@@ -1,6 +1,10 @@
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
-import { extractObservationBased, mapQItemsExtractable } from '../utils/extractObservation';
+import {
+  Extractable,
+  extractObservationBased,
+  mapQItemsExtractable
+} from '../utils/extractObservation';
 import {
   observationResults,
   qExtractSample,
@@ -95,16 +99,16 @@ describe('mapQItemsExtractable', () => {
   it('should correctly return extractionMap from a Questionnaire', () => {
     const extractionMap = mapQItemsExtractable(qExtractSample);
     expect(extractionMap).toEqual({
-      'phq-2-questionnaire': false,
-      'phq2-1': true,
-      'phq2-2': false,
-      'phq2-3': false,
-      'phq2-4': true,
-      'phq2-5': true,
-      'phq2-6': false,
-      'phq2-7': false,
-      'phq2-8': true
-    });
+      'phq-2-questionnaire': { extractable: false, extractCategories: [] },
+      'phq2-1': { extractable: true, extractCategories: [] },
+      'phq2-2': { extractable: false, extractCategories: [] },
+      'phq2-3': { extractable: false, extractCategories: [] },
+      'phq2-4': { extractable: true, extractCategories: [] },
+      'phq2-5': { extractable: true, extractCategories: [] },
+      'phq2-6': { extractable: false, extractCategories: [] },
+      'phq2-7': { extractable: false, extractCategories: [] },
+      'phq2-8': { extractable: true, extractCategories: [] }
+    } satisfies Record<string, Extractable>);
   });
 
   it('should correctly return extractionMap even with topLevel observation-extract extensions true', () => {
@@ -114,15 +118,15 @@ describe('mapQItemsExtractable', () => {
     const extractionMap = mapQItemsExtractable(topLevelExtract);
 
     expect(extractionMap).toEqual({
-      'phq-2-questionnaire': true,
-      'phq2-1': true,
-      'phq2-2': false,
-      'phq2-3': true,
-      'phq2-4': true,
-      'phq2-5': true,
-      'phq2-6': false,
-      'phq2-7': true,
-      'phq2-8': true
-    });
+      'phq-2-questionnaire': { extractable: true, extractCategories: [] },
+      'phq2-1': { extractable: true, extractCategories: [] },
+      'phq2-2': { extractable: false, extractCategories: [] },
+      'phq2-3': { extractable: true, extractCategories: [] },
+      'phq2-4': { extractable: true, extractCategories: [] },
+      'phq2-5': { extractable: true, extractCategories: [] },
+      'phq2-6': { extractable: false, extractCategories: [] },
+      'phq2-7': { extractable: true, extractCategories: [] },
+      'phq2-8': { extractable: true, extractCategories: [] }
+    } satisfies Record<string, Extractable>);
   });
 });

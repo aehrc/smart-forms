@@ -56,7 +56,7 @@ const FHIR_OBSERVATION_EXTRACT_CATEGORY_EXTENSION =
 function extractObservationBasedRecursive(
   qItem: QuestionnaireItem,
   qrItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[] | null,
-  extraData?: { qr: QuestionnaireResponse; qItemMap: Record<string, boolean> }
+  extraData?: { qr: QuestionnaireResponse; qItemMap: Record<string, Extractable> }
 ): Observation[] | null {
   // Process items with child items
   const observations: Observation[] = [];
@@ -73,30 +73,19 @@ function extractObservationBasedRecursive(
     }
   }
 
-  const categories: CodeableConcept[] = [];
-
-  for (const responseItem of qrItems) {
-    if (categories.length) break;
-
-    if (responseItem.extension) {
-      const exts = responseItem.extension.filter(
-        (e) => e.url === FHIR_OBSERVATION_EXTRACT_CATEGORY_EXTENSION
-      );
-
-      for (const ext of exts) {
-        if (ext.valueCodeableConcept) {
-          categories.push(ext.valueCodeableConcept);
-        }
-      }
-    }
-  }
-
   for (const responseItem of qrItems) {
     // Check if the response item has any values or nested items
     if (responseItem.answer && responseItem.answer.length > 0) {
       for (const answer of responseItem.answer) {
-        if (extraData.qItemMap[qItem.linkId]) {
-          const observation = createObservation(qItem, extraData.qr, answer, categories);
+        const currentQItemExtractable = extraData.qItemMap[qItem.linkId];
+
+        if (currentQItemExtractable.extractable) {
+          const observation = createObservation(
+            qItem,
+            extraData.qr,
+            answer,
+            currentQItemExtractable.extractCategories
+          );
 
           observations.push(observation);
         }
@@ -137,7 +126,12 @@ function extractObservationBasedRecursive(
   return observations;
 }
 
-export function mapQItemsExtractable(questionnaire: Questionnaire): Record<string, boolean> {
+export type Extractable = {
+  extractable: boolean;
+  extractCategories: CodeableConcept[];
+};
+
+export function mapQItemsExtractable(questionnaire: Questionnaire): Record<string, Extractable> {
   if (!questionnaire.item || questionnaire.item.length === 0) {
     return {};
   }
@@ -146,8 +140,15 @@ export function mapQItemsExtractable(questionnaire: Questionnaire): Record<strin
     (e) => e.url === FHIR_OBSERVATION_EXTRACT_EXTENSION
   );
 
-  const initialExtractMap: Record<string, boolean> = {
-    [questionnaire.id ?? 'root']: initialExtension?.valueBoolean ?? false
+  const extractCategoryExts = questionnaire.extension
+    ?.filter((e) => e.url === FHIR_OBSERVATION_EXTRACT_CATEGORY_EXTENSION && e.valueCodeableConcept)
+    ?.map((e) => e.valueCodeableConcept) as CodeableConcept[] | undefined;
+
+  const initialExtractMap: Record<string, Extractable> = {
+    [questionnaire.id ?? 'root']: {
+      extractable: initialExtension?.valueBoolean ?? false,
+      extractCategories: extractCategoryExts ?? []
+    }
   };
 
   transverseQuestionnaire(questionnaire, mapQItemsExtractableRecursive, initialExtractMap);
@@ -159,20 +160,46 @@ function mapQItemsExtractableRecursive(
   qItem: QuestionnaireItem,
   root?: Questionnaire,
   parent?: QuestionnaireItem,
-  qItemExtrableMap?: Record<string, boolean>
+  qItemExtrableMap?: Record<string, Extractable>
 ): void {
   if (!qItemExtrableMap) return;
 
+  if (!qItemExtrableMap[qItem.linkId]) {
+    qItemExtrableMap[qItem.linkId] = { extractable: false, extractCategories: [] };
+  }
+
+  // Check if questionnaire extractable
   const extension = qItem.extension?.find((e) => e.url === FHIR_OBSERVATION_EXTRACT_EXTENSION);
 
   if (extension?.valueBoolean || extension?.valueBoolean === false) {
-    qItemExtrableMap[qItem.linkId] = extension?.valueBoolean ?? false;
+    qItemExtrableMap[qItem.linkId].extractable = extension?.valueBoolean ?? false;
   } else if (parent && qItemExtrableMap[parent.linkId]) {
-    qItemExtrableMap[qItem.linkId] = qItemExtrableMap[parent.linkId];
+    qItemExtrableMap[qItem.linkId].extractable = qItemExtrableMap[parent.linkId].extractable;
   } else if (root && qItemExtrableMap[root.id ?? 'root']) {
-    qItemExtrableMap[qItem.linkId] = qItemExtrableMap[root?.id ?? 'root'];
+    qItemExtrableMap[qItem.linkId].extractable = qItemExtrableMap[root?.id ?? 'root'].extractable;
   } else {
-    qItemExtrableMap[qItem.linkId] = false;
+    qItemExtrableMap[qItem.linkId].extractable = false;
+  }
+
+  // if questionnaire extractable, check for extract category
+  if (qItemExtrableMap[qItem.linkId].extractable) {
+    const extractCategoryExts = qItem.extension
+      ?.filter(
+        (e) => e.url === FHIR_OBSERVATION_EXTRACT_CATEGORY_EXTENSION && e.valueCodeableConcept
+      )
+      ?.map((e) => e.valueCodeableConcept) as CodeableConcept[] | undefined;
+
+    if (extractCategoryExts) {
+      qItemExtrableMap[qItem.linkId].extractCategories = extractCategoryExts;
+    } else if (parent && qItemExtrableMap[parent.linkId].extractCategories.length) {
+      qItemExtrableMap[qItem.linkId].extractCategories =
+        qItemExtrableMap[parent.linkId].extractCategories;
+    } else if (root && qItemExtrableMap[root.id ?? 'root'].extractCategories.length) {
+      qItemExtrableMap[qItem.linkId].extractCategories =
+        qItemExtrableMap[root?.id ?? 'root'].extractCategories;
+    } else {
+      qItemExtrableMap[qItem.linkId].extractCategories = [];
+    }
   }
 
   if (qItem.item && qItem.item.length !== 0) {
