@@ -154,7 +154,7 @@ function Playground() {
   }
 
   // Observation $extract
-  async function handleObservationExtract() {
+  function handleObservationExtract() {
     const observations = extractObservationBased(sourceQuestionnaire, updatableResponse);
     setExtractedResource(observations);
 
