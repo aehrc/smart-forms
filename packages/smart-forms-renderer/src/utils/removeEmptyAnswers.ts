@@ -61,6 +61,7 @@ export function removeEmptyAnswers(params: removeEmptyAnswersParams): Questionna
     return updatedQuestionnaireResponse;
   }
 
+  // introduce the mapper here
   const newQuestionnaireResponse: QuestionnaireResponse = { ...questionnaireResponse, item: [] };
   for (const [i, topLevelQRItem] of topLevelQRItems.entries()) {
     const qItem = topLevelQItems[i];
@@ -133,8 +134,11 @@ function removeEmptyAnswersFromItemRecursive(
         qItemIndex < qItems.length || qrItemIndex < qrItems.length;
         qItemIndex++
       ) {
+        const initialQItemIndex = qItemIndex;
+        const initialQrItemIndex = qrItemIndex;
+
         // Save qrItem if linkIds of current qItem and qrItem are the same
-        if (qrItems[qrItemIndex] && qItems[qItemIndex].linkId === qrItems[qrItemIndex].linkId) {
+        if (qrItems[qrItemIndex] && qItems[qItemIndex]?.linkId === qrItems[qrItemIndex]?.linkId) {
           const newQrItem = removeEmptyAnswersFromItemRecursive({
             qItem: qItems[qItemIndex],
             qrItem: qrItems[qrItemIndex],
@@ -158,6 +162,14 @@ function removeEmptyAnswersFromItemRecursive(
 
           // Only Increment qrItem index whenever the current qrItem linkId matches up with the current qItem
           qrItemIndex++;
+        }
+
+        // Fail-safe: If neither index was incremented or decremented, break to prevent infinite loop
+        if (qItemIndex === initialQItemIndex && qrItemIndex === initialQrItemIndex) {
+          console.error(
+            'Possible infinite loop detected in removeEmptyAnswersFromItemRecursive(), breaking the loop'
+          );
+          break;
         }
       }
       return { ...qrItem, item: newQrItems };
