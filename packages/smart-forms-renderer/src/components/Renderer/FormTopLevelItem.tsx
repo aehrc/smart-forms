@@ -34,8 +34,9 @@ import useHidden from '../../hooks/useHidden';
 import GroupItemSwitcher from '../FormComponents/GroupItem/GroupItemSwitcher';
 import useReadOnly from '../../hooks/useReadOnly';
 import Box from '@mui/material/Box';
-import { isSpecificItemControl } from '../../utils';
+import { isRepeatItemAndNotCheckbox, isSpecificItemControl } from '../../utils';
 import GroupTable from '../FormComponents/Tables/GroupTable';
+import RepeatItem from '../FormComponents/RepeatItem/RepeatItem';
 
 interface FormTopLevelItemProps
   extends PropsWithQrItemChangeHandler,
@@ -156,6 +157,20 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
   }
 
   // Otherwise, it is rendered as a non-group item
+  const itemRepeatsAndIsNotCheckbox = isRepeatItemAndNotCheckbox(topLevelQItem);
+  if (itemRepeatsAndIsNotCheckbox) {
+    return (
+      <RepeatItem
+        key={topLevelQItem.linkId}
+        qItem={topLevelQItem}
+        qrItem={topLevelQRItem}
+        groupCardElevation={1}
+        parentIsReadOnly={readOnly}
+        onQrItemChange={onQrItemChange}
+      />
+    );
+  }
+
   return (
     <Box mt={1}>
       <SingleItem
