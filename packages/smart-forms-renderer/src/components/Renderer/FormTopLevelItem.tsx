@@ -37,6 +37,7 @@ import Box from '@mui/material/Box';
 import { isRepeatItemAndNotCheckbox, isSpecificItemControl } from '../../utils';
 import GroupTable from '../FormComponents/Tables/GroupTable';
 import RepeatItem from '../FormComponents/RepeatItem/RepeatItem';
+import GridGroup from '../FormComponents/GridGroup/GridGroup';
 
 interface FormTopLevelItemProps
   extends PropsWithQrItemChangeHandler,
@@ -128,6 +129,20 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
 
   // If form is untabbed, it is rendered as a regular group
   if (itemIsGroup) {
+    // Item is 'grid'
+    const itemIsGrid = isSpecificItemControl(topLevelQItem, 'grid');
+    if (itemIsGrid) {
+      return (
+        <GridGroup
+          qItem={topLevelQItem}
+          qrItem={topLevelQRItem}
+          groupCardElevation={1}
+          parentIsReadOnly={parentIsReadOnly}
+          onQrItemChange={onQrItemChange}
+        />
+      );
+    }
+
     // GroupTable "gtable" can be rendered with either repeats:true or false
     if (isSpecificItemControl(topLevelQItem, 'gtable')) {
       return (
