@@ -87,21 +87,24 @@ export function updateQuestionnaireResponse<T>(
   return { ...questionnaireResponse, item: topLevelQrItems };
 }
 
-export type RecursiveReadArrayFunction<T> = (
+export type RecursiveReadArrayFunction<T, U> = (
   qItem: QuestionnaireItem,
-  qrItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[] | null
+  qrItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[] | null,
+  extraData?: U
 ) => T[] | null;
 
 /**
  * A generic (and safe) way to read an array of element(s) i.e. QuestionnaireResponseItem[], extracted Observation[] from a QuestionnaireResponse given a recursive function.
+ * It also provides an optional extraData (generic U) parameter for additional data that the recursive function may need.
  * This function relies heavily on mapQItemsIndex() and getQrItemsIndex() to accurately pinpoint the locations of QR items based on their positions in the Q, taking into account repeating group answers, non-filled questions, etc
  *
  * @author Sean Fong
  */
-export function readQuestionnaireResponse<T>(
+export function readQuestionnaireResponse<T, U>(
   questionnaire: Questionnaire,
   questionnaireResponse: QuestionnaireResponse,
-  recursiveReadFunction: RecursiveReadArrayFunction<T>
+  recursiveReadFunction: RecursiveReadArrayFunction<T, U>,
+  extraData?: U
 ): T[] {
   if (!questionnaire.item || questionnaire.item.length === 0) {
     return [];
@@ -122,7 +125,7 @@ export function readQuestionnaireResponse<T>(
       item: []
     };
 
-    const readValue = recursiveReadFunction(topLevelQItem, topLevelQRItemOrItems);
+    const readValue = recursiveReadFunction(topLevelQItem, topLevelQRItemOrItems, extraData);
 
     if (readValue) {
       readValueArray.push(...readValue);
@@ -130,4 +133,23 @@ export function readQuestionnaireResponse<T>(
   }
 
   return readValueArray;
+}
+
+export type RecursiveTranverseFunction<U> = (
+  qItem: QuestionnaireItem,
+  root?: Questionnaire,
+  parent?: QuestionnaireItem,
+  extraData?: U
+) => void;
+
+export function transverseQuestionnaire<U>(
+  questionnaire: Questionnaire,
+  recursiveTranverseFunction: RecursiveTranverseFunction<U>,
+  extraData?: U
+): void {
+  if (!questionnaire.item || questionnaire.item.length === 0) return;
+
+  for (const topLevelQItem of questionnaire.item) {
+    recursiveTranverseFunction(topLevelQItem, questionnaire, undefined, extraData);
+  }
 }

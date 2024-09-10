@@ -30,6 +30,7 @@ import { isQuestionnaire } from '../typePredicates/isQuestionnaire.ts';
 import type { BuildState } from '../types/buildState.interface.ts';
 import { useLocalStorage } from 'usehooks-ts';
 import {
+  extractObservationBased,
   removeEmptyAnswersFromResponse,
   useQuestionnaireResponseStore,
   useQuestionnaireStore
@@ -152,8 +153,30 @@ function Playground() {
     };
   }
 
-  // $extract
-  async function handleExtract() {
+  // Observation $extract
+  function handleObservationExtract() {
+    const observations = extractObservationBased(sourceQuestionnaire, updatableResponse);
+    setExtractedResource(observations);
+
+    if (observations.length > 0) {
+      enqueueSnackbar(
+        'Observation-based extraction successful. See Advanced Properties > Extracted to view extracted resource.',
+        {
+          preventDuplicate: true,
+          action: <CloseSnackbar />,
+          autoHideDuration: 8000
+        }
+      );
+    } else {
+      enqueueSnackbar('Extraction performed but no observations are extracted.', {
+        preventDuplicate: true,
+        action: <CloseSnackbar />
+      });
+    }
+  }
+
+  // StructureMap $extract
+  async function handleStructureMapExtract() {
     setExtracting(true);
 
     const response = await fetch(defaultExtractEndpoint + '/QuestionnaireResponse/$extract', {
@@ -209,7 +232,8 @@ function Playground() {
                 patient={patient}
                 user={user}
                 isExtracting={isExtracting}
-                onExtract={handleExtract}
+                onObservationExtract={handleObservationExtract}
+                onStructureMapExtract={handleStructureMapExtract}
               />
             ) : buildingState === 'building' ? (
               <PopulationProgressSpinner message={'Building form'} />
