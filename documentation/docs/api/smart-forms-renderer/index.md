@@ -50,6 +50,7 @@
 | [SmartFormsRenderer](functions/SmartFormsRenderer.md) | A self-initialising wrapper around the BaseRenderer rendering engine. |
 | [buildForm](functions/buildForm.md) | Build the form with an initial Questionnaire and an optional filled QuestionnaireResponse. |
 | [destroyForm](functions/destroyForm.md) | Destroy the form to clean up the questionnaire and questionnaireResponse stores. |
+| [extractObservationBased](functions/extractObservationBased.md) | Extract an array of Observations from a QuestionnaireResponse and its source Questionnaire. |
 | [generateItemsToRepopulate](functions/generateItemsToRepopulate.md) | Compare latest data from the server with the current QuestionnaireResponse and decide items to re-populate |
 | [getResponse](functions/getResponse.md) | Get the filled QuestionnaireResponse at its current state. |
 | [initialiseQuestionnaireResponse](functions/initialiseQuestionnaireResponse.md) | Initialise a questionnaireResponse from a given questionnaire |
