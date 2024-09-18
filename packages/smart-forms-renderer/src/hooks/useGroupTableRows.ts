@@ -19,8 +19,8 @@ import { useState } from 'react';
 import useInitialiseGroupTable from './useInitialiseGroupTable';
 import type { QuestionnaireResponseItem } from 'fhir/r4';
 
-function useGroupTableRows(qrItems: QuestionnaireResponseItem[]) {
-  const initialisedGroupTableRows = useInitialiseGroupTable(qrItems);
+function useGroupTableRows(linkId: string, qrItems: QuestionnaireResponseItem[]) {
+  const initialisedGroupTableRows = useInitialiseGroupTable(linkId, qrItems);
 
   const [tableRows, setTableRows] = useState(initialisedGroupTableRows);
   const [selectedIds, setSelectedIds] = useState<string[]>(

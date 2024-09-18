@@ -16,9 +16,9 @@
  */
 
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { nanoid } from 'nanoid';
 import type { RepeatGroupSingle } from '../interfaces/repeatGroup.interface';
 import { useMemo } from 'react';
+import { generateExistingRepeatId, generateNewRepeatId } from '../utils/repeatId';
 
 function useInitialiseRepeatGroups(
   qItem: QuestionnaireItem,
@@ -28,15 +28,15 @@ function useInitialiseRepeatGroups(
     () => {
       let initialRepeatGroupAnswers: RepeatGroupSingle[] = [
         {
-          nanoId: nanoid(),
+          nanoId: generateNewRepeatId(qItem.linkId),
           qrItem: null
         }
       ];
 
       if (qrItems.length > 0) {
-        initialRepeatGroupAnswers = qrItems.map((qrItem) => {
+        initialRepeatGroupAnswers = qrItems.map((qrItem, index) => {
           return {
-            nanoId: nanoid(),
+            nanoId: generateExistingRepeatId(qItem.linkId, index),
             qrItem
           };
         });

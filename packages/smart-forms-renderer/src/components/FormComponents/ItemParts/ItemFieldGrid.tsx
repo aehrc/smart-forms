@@ -22,6 +22,7 @@ import type { QuestionnaireItem } from 'fhir/r4';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from './ItemLabelWrapper';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
+import Box from '@mui/material/Box';
 
 interface ItemFieldGridProps {
   children: ReactNode;
@@ -36,10 +37,15 @@ function ItemFieldGrid(props: ItemFieldGridProps) {
 
   return (
     <Grid container columnSpacing={4}>
-      <Grid item xs={4}>
+      <Grid item md={4} xs={12}>
         <LabelWrapper qItem={qItem} readOnly={readOnly} />
       </Grid>
-      <Grid item xs={8}>
+      <Box
+        sx={{
+          my: { xs: 1.5, md: 0 } // Adds padding for `xs` breakpoint and removes it for `md` and up
+        }}
+      />
+      <Grid item md={8} xs={12}>
         {children}
         <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
       </Grid>

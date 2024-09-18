@@ -55,8 +55,8 @@ function useDateValidation(input: string, parseFail: boolean = false): string | 
 
     const matches = input.split('/');
 
-    if (validateTwoMatches(matches[0], matches[1])) {
-      return null;
+    if (!validateTwoMatches(matches[0], matches[1])) {
+      return 'Input is an invalid date.';
     }
 
     return null;
