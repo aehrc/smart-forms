@@ -175,14 +175,16 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
   const itemRepeatsAndIsNotCheckbox = isRepeatItemAndNotCheckbox(topLevelQItem);
   if (itemRepeatsAndIsNotCheckbox) {
     return (
-      <RepeatItem
-        key={topLevelQItem.linkId}
-        qItem={topLevelQItem}
-        qrItem={topLevelQRItem}
-        groupCardElevation={1}
-        parentIsReadOnly={readOnly}
-        onQrItemChange={onQrItemChange}
-      />
+      <Box mt={1}>
+        <RepeatItem
+          key={topLevelQItem.linkId}
+          qItem={topLevelQItem}
+          qrItem={topLevelQRItem}
+          groupCardElevation={1}
+          parentIsReadOnly={readOnly}
+          onQrItemChange={onQrItemChange}
+        />
+      </Box>
     );
   }
 

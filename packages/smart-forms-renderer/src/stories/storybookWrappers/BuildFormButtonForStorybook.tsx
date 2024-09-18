@@ -44,7 +44,7 @@ function BuildFormButtonForStorybook(props: BuildFormButtonProps) {
     <Box display="flex" mb={0.5} alignItems="center" columnGap={3}>
       <Tooltip title="Build form with questionnaire response" placement="right">
         <IconButton onClick={handleBuildForm} size="small" color="primary">
-          <Iconify icon="ph:hammer" sx={{ mb: 0.5 }} />
+          <Iconify icon="ph:hammer" />
         </IconButton>
       </Tooltip>
     </Box>
