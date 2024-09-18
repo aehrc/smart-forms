@@ -1,10 +1,7 @@
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
-import {
-  Extractable,
-  extractObservationBased,
-  mapQItemsExtractable
-} from '../utils/extractObservation';
+import type { Extractable } from '../utils/extractObservation';
+import { extractObservationBased, mapQItemsExtractable } from '../utils/extractObservation';
 import {
   observationResults,
   qExtractSample,
