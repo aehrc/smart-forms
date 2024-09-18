@@ -5,6 +5,16 @@ This log documents significant changes for the [@aehrc/smart-forms-renderer](htt
 
 Changelog only includes changes from version 0.36.0 onwards.
 
+## [0.40.1] - 2024-09-18
+### Fixed
+- Fix date validation error message for two matches.
+- Fix generation of internal IDs for repeat items and groups to be consistent and sync-able with externally-generated QuestionnaireResponses.
+- Add simple, minimal fix to dynamically adjust field positions based on viewport
+
+## [0.40.0] - 2024-09-06
+### Added
+- Added support for Observation-based extraction as a library function and as a feature in the Playground.
+
 ## [0.39.0] - 2024-09-06
 ### Changed
 - Refactored `repeat` items so that it tracks item instances using the QuestionnaireResponse, instead of using React's `useState`.
