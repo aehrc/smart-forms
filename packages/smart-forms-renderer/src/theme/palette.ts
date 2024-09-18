@@ -77,10 +77,6 @@ const palette: PaletteOptions = {
     secondary: grey['600'],
     disabled: grey['500']
   },
-  background: {
-    paper: '#fff',
-    default: grey['50']
-  },
   customBackground: {
     neutral: '#F4F6F8'
   },

@@ -80,7 +80,7 @@ const palette: PaletteOptions = {
   },
   background: {
     paper: '#fff',
-    default: grey['50']
+    default: '#fafafa'
   },
   customBackground: {
     neutral: '#F4F6F8'
