@@ -15,38 +15,27 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { QuestionnaireResponseItem } from 'fhir/r4';
 import type { RepeatGroupSingle } from '../interfaces/repeatGroup.interface';
 import { useMemo } from 'react';
 import { generateExistingRepeatId, generateNewRepeatId } from '../utils/repeatId';
 
 function useInitialiseRepeatGroups(
-  qItem: QuestionnaireItem,
+  linkId: string,
   qrItems: QuestionnaireResponseItem[]
 ): RepeatGroupSingle[] {
-  return useMemo(
-    () => {
-      let initialRepeatGroupAnswers: RepeatGroupSingle[] = [
-        {
-          nanoId: generateNewRepeatId(qItem.linkId),
-          qrItem: null
-        }
-      ];
+  return useMemo(() => {
+    if (qrItems.length === 0) {
+      return [{ id: generateNewRepeatId(linkId), qrItem: null }];
+    }
 
-      if (qrItems.length > 0) {
-        initialRepeatGroupAnswers = qrItems.map((qrItem, index) => {
-          return {
-            nanoId: generateExistingRepeatId(qItem.linkId, index),
-            qrItem
-          };
-        });
-      }
-      return initialRepeatGroupAnswers;
-    },
-    // Requires checking of both qItem and qrItems
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [qItem, qrItems]
-  );
+    return qrItems.map((qrItem, index) => {
+      return {
+        id: generateExistingRepeatId(linkId, index),
+        qrItem
+      };
+    });
+  }, [linkId, qrItems]);
 }
 
 export default useInitialiseRepeatGroups;

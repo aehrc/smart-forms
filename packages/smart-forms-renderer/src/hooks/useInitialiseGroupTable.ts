@@ -23,23 +23,16 @@ function useInitialiseGroupTable(
   linkId: string,
   qrItems: QuestionnaireResponseItem[]
 ): GroupTableRowModel[] {
-  let initialGroupTableRows: GroupTableRowModel[] = [
-    {
-      nanoId: generateNewRepeatId(linkId),
-      qrItem: null
-    }
-  ];
-
-  if (qrItems.length > 0) {
-    initialGroupTableRows = qrItems.map((qrItem, index) => {
-      return {
-        nanoId: generateExistingRepeatId(linkId, index),
-        qrItem
-      };
-    });
+  if (qrItems.length === 0) {
+    return [{ id: generateNewRepeatId(linkId), qrItem: null }];
   }
 
-  return initialGroupTableRows;
+  return qrItems.map((qrItem, index) => {
+    return {
+      id: generateExistingRepeatId(linkId, index),
+      qrItem
+    };
+  });
 }
 
 export default useInitialiseGroupTable;

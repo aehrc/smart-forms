@@ -19,6 +19,7 @@ import type { Dispatch, SetStateAction } from 'react';
 import { useEffect, useState } from 'react';
 import type { RepeatGroupSingle } from '../interfaces/repeatGroup.interface';
 import _isEqual from 'lodash/isEqual';
+import type { QuestionnaireResponseItem } from 'fhir/r4';
 
 function useRepeatGroups(
   valueFromProps: RepeatGroupSingle[]
@@ -27,10 +28,13 @@ function useRepeatGroups(
 
   useEffect(
     () => {
-      const valueFromPropsQRItems = valueFromProps.map(
-        (repeatGroupSingle) => repeatGroupSingle.qrItem
-      );
-      const repeatGroupsQRItems = repeatGroups.map((repeatGroupSingle) => repeatGroupSingle.qrItem);
+      const valueFromPropsQRItems = valueFromProps
+        .map((repeatGroupSingle) => repeatGroupSingle.qrItem)
+        .filter((qrItem): qrItem is QuestionnaireResponseItem => qrItem !== null);
+
+      const repeatGroupsQRItems = repeatGroups
+        .map((repeatGroupSingle) => repeatGroupSingle.qrItem)
+        .filter((qrItem): qrItem is QuestionnaireResponseItem => qrItem !== null);
 
       if (!_isEqual(valueFromPropsQRItems, repeatGroupsQRItems)) {
         setRepeatGroups(valueFromProps);

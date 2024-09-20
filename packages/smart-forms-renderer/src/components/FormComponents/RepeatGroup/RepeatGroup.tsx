@@ -58,7 +58,7 @@ function RepeatGroup(props: RepeatGroupProps) {
 
   const mutateRepeatEnableWhenItems = useQuestionnaireStore.use.mutateRepeatEnableWhenItems();
 
-  const initialRepeatGroups = useInitialiseRepeatGroups(qItem, qrItems);
+  const initialRepeatGroups = useInitialiseRepeatGroups(qItem.linkId, qrItems);
 
   const [repeatGroups, setRepeatGroups] = useRepeatGroups(initialRepeatGroups);
 
@@ -104,7 +104,7 @@ function RepeatGroup(props: RepeatGroupProps) {
     setRepeatGroups([
       ...repeatGroups,
       {
-        nanoId: generateNewRepeatId(qItem.linkId),
+        id: generateNewRepeatId(qItem.linkId),
         qrItem: null
       }
     ]);

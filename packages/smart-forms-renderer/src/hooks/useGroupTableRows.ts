@@ -24,7 +24,7 @@ function useGroupTableRows(linkId: string, qrItems: QuestionnaireResponseItem[])
 
   const [tableRows, setTableRows] = useState(initialisedGroupTableRows);
   const [selectedIds, setSelectedIds] = useState<string[]>(
-    initialisedGroupTableRows.map((row) => row.nanoId)
+    initialisedGroupTableRows.map((row) => row.id)
   );
 
   return { tableRows, selectedIds, setTableRows, setSelectedIds };

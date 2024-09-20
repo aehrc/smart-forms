@@ -16,12 +16,108 @@
  */
 
 import { nanoid } from 'nanoid';
+import type {
+  QuestionnaireItem,
+  QuestionnaireResponseItem,
+  QuestionnaireResponseItemAnswer
+} from 'fhir/r4';
+import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 
 export function generateNewRepeatId(linkId: string): string {
-  return `${linkId}-${nanoid()}`;
+  return `${linkId}-repeat-${nanoid()}`;
 }
 
 export function generateExistingRepeatId(linkId: string, index: number): string {
   const paddedIndex = index.toString().padStart(6, '0');
-  return `${linkId}-${paddedIndex}`;
+  return `${linkId}-repeat-${paddedIndex}`;
+}
+
+export function removeInternalRepeatIdsRecursive(
+  qItem: QuestionnaireItem,
+  qrItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[] | null
+): QuestionnaireResponseItem | QuestionnaireResponseItem[] | null {
+  // Process repeating group items separately
+  const hasMultipleAnswers = Array.isArray(qrItemOrItems);
+  if (hasMultipleAnswers) {
+    return removeInternalRepeatIdsFromRepeatGroup(qItem, qrItemOrItems);
+  }
+
+  // At this point qrItemOrItems is a single QuestionnaireResponseItem
+  const qrItem = qrItemOrItems;
+
+  // Process items with child items
+  const childQItems = qItem.item ?? [];
+  const childQrItems = qrItem?.item ?? [];
+  const updatedChildQrItems: QuestionnaireResponseItem[] = [];
+  if (childQItems.length > 0) {
+    const indexMap = mapQItemsIndex(qItem);
+    const qrItemsByIndex = getQrItemsIndex(childQItems, childQrItems, indexMap);
+
+    // Iterate child items
+    for (const [index, childQItem] of childQItems.entries()) {
+      const childQRItemOrItems = qrItemsByIndex[index];
+
+      const updatedChildQRItemOrItems = removeInternalRepeatIdsRecursive(
+        childQItem,
+        childQRItemOrItems ?? null
+      );
+
+      if (Array.isArray(updatedChildQRItemOrItems)) {
+        if (updatedChildQRItemOrItems.length > 0) {
+          updatedChildQrItems.push(...updatedChildQRItemOrItems);
+        }
+        continue;
+      }
+
+      if (updatedChildQRItemOrItems) {
+        updatedChildQrItems.push(updatedChildQRItemOrItems);
+      }
+    }
+  }
+
+  // Construct updated qrItem
+  return removeInternalRepeatIdsFromItem(qItem, qrItem, updatedChildQrItems);
+}
+
+function removeInternalRepeatIdsFromRepeatGroup(
+  qItem: QuestionnaireItem,
+  qrItems: QuestionnaireResponseItem[]
+) {
+  if (!qItem.item) {
+    return [];
+  }
+
+  return qrItems
+    .flatMap((childQrItem) => removeInternalRepeatIdsRecursive(qItem, childQrItem))
+    .filter((childQRItem): childQRItem is QuestionnaireResponseItem => !!childQRItem);
+}
+
+function removeInternalRepeatIdsFromItem(
+  qItem: QuestionnaireItem,
+  qrItem: QuestionnaireResponseItem | null,
+  childQrItems: QuestionnaireResponseItem[]
+): QuestionnaireResponseItem | null {
+  if (!qrItem) {
+    return null;
+  }
+
+  // Remove internal repeatId from all answers
+  const updatedAnswers: QuestionnaireResponseItemAnswer[] =
+    qrItem.answer
+      ?.map(
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        ({ id, ...rest }) => {
+          return {
+            ...rest
+          };
+        }
+      )
+      .filter((answer) => !!answer && Object.keys(answer).length > 0) ?? [];
+
+  return {
+    linkId: qItem.linkId,
+    ...(qItem.text && { text: qItem.text }),
+    ...(childQrItems.length > 0 && { item: childQrItems }),
+    ...(updatedAnswers.length > 0 && { answer: updatedAnswers })
+  };
 }

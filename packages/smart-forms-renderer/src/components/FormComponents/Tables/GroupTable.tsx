@@ -104,7 +104,7 @@ function GroupTable(props: GroupTableProps) {
     const updatedTableRows = [...tableRows];
 
     const rowToRemove = updatedTableRows[index];
-    const updatedSelectedIds = selectedIds.filter((id) => id !== rowToRemove.nanoId);
+    const updatedSelectedIds = selectedIds.filter((id) => id !== rowToRemove.id);
 
     updatedTableRows.splice(index, 1);
 
@@ -117,21 +117,21 @@ function GroupTable(props: GroupTableProps) {
   }
 
   function handleAddRow() {
-    const newRowNanoId = generateNewRepeatId(qItem.linkId);
+    const newRowId = generateNewRepeatId(qItem.linkId);
     setTableRows([
       ...tableRows,
       {
-        nanoId: newRowNanoId,
+        id: newRowId,
         qrItem: null
       }
     ]);
-    setSelectedIds([...selectedIds, newRowNanoId]);
+    setSelectedIds([...selectedIds, newRowId]);
   }
 
   function handleSelectAll() {
     // deselect all if all are selected, otherwise select all
     const updatedTableIds =
-      selectedIds.length === tableRows.length ? [] : tableRows.map((tableRow) => tableRow.nanoId);
+      selectedIds.length === tableRows.length ? [] : tableRows.map((tableRow) => tableRow.id);
     setSelectedIds(updatedTableIds);
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
@@ -139,12 +139,12 @@ function GroupTable(props: GroupTableProps) {
     });
   }
 
-  function handleSelectRow(nanoId: string) {
+  function handleSelectRow(rowId: string) {
     const updatedSelectedIds = [...selectedIds];
 
-    const index = updatedSelectedIds.indexOf(nanoId);
+    const index = updatedSelectedIds.indexOf(rowId);
     if (index === -1) {
-      updatedSelectedIds.push(nanoId);
+      updatedSelectedIds.push(rowId);
     } else {
       updatedSelectedIds.splice(index, 1);
     }

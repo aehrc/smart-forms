@@ -76,7 +76,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
     return (
       <QGroupContainerBox key={qItem.linkId} cardElevation={groupCardElevation} isRepeated={true}>
         <Card elevation={groupCardElevation} sx={{ p: 2 }}>
-          {repeatGroups.map(({ nanoId, qrItem: nullableQrItem }, index) => {
+          {repeatGroups.map(({ id, qrItem: nullableQrItem }, index) => {
             const answeredQrItem = createEmptyQrItem(qItem, undefined);
             if (nullableQrItem) {
               answeredQrItem.item = nullableQrItem.item;
@@ -84,7 +84,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
 
             return (
               <RepeatGroupItem
-                key={nanoId}
+                key={id}
                 qItem={qItem}
                 repeatGroupIndex={index}
                 answeredQrItem={answeredQrItem}
@@ -127,14 +127,14 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
         <AccordionDetails sx={{ pt: 0 }}>
           {qItem.text ? <Divider sx={{ mb: 1.5 }} light /> : null}
           <TransitionGroup>
-            {repeatGroups.map(({ nanoId, qrItem: nullableQrItem }, index) => {
+            {repeatGroups.map(({ id, qrItem: nullableQrItem }, index) => {
               const answeredQrItem = createEmptyQrItem(qItem, undefined);
               if (nullableQrItem) {
                 answeredQrItem.item = nullableQrItem.item;
               }
 
               return (
-                <Collapse key={nanoId} timeout={200}>
+                <Collapse key={id} timeout={200}>
                   <RepeatGroupItem
                     qItem={qItem}
                     repeatGroupIndex={index}
@@ -169,14 +169,14 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
           </>
         ) : null}
         <TransitionGroup>
-          {repeatGroups.map(({ nanoId, qrItem: nullableQrItem }, index) => {
+          {repeatGroups.map(({ id, qrItem: nullableQrItem }, index) => {
             const answeredQrItem = createEmptyQrItem(qItem, undefined);
             if (nullableQrItem) {
               answeredQrItem.item = nullableQrItem.item;
             }
 
             return (
-              <Collapse key={nanoId} timeout={200}>
+              <Collapse key={id} timeout={200}>
                 <RepeatGroupItem
                   qItem={qItem}
                   repeatGroupIndex={index}

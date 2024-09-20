@@ -42,6 +42,7 @@ export {
   destroyForm,
   getResponse,
   removeEmptyAnswersFromResponse,
+  removeInternalIdsFromResponse,
   isSpecificItemControl,
   isRepeatItemAndNotCheckbox,
   initialiseQuestionnaireResponse,

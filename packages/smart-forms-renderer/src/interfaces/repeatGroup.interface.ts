@@ -23,6 +23,6 @@ export interface QrRepeatGroup {
 }
 
 export interface RepeatGroupSingle {
-  nanoId: string;
+  id: string;
   qrItem: QuestionnaireResponseItem | null;
 }

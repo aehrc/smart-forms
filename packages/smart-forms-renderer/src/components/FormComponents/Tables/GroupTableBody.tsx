@@ -41,7 +41,7 @@ interface GroupTableBodyProps
   qItemsIndexMap: Record<string, number>;
   onRowChange: (newQrRow: QuestionnaireResponseItem, index: number) => void;
   onRemoveRow: (index: number) => void;
-  onSelectRow: (nanoId: string) => void;
+  onSelectRow: (rowId: string) => void;
   onReorderRows: (newTableRows: GroupTableRowModel[]) => void;
 }
 
@@ -80,8 +80,8 @@ function GroupTableBody(props: GroupTableBodyProps) {
       <Droppable droppableId="gtable_rows" direction="vertical">
         {(droppableProvided, snapshot) => (
           <TableBody ref={droppableProvided.innerRef} {...droppableProvided.droppableProps}>
-            {tableRows.map(({ nanoId, qrItem: nullableQrItem }, index) => {
-              const itemIsSelected = selectedIds.indexOf(nanoId) !== -1;
+            {tableRows.map(({ id, qrItem: nullableQrItem }, index) => {
+              const itemIsSelected = selectedIds.indexOf(id) !== -1;
               const answeredQrItem = createEmptyQrItem(tableQItem, undefined);
               if (nullableQrItem) {
                 answeredQrItem.item = nullableQrItem.item;
@@ -89,9 +89,9 @@ function GroupTableBody(props: GroupTableBodyProps) {
 
               return (
                 <GroupTableRow
-                  key={nanoId}
+                  key={id}
                   index={index}
-                  nanoId={nanoId}
+                  rowId={id}
                   tableQItem={tableQItem}
                   answeredQrItem={answeredQrItem}
                   nullableQrItem={nullableQrItem}
