@@ -11,7 +11,7 @@ import { readEncounter, readPatient, readUser } from '../api/smartClient';
 import type Client from 'fhirclient/lib/Client';
 import cloneDeep from 'lodash.clonedeep';
 import { updateQuestionnaireResponse } from './genericRecursive';
-import { removeInternalRepeatIdsRecursive } from './repeatId';
+import { removeInternalRepeatIdsRecursive } from './removeRepeatId';
 
 /**
  * Build the form with an initial Questionnaire and an optional filled QuestionnaireResponse.
