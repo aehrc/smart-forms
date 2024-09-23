@@ -78,7 +78,7 @@
   "devDependencies": {
     "@jest/globals": "^29.5.0",
     "@playwright/test": "^1.44.1",
-    "@sentry/cli": "^2.34.1",
+    "@sentry/cli": "^2.36.2",
     "@storybook/addon-essentials": "^8.0.6",
     "@storybook/addon-interactions": "^7.4.6",
     "@storybook/addon-links": "^8.0.3",
