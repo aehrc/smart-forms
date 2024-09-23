@@ -23,7 +23,6 @@ import {
   StyledEngineProvider,
   ThemeProvider as MUIThemeProvider
 } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
 import palette from './palette';
 import typography from './typography';
 import CustomGlobalStyles from './customGlobalStyles';
@@ -102,7 +101,6 @@ export function RendererThemeProvider({ children }: { children: ReactNode }) {
   return (
     <StyledEngineProvider injectFirst>
       <MUIThemeProvider theme={theme}>
-        <CssBaseline />
         <CustomGlobalStyles />
         {children}
       </MUIThemeProvider>
