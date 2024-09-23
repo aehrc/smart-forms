@@ -16,10 +16,10 @@
  */
 
 import type { Patient, Practitioner } from 'fhir/r4';
-import '../styles.css';
 import type { ChangeEvent } from 'react';
 import useLaunchContext from '../hooks/useLaunchContext.ts';
 import { patientIsValid, practitionerIsValid } from '../utils/fetchResource.ts';
+import { Button } from '@/components/ui/button.tsx';
 
 interface LaunchContextPickerProps {
   patient: Patient | null;
@@ -82,7 +82,7 @@ function LaunchContextPicker(props: LaunchContextPickerProps) {
     return (
       <p>
         Loading patient and practitioner dropdowns...
-        <span className="fade-in">If it takes longer than usual, token might be expired.</span>
+        <span>If it takes longer than usual, token might be expired.</span>
       </p>
     );
   }
@@ -98,13 +98,13 @@ function LaunchContextPicker(props: LaunchContextPickerProps) {
 
   return (
     <div>
-      <div style={{ display: 'flex', columnGap: '1em' }}>
+      <div className="flex gap-3 items-center">
         <label htmlFor="dropdownPatient">Select a patient: </label>
         <select
           id="dropdownPatient"
           name="patient"
           value={patient?.id ?? ''}
-          className="increase-button-hitbox"
+          className="cursor-pointer"
           onChange={handleSelectPatient}>
           <option value="">No patient selected</option>
           {patientBundle.entry?.map((entry) => {
@@ -131,7 +131,7 @@ function LaunchContextPicker(props: LaunchContextPickerProps) {
           id="dropdownPractitioner"
           name="practitioner"
           value={practitioner?.id ?? ''}
-          className="increase-button-hitbox"
+          className="cursor-pointer"
           onChange={handleSelectPractitioner}>
           <option value="">No practitioner selected</option>
           {practitionerBundle.entry?.map((entry) => {
@@ -151,7 +151,9 @@ function LaunchContextPicker(props: LaunchContextPickerProps) {
           })}
         </select>
 
-        <button
+        <Button
+          size="sm"
+          variant="secondary"
           className="increase-button-hitbox"
           onClick={() => {
             if (patientBundle.entry?.[0].resource) {
@@ -163,7 +165,7 @@ function LaunchContextPicker(props: LaunchContextPickerProps) {
             }
           }}>
           Select first item from dropdowns
-        </button>
+        </Button>
       </div>
     </div>
   );

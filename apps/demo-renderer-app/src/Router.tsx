@@ -15,30 +15,20 @@
  * limitations under the License.
  */
 
-import { oauth2 } from 'fhirclient';
-import { CLIENT_ID, ISS, SCOPES } from '../utils/apiConstants.ts';
-import { Button } from '@/components/ui/button.tsx';
+import useQuestionnaireUrl from '@/hooks/useQuestionnaireUrl.ts';
+import useBearerToken from '@/hooks/useBearerToken.ts';
+import InputQuestionnaire from '@/components/InputQuestionnaire.tsx';
+import Home from '@/components/Home.tsx';
 
-function LaunchButton() {
-  function launch() {
-    oauth2
-      .authorize({
-        iss: ISS,
-        clientId: CLIENT_ID,
-        scope: SCOPES
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+function Router() {
+  const questionnaireUrl = useQuestionnaireUrl();
+  const bearerToken = useBearerToken();
+
+  if (questionnaireUrl === '' || questionnaireUrl === null) {
+    return <InputQuestionnaire bearerToken={bearerToken} />;
   }
 
-  return (
-    <div>
-      <Button variant="outline" onClick={() => launch()}>
-        Get new bearer token from demo server {ISS}
-      </Button>
-    </div>
-  );
+  return <Home questionnaireUrl={questionnaireUrl} bearerToken={bearerToken} />;
 }
 
-export default LaunchButton;
+export default Router;

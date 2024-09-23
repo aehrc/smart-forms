@@ -15,60 +15,43 @@
  * limitations under the License.
  */
 
-import { SmartFormsRenderer } from '@aehrc/smart-forms-renderer';
-import type { Patient, Practitioner, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-import LaunchContextPicker from './LaunchContextPicker.tsx';
-import { useState } from 'react';
-import LaunchContextDetails from './LaunchContextDetails.tsx';
-import PrePopButton from './PrePopButton.tsx';
-import LaunchButton from './LaunchButton.tsx';
+import { QueryClientProvider } from '@tanstack/react-query';
+import {
+  BaseRenderer,
+  RendererThemeProvider,
+  SmartFormsRendererProps,
+  useBuildForm,
+  useRendererQueryClient
+} from '@aehrc/smart-forms-renderer';
 
-interface RendererPageProps {
-  questionnaire: Questionnaire;
-  bearerToken: string | null;
-}
+function Renderer(props: SmartFormsRendererProps) {
+  const {
+    questionnaire,
+    questionnaireResponse,
+    additionalVariables,
+    terminologyServerUrl,
+    readOnly
+  } = props;
 
-function Renderer(props: RendererPageProps) {
-  const { questionnaire, bearerToken } = props;
-
-  const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse | null>(
-    null
+  const isLoading = useBuildForm(
+    questionnaire,
+    questionnaireResponse,
+    readOnly,
+    terminologyServerUrl,
+    additionalVariables
   );
-  const [patient, setPatient] = useState<Patient | null>(null);
-  const [practitioner, setPractitioner] = useState<Practitioner | null>(null);
+  const queryClient = useRendererQueryClient();
+
+  if (isLoading) {
+    return <div>Loading questionnaire...</div>;
+  }
 
   return (
-    <>
-      <div style={{ fontSize: '0.875em' }}>
-        Bearer Token: {bearerToken ?? 'null'}
-        <LaunchButton />
-      </div>
-      <hr />
-      <LaunchContextPicker
-        patient={patient}
-        practitioner={practitioner}
-        bearerToken={bearerToken}
-        onPatientChange={(newPatient) => setPatient(newPatient)}
-        onPractitionerChange={(newPractitioner) => setPractitioner(newPractitioner)}
-      />
-      <LaunchContextDetails patient={patient} practitioner={practitioner} />
-      <PrePopButton
-        questionnaire={questionnaire}
-        patient={patient}
-        practitioner={practitioner}
-        bearerToken={bearerToken}
-        onQuestionnaireResponseChange={(newQuestionnaireResponse) =>
-          setQuestionnaireResponse(newQuestionnaireResponse)
-        }
-      />
-
-      <div className="margin-y">
-        <SmartFormsRenderer
-          questionnaire={questionnaire}
-          questionnaireResponse={questionnaireResponse ?? undefined}
-        />
-      </div>
-    </>
+    <RendererThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <BaseRenderer />
+      </QueryClientProvider>
+    </RendererThemeProvider>
   );
 }
 
