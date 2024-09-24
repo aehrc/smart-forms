@@ -24,7 +24,7 @@ import {
   useRendererQueryClient
 } from '@aehrc/smart-forms-renderer';
 
-function Renderer(props: SmartFormsRendererProps) {
+function CsiroRenderer(props: SmartFormsRendererProps) {
   const {
     questionnaire,
     questionnaireResponse,
@@ -55,4 +55,4 @@ function Renderer(props: SmartFormsRendererProps) {
   );
 }
 
-export default Renderer;
+export default CsiroRenderer;

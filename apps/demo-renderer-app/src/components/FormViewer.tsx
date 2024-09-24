@@ -21,10 +21,23 @@ import { useState } from 'react';
 import LaunchContextDetails from './LaunchContextDetails.tsx';
 import PrePopButton from './PrePopButton.tsx';
 import LaunchButton from './LaunchButton.tsx';
-import Renderer from '@/components/Renderer.tsx';
+import CsiroRenderer from '@/components/CsiroRenderer.tsx';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@radix-ui/react-collapsible';
 import { Button } from '@/components/ui/button.tsx';
 import { ChevronsDownUp, ChevronsUpDown } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.tsx';
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup
+} from '@/components/ui/resizable.tsx';
+import { getResponse } from '@aehrc/smart-forms-renderer';
+import LhcFormsRenderer from '@/components/LhcFormsRenderer.tsx';
+
+interface QuestionnaireResponseResult {
+  resource: QuestionnaireResponse | null;
+  lastUpdated: Date | null;
+}
 
 interface FormViewerProps {
   questionnaire: Questionnaire;
@@ -34,13 +47,36 @@ interface FormViewerProps {
 function FormViewer(props: FormViewerProps) {
   const { questionnaire, bearerToken } = props;
 
-  const [questionnaireResponse, setQuestionnaireResponse] = useState<QuestionnaireResponse | null>(
-    null
-  );
+  const [activeTab, setActiveTab] = useState('csiro');
+  const [questionnaireResponseResult, setQuestionnaireResponseResult] =
+    useState<QuestionnaireResponseResult>({ resource: null, lastUpdated: null });
+
   const [patient, setPatient] = useState<Patient | null>(null);
   const [practitioner, setPractitioner] = useState<Practitioner | null>(null);
 
   const [additionalDetailsOpen, setAdditionalDetailsOpen] = useState(true);
+
+  function printResponse() {
+    const result: QuestionnaireResponseResult = {
+      resource: null,
+      lastUpdated: new Date()
+    };
+
+    if (activeTab === 'csiro') {
+      result.resource = getResponse();
+    }
+
+    if (activeTab === 'nlm') {
+      // @ts-ignore
+      result.resource = LForms.Util.getFormFHIRData(
+        'QuestionnaireResponse',
+        'R4',
+        'myFormContainer'
+      );
+    }
+
+    setQuestionnaireResponseResult(result);
+  }
 
   return (
     <>
@@ -50,7 +86,7 @@ function FormViewer(props: FormViewerProps) {
         className="space-y-2">
         <div className="flex items-center justify-between space-x-4 px-4">
           <h4 className="text-sm font-semibold">
-            {additionalDetailsOpen ? 'Hide additional details' : 'Show additional details'}
+            {additionalDetailsOpen ? 'Hide pre-population details' : 'Show pre-population details'}
           </h4>
           <CollapsibleTrigger asChild>
             <Button variant="ghost" size="sm" className="w-9 p-0">
@@ -90,21 +126,81 @@ function FormViewer(props: FormViewerProps) {
               practitioner={practitioner}
               bearerToken={bearerToken}
               onQuestionnaireResponseChange={(newQuestionnaireResponse) =>
-                setQuestionnaireResponse(newQuestionnaireResponse)
+                setQuestionnaireResponseResult({
+                  resource: newQuestionnaireResponse,
+                  lastUpdated: new Date()
+                })
               }
             />
           </div>
         </CollapsibleContent>
       </Collapsible>
 
-      <div className="my-5">
-        <Renderer
-          questionnaire={questionnaire}
-          questionnaireResponse={questionnaireResponse ?? undefined}
-        />
-      </div>
+      <ResizablePanelGroup direction="horizontal" className="rounded-lg border">
+        <ResizablePanel defaultSize={50} className="min-w-[450px]">
+          <div className="p-3">
+            <Tabs
+              defaultValue={activeTab}
+              value={activeTab}
+              onValueChange={(value) => setActiveTab(value)}>
+              <TabsList>
+                <TabsTrigger value="csiro">CSIRO Smart Forms</TabsTrigger>
+                <TabsTrigger value="nlm">NLM LHC-Forms</TabsTrigger>
+              </TabsList>
+              <TabsContent value="csiro">
+                <div className="my-2">
+                  <CsiroRenderer
+                    questionnaire={questionnaire}
+                    questionnaireResponse={questionnaireResponseResult.resource ?? undefined}
+                  />
+                </div>
+              </TabsContent>
+              <TabsContent value="nlm">
+                <LhcFormsRenderer
+                  questionnaire={questionnaire}
+                  questionnaireResponse={questionnaireResponseResult.resource ?? undefined}
+                />
+              </TabsContent>
+            </Tabs>
+          </div>
+        </ResizablePanel>
+        <ResizableHandle withHandle />
+        <ResizablePanel defaultSize={50}>
+          <div className="p-2.5">
+            <div className="flex items-center mb-2 gap-1">
+              <div className="text-xl font-semibold">QuestionnaireResponse</div>
+              <div className="flex-1" />
+              <div className="flex items-center gap-2">
+                <Button variant="secondary" size="sm" onClick={printResponse}>
+                  Update from {activeTab === 'csiro' ? ' CSIRO' : 'LHC-Forms'}
+                </Button>
+                <div className="text-xs text-muted-foreground">
+                  Last updated:{' '}
+                  {questionnaireResponseResult.lastUpdated
+                    ? formatTime(questionnaireResponseResult.lastUpdated)
+                    : 'N/A'}{' '}
+                </div>
+              </div>
+            </div>
+
+            <div className="overflow-auto">
+              <pre className="text-xs text-muted-foreground">
+                {JSON.stringify(questionnaireResponseResult.resource, null, 2)}
+              </pre>
+            </div>
+          </div>
+        </ResizablePanel>
+        <ResizableHandle />
+      </ResizablePanelGroup>
     </>
   );
+}
+
+function formatTime(date: Date) {
+  return date.toLocaleTimeString('en-AU', {
+    hour: 'numeric',
+    minute: 'numeric'
+  });
 }
 
 export default FormViewer;
