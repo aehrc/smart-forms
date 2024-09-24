@@ -83,7 +83,7 @@ export interface QuestionnaireResponseStoreType {
  */
 export const questionnaireResponseStore = createStore<QuestionnaireResponseStoreType>()(
   (set, get) => ({
-    key: generateUniqueId('QR'),
+    key: 'QR-initial-key',
     sourceResponse: cloneDeep(emptyResponse),
     updatableResponse: cloneDeep(emptyResponse),
     updatableResponseItems: {},
