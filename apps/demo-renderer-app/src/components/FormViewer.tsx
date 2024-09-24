@@ -22,7 +22,6 @@ import LaunchContextDetails from './LaunchContextDetails.tsx';
 import PrePopButton from './PrePopButton.tsx';
 import LaunchButton from './LaunchButton.tsx';
 import CsiroRenderer from '@/components/CsiroRenderer.tsx';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@radix-ui/react-collapsible';
 import { Button } from '@/components/ui/button.tsx';
 import { ChevronsDownUp, ChevronsUpDown } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.tsx';
@@ -34,6 +33,11 @@ import {
 import { getResponse } from '@aehrc/smart-forms-renderer';
 import LhcFormsRenderer from '@/components/LhcFormsRenderer.tsx';
 import { Switch } from '@/components/ui/switch.tsx';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger
+} from '@/components/ui/collapsible.tsx';
 
 interface QuestionnaireResponseResult {
   resource: QuestionnaireResponse | null;

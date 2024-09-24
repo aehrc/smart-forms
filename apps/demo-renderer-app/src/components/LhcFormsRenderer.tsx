@@ -106,7 +106,7 @@ function LhcFormsRenderer(props: LhcFormsRendererProps) {
           </div>
         </div>
       ) : null}
-      <div id="myFormContainer"></div>
+      <div id="myFormContainer" />
     </div>
   );
 }
