@@ -16,10 +16,10 @@
  */
 
 import { QueryClientProvider } from '@tanstack/react-query';
+import type { SmartFormsRendererProps } from '@aehrc/smart-forms-renderer';
 import {
   BaseRenderer,
   RendererThemeProvider,
-  SmartFormsRendererProps,
   useBuildForm,
   useRendererQueryClient
 } from '@aehrc/smart-forms-renderer';

@@ -16,7 +16,7 @@
  */
 
 import { useEffect, useState } from 'react';
-import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { loadLForms } from 'lforms-loader';
 import cloneDeep from 'lodash.clonedeep';
 
@@ -100,8 +100,9 @@ function LhcFormsRenderer(props: LhcFormsRendererProps) {
           <h2>Error loading LHC-Forms:</h2>
           <pre>{errors}</pre>
           <div>
-            If you're getting an error and expressions isn't working. I haven't figured out how to
-            use expressions yet.
+            {
+              "If you're getting an error and expressions in; working, I haven't figured out how to use expressions yet."
+            }
           </div>
         </div>
       ) : null}

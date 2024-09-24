@@ -16,7 +16,7 @@
  */
 
 import { useState } from 'react';
-import { GroupTableRowModel } from '../interfaces/groupTable.interface';
+import type { GroupTableRowModel } from '../interfaces/groupTable.interface';
 
 function useGroupTableRows(valueFromProps: GroupTableRowModel[]) {
   const [tableRows, setTableRows] = useState(valueFromProps);
