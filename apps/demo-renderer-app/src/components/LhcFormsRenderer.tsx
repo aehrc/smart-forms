@@ -20,6 +20,7 @@ import { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { loadLForms } from 'lforms-loader';
 import cloneDeep from 'lodash.clonedeep';
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace LForms.Util {
   function addFormToPage(
     questionnaire: Questionnaire,
@@ -36,7 +37,7 @@ declare namespace LForms.Util {
   function convertFHIRQuestionnaireToLForms(questionnaire: Questionnaire, fhirVersion: string): any;
   function mergeFHIRDataIntoLForms(
     resourceType: 'QuestionnaireResponse',
-    response: QuestionnaireResponse,
+    response: QuestionnaireResponse | undefined,
     lhcQ: any,
     fhirVersion: string
   ): any;
@@ -50,7 +51,7 @@ declare global {
 
 interface LhcFormsRendererProps {
   questionnaire: Questionnaire;
-  questionnaireResponse: QuestionnaireResponse;
+  questionnaireResponse?: QuestionnaireResponse;
 }
 
 function LhcFormsRenderer(props: LhcFormsRendererProps) {

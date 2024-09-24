@@ -18,7 +18,10 @@
 import type { Patient, Practitioner, Questionnaire } from 'fhir/r4';
 
 export async function fetchResource(endpointUrl: string, bearerToken: string | null) {
-  const headers = {};
+  const headers = {
+    'Content-Type': 'application/json',
+    'Cache-Control': 'no-cache'
+  };
   if (bearerToken) {
     headers['Authorization'] = `Bearer ${bearerToken}`;
   }
