@@ -89,9 +89,8 @@ function LhcFormsRenderer(props: LhcFormsRendererProps) {
           });
       }
     });
-  }, [questionnaire]);
+  }, [questionnaire, questionnaireResponse]);
 
-  // @ts-ignore
   return (
     <div>
       {!isRendered ? 'Loading...' : null}
