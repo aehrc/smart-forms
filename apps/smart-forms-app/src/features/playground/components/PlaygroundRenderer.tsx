@@ -114,7 +114,11 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
           </Typography>
         ) : null}
       </Box>
-      {isPopulating ? null : <BaseRenderer />}
+      {isPopulating ? null : (
+        <Box px={1}>
+          <BaseRenderer />
+        </Box>
+      )}
     </>
   );
 }

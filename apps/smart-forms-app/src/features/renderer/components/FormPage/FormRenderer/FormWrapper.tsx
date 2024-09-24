@@ -24,6 +24,7 @@ import {
   useQuestionnaireStore
 } from '@aehrc/smart-forms-renderer';
 import useDebugMode from '../../../../../hooks/useDebugMode.ts';
+import { Box } from '@mui/material';
 
 function FormWrapper() {
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
@@ -48,7 +49,9 @@ function FormWrapper() {
         <title>{sourceQuestionnaire.title ?? 'Form Renderer'}</title>
       </Helmet>
 
-      <BaseRenderer />
+      <Box px={3}>
+        <BaseRenderer />
+      </Box>
 
       {/* Debug footer */}
       {debugModeEnabled ? <RendererDebugFooter /> : null}
