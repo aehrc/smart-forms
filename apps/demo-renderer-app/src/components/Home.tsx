@@ -31,7 +31,7 @@ function Home(props: HomeProps) {
 
   const { data: questionnaire, isFetching } = useQuery<Questionnaire>(
     ['questionnaire', questionnaireUrl],
-    () => fetchResource(questionnaireUrl, bearerToken)
+    () => fetchResource(questionnaireUrl, bearerToken, true)
   );
 
   if (isFetching) {

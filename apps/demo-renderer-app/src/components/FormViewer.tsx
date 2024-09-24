@@ -33,6 +33,7 @@ import {
 } from '@/components/ui/resizable.tsx';
 import { getResponse } from '@aehrc/smart-forms-renderer';
 import LhcFormsRenderer from '@/components/LhcFormsRenderer.tsx';
+import { Switch } from '@/components/ui/switch.tsx';
 
 interface QuestionnaireResponseResult {
   resource: QuestionnaireResponse | null;
@@ -47,6 +48,7 @@ interface FormViewerProps {
 function FormViewer(props: FormViewerProps) {
   const { questionnaire, bearerToken } = props;
 
+  const [persistChanges, setPersistChanges] = useState(true);
   const [activeTab, setActiveTab] = useState('csiro');
   const [questionnaireResponseResult, setQuestionnaireResponseResult] =
     useState<QuestionnaireResponseResult>({ resource: null, lastUpdated: null });
@@ -83,7 +85,7 @@ function FormViewer(props: FormViewerProps) {
       <Collapsible
         open={additionalDetailsOpen}
         onOpenChange={setAdditionalDetailsOpen}
-        className="space-y-2">
+        className="space-y-2 mb-1 ">
         <div className="flex items-center justify-between space-x-4 px-4">
           <h4 className="text-sm font-semibold">
             {additionalDetailsOpen ? 'Hide pre-population details' : 'Show pre-population details'}
@@ -136,6 +138,14 @@ function FormViewer(props: FormViewerProps) {
         </CollapsibleContent>
       </Collapsible>
 
+      <div className="flex items-center space-x-2 justify-end">
+        <Switch
+          checked={persistChanges}
+          onCheckedChange={() => setPersistChanges(!persistChanges)}
+        />
+        <div>Persist form inputs when switching tabs</div>
+      </div>
+
       <ResizablePanelGroup direction="horizontal" className="rounded-lg border">
         <ResizablePanel defaultSize={50} className="min-w-[450px]">
           <div className="p-3">
@@ -147,21 +157,43 @@ function FormViewer(props: FormViewerProps) {
                 <TabsTrigger value="csiro">CSIRO Smart Forms</TabsTrigger>
                 <TabsTrigger value="nlm">NLM LHC-Forms</TabsTrigger>
               </TabsList>
-              <TabsContent value="csiro">
-                <div className="my-2">
+              {persistChanges ? null : (
+                <>
+                  <TabsContent value="csiro">
+                    <div className="my-2">
+                      <CsiroRenderer
+                        questionnaire={questionnaire}
+                        questionnaireResponse={questionnaireResponseResult.resource ?? undefined}
+                      />
+                    </div>
+                  </TabsContent>
+                  <TabsContent value="nlm">
+                    <LhcFormsRenderer
+                      questionnaire={questionnaire}
+                      questionnaireResponse={questionnaireResponseResult.resource ?? undefined}
+                    />
+                  </TabsContent>
+                </>
+              )}
+            </Tabs>
+
+            {persistChanges ? (
+              <>
+                <div className={activeTab === 'csiro' ? '' : 'hidden'}>
                   <CsiroRenderer
                     questionnaire={questionnaire}
                     questionnaireResponse={questionnaireResponseResult.resource ?? undefined}
                   />
                 </div>
-              </TabsContent>
-              <TabsContent value="nlm">
-                <LhcFormsRenderer
-                  questionnaire={questionnaire}
-                  questionnaireResponse={questionnaireResponseResult.resource ?? undefined}
-                />
-              </TabsContent>
-            </Tabs>
+
+                <div className={activeTab === 'nlm' ? '' : 'hidden'}>
+                  <LhcFormsRenderer
+                    questionnaire={questionnaire}
+                    questionnaireResponse={questionnaireResponseResult.resource ?? undefined}
+                  />
+                </div>
+              </>
+            ) : null}
           </div>
         </ResizablePanel>
         <ResizableHandle withHandle />
