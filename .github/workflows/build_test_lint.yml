@@ -5,7 +5,7 @@ on:
 
 jobs:
   build-smart-forms-app:
-    name: Build
+    name: Build Smart Forms App
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,7 +20,7 @@ jobs:
         run: npm run build -w apps/smart-forms-app
 
   build-demo-app:
-    name: Build
+    name: Build Demo App
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
