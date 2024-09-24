@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
@@ -26,7 +26,6 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useInitialiseRepeatGroups from '../../../hooks/useInitialiseRepeatGroups';
 import cloneDeep from 'lodash.clonedeep';
 import { useQuestionnaireStore } from '../../../stores';
-import useRepeatGroups from '../../../hooks/useRepeatGroups';
 import RepeatGroupView from './RepeatGroupView';
 import { generateNewRepeatId } from '../../../utils/repeatId';
 
@@ -60,7 +59,7 @@ function RepeatGroup(props: RepeatGroupProps) {
 
   const initialRepeatGroups = useInitialiseRepeatGroups(qItem.linkId, qrItems);
 
-  const [repeatGroups, setRepeatGroups] = useRepeatGroups(initialRepeatGroups);
+  const [repeatGroups, setRepeatGroups] = useState(initialRepeatGroups);
 
   function handleAnswerChange(newQrItem: QuestionnaireResponseItem, index: number) {
     const updatedRepeatGroups = [...repeatGroups];

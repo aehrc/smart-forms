@@ -32,6 +32,7 @@ import { getGroupTableItemsToUpdate } from '../../../utils/groupTable';
 import useGroupTableRows from '../../../hooks/useGroupTableRows';
 import { flushSync } from 'react-dom';
 import { generateNewRepeatId } from '../../../utils/repeatId';
+import useInitialiseGroupTableRows from '../../../hooks/useInitialiseGroupTableRows';
 
 interface GroupTableProps
   extends PropsWithQrRepeatGroupChangeHandler,
@@ -60,12 +61,11 @@ function GroupTable(props: GroupTableProps) {
     onQrRepeatGroupChange
   } = props;
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const initialGroupTableRows = useInitialiseGroupTableRows(qItem.linkId, qrItems);
+  const { tableRows, selectedIds, setTableRows, setSelectedIds } =
+    useGroupTableRows(initialGroupTableRows);
 
-  const { tableRows, selectedIds, setTableRows, setSelectedIds } = useGroupTableRows(
-    qItem.linkId,
-    qrItems
-  );
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Generate item labels as table headers
   const qItems = qItem.item;

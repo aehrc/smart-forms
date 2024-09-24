@@ -16,7 +16,6 @@
  */
 
 import React, { useMemo } from 'react';
-import Container from '@mui/material/Container';
 import Fade from '@mui/material/Fade';
 import FormTopLevelItem from './FormTopLevelItem';
 import type { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
@@ -27,6 +26,7 @@ import { updateQrItemsInGroup } from '../../utils/qrItem';
 import { everyIsPages } from '../../utils/page';
 import type { QrRepeatGroup } from '../../interfaces/repeatGroup.interface';
 import FormTopLevelPage from './FormTopLevelPage';
+import { Container } from '@mui/material';
 
 /**
  * Main component of the form-rendering engine.
@@ -40,6 +40,7 @@ function BaseRenderer() {
   const updateExpressions = useQuestionnaireStore.use.updateExpressions();
   const readOnly = useQuestionnaireStore.use.readOnly();
 
+  const responseKey = useQuestionnaireResponseStore.use.key();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
   const validateQuestionnaire = useQuestionnaireResponseStore.use.validateQuestionnaire();
   const updateResponse = useQuestionnaireResponseStore.use.updateResponse();
@@ -81,7 +82,7 @@ function BaseRenderer() {
   if (everyItemIsPage) {
     return (
       <Fade in={true} timeout={500}>
-        <Container maxWidth="xl">
+        <Container disableGutters maxWidth="xl" key={responseKey}>
           <FormTopLevelPage
             topLevelQItems={topLevelQItems}
             topLevelQRItems={topLevelQRItemsByIndex}
@@ -97,7 +98,7 @@ function BaseRenderer() {
 
   return (
     <Fade in={true} timeout={500}>
-      <Container maxWidth="xl">
+      <Container disableGutters maxWidth="xl" key={responseKey}>
         {topLevelQItems.map((qItem, index) => {
           const qrItemOrItems = topLevelQRItemsByIndex[index];
 

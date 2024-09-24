@@ -36,7 +36,6 @@ import { createEmptyQrItem } from '../../../../utils/qrItem';
 import useDateValidation from '../../../../hooks/useDateValidation';
 import CustomDateField from './CustomDateField';
 import { useQuestionnaireStore } from '../../../../stores';
-import useStringInput from '../../../../hooks/useStringInput';
 
 interface CustomDateItemProps
   extends PropsWithQrItemChangeHandler,
@@ -70,7 +69,7 @@ function CustomDateItem(props: CustomDateItemProps) {
 
   const { displayDate, dateParseFail } = parseFhirDateToDisplayDate(valueDate);
 
-  const [input, setInput] = useStringInput(displayDate);
+  const [input, setInput] = useState(displayDate);
   const [focused, setFocused] = useState(false);
 
   // Perform validation checks

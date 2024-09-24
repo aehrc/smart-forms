@@ -19,10 +19,10 @@ import React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
-import type { RepeatGroupSingle } from '../../../interfaces/repeatGroup.interface';
+import type { RepeatGroupSingleModel } from '../../../interfaces/repeatGroup.interface';
 
 interface AddItemButtonProps {
-  repeatGroups: RepeatGroupSingle[];
+  repeatGroups: RepeatGroupSingleModel[];
   readOnly: boolean;
   onAddItem: () => void;
 }

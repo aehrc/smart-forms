@@ -16,14 +16,14 @@
  */
 
 import type { QuestionnaireResponseItem } from 'fhir/r4';
-import type { RepeatGroupSingle } from '../interfaces/repeatGroup.interface';
+import type { RepeatGroupSingleModel } from '../interfaces/repeatGroup.interface';
 import { useMemo } from 'react';
 import { generateExistingRepeatId, generateNewRepeatId } from '../utils/repeatId';
 
 function useInitialiseRepeatGroups(
   linkId: string,
   qrItems: QuestionnaireResponseItem[]
-): RepeatGroupSingle[] {
+): RepeatGroupSingleModel[] {
   return useMemo(() => {
     if (qrItems.length === 0) {
       return [{ id: generateNewRepeatId(linkId), qrItem: null }];

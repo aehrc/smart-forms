@@ -22,7 +22,7 @@ export interface QrRepeatGroup {
   qrItems: QuestionnaireResponseItem[];
 }
 
-export interface RepeatGroupSingle {
+export interface RepeatGroupSingleModel {
   id: string;
   qrItem: QuestionnaireResponseItem | null;
 }

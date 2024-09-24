@@ -32,7 +32,7 @@ import RepeatGroupItem from './RepeatGroupItem';
 import AddItemButton from './AddItemButton';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import Typography from '@mui/material/Typography';
-import type { RepeatGroupSingle } from '../../../interfaces/repeatGroup.interface';
+import type { RepeatGroupSingleModel } from '../../../interfaces/repeatGroup.interface';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { getGroupCollapsible } from '../../../utils/qItem';
 import { GroupAccordion } from '../GroupItem/GroupAccordion.styles';
@@ -45,7 +45,7 @@ interface RepeatGroupViewProps
     PropsWithParentIsReadOnlyAttribute,
     PropsWithParentIsRepeatGroupAttribute {
   qItem: QuestionnaireItem;
-  repeatGroups: RepeatGroupSingle[];
+  repeatGroups: RepeatGroupSingleModel[];
   groupCardElevation: number;
   onAnswerChange: (newQrItem: QuestionnaireResponseItem, index: number) => void;
   onAddItem: () => void;

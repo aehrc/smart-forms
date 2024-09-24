@@ -26,7 +26,6 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import debounce from 'lodash.debounce';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
-import useStringInput from '../../../hooks/useStringInput';
 import useReadOnly from '../../../hooks/useReadOnly';
 import AttachmentFieldWrapper from './AttachmentFieldWrapper';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -61,8 +60,8 @@ function AttachmentItem(props: AttachmentItemProps) {
   }
 
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [url, setUrl] = useStringInput(valueString);
-  const [fileName, setFileName] = useStringInput(valueString);
+  const [url, setUrl] = useState(valueString);
+  const [fileName, setFileName] = useState(valueString);
 
   // Event handlers
   async function handleUploadFile(newUploadedFile: File | null) {

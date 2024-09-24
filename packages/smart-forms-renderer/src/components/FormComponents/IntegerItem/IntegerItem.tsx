@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
@@ -35,7 +35,6 @@ import { parseIntegerString } from '../../../utils/parseInputs';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
-import useStringInput from '../../../hooks/useStringInput';
 
 interface IntegerItemProps
   extends PropsWithQrItemChangeHandler,
@@ -70,7 +69,7 @@ function IntegerItem(props: IntegerItemProps) {
     initialInput = valueInteger.toString();
   }
 
-  const [input, setInput] = useStringInput(initialInput);
+  const [input, setInput] = useState(initialInput);
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, input);
