@@ -20,8 +20,7 @@ import React from 'react';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { Box, IconButton, Tooltip } from '@mui/material';
 import ContentCutIcon from '@mui/icons-material/ContentCut';
-import { useQuestionnaireResponseStore } from '../../stores';
-import { removeInternalIdsFromResponse } from '../../utils/manageForm';
+import { buildForm, removeInternalIdsFromResponse } from '../../utils/manageForm';
 
 interface IdRemoverButtonProps {
   questionnaire: Questionnaire;
@@ -31,10 +30,9 @@ interface IdRemoverButtonProps {
 function IdRemoverButtonForStorybook(props: IdRemoverButtonProps) {
   const { questionnaire, questionnaireResponse } = props;
 
-  const updateResponse = useQuestionnaireResponseStore.use.updateResponse();
-
   async function handleRemoveIds() {
-    updateResponse(removeInternalIdsFromResponse(questionnaire, questionnaireResponse));
+    const updatedResponse = removeInternalIdsFromResponse(questionnaire, questionnaireResponse);
+    await buildForm(questionnaire, updatedResponse);
   }
 
   return (
