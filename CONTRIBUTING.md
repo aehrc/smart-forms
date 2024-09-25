@@ -30,9 +30,9 @@ If possible, it is recommended to merge the `main` branch into your branch first
 
 ## Development dependencies
 
-You will need the following software to build the solution:
+You will need the following software to build the solution and run the tests:
 
-* Node.js 16.x or 18.x
+* Node.js 18.x or later versions
 
 To build and install locally, run in the root folder:
 ```
@@ -45,6 +45,16 @@ The easiest way to test your changes is to use Storybook, which can be run via:
 npm run storybook
 ```
 
+## Vite-specific caveats
+The `vite.config.ts` file in the `@aehrc/smart-forms-renderer` package contains a `resolve: { preserveSymlinks: true }` config, when used alongside `optimizeDeps` and `build.commonjsOptions` allows Vite to use CommonJS modules in the package properly.
+
+This config is essential for the package to properly build in deployments, but it breaks `tsc --watch` by ignoring changes. 
+To work around this, comment out the config during development and uncomment it (or just don't add it to git) before pushing changes.
+```
+...
+// resolve: { preserveSymlinks: true }
+...
+```
 
 ### Coding conventions
 
