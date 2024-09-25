@@ -9,7 +9,6 @@ import { initialiseQuestionnaireResponse } from './initialise';
 import { removeEmptyAnswers } from './removeEmptyAnswers';
 import { readEncounter, readPatient, readUser } from '../api/smartClient';
 import type Client from 'fhirclient/lib/Client';
-import cloneDeep from 'lodash.clonedeep';
 import { updateQuestionnaireResponse } from './genericRecursive';
 import { removeInternalRepeatIdsRecursive } from './removeRepeatId';
 
@@ -102,7 +101,7 @@ export function getResponse(): QuestionnaireResponse {
     questionnaireStore.getState().sourceQuestionnaire,
     questionnaireResponseStore.getState().updatableResponse
   );
-  return cloneDeep(cleanResponse);
+  return structuredClone(cleanResponse);
 }
 
 /**
@@ -139,7 +138,7 @@ export function removeInternalIdsFromResponse(
   questionnaire: Questionnaire,
   questionnaireResponse: QuestionnaireResponse
 ): QuestionnaireResponse {
-  const questionnaireResponseToUpdate = cloneDeep(questionnaireResponse);
+  const questionnaireResponseToUpdate = structuredClone(questionnaireResponse);
 
   return updateQuestionnaireResponse(
     questionnaire,

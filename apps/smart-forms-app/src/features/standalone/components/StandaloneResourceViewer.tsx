@@ -22,7 +22,6 @@ import { Box, Button, Stack, Typography } from '@mui/material';
 import type { RendererPropsState } from '../interfaces/standalone.interface.ts';
 import { getResponse } from '@aehrc/smart-forms-renderer';
 import type { QuestionnaireResponse } from 'fhir/r4';
-import cloneDeep from 'lodash.clonedeep';
 
 interface StandaloneResourceViewerProps {
   rendererPropsState: RendererPropsState;
@@ -65,7 +64,7 @@ function ResourceViewSwitcher(props: ResourceViewSwitcherProps) {
   const { rendererPropsState: state, selected } = props;
 
   const [latestResponse, setLatestResponse] = useState<QuestionnaireResponse | null>(
-    cloneDeep(state.response)
+    structuredClone(state.response)
   );
 
   if (selected === 'questionnaire') {

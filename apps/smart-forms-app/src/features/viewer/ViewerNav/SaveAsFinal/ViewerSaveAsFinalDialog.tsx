@@ -18,7 +18,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import cloneDeep from 'lodash.clonedeep';
 import { saveQuestionnaireResponse } from '../../../../api/saveQr.ts';
 import {
   Button,
@@ -67,7 +66,7 @@ function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
 
     setIsSaving(true);
 
-    const responseToSave = cloneDeep(updatableResponse);
+    const responseToSave = structuredClone(updatableResponse);
     responseToSave.status = 'completed';
 
     saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)

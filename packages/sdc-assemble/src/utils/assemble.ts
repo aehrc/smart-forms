@@ -36,7 +36,6 @@ import {
   isValidExtensions
 } from './getProperties';
 import { propagateProperties } from './propagate';
-import cloneDeep from 'lodash.clonedeep';
 import { getCanonicalUrls } from './canonical';
 
 /**
@@ -110,7 +109,7 @@ async function assembleQuestionnaire(
   fetchQuestionnaireCallback: FetchQuestionnaireCallback,
   fetchQuestionnaireRequestConfig: any
 ): Promise<Questionnaire | OperationOutcome> {
-  const parentQuestionnaire = cloneDeep(rootQuestionnaire);
+  const parentQuestionnaire = structuredClone(rootQuestionnaire);
 
   // Get subquestionnaire canonical urls from parent questionnaire items
   const canonicals: string[] | OperationOutcome = getCanonicalUrls(

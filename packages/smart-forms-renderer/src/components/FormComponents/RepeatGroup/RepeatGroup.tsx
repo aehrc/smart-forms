@@ -24,7 +24,6 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useInitialiseRepeatGroups from '../../../hooks/useInitialiseRepeatGroups';
-import cloneDeep from 'lodash.clonedeep';
 import { useQuestionnaireStore } from '../../../stores';
 import RepeatGroupView from './RepeatGroupView';
 import { generateNewRepeatId } from '../../../utils/repeatId';
@@ -76,7 +75,7 @@ function RepeatGroup(props: RepeatGroupProps) {
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
       qrItems: updatedRepeatGroups.flatMap((singleGroup) =>
-        singleGroup.qrItem ? [cloneDeep(singleGroup.qrItem)] : []
+        singleGroup.qrItem ? [structuredClone(singleGroup.qrItem)] : []
       )
     });
   }
@@ -92,7 +91,7 @@ function RepeatGroup(props: RepeatGroupProps) {
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
       qrItems: updatedRepeatGroups.flatMap((singleGroup) =>
-        singleGroup.qrItem ? [cloneDeep(singleGroup.qrItem)] : []
+        singleGroup.qrItem ? [structuredClone(singleGroup.qrItem)] : []
       )
     });
   }

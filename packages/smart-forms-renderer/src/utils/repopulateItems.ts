@@ -28,7 +28,6 @@ import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enableWhen.interface';
 import { isHiddenByEnableWhen } from './qItem';
 import { questionnaireResponseStore, questionnaireStore } from '../stores';
-import cloneDeep from 'lodash.clonedeep';
 import { createQuestionnaireResponseItemMap } from './questionnaireResponseStoreUtils/updatableResponseItems';
 import { getQuestionnaireItem, getSectionHeading } from './misc';
 import difference from 'lodash.difference';
@@ -316,7 +315,7 @@ function getSingleItemToRepopulate(
 ) {
   if (qItem.linkId === 'encounter-reason') {
     console.log(
-      cloneDeep({
+      structuredClone({
         qItem: qItem,
         heading: heading,
         newQRItem: qrItem,

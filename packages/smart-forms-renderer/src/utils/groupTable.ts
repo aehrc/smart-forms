@@ -16,7 +16,6 @@
  */
 
 import type { GroupTableRowModel } from '../interfaces/groupTable.interface';
-import cloneDeep from 'lodash.clonedeep';
 
 export function reorderRows(
   rows: GroupTableRowModel[],
@@ -33,5 +32,5 @@ export function reorderRows(
 export function getGroupTableItemsToUpdate(tableRows: GroupTableRowModel[], selectedIds: string[]) {
   return tableRows
     .filter((row) => selectedIds.includes(row.id))
-    .flatMap((singleRow) => (singleRow.qrItem ? [cloneDeep(singleRow.qrItem)] : []));
+    .flatMap((singleRow) => (singleRow.qrItem ? [structuredClone(singleRow.qrItem)] : []));
 }

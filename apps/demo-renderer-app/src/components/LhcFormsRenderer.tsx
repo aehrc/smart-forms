@@ -18,7 +18,6 @@
 import { useEffect, useState } from 'react';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { loadLForms } from 'lforms-loader';
-import cloneDeep from 'lodash.clonedeep';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace LForms.Util {
@@ -66,7 +65,7 @@ function LhcFormsRenderer(props: LhcFormsRendererProps) {
 
       // Now render the form to the display
       if (window.LForms) {
-        const deepCopyQR = cloneDeep(questionnaireResponse);
+        const deepCopyQR = structuredClone(questionnaireResponse);
         // Set the context vars
         LForms.Util.setFHIRContext({}, {});
         const lhcQ = LForms.Util.convertFHIRQuestionnaireToLForms(questionnaire, 'R4');
