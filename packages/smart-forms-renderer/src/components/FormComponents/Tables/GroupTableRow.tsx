@@ -39,7 +39,7 @@ interface GroupTableRowProps
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
     TableRowProps {
-  nanoId: string;
+  rowId: string;
   index: number;
   tableQItem: QuestionnaireItem;
   answeredQrItem: QuestionnaireResponseItem;
@@ -58,7 +58,7 @@ interface GroupTableRowProps
 
 function GroupTableRow(props: GroupTableRowProps) {
   const {
-    nanoId,
+    rowId,
     index,
     tableQItem,
     answeredQrItem,
@@ -78,7 +78,7 @@ function GroupTableRow(props: GroupTableRowProps) {
 
   if (isRepeated) {
     return (
-      <Draggable draggableId={nanoId} index={index}>
+      <Draggable draggableId={rowId} index={index}>
         {(draggableProvided, snapshot) => (
           <StyledGroupTableRow
             itemIsDragged={snapshot.isDragging}
@@ -106,7 +106,7 @@ function GroupTableRow(props: GroupTableRowProps) {
                 <SelectRowButton
                   isSelected={itemIsSelected}
                   readOnly={readOnly}
-                  onSelectItem={() => onSelectRow(nanoId)}
+                  onSelectItem={() => onSelectRow(rowId)}
                 />
               </>
             )}
@@ -150,7 +150,7 @@ function GroupTableRow(props: GroupTableRowProps) {
           <SelectRowButton
             isSelected={itemIsSelected}
             readOnly={readOnly}
-            onSelectItem={() => onSelectRow(nanoId)}
+            onSelectItem={() => onSelectRow(rowId)}
           />
         </>
       )}

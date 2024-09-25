@@ -54,7 +54,7 @@ interface GroupTableViewProps
   onAddRow: () => void;
   onRowChange: (newQrRow: QuestionnaireResponseItem, index: number) => void;
   onRemoveRow: (index: number) => void;
-  onSelectRow: (nanoId: string) => void;
+  onSelectRow: (rowId: string) => void;
   onSelectAll: () => void;
   onReorderRows: (newTableRows: GroupTableRowModel[]) => void;
 }

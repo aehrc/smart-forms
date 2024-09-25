@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithParentIsReadOnlyAttribute,
@@ -31,7 +31,6 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import TextField from './TextField';
 import useStringCalculatedExpression from '../../../hooks/useStringCalculatedExpression';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
-import useStringInput from '../../../hooks/useStringInput';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 
@@ -58,7 +57,7 @@ function TextItem(props: TextItemProps) {
     valueText = qrItem.answer[0].valueString;
   }
 
-  const [input, setInput] = useStringInput(valueText);
+  const [input, setInput] = useState(valueText);
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, input);

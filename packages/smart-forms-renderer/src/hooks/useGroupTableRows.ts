@@ -16,16 +16,11 @@
  */
 
 import { useState } from 'react';
-import useInitialiseGroupTable from './useInitialiseGroupTable';
-import type { QuestionnaireResponseItem } from 'fhir/r4';
+import type { GroupTableRowModel } from '../interfaces/groupTable.interface';
 
-function useGroupTableRows(linkId: string, qrItems: QuestionnaireResponseItem[]) {
-  const initialisedGroupTableRows = useInitialiseGroupTable(linkId, qrItems);
-
-  const [tableRows, setTableRows] = useState(initialisedGroupTableRows);
-  const [selectedIds, setSelectedIds] = useState<string[]>(
-    initialisedGroupTableRows.map((row) => row.nanoId)
-  );
+function useGroupTableRows(valueFromProps: GroupTableRowModel[]) {
+  const [tableRows, setTableRows] = useState(valueFromProps);
+  const [selectedIds, setSelectedIds] = useState<string[]>(valueFromProps.map((row) => row.id));
 
   return { tableRows, selectedIds, setTableRows, setSelectedIds };
 }

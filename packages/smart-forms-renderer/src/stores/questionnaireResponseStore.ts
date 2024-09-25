@@ -30,12 +30,14 @@ import { createSelectors } from './selector';
 import { validateQuestionnaire } from '../utils/validateQuestionnaire';
 import { questionnaireStore } from './questionnaireStore';
 import { createQuestionnaireResponseItemMap } from '../utils/questionnaireResponseStoreUtils/updatableResponseItems';
+import { generateUniqueId } from '../utils/extractObservation';
 
 /**
  * QuestionnaireResponseStore properties and methods
  * Properties can be accessed for fine-grain details.
  * Methods are usually used internally, using them from an external source is not recommended.
  *
+ * @property key - The React key of the questionnaireResponse, used internally for refreshing the BaseRenderer
  * @property sourceResponse - The original response created when the form is first initialised i.e. empty, pre-populated, opened saved draft
  * @property updatableResponse - The current state of the response that is being updated via form fields
  * @property updatableResponseItems - Key-value pair of updatableResponse items `Record<linkId, QR.item(s)>`
@@ -53,6 +55,7 @@ import { createQuestionnaireResponseItemMap } from '../utils/questionnaireRespon
  * @author Sean Fong
  */
 export interface QuestionnaireResponseStoreType {
+  key: string;
   sourceResponse: QuestionnaireResponse;
   updatableResponse: QuestionnaireResponse;
   updatableResponseItems: Record<string, QuestionnaireResponseItem[]>;
@@ -80,6 +83,7 @@ export interface QuestionnaireResponseStoreType {
  */
 export const questionnaireResponseStore = createStore<QuestionnaireResponseStoreType>()(
   (set, get) => ({
+    key: 'QR-initial-key',
     sourceResponse: cloneDeep(emptyResponse),
     updatableResponse: cloneDeep(emptyResponse),
     updatableResponseItems: {},
@@ -108,6 +112,7 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
       });
 
       set(() => ({
+        key: generateUniqueId('QR'),
         sourceResponse: questionnaireResponse,
         updatableResponse: questionnaireResponse,
         updatableResponseItems: createQuestionnaireResponseItemMap(questionnaireResponse),
@@ -153,6 +158,7 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
       });
 
       set(() => ({
+        key: generateUniqueId('QR'),
         sourceResponse: savedResponse,
         updatableResponse: savedResponse,
         updatableResponseItems: createQuestionnaireResponseItemMap(savedResponse),
@@ -178,6 +184,7 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
     },
     destroySourceResponse: () =>
       set(() => ({
+        key: generateUniqueId('QR'),
         sourceResponse: cloneDeep(emptyResponse),
         updatableResponse: cloneDeep(emptyResponse),
         updatableResponseItems: createQuestionnaireResponseItemMap(cloneDeep(emptyResponse)),

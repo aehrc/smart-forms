@@ -18,7 +18,9 @@
 import { useQuery } from '@tanstack/react-query';
 import type { Questionnaire } from 'fhir/r4';
 import { fetchResource, questionnaireIsValid } from '../utils/fetchResource.ts';
-import Renderer from './Renderer.tsx';
+import FormViewer from './FormViewer.tsx';
+import { Button } from '@/components/ui/button.tsx';
+import { MoveLeft } from 'lucide-react';
 
 interface HomeProps {
   questionnaireUrl: string;
@@ -29,19 +31,24 @@ function Home(props: HomeProps) {
 
   const { data: questionnaire, isFetching } = useQuery<Questionnaire>(
     ['questionnaire', questionnaireUrl],
-    () => fetchResource(questionnaireUrl, bearerToken)
+    () => fetchResource(questionnaireUrl, bearerToken, true)
   );
 
   if (isFetching) {
-    return <h2>Loading questionnaire...</h2>;
+    return <div>Loading questionnaire...</div>;
   }
 
   if (!questionnaire) {
     return (
       <>
-        <h2>Questionnaire not found. </h2>
+        <div>
+          Questionnaire <span className="font-semibold">{questionnaireUrl}</span> not found.{' '}
+        </div>
         <a href={window.location.origin}>
-          <button className="increase-button-hitbox">Go to {window.location.origin}</button>
+          <Button>
+            <MoveLeft className="mr-2 h-4 w-4" />
+            Go back to {window.location.origin}
+          </Button>
         </a>
       </>
     );
@@ -50,19 +57,20 @@ function Home(props: HomeProps) {
   if (!questionnaireIsValid(questionnaire)) {
     return (
       <>
-        <h2>Questionnaire is not valid.</h2>
+        <div>
+          Questionnaire <span className="font-semibold">{questionnaireUrl}</span> is not valid.
+        </div>
         <a href={window.location.origin}>
-          <button className="increase-button-hitbox">Go to {window.location.origin}</button>
+          <Button>
+            <MoveLeft className="mr-2 h-4 w-4" />
+            Go back to {window.location.origin}
+          </Button>
         </a>
       </>
     );
   }
 
-  return (
-    <div style={{ padding: '8px' }}>
-      <Renderer questionnaire={questionnaire} bearerToken={bearerToken} />
-    </div>
-  );
+  return <FormViewer questionnaire={questionnaire} bearerToken={bearerToken} />;
 }
 
 export default Home;

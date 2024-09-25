@@ -15,7 +15,13 @@
  * limitations under the License.
  */
 
-export { buildForm, destroyForm, getResponse, removeEmptyAnswersFromResponse } from './manageForm';
+export {
+  buildForm,
+  destroyForm,
+  getResponse,
+  removeEmptyAnswersFromResponse,
+  removeInternalIdsFromResponse
+} from './manageForm';
 export { initialiseQuestionnaireResponse } from './initialise';
 export { isSpecificItemControl } from './itemControl';
 export { isRepeatItemAndNotCheckbox } from './qItem';

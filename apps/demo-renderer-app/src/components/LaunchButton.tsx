@@ -16,8 +16,8 @@
  */
 
 import { oauth2 } from 'fhirclient';
-import '../styles.css';
 import { CLIENT_ID, ISS, SCOPES } from '../utils/apiConstants.ts';
+import { Button } from '@/components/ui/button.tsx';
 
 function LaunchButton() {
   function launch() {
@@ -34,9 +34,9 @@ function LaunchButton() {
 
   return (
     <div>
-      <button className="increase-button-hitbox" onClick={() => launch()}>
+      <Button variant="outline" onClick={() => launch()}>
         Get new bearer token from demo server {ISS}
-      </button>
+      </Button>
     </div>
   );
 }

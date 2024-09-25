@@ -18,28 +18,25 @@
 import type { QuestionnaireResponseItem } from 'fhir/r4';
 import type { GroupTableRowModel } from '../interfaces/groupTable.interface';
 import { generateExistingRepeatId, generateNewRepeatId } from '../utils/repeatId';
+import { useMemo } from 'react';
 
-function useInitialiseGroupTable(
+function useInitialiseGroupTableRows(
   linkId: string,
   qrItems: QuestionnaireResponseItem[]
 ): GroupTableRowModel[] {
-  let initialGroupTableRows: GroupTableRowModel[] = [
-    {
-      nanoId: generateNewRepeatId(linkId),
-      qrItem: null
+  return useMemo(() => {
+    if (qrItems.length === 0) {
+      return [{ id: generateNewRepeatId(linkId), qrItem: null, isSelected: true }];
     }
-  ];
 
-  if (qrItems.length > 0) {
-    initialGroupTableRows = qrItems.map((qrItem, index) => {
+    return qrItems.map((qrItem, index) => {
       return {
-        nanoId: generateExistingRepeatId(linkId, index),
-        qrItem
+        id: generateExistingRepeatId(linkId, index),
+        qrItem: qrItem,
+        isSelected: true
       };
     });
-  }
-
-  return initialGroupTableRows;
+  }, [linkId, qrItems]);
 }
 
-export default useInitialiseGroupTable;
+export default useInitialiseGroupTableRows;

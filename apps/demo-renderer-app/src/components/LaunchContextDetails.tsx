@@ -16,7 +16,6 @@
  */
 
 import type { Patient, Practitioner } from 'fhir/r4';
-import '../styles.css';
 import { getDisplayName } from '../utils/humanName.ts';
 
 interface LaunchContextDetailsProps {
@@ -29,15 +28,15 @@ function LaunchContextDetails(props: LaunchContextDetailsProps) {
 
   return (
     <div>
-      <div style={{ display: 'flex', columnGap: '1em' }}>
+      <div className="flex gap-3">
         <div>
-          <b>Selected patient</b>
+          <div className="font-semibold">Selected patient</div>
           <div>Name: {getDisplayName(patient?.name)}</div>
           <div>Resource ID: {patient?.id}</div>
         </div>
         <br />
         <div>
-          <b>Selected practitioner</b>
+          <div className="font-semibold">Selected practitioner</div>
           <div>Name: {getDisplayName(practitioner?.name)}</div>
           <div>Resource ID: {practitioner?.id}</div>
         </div>

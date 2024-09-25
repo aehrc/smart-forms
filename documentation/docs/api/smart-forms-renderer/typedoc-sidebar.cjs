@@ -220,6 +220,11 @@ const typedocSidebar = { items: [
       },
       {
         "type": "doc",
+        "id": "api/smart-forms-renderer/functions/removeInternalIdsFromResponse",
+        "label": "removeInternalIdsFromResponse"
+      },
+      {
+        "type": "doc",
         "id": "api/smart-forms-renderer/functions/repopulateResponse",
         "label": "repopulateResponse"
       },

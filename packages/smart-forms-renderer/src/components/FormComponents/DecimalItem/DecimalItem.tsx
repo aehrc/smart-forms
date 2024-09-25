@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
@@ -37,7 +37,6 @@ import {
 } from '../../../utils/parseInputs';
 import { getDecimalPrecision } from '../../../utils/itemControl';
 import useDecimalCalculatedExpression from '../../../hooks/useDecimalCalculatedExpression';
-import useStringInput from '../../../hooks/useStringInput';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import Box from '@mui/material/Box';
@@ -76,7 +75,7 @@ function DecimalItem(props: DecimalItemProps) {
     initialInput = precision ? valueDecimal.toFixed(precision) : valueDecimal.toString();
   }
 
-  const [input, setInput] = useStringInput(initialInput);
+  const [input, setInput] = useState(initialInput);
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, input);

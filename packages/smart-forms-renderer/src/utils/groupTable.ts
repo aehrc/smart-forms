@@ -32,6 +32,6 @@ export function reorderRows(
 
 export function getGroupTableItemsToUpdate(tableRows: GroupTableRowModel[], selectedIds: string[]) {
   return tableRows
-    .filter((row) => selectedIds.includes(row.nanoId))
+    .filter((row) => selectedIds.includes(row.id))
     .flatMap((singleRow) => (singleRow.qrItem ? [cloneDeep(singleRow.qrItem)] : []));
 }

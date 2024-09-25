@@ -261,7 +261,7 @@ export function createObservation(
 
 let ID_COUNTER = 0;
 
-function generateUniqueId(prefix: string) {
+export function generateUniqueId(prefix: string) {
   if (ID_COUNTER) {
     ID_COUNTER = 0;
   }

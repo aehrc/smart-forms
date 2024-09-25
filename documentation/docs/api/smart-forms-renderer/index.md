@@ -58,6 +58,7 @@
 | [isSpecificItemControl](functions/isSpecificItemControl.md) | Check if the extension has an itemControl code equal to the given itemControlCode |
 | [parseFhirDateToDisplayDate](functions/parseFhirDateToDisplayDate.md) | Parse a FHIR date string to a date to be consumed and displayed by the DateItem component. |
 | [removeEmptyAnswersFromResponse](functions/removeEmptyAnswersFromResponse.md) | Remove all empty/hidden answers from the filled QuestionnaireResponse. |
+| [removeInternalIdsFromResponse](functions/removeInternalIdsFromResponse.md) | Remove all instances of item.answer.id from the filled QuestionnaireResponse. |
 | [repopulateResponse](functions/repopulateResponse.md) | Re-populate checked items in the re-population dialog into the current QuestionnaireResponse |
 | [useBuildForm](functions/useBuildForm.md) | React hook wrapping around the buildForm() function to build a form from a questionnaire and an optional QuestionnaireResponse. |
 | [useHidden](functions/useHidden.md) | React hook to determine if a QuestionnaireItem is hidden via item.hidden, enableWhens, enableWhenExpressions. |

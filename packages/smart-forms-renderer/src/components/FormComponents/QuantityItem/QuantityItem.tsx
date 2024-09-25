@@ -20,7 +20,6 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { parseDecimalStringWithPrecision } from '../../../utils/parseInputs';
 import { getDecimalPrecision } from '../../../utils/itemControl';
-import useStringInput from '../../../hooks/useStringInput';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import Box from '@mui/material/Box';
@@ -92,7 +91,7 @@ function QuantityItem(props: QuantityItemProps) {
   }
 
   // input states
-  const [valueInput, setValueInput] = useStringInput(initialValueInput);
+  const [valueInput, setValueInput] = useState(initialValueInput);
   const [comparatorInput, setComparatorInput] = useState<Quantity['comparator'] | null>(
     initialComparatorInput
   );

@@ -18,10 +18,10 @@
 import { nanoid } from 'nanoid';
 
 export function generateNewRepeatId(linkId: string): string {
-  return `${linkId}-${nanoid()}`;
+  return `${linkId}-repeat-${nanoid()}`;
 }
 
 export function generateExistingRepeatId(linkId: string, index: number): string {
   const paddedIndex = index.toString().padStart(6, '0');
-  return `${linkId}-${paddedIndex}`;
+  return `${linkId}-repeat-${paddedIndex}`;
 }

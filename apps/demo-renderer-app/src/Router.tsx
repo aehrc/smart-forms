@@ -15,24 +15,20 @@
  * limitations under the License.
  */
 
-import type { Dispatch, SetStateAction } from 'react';
-import { useEffect, useState } from 'react';
+import useQuestionnaireUrl from '@/hooks/useQuestionnaireUrl.ts';
+import useBearerToken from '@/hooks/useBearerToken.ts';
+import InputQuestionnaire from '@/components/InputQuestionnaire.tsx';
+import Home from '@/components/Home.tsx';
 
-function useNumberInput(valueFromProps: number): [number, Dispatch<SetStateAction<number>>] {
-  const [value, setValue] = useState(valueFromProps);
+function Router() {
+  const questionnaireUrl = useQuestionnaireUrl();
+  const bearerToken = useBearerToken();
 
-  useEffect(
-    () => {
-      if (value !== valueFromProps) {
-        setValue(valueFromProps);
-      }
-    },
-    // Only trigger this effect if prop value changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [valueFromProps]
-  );
+  if (questionnaireUrl === '' || questionnaireUrl === null) {
+    return <InputQuestionnaire bearerToken={bearerToken} />;
+  }
 
-  return [value, setValue];
+  return <Home questionnaireUrl={questionnaireUrl} bearerToken={bearerToken} />;
 }
 
-export default useNumberInput;
+export default Router;

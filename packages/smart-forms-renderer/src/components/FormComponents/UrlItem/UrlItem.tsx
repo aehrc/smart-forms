@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
@@ -33,7 +33,6 @@ import UrlField from './UrlField';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
-import useStringInput from '../../../hooks/useStringInput';
 
 interface UrlItemProps
   extends PropsWithQrItemChangeHandler,
@@ -58,7 +57,7 @@ function UrlItem(props: UrlItemProps) {
     valueUri = qrItem.answer[0].valueUri;
   }
 
-  const [input, setInput] = useStringInput(valueUri);
+  const [input, setInput] = useState(valueUri);
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, input);

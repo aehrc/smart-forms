@@ -238,6 +238,67 @@ export const qButtonTester: Questionnaire = {
             'https://healthterminologies.gov.au/fhir/ValueSet/australian-states-territories-2'
         }
       ]
+    },
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-itemPopulationContext',
+          valueExpression: {
+            name: 'PostalAddressRepeat',
+            language: 'text/fhirpath',
+            expression: "%patient.address.where(type='postal')"
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: 'http://hl7.org/fhir/questionnaire-item-control',
+                code: 'gtable'
+              }
+            ]
+          }
+        }
+      ],
+      linkId: 'repeats-gtable',
+      type: 'group',
+      repeats: true,
+      text: 'Repeats Group Table Test',
+      item: [
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%PostalAddressRepeat.city'
+              }
+            }
+          ],
+          linkId: 'repeats-gtable-string',
+          text: 'String',
+          type: 'string',
+          repeats: false
+        },
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%PostalAddressRepeat.state'
+              }
+            }
+          ],
+          linkId: 'repeats-gtable-choice',
+          text: 'Choice',
+          type: 'choice',
+          repeats: false,
+          answerValueSet:
+            'https://healthterminologies.gov.au/fhir/ValueSet/australian-states-territories-2'
+        }
+      ]
     }
   ]
 };
@@ -361,6 +422,62 @@ export const qrButtonTesterResponse: QuestionnaireResponse = {
         },
         {
           linkId: 'repeats-group-choice',
+          text: 'Choice',
+          answer: [
+            {
+              valueCoding: {
+                system:
+                  'https://healthterminologies.gov.au/fhir/CodeSystem/australian-states-territories-1',
+                code: 'SA'
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      linkId: 'repeats-gtable',
+      text: 'Repeats Group Table Test',
+      item: [
+        {
+          linkId: 'repeats-gtable-string',
+          text: 'String',
+          answer: [
+            {
+              valueString: 'Group Table String 1'
+            }
+          ]
+        },
+        {
+          linkId: 'repeats-gtable-choice',
+          text: 'Choice',
+          answer: [
+            {
+              valueCoding: {
+                system:
+                  'https://healthterminologies.gov.au/fhir/CodeSystem/australian-states-territories-1',
+                code: 'NSW'
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      linkId: 'repeats-gtable',
+      text: 'Repeats Group Table Test',
+      item: [
+        {
+          linkId: 'repeats-gtable-string',
+          text: 'String',
+          answer: [
+            {
+              valueString: 'Group Table String 2'
+            }
+          ]
+        },
+        {
+          linkId: 'repeats-gtable-choice',
           text: 'Choice',
           answer: [
             {

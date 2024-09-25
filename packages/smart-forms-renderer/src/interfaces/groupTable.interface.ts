@@ -18,6 +18,6 @@
 import type { QuestionnaireResponseItem } from 'fhir/r4';
 
 export interface GroupTableRowModel {
-  nanoId: string;
+  id: string;
   qrItem: QuestionnaireResponseItem | null;
 }

@@ -1,17 +1,17 @@
-import Home from './components/Home.tsx';
-import InputQuestionnaire from './components/InputQuestionnaire.tsx';
-import useBearerToken from './hooks/useBearerToken.ts';
-import useQuestionnaireUrl from './hooks/useQuestionnaireUrl.ts';
+import Router from '@/Router.tsx';
 
 function App() {
-  const questionnaireUrl = useQuestionnaireUrl();
-  const bearerToken = useBearerToken();
-
-  if (questionnaireUrl === '' || questionnaireUrl === null) {
-    return <InputQuestionnaire bearerToken={bearerToken} />;
-  }
-
-  return <Home questionnaireUrl={questionnaireUrl} bearerToken={bearerToken} />;
+  return (
+    <div className="flex min-h-screen w-full flex-col">
+      <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
+        <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0">
+          <div className="mx-auto grid w-full  gap-2">
+            <Router />
+          </div>
+        </main>
+      </div>
+    </div>
+  );
 }
 
 export default App;
