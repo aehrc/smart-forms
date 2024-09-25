@@ -5,11 +5,27 @@ This log documents significant changes for the [@aehrc/smart-forms-renderer](htt
 
 Changelog only includes changes from version 0.36.0 onwards.
 
+## [0.41.0] - 2024-09-25
+### Changed
+- Significantly improved performance by reducing the number of re-renders.
+- Adjusted renderer's background color to be #fafafa.
+- Removed left and right paddings from the renderer - it now takes up the full width of its container.
+
+### Fixed
+- Fixed inconsistencies when syncing the renderer's internal state with externally-generated QuestionnaireResponses.
+- Fixed inconsistencies with internal IDs for tracking repeating items and groups.
+- Fixed an issue where the renderer's theme was overriding the parent app's styles.
+- Fixed issues with lodash dependencies in package.json.
+
+### Added
+- Added a library function removeInternalIdsFromResponse() to remove internal IDs for tracking repeating items.
+
+
 ## [0.40.1] - 2024-09-18
 ### Fixed
 - Fix date validation error message for two matches.
 - Fix generation of internal IDs for repeat items and groups to be consistent and sync-able with externally-generated QuestionnaireResponses.
-- Add simple, minimal fix to dynamically adjust field positions based on viewport
+- Added a simple, minimal fix to dynamically adjust field positions based on viewport
 
 ## [0.40.0] - 2024-09-06
 ### Added
@@ -18,8 +34,6 @@ Changelog only includes changes from version 0.36.0 onwards.
 ## [0.39.0] - 2024-09-06
 ### Changed
 - Refactored `repeat` items so that it tracks item instances using the QuestionnaireResponse, instead of using React's `useState`.
-
-Note: This is a huge change for performance improvements, and was able to pass all the end-to-end and Chromatic tests - but please proceed carefully and test thoroughly before using this version in production. 
 
 ### Fixed
 - Fixed an issue where `string` and `text` items were automatically removing inputted trailing whitespaces.
