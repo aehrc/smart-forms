@@ -52,6 +52,14 @@ Key-value pair of invalid items based on defined value constraints in the questi
 
 ***
 
+### key
+
+> **key**: `string`
+
+The React key of the questionnaireResponse, used internally for refreshing the BaseRenderer
+
+***
+
 ### responseIsValid
 
 > **responseIsValid**: `boolean`

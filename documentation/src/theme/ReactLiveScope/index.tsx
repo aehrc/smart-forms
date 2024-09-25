@@ -2,6 +2,7 @@ import React from 'react';
 import {
   BaseRenderer,
   getResponse,
+  RendererThemeProvider,
   useBuildForm,
   useQuestionnaireResponseStore,
   useQuestionnaireStore,
@@ -33,9 +34,13 @@ function YourBaseRendererWrapper(props: {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <BaseRenderer />
-    </QueryClientProvider>
+    <RendererThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <div style={{ padding: '0 12px' }}>
+          <BaseRenderer />
+        </div>
+      </QueryClientProvider>
+    </RendererThemeProvider>
   );
 }
 
