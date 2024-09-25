@@ -22,9 +22,6 @@ import type {
   QuestionnaireResponseItem
 } from 'fhir/r4';
 import type { Tabs } from '../interfaces/tab.interface';
-import _isEqual from 'lodash/isEqual';
-import _intersection from 'lodash/intersection';
-import _difference from 'lodash/difference';
 import { containsTabs, isTabContainer } from './tabs';
 import { getShortText, isSpecificItemControl } from './itemControl';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
@@ -34,6 +31,9 @@ import { questionnaireResponseStore, questionnaireStore } from '../stores';
 import cloneDeep from 'lodash.clonedeep';
 import { createQuestionnaireResponseItemMap } from './questionnaireResponseStoreUtils/updatableResponseItems';
 import { getQuestionnaireItem, getSectionHeading } from './misc';
+import difference from 'lodash.difference';
+import intersection from 'lodash.intersection';
+import isEqual from 'lodash.isequal';
 
 /**
  * ItemToRepopulate interface
@@ -99,11 +99,11 @@ export function generateItemsToRepopulate(populatedResponse: QuestionnaireRespon
   // Get linkIds that are different between current QRItems and populated QRItems
   // Doesn't work with repeat groups, but at the same time I'm not sure if it's needed, given you can't delete completely the first repeat group
   const populatedResponseItemMap = createQuestionnaireResponseItemMap(populatedResponse);
-  const diffLinkIds = _difference(
+  const diffLinkIds = difference(
     Object.keys(updatableResponseItems),
     Object.keys(populatedResponseItemMap)
   );
-  const diffLinkIdsWithInitialExpressions = _intersection(
+  const diffLinkIdsWithInitialExpressions = intersection(
     Object.keys(initialExpressions),
     diffLinkIds
   );
@@ -468,7 +468,7 @@ function retrieveSingleOldQRItem(
     return;
   }
 
-  if (_isEqual(oldQRItem, newQRItem)) {
+  if (isEqual(oldQRItem, newQRItem)) {
     delete itemsToRepopulate[qItem.linkId];
     return;
   }
@@ -490,7 +490,7 @@ function retrieveRepeatGroupOldQRItems(
     return;
   }
 
-  if (_isEqual(oldQRItems, newQRItems)) {
+  if (isEqual(oldQRItems, newQRItems)) {
     delete itemsToRepopulate[qItem.linkId];
     return;
   }
@@ -535,7 +535,7 @@ function retrieveGridGroupOldQRItems(
       continue;
     }
 
-    if (_isEqual(oldGridChildQrItem, newGridChildQRItem)) {
+    if (isEqual(oldGridChildQrItem, newGridChildQRItem)) {
       newGridChildQRItemMap.delete(gridChildQItem.linkId);
     } else {
       oldGridChildQRItems.push(oldGridChildQrItem);

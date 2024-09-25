@@ -23,7 +23,7 @@ import type {
 } from 'fhir/r4';
 import { OpenChoiceItemControl } from '../interfaces/choice.enum';
 import { isSpecificItemControl } from './itemControl';
-import _isEqual from 'lodash/isEqual';
+import isEqual from 'lodash.isequal';
 
 /**
  * Update open choice answer based on open label value
@@ -100,7 +100,7 @@ export function updateOpenLabelAnswer(
 
   // Old open label answer equals to new open label answer
   // This should not happen, but return oldQrItem
-  if (_isEqual(oldOpenLabelAnswer, newOpenLabelAnswer)) {
+  if (isEqual(oldOpenLabelAnswer, newOpenLabelAnswer)) {
     return oldQrItem;
   }
 
@@ -122,7 +122,7 @@ export function getOldOpenLabelAnswer(
   options: QuestionnaireItemAnswerOption[]
 ): QuestionnaireResponseItemAnswer | null {
   const openLabelAnswer = answers.find(
-    (answer) => !options.some((option) => _isEqual(option, answer))
+    (answer) => !options.some((option) => isEqual(option, answer))
   );
   return openLabelAnswer ?? null;
 }

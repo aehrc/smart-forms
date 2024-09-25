@@ -27,7 +27,6 @@ import type {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
-import _isEqual from 'lodash/isEqual';
 import { emptyResponse } from './emptyResource';
 import { createFhirPathContext } from './fhirpath';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
@@ -35,6 +34,7 @@ import { updateQrItemsInGroup } from './qrItem';
 import cloneDeep from 'lodash.clonedeep';
 import dayjs from 'dayjs';
 import { updateQuestionnaireResponse } from './genericRecursive';
+import isEqual from 'lodash.isequal';
 
 interface EvaluateInitialCalculatedExpressionsParams {
   initialResponse: QuestionnaireResponse;
@@ -60,7 +60,7 @@ export function evaluateInitialCalculatedExpressions(
 
   // Return early if initialResponse is empty or there are no calculated expressions to evaluate
   if (
-    _isEqual(initialResponse, cloneDeep(emptyResponse)) ||
+    isEqual(initialResponse, cloneDeep(emptyResponse)) ||
     Object.keys(calculatedExpressions).length === 0
   ) {
     return {
@@ -93,7 +93,7 @@ export function evaluateInitialCalculatedExpressions(
         );
 
         // Only update calculatedExpressions if length of result array > 0
-        if (result.length > 0 && !_isEqual(calcExpression.value, result[0])) {
+        if (result.length > 0 && !isEqual(calcExpression.value, result[0])) {
           calcExpression.value = result[0];
         }
       } catch (e) {
@@ -136,7 +136,7 @@ export function evaluateCalculatedExpressions(
 
         // Update calculatedExpressions if length of result array > 0
         // Only update when current calcExpression value is different from the result, otherwise it will result in an infinite loop as per issue #733
-        if (result.length > 0 && !_isEqual(calcExpression.value, result[0])) {
+        if (result.length > 0 && !isEqual(calcExpression.value, result[0])) {
           isUpdated = true;
           calcExpression.value = result[0];
         }
