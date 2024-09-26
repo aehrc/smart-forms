@@ -29,6 +29,7 @@
   "dependencies": {
     "@aehrc/sdc-populate": "^2.3.1",
     "@iconify/react": "^4.1.1",
+    "@iframe-resizer/child": "^5.3.1",
     "dayjs": "^1.11.10",
     "deep-diff": "^1.0.2",
     "fhirclient": "^2.5.2",

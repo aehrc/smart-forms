@@ -28,6 +28,7 @@ import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { fetchResourceCallback } from './populateCallbackForStorybook';
 import { buildForm } from '../../utils';
 import { STORYBOOK_TERMINOLOGY_SERVER_URL } from './globals';
+import '@iframe-resizer/child';
 
 interface PrePopWrapperForStorybookProps {
   questionnaire: Questionnaire;
@@ -51,7 +52,12 @@ function PrePopWrapperForStorybook(props: PrePopWrapperForStorybookProps) {
 
   const [isPopulating, setIsPopulating] = useState(false);
 
-  const isBuilding = useBuildForm(questionnaire);
+  const isBuilding = useBuildForm(
+    questionnaire,
+    undefined,
+    undefined,
+    STORYBOOK_TERMINOLOGY_SERVER_URL
+  );
 
   const queryClient = useRendererQueryClient();
 

@@ -24,6 +24,7 @@ import { RendererThemeProvider } from '../../theme';
 import { useBuildForm, useRendererQueryClient } from '../../hooks';
 import BuildFormButtonForStorybook from './BuildFormButtonForStorybook';
 import { STORYBOOK_TERMINOLOGY_SERVER_URL } from './globals';
+import '@iframe-resizer/child';
 
 interface BuildFormButtonTesterWrapperForStorybookProps {
   questionnaire: Questionnaire;
