@@ -98,11 +98,11 @@ function handler(event) {
     if (!uri.includes('.')) {
       // For https://smartforms.csiro.au/docs/sdc/population/ cases
       if (uri.endsWith('/')) {
-        request.uri += 'index.html';
+        request.uri = uri.slice(0, -1) + ".html";
       }
       // For https://smartforms.csiro.au/docs/sdc/population cases
       else {
-        request.uri += '/index.html';
+        request.uri += '.html';
       }
       return request;
     }
