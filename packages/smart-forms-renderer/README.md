@@ -5,6 +5,8 @@ It acts as a reference implementation for the [SDC Form Filler](https://hl7.org/
 
 <h4><a href="https://smartforms.csiro.au/docs/dev">Check out the documentation 📚</a></h4>
 
+View the changelog [here](https://github.com/aehrc/smart-forms/blob/main/CHANGELOG.md).
+
 
 ---
 
