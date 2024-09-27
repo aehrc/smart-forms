@@ -23,7 +23,6 @@ import type {
 } from 'fhir/r4';
 import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enableWhen.interface';
 import { isHiddenByEnableWhen } from './qItem';
-import cloneDeep from 'lodash.clonedeep';
 import { qrItemHasItemsOrAnswer } from './manageForm';
 
 interface removeEmptyAnswersParams {
@@ -56,7 +55,7 @@ export function removeEmptyAnswers(params: removeEmptyAnswersParams): Questionna
     !topLevelQRItems ||
     topLevelQRItems.length === 0
   ) {
-    const updatedQuestionnaireResponse = cloneDeep(questionnaireResponse);
+    const updatedQuestionnaireResponse = structuredClone(questionnaireResponse);
     delete updatedQuestionnaireResponse.item;
     return updatedQuestionnaireResponse;
   }

@@ -23,7 +23,6 @@ import type {
   QuestionnaireResponseItem
 } from 'fhir/r4';
 import { emptyResponse } from '../utils/emptyResource';
-import cloneDeep from 'lodash.clonedeep';
 import type { Diff } from 'deep-diff';
 import { diff } from 'deep-diff';
 import { createSelectors } from './selector';
@@ -84,8 +83,8 @@ export interface QuestionnaireResponseStoreType {
 export const questionnaireResponseStore = createStore<QuestionnaireResponseStoreType>()(
   (set, get) => ({
     key: 'QR-initial-key',
-    sourceResponse: cloneDeep(emptyResponse),
-    updatableResponse: cloneDeep(emptyResponse),
+    sourceResponse: structuredClone(emptyResponse),
+    updatableResponse: structuredClone(emptyResponse),
     updatableResponseItems: {},
     formChangesHistory: [],
     invalidItems: {},
@@ -185,9 +184,9 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
     destroySourceResponse: () =>
       set(() => ({
         key: generateUniqueId('QR'),
-        sourceResponse: cloneDeep(emptyResponse),
-        updatableResponse: cloneDeep(emptyResponse),
-        updatableResponseItems: createQuestionnaireResponseItemMap(cloneDeep(emptyResponse)),
+        sourceResponse: structuredClone(emptyResponse),
+        updatableResponse: structuredClone(emptyResponse),
+        updatableResponseItems: createQuestionnaireResponseItemMap(structuredClone(emptyResponse)),
         formChangesHistory: [],
         invalidItems: {},
         responseIsValid: true

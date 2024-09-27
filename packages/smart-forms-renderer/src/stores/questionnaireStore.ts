@@ -41,7 +41,6 @@ import {
 import { createQuestionnaireModel } from '../utils/questionnaireStoreUtils/createQuestionaireModel';
 import { initialiseFormFromResponse } from '../utils/initialise';
 import { emptyQuestionnaire, emptyResponse } from '../utils/emptyResource';
-import cloneDeep from 'lodash.clonedeep';
 import { terminologyServerStore } from './terminologyServerStore';
 import { createSelectors } from './selector';
 import { mutateRepeatEnableWhenExpressionInstances } from '../utils/enableWhenExpression';
@@ -160,7 +159,7 @@ export interface QuestionnaireStoreType {
  * @author Sean Fong
  */
 export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, get) => ({
-  sourceQuestionnaire: cloneDeep(emptyQuestionnaire),
+  sourceQuestionnaire: structuredClone(emptyQuestionnaire),
   itemTypes: {},
   tabs: {},
   currentTabIndex: 0,
@@ -184,7 +183,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   readOnly: false,
   buildSourceQuestionnaire: async (
     questionnaire,
-    questionnaireResponse = cloneDeep(emptyResponse),
+    questionnaireResponse = structuredClone(emptyResponse),
     additionalVariables = {},
     terminologyServerUrl = terminologyServerStore.getState().url,
     readOnly = false
@@ -244,7 +243,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   },
   destroySourceQuestionnaire: () =>
     set({
-      sourceQuestionnaire: cloneDeep(emptyQuestionnaire),
+      sourceQuestionnaire: structuredClone(emptyQuestionnaire),
       itemTypes: {},
       tabs: {},
       currentTabIndex: 0,

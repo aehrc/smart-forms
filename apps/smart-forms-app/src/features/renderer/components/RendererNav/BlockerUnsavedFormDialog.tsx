@@ -27,7 +27,6 @@ import {
   DialogTitle
 } from '@mui/material';
 import { saveQuestionnaireResponse } from '../../../../api/saveQr.ts';
-import cloneDeep from 'lodash.clonedeep';
 import { LoadingButton } from '@mui/lab';
 import {
   removeEmptyAnswersFromResponse,
@@ -78,7 +77,7 @@ function BlockerUnsavedFormDialog(props: Props) {
 
     setIsSaving(true);
 
-    let responseToSave = cloneDeep(updatableResponse);
+    let responseToSave = structuredClone(updatableResponse);
     responseToSave = removeEmptyAnswersFromResponse(sourceQuestionnaire, responseToSave);
 
     setIsSaving(true);

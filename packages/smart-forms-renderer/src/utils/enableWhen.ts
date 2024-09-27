@@ -22,7 +22,6 @@ import type {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
-import cloneDeep from 'lodash.clonedeep';
 import type {
   EnableWhenItems,
   EnableWhenRepeatItemProperties,
@@ -257,7 +256,7 @@ export function setInitialAnswers(
   items: EnableWhenItems,
   linkedQuestionsMap: Record<string, string[]>
 ): EnableWhenItems {
-  let updatedItems = cloneDeep(items);
+  let updatedItems = structuredClone(items);
 
   if (initialAnswers) {
     for (const linkId in initialAnswers) {

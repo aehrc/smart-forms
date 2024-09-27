@@ -10,35 +10,20 @@ import IframeContainer from '../../src/react/IframeContainer';
 
 ### Basic usage
 
-<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-display--display-basic">
-  <iframe
-    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-display--display-basic"
-    width="100%"
-    height="100"
-  />
-</IframeContainer>
+<IframeContainer storyId="component-itemtype-display--display-basic" initialHeight={120} />
 
 ### Advanced usage
 
 #### Calculations with [cqf-expression](/docs/sdc/calculations#cqf-expression)
 
-<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-display--display-calculation">
-  <iframe
-    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-display--display-calculation"
-    width="100%"
-    height="270"
-  />
-</IframeContainer>
+<IframeContainer storyId="component-itemtype-display--display-calculation" initialHeight={280} />
 
 #### Calculations with [cqf-expression](/docs/sdc/calculations#cqf-expression) styled with [rendering-style](/docs/sdc/advanced/display#rendering-style)
 
-<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-display--display-calculation-styled">
-  <iframe
-    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-display--display-calculation-styled"
-    width="100%"
-    height="270"
-  />
-</IframeContainer>
+<IframeContainer
+  storyId="component-itemtype-display--display-calculation-styled"
+  initialHeight={280}
+/>
 
 There are SDC advanced form rendering usages in the SDC [Display/Text Rendering](/docs/sdc/advanced/display) section.
 

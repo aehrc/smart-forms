@@ -35,14 +35,14 @@ jobs:
         run: cd apps/demo-renderer-app && npm run build
 
   jest-test:
-    name: Jest Tests
+    name: Jest Tests (only runs on node 18)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js 16.x
+      - name: Use Node.js 18.x
         uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 18
           cache: npm
       - name: Install dependencies
         run: npm ci

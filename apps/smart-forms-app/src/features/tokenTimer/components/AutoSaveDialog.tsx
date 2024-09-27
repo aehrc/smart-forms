@@ -22,7 +22,6 @@ import {
   useQuestionnaireResponseStore,
   useQuestionnaireStore
 } from '@aehrc/smart-forms-renderer';
-import cloneDeep from 'lodash.clonedeep';
 import { saveQuestionnaireResponse } from '../../../api/saveQr.ts';
 import { useSnackbar } from 'notistack';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
@@ -57,7 +56,7 @@ function AutoSaveDialog(props: AutoSaveDialogProps) {
 
     const responseToSave = removeEmptyAnswersFromResponse(
       sourceQuestionnaire,
-      cloneDeep(updatableResponse)
+      structuredClone(updatableResponse)
     );
 
     responseToSave.status = 'in-progress';

@@ -247,7 +247,7 @@ export const qChoiceAnswerOptionCalculation: Questionnaire = {
           url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
           valueExpression: {
             language: 'text/fhirpath',
-            expression: "iif(%painLevel.empty(), '', iif(%painLevel < 5, 'Y', 'N'))"
+            expression: "iif(%painLevel.empty(), 'Y', iif(%painLevel < 5, 'Y', 'N'))"
           }
         }
       ],

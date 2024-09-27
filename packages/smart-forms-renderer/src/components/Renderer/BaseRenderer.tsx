@@ -20,7 +20,6 @@ import Fade from '@mui/material/Fade';
 import FormTopLevelItem from './FormTopLevelItem';
 import type { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '../../stores';
-import cloneDeep from 'lodash.clonedeep';
 import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';
 import { updateQrItemsInGroup } from '../../utils/qrItem';
 import { everyIsPages } from '../../utils/page';
@@ -48,7 +47,7 @@ function BaseRenderer() {
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(sourceQuestionnaire), [sourceQuestionnaire]);
 
   function handleTopLevelQRItemSingleChange(newTopLevelQRItem: QuestionnaireResponseItem) {
-    const updatedResponse: QuestionnaireResponse = cloneDeep(updatableResponse);
+    const updatedResponse: QuestionnaireResponse = structuredClone(updatableResponse);
 
     updateQrItemsInGroup(newTopLevelQRItem, null, updatedResponse, qItemsIndexMap);
 
@@ -58,7 +57,7 @@ function BaseRenderer() {
   }
 
   function handleTopLevelQRItemMultipleChange(newTopLevelQRItems: QrRepeatGroup) {
-    const updatedResponse: QuestionnaireResponse = cloneDeep(updatableResponse);
+    const updatedResponse: QuestionnaireResponse = structuredClone(updatableResponse);
 
     updateQrItemsInGroup(null, newTopLevelQRItems, updatedResponse, qItemsIndexMap);
 
@@ -68,7 +67,7 @@ function BaseRenderer() {
   }
 
   const topLevelQItems = sourceQuestionnaire.item;
-  const topLevelQRItems = cloneDeep(updatableResponse.item) ?? [];
+  const topLevelQRItems = structuredClone(updatableResponse.item) ?? [];
 
   if (!topLevelQItems) {
     return <>Questionnaire does not have any items</>;

@@ -40,7 +40,6 @@ import type { Variables } from '../../interfaces/variables.interface';
 import { getFhirPathVariables, getXFhirQueryVariables } from './extractVariables';
 import { getRepeatGroupParentItem } from '../misc';
 import { checkItemIsEnabledRepeat } from '../enableWhen';
-import cloneDeep from 'lodash.clonedeep';
 import { emptyResponse } from '../emptyResource';
 import { evaluateEnableWhenRepeatExpressionInstance } from '../enableWhenExpression';
 import {
@@ -429,7 +428,7 @@ function initialiseEnableWhenExpression(
 
       const { isEnabled } = evaluateEnableWhenRepeatExpressionInstance(
         qItem.linkId,
-        { resource: cloneDeep(emptyResponse) },
+        { resource: structuredClone(emptyResponse) },
         enableWhenRepeatExpression,
         enableWhenRepeatExpression.expression.lastIndexOf('.where(linkId'),
         0
