@@ -5,6 +5,12 @@ This log documents significant changes for the [@aehrc/smart-forms-renderer](htt
 
 Changelog only includes changes from version 0.36.0 onwards.
 
+
+## [0.42.0] - 2024-09-27
+### Changed
+- Replaced all instances of cloneDeep() with the native structuredClone() function.
+- Changed Storybook iframes in the documentation to be dynamically sized based on the content.
+
 ## [0.41.0] - 2024-09-25
 ### Changed
 - Significantly improved performance by reducing the number of re-renders.
