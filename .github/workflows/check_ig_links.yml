@@ -1,0 +1,29 @@
+name: Check IG Links Workflow
+
+on:
+  push:
+
+jobs:
+  check-ig-links:
+    name: Check IG Links
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: npm install playwright
+
+      - name: Run Playwright link check
+        run: node checkIgLinks.js
+
+      - name: Report results
+        if: failure()  # This step will only run if the previous step fails
+        run: |
+          echo "One or more links cannot be resolved. View log for details."
+          exit 1
