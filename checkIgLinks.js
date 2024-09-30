@@ -18,7 +18,6 @@ const {chromium} = require('playwright');
 
         // Canonical URLs
         `https://smartforms.csiro.au/${basePathIg}/CapabilityStatement/SmartFormsApplication`,
-        `https://smartforms.csiro.au/ig/0.2.0-draft/CapabilityStatement/SmartFormsApplication`,
     ];
 
     const jsonUrls = [
@@ -29,24 +28,24 @@ const {chromium} = require('playwright');
         `https://smartforms.csiro.au/${basePathIg}/fhir.css`,
         `https://smartforms.csiro.au/${basePathIg}/0.2.0-draft/fhir.css`]
 
-    const downloadUrls = [
-        `https://smartforms.csiro.au/${basePathIg}/examples.json.zip`,
-        `https://smartforms.csiro.au/${basePathIg}/0.2.0-draft/package.tgz`]
-
-
     const browser = await chromium.launch();
     const context = await browser.newContext();
     const page = await context.newPage();
 
+    const barrier = '='.repeat(30);
+
 
     // Page URLs
+    console.log(`${barrier}`);
+    console.log('           Page URLs           ');
+    console.log(`${barrier}`);
     for (const pageUrl of pageUrls) {
         try {
             const response = await page.goto(pageUrl);
             if (response.ok()) {
                 const body = await response.text();
                 if (body.includes('csiro.fhir.au.smartforms')) {
-                    console.log(`✅ ${pageUrl} is accessible and return a page on the IG`);
+                    console.log(`✅ ${pageUrl} is accessible and returned a page on the IG`);
                 } else {
                     console.error(`❌ ${pageUrl} is accessible but does not return a page on the IG`);
                 }
@@ -60,6 +59,9 @@ const {chromium} = require('playwright');
     }
 
     // JSON URLs
+    console.log(`\n\n${barrier}`);
+    console.log('           JSON URLs           ');
+    console.log(`${barrier}`);
     for (const jsonUrl of jsonUrls) {
         try {
             const response = await page.goto(jsonUrl);
@@ -68,7 +70,7 @@ const {chromium} = require('playwright');
                 if (json.externalDocs && json.externalDocs.url.includes('CapabilityStatement/SmartFormsApplication')) {
                     console.log(`✅ ${jsonUrl} is accessible and JSON is valid`);
                 } else {
-                    console.error(`❌ ${jsonUrl} is accessible but does not return a page on the IG`);
+                    console.error(`❌ ${jsonUrl} is accessible but JSON is invalid`);
                 }
 
             } else {
@@ -76,6 +78,30 @@ const {chromium} = require('playwright');
             }
         } catch (error) {
             console.error(`❌ Error! Failed to access ${jsonUrl}: ${error.message}`);
+        }
+    }
+
+
+    // CSS URLs
+    console.log(`\n\n${barrier}`);
+    console.log('           CSS URLs           ');
+    console.log(`${barrier}`);
+    for (const cssUrl of cssUrls) {
+        try {
+            const response = await page.goto(cssUrl);
+            if (response.ok()) {
+                const cssText = await response.text();
+                if (response.url().endsWith('.css') && cssText.includes('body {')) {
+                    console.log(`✅ ${cssUrl} is accessible and CSS is valid`);
+                } else {
+                    console.error(`❌ ${cssUrl} is accessible but CSS is invalid, IG pages may not render correctly`);
+                }
+
+            } else {
+                console.error(`❌ ${cssUrl} returned status code: ${response.status()}`);
+            }
+        } catch (error) {
+            console.error(`❌ Error! Failed to access ${cssUrl}: ${error.message}`);
         }
     }
 

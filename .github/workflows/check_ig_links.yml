@@ -17,13 +17,13 @@ jobs:
           node-version: 16
 
       - name: Install dependencies
-        run: npm install playwright
+        run: npx playwright install
 
-      - name: Run Playwright link check
+      - name: Run Playwright link checks
         run: node checkIgLinks.js
 
       - name: Report results
         if: failure()  # This step will only run if the previous step fails
         run: |
-          echo "One or more links cannot be resolved. View log for details."
+          echo "One or more links cannot be resolved. View 'Run Playwright link checks' log above for details."
           exit 1
