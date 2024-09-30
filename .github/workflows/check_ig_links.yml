@@ -16,8 +16,14 @@ jobs:
         with:
           node-version: 16
 
-      - name: Install dependencies
-        run: npx playwright install --with-deps
+      - name: Create package.json
+        run: |
+          echo '{}' > package.json
+
+      - name: Install Playwright
+        run: |
+          npm install @playwright/test  # Install Playwright
+          npx playwright install --with-deps
 
       - name: Run Playwright link checks
         run: node checkIgLinks.js
