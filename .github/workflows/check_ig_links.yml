@@ -17,7 +17,7 @@ jobs:
           node-version: 16
 
       - name: Install dependencies
-        run: npx playwright install
+        run: npx playwright install --with-deps
 
       - name: Run Playwright link checks
         run: node checkIgLinks.js
