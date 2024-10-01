@@ -1,0 +1,56 @@
+name: Deploy IG Routing Cloudfront function Workflow
+
+on:
+  push:
+
+jobs:
+  build:
+    name: Deploy IG Routing Cloudfront function
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 16.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 16
+          cache: npm
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::209248795938:role/SmartFormsReactAppDeployment
+          aws-region: ap-southeast-2
+
+      - name: Describe the SmartFormsIgRouting function to get current ETag
+        id: describe_function
+        run: |
+          OUTPUT=$(aws cloudfront get-function --name SmartFormsIgRouting)
+          ETag=$(echo $OUTPUT | jq -r '.ETag')
+          echo "::set-output name=etag::$ETag"
+        shell: bash
+
+      - name: Update the SmartFormsIgRouting Function
+        id: update_function
+        run: |
+          OUTPUT=$(aws cloudfront update-function \
+            --name SmartFormsIgRouting \
+            --if-match ${{ steps.describe_function.outputs.etag }} \
+            --function-config "{\"Comment\":\"Manages routing within the Smart Forms IG\",\"Runtime\":\"cloudfront-js-2.0\"}" \
+            --function-code fileb://./SmartFormsIgRouting.js)
+          
+          NEW_ETAG=$(echo $OUTPUT | jq -r '.ETag')
+          echo "::set-output name=new_etag::$NEW_ETAG"
+        shell: bash
+
+      - name: Publish the SmartFormsIgRouting Function
+        run: |
+          aws cloudfront publish-function \
+            --name SmartFormsIgRouting \
+            --if-match ${{ steps.update_function.outputs.new_etag }}
+        shell: bash
+
+      - name: Log the new ETag
+        run: |
+          echo "New ETag after updating and publishing: ${{ steps.update_function.outputs.new_etag }}"
+        shell: bash
