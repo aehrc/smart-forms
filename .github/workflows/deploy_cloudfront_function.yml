@@ -27,7 +27,7 @@ jobs:
       - name: Describe the SmartFormsIgRouting function to get current ETag
         id: describe_function
         run: |
-          OUTPUT=$(aws cloudfront get-function --name SmartFormsIgRouting)
+          OUTPUT=$(aws cloudfront describe-function --name SmartFormsIgRouting)
           ETag=$(echo $OUTPUT | jq -r '.ETag')
           echo "::set-output name=etag::$ETag"
         shell: bash
