@@ -8,7 +8,6 @@
 
 // Latest IG version, update this every time the IG is updated
 const latestVersion = "0.2.0-draft";
-const dummyVariable = "0.2.0-draft";
 
 const basePathIg = "ig"
 const implementationGuideCanonical = `/${basePathIg}/ImplementationGuide/csiro.fhir.au.smartforms`
