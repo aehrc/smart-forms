@@ -6,6 +6,14 @@ This log documents significant changes for the [@aehrc/smart-forms-renderer](htt
 Changelog only includes changes from version 0.36.0 onwards.
 
 
+## [0.43.1] - 2024-10-04
+### Changed
+- Completely removed persisting "iframe-resizer" dependencies as a follow-up to v0.43.0.
+
+## [0.43.0] - 2024-10-04
+### Changed
+- Removed external dependency on "iframe-resizer" while retaining dynamically sized Storybook iframes in the documentation.
+
 ## [0.42.0] - 2024-09-27
 ### Changed
 - Replaced all instances of cloneDeep() with the native structuredClone() function.

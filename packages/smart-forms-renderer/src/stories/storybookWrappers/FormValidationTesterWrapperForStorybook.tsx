@@ -25,7 +25,6 @@ import { useBuildForm, useRendererQueryClient } from '../../hooks';
 import { Grid } from '@mui/material';
 import FormValidationViewerForStorybook from './FormValidationViewerForStorybook';
 import { STORYBOOK_TERMINOLOGY_SERVER_URL } from './globals';
-import '@iframe-resizer/child';
 
 interface FormValidationTesterWrapperForStorybookProps {
   questionnaire: Questionnaire;

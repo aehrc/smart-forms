@@ -26,7 +26,6 @@ import { STORYBOOK_TERMINOLOGY_SERVER_URL } from './globals';
 import IdRemoverButtonForStorybook from './IdRemoverButtonForStorybook';
 import { Grid } from '@mui/material';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '../../stores';
-import '@iframe-resizer/child';
 
 interface IdRemoverDebuggerWrapperForStorybookProps {
   questionnaire: Questionnaire;

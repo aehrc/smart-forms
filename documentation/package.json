@@ -15,14 +15,13 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@aehrc/smart-forms-renderer": "^0.42.0",
+    "@aehrc/smart-forms-renderer": "^0.43.1",
     "@docusaurus/core": "^3.4.0",
     "@docusaurus/preset-classic": "^3.4.0",
     "@docusaurus/theme-live-codeblock": "^3.4.0",
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
     "@iconify/react": "^4.1.1",
-    "@iframe-resizer/react": "^5.3.1",
     "@mdx-js/react": "^3.0.0",
     "@mui/material": "^5.16.7",
     "@tanstack/react-query": "^4.36.1",
