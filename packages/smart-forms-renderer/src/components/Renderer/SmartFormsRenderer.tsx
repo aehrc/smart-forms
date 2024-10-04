@@ -49,8 +49,6 @@ export interface SmartFormsRendererProps {
   readOnly?: boolean;
 }
 
-// Will be deprecated in version 1.0.0. Use alternative() instead. //FIXME add alternative
-
 /**
  * A self-initialising wrapper around the BaseRenderer rendering engine.
  * Will be deprecated in version 1.0.0. For alternative usage, see:
