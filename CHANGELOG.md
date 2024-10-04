@@ -5,6 +5,9 @@ This log documents significant changes for the [@aehrc/smart-forms-renderer](htt
 
 Changelog only includes changes from version 0.36.0 onwards.
 
+## [0.43.0] - 2024-10-04
+### Changed
+- Removed external dependency on "iframe-resizer" while retaining dynamically sized Storybook iframes in the documentation.
 
 ## [0.42.0] - 2024-09-27
 ### Changed
