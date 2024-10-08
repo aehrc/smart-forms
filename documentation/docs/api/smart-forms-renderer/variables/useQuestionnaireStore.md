@@ -165,6 +165,14 @@ This is the React version of the store which can be used as React hooks in React
 
 `Record`\<`string`, `InitialExpression`\>
 
+### use.itemPreferredTerminologyServers()
+
+> **itemPreferredTerminologyServers**: () => `Record`\<`string`, `string`\>
+
+#### Returns
+
+`Record`\<`string`, `string`\>
+
 ### use.itemTypes()
 
 > **itemTypes**: () => `Record`\<`string`, `string`\>

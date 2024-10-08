@@ -36,6 +36,7 @@ const VALID_VALUE_SET_URL_REGEX =
 
 const VALID_FHIRPATH_VARIABLE_REGEX = /%(.*?)\./;
 
+// Mainly for backwards compatibility, doesn't exist in the SDC spec anymore
 export function getTerminologyServerUrl(qItem: QuestionnaireItem): string | undefined {
   const itemControl = qItem.extension?.find(
     (extension: Extension) =>
