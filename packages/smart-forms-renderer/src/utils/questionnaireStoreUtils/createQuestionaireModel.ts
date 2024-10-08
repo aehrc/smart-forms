@@ -29,7 +29,7 @@ import { extractOtherExtensions } from './extractOtherExtensions';
 import type { Variables } from '../../interfaces/variables.interface';
 import { resolveValueSets } from './resolveValueSets';
 import { addAdditionalVariables } from './addAdditionalVariables';
-import { getLinkIdTypeTuples } from '../qItem';
+import { getLinkIdPreferredTerminologyServerTuples, getLinkIdTypeTuples } from '../qItem';
 import { addDisplayToAnswerOptions, addDisplayToProcessedCodings } from './addDisplayToCodings';
 
 export async function createQuestionnaireModel(
@@ -42,6 +42,9 @@ export async function createQuestionnaireModel(
   }
 
   const itemTypes: Record<string, string> = Object.fromEntries(getLinkIdTypeTuples(questionnaire));
+  const itemPreferredTerminologyServers: Record<string, string> = Object.fromEntries(
+    getLinkIdPreferredTerminologyServerTuples(questionnaire)
+  );
   const tabs: Tabs = extractTabs(questionnaire);
   const pages: Pages = extractPages(questionnaire);
 
@@ -62,6 +65,7 @@ export async function createQuestionnaireModel(
     questionnaire,
     variables,
     valueSetPromises,
+    itemPreferredTerminologyServers,
     terminologyServerUrl
   );
 
@@ -100,6 +104,7 @@ export async function createQuestionnaireModel(
 
   return {
     itemTypes,
+    itemPreferredTerminologyServers,
     tabs,
     pages,
     variables,
@@ -119,6 +124,7 @@ export async function createQuestionnaireModel(
 function createEmptyModel(): QuestionnaireModel {
   return {
     itemTypes: {},
+    itemPreferredTerminologyServers: {},
     tabs: {},
     pages: {},
     variables: { fhirPathVariables: {}, xFhirQueryVariables: {} },

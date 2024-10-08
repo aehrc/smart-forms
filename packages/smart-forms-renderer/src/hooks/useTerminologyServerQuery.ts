@@ -29,6 +29,8 @@ function useTerminologyServerQuery(
   searchTerm: string
 ): { options: Coding[]; loading: boolean; feedback?: { message: string; color: AlertColor } } {
   const processedValueSetUrls = useQuestionnaireStore.use.processedValueSetUrls();
+  const itemPreferredTerminologyServers =
+    useQuestionnaireStore.use.itemPreferredTerminologyServers();
   const defaultTerminologyServerUrl = useTerminologyServerStore.use.url();
 
   let fullUrl = '';
@@ -61,7 +63,9 @@ function useTerminologyServerQuery(
   }
 
   // Perform query
-  const terminologyServerUrl = getTerminologyServerUrl(qItem) ?? defaultTerminologyServerUrl;
+  const preferredTerminologyServerUrl = itemPreferredTerminologyServers[qItem.linkId];
+  const terminologyServerUrl =
+    getTerminologyServerUrl(qItem) ?? preferredTerminologyServerUrl ?? defaultTerminologyServerUrl;
   const { isFetching, error, data } = useQuery<ValueSet>(
     ['expandValueSet', fullUrl],
     () => getValueSetPromise(fullUrl, terminologyServerUrl),

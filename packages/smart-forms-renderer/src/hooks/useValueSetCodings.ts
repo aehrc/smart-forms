@@ -47,6 +47,8 @@ function useValueSetCodings(qItem: QuestionnaireItem): {
   const cachedValueSetCodings = useQuestionnaireStore.use.cachedValueSetCodings();
   const addCodingToCache = useQuestionnaireStore.use.addCodingToCache();
   const { xFhirQueryVariables } = useQuestionnaireStore.use.variables();
+  const itemPreferredTerminologyServers =
+    useQuestionnaireStore.use.itemPreferredTerminologyServers();
 
   const defaultTerminologyServerUrl = useTerminologyServerStore.use.url();
 
@@ -138,7 +140,11 @@ function useValueSetCodings(qItem: QuestionnaireItem): {
     const valueSetUrl = qItem.answerValueSet;
     if (!valueSetUrl || codings.length > 0) return;
 
-    const terminologyServerUrl = getTerminologyServerUrl(qItem) ?? defaultTerminologyServerUrl;
+    const preferredTerminologyServerUrl = itemPreferredTerminologyServers[qItem.linkId];
+    const terminologyServerUrl =
+      getTerminologyServerUrl(qItem) ??
+      preferredTerminologyServerUrl ??
+      defaultTerminologyServerUrl;
     const promise = getValueSetPromise(valueSetUrl, terminologyServerUrl);
     if (promise) {
       promise

@@ -27,6 +27,7 @@ import type { InitialExpression } from './initialExpression.interface';
 
 export interface QuestionnaireModel {
   itemTypes: Record<string, string>;
+  itemPreferredTerminologyServers: Record<string, string>;
   tabs: Tabs;
   pages: Pages;
   variables: Variables;

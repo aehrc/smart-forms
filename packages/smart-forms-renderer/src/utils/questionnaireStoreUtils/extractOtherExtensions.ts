@@ -65,6 +65,7 @@ export function extractOtherExtensions(
   questionnaire: Questionnaire,
   variables: Variables,
   valueSetPromises: Record<string, ValueSetPromise>,
+  itemPreferredTerminologyServers: Record<string, string>,
   terminologyServerUrl: string
 ): ReturnParamsRecursive {
   const enableWhenItems: EnableWhenItems = { singleItems: {}, repeatItems: {} };
@@ -106,6 +107,7 @@ export function extractOtherExtensions(
       answerExpressions,
       answerOptions,
       valueSetPromises,
+      itemPreferredTerminologyServers,
       defaultTerminologyServerUrl: terminologyServerUrl,
       parentRepeatGroupLinkId: isRepeatGroup ? topLevelItem.linkId : undefined
     });
@@ -134,6 +136,7 @@ interface extractExtensionsFromItemRecursiveParams {
   answerExpressions: Record<string, AnswerExpression>;
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
   valueSetPromises: Record<string, ValueSetPromise>;
+  itemPreferredTerminologyServers: Record<string, string>;
   defaultTerminologyServerUrl: string;
   parentRepeatGroupLinkId?: string;
 }
@@ -152,6 +155,7 @@ function extractExtensionsFromItemRecursive(
     answerExpressions,
     answerOptions,
     valueSetPromises,
+    itemPreferredTerminologyServers,
     defaultTerminologyServerUrl,
     parentRepeatGroupLinkId
   } = params;
@@ -234,7 +238,12 @@ function extractExtensionsFromItemRecursive(
   const valueSetUrl = item.answerValueSet;
   if (valueSetUrl) {
     if (!valueSetPromises[valueSetUrl] && !valueSetUrl.startsWith('#')) {
-      const terminologyServerUrl = getTerminologyServerUrl(item) ?? defaultTerminologyServerUrl;
+      const preferredTerminologyServerUrl = itemPreferredTerminologyServers[item.linkId];
+      const terminologyServerUrl =
+        getTerminologyServerUrl(item) ??
+        preferredTerminologyServerUrl ??
+        defaultTerminologyServerUrl;
+
       valueSetPromises[valueSetUrl] = {
         promise: getValueSetPromise(valueSetUrl, terminologyServerUrl)
       };

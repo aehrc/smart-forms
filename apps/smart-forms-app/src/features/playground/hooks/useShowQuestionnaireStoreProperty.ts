@@ -20,6 +20,8 @@ import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 function useShowQuestionnaireStoreProperty(selectedProperty: string) {
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
   const itemTypes = useQuestionnaireStore.use.itemTypes();
+  const itemPreferredTerminologyServers =
+    useQuestionnaireStore.use.itemPreferredTerminologyServers();
   const tabs = useQuestionnaireStore.use.tabs();
   const currentTabIndex = useQuestionnaireStore.use.currentTabIndex();
   const variables = useQuestionnaireStore.use.variables();
@@ -42,6 +44,7 @@ function useShowQuestionnaireStoreProperty(selectedProperty: string) {
     {
       sourceQuestionnaire,
       itemTypes,
+      itemPreferredTerminologyServers,
       tabs,
       currentTabIndex,
       variables,

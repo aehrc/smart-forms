@@ -14,9 +14,10 @@ The elements/extensions that fall under this category are:
 - [answerValueSet](http://hl7.org/fhir/uv/sdc/behavior.html#answerValueSet)
 - [answerExpression](http://hl7.org/fhir/uv/sdc/expressions.html#answerExpression)
 
-There is also another extension that can be used to define the unit of a quantity item:
+Other related extensions:
 
-- [unitOption](https://hl7.org/fhir/uv/sdc/behavior.html#unitOption)
+- [unitOption](https://hl7.org/fhir/uv/sdc/behavior.html#unitOption) - Provide selection choices for the unit of a quantity item
+- [preferredTerminologyServer](https://build.fhir.org/ig/HL7/sdc/StructureDefinition-sdc-questionnaire-preferredTerminologyServer.html) - Specify the preferred terminology server to use for terminology requests
 
 :::note
 
@@ -167,5 +168,16 @@ This can be used when the unit is not fixed, and allows the user to choose from 
 
 <IframeContainer
   storyId="component-itemtype-quantity--quantity-unit-option-response"
+  initialHeight={280}
+/>
+
+### PreferredTerminologyServer
+
+PreferredTerminologyServer is used to specify the preferred terminology server to use for terminology requests associated with the whole questionnaire or a particular group or question within the questionnaire (depending on where the extension appears).
+
+#### Basic usage
+
+<IframeContainer
+  storyId="component-sdc-other-extensions--preferred-terminology-server"
   initialHeight={280}
 />

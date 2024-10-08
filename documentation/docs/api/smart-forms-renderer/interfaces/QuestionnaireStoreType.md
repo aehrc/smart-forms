@@ -153,6 +153,14 @@ LinkId of the currently focused item
 
 ***
 
+### itemPreferredTerminologyServers
+
+> **itemPreferredTerminologyServers**: `Record`\<`string`, `string`\>
+
+Key-value pair of item types `Record<linkId, preferred terminology servers>`
+
+***
+
 ### itemTypes
 
 > **itemTypes**: `Record`\<`string`, `string`\>

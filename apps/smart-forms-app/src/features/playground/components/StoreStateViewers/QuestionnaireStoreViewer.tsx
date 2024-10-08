@@ -6,6 +6,7 @@ import GenericStatePropertyPicker from './GenericStatePropertyPicker.tsx';
 const questionnaireStoreStatePropertyNames: string[] = [
   'sourceQuestionnaire',
   'itemTypes',
+  'itemPreferredTerminologyServers',
   'tabs',
   'currentTabIndex',
   'variables',

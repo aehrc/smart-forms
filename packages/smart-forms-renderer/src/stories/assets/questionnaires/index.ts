@@ -40,3 +40,4 @@ export * from './QBehaviorValueConstraints';
 export * from './QItemControlDisplay';
 export * from './QItemControlGroup';
 export * from './QItemControlQuestion';
+export * from './QTerminologyControl';
