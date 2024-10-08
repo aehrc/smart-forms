@@ -6,6 +6,10 @@ This log documents significant changes for the [@aehrc/smart-forms-renderer](htt
 Changelog only includes changes from version 0.36.0 onwards.
 
 
+## [0.44.0] - 2024-10-09
+### Added
+- Added support for the [preferredTerminologyServer](https://hl7.org/fhir/uv/sdc/STU3/StructureDefinition-sdc-questionnaire-preferredTerminologyServer.html) SDC extension.
+
 ## [0.43.1] - 2024-10-04
 ### Changed
 - Completely removed persisting "iframe-resizer" dependencies as a follow-up to v0.43.0.
