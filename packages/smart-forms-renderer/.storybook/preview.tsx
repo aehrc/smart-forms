@@ -7,7 +7,7 @@ import '@fontsource/material-icons';
 import { withThemeFromJSXProvider } from '@storybook/addon-styling';
 import { createTheme } from '@mui/material/styles';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import './iframeResizerChild';
+import '../src/stories/storybookWrappers/iframeResizerChild.js';
 
 export const decorators = [
   withThemeFromJSXProvider({

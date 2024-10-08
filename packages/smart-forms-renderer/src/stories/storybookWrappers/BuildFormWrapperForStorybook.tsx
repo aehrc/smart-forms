@@ -25,6 +25,9 @@ import { useBuildForm } from '../../hooks';
 import useRendererQueryClient from '../../hooks/useRendererQueryClient';
 import { STORYBOOK_TERMINOLOGY_SERVER_URL } from './globals';
 
+// iframeResizerChild.js needs to be called at least once in the used storybook wrappers to be included in storybook-static
+import './iframeResizerChild';
+
 interface BuildFormWrapperForStorybookProps {
   questionnaire: Questionnaire;
   questionnaireResponse?: QuestionnaireResponse;
