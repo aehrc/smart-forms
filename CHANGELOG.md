@@ -6,6 +6,11 @@ This log documents significant changes for the [@aehrc/smart-forms-renderer](htt
 Changelog only includes changes from version 0.36.0 onwards.
 
 
+## [0.44.1] - 2024-10-14
+### Fixed
+- Fixed unexpected behaviour of open-choice's open label field clearing the answers of previously selected options.
+- Fixed an issue where enableWhen logic was not working properly with repeating items.
+
 ## [0.44.0] - 2024-10-09
 ### Added
 - Added support for the [preferredTerminologyServer](https://hl7.org/fhir/uv/sdc/STU3/StructureDefinition-sdc-questionnaire-preferredTerminologyServer.html) SDC extension.
