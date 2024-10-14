@@ -23,6 +23,7 @@ import {
   qEnableWhen,
   qEnableWhenExpressionSimple,
   qEnableWhenExpressionTabs,
+  qEnableWhenMultiCheckbox,
   qInitialRepeats,
   qInitialSingle,
   qText
@@ -56,6 +57,12 @@ export const InitialRepeats: Story = {
 export const EnableWhen: Story = {
   args: {
     questionnaire: qEnableWhen
+  }
+};
+
+export const EnableWhenMultiCheckbox: Story = {
+  args: {
+    questionnaire: qEnableWhenMultiCheckbox
   }
 };
 
