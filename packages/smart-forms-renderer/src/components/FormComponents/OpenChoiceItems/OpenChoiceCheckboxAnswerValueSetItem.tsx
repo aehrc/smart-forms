@@ -166,7 +166,7 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: OpenChoiceCheckboxAnswerVal
 
   return (
     <FullWidthFormComponentBox
-      data-test="q-item-open-choice-checkbox-answer-option-box"
+      data-test="q-item-open-choice-checkbox-answer-value-set-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
