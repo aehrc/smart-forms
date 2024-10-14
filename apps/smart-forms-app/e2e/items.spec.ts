@@ -266,3 +266,62 @@ test('enter inputs into OpenChoiceCheckboxAVS questionnaire', async ({ page }) =
   expect(isACTCheckedAgain).toBe(true);
   expect(isQueenslandCheckedAgain).toBe(true);
 });
+
+test('enableWhen multi-checkbox (also for repeating items)', async ({ page }) => {
+  // Select EnableWhenMultiCheckbox questionnaire
+  await page
+    .getByTestId('questionnaire-picker-playground')
+    .locator('input')
+    .fill('EnableWhenMultiCheckbox');
+  await page.keyboard.press('Enter');
+  await expect(page.getByTestId('questionnaire-details-playground')).toContainText(
+    'EnableWhen Multi-select Checkbox'
+  );
+  await expect(page.getByTestId('questionnaire-details-playground')).toContainText(
+    'https://smartforms.csiro.au/docs/behavior/other/enable-when-multi-checkbox'
+  );
+
+  // Build OpenChoiceCheckboxAVS questionnaire
+  await page.getByTestId('picker-build-form-button-playground').click();
+  await expect(page.getByText('"resourceType": "Questionnaire"')).toBeInViewport();
+  await expect(page.getByText('"id": "EnableWhenMultiCheckbox"')).toBeInViewport();
+
+  const openChoiceCheckboxLinkId = 'select-conditions-list';
+
+  // Check on a single option, then check for displayed enableWhen display question
+  await page
+    .locator(
+      `div[data-test="q-item-open-choice-checkbox-answer-option-box"][data-linkid="${openChoiceCheckboxLinkId}"]`
+    )
+    .locator('label:has-text("Condition A (Displays Clinical guidance: Condition A question)")')
+    .check();
+
+  await expect(page.getByTestId('q-item-display-box')).toContainText(
+    'Clinical guidance: Condition A'
+  );
+
+  // Check on options A. B. C, then check for all displayed enableWhen display questions
+  await page
+    .locator(
+      `div[data-test="q-item-open-choice-checkbox-answer-option-box"][data-linkid="${openChoiceCheckboxLinkId}"]`
+    )
+    .locator('label:has-text("Condition B (Displays Clinical guidance: Condition B question)")')
+    .check();
+
+  await page
+    .locator(
+      `div[data-test="q-item-open-choice-checkbox-answer-option-box"][data-linkid="${openChoiceCheckboxLinkId}"]`
+    )
+    .locator('label:has-text("Condition C (Displays Clinical guidance: Condition C question)")')
+    .check();
+
+  await expect(page.getByTestId('q-item-display-box').first()).toContainText(
+    'Clinical guidance: Condition A'
+  );
+  await expect(page.getByTestId('q-item-display-box').nth(1)).toContainText(
+    'Clinical guidance: Condition B'
+  );
+  await expect(page.getByTestId('q-item-display-box').nth(2)).toContainText(
+    'Clinical guidance: Condition C'
+  );
+});
