@@ -339,19 +339,29 @@ export function checkItemIsEnabledSingle(
 ): boolean {
   const checkedIsEnabledItems: boolean[] = [];
 
+  // Check if linked item satisfies enableWhen condition
   for (const linkedItem of enableWhenItemProperties.linked) {
+    let isEnabledForThisLinkedItem = false;
+
+    // Linked item has answers
     if (linkedItem.answer && linkedItem.answer.length > 0) {
+      // Check if linked answer within item satisfies enableWhen condition
+      // Exit early once a linked answer is found to satisfy the condition
       for (const answer of linkedItem.answer) {
-        const isEnabledForThisLinkedItem = isEnabledAnswerTypeSwitcher(
+        const isEnabledForThisLinkedAnswer = isEnabledAnswerTypeSwitcher(
           linkedItem.enableWhen,
           answer
         );
 
-        // In a repeat item, if at least one answer satisfies the condition, the item is enabled
-        // FIXME need to look further at this
-        checkedIsEnabledItems.push(isEnabledForThisLinkedItem);
-        break;
+        if (isEnabledForThisLinkedAnswer) {
+          isEnabledForThisLinkedItem = true;
+          break;
+        }
       }
+
+      // Push result of the linked item to the checkedIsEnabledItems array
+      checkedIsEnabledItems.push(isEnabledForThisLinkedItem);
+
       continue;
     }
 

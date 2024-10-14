@@ -24,6 +24,7 @@ import type {
 import { OpenChoiceItemControl } from '../interfaces/choice.enum';
 import { isSpecificItemControl } from './itemControl';
 import isEqual from 'lodash.isequal';
+import differenceWith from 'lodash.differencewith';
 
 /**
  * Update open choice answer based on open label value
@@ -121,10 +122,15 @@ export function getOldOpenLabelAnswer(
   answers: QuestionnaireResponseItemAnswer[],
   options: QuestionnaireItemAnswerOption[]
 ): QuestionnaireResponseItemAnswer | null {
-  const openLabelAnswer = answers.find(
-    (answer) => !options.some((option) => isEqual(option, answer))
-  );
-  return openLabelAnswer ?? null;
+  const answersWithoutId = answers.map((answer) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, ...rest } = answer;
+    return rest as QuestionnaireResponseItemAnswer;
+  });
+
+  const outliers = differenceWith(answersWithoutId, options, isEqual);
+
+  return outliers?.[0] ?? null;
 }
 
 /**

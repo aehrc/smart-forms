@@ -315,6 +315,98 @@ export const qEnableWhen: Questionnaire = {
   ]
 };
 
+export const qEnableWhenMultiCheckbox: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'EnableWhenMultiCheckbox',
+  name: 'EnableWhenMultiCheckbox',
+  title: 'EnableWhen Multi-select Checkbox',
+  version: '0.1.0',
+  status: 'draft',
+  date: '2024-05-01',
+  url: 'https://smartforms.csiro.au/docs/behavior/other/enable-when-multi-checkbox',
+  item: [
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: 'http://hl7.org/fhir/questionnaire-item-control',
+                code: 'check-box'
+              }
+            ]
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-openLabel',
+          valueString: 'Other, please specify'
+        }
+      ],
+      linkId: 'select-conditions-list',
+      text: 'Select one or more conditions',
+      type: 'open-choice',
+      repeats: true,
+      answerOption: [
+        {
+          valueString: 'Condition A (Displays Clinical guidance: Condition A question)'
+        },
+        {
+          valueString: 'Condition B (Displays Clinical guidance: Condition B question)'
+        },
+        {
+          valueString: 'Condition C (Displays Clinical guidance: Condition C question)'
+        },
+        {
+          valueString: 'Condition D'
+        },
+        {
+          valueString: 'Condition E'
+        },
+        {
+          valueString: 'Condition F'
+        }
+      ]
+    },
+    {
+      linkId: 'clinical-guidance-a',
+      text: 'Clinical guidance: Condition A',
+      type: 'display',
+      enableWhen: [
+        {
+          question: 'select-conditions-list',
+          operator: '=',
+          answerString: 'Condition A (Displays Clinical guidance: Condition A question)'
+        }
+      ]
+    },
+    {
+      linkId: 'clinical-guidance-b',
+      text: 'Clinical guidance: Condition B',
+      type: 'display',
+      enableWhen: [
+        {
+          question: 'select-conditions-list',
+          operator: '=',
+          answerString: 'Condition B (Displays Clinical guidance: Condition B question)'
+        }
+      ]
+    },
+    {
+      linkId: 'clinical-guidance-c',
+      text: 'Clinical guidance: Condition C',
+      type: 'display',
+      enableWhen: [
+        {
+          question: 'select-conditions-list',
+          operator: '=',
+          answerString: 'Condition C (Displays Clinical guidance: Condition C question)'
+        }
+      ]
+    }
+  ]
+};
+
 export const qEnableBehaviorAll: Questionnaire = {
   resourceType: 'Questionnaire',
   id: 'EnableBehaviorAll',
