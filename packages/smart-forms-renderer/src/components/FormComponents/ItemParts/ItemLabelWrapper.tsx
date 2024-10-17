@@ -24,7 +24,7 @@ import ItemLabelText from './ItemLabelText';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
-import Iconify from '../../Iconify/Iconify';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 interface LabelWrapperProps {
   qItem: QuestionnaireItem;
@@ -55,19 +55,21 @@ function ItemLabelWrapper(props: LabelWrapperProps) {
           }
         }}>
         <span>
-          <Box display="flex" columnGap={0.4} justifyContent="space-between" alignItems="center">
+          <Box position="relative">
             {required ? (
-              <Typography color="red" sx={{ ml: -1.15 }}>
+              <Typography
+                color="red"
+                sx={{ position: 'absolute', top: 0, left: -8 }} // Adjust top and left values as needed
+              >
                 *
               </Typography>
             ) : null}
-            <ItemLabelText qItem={qItem} readOnly={readOnly} />
-            {displayFlyover !== '' ? (
-              <Iconify
-                icon="mdi:information-outline"
-                sx={{ height: 16, width: 16, mt: 0.25, ml: 0.25, color: 'text.secondary' }}
-              />
-            ) : null}
+            <Box display="flex" columnGap={0.5} justifyContent="space-between" alignItems="center">
+              <ItemLabelText qItem={qItem} readOnly={readOnly} />
+              {displayFlyover !== '' ? (
+                <InfoOutlinedIcon sx={{ color: 'text.secondary' }} fontSize="small" />
+              ) : null}
+            </Box>
           </Box>
         </span>
       </Tooltip>

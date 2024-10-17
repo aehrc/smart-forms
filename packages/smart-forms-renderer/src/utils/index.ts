@@ -23,6 +23,8 @@ export {
   removeInternalIdsFromResponse
 } from './manageForm';
 export { initialiseQuestionnaireResponse } from './initialise';
+export { createEmptyQrItem } from './qrItem';
+
 export { isSpecificItemControl } from './itemControl';
 export { isRepeatItemAndNotCheckbox } from './qItem';
 export type { ItemToRepopulate } from './repopulateItems';

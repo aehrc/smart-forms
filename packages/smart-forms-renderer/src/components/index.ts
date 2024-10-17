@@ -23,5 +23,10 @@ export {
   RepeatGroup,
   GroupTable,
   GridGroup,
-  parseFhirDateToDisplayDate
+  parseFhirDateToDisplayDate,
+  ItemFieldGrid,
+  StringField
 } from './FormComponents';
+
+// Styled MUI components
+export { FullWidthFormComponentBox } from './Box.styles';

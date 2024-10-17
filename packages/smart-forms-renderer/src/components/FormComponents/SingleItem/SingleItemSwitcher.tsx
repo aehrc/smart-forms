@@ -41,6 +41,7 @@ import IntegerItem from '../IntegerItem/IntegerItem';
 import AttachmentItem from '../AttachmentItem/AttachmentItem';
 import CustomDateTimeItem from '../DateTimeItems/CustomDateTimeItem/CustomDateTimeItem';
 import QuantityItem from '../QuantityItem/QuantityItem';
+import { useQuestionnaireStore } from '../../../stores';
 
 interface SingleItemSwitcherProps
   extends PropsWithQrItemChangeHandler,
@@ -56,6 +57,25 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
   const { qItem, qrItem, isRepeated, isTabled, showMinimalView, parentIsReadOnly, onQrItemChange } =
     props;
 
+  const customComponents = useQuestionnaireStore.use.customComponents();
+  const CustomComponent = customComponents[qItem.linkId];
+
+  // If a custom component is defined for this item, render it
+  // Don't get too strict with the checks for now
+  if (CustomComponent && typeof CustomComponent === 'function') {
+    return (
+      <CustomComponent
+        qItem={qItem}
+        qrItem={qrItem}
+        isRepeated={isRepeated}
+        isTabled={isTabled}
+        parentIsReadOnly={parentIsReadOnly}
+        onQrItemChange={onQrItemChange}
+      />
+    );
+  }
+
+  // Otherwise, render the default form component based on the item type
   switch (qItem.type) {
     case 'display':
       return <DisplayItem qItem={qItem} />;

@@ -15,9 +15,10 @@
  * limitations under the License.
  */
 
-import { useLayoutEffect, useState } from 'react';
+import { ComponentType, useLayoutEffect, useState } from 'react';
 import { buildForm } from '../utils';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import { RendererStyling, useRendererStylingStore } from '../stores/rendererStylingStore';
 
 /**
  * React hook wrapping around the buildForm() function to build a form from a questionnaire and an optional QuestionnaireResponse.
@@ -28,6 +29,8 @@ import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
  * @param readOnly - Applies read-only mode to all items in the form view
  * @param terminologyServerUrl - Terminology server url to fetch terminology. If not provided, the default terminology server will be used. (optional)
  * @param additionalVariables - Additional key-value pair of SDC variables `Record<name, variable extension>` for testing (optional)
+ * @param rendererStyling - Renderer styling to be applied to the form. See docs for styling options. (optional)
+ * @param customComponents - FIXME add comment
  *
  * @author Sean Fong
  */
@@ -36,17 +39,27 @@ function useBuildForm(
   questionnaireResponse?: QuestionnaireResponse,
   readOnly?: boolean,
   terminologyServerUrl?: string,
-  additionalVariables?: Record<string, object>
+  additionalVariables?: Record<string, object>,
+  rendererStyling?: RendererStyling,
+  customComponents?: Record<string, ComponentType<any>>
 ) {
   const [isBuilding, setIsBuilding] = useState(true);
 
+  const setRendererStyling = useRendererStylingStore.use.setRendererStyling();
+
   useLayoutEffect(() => {
+    // Set optional renderer styling
+    if (rendererStyling) {
+      setRendererStyling(rendererStyling);
+    }
+
     buildForm(
       questionnaire,
       questionnaireResponse,
       readOnly,
       terminologyServerUrl,
-      additionalVariables
+      additionalVariables,
+      customComponents
     ).then(() => {
       setIsBuilding(false);
     });

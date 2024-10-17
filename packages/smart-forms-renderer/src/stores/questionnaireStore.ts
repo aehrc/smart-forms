@@ -48,6 +48,8 @@ import { questionnaireResponseStore } from './questionnaireResponseStore';
 import { createQuestionnaireResponseItemMap } from '../utils/questionnaireResponseStoreUtils/updatableResponseItems';
 import { insertCompleteAnswerOptionsIntoQuestionnaire } from '../utils/questionnaireStoreUtils/insertAnswerOptions';
 import type { InitialExpression } from '../interfaces/initialExpression.interface';
+import React from 'react';
+import { CustomComponentProps } from '../interfaces/customComponent.interface';
 
 /**
  * QuestionnaireStore properties and methods
@@ -116,6 +118,7 @@ export interface QuestionnaireStoreType {
   cachedValueSetCodings: Record<string, Coding[]>;
   fhirPathContext: Record<string, any>;
   populatedContext: Record<string, any>;
+  customComponents: Record<string, React.ComponentType<CustomComponentProps>>;
   focusedLinkId: string;
   readOnly: boolean;
   buildSourceQuestionnaire: (
@@ -123,7 +126,8 @@ export interface QuestionnaireStoreType {
     questionnaireResponse?: QuestionnaireResponse,
     additionalVariables?: Record<string, object>,
     terminologyServerUrl?: string,
-    readOnly?: boolean
+    readOnly?: boolean,
+    customComponents?: Record<string, React.ComponentType<any>>
   ) => Promise<void>;
   destroySourceQuestionnaire: () => void;
   switchTab: (newTabIndex: number) => void;
@@ -182,6 +186,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   cachedValueSetCodings: {},
   fhirPathContext: {},
   populatedContext: {},
+  customComponents: {},
   focusedLinkId: '',
   readOnly: false,
   buildSourceQuestionnaire: async (
@@ -189,7 +194,8 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     questionnaireResponse = structuredClone(emptyResponse),
     additionalVariables = {},
     terminologyServerUrl = terminologyServerStore.getState().url,
-    readOnly = false
+    readOnly = false,
+    customComponents = {}
   ) => {
     const questionnaireModel = await createQuestionnaireModel(
       questionnaire,
@@ -242,6 +248,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       processedValueSetCodings: questionnaireModel.processedValueSetCodings,
       processedValueSetUrls: questionnaireModel.processedValueSetUrls,
       fhirPathContext: updatedFhirPathContext,
+      customComponents: customComponents,
       readOnly: readOnly
     });
   },
@@ -264,7 +271,8 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       answerExpressions: {},
       processedValueSetCodings: {},
       processedValueSetUrls: {},
-      fhirPathContext: {}
+      fhirPathContext: {},
+      customComponents: {}
     }),
   switchTab: (newTabIndex: number) => set(() => ({ currentTabIndex: newTabIndex })),
   switchPage: (newPageIndex: number) => set(() => ({ currentPageIndex: newPageIndex })),

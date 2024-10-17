@@ -15,8 +15,13 @@
  * limitations under the License.
  */
 
-export type { Tab, Tabs } from './tab.interface';
-export type { Variables, VariableXFhirQuery } from './variables.interface';
-export type { LaunchContext } from './populate.interface';
-export type { EnableWhenItems, EnableWhenExpressions } from './enableWhen.interface';
-export type { CustomComponentProps } from './customComponent.interface';
+import { QuestionnaireItem, type QuestionnaireResponseItem } from 'fhir/r4';
+
+export interface CustomComponentProps {
+  qItem: QuestionnaireItem;
+  qrItem: QuestionnaireResponseItem | null;
+  isRepeated: boolean;
+  isTabled: boolean;
+  parentIsReadOnly?: boolean;
+  onQrItemChange: (qrItem: QuestionnaireResponseItem) => unknown;
+}

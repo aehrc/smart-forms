@@ -11,6 +11,7 @@ import { readEncounter, readPatient, readUser } from '../api/smartClient';
 import type Client from 'fhirclient/lib/Client';
 import { updateQuestionnaireResponse } from './genericRecursive';
 import { removeInternalRepeatIdsRecursive } from './removeRepeatId';
+import { ComponentType } from 'react';
 
 /**
  * Build the form with an initial Questionnaire and an optional filled QuestionnaireResponse.
@@ -22,6 +23,7 @@ import { removeInternalRepeatIdsRecursive } from './removeRepeatId';
  * @param readOnly - Applies read-only mode to all items in the form view
  * @param terminologyServerUrl - Terminology server url to fetch terminology. If not provided, the default terminology server will be used. (optional)
  * @param additionalVariables - Additional key-value pair of SDC variables `Record<name, variable extension>` for testing (optional)
+ * @param customComponents - FIXME add comment
  *
  * @author Sean Fong
  */
@@ -30,7 +32,8 @@ export async function buildForm(
   questionnaireResponse?: QuestionnaireResponse,
   readOnly?: boolean,
   terminologyServerUrl?: string,
-  additionalVariables?: Record<string, object>
+  additionalVariables?: Record<string, object>,
+  customComponents?: Record<string, ComponentType<any>>
 ): Promise<void> {
   // Reset terminology server
   if (terminologyServerUrl) {
@@ -42,7 +45,14 @@ export async function buildForm(
   // QR is set to undefined here to prevent it from being initialised twice. This is defined like that for backward compatibility purposes.
   await questionnaireStore
     .getState()
-    .buildSourceQuestionnaire(questionnaire, undefined, additionalVariables, terminologyServerUrl);
+    .buildSourceQuestionnaire(
+      questionnaire,
+      undefined,
+      additionalVariables,
+      terminologyServerUrl,
+      undefined,
+      customComponents
+    );
 
   const initialisedQuestionnaireResponse = initialiseQuestionnaireResponse(
     questionnaire,

@@ -21,3 +21,7 @@ export { RepeatGroup } from './RepeatGroup';
 export { GroupTable } from './Tables';
 export { GridGroup } from './GridGroup';
 export { parseFhirDateToDisplayDate } from './DateTimeItems';
+export { ItemFieldGrid } from './ItemParts';
+
+// item type components
+export { StringField } from './StringItem';

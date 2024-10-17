@@ -1,5 +1,12 @@
 // interface exports
-export type { Tab, Tabs, Variables, VariableXFhirQuery, LaunchContext } from './interfaces';
+export type {
+  Tab,
+  Tabs,
+  Variables,
+  VariableXFhirQuery,
+  LaunchContext,
+  CustomComponentProps
+} from './interfaces';
 
 // component exports
 export type { SmartFormsRendererProps } from './components';
@@ -11,7 +18,10 @@ export {
   RepeatGroup,
   GroupTable,
   GridGroup,
-  parseFhirDateToDisplayDate
+  parseFhirDateToDisplayDate,
+  ItemFieldGrid,
+  StringField,
+  FullWidthFormComponentBox
 } from './components';
 
 // state management store exports
@@ -33,7 +43,15 @@ export {
 } from './stores';
 
 // hooks exports
-export { useHidden, useBuildForm, useRendererQueryClient } from './hooks';
+export {
+  useHidden,
+  useReadOnly,
+  useBuildForm,
+  useRendererQueryClient,
+  useRenderingExtensions,
+  useValidationFeedback,
+  useStringCalculatedExpression
+} from './hooks';
 
 // utils exports
 export type { ItemToRepopulate } from './utils';
@@ -43,6 +61,7 @@ export {
   getResponse,
   removeEmptyAnswersFromResponse,
   removeInternalIdsFromResponse,
+  createEmptyQrItem,
   isSpecificItemControl,
   isRepeatItemAndNotCheckbox,
   initialiseQuestionnaireResponse,

@@ -25,6 +25,7 @@ import Typography from '@mui/material/Typography';
 import useDisplayCqfAndCalculatedExpression from '../../../hooks/useDisplayCqfAndCalculatedExpression';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 import { default as styleParse } from 'style-to-js';
+import { useRendererStylingStore } from '../../../stores/rendererStylingStore';
 
 interface ItemLabelTextProps {
   qItem: QuestionnaireItem;
@@ -33,6 +34,8 @@ interface ItemLabelTextProps {
 
 const ItemLabelText = memo(function ItemLabelText(props: ItemLabelTextProps) {
   const { qItem, readOnly } = props;
+
+  const itemLabelFontWeight = useRendererStylingStore.use.itemLabelFontWeight();
 
   let labelText = qItem.text ?? '';
 
@@ -74,9 +77,14 @@ const ItemLabelText = memo(function ItemLabelText(props: ItemLabelTextProps) {
     return <>{labelText}</>;
   }
 
+  const textFontWeight = itemLabelFontWeight != 'default' ? itemLabelFontWeight : 'normal';
+
   // parse regular text
   return (
-    <Typography color={readOnly ? 'text.disabled' : 'text.primary'} sx={{ mt: 0.25 }}>
+    <Typography
+      color={readOnly ? 'text.disabled' : 'text.primary'}
+      fontWeight={itemLabelFontWeight ? itemLabelFontWeight : 'normal'}
+      sx={{ mt: 0.25 }}>
       {labelText}
     </Typography>
   );
