@@ -45,8 +45,6 @@ export function getFirstVisiblePage(
 export function everyIsPages(topLevelQItem: QuestionnaireItem[] | undefined): boolean {
   if (!topLevelQItem) return false;
 
-  if (isPageContainer(topLevelQItem)) return false;
-
   return topLevelQItem.every((i: QuestionnaireItem) => isPage(i));
 }
 
@@ -87,16 +85,11 @@ export function isPage(item: QuestionnaireItem) {
  *
  * @author Riza Nafis
  */
-export function constructPagesWithProperties(
-  qItems: QuestionnaireItem[] | undefined,
-  hasPageContainer: boolean
-): Pages {
+export function constructPagesWithProperties(qItems: QuestionnaireItem[] | undefined): Pages {
   if (!qItems) return {};
 
-  const qItemPages = hasPageContainer ? qItems : qItems.filter(isPage);
-
   const pages: Pages = {};
-  for (const [i, qItem] of qItemPages.entries()) {
+  for (const [i, qItem] of qItems.entries()) {
     pages[qItem.linkId] = {
       pageIndex: i,
       isComplete: false,
@@ -106,7 +99,7 @@ export function constructPagesWithProperties(
   return pages;
 }
 
-interface contructPagesWithVisibilityParams {
+interface constructPagesWithVisibilityParams {
   pages: Pages;
   enableWhenIsActivated: boolean;
   enableWhenItems: EnableWhenItems;
@@ -114,7 +107,7 @@ interface contructPagesWithVisibilityParams {
 }
 
 export function constructPagesWithVisibility(
-  params: contructPagesWithVisibilityParams
+  params: constructPagesWithVisibilityParams
 ): { linkId: string; isVisible: boolean }[] {
   const { pages, enableWhenIsActivated, enableWhenItems, enableWhenExpressions } = params;
 

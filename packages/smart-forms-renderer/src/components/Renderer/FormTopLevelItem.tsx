@@ -18,9 +18,7 @@
 import React from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import FormBodyTabbed from './FormBodyTabbed';
-import FormBodyPage from './FormBodyPage';
 import { containsTabs, isTabContainer } from '../../utils/tabs';
-import { containsPages, isPage } from '../../utils/page';
 import GroupItem from '../FormComponents/GroupItem/GroupItem';
 import SingleItem from '../FormComponents/SingleItem/SingleItem';
 import type {
@@ -58,9 +56,6 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
 
   const itemIsTabContainer = isTabContainer(topLevelQItem);
   const itemContainsTabs = containsTabs(topLevelQItem);
-
-  const itemIsPageContainer = isPage(topLevelQItem);
-  const itemContainsPages = containsPages(topLevelQItem);
 
   const isTablet = useResponsive('up', 'md');
 
@@ -106,18 +101,6 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
 
     return (
       <FormBodyCollapsible
-        key={topLevelQItem.linkId}
-        topLevelQItem={topLevelQItem}
-        topLevelQRItem={topLevelQRItem}
-        parentIsReadOnly={readOnly}
-        onQrItemChange={onQrItemChange}
-      />
-    );
-  }
-
-  if (itemContainsPages || itemIsPageContainer) {
-    return (
-      <FormBodyPage
         key={topLevelQItem.linkId}
         topLevelQItem={topLevelQItem}
         topLevelQRItem={topLevelQRItem}

@@ -30,6 +30,8 @@ export interface RendererStyling {
     | '800'
     | '900'
     | 'default';
+  disablePageCardView?: boolean;
+  disablePageButtons?: boolean;
 }
 
 /**
@@ -49,6 +51,8 @@ export interface RendererStylingStoreType {
     | '800'
     | '900'
     | 'default';
+  disablePageCardView: boolean;
+  disablePageButtons: boolean;
   setRendererStyling: (params: RendererStyling) => void;
 }
 
@@ -57,9 +61,13 @@ export interface RendererStylingStoreType {
  */
 export const rendererStylingStore = createStore<RendererStylingStoreType>()((set) => ({
   itemLabelFontWeight: 'default',
+  disablePageCardView: false,
+  disablePageButtons: false,
   setRendererStyling: (params: RendererStyling) => {
     set(() => ({
-      itemLabelFontWeight: params.itemLabelFontWeight ?? 'default'
+      itemLabelFontWeight: params.itemLabelFontWeight ?? 'default',
+      disablePageCardView: params.disablePageCardView ?? false,
+      disablePageButtons: params.disablePageButtons ?? false
     }));
   }
 }));

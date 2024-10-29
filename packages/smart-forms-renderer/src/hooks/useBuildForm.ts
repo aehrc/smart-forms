@@ -15,10 +15,12 @@
  * limitations under the License.
  */
 
-import { ComponentType, useLayoutEffect, useState } from 'react';
+import type { ComponentType } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { buildForm } from '../utils';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-import { RendererStyling, useRendererStylingStore } from '../stores/rendererStylingStore';
+import type { RendererStyling } from '../stores/rendererStylingStore';
+import { useRendererStylingStore } from '../stores/rendererStylingStore';
 
 /**
  * React hook wrapping around the buildForm() function to build a form from a questionnaire and an optional QuestionnaireResponse.
@@ -29,7 +31,7 @@ import { RendererStyling, useRendererStylingStore } from '../stores/rendererStyl
  * @param readOnly - Applies read-only mode to all items in the form view
  * @param terminologyServerUrl - Terminology server url to fetch terminology. If not provided, the default terminology server will be used. (optional)
  * @param additionalVariables - Additional key-value pair of SDC variables `Record<name, variable extension>` for testing (optional)
- * @param rendererStyling - Renderer styling to be applied to the form. See docs for styling options. (optional)
+ * @param rendererStylingOptions - Renderer styling to be applied to the form. See docs for styling options. (optional)
  * @param customComponents - FIXME add comment
  *
  * @author Sean Fong
@@ -40,7 +42,7 @@ function useBuildForm(
   readOnly?: boolean,
   terminologyServerUrl?: string,
   additionalVariables?: Record<string, object>,
-  rendererStyling?: RendererStyling,
+  rendererStylingOptions?: RendererStyling,
   customComponents?: Record<string, ComponentType<any>>
 ) {
   const [isBuilding, setIsBuilding] = useState(true);
@@ -49,8 +51,8 @@ function useBuildForm(
 
   useLayoutEffect(() => {
     // Set optional renderer styling
-    if (rendererStyling) {
-      setRendererStyling(rendererStyling);
+    if (rendererStylingOptions) {
+      setRendererStyling(rendererStylingOptions);
     }
 
     buildForm(
@@ -63,7 +65,16 @@ function useBuildForm(
     ).then(() => {
       setIsBuilding(false);
     });
-  }, [additionalVariables, questionnaire, questionnaireResponse, readOnly, terminologyServerUrl]);
+  }, [
+    customComponents,
+    questionnaire,
+    questionnaireResponse,
+    readOnly,
+    rendererStylingOptions,
+    setRendererStyling,
+    terminologyServerUrl,
+    additionalVariables
+  ]);
 
   return isBuilding;
 }

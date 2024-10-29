@@ -48,8 +48,8 @@ import { questionnaireResponseStore } from './questionnaireResponseStore';
 import { createQuestionnaireResponseItemMap } from '../utils/questionnaireResponseStoreUtils/updatableResponseItems';
 import { insertCompleteAnswerOptionsIntoQuestionnaire } from '../utils/questionnaireStoreUtils/insertAnswerOptions';
 import type { InitialExpression } from '../interfaces/initialExpression.interface';
-import React from 'react';
-import { CustomComponentProps } from '../interfaces/customComponent.interface';
+import type { CustomComponentProps } from '../interfaces';
+import type { ComponentType } from 'react';
 
 /**
  * QuestionnaireStore properties and methods
@@ -118,7 +118,7 @@ export interface QuestionnaireStoreType {
   cachedValueSetCodings: Record<string, Coding[]>;
   fhirPathContext: Record<string, any>;
   populatedContext: Record<string, any>;
-  customComponents: Record<string, React.ComponentType<CustomComponentProps>>;
+  customComponents: Record<string, ComponentType<CustomComponentProps>>;
   focusedLinkId: string;
   readOnly: boolean;
   buildSourceQuestionnaire: (
@@ -127,7 +127,7 @@ export interface QuestionnaireStoreType {
     additionalVariables?: Record<string, object>,
     terminologyServerUrl?: string,
     readOnly?: boolean,
-    customComponents?: Record<string, React.ComponentType<any>>
+    customComponents?: Record<string, ComponentType<any>>
   ) => Promise<void>;
   destroySourceQuestionnaire: () => void;
   switchTab: (newTabIndex: number) => void;

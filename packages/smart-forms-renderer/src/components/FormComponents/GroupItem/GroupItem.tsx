@@ -39,6 +39,7 @@ interface GroupItemProps
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
   groupCardElevation: number;
+  disableCardView?: boolean;
   tabIsMarkedAsComplete?: boolean;
   tabs?: Tabs;
   currentTabIndex?: number;
@@ -53,6 +54,7 @@ function GroupItem(props: GroupItemProps) {
     qrItem,
     isRepeated,
     groupCardElevation,
+    disableCardView,
     tabIsMarkedAsComplete,
     tabs,
     currentTabIndex,
@@ -103,6 +105,7 @@ function GroupItem(props: GroupItemProps) {
       qrItemsByIndex={qrItemsByIndex}
       isRepeated={isRepeated}
       groupCardElevation={groupCardElevation}
+      disableCardView={disableCardView}
       tabIsMarkedAsComplete={tabIsMarkedAsComplete}
       tabs={tabs}
       currentTabIndex={currentTabIndex}

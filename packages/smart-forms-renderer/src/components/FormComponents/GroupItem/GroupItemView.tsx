@@ -50,6 +50,7 @@ interface GroupItemViewProps
   childQItems: QuestionnaireItem[];
   qrItemsByIndex: (QuestionnaireResponseItem | QuestionnaireResponseItem[] | undefined)[];
   groupCardElevation: number;
+  disableCardView?: boolean;
   tabIsMarkedAsComplete?: boolean;
   tabs?: Tabs;
   currentTabIndex?: number;
@@ -65,6 +66,7 @@ function GroupItemView(props: GroupItemViewProps) {
     qrItemsByIndex,
     isRepeated,
     groupCardElevation,
+    disableCardView,
     tabIsMarkedAsComplete,
     tabs,
     currentTabIndex,
@@ -130,6 +132,37 @@ function GroupItemView(props: GroupItemViewProps) {
           </>
         </AccordionDetails>
       </GroupAccordion>
+    );
+  }
+
+  // Disable card view - currently only available via disablePageCardView API
+  if (disableCardView) {
+    return (
+      <QGroupContainerBox
+        cardElevation={groupCardElevation}
+        isRepeated={isRepeated}
+        data-test="q-item-group-box">
+        {childQItems.map((qItem: QuestionnaireItem, i) => {
+          const qrItemOrItems = qrItemsByIndex[i];
+
+          return (
+            <GroupItemSwitcher
+              key={qItem.linkId}
+              qItem={qItem}
+              qrItemOrItems={qrItemOrItems}
+              groupCardElevation={groupCardElevation}
+              parentIsReadOnly={readOnly}
+              parentIsRepeatGroup={parentIsRepeatGroup}
+              parentRepeatGroupIndex={parentRepeatGroupIndex}
+              onQrItemChange={onQrItemChange}
+              onQrRepeatGroupChange={onQrRepeatGroupChange}
+            />
+          );
+        })}
+        {/* Next tab button at the end of each tab group */}
+        <TabButtonsWrapper currentTabIndex={currentTabIndex} tabs={tabs} />
+        <PageButtonsWrapper currentPageIndex={currentPageIndex} pages={pages} />
+      </QGroupContainerBox>
     );
   }
 

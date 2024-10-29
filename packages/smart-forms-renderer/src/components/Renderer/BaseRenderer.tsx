@@ -22,9 +22,9 @@ import type { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '../../stores';
 import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';
 import { updateQrItemsInGroup } from '../../utils/qrItem';
-import { everyIsPages } from '../../utils/page';
+import { isPage } from '../../utils/page';
 import type { QrRepeatGroup } from '../../interfaces/repeatGroup.interface';
-import FormTopLevelPage from './FormTopLevelPage';
+import FormBodyPaginated from './FormBodyPaginated';
 import { Container } from '@mui/material';
 
 /**
@@ -76,13 +76,13 @@ function BaseRenderer() {
   // If an item has multiple answers, it is a repeat group
   const topLevelQRItemsByIndex = getQrItemsIndex(topLevelQItems, topLevelQRItems, qItemsIndexMap);
 
-  const everyItemIsPage = everyIsPages(topLevelQItems);
+  const formIsPaginated = topLevelQItems.some((i) => isPage(i));
 
-  if (everyItemIsPage) {
+  if (formIsPaginated) {
     return (
       <Fade in={true} timeout={500}>
         <Container disableGutters maxWidth="xl" key={responseKey}>
-          <FormTopLevelPage
+          <FormBodyPaginated
             topLevelQItems={topLevelQItems}
             topLevelQRItems={topLevelQRItemsByIndex}
             parentIsReadOnly={readOnly}
