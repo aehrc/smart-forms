@@ -96,13 +96,13 @@ function GroupItemView(props: GroupItemViewProps) {
     return { ...parentStyles, ...xhtmlStyles };
   }, [parentStyles, xhtmlStyles]);
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const readOnly = useReadOnly(qItem, parentIsReadOnly, parentRepeatGroupIndex);
 
-  // Group with collapsible attribute
-  const isCollapsible = getGroupCollapsible(qItem);
-  const isDefaultOpen = isCollapsible ? undefined : true;
-
-  if (isCollapsible) {
+  // Render collapsible group item
+  // If group item is a repeating instance, do not render group item as collapsible
+  const groupCollapsibleValue = getGroupCollapsible(qItem);
+  if (groupCollapsibleValue && !isRepeated) {
+    const isDefaultOpen = groupCollapsibleValue === 'default-open';
     return (
       <GroupAccordion
         disableGutters
