@@ -48,7 +48,7 @@ import { questionnaireResponseStore } from './questionnaireResponseStore';
 import { createQuestionnaireResponseItemMap } from '../utils/questionnaireResponseStoreUtils/updatableResponseItems';
 import { insertCompleteAnswerOptionsIntoQuestionnaire } from '../utils/questionnaireStoreUtils/insertAnswerOptions';
 import type { InitialExpression } from '../interfaces/initialExpression.interface';
-import type { CustomComponentProps } from '../interfaces';
+import type { QItemOverrideComponentProps, SdcUiOverrideComponentProps } from '../interfaces';
 import type { ComponentType } from 'react';
 
 /**
@@ -76,6 +76,8 @@ import type { ComponentType } from 'react';
  * @property cachedValueSetCodings - Key-value pair of cached value set codings `Record<valueSetUrl, codings>`
  * @property fhirPathContext - Key-value pair of evaluated FHIRPath values `Record<variable name, evaluated value(s)>`
  * @property populatedContext - Key-value pair of one-off pre-populated FHIRPath values `Record<variable/launchContext/sourceQueries batch name, evaluated value(s)>`
+ * @property qItemOverrideComponents - Key-value pair of React component overrides for Questionnaire Items via linkId `Record<linkId, React component>`
+ * @property sdcUiOverrideComponents - Key-value pair of React component overrides for SDC UI Controls https://hl7.org/fhir/extensions/ValueSet-questionnaire-item-control.html `Record<SDC UI code, React component>`
  * @property focusedLinkId - LinkId of the currently focused item
  * @property readOnly - Flag to set the form to read-only mode
  * @property buildSourceQuestionnaire - Used to build the source questionnaire with the provided questionnaire and optionally questionnaire response, additional variables, terminology server url and readyOnly flag
@@ -118,7 +120,8 @@ export interface QuestionnaireStoreType {
   cachedValueSetCodings: Record<string, Coding[]>;
   fhirPathContext: Record<string, any>;
   populatedContext: Record<string, any>;
-  customComponents: Record<string, ComponentType<CustomComponentProps>>;
+  qItemOverrideComponents: Record<string, ComponentType<QItemOverrideComponentProps>>;
+  sdcUiOverrideComponents: Record<string, ComponentType<SdcUiOverrideComponentProps>>;
   focusedLinkId: string;
   readOnly: boolean;
   buildSourceQuestionnaire: (
@@ -127,7 +130,8 @@ export interface QuestionnaireStoreType {
     additionalVariables?: Record<string, object>,
     terminologyServerUrl?: string,
     readOnly?: boolean,
-    customComponents?: Record<string, ComponentType<any>>
+    qItemOverrideComponents?: Record<string, ComponentType<QItemOverrideComponentProps>>,
+    sdcUiOverrideComponents?: Record<string, ComponentType<SdcUiOverrideComponentProps>>
   ) => Promise<void>;
   destroySourceQuestionnaire: () => void;
   switchTab: (newTabIndex: number) => void;
@@ -186,7 +190,8 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   cachedValueSetCodings: {},
   fhirPathContext: {},
   populatedContext: {},
-  customComponents: {},
+  qItemOverrideComponents: {},
+  sdcUiOverrideComponents: {},
   focusedLinkId: '',
   readOnly: false,
   buildSourceQuestionnaire: async (
@@ -195,7 +200,8 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     additionalVariables = {},
     terminologyServerUrl = terminologyServerStore.getState().url,
     readOnly = false,
-    customComponents = {}
+    qItemOverrideComponents = {},
+    sdcUiOverrideComponents = {}
   ) => {
     const questionnaireModel = await createQuestionnaireModel(
       questionnaire,
@@ -248,7 +254,8 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       processedValueSetCodings: questionnaireModel.processedValueSetCodings,
       processedValueSetUrls: questionnaireModel.processedValueSetUrls,
       fhirPathContext: updatedFhirPathContext,
-      customComponents: customComponents,
+      qItemOverrideComponents: qItemOverrideComponents,
+      sdcUiOverrideComponents: sdcUiOverrideComponents,
       readOnly: readOnly
     });
   },
@@ -272,7 +279,8 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       processedValueSetCodings: {},
       processedValueSetUrls: {},
       fhirPathContext: {},
-      customComponents: {}
+      qItemOverrideComponents: {},
+      sdcUiOverrideComponents: {}
     }),
   switchTab: (newTabIndex: number) => set(() => ({ currentTabIndex: newTabIndex })),
   switchPage: (newPageIndex: number) => set(() => ({ currentPageIndex: newPageIndex })),

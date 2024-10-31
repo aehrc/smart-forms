@@ -5,7 +5,8 @@ export type {
   Variables,
   VariableXFhirQuery,
   LaunchContext,
-  CustomComponentProps
+  QItemOverrideComponentProps,
+  SdcUiOverrideComponentProps
 } from './interfaces';
 
 // component exports

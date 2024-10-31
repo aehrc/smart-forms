@@ -21,10 +21,9 @@ import ContextDisplayItem from './ContextDisplayItem';
 import type { QuestionnaireItem } from 'fhir/r4';
 import { getContextDisplays } from '../../../utils/tabs';
 import ItemLabelText from './ItemLabelText';
-import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import FlyoverItem from './FlyoverItem';
 
 interface LabelWrapperProps {
   qItem: QuestionnaireItem;
@@ -39,40 +38,20 @@ function ItemLabelWrapper(props: LabelWrapperProps) {
 
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between">
-      <Tooltip
-        title={displayFlyover}
-        placement="top"
-        slotProps={{
-          popper: {
-            modifiers: [
-              {
-                name: 'offset',
-                options: {
-                  offset: [0, -8]
-                }
-              }
-            ]
-          }
-        }}>
-        <span>
-          <Box position="relative">
-            {required ? (
-              <Typography
-                color="red"
-                sx={{ position: 'absolute', top: 0, left: -8 }} // Adjust top and left values as needed
-              >
-                *
-              </Typography>
-            ) : null}
-            <Box display="flex" columnGap={0.5} justifyContent="space-between" alignItems="center">
-              <ItemLabelText qItem={qItem} readOnly={readOnly} />
-              {displayFlyover !== '' ? (
-                <InfoOutlinedIcon sx={{ color: 'text.secondary' }} fontSize="small" />
-              ) : null}
-            </Box>
-          </Box>
-        </span>
-      </Tooltip>
+      <Box position="relative">
+        {required ? (
+          <Typography
+            color="red"
+            sx={{ position: 'absolute', top: 0, left: -8 }} // Adjust top and left values as needed
+          >
+            *
+          </Typography>
+        ) : null}
+        <Box display="flex" columnGap={0.75} justifyContent="space-between" alignItems="center">
+          <ItemLabelText qItem={qItem} readOnly={readOnly} />
+          {displayFlyover !== '' ? <FlyoverItem displayFlyover={displayFlyover} /> : null}
+        </Box>
+      </Box>
 
       <Box display="flex" columnGap={0.5}>
         {contextDisplayItems.map((item) => {

@@ -30,6 +30,7 @@ export interface RendererStyling {
     | '800'
     | '900'
     | 'default';
+  enableWhenAsReadOnly?: boolean | 'non-group'; // fix the non group enablewhen
   disablePageCardView?: boolean;
   disablePageButtons?: boolean;
 }
@@ -51,6 +52,7 @@ export interface RendererStylingStoreType {
     | '800'
     | '900'
     | 'default';
+  enableWhenAsReadOnly: boolean | 'non-group';
   disablePageCardView: boolean;
   disablePageButtons: boolean;
   setRendererStyling: (params: RendererStyling) => void;
@@ -61,11 +63,13 @@ export interface RendererStylingStoreType {
  */
 export const rendererStylingStore = createStore<RendererStylingStoreType>()((set) => ({
   itemLabelFontWeight: 'default',
+  enableWhenAsReadOnly: false,
   disablePageCardView: false,
   disablePageButtons: false,
   setRendererStyling: (params: RendererStyling) => {
     set(() => ({
       itemLabelFontWeight: params.itemLabelFontWeight ?? 'default',
+      enableWhenAsReadOnly: params.enableWhenAsReadOnly ?? false,
       disablePageCardView: params.disablePageCardView ?? false,
       disablePageButtons: params.disablePageButtons ?? false
     }));

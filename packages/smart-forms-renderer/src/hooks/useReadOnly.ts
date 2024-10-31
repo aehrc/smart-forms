@@ -17,9 +17,40 @@
 
 import type { QuestionnaireItem } from 'fhir/r4';
 import useRenderingExtensions from './useRenderingExtensions';
+import { useRendererStylingStore } from '../stores/rendererStylingStore';
+import { isHiddenByEnableWhen } from '../utils/qItem';
+import { useQuestionnaireStore } from '../stores';
 
-function useReadOnly(qItem: QuestionnaireItem, parentIsReadOnly: boolean | undefined): boolean {
+function useReadOnly(
+  qItem: QuestionnaireItem,
+  parentIsReadOnly: boolean | undefined,
+  parentRepeatGroupIndex?: number
+): boolean {
   let { readOnly } = useRenderingExtensions(qItem);
+
+  const enableWhenIsActivated = useQuestionnaireStore.use.enableWhenIsActivated();
+  const enableWhenItems = useQuestionnaireStore.use.enableWhenItems();
+  const enableWhenExpressions = useQuestionnaireStore.use.enableWhenExpressions();
+
+  const enableWhenAsReadOnly = useRendererStylingStore.use.enableWhenAsReadOnly();
+
+  // If enableWhenAsReadOnly is true, then items hidden by enableWhen should be displayed, but set as readOnly
+  // If enableWhenAsReadOnly is 'non-group', then items hidden by enableWhen should be displayed, but set as readOnly - only applies if item.type != group
+  if (!readOnly) {
+    if (
+      enableWhenAsReadOnly === true ||
+      (enableWhenAsReadOnly === 'non-group' && qItem.type !== 'group')
+    ) {
+      readOnly = isHiddenByEnableWhen({
+        linkId: qItem.linkId,
+        enableWhenIsActivated,
+        enableWhenItems,
+        enableWhenExpressions,
+        parentRepeatGroupIndex
+      });
+    }
+  }
+
   if (typeof parentIsReadOnly === 'boolean' && parentIsReadOnly) {
     readOnly = parentIsReadOnly;
   }

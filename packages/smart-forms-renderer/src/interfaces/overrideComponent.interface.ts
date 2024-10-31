@@ -15,13 +15,17 @@
  * limitations under the License.
  */
 
-import { QuestionnaireItem, type QuestionnaireResponseItem } from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
-export interface CustomComponentProps {
+export interface QItemOverrideComponentProps {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
   isRepeated: boolean;
   isTabled: boolean;
   parentIsReadOnly?: boolean;
   onQrItemChange: (qrItem: QuestionnaireResponseItem) => unknown;
+}
+
+export interface SdcUiOverrideComponentProps {
+  displayText: string;
 }

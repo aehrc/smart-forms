@@ -19,6 +19,7 @@ import type { QuestionnaireItem } from 'fhir/r4';
 import { useQuestionnaireStore } from '../stores';
 import { isHiddenByEnableWhen } from '../utils/qItem';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
+import { useRendererStylingStore } from '../stores/rendererStylingStore';
 
 /**
  * React hook to determine if a QuestionnaireItem is hidden via item.hidden, enableWhens, enableWhenExpressions.
@@ -31,8 +32,19 @@ function useHidden(qItem: QuestionnaireItem, parentRepeatGroupIndex?: number): b
   const enableWhenItems = useQuestionnaireStore.use.enableWhenItems();
   const enableWhenExpressions = useQuestionnaireStore.use.enableWhenExpressions();
 
+  const enableWhenAsReadOnly = useRendererStylingStore.use.enableWhenAsReadOnly();
+
   if (structuredDataCapture.getHidden(qItem)) {
     return true;
+  }
+
+  // If enableWhenAsReadOnly is true, then items hidden by enableWhen should be displayed, but set as readOnly
+  // If enableWhenAsReadOnly is 'non-group', then items hidden by enableWhen should be displayed, but set as readOnly - only applies if item.type != group
+  if (
+    enableWhenAsReadOnly === true ||
+    (enableWhenAsReadOnly === 'non-group' && qItem.type !== 'group')
+  ) {
+    return false;
   }
 
   return isHiddenByEnableWhen({

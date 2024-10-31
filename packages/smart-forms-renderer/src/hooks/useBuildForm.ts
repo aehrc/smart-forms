@@ -21,6 +21,7 @@ import { buildForm } from '../utils';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import type { RendererStyling } from '../stores/rendererStylingStore';
 import { useRendererStylingStore } from '../stores/rendererStylingStore';
+import type { QItemOverrideComponentProps, SdcUiOverrideComponentProps } from '../interfaces';
 
 /**
  * React hook wrapping around the buildForm() function to build a form from a questionnaire and an optional QuestionnaireResponse.
@@ -32,7 +33,9 @@ import { useRendererStylingStore } from '../stores/rendererStylingStore';
  * @param terminologyServerUrl - Terminology server url to fetch terminology. If not provided, the default terminology server will be used. (optional)
  * @param additionalVariables - Additional key-value pair of SDC variables `Record<name, variable extension>` for testing (optional)
  * @param rendererStylingOptions - Renderer styling to be applied to the form. See docs for styling options. (optional)
- * @param customComponents - FIXME add comment
+ * @param qItemOverrideComponents - FIXME add comment
+ * @param sdcUiOverrideComponents - FIXME add comment
+ *
  *
  * @author Sean Fong
  */
@@ -43,7 +46,8 @@ function useBuildForm(
   terminologyServerUrl?: string,
   additionalVariables?: Record<string, object>,
   rendererStylingOptions?: RendererStyling,
-  customComponents?: Record<string, ComponentType<any>>
+  qItemOverrideComponents?: Record<string, ComponentType<QItemOverrideComponentProps>>,
+  sdcUiOverrideComponents?: Record<string, ComponentType<SdcUiOverrideComponentProps>>
 ) {
   const [isBuilding, setIsBuilding] = useState(true);
 
@@ -61,19 +65,21 @@ function useBuildForm(
       readOnly,
       terminologyServerUrl,
       additionalVariables,
-      customComponents
+      qItemOverrideComponents,
+      sdcUiOverrideComponents
     ).then(() => {
       setIsBuilding(false);
     });
   }, [
-    customComponents,
     questionnaire,
     questionnaireResponse,
     readOnly,
-    rendererStylingOptions,
-    setRendererStyling,
     terminologyServerUrl,
-    additionalVariables
+    additionalVariables,
+    rendererStylingOptions,
+    qItemOverrideComponents,
+    sdcUiOverrideComponents,
+    setRendererStyling
   ]);
 
   return isBuilding;

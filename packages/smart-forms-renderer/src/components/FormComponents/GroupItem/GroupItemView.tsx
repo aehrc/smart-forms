@@ -80,7 +80,7 @@ function GroupItemView(props: GroupItemViewProps) {
     onQrRepeatGroupChange
   } = props;
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const readOnly = useReadOnly(qItem, parentIsReadOnly, parentRepeatGroupIndex);
 
   // Render collapsible group item
   // If group item is a repeating instance, do not render group item as collapsible

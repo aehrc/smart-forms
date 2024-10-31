@@ -11,7 +11,8 @@ import { readEncounter, readPatient, readUser } from '../api/smartClient';
 import type Client from 'fhirclient/lib/Client';
 import { updateQuestionnaireResponse } from './genericRecursive';
 import { removeInternalRepeatIdsRecursive } from './removeRepeatId';
-import { ComponentType } from 'react';
+import type { ComponentType } from 'react';
+import type { QItemOverrideComponentProps, SdcUiOverrideComponentProps } from '../interfaces';
 
 /**
  * Build the form with an initial Questionnaire and an optional filled QuestionnaireResponse.
@@ -23,7 +24,8 @@ import { ComponentType } from 'react';
  * @param readOnly - Applies read-only mode to all items in the form view
  * @param terminologyServerUrl - Terminology server url to fetch terminology. If not provided, the default terminology server will be used. (optional)
  * @param additionalVariables - Additional key-value pair of SDC variables `Record<name, variable extension>` for testing (optional)
- * @param customComponents - FIXME add comment
+ * @param qItemOverrideComponents - FIXME add comment
+ * @param sdcUiOverrideComponents - FIXME add comment
  *
  * @author Sean Fong
  */
@@ -33,7 +35,8 @@ export async function buildForm(
   readOnly?: boolean,
   terminologyServerUrl?: string,
   additionalVariables?: Record<string, object>,
-  customComponents?: Record<string, ComponentType<any>>
+  qItemOverrideComponents?: Record<string, ComponentType<QItemOverrideComponentProps>>,
+  sdcUiOverrideComponents?: Record<string, ComponentType<SdcUiOverrideComponentProps>>
 ): Promise<void> {
   // Reset terminology server
   if (terminologyServerUrl) {
@@ -51,7 +54,8 @@ export async function buildForm(
       additionalVariables,
       terminologyServerUrl,
       undefined,
-      customComponents
+      qItemOverrideComponents,
+      sdcUiOverrideComponents
     );
 
   const initialisedQuestionnaireResponse = initialiseQuestionnaireResponse(

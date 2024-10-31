@@ -55,7 +55,7 @@ function RepeatGroupItem(props: RepeatGroupItemProps) {
     onQrItemChange
   } = props;
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const readOnly = useReadOnly(qItem, parentIsReadOnly, repeatGroupIndex);
 
   return (
     <RepeatGroupContainerStack direction="row" justifyContent="end">

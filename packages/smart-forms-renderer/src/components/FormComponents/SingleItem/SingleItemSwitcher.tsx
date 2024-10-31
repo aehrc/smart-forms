@@ -57,14 +57,14 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
   const { qItem, qrItem, isRepeated, isTabled, showMinimalView, parentIsReadOnly, onQrItemChange } =
     props;
 
-  const customComponents = useQuestionnaireStore.use.customComponents();
-  const CustomComponent = customComponents[qItem.linkId];
+  const qItemOverrideComponents = useQuestionnaireStore.use.qItemOverrideComponents();
+  const QItemOverrideComponent = qItemOverrideComponents[qItem.linkId];
 
-  // If a custom component is defined for this item, render it
+  // If a qItem override component is defined for this item, render it
   // Don't get too strict with the checks for now
-  if (CustomComponent && typeof CustomComponent === 'function') {
+  if (QItemOverrideComponent && typeof QItemOverrideComponent === 'function') {
     return (
-      <CustomComponent
+      <QItemOverrideComponent
         qItem={qItem}
         qrItem={qrItem}
         isRepeated={isRepeated}
@@ -78,7 +78,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
   // Otherwise, render the default form component based on the item type
   switch (qItem.type) {
     case 'display':
-      return <DisplayItem qItem={qItem} />;
+      return <DisplayItem qItem={qItem} parentIsReadOnly={parentIsReadOnly} />;
     case 'boolean':
       return (
         <BooleanItem
@@ -238,7 +238,6 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         />
       );
     case 'quantity':
-      // FIXME quantity item uses the same component as decimal item currently
       return (
         <QuantityItem
           qItem={qItem}

@@ -102,7 +102,7 @@ function SingleItem(props: SingleItemProps) {
     [qItem]
   );
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const readOnly = useReadOnly(qItem, parentIsReadOnly, parentRepeatGroupIndex);
   const itemIsHidden = useHidden(qItem, parentRepeatGroupIndex);
 
   return (
