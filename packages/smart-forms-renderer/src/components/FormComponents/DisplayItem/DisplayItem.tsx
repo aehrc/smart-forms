@@ -21,13 +21,17 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import { isSpecificItemControl } from '../../../utils';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import { useQuestionnaireStore } from '../../../stores';
+import useReadOnly from '../../../hooks/useReadOnly';
+import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 
-interface DisplayItemProps {
+interface DisplayItemProps extends PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
 }
 
 const DisplayItem = memo(function DisplayItem(props: DisplayItemProps) {
-  const { qItem } = props;
+  const { qItem, parentIsReadOnly } = props;
+
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
@@ -41,7 +45,7 @@ const DisplayItem = memo(function DisplayItem(props: DisplayItemProps) {
       data-test="q-item-display-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <LabelWrapper qItem={qItem} readOnly={false} />
+      <LabelWrapper qItem={qItem} readOnly={readOnly} />
     </FullWidthFormComponentBox>
   );
 });
