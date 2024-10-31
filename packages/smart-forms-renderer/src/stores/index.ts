@@ -12,3 +12,6 @@ export { smartConfigStore, useSmartConfigStore } from './smartConfigStore';
 
 export type { TerminologyServerStoreType } from './terminologyServerStore';
 export { terminologyServerStore, useTerminologyServerStore } from './terminologyServerStore';
+
+export type { RendererStyling, RendererStylingStoreType } from './rendererStylingStore';
+export { rendererStylingStore, useRendererStylingStore } from './rendererStylingStore';
