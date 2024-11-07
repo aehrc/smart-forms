@@ -5,6 +5,10 @@ This log documents significant changes for the [@aehrc/smart-forms-renderer](htt
 
 Changelog only includes changes from version 0.36.0 onwards.
 
+## [0.44.2] - 2024-11-07
+### NPM-related
+- Bump version to set NPM tag to latest.
+
 ## [0.44.2] - 2024-10-18
 ### Fixed
 - Fixed an issue where inputs in checkbox open-choice's open label field does not update the QuestionnaireResponse. 
