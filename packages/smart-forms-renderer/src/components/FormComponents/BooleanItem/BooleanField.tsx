@@ -27,6 +27,9 @@ import ChoiceRadioSingle from '../ChoiceItems/ChoiceRadioSingle';
 import { StyledRadioGroup } from '../Item.styles';
 import { getChoiceOrientation } from '../../../utils/choice';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import { isSpecificItemControl } from '../../../utils';
 
 interface BooleanFieldProps {
   qItem: QuestionnaireItem;
@@ -40,6 +43,8 @@ interface BooleanFieldProps {
 const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
   const { qItem, readOnly, valueBoolean, calcExpUpdated, onCheckedChange, onClear } = props;
 
+  const booleanAsCheckbox = isSpecificItemControl(qItem, 'check-box');
+
   // defaults to horizontal, only set to vertical if explicitly set
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Horizontal;
 
@@ -47,15 +52,38 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
 
   return (
     <Box display="flex" alignItems="center">
-      <StyledRadioGroup
-        id={qItem.linkId}
-        row={orientation === ChoiceItemOrientation.Horizontal}
-        name={qItem.text}
-        onChange={(e) => onCheckedChange(e.target.value)}
-        value={selection}>
-        <ChoiceRadioSingle value="true" label="Yes" readOnly={readOnly} />
-        <ChoiceRadioSingle value="false" label="No" readOnly={readOnly} />
-      </StyledRadioGroup>
+      {booleanAsCheckbox ? (
+        <FormControlLabel
+          id={qItem.linkId}
+          disabled={readOnly}
+          control={
+            <Checkbox
+              size="small"
+              checked={selection === 'true'}
+              onChange={() => {
+                if (selection === 'true') {
+                  onCheckedChange('false');
+                }
+
+                if (selection === 'false' || selection === null) {
+                  onCheckedChange('true');
+                }
+              }}
+            />
+          }
+          label=""
+        />
+      ) : (
+        <StyledRadioGroup
+          id={qItem.linkId}
+          row={orientation === ChoiceItemOrientation.Horizontal}
+          name={qItem.text}
+          onChange={(e) => onCheckedChange(e.target.value)}
+          value={selection}>
+          <ChoiceRadioSingle value="true" label="Yes" readOnly={readOnly} />
+          <ChoiceRadioSingle value="false" label="No" readOnly={readOnly} />
+        </StyledRadioGroup>
+      )}
 
       <Box flexGrow={1} />
 
