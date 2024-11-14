@@ -31,6 +31,7 @@ import SingleItem from '../SingleItem/SingleItem';
 import useHidden from '../../../hooks/useHidden';
 import GroupItem from './GroupItem';
 import GridGroup from '../GridGroup/GridGroup';
+import { useQuestionnaireStore } from '../../../stores';
 
 interface GroupItemSwitcherProps
   extends PropsWithQrItemChangeHandler,
@@ -54,9 +55,30 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
     onQrRepeatGroupChange
   } = props;
 
+  const qItemOverrideComponents = useQuestionnaireStore.use.qItemOverrideComponents();
+  const QItemOverrideComponent = qItemOverrideComponents[qItem.linkId];
+
   const itemIsHidden = useHidden(qItem, parentRepeatGroupIndex);
   if (itemIsHidden) {
     return null;
+  }
+
+  // If a qItem override component is defined for this item, render it
+  // Don't get too strict with the "typeof" checks for now
+  if (QItemOverrideComponent && typeof QItemOverrideComponent === 'function') {
+    return (
+      <QItemOverrideComponent
+        qItem={qItem}
+        qrItem={qrItemOrItems ?? null}
+        isRepeated={!!qItem.repeats}
+        groupCardElevation={groupCardElevation}
+        parentIsReadOnly={parentIsReadOnly}
+        parentIsRepeatGroup={parentIsRepeatGroup}
+        parentRepeatGroupIndex={parentRepeatGroupIndex}
+        onQrItemChange={onQrItemChange}
+        onQrRepeatGroupChange={onQrRepeatGroupChange}
+      />
+    );
   }
 
   // If there are multiple answers

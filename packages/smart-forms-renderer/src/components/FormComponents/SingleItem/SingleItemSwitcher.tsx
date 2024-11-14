@@ -61,7 +61,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
   const QItemOverrideComponent = qItemOverrideComponents[qItem.linkId];
 
   // If a qItem override component is defined for this item, render it
-  // Don't get too strict with the checks for now
+  // Don't get too strict with the "typeof" checks for now
   if (QItemOverrideComponent && typeof QItemOverrideComponent === 'function') {
     return (
       <QItemOverrideComponent
@@ -71,6 +71,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         isTabled={isTabled}
         parentIsReadOnly={parentIsReadOnly}
         onQrItemChange={onQrItemChange}
+        onQrRepeatGroupChange={() => {}} // Not needed for single items, use empty function
       />
     );
   }

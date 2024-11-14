@@ -7,3 +7,4 @@ export { default as useValidationFeedback } from './useValidationFeedback';
 
 // CalculatedExpression hooks
 export { default as useStringCalculatedExpression } from './useStringCalculatedExpression';
+export { default as useDisplayCqfAndCalculatedExpression } from './useDisplayCqfAndCalculatedExpression';

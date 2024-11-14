@@ -16,14 +16,19 @@
  */
 
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { QrRepeatGroup } from './repeatGroup.interface';
 
 export interface QItemOverrideComponentProps {
   qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
+  qrItem: QuestionnaireResponseItem | QuestionnaireResponseItem[] | null;
   isRepeated: boolean;
-  isTabled: boolean;
+  isTabled?: boolean;
+  groupCardElevation?: number;
   parentIsReadOnly?: boolean;
+  parentIsRepeatGroup?: boolean;
+  parentRepeatGroupIndex?: number;
   onQrItemChange: (qrItem: QuestionnaireResponseItem) => unknown;
+  onQrRepeatGroupChange: (qrRepeatGroup: QrRepeatGroup) => unknown;
 }
 
 export interface SdcUiOverrideComponentProps {

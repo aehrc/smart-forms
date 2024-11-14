@@ -40,7 +40,7 @@ export function getQuestionnaireItem(
   return null;
 }
 
-export function getQuestionnaireItemRecursive(
+function getQuestionnaireItemRecursive(
   qItem: QuestionnaireItem,
   targetLinkId: string
 ): QuestionnaireItem | null {

@@ -17,12 +17,13 @@
 
 import type { ReactNode } from 'react';
 import React from 'react';
-import Grid from '@mui/material/Grid';
+import Grid from '@mui/material/Unstable_Grid2';
 import type { QuestionnaireItem } from 'fhir/r4';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import LabelWrapper from './ItemLabelWrapper';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import Box from '@mui/material/Box';
+import { useRendererStylingStore } from '../../../stores';
 
 interface ItemFieldGridProps {
   children: ReactNode;
@@ -33,11 +34,19 @@ interface ItemFieldGridProps {
 function ItemFieldGrid(props: ItemFieldGridProps) {
   const { children, qItem, readOnly } = props;
 
+  const itemLabelGridBreakpoints = useRendererStylingStore.use.itemLabelGridBreakpoints();
+  const itemFieldGridBreakpoints = useRendererStylingStore.use.itemFieldGridBreakpoints();
+
   const { displayInstructions } = useRenderingExtensions(qItem);
 
   return (
-    <Grid container columnSpacing={4}>
-      <Grid item md={4} xs={12}>
+    <Grid container columnSpacing={3.5}>
+      <Grid
+        xs={itemLabelGridBreakpoints.xs}
+        sm={itemLabelGridBreakpoints.sm}
+        md={itemLabelGridBreakpoints.md}
+        lg={itemLabelGridBreakpoints.lg}
+        xl={itemLabelGridBreakpoints.xl}>
         <LabelWrapper qItem={qItem} readOnly={readOnly} />
       </Grid>
       <Box
@@ -45,7 +54,12 @@ function ItemFieldGrid(props: ItemFieldGridProps) {
           my: { xs: 1.5, md: 0 } // Adds padding for `xs` breakpoint and removes it for `md` and up
         }}
       />
-      <Grid item md={8} xs={12}>
+      <Grid
+        xs={itemFieldGridBreakpoints.xs}
+        sm={itemFieldGridBreakpoints.sm}
+        md={itemFieldGridBreakpoints.md}
+        lg={itemFieldGridBreakpoints.lg}
+        xl={itemFieldGridBreakpoints.xl}>
         {children}
         <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
       </Grid>

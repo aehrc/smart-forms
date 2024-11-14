@@ -18,6 +18,14 @@
 import { createStore } from 'zustand/vanilla';
 import { createSelectors } from './selector';
 
+export interface ItemGridBreakpoints {
+  xs?: number;
+  sm?: number;
+  md?: number;
+  lg?: number;
+  xl?: number;
+}
+
 export interface RendererStyling {
   itemLabelFontWeight?:
     | '100'
@@ -30,6 +38,9 @@ export interface RendererStyling {
     | '800'
     | '900'
     | 'default';
+  itemLabelGridBreakpoints?: ItemGridBreakpoints;
+  itemFieldGridBreakpoints?: ItemGridBreakpoints;
+  booleanAsCheckbox?: boolean;
   enableWhenAsReadOnly?: boolean | 'non-group'; // fix the non group enablewhen
   disablePageCardView?: boolean;
   disablePageButtons?: boolean;
@@ -52,6 +63,8 @@ export interface RendererStylingStoreType {
     | '800'
     | '900'
     | 'default';
+  itemLabelGridBreakpoints: ItemGridBreakpoints;
+  itemFieldGridBreakpoints: ItemGridBreakpoints;
   enableWhenAsReadOnly: boolean | 'non-group';
   disablePageCardView: boolean;
   disablePageButtons: boolean;
@@ -63,12 +76,16 @@ export interface RendererStylingStoreType {
  */
 export const rendererStylingStore = createStore<RendererStylingStoreType>()((set) => ({
   itemLabelFontWeight: 'default',
+  itemLabelGridBreakpoints: { xs: 12, md: 4 },
+  itemFieldGridBreakpoints: { xs: 12, md: 8 },
   enableWhenAsReadOnly: false,
   disablePageCardView: false,
   disablePageButtons: false,
   setRendererStyling: (params: RendererStyling) => {
     set(() => ({
       itemLabelFontWeight: params.itemLabelFontWeight ?? 'default',
+      itemLabelGridBreakpoints: params.itemLabelGridBreakpoints ?? { xs: 12, md: 4 },
+      itemFieldGridBreakpoints: params.itemFieldGridBreakpoints ?? { xs: 12, md: 8 },
       enableWhenAsReadOnly: params.enableWhenAsReadOnly ?? false,
       disablePageCardView: params.disablePageCardView ?? false,
       disablePageButtons: params.disablePageButtons ?? false

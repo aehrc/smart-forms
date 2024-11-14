@@ -55,7 +55,8 @@ export {
   useRendererQueryClient,
   useRenderingExtensions,
   useValidationFeedback,
-  useStringCalculatedExpression
+  useStringCalculatedExpression,
+  useDisplayCqfAndCalculatedExpression
 } from './hooks';
 
 // utils exports
@@ -67,12 +68,14 @@ export {
   removeEmptyAnswersFromResponse,
   removeInternalIdsFromResponse,
   createEmptyQrItem,
+  createEmptyQrGroup,
   isSpecificItemControl,
   isRepeatItemAndNotCheckbox,
   initialiseQuestionnaireResponse,
   generateItemsToRepopulate,
   repopulateResponse,
-  extractObservationBased
+  extractObservationBased,
+  getQuestionnaireItem
 } from './utils';
 
 // theme provider exports
