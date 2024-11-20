@@ -17,15 +17,21 @@
 
 import React, { Fragment } from 'react';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
-import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
-import { StandardTextField, TEXT_FIELD_WIDTH } from '../Textfield.styles';
+import type {
+  PropsWithIsTabledAttribute,
+  PropsWithRenderingExtensionsAttribute
+} from '../../../interfaces/renderProps.interface';
+import { StandardTextField } from '../Textfield.styles';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import Autocomplete from '@mui/material/Autocomplete';
 import { getAnswerOptionLabel } from '../../../utils/openChoice';
 import { compareAnswerOptionValue } from '../../../utils/choice';
+import { useRendererStylingStore } from '../../../stores';
+import Typography from '@mui/material/Typography';
 
-interface ChoiceSelectAnswerOptionFieldsProps extends PropsWithIsTabledAttribute {
+interface ChoiceSelectAnswerOptionFieldsProps
+  extends PropsWithIsTabledAttribute,
+    PropsWithRenderingExtensionsAttribute {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
   valueSelect: QuestionnaireItemAnswerOption | null;
@@ -35,9 +41,20 @@ interface ChoiceSelectAnswerOptionFieldsProps extends PropsWithIsTabledAttribute
 }
 
 function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsProps) {
-  const { qItem, options, valueSelect, readOnly, calcExpUpdated, isTabled, onSelectChange } = props;
+  const {
+    qItem,
+    options,
+    valueSelect,
+    readOnly,
+    calcExpUpdated,
+    isTabled,
+    renderingExtensions,
+    onSelectChange
+  } = props;
 
-  const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
+  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+
+  const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
   return (
     <Autocomplete
@@ -49,11 +66,12 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
       onChange={(_, newValue) => onSelectChange(newValue)}
       openOnFocus
       autoHighlight
-      sx={{ maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000, minWidth: 160, flexGrow: 1 }}
+      sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }}
       size="small"
       disabled={readOnly}
       renderInput={(params) => (
         <StandardTextField
+          textFieldWidth={textFieldWidth}
           isTabled={isTabled}
           label={displayPrompt}
           placeholder={entryFormat}
@@ -64,7 +82,9 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
               <>
                 {params.InputProps.endAdornment}
                 <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-                {displayUnit}
+                <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
+                  {displayUnit}
+                </Typography>
               </>
             )
           }}

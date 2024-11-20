@@ -31,6 +31,7 @@ import type {
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
+  PropsWithRenderingExtensionsAttribute,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
 import Typography from '@mui/material/Typography';
@@ -39,6 +40,7 @@ interface ChoiceItemSwitcherProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
+    PropsWithRenderingExtensionsAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
@@ -46,8 +48,16 @@ interface ChoiceItemSwitcherProps
 }
 
 function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
-  const { qItem, qrItem, isRepeated, isTabled, showMinimalView, parentIsReadOnly, onQrItemChange } =
-    props;
+  const {
+    qItem,
+    qrItem,
+    isRepeated,
+    isTabled,
+    renderingExtensions,
+    showMinimalView,
+    parentIsReadOnly,
+    onQrItemChange
+  } = props;
 
   const choiceControlType = getChoiceControlType(qItem);
 
@@ -60,6 +70,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
             qrItem={qrItem}
             isRepeated={isRepeated}
             isTabled={isTabled}
+            renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             onQrItemChange={onQrItemChange}
           />
@@ -70,6 +81,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
             qItem={qItem}
             qrItem={qrItem}
             isRepeated={isRepeated}
+            renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             onQrItemChange={onQrItemChange}
           />
@@ -82,6 +94,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
             qItem={qItem}
             qrItem={qrItem}
             isRepeated={qItem.repeats ?? false}
+            renderingExtensions={renderingExtensions}
             showMinimalView={showMinimalView}
             parentIsReadOnly={parentIsReadOnly}
             onQrItemChange={onQrItemChange}
@@ -93,6 +106,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
             qItem={qItem}
             qrItem={qrItem}
             isRepeated={qItem.repeats ?? false}
+            renderingExtensions={renderingExtensions}
             showMinimalView={showMinimalView}
             parentIsReadOnly={parentIsReadOnly}
             onQrItemChange={onQrItemChange}
@@ -106,6 +120,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
@@ -118,6 +133,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
             qrItem={qrItem}
             isRepeated={isRepeated}
             isTabled={isTabled}
+            renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             onQrItemChange={onQrItemChange}
           />
@@ -129,6 +145,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
             qrItem={qrItem}
             isRepeated={isRepeated}
             isTabled={isTabled}
+            renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             onQrItemChange={onQrItemChange}
           />

@@ -18,7 +18,7 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import Autocomplete from '@mui/material/Autocomplete';
-import { StandardTextField, TEXT_FIELD_WIDTH } from '../Textfield.styles';
+import { StandardTextField } from '../Textfield.styles';
 import SearchIcon from '@mui/icons-material/Search';
 import CircularProgress from '@mui/material/CircularProgress';
 import Fade from '@mui/material/Fade';
@@ -30,14 +30,17 @@ import ErrorIcon from '@mui/icons-material/Error';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import type {
   PropsWithIsTabledAttribute,
-  PropsWithParentIsReadOnlyAttribute
+  PropsWithParentIsReadOnlyAttribute,
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
-import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type { AlertColor } from '@mui/material/Alert';
+import { useRendererStylingStore } from '../../../stores';
+import Typography from '@mui/material/Typography';
 
 interface OpenChoiceAutocompleteFieldProps
   extends PropsWithIsTabledAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithRenderingExtensionsAttribute {
   qItem: QuestionnaireItem;
   options: Coding[];
   valueAutocomplete: string | Coding;
@@ -60,12 +63,15 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
     feedback,
     readOnly,
     isTabled,
+    renderingExtensions,
     onInputChange,
     onValueChange,
     onUnfocus
   } = props;
 
-  const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
+  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+
+  const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
   return (
     <Box display="flex">
@@ -81,7 +87,7 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
         loadingText={'Fetching results...'}
         clearOnEscape
         freeSolo
-        sx={{ maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000, minWidth: 220, flexGrow: 1 }}
+        sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 220, flexGrow: 1 }}
         onChange={(_, newValue) => onValueChange(newValue)}
         filterOptions={(x) => x}
         renderInput={(params) => (
@@ -90,6 +96,7 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
             value={input}
             onBlur={onUnfocus}
             onChange={(e) => onInputChange(e.target.value)}
+            textFieldWidth={textFieldWidth}
             isTabled={isTabled}
             label={displayPrompt}
             size="small"
@@ -124,7 +131,9 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
                     </Fade>
                   ) : null}
                   {params.InputProps.endAdornment}
-                  {displayUnit}
+                  <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
+                    {displayUnit}
+                  </Typography>
                 </>
               )
             }}

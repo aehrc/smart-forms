@@ -22,7 +22,7 @@ import { getSliderMarks } from '../../../utils/slider';
 import Stack from '@mui/material/Stack';
 import SliderLabels from './SliderLabels';
 import SliderDisplayValue from './SliderDisplayValue';
-import { TEXT_FIELD_WIDTH } from '../Textfield.styles';
+import { useRendererStylingStore } from '../../../stores';
 
 interface SliderFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
@@ -52,10 +52,12 @@ function SliderField(props: SliderFieldProps) {
     onValueChange
   } = props;
 
+  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+
   const sliderMarks = getSliderMarks(minValue, maxValue, minLabel, maxLabel, stepValue);
 
   const sliderSx = {
-    maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000,
+    maxWidth: !isTabled ? textFieldWidth : 3000,
     minWidth: 160
   };
 

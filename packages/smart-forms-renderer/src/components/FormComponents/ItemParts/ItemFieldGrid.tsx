@@ -19,20 +19,20 @@ import type { ReactNode } from 'react';
 import React from 'react';
 import Grid from '@mui/material/Unstable_Grid2';
 import type { QuestionnaireItem } from 'fhir/r4';
-import DisplayInstructions from '../DisplayItem/DisplayInstructions';
-import LabelWrapper from './ItemLabelWrapper';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import Box from '@mui/material/Box';
 import { useRendererStylingStore } from '../../../stores';
+import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 
 interface ItemFieldGridProps {
-  children: ReactNode;
   qItem: QuestionnaireItem;
   readOnly: boolean;
+  labelChildren?: ReactNode;
+  fieldChildren?: ReactNode;
 }
 
 function ItemFieldGrid(props: ItemFieldGridProps) {
-  const { children, qItem, readOnly } = props;
+  const { qItem, readOnly, labelChildren, fieldChildren } = props;
 
   const itemLabelGridBreakpoints = useRendererStylingStore.use.itemLabelGridBreakpoints();
   const itemFieldGridBreakpoints = useRendererStylingStore.use.itemFieldGridBreakpoints();
@@ -47,7 +47,7 @@ function ItemFieldGrid(props: ItemFieldGridProps) {
         md={itemLabelGridBreakpoints.md}
         lg={itemLabelGridBreakpoints.lg}
         xl={itemLabelGridBreakpoints.xl}>
-        <LabelWrapper qItem={qItem} readOnly={readOnly} />
+        {labelChildren}
       </Grid>
       <Box
         sx={{
@@ -60,7 +60,7 @@ function ItemFieldGrid(props: ItemFieldGridProps) {
         md={itemFieldGridBreakpoints.md}
         lg={itemFieldGridBreakpoints.lg}
         xl={itemFieldGridBreakpoints.xl}>
-        {children}
+        {fieldChildren}
         <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
       </Grid>
     </Grid>

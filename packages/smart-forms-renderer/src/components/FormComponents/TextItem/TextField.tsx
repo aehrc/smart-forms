@@ -19,6 +19,7 @@ import React from 'react';
 import InputAdornment from '@mui/material/InputAdornment';
 import MuiTextField from './MuiTextField';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
+import Typography from '@mui/material/Typography';
 
 interface TextFieldProps {
   linkId: string;
@@ -60,9 +61,11 @@ function TextField(props: TextFieldProps) {
       minRows={3}
       InputProps={{
         endAdornment: (
-          <InputAdornment position={'end'}>
+          <InputAdornment position="end">
             <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-            {displayUnit}
+            <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
+              {displayUnit}
+            </Typography>
           </InputAdornment>
         )
       }}

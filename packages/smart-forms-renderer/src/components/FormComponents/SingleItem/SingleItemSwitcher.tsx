@@ -25,6 +25,7 @@ import type {
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
+  PropsWithRenderingExtensionsAttribute,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
 import StringItem from '../StringItem/StringItem';
@@ -47,6 +48,7 @@ interface SingleItemSwitcherProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
+    PropsWithRenderingExtensionsAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
@@ -54,8 +56,16 @@ interface SingleItemSwitcherProps
 }
 
 function SingleItemSwitcher(props: SingleItemSwitcherProps) {
-  const { qItem, qrItem, isRepeated, isTabled, showMinimalView, parentIsReadOnly, onQrItemChange } =
-    props;
+  const {
+    qItem,
+    qrItem,
+    isRepeated,
+    isTabled,
+    renderingExtensions,
+    showMinimalView,
+    parentIsReadOnly,
+    onQrItemChange
+  } = props;
 
   const qItemOverrideComponents = useQuestionnaireStore.use.qItemOverrideComponents();
   const QItemOverrideComponent = qItemOverrideComponents[qItem.linkId];
@@ -69,6 +79,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         qrItem={qrItem}
         isRepeated={isRepeated}
         isTabled={isTabled}
+        renderingExtensions={renderingExtensions}
         parentIsReadOnly={parentIsReadOnly}
         onQrItemChange={onQrItemChange}
         onQrRepeatGroupChange={() => {}} // Not needed for single items, use empty function
@@ -87,6 +98,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
@@ -98,6 +110,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
@@ -110,6 +123,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
             qrItem={qrItem}
             isRepeated={isRepeated}
             isTabled={isTabled}
+            renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             onQrItemChange={onQrItemChange}
           />
@@ -122,6 +136,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
@@ -133,6 +148,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
@@ -144,6 +160,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
@@ -155,6 +172,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
@@ -166,6 +184,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
@@ -176,6 +195,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qItem={qItem}
           qrItem={qrItem}
           isRepeated={isRepeated}
+          renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
@@ -187,6 +207,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
@@ -198,6 +219,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
           showMinimalView={showMinimalView}
           parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
@@ -210,6 +232,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
           showMinimalView={showMinimalView}
           parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
@@ -222,6 +245,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
@@ -234,6 +258,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
@@ -245,6 +270,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           qrItem={qrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />

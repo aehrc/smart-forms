@@ -38,9 +38,11 @@ export interface RendererStyling {
     | '800'
     | '900'
     | 'default';
+  requiredIndicatorPosition?: 'start' | 'end';
   itemLabelGridBreakpoints?: ItemGridBreakpoints;
   itemFieldGridBreakpoints?: ItemGridBreakpoints;
-  booleanAsCheckbox?: boolean;
+  textFieldWidth?: number;
+  hideClearButton?: boolean;
   enableWhenAsReadOnly?: boolean | 'non-group'; // fix the non group enablewhen
   disablePageCardView?: boolean;
   disablePageButtons?: boolean;
@@ -63,8 +65,11 @@ export interface RendererStylingStoreType {
     | '800'
     | '900'
     | 'default';
+  requiredIndicatorPosition: 'start' | 'end';
   itemLabelGridBreakpoints: ItemGridBreakpoints;
   itemFieldGridBreakpoints: ItemGridBreakpoints;
+  textFieldWidth: number;
+  hideClearButton: boolean;
   enableWhenAsReadOnly: boolean | 'non-group';
   disablePageCardView: boolean;
   disablePageButtons: boolean;
@@ -76,16 +81,22 @@ export interface RendererStylingStoreType {
  */
 export const rendererStylingStore = createStore<RendererStylingStoreType>()((set) => ({
   itemLabelFontWeight: 'default',
+  requiredIndicatorPosition: 'start',
   itemLabelGridBreakpoints: { xs: 12, md: 4 },
   itemFieldGridBreakpoints: { xs: 12, md: 8 },
+  textFieldWidth: 320,
+  hideClearButton: false,
   enableWhenAsReadOnly: false,
   disablePageCardView: false,
   disablePageButtons: false,
   setRendererStyling: (params: RendererStyling) => {
     set(() => ({
       itemLabelFontWeight: params.itemLabelFontWeight ?? 'default',
+      requiredIndicatorPosition: params.requiredIndicatorPosition ?? 'start',
       itemLabelGridBreakpoints: params.itemLabelGridBreakpoints ?? { xs: 12, md: 4 },
       itemFieldGridBreakpoints: params.itemFieldGridBreakpoints ?? { xs: 12, md: 8 },
+      textFieldWidth: params.textFieldWidth ?? 320,
+      hideClearButton: params.hideClearButton ?? false,
       enableWhenAsReadOnly: params.enableWhenAsReadOnly ?? false,
       disablePageCardView: params.disablePageCardView ?? false,
       disablePageButtons: params.disablePageButtons ?? false

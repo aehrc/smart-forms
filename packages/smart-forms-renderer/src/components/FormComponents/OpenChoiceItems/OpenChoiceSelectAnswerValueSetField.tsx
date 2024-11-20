@@ -1,18 +1,20 @@
 import React from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
-import { StandardTextField, TEXT_FIELD_WIDTH } from '../Textfield.styles';
+import { StandardTextField } from '../Textfield.styles';
 import Typography from '@mui/material/Typography';
 import type {
   PropsWithIsTabledAttribute,
-  PropsWithParentIsReadOnlyAttribute
+  PropsWithParentIsReadOnlyAttribute,
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
-import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
+import { useRendererStylingStore } from '../../../stores';
 
 interface OpenChoiceSelectAnswerValueSetFieldProps
   extends PropsWithIsTabledAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithRenderingExtensionsAttribute {
   qItem: QuestionnaireItem;
   options: Coding[];
   valueSelect: Coding | null;
@@ -22,10 +24,20 @@ interface OpenChoiceSelectAnswerValueSetFieldProps
 }
 
 function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueSetFieldProps) {
-  const { qItem, options, valueSelect, terminologyError, readOnly, isTabled, onValueChange } =
-    props;
+  const {
+    qItem,
+    options,
+    valueSelect,
+    terminologyError,
+    readOnly,
+    isTabled,
+    renderingExtensions,
+    onValueChange
+  } = props;
 
-  const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
+  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+
+  const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
   return (
     <>
@@ -40,11 +52,12 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
         onInputChange={(_, newValue) => onValueChange(newValue)}
         freeSolo
         autoHighlight
-        sx={{ maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000, minWidth: 160, flexGrow: 1 }}
+        sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }}
         disabled={readOnly}
         size="small"
         renderInput={(params) => (
           <StandardTextField
+            textFieldWidth={textFieldWidth}
             isTabled={isTabled}
             label={displayPrompt}
             placeholder={entryFormat}
@@ -54,7 +67,9 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
               endAdornment: (
                 <>
                   {params.InputProps.endAdornment}
-                  {displayUnit}
+                  <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
+                    {displayUnit}
+                  </Typography>
                 </>
               )
             }}

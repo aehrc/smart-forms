@@ -17,6 +17,7 @@
 
 import type { QrRepeatGroup } from './repeatGroup.interface';
 import type { QuestionnaireResponseItem } from 'fhir/r4';
+import type { RenderingExtensions } from '../hooks/useRenderingExtensions';
 
 export interface PropsWithQrItemChangeHandler {
   onQrItemChange: (qrItem: QuestionnaireResponseItem) => unknown;
@@ -24,6 +25,10 @@ export interface PropsWithQrItemChangeHandler {
 
 export interface PropsWithQrRepeatGroupChangeHandler {
   onQrRepeatGroupChange: (qrRepeatGroup: QrRepeatGroup) => unknown;
+}
+
+export interface PropsWithRenderingExtensionsAttribute {
+  renderingExtensions: RenderingExtensions;
 }
 
 export interface PropsWithIsRepeatedAttribute {

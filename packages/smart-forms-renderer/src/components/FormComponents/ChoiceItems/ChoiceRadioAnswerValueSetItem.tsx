@@ -24,17 +24,20 @@ import useValueSetCodings from '../../../hooks/useValueSetCodings';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import ChoiceRadioAnswerValueSetFields from './ChoiceRadioAnswerValueSetFields';
 import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
 import useCodingCalculatedExpression from '../../../hooks/useCodingCalculatedExpression';
+import { ItemLabelWrapper } from '../ItemParts';
 
 interface ChoiceRadioAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
+    PropsWithRenderingExtensionsAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
@@ -106,18 +109,23 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
       data-test="q-item-choice-radio-answer-value-set-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <ChoiceRadioAnswerValueSetFields
-          qItem={qItem}
-          options={options}
-          valueRadio={valueRadio}
-          readOnly={readOnly}
-          calcExpUpdated={calcExpUpdated}
-          terminologyError={terminologyError}
-          onCheckedChange={handleChange}
-          onClear={handleClear}
-        />
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <ChoiceRadioAnswerValueSetFields
+            qItem={qItem}
+            options={options}
+            valueRadio={valueRadio}
+            readOnly={readOnly}
+            calcExpUpdated={calcExpUpdated}
+            terminologyError={terminologyError}
+            onCheckedChange={handleChange}
+            onClear={handleClear}
+          />
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

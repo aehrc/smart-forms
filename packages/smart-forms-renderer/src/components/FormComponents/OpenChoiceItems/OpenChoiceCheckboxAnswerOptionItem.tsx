@@ -22,11 +22,11 @@ import { getOpenLabelText } from '../../../utils/itemControl';
 import { updateOpenLabelAnswer } from '../../../utils/openChoice';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import debounce from 'lodash.debounce';
-import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
+  PropsWithRenderingExtensionsAttribute,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
@@ -37,12 +37,14 @@ import { useQuestionnaireStore } from '../../../stores';
 import useOpenLabel from '../../../hooks/useOpenLabel';
 import { updateChoiceCheckboxAnswers } from '../../../utils/choice';
 import OpenChoiceCheckboxAnswerOptionFields from './OpenChoiceCheckboxAnswerOptionFields';
+import { ItemLabelWrapper } from '../ItemParts';
 
 interface OpenChoiceCheckboxAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithShowMinimalViewAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithRenderingExtensionsAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
@@ -52,6 +54,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
     qItem,
     qrItem,
     isRepeated,
+    renderingExtensions,
     showMinimalView = false,
     parentIsReadOnly,
     onQrItemChange
@@ -65,7 +68,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
   const answers = qrOpenChoiceCheckbox.answer ?? [];
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayInstructions } = useRenderingExtensions(qItem);
+  const { displayInstructions } = renderingExtensions;
   const openLabelText = getOpenLabelText(qItem);
 
   const options = qItem.answerOption ?? [];
@@ -164,20 +167,25 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
       data-test="q-item-open-choice-checkbox-answer-option-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <OpenChoiceCheckboxAnswerOptionFields
-          qItem={qItem}
-          options={options}
-          answers={answers}
-          openLabelText={openLabelText}
-          openLabelValue={openLabelValue}
-          openLabelChecked={openLabelChecked}
-          readOnly={readOnly}
-          onOptionChange={handleOptionChange}
-          onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
-          onOpenLabelInputChange={handleOpenLabelInputChange}
-        />
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <OpenChoiceCheckboxAnswerOptionFields
+            qItem={qItem}
+            options={options}
+            answers={answers}
+            openLabelText={openLabelText}
+            openLabelValue={openLabelValue}
+            openLabelChecked={openLabelChecked}
+            readOnly={readOnly}
+            onOptionChange={handleOptionChange}
+            onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
+            onOpenLabelInputChange={handleOpenLabelInputChange}
+          />
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

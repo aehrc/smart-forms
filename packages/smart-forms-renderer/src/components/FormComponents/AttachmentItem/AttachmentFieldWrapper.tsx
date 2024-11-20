@@ -15,10 +15,6 @@
  * limitations under the License.
  */
 
-// import { HTML5Backend } from 'react-dnd-html5-backend';
-//
-// <DndProvider backend={HTML5Backend}>
-
 import React from 'react';
 import AttachmentField from './AttachmentField';
 import { FullWidthFormComponentBox } from '../../Box.styles';
@@ -30,6 +26,7 @@ import type {
 import type { QuestionnaireItem } from 'fhir/r4';
 import type { AttachmentValues } from './AttachmentItem';
 import { useQuestionnaireStore } from '../../../stores';
+import { ItemLabelWrapper } from '../ItemParts';
 
 interface AttachmentFieldWrapperProps
   extends PropsWithIsRepeatedAttribute,
@@ -75,17 +72,22 @@ function AttachmentFieldWrapper(props: AttachmentFieldWrapperProps) {
       data-test="q-item-attachment-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <AttachmentField
-          linkId={qItem.linkId}
-          attachmentValues={attachmentValues}
-          readOnly={readOnly}
-          isTabled={isTabled}
-          onUploadFile={onUploadFile}
-          onUrlChange={onUrlChange}
-          onFileNameChange={onFileNameChange}
-        />
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <AttachmentField
+            linkId={qItem.linkId}
+            attachmentValues={attachmentValues}
+            readOnly={readOnly}
+            isTabled={isTabled}
+            onUploadFile={onUploadFile}
+            onUrlChange={onUrlChange}
+            onFileNameChange={onFileNameChange}
+          />
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

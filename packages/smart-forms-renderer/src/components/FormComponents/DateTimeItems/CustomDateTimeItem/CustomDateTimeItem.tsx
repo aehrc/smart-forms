@@ -20,11 +20,11 @@ import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithRenderingExtensionsAttribute
 } from '../../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useReadOnly from '../../../../hooks/useReadOnly';
-import useRenderingExtensions from '../../../../hooks/useRenderingExtensions';
 import { FullWidthFormComponentBox } from '../../../Box.styles';
 import ItemFieldGrid from '../../ItemParts/ItemFieldGrid';
 import { createEmptyQrItem } from '../../../../utils/qrItem';
@@ -43,23 +43,33 @@ import {
 import useTimeValidation from '../../../../hooks/useTimeValidation';
 import useDateNonEmptyValidation from '../../../../hooks/useDateTimeNonEmpty';
 import DateTimeField from './DateTimeField';
+import { ItemLabelWrapper } from '../../ItemParts';
 
 interface CustomDateTimeItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
+    PropsWithRenderingExtensionsAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
 
 function CustomDateTimeItem(props: CustomDateTimeItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
+  const {
+    qItem,
+    qrItem,
+    isRepeated,
+    isTabled,
+    renderingExtensions,
+    parentIsReadOnly,
+    onQrItemChange
+  } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayPrompt, entryFormat } = useRenderingExtensions(qItem);
+  const { displayPrompt, entryFormat } = renderingExtensions;
 
   // Init input value
   const answerKey = qrItem?.answer?.[0].id;
@@ -200,27 +210,32 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
       data-test="q-item-datetime-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <DateTimeField
-          linkId={qItem.linkId}
-          displayDate={displayDate}
-          dateInput={dateInput}
-          timeInput={timeInput}
-          periodInput={periodInput}
-          is24HourNotation={is24HourNotation}
-          dateFeedback={dateFeedback ?? ''}
-          timeFeedback={timeFeedback ?? ''}
-          dateFocused={dateFocused}
-          displayPrompt={displayPrompt}
-          entryFormat={entryFormat}
-          readOnly={readOnly}
-          isTabled={isTabled}
-          onDateInputChange={handleDateInputChange}
-          onSelectDate={handleSelectDate}
-          setDateFocused={setDateFocused}
-          onTimeInputChange={handleTimeInputChange}
-        />
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <DateTimeField
+            linkId={qItem.linkId}
+            displayDate={displayDate}
+            dateInput={dateInput}
+            timeInput={timeInput}
+            periodInput={periodInput}
+            is24HourNotation={is24HourNotation}
+            dateFeedback={dateFeedback ?? ''}
+            timeFeedback={timeFeedback ?? ''}
+            dateFocused={dateFocused}
+            displayPrompt={displayPrompt}
+            entryFormat={entryFormat}
+            readOnly={readOnly}
+            isTabled={isTabled}
+            onDateInputChange={handleDateInputChange}
+            onSelectDate={handleSelectDate}
+            setDateFocused={setDateFocused}
+            onTimeInputChange={handleTimeInputChange}
+          />
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

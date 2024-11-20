@@ -39,6 +39,7 @@ import {
 } from './NestedSingleItemAccordion.styles';
 import useReadOnly from '../../../hooks/useReadOnly';
 import Box from '@mui/material/Box';
+import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 
 interface SingleItemViewProps
   extends PropsWithQrItemChangeHandler,
@@ -70,6 +71,7 @@ function SingleItemView(props: SingleItemViewProps) {
   } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const renderingExtensions = useRenderingExtensions(qItem);
   const groupCollapsibleValue = getGroupCollapsible(qItem);
 
   // Item hidden, do not render
@@ -97,6 +99,7 @@ function SingleItemView(props: SingleItemViewProps) {
                   qrItem={qrItem}
                   isRepeated={isRepeated}
                   isTabled={isTabled}
+                  renderingExtensions={renderingExtensions}
                   showMinimalView={showMinimalView}
                   parentIsReadOnly={readOnly}
                   onQrItemChange={onQrItemChange}
@@ -135,6 +138,7 @@ function SingleItemView(props: SingleItemViewProps) {
             qrItem={qrItem}
             isRepeated={isRepeated}
             isTabled={isTabled}
+            renderingExtensions={renderingExtensions}
             showMinimalView={showMinimalView}
             parentIsReadOnly={readOnly}
             onQrItemChange={onQrItemChange}
@@ -152,17 +156,16 @@ function SingleItemView(props: SingleItemViewProps) {
   }
 
   return (
-    <>
-      <SingleItemSwitcher
-        qItem={qItem}
-        qrItem={qrItem}
-        isRepeated={isRepeated}
-        isTabled={isTabled}
-        showMinimalView={showMinimalView}
-        parentIsReadOnly={readOnly}
-        onQrItemChange={onQrItemChange}
-      />
-    </>
+    <SingleItemSwitcher
+      qItem={qItem}
+      qrItem={qrItem}
+      isRepeated={isRepeated}
+      isTabled={isTabled}
+      renderingExtensions={renderingExtensions}
+      showMinimalView={showMinimalView}
+      parentIsReadOnly={readOnly}
+      onQrItemChange={onQrItemChange}
+    />
   );
 }
 

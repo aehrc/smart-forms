@@ -22,6 +22,7 @@ import type { PropsWithIsTabledAttribute } from '../../../../interfaces/renderPr
 import { StandardTextField } from '../../Textfield.styles';
 import DatePicker from './DatePicker';
 import Tooltip from '@mui/material/Tooltip';
+import { useRendererStylingStore } from '../../../../stores';
 
 interface CustomDateFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
@@ -53,6 +54,8 @@ function CustomDateField(props: CustomDateFieldProps) {
     onSelectDate
   } = props;
 
+  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+
   const anchorRef: RefObject<HTMLDivElement> = useRef(null);
 
   return (
@@ -61,6 +64,7 @@ function CustomDateField(props: CustomDateFieldProps) {
         id={linkId + '-date'}
         ref={anchorRef}
         fullWidth
+        textFieldWidth={textFieldWidth}
         isTabled={isTabled}
         value={input}
         error={!!feedback}

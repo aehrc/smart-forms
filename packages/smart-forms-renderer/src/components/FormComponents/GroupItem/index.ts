@@ -15,21 +15,4 @@
  * limitations under the License.
  */
 
-export type { SmartFormsRendererProps } from './Renderer';
-export { SmartFormsRenderer, BaseRenderer } from './Renderer';
-export {
-  SingleItem,
-  GroupItem,
-  RepeatItem,
-  RepeatGroup,
-  GroupTable,
-  GridGroup,
-  parseFhirDateToDisplayDate,
-  ItemFieldGrid,
-  ItemLabelWrapper,
-  BooleanField,
-  StringField
-} from './FormComponents';
-
-// Styled MUI components
-export { FullWidthFormComponentBox } from './Box.styles';
+export { default as GroupItem } from './GroupItem';

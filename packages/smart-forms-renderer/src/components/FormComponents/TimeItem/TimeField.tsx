@@ -20,7 +20,7 @@ import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps
 import type { Dayjs } from 'dayjs';
 import { LocalizationProvider, TimePicker as MuiTimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { TEXT_FIELD_WIDTH } from '../Textfield.styles';
+import { useRendererStylingStore } from '../../../stores';
 
 interface TimeFieldProps extends PropsWithIsTabledAttribute {
   value: Dayjs | null;
@@ -33,6 +33,8 @@ interface TimeFieldProps extends PropsWithIsTabledAttribute {
 function TimeField(props: TimeFieldProps) {
   const { value, displayPrompt, entryFormat, readOnly, isTabled, onTimeChange } = props;
 
+  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <MuiTimePicker
@@ -40,7 +42,7 @@ function TimeField(props: TimeFieldProps) {
         value={value}
         disabled={readOnly}
         label={displayPrompt}
-        sx={{ maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000, minWidth: 160 }}
+        sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160 }}
         slotProps={{
           textField: {
             fullWidth: true

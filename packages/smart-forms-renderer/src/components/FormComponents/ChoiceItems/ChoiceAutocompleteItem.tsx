@@ -26,25 +26,36 @@ import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import { AUTOCOMPLETE_DEBOUNCE_DURATION } from '../../../utils/debounce';
 import useReadOnly from '../../../hooks/useReadOnly';
 import ChoiceAutocompleteField from './ChoiceAutocompleteField';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
+import { ItemLabelWrapper } from '../ItemParts';
 
 interface ChoiceAutocompleteItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithRenderingExtensionsAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
 
 function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
+  const {
+    qItem,
+    qrItem,
+    isRepeated,
+    isTabled,
+    renderingExtensions,
+    parentIsReadOnly,
+    onQrItemChange
+  } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
@@ -99,6 +110,7 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
         feedback={feedback ?? null}
         readOnly={readOnly}
         isTabled={isTabled}
+        renderingExtensions={renderingExtensions}
         onInputChange={setInput}
         onValueChange={handleValueChange}
       />
@@ -110,19 +122,25 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
       data-test="q-item-choice-autocomplete-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <ChoiceAutocompleteField
-          qItem={qItem}
-          options={options}
-          valueCoding={valueCoding ?? null}
-          loading={loading}
-          feedback={feedback ?? null}
-          readOnly={readOnly}
-          isTabled={isTabled}
-          onInputChange={setInput}
-          onValueChange={handleValueChange}
-        />
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <ChoiceAutocompleteField
+            qItem={qItem}
+            options={options}
+            valueCoding={valueCoding ?? null}
+            loading={loading}
+            feedback={feedback ?? null}
+            readOnly={readOnly}
+            isTabled={isTabled}
+            renderingExtensions={renderingExtensions}
+            onInputChange={setInput}
+            onValueChange={handleValueChange}
+          />
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

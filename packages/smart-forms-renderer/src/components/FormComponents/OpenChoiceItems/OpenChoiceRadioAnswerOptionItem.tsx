@@ -25,17 +25,20 @@ import { findInAnswerOptions, getQrChoiceValue } from '../../../utils/choice';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import OpenChoiceRadioAnswerOptionFields from './OpenChoiceRadioAnswerOptionFields';
 import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
+import { ItemLabelWrapper } from '../ItemParts';
 
 interface OpenChoiceRadioAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithRenderingExtensionsAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
@@ -132,18 +135,23 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
       data-test="q-item-open-choice-radio-answer-option-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <OpenChoiceRadioAnswerOptionFields
-          qItem={qItem}
-          options={options}
-          valueRadio={valueRadio}
-          openLabelText={openLabelText}
-          openLabelValue={openLabelValue}
-          openLabelSelected={openLabelSelected}
-          readOnly={readOnly}
-          onValueChange={handleValueChange}
-        />
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <OpenChoiceRadioAnswerOptionFields
+            qItem={qItem}
+            options={options}
+            valueRadio={valueRadio}
+            openLabelText={openLabelText}
+            openLabelValue={openLabelValue}
+            openLabelSelected={openLabelSelected}
+            readOnly={readOnly}
+            onValueChange={handleValueChange}
+          />
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

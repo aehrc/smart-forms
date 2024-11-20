@@ -20,11 +20,11 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { updateChoiceCheckboxAnswers } from '../../../utils/choice';
 import { FullWidthFormComponentBox } from '../../Box.styles';
-import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
+  PropsWithRenderingExtensionsAttribute,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
@@ -32,10 +32,12 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
 import ChoiceCheckboxAnswerOptionFields from './ChoiceCheckboxAnswerOptionFields';
+import { ItemLabelWrapper } from '../ItemParts';
 
 interface ChoiceCheckboxAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
+    PropsWithRenderingExtensionsAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
@@ -47,6 +49,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
     qItem,
     qrItem,
     isRepeated,
+    renderingExtensions,
     showMinimalView = false,
     parentIsReadOnly,
     onQrItemChange
@@ -60,7 +63,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
   const answers = qrChoiceCheckbox.answer ?? [];
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayInstructions } = useRenderingExtensions(qItem);
+  const { displayInstructions } = renderingExtensions;
 
   // TODO Process calculated expressions
   // This requires its own hook, because in the case of multi-select, we need to check if the value is already checked to prevent an infinite loop
@@ -109,15 +112,20 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
       data-test="q-item-choice-checkbox-answer-option-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <ChoiceCheckboxAnswerOptionFields
-          qItem={qItem}
-          options={options}
-          answers={answers}
-          readOnly={readOnly}
-          onCheckedChange={handleCheckedChange}
-        />
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <ChoiceCheckboxAnswerOptionFields
+            qItem={qItem}
+            options={options}
+            answers={answers}
+            readOnly={readOnly}
+            onCheckedChange={handleCheckedChange}
+          />
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

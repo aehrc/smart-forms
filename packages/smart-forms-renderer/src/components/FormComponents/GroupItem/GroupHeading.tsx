@@ -24,6 +24,8 @@ import type { QuestionnaireItem } from 'fhir/r4';
 import { getContextDisplays } from '../../../utils/tabs';
 import ContextDisplayItem from '../ItemParts/ContextDisplayItem';
 import ItemLabelText from '../ItemParts/ItemLabelText';
+import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
+import { useRendererStylingStore } from '../../../stores';
 
 interface GroupHeadingProps extends PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
@@ -35,6 +37,9 @@ interface GroupHeadingProps extends PropsWithIsRepeatedAttribute {
 const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
   const { qItem, readOnly, tabIsMarkedAsComplete, pageIsMarkedAsComplete, isRepeated } = props;
 
+  const requiredIndicatorPosition = useRendererStylingStore.use.requiredIndicatorPosition();
+
+  const { required } = useRenderingExtensions(qItem);
   const contextDisplayItems = getContextDisplays(qItem);
 
   if (isRepeated) {
@@ -47,13 +52,29 @@ const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
   return (
     <>
       <Box display="flex" alignItems="center" width="100%">
-        <Typography
-          variant="h6"
-          fontSize={isTabHeading || isPageHeading ? 16 : 15}
-          color={readOnly && (!isTabHeading || !isPageHeading) ? 'text.secondary' : 'text.primary'}>
-          <ItemLabelText qItem={qItem} />
-        </Typography>
+        <Box position="relative">
+          {required && requiredIndicatorPosition === 'start' ? (
+            <Typography
+              color="red"
+              sx={{ position: 'absolute', top: 0, left: -8 }} // Adjust top and left values as needed
+            >
+              *
+            </Typography>
+          ) : null}
+          <Box display="flex" columnGap={0.75} justifyContent="space-between" alignItems="center">
+            <Typography
+              variant="h6"
+              fontSize={isTabHeading || isPageHeading ? 16 : 15}
+              color={
+                readOnly && (!isTabHeading || !isPageHeading) ? 'text.secondary' : 'text.primary'
+              }>
+              <ItemLabelText qItem={qItem} />
+            </Typography>
+          </Box>
+        </Box>
+
         <Box flexGrow={1} />
+
         <Box display="flex" columnGap={0.5} mx={1}>
           {contextDisplayItems.map((item) => {
             return <ContextDisplayItem key={item.linkId} displayItem={item} />;

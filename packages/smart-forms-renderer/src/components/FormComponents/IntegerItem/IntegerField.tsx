@@ -20,6 +20,8 @@ import InputAdornment from '@mui/material/InputAdornment';
 import { StandardTextField } from '../Textfield.styles';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
+import { useRendererStylingStore } from '../../../stores';
+import Typography from '@mui/material/Typography';
 
 interface IntegerFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
@@ -47,6 +49,8 @@ function IntegerField(props: IntegerFieldProps) {
     onInputChange
   } = props;
 
+  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+
   return (
     <StandardTextField
       id={linkId}
@@ -58,6 +62,7 @@ function IntegerField(props: IntegerFieldProps) {
       label={displayPrompt}
       placeholder={entryFormat === '' ? '0' : entryFormat}
       fullWidth
+      textFieldWidth={textFieldWidth}
       isTabled={isTabled}
       size="small"
       inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
@@ -65,7 +70,9 @@ function IntegerField(props: IntegerFieldProps) {
         endAdornment: (
           <InputAdornment position={'end'}>
             <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-            {displayUnit}
+            <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
+              {displayUnit}
+            </Typography>
           </InputAdornment>
         )
       }}

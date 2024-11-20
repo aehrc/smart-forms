@@ -21,6 +21,7 @@ import Box from '@mui/material/Box';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { StandardTextField } from '../Textfield.styles';
+import { useRendererStylingStore } from '../../../stores';
 
 interface Props {
   value: string | null;
@@ -32,6 +33,8 @@ interface Props {
 
 function CheckboxSingleWithOpenLabel(props: Props) {
   const { value, label, isChecked, onCheckedChange, onInputChange } = props;
+
+  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
   function handleCheckedChange(event: ChangeEvent<HTMLInputElement>) {
     onCheckedChange(event.target.checked);
@@ -53,6 +56,7 @@ function CheckboxSingleWithOpenLabel(props: Props) {
         value={value}
         onChange={handleInputChange}
         fullWidth
+        textFieldWidth={textFieldWidth}
         isTabled={false}
         size="small"
         data-test="q-item-checkbox-open-label-field"

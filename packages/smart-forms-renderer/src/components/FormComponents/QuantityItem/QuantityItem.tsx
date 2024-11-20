@@ -3,7 +3,8 @@ import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import type {
   Quantity,
@@ -11,7 +12,6 @@ import type {
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItem
 } from 'fhir/r4';
-import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import debounce from 'lodash.debounce';
@@ -32,24 +32,34 @@ import {
 } from '../../../utils/quantity';
 import QuantityComparatorField from './QuantityComparatorField';
 import useQuantityCalculatedExpression from '../../../hooks/useQuantityCalculatedExpression';
+import { ItemLabelWrapper } from '../ItemParts';
 
 interface QuantityItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
+    PropsWithRenderingExtensionsAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
 
 function QuantityItem(props: QuantityItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
+  const {
+    qItem,
+    qrItem,
+    isRepeated,
+    isTabled,
+    renderingExtensions,
+    parentIsReadOnly,
+    onQrItemChange
+  } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const precision = getDecimalPrecision(qItem);
-  const { displayUnit, displayPrompt, entryFormat, quantityUnit } = useRenderingExtensions(qItem);
+  const { displayUnit, displayPrompt, entryFormat, quantityUnit } = renderingExtensions;
 
   // Get units options if present
   const unitOptions = useMemo(
@@ -265,40 +275,45 @@ function QuantityItem(props: QuantityItemProps) {
       data-test="q-item-quantity-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <Box display="flex" gap={1}>
-          <QuantityComparatorField
-            linkId={qItem.linkId}
-            options={quantityComparators}
-            valueSelect={comparatorInput}
-            readOnly={readOnly}
-            isTabled={isTabled}
-            onChange={handleComparatorInputChange}
-          />
-          <QuantityField
-            linkId={qItem.linkId}
-            input={valueInput}
-            feedback={feedback}
-            displayPrompt={displayPrompt}
-            displayUnit={displayUnit}
-            entryFormat={entryFormat}
-            readOnly={readOnly}
-            calcExpUpdated={calcExpUpdated}
-            isTabled={isTabled}
-            onInputChange={handleValueInputChange}
-          />
-          {unitOptions.length > 0 ? (
-            <QuantityUnitField
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <Box display="flex" gap={1}>
+            <QuantityComparatorField
               linkId={qItem.linkId}
-              options={unitOptions}
-              valueSelect={unitInput}
+              options={quantityComparators}
+              valueSelect={comparatorInput}
               readOnly={readOnly}
               isTabled={isTabled}
-              onChange={handleUnitInputChange}
+              onChange={handleComparatorInputChange}
             />
-          ) : null}
-        </Box>
-      </ItemFieldGrid>
+            <QuantityField
+              linkId={qItem.linkId}
+              input={valueInput}
+              feedback={feedback}
+              displayPrompt={displayPrompt}
+              displayUnit={displayUnit}
+              entryFormat={entryFormat}
+              readOnly={readOnly}
+              calcExpUpdated={calcExpUpdated}
+              isTabled={isTabled}
+              onInputChange={handleValueInputChange}
+            />
+            {unitOptions.length > 0 ? (
+              <QuantityUnitField
+                linkId={qItem.linkId}
+                options={unitOptions}
+                valueSelect={unitInput}
+                readOnly={readOnly}
+                isTabled={isTabled}
+                onChange={handleUnitInputChange}
+              />
+            ) : null}
+          </Box>
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

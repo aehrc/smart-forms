@@ -21,6 +21,7 @@ import { AttachmentFileDropBoxWrapper } from './AttachmentFileDropBox.styles';
 import React from 'react';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import { getFileSize } from '../../../utils/fileUtils';
+import { useRendererStylingStore } from '../../../stores';
 
 export interface AttachmentFileDropBoxProps extends PropsWithIsTabledAttribute {
   file: File | null;
@@ -31,6 +32,8 @@ export interface AttachmentFileDropBoxProps extends PropsWithIsTabledAttribute {
 
 function AttachmentFileDropBox(props: AttachmentFileDropBoxProps) {
   const { file, onDrop, errorMessage, readOnly, isTabled } = props;
+
+  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
   const { canDrop, isOver, dropTarget } = useFileDrop(onDrop);
 
@@ -52,6 +55,7 @@ function AttachmentFileDropBox(props: AttachmentFileDropBoxProps) {
       ref={dropTarget}
       display="flex"
       isActive={isActive}
+      textFieldWidth={textFieldWidth}
       isTabled={isTabled}>
       <Box p={1.5}>
         <Typography color={readOnly ? 'text.disabled' : 'text.primary'}>{boxMessage}</Typography>

@@ -17,10 +17,6 @@
 
 import React, { memo } from 'react';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import { grey } from '@mui/material/colors';
-import Fade from '@mui/material/Fade';
-import Tooltip from '@mui/material/Tooltip';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem } from 'fhir/r4';
 import ChoiceRadioSingle from '../ChoiceItems/ChoiceRadioSingle';
@@ -30,6 +26,9 @@ import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { isSpecificItemControl } from '../../../utils';
+import ClearInputButton from '../ItemParts/ClearInputButton';
+import { useRendererStylingStore } from '../../../stores';
+import { findCalculatedExpressionsInExtensions } from '../../../utils/getExpressionsFromItem';
 
 interface BooleanFieldProps {
   qItem: QuestionnaireItem;
@@ -42,6 +41,10 @@ interface BooleanFieldProps {
 
 const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
   const { qItem, readOnly, valueBoolean, calcExpUpdated, onCheckedChange, onClear } = props;
+
+  const hideClearButton = useRendererStylingStore.use.hideClearButton();
+  const calculatedExpressionExist =
+    findCalculatedExpressionsInExtensions(qItem.extension ?? []).length > 0;
 
   const booleanAsCheckbox = isSpecificItemControl(qItem, 'check-box');
 
@@ -86,23 +89,16 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
       )}
 
       <Box flexGrow={1} />
-
-      <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-      <Fade in={valueBoolean !== undefined} timeout={100}>
-        <Tooltip title="Set question as unanswered">
-          <span>
-            <Button
-              sx={{
-                color: grey['500'],
-                '&:hover': { backgroundColor: grey['200'] }
-              }}
-              disabled={readOnly}
-              onClick={onClear}>
-              Clear
-            </Button>
-          </span>
-        </Tooltip>
-      </Fade>
+      {calculatedExpressionExist ? (
+        <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+      ) : null}
+      {hideClearButton ? null : (
+        <ClearInputButton
+          buttonShown={valueBoolean !== undefined}
+          readOnly={readOnly}
+          onClear={onClear}
+        />
+      )}
     </Box>
   );
 });

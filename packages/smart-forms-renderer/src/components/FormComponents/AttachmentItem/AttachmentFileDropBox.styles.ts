@@ -17,15 +17,17 @@
 
 import { styled } from '@mui/material/styles';
 import { Box } from '@mui/material';
-import { TEXT_FIELD_WIDTH } from '../Textfield.styles';
 
 export const AttachmentFileDropBoxWrapper = styled(Box, {
-  shouldForwardProp: (prop) => prop !== 'isActive' && prop !== 'isTabled'
-})<{ isActive: boolean; isTabled: boolean }>(({ theme, isActive, isTabled }) => ({
-  backgroundColor: theme.palette.background.paper,
-  border: '2px dashed',
-  borderColor: isActive ? theme.palette.secondary.main : theme.palette.primary.main,
-  borderRadius: '4px',
-  maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000,
-  minWidth: 160
-}));
+  shouldForwardProp: (prop) =>
+    prop !== 'isActive' && prop !== 'isTabled' && prop !== 'textFieldWidth'
+})<{ isActive: boolean; isTabled: boolean; textFieldWidth: number }>(
+  ({ theme, isActive, isTabled, textFieldWidth }) => ({
+    backgroundColor: theme.palette.background.paper,
+    border: '2px dashed',
+    borderColor: isActive ? theme.palette.secondary.main : theme.palette.primary.main,
+    borderRadius: '4px',
+    maxWidth: !isTabled ? textFieldWidth : 3000,
+    minWidth: 160
+  })
+);

@@ -25,7 +25,8 @@ import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import ChoiceSelectAnswerValueSetFields from './ChoiceSelectAnswerValueSetFields';
 import useReadOnly from '../../../hooks/useReadOnly';
@@ -33,18 +34,28 @@ import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
 import useCodingCalculatedExpression from '../../../hooks/useCodingCalculatedExpression';
 import { convertCodingsToAnswerOptions, findInAnswerOptions } from '../../../utils/choice';
+import { ItemLabelWrapper } from '../ItemParts';
 
 interface ChoiceSelectAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
+    PropsWithRenderingExtensionsAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
 
 function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
+  const {
+    qItem,
+    qrItem,
+    isRepeated,
+    isTabled,
+    renderingExtensions,
+    parentIsReadOnly,
+    onQrItemChange
+  } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
@@ -126,6 +137,7 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         isTabled={isTabled}
+        renderingExtensions={renderingExtensions}
         onSelectChange={handleChange}
       />
     );
@@ -135,18 +147,24 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
     <FullWidthFormComponentBox
       data-test="q-item-choice-select-answer-value-set-box"
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <ChoiceSelectAnswerValueSetFields
-          qItem={qItem}
-          codings={codings}
-          valueCoding={valueCoding}
-          terminologyError={terminologyError}
-          readOnly={readOnly}
-          calcExpUpdated={calcExpUpdated}
-          isTabled={isTabled}
-          onSelectChange={handleChange}
-        />
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <ChoiceSelectAnswerValueSetFields
+            qItem={qItem}
+            codings={codings}
+            valueCoding={valueCoding}
+            terminologyError={terminologyError}
+            readOnly={readOnly}
+            calcExpUpdated={calcExpUpdated}
+            isTabled={isTabled}
+            renderingExtensions={renderingExtensions}
+            onSelectChange={handleChange}
+          />
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

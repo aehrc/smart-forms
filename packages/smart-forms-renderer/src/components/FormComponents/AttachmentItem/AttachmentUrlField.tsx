@@ -26,6 +26,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import Tooltip from '@mui/material/Tooltip';
 import CheckIcon from '@mui/icons-material/Check';
 import DangerousIcon from '@mui/icons-material/Dangerous';
+import { useRendererStylingStore } from '../../../stores';
 
 interface AttachmentUrlFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
@@ -37,6 +38,8 @@ interface AttachmentUrlFieldProps extends PropsWithIsTabledAttribute {
 function AttachmentUrlField(props: AttachmentUrlFieldProps) {
   const { linkId, url, readOnly, isTabled, onUrlChange } = props;
 
+  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+
   const urlIsValid = useAttachmentUrlValidation(url);
 
   return (
@@ -47,6 +50,7 @@ function AttachmentUrlField(props: AttachmentUrlFieldProps) {
       <Stack direction="row" alignItems="center">
         <StandardTextField
           fullWidth
+          textFieldWidth={textFieldWidth}
           isTabled={isTabled}
           id={linkId}
           value={url}

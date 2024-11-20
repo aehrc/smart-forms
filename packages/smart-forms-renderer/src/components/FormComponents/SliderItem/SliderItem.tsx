@@ -20,7 +20,8 @@ import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
@@ -31,11 +32,13 @@ import SliderField from './SliderField';
 import useSliderExtensions from '../../../hooks/useSliderExtensions';
 import Box from '@mui/material/Box';
 import { useQuestionnaireStore } from '../../../stores';
+import { ItemLabelWrapper } from '../ItemParts';
 
 interface SliderItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
+    PropsWithRenderingExtensionsAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
@@ -96,23 +99,28 @@ function SliderItem(props: SliderItemProps) {
       data-test="q-item-slider-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <Box px={4}>
-          <SliderField
-            linkId={qItem.linkId}
-            value={valueInteger}
-            minValue={minValue}
-            maxValue={maxValue}
-            stepValue={stepValue}
-            minLabel={minLabel}
-            maxLabel={maxLabel}
-            isInteracted={isInteracted}
-            readOnly={readOnly}
-            isTabled={isTabled}
-            onValueChange={handleValueChange}
-          />
-        </Box>
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <Box px={4}>
+            <SliderField
+              linkId={qItem.linkId}
+              value={valueInteger}
+              minValue={minValue}
+              maxValue={maxValue}
+              stepValue={stepValue}
+              minLabel={minLabel}
+              maxLabel={maxLabel}
+              isInteracted={isInteracted}
+              readOnly={readOnly}
+              isTabled={isTabled}
+              onValueChange={handleValueChange}
+            />
+          </Box>
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

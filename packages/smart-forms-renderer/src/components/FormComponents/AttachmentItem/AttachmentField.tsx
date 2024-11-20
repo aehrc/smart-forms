@@ -24,6 +24,7 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import type { AttachmentValues } from './AttachmentItem';
 import AttachmentUrlField from './AttachmentUrlField';
+import { useRendererStylingStore } from '../../../stores';
 
 interface AttachmentFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
@@ -44,6 +45,8 @@ function AttachmentField(props: AttachmentFieldProps) {
     onUrlChange,
     onFileNameChange
   } = props;
+
+  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
   const { uploadedFile, url, fileName } = attachmentValues;
 
@@ -76,6 +79,7 @@ function AttachmentField(props: AttachmentFieldProps) {
           </Typography>
           <StandardTextField
             fullWidth
+            textFieldWidth={textFieldWidth}
             isTabled={isTabled}
             id={linkId}
             value={fileName}

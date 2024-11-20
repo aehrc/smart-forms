@@ -27,10 +27,8 @@ import { getChoiceOrientation } from '../../../utils/choice';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import Box from '@mui/material/Box';
 import RadioOptionList from '../ItemParts/RadioOptionList';
-import Tooltip from '@mui/material/Tooltip';
-import Button from '@mui/material/Button';
-import { grey } from '@mui/material/colors';
-import Fade from '@mui/material/Fade';
+import ClearInputButton from '../ItemParts/ClearInputButton';
+import { useRendererStylingStore } from '../../../stores';
 
 interface ChoiceRadioAnswerValueSetFieldsProps {
   qItem: QuestionnaireItem;
@@ -55,6 +53,8 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
     onClear
   } = props;
 
+  const hideClearButton = useRendererStylingStore.use.hideClearButton();
+
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
   if (options.length > 0) {
@@ -73,21 +73,10 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
         <Box flexGrow={1} />
 
         <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-        <Fade in={!!valueRadio} timeout={100}>
-          <Tooltip title="Set question as unanswered">
-            <span>
-              <Button
-                sx={{
-                  color: grey['500'],
-                  '&:hover': { backgroundColor: grey['200'] }
-                }}
-                disabled={readOnly}
-                onClick={onClear}>
-                Clear
-              </Button>
-            </span>
-          </Tooltip>
-        </Fade>
+
+        {hideClearButton ? null : (
+          <ClearInputButton buttonShown={!!valueRadio} readOnly={readOnly} onClear={onClear} />
+        )}
       </Box>
     );
   }

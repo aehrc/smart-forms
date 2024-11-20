@@ -21,11 +21,11 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import useValueSetCodings from '../../../hooks/useValueSetCodings';
 import { convertCodingsToAnswerOptions, updateChoiceCheckboxAnswers } from '../../../utils/choice';
 import { FullWidthFormComponentBox } from '../../Box.styles';
-import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
+  PropsWithRenderingExtensionsAttribute,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
@@ -33,10 +33,12 @@ import ChoiceCheckboxAnswerValueSetFields from './ChoiceCheckboxAnswerValueSetFi
 import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
+import { ItemLabelWrapper } from '../ItemParts';
 
 interface ChoiceCheckboxAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
+    PropsWithRenderingExtensionsAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
@@ -49,6 +51,7 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
     qItem,
     qrItem,
     isRepeated,
+    renderingExtensions,
     showMinimalView = false,
     parentIsReadOnly,
     onQrItemChange
@@ -62,7 +65,7 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
   const answers = qrChoiceCheckbox.answer ?? [];
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayInstructions } = useRenderingExtensions(qItem);
+  const { displayInstructions } = renderingExtensions;
 
   // Get codings/options from valueSet
   const { codings, terminologyError } = useValueSetCodings(qItem);
@@ -115,16 +118,21 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
       data-test="q-item-choice-checkbox-answer-value-set-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <ChoiceCheckboxAnswerValueSetFields
-          qItem={qItem}
-          options={options}
-          answers={answers}
-          readOnly={readOnly}
-          terminologyError={terminologyError}
-          onCheckedChange={handleCheckedChange}
-        />
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <ChoiceCheckboxAnswerValueSetFields
+            qItem={qItem}
+            options={options}
+            answers={answers}
+            readOnly={readOnly}
+            terminologyError={terminologyError}
+            onCheckedChange={handleCheckedChange}
+          />
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

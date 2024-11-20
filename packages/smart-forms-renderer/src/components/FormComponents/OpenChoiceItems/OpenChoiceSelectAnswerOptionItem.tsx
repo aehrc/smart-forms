@@ -27,24 +27,35 @@ import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import OpenChoiceSelectAnswerOptionField from './OpenChoiceSelectAnswerOptionField';
 import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
+import { ItemLabelWrapper } from '../ItemParts';
 
 interface OpenChoiceSelectAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
+    PropsWithRenderingExtensionsAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
 
 function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
+  const {
+    qItem,
+    qrItem,
+    isRepeated,
+    isTabled,
+    renderingExtensions,
+    parentIsReadOnly,
+    onQrItemChange
+  } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
@@ -102,6 +113,7 @@ function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionIte
         valueSelect={valueSelect}
         readOnly={readOnly}
         isTabled={isTabled}
+        renderingExtensions={renderingExtensions}
         onChange={handleChange}
       />
     );
@@ -112,16 +124,22 @@ function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionIte
       data-test="q-item-open-choice-select-answer-option-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <OpenChoiceSelectAnswerOptionField
-          qItem={qItem}
-          options={answerOptions}
-          valueSelect={valueSelect}
-          readOnly={readOnly}
-          isTabled={isTabled}
-          onChange={handleChange}
-        />
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <OpenChoiceSelectAnswerOptionField
+            qItem={qItem}
+            options={answerOptions}
+            valueSelect={valueSelect}
+            readOnly={readOnly}
+            isTabled={isTabled}
+            renderingExtensions={renderingExtensions}
+            onChange={handleChange}
+          />
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

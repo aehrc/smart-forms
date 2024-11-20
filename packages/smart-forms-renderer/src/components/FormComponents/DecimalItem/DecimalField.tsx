@@ -20,6 +20,8 @@ import InputAdornment from '@mui/material/InputAdornment';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import { StandardTextField } from '../Textfield.styles';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import { useRendererStylingStore } from '../../../stores';
+import Typography from '@mui/material/Typography';
 
 interface DecimalFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
@@ -47,6 +49,8 @@ function DecimalField(props: DecimalFieldProps) {
     onInputChange
   } = props;
 
+  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+
   return (
     <StandardTextField
       id={linkId}
@@ -56,6 +60,7 @@ function DecimalField(props: DecimalFieldProps) {
       disabled={readOnly}
       label={displayPrompt}
       placeholder={entryFormat === '' ? '0.0' : entryFormat}
+      textFieldWidth={textFieldWidth}
       fullWidth
       isTabled={isTabled}
       size="small"
@@ -64,7 +69,9 @@ function DecimalField(props: DecimalFieldProps) {
         endAdornment: (
           <InputAdornment position={'end'}>
             <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-            {displayUnit}
+            <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
+              {displayUnit}
+            </Typography>
           </InputAdornment>
         )
       }}

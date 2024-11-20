@@ -20,6 +20,8 @@ import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps
 import InputAdornment from '@mui/material/InputAdornment';
 import { StandardTextField } from '../Textfield.styles';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
+import { useRendererStylingStore } from '../../../stores';
+import Typography from '@mui/material/Typography';
 
 interface StringFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
@@ -47,9 +49,12 @@ function StringField(props: StringFieldProps) {
     onInputChange
   } = props;
 
+  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+
   return (
     <StandardTextField
       fullWidth
+      textFieldWidth={textFieldWidth}
       isTabled={isTabled}
       id={linkId}
       value={input}
@@ -63,7 +68,9 @@ function StringField(props: StringFieldProps) {
         endAdornment: (
           <InputAdornment position="end">
             <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-            {displayUnit}
+            <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
+              {displayUnit}
+            </Typography>
           </InputAdornment>
         )
       }}

@@ -20,15 +20,18 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import type {
   PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute
+  PropsWithIsTabledAttribute,
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { findInAnswerOptions } from '../../../utils/choice';
 import ChoiceSelectAnswerOptionFields from './ChoiceSelectAnswerOptionFields';
+import { ItemLabelWrapper } from '../ItemParts';
 
 interface ChoiceSelectAnswerOptionViewProps
   extends PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute {
+    PropsWithIsTabledAttribute,
+    PropsWithRenderingExtensionsAttribute {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
   valueChoice: string | null;
@@ -45,6 +48,7 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
     valueChoice,
     isRepeated,
     isTabled,
+    renderingExtensions,
     readOnly,
     calcExpUpdated,
     onFocusLinkId,
@@ -65,6 +69,7 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         isTabled={isTabled}
+        renderingExtensions={renderingExtensions}
         onSelectChange={onSelectChange}
       />
     );
@@ -75,17 +80,23 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
       data-test="q-item-choice-select-answer-option-box"
       data-linkid={qItem.linkId}
       onClick={onFocusLinkId}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <ChoiceSelectAnswerOptionFields
-          qItem={qItem}
-          options={options}
-          valueSelect={valueSelect}
-          readOnly={readOnly}
-          calcExpUpdated={calcExpUpdated}
-          isTabled={isTabled}
-          onSelectChange={onSelectChange}
-        />
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <ChoiceSelectAnswerOptionFields
+            qItem={qItem}
+            options={options}
+            valueSelect={valueSelect}
+            readOnly={readOnly}
+            calcExpUpdated={calcExpUpdated}
+            isTabled={isTabled}
+            renderingExtensions={renderingExtensions}
+            onSelectChange={onSelectChange}
+          />
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

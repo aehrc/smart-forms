@@ -17,12 +17,14 @@
 
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type { QrRepeatGroup } from './repeatGroup.interface';
+import type { RenderingExtensions } from '../hooks/useRenderingExtensions';
 
 export interface QItemOverrideComponentProps {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | QuestionnaireResponseItem[] | null;
   isRepeated: boolean;
   isTabled?: boolean;
+  renderingExtensions?: RenderingExtensions;
   groupCardElevation?: number;
   parentIsReadOnly?: boolean;
   parentIsRepeatGroup?: boolean;

@@ -20,6 +20,7 @@ import React from 'react';
 import Box from '@mui/material/Box';
 import { StandardTextField } from '../Textfield.styles';
 import ChoiceRadioSingle from '../ChoiceItems/ChoiceRadioSingle';
+import { useRendererStylingStore } from '../../../stores';
 
 interface RadioButtonWithOpenLabelProps {
   value: string | null;
@@ -31,6 +32,9 @@ interface RadioButtonWithOpenLabelProps {
 
 function RadioButtonWithOpenLabel(props: RadioButtonWithOpenLabelProps) {
   const { value, label, readOnly, isSelected, onInputChange } = props;
+
+  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+
   function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
     onInputChange(event.target.value);
   }
@@ -43,6 +47,7 @@ function RadioButtonWithOpenLabel(props: RadioButtonWithOpenLabelProps) {
         value={value}
         onChange={handleInputChange}
         fullWidth
+        textFieldWidth={textFieldWidth}
         isTabled={false}
         size="small"
         data-test="q-item-radio-open-label-field"

@@ -89,7 +89,7 @@ export function getCalculatedExpressions(qItem: QuestionnaireItem): CalculatedEx
   return [...calculatedExpressionsInItem, ...calculatedAndCqfExpressionsInText];
 }
 
-function findCalculatedExpressionsInExtensions(extensions: Extension[]): Extension[] {
+export function findCalculatedExpressionsInExtensions(extensions: Extension[]): Extension[] {
   return extensions.filter(
     (extension) =>
       extension.url ===

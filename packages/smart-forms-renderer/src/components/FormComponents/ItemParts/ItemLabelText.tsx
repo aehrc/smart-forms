@@ -26,6 +26,8 @@ import useDisplayCqfAndCalculatedExpression from '../../../hooks/useDisplayCqfAn
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 import { default as styleParse } from 'style-to-js';
 import { useRendererStylingStore } from '../../../stores/rendererStylingStore';
+import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
+import FlyoverItem from './FlyoverItem';
 
 interface ItemLabelTextProps {
   qItem: QuestionnaireItem;
@@ -36,6 +38,9 @@ const ItemLabelText = memo(function ItemLabelText(props: ItemLabelTextProps) {
   const { qItem, readOnly } = props;
 
   const itemLabelFontWeight = useRendererStylingStore.use.itemLabelFontWeight();
+  const requiredIndicatorPosition = useRendererStylingStore.use.requiredIndicatorPosition();
+
+  const { required, displayFlyover } = useRenderingExtensions(qItem);
 
   let labelText = qItem.text ?? '';
 
@@ -48,15 +53,28 @@ const ItemLabelText = memo(function ItemLabelText(props: ItemLabelTextProps) {
   // parse xHTML if found
   const xHtmlString = getXHtmlString(qItem);
   if (xHtmlString) {
-    return <Box>{htmlParse(xHtmlString)}</Box>;
+    return (
+      <Box display="flex">
+        {htmlParse(xHtmlString)}
+        {required && requiredIndicatorPosition === 'end' ? (
+          <Typography color="red">*</Typography>
+        ) : null}
+        {displayFlyover !== '' ? <FlyoverItem displayFlyover={displayFlyover} /> : null}
+      </Box>
+    );
   }
 
   // parse markdown if found
   const markdownString = getMarkdownString(qItem);
   if (markdownString) {
     return (
-      <Box>
+      <Box display="flex">
         <ReactMarkdown>{markdownString}</ReactMarkdown>
+        {required && requiredIndicatorPosition === 'end' ? (
+          <Typography color="red">*</Typography>
+        ) : null}
+        <FlyoverItem displayFlyover={displayFlyover} />
+        {displayFlyover !== '' ? <FlyoverItem displayFlyover={displayFlyover} /> : null}
       </Box>
     );
   }
@@ -70,11 +88,15 @@ const ItemLabelText = memo(function ItemLabelText(props: ItemLabelTextProps) {
   const stylesString = structuredDataCapture.getStyle(qItem._text);
   if (stylesString) {
     const styles = styleParse(stylesString);
-    return <div style={styles}>{labelText}</div>;
-  }
-
-  if (qItem.type === 'group') {
-    return <>{labelText}</>;
+    return (
+      <Box display="flex">
+        <div style={styles}>{labelText}</div>
+        {required && requiredIndicatorPosition === 'end' ? (
+          <Typography color="red">*</Typography>
+        ) : null}
+        {displayFlyover !== '' ? <FlyoverItem displayFlyover={displayFlyover} /> : null}
+      </Box>
+    );
   }
 
   const textFontWeight = itemLabelFontWeight != 'default' ? itemLabelFontWeight : 'normal';
@@ -86,6 +108,21 @@ const ItemLabelText = memo(function ItemLabelText(props: ItemLabelTextProps) {
       fontWeight={itemLabelFontWeight ? itemLabelFontWeight : 'normal'}
       sx={{ mt: 0.25 }}>
       {labelText}
+      {required && requiredIndicatorPosition === 'end' ? (
+        <Typography
+          component="span"
+          color="red"
+          fontWeight={itemLabelFontWeight ? itemLabelFontWeight : 'normal'}
+          sx={{ verticalAlign: 'middle' }}>
+          *
+        </Typography>
+      ) : null}
+      <Typography component="span" sx={{ mr: 0.75 }} />
+      {displayFlyover !== '' ? (
+        <Typography component="span">
+          <FlyoverItem displayFlyover={displayFlyover} />
+        </Typography>
+      ) : null}
     </Typography>
   );
 });

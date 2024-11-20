@@ -20,10 +20,10 @@ import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import debounce from 'lodash.debounce';
@@ -40,24 +40,34 @@ import useDecimalCalculatedExpression from '../../../hooks/useDecimalCalculatedE
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import Box from '@mui/material/Box';
+import { ItemLabelWrapper } from '../ItemParts';
 
 interface DecimalItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
+    PropsWithRenderingExtensionsAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
 
 function DecimalItem(props: DecimalItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
+  const {
+    qItem,
+    qrItem,
+    isRepeated,
+    isTabled,
+    renderingExtensions,
+    parentIsReadOnly,
+    onQrItemChange
+  } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const precision = getDecimalPrecision(qItem);
-  const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
+  const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
   // Init input value
   const answerKey = qrItem?.answer?.[0].id;
@@ -157,20 +167,25 @@ function DecimalItem(props: DecimalItemProps) {
       data-test="q-item-decimal-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <DecimalField
-          linkId={qItem.linkId}
-          input={input}
-          feedback={feedback}
-          displayPrompt={displayPrompt}
-          displayUnit={displayUnit}
-          entryFormat={entryFormat}
-          readOnly={readOnly}
-          calcExpUpdated={calcExpUpdated}
-          isTabled={isTabled}
-          onInputChange={handleInputChange}
-        />
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <DecimalField
+            linkId={qItem.linkId}
+            input={input}
+            feedback={feedback}
+            displayPrompt={displayPrompt}
+            displayUnit={displayUnit}
+            entryFormat={entryFormat}
+            readOnly={readOnly}
+            calcExpUpdated={calcExpUpdated}
+            isTabled={isTabled}
+            onInputChange={handleInputChange}
+          />
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

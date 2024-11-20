@@ -20,7 +20,8 @@ import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
@@ -31,11 +32,13 @@ import Box from '@mui/material/Box';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import useBooleanCalculatedExpression from '../../../hooks/useBooleanCalculatedExpression';
+import { ItemLabelWrapper } from '../ItemParts';
 
 interface BooleanItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
+    PropsWithRenderingExtensionsAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
@@ -122,21 +125,27 @@ function BooleanItem(props: BooleanItemProps) {
       />
     );
   }
+
   return (
     <FullWidthFormComponentBox
       data-test="q-item-boolean-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <BooleanField
-          qItem={qItem}
-          readOnly={readOnly}
-          valueBoolean={valueBoolean}
-          calcExpUpdated={calcExpUpdated}
-          onCheckedChange={handleValueChange}
-          onClear={handleClear}
-        />
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <BooleanField
+            qItem={qItem}
+            readOnly={readOnly}
+            valueBoolean={valueBoolean}
+            calcExpUpdated={calcExpUpdated}
+            onCheckedChange={handleValueChange}
+            onClear={handleClear}
+          />
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

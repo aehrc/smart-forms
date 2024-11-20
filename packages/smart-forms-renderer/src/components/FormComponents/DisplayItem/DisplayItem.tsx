@@ -23,6 +23,7 @@ import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import { useQuestionnaireStore } from '../../../stores';
 import useReadOnly from '../../../hooks/useReadOnly';
 import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
+import Divider from '@mui/material/Divider';
 
 interface DisplayItemProps extends PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
@@ -38,6 +39,16 @@ const DisplayItem = memo(function DisplayItem(props: DisplayItemProps) {
   const isContextDisplay = isSpecificItemControl(qItem, 'context-display');
   if (isContextDisplay) {
     return null;
+  }
+
+  const isFlyover = isSpecificItemControl(qItem, 'flyover');
+  if (isFlyover) {
+    return null;
+  }
+
+  const isDivider = isSpecificItemControl(qItem, 'divider');
+  if (isDivider) {
+    return <Divider sx={{ mt: 1.5, mb: 1 }} />;
   }
 
   return (

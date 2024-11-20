@@ -19,6 +19,8 @@ import React from 'react';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import InputAdornment from '@mui/material/InputAdornment';
 import { StandardTextField } from '../Textfield.styles';
+import { useRendererStylingStore } from '../../../stores';
+import Typography from '@mui/material/Typography';
 
 interface UrlFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
@@ -44,9 +46,12 @@ function UrlField(props: UrlFieldProps) {
     onInputChange
   } = props;
 
+  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+
   return (
     <StandardTextField
       fullWidth
+      textFieldWidth={textFieldWidth}
       isTabled={isTabled}
       id={linkId}
       value={input}
@@ -56,7 +61,15 @@ function UrlField(props: UrlFieldProps) {
       placeholder={entryFormat}
       disabled={readOnly}
       size="small"
-      InputProps={{ endAdornment: <InputAdornment position={'end'}>{displayUnit}</InputAdornment> }}
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
+              {displayUnit}
+            </Typography>
+          </InputAdornment>
+        )
+      }}
       helperText={feedback}
       data-test="q-item-url-field"
     />

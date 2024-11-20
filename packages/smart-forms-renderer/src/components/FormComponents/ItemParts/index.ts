@@ -16,3 +16,4 @@
  */
 
 export { default as ItemFieldGrid } from './ItemFieldGrid';
+export { default as ItemLabelWrapper } from './ItemLabelWrapper';

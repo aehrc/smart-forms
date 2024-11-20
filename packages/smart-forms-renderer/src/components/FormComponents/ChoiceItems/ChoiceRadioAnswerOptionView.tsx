@@ -21,6 +21,7 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import type { PropsWithIsRepeatedAttribute } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import { ItemLabelWrapper } from '../ItemParts';
 
 interface ChoiceRadioAnswerOptionViewProps extends PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
@@ -65,17 +66,22 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
       data-test="q-item-choice-radio-answer-option-box"
       data-linkid={qItem.linkId}
       onClick={onFocusLinkId}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <ChoiceRadioAnswerOptionFields
-          qItem={qItem}
-          options={options}
-          valueRadio={valueChoice}
-          readOnly={readOnly}
-          calcExpUpdated={calcExpUpdated}
-          onCheckedChange={onCheckedChange}
-          onClear={onClear}
-        />
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <ChoiceRadioAnswerOptionFields
+            qItem={qItem}
+            options={options}
+            valueRadio={valueChoice}
+            readOnly={readOnly}
+            calcExpUpdated={calcExpUpdated}
+            onCheckedChange={onCheckedChange}
+            onClear={onClear}
+          />
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

@@ -21,22 +21,25 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Fade from '@mui/material/Fade';
 import Tooltip from '@mui/material/Tooltip';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
-import { StandardTextField, TEXT_FIELD_WIDTH } from '../Textfield.styles';
+import { StandardTextField } from '../Textfield.styles';
 import SearchIcon from '@mui/icons-material/Search';
 import InfoIcon from '@mui/icons-material/Info';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import DoneIcon from '@mui/icons-material/Done';
 import ErrorIcon from '@mui/icons-material/Error';
-import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
   PropsWithIsTabledAttribute,
-  PropsWithParentIsReadOnlyAttribute
+  PropsWithParentIsReadOnlyAttribute,
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import type { AlertColor } from '@mui/material/Alert';
+import { useRendererStylingStore } from '../../../stores';
+import Typography from '@mui/material/Typography';
 
 interface ChoiceAutocompleteFieldsProps
   extends PropsWithIsTabledAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithRenderingExtensionsAttribute {
   qItem: QuestionnaireItem;
   options: Coding[];
   valueCoding: Coding | null;
@@ -56,11 +59,14 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
     feedback,
     readOnly,
     isTabled,
+    renderingExtensions,
     onInputChange,
     onValueChange
   } = props;
 
-  const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
+  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+
+  const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
   return (
     <Autocomplete
@@ -75,12 +81,13 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
       clearOnEscape
       autoHighlight
       onChange={(_, newValue) => onValueChange(newValue)}
-      sx={{ maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000, minWidth: 160, flexGrow: 1 }}
+      sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }}
       filterOptions={(x) => x}
       renderInput={(params) => (
         <StandardTextField
           {...params}
           onChange={(e) => onInputChange(e.target.value)}
+          textFieldWidth={textFieldWidth}
           isTabled={isTabled}
           label={displayPrompt}
           size="small"
@@ -113,7 +120,9 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
                   </Fade>
                 ) : null}
                 {params.InputProps.endAdornment}
-                {displayUnit}
+                <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
+                  {displayUnit}
+                </Typography>
               </>
             )
           }}

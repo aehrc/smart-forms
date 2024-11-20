@@ -21,9 +21,9 @@ import ContextDisplayItem from './ContextDisplayItem';
 import type { QuestionnaireItem } from 'fhir/r4';
 import { getContextDisplays } from '../../../utils/tabs';
 import ItemLabelText from './ItemLabelText';
-import Typography from '@mui/material/Typography';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
-import FlyoverItem from './FlyoverItem';
+import { useRendererStylingStore } from '../../../stores';
+import Typography from '@mui/material/Typography';
 
 interface LabelWrapperProps {
   qItem: QuestionnaireItem;
@@ -33,13 +33,15 @@ interface LabelWrapperProps {
 function ItemLabelWrapper(props: LabelWrapperProps) {
   const { qItem, readOnly } = props;
 
-  const { required, displayFlyover } = useRenderingExtensions(qItem);
+  const requiredIndicatorPosition = useRendererStylingStore.use.requiredIndicatorPosition();
+
+  const { required } = useRenderingExtensions(qItem);
   const contextDisplayItems = getContextDisplays(qItem);
 
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between">
       <Box position="relative">
-        {required ? (
+        {required && requiredIndicatorPosition === 'start' ? (
           <Typography
             color="red"
             sx={{ position: 'absolute', top: 0, left: -8 }} // Adjust top and left values as needed
@@ -48,8 +50,9 @@ function ItemLabelWrapper(props: LabelWrapperProps) {
           </Typography>
         ) : null}
         <Box display="flex" columnGap={0.75} justifyContent="space-between" alignItems="center">
-          <ItemLabelText qItem={qItem} readOnly={readOnly} />
-          {displayFlyover !== '' ? <FlyoverItem displayFlyover={displayFlyover} /> : null}
+          <Box display="flex">
+            <ItemLabelText qItem={qItem} readOnly={readOnly} />
+          </Box>
         </Box>
       </Box>
 

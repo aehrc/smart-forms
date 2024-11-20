@@ -23,7 +23,8 @@ export {
   removeInternalIdsFromResponse
 } from './manageForm';
 export { initialiseQuestionnaireResponse } from './initialise';
-export { createEmptyQrItem, createEmptyQrGroup } from './qrItem';
+export { createEmptyQrItem, createEmptyQrGroup, updateQrItemsInGroup } from './qrItem';
+export { mapQItemsIndex, getQrItemsIndex } from './mapItem';
 
 export { isSpecificItemControl } from './itemControl';
 export { isRepeatItemAndNotCheckbox } from './qItem';

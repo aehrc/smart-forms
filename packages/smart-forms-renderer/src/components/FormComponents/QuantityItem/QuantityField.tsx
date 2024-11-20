@@ -3,6 +3,8 @@ import InputAdornment from '@mui/material/InputAdornment';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import { StandardTextField } from '../Textfield.styles';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import { useRendererStylingStore } from '../../../stores';
+import Typography from '@mui/material/Typography';
 
 interface QuantityFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
@@ -30,6 +32,8 @@ function QuantityField(props: QuantityFieldProps) {
     onInputChange
   } = props;
 
+  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+
   return (
     <StandardTextField
       id={linkId}
@@ -40,6 +44,7 @@ function QuantityField(props: QuantityFieldProps) {
       label={displayPrompt}
       placeholder={entryFormat === '' ? '0.0' : entryFormat}
       fullWidth
+      textFieldWidth={textFieldWidth}
       isTabled={isTabled}
       size="small"
       inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
@@ -47,7 +52,9 @@ function QuantityField(props: QuantityFieldProps) {
         endAdornment: (
           <InputAdornment position={'end'}>
             <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-            {displayUnit}
+            <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
+              {displayUnit}
+            </Typography>
           </InputAdornment>
         )
       }}

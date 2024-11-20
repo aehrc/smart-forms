@@ -19,10 +19,10 @@ import React, { useCallback, useState } from 'react';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import debounce from 'lodash.debounce';
 import { createEmptyQrItem } from '../../../utils/qrItem';
@@ -33,22 +33,25 @@ import useStringCalculatedExpression from '../../../hooks/useStringCalculatedExp
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
+import { ItemLabelWrapper } from '../ItemParts';
 
 interface TextItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
+    PropsWithRenderingExtensionsAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
 
 function TextItem(props: TextItemProps) {
-  const { qItem, qrItem, isRepeated, parentIsReadOnly, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, renderingExtensions, parentIsReadOnly, onQrItemChange } =
+    props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
+  const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
   // Init input value
   const answerKey = qrItem?.answer?.[0].id;
@@ -118,19 +121,24 @@ function TextItem(props: TextItemProps) {
       data-test="q-item-text-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <TextField
-          linkId={qItem.linkId}
-          input={input}
-          feedback={feedback}
-          displayPrompt={displayPrompt}
-          displayUnit={displayUnit}
-          entryFormat={entryFormat}
-          readOnly={readOnly}
-          calcExpUpdated={calcExpUpdated}
-          onInputChange={handleInputChange}
-        />
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <TextField
+            linkId={qItem.linkId}
+            input={input}
+            feedback={feedback}
+            displayPrompt={displayPrompt}
+            displayUnit={displayUnit}
+            entryFormat={entryFormat}
+            readOnly={readOnly}
+            calcExpUpdated={calcExpUpdated}
+            onInputChange={handleInputChange}
+          />
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

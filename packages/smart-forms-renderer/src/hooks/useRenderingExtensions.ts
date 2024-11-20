@@ -26,7 +26,7 @@ import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 import { useMemo } from 'react';
 
-interface RenderingExtensions {
+export interface RenderingExtensions {
   displayUnit: string;
   displayPrompt: string;
   displayInstructions: string;
