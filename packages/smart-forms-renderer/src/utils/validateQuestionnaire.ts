@@ -230,7 +230,7 @@ function validateItemRecursive(params: ValidateItemRecursiveParams) {
 
     // Check if group is required and has no answers
     if (qItem.type === 'group' && qItem.required) {
-      if (!qrItem || qrItemsByIndex.length === 0) {
+      if (!qrItem.item || qrItem.item?.length === 0) {
         invalidItems[qItem.linkId] = createValidationOperationOutcome(
           ValidationResult.required,
           qItem,
@@ -270,6 +270,11 @@ function validateItemRecursive(params: ValidateItemRecursiveParams) {
         isRepeatGroupInstance: false
       });
     }
+  }
+
+  // Stop checking if the item is a group, we have checked previously
+  if (qItem.type === 'group') {
+    return;
   }
 
   // Validate the item, note that this can be either a group or a non-group
