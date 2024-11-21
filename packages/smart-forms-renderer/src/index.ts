@@ -5,6 +5,7 @@ export type {
   Variables,
   VariableXFhirQuery,
   LaunchContext,
+  CalculatedExpression,
   QItemOverrideComponentProps,
   SdcUiOverrideComponentProps
 } from './interfaces';
@@ -58,8 +59,11 @@ export {
   useRendererQueryClient,
   useRenderingExtensions,
   useValidationFeedback,
+  useValueSetCodings,
   useStringCalculatedExpression,
-  useDisplayCqfAndCalculatedExpression
+  useDisplayCqfAndCalculatedExpression,
+  useCodingCalculatedExpression,
+  objectIsCoding
 } from './hooks';
 
 // utils exports

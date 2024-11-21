@@ -42,7 +42,9 @@ interface BooleanFieldProps {
 const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
   const { qItem, readOnly, valueBoolean, calcExpUpdated, onCheckedChange, onClear } = props;
 
+  const reverseBooleanYesNo = useRendererStylingStore.use.reverseBooleanYesNo();
   const hideClearButton = useRendererStylingStore.use.hideClearButton();
+
   const calculatedExpressionExist =
     findCalculatedExpressionsInExtensions(qItem.extension ?? []).length > 0;
 
@@ -83,8 +85,17 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
           name={qItem.text}
           onChange={(e) => onCheckedChange(e.target.value)}
           value={selection}>
-          <ChoiceRadioSingle value="true" label="Yes" readOnly={readOnly} />
-          <ChoiceRadioSingle value="false" label="No" readOnly={readOnly} />
+          {reverseBooleanYesNo ? (
+            <>
+              <ChoiceRadioSingle value="false" label="No" readOnly={readOnly} />
+              <ChoiceRadioSingle value="true" label="Yes" readOnly={readOnly} />
+            </>
+          ) : (
+            <>
+              <ChoiceRadioSingle value="true" label="Yes" readOnly={readOnly} />
+              <ChoiceRadioSingle value="false" label="No" readOnly={readOnly} />
+            </>
+          )}
         </StyledRadioGroup>
       )}
 

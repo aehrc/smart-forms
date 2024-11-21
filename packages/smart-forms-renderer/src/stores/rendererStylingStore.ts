@@ -42,6 +42,7 @@ export interface RendererStyling {
   itemLabelGridBreakpoints?: ItemGridBreakpoints;
   itemFieldGridBreakpoints?: ItemGridBreakpoints;
   textFieldWidth?: number;
+  reverseBooleanYesNo?: boolean;
   hideClearButton?: boolean;
   enableWhenAsReadOnly?: boolean | 'non-group'; // fix the non group enablewhen
   disablePageCardView?: boolean;
@@ -69,6 +70,7 @@ export interface RendererStylingStoreType {
   itemLabelGridBreakpoints: ItemGridBreakpoints;
   itemFieldGridBreakpoints: ItemGridBreakpoints;
   textFieldWidth: number;
+  reverseBooleanYesNo: boolean;
   hideClearButton: boolean;
   enableWhenAsReadOnly: boolean | 'non-group';
   disablePageCardView: boolean;
@@ -85,6 +87,7 @@ export const rendererStylingStore = createStore<RendererStylingStoreType>()((set
   itemLabelGridBreakpoints: { xs: 12, md: 4 },
   itemFieldGridBreakpoints: { xs: 12, md: 8 },
   textFieldWidth: 320,
+  reverseBooleanYesNo: false,
   hideClearButton: false,
   enableWhenAsReadOnly: false,
   disablePageCardView: false,
@@ -96,6 +99,7 @@ export const rendererStylingStore = createStore<RendererStylingStoreType>()((set
       itemLabelGridBreakpoints: params.itemLabelGridBreakpoints ?? { xs: 12, md: 4 },
       itemFieldGridBreakpoints: params.itemFieldGridBreakpoints ?? { xs: 12, md: 8 },
       textFieldWidth: params.textFieldWidth ?? 320,
+      reverseBooleanYesNo: params.reverseBooleanYesNo ?? false,
       hideClearButton: params.hideClearButton ?? false,
       enableWhenAsReadOnly: params.enableWhenAsReadOnly ?? false,
       disablePageCardView: params.disablePageCardView ?? false,

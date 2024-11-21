@@ -97,7 +97,7 @@ function useCodingCalculatedExpression(
   return { calcExpUpdated: calcExpUpdated };
 }
 
-function objectIsCoding(obj: any): obj is Coding {
+export function objectIsCoding(obj: any): obj is Coding {
   return obj && obj.code && typeof obj.code === 'string';
 }
 
