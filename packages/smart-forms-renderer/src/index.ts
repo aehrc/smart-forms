@@ -26,6 +26,7 @@ export {
   ItemLabelWrapper,
   BooleanField,
   StringField,
+  ChoiceRadioSingle,
   FullWidthFormComponentBox
 } from './components';
 

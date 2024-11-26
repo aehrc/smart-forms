@@ -15,16 +15,22 @@
  * limitations under the License.
  */
 
-export { SingleItem } from './SingleItem';
-export { GroupItem } from './GroupItem';
-export { RepeatItem } from './RepeatItem';
-export { RepeatGroup } from './RepeatGroup';
-export { GroupTable } from './Tables';
-export { GridGroup } from './GridGroup';
-export { parseFhirDateToDisplayDate } from './DateTimeItems';
-export { ItemFieldGrid, ItemLabelWrapper } from './ItemParts';
+import React from 'react';
+import type { TypographyProps } from '@mui/material/Typography';
+import Typography from '@mui/material/Typography';
 
-// item type components
-export { BooleanField } from './BooleanItem';
-export { StringField } from './StringItem';
-export { ChoiceRadioSingle } from './ChoiceItems';
+interface RequiredAsteriskProps extends TypographyProps {
+  readOnly?: boolean;
+}
+
+function RequiredAsterisk(props: RequiredAsteriskProps) {
+  const { readOnly, children = '*', ...rest } = props;
+
+  return (
+    <Typography color={readOnly ? 'rgba(255, 0, 0, 0.5)' : 'red'} {...rest}>
+      {children}
+    </Typography>
+  );
+}
+
+export default RequiredAsterisk;

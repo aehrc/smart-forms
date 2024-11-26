@@ -17,6 +17,7 @@
 
 import { createStore } from 'zustand/vanilla';
 import { createSelectors } from './selector';
+import type { QuestionnaireItem } from 'fhir/r4';
 
 export interface ItemGridBreakpoints {
   xs?: number;
@@ -42,9 +43,10 @@ export interface RendererStyling {
   itemLabelGridBreakpoints?: ItemGridBreakpoints;
   itemFieldGridBreakpoints?: ItemGridBreakpoints;
   textFieldWidth?: number;
+  inputsFlexGrow?: boolean;
   reverseBooleanYesNo?: boolean;
   hideClearButton?: boolean;
-  enableWhenAsReadOnly?: boolean | 'non-group'; // fix the non group enablewhen
+  enableWhenAsReadOnly?: boolean | Set<QuestionnaireItem['type']>; // The Set<QuestionnaireItem['type']> is used to store the types of items that should be displayed as readOnly when hidden by enableWhen
   disablePageCardView?: boolean;
   disablePageButtons?: boolean;
 }
@@ -70,9 +72,10 @@ export interface RendererStylingStoreType {
   itemLabelGridBreakpoints: ItemGridBreakpoints;
   itemFieldGridBreakpoints: ItemGridBreakpoints;
   textFieldWidth: number;
+  inputsFlexGrow: boolean; // radio, checkbox and boolean inputs should have flexGrow: 1
   reverseBooleanYesNo: boolean;
   hideClearButton: boolean;
-  enableWhenAsReadOnly: boolean | 'non-group';
+  enableWhenAsReadOnly: boolean | Set<QuestionnaireItem['type']>;
   disablePageCardView: boolean;
   disablePageButtons: boolean;
   setRendererStyling: (params: RendererStyling) => void;
@@ -87,6 +90,7 @@ export const rendererStylingStore = createStore<RendererStylingStoreType>()((set
   itemLabelGridBreakpoints: { xs: 12, md: 4 },
   itemFieldGridBreakpoints: { xs: 12, md: 8 },
   textFieldWidth: 320,
+  inputsFlexGrow: false,
   reverseBooleanYesNo: false,
   hideClearButton: false,
   enableWhenAsReadOnly: false,
@@ -99,6 +103,7 @@ export const rendererStylingStore = createStore<RendererStylingStoreType>()((set
       itemLabelGridBreakpoints: params.itemLabelGridBreakpoints ?? { xs: 12, md: 4 },
       itemFieldGridBreakpoints: params.itemFieldGridBreakpoints ?? { xs: 12, md: 8 },
       textFieldWidth: params.textFieldWidth ?? 320,
+      inputsFlexGrow: params.inputsFlexGrow ?? false,
       reverseBooleanYesNo: params.reverseBooleanYesNo ?? false,
       hideClearButton: params.hideClearButton ?? false,
       enableWhenAsReadOnly: params.enableWhenAsReadOnly ?? false,

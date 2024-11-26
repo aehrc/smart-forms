@@ -49,7 +49,6 @@ function CheckboxSingleWithOpenLabel(props: Props) {
       <FormControlLabel
         control={<Checkbox size="small" checked={isChecked} onChange={handleCheckedChange} />}
         label={label + ':'}
-        sx={{ mr: 3 }}
       />
       <StandardTextField
         disabled={!isChecked}

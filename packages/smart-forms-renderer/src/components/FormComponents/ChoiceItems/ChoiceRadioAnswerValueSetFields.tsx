@@ -53,6 +53,7 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
     onClear
   } = props;
 
+  const inputsFlexGrow = useRendererStylingStore.use.inputsFlexGrow();
   const hideClearButton = useRendererStylingStore.use.hideClearButton();
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
@@ -64,10 +65,11 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
           id={qItem.linkId}
           row={orientation === ChoiceItemOrientation.Horizontal}
           name={qItem.text}
+          sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
           onChange={(e) => onCheckedChange(e.target.value)}
           value={valueRadio}
           data-test="q-item-radio-group">
-          <RadioOptionList options={options} readOnly={readOnly} />
+          <RadioOptionList options={options} readOnly={readOnly} fullWidth={inputsFlexGrow} />
         </StyledRadioGroup>
 
         <Box flexGrow={1} />

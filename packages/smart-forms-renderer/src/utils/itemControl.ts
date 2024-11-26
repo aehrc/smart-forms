@@ -18,6 +18,7 @@
 import type { Coding, Extension, QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type { RegexValidation } from '../interfaces/regex.interface';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
+import { default as htmlParse } from 'html-react-parser';
 
 function hasDisplayCategory(qItem: QuestionnaireItem): boolean {
   return !!qItem.extension?.some(
@@ -332,14 +333,20 @@ export function getTextDisplayInstructions(qItem: QuestionnaireItem): string {
  *
  * @author Sean Fong
  */
-export function getTextDisplayFlyover(qItem: QuestionnaireItem): string {
+export function getTextDisplayFlyover(qItem: QuestionnaireItem) {
   if (qItem.item) {
     for (const childItem of qItem.item) {
       if (childItem.type === 'display' && isSpecificItemControl(childItem, 'flyover')) {
+        const xHtmlString = getXHtmlString(childItem);
+        if (xHtmlString) {
+          return htmlParse(xHtmlString);
+        }
+
         return `${childItem.text}`;
       }
     }
   }
+
   return '';
 }
 
@@ -411,6 +418,21 @@ export function getMinValue(qItem: QuestionnaireItem) {
   }
 }
 
+export function getMinValueFeedback(qItem: QuestionnaireItem) {
+  const itemControl = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url === 'https://smartforms.csiro.au/ig/StructureDefinition/minValue-feedback'
+  );
+  if (itemControl) {
+    const extensionString = itemControl.valueString;
+    if (extensionString) {
+      return extensionString;
+    }
+  }
+
+  return null;
+}
+
 export function getMaxValue(qItem: QuestionnaireItem) {
   switch (qItem.type) {
     case 'integer':
@@ -432,4 +454,19 @@ export function getMaxValue(qItem: QuestionnaireItem) {
     default:
       return undefined;
   }
+}
+
+export function getMaxValueFeedback(qItem: QuestionnaireItem) {
+  const itemControl = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url === 'https://smartforms.csiro.au/ig/StructureDefinition/maxValue-feedback'
+  );
+  if (itemControl) {
+    const extensionString = itemControl.valueString;
+    if (extensionString) {
+      return extensionString;
+    }
+  }
+
+  return null;
 }

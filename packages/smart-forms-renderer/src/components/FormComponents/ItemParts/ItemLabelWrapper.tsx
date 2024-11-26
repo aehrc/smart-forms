@@ -23,7 +23,7 @@ import { getContextDisplays } from '../../../utils/tabs';
 import ItemLabelText from './ItemLabelText';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import { useRendererStylingStore } from '../../../stores';
-import Typography from '@mui/material/Typography';
+import RequiredAsterisk from './RequiredAsterisk';
 
 interface LabelWrapperProps {
   qItem: QuestionnaireItem;
@@ -40,20 +40,15 @@ function ItemLabelWrapper(props: LabelWrapperProps) {
 
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between">
-      <Box position="relative">
+      <Box position="relative" flexGrow={1}>
         {required && requiredIndicatorPosition === 'start' ? (
-          <Typography
-            color="red"
+          <RequiredAsterisk
             sx={{ position: 'absolute', top: 0, left: -8 }} // Adjust top and left values as needed
           >
             *
-          </Typography>
+          </RequiredAsterisk>
         ) : null}
-        <Box display="flex" columnGap={0.75} justifyContent="space-between" alignItems="center">
-          <Box display="flex">
-            <ItemLabelText qItem={qItem} readOnly={readOnly} />
-          </Box>
-        </Box>
+        <ItemLabelText qItem={qItem} readOnly={readOnly} />
       </Box>
 
       <Box display="flex" columnGap={0.5}>

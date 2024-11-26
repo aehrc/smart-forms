@@ -22,10 +22,11 @@ import type { QuestionnaireItemAnswerOption } from 'fhir/r4';
 interface RadioOptionListProps {
   options: QuestionnaireItemAnswerOption[];
   readOnly: boolean;
+  fullWidth: boolean;
 }
 
 function RadioOptionList(props: RadioOptionListProps) {
-  const { options, readOnly } = props;
+  const { options, readOnly, fullWidth } = props;
 
   return (
     <>
@@ -37,6 +38,7 @@ function RadioOptionList(props: RadioOptionListProps) {
               value={option.valueCoding.code ?? ''}
               label={option.valueCoding.display ?? `${option.valueCoding.code}`}
               readOnly={readOnly}
+              fullWidth={fullWidth}
             />
           );
         }
@@ -48,6 +50,7 @@ function RadioOptionList(props: RadioOptionListProps) {
               value={option.valueString}
               label={option.valueString}
               readOnly={readOnly}
+              fullWidth={fullWidth}
             />
           );
         }
@@ -59,6 +62,7 @@ function RadioOptionList(props: RadioOptionListProps) {
               value={option.valueInteger.toString()}
               label={option.valueInteger.toString()}
               readOnly={readOnly}
+              fullWidth={fullWidth}
             />
           );
         }

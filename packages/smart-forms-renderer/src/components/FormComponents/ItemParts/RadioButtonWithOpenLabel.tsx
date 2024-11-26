@@ -41,7 +41,12 @@ function RadioButtonWithOpenLabel(props: RadioButtonWithOpenLabelProps) {
 
   return (
     <Box data-test="q-item-radio-open-label-box">
-      <ChoiceRadioSingle value={value ?? ''} label={label + ':'} readOnly={readOnly} />
+      <ChoiceRadioSingle
+        value={value ?? ''}
+        label={label + ':'}
+        readOnly={readOnly}
+        fullWidth={false}
+      />
       <StandardTextField
         disabled={!isSelected}
         value={value}

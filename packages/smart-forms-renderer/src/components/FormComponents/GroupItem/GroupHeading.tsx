@@ -26,6 +26,7 @@ import ContextDisplayItem from '../ItemParts/ContextDisplayItem';
 import ItemLabelText from '../ItemParts/ItemLabelText';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import { useRendererStylingStore } from '../../../stores';
+import RequiredAsterisk from '../ItemParts/RequiredAsterisk';
 
 interface GroupHeadingProps extends PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
@@ -54,12 +55,11 @@ const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
       <Box display="flex" alignItems="center" width="100%">
         <Box position="relative">
           {required && requiredIndicatorPosition === 'start' ? (
-            <Typography
-              color="red"
+            <RequiredAsterisk
               sx={{ position: 'absolute', top: 0, left: -8 }} // Adjust top and left values as needed
             >
               *
-            </Typography>
+            </RequiredAsterisk>
           ) : null}
           <Box display="flex" columnGap={0.75} justifyContent="space-between" alignItems="center">
             <Typography
@@ -68,7 +68,7 @@ const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
               color={
                 readOnly && (!isTabHeading || !isPageHeading) ? 'text.secondary' : 'text.primary'
               }>
-              <ItemLabelText qItem={qItem} />
+              <ItemLabelText qItem={qItem} readOnly={readOnly} />
             </Typography>
           </Box>
         </Box>

@@ -42,6 +42,7 @@ interface BooleanFieldProps {
 const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
   const { qItem, readOnly, valueBoolean, calcExpUpdated, onCheckedChange, onClear } = props;
 
+  const inputsFlexGrow = useRendererStylingStore.use.inputsFlexGrow();
   const reverseBooleanYesNo = useRendererStylingStore.use.reverseBooleanYesNo();
   const hideClearButton = useRendererStylingStore.use.hideClearButton();
 
@@ -83,17 +84,38 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
           id={qItem.linkId}
           row={orientation === ChoiceItemOrientation.Horizontal}
           name={qItem.text}
+          sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
           onChange={(e) => onCheckedChange(e.target.value)}
           value={selection}>
           {reverseBooleanYesNo ? (
             <>
-              <ChoiceRadioSingle value="false" label="No" readOnly={readOnly} />
-              <ChoiceRadioSingle value="true" label="Yes" readOnly={readOnly} />
+              <ChoiceRadioSingle
+                value="false"
+                label="No"
+                readOnly={readOnly}
+                fullWidth={inputsFlexGrow}
+              />
+              <ChoiceRadioSingle
+                value="true"
+                label="Yes"
+                readOnly={readOnly}
+                fullWidth={inputsFlexGrow}
+              />
             </>
           ) : (
             <>
-              <ChoiceRadioSingle value="true" label="Yes" readOnly={readOnly} />
-              <ChoiceRadioSingle value="false" label="No" readOnly={readOnly} />
+              <ChoiceRadioSingle
+                value="true"
+                label="Yes"
+                readOnly={readOnly}
+                fullWidth={inputsFlexGrow}
+              />
+              <ChoiceRadioSingle
+                value="false"
+                label="No"
+                readOnly={readOnly}
+                fullWidth={inputsFlexGrow}
+              />
             </>
           )}
         </StyledRadioGroup>

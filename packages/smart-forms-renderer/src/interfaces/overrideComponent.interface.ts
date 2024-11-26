@@ -34,5 +34,6 @@ export interface QItemOverrideComponentProps {
 }
 
 export interface SdcUiOverrideComponentProps {
-  displayText: string;
+  displayText: string | JSX.Element | JSX.Element[];
+  readOnly?: boolean;
 }

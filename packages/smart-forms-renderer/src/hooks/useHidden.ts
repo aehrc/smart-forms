@@ -39,10 +39,10 @@ function useHidden(qItem: QuestionnaireItem, parentRepeatGroupIndex?: number): b
   }
 
   // If enableWhenAsReadOnly is true, then items hidden by enableWhen should be displayed, but set as readOnly
-  // If enableWhenAsReadOnly is 'non-group', then items hidden by enableWhen should be displayed, but set as readOnly - only applies if item.type != group
+  // If enableWhenAsReadOnly is a Set, all item types in the set should be displayed, but set as readOnly
   if (
     enableWhenAsReadOnly === true ||
-    (enableWhenAsReadOnly === 'non-group' && qItem.type !== 'group')
+    (enableWhenAsReadOnly instanceof Set && enableWhenAsReadOnly.has(qItem.type))
   ) {
     return false;
   }

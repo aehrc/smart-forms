@@ -17,8 +17,7 @@
 
 import React, { memo } from 'react';
 import type { QuestionnaireItem } from 'fhir/r4';
-import { getMarkdownString, getXHtmlString } from '../../../utils/itemControl';
-import { default as htmlParse } from 'html-react-parser';
+import { getMarkdownString } from '../../../utils/itemControl';
 import Box from '@mui/material/Box';
 import ReactMarkdown from 'react-markdown';
 import Typography from '@mui/material/Typography';
@@ -28,10 +27,12 @@ import { default as styleParse } from 'style-to-js';
 import { useRendererStylingStore } from '../../../stores/rendererStylingStore';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import FlyoverItem from './FlyoverItem';
+import { useParseXhtml } from '../../../hooks/useParseXhtml';
+import RequiredAsterisk from './RequiredAsterisk';
 
 interface ItemLabelTextProps {
   qItem: QuestionnaireItem;
-  readOnly?: boolean;
+  readOnly: boolean;
 }
 
 const ItemLabelText = memo(function ItemLabelText(props: ItemLabelTextProps) {
@@ -50,16 +51,17 @@ const ItemLabelText = memo(function ItemLabelText(props: ItemLabelTextProps) {
     labelText = calculatedExpressionString;
   }
 
-  // parse xHTML if found
-  const xHtmlString = getXHtmlString(qItem);
-  if (xHtmlString) {
+  const parsedXhtml = useParseXhtml(qItem);
+  if (parsedXhtml) {
     return (
-      <Box display="flex">
-        {htmlParse(xHtmlString)}
+      <Box display="flex" flexGrow={1}>
+        {parsedXhtml}
         {required && requiredIndicatorPosition === 'end' ? (
-          <Typography color="red">*</Typography>
+          <RequiredAsterisk>*</RequiredAsterisk>
         ) : null}
-        {displayFlyover !== '' ? <FlyoverItem displayFlyover={displayFlyover} /> : null}
+        {displayFlyover !== '' ? (
+          <FlyoverItem displayFlyover={displayFlyover} readOnly={readOnly} />
+        ) : null}
       </Box>
     );
   }
@@ -71,10 +73,12 @@ const ItemLabelText = memo(function ItemLabelText(props: ItemLabelTextProps) {
       <Box display="flex">
         <ReactMarkdown>{markdownString}</ReactMarkdown>
         {required && requiredIndicatorPosition === 'end' ? (
-          <Typography color="red">*</Typography>
+          <RequiredAsterisk>*</RequiredAsterisk>
         ) : null}
-        <FlyoverItem displayFlyover={displayFlyover} />
-        {displayFlyover !== '' ? <FlyoverItem displayFlyover={displayFlyover} /> : null}
+        <FlyoverItem displayFlyover={displayFlyover} readOnly={readOnly} />
+        {displayFlyover !== '' ? (
+          <FlyoverItem displayFlyover={displayFlyover} readOnly={readOnly} />
+        ) : null}
       </Box>
     );
   }
@@ -92,9 +96,11 @@ const ItemLabelText = memo(function ItemLabelText(props: ItemLabelTextProps) {
       <Box display="flex">
         <div style={styles}>{labelText}</div>
         {required && requiredIndicatorPosition === 'end' ? (
-          <Typography color="red">*</Typography>
+          <RequiredAsterisk>*</RequiredAsterisk>
         ) : null}
-        {displayFlyover !== '' ? <FlyoverItem displayFlyover={displayFlyover} /> : null}
+        {displayFlyover !== '' ? (
+          <FlyoverItem displayFlyover={displayFlyover} readOnly={readOnly} />
+        ) : null}
       </Box>
     );
   }
@@ -109,18 +115,18 @@ const ItemLabelText = memo(function ItemLabelText(props: ItemLabelTextProps) {
       sx={{ mt: 0.25 }}>
       {labelText}
       {required && requiredIndicatorPosition === 'end' ? (
-        <Typography
+        <RequiredAsterisk
+          readOnly={readOnly}
           component="span"
-          color="red"
           fontWeight={itemLabelFontWeight ? itemLabelFontWeight : 'normal'}
           sx={{ verticalAlign: 'middle' }}>
           *
-        </Typography>
+        </RequiredAsterisk>
       ) : null}
       <Typography component="span" sx={{ mr: 0.75 }} />
       {displayFlyover !== '' ? (
         <Typography component="span">
-          <FlyoverItem displayFlyover={displayFlyover} />
+          <FlyoverItem displayFlyover={displayFlyover} readOnly={readOnly} />
         </Typography>
       ) : null}
     </Typography>

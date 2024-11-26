@@ -27,6 +27,7 @@ import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 import { StyledAlert } from '../../Alert.styles';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Typography from '@mui/material/Typography';
+import { useRendererStylingStore } from '../../../stores';
 
 interface OpenChoiceRadioAnswerValueSetFieldsProps {
   qItem: QuestionnaireItem;
@@ -53,6 +54,8 @@ function OpenChoiceRadioAnswerValueSetFields(props: OpenChoiceRadioAnswerValueSe
     onValueChange
   } = props;
 
+  const inputsFlexGrow = useRendererStylingStore.use.inputsFlexGrow();
+
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
   if (options.length > 0) {
@@ -61,10 +64,11 @@ function OpenChoiceRadioAnswerValueSetFields(props: OpenChoiceRadioAnswerValueSe
         id={qItem.linkId}
         row={orientation === ChoiceItemOrientation.Horizontal}
         name={qItem.text}
+        sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
         onChange={(e: ChangeEvent<HTMLInputElement>) => onValueChange(e.target.value, null)}
         value={valueRadio}
         data-test="q-item-radio-group">
-        <RadioOptionList options={options} readOnly={readOnly} />
+        <RadioOptionList options={options} readOnly={readOnly} fullWidth={inputsFlexGrow} />
 
         {openLabelText ? (
           <RadioButtonWithOpenLabel

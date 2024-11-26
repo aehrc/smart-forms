@@ -63,9 +63,13 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
     return null;
   }
 
-  // If a qItem override component is defined for this item, render it
+  // If a qItem (type=group) override component is defined for this item, render it
   // Don't get too strict with the "typeof" checks for now
-  if (QItemOverrideComponent && typeof QItemOverrideComponent === 'function') {
+  if (
+    qItem.type === 'group' &&
+    QItemOverrideComponent &&
+    typeof QItemOverrideComponent === 'function'
+  ) {
     return (
       <QItemOverrideComponent
         qItem={qItem}

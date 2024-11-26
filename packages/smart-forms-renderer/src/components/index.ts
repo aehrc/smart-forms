@@ -28,7 +28,8 @@ export {
   ItemFieldGrid,
   ItemLabelWrapper,
   BooleanField,
-  StringField
+  StringField,
+  ChoiceRadioSingle
 } from './FormComponents';
 
 // Styled MUI components

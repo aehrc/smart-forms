@@ -30,7 +30,7 @@ export interface RenderingExtensions {
   displayUnit: string;
   displayPrompt: string;
   displayInstructions: string;
-  displayFlyover: string;
+  displayFlyover: string | JSX.Element | JSX.Element[];
   readOnly: boolean;
   entryFormat: string;
   required: boolean;

@@ -21,18 +21,19 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { useQuestionnaireStore } from '../../../stores';
 
 interface FlyoverItemProps {
-  displayFlyover: string;
+  displayFlyover: string | JSX.Element | JSX.Element[];
+  readOnly: boolean;
 }
 
 function FlyoverItem(props: FlyoverItemProps) {
-  const { displayFlyover } = props;
+  const { displayFlyover, readOnly } = props;
 
   const sdcUiOverrideComponents = useQuestionnaireStore.use.sdcUiOverrideComponents();
   const FlyoverOverrideComponent = sdcUiOverrideComponents['flyover'];
 
   // If a flyover override component is defined for this item, render it
   if (FlyoverOverrideComponent && typeof FlyoverOverrideComponent === 'function') {
-    return <FlyoverOverrideComponent displayText={displayFlyover} />;
+    return <FlyoverOverrideComponent displayText={displayFlyover} readOnly={readOnly} />;
   }
 
   return (

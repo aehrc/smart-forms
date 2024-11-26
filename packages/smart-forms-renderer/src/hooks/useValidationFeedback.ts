@@ -17,7 +17,13 @@
 
 import { getInputInvalidType, ValidationResult } from '../utils/validateQuestionnaire';
 import type { QuestionnaireItem } from 'fhir/r4';
-import { getMaxValue, getMinValue, getRegexValidation } from '../utils/itemControl';
+import {
+  getMaxValue,
+  getMaxValueFeedback,
+  getMinValue,
+  getMinValueFeedback,
+  getRegexValidation
+} from '../utils/itemControl';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 
 function useValidationFeedback(qItem: QuestionnaireItem, input: string): string {
@@ -67,7 +73,8 @@ function useValidationFeedback(qItem: QuestionnaireItem, input: string): string 
     invalidType === ValidationResult.minValue &&
     (typeof minValue === 'string' || typeof minValue === 'number')
   ) {
-    return `Input is lower than the expected minimum value of ${minValue}.`;
+    const minValueFeedback = getMinValueFeedback(qItem);
+    return minValueFeedback ?? `Input is lower than the expected minimum value of ${minValue}.`;
   }
 
   // Test max value
@@ -75,7 +82,8 @@ function useValidationFeedback(qItem: QuestionnaireItem, input: string): string 
     invalidType === ValidationResult.maxValue &&
     (typeof maxValue === 'string' || typeof maxValue === 'number')
   ) {
-    return `Input exceeds permitted maximum value of ${maxValue}.`;
+    const maxValueFeedback = getMaxValueFeedback(qItem);
+    return maxValueFeedback ?? `Input exceeds permitted maximum value of ${maxValue}.`;
   }
 
   return '';

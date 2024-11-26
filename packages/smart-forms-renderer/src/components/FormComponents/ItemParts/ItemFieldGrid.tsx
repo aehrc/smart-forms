@@ -40,7 +40,7 @@ function ItemFieldGrid(props: ItemFieldGridProps) {
   const { displayInstructions } = useRenderingExtensions(qItem);
 
   return (
-    <Grid container columnSpacing={3.5}>
+    <Grid container columnSpacing={4}>
       <Grid
         xs={itemLabelGridBreakpoints.xs}
         sm={itemLabelGridBreakpoints.sm}

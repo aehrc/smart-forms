@@ -23,6 +23,7 @@ import { StyledRadioGroup } from '../Item.styles';
 import RadioButtonWithOpenLabel from '../ItemParts/RadioButtonWithOpenLabel';
 import RadioOptionList from '../ItemParts/RadioOptionList';
 import { getChoiceOrientation } from '../../../utils/choice';
+import { useRendererStylingStore } from '../../../stores';
 
 interface OpenChoiceRadioAnswerOptionFieldsProps {
   qItem: QuestionnaireItem;
@@ -47,6 +48,8 @@ function OpenChoiceRadioAnswerOptionFields(props: OpenChoiceRadioAnswerOptionFie
     onValueChange
   } = props;
 
+  const inputsFlexGrow = useRendererStylingStore.use.inputsFlexGrow();
+
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
   return (
@@ -54,10 +57,11 @@ function OpenChoiceRadioAnswerOptionFields(props: OpenChoiceRadioAnswerOptionFie
       id={qItem.linkId}
       row={orientation === ChoiceItemOrientation.Horizontal}
       name={qItem.text}
+      sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
       onChange={(e: ChangeEvent<HTMLInputElement>) => onValueChange(e.target.value, null)}
       value={valueRadio}
       data-test="q-item-radio-group">
-      <RadioOptionList options={options} readOnly={readOnly} />
+      <RadioOptionList options={options} readOnly={readOnly} fullWidth={inputsFlexGrow} />
 
       {openLabelText ? (
         <RadioButtonWithOpenLabel

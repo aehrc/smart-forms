@@ -17,24 +17,25 @@
 
 import React from 'react';
 import Radio from '@mui/material/Radio';
-import { StyledFormControlLabel } from '../../Box.styles';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 interface ChoiceRadioSingleProps {
   value: string;
   label: string;
   readOnly: boolean;
+  fullWidth: boolean;
 }
 
 function ChoiceRadioSingle(props: ChoiceRadioSingleProps) {
-  const { value, label, readOnly } = props;
+  const { value, label, readOnly, fullWidth } = props;
 
   return (
-    <StyledFormControlLabel
+    <FormControlLabel
+      sx={{ width: fullWidth ? '100%' : 'unset' }}
       disabled={readOnly}
       value={value}
       control={<Radio size="small" />}
       label={label}
-      sx={{ mr: 3 }}
     />
   );
 }

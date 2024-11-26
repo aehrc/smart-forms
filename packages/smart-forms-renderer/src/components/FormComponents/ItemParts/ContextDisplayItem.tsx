@@ -32,7 +32,7 @@ const ContextDisplayItem = memo(function GroupHeadingIcon(props: GroupHeadingIco
     return null;
   }
 
-  return <ItemLabelText qItem={displayItem} />;
+  return <ItemLabelText qItem={displayItem} readOnly={false} />;
 });
 
 export default ContextDisplayItem;
