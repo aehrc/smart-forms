@@ -82,6 +82,7 @@ export {
   getQrItemsIndex,
   isSpecificItemControl,
   isRepeatItemAndNotCheckbox,
+  isHiddenByEnableWhen,
   initialiseQuestionnaireResponse,
   generateItemsToRepopulate,
   repopulateResponse,
