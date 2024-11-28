@@ -26,8 +26,9 @@ export { initialiseQuestionnaireResponse } from './initialise';
 export { createEmptyQrItem, createEmptyQrGroup, updateQrItemsInGroup } from './qrItem';
 export { mapQItemsIndex, getQrItemsIndex } from './mapItem';
 
-export { isSpecificItemControl } from './itemControl';
+export { isSpecificItemControl, getDecimalPrecision } from './itemControl';
 export { isRepeatItemAndNotCheckbox, isHiddenByEnableWhen } from './qItem';
+export { parseDecimalStringToFloat, parseDecimalStringWithPrecision } from './parseInputs';
 export type { ItemToRepopulate } from './repopulateItems';
 export { generateItemsToRepopulate } from './repopulateItems';
 export { repopulateResponse } from './repopulateIntoResponse';

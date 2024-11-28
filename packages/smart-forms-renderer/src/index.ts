@@ -25,6 +25,7 @@ export {
   ItemFieldGrid,
   ItemLabelWrapper,
   BooleanField,
+  DecimalField,
   StringField,
   ChoiceRadioSingle,
   FullWidthFormComponentBox
@@ -81,7 +82,10 @@ export {
   mapQItemsIndex,
   getQrItemsIndex,
   isSpecificItemControl,
+  getDecimalPrecision,
   isRepeatItemAndNotCheckbox,
+  parseDecimalStringToFloat,
+  parseDecimalStringWithPrecision,
   isHiddenByEnableWhen,
   initialiseQuestionnaireResponse,
   generateItemsToRepopulate,

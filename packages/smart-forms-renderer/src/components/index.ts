@@ -28,6 +28,7 @@ export {
   ItemFieldGrid,
   ItemLabelWrapper,
   BooleanField,
+  DecimalField,
   StringField,
   ChoiceRadioSingle
 } from './FormComponents';
