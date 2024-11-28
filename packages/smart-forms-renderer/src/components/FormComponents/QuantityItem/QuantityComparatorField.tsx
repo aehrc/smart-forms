@@ -5,6 +5,7 @@ import MuiTextField from '../TextItem/MuiTextField';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import type { Quantity } from 'fhir/r4';
+import { useRendererStylingStore } from '../../../stores';
 
 interface QuantityComparatorFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
@@ -16,6 +17,11 @@ interface QuantityComparatorFieldProps extends PropsWithIsTabledAttribute {
 
 function QuantityComparatorField(props: QuantityComparatorFieldProps) {
   const { linkId, options, valueSelect, readOnly, onChange } = props;
+
+  const hideQuantityComparatorField = useRendererStylingStore.use.hideQuantityComparatorField();
+  if (hideQuantityComparatorField) {
+    return null;
+  }
 
   return (
     <Box>

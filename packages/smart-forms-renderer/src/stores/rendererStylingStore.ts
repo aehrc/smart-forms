@@ -46,6 +46,7 @@ export interface RendererStyling {
   inputsFlexGrow?: boolean;
   reverseBooleanYesNo?: boolean;
   hideClearButton?: boolean;
+  hideQuantityComparatorField?: boolean;
   enableWhenAsReadOnly?: boolean | Set<QuestionnaireItem['type']>; // The Set<QuestionnaireItem['type']> is used to store the types of items that should be displayed as readOnly when hidden by enableWhen
   disablePageCardView?: boolean;
   disablePageButtons?: boolean;
@@ -75,6 +76,7 @@ export interface RendererStylingStoreType {
   inputsFlexGrow: boolean; // radio, checkbox and boolean inputs should have flexGrow: 1
   reverseBooleanYesNo: boolean;
   hideClearButton: boolean;
+  hideQuantityComparatorField: boolean;
   enableWhenAsReadOnly: boolean | Set<QuestionnaireItem['type']>;
   disablePageCardView: boolean;
   disablePageButtons: boolean;
@@ -93,6 +95,7 @@ export const rendererStylingStore = createStore<RendererStylingStoreType>()((set
   inputsFlexGrow: false,
   reverseBooleanYesNo: false,
   hideClearButton: false,
+  hideQuantityComparatorField: false,
   enableWhenAsReadOnly: false,
   disablePageCardView: false,
   disablePageButtons: false,
@@ -106,6 +109,7 @@ export const rendererStylingStore = createStore<RendererStylingStoreType>()((set
       inputsFlexGrow: params.inputsFlexGrow ?? false,
       reverseBooleanYesNo: params.reverseBooleanYesNo ?? false,
       hideClearButton: params.hideClearButton ?? false,
+      hideQuantityComparatorField: params.hideQuantityComparatorField ?? false,
       enableWhenAsReadOnly: params.enableWhenAsReadOnly ?? false,
       disablePageCardView: params.disablePageCardView ?? false,
       disablePageButtons: params.disablePageButtons ?? false
