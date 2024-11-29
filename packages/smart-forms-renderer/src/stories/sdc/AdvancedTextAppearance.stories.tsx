@@ -29,7 +29,7 @@ import {
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'Component/SDC/8.1.1 Advanced Text Appearance',
+  title: 'SDC/8.1.1 Advanced Text Appearance',
   component: BuildFormWrapperForStorybook,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []

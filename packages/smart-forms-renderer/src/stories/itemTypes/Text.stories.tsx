@@ -21,7 +21,7 @@ import { qrTextBasicResponse, qTextBasic, qTextCalculation } from '../assets/que
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'Component/ItemType/Text',
+  title: 'ItemType/Text',
   component: BuildFormWrapperForStorybook,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []
