@@ -59,7 +59,8 @@ function QuantityItem(props: QuantityItemProps) {
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const precision = getDecimalPrecision(qItem);
-  const { displayUnit, displayPrompt, entryFormat, quantityUnit } = renderingExtensions;
+  const { displayPrompt, entryFormat, quantityUnit } = renderingExtensions;
+  let { displayUnit } = renderingExtensions;
 
   // Get units options if present
   const unitOptions = useMemo(
@@ -69,6 +70,9 @@ function QuantityItem(props: QuantityItemProps) {
       ) ?? [],
     [qItem]
   );
+  if (displayUnit === '' && unitOptions.length === 1) {
+    displayUnit = unitOptions[0].valueCoding?.display ?? '';
+  }
 
   // Init inputs
   const answerKey = qrItem?.answer?.[0].id;
@@ -233,6 +237,8 @@ function QuantityItem(props: QuantityItemProps) {
     [onQrItemChange, qItem, displayUnit, precision, comparatorInput, unitInput]
   ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
 
+  const showUnitOptions = unitOptions.length > 0 && displayUnit === '';
+
   if (isRepeated) {
     return (
       <Box data-test="q-item-quantity-box" display="flex" gap={1}>
@@ -256,7 +262,7 @@ function QuantityItem(props: QuantityItemProps) {
           isTabled={isTabled}
           onInputChange={handleValueInputChange}
         />
-        {unitOptions.length > 0 ? (
+        {showUnitOptions ? (
           <QuantityUnitField
             linkId={qItem.linkId}
             options={unitOptions}
@@ -301,7 +307,7 @@ function QuantityItem(props: QuantityItemProps) {
               isTabled={isTabled}
               onInputChange={handleValueInputChange}
             />
-            {unitOptions.length > 0 ? (
+            {showUnitOptions ? (
               <QuantityUnitField
                 linkId={qItem.linkId}
                 options={unitOptions}
