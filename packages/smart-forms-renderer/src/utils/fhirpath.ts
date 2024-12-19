@@ -30,21 +30,25 @@ interface EvaluateUpdatedExpressionsParams {
   enableWhenExpressions: EnableWhenExpressions;
   variablesFhirPath: Record<string, Expression[]>;
   existingFhirPathContext: Record<string, any>;
+  terminologyServerUrl: string;
 }
 
-export function evaluateUpdatedExpressions(params: EvaluateUpdatedExpressionsParams): {
+export async function evaluateUpdatedExpressions(
+  params: EvaluateUpdatedExpressionsParams
+): Promise<{
   isUpdated: boolean;
   updatedEnableWhenExpressions: EnableWhenExpressions;
   updatedCalculatedExpressions: Record<string, CalculatedExpression[]>;
   updatedFhirPathContext: Record<string, any>;
-} {
+}> {
   const {
     updatedResponse,
     updatedResponseItemMap,
     enableWhenExpressions,
     calculatedExpressions,
     variablesFhirPath,
-    existingFhirPathContext
+    existingFhirPathContext,
+    terminologyServerUrl
   } = params;
 
   const noExpressionsToBeUpdated =
@@ -59,24 +63,29 @@ export function evaluateUpdatedExpressions(params: EvaluateUpdatedExpressionsPar
     };
   }
 
-  const updatedFhirPathContext = createFhirPathContext(
+  const updatedFhirPathContext = await createFhirPathContext(
     updatedResponse,
     updatedResponseItemMap,
     variablesFhirPath,
-    existingFhirPathContext
+    existingFhirPathContext,
+    terminologyServerUrl
   );
 
   // Update enableWhenExpressions
-  const { enableWhenExpsIsUpdated, updatedEnableWhenExpressions } = evaluateEnableWhenExpressions(
-    updatedFhirPathContext,
-    enableWhenExpressions
-  );
+  const { enableWhenExpsIsUpdated, updatedEnableWhenExpressions } =
+    await evaluateEnableWhenExpressions(
+      updatedFhirPathContext,
+      enableWhenExpressions,
+      terminologyServerUrl
+    );
 
   // Update calculatedExpressions
-  const { calculatedExpsIsUpdated, updatedCalculatedExpressions } = evaluateCalculatedExpressions(
-    updatedFhirPathContext,
-    calculatedExpressions
-  );
+  const { calculatedExpsIsUpdated, updatedCalculatedExpressions } =
+    await evaluateCalculatedExpressions(
+      updatedFhirPathContext,
+      calculatedExpressions,
+      terminologyServerUrl
+    );
 
   const isUpdated = enableWhenExpsIsUpdated || calculatedExpsIsUpdated;
 
@@ -88,12 +97,13 @@ export function evaluateUpdatedExpressions(params: EvaluateUpdatedExpressionsPar
   };
 }
 
-export function createFhirPathContext(
+export async function createFhirPathContext(
   questionnaireResponse: QuestionnaireResponse,
   questionnaireResponseItemMap: Record<string, QuestionnaireResponseItem[]>,
   variablesFhirPath: Record<string, Expression[]>,
-  existingFhirPathContext: Record<string, any>
-): Record<string, any> {
+  existingFhirPathContext: Record<string, any>,
+  terminologyServerUrl: string
+): Promise<Record<string, any>> {
   // Add latest resource to fhirPathContext
   let fhirPathContext: Record<string, any> = {
     ...existingFhirPathContext,
@@ -102,10 +112,11 @@ export function createFhirPathContext(
   };
 
   // Evaluate resource-level variables
-  fhirPathContext = evaluateQuestionnaireLevelVariables(
+  fhirPathContext = await evaluateQuestionnaireLevelVariables(
     questionnaireResponse,
     variablesFhirPath,
-    fhirPathContext
+    fhirPathContext,
+    terminologyServerUrl
   );
 
   // Add variables of items that exist in questionnaireResponseItemMap into fhirPathContext
@@ -113,7 +124,12 @@ export function createFhirPathContext(
     // For non-repeat groups, the same linkId will have only one item
     // For repeat groups, the same linkId will have multiple items
     for (const qrItem of questionnaireResponseItemMap[linkId]) {
-      fhirPathContext = evaluateLinkIdVariables(qrItem, variablesFhirPath, fhirPathContext);
+      fhirPathContext = await evaluateLinkIdVariables(
+        qrItem,
+        variablesFhirPath,
+        fhirPathContext,
+        terminologyServerUrl
+      );
     }
   }
 
@@ -125,10 +141,11 @@ export function createFhirPathContext(
   return fhirPathContext;
 }
 
-export function evaluateLinkIdVariables(
+export async function evaluateLinkIdVariables(
   item: QuestionnaireResponseItem,
   variablesFhirPath: Record<string, Expression[]>,
-  fhirPathContext: Record<string, any>
+  fhirPathContext: Record<string, any>,
+  terminologyServerUrl: string
 ) {
   const linkIdVariables = variablesFhirPath[item.linkId];
   if (!linkIdVariables || linkIdVariables.length === 0) {
@@ -138,15 +155,20 @@ export function evaluateLinkIdVariables(
   for (const variable of linkIdVariables) {
     if (variable.expression && variable.name) {
       try {
-        fhirPathContext[`${variable.name}`] = fhirpath.evaluate(
+        const fhirPathResult = fhirpath.evaluate(
           item,
           {
             base: 'QuestionnaireResponse.item',
             expression: variable.expression
           },
           fhirPathContext,
-          fhirpath_r4_model
+          fhirpath_r4_model,
+          {
+            async: true,
+            terminologyUrl: terminologyServerUrl
+          }
         );
+        fhirPathContext[`${variable.name}`] = await handleFhirPathResult(fhirPathResult);
       } catch (e) {
         console.warn(e.message, `LinkId: ${item.linkId}\nExpression: ${variable.expression}`);
       }
@@ -177,10 +199,11 @@ export function addEmptyLinkIdVariables(
   return fhirPathContext;
 }
 
-export function evaluateQuestionnaireLevelVariables(
+export async function evaluateQuestionnaireLevelVariables(
   resource: QuestionnaireResponse,
   variablesFhirPath: Record<string, Expression[]>,
-  fhirPathContext: Record<string, any>
+  fhirPathContext: Record<string, any>,
+  terminologyServerUrl: string
 ) {
   const questionnaireLevelVariables = variablesFhirPath['QuestionnaireLevel'];
   if (!questionnaireLevelVariables || questionnaireLevelVariables.length === 0) {
@@ -190,15 +213,21 @@ export function evaluateQuestionnaireLevelVariables(
   for (const variable of questionnaireLevelVariables) {
     if (variable.expression) {
       try {
-        fhirPathContext[`${variable.name}`] = fhirpath.evaluate(
+        const fhirPathResult = fhirpath.evaluate(
           resource,
           {
             base: 'QuestionnaireResponse',
             expression: variable.expression
           },
           fhirPathContext,
-          fhirpath_r4_model
+          fhirpath_r4_model,
+          {
+            async: true,
+            terminologyUrl: terminologyServerUrl
+          }
         );
+
+        fhirPathContext[`${variable.name}`] = await handleFhirPathResult(fhirPathResult);
       } catch (e) {
         console.warn(e.message, `Questionnaire-level\nExpression: ${variable.expression}`);
       }
@@ -206,4 +235,12 @@ export function evaluateQuestionnaireLevelVariables(
   }
 
   return fhirPathContext;
+}
+
+export async function handleFhirPathResult(result: any[] | Promise<any[]>) {
+  if (result instanceof Promise) {
+    return await result;
+  }
+
+  return result;
 }

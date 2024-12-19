@@ -63,6 +63,7 @@ function SingleNestedItems(props: SingleNestedItemsProps) {
 
   const qrItemsByIndex = getQrItemsIndex(qItems, qrItems, qItemsIndexMap);
 
+  // TODO - Add support for horizontal "row" layout
   return (
     <Box display="flex">
       <Box ml={1.5} />

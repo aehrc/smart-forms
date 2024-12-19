@@ -101,12 +101,16 @@ function useValueSetCodings(qItem: QuestionnaireItem): {
 
       if (contextMap[variable]) {
         try {
-          const evaluated: any[] = fhirpath.evaluate(
-            {},
-            answerExpression,
-            contextMap,
-            fhirpath_r4_model
-          );
+          const evaluated = fhirpath.evaluate({}, answerExpression, contextMap, fhirpath_r4_model, {
+            async: false
+          });
+
+          // Check for Promise and throw an error
+          if (evaluated instanceof Promise) {
+            throw new Error(
+              'Unexpected Promise returned from fhirpath.evaluate in the useValueSetCodings hook. Expected synchronous evaluation.'
+            );
+          }
 
           if (evaluated[0].system || evaluated[0].code) {
             // determine if the evaluated array is a coding array

@@ -61,13 +61,13 @@ interface ReturnParamsRecursive {
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
 }
 
-export function extractOtherExtensions(
+export async function extractOtherExtensions(
   questionnaire: Questionnaire,
   variables: Variables,
   valueSetPromises: Record<string, ValueSetPromise>,
   itemPreferredTerminologyServers: Record<string, string>,
   terminologyServerUrl: string
-): ReturnParamsRecursive {
+): Promise<ReturnParamsRecursive> {
   const enableWhenItems: EnableWhenItems = { singleItems: {}, repeatItems: {} };
   const enableWhenExpressions: EnableWhenExpressions = {
     singleExpressions: {},
@@ -96,7 +96,7 @@ export function extractOtherExtensions(
 
   for (const topLevelItem of questionnaire.item) {
     const isRepeatGroup = !!topLevelItem.repeats && topLevelItem.type === 'group';
-    extractExtensionsFromItemRecursive({
+    await extractExtensionsFromItemRecursive({
       questionnaire,
       item: topLevelItem,
       variables,
@@ -141,9 +141,9 @@ interface extractExtensionsFromItemRecursiveParams {
   parentRepeatGroupLinkId?: string;
 }
 
-function extractExtensionsFromItemRecursive(
+async function extractExtensionsFromItemRecursive(
   params: extractExtensionsFromItemRecursiveParams
-): ReturnParamsRecursive {
+): Promise<ReturnParamsRecursive> {
   const {
     questionnaire,
     item,
@@ -165,7 +165,7 @@ function extractExtensionsFromItemRecursive(
   if (items && items.length > 0) {
     // iterate through items of item recursively
     for (const childItem of items) {
-      extractExtensionsFromItemRecursive({
+      await extractExtensionsFromItemRecursive({
         ...params,
         item: childItem,
         parentRepeatGroupLinkId: isRepeatGroup ? item.linkId : parentRepeatGroupLinkId
@@ -190,9 +190,15 @@ function extractExtensionsFromItemRecursive(
     }
   }
 
-  const initialisedEnableWhenExpressions = initialiseEnableWhenExpression(
+  // Get preferred terminology server URL of the item
+  const preferredTerminologyServerUrl = itemPreferredTerminologyServers[item.linkId];
+  const terminologyServerUrl =
+    getTerminologyServerUrl(item) ?? preferredTerminologyServerUrl ?? defaultTerminologyServerUrl;
+
+  const initialisedEnableWhenExpressions = await initialiseEnableWhenExpression(
     item,
     questionnaire,
+    terminologyServerUrl,
     parentRepeatGroupLinkId
   );
   if (initialisedEnableWhenExpressions) {
@@ -238,12 +244,6 @@ function extractExtensionsFromItemRecursive(
   const valueSetUrl = item.answerValueSet;
   if (valueSetUrl) {
     if (!valueSetPromises[valueSetUrl] && !valueSetUrl.startsWith('#')) {
-      const preferredTerminologyServerUrl = itemPreferredTerminologyServers[item.linkId];
-      const terminologyServerUrl =
-        getTerminologyServerUrl(item) ??
-        preferredTerminologyServerUrl ??
-        defaultTerminologyServerUrl;
-
       valueSetPromises[valueSetUrl] = {
         promise: getValueSetPromise(valueSetUrl, terminologyServerUrl)
       };
@@ -407,14 +407,15 @@ function initialiseEnableWhenExpressionRepeat(
   return null;
 }
 
-function initialiseEnableWhenExpression(
+async function initialiseEnableWhenExpression(
   qItem: QuestionnaireItem,
   questionnaire: Questionnaire,
+  terminologyServerUrl: string,
   parentLinkId?: string
-): {
+): Promise<{
   enableWhenExpressionType: 'single' | 'repeat';
   enableWhenExpression: EnableWhenSingleExpression | EnableWhenRepeatExpression;
-} | null {
+} | null> {
   const enableWhenExpression = getEnableWhenExpression(qItem);
   if (!enableWhenExpression) {
     return null;
@@ -435,12 +436,13 @@ function initialiseEnableWhenExpression(
         enabledIndexes: [false]
       };
 
-      const { isEnabled } = evaluateEnableWhenRepeatExpressionInstance(
+      const { isEnabled } = await evaluateEnableWhenRepeatExpressionInstance(
         qItem.linkId,
         { resource: structuredClone(emptyResponse) },
         enableWhenRepeatExpression,
         enableWhenRepeatExpression.expression.lastIndexOf('.where(linkId'),
-        0
+        0,
+        terminologyServerUrl
       );
 
       if (typeof isEnabled === 'boolean') {

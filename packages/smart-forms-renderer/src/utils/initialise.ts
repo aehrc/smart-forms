@@ -318,9 +318,10 @@ export interface initialFormFromResponseParams {
   tabs: Tabs;
   pages: Pages;
   fhirPathContext: Record<string, any>;
+  terminologyServerUrl: string;
 }
 
-export function initialiseFormFromResponse(params: initialFormFromResponseParams): {
+export async function initialiseFormFromResponse(params: initialFormFromResponseParams): Promise<{
   initialEnableWhenItems: EnableWhenItems;
   initialEnableWhenLinkedQuestions: Record<string, string[]>;
   initialEnableWhenExpressions: EnableWhenExpressions;
@@ -328,7 +329,7 @@ export function initialiseFormFromResponse(params: initialFormFromResponseParams
   firstVisibleTab: number;
   firstVisiblePage: number;
   updatedFhirPathContext: Record<string, any>;
-} {
+}> {
   const {
     questionnaireResponse,
     enableWhenItems,
@@ -337,7 +338,8 @@ export function initialiseFormFromResponse(params: initialFormFromResponseParams
     variablesFhirPath,
     tabs,
     pages,
-    fhirPathContext
+    fhirPathContext,
+    terminologyServerUrl
   } = params;
   const initialResponseItemMap = createQuestionnaireResponseItemMap(questionnaireResponse);
   let updatedFhirPathContext = {};
@@ -347,22 +349,24 @@ export function initialiseFormFromResponse(params: initialFormFromResponseParams
     questionnaireResponse
   );
 
-  const evaluateInitialEnableWhenExpressionsResult = evaluateInitialEnableWhenExpressions({
+  const evaluateInitialEnableWhenExpressionsResult = await evaluateInitialEnableWhenExpressions({
     initialResponse: questionnaireResponse,
     initialResponseItemMap: initialResponseItemMap,
     enableWhenExpressions: enableWhenExpressions,
     variablesFhirPath: variablesFhirPath,
-    existingFhirPathContext: fhirPathContext
+    existingFhirPathContext: fhirPathContext,
+    terminologyServerUrl: terminologyServerUrl
   });
   const { initialEnableWhenExpressions } = evaluateInitialEnableWhenExpressionsResult;
   updatedFhirPathContext = evaluateInitialEnableWhenExpressionsResult.updatedFhirPathContext;
 
-  const evaluateInitialCalculatedExpressionsResult = evaluateInitialCalculatedExpressions({
+  const evaluateInitialCalculatedExpressionsResult = await evaluateInitialCalculatedExpressions({
     initialResponse: questionnaireResponse,
     initialResponseItemMap: initialResponseItemMap,
     calculatedExpressions: calculatedExpressions,
     variablesFhirPath: variablesFhirPath,
-    existingFhirPathContext: fhirPathContext
+    existingFhirPathContext: fhirPathContext,
+    terminologyServerUrl
   });
   const { initialCalculatedExpressions } = evaluateInitialCalculatedExpressionsResult;
   updatedFhirPathContext = evaluateInitialEnableWhenExpressionsResult.updatedFhirPathContext;

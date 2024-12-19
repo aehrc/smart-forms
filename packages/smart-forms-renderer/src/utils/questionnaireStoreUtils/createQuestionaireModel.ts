@@ -61,7 +61,7 @@ export async function createQuestionnaireModel(
   let processedValueSetCodings = extractContainedValueSetsResult.processedValueSetCodings;
   const processedValueSetUrls = extractContainedValueSetsResult.processedValueSetUrls;
 
-  const extractOtherExtensionsResult = extractOtherExtensions(
+  const extractOtherExtensionsResult = await extractOtherExtensions(
     questionnaire,
     variables,
     valueSetPromises,

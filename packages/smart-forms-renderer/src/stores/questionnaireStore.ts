@@ -93,7 +93,7 @@ import type { ComponentType } from 'react';
  * @property addCodingToCache - Used to add a coding to the cached value set codings
  * @property updatePopulatedProperties - Used to update all SDC expressions based on a pre-populated questionnaire response
  * @property onFocusLinkId - Used to set the focused linkId
- * @property setPopulatedContext - Used to set the populated contexts (launchContext, sourceQueries, x-fhir-query vars) for debugging purposes
+ * @property setPopulatedContext - Used to set the populated contexts (launchContext, sourceQueries, x-fhir-query vars) for debugging purposes, and optionally add to the FHIRPath context
  * @property setFormAsReadOnly - Used to set the form as read-only
  *
  * @author Sean Fong
@@ -149,15 +149,18 @@ export interface QuestionnaireStoreType {
     actionType: 'add' | 'remove'
   ) => void;
   toggleEnableWhenActivation: (isActivated: boolean) => void;
-  updateExpressions: (updatedResponse: QuestionnaireResponse) => void;
+  updateExpressions: (updatedResponse: QuestionnaireResponse) => Promise<void>;
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) => void;
   updatePopulatedProperties: (
     populatedResponse: QuestionnaireResponse,
     populatedContext?: Record<string, any>,
     persistTabIndex?: boolean
-  ) => QuestionnaireResponse;
+  ) => Promise<QuestionnaireResponse>;
   onFocusLinkId: (linkId: string) => void;
-  setPopulatedContext: (newPopulatedContext: Record<string, any>) => void;
+  setPopulatedContext: (
+    newPopulatedContext: Record<string, any>,
+    addToFhirPathContext?: boolean
+  ) => void;
   setFormAsReadOnly: (readOnly: boolean) => void;
 }
 
@@ -215,6 +218,10 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       questionnaireModel.answerOptions
     );
 
+    // If existing fhirPathContext is empty, use the one from the questionnaire model
+    // Mostly existing fhirPathContext will be empty, but in some cases it may not be e.g. after pre-population
+    const fhirPathContext = get().fhirPathContext ?? questionnaireModel.fhirPathContext;
+
     // Initialise form with questionnaire response and properties in questionnaire model
     const {
       initialEnableWhenItems,
@@ -224,7 +231,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       firstVisibleTab,
       firstVisiblePage,
       updatedFhirPathContext
-    } = initialiseFormFromResponse({
+    } = await initialiseFormFromResponse({
       questionnaireResponse,
       enableWhenItems: questionnaireModel.enableWhenItems,
       enableWhenExpressions: questionnaireModel.enableWhenExpressions,
@@ -232,7 +239,8 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       variablesFhirPath: questionnaireModel.variables.fhirPathVariables,
       tabs: questionnaireModel.tabs,
       pages: questionnaireModel.pages,
-      fhirPathContext: questionnaireModel.fhirPathContext
+      fhirPathContext: fhirPathContext,
+      terminologyServerUrl: terminologyServerUrl
     });
 
     set({
@@ -326,7 +334,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       enableWhenItems: updatedEnableWhenItems
     }));
   },
-  mutateRepeatEnableWhenItems: (
+  mutateRepeatEnableWhenItems: async (
     parentRepeatGroupLinkId: string,
     parentRepeatGroupIndex: number,
     actionType: 'add' | 'remove'
@@ -343,16 +351,18 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       actionType
     );
 
-    const { updatedEnableWhenExpressions, isUpdated } = mutateRepeatEnableWhenExpressionInstances({
-      questionnaireResponse: questionnaireResponseStore.getState().updatableResponse,
-      questionnaireResponseItemMap: questionnaireResponseStore.getState().updatableResponseItems,
-      variablesFhirPath: get().variables.fhirPathVariables,
-      existingFhirPathContext: get().fhirPathContext,
-      enableWhenExpressions: enableWhenExpressions,
-      parentRepeatGroupLinkId,
-      parentRepeatGroupIndex,
-      actionType
-    });
+    const { updatedEnableWhenExpressions, isUpdated } =
+      await mutateRepeatEnableWhenExpressionInstances({
+        questionnaireResponse: questionnaireResponseStore.getState().updatableResponse,
+        questionnaireResponseItemMap: questionnaireResponseStore.getState().updatableResponseItems,
+        variablesFhirPath: get().variables.fhirPathVariables,
+        existingFhirPathContext: get().fhirPathContext,
+        enableWhenExpressions: enableWhenExpressions,
+        parentRepeatGroupLinkId,
+        parentRepeatGroupIndex,
+        actionType,
+        terminologyServerUrl: terminologyServerStore.getState().url
+      });
 
     if (isUpdated) {
       set(() => ({
@@ -363,20 +373,21 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   },
   toggleEnableWhenActivation: (isActivated: boolean) =>
     set(() => ({ enableWhenIsActivated: isActivated })),
-  updateExpressions: (updatedResponse: QuestionnaireResponse) => {
+  updateExpressions: async (updatedResponse: QuestionnaireResponse) => {
     const updatedResponseItemMap = createQuestionnaireResponseItemMap(updatedResponse);
     const {
       isUpdated,
       updatedEnableWhenExpressions,
       updatedCalculatedExpressions,
       updatedFhirPathContext
-    } = evaluateUpdatedExpressions({
+    } = await evaluateUpdatedExpressions({
       updatedResponse,
       updatedResponseItemMap,
       enableWhenExpressions: get().enableWhenExpressions,
       calculatedExpressions: get().calculatedExpressions,
       variablesFhirPath: get().variables.fhirPathVariables,
-      existingFhirPathContext: get().fhirPathContext
+      existingFhirPathContext: get().fhirPathContext,
+      terminologyServerUrl: terminologyServerStore.getState().url
     });
 
     if (isUpdated) {
@@ -385,7 +396,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
         calculatedExpressions: updatedCalculatedExpressions,
         fhirPathContext: updatedFhirPathContext
       }));
-      return 0;
+      return;
     }
 
     set(() => ({
@@ -399,7 +410,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
         [valueSetUrl]: codings
       }
     })),
-  updatePopulatedProperties: (
+  updatePopulatedProperties: async (
     populatedResponse: QuestionnaireResponse,
     populatedContext?: Record<string, any>,
     persistTabIndex?: boolean,
@@ -407,12 +418,13 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   ) => {
     const initialResponseItemMap = createQuestionnaireResponseItemMap(populatedResponse);
 
-    const evaluateInitialCalculatedExpressionsResult = evaluateInitialCalculatedExpressions({
+    const evaluateInitialCalculatedExpressionsResult = await evaluateInitialCalculatedExpressions({
       initialResponse: populatedResponse,
       initialResponseItemMap: initialResponseItemMap,
       calculatedExpressions: get().calculatedExpressions,
       variablesFhirPath: get().variables.fhirPathVariables,
-      existingFhirPathContext: get().fhirPathContext
+      existingFhirPathContext: get().fhirPathContext,
+      terminologyServerUrl: terminologyServerStore.getState().url
     });
     const { initialCalculatedExpressions } = evaluateInitialCalculatedExpressionsResult;
     let updatedFhirPathContext = evaluateInitialCalculatedExpressionsResult.updatedFhirPathContext;
@@ -429,7 +441,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       initialEnableWhenExpressions,
       firstVisibleTab,
       firstVisiblePage
-    } = initialiseFormFromResponse({
+    } = await initialiseFormFromResponse({
       questionnaireResponse: updatedResponse,
       enableWhenItems: get().enableWhenItems,
       enableWhenExpressions: get().enableWhenExpressions,
@@ -437,7 +449,8 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       variablesFhirPath: get().variables.fhirPathVariables,
       tabs: get().tabs,
       pages: get().pages,
-      fhirPathContext: updatedFhirPathContext
+      fhirPathContext: updatedFhirPathContext,
+      terminologyServerUrl: terminologyServerStore.getState().url
     });
     updatedFhirPathContext = evaluateInitialCalculatedExpressionsResult.updatedFhirPathContext;
 
@@ -458,10 +471,23 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     set(() => ({
       focusedLinkId: linkId
     })),
-  setPopulatedContext: (newPopulatedContext: Record<string, any>) =>
+  setPopulatedContext: (
+    newPopulatedContext: Record<string, any>,
+    addToFhirPathContext?: boolean
+  ) => {
+    if (addToFhirPathContext) {
+      const newFhirPathContext = { ...newPopulatedContext, ...get().fhirPathContext };
+      set(() => ({
+        populatedContext: newPopulatedContext,
+        fhirPathContext: newFhirPathContext
+      }));
+      return;
+    }
+
     set(() => ({
       populatedContext: newPopulatedContext
-    })),
+    }));
+  },
   setFormAsReadOnly: (readOnly: boolean) =>
     set(() => ({
       readOnly: readOnly

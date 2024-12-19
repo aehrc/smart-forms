@@ -28,7 +28,7 @@ import type {
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
 import { emptyResponse } from './emptyResource';
-import { createFhirPathContext } from './fhirpath';
+import { createFhirPathContext, handleFhirPathResult } from './fhirpath';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import { updateQrItemsInGroup } from './qrItem';
 import dayjs from 'dayjs';
@@ -41,20 +41,22 @@ interface EvaluateInitialCalculatedExpressionsParams {
   calculatedExpressions: Record<string, CalculatedExpression[]>;
   variablesFhirPath: Record<string, Expression[]>;
   existingFhirPathContext: Record<string, any>;
+  terminologyServerUrl: string;
 }
 
-export function evaluateInitialCalculatedExpressions(
+export async function evaluateInitialCalculatedExpressions(
   params: EvaluateInitialCalculatedExpressionsParams
-): {
+): Promise<{
   initialCalculatedExpressions: Record<string, CalculatedExpression[]>;
   updatedFhirPathContext: Record<string, any>;
-} {
+}> {
   const {
     initialResponse,
     initialResponseItemMap,
     calculatedExpressions,
     variablesFhirPath,
-    existingFhirPathContext
+    existingFhirPathContext,
+    terminologyServerUrl
   } = params;
 
   // Return early if initialResponse is empty or there are no calculated expressions to evaluate
@@ -72,11 +74,12 @@ export function evaluateInitialCalculatedExpressions(
     ...calculatedExpressions
   };
 
-  const updatedFhirPathContext = createFhirPathContext(
+  const updatedFhirPathContext = await createFhirPathContext(
     initialResponse,
     initialResponseItemMap,
     variablesFhirPath,
-    existingFhirPathContext
+    existingFhirPathContext,
+    terminologyServerUrl
   );
 
   for (const linkId in initialCalculatedExpressions) {
@@ -84,12 +87,17 @@ export function evaluateInitialCalculatedExpressions(
 
     for (const calcExpression of itemCalcExpressions) {
       try {
-        const result = fhirpath.evaluate(
+        const fhirPathResult = fhirpath.evaluate(
           {},
           calcExpression.expression,
           updatedFhirPathContext,
-          fhirpath_r4_model
+          fhirpath_r4_model,
+          {
+            async: true,
+            terminologyUrl: terminologyServerUrl
+          }
         );
+        const result = await handleFhirPathResult(fhirPathResult);
 
         // Only update calculatedExpressions if length of result array > 0
         if (result.length > 0 && !isEqual(calcExpression.value, result[0])) {
@@ -109,13 +117,14 @@ export function evaluateInitialCalculatedExpressions(
   };
 }
 
-export function evaluateCalculatedExpressions(
+export async function evaluateCalculatedExpressions(
   fhirPathContext: Record<string, any>,
-  calculatedExpressions: Record<string, CalculatedExpression[]>
-): {
+  calculatedExpressions: Record<string, CalculatedExpression[]>,
+  terminologyServerUrl: string
+): Promise<{
   calculatedExpsIsUpdated: boolean;
   updatedCalculatedExpressions: Record<string, CalculatedExpression[]>;
-} {
+}> {
   const updatedCalculatedExpressions: Record<string, CalculatedExpression[]> = {
     ...calculatedExpressions
   };
@@ -126,12 +135,17 @@ export function evaluateCalculatedExpressions(
 
     for (const calcExpression of itemCalcExpressions) {
       try {
-        const result = fhirpath.evaluate(
+        const fhirPathResult = fhirpath.evaluate(
           {},
           calcExpression.expression,
           fhirPathContext,
-          fhirpath_r4_model
+          fhirpath_r4_model,
+          {
+            async: true,
+            terminologyUrl: terminologyServerUrl
+          }
         );
+        const result = await handleFhirPathResult(fhirPathResult);
 
         // Update calculatedExpressions if length of result array > 0
         // Only update when current calcExpression value is different from the result, otherwise it will result in an infinite loop as per issue #733

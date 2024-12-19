@@ -313,17 +313,6 @@ function getSingleItemToRepopulate(
   heading: string | null,
   itemsToRepopulate: Record<string, ItemToRepopulate>
 ) {
-  if (qItem.linkId === 'encounter-reason') {
-    console.log(
-      structuredClone({
-        qItem: qItem,
-        heading: heading,
-        newQRItem: qrItem,
-        newQRItems: []
-      })
-    );
-  }
-
   itemsToRepopulate[qItem.linkId] = {
     qItem: qItem,
     heading: heading,
