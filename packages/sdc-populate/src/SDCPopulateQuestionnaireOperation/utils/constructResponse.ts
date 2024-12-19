@@ -41,11 +41,7 @@ import { getItemPopulationContextName } from './readPopulationExpressions';
 import { createQuestionnaireReference } from './createQuestionnaireReference';
 import { parseItemInitialToAnswer, parseValueToAnswer } from './parse';
 import { getValueSetPromise } from '../api/expandValueset';
-import type {
-  FetchResourceCallback,
-  FetchTerminologyCallback,
-  TerminologyRequestConfig
-} from '../interfaces';
+import type { FetchResourceCallback, FetchTerminologyCallback, TerminologyRequestConfig } from '../interfaces';
 import { handleFhirPathResult } from './createFhirPathContext';
 import { TERMINOLOGY_SERVER_URL } from '../../globals';
 
@@ -281,9 +277,17 @@ function constructGroupItem(params: ConstructGroupItemParams): QuestionnaireResp
 
   const { initialExpressions } = populationExpressions;
 
+  let populatedAnswers: QuestionnaireResponseItemAnswer[] | undefined;
+  // Populate answers from item.initial if present
+  // Process item.initial first, then can potentially overwrite with initialExpressions
+  if (qItem.initial) {
+    populatedAnswers = qItem.initial
+      .map((initial) => parseItemInitialToAnswer(initial))
+      .filter((answer): answer is QuestionnaireResponseItemAnswer => answer !== null);
+  }
+
   // Populate answers from initialExpressions if present
   const initialExpression = initialExpressions[qItem.linkId];
-  let populatedAnswers: QuestionnaireResponseItemAnswer[] | undefined;
   if (initialExpression) {
     const initialValues = initialExpression.value;
 
@@ -305,12 +309,6 @@ function constructGroupItem(params: ConstructGroupItemParams): QuestionnaireResp
     }
   }
 
-  // Populate answers from item.initial if present
-  if (qItem.initial) {
-    populatedAnswers = qItem.initial
-      .map((initial) => parseItemInitialToAnswer(initial))
-      .filter((answer): answer is QuestionnaireResponseItemAnswer => answer !== null);
-  }
 
   if (qrItems.length > 0) {
     return {
@@ -380,7 +378,7 @@ function constructSingleItem(params: ConstructSingleItemParams): QuestionnaireRe
       return {
         linkId: qItem.linkId,
         answer: newValues,
-        ...(qItem.text ? { text: qItem.text } : {})
+        ...(qItem.text ? { text: qItem.text } : {}) 
       };
     }
   }
