@@ -15,7 +15,11 @@
  * limitations under the License.
  */
 
-import type { FetchResourceCallback } from '@aehrc/sdc-populate';
+import type {
+  FetchResourceCallback,
+  FetchTerminologyCallback,
+  TerminologyRequestConfig
+} from '@aehrc/sdc-populate';
 import axios from 'axios';
 
 const ABSOLUTE_URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
@@ -48,21 +52,21 @@ export const fetchResourceCallback: FetchResourceCallback = (
   });
 };
 
-export const terminologyCallback: FetchResourceCallback = (
+export const fetchTerminologyCallback: FetchTerminologyCallback = (
   query: string,
-  requestConfig: RequestConfig
+  terminologyRequestConfig: TerminologyRequestConfig
 ) => {
-  let { clientEndpoint } = requestConfig;
+  let { terminologyServerUrl } = terminologyRequestConfig;
 
   const headers = {
     Accept: 'application/json;charset=utf-8'
   };
 
-  if (!clientEndpoint.endsWith('/')) {
-    clientEndpoint += '/';
+  if (!terminologyServerUrl.endsWith('/')) {
+    terminologyServerUrl += '/';
   }
 
-  const queryUrl = ABSOLUTE_URL_REGEX.test(query) ? query : clientEndpoint + query;
+  const queryUrl = ABSOLUTE_URL_REGEX.test(query) ? query : terminologyServerUrl + query;
 
   return axios.get(queryUrl, {
     headers: headers

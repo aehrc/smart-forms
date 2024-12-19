@@ -15,10 +15,14 @@
  * limitations under the License.
  */
 
-import type { InputParameters, OutputParameters } from '@aehrc/sdc-populate';
+import type {
+  InputParameters,
+  OutputParameters,
+  TerminologyRequestConfig
+} from '@aehrc/sdc-populate';
 import { isOutputParameters, populate } from '@aehrc/sdc-populate';
 import type { RequestConfig } from '../utils/callback.ts';
-import { fetchResourceCallback, terminologyCallback } from '../utils/callback.ts';
+import { fetchResourceCallback, fetchTerminologyCallback } from '../utils/callback.ts';
 import { HEADERS } from '../../../api/headers.ts';
 import type Client from 'fhirclient/lib/Client';
 import type { OperationOutcome } from 'fhir/r4';
@@ -33,8 +37,8 @@ export async function requestPopulate(
     authToken: fhirClient.state.tokenResponse!.access_token!
   };
 
-  const terminologyRequestConfig: RequestConfig = {
-    clientEndpoint: TERMINOLOGY_SERVER_URL
+  const terminologyRequestConfig: TerminologyRequestConfig = {
+    terminologyServerUrl: TERMINOLOGY_SERVER_URL
   };
 
   const populatePromise: Promise<any> = IN_APP_POPULATE
@@ -42,7 +46,7 @@ export async function requestPopulate(
         inputParameters,
         fetchResourceCallback,
         fetchResourceRequestConfig,
-        terminologyCallback,
+        fetchTerminologyCallback,
         terminologyRequestConfig
       )
     : fhirClient.request({
