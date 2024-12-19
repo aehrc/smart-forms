@@ -22,41 +22,48 @@ import type {
 } from '../interfaces/inputParameters.interface';
 import { isContextParameter } from './typePredicates';
 import fhirpath from 'fhirpath';
+import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import type {
   Bundle,
   BundleEntry,
+  Expression,
+  Extension,
   FhirResource,
   OperationOutcomeIssue,
-  Questionnaire
+  Questionnaire,
+  QuestionnaireItem
 } from 'fhir/r4';
-import type { FetchResourceCallback } from '../interfaces';
+import type { FetchResourceCallback, TerminologyRequestConfig } from '../interfaces';
 import { createInvalidWarningIssue, createNotFoundWarningIssue } from './operationOutcome';
+import { TERMINOLOGY_SERVER_URL } from '../../globals';
 
 export async function createFhirPathContext(
   parameters: InputParameters,
   questionnaire: Questionnaire,
   fetchResourceCallback: FetchResourceCallback,
   requestConfig: any,
-  issues: OperationOutcomeIssue[]
+  issues: OperationOutcomeIssue[],
+  terminologyRequestConfig?: TerminologyRequestConfig
 ): Promise<Record<string, any>> {
   const { launchContexts, updatedReferenceContexts, updatedContainedBatchContexts } =
-    replaceFhirPathEmbeddings(parameters, questionnaire);
+    await replaceFhirPathEmbeddings(parameters, questionnaire, terminologyRequestConfig);
 
-  const contextMap: Record<string, any> = {};
+  let fhirPathContext: Record<string, any> = {};
 
   // Add launch contexts and contained batch contexts to contextMap
   for (const launchContext of launchContexts) {
-    contextMap[launchContext.part[0].valueString] = launchContext.part[1].resource;
+    fhirPathContext[launchContext.part[0].valueString] = launchContext.part[1].resource;
   }
 
   for (const containedBatchContext of updatedContainedBatchContexts) {
-    contextMap[containedBatchContext.part[0].valueString] = containedBatchContext.part[1].resource;
+    fhirPathContext[containedBatchContext.part[0].valueString] =
+      containedBatchContext.part[1].resource;
   }
 
   // Resolve and populate reference context resources into contextMap
   await populateReferenceContextsIntoContextMap(
     updatedReferenceContexts,
-    contextMap,
+    fhirPathContext,
     fetchResourceCallback,
     requestConfig,
     issues
@@ -65,13 +72,161 @@ export async function createFhirPathContext(
   // Resolve and populate contained batch resources into contextMap
   await populateBatchContextsIntoContextMap(
     updatedContainedBatchContexts,
-    contextMap,
+    fhirPathContext,
     fetchResourceCallback,
     requestConfig,
     issues
   );
 
-  return contextMap;
+  // Extract and evaluate FHIRPath variables
+  await extractAndEvaluateFhirPathVariables(
+    questionnaire,
+    fhirPathContext,
+    issues,
+    terminologyRequestConfig
+  );
+
+  return fhirPathContext;
+}
+
+async function extractAndEvaluateFhirPathVariables(
+  questionnaire: Questionnaire,
+  fhirPathContext: Record<string, any>,
+  issues: OperationOutcomeIssue[],
+  terminologyRequestConfig?: TerminologyRequestConfig
+) {
+  if (!questionnaire.extension || questionnaire.extension.length === 0) {
+    return;
+  }
+
+  // Extract and evaluate FHIRPath variables from questionnaire-level
+  const questionnaireLevelVariables = getFhirPathVariables(questionnaire.extension);
+  await evaluateFhirPathVariables(
+    questionnaireLevelVariables,
+    fhirPathContext,
+    issues,
+    terminologyRequestConfig
+  );
+
+  // Extract and evaluate FHIRPath variables from item-level
+  let itemLevelVariables: Record<string, any> = {};
+  itemLevelVariables = extractItemLevelFhirPathVariables(questionnaire, itemLevelVariables);
+  if (Object.keys(itemLevelVariables).length > 0) {
+    for (const [, variables] of Object.entries(itemLevelVariables)) {
+      await evaluateFhirPathVariables(variables, fhirPathContext, issues, terminologyRequestConfig);
+    }
+  }
+}
+
+function extractItemLevelFhirPathVariables(
+  questionnaire: Questionnaire,
+  variables: Record<string, Expression[]>
+): Record<string, Expression[]> {
+  if (!questionnaire.item || questionnaire.item.length === 0) {
+    return variables;
+  }
+
+  for (const topLevelItem of questionnaire.item) {
+    const isRepeatGroup = !!topLevelItem.repeats && topLevelItem.type === 'group';
+    extractItemLevelFhirPathVariablesRecursive({
+      item: topLevelItem,
+      variables,
+      parentRepeatGroupLinkId: isRepeatGroup ? topLevelItem.linkId : undefined
+    });
+  }
+
+  return variables;
+}
+
+interface ExtractItemLevelFhirPathVariablesRecursiveParams {
+  item: QuestionnaireItem;
+  variables: Record<string, Expression[]>;
+  parentRepeatGroupLinkId?: string;
+}
+
+function extractItemLevelFhirPathVariablesRecursive(
+  params: ExtractItemLevelFhirPathVariablesRecursiveParams
+) {
+  const { item, variables, parentRepeatGroupLinkId } = params;
+
+  const items = item.item;
+  const isRepeatGroup = !!item.repeats && item.type === 'group';
+  if (items && items.length > 0) {
+    // iterate through items of item recursively
+    for (const childItem of items) {
+      extractItemLevelFhirPathVariablesRecursive({
+        ...params,
+        item: childItem,
+        parentRepeatGroupLinkId: isRepeatGroup ? item.linkId : parentRepeatGroupLinkId
+      });
+    }
+  }
+
+  if (item.extension) {
+    variables[item.linkId] = getFhirPathVariables(item.extension);
+  }
+
+  return {
+    variables
+  };
+}
+
+async function evaluateFhirPathVariables(
+  variables: Expression[],
+  fhirPathContext: Record<string, any>,
+  issues: OperationOutcomeIssue[],
+  terminologyRequestConfig?: TerminologyRequestConfig
+) {
+  if (variables.length === 0) {
+    return;
+  }
+
+  const terminologyServerUrl = terminologyRequestConfig?.terminologyServerUrl ?? null;
+
+  for (const variable of variables) {
+    if (variable.expression) {
+      try {
+        const fhirPathResult = fhirpath.evaluate(
+          {},
+          variable.expression,
+          fhirPathContext,
+          fhirpath_r4_model,
+          {
+            async: true,
+            terminologyUrl: terminologyServerUrl ?? TERMINOLOGY_SERVER_URL
+          }
+        );
+
+        fhirPathContext[`${variable.name}`] = await handleFhirPathResult(fhirPathResult);
+      } catch (e) {
+        if (e instanceof Error) {
+          console.warn(
+            'Error: fhirpath evaluation for Questionnaire-level FHIRPath variable failed. Details below:' +
+              e
+          );
+          issues.push(createInvalidWarningIssue(e.message));
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Get fhirpath variables from an array of extensions
+ *
+ * @author Sean Fong
+ */
+function getFhirPathVariables(extensions: Extension[]): Expression[] {
+  return (
+    extensions
+      .filter(
+        (extension) =>
+          extension.url === 'http://hl7.org/fhir/StructureDefinition/variable' &&
+          extension.valueExpression?.language === 'text/fhirpath'
+      )
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      .map((extension) => extension.valueExpression!)
+  );
 }
 
 async function populateReferenceContextsIntoContextMap(
@@ -301,14 +456,15 @@ function createResourceContextTuple(
   return [resourceContext, fetchResourceCallback(query, requestConfig), null];
 }
 
-function replaceFhirPathEmbeddings(
+async function replaceFhirPathEmbeddings(
   parameters: InputParameters,
-  questionnaire: Questionnaire
-): {
+  questionnaire: Questionnaire,
+  terminologyRequestConfig?: TerminologyRequestConfig
+): Promise<{
   launchContexts: ResourceContext[];
   updatedReferenceContexts: ReferenceContext[];
   updatedContainedBatchContexts: ResourceContext[];
-} {
+}> {
   const launchContexts = parameters.parameter.filter(
     (param) => isContextParameter(param) && param.part && !!param.part[1].resource
   ) as ResourceContext[];
@@ -328,9 +484,10 @@ function replaceFhirPathEmbeddings(
     const fhirPathEmbeddingsMap = getFhirPathEmbeddings(referenceContexts, containedBatchContexts);
 
     // evaluate fhirpath embeddings with values from launch context map
-    const evaluatedFhirPathEmbeddingsMap = evaluateFhirPathEmbeddings(
+    const evaluatedFhirPathEmbeddingsMap = await evaluateFhirPathEmbeddings(
       fhirPathEmbeddingsMap,
-      launchContexts
+      launchContexts,
+      terminologyRequestConfig
     );
 
     // Replace fhirpath embeddings with evaluated values
@@ -429,10 +586,13 @@ function getFhirPathEmbeddings(
   return fhirPathEmbeddingsMap;
 }
 
-function evaluateFhirPathEmbeddings(
+async function evaluateFhirPathEmbeddings(
   fhirPathEmbeddingsMap: Record<string, string>,
-  launchContexts: ResourceContext[]
+  launchContexts: ResourceContext[],
+  terminologyRequestConfig?: TerminologyRequestConfig
 ) {
+  const terminologyServerUrl = terminologyRequestConfig?.terminologyServerUrl ?? null;
+
   // transform launch contexts to launch context map
   const launchContextMap: Record<string, FhirResource> = {};
   for (const launchContext of launchContexts) {
@@ -440,21 +600,22 @@ function evaluateFhirPathEmbeddings(
   }
 
   // evaluate fhirpath embeddings within map
-  Object.keys(fhirPathEmbeddingsMap).forEach((embedding) => {
+  for (const embedding of Object.keys(fhirPathEmbeddingsMap)) {
     const contextName = embedding.split('.')[0];
     const fhirPathQuery = embedding.split('.').slice(1).join('.');
 
     if (contextName) {
       try {
-        fhirPathEmbeddingsMap[embedding] = fhirpath.evaluate(
-          launchContextMap[contextName],
-          fhirPathQuery
-        )[0];
+        const fhirPathResult = fhirpath.evaluate(launchContextMap[contextName], fhirPathQuery, {
+          async: true,
+          terminologyUrl: terminologyServerUrl ?? TERMINOLOGY_SERVER_URL
+        });
+        fhirPathEmbeddingsMap[embedding] = (await handleFhirPathResult(fhirPathResult))[0];
       } catch (e) {
         console.warn(e);
       }
     }
-  });
+  }
 
   return fhirPathEmbeddingsMap;
 }
@@ -516,4 +677,12 @@ const FHIRPATH_EMBEDDING_REGEX = /{{%(.*?)}}/g;
 
 function readFhirPathEmbeddingsFromStr(expression: string): string[] {
   return [...expression.matchAll(FHIRPATH_EMBEDDING_REGEX)].map((match) => match[1] ?? '');
+}
+
+export async function handleFhirPathResult(result: any[] | Promise<any[]>) {
+  if (result instanceof Promise) {
+    return await result;
+  }
+
+  return result;
 }

@@ -15,7 +15,11 @@
  * limitations under the License.
  */
 
-export { FetchResourceCallback } from './callback.interface';
+export {
+  FetchResourceCallback,
+  TerminologyRequestConfig,
+  FetchTerminologyCallback
+} from './callback.interface';
 export { IdentifierParameter, QuestionnaireRefParameter } from './inputParameters.interface';
 export {
   IssuesParameter,

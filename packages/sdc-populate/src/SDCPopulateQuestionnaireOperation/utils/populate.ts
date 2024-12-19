@@ -15,7 +15,13 @@
  * limitations under the License.
  */
 
-import type { FetchResourceCallback, InputParameters, OutputParameters } from '../interfaces';
+import type {
+  FetchResourceCallback,
+  FetchTerminologyCallback,
+  InputParameters,
+  OutputParameters,
+  TerminologyRequestConfig
+} from '../interfaces';
 import type { Encounter, OperationOutcome, OperationOutcomeIssue, Reference } from 'fhir/r4';
 import { fetchQuestionnaire } from '../api/fetchQuestionnaire';
 import { isSubjectParameter } from './index';
@@ -43,8 +49,8 @@ export async function populate(
   parameters: InputParameters,
   fetchResourceCallback: FetchResourceCallback,
   fetchResourceRequestConfig: any,
-  terminologyCallback?: FetchResourceCallback,
-  terminologyRequestConfig?: any
+  terminologyCallback?: FetchTerminologyCallback,
+  terminologyRequestConfig?: TerminologyRequestConfig
 ): Promise<OutputParameters | OperationOutcome> {
   const issues: OperationOutcomeIssue[] = [];
 
@@ -69,7 +75,8 @@ export async function populate(
     questionnaire,
     fetchResourceCallback,
     fetchResourceRequestConfig,
-    issues
+    issues,
+    terminologyRequestConfig
   );
 
   // Read expressions to be populated from questionnaire recursively
@@ -77,19 +84,22 @@ export async function populate(
   const populationExpressions = readPopulationExpressions(questionnaire);
 
   // Evaluate itemPopulationContexts and add them to contextMap
-  fhirPathContext = evaluateItemPopulationContexts(
+  fhirPathContext = await evaluateItemPopulationContexts(
     populationExpressions.itemPopulationContexts,
     fhirPathContext,
-    issues
+    issues,
+    terminologyRequestConfig
   );
   fhirPathContext = sortResourceArrays(fhirPathContext);
 
   // Get values for expressions
-  const { evaluatedInitialExpressions, evaluatedItemPopulationContexts } = generateExpressionValues(
-    populationExpressions,
-    fhirPathContext,
-    issues
-  );
+  const { evaluatedInitialExpressions, evaluatedItemPopulationContexts } =
+    await generateExpressionValues(
+      populationExpressions,
+      fhirPathContext,
+      issues,
+      terminologyRequestConfig
+    );
 
   // In evaluatedInitialExpressions, add display values to codings lacking them
   const completeInitialExpressions = await addDisplayToInitialExpressionsCodings(

@@ -41,7 +41,13 @@ import { getItemPopulationContextName } from './readPopulationExpressions';
 import { createQuestionnaireReference } from './createQuestionnaireReference';
 import { parseItemInitialToAnswer, parseValueToAnswer } from './parse';
 import { getValueSetPromise } from '../api/expandValueset';
-import type { FetchResourceCallback } from '../interfaces';
+import type {
+  FetchResourceCallback,
+  FetchTerminologyCallback,
+  TerminologyRequestConfig
+} from '../interfaces';
+import { handleFhirPathResult } from './createFhirPathContext';
+import { TERMINOLOGY_SERVER_URL } from '../../globals';
 
 /**
  * Constructs a questionnaireResponse recursively from a specified questionnaire, its subject and its initialExpressions
@@ -84,7 +90,7 @@ export async function constructResponse(
   // In second step, resolves all promises in parallel and populate valueSet answers by comparing their codes
   const topLevelQRItems: QuestionnaireResponseItem[] = [];
   for (const qItem of questionnaire.item) {
-    const newTopLevelQRItem = constructResponseItemRecursive({
+    const newTopLevelQRItem = await constructResponseItemRecursive({
       qItem,
       qrItem: {
         linkId: qItem.linkId,
@@ -164,9 +170,9 @@ interface ConstructResponseItemRecursiveParams {
  *
  * @author Sean Fong
  */
-function constructResponseItemRecursive(
+async function constructResponseItemRecursive(
   params: ConstructResponseItemRecursiveParams
-): QuestionnaireResponseItem | QuestionnaireResponseItem[] | null {
+): Promise<QuestionnaireResponseItem | QuestionnaireResponseItem[] | null> {
   const {
     qItem,
     qrItem,
@@ -188,7 +194,7 @@ function constructResponseItemRecursive(
     // If qItem is a repeat group, populate instances of repeat groups containing child items
     if (qItem.type === 'group' && qItem.repeats) {
       // Create number of repeat group instances based on the number of answers that the first child item has
-      return constructRepeatGroupInstances(
+      return await constructRepeatGroupInstances(
         qItem,
         qContainedResources,
         populationExpressions,
@@ -202,7 +208,7 @@ function constructResponseItemRecursive(
 
     // Otherwise loop through qItem as usual
     for (const item of items) {
-      const newQrItem = constructResponseItemRecursive({
+      const newQrItem = await constructResponseItemRecursive({
         qItem: item,
         qrItem,
         qContainedResources,
@@ -500,21 +506,23 @@ export function checkIsTime(value: string): boolean {
  *
  * @author Sean Fong
  */
-function constructRepeatGroupInstances(
+async function constructRepeatGroupInstances(
   qRepeatGroupParent: QuestionnaireItem,
   qContainedResources: FhirResource[],
   populationExpressions: PopulationExpressions,
   valueSetPromises: Record<string, ValueSetPromise>,
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>,
   containedValueSets: Record<string, ValueSet>,
-  terminologyCallback?: FetchResourceCallback,
-  terminologyRequestConfig?: any
-): QuestionnaireResponseItem[] {
+  terminologyCallback?: FetchTerminologyCallback,
+  terminologyRequestConfig?: TerminologyRequestConfig
+): Promise<QuestionnaireResponseItem[]> {
   if (!qRepeatGroupParent.item || !qRepeatGroupParent.item[0]) {
     return [];
   }
 
   const { initialExpressions, itemPopulationContexts } = populationExpressions;
+
+  const terminologyServerUrl = terminologyRequestConfig?.terminologyServerUrl ?? null;
 
   // Look in initialExpressions of each of the child items to relate back to the itemPopulationContext its using
   // FIXME eventually need to consider initialExpressions other than the first one
@@ -565,12 +573,17 @@ function constructRepeatGroupInstances(
       const initialExpression = initialExpressions[childItem.linkId];
       if (initialExpression) {
         try {
-          const initialValues = fhirpath.evaluate(
+          const fhirPathResult = fhirpath.evaluate(
             {},
             initialExpression.expression,
             { [itemPopulationContext.name]: [itemPopulationContextValue] },
-            fhirpath_r4_model
+            fhirpath_r4_model,
+            {
+              async: true,
+              terminologyUrl: terminologyServerUrl ?? TERMINOLOGY_SERVER_URL
+            }
           );
+          const initialValues = await handleFhirPathResult(fhirPathResult);
 
           if (initialValues && initialValues.length > 0 && initialValues[0] !== '') {
             const { newValues, expandRequired } = getAnswerValues(initialValues, childItem);
@@ -606,7 +619,7 @@ function constructRepeatGroupInstances(
       // Populate answers from associated itemPopulationContexts
       const associatedItemPopulationContext = associatedItemPopulationContexts[childItem.linkId];
       if (associatedItemPopulationContext) {
-        const newQrItem = constructResponseItemRecursive({
+        const newQrItem = await constructResponseItemRecursive({
           qItem: childItem,
           qrItem: {
             linkId: childItem.linkId,

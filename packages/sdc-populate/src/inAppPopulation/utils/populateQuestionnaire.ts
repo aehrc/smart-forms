@@ -28,10 +28,12 @@ import type {
 import type {
   CustomContextResultParameter,
   FetchResourceCallback,
+  FetchTerminologyCallback,
   InputParameters,
   IssuesParameter,
   OutputParameters,
-  ResponseParameter
+  ResponseParameter,
+  TerminologyRequestConfig
 } from '../../SDCPopulateQuestionnaireOperation';
 import {
   isInputParameters,
@@ -102,7 +104,7 @@ export async function populateQuestionnaire(params: PopulateQuestionnaireParams)
     terminologyRequestConfig
   } = params;
 
-  const context: Record<string, any> = {};
+  const fhirPathContext: Record<string, any> = {};
 
   // Get launch contexts, source queries and questionnaire-level variables
   const launchContexts = getLaunchContexts(questionnaire);
@@ -129,7 +131,7 @@ export async function populateQuestionnaire(params: PopulateQuestionnaireParams)
     launchContexts,
     sourceQueries,
     questionnaireLevelVariables,
-    context
+    fhirPathContext
   );
 
   if (!inputParameters) {
@@ -199,8 +201,8 @@ async function performInAppPopulation(
   inputParameters: InputParameters,
   fetchResourceCallback: FetchResourceCallback,
   requestConfig: any,
-  terminologyCallback?: FetchResourceCallback,
-  terminologyRequestConfig?: any
+  terminologyCallback?: FetchTerminologyCallback,
+  terminologyRequestConfig?: TerminologyRequestConfig
 ): Promise<OutputParameters | OperationOutcome> {
   const populatePromise = populate(
     inputParameters,

@@ -51,3 +51,48 @@
 export interface FetchResourceCallback {
   (query: string, requestConfig?: any): Promise<any>;
 }
+
+/* Terminology request callback */
+export interface TerminologyRequestConfig {
+  terminologyServerUrl: string;
+  [key: string]: any; // Allow multiple additional properties
+}
+
+/**
+ * To define a method to fetch resources from the FHIR server with a given query string
+ * Method should be able to handle both absolute urls and query strings
+ *
+ * @param query - The query URL of the FHIR resource
+ * @param requestConfig - Terminology request configs - must have terminologyServerUrl + any key value pair - can be headers, auth tokens or endpoints
+ * @returns A promise of the FHIR resource (or an error)!
+ *
+ * @example
+ * const ABSOLUTE_URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
+ *
+ * const fetchTerminologyCallback: FetchTerminologyCallback = (
+ *   query: string,
+ *   terminologyRequestConfig: TerminologyRequestConfig
+ * ) => {
+ *   let { terminologyServerUrl } = terminologyRequestConfig;
+ *
+ *   const headers = {
+ *     Accept: 'application/json;charset=utf-8'
+ *   };
+ *
+ *   if (!terminologyServerUrl.endsWith('/')) {
+ *     terminologyServerUrl += '/';
+ *   }
+ *
+ *   const queryUrl = ABSOLUTE_URL_REGEX.test(query) ? query : terminologyServerUrl + query;
+ *
+ *   return axios.get(queryUrl, {
+ *     headers: headers
+ *   });
+ * };
+ *
+ *
+ * @author Sean Fong
+ */
+export interface FetchTerminologyCallback {
+  (query: string, requestConfig: TerminologyRequestConfig): Promise<any>;
+}

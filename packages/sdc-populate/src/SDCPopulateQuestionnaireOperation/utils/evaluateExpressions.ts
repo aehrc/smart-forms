@@ -23,6 +23,9 @@ import type {
 } from '../interfaces/expressions.interface';
 import type { OperationOutcomeIssue } from 'fhir/r4';
 import { createInvalidWarningIssue } from './operationOutcome';
+import type { TerminologyRequestConfig } from '../interfaces';
+import { handleFhirPathResult } from './createFhirPathContext';
+import { TERMINOLOGY_SERVER_URL } from '../../globals';
 
 /**
  * Use FHIRPath.js to evaluate initialExpressions and generate its values to be populated into the questionnaireResponse.
@@ -30,12 +33,15 @@ import { createInvalidWarningIssue } from './operationOutcome';
  *
  * @author Sean Fong
  */
-export function generateExpressionValues(
+export async function generateExpressionValues(
   populationExpressions: PopulationExpressions,
   contextMap: Record<string, any>,
-  issues: OperationOutcomeIssue[]
+  issues: OperationOutcomeIssue[],
+  terminologyRequestConfig?: TerminologyRequestConfig
 ) {
   const { initialExpressions, itemPopulationContexts } = populationExpressions;
+
+  const terminologyServerUrl = terminologyRequestConfig?.terminologyServerUrl ?? null;
 
   for (const linkId in initialExpressions) {
     const initialExpression = initialExpressions[linkId];
@@ -44,7 +50,12 @@ export function generateExpressionValues(
 
       // Evaluate expression by LaunchPatient or PrePopQuery
       try {
-        initialExpression.value = fhirpath.evaluate({}, expression, contextMap, fhirpath_r4_model);
+        const fhirPathResult = fhirpath.evaluate({}, expression, contextMap, fhirpath_r4_model, {
+          async: true,
+          terminologyUrl: terminologyServerUrl ?? TERMINOLOGY_SERVER_URL
+        });
+
+        initialExpression.value = await handleFhirPathResult(fhirPathResult);
       } catch (e) {
         if (e instanceof Error) {
           console.warn(
@@ -65,12 +76,11 @@ export function generateExpressionValues(
       const expression = itemPopulationContext.expression;
 
       try {
-        itemPopulationContext.value = fhirpath.evaluate(
-          {},
-          expression,
-          contextMap,
-          fhirpath_r4_model
-        );
+        const fhirPathResult = fhirpath.evaluate({}, expression, contextMap, fhirpath_r4_model, {
+          async: true,
+          terminologyUrl: terminologyServerUrl ?? TERMINOLOGY_SERVER_URL
+        });
+        itemPopulationContext.value = await handleFhirPathResult(fhirPathResult);
       } catch (e) {
         if (e instanceof Error) {
           console.warn(
@@ -98,11 +108,14 @@ export function generateExpressionValues(
  *
  * @author Sean Fong
  */
-export function evaluateItemPopulationContexts(
+export async function evaluateItemPopulationContexts(
   itemPopulationContexts: Record<string, ItemPopulationContext>,
   contextMap: Record<string, any>,
-  issues: OperationOutcomeIssue[]
-): Record<string, any> {
+  issues: OperationOutcomeIssue[],
+  terminologyRequestConfig?: TerminologyRequestConfig
+): Promise<Record<string, any>> {
+  const terminologyServerUrl = terminologyRequestConfig?.terminologyServerUrl ?? null;
+
   for (const name in itemPopulationContexts) {
     const itemPopulationContext = itemPopulationContexts[name];
     if (itemPopulationContext) {
@@ -111,7 +124,11 @@ export function evaluateItemPopulationContexts(
 
       // Evaluate expression by LaunchPatient or PrePopQuery
       try {
-        evaluatedResult = fhirpath.evaluate({}, expression, contextMap, fhirpath_r4_model);
+        const fhirPathResult = fhirpath.evaluate({}, expression, contextMap, fhirpath_r4_model, {
+          async: true,
+          terminologyUrl: terminologyServerUrl ?? TERMINOLOGY_SERVER_URL
+        });
+        evaluatedResult = await handleFhirPathResult(fhirPathResult);
       } catch (e) {
         if (e instanceof Error) {
           console.warn(
