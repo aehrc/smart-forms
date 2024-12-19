@@ -41,7 +41,11 @@ import { getItemPopulationContextName } from './readPopulationExpressions';
 import { createQuestionnaireReference } from './createQuestionnaireReference';
 import { parseItemInitialToAnswer, parseValueToAnswer } from './parse';
 import { getValueSetPromise } from '../api/expandValueset';
-import type { FetchResourceCallback, FetchTerminologyCallback, TerminologyRequestConfig } from '../interfaces';
+import type {
+  FetchResourceCallback,
+  FetchTerminologyCallback,
+  TerminologyRequestConfig
+} from '../interfaces';
 import { handleFhirPathResult } from './createFhirPathContext';
 import { TERMINOLOGY_SERVER_URL } from '../../globals';
 
@@ -309,7 +313,6 @@ function constructGroupItem(params: ConstructGroupItemParams): QuestionnaireResp
     }
   }
 
-
   if (qrItems.length > 0) {
     return {
       linkId: qItem.linkId,
@@ -378,7 +381,7 @@ function constructSingleItem(params: ConstructSingleItemParams): QuestionnaireRe
       return {
         linkId: qItem.linkId,
         answer: newValues,
-        ...(qItem.text ? { text: qItem.text } : {}) 
+        ...(qItem.text ? { text: qItem.text } : {})
       };
     }
   }
