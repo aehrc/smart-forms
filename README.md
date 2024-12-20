@@ -140,11 +140,11 @@ To run the [@aehrc/smart-forms-renderer](https://www.npmjs.com/package/@aehrc/sm
 - On the main directory, go to packages>smart-forms-renderer in a terminal
 - run the npm install again in the smart-forms-renderer folder
  > npm install  
-- now you can run the storybook
+- now you can run the storybook while watching the directory for any file changes. 
 
->npm run storybook
+>npm run storybook-watch
 
-TODO: ensure run storybook is running in parrallel with watch.
+
 
 
 
