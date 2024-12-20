@@ -37,8 +37,8 @@
     "docusaurus-plugin-typedoc": "^1.0.1",
     "docusaurus-plugin-typedoc-api": "^4.2.0",
     "typedoc": "^0.27.5",
-    "typedoc-plugin-frontmatter": "^1.1.2",
-    "typedoc-plugin-markdown": "^4.3.2",
+    "typedoc-plugin-frontmatter": "^1.0.0",
+    "typedoc-plugin-markdown": "^4.0.2",
     "typescript": "~5.2.2"
   },
   "browserslist": {

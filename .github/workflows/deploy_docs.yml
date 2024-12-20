@@ -2,8 +2,10 @@ name: Smart Forms Docs + Storybook Deployment Workflow
 
 on:
   push:
+    # Alpha changes should not be included in the docs
     branches-ignore:
       - alpha
+      - alpha-jv
 
 permissions:
   contents: read
