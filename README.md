@@ -132,6 +132,23 @@ npm start
 
 5. Follow the instructions [here](https://github.com/aehrc/smart-forms#usage) but replace https://smartforms.csiro.au/launch with http://localhost:5173/launch
 
+### Run Storybook locally
+
+
+To run the [@aehrc/smart-forms-renderer](https://www.npmjs.com/package/@aehrc/smart-forms-renderer) via the storybook, follow the instruction below:
+
+- On the main directory, go to packages>smart-forms-renderer in a terminal
+- run the npm install again in the smart-forms-renderer folder
+ > npm install  
+- now you can run the storybook
+
+>npm run storybook
+
+TODO: ensure run storybook is running in parrallel with watch.
+
+
+
+
 ## Feature requests and bug reports
 
 If you find any bugs, feel free to [create an issue](https://github.com/aehrc/smart-forms/issues/new) and we will try our best to get it fixed.
