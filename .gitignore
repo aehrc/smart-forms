@@ -1,3 +1,5 @@
 node_modules
 coverage
 changelog_guide.md
+#Mac OS .DS_STORE
+.DS_STORE
