@@ -103,6 +103,9 @@ VITE_LAUNCH_CLIENT_ID=smart-forms
 
 In development mode, create a `.env.local` file in the `apps/smart-forms-app` directory and tweak the environment variables as needed.
 
+> Note: in the local development mode, set 
+VITE_PRESERVE_SYM_LINKS=false so that it allows `tsc -w` to watch the latest changes. If preserveSymLink: true local changes will be ignored.
+
 
 
 ### Run app locally
