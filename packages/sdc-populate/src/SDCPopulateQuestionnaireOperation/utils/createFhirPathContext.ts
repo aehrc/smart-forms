@@ -48,7 +48,7 @@ export async function createFhirPathContext(
   const { launchContexts, updatedReferenceContexts, updatedContainedBatchContexts } =
     await replaceFhirPathEmbeddings(parameters, questionnaire, terminologyRequestConfig);
 
-  let fhirPathContext: Record<string, any> = {};
+  const fhirPathContext: Record<string, any> = {};
 
   // Add launch contexts and contained batch contexts to contextMap
   for (const launchContext of launchContexts) {

@@ -103,6 +103,9 @@ VITE_LAUNCH_CLIENT_ID=smart-forms
 
 In development mode, create a `.env.local` file in the `apps/smart-forms-app` directory and tweak the environment variables as needed.
 
+> Note: in the local development mode, set 
+VITE_PRESERVE_SYM_LINKS=false so that it allows `tsc -w` to watch the latest changes. If preserveSymLink: true local changes will be ignored.
+
 
 
 ### Run app locally
@@ -128,6 +131,23 @@ npm start
 ```
 
 5. Follow the instructions [here](https://github.com/aehrc/smart-forms#usage) but replace https://smartforms.csiro.au/launch with http://localhost:5173/launch
+
+### Run Storybook locally
+
+
+To run the [@aehrc/smart-forms-renderer](https://www.npmjs.com/package/@aehrc/smart-forms-renderer) via the storybook, follow the instruction below:
+
+- On the main directory, go to packages>smart-forms-renderer in a terminal
+- run the npm install again in the smart-forms-renderer folder
+ > npm install  
+- now you can run the storybook while watching the directory for any file changes. 
+
+>npm run storybook-watch
+
+
+
+
+
 
 ## Feature requests and bug reports
 
