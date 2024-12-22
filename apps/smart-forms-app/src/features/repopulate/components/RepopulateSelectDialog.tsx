@@ -77,7 +77,7 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
     setCheckedLinkIds(newCheckedIds);
   }
 
-  function handleConfirmRepopulate() {
+  async function handleConfirmRepopulate() {
     const checkedRepopulatedItems = filterCheckedItemsToRepopulate(
       itemsToRepopulate,
       checkedLinkIds
@@ -93,7 +93,7 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
     });
 
     const repopulatedResponse = repopulateResponse(checkedRepopulatedItems);
-    const updatedResponse = updatePopulatedProperties(repopulatedResponse, undefined, true);
+    const updatedResponse = await updatePopulatedProperties(repopulatedResponse, undefined, true);
     setUpdatableResponseAsPopulated(updatedResponse);
 
     onCloseDialog();
