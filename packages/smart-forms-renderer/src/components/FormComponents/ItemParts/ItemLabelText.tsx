@@ -105,8 +105,6 @@ const ItemLabelText = memo(function ItemLabelText(props: ItemLabelTextProps) {
     );
   }
 
-  const textFontWeight = itemLabelFontWeight != 'default' ? itemLabelFontWeight : 'normal';
-
   // parse regular text
   return (
     <Typography

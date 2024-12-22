@@ -31,7 +31,6 @@ interface ImportMetaEnv {
   readonly VITE_IN_APP_POPULATE: boolean;
   readonly VITE_SHOW_DEBUG_MODE: string;
   readonly VITE_PRESERVE_SYM_LINKS: boolean;
-
 }
 
 interface ImportMeta {
