@@ -75,7 +75,7 @@ const ItemLabelText = memo(function ItemLabelText(props: ItemLabelTextProps) {
         {required && requiredIndicatorPosition === 'end' ? (
           <RequiredAsterisk>*</RequiredAsterisk>
         ) : null}
-        <FlyoverItem displayFlyover={displayFlyover} readOnly={readOnly} />
+
         {displayFlyover !== '' ? (
           <FlyoverItem displayFlyover={displayFlyover} readOnly={readOnly} />
         ) : null}
