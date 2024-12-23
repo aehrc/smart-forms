@@ -78,75 +78,8 @@ This method of running the app does not allow you to save responses as it is not
 
 NOTE: The app will not be able to view or save responses as it is not connected to a CMS client.
 
-## Configuration
-
-### Environment
-
-The default configuration is set to:
-```
-# Ontoserver endpoint for $expand operations
-# To run your own Ontoserver instance, contact us at https://ontoserver.csiro.au/site/contact-us/ontoserver-contact-form/
-VITE_ONTOSERVER_URL=https://tx.ontoserver.csiro.au/fhir
-
-# Questionnaire-hosting FHIR server
-VITE_FORMS_SERVER_URL=https://smartforms.csiro.au/api/fhir
-
-# Debug mode - set to true in dev mode
-VITE_SHOW_DEBUG_MODE=false
-
-# SMART App Launch scopes and launch contexts
-# It will be necessary to tweak these variables if you are connecting the app to your own SMART on FHIR enabled CMS/EHR
-VITE_LAUNCH_SCOPE=launch/patient patient/*.read offline_access openid fhirUser
-VITE_LAUNCH_CLIENT_ID=smart-forms
-
-```
-
-In development mode, create a `.env.local` file in the `apps/smart-forms-app` directory and tweak the environment variables as needed.
-
-> Note: in the local development mode, set 
-VITE_PRESERVE_SYM_LINKS=false so that it allows `tsc -w` to watch the latest changes. If preserveSymLink: true local changes will be ignored.
-
-
-
-### Run app locally
-
-1. Clone this Git source repository onto your local machine from https://github.com/aehrc/smart-forms.
-
-2. Install dependencies.
-
-```sh
-npm install
-```
-
-3. Change directory into the directory containing the Smart Forms app.
-
-```sh
-cd apps/smart-forms-app
-```
-
-4. Start the local server.
-
-```sh
-npm start
-```
-
-5. Follow the instructions [here](https://github.com/aehrc/smart-forms#usage) but replace https://smartforms.csiro.au/launch with http://localhost:5173/launch
-
-### Run Storybook locally
-
-
-To run the [@aehrc/smart-forms-renderer](https://www.npmjs.com/package/@aehrc/smart-forms-renderer) via the storybook, follow the instruction below:
-
-- On the main directory, go to packages>smart-forms-renderer in a terminal
-- run the npm install again in the smart-forms-renderer folder
- > npm install  
-- now you can run the storybook while watching the directory for any file changes. 
-
->npm run storybook-watch
-
-
-
-
+## Local Development
+Refer to [LOCAL_DEVELOPMENT.md](LOCAL_DEVELOPMENT.md) for instructions on local development and running.
 
 
 ## Feature requests and bug reports
