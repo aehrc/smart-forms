@@ -4,6 +4,9 @@ on:
   push:
     branches: ['main']
 
+env:
+  VITE_PRESERVE_SYM_LINKS: true
+
 permissions:
   contents: read
   pages: write

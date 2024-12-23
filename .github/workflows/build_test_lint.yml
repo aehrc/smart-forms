@@ -3,6 +3,9 @@ name: Smart Forms Build-Test-Lint Workflow
 on:
   push:
 
+env:
+  VITE_PRESERVE_SYM_LINKS: true
+
 jobs:
   build-smart-forms-app:
     name: Build Smart Forms App
