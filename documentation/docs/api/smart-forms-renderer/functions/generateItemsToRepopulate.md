@@ -7,7 +7,7 @@ Compare latest data from the server with the current QuestionnaireResponse and d
 ## Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `populatedResponse` | `QuestionnaireResponse` |
 
 ## Returns

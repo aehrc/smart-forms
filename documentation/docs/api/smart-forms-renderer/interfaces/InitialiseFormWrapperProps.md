@@ -10,7 +10,7 @@
 
 ### fhirClient?
 
-> `optional` **fhirClient**: `default`
+> `optional` **fhirClient**: `Client`
 
 ***
 

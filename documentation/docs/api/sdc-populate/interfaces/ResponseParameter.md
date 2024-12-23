@@ -216,6 +216,8 @@ There can be no stigma associated with the use of extensions by any application,
 
 > **name**: `"response"`
 
+The name of the parameter (reference to the operation definition).
+
 #### Overrides
 
 `ParametersParameter.name`
@@ -237,6 +239,8 @@ Only one level of nested parameters is allowed.
 ### resource
 
 > **resource**: `QuestionnaireResponse`
+
+When resolving references in resources, the operation definition may specify how references may be resolved between parameters. If a reference cannot be resolved between the parameters, the application should fall back to it's general resource resolution methods.
 
 #### Overrides
 

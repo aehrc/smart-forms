@@ -8,7 +8,7 @@ These IDs are used internally for rendering repeating items, and can be safely l
 ## Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `questionnaire` | `Questionnaire` |
 | `questionnaireResponse` | `QuestionnaireResponse` |
 

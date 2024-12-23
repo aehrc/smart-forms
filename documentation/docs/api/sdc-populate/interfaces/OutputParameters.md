@@ -94,6 +94,8 @@ The metadata about the resource. This is content that is maintained by the infra
 
 > **parameter**: `OutputParamArray`
 
+A parameter passed to or received from the operation.
+
 #### Overrides
 
 `Parameters.parameter`

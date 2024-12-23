@@ -1,14 +1,9 @@
 # Variable: useQuestionnaireStore
 
-> `const` **useQuestionnaireStore**: `StoreApi` \<[`QuestionnaireStoreType`](../interfaces/QuestionnaireStoreType.md)\> & `object`
+> `const` **useQuestionnaireStore**: `StoreApi`\<[`QuestionnaireStoreType`](../interfaces/QuestionnaireStoreType.md)\> & `object`
 
 Questionnaire state management store which contains all properties and methods to manage the state of the questionnaire.
 This is the React version of the store which can be used as React hooks in React functional components.
-
-## See
-
- - QuestionnaireStoreType for available properties and methods.
- - questionnaireStore for the vanilla store.
 
 ## Type declaration
 
@@ -16,461 +11,485 @@ This is the React version of the store which can be used as React hooks in React
 
 > **use**: `object`
 
-### use.addCodingToCache()
+#### use.addCodingToCache()
 
 > **addCodingToCache**: () => (`valueSetUrl`, `codings`) => `void`
 
-#### Returns
+##### Returns
 
 `Function`
 
-##### Parameters
+###### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `valueSetUrl` | `string` |
 | `codings` | `Coding`[] |
 
-##### Returns
+###### Returns
 
 `void`
 
-### use.answerExpressions()
+#### use.answerExpressions()
 
 > **answerExpressions**: () => `Record`\<`string`, `AnswerExpression`\>
 
-#### Returns
+##### Returns
 
 `Record`\<`string`, `AnswerExpression`\>
 
-### use.buildSourceQuestionnaire()
+#### use.buildSourceQuestionnaire()
 
-> **buildSourceQuestionnaire**: () => (`questionnaire`, `questionnaireResponse`?, `additionalVariables`?, `terminologyServerUrl`?, `readOnly`?) => `Promise`\<`void`\>
+> **buildSourceQuestionnaire**: () => (`questionnaire`, `questionnaireResponse`?, `additionalVariables`?, `terminologyServerUrl`?, `readOnly`?, `qItemOverrideComponents`?, `sdcUiOverrideComponents`?) => `Promise`\<`void`\>
 
-#### Returns
+##### Returns
 
 `Function`
 
-##### Parameters
+###### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `questionnaire` | `Questionnaire` |
 | `questionnaireResponse`? | `QuestionnaireResponse` |
 | `additionalVariables`? | `Record`\<`string`, `object`\> |
 | `terminologyServerUrl`? | `string` |
 | `readOnly`? | `boolean` |
+| `qItemOverrideComponents`? | `Record`\<`string`, `ComponentType`\<[`QItemOverrideComponentProps`](../interfaces/QItemOverrideComponentProps.md)\>\> |
+| `sdcUiOverrideComponents`? | `Record`\<`string`, `ComponentType`\<[`SdcUiOverrideComponentProps`](../interfaces/SdcUiOverrideComponentProps.md)\>\> |
 
-##### Returns
+###### Returns
 
 `Promise`\<`void`\>
 
-### use.cachedValueSetCodings()
+#### use.cachedValueSetCodings()
 
 > **cachedValueSetCodings**: () => `Record`\<`string`, `Coding`[]\>
 
-#### Returns
+##### Returns
 
 `Record`\<`string`, `Coding`[]\>
 
-### use.calculatedExpressions()
+#### use.calculatedExpressions()
 
-> **calculatedExpressions**: () => `Record`\<`string`, `CalculatedExpression`[]\>
+> **calculatedExpressions**: () => `Record`\<`string`, [`CalculatedExpression`](../interfaces/CalculatedExpression.md)[]\>
 
-#### Returns
+##### Returns
 
-`Record`\<`string`, `CalculatedExpression`[]\>
+`Record`\<`string`, [`CalculatedExpression`](../interfaces/CalculatedExpression.md)[]\>
 
-### use.currentPageIndex()
+#### use.currentPageIndex()
 
 > **currentPageIndex**: () => `number`
 
-#### Returns
+##### Returns
 
 `number`
 
-### use.currentTabIndex()
+#### use.currentTabIndex()
 
 > **currentTabIndex**: () => `number`
 
-#### Returns
+##### Returns
 
 `number`
 
-### use.destroySourceQuestionnaire()
+#### use.destroySourceQuestionnaire()
 
 > **destroySourceQuestionnaire**: () => () => `void`
 
-#### Returns
+##### Returns
 
 `Function`
 
-##### Returns
+###### Returns
 
 `void`
 
-### use.enableWhenExpressions()
+#### use.enableWhenExpressions()
 
 > **enableWhenExpressions**: () => `EnableWhenExpressions`
 
-#### Returns
+##### Returns
 
 `EnableWhenExpressions`
 
-### use.enableWhenIsActivated()
+#### use.enableWhenIsActivated()
 
 > **enableWhenIsActivated**: () => `boolean`
 
-#### Returns
+##### Returns
 
 `boolean`
 
-### use.enableWhenItems()
+#### use.enableWhenItems()
 
 > **enableWhenItems**: () => `EnableWhenItems`
 
-#### Returns
+##### Returns
 
 `EnableWhenItems`
 
-### use.enableWhenLinkedQuestions()
+#### use.enableWhenLinkedQuestions()
 
 > **enableWhenLinkedQuestions**: () => `Record`\<`string`, `string`[]\>
 
-#### Returns
+##### Returns
 
 `Record`\<`string`, `string`[]\>
 
-### use.fhirPathContext()
+#### use.fhirPathContext()
 
 > **fhirPathContext**: () => `Record`\<`string`, `any`\>
 
-#### Returns
+##### Returns
 
 `Record`\<`string`, `any`\>
 
-### use.focusedLinkId()
+#### use.focusedLinkId()
 
 > **focusedLinkId**: () => `string`
 
-#### Returns
+##### Returns
 
 `string`
 
-### use.initialExpressions()
+#### use.initialExpressions()
 
 > **initialExpressions**: () => `Record`\<`string`, `InitialExpression`\>
 
-#### Returns
+##### Returns
 
 `Record`\<`string`, `InitialExpression`\>
 
-### use.itemPreferredTerminologyServers()
+#### use.itemPreferredTerminologyServers()
 
 > **itemPreferredTerminologyServers**: () => `Record`\<`string`, `string`\>
 
-#### Returns
+##### Returns
 
 `Record`\<`string`, `string`\>
 
-### use.itemTypes()
+#### use.itemTypes()
 
 > **itemTypes**: () => `Record`\<`string`, `string`\>
 
-#### Returns
+##### Returns
 
 `Record`\<`string`, `string`\>
 
-### use.launchContexts()
+#### use.launchContexts()
 
 > **launchContexts**: () => `Record`\<`string`, [`LaunchContext`](../interfaces/LaunchContext.md)\>
 
-#### Returns
+##### Returns
 
 `Record`\<`string`, [`LaunchContext`](../interfaces/LaunchContext.md)\>
 
-### use.markPageAsComplete()
+#### use.markPageAsComplete()
 
 > **markPageAsComplete**: () => (`pageLinkId`) => `void`
 
-#### Returns
+##### Returns
 
 `Function`
 
-##### Parameters
+###### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `pageLinkId` | `string` |
 
-##### Returns
+###### Returns
 
 `void`
 
-### use.markTabAsComplete()
+#### use.markTabAsComplete()
 
 > **markTabAsComplete**: () => (`tabLinkId`) => `void`
 
-#### Returns
+##### Returns
 
 `Function`
 
-##### Parameters
+###### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `tabLinkId` | `string` |
 
-##### Returns
+###### Returns
 
 `void`
 
-### use.mutateRepeatEnableWhenItems()
+#### use.mutateRepeatEnableWhenItems()
 
 > **mutateRepeatEnableWhenItems**: () => (`parentRepeatGroupLinkId`, `parentRepeatGroupIndex`, `actionType`) => `void`
 
-#### Returns
+##### Returns
 
 `Function`
 
-##### Parameters
+###### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `parentRepeatGroupLinkId` | `string` |
 | `parentRepeatGroupIndex` | `number` |
 | `actionType` | `"add"` \| `"remove"` |
 
-##### Returns
+###### Returns
 
 `void`
 
-### use.onFocusLinkId()
+#### use.onFocusLinkId()
 
 > **onFocusLinkId**: () => (`linkId`) => `void`
 
-#### Returns
+##### Returns
 
 `Function`
 
-##### Parameters
+###### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `linkId` | `string` |
 
-##### Returns
+###### Returns
 
 `void`
 
-### use.pages()
+#### use.pages()
 
 > **pages**: () => `Pages`
 
-#### Returns
+##### Returns
 
 `Pages`
 
-### use.populatedContext()
+#### use.populatedContext()
 
 > **populatedContext**: () => `Record`\<`string`, `any`\>
 
-#### Returns
+##### Returns
 
 `Record`\<`string`, `any`\>
 
-### use.processedValueSetCodings()
+#### use.processedValueSetCodings()
 
 > **processedValueSetCodings**: () => `Record`\<`string`, `Coding`[]\>
 
-#### Returns
+##### Returns
 
 `Record`\<`string`, `Coding`[]\>
 
-### use.processedValueSetUrls()
+#### use.processedValueSetUrls()
 
 > **processedValueSetUrls**: () => `Record`\<`string`, `string`\>
 
-#### Returns
+##### Returns
 
 `Record`\<`string`, `string`\>
 
-### use.readOnly()
+#### use.qItemOverrideComponents()
+
+> **qItemOverrideComponents**: () => `Record`\<`string`, `ComponentType`\<[`QItemOverrideComponentProps`](../interfaces/QItemOverrideComponentProps.md)\>\>
+
+##### Returns
+
+`Record`\<`string`, `ComponentType`\<[`QItemOverrideComponentProps`](../interfaces/QItemOverrideComponentProps.md)\>\>
+
+#### use.readOnly()
 
 > **readOnly**: () => `boolean`
 
-#### Returns
+##### Returns
 
 `boolean`
 
-### use.setFormAsReadOnly()
+#### use.sdcUiOverrideComponents()
+
+> **sdcUiOverrideComponents**: () => `Record`\<`string`, `ComponentType`\<[`SdcUiOverrideComponentProps`](../interfaces/SdcUiOverrideComponentProps.md)\>\>
+
+##### Returns
+
+`Record`\<`string`, `ComponentType`\<[`SdcUiOverrideComponentProps`](../interfaces/SdcUiOverrideComponentProps.md)\>\>
+
+#### use.setFormAsReadOnly()
 
 > **setFormAsReadOnly**: () => (`readOnly`) => `void`
 
-#### Returns
+##### Returns
 
 `Function`
 
-##### Parameters
+###### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `readOnly` | `boolean` |
 
-##### Returns
+###### Returns
 
 `void`
 
-### use.setPopulatedContext()
+#### use.setPopulatedContext()
 
-> **setPopulatedContext**: () => (`newPopulatedContext`) => `void`
+> **setPopulatedContext**: () => (`newPopulatedContext`, `addToFhirPathContext`?) => `void`
 
-#### Returns
+##### Returns
 
 `Function`
 
-##### Parameters
+###### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `newPopulatedContext` | `Record`\<`string`, `any`\> |
+| `addToFhirPathContext`? | `boolean` |
 
-##### Returns
+###### Returns
 
 `void`
 
-### use.sourceQuestionnaire()
+#### use.sourceQuestionnaire()
 
 > **sourceQuestionnaire**: () => `Questionnaire`
 
-#### Returns
+##### Returns
 
 `Questionnaire`
 
-### use.switchPage()
+#### use.switchPage()
 
 > **switchPage**: () => (`newPageIndex`) => `void`
 
-#### Returns
+##### Returns
 
 `Function`
 
-##### Parameters
+###### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `newPageIndex` | `number` |
 
-##### Returns
+###### Returns
 
 `void`
 
-### use.switchTab()
+#### use.switchTab()
 
 > **switchTab**: () => (`newTabIndex`) => `void`
 
-#### Returns
+##### Returns
 
 `Function`
 
-##### Parameters
+###### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `newTabIndex` | `number` |
 
-##### Returns
+###### Returns
 
 `void`
 
-### use.tabs()
+#### use.tabs()
 
 > **tabs**: () => [`Tabs`](../type-aliases/Tabs.md)
 
-#### Returns
+##### Returns
 
 [`Tabs`](../type-aliases/Tabs.md)
 
-### use.toggleEnableWhenActivation()
+#### use.toggleEnableWhenActivation()
 
 > **toggleEnableWhenActivation**: () => (`isActivated`) => `void`
 
-#### Returns
+##### Returns
 
 `Function`
 
-##### Parameters
+###### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `isActivated` | `boolean` |
 
-##### Returns
+###### Returns
 
 `void`
 
-### use.updateEnableWhenItem()
+#### use.updateEnableWhenItem()
 
 > **updateEnableWhenItem**: () => (`linkId`, `newAnswer`, `parentRepeatGroupIndex`) => `void`
 
-#### Returns
+##### Returns
 
 `Function`
 
-##### Parameters
+###### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `linkId` | `string` |
 | `newAnswer` | `undefined` \| `QuestionnaireResponseItemAnswer`[] |
 | `parentRepeatGroupIndex` | `null` \| `number` |
 
-##### Returns
+###### Returns
 
 `void`
 
-### use.updateExpressions()
+#### use.updateExpressions()
 
-> **updateExpressions**: () => (`updatedResponse`) => `void`
+> **updateExpressions**: () => (`updatedResponse`) => `Promise`\<`void`\>
 
-#### Returns
+##### Returns
 
 `Function`
 
-##### Parameters
+###### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `updatedResponse` | `QuestionnaireResponse` |
 
+###### Returns
+
+`Promise`\<`void`\>
+
+#### use.updatePopulatedProperties()
+
+> **updatePopulatedProperties**: () => (`populatedResponse`, `populatedContext`?, `persistTabIndex`?) => `Promise`\<`QuestionnaireResponse`\>
+
 ##### Returns
-
-`void`
-
-### use.updatePopulatedProperties()
-
-> **updatePopulatedProperties**: () => (`populatedResponse`, `populatedContext`?, `persistTabIndex`?) => `QuestionnaireResponse`
-
-#### Returns
 
 `Function`
 
-##### Parameters
+###### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `populatedResponse` | `QuestionnaireResponse` |
 | `populatedContext`? | `Record`\<`string`, `any`\> |
 | `persistTabIndex`? | `boolean` |
 
-##### Returns
+###### Returns
 
-`QuestionnaireResponse`
+`Promise`\<`QuestionnaireResponse`\>
 
-### use.variables()
+#### use.variables()
 
 > **variables**: () => [`Variables`](../interfaces/Variables.md)
 
-#### Returns
+##### Returns
 
 [`Variables`](../interfaces/Variables.md)
+
+## See
+
+ - QuestionnaireStoreType for available properties and methods.
+ - questionnaireStore for the vanilla store.

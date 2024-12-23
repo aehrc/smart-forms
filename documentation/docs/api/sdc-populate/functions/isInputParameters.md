@@ -7,7 +7,7 @@ Checks if the parameters passed satisfies the conditions of populateInputParamet
 ## Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `parameters` | `Parameters` |
 
 ## Returns

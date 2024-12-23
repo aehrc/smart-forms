@@ -8,7 +8,7 @@ Store and manages the state of multiple instances of GroupItem in a repeating gr
 ## Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `props` | `RepeatGroupProps` |
 
 ## Returns

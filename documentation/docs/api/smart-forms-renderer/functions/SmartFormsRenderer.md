@@ -9,7 +9,7 @@ Will be deprecated in version 1.0.0. For alternative usage, see:
 ## Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `props` | [`SmartFormsRendererProps`](../interfaces/SmartFormsRendererProps.md) |
 
 ## Returns

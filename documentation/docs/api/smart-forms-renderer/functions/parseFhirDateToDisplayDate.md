@@ -7,7 +7,7 @@ Parse a FHIR date string to a date to be consumed and displayed by the DateItem 
 ## Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `fhirDate` | `string` |
 
 ## Returns

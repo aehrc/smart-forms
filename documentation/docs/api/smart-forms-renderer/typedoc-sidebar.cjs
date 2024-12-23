@@ -7,6 +7,11 @@ const typedocSidebar = { items: [
     "items": [
       {
         "type": "doc",
+        "id": "api/smart-forms-renderer/interfaces/CalculatedExpression",
+        "label": "CalculatedExpression"
+      },
+      {
+        "type": "doc",
         "id": "api/smart-forms-renderer/interfaces/InitialiseFormWrapperProps",
         "label": "InitialiseFormWrapperProps"
       },
@@ -22,6 +27,11 @@ const typedocSidebar = { items: [
       },
       {
         "type": "doc",
+        "id": "api/smart-forms-renderer/interfaces/QItemOverrideComponentProps",
+        "label": "QItemOverrideComponentProps"
+      },
+      {
+        "type": "doc",
         "id": "api/smart-forms-renderer/interfaces/QuestionnaireResponseStoreType",
         "label": "QuestionnaireResponseStoreType"
       },
@@ -29,6 +39,21 @@ const typedocSidebar = { items: [
         "type": "doc",
         "id": "api/smart-forms-renderer/interfaces/QuestionnaireStoreType",
         "label": "QuestionnaireStoreType"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/interfaces/RendererStyling",
+        "label": "RendererStyling"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/interfaces/RendererStylingStoreType",
+        "label": "RendererStylingStoreType"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/interfaces/SdcUiOverrideComponentProps",
+        "label": "SdcUiOverrideComponentProps"
       },
       {
         "type": "doc",
@@ -47,13 +72,13 @@ const typedocSidebar = { items: [
       },
       {
         "type": "doc",
-        "id": "api/smart-forms-renderer/interfaces/VariableXFhirQuery",
-        "label": "VariableXFhirQuery"
+        "id": "api/smart-forms-renderer/interfaces/Variables",
+        "label": "Variables"
       },
       {
         "type": "doc",
-        "id": "api/smart-forms-renderer/interfaces/Variables",
-        "label": "Variables"
+        "id": "api/smart-forms-renderer/interfaces/VariableXFhirQuery",
+        "label": "VariableXFhirQuery"
       }
     ]
   },
@@ -89,6 +114,11 @@ const typedocSidebar = { items: [
       },
       {
         "type": "doc",
+        "id": "api/smart-forms-renderer/variables/rendererStylingStore",
+        "label": "rendererStylingStore"
+      },
+      {
+        "type": "doc",
         "id": "api/smart-forms-renderer/variables/smartConfigStore",
         "label": "smartConfigStore"
       },
@@ -106,6 +136,11 @@ const typedocSidebar = { items: [
         "type": "doc",
         "id": "api/smart-forms-renderer/variables/useQuestionnaireStore",
         "label": "useQuestionnaireStore"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/variables/useRendererStylingStore",
+        "label": "useRendererStylingStore"
       },
       {
         "type": "doc",
@@ -130,48 +165,33 @@ const typedocSidebar = { items: [
       },
       {
         "type": "doc",
-        "id": "api/smart-forms-renderer/functions/GridGroup",
-        "label": "GridGroup"
-      },
-      {
-        "type": "doc",
-        "id": "api/smart-forms-renderer/functions/GroupTable",
-        "label": "GroupTable"
-      },
-      {
-        "type": "doc",
-        "id": "api/smart-forms-renderer/functions/InitialiseFormWrapperForStorybook",
-        "label": "InitialiseFormWrapperForStorybook"
-      },
-      {
-        "type": "doc",
-        "id": "api/smart-forms-renderer/functions/RendererThemeProvider",
-        "label": "RendererThemeProvider"
-      },
-      {
-        "type": "doc",
-        "id": "api/smart-forms-renderer/functions/RepeatGroup",
-        "label": "RepeatGroup"
-      },
-      {
-        "type": "doc",
-        "id": "api/smart-forms-renderer/functions/RepeatItem",
-        "label": "RepeatItem"
-      },
-      {
-        "type": "doc",
-        "id": "api/smart-forms-renderer/functions/SingleItem",
-        "label": "SingleItem"
-      },
-      {
-        "type": "doc",
-        "id": "api/smart-forms-renderer/functions/SmartFormsRenderer",
-        "label": "SmartFormsRenderer"
+        "id": "api/smart-forms-renderer/functions/BooleanField",
+        "label": "BooleanField"
       },
       {
         "type": "doc",
         "id": "api/smart-forms-renderer/functions/buildForm",
         "label": "buildForm"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/functions/ChoiceRadioSingle",
+        "label": "ChoiceRadioSingle"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/functions/createEmptyQrGroup",
+        "label": "createEmptyQrGroup"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/functions/createEmptyQrItem",
+        "label": "createEmptyQrItem"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/functions/DecimalField",
+        "label": "DecimalField"
       },
       {
         "type": "doc",
@@ -185,8 +205,28 @@ const typedocSidebar = { items: [
       },
       {
         "type": "doc",
+        "id": "api/smart-forms-renderer/functions/FullWidthFormComponentBox",
+        "label": "FullWidthFormComponentBox"
+      },
+      {
+        "type": "doc",
         "id": "api/smart-forms-renderer/functions/generateItemsToRepopulate",
         "label": "generateItemsToRepopulate"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/functions/getDecimalPrecision",
+        "label": "getDecimalPrecision"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/functions/getQrItemsIndex",
+        "label": "getQrItemsIndex"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/functions/getQuestionnaireItem",
+        "label": "getQuestionnaireItem"
       },
       {
         "type": "doc",
@@ -195,8 +235,33 @@ const typedocSidebar = { items: [
       },
       {
         "type": "doc",
+        "id": "api/smart-forms-renderer/functions/GridGroup",
+        "label": "GridGroup"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/functions/GroupItem",
+        "label": "GroupItem"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/functions/GroupTable",
+        "label": "GroupTable"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/functions/InitialiseFormWrapperForStorybook",
+        "label": "InitialiseFormWrapperForStorybook"
+      },
+      {
+        "type": "doc",
         "id": "api/smart-forms-renderer/functions/initialiseQuestionnaireResponse",
         "label": "initialiseQuestionnaireResponse"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/functions/isHiddenByEnableWhen",
+        "label": "isHiddenByEnableWhen"
       },
       {
         "type": "doc",
@@ -207,6 +272,36 @@ const typedocSidebar = { items: [
         "type": "doc",
         "id": "api/smart-forms-renderer/functions/isSpecificItemControl",
         "label": "isSpecificItemControl"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/functions/ItemFieldGrid",
+        "label": "ItemFieldGrid"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/functions/ItemLabelWrapper",
+        "label": "ItemLabelWrapper"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/functions/mapQItemsIndex",
+        "label": "mapQItemsIndex"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/functions/objectIsCoding",
+        "label": "objectIsCoding"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/functions/parseDecimalStringToFloat",
+        "label": "parseDecimalStringToFloat"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/functions/parseDecimalStringWithPrecision",
+        "label": "parseDecimalStringWithPrecision"
       },
       {
         "type": "doc",
@@ -225,8 +320,43 @@ const typedocSidebar = { items: [
       },
       {
         "type": "doc",
+        "id": "api/smart-forms-renderer/functions/RendererThemeProvider",
+        "label": "RendererThemeProvider"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/functions/RepeatGroup",
+        "label": "RepeatGroup"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/functions/RepeatItem",
+        "label": "RepeatItem"
+      },
+      {
+        "type": "doc",
         "id": "api/smart-forms-renderer/functions/repopulateResponse",
         "label": "repopulateResponse"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/functions/SingleItem",
+        "label": "SingleItem"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/functions/SmartFormsRenderer",
+        "label": "SmartFormsRenderer"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/functions/StringField",
+        "label": "StringField"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/functions/updateQrItemsInGroup",
+        "label": "updateQrItemsInGroup"
       },
       {
         "type": "doc",
@@ -235,13 +365,48 @@ const typedocSidebar = { items: [
       },
       {
         "type": "doc",
+        "id": "api/smart-forms-renderer/functions/useCodingCalculatedExpression",
+        "label": "useCodingCalculatedExpression"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/functions/useDisplayCqfAndCalculatedExpression",
+        "label": "useDisplayCqfAndCalculatedExpression"
+      },
+      {
+        "type": "doc",
         "id": "api/smart-forms-renderer/functions/useHidden",
         "label": "useHidden"
       },
       {
         "type": "doc",
+        "id": "api/smart-forms-renderer/functions/useReadOnly",
+        "label": "useReadOnly"
+      },
+      {
+        "type": "doc",
         "id": "api/smart-forms-renderer/functions/useRendererQueryClient",
         "label": "useRendererQueryClient"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/functions/useRenderingExtensions",
+        "label": "useRenderingExtensions"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/functions/useStringCalculatedExpression",
+        "label": "useStringCalculatedExpression"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/functions/useValidationFeedback",
+        "label": "useValidationFeedback"
+      },
+      {
+        "type": "doc",
+        "id": "api/smart-forms-renderer/functions/useValueSetCodings",
+        "label": "useValueSetCodings"
       }
     ]
   }

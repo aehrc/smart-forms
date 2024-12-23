@@ -20,7 +20,7 @@ For button click usage examples of buildForm(), see:
 ## Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `props` | [`InitialiseFormWrapperProps`](../interfaces/InitialiseFormWrapperProps.md) |
 
 ## Returns

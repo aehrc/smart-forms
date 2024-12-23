@@ -1,6 +1,6 @@
 # Variable: smartConfigStore
 
-> `const` **smartConfigStore**: `StoreApi` \<[`SmartConfigStoreType`](../interfaces/SmartConfigStoreType.md)\>
+> `const` **smartConfigStore**: `StoreApi`\<[`SmartConfigStoreType`](../interfaces/SmartConfigStoreType.md)\>
 
 Smart Config state management store. This is only used for answerExpressions.
 It is recommended to manage the state of the FHIRClient, patient, user, and encounter in the parent application, since the renderer doesn't provide pre-population capabilities.

@@ -1,6 +1,6 @@
 # Variable: useSmartConfigStore
 
-> `const` **useSmartConfigStore**: `StoreApi` \<[`SmartConfigStoreType`](../interfaces/SmartConfigStoreType.md)\> & `object`
+> `const` **useSmartConfigStore**: `StoreApi`\<[`SmartConfigStoreType`](../interfaces/SmartConfigStoreType.md)\> & `object`
 
 Smart Config state management store. This is only used for answerExpressions.
 It is recommended to manage the state of the FHIRClient, patient, user, and encounter in the parent application, since the renderer doesn't provide pre-population capabilities.
@@ -8,117 +8,117 @@ Will be deprecated in version 1.0.0.
 
 This is the React version of the store which can be used as React hooks in React functional components.
 
-## See
-
- - SmartConfigStoreType for available properties and methods.
- - smartConfigStore for the vanilla store.
-
 ## Type declaration
 
 ### use
 
 > **use**: `object`
 
-### use.client()
+#### use.client()
 
-> **client**: () => `null` \| `default`
+> **client**: () => `null` \| `Client`
 
-#### Returns
+##### Returns
 
-`null` \| `default`
+`null` \| `Client`
 
-### use.encounter()
+#### use.encounter()
 
 > **encounter**: () => `null` \| `Encounter`
 
-#### Returns
+##### Returns
 
 `null` \| `Encounter`
 
-### use.patient()
+#### use.patient()
 
 > **patient**: () => `null` \| `Patient`
 
-#### Returns
+##### Returns
 
 `null` \| `Patient`
 
-### use.setClient()
+#### use.setClient()
 
 > **setClient**: () => (`client`) => `void`
 
-#### Returns
+##### Returns
 
 `Function`
 
-##### Parameters
+###### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
-| `client` | `default` |
+| ------ | ------ |
+| `client` | `Client` |
 
-##### Returns
+###### Returns
 
 `void`
 
-### use.setEncounter()
+#### use.setEncounter()
 
 > **setEncounter**: () => (`encounter`) => `void`
 
-#### Returns
+##### Returns
 
 `Function`
 
-##### Parameters
+###### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `encounter` | `Encounter` |
 
-##### Returns
+###### Returns
 
 `void`
 
-### use.setPatient()
+#### use.setPatient()
 
 > **setPatient**: () => (`patient`) => `void`
 
-#### Returns
+##### Returns
 
 `Function`
 
-##### Parameters
+###### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `patient` | `Patient` |
 
-##### Returns
+###### Returns
 
 `void`
 
-### use.setUser()
+#### use.setUser()
 
 > **setUser**: () => (`user`) => `void`
 
-#### Returns
+##### Returns
 
 `Function`
 
-##### Parameters
+###### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `user` | `Practitioner` |
 
-##### Returns
+###### Returns
 
 `void`
 
-### use.user()
+#### use.user()
 
 > **user**: () => `null` \| `Practitioner`
 
-#### Returns
+##### Returns
 
 `null` \| `Practitioner`
+
+## See
+
+ - SmartConfigStoreType for available properties and methods.
+ - smartConfigStore for the vanilla store.

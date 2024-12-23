@@ -216,6 +216,8 @@ There can be no stigma associated with the use of extensions by any application,
 
 > **name**: `"questionnaireRef"`
 
+The name of the parameter (reference to the operation definition).
+
 #### Overrides
 
 `ParametersParameter.name`
@@ -693,6 +695,8 @@ If the parameter is a data type.
 ### valueReference
 
 > **valueReference**: `Reference`
+
+If the parameter is a data type.
 
 #### Overrides
 

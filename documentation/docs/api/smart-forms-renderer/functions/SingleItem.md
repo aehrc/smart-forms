@@ -8,7 +8,7 @@ Store and manages the state of multiple instances of SingleItem in a repeating i
 ## Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `props` | `SingleItemProps` |
 
 ## Returns

@@ -15,7 +15,7 @@ Used to add a coding to the cached value set codings
 #### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `valueSetUrl` | `string` |
 | `codings` | `Coding`[] |
 
@@ -35,19 +35,21 @@ Key-value pair of answer expressions `Record<linkId, answer expression propertie
 
 ### buildSourceQuestionnaire()
 
-> **buildSourceQuestionnaire**: (`questionnaire`, `questionnaireResponse`?, `additionalVariables`?, `terminologyServerUrl`?, `readOnly`?) => `Promise`\<`void`\>
+> **buildSourceQuestionnaire**: (`questionnaire`, `questionnaireResponse`?, `additionalVariables`?, `terminologyServerUrl`?, `readOnly`?, `qItemOverrideComponents`?, `sdcUiOverrideComponents`?) => `Promise`\<`void`\>
 
 Used to build the source questionnaire with the provided questionnaire and optionally questionnaire response, additional variables, terminology server url and readyOnly flag
 
 #### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `questionnaire` | `Questionnaire` |
 | `questionnaireResponse`? | `QuestionnaireResponse` |
 | `additionalVariables`? | `Record`\<`string`, `object`\> |
 | `terminologyServerUrl`? | `string` |
 | `readOnly`? | `boolean` |
+| `qItemOverrideComponents`? | `Record`\<`string`, `ComponentType`\<[`QItemOverrideComponentProps`](QItemOverrideComponentProps.md)\>\> |
+| `sdcUiOverrideComponents`? | `Record`\<`string`, `ComponentType`\<[`SdcUiOverrideComponentProps`](SdcUiOverrideComponentProps.md)\>\> |
 
 #### Returns
 
@@ -65,7 +67,7 @@ Key-value pair of cached value set codings `Record<valueSetUrl, codings>`
 
 ### calculatedExpressions
 
-> **calculatedExpressions**: `Record`\<`string`, `CalculatedExpression`[]\>
+> **calculatedExpressions**: `Record`\<`string`, [`CalculatedExpression`](CalculatedExpression.md)[]\>
 
 Key-value pair of calculated expressions `Record<linkId, array of calculated expression properties>`
 
@@ -186,7 +188,7 @@ Used to mark a page index as complete
 #### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `pageLinkId` | `string` |
 
 #### Returns
@@ -204,7 +206,7 @@ Used to mark a tab index as complete
 #### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `tabLinkId` | `string` |
 
 #### Returns
@@ -222,7 +224,7 @@ Used to add or remove instances of repeating enableWhen items
 #### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `parentRepeatGroupLinkId` | `string` |
 | `parentRepeatGroupIndex` | `number` |
 | `actionType` | `"add"` \| `"remove"` |
@@ -242,7 +244,7 @@ Used to set the focused linkId
 #### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `linkId` | `string` |
 
 #### Returns
@@ -283,11 +285,27 @@ Key-value pair of contained value set urls `Record<valueSetName, valueSetUrl>`
 
 ***
 
+### qItemOverrideComponents
+
+> **qItemOverrideComponents**: `Record`\<`string`, `ComponentType`\<[`QItemOverrideComponentProps`](QItemOverrideComponentProps.md)\>\>
+
+Key-value pair of React component overrides for Questionnaire Items via linkId `Record<linkId, React component>`
+
+***
+
 ### readOnly
 
 > **readOnly**: `boolean`
 
 Flag to set the form to read-only mode
+
+***
+
+### sdcUiOverrideComponents
+
+> **sdcUiOverrideComponents**: `Record`\<`string`, `ComponentType`\<[`SdcUiOverrideComponentProps`](SdcUiOverrideComponentProps.md)\>\>
+
+Key-value pair of React component overrides for SDC UI Controls https://hl7.org/fhir/extensions/ValueSet-questionnaire-item-control.html `Record<SDC UI code, React component>`
 
 ***
 
@@ -300,7 +318,7 @@ Used to set the form as read-only
 #### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `readOnly` | `boolean` |
 
 #### Returns
@@ -311,15 +329,16 @@ Used to set the form as read-only
 
 ### setPopulatedContext()
 
-> **setPopulatedContext**: (`newPopulatedContext`) => `void`
+> **setPopulatedContext**: (`newPopulatedContext`, `addToFhirPathContext`?) => `void`
 
-Used to set the populated contexts (launchContext, sourceQueries, x-fhir-query vars) for debugging purposes
+Used to set the populated contexts (launchContext, sourceQueries, x-fhir-query vars) for debugging purposes, and optionally add to the FHIRPath context
 
 #### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `newPopulatedContext` | `Record`\<`string`, `any`\> |
+| `addToFhirPathContext`? | `boolean` |
 
 #### Returns
 
@@ -344,7 +363,7 @@ Used to switch the current page index
 #### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `newPageIndex` | `number` |
 
 #### Returns
@@ -362,7 +381,7 @@ Used to switch the current tab index
 #### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `newTabIndex` | `number` |
 
 #### Returns
@@ -388,7 +407,7 @@ Used to toggle enableWhen checks on/off
 #### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `isActivated` | `boolean` |
 
 #### Returns
@@ -406,7 +425,7 @@ Used to update linked enableWhen items by updating a question with a new answer
 #### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `linkId` | `string` |
 | `newAnswer` | `undefined` \| `QuestionnaireResponseItemAnswer`[] |
 | `parentRepeatGroupIndex` | `null` \| `number` |
@@ -419,39 +438,39 @@ Used to update linked enableWhen items by updating a question with a new answer
 
 ### updateExpressions()
 
-> **updateExpressions**: (`updatedResponse`) => `void`
+> **updateExpressions**: (`updatedResponse`) => `Promise`\<`void`\>
 
 Used to update all SDC expressions based on the updated questionnaire response
 
 #### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `updatedResponse` | `QuestionnaireResponse` |
 
 #### Returns
 
-`void`
+`Promise`\<`void`\>
 
 ***
 
 ### updatePopulatedProperties()
 
-> **updatePopulatedProperties**: (`populatedResponse`, `populatedContext`?, `persistTabIndex`?) => `QuestionnaireResponse`
+> **updatePopulatedProperties**: (`populatedResponse`, `populatedContext`?, `persistTabIndex`?) => `Promise`\<`QuestionnaireResponse`\>
 
 Used to update all SDC expressions based on a pre-populated questionnaire response
 
 #### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `populatedResponse` | `QuestionnaireResponse` |
 | `populatedContext`? | `Record`\<`string`, `any`\> |
 | `persistTabIndex`? | `boolean` |
 
 #### Returns
 
-`QuestionnaireResponse`
+`Promise`\<`QuestionnaireResponse`\>
 
 ***
 

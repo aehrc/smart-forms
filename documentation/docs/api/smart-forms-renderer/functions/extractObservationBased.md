@@ -7,7 +7,7 @@ Extract an array of Observations from a QuestionnaireResponse and its source Que
 ## Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `questionnaire` | `Questionnaire` |
 | `questionnaireResponse` | `QuestionnaireResponse` |
 

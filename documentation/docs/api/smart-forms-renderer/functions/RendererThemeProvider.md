@@ -7,8 +7,8 @@ Default theme used by the renderer using Material UI. You can customise your own
 ## Parameters
 
 | Parameter | Type |
-| :------ | :------ |
-| `__namedParameters` | `object` |
+| ------ | ------ |
+| `__namedParameters` | \{ `children`: `ReactNode`; \} |
 | `__namedParameters.children` | `ReactNode` |
 
 ## Returns

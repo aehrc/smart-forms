@@ -80,8 +80,8 @@ export function getQrItemsIndex(
 }
 
 /**
- * Generate a dictionary of QuestionnaireItems linkIds mapped to their respective array indexes <linkId, QItemIndex>
- * i.e. { ee2589d5: 0, f9aaa187: 1, 88cab112: 2 }
+ * Generate a dictionary of QuestionnaireItems linkIds mapped to their respective array indexes `<linkId, QItemIndex>`
+ * i.e. `{ ee2589d5: 0, f9aaa187: 1, 88cab112: 2 }`
  * where ee2589d5, f9aaa187 and 88cab112 are linkIds of QItem0, QItem1 and QItem2 respectively
  *
  * @author Sean Fong

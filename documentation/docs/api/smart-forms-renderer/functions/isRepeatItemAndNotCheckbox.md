@@ -8,7 +8,7 @@ Note: repeat checkbox items are rendered as multi-select checkbox instead of bei
 ## Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `qItem` | `QuestionnaireItem` |
 
 ## Returns

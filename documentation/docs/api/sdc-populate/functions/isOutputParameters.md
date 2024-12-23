@@ -5,7 +5,7 @@
 ## Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `parameters` | `Parameters` |
 
 ## Returns

@@ -17,6 +17,11 @@ const typedocSidebar = { items: [
       },
       {
         "type": "doc",
+        "id": "api/sdc-populate/interfaces/FetchTerminologyCallback",
+        "label": "FetchTerminologyCallback"
+      },
+      {
+        "type": "doc",
         "id": "api/sdc-populate/interfaces/IdentifierParameter",
         "label": "IdentifierParameter"
       },
@@ -54,6 +59,11 @@ const typedocSidebar = { items: [
         "type": "doc",
         "id": "api/sdc-populate/interfaces/ResponseParameter",
         "label": "ResponseParameter"
+      },
+      {
+        "type": "doc",
+        "id": "api/sdc-populate/interfaces/TerminologyRequestConfig",
+        "label": "TerminologyRequestConfig"
       }
     ]
   },

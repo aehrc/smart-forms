@@ -8,7 +8,7 @@ Methods are usually used internally, using them from an external source is not r
 
 ### client
 
-> **client**: `null` \| `default`
+> **client**: `null` \| `Client`
 
 The FHIRClient object (https://github.com/smart-on-fhir/client-js)
 
@@ -39,8 +39,8 @@ Set the FHIRClient object when launching via SMART App Launch
 #### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
-| `client` | `default` |
+| ------ | ------ |
+| `client` | `Client` |
 
 #### Returns
 
@@ -57,7 +57,7 @@ Set the encounter resource in context
 #### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `encounter` | `Encounter` |
 
 #### Returns
@@ -75,7 +75,7 @@ Set the patient resource in context
 #### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `patient` | `Patient` |
 
 #### Returns
@@ -93,7 +93,7 @@ Set the user resource in context
 #### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `user` | `Practitioner` |
 
 #### Returns

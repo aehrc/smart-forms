@@ -216,6 +216,8 @@ There can be no stigma associated with the use of extensions by any application,
 
 > **name**: `"contextResult-custom"`
 
+The name of the parameter (reference to the operation definition).
+
 #### Overrides
 
 `ParametersParameter.name`
@@ -285,6 +287,8 @@ If the parameter is a data type.
 ### valueAttachment
 
 > **valueAttachment**: `Attachment`
+
+If the parameter is a data type.
 
 #### Overrides
 

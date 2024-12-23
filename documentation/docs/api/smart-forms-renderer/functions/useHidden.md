@@ -8,7 +8,7 @@ When checking for repeating group enableWhen items, the parentRepeatGroupIndex s
 ## Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `qItem` | `QuestionnaireItem` |
 | `parentRepeatGroupIndex`? | `number` |
 
