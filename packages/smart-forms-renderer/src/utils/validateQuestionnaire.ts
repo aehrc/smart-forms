@@ -18,6 +18,7 @@
 import type {
   OperationOutcome,
   OperationOutcomeIssue,
+  Quantity,
   Questionnaire,
   QuestionnaireItem,
   QuestionnaireResponse,
@@ -33,7 +34,9 @@ import {
   getMinValue,
   getRegexString,
   getRegexValidation,
-  getShortText
+  getShortText,
+  getMinQuantityValue,//import for Quantity Value
+  getMaxQuantityValue//import for Quantity Value
 } from './itemControl';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 import type { RegexValidation } from '../interfaces/regex.interface';
@@ -80,7 +83,9 @@ export enum ValidationResult {
   minValueIncompatUnits = 'minValueIncompatUnits', // The units provided in the Quantity cannot be converted to the min Quantity units
   maxValueIncompatUnits = 'maxValueIncompatUnits', // The units provided in the Quantity cannot be converted to the max Quantity units
   invalidUnit = 'invalidUnit', // The unit provided was not among the list selected (or did not have all the properties defined in the unit coding)
-  invalidUnitValueSet = 'invalidUnitValueSet' // The unit provided was not in the provided valueset
+  invalidUnitValueSet = 'invalidUnitValueSet', // The unit provided was not in the provided valueset
+  minQuantityValue = 'minQuantityValue', // Minimum Quantity value constraint violated
+  maxQuantityValue = 'maxQuantityValue' // Maximum Quantity value constraint violated
 }
 
 interface ValidateQuestionnaireParams {
@@ -339,11 +344,11 @@ function validateSingleItem(
     }
   }
 
-  // Validate regex, maxLength and minLength
+  // Validate regex, maxLength and minLength, maxQuantity and minQuantity
   if (qrItem.answer) {
     for (const [i, answer] of qrItem.answer.entries()) {
       // Your code here, you can use 'index' and 'answer' as needed
-      if (answer.valueString || answer.valueInteger || answer.valueDecimal || answer.valueUri) {
+      if (answer.valueString || answer.valueInteger || answer.valueDecimal || answer.valueUri || answer.valueQuantity) {
         const invalidInputType = getInputInvalidType({
           qItem,
           input: getInputInString(answer),
@@ -352,7 +357,9 @@ function validateSingleItem(
           maxLength: qItem.maxLength,
           maxDecimalPlaces: structuredDataCapture.getMaxDecimalPlaces(qItem),
           minValue: getMinValue(qItem),
-          maxValue: getMaxValue(qItem)
+          maxValue: getMaxValue(qItem),
+          minQuantityValue: getMinQuantityValue(qItem),
+          maxQuantityValue: getMaxQuantityValue(qItem)
         });
 
         if (invalidInputType) {
@@ -364,6 +371,10 @@ function validateSingleItem(
             locationExpression,
             invalidItems[qItem.linkId]?.issue
           );
+        }
+        else // if not invalid input types found
+        {
+          //do nothing
         }
       }
     }
@@ -385,6 +396,9 @@ function getInputInString(answer?: QuestionnaireResponseItemAnswer) {
     return answer.valueDecimal.toString();
   } else if (answer.valueUri) {
     return answer.valueUri;
+  } else if (answer.valueQuantity && answer.valueQuantity.value) //return the valueQuantity as string
+  {
+    return answer.valueQuantity.value.toString();
   }
 
   return '';
@@ -399,6 +413,9 @@ interface GetInputInvalidTypeParams {
   maxDecimalPlaces?: number;
   minValue?: string | number;
   maxValue?: string | number;
+  minQuantityValue?: number;
+  maxQuantityValue?: number;
+
 }
 
 export function getInputInvalidType(
@@ -412,7 +429,9 @@ export function getInputInvalidType(
     maxLength,
     maxDecimalPlaces,
     minValue,
-    maxValue
+    maxValue,
+    minQuantityValue,
+    maxQuantityValue
   } = getInputInvalidTypeParams;
 
   if (input) {
@@ -446,6 +465,26 @@ export function getInputInvalidType(
       const maxValueError = checkMaxValue(qItem, input, maxValue);
       if (maxValueError !== null) {
         return ValidationResult.maxValue;
+      }
+    }
+    //if minQuantityValue exists then check the value and validate
+    if (minQuantityValue) {
+      const minQuantityValueError = checkMinQuantityValue(qItem, input, minQuantityValue);
+      if (minQuantityValueError !== null) {
+        return ValidationResult.minQuantityValue;
+      }
+      else {
+        //No error, do nothing
+      }
+    }
+    //if maxQuantityValue exists then check the value and validate
+    if (maxQuantityValue) {
+      const maxQuantityValueError = checkMaxQuantityValue(qItem, input, maxQuantityValue);
+      if (maxQuantityValueError !== null) {
+        return ValidationResult.maxQuantityValue;
+      }
+      else {
+        //No error, do nothing
       }
     }
   }
@@ -546,6 +585,83 @@ function checkMaxValue(
 
   return null;
 }
+
+/**
+ * Checks for Minimum Quantity Value and returns the validation results
+ *
+ * @param {QuestionnaireItem} qItem
+ * @param {string} input
+ * @param {number} minQuantityValue
+ * @return {*}  {(ValidationResult.minQuantityValue | null)}
+ */
+function checkMinQuantityValue(
+  qItem: QuestionnaireItem,
+  input: string,
+  minQuantityValue: number
+): ValidationResult.minQuantityValue | null {
+
+
+
+  switch (qItem.type) {
+    case 'quantity':
+
+      const precision = getDecimalPrecision(qItem);
+      const decimalValue = precision
+        ? parseDecimalStringToFloat(input, precision)
+        : parseFloat(input);
+
+      if (decimalValue < minQuantityValue) {
+        return ValidationResult.minQuantityValue;
+      }
+
+      break;
+    default:
+      return null;
+  }
+
+  return null;
+
+
+}
+
+/**
+ * Checks for Maxmim Quantity Value and returns the validation results
+ *
+ * @param {QuestionnaireItem} qItem
+ * @param {string} input
+ * @param {number} maxQuantityValue
+ * @return {*}  {(ValidationResult.maxQuantityValue | null)}
+ */
+function checkMaxQuantityValue(
+  qItem: QuestionnaireItem,
+  input: string,
+  maxQuantityValue: number
+): ValidationResult.maxQuantityValue | null {
+
+  switch (qItem.type) {
+    case 'quantity':
+
+      const precision = getDecimalPrecision(qItem);
+      const decimalValue = precision
+        ? parseDecimalStringToFloat(input, precision)
+        : parseFloat(input);
+
+      if (decimalValue > maxQuantityValue) {
+        return ValidationResult.maxQuantityValue;
+      }
+
+
+      break;
+
+
+    default:
+      return null;
+  }
+
+  return null;
+
+}
+
 
 function createValidationOperationOutcome(
   error: ValidationResult,
@@ -656,7 +772,7 @@ function createValidationOperationOutcomeIssue(
     case ValidationResult.maxLength: {
       detailsText = `${fieldDisplayText}: Exceeded maximum of  ${
         qItem.maxLength
-      } characters, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
+        } characters, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
       return {
         severity: 'error',
         code: 'business-rule',
@@ -718,6 +834,49 @@ function createValidationOperationOutcomeIssue(
 
     case ValidationResult.maxValue: {
       detailsText = `${fieldDisplayText}: Exceeded the maximum value ${getMaxValue(
+        qItem
+      )}, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
+      return {
+        severity: 'error',
+        code: 'business-rule',
+        expression: [locationExpression],
+        details: {
+          coding: [
+            {
+              system: errorCodeSystem,
+              code: error,
+              display: 'Too big'
+            }
+          ],
+          text: detailsText
+        }
+      };
+    }
+    //Validation result error handling for min quantity extension
+    case ValidationResult.minQuantityValue: {
+      detailsText = `${fieldDisplayText}: Expected the minimum value ${getMinQuantityValue(
+        qItem
+      )}, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
+      return {
+        severity: 'error',
+        code: 'business-rule',
+        expression: [locationExpression],
+        details: {
+          coding: [
+            {
+              system: errorCodeSystem,
+              code: error,
+              display: 'Too small'
+            }
+          ],
+          text: detailsText
+        }
+      };
+    }
+    //Validation result error handling for max quantity extension
+
+    case ValidationResult.maxQuantityValue: {
+      detailsText = `${fieldDisplayText}: Exceeded the maximum value ${getMaxQuantityValue(
         qItem
       )}, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
       return {
