@@ -318,6 +318,7 @@ export interface initialFormFromResponseParams {
   tabs: Tabs;
   pages: Pages;
   fhirPathContext: Record<string, any>;
+  fhirPathTerminologyCache: Record<string, any>;
   terminologyServerUrl: string;
 }
 
@@ -329,6 +330,7 @@ export async function initialiseFormFromResponse(params: initialFormFromResponse
   firstVisibleTab: number;
   firstVisiblePage: number;
   updatedFhirPathContext: Record<string, any>;
+  fhirPathTerminologyCache: Record<string, any>;
 }> {
   const {
     questionnaireResponse,
@@ -341,6 +343,8 @@ export async function initialiseFormFromResponse(params: initialFormFromResponse
     fhirPathContext,
     terminologyServerUrl
   } = params;
+  let { fhirPathTerminologyCache } = params;
+
   const initialResponseItemMap = createQuestionnaireResponseItemMap(questionnaireResponse);
   let updatedFhirPathContext = {};
 
@@ -355,10 +359,12 @@ export async function initialiseFormFromResponse(params: initialFormFromResponse
     enableWhenExpressions: enableWhenExpressions,
     variablesFhirPath: variablesFhirPath,
     existingFhirPathContext: fhirPathContext,
+    fhirPathTerminologyCache: fhirPathTerminologyCache,
     terminologyServerUrl: terminologyServerUrl
   });
   const { initialEnableWhenExpressions } = evaluateInitialEnableWhenExpressionsResult;
   updatedFhirPathContext = evaluateInitialEnableWhenExpressionsResult.updatedFhirPathContext;
+  fhirPathTerminologyCache = evaluateInitialEnableWhenExpressionsResult.fhirPathTerminologyCache;
 
   const evaluateInitialCalculatedExpressionsResult = await evaluateInitialCalculatedExpressions({
     initialResponse: questionnaireResponse,
@@ -366,6 +372,7 @@ export async function initialiseFormFromResponse(params: initialFormFromResponse
     calculatedExpressions: calculatedExpressions,
     variablesFhirPath: variablesFhirPath,
     existingFhirPathContext: fhirPathContext,
+    fhirPathTerminologyCache: fhirPathTerminologyCache,
     terminologyServerUrl
   });
   const { initialCalculatedExpressions } = evaluateInitialCalculatedExpressionsResult;
@@ -388,6 +395,7 @@ export async function initialiseFormFromResponse(params: initialFormFromResponse
     initialCalculatedExpressions,
     firstVisibleTab,
     firstVisiblePage,
-    updatedFhirPathContext
+    updatedFhirPathContext,
+    fhirPathTerminologyCache
   };
 }

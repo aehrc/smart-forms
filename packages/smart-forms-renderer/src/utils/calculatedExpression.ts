@@ -41,6 +41,7 @@ interface EvaluateInitialCalculatedExpressionsParams {
   calculatedExpressions: Record<string, CalculatedExpression[]>;
   variablesFhirPath: Record<string, Expression[]>;
   existingFhirPathContext: Record<string, any>;
+  fhirPathTerminologyCache: Record<string, any>;
   terminologyServerUrl: string;
 }
 
@@ -49,6 +50,7 @@ export async function evaluateInitialCalculatedExpressions(
 ): Promise<{
   initialCalculatedExpressions: Record<string, CalculatedExpression[]>;
   updatedFhirPathContext: Record<string, any>;
+  fhirPathTerminologyCache: Record<string, any>;
 }> {
   const {
     initialResponse,
@@ -58,6 +60,7 @@ export async function evaluateInitialCalculatedExpressions(
     existingFhirPathContext,
     terminologyServerUrl
   } = params;
+  let { fhirPathTerminologyCache } = params;
 
   // Return early if initialResponse is empty or there are no calculated expressions to evaluate
   if (
@@ -66,7 +69,8 @@ export async function evaluateInitialCalculatedExpressions(
   ) {
     return {
       initialCalculatedExpressions: calculatedExpressions,
-      updatedFhirPathContext: existingFhirPathContext
+      updatedFhirPathContext: existingFhirPathContext,
+      fhirPathTerminologyCache
     };
   }
 
@@ -74,18 +78,26 @@ export async function evaluateInitialCalculatedExpressions(
     ...calculatedExpressions
   };
 
-  const updatedFhirPathContext = await createFhirPathContext(
+  const fhirPathEvalResult = await createFhirPathContext(
     initialResponse,
     initialResponseItemMap,
     variablesFhirPath,
     existingFhirPathContext,
+    fhirPathTerminologyCache,
     terminologyServerUrl
   );
+  const updatedFhirPathContext = fhirPathEvalResult.fhirPathContext;
+  fhirPathTerminologyCache = fhirPathEvalResult.fhirPathTerminologyCache;
 
   for (const linkId in initialCalculatedExpressions) {
     const itemCalcExpressions = calculatedExpressions[linkId];
 
     for (const calcExpression of itemCalcExpressions) {
+      const cacheKey = JSON.stringify(calcExpression.expression); // Use expression as cache key
+      if (fhirPathTerminologyCache[cacheKey]) {
+        continue;
+      }
+
       try {
         const fhirPathResult = fhirpath.evaluate(
           {},
@@ -98,6 +110,11 @@ export async function evaluateInitialCalculatedExpressions(
           }
         );
         const result = await handleFhirPathResult(fhirPathResult);
+
+        // If fhirPathResult is an async terminology call, cache the result
+        if (fhirPathResult instanceof Promise) {
+          fhirPathTerminologyCache[cacheKey] = result;
+        }
 
         // Only update calculatedExpressions if length of result array > 0
         if (result.length > 0 && !isEqual(calcExpression.value, result[0])) {
@@ -113,12 +130,14 @@ export async function evaluateInitialCalculatedExpressions(
 
   return {
     initialCalculatedExpressions,
-    updatedFhirPathContext
+    updatedFhirPathContext,
+    fhirPathTerminologyCache
   };
 }
 
 export async function evaluateCalculatedExpressions(
   fhirPathContext: Record<string, any>,
+  fhirPathTerminologyCache: Record<string, any>,
   calculatedExpressions: Record<string, CalculatedExpression[]>,
   terminologyServerUrl: string
 ): Promise<{
@@ -134,6 +153,11 @@ export async function evaluateCalculatedExpressions(
     const itemCalcExpressions = calculatedExpressions[linkId];
 
     for (const calcExpression of itemCalcExpressions) {
+      const cacheKey = JSON.stringify(calcExpression.expression); // Use expression as cache key
+      if (fhirPathTerminologyCache[cacheKey]) {
+        continue;
+      }
+
       try {
         const fhirPathResult = fhirpath.evaluate(
           {},
@@ -146,6 +170,11 @@ export async function evaluateCalculatedExpressions(
           }
         );
         const result = await handleFhirPathResult(fhirPathResult);
+
+        // If fhirPathResult is an async terminology call, cache the result
+        if (fhirPathResult instanceof Promise) {
+          fhirPathTerminologyCache[cacheKey] = result;
+        }
 
         // Update calculatedExpressions if length of result array > 0
         // Only update when current calcExpression value is different from the result, otherwise it will result in an infinite loop as per issue #733

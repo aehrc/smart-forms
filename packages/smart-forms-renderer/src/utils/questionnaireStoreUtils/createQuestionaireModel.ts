@@ -117,7 +117,8 @@ export async function createQuestionnaireModel(
     answerOptions: completeAnswerOptions,
     processedValueSetCodings,
     processedValueSetUrls,
-    fhirPathContext: {}
+    fhirPathContext: {},
+    fhirPathTerminologyCache: {}
   };
 }
 
@@ -137,6 +138,7 @@ function createEmptyModel(): QuestionnaireModel {
     enableWhenItems: { singleItems: {}, repeatItems: {} },
     processedValueSetCodings: {},
     processedValueSetUrls: {},
-    fhirPathContext: {}
+    fhirPathContext: {},
+    fhirPathTerminologyCache: {}
   };
 }

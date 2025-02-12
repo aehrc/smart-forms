@@ -41,4 +41,5 @@ export interface QuestionnaireModel {
   processedValueSetCodings: Record<string, Coding[]>;
   processedValueSetUrls: Record<string, string>;
   fhirPathContext: Record<string, any>;
+  fhirPathTerminologyCache: Record<string, any>;
 }
