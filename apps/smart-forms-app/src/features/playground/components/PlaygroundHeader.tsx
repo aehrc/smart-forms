@@ -75,7 +75,7 @@ const PlaygroundHeader = memo(function PlaygroundHeader(props: PlaygroundHeaderP
           </LogoWrapper>
         </Box>
         <Typography variant="h6" color="text.primary" sx={{ mx: 0.5 }}>
-          Playground
+          Playground [{RENDERER_VERSION}]
         </Typography>
 
         <Box flexGrow={1} />

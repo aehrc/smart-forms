@@ -22,6 +22,8 @@ declare module '*.svg';
 declare module '*.jpeg';
 declare module '*.jpg';
 
+declare const RENDERER_VERSION: string;
+
 interface ImportMetaEnv {
   readonly VITE_APP_TITLE: string;
   readonly VITE_ONTOSERVER_URL: string;
