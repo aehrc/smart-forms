@@ -6,7 +6,7 @@ import packageJson from './package.json';
 
 // resolve preserveSymlink to boolean(Explicitly parse the string to a boolean)
 // When VITE_PRESERVE_SYM_LINKS is not "false", it should always default to true
-const preserveSymlinks = process.env.VITE_PRESERVE_SYM_LINKS !== 'false';
+const preserveSymlinks = process.env.VITE_PRESERVE_SYM_LINKS === 'false' ? false : true;
 
 // https://vitejs.dev/config/
 export default defineConfig({
