@@ -18,7 +18,6 @@
 import type {
   OperationOutcome,
   OperationOutcomeIssue,
-  Quantity,
   Questionnaire,
   QuestionnaireItem,
   QuestionnaireResponse,
@@ -30,13 +29,13 @@ import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enabl
 import { isHiddenByEnableWhen } from './qItem';
 import {
   getDecimalPrecision,
+  getMaxQuantityValue,
   getMaxValue,
+  getMinQuantityValue,
   getMinValue,
   getRegexString,
   getRegexValidation,
-  getShortText,
-  getMinQuantityValue,//import for Quantity Value
-  getMaxQuantityValue//import for Quantity Value
+  getShortText
 } from './itemControl';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 import type { RegexValidation } from '../interfaces/regex.interface';
@@ -348,7 +347,13 @@ function validateSingleItem(
   if (qrItem.answer) {
     for (const [i, answer] of qrItem.answer.entries()) {
       // Your code here, you can use 'index' and 'answer' as needed
-      if (answer.valueString || answer.valueInteger || answer.valueDecimal || answer.valueUri || answer.valueQuantity) {
+      if (
+        answer.valueString ||
+        answer.valueInteger ||
+        answer.valueDecimal ||
+        answer.valueUri ||
+        answer.valueQuantity
+      ) {
         const invalidInputType = getInputInvalidType({
           qItem,
           input: getInputInString(answer),
@@ -371,9 +376,8 @@ function validateSingleItem(
             locationExpression,
             invalidItems[qItem.linkId]?.issue
           );
-        }
-        else // if not invalid input types found
-        {
+        } // if not invalid input types found
+        else {
           //do nothing
         }
       }
@@ -396,8 +400,8 @@ function getInputInString(answer?: QuestionnaireResponseItemAnswer) {
     return answer.valueDecimal.toString();
   } else if (answer.valueUri) {
     return answer.valueUri;
-  } else if (answer.valueQuantity && answer.valueQuantity.value) //return the valueQuantity as string
-  {
+  } else if (answer.valueQuantity && answer.valueQuantity.value) {
+    // return the valueQuantity as string
     return answer.valueQuantity.value.toString();
   }
 
@@ -415,7 +419,6 @@ interface GetInputInvalidTypeParams {
   maxValue?: string | number;
   minQuantityValue?: number;
   maxQuantityValue?: number;
-
 }
 
 export function getInputInvalidType(
@@ -439,52 +442,51 @@ export function getInputInvalidType(
       return ValidationResult.regex;
     }
 
-    if (minLength && input.length < minLength) {
+    if (minLength !== undefined && input.length < minLength) {
       return ValidationResult.minLength;
     }
 
-    if (maxLength && input.length > maxLength) {
+    if (maxLength !== undefined && input.length > maxLength) {
       return ValidationResult.maxLength;
     }
 
-    if (maxDecimalPlaces) {
+    if (maxDecimalPlaces !== undefined) {
       const decimalPlaces = input.split('.')[1]?.length ?? 0;
       if (decimalPlaces > maxDecimalPlaces) {
         return ValidationResult.maxDecimalPlaces;
       }
     }
 
-    if (minValue) {
+    if (minValue !== undefined) {
       const minValueError = checkMinValue(qItem, input, minValue);
       if (minValueError !== null) {
         return ValidationResult.minValue;
       }
     }
 
-    if (maxValue) {
+    if (maxValue !== undefined) {
       const maxValueError = checkMaxValue(qItem, input, maxValue);
       if (maxValueError !== null) {
         return ValidationResult.maxValue;
       }
     }
-    //if minQuantityValue exists then check the value and validate
-    if (minQuantityValue) {
+
+    // if minQuantityValue exists then check the value and validate
+    if (minQuantityValue !== undefined) {
       const minQuantityValueError = checkMinQuantityValue(qItem, input, minQuantityValue);
       if (minQuantityValueError !== null) {
         return ValidationResult.minQuantityValue;
-      }
-      else {
-        //No error, do nothing
+      } else {
+        // No error, do nothing
       }
     }
-    //if maxQuantityValue exists then check the value and validate
-    if (maxQuantityValue) {
+    // if maxQuantityValue exists then check the value and validate
+    if (maxQuantityValue !== undefined) {
       const maxQuantityValueError = checkMaxQuantityValue(qItem, input, maxQuantityValue);
       if (maxQuantityValueError !== null) {
         return ValidationResult.maxQuantityValue;
-      }
-      else {
-        //No error, do nothing
+      } else {
+        // No error, do nothing
       }
     }
   }
@@ -599,12 +601,8 @@ function checkMinQuantityValue(
   input: string,
   minQuantityValue: number
 ): ValidationResult.minQuantityValue | null {
-
-
-
   switch (qItem.type) {
     case 'quantity':
-
       const precision = getDecimalPrecision(qItem);
       const decimalValue = precision
         ? parseDecimalStringToFloat(input, precision)
@@ -620,8 +618,6 @@ function checkMinQuantityValue(
   }
 
   return null;
-
-
 }
 
 /**
@@ -637,10 +633,8 @@ function checkMaxQuantityValue(
   input: string,
   maxQuantityValue: number
 ): ValidationResult.maxQuantityValue | null {
-
   switch (qItem.type) {
     case 'quantity':
-
       const precision = getDecimalPrecision(qItem);
       const decimalValue = precision
         ? parseDecimalStringToFloat(input, precision)
@@ -650,18 +644,14 @@ function checkMaxQuantityValue(
         return ValidationResult.maxQuantityValue;
       }
 
-
       break;
-
 
     default:
       return null;
   }
 
   return null;
-
 }
-
 
 function createValidationOperationOutcome(
   error: ValidationResult,
@@ -772,7 +762,7 @@ function createValidationOperationOutcomeIssue(
     case ValidationResult.maxLength: {
       detailsText = `${fieldDisplayText}: Exceeded maximum of  ${
         qItem.maxLength
-        } characters, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
+      } characters, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
       return {
         severity: 'error',
         code: 'business-rule',

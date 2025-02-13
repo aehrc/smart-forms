@@ -18,14 +18,14 @@
 import { getInputInvalidType, ValidationResult } from '../utils/validateQuestionnaire';
 import type { QuestionnaireItem } from 'fhir/r4';
 import {
-  getMaxValue,
-  getMaxValueFeedback,
-  getMinValue,
-  getMinValueFeedback,
-  getMinQuantityValue,
-  getMinQuantityValueFeedback,
   getMaxQuantityValue,
   getMaxQuantityValueFeedback,
+  getMaxValue,
+  getMaxValueFeedback,
+  getMinQuantityValue,
+  getMinQuantityValueFeedback,
+  getMinValue,
+  getMinValueFeedback,
   getRegexValidation
 } from '../utils/itemControl';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
@@ -37,8 +37,8 @@ function useValidationFeedback(qItem: QuestionnaireItem, input: string): string 
   const maxDecimalPlaces = structuredDataCapture.getMaxDecimalPlaces(qItem);
   const minValue = getMinValue(qItem);
   const maxValue = getMaxValue(qItem);
-  const minQuantityValue = getMinQuantityValue(qItem);//gets the minQuantity value from the questionaire item
-  const maxQuantityValue = getMaxQuantityValue(qItem);//gets the maxQuantity value from the questionaire item
+  const minQuantityValue = getMinQuantityValue(qItem); // gets the minQuantity value from the questionnaire item
+  const maxQuantityValue = getMaxQuantityValue(qItem); // gets the maxQuantity value from the questionnaire item
 
   const invalidType = getInputInvalidType({
     qItem,
@@ -49,14 +49,13 @@ function useValidationFeedback(qItem: QuestionnaireItem, input: string): string 
     maxDecimalPlaces,
     minValue,
     maxValue,
-    minQuantityValue,// Min Quantity validation type
-    maxQuantityValue// Max Quantity validation type
+    minQuantityValue, // Min Quantity validation type
+    maxQuantityValue // Max Quantity validation type
   });
 
   if (!invalidType) {
     return '';
-  }
-  else {
+  } else {
     //invalid type exists, so we proceed
   }
 
@@ -97,21 +96,22 @@ function useValidationFeedback(qItem: QuestionnaireItem, input: string): string 
     return maxValueFeedback ?? `Input exceeds permitted maximum value of ${maxValue}.`;
   }
 
-  //Test min quantity
-  if (
-    invalidType === ValidationResult.minQuantityValue &&
-    (typeof minQuantityValue === 'number')
-  ) {
-    const minQuantityFeedback = getMinQuantityValueFeedback(qItem);//get the feedback for minquantity if it exists
-    return minQuantityFeedback ?? `Input is lower than the expected minimum quantity value of ${minQuantityValue}.`;
+  // Test min quantity
+  if (invalidType === ValidationResult.minQuantityValue && typeof minQuantityValue === 'number') {
+    const minQuantityFeedback = getMinQuantityValueFeedback(qItem); // get the feedback for minQuantity if it exists
+    return (
+      minQuantityFeedback ??
+      `Input is lower than the expected minimum quantity value of ${minQuantityValue}.`
+    );
   }
-  //Test max quantity
-  if (
-    invalidType === ValidationResult.maxQuantityValue &&
-    (typeof maxQuantityValue === 'number')
-  ) {
-    const maxQuantityFeedback = getMaxQuantityValueFeedback(qItem);//get the feedback for maxquantity if it exists
-    return maxQuantityFeedback ?? `Input exceeds permitted maximum quantity value of ${maxQuantityValue}.`;
+
+  // Test max quantity
+  if (invalidType === ValidationResult.maxQuantityValue && typeof maxQuantityValue === 'number') {
+    const maxQuantityFeedback = getMaxQuantityValueFeedback(qItem); // get the feedback for maxQuantity if it exists
+    return (
+      maxQuantityFeedback ??
+      `Input exceeds permitted maximum quantity value of ${maxQuantityValue}.`
+    );
   }
   return '';
 }
