@@ -18,7 +18,7 @@
 import React, { memo } from 'react';
 import Box from '@mui/material/Box';
 import type { Tabs } from '../../../interfaces/tab.interface';
-import { useQuestionnaireStore } from '../../../stores';
+import { useQuestionnaireStore, useRendererStylingStore } from '../../../stores';
 import NextTabButton from './NextTabButton';
 import PreviousTabButton from './PreviousTabButton';
 import useNextAndPreviousVisibleTabs from '../../../hooks/useNextAndPreviousVisibleTabs';
@@ -32,6 +32,7 @@ const TabButtonsWrapper = memo(function TabButtonsWrapper(props: TabButtonsWrapp
   const { currentTabIndex, tabs } = props;
 
   const switchTab = useQuestionnaireStore.use.switchTab();
+  const disableTabButtons = useRendererStylingStore.use.disableTabButtons();
 
   const { previousTabIndex, nextTabIndex, numOfVisibleTabs } = useNextAndPreviousVisibleTabs(
     currentTabIndex,
@@ -64,6 +65,11 @@ const TabButtonsWrapper = memo(function TabButtonsWrapper(props: TabButtonsWrapp
   }
 
   if (tabsNotDefined) {
+    return null;
+  }
+
+  // Disable tab buttons - currently only available via disableTabButtons API
+  if (disableTabButtons) {
     return null;
   }
 

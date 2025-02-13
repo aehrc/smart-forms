@@ -50,6 +50,7 @@ export interface RendererStyling {
   enableWhenAsReadOnly?: boolean | Set<QuestionnaireItem['type']>; // The Set<QuestionnaireItem['type']> is used to store the types of items that should be displayed as readOnly when hidden by enableWhen
   disablePageCardView?: boolean;
   disablePageButtons?: boolean;
+  disableTabButtons?: boolean;
 }
 
 /**
@@ -80,6 +81,7 @@ export interface RendererStylingStoreType {
   enableWhenAsReadOnly: boolean | Set<QuestionnaireItem['type']>;
   disablePageCardView: boolean;
   disablePageButtons: boolean;
+  disableTabButtons: boolean;
   setRendererStyling: (params: RendererStyling) => void;
 }
 
@@ -99,6 +101,7 @@ export const rendererStylingStore = createStore<RendererStylingStoreType>()((set
   enableWhenAsReadOnly: false,
   disablePageCardView: false,
   disablePageButtons: false,
+  disableTabButtons: false,
   setRendererStyling: (params: RendererStyling) => {
     set(() => ({
       itemLabelFontWeight: params.itemLabelFontWeight ?? 'default',
@@ -112,7 +115,8 @@ export const rendererStylingStore = createStore<RendererStylingStoreType>()((set
       hideQuantityComparatorField: params.hideQuantityComparatorField ?? false,
       enableWhenAsReadOnly: params.enableWhenAsReadOnly ?? false,
       disablePageCardView: params.disablePageCardView ?? false,
-      disablePageButtons: params.disablePageButtons ?? false
+      disablePageButtons: params.disablePageButtons ?? false,
+      disableTabButtons: params.disableTabButtons ?? false
     }));
   }
 }));

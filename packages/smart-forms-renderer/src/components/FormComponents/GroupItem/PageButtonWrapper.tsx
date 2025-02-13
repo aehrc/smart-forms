@@ -54,7 +54,7 @@ const PageButtonsWrapper = memo(function PageButtonsWrapper(props: PageButtonsWr
     return null;
   }
 
-  // Disable page buttons - currently only available via disableTabButtons API
+  // Disable page buttons - currently only available via disablePageButtons API
   if (disablePageButtons) {
     return null;
   }
