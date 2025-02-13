@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { Coding, Extension, QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import type { Coding, Extension, Quantity, QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type { RegexValidation } from '../interfaces/regex.interface';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 import { default as htmlParse } from 'html-react-parser';
@@ -470,3 +470,106 @@ export function getMaxValueFeedback(qItem: QuestionnaireItem) {
 
   return null;
 }
+
+
+
+
+/**
+ * Check if the item  has a sdc-questionnaire-minQuantity and minQuantity extension
+ * @author Janardhan Vignarajan
+ * @export
+ * @param {QuestionnaireItem} qItem
+ * @return {*}  {(number | undefined)}
+ */
+export function getMinQuantityValue(qItem: QuestionnaireItem) : number | undefined  {
+  const itemControl = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url === 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-minQuantity'
+  );
+
+  if (itemControl && itemControl.valueQuantity)  { //check if valueQuantity exists in the extension
+    if (itemControl.valueQuantity.value) {//check if valueQuantity.value exists in the extension
+      return itemControl.valueQuantity.value;
+    }
+  }
+  return undefined;
+}
+
+
+/**
+ * Check if the item  has a sdc-questionnaire-minQuantity feedback extension
+ *
+ * @author Janardhan Vignarajan
+ * @export
+ * @param {QuestionnaireItem} qItem
+ * @return {*} 
+ */
+export function getMinQuantityValueFeedback(qItem: QuestionnaireItem) {
+  const itemControl = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url === 'https://smartforms.csiro.au/ig/StructureDefinition/minQuantityValue-feedback'
+  );
+  if (itemControl) {
+    const extensionString = itemControl.valueString;
+    if (extensionString) {
+      return extensionString;
+    }
+  }
+
+  return null;
+}
+
+
+
+/**
+* Check if the item  has a sdc-questionnaire-maxQuantity  extension
+ *
+ * @author Janardhan Vignarajan
+ * @export
+ * @param {QuestionnaireItem} qItem
+ * @return {*}  {(number | undefined)}
+ */
+export function getMaxQuantityValue(qItem: QuestionnaireItem)  : number | undefined  {
+  const itemControl = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url === 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-maxQuantity'
+  );
+
+  if (itemControl && itemControl.valueQuantity)  { //check if valueQuantity exists in the extension
+    if (itemControl.valueQuantity.value) {//check if valueQuantity.value exists in the extension
+      return itemControl.valueQuantity.value;
+    }
+  }
+  return undefined;
+}
+
+
+/**
+ * Check if the item  has a sdc-questionnaire-maxQuantity Feedback extension
+ *
+ * @author Janardhan Vignarajan
+ 
+ * @export
+ * @param {QuestionnaireItem} qItem
+ * @return {*} 
+ */
+export function getMaxQuantityValueFeedback(qItem: QuestionnaireItem) {
+  const itemControl = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url === 'https://smartforms.csiro.au/ig/StructureDefinition/maxQuantityValue-feedback'
+  );
+  if (itemControl) {
+    const extensionString = itemControl.valueString;
+    if (extensionString) {
+      return extensionString;
+    }
+  }
+
+  return null;
+}
+
+
+
+
+
+
