@@ -140,6 +140,7 @@ function getPreferredTerminologyServer(element: BackboneElement): string | null 
   if (preferredTerminologyServerExtension) {
     return (
       preferredTerminologyServerExtension.valueUrl ??
+      preferredTerminologyServerExtension.valueUri ??
       preferredTerminologyServerExtension.valueString ??
       null
     );
