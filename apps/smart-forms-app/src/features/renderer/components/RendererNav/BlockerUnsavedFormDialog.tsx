@@ -16,7 +16,7 @@
  */
 
 import { useState } from 'react';
-import type { unstable_Blocker as Blocker } from 'react-router-dom';
+import type { Blocker } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import {
   Button,

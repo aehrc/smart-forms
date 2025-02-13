@@ -16,9 +16,9 @@
  */
 
 import { useLayoutEffect } from 'react';
-import type { unstable_Blocker as Blocker } from 'react-router';
-import { unstable_useBlocker as useBlocker } from 'react-router';
 import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
+import type { Blocker } from 'react-router-dom';
+import { useBlocker } from 'react-router-dom';
 
 function useLeavePageBlocker(): Blocker {
   const formChangesHistory = useQuestionnaireResponseStore.use.formChangesHistory();

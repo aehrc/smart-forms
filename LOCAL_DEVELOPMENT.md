@@ -32,26 +32,34 @@ However, it has its own set of complexities to watch out for, such as dependenci
 
 ## Setting up the repository
 1. Clone this Git source repository onto your local machine from https://github.com/aehrc/smart-forms.
-```sh
-git clone https://github.com/aehrc/smart-forms
-```
+    ```sh
+    git clone https://github.com/aehrc/smart-forms
+    ```
 
 2. Navigate to the cloned directory and install dependencies. You can do it anywhere in the repository as it uses npm workspaces.
-```sh
-cd smart-forms
-npm install
-```
+    ```sh
+    cd smart-forms
+    npm install
+    ```
+
+## Creating a local environment file
+1. Navigate to the directory containing the Smart Forms app.
+    ```sh
+    cd apps/smart-forms-app
+    ```
+
+2. Duplicate .env and rename it to .env.local. This file will be used to store your local environment variables.
+
+3. Change VITE_PRESERVE_SYM_LINKS=true to VITE_PRESERVE_SYM_LINKS=false in .env.local. This will allow `tsc -w` to watch for changes properly in the smart-forms-renderer component.
+
 
 ## Running the Smart Forms app locally
-1. Navigate to the directory containing the Smart Forms app.
-```sh
-cd apps/smart-forms-app
-```
+1. Ensure you are in the directory containing the Smart Forms app.
 
 2. Start the app on localhost. It defaults to port 5173.
-```sh
-npm start
-```
+    ```sh
+    npm start
+    ```
 
 
 #### Environment
@@ -75,6 +83,10 @@ VITE_SHOW_DEBUG_MODE=false
 # It will be necessary to tweak these variables if you are connecting the app to your own SMART on FHIR enabled CMS/EHR
 VITE_LAUNCH_SCOPE=launch/patient patient/*.read offline_access openid fhirUser
 VITE_LAUNCH_CLIENT_ID=smart-forms
+
+# This is for setting preserveSymlinks in Vite, ensuring Vite build plays nice with CJS modules (@aehrc/sdc-assemble and @aehrc/sdc-populate) when building for production
+# If running locally, set VITE_PRESERVE_SYM_LINKS=false
+# In all other occasions, VITE_PRESERVE_SYM_LINKS should be true
 VITE_PRESERVE_SYM_LINKS=true
 ```
 
@@ -89,9 +101,9 @@ If you are making changes to the renderer (`packages/smart-forms-renderer`) and 
 Ensure that `tsc -w` is running in the `packages/smart-forms-renderer` directory to watch for changes.
 
 > Every time the renderer is built, the Smart Forms app will automatically reload to reflect the changes.
-If it is not reloading as expected, the most common issue is the renderer version doesn't match the dependency version in the Smart Forms app.
+If it is not reloading as expected, the most common issue is that the renderer's version doesn't match the dependency version in the Smart Forms app.
 
-> You might also want to check if `resolve: { preserveSymlinks: preserveSymlinks }` in vite.config.ts is set to false via env.
+> You might also want to ensure if `resolve: { preserveSymlinks: preserveSymlinks }` in vite.config.ts is set to true via env.
 
 > Another potential issue why your changes aren't reflected is because of compilation errors. Go back to the watching terminal tab and check if there are any errors.
 
@@ -167,7 +179,7 @@ If `npm install` doesn't resolve the issue, try deleting the `node_modules` dire
 
 Sometimes packages in the monorepo can have different versions of the same dependency, which may cause issues. Ensure that the package/app you are working on have the same dependency versions as the other packages in the monorepo.
 Perform a `npm install` in the directory you are working on every time you change package versions.
-e.g. Smart Forms app running v1.0.0-alpha.11 of `@aehrc/smart-forms-renderer` while the documentation app is running v0.44.3.
+e.g. Smart Forms app running v1.0.0-alpha.15 of `@aehrc/smart-forms-renderer` while the documentation app is running v0.44.3.
 
 Sometimes dependencies will work even when they are not installed. That is because NPM workspaces allow packages to work even when they are located in different directories.
 Ensure that the new dependency you are using is installed in the directory you are working on.
