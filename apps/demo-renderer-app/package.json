@@ -11,8 +11,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@aehrc/sdc-populate": "^2.3.1",
-    "@aehrc/smart-forms-renderer": "^0.44.1",
+    "@aehrc/sdc-populate": "^3.0.1",
+    "@aehrc/smart-forms-renderer": "^1.0.0-alpha.15",
     "@radix-ui/react-collapsible": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-switch": "^1.1.0",
