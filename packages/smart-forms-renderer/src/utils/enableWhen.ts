@@ -126,6 +126,18 @@ export function isEnabledAnswerTypeSwitcher(
     );
   }
 
+  // Handle case where valueCoding.code is not present
+  if (
+    typeof enableWhen.answerCoding?.display === 'string' &&
+    typeof answer.valueCoding?.display === 'string'
+  ) {
+    return answerOperatorSwitcher(
+      enableWhen.answerCoding.display,
+      answer.valueCoding.display,
+      enableWhen.operator
+    );
+  }
+
   if (enableWhen.answerQuantity && answer.valueQuantity) {
     return answerOperatorSwitcher(
       enableWhen.answerQuantity,

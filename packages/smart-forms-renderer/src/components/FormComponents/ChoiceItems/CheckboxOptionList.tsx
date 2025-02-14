@@ -35,8 +35,8 @@ function CheckboxOptionList(props: CheckboxOptionListProps) {
         if (option['valueCoding']) {
           return (
             <CheckboxSingle
-              key={option.valueCoding.code ?? ''}
-              value={option.valueCoding.code ?? ''}
+              key={option.valueCoding.code ?? option.valueCoding.display ?? ''}
+              value={option.valueCoding.code ?? option.valueCoding.display ?? ''}
               label={option.valueCoding.display ?? `${option.valueCoding.code}`}
               readOnly={readOnly}
               isChecked={answers.some(
