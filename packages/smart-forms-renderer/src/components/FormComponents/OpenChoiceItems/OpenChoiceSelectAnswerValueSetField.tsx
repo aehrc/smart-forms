@@ -46,7 +46,7 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
         value={valueSelect ?? null}
         options={options}
         getOptionLabel={(option) =>
-          typeof option === 'string' ? option : option.display ?? `${option.code}`
+          typeof option === 'string' ? option : (option.display ?? `${option.code}`)
         }
         onChange={(_, newValue) => onValueChange(newValue)}
         onInputChange={(_, newValue) => onValueChange(newValue)}

@@ -70,7 +70,7 @@ function SingleItem(props: SingleItemProps) {
       updateEnableWhenItem(
         qItem.linkId,
         newQrItem.answer,
-        parentIsRepeatGroup ? parentRepeatGroupIndex ?? null : null
+        parentIsRepeatGroup ? (parentRepeatGroupIndex ?? null) : null
       );
 
       if (qrItem && qrItem.item && qrItem.item.length > 0) {

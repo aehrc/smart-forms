@@ -145,7 +145,13 @@ export async function resolveValueSetPromises(
  * @author Sean Fong
  */
 export function getValueSetCodings(valueSet: ValueSet): Coding[] {
-  return valueSet.expansion?.contains?.map((coding) => coding) ?? [];
+  return (
+    valueSet.expansion?.contains?.map((coding) => ({
+      system: coding.system,
+      code: coding.code,
+      display: coding.display
+    })) ?? []
+  );
 }
 
 /**

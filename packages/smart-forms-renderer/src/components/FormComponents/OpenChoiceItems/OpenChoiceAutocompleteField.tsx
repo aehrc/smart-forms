@@ -80,7 +80,7 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
         value={valueAutocomplete}
         options={options}
         getOptionLabel={(option) =>
-          typeof option === 'string' ? option : option.display ?? `${option.code}`
+          typeof option === 'string' ? option : (option.display ?? `${option.code}`)
         }
         disabled={readOnly}
         loading={loading}

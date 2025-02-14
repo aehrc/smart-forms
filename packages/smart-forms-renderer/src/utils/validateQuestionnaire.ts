@@ -602,7 +602,7 @@ function checkMinQuantityValue(
   minQuantityValue: number
 ): ValidationResult.minQuantityValue | null {
   switch (qItem.type) {
-    case 'quantity':
+    case 'quantity': {
       const precision = getDecimalPrecision(qItem);
       const decimalValue = precision
         ? parseDecimalStringToFloat(input, precision)
@@ -613,6 +613,7 @@ function checkMinQuantityValue(
       }
 
       break;
+    }
     default:
       return null;
   }
@@ -634,7 +635,7 @@ function checkMaxQuantityValue(
   maxQuantityValue: number
 ): ValidationResult.maxQuantityValue | null {
   switch (qItem.type) {
-    case 'quantity':
+    case 'quantity': {
       const precision = getDecimalPrecision(qItem);
       const decimalValue = precision
         ? parseDecimalStringToFloat(input, precision)
@@ -645,7 +646,7 @@ function checkMaxQuantityValue(
       }
 
       break;
-
+    }
     default:
       return null;
   }
