@@ -344,7 +344,10 @@ function constructSingleItem(
 function parseValueToAnswer(qItem: QuestionnaireItem, value: any): QuestionnaireResponseItemAnswer {
   if (qItem.answerOption) {
     const answerOption = qItem.answerOption.find(
-      (option: QuestionnaireItemAnswerOption) => option.valueCoding?.code === value?.code
+      (option: QuestionnaireItemAnswerOption) =>
+        option.valueCoding?.code === value?.code ||
+        // Handle case where valueCoding.code is not available
+        (!option.valueCoding?.code && option.valueCoding?.display === value?.display)
     );
 
     if (answerOption) {

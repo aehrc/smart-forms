@@ -56,7 +56,10 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
 
   let valueRadio: string | null = null;
   if (qrChoiceRadio.answer) {
-    valueRadio = qrChoiceRadio.answer[0].valueCoding?.code ?? null;
+    valueRadio =
+      qrChoiceRadio.answer[0].valueCoding?.code ??
+      qrChoiceRadio.answer[0].valueCoding?.display ??
+      null;
   }
 
   // Get codings/options from valueSet

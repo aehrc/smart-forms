@@ -58,6 +58,13 @@ export function findInAnswerOptions(
           valueCoding: option.valueCoding
         };
       }
+
+      // handle case where valueCoding.code is not present
+      if (valueInString === option.valueCoding.display) {
+        return {
+          valueCoding: option.valueCoding
+        };
+      }
     }
 
     if (option.valueString) {
@@ -101,8 +108,13 @@ export function compareAnswerOptionValue(
     return option.valueInteger === value.valueInteger;
   }
 
-  if (value.valueCoding && value.valueCoding.code) {
-    return option.valueCoding?.code === value.valueCoding.code;
+  if (value.valueCoding) {
+    if (value.valueCoding.code) {
+      return option.valueCoding?.code === value.valueCoding.code;
+    }
+
+    // handle case where valueCoding.code is not present
+    return option.valueCoding?.display === value.valueCoding.display;
   }
 
   return false;
@@ -145,7 +157,7 @@ export function getQrChoiceValue(
   if (qrChoice.answer && qrChoice.answer.length > 0) {
     const answer = qrChoice['answer'][0];
     if (answer['valueCoding']) {
-      return answer.valueCoding.code ? answer.valueCoding.code : '';
+      return answer.valueCoding.code ?? answer.valueCoding.display ?? '';
     } else if (answer['valueString'] !== undefined) {
       return answer.valueString;
     } else if (answer['valueInteger']) {

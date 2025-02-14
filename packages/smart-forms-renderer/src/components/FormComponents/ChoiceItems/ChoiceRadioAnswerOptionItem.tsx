@@ -117,7 +117,7 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
   const choiceControlType = getChoiceControlType(qItem);
 
   switch (choiceControlType) {
-    // TODO At the moment only this case will be executed because this switch statment was already in the parent components
+    // TODO At the moment only this case will be executed because this switch statement was already in the parent components
     case ChoiceItemControl.Radio: {
       return (
         <ChoiceRadioAnswerOptionView

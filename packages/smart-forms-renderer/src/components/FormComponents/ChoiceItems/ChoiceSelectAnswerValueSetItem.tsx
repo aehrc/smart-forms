@@ -99,7 +99,7 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
   // Process calculated expressions
   const { calcExpUpdated } = useCodingCalculatedExpression({
     qItem: qItem,
-    valueInString: valueCoding?.code ?? '',
+    valueInString: valueCoding?.code ?? valueCoding?.display ?? '',
     onChangeByCalcExpressionString: (newValueString) => {
       if (codings.length > 0) {
         const qrAnswer = findInAnswerOptions(answerOptions, newValueString);
