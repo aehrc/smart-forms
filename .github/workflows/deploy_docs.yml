@@ -2,6 +2,8 @@ name: Smart Forms Docs Deployment Workflow
 
 on:
   push:
+    # Only run this workflow when changes are pushed to the main branch
+    branches: ['main']
 
 permissions:
   contents: read
