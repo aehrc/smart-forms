@@ -2,10 +2,9 @@ name: Smart Forms Docs + Storybook Deployment Workflow
 
 on:
   push:
-    # Alpha changes should not be included in the docs
-    branches-ignore:
-      - alpha
-      - alpha-jv
+    # Only run this workflow when changes are pushed to the main branch
+    branches: ['main']
+
 
 env:
   VITE_PRESERVE_SYM_LINKS: true
