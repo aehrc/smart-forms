@@ -15,4 +15,9 @@
  * limitations under the License.
  */
 
+// @ts-ignore
+import { version } from '../package.json';
+
 export const TERMINOLOGY_SERVER_URL = 'https://tx.ontoserver.csiro.au/fhir';
+
+export const PACKAGE_VERSION = version;
