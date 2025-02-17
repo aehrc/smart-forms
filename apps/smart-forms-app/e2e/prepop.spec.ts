@@ -86,7 +86,7 @@ test('pre-pop into CVDRiskCalculator questionnaire', async ({ page }) => {
 
   // Ensure questionnaire is built
   await expect(page.getByTestId('q-item-display-box')).toContainText(
-    'The calculator below should only be used for technology demonstration purposes.'
+    'NOTE: The Australian guideline for assessing and managing cardiovascular disease risk recommends the use of the online Australian CVD risk calculator.'
   );
 
   // Perform pre-population
