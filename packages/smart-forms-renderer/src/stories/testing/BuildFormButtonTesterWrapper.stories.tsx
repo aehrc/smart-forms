@@ -21,7 +21,7 @@ import { qButtonTester, qrButtonTesterResponse } from '../assets/questionnaires/
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'Component/Testing/Build Form Button Tester',
+  title: 'Testing/Build Form Button Tester',
   component: BuildFormButtonTesterWrapperForStorybook,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []

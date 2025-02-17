@@ -21,7 +21,7 @@ import { qGroupBasic } from '../assets/questionnaires/QGroup';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'Component/ItemType/Group',
+  title: 'ItemType/Group',
   component: BuildFormWrapperForStorybook,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []
