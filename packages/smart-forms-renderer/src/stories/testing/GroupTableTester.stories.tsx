@@ -21,7 +21,7 @@ import { qGTableWithBoolean } from '../assets/questionnaires/QGroupTableTester';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'Component/Testing/Group Table Tester',
+  title: 'Testing/Group Table Tester',
   component: BuildFormWrapperForStorybook,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []

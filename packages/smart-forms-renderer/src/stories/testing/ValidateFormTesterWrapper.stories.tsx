@@ -21,7 +21,7 @@ import { qValidateTester } from '../assets/questionnaires/QValidateTester';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'Component/Testing/Validate Tester',
+  title: 'Testing/Validate Tester',
   component: ValidationFormTesterWrapper,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []
