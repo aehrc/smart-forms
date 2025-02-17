@@ -53,7 +53,8 @@ jobs:
   playwright-test:
     name: Playwright Tests
     timeout-minutes: 60
-    runs-on: ubuntu-latest
+    #   Use ubuntu-22.04 because ubuntu-24.04 doesn't have the necessary dependencies for Playwright https://github.com/microsoft/playwright/issues/30368
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
