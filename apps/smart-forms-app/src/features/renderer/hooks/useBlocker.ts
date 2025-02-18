@@ -16,7 +16,8 @@
  */
 
 import { useLayoutEffect } from 'react';
-import { Blocker, useBlocker } from 'react-router-dom';
+import type { Blocker } from 'react-router-dom';
+import { useBlocker } from 'react-router-dom';
 import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
 
 function useLeavePageBlocker(): Blocker {
