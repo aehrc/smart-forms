@@ -10,7 +10,7 @@ function getAbsolutePath(value: string): any {
   return dirname(require.resolve(join(value, 'package.json')));
 }
 const config: StorybookConfig = {
-  stories: [{ directory: '../src/stories', titlePrefix: 'CSIRO Renderer' }],
+  stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
 
   addons: [
     getAbsolutePath('@storybook/addon-links'),
@@ -31,5 +31,4 @@ const config: StorybookConfig = {
     reactDocgen: 'react-docgen-typescript'
   }
 };
-
 export default config;

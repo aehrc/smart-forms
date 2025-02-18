@@ -16,10 +16,15 @@
  */
 
 import { defineConfig } from 'vite';
+// @ts-ignore
+import { version } from './package.json';
 
 // This Vite config is for storybook usage only.
 // https://vitejs.dev/config/
 export default defineConfig({
+  define: {
+    'import.meta.env.VITE_RENDERER_VERSION': JSON.stringify(version ?? 'unspecified')
+  },
   plugins: [],
   optimizeDeps: {
     include: ['@aehrc/sdc-populate']
