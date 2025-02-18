@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2023 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,4 +15,13 @@
  * limitations under the License.
  */
 
-export const TERMINOLOGY_SERVER_URL = 'https://tx.ontoserver.csiro.au/fhir';
+/// <reference types="vite/client" />
+// Vite is only used for Storybook
+
+interface ImportMetaEnv {
+  readonly VITE_RENDERER_VERSION: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
