@@ -7,6 +7,53 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.20] - 2025-02-19
+### Fixed
+- Fixed an issue where the default tabbed form breakpoint is set to render at a width lower than "md" rather than higher.
+
+## [1.0.0-alpha.19] - 2025-02-19
+_(WARNING: This version will break the renderer, use 1.0.0-alpha.20 instead.)_
+### Added
+- Added a hook to adjust breakpoints for rendering a tabbed form in RendererStylingStore.
+
+## [1.0.0-alpha.18] - 2025-02-14
+### Fixed
+- Increased renderer's tolerance when working with valueCoding without codes.
+
+## [1.0.0-alpha.17] - 2025-02-14
+### Fixed
+- Fixed an issue where unexpected properties in valueCodings from a terminology server e.g. designation would not be filtered from the QuestionnaireResponse and cause validation failure when submitted to a FHIR server.
+
+## [1.0.0-alpha.16] - 2025-02-13
+### Fixed
+- Updated dependencies to fix incompatible Node and dependency versions.
+
+### Added
+- Added preferredTerminologyServer compatibility with valueUri.
+
+### Changed
+- Changed how the .env file controls how Vite handles preserveSymLinks to play nice with CommonJS modules. It is worth re-reading LOCAL_DEVELOPMENT.md for local development setup.
+
+## [1.0.0-alpha.15] - 2025-02-13
+### Added
+- Added hook to hide tab button in RendererStylingStore.
+
+## [1.0.0-alpha.14] - 2025-02-13
+### Fixed
+- Added checks for "0" values in maxQuantity and minQuantity validation.
+
+## [1.0.0-alpha.13] - 2025-02-12
+### Added
+- Added terminology caching in FHIRPath's memberOf() to significantly improve performance for async FHIRPath evaluation.
+
+## [1.0.0-alpha.12] - 2025-02-10
+### Changed
+- Updated [fhirpath.js](https://github.com/hl7/fhirpath.js/) to v3.17.0.
+
+### Added
+- Added support for maxQuantity and minQuantity SDC extensions.
+- Added a local development guide.
+
 ## [1.0.0-alpha.11] - 2024-12-23
 ### Fixed
 - Fixed build issues with v1.0.0-alpha.10.
