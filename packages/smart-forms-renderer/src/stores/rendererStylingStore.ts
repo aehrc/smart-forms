@@ -18,6 +18,7 @@
 import { createStore } from 'zustand/vanilla';
 import { createSelectors } from './selector';
 import type { QuestionnaireItem } from 'fhir/r4';
+import type { UseResponsiveProps } from '../hooks';
 
 export interface ItemGridBreakpoints {
   xs?: number;
@@ -42,6 +43,7 @@ export interface RendererStyling {
   requiredIndicatorPosition?: 'start' | 'end';
   itemLabelGridBreakpoints?: ItemGridBreakpoints;
   itemFieldGridBreakpoints?: ItemGridBreakpoints;
+  showTabbedFormAt?: UseResponsiveProps;
   textFieldWidth?: number;
   inputsFlexGrow?: boolean;
   reverseBooleanYesNo?: boolean;
@@ -73,6 +75,7 @@ export interface RendererStylingStoreType {
   requiredIndicatorPosition: 'start' | 'end';
   itemLabelGridBreakpoints: ItemGridBreakpoints;
   itemFieldGridBreakpoints: ItemGridBreakpoints;
+  showTabbedFormAt: UseResponsiveProps;
   textFieldWidth: number;
   inputsFlexGrow: boolean; // radio, checkbox and boolean inputs should have flexGrow: 1
   reverseBooleanYesNo: boolean;
@@ -93,6 +96,7 @@ export const rendererStylingStore = createStore<RendererStylingStoreType>()((set
   requiredIndicatorPosition: 'start',
   itemLabelGridBreakpoints: { xs: 12, md: 4 },
   itemFieldGridBreakpoints: { xs: 12, md: 8 },
+  showTabbedFormAt: { query: 'down', start: 'md' },
   textFieldWidth: 320,
   inputsFlexGrow: false,
   reverseBooleanYesNo: false,
@@ -108,6 +112,7 @@ export const rendererStylingStore = createStore<RendererStylingStoreType>()((set
       requiredIndicatorPosition: params.requiredIndicatorPosition ?? 'start',
       itemLabelGridBreakpoints: params.itemLabelGridBreakpoints ?? { xs: 12, md: 4 },
       itemFieldGridBreakpoints: params.itemFieldGridBreakpoints ?? { xs: 12, md: 8 },
+      showTabbedFormAt: params.showTabbedFormAt ?? { query: 'up', start: 'md' },
       textFieldWidth: params.textFieldWidth ?? 320,
       inputsFlexGrow: params.inputsFlexGrow ?? false,
       reverseBooleanYesNo: params.reverseBooleanYesNo ?? false,

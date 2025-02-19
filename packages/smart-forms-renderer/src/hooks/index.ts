@@ -13,3 +13,7 @@ export {
   default as useCodingCalculatedExpression,
   objectIsCoding
 } from './useCodingCalculatedExpression';
+
+// Responsiveness-related hooks
+export { default as useResponsive } from './useResponsive';
+export type { UseResponsiveProps } from './useResponsive';

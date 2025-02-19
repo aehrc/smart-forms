@@ -54,6 +54,7 @@ export {
 } from './stores';
 
 // hooks exports
+export type { UseResponsiveProps } from './hooks';
 export {
   useHidden,
   useReadOnly,
@@ -65,7 +66,8 @@ export {
   useStringCalculatedExpression,
   useDisplayCqfAndCalculatedExpression,
   useCodingCalculatedExpression,
-  objectIsCoding
+  objectIsCoding,
+  useResponsive
 } from './hooks';
 
 // utils exports

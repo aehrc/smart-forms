@@ -36,6 +36,7 @@ import { isRepeatItemAndNotCheckbox, isSpecificItemControl } from '../../utils';
 import GroupTable from '../FormComponents/Tables/GroupTable';
 import RepeatItem from '../FormComponents/RepeatItem/RepeatItem';
 import GridGroup from '../FormComponents/GridGroup/GridGroup';
+import { useRendererStylingStore } from '../../stores';
 
 interface FormTopLevelItemProps
   extends PropsWithQrItemChangeHandler,
@@ -57,7 +58,8 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
   const itemIsTabContainer = isTabContainer(topLevelQItem);
   const itemContainsTabs = containsTabs(topLevelQItem);
 
-  const isTablet = useResponsive('up', 'md');
+  const showTabbedFormAt = useRendererStylingStore.use.showTabbedFormAt();
+  const isTabbedForm = useResponsive(showTabbedFormAt);
 
   const itemIsGroup = topLevelQItem.type === 'group';
 
@@ -87,7 +89,7 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
 
   // If form is tabbed, it is rendered as a tabbed form
   if (itemContainsTabs || itemIsTabContainer) {
-    if (isTablet) {
+    if (isTabbedForm) {
       return (
         <FormBodyTabbed
           key={topLevelQItem.linkId}

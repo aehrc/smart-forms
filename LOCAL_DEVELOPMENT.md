@@ -184,6 +184,8 @@ e.g. Smart Forms app running v1.0.0-alpha.15 of `@aehrc/smart-forms-renderer` wh
 Sometimes dependencies will work even when they are not installed. That is because NPM workspaces allow packages to work even when they are located in different directories.
 Ensure that the new dependency you are using is installed in the directory you are working on.
 
+When running the Smart Forms app locally, if you are getting errors like "Uncaught TypeError: undefined is not a function e.g. Grid2.js", it is likely that Vite is caching a previous (failing) build.
+Try deleting the `apps/smart-forms-app/node_modules/.vite` directory and run `npm start` again.
 
 
 
