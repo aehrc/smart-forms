@@ -96,7 +96,7 @@ export const rendererStylingStore = createStore<RendererStylingStoreType>()((set
   requiredIndicatorPosition: 'start',
   itemLabelGridBreakpoints: { xs: 12, md: 4 },
   itemFieldGridBreakpoints: { xs: 12, md: 8 },
-  showTabbedFormAt: { query: 'down', start: 'md' },
+  showTabbedFormAt: { query: 'up', start: 'md' },
   textFieldWidth: 320,
   inputsFlexGrow: false,
   reverseBooleanYesNo: false,
