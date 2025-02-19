@@ -5,6 +5,17 @@ This log documents significant changes for the [@aehrc/smart-forms-renderer](htt
 
 Changelog only includes changes from version 0.36.0 onwards.
 
+## [0.45.0] - 2025-02-18
+### Added
+- Added preferredTerminologyServer compatibility with valueUri.
+
+### Fixed
+- Increased renderer's tolerance when working with valueCoding without codes.
+
+## [0.44.4] - 2025-02-17
+### Fixed
+- Update dependencies to fix incompatible Node and dependency versions.
+
 ## [0.44.3] - 2024-11-07
 ### NPM-related
 - Bump version to set NPM tag to latest.
