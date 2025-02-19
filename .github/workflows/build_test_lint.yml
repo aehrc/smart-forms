@@ -48,7 +48,7 @@ jobs:
         run: npm ci
       - name: Run jest tests
         run: npm run test -w packages/smart-forms-renderer
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v5
 
   playwright-test:
     name: Playwright Tests
