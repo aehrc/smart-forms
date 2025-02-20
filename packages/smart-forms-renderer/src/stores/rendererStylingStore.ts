@@ -44,6 +44,7 @@ export interface RendererStyling {
   itemLabelGridBreakpoints?: ItemGridBreakpoints;
   itemFieldGridBreakpoints?: ItemGridBreakpoints;
   showTabbedFormAt?: UseResponsiveProps;
+  tabListFixedWidth?: number | false;
   textFieldWidth?: number;
   inputsFlexGrow?: boolean;
   reverseBooleanYesNo?: boolean;
@@ -76,6 +77,7 @@ export interface RendererStylingStoreType {
   itemLabelGridBreakpoints: ItemGridBreakpoints;
   itemFieldGridBreakpoints: ItemGridBreakpoints;
   showTabbedFormAt: UseResponsiveProps;
+  tabListFixedWidth: number | false;
   textFieldWidth: number;
   inputsFlexGrow: boolean; // radio, checkbox and boolean inputs should have flexGrow: 1
   reverseBooleanYesNo: boolean;
@@ -97,6 +99,7 @@ export const rendererStylingStore = createStore<RendererStylingStoreType>()((set
   itemLabelGridBreakpoints: { xs: 12, md: 4 },
   itemFieldGridBreakpoints: { xs: 12, md: 8 },
   showTabbedFormAt: { query: 'up', start: 'md' },
+  tabListFixedWidth: false,
   textFieldWidth: 320,
   inputsFlexGrow: false,
   reverseBooleanYesNo: false,
@@ -113,6 +116,7 @@ export const rendererStylingStore = createStore<RendererStylingStoreType>()((set
       itemLabelGridBreakpoints: params.itemLabelGridBreakpoints ?? { xs: 12, md: 4 },
       itemFieldGridBreakpoints: params.itemFieldGridBreakpoints ?? { xs: 12, md: 8 },
       showTabbedFormAt: params.showTabbedFormAt ?? { query: 'up', start: 'md' },
+      tabListFixedWidth: params.tabListFixedWidth ?? false,
       textFieldWidth: params.textFieldWidth ?? 320,
       inputsFlexGrow: params.inputsFlexGrow ?? false,
       reverseBooleanYesNo: params.reverseBooleanYesNo ?? false,

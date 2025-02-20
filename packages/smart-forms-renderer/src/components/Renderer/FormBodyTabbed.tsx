@@ -28,7 +28,7 @@ import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../interfaces/renderProps.interface';
-import { useQuestionnaireStore } from '../../stores';
+import { useQuestionnaireStore, useRendererStylingStore } from '../../stores';
 
 interface FormBodyTabbedProps
   extends PropsWithQrItemChangeHandler,
@@ -42,6 +42,8 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
 
   const tabs = useQuestionnaireStore.use.tabs();
   const currentTab = useQuestionnaireStore.use.currentTabIndex();
+
+  const tabListFixedWidth = useRendererStylingStore.use.tabListFixedWidth();
 
   const indexMap: Record<string, number> = useMemo(
     () => mapQItemsIndex(topLevelQItem),
@@ -64,14 +66,22 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
 
   const qrItemsByIndex = getQrItemsIndex(qItems, qrItems, indexMap);
 
+  const tabListWrapperProps =
+    typeof tabListFixedWidth === 'number'
+      ? { sx: { width: tabListFixedWidth, flexShrink: 0 } }
+      : { xs: 12, md: 3, lg: 2.75 };
+
+  const qItemTabPanelProps =
+    typeof tabListFixedWidth === 'number' ? { sx: { flexGrow: 1 } } : { xs: 12, md: 9, lg: 9.25 };
+
   return (
     <Grid container spacing={1.5}>
       <TabContext value={currentTab.toString()}>
-        <Grid item xs={12} md={3} lg={2.75}>
+        <Grid item {...tabListWrapperProps}>
           <FormBodyTabListWrapper topLevelItems={qItems} currentTabIndex={currentTab} tabs={tabs} />
         </Grid>
 
-        <Grid item xs={12} md={9} lg={9.25}>
+        <Grid item {...qItemTabPanelProps}>
           {qItems.map((qItem, i) => {
             const qrItem = qrItemsByIndex[i];
 
