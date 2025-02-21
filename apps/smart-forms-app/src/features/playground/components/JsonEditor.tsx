@@ -137,6 +137,9 @@ function JsonEditor(props: JsonEditorProps) {
           onChange={handleEditorChange}
           value={jsonString}
           onValidate={handleEditorValidation}
+          options={{
+            minimap: { enabled: false }
+          }}
         />
       ) : (
         <Box sx={{ height: '100%', overflow: 'auto' }}>
