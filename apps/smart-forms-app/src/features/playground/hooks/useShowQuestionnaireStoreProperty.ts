@@ -24,19 +24,27 @@ function useShowQuestionnaireStoreProperty(selectedProperty: string) {
     useQuestionnaireStore.use.itemPreferredTerminologyServers();
   const tabs = useQuestionnaireStore.use.tabs();
   const currentTabIndex = useQuestionnaireStore.use.currentTabIndex();
+  const pages = useQuestionnaireStore.use.pages();
+  const currentPageIndex = useQuestionnaireStore.use.currentPageIndex();
   const variables = useQuestionnaireStore.use.variables();
   const launchContexts = useQuestionnaireStore.use.launchContexts();
+  const targetConstraints = useQuestionnaireStore.use.targetConstraints();
+  const targetConstraintLinkIds = useQuestionnaireStore.use.targetConstraintLinkIds();
   const enableWhenItems = useQuestionnaireStore.use.enableWhenItems();
   const enableWhenLinkedQuestions = useQuestionnaireStore.use.enableWhenLinkedQuestions();
   const enableWhenIsActivated = useQuestionnaireStore.use.enableWhenIsActivated();
   const enableWhenExpressions = useQuestionnaireStore.use.enableWhenExpressions();
   const calculatedExpressions = useQuestionnaireStore.use.calculatedExpressions();
+  const initialExpressions = useQuestionnaireStore.use.initialExpressions();
   const answerExpressions = useQuestionnaireStore.use.answerExpressions();
   const processedValueSetCodings = useQuestionnaireStore.use.processedValueSetCodings();
   const processedValueSetUrls = useQuestionnaireStore.use.processedValueSetUrls();
   const cachedValueSetCodings = useQuestionnaireStore.use.cachedValueSetCodings();
   const fhirPathContext = useQuestionnaireStore.use.fhirPathContext();
+  const fhirPathTerminologyCache = useQuestionnaireStore.use.fhirPathTerminologyCache();
   const populatedContext = useQuestionnaireStore.use.populatedContext();
+  const qItemOverrideComponents = useQuestionnaireStore.use.qItemOverrideComponents();
+  const sdcUiOverrideComponents = useQuestionnaireStore.use.sdcUiOverrideComponents();
   const focusedLinkId = useQuestionnaireStore.use.focusedLinkId();
   const readOnly = useQuestionnaireStore.use.readOnly();
 
@@ -47,19 +55,27 @@ function useShowQuestionnaireStoreProperty(selectedProperty: string) {
       itemPreferredTerminologyServers,
       tabs,
       currentTabIndex,
+      pages,
+      currentPageIndex,
       variables,
       launchContexts,
+      targetConstraints,
+      targetConstraintLinkIds,
       enableWhenItems,
       enableWhenLinkedQuestions,
       enableWhenIsActivated,
       enableWhenExpressions,
       calculatedExpressions,
+      initialExpressions,
       answerExpressions,
       processedValueSetCodings,
       processedValueSetUrls,
       cachedValueSetCodings,
       fhirPathContext,
+      fhirPathTerminologyCache,
       populatedContext,
+      qItemOverrideComponents,
+      sdcUiOverrideComponents,
       focusedLinkId,
       readOnly
     }[selectedProperty] || null

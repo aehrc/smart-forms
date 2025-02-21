@@ -4,6 +4,7 @@ import GenericViewer from './GenericViewer.tsx';
 import useShowQuestionnaireResponseStoreProperty from '../../hooks/useShowQuestionnaireResponseStoreProperty.ts';
 
 const questionnaireResponseStoreStatePropertyNames: string[] = [
+  'key',
   'sourceResponse',
   'updatableResponse',
   'updatableResponseItems',

@@ -9,8 +9,12 @@ const questionnaireStoreStatePropertyNames: string[] = [
   'itemPreferredTerminologyServers',
   'tabs',
   'currentTabIndex',
+  'pages',
+  'currentPageIndex',
   'variables',
   'launchContexts',
+  'targetConstraints',
+  'targetConstraintLinkIds',
   'enableWhenItems',
   'enableWhenLinkedQuestions',
   'enableWhenIsActivated',
@@ -21,7 +25,10 @@ const questionnaireStoreStatePropertyNames: string[] = [
   'processedValueSetUrls',
   'cachedValueSetCodings',
   'fhirPathContext',
+  'fhirPathTerminologyCache',
   'populatedContext',
+  'qItemOverrideComponents',
+  'sdcUiOverrideComponents',
   'focusedLinkId',
   'readOnly'
 ];

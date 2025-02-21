@@ -18,6 +18,7 @@
 import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
 
 function useShowQuestionnaireResponseStoreProperty(selectedProperty: string) {
+  const key = useQuestionnaireResponseStore.use.key();
   const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
   const updatableResponseItems = useQuestionnaireResponseStore.use.updatableResponseItems();
@@ -27,6 +28,7 @@ function useShowQuestionnaireResponseStoreProperty(selectedProperty: string) {
 
   return (
     {
+      key,
       sourceResponse,
       updatableResponse,
       updatableResponseItems,
