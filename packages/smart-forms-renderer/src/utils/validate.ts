@@ -110,7 +110,9 @@ export function validateTargetConstraint(): Record<string, OperationOutcome> {
   for (const [, targetConstraint] of Object.entries(targetConstraints)) {
     if (targetConstraint.isEnabled) {
       const locationExpression = targetConstraint.location
-        ? `${targetConstraint.valueExpression.expression ?? 'unknown FHIRPath expression'} at ${targetConstraint.location}`
+        ? `${targetConstraint.valueExpression.expression ?? 'unknown FHIRPath expression'} at ${
+            targetConstraint.location
+          }`
         : `${targetConstraint.valueExpression.expression ?? 'unknown FHIRPath expression'}`;
 
       const validationOutcome = createValidationOperationOutcome(
