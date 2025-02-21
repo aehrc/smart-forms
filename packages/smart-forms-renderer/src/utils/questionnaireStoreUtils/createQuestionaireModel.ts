@@ -31,6 +31,8 @@ import { resolveValueSets } from './resolveValueSets';
 import { addAdditionalVariables } from './addAdditionalVariables';
 import { getLinkIdPreferredTerminologyServerTuples, getLinkIdTypeTuples } from '../qItem';
 import { addDisplayToAnswerOptions, addDisplayToProcessedCodings } from './addDisplayToCodings';
+import type { TargetConstraint } from '../../interfaces/targetConstraint.interface';
+import { extractTargetConstraints } from './extractTargetConstraint';
 
 export async function createQuestionnaireModel(
   questionnaire: Questionnaire,
@@ -49,6 +51,8 @@ export async function createQuestionnaireModel(
   const pages: Pages = extractPages(questionnaire);
 
   const launchContexts: Record<string, LaunchContext> = extractLaunchContexts(questionnaire);
+  const targetConstraints: Record<string, TargetConstraint> =
+    extractTargetConstraints(questionnaire);
 
   let variables: Variables = extractQuestionnaireLevelVariables(questionnaire);
   variables = addAdditionalVariables(variables, additionalVariables);
@@ -109,6 +113,7 @@ export async function createQuestionnaireModel(
     pages,
     variables,
     launchContexts,
+    targetConstraints,
     enableWhenItems,
     enableWhenExpressions,
     calculatedExpressions,
@@ -130,6 +135,7 @@ function createEmptyModel(): QuestionnaireModel {
     pages: {},
     variables: { fhirPathVariables: {}, xFhirQueryVariables: {} },
     launchContexts: {},
+    targetConstraints: {},
     calculatedExpressions: {},
     initialExpressions: {},
     enableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} },

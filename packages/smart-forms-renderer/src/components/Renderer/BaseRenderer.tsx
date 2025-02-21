@@ -51,8 +51,9 @@ function BaseRenderer() {
 
     updateQrItemsInGroup(newTopLevelQRItem, null, updatedResponse, qItemsIndexMap);
 
-    updateExpressions(updatedResponse);
-    validateQuestionnaire(sourceQuestionnaire, updatedResponse);
+    updateExpressions(updatedResponse).then(() => {
+      validateQuestionnaire(sourceQuestionnaire, updatedResponse);
+    });
     updateResponse(updatedResponse);
   }
 
@@ -61,8 +62,9 @@ function BaseRenderer() {
 
     updateQrItemsInGroup(null, newTopLevelQRItems, updatedResponse, qItemsIndexMap);
 
-    updateExpressions(updatedResponse);
-    validateQuestionnaire(sourceQuestionnaire, updatedResponse);
+    updateExpressions(updatedResponse).then(() => {
+      validateQuestionnaire(sourceQuestionnaire, updatedResponse);
+    });
     updateResponse(updatedResponse);
   }
 

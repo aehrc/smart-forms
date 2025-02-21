@@ -26,7 +26,7 @@ import { emptyResponse } from '../utils/emptyResource';
 import type { Diff } from 'deep-diff';
 import { diff } from 'deep-diff';
 import { createSelectors } from './selector';
-import { validateQuestionnaire } from '../utils/validateQuestionnaire';
+import { validateForm, validateQuestionnaireResponse } from '../utils/validate';
 import { questionnaireStore } from './questionnaireStore';
 import { createQuestionnaireResponseItemMap } from '../utils/questionnaireResponseStoreUtils/updatableResponseItems';
 import { generateUniqueId } from '../utils/extractObservation';
@@ -43,7 +43,7 @@ import { generateUniqueId } from '../utils/extractObservation';
  * @property formChangesHistory - Array of form changes history in the form of deep-diff objects
  * @property invalidItems - Key-value pair of invalid items based on defined value constraints in the questionnaire `Record<linkId, OperationOutcome>`
  * @property responseIsValid - Whether there are any invalid items in the response
- * @property validateQuestionnaire - Used to validate the questionnaire response based on the questionnaire
+ * @property validateQuestionnaireResponse - Used to validate the questionnaire response based on the questionnaire
  * @property buildSourceResponse - Used to build the source response when the form is first initialised
  * @property setUpdatableResponseAsPopulated - Used to set a pre-populated response as the current response
  * @property updateResponse - Used to update the current response
@@ -93,10 +93,7 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
       questionnaire: Questionnaire,
       updatedResponse: QuestionnaireResponse
     ) => {
-      const updatedInvalidItems = validateQuestionnaire({
-        questionnaire,
-        questionnaireResponse: updatedResponse
-      });
+      const updatedInvalidItems = validateForm(questionnaire, updatedResponse);
 
       set(() => ({
         invalidItems: updatedInvalidItems,
@@ -105,10 +102,7 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
     },
     buildSourceResponse: (questionnaireResponse: QuestionnaireResponse) => {
       const sourceQuestionnaire = questionnaireStore.getState().sourceQuestionnaire;
-      const initialInvalidItems = validateQuestionnaire({
-        questionnaire: sourceQuestionnaire,
-        questionnaireResponse: questionnaireResponse
-      });
+      const initialInvalidItems = validateForm(sourceQuestionnaire, questionnaireResponse);
 
       set(() => ({
         key: generateUniqueId('QR'),
@@ -122,10 +116,9 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
     setUpdatableResponseAsPopulated: (populatedResponse: QuestionnaireResponse) => {
       const sourceQuestionnaire = questionnaireStore.getState().sourceQuestionnaire;
       const formChanges = diff(get().updatableResponse, populatedResponse) ?? null;
-      const updatedInvalidItems = validateQuestionnaire({
-        questionnaire: sourceQuestionnaire,
-        questionnaireResponse: populatedResponse
-      });
+
+      const updatedInvalidItems = validateForm(sourceQuestionnaire, populatedResponse);
+
       set(() => ({
         updatableResponse: populatedResponse,
         updatableResponseItems: createQuestionnaireResponseItemMap(populatedResponse),
@@ -137,10 +130,11 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
     updateResponse: (updatedResponse: QuestionnaireResponse) => {
       const sourceQuestionnaire = questionnaireStore.getState().sourceQuestionnaire;
       const formChanges = diff(get().updatableResponse, updatedResponse) ?? null;
-      const updatedInvalidItems = validateQuestionnaire({
+      const updatedInvalidItems = validateQuestionnaireResponse({
         questionnaire: sourceQuestionnaire,
         questionnaireResponse: updatedResponse
       });
+
       set(() => ({
         updatableResponse: updatedResponse,
         updatableResponseItems: createQuestionnaireResponseItemMap(updatedResponse),
@@ -151,7 +145,7 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
     },
     setUpdatableResponseAsSaved: (savedResponse: QuestionnaireResponse) => {
       const sourceQuestionnaire = questionnaireStore.getState().sourceQuestionnaire;
-      const updatedInvalidItems = validateQuestionnaire({
+      const updatedInvalidItems = validateQuestionnaireResponse({
         questionnaire: sourceQuestionnaire,
         questionnaireResponse: savedResponse
       });
@@ -168,7 +162,7 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
     },
     setUpdatableResponseAsEmpty: (clearedResponse: QuestionnaireResponse) => {
       const sourceQuestionnaire = questionnaireStore.getState().sourceQuestionnaire;
-      const updatedInvalidItems = validateQuestionnaire({
+      const updatedInvalidItems = validateQuestionnaireResponse({
         questionnaire: sourceQuestionnaire,
         questionnaireResponse: clearedResponse
       });

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { getInputInvalidType, ValidationResult } from '../utils/validateQuestionnaire';
+import { getInputInvalidType, ValidationResult } from '../utils/validate';
 import type { QuestionnaireItem } from 'fhir/r4';
 import {
   getMaxQuantityValue,
@@ -29,8 +29,26 @@ import {
   getRegexValidation
 } from '../utils/itemControl';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
+import { useQuestionnaireStore } from '../stores';
 
 function useValidationFeedback(qItem: QuestionnaireItem, input: string): string {
+  // Target constraint-based validation
+  const targetConstraints = useQuestionnaireStore.use.targetConstraints();
+  const targetConstraintLinkIds = useQuestionnaireStore.use.targetConstraintLinkIds();
+  const targetConstraintKeys = targetConstraintLinkIds[qItem.linkId];
+  if (targetConstraintKeys && targetConstraintKeys.length > 0) {
+    for (const targetConstraintKey of targetConstraintKeys) {
+      const targetConstraint = targetConstraints[targetConstraintKey];
+      if (targetConstraint) {
+        const { isEnabled, human } = targetConstraint;
+        if (isEnabled) {
+          return human;
+        }
+      }
+    }
+  }
+
+  // Extension-based validation
   const regexValidation = getRegexValidation(qItem);
   const minLength = structuredDataCapture.getMinLength(qItem);
   const maxLength = qItem.maxLength;

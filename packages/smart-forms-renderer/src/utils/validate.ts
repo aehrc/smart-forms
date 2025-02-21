@@ -87,7 +87,50 @@ export enum ValidationResult {
   maxQuantityValue = 'maxQuantityValue' // Maximum Quantity value constraint violated
 }
 
-interface ValidateQuestionnaireParams {
+export function validateForm(
+  questionnaire: Questionnaire,
+  questionnaireResponse: QuestionnaireResponse
+): Record<string, OperationOutcome> {
+  const invalidItemsFromQRValidation = validateQuestionnaireResponse({
+    questionnaire,
+    questionnaireResponse
+  });
+
+  const invalidItemsFromTCValidation = validateTargetConstraint();
+
+  return {
+    ...invalidItemsFromQRValidation,
+    ...invalidItemsFromTCValidation
+  };
+}
+
+export function validateTargetConstraint(): Record<string, OperationOutcome> {
+  const targetConstraints = questionnaireStore.getState().targetConstraints;
+  const invalidItems: Record<string, OperationOutcome> = {};
+  for (const [, targetConstraint] of Object.entries(targetConstraints)) {
+    if (targetConstraint.isEnabled) {
+      const locationExpression = targetConstraint.location
+        ? `${targetConstraint.valueExpression.expression ?? 'unknown FHIRPath expression'} at ${targetConstraint.location}`
+        : `${targetConstraint.valueExpression.expression ?? 'unknown FHIRPath expression'}`;
+
+      const validationOutcome = createValidationOperationOutcome(
+        ValidationResult.invariant,
+        null as unknown as QuestionnaireItem, // We don't need a QuestionnaireItem here
+        null as unknown as QuestionnaireResponseItem, // We don't need a QuestionnaireResponseItem here
+        null,
+        locationExpression,
+        []
+      );
+
+      const invalidItemKey = targetConstraint.linkId ?? `target-constraint-${targetConstraint.key}`;
+      invalidItems[invalidItemKey] = validationOutcome;
+    }
+  }
+
+  return invalidItems;
+}
+
+interface ValidateQuestionnaireResponseParams {
   questionnaire: Questionnaire;
   questionnaireResponse: QuestionnaireResponse;
 }
@@ -98,8 +141,8 @@ interface ValidateQuestionnaireParams {
  *
  * @author Sean Fong
  */
-export function validateQuestionnaire(
-  params: ValidateQuestionnaireParams
+export function validateQuestionnaireResponse(
+  params: ValidateQuestionnaireResponseParams
 ): Record<string, OperationOutcome> {
   const { questionnaire, questionnaireResponse } = params;
 
@@ -654,10 +697,10 @@ function checkMaxQuantityValue(
   return null;
 }
 
-function createValidationOperationOutcome(
+export function createValidationOperationOutcome(
   error: ValidationResult,
-  qItem: QuestionnaireItem,
-  qrItem: QuestionnaireResponseItem,
+  qItem: QuestionnaireItem | null,
+  qrItem: QuestionnaireResponseItem | null,
   answerIndex: number | null,
   locationExpression: string,
   existingOperationOutcomeIssues: OperationOutcomeIssue[] = []
@@ -672,15 +715,23 @@ function createValidationOperationOutcome(
 
 function createValidationOperationOutcomeIssue(
   error: ValidationResult,
-  qItem: QuestionnaireItem,
-  qrItem: QuestionnaireResponseItem,
+  qItem: QuestionnaireItem | null,
+  qrItem: QuestionnaireResponseItem | null,
   answerIndex: number | null,
-  locationExpression: string
+  locationExpression: string,
+  severity: 'error' | 'warning' = 'error',
+  humanReadable?: string
 ): OperationOutcomeIssue {
   const errorCodeSystem = 'http://fhir.forms-lab.com/CodeSystem/errors';
   let detailsText = '';
-  let fieldDisplayText =
-    qrItem?.text ?? getShortText(qItem) ?? qItem?.text ?? qItem.linkId ?? qrItem.linkId;
+  let fieldDisplayText = '';
+  if (qItem && qrItem) {
+    fieldDisplayText =
+      qrItem?.text ?? getShortText(qItem) ?? qItem?.text ?? qItem.linkId ?? qrItem.linkId;
+  } else {
+    fieldDisplayText = 'Unknown item';
+  }
+
   if (!fieldDisplayText && fieldDisplayText.endsWith(':')) {
     fieldDisplayText = fieldDisplayText.substring(0, fieldDisplayText.length - 1);
   }
@@ -690,14 +741,14 @@ function createValidationOperationOutcomeIssue(
   // create operationOutcomeIssue based on error
   switch (error) {
     case ValidationResult.required: {
-      if (qItem.type === 'group') {
+      if (qItem?.type === 'group') {
         detailsText = `${fieldDisplayText}: Mandatory group does not have answer(s)`;
       } else {
         detailsText = `${fieldDisplayText}: Mandatory field does not have an answer`;
       }
 
       return {
-        severity: 'error',
+        severity: severity,
         code: 'required',
         expression: [locationExpression],
         details: {
@@ -715,14 +766,14 @@ function createValidationOperationOutcomeIssue(
 
     case ValidationResult.regex: {
       detailsText = `${fieldDisplayText}: The value '${getInputInString(
-        qrItem.answer?.[answerIndex]
+        qrItem?.answer?.[answerIndex]
       )}' does not match the defined format.`;
-      if (structuredDataCapture.getEntryFormat(qItem)) {
+      if (qItem && structuredDataCapture.getEntryFormat(qItem)) {
         detailsText += ` ${structuredDataCapture.getEntryFormat(qItem)}`;
       }
 
       return {
-        severity: 'error',
+        severity: severity,
         code: 'invalid',
         expression: [locationExpression],
         details: {
@@ -735,16 +786,16 @@ function createValidationOperationOutcomeIssue(
           ],
           text: detailsText
         },
-        diagnostics: getRegexString(qItem) ?? undefined
+        diagnostics: qItem ? (getRegexString(qItem) ?? undefined) : undefined
       };
     }
 
     case ValidationResult.minLength: {
-      detailsText = `${fieldDisplayText}: Expected the minimum value ${structuredDataCapture.getMinLength(
-        qItem
-      )} characters, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
+      detailsText = `${fieldDisplayText}: Expected the minimum value ${
+        qItem ? structuredDataCapture.getMinLength(qItem) : undefined
+      } characters, received '${getInputInString(qrItem?.answer?.[answerIndex])}'`;
       return {
-        severity: 'error',
+        severity: severity,
         code: 'business-rule',
         expression: [locationExpression],
         details: {
@@ -762,10 +813,10 @@ function createValidationOperationOutcomeIssue(
 
     case ValidationResult.maxLength: {
       detailsText = `${fieldDisplayText}: Exceeded maximum of  ${
-        qItem.maxLength
-      } characters, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
+        qItem?.maxLength
+      } characters, received '${getInputInString(qrItem?.answer?.[answerIndex])}'`;
       return {
-        severity: 'error',
+        severity: severity,
         code: 'business-rule',
         expression: [locationExpression],
         details: {
@@ -782,11 +833,11 @@ function createValidationOperationOutcomeIssue(
     }
 
     case ValidationResult.maxDecimalPlaces: {
-      detailsText = `${fieldDisplayText}: Exceeded maximum decimal places ${structuredDataCapture.getMaxDecimalPlaces(
-        qItem
-      )}, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
+      detailsText = `${fieldDisplayText}: Exceeded maximum decimal places ${
+        qItem ? structuredDataCapture.getMaxDecimalPlaces(qItem) : undefined
+      }, received '${getInputInString(qrItem?.answer?.[answerIndex])}'`;
       return {
-        severity: 'error',
+        severity: severity,
         code: 'business-rule',
         expression: [locationExpression],
         details: {
@@ -803,11 +854,11 @@ function createValidationOperationOutcomeIssue(
     }
 
     case ValidationResult.minValue: {
-      detailsText = `${fieldDisplayText}: Expected the minimum value ${getMinValue(
-        qItem
-      )}, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
+      detailsText = `${fieldDisplayText}: Expected the minimum value ${
+        qItem ? getMinValue(qItem) : undefined
+      }, received '${getInputInString(qrItem?.answer?.[answerIndex])}'`;
       return {
-        severity: 'error',
+        severity: severity,
         code: 'business-rule',
         expression: [locationExpression],
         details: {
@@ -824,11 +875,11 @@ function createValidationOperationOutcomeIssue(
     }
 
     case ValidationResult.maxValue: {
-      detailsText = `${fieldDisplayText}: Exceeded the maximum value ${getMaxValue(
-        qItem
-      )}, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
+      detailsText = `${fieldDisplayText}: Exceeded the maximum value ${
+        qItem ? getMaxValue(qItem) : undefined
+      }, received '${getInputInString(qrItem?.answer?.[answerIndex])}'`;
       return {
-        severity: 'error',
+        severity: severity,
         code: 'business-rule',
         expression: [locationExpression],
         details: {
@@ -843,13 +894,14 @@ function createValidationOperationOutcomeIssue(
         }
       };
     }
-    //Validation result error handling for min quantity extension
+
+    // Validation result error handling for min quantity extension
     case ValidationResult.minQuantityValue: {
-      detailsText = `${fieldDisplayText}: Expected the minimum value ${getMinQuantityValue(
-        qItem
-      )}, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
+      detailsText = `${fieldDisplayText}: Expected the minimum value ${
+        qItem ? getMinQuantityValue(qItem) : undefined
+      }, received '${getInputInString(qrItem?.answer?.[answerIndex])}'`;
       return {
-        severity: 'error',
+        severity: severity,
         code: 'business-rule',
         expression: [locationExpression],
         details: {
@@ -864,14 +916,14 @@ function createValidationOperationOutcomeIssue(
         }
       };
     }
-    //Validation result error handling for max quantity extension
 
+    // Validation result error handling for max quantity extension
     case ValidationResult.maxQuantityValue: {
-      detailsText = `${fieldDisplayText}: Exceeded the maximum value ${getMaxQuantityValue(
-        qItem
-      )}, received '${getInputInString(qrItem.answer?.[answerIndex])}'`;
+      detailsText = `${fieldDisplayText}: Exceeded the maximum value ${
+        qItem ? getMaxQuantityValue(qItem) : undefined
+      }, received '${getInputInString(qrItem?.answer?.[answerIndex])}'`;
       return {
-        severity: 'error',
+        severity: severity,
         code: 'business-rule',
         expression: [locationExpression],
         details: {
@@ -883,6 +935,24 @@ function createValidationOperationOutcomeIssue(
             }
           ],
           text: detailsText
+        }
+      };
+    }
+
+    case ValidationResult.invariant: {
+      return {
+        severity: severity,
+        code: 'business-rule',
+        expression: [locationExpression],
+        details: {
+          coding: [
+            {
+              system: errorCodeSystem,
+              code: error,
+              display: humanReadable
+            }
+          ],
+          text: humanReadable
         }
       };
     }

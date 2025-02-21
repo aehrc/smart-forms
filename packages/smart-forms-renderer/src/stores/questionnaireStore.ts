@@ -50,6 +50,8 @@ import { insertCompleteAnswerOptionsIntoQuestionnaire } from '../utils/questionn
 import type { InitialExpression } from '../interfaces/initialExpression.interface';
 import type { QItemOverrideComponentProps, SdcUiOverrideComponentProps } from '../interfaces';
 import type { ComponentType } from 'react';
+import type { TargetConstraint } from '../interfaces/targetConstraint.interface';
+import { readTargetConstraintLocationLinkIds } from '../utils/targetConstraint';
 
 /**
  * QuestionnaireStore properties and methods
@@ -65,6 +67,8 @@ import type { ComponentType } from 'react';
  * @property currentPageIndex - Index of the current page
  * @property variables - Questionnaire variables object containing FHIRPath and x-fhir-query variables
  * @property launchContexts - Key-value pair of launch contexts `Record<launch context name, launch context properties>`
+ * @property targetConstraints - Key-value pair of target constraints `Record<target constraint key, target constraint properties>`
+ * @property targetConstraintLinkIds - Key-value pair of linkIds against target constraint key(s) `Record<linkId, target constraint keys>`
  * @property enableWhenItems - EnableWhenItems object containing enableWhen items and their linked questions
  * @property enableWhenLinkedQuestions - Key-value pair of linked questions to enableWhen items `Record<linkId, linkIds of linked questions>`
  * @property enableWhenIsActivated - Flag to turn enableWhen checks on/off
@@ -109,6 +113,8 @@ export interface QuestionnaireStoreType {
   currentPageIndex: number;
   variables: Variables;
   launchContexts: Record<string, LaunchContext>;
+  targetConstraints: Record<string, TargetConstraint>;
+  targetConstraintLinkIds: Record<string, string[]>;
   enableWhenItems: EnableWhenItems;
   enableWhenLinkedQuestions: Record<string, string[]>;
   enableWhenIsActivated: boolean;
@@ -183,6 +189,8 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   currentPageIndex: 0,
   variables: { fhirPathVariables: {}, xFhirQueryVariables: {} },
   launchContexts: {},
+  targetConstraints: {},
+  targetConstraintLinkIds: {},
   calculatedExpressions: {},
   initialExpressions: {},
   enableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} },
@@ -229,6 +237,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
 
     // Initialise form with questionnaire response and properties in questionnaire model
     const {
+      initialTargetConstraints,
       initialEnableWhenItems,
       initialEnableWhenLinkedQuestions,
       initialEnableWhenExpressions,
@@ -239,6 +248,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       fhirPathTerminologyCache: updatedFhirPathTerminologyCache
     } = await initialiseFormFromResponse({
       questionnaireResponse,
+      targetConstraints: questionnaireModel.targetConstraints,
       enableWhenItems: questionnaireModel.enableWhenItems,
       enableWhenExpressions: questionnaireModel.enableWhenExpressions,
       calculatedExpressions: questionnaireModel.calculatedExpressions,
@@ -250,6 +260,12 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       terminologyServerUrl: terminologyServerUrl
     });
 
+    // Read target constraint locations
+    const targetConstraintLinkIds = readTargetConstraintLocationLinkIds(
+      questionnaire,
+      initialTargetConstraints
+    );
+
     set({
       sourceQuestionnaire: questionnaire,
       itemTypes: questionnaireModel.itemTypes,
@@ -260,6 +276,8 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       currentPageIndex: firstVisiblePage,
       variables: questionnaireModel.variables,
       launchContexts: questionnaireModel.launchContexts,
+      targetConstraints: initialTargetConstraints,
+      targetConstraintLinkIds: targetConstraintLinkIds,
       enableWhenItems: initialEnableWhenItems,
       enableWhenLinkedQuestions: initialEnableWhenLinkedQuestions,
       enableWhenExpressions: initialEnableWhenExpressions,
@@ -286,6 +304,8 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       currentPageIndex: 0,
       variables: { fhirPathVariables: {}, xFhirQueryVariables: {} },
       launchContexts: {},
+      targetConstraints: {},
+      targetConstraintLinkIds: {},
       enableWhenItems: { singleItems: {}, repeatItems: {} },
       enableWhenLinkedQuestions: {},
       enableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} },
@@ -387,6 +407,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     const updatedResponseItemMap = createQuestionnaireResponseItemMap(updatedResponse);
     const {
       isUpdated,
+      updatedTargetConstraints,
       updatedEnableWhenExpressions,
       updatedCalculatedExpressions,
       updatedFhirPathContext,
@@ -394,6 +415,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     } = await evaluateUpdatedExpressions({
       updatedResponse,
       updatedResponseItemMap,
+      targetConstraints: get().targetConstraints,
       enableWhenExpressions: get().enableWhenExpressions,
       calculatedExpressions: get().calculatedExpressions,
       variablesFhirPath: get().variables.fhirPathVariables,
@@ -404,6 +426,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
 
     if (isUpdated) {
       set(() => ({
+        targetConstraints: updatedTargetConstraints,
         enableWhenExpressions: updatedEnableWhenExpressions,
         calculatedExpressions: updatedCalculatedExpressions,
         fhirPathContext: updatedFhirPathContext,
@@ -453,6 +476,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     );
 
     const {
+      initialTargetConstraints,
       initialEnableWhenItems,
       initialEnableWhenLinkedQuestions,
       initialEnableWhenExpressions,
@@ -460,6 +484,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       firstVisiblePage
     } = await initialiseFormFromResponse({
       questionnaireResponse: updatedResponse,
+      targetConstraints: get().targetConstraints,
       enableWhenItems: get().enableWhenItems,
       enableWhenExpressions: get().enableWhenExpressions,
       calculatedExpressions: initialCalculatedExpressions,
@@ -474,6 +499,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     fhirPathTerminologyCache = evaluateInitialCalculatedExpressionsResult.fhirPathTerminologyCache;
 
     set(() => ({
+      targetConstraints: initialTargetConstraints,
       enableWhenItems: initialEnableWhenItems,
       enableWhenLinkedQuestions: initialEnableWhenLinkedQuestions,
       enableWhenExpressions: initialEnableWhenExpressions,

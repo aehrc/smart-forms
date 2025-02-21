@@ -36,6 +36,8 @@ import { evaluateInitialCalculatedExpressions } from './calculatedExpression';
 import { createQuestionnaireResponseItemMap } from './questionnaireResponseStoreUtils/updatableResponseItems';
 import { readQuestionnaireResponse } from './genericRecursive';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
+import type { TargetConstraint } from '../interfaces/targetConstraint.interface';
+import { evaluateInitialTargetConstraints } from './targetConstraint';
 
 /**
  * Initialise a questionnaireResponse from a given questionnaire
@@ -311,6 +313,7 @@ function createNewRepeatGroupQuestionnaireResponseItem(
 
 export interface initialFormFromResponseParams {
   questionnaireResponse: QuestionnaireResponse;
+  targetConstraints: Record<string, TargetConstraint>;
   enableWhenItems: EnableWhenItems;
   enableWhenExpressions: EnableWhenExpressions;
   calculatedExpressions: Record<string, CalculatedExpression[]>;
@@ -323,6 +326,7 @@ export interface initialFormFromResponseParams {
 }
 
 export async function initialiseFormFromResponse(params: initialFormFromResponseParams): Promise<{
+  initialTargetConstraints: Record<string, TargetConstraint>;
   initialEnableWhenItems: EnableWhenItems;
   initialEnableWhenLinkedQuestions: Record<string, string[]>;
   initialEnableWhenExpressions: EnableWhenExpressions;
@@ -334,6 +338,7 @@ export async function initialiseFormFromResponse(params: initialFormFromResponse
 }> {
   const {
     questionnaireResponse,
+    targetConstraints,
     enableWhenItems,
     enableWhenExpressions,
     calculatedExpressions,
@@ -353,6 +358,18 @@ export async function initialiseFormFromResponse(params: initialFormFromResponse
     questionnaireResponse
   );
 
+  const evaluateInitialTargetConstraintsResult = await evaluateInitialTargetConstraints({
+    initialResponse: questionnaireResponse,
+    initialResponseItemMap: initialResponseItemMap,
+    targetConstraints: targetConstraints,
+    variablesFhirPath: variablesFhirPath,
+    existingFhirPathContext: fhirPathContext,
+    fhirPathTerminologyCache: fhirPathTerminologyCache,
+    terminologyServerUrl
+  });
+  const { initialTargetConstraints } = evaluateInitialTargetConstraintsResult;
+  fhirPathTerminologyCache = evaluateInitialTargetConstraintsResult.fhirPathTerminologyCache;
+
   const evaluateInitialEnableWhenExpressionsResult = await evaluateInitialEnableWhenExpressions({
     initialResponse: questionnaireResponse,
     initialResponseItemMap: initialResponseItemMap,
@@ -363,7 +380,6 @@ export async function initialiseFormFromResponse(params: initialFormFromResponse
     terminologyServerUrl: terminologyServerUrl
   });
   const { initialEnableWhenExpressions } = evaluateInitialEnableWhenExpressionsResult;
-  updatedFhirPathContext = evaluateInitialEnableWhenExpressionsResult.updatedFhirPathContext;
   fhirPathTerminologyCache = evaluateInitialEnableWhenExpressionsResult.fhirPathTerminologyCache;
 
   const evaluateInitialCalculatedExpressionsResult = await evaluateInitialCalculatedExpressions({
@@ -389,6 +405,7 @@ export async function initialiseFormFromResponse(params: initialFormFromResponse
       : 0;
 
   return {
+    initialTargetConstraints,
     initialEnableWhenItems: initialisedItems,
     initialEnableWhenLinkedQuestions: linkedQuestions,
     initialEnableWhenExpressions,

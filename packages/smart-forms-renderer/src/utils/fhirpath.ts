@@ -22,10 +22,13 @@ import type { CalculatedExpression } from '../interfaces/calculatedExpression.in
 import type { EnableWhenExpressions } from '../interfaces/enableWhen.interface';
 import { evaluateEnableWhenExpressions } from './enableWhenExpression';
 import { evaluateCalculatedExpressions } from './calculatedExpression';
+import { evaluateTargetConstraints } from './targetConstraint';
+import type { TargetConstraint } from '../interfaces/targetConstraint.interface';
 
 interface EvaluateUpdatedExpressionsParams {
   updatedResponse: QuestionnaireResponse;
   updatedResponseItemMap: Record<string, QuestionnaireResponseItem[]>;
+  targetConstraints: Record<string, TargetConstraint>;
   calculatedExpressions: Record<string, CalculatedExpression[]>;
   enableWhenExpressions: EnableWhenExpressions;
   variablesFhirPath: Record<string, Expression[]>;
@@ -38,6 +41,7 @@ export async function evaluateUpdatedExpressions(
   params: EvaluateUpdatedExpressionsParams
 ): Promise<{
   isUpdated: boolean;
+  updatedTargetConstraints: Record<string, TargetConstraint>;
   updatedEnableWhenExpressions: EnableWhenExpressions;
   updatedCalculatedExpressions: Record<string, CalculatedExpression[]>;
   updatedFhirPathContext: Record<string, any>;
@@ -46,6 +50,7 @@ export async function evaluateUpdatedExpressions(
   const {
     updatedResponse,
     updatedResponseItemMap,
+    targetConstraints,
     enableWhenExpressions,
     calculatedExpressions,
     variablesFhirPath,
@@ -57,9 +62,10 @@ export async function evaluateUpdatedExpressions(
   const noExpressionsToBeUpdated =
     Object.keys(enableWhenExpressions).length === 0 &&
     Object.keys(calculatedExpressions).length === 0;
-  if (noExpressionsToBeUpdated || !updatedResponse.item) {
+  if (noExpressionsToBeUpdated) {
     return {
       isUpdated: false,
+      updatedTargetConstraints: targetConstraints,
       updatedEnableWhenExpressions: enableWhenExpressions,
       updatedCalculatedExpressions: calculatedExpressions,
       updatedFhirPathContext: existingFhirPathContext,
@@ -79,6 +85,14 @@ export async function evaluateUpdatedExpressions(
   const updatedFhirPathContext = fhirPathEvalResult.fhirPathContext;
   fhirPathTerminologyCache = fhirPathEvalResult.fhirPathTerminologyCache;
 
+  // Update targetConstraints
+  const { targetConstraintsIsUpdated, updatedTargetConstraints } = await evaluateTargetConstraints(
+    updatedFhirPathContext,
+    fhirPathTerminologyCache,
+    targetConstraints,
+    terminologyServerUrl
+  );
+
   // Update enableWhenExpressions
   const { enableWhenExpsIsUpdated, updatedEnableWhenExpressions } =
     await evaluateEnableWhenExpressions(
@@ -97,10 +111,12 @@ export async function evaluateUpdatedExpressions(
       terminologyServerUrl
     );
 
-  const isUpdated = enableWhenExpsIsUpdated || calculatedExpsIsUpdated;
+  const isUpdated =
+    enableWhenExpsIsUpdated || calculatedExpsIsUpdated || targetConstraintsIsUpdated;
 
   return {
     isUpdated,
+    updatedTargetConstraints,
     updatedEnableWhenExpressions,
     updatedCalculatedExpressions,
     updatedFhirPathContext,
@@ -155,8 +171,14 @@ export async function createFhirPathContext(
   }
 
   // Items don't exist in questionnaireResponseItemMap, but we still have to add them into the fhirPathContext as empty arrays
+  const qrItemMapIsEmpty = Object.keys(questionnaireResponseItemMap).length === 0;
   for (const linkId in variablesFhirPath) {
-    fhirPathContext = addEmptyLinkIdVariables(linkId, variablesFhirPath, fhirPathContext);
+    fhirPathContext = addEmptyLinkIdVariables(
+      linkId,
+      variablesFhirPath,
+      fhirPathContext,
+      qrItemMapIsEmpty
+    );
   }
 
   return { fhirPathContext, fhirPathTerminologyCache };
@@ -213,7 +235,8 @@ export async function evaluateLinkIdVariables(
 export function addEmptyLinkIdVariables(
   linkId: string,
   variablesFhirPath: Record<string, Expression[]>,
-  fhirPathContext: Record<string, any>
+  fhirPathContext: Record<string, any>,
+  qrItemMapIsEmpty: boolean
 ) {
   const linkIdVariables = variablesFhirPath[linkId];
   if (!linkIdVariables || linkIdVariables.length === 0) {
@@ -222,7 +245,9 @@ export function addEmptyLinkIdVariables(
 
   for (const variable of linkIdVariables) {
     if (variable.expression && variable.name) {
-      if (fhirPathContext[`${variable.name}`] === undefined) {
+      // If the variable is not evaluated, add it as an empty array
+      // Also, when questionnaireResponseItemMap is empty, no items exist in the questionnaireResponse, therefore no variables are evaluated
+      if (fhirPathContext[`${variable.name}`] === undefined || qrItemMapIsEmpty) {
         fhirPathContext[`${variable.name}`] = [];
       }
     }

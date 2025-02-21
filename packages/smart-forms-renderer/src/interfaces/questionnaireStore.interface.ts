@@ -24,6 +24,7 @@ import type { CalculatedExpression } from './calculatedExpression.interface';
 import type { AnswerExpression } from './answerExpression.interface';
 import type { Coding, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type { InitialExpression } from './initialExpression.interface';
+import type { TargetConstraint } from './targetConstraint.interface';
 
 export interface QuestionnaireModel {
   itemTypes: Record<string, string>;
@@ -32,6 +33,7 @@ export interface QuestionnaireModel {
   pages: Pages;
   variables: Variables;
   launchContexts: Record<string, LaunchContext>;
+  targetConstraints: Record<string, TargetConstraint>;
   enableWhenItems: EnableWhenItems;
   enableWhenExpressions: EnableWhenExpressions;
   calculatedExpressions: Record<string, CalculatedExpression[]>;
