@@ -7,6 +7,17 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.22] - 2025-02-21
+### Added
+- Added support for the targetConstraint extension for target constraint-based validation and item feedback.
+
+### Fixed
+- Fixed an issue where higher fixed width values for the tab list may cause the tab content to wrap below the tab list.
+
+## [1.0.0-alpha.21] - 2025-02-20
+### Added
+- Added a hook to set a fixed width for the tab list within a tabbed form in RendererStylingStore.
+
 ## [1.0.0-alpha.20] - 2025-02-19
 ### Fixed
 - Fixed an issue where the default tabbed form breakpoint is set to render at a width lower than "md" rather than higher.
