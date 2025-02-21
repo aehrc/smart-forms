@@ -73,6 +73,7 @@
   "devDependencies": {
     "@jest/globals": "^29.5.0",
     "@playwright/test": "^1.49.1",
+    "@sentry/cli": "^2.42.1",
     "@tanstack/react-query-devtools": "^4.35.3",
     "@types/fhir": "^0.0.38",
     "@types/he": "^1.2.3",
