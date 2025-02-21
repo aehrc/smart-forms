@@ -75,7 +75,7 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
     typeof tabListFixedWidth === 'number' ? { sx: { flexGrow: 1 } } : { xs: 12, md: 9, lg: 9.25 };
 
   return (
-    <Grid container spacing={1.5}>
+    <Grid container spacing={1.5} sx={{ flexWrap: 'nowrap' }}>
       <TabContext value={currentTab.toString()}>
         <Grid item {...tabListWrapperProps}>
           <FormBodyTabListWrapper topLevelItems={qItems} currentTabIndex={currentTab} tabs={tabs} />
