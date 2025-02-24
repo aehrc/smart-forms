@@ -53,6 +53,32 @@ However, it has its own set of complexities to watch out for, such as dependenci
 3. Change VITE_PRESERVE_SYM_LINKS=true to VITE_PRESERVE_SYM_LINKS=false in .env.local. This will allow `tsc -w` to watch for changes properly in the smart-forms-renderer component.
 
 
+## Running the Smart Forms and Storybook Locally on Docker with Live Code Reload
+
+1. Install Docker and Docker Compose from [text](https://www.docker.com/). You need to have license if you are planning to use DockerHub. Please refer to the terms and conditions of Docker
+
+2. In the main folder, build the docker container
+
+```sh
+docker-compose --env-file ./apps/smart-forms-app/.env.local build
+```
+3. Once the container is built, you can run both Smart Forms and Storyboard at the same time 
+```sh
+docker-compose --env-file ./apps/smart-forms-app/.env.local up  
+```
+4. Press CTRL+C to stop the container. 
+
+5. Go to [http://localhost:5173/](http://localhost:5173/) for Smart Forms App 
+
+6. Go to [http://localhost:6006/](http://localhost:6006/) for Story Book App
+
+NOTE: In the Docker setup, the current source code folder is shared as a volume to the Docker container. This allows the live code reload to work.
+
+TODO: We have experienced some issues with "Type Error: styled_default is not defined" errors in Docker.  This can be fixed by upgrading MUI library. Watch this space for future update! 
+
+
+
+
 ## Running the Smart Forms app locally
 1. Ensure you are in the directory containing the Smart Forms app.
 
