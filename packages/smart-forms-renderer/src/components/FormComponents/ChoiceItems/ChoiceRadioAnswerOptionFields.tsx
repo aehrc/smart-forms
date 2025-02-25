@@ -44,20 +44,28 @@ function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
   return (
-    <Box display="flex" alignItems="center">
-      <StyledRadioGroup
-        id={qItem.linkId}
-        row={orientation === ChoiceItemOrientation.Horizontal}
-        name={qItem.text}
-        onChange={(e) => onCheckedChange(e.target.value)}
-        value={valueRadio}
-        data-test="q-item-radio-group">
-        <RadioOptionList options={options} readOnly={readOnly} />
-      </StyledRadioGroup>
+    <Box
+      display="flex"
+      sx={{
+        justifyContent: 'space-between',
+        alignItems: { xs: 'start', sm: 'center' },
+        flexDirection: { xs: 'column', sm: 'row' }
+      }}>
+      <Box display="flex">
+        <StyledRadioGroup
+          id={qItem.linkId}
+          row={orientation === ChoiceItemOrientation.Horizontal}
+          name={qItem.text}
+          onChange={(e) => onCheckedChange(e.target.value)}
+          value={valueRadio}
+          data-test="q-item-radio-group">
+          <RadioOptionList options={options} readOnly={readOnly} />
+        </StyledRadioGroup>
 
-      <Box flexGrow={1} />
+        <Box flexGrow={1} />
 
-      <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+        <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+      </Box>
       <Fade in={!!valueRadio} timeout={100}>
         <Tooltip title="Set question as unanswered">
           <span>
