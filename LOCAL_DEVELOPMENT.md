@@ -74,7 +74,7 @@ docker-compose --env-file ./apps/smart-forms-app/.env.local up
 
 NOTE: In the Docker setup, the current source code folder is shared as a volume to the Docker container. This allows the live code reload to work.
 
-TODO: We have experienced some issues with "Type Error: styled_default is not defined" errors in Docker.  This can be fixed by upgrading MUI library. Watch this space for future update! 
+TODO: We have experienced some issues with "Type Error: styled_default is not defined" errors in Docker.  This can be fixed by upgrading MUI library. Watch this space for future update! As a workaround, restart the Step 3.  
 
 
 

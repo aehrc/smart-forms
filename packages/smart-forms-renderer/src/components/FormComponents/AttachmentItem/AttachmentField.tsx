@@ -53,7 +53,7 @@ function AttachmentField(props: AttachmentFieldProps) {
   return (
     <>
       <Stack rowGap={1}>
-        <Typography variant="subtitle2" color={readOnly ? 'text.disabled' : 'text.primary'}>
+        <Typography variant="body1" color={readOnly ? 'text.disabled' : 'text.primary'}>
           An attachment must either have a file or a URL, or both.
         </Typography>
         <Box>
@@ -91,7 +91,7 @@ function AttachmentField(props: AttachmentFieldProps) {
         </Box>
 
         {uploadedFile && url ? (
-          <Typography variant="subtitle2" color={readOnly ? 'text.disabled' : 'text.primary'}>
+          <Typography variant="body1" color={readOnly ? 'text.disabled' : 'text.primary'}>
             Ensure that the attached file and URL has the same content.
           </Typography>
         ) : null}

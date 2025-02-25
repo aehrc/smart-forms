@@ -50,7 +50,7 @@ const FormBodySingleTab = memo(function FormBodySingleTab(props: FormBodySingleT
         <ListItemText
           primary={
             <Box display="flex" alignItems="center" justifyContent="space-between">
-              <Typography variant="subtitle2">{tabLabel}</Typography>
+              <Typography variant="body1">{tabLabel}</Typography>
               <Box display="flex" minHeight={24} minWidth={24} ml={1}>
                 {contextDisplayItems.map((item) => {
                   return <ContextDisplayItem key={item.linkId} displayItem={item} />;
