@@ -50,7 +50,6 @@ function TextItem(props: TextItemProps) {
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
   // Init input value
@@ -61,6 +60,8 @@ function TextItem(props: TextItemProps) {
   }
 
   const [input, setInput] = useState(valueText);
+
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, input);

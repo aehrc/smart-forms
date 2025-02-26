@@ -33,6 +33,7 @@ import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
 import useCodingCalculatedExpression from '../../../hooks/useCodingCalculatedExpression';
 import { ItemLabelWrapper } from '../ItemParts';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
 
 interface ChoiceRadioAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
@@ -48,8 +49,6 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
-
   // Init input value
   const answerKey = qrItem?.answer?.[0].id;
   const qrChoiceRadio = qrItem ?? createEmptyQrItem(qItem, answerKey);
@@ -64,6 +63,11 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
 
   // Get codings/options from valueSet
   const { codings, terminologyError } = useValueSetCodings(qItem);
+
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+
+  // Perform validation checks - there's no string-based input here
+  const feedback = useValidationFeedback(qItem, '');
 
   const options = useMemo(() => convertCodingsToAnswerOptions(codings), [codings]);
 
@@ -98,6 +102,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
         qItem={qItem}
         options={options}
         valueRadio={valueRadio}
+        feedback={feedback}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         terminologyError={terminologyError}
@@ -121,6 +126,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
             qItem={qItem}
             options={options}
             valueRadio={valueRadio}
+            feedback={feedback}
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}
             terminologyError={terminologyError}

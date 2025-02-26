@@ -35,6 +35,7 @@ interface ChoiceSelectAnswerOptionViewProps
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
   valueChoice: string | null;
+  feedback: string;
   readOnly: boolean;
   calcExpUpdated: boolean;
   onSelectChange: (newValue: QuestionnaireItemAnswerOption | null) => void;
@@ -46,6 +47,7 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
     qItem,
     options,
     valueChoice,
+    feedback,
     isRepeated,
     isTabled,
     renderingExtensions,
@@ -66,6 +68,7 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
         qItem={qItem}
         options={options}
         valueSelect={valueSelect}
+        feedback={feedback}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         isTabled={isTabled}
@@ -89,6 +92,7 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
             qItem={qItem}
             options={options}
             valueSelect={valueSelect}
+            feedback={feedback}
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}

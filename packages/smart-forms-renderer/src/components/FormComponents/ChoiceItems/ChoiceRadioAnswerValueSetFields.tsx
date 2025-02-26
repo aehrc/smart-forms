@@ -34,6 +34,7 @@ interface ChoiceRadioAnswerValueSetFieldsProps {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
   valueRadio: string | null;
+  feedback: string;
   readOnly: boolean;
   calcExpUpdated: boolean;
   terminologyError: TerminologyError;
@@ -46,6 +47,7 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
     qItem,
     options,
     valueRadio,
+    feedback,
     readOnly,
     calcExpUpdated,
     terminologyError,
@@ -60,34 +62,42 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
 
   if (options.length > 0) {
     return (
-      <Box
-        display="flex"
-        sx={{
-          justifyContent: 'space-between',
-          alignItems: { xs: 'start', sm: 'center' },
-          flexDirection: { xs: 'column', sm: 'row' }
-        }}>
-        <Box display="flex">
-          <StyledRadioGroup
-            id={qItem.linkId}
-            row={orientation === ChoiceItemOrientation.Horizontal}
-            name={qItem.text}
-            sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
-            onChange={(e) => onCheckedChange(e.target.value)}
-            value={valueRadio}
-            data-test="q-item-radio-group">
-            <RadioOptionList options={options} readOnly={readOnly} fullWidth={inputsFlexGrow} />
-          </StyledRadioGroup>
+      <>
+        <Box
+          display="flex"
+          sx={{
+            justifyContent: 'space-between',
+            alignItems: { xs: 'start', sm: 'center' },
+            flexDirection: { xs: 'column', sm: 'row' }
+          }}>
+          <Box display="flex" sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
+            <StyledRadioGroup
+              id={qItem.linkId}
+              row={orientation === ChoiceItemOrientation.Horizontal}
+              name={qItem.text}
+              sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
+              onChange={(e) => onCheckedChange(e.target.value)}
+              value={valueRadio}
+              data-test="q-item-radio-group">
+              <RadioOptionList options={options} readOnly={readOnly} fullWidth={inputsFlexGrow} />
+            </StyledRadioGroup>
 
-          <Box flexGrow={1} />
+            <Box flexGrow={1} />
 
-          <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+            <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+          </Box>
+
+          {hideClearButton ? null : (
+            <ClearInputButton buttonShown={!!valueRadio} readOnly={readOnly} onClear={onClear} />
+          )}
         </Box>
 
-        {hideClearButton ? null : (
-          <ClearInputButton buttonShown={!!valueRadio} readOnly={readOnly} onClear={onClear} />
-        )}
-      </Box>
+        {feedback ? (
+          <Typography sx={{ color: 'error.main', fontSize: '0.75rem', mt: 1 }}>
+            {feedback}
+          </Typography>
+        ) : null}
+      </>
     );
   }
 

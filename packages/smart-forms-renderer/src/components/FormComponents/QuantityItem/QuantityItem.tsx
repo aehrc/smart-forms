@@ -57,7 +57,6 @@ function QuantityItem(props: QuantityItemProps) {
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const precision = getDecimalPrecision(qItem);
   const { displayPrompt, entryFormat, quantityUnit } = renderingExtensions;
   let { displayUnit } = renderingExtensions;
@@ -112,6 +111,8 @@ function QuantityItem(props: QuantityItemProps) {
   const [unitInput, setUnitInput] = useState<QuestionnaireItemAnswerOption | null>(
     initialUnitInput
   );
+
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, valueInput);

@@ -46,6 +46,7 @@ export interface PropsWithShowMinimalViewAttribute {
 export interface PropsWithParentIsReadOnlyAttribute {
   parentIsReadOnly?: boolean;
 }
+
 export interface PropsWithParentIsRepeatGroupAttribute {
   parentIsRepeatGroup?: boolean;
   parentRepeatGroupIndex?: number;

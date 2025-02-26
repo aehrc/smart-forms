@@ -65,6 +65,9 @@ export async function buildForm(
   questionnaireResponseStore.getState().buildSourceResponse(initialisedQuestionnaireResponse);
   await questionnaireStore.getState().updatePopulatedProperties(initialisedQuestionnaireResponse);
 
+  // Adding another call to buildSourceResponse so invalidItems is truly updated - not great, but a cheap fix
+  questionnaireResponseStore.getState().buildSourceResponse(initialisedQuestionnaireResponse);
+
   if (readOnly) {
     questionnaireStore.getState().setFormAsReadOnly(readOnly);
   }

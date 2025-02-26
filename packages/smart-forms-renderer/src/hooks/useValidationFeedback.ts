@@ -26,12 +26,16 @@ import {
   getMinQuantityValueFeedback,
   getMinValue,
   getMinValueFeedback,
-  getRegexValidation
+  getRegexValidation,
+  getRequiredFeedback
 } from '../utils/itemControl';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
-import { useQuestionnaireStore } from '../stores';
+import { useQuestionnaireResponseStore, useQuestionnaireStore } from '../stores';
 
 function useValidationFeedback(qItem: QuestionnaireItem, input: string): string {
+  const invalidItems = useQuestionnaireResponseStore.use.invalidItems();
+  const requiredItemsIsHighlighted = useQuestionnaireResponseStore.use.requiredItemsIsHighlighted();
+
   // Target constraint-based validation
   const targetConstraints = useQuestionnaireStore.use.targetConstraints();
   const targetConstraintLinkIds = useQuestionnaireStore.use.targetConstraintLinkIds();
@@ -44,6 +48,21 @@ function useValidationFeedback(qItem: QuestionnaireItem, input: string): string 
         if (isEnabled) {
           return human;
         }
+      }
+    }
+  }
+
+  // Required-based validation
+  // User needs to manually invoke required items to be highlighted
+  if (requiredItemsIsHighlighted) {
+    const invalidOperationOutcome = invalidItems[qItem.linkId];
+    if (invalidOperationOutcome) {
+      const requiredIssue = invalidOperationOutcome.issue.find(
+        (issue) => issue.code === 'required'
+      );
+      if (requiredIssue) {
+        const requiredFeedback = getRequiredFeedback(qItem);
+        return requiredFeedback ?? 'This field is required.';
       }
     }
   }

@@ -15,22 +15,18 @@
  * limitations under the License.
  */
 
-import type {
-  Expression,
-  Questionnaire,
-  QuestionnaireResponse,
-  QuestionnaireResponseItem
-} from 'fhir/r4';
+import type { Questionnaire, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import { createFhirPathContext, handleFhirPathResult } from './fhirpath';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import type { TargetConstraint } from '../interfaces/targetConstraint.interface';
+import type { Variables } from '../interfaces';
 
 interface EvaluateInitialTargetConstraintsParams {
   initialResponse: QuestionnaireResponse;
   initialResponseItemMap: Record<string, QuestionnaireResponseItem[]>;
   targetConstraints: Record<string, TargetConstraint>;
-  variablesFhirPath: Record<string, Expression[]>;
+  variables: Variables;
   existingFhirPathContext: Record<string, any>;
   fhirPathTerminologyCache: Record<string, any>;
   terminologyServerUrl: string;
@@ -47,7 +43,7 @@ export async function evaluateInitialTargetConstraints(
     initialResponse,
     initialResponseItemMap,
     targetConstraints,
-    variablesFhirPath,
+    variables,
     existingFhirPathContext,
     terminologyServerUrl
   } = params;
@@ -56,7 +52,7 @@ export async function evaluateInitialTargetConstraints(
   const fhirPathEvalResult = await createFhirPathContext(
     initialResponse,
     initialResponseItemMap,
-    variablesFhirPath,
+    variables,
     existingFhirPathContext,
     fhirPathTerminologyCache,
     terminologyServerUrl

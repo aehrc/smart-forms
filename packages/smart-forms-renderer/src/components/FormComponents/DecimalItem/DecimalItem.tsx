@@ -65,7 +65,6 @@ function DecimalItem(props: DecimalItemProps) {
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const precision = getDecimalPrecision(qItem);
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
@@ -86,6 +85,8 @@ function DecimalItem(props: DecimalItemProps) {
   }
 
   const [input, setInput] = useState(initialInput);
+
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, input);

@@ -37,6 +37,7 @@ import Typography from '@mui/material/Typography';
 import useCodingCalculatedExpression from '../../../hooks/useCodingCalculatedExpression';
 import ChoiceRadioAnswerOptionView from './ChoiceRadioAnswerOptionView';
 import ChoiceSelectAnswerOptionView from './ChoiceSelectAnswerOptionView';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
 
 interface ChoiceRadioAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
@@ -67,6 +68,9 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
   const valueChoice = getQrChoiceValue(qrChoice);
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
+
+  // Perform validation checks - there's no string-based input here
+  const feedback = useValidationFeedback(qItem, '');
 
   const options = qItem.answerOption ?? [];
 
@@ -124,6 +128,7 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
           qItem={qItem}
           options={options}
           valueChoice={valueChoice}
+          feedback={feedback}
           isRepeated={isRepeated}
           readOnly={readOnly}
           calcExpUpdated={calcExpUpdated}
@@ -140,6 +145,7 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
           qItem={qItem}
           options={options}
           valueChoice={valueChoice}
+          feedback={feedback}
           isRepeated={isRepeated}
           isTabled={isTabled}
           readOnly={readOnly}

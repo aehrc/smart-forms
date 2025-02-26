@@ -33,6 +33,7 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import useBooleanCalculatedExpression from '../../../hooks/useBooleanCalculatedExpression';
 import { ItemLabelWrapper } from '../ItemParts';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
 
 interface BooleanItemProps
   extends PropsWithQrItemChangeHandler,
@@ -50,6 +51,9 @@ function BooleanItem(props: BooleanItemProps) {
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
+
+  // Perform validation checks - there's no string-based input here
+  const feedback = useValidationFeedback(qItem, '');
 
   // Init input value
   const answerKey = qrItem?.answer?.[0].id;
@@ -105,6 +109,7 @@ function BooleanItem(props: BooleanItemProps) {
           qItem={qItem}
           readOnly={readOnly}
           valueBoolean={valueBoolean}
+          feedback={feedback}
           calcExpUpdated={calcExpUpdated}
           onCheckedChange={handleValueChange}
           onClear={handleClear}
@@ -119,6 +124,7 @@ function BooleanItem(props: BooleanItemProps) {
         qItem={qItem}
         readOnly={readOnly}
         valueBoolean={valueBoolean}
+        feedback={feedback}
         calcExpUpdated={calcExpUpdated}
         onCheckedChange={handleValueChange}
         onClear={handleClear}
@@ -140,6 +146,7 @@ function BooleanItem(props: BooleanItemProps) {
             qItem={qItem}
             readOnly={readOnly}
             valueBoolean={valueBoolean}
+            feedback={feedback}
             calcExpUpdated={calcExpUpdated}
             onCheckedChange={handleValueChange}
             onClear={handleClear}

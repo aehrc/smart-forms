@@ -24,6 +24,7 @@ import { evaluateEnableWhenExpressions } from './enableWhenExpression';
 import { evaluateCalculatedExpressions } from './calculatedExpression';
 import { evaluateTargetConstraints } from './targetConstraint';
 import type { TargetConstraint } from '../interfaces/targetConstraint.interface';
+import type { Variables, VariableXFhirQuery } from '../interfaces';
 
 interface EvaluateUpdatedExpressionsParams {
   updatedResponse: QuestionnaireResponse;
@@ -31,7 +32,7 @@ interface EvaluateUpdatedExpressionsParams {
   targetConstraints: Record<string, TargetConstraint>;
   calculatedExpressions: Record<string, CalculatedExpression[]>;
   enableWhenExpressions: EnableWhenExpressions;
-  variablesFhirPath: Record<string, Expression[]>;
+  variables: Variables;
   existingFhirPathContext: Record<string, any>;
   fhirPathTerminologyCache: Record<string, any>;
   terminologyServerUrl: string;
@@ -53,7 +54,7 @@ export async function evaluateUpdatedExpressions(
     targetConstraints,
     enableWhenExpressions,
     calculatedExpressions,
-    variablesFhirPath,
+    variables,
     existingFhirPathContext,
     terminologyServerUrl
   } = params;
@@ -76,7 +77,7 @@ export async function evaluateUpdatedExpressions(
   const fhirPathEvalResult = await createFhirPathContext(
     updatedResponse,
     updatedResponseItemMap,
-    variablesFhirPath,
+    variables,
     existingFhirPathContext,
     fhirPathTerminologyCache,
     terminologyServerUrl
@@ -127,7 +128,7 @@ export async function evaluateUpdatedExpressions(
 export async function createFhirPathContext(
   questionnaireResponse: QuestionnaireResponse,
   questionnaireResponseItemMap: Record<string, QuestionnaireResponseItem[]>,
-  variablesFhirPath: Record<string, Expression[]>,
+  variables: Variables,
   existingFhirPathContext: Record<string, any>,
   fhirPathTerminologyCache: Record<string, any>,
   terminologyServerUrl: string
@@ -135,12 +136,21 @@ export async function createFhirPathContext(
   fhirPathContext: Record<string, any>;
   fhirPathTerminologyCache: Record<string, any>;
 }> {
+  const { fhirPathVariables: variablesFhirPath, xFhirQueryVariables: variablesXFhirQuery } =
+    variables;
+
   // Add latest resource to fhirPathContext
   let fhirPathContext: Record<string, any> = {
     ...existingFhirPathContext,
     resource: questionnaireResponse,
     rootResource: questionnaireResponse
   };
+
+  // Add empty x-fhir-query variables to fhirPathContext to prevent false-positive warnings
+  fhirPathContext = addEmptyXFhirQueryVariablesToFhirPathContext(
+    fhirPathContext,
+    variablesXFhirQuery
+  );
 
   // Evaluate resource-level variables
   const fhirPathEvalResult = await evaluateQuestionnaireLevelVariables(
@@ -182,6 +192,19 @@ export async function createFhirPathContext(
   }
 
   return { fhirPathContext, fhirPathTerminologyCache };
+}
+
+export function addEmptyXFhirQueryVariablesToFhirPathContext(
+  fhirPathContext: Record<string, any>,
+  variablesXFhirQuery: Record<string, VariableXFhirQuery>
+) {
+  for (const variableName in variablesXFhirQuery) {
+    if (!fhirPathContext[variableName]) {
+      fhirPathContext[variableName] = [];
+    }
+  }
+
+  return fhirPathContext;
 }
 
 export async function evaluateLinkIdVariables(

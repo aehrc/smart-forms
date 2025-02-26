@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { Expression, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
+import type { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import { createFhirPathContext, handleFhirPathResult } from './fhirpath';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
@@ -24,12 +24,13 @@ import type {
   EnableWhenRepeatExpression,
   EnableWhenSingleExpression
 } from '../interfaces/enableWhen.interface';
+import type { Variables } from '../interfaces';
 
 interface EvaluateInitialEnableWhenExpressionsParams {
   initialResponse: QuestionnaireResponse;
   initialResponseItemMap: Record<string, QuestionnaireResponseItem[]>;
   enableWhenExpressions: EnableWhenExpressions;
-  variablesFhirPath: Record<string, Expression[]>;
+  variables: Variables;
   existingFhirPathContext: Record<string, any>;
   fhirPathTerminologyCache: Record<string, any>;
   terminologyServerUrl: string;
@@ -46,7 +47,7 @@ export async function evaluateInitialEnableWhenExpressions(
     initialResponse,
     initialResponseItemMap,
     enableWhenExpressions,
-    variablesFhirPath,
+    variables,
     existingFhirPathContext,
     terminologyServerUrl
   } = params;
@@ -58,7 +59,7 @@ export async function evaluateInitialEnableWhenExpressions(
   const fhirPathEvalResult = await createFhirPathContext(
     initialResponse,
     initialResponseItemMap,
-    variablesFhirPath,
+    variables,
     existingFhirPathContext,
     fhirPathTerminologyCache,
     terminologyServerUrl
@@ -325,7 +326,7 @@ export async function evaluateEnableWhenExpressions(
 interface MutateRepeatEnableWhenExpressionInstancesParams {
   questionnaireResponse: QuestionnaireResponse;
   questionnaireResponseItemMap: Record<string, QuestionnaireResponseItem[]>;
-  variablesFhirPath: Record<string, Expression[]>;
+  variables: Variables;
   existingFhirPathContext: Record<string, any>;
   fhirPathTerminologyCache: Record<string, any>;
   enableWhenExpressions: EnableWhenExpressions;
@@ -341,7 +342,7 @@ export async function mutateRepeatEnableWhenExpressionInstances(
   const {
     questionnaireResponse,
     questionnaireResponseItemMap,
-    variablesFhirPath,
+    variables,
     fhirPathTerminologyCache,
     existingFhirPathContext,
     enableWhenExpressions,
@@ -356,7 +357,7 @@ export async function mutateRepeatEnableWhenExpressionInstances(
   const fhirPathEvalResult = await createFhirPathContext(
     questionnaireResponse,
     questionnaireResponseItemMap,
-    variablesFhirPath,
+    variables,
     existingFhirPathContext,
     fhirPathTerminologyCache,
     terminologyServerUrl

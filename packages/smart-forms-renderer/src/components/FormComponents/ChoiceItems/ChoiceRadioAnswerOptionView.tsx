@@ -27,6 +27,7 @@ interface ChoiceRadioAnswerOptionViewProps extends PropsWithIsRepeatedAttribute 
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
   valueChoice: string | null;
+  feedback: string;
   readOnly: boolean;
   calcExpUpdated: boolean;
   onCheckedChange: (linkId: string) => void;
@@ -39,6 +40,7 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
     qItem,
     options,
     valueChoice,
+    feedback,
     isRepeated,
     readOnly,
     calcExpUpdated,
@@ -53,6 +55,7 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
         qItem={qItem}
         options={options}
         valueRadio={valueChoice}
+        feedback={feedback}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         onCheckedChange={onCheckedChange}
@@ -75,6 +78,7 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
             qItem={qItem}
             options={options}
             valueRadio={valueChoice}
+            feedback={feedback}
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}
             onCheckedChange={onCheckedChange}

@@ -35,6 +35,7 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import useCodingCalculatedExpression from '../../../hooks/useCodingCalculatedExpression';
 import ChoiceSelectAnswerOptionView from './ChoiceSelectAnswerOptionView';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
 
 // TODO eventually merge this item with ChoiceRadioAnswerOptionItem
 interface ChoiceSelectAnswerOptionItemProps
@@ -61,6 +62,9 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
+
+  // Perform validation checks - there's no string-based input here
+  const feedback = useValidationFeedback(qItem, '');
 
   // Init input value
   const answerKey = qrItem?.answer?.[0].id;
@@ -112,6 +116,7 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
       qItem={qItem}
       options={options}
       valueChoice={valueChoice}
+      feedback={feedback}
       readOnly={readOnly}
       calcExpUpdated={calcExpUpdated}
       isRepeated={isRepeated}

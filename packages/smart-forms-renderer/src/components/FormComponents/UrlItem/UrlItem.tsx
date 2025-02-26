@@ -57,7 +57,6 @@ function UrlItem(props: UrlItemProps) {
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
   // Init input value
@@ -68,6 +67,8 @@ function UrlItem(props: UrlItemProps) {
   }
 
   const [input, setInput] = useState(valueUri);
+
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, input);

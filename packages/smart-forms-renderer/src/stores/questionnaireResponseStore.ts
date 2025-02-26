@@ -34,7 +34,7 @@ import { generateUniqueId } from '../utils/extractObservation';
 /**
  * QuestionnaireResponseStore properties and methods
  * Properties can be accessed for fine-grain details.
- * Methods are usually used internally, using them from an external source is not recommended.
+ * Methods are usually used internally, but it is possible to use them externally to hook into the renderer for more fine-grain control.
  *
  * @property key - The React key of the questionnaireResponse, used internally for refreshing the BaseRenderer
  * @property sourceResponse - The original response created when the form is first initialised i.e. empty, pre-populated, opened saved draft
@@ -42,6 +42,7 @@ import { generateUniqueId } from '../utils/extractObservation';
  * @property updatableResponseItems - Key-value pair of updatableResponse items `Record<linkId, QR.item(s)>`
  * @property formChangesHistory - Array of form changes history in the form of deep-diff objects
  * @property invalidItems - Key-value pair of invalid items based on defined value constraints in the questionnaire `Record<linkId, OperationOutcome>`
+ * @property requiredItemsIsHighlighted - Required items are not highlighted by default (to provide a less-jarring UX), but can be manually toggled to be highlighted
  * @property responseIsValid - Whether there are any invalid items in the response
  * @property validateQuestionnaireResponse - Used to validate the questionnaire response based on the questionnaire
  * @property buildSourceResponse - Used to build the source response when the form is first initialised
@@ -50,6 +51,7 @@ import { generateUniqueId } from '../utils/extractObservation';
  * @property setUpdatableResponseAsSaved - Used to set a saved response as the current response
  * @property setUpdatableResponseAsEmpty - Used to set an empty response as the current response
  * @property destroySourceResponse - Used to destroy the source response  and reset all properties
+ * @property highlightRequiredItems - Used to highlight invalid items and show error feedback in the UI
  *
  * @author Sean Fong
  */
@@ -60,6 +62,7 @@ export interface QuestionnaireResponseStoreType {
   updatableResponseItems: Record<string, QuestionnaireResponseItem[]>;
   formChangesHistory: (Diff<QuestionnaireResponse, QuestionnaireResponse>[] | null)[];
   invalidItems: Record<string, OperationOutcome>;
+  requiredItemsIsHighlighted: boolean;
   responseIsValid: boolean;
   validateQuestionnaire: (
     questionnaire: Questionnaire,
@@ -71,6 +74,7 @@ export interface QuestionnaireResponseStoreType {
   setUpdatableResponseAsSaved: (savedResponse: QuestionnaireResponse) => void;
   setUpdatableResponseAsEmpty: (clearedResponse: QuestionnaireResponse) => void;
   destroySourceResponse: () => void;
+  highlightRequiredItems: () => void;
 }
 
 /**
@@ -88,6 +92,7 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
     updatableResponseItems: {},
     formChangesHistory: [],
     invalidItems: {},
+    requiredItemsIsHighlighted: false,
     responseIsValid: true,
     validateQuestionnaire: (
       questionnaire: Questionnaire,
@@ -110,6 +115,7 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
         updatableResponse: questionnaireResponse,
         updatableResponseItems: createQuestionnaireResponseItemMap(questionnaireResponse),
         invalidItems: initialInvalidItems,
+        requiredItemsIsHighlighted: false,
         responseIsValid: Object.keys(initialInvalidItems).length === 0
       }));
     },
@@ -124,6 +130,7 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
         updatableResponseItems: createQuestionnaireResponseItemMap(populatedResponse),
         formChangesHistory: [...get().formChangesHistory, formChanges],
         invalidItems: updatedInvalidItems,
+        requiredItemsIsHighlighted: false,
         responseIsValid: Object.keys(updatedInvalidItems).length === 0
       }));
     },
@@ -172,6 +179,7 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
         updatableResponseItems: createQuestionnaireResponseItemMap(clearedResponse),
         formChangesHistory: [],
         invalidItems: updatedInvalidItems,
+        requiredItemsIsHighlighted: false,
         responseIsValid: Object.keys(updatedInvalidItems).length === 0
       }));
     },
@@ -183,7 +191,12 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
         updatableResponseItems: createQuestionnaireResponseItemMap(structuredClone(emptyResponse)),
         formChangesHistory: [],
         invalidItems: {},
+        requiredItemsIsHighlighted: false,
         responseIsValid: true
+      })),
+    highlightRequiredItems: () =>
+      set(() => ({
+        requiredItemsIsHighlighted: true
       }))
   })
 );

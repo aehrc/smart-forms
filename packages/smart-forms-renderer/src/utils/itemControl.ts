@@ -471,6 +471,21 @@ export function getMaxValueFeedback(qItem: QuestionnaireItem) {
   return null;
 }
 
+export function getRequiredFeedback(qItem: QuestionnaireItem) {
+  const itemControl = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url === 'https://smartforms.csiro.au/ig/StructureDefinition/required-feedback'
+  );
+  if (itemControl) {
+    const extensionString = itemControl.valueString;
+    if (extensionString) {
+      return extensionString;
+    }
+  }
+
+  return null;
+}
+
 /**
  * Check if the item  has a sdc-questionnaire-minQuantity and minQuantity extension
  * @author Janardhan Vignarajan

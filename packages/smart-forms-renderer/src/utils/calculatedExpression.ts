@@ -19,7 +19,6 @@ import type { CalculatedExpression } from '../interfaces/calculatedExpression.in
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import type {
-  Expression,
   Questionnaire,
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
@@ -34,12 +33,13 @@ import { updateQrItemsInGroup } from './qrItem';
 import dayjs from 'dayjs';
 import { updateQuestionnaireResponse } from './genericRecursive';
 import isEqual from 'lodash.isequal';
+import type { Variables } from '../interfaces';
 
 interface EvaluateInitialCalculatedExpressionsParams {
   initialResponse: QuestionnaireResponse;
   initialResponseItemMap: Record<string, QuestionnaireResponseItem[]>;
   calculatedExpressions: Record<string, CalculatedExpression[]>;
-  variablesFhirPath: Record<string, Expression[]>;
+  variables: Variables;
   existingFhirPathContext: Record<string, any>;
   fhirPathTerminologyCache: Record<string, any>;
   terminologyServerUrl: string;
@@ -56,7 +56,7 @@ export async function evaluateInitialCalculatedExpressions(
     initialResponse,
     initialResponseItemMap,
     calculatedExpressions,
-    variablesFhirPath,
+    variables,
     existingFhirPathContext,
     terminologyServerUrl
   } = params;
@@ -81,7 +81,7 @@ export async function evaluateInitialCalculatedExpressions(
   const fhirPathEvalResult = await createFhirPathContext(
     initialResponse,
     initialResponseItemMap,
-    variablesFhirPath,
+    variables,
     existingFhirPathContext,
     fhirPathTerminologyCache,
     terminologyServerUrl

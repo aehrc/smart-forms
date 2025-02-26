@@ -29,18 +29,21 @@ import { isSpecificItemControl } from '../../../utils';
 import ClearInputButton from '../ItemParts/ClearInputButton';
 import { useRendererStylingStore } from '../../../stores';
 import { findCalculatedExpressionsInExtensions } from '../../../utils/getExpressionsFromItem';
+import Typography from '@mui/material/Typography';
 
 interface BooleanFieldProps {
   qItem: QuestionnaireItem;
   readOnly: boolean;
   valueBoolean: boolean | undefined;
+  feedback: string;
   calcExpUpdated: boolean;
   onCheckedChange: (newValue: string) => void;
   onClear: () => void;
 }
 
 const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
-  const { qItem, readOnly, valueBoolean, calcExpUpdated, onCheckedChange, onClear } = props;
+  const { qItem, readOnly, valueBoolean, feedback, calcExpUpdated, onCheckedChange, onClear } =
+    props;
 
   const inputsFlexGrow = useRendererStylingStore.use.inputsFlexGrow();
   const reverseBooleanYesNo = useRendererStylingStore.use.reverseBooleanYesNo();
@@ -57,82 +60,88 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
   const selection = valueBoolean === undefined ? null : valueBoolean.toString();
 
   return (
-    <Box display="flex" alignItems="center">
-      {booleanAsCheckbox ? (
-        <FormControlLabel
-          id={qItem.linkId}
-          disabled={readOnly}
-          control={
-            <Checkbox
-              size="small"
-              checked={selection === 'true'}
-              onChange={() => {
-                if (selection === 'true') {
-                  onCheckedChange('false');
-                }
+    <>
+      <Box display="flex" alignItems="center">
+        {booleanAsCheckbox ? (
+          <FormControlLabel
+            id={qItem.linkId}
+            disabled={readOnly}
+            control={
+              <Checkbox
+                size="small"
+                checked={selection === 'true'}
+                onChange={() => {
+                  if (selection === 'true') {
+                    onCheckedChange('false');
+                  }
 
-                if (selection === 'false' || selection === null) {
-                  onCheckedChange('true');
-                }
-              }}
-            />
-          }
-          label=""
-        />
-      ) : (
-        <StyledRadioGroup
-          id={qItem.linkId}
-          row={orientation === ChoiceItemOrientation.Horizontal}
-          name={qItem.text}
-          sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
-          onChange={(e) => onCheckedChange(e.target.value)}
-          value={selection}>
-          {reverseBooleanYesNo ? (
-            <>
-              <ChoiceRadioSingle
-                value="false"
-                label="No"
-                readOnly={readOnly}
-                fullWidth={inputsFlexGrow}
+                  if (selection === 'false' || selection === null) {
+                    onCheckedChange('true');
+                  }
+                }}
               />
-              <ChoiceRadioSingle
-                value="true"
-                label="Yes"
-                readOnly={readOnly}
-                fullWidth={inputsFlexGrow}
-              />
-            </>
-          ) : (
-            <>
-              <ChoiceRadioSingle
-                value="true"
-                label="Yes"
-                readOnly={readOnly}
-                fullWidth={inputsFlexGrow}
-              />
-              <ChoiceRadioSingle
-                value="false"
-                label="No"
-                readOnly={readOnly}
-                fullWidth={inputsFlexGrow}
-              />
-            </>
-          )}
-        </StyledRadioGroup>
-      )}
+            }
+            label=""
+          />
+        ) : (
+          <StyledRadioGroup
+            id={qItem.linkId}
+            row={orientation === ChoiceItemOrientation.Horizontal}
+            name={qItem.text}
+            sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
+            onChange={(e) => onCheckedChange(e.target.value)}
+            value={selection}>
+            {reverseBooleanYesNo ? (
+              <>
+                <ChoiceRadioSingle
+                  value="false"
+                  label="No"
+                  readOnly={readOnly}
+                  fullWidth={inputsFlexGrow}
+                />
+                <ChoiceRadioSingle
+                  value="true"
+                  label="Yes"
+                  readOnly={readOnly}
+                  fullWidth={inputsFlexGrow}
+                />
+              </>
+            ) : (
+              <>
+                <ChoiceRadioSingle
+                  value="true"
+                  label="Yes"
+                  readOnly={readOnly}
+                  fullWidth={inputsFlexGrow}
+                />
+                <ChoiceRadioSingle
+                  value="false"
+                  label="No"
+                  readOnly={readOnly}
+                  fullWidth={inputsFlexGrow}
+                />
+              </>
+            )}
+          </StyledRadioGroup>
+        )}
 
-      <Box flexGrow={1} />
-      {calculatedExpressionExist ? (
-        <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+        <Box flexGrow={1} />
+        {calculatedExpressionExist ? (
+          <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+        ) : null}
+        {hideClearButton ? null : (
+          <ClearInputButton
+            buttonShown={valueBoolean !== undefined}
+            readOnly={readOnly}
+            onClear={onClear}
+          />
+        )}
+      </Box>
+
+      {feedback ? (
+        <Typography sx={{ color: 'error.main', fontSize: '0.75rem', mt: 1 }}>{feedback}</Typography>
       ) : null}
-      {hideClearButton ? null : (
-        <ClearInputButton
-          buttonShown={valueBoolean !== undefined}
-          readOnly={readOnly}
-          onClear={onClear}
-        />
-      )}
-    </Box>
+    </>
   );
 });
 

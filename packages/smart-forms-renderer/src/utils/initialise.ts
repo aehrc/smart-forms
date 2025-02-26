@@ -19,7 +19,6 @@ import { evaluateInitialEnableWhenExpressions } from './enableWhenExpression';
 import { getFirstVisibleTab } from './tabs';
 import { getFirstVisiblePage } from './page';
 import type {
-  Expression,
   Questionnaire,
   QuestionnaireItem,
   QuestionnaireItemInitial,
@@ -38,6 +37,7 @@ import { readQuestionnaireResponse } from './genericRecursive';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import type { TargetConstraint } from '../interfaces/targetConstraint.interface';
 import { evaluateInitialTargetConstraints } from './targetConstraint';
+import type { Variables } from '../interfaces';
 
 /**
  * Initialise a questionnaireResponse from a given questionnaire
@@ -317,7 +317,7 @@ export interface initialFormFromResponseParams {
   enableWhenItems: EnableWhenItems;
   enableWhenExpressions: EnableWhenExpressions;
   calculatedExpressions: Record<string, CalculatedExpression[]>;
-  variablesFhirPath: Record<string, Expression[]>;
+  variables: Variables;
   tabs: Tabs;
   pages: Pages;
   fhirPathContext: Record<string, any>;
@@ -342,7 +342,7 @@ export async function initialiseFormFromResponse(params: initialFormFromResponse
     enableWhenItems,
     enableWhenExpressions,
     calculatedExpressions,
-    variablesFhirPath,
+    variables,
     tabs,
     pages,
     fhirPathContext,
@@ -362,7 +362,7 @@ export async function initialiseFormFromResponse(params: initialFormFromResponse
     initialResponse: questionnaireResponse,
     initialResponseItemMap: initialResponseItemMap,
     targetConstraints: targetConstraints,
-    variablesFhirPath: variablesFhirPath,
+    variables: variables,
     existingFhirPathContext: fhirPathContext,
     fhirPathTerminologyCache: fhirPathTerminologyCache,
     terminologyServerUrl
@@ -374,7 +374,7 @@ export async function initialiseFormFromResponse(params: initialFormFromResponse
     initialResponse: questionnaireResponse,
     initialResponseItemMap: initialResponseItemMap,
     enableWhenExpressions: enableWhenExpressions,
-    variablesFhirPath: variablesFhirPath,
+    variables: variables,
     existingFhirPathContext: fhirPathContext,
     fhirPathTerminologyCache: fhirPathTerminologyCache,
     terminologyServerUrl: terminologyServerUrl
@@ -386,7 +386,7 @@ export async function initialiseFormFromResponse(params: initialFormFromResponse
     initialResponse: questionnaireResponse,
     initialResponseItemMap: initialResponseItemMap,
     calculatedExpressions: calculatedExpressions,
-    variablesFhirPath: variablesFhirPath,
+    variables: variables,
     existingFhirPathContext: fhirPathContext,
     fhirPathTerminologyCache: fhirPathTerminologyCache,
     terminologyServerUrl

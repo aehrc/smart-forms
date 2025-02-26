@@ -237,6 +237,11 @@ function validateItemRecursive(params: ValidateItemRecursiveParams) {
   } = params;
   let { locationExpression } = params;
 
+  // Skip display items
+  if (qItem.type === 'display') {
+    return;
+  }
+
   // If item is hidden by enableWhen, skip validation
   if (
     isHiddenByEnableWhen({
@@ -372,20 +377,23 @@ function validateSingleItem(
   invalidItems: Record<string, OperationOutcome>,
   locationExpression: string
 ) {
-  // Validate item.required first before every other validation check
-  if (qItem.type !== 'display') {
-    if (qItem.required && !qrItem.answer) {
-      invalidItems[qItem.linkId] = createValidationOperationOutcome(
-        ValidationResult.required,
-        qItem,
-        qrItem,
-        null,
-        locationExpression,
-        invalidItems[qItem.linkId]?.issue
-      );
+  // Skip display items
+  if (qItem.type === 'display') {
+    return invalidItems;
+  }
 
-      return invalidItems;
-    }
+  // Validate item.required first before every other validation check
+  if (qItem.required && !qrItem.answer) {
+    invalidItems[qItem.linkId] = createValidationOperationOutcome(
+      ValidationResult.required,
+      qItem,
+      qrItem,
+      null,
+      locationExpression,
+      invalidItems[qItem.linkId]?.issue
+    );
+
+    return invalidItems;
   }
 
   // Validate regex, maxLength and minLength, maxQuantity and minQuantity
