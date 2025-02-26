@@ -7,6 +7,20 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.24] - 2025-02-26
+### Added
+- Add support for required-based validation and the useValidationFeedback hook to all item types except date and dateTime.
+- Add feedbackFromParent property in QItemOverrideComponentProps and SingleItem to manually pass feedback into a single item.
+
+## [1.0.0-alpha.23] - 2025-02-26
+### Added
+- Implemented highlightRequiredItems function in QuestionnaireResponseStore to manually highlight required items in the UI.
+- Add useValidationFeedback support to boolean and radio buttons.
+- Add support for "required-feedback" extension (custom extension) to customise displayed feedback for required items.
+
+### Fixed
+- Remove false positive FHIRPath warnings due to unresolvable x-fhir-query variables.
+
 ## [1.0.0-alpha.22] - 2025-02-21
 ### Added
 - Added support for the targetConstraint extension for target constraint-based validation and item feedback.
