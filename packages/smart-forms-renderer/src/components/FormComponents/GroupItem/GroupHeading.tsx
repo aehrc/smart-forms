@@ -27,12 +27,14 @@ import ItemLabelText from '../ItemParts/ItemLabelText';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import { useRendererStylingStore } from '../../../stores';
 import RequiredAsterisk from '../ItemParts/RequiredAsterisk';
+import { getHeadingVariant } from '../../../utils/headingVariant';
 
 interface GroupHeadingProps extends PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   readOnly: boolean;
   tabIsMarkedAsComplete?: boolean;
   pageIsMarkedAsComplete?: boolean;
+  groupCardElevation: number;
 }
 
 const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
@@ -63,8 +65,7 @@ const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
           ) : null}
           <Box display="flex" columnGap={0.75} justifyContent="space-between" alignItems="center">
             <Typography
-              variant="h6"
-              fontSize={isTabHeading || isPageHeading ? 16 : 15}
+              variant={getHeadingVariant(props.groupCardElevation)}
               color={
                 readOnly && (!isTabHeading || !isPageHeading) ? 'text.secondary' : 'text.primary'
               }>
@@ -81,7 +82,7 @@ const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
           })}
         </Box>
       </Box>
-      {qItem.text ? <Divider sx={{ mt: 1, mb: 1.5 }} light /> : null}
+      {qItem.text ? <Divider sx={{ mt: 1, mb: 1.5, opacity:0.6 }} /> : null}
     </>
   );
 });

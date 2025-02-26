@@ -34,6 +34,7 @@ import GridTable from './GridTable';
 import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
+import { getHeadingVariant } from '../../../utils/headingVariant';
 
 interface GridGroupProps
   extends PropsWithQrItemChangeHandler,
@@ -118,11 +119,11 @@ function GridGroup(props: GridGroupProps) {
         <>
           <Typography
             fontSize={13}
-            variant="h6"
+            variant={getHeadingVariant(props.groupCardElevation)}
             color={readOnly ? 'text.secondary' : 'text.primary'}>
             <LabelWrapper qItem={qItem} readOnly={readOnly} />
           </Typography>
-          <Divider sx={{ my: 1 }} light />
+          <Divider sx={{ my: 1, opacity:0.6 }} />
         </>
       ) : null}
 

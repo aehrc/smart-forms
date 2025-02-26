@@ -39,6 +39,7 @@ import { GroupAccordion } from '../GroupItem/GroupAccordion.styles';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccordionDetails from '@mui/material/AccordionDetails';
+import { getHeadingVariant } from '../../../utils/headingVariant';
 
 interface RepeatGroupViewProps
   extends PropsWithShowMinimalViewAttribute,
@@ -118,14 +119,14 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
         <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ minHeight: '28px' }}>
           {qItem.text ? (
             <>
-              <Typography variant="h6" color={readOnly ? 'text.secondary' : 'text.primary'}>
+              <Typography variant={getHeadingVariant(props.groupCardElevation)} color={readOnly ? 'text.secondary' : 'text.primary'}>
                 <LabelWrapper qItem={qItem} readOnly={readOnly} />
               </Typography>
             </>
           ) : null}
         </AccordionSummary>
         <AccordionDetails sx={{ pt: 0 }}>
-          {qItem.text ? <Divider sx={{ mb: 1.5 }} light /> : null}
+          {qItem.text ? <Divider sx={{ mb: 1.5, opacity:0.6 }} /> : null}
           <TransitionGroup>
             {repeatGroups.map(({ id, qrItem: nullableQrItem }, index) => {
               const answeredQrItem = createEmptyQrItem(qItem, undefined);
@@ -162,10 +163,10 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
       <Card elevation={groupCardElevation} sx={{ p: 3, py: 2.5, mb: 3.5 }}>
         {qItem.text ? (
           <>
-            <Typography variant="h6" color={readOnly ? 'text.secondary' : 'text.primary'}>
+            <Typography variant={getHeadingVariant(props.groupCardElevation)} color={readOnly ? 'text.secondary' : 'text.primary'}>
               <LabelWrapper qItem={qItem} readOnly={readOnly} />
             </Typography>
-            <Divider sx={{ mt: 1, mb: 1.5 }} light />
+            <Divider sx={{ mt: 1, mb: 1.5, opacity:0.6 }} />
           </>
         ) : null}
         <TransitionGroup>

@@ -34,7 +34,7 @@ const FormTitle = memo(function FormTitle(props: FormTitleProps) {
 
   return (
     <FormTitleWrapper>
-      <Typography variant="h3" data-test="form-heading">
+      <Typography variant="h1" data-test="form-heading">
         {formTitle}
       </Typography>
     </FormTitleWrapper>

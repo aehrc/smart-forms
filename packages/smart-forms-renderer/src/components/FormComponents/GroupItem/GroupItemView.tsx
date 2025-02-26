@@ -103,10 +103,13 @@ function GroupItemView(props: GroupItemViewProps) {
             tabIsMarkedAsComplete={tabIsMarkedAsComplete}
             pageIsMarkedAsComplete={pageIsMarkedAsComplete}
             isRepeated={isRepeated}
+            groupCardElevation={groupCardElevation}
+
+
           />
         </AccordionSummary>
         <AccordionDetails sx={{ pt: 0 }}>
-          {qItem.text ? <Divider sx={{ mb: 1.5 }} light /> : null}
+          {qItem.text ? <Divider sx={{ mb: 1.5, opacity:0.6 }} /> : null}
           <>
             {childQItems.map((qItem: QuestionnaireItem, i) => {
               const qrItemOrItems = qrItemsByIndex[i];
@@ -178,6 +181,8 @@ function GroupItemView(props: GroupItemViewProps) {
           tabIsMarkedAsComplete={tabIsMarkedAsComplete}
           pageIsMarkedAsComplete={pageIsMarkedAsComplete}
           isRepeated={isRepeated}
+          groupCardElevation={groupCardElevation}
+
         />
         {childQItems.map((qItem: QuestionnaireItem, i) => {
           const qrItemOrItems = qrItemsByIndex[i];
