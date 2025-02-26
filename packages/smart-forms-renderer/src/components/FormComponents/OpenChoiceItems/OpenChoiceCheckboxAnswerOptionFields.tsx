@@ -24,7 +24,7 @@ import type {
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
 import { getChoiceOrientation } from '../../../utils/choice';
-import { StyledFormGroup } from '../Item.styles';
+import { StyledFormGroup, StyledRequiredTypography } from '../Item.styles';
 import CheckboxOptionList from '../ChoiceItems/CheckboxOptionList';
 
 interface OpenChoiceCheckboxAnswerOptionFieldsProps {
@@ -34,6 +34,7 @@ interface OpenChoiceCheckboxAnswerOptionFieldsProps {
   openLabelText: string | null;
   openLabelValue: string;
   openLabelChecked: boolean;
+  feedback: string;
   readOnly: boolean;
   onOptionChange: (changedOptionValue: string) => void;
   onOpenLabelCheckedChange: (checked: boolean) => void;
@@ -48,6 +49,7 @@ function OpenChoiceCheckboxAnswerOptionFields(props: OpenChoiceCheckboxAnswerOpt
     openLabelText,
     openLabelValue,
     openLabelChecked,
+    feedback,
     readOnly,
     onOptionChange,
     onOpenLabelCheckedChange,
@@ -57,24 +59,28 @@ function OpenChoiceCheckboxAnswerOptionFields(props: OpenChoiceCheckboxAnswerOpt
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
   return (
-    <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
-      <CheckboxOptionList
-        options={options}
-        answers={answers}
-        readOnly={readOnly}
-        onCheckedChange={onOptionChange}
-      />
-
-      {openLabelText !== null ? (
-        <CheckboxSingleWithOpenLabel
-          value={openLabelValue}
-          label={openLabelText}
-          isChecked={openLabelChecked}
-          onCheckedChange={onOpenLabelCheckedChange}
-          onInputChange={onOpenLabelInputChange}
+    <>
+      <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
+        <CheckboxOptionList
+          options={options}
+          answers={answers}
+          readOnly={readOnly}
+          onCheckedChange={onOptionChange}
         />
-      ) : null}
-    </StyledFormGroup>
+
+        {openLabelText !== null ? (
+          <CheckboxSingleWithOpenLabel
+            value={openLabelValue}
+            label={openLabelText}
+            isChecked={openLabelChecked}
+            onCheckedChange={onOpenLabelCheckedChange}
+            onInputChange={onOpenLabelInputChange}
+          />
+        ) : null}
+      </StyledFormGroup>
+
+      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
+    </>
   );
 }
 

@@ -19,13 +19,12 @@ import React from 'react';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import RadioOptionList from '../ItemParts/RadioOptionList';
-import { StyledRadioGroup } from '../Item.styles';
+import { StyledRadioGroup, StyledRequiredTypography } from '../Item.styles';
 import { getChoiceOrientation } from '../../../utils/choice';
 import Box from '@mui/material/Box';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import ClearInputButton from '../ItemParts/ClearInputButton';
 import { useRendererStylingStore } from '../../../stores';
-import Typography from '@mui/material/Typography';
 
 interface ChoiceRadioAnswerOptionFieldsProps {
   qItem: QuestionnaireItem;
@@ -85,9 +84,8 @@ function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps
           <ClearInputButton buttonShown={!!valueRadio} readOnly={readOnly} onClear={onClear} />
         )}
       </Box>
-      {feedback ? (
-        <Typography sx={{ color: 'error.main', fontSize: '0.75rem', mt: 1 }}>{feedback}</Typography>
-      ) : null}
+
+      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
     </>
   );
 }

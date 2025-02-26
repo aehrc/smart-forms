@@ -17,6 +17,7 @@
 
 import React from 'react';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
@@ -39,7 +40,8 @@ interface TimeItemProps
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
     PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }

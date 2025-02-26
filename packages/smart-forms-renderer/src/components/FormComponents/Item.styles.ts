@@ -18,6 +18,7 @@
 import FormGroup from '@mui/material/FormGroup';
 import RadioGroup from '@mui/material/RadioGroup';
 import { styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
 
 export const StyledFormGroup = styled(FormGroup)(() => ({
   marginBottom: 4
@@ -25,4 +26,10 @@ export const StyledFormGroup = styled(FormGroup)(() => ({
 
 export const StyledRadioGroup = styled(RadioGroup)(() => ({
   marginBottom: 4
+}));
+
+export const StyledRequiredTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.error.main,
+  fontSize: '0.75rem',
+  marginTop: 4
 }));

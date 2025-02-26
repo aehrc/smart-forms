@@ -17,6 +17,7 @@
 
 import React from 'react';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
@@ -33,23 +34,32 @@ import useSliderExtensions from '../../../hooks/useSliderExtensions';
 import Box from '@mui/material/Box';
 import { useQuestionnaireStore } from '../../../stores';
 import { ItemLabelWrapper } from '../ItemParts';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
 
 interface SliderItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
     PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
 
 function SliderItem(props: SliderItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
+  const {
+    qItem,
+    qrItem,
+    isRepeated,
+    isTabled,
+    parentIsReadOnly,
+    feedbackFromParent,
+    onQrItemChange
+  } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const { minValue, maxValue, stepValue, minLabel, maxLabel } = useSliderExtensions(qItem);
 
   const isInteracted = !!qrItem?.answer;
@@ -65,6 +75,11 @@ function SliderItem(props: SliderItemProps) {
       valueInteger = Math.round(qrItem.answer[0].valueDecimal);
     }
   }
+
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+
+  // Perform validation checks
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
 
   // Event handlers
   function handleValueChange(newValue: number) {
@@ -86,6 +101,7 @@ function SliderItem(props: SliderItemProps) {
           minLabel={minLabel}
           maxLabel={maxLabel}
           isInteracted={isInteracted}
+          feedback={feedback}
           readOnly={readOnly}
           isTabled={isTabled}
           onValueChange={handleValueChange}
@@ -114,6 +130,7 @@ function SliderItem(props: SliderItemProps) {
               minLabel={minLabel}
               maxLabel={maxLabel}
               isInteracted={isInteracted}
+              feedback={feedback}
               readOnly={readOnly}
               isTabled={isTabled}
               onValueChange={handleValueChange}

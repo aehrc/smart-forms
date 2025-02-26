@@ -47,6 +47,10 @@ export interface PropsWithParentIsReadOnlyAttribute {
   parentIsReadOnly?: boolean;
 }
 
+export interface PropsWithFeedbackFromParentAttribute {
+  feedbackFromParent?: string;
+}
+
 export interface PropsWithParentIsRepeatGroupAttribute {
   parentIsRepeatGroup?: boolean;
   parentRepeatGroupIndex?: number;

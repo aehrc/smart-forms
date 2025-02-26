@@ -17,6 +17,7 @@
 
 import React, { useCallback, useState } from 'react';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
@@ -32,6 +33,7 @@ import AttachmentFieldWrapper from './AttachmentFieldWrapper';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import { createAttachmentAnswer } from '../../../utils/fileUtils';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
 
 export interface AttachmentValues {
   uploadedFile: File | null;
@@ -44,15 +46,22 @@ interface AttachmentItemProps
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
     PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
 
 function AttachmentItem(props: AttachmentItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
-
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const {
+    qItem,
+    qrItem,
+    isRepeated,
+    isTabled,
+    parentIsReadOnly,
+    feedbackFromParent,
+    onQrItemChange
+  } = props;
 
   // Init input value
   const answerKey = qrItem?.answer?.[0].id;
@@ -64,6 +73,11 @@ function AttachmentItem(props: AttachmentItemProps) {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [url, setUrl] = useState(valueString);
   const [fileName, setFileName] = useState(valueString);
+
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+
+  // Perform validation checks
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
 
   // Event handlers
   async function handleUploadFile(newUploadedFile: File | null) {
@@ -112,6 +126,7 @@ function AttachmentItem(props: AttachmentItemProps) {
       <AttachmentFieldWrapper
         qItem={qItem}
         attachmentValues={{ uploadedFile: uploadedFile, url: url, fileName: fileName }}
+        feedback={feedback}
         readOnly={readOnly}
         isRepeated={isRepeated}
         isTabled={isTabled}

@@ -24,6 +24,7 @@ import type {
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
@@ -35,13 +36,15 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
 import { ItemLabelWrapper } from '../ItemParts';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
 
 interface OpenChoiceSelectAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
     PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
@@ -54,12 +57,16 @@ function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionIte
     isTabled,
     renderingExtensions,
     parentIsReadOnly,
+    feedbackFromParent,
     onQrItemChange
   } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
+
+  // Perform validation checks
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
 
   // Init input value
   const answerKey = qrItem?.answer?.[0].id;
@@ -111,6 +118,7 @@ function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionIte
         qItem={qItem}
         options={answerOptions}
         valueSelect={valueSelect}
+        feedback={feedback}
         readOnly={readOnly}
         isTabled={isTabled}
         renderingExtensions={renderingExtensions}
@@ -133,6 +141,7 @@ function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionIte
             qItem={qItem}
             options={answerOptions}
             valueSelect={valueSelect}
+            feedback={feedback}
             readOnly={readOnly}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}

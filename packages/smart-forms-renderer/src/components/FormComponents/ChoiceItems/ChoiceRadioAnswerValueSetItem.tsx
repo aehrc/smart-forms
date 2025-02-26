@@ -22,6 +22,7 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import useValueSetCodings from '../../../hooks/useValueSetCodings';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
@@ -39,13 +40,14 @@ interface ChoiceRadioAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
 
 function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps) {
-  const { qItem, qrItem, isRepeated, parentIsReadOnly, onQrItemChange } = props;
+  const { qItem, qrItem, isRepeated, parentIsReadOnly, feedbackFromParent, onQrItemChange } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
@@ -67,7 +69,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks - there's no string-based input here
-  const feedback = useValidationFeedback(qItem, '');
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
 
   const options = useMemo(() => convertCodingsToAnswerOptions(codings), [codings]);
 

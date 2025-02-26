@@ -27,6 +27,7 @@ import {
   getQrChoiceValue
 } from '../../../utils/choice';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
@@ -38,18 +39,20 @@ import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
 import useValueSetCodings from '../../../hooks/useValueSetCodings';
 import { ItemLabelWrapper } from '../ItemParts';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
 
 interface OpenChoiceRadioAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithParentIsReadOnlyAttribute,
-    PropsWithRenderingExtensionsAttribute {
+    PropsWithRenderingExtensionsAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
 
 function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetItemProps) {
-  const { qItem, qrItem, parentIsReadOnly, onQrItemChange } = props;
+  const { qItem, qrItem, parentIsReadOnly, feedbackFromParent, onQrItemChange } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
@@ -60,6 +63,10 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
   const answers = qrOpenChoiceRadio.answer ?? [];
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
+
+  // Perform validation checks
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
+
   const openLabelText = getOpenLabelText(qItem);
 
   // Get codings/options from valueSet
@@ -155,6 +162,7 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
             openLabelText={openLabelText}
             openLabelValue={openLabelValue}
             openLabelSelected={openLabelSelected}
+            feedback={feedback}
             readOnly={readOnly}
             terminologyError={terminologyError}
             onValueChange={handleValueChange}

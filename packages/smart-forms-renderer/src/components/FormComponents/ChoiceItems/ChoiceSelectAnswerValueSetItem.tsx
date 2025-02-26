@@ -22,6 +22,7 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import useValueSetCodings from '../../../hooks/useValueSetCodings';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
@@ -35,13 +36,15 @@ import { useQuestionnaireStore } from '../../../stores';
 import useCodingCalculatedExpression from '../../../hooks/useCodingCalculatedExpression';
 import { convertCodingsToAnswerOptions, findInAnswerOptions } from '../../../utils/choice';
 import { ItemLabelWrapper } from '../ItemParts';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
 
 interface ChoiceSelectAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
     PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
@@ -54,12 +57,11 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
     isTabled,
     renderingExtensions,
     parentIsReadOnly,
+    feedbackFromParent,
     onQrItemChange
   } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
-
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Init input value
   const answerKey = qrItem?.answer?.[0].id;
@@ -69,6 +71,11 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
   if (qrChoiceSelect.answer) {
     valueCoding = qrChoiceSelect.answer[0].valueCoding ?? null;
   }
+
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+
+  // Perform validation checks
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
 
   // Get codings/options from valueSet
   const { codings, terminologyError } = useValueSetCodings(qItem);
@@ -134,6 +141,7 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
         codings={codings}
         valueCoding={valueCoding}
         terminologyError={terminologyError}
+        feedback={feedback}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         isTabled={isTabled}
@@ -157,6 +165,7 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
             codings={codings}
             valueCoding={valueCoding}
             terminologyError={terminologyError}
+            feedback={feedback}
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}

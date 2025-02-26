@@ -17,6 +17,7 @@
 
 import React, { useCallback, useState } from 'react';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
@@ -40,7 +41,8 @@ interface UrlItemProps
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
     PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
@@ -52,6 +54,7 @@ function UrlItem(props: UrlItemProps) {
     isRepeated,
     isTabled,
     parentIsReadOnly,
+    feedbackFromParent,
     onQrItemChange
   } = props;
 
@@ -71,7 +74,7 @@ function UrlItem(props: UrlItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, input);
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, input);
 
   // Event handlers
   function handleChange(newInput: string) {

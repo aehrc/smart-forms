@@ -23,6 +23,7 @@ import { updateOpenLabelAnswer } from '../../../utils/openChoice';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import debounce from 'lodash.debounce';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
@@ -39,13 +40,15 @@ import useOpenLabel from '../../../hooks/useOpenLabel';
 import { convertCodingsToAnswerOptions, updateChoiceCheckboxAnswers } from '../../../utils/choice';
 import useValueSetCodings from '../../../hooks/useValueSetCodings';
 import { ItemLabelWrapper } from '../ItemParts';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
 
 interface OpenChoiceCheckboxAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
-    PropsWithRenderingExtensionsAttribute {
+    PropsWithRenderingExtensionsAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
@@ -58,6 +61,7 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: OpenChoiceCheckboxAnswerVal
     renderingExtensions,
     showMinimalView = false,
     parentIsReadOnly,
+    feedbackFromParent,
     onQrItemChange
   } = props;
 
@@ -69,6 +73,10 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: OpenChoiceCheckboxAnswerVal
   const answers = qrOpenChoiceCheckbox.answer ?? [];
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
+
+  // Perform validation checks
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
+
   const { displayInstructions } = renderingExtensions;
   const openLabelText = getOpenLabelText(qItem);
 
@@ -156,6 +164,7 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: OpenChoiceCheckboxAnswerVal
           openLabelText={openLabelText}
           openLabelValue={openLabelValue}
           openLabelChecked={openLabelChecked}
+          feedback={feedback}
           readOnly={readOnly}
           terminologyError={terminologyError}
           onOptionChange={handleOptionChange}
@@ -184,6 +193,7 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: OpenChoiceCheckboxAnswerVal
             openLabelText={openLabelText}
             openLabelValue={openLabelValue}
             openLabelChecked={openLabelChecked}
+            feedback={feedback}
             readOnly={readOnly}
             terminologyError={terminologyError}
             onOptionChange={handleOptionChange}

@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
@@ -39,7 +40,8 @@ interface QuantityItemProps
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
     PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
@@ -52,6 +54,7 @@ function QuantityItem(props: QuantityItemProps) {
     isTabled,
     renderingExtensions,
     parentIsReadOnly,
+    feedbackFromParent,
     onQrItemChange
   } = props;
 
@@ -115,7 +118,7 @@ function QuantityItem(props: QuantityItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, valueInput);
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, valueInput);
 
   // Process calculated expressions
   const { calcExpUpdated } = useQuantityCalculatedExpression({

@@ -17,6 +17,7 @@
 
 import React, { useState } from 'react';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
@@ -43,7 +44,8 @@ interface CustomDateItemProps
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
     PropsWithParentIsReadOnlyAttribute,
-    PropsWithRenderingExtensionsAttribute {
+    PropsWithRenderingExtensionsAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }

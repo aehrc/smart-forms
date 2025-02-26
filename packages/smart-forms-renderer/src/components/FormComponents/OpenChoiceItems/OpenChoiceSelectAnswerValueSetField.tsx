@@ -10,6 +10,7 @@ import type {
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 import { useRendererStylingStore } from '../../../stores';
+import { StyledRequiredTypography } from '../Item.styles';
 
 interface OpenChoiceSelectAnswerValueSetFieldProps
   extends PropsWithIsTabledAttribute,
@@ -19,6 +20,7 @@ interface OpenChoiceSelectAnswerValueSetFieldProps
   options: Coding[];
   valueSelect: Coding | null;
   terminologyError: TerminologyError;
+  feedback: string;
   readOnly: boolean;
   onValueChange: (newValue: Coding | string | null) => void;
 }
@@ -29,6 +31,7 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
     options,
     valueSelect,
     terminologyError,
+    feedback,
     readOnly,
     isTabled,
     renderingExtensions,
@@ -82,6 +85,8 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
           {terminologyError.answerValueSet}
         </Typography>
       ) : null}
+
+      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
     </>
   );
 }

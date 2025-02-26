@@ -19,7 +19,7 @@ import type { ChangeEvent } from 'react';
 import React from 'react';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import { StyledRadioGroup } from '../Item.styles';
+import { StyledRadioGroup, StyledRequiredTypography } from '../Item.styles';
 import RadioButtonWithOpenLabel from '../ItemParts/RadioButtonWithOpenLabel';
 import RadioOptionList from '../ItemParts/RadioOptionList';
 import { getChoiceOrientation } from '../../../utils/choice';
@@ -36,6 +36,7 @@ interface OpenChoiceRadioAnswerValueSetFieldsProps {
   openLabelText: string | null;
   openLabelValue: string | null;
   openLabelSelected: boolean;
+  feedback: string;
   readOnly: boolean;
   terminologyError: TerminologyError;
   onValueChange: (changedOptionValue: string | null, changedOpenLabelValue: string | null) => void;
@@ -49,6 +50,7 @@ function OpenChoiceRadioAnswerValueSetFields(props: OpenChoiceRadioAnswerValueSe
     openLabelText,
     openLabelValue,
     openLabelSelected,
+    feedback,
     readOnly,
     terminologyError,
     onValueChange
@@ -60,26 +62,30 @@ function OpenChoiceRadioAnswerValueSetFields(props: OpenChoiceRadioAnswerValueSe
 
   if (options.length > 0) {
     return (
-      <StyledRadioGroup
-        id={qItem.linkId}
-        row={orientation === ChoiceItemOrientation.Horizontal}
-        name={qItem.text}
-        sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
-        onChange={(e: ChangeEvent<HTMLInputElement>) => onValueChange(e.target.value, null)}
-        value={valueRadio}
-        data-test="q-item-radio-group">
-        <RadioOptionList options={options} readOnly={readOnly} fullWidth={inputsFlexGrow} />
+      <>
+        <StyledRadioGroup
+          id={qItem.linkId}
+          row={orientation === ChoiceItemOrientation.Horizontal}
+          name={qItem.text}
+          sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => onValueChange(e.target.value, null)}
+          value={valueRadio}
+          data-test="q-item-radio-group">
+          <RadioOptionList options={options} readOnly={readOnly} fullWidth={inputsFlexGrow} />
 
-        {openLabelText ? (
-          <RadioButtonWithOpenLabel
-            value={openLabelValue}
-            label={openLabelText}
-            readOnly={readOnly}
-            isSelected={openLabelSelected}
-            onInputChange={(input) => onValueChange(null, input)}
-          />
-        ) : null}
-      </StyledRadioGroup>
+          {openLabelText ? (
+            <RadioButtonWithOpenLabel
+              value={openLabelValue}
+              label={openLabelText}
+              readOnly={readOnly}
+              isSelected={openLabelSelected}
+              onInputChange={(input) => onValueChange(null, input)}
+            />
+          ) : null}
+        </StyledRadioGroup>
+
+        {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
+      </>
     );
   }
 

@@ -17,6 +17,7 @@
 
 import React, { useCallback, useState } from 'react';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
@@ -39,14 +40,22 @@ interface TextItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
 
 function TextItem(props: TextItemProps) {
-  const { qItem, qrItem, isRepeated, renderingExtensions, parentIsReadOnly, onQrItemChange } =
-    props;
+  const {
+    qItem,
+    qrItem,
+    isRepeated,
+    renderingExtensions,
+    parentIsReadOnly,
+    feedbackFromParent,
+    onQrItemChange
+  } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
@@ -64,7 +73,7 @@ function TextItem(props: TextItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, input);
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, input);
 
   // Process calculated expressions
   const { calcExpUpdated } = useStringCalculatedExpression({

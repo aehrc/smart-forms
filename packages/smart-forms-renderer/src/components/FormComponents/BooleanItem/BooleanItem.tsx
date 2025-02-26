@@ -17,6 +17,7 @@
 
 import React from 'react';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
@@ -40,20 +41,29 @@ interface BooleanItemProps
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
     PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
 
 function BooleanItem(props: BooleanItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
+  const {
+    qItem,
+    qrItem,
+    isRepeated,
+    isTabled,
+    parentIsReadOnly,
+    feedbackFromParent,
+    onQrItemChange
+  } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks - there's no string-based input here
-  const feedback = useValidationFeedback(qItem, '');
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
 
   // Init input value
   const answerKey = qrItem?.answer?.[0].id;

@@ -21,6 +21,7 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import { updateChoiceCheckboxAnswers } from '../../../utils/choice';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
@@ -33,13 +34,15 @@ import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
 import ChoiceCheckboxAnswerOptionFields from './ChoiceCheckboxAnswerOptionFields';
 import { ItemLabelWrapper } from '../ItemParts';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
 
 interface ChoiceCheckboxAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithRenderingExtensionsAttribute,
     PropsWithShowMinimalViewAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
@@ -52,6 +55,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
     renderingExtensions,
     showMinimalView = false,
     parentIsReadOnly,
+    feedbackFromParent,
     onQrItemChange
   } = props;
 
@@ -62,12 +66,16 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
   const qrChoiceCheckbox = qrItem ?? createEmptyQrItem(qItem, answerKey);
   const answers = qrChoiceCheckbox.answer ?? [];
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const { displayInstructions } = renderingExtensions;
 
   // TODO Process calculated expressions
   // This requires its own hook, because in the case of multi-select, we need to check if the value is already checked to prevent an infinite loop
   // This will be done after the choice/open-choice refactoring
+
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+
+  // Perform validation checks
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
 
   const options = qItem.answerOption ?? [];
 
@@ -99,6 +107,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
           qItem={qItem}
           options={options}
           answers={answers}
+          feedback={feedback}
           readOnly={readOnly}
           onCheckedChange={handleCheckedChange}
         />
@@ -121,6 +130,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
             qItem={qItem}
             options={options}
             answers={answers}
+            feedback={feedback}
             readOnly={readOnly}
             onCheckedChange={handleCheckedChange}
           />

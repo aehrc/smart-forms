@@ -24,6 +24,7 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import useDebounce from '../../../hooks/useDebounce';
 import useTerminologyServerQuery from '../../../hooks/useTerminologyServerQuery';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
@@ -36,13 +37,15 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
 import { ItemLabelWrapper } from '../ItemParts';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
 
 interface OpenChoiceAutocompleteItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
     PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
@@ -54,13 +57,12 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
     isRepeated,
     isTabled,
     renderingExtensions,
+    feedbackFromParent,
     parentIsReadOnly,
     onQrItemChange
   } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
-
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   const answerKey = qrItem?.answer?.[0].id;
   const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem, answerKey);
@@ -81,12 +83,18 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
   const [input, setInput] = useState('');
   const debouncedInput = useDebounce(input, AUTOCOMPLETE_DEBOUNCE_DURATION);
 
-  const { options, loading, feedback } = useTerminologyServerQuery(
-    qItem,
-    maxList,
-    input,
-    debouncedInput
-  );
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+
+  // Perform validation checks
+  const validationFeedback = useValidationFeedback(qItem, feedbackFromParent, '');
+
+  const {
+    options,
+    loading,
+    feedback: terminologyFeedback
+  } = useTerminologyServerQuery(qItem, maxList, input, debouncedInput);
+
+  const feedback = terminologyFeedback ?? { message: validationFeedback, color: 'error' };
 
   if (!qItem.answerValueSet) {
     return null;

@@ -20,7 +20,7 @@ import Box from '@mui/material/Box';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem } from 'fhir/r4';
 import ChoiceRadioSingle from '../ChoiceItems/ChoiceRadioSingle';
-import { StyledRadioGroup } from '../Item.styles';
+import { StyledRadioGroup, StyledRequiredTypography } from '../Item.styles';
 import { getChoiceOrientation } from '../../../utils/choice';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import Checkbox from '@mui/material/Checkbox';
@@ -29,7 +29,6 @@ import { isSpecificItemControl } from '../../../utils';
 import ClearInputButton from '../ItemParts/ClearInputButton';
 import { useRendererStylingStore } from '../../../stores';
 import { findCalculatedExpressionsInExtensions } from '../../../utils/getExpressionsFromItem';
-import Typography from '@mui/material/Typography';
 
 interface BooleanFieldProps {
   qItem: QuestionnaireItem;
@@ -138,9 +137,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
         )}
       </Box>
 
-      {feedback ? (
-        <Typography sx={{ color: 'error.main', fontSize: '0.75rem', mt: 1 }}>{feedback}</Typography>
-      ) : null}
+      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
     </>
   );
 });

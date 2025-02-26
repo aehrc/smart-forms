@@ -29,6 +29,7 @@ import type {
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import { useRendererStylingStore } from '../../../stores';
+import { StyledRequiredTypography } from '../Item.styles';
 
 interface ChoiceSelectAnswerValueSetFieldsProps
   extends PropsWithIsTabledAttribute,
@@ -37,6 +38,7 @@ interface ChoiceSelectAnswerValueSetFieldsProps
   codings: Coding[];
   valueCoding: Coding | null;
   terminologyError: TerminologyError;
+  feedback: string;
   readOnly: boolean;
   calcExpUpdated: boolean;
   onSelectChange: (newValue: Coding | null) => void;
@@ -48,6 +50,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
     codings,
     valueCoding,
     terminologyError,
+    feedback,
     readOnly,
     calcExpUpdated,
     isTabled,
@@ -61,40 +64,44 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
 
   if (codings.length > 0) {
     return (
-      <Autocomplete
-        id={qItem.linkId}
-        options={codings}
-        getOptionLabel={(option) => option.display ?? `${option.code}`}
-        value={valueCoding ?? null}
-        onChange={(_, newValue) => onSelectChange(newValue)}
-        openOnFocus
-        autoHighlight
-        sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }}
-        size="small"
-        disabled={readOnly}
-        renderInput={(params) => (
-          <StandardTextField
-            textFieldWidth={textFieldWidth}
-            isTabled={isTabled}
-            label={displayPrompt}
-            placeholder={entryFormat}
-            {...params}
-            InputProps={{
-              ...params.InputProps,
-              endAdornment: (
-                <>
-                  {params.InputProps.endAdornment}
-                  <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-                  <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
-                    {displayUnit}
-                  </Typography>
-                </>
-              )
-            }}
-            data-test="q-item-choice-select-answer-value-set-field"
-          />
-        )}
-      />
+      <>
+        <Autocomplete
+          id={qItem.linkId}
+          options={codings}
+          getOptionLabel={(option) => option.display ?? `${option.code}`}
+          value={valueCoding ?? null}
+          onChange={(_, newValue) => onSelectChange(newValue)}
+          openOnFocus
+          autoHighlight
+          sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }}
+          size="small"
+          disabled={readOnly}
+          renderInput={(params) => (
+            <StandardTextField
+              textFieldWidth={textFieldWidth}
+              isTabled={isTabled}
+              label={displayPrompt}
+              placeholder={entryFormat}
+              {...params}
+              InputProps={{
+                ...params.InputProps,
+                endAdornment: (
+                  <>
+                    {params.InputProps.endAdornment}
+                    <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+                    <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
+                      {displayUnit}
+                    </Typography>
+                  </>
+                )
+              }}
+              data-test="q-item-choice-select-answer-value-set-field"
+            />
+          )}
+        />
+
+        {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
+      </>
     );
   }
 

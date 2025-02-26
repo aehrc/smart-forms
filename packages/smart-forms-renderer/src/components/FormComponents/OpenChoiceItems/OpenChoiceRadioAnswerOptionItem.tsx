@@ -23,6 +23,7 @@ import { getOldOpenLabelAnswer } from '../../../utils/openChoice';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../utils/choice';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
@@ -33,18 +34,20 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
 import { ItemLabelWrapper } from '../ItemParts';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
 
 interface OpenChoiceRadioAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithParentIsReadOnlyAttribute,
-    PropsWithRenderingExtensionsAttribute {
+    PropsWithRenderingExtensionsAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
 
 function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemProps) {
-  const { qItem, qrItem, parentIsReadOnly, onQrItemChange } = props;
+  const { qItem, qrItem, parentIsReadOnly, feedbackFromParent, onQrItemChange } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
@@ -55,6 +58,10 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
   const answers = qrOpenChoiceRadio.answer ?? [];
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
+
+  // Perform validation checks
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
+
   const openLabelText = getOpenLabelText(qItem);
 
   const options = qItem.answerOption ?? [];
@@ -147,6 +154,7 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
             openLabelText={openLabelText}
             openLabelValue={openLabelValue}
             openLabelSelected={openLabelSelected}
+            feedback={feedback}
             readOnly={readOnly}
             onValueChange={handleValueChange}
           />

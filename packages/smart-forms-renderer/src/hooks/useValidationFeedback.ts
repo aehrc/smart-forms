@@ -32,7 +32,11 @@ import {
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '../stores';
 
-function useValidationFeedback(qItem: QuestionnaireItem, input: string): string {
+function useValidationFeedback(
+  qItem: QuestionnaireItem,
+  feedbackFromParent: string | undefined,
+  input: string
+): string {
   const invalidItems = useQuestionnaireResponseStore.use.invalidItems();
   const requiredItemsIsHighlighted = useQuestionnaireResponseStore.use.requiredItemsIsHighlighted();
 
@@ -50,6 +54,11 @@ function useValidationFeedback(qItem: QuestionnaireItem, input: string): string 
         }
       }
     }
+  }
+
+  // Feedback from parent
+  if (feedbackFromParent) {
+    return feedbackFromParent;
   }
 
   // Required-based validation

@@ -18,6 +18,7 @@
 import React, { useCallback, useMemo } from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
@@ -37,7 +38,8 @@ interface SingleItemProps
     PropsWithIsTabledAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
-    PropsWithParentIsRepeatGroupAttribute {
+    PropsWithParentIsRepeatGroupAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
   groupCardElevation: number;
@@ -58,6 +60,7 @@ function SingleItem(props: SingleItemProps) {
     groupCardElevation,
     showMinimalView,
     parentIsReadOnly,
+    feedbackFromParent,
     parentIsRepeatGroup,
     parentRepeatGroupIndex,
     onQrItemChange
@@ -116,6 +119,7 @@ function SingleItem(props: SingleItemProps) {
       groupCardElevation={groupCardElevation}
       showMinimalView={showMinimalView}
       parentIsReadOnly={readOnly}
+      feedbackFromParent={feedbackFromParent}
       onQrItemChange={handleQrItemChange}
       onQrItemChangeWithNestedItems={handleQrItemChangeWithNestedItems}
     />

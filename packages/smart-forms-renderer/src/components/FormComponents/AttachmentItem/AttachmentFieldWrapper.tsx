@@ -33,6 +33,7 @@ interface AttachmentFieldWrapperProps
     PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   attachmentValues: AttachmentValues;
+  feedback: string;
   readOnly: boolean;
   onUploadFile: (file: File | null) => void;
   onUrlChange: (url: string) => void;
@@ -43,6 +44,7 @@ function AttachmentFieldWrapper(props: AttachmentFieldWrapperProps) {
   const {
     qItem,
     attachmentValues,
+    feedback,
     readOnly,
     isRepeated,
     isTabled,
@@ -58,6 +60,7 @@ function AttachmentFieldWrapper(props: AttachmentFieldWrapperProps) {
       <AttachmentField
         linkId={qItem.linkId}
         attachmentValues={attachmentValues}
+        feedback={feedback}
         readOnly={readOnly}
         isTabled={isTabled}
         onUploadFile={onUploadFile}
@@ -80,6 +83,7 @@ function AttachmentFieldWrapper(props: AttachmentFieldWrapperProps) {
           <AttachmentField
             linkId={qItem.linkId}
             attachmentValues={attachmentValues}
+            feedback={feedback}
             readOnly={readOnly}
             isTabled={isTabled}
             onUploadFile={onUploadFile}

@@ -17,6 +17,7 @@
 
 import React, { useCallback, useState } from 'react';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
@@ -47,7 +48,8 @@ interface DecimalItemProps
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
     PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
@@ -60,6 +62,7 @@ function DecimalItem(props: DecimalItemProps) {
     isTabled,
     renderingExtensions,
     parentIsReadOnly,
+    feedbackFromParent,
     onQrItemChange
   } = props;
 
@@ -88,8 +91,8 @@ function DecimalItem(props: DecimalItemProps) {
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
-  // Perform validation checks
-  const feedback = useValidationFeedback(qItem, input);
+  // Perform validation checks - there's no string-based input here
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
 
   // Process calculated expressions
   const { calcExpUpdated } = useDecimalCalculatedExpression({

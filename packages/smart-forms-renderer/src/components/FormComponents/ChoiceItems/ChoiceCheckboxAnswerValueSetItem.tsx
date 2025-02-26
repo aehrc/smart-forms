@@ -22,6 +22,7 @@ import useValueSetCodings from '../../../hooks/useValueSetCodings';
 import { convertCodingsToAnswerOptions, updateChoiceCheckboxAnswers } from '../../../utils/choice';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
@@ -34,13 +35,15 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
 import { ItemLabelWrapper } from '../ItemParts';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
 
 interface ChoiceCheckboxAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithRenderingExtensionsAttribute,
     PropsWithShowMinimalViewAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
   showText?: boolean;
@@ -54,6 +57,7 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
     renderingExtensions,
     showMinimalView = false,
     parentIsReadOnly,
+    feedbackFromParent,
     onQrItemChange
   } = props;
 
@@ -64,8 +68,12 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
   const qrChoiceCheckbox = qrItem ?? createEmptyQrItem(qItem, answerKey);
   const answers = qrChoiceCheckbox.answer ?? [];
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const { displayInstructions } = renderingExtensions;
+
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+
+  // Perform validation checks
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
 
   // Get codings/options from valueSet
   const { codings, terminologyError } = useValueSetCodings(qItem);
@@ -104,6 +112,7 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
           qItem={qItem}
           options={options}
           answers={answers}
+          feedback={feedback}
           readOnly={readOnly}
           terminologyError={terminologyError}
           onCheckedChange={handleCheckedChange}
@@ -127,6 +136,7 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
             qItem={qItem}
             options={options}
             answers={answers}
+            feedback={feedback}
             readOnly={readOnly}
             terminologyError={terminologyError}
             onCheckedChange={handleCheckedChange}

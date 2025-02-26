@@ -28,32 +28,37 @@ import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 import { getChoiceOrientation } from '../../../utils/choice';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import CheckboxOptionList from './CheckboxOptionList';
-import { StyledFormGroup } from '../Item.styles';
+import { StyledFormGroup, StyledRequiredTypography } from '../Item.styles';
 
 interface ChoiceCheckboxAnswerValueSetFieldsProps {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
   answers: QuestionnaireResponseItemAnswer[];
+  feedback: string;
   readOnly: boolean;
   terminologyError: TerminologyError;
   onCheckedChange: (newValue: string) => void;
 }
 
 function ChoiceCheckboxAnswerValueSetFields(props: ChoiceCheckboxAnswerValueSetFieldsProps) {
-  const { qItem, options, answers, readOnly, terminologyError, onCheckedChange } = props;
+  const { qItem, options, answers, feedback, readOnly, terminologyError, onCheckedChange } = props;
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
   if (options.length > 0) {
     return (
-      <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
-        <CheckboxOptionList
-          options={options}
-          answers={answers}
-          readOnly={readOnly}
-          onCheckedChange={onCheckedChange}
-        />
-      </StyledFormGroup>
+      <>
+        <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
+          <CheckboxOptionList
+            options={options}
+            answers={answers}
+            readOnly={readOnly}
+            onCheckedChange={onCheckedChange}
+          />
+        </StyledFormGroup>
+
+        {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
+      </>
     );
   }
 

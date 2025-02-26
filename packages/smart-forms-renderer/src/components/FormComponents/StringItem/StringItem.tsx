@@ -17,6 +17,7 @@
 
 import React, { useCallback, useState } from 'react';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
@@ -41,7 +42,8 @@ interface StringItemProps
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
     PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
@@ -53,6 +55,7 @@ function StringItem(props: StringItemProps) {
     isTabled,
     renderingExtensions,
     parentIsReadOnly,
+    feedbackFromParent,
     onQrItemChange
   } = props;
 
@@ -71,7 +74,7 @@ function StringItem(props: StringItemProps) {
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, input);
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, input);
 
   // Process calculated expressions
   const { calcExpUpdated } = useStringCalculatedExpression({

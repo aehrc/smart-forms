@@ -19,7 +19,7 @@ import React from 'react';
 import Typography from '@mui/material/Typography';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import { StyledRadioGroup } from '../Item.styles';
+import { StyledRadioGroup, StyledRequiredTypography } from '../Item.styles';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { StyledAlert } from '../../Alert.styles';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
@@ -92,11 +92,7 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
           )}
         </Box>
 
-        {feedback ? (
-          <Typography sx={{ color: 'error.main', fontSize: '0.75rem', mt: 1 }}>
-            {feedback}
-          </Typography>
-        ) : null}
+        {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
       </>
     );
   }

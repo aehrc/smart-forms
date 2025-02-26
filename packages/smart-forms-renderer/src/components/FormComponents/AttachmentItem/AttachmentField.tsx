@@ -25,10 +25,12 @@ import Stack from '@mui/material/Stack';
 import type { AttachmentValues } from './AttachmentItem';
 import AttachmentUrlField from './AttachmentUrlField';
 import { useRendererStylingStore } from '../../../stores';
+import { StyledRequiredTypography } from '../Item.styles';
 
 interface AttachmentFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
   attachmentValues: AttachmentValues;
+  feedback: string;
   readOnly: boolean;
   onUploadFile: (file: File | null) => void;
   onUrlChange: (url: string) => void;
@@ -39,6 +41,7 @@ function AttachmentField(props: AttachmentFieldProps) {
   const {
     linkId,
     attachmentValues,
+    feedback,
     readOnly,
     isTabled,
     onUploadFile,
@@ -96,6 +99,8 @@ function AttachmentField(props: AttachmentFieldProps) {
           </Typography>
         ) : null}
       </Stack>
+
+      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
     </>
   );
 }

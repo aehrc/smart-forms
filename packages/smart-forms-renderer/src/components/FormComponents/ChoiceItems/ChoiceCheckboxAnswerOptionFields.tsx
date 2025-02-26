@@ -24,31 +24,36 @@ import type {
 import { getChoiceOrientation } from '../../../utils/choice';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import CheckboxOptionList from './CheckboxOptionList';
-import { StyledFormGroup } from '../Item.styles';
+import { StyledFormGroup, StyledRequiredTypography } from '../Item.styles';
 
 interface ChoiceCheckboxAnswerOptionFieldsProps {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
   answers: QuestionnaireResponseItemAnswer[];
+  feedback: string;
   readOnly: boolean;
   onCheckedChange: (newValue: string) => void;
 }
 
 function ChoiceCheckboxAnswerOptionFields(props: ChoiceCheckboxAnswerOptionFieldsProps) {
-  const { qItem, options, answers, readOnly, onCheckedChange } = props;
+  const { qItem, options, answers, feedback, readOnly, onCheckedChange } = props;
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
   if (options.length > 0) {
     return (
-      <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
-        <CheckboxOptionList
-          options={options}
-          answers={answers}
-          readOnly={readOnly}
-          onCheckedChange={onCheckedChange}
-        />
-      </StyledFormGroup>
+      <>
+        <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
+          <CheckboxOptionList
+            options={options}
+            answers={answers}
+            readOnly={readOnly}
+            onCheckedChange={onCheckedChange}
+          />
+        </StyledFormGroup>
+
+        {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
+      </>
     );
   }
 

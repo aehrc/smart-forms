@@ -23,6 +23,7 @@ import Stack from '@mui/material/Stack';
 import SliderLabels from './SliderLabels';
 import SliderDisplayValue from './SliderDisplayValue';
 import { useRendererStylingStore } from '../../../stores';
+import { StyledRequiredTypography } from '../Item.styles';
 
 interface SliderFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
@@ -33,6 +34,7 @@ interface SliderFieldProps extends PropsWithIsTabledAttribute {
   maxLabel: string;
   stepValue: number;
   isInteracted: boolean;
+  feedback: string;
   readOnly: boolean;
   onValueChange: (newValue: number) => void;
 }
@@ -47,6 +49,7 @@ function SliderField(props: SliderFieldProps) {
     minLabel,
     maxLabel,
     isInteracted,
+    feedback,
     readOnly,
     isTabled,
     onValueChange
@@ -64,27 +67,31 @@ function SliderField(props: SliderFieldProps) {
   const hasLabels = !!(minLabel || maxLabel);
 
   return (
-    <Stack sx={{ ...sliderSx }}>
-      <SliderDisplayValue value={value} hasLabels={hasLabels} isInteracted={isInteracted} />
-      {hasLabels ? <SliderLabels minLabel={minLabel} maxLabel={maxLabel} /> : null}
-      <Slider
-        id={linkId}
-        value={value}
-        min={minValue}
-        max={maxValue}
-        step={stepValue}
-        marks={sliderMarks}
-        sx={{ ...sliderSx }}
-        onChange={(_, newValue) => {
-          if (typeof newValue === 'number') {
-            onValueChange(newValue);
-          }
-        }}
-        disabled={readOnly}
-        valueLabelDisplay="auto"
-        data-test="q-item-slider-field"
-      />
-    </Stack>
+    <>
+      <Stack sx={{ ...sliderSx }}>
+        <SliderDisplayValue value={value} hasLabels={hasLabels} isInteracted={isInteracted} />
+        {hasLabels ? <SliderLabels minLabel={minLabel} maxLabel={maxLabel} /> : null}
+        <Slider
+          id={linkId}
+          value={value}
+          min={minValue}
+          max={maxValue}
+          step={stepValue}
+          marks={sliderMarks}
+          sx={{ ...sliderSx }}
+          onChange={(_, newValue) => {
+            if (typeof newValue === 'number') {
+              onValueChange(newValue);
+            }
+          }}
+          disabled={readOnly}
+          valueLabelDisplay="auto"
+          data-test="q-item-slider-field"
+        />
+      </Stack>
+
+      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
+    </>
   );
 }
 

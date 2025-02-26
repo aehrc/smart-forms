@@ -24,6 +24,7 @@ import type {
 import { findInAnswerOptions, getChoiceControlType, getQrChoiceValue } from '../../../utils/choice';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
@@ -44,7 +45,8 @@ interface ChoiceRadioAnswerOptionItemProps
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
     PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
@@ -57,6 +59,7 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
     isTabled,
     renderingExtensions,
     parentIsReadOnly,
+    feedbackFromParent,
     onQrItemChange
   } = props;
 
@@ -70,7 +73,7 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks - there's no string-based input here
-  const feedback = useValidationFeedback(qItem, '');
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
 
   const options = qItem.answerOption ?? [];
 

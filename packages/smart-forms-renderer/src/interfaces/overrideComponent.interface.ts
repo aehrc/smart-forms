@@ -27,6 +27,7 @@ export interface QItemOverrideComponentProps {
   renderingExtensions?: RenderingExtensions;
   groupCardElevation?: number;
   parentIsReadOnly?: boolean;
+  feedbackFromParent?: string;
   parentIsRepeatGroup?: boolean;
   parentRepeatGroupIndex?: number;
   onQrItemChange: (qrItem: QuestionnaireResponseItem) => unknown;

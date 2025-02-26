@@ -18,6 +18,7 @@
 import React from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
@@ -46,7 +47,8 @@ interface SingleItemViewProps
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledAttribute,
     PropsWithShowMinimalViewAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
   itemIsHidden: boolean;
@@ -66,6 +68,7 @@ function SingleItemView(props: SingleItemViewProps) {
     groupCardElevation,
     showMinimalView,
     parentIsReadOnly,
+    feedbackFromParent,
     onQrItemChange,
     onQrItemChangeWithNestedItems
   } = props;
@@ -102,6 +105,7 @@ function SingleItemView(props: SingleItemViewProps) {
                   renderingExtensions={renderingExtensions}
                   showMinimalView={showMinimalView}
                   parentIsReadOnly={readOnly}
+                  feedbackFromParent={feedbackFromParent}
                   onQrItemChange={onQrItemChange}
                 />
               </StopPropagationWrapper>
@@ -141,6 +145,7 @@ function SingleItemView(props: SingleItemViewProps) {
             renderingExtensions={renderingExtensions}
             showMinimalView={showMinimalView}
             parentIsReadOnly={readOnly}
+            feedbackFromParent={feedbackFromParent}
             onQrItemChange={onQrItemChange}
           />
           <SingleNestedItems
@@ -164,6 +169,7 @@ function SingleItemView(props: SingleItemViewProps) {
       renderingExtensions={renderingExtensions}
       showMinimalView={showMinimalView}
       parentIsReadOnly={readOnly}
+      feedbackFromParent={feedbackFromParent}
       onQrItemChange={onQrItemChange}
     />
   );

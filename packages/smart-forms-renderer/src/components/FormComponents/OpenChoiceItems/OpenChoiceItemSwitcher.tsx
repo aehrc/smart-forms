@@ -25,6 +25,7 @@ import { getOpenChoiceControlType } from '../../../utils/openChoice';
 import OpenChoiceCheckboxAnswerOptionItem from './OpenChoiceCheckboxAnswerOptionItem';
 import OpenChoiceRadioAnswerOptionItem from './OpenChoiceRadioAnswerOptionItem';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
@@ -41,7 +42,8 @@ interface OpenChoiceItemSwitcherProps
     PropsWithIsTabledAttribute,
     PropsWithRenderingExtensionsAttribute,
     PropsWithShowMinimalViewAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
@@ -55,6 +57,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
     renderingExtensions,
     showMinimalView,
     parentIsReadOnly,
+    feedbackFromParent,
     onQrItemChange
   } = props;
 
@@ -69,6 +72,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
             renderingExtensions={renderingExtensions}
             showMinimalView={showMinimalView}
             parentIsReadOnly={parentIsReadOnly}
+            feedbackFromParent={feedbackFromParent}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -81,6 +85,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
             renderingExtensions={renderingExtensions}
             showMinimalView={showMinimalView}
             parentIsReadOnly={parentIsReadOnly}
+            feedbackFromParent={feedbackFromParent}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -94,6 +99,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
             isRepeated={qItem['repeats'] ?? false}
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
+            feedbackFromParent={feedbackFromParent}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -105,6 +111,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
             isRepeated={qItem['repeats'] ?? false}
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
+            feedbackFromParent={feedbackFromParent}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -118,6 +125,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
+          feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
         />
       );
@@ -131,6 +139,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
+            feedbackFromParent={feedbackFromParent}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -143,6 +152,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
+            feedbackFromParent={feedbackFromParent}
             onQrItemChange={onQrItemChange}
           />
         );

@@ -28,6 +28,7 @@ import { getAnswerOptionLabel } from '../../../utils/openChoice';
 import { compareAnswerOptionValue } from '../../../utils/choice';
 import { useRendererStylingStore } from '../../../stores';
 import Typography from '@mui/material/Typography';
+import { StyledRequiredTypography } from '../Item.styles';
 
 interface ChoiceSelectAnswerOptionFieldsProps
   extends PropsWithIsTabledAttribute,
@@ -94,9 +95,8 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
           />
         )}
       />
-      {feedback ? (
-        <Typography sx={{ color: 'error.main', fontSize: '0.75rem', mt: 1 }}>{feedback}</Typography>
-      ) : null}
+
+      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
     </>
   );
 }
