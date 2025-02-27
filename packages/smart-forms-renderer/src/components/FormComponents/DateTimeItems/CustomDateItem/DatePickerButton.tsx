@@ -26,7 +26,7 @@ import IconButton from '@mui/material/IconButton';
 import EventIcon from '@mui/icons-material/Event';
 
 interface DatePickerButtonProps
-  extends BaseSingleInputFieldProps<Dayjs | null, Dayjs, FieldSection, DateValidationError> {
+  extends BaseSingleInputFieldProps<Dayjs | null, Dayjs, FieldSection, false, DateValidationError> {
   onOpen?: () => void;
   readOnly?: boolean;
 }

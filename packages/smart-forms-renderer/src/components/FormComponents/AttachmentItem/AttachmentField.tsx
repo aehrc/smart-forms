@@ -83,7 +83,7 @@ function AttachmentField(props: AttachmentFieldProps) {
             isTabled={isTabled}
             id={linkId}
             value={fileName}
-            onChange={(event) => onFileNameChange(event.target.value)}
+            onChange={(event: { target: { value: string; }; }) => onFileNameChange(event.target.value)}
             disabled={readOnly}
             size="small"
             data-test="q-item-attachment-field"

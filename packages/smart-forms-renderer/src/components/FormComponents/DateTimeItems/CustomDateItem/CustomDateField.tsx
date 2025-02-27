@@ -56,10 +56,13 @@ function CustomDateField(props: CustomDateFieldProps) {
 
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
-  const anchorRef: RefObject<HTMLDivElement> = useRef(null);
-
+  const anchorRef: RefObject<HTMLDivElement | null> = useRef<HTMLDivElement>(null);
+  // const anchorRef =  React.createRef();
   return (
-    <Tooltip title={isTabled ? feedback : ''}>
+    <Tooltip 
+    
+    title={isTabled ? feedback : ''}
+    >
       <StandardTextField
         id={linkId + '-date'}
         ref={anchorRef}

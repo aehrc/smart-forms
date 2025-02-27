@@ -17,7 +17,7 @@
 
 import type { ReactNode } from 'react';
 import React from 'react';
-import Grid from '@mui/material/Unstable_Grid2';
+import Grid from '@mui/material/Grid2';
 import type { QuestionnaireItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import Box from '@mui/material/Box';
@@ -41,12 +41,15 @@ function ItemFieldGrid(props: ItemFieldGridProps) {
 
   return (
     <Grid container columnSpacing={4}>
-      <Grid
-        xs={itemLabelGridBreakpoints.xs}
-        sm={itemLabelGridBreakpoints.sm}
-        md={itemLabelGridBreakpoints.md}
-        lg={itemLabelGridBreakpoints.lg}
-        xl={itemLabelGridBreakpoints.xl}>
+      <Grid  
+      size={{ 
+        xs: itemLabelGridBreakpoints.xs, 
+        sm: itemLabelGridBreakpoints.sm,  
+        md: itemLabelGridBreakpoints.md,  
+        lg: itemLabelGridBreakpoints.lg,  
+        xl: itemLabelGridBreakpoints.xl 
+      }}  
+        >
         {labelChildren}
       </Grid>
       <Box
@@ -55,11 +58,14 @@ function ItemFieldGrid(props: ItemFieldGridProps) {
         }}
       />
       <Grid
-        xs={itemFieldGridBreakpoints.xs}
-        sm={itemFieldGridBreakpoints.sm}
-        md={itemFieldGridBreakpoints.md}
-        lg={itemFieldGridBreakpoints.lg}
-        xl={itemFieldGridBreakpoints.xl}>
+        size={{ 
+          xs: itemLabelGridBreakpoints.xs, 
+          sm: itemLabelGridBreakpoints.sm,  
+          md: itemLabelGridBreakpoints.md,  
+          lg: itemLabelGridBreakpoints.lg,  
+          xl: itemLabelGridBreakpoints.xl 
+        }}
+        >
         {fieldChildren}
         <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
       </Grid>

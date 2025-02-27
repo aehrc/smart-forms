@@ -9,7 +9,7 @@
     "useUnknownInCatchVariables": false,
     "strict": true,
     "skipLibCheck": true,
-    "jsx": "react",
+    "jsx": "react-jsx",
     "sourceMap": true,
     "allowJs": true,
     "outDir": "lib",
