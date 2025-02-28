@@ -23,7 +23,7 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table';
-import { useDebounce } from 'usehooks-ts';
+import { useDebounceValue } from 'usehooks-ts';
 import useFetchQuestionnaires from '../../../hooks/useFetchQuestionnaires.ts';
 import { createQuestionnaireTableColumns } from '../../../utils/tableColumns.ts';
 import QuestionnaireTableView from './QuestionnaireTableView.tsx';
@@ -34,7 +34,7 @@ function QuestionnaireTable() {
 
   // search questionnaires
   const [searchInput, setSearchInput] = useState('');
-  const debouncedInput = useDebounce(searchInput, 300);
+  const debouncedInput = useDebounceValue(searchInput, 300);
 
   const {
     questionnaires,
@@ -43,7 +43,7 @@ function QuestionnaireTable() {
     isInitialLoading,
     isFetching,
     refetchQuestionnaires
-  } = useFetchQuestionnaires(searchInput, debouncedInput);
+  } = useFetchQuestionnaires(searchInput, debouncedInput[0]);
 
   const columns = useMemo(() => createQuestionnaireTableColumns(), []);
 
@@ -77,13 +77,13 @@ function QuestionnaireTable() {
     <QuestionnaireTableView
       table={table}
       searchInput={searchInput}
-      debouncedInput={debouncedInput}
+      debouncedInput={debouncedInput[0]}
       fetchStatus={fetchStatus}
       isInitialLoading={isInitialLoading}
       isFetching={isFetching}
       fetchError={fetchError}
       selectedQuestionnaire={selectedQuestionnaire}
-      onSearch={(input) => {
+      onSearch={(input:any) => {
         table.setPageIndex(0);
         setSearchInput(input);
       }}

@@ -17,7 +17,6 @@
 
 import type { ReactNode } from 'react';
 import { forwardRef } from 'react';
-import { useTheme } from '@mui/material/styles';
 import type { SxProps, Theme } from '@mui/material';
 import { Box } from '@mui/material';
 import { QuestionnaireStyledLabel } from './QuestionnaireLabel.styles.ts';
@@ -35,7 +34,6 @@ interface QuestionnaireLabelProps {
 const QuestionnaireLabel = forwardRef((props: QuestionnaireLabelProps, ref) => {
   const { color, startIcon, endIcon, children, sx, ...other } = props;
 
-  const theme = useTheme();
 
   const iconStyle = {
     width: 16,
@@ -53,7 +51,6 @@ const QuestionnaireLabel = forwardRef((props: QuestionnaireLabelProps, ref) => {
         ...(endIcon && { pr: 0.75 }),
         ...sx
       }}
-      theme={theme}
       {...other}>
       {startIcon && <Box sx={{ mr: 0.75, ...iconStyle }}> {startIcon} </Box>}
 

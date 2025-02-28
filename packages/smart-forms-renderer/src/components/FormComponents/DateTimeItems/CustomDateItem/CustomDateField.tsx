@@ -56,7 +56,7 @@ function CustomDateField(props: CustomDateFieldProps) {
 
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
-  const anchorRef: RefObject<HTMLDivElement | null> = useRef<HTMLDivElement>(null);
+  const anchorRef: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
   // const anchorRef =  React.createRef();
   return (
     <Tooltip 
