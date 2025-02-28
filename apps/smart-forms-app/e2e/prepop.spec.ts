@@ -98,7 +98,7 @@ test('pre-pop into CVDRiskCalculator questionnaire', async ({ page }) => {
   expect(populateResponse.status()).toBe(200);
 
   // Check calculated value
-  const cvdRiskValueLinkId = 'cvd-result';
+  const cvdRiskValueLinkId = 'integer-cvd-result';
   await expect(
     page.getByTestId('q-item-integer-box').locator(`#${cvdRiskValueLinkId}`)
   ).toHaveValue('23');
@@ -141,7 +141,7 @@ test('pre-pop to test terminology resolving logic', async ({ page }) => {
   const genderAvsUrlValueLinkId = 'gender-avs-url';
   await expect(
     page
-      .getByTestId('q-item-choice-select-answer-value-set-box')
+      .getByTestId('choice-q-item-choice-select-answer-value-set-box')
       .locator(`#${genderAvsUrlValueLinkId}`)
   ).toHaveValue('Female');
 
@@ -152,7 +152,7 @@ test('pre-pop to test terminology resolving logic', async ({ page }) => {
       .locator(`#${genderAvsContainedValueLinkId}`)
   ).toHaveValue('Female');
 
-  const medicalHistoryConditionValueLinkId = 'medical-history-condition';
+  const medicalHistoryConditionValueLinkId = 'open-choice-medical-history-condition';
 
   const elements = await page.locator(`#${medicalHistoryConditionValueLinkId}`).all();
   for (const element of elements) {

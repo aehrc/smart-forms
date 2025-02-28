@@ -7,6 +7,14 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.25] - 2025-02-28
+_(WARNING: Breaking changes for id-based e2e testing)_
+### Added
+- Associated labels in ItemLabelText explicitly (via htmlFor + id) to all item types except time.
+
+### Changed
+- All input ids are now prepended with item.type i.e. item.type + "-" + item.linkId
+
 ## [1.0.0-alpha.24] - 2025-02-26
 ### Added
 - Add support for required-based validation and the useValidationFeedback hook to all item types except date and dateTime.

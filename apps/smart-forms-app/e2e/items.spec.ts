@@ -67,7 +67,7 @@ test('enter inputs into BitOfEverything questionnaire', async ({ page }) => {
   await expect(page.getByTestId('q-item-display-box')).toContainText('display label');
 
   // String
-  const stringItemLinkId = 'Item-string';
+  const stringItemLinkId = 'string-Item-string';
   await page
     .getByTestId('q-item-string-box')
     .getByTestId('q-item-string-field')
@@ -75,7 +75,7 @@ test('enter inputs into BitOfEverything questionnaire', async ({ page }) => {
     .fill(stringInput);
 
   // Text
-  const textItemLinkId = 'Item-text';
+  const textItemLinkId = 'text-Item-text';
   await page
     .getByTestId('q-item-text-box')
     .getByTestId('q-item-text-field')
@@ -83,7 +83,7 @@ test('enter inputs into BitOfEverything questionnaire', async ({ page }) => {
     .fill(textInput);
 
   // Boolean
-  const booleanItemLinkId = 'Item-bool';
+  const booleanItemLinkId = 'boolean-Item-bool';
   await page
     .getByTestId('q-item-boolean-box')
     .locator(`#${booleanItemLinkId}`)
@@ -92,14 +92,14 @@ test('enter inputs into BitOfEverything questionnaire', async ({ page }) => {
     .click();
 
   // Date
-  const dateItemLinkId = 'Item-date';
+  const dateItemLinkId = 'date-Item-date';
   await page
     .getByTestId('q-item-date-box')
     .locator(`#${dateItemLinkId}-date`)
     .pressSequentially(dateInput, { delay: 100 });
 
   // DateTime
-  const dateTimeItemLinkId = 'Item-datetime';
+  const dateTimeItemLinkId = 'datetime-Item-datetime';
   await page
     .getByTestId('q-item-datetime-box')
     .locator(`#${dateTimeItemLinkId}-date`)
@@ -115,16 +115,16 @@ test('enter inputs into BitOfEverything questionnaire', async ({ page }) => {
   // Skipping Time for now
 
   // Integer
-  const integerItemLinkId = 'Item-integer';
+  const integerItemLinkId = 'integer-Item-integer';
   await page.getByTestId('q-item-integer-box').locator(`#${integerItemLinkId}`).fill(integerInput);
 
   // Decimal
-  const decimalItemLinkId = 'Item-decimal';
+  const decimalItemLinkId = 'decimal-Item-decimal';
   await page.getByTestId('q-item-decimal-box').locator(`#${decimalItemLinkId}`).fill(decimalInput);
   await expect(page.getByTestId('q-item-decimal-box').first()).toContainText('meters'); // first() is hacky
 
   // Url
-  const urlItemLinkId = 'Item-url';
+  const urlItemLinkId = 'url-Item-url';
   await page.getByTestId('q-item-url-box').locator(`#${urlItemLinkId}`).fill(urlInput);
 
   // Skipping Reference for now
@@ -134,7 +134,7 @@ test('enter inputs into BitOfEverything questionnaire', async ({ page }) => {
   // Skipping Quantity for now
 
   // Choice answerOption - option A
-  const choiceItemAnswerOptionLinkId = 'Item-rb-local';
+  const choiceItemAnswerOptionLinkId = 'choice-Item-rb-local';
   await page.getByTestId('q-item-choice-select-answer-option-box').first().scrollIntoViewIfNeeded();
   await page
     .getByTestId('q-item-choice-select-answer-option-box')
@@ -143,7 +143,7 @@ test('enter inputs into BitOfEverything questionnaire', async ({ page }) => {
   await page.keyboard.press('Enter');
 
   // Choice answerValueSet - Tasmania
-  const choiceItemAnswerValueSetLinkId = 'Item10';
+  const choiceItemAnswerValueSetLinkId = 'choice-Item10';
   await page
     .getByTestId('q-item-choice-select-answer-value-set-box')
     .locator(`#${choiceItemAnswerValueSetLinkId}`)
