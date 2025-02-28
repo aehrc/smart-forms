@@ -132,6 +132,7 @@ function IntegerItem(props: IntegerItemProps) {
     return (
       <IntegerField
         linkId={qItem.linkId}
+        itemType={qItem.type}
         input={input}
         feedback={feedback}
         displayPrompt={displayPrompt}
@@ -157,6 +158,7 @@ function IntegerItem(props: IntegerItemProps) {
         fieldChildren={
           <IntegerField
             linkId={qItem.linkId}
+            itemType={qItem.type}
             input={input}
             feedback={feedback}
             displayPrompt={displayPrompt}

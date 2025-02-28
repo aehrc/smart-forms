@@ -63,7 +63,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
       <Box display="flex" alignItems="center">
         {booleanAsCheckbox ? (
           <FormControlLabel
-            id={qItem.linkId}
+            id={qItem.type + '-' + qItem.linkId}
             disabled={readOnly}
             control={
               <Checkbox
@@ -84,9 +84,8 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
           />
         ) : (
           <StyledRadioGroup
-            id={qItem.linkId}
+            id={qItem.type + '-' + qItem.linkId}
             row={orientation === ChoiceItemOrientation.Horizontal}
-            name={qItem.text}
             sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
             onChange={(e) => onCheckedChange(e.target.value)}
             value={selection}>

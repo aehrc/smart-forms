@@ -94,6 +94,7 @@ function SliderItem(props: SliderItemProps) {
       <Box px={4}>
         <SliderField
           linkId={qItem.linkId}
+          itemType={qItem.type}
           value={valueInteger}
           minValue={minValue}
           maxValue={maxValue}
@@ -123,6 +124,7 @@ function SliderItem(props: SliderItemProps) {
           <Box px={4}>
             <SliderField
               linkId={qItem.linkId}
+              itemType={qItem.type}
               value={valueInteger}
               minValue={minValue}
               maxValue={maxValue}

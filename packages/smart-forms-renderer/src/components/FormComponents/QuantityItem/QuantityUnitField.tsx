@@ -8,6 +8,7 @@ import { useRendererStylingStore } from '../../../stores';
 
 interface QuantityUnitFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
+  itemType: string;
   options: QuestionnaireItemAnswerOption[];
   valueSelect: QuestionnaireItemAnswerOption | null;
   readOnly: boolean;
@@ -15,13 +16,13 @@ interface QuantityUnitFieldProps extends PropsWithIsTabledAttribute {
 }
 
 function QuantityUnitField(props: QuantityUnitFieldProps) {
-  const { linkId, options, valueSelect, readOnly, isTabled, onChange } = props;
+  const { linkId, itemType, options, valueSelect, readOnly, isTabled, onChange } = props;
 
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
   return (
     <Autocomplete
-      id={linkId + '-unit'}
+      id={itemType + '-' + linkId + '-unit'}
       value={valueSelect ?? null}
       isOptionEqualToValue={(option, value) =>
         option.valueCoding?.code === value?.valueCoding?.code

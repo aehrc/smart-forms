@@ -25,6 +25,7 @@ import Typography from '@mui/material/Typography';
 
 interface DecimalFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
+  itemType: string;
   input: string;
   feedback: string;
   displayPrompt: string;
@@ -38,6 +39,7 @@ interface DecimalFieldProps extends PropsWithIsTabledAttribute {
 function DecimalField(props: DecimalFieldProps) {
   const {
     linkId,
+    itemType,
     input,
     feedback,
     displayPrompt,
@@ -53,7 +55,7 @@ function DecimalField(props: DecimalFieldProps) {
 
   return (
     <StandardTextField
-      id={linkId}
+      id={itemType + '-' + linkId}
       value={input}
       error={!!feedback}
       onChange={(event) => onInputChange(event.target.value)}

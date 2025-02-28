@@ -29,6 +29,7 @@ import { getChoiceOrientation } from '../../../utils/choice';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import CheckboxOptionList from './CheckboxOptionList';
 import { StyledFormGroup, StyledRequiredTypography } from '../Item.styles';
+import { Box } from '@mui/material';
 
 interface ChoiceCheckboxAnswerValueSetFieldsProps {
   qItem: QuestionnaireItem;
@@ -47,7 +48,7 @@ function ChoiceCheckboxAnswerValueSetFields(props: ChoiceCheckboxAnswerValueSetF
 
   if (options.length > 0) {
     return (
-      <>
+      <Box id={qItem.type + '-' + qItem.linkId}>
         <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
           <CheckboxOptionList
             options={options}
@@ -58,7 +59,7 @@ function ChoiceCheckboxAnswerValueSetFields(props: ChoiceCheckboxAnswerValueSetF
         </StyledFormGroup>
 
         {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
-      </>
+      </Box>
     );
   }
 

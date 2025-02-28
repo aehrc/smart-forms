@@ -65,9 +65,8 @@ function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps
         }}>
         <Box display="flex" sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
           <StyledRadioGroup
-            id={qItem.linkId}
+            id={qItem.type + '-' + qItem.linkId}
             row={orientation === ChoiceItemOrientation.Horizontal}
-            name={qItem.text}
             sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
             onChange={(e) => onCheckedChange(e.target.value)}
             value={valueRadio}

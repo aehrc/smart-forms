@@ -70,7 +70,7 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
 
   return (
     <Autocomplete
-      id={qItem.linkId}
+      id={qItem.type + '-' + qItem.linkId}
       value={valueCoding ?? null}
       options={options}
       getOptionLabel={(option) => option.display ?? `${option.code}`}

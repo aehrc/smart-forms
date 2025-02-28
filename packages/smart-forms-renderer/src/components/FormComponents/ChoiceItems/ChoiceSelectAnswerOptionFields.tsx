@@ -62,7 +62,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
   return (
     <>
       <Autocomplete
-        id={qItem.linkId}
+        id={qItem.type + '-' + qItem.linkId}
         value={valueSelect ?? null}
         options={options}
         getOptionLabel={(option) => getAnswerOptionLabel(option)}

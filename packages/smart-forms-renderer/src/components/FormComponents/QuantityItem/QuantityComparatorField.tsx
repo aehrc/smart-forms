@@ -9,6 +9,7 @@ import { useRendererStylingStore } from '../../../stores';
 
 interface QuantityComparatorFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
+  itemType: string;
   options: Quantity['comparator'][];
   valueSelect: Quantity['comparator'] | null;
   readOnly: boolean;
@@ -16,7 +17,7 @@ interface QuantityComparatorFieldProps extends PropsWithIsTabledAttribute {
 }
 
 function QuantityComparatorField(props: QuantityComparatorFieldProps) {
-  const { linkId, options, valueSelect, readOnly, onChange } = props;
+  const { linkId, itemType, options, valueSelect, readOnly, onChange } = props;
 
   const hideQuantityComparatorField = useRendererStylingStore.use.hideQuantityComparatorField();
   if (hideQuantityComparatorField) {
@@ -26,7 +27,7 @@ function QuantityComparatorField(props: QuantityComparatorFieldProps) {
   return (
     <Box>
       <Autocomplete
-        id={linkId + '-comparator'}
+        id={itemType + '-' + linkId + '-comparator'}
         value={valueSelect ?? null}
         options={options}
         onChange={(_, newValue) => onChange(newValue as Quantity['comparator'])}

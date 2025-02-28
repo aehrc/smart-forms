@@ -99,6 +99,7 @@ function UrlItem(props: UrlItemProps) {
     return (
       <UrlField
         linkId={qItem.linkId}
+        itemType={qItem.type}
         input={input}
         feedback={feedback}
         displayPrompt={displayPrompt}
@@ -122,6 +123,7 @@ function UrlItem(props: UrlItemProps) {
         fieldChildren={
           <UrlField
             linkId={qItem.linkId}
+            itemType={qItem.type}
             input={input}
             feedback={feedback}
             displayPrompt={displayPrompt}

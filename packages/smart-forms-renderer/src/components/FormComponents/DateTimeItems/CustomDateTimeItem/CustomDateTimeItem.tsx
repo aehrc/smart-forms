@@ -186,6 +186,7 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
       <Stack>
         <DateTimeField
           linkId={qItem.linkId}
+          itemType={qItem.type}
           displayDate={displayDate}
           dateInput={dateInput}
           timeInput={timeInput}
@@ -219,6 +220,7 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
         fieldChildren={
           <DateTimeField
             linkId={qItem.linkId}
+            itemType={qItem.type}
             displayDate={displayDate}
             dateInput={dateInput}
             timeInput={timeInput}

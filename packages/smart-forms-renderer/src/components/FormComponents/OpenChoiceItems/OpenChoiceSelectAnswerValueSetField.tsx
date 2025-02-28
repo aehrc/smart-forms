@@ -45,7 +45,7 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
   return (
     <>
       <Autocomplete
-        id={qItem.linkId}
+        id={qItem.type + '-' + qItem.linkId}
         value={valueSelect ?? null}
         options={options}
         getOptionLabel={(option) =>

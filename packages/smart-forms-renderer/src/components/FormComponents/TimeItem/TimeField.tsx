@@ -23,6 +23,8 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useRendererStylingStore } from '../../../stores';
 
 interface TimeFieldProps extends PropsWithIsTabledAttribute {
+  linkId: string;
+  itemType: string;
   value: Dayjs | null;
   displayPrompt: string;
   entryFormat: string;
@@ -31,13 +33,17 @@ interface TimeFieldProps extends PropsWithIsTabledAttribute {
 }
 
 function TimeField(props: TimeFieldProps) {
-  const { value, displayPrompt, entryFormat, readOnly, isTabled, onTimeChange } = props;
+  const { linkId, itemType, value, displayPrompt, entryFormat, readOnly, isTabled, onTimeChange } =
+    props;
 
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <MuiTimePicker
+        // TODO no way to add an id attribute to this time input field
+        // TODO ignore this - we will be creating our own custom time field anyway
+        name={itemType + '-' + linkId}
         format={entryFormat !== '' ? entryFormat : 'hh:mm a'}
         value={value}
         disabled={readOnly}

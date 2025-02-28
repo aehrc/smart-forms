@@ -23,6 +23,7 @@ import Typography from '@mui/material/Typography';
 
 interface TextFieldProps {
   linkId: string;
+  itemType: string;
   input: string;
   feedback: string;
   displayPrompt: string;
@@ -36,6 +37,7 @@ interface TextFieldProps {
 function TextField(props: TextFieldProps) {
   const {
     linkId,
+    itemType,
     input,
     feedback,
     displayPrompt,
@@ -48,7 +50,7 @@ function TextField(props: TextFieldProps) {
 
   return (
     <MuiTextField
-      id={linkId}
+      id={itemType + '-' + linkId}
       value={input}
       error={!!feedback}
       onChange={(event) => onInputChange(event.target.value)}

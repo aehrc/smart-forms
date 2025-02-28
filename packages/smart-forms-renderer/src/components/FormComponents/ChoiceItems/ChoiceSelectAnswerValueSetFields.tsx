@@ -66,7 +66,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
     return (
       <>
         <Autocomplete
-          id={qItem.linkId}
+          id={qItem.type + '-' + qItem.linkId}
           options={codings}
           getOptionLabel={(option) => option.display ?? `${option.code}`}
           value={valueCoding ?? null}

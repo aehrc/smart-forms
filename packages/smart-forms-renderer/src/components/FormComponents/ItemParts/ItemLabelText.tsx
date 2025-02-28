@@ -54,7 +54,7 @@ const ItemLabelText = memo(function ItemLabelText(props: ItemLabelTextProps) {
   const parsedXhtml = useParseXhtml(qItem);
   if (parsedXhtml) {
     return (
-      <Box display="flex" flexGrow={1}>
+      <Box display="flex" flexGrow={1} component="label" htmlFor={qItem.type + '-' + qItem.linkId}>
         {parsedXhtml}
         {required && requiredIndicatorPosition === 'end' ? (
           <RequiredAsterisk>*</RequiredAsterisk>
@@ -70,7 +70,7 @@ const ItemLabelText = memo(function ItemLabelText(props: ItemLabelTextProps) {
   const markdownString = getMarkdownString(qItem);
   if (markdownString) {
     return (
-      <Box display="flex">
+      <Box display="flex" component="label" htmlFor={qItem.type + '-' + qItem.linkId}>
         <ReactMarkdown>{markdownString}</ReactMarkdown>
         {required && requiredIndicatorPosition === 'end' ? (
           <RequiredAsterisk>*</RequiredAsterisk>
@@ -93,7 +93,7 @@ const ItemLabelText = memo(function ItemLabelText(props: ItemLabelTextProps) {
   if (stylesString) {
     const styles = styleParse(stylesString);
     return (
-      <Box display="flex">
+      <Box display="flex" component="label" htmlFor={qItem.type + '-' + qItem.linkId}>
         <div style={styles}>{labelText}</div>
         {required && requiredIndicatorPosition === 'end' ? (
           <RequiredAsterisk>*</RequiredAsterisk>
@@ -110,6 +110,8 @@ const ItemLabelText = memo(function ItemLabelText(props: ItemLabelTextProps) {
     <Typography
       color={readOnly ? 'text.disabled' : 'text.primary'}
       fontWeight={itemLabelFontWeight ? itemLabelFontWeight : 'normal'}
+      component="label"
+      htmlFor={qItem.type + '-' + qItem.linkId}
       sx={{ mt: 0.25 }}>
       {labelText}
       {required && requiredIndicatorPosition === 'end' ? (

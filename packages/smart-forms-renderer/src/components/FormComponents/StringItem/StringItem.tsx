@@ -116,6 +116,7 @@ function StringItem(props: StringItemProps) {
     return (
       <StringField
         linkId={qItem.linkId}
+        itemType={qItem.type}
         input={input}
         feedback={feedback}
         displayPrompt={displayPrompt}
@@ -140,6 +141,7 @@ function StringItem(props: StringItemProps) {
         fieldChildren={
           <StringField
             linkId={qItem.linkId}
+            itemType={qItem.type}
             input={input}
             feedback={feedback}
             displayPrompt={displayPrompt}

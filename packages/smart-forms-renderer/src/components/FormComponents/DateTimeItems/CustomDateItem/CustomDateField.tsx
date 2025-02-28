@@ -26,6 +26,7 @@ import { useRendererStylingStore } from '../../../../stores';
 
 interface CustomDateFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
+  itemType: string;
   valueDate: string;
   input: string;
   feedback: string;
@@ -33,6 +34,7 @@ interface CustomDateFieldProps extends PropsWithIsTabledAttribute {
   displayPrompt: string;
   entryFormat: string;
   readOnly: boolean;
+  isPartOfDateTime: boolean;
   setFocused: Dispatch<SetStateAction<boolean>>;
   onInputChange: (newInput: string) => void;
   onSelectDate: (newDateValue: string) => void;
@@ -41,6 +43,7 @@ interface CustomDateFieldProps extends PropsWithIsTabledAttribute {
 function CustomDateField(props: CustomDateFieldProps) {
   const {
     linkId,
+    itemType,
     valueDate,
     input,
     feedback,
@@ -48,6 +51,7 @@ function CustomDateField(props: CustomDateFieldProps) {
     displayPrompt,
     entryFormat,
     readOnly,
+    isPartOfDateTime,
     isTabled,
     setFocused,
     onInputChange,
@@ -58,10 +62,13 @@ function CustomDateField(props: CustomDateFieldProps) {
 
   const anchorRef: RefObject<HTMLDivElement> = useRef(null);
 
+  // If this reusable date field is part of a DateTime component, the id should be appended with '-date'
+  const id = isPartOfDateTime ? itemType + '-' + linkId + '-date' : itemType + '-' + linkId;
+
   return (
     <Tooltip title={isTabled ? feedback : ''}>
       <StandardTextField
-        id={linkId + '-date'}
+        id={id}
         ref={anchorRef}
         fullWidth
         textFieldWidth={textFieldWidth}

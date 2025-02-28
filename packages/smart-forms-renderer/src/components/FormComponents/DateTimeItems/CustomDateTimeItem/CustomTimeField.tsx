@@ -29,12 +29,14 @@ import { useRendererStylingStore } from '../../../../stores';
 
 interface CustomTimeFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
+  itemType: string;
   timeInput: string;
   periodInput: string;
   is24HourNotation: boolean;
   feedback: string;
   displayPrompt: string;
   readOnly: boolean;
+  isPartOfDateTime: boolean;
   onTimeInputChange: (newInput: string) => void;
   onPeriodChange: (newPeriod: string) => void;
 }
@@ -42,12 +44,14 @@ interface CustomTimeFieldProps extends PropsWithIsTabledAttribute {
 function CustomTimeField(props: CustomTimeFieldProps) {
   const {
     linkId,
+    itemType,
     timeInput,
     periodInput,
     is24HourNotation,
     feedback,
     displayPrompt,
     readOnly,
+    isPartOfDateTime,
     isTabled,
     onTimeInputChange,
     onPeriodChange
@@ -55,16 +59,24 @@ function CustomTimeField(props: CustomTimeFieldProps) {
 
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
+  // If this reusable time field is part of a DateTime component, do not assign an id to the wrapping <Box/>
+  // If this reusable time field is from a Time component, the wrapping <Box/> should have an id
+  const itemId = isPartOfDateTime ? undefined : itemType + '-' + linkId;
+
+  const timeId = itemType + '-' + linkId + '-time';
+  const periodId = itemType + '-' + linkId + '-period';
+
   return (
     <Tooltip title={isTabled ? feedback : ''}>
       <>
         <Box
+          id={itemId}
           display="flex"
           alignItems="center"
           columnGap={1}
           sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160 }}>
           <MuiTextField
-            id={linkId + '-time'}
+            id={timeId}
             value={timeInput}
             error={!!feedback}
             fullWidth
@@ -76,7 +88,7 @@ function CustomTimeField(props: CustomTimeFieldProps) {
             size="small"
           />
           <Select
-            id={linkId + '-period'}
+            id={periodId}
             value={is24HourNotation ? '' : periodInput}
             error={!!feedback}
             disabled={readOnly || is24HourNotation}

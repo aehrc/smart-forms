@@ -152,6 +152,7 @@ function DecimalItem(props: DecimalItemProps) {
       <Box data-test="q-item-decimal-box">
         <DecimalField
           linkId={qItem.linkId}
+          itemType={qItem.type}
           input={input}
           feedback={feedback}
           displayPrompt={displayPrompt}
@@ -178,6 +179,7 @@ function DecimalItem(props: DecimalItemProps) {
         fieldChildren={
           <DecimalField
             linkId={qItem.linkId}
+            itemType={qItem.type}
             input={input}
             feedback={feedback}
             displayPrompt={displayPrompt}

@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 
 interface QuantityFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
+  itemType: string;
   input: string;
   feedback: string;
   displayPrompt: string;
@@ -21,6 +22,7 @@ interface QuantityFieldProps extends PropsWithIsTabledAttribute {
 function QuantityField(props: QuantityFieldProps) {
   const {
     linkId,
+    itemType,
     input,
     feedback,
     displayPrompt,
@@ -36,7 +38,7 @@ function QuantityField(props: QuantityFieldProps) {
 
   return (
     <StandardTextField
-      id={linkId}
+      id={itemType + '-' + linkId + '-input'}
       value={input}
       error={!!feedback}
       onChange={(event) => onInputChange(event.target.value)}

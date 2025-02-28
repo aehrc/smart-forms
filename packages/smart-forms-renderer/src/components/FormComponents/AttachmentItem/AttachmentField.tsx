@@ -29,6 +29,7 @@ import { StyledRequiredTypography } from '../Item.styles';
 
 interface AttachmentFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
+  itemType: string;
   attachmentValues: AttachmentValues;
   feedback: string;
   readOnly: boolean;
@@ -40,6 +41,7 @@ interface AttachmentFieldProps extends PropsWithIsTabledAttribute {
 function AttachmentField(props: AttachmentFieldProps) {
   const {
     linkId,
+    itemType,
     attachmentValues,
     feedback,
     readOnly,
@@ -55,7 +57,7 @@ function AttachmentField(props: AttachmentFieldProps) {
 
   return (
     <>
-      <Stack rowGap={1}>
+      <Stack rowGap={1} id={itemType + '-' + linkId}>
         <Typography variant="subtitle2" color={readOnly ? 'text.disabled' : 'text.primary'}>
           An attachment must either have a file or a URL, or both.
         </Typography>

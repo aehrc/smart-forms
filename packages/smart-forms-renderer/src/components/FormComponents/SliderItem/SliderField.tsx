@@ -27,6 +27,7 @@ import { StyledRequiredTypography } from '../Item.styles';
 
 interface SliderFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
+  itemType: string;
   value: number;
   minValue: number;
   minLabel: string;
@@ -42,6 +43,7 @@ interface SliderFieldProps extends PropsWithIsTabledAttribute {
 function SliderField(props: SliderFieldProps) {
   const {
     linkId,
+    itemType,
     value,
     minValue,
     maxValue,
@@ -72,7 +74,7 @@ function SliderField(props: SliderFieldProps) {
         <SliderDisplayValue value={value} hasLabels={hasLabels} isInteracted={isInteracted} />
         {hasLabels ? <SliderLabels minLabel={minLabel} maxLabel={maxLabel} /> : null}
         <Slider
-          id={linkId}
+          id={itemType + '-' + linkId}
           value={value}
           min={minValue}
           max={maxValue}

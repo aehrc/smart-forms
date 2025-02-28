@@ -24,6 +24,7 @@ import Typography from '@mui/material/Typography';
 
 interface UrlFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
+  itemType: string;
   input: string;
   feedback: string;
   displayPrompt: string;
@@ -36,6 +37,7 @@ interface UrlFieldProps extends PropsWithIsTabledAttribute {
 function UrlField(props: UrlFieldProps) {
   const {
     linkId,
+    itemType,
     input,
     feedback,
     displayPrompt,
@@ -50,10 +52,10 @@ function UrlField(props: UrlFieldProps) {
 
   return (
     <StandardTextField
+      id={itemType + '-' + linkId}
       fullWidth
       textFieldWidth={textFieldWidth}
       isTabled={isTabled}
-      id={linkId}
       value={input}
       error={!!feedback}
       onChange={(event) => onInputChange(event.target.value)}

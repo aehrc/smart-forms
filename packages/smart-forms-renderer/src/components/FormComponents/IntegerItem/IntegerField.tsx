@@ -25,6 +25,7 @@ import Typography from '@mui/material/Typography';
 
 interface IntegerFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
+  itemType: string;
   input: string;
   feedback: string;
   displayPrompt: string;
@@ -38,6 +39,7 @@ interface IntegerFieldProps extends PropsWithIsTabledAttribute {
 function IntegerField(props: IntegerFieldProps) {
   const {
     linkId,
+    itemType,
     input,
     feedback,
     displayPrompt,
@@ -53,7 +55,7 @@ function IntegerField(props: IntegerFieldProps) {
 
   return (
     <StandardTextField
-      id={linkId}
+      id={itemType + '-' + linkId}
       value={input}
       error={!!feedback}
       helperText={feedback}

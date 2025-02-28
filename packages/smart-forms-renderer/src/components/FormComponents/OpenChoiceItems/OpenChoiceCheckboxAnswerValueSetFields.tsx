@@ -30,6 +30,7 @@ import { StyledAlert } from '../../Alert.styles';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Typography from '@mui/material/Typography';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
+import { Box } from '@mui/material';
 
 interface OpenChoiceCheckboxFieldsProps {
   qItem: QuestionnaireItem;
@@ -66,7 +67,7 @@ function OpenChoiceCheckboxAnswerValueSetFields(props: OpenChoiceCheckboxFieldsP
 
   if (options.length > 0) {
     return (
-      <>
+      <Box id={qItem.type + '-' + qItem.linkId}>
         <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
           <CheckboxOptionList
             options={options}
@@ -87,7 +88,7 @@ function OpenChoiceCheckboxAnswerValueSetFields(props: OpenChoiceCheckboxFieldsP
         </StyledFormGroup>
 
         {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
-      </>
+      </Box>
     );
   }
 

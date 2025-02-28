@@ -245,9 +245,14 @@ function QuantityItem(props: QuantityItemProps) {
 
   if (isRepeated) {
     return (
-      <Box data-test="q-item-quantity-box" display="flex" gap={1}>
+      <Box
+        id={qItem.type + '-' + qItem.linkId}
+        data-test="q-item-quantity-box"
+        display="flex"
+        gap={1}>
         <QuantityComparatorField
           linkId={qItem.linkId}
+          itemType={qItem.type}
           options={quantityComparators}
           valueSelect={comparatorInput}
           readOnly={readOnly}
@@ -256,6 +261,7 @@ function QuantityItem(props: QuantityItemProps) {
         />
         <QuantityField
           linkId={qItem.linkId}
+          itemType={qItem.type}
           input={valueInput}
           feedback={feedback}
           displayPrompt={displayPrompt}
@@ -269,6 +275,7 @@ function QuantityItem(props: QuantityItemProps) {
         {showUnitOptions ? (
           <QuantityUnitField
             linkId={qItem.linkId}
+            itemType={qItem.type}
             options={unitOptions}
             valueSelect={unitInput}
             readOnly={readOnly}
@@ -293,6 +300,7 @@ function QuantityItem(props: QuantityItemProps) {
           <Box display="flex" gap={1}>
             <QuantityComparatorField
               linkId={qItem.linkId}
+              itemType={qItem.type}
               options={quantityComparators}
               valueSelect={comparatorInput}
               readOnly={readOnly}
@@ -301,6 +309,7 @@ function QuantityItem(props: QuantityItemProps) {
             />
             <QuantityField
               linkId={qItem.linkId}
+              itemType={qItem.type}
               input={valueInput}
               feedback={feedback}
               displayPrompt={displayPrompt}
@@ -314,6 +323,7 @@ function QuantityItem(props: QuantityItemProps) {
             {showUnitOptions ? (
               <QuantityUnitField
                 linkId={qItem.linkId}
+                itemType={qItem.type}
                 options={unitOptions}
                 valueSelect={unitInput}
                 readOnly={readOnly}

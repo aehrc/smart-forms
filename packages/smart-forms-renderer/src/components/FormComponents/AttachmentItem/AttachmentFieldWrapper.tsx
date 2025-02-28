@@ -59,6 +59,7 @@ function AttachmentFieldWrapper(props: AttachmentFieldWrapperProps) {
     return (
       <AttachmentField
         linkId={qItem.linkId}
+        itemType={qItem.type}
         attachmentValues={attachmentValues}
         feedback={feedback}
         readOnly={readOnly}
@@ -82,6 +83,7 @@ function AttachmentFieldWrapper(props: AttachmentFieldWrapperProps) {
         fieldChildren={
           <AttachmentField
             linkId={qItem.linkId}
+            itemType={qItem.type}
             attachmentValues={attachmentValues}
             feedback={feedback}
             readOnly={readOnly}

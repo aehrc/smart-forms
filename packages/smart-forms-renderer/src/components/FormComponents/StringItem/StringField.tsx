@@ -25,6 +25,7 @@ import Typography from '@mui/material/Typography';
 
 interface StringFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
+  itemType: string;
   input: string;
   feedback: string;
   displayPrompt: string;
@@ -38,6 +39,7 @@ interface StringFieldProps extends PropsWithIsTabledAttribute {
 function StringField(props: StringFieldProps) {
   const {
     linkId,
+    itemType,
     input,
     feedback,
     displayPrompt,
@@ -53,10 +55,10 @@ function StringField(props: StringFieldProps) {
 
   return (
     <StandardTextField
+      id={itemType + '-' + linkId}
       fullWidth
       textFieldWidth={textFieldWidth}
       isTabled={isTabled}
-      id={linkId}
       value={input}
       error={!!feedback}
       onChange={(event) => onInputChange(event.target.value)}

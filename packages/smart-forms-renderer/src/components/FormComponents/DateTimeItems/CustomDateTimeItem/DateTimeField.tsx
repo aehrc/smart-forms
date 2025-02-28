@@ -24,6 +24,7 @@ import Stack from '@mui/material/Stack';
 
 interface DateTimeFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
+  itemType: string;
   displayDate: string;
   dateInput: string;
   timeInput: string;
@@ -44,6 +45,7 @@ interface DateTimeFieldProps extends PropsWithIsTabledAttribute {
 function DateTimeField(props: DateTimeFieldProps) {
   const {
     linkId,
+    itemType,
     displayDate,
     dateInput,
     timeInput,
@@ -63,9 +65,10 @@ function DateTimeField(props: DateTimeFieldProps) {
   } = props;
 
   return (
-    <Stack rowGap={1}>
+    <Stack id={itemType + '-' + linkId} rowGap={1}>
       <CustomDateField
         linkId={linkId}
+        itemType={itemType}
         valueDate={displayDate}
         input={dateInput}
         feedback={dateFeedback ?? ''}
@@ -73,6 +76,7 @@ function DateTimeField(props: DateTimeFieldProps) {
         displayPrompt={displayPrompt}
         entryFormat={entryFormat}
         readOnly={readOnly}
+        isPartOfDateTime={true}
         isTabled={isTabled}
         setFocused={setDateFocused}
         onInputChange={onDateInputChange}
@@ -80,12 +84,14 @@ function DateTimeField(props: DateTimeFieldProps) {
       />
       <CustomTimeField
         linkId={linkId}
+        itemType={itemType}
         timeInput={timeInput}
         periodInput={periodInput}
         is24HourNotation={is24HourNotation}
         feedback={timeFeedback ?? ''}
         displayPrompt={displayPrompt}
         readOnly={readOnly}
+        isPartOfDateTime={true}
         isTabled={isTabled}
         onTimeInputChange={(newTimeInput) => onTimeInputChange(newTimeInput, periodInput)}
         onPeriodChange={(newPeriodInput) => onTimeInputChange(timeInput, newPeriodInput)}

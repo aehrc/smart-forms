@@ -76,7 +76,7 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
   return (
     <Box display="flex">
       <Autocomplete
-        id={qItem.linkId}
+        id={qItem.type + '-' + qItem.linkId}
         value={valueAutocomplete}
         options={options}
         getOptionLabel={(option) =>

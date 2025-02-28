@@ -115,6 +115,7 @@ function TextItem(props: TextItemProps) {
     return (
       <TextField
         linkId={qItem.linkId}
+        itemType={qItem.type}
         input={input}
         feedback={feedback}
         displayPrompt={displayPrompt}
@@ -126,6 +127,7 @@ function TextItem(props: TextItemProps) {
       />
     );
   }
+
   return (
     <FullWidthFormComponentBox
       data-test="q-item-text-box"
@@ -138,6 +140,7 @@ function TextItem(props: TextItemProps) {
         fieldChildren={
           <TextField
             linkId={qItem.linkId}
+            itemType={qItem.type}
             input={input}
             feedback={feedback}
             displayPrompt={displayPrompt}

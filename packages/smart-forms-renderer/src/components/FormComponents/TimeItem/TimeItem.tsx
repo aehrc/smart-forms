@@ -83,6 +83,8 @@ function TimeItem(props: TimeItemProps) {
   if (isRepeated) {
     return (
       <TimeField
+        linkId={qItem.linkId}
+        itemType={qItem.type}
         value={timeDayJs}
         displayPrompt={displayPrompt}
         entryFormat={entryFormat}
@@ -104,6 +106,8 @@ function TimeItem(props: TimeItemProps) {
         labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
         fieldChildren={
           <TimeField
+            linkId={qItem.linkId}
+            itemType={qItem.type}
             value={timeDayJs}
             displayPrompt={displayPrompt}
             entryFormat={entryFormat}

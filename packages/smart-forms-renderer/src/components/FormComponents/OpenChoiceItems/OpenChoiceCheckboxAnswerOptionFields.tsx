@@ -26,6 +26,7 @@ import type {
 import { getChoiceOrientation } from '../../../utils/choice';
 import { StyledFormGroup, StyledRequiredTypography } from '../Item.styles';
 import CheckboxOptionList from '../ChoiceItems/CheckboxOptionList';
+import { Box } from '@mui/material';
 
 interface OpenChoiceCheckboxAnswerOptionFieldsProps {
   qItem: QuestionnaireItem;
@@ -59,7 +60,7 @@ function OpenChoiceCheckboxAnswerOptionFields(props: OpenChoiceCheckboxAnswerOpt
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
   return (
-    <>
+    <Box id={qItem.type + '-' + qItem.linkId}>
       <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
         <CheckboxOptionList
           options={options}
@@ -80,7 +81,7 @@ function OpenChoiceCheckboxAnswerOptionFields(props: OpenChoiceCheckboxAnswerOpt
       </StyledFormGroup>
 
       {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
-    </>
+    </Box>
   );
 }
 

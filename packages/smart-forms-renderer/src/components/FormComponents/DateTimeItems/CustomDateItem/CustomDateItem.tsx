@@ -116,6 +116,7 @@ function CustomDateItem(props: CustomDateItemProps) {
     return (
       <CustomDateField
         linkId={qItem.linkId}
+        itemType={qItem.type}
         valueDate={displayDate}
         input={input}
         feedback={errorFeedback ?? ''}
@@ -123,6 +124,7 @@ function CustomDateItem(props: CustomDateItemProps) {
         displayPrompt={displayPrompt}
         entryFormat={entryFormat}
         readOnly={readOnly}
+        isPartOfDateTime={false}
         isTabled={isTabled}
         setFocused={setFocused}
         onInputChange={handleInputChange}
@@ -143,6 +145,7 @@ function CustomDateItem(props: CustomDateItemProps) {
         fieldChildren={
           <CustomDateField
             linkId={qItem.linkId}
+            itemType={qItem.type}
             valueDate={displayDate}
             input={input}
             feedback={errorFeedback ?? ''}
@@ -150,6 +153,7 @@ function CustomDateItem(props: CustomDateItemProps) {
             displayPrompt={displayPrompt}
             entryFormat={entryFormat}
             readOnly={readOnly}
+            isPartOfDateTime={false}
             isTabled={isTabled}
             setFocused={setFocused}
             onInputChange={handleInputChange}
