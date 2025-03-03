@@ -20,7 +20,6 @@ import React from 'react';
 import Grid from '@mui/material/Unstable_Grid2';
 import type { QuestionnaireItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
-import Box from '@mui/material/Box';
 import { useRendererStylingStore } from '../../../stores';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 
@@ -34,32 +33,15 @@ interface ItemFieldGridProps {
 function ItemFieldGrid(props: ItemFieldGridProps) {
   const { qItem, readOnly, labelChildren, fieldChildren } = props;
 
-  const itemLabelGridBreakpoints = useRendererStylingStore.use.itemLabelGridBreakpoints();
-  const itemFieldGridBreakpoints = useRendererStylingStore.use.itemFieldGridBreakpoints();
+  const itemResponsive = useRendererStylingStore.use.itemResponsive();
+  const { labelBreakpoints, fieldBreakpoints, columnGapPixels, rowGapPixels } = itemResponsive;
 
   const { displayInstructions } = useRenderingExtensions(qItem);
 
   return (
-    <Grid container columnSpacing={4}>
-      <Grid
-        xs={itemLabelGridBreakpoints.xs}
-        sm={itemLabelGridBreakpoints.sm}
-        md={itemLabelGridBreakpoints.md}
-        lg={itemLabelGridBreakpoints.lg}
-        xl={itemLabelGridBreakpoints.xl}>
-        {labelChildren}
-      </Grid>
-      <Box
-        sx={{
-          my: { xs: 1.5, md: 0 } // Adds padding for `xs` breakpoint and removes it for `md` and up
-        }}
-      />
-      <Grid
-        xs={itemFieldGridBreakpoints.xs}
-        sm={itemFieldGridBreakpoints.sm}
-        md={itemFieldGridBreakpoints.md}
-        lg={itemFieldGridBreakpoints.lg}
-        xl={itemFieldGridBreakpoints.xl}>
+    <Grid container columnSpacing={columnGapPixels + 'px'} rowGap={rowGapPixels + 'px'}>
+      <Grid {...labelBreakpoints}>{labelChildren}</Grid>
+      <Grid {...fieldBreakpoints}>
         {fieldChildren}
         <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
       </Grid>

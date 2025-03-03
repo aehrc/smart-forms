@@ -17,6 +17,7 @@
 
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import type { Breakpoint } from '@mui/system/createTheme/createBreakpoints';
 
 /**
  * Props for the useResponsive() hook -  used to determine if the screen size matches a given breakpoint query.
@@ -26,8 +27,8 @@ import useMediaQuery from '@mui/material/useMediaQuery';
  *   - `'down'`: Matches screen sizes below and including `start`.
  *   - `'between'`: Matches screen sizes between `start` and `end` (inclusive).
  *   - `'only'`: Matches exactly the `start` size.
- * @param {'xs' | 'sm' | 'md' | 'lg' | 'xl'} start - The starting breakpoint.
- * @param {'xs' | 'sm' | 'md' | 'lg' | 'xl'} end - The ending breakpoint (required if `query` is `'between'`).
+ * @param {'xs' | 'sm' | 'md' | 'lg' | 'xl'} start - The starting breakpoint - can be extended via MUI BreakpointOverrides.
+ * @param {'xs' | 'sm' | 'md' | 'lg' | 'xl'} end - The ending breakpoint (required if `query` is `'between'`) - can be extended via MUI BreakpointOverrides.
  *
  * @example
  * // Check if the screen size is at least 'md' (medium)
@@ -37,11 +38,14 @@ import useMediaQuery from '@mui/material/useMediaQuery';
  * // Check if the screen size is exactly 'lg' (large)
  * const isLgOnly = useResponsive({ query: 'only', start: 'lg' });
  *
+ * @example
+ * // Check if the screen size is at least 'tablet' - this is a custom breakpoint https://mui.com/material-ui/customization/breakpoints/#custom-breakpoints
+ * const isTabletUp = useResponsive({ query: 'up', start: 'tablet' });
  **/
 export interface UseResponsiveProps {
   query: 'up' | 'down' | 'between' | 'only';
-  start: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  end?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  start: Breakpoint;
+  end?: Breakpoint;
 }
 
 /**
@@ -58,6 +62,10 @@ export interface UseResponsiveProps {
  * @example
  * // Check if the screen size is exactly 'lg' (large)
  * const isLgOnly = useResponsive({ query: 'only', start: 'lg' });
+ *
+ * @example
+ * // Check if the screen size is at least 'tablet' - this is a custom breakpoint https://mui.com/material-ui/customization/breakpoints/#custom-breakpoints
+ * const isTabletUp = useResponsive({ query: 'up', start: 'tablet' });
  */
 function useResponsive(props: UseResponsiveProps): boolean {
   const { query, start, end = 'xl' } = props;

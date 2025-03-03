@@ -43,7 +43,7 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
   const tabs = useQuestionnaireStore.use.tabs();
   const currentTab = useQuestionnaireStore.use.currentTabIndex();
 
-  const tabListFixedWidth = useRendererStylingStore.use.tabListFixedWidth();
+  const tabListWidthOrResponsive = useRendererStylingStore.use.tabListWidthOrResponsive();
 
   const indexMap: Record<string, number> = useMemo(
     () => mapQItemsIndex(topLevelQItem),
@@ -66,13 +66,17 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
 
   const qrItemsByIndex = getQrItemsIndex(qItems, qrItems, indexMap);
 
+  // If tabListWidthOrBreakpoints is a number, it is a fixed width of the tab list - set a fixed width and prevent shrinking
+  // If tabListWidthOrBreakpoints is an object, it is a MUI Breakpoints object
   const tabListWrapperProps =
-    typeof tabListFixedWidth === 'number'
-      ? { sx: { width: tabListFixedWidth, flexShrink: 0 } }
-      : { xs: 12, md: 3, lg: 2.75 };
+    typeof tabListWidthOrResponsive === 'number'
+      ? { sx: { width: tabListWidthOrResponsive, flexShrink: 0 } }
+      : tabListWidthOrResponsive.tabListBreakpoints;
 
   const qItemTabPanelProps =
-    typeof tabListFixedWidth === 'number' ? { sx: { flexGrow: 1 } } : { xs: 12, md: 9, lg: 9.25 };
+    typeof tabListWidthOrResponsive === 'number'
+      ? { sx: { flexGrow: 1 } }
+      : tabListWidthOrResponsive.tabContentBreakpoints;
 
   return (
     <Grid container spacing={1.5} sx={{ flexWrap: 'nowrap' }}>

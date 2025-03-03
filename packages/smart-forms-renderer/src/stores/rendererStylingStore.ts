@@ -19,14 +19,7 @@ import { createStore } from 'zustand/vanilla';
 import { createSelectors } from './selector';
 import type { QuestionnaireItem } from 'fhir/r4';
 import type { UseResponsiveProps } from '../hooks';
-
-export interface ItemGridBreakpoints {
-  xs?: number;
-  sm?: number;
-  md?: number;
-  lg?: number;
-  xl?: number;
-}
+import type { Breakpoints } from '@mui/material';
 
 export interface RendererStyling {
   itemLabelFontWeight?:
@@ -41,10 +34,19 @@ export interface RendererStyling {
     | '900'
     | 'default';
   requiredIndicatorPosition?: 'start' | 'end';
-  itemLabelGridBreakpoints?: ItemGridBreakpoints;
-  itemFieldGridBreakpoints?: ItemGridBreakpoints;
+  itemResponsive?: {
+    labelBreakpoints: Partial<Breakpoints['values']>;
+    fieldBreakpoints: Partial<Breakpoints['values']>;
+    columnGapPixels: number;
+    rowGapPixels: number;
+  };
   showTabbedFormAt?: UseResponsiveProps;
-  tabListFixedWidth?: number | false;
+  tabListWidthOrResponsive?:
+    | number
+    | {
+        tabListBreakpoints: Partial<Breakpoints['values']>;
+        tabContentBreakpoints: Partial<Breakpoints['values']>;
+      };
   textFieldWidth?: number;
   inputsFlexGrow?: boolean;
   reverseBooleanYesNo?: boolean;
@@ -74,10 +76,19 @@ export interface RendererStylingStoreType {
     | '900'
     | 'default';
   requiredIndicatorPosition: 'start' | 'end';
-  itemLabelGridBreakpoints: ItemGridBreakpoints;
-  itemFieldGridBreakpoints: ItemGridBreakpoints;
+  itemResponsive: {
+    labelBreakpoints: Partial<Breakpoints['values']>;
+    fieldBreakpoints: Partial<Breakpoints['values']>;
+    columnGapPixels: number;
+    rowGapPixels: number;
+  };
+  tabListWidthOrResponsive:
+    | number
+    | {
+        tabListBreakpoints: Partial<Breakpoints['values']>;
+        tabContentBreakpoints: Partial<Breakpoints['values']>;
+      };
   showTabbedFormAt: UseResponsiveProps;
-  tabListFixedWidth: number | false;
   textFieldWidth: number;
   inputsFlexGrow: boolean; // radio, checkbox and boolean inputs should have flexGrow: 1
   reverseBooleanYesNo: boolean;
@@ -96,10 +107,17 @@ export interface RendererStylingStoreType {
 export const rendererStylingStore = createStore<RendererStylingStoreType>()((set) => ({
   itemLabelFontWeight: 'default',
   requiredIndicatorPosition: 'start',
-  itemLabelGridBreakpoints: { xs: 12, md: 4 },
-  itemFieldGridBreakpoints: { xs: 12, md: 8 },
+  itemResponsive: {
+    labelBreakpoints: { xs: 12, md: 4 },
+    fieldBreakpoints: { xs: 12, md: 8 },
+    columnGapPixels: 32,
+    rowGapPixels: 4
+  },
+  tabListWidthOrResponsive: {
+    tabListBreakpoints: { xs: 12, sm: 3, md: 3, lg: 2.75 },
+    tabContentBreakpoints: { xs: 12, sm: 9, md: 9, lg: 9.25 }
+  },
   showTabbedFormAt: { query: 'up', start: 'md' },
-  tabListFixedWidth: false,
   textFieldWidth: 320,
   inputsFlexGrow: false,
   reverseBooleanYesNo: false,
@@ -113,10 +131,17 @@ export const rendererStylingStore = createStore<RendererStylingStoreType>()((set
     set(() => ({
       itemLabelFontWeight: params.itemLabelFontWeight ?? 'default',
       requiredIndicatorPosition: params.requiredIndicatorPosition ?? 'start',
-      itemLabelGridBreakpoints: params.itemLabelGridBreakpoints ?? { xs: 12, md: 4 },
-      itemFieldGridBreakpoints: params.itemFieldGridBreakpoints ?? { xs: 12, md: 8 },
+      itemResponsive: params.itemResponsive ?? {
+        labelBreakpoints: { xs: 12, md: 4 },
+        fieldBreakpoints: { xs: 12, md: 8 },
+        columnGapPixels: 32,
+        rowGapPixels: 4
+      },
+      tabListWidthOrResponsive: params.tabListWidthOrResponsive ?? {
+        tabListBreakpoints: { xs: 12, md: 3, lg: 2.75 },
+        tabContentBreakpoints: { xs: 12, md: 9, lg: 9.25 }
+      },
       showTabbedFormAt: params.showTabbedFormAt ?? { query: 'up', start: 'md' },
-      tabListFixedWidth: params.tabListFixedWidth ?? false,
       textFieldWidth: params.textFieldWidth ?? 320,
       inputsFlexGrow: params.inputsFlexGrow ?? false,
       reverseBooleanYesNo: params.reverseBooleanYesNo ?? false,
