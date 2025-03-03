@@ -36,7 +36,7 @@ function RefetchButton(props: RefetchButtonProps) {
         </span>
       </Tooltip>
       <Fade in={isFetching}>
-        <Typography variant="subtitle2" color="text.secondary" sx={{ pb: 0.25 }}>
+        <Typography variant="subtitle2" color="text.secondary" fontWeight={100} sx={{ pb: 0.25 }}>
           Updating...
         </Typography>
       </Fade>

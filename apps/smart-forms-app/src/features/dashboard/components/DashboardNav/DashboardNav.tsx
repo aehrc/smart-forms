@@ -16,7 +16,6 @@
  */
 
 import { Box, Drawer } from '@mui/material';
-import useResponsive from '../../../../hooks/useResponsive.ts';
 import Logo from '../../../../components/Logos/Logo.tsx';
 import Scrollbar from '../../../../components/Scrollbar/Scrollbar.tsx';
 import DashboardNavSection from './DashboardNavSection.tsx';
@@ -29,6 +28,7 @@ import { NavMiddleWrapper } from '../../../../components/Nav/Nav.styles.ts';
 import { NAV_WIDTH } from '../../../../components/Header/Header.styles.ts';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import useDebugMode from '../../../../hooks/useDebugMode.ts';
+import { useResponsive } from '@aehrc/smart-forms-renderer';
 
 interface DashboardNavProps {
   openNav: boolean;
@@ -41,7 +41,7 @@ export default function DashboardNav(props: DashboardNavProps) {
   const { smartClient } = useSmartClient();
   const { debugModeEnabled } = useDebugMode();
 
-  const isDesktop = useResponsive('up', 'lg');
+  const isLgUp = useResponsive({ query: 'up', start: 'lg' });
 
   const isNotLaunched = !smartClient;
 
@@ -81,7 +81,7 @@ export default function DashboardNav(props: DashboardNavProps) {
         flexShrink: { lg: 0 },
         width: { lg: NAV_WIDTH }
       }}>
-      {isDesktop ? (
+      {isLgUp ? (
         <Drawer
           open
           variant="permanent"

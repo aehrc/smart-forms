@@ -18,7 +18,7 @@
 import { memo } from 'react';
 import { Box, Typography } from '@mui/material';
 import AppLogo from '../../data/images/logo.svg';
-import useResponsive from '../../hooks/useResponsive.ts';
+import { useResponsive } from '@aehrc/smart-forms-renderer';
 
 interface LogoProps {
   isNav?: boolean;
@@ -28,9 +28,9 @@ interface LogoProps {
 const Logo = memo(function Logo(props: LogoProps) {
   const { isNav, isRendererHeader } = props;
 
-  const isDesktop = useResponsive('up', 'lg');
+  const isLgUp = useResponsive({ query: 'up', start: 'lg' });
 
-  const showLogoNameOnHeader = isDesktop && !isRendererHeader;
+  const showLogoNameOnHeader = isLgUp && !isRendererHeader;
 
   return (
     <Box display="flex" alignItems="center" columnGap={1.5}>

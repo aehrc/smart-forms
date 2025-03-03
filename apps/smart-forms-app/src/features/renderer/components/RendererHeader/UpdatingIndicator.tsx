@@ -17,15 +17,14 @@
 
 import { useEffect, useState } from 'react';
 import { Fade, Typography } from '@mui/material';
-import useResponsive from '../../../../hooks/useResponsive.ts';
-import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
+import { useQuestionnaireResponseStore, useResponsive } from '@aehrc/smart-forms-renderer';
 
 function UpdatingIndicator() {
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
 
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const isDesktop = useResponsive('up', 'lg');
+  const isLgUp = useResponsive({ query: 'up', start: 'lg' });
 
   useEffect(() => {
     setIsUpdating(true);
@@ -41,8 +40,8 @@ function UpdatingIndicator() {
       <Typography
         variant="subtitle2"
         color="text.secondary"
-        fontSize={isDesktop ? 12 : 9}
-        sx={{ mx: isDesktop ? 2 : 0.5 }}
+        fontSize={isLgUp ? 12 : 9}
+        sx={{ mx: isLgUp ? 2 : 0.5 }}
         data-test="updating-indicator">
         Updating...
       </Typography>

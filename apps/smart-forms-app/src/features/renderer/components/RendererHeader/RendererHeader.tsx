@@ -17,7 +17,6 @@
 
 import Iconify from '../../../../components/Iconify/Iconify.tsx';
 import { useTheme } from '@mui/material/styles';
-import useResponsive from '../../../../hooks/useResponsive.ts';
 import Logo from '../../../../components/Logos/Logo.tsx';
 import { Box, IconButton, Typography } from '@mui/material';
 import UpdatingIndicator from './UpdatingIndicator.tsx';
@@ -25,7 +24,7 @@ import { LogoWrapper } from '../../../../components/Logos/Logo.styles.ts';
 import { StyledRoot, StyledToolbar } from '../../../../components/Header/Header.styles.ts';
 import { memo } from 'react';
 import HeaderIcons from '../../../../components/Header/HeaderIcons.tsx';
-import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import { useQuestionnaireStore, useResponsive } from '@aehrc/smart-forms-renderer';
 import TokenTimer from '../../../tokenTimer/components/TokenTimer.tsx';
 
 interface RendererHeaderProps {
@@ -39,14 +38,14 @@ const RendererHeader = memo(function RendererHeader(props: RendererHeaderProps) 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
 
   const theme = useTheme();
-  const isDesktop = useResponsive('up', 'lg');
+  const isLgUp = useResponsive({ query: 'up', start: 'lg' });
 
   const navIsExpanded = !desktopNavCollapsed;
 
   return (
     <StyledRoot sx={{ boxShadow: theme.customShadows.z4 }} navCollapsed={desktopNavCollapsed}>
       <StyledToolbar>
-        {isDesktop ? (
+        {isLgUp ? (
           <IconButton
             onClick={onOpenMobileNav}
             sx={{
@@ -58,14 +57,14 @@ const RendererHeader = memo(function RendererHeader(props: RendererHeaderProps) 
           </IconButton>
         ) : null}
 
-        {isDesktop && navIsExpanded ? null : (
+        {isLgUp && navIsExpanded ? null : (
           <LogoWrapper>
             <Logo isRendererHeader />
           </LogoWrapper>
         )}
 
         <Box m={0.5}>
-          <Typography variant="subtitle1" color="text.primary" fontSize={isDesktop ? 13 : 11}>
+          <Typography variant="subtitle1" color="text.primary" fontSize={isLgUp ? 13 : 11}>
             {sourceQuestionnaire.title}
           </Typography>
         </Box>

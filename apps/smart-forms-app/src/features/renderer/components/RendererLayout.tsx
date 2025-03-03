@@ -30,9 +30,8 @@ import PopulationProgressSpinner from '../../../components/Spinners/PopulationPr
 import useLeavePageBlocker from '../hooks/useBlocker.ts';
 import useBackToTop from '../../backToTop/hooks/useBackToTop.ts';
 import RendererEmbeddedSpeedDial from './RendererEmbeddedSpeedDial/RendererEmbeddedSpeedDial.tsx';
-import useResponsive from '../../../hooks/useResponsive.ts';
 import usePopulate from '../../prepopulate/hooks/usePopulate.tsx';
-import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
+import { useQuestionnaireResponseStore, useResponsive } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
 import type { RendererSpinner } from '../types/rendererSpinner.ts';
 import RepopulateBackdrop from '../../repopulate/components/RepopulateBackdrop.tsx';
@@ -63,7 +62,7 @@ function RendererLayout() {
     setDialogOpen(true);
   }
 
-  const isDesktop = useResponsive('up', 'lg');
+  const isLgUp = useResponsive({ query: 'up', start: 'lg' });
 
   useBackToTop();
 
@@ -109,7 +108,7 @@ function RendererLayout() {
         onExpandNav={() => setDesktopNavCollapsed(false)}
       />
 
-      {isDesktop ? (
+      {isLgUp ? (
         <BackToTopButton>
           <Fab size="medium">
             <KeyboardArrowUpIcon />

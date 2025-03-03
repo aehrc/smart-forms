@@ -16,10 +16,10 @@
  */
 
 import { Box } from '@mui/material';
-import useResponsive from '../../../../hooks/useResponsive.ts';
 import { NAV_WIDTH } from '../../../../components/Header/Header.styles.ts';
 import RendererNavDrawer from './RendererNavDrawer.tsx';
 import type { RendererSpinner } from '../../types/rendererSpinner.ts';
+import { useResponsive } from '@aehrc/smart-forms-renderer';
 
 interface Props {
   mobileNavOpen: boolean;
@@ -40,9 +40,9 @@ function RendererNavWrapper(props: Props) {
     onSpinnerChange
   } = props;
 
-  const isDesktop = useResponsive('up', 'lg');
+  const isLgUp = useResponsive({ query: 'up', start: 'lg' });
 
-  const desktopNavIsShown = isDesktop && !desktopNavCollapsed;
+  const desktopNavIsShown = isLgUp && !desktopNavCollapsed;
 
   return (
     <>

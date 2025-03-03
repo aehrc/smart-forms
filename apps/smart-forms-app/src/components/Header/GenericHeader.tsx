@@ -17,12 +17,12 @@
 
 import { Box } from '@mui/material';
 import Iconify from '../Iconify/Iconify.tsx';
-import useResponsive from '../../hooks/useResponsive.ts';
 import Logo from '../Logos/Logo.tsx';
 import { LogoWrapper } from '../Logos/Logo.styles.ts';
 import { MenuIconButton, StyledRoot, StyledToolbar } from './Header.styles.ts';
 import { memo } from 'react';
 import HeaderIcons from './HeaderIcons.tsx';
+import { useResponsive } from '@aehrc/smart-forms-renderer';
 
 interface DashboardHeaderProps {
   onOpenNav: () => void;
@@ -31,7 +31,7 @@ interface DashboardHeaderProps {
 const GenericHeader = memo(function GenericHeader(props: DashboardHeaderProps) {
   const { onOpenNav } = props;
 
-  const isDesktop = useResponsive('up', 'lg');
+  const isLgUp = useResponsive({ query: 'up', start: 'lg' });
 
   return (
     <StyledRoot>
@@ -40,7 +40,7 @@ const GenericHeader = memo(function GenericHeader(props: DashboardHeaderProps) {
           <Iconify icon="eva:menu-2-fill" />
         </MenuIconButton>
 
-        {!isDesktop ? (
+        {!isLgUp ? (
           <LogoWrapper>
             <Logo />
           </LogoWrapper>

@@ -16,7 +16,6 @@
  */
 
 import { Box, Drawer } from '@mui/material';
-import useResponsive from '../../../hooks/useResponsive.ts';
 import Logo from '../../../components/Logos/Logo.tsx';
 import Scrollbar from '../../../components/Scrollbar/Scrollbar.tsx';
 import NavPatientDetails from '../../../components/Nav/NavPatientDetails.tsx';
@@ -28,7 +27,11 @@ import { CsiroLogoWrapper, NavLogoWrapper } from '../../../components/Logos/Logo
 import { NavErrorAlertWrapper } from '../../../components/Nav/Nav.styles.ts';
 import { NAV_WIDTH } from '../../../components/Header/Header.styles.ts';
 import ViewerLaunchQuestionnaireNavSection from './ViewerLaunchQuestionnaireNavSection.tsx';
-import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import {
+  useQuestionnaireResponseStore,
+  useQuestionnaireStore,
+  useResponsive
+} from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
 
 interface Props {
@@ -44,7 +47,7 @@ function ViewerNav(props: Props) {
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
   const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
 
-  const isDesktop = useResponsive('up', 'lg');
+  const isLgUp = useResponsive({ query: 'up', start: 'lg' });
 
   const launchQuestionnaireExists = !!launchQuestionnaire;
   const isNotLaunched = !smartClient;
@@ -89,7 +92,7 @@ function ViewerNav(props: Props) {
         flexShrink: { lg: 0 },
         width: { lg: NAV_WIDTH }
       }}>
-      {isDesktop ? (
+      {isLgUp ? (
         <Drawer
           open
           variant="permanent"

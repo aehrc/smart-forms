@@ -20,12 +20,12 @@ import useSmartClient from '../../hooks/useSmartClient.ts';
 import Logo from '../../components/Logos/Logo.tsx';
 import csiroLogo from '../../data/images/csiro-logo.png';
 import NotFoundSelections from './NotFoundSelections.tsx';
-import useResponsive from '../../hooks/useResponsive.ts';
+import { useResponsive } from '@aehrc/smart-forms-renderer';
 
 function NotFound() {
   const { smartClient } = useSmartClient();
 
-  const isDesktop = useResponsive('up', 'lg');
+  const isLgUp = useResponsive({ query: 'up', start: 'lg' });
 
   const isNotLaunched = !smartClient;
 
@@ -42,7 +42,7 @@ function NotFound() {
         </Box>
       </Box>
 
-      <Box mb={isDesktop ? 10 : 5} />
+      <Box mb={isLgUp ? 10 : 5} />
 
       <Stack justifyContent="center" alignItems="center">
         <Container>
