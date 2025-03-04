@@ -28,7 +28,6 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { isSpecificItemControl } from '../../../utils';
 import ClearInputButton from '../ItemParts/ClearInputButton';
 import { useRendererStylingStore } from '../../../stores';
-import { findCalculatedExpressionsInExtensions } from '../../../utils/getExpressionsFromItem';
 
 interface BooleanFieldProps {
   qItem: QuestionnaireItem;
@@ -48,9 +47,6 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
   const reverseBooleanYesNo = useRendererStylingStore.use.reverseBooleanYesNo();
   const hideClearButton = useRendererStylingStore.use.hideClearButton();
 
-  const calculatedExpressionExist =
-    findCalculatedExpressionsInExtensions(qItem.extension ?? []).length > 0;
-
   const booleanAsCheckbox = isSpecificItemControl(qItem, 'check-box');
 
   // defaults to horizontal, only set to vertical if explicitly set
@@ -60,7 +56,13 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
 
   return (
     <>
-      <Box display="flex" alignItems="center">
+      <Box
+        display="flex"
+        sx={{
+          justifyContent: 'space-between',
+          alignItems: { xs: 'start', sm: 'center' },
+          flexDirection: { xs: 'column', sm: 'row' }
+        }}>
         {booleanAsCheckbox ? (
           <FormControlLabel
             id={qItem.type + '-' + qItem.linkId}
@@ -83,50 +85,55 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
             label=""
           />
         ) : (
-          <StyledRadioGroup
-            id={qItem.type + '-' + qItem.linkId}
-            row={orientation === ChoiceItemOrientation.Horizontal}
-            sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
-            onChange={(e) => onCheckedChange(e.target.value)}
-            value={selection}>
-            {reverseBooleanYesNo ? (
-              <>
-                <ChoiceRadioSingle
-                  value="false"
-                  label="No"
-                  readOnly={readOnly}
-                  fullWidth={inputsFlexGrow}
-                />
-                <ChoiceRadioSingle
-                  value="true"
-                  label="Yes"
-                  readOnly={readOnly}
-                  fullWidth={inputsFlexGrow}
-                />
-              </>
-            ) : (
-              <>
-                <ChoiceRadioSingle
-                  value="true"
-                  label="Yes"
-                  readOnly={readOnly}
-                  fullWidth={inputsFlexGrow}
-                />
-                <ChoiceRadioSingle
-                  value="false"
-                  label="No"
-                  readOnly={readOnly}
-                  fullWidth={inputsFlexGrow}
-                />
-              </>
-            )}
-          </StyledRadioGroup>
+          <Box
+            display="flex"
+            alignItems="center"
+            sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
+            <StyledRadioGroup
+              id={qItem.type + '-' + qItem.linkId}
+              row={orientation === ChoiceItemOrientation.Horizontal}
+              sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
+              onChange={(e) => onCheckedChange(e.target.value)}
+              value={selection}>
+              {reverseBooleanYesNo ? (
+                <>
+                  <ChoiceRadioSingle
+                    value="false"
+                    label="No"
+                    readOnly={readOnly}
+                    fullWidth={inputsFlexGrow}
+                  />
+                  <ChoiceRadioSingle
+                    value="true"
+                    label="Yes"
+                    readOnly={readOnly}
+                    fullWidth={inputsFlexGrow}
+                  />
+                </>
+              ) : (
+                <>
+                  <ChoiceRadioSingle
+                    value="true"
+                    label="Yes"
+                    readOnly={readOnly}
+                    fullWidth={inputsFlexGrow}
+                  />
+                  <ChoiceRadioSingle
+                    value="false"
+                    label="No"
+                    readOnly={readOnly}
+                    fullWidth={inputsFlexGrow}
+                  />
+                </>
+              )}
+            </StyledRadioGroup>
+
+            <Box flexGrow={1} />
+
+            <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+          </Box>
         )}
 
-        <Box flexGrow={1} />
-        {calculatedExpressionExist ? (
-          <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-        ) : null}
         {hideClearButton ? null : (
           <ClearInputButton
             buttonShown={valueBoolean !== undefined}

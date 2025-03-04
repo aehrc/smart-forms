@@ -197,6 +197,7 @@ export const qItemControlDisplayFlyover: Questionnaire = {
           text: 'Height',
           type: 'decimal',
           repeats: false,
+          required: true,
           item: [
             {
               extension: [

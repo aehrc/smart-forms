@@ -38,6 +38,7 @@ import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
 import { ItemLabelWrapper } from '../ItemParts';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import { AlertColor } from '@mui/material/Alert';
 
 interface OpenChoiceAutocompleteItemProps
   extends PropsWithQrItemChangeHandler,
@@ -94,7 +95,12 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
     feedback: terminologyFeedback
   } = useTerminologyServerQuery(qItem, maxList, input, debouncedInput);
 
-  const feedback = terminologyFeedback ?? { message: validationFeedback, color: 'error' };
+  let feedback: { message: string; color: AlertColor } | null = null;
+  if (terminologyFeedback) {
+    feedback = terminologyFeedback;
+  } else if (validationFeedback !== '') {
+    feedback = { message: validationFeedback, color: 'error' };
+  }
 
   if (!qItem.answerValueSet) {
     return null;
@@ -142,7 +148,7 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
         valueAutocomplete={valueAutocomplete}
         input={input}
         loading={loading}
-        feedback={feedback ?? null}
+        feedback={feedback}
         readOnly={readOnly}
         isTabled={isTabled}
         renderingExtensions={renderingExtensions}
@@ -169,7 +175,7 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
             valueAutocomplete={valueAutocomplete}
             input={input}
             loading={loading}
-            feedback={feedback ?? null}
+            feedback={feedback}
             readOnly={readOnly}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}

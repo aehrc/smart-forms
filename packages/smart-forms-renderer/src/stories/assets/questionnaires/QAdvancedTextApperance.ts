@@ -1,6 +1,6 @@
 import type { Questionnaire } from 'fhir/r4';
 
-export const qRenderingStyleBooleanCheckboxItem: Questionnaire = {
+export const qRenderingStyleBooleanItem: Questionnaire = {
   resourceType: 'Questionnaire',
   id: 'RenderingStyle-1',
   name: 'RenderingStyle-1',
@@ -29,7 +29,7 @@ export const qRenderingStyleBooleanCheckboxItem: Questionnaire = {
   ]
 };
 
-export const qRenderingXhtmlBooleanCheckboxItem: Questionnaire = {
+export const qRenderingXhtmlBooleanItem: Questionnaire = {
   resourceType: 'Questionnaire',
   id: 'RenderingXhtml-1',
   name: 'RenderingXhtml-1',

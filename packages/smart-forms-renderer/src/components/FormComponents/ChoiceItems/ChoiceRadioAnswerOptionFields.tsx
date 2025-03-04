@@ -63,7 +63,10 @@ function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps
           alignItems: { xs: 'start', sm: 'center' },
           flexDirection: { xs: 'column', sm: 'row' }
         }}>
-        <Box display="flex" sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
+        <Box
+          display="flex"
+          alignItems="center"
+          sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
           <StyledRadioGroup
             id={qItem.type + '-' + qItem.linkId}
             row={orientation === ChoiceItemOrientation.Horizontal}

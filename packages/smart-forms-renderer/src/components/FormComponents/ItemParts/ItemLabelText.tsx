@@ -106,6 +106,7 @@ const ItemLabelText = memo(function ItemLabelText(props: ItemLabelTextProps) {
   }
 
   // parse regular text
+  // FIXME flyover and required symbol is located much higher above the label - should be on the same line
   return (
     <Typography
       color={readOnly ? 'text.disabled' : 'text.primary'}
