@@ -20,13 +20,13 @@ import React from 'react';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { BaseRenderer } from '../../components';
 import { QueryClientProvider } from '@tanstack/react-query';
-import RendererThemeProvider from '../../theme/Theme';
 import useRendererQueryClient from '../../hooks/useRendererQueryClient';
 import type Client from 'fhirclient/lib/Client';
 import useInitialiseForm from '../../hooks/useInitialiseForm';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
+import RendererThemeProvider from '../../theme/RendererThemeProvider';
 
 export interface InitialiseFormWrapperProps {
   questionnaire: Questionnaire;

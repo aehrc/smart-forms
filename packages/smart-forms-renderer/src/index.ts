@@ -97,7 +97,7 @@ export {
 } from './utils';
 
 // theme provider exports
-export { RendererThemeProvider } from './theme';
+export { RendererThemeProvider, themeOptions } from './theme';
 
 // wrapper exports - only for smartforms.csiro.au/standalone use
 export type { InitialiseFormWrapperProps } from './stories/storybookWrappers';

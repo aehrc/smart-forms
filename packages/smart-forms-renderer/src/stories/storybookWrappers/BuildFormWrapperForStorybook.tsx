@@ -20,13 +20,13 @@ import React from 'react';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { BaseRenderer } from '../../components';
 import { QueryClientProvider } from '@tanstack/react-query';
-import RendererThemeProvider from '../../theme/Theme';
 import { useBuildForm } from '../../hooks';
 import useRendererQueryClient from '../../hooks/useRendererQueryClient';
 import { STORYBOOK_TERMINOLOGY_SERVER_URL } from './globals';
 
 // iframeResizerChild.js needs to be called at least once in the used storybook wrappers to be included in storybook-static
 import './iframeResizerChild';
+import RendererThemeProvider from '../../theme/RendererThemeProvider';
 
 interface BuildFormWrapperForStorybookProps {
   questionnaire: Questionnaire;

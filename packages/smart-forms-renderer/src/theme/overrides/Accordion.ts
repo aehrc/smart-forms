@@ -22,7 +22,7 @@ export default function Accordion(theme: Theme) {
     MuiAccordion: {
       styleOverrides: {
         root: {
-          boxShadow: theme.customShadows.card,
+          boxShadow: theme.shadows[12],
           borderRadius: Number(theme.shape.borderRadius) * 2,
           '&:before': {
             display: 'none'

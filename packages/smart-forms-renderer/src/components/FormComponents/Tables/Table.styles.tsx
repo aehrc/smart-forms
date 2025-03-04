@@ -68,7 +68,7 @@ export const StyledGroupTableRow = styled(TableRow, {
         }),
     ...(itemIsDragged
       ? {
-          boxShadow: theme.customShadows.z8,
+          boxShadow: theme.shadows[16],
           opacity: 1,
           backgroundColor: itemIsSelected ? '#edf4ff' : '#fafafa'
         }

@@ -1,1 +1,2 @@
-export { RendererThemeProvider } from './Theme';
+export { RendererThemeProvider } from './RendererThemeProvider';
+export { themeOptions } from './themeOptions';
