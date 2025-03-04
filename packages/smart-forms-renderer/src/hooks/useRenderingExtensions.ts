@@ -24,7 +24,8 @@ import {
 } from '../utils/itemControl';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
-import { JSX, useMemo } from 'react';
+import type { JSX } from 'react';
+import { useMemo } from 'react';
 
 export interface RenderingExtensions {
   displayUnit: string;

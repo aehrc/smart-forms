@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 
-import React, { JSX } from 'react';
+import type { JSX } from 'react';
+import React from 'react';
 import Tooltip from '@mui/material/Tooltip';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { useQuestionnaireStore } from '../../../stores';

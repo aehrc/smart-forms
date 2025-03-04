@@ -36,9 +36,9 @@ function ResponseListToolbarSearch(props: ResponseListToolbarSearchProps) {
   const { searchedQuestionnaire, onChangeQuestionnaire } = props;
 
   const [input, setInput] = useState('');
-  const debouncedInput = useDebounceValue(input, 300);
+  const [debouncedInput] = useDebounceValue(input, 300);
 
-  const { questionnaires, isFetching } = useFetchQuestionnaires(input, debouncedInput[0], 2);
+  const { questionnaires, isFetching } = useFetchQuestionnaires(input, debouncedInput, 2);
 
   const theme = useTheme();
 
@@ -58,7 +58,7 @@ function ResponseListToolbarSearch(props: ResponseListToolbarSearchProps) {
     <Autocomplete
       value={searchedQuestionnaire ?? null}
       options={questionnaires}
-      getOptionLabel={(questionnaire:any) => createResponseSearchOption(questionnaire)}
+      getOptionLabel={(questionnaire) => createResponseSearchOption(questionnaire)}
       loading={isFetching}
       loadingText="Fetching results..."
       noOptionsText="No results... yet."
@@ -70,7 +70,7 @@ function ResponseListToolbarSearch(props: ResponseListToolbarSearchProps) {
         maxWidth: 400,
         ...getResponseSearchStyles(theme)
       }}
-      renderInput={(params:any) => (
+      renderInput={(params) => (
         <TextField
           {...params}
           placeholder="Search responses..."

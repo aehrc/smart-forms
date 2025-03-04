@@ -17,11 +17,11 @@
 
 import type { ReactNode } from 'react';
 import React from 'react';
-import Grid from '@mui/material/Grid2';
 import type { QuestionnaireItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import { useRendererStylingStore } from '../../../stores';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
+import Grid from '@mui/material/Grid2';
 
 interface ItemFieldGridProps {
   qItem: QuestionnaireItem;
@@ -40,8 +40,8 @@ function ItemFieldGrid(props: ItemFieldGridProps) {
 
   return (
     <Grid container columnSpacing={columnGapPixels + 'px'} rowGap={rowGapPixels + 'px'}>
-      <Grid {...labelBreakpoints}>{labelChildren}</Grid>
-      <Grid {...fieldBreakpoints}>
+      <Grid size={{ ...labelBreakpoints }}>{labelChildren}</Grid>
+      <Grid size={{ ...fieldBreakpoints }}>
         {fieldChildren}
         <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
       </Grid>

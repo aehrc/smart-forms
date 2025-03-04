@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
+import type { Breakpoint } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import type { Breakpoint } from '@mui/system/createTheme/createBreakpoints';
 
 /**
  * Props for the useResponsive() hook -  used to determine if the screen size matches a given breakpoint query.

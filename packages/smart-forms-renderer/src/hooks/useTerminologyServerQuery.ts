@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-// import { useQuery } from '@tanstack/react-query';
 import type { Coding, QuestionnaireItem, ValueSet } from 'fhir/r4';
 import { getTerminologyServerUrl, getValueSetCodings, getValueSetPromise } from '../utils/valueSet';
 
@@ -67,12 +66,11 @@ function useTerminologyServerQuery(
   const preferredTerminologyServerUrl = itemPreferredTerminologyServers[qItem.linkId];
   const terminologyServerUrl =
     getTerminologyServerUrl(qItem) ?? preferredTerminologyServerUrl ?? defaultTerminologyServerUrl;
-  
-    const { isFetching, error, data } = useQuery<ValueSet>(
+
+  const { isFetching, error, data } = useQuery<ValueSet>(
     ['expandValueSet', fullUrl],
-    () => getValueSetPromise(fullUrl, terminologyServerUrl)
-    ,
-    {enabled: searchTerm.length >= 2 && answerValueSetUrl !== undefined}
+    () => getValueSetPromise(fullUrl, terminologyServerUrl),
+    { enabled: searchTerm.length >= 2 && answerValueSetUrl !== undefined }
   );
 
   if (error) {

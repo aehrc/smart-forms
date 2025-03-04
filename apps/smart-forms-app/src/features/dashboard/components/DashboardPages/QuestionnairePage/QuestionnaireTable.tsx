@@ -34,7 +34,7 @@ function QuestionnaireTable() {
 
   // search questionnaires
   const [searchInput, setSearchInput] = useState('');
-  const debouncedInput = useDebounceValue(searchInput, 300);
+  const [debouncedInput] = useDebounceValue(searchInput, 300);
 
   const {
     questionnaires,
@@ -43,7 +43,7 @@ function QuestionnaireTable() {
     isInitialLoading,
     isFetching,
     refetchQuestionnaires
-  } = useFetchQuestionnaires(searchInput, debouncedInput[0]);
+  } = useFetchQuestionnaires(searchInput, debouncedInput);
 
   const columns = useMemo(() => createQuestionnaireTableColumns(), []);
 
@@ -77,13 +77,13 @@ function QuestionnaireTable() {
     <QuestionnaireTableView
       table={table}
       searchInput={searchInput}
-      debouncedInput={debouncedInput[0]}
+      debouncedInput={debouncedInput}
       fetchStatus={fetchStatus}
       isInitialLoading={isInitialLoading}
       isFetching={isFetching}
       fetchError={fetchError}
       selectedQuestionnaire={selectedQuestionnaire}
-      onSearch={(input:any) => {
+      onSearch={(input) => {
         table.setPageIndex(0);
         setSearchInput(input);
       }}

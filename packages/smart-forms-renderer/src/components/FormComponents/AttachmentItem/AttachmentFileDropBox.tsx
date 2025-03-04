@@ -30,7 +30,7 @@ export interface AttachmentFileDropBoxProps extends PropsWithIsTabledAttribute {
   readOnly: boolean;
 }
 
-function AttachmentFileDropBox( props: AttachmentFileDropBoxProps) {
+function AttachmentFileDropBox(props: AttachmentFileDropBoxProps) {
   const { file, onDrop, errorMessage, readOnly, isTabled } = props;
 
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
@@ -52,7 +52,7 @@ function AttachmentFileDropBox( props: AttachmentFileDropBoxProps) {
 
   return (
     <AttachmentFileDropBoxWrapper
-      ref ={React.createRef()}
+      ref={dropTarget}
       display="flex"
       isActive={isActive}
       textFieldWidth={textFieldWidth}
