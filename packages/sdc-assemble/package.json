@@ -20,11 +20,11 @@
   },
   "homepage": "https://github.com/aehrc/smart-forms#readme",
   "dependencies": {
-    "axios": "^1.7.4",
+    "axios": "^1.7.9",
     "lodash.clonedeep": "^4.5.0"
   },
   "devDependencies": {
-    "@types/fhir": "^0.0.38",
+    "@types/fhir": "^0.0.41",
     "@types/lodash.clonedeep": "^4.5.9",
     "jest": "^29.7.0"
   }

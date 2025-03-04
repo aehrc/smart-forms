@@ -17,7 +17,7 @@
 
 import type { ReactNode } from 'react';
 import React from 'react';
-import Grid from '@mui/material/Unstable_Grid2';
+import Grid from '@mui/material/Grid2';
 import type { QuestionnaireItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import { useRendererStylingStore } from '../../../stores';

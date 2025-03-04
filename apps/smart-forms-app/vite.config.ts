@@ -18,7 +18,9 @@ export default ({ mode }) => {
       RENDERER_VERSION: JSON.stringify(packageJson.dependencies['@aehrc/smart-forms-renderer'])
     },
     optimizeDeps: {
-      include: ['@aehrc/sdc-assemble', '@aehrc/sdc-populate', '@emotion/react', '@emotion/styled']
+      include: ['@aehrc/sdc-assemble', '@aehrc/sdc-populate'
+        // , '@emotion/react', '@emotion/styled'
+      ]
     },
     build: {
       commonjsOptions: {

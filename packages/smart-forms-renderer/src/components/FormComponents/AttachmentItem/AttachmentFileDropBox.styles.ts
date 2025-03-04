@@ -28,6 +28,30 @@ export const AttachmentFileDropBoxWrapper = styled(Box, {
     borderColor: isActive ? theme.palette.secondary.main : theme.palette.primary.main,
     borderRadius: '4px',
     maxWidth: !isTabled ? textFieldWidth : 3000,
-    minWidth: 160
+    minWidth: 160,
+    ref: HTMLElement
   })
 );
+AttachmentFileDropBoxWrapper.displayName = 'AttachmentFileDropBoxWrapper';
+
+// Forwarding ref to Box
+// export const AttachmentFileDropBoxWrapper = React.forwardRef<
+//   HTMLDivElement,
+//   { isActive: boolean; isTabled: boolean; textFieldWidth: number }
+// >(({ isActive, isTabled, textFieldWidth, ...props }, ref) => {
+//   const StyledBox = styled(Box, {
+//     shouldForwardProp: (prop) =>
+//       prop !== 'isActive' && prop !== 'isTabled' && prop !== 'textFieldWidth'
+//   })(({ theme }) => ({
+//     backgroundColor: theme.palette.background.paper,
+//     border: '2px dashed',
+//     borderColor: isActive ? theme.palette.secondary.main : theme.palette.primary.main,
+//     borderRadius: '4px',
+//     maxWidth: !isTabled ? textFieldWidth : 3000,
+//     minWidth: 160
+//   }));
+
+//   return <StyledBox ref={ref} {...props} />;
+// });
+
+// AttachmentFileDropBoxWrapper.displayName = 'AttachmentFileDropBoxWrapper';

@@ -17,7 +17,7 @@
 
 import type { ReactNode } from 'react';
 import { forwardRef } from 'react';
-import { useTheme } from '@mui/material/styles';
+// import { useTheme } from '@mui/material/styles';
 import type { SxProps, Theme } from '@mui/material';
 import { Box } from '@mui/material';
 import { ResponseStyledLabel } from './ResponseLabel.styles.ts';
@@ -34,7 +34,7 @@ interface Props {
 const ResponseLabel = forwardRef((props: Props, ref) => {
   const { color, startIcon, endIcon, children, sx, ...other } = props;
 
-  const theme = useTheme();
+  // const theme = useTheme();
 
   const iconStyle = {
     width: 16,
@@ -52,7 +52,7 @@ const ResponseLabel = forwardRef((props: Props, ref) => {
         ...(endIcon && { pr: 0.75 }),
         ...sx
       }}
-      theme={theme}
+      // theme={theme}
       {...other}>
       {startIcon && <Box sx={{ mr: 0.75, ...iconStyle }}> {startIcon} </Box>}
 

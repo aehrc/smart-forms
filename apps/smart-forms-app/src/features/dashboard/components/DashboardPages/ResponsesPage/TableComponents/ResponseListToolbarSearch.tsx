@@ -22,7 +22,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import type { Questionnaire } from 'fhir/r4';
 import { InputAdornment, TextField } from '@mui/material';
 import { createResponseSearchOption } from '../../../../utils/dashboard.ts';
-import { useDebounce } from 'usehooks-ts';
+import { useDebounceValue } from 'usehooks-ts';
 import { useTheme } from '@mui/material/styles';
 import { getResponseSearchStyles } from '../../QuestionnairePage/TableComponents/QuestionnaireListToolbar.styles.ts';
 import Iconify from '../../../../../../components/Iconify/Iconify.tsx';
@@ -36,9 +36,9 @@ function ResponseListToolbarSearch(props: ResponseListToolbarSearchProps) {
   const { searchedQuestionnaire, onChangeQuestionnaire } = props;
 
   const [input, setInput] = useState('');
-  const debouncedInput = useDebounce(input, 300);
+  const debouncedInput = useDebounceValue(input, 300);
 
-  const { questionnaires, isFetching } = useFetchQuestionnaires(input, debouncedInput, 2);
+  const { questionnaires, isFetching } = useFetchQuestionnaires(input, debouncedInput[0], 2);
 
   const theme = useTheme();
 
@@ -58,7 +58,7 @@ function ResponseListToolbarSearch(props: ResponseListToolbarSearchProps) {
     <Autocomplete
       value={searchedQuestionnaire ?? null}
       options={questionnaires}
-      getOptionLabel={(questionnaire) => createResponseSearchOption(questionnaire)}
+      getOptionLabel={(questionnaire:any) => createResponseSearchOption(questionnaire)}
       loading={isFetching}
       loadingText="Fetching results..."
       noOptionsText="No results... yet."
@@ -70,7 +70,7 @@ function ResponseListToolbarSearch(props: ResponseListToolbarSearchProps) {
         maxWidth: 400,
         ...getResponseSearchStyles(theme)
       }}
-      renderInput={(params) => (
+      renderInput={(params:any) => (
         <TextField
           {...params}
           placeholder="Search responses..."
