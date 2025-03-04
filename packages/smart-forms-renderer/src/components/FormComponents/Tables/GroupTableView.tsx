@@ -39,7 +39,7 @@ import type { GroupTableRowModel } from '../../../interfaces/groupTable.interfac
 import GroupTableBody from './GroupTableBody';
 import Checkbox from '@mui/material/Checkbox';
 import { useQuestionnaireStore } from '../../../stores';
-
+import { getHeadingVariant } from '../../../utils/headingVariant';
 interface GroupTableViewProps
   extends PropsWithIsRepeatedAttribute,
     PropsWithShowMinimalViewAttribute,
@@ -126,10 +126,10 @@ function GroupTableView(props: GroupTableViewProps) {
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <>
-        <Typography fontSize={13} variant="h6" color={readOnly ? 'text.secondary' : 'text.primary'}>
+        <Typography fontSize={13} variant={getHeadingVariant(props.groupCardElevation)} color={readOnly ? 'text.secondary' : 'text.primary'}>
           <LabelWrapper qItem={qItem} readOnly={readOnly} />
         </Typography>
-        <Divider sx={{ my: 1 }} light />
+        <Divider sx={{ my: 1 , opacity:0.6}} />
       </>
       <TableContainer component={Paper} elevation={groupCardElevation}>
         <Table>
