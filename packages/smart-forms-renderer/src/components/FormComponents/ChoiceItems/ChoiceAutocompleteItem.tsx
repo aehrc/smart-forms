@@ -36,7 +36,7 @@ import ChoiceAutocompleteField from './ChoiceAutocompleteField';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
-import { AlertColor } from '@mui/material/Alert';
+import type { AlertColor } from '@mui/material/Alert';
 import ItemLabel from '../ItemParts/ItemLabel';
 
 interface ChoiceAutocompleteItemProps

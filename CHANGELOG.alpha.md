@@ -7,6 +7,29 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.26] - 2025-03-05
+_(WARNING: Major breaking changes with MUI, theming and rendererStylingStore)_
+### Changed
+- Upgraded to Material-UI v6.
+- Changed `tabListFixedWidth` to a more flexible `tabListWidthOrResponsive`.
+- Changed `itemLabelGridBreakpoints` and `itemFieldGridBreakpoints` to a more flexible `itemResponsive`.
+- `itemLabelGridBreakpoints` is now `itemResponsive.labelBreakpoints`. `itemFieldGridBreakpoints` is now `itemResponsive.fieldBreakpoints`
+- Allow customisation of gaps between item labels and fields via `itemResponsive.columnGapPixels` and `itemResponsive.rowGapPixels`.
+- Refactor `ItemLabel` and `GroupHeading`. `ItemLabelWrapper` is now called `ItemLabel`.
+- Refactor `typographyOptions` in renderer theme to have increased font sizes.
+- Remove custom backgrounds, shadows and colours from theme.
+- Minor font size adjustments throughout components.
+- Changed flyover icon and text.
+- Removed `itemLabelFontWeight` from RendererStylingStore. Use MUI Typography `label` to customise item label styling.
+
+### Fixed
+- Fixed sequencing of `groupCardElevation`.
+
+### Added
+- Allow overriding of Typography "groupHeading" to dictate stylings of group headings
+- Allow overriding of Typography "label" to dictate stylings of item labels (replacing `itemLabelFontWeight` in RendererStylingStore)
+- Add (a much-needed) JSDoc for RendererStylingStore.
+
 ## [1.0.0-alpha.25] - 2025-02-28
 _(WARNING: Breaking changes for id-based e2e testing)_
 ### Added

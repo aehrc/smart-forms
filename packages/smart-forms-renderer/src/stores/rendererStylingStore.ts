@@ -21,6 +21,59 @@ import type { QuestionnaireItem } from 'fhir/r4';
 import type { UseResponsiveProps } from '../hooks';
 import type { Breakpoints } from '@mui/material';
 
+/**
+ * RendererStyling interface
+ * Provides fine-grained control over the styling and behaviour of the renderer.
+ *
+ * @property requiredIndicatorPosition - Defines where the required asterisk (*) is placed relative to the label.
+ *   - `"start"` (default): Asterisk appears before the label.
+ *   - `"end"`: Asterisk appears after the label.
+ *
+ * @property itemResponsive - Controls responsive layout settings for item labels and fields.
+ *   @property labelBreakpoints - Defines breakpoints for label width at different screen sizes.
+ *     - Default: `{ xs: 12, md: 4 }`
+ *   @property fieldBreakpoints - Defines breakpoints for field width at different screen sizes.
+ *     - Default: `{ xs: 12, md: 8 }`
+ *   @property columnGapPixels - Spacing (in pixels) between the label and the field.
+ *     - Default: `32`
+ *   @property rowGapPixels - Vertical spacing (in pixels) between stacked items.
+ *     - Default: `4`
+ *
+ * @property showTabbedFormAt - Defines when the form should switch to a tabbed layout based on screen size.
+ *   - Default: `{ query: 'up', start: 'md' }`
+ *
+ * @property tabListWidthOrResponsive - Configures the width of the tab list, either as a fixed number or responsive breakpoints.
+ *   - Default: `{ tabListBreakpoints: { xs: 12, sm: 3, md: 3, lg: 2.75 }, tabContentBreakpoints: { xs: 12, sm: 9, md: 9, lg: 9.25 } }`
+ *
+ * @property textFieldWidth - Defines the default width for text input fields (in pixels).
+ *   - Default: `320`
+ *
+ * @property inputsFlexGrow - Determines whether input fields should grow to fill available space.
+ *   - `false` (default): Inputs maintain their default size.
+ *   - `true`: Inputs expand to fill space.
+ *
+ * @property reverseBooleanYesNo - If `true`, swaps "Yes" and "No" options for boolean fields.
+ *   - Default: `false`
+ *
+ * @property hideClearButton - If `true`, hides the clear button on input fields.
+ *   - Default: `false`
+ *
+ * @property hideQuantityComparatorField - If `true`, hides the quantity comparator field.
+ *   - Default: `false`
+ *
+ * @property enableWhenAsReadOnly - Determines whether fields hidden by `enableWhen` logic should still be shown as read-only.
+ *   - Can be `true` (all fields affected) or a `Set<QuestionnaireItem['type']>` to specify types.
+ *   - Default: `false`
+ *
+ * @property disablePageCardView - If `true`, disables the card-style layout for pages.
+ *   - Default: `false`
+ *
+ * @property disablePageButtons - If `true`, hides navigation buttons for pages.
+ *   - Default: `false`
+ *
+ * @property disableTabButtons - If `true`, hides navigation buttons for tabs.
+ *   - Default: `false`
+ */
 export interface RendererStyling {
   requiredIndicatorPosition?: 'start' | 'end';
   itemResponsive?: {

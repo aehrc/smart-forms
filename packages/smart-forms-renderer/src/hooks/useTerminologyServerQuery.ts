@@ -18,7 +18,7 @@
 import type { Coding, QuestionnaireItem, ValueSet } from 'fhir/r4';
 import { getTerminologyServerUrl, getValueSetCodings, getValueSetPromise } from '../utils/valueSet';
 
-import { AlertColor } from '@mui/material/Alert';
+import type { AlertColor } from '@mui/material/Alert';
 import { useQuestionnaireStore, useTerminologyServerStore } from '../stores';
 import { useQuery } from '@tanstack/react-query';
 
