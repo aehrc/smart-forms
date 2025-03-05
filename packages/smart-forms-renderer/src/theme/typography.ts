@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import { TypographyOptions } from '@mui/material/styles/createTypography';
-import { CSSProperties } from 'react';
+import type { TypographyOptions } from '@mui/material/styles/createTypography';
+import type { CSSProperties } from 'react';
 
 declare module '@mui/material/styles' {
   // noinspection JSUnusedGlobalSymbols

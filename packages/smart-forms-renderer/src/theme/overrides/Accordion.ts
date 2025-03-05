@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 
-import { alpha, Theme } from '@mui/material/styles';
+import type { Theme } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import { grey } from '@mui/material/colors';
 
 export default function Accordion(theme: Theme) {
