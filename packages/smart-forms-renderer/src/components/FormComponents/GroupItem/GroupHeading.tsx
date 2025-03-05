@@ -62,6 +62,7 @@ const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
           ) : null}
 
           {/* Group Heading typography */}
+          {/* flexGrow: 1 is important if xhtml and markdown rendering has width: 100% */}
           <Typography
             component={getHeadingTag(groupCardElevation)}
             variant="groupHeading"
@@ -69,7 +70,8 @@ const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
               readOnly && (!isTabHeading || !isPageHeading) ? 'text.secondary' : 'text.primary'
             }
             display="flex"
-            alignItems="center">
+            alignItems="center"
+            sx={{ flexGrow: 1 }}>
             <ItemTextSwitcher qItem={qItem} />
 
             {/* Required asterisk position is behind text */}

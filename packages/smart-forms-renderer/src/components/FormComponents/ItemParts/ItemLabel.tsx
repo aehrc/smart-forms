@@ -55,12 +55,13 @@ const ItemLabel = memo(function ItemLabel(props: ItemLabelProps) {
 
         {/* Label typography */}
         {/* Added 0.5 marginTop (4px) because item labels doesn't look in line with their fields */}
+        {/* flexGrow: 1 is important if xhtml and markdown rendering has width: 100% */}
         <Typography
           component="label"
           variant="label"
           htmlFor={qItem.type + '-' + qItem.linkId}
           color={readOnly ? 'text.disabled' : 'text.primary'}
-          sx={{ mt: 0.5 }}>
+          sx={{ mt: 0.5, flexGrow: 1 }}>
           <ItemTextSwitcher qItem={qItem} />
 
           {/* Required asterisk position is behind text */}

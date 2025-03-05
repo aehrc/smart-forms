@@ -7,10 +7,21 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.27] - 2025-03-05
+### Fixed
+- Restore flex-grow: 1 in ItemLabel and GroupHeading to work with XHTML and markdown renderings with 100% width
+
+
 ## [1.0.0-alpha.26] - 2025-03-05
 _(WARNING: Major breaking changes with MUI, theming and rendererStylingStore)_
+### Added
+- Allow overriding of Typography "groupHeading" to dictate stylings of group headings
+- Allow overriding of Typography "label" to dictate stylings of item labels (replacing `itemLabelFontWeight` in RendererStylingStore)
+- Add (a much-needed) JSDoc for RendererStylingStore.
+- Group headings now have a proper sequence for heading semantics based on level of nesting i.e h1, h2, h3, h4, h5, h6
+
 ### Changed
-- Upgraded to Material-UI v6.
+- Upgraded to Material-UI v6. Follow the [migration guide](https://mui.com/material-ui/migration/upgrade-to-v6/) to update your MUI to v6.
 - Changed `tabListFixedWidth` to a more flexible `tabListWidthOrResponsive`.
 - Changed `itemLabelGridBreakpoints` and `itemFieldGridBreakpoints` to a more flexible `itemResponsive`.
 - `itemLabelGridBreakpoints` is now `itemResponsive.labelBreakpoints`. `itemFieldGridBreakpoints` is now `itemResponsive.fieldBreakpoints`
@@ -25,10 +36,6 @@ _(WARNING: Major breaking changes with MUI, theming and rendererStylingStore)_
 ### Fixed
 - Fixed sequencing of `groupCardElevation`.
 
-### Added
-- Allow overriding of Typography "groupHeading" to dictate stylings of group headings
-- Allow overriding of Typography "label" to dictate stylings of item labels (replacing `itemLabelFontWeight` in RendererStylingStore)
-- Add (a much-needed) JSDoc for RendererStylingStore.
 
 ## [1.0.0-alpha.25] - 2025-02-28
 _(WARNING: Breaking changes for id-based e2e testing)_
