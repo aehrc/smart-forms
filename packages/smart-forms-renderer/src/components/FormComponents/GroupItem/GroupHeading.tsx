@@ -24,9 +24,9 @@ import ContextDisplayItem from '../ItemParts/ContextDisplayItem';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import { useRendererStylingStore } from '../../../stores';
 import RequiredAsterisk from '../ItemParts/RequiredAsterisk';
-import { getHeadingVariant } from '../../../utils/headingVariant';
 import ItemTextSwitcher from '../ItemParts/ItemTextSwitcher';
 import FlyoverItem from '../ItemParts/FlyoverItem';
+import { getHeadingTag } from '../../../utils/headingVariant';
 
 interface GroupHeadingProps {
   qItem: QuestionnaireItem;
@@ -63,10 +63,8 @@ const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
 
           {/* Group Heading typography */}
           <Typography
-            variant={getHeadingVariant(groupCardElevation)}
-            fontWeight={600}
-            lineHeight="20px"
-            fontSize="0.875rem"
+            component={getHeadingTag(groupCardElevation)}
+            variant="groupHeading"
             color={
               readOnly && (!isTabHeading || !isPageHeading) ? 'text.secondary' : 'text.primary'
             }
@@ -76,11 +74,10 @@ const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
 
             {/* Required asterisk position is behind text */}
             {required && requiredIndicatorPosition === 'end' ? (
-              <RequiredAsterisk readOnly={readOnly} variant="label">
+              <RequiredAsterisk readOnly={readOnly} variant="groupHeading">
                 *
               </RequiredAsterisk>
             ) : null}
-
             {/* Flyover */}
             {displayFlyover !== '' ? (
               <Typography component="span" sx={{ ml: 0.75 }}>

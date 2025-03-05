@@ -14,32 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * @author Janardhan Vignarajan
- * 
+ *
  */
-
-
-import { Variant } from '@mui/material/styles/createTypography';
 
 /**
  * Returns the values from h1 to h6 based on the elevation number.
  *
  * @export
  * @param {number} groupCardElevation
- * @return {*}  {Variant}
+ * @return {*}  {'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'}
  */
 
-export function getHeadingVariant(groupCardElevation: number): Variant {
-
-
+export function getHeadingTag(groupCardElevation: number): 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' {
   // Ensure heading level is within valid range
   let headingIntValue = Math.min(groupCardElevation, 6);
-  //If Elevation is 0, then return always 1
-  headingIntValue = Math.max(groupCardElevation, 0);  
-  // Construct the Variant type
-  const variant: Variant = `h${headingIntValue}` as Variant;
 
-  
-  return variant;
+  // If Elevation is 0, then return always 1
+  if (groupCardElevation === 0) {
+    headingIntValue = 1;
+  }
+
+  // Construct the Heading tag type
+  return `h${headingIntValue}` as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 }
-
-

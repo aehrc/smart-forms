@@ -101,7 +101,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
         <GroupTable
           qItem={qItem}
           qrItems={qrItems}
-          groupCardElevation={groupCardElevation + 1}
+          groupCardElevation={groupCardElevation}
           isRepeated={true}
           parentIsReadOnly={parentIsReadOnly}
           onQrRepeatGroupChange={onQrRepeatGroupChange}
@@ -113,7 +113,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
       <RepeatGroup
         qItem={qItem}
         qrItems={qrItems}
-        groupCardElevation={groupCardElevation + 1}
+        groupCardElevation={groupCardElevation}
         parentIsReadOnly={parentIsReadOnly}
         onQrRepeatGroupChange={onQrRepeatGroupChange}
       />
@@ -145,7 +145,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
           <GroupTable
             qItem={qItem}
             qrItems={[]}
-            groupCardElevation={groupCardElevation + 1}
+            groupCardElevation={groupCardElevation}
             isRepeated={true}
             parentIsReadOnly={parentIsReadOnly}
             onQrRepeatGroupChange={onQrRepeatGroupChange}
@@ -157,7 +157,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
         <RepeatGroup
           qItem={qItem}
           qrItems={[]}
-          groupCardElevation={groupCardElevation + 1}
+          groupCardElevation={groupCardElevation}
           parentIsReadOnly={parentIsReadOnly}
           onQrRepeatGroupChange={onQrRepeatGroupChange}
         />
@@ -168,7 +168,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
       <RepeatItem
         qItem={qItem}
         qrItem={qrItem ?? null}
-        groupCardElevation={groupCardElevation + 1}
+        groupCardElevation={groupCardElevation}
         parentIsReadOnly={parentIsReadOnly}
         onQrItemChange={onQrItemChange}
       />
@@ -183,7 +183,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
         <GroupTable
           qItem={qItem}
           qrItems={qrItem ? [qrItem] : []}
-          groupCardElevation={groupCardElevation + 1}
+          groupCardElevation={groupCardElevation}
           isRepeated={false}
           parentIsReadOnly={parentIsReadOnly}
           onQrRepeatGroupChange={onQrRepeatGroupChange}
@@ -196,7 +196,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
         qItem={qItem}
         qrItem={qrItem ?? null}
         isRepeated={false}
-        groupCardElevation={groupCardElevation + 1}
+        groupCardElevation={groupCardElevation}
         parentIsReadOnly={parentIsReadOnly}
         parentIsRepeatGroup={parentIsRepeatGroup}
         parentRepeatGroupIndex={parentRepeatGroupIndex}
@@ -212,7 +212,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
       qrItem={qrItem ?? null}
       isRepeated={false}
       isTabled={false}
-      groupCardElevation={groupCardElevation + 1}
+      groupCardElevation={groupCardElevation}
       parentIsReadOnly={parentIsReadOnly}
       parentIsRepeatGroup={parentIsRepeatGroup}
       parentRepeatGroupIndex={parentRepeatGroupIndex}

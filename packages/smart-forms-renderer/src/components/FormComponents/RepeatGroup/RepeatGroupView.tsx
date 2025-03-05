@@ -89,7 +89,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
                 answeredQrItem={answeredQrItem}
                 nullableQrItem={nullableQrItem}
                 numOfRepeatGroups={repeatGroups.length}
-                groupCardElevation={groupCardElevation + 1}
+                groupCardElevation={groupCardElevation}
                 showMinimalView={showMinimalView}
                 parentIsReadOnly={parentIsReadOnly}
                 onDeleteItem={() => onDeleteItem(index)}
@@ -140,7 +140,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
                     answeredQrItem={answeredQrItem}
                     nullableQrItem={nullableQrItem}
                     numOfRepeatGroups={repeatGroups.length}
-                    groupCardElevation={groupCardElevation + 1}
+                    groupCardElevation={groupCardElevation}
                     parentIsReadOnly={parentIsReadOnly}
                     onDeleteItem={() => onDeleteItem(index)}
                     onQrItemChange={(newQrItem) => onAnswerChange(newQrItem, index)}
@@ -184,7 +184,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
                   answeredQrItem={answeredQrItem}
                   nullableQrItem={nullableQrItem}
                   numOfRepeatGroups={repeatGroups.length}
-                  groupCardElevation={groupCardElevation + 1}
+                  groupCardElevation={groupCardElevation}
                   parentIsReadOnly={parentIsReadOnly}
                   onDeleteItem={() => onDeleteItem(index)}
                   onQrItemChange={(newQrItem) => onAnswerChange(newQrItem, index)}

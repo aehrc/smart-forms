@@ -116,7 +116,7 @@ function GroupItemView(props: GroupItemViewProps) {
                   key={qItem.linkId}
                   qItem={qItem}
                   qrItemOrItems={qrItemOrItems}
-                  groupCardElevation={groupCardElevation}
+                  groupCardElevation={groupCardElevation + 1}
                   parentIsReadOnly={readOnly}
                   parentIsRepeatGroup={parentIsRepeatGroup}
                   parentRepeatGroupIndex={parentRepeatGroupIndex}
@@ -150,7 +150,7 @@ function GroupItemView(props: GroupItemViewProps) {
               key={qItem.linkId}
               qItem={qItem}
               qrItemOrItems={qrItemOrItems}
-              groupCardElevation={groupCardElevation}
+              groupCardElevation={groupCardElevation + 1}
               parentIsReadOnly={readOnly}
               parentIsRepeatGroup={parentIsRepeatGroup}
               parentRepeatGroupIndex={parentRepeatGroupIndex}
@@ -192,7 +192,7 @@ function GroupItemView(props: GroupItemViewProps) {
               key={qItem.linkId}
               qItem={qItem}
               qrItemOrItems={qrItemOrItems}
-              groupCardElevation={groupCardElevation}
+              groupCardElevation={groupCardElevation + 1}
               parentIsReadOnly={readOnly}
               parentIsRepeatGroup={parentIsRepeatGroup}
               parentRepeatGroupIndex={parentRepeatGroupIndex}

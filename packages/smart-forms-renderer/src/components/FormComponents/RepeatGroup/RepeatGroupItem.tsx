@@ -67,7 +67,7 @@ function RepeatGroupItem(props: RepeatGroupItemProps) {
           parentIsRepeatGroup={true}
           parentRepeatGroupIndex={repeatGroupIndex}
           parentIsReadOnly={parentIsReadOnly}
-          groupCardElevation={groupCardElevation + 1}
+          groupCardElevation={groupCardElevation}
           onQrItemChange={onQrItemChange}
         />
       </Box>

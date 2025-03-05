@@ -80,7 +80,7 @@ function SingleNestedItems(props: SingleNestedItemsProps) {
               key={qItem.linkId}
               qItem={qItem}
               qrItemOrItems={qrItemOrItems}
-              groupCardElevation={groupCardElevation}
+              groupCardElevation={groupCardElevation + 1}
               parentIsReadOnly={parentIsReadOnly}
               onQrItemChange={handleQrItemChange}
               onQrRepeatGroupChange={handleQrRepeatGroupChange}
