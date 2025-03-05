@@ -138,14 +138,14 @@ test('pre-pop to test terminology resolving logic', async ({ page }) => {
   expect(expandResponse.status()).toBe(200);
 
   // Check pre-populated values
-  const genderAvsUrlValueLinkId = 'gender-avs-url';
+  const genderAvsUrlValueLinkId = 'choice-gender-avs-url';
   await expect(
     page
-      .getByTestId('choice-q-item-choice-select-answer-value-set-box')
+      .getByTestId('q-item-choice-select-answer-value-set-box')
       .locator(`#${genderAvsUrlValueLinkId}`)
   ).toHaveValue('Female');
 
-  const genderAvsContainedValueLinkId = 'gender-avs-contained';
+  const genderAvsContainedValueLinkId = 'choice-gender-avs-contained';
   await expect(
     page
       .getByTestId('q-item-choice-select-answer-value-set-box')

@@ -95,11 +95,11 @@ test('enter inputs into BitOfEverything questionnaire', async ({ page }) => {
   const dateItemLinkId = 'date-Item-date';
   await page
     .getByTestId('q-item-date-box')
-    .locator(`#${dateItemLinkId}-date`)
+    .locator(`#${dateItemLinkId}`)
     .pressSequentially(dateInput, { delay: 100 });
 
   // DateTime
-  const dateTimeItemLinkId = 'datetime-Item-datetime';
+  const dateTimeItemLinkId = 'dateTime-Item-datetime';
   await page
     .getByTestId('q-item-datetime-box')
     .locator(`#${dateTimeItemLinkId}-date`)
