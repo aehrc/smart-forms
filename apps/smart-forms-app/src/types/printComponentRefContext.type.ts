@@ -18,6 +18,5 @@
 import type { MutableRefObject } from 'react';
 
 export type PrintComponentRefContextType = {
-  componentRef: MutableRefObject<null> | null;
-  setComponentRef: (componentRef: MutableRefObject<null>) => unknown;
+  componentRef: MutableRefObject<HTMLDivElement | null> | null;
 };

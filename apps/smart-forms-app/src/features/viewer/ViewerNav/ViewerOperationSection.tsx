@@ -38,7 +38,7 @@ function ViewerOperationSection() {
 
   const { componentRef } = useContext(PrintComponentRefContext);
   const handlePrint = useReactToPrint({
-    content: () => (componentRef ? componentRef.current : null)
+    contentRef: componentRef ?? undefined
   });
 
   return (

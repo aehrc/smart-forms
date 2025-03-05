@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 
-import type { MutableRefObject } from 'react';
-import { createContext, useState } from 'react';
+import { createContext, useRef, useState } from 'react';
 import { Main, StyledRoot } from '../../components/Layout/Layout.styles.ts';
 import { Outlet } from 'react-router-dom';
 import BackToTopButton from '../backToTop/components/BackToTopButton.tsx';
@@ -30,19 +29,18 @@ import RendererDebugFooter from '../renderer/components/RendererDebugFooter/Rend
 import useDebugMode from '../../hooks/useDebugMode.ts';
 
 export const PrintComponentRefContext = createContext<PrintComponentRefContextType>({
-  componentRef: null,
-  setComponentRef: () => void 0
+  componentRef: null
 });
 
 function ViewerLayout() {
   const [open, setOpen] = useState(false);
 
-  const [componentRef, setComponentRef] = useState<MutableRefObject<null> | null>(null);
+  const componentRef = useRef<HTMLDivElement>(null); // ✅ Store the ref directly
 
   const { debugModeEnabled } = useDebugMode();
 
   return (
-    <PrintComponentRefContext.Provider value={{ componentRef, setComponentRef }}>
+    <PrintComponentRefContext.Provider value={{ componentRef }}>
       <StyledRoot>
         <GenericHeader onOpenNav={() => setOpen(true)} />
         <ViewerNav openNav={open} onCloseNav={() => setOpen(false)} />

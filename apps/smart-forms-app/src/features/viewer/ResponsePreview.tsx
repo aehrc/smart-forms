@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { useContext, useEffect, useRef } from 'react';
+import { useContext } from 'react';
 import { Box, Card, Container, Fade } from '@mui/material';
 import ViewerInvalid from '../renderer/components/FormPage/ViewerInvalid.tsx';
 import { PrintComponentRefContext } from './ViewerLayout.tsx';
@@ -30,17 +30,7 @@ import {
 } from '@aehrc/smart-forms-renderer';
 
 function ResponsePreview() {
-  const { setComponentRef } = useContext(PrintComponentRefContext);
-  const componentRef = useRef(null);
-
-  useEffect(
-    () => {
-      setComponentRef(componentRef);
-    },
-    // init componentRef on first render, leave dependency array empty
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  );
+  const { componentRef } = useContext(PrintComponentRefContext);
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
   const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
