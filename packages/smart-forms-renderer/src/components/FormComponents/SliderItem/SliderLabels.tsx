@@ -17,7 +17,6 @@
 
 import React from 'react';
 import Typography from '@mui/material/Typography';
-import { pxToRem } from '../../../theme/typography';
 import Box from '@mui/material/Box';
 
 interface SliderLabelsProps {
@@ -37,8 +36,10 @@ function SliderLabels(props: SliderLabelsProps) {
       {[minLabel, maxLabel].map((label, index) => (
         <Typography
           key={index}
+          fontWeight={600}
+          fontSize="0.75rem"
+          color="text.secondary"
           textAlign="center"
-          fontSize={pxToRem(10)}
           sx={{
             transform: `translateX(${index === 0 ? '-50%' : '50%'})`,
             wordWrap: 'break-word'

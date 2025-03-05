@@ -35,9 +35,9 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import ChoiceAutocompleteField from './ChoiceAutocompleteField';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
-import { ItemLabelWrapper } from '../ItemParts';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import { AlertColor } from '@mui/material/Alert';
+import ItemLabel from '../ItemParts/ItemLabel';
 
 interface ChoiceAutocompleteItemProps
   extends PropsWithQrItemChangeHandler,
@@ -139,7 +139,7 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
       <ItemFieldGrid
         qItem={qItem}
         readOnly={readOnly}
-        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
         fieldChildren={
           <ChoiceAutocompleteField
             qItem={qItem}

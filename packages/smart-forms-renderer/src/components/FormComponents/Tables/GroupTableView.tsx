@@ -25,8 +25,6 @@ import TableRow from '@mui/material/TableRow';
 import { HeaderTableCell } from './Table.styles';
 import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
-import Typography from '@mui/material/Typography';
-import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import Divider from '@mui/material/Divider';
 import AddRowButton from './AddRowButton';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
@@ -39,7 +37,8 @@ import type { GroupTableRowModel } from '../../../interfaces/groupTable.interfac
 import GroupTableBody from './GroupTableBody';
 import Checkbox from '@mui/material/Checkbox';
 import { useQuestionnaireStore } from '../../../stores';
-import { getHeadingVariant } from '../../../utils/headingVariant';
+import GroupHeading from '../GroupItem/GroupHeading';
+
 interface GroupTableViewProps
   extends PropsWithIsRepeatedAttribute,
     PropsWithShowMinimalViewAttribute,
@@ -126,10 +125,8 @@ function GroupTableView(props: GroupTableViewProps) {
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <>
-        <Typography fontSize={13} variant={getHeadingVariant(props.groupCardElevation)} color={readOnly ? 'text.secondary' : 'text.primary'}>
-          <LabelWrapper qItem={qItem} readOnly={readOnly} />
-        </Typography>
-        <Divider sx={{ my: 1 , opacity:0.6}} />
+        <GroupHeading qItem={qItem} readOnly={readOnly} groupCardElevation={groupCardElevation} />
+        <Divider sx={{ my: 1, opacity: 0.6 }} />
       </>
       <TableContainer component={Paper} elevation={groupCardElevation}>
         <Table>

@@ -459,7 +459,7 @@ export const qChoiceAnswerValueSetCalculation: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <div style="font-size:0.875em">Feel free to play around with the following state codes:</div>\r\n    <ul style="font-size:0.875em">\r\n      <li>ACT</li>\r\n      <li>NSW</li>\r\n      <li>NT</li>\r\n      <li>OTHER</li>\r\n      <li>QLD</li>\r\n      <li>SA</li>\r\n      <li>TAS</li>\r\n      <li>VIC</li>\r\n      <li>WA</li>\r\n    </ul>\r\n    </div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <div>Feel free to play around with the following state codes:</div>\r\n    <ul>\r\n      <li>ACT</li>\r\n      <li>NSW</li>\r\n      <li>NT</li>\r\n      <li>OTHER</li>\r\n      <li>QLD</li>\r\n      <li>SA</li>\r\n      <li>TAS</li>\r\n      <li>VIC</li>\r\n      <li>WA</li>\r\n    </ul>\r\n    </div>'
           }
         ]
       },

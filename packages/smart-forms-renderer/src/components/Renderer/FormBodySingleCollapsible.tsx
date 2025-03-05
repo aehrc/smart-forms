@@ -56,7 +56,7 @@ const FormBodySingleCollapsible = memo(function FormBodySingleCollapsible(
       onChange={() => onToggleExpand(index)}>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Box display="flex" alignItems="center" justifyContent="space-between" width="100%" mr={3}>
-          <Typography variant="body1">{collapsibleLabel}</Typography>
+          <Typography>{collapsibleLabel}</Typography>
           <Box display="flex" columnGap={0.5}>
             {contextDisplayItems.map((item) => {
               return <ContextDisplayItem key={item.linkId} displayItem={item} />;

@@ -17,37 +17,33 @@
 
 import React, { memo } from 'react';
 import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
-import type { PropsWithIsRepeatedAttribute } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem } from 'fhir/r4';
 import { getContextDisplays } from '../../../utils/tabs';
 import ContextDisplayItem from '../ItemParts/ContextDisplayItem';
-import ItemLabelText from '../ItemParts/ItemLabelText';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import { useRendererStylingStore } from '../../../stores';
 import RequiredAsterisk from '../ItemParts/RequiredAsterisk';
 import { getHeadingVariant } from '../../../utils/headingVariant';
+import ItemTextSwitcher from '../ItemParts/ItemTextSwitcher';
+import FlyoverItem from '../ItemParts/FlyoverItem';
 
-interface GroupHeadingProps extends PropsWithIsRepeatedAttribute {
+interface GroupHeadingProps {
   qItem: QuestionnaireItem;
   readOnly: boolean;
+  groupCardElevation: number;
   tabIsMarkedAsComplete?: boolean;
   pageIsMarkedAsComplete?: boolean;
-  groupCardElevation: number;
 }
 
 const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
-  const { qItem, readOnly, tabIsMarkedAsComplete, pageIsMarkedAsComplete, isRepeated } = props;
+  const { qItem, readOnly, groupCardElevation, tabIsMarkedAsComplete, pageIsMarkedAsComplete } =
+    props;
 
   const requiredIndicatorPosition = useRendererStylingStore.use.requiredIndicatorPosition();
 
-  const { required } = useRenderingExtensions(qItem);
+  const { required, displayFlyover } = useRenderingExtensions(qItem);
   const contextDisplayItems = getContextDisplays(qItem);
-
-  if (isRepeated) {
-    return null;
-  }
 
   const isTabHeading = tabIsMarkedAsComplete !== undefined;
   const isPageHeading = pageIsMarkedAsComplete !== undefined;
@@ -55,7 +51,8 @@ const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
   return (
     <>
       <Box display="flex" alignItems="center" width="100%">
-        <Box position="relative">
+        <Box position="relative" display="flex" flexGrow={1} alignItems="center">
+          {/* Required asterisk position is in front of text */}
           {required && requiredIndicatorPosition === 'start' ? (
             <RequiredAsterisk
               sx={{ position: 'absolute', top: 0, left: -8 }} // Adjust top and left values as needed
@@ -63,26 +60,42 @@ const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
               *
             </RequiredAsterisk>
           ) : null}
-          <Box display="flex" columnGap={0.75} justifyContent="space-between" alignItems="center">
-            <Typography
-              variant={getHeadingVariant(props.groupCardElevation)}
-              color={
-                readOnly && (!isTabHeading || !isPageHeading) ? 'text.secondary' : 'text.primary'
-              }>
-              <ItemLabelText qItem={qItem} readOnly={readOnly} />
-            </Typography>
-          </Box>
+
+          {/* Group Heading typography */}
+          <Typography
+            variant={getHeadingVariant(groupCardElevation)}
+            fontWeight={600}
+            lineHeight="20px"
+            fontSize="0.875rem"
+            color={
+              readOnly && (!isTabHeading || !isPageHeading) ? 'text.secondary' : 'text.primary'
+            }
+            display="flex"
+            alignItems="center">
+            <ItemTextSwitcher qItem={qItem} />
+
+            {/* Required asterisk position is behind text */}
+            {required && requiredIndicatorPosition === 'end' ? (
+              <RequiredAsterisk readOnly={readOnly} variant="label">
+                *
+              </RequiredAsterisk>
+            ) : null}
+
+            {/* Flyover */}
+            {displayFlyover !== '' ? (
+              <Typography component="span" sx={{ ml: 0.75 }}>
+                <FlyoverItem displayFlyover={displayFlyover} readOnly={readOnly} />
+              </Typography>
+            ) : null}
+          </Typography>
         </Box>
 
-        <Box flexGrow={1} />
-
-        <Box display="flex" columnGap={0.5} mx={1}>
+        <Box display="flex" columnGap={0.5}>
           {contextDisplayItems.map((item) => {
             return <ContextDisplayItem key={item.linkId} displayItem={item} />;
           })}
         </Box>
       </Box>
-      {qItem.text ? <Divider sx={{ mt: 1, mb: 1.5, opacity:0.6 }} /> : null}
     </>
   );
 });

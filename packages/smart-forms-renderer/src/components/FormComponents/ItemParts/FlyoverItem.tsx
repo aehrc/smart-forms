@@ -17,9 +17,8 @@
 
 import type { JSX } from 'react';
 import React from 'react';
-import Tooltip from '@mui/material/Tooltip';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { useQuestionnaireStore } from '../../../stores';
+import FlyoverHoverCard from './FlyoverHoverCard';
 
 interface FlyoverItemProps {
   displayFlyover: string | JSX.Element | JSX.Element[];
@@ -37,27 +36,7 @@ function FlyoverItem(props: FlyoverItemProps) {
     return <FlyoverOverrideComponent displayText={displayFlyover} readOnly={readOnly} />;
   }
 
-  return (
-    <Tooltip
-      title={displayFlyover}
-      placement="top"
-      slotProps={{
-        popper: {
-          modifiers: [
-            {
-              name: 'offset',
-              options: {
-                offset: [0, -8]
-              }
-            }
-          ]
-        }
-      }}>
-      <span>
-        <InfoOutlinedIcon sx={{ color: 'text.secondary' }} fontSize="small" />
-      </span>
-    </Tooltip>
-  );
+  return <FlyoverHoverCard>{displayFlyover}</FlyoverHoverCard>;
 }
 
 export default FlyoverItem;

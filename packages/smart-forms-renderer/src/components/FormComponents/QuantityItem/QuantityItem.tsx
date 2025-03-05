@@ -33,7 +33,7 @@ import {
 } from '../../../utils/quantity';
 import QuantityComparatorField from './QuantityComparatorField';
 import useQuantityCalculatedExpression from '../../../hooks/useQuantityCalculatedExpression';
-import { ItemLabelWrapper } from '../ItemParts';
+import ItemLabel from '../ItemParts/ItemLabel';
 
 interface QuantityItemProps
   extends PropsWithQrItemChangeHandler,
@@ -295,7 +295,7 @@ function QuantityItem(props: QuantityItemProps) {
       <ItemFieldGrid
         qItem={qItem}
         readOnly={readOnly}
-        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
         fieldChildren={
           <Box display="flex" gap={1}>
             <QuantityComparatorField

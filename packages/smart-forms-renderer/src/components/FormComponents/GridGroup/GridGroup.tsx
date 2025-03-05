@@ -28,13 +28,11 @@ import { QGroupContainerBox } from '../../Box.styles';
 import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';
 import TableContainer from '@mui/material/TableContainer';
-import Typography from '@mui/material/Typography';
 import { mapQItemsIndex } from '../../../utils/mapItem';
 import GridTable from './GridTable';
-import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
-import { getHeadingVariant } from '../../../utils/headingVariant';
+import GroupHeading from '../GroupItem/GroupHeading';
 
 interface GridGroupProps
   extends PropsWithQrItemChangeHandler,
@@ -117,13 +115,8 @@ function GridGroup(props: GridGroupProps) {
       onClick={() => onFocusLinkId(qItem.linkId)}>
       {qItem.text ? (
         <>
-          <Typography
-            fontSize={13}
-            variant={getHeadingVariant(props.groupCardElevation)}
-            color={readOnly ? 'text.secondary' : 'text.primary'}>
-            <LabelWrapper qItem={qItem} readOnly={readOnly} />
-          </Typography>
-          <Divider sx={{ my: 1, opacity:0.6 }} />
+          <GroupHeading qItem={qItem} readOnly={readOnly} groupCardElevation={groupCardElevation} />
+          <Divider sx={{ my: 1, opacity: 0.6 }} />
         </>
       ) : null}
 

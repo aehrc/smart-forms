@@ -37,7 +37,7 @@ export const qAnswerOption: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p style="font-size:0.875em"> Please refer to the <strong>Advanced Control Appearance - Item Control Question</strong> section for the full list of answerOption examples.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n Please refer to the <strong>Advanced Control Appearance - Item Control Question</strong> section for the full list of answerOption examples.</p></div>'
           }
         ]
       },
@@ -121,7 +121,7 @@ export const qAnswerValueSet: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p style="font-size:0.875em">Please refer to the <strong>Advanced Control Appearance - Item Control Question</strong> section for the full list of answerValueSet examples.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to the <strong>Advanced Control Appearance - Item Control Question</strong> section for the full list of answerValueSet examples.</p></div>'
           }
         ]
       },
@@ -211,7 +211,7 @@ export const qRequiredDuplicate: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p style="font-size:0.875em"> Please refer to the <strong>Advanced Form Rendering - Other</strong> section for the full list of required examples.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to the <strong>Advanced Form Rendering - Other</strong> section for the full list of required examples.</p></div>'
           }
         ]
       },
@@ -240,7 +240,7 @@ export const qRepeatsDuplicate: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p style="font-size:0.875em"> Please refer to the <strong>Advanced Form Rendering - Other</strong> section for the full list of repeats examples.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to the <strong>Advanced Form Rendering - Other</strong> section for the full list of repeats examples.</p></div>'
           }
         ]
       },
@@ -269,7 +269,7 @@ export const qReadOnlyDuplicate: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p style="font-size:0.875em"> Please refer to the <strong>Advanced Form Rendering - Other</strong> section for the full list of readOnly examples.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to the <strong>Advanced Form Rendering - Other</strong> section for the full list of readOnly examples.</p></div>'
           }
         ]
       },

@@ -19,11 +19,11 @@ import React, { memo } from 'react';
 import type { QuestionnaireItem } from 'fhir/r4';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import { isSpecificItemControl } from '../../../utils';
-import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import { useQuestionnaireStore } from '../../../stores';
 import useReadOnly from '../../../hooks/useReadOnly';
 import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 import Divider from '@mui/material/Divider';
+import ItemLabel from '../ItemParts/ItemLabel';
 
 interface DisplayItemProps extends PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
@@ -56,7 +56,7 @@ const DisplayItem = memo(function DisplayItem(props: DisplayItemProps) {
       data-test="q-item-display-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <LabelWrapper qItem={qItem} readOnly={readOnly} />
+      <ItemLabel qItem={qItem} readOnly={readOnly} />
     </FullWidthFormComponentBox>
   );
 });

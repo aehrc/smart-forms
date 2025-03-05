@@ -38,7 +38,7 @@ function QuantityComparatorField(props: QuantityComparatorFieldProps) {
         renderInput={(params) => <MuiTextField sx={{ width: 88 }} {...params} />}
       />
       <Typography variant="caption" color="text.secondary">
-        Symbol (optional)
+        (optional)
       </Typography>
     </Box>
   );

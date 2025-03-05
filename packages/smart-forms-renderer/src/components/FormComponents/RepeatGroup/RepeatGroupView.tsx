@@ -30,8 +30,6 @@ import { TransitionGroup } from 'react-transition-group';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import RepeatGroupItem from './RepeatGroupItem';
 import AddItemButton from './AddItemButton';
-import LabelWrapper from '../ItemParts/ItemLabelWrapper';
-import Typography from '@mui/material/Typography';
 import type { RepeatGroupSingleModel } from '../../../interfaces/repeatGroup.interface';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { getGroupCollapsible } from '../../../utils/qItem';
@@ -39,7 +37,7 @@ import { GroupAccordion } from '../GroupItem/GroupAccordion.styles';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccordionDetails from '@mui/material/AccordionDetails';
-import { getHeadingVariant } from '../../../utils/headingVariant';
+import GroupHeading from '../GroupItem/GroupHeading';
 
 interface RepeatGroupViewProps
   extends PropsWithShowMinimalViewAttribute,
@@ -118,15 +116,15 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
         }}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ minHeight: '28px' }}>
           {qItem.text ? (
-            <>
-              <Typography variant={getHeadingVariant(props.groupCardElevation)} color={readOnly ? 'text.secondary' : 'text.primary'}>
-                <LabelWrapper qItem={qItem} readOnly={readOnly} />
-              </Typography>
-            </>
+            <GroupHeading
+              qItem={qItem}
+              readOnly={readOnly}
+              groupCardElevation={groupCardElevation}
+            />
           ) : null}
         </AccordionSummary>
         <AccordionDetails sx={{ pt: 0 }}>
-          {qItem.text ? <Divider sx={{ mb: 1.5, opacity:0.6 }} /> : null}
+          {qItem.text ? <Divider sx={{ mb: 1.5, opacity: 0.6 }} /> : null}
           <TransitionGroup>
             {repeatGroups.map(({ id, qrItem: nullableQrItem }, index) => {
               const answeredQrItem = createEmptyQrItem(qItem, undefined);
@@ -163,10 +161,12 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
       <Card elevation={groupCardElevation} sx={{ p: 3, py: 2.5, mb: 3.5 }}>
         {qItem.text ? (
           <>
-            <Typography variant={getHeadingVariant(props.groupCardElevation)} color={readOnly ? 'text.secondary' : 'text.primary'}>
-              <LabelWrapper qItem={qItem} readOnly={readOnly} />
-            </Typography>
-            <Divider sx={{ mt: 1, mb: 1.5, opacity:0.6 }} />
+            <GroupHeading
+              qItem={qItem}
+              readOnly={readOnly}
+              groupCardElevation={groupCardElevation}
+            />
+            <Divider sx={{ mt: 1, mb: 1.5, opacity: 0.6 }} />
           </>
         ) : null}
         <TransitionGroup>

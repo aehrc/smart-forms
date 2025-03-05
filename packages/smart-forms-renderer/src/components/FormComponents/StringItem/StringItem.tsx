@@ -35,7 +35,7 @@ import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useStringCalculatedExpression from '../../../hooks/useStringCalculatedExpression';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
-import { ItemLabelWrapper } from '../ItemParts';
+import ItemLabel from '../ItemParts/ItemLabel';
 
 interface StringItemProps
   extends PropsWithQrItemChangeHandler,
@@ -137,7 +137,7 @@ function StringItem(props: StringItemProps) {
       <ItemFieldGrid
         qItem={qItem}
         readOnly={readOnly}
-        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
         fieldChildren={
           <StringField
             linkId={qItem.linkId}

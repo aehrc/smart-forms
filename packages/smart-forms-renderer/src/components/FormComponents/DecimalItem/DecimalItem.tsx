@@ -41,7 +41,7 @@ import useDecimalCalculatedExpression from '../../../hooks/useDecimalCalculatedE
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import Box from '@mui/material/Box';
-import { ItemLabelWrapper } from '../ItemParts';
+import ItemLabel from '../ItemParts/ItemLabel';
 
 interface DecimalItemProps
   extends PropsWithQrItemChangeHandler,
@@ -92,7 +92,11 @@ function DecimalItem(props: DecimalItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks - there's no string-based input here
-  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, input);
+
+  if (qItem.linkId === 'weight-feedback') {
+    console.log(feedback);
+  }
 
   // Process calculated expressions
   const { calcExpUpdated } = useDecimalCalculatedExpression({
@@ -175,7 +179,7 @@ function DecimalItem(props: DecimalItemProps) {
       <ItemFieldGrid
         qItem={qItem}
         readOnly={readOnly}
-        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
         fieldChildren={
           <DecimalField
             linkId={qItem.linkId}

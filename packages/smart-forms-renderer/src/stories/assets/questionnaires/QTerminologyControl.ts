@@ -41,7 +41,7 @@ export const qPreferredTerminologyServer: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p style="font-size:0.875em"> PreferredTerminologyServer is set as <strong>https://sqlonfhir-r4.azurewebsites.net/fhir</strong> for the entire questionnaire.</p><p style="font-size:0.875em">Developer note: Use <strong>Inspect > Network</strong> to see the request.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>PreferredTerminologyServer is set as <strong>https://sqlonfhir-r4.azurewebsites.net/fhir</strong> for the entire questionnaire.</p><p>Developer note: Use <strong>Inspect > Network</strong> to see the request.</p></div>'
           }
         ]
       },

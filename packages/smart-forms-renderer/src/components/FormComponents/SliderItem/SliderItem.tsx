@@ -33,8 +33,8 @@ import SliderField from './SliderField';
 import useSliderExtensions from '../../../hooks/useSliderExtensions';
 import Box from '@mui/material/Box';
 import { useQuestionnaireStore } from '../../../stores';
-import { ItemLabelWrapper } from '../ItemParts';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import ItemLabel from '../ItemParts/ItemLabel';
 
 interface SliderItemProps
   extends PropsWithQrItemChangeHandler,
@@ -119,7 +119,7 @@ function SliderItem(props: SliderItemProps) {
       <ItemFieldGrid
         qItem={qItem}
         readOnly={readOnly}
-        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
         fieldChildren={
           <Box px={4}>
             <SliderField

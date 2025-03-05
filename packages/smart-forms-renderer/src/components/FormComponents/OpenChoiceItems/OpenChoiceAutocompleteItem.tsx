@@ -36,9 +36,9 @@ import OpenChoiceAutocompleteField from './OpenChoiceAutocompleteField';
 import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
-import { ItemLabelWrapper } from '../ItemParts';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import { AlertColor } from '@mui/material/Alert';
+import ItemLabel from '../ItemParts/ItemLabel';
 
 interface OpenChoiceAutocompleteItemProps
   extends PropsWithQrItemChangeHandler,
@@ -167,7 +167,7 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
       <ItemFieldGrid
         qItem={qItem}
         readOnly={readOnly}
-        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
         fieldChildren={
           <OpenChoiceAutocompleteField
             qItem={qItem}

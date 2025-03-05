@@ -23,7 +23,7 @@ export {
   GridGroup,
   parseFhirDateToDisplayDate,
   ItemFieldGrid,
-  ItemLabelWrapper,
+  ItemLabel,
   BooleanField,
   DecimalField,
   StringField,

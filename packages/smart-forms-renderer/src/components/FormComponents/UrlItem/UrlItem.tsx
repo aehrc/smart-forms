@@ -34,7 +34,7 @@ import UrlField from './UrlField';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
-import { ItemLabelWrapper } from '../ItemParts';
+import ItemLabel from '../ItemParts/ItemLabel';
 
 interface UrlItemProps
   extends PropsWithQrItemChangeHandler,
@@ -119,7 +119,7 @@ function UrlItem(props: UrlItemProps) {
       <ItemFieldGrid
         qItem={qItem}
         readOnly={readOnly}
-        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
         fieldChildren={
           <UrlField
             linkId={qItem.linkId}

@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 
-import type { Theme } from '@mui/material/styles';
+import { alpha, Theme } from '@mui/material/styles';
+import { grey } from '@mui/material/colors';
 
 export default function Table(theme: Theme) {
   return {
@@ -23,8 +24,15 @@ export default function Table(theme: Theme) {
       styleOverrides: {
         head: {
           color: theme.palette.text.secondary,
-          backgroundColor: theme.palette.customBackground.neutral,
+          backgroundColor: '#F4F6F8',
           borderBottom: '1px solid #e5e7eb'
+        }
+      }
+    },
+    MuiTableContainer: {
+      styleOverrides: {
+        root: {
+          boxShadow: `0 0 2px 0 ${alpha(grey[500], 0.2)}, 0 12px 24px -4px ${alpha(grey[500], 0.16)}`
         }
       }
     }

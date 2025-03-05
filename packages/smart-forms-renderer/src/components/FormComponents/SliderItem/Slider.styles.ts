@@ -30,5 +30,5 @@ export const SliderDisplayBox = styled(Box, {
   borderRadius: Number(theme.shape.borderRadius) * 0.5,
   border: `1px solid ${alpha(theme.palette.text.disabled, 0.5)}`,
   minWidth: 28,
-  height: 18
+  height: 20
 }));

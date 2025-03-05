@@ -80,7 +80,7 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
         )}
       />
       {terminologyError.error ? (
-        <Typography variant="body1">
+        <Typography>
           There was an error fetching options from the terminology server for{' '}
           {terminologyError.answerValueSet}
         </Typography>

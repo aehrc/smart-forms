@@ -37,7 +37,7 @@ import { createEmptyQrItem } from '../../../../utils/qrItem';
 import useDateValidation from '../../../../hooks/useDateValidation';
 import CustomDateField from './CustomDateField';
 import { useQuestionnaireStore } from '../../../../stores';
-import { ItemLabelWrapper } from '../../ItemParts';
+import ItemLabel from '../../ItemParts/ItemLabel';
 
 interface CustomDateItemProps
   extends PropsWithQrItemChangeHandler,
@@ -141,7 +141,7 @@ function CustomDateItem(props: CustomDateItemProps) {
       <ItemFieldGrid
         qItem={qItem}
         readOnly={readOnly}
-        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
         fieldChildren={
           <CustomDateField
             linkId={qItem.linkId}

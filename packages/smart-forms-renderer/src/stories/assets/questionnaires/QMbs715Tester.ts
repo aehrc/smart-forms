@@ -4602,7 +4602,7 @@ export const qBasicMbs715: Questionnaire = {
                   {
                     url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
                     valueString:
-                      '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p>Medical history and current problems list</p>\r\n    <p style="font-size:0.9em; font-weight:normal"><em>This list includes items from the clinical record. If you wish to enter additional diagnoses, either update the clinical record and repopulate this form or add them to the "New diagnoses list" below and later update the clinical record as required.</em></p>\r\n    </div>'
+                      '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p>Medical history and current problems list</p>\r\n    <p style="font-size:1.125rem; font-weight:normal"><em>This list includes items from the clinical record. If you wish to enter additional diagnoses, either update the clinical record and repopulate this form or add them to the "New diagnoses list" below and later update the clinical record as required.</em></p>\r\n    </div>'
                   }
                 ]
               },
@@ -21042,7 +21042,7 @@ export const qModifiedMbs715WithCollapsible: Questionnaire = {
                   {
                     url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
                     valueString:
-                      '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p>Medical history and current problems list</p>\r\n    <p style="font-size:0.9em; font-weight:normal"><em>This list includes items from the clinical record. If you wish to enter additional diagnoses, either update the clinical record and repopulate this form or add them to the "New diagnoses list" below and later update the clinical record as required.</em></p>\r\n    </div>'
+                      '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p>Medical history and current problems list</p>\r\n    <p style="font-size:1.125rem; font-weight:normal"><em>This list includes items from the clinical record. If you wish to enter additional diagnoses, either update the clinical record and repopulate this form or add them to the "New diagnoses list" below and later update the clinical record as required.</em></p>\r\n    </div>'
                   }
                 ]
               },

@@ -33,7 +33,7 @@ import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import { generateExistingRepeatId, generateNewRepeatId } from '../../../utils/repeatId';
-import { ItemLabelWrapper } from '../ItemParts';
+import ItemLabel from '../ItemParts/ItemLabel';
 
 interface RepeatItemProps
   extends PropsWithQrItemChangeHandler,
@@ -126,7 +126,7 @@ function RepeatItem(props: RepeatItemProps) {
       <ItemFieldGrid
         qItem={qItem}
         readOnly={readOnly}
-        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
         fieldChildren={
           <TransitionGroup>
             {repeatAnswers.map((answer, index) => {

@@ -44,7 +44,7 @@ import {
 import useTimeValidation from '../../../../hooks/useTimeValidation';
 import useDateNonEmptyValidation from '../../../../hooks/useDateTimeNonEmpty';
 import DateTimeField from './DateTimeField';
-import { ItemLabelWrapper } from '../../ItemParts';
+import ItemLabel from '../../ItemParts/ItemLabel';
 
 interface CustomDateTimeItemProps
   extends PropsWithQrItemChangeHandler,
@@ -216,7 +216,7 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
       <ItemFieldGrid
         qItem={qItem}
         readOnly={readOnly}
-        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
         fieldChildren={
           <DateTimeField
             linkId={qItem.linkId}

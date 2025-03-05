@@ -100,16 +100,13 @@ function GroupItemView(props: GroupItemViewProps) {
           <GroupHeading
             qItem={qItem}
             readOnly={readOnly}
+            groupCardElevation={groupCardElevation}
             tabIsMarkedAsComplete={tabIsMarkedAsComplete}
             pageIsMarkedAsComplete={pageIsMarkedAsComplete}
-            isRepeated={isRepeated}
-            groupCardElevation={groupCardElevation}
-
-
           />
         </AccordionSummary>
         <AccordionDetails sx={{ pt: 0 }}>
-          {qItem.text ? <Divider sx={{ mb: 1.5, opacity:0.6 }} /> : null}
+          {qItem.text ? <Divider sx={{ mb: 1.5, opacity: 0.6 }} /> : null}
           <>
             {childQItems.map((qItem: QuestionnaireItem, i) => {
               const qrItemOrItems = qrItemsByIndex[i];
@@ -175,15 +172,18 @@ function GroupItemView(props: GroupItemViewProps) {
       isRepeated={isRepeated}
       data-test="q-item-group-box">
       <GroupCard elevation={groupCardElevation} isRepeated={isRepeated}>
-        <GroupHeading
-          qItem={qItem}
-          readOnly={readOnly}
-          tabIsMarkedAsComplete={tabIsMarkedAsComplete}
-          pageIsMarkedAsComplete={pageIsMarkedAsComplete}
-          isRepeated={isRepeated}
-          groupCardElevation={groupCardElevation}
-
-        />
+        {isRepeated ? null : (
+          <>
+            <GroupHeading
+              qItem={qItem}
+              readOnly={readOnly}
+              tabIsMarkedAsComplete={tabIsMarkedAsComplete}
+              pageIsMarkedAsComplete={pageIsMarkedAsComplete}
+              groupCardElevation={groupCardElevation}
+            />
+            {qItem.text ? <Divider sx={{ mt: 1, mb: 1.5, opacity: 0.6 }} /> : null}
+          </>
+        )}
         {childQItems.map((qItem: QuestionnaireItem, i) => {
           const qrItemOrItems = qrItemsByIndex[i];
 

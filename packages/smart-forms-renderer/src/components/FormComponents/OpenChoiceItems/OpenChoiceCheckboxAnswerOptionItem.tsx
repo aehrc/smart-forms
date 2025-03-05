@@ -38,8 +38,8 @@ import { useQuestionnaireStore } from '../../../stores';
 import useOpenLabel from '../../../hooks/useOpenLabel';
 import { updateChoiceCheckboxAnswers } from '../../../utils/choice';
 import OpenChoiceCheckboxAnswerOptionFields from './OpenChoiceCheckboxAnswerOptionFields';
-import { ItemLabelWrapper } from '../ItemParts';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import ItemLabel from '../ItemParts/ItemLabel';
 
 interface OpenChoiceCheckboxAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
@@ -179,7 +179,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
       <ItemFieldGrid
         qItem={qItem}
         readOnly={readOnly}
-        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
         fieldChildren={
           <OpenChoiceCheckboxAnswerOptionFields
             qItem={qItem}

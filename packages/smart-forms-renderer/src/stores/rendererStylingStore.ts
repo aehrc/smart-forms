@@ -22,17 +22,6 @@ import type { UseResponsiveProps } from '../hooks';
 import type { Breakpoints } from '@mui/material';
 
 export interface RendererStyling {
-  itemLabelFontWeight?:
-    | '100'
-    | '200'
-    | '300'
-    | '400'
-    | '500'
-    | '600'
-    | '700'
-    | '800'
-    | '900'
-    | 'default';
   requiredIndicatorPosition?: 'start' | 'end';
   itemResponsive?: {
     labelBreakpoints: Partial<Breakpoints['values']>;
@@ -64,17 +53,6 @@ export interface RendererStyling {
  * @author Sean Fong
  */
 export interface RendererStylingStoreType {
-  itemLabelFontWeight:
-    | '100'
-    | '200'
-    | '300'
-    | '400'
-    | '500'
-    | '600'
-    | '700'
-    | '800'
-    | '900'
-    | 'default';
   requiredIndicatorPosition: 'start' | 'end';
   itemResponsive: {
     labelBreakpoints: Partial<Breakpoints['values']>;
@@ -105,7 +83,6 @@ export interface RendererStylingStoreType {
  * @author Sean Fong
  */
 export const rendererStylingStore = createStore<RendererStylingStoreType>()((set) => ({
-  itemLabelFontWeight: 'default',
   requiredIndicatorPosition: 'start',
   itemResponsive: {
     labelBreakpoints: { xs: 12, md: 4 },
@@ -129,7 +106,6 @@ export const rendererStylingStore = createStore<RendererStylingStoreType>()((set
   disableTabButtons: false,
   setRendererStyling: (params: RendererStyling) => {
     set(() => ({
-      itemLabelFontWeight: params.itemLabelFontWeight ?? 'default',
       requiredIndicatorPosition: params.requiredIndicatorPosition ?? 'start',
       itemResponsive: params.itemResponsive ?? {
         labelBreakpoints: { xs: 12, md: 4 },

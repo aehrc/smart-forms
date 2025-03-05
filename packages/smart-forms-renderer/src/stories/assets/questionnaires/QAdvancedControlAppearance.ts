@@ -35,7 +35,7 @@ export const qItemControl: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p style="font-size:0.875em"> Please refer to the respective itemControl sections for group, display and question items.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to the respective itemControl sections for group, display and question items.</p></div>'
           }
         ]
       },

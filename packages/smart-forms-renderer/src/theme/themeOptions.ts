@@ -15,15 +15,39 @@
  * limitations under the License.
  */
 
-import type { ThemeOptions } from '@mui/material/styles';
-import palette from './palette';
+import { alpha, ThemeOptions } from '@mui/material/styles';
 import typography from './typography';
+import { grey } from '@mui/material/colors';
 
 export const themeOptions: ThemeOptions = {
-  palette,
+  palette: {
+    secondary: {
+      light: '#7ac298',
+      main: '#229954',
+      dark: '#145c32'
+    },
+    text: {
+      primary: grey['800'],
+      secondary: grey['600'],
+      disabled: grey['500']
+    },
+    background: {
+      paper: '#fff',
+      default: '#fafafa'
+    },
+    action: {
+      active: grey['600'],
+      hover: alpha(grey['500'], 0.08),
+      selected: alpha(grey['500'], 0.16),
+      disabled: alpha(grey['500'], 0.8),
+      disabledBackground: alpha(grey['500'], 0.24),
+      focus: alpha(grey['500'], 0.24),
+      hoverOpacity: 0.08,
+      disabledOpacity: 0.48
+    }
+  },
   shape: { borderRadius: 6 },
-  typography,
-  // Mapped to Tailwind CSS shadow utility
+  typography: typography,
   // 0 - shadow-none
   // 1-3 - shadow-2xs
   // 4-7 - shadow-xs

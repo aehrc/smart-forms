@@ -588,7 +588,7 @@ export const qEnableWhenExpressionSimple: Questionnaire = {
               {
                 url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
                 valueString:
-                  '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p style="font-size:0.875em">Feel free to play around with the age value according to different age groups:</p><ul style="font-size:0.875em">\r\n      <li >Less or equal to 5</li>\r\n      <li>6 to 12</li>\r\n      <li>12 to 24</li>\r\n      <li>24 to 49</li>\r\n      <li>More or equal to 49</li>\r\n</ul></div>'
+                  '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Feel free to play around with the age value according to different age groups:</p><ul>\r\n      <li >Less or equal to 5</li>\r\n      <li>6 to 12</li>\r\n      <li>12 to 24</li>\r\n      <li>24 to 49</li>\r\n      <li>More or equal to 49</li>\r\n</ul></div>'
               }
             ]
           },
@@ -1038,7 +1038,7 @@ export const qEnableWhenExpressionTabs: Questionnaire = {
                   {
                     url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
                     valueString:
-                      '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p style="font-size:0.875em">Feel free to play around with the age value according to different age groups:</p><ul style="font-size:0.875em">\r\n      <li >Less or equal to 5</li>\r\n      <li>6 to 12</li>\r\n      <li>13 to 24</li>\r\n      <li>25 to 49</li>\r\n      <li>More or equal to 49</li>\r\n</ul></div>'
+                      '<div xmlns="http://www.w3.org/1999/xhtml">\r\n<p>Feel free to play around with the age value according to different age groups:</p><ul>\r\n      <li >Less or equal to 5</li>\r\n      <li>6 to 12</li>\r\n      <li>13 to 24</li>\r\n      <li>25 to 49</li>\r\n      <li>More or equal to 49</li>\r\n</ul></div>'
                   }
                 ]
               },
@@ -1229,7 +1229,7 @@ export const qText: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p>This sentence is an example of a text using the rendering-xhtml extension.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p style="font-size:1.25rem">This sentence is an example of a text using the rendering-xhtml extension.</p></div>'
           }
         ]
       },

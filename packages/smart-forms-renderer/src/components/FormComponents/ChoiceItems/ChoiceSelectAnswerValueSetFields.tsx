@@ -109,7 +109,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
     return (
       <StyledAlert color="error">
         <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-        <Typography variant="body1">
+        <Typography>
           There was an error fetching options from the terminology server for{' '}
           {terminologyError.answerValueSet}
         </Typography>
@@ -120,9 +120,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
   return (
     <StyledAlert color="error">
       <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-      <Typography variant="body1">
-        Unable to fetch options from the questionnaire or launch context
-      </Typography>
+      <Typography>Unable to fetch options from the questionnaire or launch context</Typography>
     </StyledAlert>
   );
 }

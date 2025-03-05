@@ -18,7 +18,6 @@
 import React from 'react';
 import { SliderDisplayBox } from './Slider.styles';
 import Typography from '@mui/material/Typography';
-import { pxToRem } from '../../../theme/typography';
 
 interface SliderDisplayValueProps {
   value: number;
@@ -33,7 +32,7 @@ function SliderDisplayValue(props: SliderDisplayValueProps) {
 
   return (
     <SliderDisplayBox hasLabels={hasLabels}>
-      <Typography textAlign="center" color="text.disabled" fontSize={pxToRem(9.5)}>
+      <Typography textAlign="center" color="text.disabled">
         {valueToDisplay}
       </Typography>
     </SliderDisplayBox>

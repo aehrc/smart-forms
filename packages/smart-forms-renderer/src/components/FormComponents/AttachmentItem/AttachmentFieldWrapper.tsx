@@ -26,7 +26,7 @@ import type {
 import type { QuestionnaireItem } from 'fhir/r4';
 import type { AttachmentValues } from './AttachmentItem';
 import { useQuestionnaireStore } from '../../../stores';
-import { ItemLabelWrapper } from '../ItemParts';
+import ItemLabel from '../ItemParts/ItemLabel';
 
 interface AttachmentFieldWrapperProps
   extends PropsWithIsRepeatedAttribute,
@@ -79,7 +79,7 @@ function AttachmentFieldWrapper(props: AttachmentFieldWrapperProps) {
       <ItemFieldGrid
         qItem={qItem}
         readOnly={readOnly}
-        labelChildren={<ItemLabelWrapper qItem={qItem} readOnly={readOnly} />}
+        labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
         fieldChildren={
           <AttachmentField
             linkId={qItem.linkId}

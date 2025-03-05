@@ -18,7 +18,7 @@
 import React, { memo } from 'react';
 import type { QuestionnaireItem } from 'fhir/r4';
 import useHidden from '../../../hooks/useHidden';
-import ItemLabelText from './ItemLabelText';
+import ItemTextSwitcher from './ItemTextSwitcher';
 
 interface GroupHeadingIconProps {
   displayItem: QuestionnaireItem;
@@ -32,7 +32,7 @@ const ContextDisplayItem = memo(function GroupHeadingIcon(props: GroupHeadingIco
     return null;
   }
 
-  return <ItemLabelText qItem={displayItem} readOnly={false} />;
+  return <ItemTextSwitcher qItem={displayItem} />;
 });
 
 export default ContextDisplayItem;
