@@ -22,7 +22,7 @@ export default function Dialog(theme: Theme) {
     MuiDialog: {
       styleOverrides: {
         paper: {
-          boxShadow: theme.customShadows.dialog, // Customize the shadow
+          boxShadow: theme.shadows[12], // Customize the shadow
           borderRadius: Number(theme.shape.borderRadius) * 1.5
         }
       }

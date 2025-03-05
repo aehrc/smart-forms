@@ -18,7 +18,6 @@
 import { Box, Typography } from '@mui/material';
 import csiroLogo from '../../data/images/csiro-logo.png';
 import { useSnackbar } from 'notistack';
-import Confetti from 'react-confetti';
 import useClickCounter from '../../features/easterEgg/hooks/useClickCounter.ts';
 import useDebugMode from '../../hooks/useDebugMode.ts';
 import CloseSnackbar from '../Snackbar/CloseSnackbar.tsx';
@@ -53,9 +52,6 @@ function CsiroLogo() {
           }}
         />
       </Box>
-      {counter === 3 ? (
-        <Confetti width={2000} />
-      ) : null}
     </>
   );
 }

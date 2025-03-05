@@ -36,7 +36,7 @@ export const StyledSearch = styled(OutlinedInput)(({ theme }) => ({
   }),
   '&.Mui-focused': {
     width: '100%',
-    boxShadow: theme.customShadows.z4
+    boxShadow: theme.shadows[4]
   },
   '& fieldset': {
     borderWidth: `1px !important`,
@@ -51,7 +51,7 @@ export function getResponseSearchStyles(theme: Theme) {
       duration: theme.transitions.duration.shorter
     }),
     '&.Mui-focused': {
-      boxShadow: theme.customShadows.z4
+      boxShadow: theme.shadows[4]
     },
     '& fieldset': {
       borderWidth: `1px !important`,
@@ -68,14 +68,14 @@ export function getResponseToolBarColors(
   if (selected) {
     return {
       color: 'primary.main',
-      bgcolor: 'pale.primary'
+      bgcolor: '#D6EBFC'
     };
   }
 
   if (selectedQuestionnaire && existingResponses.length > 0) {
     return {
       color: 'secondary.main',
-      bgcolor: 'pale.secondary'
+      bgcolor: '#D3EBDD'
     };
   }
 
@@ -86,7 +86,7 @@ export function getQuestionnaireToolBarColors(selected: Questionnaire | null) {
   return {
     ...(selected && {
       color: 'primary.main',
-      bgcolor: 'pale.primary'
+      bgcolor: '#D6EBFC'
     })
   };
 }
@@ -96,11 +96,11 @@ export function getExistingResponsesToolBarColors(selected: QuestionnaireRespons
     ...(selected
       ? {
           color: 'primary.main',
-          bgcolor: 'pale.primary'
+          bgcolor: '#D6EBFC'
         }
       : {
           color: 'secondary.main',
-          bgcolor: 'pale.secondary'
+          bgcolor: '#D3EBDD'
         })
   };
 }

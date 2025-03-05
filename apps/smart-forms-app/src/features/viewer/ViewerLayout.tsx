@@ -54,7 +54,7 @@ function ViewerLayout() {
           {debugModeEnabled ? <RendererDebugFooter /> : null}
         </Main>
         <BackToTopButton>
-          <Fab size="medium" sx={{ backgroundColor: 'pale.primary' }}>
+          <Fab size="medium" sx={{ backgroundColor: '#D6EBFC' }}>
             <KeyboardArrowUpIcon />
           </Fab>
         </BackToTopButton>

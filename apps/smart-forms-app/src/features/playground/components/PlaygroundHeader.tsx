@@ -52,7 +52,7 @@ const PlaygroundHeader = memo(function PlaygroundHeader(props: PlaygroundHeaderP
   const navigate = useNavigate();
 
   return (
-    <StyledRoot sx={{ boxShadow: theme.customShadows.z4 }} navCollapsed={true}>
+    <StyledRoot sx={{ boxShadow: theme.shadows[4] }} navCollapsed={true}>
       <StyledToolbar>
         <Tooltip title="Exit playground">
           <IconButton

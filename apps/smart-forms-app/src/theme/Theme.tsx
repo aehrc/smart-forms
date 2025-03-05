@@ -30,66 +30,51 @@ import GlobalStyles from './globalStyles';
 import componentsOverride from './overrides/Overrides';
 import { grey } from '@mui/material/colors';
 
-// ----------------------------------------------------------------------
-// Module Augmentation
-
-declare module '@mui/material/styles' {
-  // noinspection JSUnusedGlobalSymbols
-  interface Theme {
-    customShadows: {
-      z1: string;
-      z4: string;
-      z8: string;
-      z12: string;
-      z16: string;
-      z20: string;
-      z24: string;
-      card: string;
-      dialog: string;
-      dropdown: string;
-    };
-  }
-
-  // noinspection JSUnusedGlobalSymbols
-  interface ThemeOptions {
-    customShadows: {
-      z1: string;
-      z4: string;
-      z8: string;
-      z12: string;
-      z16: string;
-      z20: string;
-      z24: string;
-      card: string;
-      dialog: string;
-      dropdown: string;
-    };
-  }
-}
-// ----------------------------------------------------------------------
-
 const transparent = alpha(grey[500], 0.16);
 
 const themeOptions: ThemeOptions = {
   palette,
   shape: { borderRadius: 6 },
-  typography,
-  customShadows: {
-    z1: `0 1px 2px 0 ${transparent}`,
-    z4: `0 4px 8px 0 ${transparent}`,
-    z8: `0 8px 16px 0 ${transparent}`,
-    z12: `0 12px 24px -4px ${transparent}`,
-    z16: `0 16px 32px -4px ${transparent}`,
-    z20: `0 20px 40px -4px ${transparent}`,
-    z24: `0 24px 48px 0 ${transparent}`,
-    //
-    card: `0 0 2px 0 ${alpha(grey[500], 0.2)}, 0 12px 24px -4px ${transparent}`,
-    dialog: `0 16px 32px -4px ${alpha(grey[600], 0.64)}`,
-    dropdown: `0 0 16px 0 ${alpha(grey[500], 0.24)}`
-  }
+  typography: typography,
+  // Mapped to Tailwind CSS shadow utility
+  // 0 - shadow-none
+  // 1-3 - shadow-2xs
+  // 4-7 - shadow-xs
+  // 8-11 - shadow-sm
+  // 12-15 - shadow-md
+  // 16-19 - shadow-lg
+  // 20-23 - shadow-xl
+  // 24 - shadow-2xl
+  shadows: [
+    'none', // 0 - shadow-none
+    `0 1px 2px 0 ${transparent}`, // 1 - shadow-2xs
+    `0 1px 2px 0 ${transparent}`, // 2 - shadow-2xs
+    `0 1px 2px 0 ${transparent}`, // 3 - shadow-2xs
+    `0 4px 8px 0 ${transparent}`, // 4 - shadow-xs
+    `0 4px 8px 0 ${transparent}`, // 5 - shadow-xs
+    `0 4px 8px 0 ${transparent}`, // 6 - shadow-xs
+    `0 4px 8px 0 ${transparent}`, // 7 - shadow-xs
+    `0 8px 16px 0 ${transparent}`, // 8 - shadow-sm
+    `0 8px 16px 0 ${transparent}`, // 9 - shadow-sm
+    `0 8px 16px 0 ${transparent}`, // 10 - shadow-sm
+    `0 8px 16px 0 ${transparent}`, // 11 - shadow-sm
+    `0 12px 24px -4px ${transparent}`, // 12 - shadow-md
+    `0 12px 24px -4px ${transparent}`, // 13 - shadow-md
+    `0 12px 24px -4px ${transparent}`, // 14 - shadow-md
+    `0 12px 24px -4px ${transparent}`, // 15 - shadow-md
+    `0 16px 32px -4px ${transparent}`, // 16 - shadow-lg
+    `0 16px 32px -4px ${transparent}`, // 17 - shadow-lg
+    `0 16px 32px -4px ${transparent}`, // 18 - shadow-lg
+    `0 16px 32px -4px ${transparent}`, // 19 - shadow-lg
+    `0 20px 40px -4px ${transparent}`, // 20 - shadow-xl
+    `0 20px 40px -4px ${transparent}`, // 21 - shadow-xl
+    `0 20px 40px -4px ${transparent}`, // 22 - shadow-xl
+    `0 20px 40px -4px ${transparent}`, // 23 - shadow-xl
+    `0 24px 48px 0 ${transparent}` // 24 - shadow-2xl
+  ]
 };
 
-function ThemeProvider({ children }: { children: ReactNode }) {
+function AppThemeProvider({ children }: { children: ReactNode }) {
   const theme = createTheme(themeOptions);
   theme.components = componentsOverride(theme);
 
@@ -104,4 +89,4 @@ function ThemeProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export default ThemeProvider;
+export default AppThemeProvider;

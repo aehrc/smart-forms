@@ -43,7 +43,7 @@ const RendererHeader = memo(function RendererHeader(props: RendererHeaderProps) 
   const navIsExpanded = !desktopNavCollapsed;
 
   return (
-    <StyledRoot sx={{ boxShadow: theme.customShadows.z4 }} navCollapsed={desktopNavCollapsed}>
+    <StyledRoot sx={{ boxShadow: theme.shadows[4] }} navCollapsed={desktopNavCollapsed}>
       <StyledToolbar>
         {isLgUp ? (
           <IconButton

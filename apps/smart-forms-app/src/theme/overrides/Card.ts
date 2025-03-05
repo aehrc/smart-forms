@@ -16,13 +16,15 @@
  */
 
 import type { Theme } from '@mui/material';
+import { alpha } from '@mui/material/styles';
+import { grey } from '@mui/material/colors';
 
 export default function Card(theme: Theme) {
   return {
     MuiCard: {
       styleOverrides: {
         root: {
-          boxShadow: theme.customShadows.card,
+          boxShadow: `0 0 2px 0 ${alpha(grey[500], 0.2)}, 0 12px 24px -4px ${alpha(grey[500], 0.16)}`,
           borderRadius: Number(theme.shape.borderRadius) * 2,
           position: 'relative',
           zIndex: 0 // Fix Safari overflow: hidden with border radius

@@ -93,6 +93,10 @@ const typography = {
     lineHeight: 22 / 14,
     fontSize: pxToRem(11)
   },
+  groupHeading: {
+    fontSize: pxToRem(13),
+    fontWeight: 600
+  },
   caption: {
     lineHeight: 1.5,
     fontSize: pxToRem(10)
