@@ -56,7 +56,7 @@ const FormBodyTabListWrapper = memo(function FormBodyTabListWrapper(
                 completedTabsExpanded={completedTabsExpanded}
                 setCompletedTabsExpanded={setCompletedTabsExpanded}
               />
-              <Divider sx={{ mx: 1 , opacity:0.6 }} />
+              <Divider sx={{ mx: 1, opacity: 0.6 }} />
             </>
           ) : null}
           <FormBodyTabList

@@ -34,7 +34,6 @@ interface QuestionnaireLabelProps {
 const QuestionnaireLabel = forwardRef((props: QuestionnaireLabelProps, ref) => {
   const { color, startIcon, endIcon, children, sx, ...other } = props;
 
-
   const iconStyle = {
     width: 16,
     height: 16,
@@ -44,7 +43,7 @@ const QuestionnaireLabel = forwardRef((props: QuestionnaireLabelProps, ref) => {
   return (
     <QuestionnaireStyledLabel
       ref={ref}
-      component="span"
+      as="span"
       color={color}
       sx={{
         ...(startIcon && { pl: 0.75 }),

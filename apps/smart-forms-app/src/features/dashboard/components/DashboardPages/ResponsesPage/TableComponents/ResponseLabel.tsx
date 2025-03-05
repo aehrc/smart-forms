@@ -45,7 +45,7 @@ const ResponseLabel = forwardRef((props: Props, ref) => {
   return (
     <ResponseStyledLabel
       ref={ref}
-      component="span"
+      as="span"
       color={color}
       sx={{
         ...(startIcon && { pl: 0.75 }),

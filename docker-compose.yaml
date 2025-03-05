@@ -1,8 +1,7 @@
- 
 services:
   # Smart-Forms-App
 
-  smart-forms-app: 
+  smart-forms-app:
     image: aehrc/smart-forms-app:1.0
     environment:
       VITE_ONTOSERVER_URL: ${VITE_ONTOSERVER_URL}
@@ -11,7 +10,7 @@ services:
       VITE_LAUNCH_CLIENT_ID: ${VITE_LAUNCH_CLIENT_ID}
       VITE_IN_APP_POPULATE: ${VITE_IN_APP_POPULATE}
       VITE_PRESERVE_SYM_LINKS: ${VITE_PRESERVE_SYM_LINKS}
-      MODE: ${MODE}  
+      MODE: ${MODE}
     build:
       context: ./
       args:
@@ -37,7 +36,7 @@ services:
       - /app/packages/sdc-assemble/lib
       - /app/packages/sdc-populate/node_modules
       - /app/packages/sdc-populate/lib
-    
+
     command: >
       sh -c "
         if [ \"$MODE\" = \"DEV\" ]; then

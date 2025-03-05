@@ -32,7 +32,10 @@ export default function Table(theme: Theme) {
     MuiTableContainer: {
       styleOverrides: {
         root: {
-          boxShadow: `0 0 2px 0 ${alpha(grey[500], 0.2)}, 0 12px 24px -4px ${alpha(grey[500], 0.16)}`
+          boxShadow: `0 0 2px 0 ${alpha(grey[500], 0.2)}, 0 12px 24px -4px ${alpha(
+            grey[500],
+            0.16
+          )}`
         }
       }
     }
