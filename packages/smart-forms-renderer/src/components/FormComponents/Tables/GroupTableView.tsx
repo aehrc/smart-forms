@@ -37,6 +37,11 @@ import type { GroupTableRowModel } from '../../../interfaces/groupTable.interfac
 import GroupTableBody from './GroupTableBody';
 import Checkbox from '@mui/material/Checkbox';
 import { useQuestionnaireStore } from '../../../stores';
+import { getGroupCollapsible } from '../../../utils/qItem';
+import { GroupAccordion } from '../GroupItem/GroupAccordion.styles';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import AccordionDetails from '@mui/material/AccordionDetails';
 import GroupHeading from '../GroupItem/GroupHeading';
 
 interface GroupTableViewProps
@@ -81,7 +86,134 @@ function GroupTableView(props: GroupTableViewProps) {
   } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
+  const groupCollapsibleValue = getGroupCollapsible(qItem);
 
+  // If the table is collapsible, wrap it in an accordion
+  if (groupCollapsibleValue) {
+    const isDefaultOpen = groupCollapsibleValue === 'default-open';
+
+    // Minimal + Accordion
+    if (showMinimalView) {
+      return (
+        <GroupAccordion
+          disableGutters
+          defaultExpanded={isDefaultOpen}
+          elevation={groupCardElevation}
+          isRepeated={isRepeated}
+          slotProps={{
+            transition: { unmountOnExit: true, timeout: 250 }
+          }}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ minHeight: '28px' }}>
+            <GroupHeading
+              qItem={qItem}
+              readOnly={readOnly}
+              groupCardElevation={groupCardElevation}
+            />
+          </AccordionSummary>
+          <AccordionDetails sx={{ pt: 0 }}>
+            {qItem.text ? <Divider sx={{ mb: 1.5, opacity: 0.6 }} /> : null}
+            <TableContainer component={Paper} elevation={groupCardElevation}>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    {itemLabels.map((itemLabel) => (
+                      <HeaderTableCell key={itemLabel} size="medium">
+                        {itemLabel}
+                      </HeaderTableCell>
+                    ))}
+                    <TableCell />
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <GroupTableBody
+                    tableQItem={qItem}
+                    readOnly={readOnly}
+                    tableRows={tableRows}
+                    selectedIds={selectedIds}
+                    qItemsIndexMap={qItemsIndexMap}
+                    isRepeated={isRepeated}
+                    showMinimalView={showMinimalView}
+                    parentIsReadOnly={parentIsReadOnly}
+                    onRowChange={onRowChange}
+                    onRemoveRow={onRemoveRow}
+                    onSelectRow={onSelectRow}
+                    onReorderRows={onReorderRows}
+                  />
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </AccordionDetails>
+        </GroupAccordion>
+      );
+    }
+
+    // Non-minimal Accordion
+    return (
+      <GroupAccordion
+        disableGutters
+        defaultExpanded={isDefaultOpen}
+        elevation={groupCardElevation}
+        isRepeated={isRepeated}
+        slotProps={{
+          transition: { unmountOnExit: true, timeout: 250 }
+        }}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ minHeight: '28px' }}>
+          <GroupHeading qItem={qItem} readOnly={readOnly} groupCardElevation={groupCardElevation} />
+        </AccordionSummary>
+        <AccordionDetails sx={{ pt: 0 }}>
+          {qItem.text ? <Divider sx={{ mb: 1.5, opacity: 0.6 }} /> : null}
+          <TableContainer component={Paper} elevation={groupCardElevation}>
+            <Table>
+              {isRepeated ? (
+                <caption>
+                  <AddRowButton repeatGroups={tableRows} readOnly={readOnly} onAddItem={onAddRow} />
+                </caption>
+              ) : null}
+              <TableHead>
+                <TableRow>
+                  <HeaderTableCell padding="none" />
+                  {isRepeated ? (
+                    <HeaderTableCell padding="none">
+                      <Checkbox
+                        color="primary"
+                        size="small"
+                        indeterminate={
+                          selectedIds.length > 0 && selectedIds.length < tableRows.length
+                        }
+                        checked={tableRows.length > 0 && selectedIds.length === tableRows.length}
+                        disabled={readOnly}
+                        onChange={onSelectAll}
+                      />
+                    </HeaderTableCell>
+                  ) : null}
+                  {itemLabels.map((itemLabel) => (
+                    <HeaderTableCell key={itemLabel}>{itemLabel}</HeaderTableCell>
+                  ))}
+                  <TableCell padding="checkbox" />
+                </TableRow>
+              </TableHead>
+              <GroupTableBody
+                tableQItem={qItem}
+                readOnly={readOnly}
+                tableRows={tableRows}
+                selectedIds={selectedIds}
+                qItemsIndexMap={qItemsIndexMap}
+                isRepeated={isRepeated}
+                showMinimalView={showMinimalView}
+                parentIsReadOnly={parentIsReadOnly}
+                onRowChange={onRowChange}
+                onRemoveRow={onRemoveRow}
+                onSelectRow={onSelectRow}
+                onReorderRows={onReorderRows}
+              />
+            </Table>
+          </TableContainer>
+        </AccordionDetails>
+      </GroupAccordion>
+    );
+  }
+
+  // Minimal + Regular GTable
   if (showMinimalView) {
     return (
       <QGroupContainerBox
@@ -123,6 +255,7 @@ function GroupTableView(props: GroupTableViewProps) {
     );
   }
 
+  // Regular GTable (not minimal)
   return (
     <QGroupContainerBox
       cardElevation={groupCardElevation}
