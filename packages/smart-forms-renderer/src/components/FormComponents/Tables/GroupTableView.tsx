@@ -40,6 +40,12 @@ import GroupTableBody from './GroupTableBody';
 import Checkbox from '@mui/material/Checkbox';
 import { useQuestionnaireStore } from '../../../stores';
 import { getHeadingVariant } from '../../../utils/headingVariant';
+import { getGroupCollapsible } from '../../../utils/qItem';
+import { GroupAccordion } from '../GroupItem/GroupAccordion.styles';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import AccordionDetails from '@mui/material/AccordionDetails';
+
 interface GroupTableViewProps
   extends PropsWithIsRepeatedAttribute,
     PropsWithShowMinimalViewAttribute,
@@ -80,23 +86,115 @@ function GroupTableView(props: GroupTableViewProps) {
   } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
+  const groupCollapsibleValue = getGroupCollapsible(qItem);
 
-  if (showMinimalView) {
+
+  // If the table is collapsible, wrap it in an accordion
+  if (groupCollapsibleValue) {
+    const isDefaultOpen = groupCollapsibleValue === 'default-open';
+    // if the table is in minimal view, return the minimal table view but in GroupAccordion
+    if (showMinimalView) {
+      return (
+
+        <GroupAccordion
+        disableGutters
+        defaultExpanded={isDefaultOpen}
+        elevation={groupCardElevation}
+        isRepeated={isRepeated}
+        slotProps={{
+          transition: { unmountOnExit: true, timeout: 250 }
+        }}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ minHeight: '28px' }}>
+          <Typography fontSize={13} variant={getHeadingVariant(props.groupCardElevation)} color={readOnly ? 'text.secondary' : 'text.primary'}>
+            <LabelWrapper qItem={qItem} readOnly={readOnly} />
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails sx={{ pt: 0 }}>
+          {qItem.text ? <Divider sx={{ mb: 1.5, opacity:0.6 }} /> : null}
+          <TableContainer component={Paper} elevation={groupCardElevation}>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  {itemLabels.map((itemLabel) => (
+                    <HeaderTableCell key={itemLabel} size="medium">
+                      {itemLabel}
+                    </HeaderTableCell>
+                  ))}
+                  <TableCell />
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <GroupTableBody
+                  tableQItem={qItem}
+                  readOnly={readOnly}
+                  tableRows={tableRows}
+                  selectedIds={selectedIds}
+                  qItemsIndexMap={qItemsIndexMap}
+                  isRepeated={isRepeated}
+                  showMinimalView={showMinimalView}
+                  parentIsReadOnly={parentIsReadOnly}
+                  onRowChange={onRowChange}
+                  onRemoveRow={onRemoveRow}
+                  onSelectRow={onSelectRow}
+                  onReorderRows={onReorderRows}
+                />
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </AccordionDetails>
+      </GroupAccordion>
+
+
+      );
+    }
+    
+    
+    
+    
     return (
-      <QGroupContainerBox cardElevation={groupCardElevation} isRepeated={false} py={1}>
-        <TableContainer component={Paper} elevation={groupCardElevation}>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                {itemLabels.map((itemLabel) => (
-                  <HeaderTableCell key={itemLabel} size="medium">
-                    {itemLabel}
-                  </HeaderTableCell>
-                ))}
-                <TableCell />
-              </TableRow>
-            </TableHead>
-            <TableBody>
+      <GroupAccordion
+        disableGutters
+        defaultExpanded={isDefaultOpen}
+        elevation={groupCardElevation}
+        isRepeated={isRepeated}
+        slotProps={{
+          transition: { unmountOnExit: true, timeout: 250 }
+        }}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ minHeight: '28px' }}>
+          <Typography fontSize={13} variant={getHeadingVariant(props.groupCardElevation)} color={readOnly ? 'text.secondary' : 'text.primary'}>
+            <LabelWrapper qItem={qItem} readOnly={readOnly} />
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails sx={{ pt: 0 }}>
+          {qItem.text ? <Divider sx={{ mb: 1.5, opacity:0.6 }} /> : null}
+          <TableContainer component={Paper} elevation={groupCardElevation}>
+            <Table>
+              {isRepeated ? (
+                <caption>
+                  <AddRowButton repeatGroups={tableRows} readOnly={readOnly} onAddItem={onAddRow} />
+                </caption>
+              ) : null}
+              <TableHead>
+                <TableRow>
+                  <HeaderTableCell padding="none" />
+                  {isRepeated ? (
+                    <HeaderTableCell padding="none">
+                      <Checkbox
+                        color="primary"
+                        size="small"
+                        indeterminate={selectedIds.length > 0 && selectedIds.length < tableRows.length}
+                        checked={tableRows.length > 0 && selectedIds.length === tableRows.length}
+                        disabled={readOnly}
+                        onChange={onSelectAll}
+                      />
+                    </HeaderTableCell>
+                  ) : null}
+                  {itemLabels.map((itemLabel) => (
+                    <HeaderTableCell key={itemLabel}>{itemLabel}</HeaderTableCell>
+                  ))}
+                  <TableCell padding="checkbox" />
+                </TableRow>
+              </TableHead>
               <GroupTableBody
                 tableQItem={qItem}
                 readOnly={readOnly}
@@ -111,72 +209,118 @@ function GroupTableView(props: GroupTableViewProps) {
                 onSelectRow={onSelectRow}
                 onReorderRows={onReorderRows}
               />
-            </TableBody>
+            </Table>
+          </TableContainer>
+        </AccordionDetails>
+      </GroupAccordion>
+    );
+  }
+
+// If the table is not collapsible, return the standard table view
+
+  else{
+
+    // if the table is in minimal view, return the minimal table view
+    if (showMinimalView) {
+      return (
+        <QGroupContainerBox cardElevation={groupCardElevation} isRepeated={false} py={1}>
+          <TableContainer component={Paper} elevation={groupCardElevation}>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  {itemLabels.map((itemLabel) => (
+                    <HeaderTableCell key={itemLabel} size="medium">
+                      {itemLabel}
+                    </HeaderTableCell>
+                  ))}
+                  <TableCell />
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <GroupTableBody
+                  tableQItem={qItem}
+                  readOnly={readOnly}
+                  tableRows={tableRows}
+                  selectedIds={selectedIds}
+                  qItemsIndexMap={qItemsIndexMap}
+                  isRepeated={isRepeated}
+                  showMinimalView={showMinimalView}
+                  parentIsReadOnly={parentIsReadOnly}
+                  onRowChange={onRowChange}
+                  onRemoveRow={onRemoveRow}
+                  onSelectRow={onSelectRow}
+                  onReorderRows={onReorderRows}
+                />
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </QGroupContainerBox>
+      );
+    }
+  
+    return (
+      <QGroupContainerBox
+        cardElevation={groupCardElevation}
+        isRepeated={false}
+        py={3}
+        data-linkid={qItem.linkId}
+        onClick={() => onFocusLinkId(qItem.linkId)}>
+        <>
+          <Typography fontSize={13} variant={getHeadingVariant(props.groupCardElevation)} color={readOnly ? 'text.secondary' : 'text.primary'}>
+            <LabelWrapper qItem={qItem} readOnly={readOnly} />
+          </Typography>
+          <Divider sx={{ my: 1 , opacity:0.6}} />
+        </>
+        <TableContainer component={Paper} elevation={groupCardElevation}>
+          <Table>
+            {isRepeated ? (
+              <caption>
+                <AddRowButton repeatGroups={tableRows} readOnly={readOnly} onAddItem={onAddRow} />
+              </caption>
+            ) : null}
+            <TableHead>
+              <TableRow>
+                <HeaderTableCell padding="none" />
+                {isRepeated ? (
+                  <HeaderTableCell padding="none">
+                    <Checkbox
+                      color="primary"
+                      size="small"
+                      indeterminate={selectedIds.length > 0 && selectedIds.length < tableRows.length}
+                      checked={tableRows.length > 0 && selectedIds.length === tableRows.length}
+                      disabled={readOnly}
+                      onChange={onSelectAll}
+                    />
+                  </HeaderTableCell>
+                ) : null}
+                {itemLabels.map((itemLabel) => (
+                  <HeaderTableCell key={itemLabel}>{itemLabel}</HeaderTableCell>
+                ))}
+                <TableCell padding="checkbox" />
+              </TableRow>
+            </TableHead>
+            <GroupTableBody
+              tableQItem={qItem}
+              readOnly={readOnly}
+              tableRows={tableRows}
+              selectedIds={selectedIds}
+              qItemsIndexMap={qItemsIndexMap}
+              isRepeated={isRepeated}
+              showMinimalView={showMinimalView}
+              parentIsReadOnly={parentIsReadOnly}
+              onRowChange={onRowChange}
+              onRemoveRow={onRemoveRow}
+              onSelectRow={onSelectRow}
+              onReorderRows={onReorderRows}
+            />
           </Table>
         </TableContainer>
       </QGroupContainerBox>
     );
+
   }
 
-  return (
-    <QGroupContainerBox
-      cardElevation={groupCardElevation}
-      isRepeated={false}
-      py={3}
-      data-linkid={qItem.linkId}
-      onClick={() => onFocusLinkId(qItem.linkId)}>
-      <>
-        <Typography fontSize={13} variant={getHeadingVariant(props.groupCardElevation)} color={readOnly ? 'text.secondary' : 'text.primary'}>
-          <LabelWrapper qItem={qItem} readOnly={readOnly} />
-        </Typography>
-        <Divider sx={{ my: 1 , opacity:0.6}} />
-      </>
-      <TableContainer component={Paper} elevation={groupCardElevation}>
-        <Table>
-          {isRepeated ? (
-            <caption>
-              <AddRowButton repeatGroups={tableRows} readOnly={readOnly} onAddItem={onAddRow} />
-            </caption>
-          ) : null}
-          <TableHead>
-            <TableRow>
-              <HeaderTableCell padding="none" />
-              {isRepeated ? (
-                <HeaderTableCell padding="none">
-                  <Checkbox
-                    color="primary"
-                    size="small"
-                    indeterminate={selectedIds.length > 0 && selectedIds.length < tableRows.length}
-                    checked={tableRows.length > 0 && selectedIds.length === tableRows.length}
-                    disabled={readOnly}
-                    onChange={onSelectAll}
-                  />
-                </HeaderTableCell>
-              ) : null}
-              {itemLabels.map((itemLabel) => (
-                <HeaderTableCell key={itemLabel}>{itemLabel}</HeaderTableCell>
-              ))}
-              <TableCell padding="checkbox" />
-            </TableRow>
-          </TableHead>
-          <GroupTableBody
-            tableQItem={qItem}
-            readOnly={readOnly}
-            tableRows={tableRows}
-            selectedIds={selectedIds}
-            qItemsIndexMap={qItemsIndexMap}
-            isRepeated={isRepeated}
-            showMinimalView={showMinimalView}
-            parentIsReadOnly={parentIsReadOnly}
-            onRowChange={onRowChange}
-            onRemoveRow={onRemoveRow}
-            onSelectRow={onSelectRow}
-            onReorderRows={onReorderRows}
-          />
-        </Table>
-      </TableContainer>
-    </QGroupContainerBox>
-  );
+
 }
 
 export default GroupTableView;
