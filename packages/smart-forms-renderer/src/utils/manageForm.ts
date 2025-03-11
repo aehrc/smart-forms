@@ -6,7 +6,7 @@ import {
   terminologyServerStore
 } from '../stores';
 import { initialiseQuestionnaireResponse } from './initialise';
-import { removeEmptyAnswers } from './removeEmptyAnswers';
+import { removeEmptyAnswersFromItemRecursive } from './removeEmptyAnswers';
 import { readEncounter, readPatient, readUser } from '../api/smartClient';
 import type Client from 'fhirclient/lib/Client';
 import { updateQuestionnaireResponse } from './genericRecursive';
@@ -136,13 +136,16 @@ export function removeEmptyAnswersFromResponse(
   const enableWhenItems = questionnaireStore.getState().enableWhenItems;
   const enableWhenExpressions = questionnaireStore.getState().enableWhenExpressions;
 
-  return removeEmptyAnswers({
+  return updateQuestionnaireResponse(
     questionnaire,
     questionnaireResponse,
-    enableWhenIsActivated,
-    enableWhenItems,
-    enableWhenExpressions
-  });
+    removeEmptyAnswersFromItemRecursive,
+    {
+      enableWhenIsActivated,
+      enableWhenItems,
+      enableWhenExpressions
+    }
+  );
 }
 
 /**

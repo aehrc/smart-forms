@@ -528,7 +528,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     addToFhirPathContext?: boolean
   ) => {
     if (addToFhirPathContext) {
-      const newFhirPathContext = { ...newPopulatedContext, ...get().fhirPathContext };
+      const newFhirPathContext = { ...get().fhirPathContext, ...newPopulatedContext };
       set(() => ({
         populatedContext: newPopulatedContext,
         fhirPathContext: newFhirPathContext
