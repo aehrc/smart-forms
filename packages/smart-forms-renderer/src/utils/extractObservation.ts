@@ -249,7 +249,15 @@ export function createObservation(
   } else if (answer.valueInteger) {
     observation.valueInteger = answer.valueInteger;
   } else if (answer.valueCoding) {
-    observation.valueCodeableConcept = { coding: [answer.valueCoding] };
+    observation.valueCodeableConcept = {
+      coding: [
+        {
+          system: answer.valueCoding.system,
+          code: answer.valueCoding.code,
+          display: answer.valueCoding.display
+        }
+      ]
+    };
   }
 
   if (categories.length) {

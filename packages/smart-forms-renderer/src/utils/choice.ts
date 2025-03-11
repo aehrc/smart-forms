@@ -55,14 +55,22 @@ export function findInAnswerOptions(
     if (option.valueCoding) {
       if (valueInString === option.valueCoding.code) {
         return {
-          valueCoding: option.valueCoding
+          valueCoding: {
+            system: option.valueCoding.system,
+            code: option.valueCoding.code,
+            display: option.valueCoding.display
+          }
         };
       }
 
       // handle case where valueCoding.code is not present
       if (valueInString === option.valueCoding.display) {
         return {
-          valueCoding: option.valueCoding
+          valueCoding: {
+            system: option.valueCoding.system,
+            code: option.valueCoding.code,
+            display: option.valueCoding.display
+          }
         };
       }
     }

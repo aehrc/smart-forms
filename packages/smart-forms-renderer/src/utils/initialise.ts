@@ -190,7 +190,11 @@ function getInitialValueAnswers(qItem: QuestionnaireItem): QuestionnaireResponse
       .map((option): QuestionnaireResponseItemAnswer | null => {
         if (option.valueCoding) {
           return {
-            valueCoding: option.valueCoding
+            valueCoding: {
+              system: option.valueCoding.system,
+              code: option.valueCoding.code,
+              display: option.valueCoding.display
+            }
           };
         }
 

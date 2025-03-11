@@ -63,7 +63,13 @@ export function parseItemInitialToAnswer(
   }
 
   if (initial.valueCoding) {
-    return { valueCoding: initial.valueCoding };
+    return {
+      valueCoding: {
+        system: initial.valueCoding.system,
+        code: initial.valueCoding.code,
+        display: initial.valueCoding.display
+      }
+    };
   }
 
   if (initial.valueQuantity) {
@@ -107,7 +113,13 @@ export function parseValueToAnswer(
   }
 
   if (typeof value === 'object' && value.system && value.code) {
-    return { valueCoding: value };
+    return {
+      valueCoding: {
+        system: value.system,
+        code: value.code,
+        display: value.display
+      }
+    };
   }
 
   // Value is string at this point

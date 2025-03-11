@@ -156,7 +156,15 @@ function parseStringToCoding(
   }
 
   const coding = options.find((coding) => coding?.code === value);
-  return coding ? { valueCoding: coding } : { valueString: value };
+  return coding
+    ? {
+        valueCoding: {
+          system: coding.system,
+          code: coding.code,
+          display: coding.display
+        }
+      }
+    : { valueString: value };
 }
 
 function codingIsInOptions(answerCoding: Coding, options: (Coding | undefined)[]): Coding | null {
@@ -164,5 +172,14 @@ function codingIsInOptions(answerCoding: Coding, options: (Coding | undefined)[]
     return null;
   }
 
-  return options.find((option) => option?.code === answerCoding.code) ?? null;
+  const foundCoding = options.find((option) => option?.code === answerCoding.code);
+  if (foundCoding) {
+    return {
+      system: foundCoding.system,
+      code: foundCoding.code,
+      display: foundCoding.display
+    };
+  }
+
+  return null;
 }

@@ -30,7 +30,11 @@ export function findInAnswerOptions(
     if (option.valueCoding) {
       if (str === option.valueCoding.code) {
         return {
-          valueCoding: option.valueCoding
+          valueCoding: {
+            system: option.valueCoding.system,
+            code: option.valueCoding.code,
+            display: option.valueCoding.display
+          }
         };
       }
     }
