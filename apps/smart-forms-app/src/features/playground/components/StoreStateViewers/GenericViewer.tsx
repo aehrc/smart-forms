@@ -17,7 +17,11 @@ function GenericViewer(props: GenericViewerProps) {
   const { propertyName, propertyObject, showJsonTree, onToggleShowJsonTree, children } = props;
 
   if (propertyName === null) {
-    return <Typography variant="h5">No property selected</Typography>;
+    return (
+      <Typography variant="h5" px={0.5}>
+        No property selected
+      </Typography>
+    );
   }
 
   return (
@@ -52,7 +56,7 @@ function GenericViewer(props: GenericViewerProps) {
       </Stack>
       <Box display="flex" columnGap={1}></Box>
 
-      <Box p={1} pb={100}>
+      <Box p={0.5} pb={100}>
         <Typography color="text.secondary" pb={1}>
           {showJsonTree
             ? 'Use JSON Tree for selective debugging. For more detailed debugging, copy tree nodes to a text editor.'

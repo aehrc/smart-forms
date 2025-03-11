@@ -30,17 +30,27 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import UpdatingIndicator from '../../renderer/components/RendererHeader/UpdatingIndicator.tsx';
 
 interface PlaygroundHeaderProps {
-  fhirServerUrl: string;
+  sourceFhirServerUrl: string;
   patient: Patient | null;
   user: Practitioner | null;
-  onFhirServerUrlChange: (url: string) => void;
+  terminologyServerUrl: string;
+  onSourceFhirServerUrlChange: (url: string) => void;
   onPatientChange: (patient: Patient | null) => void;
   onUserChange: (practitioner: Practitioner | null) => void;
+  onTerminologyServerUrlChange: (url: string) => void;
 }
 
 const PlaygroundHeader = memo(function PlaygroundHeader(props: PlaygroundHeaderProps) {
-  const { fhirServerUrl, patient, user, onFhirServerUrlChange, onPatientChange, onUserChange } =
-    props;
+  const {
+    sourceFhirServerUrl,
+    patient,
+    user,
+    terminologyServerUrl,
+    onSourceFhirServerUrlChange,
+    onPatientChange,
+    onUserChange,
+    onTerminologyServerUrlChange
+  } = props;
 
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
 
@@ -99,12 +109,14 @@ const PlaygroundHeader = memo(function PlaygroundHeader(props: PlaygroundHeaderP
           closeDialog={() => {
             setSettingsDialogOpen(false);
           }}
-          fhirServerUrl={fhirServerUrl}
+          sourceFhirServerUrl={sourceFhirServerUrl}
           patient={patient}
           user={user}
-          onFhirServerUrlChange={onFhirServerUrlChange}
+          terminologyServerUrl={terminologyServerUrl}
+          onSourceFhirServerUrlChange={onSourceFhirServerUrlChange}
           onPatientChange={onPatientChange}
           onUserChange={onUserChange}
+          onTerminologyServerUrlChange={onTerminologyServerUrlChange}
         />
       </StyledToolbar>
     </StyledRoot>

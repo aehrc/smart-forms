@@ -12,11 +12,11 @@ import useShowExtractedOperationStoreProperty from '../../hooks/useShowExtracted
 const extractedSectionPropertyNames: string[] = ['extractedResource', 'targetStructureMap'];
 
 interface ExtractedSectionViewerProps {
-  fhirServerUrl: string;
+  sourceFhirServerUrl: string;
 }
 
 function ExtractedSectionViewer(props: ExtractedSectionViewerProps) {
-  const { fhirServerUrl } = props;
+  const { sourceFhirServerUrl } = props;
   const [selectedProperty, setSelectedProperty] = useState('extractedResource');
   const [showJsonTree, setShowJsonTree] = useState(false);
   const [writingBack, setWritingBack] = useState(false);
@@ -34,7 +34,7 @@ function ExtractedSectionViewer(props: ExtractedSectionViewerProps) {
     }
     setWritingBack(true);
 
-    const response = await fetch(fhirServerUrl, {
+    const response = await fetch(sourceFhirServerUrl, {
       method: 'POST',
       headers: { ...HEADERS, 'Content-Type': 'application/json;charset=utf-8' },
       body: JSON.stringify(propertyObject)
@@ -48,11 +48,14 @@ function ExtractedSectionViewer(props: ExtractedSectionViewerProps) {
         action: <CloseSnackbar />
       });
     } else {
-      enqueueSnackbar(`Write back to ${fhirServerUrl} successful. See Network tab for response`, {
-        variant: 'success',
-        preventDuplicate: true,
-        action: <CloseSnackbar />
-      });
+      enqueueSnackbar(
+        `Write back to ${sourceFhirServerUrl} successful. See Network tab for response`,
+        {
+          variant: 'success',
+          preventDuplicate: true,
+          action: <CloseSnackbar />
+        }
+      );
     }
   }
 
@@ -73,7 +76,7 @@ function ExtractedSectionViewer(props: ExtractedSectionViewerProps) {
             <Tooltip
               title={
                 writeBackEnabled
-                  ? `Write to source FHIR server ${fhirServerUrl} `
+                  ? `Write to source FHIR server ${sourceFhirServerUrl} `
                   : 'No extracted resource to write back, or resource is not a batch/tranaction bundle.'
               }>
               <span>

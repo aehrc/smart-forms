@@ -16,7 +16,6 @@
  */
 
 import * as FHIR from 'fhirclient';
-import { HEADERS } from '../../../api/headers.ts';
 import type { CapabilityStatement } from 'fhir/r4';
 
 export async function verifyFhirServer(
@@ -25,7 +24,10 @@ export async function verifyFhirServer(
   try {
     const metadata = await FHIR.client(endpointUrl).request({
       url: 'metadata',
-      headers: HEADERS
+      headers: {
+        'Content-Type': 'application/fhir+json;charset=utf-8',
+        Accept: 'application/json;charset=utf-8'
+      }
     });
 
     return metadataResponseIsValid(metadata)

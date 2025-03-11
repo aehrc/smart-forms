@@ -48,13 +48,23 @@ import { buildFormWrapper, destroyFormWrapper } from '../../../utils/manageForm.
 const defaultFhirServerUrl = 'https://hapi.fhir.org/baseR4';
 const defaultExtractEndpoint = 'https://proxy.smartforms.io/fhir';
 
+const defaultTerminologyServerUrl = TERMINOLOGY_SERVER_URL;
+
 function Playground() {
-  const [fhirServerUrl, setFhirServerUrl] = useLocalStorage<string>(
+  // Source FHIR Server to do pre-pop and write back
+  const [sourceFhirServerUrl, setSourceFhirServerUrl] = useLocalStorage<string>(
     'playgroundSourceFhirServerUrl',
     defaultFhirServerUrl
   );
   const [patient, setPatient] = useLocalStorage<Patient | null>('playgroundLaunchPatient', null);
   const [user, setUser] = useLocalStorage<Practitioner | null>('playgroundLaunchUser', null);
+
+  // Terminology Server to do terminology queries
+  const [terminologyServerUrl, setTerminologyServerUrl] = useLocalStorage<string>(
+    'playgroundTerminologyServerUrl',
+    defaultTerminologyServerUrl
+  );
+
   const [jsonString, setJsonString] = useLocalStorage('playgroundJsonString', '');
   const [buildingState, setBuildingState] = useState<BuildState>('idle');
 
@@ -81,7 +91,7 @@ function Playground() {
     try {
       const parsedQuestionnaire = JSON.parse(jsonString);
       if (isQuestionnaire(parsedQuestionnaire)) {
-        await buildFormWrapper(parsedQuestionnaire, undefined, undefined, TERMINOLOGY_SERVER_URL);
+        await buildFormWrapper(parsedQuestionnaire, undefined, undefined, terminologyServerUrl);
         setBuildingState('built');
       } else {
         enqueueSnackbar('JSON string does not represent a questionnaire', {
@@ -107,7 +117,7 @@ function Playground() {
 
     setJsonString(JSON.stringify(questionnaire, null, 2));
 
-    await buildFormWrapper(questionnaire, undefined, undefined, TERMINOLOGY_SERVER_URL);
+    await buildFormWrapper(questionnaire, undefined, undefined, terminologyServerUrl);
     setBuildingState('built');
   }
 
@@ -132,7 +142,7 @@ function Playground() {
         if (typeof jsonString === 'string') {
           setJsonString(jsonString);
           const questionnaire = JSON.parse(jsonString);
-          await buildFormWrapper(questionnaire, undefined, undefined, TERMINOLOGY_SERVER_URL);
+          await buildFormWrapper(questionnaire, undefined, undefined, terminologyServerUrl);
           setBuildingState('built');
         } else {
           enqueueSnackbar('There was an issue with the attached JSON file.', {
@@ -210,11 +220,12 @@ function Playground() {
   return (
     <>
       <PlaygroundHeader
-        fhirServerUrl={fhirServerUrl}
+        sourceFhirServerUrl={sourceFhirServerUrl}
         patient={patient}
         user={user}
-        onFhirServerUrlChange={(url) => {
-          setFhirServerUrl(url);
+        terminologyServerUrl={terminologyServerUrl}
+        onSourceFhirServerUrlChange={(url) => {
+          setSourceFhirServerUrl(url);
         }}
         onPatientChange={(patient) => {
           setPatient(patient);
@@ -222,15 +233,19 @@ function Playground() {
         onUserChange={(user) => {
           setUser(user);
         }}
+        onTerminologyServerUrlChange={(url) => {
+          setTerminologyServerUrl(url);
+        }}
       />
       <DndProvider backend={HTML5Backend} context={window}>
         <Allotment defaultSizes={[40, 60]}>
           <Box sx={{ height: '100%', overflow: 'auto' }}>
             {buildingState === 'built' ? (
               <PlaygroundRenderer
-                endpointUrl={fhirServerUrl}
+                sourceFhirServerUrl={sourceFhirServerUrl}
                 patient={patient}
                 user={user}
+                terminologyServerUrl={terminologyServerUrl}
                 isExtracting={isExtracting}
                 onObservationExtract={handleObservationExtract}
                 onStructureMapExtract={handleStructureMapExtract}
@@ -250,7 +265,7 @@ function Playground() {
             jsonString={jsonString}
             onJsonStringChange={(jsonString: string) => setJsonString(jsonString)}
             buildingState={buildingState}
-            fhirServerUrl={fhirServerUrl}
+            sourceFhirServerUrl={sourceFhirServerUrl}
             onBuildForm={handleBuildQuestionnaireFromString}
             onDestroyForm={handleDestroyForm}
           />

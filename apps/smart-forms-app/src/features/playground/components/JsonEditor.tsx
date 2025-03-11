@@ -28,7 +28,7 @@ interface JsonEditorProps {
   jsonString: string;
   onJsonStringChange: (jsonString: string) => void;
   buildingState: 'idle' | 'building' | 'built';
-  fhirServerUrl: string;
+  sourceFhirServerUrl: string;
   onBuildForm: (jsonString: string) => unknown;
   onDestroyForm: () => unknown;
 }
@@ -38,7 +38,7 @@ function JsonEditor(props: JsonEditorProps) {
     jsonString,
     onJsonStringChange,
     buildingState,
-    fhirServerUrl,
+    sourceFhirServerUrl,
     onBuildForm,
     onDestroyForm
   } = props;
@@ -143,7 +143,10 @@ function JsonEditor(props: JsonEditorProps) {
         />
       ) : (
         <Box sx={{ height: '100%', overflow: 'auto' }}>
-          <StoreStateViewer selectedStore={selectedStore} fhirServerUrl={fhirServerUrl} />
+          <StoreStateViewer
+            selectedStore={selectedStore}
+            sourceFhirServerUrl={sourceFhirServerUrl}
+          />
         </Box>
       )}
     </Box>

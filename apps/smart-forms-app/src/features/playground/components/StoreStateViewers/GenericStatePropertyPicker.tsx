@@ -29,7 +29,15 @@ function GenericStatePropertyPicker(props: GenericStatePropertyPickerProps) {
   const { statePropertyNames, selectedProperty, onSelectProperty } = props;
 
   return (
-    <Stack gap={0.25} sx={{ overflowX: 'auto' }}>
+    <Stack
+      gap={0.25}
+      sx={{
+        position: 'sticky',
+        top: 0,
+        backgroundColor: 'white',
+        zIndex: 10,
+        overflowX: 'auto'
+      }}>
       <ToggleButtonGroup
         size="small"
         color="primary"

@@ -23,22 +23,29 @@ import { fetchResourceCallback } from './PrePopCallbackForPlayground.tsx';
 import type { Patient, Practitioner } from 'fhir/r4';
 import { Box, Typography } from '@mui/material';
 import useLaunchContextNames from '../hooks/useLaunchContextNames.ts';
-import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
 import { buildFormWrapper } from '../../../utils/manageForm.ts';
 import ExtractMenu from './ExtractMenu.tsx';
 
 interface PlaygroundRendererProps {
-  endpointUrl: string | null;
+  sourceFhirServerUrl: string | null;
   patient: Patient | null;
   user: Practitioner | null;
+  terminologyServerUrl: string;
   isExtracting: boolean;
   onObservationExtract: () => void;
   onStructureMapExtract: () => void;
 }
 
 function PlaygroundRenderer(props: PlaygroundRendererProps) {
-  const { endpointUrl, patient, user, isExtracting, onObservationExtract, onStructureMapExtract } =
-    props;
+  const {
+    sourceFhirServerUrl,
+    patient,
+    user,
+    terminologyServerUrl,
+    isExtracting,
+    onObservationExtract,
+    onStructureMapExtract
+  } = props;
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
   const setPopulatedContext = useQuestionnaireStore.use.setPopulatedContext();
@@ -47,7 +54,7 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
 
   const { patientName, userName } = useLaunchContextNames(patient, user);
 
-  const prePopEnabled = endpointUrl !== null && patient !== null;
+  const prePopEnabled = sourceFhirServerUrl !== null && patient !== null;
 
   function handlePrepopulate() {
     if (!prePopEnabled) {
@@ -60,7 +67,7 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
       questionnaire: sourceQuestionnaire,
       fetchResourceCallback: fetchResourceCallback,
       requestConfig: {
-        clientEndpoint: endpointUrl,
+        clientEndpoint: sourceFhirServerUrl,
         authToken: null
       },
       patient: patient,
@@ -78,7 +85,7 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
         sourceQuestionnaire,
         populatedResponse,
         undefined,
-        TERMINOLOGY_SERVER_URL
+        terminologyServerUrl
       );
       if (populatedContext) {
         setPopulatedContext(populatedContext);

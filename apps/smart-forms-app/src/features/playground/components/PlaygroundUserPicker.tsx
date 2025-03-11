@@ -26,15 +26,15 @@ import useFetchPractitioners from '../hooks/useFetchPractitioners.ts';
 import Button from '@mui/material/Button';
 
 interface PlaygroundPractitionerPickerProps {
-  fhirServerUrl: string;
+  sourceFhirServerUrl: string;
   selectedUser: Practitioner | null;
   onSelectUser: (user: Practitioner | null) => void;
 }
 
 function PlaygroundUserPicker(props: PlaygroundPractitionerPickerProps) {
-  const { fhirServerUrl, selectedUser, onSelectUser } = props;
+  const { sourceFhirServerUrl, selectedUser, onSelectUser } = props;
 
-  const { practitioners, isInitialLoading } = useFetchPractitioners(fhirServerUrl);
+  const { practitioners, isInitialLoading } = useFetchPractitioners(sourceFhirServerUrl);
 
   const selectedUserId = useMemo(
     () => practitioners.find((p) => p.id === selectedUser?.id)?.id,

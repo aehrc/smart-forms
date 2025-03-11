@@ -24,15 +24,17 @@ import { verifyFhirServer } from '../api/verifyFhirServer.ts';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import ErrorIcon from '@mui/icons-material/Error';
 
-interface PlaygroundSourceFhirServerInputProps {
+interface PlaygroundFhirServerInputProps {
+  fhirServerId: 'source' | 'terminology';
   fhirServerUrlInput: string;
   fhirServerUrlInputValid: boolean | 'unchecked';
   onFhirServerUrlInputChange: (endpointUrl: string) => void;
   onValidateFhirServerUrlInput: (isValid: boolean | 'unchecked') => void;
 }
 
-function PlaygroundSourceFhirServerInput(props: PlaygroundSourceFhirServerInputProps) {
+function PlaygroundFhirServerInput(props: PlaygroundFhirServerInputProps) {
   const {
+    fhirServerId,
     fhirServerUrlInput,
     fhirServerUrlInputValid,
     onFhirServerUrlInputChange,
@@ -62,10 +64,13 @@ function PlaygroundSourceFhirServerInput(props: PlaygroundSourceFhirServerInputP
     setFeedbackMessage(feedbackMessage.slice(0, 1).toUpperCase() + feedbackMessage.slice(1));
   }
 
+  const fhirServerName =
+    fhirServerId === 'source' ? 'Source FHIR Server URL' : 'Terminology Server URL';
+
   return (
     <Stack justifyContent="left" gap={0.5}>
       <Typography variant="subtitle2" color="text.secondary">
-        Source FHIR Server URL
+        {fhirServerName}
       </Typography>
       <TextField
         value={fhirServerUrlInput}
@@ -104,4 +109,4 @@ function PlaygroundSourceFhirServerInput(props: PlaygroundSourceFhirServerInputP
   );
 }
 
-export default PlaygroundSourceFhirServerInput;
+export default PlaygroundFhirServerInput;

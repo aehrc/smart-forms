@@ -26,15 +26,15 @@ import { constructName } from '../../smartAppLaunch/utils/launchContext.ts';
 import Button from '@mui/material/Button';
 
 interface PlaygroundPatientPickerProps {
-  fhirServerUrl: string;
+  sourceFhirServerUrl: string;
   selectedPatient: Patient | null;
   onSelectPatient: (patient: Patient | null) => void;
 }
 
 function PlaygroundPatientPicker(props: PlaygroundPatientPickerProps) {
-  const { fhirServerUrl, selectedPatient, onSelectPatient } = props;
+  const { sourceFhirServerUrl, selectedPatient, onSelectPatient } = props;
 
-  const { patients, isInitialLoading } = useFetchPatients(fhirServerUrl);
+  const { patients, isInitialLoading } = useFetchPatients(sourceFhirServerUrl);
 
   const selectedPatientId = useMemo(
     () => patients.find((p) => p.id === selectedPatient?.id)?.id,
