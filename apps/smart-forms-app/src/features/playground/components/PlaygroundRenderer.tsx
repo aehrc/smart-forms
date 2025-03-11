@@ -88,7 +88,7 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
         terminologyServerUrl
       );
       if (populatedContext) {
-        setPopulatedContext(populatedContext);
+        setPopulatedContext(populatedContext, true);
       }
 
       setIsPopulating(false);
