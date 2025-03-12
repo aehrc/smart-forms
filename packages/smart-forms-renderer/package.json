@@ -33,7 +33,7 @@
     "@fontsource/roboto": "^5.2.5",
     "@fontsource/inter": "5.2.5",
     "@iconify/react": "^5.2.0",
-    "axios": "^1.8.1",
+    "axios": "^1.8.3",
     "dayjs": "^1.11.13",
     "deep-diff": "^1.0.2",
     "fhirclient": "^2.5.5",
