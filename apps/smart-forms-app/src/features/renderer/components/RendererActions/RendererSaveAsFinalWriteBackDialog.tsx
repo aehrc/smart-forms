@@ -37,6 +37,8 @@ import {
   extractedResourceIsBundle,
   responseIsOperationOutcome
 } from '../../../../utils/extract.ts';
+import * as FHIR from 'fhirclient';
+import { EXTRACT_SERVER_URL } from '../../../../globals.ts';
 
 export interface RendererSaveAsFinalWriteBackDialogProps {
   open: boolean;
@@ -97,6 +99,7 @@ function RendererSaveAsFinalWriteBackDialog(props: RendererSaveAsFinalWriteBackD
         variant: 'error',
         action: <CloseSnackbar />
       });
+      setIsSavingOnly(false);
       handleClose();
       return;
     }
@@ -129,6 +132,7 @@ function RendererSaveAsFinalWriteBackDialog(props: RendererSaveAsFinalWriteBackD
         variant: 'error',
         action: <CloseSnackbar />
       });
+      setIsSavingWriteBack(false);
       handleClose();
       return;
     }
@@ -136,7 +140,8 @@ function RendererSaveAsFinalWriteBackDialog(props: RendererSaveAsFinalWriteBackD
     setUpdatableResponseAsSaved(savedResponse);
 
     // Perform $extract
-    const extractedResource = await smartClient.request({
+    // Fix $extract endpoint as https://proxy.smartforms.io/fhir for now
+    const extractedResource = await FHIR.client(EXTRACT_SERVER_URL).request({
       url: 'QuestionnaireResponse/$extract',
       method: 'POST',
       body: JSON.stringify(savedResponse),

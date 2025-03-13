@@ -57,6 +57,7 @@ function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
 
   // Event Handlers
   function handleClose() {
+    setIsSaving(false);
     closeDialog();
   }
 

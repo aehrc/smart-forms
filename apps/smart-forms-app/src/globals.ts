@@ -19,6 +19,9 @@ export const TERMINOLOGY_SERVER_URL =
   import.meta.env.VITE_ONTOSERVER_URL ?? 'https://tx.ontoserver.csiro.au/fhir';
 export const FORMS_SERVER_URL =
   import.meta.env.VITE_FORMS_SERVER_URL ?? 'https://smartforms.csiro.au/api/fhir';
+
+// Fix $extract endpoint as https://proxy.smartforms.io/fhir for now
+export const EXTRACT_SERVER_URL = 'https://proxy.smartforms.io/fhir';
 export const LAUNCH_SCOPE =
   import.meta.env.VITE_LAUNCH_SCOPE ??
   'fhirUser online_access openid profile patient/Condition.rs patient/Observation.rs launch patient/Encounter.rs patient/QuestionnaireResponse.cruds patient/Patient.rs';
