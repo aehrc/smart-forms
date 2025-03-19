@@ -151,6 +151,7 @@ function TextItem(props: TextItemProps) {
             onInputChange={handleInputChange}
           />
         }
+        feedback={feedback}
       />
     </FullWidthFormComponentBox>
   );

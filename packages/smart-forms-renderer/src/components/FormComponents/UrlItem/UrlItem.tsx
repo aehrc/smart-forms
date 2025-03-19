@@ -134,6 +134,7 @@ function UrlItem(props: UrlItemProps) {
             isTabled={isTabled}
           />
         }
+        feedback={feedback}
       />
     </FullWidthFormComponentBox>
   );

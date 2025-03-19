@@ -239,6 +239,8 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
             onTimeInputChange={handleTimeInputChange}
           />
         }
+        dateFeedback={dateFeedback ?? undefined}
+        timeFeedback={timeFeedback ?? undefined}
       />
     </FullWidthFormComponentBox>
   );

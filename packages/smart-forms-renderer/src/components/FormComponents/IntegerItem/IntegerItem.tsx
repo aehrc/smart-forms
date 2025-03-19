@@ -170,6 +170,7 @@ function IntegerItem(props: IntegerItemProps) {
             onInputChange={handleInputChange}
           />
         }
+        feedback={feedback}
       />
     </FullWidthFormComponentBox>
   );

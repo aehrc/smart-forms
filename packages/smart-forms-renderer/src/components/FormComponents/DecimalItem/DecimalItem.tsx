@@ -195,6 +195,7 @@ function DecimalItem(props: DecimalItemProps) {
             onInputChange={handleInputChange}
           />
         }
+        feedback={feedback}
       />
     </FullWidthFormComponentBox>
   );
