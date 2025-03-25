@@ -17,6 +17,7 @@
 
 import React, { useCallback, useState } from 'react';
 import type {
+  BaseItemProps,
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithParentIsReadOnlyAttribute,
@@ -36,14 +37,10 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
 
-interface TextItemProps
-  extends PropsWithQrItemChangeHandler,
-    PropsWithIsRepeatedAttribute,
-    PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute,
-    PropsWithFeedbackFromParentAttribute {
+interface TextItemProps extends BaseItemProps {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
+  isTabled?: boolean;
 }
 
 function TextItem(props: TextItemProps) {

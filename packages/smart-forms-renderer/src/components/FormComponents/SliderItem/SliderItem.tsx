@@ -17,6 +17,7 @@
 
 import React from 'react';
 import type {
+  BaseItemProps,
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
@@ -36,13 +37,7 @@ import { useQuestionnaireStore } from '../../../stores';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import ItemLabel from '../ItemParts/ItemLabel';
 
-interface SliderItemProps
-  extends PropsWithQrItemChangeHandler,
-    PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute,
-    PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute,
-    PropsWithFeedbackFromParentAttribute {
+interface SliderItemProps extends BaseItemProps {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }

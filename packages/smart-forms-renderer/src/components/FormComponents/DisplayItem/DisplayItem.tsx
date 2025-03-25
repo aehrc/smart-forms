@@ -16,18 +16,25 @@
  */
 
 import React, { memo } from 'react';
-import type { QuestionnaireItem } from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import { isSpecificItemControl } from '../../../utils';
 import { useQuestionnaireStore } from '../../../stores';
 import useReadOnly from '../../../hooks/useReadOnly';
-import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
+import type {
+  PropsWithParentIsReadOnlyAttribute,
+  PropsWithParentStylesAttribute
+} from '../../../interfaces/renderProps.interface';
 import Divider from '@mui/material/Divider';
 import ItemLabel from '../ItemParts/ItemLabel';
+import type { RenderingExtensions } from '../../../interfaces/renderingExtensions.interface';
 
-interface DisplayItemProps extends PropsWithParentIsReadOnlyAttribute {
+interface DisplayItemProps
+  extends PropsWithParentIsReadOnlyAttribute,
+    PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
-  parentStyles?: Record<string, string>;
+  qrItem?: QuestionnaireResponseItem | null;
+  renderingExtensions?: RenderingExtensions;
 }
 
 const DisplayItem = memo(function DisplayItem(props: DisplayItemProps) {

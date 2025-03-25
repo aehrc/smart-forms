@@ -17,6 +17,7 @@
 
 import React, { useState } from 'react';
 import type {
+  BaseItemProps,
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
@@ -46,16 +47,7 @@ import useDateNonEmptyValidation from '../../../../hooks/useDateTimeNonEmpty';
 import DateTimeField from './DateTimeField';
 import ItemLabel from '../../ItemParts/ItemLabel';
 
-interface CustomDateTimeItemProps
-  extends PropsWithQrItemChangeHandler,
-    PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute,
-    PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute,
-    PropsWithFeedbackFromParentAttribute {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
-}
+interface CustomDateTimeItemProps extends BaseItemProps {}
 
 function CustomDateTimeItem(props: CustomDateTimeItemProps) {
   const {

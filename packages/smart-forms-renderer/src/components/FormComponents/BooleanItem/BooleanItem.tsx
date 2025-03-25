@@ -22,7 +22,8 @@ import type {
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
-  PropsWithRenderingExtensionsAttribute
+  PropsWithRenderingExtensionsAttribute,
+  BaseItemProps
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
@@ -36,13 +37,7 @@ import useBooleanCalculatedExpression from '../../../hooks/useBooleanCalculatedE
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import ItemLabel from '../ItemParts/ItemLabel';
 
-interface BooleanItemProps
-  extends PropsWithQrItemChangeHandler,
-    PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute,
-    PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute,
-    PropsWithFeedbackFromParentAttribute {
+interface BooleanItemProps extends BaseItemProps {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }

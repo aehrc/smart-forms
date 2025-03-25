@@ -16,7 +16,7 @@
  */
 
 import type { QrRepeatGroup } from './repeatGroup.interface';
-import type { QuestionnaireResponseItem } from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type { RenderingExtensions } from '../hooks/useRenderingExtensions';
 
 export interface PropsWithQrItemChangeHandler {
