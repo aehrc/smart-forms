@@ -20,7 +20,7 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import type {
   PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
+  PropsWithIsTabledRequiredAttribute,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
@@ -30,7 +30,7 @@ import ItemLabel from '../ItemParts/ItemLabel';
 
 interface ChoiceSelectAnswerOptionViewProps
   extends PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute,
+    PropsWithIsTabledRequiredAttribute,
     PropsWithRenderingExtensionsAttribute {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];

@@ -20,7 +20,7 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
+  PropsWithIsTabledRequiredAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
   PropsWithQrItemChangeHandler,
@@ -35,7 +35,7 @@ import SingleItemView from './SingleItemView';
 interface SingleItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute,
+    PropsWithIsTabledRequiredAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithParentIsRepeatGroupAttribute,

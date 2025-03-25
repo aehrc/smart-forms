@@ -19,11 +19,11 @@ import { Box, Typography } from '@mui/material';
 import useFileDrop from '../../../hooks/UseFileDrop';
 import { AttachmentFileDropBoxWrapper } from './AttachmentFileDropBox.styles';
 import React from 'react';
-import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import { getFileSize } from '../../../utils/fileUtils';
 import { useRendererStylingStore } from '../../../stores';
 
-export interface AttachmentFileDropBoxProps extends PropsWithIsTabledAttribute {
+export interface AttachmentFileDropBoxProps extends PropsWithIsTabledRequiredAttribute {
   file: File | null;
   onDrop: (item: { files: any[] }) => void;
   errorMessage: string;

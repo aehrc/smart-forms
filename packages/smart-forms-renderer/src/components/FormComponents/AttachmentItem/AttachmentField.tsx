@@ -16,7 +16,7 @@
  */
 
 import React from 'react';
-import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import { StandardTextField } from '../Textfield.styles';
 import AttachmentFileCollector from './AttachmentFileCollector';
 import Typography from '@mui/material/Typography';
@@ -27,7 +27,7 @@ import AttachmentUrlField from './AttachmentUrlField';
 import { useRendererStylingStore } from '../../../stores';
 import { StyledRequiredTypography } from '../Item.styles';
 
-interface AttachmentFieldProps extends PropsWithIsTabledAttribute {
+interface AttachmentFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
   itemType: string;
   attachmentValues: AttachmentValues;

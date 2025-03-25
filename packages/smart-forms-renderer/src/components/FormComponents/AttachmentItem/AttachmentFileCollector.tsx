@@ -20,9 +20,9 @@ import React, { memo, useCallback } from 'react';
 import { Box, IconButton, Stack, Tooltip } from '@mui/material';
 import AttachmentFileDropBox from './AttachmentFileDropBox';
 import Iconify from '../../Iconify/Iconify';
-import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 
-interface AttachmentFileCollectorProps extends PropsWithIsTabledAttribute {
+interface AttachmentFileCollectorProps extends PropsWithIsTabledRequiredAttribute {
   uploadedFile: File | null;
   readOnly: boolean;
   onUploadFile: (file: File | null) => void;

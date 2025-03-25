@@ -29,7 +29,7 @@ import ChoiceCheckboxAnswerValueSetItem from './ChoiceCheckboxAnswerValueSetItem
 import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
+  PropsWithIsTabledRequiredAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentStylesAttribute,
   PropsWithQrItemChangeHandler,
@@ -41,7 +41,7 @@ import Typography from '@mui/material/Typography';
 interface ChoiceItemSwitcherProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute,
+    PropsWithIsTabledRequiredAttribute,
     PropsWithRenderingExtensionsAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,

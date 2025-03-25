@@ -39,6 +39,10 @@ export interface PropsWithIsTabledAttribute {
   isTabled?: boolean;
 }
 
+export interface PropsWithIsTabledRequiredAttribute {
+  isTabled: boolean;
+}
+
 export interface PropsWithShowMinimalViewAttribute {
   showMinimalView?: boolean;
 }
@@ -63,7 +67,7 @@ export interface PropsWithParentStylesAttribute {
 export interface BaseItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute, 
+    PropsWithIsTabledRequiredAttribute, 
     PropsWithRenderingExtensionsAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithFeedbackFromParentAttribute,

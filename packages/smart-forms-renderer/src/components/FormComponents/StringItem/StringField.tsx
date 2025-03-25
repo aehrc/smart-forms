@@ -16,14 +16,14 @@
  */
 
 import React from 'react';
-import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import InputAdornment from '@mui/material/InputAdornment';
 import { StandardTextField } from '../Textfield.styles';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import { useRendererStylingStore } from '../../../stores';
 import Typography from '@mui/material/Typography';
 
-interface StringFieldProps extends PropsWithIsTabledAttribute {
+interface StringFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
   itemType: string;
   input: string;

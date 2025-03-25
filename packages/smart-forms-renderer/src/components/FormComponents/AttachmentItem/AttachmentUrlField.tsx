@@ -16,7 +16,7 @@
  */
 
 import React from 'react';
-import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import { StandardTextField } from '../Textfield.styles';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
@@ -28,7 +28,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import DangerousIcon from '@mui/icons-material/Dangerous';
 import { useRendererStylingStore } from '../../../stores';
 
-interface AttachmentUrlFieldProps extends PropsWithIsTabledAttribute {
+interface AttachmentUrlFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
   url: string;
   readOnly: boolean;

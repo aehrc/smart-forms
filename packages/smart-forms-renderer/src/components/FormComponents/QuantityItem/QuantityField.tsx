@@ -2,11 +2,11 @@ import React from 'react';
 import InputAdornment from '@mui/material/InputAdornment';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import { StandardTextField } from '../Textfield.styles';
-import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import { useRendererStylingStore } from '../../../stores';
 import Typography from '@mui/material/Typography';
 
-interface QuantityFieldProps extends PropsWithIsTabledAttribute {
+interface QuantityFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
   itemType: string;
   input: string;

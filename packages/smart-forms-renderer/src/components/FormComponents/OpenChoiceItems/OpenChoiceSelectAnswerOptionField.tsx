@@ -4,7 +4,7 @@ import { StandardTextField } from '../Textfield.styles';
 import Autocomplete from '@mui/material/Autocomplete';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type {
-  PropsWithIsTabledAttribute,
+  PropsWithIsTabledRequiredAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
@@ -13,7 +13,7 @@ import Typography from '@mui/material/Typography';
 import { StyledRequiredTypography } from '../Item.styles';
 
 interface OpenChoiceSelectAnswerOptionFieldProps
-  extends PropsWithIsTabledAttribute,
+  extends PropsWithIsTabledRequiredAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithRenderingExtensionsAttribute {
   qItem: QuestionnaireItem;

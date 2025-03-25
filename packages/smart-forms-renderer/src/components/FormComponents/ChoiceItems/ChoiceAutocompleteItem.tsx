@@ -25,7 +25,7 @@ import useTerminologyServerQuery from '../../../hooks/useTerminologyServerQuery'
 import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
+  PropsWithIsTabledRequiredAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithRenderingExtensionsAttribute
@@ -42,7 +42,7 @@ import ItemLabel from '../ItemParts/ItemLabel';
 interface ChoiceAutocompleteItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute,
+    PropsWithIsTabledRequiredAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithRenderingExtensionsAttribute,
     PropsWithFeedbackFromParentAttribute {

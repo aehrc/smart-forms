@@ -1,13 +1,13 @@
 import React from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
-import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import MuiTextField from '../TextItem/MuiTextField';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import type { Quantity } from 'fhir/r4';
 import { useRendererStylingStore } from '../../../stores';
 
-interface QuantityComparatorFieldProps extends PropsWithIsTabledAttribute {
+interface QuantityComparatorFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
   itemType: string;
   options: Quantity['comparator'][];

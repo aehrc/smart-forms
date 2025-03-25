@@ -27,7 +27,7 @@ import OpenChoiceRadioAnswerOptionItem from './OpenChoiceRadioAnswerOptionItem';
 import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
+  PropsWithIsTabledRequiredAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentStylesAttribute,
   PropsWithQrItemChangeHandler,
@@ -40,7 +40,7 @@ import OpenChoiceRadioAnswerValueSetItem from './OpenChoiceRadioAnswerValueSetIt
 interface OpenChoiceItemSwitcherProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute,
+    PropsWithIsTabledRequiredAttribute,
     PropsWithRenderingExtensionsAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
