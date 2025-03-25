@@ -27,7 +27,7 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import Divider from '@mui/material/Divider';
 import ItemLabel from '../ItemParts/ItemLabel';
-import type { RenderingExtensions } from '../../../interfaces/renderingExtensions.interface';
+import type { RenderingExtensions } from '../../../hooks/useRenderingExtensions';
 
 interface DisplayItemProps
   extends PropsWithParentIsReadOnlyAttribute,

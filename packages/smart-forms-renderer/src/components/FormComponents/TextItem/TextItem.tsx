@@ -37,11 +37,7 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
 
-interface TextItemProps extends BaseItemProps {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
-  isTabled?: boolean;
-}
+interface TextItemProps extends BaseItemProps {}
 
 function TextItem(props: TextItemProps) {
   const {
