@@ -36,6 +36,7 @@ interface RepeatGroupProps
   qItem: QuestionnaireItem;
   qrItems: QuestionnaireResponseItem[];
   groupCardElevation: number;
+  parentStyles?: Record<string, string>;
 }
 
 /**
@@ -51,7 +52,8 @@ function RepeatGroup(props: RepeatGroupProps) {
     groupCardElevation,
     showMinimalView,
     parentIsReadOnly,
-    onQrRepeatGroupChange
+    onQrRepeatGroupChange,
+    parentStyles
   } = props;
 
   const mutateRepeatEnableWhenItems = useQuestionnaireStore.use.mutateRepeatEnableWhenItems();
@@ -118,6 +120,7 @@ function RepeatGroup(props: RepeatGroupProps) {
       onAnswerChange={handleAnswerChange}
       onAddItem={handleAddItem}
       onDeleteItem={handleDeleteItem}
+      parentStyles={parentStyles}
     />
   );
 }

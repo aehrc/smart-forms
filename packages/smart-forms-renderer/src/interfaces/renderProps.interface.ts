@@ -55,3 +55,19 @@ export interface PropsWithParentIsRepeatGroupAttribute {
   parentIsRepeatGroup?: boolean;
   parentRepeatGroupIndex?: number;
 }
+
+export interface PropsWithParentStylesAttribute {
+  parentStyles?: Record<string, string>;
+}
+
+export interface BaseItemProps
+  extends PropsWithQrItemChangeHandler,
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute, 
+    PropsWithRenderingExtensionsAttribute,
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute,
+    PropsWithParentStylesAttribute {
+  qItem: QuestionnaireItem;
+  qrItem: QuestionnaireResponseItem | null;
+}

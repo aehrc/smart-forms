@@ -41,6 +41,7 @@ interface GridGroupProps
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
   groupCardElevation: number;
+  parentStyles?: Record<string, string>;
 }
 
 /**
@@ -50,8 +51,15 @@ interface GridGroupProps
  * @author Sean Fong
  */
 function GridGroup(props: GridGroupProps) {
-  const { qItem, qrItem, groupCardElevation, showMinimalView, parentIsReadOnly, onQrItemChange } =
-    props;
+  const {
+    qItem,
+    qrItem,
+    groupCardElevation,
+    showMinimalView,
+    parentIsReadOnly,
+    onQrItemChange,
+    parentStyles
+  } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
@@ -90,7 +98,11 @@ function GridGroup(props: GridGroupProps) {
 
   if (showMinimalView) {
     return (
-      <QGroupContainerBox cardElevation={groupCardElevation} isRepeated={false} py={1}>
+      <QGroupContainerBox
+        cardElevation={groupCardElevation}
+        isRepeated={false}
+        py={1}
+        style={parentStyles || undefined}>
         <TableContainer component={Paper} elevation={groupCardElevation}>
           <GridTable
             qItems={qRowItems}
@@ -112,7 +124,8 @@ function GridGroup(props: GridGroupProps) {
       isRepeated={false}
       py={3}
       data-linkid={qItem.linkId}
-      onClick={() => onFocusLinkId(qItem.linkId)}>
+      onClick={() => onFocusLinkId(qItem.linkId)}
+      style={parentStyles || undefined}>
       {qItem.text ? (
         <>
           <GroupHeading qItem={qItem} readOnly={readOnly} groupCardElevation={groupCardElevation} />

@@ -57,6 +57,7 @@ interface GroupItemViewProps
   pageIsMarkedAsComplete?: boolean;
   pages?: Pages;
   currentPageIndex?: number;
+  parentStyles?: Record<string, string>;
 }
 
 function GroupItemView(props: GroupItemViewProps) {
@@ -64,7 +65,7 @@ function GroupItemView(props: GroupItemViewProps) {
     qItem,
     childQItems,
     qrItemsByIndex,
-    isRepeated,
+    isRepeated = false,
     groupCardElevation,
     disableCardView,
     tabIsMarkedAsComplete,
@@ -77,16 +78,35 @@ function GroupItemView(props: GroupItemViewProps) {
     parentIsRepeatGroup,
     parentRepeatGroupIndex,
     onQrItemChange,
-    onQrRepeatGroupChange
+    onQrRepeatGroupChange,
+    parentStyles
   } = props;
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly, parentRepeatGroupIndex);
+  // State to hold extracted styles from XHTML
+  const [extractedStyles, setExtractedStyles] = React.useState<Record<string, string> | null>(null);
 
-  // Render collapsible group item
-  // If group item is a repeating instance, do not render group item as collapsible
-  const groupCollapsibleValue = getGroupCollapsible(qItem);
-  if (groupCollapsibleValue && !isRepeated) {
-    const isDefaultOpen = groupCollapsibleValue === 'default-open';
+  // Handle extracted styles from the GroupHeading component
+  const handleStylesExtracted = React.useCallback((styles: Record<string, string>) => {
+    setExtractedStyles(styles);
+  }, []);
+
+  // Combine parent styles with this group's styles
+  const combinedStyles = React.useMemo(() => {
+    if (!parentStyles && !extractedStyles) return undefined;
+    if (parentStyles && !extractedStyles) return parentStyles;
+    if (!parentStyles && extractedStyles) return extractedStyles;
+
+    // Merge parent styles with extracted styles (extracted styles take precedence)
+    return { ...parentStyles, ...extractedStyles };
+  }, [parentStyles, extractedStyles]);
+
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+
+  // Group with collapsible attribute
+  const isCollapsible = getGroupCollapsible(qItem);
+  const isDefaultOpen = isCollapsible ? undefined : true;
+
+  if (isCollapsible) {
     return (
       <GroupAccordion
         disableGutters
@@ -95,7 +115,8 @@ function GroupItemView(props: GroupItemViewProps) {
         isRepeated={isRepeated}
         slotProps={{
           transition: { unmountOnExit: true, timeout: 250 }
-        }}>
+        }}
+        style={combinedStyles || undefined}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ minHeight: '28px' }}>
           <GroupHeading
             qItem={qItem}
@@ -103,6 +124,8 @@ function GroupItemView(props: GroupItemViewProps) {
             groupCardElevation={groupCardElevation}
             tabIsMarkedAsComplete={tabIsMarkedAsComplete}
             pageIsMarkedAsComplete={pageIsMarkedAsComplete}
+            onStylesExtracted={handleStylesExtracted}
+            parentStyles={combinedStyles}
           />
         </AccordionSummary>
         <AccordionDetails sx={{ pt: 0 }}>
@@ -122,6 +145,7 @@ function GroupItemView(props: GroupItemViewProps) {
                   parentRepeatGroupIndex={parentRepeatGroupIndex}
                   onQrItemChange={onQrItemChange}
                   onQrRepeatGroupChange={onQrRepeatGroupChange}
+                  parentStyles={combinedStyles}
                 />
               );
             })}
@@ -141,37 +165,8 @@ function GroupItemView(props: GroupItemViewProps) {
       <QGroupContainerBox
         cardElevation={groupCardElevation}
         isRepeated={isRepeated}
-        data-test="q-item-group-box">
-        {childQItems.map((qItem: QuestionnaireItem, i) => {
-          const qrItemOrItems = qrItemsByIndex[i];
-
-          return (
-            <GroupItemSwitcher
-              key={qItem.linkId}
-              qItem={qItem}
-              qrItemOrItems={qrItemOrItems}
-              groupCardElevation={groupCardElevation + 1}
-              parentIsReadOnly={readOnly}
-              parentIsRepeatGroup={parentIsRepeatGroup}
-              parentRepeatGroupIndex={parentRepeatGroupIndex}
-              onQrItemChange={onQrItemChange}
-              onQrRepeatGroupChange={onQrRepeatGroupChange}
-            />
-          );
-        })}
-        {/* Next tab button at the end of each tab group */}
-        <TabButtonsWrapper currentTabIndex={currentTabIndex} tabs={tabs} />
-        <PageButtonsWrapper currentPageIndex={currentPageIndex} pages={pages} />
-      </QGroupContainerBox>
-    );
-  }
-
-  return (
-    <QGroupContainerBox
-      cardElevation={groupCardElevation}
-      isRepeated={isRepeated}
-      data-test="q-item-group-box">
-      <GroupCard elevation={groupCardElevation} isRepeated={isRepeated}>
+        data-test="q-item-group-box"
+        style={combinedStyles || undefined}>
         {isRepeated ? null : (
           <>
             <GroupHeading
@@ -180,6 +175,8 @@ function GroupItemView(props: GroupItemViewProps) {
               tabIsMarkedAsComplete={tabIsMarkedAsComplete}
               pageIsMarkedAsComplete={pageIsMarkedAsComplete}
               groupCardElevation={groupCardElevation}
+              onStylesExtracted={handleStylesExtracted}
+              parentStyles={combinedStyles}
             />
             {qItem.text ? <Divider sx={{ mt: 1, mb: 1.5, opacity: 0.6 }} /> : null}
           </>
@@ -198,6 +195,55 @@ function GroupItemView(props: GroupItemViewProps) {
               parentRepeatGroupIndex={parentRepeatGroupIndex}
               onQrItemChange={onQrItemChange}
               onQrRepeatGroupChange={onQrRepeatGroupChange}
+              parentStyles={combinedStyles}
+            />
+          );
+        })}
+        {/* Next tab button at the end of each tab group */}
+        <TabButtonsWrapper currentTabIndex={currentTabIndex} tabs={tabs} />
+        <PageButtonsWrapper currentPageIndex={currentPageIndex} pages={pages} />
+      </QGroupContainerBox>
+    );
+  }
+
+  return (
+    <QGroupContainerBox
+      cardElevation={groupCardElevation}
+      isRepeated={isRepeated}
+      data-test="q-item-group-box">
+      <GroupCard
+        elevation={groupCardElevation}
+        isRepeated={isRepeated}
+        style={combinedStyles || undefined}>
+        {isRepeated ? null : (
+          <>
+            <GroupHeading
+              qItem={qItem}
+              readOnly={readOnly}
+              tabIsMarkedAsComplete={tabIsMarkedAsComplete}
+              pageIsMarkedAsComplete={pageIsMarkedAsComplete}
+              groupCardElevation={groupCardElevation}
+              onStylesExtracted={handleStylesExtracted}
+              parentStyles={combinedStyles}
+            />
+            {qItem.text ? <Divider sx={{ mt: 1, mb: 1.5, opacity: 0.6 }} /> : null}
+          </>
+        )}
+        {childQItems.map((qItem: QuestionnaireItem, i) => {
+          const qrItemOrItems = qrItemsByIndex[i];
+
+          return (
+            <GroupItemSwitcher
+              key={qItem.linkId}
+              qItem={qItem}
+              qrItemOrItems={qrItemOrItems}
+              groupCardElevation={groupCardElevation + 1}
+              parentIsReadOnly={readOnly}
+              parentIsRepeatGroup={parentIsRepeatGroup}
+              parentRepeatGroupIndex={parentRepeatGroupIndex}
+              onQrItemChange={onQrItemChange}
+              onQrRepeatGroupChange={onQrRepeatGroupChange}
+              parentStyles={combinedStyles}
             />
           );
         })}

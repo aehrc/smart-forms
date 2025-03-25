@@ -49,6 +49,7 @@ interface RepeatGroupViewProps
   onAnswerChange: (newQrItem: QuestionnaireResponseItem, index: number) => void;
   onAddItem: () => void;
   onDeleteItem: (index: number) => void;
+  parentStyles?: Record<string, string>;
 }
 
 /**
@@ -66,14 +67,19 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
     parentIsReadOnly,
     onAnswerChange,
     onAddItem,
-    onDeleteItem
+    onDeleteItem,
+    parentStyles
   } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   if (showMinimalView) {
     return (
-      <QGroupContainerBox key={qItem.linkId} cardElevation={groupCardElevation} isRepeated={true}>
+      <QGroupContainerBox
+        key={qItem.linkId}
+        cardElevation={groupCardElevation}
+        isRepeated={true}
+        style={parentStyles || undefined}>
         <Card elevation={groupCardElevation} sx={{ p: 2 }}>
           {repeatGroups.map(({ id, qrItem: nullableQrItem }, index) => {
             const answeredQrItem = createEmptyQrItem(qItem, undefined);
@@ -113,7 +119,8 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
         isRepeated={true}
         slotProps={{
           transition: { unmountOnExit: true, timeout: 250 }
-        }}>
+        }}
+        style={parentStyles || undefined}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ minHeight: '28px' }}>
           {qItem.text ? (
             <GroupHeading
@@ -157,7 +164,11 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
   }
 
   return (
-    <QGroupContainerBox key={qItem.linkId} cardElevation={groupCardElevation} isRepeated={true}>
+    <QGroupContainerBox
+      key={qItem.linkId}
+      cardElevation={groupCardElevation}
+      isRepeated={true}
+      style={parentStyles || undefined}>
       <Card elevation={groupCardElevation} sx={{ p: 3, py: 2.5, mb: 3.5 }}>
         {qItem.text ? (
           <>

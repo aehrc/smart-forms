@@ -30,15 +30,19 @@ import FlyoverItem from './FlyoverItem';
 interface ItemLabelProps {
   qItem: QuestionnaireItem;
   readOnly: boolean;
+  parentStyles?: Record<string, string>;
 }
 
 const ItemLabel = memo(function ItemLabel(props: ItemLabelProps) {
-  const { qItem, readOnly } = props;
+  const { qItem, readOnly, parentStyles } = props;
 
   const requiredIndicatorPosition = useRendererStylingStore.use.requiredIndicatorPosition();
 
   const { required, displayFlyover } = useRenderingExtensions(qItem);
   const contextDisplayItems = getContextDisplays(qItem);
+
+  // Get text color from parent styles if available
+  const textColor = parentStyles?.color || (readOnly ? 'text.disabled' : 'text.primary');
 
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -60,8 +64,8 @@ const ItemLabel = memo(function ItemLabel(props: ItemLabelProps) {
           component="label"
           variant="label"
           htmlFor={qItem.type + '-' + qItem.linkId}
-          color={readOnly ? 'text.disabled' : 'text.primary'}
-          sx={{ mt: 0.5, flexGrow: 1 }}>
+          color={textColor}
+          sx={{ mt: 0.5, flexGrow: 1, ...(parentStyles || {}) }}>
           <ItemTextSwitcher qItem={qItem} />
 
           {/* Required asterisk position is behind text */}

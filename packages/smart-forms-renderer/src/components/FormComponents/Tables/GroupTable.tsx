@@ -42,6 +42,7 @@ interface GroupTableProps
   qItem: QuestionnaireItem;
   qrItems: QuestionnaireResponseItem[];
   groupCardElevation: number;
+  parentStyles?: Record<string, string>;
 }
 
 /**
@@ -58,7 +59,8 @@ function GroupTable(props: GroupTableProps) {
     isRepeated,
     showMinimalView,
     parentIsReadOnly,
-    onQrRepeatGroupChange
+    onQrRepeatGroupChange,
+    parentStyles
   } = props;
 
   const initialGroupTableRows = useInitialiseGroupTableRows(qItem.linkId, qrItems);
@@ -185,6 +187,7 @@ function GroupTable(props: GroupTableProps) {
       onSelectRow={handleSelectRow}
       onSelectAll={handleSelectAll}
       onReorderRows={handleReorderRows}
+      parentStyles={parentStyles}
     />
   );
 }

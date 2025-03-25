@@ -25,6 +25,7 @@ import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
+  PropsWithParentStylesAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithRenderingExtensionsAttribute,
   PropsWithShowMinimalViewAttribute
@@ -52,7 +53,8 @@ interface SingleItemSwitcherProps
     PropsWithRenderingExtensionsAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
-    PropsWithFeedbackFromParentAttribute {
+    PropsWithFeedbackFromParentAttribute,
+    PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
@@ -67,7 +69,8 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
     showMinimalView,
     parentIsReadOnly,
     feedbackFromParent,
-    onQrItemChange
+    onQrItemChange,
+    parentStyles
   } = props;
 
   const qItemOverrideComponents = useQuestionnaireStore.use.qItemOverrideComponents();
@@ -94,7 +97,15 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
   // Otherwise, render the default form component based on the item type
   switch (qItem.type) {
     case 'display':
-      return <DisplayItem qItem={qItem} parentIsReadOnly={parentIsReadOnly} />;
+      return (
+        <DisplayItem
+          qItem={qItem}
+          qrItem={qrItem}
+          renderingExtensions={renderingExtensions}
+          parentIsReadOnly={parentIsReadOnly}
+          parentStyles={parentStyles}
+        />
+      );
     case 'boolean':
       return (
         <BooleanItem
@@ -106,6 +117,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
         />
       );
     case 'decimal':
@@ -119,6 +131,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
         />
       );
     case 'integer':
@@ -133,6 +146,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
             onQrItemChange={onQrItemChange}
+            parentStyles={parentStyles}
           />
         );
       }
@@ -147,6 +161,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
         />
       );
     case 'date':
@@ -160,6 +175,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
         />
       );
     case 'dateTime':
@@ -173,6 +189,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
         />
       );
     case 'time':
@@ -186,6 +203,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
         />
       );
     case 'string':
@@ -199,6 +217,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
         />
       );
     case 'text':
@@ -211,6 +230,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
         />
       );
     case 'url':
@@ -224,6 +244,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
         />
       );
     case 'choice':
@@ -238,6 +259,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
         />
       );
     case 'open-choice':
@@ -252,6 +274,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
         />
       );
     case 'attachment':
@@ -265,6 +288,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
         />
       );
     case 'reference':
@@ -279,6 +303,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
         />
       );
     case 'quantity':
@@ -292,6 +317,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
         />
       );
     default:

@@ -31,6 +31,7 @@ export interface QItemOverrideComponentProps {
   feedbackFromParent?: string;
   parentIsRepeatGroup?: boolean;
   parentRepeatGroupIndex?: number;
+  parentStyles?: Record<string, string>;
   onQrItemChange: (qrItem: QuestionnaireResponseItem) => unknown;
   onQrRepeatGroupChange: (qrRepeatGroup: QrRepeatGroup) => unknown;
 }

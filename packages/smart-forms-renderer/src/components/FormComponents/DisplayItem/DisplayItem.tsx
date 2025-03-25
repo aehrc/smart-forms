@@ -27,10 +27,11 @@ import ItemLabel from '../ItemParts/ItemLabel';
 
 interface DisplayItemProps extends PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
+  parentStyles?: Record<string, string>;
 }
 
 const DisplayItem = memo(function DisplayItem(props: DisplayItemProps) {
-  const { qItem, parentIsReadOnly } = props;
+  const { qItem, parentIsReadOnly, parentStyles } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
@@ -56,7 +57,7 @@ const DisplayItem = memo(function DisplayItem(props: DisplayItemProps) {
       data-test="q-item-display-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemLabel qItem={qItem} readOnly={readOnly} />
+      <ItemLabel qItem={qItem} readOnly={readOnly} parentStyles={parentStyles} />
     </FullWidthFormComponentBox>
   );
 });

@@ -9,9 +9,13 @@ import type { QuestionnaireItem } from 'fhir/r4';
 
 interface ItemTextSwitcherProps {
   qItem: QuestionnaireItem;
+  onStylesExtracted?: (styles: Record<string, any>) => void;
 }
 
-const ItemTextSwitcher = memo(function ItemTextSwitcher({ qItem }: ItemTextSwitcherProps) {
+const ItemTextSwitcher = memo(function ItemTextSwitcher({
+  qItem,
+  onStylesExtracted
+}: ItemTextSwitcherProps) {
   let itemText = qItem.text ?? '';
 
   // Use calculatedExpressionString if available
@@ -23,7 +27,12 @@ const ItemTextSwitcher = memo(function ItemTextSwitcher({ qItem }: ItemTextSwitc
   // parse XHTML if found
   const parsedXhtml = useParseXhtml(qItem);
   if (parsedXhtml) {
-    return <span>{parsedXhtml}</span>;
+    // If we have styles and a callback, pass the styles to the parent
+    if (parsedXhtml.styles && onStylesExtracted) {
+      onStylesExtracted(parsedXhtml.styles);
+    }
+
+    return <span>{parsedXhtml.content}</span>;
   }
 
   // parse markdown if found

@@ -56,6 +56,7 @@ interface GroupTableViewProps
   onSelectRow: (rowId: string) => void;
   onSelectAll: () => void;
   onReorderRows: (newTableRows: GroupTableRowModel[]) => void;
+  parentStyles?: Record<string, string>;
 }
 
 function GroupTableView(props: GroupTableViewProps) {
@@ -75,14 +76,19 @@ function GroupTableView(props: GroupTableViewProps) {
     onRemoveRow,
     onSelectRow,
     onSelectAll,
-    onReorderRows
+    onReorderRows,
+    parentStyles
   } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   if (showMinimalView) {
     return (
-      <QGroupContainerBox cardElevation={groupCardElevation} isRepeated={false} py={1}>
+      <QGroupContainerBox
+        cardElevation={groupCardElevation}
+        isRepeated={false}
+        py={1}
+        style={parentStyles || undefined}>
         <TableContainer component={Paper} elevation={groupCardElevation}>
           <Table size="small">
             <TableHead>
@@ -123,7 +129,8 @@ function GroupTableView(props: GroupTableViewProps) {
       isRepeated={false}
       py={3}
       data-linkid={qItem.linkId}
-      onClick={() => onFocusLinkId(qItem.linkId)}>
+      onClick={() => onFocusLinkId(qItem.linkId)}
+      style={parentStyles || undefined}>
       <>
         <GroupHeading qItem={qItem} readOnly={readOnly} groupCardElevation={groupCardElevation} />
         <Divider sx={{ my: 1, opacity: 0.6 }} />
