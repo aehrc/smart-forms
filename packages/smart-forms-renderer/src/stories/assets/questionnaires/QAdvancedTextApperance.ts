@@ -332,7 +332,7 @@ export const qRenderingXhtmlGroupPropagation: Questionnaire = {
 
 export const qRenderingXhtmlGroupPropagationCalcExpression: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'CalcExpression',
+  id: 'RenderingXhtmlGroupPropagationCalcExpression',
   name: 'RenderingXhtmlGroupPropagationCalcExpression',
   title: 'RenderingXhtmlGroupPropagationCalcExpression',
   version: '0.1.0',
