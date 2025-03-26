@@ -24,7 +24,9 @@ import {
   qRenderingStyleBooleanItem,
   qRenderingXhtmlBooleanItem,
   qRenderingXhtmlDisplayBase64ImageItem,
-  qRenderingXhtmlDisplayListItem
+  qRenderingXhtmlDisplayListItem,
+  qRenderingXhtmlGroupPropagation,
+  qRenderingXhtmlGroupPropagationCalcExpression
 } from '../assets/questionnaires';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -61,6 +63,17 @@ export const RenderingXHTMLDisplayList: Story = {
 export const RenderingXHTMLDisplayBase64Image: Story = {
   args: {
     questionnaire: qRenderingXhtmlDisplayBase64ImageItem
+  }
+};
+
+export const RenderingXHTMLGroupPropagation: Story = {
+  args: {
+    questionnaire: qRenderingXhtmlGroupPropagation
+  }
+};
+export const RenderingXHTMLGroupPropagationCalcExpression: Story = {
+  args: {
+    questionnaire: qRenderingXhtmlGroupPropagationCalcExpression
   }
 };
 

@@ -39,6 +39,7 @@ import { getGroupCollapsible } from '../../../utils/qItem';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { GroupAccordion } from './GroupAccordion.styles';
 import PageButtonsWrapper from './PageButtonWrapper';
+import { useParseXhtml } from '../../../hooks/useParseXhtml';
 
 interface GroupItemViewProps
   extends PropsWithQrItemChangeHandler,
@@ -82,23 +83,18 @@ function GroupItemView(props: GroupItemViewProps) {
     parentStyles
   } = props;
 
-  // State to hold extracted styles from XHTML
-  const [extractedStyles, setExtractedStyles] = React.useState<Record<string, string> | null>(null);
-
-  // Handle extracted styles from the GroupHeading component
-  const handleStylesExtracted = React.useCallback((styles: Record<string, string>) => {
-    setExtractedStyles(styles);
-  }, []);
+  // If XHTML has styles, pass them to the GroupItemView so it cna be applied down the tree
+  const xhtmlStyles = useParseXhtml(qItem)?.styles;
 
   // Combine parent styles with this group's styles
   const combinedStyles = React.useMemo(() => {
-    if (!parentStyles && !extractedStyles) return undefined;
-    if (parentStyles && !extractedStyles) return parentStyles;
-    if (!parentStyles && extractedStyles) return extractedStyles;
+    if (!parentStyles && !xhtmlStyles) return undefined;
+    if (parentStyles && !xhtmlStyles) return parentStyles;
+    if (!parentStyles && xhtmlStyles) return xhtmlStyles;
 
     // Merge parent styles with extracted styles (extracted styles take precedence)
-    return { ...parentStyles, ...extractedStyles };
-  }, [parentStyles, extractedStyles]);
+    return { ...parentStyles, ...xhtmlStyles };
+  }, [parentStyles, xhtmlStyles]);
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
@@ -124,7 +120,6 @@ function GroupItemView(props: GroupItemViewProps) {
             groupCardElevation={groupCardElevation}
             tabIsMarkedAsComplete={tabIsMarkedAsComplete}
             pageIsMarkedAsComplete={pageIsMarkedAsComplete}
-            onStylesExtracted={handleStylesExtracted}
             parentStyles={combinedStyles}
           />
         </AccordionSummary>
@@ -175,7 +170,6 @@ function GroupItemView(props: GroupItemViewProps) {
               tabIsMarkedAsComplete={tabIsMarkedAsComplete}
               pageIsMarkedAsComplete={pageIsMarkedAsComplete}
               groupCardElevation={groupCardElevation}
-              onStylesExtracted={handleStylesExtracted}
               parentStyles={combinedStyles}
             />
             {qItem.text ? <Divider sx={{ mt: 1, mb: 1.5, opacity: 0.6 }} /> : null}
@@ -223,7 +217,6 @@ function GroupItemView(props: GroupItemViewProps) {
               tabIsMarkedAsComplete={tabIsMarkedAsComplete}
               pageIsMarkedAsComplete={pageIsMarkedAsComplete}
               groupCardElevation={groupCardElevation}
-              onStylesExtracted={handleStylesExtracted}
               parentStyles={combinedStyles}
             />
             {qItem.text ? <Divider sx={{ mt: 1, mb: 1.5, opacity: 0.6 }} /> : null}
