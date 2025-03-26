@@ -30,15 +30,20 @@ import FlyoverItem from './FlyoverItem';
 interface ItemLabelProps {
   qItem: QuestionnaireItem;
   readOnly: boolean;
+  isDisplayItem?: boolean;
 }
 
 const ItemLabel = memo(function ItemLabel(props: ItemLabelProps) {
-  const { qItem, readOnly } = props;
+  const { qItem, readOnly, isDisplayItem = false } = props;
 
   const requiredIndicatorPosition = useRendererStylingStore.use.requiredIndicatorPosition();
 
   const { required, displayFlyover } = useRenderingExtensions(qItem);
   const contextDisplayItems = getContextDisplays(qItem);
+
+  // is item is a display item, it should not use the "label" variant
+  const component = isDisplayItem ? 'span' : 'label';
+  const variant = isDisplayItem ? undefined : 'label';
 
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -47,7 +52,7 @@ const ItemLabel = memo(function ItemLabel(props: ItemLabelProps) {
         {required && requiredIndicatorPosition === 'start' ? (
           <RequiredAsterisk
             readOnly={readOnly}
-            variant="label"
+            variant={variant}
             sx={{ position: 'absolute', top: 0, left: -8 }}>
             *
           </RequiredAsterisk>
@@ -57,8 +62,8 @@ const ItemLabel = memo(function ItemLabel(props: ItemLabelProps) {
         {/* Added 0.5 marginTop (4px) because item labels doesn't look in line with their fields */}
         {/* flexGrow: 1 is important if xhtml and markdown rendering has width: 100% */}
         <Typography
-          component="label"
-          variant="label"
+          component={component}
+          variant={variant}
           htmlFor={qItem.type + '-' + qItem.linkId}
           color={readOnly ? 'text.disabled' : 'text.primary'}
           sx={{ mt: 0.5, flexGrow: 1 }}>
@@ -66,7 +71,7 @@ const ItemLabel = memo(function ItemLabel(props: ItemLabelProps) {
 
           {/* Required asterisk position is behind text */}
           {required && requiredIndicatorPosition === 'end' ? (
-            <RequiredAsterisk readOnly={readOnly} variant="label">
+            <RequiredAsterisk readOnly={readOnly} variant={variant}>
               *
             </RequiredAsterisk>
           ) : null}
