@@ -105,6 +105,7 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
                 key={qItem.linkId}
                 sx={{ p: 0 }}
                 value={i.toString()}
+                id={`tabpanel-${i}`}
                 data-test="renderer-tab-panel">
                 <GroupItem
                   qItem={qItem}
