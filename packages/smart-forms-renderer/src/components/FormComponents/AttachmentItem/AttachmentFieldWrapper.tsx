@@ -21,7 +21,7 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import type {
   PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute
+  PropsWithIsTabledRequiredAttribute
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem } from 'fhir/r4';
 import type { AttachmentValues } from './AttachmentItem';
@@ -30,7 +30,7 @@ import ItemLabel from '../ItemParts/ItemLabel';
 
 interface AttachmentFieldWrapperProps
   extends PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute {
+    PropsWithIsTabledRequiredAttribute {
   qItem: QuestionnaireItem;
   attachmentValues: AttachmentValues;
   feedback: string;

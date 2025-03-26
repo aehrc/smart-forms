@@ -34,11 +34,20 @@ interface GroupHeadingProps {
   groupCardElevation: number;
   tabIsMarkedAsComplete?: boolean;
   pageIsMarkedAsComplete?: boolean;
+  onStylesExtracted?: (styles: Record<string, any>) => void;
+  parentStyles?: Record<string, string>;
 }
 
 const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
-  const { qItem, readOnly, groupCardElevation, tabIsMarkedAsComplete, pageIsMarkedAsComplete } =
-    props;
+  const {
+    qItem,
+    readOnly,
+    groupCardElevation,
+    tabIsMarkedAsComplete,
+    pageIsMarkedAsComplete,
+    onStylesExtracted,
+    parentStyles
+  } = props;
 
   const requiredIndicatorPosition = useRendererStylingStore.use.requiredIndicatorPosition();
 
@@ -47,6 +56,11 @@ const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
 
   const isTabHeading = tabIsMarkedAsComplete !== undefined;
   const isPageHeading = pageIsMarkedAsComplete !== undefined;
+
+  // Get text color from parent styles if available
+  const textColor =
+    parentStyles?.color ||
+    (readOnly && (!isTabHeading || !isPageHeading) ? 'text.secondary' : 'text.primary');
 
   return (
     <>
@@ -66,13 +80,11 @@ const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
           <Typography
             component={getHeadingTag(groupCardElevation)}
             variant="groupHeading"
-            color={
-              readOnly && (!isTabHeading || !isPageHeading) ? 'text.secondary' : 'text.primary'
-            }
+            color={textColor}
             display="flex"
             alignItems="center"
-            sx={{ flexGrow: 1 }}>
-            <ItemTextSwitcher qItem={qItem} />
+            sx={{ flexGrow: 1, ...(parentStyles || {}) }}>
+            <ItemTextSwitcher qItem={qItem} onStylesExtracted={onStylesExtracted} />
 
             {/* Required asterisk position is behind text */}
             {required && requiredIndicatorPosition === 'end' ? (

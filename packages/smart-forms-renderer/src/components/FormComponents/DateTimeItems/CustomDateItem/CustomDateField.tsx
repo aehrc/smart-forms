@@ -18,13 +18,13 @@
 import type { Dayjs } from 'dayjs';
 import type { ChangeEvent, Dispatch, RefObject, SetStateAction } from 'react';
 import React, { useRef } from 'react';
-import type { PropsWithIsTabledAttribute } from '../../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledRequiredAttribute } from '../../../../interfaces/renderProps.interface';
 import { StandardTextField } from '../../Textfield.styles';
 import DatePicker from './DatePicker';
 import Tooltip from '@mui/material/Tooltip';
 import { useRendererStylingStore } from '../../../../stores';
 
-interface CustomDateFieldProps extends PropsWithIsTabledAttribute {
+interface CustomDateFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
   itemType: string;
   valueDate: string;

@@ -17,7 +17,7 @@
 
 import type { ChangeEvent } from 'react';
 import React from 'react';
-import type { PropsWithIsTabledAttribute } from '../../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledRequiredAttribute } from '../../../../interfaces/renderProps.interface';
 import Tooltip from '@mui/material/Tooltip';
 import Box from '@mui/material/Box';
 import Select from '@mui/material/Select';
@@ -27,7 +27,7 @@ import { grey } from '@mui/material/colors';
 import Typography from '@mui/material/Typography';
 import { useRendererStylingStore } from '../../../../stores';
 
-interface CustomTimeFieldProps extends PropsWithIsTabledAttribute {
+interface CustomTimeFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
   itemType: string;
   timeInput: string;

@@ -46,6 +46,7 @@ interface GroupItemProps
   pageIsMarkedAsComplete?: boolean;
   pages?: Pages;
   currentPageIndex?: number;
+  parentStyles?: Record<string, string>;
 }
 
 function GroupItem(props: GroupItemProps) {
@@ -64,7 +65,8 @@ function GroupItem(props: GroupItemProps) {
     parentIsReadOnly,
     parentIsRepeatGroup,
     parentRepeatGroupIndex,
-    onQrItemChange
+    onQrItemChange,
+    parentStyles
   } = props;
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
@@ -117,6 +119,7 @@ function GroupItem(props: GroupItemProps) {
       parentRepeatGroupIndex={parentRepeatGroupIndex}
       onQrItemChange={handleQrItemChange}
       onQrRepeatGroupChange={handleQrRepeatGroupChange}
+      parentStyles={parentStyles}
     />
   );
 }

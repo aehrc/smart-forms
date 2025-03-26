@@ -20,7 +20,7 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
+  PropsWithIsTabledRequiredAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
   PropsWithQrItemChangeHandler,
@@ -35,7 +35,7 @@ import SingleItemView from './SingleItemView';
 interface SingleItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute,
+    PropsWithIsTabledRequiredAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithParentIsRepeatGroupAttribute,
@@ -43,6 +43,7 @@ interface SingleItemProps
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
   groupCardElevation: number;
+  parentStyles?: Record<string, string>;
 }
 
 /**
@@ -55,15 +56,16 @@ function SingleItem(props: SingleItemProps) {
   const {
     qItem,
     qrItem,
-    isRepeated,
-    isTabled,
+    isRepeated = false,
+    isTabled = false,
     groupCardElevation,
-    showMinimalView,
+    showMinimalView = false,
     parentIsReadOnly,
     feedbackFromParent,
     parentIsRepeatGroup,
     parentRepeatGroupIndex,
-    onQrItemChange
+    onQrItemChange,
+    parentStyles
   } = props;
 
   const updateEnableWhenItem = useQuestionnaireStore.use.updateEnableWhenItem();
@@ -73,7 +75,7 @@ function SingleItem(props: SingleItemProps) {
       updateEnableWhenItem(
         qItem.linkId,
         newQrItem.answer,
-        parentIsRepeatGroup ? (parentRepeatGroupIndex ?? null) : null
+        parentIsRepeatGroup ? parentRepeatGroupIndex ?? null : null
       );
 
       if (qrItem && qrItem.item && qrItem.item.length > 0) {
@@ -122,6 +124,7 @@ function SingleItem(props: SingleItemProps) {
       feedbackFromParent={feedbackFromParent}
       onQrItemChange={handleQrItemChange}
       onQrItemChangeWithNestedItems={handleQrItemChangeWithNestedItems}
+      parentStyles={parentStyles}
     />
   );
 }

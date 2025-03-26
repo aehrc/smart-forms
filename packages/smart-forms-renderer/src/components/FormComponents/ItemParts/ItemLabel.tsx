@@ -31,10 +31,11 @@ interface ItemLabelProps {
   qItem: QuestionnaireItem;
   readOnly: boolean;
   isDisplayItem?: boolean;
+  parentStyles?: Record<string, string>;
 }
 
 const ItemLabel = memo(function ItemLabel(props: ItemLabelProps) {
-  const { qItem, readOnly, isDisplayItem = false } = props;
+  const { qItem, readOnly, isDisplayItem, parentStyles } = props;
 
   const requiredIndicatorPosition = useRendererStylingStore.use.requiredIndicatorPosition();
 
@@ -44,6 +45,9 @@ const ItemLabel = memo(function ItemLabel(props: ItemLabelProps) {
   // is item is a display item, it should not use the "label" variant
   const component = isDisplayItem ? 'span' : 'label';
   const variant = isDisplayItem ? undefined : 'label';
+
+  // Get text color from parent styles if available
+  const textColor = parentStyles?.color || (readOnly ? 'text.disabled' : 'text.primary');
 
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -65,8 +69,8 @@ const ItemLabel = memo(function ItemLabel(props: ItemLabelProps) {
           component={component}
           variant={variant}
           htmlFor={qItem.type + '-' + qItem.linkId}
-          color={readOnly ? 'text.disabled' : 'text.primary'}
-          sx={{ mt: 0.5, flexGrow: 1 }}>
+          color={textColor}
+          sx={{ mt: 0.5, flexGrow: 1, ...(parentStyles || {}) }}>
           <ItemTextSwitcher qItem={qItem} />
 
           {/* Required asterisk position is behind text */}

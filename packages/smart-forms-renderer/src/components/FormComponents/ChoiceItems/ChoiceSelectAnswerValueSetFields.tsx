@@ -23,7 +23,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Typography from '@mui/material/Typography';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import type {
-  PropsWithIsTabledAttribute,
+  PropsWithIsTabledRequiredAttribute,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
@@ -32,7 +32,7 @@ import { useRendererStylingStore } from '../../../stores';
 import { StyledRequiredTypography } from '../Item.styles';
 
 interface ChoiceSelectAnswerValueSetFieldsProps
-  extends PropsWithIsTabledAttribute,
+  extends PropsWithIsTabledRequiredAttribute,
     PropsWithRenderingExtensionsAttribute {
   qItem: QuestionnaireItem;
   codings: Coding[];

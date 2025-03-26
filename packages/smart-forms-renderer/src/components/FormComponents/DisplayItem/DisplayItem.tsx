@@ -16,21 +16,29 @@
  */
 
 import React, { memo } from 'react';
-import type { QuestionnaireItem } from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import { isSpecificItemControl } from '../../../utils';
 import { useQuestionnaireStore } from '../../../stores';
 import useReadOnly from '../../../hooks/useReadOnly';
-import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
+import type {
+  PropsWithParentIsReadOnlyAttribute,
+  PropsWithParentStylesAttribute
+} from '../../../interfaces/renderProps.interface';
 import Divider from '@mui/material/Divider';
 import ItemLabel from '../ItemParts/ItemLabel';
+import type { RenderingExtensions } from '../../../hooks/useRenderingExtensions';
 
-interface DisplayItemProps extends PropsWithParentIsReadOnlyAttribute {
+interface DisplayItemProps
+  extends PropsWithParentIsReadOnlyAttribute,
+    PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
+  qrItem?: QuestionnaireResponseItem | null;
+  renderingExtensions?: RenderingExtensions;
 }
 
 const DisplayItem = memo(function DisplayItem(props: DisplayItemProps) {
-  const { qItem, parentIsReadOnly } = props;
+  const { qItem, parentIsReadOnly, parentStyles } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
@@ -56,7 +64,7 @@ const DisplayItem = memo(function DisplayItem(props: DisplayItemProps) {
       data-test="q-item-display-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemLabel qItem={qItem} readOnly={readOnly} isDisplayItem={true} />
+      <ItemLabel qItem={qItem} readOnly={readOnly} isDisplayItem={true} parentStyles={parentStyles} />
     </FullWidthFormComponentBox>
   );
 });

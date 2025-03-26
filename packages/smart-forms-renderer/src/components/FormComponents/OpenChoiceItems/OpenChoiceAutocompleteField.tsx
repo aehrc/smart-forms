@@ -29,7 +29,7 @@ import DoneIcon from '@mui/icons-material/Done';
 import ErrorIcon from '@mui/icons-material/Error';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import type {
-  PropsWithIsTabledAttribute,
+  PropsWithIsTabledRequiredAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
@@ -38,7 +38,7 @@ import { useRendererStylingStore } from '../../../stores';
 import Typography from '@mui/material/Typography';
 
 interface OpenChoiceAutocompleteFieldProps
-  extends PropsWithIsTabledAttribute,
+  extends PropsWithIsTabledRequiredAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithRenderingExtensionsAttribute {
   qItem: QuestionnaireItem;

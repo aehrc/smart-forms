@@ -3,10 +3,10 @@ import { getAnswerOptionLabel } from '../../../utils/openChoice';
 import { StandardTextField } from '../Textfield.styles';
 import Autocomplete from '@mui/material/Autocomplete';
 import type { QuestionnaireItemAnswerOption } from 'fhir/r4';
-import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import { useRendererStylingStore } from '../../../stores';
 
-interface QuantityUnitFieldProps extends PropsWithIsTabledAttribute {
+interface QuantityUnitFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
   itemType: string;
   options: QuestionnaireItemAnswerOption[];

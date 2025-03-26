@@ -18,7 +18,7 @@
 import React, { Fragment } from 'react';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type {
-  PropsWithIsTabledAttribute,
+  PropsWithIsTabledRequiredAttribute,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import { StandardTextField } from '../Textfield.styles';
@@ -31,7 +31,7 @@ import Typography from '@mui/material/Typography';
 import { StyledRequiredTypography } from '../Item.styles';
 
 interface ChoiceSelectAnswerOptionFieldsProps
-  extends PropsWithIsTabledAttribute,
+  extends PropsWithIsTabledRequiredAttribute,
     PropsWithRenderingExtensionsAttribute {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];

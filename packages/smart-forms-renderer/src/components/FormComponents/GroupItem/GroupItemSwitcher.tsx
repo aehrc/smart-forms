@@ -41,6 +41,7 @@ interface GroupItemSwitcherProps
   qItem: QuestionnaireItem;
   qrItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[] | undefined;
   groupCardElevation: number;
+  parentStyles?: Record<string, string>;
 }
 
 function GroupItemSwitcher(props: GroupItemSwitcherProps) {
@@ -52,7 +53,8 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
     parentIsRepeatGroup,
     parentRepeatGroupIndex,
     onQrItemChange,
-    onQrRepeatGroupChange
+    onQrRepeatGroupChange,
+    parentStyles
   } = props;
 
   const qItemOverrideComponents = useQuestionnaireStore.use.qItemOverrideComponents();
@@ -81,6 +83,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
         parentRepeatGroupIndex={parentRepeatGroupIndex}
         onQrItemChange={onQrItemChange}
         onQrRepeatGroupChange={onQrRepeatGroupChange}
+        parentStyles={parentStyles}
       />
     );
   }
@@ -105,6 +108,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
           isRepeated={true}
           parentIsReadOnly={parentIsReadOnly}
           onQrRepeatGroupChange={onQrRepeatGroupChange}
+          parentStyles={parentStyles}
         />
       );
     }
@@ -116,6 +120,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
         groupCardElevation={groupCardElevation}
         parentIsReadOnly={parentIsReadOnly}
         onQrRepeatGroupChange={onQrRepeatGroupChange}
+        parentStyles={parentStyles}
       />
     );
   }
@@ -131,6 +136,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
         groupCardElevation={groupCardElevation}
         parentIsReadOnly={parentIsReadOnly}
         onQrItemChange={onQrItemChange}
+        parentStyles={parentStyles}
       />
     );
   }
@@ -149,6 +155,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
             isRepeated={true}
             parentIsReadOnly={parentIsReadOnly}
             onQrRepeatGroupChange={onQrRepeatGroupChange}
+            parentStyles={parentStyles}
           />
         );
       }
@@ -160,6 +167,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
           groupCardElevation={groupCardElevation}
           parentIsReadOnly={parentIsReadOnly}
           onQrRepeatGroupChange={onQrRepeatGroupChange}
+          parentStyles={parentStyles}
         />
       );
     }
@@ -187,6 +195,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
           isRepeated={false}
           parentIsReadOnly={parentIsReadOnly}
           onQrRepeatGroupChange={onQrRepeatGroupChange}
+          parentStyles={parentStyles}
         />
       );
     }
@@ -201,6 +210,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
         parentIsRepeatGroup={parentIsRepeatGroup}
         parentRepeatGroupIndex={parentRepeatGroupIndex}
         onQrItemChange={onQrItemChange}
+        parentStyles={parentStyles}
       />
     );
   }
@@ -217,6 +227,7 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
       parentIsRepeatGroup={parentIsRepeatGroup}
       parentRepeatGroupIndex={parentRepeatGroupIndex}
       onQrItemChange={onQrItemChange}
+      parentStyles={parentStyles}
     />
   );
 }

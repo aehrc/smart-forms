@@ -16,7 +16,7 @@
  */
 
 import type { QrRepeatGroup } from './repeatGroup.interface';
-import type { QuestionnaireResponseItem } from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type { RenderingExtensions } from '../hooks/useRenderingExtensions';
 
 export interface PropsWithQrItemChangeHandler {
@@ -36,6 +36,10 @@ export interface PropsWithIsRepeatedAttribute {
 }
 
 export interface PropsWithIsTabledAttribute {
+  isTabled?: boolean;
+}
+
+export interface PropsWithIsTabledRequiredAttribute {
   isTabled: boolean;
 }
 
@@ -54,4 +58,20 @@ export interface PropsWithFeedbackFromParentAttribute {
 export interface PropsWithParentIsRepeatGroupAttribute {
   parentIsRepeatGroup?: boolean;
   parentRepeatGroupIndex?: number;
+}
+
+export interface PropsWithParentStylesAttribute {
+  parentStyles?: Record<string, string>;
+}
+
+export interface BaseItemProps
+  extends PropsWithQrItemChangeHandler,
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledRequiredAttribute, 
+    PropsWithRenderingExtensionsAttribute,
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute,
+    PropsWithParentStylesAttribute {
+  qItem: QuestionnaireItem;
+  qrItem: QuestionnaireResponseItem | null;
 }

@@ -22,7 +22,12 @@ import type { HTMLReactParserOptions } from 'html-react-parser';
 import { attributesToProps, default as htmlParse, domToReact } from 'html-react-parser';
 import type { Attributes } from 'html-react-parser/lib/attributes-to-props';
 
-export function useParseXhtml(qItem: QuestionnaireItem) {
+export interface ParsedXhtml {
+  content: React.ReactNode;
+  styles?: Record<string, string>;
+}
+
+export function useParseXhtml(qItem: QuestionnaireItem): ParsedXhtml | null {
   return useMemo(() => {
     const xHtmlString = getXHtmlString(qItem);
 
@@ -30,9 +35,55 @@ export function useParseXhtml(qItem: QuestionnaireItem) {
       return null;
     }
 
+    // Extract global styles from the XHTML
+    let extractedStyles: Record<string, string> | undefined;
+
     const htmlParseOptions = {
       // Limited to work with document.getElementById manipulation only
-      replace: (domNode: { attribs: Attributes; name: string; children: any[] }) => {
+      replace: (domNode: { attribs: Attributes; name: string; children: any[]; type?: string }) => {
+        if (!domNode.attribs) return;
+
+        // Extract CSS styles from style tags
+        if (domNode.name === 'style' && domNode.children && domNode.children.length > 0) {
+          const styleContent = domNode.children[0].data;
+          if (styleContent) {
+            // We don't return anything for style tags as they will be applied globally
+            return <></>;
+          }
+        }
+
+        // Extract styles from the root div for group-level styling
+        if (
+          domNode.name === 'div' &&
+          !domNode.attribs.class &&
+          Object.keys(domNode.attribs).length > 0
+        ) {
+          if (domNode.attribs.style) {
+            try {
+              // Convert style string to object
+              const styleObj: Record<string, string> = {};
+              const styleStr = domNode.attribs.style;
+              styleStr.split(';').forEach((style) => {
+                if (style.trim()) {
+                  const [property, value] = style.split(':');
+                  if (property && value) {
+                    // Convert kebab-case to camelCase for React
+                    const propName = property
+                      .trim()
+                      .replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
+                    styleObj[propName] = value.trim();
+                  }
+                }
+              });
+
+              // Store styles to be applied to parent container
+              extractedStyles = styleObj;
+            } catch (error) {
+              console.error('Error parsing style', error);
+            }
+          }
+        }
+
         if (domNode.attribs) {
           if (domNode.name === 'button') {
             // Extract the onclick attribute
@@ -68,6 +119,11 @@ export function useParseXhtml(qItem: QuestionnaireItem) {
       }
     };
 
-    return htmlParse(xHtmlString, htmlParseOptions as HTMLReactParserOptions);
+    const parsedContent = htmlParse(xHtmlString, htmlParseOptions as HTMLReactParserOptions);
+
+    return {
+      content: parsedContent,
+      styles: extractedStyles
+    };
   }, [qItem]);
 }

@@ -20,7 +20,7 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
+  PropsWithIsTabledRequiredAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithShowMinimalViewAttribute
@@ -45,7 +45,7 @@ import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 interface SingleItemViewProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute,
+    PropsWithIsTabledRequiredAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithFeedbackFromParentAttribute {
@@ -54,7 +54,8 @@ interface SingleItemViewProps
   itemIsHidden: boolean;
   itemHasNestedItems: boolean;
   groupCardElevation: number;
-  onQrItemChangeWithNestedItems: (newQrItem: QuestionnaireResponseItem) => void;
+  onQrItemChangeWithNestedItems: (qrItem: QuestionnaireResponseItem) => void;
+  parentStyles?: Record<string, string>;
 }
 
 function SingleItemView(props: SingleItemViewProps) {
@@ -70,7 +71,8 @@ function SingleItemView(props: SingleItemViewProps) {
     parentIsReadOnly,
     feedbackFromParent,
     onQrItemChange,
-    onQrItemChangeWithNestedItems
+    onQrItemChangeWithNestedItems,
+    parentStyles
   } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
@@ -107,6 +109,7 @@ function SingleItemView(props: SingleItemViewProps) {
                   parentIsReadOnly={readOnly}
                   feedbackFromParent={feedbackFromParent}
                   onQrItemChange={onQrItemChange}
+                  parentStyles={parentStyles}
                 />
               </StopPropagationWrapper>
             </Box>
@@ -147,6 +150,7 @@ function SingleItemView(props: SingleItemViewProps) {
             parentIsReadOnly={readOnly}
             feedbackFromParent={feedbackFromParent}
             onQrItemChange={onQrItemChange}
+            parentStyles={parentStyles}
           />
           <SingleNestedItems
             qItem={qItem}
@@ -171,6 +175,7 @@ function SingleItemView(props: SingleItemViewProps) {
       parentIsReadOnly={readOnly}
       feedbackFromParent={feedbackFromParent}
       onQrItemChange={onQrItemChange}
+      parentStyles={parentStyles}
     />
   );
 }
