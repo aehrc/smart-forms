@@ -22,7 +22,7 @@ import type { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '../../stores';
 import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';
 import { updateQrItemsInGroup } from '../../utils/qrItem';
-import { isPage } from '../../utils/page';
+import { isPaginatedForm } from '../../utils/page';
 import type { QrRepeatGroup } from '../../interfaces/repeatGroup.interface';
 import FormBodyPaginated from './FormBodyPaginated';
 import { Container } from '@mui/material';
@@ -78,9 +78,8 @@ function BaseRenderer() {
   // If an item has multiple answers, it is a repeat group
   const topLevelQRItemsByIndex = getQrItemsIndex(topLevelQItems, topLevelQRItems, qItemsIndexMap);
 
-  const formIsPaginated = topLevelQItems.some((i) => isPage(i));
-
-  if (formIsPaginated) {
+  const wholeFormIsPaginated = isPaginatedForm(topLevelQItems);
+  if (wholeFormIsPaginated) {
     return (
       <Fade in={true} timeout={500}>
         <Container disableGutters maxWidth="xl" key={responseKey}>
@@ -109,6 +108,7 @@ function BaseRenderer() {
               topLevelQItem={qItem}
               topLevelQRItemOrItems={qrItemOrItems ?? null}
               parentIsReadOnly={readOnly}
+              wholeFormIsPaginated={wholeFormIsPaginated}
               onQrItemChange={(newTopLevelQRItem) =>
                 handleTopLevelQRItemSingleChange(newTopLevelQRItem)
               }
