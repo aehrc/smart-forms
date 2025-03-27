@@ -16,6 +16,7 @@
  */
 
 import type { QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { getRelevantCodingProperties } from './codingProperties';
 
 /**
  * Find and return corresponding answerOption based on selected answer in form
@@ -30,11 +31,7 @@ export function findInAnswerOptions(
     if (option.valueCoding) {
       if (str === option.valueCoding.code) {
         return {
-          valueCoding: {
-            system: option.valueCoding.system,
-            code: option.valueCoding.code,
-            display: option.valueCoding.display
-          }
+          valueCoding: getRelevantCodingProperties(option.valueCoding)
         };
       }
     }

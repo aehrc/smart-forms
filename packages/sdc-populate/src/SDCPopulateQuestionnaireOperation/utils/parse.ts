@@ -22,6 +22,7 @@ import type {
 } from 'fhir/r4';
 import { findInAnswerOptions } from './answerOption';
 import { checkIsDateTime, checkIsTime, convertDateTimeToDate } from './constructResponse';
+import { getRelevantCodingProperties } from './codingProperties';
 
 export function parseItemInitialToAnswer(
   initial: QuestionnaireItemInitial
@@ -64,11 +65,7 @@ export function parseItemInitialToAnswer(
 
   if (initial.valueCoding) {
     return {
-      valueCoding: {
-        system: initial.valueCoding.system,
-        code: initial.valueCoding.code,
-        display: initial.valueCoding.display
-      }
+      valueCoding: getRelevantCodingProperties(initial.valueCoding)
     };
   }
 
@@ -114,11 +111,7 @@ export function parseValueToAnswer(
 
   if (typeof value === 'object' && value.system && value.code) {
     return {
-      valueCoding: {
-        system: value.system,
-        code: value.code,
-        display: value.display
-      }
+      valueCoding: getRelevantCodingProperties(value)
     };
   }
 

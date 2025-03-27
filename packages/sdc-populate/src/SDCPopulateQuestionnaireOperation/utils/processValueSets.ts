@@ -23,6 +23,7 @@ import type {
   ValueSet
 } from 'fhir/r4';
 import type { ValueSetPromise } from '../interfaces/expressions.interface';
+import { getRelevantCodingProperties } from './codingProperties';
 
 export async function resolveValueSetPromises(
   valueSetPromises: Record<string, ValueSetPromise>
@@ -158,11 +159,7 @@ function parseStringToCoding(
   const coding = options.find((coding) => coding?.code === value);
   return coding
     ? {
-        valueCoding: {
-          system: coding.system,
-          code: coding.code,
-          display: coding.display
-        }
+        valueCoding: getRelevantCodingProperties(coding)
       }
     : { valueString: value };
 }
@@ -174,11 +171,7 @@ function codingIsInOptions(answerCoding: Coding, options: (Coding | undefined)[]
 
   const foundCoding = options.find((option) => option?.code === answerCoding.code);
   if (foundCoding) {
-    return {
-      system: foundCoding.system,
-      code: foundCoding.code,
-      display: foundCoding.display
-    };
+    return getRelevantCodingProperties(foundCoding);
   }
 
   return null;
