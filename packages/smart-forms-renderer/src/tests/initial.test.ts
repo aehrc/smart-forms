@@ -28,7 +28,8 @@ test('item.initial is properly pre-filled into QuestionnaireResponse', () => {
   expect(outputResponse?.item?.[0].item?.[0].item?.[0].item?.[0].answer?.[0]).toStrictEqual({
     valueCoding: {
       system: 'http://snomed.info/sct',
-      code: '373066001'
+      code: '373066001',
+      display: undefined
     }
   });
 });

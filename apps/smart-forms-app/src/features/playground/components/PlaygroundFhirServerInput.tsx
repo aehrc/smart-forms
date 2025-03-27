@@ -80,7 +80,7 @@ function PlaygroundFhirServerInput(props: PlaygroundFhirServerInputProps) {
         helperText={feedbackMessage ?? ''}
         fullWidth
         sx={{ minWidth: 350 }}
-        data-test="source-fhir-server-url-field-playground"
+        data-test={`${fhirServerId}-fhir-server-url-field-playground`}
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
