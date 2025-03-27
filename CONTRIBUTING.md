@@ -26,7 +26,7 @@ situations where people are working at cross-purposes.
 
 Your branch should be named `issue/[GitHub issue #]`.
 
-If possible, it is recommended to merge the `main` branch into your branch first before creating a pull request.
+If possible, it is recommended to merge the `main` (or `alpha`) branch into your branch first before creating a pull request.
 
 ## Development dependencies
 
