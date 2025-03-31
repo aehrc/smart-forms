@@ -43,6 +43,7 @@ function useValueSetCodings(qItem: QuestionnaireItem): {
   const encounter = useSmartConfigStore.use.encounter();
 
   const launchContexts = useQuestionnaireStore.use.launchContexts();
+  const fhirPathContext = useQuestionnaireStore.use.fhirPathContext();
   const processedValueSetCodings = useQuestionnaireStore.use.processedValueSetCodings();
   const cachedValueSetCodings = useQuestionnaireStore.use.cachedValueSetCodings();
   const addCodingToCache = useQuestionnaireStore.use.addCodingToCache();
@@ -170,6 +171,106 @@ function useValueSetCodings(qItem: QuestionnaireItem): {
         });
     }
   }, [qItem]);
+
+  // barebones _answerValueSet implementation
+  useEffect(() => {
+    if (!qItem._answerValueSet) {
+      return;
+    }
+
+    let valueSetUrl = qItem.answerValueSet;
+    if (!valueSetUrl) {
+      return;
+    }
+
+    // TODO make this use multiple 'http://hl7.org/fhir/tools/StructureDefinition/binding-parameter'
+    const answerValueSetBindingParamExtension = qItem._answerValueSet?.extension?.find(
+      (ext) => ext.url === 'http://hl7.org/fhir/tools/StructureDefinition/binding-parameter'
+    );
+
+    if (answerValueSetBindingParamExtension?.extension) {
+      const paramName = answerValueSetBindingParamExtension.extension.find(
+        (ext) => ext.url === 'name'
+      )?.valueString;
+
+      // either valueExpression or valueString
+      const paramExpression = answerValueSetBindingParamExtension.extension.find(
+        (ext) => ext.url === 'value'
+      )?.valueExpression?.expression;
+
+      if (paramName && paramExpression) {
+        // evaluate expression
+        console.log(fhirPathContext);
+        console.log(paramExpression);
+        try {
+          const evaluated = fhirpath.evaluate(
+            {},
+            paramExpression,
+            fhirPathContext,
+            fhirpath_r4_model,
+            {
+              async: false
+            }
+          );
+
+          console.log(evaluated);
+          if (evaluated[0] && typeof evaluated[0] === 'string') {
+            valueSetUrl += `&${paramName}=${evaluated[0]}`;
+          }
+
+          // Check for Promise and throw an error
+          if (evaluated instanceof Promise) {
+            throw new Error(
+              'Unexpected Promise returned from fhirpath.evaluate in the useValueSetCodings hook. Expected synchronous evaluation.'
+            );
+          }
+        } catch (e) {
+          console.warn(e.message);
+        }
+      }
+
+      console.log(valueSetUrl);
+
+      // dont continue if the valueSetUrl is in cached
+      if (cachedValueSetCodings[valueSetUrl]) {
+        setCodings(cachedValueSetCodings[valueSetUrl]);
+        return;
+      }
+
+      const preferredTerminologyServerUrl = itemPreferredTerminologyServers[qItem.linkId];
+      const terminologyServerUrl =
+        getTerminologyServerUrl(qItem) ??
+        preferredTerminologyServerUrl ??
+        defaultTerminologyServerUrl;
+      const promise = getValueSetPromise(valueSetUrl, terminologyServerUrl);
+      if (promise) {
+        promise
+          .then(async (valueSet: ValueSet) => {
+            const codings = getValueSetCodings(valueSet);
+            addDisplayToCodingArray(codings, terminologyServerUrl)
+              .then((codingsWithDisplay) => {
+                if (!valueSetUrl) {
+                  return;
+                }
+
+                if (codingsWithDisplay.length > 0) {
+                  addCodingToCache(valueSetUrl, codingsWithDisplay);
+                  setCodings(codings);
+                } else {
+                  addCodingToCache(valueSetUrl, codingsWithDisplay);
+                  setCodings([]);
+                }
+              })
+              .catch((error: Error) => {
+                setServerError(error);
+              });
+          })
+          .catch((error: Error) => {
+            setServerError(error);
+          });
+      }
+    }
+  });
 
   return { codings, terminologyError: { error: serverError, answerValueSet: valueSetUrl ?? '' } };
 }
