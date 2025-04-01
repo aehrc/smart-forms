@@ -36,7 +36,7 @@ interface ChoiceRadioAnswerValueSetFieldsProps {
   valueRadio: string | null;
   feedback: string;
   readOnly: boolean;
-  calcExpUpdated: boolean;
+  expressionUpdated: boolean;
   terminologyError: TerminologyError;
   onCheckedChange: (newValue: string) => void;
   onClear: () => void;
@@ -49,7 +49,7 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
     valueRadio,
     feedback,
     readOnly,
-    calcExpUpdated,
+    expressionUpdated,
     terminologyError,
     onCheckedChange,
     onClear
@@ -86,7 +86,7 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
 
             <Box flexGrow={1} />
 
-            <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+            <FadingCheckIcon fadeIn={expressionUpdated} disabled={readOnly} />
           </Box>
 
           {hideClearButton ? null : (

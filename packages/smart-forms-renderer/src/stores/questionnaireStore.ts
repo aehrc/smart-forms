@@ -53,6 +53,7 @@ import type { ComponentType } from 'react';
 import type { TargetConstraint } from '../interfaces/targetConstraint.interface';
 import { readTargetConstraintLocationLinkIds } from '../utils/targetConstraint';
 import type { ProcessedValueSet } from '../interfaces/valueSet.interface';
+import { ComputedQRItemUpdates } from '../interfaces/computedUpdates.interface';
 
 /**
  * QuestionnaireStore properties and methods
@@ -156,7 +157,7 @@ export interface QuestionnaireStoreType {
     actionType: 'add' | 'remove'
   ) => void;
   toggleEnableWhenActivation: (isActivated: boolean) => void;
-  updateExpressions: (updatedResponse: QuestionnaireResponse) => Promise<void>;
+  updateExpressions: (updatedResponse: QuestionnaireResponse) => Promise<ComputedQRItemUpdates>;
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) => void;
   updatePopulatedProperties: (
     populatedResponse: QuestionnaireResponse,
@@ -411,7 +412,8 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       updatedCalculatedExpressions,
       updatedProcessedValueSets,
       updatedFhirPathContext,
-      fhirPathTerminologyCache
+      fhirPathTerminologyCache,
+      computedQRItemUpdates
     } = await evaluateUpdatedExpressions({
       updatedResponse,
       updatedResponseItemMap,
@@ -434,13 +436,14 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
         fhirPathContext: updatedFhirPathContext,
         fhirPathTerminologyCache: fhirPathTerminologyCache
       }));
-      return;
+      return computedQRItemUpdates;
     }
 
     set(() => ({
       fhirPathContext: updatedFhirPathContext,
       fhirPathTerminologyCache: fhirPathTerminologyCache
     }));
+    return computedQRItemUpdates;
   },
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) =>
     set(() => ({

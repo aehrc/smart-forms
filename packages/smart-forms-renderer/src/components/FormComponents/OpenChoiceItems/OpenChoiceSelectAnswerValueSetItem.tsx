@@ -75,9 +75,8 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
   }
 
   // Get codings/options from valueSet
-  const { codings, terminologyError } = useValueSetCodings(qItem, () => {
-    onQrItemChange(createEmptyQrItem(qItem, answerKey));
-  });
+  // TODO use dynamicCodingsUpdated to trigger a "refresh" icon when codings are dynamically updated
+  const { codings, terminologyError } = useValueSetCodings(qItem);
 
   // Event handlers
   function handleValueChange(newValue: Coding | string | null) {

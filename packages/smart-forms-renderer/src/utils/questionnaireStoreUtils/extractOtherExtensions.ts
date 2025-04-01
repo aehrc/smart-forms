@@ -279,12 +279,17 @@ async function extractExtensionsFromItemRecursive(
 
       // Create entries in processedValueSets and cachedValueSetCodings
       // Note: initialValueSetUrl is key for processedValueSets, while valueSetUrlWithParams is key for cachedValueSetCodings
-      processedValueSets[initialValueSetUrl] = {
-        initialValueSetUrl: initialValueSetUrl,
-        updatableValueSetUrl: valueSetUrlWithParams,
-        bindingParameters: bindingParameters,
-        isDynamic: isDynamic
-      };
+      if (!processedValueSets[initialValueSetUrl]) {
+        processedValueSets[initialValueSetUrl] = {
+          initialValueSetUrl: initialValueSetUrl,
+          updatableValueSetUrl: valueSetUrlWithParams,
+          bindingParameters: bindingParameters,
+          isDynamic: isDynamic,
+          linkIds: [item.linkId]
+        };
+      } else {
+        processedValueSets[initialValueSetUrl].linkIds.push(item.linkId);
+      }
       cachedValueSetCodings[valueSetUrlWithParams] = [];
     }
   }

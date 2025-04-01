@@ -9,6 +9,7 @@ import type { Variables } from '../interfaces';
 import { createFhirPathContext, handleFhirPathResult } from './fhirpath';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
+import { ComputedNewAnswers } from '../interfaces/computedUpdates.interface';
 
 export function getBindingParameter(bindingParamExtension: Extension): BindingParameter | null {
   const paramName = bindingParamExtension.extension?.find((ext) => ext.url === 'name')?.valueString;
@@ -209,15 +210,15 @@ export async function evaluateDynamicValueSets(
 ): Promise<{
   processedValueSetsIsUpdated: boolean;
   updatedProcessedValueSets: Record<string, ProcessedValueSet>;
+  computedNewAnswers: ComputedNewAnswers;
 }> {
   let isUpdated = false;
+  let computedNewAnswers: ComputedNewAnswers = {};
   for (const key in processedValueSets) {
     const processedValueSet = processedValueSets[key];
     if (!processedValueSet.isDynamic) {
       continue;
     }
-
-    // console.log(processedValueSet);
 
     for (const bindingParameter of processedValueSet.bindingParameters) {
       if (bindingParameter.fhirPathExpression) {
@@ -263,6 +264,11 @@ export async function evaluateDynamicValueSets(
               processedValueSet.initialValueSetUrl,
               processedValueSet.bindingParameters
             );
+
+            computedNewAnswers = {
+              ...computedNewAnswers,
+              ...getComputedAnswerUpdates(processedValueSet.linkIds)
+            };
           }
         } catch (e) {
           console.warn(
@@ -276,6 +282,17 @@ export async function evaluateDynamicValueSets(
 
   return {
     processedValueSetsIsUpdated: isUpdated,
-    updatedProcessedValueSets: processedValueSets
+    updatedProcessedValueSets: processedValueSets,
+    computedNewAnswers
   };
+}
+
+// For parameterised valueSets, if the valueSet options is updated, clear the answers
+function getComputedAnswerUpdates(linkIds: string[]): ComputedNewAnswers {
+  const computedAnswerUpdates: ComputedNewAnswers = {};
+  for (const linkId of linkIds) {
+    computedAnswerUpdates[linkId] = null;
+  }
+
+  return computedAnswerUpdates;
 }

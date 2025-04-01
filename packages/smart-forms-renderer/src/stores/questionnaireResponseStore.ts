@@ -26,7 +26,7 @@ import { emptyResponse } from '../utils/emptyResource';
 import type { Diff } from 'deep-diff';
 import { diff } from 'deep-diff';
 import { createSelectors } from './selector';
-import { validateForm, validateQuestionnaireResponse } from '../utils/validate';
+import { validateForm } from '../utils/validate';
 import { questionnaireStore } from './questionnaireStore';
 import { createQuestionnaireResponseItemMap } from '../utils/questionnaireResponseStoreUtils/updatableResponseItems';
 import { generateUniqueId } from '../utils/extractObservation';
@@ -137,10 +137,7 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
     updateResponse: (updatedResponse: QuestionnaireResponse) => {
       const sourceQuestionnaire = questionnaireStore.getState().sourceQuestionnaire;
       const formChanges = diff(get().updatableResponse, updatedResponse) ?? null;
-      const updatedInvalidItems = validateQuestionnaireResponse({
-        questionnaire: sourceQuestionnaire,
-        questionnaireResponse: updatedResponse
-      });
+      const updatedInvalidItems = validateForm(sourceQuestionnaire, updatedResponse);
 
       set(() => ({
         updatableResponse: updatedResponse,
@@ -152,10 +149,7 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
     },
     setUpdatableResponseAsSaved: (savedResponse: QuestionnaireResponse) => {
       const sourceQuestionnaire = questionnaireStore.getState().sourceQuestionnaire;
-      const updatedInvalidItems = validateQuestionnaireResponse({
-        questionnaire: sourceQuestionnaire,
-        questionnaireResponse: savedResponse
-      });
+      const updatedInvalidItems = validateForm(sourceQuestionnaire, savedResponse);
 
       set(() => ({
         key: generateUniqueId('QR'),
@@ -169,10 +163,7 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
     },
     setUpdatableResponseAsEmpty: (clearedResponse: QuestionnaireResponse) => {
       const sourceQuestionnaire = questionnaireStore.getState().sourceQuestionnaire;
-      const updatedInvalidItems = validateQuestionnaireResponse({
-        questionnaire: sourceQuestionnaire,
-        questionnaireResponse: clearedResponse
-      });
+      const updatedInvalidItems = validateForm(sourceQuestionnaire, clearedResponse);
 
       set(() => ({
         updatableResponse: clearedResponse,

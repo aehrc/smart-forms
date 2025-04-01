@@ -26,6 +26,7 @@ import { evaluateTargetConstraints } from './targetConstraint';
 import type { TargetConstraint } from '../interfaces/targetConstraint.interface';
 import type { Variables, VariableXFhirQuery } from '../interfaces';
 import { evaluateDynamicValueSets } from './parameterisedValueSets';
+import { ComputedQRItemUpdates } from '../interfaces/computedUpdates.interface';
 
 interface EvaluateUpdatedExpressionsParams {
   updatedResponse: QuestionnaireResponse;
@@ -50,6 +51,7 @@ export async function evaluateUpdatedExpressions(
   updatedProcessedValueSets: Record<string, any>;
   updatedFhirPathContext: Record<string, any>;
   fhirPathTerminologyCache: Record<string, any>;
+  computedQRItemUpdates: ComputedQRItemUpdates;
 }> {
   const {
     updatedResponse,
@@ -75,10 +77,12 @@ export async function evaluateUpdatedExpressions(
       updatedCalculatedExpressions: calculatedExpressions,
       updatedProcessedValueSets: processedValueSets,
       updatedFhirPathContext: existingFhirPathContext,
-      fhirPathTerminologyCache
+      fhirPathTerminologyCache,
+      computedQRItemUpdates: {}
     };
   }
 
+  let computedQRItemUpdates: ComputedQRItemUpdates = {};
   const fhirPathEvalResult = await createFhirPathContext(
     updatedResponse,
     updatedResponseItemMap,
@@ -118,12 +122,23 @@ export async function evaluateUpdatedExpressions(
     );
 
   // Update dynamic value sets
-  const { processedValueSetsIsUpdated, updatedProcessedValueSets } = await evaluateDynamicValueSets(
+  const {
+    processedValueSetsIsUpdated,
+    updatedProcessedValueSets,
+    computedNewAnswers: computedNewAnswersDynamicValueSets
+  } = await evaluateDynamicValueSets(
     updatedFhirPathContext,
     fhirPathTerminologyCache,
     processedValueSets,
     terminologyServerUrl
   );
+
+  // Have a process here to find their QRItems and assign updates based on the computedNewAnswers
+  // In the case of dynamic value sets, just clear the existing answers
+  // Eventually we want to expand this to calculatedExpressions
+  for (const linkId in computedNewAnswersDynamicValueSets) {
+    computedQRItemUpdates[linkId] = null;
+  }
 
   const isUpdated =
     enableWhenExpsIsUpdated ||
@@ -138,7 +153,8 @@ export async function evaluateUpdatedExpressions(
     updatedCalculatedExpressions,
     updatedProcessedValueSets,
     updatedFhirPathContext,
-    fhirPathTerminologyCache
+    fhirPathTerminologyCache,
+    computedQRItemUpdates
   };
 }
 

@@ -78,9 +78,7 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
   const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
 
   // Get codings/options from valueSet
-  const { codings, terminologyError } = useValueSetCodings(qItem, () => {
-    onQrItemChange(createEmptyQrItem(qItem, answerKey));
-  });
+  const { codings, terminologyError, dynamicCodingsUpdated } = useValueSetCodings(qItem);
 
   valueCoding = useMemo(() => {
     const updatedValueCoding = codings.find(
@@ -145,7 +143,7 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
         terminologyError={terminologyError}
         feedback={feedback}
         readOnly={readOnly}
-        calcExpUpdated={calcExpUpdated}
+        expressionUpdated={calcExpUpdated || dynamicCodingsUpdated}
         isTabled={isTabled}
         renderingExtensions={renderingExtensions}
         onSelectChange={handleChange}
@@ -169,7 +167,7 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
             terminologyError={terminologyError}
             feedback={feedback}
             readOnly={readOnly}
-            calcExpUpdated={calcExpUpdated}
+            expressionUpdated={calcExpUpdated || dynamicCodingsUpdated}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
             onSelectChange={handleChange}

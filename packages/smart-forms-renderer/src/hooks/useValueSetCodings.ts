@@ -34,12 +34,10 @@ export interface TerminologyError {
   answerValueSet: string;
 }
 
-function useValueSetCodings(
-  qItem: QuestionnaireItem,
-  clearAnswer: () => void
-): {
+function useValueSetCodings(qItem: QuestionnaireItem): {
   codings: Coding[];
   terminologyError: TerminologyError;
+  dynamicCodingsUpdated: boolean;
 } {
   const patient = useSmartConfigStore.use.patient();
   const user = useSmartConfigStore.use.user();
@@ -147,6 +145,7 @@ function useValueSetCodings(
 
   const [codings, setCodings] = useState<Coding[]>(initialCodings);
   const [serverError, setServerError] = useState<Error | null>(null);
+  const [dynamicCodingsUpdated, setDynamicCodingsUpdated] = useState(false);
 
   const codingsCount = codings.length;
   const preferredTerminologyServerUrl = itemPreferredTerminologyServers[qItem.linkId];
@@ -165,11 +164,16 @@ function useValueSetCodings(
         return;
       }
 
+      // Update ui to show calculated value changes
+      setDynamicCodingsUpdated(true);
+      const timeoutId = setTimeout(() => {
+        setDynamicCodingsUpdated(false);
+      }, 500);
+
       // attempt to get codings from cached queried value sets
       if (cachedValueSetCodings[updatableValueSetUrl]) {
         setCodings(cachedValueSetCodings[updatableValueSetUrl]);
-        clearAnswer();
-        return;
+        return () => clearTimeout(timeoutId);
       }
 
       const promise = getValueSetPromise(updatableValueSetUrl, terminologyServerUrl);
@@ -182,19 +186,20 @@ function useValueSetCodings(
                 if (codingsWithDisplay.length > 0) {
                   addCodingToCache(updatableValueSetUrl, codingsWithDisplay);
                   setCodings(newCodings);
-                  clearAnswer();
                 } else {
                   addCodingToCache(updatableValueSetUrl, codingsWithDisplay);
                   setCodings([]);
-                  clearAnswer();
                 }
+                return () => clearTimeout(timeoutId);
               })
               .catch((error: Error) => {
                 setServerError(error);
+                return () => clearTimeout(timeoutId);
               });
           })
           .catch((error: Error) => {
             setServerError(error);
+            return () => clearTimeout(timeoutId);
           });
       }
     },
@@ -234,7 +239,8 @@ function useValueSetCodings(
 
   return {
     codings,
-    terminologyError: { error: serverError, answerValueSet: answerValueSetUrl ?? '' }
+    terminologyError: { error: serverError, answerValueSet: answerValueSetUrl ?? '' },
+    dynamicCodingsUpdated
   };
 }
 

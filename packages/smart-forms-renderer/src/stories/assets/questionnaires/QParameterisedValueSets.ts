@@ -49,6 +49,24 @@ export const qParameterisedValueSetBasic: Questionnaire = {
       answerValueSet: 'http://example.com/countries/vs'
     },
     {
+      linkId: 'requestDisplay',
+      type: 'display',
+      repeats: false,
+      _text: {
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
+            valueExpression: {
+              language: 'text/fhirpath',
+              expression:
+                "'State GET request url: https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=https://example.com/limited-states&p-country=' + %resource.item.where(linkId = 'countryCode').answer.value.code"
+            }
+          }
+        ]
+      },
+      text: 'State GET request url: https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=https://example.com/limited-states'
+    },
+    {
       type: 'choice',
       extension: [
         {
@@ -64,8 +82,8 @@ export const qParameterisedValueSetBasic: Questionnaire = {
           }
         }
       ],
-      linkId: 'stateCode',
-      text: 'State',
+      linkId: 'stateCodeDropdown',
+      text: 'State (Dropdown)',
       answerValueSet: 'https://example.com/limited-states',
       _answerValueSet: {
         // Mimics GET request of https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=https://example.com/limited-states&p-country={country_value}
@@ -90,22 +108,45 @@ export const qParameterisedValueSetBasic: Questionnaire = {
       }
     },
     {
-      linkId: 'requestDisplay',
-      type: 'display',
-      repeats: false,
-      _text: {
+      type: 'choice',
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: 'http://hl7.org/fhir/questionnaire-item-control',
+                code: 'radio-button',
+                display: 'Radio'
+              }
+            ]
+          }
+        }
+      ],
+      linkId: 'stateCodeRadio',
+      text: 'State (Radio)',
+      answerValueSet: 'https://example.com/limited-states',
+      _answerValueSet: {
+        // Mimics GET request of https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=https://example.com/limited-states&p-country={country_value}
         extension: [
           {
-            url: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
-            valueExpression: {
-              language: 'text/fhirpath',
-              expression:
-                "'State GET request url: https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=https://example.com/limited-states&p-country=' + %resource.item.where(linkId = 'countryCode').answer.value.code"
-            }
+            url: 'http://hl7.org/fhir/tools/StructureDefinition/binding-parameter',
+            extension: [
+              {
+                url: 'name',
+                valueString: 'p-country'
+              },
+              {
+                url: 'expression',
+                valueExpression: {
+                  expression: "%resource.item.where(linkId = 'countryCode').answer.value.code",
+                  language: 'text/fhirpath'
+                }
+              }
+            ]
           }
         ]
-      },
-      text: 'State GET request url: https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=https://example.com/limited-states'
+      }
     }
   ]
 };
@@ -142,6 +183,24 @@ export const qParameterisedValueSetMultiple: Questionnaire = {
       answerValueSet: 'http://example.com/countries/vs'
     },
     {
+      linkId: 'requestDisplay',
+      type: 'display',
+      repeats: false,
+      _text: {
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
+            valueExpression: {
+              language: 'text/fhirpath',
+              expression:
+                "'State GET request url: https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=https://example.com/limited-states&p-country=' + %resource.item.where(linkId = 'countryCode').answer.value.code + '&includeDefinition=true'"
+            }
+          }
+        ]
+      },
+      text: 'State GET request url: https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=https://example.com/limited-states&includeDefinition=true'
+    },
+    {
       type: 'choice',
       extension: [
         {
@@ -157,8 +216,8 @@ export const qParameterisedValueSetMultiple: Questionnaire = {
           }
         }
       ],
-      linkId: 'stateCode',
-      text: 'State',
+      linkId: 'stateCodeDropdown',
+      text: 'State (drop down)',
       answerValueSet: 'https://example.com/limited-states',
       _answerValueSet: {
         // Mimics GET request of https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=https://example.com/limited-states&p-country={country_value}
@@ -196,22 +255,58 @@ export const qParameterisedValueSetMultiple: Questionnaire = {
       }
     },
     {
-      linkId: 'requestDisplay',
-      type: 'display',
-      repeats: false,
-      _text: {
+      type: 'choice',
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: 'http://hl7.org/fhir/questionnaire-item-control',
+                code: 'radio-button',
+                display: 'Radio'
+              }
+            ]
+          }
+        }
+      ],
+      linkId: 'stateCodeRadio',
+      text: 'State (Radio)',
+      answerValueSet: 'https://example.com/limited-states',
+      _answerValueSet: {
+        // Mimics GET request of https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=https://example.com/limited-states&p-country={country_value}
         extension: [
           {
-            url: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
-            valueExpression: {
-              language: 'text/fhirpath',
-              expression:
-                "'State GET request url: https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=https://example.com/limited-states&p-country=' + %resource.item.where(linkId = 'countryCode').answer.value.code + '&includeDefinition=true'"
-            }
+            url: 'http://hl7.org/fhir/tools/StructureDefinition/binding-parameter',
+            extension: [
+              {
+                url: 'name',
+                valueString: 'p-country'
+              },
+              {
+                url: 'expression',
+                valueExpression: {
+                  expression: "%resource.item.where(linkId = 'countryCode').answer.value.code",
+                  language: 'text/fhirpath'
+                }
+              }
+            ]
+          },
+          {
+            url: 'http://hl7.org/fhir/tools/StructureDefinition/binding-parameter',
+            extension: [
+              {
+                url: 'name',
+                valueString: 'includeDefinition'
+              },
+              {
+                url: 'expression',
+                valueString: 'true'
+              }
+            ]
           }
         ]
-      },
-      text: 'State GET request url: https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=https://example.com/limited-states&includeDefinition=true'
+      }
     }
   ]
 };

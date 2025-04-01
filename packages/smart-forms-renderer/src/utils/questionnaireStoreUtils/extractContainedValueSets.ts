@@ -48,7 +48,8 @@ export function extractContainedValueSets(
         initialValueSetUrl: entry.url ?? '',
         updatableValueSetUrl: entry.url ?? '',
         bindingParameters: [],
-        isDynamic: false
+        isDynamic: false,
+        linkIds: []
       };
       cachedValueSetCodings[entry.id] = getValueSetCodings(entry);
       continue;
@@ -68,7 +69,8 @@ export function extractContainedValueSets(
         initialValueSetUrl: entry.url,
         updatableValueSetUrl: entry.url,
         bindingParameters: [],
-        isDynamic: false
+        isDynamic: false,
+        linkIds: []
       };
     }
   }

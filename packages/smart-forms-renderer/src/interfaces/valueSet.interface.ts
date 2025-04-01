@@ -22,6 +22,7 @@ export interface ProcessedValueSet {
   updatableValueSetUrl: string;
   bindingParameters: BindingParameter[];
   isDynamic: boolean;
+  linkIds: string[];
 }
 
 export interface ValueSetPromise {
