@@ -52,6 +52,8 @@ import type { QItemOverrideComponentProps, SdcUiOverrideComponentProps } from '.
 import type { ComponentType } from 'react';
 import type { TargetConstraint } from '../interfaces/targetConstraint.interface';
 import { readTargetConstraintLocationLinkIds } from '../utils/targetConstraint';
+import type { ProcessedValueSet } from '../interfaces/valueSet.interface';
+import type { ComputedQRItemUpdates } from '../interfaces/computedUpdates.interface';
 
 /**
  * QuestionnaireStore properties and methods
@@ -75,8 +77,7 @@ import { readTargetConstraintLocationLinkIds } from '../utils/targetConstraint';
  * @property enableWhenExpressions - EnableWhenExpressions object containing enableWhen expressions
  * @property calculatedExpressions - Key-value pair of calculated expressions `Record<linkId, array of calculated expression properties>`
  * @property answerExpressions - Key-value pair of answer expressions `Record<linkId, answer expression properties>`
- * @property processedValueSetCodings - Key-value pair of processed value set codings `Record<valueSetUrl, codings>`
- * @property processedValueSetUrls - Key-value pair of contained value set urls `Record<valueSetName, valueSetUrl>`
+ * @property processedValueSets - Key-value pair of (pre-)processed value set codings `Record<valueSetUrl, ProcessedValueSet>`
  * @property cachedValueSetCodings - Key-value pair of cached value set codings `Record<valueSetUrl, codings>`
  * @property fhirPathContext - Key-value pair of evaluated FHIRPath values `Record<variable name, evaluated value(s)>`
  * @property fhirPathTerminologyCache - Key-value pair of cached FHIRPath Terminology results `Record<cacheKey, cached terminology result>`
@@ -122,8 +123,7 @@ export interface QuestionnaireStoreType {
   calculatedExpressions: Record<string, CalculatedExpression[]>;
   initialExpressions: Record<string, InitialExpression>;
   answerExpressions: Record<string, AnswerExpression>;
-  processedValueSetCodings: Record<string, Coding[]>;
-  processedValueSetUrls: Record<string, string>;
+  processedValueSets: Record<string, ProcessedValueSet>;
   cachedValueSetCodings: Record<string, Coding[]>;
   fhirPathContext: Record<string, any>;
   fhirPathTerminologyCache: Record<string, any>;
@@ -157,7 +157,7 @@ export interface QuestionnaireStoreType {
     actionType: 'add' | 'remove'
   ) => void;
   toggleEnableWhenActivation: (isActivated: boolean) => void;
-  updateExpressions: (updatedResponse: QuestionnaireResponse) => Promise<void>;
+  updateExpressions: (updatedResponse: QuestionnaireResponse) => Promise<ComputedQRItemUpdates>;
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) => void;
   updatePopulatedProperties: (
     populatedResponse: QuestionnaireResponse,
@@ -198,8 +198,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   enableWhenItems: { singleItems: {}, repeatItems: {} },
   enableWhenLinkedQuestions: {},
   enableWhenIsActivated: true,
-  processedValueSetCodings: {},
-  processedValueSetUrls: {},
+  processedValueSets: {},
   cachedValueSetCodings: {},
   fhirPathContext: {},
   fhirPathTerminologyCache: {},
@@ -242,6 +241,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       initialEnableWhenLinkedQuestions,
       initialEnableWhenExpressions,
       initialCalculatedExpressions,
+      initialProcessedValueSets,
       firstVisibleTab,
       firstVisiblePage,
       updatedFhirPathContext,
@@ -253,6 +253,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       enableWhenExpressions: questionnaireModel.enableWhenExpressions,
       calculatedExpressions: questionnaireModel.calculatedExpressions,
       variables: questionnaireModel.variables,
+      processedValueSets: questionnaireModel.processedValueSets,
       tabs: questionnaireModel.tabs,
       pages: questionnaireModel.pages,
       fhirPathContext: fhirPathContext,
@@ -284,8 +285,8 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       calculatedExpressions: initialCalculatedExpressions,
       initialExpressions: questionnaireModel.initialExpressions,
       answerExpressions: questionnaireModel.answerExpressions,
-      processedValueSetCodings: questionnaireModel.processedValueSetCodings,
-      processedValueSetUrls: questionnaireModel.processedValueSetUrls,
+      processedValueSets: initialProcessedValueSets,
+      cachedValueSetCodings: questionnaireModel.cachedValueSetCodings,
       fhirPathContext: updatedFhirPathContext,
       fhirPathTerminologyCache: updatedFhirPathTerminologyCache,
       qItemOverrideComponents: qItemOverrideComponents,
@@ -312,8 +313,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       calculatedExpressions: {},
       initialExpressions: {},
       answerExpressions: {},
-      processedValueSetCodings: {},
-      processedValueSetUrls: {},
+      processedValueSets: {},
       fhirPathContext: {},
       fhirPathTerminologyCache: {},
       qItemOverrideComponents: {},
@@ -410,14 +410,17 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       updatedTargetConstraints,
       updatedEnableWhenExpressions,
       updatedCalculatedExpressions,
+      updatedProcessedValueSets,
       updatedFhirPathContext,
-      fhirPathTerminologyCache
+      fhirPathTerminologyCache,
+      computedQRItemUpdates
     } = await evaluateUpdatedExpressions({
       updatedResponse,
       updatedResponseItemMap,
       targetConstraints: get().targetConstraints,
       enableWhenExpressions: get().enableWhenExpressions,
       calculatedExpressions: get().calculatedExpressions,
+      processedValueSets: get().processedValueSets,
       variables: get().variables,
       existingFhirPathContext: get().fhirPathContext,
       fhirPathTerminologyCache: get().fhirPathTerminologyCache,
@@ -429,16 +432,18 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
         targetConstraints: updatedTargetConstraints,
         enableWhenExpressions: updatedEnableWhenExpressions,
         calculatedExpressions: updatedCalculatedExpressions,
+        processedValueSets: updatedProcessedValueSets,
         fhirPathContext: updatedFhirPathContext,
         fhirPathTerminologyCache: fhirPathTerminologyCache
       }));
-      return;
+      return computedQRItemUpdates;
     }
 
     set(() => ({
       fhirPathContext: updatedFhirPathContext,
       fhirPathTerminologyCache: fhirPathTerminologyCache
     }));
+    return computedQRItemUpdates;
   },
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) =>
     set(() => ({
@@ -489,6 +494,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       enableWhenExpressions: get().enableWhenExpressions,
       calculatedExpressions: initialCalculatedExpressions,
       variables: get().variables,
+      processedValueSets: get().processedValueSets,
       tabs: get().tabs,
       pages: get().pages,
       fhirPathContext: updatedFhirPathContext,

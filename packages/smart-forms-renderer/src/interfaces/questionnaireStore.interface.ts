@@ -25,6 +25,7 @@ import type { AnswerExpression } from './answerExpression.interface';
 import type { Coding, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type { InitialExpression } from './initialExpression.interface';
 import type { TargetConstraint } from './targetConstraint.interface';
+import type { ProcessedValueSet } from './valueSet.interface';
 
 export interface QuestionnaireModel {
   itemTypes: Record<string, string>;
@@ -40,8 +41,8 @@ export interface QuestionnaireModel {
   initialExpressions: Record<string, InitialExpression>;
   answerExpressions: Record<string, AnswerExpression>;
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
-  processedValueSetCodings: Record<string, Coding[]>;
-  processedValueSetUrls: Record<string, string>;
+  processedValueSets: Record<string, ProcessedValueSet>;
+  cachedValueSetCodings: Record<string, Coding[]>;
   fhirPathContext: Record<string, any>;
   fhirPathTerminologyCache: Record<string, any>;
 }

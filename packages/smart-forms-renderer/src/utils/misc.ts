@@ -17,10 +17,16 @@
 
 // TODO to be imported into sdc-fhir-helpers
 
-import type { Questionnaire, QuestionnaireItem } from 'fhir/r4';
+import type {
+  Questionnaire,
+  QuestionnaireItem,
+  QuestionnaireResponse,
+  QuestionnaireResponseItem
+} from 'fhir/r4';
 import type { Tabs } from '../interfaces';
 import { getShortText } from './itemControl';
 
+// Get QuestionnaireItem from Questionnaire based on linkId
 export function getQuestionnaireItem(
   questionnaire: Questionnaire,
   targetLinkId: string
@@ -64,7 +70,97 @@ function getQuestionnaireItemRecursive(
   return null;
 }
 
-///
+// Get QuestionnaireResponseItem from QuestionnaireResponse based on linkId
+export function getQuestionnaireResponseItem(
+  questionnaireResponse: QuestionnaireResponse,
+  targetLinkId: string
+): QuestionnaireResponseItem | null {
+  // Search through the top level items recursively
+  const topLevelQRItems = questionnaireResponse.item;
+  if (topLevelQRItems) {
+    for (const topLevelQRItem of topLevelQRItems) {
+      const foundQRItem = getQuestionnaireResponseItemRecursive(topLevelQRItem, targetLinkId);
+      if (foundQRItem) {
+        return foundQRItem;
+      }
+    }
+  }
+
+  // No matching item found in the questionnaire, return null
+  return null;
+}
+
+function getQuestionnaireResponseItemRecursive(
+  qrItem: QuestionnaireResponseItem,
+  targetLinkId: string
+): QuestionnaireResponseItem | null {
+  // Target linkId found in current item
+  if (qrItem.linkId === targetLinkId) {
+    return qrItem;
+  }
+
+  // Search through its child items recursively
+  const childQRItems = qrItem.item;
+  if (childQRItems) {
+    for (const childQRItem of childQRItems) {
+      const foundQRItem = getQuestionnaireResponseItemRecursive(childQRItem, targetLinkId);
+      if (foundQRItem) {
+        return foundQRItem;
+      }
+    }
+  }
+
+  // No matching item found in the current item or its child items, return null
+  return null;
+}
+
+// Replace QuestionnaireResponseItem in QuestionnaireResponse based on linkId with a new QR item
+export function replaceQuestionnaireResponseItem(
+  questionnaireResponse: QuestionnaireResponse,
+  targetLinkId: string,
+  newQRItem: QuestionnaireResponseItem | null
+): QuestionnaireResponse {
+  if (!questionnaireResponse.item) return questionnaireResponse;
+
+  const updatedItems = replaceQuestionnaireResponseItemRecursive(
+    questionnaireResponse.item,
+    targetLinkId,
+    newQRItem
+  );
+
+  return {
+    ...questionnaireResponse,
+    item: updatedItems.length > 0 ? updatedItems : undefined // Remove top-level item array if empty
+  };
+}
+
+function replaceQuestionnaireResponseItemRecursive(
+  items: QuestionnaireResponseItem[],
+  targetLinkId: string,
+  newQRItem: QuestionnaireResponseItem | null
+): QuestionnaireResponseItem[] {
+  return items
+    .map((item) => {
+      if (item.linkId === targetLinkId) {
+        return newQRItem; // Replace or remove
+      }
+
+      if (!item.item) return item; // No child items, return as is
+
+      const updatedChildren = replaceQuestionnaireResponseItemRecursive(
+        item.item,
+        targetLinkId,
+        newQRItem
+      );
+
+      if (updatedChildren.length === 0) {
+        return null; // Remove parent if all its children are gone
+      }
+
+      return { ...item, item: updatedChildren };
+    })
+    .filter(Boolean) as QuestionnaireResponseItem[]; // Remove any `null` entries
+}
 
 export function getParentItem(
   questionnaire: Questionnaire,

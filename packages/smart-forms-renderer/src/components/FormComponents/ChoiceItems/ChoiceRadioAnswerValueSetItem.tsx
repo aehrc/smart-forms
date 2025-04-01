@@ -64,7 +64,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
   }
 
   // Get codings/options from valueSet
-  const { codings, terminologyError } = useValueSetCodings(qItem);
+  const { codings, terminologyError, dynamicCodingsUpdated } = useValueSetCodings(qItem);
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
@@ -106,7 +106,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
         valueRadio={valueRadio}
         feedback={feedback}
         readOnly={readOnly}
-        calcExpUpdated={calcExpUpdated}
+        expressionUpdated={calcExpUpdated || dynamicCodingsUpdated}
         terminologyError={terminologyError}
         onCheckedChange={handleChange}
         onClear={handleClear}
@@ -130,7 +130,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
             valueRadio={valueRadio}
             feedback={feedback}
             readOnly={readOnly}
-            calcExpUpdated={calcExpUpdated}
+            expressionUpdated={calcExpUpdated || dynamicCodingsUpdated}
             terminologyError={terminologyError}
             onCheckedChange={handleChange}
             onClear={handleClear}

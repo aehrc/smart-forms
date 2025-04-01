@@ -40,7 +40,7 @@ interface ChoiceSelectAnswerValueSetFieldsProps
   terminologyError: TerminologyError;
   feedback: string;
   readOnly: boolean;
-  calcExpUpdated: boolean;
+  expressionUpdated: boolean;
   onSelectChange: (newValue: Coding | null) => void;
 }
 
@@ -52,7 +52,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
     terminologyError,
     feedback,
     readOnly,
-    calcExpUpdated,
+    expressionUpdated,
     isTabled,
     renderingExtensions,
     onSelectChange
@@ -88,7 +88,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
                 endAdornment: (
                   <>
                     {params.InputProps.endAdornment}
-                    <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+                    <FadingCheckIcon fadeIn={expressionUpdated} disabled={readOnly} />
                     <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
                       {displayUnit}
                     </Typography>

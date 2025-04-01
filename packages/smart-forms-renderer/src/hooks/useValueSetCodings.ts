@@ -37,13 +37,14 @@ export interface TerminologyError {
 function useValueSetCodings(qItem: QuestionnaireItem): {
   codings: Coding[];
   terminologyError: TerminologyError;
+  dynamicCodingsUpdated: boolean;
 } {
   const patient = useSmartConfigStore.use.patient();
   const user = useSmartConfigStore.use.user();
   const encounter = useSmartConfigStore.use.encounter();
 
   const launchContexts = useQuestionnaireStore.use.launchContexts();
-  const processedValueSetCodings = useQuestionnaireStore.use.processedValueSetCodings();
+  const processedValueSets = useQuestionnaireStore.use.processedValueSets();
   const cachedValueSetCodings = useQuestionnaireStore.use.cachedValueSetCodings();
   const addCodingToCache = useQuestionnaireStore.use.addCodingToCache();
   const { xFhirQueryVariables } = useQuestionnaireStore.use.variables();
@@ -52,28 +53,34 @@ function useValueSetCodings(qItem: QuestionnaireItem): {
 
   const defaultTerminologyServerUrl = useTerminologyServerStore.use.url();
 
-  const valueSetUrl = qItem.answerValueSet;
+  const answerValueSetUrl = qItem.answerValueSet;
   let initialCodings = useMemo(() => {
     // set options from cached answer options if present
-    if (valueSetUrl) {
-      let cleanValueSetUrl = valueSetUrl;
+    if (answerValueSetUrl) {
+      let valueSetUrl = answerValueSetUrl;
+
+      // answerValueSetUrl is a reference to a contained value set
+      // If found, return early
       if (valueSetUrl.startsWith('#')) {
-        cleanValueSetUrl = valueSetUrl.slice(1);
+        const valueSetReference = answerValueSetUrl.slice(1);
+        if (cachedValueSetCodings[valueSetReference]) {
+          return cachedValueSetCodings[valueSetReference];
+        }
       }
 
-      // attempt to get codings from value sets preprocessed when loading questionnaire
-      if (processedValueSetCodings[cleanValueSetUrl]) {
-        return processedValueSetCodings[cleanValueSetUrl];
+      // Get updatableValueSetUrl and use it as the current valueSetUrl
+      if (processedValueSets[valueSetUrl]?.updatableValueSetUrl) {
+        valueSetUrl = processedValueSets[valueSetUrl].updatableValueSetUrl;
       }
 
       // attempt to get codings from cached queried value sets
-      if (cachedValueSetCodings[cleanValueSetUrl]) {
-        return cachedValueSetCodings[cleanValueSetUrl];
+      if (cachedValueSetCodings[valueSetUrl]) {
+        return cachedValueSetCodings[valueSetUrl];
       }
     }
 
     return [];
-  }, [cachedValueSetCodings, processedValueSetCodings, valueSetUrl]);
+  }, [cachedValueSetCodings, processedValueSets, answerValueSetUrl]);
 
   // Attempt to get codings from answer expression
   const answerExpression = getAnswerExpression(qItem)?.expression;
@@ -138,27 +145,86 @@ function useValueSetCodings(qItem: QuestionnaireItem): {
 
   const [codings, setCodings] = useState<Coding[]>(initialCodings);
   const [serverError, setServerError] = useState<Error | null>(null);
+  const [dynamicCodingsUpdated, setDynamicCodingsUpdated] = useState(false);
 
-  // get options from answerValueSet on render
+  const codingsCount = codings.length;
+  const preferredTerminologyServerUrl = itemPreferredTerminologyServers[qItem.linkId];
+  const terminologyServerUrl =
+    getTerminologyServerUrl(qItem) ?? preferredTerminologyServerUrl ?? defaultTerminologyServerUrl;
+
+  // Get options from parameterised/dynamic value sets when the updatableValueSetUrl changes (p-param is updated via fhirpath)
+  const updatableValueSetUrl = processedValueSets[answerValueSetUrl ?? '']?.updatableValueSetUrl;
+  useEffect(
+    () => {
+      if (!qItem.answerValueSet || !qItem._answerValueSet) {
+        return;
+      }
+
+      if (!updatableValueSetUrl) {
+        return;
+      }
+
+      // Update ui to show calculated value changes
+      setDynamicCodingsUpdated(true);
+      const timeoutId = setTimeout(() => {
+        setDynamicCodingsUpdated(false);
+      }, 500);
+
+      // attempt to get codings from cached queried value sets
+      if (cachedValueSetCodings[updatableValueSetUrl]) {
+        setCodings(cachedValueSetCodings[updatableValueSetUrl]);
+        return () => clearTimeout(timeoutId);
+      }
+
+      const promise = getValueSetPromise(updatableValueSetUrl, terminologyServerUrl);
+      if (promise) {
+        promise
+          .then(async (valueSet: ValueSet) => {
+            const newCodings = getValueSetCodings(valueSet);
+            addDisplayToCodingArray(newCodings, terminologyServerUrl)
+              .then((codingsWithDisplay) => {
+                if (codingsWithDisplay.length > 0) {
+                  addCodingToCache(updatableValueSetUrl, codingsWithDisplay);
+                  setCodings(newCodings);
+                } else {
+                  addCodingToCache(updatableValueSetUrl, codingsWithDisplay);
+                  setCodings([]);
+                }
+                return () => clearTimeout(timeoutId);
+              })
+              .catch((error: Error) => {
+                setServerError(error);
+                return () => clearTimeout(timeoutId);
+              });
+          })
+          .catch((error: Error) => {
+            setServerError(error);
+            return () => clearTimeout(timeoutId);
+          });
+      }
+    },
+    // Omit clearAnswer from dependencies to avoid infinite loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [addCodingToCache, cachedValueSetCodings, qItem, terminologyServerUrl, updatableValueSetUrl]
+  );
+
+  // Acts as a fallback - get options from answerValueSet in real-time if it's not pre-processed or cached which is very unlikely
   useEffect(() => {
     const valueSetUrl = qItem.answerValueSet;
-    if (!valueSetUrl || codings.length > 0) return;
+    if (!valueSetUrl || codingsCount > 0) {
+      return;
+    }
 
-    const preferredTerminologyServerUrl = itemPreferredTerminologyServers[qItem.linkId];
-    const terminologyServerUrl =
-      getTerminologyServerUrl(qItem) ??
-      preferredTerminologyServerUrl ??
-      defaultTerminologyServerUrl;
     const promise = getValueSetPromise(valueSetUrl, terminologyServerUrl);
     if (promise) {
       promise
         .then(async (valueSet: ValueSet) => {
-          const codings = getValueSetCodings(valueSet);
-          addDisplayToCodingArray(codings, terminologyServerUrl)
+          const newCodings = getValueSetCodings(valueSet);
+          addDisplayToCodingArray(newCodings, terminologyServerUrl)
             .then((codingsWithDisplay) => {
               if (codingsWithDisplay.length > 0) {
                 addCodingToCache(valueSetUrl, codingsWithDisplay);
-                setCodings(codings);
+                setCodings(newCodings);
               }
             })
             .catch((error: Error) => {
@@ -169,9 +235,13 @@ function useValueSetCodings(qItem: QuestionnaireItem): {
           setServerError(error);
         });
     }
-  }, [qItem]);
+  }, [addCodingToCache, codingsCount, qItem, terminologyServerUrl]);
 
-  return { codings, terminologyError: { error: serverError, answerValueSet: valueSetUrl ?? '' } };
+  return {
+    codings,
+    terminologyError: { error: serverError, answerValueSet: answerValueSetUrl ?? '' },
+    dynamicCodingsUpdated
+  };
 }
 
 export default useValueSetCodings;

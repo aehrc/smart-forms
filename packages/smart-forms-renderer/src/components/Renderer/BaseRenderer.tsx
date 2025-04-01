@@ -26,6 +26,7 @@ import { isPaginatedForm } from '../../utils/page';
 import type { QrRepeatGroup } from '../../interfaces/repeatGroup.interface';
 import FormBodyPaginated from './FormBodyPaginated';
 import { Container } from '@mui/material';
+import { applyComputedUpdates } from '../../utils/computedUpdates';
 
 /**
  * Main component of the form-rendering engine.
@@ -41,20 +42,31 @@ function BaseRenderer() {
 
   const responseKey = useQuestionnaireResponseStore.use.key();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
-  const validateQuestionnaire = useQuestionnaireResponseStore.use.validateQuestionnaire();
   const updateResponse = useQuestionnaireResponseStore.use.updateResponse();
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(sourceQuestionnaire), [sourceQuestionnaire]);
+
+  function updateFormState(updatedResponse: QuestionnaireResponse) {
+    // Perform first pass QR update to immediately update UI answers
+    updateResponse(updatedResponse);
+
+    updateExpressions(updatedResponse).then((computedQRItemUpdates) => {
+      // Async update for changed values: clear answers for dynamic valueSets and calculated expressions (in the future)
+      const appliedComputedUpdatesResponse = applyComputedUpdates(
+        sourceQuestionnaire,
+        updatedResponse,
+        computedQRItemUpdates
+      );
+      updateResponse(appliedComputedUpdatesResponse);
+    });
+  }
 
   function handleTopLevelQRItemSingleChange(newTopLevelQRItem: QuestionnaireResponseItem) {
     const updatedResponse: QuestionnaireResponse = structuredClone(updatableResponse);
 
     updateQrItemsInGroup(newTopLevelQRItem, null, updatedResponse, qItemsIndexMap);
 
-    updateExpressions(updatedResponse).then(() => {
-      validateQuestionnaire(sourceQuestionnaire, updatedResponse);
-    });
-    updateResponse(updatedResponse);
+    updateFormState(updatedResponse);
   }
 
   function handleTopLevelQRItemMultipleChange(newTopLevelQRItems: QrRepeatGroup) {
@@ -62,10 +74,7 @@ function BaseRenderer() {
 
     updateQrItemsInGroup(null, newTopLevelQRItems, updatedResponse, qItemsIndexMap);
 
-    updateExpressions(updatedResponse).then(() => {
-      validateQuestionnaire(sourceQuestionnaire, updatedResponse);
-    });
-    updateResponse(updatedResponse);
+    updateFormState(updatedResponse);
   }
 
   const topLevelQItems = sourceQuestionnaire.item;
