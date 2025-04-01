@@ -30,7 +30,7 @@ import type { Variables } from '../../interfaces/variables.interface';
 import { resolveValueSets } from './resolveValueSets';
 import { addAdditionalVariables } from './addAdditionalVariables';
 import { getLinkIdPreferredTerminologyServerTuples, getLinkIdTypeTuples } from '../qItem';
-import { addDisplayToAnswerOptions, addDisplayToProcessedCodings } from './addDisplayToCodings';
+import { addDisplayToAnswerOptions, addDisplayToCacheCodings } from './addDisplayToCodings';
 import type { TargetConstraint } from '../../interfaces/targetConstraint.interface';
 import { extractTargetConstraints } from './extractTargetConstraint';
 
@@ -62,13 +62,15 @@ export async function createQuestionnaireModel(
     terminologyServerUrl
   );
   let valueSetPromises = extractContainedValueSetsResult.valueSetPromises;
-  let processedValueSetCodings = extractContainedValueSetsResult.processedValueSetCodings;
-  const processedValueSetUrls = extractContainedValueSetsResult.processedValueSetUrls;
+  let processedValueSets = extractContainedValueSetsResult.processedValueSets;
+  let cachedValueSetCodings = extractContainedValueSetsResult.cachedValueSetCodings;
 
   const extractOtherExtensionsResult = await extractOtherExtensions(
     questionnaire,
     variables,
     valueSetPromises,
+    processedValueSets,
+    cachedValueSetCodings,
     itemPreferredTerminologyServers,
     terminologyServerUrl
   );
@@ -83,20 +85,22 @@ export async function createQuestionnaireModel(
   } = extractOtherExtensionsResult;
   variables = extractOtherExtensionsResult.variables;
   valueSetPromises = extractOtherExtensionsResult.valueSetPromises;
+  processedValueSets = extractOtherExtensionsResult.processedValueSets;
+  cachedValueSetCodings = extractOtherExtensionsResult.cachedValueSetCodings;
 
   const resolveValueSetsResult = await resolveValueSets(
     variables,
     valueSetPromises,
-    processedValueSetCodings,
+    cachedValueSetCodings,
     terminologyServerUrl
   );
 
   variables = resolveValueSetsResult.variables;
-  processedValueSetCodings = resolveValueSetsResult.processedValueSetCodings;
+  cachedValueSetCodings = resolveValueSetsResult.cachedValueSetCodings;
 
   // In processedCodings, add display values to codings lacking them
-  processedValueSetCodings = await addDisplayToProcessedCodings(
-    processedValueSetCodings,
+  cachedValueSetCodings = await addDisplayToCacheCodings(
+    cachedValueSetCodings,
     terminologyServerUrl
   );
 
@@ -120,8 +124,8 @@ export async function createQuestionnaireModel(
     initialExpressions,
     answerExpressions,
     answerOptions: completeAnswerOptions,
-    processedValueSetCodings,
-    processedValueSetUrls,
+    processedValueSets,
+    cachedValueSetCodings,
     fhirPathContext: {},
     fhirPathTerminologyCache: {}
   };
@@ -142,8 +146,8 @@ function createEmptyModel(): QuestionnaireModel {
     answerExpressions: {},
     answerOptions: {},
     enableWhenItems: { singleItems: {}, repeatItems: {} },
-    processedValueSetCodings: {},
-    processedValueSetUrls: {},
+    processedValueSets: {},
+    cachedValueSetCodings: {},
     fhirPathContext: {},
     fhirPathTerminologyCache: {}
   };

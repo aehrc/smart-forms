@@ -28,7 +28,7 @@ function useTerminologyServerQuery(
   input: string,
   searchTerm: string
 ): { options: Coding[]; loading: boolean; feedback?: { message: string; color: AlertColor } } {
-  const processedValueSetUrls = useQuestionnaireStore.use.processedValueSetUrls();
+  const processedValueSets = useQuestionnaireStore.use.processedValueSets();
   const itemPreferredTerminologyServers =
     useQuestionnaireStore.use.itemPreferredTerminologyServers();
   const defaultTerminologyServerUrl = useTerminologyServerStore.use.url();
@@ -41,7 +41,7 @@ function useTerminologyServerQuery(
     feedback = undefined;
   }
 
-  if (searchTerm.length < 2 && searchTerm.length > 0) {
+  if (searchTerm.length < 1 && searchTerm.length > 0) {
     feedback = { message: 'Enter at least 2 characters to search for results.', color: 'info' };
   }
 
@@ -53,8 +53,8 @@ function useTerminologyServerQuery(
     }
 
     // attempt to get url from contained value sets when loading questionnaire
-    if (processedValueSetUrls[answerValueSetUrl]) {
-      answerValueSetUrl = processedValueSetUrls[answerValueSetUrl];
+    if (processedValueSets[answerValueSetUrl]?.updatableValueSetUrl) {
+      answerValueSetUrl = processedValueSets[answerValueSetUrl].updatableValueSetUrl;
     }
 
     const urlWithTrailingAmpersand =

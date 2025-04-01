@@ -25,6 +25,7 @@ import { evaluateCalculatedExpressions } from './calculatedExpression';
 import { evaluateTargetConstraints } from './targetConstraint';
 import type { TargetConstraint } from '../interfaces/targetConstraint.interface';
 import type { Variables, VariableXFhirQuery } from '../interfaces';
+import { evaluateDynamicValueSets } from './parameterisedValueSets';
 
 interface EvaluateUpdatedExpressionsParams {
   updatedResponse: QuestionnaireResponse;
@@ -33,6 +34,7 @@ interface EvaluateUpdatedExpressionsParams {
   calculatedExpressions: Record<string, CalculatedExpression[]>;
   enableWhenExpressions: EnableWhenExpressions;
   variables: Variables;
+  processedValueSets: Record<string, any>;
   existingFhirPathContext: Record<string, any>;
   fhirPathTerminologyCache: Record<string, any>;
   terminologyServerUrl: string;
@@ -45,6 +47,7 @@ export async function evaluateUpdatedExpressions(
   updatedTargetConstraints: Record<string, TargetConstraint>;
   updatedEnableWhenExpressions: EnableWhenExpressions;
   updatedCalculatedExpressions: Record<string, CalculatedExpression[]>;
+  updatedProcessedValueSets: Record<string, any>;
   updatedFhirPathContext: Record<string, any>;
   fhirPathTerminologyCache: Record<string, any>;
 }> {
@@ -54,6 +57,7 @@ export async function evaluateUpdatedExpressions(
     targetConstraints,
     enableWhenExpressions,
     calculatedExpressions,
+    processedValueSets,
     variables,
     existingFhirPathContext,
     terminologyServerUrl
@@ -69,6 +73,7 @@ export async function evaluateUpdatedExpressions(
       updatedTargetConstraints: targetConstraints,
       updatedEnableWhenExpressions: enableWhenExpressions,
       updatedCalculatedExpressions: calculatedExpressions,
+      updatedProcessedValueSets: processedValueSets,
       updatedFhirPathContext: existingFhirPathContext,
       fhirPathTerminologyCache
     };
@@ -112,14 +117,26 @@ export async function evaluateUpdatedExpressions(
       terminologyServerUrl
     );
 
+  // Update dynamic value sets
+  const { processedValueSetsIsUpdated, updatedProcessedValueSets } = await evaluateDynamicValueSets(
+    updatedFhirPathContext,
+    fhirPathTerminologyCache,
+    processedValueSets,
+    terminologyServerUrl
+  );
+
   const isUpdated =
-    enableWhenExpsIsUpdated || calculatedExpsIsUpdated || targetConstraintsIsUpdated;
+    enableWhenExpsIsUpdated ||
+    calculatedExpsIsUpdated ||
+    targetConstraintsIsUpdated ||
+    processedValueSetsIsUpdated;
 
   return {
     isUpdated,
     updatedTargetConstraints,
     updatedEnableWhenExpressions,
     updatedCalculatedExpressions,
+    updatedProcessedValueSets,
     updatedFhirPathContext,
     fhirPathTerminologyCache
   };

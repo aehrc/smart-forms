@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { ValueSetPromise } from '../../interfaces/valueSet.interface';
+import type { ProcessedValueSet, ValueSetPromise } from '../../interfaces/valueSet.interface';
 import { getValueSetCodings, getValueSetPromise } from '../valueSet';
 import type { Coding, Questionnaire, ValueSet } from 'fhir/r4';
 
@@ -23,26 +23,34 @@ export function extractContainedValueSets(
   questionnaire: Questionnaire,
   terminologyServerUrl: string
 ): {
-  processedValueSetCodings: Record<string, Coding[]>;
-  processedValueSetUrls: Record<string, string>;
+  processedValueSets: Record<string, ProcessedValueSet>;
   valueSetPromises: Record<string, ValueSetPromise>;
+  cachedValueSetCodings: Record<string, Coding[]>;
 } {
+  const processedValueSets: Record<string, ProcessedValueSet> = {};
+  const valueSetPromises: Record<string, ValueSetPromise> = {};
+  const cachedValueSetCodings: Record<string, Coding[]> = {};
+
   if (!questionnaire.contained || questionnaire.contained.length === 0) {
-    return { processedValueSetCodings: {}, processedValueSetUrls: {}, valueSetPromises: {} };
+    return { processedValueSets, valueSetPromises, cachedValueSetCodings };
   }
 
   // Process contained ValueSets
-  const processedValueSetCodings: Record<string, Coding[]> = {};
-  const processedValueSetUrls: Record<string, string> = {};
-  const valueSetPromises: Record<string, ValueSetPromise> = {};
   for (const entry of questionnaire.contained) {
     if (entry.resourceType !== 'ValueSet' || !entry.id) {
       continue;
     }
 
+    // There are Codings in contained ValueSets, save into cache and skip to next iteration
     if (entry.expansion) {
       // Store contained valueSet codings
-      processedValueSetCodings[entry.id] = getValueSetCodings(entry);
+      processedValueSets[entry.id] = {
+        initialValueSetUrl: entry.url ?? '',
+        updatableValueSetUrl: entry.url ?? '',
+        bindingParameters: [],
+        isDynamic: false
+      };
+      cachedValueSetCodings[entry.id] = getValueSetCodings(entry);
       continue;
     }
 
@@ -56,11 +64,16 @@ export function extractContainedValueSets(
     }
 
     if (entry.url) {
-      processedValueSetUrls[entry.id] = entry.url;
+      processedValueSets[entry.id] = {
+        initialValueSetUrl: entry.url,
+        updatableValueSetUrl: entry.url,
+        bindingParameters: [],
+        isDynamic: false
+      };
     }
   }
 
-  return { processedValueSetCodings, processedValueSetUrls, valueSetPromises };
+  return { processedValueSets, valueSetPromises, cachedValueSetCodings };
 }
 
 /**

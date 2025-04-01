@@ -16,6 +16,7 @@
  */
 
 import type {
+  Coding,
   Expression,
   Questionnaire,
   QuestionnaireItem,
@@ -34,7 +35,7 @@ import type {
   EnableWhenSingleLinkedItem
 } from '../../interfaces/enableWhen.interface';
 import type { AnswerExpression } from '../../interfaces/answerExpression.interface';
-import type { ValueSetPromise } from '../../interfaces/valueSet.interface';
+import type { ProcessedValueSet, ValueSetPromise } from '../../interfaces/valueSet.interface';
 import { getTerminologyServerUrl, getValueSetPromise } from '../valueSet';
 import type { Variables } from '../../interfaces/variables.interface';
 import { getFhirPathVariables, getXFhirQueryVariables } from './extractVariables';
@@ -49,6 +50,7 @@ import {
   getInitialExpression
 } from '../getExpressionsFromItem';
 import type { InitialExpression } from '../../interfaces/initialExpression.interface';
+import { addBindingParametersToValueSetUrl, getBindingParameters } from '../parameterisedValueSets';
 
 interface ReturnParamsRecursive {
   variables: Variables;
@@ -58,6 +60,8 @@ interface ReturnParamsRecursive {
   initialExpressions: Record<string, InitialExpression>;
   answerExpressions: Record<string, AnswerExpression>;
   valueSetPromises: Record<string, ValueSetPromise>;
+  processedValueSets: Record<string, ProcessedValueSet>;
+  cachedValueSetCodings: Record<string, Coding[]>;
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
 }
 
@@ -65,6 +69,8 @@ export async function extractOtherExtensions(
   questionnaire: Questionnaire,
   variables: Variables,
   valueSetPromises: Record<string, ValueSetPromise>,
+  processedValueSets: Record<string, ProcessedValueSet>,
+  cachedValueSetCodings: Record<string, Coding[]>,
   itemPreferredTerminologyServers: Record<string, string>,
   terminologyServerUrl: string
 ): Promise<ReturnParamsRecursive> {
@@ -90,7 +96,9 @@ export async function extractOtherExtensions(
       initialExpressions: {},
       answerExpressions: {},
       answerOptions: {},
-      valueSetPromises: valueSetPromises
+      valueSetPromises: valueSetPromises,
+      processedValueSets: processedValueSets,
+      cachedValueSetCodings: cachedValueSetCodings
     };
   }
 
@@ -107,6 +115,8 @@ export async function extractOtherExtensions(
       answerExpressions,
       answerOptions,
       valueSetPromises,
+      processedValueSets,
+      cachedValueSetCodings,
       itemPreferredTerminologyServers,
       defaultTerminologyServerUrl: terminologyServerUrl,
       parentRepeatGroupLinkId: isRepeatGroup ? topLevelItem.linkId : undefined
@@ -121,7 +131,9 @@ export async function extractOtherExtensions(
     initialExpressions,
     answerExpressions,
     answerOptions,
-    valueSetPromises
+    valueSetPromises,
+    processedValueSets,
+    cachedValueSetCodings
   };
 }
 
@@ -136,6 +148,8 @@ interface extractExtensionsFromItemRecursiveParams {
   answerExpressions: Record<string, AnswerExpression>;
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
   valueSetPromises: Record<string, ValueSetPromise>;
+  processedValueSets: Record<string, ProcessedValueSet>;
+  cachedValueSetCodings: Record<string, Coding[]>;
   itemPreferredTerminologyServers: Record<string, string>;
   defaultTerminologyServerUrl: string;
   parentRepeatGroupLinkId?: string;
@@ -155,6 +169,8 @@ async function extractExtensionsFromItemRecursive(
     answerExpressions,
     answerOptions,
     valueSetPromises,
+    processedValueSets,
+    cachedValueSetCodings,
     itemPreferredTerminologyServers,
     defaultTerminologyServerUrl,
     parentRepeatGroupLinkId
@@ -241,12 +257,35 @@ async function extractExtensionsFromItemRecursive(
     answerOptions[item.linkId] = options;
   }
 
-  const valueSetUrl = item.answerValueSet;
-  if (valueSetUrl) {
-    if (!valueSetPromises[valueSetUrl] && !valueSetUrl.startsWith('#')) {
-      valueSetPromises[valueSetUrl] = {
-        promise: getValueSetPromise(valueSetUrl, terminologyServerUrl)
+  const initialValueSetUrl = item.answerValueSet;
+  if (initialValueSetUrl) {
+    const bindingParameters = getBindingParameters(item, initialValueSetUrl);
+    const fixedBindingParameters = bindingParameters.filter((param) => !param.fhirPathExpression);
+    const isDynamic = bindingParameters.length !== fixedBindingParameters.length;
+    const valueSetUrlWithParams = addBindingParametersToValueSetUrl(
+      initialValueSetUrl,
+      fixedBindingParameters
+    );
+
+    // Only continue to process if answerValueSetUrl is not a reference, because we have already processed it earlier
+    if (!initialValueSetUrl.startsWith('#')) {
+      // Get valueSet promise to be resolved
+      // Note: this entry uses valueSetUrlWithParams as the key
+      if (!valueSetPromises[initialValueSetUrl]) {
+        valueSetPromises[valueSetUrlWithParams] = {
+          promise: getValueSetPromise(valueSetUrlWithParams, terminologyServerUrl)
+        };
+      }
+
+      // Create entries in processedValueSets and cachedValueSetCodings
+      // Note: initialValueSetUrl is key for processedValueSets, while valueSetUrlWithParams is key for cachedValueSetCodings
+      processedValueSets[initialValueSetUrl] = {
+        initialValueSetUrl: initialValueSetUrl,
+        updatableValueSetUrl: valueSetUrlWithParams,
+        bindingParameters: bindingParameters,
+        isDynamic: isDynamic
       };
+      cachedValueSetCodings[valueSetUrlWithParams] = [];
     }
   }
 
@@ -270,7 +309,9 @@ async function extractExtensionsFromItemRecursive(
     initialExpressions,
     answerExpressions,
     answerOptions,
-    valueSetPromises
+    valueSetPromises,
+    processedValueSets,
+    cachedValueSetCodings
   };
 }
 

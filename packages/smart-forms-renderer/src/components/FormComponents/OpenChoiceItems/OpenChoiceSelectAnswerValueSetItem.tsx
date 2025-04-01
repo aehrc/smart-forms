@@ -75,7 +75,9 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
   }
 
   // Get codings/options from valueSet
-  const { codings, terminologyError } = useValueSetCodings(qItem);
+  const { codings, terminologyError } = useValueSetCodings(qItem, () => {
+    onQrItemChange(createEmptyQrItem(qItem, answerKey));
+  });
 
   // Event handlers
   function handleValueChange(newValue: Coding | string | null) {

@@ -78,7 +78,7 @@ export const qParameterisedValueSetBasic: Questionnaire = {
                 valueString: 'p-country'
               },
               {
-                url: 'value',
+                url: 'expression',
                 valueExpression: {
                   expression: "%resource.item.where(linkId = 'countryCode').answer.value.code",
                   language: 'text/fhirpath'
@@ -171,7 +171,7 @@ export const qParameterisedValueSetMultiple: Questionnaire = {
                 valueString: 'p-country'
               },
               {
-                url: 'value',
+                url: 'expression',
                 valueExpression: {
                   expression: "%resource.item.where(linkId = 'countryCode').answer.value.code",
                   language: 'text/fhirpath'
@@ -187,8 +187,8 @@ export const qParameterisedValueSetMultiple: Questionnaire = {
                 valueString: 'includeDefinition'
               },
               {
-                url: 'value',
-                valueBoolean: true
+                url: 'expression',
+                valueString: 'true'
               }
             ]
           }

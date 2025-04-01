@@ -39,6 +39,8 @@ import type { TargetConstraint } from '../interfaces/targetConstraint.interface'
 import { evaluateInitialTargetConstraints } from './targetConstraint';
 import type { Variables } from '../interfaces';
 import { getRelevantCodingProperties } from './valueSet';
+import type { ProcessedValueSet } from '../interfaces/valueSet.interface';
+import { evaluateInitialDynamicValueSets } from './parameterisedValueSets';
 
 /**
  * Initialise a questionnaireResponse from a given questionnaire
@@ -319,6 +321,7 @@ export interface initialFormFromResponseParams {
   enableWhenExpressions: EnableWhenExpressions;
   calculatedExpressions: Record<string, CalculatedExpression[]>;
   variables: Variables;
+  processedValueSets: Record<string, ProcessedValueSet>;
   tabs: Tabs;
   pages: Pages;
   fhirPathContext: Record<string, any>;
@@ -332,6 +335,7 @@ export async function initialiseFormFromResponse(params: initialFormFromResponse
   initialEnableWhenLinkedQuestions: Record<string, string[]>;
   initialEnableWhenExpressions: EnableWhenExpressions;
   initialCalculatedExpressions: Record<string, CalculatedExpression[]>;
+  initialProcessedValueSets: Record<string, ProcessedValueSet>;
   firstVisibleTab: number;
   firstVisiblePage: number;
   updatedFhirPathContext: Record<string, any>;
@@ -344,6 +348,7 @@ export async function initialiseFormFromResponse(params: initialFormFromResponse
     enableWhenExpressions,
     calculatedExpressions,
     variables,
+    processedValueSets,
     tabs,
     pages,
     fhirPathContext,
@@ -370,6 +375,18 @@ export async function initialiseFormFromResponse(params: initialFormFromResponse
   });
   const { initialTargetConstraints } = evaluateInitialTargetConstraintsResult;
   fhirPathTerminologyCache = evaluateInitialTargetConstraintsResult.fhirPathTerminologyCache;
+
+  const evaluateInitialDynamicValueSetsResult = await evaluateInitialDynamicValueSets({
+    initialResponse: questionnaireResponse,
+    initialResponseItemMap: initialResponseItemMap,
+    processedValueSets: processedValueSets,
+    variables: variables,
+    existingFhirPathContext: fhirPathContext,
+    fhirPathTerminologyCache: fhirPathTerminologyCache,
+    terminologyServerUrl
+  });
+  const { initialProcessedValueSets } = evaluateInitialDynamicValueSetsResult;
+  fhirPathTerminologyCache = evaluateInitialDynamicValueSetsResult.fhirPathTerminologyCache;
 
   const evaluateInitialEnableWhenExpressionsResult = await evaluateInitialEnableWhenExpressions({
     initialResponse: questionnaireResponse,
@@ -411,6 +428,7 @@ export async function initialiseFormFromResponse(params: initialFormFromResponse
     initialEnableWhenLinkedQuestions: linkedQuestions,
     initialEnableWhenExpressions,
     initialCalculatedExpressions,
+    initialProcessedValueSets,
     firstVisibleTab,
     firstVisiblePage,
     updatedFhirPathContext,

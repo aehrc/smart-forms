@@ -70,7 +70,9 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
   const openLabelText = getOpenLabelText(qItem);
 
   // Get codings/options from valueSet
-  const { codings, terminologyError } = useValueSetCodings(qItem);
+  const { codings, terminologyError } = useValueSetCodings(qItem, () => {
+    onQrItemChange(createEmptyQrItem(qItem, answerKey));
+  });
 
   const options = useMemo(() => convertCodingsToAnswerOptions(codings), [codings]);
 

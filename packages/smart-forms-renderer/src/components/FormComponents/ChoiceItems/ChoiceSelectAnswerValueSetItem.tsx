@@ -78,7 +78,9 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
   const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
 
   // Get codings/options from valueSet
-  const { codings, terminologyError } = useValueSetCodings(qItem);
+  const { codings, terminologyError } = useValueSetCodings(qItem, () => {
+    onQrItemChange(createEmptyQrItem(qItem, answerKey));
+  });
 
   valueCoding = useMemo(() => {
     const updatedValueCoding = codings.find(

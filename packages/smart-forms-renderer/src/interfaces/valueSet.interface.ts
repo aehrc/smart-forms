@@ -17,6 +17,13 @@
 
 import type { ValueSet } from 'fhir/r4';
 
+export interface ProcessedValueSet {
+  initialValueSetUrl: string;
+  updatableValueSetUrl: string;
+  bindingParameters: BindingParameter[];
+  isDynamic: boolean;
+}
+
 export interface ValueSetPromise {
   promise: Promise<ValueSet>;
   valueSet?: ValueSet;
@@ -39,4 +46,12 @@ export interface CodeParameter {
 export interface DisplayParameter {
   name: 'display';
   valueString: string;
+}
+
+// For parameterised value sets
+// See https://build.fhir.org/ig/FHIR/fhir-tools-ig/StructureDefinition-binding-parameter.html
+export interface BindingParameter {
+  name: string;
+  value: string; // This is either the fixed value or an evaluated value from the fhirPathExpression, defaults to '' if no evaluated value
+  fhirPathExpression?: string;
 }

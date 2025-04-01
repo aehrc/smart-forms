@@ -76,7 +76,9 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
   const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
 
   // Get codings/options from valueSet
-  const { codings, terminologyError } = useValueSetCodings(qItem);
+  const { codings, terminologyError } = useValueSetCodings(qItem, () => {
+    onQrItemChange(createEmptyQrItem(qItem, answerKey));
+  });
 
   const options = useMemo(() => convertCodingsToAnswerOptions(codings), [codings]);
 

@@ -34,7 +34,10 @@ export interface TerminologyError {
   answerValueSet: string;
 }
 
-function useValueSetCodings(qItem: QuestionnaireItem): {
+function useValueSetCodings(
+  qItem: QuestionnaireItem,
+  clearAnswer: () => void
+): {
   codings: Coding[];
   terminologyError: TerminologyError;
 } {
@@ -43,8 +46,7 @@ function useValueSetCodings(qItem: QuestionnaireItem): {
   const encounter = useSmartConfigStore.use.encounter();
 
   const launchContexts = useQuestionnaireStore.use.launchContexts();
-  const fhirPathContext = useQuestionnaireStore.use.fhirPathContext();
-  const processedValueSetCodings = useQuestionnaireStore.use.processedValueSetCodings();
+  const processedValueSets = useQuestionnaireStore.use.processedValueSets();
   const cachedValueSetCodings = useQuestionnaireStore.use.cachedValueSetCodings();
   const addCodingToCache = useQuestionnaireStore.use.addCodingToCache();
   const { xFhirQueryVariables } = useQuestionnaireStore.use.variables();
@@ -53,28 +55,34 @@ function useValueSetCodings(qItem: QuestionnaireItem): {
 
   const defaultTerminologyServerUrl = useTerminologyServerStore.use.url();
 
-  const valueSetUrl = qItem.answerValueSet;
+  const answerValueSetUrl = qItem.answerValueSet;
   let initialCodings = useMemo(() => {
     // set options from cached answer options if present
-    if (valueSetUrl) {
-      let cleanValueSetUrl = valueSetUrl;
+    if (answerValueSetUrl) {
+      let valueSetUrl = answerValueSetUrl;
+
+      // answerValueSetUrl is a reference to a contained value set
+      // If found, return early
       if (valueSetUrl.startsWith('#')) {
-        cleanValueSetUrl = valueSetUrl.slice(1);
+        const valueSetReference = answerValueSetUrl.slice(1);
+        if (cachedValueSetCodings[valueSetReference]) {
+          return cachedValueSetCodings[valueSetReference];
+        }
       }
 
-      // attempt to get codings from value sets preprocessed when loading questionnaire
-      if (processedValueSetCodings[cleanValueSetUrl]) {
-        return processedValueSetCodings[cleanValueSetUrl];
+      // Get updatableValueSetUrl and use it as the current valueSetUrl
+      if (processedValueSets[valueSetUrl]?.updatableValueSetUrl) {
+        valueSetUrl = processedValueSets[valueSetUrl].updatableValueSetUrl;
       }
 
       // attempt to get codings from cached queried value sets
-      if (cachedValueSetCodings[cleanValueSetUrl]) {
-        return cachedValueSetCodings[cleanValueSetUrl];
+      if (cachedValueSetCodings[valueSetUrl]) {
+        return cachedValueSetCodings[valueSetUrl];
       }
     }
 
     return [];
-  }, [cachedValueSetCodings, processedValueSetCodings, valueSetUrl]);
+  }, [cachedValueSetCodings, processedValueSets, answerValueSetUrl]);
 
   // Attempt to get codings from answer expression
   const answerExpression = getAnswerExpression(qItem)?.expression;
@@ -140,125 +148,45 @@ function useValueSetCodings(qItem: QuestionnaireItem): {
   const [codings, setCodings] = useState<Coding[]>(initialCodings);
   const [serverError, setServerError] = useState<Error | null>(null);
 
-  // get options from answerValueSet on render
-  useEffect(() => {
-    const valueSetUrl = qItem.answerValueSet;
-    if (!valueSetUrl || codings.length > 0) return;
+  const codingsCount = codings.length;
+  const preferredTerminologyServerUrl = itemPreferredTerminologyServers[qItem.linkId];
+  const terminologyServerUrl =
+    getTerminologyServerUrl(qItem) ?? preferredTerminologyServerUrl ?? defaultTerminologyServerUrl;
 
-    const preferredTerminologyServerUrl = itemPreferredTerminologyServers[qItem.linkId];
-    const terminologyServerUrl =
-      getTerminologyServerUrl(qItem) ??
-      preferredTerminologyServerUrl ??
-      defaultTerminologyServerUrl;
-    const promise = getValueSetPromise(valueSetUrl, terminologyServerUrl);
-    if (promise) {
-      promise
-        .then(async (valueSet: ValueSet) => {
-          const codings = getValueSetCodings(valueSet);
-          addDisplayToCodingArray(codings, terminologyServerUrl)
-            .then((codingsWithDisplay) => {
-              if (codingsWithDisplay.length > 0) {
-                addCodingToCache(valueSetUrl, codingsWithDisplay);
-                setCodings(codings);
-              }
-            })
-            .catch((error: Error) => {
-              setServerError(error);
-            });
-        })
-        .catch((error: Error) => {
-          setServerError(error);
-        });
-    }
-  }, [qItem]);
-
-  // barebones _answerValueSet implementation
-  useEffect(() => {
-    if (!qItem._answerValueSet) {
-      return;
-    }
-
-    let valueSetUrl = qItem.answerValueSet;
-    if (!valueSetUrl) {
-      return;
-    }
-
-    // TODO make this use multiple 'http://hl7.org/fhir/tools/StructureDefinition/binding-parameter'
-    const answerValueSetBindingParamExtension = qItem._answerValueSet?.extension?.find(
-      (ext) => ext.url === 'http://hl7.org/fhir/tools/StructureDefinition/binding-parameter'
-    );
-
-    if (answerValueSetBindingParamExtension?.extension) {
-      const paramName = answerValueSetBindingParamExtension.extension.find(
-        (ext) => ext.url === 'name'
-      )?.valueString;
-
-      // either valueExpression or valueString
-      const paramExpression = answerValueSetBindingParamExtension.extension.find(
-        (ext) => ext.url === 'value'
-      )?.valueExpression?.expression;
-
-      if (paramName && paramExpression) {
-        // evaluate expression
-        console.log(fhirPathContext);
-        console.log(paramExpression);
-        try {
-          const evaluated = fhirpath.evaluate(
-            {},
-            paramExpression,
-            fhirPathContext,
-            fhirpath_r4_model,
-            {
-              async: false
-            }
-          );
-
-          console.log(evaluated);
-          if (evaluated[0] && typeof evaluated[0] === 'string') {
-            valueSetUrl += `&${paramName}=${evaluated[0]}`;
-          }
-
-          // Check for Promise and throw an error
-          if (evaluated instanceof Promise) {
-            throw new Error(
-              'Unexpected Promise returned from fhirpath.evaluate in the useValueSetCodings hook. Expected synchronous evaluation.'
-            );
-          }
-        } catch (e) {
-          console.warn(e.message);
-        }
-      }
-
-      console.log(valueSetUrl);
-
-      // dont continue if the valueSetUrl is in cached
-      if (cachedValueSetCodings[valueSetUrl]) {
-        setCodings(cachedValueSetCodings[valueSetUrl]);
+  // Get options from parameterised/dynamic value sets when the updatableValueSetUrl changes (p-param is updated via fhirpath)
+  const updatableValueSetUrl = processedValueSets[answerValueSetUrl ?? '']?.updatableValueSetUrl;
+  useEffect(
+    () => {
+      if (!qItem.answerValueSet || !qItem._answerValueSet) {
         return;
       }
 
-      const preferredTerminologyServerUrl = itemPreferredTerminologyServers[qItem.linkId];
-      const terminologyServerUrl =
-        getTerminologyServerUrl(qItem) ??
-        preferredTerminologyServerUrl ??
-        defaultTerminologyServerUrl;
-      const promise = getValueSetPromise(valueSetUrl, terminologyServerUrl);
+      if (!updatableValueSetUrl) {
+        return;
+      }
+
+      // attempt to get codings from cached queried value sets
+      if (cachedValueSetCodings[updatableValueSetUrl]) {
+        setCodings(cachedValueSetCodings[updatableValueSetUrl]);
+        clearAnswer();
+        return;
+      }
+
+      const promise = getValueSetPromise(updatableValueSetUrl, terminologyServerUrl);
       if (promise) {
         promise
           .then(async (valueSet: ValueSet) => {
-            const codings = getValueSetCodings(valueSet);
-            addDisplayToCodingArray(codings, terminologyServerUrl)
+            const newCodings = getValueSetCodings(valueSet);
+            addDisplayToCodingArray(newCodings, terminologyServerUrl)
               .then((codingsWithDisplay) => {
-                if (!valueSetUrl) {
-                  return;
-                }
-
                 if (codingsWithDisplay.length > 0) {
-                  addCodingToCache(valueSetUrl, codingsWithDisplay);
-                  setCodings(codings);
+                  addCodingToCache(updatableValueSetUrl, codingsWithDisplay);
+                  setCodings(newCodings);
+                  clearAnswer();
                 } else {
-                  addCodingToCache(valueSetUrl, codingsWithDisplay);
+                  addCodingToCache(updatableValueSetUrl, codingsWithDisplay);
                   setCodings([]);
+                  clearAnswer();
                 }
               })
               .catch((error: Error) => {
@@ -269,10 +197,45 @@ function useValueSetCodings(qItem: QuestionnaireItem): {
             setServerError(error);
           });
       }
-    }
-  });
+    },
+    // Omit clearAnswer from dependencies to avoid infinite loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [addCodingToCache, cachedValueSetCodings, qItem, terminologyServerUrl, updatableValueSetUrl]
+  );
 
-  return { codings, terminologyError: { error: serverError, answerValueSet: valueSetUrl ?? '' } };
+  // Acts as a fallback - get options from answerValueSet in real-time if it's not pre-processed or cached which is very unlikely
+  useEffect(() => {
+    const valueSetUrl = qItem.answerValueSet;
+    if (!valueSetUrl || codingsCount > 0) {
+      return;
+    }
+
+    const promise = getValueSetPromise(valueSetUrl, terminologyServerUrl);
+    if (promise) {
+      promise
+        .then(async (valueSet: ValueSet) => {
+          const newCodings = getValueSetCodings(valueSet);
+          addDisplayToCodingArray(newCodings, terminologyServerUrl)
+            .then((codingsWithDisplay) => {
+              if (codingsWithDisplay.length > 0) {
+                addCodingToCache(valueSetUrl, codingsWithDisplay);
+                setCodings(newCodings);
+              }
+            })
+            .catch((error: Error) => {
+              setServerError(error);
+            });
+        })
+        .catch((error: Error) => {
+          setServerError(error);
+        });
+    }
+  }, [addCodingToCache, codingsCount, qItem, terminologyServerUrl]);
+
+  return {
+    codings,
+    terminologyError: { error: serverError, answerValueSet: answerValueSetUrl ?? '' }
+  };
 }
 
 export default useValueSetCodings;
