@@ -1,7 +1,6 @@
 version: 1
 applications:
   - frontend:
-      name: "smart-forms-app"
       phases:
         preBuild:
           commands:
@@ -23,25 +22,6 @@ applications:
         baseDirectory: apps/smart-forms-app/dist
         files:
           - '**/*'
-      cache:
-        paths:
-          - node_modules/**/*
-  - frontend:
-      name: "storybook"
-      phases:
-        preBuild:
-          commands:
-            - nvm use 18
-            - npm ci
-        build:
-          commands:
-            - npm run build-storybook -w packages/smart-forms-renderer
-
-      artifacts:
-        baseDirectory: packages/smart-forms-renderer/storybook-static
-        files:
-          - '**/*'
-
       cache:
         paths:
           - node_modules/**/*
