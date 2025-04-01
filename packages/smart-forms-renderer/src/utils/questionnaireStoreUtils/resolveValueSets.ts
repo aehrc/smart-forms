@@ -46,7 +46,7 @@ export async function resolveValueSets(
     }
   }
 
-  // Resolve promises and store valueSet codings in preprocessedValueSetCodings AND XFhirQueryVariables
+  // Resolve promises and store valueSet codings in XFhirQueryVariables and cachedValueSetCodings
   const resolvedPromises = await resolveValueSetPromises(valueSetPromises);
 
   for (const valueSetUrl in resolvedPromises) {

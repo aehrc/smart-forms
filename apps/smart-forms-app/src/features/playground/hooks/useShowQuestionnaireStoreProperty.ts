@@ -37,8 +37,7 @@ function useShowQuestionnaireStoreProperty(selectedProperty: string) {
   const calculatedExpressions = useQuestionnaireStore.use.calculatedExpressions();
   const initialExpressions = useQuestionnaireStore.use.initialExpressions();
   const answerExpressions = useQuestionnaireStore.use.answerExpressions();
-  const processedValueSetCodings = useQuestionnaireStore.use.processedValueSetCodings();
-  const processedValueSetUrls = useQuestionnaireStore.use.processedValueSetUrls();
+  const processedValueSets = useQuestionnaireStore.use.processedValueSets();
   const cachedValueSetCodings = useQuestionnaireStore.use.cachedValueSetCodings();
   const fhirPathContext = useQuestionnaireStore.use.fhirPathContext();
   const fhirPathTerminologyCache = useQuestionnaireStore.use.fhirPathTerminologyCache();
@@ -68,8 +67,7 @@ function useShowQuestionnaireStoreProperty(selectedProperty: string) {
       calculatedExpressions,
       initialExpressions,
       answerExpressions,
-      processedValueSetCodings,
-      processedValueSetUrls,
+      processedValueSets,
       cachedValueSetCodings,
       fhirPathContext,
       fhirPathTerminologyCache,
