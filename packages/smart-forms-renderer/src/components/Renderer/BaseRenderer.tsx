@@ -42,7 +42,6 @@ function BaseRenderer() {
 
   const responseKey = useQuestionnaireResponseStore.use.key();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
-  const validateQuestionnaire = useQuestionnaireResponseStore.use.validateQuestionnaire();
   const updateResponse = useQuestionnaireResponseStore.use.updateResponse();
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(sourceQuestionnaire), [sourceQuestionnaire]);

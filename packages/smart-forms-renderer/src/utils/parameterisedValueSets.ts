@@ -9,7 +9,7 @@ import type { Variables } from '../interfaces';
 import { createFhirPathContext, handleFhirPathResult } from './fhirpath';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
-import { ComputedNewAnswers } from '../interfaces/computedUpdates.interface';
+import type { ComputedNewAnswers } from '../interfaces/computedUpdates.interface';
 
 export function getBindingParameter(bindingParamExtension: Extension): BindingParameter | null {
   const paramName = bindingParamExtension.extension?.find((ext) => ext.url === 'name')?.valueString;

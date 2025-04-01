@@ -26,7 +26,7 @@ import { evaluateTargetConstraints } from './targetConstraint';
 import type { TargetConstraint } from '../interfaces/targetConstraint.interface';
 import type { Variables, VariableXFhirQuery } from '../interfaces';
 import { evaluateDynamicValueSets } from './parameterisedValueSets';
-import { ComputedQRItemUpdates } from '../interfaces/computedUpdates.interface';
+import type { ComputedQRItemUpdates } from '../interfaces/computedUpdates.interface';
 
 interface EvaluateUpdatedExpressionsParams {
   updatedResponse: QuestionnaireResponse;
@@ -82,7 +82,7 @@ export async function evaluateUpdatedExpressions(
     };
   }
 
-  let computedQRItemUpdates: ComputedQRItemUpdates = {};
+  const computedQRItemUpdates: ComputedQRItemUpdates = {};
   const fhirPathEvalResult = await createFhirPathContext(
     updatedResponse,
     updatedResponseItemMap,

@@ -1,10 +1,10 @@
-import {
+import type {
   Questionnaire,
   QuestionnaireItem,
   QuestionnaireResponse,
   QuestionnaireResponseItem
 } from 'fhir/r4';
-import { ComputedQRItemUpdates } from '../interfaces/computedUpdates.interface';
+import type { ComputedQRItemUpdates } from '../interfaces/computedUpdates.interface';
 import { updateQuestionnaireResponse } from './genericRecursive';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import { updateQrItemsInGroup } from './qrItem';
@@ -51,7 +51,6 @@ function applyComputedUpdateRecursive(
   // Process items with child items
   const childQItems = qItem.item ?? [];
   const childQrItems = qrItem?.item ?? [];
-  const updatedChildQrItems: QuestionnaireResponseItem[] = [];
   if (childQItems.length > 0) {
     const indexMap = mapQItemsIndex(qItem);
     const qrItemsByIndex = getQrItemsIndex(childQItems, childQrItems, indexMap);

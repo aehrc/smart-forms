@@ -53,7 +53,7 @@ import type { ComponentType } from 'react';
 import type { TargetConstraint } from '../interfaces/targetConstraint.interface';
 import { readTargetConstraintLocationLinkIds } from '../utils/targetConstraint';
 import type { ProcessedValueSet } from '../interfaces/valueSet.interface';
-import { ComputedQRItemUpdates } from '../interfaces/computedUpdates.interface';
+import type { ComputedQRItemUpdates } from '../interfaces/computedUpdates.interface';
 
 /**
  * QuestionnaireStore properties and methods
