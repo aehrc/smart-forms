@@ -8,5 +8,5 @@ export const GroupAccordion = styled(Accordion, {
   paddingBottom: '4px',
   paddingLeft: elevation === 1 ? '10px' : '8px',
   paddingRight: elevation === 1 ? '10px' : '8px',
-  marginBottom: isRepeated ? 0 : '28px'
+  marginBottom: '28px'
 }));
