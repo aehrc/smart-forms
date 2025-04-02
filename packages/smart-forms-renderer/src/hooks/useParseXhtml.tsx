@@ -165,8 +165,16 @@ function getStylesFromClass(className: string): Record<string, string> | null {
           return computedStyles;
         }
       }
-    } catch (e) {
-      console.warn('Unable to access stylesheet due to CORS restrictions', e);
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'SecurityError') {
+        console.warn(
+          `Unable to access stylesheet due to CORS restrictions: Skipping sheet ${sheet.href}. Add crossorigin="anonymous" to the stylesheet link if you want to bypass this warning.`,
+          sheet.href
+        );
+        continue;
+      }
+
+      console.warn(`Error accessing stylesheet ${sheet.href}`, error);
     }
   }
 
