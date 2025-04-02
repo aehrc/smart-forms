@@ -28,6 +28,9 @@ interface ItemFieldGridProps {
   readOnly: boolean;
   labelChildren?: ReactNode;
   fieldChildren?: ReactNode;
+  feedback?: string;
+  dateFeedback?: string;
+  timeFeedback?: string;
 }
 
 function ItemFieldGrid(props: ItemFieldGridProps) {
@@ -43,7 +46,10 @@ function ItemFieldGrid(props: ItemFieldGridProps) {
       <Grid size={{ ...labelBreakpoints }}>{labelChildren}</Grid>
       <Grid size={{ ...fieldBreakpoints }}>
         {fieldChildren}
-        <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
+        {/* Only show display instructions if there is no feedback of any type */}
+        {!props.feedback && !props.dateFeedback && !props.timeFeedback && (
+          <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
+        )}
       </Grid>
     </Grid>
   );

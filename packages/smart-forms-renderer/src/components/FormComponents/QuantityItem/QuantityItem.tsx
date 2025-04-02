@@ -320,6 +320,7 @@ function QuantityItem(props: QuantityItemProps) {
             ) : null}
           </Box>
         }
+        feedback={feedback}
       />
     </FullWidthFormComponentBox>
   );
