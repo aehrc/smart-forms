@@ -23,7 +23,7 @@
     "dayjs": "^1.11.10",
     "fhir-sdc-helpers": "^0.1.0",
     "fhirclient": "^2.5.2",
-    "fhirpath": "3.15.2",
+    "fhirpath": "4.0.0",
     "js-base64": "^3.7.7",
     "moment": "^2.30.1"
   },
