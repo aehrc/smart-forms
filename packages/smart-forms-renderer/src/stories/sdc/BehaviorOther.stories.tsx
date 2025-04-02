@@ -26,8 +26,7 @@ import {
   qEnableWhenMultiCheckbox,
   qInitialRepeats,
   qInitialSingle,
-  qText,
-  qRenderingXhtmlGroupPropagation
+  qText
 } from '../assets/questionnaires'; // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -94,11 +93,5 @@ export const EnableWhenExpressionTabs: Story = {
 export const Text: Story = {
   args: {
     questionnaire: qText
-  }
-};
-
-export const RenderingXhtmlGroupPropagation: Story = {
-  args: {
-    questionnaire: qRenderingXhtmlGroupPropagation
   }
 };

@@ -52,6 +52,18 @@ export function useParseXhtml(qItem: QuestionnaireItem): ParsedXhtml | null {
           }
         }
 
+        // Extract external CSS styles from class attributes
+        // To use this, define your stylesheet where you are calling <BaseRenderer/> in your app
+        if (domNode.name === 'div' && domNode.attribs.class) {
+          const classNames = domNode.attribs.class.split(/\s+/);
+          classNames.forEach((className) => {
+            const classStyles = getStylesFromClass(className);
+            if (classStyles) {
+              extractedStyles = { ...extractedStyles, ...classStyles };
+            }
+          });
+        }
+
         // Extract styles from the root div for group-level styling
         if (
           domNode.name === 'div' &&
@@ -68,9 +80,7 @@ export function useParseXhtml(qItem: QuestionnaireItem): ParsedXhtml | null {
                   const [property, value] = style.split(':');
                   if (property && value) {
                     // Convert kebab-case to camelCase for React
-                    const propName = property
-                      .trim()
-                      .replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
+                    const propName = convertKebabToCamelCase(property);
                     styleObj[propName] = value.trim();
                   }
                 }
@@ -126,4 +136,44 @@ export function useParseXhtml(qItem: QuestionnaireItem): ParsedXhtml | null {
       styles: extractedStyles
     };
   }, [qItem]);
+}
+
+function getStylesFromClass(className: string): Record<string, string> | null {
+  if (!className) {
+    return null;
+  }
+
+  const selector = className.startsWith('.') ? className : `.${className}`;
+
+  for (const sheet of document.styleSheets) {
+    try {
+      const rules = sheet.cssRules;
+      for (const rule of rules) {
+        if (rule instanceof CSSStyleRule && rule.selectorText === selector) {
+          const computedStyles: Record<string, string> = {};
+          const style = rule.style;
+
+          for (let i = 0; i < style.length; i++) {
+            const property = style[i];
+
+            // Convert propertyName from kebab-case to camelCase for React
+            const propNameCamelCase = convertKebabToCamelCase(property);
+
+            computedStyles[propNameCamelCase] = style.getPropertyValue(property);
+          }
+
+          return computedStyles;
+        }
+      }
+    } catch (e) {
+      console.warn('Unable to access stylesheet due to CORS restrictions', e);
+    }
+  }
+
+  return null;
+}
+
+// Convert kebab-case to camelCase for React
+function convertKebabToCamelCase(property: string): string {
+  return property.trim().replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
 }

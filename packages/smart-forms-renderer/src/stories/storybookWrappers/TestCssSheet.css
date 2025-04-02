@@ -1,0 +1,17 @@
+/* This stylesheet is using for testing the RenderingXhtmlGroupPropagationClassStyles story, it has no other use outside of this.
+ * It works by having a class defined in the XHTML, where the class references external styles from a stylesheet.
+ * Please import the stylesheet where you call the <BaseRenderer/> component.
+ *
+ * NOTE before using:
+ * The renderer support this, but it is recommended to define the styles inline in the XHTML.
+ * Using external styles means that the Questionnaire itself is not self-contained and the stylings are almost guaranteed to not work in other SDC implementations.
+ * For accurate guidance, see https://hl7.org/fhir/R4/narrative.html#:~:text=Authoring%20systems%20may,approach%20with%20care.
+ */
+
+.group-custom-bg {
+    background-color: #E9F2FF;
+}
+
+.bold {
+    font-weight: bold;
+}

@@ -244,7 +244,7 @@ export const qHidden: Questionnaire = {
   ]
 };
 
-export const qRenderingXhtmlGroupPropagation: Questionnaire = {
+export const qRenderingXhtmlGroupPropagationNested: Questionnaire = {
   resourceType: 'Questionnaire',
   id: 'RenderingXhtmlGroupPropagation',
   name: 'RenderingXhtmlGroupPropagation',
@@ -330,7 +330,7 @@ export const qRenderingXhtmlGroupPropagation: Questionnaire = {
   ]
 };
 
-export const qRenderingXhtmlGroupPropagationCalcExpression: Questionnaire = {
+export const qRenderingXhtmlGroupPropagationInlineStyles: Questionnaire = {
   resourceType: 'Questionnaire',
   id: 'RenderingXhtmlGroupPropagationCalcExpression',
   name: 'RenderingXhtmlGroupPropagationCalcExpression',
@@ -382,6 +382,92 @@ export const qRenderingXhtmlGroupPropagationCalcExpression: Questionnaire = {
               url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
               valueString:
                 '<div style="background-color: #E9F2FF;" role="status" xmlns="http://www.w3.org/1999/xhtml"><img alt="Information" src="https://www.digitalhealth.gov.au/chap/info.svg" /><div><h2>Consider a referral</h2></div></div>'
+            }
+          ],
+          item: [
+            {
+              linkId: '3-BasicExaminations-visiontest-Infopanel-referral4',
+              _text: {
+                extension: [
+                  {
+                    url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
+                    valueExpression: {
+                      description: "Display the patient's first name",
+                      language: 'text/fhirpath',
+                      expression:
+                        "'You may need a referral if ' + %patientToRefer + '\\'s screening result is abnormal, or you\\'re uncertain, and unable to test.'"
+                    }
+                  }
+                ]
+              },
+              type: 'display'
+            }
+          ],
+          enableWhen: [
+            {
+              question: 'referral-patient-picker',
+              operator: 'exists',
+              answerBoolean: true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+export const qRenderingXhtmlGroupPropagationClassStyles: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'RenderingXhtmlGroupPropagationCalcExpression',
+  name: 'RenderingXhtmlGroupPropagationCalcExpression',
+  title: 'RenderingXhtmlGroupPropagationCalcExpression',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-05-01',
+  url: 'https://smartforms.csiro.au/docs/advanced/text/rendering-xhtml-4',
+  extension: [
+    {
+      url: 'http://hl7.org/fhir/StructureDefinition/variable',
+      valueExpression: {
+        name: 'patientToRefer',
+        language: 'text/fhirpath',
+        expression:
+          "%resource.item.where(linkId='referral-group').item.where(linkId='referral-patient-picker').answer.value"
+      }
+    }
+  ],
+  item: [
+    {
+      linkId: 'referral-group',
+      text: 'Referral',
+      type: 'group',
+      item: [
+        {
+          linkId: 'referral-patient-picker',
+          text: 'Select patient to refer',
+          type: 'choice',
+          answerOption: [
+            {
+              valueString: 'Adam'
+            },
+            {
+              valueString: 'Alan'
+            },
+
+            {
+              valueString: 'Ben'
+            }
+          ]
+        },
+        {
+          linkId: 'referral-group-info',
+          type: 'group',
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
+              valueString:
+                '<div class="group-custom-bg bold" role="status" xmlns="http://www.w3.org/1999/xhtml"><img alt="Information" src="https://www.digitalhealth.gov.au/chap/info.svg" /><div><h2>Consider a referral</h2></div></div>'
             }
           ],
           item: [

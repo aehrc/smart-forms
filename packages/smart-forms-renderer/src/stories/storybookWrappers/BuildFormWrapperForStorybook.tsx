@@ -23,7 +23,8 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { useBuildForm } from '../../hooks';
 import useRendererQueryClient from '../../hooks/useRendererQueryClient';
 import { STORYBOOK_TERMINOLOGY_SERVER_URL } from './globals';
-
+// This stylesheet is using for testing the RenderingXhtmlGroupPropagationClassStyles story
+import './TestCssSheet.css';
 // iframeResizerChild.js needs to be called at least once in the used storybook wrappers to be included in storybook-static
 import './iframeResizerChild';
 import RendererThemeProvider from '../../theme/RendererThemeProvider';
