@@ -1,6 +1,6 @@
 import { Questionnaire, QuestionnaireResponse, Observation } from 'fhir/r4';
 import { evaluateFhirPath } from '../fhirPathUtils';
-import { TemplateExtractionDebugger, debugUtils } from '../../debug/debugUtils';
+import { TemplateExtractionDebugger, debugUtils } from '../debugUtils';
 
 export interface BMIProcessorResult {
   observations: Observation[];
