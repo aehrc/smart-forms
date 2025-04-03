@@ -16,14 +16,7 @@
  */
 
 import React, { useCallback, useState } from 'react';
-import type {
-  PropsWithFeedbackFromParentAttribute,
-  PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithRenderingExtensionsAttribute
-} from '../../../interfaces/renderProps.interface';
+import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
@@ -43,13 +36,7 @@ import { useQuestionnaireStore } from '../../../stores';
 import Box from '@mui/material/Box';
 import ItemLabel from '../ItemParts/ItemLabel';
 
-interface DecimalItemProps
-  extends PropsWithQrItemChangeHandler,
-    PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute,
-    PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute,
-    PropsWithFeedbackFromParentAttribute {
+interface DecimalItemProps extends BaseItemProps {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
@@ -59,9 +46,9 @@ function DecimalItem(props: DecimalItemProps) {
     qItem,
     qrItem,
     isRepeated,
-    isTabled,
+    isTabled = false,
     renderingExtensions,
-    parentIsReadOnly,
+    parentIsReadOnly = false,
     feedbackFromParent,
     onQrItemChange
   } = props;
