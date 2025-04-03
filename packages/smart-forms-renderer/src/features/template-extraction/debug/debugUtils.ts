@@ -60,7 +60,7 @@ export const debugUtils: DebugUtils = {
       debugLogger.logStep('blood_pressure_template_validation', {
         isValid: bpValidation.isValid,
         error: bpValidation.error,
-        templates: bpValidation.templates?.map(obs => ({
+        templates: bpValidation.templates?.map((obs: Observation) => ({
           id: obs.id,
           code: obs.code?.coding?.[0]?.code
         }))
@@ -70,7 +70,7 @@ export const debugUtils: DebugUtils = {
       debugLogger.logStep('bmi_template_validation', {
         isValid: bmiValidation.isValid,
         error: bmiValidation.error,
-        templates: bmiValidation.templates?.map(obs => ({
+        templates: bmiValidation.templates?.map((obs: Observation) => ({
           id: obs.id,
           code: obs.code?.coding?.[0]?.code
         }))
@@ -85,7 +85,7 @@ export const debugUtils: DebugUtils = {
 
     debugLogger.logStep('observation_templates', {
       count: observationTemplates.length,
-      templates: observationTemplates.map(obs => ({
+      templates: observationTemplates.map((obs: Observation) => ({
         id: obs.id,
         code: obs.code?.coding?.[0]?.code,
         hasValue: !!obs.valueQuantity?.value
@@ -114,7 +114,7 @@ export const debugUtils: DebugUtils = {
   logExtractionResult(debugLogger: TemplateExtractionDebugger, result: { observations: Observation[] }): void {
     debugLogger.logStep('extraction_result', {
       count: result.observations.length,
-      observations: result.observations.map(obs => ({
+      observations: result.observations.map((obs: Observation) => ({
         id: obs.id,
         code: obs.code?.coding?.[0]?.code,
         value: obs.valueQuantity?.value
