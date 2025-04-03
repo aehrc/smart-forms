@@ -73,14 +73,23 @@ export const qInitialExpressionBasic: Questionnaire = {
 export const qCalculatedExpressionBMICalculatorPrepop: Questionnaire = {
   resourceType: 'Questionnaire',
   id: 'CalculatedExpressionBMICalculatorPrepop',
-  name: 'CalculatedExpressionBMICalculatorPrepop',
+  url: 'https://smartforms.csiro.au/docs/sdc/population/calculated-expression-1',
+  name: 'CalculatedExpression BMI Calculator - Pre-population',
   title: 'CalculatedExpression BMI Calculator - Pre-population',
   version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
   date: '2024-05-15',
-  url: 'https://smartforms.csiro.au/docs/sdc/population/calculated-expression-1',
+  publisher: 'AEHRC CSIRO',
+  meta: {
+    profile: [
+      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationTemplate'
+    ]
+  },
   extension: [
+    {
+      url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-template',
+      valueBoolean: true
+    },
     {
       url: 'http://hl7.org/fhir/StructureDefinition/variable',
       valueExpression: {
@@ -110,10 +119,95 @@ export const qCalculatedExpressionBMICalculatorPrepop: Questionnaire = {
         {
           url: 'type',
           valueCode: 'Patient'
-        },
+        }
+      ]
+    }
+  ],
+  contained: [
+    {
+      resourceType: 'Observation',
+      id: 'height-obs',
+      status: 'final',
+      category: [{
+        coding: [{
+          system: 'http://terminology.hl7.org/CodeSystem/observation-category',
+          code: 'vital-signs'
+        }]
+      }],
+      code: {
+        coding: [{
+          system: 'http://loinc.org',
+          code: '8302-2',
+          display: 'Body height'
+        }]
+      },
+      valueQuantity: {
+        value: 0,
+        unit: 'cm',
+        system: 'http://unitsofmeasure.org'
+      },
+      extension: [
         {
-          url: 'description',
-          valueString: 'The patient that is to be used to pre-populate the form'
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue',
+          valueString: "item.where(linkId='patient-height').answer.value"
+        }
+      ]
+    },
+    {
+      resourceType: 'Observation',
+      id: 'weight-obs',
+      status: 'final',
+      category: [{
+        coding: [{
+          system: 'http://terminology.hl7.org/CodeSystem/observation-category',
+          code: 'vital-signs'
+        }]
+      }],
+      code: {
+        coding: [{
+          system: 'http://loinc.org',
+          code: '29463-7',
+          display: 'Weight'
+        }]
+      },
+      valueQuantity: {
+        value: 0,
+        unit: 'kg',
+        system: 'http://unitsofmeasure.org'
+      },
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue',
+          valueString: "item.where(linkId='patient-weight').answer.value"
+        }
+      ]
+    },
+    {
+      resourceType: 'Observation',
+      id: 'bmi-obs',
+      status: 'final',
+      category: [{
+        coding: [{
+          system: 'http://terminology.hl7.org/CodeSystem/observation-category',
+          code: 'vital-signs'
+        }]
+      }],
+      code: {
+        coding: [{
+          system: 'http://loinc.org',
+          code: '39156-5',
+          display: 'Body mass index'
+        }]
+      },
+      valueQuantity: {
+        value: 0,
+        unit: 'kg/m2',
+        system: 'http://unitsofmeasure.org'
+      },
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue',
+          valueString: "item.where(linkId='bmi-result').answer.valueQuantity"
         }
       ]
     }
@@ -159,6 +253,12 @@ export const qCalculatedExpressionBMICalculatorPrepop: Questionnaire = {
                 code: 'cm',
                 display: 'cm'
               }
+            },
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-observationTemplate',
+              valueReference: {
+                reference: '#height-obs'
+              }
             }
           ],
           linkId: 'patient-height',
@@ -182,6 +282,12 @@ export const qCalculatedExpressionBMICalculatorPrepop: Questionnaire = {
                 system: 'http://unitsofmeasure.org',
                 code: 'kg',
                 display: 'kg'
+              }
+            },
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-observationTemplate',
+              valueReference: {
+                reference: '#weight-obs'
               }
             }
           ],
@@ -208,13 +314,49 @@ export const qCalculatedExpressionBMICalculatorPrepop: Questionnaire = {
                 code: 'kg/m2',
                 display: 'kg/m2'
               }
+            },
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-observationTemplate',
+              valueReference: {
+                reference: '#bmi-obs'
+              }
             }
           ],
           linkId: 'bmi-result',
           text: 'Value',
-          type: 'decimal',
+          type: 'quantity',
           repeats: false,
-          readOnly: true
+          readOnly: true,
+          answerOption: [
+            {
+              valueCoding: {
+                system: 'http://terminology.hl7.org/CodeSystem/quantity-comparator',
+                code: '<',
+                display: 'Less than'
+              }
+            },
+            {
+              valueCoding: {
+                system: 'http://terminology.hl7.org/CodeSystem/quantity-comparator',
+                code: '<=',
+                display: 'Less than or equal to'
+              }
+            },
+            {
+              valueCoding: {
+                system: 'http://terminology.hl7.org/CodeSystem/quantity-comparator',
+                code: '>=',
+                display: 'Greater than or equal to'
+              }
+            },
+            {
+              valueCoding: {
+                system: 'http://terminology.hl7.org/CodeSystem/quantity-comparator',
+                code: '>',
+                display: 'Greater than'
+              }
+            }
+          ]
         }
       ]
     }
@@ -1339,9 +1481,39 @@ export const qSourceQueriesBMICalculator: Questionnaire = {
           ],
           linkId: 'bmi-result',
           text: 'Value',
-          type: 'decimal',
+          type: 'quantity',
           repeats: false,
-          readOnly: true
+          readOnly: true,
+          answerOption: [
+            {
+              valueCoding: {
+                system: 'http://terminology.hl7.org/CodeSystem/quantity-comparator',
+                code: '<',
+                display: 'Less than'
+              }
+            },
+            {
+              valueCoding: {
+                system: 'http://terminology.hl7.org/CodeSystem/quantity-comparator',
+                code: '<=',
+                display: 'Less than or equal to'
+              }
+            },
+            {
+              valueCoding: {
+                system: 'http://terminology.hl7.org/CodeSystem/quantity-comparator',
+                code: '>=',
+                display: 'Greater than or equal to'
+              }
+            },
+            {
+              valueCoding: {
+                system: 'http://terminology.hl7.org/CodeSystem/quantity-comparator',
+                code: '>',
+                display: 'Greater than'
+              }
+            }
+          ]
         }
       ]
     }

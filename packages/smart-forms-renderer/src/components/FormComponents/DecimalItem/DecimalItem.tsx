@@ -17,10 +17,9 @@
 
 import React, { useCallback, useState } from 'react';
 import type {
-  BaseItemProps,
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledRequiredAttribute,
+  PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithRenderingExtensionsAttribute
@@ -44,7 +43,13 @@ import { useQuestionnaireStore } from '../../../stores';
 import Box from '@mui/material/Box';
 import ItemLabel from '../ItemParts/ItemLabel';
 
-interface DecimalItemProps extends BaseItemProps {
+interface DecimalItemProps
+  extends PropsWithQrItemChangeHandler,
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute,
+    PropsWithRenderingExtensionsAttribute,
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
