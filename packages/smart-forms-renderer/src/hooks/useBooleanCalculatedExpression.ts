@@ -64,12 +64,10 @@ function useBooleanCalculatedExpression(
         // calculatedExpression value is null
         if (calcExpression.value === null) {
           onChangeByCalcExpressionNull();
-          return () => clearTimeout(timeoutId);
+        } else {
+          // calculatedExpression value is boolean
+          onChangeByCalcExpressionBoolean(calcExpression.value);
         }
-
-        // calculatedExpression value is boolean
-        onChangeByCalcExpressionBoolean(calcExpression.value);
-        return () => clearTimeout(timeoutId);
       }
     },
     // Only trigger this effect if calculatedExpression of item changes
