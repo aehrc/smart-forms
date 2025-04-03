@@ -8,8 +8,8 @@
     ]
   },
   "url": "https://smartforms.csiro.au/ig/Questionnaire/ACDCPlusNQIPClinicalQI",
-  "title": "ACDC+ NQIP Clinical QI Dataset - v2.3",
-  "description": "ACDC+ NQIP Clinical QI Dataset - v2.3",
+  "title": "ACDC+ NQIP Clinical QI Dataset - v2.4",
+  "description": "ACDC+ NQIP Clinical QI Dataset - v2.4",
   "extension": [
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
@@ -149,14 +149,6 @@
         "name": "RestrictivePracticeExclusiveSecureAreaOnly",
         "language": "application/x-fhir-query",
         "expression": "Procedure?code=386517008&patient={{%patient.id}}"
-      }
-    },
-    {
-      "url": "http://hl7.org/fhir/StructureDefinition/variable",
-      "valueExpression": {
-        "name": "birthDate",
-        "language": "application/x-fhir-query",
-        "expression": "Patient?_elements=birthDate&_count=1&_id={{%patient.id}}"
       }
     },
     {
@@ -3322,17 +3314,17 @@
             {
               "url": "http://hl7.org/fhir/StructureDefinition/variable",
               "valueExpression": {
-                "name": "ThirdMonthWeightChange",
+                "name": "WeightInSecondMonth",
                 "language": "text/fhirpath",
-                "expression": "%LatestWeight - %WeightInSecondMonth"
+                "expression": "iif(%WeightValueAt30DaysPriorToLatestWeightDate.exists(), %WeightValueAt30DaysPriorToLatestWeightDate, iif(%FirstWeightValueInThreeDayWindowAround30DaysFromLatestWeightDate.exists(), %FirstWeightValueInThreeDayWindowAround30DaysFromLatestWeightDate, iif(%FirstWeightValueInSevenDayWindowAround30DaysFromLatestWeightDate.exists(), %FirstWeightValueInSevenDayWindowAround30DaysFromLatestWeightDate, null)))"
               }
             },
             {
               "url": "http://hl7.org/fhir/StructureDefinition/variable",
               "valueExpression": {
-                "name": "WeightInSecondMonth",
+                "name": "ThirdMonthWeightChange",
                 "language": "text/fhirpath",
-                "expression": "iif(%WeightValueAt30DaysPriorToLatestWeightDate.exists(), %WeightValueAt30DaysPriorToLatestWeightDate, iif(%FirstWeightValueInThreeDayWindowAround30DaysFromLatestWeightDate.exists(), %FirstWeightValueInThreeDayWindowAround30DaysFromLatestWeightDate, iif(%FirstWeightValueInSevenDayWindowAround30DaysFromLatestWeightDate.exists(), %FirstWeightValueInSevenDayWindowAround30DaysFromLatestWeightDate, null)))"
+                "expression": "%LatestWeight - %WeightInSecondMonth"
               }
             },
             {
@@ -3426,17 +3418,17 @@
             {
               "url": "http://hl7.org/fhir/StructureDefinition/variable",
               "valueExpression": {
-                "name": "SecondMonthWeightChange",
+                "name": "WeightInFirstMonth",
                 "language": "text/fhirpath",
-                "expression": "%WeightInSecondMonth - %WeightInFirstMonth"
+                "expression": "iif(%WeightValueAtIdeal30DayDateForFirstMonthWeight.exists(), %WeightValueAtIdeal30DayDateForFirstMonthWeight, iif(%FirstWeightValueInThreeDayWindowAroundIdeal30DayDateForFirstMonthWeight.exists(), %FirstWeightValueInThreeDayWindowAroundIdeal30DayDateForFirstMonthWeight, iif(%FirstWeightValueInSevenDayWindowAroundIdeal30DayDateForFirstMonthWeight.exists(), %FirstWeightValueInSevenDayWindowAroundIdeal30DayDateForFirstMonthWeight, null)))"
               }
             },
             {
               "url": "http://hl7.org/fhir/StructureDefinition/variable",
               "valueExpression": {
-                "name": "WeightInFirstMonth",
+                "name": "SecondMonthWeightChange",
                 "language": "text/fhirpath",
-                "expression": "iif(%WeightValueAtIdeal30DayDateForFirstMonthWeight.exists(), %WeightValueAtIdeal30DayDateForFirstMonthWeight, iif(%FirstWeightValueInThreeDayWindowAroundIdeal30DayDateForFirstMonthWeight.exists(), %FirstWeightValueInThreeDayWindowAroundIdeal30DayDateForFirstMonthWeight, iif(%FirstWeightValueInSevenDayWindowAroundIdeal30DayDateForFirstMonthWeight.exists(), %FirstWeightValueInSevenDayWindowAroundIdeal30DayDateForFirstMonthWeight, null)))"
+                "expression": "%WeightInSecondMonth - %WeightInFirstMonth"
               }
             },
             {
@@ -3530,17 +3522,17 @@
             {
               "url": "http://hl7.org/fhir/StructureDefinition/variable",
               "valueExpression": {
-                "name": "FirstMonthWeightChange",
+                "name": "WeightInStartingPoint",
                 "language": "text/fhirpath",
-                "expression": "%WeightInFirstMonth - %WeightInStartingPoint"
+                "expression": "iif(%WeightValueAtIdeal30DayDateForStartingPointWeight.exists(), %WeightValueAtIdeal30DayDateForStartingPointWeight, iif(%FirstWeightValueInThreeDayWindowAroundIdeal30DayDateForStartingPointWeight.exists(), %FirstWeightValueInThreeDayWindowAroundIdeal30DayDateForStartingPointWeight, iif(%FirstWeightValueInSevenDayWindowAroundIdeal30DayDateForStartingPointWeight.exists(), %FirstWeightValueInSevenDayWindowAroundIdeal30DayDateForStartingPointWeight, null)))"
               }
             },
             {
               "url": "http://hl7.org/fhir/StructureDefinition/variable",
               "valueExpression": {
-                "name": "WeightInStartingPoint",
+                "name": "FirstMonthWeightChange",
                 "language": "text/fhirpath",
-                "expression": "iif(%WeightValueAtIdeal30DayDateForStartingPointWeight.exists(), %WeightValueAtIdeal30DayDateForStartingPointWeight, iif(%FirstWeightValueInThreeDayWindowAroundIdeal30DayDateForStartingPointWeight.exists(), %FirstWeightValueInThreeDayWindowAroundIdeal30DayDateForStartingPointWeight, iif(%FirstWeightValueInSevenDayWindowAroundIdeal30DayDateForStartingPointWeight.exists(), %FirstWeightValueInSevenDayWindowAroundIdeal30DayDateForStartingPointWeight, null)))"
+                "expression": "%WeightInFirstMonth - %WeightInStartingPoint"
               }
             },
             {
