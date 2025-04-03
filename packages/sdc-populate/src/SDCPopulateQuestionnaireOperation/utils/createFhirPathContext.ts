@@ -36,6 +36,7 @@ import type {
 import type { FetchResourceCallback, TerminologyRequestConfig } from '../interfaces';
 import { createInvalidWarningIssue, createNotFoundWarningIssue } from './operationOutcome';
 import { TERMINOLOGY_SERVER_URL } from '../../globals';
+import { emptyResponse } from './emptyResource';
 
 export async function createFhirPathContext(
   parameters: InputParameters,
@@ -48,7 +49,10 @@ export async function createFhirPathContext(
   const { launchContexts, updatedReferenceContexts, updatedContainedBatchContexts } =
     await replaceFhirPathEmbeddings(parameters, questionnaire, terminologyRequestConfig);
 
-  const fhirPathContext: Record<string, any> = {};
+  const fhirPathContext: Record<string, any> = {
+    resource: structuredClone(emptyResponse),
+    rootResource: structuredClone(emptyResponse)
+  };
 
   // Add launch contexts and contained batch contexts to contextMap
   for (const launchContext of launchContexts) {
@@ -201,7 +205,7 @@ async function evaluateFhirPathVariables(
       } catch (e) {
         if (e instanceof Error) {
           console.warn(
-            'Error: fhirpath evaluation for Questionnaire-level FHIRPath variable failed. Details below:' +
+            'SDC-Populate Error: fhirpath evaluation for Questionnaire-level FHIRPath variable failed. Details below:' +
               e
           );
           issues.push(createInvalidWarningIssue(e.message));
@@ -612,7 +616,7 @@ async function evaluateFhirPathEmbeddings(
         });
         fhirPathEmbeddingsMap[embedding] = (await handleFhirPathResult(fhirPathResult))[0];
       } catch (e) {
-        console.warn(e);
+        console.warn('SDC-Populate Error: Evaluate fhirpath embeddings failed. Details below:' + e);
       }
     }
   }

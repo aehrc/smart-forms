@@ -59,7 +59,8 @@ export async function generateExpressionValues(
       } catch (e) {
         if (e instanceof Error) {
           console.warn(
-            'Error: fhirpath evaluation for InitialExpression failed. Details below:' + e
+            'SDC-Populate Error: fhirpath evaluation for InitialExpression failed. Details below:' +
+              e
           );
           issues.push(createInvalidWarningIssue(e.message));
         }
@@ -84,7 +85,8 @@ export async function generateExpressionValues(
       } catch (e) {
         if (e instanceof Error) {
           console.warn(
-            'Error: fhirpath evaluation for ItemPopulationContext failed. Details below:' + e
+            'SDC-Populate Error: fhirpath evaluation for ItemPopulationContext failed. Details below:' +
+              e
           );
           issues.push(createInvalidWarningIssue(e.message));
         }
@@ -132,7 +134,8 @@ export async function evaluateItemPopulationContexts(
       } catch (e) {
         if (e instanceof Error) {
           console.warn(
-            'Error: fhirpath evaluation for ItemPopulationContext failed. Details below:' + e
+            'SDC-Populate Error: fhirpath evaluation for ItemPopulationContext failed. Details below:' +
+              e
           );
           issues.push(createInvalidWarningIssue(e.message));
         }
