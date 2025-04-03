@@ -45,6 +45,7 @@ import AttachmentItem from '../AttachmentItem/AttachmentItem';
 import CustomDateTimeItem from '../DateTimeItems/CustomDateTimeItem/CustomDateTimeItem';
 import QuantityItem from '../QuantityItem/QuantityItem';
 import { useQuestionnaireStore } from '../../../stores';
+import { createEmptyQrItem } from '../../../utils/qrItem';
 
 interface SingleItemSwitcherProps
   extends PropsWithQrItemChangeHandler,
@@ -76,13 +77,17 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
   const qItemOverrideComponents = useQuestionnaireStore.use.qItemOverrideComponents();
   const QItemOverrideComponent = qItemOverrideComponents[qItem.linkId];
 
+  // Create a non-null qrItem for child components
+  const answerKey = qrItem?.answer?.[0].id;
+  const nonNullQrItem = qrItem || createEmptyQrItem(qItem, answerKey);
+
   // If a qItem override component is defined for this item, render it
   // Don't get too strict with the "typeof" checks for now
   if (QItemOverrideComponent && typeof QItemOverrideComponent === 'function') {
     return (
       <QItemOverrideComponent
         qItem={qItem}
-        qrItem={qrItem}
+        qrItem={nonNullQrItem}
         isRepeated={isRepeated}
         isTabled={isTabled}
         renderingExtensions={renderingExtensions}
@@ -100,7 +105,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
       return (
         <DisplayItem
           qItem={qItem}
-          qrItem={qrItem}
+          qrItem={nonNullQrItem}
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           parentStyles={parentStyles}
@@ -110,7 +115,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
       return (
         <BooleanItem
           qItem={qItem}
-          qrItem={qrItem}
+          qrItem={nonNullQrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -124,7 +129,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
       return (
         <DecimalItem
           qItem={qItem}
-          qrItem={qrItem}
+          qrItem={nonNullQrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -139,7 +144,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         return (
           <SliderItem
             qItem={qItem}
-            qrItem={qrItem}
+            qrItem={nonNullQrItem}
             isRepeated={isRepeated}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
@@ -154,7 +159,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
       return (
         <IntegerItem
           qItem={qItem}
-          qrItem={qrItem}
+          qrItem={nonNullQrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -168,7 +173,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
       return (
         <CustomDateItem
           qItem={qItem}
-          qrItem={qrItem}
+          qrItem={nonNullQrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -182,7 +187,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
       return (
         <CustomDateTimeItem
           qItem={qItem}
-          qrItem={qrItem}
+          qrItem={nonNullQrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -196,7 +201,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
       return (
         <TimeItem
           qItem={qItem}
-          qrItem={qrItem}
+          qrItem={nonNullQrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -210,7 +215,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
       return (
         <StringItem
           qItem={qItem}
-          qrItem={qrItem}
+          qrItem={nonNullQrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -224,7 +229,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
       return (
         <TextItem
           qItem={qItem}
-          qrItem={qrItem}
+          qrItem={nonNullQrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -238,7 +243,35 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
       return (
         <UrlItem
           qItem={qItem}
-          qrItem={qrItem}
+          qrItem={nonNullQrItem}
+          isRepeated={isRepeated}
+          isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
+          parentIsReadOnly={parentIsReadOnly}
+          feedbackFromParent={feedbackFromParent}
+          onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
+        />
+      );
+    case 'attachment':
+      return (
+        <AttachmentItem
+          qItem={qItem}
+          qrItem={nonNullQrItem}
+          isRepeated={isRepeated}
+          isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
+          parentIsReadOnly={parentIsReadOnly}
+          feedbackFromParent={feedbackFromParent}
+          onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
+        />
+      );
+    case 'quantity':
+      return (
+        <QuantityItem
+          qItem={qItem}
+          qrItem={nonNullQrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -252,7 +285,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
       return (
         <ChoiceItemSwitcher
           qItem={qItem}
-          qrItem={qrItem}
+          qrItem={nonNullQrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -267,7 +300,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
       return (
         <OpenChoiceItemSwitcher
           qItem={qItem}
-          qrItem={qrItem}
+          qrItem={nonNullQrItem}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -278,54 +311,10 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           parentStyles={parentStyles}
         />
       );
-    case 'attachment':
-      return (
-        <AttachmentItem
-          qItem={qItem}
-          qrItem={qrItem}
-          isRepeated={isRepeated}
-          isTabled={isTabled}
-          renderingExtensions={renderingExtensions}
-          parentIsReadOnly={parentIsReadOnly}
-          feedbackFromParent={feedbackFromParent}
-          onQrItemChange={onQrItemChange}
-          parentStyles={parentStyles}
-        />
-      );
-    case 'reference':
-      // FIXME reference item uses the same component as string item currently
-      return (
-        <StringItem
-          qItem={qItem}
-          qrItem={qrItem}
-          isRepeated={isRepeated}
-          isTabled={isTabled}
-          renderingExtensions={renderingExtensions}
-          parentIsReadOnly={parentIsReadOnly}
-          feedbackFromParent={feedbackFromParent}
-          onQrItemChange={onQrItemChange}
-          parentStyles={parentStyles}
-        />
-      );
-    case 'quantity':
-      return (
-        <QuantityItem
-          qItem={qItem}
-          qrItem={qrItem}
-          isRepeated={isRepeated}
-          isTabled={isTabled}
-          renderingExtensions={renderingExtensions}
-          parentIsReadOnly={parentIsReadOnly}
-          feedbackFromParent={feedbackFromParent}
-          onQrItemChange={onQrItemChange}
-          parentStyles={parentStyles}
-        />
-      );
     default:
       return (
-        <Typography>
-          Item type <b>{qItem.type}</b> not supported yet, or something has went wrong. If your
-          questionnnaire is not a FHIR R4 resource, there might be issues rendering it.
+        <Typography variant="subtitle2" color="error">
+          Unsupported item type: {qItem.type}
         </Typography>
       );
   }
