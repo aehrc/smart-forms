@@ -282,34 +282,38 @@ function constructGroupItem(params: ConstructGroupItemParams): QuestionnaireResp
   const { initialExpressions } = populationExpressions;
 
   let populatedAnswers: QuestionnaireResponseItemAnswer[] | undefined;
-  // Populate answers from item.initial if present
-  // Process item.initial first, then can potentially overwrite with initialExpressions
-  if (qItem.initial) {
-    populatedAnswers = qItem.initial
-      .map((initial) => parseItemInitialToAnswer(initial))
-      .filter((answer): answer is QuestionnaireResponseItemAnswer => answer !== null);
-  }
 
-  // Populate answers from initialExpressions if present
-  const initialExpression = initialExpressions[qItem.linkId];
-  if (initialExpression) {
-    const initialValues = initialExpression.value;
+  // This only applies to question (non-group) items! 'group' items should not have item.answer
+  if (qItem.type !== 'group') {
+    // Populate answers from item.initial if present
+    // Process item.initial first, then can potentially overwrite with initialExpressions
+    if (qItem.initial) {
+      populatedAnswers = qItem.initial
+        .map((initial) => parseItemInitialToAnswer(initial))
+        .filter((answer): answer is QuestionnaireResponseItemAnswer => answer !== null);
+    }
 
-    if (initialValues && initialValues.length) {
-      const { newValues, expandRequired } = getAnswerValues(initialValues, qItem);
-      populatedAnswers = newValues;
+    // Populate answers from initialExpressions if present
+    const initialExpression = initialExpressions[qItem.linkId];
+    if (initialExpression) {
+      const initialValues = initialExpression.value;
 
-      if (expandRequired) {
-        recordAnswerValueSet(
-          qItem,
-          valueSetPromises,
-          terminologyCallback,
-          terminologyRequestConfig
-        );
+      if (initialValues && initialValues.length) {
+        const { newValues, expandRequired } = getAnswerValues(initialValues, qItem);
+        populatedAnswers = newValues;
+
+        if (expandRequired) {
+          recordAnswerValueSet(
+            qItem,
+            valueSetPromises,
+            terminologyCallback,
+            terminologyRequestConfig
+          );
+        }
+
+        recordAnswerOption(qItem, answerOptions);
+        recordContainedValueSet(qItem, qContainedResources, containedValueSets);
       }
-
-      recordAnswerOption(qItem, answerOptions);
-      recordContainedValueSet(qItem, qContainedResources, containedValueSets);
     }
   }
 
@@ -610,7 +614,7 @@ async function constructRepeatGroupInstances(
         } catch (e) {
           if (e instanceof Error) {
             console.warn(
-              'Error: fhirpath evaluation for ItemPopulationContext child failed. Details below:' +
+              'SDC-Populate Error: fhirpath evaluation for ItemPopulationContext child failed. Details below:' +
                 e
             );
           }
