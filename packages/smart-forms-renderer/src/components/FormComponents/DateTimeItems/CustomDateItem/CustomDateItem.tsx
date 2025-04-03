@@ -16,31 +16,27 @@
  */
 
 import React, { useState } from 'react';
-import type {
-  BaseItemProps,
-  PropsWithFeedbackFromParentAttribute,
-  PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledRequiredAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithRenderingExtensionsAttribute
-} from '../../../../interfaces/renderProps.interface';
+import type { BaseItemProps } from '../../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useReadOnly from '../../../../hooks/useReadOnly';
 import { FullWidthFormComponentBox } from '../../../Box.styles';
 import ItemFieldGrid from '../../ItemParts/ItemFieldGrid';
-import {
-  parseFhirDateToDisplayDate,
-  parseInputDateToFhirDate,
-  validateDateInput
-} from '../utils/parseDate';
+import { parseInputDateToFhirDate } from '../utils/parseDate';
 import { createEmptyQrItem } from '../../../../utils/qrItem';
 import useDateValidation from '../../../../hooks/useDateValidation';
 import CustomDateField from './CustomDateField';
 import { useQuestionnaireStore } from '../../../../stores';
 import ItemLabel from '../../ItemParts/ItemLabel';
 
-interface CustomDateItemProps extends BaseItemProps {}
+interface CustomDateItemProps extends Omit<BaseItemProps, 'onQrItemChange'> {
+  qItem: QuestionnaireItem;
+  qrItem: QuestionnaireResponseItem;
+  isRepeated: boolean;
+  isTabled: boolean;
+  parentIsReadOnly?: boolean;
+  feedbackFromParent?: string;
+  onQrItemChange: (qrItem: QuestionnaireResponseItem) => void;
+}
 
 function CustomDateItem(props: CustomDateItemProps) {
   const {
@@ -48,88 +44,64 @@ function CustomDateItem(props: CustomDateItemProps) {
     qrItem,
     isRepeated,
     isTabled,
-    renderingExtensions,
-    parentIsReadOnly,
+    parentIsReadOnly = false,
+    feedbackFromParent,
     onQrItemChange
   } = props;
 
-  const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
-
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayPrompt, entryFormat } = renderingExtensions;
+  const entryFormat = qItem.extension?.find(ext => ext.url === 'http://hl7.org/fhir/StructureDefinition/rendering-style')?.extension?.find(ext => ext.url === 'entry-format')?.valueString || '';
 
   // Init input value
   const answerKey = qrItem?.answer?.[0].id;
-  const qrDate = qrItem ?? createEmptyQrItem(qItem, answerKey);
-
-  let valueDate: string = '';
-  if (qrDate.answer) {
-    if (qrDate.answer[0].valueDate) {
-      valueDate = qrDate.answer[0].valueDate;
-    } else if (qrDate.answer[0].valueDateTime) {
-      valueDate = qrDate.answer[0].valueDateTime;
-    }
+  let valueString = '';
+  if (qrItem?.answer && qrItem?.answer[0].valueString) {
+    valueString = qrItem.answer[0].valueString;
   }
 
-  const { displayDate, dateParseFail } = parseFhirDateToDisplayDate(valueDate);
+  const [input, setInput] = useState(valueString);
+  const [isFocused, setIsFocused] = useState(false);
 
-  const [input, setInput] = useState(displayDate);
-  const [focused, setFocused] = useState(false);
+  const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   // Perform validation checks
-  const errorFeedback = useDateValidation(input, dateParseFail);
+  const errorFeedback = useDateValidation(input);
 
   function handleSelectDate(selectedDate: string) {
     setInput(selectedDate);
-    onQrItemChange({
-      ...createEmptyQrItem(qItem, answerKey),
-      answer: [{ id: answerKey, valueDate: parseInputDateToFhirDate(selectedDate) }]
-    });
+    const fhirDate = parseInputDateToFhirDate(selectedDate);
+    if (fhirDate) {
+      onQrItemChange({
+        ...createEmptyQrItem(qItem, answerKey),
+        answer: [{ id: answerKey, valueString: fhirDate }]
+      });
+    } else {
+      onQrItemChange(createEmptyQrItem(qItem, answerKey));
+    }
   }
 
   function handleInputChange(newInput: string) {
     setInput(newInput);
-
-    if (newInput === '') {
+    const fhirDate = parseInputDateToFhirDate(newInput);
+    if (fhirDate) {
+      onQrItemChange({
+        ...createEmptyQrItem(qItem, answerKey),
+        answer: [{ id: answerKey, valueString: fhirDate }]
+      });
+    } else {
       onQrItemChange(createEmptyQrItem(qItem, answerKey));
     }
-
-    if (!validateDateInput(newInput)) {
-      return;
-    }
-
-    onQrItemChange({
-      ...createEmptyQrItem(qItem, answerKey),
-      answer: [{ id: answerKey, valueDate: parseInputDateToFhirDate(newInput) }]
-    });
   }
 
-  if (isRepeated) {
-    return (
-      <CustomDateField
-        linkId={qItem.linkId}
-        itemType={qItem.type}
-        valueDate={displayDate}
-        input={input}
-        feedback={errorFeedback ?? ''}
-        isFocused={focused}
-        displayPrompt={displayPrompt}
-        entryFormat={entryFormat}
-        readOnly={readOnly}
-        isPartOfDateTime={false}
-        isTabled={isTabled}
-        setFocused={setFocused}
-        onInputChange={handleInputChange}
-        onSelectDate={handleSelectDate}
-      />
-    );
+  function handleFocusChange(value: boolean | ((prevState: boolean) => boolean)) {
+    setIsFocused(value);
+    if (typeof value === 'boolean' && value) {
+      onFocusLinkId(qItem.linkId);
+    }
   }
 
   return (
-    <FullWidthFormComponentBox
-      data-test="q-item-date-box"
-      data-linkid={qItem.linkId}
-      onClick={() => onFocusLinkId(qItem.linkId)}>
+    <FullWidthFormComponentBox>
       <ItemFieldGrid
         qItem={qItem}
         readOnly={readOnly}
@@ -138,16 +110,16 @@ function CustomDateItem(props: CustomDateItemProps) {
           <CustomDateField
             linkId={qItem.linkId}
             itemType={qItem.type}
-            valueDate={displayDate}
+            valueDate={valueString}
             input={input}
             feedback={errorFeedback ?? ''}
-            isFocused={focused}
-            displayPrompt={displayPrompt}
+            isFocused={isFocused}
+            displayPrompt={''}
             entryFormat={entryFormat}
             readOnly={readOnly}
             isPartOfDateTime={false}
             isTabled={isTabled}
-            setFocused={setFocused}
+            setFocused={handleFocusChange}
             onInputChange={handleInputChange}
             onSelectDate={handleSelectDate}
           />
