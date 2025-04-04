@@ -15,18 +15,35 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
+import type {
+  Questionnaire,
+  QuestionnaireItem,
+  QuestionnaireResponse,
+  QuestionnaireResponseItem
+} from 'fhir/r4';
 
 export function createQuestionnaireResponseItemMap(
+  sourceQuestionnaire: Questionnaire,
   questionnaireResponse: QuestionnaireResponse
 ): Record<string, QuestionnaireResponseItem[]> {
-  if (!questionnaireResponse.item) {
+  if (!sourceQuestionnaire.item || sourceQuestionnaire.item.length === 0) {
     return {};
   }
 
+  // Even if the questionnaireResponse has no items, we still need to identify an empty entry for every linkId
   const questionnaireResponseItemMap: Record<string, QuestionnaireResponseItem[]> = {};
-  for (const topLevelQRItem of questionnaireResponse.item) {
-    fillQuestionnaireResponseItemMapRecursive(topLevelQRItem, questionnaireResponseItemMap);
+  for (const topLevelQItem of sourceQuestionnaire.item) {
+    fillQuestionnaireResponseItemMapEmptyEntriesRecursive(
+      topLevelQItem,
+      questionnaireResponseItemMap
+    );
+  }
+
+  // Now loop through the questionnaireResponse items and fill the map
+  if (questionnaireResponse.item) {
+    for (const topLevelQRItem of questionnaireResponse.item) {
+      fillQuestionnaireResponseItemMapRecursive(topLevelQRItem, questionnaireResponseItemMap);
+    }
   }
 
   return questionnaireResponseItemMap;
@@ -59,4 +76,22 @@ function fillQuestionnaireResponseItemMap(
   else {
     questionnaireResponseItemMap[qrItem.linkId] = [qrItem];
   }
+}
+
+function fillQuestionnaireResponseItemMapEmptyEntriesRecursive(
+  qItem: QuestionnaireItem,
+  questionnaireResponseItemMap: Record<string, QuestionnaireResponseItem[]>
+) {
+  const qItems = qItem.item;
+  if (qItems && qItems.length > 0) {
+    // iterate through items of item recursively
+    for (const childQItem of qItems) {
+      fillQuestionnaireResponseItemMapEmptyEntriesRecursive(
+        childQItem,
+        questionnaireResponseItemMap
+      );
+    }
+  }
+
+  questionnaireResponseItemMap[qItem.linkId] = [];
 }

@@ -315,6 +315,7 @@ function createNewRepeatGroupQuestionnaireResponseItem(
 }
 
 export interface initialFormFromResponseParams {
+  sourceQuestionnaire: Questionnaire;
   questionnaireResponse: QuestionnaireResponse;
   targetConstraints: Record<string, TargetConstraint>;
   enableWhenItems: EnableWhenItems;
@@ -342,6 +343,7 @@ export async function initialiseFormFromResponse(params: initialFormFromResponse
   fhirPathTerminologyCache: Record<string, any>;
 }> {
   const {
+    sourceQuestionnaire,
     questionnaireResponse,
     targetConstraints,
     enableWhenItems,
@@ -356,7 +358,10 @@ export async function initialiseFormFromResponse(params: initialFormFromResponse
   } = params;
   let { fhirPathTerminologyCache } = params;
 
-  const initialResponseItemMap = createQuestionnaireResponseItemMap(questionnaireResponse);
+  const initialResponseItemMap = createQuestionnaireResponseItemMap(
+    sourceQuestionnaire,
+    questionnaireResponse
+  );
   let updatedFhirPathContext = {};
 
   const { initialisedItems, linkedQuestions } = assignPopulatedAnswersToEnableWhen(

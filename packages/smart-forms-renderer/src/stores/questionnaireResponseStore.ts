@@ -113,7 +113,10 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
         key: generateUniqueId('QR'),
         sourceResponse: questionnaireResponse,
         updatableResponse: questionnaireResponse,
-        updatableResponseItems: createQuestionnaireResponseItemMap(questionnaireResponse),
+        updatableResponseItems: createQuestionnaireResponseItemMap(
+          sourceQuestionnaire,
+          questionnaireResponse
+        ),
         invalidItems: initialInvalidItems,
         requiredItemsIsHighlighted: false,
         responseIsValid: Object.keys(initialInvalidItems).length === 0
@@ -126,8 +129,12 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
       const updatedInvalidItems = validateForm(sourceQuestionnaire, populatedResponse);
 
       set(() => ({
+        sourceResponse: populatedResponse,
         updatableResponse: populatedResponse,
-        updatableResponseItems: createQuestionnaireResponseItemMap(populatedResponse),
+        updatableResponseItems: createQuestionnaireResponseItemMap(
+          sourceQuestionnaire,
+          populatedResponse
+        ),
         formChangesHistory: [...get().formChangesHistory, formChanges],
         invalidItems: updatedInvalidItems,
         requiredItemsIsHighlighted: false,
@@ -141,7 +148,10 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
 
       set(() => ({
         updatableResponse: updatedResponse,
-        updatableResponseItems: createQuestionnaireResponseItemMap(updatedResponse),
+        updatableResponseItems: createQuestionnaireResponseItemMap(
+          sourceQuestionnaire,
+          updatedResponse
+        ),
         formChangesHistory: [...get().formChangesHistory, formChanges],
         invalidItems: updatedInvalidItems,
         responseIsValid: Object.keys(updatedInvalidItems).length === 0
@@ -155,7 +165,10 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
         key: generateUniqueId('QR'),
         sourceResponse: savedResponse,
         updatableResponse: savedResponse,
-        updatableResponseItems: createQuestionnaireResponseItemMap(savedResponse),
+        updatableResponseItems: createQuestionnaireResponseItemMap(
+          sourceQuestionnaire,
+          savedResponse
+        ),
         formChangesHistory: [],
         invalidItems: updatedInvalidItems,
         responseIsValid: Object.keys(updatedInvalidItems).length === 0
@@ -167,24 +180,32 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
 
       set(() => ({
         updatableResponse: clearedResponse,
-        updatableResponseItems: createQuestionnaireResponseItemMap(clearedResponse),
+        updatableResponseItems: createQuestionnaireResponseItemMap(
+          sourceQuestionnaire,
+          clearedResponse
+        ),
         formChangesHistory: [],
         invalidItems: updatedInvalidItems,
         requiredItemsIsHighlighted: false,
         responseIsValid: Object.keys(updatedInvalidItems).length === 0
       }));
     },
-    destroySourceResponse: () =>
+    destroySourceResponse: () => {
+      const sourceQuestionnaire = questionnaireStore.getState().sourceQuestionnaire;
       set(() => ({
         key: generateUniqueId('QR'),
         sourceResponse: structuredClone(emptyResponse),
         updatableResponse: structuredClone(emptyResponse),
-        updatableResponseItems: createQuestionnaireResponseItemMap(structuredClone(emptyResponse)),
+        updatableResponseItems: createQuestionnaireResponseItemMap(
+          sourceQuestionnaire,
+          structuredClone(emptyResponse)
+        ),
         formChangesHistory: [],
         invalidItems: {},
         requiredItemsIsHighlighted: false,
         responseIsValid: true
-      })),
+      }));
+    },
     highlightRequiredItems: () =>
       set(() => ({
         requiredItemsIsHighlighted: true
