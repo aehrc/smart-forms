@@ -15,34 +15,16 @@
  * limitations under the License.
  */
 
-import { useCallback, useLayoutEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
-import type { Blocker, BlockerFunction } from 'react-router-dom';
+import type { Blocker } from 'react-router-dom';
 import { useBlocker } from 'react-router-dom';
 
 function useLeavePageBlocker(): Blocker {
   const formChangesHistory = useQuestionnaireResponseStore.use.formChangesHistory();
 
-  const hasChanges = formChangesHistory.length > 0;
-
-  const shouldBlock = useCallback<BlockerFunction>(
-    ({ currentLocation, nextLocation }) => {
-      // this blocker is buggy, ensure it does not block when switching between preview and renderer
-      const switchingBetweenPreviewAndRenderer =
-        (currentLocation.pathname === '/renderer/preview' &&
-          nextLocation.pathname === '/renderer') ||
-        (currentLocation.pathname === '/renderer/preview' && nextLocation.pathname === '/renderer');
-
-      return (
-        hasChanges &&
-        !switchingBetweenPreviewAndRenderer &&
-        currentLocation.pathname !== nextLocation.pathname
-      );
-    },
-    [hasChanges]
-  );
-
-  const blocker = useBlocker(shouldBlock);
+  const isBlocked = formChangesHistory.length > 0;
+  const blocker = useBlocker(isBlocked);
 
   useLayoutEffect(() => {
     if (
@@ -52,10 +34,10 @@ function useLeavePageBlocker(): Blocker {
       blocker.proceed?.();
     }
 
-    if (blocker.state === 'blocked' && !hasChanges) {
+    if (blocker.state === 'blocked' && !isBlocked) {
       blocker.reset();
     }
-  }, [blocker, hasChanges]);
+  }, [blocker, isBlocked]);
 
   return blocker;
 }
