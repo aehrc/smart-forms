@@ -91,6 +91,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
             sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
             <StyledRadioGroup
               id={qItem.type + '-' + qItem.linkId}
+              aria-labelledby={'label-' + qItem.linkId}
               row={orientation === ChoiceItemOrientation.Horizontal}
               sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
               onChange={(e) => onCheckedChange(e.target.value)}
