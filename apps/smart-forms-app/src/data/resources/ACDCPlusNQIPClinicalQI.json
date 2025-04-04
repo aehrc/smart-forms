@@ -8,8 +8,8 @@
     ]
   },
   "url": "https://smartforms.csiro.au/ig/Questionnaire/ACDCPlusNQIPClinicalQI",
-  "title": "ACDC+ NQIP Clinical QI Dataset - v2.4",
-  "description": "ACDC+ NQIP Clinical QI Dataset - v2.4",
+  "title": "ACDC+ NQIP Clinical QI Dataset - v2.5",
+  "description": "ACDC+ NQIP Clinical QI Dataset - v2.5",
   "extension": [
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
@@ -852,13 +852,6 @@
                 "system": "http://hl7.org/fhir/questionnaire-item-control"
               }
             ]
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
-          "valueExpression": {
-            "language": "text/fhirpath",
-            "expression": "%PressureInjuryRepeat.clinicalStatus.coding='active'"
           }
         },
         {
@@ -1775,13 +1768,6 @@
                 "system": "http://hl7.org/fhir/questionnaire-item-control"
               }
             ]
-          }
-        },
-        {
-          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
-          "valueExpression": {
-            "language": "text/fhirpath",
-            "expression": "%IADRepeat.clinicalStatus.coding='active'"
           }
         },
         {
