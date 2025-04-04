@@ -29,7 +29,7 @@ import type {
 import { emptyResponse } from './emptyResource';
 import { createFhirPathContext, handleFhirPathResult } from './fhirpath';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
-import { updateQrItemsInGroup } from './qrItem';
+import { createEmptyQrGroup, updateQrItemsInGroup } from './qrItem';
 import dayjs from 'dayjs';
 import { updateQuestionnaireResponse } from './genericRecursive';
 import isEqual from 'lodash.isequal';
@@ -235,13 +235,29 @@ function initialiseItemCalculatedExpressionValueRecursive(
   // For repeat groups
   const hasMultipleAnswers = Array.isArray(qrItemOrItems);
   if (hasMultipleAnswers) {
-    return qrItemOrItems;
+    const updatedQrItems = initialiseItemCalculatedExpressionValueInRepeatGroup(
+      qItem,
+      qrItemOrItems,
+      calculatedExpressions
+    );
+    return constructGroupItem(
+      qItem,
+      updatedQrItems
+        ? {
+            linkId: qItem.linkId,
+            text: qItem.text,
+            item: updatedQrItems
+          }
+        : null,
+      calculatedExpressions
+    );
   }
 
-  const qrItem = qrItemOrItems;
+  let qrItem = qrItemOrItems;
   const childQItems = qItem.item;
   if (childQItems && childQItems.length > 0) {
-    const childQrItems = qrItem?.item ?? [];
+    qrItem = qrItemOrItems ?? structuredClone(createEmptyQrGroup(qItem));
+    const childQrItems = qrItem.item ?? [];
 
     const indexMap = mapQItemsIndex(qItem);
     const qrItemsByIndex = getQrItemsIndex(childQItems, childQrItems, indexMap);
@@ -256,19 +272,26 @@ function initialiseItemCalculatedExpressionValueRecursive(
         calculatedExpressions
       );
 
-      // FIXME Not implemented for repeat groups
+      // Update QR items in repeating group
       if (Array.isArray(updatedChildQRItemOrItems)) {
+        if (updatedChildQRItemOrItems.length > 0) {
+          updateQrItemsInGroup(
+            null,
+            {
+              linkId: childQItem.linkId,
+              qrItems: updatedChildQRItemOrItems
+            },
+            qrItem,
+            indexMap
+          );
+        }
         continue;
       }
 
+      // Update QR items in non-repeating group
       const updatedChildQRItem = updatedChildQRItemOrItems;
       if (updatedChildQRItem) {
-        updateQrItemsInGroup(
-          updatedChildQRItem,
-          null,
-          qrItem ?? { linkId: qItem.linkId, text: qItem.text, item: [] },
-          indexMap
-        );
+        updateQrItemsInGroup(updatedChildQRItem, null, qrItem, indexMap);
       }
     }
 
@@ -276,6 +299,38 @@ function initialiseItemCalculatedExpressionValueRecursive(
   }
 
   return constructSingleItem(qItem, qrItem, calculatedExpressions);
+}
+
+function initialiseItemCalculatedExpressionValueInRepeatGroup(
+  qItem: QuestionnaireItem,
+  qrItems: QuestionnaireResponseItem[],
+  calculatedExpressions: Record<string, CalculatedExpression[]>
+): QuestionnaireResponseItem[] | null {
+  if (!qItem.item) {
+    return [];
+  }
+
+  const indexMap = mapQItemsIndex(qItem);
+  const qrItemsByIndex = getQrItemsIndex(qItem.item, qrItems, indexMap);
+  const updatedQrItems: QuestionnaireResponseItem[] = [];
+
+  for (const [index, childQItem] of qItem.item.entries()) {
+    const childQRItemOrItems = qrItemsByIndex[index] ?? null;
+
+    const updatedChildQRItemOrItems = initialiseItemCalculatedExpressionValueRecursive(
+      childQItem,
+      childQRItemOrItems,
+      calculatedExpressions
+    );
+
+    if (Array.isArray(updatedChildQRItemOrItems)) {
+      updatedQrItems.push(...updatedChildQRItemOrItems);
+    } else if (updatedChildQRItemOrItems) {
+      updatedQrItems.push(updatedChildQRItemOrItems);
+    }
+  }
+
+  return updatedQrItems.length > 0 ? updatedQrItems : null;
 }
 
 function getCalculatedExpressionAnswer(
@@ -286,7 +341,13 @@ function getCalculatedExpressionAnswer(
     (calcExpression) => calcExpression.from === 'item'
   );
 
-  if (calcExpressionFromItem && calcExpressionFromItem.value) {
+  if (calcExpressionFromItem) {
+    // If value is undefined or null, do not return anything
+    if (calcExpressionFromItem?.value === undefined || calcExpressionFromItem.value === null) {
+      return;
+    }
+
+    // Otherwise there is a value (including 0 and empty strings)
     return parseValueToAnswer(qItem, calcExpressionFromItem.value);
   }
 
