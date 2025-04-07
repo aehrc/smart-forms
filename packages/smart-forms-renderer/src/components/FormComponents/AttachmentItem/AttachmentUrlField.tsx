@@ -38,13 +38,14 @@ interface AttachmentUrlFieldProps extends PropsWithIsTabledRequiredAttribute {
 function AttachmentUrlField(props: AttachmentUrlFieldProps) {
   const { linkId, url, readOnly, isTabled, onUrlChange } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
   const urlIsValid = useAttachmentUrlValidation(url);
 
   return (
     <Box>
-      <Typography variant="body2" color={readOnly ? 'text.disabled' : 'text.primary'}>
+      <Typography variant="body2" color={readOnly ? 'text.secondary' : 'text.primary'}>
         URL
       </Typography>
       <Stack direction="row" alignItems="center">
@@ -55,11 +56,12 @@ function AttachmentUrlField(props: AttachmentUrlFieldProps) {
           id={linkId}
           value={url}
           onChange={(event) => onUrlChange(event.target.value)}
-          disabled={readOnly}
+          disabled={readOnly && readOnlyVisualStyle === 'disabled'}
           size="small"
           data-test="q-item-attachment-field"
           slotProps={{
             input: {
+              readOnly: readOnly && readOnlyVisualStyle === 'readonly',
               endAdornment: (
                 <InputAdornment position="end">
                   {url != '' ? (

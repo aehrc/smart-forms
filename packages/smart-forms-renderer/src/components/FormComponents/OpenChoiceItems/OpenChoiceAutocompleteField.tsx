@@ -35,7 +35,7 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import type { AlertColor } from '@mui/material/Alert';
 import { useRendererStylingStore } from '../../../stores';
-import Typography from '@mui/material/Typography';
+import DisplayUnitText from '../ItemParts/DisplayUnitText';
 
 interface OpenChoiceAutocompleteFieldProps
   extends PropsWithIsTabledRequiredAttribute,
@@ -69,6 +69,7 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
     onUnfocus
   } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
@@ -82,7 +83,7 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
         getOptionLabel={(option) =>
           typeof option === 'string' ? option : (option.display ?? `${option.code}`)
         }
-        disabled={readOnly}
+        disabled={readOnly && readOnlyVisualStyle === 'disabled'}
         loading={loading}
         loadingText={'Fetching results...'}
         clearOnEscape
@@ -104,6 +105,7 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
             slotProps={{
               input: {
                 ...params.InputProps,
+                readOnly: readOnly && readOnlyVisualStyle === 'readonly',
                 startAdornment: (
                   <>
                     {!valueAutocomplete || valueAutocomplete === '' ? (
@@ -132,9 +134,7 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
                       </Fade>
                     ) : null}
                     {params.InputProps.endAdornment}
-                    <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
-                      {displayUnit}
-                    </Typography>
+                    <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
                   </>
                 )
               }

@@ -30,6 +30,7 @@ import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import { useRendererStylingStore } from '../../../stores';
 import { StyledRequiredTypography } from '../Item.styles';
+import DisplayUnitText from '../ItemParts/DisplayUnitText';
 
 interface ChoiceSelectAnswerValueSetFieldsProps
   extends PropsWithIsTabledRequiredAttribute,
@@ -58,6 +59,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
     onSelectChange
   } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
@@ -75,7 +77,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
           autoHighlight
           sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }}
           size="small"
-          disabled={readOnly}
+          disabled={readOnly && readOnlyVisualStyle === 'disabled'}
           renderInput={(params) => (
             <StandardTextField
               textFieldWidth={textFieldWidth}
@@ -86,13 +88,12 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
               slotProps={{
                 input: {
                   ...params.InputProps,
+                  readOnly: readOnly && readOnlyVisualStyle === 'readonly',
                   endAdornment: (
                     <>
                       {params.InputProps.endAdornment}
                       <FadingCheckIcon fadeIn={expressionUpdated} disabled={readOnly} />
-                      <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
-                        {displayUnit}
-                      </Typography>
+                      <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
                     </>
                   )
                 }

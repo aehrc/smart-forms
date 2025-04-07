@@ -21,7 +21,7 @@ import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import { StandardTextField } from '../Textfield.styles';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import { useRendererStylingStore } from '../../../stores';
-import Typography from '@mui/material/Typography';
+import DisplayUnitText from '../ItemParts/DisplayUnitText';
 
 interface DecimalFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -51,6 +51,7 @@ function DecimalField(props: DecimalFieldProps) {
     onInputChange
   } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
   return (
@@ -59,7 +60,7 @@ function DecimalField(props: DecimalFieldProps) {
       value={input}
       error={!!feedback}
       onChange={(event) => onInputChange(event.target.value)}
-      disabled={readOnly}
+      disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       label={displayPrompt}
       placeholder={entryFormat === '' ? '0.0' : entryFormat}
       textFieldWidth={textFieldWidth}
@@ -69,12 +70,11 @@ function DecimalField(props: DecimalFieldProps) {
       slotProps={{
         htmlInput: { inputMode: 'numeric', pattern: '[0-9]*' },
         input: {
+          readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
             <InputAdornment position={'end'}>
               <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-              <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
-                {displayUnit}
-              </Typography>
+              <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>
           )
         }

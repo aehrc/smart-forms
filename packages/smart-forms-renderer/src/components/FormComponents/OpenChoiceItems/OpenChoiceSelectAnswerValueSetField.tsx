@@ -11,6 +11,7 @@ import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 import { useRendererStylingStore } from '../../../stores';
 import { StyledRequiredTypography } from '../Item.styles';
+import DisplayUnitText from '../ItemParts/DisplayUnitText';
 
 interface OpenChoiceSelectAnswerValueSetFieldProps
   extends PropsWithIsTabledRequiredAttribute,
@@ -38,6 +39,7 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
     onValueChange
   } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
@@ -56,7 +58,7 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
         freeSolo
         autoHighlight
         sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }}
-        disabled={readOnly}
+        disabled={readOnly && readOnlyVisualStyle === 'disabled'}
         size="small"
         renderInput={(params) => (
           <StandardTextField
@@ -68,12 +70,11 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
             slotProps={{
               input: {
                 ...params.InputProps,
+                readOnly: readOnly && readOnlyVisualStyle === 'readonly',
                 endAdornment: (
                   <>
                     {params.InputProps.endAdornment}
-                    <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
-                      {displayUnit}
-                    </Typography>
+                    <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
                   </>
                 )
               }

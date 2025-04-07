@@ -34,7 +34,7 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import type { AlertColor } from '@mui/material/Alert';
 import { useRendererStylingStore } from '../../../stores';
-import Typography from '@mui/material/Typography';
+import DisplayUnitText from '../ItemParts/DisplayUnitText';
 
 interface ChoiceAutocompleteFieldsProps
   extends PropsWithIsTabledRequiredAttribute,
@@ -64,6 +64,7 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
     onValueChange
   } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
@@ -75,7 +76,7 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
       options={options}
       getOptionLabel={(option) => option.display ?? `${option.code}`}
       isOptionEqualToValue={(option, value) => option.id === value.id}
-      disabled={readOnly}
+      disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       loading={loading}
       loadingText={'Fetching results...'}
       clearOnEscape
@@ -95,7 +96,7 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
           slotProps={{
             input: {
               ...params.InputProps,
-
+              readOnly: readOnly && readOnlyVisualStyle === 'readonly',
               startAdornment: (
                 <>
                   {!valueCoding ? <SearchIcon fontSize="small" sx={{ ml: 0.5 }} /> : null}
@@ -121,9 +122,7 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
                     </Fade>
                   ) : null}
                   {params.InputProps.endAdornment}
-                  <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
-                    {displayUnit}
-                  </Typography>
+                  <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
                 </>
               )
             }

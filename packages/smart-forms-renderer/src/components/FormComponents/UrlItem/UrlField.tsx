@@ -20,7 +20,7 @@ import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/ren
 import InputAdornment from '@mui/material/InputAdornment';
 import { StandardTextField } from '../Textfield.styles';
 import { useRendererStylingStore } from '../../../stores';
-import Typography from '@mui/material/Typography';
+import DisplayUnitText from '../ItemParts/DisplayUnitText';
 
 interface UrlFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -48,6 +48,7 @@ function UrlField(props: UrlFieldProps) {
     onInputChange
   } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
   return (
@@ -61,15 +62,14 @@ function UrlField(props: UrlFieldProps) {
       onChange={(event) => onInputChange(event.target.value)}
       label={displayPrompt}
       placeholder={entryFormat}
-      disabled={readOnly}
+      disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       size="small"
       slotProps={{
         input: {
+          readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
             <InputAdornment position="end">
-              <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
-                {displayUnit}
-              </Typography>
+              <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>
           )
         }

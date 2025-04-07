@@ -58,6 +58,7 @@ function CustomDateField(props: CustomDateFieldProps) {
     onSelectDate
   } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
   const anchorRef: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
@@ -78,13 +79,14 @@ function CustomDateField(props: CustomDateFieldProps) {
         onChange={(e: ChangeEvent<HTMLInputElement>) => onInputChange(e.target.value)}
         label={displayPrompt}
         placeholder={entryFormat !== '' ? entryFormat : 'DD/MM/YYYY'}
-        disabled={readOnly}
+        disabled={readOnly && readOnlyVisualStyle === 'disabled'}
         size="small"
         focused={isFocused}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         slotProps={{
           input: {
+            readOnly: readOnly && readOnlyVisualStyle === 'readonly',
             endAdornment: (
               <>
                 <DatePicker

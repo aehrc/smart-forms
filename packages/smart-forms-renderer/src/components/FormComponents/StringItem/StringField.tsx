@@ -21,7 +21,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import { StandardTextField } from '../Textfield.styles';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import { useRendererStylingStore } from '../../../stores';
-import Typography from '@mui/material/Typography';
+import DisplayUnitText from '../ItemParts/DisplayUnitText';
 
 interface StringFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -51,6 +51,7 @@ function StringField(props: StringFieldProps) {
     onInputChange
   } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
   return (
@@ -64,16 +65,15 @@ function StringField(props: StringFieldProps) {
       onChange={(event) => onInputChange(event.target.value)}
       label={displayPrompt}
       placeholder={entryFormat}
-      disabled={readOnly}
+      disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       size="small"
       slotProps={{
         input: {
+          readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
             <InputAdornment position="end">
               <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-              <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
-                {displayUnit}
-              </Typography>
+              <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>
           )
         }
