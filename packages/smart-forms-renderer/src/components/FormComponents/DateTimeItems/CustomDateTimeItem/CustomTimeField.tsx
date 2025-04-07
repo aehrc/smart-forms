@@ -97,7 +97,8 @@ function CustomTimeField(props: CustomTimeFieldProps) {
             id={periodId}
             value={is24HourNotation ? '' : periodInput}
             error={!!feedback}
-            disabled={readOnly || is24HourNotation}
+            disabled={(readOnly && readOnlyVisualStyle === 'disabled') || is24HourNotation}
+            readOnly={(readOnly && readOnlyVisualStyle === 'readonly') || is24HourNotation}
             displayEmpty
             size="small"
             sx={{ flex: 1 }}

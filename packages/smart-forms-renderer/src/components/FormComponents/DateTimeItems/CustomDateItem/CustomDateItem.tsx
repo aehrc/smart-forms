@@ -142,7 +142,6 @@ function CustomDateItem(props: CustomDateItemProps) {
             onInputChange={handleInputChange}
             onSelectDate={handleSelectDate}
           />
-          
         }
         feedback={errorFeedback ?? undefined}
       />

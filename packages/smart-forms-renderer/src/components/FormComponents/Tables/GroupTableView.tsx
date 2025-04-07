@@ -35,14 +35,14 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import type { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
 import GroupTableBody from './GroupTableBody';
-import Checkbox from '@mui/material/Checkbox';
-import { useQuestionnaireStore } from '../../../stores';
+import { useQuestionnaireStore, useRendererStylingStore } from '../../../stores';
 import { getGroupCollapsible } from '../../../utils/qItem';
 import { GroupAccordion } from '../GroupItem/GroupAccordion.styles';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import GroupHeading from '../GroupItem/GroupHeading';
+import { StandardCheckbox } from '../../Checkbox.styles';
 
 interface GroupTableViewProps
   extends PropsWithIsRepeatedAttribute,
@@ -86,6 +86,9 @@ function GroupTableView(props: GroupTableViewProps) {
   } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
+
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+
   const groupCollapsibleValue = getGroupCollapsible(qItem);
 
   // If the table is collapsible, wrap it in an accordion
@@ -174,14 +177,15 @@ function GroupTableView(props: GroupTableViewProps) {
                   <HeaderTableCell padding="none" />
                   {isRepeated ? (
                     <HeaderTableCell padding="none">
-                      <Checkbox
+                      <StandardCheckbox
                         color="primary"
                         size="small"
                         indeterminate={
                           selectedIds.length > 0 && selectedIds.length < tableRows.length
                         }
                         checked={tableRows.length > 0 && selectedIds.length === tableRows.length}
-                        disabled={readOnly}
+                        disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+                        readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
                         onChange={onSelectAll}
                       />
                     </HeaderTableCell>
@@ -280,12 +284,13 @@ function GroupTableView(props: GroupTableViewProps) {
               <HeaderTableCell padding="none" />
               {isRepeated ? (
                 <HeaderTableCell padding="none">
-                  <Checkbox
+                  <StandardCheckbox
                     color="primary"
                     size="small"
                     indeterminate={selectedIds.length > 0 && selectedIds.length < tableRows.length}
                     checked={tableRows.length > 0 && selectedIds.length === tableRows.length}
-                    disabled={readOnly}
+                    disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+                    readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
                     onChange={onSelectAll}
                   />
                 </HeaderTableCell>
