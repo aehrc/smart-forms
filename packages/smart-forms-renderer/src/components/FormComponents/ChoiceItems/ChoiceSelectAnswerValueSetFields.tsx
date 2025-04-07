@@ -78,6 +78,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
           sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }}
           size="small"
           disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+          readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
           renderInput={(params) => (
             <StandardTextField
               textFieldWidth={textFieldWidth}

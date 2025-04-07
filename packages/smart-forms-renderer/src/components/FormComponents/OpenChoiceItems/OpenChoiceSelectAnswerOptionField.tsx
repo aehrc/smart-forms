@@ -53,6 +53,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
         autoHighlight
         sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }}
         disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+        readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
         size="small"
         renderInput={(params) => (
           <StandardTextField

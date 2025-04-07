@@ -84,6 +84,7 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
           typeof option === 'string' ? option : (option.display ?? `${option.code}`)
         }
         disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+        readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
         loading={loading}
         loadingText={'Fetching results...'}
         clearOnEscape

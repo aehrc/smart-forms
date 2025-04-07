@@ -44,7 +44,7 @@ function AttachmentFileDropBox(props: AttachmentFileDropBoxProps) {
 
   let boxMessage = 'No file selected';
   if (readOnly) {
-    boxMessage = 'Item is read only';
+    boxMessage = 'Attachment item is read only';
   } else if (isActive) {
     boxMessage = 'Release to drop file';
   } else if (errorMessage) {
