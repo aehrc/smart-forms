@@ -58,22 +58,24 @@ function AttachmentUrlField(props: AttachmentUrlFieldProps) {
           disabled={readOnly}
           size="small"
           data-test="q-item-attachment-field"
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                {url != '' ? (
-                  <Tooltip title={urlIsValid ? 'URL is valid!' : 'Invalid URL'} placement="right">
-                    <Box mt={0.5}>
-                      {urlIsValid ? (
-                        <CheckIcon color="success" fontSize="small" />
-                      ) : (
-                        <DangerousIcon color="error" fontSize="small" />
-                      )}
-                    </Box>
-                  </Tooltip>
-                ) : null}
-              </InputAdornment>
-            )
+          slotProps={{
+            input: {
+              endAdornment: (
+                <InputAdornment position="end">
+                  {url != '' ? (
+                    <Tooltip title={urlIsValid ? 'URL is valid!' : 'Invalid URL'} placement="right">
+                      <Box mt={0.5}>
+                        {urlIsValid ? (
+                          <CheckIcon color="success" fontSize="small" />
+                        ) : (
+                          <DangerousIcon color="error" fontSize="small" />
+                        )}
+                      </Box>
+                    </Tooltip>
+                  ) : null}
+                </InputAdornment>
+              )
+            }
           }}
         />
       </Stack>

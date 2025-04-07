@@ -49,16 +49,18 @@ function QuantityField(props: QuantityFieldProps) {
       textFieldWidth={textFieldWidth}
       isTabled={isTabled}
       size="small"
-      inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position={'end'}>
-            <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-            <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
-              {displayUnit}
-            </Typography>
-          </InputAdornment>
-        )
+      slotProps={{
+        htmlInput: { inputMode: 'numeric', pattern: '[0-9]*' },
+        input: {
+          endAdornment: (
+            <InputAdornment position={'end'}>
+              <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+              <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
+                {displayUnit}
+              </Typography>
+            </InputAdornment>
+          )
+        }
       }}
       helperText={feedback}
       data-test="q-item-quantity-field"

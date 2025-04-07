@@ -83,17 +83,19 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
               label={displayPrompt}
               placeholder={entryFormat}
               {...params}
-              InputProps={{
-                ...params.InputProps,
-                endAdornment: (
-                  <>
-                    {params.InputProps.endAdornment}
-                    <FadingCheckIcon fadeIn={expressionUpdated} disabled={readOnly} />
-                    <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
-                      {displayUnit}
-                    </Typography>
-                  </>
-                )
+              slotProps={{
+                input: {
+                  ...params.InputProps,
+                  endAdornment: (
+                    <>
+                      {params.InputProps.endAdornment}
+                      <FadingCheckIcon fadeIn={expressionUpdated} disabled={readOnly} />
+                      <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
+                        {displayUnit}
+                      </Typography>
+                    </>
+                  )
+                }
               }}
               data-test="q-item-choice-select-answer-value-set-field"
             />

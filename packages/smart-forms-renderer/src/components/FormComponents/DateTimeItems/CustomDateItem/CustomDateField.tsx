@@ -83,20 +83,22 @@ function CustomDateField(props: CustomDateFieldProps) {
         focused={isFocused}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
-        InputProps={{
-          endAdornment: (
-            <>
-              <DatePicker
-                valueString={valueDate}
-                readOnly={readOnly}
-                anchorEl={anchorRef.current}
-                onSelectDate={(valueDayjs: Dayjs) => {
-                  onSelectDate(valueDayjs.format('DD/MM/YYYY'));
-                }}
-                onFocus={(focus) => setFocused(focus)}
-              />
-            </>
-          )
+        slotProps={{
+          input: {
+            endAdornment: (
+              <>
+                <DatePicker
+                  valueString={valueDate}
+                  readOnly={readOnly}
+                  anchorEl={anchorRef.current}
+                  onSelectDate={(valueDayjs: Dayjs) => {
+                    onSelectDate(valueDayjs.format('DD/MM/YYYY'));
+                  }}
+                  onFocus={(focus) => setFocused(focus)}
+                />
+              </>
+            )
+          }
         }}
         helperText={isTabled ? '' : feedback}
       />

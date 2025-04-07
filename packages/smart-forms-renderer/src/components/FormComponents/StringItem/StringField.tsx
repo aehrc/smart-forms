@@ -66,15 +66,17 @@ function StringField(props: StringFieldProps) {
       placeholder={entryFormat}
       disabled={readOnly}
       size="small"
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end">
-            <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-            <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
-              {displayUnit}
-            </Typography>
-          </InputAdornment>
-        )
+      slotProps={{
+        input: {
+          endAdornment: (
+            <InputAdornment position="end">
+              <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+              <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
+                {displayUnit}
+              </Typography>
+            </InputAdornment>
+          )
+        }
       }}
       helperText={feedback}
       data-test="q-item-string-field"

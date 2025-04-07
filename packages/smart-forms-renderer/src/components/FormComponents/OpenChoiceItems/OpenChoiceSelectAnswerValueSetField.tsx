@@ -65,16 +65,18 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
             label={displayPrompt}
             placeholder={entryFormat}
             {...params}
-            InputProps={{
-              ...params.InputProps,
-              endAdornment: (
-                <>
-                  {params.InputProps.endAdornment}
-                  <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
-                    {displayUnit}
-                  </Typography>
-                </>
-              )
+            slotProps={{
+              input: {
+                ...params.InputProps,
+                endAdornment: (
+                  <>
+                    {params.InputProps.endAdornment}
+                    <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
+                      {displayUnit}
+                    </Typography>
+                  </>
+                )
+              }
             }}
           />
         )}

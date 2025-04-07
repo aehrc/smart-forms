@@ -80,17 +80,19 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
             label={displayPrompt}
             placeholder={entryFormat}
             {...params}
-            InputProps={{
-              ...params.InputProps,
-              endAdornment: (
-                <>
-                  {params.InputProps.endAdornment}
-                  <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-                  <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
-                    {displayUnit}
-                  </Typography>
-                </>
-              )
+            slotProps={{
+              input: {
+                ...params.InputProps,
+                endAdornment: (
+                  <>
+                    {params.InputProps.endAdornment}
+                    <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+                    <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
+                      {displayUnit}
+                    </Typography>
+                  </>
+                )
+              }
             }}
           />
         )}

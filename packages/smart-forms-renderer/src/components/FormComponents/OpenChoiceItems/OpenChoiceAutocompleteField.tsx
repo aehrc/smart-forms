@@ -101,41 +101,43 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
             label={displayPrompt}
             size="small"
             placeholder={entryFormat}
-            InputProps={{
-              ...params.InputProps,
-              startAdornment: (
-                <>
-                  {!valueAutocomplete || valueAutocomplete === '' ? (
-                    <SearchIcon fontSize="small" sx={{ ml: 0.5 }} />
-                  ) : null}
-                  {params.InputProps.startAdornment}
-                </>
-              ),
-              // Warning indicator should not show up in open-choice autocomplete
-              endAdornment: (
-                <>
-                  {loading ? (
-                    <CircularProgress color="inherit" size={16} />
-                  ) : feedback && feedback.color !== 'warning' ? (
-                    <Fade in={!!feedback} timeout={300}>
-                      <Tooltip title={feedback.message} arrow sx={{ ml: 1 }}>
-                        {
+            slotProps={{
+              input: {
+                ...params.InputProps,
+                startAdornment: (
+                  <>
+                    {!valueAutocomplete || valueAutocomplete === '' ? (
+                      <SearchIcon fontSize="small" sx={{ ml: 0.5 }} />
+                    ) : null}
+                    {params.InputProps.startAdornment}
+                  </>
+                ),
+                // Warning indicator should not show up in open-choice autocomplete
+                endAdornment: (
+                  <>
+                    {loading ? (
+                      <CircularProgress color="inherit" size={16} />
+                    ) : feedback && feedback.color !== 'warning' ? (
+                      <Fade in={!!feedback} timeout={300}>
+                        <Tooltip title={feedback.message} arrow sx={{ ml: 1 }}>
                           {
-                            info: <InfoIcon fontSize="small" color="info" />,
-                            warning: <WarningAmberIcon fontSize="small" color="warning" />,
-                            success: <DoneIcon fontSize="small" color="success" />,
-                            error: <ErrorIcon fontSize="small" color="error" />
-                          }[feedback.color]
-                        }
-                      </Tooltip>
-                    </Fade>
-                  ) : null}
-                  {params.InputProps.endAdornment}
-                  <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
-                    {displayUnit}
-                  </Typography>
-                </>
-              )
+                            {
+                              info: <InfoIcon fontSize="small" color="info" />,
+                              warning: <WarningAmberIcon fontSize="small" color="warning" />,
+                              success: <DoneIcon fontSize="small" color="success" />,
+                              error: <ErrorIcon fontSize="small" color="error" />
+                            }[feedback.color]
+                          }
+                        </Tooltip>
+                      </Fade>
+                    ) : null}
+                    {params.InputProps.endAdornment}
+                    <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
+                      {displayUnit}
+                    </Typography>
+                  </>
+                )
+              }
             }}
             data-test="q-item-open-choice-autocomplete-field"
           />

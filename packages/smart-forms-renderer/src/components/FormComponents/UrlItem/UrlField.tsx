@@ -63,14 +63,16 @@ function UrlField(props: UrlFieldProps) {
       placeholder={entryFormat}
       disabled={readOnly}
       size="small"
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end">
-            <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
-              {displayUnit}
-            </Typography>
-          </InputAdornment>
-        )
+      slotProps={{
+        input: {
+          endAdornment: (
+            <InputAdornment position="end">
+              <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
+                {displayUnit}
+              </Typography>
+            </InputAdornment>
+          )
+        }
       }}
       helperText={feedback}
       data-test="q-item-url-field"

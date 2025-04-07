@@ -67,16 +67,18 @@ function IntegerField(props: IntegerFieldProps) {
       textFieldWidth={textFieldWidth}
       isTabled={isTabled}
       size="small"
-      inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position={'end'}>
-            <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-            <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
-              {displayUnit}
-            </Typography>
-          </InputAdornment>
-        )
+      slotProps={{
+        htmlInput: { inputMode: 'numeric', pattern: '[0-9]*' },
+        input: {
+          endAdornment: (
+            <InputAdornment position={'end'}>
+              <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+              <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
+                {displayUnit}
+              </Typography>
+            </InputAdornment>
+          )
+        }
       }}
       data-test="q-item-integer-field"
     />

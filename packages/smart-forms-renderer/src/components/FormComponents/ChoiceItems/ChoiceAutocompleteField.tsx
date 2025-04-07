@@ -92,39 +92,41 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
           label={displayPrompt}
           size="small"
           placeholder={entryFormat}
-          InputProps={{
-            ...params.InputProps,
+          slotProps={{
+            input: {
+              ...params.InputProps,
 
-            startAdornment: (
-              <>
-                {!valueCoding ? <SearchIcon fontSize="small" sx={{ ml: 0.5 }} /> : null}
-                {params.InputProps.startAdornment}
-              </>
-            ),
-            endAdornment: (
-              <>
-                {loading ? (
-                  <CircularProgress color="inherit" size={16} />
-                ) : feedback ? (
-                  <Fade in={!!feedback} timeout={300}>
-                    <Tooltip title={feedback.message} arrow sx={{ ml: 1 }}>
-                      {
+              startAdornment: (
+                <>
+                  {!valueCoding ? <SearchIcon fontSize="small" sx={{ ml: 0.5 }} /> : null}
+                  {params.InputProps.startAdornment}
+                </>
+              ),
+              endAdornment: (
+                <>
+                  {loading ? (
+                    <CircularProgress color="inherit" size={16} />
+                  ) : feedback ? (
+                    <Fade in={!!feedback} timeout={300}>
+                      <Tooltip title={feedback.message} arrow sx={{ ml: 1 }}>
                         {
-                          info: <InfoIcon fontSize="small" color="info" />,
-                          warning: <WarningAmberIcon fontSize="small" color="warning" />,
-                          success: <DoneIcon fontSize="small" color="success" />,
-                          error: <ErrorIcon fontSize="small" color="error" />
-                        }[feedback.color]
-                      }
-                    </Tooltip>
-                  </Fade>
-                ) : null}
-                {params.InputProps.endAdornment}
-                <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
-                  {displayUnit}
-                </Typography>
-              </>
-            )
+                          {
+                            info: <InfoIcon fontSize="small" color="info" />,
+                            warning: <WarningAmberIcon fontSize="small" color="warning" />,
+                            success: <DoneIcon fontSize="small" color="success" />,
+                            error: <ErrorIcon fontSize="small" color="error" />
+                          }[feedback.color]
+                        }
+                      </Tooltip>
+                    </Fade>
+                  ) : null}
+                  {params.InputProps.endAdornment}
+                  <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
+                    {displayUnit}
+                  </Typography>
+                </>
+              )
+            }
           }}
         />
       )}
