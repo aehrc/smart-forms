@@ -18,6 +18,7 @@
 import React from 'react';
 import type { TypographyProps } from '@mui/material/Typography';
 import Typography from '@mui/material/Typography';
+import { useRendererStylingStore } from '../../../stores';
 
 interface RequiredAsteriskProps extends TypographyProps {
   readOnly?: boolean;
@@ -26,8 +27,12 @@ interface RequiredAsteriskProps extends TypographyProps {
 function RequiredAsterisk(props: RequiredAsteriskProps) {
   const { readOnly, children = '*', ...rest } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+
+  const readOnlyTextColor = readOnlyVisualStyle === 'disabled' ? 'text.disabled' : 'text.secondary';
+
   return (
-    <Typography color={readOnly ? 'rgba(255, 0, 0, 0.5)' : 'red'} {...rest}>
+    <Typography color={readOnly ? readOnlyTextColor : 'red'} {...rest}>
       {children}
     </Typography>
   );

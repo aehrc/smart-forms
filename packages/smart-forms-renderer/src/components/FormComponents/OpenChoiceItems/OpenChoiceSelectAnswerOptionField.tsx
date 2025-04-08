@@ -9,8 +9,8 @@ import type {
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import { useRendererStylingStore } from '../../../stores';
-import Typography from '@mui/material/Typography';
 import { StyledRequiredTypography } from '../Item.styles';
+import DisplayUnitText from '../ItemParts/DisplayUnitText';
 
 interface OpenChoiceSelectAnswerOptionFieldProps
   extends PropsWithIsTabledRequiredAttribute,
@@ -36,6 +36,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
     onChange
   } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
@@ -51,7 +52,8 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
         freeSolo
         autoHighlight
         sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }}
-        disabled={readOnly}
+        disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+        readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
         size="small"
         renderInput={(params) => (
           <StandardTextField
@@ -60,16 +62,17 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
             label={displayPrompt}
             placeholder={entryFormat}
             {...params}
-            InputProps={{
-              ...params.InputProps,
-              endAdornment: (
-                <>
-                  {params.InputProps.endAdornment}
-                  <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
-                    {displayUnit}
-                  </Typography>
-                </>
-              )
+            slotProps={{
+              input: {
+                ...params.InputProps,
+                readOnly: readOnly && readOnlyVisualStyle === 'readonly',
+                endAdornment: (
+                  <>
+                    {params.InputProps.endAdornment}
+                    <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
+                  </>
+                )
+              }
             }}
           />
         )}

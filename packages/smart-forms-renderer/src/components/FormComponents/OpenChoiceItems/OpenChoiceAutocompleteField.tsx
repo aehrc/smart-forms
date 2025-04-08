@@ -35,7 +35,7 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import type { AlertColor } from '@mui/material/Alert';
 import { useRendererStylingStore } from '../../../stores';
-import Typography from '@mui/material/Typography';
+import DisplayUnitText from '../ItemParts/DisplayUnitText';
 
 interface OpenChoiceAutocompleteFieldProps
   extends PropsWithIsTabledRequiredAttribute,
@@ -69,6 +69,7 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
     onUnfocus
   } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
@@ -82,7 +83,8 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
         getOptionLabel={(option) =>
           typeof option === 'string' ? option : (option.display ?? `${option.code}`)
         }
-        disabled={readOnly}
+        disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+        readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
         loading={loading}
         loadingText={'Fetching results...'}
         clearOnEscape
@@ -101,41 +103,42 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
             label={displayPrompt}
             size="small"
             placeholder={entryFormat}
-            InputProps={{
-              ...params.InputProps,
-              startAdornment: (
-                <>
-                  {!valueAutocomplete || valueAutocomplete === '' ? (
-                    <SearchIcon fontSize="small" sx={{ ml: 0.5 }} />
-                  ) : null}
-                  {params.InputProps.startAdornment}
-                </>
-              ),
-              // Warning indicator should not show up in open-choice autocomplete
-              endAdornment: (
-                <>
-                  {loading ? (
-                    <CircularProgress color="inherit" size={16} />
-                  ) : feedback && feedback.color !== 'warning' ? (
-                    <Fade in={!!feedback} timeout={300}>
-                      <Tooltip title={feedback.message} arrow sx={{ ml: 1 }}>
-                        {
+            slotProps={{
+              input: {
+                ...params.InputProps,
+                readOnly: readOnly && readOnlyVisualStyle === 'readonly',
+                startAdornment: (
+                  <>
+                    {!valueAutocomplete || valueAutocomplete === '' ? (
+                      <SearchIcon fontSize="small" sx={{ ml: 0.5 }} />
+                    ) : null}
+                    {params.InputProps.startAdornment}
+                  </>
+                ),
+                // Warning indicator should not show up in open-choice autocomplete
+                endAdornment: (
+                  <>
+                    {loading ? (
+                      <CircularProgress color="inherit" size={16} />
+                    ) : feedback && feedback.color !== 'warning' ? (
+                      <Fade in={!!feedback} timeout={300}>
+                        <Tooltip title={feedback.message} arrow sx={{ ml: 1 }}>
                           {
-                            info: <InfoIcon fontSize="small" color="info" />,
-                            warning: <WarningAmberIcon fontSize="small" color="warning" />,
-                            success: <DoneIcon fontSize="small" color="success" />,
-                            error: <ErrorIcon fontSize="small" color="error" />
-                          }[feedback.color]
-                        }
-                      </Tooltip>
-                    </Fade>
-                  ) : null}
-                  {params.InputProps.endAdornment}
-                  <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
-                    {displayUnit}
-                  </Typography>
-                </>
-              )
+                            {
+                              info: <InfoIcon fontSize="small" color="info" />,
+                              warning: <WarningAmberIcon fontSize="small" color="warning" />,
+                              success: <DoneIcon fontSize="small" color="success" />,
+                              error: <ErrorIcon fontSize="small" color="error" />
+                            }[feedback.color]
+                          }
+                        </Tooltip>
+                      </Fade>
+                    ) : null}
+                    {params.InputProps.endAdornment}
+                    <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
+                  </>
+                )
+              }
             }}
             data-test="q-item-open-choice-autocomplete-field"
           />

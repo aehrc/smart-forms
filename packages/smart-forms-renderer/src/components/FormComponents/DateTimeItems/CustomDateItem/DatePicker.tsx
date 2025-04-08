@@ -42,11 +42,14 @@ function DatePicker(props: DatePickerProps) {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <MuiDatePicker
         value={valueDayJs ?? null}
-        disabled={readOnly}
         slots={{ field: DatePickerButton }}
         slotProps={{
           field: {
             onOpen: () => {
+              if (readOnly) {
+                return;
+              }
+
               setOpen(!open);
               onFocus(true);
             },

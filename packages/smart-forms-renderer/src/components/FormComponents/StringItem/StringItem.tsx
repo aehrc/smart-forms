@@ -155,7 +155,7 @@ function StringItem(props: StringItemProps) {
             isTabled={isTabled}
           />
         }
-        feedback={feedback}       
+        feedback={feedback}
       />
     </FullWidthFormComponentBox>
   );

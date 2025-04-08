@@ -21,7 +21,7 @@ import { StandardTextField } from '../Textfield.styles';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import { useRendererStylingStore } from '../../../stores';
-import Typography from '@mui/material/Typography';
+import DisplayUnitText from '../ItemParts/DisplayUnitText';
 
 interface IntegerFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -51,6 +51,7 @@ function IntegerField(props: IntegerFieldProps) {
     onInputChange
   } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
   return (
@@ -60,23 +61,24 @@ function IntegerField(props: IntegerFieldProps) {
       error={!!feedback}
       helperText={feedback}
       onChange={(event) => onInputChange(event.target.value)}
-      disabled={readOnly}
+      disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       label={displayPrompt}
       placeholder={entryFormat === '' ? '0' : entryFormat}
       fullWidth
       textFieldWidth={textFieldWidth}
       isTabled={isTabled}
       size="small"
-      inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position={'end'}>
-            <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-            <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
-              {displayUnit}
-            </Typography>
-          </InputAdornment>
-        )
+      slotProps={{
+        htmlInput: { inputMode: 'numeric', pattern: '[0-9]*' },
+        input: {
+          readOnly: readOnly && readOnlyVisualStyle === 'readonly',
+          endAdornment: (
+            <InputAdornment position={'end'}>
+              <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+              <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
+            </InputAdornment>
+          )
+        }
       }}
       data-test="q-item-integer-field"
     />

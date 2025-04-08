@@ -96,5 +96,5 @@ jobs:
       - name: Run linter
         run: npm run lint
 
-      - name: Check formatting
-        run: npm run check-formatting
+      - name: Run prettier
+        run: npm run prettier

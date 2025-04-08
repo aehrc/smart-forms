@@ -19,6 +19,7 @@ interface QuantityComparatorFieldProps extends PropsWithIsTabledRequiredAttribut
 function QuantityComparatorField(props: QuantityComparatorFieldProps) {
   const { linkId, itemType, options, valueSelect, readOnly, onChange } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const hideQuantityComparatorField = useRendererStylingStore.use.hideQuantityComparatorField();
   if (hideQuantityComparatorField) {
     return null;
@@ -33,9 +34,20 @@ function QuantityComparatorField(props: QuantityComparatorFieldProps) {
         onChange={(_, newValue) => onChange(newValue as Quantity['comparator'])}
         autoHighlight
         sx={{ width: 88 }}
-        disabled={readOnly}
+        disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+        readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
         size="small"
-        renderInput={(params) => <MuiTextField sx={{ width: 88 }} {...params} />}
+        renderInput={(params) => (
+          <MuiTextField
+            sx={{ width: 88 }}
+            {...params}
+            slotProps={{
+              input: {
+                readOnly: readOnly && readOnlyVisualStyle === 'readonly'
+              }
+            }}
+          />
+        )}
       />
       <Typography variant="caption" color="text.secondary">
         (optional)
