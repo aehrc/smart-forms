@@ -102,7 +102,6 @@ function GroupTableView(props: GroupTableViewProps) {
           disableGutters
           defaultExpanded={isDefaultOpen}
           elevation={groupCardElevation}
-          isRepeated={isRepeated}
           slotProps={{
             transition: { unmountOnExit: true, timeout: 250 }
           }}>
@@ -156,7 +155,6 @@ function GroupTableView(props: GroupTableViewProps) {
         disableGutters
         defaultExpanded={isDefaultOpen}
         elevation={groupCardElevation}
-        isRepeated={isRepeated}
         slotProps={{
           transition: { unmountOnExit: true, timeout: 250 }
         }}>

@@ -108,7 +108,6 @@ function GroupItemView(props: GroupItemViewProps) {
         disableGutters
         defaultExpanded={isDefaultOpen}
         elevation={groupCardElevation}
-        isRepeated={isRepeated}
         slotProps={{
           transition: { unmountOnExit: true, timeout: 250 }
         }}
