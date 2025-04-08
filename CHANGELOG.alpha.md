@@ -7,6 +7,72 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.40] - 2025-04-08
+### Added
+- Added support for HTML readonly `attribute` as an alternative to `disabled` for readOnly items. See https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/readonly#attribute_interactions for more information.
+- You can toggle between these two visual styles/behaviours via the `readOnlyVisualStyle` config in `RendererStylingStore`.
+
+## [1.0.0-alpha.39] - 2025-04-04
+### Changed
+- Completely refactored removeEmptyAnswers() implementation to work with repeat groups.
+
+### Fixed
+- Add support for repeat groups in initialisation of calculatedExpressions.
+
+## [1.0.0-alpha.38] - 2025-04-02
+### Added
+- Add support for class-based styles for XHTML item._text. See https://github.com/aehrc/smart-forms/issues/1120#issuecomment-2771327317 for more information.
+
+## [1.0.0-alpha.37] - 2025-04-02
+### Fixed
+- Fixed an issue where display instructions persists even when the item has an error message.
+
+## [1.0.0-alpha.36] - 2025-04-02
+### Fixed
+- Fixed an issue where SDC itemControl `collapsible` doesn't work with Group Table.
+
+## [1.0.0-alpha.35] - 2025-04-01
+### Added
+- Implement Parameterised/Dynamic ValueSets
+- Proposal: https://build.fhir.org/ig/FHIR/fhir-tools-ig/parameterized-valuesets.html
+- chat.fhir.org channel: https://chat.fhir.org/#narrow/channel/179202-terminology/topic/Parameterised.20ValueSets/with/509420458
+
+## [1.0.0-alpha.34] - 2025-03-27
+### Added
+- Implement partial support for header and footer itemControls - header and footer will render properly but will not be sticky.
+
+### Changed
+- Allow two methods for defining SDC itemControl `page`:
+  1. Standards-based as defined in SDC: https://hl7.org/fhir/extensions/CodeSystem-questionnaire-item-control.html#questionnaire-item-control-page
+  2. Backwards-compatible way - using it as a "page-container"
+
+## [1.0.0-alpha.33] - 2025-03-27
+### Fixed
+- Allow `extension` property in valueCodings i.e. `ordinalValue` extension usage. 
+
+## [1.0.0-alpha.32] - 2025-03-27
+### Fixed
+- Fixed an issue where SDC itemControl `collapsible`'s `default-open` value doesn't work as expected.
+
+## [1.0.0-alpha.31] - 2025-03-26
+### Added
+- Add support for when a form tab and next/previous tab buttons is clicked, it focuses on the heading of the tab's content.
+
+## [1.0.0-alpha.30] - 2025-03-26
+### Added
+- Read styles from XHTML item._text and apply it to children items.
+
+## [1.0.0-alpha.29] - 2025-03-11
+### Fixed
+- Fixed infinite updating of string-based calculatedExpressions when the input is empty and the new value is Falsy (null, undefined, "", etc)
+
+### Changed
+- Display items now do not classify as HTML labels.
+
+## [1.0.0-alpha.28] - 2025-03-11
+### Fixed
+- Only allow valueCodings to have system, code and display properties. This is to prevent unexpected properties in the QuestionnaireResponse causing validation errors.
+
 ## [1.0.0-alpha.27] - 2025-03-05
 ### Fixed
 - Restore flex-grow: 1 in ItemLabel and GroupHeading to work with XHTML and markdown renderings with 100% width
