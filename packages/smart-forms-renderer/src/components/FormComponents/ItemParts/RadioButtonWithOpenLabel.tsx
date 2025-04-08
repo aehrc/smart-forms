@@ -15,12 +15,10 @@
  * limitations under the License.
  */
 
-import type { ChangeEvent } from 'react';
 import React from 'react';
 import Box from '@mui/material/Box';
-import { StandardTextField } from '../Textfield.styles';
 import ChoiceRadioSingle from '../ChoiceItems/ChoiceRadioSingle';
-import { useRendererStylingStore } from '../../../stores';
+import OpenLabelField from './OpenLabelField';
 
 interface RadioButtonWithOpenLabelProps {
   value: string | null;
@@ -33,16 +31,6 @@ interface RadioButtonWithOpenLabelProps {
 function RadioButtonWithOpenLabel(props: RadioButtonWithOpenLabelProps) {
   const { value, label, readOnly, isSelected, onInputChange } = props;
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
-  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
-
-  function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
-    onInputChange(event.target.value);
-  }
-
-  const openLabelFieldDisabled = !isSelected || (readOnly && readOnlyVisualStyle === 'disabled');
-  const openLabelFieldReadonly = !isSelected || (readOnly && readOnlyVisualStyle === 'readonly');
-
   return (
     <Box data-test="q-item-radio-open-label-box">
       <ChoiceRadioSingle
@@ -51,20 +39,11 @@ function RadioButtonWithOpenLabel(props: RadioButtonWithOpenLabelProps) {
         readOnly={readOnly}
         fullWidth={false}
       />
-      <StandardTextField
-        disabled={openLabelFieldDisabled}
+      <OpenLabelField
         value={value}
-        onChange={handleInputChange}
-        fullWidth
-        textFieldWidth={textFieldWidth}
-        isTabled={false}
-        size="small"
-        slotProps={{
-          input: {
-            readOnly: openLabelFieldReadonly
-          }
-        }}
-        data-test="q-item-radio-open-label-field"
+        readOnly={readOnly}
+        openLabelOptionSelected={isSelected}
+        onInputChange={onInputChange}
       />
     </Box>
   );

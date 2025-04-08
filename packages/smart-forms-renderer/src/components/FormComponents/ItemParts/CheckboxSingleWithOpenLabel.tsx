@@ -19,9 +19,9 @@ import type { ChangeEvent } from 'react';
 import React from 'react';
 import Box from '@mui/material/Box';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { StandardTextField } from '../Textfield.styles';
 import { useRendererStylingStore } from '../../../stores';
 import { StandardCheckbox } from '../../Checkbox.styles';
+import OpenLabelField from './OpenLabelField';
 
 interface Props {
   value: string | null;
@@ -36,18 +36,10 @@ function CheckboxSingleWithOpenLabel(props: Props) {
   const { value, label, isChecked, readOnly, onCheckedChange, onInputChange } = props;
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
-  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
   function handleCheckedChange(event: ChangeEvent<HTMLInputElement>) {
     onCheckedChange(event.target.checked);
   }
-
-  function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
-    onInputChange(event.target.value);
-  }
-
-  const openLabelFieldDisabled = !isChecked || (readOnly && readOnlyVisualStyle === 'disabled');
-  const openLabelFieldReadonly = !isChecked || (readOnly && readOnlyVisualStyle === 'readonly');
 
   return (
     <Box data-test="q-item-checkbox-open-label-box">
@@ -64,20 +56,11 @@ function CheckboxSingleWithOpenLabel(props: Props) {
         }
         label={label + ':'}
       />
-      <StandardTextField
-        disabled={openLabelFieldDisabled}
+      <OpenLabelField
         value={value}
-        onChange={handleInputChange}
-        fullWidth
-        textFieldWidth={textFieldWidth}
-        isTabled={false}
-        size="small"
-        slotProps={{
-          input: {
-            readOnly: openLabelFieldReadonly
-          }
-        }}
-        data-test="q-item-checkbox-open-label-field"
+        readOnly={readOnly}
+        openLabelOptionSelected={isChecked}
+        onInputChange={onInputChange}
       />
     </Box>
   );
