@@ -20,23 +20,25 @@ import type {
   FetchTerminologyCallback,
   TerminologyRequestConfig
 } from '@aehrc/sdc-populate';
-import axios from 'axios';
+import { Bundle, BundleEntry, BundleLink } from 'fhir/r4';
+import { nanoid } from 'nanoid';
 
-const ABSOLUTE_URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
+const ABSOLUTE_URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].\S*$/;
+const MAX_PAGES_SEARCH_BUNDLE = 10;
 
 export interface RequestConfig {
   clientEndpoint: string;
   authToken?: string;
 }
 
-export const fetchResourceCallback: FetchResourceCallback = (
+export const fetchResourceCallback: FetchResourceCallback = async (
   query: string,
   requestConfig: RequestConfig
 ) => {
   let { clientEndpoint } = requestConfig;
   const { authToken } = requestConfig;
 
-  const headers = {
+  const headers: Record<string, string> = {
     Accept: 'application/json;charset=utf-8',
     Authorization: `Bearer ${authToken}`
   };
@@ -45,14 +47,110 @@ export const fetchResourceCallback: FetchResourceCallback = (
     clientEndpoint += '/';
   }
 
-  const queryUrl = ABSOLUTE_URL_REGEX.test(query) ? query : clientEndpoint + query;
+  const requestUrl = ABSOLUTE_URL_REGEX.test(query) ? query : clientEndpoint + query;
 
-  return axios.get(queryUrl, {
-    headers: headers
-  });
+  // Support for paginated resources, keep repeating the request until there are no more pages
+  let allEntries: BundleEntry[] = [];
+  let nextUrl: string | null = requestUrl;
+  const maxPages = MAX_PAGES_SEARCH_BUNDLE; // Set a maximum number of pages to fetch
+  let pageCount = 0;
+  do {
+    const response: Response = await fetch(nextUrl, { headers });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error when performing ${nextUrl}. Status: ${response.status}`);
+    }
+
+    try {
+      // Attempt to parse the response JSON
+      const fhirData = await response.json();
+
+      // If the response is not a Bundle searchset, return the original promise
+      if (!isBundleSearchset(fhirData)) {
+        return fhirData;
+      }
+
+      // At this point, fhirData is always a Bundle
+      if (fhirData.entry) {
+        allEntries = allEntries.concat(fhirData.entry);
+      }
+
+      const nextLink: BundleLink | undefined = fhirData.link?.find(
+        (link) => link.relation === 'next'
+      );
+
+      // Set nextUrl to null if there are no more pages
+      nextUrl = nextLink ? fixFhirNextUrl(nextLink.url, clientEndpoint) : null;
+      pageCount++;
+      if (pageCount >= maxPages) {
+        nextUrl = null;
+      }
+      // console.log(nextUrl);
+    } catch (error) {
+      // Return the original promise when an error occurs without any interruption
+      console.error('Error processing FHIR resource:', error);
+
+      return response.json();
+    }
+  } while (nextUrl);
+
+  // At this point, fhirData is always a Bundle
+  // Create a combined bundle with all entries
+  return createCombinedBundle(allEntries, query);
 };
 
-export const fetchTerminologyCallback: FetchTerminologyCallback = (
+function createCombinedBundle(entries: BundleEntry[], query: string): Bundle {
+  return {
+    resourceType: 'Bundle',
+    id: nanoid(),
+    meta: {
+      lastUpdated: new Date().toISOString().replace('Z', '+00:00'),
+      tag: [
+        {
+          code: `${query}:fhirpath`
+        }
+      ]
+    },
+    type: 'searchset',
+    entry: entries
+  };
+}
+
+// Fix nextLink as some FHIR servers have inaccurate URLs
+// Example: Next link of https://proxy.smartforms.io/v/r4/fhir might be returned as http://proxy.smartforms.io/fhir (non HTTPS)
+function fixFhirNextUrl(nextUrl: string, baseUrl: string) {
+  const fhirRoute = '/fhir';
+  const fhirIndex = nextUrl.indexOf(fhirRoute);
+
+  // Replace everything before "/fhir" with correct base URL
+  if (fhirIndex !== -1) {
+    const nextQuery = nextUrl.slice(fhirIndex + fhirRoute.length);
+
+    // Remove trailing slash from base URL if there are two slashes
+    if (baseUrl.endsWith('/') && nextQuery.startsWith('/')) {
+      baseUrl = baseUrl.slice(0, -1);
+    }
+
+    return baseUrl + nextQuery;
+  }
+
+  // Return original if "/fhir" is not found
+  return nextUrl;
+}
+
+function isBundleSearchset(resource: unknown): resource is Bundle {
+  if (!resource || typeof resource !== 'object') {
+    return false;
+  }
+  return (
+    'resourceType' in resource &&
+    resource.resourceType === 'Bundle' &&
+    'type' in resource &&
+    resource.type === 'searchset'
+  );
+}
+
+export const fetchTerminologyCallback: FetchTerminologyCallback = async (
   query: string,
   terminologyRequestConfig: TerminologyRequestConfig
 ) => {
@@ -66,9 +164,13 @@ export const fetchTerminologyCallback: FetchTerminologyCallback = (
     terminologyServerUrl += '/';
   }
 
-  const queryUrl = ABSOLUTE_URL_REGEX.test(query) ? query : terminologyServerUrl + query;
+  const requestUrl = ABSOLUTE_URL_REGEX.test(query) ? query : terminologyServerUrl + query;
 
-  return axios.get(queryUrl, {
-    headers: headers
-  });
+  const response = await fetch(requestUrl, { headers });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error when performing ${requestUrl}. Status: ${response.status}`);
+  }
+
+  return response.json();
 };
