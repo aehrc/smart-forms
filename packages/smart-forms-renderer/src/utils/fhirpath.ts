@@ -198,30 +198,25 @@ export async function createFhirPathContext(
 
   // Add variables of items that exist in questionnaireResponseItemMap into fhirPathContext
   for (const linkId in questionnaireResponseItemMap) {
+    const qrItems = questionnaireResponseItemMap[linkId] ?? [];
+
+    // Ensure at least one iteration even if qrItems is empty
+    const qrItemsToProcess = qrItems.length > 0 ? qrItems : [undefined];
+
     // For non-repeat groups, the same linkId will have only one item
     // For repeat groups, the same linkId will have multiple items
-    for (const qrItem of questionnaireResponseItemMap[linkId]) {
-      const fhirpathEvalResult = await evaluateLinkIdVariables(
-        qrItem,
+    for (const qrItem of qrItemsToProcess) {
+      const fhirPathEvalResult = await evaluateLinkIdVariables(
+        linkId,
         variablesFhirPath,
         fhirPathContext,
         fhirPathTerminologyCache,
-        terminologyServerUrl
+        terminologyServerUrl,
+        qrItem
       );
-      fhirPathContext = fhirpathEvalResult.fhirPathContext;
-      fhirPathTerminologyCache = fhirpathEvalResult.fhirPathTerminologyCache;
+      fhirPathContext = fhirPathEvalResult.fhirPathContext;
+      fhirPathTerminologyCache = fhirPathEvalResult.fhirPathTerminologyCache;
     }
-  }
-
-  // Items don't exist in questionnaireResponseItemMap, but we still have to add them into the fhirPathContext as empty arrays
-  const qrItemMapIsEmpty = Object.keys(questionnaireResponseItemMap).length === 0;
-  for (const linkId in variablesFhirPath) {
-    fhirPathContext = addEmptyLinkIdVariables(
-      linkId,
-      variablesFhirPath,
-      fhirPathContext,
-      qrItemMapIsEmpty
-    );
   }
 
   return { fhirPathContext, fhirPathTerminologyCache };
@@ -241,13 +236,14 @@ export function addEmptyXFhirQueryVariablesToFhirPathContext(
 }
 
 export async function evaluateLinkIdVariables(
-  item: QuestionnaireResponseItem,
+  linkId: string,
   variablesFhirPath: Record<string, Expression[]>,
   fhirPathContext: Record<string, any>,
   fhirPathTerminologyCache: Record<string, any>,
-  terminologyServerUrl: string
+  terminologyServerUrl: string,
+  qrItem?: QuestionnaireResponseItem
 ) {
-  const linkIdVariables = variablesFhirPath[item.linkId];
+  const linkIdVariables = variablesFhirPath[linkId];
   if (!linkIdVariables || linkIdVariables.length === 0) {
     return { fhirPathContext, fhirPathTerminologyCache };
   }
@@ -261,7 +257,7 @@ export async function evaluateLinkIdVariables(
 
       try {
         const fhirPathResult = fhirpath.evaluate(
-          item,
+          qrItem ?? {},
           {
             base: 'QuestionnaireResponse.item',
             expression: variable.expression
@@ -280,36 +276,12 @@ export async function evaluateLinkIdVariables(
           fhirPathTerminologyCache[cacheKey] = fhirPathContext[`${variable.name}`];
         }
       } catch (e) {
-        console.warn(e.message, `LinkId: ${item.linkId}\nExpression: ${variable.expression}`);
+        console.warn(e.message, `LinkId: ${linkId}\nExpression: ${variable.expression}`);
       }
     }
   }
 
   return { fhirPathContext, fhirPathTerminologyCache };
-}
-
-export function addEmptyLinkIdVariables(
-  linkId: string,
-  variablesFhirPath: Record<string, Expression[]>,
-  fhirPathContext: Record<string, any>,
-  qrItemMapIsEmpty: boolean
-) {
-  const linkIdVariables = variablesFhirPath[linkId];
-  if (!linkIdVariables || linkIdVariables.length === 0) {
-    return fhirPathContext;
-  }
-
-  for (const variable of linkIdVariables) {
-    if (variable.expression && variable.name) {
-      // If the variable is not evaluated, add it as an empty array
-      // Also, when questionnaireResponseItemMap is empty, no items exist in the questionnaireResponse, therefore no variables are evaluated
-      if (fhirPathContext[`${variable.name}`] === undefined || qrItemMapIsEmpty) {
-        fhirPathContext[`${variable.name}`] = [];
-      }
-    }
-  }
-
-  return fhirPathContext;
 }
 
 export async function evaluateQuestionnaireLevelVariables(

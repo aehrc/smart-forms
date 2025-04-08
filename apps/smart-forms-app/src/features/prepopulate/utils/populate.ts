@@ -137,7 +137,7 @@ export async function populateQuestionnaire(
   if (issuesParameter) {
     for (const issue of issuesParameter.resource.issue) {
       if (issue.details?.text) {
-        console.warn(issue.details.text);
+        console.warn(`SDC-Populate issue:`, issue.details.text);
       }
     }
 
