@@ -8,10 +8,10 @@ export const StandardCheckbox = styled(Checkbox, {
     '&.MuiButtonBase-root': {
       '&.MuiCheckbox-root': {
         // Use text.disabled colour (same as disabled field) here because text.secondary is too dark, and 'rgb(220, 223, 228)' is too light
-        color: readOnly ? theme.palette.text.disabled : undefined
+        color: theme.palette.text.disabled
       },
       '&:hover': {
-        backgroundColor: readOnly ? theme.palette.action.hover : undefined
+        backgroundColor: theme.palette.action.hover
       }
     }
   })
