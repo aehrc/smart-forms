@@ -7,6 +7,11 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.41] - 2025-04-08
+### Changed
+- Capped peer React version at ^18.0.0. Reason being there are multiple dependencies that are not compatible with React 19.x.x.
+- When reading XHTML class styles, skip stylesheets from other origins
+
 ## [1.0.0-alpha.40] - 2025-04-08
 ### Added
 - Added support for HTML readonly `attribute` as an alternative to `disabled` for readOnly items. See https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/readonly#attribute_interactions for more information.

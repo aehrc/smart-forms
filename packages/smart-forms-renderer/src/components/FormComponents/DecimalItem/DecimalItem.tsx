@@ -81,10 +81,6 @@ function DecimalItem(props: DecimalItemProps) {
   // Perform validation checks - there's no string-based input here
   const feedback = useValidationFeedback(qItem, feedbackFromParent, input);
 
-  if (qItem.linkId === 'weight-feedback') {
-    console.log(feedback);
-  }
-
   // Process calculated expressions
   const { calcExpUpdated } = useDecimalCalculatedExpression({
     qItem: qItem,

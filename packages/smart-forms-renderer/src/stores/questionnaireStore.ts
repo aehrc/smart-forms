@@ -488,8 +488,6 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       initialCalculatedExpressions
     );
 
-    console.log(structuredClone(updatedResponse));
-
     const {
       initialTargetConstraints,
       initialEnableWhenItems,
