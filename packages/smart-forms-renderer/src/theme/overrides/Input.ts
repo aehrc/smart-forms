@@ -68,9 +68,6 @@ export default function Input(theme: Theme) {
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          '& .MuiOutlinedInput-notchedOutline': {
-            borderColor: 'rgb(143, 144, 153)'
-          },
           '&.Mui-disabled': {
             '& .MuiOutlinedInput-notchedOutline': {
               borderColor: theme.palette.action.disabledBackground
