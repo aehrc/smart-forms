@@ -23,7 +23,7 @@ import type {
 } from '../interfaces/expressions.interface';
 import type { OperationOutcomeIssue } from 'fhir/r4';
 import { createInvalidWarningIssue } from './operationOutcome';
-import type { TerminologyRequestConfig } from '../interfaces';
+import type { FetchTerminologyRequestConfig } from '../interfaces';
 import { handleFhirPathResult } from './createFhirPathContext';
 import { TERMINOLOGY_SERVER_URL } from '../../globals';
 
@@ -37,11 +37,11 @@ export async function generateExpressionValues(
   populationExpressions: PopulationExpressions,
   contextMap: Record<string, any>,
   issues: OperationOutcomeIssue[],
-  terminologyRequestConfig?: TerminologyRequestConfig
+  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
 ) {
   const { initialExpressions, itemPopulationContexts } = populationExpressions;
 
-  const terminologyServerUrl = terminologyRequestConfig?.terminologyServerUrl ?? null;
+  const terminologyServerUrl = fetchTerminologyRequestConfig?.terminologyServerUrl ?? null;
 
   for (const linkId in initialExpressions) {
     const initialExpression = initialExpressions[linkId];
@@ -114,9 +114,9 @@ export async function evaluateItemPopulationContexts(
   itemPopulationContexts: Record<string, ItemPopulationContext>,
   contextMap: Record<string, any>,
   issues: OperationOutcomeIssue[],
-  terminologyRequestConfig?: TerminologyRequestConfig
+  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
 ): Promise<Record<string, any>> {
-  const terminologyServerUrl = terminologyRequestConfig?.terminologyServerUrl ?? null;
+  const terminologyServerUrl = fetchTerminologyRequestConfig?.terminologyServerUrl ?? null;
 
   for (const name in itemPopulationContexts) {
     const itemPopulationContext = itemPopulationContexts[name];
