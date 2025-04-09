@@ -20,10 +20,11 @@ import ResponseFeedbackMessage from './ResponseFeedbackMessage.tsx';
 import { useSnackbar } from 'notistack';
 import type { Questionnaire } from 'fhir/r4';
 import CloseSnackbar from '../../../../../../components/Snackbar/CloseSnackbar.tsx';
+import type { UseQueryResult } from '@tanstack/react-query';
 
 interface Props {
   isEmpty: boolean;
-  status: 'loading' | 'error' | 'success';
+  status: UseQueryResult['status'];
   searchedQuestionnaire: Questionnaire | null;
   error?: unknown;
 }
@@ -36,7 +37,7 @@ function ResponseListFeedback(props: Props) {
   let feedbackType: 'error' | 'empty' | 'loading' | null = null;
   if (status === 'error') {
     feedbackType = 'error';
-  } else if (status === 'loading') {
+  } else if (status === 'pending') {
     feedbackType = 'loading';
   } else if (isEmpty) {
     feedbackType = 'empty';

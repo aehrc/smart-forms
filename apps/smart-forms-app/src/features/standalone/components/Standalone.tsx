@@ -65,7 +65,7 @@ function Standalone() {
 
   return (
     <Grid container>
-      <Grid item xs={12} xl={resourcesShown ? 8 : 12}>
+      <Grid component="div" size={{ xs: 12, xl: resourcesShown ? 8 : 12 }}>
         <Stack my={3} rowGap={2}>
           <StandaloneQuestionnairePicker
             rendererPropsState={state}
@@ -99,11 +99,9 @@ function Standalone() {
         </Stack>
       </Grid>
       {resourcesShown ? (
-        <>
-          <Grid item xs={12} xl={4}>
-            <StandaloneResourceViewer rendererPropsState={state} />
-          </Grid>
-        </>
+        <Grid component="div" size={{ xs: 12, xl: 4 }}>
+          <StandaloneResourceViewer rendererPropsState={state} />
+        </Grid>
       ) : null}
     </Grid>
   );

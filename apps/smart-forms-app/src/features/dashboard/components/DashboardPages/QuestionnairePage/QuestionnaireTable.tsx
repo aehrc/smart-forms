@@ -36,14 +36,8 @@ function QuestionnaireTable() {
   const [searchInput, setSearchInput] = useState('');
   const [debouncedInput] = useDebounceValue(searchInput, 300);
 
-  const {
-    questionnaires,
-    fetchStatus,
-    fetchError,
-    isInitialLoading,
-    isFetching,
-    refetchQuestionnaires
-  } = useFetchQuestionnaires(searchInput, debouncedInput);
+  const { questionnaires, fetchStatus, fetchError, isLoading, isFetching, refetchQuestionnaires } =
+    useFetchQuestionnaires(searchInput, debouncedInput);
 
   const columns = useMemo(() => createQuestionnaireTableColumns(), []);
 
@@ -79,7 +73,7 @@ function QuestionnaireTable() {
       searchInput={searchInput}
       debouncedInput={debouncedInput}
       fetchStatus={fetchStatus}
-      isInitialLoading={isInitialLoading}
+      isLoading={isLoading}
       isFetching={isFetching}
       fetchError={fetchError}
       selectedQuestionnaire={selectedQuestionnaire}

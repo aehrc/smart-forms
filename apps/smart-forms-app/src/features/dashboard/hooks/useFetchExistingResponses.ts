@@ -63,15 +63,12 @@ function useFetchExistingResponses(): useFetchExistingResponsesReturnParams {
     questionnaireRefParam +
     patientIdParam;
 
-  const { data, isFetching, error, refetch } = useQuery<Bundle>(
-    ['existingResponses', queryUrl],
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    () => getClientBundlePromise(smartClient!, queryUrl),
-    {
-      enabled:
-        !!questionnaire && questionnaireRefParam !== '' && patientIdParam !== '' && !!smartClient
-    }
-  );
+  const { data, isFetching, error, refetch } = useQuery<Bundle>({
+    queryKey: ['existingResponses', queryUrl],
+    queryFn: () => getClientBundlePromise(smartClient!, queryUrl),
+    enabled:
+      !!questionnaire && questionnaireRefParam !== '' && patientIdParam !== '' && !!smartClient
+  });
 
   const existingResponses: QuestionnaireResponse[] = useMemo(
     () => getResponsesFromBundle(data),

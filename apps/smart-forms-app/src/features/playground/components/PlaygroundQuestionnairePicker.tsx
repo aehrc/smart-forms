@@ -40,10 +40,7 @@ function PlaygroundQuestionnairePicker(props: PlaygroundQuestionnairePickerProps
 
   const [selectedQuestionnaireId, setSelectedQuestionnaireId] = useState('');
 
-  const { questionnaires, fetchStatus, isInitialLoading, isFetching } = useFetchQuestionnaires(
-    '',
-    ''
-  );
+  const { questionnaires, fetchStatus, isLoading, isFetching } = useFetchQuestionnaires('', '');
 
   const questionnaireIds = useMemo(
     () => questionnaires.map((questionnaire) => questionnaire.id),
@@ -55,7 +52,7 @@ function PlaygroundQuestionnairePicker(props: PlaygroundQuestionnairePickerProps
     [questionnaires, selectedQuestionnaireId]
   );
 
-  if (isInitialLoading || isFetching) {
+  if (isLoading || isFetching) {
     return (
       <Stack
         direction="row"
@@ -105,31 +102,31 @@ function PlaygroundQuestionnairePicker(props: PlaygroundQuestionnairePickerProps
         {selectedQuestionnaire ? (
           <>
             <Grid container>
-              <Grid item xs={1.5}>
+              <Grid size={{ xs: 1.5 }} component="div">
                 ID:
               </Grid>
-              <Grid item xs={10.5}>
+              <Grid size={{ xs: 1.5 }} component="div">
                 <Typography mb={1}>{selectedQuestionnaire.id}</Typography>
               </Grid>
 
-              <Grid item xs={1.5}>
+              <Grid size={{ xs: 1.5 }} component="div">
                 Title:
               </Grid>
-              <Grid item xs={10.5}>
+              <Grid size={{ xs: 1.5 }} component="div">
                 <Typography mb={1}>{selectedQuestionnaire.title}</Typography>
               </Grid>
 
-              <Grid item xs={1.5}>
+              <Grid size={{ xs: 1.5 }} component="div">
                 URL:
               </Grid>
-              <Grid item xs={10.5}>
+              <Grid size={{ xs: 1.5 }} component="div">
                 <Typography mb={1}>{selectedQuestionnaire.url}</Typography>
               </Grid>
 
-              <Grid item xs={1.5}>
+              <Grid size={{ xs: 1.5 }} component="div">
                 Version:
               </Grid>
-              <Grid item xs={10.5}>
+              <Grid size={{ xs: 1.5 }} component="div">
                 <Typography mb={1}>{selectedQuestionnaire.version}</Typography>
               </Grid>
             </Grid>

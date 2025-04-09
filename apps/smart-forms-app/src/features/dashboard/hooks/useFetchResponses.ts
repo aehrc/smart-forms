@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+import type { UseQueryResult } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
 import type { Bundle, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { constructBundle, filterResponses, getClientBundlePromise } from '../utils/dashboard.ts';
@@ -24,7 +25,7 @@ import useSelectedQuestionnaire from './useSelectedQuestionnaire.ts';
 
 interface useFetchResponsesReturnParams {
   responses: QuestionnaireResponse[];
-  fetchStatus: 'error' | 'success' | 'loading';
+  fetchStatus: UseQueryResult['status'];
   fetchError: unknown;
   isFetching: boolean;
   refetchResponses: () => void;
@@ -59,14 +60,11 @@ function useFetchResponses(
     error,
     isFetching,
     refetch
-  } = useQuery<Bundle>(
-    ['response', queryUrl],
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    () => getClientBundlePromise(smartClient!, queryUrl),
-    {
-      enabled: !!smartClient
-    }
-  );
+  } = useQuery<Bundle>({
+    queryKey: ['response', queryUrl],
+    queryFn: () => getClientBundlePromise(smartClient!, queryUrl),
+    enabled: !!smartClient
+  });
 
   // create existing responses from a selectedResponse questionnaire if exists
   const existingResponseBundle: Bundle = useMemo(

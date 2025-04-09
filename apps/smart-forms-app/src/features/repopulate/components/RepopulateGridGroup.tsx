@@ -45,7 +45,7 @@ function RepopulateGridGroup(props: RepopulateGridGroupProps) {
 
   return (
     <Grid container rowGap={2} mt={0.25}>
-      <Grid item xs={12}>
+      <Grid component="div" size={{ xs: 12 }}>
         <Typography color="text.secondary" variant="overline" fontSize={7.5}>
           Old answer
         </Typography>
@@ -58,7 +58,7 @@ function RepopulateGridGroup(props: RepopulateGridGroupProps) {
           onQrItemChange={() => void 0}
         />
       </Grid>
-      <Grid item xs={12}>
+      <Grid component="div" size={{ xs: 12 }}>
         <Typography color="text.secondary" variant="overline" fontSize={7.5}>
           New answer
         </Typography>
