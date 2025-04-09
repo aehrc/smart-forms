@@ -20,7 +20,7 @@ import type {
   FetchTerminologyCallback,
   TerminologyRequestConfig
 } from '@aehrc/sdc-populate';
-import { Bundle, BundleEntry, BundleLink } from 'fhir/r4';
+import type { Bundle, BundleEntry, BundleLink } from 'fhir/r4';
 import { nanoid } from 'nanoid';
 
 const ABSOLUTE_URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].\S*$/;
