@@ -1,6 +1,6 @@
 {
   "name": "@aehrc/smart-forms-renderer",
-  "version": "1.0.0-alpha.42.dev1",
+  "version": "1.0.0-alpha.42.dev2",
   "description": "FHIR Structured Data Captured (SDC) rendering engine for Smart Forms",
   "main": "lib/index.js",
   "scripts": {
@@ -52,18 +52,18 @@
     "react-dnd-html5-backend": "^16.0.1",
     "react-markdown": "^10.0.1",
     "style-to-object": "^1.0.8",
-    "zustand": "^4.5.6"
+    "zustand": "^4.5.6",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/icons-material": "^7.0.1",
+    "@mui/lab": "^7.0.0-beta.10",
+    "@mui/material": "^7.0.1",
+    "@mui/x-date-pickers": "^7.28.3",
+    "@tanstack/react-query": "^5.72.1"
   },
   "peerDependencies": {
-    "@emotion/react": "^11.0.0",
-    "@emotion/styled": "^11.0.0",
-    "@mui/icons-material": "^6.0.0 || ^7.0.0",
-    "@mui/lab": "^6.0.0-beta.0 || ^7.0.0-beta.0",
-    "@mui/material": "^6.0.0 || ^7.0.0",
-    "@mui/x-date-pickers": "^7.0.0",
-    "@tanstack/react-query": "^5.0.0",
-    "react": "^17.0.0 || ^18.0.0 || ^19.0.0",
-    "react-dom": "^17.0.0 || ^18.0.0 || ^19.0.0"
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.26.9",

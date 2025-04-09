@@ -55,7 +55,7 @@ function AttachmentFileDropBox(props: AttachmentFileDropBoxProps) {
 
   return (
     <AttachmentFileDropBoxWrapper
-      ref={dropTarget}
+      ref={dropTarget as unknown as React.Ref<any>} // works in runtime, but produces error TS2322: Type 'ConnectDropTarget' is not assignable to type 'Ref<unknown> | undefined' at compile time
       display="flex"
       isActive={isActive}
       textFieldWidth={textFieldWidth}

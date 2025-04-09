@@ -82,7 +82,7 @@ function FormBodyPaginated(props: FormBodyPaginatedProps) {
 
       <Grid container spacing={1.5}>
         <TabContext value={currentPage.toString()}>
-          <Grid item xs={12} md={12} lg={12}>
+          <Grid size={{ xs: 12, md: 12, lg: 12 }}>
             {pageQItems.map((pageQItem, i) => {
               const [qItem, qrItemIndex] = pageQItem;
               const qrItem = topLevelQRItems[qrItemIndex];

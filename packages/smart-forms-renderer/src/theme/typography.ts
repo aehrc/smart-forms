@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { TypographyOptions } from '@mui/material/styles/createTypography';
+import { TypographyVariantsOptions } from '@mui/material';
 import type { CSSProperties } from 'react';
 
 declare module '@mui/material/styles' {
@@ -42,7 +42,7 @@ declare module '@mui/material/Typography' {
 
 // ----------------------------------------------------------------------
 
-const typography: TypographyOptions = {
+const typography: TypographyVariantsOptions = {
   fontFamily: ['Inter', 'sans-serif', 'Helvetica', 'Arial', 'Roboto', '"Helvetica Neue"'].join(','),
   h1: {
     fontSize: '2rem', // 32px
