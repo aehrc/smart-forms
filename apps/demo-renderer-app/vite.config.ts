@@ -6,17 +6,15 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   resolve: {
-    preserveSymlinks: false,
     alias: {
       '@': path.resolve(__dirname, './src')
     }
   },
-  optimizeDeps: {
-    include: ['@aehrc/sdc-populate']
-  },
-  build: {
-    commonjsOptions: {
-      include: [/node_modules/, '@aehrc/sdc-populate']
+  server: {
+    fs: {
+      // We are trying to access a Questionnaire on a remote forms server and render it, which Vite doesn't allow by default
+      // See https://vite.dev/config/server-options.html#server-fs-allow
+      strict: false
     }
   }
 });
