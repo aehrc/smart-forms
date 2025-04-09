@@ -48,7 +48,7 @@ function ItemFieldGrid(props: ItemFieldGridProps) {
         {fieldChildren}
         {/* Only show display instructions if there is no feedback of any type */}
         {!props.feedback && !props.dateFeedback && !props.timeFeedback && (
-          <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
+          <DisplayInstructions readOnly={readOnly}>{displayInstructions}</DisplayInstructions>
         )}
       </Grid>
     </Grid>

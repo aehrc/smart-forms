@@ -118,7 +118,7 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
           terminologyError={terminologyError}
           onCheckedChange={handleCheckedChange}
         />
-        <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
+        <DisplayInstructions readOnly={readOnly}>{displayInstructions}</DisplayInstructions>
       </>
     );
   }

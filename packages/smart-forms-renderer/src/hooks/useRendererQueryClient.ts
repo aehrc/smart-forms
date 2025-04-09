@@ -28,8 +28,7 @@ function useRendererQueryClient() {
   return new QueryClient({
     defaultOptions: {
       queries: {
-        refetchOnWindowFocus: false,
-        keepPreviousData: true
+        refetchOnWindowFocus: false
       }
     }
   });

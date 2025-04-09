@@ -16,7 +16,7 @@
  */
 
 import type { Dayjs } from 'dayjs';
-import type { ChangeEvent, Dispatch, RefObject, SetStateAction } from 'react';
+import type { ChangeEvent, Dispatch, SetStateAction } from 'react';
 import React, { useRef } from 'react';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../../interfaces/renderProps.interface';
 import { StandardTextField } from '../../Textfield.styles';
@@ -61,7 +61,7 @@ function CustomDateField(props: CustomDateFieldProps) {
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
-  const anchorRef: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
+  const anchorRef = useRef<HTMLDivElement | null>(null);
 
   // If this reusable date field is part of a DateTime component, the id should be appended with '-date'
   const id = isPartOfDateTime ? itemType + '-' + linkId + '-date' : itemType + '-' + linkId;

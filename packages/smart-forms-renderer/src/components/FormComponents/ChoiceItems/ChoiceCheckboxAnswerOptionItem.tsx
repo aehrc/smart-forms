@@ -111,7 +111,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
           readOnly={readOnly}
           onCheckedChange={handleCheckedChange}
         />
-        <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
+        <DisplayInstructions readOnly={readOnly}>{displayInstructions}</DisplayInstructions>
       </>
     );
   }
