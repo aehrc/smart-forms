@@ -30,7 +30,7 @@ function RepopulateGroupTable(props: RepopulateRepeatGroupProps) {
 
   return (
     <Grid container rowGap={2} mt={0.25}>
-      <Grid component="div" size={{ xs: 12 }}>
+      <Grid size={{ xs: 12 }}>
         <Typography color="text.secondary" variant="overline" fontSize={7.5}>
           Old answer
         </Typography>
@@ -44,7 +44,7 @@ function RepopulateGroupTable(props: RepopulateRepeatGroupProps) {
           onQrRepeatGroupChange={() => void 0}
         />
       </Grid>
-      <Grid component="div" size={{ xs: 12 }}>
+      <Grid size={{ xs: 12 }}>
         <Typography color="text.secondary" variant="overline" fontSize={7.5}>
           New answer
         </Typography>

@@ -30,7 +30,7 @@ function RepopulateSingleItem(props: RepopulateSingleItemProps) {
 
   return (
     <Grid container columnSpacing={2} mt={0.25}>
-      <Grid component="div" size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <Stack rowGap={0.25}>
           <Typography color="text.secondary" variant="overline" fontSize={7.5}>
             Old answer
@@ -51,7 +51,7 @@ function RepopulateSingleItem(props: RepopulateSingleItemProps) {
           />
         </Stack>
       </Grid>
-      <Grid component="div" size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <Stack rowGap={0.25}>
           <Typography color="text.secondary" variant="overline" fontSize={7.5}>
             New answer

@@ -96,31 +96,23 @@ function PlaygroundPatientPicker(props: PlaygroundPatientPickerProps) {
         {selectedPatient ? (
           <>
             <Grid container>
-              <Grid component="div" size={{ xs: 2 }}>
-                ID:
-              </Grid>
-              <Grid component="div" size={{ xs: 10 }}>
+              <Grid size={{ xs: 2 }}>ID:</Grid>
+              <Grid size={{ xs: 10 }}>
                 <Typography mb={1}>{selectedPatient.id}</Typography>
               </Grid>
 
-              <Grid component="div" size={{ xs: 2 }}>
-                Name:
-              </Grid>
-              <Grid component="div" size={{ xs: 10 }}>
+              <Grid size={{ xs: 2 }}>Name:</Grid>
+              <Grid size={{ xs: 10 }}>
                 <Typography mb={1}>{constructName(selectedPatient.name)}</Typography>
               </Grid>
 
-              <Grid component="div" size={{ xs: 2 }}>
-                Gender:
-              </Grid>
-              <Grid component="div" size={{ xs: 10 }}>
+              <Grid size={{ xs: 2 }}>Gender:</Grid>
+              <Grid size={{ xs: 10 }}>
                 <Typography mb={1}>{selectedPatient.gender}</Typography>
               </Grid>
 
-              <Grid component="div" size={{ xs: 2 }}>
-                Birthdate:
-              </Grid>
-              <Grid component="div" size={{ xs: 10 }}>
+              <Grid size={{ xs: 2 }}>Birthdate:</Grid>
+              <Grid size={{ xs: 10 }}>
                 <Typography mb={1}>{selectedPatient.birthDate}</Typography>
               </Grid>
             </Grid>

@@ -98,17 +98,13 @@ function PlaygroundUserPicker(props: PlaygroundPractitionerPickerProps) {
         {selectedUser ? (
           <>
             <Grid container>
-              <Grid size={{ xs: 2 }} component="div">
-                ID:
-              </Grid>
-              <Grid size={{ xs: 10 }} component="div">
+              <Grid size={{ xs: 2 }}>ID:</Grid>
+              <Grid size={{ xs: 10 }}>
                 <Typography mb={1}>{selectedUser.id}</Typography>
               </Grid>
 
-              <Grid size={{ xs: 2 }} component="div">
-                Name:
-              </Grid>
-              <Grid size={{ xs: 10 }} component="div">
+              <Grid size={{ xs: 2 }}>Name:</Grid>
+              <Grid size={{ xs: 10 }}>
                 <Typography mb={1}>{constructName(selectedUser.name)}</Typography>
               </Grid>
             </Grid>

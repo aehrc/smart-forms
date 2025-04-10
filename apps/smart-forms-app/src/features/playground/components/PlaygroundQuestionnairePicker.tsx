@@ -102,31 +102,23 @@ function PlaygroundQuestionnairePicker(props: PlaygroundQuestionnairePickerProps
         {selectedQuestionnaire ? (
           <>
             <Grid container>
-              <Grid size={{ xs: 1.5 }} component="div">
-                ID:
-              </Grid>
-              <Grid size={{ xs: 1.5 }} component="div">
+              <Grid size={{ xs: 1.5 }}>ID:</Grid>
+              <Grid size={{ xs: 10.5 }}>
                 <Typography mb={1}>{selectedQuestionnaire.id}</Typography>
               </Grid>
 
-              <Grid size={{ xs: 1.5 }} component="div">
-                Title:
-              </Grid>
-              <Grid size={{ xs: 1.5 }} component="div">
+              <Grid size={{ xs: 1.5 }}>Title:</Grid>
+              <Grid size={{ xs: 10.5 }}>
                 <Typography mb={1}>{selectedQuestionnaire.title}</Typography>
               </Grid>
 
-              <Grid size={{ xs: 1.5 }} component="div">
-                URL:
-              </Grid>
-              <Grid size={{ xs: 1.5 }} component="div">
+              <Grid size={{ xs: 1.5 }}>URL:</Grid>
+              <Grid size={{ xs: 10.5 }}>
                 <Typography mb={1}>{selectedQuestionnaire.url}</Typography>
               </Grid>
 
-              <Grid size={{ xs: 1.5 }} component="div">
-                Version:
-              </Grid>
-              <Grid size={{ xs: 1.5 }} component="div">
+              <Grid size={{ xs: 1.5 }}>Version:</Grid>
+              <Grid size={{ xs: 10.5 }}>
                 <Typography mb={1}>{selectedQuestionnaire.version}</Typography>
               </Grid>
             </Grid>

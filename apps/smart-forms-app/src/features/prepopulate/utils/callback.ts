@@ -17,8 +17,9 @@
 
 import type {
   FetchResourceCallback,
+  FetchResourceRequestConfig,
   FetchTerminologyCallback,
-  TerminologyRequestConfig
+  FetchTerminologyRequestConfig
 } from '@aehrc/sdc-populate';
 import type { Bundle, BundleEntry, BundleLink } from 'fhir/r4';
 import { nanoid } from 'nanoid';
@@ -26,28 +27,26 @@ import { nanoid } from 'nanoid';
 const ABSOLUTE_URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].\S*$/;
 const MAX_PAGES_SEARCH_BUNDLE = 10;
 
-export interface RequestConfig {
-  clientEndpoint: string;
-  authToken?: string;
-}
-
 export const fetchResourceCallback: FetchResourceCallback = async (
   query: string,
-  requestConfig: RequestConfig
+  requestConfig: FetchResourceRequestConfig
 ) => {
-  let { clientEndpoint } = requestConfig;
+  let { sourceServerUrl } = requestConfig;
   const { authToken } = requestConfig;
 
   const headers: Record<string, string> = {
-    Accept: 'application/json;charset=utf-8',
-    Authorization: `Bearer ${authToken}`
+    Accept: 'application/json;charset=utf-8'
   };
 
-  if (!clientEndpoint.endsWith('/')) {
-    clientEndpoint += '/';
+  if (authToken) {
+    headers['Authorization'] = `Bearer ${authToken}`;
   }
 
-  const requestUrl = ABSOLUTE_URL_REGEX.test(query) ? query : clientEndpoint + query;
+  if (!sourceServerUrl.endsWith('/')) {
+    sourceServerUrl += '/';
+  }
+
+  const requestUrl = ABSOLUTE_URL_REGEX.test(query) ? query : `${sourceServerUrl}${query}`;
 
   // Support for paginated resources, keep repeating the request until there are no more pages
   let allEntries: BundleEntry[] = [];
@@ -80,7 +79,7 @@ export const fetchResourceCallback: FetchResourceCallback = async (
       );
 
       // Set nextUrl to null if there are no more pages
-      nextUrl = nextLink ? fixFhirNextUrl(nextLink.url, clientEndpoint) : null;
+      nextUrl = nextLink ? fixFhirNextUrl(nextLink.url, sourceServerUrl) : null;
       pageCount++;
       if (pageCount >= maxPages) {
         nextUrl = null;
@@ -152,7 +151,7 @@ function isBundleSearchset(resource: unknown): resource is Bundle {
 
 export const fetchTerminologyCallback: FetchTerminologyCallback = async (
   query: string,
-  terminologyRequestConfig: TerminologyRequestConfig
+  terminologyRequestConfig: FetchTerminologyRequestConfig
 ) => {
   let { terminologyServerUrl } = terminologyRequestConfig;
 

@@ -75,14 +75,12 @@ function NotFoundQuickLinks() {
   return (
     <Grid container spacing={2}>
       {quickLinkCards.map((card) => (
-        <Grid key={card.link} component="div" size={{ xs: 12, sm: 6, md: 4 }}>
+        <Grid key={card.link} size={{ xs: 12, sm: 6, md: 4 }}>
           <Card sx={{ p: 3, pb: 2.5, height: '100%' }}>
             <Stack justifyContent="space-between" height="inherit">
-              <Grid container spacing={1} component="div">
-                <Grid size={{ xs: 2 }} component="div">
-                  {card.icon}
-                </Grid>
-                <Grid size={{ xs: 10 }} component="div">
+              <Grid container spacing={1}>
+                <Grid size={{ xs: 2 }}>{card.icon}</Grid>
+                <Grid size={{ xs: 10 }}>
                   <Typography variant="h5" mb={1}>
                     {card.title}
                   </Typography>
