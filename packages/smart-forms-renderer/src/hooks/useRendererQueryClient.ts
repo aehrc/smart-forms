@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 
-import { QueryClient } from '@tanstack/react-query';
+import { keepPreviousData, QueryClient } from '@tanstack/react-query';
 
 /**
  * Default QueryClient used by the renderer.
- * You can customise your own QueryClient with your own options, use v4 of @tanstack/react-query.
- * @see {@link https://tanstack.com/query/v4/docs/reference/QueryClient}
+ * You can customise your own QueryClient with your own options, use v5 of @tanstack/react-query.
+ * @see {@link https://tanstack.com/query/v5/docs/reference/QueryClient}
  *
  * @author Sean Fong
  */
@@ -28,7 +28,8 @@ function useRendererQueryClient() {
   return new QueryClient({
     defaultOptions: {
       queries: {
-        refetchOnWindowFocus: false
+        refetchOnWindowFocus: false,
+        placeholderData: keepPreviousData
       }
     }
   });

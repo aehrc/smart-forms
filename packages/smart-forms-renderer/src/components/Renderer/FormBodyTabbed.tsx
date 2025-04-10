@@ -29,7 +29,7 @@ import type {
   PropsWithQrItemChangeHandler
 } from '../../interfaces/renderProps.interface';
 import { useQuestionnaireStore, useRendererStylingStore } from '../../stores';
-import { GridProps } from '@mui/material/Grid';
+import type { GridProps } from '@mui/material/Grid';
 
 interface FormBodyTabbedProps
   extends PropsWithQrItemChangeHandler,

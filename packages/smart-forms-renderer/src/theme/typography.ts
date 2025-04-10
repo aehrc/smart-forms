@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { TypographyVariantsOptions } from '@mui/material';
+import type { TypographyVariantsOptions } from '@mui/material';
 import type { CSSProperties } from 'react';
 
 declare module '@mui/material/styles' {
