@@ -74,7 +74,6 @@
     "@jest/globals": "^29.7.0",
     "@playwright/test": "^1.50.1",
     "@sentry/cli": "^2.42.2",
-    "@tanstack/react-query-devtools": "^4.36.1",
     "@types/fhir": "^0.0.41",
     "@types/he": "^1.2.3",
     "@types/jest": "^29.5.14",
