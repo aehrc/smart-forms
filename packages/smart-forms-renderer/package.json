@@ -1,13 +1,11 @@
 {
   "name": "@aehrc/smart-forms-renderer",
-  "version": "1.0.0-alpha.42.dev4",
+  "version": "1.0.0-alpha.42.dev7",
   "description": "FHIR Structured Data Captured (SDC) rendering engine for Smart Forms",
-  "main": "lib/index.js",
   "scripts": {
-    "compile": "tsc",
-    "compile:watch": "tsc -w",
-    "compile:swc:watch": "npx swc src --out-dir lib -w",
-    "prepare": "npm run compile",
+    "compile": "tsup src/index.ts --format cjs,esm --dts --clean --sourcemap",
+    "watch": "tsup src/index.ts --format cjs,esm --dts --clean --sourcemap --watch",
+    "build": "npm run compile",
     "test": "jest",
     "test:watch": "jest --watch",
     "storybook": "storybook dev -p 6006",
@@ -20,7 +18,7 @@
     "url": "git+https://github.com/aehrc/smart-forms.git"
   },
   "author": {
-    "name": "Sean Fong"
+    "name": "AEHRC"
   },
   "license": "Apache-2.0",
   "bugs": {
@@ -29,14 +27,21 @@
   "homepage": "https://github.com/aehrc/smart-forms#readme",
   "dependencies": {
     "@aehrc/sdc-populate": "^4.0.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@fontsource/inter": "^5.2.5",
     "@fontsource/material-icons": "^5.2.5",
     "@fontsource/roboto": "^5.2.5",
-    "@fontsource/inter": "^5.2.5",
     "@iconify/react": "^5.2.1",
+    "@mui/icons-material": "^7.0.1",
+    "@mui/lab": "^7.0.0-beta.10",
+    "@mui/material": "^7.0.1",
+    "@mui/x-date-pickers": "^7.28.3",
+    "@tanstack/react-query": "^5.72.1",
     "dayjs": "^1.11.13",
     "deep-diff": "^1.0.2",
     "fhirclient": "^2.5.5",
-    "fhirpath": "3.17.3",
+    "fhirpath": "3.18.0",
     "html-react-parser": "^4.2.10",
     "js-base64": "^3.7.7",
     "lodash.debounce": "^4.0.8",
@@ -48,16 +53,9 @@
     "react-beautiful-dnd": "^13.1.1",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
-    "react-markdown": "^10.0.1",
-    "style-to-object": "^1.0.8",
-    "zustand": "^4.5.6",
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.0",
-    "@mui/icons-material": "^7.0.1",
-    "@mui/lab": "^7.0.0-beta.10",
-    "@mui/material": "^7.0.1",
-    "@mui/x-date-pickers": "^7.28.3",
-    "@tanstack/react-query": "^5.72.1"
+    "react-markdown": "^8.0.7",
+    "style-to-js": "^1.1.16",
+    "zustand": "^4.5.6"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0",
@@ -96,6 +94,21 @@
     "storybook": "^8.6.3",
     "ts-jest": "^29.2.6",
     "tslib": "^2.8.1",
+    "tsup": "^8.4.0",
     "typescript": "^5.8.2"
+  },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "import": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "require": {
+      "types": "./dist/index.d.cts",
+      "require": "./dist/index.cjs"
+    }
   }
 }

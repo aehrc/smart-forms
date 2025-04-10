@@ -10,3 +10,6 @@ storybook-static
 storybook.log
 doctor-storybook.log
 build-storybook.log
+
+# Ignore lib folder if mistakenly ran tsc
+lib/

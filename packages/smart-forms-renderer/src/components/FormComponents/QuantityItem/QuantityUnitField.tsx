@@ -37,16 +37,7 @@ function QuantityUnitField(props: QuantityUnitFieldProps) {
       readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
       size="small"
       renderInput={(params) => (
-        <StandardTextField
-          textFieldWidth={textFieldWidth}
-          isTabled={isTabled}
-          {...params}
-          slotProps={{
-            input: {
-              readOnly: readOnly && readOnlyVisualStyle === 'readonly'
-            }
-          }}
-        />
+        <StandardTextField textFieldWidth={textFieldWidth} isTabled={isTabled} {...params} />
       )}
     />
   );
