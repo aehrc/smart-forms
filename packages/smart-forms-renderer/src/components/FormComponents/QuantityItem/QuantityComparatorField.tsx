@@ -37,17 +37,7 @@ function QuantityComparatorField(props: QuantityComparatorFieldProps) {
         disabled={readOnly && readOnlyVisualStyle === 'disabled'}
         readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
         size="small"
-        renderInput={(params) => (
-          <MuiTextField
-            sx={{ width: 88 }}
-            {...params}
-            slotProps={{
-              input: {
-                readOnly: readOnly && readOnlyVisualStyle === 'readonly'
-              }
-            }}
-          />
-        )}
+        renderInput={(params) => <MuiTextField sx={{ width: 88 }} {...params} />}
       />
       <Typography variant="caption" color="text.secondary">
         (optional)
