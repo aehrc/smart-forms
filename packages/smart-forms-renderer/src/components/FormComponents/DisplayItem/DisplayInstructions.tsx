@@ -30,7 +30,10 @@ const DisplayInstructions = memo(function DisplayInstructions(props: DisplayInst
 
   return children ? (
     <DisplayInstructionsWrapper>
-      <Typography variant="caption" color={readOnly ? 'text.secondary' : 'text.primary'}>
+      <Typography
+        component="span"
+        variant="caption"
+        color={readOnly ? 'text.secondary' : 'text.primary'}>
         <>{children}</>
       </Typography>
     </DisplayInstructionsWrapper>

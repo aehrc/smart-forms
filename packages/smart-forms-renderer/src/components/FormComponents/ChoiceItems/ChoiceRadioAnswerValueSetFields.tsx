@@ -110,7 +110,7 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
     return (
       <StyledAlert color="error">
         <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-        <Typography>
+        <Typography component="div">
           There was an error fetching options from the terminology server for{' '}
           {terminologyError.answerValueSet}
         </Typography>
@@ -121,7 +121,9 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
   return (
     <StyledAlert color="error">
       <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-      <Typography>Unable to fetch options from the questionnaire or launch context</Typography>
+      <Typography component="div">
+        Unable to fetch options from the questionnaire or launch context
+      </Typography>
     </StyledAlert>
   );
 }

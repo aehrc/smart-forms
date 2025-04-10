@@ -110,7 +110,7 @@ function CustomTimeField(props: CustomTimeFieldProps) {
             <MenuItem value="PM">PM</MenuItem>
           </Select>
         </Box>
-        <Typography variant="caption" color="error" sx={{ ml: 1.75, mt: -0.5 }}>
+        <Typography component="span" variant="caption" color="error" sx={{ ml: 1.75, mt: -0.5 }}>
           {isTabled ? '' : feedback}
         </Typography>
       </>

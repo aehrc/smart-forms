@@ -45,7 +45,10 @@ function AttachmentUrlField(props: AttachmentUrlFieldProps) {
 
   return (
     <Box>
-      <Typography variant="body2" color={readOnly ? 'text.secondary' : 'text.primary'}>
+      <Typography
+        component="div"
+        variant="body2"
+        color={readOnly ? 'text.secondary' : 'text.primary'}>
         URL
       </Typography>
       <Stack direction="row" alignItems="center">

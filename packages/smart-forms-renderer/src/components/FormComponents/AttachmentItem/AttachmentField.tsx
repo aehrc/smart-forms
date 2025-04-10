@@ -61,7 +61,7 @@ function AttachmentField(props: AttachmentFieldProps) {
   return (
     <>
       <Stack rowGap={1} id={itemType + '-' + linkId}>
-        <Typography color={readOnly ? readOnlyTextColor : 'text.primary'}>
+        <Typography component="div" color={readOnly ? readOnlyTextColor : 'text.primary'}>
           An attachment must either have a file or a URL, or both.
         </Typography>
         <Box>
@@ -82,7 +82,10 @@ function AttachmentField(props: AttachmentFieldProps) {
         />
 
         <Box>
-          <Typography variant="body2" color={readOnly ? readOnlyTextColor : 'text.primary'}>
+          <Typography
+            component="div"
+            variant="body2"
+            color={readOnly ? readOnlyTextColor : 'text.primary'}>
             File name (optional)
           </Typography>
           <StandardTextField
@@ -104,7 +107,7 @@ function AttachmentField(props: AttachmentFieldProps) {
         </Box>
 
         {uploadedFile && url ? (
-          <Typography color={readOnly ? readOnlyTextColor : 'text.primary'}>
+          <Typography component="div" color={readOnly ? readOnlyTextColor : 'text.primary'}>
             Ensure that the attached file and URL has the same content.
           </Typography>
         ) : null}
