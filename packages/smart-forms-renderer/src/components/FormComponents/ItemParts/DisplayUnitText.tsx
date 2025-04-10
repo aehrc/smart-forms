@@ -15,7 +15,11 @@ function DisplayUnitText(props: DisplayUnitTextProps) {
   const readOnlyTextColor = readOnlyVisualStyle === 'disabled' ? 'text.disabled' : 'text.secondary';
 
   return (
-    <Typography color={readOnly ? readOnlyTextColor : 'text.secondary'}>{children}</Typography>
+    <Typography
+      sx={{ m: 0 }} // Ensure no margin is applied, even if external apps add margin to their <p>'s
+      color={readOnly ? readOnlyTextColor : 'text.secondary'}>
+      {children}
+    </Typography>
   );
 }
 
