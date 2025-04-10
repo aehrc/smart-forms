@@ -34,6 +34,7 @@ import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import ItemLabel from '../ItemParts/ItemLabel';
+import { AutocompleteChangeReason } from '@mui/material';
 
 interface OpenChoiceSelectAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
@@ -69,24 +70,67 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
   const answerKey = qrItem?.answer?.[0].id;
   const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem, answerKey);
 
-  let valueSelect: Coding | null = null;
+  let valueSelect: Coding | string | null = null;
   if (qrOpenChoice['answer']) {
-    valueSelect = qrOpenChoice['answer'][0].valueCoding ?? null;
+    //check if answer has valueCoding or valueString and assign it to valueSelect and null if not present
+    if (qrOpenChoice['answer'][0].valueString) {
+      valueSelect = qrOpenChoice['answer'][0].valueString;
+    }
+    else if (qrOpenChoice['answer'][0].valueCoding) {
+      valueSelect = qrOpenChoice['answer'][0].valueCoding;
+    }
+    else
+    {
+      valueSelect = null;
+    }
   }
+  
 
   // Get codings/options from valueSet
   // TODO use dynamicCodingsUpdated to trigger a "refresh" icon when codings are dynamically updated
   const { codings, terminologyError } = useValueSetCodings(qItem);
 
   // Event handlers
-  function handleValueChange(newValue: Coding | string | null) {
+  // Handler function which handles both input change and selection change
+  function handleValueChange(newValue: Coding | string | null, reason: AutocompleteChangeReason | string) {
+    //if the reason is reset, then we don't change the value, otherwise you will end up with looped setState calls
+    
+    
+    if (reason === 'reset') {
+      return;
+    }
+
     if (newValue) {
       if (typeof newValue === 'string') {
-        onQrItemChange({
-          ...qrOpenChoice,
-          answer: [{ id: answerKey, valueString: newValue }]
+      // Check if the newValue in in the options, first check options.display, then check options.code
+        const foundOption = codings.find((option) => {
+          if (option.display) {
+            return option.display === newValue;
+          }
+          return option.code === newValue;
         });
-      } else {
+        
+        //if the option.display is not present, then compare to code. 
+        
+
+        if (foundOption) {
+          newValue = foundOption;
+          onQrItemChange({
+            ...qrOpenChoice,
+            answer: [{ id: answerKey, valueCoding: newValue }]
+          });
+        }
+        else //if newValue is not in the options list, treat it as a string
+        {
+
+          onQrItemChange({
+            ...qrOpenChoice,
+            answer: [{ id: answerKey, valueString: newValue }]
+          });
+        }
+      }
+      else //if the newValue is not a string, then it is coding
+      {
         onQrItemChange({
           ...qrOpenChoice,
           answer: [{ id: answerKey, valueCoding: newValue }]

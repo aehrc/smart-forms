@@ -18,6 +18,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
+  qOpenChoiceAnswerAutoCompleteFromValueSet,
   qOpenChoiceAnswerOptionBasic,
   qOpenChoiceAnswerValueSetBasic,
   qrOpenChoiceAnswerOptionBasicResponse,
@@ -60,5 +61,13 @@ export const OpenChoiceAnswerValueSetBasicResponse: Story = {
   args: {
     questionnaire: qOpenChoiceAnswerValueSetBasic,
     questionnaireResponse: qrOpenChoiceAnswerValueSetBasicResponse
+  }
+};
+
+//Story for OpenChoiceAutoCompleteItem in Tabbed environment
+export const OpenChoiceAutoCompleteFromValueSetsWithTabs: Story = {
+  args: {
+    questionnaire: qOpenChoiceAnswerAutoCompleteFromValueSet,
+    // questionnaireResponse: qrOpenChoiceAnswerValueSetBasicResponse
   }
 };

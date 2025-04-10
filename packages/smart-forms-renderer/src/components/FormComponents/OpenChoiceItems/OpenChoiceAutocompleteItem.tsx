@@ -39,6 +39,7 @@ import { useQuestionnaireStore } from '../../../stores';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import type { AlertColor } from '@mui/material/Alert';
 import ItemLabel from '../ItemParts/ItemLabel';
+import { AutocompleteChangeReason } from '@mui/material';
 
 interface OpenChoiceAutocompleteItemProps
   extends PropsWithQrItemChangeHandler,
@@ -107,7 +108,18 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
   }
 
   // Event handlers
-  function handleValueChange(newValue: Coding | string | null) {
+  // Handler function which handles both input change and selection change
+  function handleValueChange(newValue: Coding | string | null, reason: AutocompleteChangeReason | string) {
+    //if the reason is reset, then we don't change the value, otherwise you will end up with looped setState calls
+    if (reason === 'reset') {
+      return;
+    }
+    //if the text input is changed, and only if hte input is a string the set the state.    
+    if (newValue && typeof newValue === 'string' && reason === 'input') {
+      setInput(newValue);
+      // return;
+    }
+
     if (newValue === null) {
       setInput('');
       newValue = '';
@@ -115,10 +127,27 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
 
     if (typeof newValue === 'string') {
       if (newValue !== '') {
-        onQrItemChange({
-          ...createEmptyQrItem(qItem, answerKey),
-          answer: [{ id: answerKey, valueString: newValue }]
+        // Check if the newValue in in the options, first check options.display, then check options.code
+        const foundOption = options.find((option) => {
+          if (option.display) {
+            return option.display === newValue;
+          }
+          return option.code === newValue;
         });
+        if (foundOption) {
+          newValue = foundOption;
+          onQrItemChange({
+            ...qrOpenChoice,
+            answer: [{ id: answerKey, valueCoding: newValue }]
+          });
+        }
+        else //if newValue is not in the options list, treat it as a string
+        {
+          onQrItemChange({
+            ...createEmptyQrItem(qItem, answerKey),
+            answer: [{ id: answerKey, valueString: newValue }]
+          });
+        }
       } else {
         onQrItemChange(createEmptyQrItem(qItem, answerKey));
       }
@@ -130,15 +159,6 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
     }
   }
 
-  function handleUnfocus() {
-    // set answer to current input when text field is unfocused
-    if (!valueAutocomplete && input !== '') {
-      onQrItemChange({
-        ...createEmptyQrItem(qItem, answerKey),
-        answer: [{ id: answerKey, valueString: input }]
-      });
-    }
-  }
 
   if (isRepeated) {
     return (
@@ -152,9 +172,7 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
         readOnly={readOnly}
         isTabled={isTabled}
         renderingExtensions={renderingExtensions}
-        onInputChange={(newValue) => setInput(newValue)}
         onValueChange={handleValueChange}
-        onUnfocus={handleUnfocus}
       />
     );
   }
@@ -179,9 +197,7 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
             readOnly={readOnly}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
-            onInputChange={(newValue) => setInput(newValue)}
             onValueChange={handleValueChange}
-            onUnfocus={handleUnfocus}
           />
         }
       />
