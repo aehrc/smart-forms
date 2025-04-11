@@ -1,0 +1,215 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "CalculatedExpressionBMICalculatorPrepop",
+  "title": "BMI Calculator",
+  "status": "active",
+  "meta": {
+    "profile": ["http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-template"]
+  },
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-template",
+      "valueBoolean": true
+    }
+  ],
+  "contained": [
+    {
+      "resourceType": "Observation",
+      "id": "height-obs",
+      "status": "final",
+      "category": [{
+        "coding": [{
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs"
+        }]
+      }],
+      "code": {
+        "coding": [{
+          "system": "http://loinc.org",
+          "code": "8302-2",
+          "display": "Body height"
+        }]
+      },
+      "valueQuantity": {
+        "value": "%patient-height.value",
+        "unit": "cm",
+        "system": "http://unitsofmeasure.org"
+      }
+    },
+    {
+      "resourceType": "Observation",
+      "id": "weight-obs",
+      "status": "final",
+      "category": [{
+        "coding": [{
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs"
+        }]
+      }],
+      "code": {
+        "coding": [{
+          "system": "http://loinc.org",
+          "code": "29463-7",
+          "display": "Weight"
+        }]
+      },
+      "valueQuantity": {
+        "value": "%patient-weight.value",
+        "unit": "kg",
+        "system": "http://unitsofmeasure.org"
+      }
+    },
+    {
+      "resourceType": "Observation",
+      "id": "bmi-obs",
+      "status": "final",
+      "category": [{
+        "coding": [{
+          "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+          "code": "vital-signs"
+        }]
+      }],
+      "code": {
+        "coding": [{
+          "system": "http://loinc.org",
+          "code": "39156-5",
+          "display": "Body mass index"
+        }]
+      },
+      "valueQuantity": {
+        "value": "%bmi-result.value",
+        "unit": "kg/m2",
+        "system": "http://unitsofmeasure.org"
+      }
+    }
+  ],
+  "item": [
+    {
+      "linkId": "bmi-calculation",
+      "text": "BMI Calculation",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "patient-height",
+          "text": "Height (cm)",
+          "type": "decimal",
+          "required": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": {
+                "system": "http://unitsofmeasure.org",
+                "code": "cm"
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationTemplate",
+              "valueReference": {
+                "reference": "#height-obs"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "patient-weight",
+          "text": "Weight (kg)",
+          "type": "decimal",
+          "required": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": {
+                "system": "http://unitsofmeasure.org",
+                "code": "kg"
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationTemplate",
+              "valueReference": {
+                "reference": "#weight-obs"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "bmi-result",
+          "text": "BMI (kg/m²)",
+          "type": "decimal",
+          "readOnly": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": {
+                "system": "http://unitsofmeasure.org",
+                "code": "kg/m2"
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationTemplate",
+              "valueReference": {
+                "reference": "#bmi-obs"
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
+              "valueExpression": {
+                "description": "BMI calculation",
+                "language": "text/fhirpath",
+                "expression": "iif(item.where(linkId='patient-height').answer.value.exists() and item.where(linkId='patient-weight').answer.value.exists() and item.where(linkId='patient-height').answer.value > 0, (item.where(linkId='patient-weight').answer.value / ((item.where(linkId='patient-height').answer.value/100) * (item.where(linkId='patient-height').answer.value/100))).round(1), 0)"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "bmi-category",
+          "text": "BMI Category",
+          "type": "choice",
+          "required": false,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://hl7.org/fhir/questionnaire-item-control",
+                    "code": "drop-down"
+                  }
+                ]
+              }
+            }
+          ],
+          "answerOption": [
+            {
+              "valueCoding": {
+                "system": "http://snomed.info/sct",
+                "code": "248327005",
+                "display": "Underweight"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://snomed.info/sct",
+                "code": "248326001",
+                "display": "Normal weight"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://snomed.info/sct",
+                "code": "248325002",
+                "display": "Overweight"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://snomed.info/sct",
+                "code": "248324003",
+                "display": "Obese"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "simple-bp",
+  "title": "Simple Blood Pressure",
+  "status": "active",
+  "meta": {
+    "profile": ["http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-extr-template"]
+  },
+  "contained": [
+    {
+      "resourceType": "Observation",
+      "id": "bp-observation",
+      "status": "final",
+      "category": [
+        {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+              "code": "vital-signs",
+              "display": "Vital Signs"
+            }
+          ]
+        }
+      ],
+      "code": {
+        "coding": [
+          {
+            "system": "http://loinc.org",
+            "code": "85354-9",
+            "display": "Blood pressure panel"
+          }
+        ]
+      },
+      "valueQuantity": {
+        "value": 0,
+        "unit": "mmHg"
+      },
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+          "valueExpression": {
+            "language": "text/fhirpath",
+            "expression": "%resource.item.where(linkId='bp').answer.value"
+          }
+        }
+      ]
+    }
+  ],
+  "item": [
+    {
+      "linkId": "bp",
+      "text": "Blood Pressure (mmHg)",
+      "type": "decimal",
+      "required": true
+    }
+  ]
+}

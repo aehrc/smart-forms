@@ -1,0 +1,121 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "bmi-calc-template",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationTemplate"
+    ]
+  },
+  "extension": [{
+    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-template",
+    "valueBoolean": true
+  }],
+  "status": "active",
+  "title": "BMI Calculator",
+  "item": [
+    {
+      "linkId": "height",
+      "text": "Height (in meters)",
+      "type": "decimal",
+      "required": true,
+      "extension": [{
+        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationTemplate",
+        "valueReference": {
+          "reference": "#obs-height"
+        }
+      }]
+    },
+    {
+      "linkId": "weight",
+      "text": "Weight (in kilograms)",
+      "type": "decimal",
+      "required": true,
+      "extension": [{
+        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationTemplate",
+        "valueReference": {
+          "reference": "#obs-weight"
+        }
+      }]
+    }
+  ],
+  "contained": [
+    {
+      "resourceType": "Observation",
+      "id": "obs-height",
+      "status": "final",
+      "code": {
+        "coding": [
+          {
+            "system": "http://loinc.org",
+            "code": "8302-2",
+            "display": "Body height"
+          }
+        ]
+      },
+      "valueQuantity": {
+        "value": 0,
+        "unit": "m",
+        "system": "http://unitsofmeasure.org",
+        "code": "m"
+      },
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+          "valueString": "item.where(linkId='height').answer.valueDecimal"
+        }
+      ]
+    },
+    {
+      "resourceType": "Observation",
+      "id": "obs-weight",
+      "status": "final",
+      "code": {
+        "coding": [
+          {
+            "system": "http://loinc.org",
+            "code": "29463-7",
+            "display": "Weight"
+          }
+        ]
+      },
+      "valueQuantity": {
+        "value": 0,
+        "unit": "kg",
+        "system": "http://unitsofmeasure.org",
+        "code": "kg"
+      },
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+          "valueString": "item.where(linkId='weight').answer.valueDecimal"
+        }
+      ]
+    },
+    {
+      "resourceType": "Observation",
+      "id": "obs-bmi-result",
+      "status": "final",
+      "code": {
+        "coding": [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "60621009",
+            "display": "Body mass index"
+          }
+        ]
+      },
+      "valueQuantity": {
+        "value": 0,
+        "unit": "kg/m2",
+        "system": "http://unitsofmeasure.org",
+        "code": "kg/m2"
+      },
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+          "valueString": "item.where(linkId='weight').answer.valueDecimal / (item.where(linkId='height').answer.valueDecimal * item.where(linkId='height').answer.valueDecimal)"
+        }
+      ]
+    }
+  ]
+} 

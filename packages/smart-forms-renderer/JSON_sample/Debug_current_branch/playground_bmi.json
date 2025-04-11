@@ -1,0 +1,116 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "playground-bmi",
+  "meta": {
+    "profile": ["http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-template"]
+  },
+  "status": "active",
+  "contained": [
+    {
+      "resourceType": "Observation",
+      "id": "height-template",
+      "status": "final",
+      "code": {
+        "coding": [{
+          "system": "http://loinc.org",
+          "code": "8302-2",
+          "display": "Body height"
+        }]
+      },
+      "valueQuantity": {
+        "unit": "cm"
+      },
+      "extension": [{
+        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-fhirPath",
+        "valueString": "item.where(linkId='height').answer.valueDecimal"
+      }]
+    },
+    {
+      "resourceType": "Observation",
+      "id": "weight-template",
+      "status": "final",
+      "code": {
+        "coding": [{
+          "system": "http://loinc.org",
+          "code": "29463-7",
+          "display": "Body weight"
+        }]
+      },
+      "valueQuantity": {
+        "unit": "kg"
+      },
+      "extension": [{
+        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-fhirPath",
+        "valueString": "item.where(linkId='weight').answer.valueDecimal"
+      }]
+    },
+    {
+      "resourceType": "Observation",
+      "id": "bmi-template",
+      "status": "final",
+      "code": {
+        "coding": [{
+          "system": "http://loinc.org",
+          "code": "39156-5",
+          "display": "Body mass index"
+        }]
+      },
+      "valueQuantity": {
+        "unit": "kg/m2"
+      },
+      "extension": [{
+        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-fhirPath",
+        "valueString": "item.where(linkId='bmi').answer.valueDecimal"
+      }]
+    }
+  ],
+  "item": [
+    {
+      "linkId": "height",
+      "text": "Height (cm)",
+      "type": "decimal",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationTemplate",
+          "valueReference": {
+            "reference": "#height-template"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "weight",
+      "text": "Weight (kg)",
+      "type": "decimal",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationTemplate",
+          "valueReference": {
+            "reference": "#weight-template"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "bmi",
+      "text": "BMI",
+      "type": "decimal",
+      "readOnly": true,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationTemplate",
+          "valueReference": {
+            "reference": "#bmi-template"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-calculatedExpression",
+          "valueExpression": {
+            "language": "text/fhirpath",
+            "expression": "round((item.where(linkId='weight').answer.valueDecimal / pow(item.where(linkId='height').answer.valueDecimal / 100, 2)), 1)"
+          }
+        }
+      ]
+    }
+  ]
+} 

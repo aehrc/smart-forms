@@ -1,0 +1,97 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "bp-template",
+  "meta": {
+    "profile": ["http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationTemplate"]
+  },
+  "extension": [{
+    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-template",
+    "valueBoolean": true
+  }],
+  "status": "active",
+  "title": "Blood Pressure Measurement",
+  "item": [
+    {
+      "linkId": "systolic",
+      "text": "Systolic Blood Pressure (mmHg)",
+      "type": "integer",
+      "required": true,
+      "extension": [{
+        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationTemplate",
+        "valueReference": {
+          "reference": "#obs-systolic"
+        }
+      }]
+    },
+    {
+      "linkId": "diastolic",
+      "text": "Diastolic Blood Pressure (mmHg)",
+      "type": "integer",
+      "required": true,
+      "extension": [{
+        "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationTemplate",
+        "valueReference": {
+          "reference": "#obs-diastolic"
+        }
+      }]
+    }
+  ],
+  "contained": [
+    {
+      "resourceType": "Observation",
+      "id": "obs-systolic",
+      "status": "final",
+      "code": {
+        "coding": [{
+          "system": "http://loinc.org",
+          "code": "8480-6",
+          "display": "Systolic blood pressure"
+        }]
+      },
+      "valueQuantity": {
+        "value": 0,
+        "unit": "mmHg",
+        "system": "http://unitsofmeasure.org",
+        "code": "mmHg"
+      },
+      "extension": [{
+        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+        "valueString": "item.where(linkId='systolic').answer.valueInteger"
+      }]
+    },
+    {
+      "resourceType": "Observation",
+      "id": "obs-diastolic",
+      "status": "final",
+      "code": {
+        "coding": [{
+          "system": "http://loinc.org",
+          "code": "8462-4",
+          "display": "Diastolic blood pressure"
+        }]
+      },
+      "valueQuantity": {
+        "value": 0,
+        "unit": "mmHg",
+        "system": "http://unitsofmeasure.org",
+        "code": "mmHg"
+      },
+      "extension": [{
+        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+        "valueString": "item.where(linkId='diastolic').answer.valueInteger"
+      }]
+    },
+    {
+      "resourceType": "Observation",
+      "id": "obs-bp-panel",
+      "status": "final",
+      "code": {
+        "coding": [{
+          "system": "http://loinc.org",
+          "code": "85354-9",
+          "display": "Blood pressure panel"
+        }]
+      }
+    }
+  ]
+} 

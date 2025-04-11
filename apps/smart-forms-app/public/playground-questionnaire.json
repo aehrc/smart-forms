@@ -1,0 +1,107 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "playground-test",
+  "meta": {
+    "profile": ["http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-template"]
+  },
+  "status": "active",
+  "contained": [
+    {
+      "resourceType": "Observation",
+      "id": "bp-template",
+      "status": "final",
+      "code": {
+        "coding": [{
+          "system": "http://loinc.org",
+          "code": "85354-9",
+          "display": "Blood pressure panel"
+        }]
+      },
+      "component": [
+        {
+          "code": {
+            "coding": [{
+              "system": "http://loinc.org",
+              "code": "8480-6",
+              "display": "Systolic blood pressure"
+            }]
+          },
+          "extension": [{
+            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-fhirPath",
+            "valueString": "item.where(linkId='systolic').answer.valueInteger"
+          }]
+        },
+        {
+          "code": {
+            "coding": [{
+              "system": "http://loinc.org",
+              "code": "8462-4",
+              "display": "Diastolic blood pressure"
+            }]
+          },
+          "extension": [{
+            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-fhirPath",
+            "valueString": "item.where(linkId='diastolic').answer.valueInteger"
+          }]
+        }
+      ]
+    },
+    {
+      "resourceType": "Observation",
+      "id": "hr-template",
+      "status": "final",
+      "code": {
+        "coding": [{
+          "system": "http://loinc.org",
+          "code": "8867-4",
+          "display": "Heart rate"
+        }]
+      },
+      "extension": [{
+        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-fhirPath",
+        "valueString": "item.where(linkId='heartrate').answer.valueInteger"
+      }]
+    }
+  ],
+  "item": [
+    {
+      "linkId": "systolic",
+      "text": "Systolic Blood Pressure",
+      "type": "integer",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationTemplate",
+          "valueReference": {
+            "reference": "#bp-template"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "diastolic",
+      "text": "Diastolic Blood Pressure",
+      "type": "integer",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationTemplate",
+          "valueReference": {
+            "reference": "#bp-template"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "heartrate",
+      "text": "Heart Rate",
+      "type": "integer",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationTemplate",
+          "valueReference": {
+            "reference": "#hr-template"
+          }
+        }
+      ]
+    }
+  ]
+} 

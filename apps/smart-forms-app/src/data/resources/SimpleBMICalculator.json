@@ -1,0 +1,175 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "SimpleBMICalculator",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-render",
+      "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-pop-smap",
+      "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-extr-obsn"
+    ]
+  },
+  "title": "Simple BMI Calculator",
+  "status": "draft",
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-template",
+      "valueBoolean": true
+    }
+  ],
+  "item": [
+    {
+      "linkId": "bmi-calculation",
+      "text": "BMI Calculation",
+      "type": "group",
+      "repeats": false,
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "height",
+            "language": "text/fhirpath",
+            "expression": "item.where(linkId='patient-height').answer.value"
+          }
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "weight",
+            "language": "text/fhirpath",
+            "expression": "item.where(linkId='patient-weight').answer.value"
+          }
+        }
+      ],
+      "item": [
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": {
+                "system": "http://unitsofmeasure.org",
+                "code": "cm",
+                "display": "cm"
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationExtract",
+              "valueBoolean": true
+            },
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationLinkPeriod",
+              "valueDuration": {
+                "value": 1,
+                "unit": "year"
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationCode",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://loinc.org",
+                    "code": "8302-2",
+                    "display": "Body height"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "patient-height",
+          "text": "Height",
+          "type": "decimal",
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": {
+                "system": "http://unitsofmeasure.org",
+                "code": "kg",
+                "display": "kg"
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationExtract",
+              "valueBoolean": true
+            },
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationLinkPeriod",
+              "valueDuration": {
+                "value": 1,
+                "unit": "year"
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationCode",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://loinc.org",
+                    "code": "29463-7",
+                    "display": "Body weight"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "patient-weight",
+          "text": "Weight",
+          "type": "decimal",
+          "repeats": false,
+          "readOnly": false
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression",
+              "valueExpression": {
+                "description": "BMI calculation",
+                "language": "text/fhirpath",
+                "expression": "(%weight/((%height/100).power(2))).round(1)"
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+              "valueCoding": {
+                "system": "http://unitsofmeasure.org",
+                "code": "kg/m2",
+                "display": "kg/m2"
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationExtract",
+              "valueBoolean": true
+            },
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationLinkPeriod",
+              "valueDuration": {
+                "value": 1,
+                "unit": "year"
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-observationCode",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://loinc.org",
+                    "code": "39156-5",
+                    "display": "Body mass index"
+                  }
+                ]
+              }
+            }
+          ],
+          "linkId": "bmi-result",
+          "text": "BMI Result",
+          "type": "decimal",
+          "repeats": false,
+          "readOnly": true
+        }
+      ]
+    }
+  ]
+}
