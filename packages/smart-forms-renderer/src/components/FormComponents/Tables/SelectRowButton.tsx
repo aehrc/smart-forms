@@ -39,6 +39,7 @@ function SelectRowButton(props: SelectRowButtonProps) {
         checked={isSelected}
         disabled={readOnly && readOnlyVisualStyle === 'disabled'}
         readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
+        aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
         onChange={onSelectItem}
       />
     </TableCell>

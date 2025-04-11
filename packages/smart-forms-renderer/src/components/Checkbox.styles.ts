@@ -5,6 +5,20 @@ export const StandardCheckbox = styled(Checkbox, {
   shouldForwardProp: (prop) => prop !== 'readOnly'
 })<{ readOnly: boolean }>(({ theme, readOnly }) => ({
   ...(readOnly && {
+    // Remove 'pointer' cursor when readOnly
+    cursor: 'default',
+
+    // Hide the ripple effect when readOnly
+    '.MuiTouchRipple-root': {
+      display: 'none'
+    },
+
+    // Show grey background when focused (via keyboard)
+    '&.Mui-focusVisible': {
+      backgroundColor: theme.palette.action.hover
+    },
+
+    // Use grey stylings when it's readOnly
     '&.MuiButtonBase-root': {
       '&.MuiCheckbox-root': {
         // Use text.disabled colour (same as disabled field) here because text.secondary is too dark, and 'rgb(220, 223, 228)' is too light

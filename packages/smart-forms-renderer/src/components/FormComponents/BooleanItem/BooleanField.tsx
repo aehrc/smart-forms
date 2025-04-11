@@ -74,6 +74,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
                 size="small"
                 checked={selection === 'true'}
                 readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
+                aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
                 onChange={() => {
                   // If item.readOnly=true, do not allow any changes
                   if (readOnly) {
@@ -101,6 +102,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
               id={qItem.type + '-' + qItem.linkId}
               row={orientation === ChoiceItemOrientation.Horizontal}
               sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
+              aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
               onChange={(e) => {
                 // If item.readOnly=true, do not allow any changes
                 if (readOnly) {

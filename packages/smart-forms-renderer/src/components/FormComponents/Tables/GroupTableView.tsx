@@ -184,6 +184,7 @@ function GroupTableView(props: GroupTableViewProps) {
                         checked={tableRows.length > 0 && selectedIds.length === tableRows.length}
                         disabled={readOnly && readOnlyVisualStyle === 'disabled'}
                         readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
+                        aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
                         onChange={onSelectAll}
                       />
                     </HeaderTableCell>
@@ -289,6 +290,7 @@ function GroupTableView(props: GroupTableViewProps) {
                     checked={tableRows.length > 0 && selectedIds.length === tableRows.length}
                     disabled={readOnly && readOnlyVisualStyle === 'disabled'}
                     readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
+                    aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
                     onChange={onSelectAll}
                   />
                 </HeaderTableCell>

@@ -51,6 +51,7 @@ function CheckboxSingleWithOpenLabel(props: Props) {
             size="small"
             checked={isChecked}
             readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
+            aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
             onChange={handleCheckedChange}
           />
         }

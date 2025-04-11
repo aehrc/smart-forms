@@ -42,6 +42,7 @@ function CheckboxSingle(props: Props) {
           size="small"
           checked={isChecked}
           readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
+          aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
           onChange={() => {
             // If item.readOnly=true, do not allow any changes
             if (readOnly) {
