@@ -63,7 +63,7 @@
     "react-helmet": "^6.1.0",
     "react-json-tree": "^0.20.0",
     "react-markdown": "^10.0.1",
-    "react-router-dom": "^7.2.0",
+    "react-router-dom": "^7.5.0",
     "react-spinners": "^0.15.0",
     "react-to-print": "^3.0.5",
     "simplebar-react": "^3.3.0",
