@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { getMarkdownString } from '../../../utils/itemControl';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
-import { default as styleParse } from 'style-to-js';
+import { default as parseStyleToJs } from 'style-to-js';
 import { useParseXhtml } from '../../../hooks/useParseXhtml';
 import useDisplayCqfAndCalculatedExpression from '../../../hooks/useDisplayCqfAndCalculatedExpression';
 import type { QuestionnaireItem } from 'fhir/r4';
@@ -53,7 +53,7 @@ const ItemTextSwitcher = memo(function ItemTextSwitcher({
   // parse styles if found
   const stylesString = structuredDataCapture.getStyle(qItem._text);
   if (stylesString) {
-    const styles = styleParse(stylesString);
+    const styles = parseStyleToJs(stylesString);
     return <span style={styles}>{itemText}</span>;
   }
 

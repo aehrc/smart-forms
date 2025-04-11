@@ -15,33 +15,69 @@
  * limitations under the License.
  */
 
-import type { FetchResourceCallback } from '@aehrc/sdc-populate';
-import { HEADERS } from './globals';
+import type {
+  FetchResourceCallback,
+  FetchResourceRequestConfig,
+  FetchTerminologyCallback,
+  FetchTerminologyRequestConfig
+} from '@aehrc/sdc-populate';
 
 const ABSOLUTE_URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
 
-export interface RequestConfig {
-  url: string;
-  authToken?: string;
-}
-
 export const fetchResourceCallback: FetchResourceCallback = async (
   query: string,
-  requestConfig: RequestConfig
+  requestConfig: FetchResourceRequestConfig
 ) => {
-  const { url, authToken } = requestConfig;
+  let { sourceServerUrl } = requestConfig;
+  const { authToken } = requestConfig;
 
-  let requestUrl = url;
-  if (!requestUrl.endsWith('/')) {
-    requestUrl += '/';
+  const headers: Record<string, string> = {
+    Accept: 'application/json;charset=utf-8'
+  };
+
+  if (authToken) {
+    headers['Authorization'] = `Bearer ${authToken}`;
   }
-  requestUrl = ABSOLUTE_URL_REGEX.test(query) ? query : requestUrl + query;
 
-  const headers = authToken ? { ...HEADERS, Authorization: `Bearer ${authToken}` } : HEADERS;
+  if (!sourceServerUrl.endsWith('/')) {
+    sourceServerUrl += '/';
+  }
+
+  const requestUrl = ABSOLUTE_URL_REGEX.test(query) ? query : `${sourceServerUrl}${query}`;
 
   const response = await fetch(requestUrl, {
     headers: headers
   });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error when performing ${requestUrl}. Status: ${response.status}`);
+  }
+
+  return response.json();
+};
+
+export const fetchTerminologyCallback: FetchTerminologyCallback = async (
+  query: string,
+  terminologyRequestConfig: FetchTerminologyRequestConfig
+) => {
+  let { url } = terminologyRequestConfig;
+  const { authToken } = terminologyRequestConfig;
+
+  const headers: Record<string, string> = {
+    Accept: 'application/json;charset=utf-8'
+  };
+
+  if (authToken) {
+    headers['Authorization'] = `Bearer ${authToken}`;
+  }
+
+  if (!url.endsWith('/')) {
+    url += '/';
+  }
+
+  const requestUrl = ABSOLUTE_URL_REGEX.test(query) ? query : `${url}${query}`;
+
+  const response = await fetch(requestUrl, { headers });
 
   if (!response.ok) {
     throw new Error(`HTTP error when performing ${requestUrl}. Status: ${response.status}`);

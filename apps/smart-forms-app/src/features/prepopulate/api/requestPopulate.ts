@@ -16,12 +16,12 @@
  */
 
 import type {
+  FetchResourceRequestConfig,
+  FetchTerminologyRequestConfig,
   InputParameters,
-  OutputParameters,
-  TerminologyRequestConfig
+  OutputParameters
 } from '@aehrc/sdc-populate';
 import { isOutputParameters, populate } from '@aehrc/sdc-populate';
-import type { RequestConfig } from '../utils/callback.ts';
 import { fetchResourceCallback, fetchTerminologyCallback } from '../utils/callback.ts';
 import { HEADERS } from '../../../api/headers.ts';
 import type Client from 'fhirclient/lib/Client';
@@ -32,12 +32,12 @@ export async function requestPopulate(
   fhirClient: Client,
   inputParameters: InputParameters
 ): Promise<OutputParameters | OperationOutcome> {
-  const fetchResourceRequestConfig: RequestConfig = {
-    clientEndpoint: fhirClient.state.serverUrl,
+  const fetchResourceRequestConfig: FetchResourceRequestConfig = {
+    sourceServerUrl: fhirClient.state.serverUrl,
     authToken: fhirClient.state.tokenResponse!.access_token!
   };
 
-  const terminologyRequestConfig: TerminologyRequestConfig = {
+  const terminologyRequestConfig: FetchTerminologyRequestConfig = {
     terminologyServerUrl: TERMINOLOGY_SERVER_URL
   };
 

@@ -15,15 +15,9 @@
  * limitations under the License.
  */
 
-import type { FetchResourceCallback } from '@aehrc/sdc-populate';
-import axios from 'axios';
+import type { FetchResourceCallback, FetchResourceRequestConfig } from '@aehrc/sdc-populate';
 
 const ABSOLUTE_URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
-
-interface RequestConfig {
-  clientEndpoint: string;
-  authToken: string | null;
-}
 
 /**
  * Sample callback function to fetch resources from your source server when using populate() or populateQuestionnaire() from @aehrc/sdc-populate.
@@ -31,14 +25,14 @@ interface RequestConfig {
  *
  * @author Sean Fong
  */
-export const fetchResourceCallback: FetchResourceCallback = (
+export const fetchResourceCallback: FetchResourceCallback = async (
   query: string,
-  requestConfig: RequestConfig
+  requestConfig: FetchResourceRequestConfig
 ) => {
-  let { clientEndpoint } = requestConfig;
+  let { sourceServerUrl } = requestConfig;
   const { authToken } = requestConfig;
 
-  const headers: any = {
+  const headers: Record<string, string> = {
     Accept: 'application/json;charset=utf-8'
   };
 
@@ -46,17 +40,16 @@ export const fetchResourceCallback: FetchResourceCallback = (
     headers['Authorization'] = `Bearer ${authToken}`;
   }
 
-  if (!clientEndpoint.endsWith('/')) {
-    clientEndpoint += '/';
+  if (!sourceServerUrl.endsWith('/')) {
+    sourceServerUrl += '/';
   }
 
-  if (ABSOLUTE_URL_REGEX.test(query)) {
-    return axios.get(query, {
-      headers: headers
-    });
+  const requestUrl = ABSOLUTE_URL_REGEX.test(query) ? query : `${sourceServerUrl}${query}`;
+  const response = await fetch(requestUrl, { headers });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error when performing ${requestUrl}. Status: ${response.status}`);
   }
 
-  return axios.get(clientEndpoint + query, {
-    headers: headers
-  });
+  return response.json();
 };

@@ -16,8 +16,9 @@
  */
 
 export {
+  FetchResourceRequestConfig,
   FetchResourceCallback,
-  TerminologyRequestConfig,
+  FetchTerminologyRequestConfig,
   FetchTerminologyCallback
 } from './callback.interface';
 export { IdentifierParameter, QuestionnaireRefParameter } from './inputParameters.interface';

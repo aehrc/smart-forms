@@ -33,7 +33,11 @@ import type {
   Questionnaire,
   QuestionnaireItem
 } from 'fhir/r4';
-import type { FetchResourceCallback, TerminologyRequestConfig } from '../interfaces';
+import type {
+  FetchResourceCallback,
+  FetchResourceRequestConfig,
+  FetchTerminologyRequestConfig
+} from '../interfaces';
 import { createInvalidWarningIssue, createNotFoundWarningIssue } from './operationOutcome';
 import { TERMINOLOGY_SERVER_URL } from '../../globals';
 import { emptyResponse } from './emptyResource';
@@ -42,12 +46,12 @@ export async function createFhirPathContext(
   parameters: InputParameters,
   questionnaire: Questionnaire,
   fetchResourceCallback: FetchResourceCallback,
-  requestConfig: any,
+  fetchResourceRequestConfig: FetchResourceRequestConfig,
   issues: OperationOutcomeIssue[],
-  terminologyRequestConfig?: TerminologyRequestConfig
+  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
 ): Promise<Record<string, any>> {
   const { launchContexts, updatedReferenceContexts, updatedContainedBatchContexts } =
-    await replaceFhirPathEmbeddings(parameters, questionnaire, terminologyRequestConfig);
+    await replaceFhirPathEmbeddings(parameters, questionnaire, fetchTerminologyRequestConfig);
 
   const fhirPathContext: Record<string, any> = {
     resource: structuredClone(emptyResponse),
@@ -69,7 +73,7 @@ export async function createFhirPathContext(
     updatedReferenceContexts,
     fhirPathContext,
     fetchResourceCallback,
-    requestConfig,
+    fetchResourceRequestConfig,
     issues
   );
 
@@ -78,7 +82,7 @@ export async function createFhirPathContext(
     updatedContainedBatchContexts,
     fhirPathContext,
     fetchResourceCallback,
-    requestConfig,
+    fetchResourceRequestConfig,
     issues
   );
 
@@ -87,7 +91,7 @@ export async function createFhirPathContext(
     questionnaire,
     fhirPathContext,
     issues,
-    terminologyRequestConfig
+    fetchTerminologyRequestConfig
   );
 
   return fhirPathContext;
@@ -97,7 +101,7 @@ async function extractAndEvaluateFhirPathVariables(
   questionnaire: Questionnaire,
   fhirPathContext: Record<string, any>,
   issues: OperationOutcomeIssue[],
-  terminologyRequestConfig?: TerminologyRequestConfig
+  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
 ) {
   if (!questionnaire.extension || questionnaire.extension.length === 0) {
     return;
@@ -109,7 +113,7 @@ async function extractAndEvaluateFhirPathVariables(
     questionnaireLevelVariables,
     fhirPathContext,
     issues,
-    terminologyRequestConfig
+    fetchTerminologyRequestConfig
   );
 
   // Extract and evaluate FHIRPath variables from item-level
@@ -117,7 +121,12 @@ async function extractAndEvaluateFhirPathVariables(
   itemLevelVariables = extractItemLevelFhirPathVariables(questionnaire, itemLevelVariables);
   if (Object.keys(itemLevelVariables).length > 0) {
     for (const [, variables] of Object.entries(itemLevelVariables)) {
-      await evaluateFhirPathVariables(variables, fhirPathContext, issues, terminologyRequestConfig);
+      await evaluateFhirPathVariables(
+        variables,
+        fhirPathContext,
+        issues,
+        fetchTerminologyRequestConfig
+      );
     }
   }
 }
@@ -179,13 +188,13 @@ async function evaluateFhirPathVariables(
   variables: Expression[],
   fhirPathContext: Record<string, any>,
   issues: OperationOutcomeIssue[],
-  terminologyRequestConfig?: TerminologyRequestConfig
+  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
 ) {
   if (variables.length === 0) {
     return;
   }
 
-  const terminologyServerUrl = terminologyRequestConfig?.terminologyServerUrl ?? null;
+  const terminologyServerUrl = fetchTerminologyRequestConfig?.terminologyServerUrl ?? null;
 
   for (const variable of variables) {
     if (variable.expression) {
@@ -237,12 +246,12 @@ async function populateReferenceContextsIntoContextMap(
   referenceContexts: ReferenceContext[],
   contextMap: Record<string, any>,
   fetchResourceCallback: FetchResourceCallback,
-  requestConfig: any,
+  fetchResourceRequestConfig: FetchResourceRequestConfig,
   issues: OperationOutcomeIssue[]
 ) {
   // Get promises from context references
   let referenceContextTuples = referenceContexts.map((referenceContext) =>
-    createReferenceContextTuple(referenceContext, fetchResourceCallback, requestConfig)
+    createReferenceContextTuple(referenceContext, fetchResourceCallback, fetchResourceRequestConfig)
   );
 
   try {
@@ -319,7 +328,7 @@ async function populateBatchContextsIntoContextMap(
   batchContexts: ResourceContext[],
   contextMap: Record<string, any>,
   fetchResourceCallback: FetchResourceCallback,
-  requestConfig: any,
+  fetchResourceRequestConfig: FetchResourceRequestConfig,
   issues: OperationOutcomeIssue[]
 ) {
   // Get promises from contained batch contexts
@@ -334,7 +343,12 @@ async function populateBatchContextsIntoContextMap(
 
     // batch bundle contains entries, create a request for each entry
     const batchContextEntryTuples = batchBundle.entry.map((entry) =>
-      createResourceContextTuple(batchContext, entry, fetchResourceCallback, requestConfig)
+      createResourceContextTuple(
+        batchContext,
+        entry,
+        fetchResourceCallback,
+        fetchResourceRequestConfig
+      )
     );
 
     batchContextTuples.push(batchContextEntryTuples);
@@ -413,7 +427,7 @@ function responseDataIsFhirResource(responseData: any): responseData is FhirReso
 function createReferenceContextTuple(
   referenceContext: ReferenceContext,
   fetchResourceCallback: FetchResourceCallback,
-  requestConfig: any
+  fetchResourceRequestConfig: FetchResourceRequestConfig
 ): [ReferenceContext, Promise<any>, FhirResource | null] {
   const query = referenceContext.part[1]?.valueReference?.reference;
 
@@ -431,14 +445,14 @@ function createReferenceContextTuple(
     ];
   }
 
-  return [referenceContext, fetchResourceCallback(query, requestConfig), null];
+  return [referenceContext, fetchResourceCallback(query, fetchResourceRequestConfig), null];
 }
 
 function createResourceContextTuple(
   resourceContext: ResourceContext,
-  bundleEntry: BundleEntry<FhirResource>,
+  bundleEntry: BundleEntry,
   fetchResourceCallback: FetchResourceCallback,
-  requestConfig: any
+  fetchResourceRequestConfig: FetchResourceRequestConfig
 ): [ResourceContext, Promise<any>, FhirResource | null] {
   const query = bundleEntry.request?.url;
 
@@ -457,13 +471,13 @@ function createResourceContextTuple(
     ];
   }
 
-  return [resourceContext, fetchResourceCallback(query, requestConfig), null];
+  return [resourceContext, fetchResourceCallback(query, fetchResourceRequestConfig), null];
 }
 
 async function replaceFhirPathEmbeddings(
   parameters: InputParameters,
   questionnaire: Questionnaire,
-  terminologyRequestConfig?: TerminologyRequestConfig
+  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
 ): Promise<{
   launchContexts: ResourceContext[];
   updatedReferenceContexts: ReferenceContext[];
@@ -491,7 +505,7 @@ async function replaceFhirPathEmbeddings(
     const evaluatedFhirPathEmbeddingsMap = await evaluateFhirPathEmbeddings(
       fhirPathEmbeddingsMap,
       launchContexts,
-      terminologyRequestConfig
+      fetchTerminologyRequestConfig
     );
 
     // Replace fhirpath embeddings with evaluated values
@@ -593,9 +607,9 @@ function getFhirPathEmbeddings(
 async function evaluateFhirPathEmbeddings(
   fhirPathEmbeddingsMap: Record<string, string>,
   launchContexts: ResourceContext[],
-  terminologyRequestConfig?: TerminologyRequestConfig
+  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
 ) {
-  const terminologyServerUrl = terminologyRequestConfig?.terminologyServerUrl ?? null;
+  const terminologyServerUrl = fetchTerminologyRequestConfig?.terminologyServerUrl ?? null;
 
   // transform launch contexts to launch context map
   const launchContextMap: Record<string, FhirResource> = {};

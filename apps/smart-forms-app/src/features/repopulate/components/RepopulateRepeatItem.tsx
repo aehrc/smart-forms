@@ -30,7 +30,7 @@ function RepopulateRepeatItem(props: RepopulateRepeatItemProps) {
 
   return (
     <Grid container columnSpacing={2} mt={0.25}>
-      <Grid item xs={12} md={6}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <Typography color="text.secondary" variant="overline" fontSize={7.5}>
           Old answers
         </Typography>
@@ -47,7 +47,7 @@ function RepopulateRepeatItem(props: RepopulateRepeatItemProps) {
           onQrItemChange={() => void 0}
         />
       </Grid>
-      <Grid item xs={12} md={6}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <Typography color="text.secondary" variant="overline" fontSize={7.5}>
           New answers
         </Typography>

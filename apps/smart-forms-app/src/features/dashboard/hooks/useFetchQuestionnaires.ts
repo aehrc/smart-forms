@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+import type { UseQueryResult } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
 import type { Bundle, Questionnaire } from 'fhir/r4';
 import { filterQuestionnaires, getFormsServerBundlePromise } from '../utils/dashboard.ts';
@@ -22,9 +23,9 @@ import { useMemo } from 'react';
 
 interface useFetchQuestionnairesReturnParams {
   questionnaires: Questionnaire[];
-  fetchStatus: 'error' | 'success' | 'loading';
+  fetchStatus: UseQueryResult['status'];
   fetchError: unknown;
-  isInitialLoading: boolean;
+  isLoading: boolean;
   isFetching: boolean;
   refetchQuestionnaires: () => void;
 }
@@ -46,17 +47,15 @@ function useFetchQuestionnaires(
   const {
     data: bundle,
     status,
-    isInitialLoading,
+    isLoading,
     error,
     isFetching,
     refetch
-  } = useQuery<Bundle>(
-    ['questionnaires' + numOfSearchEntries.toString(), queryUrl],
-    () => getFormsServerBundlePromise(queryUrl),
-    {
-      enabled: queryIsLongEnough && debouncedInput === searchInput
-    }
-  );
+  } = useQuery<Bundle>({
+    queryKey: ['questionnaires' + numOfSearchEntries.toString(), queryUrl],
+    queryFn: () => getFormsServerBundlePromise(queryUrl),
+    enabled: queryIsLongEnough && debouncedInput === searchInput
+  });
 
   const questionnaires: Questionnaire[] = useMemo(() => filterQuestionnaires(bundle), [bundle]);
 
@@ -64,7 +63,7 @@ function useFetchQuestionnaires(
     questionnaires,
     fetchStatus: status,
     fetchError: error,
-    isInitialLoading,
+    isLoading,
     isFetching,
     refetchQuestionnaires: refetch
   };

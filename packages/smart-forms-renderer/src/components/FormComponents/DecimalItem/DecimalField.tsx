@@ -72,7 +72,7 @@ function DecimalField(props: DecimalFieldProps) {
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
-            <InputAdornment position={'end'}>
+            <InputAdornment position="end">
               <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
               <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>

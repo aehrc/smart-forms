@@ -21,21 +21,17 @@ import { fetchResource } from '../utils/fetchResource.ts';
 import { PATIENT_QUERY, PRACTITIONER_QUERY } from '../utils/apiConstants.ts';
 
 function useLaunchContext(bearerToken: string | null) {
-  const { data: patientBundle, isFetching: isFetchingPatient } = useQuery<Bundle>(
-    ['patientBundle'],
-    () => fetchResource(PATIENT_QUERY, bearerToken),
-    {
-      enabled: bearerToken !== null
-    }
-  );
+  const { data: patientBundle, isFetching: isFetchingPatient } = useQuery<Bundle>({
+    queryKey: ['patientBundle'],
+    queryFn: () => fetchResource(PATIENT_QUERY, bearerToken),
+    enabled: bearerToken !== null
+  });
 
-  const { data: practitionerBundle, isFetching: isFetchingPractitioner } = useQuery<Bundle>(
-    ['practitionerBundle'],
-    () => fetchResource(PRACTITIONER_QUERY, bearerToken),
-    {
-      enabled: bearerToken !== null
-    }
-  );
+  const { data: practitionerBundle, isFetching: isFetchingPractitioner } = useQuery<Bundle>({
+    queryKey: ['practitionerBundle'],
+    queryFn: () => fetchResource(PRACTITIONER_QUERY, bearerToken),
+    enabled: bearerToken !== null
+  });
 
   return {
     patientBundle,

@@ -68,8 +68,8 @@ function PrePopWrapperForStorybook(props: PrePopWrapperForStorybookProps) {
     populateQuestionnaire({
       questionnaire: questionnaire,
       fetchResourceCallback: fetchResourceCallback,
-      requestConfig: {
-        clientEndpoint: fhirClient.state.serverUrl,
+      fetchResourceRequestConfig: {
+        sourceServerUrl: fhirClient.state.serverUrl,
         authToken: null
       },
       patient: patient,

@@ -165,7 +165,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
       }
     default:
       return (
-        <Typography>
+        <Typography component="div">
           Something has went wrong when parsing item {qItem.linkId} - {qItem.text}
         </Typography>
       );

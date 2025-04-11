@@ -54,10 +54,10 @@ function FormValidationTesterWrapperForStorybook(
       <QueryClientProvider client={queryClient}>
         <div>
           <Grid container>
-            <Grid item xs={6}>
+            <Grid size={{ xs: 6 }}>
               <BaseRenderer />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={{ xs: 6 }}>
               <FormValidationViewerForStorybook />
             </Grid>
           </Grid>

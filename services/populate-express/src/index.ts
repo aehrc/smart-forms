@@ -17,10 +17,14 @@
 
 import express from 'express';
 import cors from 'cors';
-import type { IssuesParameter, ResponseParameter } from '@aehrc/sdc-populate';
+import type {
+  FetchResourceRequestConfig,
+  FetchTerminologyRequestConfig,
+  IssuesParameter,
+  ResponseParameter
+} from '@aehrc/sdc-populate';
 import { isInputParameters, populate } from '@aehrc/sdc-populate';
-import type { RequestConfig } from './callback';
-import { fetchResourceCallback } from './callback';
+import { fetchResourceCallback, fetchTerminologyCallback } from './callback';
 import dotenv from 'dotenv';
 import {
   addEndpointToNotFoundIssues,
@@ -61,30 +65,27 @@ app.get('/fhir/Questionnaire/\\$populate', (_, res) => {
 
 app.post('/fhir/Questionnaire/\\$populate', async (req, res) => {
   const debugMode = req.query['debug'] === 'true';
-  const ehrServerRequestConfig: RequestConfig = {
-    url: req.protocol + '://' + req.get('host') + '/fhir'
+  const ehrServerRequestConfig: FetchResourceRequestConfig = {
+    sourceServerUrl: req.protocol + '://' + req.get('host') + '/fhir'
   };
 
-  const terminologyServerRequestConfig: {
-    url: string | undefined;
-    authToken: string | undefined;
-  } = {
-    url: undefined,
+  const terminologyServerRequestConfig: FetchTerminologyRequestConfig = {
+    terminologyServerUrl: '',
     authToken: undefined
   };
 
   // Set EHR server URL and auth token if provided in env variables
   if (EHR_SERVER_URL) {
-    ehrServerRequestConfig.url = EHR_SERVER_URL;
+    ehrServerRequestConfig.sourceServerUrl = EHR_SERVER_URL;
     if (EHR_SERVER_AUTH_TOKEN) {
-      ehrServerRequestConfig.authToken = EHR_SERVER_AUTH_TOKEN;
+      ehrServerRequestConfig['authToken'] = EHR_SERVER_AUTH_TOKEN;
     }
   }
 
   // Set terminology server URL and auth token if provided in env variables
   if (TERMINOLOGY_SERVER_URL) {
-    terminologyServerRequestConfig.url = TERMINOLOGY_SERVER_URL;
-    terminologyServerRequestConfig.authToken = TERMINOLOGY_SERVER_AUTH_TOKEN;
+    terminologyServerRequestConfig.terminologyServerUrl = TERMINOLOGY_SERVER_URL;
+    terminologyServerRequestConfig['authToken'] = TERMINOLOGY_SERVER_AUTH_TOKEN;
   }
 
   try {
@@ -99,12 +100,12 @@ app.post('/fhir/Questionnaire/\\$populate', async (req, res) => {
 
     // Terminology server defined, use terminology callback
     // Otherwise, use default terminology server provided in sdc-populate
-    const outputParameters = terminologyServerRequestConfig.url
+    const outputParameters = terminologyServerRequestConfig.terminologyServerUrl
       ? await populate(
           body,
           fetchResourceCallback,
           ehrServerRequestConfig,
-          fetchResourceCallback,
+          fetchTerminologyCallback,
           terminologyServerRequestConfig
         )
       : await populate(body, fetchResourceCallback, ehrServerRequestConfig);
@@ -128,7 +129,7 @@ app.post('/fhir/Questionnaire/\\$populate', async (req, res) => {
       (param): param is IssuesParameter => param.name === 'issues'
     ) as IssuesParameter | undefined;
     if (issuesParameter) {
-      addEndpointToNotFoundIssues(issuesParameter, ehrServerRequestConfig.url);
+      addEndpointToNotFoundIssues(issuesParameter, ehrServerRequestConfig.sourceServerUrl);
     }
     res.json(outputParameters);
   } catch (error) {

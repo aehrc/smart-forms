@@ -16,7 +16,7 @@
  */
 
 import React, { useMemo } from 'react';
-import Grid from '@mui/material/Grid';
+import { Grid } from '@mui/material';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import TabContext from '@mui/lab/TabContext';
 import TabPanel from '@mui/lab/TabPanel';
@@ -29,6 +29,7 @@ import type {
   PropsWithQrItemChangeHandler
 } from '../../interfaces/renderProps.interface';
 import { useQuestionnaireStore, useRendererStylingStore } from '../../stores';
+import type { GridProps } from '@mui/material/Grid';
 
 interface FormBodyTabbedProps
   extends PropsWithQrItemChangeHandler,
@@ -68,24 +69,24 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
 
   // If tabListWidthOrBreakpoints is a number, it is a fixed width of the tab list - set a fixed width and prevent shrinking
   // If tabListWidthOrBreakpoints is an object, it is a MUI Breakpoints object
-  const tabListWrapperProps =
+  const tabListWrapperProps: GridProps =
     typeof tabListWidthOrResponsive === 'number'
       ? { sx: { width: tabListWidthOrResponsive, flexShrink: 0 } }
-      : tabListWidthOrResponsive.tabListBreakpoints;
+      : { size: { ...tabListWidthOrResponsive.tabListBreakpoints } };
 
-  const qItemTabPanelProps =
+  const qItemTabPanelProps: GridProps =
     typeof tabListWidthOrResponsive === 'number'
       ? { sx: { flexGrow: 1 } }
-      : tabListWidthOrResponsive.tabContentBreakpoints;
+      : { size: { ...tabListWidthOrResponsive.tabContentBreakpoints } };
 
   return (
     <Grid container spacing={1.5} sx={{ flexWrap: 'nowrap' }}>
       <TabContext value={currentTab.toString()}>
-        <Grid item {...tabListWrapperProps}>
+        <Grid {...tabListWrapperProps}>
           <FormBodyTabListWrapper topLevelItems={qItems} currentTabIndex={currentTab} tabs={tabs} />
         </Grid>
 
-        <Grid item {...qItemTabPanelProps}>
+        <Grid {...qItemTabPanelProps}>
           {qItems.map((qItem, i) => {
             const qrItem = qrItemsByIndex[i];
 

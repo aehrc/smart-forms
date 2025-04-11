@@ -5,9 +5,6 @@ on:
     # Only run this workflow when changes are pushed to the main branch
     branches: ['main']
 
-env:
-  VITE_PRESERVE_SYM_LINKS: true
-
 permissions:
   contents: read
   pages: write

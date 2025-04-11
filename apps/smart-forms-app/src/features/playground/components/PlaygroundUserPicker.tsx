@@ -34,7 +34,7 @@ interface PlaygroundPractitionerPickerProps {
 function PlaygroundUserPicker(props: PlaygroundPractitionerPickerProps) {
   const { sourceFhirServerUrl, selectedUser, onSelectUser } = props;
 
-  const { practitioners, isInitialLoading } = useFetchPractitioners(sourceFhirServerUrl);
+  const { practitioners, isLoading } = useFetchPractitioners(sourceFhirServerUrl);
 
   const selectedUserId = useMemo(
     () => practitioners.find((p) => p.id === selectedUser?.id)?.id,
@@ -52,7 +52,7 @@ function PlaygroundUserPicker(props: PlaygroundPractitionerPickerProps) {
     onSelectUser(null);
   }
 
-  if (isInitialLoading) {
+  if (isLoading) {
     return (
       <Fade in={true} timeout={300}>
         <Stack
@@ -98,17 +98,13 @@ function PlaygroundUserPicker(props: PlaygroundPractitionerPickerProps) {
         {selectedUser ? (
           <>
             <Grid container>
-              <Grid item xs={2}>
-                ID:
-              </Grid>
-              <Grid item xs={10}>
+              <Grid size={{ xs: 2 }}>ID:</Grid>
+              <Grid size={{ xs: 10 }}>
                 <Typography mb={1}>{selectedUser.id}</Typography>
               </Grid>
 
-              <Grid item xs={2}>
-                Name:
-              </Grid>
-              <Grid item xs={10}>
+              <Grid size={{ xs: 2 }}>Name:</Grid>
+              <Grid size={{ xs: 10 }}>
                 <Typography mb={1}>{constructName(selectedUser.name)}</Typography>
               </Grid>
             </Grid>

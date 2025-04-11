@@ -55,18 +55,24 @@ function AttachmentFileDropBox(props: AttachmentFileDropBoxProps) {
 
   return (
     <AttachmentFileDropBoxWrapper
-      ref={dropTarget}
+      ref={dropTarget as unknown as React.Ref<any>} // works in runtime, but produces error TS2322: Type 'ConnectDropTarget' is not assignable to type 'Ref<unknown> | undefined' at compile time
       display="flex"
       isActive={isActive}
       textFieldWidth={textFieldWidth}
       isTabled={isTabled}>
       <Box p={1.5}>
-        <Typography color={readOnly ? readOnlyTextColor : 'text.primary'}>{boxMessage}</Typography>
+        <Typography component="div" color={readOnly ? readOnlyTextColor : 'text.primary'}>
+          {boxMessage}
+        </Typography>
 
         {file ? (
           <Box pt={1}>
-            <Typography fontSize={10}>Size: {getFileSize(file.size.toString() ?? '0')}</Typography>
-            <Typography fontSize={10}>Type: {file.type}</Typography>
+            <Typography component="div" fontSize={10}>
+              Size: {getFileSize(file.size.toString() ?? '0')}
+            </Typography>
+            <Typography component="div" fontSize={10}>
+              Type: {file.type}
+            </Typography>
           </Box>
         ) : null}
       </Box>

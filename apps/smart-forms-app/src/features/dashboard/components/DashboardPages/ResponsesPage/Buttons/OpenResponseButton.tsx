@@ -57,13 +57,11 @@ function OpenResponseButton(props: Props) {
   }
 
   // search referenced questionnaire
-  const { data, error } = useQuery<Bundle | Questionnaire>(
-    ['referencedQuestionnaire', queryUrl],
-    () => getFormsServerBundleOrQuestionnairePromise(queryUrl),
-    {
-      enabled: !!selectedResponse && !!questionnaireRef
-    }
-  );
+  const { data, error } = useQuery<Bundle | Questionnaire>({
+    queryKey: ['referencedQuestionnaire', queryUrl],
+    queryFn: () => getFormsServerBundleOrQuestionnairePromise(queryUrl),
+    enabled: !!selectedResponse && !!questionnaireRef
+  });
 
   if (error) {
     console.error(error);

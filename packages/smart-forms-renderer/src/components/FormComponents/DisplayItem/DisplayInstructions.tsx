@@ -15,23 +15,26 @@
  * limitations under the License.
  */
 
-import type { ReactElement } from 'react';
+import type { ReactNode } from 'react';
 import React, { memo } from 'react';
 import Typography from '@mui/material/Typography';
 import { DisplayInstructionsWrapper } from './DisplayInstructions.styles';
 
 interface DisplayInstructionsProps {
-  displayInstructions: string | ReactElement;
   readOnly: boolean;
+  children?: ReactNode;
 }
 
 const DisplayInstructions = memo(function DisplayInstructions(props: DisplayInstructionsProps) {
-  const { displayInstructions, readOnly } = props;
+  const { readOnly, children } = props;
 
-  return displayInstructions ? (
+  return children ? (
     <DisplayInstructionsWrapper>
-      <Typography variant="caption" color={readOnly ? 'text.secondary' : 'text.primary'}>
-        {displayInstructions}
+      <Typography
+        component="span"
+        variant="caption"
+        color={readOnly ? 'text.secondary' : 'text.primary'}>
+        <>{children}</>
       </Typography>
     </DisplayInstructionsWrapper>
   ) : null;

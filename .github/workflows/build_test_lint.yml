@@ -3,9 +3,6 @@ name: Smart Forms Build-Test-Lint Workflow
 on:
   push:
 
-env:
-  VITE_PRESERVE_SYM_LINKS: true
-
 jobs:
   build-smart-forms-app:
     name: Build Smart Forms App
@@ -19,6 +16,13 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
+
+      - name: Build workspace packages
+        run: |
+          npm run build -w packages/sdc-assemble
+          npm run build -w packages/sdc-populate
+          npm run build -w packages/smart-forms-renderer
+
       - name: Build application
         run: npm run build -w apps/smart-forms-app
 
@@ -64,12 +68,22 @@ jobs:
         with:
           node-version: 20
           cache: npm
+
       - name: Install dependencies
         run: npm ci
+
+      - name: Build workspace packages
+        run: |
+          npm run build -w packages/sdc-assemble
+          npm run build -w packages/sdc-populate
+          npm run build -w packages/smart-forms-renderer
+
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
+
       - name: Run Playwright tests
         run: npm run playwright -w apps/smart-forms-app
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
