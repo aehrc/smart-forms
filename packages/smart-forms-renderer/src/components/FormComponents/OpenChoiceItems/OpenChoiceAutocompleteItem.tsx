@@ -39,7 +39,7 @@ import { useQuestionnaireStore } from '../../../stores';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import type { AlertColor } from '@mui/material/Alert';
 import ItemLabel from '../ItemParts/ItemLabel';
-import { AutocompleteChangeReason } from '@mui/material';
+import type { AutocompleteChangeReason } from '@mui/material';
 
 interface OpenChoiceAutocompleteItemProps
   extends PropsWithQrItemChangeHandler,
@@ -109,12 +109,15 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
 
   // Event handlers
   // Handler function which handles both input change and selection change
-  function handleValueChange(newValue: Coding | string | null, reason: AutocompleteChangeReason | string) {
+  function handleValueChange(
+    newValue: Coding | string | null,
+    reason: AutocompleteChangeReason | string
+  ) {
     //if the reason is reset, then we don't change the value, otherwise you will end up with looped setState calls
     if (reason === 'reset') {
       return;
     }
-    //if the text input is changed, and only if hte input is a string the set the state.    
+    //if the text input is changed, and only if hte input is a string the set the state.
     if (newValue && typeof newValue === 'string' && reason === 'input') {
       setInput(newValue);
       // return;
@@ -140,9 +143,8 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
             ...qrOpenChoice,
             answer: [{ id: answerKey, valueCoding: newValue }]
           });
-        }
-        else //if newValue is not in the options list, treat it as a string
-        {
+        } //if newValue is not in the options list, treat it as a string
+        else {
           onQrItemChange({
             ...createEmptyQrItem(qItem, answerKey),
             answer: [{ id: answerKey, valueString: newValue }]
@@ -158,7 +160,6 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
       });
     }
   }
-
 
   if (isRepeated) {
     return (

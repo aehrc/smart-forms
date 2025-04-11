@@ -17,7 +17,8 @@
 
 import React from 'react';
 import Box from '@mui/material/Box';
-import Autocomplete, { AutocompleteChangeReason } from '@mui/material/Autocomplete';
+import type { AutocompleteChangeReason } from '@mui/material/Autocomplete';
+import Autocomplete from '@mui/material/Autocomplete';
 import { StandardTextField } from '../Textfield.styles';
 import SearchIcon from '@mui/icons-material/Search';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -48,7 +49,10 @@ interface OpenChoiceAutocompleteFieldProps
   loading: boolean;
   feedback: { message: string; color: AlertColor } | null;
   readOnly: boolean;
-  onValueChange: (newValue: Coding | string | null, reason: AutocompleteChangeReason | string) => void;
+  onValueChange: (
+    newValue: Coding | string | null,
+    reason: AutocompleteChangeReason | string
+  ) => void;
 }
 
 function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
@@ -62,7 +66,7 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
     readOnly,
     isTabled,
     renderingExtensions,
-    onValueChange,
+    onValueChange
   } = props;
 
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
@@ -85,7 +89,7 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
         freeSolo
         sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 220, flexGrow: 1 }}
         onChange={(_, newValue, reason) => onValueChange(newValue, reason)}
-        onInputChange={(_,newValue,reason) => onValueChange(newValue, reason)}
+        onInputChange={(_, newValue, reason) => onValueChange(newValue, reason)}
         filterOptions={(x) => x}
         renderInput={(params) => (
           <StandardTextField

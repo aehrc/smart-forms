@@ -1,7 +1,8 @@
 import React from 'react';
 import { getAnswerOptionLabel } from '../../../utils/openChoice';
 import { StandardTextField } from '../Textfield.styles';
-import Autocomplete, { AutocompleteChangeReason}  from '@mui/material/Autocomplete';
+import type { AutocompleteChangeReason } from '@mui/material/Autocomplete';
+import Autocomplete from '@mui/material/Autocomplete';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type {
   PropsWithIsTabledRequiredAttribute,
@@ -21,7 +22,10 @@ interface OpenChoiceSelectAnswerOptionFieldProps
   valueSelect: QuestionnaireItemAnswerOption | null;
   feedback: string;
   readOnly: boolean;
-  onValueChange: (newValue: QuestionnaireItemAnswerOption | string | null,  reason: AutocompleteChangeReason | string) => void;
+  onValueChange: (
+    newValue: QuestionnaireItemAnswerOption | string | null,
+    reason: AutocompleteChangeReason | string
+  ) => void;
 }
 
 function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFieldProps) {
@@ -48,8 +52,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
         options={options}
         getOptionLabel={(option) => getAnswerOptionLabel(option)}
         onChange={(_, newValue, reason) => onValueChange(newValue, reason)}
-        onInputChange={(_,newValue,reason) => onValueChange(newValue, reason)}
-
+        onInputChange={(_, newValue, reason) => onValueChange(newValue, reason)}
         freeSolo
         autoHighlight
         sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }}

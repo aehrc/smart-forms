@@ -37,7 +37,7 @@ import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import ItemLabel from '../ItemParts/ItemLabel';
-import { AutocompleteChangeReason } from '@mui/material';
+import type { AutocompleteChangeReason } from '@mui/material';
 
 interface OpenChoiceSelectAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
@@ -82,17 +82,17 @@ function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionIte
 
   // Event handlers
   // Handler function which handles both input change and selection change
-  function handleValueChange(newValue: QuestionnaireItemAnswerOption | string | null, reason: AutocompleteChangeReason | string) {
-
-
+  function handleValueChange(
+    newValue: QuestionnaireItemAnswerOption | string | null,
+    reason: AutocompleteChangeReason | string
+  ) {
     //if the reason is reset, then we don't change the value, otherwise you will end up with looped setState calls
     if (reason === 'reset') {
       // console.log("Reason: ", reason)
       return;
     }
     if (newValue) {
-
-    //If the value is a string (i.e from freeSolo input)
+      //If the value is a string (i.e from freeSolo input)
       if (typeof newValue === 'string') {
         onQrItemChange({
           ...qrOpenChoice,

@@ -1,5 +1,6 @@
 import React from 'react';
-import Autocomplete, { AutocompleteChangeReason } from '@mui/material/Autocomplete';
+import type { AutocompleteChangeReason } from '@mui/material/Autocomplete';
+import Autocomplete from '@mui/material/Autocomplete';
 import { StandardTextField } from '../Textfield.styles';
 import Typography from '@mui/material/Typography';
 import type {
@@ -18,11 +19,14 @@ interface OpenChoiceSelectAnswerValueSetFieldProps
     PropsWithRenderingExtensionsAttribute {
   qItem: QuestionnaireItem;
   options: Coding[];
-  valueSelect: Coding| string | null;
+  valueSelect: Coding | string | null;
   terminologyError: TerminologyError;
   feedback: string;
   readOnly: boolean;
-  onValueChange: (newValue: Coding | string | null, reason: AutocompleteChangeReason | string) => void;
+  onValueChange: (
+    newValue: Coding | string | null,
+    reason: AutocompleteChangeReason | string
+  ) => void;
 }
 
 function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueSetFieldProps) {
@@ -52,7 +56,7 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
           typeof option === 'string' ? option : (option.display ?? `${option.code}`)
         }
         onChange={(_, newValue, reason) => onValueChange(newValue, reason)}
-        onInputChange={(_,newValue,reason) => onValueChange(newValue, reason)}
+        onInputChange={(_, newValue, reason) => onValueChange(newValue, reason)}
         freeSolo
         autoHighlight
         sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }}
