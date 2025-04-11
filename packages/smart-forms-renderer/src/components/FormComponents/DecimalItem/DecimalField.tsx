@@ -51,7 +51,7 @@ function DecimalField(props: DecimalFieldProps) {
     onInputChange
   } = props;
 
-  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+  const textFieldWidth = useRendererStylingStore.use.textFieldWidth() || 320;
 
   return (
     <StandardTextField

@@ -16,7 +16,7 @@
  */
 
 // @ts-ignore
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography, Button } from '@mui/material';
 import FileCollector from './FileCollector.tsx';
 import type { Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import PlaygroundQuestionnairePicker from './PlaygroundQuestionnairePicker.tsx';
@@ -27,10 +27,11 @@ interface PlaygroundPickerProps {
   user: Practitioner | null;
   onBuildQuestionnaireFromFile: (file: File) => void;
   onBuildQuestionnaireFromResource: (questionnaire: Questionnaire) => void;
+  onTestQuestionnaire: () => void;
 }
 
 function PlaygroundPicker(props: PlaygroundPickerProps) {
-  const { patient, user, onBuildQuestionnaireFromFile, onBuildQuestionnaireFromResource } = props;
+  const { patient, user, onBuildQuestionnaireFromFile, onBuildQuestionnaireFromResource, onTestQuestionnaire } = props;
 
   const { patientName, userName } = useLaunchContextNames(patient, user);
 
@@ -56,6 +57,12 @@ function PlaygroundPicker(props: PlaygroundPickerProps) {
 
           <Box>
             <PlaygroundQuestionnairePicker onBuild={onBuildQuestionnaireFromResource} />
+          </Box>
+
+          <Box>
+            <Button variant="contained" onClick={onTestQuestionnaire}>
+              Load Test Questionnaire
+            </Button>
           </Box>
         </Stack>
       </Stack>

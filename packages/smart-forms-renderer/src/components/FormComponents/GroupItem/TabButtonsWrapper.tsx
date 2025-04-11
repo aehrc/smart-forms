@@ -22,6 +22,7 @@ import { useQuestionnaireStore, useRendererStylingStore } from '../../../stores'
 import NextTabButton from './NextTabButton';
 import PreviousTabButton from './PreviousTabButton';
 import useNextAndPreviousVisibleTabs from '../../../hooks/useNextAndPreviousVisibleTabs';
+import { useFocusTabHeading } from '../../../hooks/useFocusTabHeading';
 
 interface TabButtonsWrapperProps {
   currentTabIndex?: number;
@@ -39,6 +40,8 @@ const TabButtonsWrapper = memo(function TabButtonsWrapper(props: TabButtonsWrapp
     tabs
   );
 
+  const focusHeading = useFocusTabHeading();
+
   const tabsNotDefined = currentTabIndex === undefined || tabs === undefined;
 
   // Event handlers
@@ -51,6 +54,11 @@ const TabButtonsWrapper = memo(function TabButtonsWrapper(props: TabButtonsWrapp
 
     // Scroll to top of page
     window.scrollTo(0, 0);
+
+    // Focus the first heading in the new tab panel
+    setTimeout(() => {
+      focusHeading(`tabpanel-${previousTabIndex}`);
+    }, 100); // Small delay to ensure panel is rendered
   }
 
   function handleNextTabButtonClick() {
@@ -62,6 +70,11 @@ const TabButtonsWrapper = memo(function TabButtonsWrapper(props: TabButtonsWrapp
 
     // Scroll to top of page
     window.scrollTo(0, 0);
+
+    // Focus the first heading in the new tab panel
+    setTimeout(() => {
+      focusHeading(`tabpanel-${nextTabIndex}`);
+    }, 100); // Small delay to ensure panel is rendered
   }
 
   if (tabsNotDefined) {

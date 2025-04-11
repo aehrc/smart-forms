@@ -16,15 +16,7 @@
  */
 
 import React, { useCallback, useState } from 'react';
-import type {
-  BaseItemProps,
-  PropsWithFeedbackFromParentAttribute,
-  PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledRequiredAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithRenderingExtensionsAttribute
-} from '../../../interfaces/renderProps.interface';
+import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import debounce from 'lodash.debounce';
 import { createEmptyQrItem } from '../../../utils/qrItem';
@@ -42,7 +34,15 @@ export interface AttachmentValues {
   fileName: string;
 }
 
-interface AttachmentItemProps extends BaseItemProps {}
+interface AttachmentItemProps extends Omit<BaseItemProps, 'onQrItemChange'> {
+  qItem: QuestionnaireItem;
+  qrItem: QuestionnaireResponseItem;
+  isRepeated: boolean;
+  isTabled: boolean;
+  parentIsReadOnly?: boolean;
+  feedbackFromParent?: string;
+  onQrItemChange: (qrItem: QuestionnaireResponseItem) => void;
+}
 
 function AttachmentItem(props: AttachmentItemProps) {
   const {
@@ -50,7 +50,7 @@ function AttachmentItem(props: AttachmentItemProps) {
     qrItem,
     isRepeated,
     isTabled,
-    parentIsReadOnly,
+    parentIsReadOnly = false,
     feedbackFromParent,
     onQrItemChange
   } = props;

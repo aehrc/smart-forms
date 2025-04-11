@@ -1,13 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import type {
-  BaseItemProps,
-  PropsWithFeedbackFromParentAttribute,
-  PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledRequiredAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithRenderingExtensionsAttribute
-} from '../../../interfaces/renderProps.interface';
+import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import type {
   Quantity,
   QuestionnaireItem,

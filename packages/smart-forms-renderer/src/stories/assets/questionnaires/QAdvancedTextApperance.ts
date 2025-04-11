@@ -243,3 +243,175 @@ export const qHidden: Questionnaire = {
     }
   ]
 };
+
+export const qRenderingXhtmlGroupPropagation: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'RenderingXhtmlGroupPropagation',
+  name: 'RenderingXhtmlGroupPropagation',
+  title: 'Rendering XHTML Group Propagation',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-05-01',
+  url: 'https://smartforms.csiro.au/docs/advanced/text/rendering-xhtml-3',
+  item: [
+    {
+      linkId: 'styled-group',
+      text: 'Styled Group with XHTML',
+      _text: {
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
+            valueString:
+              '<div xmlns="http://www.w3.org/1999/xhtml" style="color: blue; background-color: #f0f8ff; padding: 10px; border-radius: 5px;">\r\n<p>Styled Group with XHTML</p>\r\n</div>'
+          }
+        ]
+      },
+      type: 'group',
+      item: [
+        {
+          linkId: 'child-question-1',
+          text: 'Child Question 1',
+          type: 'string'
+        },
+        {
+          linkId: 'child-question-2',
+          text: 'Child Question 2',
+          type: 'string'
+        },
+        {
+          linkId: 'child-subgroup',
+          text: 'Child Subgroup',
+          type: 'group',
+          item: [
+            {
+              linkId: 'subgroup-question-1',
+              text: 'Subgroup Question 1',
+              type: 'string'
+            },
+            {
+              linkId: 'nested-level-2',
+              text: 'Nested Level 2 Group',
+              type: 'group',
+              item: [
+                {
+                  linkId: 'level-2-question-1',
+                  text: 'Level 2 Question 1',
+                  type: 'string'
+                },
+                {
+                  linkId: 'level-2-question-2',
+                  text: 'Level 2 Question 2',
+                  type: 'string'
+                },
+                {
+                  linkId: 'nested-level-3',
+                  text: 'Nested Level 3 Group',
+                  type: 'group',
+                  item: [
+                    {
+                      linkId: 'level-3-question-1',
+                      text: 'Level 3 Question 1',
+                      type: 'string'
+                    },
+                    {
+                      linkId: 'level-3-question-2',
+                      text: 'Level 3 Question 2',
+                      type: 'string'
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+export const qRenderingXhtmlGroupPropagationCalcExpression: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'RenderingXhtmlGroupPropagationCalcExpression',
+  name: 'RenderingXhtmlGroupPropagationCalcExpression',
+  title: 'RenderingXhtmlGroupPropagationCalcExpression',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-05-01',
+  url: 'https://smartforms.csiro.au/docs/advanced/text/rendering-xhtml-4',
+  extension: [
+    {
+      url: 'http://hl7.org/fhir/StructureDefinition/variable',
+      valueExpression: {
+        name: 'patientToRefer',
+        language: 'text/fhirpath',
+        expression:
+          "%resource.item.where(linkId='referral-group').item.where(linkId='referral-patient-picker').answer.value"
+      }
+    }
+  ],
+  item: [
+    {
+      linkId: 'referral-group',
+      text: 'Referral',
+      type: 'group',
+      item: [
+        {
+          linkId: 'referral-patient-picker',
+          text: 'Select patient to refer',
+          type: 'choice',
+          answerOption: [
+            {
+              valueString: 'Adam'
+            },
+            {
+              valueString: 'Alan'
+            },
+
+            {
+              valueString: 'Ben'
+            }
+          ]
+        },
+        {
+          linkId: 'referral-group-info',
+          type: 'group',
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
+              valueString:
+                '<div style="background-color: #E9F2FF;" role="status" xmlns="http://www.w3.org/1999/xhtml"><img alt="Information" src="https://www.digitalhealth.gov.au/chap/info.svg" /><div><h2>Consider a referral</h2></div></div>'
+            }
+          ],
+          item: [
+            {
+              linkId: '3-BasicExaminations-visiontest-Infopanel-referral4',
+              _text: {
+                extension: [
+                  {
+                    url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
+                    valueExpression: {
+                      description: "Display the patient's first name",
+                      language: 'text/fhirpath',
+                      expression:
+                        "'You may need a referral if ' + %patientToRefer + '\\'s screening result is abnormal, or you\\'re uncertain, and unable to test.'"
+                    }
+                  }
+                ]
+              },
+              type: 'display'
+            }
+          ],
+          enableWhen: [
+            {
+              question: 'referral-patient-picker',
+              operator: 'exists',
+              answerBoolean: true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};

@@ -9,6 +9,7 @@ import type {
 } from 'fhir/r4';
 import { readQuestionnaireResponse, transverseQuestionnaire } from './genericRecursive';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
+import { getRelevantCodingProperties } from './valueSet';
 
 /**
  * Extract an array of Observations from a QuestionnaireResponse and its source Questionnaire.
@@ -250,13 +251,7 @@ export function createObservation(
     observation.valueInteger = answer.valueInteger;
   } else if (answer.valueCoding) {
     observation.valueCodeableConcept = {
-      coding: [
-        {
-          system: answer.valueCoding.system,
-          code: answer.valueCoding.code,
-          display: answer.valueCoding.display
-        }
-      ]
+      coding: [getRelevantCodingProperties(answer.valueCoding)]
     };
   }
 

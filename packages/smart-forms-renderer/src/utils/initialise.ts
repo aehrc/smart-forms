@@ -38,6 +38,7 @@ import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import type { TargetConstraint } from '../interfaces/targetConstraint.interface';
 import { evaluateInitialTargetConstraints } from './targetConstraint';
 import type { Variables } from '../interfaces';
+import { getRelevantCodingProperties } from './valueSet';
 
 /**
  * Initialise a questionnaireResponse from a given questionnaire
@@ -190,11 +191,7 @@ function getInitialValueAnswers(qItem: QuestionnaireItem): QuestionnaireResponse
       .map((option): QuestionnaireResponseItemAnswer | null => {
         if (option.valueCoding) {
           return {
-            valueCoding: {
-              system: option.valueCoding.system,
-              code: option.valueCoding.code,
-              display: option.valueCoding.display
-            }
+            valueCoding: getRelevantCodingProperties(option.valueCoding)
           };
         }
 
@@ -266,7 +263,7 @@ export function parseItemInitialToAnswer(
   }
 
   if (initial.valueCoding) {
-    return { valueCoding: initial.valueCoding };
+    return { valueCoding: getRelevantCodingProperties(initial.valueCoding) };
   }
 
   if (initial.valueQuantity) {

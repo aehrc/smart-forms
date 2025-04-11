@@ -24,6 +24,7 @@ import type {
 } from 'fhir/r4';
 import { ChoiceItemControl, ChoiceItemOrientation } from '../interfaces/choice.enum';
 import { isSpecificItemControl } from './itemControl';
+import { getRelevantCodingProperties } from './valueSet';
 
 /**
  * Convert codings to Questionnaire answer options
@@ -33,11 +34,7 @@ import { isSpecificItemControl } from './itemControl';
 export function convertCodingsToAnswerOptions(codings: Coding[]): QuestionnaireItemAnswerOption[] {
   return codings.map(
     (coding): QuestionnaireItemAnswerOption => ({
-      valueCoding: {
-        system: coding.system,
-        code: coding.code,
-        display: coding.display
-      }
+      valueCoding: getRelevantCodingProperties(coding)
     })
   );
 }
@@ -55,22 +52,14 @@ export function findInAnswerOptions(
     if (option.valueCoding) {
       if (valueInString === option.valueCoding.code) {
         return {
-          valueCoding: {
-            system: option.valueCoding.system,
-            code: option.valueCoding.code,
-            display: option.valueCoding.display
-          }
+          valueCoding: getRelevantCodingProperties(option.valueCoding)
         };
       }
 
       // handle case where valueCoding.code is not present
       if (valueInString === option.valueCoding.display) {
         return {
-          valueCoding: {
-            system: option.valueCoding.system,
-            code: option.valueCoding.code,
-            display: option.valueCoding.display
-          }
+          valueCoding: getRelevantCodingProperties(option.valueCoding)
         };
       }
     }

@@ -17,83 +17,79 @@
 
 import { useState } from 'react';
 import PrePopButtonForPlayground from './PrePopButtonForPlayground.tsx';
-import { populateQuestionnaire } from '@aehrc/sdc-populate';
+import { populateQuestionnaire, PopulateQuestionnaireParams } from '@aehrc/sdc-populate';
 import { BaseRenderer, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import { fetchResourceCallback } from './PrePopCallbackForPlayground.tsx';
 import type { Patient, Practitioner } from 'fhir/r4';
 import { Box, Typography } from '@mui/material';
 import useLaunchContextNames from '../hooks/useLaunchContextNames.ts';
-import { buildFormWrapper } from '../../../utils/manageForm.ts';
 import ExtractMenu from './ExtractMenu.tsx';
+import DebugPanel from '@aehrc/smart-forms-renderer/src/features/template-extraction/debug/DebugPanel.tsx';
+import { debugUtils, TemplateExtractionDebugger } from '@aehrc/smart-forms-renderer/src/features/template-extraction/debug/debugUtils.ts';
 
 interface PlaygroundRendererProps {
   sourceFhirServerUrl: string | null;
   patient: Patient | null;
   user: Practitioner | null;
-  terminologyServerUrl: string;
   isExtracting: boolean;
   onObservationExtract: () => void;
   onStructureMapExtract: () => void;
+  onTemplateExtract: () => void;
 }
 
-function PlaygroundRenderer(props: PlaygroundRendererProps) {
-  const {
-    sourceFhirServerUrl,
-    patient,
-    user,
-    terminologyServerUrl,
-    isExtracting,
-    onObservationExtract,
-    onStructureMapExtract
-  } = props;
-
-  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
-  const setPopulatedContext = useQuestionnaireStore.use.setPopulatedContext();
-
+export default function PlaygroundRenderer(props: PlaygroundRendererProps) {
+  const { sourceFhirServerUrl, patient, user, isExtracting, onObservationExtract, onStructureMapExtract, onTemplateExtract } = props;
+  const [prePopEnabled] = useState(true);
   const [isPopulating, setIsPopulating] = useState(false);
+  const [debugInfo, setDebugInfo] = useState<{ steps: any[]; questionnaireId: string } | null>(null);
 
   const { patientName, userName } = useLaunchContextNames(patient, user);
+  const questionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
 
-  const prePopEnabled = sourceFhirServerUrl !== null && patient !== null;
-
-  function handlePrepopulate() {
-    if (!prePopEnabled) {
+  const handlePrepopulate = async () => {
+    if (!sourceFhirServerUrl || !patient || !user || !questionnaire) {
       return;
     }
 
     setIsPopulating(true);
-
-    populateQuestionnaire({
-      questionnaire: sourceQuestionnaire,
-      fetchResourceCallback: fetchResourceCallback,
-      requestConfig: {
-        clientEndpoint: sourceFhirServerUrl,
-        authToken: null
-      },
-      patient: patient,
-      user: user ?? undefined
-    }).then(async ({ populateSuccess, populateResult }) => {
-      if (!populateSuccess || !populateResult) {
-        setIsPopulating(false);
-        return;
-      }
-
-      const { populatedResponse, populatedContext } = populateResult;
-
-      // Call to buildForm to pre-populate the QR which repaints the entire BaseRenderer view
-      await buildFormWrapper(
-        sourceQuestionnaire,
-        populatedResponse,
-        undefined,
-        terminologyServerUrl
-      );
-      if (populatedContext) {
-        setPopulatedContext(populatedContext);
-      }
-
+    try {
+      const params: PopulateQuestionnaireParams = {
+        questionnaire,
+        patient,
+        user,
+        fetchResourceCallback,
+        requestConfig: {
+          baseUrl: sourceFhirServerUrl
+        }
+      };
+      await populateQuestionnaire(params);
+    } finally {
       setIsPopulating(false);
-    });
-  }
+    }
+  };
+
+  const handleTemplateExtract = async () => {
+    if (!questionnaire) return;
+    
+    // Create a proper TemplateExtractionDebugger instance
+    const debugLogger = new TemplateExtractionDebugger(questionnaire.id || 'unknown');
+
+    // Log questionnaire structure
+    debugUtils.logQuestionnaireStructure(debugLogger, questionnaire);
+    
+    // Log observation templates
+    debugUtils.logObservationTemplates(debugLogger, questionnaire);
+    
+    // Log item templates
+    debugUtils.logItemTemplates(debugLogger, questionnaire);
+
+    // Get the debug info
+    const info = debugUtils.getPlaygroundDebugInfo(debugLogger);
+    setDebugInfo(info);
+
+    // Call the template extract handler
+    onTemplateExtract();
+  };
 
   return (
     <>
@@ -107,6 +103,7 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
           isExtracting={isExtracting}
           onObservationExtract={onObservationExtract}
           onStructureMapExtract={onStructureMapExtract}
+          onTemplateExtract={handleTemplateExtract}
         />
         <Box flexGrow={1} />
 
@@ -121,6 +118,12 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
           </Typography>
         ) : null}
       </Box>
+      {debugInfo && (
+        <DebugPanel
+          steps={debugInfo.steps}
+          questionnaireId={debugInfo.questionnaireId}
+        />
+      )}
       {isPopulating ? null : (
         <Box px={1}>
           <BaseRenderer />
@@ -129,5 +132,3 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
     </>
   );
 }
-
-export default PlaygroundRenderer;

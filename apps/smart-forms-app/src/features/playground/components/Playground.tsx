@@ -39,11 +39,12 @@ import RendererDebugFooter from '../../renderer/components/RendererDebugFooter/R
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
 import PlaygroundPicker from './PlaygroundPicker.tsx';
-import type { Patient, Practitioner, Questionnaire } from 'fhir/r4';
+import type { Patient, Practitioner, Questionnaire, Observation } from 'fhir/r4';
 import PlaygroundHeader from './PlaygroundHeader.tsx';
 import { HEADERS } from '../../../api/headers.ts';
 import { useExtractOperationStore } from '../stores/extractOperationStore.ts';
 import { buildFormWrapper, destroyFormWrapper } from '../../../utils/manageForm.ts';
+import { processTemplateObservations } from '../../../utils/templateProcessing';
 
 const defaultFhirServerUrl = 'https://hapi.fhir.org/baseR4';
 const defaultExtractEndpoint = 'https://proxy.smartforms.io/fhir';
@@ -202,19 +203,194 @@ function Playground() {
         preventDuplicate: true,
         action: <CloseSnackbar />
       });
-      setExtractedResource(null);
-    } else {
-      enqueueSnackbar(
-        'Extract successful. See Advanced Properties > Extracted to view extracted resource.',
-        {
-          preventDuplicate: true,
-          action: <CloseSnackbar />,
-          autoHideDuration: 8000
-        }
-      );
-      const extractedResource = await response.json();
-      setExtractedResource(extractedResource);
+      return;
     }
+
+    const extractedResource = await response.json();
+    setExtractedResource(extractedResource);
+
+    enqueueSnackbar(
+      'StructureMap-based extraction successful. See Advanced Properties > Extracted to view extracted resource.',
+      {
+        preventDuplicate: true,
+        action: <CloseSnackbar />,
+        autoHideDuration: 8000
+      }
+    );
+  }
+
+  // Template-based extract
+  async function handleTemplateExtract() {
+    setExtracting(true);
+    try {
+      if (!sourceQuestionnaire.contained || sourceQuestionnaire.contained.length === 0) {
+        enqueueSnackbar('No templates found in the questionnaire for template-based extraction', {
+          variant: 'error',
+          preventDuplicate: true,
+          action: <CloseSnackbar />
+        });
+        return;
+      }
+
+      // Process templates
+      const result = await processTemplateObservations(sourceQuestionnaire, updatableResponse);
+
+      if (result.errors && result.errors.length > 0) {
+        enqueueSnackbar('Some errors occurred during template extraction', {
+          variant: 'warning',
+          preventDuplicate: true,
+          action: <CloseSnackbar />
+        });
+      }
+
+      if (result.observations.length === 0) {
+        enqueueSnackbar('No data could be extracted from the templates', {
+          variant: 'error',
+          preventDuplicate: true,
+          action: <CloseSnackbar />
+        });
+        return;
+      }
+
+      // Create transaction bundle with extracted observations
+      const transactionBundle = {
+        resourceType: 'Bundle',
+        type: 'transaction',
+        entry: result.observations.map((observation: Observation) => ({
+          resource: observation
+        }))
+      };
+
+      // Update the extracted resource
+      setExtractedResource(transactionBundle);
+
+      enqueueSnackbar('Successfully extracted resources from templates', {
+        variant: 'success',
+        preventDuplicate: true,
+        action: <CloseSnackbar />
+      });
+    } catch (error) {
+      console.error('Error during template extraction:', error);
+      enqueueSnackbar('Failed to perform template-based extraction', {
+        variant: 'error',
+        preventDuplicate: true,
+        action: <CloseSnackbar />
+      });
+    } finally {
+      setExtracting(false);
+    }
+  }
+
+  // Test function to create a sample questionnaire with Observation templates
+  function createTestQuestionnaire() {
+    const testQuestionnaire: Questionnaire = {
+      resourceType: 'Questionnaire',
+      id: 'test-questionnaire',
+      title: 'Test Questionnaire with Templates',
+      status: 'active',
+      contained: [
+        {
+          resourceType: 'Observation',
+          id: 'template1',
+          status: 'final',
+          code: {
+            coding: [{
+              system: 'http://loinc.org',
+              code: '85354-9',
+              display: 'Blood pressure panel'
+            }]
+          },
+          component: [
+            {
+              code: {
+                coding: [{
+                  system: 'http://loinc.org',
+                  code: '8480-6',
+                  display: 'Systolic blood pressure'
+                }]
+              },
+              extension: [{
+                url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-fhirPath',
+                valueString: "QuestionnaireResponse.item.where(linkId='systolic').answer.value"
+              }]
+            },
+            {
+              code: {
+                coding: [{
+                  system: 'http://loinc.org',
+                  code: '8462-4',
+                  display: 'Diastolic blood pressure'
+                }]
+              },
+              extension: [{
+                url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-fhirPath',
+                valueString: "QuestionnaireResponse.item.where(linkId='diastolic').answer.value"
+              }]
+            }
+          ]
+        },
+        {
+          resourceType: 'Observation',
+          id: 'template2',
+          status: 'final',
+          code: {
+            coding: [{
+              system: 'http://loinc.org',
+              code: '8867-4',
+              display: 'Heart rate'
+            }]
+          },
+          extension: [{
+            url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-fhirPath',
+            valueString: "QuestionnaireResponse.item.where(linkId='hr').answer.value"
+          }]
+        }
+      ],
+      item: [
+        {
+          linkId: 'bp',
+          text: 'Blood Pressure',
+          type: 'group',
+          item: [
+            {
+              linkId: 'systolic',
+              text: 'Systolic',
+              type: 'integer',
+              extension: [{
+                url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-observationTemplate',
+                valueReference: {
+                  reference: '#template1'
+                }
+              }]
+            },
+            {
+              linkId: 'diastolic',
+              text: 'Diastolic',
+              type: 'integer',
+              extension: [{
+                url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-observationTemplate',
+                valueReference: {
+                  reference: '#template1'
+                }
+              }]
+            }
+          ]
+        },
+        {
+          linkId: 'hr',
+          text: 'Heart Rate',
+          type: 'integer',
+          extension: [{
+            url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-observationTemplate',
+            valueReference: {
+              reference: '#template2'
+            }
+          }]
+        }
+      ]
+    };
+
+    handleBuildQuestionnaireFromResource(testQuestionnaire);
   }
 
   return (
@@ -249,6 +425,7 @@ function Playground() {
                 isExtracting={isExtracting}
                 onObservationExtract={handleObservationExtract}
                 onStructureMapExtract={handleStructureMapExtract}
+                onTemplateExtract={handleTemplateExtract}
               />
             ) : buildingState === 'building' ? (
               <PopulationProgressSpinner message={'Building form'} />
@@ -258,6 +435,7 @@ function Playground() {
                 user={user}
                 onBuildQuestionnaireFromFile={handleBuildQuestionnaireFromFile}
                 onBuildQuestionnaireFromResource={handleBuildQuestionnaireFromResource}
+                onTestQuestionnaire={createTestQuestionnaire}
               />
             )}
           </Box>

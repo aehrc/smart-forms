@@ -31,10 +31,11 @@ interface ExtractMenuProps {
   isExtracting: boolean;
   onObservationExtract: () => void;
   onStructureMapExtract: () => void;
+  onTemplateExtract: () => void;
 }
 
 function ExtractMenu(props: ExtractMenuProps) {
-  const { isExtracting, onObservationExtract, onStructureMapExtract } = props;
+  const { isExtracting, onObservationExtract, onStructureMapExtract, onTemplateExtract } = props;
 
   const targetStructureMap = useExtractOperationStore.use.targetStructureMap();
 
@@ -114,6 +115,16 @@ function ExtractMenu(props: ExtractMenuProps) {
             </MenuItem>
           </span>
         </Tooltip>
+        <MenuItem
+          onClick={() => {
+            onTemplateExtract();
+            handleClose();
+          }}>
+          <ListItemIcon>
+            <Iconify icon="ion:document-text" />
+          </ListItemIcon>
+          <ListItemText>Template-based extract</ListItemText>
+        </MenuItem>
       </Menu>
 
       {isExtracting ? (

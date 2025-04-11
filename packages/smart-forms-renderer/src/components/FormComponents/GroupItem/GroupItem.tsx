@@ -30,6 +30,9 @@ import useHidden from '../../../hooks/useHidden';
 import type { Tabs } from '../../../interfaces/tab.interface';
 import type { Pages } from '../../../interfaces/page.interface';
 import GroupItemView from './GroupItemView';
+import { QGroupContainerBox } from '../../Box.styles';
+import { GroupCard } from './GroupItem.styles';
+import PageButtonsWrapper from './PageButtonWrapper';
 
 interface GroupItemProps
   extends PropsWithQrItemChangeHandler,
@@ -94,6 +97,29 @@ function GroupItem(props: GroupItemProps) {
   }
 
   if (!qItems || !qrItems) {
+    // If there are pages passed through, render this invalid group as a card to at least allow the user to see the error
+    if (pages) {
+      return (
+        <QGroupContainerBox cardElevation={groupCardElevation} isRepeated={isRepeated}>
+          <GroupCard elevation={groupCardElevation} isRepeated={isRepeated}>
+            <>
+              Group Item: Unable to load group, something has gone terribly wrong. If you are seeing
+              this error message, see{' '}
+              <a
+                href="https://hl7.org/fhir/extensions/CodeSystem-questionnaire-item-control.html#questionnaire-item-control-page"
+                target="_blank"
+                rel="noreferrer">
+                https://hl7.org/fhir/extensions/CodeSystem-questionnaire-item-control.html#questionnaire-item-control-page
+              </a>{' '}
+              for a standards-based way to use pages.
+            </>
+          </GroupCard>
+          <PageButtonsWrapper currentPageIndex={currentPageIndex} pages={pages} />
+        </QGroupContainerBox>
+      );
+    }
+
+    // Otherwise, render the regular error message
     return <>Group Item: Unable to load group, something has gone terribly wrong.</>;
   }
 

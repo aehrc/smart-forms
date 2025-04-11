@@ -37,6 +37,8 @@ import GroupTable from '../FormComponents/Tables/GroupTable';
 import RepeatItem from '../FormComponents/RepeatItem/RepeatItem';
 import GridGroup from '../FormComponents/GridGroup/GridGroup';
 import { useRendererStylingStore } from '../../stores';
+import { isPage } from '../../utils/page';
+import FormBodyPageContainer from './FormBodyPageContainer';
 
 interface FormTopLevelItemProps
   extends PropsWithQrItemChangeHandler,
@@ -44,6 +46,7 @@ interface FormTopLevelItemProps
     PropsWithParentIsReadOnlyAttribute {
   topLevelQItem: QuestionnaireItem;
   topLevelQRItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[] | null;
+  wholeFormIsPaginated: boolean;
 }
 
 function FormTopLevelItem(props: FormTopLevelItemProps) {
@@ -51,12 +54,18 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
     topLevelQItem,
     topLevelQRItemOrItems,
     parentIsReadOnly,
+    wholeFormIsPaginated,
     onQrItemChange,
     onQrRepeatGroupChange
   } = props;
 
   const itemIsTabContainer = isTabContainer(topLevelQItem);
   const itemContainsTabs = containsTabs(topLevelQItem);
+
+  // itemIsPageContainer is there for backwards compatibility only - see https://github.com/aehrc/smart-forms/issues/1041
+  // The proper way to do it ATM is to make every single top-level item a page
+  // Unfortunately, "header" and "footer" itemControl is not supported.
+  const itemIsPageContainer = isPage(topLevelQItem);
 
   const showTabbedFormAt = useRendererStylingStore.use.showTabbedFormAt();
   const isTabbedForm = useResponsive(showTabbedFormAt);
@@ -103,6 +112,25 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
 
     return (
       <FormBodyCollapsible
+        key={topLevelQItem.linkId}
+        topLevelQItem={topLevelQItem}
+        topLevelQRItem={topLevelQRItem}
+        parentIsReadOnly={readOnly}
+        onQrItemChange={onQrItemChange}
+      />
+    );
+  }
+
+  /* Using "page" item as a page-container - only preserved for backwards compatibility (not complaint with https://hl7.org/fhir/extensions/CodeSystem-questionnaire-item-control.html#questionnaire-item-control-page)
+   * - The first "page" item in the questionnaire will be considered as a page-container, and all its children will be considered as pages
+   * - All other pages will be ignored by the renderer
+   * - You can have non-page items in the same level as the page-container to be used as faux headers or footers
+   * - Ensure that only group items are in the page-container
+   * Note: This will only be used if wholeFormIsPaginated=false
+   */
+  if (!wholeFormIsPaginated && itemIsPageContainer) {
+    return (
+      <FormBodyPageContainer
         key={topLevelQItem.linkId}
         topLevelQItem={topLevelQItem}
         topLevelQRItem={topLevelQRItem}
