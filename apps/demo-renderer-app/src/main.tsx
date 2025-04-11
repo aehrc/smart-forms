@@ -1,11 +1,7 @@
 import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
-import {
-  DefaultOptions,
-  keepPreviousData,
-  QueryClient,
-  QueryClientProvider
-} from '@tanstack/react-query';
+import type { DefaultOptions } from '@tanstack/react-query';
+import { keepPreviousData, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import '@/styles/globals.css';
 
 const DEFAULT_QUERY_OPTIONS: DefaultOptions = {

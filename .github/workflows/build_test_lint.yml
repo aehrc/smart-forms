@@ -16,6 +16,13 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
+
+      - name: Build workspace packages
+        run: |
+          npm run build -w packages/sdc-assemble
+          npm run build -w packages/sdc-populate
+          npm run build -w packages/smart-forms-renderer
+
       - name: Build application
         run: npm run build -w apps/smart-forms-app
 
