@@ -67,11 +67,11 @@ function useTerminologyServerQuery(
   const terminologyServerUrl =
     getTerminologyServerUrl(qItem) ?? preferredTerminologyServerUrl ?? defaultTerminologyServerUrl;
 
-  const { isFetching, error, data } = useQuery<ValueSet>(
-    ['expandValueSet', fullUrl],
-    () => getValueSetPromise(fullUrl, terminologyServerUrl),
-    { enabled: searchTerm.length >= 2 && answerValueSetUrl !== undefined }
-  );
+  const { isFetching, error, data } = useQuery<ValueSet>({
+    queryKey: ['expandValueSet', fullUrl],
+    queryFn: () => getValueSetPromise(fullUrl, terminologyServerUrl),
+    enabled: searchTerm.length >= 2 && answerValueSetUrl !== undefined
+  });
 
   if (error) {
     console.warn('Ontoserver query failed. Details below: \n' + error);

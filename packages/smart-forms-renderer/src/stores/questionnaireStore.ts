@@ -247,6 +247,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       updatedFhirPathContext,
       fhirPathTerminologyCache: updatedFhirPathTerminologyCache
     } = await initialiseFormFromResponse({
+      sourceQuestionnaire: questionnaire,
       questionnaireResponse,
       targetConstraints: questionnaireModel.targetConstraints,
       enableWhenItems: questionnaireModel.enableWhenItems,
@@ -404,7 +405,10 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   toggleEnableWhenActivation: (isActivated: boolean) =>
     set(() => ({ enableWhenIsActivated: isActivated })),
   updateExpressions: async (updatedResponse: QuestionnaireResponse) => {
-    const updatedResponseItemMap = createQuestionnaireResponseItemMap(updatedResponse);
+    const updatedResponseItemMap = createQuestionnaireResponseItemMap(
+      get().sourceQuestionnaire,
+      updatedResponse
+    );
     const {
       isUpdated,
       updatedTargetConstraints,
@@ -458,7 +462,11 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     persistTabIndex?: boolean,
     persistPageIndex?: boolean
   ) => {
-    const initialResponseItemMap = createQuestionnaireResponseItemMap(populatedResponse);
+    const sourceQuestionnaire = get().sourceQuestionnaire;
+    const initialResponseItemMap = createQuestionnaireResponseItemMap(
+      sourceQuestionnaire,
+      populatedResponse
+    );
 
     const evaluateInitialCalculatedExpressionsResult = await evaluateInitialCalculatedExpressions({
       initialResponse: populatedResponse,
@@ -475,7 +483,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       evaluateInitialCalculatedExpressionsResult.fhirPathTerminologyCache;
 
     const updatedResponse = initialiseCalculatedExpressionValues(
-      get().sourceQuestionnaire,
+      sourceQuestionnaire,
       populatedResponse,
       initialCalculatedExpressions
     );
@@ -488,6 +496,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       firstVisibleTab,
       firstVisiblePage
     } = await initialiseFormFromResponse({
+      sourceQuestionnaire,
       questionnaireResponse: updatedResponse,
       targetConstraints: get().targetConstraints,
       enableWhenItems: get().enableWhenItems,
@@ -528,7 +537,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     addToFhirPathContext?: boolean
   ) => {
     if (addToFhirPathContext) {
-      const newFhirPathContext = { ...newPopulatedContext, ...get().fhirPathContext };
+      const newFhirPathContext = { ...get().fhirPathContext, ...newPopulatedContext };
       set(() => ({
         populatedContext: newPopulatedContext,
         fhirPathContext: newFhirPathContext

@@ -146,6 +146,14 @@ function getStylesFromClass(className: string): Record<string, string> | null {
   const selector = className.startsWith('.') ? className : `.${className}`;
 
   for (const sheet of document.styleSheets) {
+    // Skip stylesheets that are not on the same origin, as they may cause CORS issues - we also don't want to show warnings every time the user performs an action in the form
+    if (sheet.href) {
+      const sheetURL = new URL(sheet.href);
+      if (sheetURL.hostname !== location.hostname) {
+        continue;
+      }
+    }
+
     try {
       const rules = sheet.cssRules;
       for (const rule of rules) {

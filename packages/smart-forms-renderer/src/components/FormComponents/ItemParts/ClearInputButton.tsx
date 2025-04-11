@@ -16,7 +16,7 @@
  */
 
 import React from 'react';
-import Tooltip from '@mui/material/Tooltip';
+import { Tooltip } from '@mui/material';
 import Button from '@mui/material/Button';
 import { grey } from '@mui/material/colors';
 import Fade from '@mui/material/Fade';
@@ -33,7 +33,10 @@ function ClearInputButton(props: ClearInputButtonProps) {
   return (
     <Fade in={buttonShown} timeout={100}>
       <Tooltip title="Set question as unanswered">
-        <span>
+        <span
+          style={{
+            cursor: readOnly ? 'not-allowed' : 'pointer'
+          }}>
           <Button
             sx={{
               color: grey['500'],

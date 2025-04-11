@@ -68,12 +68,23 @@ export default function Input(theme: Theme) {
     MuiOutlinedInput: {
       styleOverrides: {
         root: {
-          '& .MuiOutlinedInput-notchedOutline': {
-            borderColor: alpha(theme.palette.grey[500], 0.32)
-          },
           '&.Mui-disabled': {
             '& .MuiOutlinedInput-notchedOutline': {
               borderColor: theme.palette.action.disabledBackground
+            }
+          },
+          '&.Mui-readOnly': {
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'rgb(220, 223, 228)'
+            },
+            '&:hover .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'rgb(220, 223, 228)'
+            },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'rgb(220, 223, 228)'
+            },
+            '&.Mui-visited .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'rgb(220, 223, 228)'
             }
           }
         }

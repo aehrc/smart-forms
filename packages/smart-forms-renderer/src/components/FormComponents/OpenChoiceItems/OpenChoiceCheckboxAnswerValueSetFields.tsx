@@ -80,6 +80,7 @@ function OpenChoiceCheckboxAnswerValueSetFields(props: OpenChoiceCheckboxFieldsP
             <CheckboxSingleWithOpenLabel
               value={openLabelValue}
               label={openLabelText}
+              readOnly={readOnly}
               isChecked={openLabelChecked}
               onCheckedChange={onOpenLabelCheckedChange}
               onInputChange={onOpenLabelInputChange}
@@ -96,7 +97,7 @@ function OpenChoiceCheckboxAnswerValueSetFields(props: OpenChoiceCheckboxFieldsP
     return (
       <StyledAlert color="error">
         <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-        <Typography>
+        <Typography component="div">
           There was an error fetching options from the terminology server for{' '}
           {terminologyError.answerValueSet}
         </Typography>

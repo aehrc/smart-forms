@@ -97,7 +97,10 @@ export function generateItemsToRepopulate(populatedResponse: QuestionnaireRespon
 
   // Get linkIds that are different between current QRItems and populated QRItems
   // Doesn't work with repeat groups, but at the same time I'm not sure if it's needed, given you can't delete completely the first repeat group
-  const populatedResponseItemMap = createQuestionnaireResponseItemMap(populatedResponse);
+  const populatedResponseItemMap = createQuestionnaireResponseItemMap(
+    sourceQuestionnaire,
+    populatedResponse
+  );
   const diffLinkIds = difference(
     Object.keys(updatableResponseItems),
     Object.keys(populatedResponseItemMap)

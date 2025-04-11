@@ -1,0 +1,6 @@
+# Don't ignore dist folder
+!dist/
+
+# Ignore lib folder if mistakenly ran tsc
+lib/
+

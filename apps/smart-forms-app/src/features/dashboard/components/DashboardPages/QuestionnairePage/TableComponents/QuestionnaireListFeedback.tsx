@@ -19,23 +19,24 @@ import { Stack, TableBody, TableCell, TableRow } from '@mui/material';
 import QuestionnaireFeedbackMessage from './QuestionnaireFeedbackMessage.tsx';
 import { useSnackbar } from 'notistack';
 import CloseSnackbar from '../../../../../../components/Snackbar/CloseSnackbar.tsx';
+import type { UseQueryResult } from '@tanstack/react-query';
 
 interface Props {
   isEmpty: boolean;
-  isInitialLoading: boolean;
-  status: 'loading' | 'error' | 'success';
+  isLoading: boolean;
+  status: UseQueryResult['status'];
   searchInput: string;
   error?: unknown;
 }
 function QuestionnaireListFeedback(props: Props) {
-  const { isEmpty, isInitialLoading, status, searchInput, error } = props;
+  const { isEmpty, isLoading, status, searchInput, error } = props;
 
   const { enqueueSnackbar } = useSnackbar();
 
   let feedbackType: 'error' | 'empty' | 'loading' | null = null;
   if (status === 'error') {
     feedbackType = 'error';
-  } else if (isInitialLoading) {
+  } else if (isLoading) {
     feedbackType = 'loading';
   } else if (isEmpty) {
     feedbackType = 'empty';

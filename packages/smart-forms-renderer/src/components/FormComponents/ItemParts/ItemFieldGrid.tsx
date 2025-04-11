@@ -21,7 +21,7 @@ import type { QuestionnaireItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import { useRendererStylingStore } from '../../../stores';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 
 interface ItemFieldGridProps {
   qItem: QuestionnaireItem;
@@ -43,12 +43,14 @@ function ItemFieldGrid(props: ItemFieldGridProps) {
 
   return (
     <Grid container columnSpacing={columnGapPixels + 'px'} rowGap={rowGapPixels + 'px'}>
-      <Grid size={{ ...labelBreakpoints }}>{labelChildren}</Grid>
+      <Grid size={{ ...labelBreakpoints }}>
+        <>{labelChildren}</>
+      </Grid>
       <Grid size={{ ...fieldBreakpoints }}>
-        {fieldChildren}
+        <>{fieldChildren}</>
         {/* Only show display instructions if there is no feedback of any type */}
         {!props.feedback && !props.dateFeedback && !props.timeFeedback && (
-          <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
+          <DisplayInstructions readOnly={readOnly}>{displayInstructions}</DisplayInstructions>
         )}
       </Grid>
     </Grid>

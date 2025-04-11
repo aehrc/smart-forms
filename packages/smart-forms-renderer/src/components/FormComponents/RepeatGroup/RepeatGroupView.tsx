@@ -116,7 +116,6 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
         disableGutters
         defaultExpanded={isDefaultOpen}
         elevation={groupCardElevation}
-        isRepeated={true}
         slotProps={{
           transition: { unmountOnExit: true, timeout: 250 }
         }}

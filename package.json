@@ -3,8 +3,8 @@
   "scripts": {
     "lint": "eslint -c .eslintrc.json .",
     "lint-fix": "eslint -c .eslintrc.json --fix .",
-    "check-formatting": "prettier --check .",
-    "fix-formatting": "prettier --write .",
+    "prettier": "prettier --check .",
+    "prettier-fix": "prettier --write .",
     "clean-folders": "find . -type d \\( -name \"node_modules\" -o -name \"dist\" -o -name \"lib\" \\) -exec rm -rf {} +"
   },
   "workspaces": [

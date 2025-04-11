@@ -166,7 +166,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
           onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
           onOpenLabelInputChange={handleOpenLabelInputChange}
         />
-        <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
+        <DisplayInstructions readOnly={readOnly}>{displayInstructions}</DisplayInstructions>
       </>
     );
   }

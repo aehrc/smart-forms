@@ -29,10 +29,10 @@ interface HomeProps {
 function Home(props: HomeProps) {
   const { questionnaireUrl, bearerToken } = props;
 
-  const { data: questionnaire, isFetching } = useQuery<Questionnaire>(
-    ['questionnaire', questionnaireUrl],
-    () => fetchResource(questionnaireUrl, bearerToken, true)
-  );
+  const { data: questionnaire, isFetching } = useQuery<Questionnaire>({
+    queryKey: ['questionnaire', questionnaireUrl],
+    queryFn: () => fetchResource(questionnaireUrl, bearerToken, true)
+  });
 
   if (isFetching) {
     return <div>Loading questionnaire...</div>;

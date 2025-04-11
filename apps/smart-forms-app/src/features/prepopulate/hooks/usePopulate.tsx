@@ -34,6 +34,7 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
   const fhirPathContext = useQuestionnaireStore.use.fhirPathContext();
 
   const updatePopulatedProperties = useQuestionnaireStore.use.updatePopulatedProperties();
+  const setPopulatedContext = useQuestionnaireStore.use.setPopulatedContext();
 
   const setUpdatableResponseAsPopulated =
     useQuestionnaireResponseStore.use.setUpdatableResponseAsPopulated();
@@ -87,6 +88,12 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
       const { populated, hasWarnings, populatedContext } = populateResult;
       const updatedResponse = await updatePopulatedProperties(populated, populatedContext);
       setUpdatableResponseAsPopulated(updatedResponse);
+
+      // Add populatedContext to FhirPathContext so that it can be used in FHIRPath variables
+      if (populatedContext) {
+        setPopulatedContext(populatedContext, true);
+      }
+
       onStopSpinner();
       if (hasWarnings) {
         enqueueSnackbar(

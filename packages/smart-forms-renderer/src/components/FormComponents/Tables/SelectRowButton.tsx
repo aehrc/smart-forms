@@ -16,8 +16,9 @@
  */
 
 import React from 'react';
-import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
+import { StandardCheckbox } from '../../Checkbox.styles';
+import { useRendererStylingStore } from '../../../stores';
 
 interface SelectRowButtonProps {
   isSelected: boolean;
@@ -28,13 +29,16 @@ interface SelectRowButtonProps {
 function SelectRowButton(props: SelectRowButtonProps) {
   const { isSelected, readOnly, onSelectItem } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+
   return (
     <TableCell padding="none">
-      <Checkbox
+      <StandardCheckbox
         color="primary"
         size="small"
         checked={isSelected}
-        disabled={readOnly}
+        disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+        readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
         onChange={onSelectItem}
       />
     </TableCell>

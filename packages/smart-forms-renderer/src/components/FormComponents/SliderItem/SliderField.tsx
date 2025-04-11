@@ -17,13 +17,13 @@
 
 import React from 'react';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
-import Slider from '@mui/material/Slider';
 import { getSliderMarks } from '../../../utils/slider';
 import Stack from '@mui/material/Stack';
 import SliderLabels from './SliderLabels';
 import SliderDisplayValue from './SliderDisplayValue';
 import { useRendererStylingStore } from '../../../stores';
 import { StyledRequiredTypography } from '../Item.styles';
+import { StandardSlider } from './Slider.styles';
 
 interface SliderFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -57,6 +57,7 @@ function SliderField(props: SliderFieldProps) {
     onValueChange
   } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
   const sliderMarks = getSliderMarks(minValue, maxValue, minLabel, maxLabel, stepValue);
@@ -73,7 +74,7 @@ function SliderField(props: SliderFieldProps) {
       <Stack sx={{ ...sliderSx }}>
         <SliderDisplayValue value={value} hasLabels={hasLabels} isInteracted={isInteracted} />
         {hasLabels ? <SliderLabels minLabel={minLabel} maxLabel={maxLabel} /> : null}
-        <Slider
+        <StandardSlider
           id={itemType + '-' + linkId}
           value={value}
           min={minValue}
@@ -82,11 +83,18 @@ function SliderField(props: SliderFieldProps) {
           marks={sliderMarks}
           sx={{ ...sliderSx }}
           onChange={(_, newValue) => {
+            // If item.readOnly=true, do not allow any changes
+            if (readOnly) {
+              return;
+            }
+
             if (typeof newValue === 'number') {
               onValueChange(newValue);
             }
           }}
-          disabled={readOnly}
+          disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+          readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
+          aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
           valueLabelDisplay="auto"
           data-test="q-item-slider-field"
         />

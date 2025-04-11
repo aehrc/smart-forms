@@ -73,6 +73,7 @@ function OpenChoiceCheckboxAnswerOptionFields(props: OpenChoiceCheckboxAnswerOpt
           <CheckboxSingleWithOpenLabel
             value={openLabelValue}
             label={openLabelText}
+            readOnly={readOnly}
             isChecked={openLabelChecked}
             onCheckedChange={onOpenLabelCheckedChange}
             onInputChange={onOpenLabelInputChange}

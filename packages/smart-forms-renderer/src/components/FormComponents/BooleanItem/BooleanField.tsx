@@ -23,11 +23,11 @@ import ChoiceRadioSingle from '../ChoiceItems/ChoiceRadioSingle';
 import { StyledRadioGroup, StyledRequiredTypography } from '../Item.styles';
 import { getChoiceOrientation } from '../../../utils/choice';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
-import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { isSpecificItemControl } from '../../../utils';
 import ClearInputButton from '../ItemParts/ClearInputButton';
 import { useRendererStylingStore } from '../../../stores';
+import { StandardCheckbox } from '../../Checkbox.styles';
 
 interface BooleanFieldProps {
   qItem: QuestionnaireItem;
@@ -43,6 +43,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
   const { qItem, readOnly, valueBoolean, feedback, calcExpUpdated, onCheckedChange, onClear } =
     props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const inputsFlexGrow = useRendererStylingStore.use.inputsFlexGrow();
   const reverseBooleanYesNo = useRendererStylingStore.use.reverseBooleanYesNo();
   const hideClearButton = useRendererStylingStore.use.hideClearButton();
@@ -66,12 +67,19 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
         {booleanAsCheckbox ? (
           <FormControlLabel
             id={qItem.type + '-' + qItem.linkId}
-            disabled={readOnly}
+            disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+            aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
             control={
-              <Checkbox
+              <StandardCheckbox
                 size="small"
                 checked={selection === 'true'}
+                readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
                 onChange={() => {
+                  // If item.readOnly=true, do not allow any changes
+                  if (readOnly) {
+                    return;
+                  }
+
                   if (selection === 'true') {
                     onCheckedChange('false');
                   }
@@ -93,7 +101,14 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
               id={qItem.type + '-' + qItem.linkId}
               row={orientation === ChoiceItemOrientation.Horizontal}
               sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
-              onChange={(e) => onCheckedChange(e.target.value)}
+              onChange={(e) => {
+                // If item.readOnly=true, do not allow any changes
+                if (readOnly) {
+                  return;
+                }
+
+                onCheckedChange(e.target.value);
+              }}
               value={selection}>
               {reverseBooleanYesNo ? (
                 <>

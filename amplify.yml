@@ -4,7 +4,7 @@ applications:
       phases:
         preBuild:
           commands:
-            - nvm use 18
+            - nvm use 20
             - npm ci
         build:
           commands:

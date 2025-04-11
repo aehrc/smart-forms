@@ -19,7 +19,8 @@ import React from 'react';
 import InputAdornment from '@mui/material/InputAdornment';
 import MuiTextField from './MuiTextField';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
-import Typography from '@mui/material/Typography';
+import DisplayUnitText from '../ItemParts/DisplayUnitText';
+import { useRendererStylingStore } from '../../../stores';
 
 interface TextFieldProps {
   linkId: string;
@@ -48,28 +49,31 @@ function TextField(props: TextFieldProps) {
     onInputChange
   } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+
   return (
     <MuiTextField
       id={itemType + '-' + linkId}
       value={input}
       error={!!feedback}
       onChange={(event) => onInputChange(event.target.value)}
-      disabled={readOnly}
+      disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       label={displayPrompt}
       placeholder={entryFormat}
       fullWidth
       multiline
       size="small"
       minRows={3}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end">
-            <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-            <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
-              {displayUnit}
-            </Typography>
-          </InputAdornment>
-        )
+      slotProps={{
+        input: {
+          readOnly: readOnly && readOnlyVisualStyle === 'readonly',
+          endAdornment: (
+            <InputAdornment position="end">
+              <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+              <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
+            </InputAdornment>
+          )
+        }
       }}
       helperText={feedback}
       data-test="q-item-text-field"

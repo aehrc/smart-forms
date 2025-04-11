@@ -73,11 +73,11 @@ function RendererNav(props: RendererNavProps) {
 
       <Box sx={{ mx: 0.5, pb: 2 }}>
         <Grid container alignItems="center">
-          <Grid item xs={4} />
-          <Grid item xs={4}>
+          <Grid size={{ xs: 4 }} />
+          <Grid size={{ xs: 4 }}>
             <CsiroLogo />
           </Grid>
-          <Grid item xs={4}>
+          <Grid size={{ xs: 4 }}>
             {navIsShown ? (
               <Box display="flex" justifyContent="end" alignItems="center">
                 <Tooltip title="Collapse Sidebar" placement="right">
