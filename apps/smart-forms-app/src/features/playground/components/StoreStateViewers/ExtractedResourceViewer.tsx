@@ -1,80 +1,97 @@
 import { useState } from 'react';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material';
+import GenericStatePropertyPicker from './GenericStatePropertyPicker.tsx';
+import GenericViewer from './GenericViewer.tsx';
+import { Box, Tooltip } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 import { useSnackbar } from 'notistack';
-import { GenericViewer } from '../../../../components/GenericViewer';
-import { useShowExtractedOperationStoreProperty } from '../../../playground/hooks/useShowExtractedOperationStoreProperty';
-import { HEADERS } from '../../../../utils/constants';
-import { extractedResourceIsBatchBundle } from '../../../../utils/extract';
+import { extractedResourceIsBatchBundle } from '../../api/extract.ts';
+import { HEADERS } from '../../../../api/headers.ts';
+import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
+import useShowExtractedOperationStoreProperty from '../../hooks/useShowExtractedOperationStoreProperty.ts';
 
-export const ExtractedResourceViewer = () => {
-  const [selectedProperty, setSelectedProperty] = useState<'extractionResult' | 'targetStructureMap'>('extractionResult');
+const extractedSectionPropertyNames: string[] = ['extractionResult', 'targetStructureMap'];
+
+interface ExtractedSectionViewerProps {
+  sourceFhirServerUrl: string;
+}
+
+function ExtractedSectionViewer(props: ExtractedSectionViewerProps) {
+  const { sourceFhirServerUrl } = props;
+  const [selectedProperty, setSelectedProperty] = useState('extractionResult');
   const [showJsonTree, setShowJsonTree] = useState(false);
   const [writingBack, setWritingBack] = useState(false);
 
   const propertyObject = useShowExtractedOperationStoreProperty(selectedProperty);
-  const writeBackEnabled = selectedProperty === 'extractionResult' && extractedResourceIsBatchBundle(propertyObject);
+  const writeBackEnabled = extractedResourceIsBatchBundle(propertyObject);
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const handleWriteBack = async () => {
-    setWritingBack(true);
-    try {
-      const response = await fetch('/api/fhir', {
-        method: 'POST',
-        headers: { ...HEADERS, 'Content-Type': 'application/json;charset=utf-8' },
-        body: JSON.stringify(propertyObject)
-      });
-      setWritingBack(false);
-      if (response.ok) {
-        enqueueSnackbar('Successfully wrote back to FHIR server', { variant: 'success' });
-      } else {
-        enqueueSnackbar('Failed to write back to FHIR server', { variant: 'error' });
-      }
-    } catch (error) {
-      setWritingBack(false);
-      enqueueSnackbar('Error writing back to FHIR server', { variant: 'error' });
+  // Write back extracted resource
+  async function handleExtract() {
+    if (!writeBackEnabled) {
+      return;
     }
-  };
+    setWritingBack(true);
+
+    const response = await fetch(sourceFhirServerUrl, {
+      method: 'POST',
+      headers: { ...HEADERS, 'Content-Type': 'application/json;charset=utf-8' },
+      body: JSON.stringify(propertyObject)
+    });
+    setWritingBack(false);
+
+    if (!response.ok) {
+      enqueueSnackbar('Failed to write back resource', {
+        variant: 'error',
+        preventDuplicate: true,
+        action: <CloseSnackbar />
+      });
+    } else {
+      enqueueSnackbar(
+        `Write back to ${sourceFhirServerUrl} successful. See Network tab for response`,
+        {
+          variant: 'success',
+          preventDuplicate: true,
+          action: <CloseSnackbar />
+        }
+      );
+    }
+  }
 
   return (
-    <Box>
-      <FormControl fullWidth>
-        <InputLabel>Property</InputLabel>
-        <Select
-          value={selectedProperty}
-          onChange={(e) => setSelectedProperty(e.target.value as 'extractionResult' | 'targetStructureMap')}
-        >
-          <MenuItem value="extractionResult">Extraction Result</MenuItem>
-          <MenuItem value="targetStructureMap">Target Structure Map</MenuItem>
-        </Select>
-      </FormControl>
-
-      {writeBackEnabled && (
-        <Box mt={2}>
-          <Button variant="contained" color="primary" onClick={handleWriteBack} disabled={writingBack}>
-            Write Back to FHIR Server
-          </Button>
-        </Box>
-      )}
-
-      <Box mt={2}>
-        <GenericViewer
-          propertyName={selectedProperty}
-          propertyObject={propertyObject}
-          showJsonTree={showJsonTree}
-          onToggleShowJsonTree={setShowJsonTree}
-        />
-      </Box>
-
-      <Dialog open={writingBack}>
-        <DialogTitle>Writing Back to FHIR Server</DialogTitle>
-        <DialogContent>
-          <Typography>Please wait while we write back to the FHIR server...</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setWritingBack(false)}>Cancel</Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
+    <>
+      <GenericStatePropertyPicker
+        statePropertyNames={extractedSectionPropertyNames}
+        selectedProperty={selectedProperty}
+        onSelectProperty={setSelectedProperty}
+      />
+      <GenericViewer
+        propertyName={selectedProperty}
+        propertyObject={propertyObject}
+        showJsonTree={showJsonTree}
+        onToggleShowJsonTree={setShowJsonTree}>
+        {selectedProperty === 'extractionResult' ? (
+          <Box display="flex" justifyContent="end">
+            <Tooltip
+              title={
+                writeBackEnabled
+                  ? `Write to source FHIR server ${sourceFhirServerUrl} `
+                  : 'No extracted resource to write back, or resource is not a batch/tranaction bundle.'
+              }>
+              <span>
+                <LoadingButton
+                  loading={writingBack}
+                  disabled={!writeBackEnabled}
+                  onClick={handleExtract}>
+                  Write back
+                </LoadingButton>
+              </span>
+            </Tooltip>
+          </Box>
+        ) : null}
+      </GenericViewer>
+    </>
   );
-};
+}
+
+export default ExtractedSectionViewer;
