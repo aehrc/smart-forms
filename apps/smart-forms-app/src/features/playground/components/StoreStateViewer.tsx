@@ -27,7 +27,7 @@ export type StateStore =
   | 'questionnaireResponseStore'
   | 'smartConfigStore'
   | 'terminologyServerStore'
-  | 'extractedResource'
+  | 'extractionResult'
   | null;
 
 interface StoreStateViewerProps {
@@ -54,8 +54,8 @@ function StoreStateViewer(props: StoreStateViewerProps) {
     return <TerminologyServerStoreViewer />;
   }
 
-  if (selectedStore === 'extractedResource') {
-    return <ExtractedSectionViewer sourceFhirServerUrl={sourceFhirServerUrl} />;
+  if (selectedStore === 'extractionResult') {
+    return <ExtractedSectionViewer />;
   }
 
   return <Typography variant="h5">No store selected</Typography>;

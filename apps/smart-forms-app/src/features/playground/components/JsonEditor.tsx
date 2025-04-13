@@ -107,7 +107,7 @@ function JsonEditor(props: JsonEditorProps) {
                   <ToggleButton value="questionnaireStore">Q</ToggleButton>
                   <ToggleButton value="questionnaireResponseStore">QR</ToggleButton>
                   <ToggleButton value="terminologyServerStore">Terminology</ToggleButton>
-                  <ToggleButton value="extractedResource">Extracted</ToggleButton>
+                  <ToggleButton value="extractionResult">Extracted</ToggleButton>
                 </ToggleButtonGroup>
               </Stack>
             )}

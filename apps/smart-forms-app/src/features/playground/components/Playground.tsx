@@ -39,7 +39,7 @@ import RendererDebugFooter from '../../renderer/components/RendererDebugFooter/R
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
 import PlaygroundPicker from './PlaygroundPicker.tsx';
-import type { Patient, Practitioner, Questionnaire } from 'fhir/r4';
+import type { Patient, Practitioner, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import PlaygroundHeader from './PlaygroundHeader.tsx';
 import { HEADERS } from '../../../api/headers.ts';
 import { useExtractOperationStore } from '../stores/extractOperationStore.ts';
@@ -73,8 +73,7 @@ function Playground() {
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
-
-  const setExtractedResource = useExtractOperationStore.use.setExtractedResource();
+  const setExtractionResult = useExtractOperationStore.use.setExtractionResult();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -142,18 +141,30 @@ function Playground() {
         if (typeof jsonString === 'string') {
           setJsonString(jsonString);
           const questionnaire = JSON.parse(jsonString);
+          
+          // Add more detailed validation
+          if (!questionnaire) {
+            throw new Error('Empty questionnaire');
+          }
+          
+          if (!isQuestionnaire(questionnaire)) {
+            throw new Error('Invalid questionnaire format. Must have resourceType: "Questionnaire"');
+          }
+          
           await buildFormWrapper(questionnaire, undefined, undefined, terminologyServerUrl);
           setBuildingState('built');
         } else {
-          enqueueSnackbar('There was an issue with the attached JSON file.', {
+          enqueueSnackbar('There was an issue reading the file content.', {
             variant: 'error',
             preventDuplicate: true,
             action: <CloseSnackbar />
           });
           setBuildingState('idle');
         }
-      } catch (error) {
-        enqueueSnackbar('Attached file has invalid JSON format', {
+      } catch (error: unknown) {
+        console.error('Error parsing questionnaire:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+        enqueueSnackbar(`Error loading questionnaire: ${errorMessage}`, {
           variant: 'error',
           preventDuplicate: true,
           action: <CloseSnackbar />
@@ -161,12 +172,27 @@ function Playground() {
         setBuildingState('idle');
       }
     };
+    
+    reader.onerror = () => {
+      enqueueSnackbar('Error reading file', {
+        variant: 'error',
+        preventDuplicate: true,
+        action: <CloseSnackbar />
+      });
+      setBuildingState('idle');
+    };
   }
 
   // Observation $extract
   function handleObservationExtract() {
     const observations = extractObservationBased(sourceQuestionnaire, updatableResponse);
-    setExtractedResource(observations);
+    const qr: QuestionnaireResponse = {
+      resourceType: 'QuestionnaireResponse',
+      status: 'completed',
+      item: [],
+      contained: observations
+    };
+    setExtractionResult(qr);
 
     if (observations.length > 0) {
       enqueueSnackbar(
@@ -202,7 +228,7 @@ function Playground() {
         preventDuplicate: true,
         action: <CloseSnackbar />
       });
-      setExtractedResource(null);
+      setExtractionResult(null);
     } else {
       enqueueSnackbar(
         'Extract successful. See Advanced Properties > Extracted to view extracted resource.',
@@ -213,7 +239,7 @@ function Playground() {
         }
       );
       const extractedResource = await response.json();
-      setExtractedResource(extractedResource);
+      setExtractionResult(extractedResource);
     }
   }
 

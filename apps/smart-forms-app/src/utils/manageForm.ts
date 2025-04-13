@@ -10,7 +10,7 @@ export async function buildFormWrapper(
   terminologyServerUrl?: string,
   additionalVariables?: Record<string, object>
 ) {
-  extractOperationStore.getState().resetStore();
+  extractOperationStore.getState().clearExtraction();
   const targetStructureMap = await fetchTargetStructureMap(questionnaire);
   if (targetStructureMap) {
     extractOperationStore.getState().setTargetStructureMap(targetStructureMap);
@@ -26,6 +26,6 @@ export async function buildFormWrapper(
 }
 
 export function destroyFormWrapper() {
-  extractOperationStore.getState().resetStore();
+  extractOperationStore.getState().clearExtraction();
   return destroyForm();
 }
