@@ -21,13 +21,13 @@ import { StandardCheckbox } from '../../Checkbox.styles';
 import { useRendererStylingStore } from '../../../stores';
 
 interface SelectRowButtonProps {
-  isSelected: boolean;
+  isChecked: boolean;
   readOnly: boolean;
   onSelectItem: () => void;
 }
 
 function SelectRowButton(props: SelectRowButtonProps) {
-  const { isSelected, readOnly, onSelectItem } = props;
+  const { isChecked, readOnly, onSelectItem } = props;
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
 
@@ -36,9 +36,12 @@ function SelectRowButton(props: SelectRowButtonProps) {
       <StandardCheckbox
         color="primary"
         size="small"
-        checked={isSelected}
+        checked={isChecked}
         disabled={readOnly && readOnlyVisualStyle === 'disabled'}
         readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
+        aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
+        role="checkbox"
+        aria-checked={isChecked}
         onChange={onSelectItem}
       />
     </TableCell>
