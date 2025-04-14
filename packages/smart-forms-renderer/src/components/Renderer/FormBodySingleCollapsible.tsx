@@ -64,7 +64,9 @@ const FormBodySingleCollapsible = memo(function FormBodySingleCollapsible(
           </Box>
         </Box>
       </AccordionSummary>
-      <AccordionDetails>{children}</AccordionDetails>
+      <AccordionDetails>
+        <>{children}</>
+      </AccordionDetails>
     </Accordion>
   );
 });

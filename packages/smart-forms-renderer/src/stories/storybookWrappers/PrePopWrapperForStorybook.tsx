@@ -28,6 +28,7 @@ import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { fetchResourceCallback } from './populateCallbackForStorybook';
 import { buildForm } from '../../utils';
 import { STORYBOOK_TERMINOLOGY_SERVER_URL } from './globals';
+import { useQuestionnaireStore } from '../../stores';
 
 interface PrePopWrapperForStorybookProps {
   questionnaire: Questionnaire;
@@ -50,6 +51,7 @@ function PrePopWrapperForStorybook(props: PrePopWrapperForStorybookProps) {
   const { questionnaire, fhirClient, patient, user } = props;
 
   const [isPopulating, setIsPopulating] = useState(false);
+  const setPopulatedContext = useQuestionnaireStore.use.setPopulatedContext();
 
   const isBuilding = useBuildForm(
     questionnaire,
@@ -66,8 +68,8 @@ function PrePopWrapperForStorybook(props: PrePopWrapperForStorybookProps) {
     populateQuestionnaire({
       questionnaire: questionnaire,
       fetchResourceCallback: fetchResourceCallback,
-      requestConfig: {
-        clientEndpoint: fhirClient.state.serverUrl,
+      fetchResourceRequestConfig: {
+        sourceServerUrl: fhirClient.state.serverUrl,
         authToken: null
       },
       patient: patient,
@@ -78,7 +80,7 @@ function PrePopWrapperForStorybook(props: PrePopWrapperForStorybookProps) {
         return;
       }
 
-      const { populatedResponse } = populateResult;
+      const { populatedResponse, populatedContext } = populateResult;
 
       // Call to buildForm to pre-populate the QR which repaints the entire BaseRenderer view
       await buildForm(
@@ -87,6 +89,7 @@ function PrePopWrapperForStorybook(props: PrePopWrapperForStorybookProps) {
         undefined,
         STORYBOOK_TERMINOLOGY_SERVER_URL
       );
+      setPopulatedContext(populatedContext, true);
 
       setIsPopulating(false);
     });

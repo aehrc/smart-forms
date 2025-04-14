@@ -62,14 +62,14 @@ function IdRemoverDebuggerWrapperForStorybook(props: IdRemoverDebuggerWrapperFor
       <QueryClientProvider client={queryClient}>
         <div>
           <Grid container>
-            <Grid item xs={6}>
+            <Grid size={{ xs: 6 }}>
               <IdRemoverButtonForStorybook
                 questionnaire={questionnaire}
                 questionnaireResponse={updatableResponse}
               />
               <BaseRenderer />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={{ xs: 6 }}>
               <pre>{JSON.stringify(focusedLinkId, null, 2)}</pre>
               ----
               <pre style={{ fontSize: 10 }}>{JSON.stringify(updatableResponse, null, 2)}</pre>

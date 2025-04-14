@@ -17,10 +17,11 @@
 
 import type {
   FetchResourceCallback,
+  FetchResourceRequestConfig,
   FetchTerminologyCallback,
+  FetchTerminologyRequestConfig,
   InputParameters,
-  OutputParameters,
-  TerminologyRequestConfig
+  OutputParameters
 } from '../interfaces';
 import type { Encounter, OperationOutcome, OperationOutcomeIssue, Reference } from 'fhir/r4';
 import { fetchQuestionnaire } from '../api/fetchQuestionnaire';
@@ -48,9 +49,9 @@ import { addDisplayToInitialExpressionsCodings } from './addDisplayToCodings';
 export async function populate(
   parameters: InputParameters,
   fetchResourceCallback: FetchResourceCallback,
-  fetchResourceRequestConfig: any,
-  terminologyCallback?: FetchTerminologyCallback,
-  terminologyRequestConfig?: TerminologyRequestConfig
+  fetchResourceRequestConfig: FetchResourceRequestConfig,
+  fetchTerminologyCallback?: FetchTerminologyCallback,
+  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
 ): Promise<OutputParameters | OperationOutcome> {
   const issues: OperationOutcomeIssue[] = [];
 
@@ -76,7 +77,7 @@ export async function populate(
     fetchResourceCallback,
     fetchResourceRequestConfig,
     issues,
-    terminologyRequestConfig
+    fetchTerminologyRequestConfig
   );
 
   // Read expressions to be populated from questionnaire recursively
@@ -88,7 +89,7 @@ export async function populate(
     populationExpressions.itemPopulationContexts,
     fhirPathContext,
     issues,
-    terminologyRequestConfig
+    fetchTerminologyRequestConfig
   );
   fhirPathContext = sortResourceArrays(fhirPathContext);
 
@@ -98,14 +99,14 @@ export async function populate(
       populationExpressions,
       fhirPathContext,
       issues,
-      terminologyRequestConfig
+      fetchTerminologyRequestConfig
     );
 
   // In evaluatedInitialExpressions, add display values to codings lacking them
   const completeInitialExpressions = await addDisplayToInitialExpressionsCodings(
     evaluatedInitialExpressions,
-    terminologyCallback,
-    terminologyRequestConfig
+    fetchTerminologyCallback,
+    fetchTerminologyRequestConfig
   );
 
   // Construct response from initialExpressions
@@ -117,8 +118,8 @@ export async function populate(
       itemPopulationContexts: evaluatedItemPopulationContexts
     },
     encounter,
-    terminologyCallback,
-    terminologyRequestConfig
+    fetchTerminologyCallback,
+    fetchTerminologyRequestConfig
   );
 
   const cleanQuestionnaireResponse = removeEmptyAnswersFromResponse(

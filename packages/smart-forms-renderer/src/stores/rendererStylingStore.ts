@@ -73,8 +73,12 @@ import type { Breakpoints } from '@mui/material';
  *
  * @property disableTabButtons - If `true`, hides navigation buttons for tabs.
  *   - Default: `false`
+ *
+ * @property readOnlyVisualStyle - If `true`, item.readOnly will result in form fields having MUI disabled property and styles (recommended from usability perspective). If `false`, item.readOnly will result in form fields having HTML readonly property (less stable, but recommended from accessibility perspective).
+ *   - Default: `true`
  */
 export interface RendererStyling {
+  readOnlyVisualStyle?: 'disabled' | 'readonly';
   requiredIndicatorPosition?: 'start' | 'end';
   itemResponsive?: {
     labelBreakpoints: Partial<Breakpoints['values']>;
@@ -106,6 +110,7 @@ export interface RendererStyling {
  * @author Sean Fong
  */
 export interface RendererStylingStoreType {
+  readOnlyVisualStyle: 'disabled' | 'readonly';
   requiredIndicatorPosition: 'start' | 'end';
   itemResponsive: {
     labelBreakpoints: Partial<Breakpoints['values']>;
@@ -136,6 +141,7 @@ export interface RendererStylingStoreType {
  * @author Sean Fong
  */
 export const rendererStylingStore = createStore<RendererStylingStoreType>()((set) => ({
+  readOnlyVisualStyle: 'disabled',
   requiredIndicatorPosition: 'start',
   itemResponsive: {
     labelBreakpoints: { xs: 12, md: 4 },
@@ -159,6 +165,7 @@ export const rendererStylingStore = createStore<RendererStylingStoreType>()((set
   disableTabButtons: false,
   setRendererStyling: (params: RendererStyling) => {
     set(() => ({
+      readOnlyVisualStyle: params.readOnlyVisualStyle ?? 'disabled',
       requiredIndicatorPosition: params.requiredIndicatorPosition ?? 'start',
       itemResponsive: params.itemResponsive ?? {
         labelBreakpoints: { xs: 12, md: 4 },

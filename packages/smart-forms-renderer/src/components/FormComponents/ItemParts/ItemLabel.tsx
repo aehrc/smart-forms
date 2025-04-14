@@ -37,6 +37,7 @@ interface ItemLabelProps {
 const ItemLabel = memo(function ItemLabel(props: ItemLabelProps) {
   const { qItem, readOnly, isDisplayItem, parentStyles } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const requiredIndicatorPosition = useRendererStylingStore.use.requiredIndicatorPosition();
 
   const { required, displayFlyover } = useRenderingExtensions(qItem);
@@ -47,7 +48,9 @@ const ItemLabel = memo(function ItemLabel(props: ItemLabelProps) {
   const variant = isDisplayItem ? undefined : 'label';
 
   // Get text color from parent styles if available
-  const textColor = parentStyles?.color || (readOnly ? 'text.disabled' : 'text.primary');
+
+  const readOnlyTextColor = readOnlyVisualStyle === 'disabled' ? 'text.disabled' : 'text.secondary';
+  const textColor = parentStyles?.color || (readOnly ? readOnlyTextColor : 'text.primary');
 
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between">

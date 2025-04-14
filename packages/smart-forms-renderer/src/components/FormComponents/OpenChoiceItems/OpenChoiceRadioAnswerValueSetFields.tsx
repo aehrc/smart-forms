@@ -68,7 +68,14 @@ function OpenChoiceRadioAnswerValueSetFields(props: OpenChoiceRadioAnswerValueSe
           aria-labelledby={'label-' + qItem.linkId}
           row={orientation === ChoiceItemOrientation.Horizontal}
           sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
-          onChange={(e: ChangeEvent<HTMLInputElement>) => onValueChange(e.target.value, null)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            // If item.readOnly=true, do not allow any changes
+            if (readOnly) {
+              return;
+            }
+
+            onValueChange(e.target.value, null);
+          }}
           value={valueRadio}
           data-test="q-item-radio-group">
           <RadioOptionList options={options} readOnly={readOnly} fullWidth={inputsFlexGrow} />

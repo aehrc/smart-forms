@@ -4,12 +4,16 @@ applications:
       phases:
         preBuild:
           commands:
-            - nvm use 18
+            - nvm use 20
             - npm ci
         build:
           commands:
             - |
               export REACT_APP_SENTRY_RELEASE=`git rev-parse --short HEAD`
+              
+              npm run build -w packages/sdc-assemble
+              npm run build -w packages/sdc-populate
+              npm run build -w packages/smart-forms-renderer
               npm run build -w apps/smart-forms-app
         postBuild:
           commands:

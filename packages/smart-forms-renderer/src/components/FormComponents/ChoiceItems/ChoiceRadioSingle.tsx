@@ -16,8 +16,9 @@
  */
 
 import React from 'react';
-import Radio from '@mui/material/Radio';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import { useRendererStylingStore } from '../../../stores';
+import { StandardRadio } from '../../Radio.styles';
 
 interface ChoiceRadioSingleProps {
   value: string;
@@ -29,12 +30,22 @@ interface ChoiceRadioSingleProps {
 function ChoiceRadioSingle(props: ChoiceRadioSingleProps) {
   const { value, label, readOnly, fullWidth } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+
   return (
     <FormControlLabel
-      sx={{ width: fullWidth ? '100%' : 'unset' }}
-      disabled={readOnly}
+      sx={{
+        width: fullWidth ? '100%' : 'unset',
+        ...(readOnly && {
+          color: readOnlyVisualStyle === 'readonly' ? 'text.secondary' : undefined
+        })
+      }}
+      disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+      aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
       value={value}
-      control={<Radio size="small" />}
+      control={
+        <StandardRadio size="small" readOnly={readOnly && readOnlyVisualStyle === 'readonly'} />
+      }
       label={label}
     />
   );

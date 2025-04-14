@@ -18,6 +18,7 @@ interface QuantityUnitFieldProps extends PropsWithIsTabledRequiredAttribute {
 function QuantityUnitField(props: QuantityUnitFieldProps) {
   const { linkId, itemType, options, valueSelect, readOnly, isTabled, onChange } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
   return (
@@ -32,7 +33,8 @@ function QuantityUnitField(props: QuantityUnitFieldProps) {
       onChange={(_, newValue) => onChange(newValue as QuestionnaireItemAnswerOption | null)}
       autoHighlight
       sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }}
-      disabled={readOnly}
+      disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+      readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
       size="small"
       renderInput={(params) => (
         <StandardTextField textFieldWidth={textFieldWidth} isTabled={isTabled} {...params} />

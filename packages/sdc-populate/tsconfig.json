@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES6",
-    "module": "CommonJS",
+    "module": "ES6",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
@@ -23,5 +23,5 @@
     "noUnusedParameters": true
   },
   "include": ["src"],
-  "exclude": ["src/test", "src/**/*.test.ts", "lib"]
+  "exclude": ["src/test", "src/**/*.test.ts", "lib", "dist"]
 }

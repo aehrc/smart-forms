@@ -16,8 +16,9 @@
  */
 
 import React from 'react';
-import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import { StandardCheckbox } from '../../Checkbox.styles';
+import { useRendererStylingStore } from '../../../stores';
 
 interface Props {
   value: string;
@@ -30,11 +31,26 @@ interface Props {
 function CheckboxSingle(props: Props) {
   const { value, label, readOnly, isChecked, onCheckedChange } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+
   return (
     <FormControlLabel
-      disabled={readOnly}
+      disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+      aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
       control={
-        <Checkbox size="small" checked={isChecked} onChange={() => onCheckedChange(value)} />
+        <StandardCheckbox
+          size="small"
+          checked={isChecked}
+          readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
+          onChange={() => {
+            // If item.readOnly=true, do not allow any changes
+            if (readOnly) {
+              return;
+            }
+
+            onCheckedChange(value);
+          }}
+        />
       }
       label={label}
     />

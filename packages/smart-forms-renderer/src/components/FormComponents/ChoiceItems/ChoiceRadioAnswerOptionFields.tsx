@@ -72,7 +72,14 @@ function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps
             aria-labelledby={'label-' + qItem.linkId}
             row={orientation === ChoiceItemOrientation.Horizontal}
             sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
-            onChange={(e) => onCheckedChange(e.target.value)}
+            onChange={(e) => {
+              // If item.readOnly=true, do not allow any changes
+              if (readOnly) {
+                return;
+              }
+
+              onCheckedChange(e.target.value);
+            }}
             value={valueRadio}
             data-test="q-item-radio-group">
             <RadioOptionList options={options} readOnly={readOnly} fullWidth={inputsFlexGrow} />

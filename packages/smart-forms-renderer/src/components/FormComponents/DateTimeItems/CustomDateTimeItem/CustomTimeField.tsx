@@ -57,6 +57,7 @@ function CustomTimeField(props: CustomTimeFieldProps) {
     onPeriodChange
   } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
   // If this reusable time field is part of a DateTime component, do not assign an id to the wrapping <Box/>
@@ -84,14 +85,20 @@ function CustomTimeField(props: CustomTimeFieldProps) {
             onChange={(e: ChangeEvent<HTMLInputElement>) => onTimeInputChange(e.target.value)}
             label={displayPrompt}
             placeholder="--:--"
-            disabled={readOnly}
+            disabled={readOnly && readOnlyVisualStyle === 'disabled'}
             size="small"
+            slotProps={{
+              input: {
+                readOnly: readOnly && readOnlyVisualStyle === 'readonly'
+              }
+            }}
           />
           <Select
             id={periodId}
             value={is24HourNotation ? '' : periodInput}
             error={!!feedback}
-            disabled={readOnly || is24HourNotation}
+            disabled={(readOnly && readOnlyVisualStyle === 'disabled') || is24HourNotation}
+            readOnly={(readOnly && readOnlyVisualStyle === 'readonly') || is24HourNotation}
             displayEmpty
             size="small"
             sx={{ flex: 1 }}
@@ -103,7 +110,7 @@ function CustomTimeField(props: CustomTimeFieldProps) {
             <MenuItem value="PM">PM</MenuItem>
           </Select>
         </Box>
-        <Typography variant="caption" color="error" sx={{ ml: 1.75, mt: -0.5 }}>
+        <Typography component="span" variant="caption" color="error" sx={{ ml: 1.75, mt: -0.5 }}>
           {isTabled ? '' : feedback}
         </Typography>
       </>

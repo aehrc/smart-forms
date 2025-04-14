@@ -28,12 +28,13 @@ import type {
 import type {
   CustomContextResultParameter,
   FetchResourceCallback,
+  FetchResourceRequestConfig,
   FetchTerminologyCallback,
+  FetchTerminologyRequestConfig,
   InputParameters,
   IssuesParameter,
   OutputParameters,
-  ResponseParameter,
-  TerminologyRequestConfig
+  ResponseParameter
 } from '../../SDCPopulateQuestionnaireOperation';
 import {
   isInputParameters,
@@ -56,25 +57,25 @@ export interface PopulateResult {
 
 /**
  * @property questionnaire - Questionnaire to populate
- * @property fetchResourceCallback - A callback function to fetch resources
- * @property requestConfig - Any request configuration to be passed to the fetchResourceCallback i.e. headers, auth etc.
+ * @property fetchResourceCallback - A callback function to fetch resources from your FHIR server
+ * @property fetchResourceRequestConfig - Any request configuration to be passed to the fetchResourceCallback i.e. headers, auth etc.
  * @property patient - Patient resource as patient in context
- * @property user - Practitioner resource as user in context
+ * @property user - Practitioner resource as user in context, optional
  * @property encounter - Encounter resource as encounter in context, optional
- * @property terminologyCallback - A callback function to fetch terminology resources, optional
- * @property terminologyRequestConfig - Any request configuration to be passed to the terminologyCallback i.e. headers, auth etc., optional
+ * @property fetchTerminologyCallback - A callback function to fetch terminology resources, optional
+ * @property fetchTerminologyRequestConfig - Any request configuration to be passed to the fetchTerminologyCallback i.e. headers, auth etc., optional
  *
  * @author Sean Fong
  */
 export interface PopulateQuestionnaireParams {
   questionnaire: Questionnaire;
   fetchResourceCallback: FetchResourceCallback;
-  requestConfig: any;
+  fetchResourceRequestConfig: FetchResourceRequestConfig;
   patient: Patient;
   user?: Practitioner;
   encounter?: Encounter;
-  terminologyCallback?: FetchResourceCallback;
-  terminologyRequestConfig?: any;
+  fetchTerminologyCallback?: FetchTerminologyCallback;
+  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig;
 }
 
 /**
@@ -96,12 +97,12 @@ export async function populateQuestionnaire(params: PopulateQuestionnaireParams)
   const {
     questionnaire,
     fetchResourceCallback,
-    requestConfig,
+    fetchResourceRequestConfig,
     patient,
     user,
     encounter,
-    terminologyCallback,
-    terminologyRequestConfig
+    fetchTerminologyCallback,
+    fetchTerminologyRequestConfig
   } = params;
 
   const fhirPathContext: Record<string, any> = {};
@@ -152,9 +153,9 @@ export async function populateQuestionnaire(params: PopulateQuestionnaireParams)
   const outputParameters = await performInAppPopulation(
     inputParameters,
     fetchResourceCallback,
-    requestConfig,
-    terminologyCallback,
-    terminologyRequestConfig
+    fetchResourceRequestConfig,
+    fetchTerminologyCallback,
+    fetchTerminologyRequestConfig
   );
 
   if (outputParameters.resourceType === 'OperationOutcome') {
@@ -200,16 +201,16 @@ export async function populateQuestionnaire(params: PopulateQuestionnaireParams)
 async function performInAppPopulation(
   inputParameters: InputParameters,
   fetchResourceCallback: FetchResourceCallback,
-  requestConfig: any,
-  terminologyCallback?: FetchTerminologyCallback,
-  terminologyRequestConfig?: TerminologyRequestConfig
+  fetchResourceRequestConfig: FetchResourceRequestConfig,
+  fetchTerminologyCallback?: FetchTerminologyCallback,
+  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
 ): Promise<OutputParameters | OperationOutcome> {
   const populatePromise = populate(
     inputParameters,
     fetchResourceCallback,
-    requestConfig,
-    terminologyCallback,
-    terminologyRequestConfig
+    fetchResourceRequestConfig,
+    fetchTerminologyCallback,
+    fetchTerminologyRequestConfig
   );
 
   try {

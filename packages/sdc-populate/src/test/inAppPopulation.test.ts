@@ -28,7 +28,7 @@ describe.only('in app population test', () => {
       patient: patSmartForm,
       user: pracPrimaryPeter,
       fetchResourceCallback: fetchResourceCallbackTest,
-      requestConfig: requestConfigTest
+      fetchResourceRequestConfig: requestConfigTest
     });
 
     expect(populateSuccess).toBe(true);

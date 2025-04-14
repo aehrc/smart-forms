@@ -27,8 +27,8 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { getAnswerOptionLabel } from '../../../utils/openChoice';
 import { compareAnswerOptionValue } from '../../../utils/choice';
 import { useRendererStylingStore } from '../../../stores';
-import Typography from '@mui/material/Typography';
 import { StyledRequiredTypography } from '../Item.styles';
+import DisplayUnitText from '../ItemParts/DisplayUnitText';
 
 interface ChoiceSelectAnswerOptionFieldsProps
   extends PropsWithIsTabledRequiredAttribute,
@@ -55,6 +55,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
     onSelectChange
   } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
@@ -72,7 +73,8 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
         autoHighlight
         sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }}
         size="small"
-        disabled={readOnly}
+        disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+        readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
         renderInput={(params) => (
           <StandardTextField
             textFieldWidth={textFieldWidth}
@@ -80,17 +82,18 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
             label={displayPrompt}
             placeholder={entryFormat}
             {...params}
-            InputProps={{
-              ...params.InputProps,
-              endAdornment: (
-                <>
-                  {params.InputProps.endAdornment}
-                  <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-                  <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
-                    {displayUnit}
-                  </Typography>
-                </>
-              )
+            slotProps={{
+              input: {
+                ...params.InputProps,
+                readOnly: readOnly && readOnlyVisualStyle === 'readonly',
+                endAdornment: (
+                  <>
+                    {params.InputProps.endAdornment}
+                    <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+                    <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
+                  </>
+                )
+              }
             }}
           />
         )}
