@@ -46,6 +46,8 @@ function ChoiceCheckboxAnswerOptionFields(props: ChoiceCheckboxAnswerOptionField
       <Box id={qItem.type + '-' + qItem.linkId}>
         <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
           <CheckboxOptionList
+            aria-labelledby={'label-' + qItem.linkId}
+
             options={options}
             answers={answers}
             readOnly={readOnly}

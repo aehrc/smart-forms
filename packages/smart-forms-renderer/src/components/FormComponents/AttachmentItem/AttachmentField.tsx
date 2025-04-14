@@ -58,6 +58,9 @@ function AttachmentField(props: AttachmentFieldProps) {
 
   const { uploadedFile, url, fileName } = attachmentValues;
 
+// TODO: Consider accessible items for attachment fields too if #1096 is fixed. 
+
+
   return (
     <>
       <Stack rowGap={1} id={itemType + '-' + linkId}>
