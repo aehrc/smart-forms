@@ -104,7 +104,7 @@ function GroupTableRow(props: GroupTableRowProps) {
                   </Box>
                 </TableCell>
                 <SelectRowButton
-                  isSelected={itemIsSelected}
+                  isChecked={itemIsSelected}
                   readOnly={readOnly}
                   onSelectItem={() => onSelectRow(rowId)}
                 />
@@ -148,7 +148,7 @@ function GroupTableRow(props: GroupTableRowProps) {
             </Box>
           </TableCell>
           <SelectRowButton
-            isSelected={itemIsSelected}
+            isChecked={itemIsSelected}
             readOnly={readOnly}
             onSelectItem={() => onSelectRow(rowId)}
           />

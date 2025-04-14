@@ -91,6 +91,10 @@ function GroupTableView(props: GroupTableViewProps) {
 
   const groupCollapsibleValue = getGroupCollapsible(qItem);
 
+  const indeterminateValue = selectedIds.length > 0 && selectedIds.length < tableRows.length;
+  const checkedValue = tableRows.length > 0 && selectedIds.length === tableRows.length;
+  const ariaCheckedValue = indeterminateValue ? 'mixed' : checkedValue ? 'true' : 'false';
+
   // If the table is collapsible, wrap it in an accordion
   if (groupCollapsibleValue) {
     const isDefaultOpen = groupCollapsibleValue === 'default-open';
@@ -178,13 +182,13 @@ function GroupTableView(props: GroupTableViewProps) {
                       <StandardCheckbox
                         color="primary"
                         size="small"
-                        indeterminate={
-                          selectedIds.length > 0 && selectedIds.length < tableRows.length
-                        }
-                        checked={tableRows.length > 0 && selectedIds.length === tableRows.length}
+                        indeterminate={indeterminateValue}
+                        checked={checkedValue}
                         disabled={readOnly && readOnlyVisualStyle === 'disabled'}
                         readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
                         aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
+                        role="checkbox"
+                        aria-checked={ariaCheckedValue}
                         onChange={onSelectAll}
                       />
                     </HeaderTableCell>
@@ -286,11 +290,13 @@ function GroupTableView(props: GroupTableViewProps) {
                   <StandardCheckbox
                     color="primary"
                     size="small"
-                    indeterminate={selectedIds.length > 0 && selectedIds.length < tableRows.length}
-                    checked={tableRows.length > 0 && selectedIds.length === tableRows.length}
+                    indeterminate={indeterminateValue}
+                    checked={checkedValue}
                     disabled={readOnly && readOnlyVisualStyle === 'disabled'}
                     readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
                     aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
+                    role="checkbox"
+                    aria-checked={ariaCheckedValue}
                     onChange={onSelectAll}
                   />
                 </HeaderTableCell>
