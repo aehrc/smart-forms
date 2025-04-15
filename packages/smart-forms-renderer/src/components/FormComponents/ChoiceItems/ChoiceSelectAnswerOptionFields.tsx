@@ -29,6 +29,7 @@ import { compareAnswerOptionValue } from '../../../utils/choice';
 import { useRendererStylingStore } from '../../../stores';
 import { StyledRequiredTypography } from '../Item.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
+import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 
 interface ChoiceSelectAnswerOptionFieldsProps
   extends PropsWithIsTabledRequiredAttribute,
@@ -58,6 +59,8 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
+  const optionsEnabled = useAnswerOptionsToggleExpressions(qItem, options);
+
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
   return (
@@ -66,6 +69,12 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
         id={qItem.type + '-' + qItem.linkId}
         value={valueSelect ?? null}
         options={options}
+        getOptionDisabled={(option) => {
+          // Find the index of the current option
+          const index = options.findIndex((item) => item === option);
+          // Return whether the option is disabled based on the corresponding enabled state
+          return !optionsEnabled[index];
+        }}
         getOptionLabel={(option) => getAnswerOptionLabel(option)}
         isOptionEqualToValue={(option, value) => compareAnswerOptionValue(option, value)}
         onChange={(_, newValue) => onSelectChange(newValue)}

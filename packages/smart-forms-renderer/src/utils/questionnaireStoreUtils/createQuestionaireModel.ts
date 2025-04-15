@@ -81,7 +81,8 @@ export async function createQuestionnaireModel(
     calculatedExpressions,
     initialExpressions,
     answerExpressions,
-    answerOptions
+    answerOptions,
+    answerOptionsToggleExpressions
   } = extractOtherExtensionsResult;
   variables = extractOtherExtensionsResult.variables;
   valueSetPromises = extractOtherExtensionsResult.valueSetPromises;
@@ -124,6 +125,7 @@ export async function createQuestionnaireModel(
     initialExpressions,
     answerExpressions,
     answerOptions: completeAnswerOptions,
+    answerOptionsToggleExpressions: answerOptionsToggleExpressions,
     processedValueSets,
     cachedValueSetCodings,
     fhirPathContext: {},
@@ -145,6 +147,7 @@ function createEmptyModel(): QuestionnaireModel {
     enableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} },
     answerExpressions: {},
     answerOptions: {},
+    answerOptionsToggleExpressions: {},
     enableWhenItems: { singleItems: {}, repeatItems: {} },
     processedValueSets: {},
     cachedValueSetCodings: {},
