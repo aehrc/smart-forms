@@ -18,12 +18,12 @@
 import { useExtractOperationStore } from '../stores/extractOperationStore.ts';
 
 function useShowExtractedOperationStoreProperty(selectedProperty: string) {
-  const extractionResult = useExtractOperationStore.use.extractionResult();
+  const extractedResource = useExtractOperationStore.use.extractedResource();
   const targetStructureMap = useExtractOperationStore.use.targetStructureMap();
 
   return (
     {
-      extractionResult,
+      extractedResource,
       targetStructureMap
     }[selectedProperty] || null
   );
