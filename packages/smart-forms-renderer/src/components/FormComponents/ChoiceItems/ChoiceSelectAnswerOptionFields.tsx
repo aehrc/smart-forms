@@ -25,7 +25,7 @@ import { StandardTextField } from '../Textfield.styles';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import Autocomplete from '@mui/material/Autocomplete';
 import { getAnswerOptionLabel } from '../../../utils/openChoice';
-import { compareAnswerOptionValue } from '../../../utils/choice';
+import { compareAnswerOptionValue, isOptionDisabled } from '../../../utils/choice';
 import { useRendererStylingStore } from '../../../stores';
 import { StyledRequiredTypography } from '../Item.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
@@ -59,7 +59,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
-  const optionsEnabled = useAnswerOptionsToggleExpressions(qItem, options);
+  const answerOptionsToggleExpressionsMap = useAnswerOptionsToggleExpressions(qItem, options);
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
@@ -69,12 +69,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
         id={qItem.type + '-' + qItem.linkId}
         value={valueSelect ?? null}
         options={options}
-        getOptionDisabled={(option) => {
-          // Find the index of the current option
-          const index = options.findIndex((item) => item === option);
-          // Return whether the option is disabled based on the corresponding enabled state
-          return !optionsEnabled[index];
-        }}
+        getOptionDisabled={(option) => isOptionDisabled(option, answerOptionsToggleExpressionsMap)}
         getOptionLabel={(option) => getAnswerOptionLabel(option)}
         isOptionEqualToValue={(option, value) => compareAnswerOptionValue(option, value)}
         onChange={(_, newValue) => onSelectChange(newValue)}

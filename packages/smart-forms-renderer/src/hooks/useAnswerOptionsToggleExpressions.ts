@@ -4,48 +4,50 @@ import { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 function useAnswerOptionsToggleExpressions(
   qItem: QuestionnaireItem,
   options: QuestionnaireItemAnswerOption[]
-): boolean[] {
+): Map<string, boolean> | null {
   const answerOptionsToggleExpressions = useQuestionnaireStore.use.answerOptionsToggleExpressions();
-
-  const answerOptionsEnabled = new Array(options.length).fill(true);
   const itemAnswerOptionsToggleExpressions = answerOptionsToggleExpressions[qItem.linkId];
-  if (itemAnswerOptionsToggleExpressions) {
-    for (const answerOptionsToggleExpression of itemAnswerOptionsToggleExpressions) {
-      const { options: toggleOptions, valueExpression, isEnabled } = answerOptionsToggleExpression;
 
-      options.forEach((option, index) => {
-        const matches = toggleOptions.some((toggleOption) =>
-          areAnswerOptionValuesEqual(option, toggleOption)
-        );
+  // Item has no answerOptionsToggleExpressions, return null early
+  if (!itemAnswerOptionsToggleExpressions) {
+    return null;
+  }
 
-        if (matches && (isEnabled === false || isEnabled === undefined)) {
-          answerOptionsEnabled[index] = false;
-        }
-      });
+  // Create a Map to store toggleOptions for fast lookup
+  const answerOptionsToggleExpressionsMap = new Map<string, boolean>();
+
+  // Populate the map for all toggleOptions
+  for (const itemAnswerOptionsToggleExpression of itemAnswerOptionsToggleExpressions) {
+    const { options: toggleOptions, isEnabled } = itemAnswerOptionsToggleExpression;
+
+    for (const toggleOption of toggleOptions) {
+      const key = generateOptionKey(toggleOption);
+      const optionIsEnabled = !(isEnabled === false || isEnabled === undefined);
+      answerOptionsToggleExpressionsMap.set(key, optionIsEnabled);
     }
   }
 
-  return answerOptionsEnabled;
+  return answerOptionsToggleExpressionsMap;
 }
 
-function areAnswerOptionValuesEqual(a: any, b: any): boolean {
-  if (a.valueCoding && b.valueCoding) {
-    // Use structuredClone for deep equality (temporary, will optimize later)
-    return (
-      JSON.stringify(structuredClone(a.valueCoding)) ===
-      JSON.stringify(structuredClone(b.valueCoding))
-    );
+export function generateOptionKey(option: QuestionnaireItemAnswerOption): string {
+  if (option.valueCoding) {
+    const systemKey = option.valueCoding.system ?? ' ';
+    const codeKey = option.valueCoding.code ?? ' ';
+    const displayKey = option.valueCoding.display ?? ' ';
+
+    return `coding:${systemKey}-${codeKey}-${displayKey}`;
   }
 
-  if (a.valueString !== undefined && b.valueString !== undefined) {
-    return a.valueString === b.valueString;
+  if (option.valueString !== undefined) {
+    return `string:${option.valueString}`;
   }
 
-  if (a.valueInteger !== undefined && b.valueInteger !== undefined) {
-    return a.valueInteger === b.valueInteger;
+  if (option.valueInteger !== undefined) {
+    return `integer:${option.valueInteger}`;
   }
 
-  return false;
+  return ''; // In case no valid value is found
 }
 
 export default useAnswerOptionsToggleExpressions;
