@@ -30,6 +30,7 @@ function useShowQuestionnaireStoreProperty(selectedProperty: string) {
   const launchContexts = useQuestionnaireStore.use.launchContexts();
   const targetConstraints = useQuestionnaireStore.use.targetConstraints();
   const targetConstraintLinkIds = useQuestionnaireStore.use.targetConstraintLinkIds();
+  const answerOptionsToggleExpressions = useQuestionnaireStore.use.answerOptionsToggleExpressions();
   const enableWhenItems = useQuestionnaireStore.use.enableWhenItems();
   const enableWhenLinkedQuestions = useQuestionnaireStore.use.enableWhenLinkedQuestions();
   const enableWhenIsActivated = useQuestionnaireStore.use.enableWhenIsActivated();
@@ -60,6 +61,7 @@ function useShowQuestionnaireStoreProperty(selectedProperty: string) {
       launchContexts,
       targetConstraints,
       targetConstraintLinkIds,
+      answerOptionsToggleExpressions,
       enableWhenItems,
       enableWhenLinkedQuestions,
       enableWhenIsActivated,
