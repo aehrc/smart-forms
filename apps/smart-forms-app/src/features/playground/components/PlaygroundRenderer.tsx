@@ -152,7 +152,7 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
       startExtraction();
       setDebugInfo({
         contentAnalysis: {
-          detectedSigns: [],
+          detectedTemplates: [],
           patterns: [],
           confidence: 'Analyzing...'
         },
@@ -165,6 +165,10 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
           values: {},
           transformations: [],
           qualityChecks: []
+        },
+        resultGeneration: {
+          status: 'Pending',
+          observations: []
         }
       });
 
@@ -205,7 +209,7 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
       setExtractionError(error instanceof Error ? error.message : 'Unknown error during extraction');
       setDebugInfo({
         contentAnalysis: {
-          detectedSigns: [],
+          detectedTemplates: [],
           patterns: [],
           confidence: 'Error'
         },
@@ -218,6 +222,10 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
           values: {},
           transformations: [],
           qualityChecks: []
+        },
+        resultGeneration: {
+          status: 'Error',
+          observations: []
         }
       });
     }

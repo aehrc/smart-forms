@@ -4,340 +4,946 @@ import type {
   QuestionnaireItem,
   QuestionnaireResponse,
   QuestionnaireResponseItem,
-  Observation
+  Observation,
+  StructureMap,
+  Element
 } from 'fhir/r4';
-import { createBloodPressureObservations } from '../templates/bloodPressureTemplate';
-
-const FHIR_TEMPLATE_EXTRACT_EXTENSION =
-  'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtract';
+import fhirpath from 'fhirpath';
+import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
+import { findMatchingItem, FHIR_TEMPLATE_EXTRACT_EXTENSION } from './templateMatching';
 
 const FHIR_TEMPLATE_REFERENCE_EXTENSION =
   'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateReference';
 
-interface VitalSignTemplate {
-  type: string;
-  requiredCodes: string[]; // LOINC codes that must be present
-  requiredLinkIds?: string[]; // Optional linkIds that must be present
-  createObservations: (values: Record<string, number>, subjectRef: string) => Observation[];
-}
-
-const vitalSignTemplates: VitalSignTemplate[] = [
-  {
-    type: 'blood-pressure',
-    requiredCodes: ['8480-6', '8462-4'], // Systolic and Diastolic BP
-    requiredLinkIds: ['systolic', 'diastolic'],
-    createObservations: (values, subjectRef) => 
-      createBloodPressureObservations(values['8480-6'], values['8462-4'], subjectRef)
-  },
-  // Add more templates here for other vital signs
-  // Example for heart rate:
-  // {
-  //   type: 'heart-rate',
-  //   requiredCodes: ['8867-4'],
-  //   createObservations: (values, subjectRef) => createHeartRateObservation(values['8867-4'], subjectRef)
-  // }
-];
-
-/**
- * Determines if a questionnaire matches any vital sign template
- */
-function findMatchingTemplate(questionnaire: Questionnaire): VitalSignTemplate | null {
-  if (!questionnaire.item) return null;
-
-  for (const template of vitalSignTemplates) {
-    const hasAllRequiredCodes = template.requiredCodes.every(code => 
-      questionnaire.item?.some(item => 
-        item.code?.some(c => c.code === code)
-      )
-    );
-
-    const hasAllRequiredLinkIds = !template.requiredLinkIds || 
-      template.requiredLinkIds.every(linkId => 
-        questionnaire.item?.some(item => item.linkId === linkId)
-      );
-
-    if (hasAllRequiredCodes && hasAllRequiredLinkIds) {
-      return template;
-    }
-  }
-
-  return null;
-}
+const TEMPLATE_EXTRACT_VALUE_EXTENSION = 
+  'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue';
 
 interface DebugInfo {
-  contentAnalysis?: {
-    detectedSigns?: string[];
-    confidence?: string;
-    patterns?: string[];
+  contentAnalysis: {
+    detectedTemplates: string[];
+    patterns: string[];
+    confidence: string;
   };
-  fieldMapping?: {
-    mappedFields: Record<string, {
-      linkId: string;
-      text?: string;
-      type?: string;
-    } | null>;
-    assumptions?: string[];
-    alternatives?: string[];
+  fieldMapping: {
+    mappedFields: Record<string, any>;
+    assumptions: string[];
+    alternatives: string[];
   };
-  valueProcessing?: {
+  valueProcessing: {
     values: Record<string, any>;
-    transformations?: string[];
-    qualityChecks?: Array<{
+    transformations: string[];
+    qualityChecks: Array<{
       check: string;
       passed: boolean;
       message: string;
     }>;
-    rawAnswers?: Record<string, any>;
-    subjectReference?: string;
+    datetime?: {
+      source: 'static' | 'dynamic' | 'fallback';
+      expression?: string;
+      value?: string;
+      originalValue?: string;
+    };
   };
-  resultGeneration?: {
+  resultGeneration: {
+    status: string;
+    observations: Observation[];
     warnings?: string[];
-    missingValues?: Record<string, boolean>;
-    observations?: Observation[];
-    inputValues?: Record<string, any>;
   };
+}
+
+interface ExtendedElement extends Element {
+  extension?: Extension[];
+}
+
+interface ExtendedObservation extends Observation {
+  _effectiveDateTime?: ExtendedElement;
+  _issued?: ExtendedElement;
+  _valueBoolean?: ExtendedElement;
+}
+
+function evaluateTemplateExpression(
+  questionnaireResponse: QuestionnaireResponse,
+  expression: string,
+  context?: QuestionnaireResponseItem | QuestionnaireResponseItem[]
+): any {
+  try {
+    // If we have a context, use it as the starting point for evaluation
+    const evaluationContext = context || questionnaireResponse;
+    
+    // Handle special cases for nested structures
+    if (expression.includes('item.where')) {
+      // Process nested item expressions
+      const result = fhirpath.evaluate(
+        evaluationContext,
+        expression,
+        {}, // Empty context object
+        fhirpath_r4_model,
+        {
+          async: false
+        }
+      );
+
+      if (Array.isArray(result)) {
+        if (result.length === 0) return null;
+        if (result.length === 1) return result[0];
+        return result;
+      }
+
+      return result;
+    }
+
+    // Handle direct value references
+    const result = fhirpath.evaluate(
+      evaluationContext,
+      expression,
+      {}, // Empty context object
+      fhirpath_r4_model,
+      {
+        async: false
+      }
+    );
+
+    return result;
+  } catch (error) {
+    console.error('Error evaluating FHIRPath expression:', error);
+    return null;
+  }
+}
+
+function findNestedItem(
+  items: QuestionnaireResponseItem[] | undefined,
+  linkId: string
+): QuestionnaireResponseItem | null {
+  if (!items) return null;
+
+  for (const item of items) {
+    if (item.linkId === linkId) {
+      return item;
+    }
+    if (item.item) {
+      const nested = findNestedItem(item.item, linkId);
+      if (nested) return nested;
+    }
+  }
+  return null;
+}
+
+function getNestedAnswerValue(
+  response: QuestionnaireResponse,
+  linkId: string,
+  parentLinkId?: string
+): any {
+  console.log(`Looking for value at linkId: ${linkId} (parent: ${parentLinkId || 'none'})`);
+  
+  // More flexible recursive item finder
+  const findItem = (items: QuestionnaireResponseItem[] | undefined, currentLevel: number = 0): QuestionnaireResponseItem | null => {
+    if (!items) return null;
+    
+    for (const item of items) {
+      console.log(`${' '.repeat(currentLevel * 2)}Checking item: ${item.linkId}`);
+      
+      // Direct match
+      if (item.linkId === linkId) {
+        console.log(`${' '.repeat(currentLevel * 2)}✅ Found direct match: ${item.linkId}`);
+        return item;
+      }
+      
+      // Parent match, check children
+      if (parentLinkId && item.linkId === parentLinkId && item.item) {
+        console.log(`${' '.repeat(currentLevel * 2)}Found parent: ${item.linkId}, checking children...`);
+        for (const childItem of item.item) {
+          if (childItem.linkId === linkId) {
+            console.log(`${' '.repeat(currentLevel * 2)}✅ Found child match: ${childItem.linkId}`);
+            return childItem;
+          }
+        }
+      }
+      
+      // Recursive search in children
+      if (item.item) {
+        const foundItem = findItem(item.item, currentLevel + 1);
+        if (foundItem) return foundItem;
+      }
+    }
+    
+    return null;
+  };
+  
+  const item = findItem(response.item);
+  if (!item || !item.answer || item.answer.length === 0) {
+    console.log(`❌ No answer found for linkId: ${linkId}`);
+    return null;
+  }
+  
+  const answer = item.answer[0];
+  
+  // Extract the value based on its type
+  if (answer.valueDecimal !== undefined) return answer.valueDecimal;
+  if (answer.valueInteger !== undefined) return answer.valueInteger;
+  if (answer.valueString !== undefined) return answer.valueString;
+  if (answer.valueBoolean !== undefined) return answer.valueBoolean;
+  if (answer.valueQuantity?.value !== undefined) return answer.valueQuantity.value;
+  
+  console.log(`❌ No supported value type found in answer for linkId: ${linkId}`);
+  return null;
+}
+
+function hasTemplateExtractExtension(item: QuestionnaireItem | Questionnaire): boolean {
+  // Enhanced detection with detailed logging
+  console.log(`Checking for template extraction extension in item with linkId: ${(item as QuestionnaireItem).linkId || 'root questionnaire'}`);
+  
+  if (!item.extension || item.extension.length === 0) {
+    console.log(`No extensions found for item ${(item as QuestionnaireItem).linkId || 'root questionnaire'}`);
+    return false;
+  }
+  
+  for (const ext of item.extension) {
+    console.log(`Examining extension with URL: ${ext.url}`);
+    
+    if (ext.url === FHIR_TEMPLATE_EXTRACT_EXTENSION) {
+      // Check for direct boolean value
+      if (ext.valueBoolean !== undefined) {
+        console.log(`Found template extraction extension with valueBoolean: ${ext.valueBoolean}`);
+        return ext.valueBoolean;
+      }
+      
+      // Check for nested template reference
+      if (ext.extension) {
+        for (const subExt of ext.extension) {
+          if (subExt.url === 'template' && subExt.valueReference?.reference) {
+            console.log(`Found template reference: ${subExt.valueReference.reference}`);
+            return true;
+          }
+        }
+      }
+    }
+  }
+  
+  return false;
+}
+
+/**
+ * Processes datetime extraction from templates, handling both static values and expressions
+ * @param template The template containing datetime fields
+ * @param response The questionnaire response to extract values from
+ * @returns An ISO formatted datetime string
+ */
+function processDateTimeExtraction(template: any, response: QuestionnaireResponse, debugInfo: DebugInfo): string {
+  // Check if we have an effectiveDateTime with extraction extension
+  const effectiveDateTime = template.effectiveDateTime;
+  const effectiveDateTimeExt = template._effectiveDateTime?.extension?.find(
+    (ext: Extension) => ext.url === TEMPLATE_EXTRACT_VALUE_EXTENSION
+  );
+
+  // Initialize datetime debug info
+  debugInfo.valueProcessing.datetime = {
+    source: 'fallback',
+    value: ''
+  };
+
+  if (effectiveDateTimeExt?.valueString) {
+    // Handle specific extraction expressions
+    if (effectiveDateTimeExt.valueString === 'now()') {
+      // Use current date/time
+      const now = new Date().toISOString();
+      console.log(`Processing datetime with now() function: ${now}`);
+      
+      // Update datetime debug info
+      debugInfo.valueProcessing.datetime = {
+        source: 'dynamic',
+        expression: 'now()',
+        value: now,
+        originalValue: effectiveDateTime
+      };
+      
+      return now;
+    } else {
+      // Try to evaluate as a FHIRPath expression
+      const extractedDateTime = evaluateTemplateExpression(response, effectiveDateTimeExt.valueString);
+      if (extractedDateTime) {
+        console.log(`Extracted datetime using expression: ${extractedDateTime}`);
+        
+        // Update datetime debug info
+        debugInfo.valueProcessing.datetime = {
+          source: 'dynamic',
+          expression: effectiveDateTimeExt.valueString,
+          value: extractedDateTime,
+          originalValue: effectiveDateTime
+        };
+        
+        return extractedDateTime;
+      }
+    }
+  }
+
+  // Default to template's static value if available
+  if (effectiveDateTime) {
+    console.log(`Using template's static datetime: ${effectiveDateTime}`);
+    
+    // Update datetime debug info
+    debugInfo.valueProcessing.datetime = {
+      source: 'static',
+      value: effectiveDateTime
+    };
+    
+    return effectiveDateTime;
+  }
+
+  // Final fallback to current date/time
+  const fallbackTime = new Date().toISOString();
+  console.log(`No datetime information found, using current time: ${fallbackTime}`);
+  
+  // Update datetime debug info
+  debugInfo.valueProcessing.datetime = {
+    source: 'fallback',
+    value: fallbackTime
+  };
+  
+  return fallbackTime;
 }
 
 export async function extractTemplateBased(
   questionnaire: Questionnaire,
   response: QuestionnaireResponse
 ): Promise<{ result: Observation[] | null; error: string | null; debugInfo: DebugInfo }> {
-  const debugInfo: DebugInfo = {};
-
-  // Content Analysis Stage
-  debugInfo.contentAnalysis = {
-    detectedSigns: [],
-    patterns: []
+  const debugInfo: DebugInfo = {
+    contentAnalysis: {
+      detectedTemplates: [],
+      confidence: 'Valid',
+      patterns: []
+    },
+    fieldMapping: {
+      mappedFields: {},
+      assumptions: [],
+      alternatives: []
+    },
+    valueProcessing: {
+      values: {},
+      transformations: [],
+      qualityChecks: []
+    },
+    resultGeneration: {
+      status: 'Pending',
+      observations: []
+    }
   };
 
-  // Check for blood pressure related content
-  const hasBloodPressureContent = questionnaire.item?.some(item => 
-    item.text?.toLowerCase().includes('blood pressure') ||
-    item.text?.toLowerCase().includes('bp') ||
-    item.text?.toLowerCase().includes('systolic') ||
-    item.text?.toLowerCase().includes('diastolic')
+  console.log('=== Template Extraction Debug ===');
+  console.log('Stage 1: Initial Validation');
+  
+  // Enhanced validation with more detailed error reporting
+  if (!questionnaire) {
+    console.log('❌ Failed: Questionnaire is undefined or null');
+    debugInfo.contentAnalysis.confidence = 'Invalid';
+    return {
+      result: null,
+      error: 'Missing questionnaire',
+      debugInfo
+    };
+  }
+  
+  if (!questionnaire.item) {
+    console.log('❌ Failed: Questionnaire has no items');
+    debugInfo.contentAnalysis.confidence = 'Invalid';
+    return {
+      result: null,
+      error: 'Questionnaire has no items',
+      debugInfo
+    };
+  }
+  
+  if (!questionnaire.contained || questionnaire.contained.length === 0) {
+    console.log('❌ Failed: Questionnaire has no contained resources for templates');
+    debugInfo.contentAnalysis.confidence = 'Invalid';
+    return {
+      result: null,
+      error: 'Questionnaire has no contained resources for templates',
+      debugInfo
+    };
+  }
+  
+  if (!response.item) {
+    console.log('❌ Failed: Response has no items');
+    debugInfo.contentAnalysis.confidence = 'Invalid';
+    return {
+      result: null,
+      error: 'Response has no items',
+      debugInfo
+    };
+  }
+  
+  console.log('✅ Passed: Required items present');
+
+  // Check for template extraction extension at questionnaire or item level
+  console.log('\nStage 2: Template Extraction Extension Check');
+  
+  // Enhanced template detection with recursive item checking
+  const hasTemplateExtract = hasTemplateExtractExtension(questionnaire);
+  let itemsWithTemplates: string[] = [];
+  
+  const checkItemsForTemplates = (items: QuestionnaireItem[]): boolean => {
+    let found = false;
+    for (const item of items) {
+      if (hasTemplateExtractExtension(item)) {
+        found = true;
+        itemsWithTemplates.push(item.linkId);
+      }
+      
+      if (item.item && checkItemsForTemplates(item.item)) {
+        found = true;
+      }
+    }
+    return found;
+  };
+  
+  const hasItemTemplates = checkItemsForTemplates(questionnaire.item);
+  
+  if (!hasTemplateExtract && !hasItemTemplates) {
+    console.log('❌ Failed: No template extraction extension found');
+    debugInfo.contentAnalysis.confidence = 'Invalid';
+    debugInfo.contentAnalysis.detectedTemplates.push('No template type detected');
+    
+    // Enhanced debug information for template detection failure
+    if (questionnaire.extension && questionnaire.extension.length > 0) {
+      const urls = questionnaire.extension.map(e => e.url).join(', ');
+      debugInfo.fieldMapping.assumptions.push(`Found extensions but none match template extraction: ${urls}`);
+    } else {
+      debugInfo.fieldMapping.assumptions.push('No extensions found at questionnaire level');
+    }
+    
+    if (itemsWithTemplates.length > 0) {
+      debugInfo.fieldMapping.assumptions.push(`Found items with extensions: ${itemsWithTemplates.join(', ')}`);
+    }
+    
+    return {
+      result: null,
+      error: 'Questionnaire is not configured for template extraction',
+      debugInfo
+    };
+  }
+  
+  if (hasTemplateExtract) {
+    console.log('✅ Passed: Template extraction extension found at questionnaire level');
+  }
+  
+  if (hasItemTemplates) {
+    console.log(`✅ Passed: Template extraction extensions found at item level: ${itemsWithTemplates.join(', ')}`);
+  }
+
+  const templates = questionnaire.contained;
+  console.log('\nStage 3: Template Analysis');
+  console.log(`Found ${templates.length} templates:`);
+  
+  // Enhanced template analysis
+  const observationTemplates = templates.filter(t => t.resourceType === 'Observation');
+  const patientTemplates = templates.filter(t => t.resourceType === 'Patient');
+  const otherTemplates = templates.filter(t => !['Observation', 'Patient'].includes(t.resourceType));
+  
+  console.log(`- ${observationTemplates.length} Observation templates`);
+  console.log(`- ${patientTemplates.length} Patient templates`);
+  console.log(`- ${otherTemplates.length} Other templates`);
+  
+  templates.forEach(template => {
+    const templateId = template.id || 'unnamed';
+    console.log(`- ${template.resourceType}: ${templateId}`);
+    debugInfo.contentAnalysis.detectedTemplates.push(templateId);
+  });
+
+  const observations: Observation[] = [];
+
+  // Initialize field mapping with template information
+  console.log('\nStage 4: Field Mapping');
+  debugInfo.fieldMapping.mappedFields = templates.reduce((acc, template) => {
+    if (template.resourceType === 'Observation') {
+      const code = template.code?.coding?.[0]?.code;
+      if (code) {
+        // Skip the boolean observation for now
+        if ((template as ExtendedObservation)._valueBoolean) return acc;
+
+        // Find the corresponding item in the questionnaire using the enhanced matcher
+        const item = findMatchingItem(
+          questionnaire.item, 
+          template.id || 'unknown',
+          template.resourceType, 
+          template.code?.coding
+        );
+        
+        if (!item) {
+          console.log(`❌ Failed to find corresponding item in questionnaire for template: ${template.id}`);
+          debugInfo.valueProcessing.qualityChecks.push({
+            check: `Process ${template.id || 'unknown'}`,
+            passed: false,
+            message: 'Failed to find corresponding item in questionnaire'
+          });
+          return acc;
+        }
+
+        // Enhanced path detection with better support for different questionnaire structures
+        let valuePath = "";
+        
+        // Check for parent hierarchy to build proper path
+        const buildPath = (items: QuestionnaireItem[] | undefined, targetLinkId: string, path: string = ""): string => {
+          if (!items) return "";
+          
+          for (const i of items) {
+            if (i.linkId === targetLinkId) return path ? `${path}.item.where(linkId='${targetLinkId}')` : `item.where(linkId='${targetLinkId}')`;
+            
+            if (i.item) {
+              const newPath = path ? `${path}.item.where(linkId='${i.linkId}')` : `item.where(linkId='${i.linkId}')`;
+              const result = buildPath(i.item, targetLinkId, newPath);
+              if (result) return result;
+            }
+          }
+          
+          return "";
+        };
+        
+        valuePath = buildPath(questionnaire.item, item.linkId);
+        if (!valuePath) {
+          valuePath = `item.where(linkId='${item.linkId}')`;
+        }
+        
+        // Add answer type based on item type
+        switch (item.type) {
+          case 'decimal':
+            valuePath += '.answer.valueDecimal';
+            break;
+          case 'integer':
+            valuePath += '.answer.valueInteger';
+            break;
+          case 'boolean':
+            valuePath += '.answer.valueBoolean';
+            break;
+          case 'string':
+            valuePath += '.answer.valueString';
+            break;
+          case 'quantity':
+            valuePath += '.answer.valueQuantity.value';
+            break;
+          default:
+            valuePath += '.answer.value';
+        }
+        
+        acc[code] = {
+          templateId: template.id,
+          type: template.resourceType,
+          valuePath: valuePath,
+          itemType: item.type,
+          itemLinkId: item.linkId,
+          itemText: item.text || "No text"
+        };
+        
+        console.log(`Mapped field: ${code} -> ${template.id} (${valuePath})`);
+      }
+    }
+    return acc;
+  }, {} as Record<string, any>);
+
+  // Add relevant assumptions about the mapping based on found patterns
+  if (Object.keys(debugInfo.fieldMapping.mappedFields).length === 0) {
+    debugInfo.fieldMapping.assumptions.push('No fields could be mapped between templates and questionnaire items');
+  } else {
+    debugInfo.fieldMapping.assumptions.push(`Successfully mapped ${Object.keys(debugInfo.fieldMapping.mappedFields).length} fields`);
+  }
+
+  // Check for specific patterns in the template (like height, weight, blood pressure)
+  const hasHeight = observationTemplates.some(t => 
+    t.code?.coding?.some(c => c.code === '8302-2' || c.display?.toLowerCase().includes('height'))
+  );
+  
+  const hasWeight = observationTemplates.some(t => 
+    t.code?.coding?.some(c => c.code === '29463-7' || c.display?.toLowerCase().includes('weight'))
+  );
+  
+  // More precise BP detection to avoid false positives
+  const hasBpLoinc = observationTemplates.some(t => 
+    t.code?.coding?.some(c => c.code === '85354-9') // Blood pressure panel with all children optional
+  );
+  
+  const hasSystolicComponent = observationTemplates.some(t => 
+    t.component?.some(comp => 
+      comp.code?.coding?.some(c => c.code === '8480-6' || c.display?.toLowerCase().includes('systolic'))
+    )
+  );
+  
+  const hasDiastolicComponent = observationTemplates.some(t => 
+    t.component?.some(comp => 
+      comp.code?.coding?.some(c => c.code === '8462-4' || c.display?.toLowerCase().includes('diastolic'))
+    )
+  );
+  
+  // Separate standalone templates with BP codes
+  const hasSystolicTemplate = observationTemplates.some(t => 
+    t.code?.coding?.some(c => c.code === '8480-6' || c.display?.toLowerCase().includes('systolic'))
+  );
+  
+  const hasDiastolicTemplate = observationTemplates.some(t => 
+    t.code?.coding?.some(c => c.code === '8462-4' || c.display?.toLowerCase().includes('diastolic'))
+  );
+  
+  // Content-driven pattern detection
+  // Instead of fixed assumptions, detect patterns dynamically based on content
+  const patterns = [];
+  const assumptions = [];
+  
+  if (observationTemplates.length > 0) {
+    assumptions.push(`Found ${observationTemplates.length} observation templates`);
+  }
+  
+  if (hasHeight) {
+    patterns.push('Height Measurement');
+    if (hasWeight) {
+      // Both height and weight together form a pattern
+      assumptions.push('Detected height and weight template pattern');
+    } else {
+      // Just height alone
+      assumptions.push('Detected height measurement template');
+    }
+  } else if (hasWeight) {
+    // Just weight alone
+    patterns.push('Weight Measurement');
+    assumptions.push('Detected weight measurement template');
+  }
+  
+  // Only detect BP if we have a proper complete BP pattern
+  const isCompleteBpPattern = hasBpLoinc || 
+    (hasSystolicComponent && hasDiastolicComponent) || 
+    (hasSystolicTemplate && hasDiastolicTemplate);
+  
+  if (isCompleteBpPattern) {
+    patterns.push('Blood Pressure Measurement');
+    assumptions.push('Detected complete blood pressure template pattern');
+  } else if (hasSystolicTemplate && !hasDiastolicTemplate) {
+    // Just systolic without diastolic - not a complete BP pattern
+    patterns.push('Systolic Measurement');
+    assumptions.push('Detected systolic pressure template (incomplete BP pattern)');
+  } else if (!hasSystolicTemplate && hasDiastolicTemplate) {
+    // Just diastolic without systolic - not a complete BP pattern
+    patterns.push('Diastolic Measurement');
+    assumptions.push('Detected diastolic pressure template (incomplete BP pattern)');
+  }
+  
+  // Add the detected patterns to debug info
+  debugInfo.contentAnalysis.patterns.push(...patterns);
+  
+  // Add the assumptions to debug info
+  debugInfo.fieldMapping.assumptions.push(...assumptions);
+
+  // Update debug info with resource types
+  debugInfo.contentAnalysis.patterns.push(
+    ...templates.map(template => `${template.resourceType}: ${template.id || 'unnamed'}`)
   );
 
-  if (hasBloodPressureContent) {
-    debugInfo.contentAnalysis.detectedSigns?.push('Blood Pressure');
-    debugInfo.contentAnalysis.confidence = 'High';
-    debugInfo.contentAnalysis.patterns?.push('Vital signs measurement');
-  }
-
-  // Field Mapping Stage
-  const findNestedItem = (items: QuestionnaireItem[] | undefined, linkId: string): QuestionnaireItem | undefined => {
-    if (!items) return undefined;
-    for (const item of items) {
-      if (item.linkId === linkId) return item;
-      if (item.item) {
-        const found = findNestedItem(item.item, linkId);
-        if (found) return found;
-      }
-    }
-    return undefined;
-  };
-
-  const systolicItem = findNestedItem(questionnaire.item, 'systolic');
-  const diastolicItem = findNestedItem(questionnaire.item, 'diastolic');
-
-  debugInfo.fieldMapping = {
-    mappedFields: {
-      systolic: systolicItem ? {
-        linkId: systolicItem.linkId,
-        text: systolicItem.text,
-        type: systolicItem.type
-      } : null,
-      diastolic: diastolicItem ? {
-        linkId: diastolicItem.linkId,
-        text: diastolicItem.text,
-        type: diastolicItem.type
-      } : null
-    },
-    assumptions: [],
-    alternatives: []
-  };
-
-  // Value Processing Stage
-  debugInfo.valueProcessing = {
-    values: {},
-    transformations: [],
-    qualityChecks: [],
-    rawAnswers: {},
-    subjectReference: undefined
-  };
-
-  if (hasBloodPressureContent && debugInfo.fieldMapping?.mappedFields.systolic && debugInfo.fieldMapping?.mappedFields.diastolic) {
-    const findNestedResponseItem = (items: QuestionnaireResponseItem[] | undefined, linkId: string): QuestionnaireResponseItem | undefined => {
-      if (!items) return undefined;
-      for (const item of items) {
-        if (item.linkId === linkId) return item;
-        if (item.item) {
-          const found = findNestedResponseItem(item.item, linkId);
-          if (found) return found;
-        }
-      }
-      return undefined;
-    };
-
-    const systolicAnswer = findNestedResponseItem(response.item, 'systolic')?.answer?.[0];
-    const diastolicAnswer = findNestedResponseItem(response.item, 'diastolic')?.answer?.[0];
-
-    // Add debug info for raw answers
-    (debugInfo.valueProcessing as any).rawAnswers = {
-      systolic: systolicAnswer,
-      diastolic: diastolicAnswer
-    };
-
-    const extractNumericValue = (answer: any, fieldName: string): number | undefined => {
-      if (!answer) {
-        (debugInfo.valueProcessing as any).qualityChecks?.push({
-          check: `${fieldName} answer presence`,
-          passed: false,
-          message: `No answer found for ${fieldName}`
-        });
-        return undefined;
-      }
-      
-      // Try all possible numeric value fields
-      const possibleValues = [
-        { type: 'valueQuantity', value: answer.valueQuantity?.value },
-        { type: 'valueInteger', value: answer.valueInteger },
-        { type: 'valueDecimal', value: answer.valueDecimal }
-      ];
-      
-      for (const { type, value } of possibleValues) {
-        if (value === undefined || value === null) continue;
+  console.log('\nStage 5: Template Processing');
+  // Process each template
+  for (const template of templates) {
+    try {
+      if (template.resourceType === 'Observation') {
+        const templateId = template.id || 'unnamed';
+        console.log(`\nProcessing template: ${templateId}`);
         
-        if (typeof value === 'number') {
-          (debugInfo.valueProcessing as any).qualityChecks?.push({
-            check: `${fieldName} value type`,
-            passed: true,
-            message: `Found ${type} with value ${value}`
+        // Skip the boolean observation for now
+        if ((template as ExtendedObservation)._valueBoolean) continue;
+
+        const observation: ExtendedObservation = {
+          ...template,
+          id: undefined // Remove template ID
+        };
+
+        // Find the corresponding item in the questionnaire using the enhanced matcher
+        const item = findMatchingItem(
+          questionnaire.item, 
+          template.id || 'unknown',
+          template.resourceType, 
+          template.code?.coding
+        );
+        
+        if (!item) {
+          console.log(`❌ Failed to find corresponding item in questionnaire for template: ${template.id}`);
+          debugInfo.valueProcessing.qualityChecks.push({
+            check: `Process ${template.id || 'unknown'}`,
+            passed: false,
+            message: 'Failed to find corresponding item in questionnaire'
           });
-          return value;
+          continue;
         }
-        if (typeof value === 'string') {
-          const numericValue = parseFloat(value);
-          if (!isNaN(numericValue)) {
-            (debugInfo.valueProcessing as any).qualityChecks?.push({
-              check: `${fieldName} value type`,
-              passed: true,
-              message: `Converted ${type} string "${value}" to number ${numericValue}`
-            });
-            return numericValue;
-          }
-        }
-      }
-      
-      (debugInfo.valueProcessing as any).qualityChecks?.push({
-        check: `${fieldName} value extraction`,
-        passed: false,
-        message: `Could not extract numeric value from ${fieldName} answer`
-      });
-      return undefined;
-    };
 
-    const systolicValue = extractNumericValue(systolicAnswer, 'systolic');
-    const diastolicValue = extractNumericValue(diastolicAnswer, 'diastolic');
-
-    if (systolicValue !== undefined) {
-      debugInfo.valueProcessing.values.systolic = systolicValue;
-    }
-    if (diastolicValue !== undefined) {
-      debugInfo.valueProcessing.values.diastolic = diastolicValue;
-    }
-
-    if (systolicValue !== undefined && diastolicValue !== undefined) {
-      debugInfo.valueProcessing.qualityChecks?.push({
-        check: 'Value types',
-        passed: true,
-        message: 'Both values are valid numbers'
-      });
-
-      const subjectReference = response.subject?.reference || 'Patient/unknown';
-      debugInfo.valueProcessing.subjectReference = subjectReference;
-      
-      // Get LOINC codes from questionnaire items
-      const systolicCode = systolicItem?.code?.find(c => c.system === 'http://loinc.org')?.code || '8480-6';
-      const diastolicCode = diastolicItem?.code?.find(c => c.system === 'http://loinc.org')?.code || '8462-4';
-      
-      const observations = createBloodPressureObservations(
-        systolicValue,
-        diastolicValue,
-        subjectReference
-      );
-      
-      // Initialize resultGeneration
-      debugInfo.resultGeneration = {
-        warnings: observations.length === 2 ? [] : ['Unexpected number of observations generated'],
-        observations: observations,
-        inputValues: {
-          systolic: systolicValue,
-          diastolic: diastolicValue,
-          subjectReference: subjectReference,
-          codes: {
-            systolic: systolicCode,
-            diastolic: diastolicCode
-          }
-        }
-      };
-
-      // Verify observation values
-      observations.forEach((obs, index) => {
-        const type = index === 0 ? 'systolic' : 'diastolic';
-        const expectedValue = type === 'systolic' ? systolicValue : diastolicValue;
-        const actualValue = obs.valueQuantity?.value;
+        // Process datetime values for the observation
+        const originalDateTime = template.effectiveDateTime;
+        observation.effectiveDateTime = processDateTimeExtraction(template, response, debugInfo);
         
-        if (actualValue !== expectedValue) {
-          (debugInfo.resultGeneration as any).warnings?.push(
-            `${type} observation value mismatch: expected ${expectedValue}, got ${actualValue}`
+        // Add information to debug info
+        debugInfo.valueProcessing.transformations.push(
+          `Set effectiveDateTime to ${observation.effectiveDateTime} for ${templateId}`
+        );
+        
+        // Remove the extraction extension since it's been processed
+        if (observation._effectiveDateTime) {
+          delete observation._effectiveDateTime;
+        }
+
+        // Process value extraction with improved nested handling
+        if (template.valueQuantity) {
+          // First try direct extension on valueQuantity (common in test files)
+          let valueExt = template.valueQuantity.extension?.find(
+            (ext: Extension) => ext.url === TEMPLATE_EXTRACT_VALUE_EXTENSION
           );
+          
+          // If not found, try the nested structure from HL7 SDC examples
+          if (!valueExt && (template.valueQuantity as any)._value?.extension) {
+            valueExt = (template.valueQuantity as any)._value.extension.find(
+              (ext: Extension) => ext.url === TEMPLATE_EXTRACT_VALUE_EXTENSION
+            );
+            console.log('Using nested _value extension structure from HL7 SDC example');
+          }
+          
+          if (valueExt?.valueString) {
+            console.log(`Extracting value with expression: ${valueExt.valueString}`);
+            let value;
+            
+            // Handle direct answer value references
+            if (valueExt.valueString.includes('answer.value')) {
+              value = getNestedAnswerValue(response, item.linkId);
+              if (value !== null) {
+                // Improved unit detection and value conversion based on context
+                const isHeightTemplate = template.code?.coding?.some(c => 
+                  c.code === '8302-2' || c.display?.toLowerCase().includes('height')
+                );
+                
+                // Check if a unit conversion is needed
+                if (isHeightTemplate) {
+                  console.log(`Processing height value: ${value}`);
+                  
+                  // Determine the source unit from the questionnaire item
+                  const unitExtension = item.extension?.find(ext => 
+                    ext.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit'
+                  );
+                  const sourceUnit = unitExtension?.valueCoding?.code || 'm';
+                  
+                  // Extract target unit from template
+                  const targetUnit = template.valueQuantity.unit || 'cm';
+                  
+                  // Intelligence for unit conversion
+                  if (sourceUnit === 'm' && targetUnit === 'cm') {
+                    // Smart unit conversion - only apply if the value looks like meters
+                    if (value < 3) {
+                      const originalValue = value;
+                      value = value * 100;
+                      console.log(`Converting height from ${originalValue}m to ${value}cm`);
+                      debugInfo.valueProcessing.transformations.push(`Converted height from ${originalValue}m to ${value}cm for ${templateId}`);
+                    } else {
+                      // Value is likely already in cm
+                      console.log(`Height value ${value} appears to already be in cm, no conversion needed`);
+                      debugInfo.valueProcessing.transformations.push(`Height value ${value} appears to already be in cm, no conversion needed for ${templateId}`);
+                    }
+                  }
+                } else {
+                  // Not a height template, just extract the value
+                  debugInfo.valueProcessing.transformations.push(`Extracted value ${value} for ${templateId}`);
+                }
+                
+                observation.valueQuantity = {
+                  value: value,
+                  unit: template.valueQuantity.unit,
+                  system: template.valueQuantity.system,
+                  code: template.valueQuantity.code
+                };
+                
+                debugInfo.valueProcessing.values[templateId] = value;
+                console.log(`✅ Value extracted: ${value}`);
+                
+                // Enhanced quality checks based on value type
+                if (isHeightTemplate) {
+                  const inReasonableRange = value > 30 && value < 250;
+                  debugInfo.valueProcessing.qualityChecks.push({
+                    check: `Height value in reasonable range (${value}cm)`,
+                    passed: inReasonableRange,
+                    message: inReasonableRange 
+                      ? 'Height within expected range'
+                      : 'Height outside normal range, verify input'
+                  });
+                } else if (template.code?.coding?.some(c => 
+                  c.code === '29463-7' || c.display?.toLowerCase().includes('weight')
+                )) {
+                  const inReasonableRange = value > 0.1 && value < 300;
+                  debugInfo.valueProcessing.qualityChecks.push({
+                    check: `Weight value in reasonable range (${value}kg)`,
+                    passed: inReasonableRange,
+                    message: inReasonableRange 
+                      ? 'Weight within expected range'
+                      : 'Weight outside normal range, verify input'
+                  });
+                }
+                
+                debugInfo.valueProcessing.qualityChecks.push({
+                  check: `Process ${templateId}`,
+                  passed: true,
+                  message: 'Successfully processed observation'
+                });
+              } else {
+                console.log('❌ Failed to extract value');
+                debugInfo.valueProcessing.qualityChecks.push({
+                  check: `Process ${templateId}`,
+                  passed: false,
+                  message: 'Failed to extract value from questionnaire response'
+                });
+                continue; // Skip this observation if value extraction failed
+              }
+            } else {
+              // Handle complex FHIRPath expressions
+              value = evaluateTemplateExpression(response, valueExt.valueString);
+              if (value !== null) {
+                observation.valueQuantity = {
+                  value: value,
+                  unit: template.valueQuantity.unit,
+                  system: template.valueQuantity.system,
+                  code: template.valueQuantity.code
+                };
+                
+                debugInfo.valueProcessing.values[templateId] = value;
+                debugInfo.valueProcessing.transformations.push(`Extracted value ${value} for ${templateId} using expression`);
+                console.log(`✅ Value extracted with expression: ${value}`);
+                
+                debugInfo.valueProcessing.qualityChecks.push({
+                  check: `Process ${templateId}`,
+                  passed: true,
+                  message: 'Successfully processed observation'
+                });
+              } else {
+                console.log('❌ Failed to extract value with expression');
+                debugInfo.valueProcessing.qualityChecks.push({
+                  check: `Process ${templateId}`,
+                  passed: false,
+                  message: 'Failed to extract value using expression'
+                });
+                continue;
+              }
+            }
+          } else {
+            console.log('❌ No template extraction value extension found');
+            debugInfo.valueProcessing.qualityChecks.push({
+              check: `Process ${templateId}`,
+              passed: false,
+              message: 'No template extraction value extension found'
+            });
+            continue;
+          }
+        } else if ((template as ExtendedObservation)._valueBoolean) {
+          // Handle boolean observations
+          console.log('Processing boolean observation template');
+          
+          // Get the template extraction expression from the boolean extension
+          const booleanExt = (template as ExtendedObservation)._valueBoolean?.extension?.find(
+            (ext: Extension) => ext.url === TEMPLATE_EXTRACT_VALUE_EXTENSION
+          );
+          
+          if (!booleanExt?.valueString) {
+            console.log('❌ No template extraction value extension found for boolean value');
+            debugInfo.valueProcessing.qualityChecks.push({
+              check: `Process ${templateId}`,
+              passed: false,
+              message: 'No template extraction value extension found for boolean value'
+            });
+            continue;
+          }
+          
+          console.log(`Boolean extraction expression: ${booleanExt.valueString}`);
+          
+          // Use the extraction expression
+          if (booleanExt.valueString.includes('answer.value')) {
+            const boolValue = getNestedAnswerValue(response, item.linkId);
+            
+            if (boolValue !== null) {
+              observation.valueBoolean = boolValue === true || boolValue === 'true';
+              
+              debugInfo.valueProcessing.values[templateId] = boolValue;
+              debugInfo.valueProcessing.transformations.push(`Extracted boolean value ${boolValue} for ${templateId}`);
+              console.log(`✅ Boolean value extracted: ${boolValue}`);
+              
+              debugInfo.valueProcessing.qualityChecks.push({
+                check: `Process ${templateId}`,
+                passed: true,
+                message: 'Successfully processed boolean observation'
+              });
+            } else {
+              console.log('❌ Failed to extract boolean value');
+              debugInfo.valueProcessing.qualityChecks.push({
+                check: `Process ${templateId}`,
+                passed: false,
+                message: 'Failed to extract boolean value from questionnaire response'
+              });
+              continue;
+            }
+          } else {
+            // Handle complex FHIRPath expressions
+            const boolValue = evaluateTemplateExpression(response, booleanExt.valueString);
+            
+            if (boolValue !== null) {
+              observation.valueBoolean = boolValue === true || boolValue === 'true';
+              
+              debugInfo.valueProcessing.values[templateId] = boolValue;
+              debugInfo.valueProcessing.transformations.push(`Extracted boolean value ${boolValue} for ${templateId} using expression`);
+              console.log(`✅ Boolean value extracted with expression: ${boolValue}`);
+              
+              debugInfo.valueProcessing.qualityChecks.push({
+                check: `Process ${templateId}`,
+                passed: true,
+                message: 'Successfully processed boolean observation'
+              });
+            } else {
+              console.log('❌ Failed to extract boolean value with expression');
+              debugInfo.valueProcessing.qualityChecks.push({
+                check: `Process ${templateId}`,
+                passed: false,
+                message: 'Failed to extract boolean value using expression'
+              });
+              continue;
+            }
+          }
+        } else {
+          console.log('❌ Template has unsupported value type');
+          debugInfo.valueProcessing.qualityChecks.push({
+            check: `Process ${templateId}`,
+            passed: false,
+            message: 'Template has unsupported value type'
+          });
+          continue;
         }
+
+        observations.push(observation);
+      }
+    } catch (error) {
+      console.error(`Error processing template ${template.id}:`, error);
+      debugInfo.valueProcessing.qualityChecks.push({
+        check: `Process ${template.id || 'unknown'}`,
+        passed: false,
+        message: `Error: ${error instanceof Error ? error.message : 'Unknown error'}`
       });
-      
-      return { result: observations, error: null, debugInfo };
-    } else {
-      debugInfo.resultGeneration = {
-        warnings: ['Missing or invalid blood pressure values'],
-        missingValues: {
-          systolic: systolicValue === undefined,
-          diastolic: diastolicValue === undefined
-        }
-      };
-      return { result: null, error: 'Missing or invalid blood pressure values', debugInfo };
     }
   }
 
-  debugInfo.resultGeneration = {
-    warnings: ['No valid blood pressure measurements found']
+  // Stage 6: Generate result
+  if (observations.length > 0) {
+    debugInfo.resultGeneration.status = 'Success';
+    debugInfo.resultGeneration.observations = observations;
+    console.log(`✅ Successfully extracted ${observations.length} observations`);
+  } else {
+    debugInfo.resultGeneration.status = 'Failed';
+    debugInfo.resultGeneration.warnings = ['No observations could be extracted'];
+    console.log('❌ No observations could be extracted');
+  }
+
+  return {
+    result: observations.length > 0 ? observations : null,
+    error: observations.length === 0 ? 'No observations could be extracted' : null,
+    debugInfo
   };
-  return { result: null, error: 'No valid blood pressure measurements found', debugInfo };
 }
 
 export type TemplateExtractable = {
   extractable: boolean;
   templateReference?: string;
 };
-
-function extractTemplateBasedRecursive(
-  qItem: QuestionnaireItem,
-  qrItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[] | null,
-  extraData?: { qr: QuestionnaireResponse; qItemMap: Record<string, TemplateExtractable> }
-): any {
-  if (!extraData?.qr || !extraData?.qItemMap) return null;
-
-  const currentQItemTemplate = extraData.qItemMap[qItem.linkId];
-  if (!currentQItemTemplate.extractable) return null;
-
-  // TODO: Implement template-based extraction logic
-  // This would involve:
-  // 1. Loading the template from the reference
-  // 2. Mapping questionnaire answers to template fields
-  // 3. Applying template transformations
-  // 4. Generating the final output
-
-  return null;
-}
 
 export function mapQItemsTemplate(questionnaire: Questionnaire): Record<string, TemplateExtractable> {
   if (!questionnaire.item || questionnaire.item.length === 0) {
