@@ -1,33 +1,68 @@
 import { useQuestionnaireStore } from '../stores';
-import { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import type { QuestionnaireItemAnswerOption } from 'fhir/r4';
+import { useEffect, useRef, useState } from 'react';
 
-function useAnswerOptionsToggleExpressions(
-  qItem: QuestionnaireItem,
-  options: QuestionnaireItemAnswerOption[]
-): Map<string, boolean> | null {
+function useAnswerOptionsToggleExpressions(linkId: string): {
+  answerOptionsToggleExpressionsMap: Map<string, boolean>;
+  answerOptionsToggleExpUpdated: boolean;
+} {
   const answerOptionsToggleExpressions = useQuestionnaireStore.use.answerOptionsToggleExpressions();
-  const itemAnswerOptionsToggleExpressions = answerOptionsToggleExpressions[qItem.linkId];
+  const itemAnswerOptionsToggleExpressions = answerOptionsToggleExpressions[linkId];
 
-  // Item has no answerOptionsToggleExpressions, return null early
-  if (!itemAnswerOptionsToggleExpressions) {
-    return null;
-  }
-
-  // Create a Map to store toggleOptions for fast lookup
+  // Use a map to store answerOptionsToggleExpressions values for fast lookup
   const answerOptionsToggleExpressionsMap = new Map<string, boolean>();
 
-  // Populate the map for all toggleOptions
-  for (const itemAnswerOptionsToggleExpression of itemAnswerOptionsToggleExpressions) {
-    const { options: toggleOptions, isEnabled } = itemAnswerOptionsToggleExpression;
+  // Ref to store the previous map
+  const prevMapRef = useRef<Map<string, boolean>>(new Map<string, boolean>());
+  let mapHasChanged = false;
 
-    for (const toggleOption of toggleOptions) {
-      const key = generateOptionKey(toggleOption);
-      const optionIsEnabled = !(isEnabled === false || isEnabled === undefined);
-      answerOptionsToggleExpressionsMap.set(key, optionIsEnabled);
+  const [optionsUpdated, setOptionsUpdated] = useState(false);
+
+  // There are itemAnswerOptionsToggleExpressions for this item
+  if (itemAnswerOptionsToggleExpressions) {
+    // Populate the map for all toggleOptions
+    for (const itemAnswerOptionsToggleExpression of itemAnswerOptionsToggleExpressions) {
+      const { options: toggleOptions, isEnabled } = itemAnswerOptionsToggleExpression;
+
+      for (const toggleOption of toggleOptions) {
+        const key = generateOptionKey(toggleOption);
+        const optionIsEnabled = !(isEnabled === false || isEnabled === undefined);
+        answerOptionsToggleExpressionsMap.set(key, optionIsEnabled);
+      }
     }
+
+    // Compare current map with the previous map
+    mapHasChanged = hasMapChanged(prevMapRef.current, answerOptionsToggleExpressionsMap);
+
+    // Update the ref with the current map
+    prevMapRef.current = answerOptionsToggleExpressionsMap;
   }
 
-  return answerOptionsToggleExpressionsMap;
+  useEffect(() => {
+    if (answerOptionsToggleExpressionsMap.size === 0) {
+      return;
+    }
+
+    // Update ui to show calculated value changes
+    setOptionsUpdated(true);
+    const timeoutId = setTimeout(() => {
+      setOptionsUpdated(false);
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [answerOptionsToggleExpressionsMap.size, mapHasChanged]);
+
+  return { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated: optionsUpdated };
+}
+
+function hasMapChanged(map1: Map<string, boolean>, map2: Map<string, boolean>): boolean {
+  if (map1.size !== map2.size) return true;
+
+  for (const [key, value] of map1) {
+    if (map2.get(key) !== value) return true;
+  }
+
+  return false;
 }
 
 export function generateOptionKey(option: QuestionnaireItemAnswerOption): string {

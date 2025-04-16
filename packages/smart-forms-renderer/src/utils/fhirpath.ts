@@ -110,13 +110,16 @@ export async function evaluateUpdatedExpressions(
   );
 
   // Update answerOptionsToggleExpressions
-  const { answerOptionsToggleExpressionsIsUpdated, updatedAnswerOptionsToggleExpressions } =
-    await evaluateAnswerOptionsToggleExpressions(
-      updatedFhirPathContext,
-      fhirPathTerminologyCache,
-      answerOptionsToggleExpressions,
-      terminologyServerUrl
-    );
+  const {
+    answerOptionsToggleExpressionsIsUpdated,
+    updatedAnswerOptionsToggleExpressions,
+    computedNewAnswers: computedNewAnswersAnswerOptionsToggleExpressions
+  } = await evaluateAnswerOptionsToggleExpressions(
+    updatedFhirPathContext,
+    fhirPathTerminologyCache,
+    answerOptionsToggleExpressions,
+    terminologyServerUrl
+  );
 
   // Update enableWhenExpressions
   const { enableWhenExpsIsUpdated, updatedEnableWhenExpressions } =
@@ -152,6 +155,10 @@ export async function evaluateUpdatedExpressions(
   // In the case of dynamic value sets, just clear the existing answers
   // Eventually we want to expand this to calculatedExpressions
   for (const linkId in computedNewAnswersDynamicValueSets) {
+    computedQRItemUpdates[linkId] = null;
+  }
+
+  for (const linkId in computedNewAnswersAnswerOptionsToggleExpressions) {
     computedQRItemUpdates[linkId] = null;
   }
 

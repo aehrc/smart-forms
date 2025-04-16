@@ -20,7 +20,8 @@ import { createFhirPathContext, handleFhirPathResult } from './fhirpath';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import type { Variables } from '../interfaces';
-import { AnswerOptionsToggleExpression } from '../interfaces/answerOptionsToggleExpression.interface';
+import type { AnswerOptionsToggleExpression } from '../interfaces/answerOptionsToggleExpression.interface';
+import type { ComputedNewAnswers } from '../interfaces/computedUpdates.interface';
 
 interface EvaluateInitialAnswerOptionsToggleExpressionsParams {
   initialResponse: QuestionnaireResponse;
@@ -132,8 +133,10 @@ export async function evaluateAnswerOptionsToggleExpressions(
 ): Promise<{
   answerOptionsToggleExpressionsIsUpdated: boolean;
   updatedAnswerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
+  computedNewAnswers: ComputedNewAnswers;
 }> {
   let isUpdated = false;
+  const computedNewAnswers: ComputedNewAnswers = {};
   for (const linkId in answerOptionsToggleExpressions) {
     const itemAnswerOptionsToggleExpressions = answerOptionsToggleExpressions[linkId];
     for (const itemAnswerOptionsToggleExpression of itemAnswerOptionsToggleExpressions) {
@@ -166,18 +169,21 @@ export async function evaluateAnswerOptionsToggleExpressions(
         if (result.length > 0 && initialValue !== result[0] && typeof result[0] === 'boolean') {
           itemAnswerOptionsToggleExpression.isEnabled = result[0];
           isUpdated = true;
+          computedNewAnswers[linkId] = null;
         }
 
         // Update isEnabled value to false if no result is returned
         if (result.length === 0 && initialValue !== false) {
           itemAnswerOptionsToggleExpression.isEnabled = false;
           isUpdated = true;
+          computedNewAnswers[linkId] = null;
         }
 
         // handle intersect edge case - evaluate() returns empty array if result is false
         if (expression.includes('intersect') && result.length === 0 && initialValue !== false) {
           itemAnswerOptionsToggleExpression.isEnabled = false;
           isUpdated = true;
+          computedNewAnswers[linkId] = null;
         }
 
         // If fhirPathResult is an async terminology call, cache the result
@@ -195,6 +201,7 @@ export async function evaluateAnswerOptionsToggleExpressions(
 
   return {
     answerOptionsToggleExpressionsIsUpdated: isUpdated,
-    updatedAnswerOptionsToggleExpressions: answerOptionsToggleExpressions
+    updatedAnswerOptionsToggleExpressions: answerOptionsToggleExpressions,
+    computedNewAnswers
   };
 }

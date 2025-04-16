@@ -22,14 +22,13 @@ import type {
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import { StandardTextField } from '../Textfield.styles';
-import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import Autocomplete from '@mui/material/Autocomplete';
 import { getAnswerOptionLabel } from '../../../utils/openChoice';
 import { compareAnswerOptionValue, isOptionDisabled } from '../../../utils/choice';
 import { useRendererStylingStore } from '../../../stores';
 import { StyledRequiredTypography } from '../Item.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
-import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
+import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 
 interface ChoiceSelectAnswerOptionFieldsProps
   extends PropsWithIsTabledRequiredAttribute,
@@ -39,7 +38,8 @@ interface ChoiceSelectAnswerOptionFieldsProps
   valueSelect: QuestionnaireItemAnswerOption | null;
   feedback: string;
   readOnly: boolean;
-  calcExpUpdated: boolean;
+  expressionUpdated: boolean;
+  answerOptionsToggleExpressionsMap: Map<string, boolean>;
   onSelectChange: (newValue: QuestionnaireItemAnswerOption | null) => void;
 }
 
@@ -50,16 +50,15 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
     valueSelect,
     feedback,
     readOnly,
-    calcExpUpdated,
+    expressionUpdated,
     isTabled,
     renderingExtensions,
+    answerOptionsToggleExpressionsMap,
     onSelectChange
   } = props;
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
-
-  const answerOptionsToggleExpressionsMap = useAnswerOptionsToggleExpressions(qItem, options);
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
@@ -93,7 +92,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
                 endAdornment: (
                   <>
                     {params.InputProps.endAdornment}
-                    <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+                    <FadingCheckIcon fadeIn={expressionUpdated} disabled={readOnly} />
                     <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
                   </>
                 )

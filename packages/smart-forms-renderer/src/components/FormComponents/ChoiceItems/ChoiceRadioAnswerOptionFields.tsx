@@ -32,7 +32,8 @@ interface ChoiceRadioAnswerOptionFieldsProps {
   valueRadio: string | null;
   feedback: string;
   readOnly: boolean;
-  calcExpUpdated: boolean;
+  expressionUpdated: boolean;
+  answerOptionsToggleExpressionsMap: Map<string, boolean>;
   onCheckedChange: (newValue: string) => void;
   onClear: () => void;
 }
@@ -44,7 +45,8 @@ function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps
     valueRadio,
     feedback,
     readOnly,
-    calcExpUpdated,
+    expressionUpdated,
+    answerOptionsToggleExpressionsMap,
     onCheckedChange,
     onClear
   } = props;
@@ -81,12 +83,17 @@ function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps
             }}
             value={valueRadio}
             data-test="q-item-radio-group">
-            <RadioOptionList options={options} readOnly={readOnly} fullWidth={inputsFlexGrow} />
+            <RadioOptionList
+              options={options}
+              readOnly={readOnly}
+              fullWidth={inputsFlexGrow}
+              answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+            />
           </StyledRadioGroup>
 
           <Box flexGrow={1} />
 
-          <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+          <FadingCheckIcon fadeIn={expressionUpdated} disabled={readOnly} />
         </Box>
 
         {hideClearButton ? null : (

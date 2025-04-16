@@ -239,10 +239,10 @@ export function getChoiceOrientation(qItem: QuestionnaireItem): ChoiceItemOrient
 
 export function isOptionDisabled(
   option: QuestionnaireItemAnswerOption,
-  answerOptionsToggleExpressionsMap: Map<string, boolean> | null
+  answerOptionsToggleExpressionsMap: Map<string, boolean>
 ): boolean {
   // all options are enabled by default if answerOptionsToggleExpressions are present
-  if (!answerOptionsToggleExpressionsMap) {
+  if (answerOptionsToggleExpressionsMap.size === 0) {
     return false;
   }
 

@@ -37,6 +37,7 @@ import { useQuestionnaireStore } from '../../../stores';
 import useCodingCalculatedExpression from '../../../hooks/useCodingCalculatedExpression';
 import ChoiceSelectAnswerOptionView from './ChoiceSelectAnswerOptionView';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 
 // TODO eventually merge this item with ChoiceRadioAnswerOptionItem
 interface ChoiceSelectAnswerOptionItemProps
@@ -88,6 +89,10 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
     }
   });
 
+  // Process answerOptionsToggleExpressions
+  const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
+    useAnswerOptionsToggleExpressions(qItem.linkId);
+
   function handleChange(newValue: QuestionnaireItemAnswerOption | string | null) {
     // No options present or newValue is type null
     if (options.length === 0 || newValue === null) {
@@ -121,10 +126,11 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
       valueChoice={valueChoice}
       feedback={feedback}
       readOnly={readOnly}
-      calcExpUpdated={calcExpUpdated}
+      expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
       isRepeated={isRepeated}
       isTabled={isTabled}
       renderingExtensions={renderingExtensions}
+      answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
       onFocusLinkId={() => onFocusLinkId(qItem.linkId)}
       onSelectChange={handleChange}
     />

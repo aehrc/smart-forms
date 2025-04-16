@@ -29,7 +29,8 @@ interface ChoiceRadioAnswerOptionViewProps extends PropsWithIsRepeatedAttribute 
   valueChoice: string | null;
   feedback: string;
   readOnly: boolean;
-  calcExpUpdated: boolean;
+  expressionUpdated: boolean;
+  answerOptionsToggleExpressionsMap: Map<string, boolean>;
   onCheckedChange: (linkId: string) => void;
   onFocusLinkId: () => void;
   onClear: () => void;
@@ -43,7 +44,8 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
     feedback,
     isRepeated,
     readOnly,
-    calcExpUpdated,
+    expressionUpdated,
+    answerOptionsToggleExpressionsMap,
     onFocusLinkId,
     onCheckedChange,
     onClear
@@ -57,7 +59,8 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
         valueRadio={valueChoice}
         feedback={feedback}
         readOnly={readOnly}
-        calcExpUpdated={calcExpUpdated}
+        expressionUpdated={expressionUpdated}
+        answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
         onCheckedChange={onCheckedChange}
         onClear={onClear}
       />
@@ -80,7 +83,8 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
             valueRadio={valueChoice}
             feedback={feedback}
             readOnly={readOnly}
-            calcExpUpdated={calcExpUpdated}
+            expressionUpdated={expressionUpdated}
+            answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             onCheckedChange={onCheckedChange}
             onClear={onClear}
           />
