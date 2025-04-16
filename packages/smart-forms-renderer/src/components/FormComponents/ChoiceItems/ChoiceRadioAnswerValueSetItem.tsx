@@ -35,6 +35,7 @@ import { useQuestionnaireStore } from '../../../stores';
 import useCodingCalculatedExpression from '../../../hooks/useCodingCalculatedExpression';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import ItemLabel from '../ItemParts/ItemLabel';
+import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 
 interface ChoiceRadioAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
@@ -84,6 +85,10 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
     }
   });
 
+  // Process answerOptionsToggleExpressions
+  const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
+    useAnswerOptionsToggleExpressions(qItem.linkId);
+
   function handleChange(newValue: string) {
     if (codings.length > 0) {
       const qrAnswer = findInAnswerOptions(options, newValue);
@@ -107,6 +112,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
         feedback={feedback}
         readOnly={readOnly}
         expressionUpdated={calcExpUpdated || dynamicCodingsUpdated}
+        answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
         terminologyError={terminologyError}
         onCheckedChange={handleChange}
         onClear={handleClear}
@@ -131,6 +137,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
             feedback={feedback}
             readOnly={readOnly}
             expressionUpdated={calcExpUpdated || dynamicCodingsUpdated}
+            answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             terminologyError={terminologyError}
             onCheckedChange={handleChange}
             onClear={handleClear}

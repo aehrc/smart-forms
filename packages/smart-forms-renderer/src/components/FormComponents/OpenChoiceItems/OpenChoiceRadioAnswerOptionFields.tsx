@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 
-import type { ChangeEvent } from 'react';
-import React from 'react';
+import React, { ChangeEvent, useMemo } from 'react';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { StyledRadioGroup, StyledRequiredTypography } from '../Item.styles';
@@ -54,6 +53,9 @@ function OpenChoiceRadioAnswerOptionFields(props: OpenChoiceRadioAnswerOptionFie
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
+  // TODO bring answerOptionsToggleExpressionsMap to all choice and open choice items
+  const emptyTempAnswerOptionsToggleExpressionsMap = useMemo(() => new Map<string, boolean>(), []);
+
   return (
     <>
       <StyledRadioGroup
@@ -70,7 +72,12 @@ function OpenChoiceRadioAnswerOptionFields(props: OpenChoiceRadioAnswerOptionFie
         }}
         value={valueRadio}
         data-test="q-item-radio-group">
-        <RadioOptionList options={options} readOnly={readOnly} fullWidth={inputsFlexGrow} />
+        <RadioOptionList
+          options={options}
+          readOnly={readOnly}
+          fullWidth={inputsFlexGrow}
+          answerOptionsToggleExpressionsMap={emptyTempAnswerOptionsToggleExpressionsMap}
+        />
 
         {openLabelText ? (
           <RadioButtonWithOpenLabel

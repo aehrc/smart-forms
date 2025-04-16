@@ -37,12 +37,22 @@ interface ChoiceCheckboxAnswerValueSetFieldsProps {
   answers: QuestionnaireResponseItemAnswer[];
   feedback: string;
   readOnly: boolean;
+  answerOptionsToggleExpressionsMap: Map<string, boolean>;
   terminologyError: TerminologyError;
   onCheckedChange: (newValue: string) => void;
 }
 
 function ChoiceCheckboxAnswerValueSetFields(props: ChoiceCheckboxAnswerValueSetFieldsProps) {
-  const { qItem, options, answers, feedback, readOnly, terminologyError, onCheckedChange } = props;
+  const {
+    qItem,
+    options,
+    answers,
+    feedback,
+    readOnly,
+    answerOptionsToggleExpressionsMap,
+    terminologyError,
+    onCheckedChange
+  } = props;
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
@@ -54,6 +64,7 @@ function ChoiceCheckboxAnswerValueSetFields(props: ChoiceCheckboxAnswerValueSetF
             options={options}
             answers={answers}
             readOnly={readOnly}
+            answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             onCheckedChange={onCheckedChange}
           />
         </StyledFormGroup>

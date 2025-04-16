@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 
-import type { ChangeEvent } from 'react';
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { StyledRadioGroup, StyledRequiredTypography } from '../Item.styles';
@@ -38,6 +37,7 @@ interface OpenChoiceRadioAnswerValueSetFieldsProps {
   openLabelSelected: boolean;
   feedback: string;
   readOnly: boolean;
+  answerOptionsToggleExpressionsMap: Map<string, boolean>;
   terminologyError: TerminologyError;
   onValueChange: (changedOptionValue: string | null, changedOpenLabelValue: string | null) => void;
 }
@@ -52,6 +52,7 @@ function OpenChoiceRadioAnswerValueSetFields(props: OpenChoiceRadioAnswerValueSe
     openLabelSelected,
     feedback,
     readOnly,
+    answerOptionsToggleExpressionsMap,
     terminologyError,
     onValueChange
   } = props;
@@ -77,7 +78,12 @@ function OpenChoiceRadioAnswerValueSetFields(props: OpenChoiceRadioAnswerValueSe
           }}
           value={valueRadio}
           data-test="q-item-radio-group">
-          <RadioOptionList options={options} readOnly={readOnly} fullWidth={inputsFlexGrow} />
+          <RadioOptionList
+            options={options}
+            readOnly={readOnly}
+            fullWidth={inputsFlexGrow}
+            answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+          />
 
           {openLabelText ? (
             <RadioButtonWithOpenLabel

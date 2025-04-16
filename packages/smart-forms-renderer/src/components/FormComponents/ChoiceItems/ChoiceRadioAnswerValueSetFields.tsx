@@ -37,6 +37,7 @@ interface ChoiceRadioAnswerValueSetFieldsProps {
   feedback: string;
   readOnly: boolean;
   expressionUpdated: boolean;
+  answerOptionsToggleExpressionsMap: Map<string, boolean>;
   terminologyError: TerminologyError;
   onCheckedChange: (newValue: string) => void;
   onClear: () => void;
@@ -50,6 +51,7 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
     feedback,
     readOnly,
     expressionUpdated,
+    answerOptionsToggleExpressionsMap,
     terminologyError,
     onCheckedChange,
     onClear
@@ -88,7 +90,12 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
               }}
               value={valueRadio}
               data-test="q-item-radio-group">
-              <RadioOptionList options={options} readOnly={readOnly} fullWidth={inputsFlexGrow} />
+              <RadioOptionList
+                options={options}
+                readOnly={readOnly}
+                fullWidth={inputsFlexGrow}
+                answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+              />
             </StyledRadioGroup>
 
             <Box flexGrow={1} />

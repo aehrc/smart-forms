@@ -41,6 +41,7 @@ import { convertCodingsToAnswerOptions, updateChoiceCheckboxAnswers } from '../.
 import useValueSetCodings from '../../../hooks/useValueSetCodings';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import ItemLabel from '../ItemParts/ItemLabel';
+import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 
 interface OpenChoiceCheckboxAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
@@ -90,6 +91,10 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: OpenChoiceCheckboxAnswerVal
     options,
     answers
   );
+
+  // Process answerOptionsToggleExpressions
+  const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
+    useAnswerOptionsToggleExpressions(qItem.linkId);
 
   // Event handlers
 
@@ -167,6 +172,8 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: OpenChoiceCheckboxAnswerVal
           openLabelChecked={openLabelChecked}
           feedback={feedback}
           readOnly={readOnly}
+          expressionUpdated={answerOptionsToggleExpUpdated}
+          answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
           terminologyError={terminologyError}
           onOptionChange={handleOptionChange}
           onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
@@ -196,6 +203,8 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: OpenChoiceCheckboxAnswerVal
             openLabelChecked={openLabelChecked}
             feedback={feedback}
             readOnly={readOnly}
+            expressionUpdated={answerOptionsToggleExpUpdated}
+            answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             terminologyError={terminologyError}
             onOptionChange={handleOptionChange}
             onOpenLabelCheckedChange={handleOpenLabelCheckedChange}

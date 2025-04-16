@@ -40,6 +40,7 @@ import { updateChoiceCheckboxAnswers } from '../../../utils/choice';
 import OpenChoiceCheckboxAnswerOptionFields from './OpenChoiceCheckboxAnswerOptionFields';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import ItemLabel from '../ItemParts/ItemLabel';
+import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 
 interface OpenChoiceCheckboxAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
@@ -85,6 +86,10 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
     options,
     answers
   );
+
+  // Process answerOptionsToggleExpressions
+  // TODO use answerOptionsToggleExpUpdated to trigger a "refresh" icon when codings are dynamically updated
+  const { answerOptionsToggleExpressionsMap } = useAnswerOptionsToggleExpressions(qItem.linkId);
 
   // Event handlers
 
@@ -162,6 +167,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
           openLabelChecked={openLabelChecked}
           feedback={feedback}
           readOnly={readOnly}
+          answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
           onOptionChange={handleOptionChange}
           onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
           onOpenLabelInputChange={handleOpenLabelInputChange}
@@ -190,6 +196,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
             openLabelChecked={openLabelChecked}
             feedback={feedback}
             readOnly={readOnly}
+            answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             onOptionChange={handleOptionChange}
             onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
             onOpenLabelInputChange={handleOpenLabelInputChange}

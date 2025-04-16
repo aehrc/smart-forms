@@ -40,6 +40,7 @@ import { useQuestionnaireStore } from '../../../stores';
 import useValueSetCodings from '../../../hooks/useValueSetCodings';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import ItemLabel from '../ItemParts/ItemLabel';
+import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 
 interface OpenChoiceRadioAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
@@ -74,6 +75,10 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
   const { codings, terminologyError } = useValueSetCodings(qItem);
 
   const options = useMemo(() => convertCodingsToAnswerOptions(codings), [codings]);
+
+  // Process answerOptionsToggleExpressions
+  // TODO use answerOptionsToggleExpUpdated to trigger a "refresh" icon when codings are dynamically updated
+  const { answerOptionsToggleExpressionsMap } = useAnswerOptionsToggleExpressions(qItem.linkId);
 
   // Init empty open label
   let initialOpenLabelValue = '';
@@ -165,6 +170,7 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
             openLabelSelected={openLabelSelected}
             feedback={feedback}
             readOnly={readOnly}
+            answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             terminologyError={terminologyError}
             onValueChange={handleValueChange}
           />

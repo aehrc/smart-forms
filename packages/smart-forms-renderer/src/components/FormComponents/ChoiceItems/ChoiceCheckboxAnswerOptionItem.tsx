@@ -35,6 +35,7 @@ import { useQuestionnaireStore } from '../../../stores';
 import ChoiceCheckboxAnswerOptionFields from './ChoiceCheckboxAnswerOptionFields';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import ItemLabel from '../ItemParts/ItemLabel';
+import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 
 interface ChoiceCheckboxAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
@@ -71,6 +72,10 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
   // TODO Process calculated expressions
   // This requires its own hook, because in the case of multi-select, we need to check if the value is already checked to prevent an infinite loop
   // This will be done after the choice/open-choice refactoring
+
+  // Process answerOptionsToggleExpressions
+  // TODO use answerOptionsToggleExpUpdated to trigger a "refresh" icon when codings are dynamically updated
+  const { answerOptionsToggleExpressionsMap } = useAnswerOptionsToggleExpressions(qItem.linkId);
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
@@ -109,6 +114,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
           answers={answers}
           feedback={feedback}
           readOnly={readOnly}
+          answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
           onCheckedChange={handleCheckedChange}
         />
         <DisplayInstructions readOnly={readOnly}>{displayInstructions}</DisplayInstructions>
@@ -132,6 +138,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
             answers={answers}
             feedback={feedback}
             readOnly={readOnly}
+            answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             onCheckedChange={handleCheckedChange}
           />
         }
