@@ -66,8 +66,8 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
     populateQuestionnaire({
       questionnaire: sourceQuestionnaire,
       fetchResourceCallback: fetchResourceCallback,
-      requestConfig: {
-        clientEndpoint: sourceFhirServerUrl,
+      fetchResourceRequestConfig: {
+        sourceServerUrl: sourceFhirServerUrl,
         authToken: null
       },
       patient: patient,

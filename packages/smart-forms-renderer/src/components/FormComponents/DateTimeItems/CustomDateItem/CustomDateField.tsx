@@ -16,7 +16,7 @@
  */
 
 import type { Dayjs } from 'dayjs';
-import type { ChangeEvent, Dispatch, RefObject, SetStateAction } from 'react';
+import type { ChangeEvent, Dispatch, SetStateAction } from 'react';
 import React, { useRef } from 'react';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../../interfaces/renderProps.interface';
 import { StandardTextField } from '../../Textfield.styles';
@@ -58,9 +58,10 @@ function CustomDateField(props: CustomDateFieldProps) {
     onSelectDate
   } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
-  const anchorRef: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
+  const anchorRef = useRef<HTMLDivElement | null>(null);
 
   // If this reusable date field is part of a DateTime component, the id should be appended with '-date'
   const id = isPartOfDateTime ? itemType + '-' + linkId + '-date' : itemType + '-' + linkId;
@@ -78,25 +79,28 @@ function CustomDateField(props: CustomDateFieldProps) {
         onChange={(e: ChangeEvent<HTMLInputElement>) => onInputChange(e.target.value)}
         label={displayPrompt}
         placeholder={entryFormat !== '' ? entryFormat : 'DD/MM/YYYY'}
-        disabled={readOnly}
+        disabled={readOnly && readOnlyVisualStyle === 'disabled'}
         size="small"
         focused={isFocused}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
-        InputProps={{
-          endAdornment: (
-            <>
-              <DatePicker
-                valueString={valueDate}
-                readOnly={readOnly}
-                anchorEl={anchorRef.current}
-                onSelectDate={(valueDayjs: Dayjs) => {
-                  onSelectDate(valueDayjs.format('DD/MM/YYYY'));
-                }}
-                onFocus={(focus) => setFocused(focus)}
-              />
-            </>
-          )
+        slotProps={{
+          input: {
+            readOnly: readOnly && readOnlyVisualStyle === 'readonly',
+            endAdornment: (
+              <>
+                <DatePicker
+                  valueString={valueDate}
+                  readOnly={readOnly}
+                  anchorEl={anchorRef.current}
+                  onSelectDate={(valueDayjs: Dayjs) => {
+                    onSelectDate(valueDayjs.format('DD/MM/YYYY'));
+                  }}
+                  onFocus={(focus) => setFocused(focus)}
+                />
+              </>
+            )
+          }
         }}
         helperText={isTabled ? '' : feedback}
       />

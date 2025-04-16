@@ -17,15 +17,15 @@
 
 import type { ValueSetPromise } from '../interfaces/expressions.interface';
 import type { QuestionnaireItem } from 'fhir/r4';
-import type { FetchResourceCallback } from '../interfaces';
+import type { FetchTerminologyCallback, FetchTerminologyRequestConfig } from '../interfaces';
 import { TERMINOLOGY_SERVER_URL } from '../../globals';
 
 export function getValueSetPromise(
   qItem: QuestionnaireItem,
   fullUrl: string,
   valueSetPromiseMap: Record<string, ValueSetPromise>,
-  terminologyCallback?: FetchResourceCallback,
-  terminologyRequestConfig?: any
+  fetchTerminologyCallback?: FetchTerminologyCallback,
+  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
 ) {
   let valueSetUrl = fullUrl;
   if (fullUrl.includes('ValueSet/$expand?url=')) {
@@ -38,9 +38,10 @@ export function getValueSetPromise(
   valueSetUrl = valueSetUrl.replace('|', '&version=');
   const query = `ValueSet/$expand?url=${valueSetUrl}`;
 
-  const valueSetPromise = terminologyCallback
-    ? terminologyCallback(query, terminologyRequestConfig)
-    : defaultTerminologyRequest(query);
+  const valueSetPromise =
+    fetchTerminologyCallback && fetchTerminologyRequestConfig
+      ? fetchTerminologyCallback(query, fetchTerminologyRequestConfig)
+      : defaultTerminologyRequest(query);
 
   valueSetPromiseMap[qItem.linkId] = {
     promise: valueSetPromise

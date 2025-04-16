@@ -1,4 +1,5 @@
 import React from 'react';
+import type { AutocompleteChangeReason } from '@mui/material/Autocomplete';
 import Autocomplete from '@mui/material/Autocomplete';
 import { StandardTextField } from '../Textfield.styles';
 import Typography from '@mui/material/Typography';
@@ -11,6 +12,7 @@ import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 import { useRendererStylingStore } from '../../../stores';
 import { StyledRequiredTypography } from '../Item.styles';
+import DisplayUnitText from '../ItemParts/DisplayUnitText';
 
 interface OpenChoiceSelectAnswerValueSetFieldProps
   extends PropsWithIsTabledRequiredAttribute,
@@ -18,11 +20,14 @@ interface OpenChoiceSelectAnswerValueSetFieldProps
     PropsWithRenderingExtensionsAttribute {
   qItem: QuestionnaireItem;
   options: Coding[];
-  valueSelect: Coding | null;
+  valueSelect: Coding | string | null;
   terminologyError: TerminologyError;
   feedback: string;
   readOnly: boolean;
-  onValueChange: (newValue: Coding | string | null) => void;
+  onValueChange: (
+    newValue: Coding | string | null,
+    reason: AutocompleteChangeReason | string
+  ) => void;
 }
 
 function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueSetFieldProps) {
@@ -38,6 +43,7 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
     onValueChange
   } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
@@ -51,12 +57,13 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
         getOptionLabel={(option) =>
           typeof option === 'string' ? option : (option.display ?? `${option.code}`)
         }
-        onChange={(_, newValue) => onValueChange(newValue)}
-        onInputChange={(_, newValue) => onValueChange(newValue)}
+        onChange={(_, newValue, reason) => onValueChange(newValue, reason)}
+        onInputChange={(_, newValue, reason) => onValueChange(newValue, reason)}
         freeSolo
         autoHighlight
         sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }}
-        disabled={readOnly}
+        disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+        readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
         size="small"
         renderInput={(params) => (
           <StandardTextField
@@ -65,16 +72,17 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
             label={displayPrompt}
             placeholder={entryFormat}
             {...params}
-            InputProps={{
-              ...params.InputProps,
-              endAdornment: (
-                <>
-                  {params.InputProps.endAdornment}
-                  <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
-                    {displayUnit}
-                  </Typography>
-                </>
-              )
+            slotProps={{
+              input: {
+                ...params.InputProps,
+                readOnly: readOnly && readOnlyVisualStyle === 'readonly',
+                endAdornment: (
+                  <>
+                    {params.InputProps.endAdornment}
+                    <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
+                  </>
+                )
+              }
             }}
           />
         )}

@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+import type { UseQueryResult } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
 import type { Bundle, Practitioner } from 'fhir/r4';
 import { useMemo } from 'react';
@@ -22,9 +23,9 @@ import { fetchFhirResources } from '../api/fetchFhirResources.ts';
 
 interface useFetchPractitionersReturnParams {
   practitioners: Practitioner[];
-  fetchStatus: 'error' | 'success' | 'loading';
+  fetchStatus: UseQueryResult['status'];
   fetchError: unknown;
-  isInitialLoading: boolean;
+  isLoading: boolean;
   isFetching: boolean;
 }
 
@@ -36,12 +37,15 @@ function useFetchPractitioners(endpointUrl: string): useFetchPractitionersReturn
   const {
     data: bundle,
     status,
-    isInitialLoading,
+    isLoading,
     error,
     isFetching
-  } = useQuery<Bundle>(['practitioners', endpointUrl, queryUrl], () =>
-    fetchFhirResources(endpointUrl, queryUrl)
-  );
+  } = useQuery<Bundle>({
+    queryKey: ['practitioners' + numOfSearchEntries.toString(), endpointUrl, queryUrl],
+    queryFn: () => {
+      return fetchFhirResources(endpointUrl, queryUrl);
+    }
+  });
 
   const practitioners: Practitioner[] = useMemo(() => {
     if (responseIsPractitionerBundle(bundle)) {
@@ -59,7 +63,7 @@ function useFetchPractitioners(endpointUrl: string): useFetchPractitionersReturn
     practitioners,
     fetchStatus: status,
     fetchError: error,
-    isInitialLoading,
+    isLoading,
     isFetching
   };
 }

@@ -15,45 +15,61 @@
  * limitations under the License.
  */
 
+/* Fetch resource request callback */
+export interface FetchResourceRequestConfig {
+  sourceServerUrl: string;
+  [key: string]: any; // Allow multiple additional properties
+}
+
 /**
  * To define a method to fetch resources from the FHIR server with a given query string
  * Method should be able to handle both absolute urls and query strings
  *
  * @param query - The query URL of the FHIR resource
- * @param requestConfig - Any request configs - can be headers, auth tokens or endpoints
+ * @param requestConfig - Terminology request configs - must have sourceServerUrl + any key value pair - can be headers, auth tokens or endpoints
  * @returns A promise of the FHIR resource (or an error)!
  *
  * @example
  * const ABSOLUTE_URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
  *
- * const fetchResourceCallback: FetchResourceCallback = (canonicalUrl: string, requestConfig: any) => {
- * const { clientEndpoint, authToken } = requestConfig
- * const headers = {
- *     'Cache-Control': 'no-cache',
- *     Accept: 'application/json;charset=utf-8',
- *     Authorization: `Bearer ${authToken}`
+ * export const fetchResourceCallback: FetchResourceCallback = async (
+ *   query: string,
+ *   requestConfig: FetchResourceRequestConfig
+ * ) => {
+ *   let { sourceServerUrl } = requestConfig;
+ *   const { authToken } = requestConfig;
+ *
+ *   const headers: Record<string, string> = {
+ *     Accept: 'application/json;charset=utf-8'
  *   };
  *
- *   if (ABSOLUTE_URL_REGEX.test(query)) {
- *     return axios.get(query, {
- *       headers: headers
- *     });
- *   } else {
- *     return axios.get(clientEndpoint + query, {
- *       headers: headers
- *     });
+ *   if (authToken) {
+ *     headers['Authorization'] = `Bearer ${authToken}`;
  *   }
+ *
+ *   if (!sourceServerUrl.endsWith('/')) {
+ *     sourceServerUrl += '/';
+ *   }
+ *
+ *   const requestUrl = ABSOLUTE_URL_REGEX.test(query) ? query : `${sourceServerUrl}${query}`;
+ *   const response = await fetch(requestUrl, { headers });
+ *
+ *   if (!response.ok) {
+ *     throw new Error(`HTTP error when performing ${requestUrl}. Status: ${response.status}`);
+ *   }
+ *
+ *   return response.json();
  * };
  *
  *
  * @author Sean Fong
  */
 export interface FetchResourceCallback {
-  (query: string, requestConfig?: any): Promise<any>;
+  (query: string, requestConfig: FetchResourceRequestConfig): Promise<any>;
 }
 
 /* Terminology request callback */
-export interface TerminologyRequestConfig {
+export interface FetchTerminologyRequestConfig {
   terminologyServerUrl: string;
   [key: string]: any; // Allow multiple additional properties
 }
@@ -69,13 +85,13 @@ export interface TerminologyRequestConfig {
  * @example
  * const ABSOLUTE_URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
  *
- * const fetchTerminologyCallback: FetchTerminologyCallback = (
+ * export const fetchTerminologyCallback: FetchTerminologyCallback = async (
  *   query: string,
- *   terminologyRequestConfig: TerminologyRequestConfig
+ *   requestConfig: FetchTerminologyRequestConfig
  * ) => {
- *   let { terminologyServerUrl } = terminologyRequestConfig;
+ *   let { terminologyServerUrl } = requestConfig;
  *
- *   const headers = {
+ *   const headers: Record<string, string> = {
  *     Accept: 'application/json;charset=utf-8'
  *   };
  *
@@ -83,16 +99,19 @@ export interface TerminologyRequestConfig {
  *     terminologyServerUrl += '/';
  *   }
  *
- *   const queryUrl = ABSOLUTE_URL_REGEX.test(query) ? query : terminologyServerUrl + query;
+ *   const requestUrl = ABSOLUTE_URL_REGEX.test(query) ? query : `${terminologyServerUrl}${query}`;
+ *   const response = await fetch(requestUrl, { headers });
  *
- *   return axios.get(queryUrl, {
- *     headers: headers
- *   });
+ *   if (!response.ok) {
+ *     throw new Error(`HTTP error when performing ${requestUrl}. Status: ${response.status}`);
+ *   }
+ *
+ *   return response.json();
  * };
  *
  *
  * @author Sean Fong
  */
 export interface FetchTerminologyCallback {
-  (query: string, requestConfig: TerminologyRequestConfig): Promise<any>;
+  (query: string, requestConfig: FetchTerminologyRequestConfig): Promise<any>;
 }

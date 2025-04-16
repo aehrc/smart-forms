@@ -15,29 +15,26 @@
  * limitations under the License.
  */
 
-import axios from 'axios';
-import type { FetchResourceCallback } from '../SDCPopulateQuestionnaireOperation';
+import type {
+  FetchResourceCallback,
+  FetchResourceRequestConfig
+} from '../SDCPopulateQuestionnaireOperation';
 
 const ABSOLUTE_URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
 
-export interface RequestConfig {
-  clientEndpoint: string;
-  authToken: string | null;
-}
-
-export const requestConfigTest: RequestConfig = {
-  clientEndpoint: 'https://proxy.smartforms.io/fhir',
+export const requestConfigTest: FetchResourceRequestConfig = {
+  sourceServerUrl: 'https://proxy.smartforms.io/fhir',
   authToken: null
 };
 
-export const fetchResourceCallbackTest: FetchResourceCallback = (
+export const fetchResourceCallbackTest: FetchResourceCallback = async (
   query: string,
-  requestConfig: RequestConfig
+  requestConfig: FetchResourceRequestConfig
 ) => {
-  let { clientEndpoint } = requestConfig;
+  let { sourceServerUrl } = requestConfig;
   const { authToken } = requestConfig;
 
-  const headers: any = {
+  const headers: Record<string, string> = {
     Accept: 'application/json;charset=utf-8'
   };
 
@@ -45,17 +42,16 @@ export const fetchResourceCallbackTest: FetchResourceCallback = (
     headers['Authorization'] = `Bearer ${authToken}`;
   }
 
-  if (!clientEndpoint.endsWith('/')) {
-    clientEndpoint += '/';
+  if (!sourceServerUrl.endsWith('/')) {
+    sourceServerUrl += '/';
   }
 
-  if (ABSOLUTE_URL_REGEX.test(query)) {
-    return axios.get(query, {
-      headers: headers
-    });
+  const requestUrl = ABSOLUTE_URL_REGEX.test(query) ? query : `${sourceServerUrl}${query}`;
+  const response = await fetch(requestUrl, { headers });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error when performing ${requestUrl}. Status: ${response.status}`);
   }
 
-  return axios.get(clientEndpoint + query, {
-    headers: headers
-  });
+  return response.json();
 };

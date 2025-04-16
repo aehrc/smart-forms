@@ -40,7 +40,7 @@ export function RendererThemeProvider({ children }: { children: ReactNode }) {
     <StyledEngineProvider injectFirst>
       <MUIThemeProvider theme={theme}>
         <CustomGlobalStyles />
-        {children}
+        <>{children}</>
       </MUIThemeProvider>
     </StyledEngineProvider>
   );

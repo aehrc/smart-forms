@@ -54,6 +54,56 @@ export const qrBooleanBasicResponse: QuestionnaireResponse = {
   questionnaire: 'https://smartforms.csiro.au/docs/components/boolean/basic'
 };
 
+export const qBooleanCheckbox: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'BooleanCheckbox',
+  name: 'BooleanCheckbox',
+  title: 'Boolean Checkbox',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-05-01',
+  url: 'https://smartforms.csiro.au/docs/components/boolean/checkbox',
+  item: [
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: 'http://hl7.org/fhir/questionnaire-item-control',
+                code: 'check-box'
+              }
+            ]
+          }
+        }
+      ],
+      linkId: 'eaten',
+      type: 'boolean',
+      repeats: false,
+      text: 'Have you eaten yet?'
+    }
+  ]
+};
+
+export const qrBooleanCheckboxResponse: QuestionnaireResponse = {
+  resourceType: 'QuestionnaireResponse',
+  status: 'in-progress',
+  item: [
+    {
+      linkId: 'eaten',
+      text: 'Have you eaten yet?',
+      answer: [
+        {
+          valueBoolean: true
+        }
+      ]
+    }
+  ],
+  questionnaire: 'https://smartforms.csiro.au/docs/components/boolean/checkbox'
+};
+
 export const qBooleanCalculation: Questionnaire = {
   resourceType: 'Questionnaire',
   id: 'BooleanCalculation',

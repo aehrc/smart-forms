@@ -24,15 +24,5 @@ import { version } from './package.json';
 export default defineConfig({
   define: {
     'import.meta.env.VITE_RENDERER_VERSION': JSON.stringify(version ?? 'unspecified')
-  },
-  plugins: [],
-  optimizeDeps: {
-    include: ['@aehrc/sdc-populate']
-  },
-  build: {
-    commonjsOptions: {
-      include: [/node_modules/, '@aehrc/sdc-populate']
-    }
-  },
-  resolve: { preserveSymlinks: true }
+  }
 });

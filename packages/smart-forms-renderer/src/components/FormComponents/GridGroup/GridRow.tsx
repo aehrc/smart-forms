@@ -64,7 +64,9 @@ function GridRow(props: GridRowProps) {
   return (
     <>
       <GridTextTableCell>
-        <Typography fontWeight="bold">{qItem.text}</Typography>
+        <Typography component="span" fontWeight="bold">
+          {qItem.text}
+        </Typography>
       </GridTextTableCell>
       {rowQItems.map((cellQItem, index) => {
         const cellQrItem = qrItemsByIndex[index];

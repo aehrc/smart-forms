@@ -58,7 +58,9 @@ function FlyoverHoverCard(props: FlyoverHoverCardProps) {
       >
         {childrenIsString ? (
           <Box sx={{ p: 2, maxWidth: 550, bgcolor: 'background.paper', boxShadow: 8 }}>
-            <Typography variant="body2">{children}</Typography>
+            <Typography component="span" variant="body2">
+              {children}
+            </Typography>
           </Box>
         ) : (
           <Box>{children}</Box>

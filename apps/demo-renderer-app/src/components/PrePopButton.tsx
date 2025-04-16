@@ -42,7 +42,7 @@ function PrePopButton(props: PrePopButtonProps) {
     setIsPopulating(true);
 
     const { populateResult } = await populateQuestionnaire(questionnaire, patient, practitioner, {
-      clientEndpoint: ISS,
+      sourceServerUrl: ISS,
       authToken: bearerToken
     });
 

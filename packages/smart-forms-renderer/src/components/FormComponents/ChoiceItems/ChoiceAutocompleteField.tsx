@@ -34,7 +34,7 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import type { AlertColor } from '@mui/material/Alert';
 import { useRendererStylingStore } from '../../../stores';
-import Typography from '@mui/material/Typography';
+import DisplayUnitText from '../ItemParts/DisplayUnitText';
 
 interface ChoiceAutocompleteFieldsProps
   extends PropsWithIsTabledRequiredAttribute,
@@ -64,6 +64,7 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
     onValueChange
   } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
@@ -75,7 +76,8 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
       options={options}
       getOptionLabel={(option) => option.display ?? `${option.code}`}
       isOptionEqualToValue={(option, value) => option.id === value.id}
-      disabled={readOnly}
+      disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+      readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
       loading={loading}
       loadingText={'Fetching results...'}
       clearOnEscape
@@ -92,39 +94,39 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
           label={displayPrompt}
           size="small"
           placeholder={entryFormat}
-          InputProps={{
-            ...params.InputProps,
-
-            startAdornment: (
-              <>
-                {!valueCoding ? <SearchIcon fontSize="small" sx={{ ml: 0.5 }} /> : null}
-                {params.InputProps.startAdornment}
-              </>
-            ),
-            endAdornment: (
-              <>
-                {loading ? (
-                  <CircularProgress color="inherit" size={16} />
-                ) : feedback ? (
-                  <Fade in={!!feedback} timeout={300}>
-                    <Tooltip title={feedback.message} arrow sx={{ ml: 1 }}>
-                      {
+          slotProps={{
+            input: {
+              ...params.InputProps,
+              readOnly: readOnly && readOnlyVisualStyle === 'readonly',
+              startAdornment: (
+                <>
+                  {!valueCoding ? <SearchIcon fontSize="small" sx={{ ml: 0.5 }} /> : null}
+                  {params.InputProps.startAdornment}
+                </>
+              ),
+              endAdornment: (
+                <>
+                  {loading ? (
+                    <CircularProgress color="inherit" size={16} />
+                  ) : feedback ? (
+                    <Fade in={!!feedback} timeout={300}>
+                      <Tooltip title={feedback.message} arrow sx={{ ml: 1 }}>
                         {
-                          info: <InfoIcon fontSize="small" color="info" />,
-                          warning: <WarningAmberIcon fontSize="small" color="warning" />,
-                          success: <DoneIcon fontSize="small" color="success" />,
-                          error: <ErrorIcon fontSize="small" color="error" />
-                        }[feedback.color]
-                      }
-                    </Tooltip>
-                  </Fade>
-                ) : null}
-                {params.InputProps.endAdornment}
-                <Typography color={readOnly ? 'text.disabled' : 'text.secondary'}>
-                  {displayUnit}
-                </Typography>
-              </>
-            )
+                          {
+                            info: <InfoIcon fontSize="small" color="info" />,
+                            warning: <WarningAmberIcon fontSize="small" color="warning" />,
+                            success: <DoneIcon fontSize="small" color="success" />,
+                            error: <ErrorIcon fontSize="small" color="error" />
+                          }[feedback.color]
+                        }
+                      </Tooltip>
+                    </Fade>
+                  ) : null}
+                  {params.InputProps.endAdornment}
+                  <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
+                </>
+              )
+            }
           }}
         />
       )}

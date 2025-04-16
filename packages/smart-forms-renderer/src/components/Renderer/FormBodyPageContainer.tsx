@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import Grid from '@mui/material/Grid';
+import { Grid } from '@mui/material';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import TabContext from '@mui/lab/TabContext';
 import TabPanel from '@mui/lab/TabPanel';
@@ -56,7 +56,7 @@ function FormBodyPageContainer(props: FormBodyPageContainerProps) {
   return (
     <Grid container spacing={1.5}>
       <TabContext value={currentPage.toString()}>
-        <Grid item xs={12} md={12} lg={12}>
+        <Grid size={{ xs: 12, md: 12, lg: 12 }}>
           {qItems.map((qItem, i) => {
             const qrItem = qrItemsByIndex[i];
 

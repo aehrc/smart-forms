@@ -172,7 +172,7 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: OpenChoiceCheckboxAnswerVal
           onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
           onOpenLabelInputChange={handleOpenLabelInputChange}
         />
-        <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
+        <DisplayInstructions readOnly={readOnly}>{displayInstructions}</DisplayInstructions>
       </>
     );
   }

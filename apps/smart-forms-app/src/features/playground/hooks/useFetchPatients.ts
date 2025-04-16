@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+import type { UseQueryResult } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
 import type { Bundle, Patient } from 'fhir/r4';
 import { useMemo } from 'react';
@@ -22,9 +23,9 @@ import { fetchFhirResources } from '../api/fetchFhirResources.ts';
 
 interface useFetchPatientsReturnParams {
   patients: Patient[];
-  fetchStatus: 'error' | 'success' | 'loading';
+  fetchStatus: UseQueryResult['status'];
   fetchError: unknown;
-  isInitialLoading: boolean;
+  isLoading: boolean;
   isFetching: boolean;
 }
 
@@ -36,12 +37,13 @@ function useFetchPatients(endpointUrl: string): useFetchPatientsReturnParams {
   const {
     data: bundle,
     status,
-    isInitialLoading,
+    isLoading,
     error,
     isFetching
-  } = useQuery<Bundle>(['patients', endpointUrl, queryUrl], () =>
-    fetchFhirResources(endpointUrl, queryUrl)
-  );
+  } = useQuery<Bundle>({
+    queryKey: ['patients', endpointUrl, queryUrl],
+    queryFn: () => fetchFhirResources(endpointUrl, queryUrl)
+  });
 
   const patients: Patient[] = useMemo(() => {
     if (responseIsPatientBundle(bundle)) {
@@ -59,7 +61,7 @@ function useFetchPatients(endpointUrl: string): useFetchPatientsReturnParams {
     patients,
     fetchStatus: status,
     fetchError: error,
-    isInitialLoading,
+    isLoading,
     isFetching
   };
 }
