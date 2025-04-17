@@ -15,28 +15,16 @@
  * limitations under the License.
  */
 
-import { useLayoutEffect } from 'react';
 import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
-import type { Blocker } from 'react-router-dom';
-import { useBlocker } from 'react-router-dom';
+import type { unstable_Blocker as Blocker } from 'react-router-dom';
+import { unstable_useBlocker as useBlocker } from 'react-router-dom';
+import { useLayoutEffect } from 'react';
 
 function useLeavePageBlocker(): Blocker {
   const formChangesHistory = useQuestionnaireResponseStore.use.formChangesHistory();
 
   const isBlocked = formChangesHistory.length > 0;
-  // const blocker = useBlocker(isBlocked);
-
-  const blocker = useBlocker(({ currentLocation, nextLocation }) => {
-    // If switching between renderer and preview, do not block regardless
-    if (
-      (currentLocation.pathname === '/renderer/preview' && nextLocation.pathname === '/renderer') ||
-      (currentLocation.pathname === '/renderer' && nextLocation.pathname === '/renderer/preview')
-    ) {
-      return false;
-    }
-
-    return currentLocation.pathname !== nextLocation.pathname;
-  });
+  const blocker = useBlocker(isBlocked);
 
   useLayoutEffect(() => {
     if (
