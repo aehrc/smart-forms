@@ -19,13 +19,13 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
-import type { SetStateAction } from 'react';
 import { useState } from 'react';
 import { CircularProgress, Fade, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { useExtractOperationStore } from '../stores/extractOperationStore.ts';
 import { FORMS_SERVER_URL } from '../../../globals.ts';
 import Iconify from '../../../components/Iconify/Iconify.tsx';
+import { sampleFunction } from '@aehrc/sdc-template-extract';
 
 interface ExtractMenuProps {
   isExtracting: boolean;
@@ -52,10 +52,16 @@ function ExtractMenu(props: ExtractMenuProps) {
 
   const handleTemplateExtract = async () => {
     try {
+      const sampleText = sampleFunction();
+      console.log(
+        `${sampleText} text from the sdc-template-extract library, if you see this then the library is working correctly`
+      );
       await onTemplateExtract();
     } catch (error) {
       console.error('Template extraction failed:', error);
-      alert('Template extraction failed: ' + (error instanceof Error ? error.message : 'Unknown error'));
+      alert(
+        'Template extraction failed: ' + (error instanceof Error ? error.message : 'Unknown error')
+      );
     }
     handleClose();
   };
