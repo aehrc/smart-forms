@@ -19,32 +19,51 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
-import type { SetStateAction } from 'react';
 import { useState } from 'react';
 import { CircularProgress, Fade, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { useExtractOperationStore } from '../stores/extractOperationStore.ts';
 import { FORMS_SERVER_URL } from '../../../globals.ts';
 import Iconify from '../../../components/Iconify/Iconify.tsx';
+import { sampleFunction } from '@aehrc/sdc-template-extract';
 
 interface ExtractMenuProps {
   isExtracting: boolean;
   onObservationExtract: () => void;
   onStructureMapExtract: () => void;
+  onTemplateExtract: () => void;
 }
 
 function ExtractMenu(props: ExtractMenuProps) {
-  const { isExtracting, onObservationExtract, onStructureMapExtract } = props;
+  const { isExtracting, onObservationExtract, onStructureMapExtract, onTemplateExtract } = props;
 
   const targetStructureMap = useExtractOperationStore.use.targetStructureMap();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const handleClick = (event: { currentTarget: SetStateAction<HTMLElement | null> }) => {
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleTemplateExtract = async () => {
+    try {
+      const sampleText = sampleFunction();
+      console.log(
+        `${sampleText} text from the sdc-template-extract library, if you see this then the library is working correctly`
+      );
+      await onTemplateExtract();
+    } catch (error) {
+      console.error('Template extraction failed:', error);
+      alert(
+        'Template extraction failed: ' + (error instanceof Error ? error.message : 'Unknown error')
+      );
+    }
+    handleClose();
   };
 
   const structuredMapExtractEnabled = targetStructureMap !== null;
@@ -78,7 +97,9 @@ function ExtractMenu(props: ExtractMenuProps) {
         onClose={handleClose}
         MenuListProps={{
           'aria-labelledby': 'extract-button'
-        }}>
+        }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
         <MenuItem
           onClick={() => {
             onObservationExtract();
@@ -114,6 +135,12 @@ function ExtractMenu(props: ExtractMenuProps) {
             </MenuItem>
           </span>
         </Tooltip>
+        <MenuItem onClick={handleTemplateExtract}>
+          <ListItemIcon>
+            <Iconify icon="mdi:file-document-edit" />
+          </ListItemIcon>
+          <ListItemText>Template-based $extract</ListItemText>
+        </MenuItem>
       </Menu>
 
       {isExtracting ? (

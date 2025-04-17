@@ -33,5 +33,6 @@ export type { ItemToRepopulate } from './repopulateItems';
 export { generateItemsToRepopulate } from './repopulateItems';
 export { repopulateResponse } from './repopulateIntoResponse';
 export { extractObservationBased } from './extractObservation';
+export { extractTemplateBased } from './extractTemplate';
 
 export { getQuestionnaireItem } from './misc';

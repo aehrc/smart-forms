@@ -16,28 +16,46 @@
  */
 
 import { createStore } from 'zustand/vanilla';
-import type { StructureMap } from 'fhir/r4';
+import type { StructureMap, QuestionnaireResponse } from 'fhir/r4';
 import { createSelectors } from '../../../stores/selector.ts';
 
 export interface ExtractOperationStoreType {
   targetStructureMap: StructureMap | null;
-  extractedResource: any;
+  extractionResult: QuestionnaireResponse | null;
+  extractionError: string | null;
+  debugInfo: any | null;
+  isExtractionStarted: boolean;
   setTargetStructureMap: (structureMap: StructureMap | null) => void;
-  setExtractedResource: (extractedResource: any) => void;
-  resetStore: () => void;
+  setExtractionResult: (result: QuestionnaireResponse | null) => void;
+  setExtractionError: (error: string | null) => void;
+  setDebugInfo: (info: any | null) => void;
+  startExtraction: () => void;
+  clearExtraction: () => void;
 }
 
 export const extractOperationStore = createStore<ExtractOperationStoreType>()((set) => ({
   targetStructureMap: null,
-  extractedResource: null,
+  extractionResult: null,
+  extractionError: null,
+  debugInfo: null,
+  isExtractionStarted: false,
   setTargetStructureMap: (structureMap: StructureMap | null) =>
     set(() => ({ targetStructureMap: structureMap })),
-  setExtractedResource: (extractedResource: any) =>
-    set(() => ({ extractedResource: extractedResource })),
-  resetStore: () =>
+  setExtractionResult: (result: QuestionnaireResponse | null) =>
+    set(() => ({ extractionResult: result, extractionError: null })),
+  setExtractionError: (error: string | null) =>
+    set(() => ({ extractionError: error, extractionResult: null })),
+  setDebugInfo: (info: any | null) =>
+    set(() => ({ debugInfo: info })),
+  startExtraction: () =>
+    set(() => ({ isExtractionStarted: true })),
+  clearExtraction: () =>
     set(() => ({
       targetStructureMap: null,
-      extractedResource: null
+      extractionResult: null,
+      extractionError: null,
+      debugInfo: null,
+      isExtractionStarted: false
     }))
 }));
 

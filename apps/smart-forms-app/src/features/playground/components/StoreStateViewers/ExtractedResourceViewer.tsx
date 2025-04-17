@@ -9,7 +9,7 @@ import { HEADERS } from '../../../../api/headers.ts';
 import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
 import useShowExtractedOperationStoreProperty from '../../hooks/useShowExtractedOperationStoreProperty.ts';
 
-const extractedSectionPropertyNames: string[] = ['extractedResource', 'targetStructureMap'];
+const extractedSectionPropertyNames: string[] = ['extractionResult', 'targetStructureMap'];
 
 interface ExtractedSectionViewerProps {
   sourceFhirServerUrl: string;
@@ -17,12 +17,11 @@ interface ExtractedSectionViewerProps {
 
 function ExtractedSectionViewer(props: ExtractedSectionViewerProps) {
   const { sourceFhirServerUrl } = props;
-  const [selectedProperty, setSelectedProperty] = useState('extractedResource');
+  const [selectedProperty, setSelectedProperty] = useState('extractionResult');
   const [showJsonTree, setShowJsonTree] = useState(false);
   const [writingBack, setWritingBack] = useState(false);
 
   const propertyObject = useShowExtractedOperationStoreProperty(selectedProperty);
-
   const writeBackEnabled = extractedResourceIsBatchBundle(propertyObject);
 
   const { enqueueSnackbar } = useSnackbar();
@@ -71,7 +70,7 @@ function ExtractedSectionViewer(props: ExtractedSectionViewerProps) {
         propertyObject={propertyObject}
         showJsonTree={showJsonTree}
         onToggleShowJsonTree={setShowJsonTree}>
-        {selectedProperty === 'extractedResource' ? (
+        {selectedProperty === 'extractionResult' ? (
           <Box display="flex" justifyContent="end">
             <Tooltip
               title={

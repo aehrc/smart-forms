@@ -1,0 +1,60 @@
+map "https://smartforms.csiro.au/docs/StructureMap/extract-bp" = "extract-bp"
+
+uses "http://hl7.org/fhir/StructureDefinition/QuestionnaireResponse" as source
+uses "http://hl7.org/fhir/StructureDefinition/Bundle" as target
+
+group patientMap(source src : QuestionnaireResponse, target bundle : Bundle) {
+  // Create bundle id and type
+  src -> bundle.id = uuid();
+  src -> bundle.type = 'transaction';
+
+  // Create bundle entries for systolic pressure
+  src -> bundle.entry as systolicEntry then {
+    // Create entry.request
+    src -> systolicEntry.request as request, request.method = 'POST', request.url = 'Observation';
+    src -> systolicEntry.resource = create("Observation") as resource then {
+      // Create resource.status
+      src -> resource.status = "final";
+
+      // Create resource.code for systolic pressure
+      src -> resource.code = cc("http://loinc.org", "8480-6", "Systolic blood pressure") as cc;
+
+      // Create resource.subject with QR's subject
+      src.subject as sub -> resource.subject = create("Reference") as r, r.reference = (%sub.reference);
+
+      // Create resource.valueQuantity for systolic
+      src.item as bpItem where linkId = 'blood-pressure' -> resource then {
+        bpItem.item as systolicItem where linkId = 'systolic' -> resource.valueQuantity = create("Quantity") as q, 
+          q.value = (%systolicItem.answer.value), 
+          q.unit = "mmHg", 
+          q.system = "http://unitsofmeasure.org", 
+          q.code = "mm[Hg]";
+      };
+    };
+  };
+
+  // Create bundle entries for diastolic pressure
+  src -> bundle.entry as diastolicEntry then {
+    // Create entry.request
+    src -> diastolicEntry.request as request, request.method = 'POST', request.url = 'Observation';
+    src -> diastolicEntry.resource = create("Observation") as resource then {
+      // Create resource.status
+      src -> resource.status = "final";
+
+      // Create resource.code for diastolic pressure
+      src -> resource.code = cc("http://loinc.org", "8462-4", "Diastolic blood pressure") as cc;
+
+      // Create resource.subject with QR's subject
+      src.subject as sub -> resource.subject = create("Reference") as r, r.reference = (%sub.reference);
+
+      // Create resource.valueQuantity for diastolic
+      src.item as bpItem where linkId = 'blood-pressure' -> resource then {
+        bpItem.item as diastolicItem where linkId = 'diastolic' -> resource.valueQuantity = create("Quantity") as q, 
+          q.value = (%diastolicItem.answer.value), 
+          q.unit = "mmHg", 
+          q.system = "http://unitsofmeasure.org", 
+          q.code = "mm[Hg]";
+      };
+    };
+  };
+} 
