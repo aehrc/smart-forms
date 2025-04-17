@@ -24,7 +24,19 @@ function useLeavePageBlocker(): Blocker {
   const formChangesHistory = useQuestionnaireResponseStore.use.formChangesHistory();
 
   const isBlocked = formChangesHistory.length > 0;
-  const blocker = useBlocker(isBlocked);
+  // const blocker = useBlocker(isBlocked);
+
+  const blocker = useBlocker(({ currentLocation, nextLocation }) => {
+    // If switching between renderer and preview, do not block regardless
+    if (
+      (currentLocation.pathname === '/renderer/preview' && nextLocation.pathname === '/renderer') ||
+      (currentLocation.pathname === '/renderer' && nextLocation.pathname === '/renderer/preview')
+    ) {
+      return false;
+    }
+
+    return currentLocation.pathname !== nextLocation.pathname;
+  });
 
   useLayoutEffect(() => {
     if (
