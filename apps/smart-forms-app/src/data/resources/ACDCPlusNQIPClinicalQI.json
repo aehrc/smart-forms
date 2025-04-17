@@ -8,8 +8,8 @@
     ]
   },
   "url": "https://smartforms.csiro.au/ig/Questionnaire/ACDCPlusNQIPClinicalQI",
-  "title": "ACDC+ NQIP Clinical QI Dataset - v2.5",
-  "description": "ACDC+ NQIP Clinical QI Dataset - v2.5",
+  "title": "ACDC+ NQIP Clinical QI Dataset - v2.6",
+  "description": "ACDC+ NQIP Clinical QI Dataset - v2.6",
   "extension": [
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
@@ -2261,7 +2261,7 @@
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%RestrictivePracticeRepeat.select(performed.start | performed.ofType(date))"
+                    "expression": "%RestrictivePracticeRepeat.select(performed.start | performed.ofType(date) | performed.ofType(dateTime))"
                   }
                 }
               ],
@@ -2404,7 +2404,7 @@
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%RestrictivePracticeExclusiveSecureAreaOnlyRepeat.select(performed.start | performed.ofType(date))"
+                    "expression": "%RestrictivePracticeExclusiveSecureAreaOnlyRepeat.select(performed.start | performed.ofType(date) | performed.ofType(dateTime))"
                   }
                 }
               ],
@@ -2647,7 +2647,7 @@
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%BarthelIndexRepeat.effective.ofType(date)"
+                    "expression": "%BarthelIndexRepeat.effective.ofType(date) | effective.ofType(dateTime)"
                   }
                 }
               ],
@@ -3644,7 +3644,7 @@
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%WeightRepeat.effective.ofType(date).value"
+                    "expression": "%WeightRepeat.effective.ofType(date) | %WeightRepeat.effective.ofType(dateTime)"
                   }
                 }
               ],
