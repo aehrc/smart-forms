@@ -8,8 +8,8 @@
     ]
   },
   "url": "https://smartforms.csiro.au/ig/Questionnaire/ACDCPlusNQIPClinicalQI",
-  "title": "ACDC+ NQIP Clinical QI Dataset - v2.6",
-  "description": "ACDC+ NQIP Clinical QI Dataset - v2.6",
+  "title": "ACDC+ NQIP Clinical QI Dataset - v2.7",
+  "description": "ACDC+ NQIP Clinical QI Dataset - v2.7",
   "extension": [
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
@@ -2125,7 +2125,7 @@
               "valueExpression": {
                 "name": "RestrictivePracticeRepeat",
                 "language": "text/fhirpath",
-                "expression": "%RestrictivePractice.entry.resource.where(date > (today() - 3 days))"
+                "expression": "%RestrictivePractice.entry.resource.where(performedDateTime > (today() - 3 days) or performed.start > (today() - 3 days) or performed.end > (today() - 3 days))"
               }
             },
             {
@@ -2305,7 +2305,7 @@
               "valueExpression": {
                 "name": "RestrictivePracticeExclusiveSecureAreaOnlyRepeat",
                 "language": "text/fhirpath",
-                "expression": "%RestrictivePracticeExclusiveSecureAreaOnly.entry.resource.where(date > (today() - 3 days))"
+                "expression": "%RestrictivePracticeExclusiveSecureAreaOnly.entry.resource.where(performedDateTime > (today() - 3 days) or performed.start > (today() - 3 days) or performed.end > (today() - 3 days))"
               }
             }
           ],
