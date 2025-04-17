@@ -18,6 +18,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
+  qChoiceAnswerInitialSelected,
   qChoiceAnswerOptionBasic,
   qChoiceAnswerOptionCalculation,
   qChoiceAnswerValueSetBasic,
@@ -76,3 +77,10 @@ export const ChoiceAnswerValueSetCalculation: Story = {
     questionnaire: qChoiceAnswerValueSetCalculation
   }
 };
+// Story for ChoiceSelectAnswerOptions Using InitialSelected field set
+export const ChoiceAnswerOptionsUsingInitialSelected: Story = {
+  args: {
+    questionnaire: qChoiceAnswerInitialSelected
+  }
+};
+
