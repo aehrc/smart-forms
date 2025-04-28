@@ -21,7 +21,7 @@ import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { StyledAlert } from '../../Alert.styles';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
-import ChoiceRadioGroup from './ChoiceRadioGroup';
+import RadioFormGroup from '../ItemParts/RadioFormGroup';
 
 interface ChoiceRadioAnswerValueSetFieldsProps {
   qItem: QuestionnaireItem;
@@ -52,7 +52,7 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
 
   if (options.length > 0) {
     return (
-      <ChoiceRadioGroup
+      <RadioFormGroup
         qItem={qItem}
         options={options}
         valueRadio={valueRadio}

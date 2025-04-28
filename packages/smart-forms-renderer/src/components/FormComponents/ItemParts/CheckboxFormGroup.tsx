@@ -1,43 +1,52 @@
+import type { ReactNode } from 'react';
 import React from 'react';
-import Box from '@mui/material/Box';
-import { StyledRadioGroup, StyledRequiredTypography } from '../Item.styles';
+import { Box } from '@mui/material';
+import { StyledFormGroup, StyledRequiredTypography } from '../Item.styles';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
-import RadioOptionList from '../ItemParts/RadioOptionList';
-import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
-import ClearInputButton from '../ItemParts/ClearInputButton';
-import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import FadingCheckIcon from './FadingCheckIcon';
+import ClearInputButton from './ClearInputButton';
+import type {
+  QuestionnaireItem,
+  QuestionnaireItemAnswerOption,
+  QuestionnaireResponseItemAnswer
+} from 'fhir/r4';
 import { useRendererStylingStore } from '../../../stores';
 import { getChoiceOrientation } from '../../../utils/choice';
+import CheckboxOptionList from '../ChoiceItems/CheckboxOptionList';
 
-interface ChoiceRadioGroupProps {
+interface ChoiceCheckboxFormGroupProps {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
-  valueRadio: string | null;
+  answers: QuestionnaireResponseItemAnswer[];
   feedback: string;
   readOnly: boolean;
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   onCheckedChange: (newValue: string) => void;
   onClear: () => void;
+  children?: ReactNode; // Mainly used for open-choice openLabel field
 }
 
-function ChoiceRadioGroup(props: ChoiceRadioGroupProps) {
+function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
   const {
     qItem,
     options,
-    valueRadio,
+    answers,
     feedback,
     readOnly,
     expressionUpdated,
     answerOptionsToggleExpressionsMap,
     onCheckedChange,
-    onClear
+    onClear,
+    children
   } = props;
 
   const inputsFlexGrow = useRendererStylingStore.use.inputsFlexGrow();
   const hideClearButton = useRendererStylingStore.use.hideClearButton();
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
+
+  const answersEmpty = answers.length === 0;
 
   return (
     <>
@@ -52,27 +61,20 @@ function ChoiceRadioGroup(props: ChoiceRadioGroupProps) {
           display="flex"
           alignItems="center"
           sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
-          <StyledRadioGroup
+          <StyledFormGroup
             id={qItem.type + '-' + qItem.linkId}
             row={orientation === ChoiceItemOrientation.Horizontal}
-            sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
-            onChange={(e) => {
-              // If item.readOnly=true, do not allow any changes
-              if (readOnly) {
-                return;
-              }
-
-              onCheckedChange(e.target.value);
-            }}
-            value={valueRadio}
-            data-test="q-item-radio-group">
-            <RadioOptionList
+            sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
+            <CheckboxOptionList
               options={options}
+              answers={answers}
               readOnly={readOnly}
               fullWidth={inputsFlexGrow}
               answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+              onCheckedChange={onCheckedChange}
             />
-          </StyledRadioGroup>
+            {children}
+          </StyledFormGroup>
 
           <Box flexGrow={1} />
 
@@ -80,7 +82,7 @@ function ChoiceRadioGroup(props: ChoiceRadioGroupProps) {
         </Box>
 
         {hideClearButton ? null : (
-          <ClearInputButton buttonShown={!!valueRadio} readOnly={readOnly} onClear={onClear} />
+          <ClearInputButton buttonShown={!answersEmpty} readOnly={readOnly} onClear={onClear} />
         )}
       </Box>
 
@@ -89,4 +91,4 @@ function ChoiceRadioGroup(props: ChoiceRadioGroupProps) {
   );
 }
 
-export default ChoiceRadioGroup;
+export default CheckboxFormGroup;

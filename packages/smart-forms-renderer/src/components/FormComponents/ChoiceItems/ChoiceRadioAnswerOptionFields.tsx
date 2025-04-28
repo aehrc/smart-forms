@@ -17,7 +17,7 @@
 
 import React from 'react';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import ChoiceRadioGroup from './ChoiceRadioGroup';
+import RadioFormGroup from '../ItemParts/RadioFormGroup';
 
 interface ChoiceRadioAnswerOptionFieldsProps {
   qItem: QuestionnaireItem;
@@ -45,7 +45,7 @@ function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps
   } = props;
 
   return (
-    <ChoiceRadioGroup
+    <RadioFormGroup
       qItem={qItem}
       options={options}
       valueRadio={valueRadio}
