@@ -9,7 +9,7 @@ import { HEADERS } from '../../../../api/headers.ts';
 import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
 import useShowExtractedOperationStoreProperty from '../../hooks/useShowExtractedOperationStoreProperty.ts';
 
-const extractedSectionPropertyNames: string[] = ['extractedResource', 'targetStructureMap'];
+const extractedSectionPropertyNames: string[] = ['extractionResult', 'targetStructureMap'];
 
 interface ExtractedSectionViewerProps {
   sourceFhirServerUrl: string;
@@ -17,12 +17,12 @@ interface ExtractedSectionViewerProps {
 
 function ExtractedSectionViewer(props: ExtractedSectionViewerProps) {
   const { sourceFhirServerUrl } = props;
-  const [selectedProperty, setSelectedProperty] = useState('extractedResource');
+  const [selectedProperty, setSelectedProperty] = useState('extractionResult');
   const [showJsonTree, setShowJsonTree] = useState(false);
   const [writingBack, setWritingBack] = useState(false);
 
   const propertyObject = useShowExtractedOperationStoreProperty(selectedProperty);
-
+  console.log('ExtractedResourceViewer propertyObject:', propertyObject);
   const writeBackEnabled = extractedResourceIsBatchBundle(propertyObject);
 
   const { enqueueSnackbar } = useSnackbar();
@@ -71,7 +71,7 @@ function ExtractedSectionViewer(props: ExtractedSectionViewerProps) {
         propertyObject={propertyObject}
         showJsonTree={showJsonTree}
         onToggleShowJsonTree={setShowJsonTree}>
-        {selectedProperty === 'extractedResource' ? (
+        {selectedProperty === 'extractionResult' ? (
           <Box display="flex" justifyContent="end">
             <Tooltip
               title={
@@ -88,6 +88,14 @@ function ExtractedSectionViewer(props: ExtractedSectionViewerProps) {
                 </LoadingButton>
               </span>
             </Tooltip>
+          </Box>
+        ) : null}
+        {/* Fallback debug view for extracted resource */}
+        {propertyObject ? (
+          <Box mt={2}>
+            <pre style={{ maxHeight: 300, overflow: 'auto', background: '#f5f5f5', padding: 8 }}>
+              {JSON.stringify(propertyObject, null, 2)}
+            </pre>
           </Box>
         ) : null}
       </GenericViewer>

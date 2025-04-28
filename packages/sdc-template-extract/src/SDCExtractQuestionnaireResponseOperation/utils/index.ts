@@ -1,0 +1,1 @@
+export { sampleFunction } from './sample';

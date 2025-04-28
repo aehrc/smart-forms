@@ -15,18 +15,19 @@
  * limitations under the License.
  */
 
-import { useExtractOperationStore } from '../stores/extractOperationStore.ts';
+import type { Config } from 'jest';
 
-function useShowExtractedOperationStoreProperty(selectedProperty: string) {
-  const extractionResult = useExtractOperationStore.use.extractionResult();
-  const targetStructureMap = useExtractOperationStore.use.targetStructureMap();
+const config: Config = {
+  verbose: true,
+  roots: ['<rootDir>'],
+  transform: {
+    '^.+\\.ts?$': 'ts-jest'
+  },
+  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.ts?$',
+  moduleFileExtensions: ['ts', 'js', 'json', 'node'],
+  collectCoverage: true,
+  clearMocks: true,
+  coverageDirectory: 'coverage'
+};
 
-  return (
-    {
-      extractionResult,
-      targetStructureMap
-    }[selectedProperty] || null
-  );
-}
-
-export default useShowExtractedOperationStoreProperty;
+export default config;

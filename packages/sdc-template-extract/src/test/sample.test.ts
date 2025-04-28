@@ -15,18 +15,9 @@
  * limitations under the License.
  */
 
-import { useExtractOperationStore } from '../stores/extractOperationStore.ts';
+import { expect } from '@jest/globals';
 
-function useShowExtractedOperationStoreProperty(selectedProperty: string) {
-  const extractionResult = useExtractOperationStore.use.extractionResult();
-  const targetStructureMap = useExtractOperationStore.use.targetStructureMap();
-
-  return (
-    {
-      extractionResult,
-      targetStructureMap
-    }[selectedProperty] || null
-  );
-}
-
-export default useShowExtractedOperationStoreProperty;
+test('foobar test', () => {
+  expect('foo').toEqual('foo');
+  expect('bar').toEqual('bar');
+});
