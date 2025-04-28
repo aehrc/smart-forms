@@ -22,6 +22,7 @@ function ExtractedSectionViewer(props: ExtractedSectionViewerProps) {
   const [writingBack, setWritingBack] = useState(false);
 
   const propertyObject = useShowExtractedOperationStoreProperty(selectedProperty);
+  console.log('ExtractedResourceViewer propertyObject:', propertyObject);
   const writeBackEnabled = extractedResourceIsBatchBundle(propertyObject);
 
   const { enqueueSnackbar } = useSnackbar();
@@ -87,6 +88,14 @@ function ExtractedSectionViewer(props: ExtractedSectionViewerProps) {
                 </LoadingButton>
               </span>
             </Tooltip>
+          </Box>
+        ) : null}
+        {/* Fallback debug view for extracted resource */}
+        {propertyObject ? (
+          <Box mt={2}>
+            <pre style={{ maxHeight: 300, overflow: 'auto', background: '#f5f5f5', padding: 8 }}>
+              {JSON.stringify(propertyObject, null, 2)}
+            </pre>
           </Box>
         ) : null}
       </GenericViewer>

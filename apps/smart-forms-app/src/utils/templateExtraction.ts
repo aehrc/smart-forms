@@ -40,7 +40,7 @@ async function loadTemplate(templateId: string): Promise<any> {
  * Extracts data from a questionnaire using a template
  */
 export async function extractWithTemplate(
-  questionnaire: Questionnaire,
+  // questionnaire: Questionnaire,
   template: any,
   questionnaireResponse: any
 ): Promise<any> {

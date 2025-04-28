@@ -25,7 +25,7 @@ import Typography from '@mui/material/Typography';
 import { useExtractOperationStore } from '../stores/extractOperationStore.ts';
 import { FORMS_SERVER_URL } from '../../../globals.ts';
 import Iconify from '../../../components/Iconify/Iconify.tsx';
-import { sampleFunction } from '@aehrc/sdc-template-extract';
+// import { extract } from '@aehrc/sdc-template-extract';
 
 interface ExtractMenuProps {
   isExtracting: boolean;
@@ -52,10 +52,10 @@ function ExtractMenu(props: ExtractMenuProps) {
 
   const handleTemplateExtract = async () => {
     try {
-      const sampleText = sampleFunction();
-      console.log(
-        `${sampleText} text from the sdc-template-extract library, if you see this then the library is working correctly`
-      );
+      // const sampleText = sampleFunction();
+      // console.log(
+      //   `${sampleText} text from the sdc-template-extract library, if you see this then the library is working correctly`
+      // );
       await onTemplateExtract();
     } catch (error) {
       console.error('Template extraction failed:', error);

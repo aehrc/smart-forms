@@ -22,8 +22,9 @@ import {
   BaseRenderer, 
   useQuestionnaireStore, 
   useQuestionnaireResponseStore, 
-  extractTemplateBased
 } from '@aehrc/smart-forms-renderer';
+import { extract } from '@aehrc/sdc-template-extract';
+
 import { fetchResourceCallback } from './PrePopCallbackForPlayground.tsx';
 import type { Patient, Practitioner, QuestionnaireResponse } from 'fhir/r4';
 import { Box, Typography } from '@mui/material';
@@ -32,6 +33,7 @@ import { buildFormWrapper } from '../../../utils/manageForm.ts';
 import ExtractMenu from './ExtractMenu.tsx';
 import TemplateExtractionDebug from './TemplateExtractionDebug';
 import { useExtractOperationStore } from '../stores/extractOperationStore.ts';
+import { convertQuestionnaireResponseLinkIds } from '../utils/linkIdToCodeConverter';
 
 interface PlaygroundRendererProps {
   sourceFhirServerUrl: string | null;
@@ -60,14 +62,15 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
   const setExtractionError = useExtractOperationStore.use.setExtractionError();
   const setDebugInfo = useExtractOperationStore.use.setDebugInfo();
   const startExtraction = useExtractOperationStore.use.startExtraction();
-  const clearExtraction = useExtractOperationStore.use.clearExtraction();
-  const extractionResult = useExtractOperationStore.use.extractionResult();
-  const extractionError = useExtractOperationStore.use.extractionError();
-  const debugInfo = useExtractOperationStore.use.debugInfo();
-  const isExtractionStarted = useExtractOperationStore.use.isExtractionStarted();
+  // const clearExtraction = useExtractOperationStore.use.clearExtraction();
+  // const extractionResult = useExtractOperationStore.use.extractionResult();
+  // const extractionError = useExtractOperationStore.use.extractionError();
+  // const debugInfo = useExtractOperationStore.use.debugInfo();
+  // const isExtractionStarted = useExtractOperationStore.use.isExtractionStarted();
 
   const [isPopulating, setIsPopulating] = useState(false);
-  const [populatedContext, setPopulatedContext] = useState<Record<string, object> | null>(null);
+  // const [populatedContext, setPopulatedContext] = useState<Record<string, object> | null>(null);
+  // const [setPopulatedContext] = useState<Record<string, object> | null>(null);
 
   const { patientName, userName } = useLaunchContextNames(patient, user);
 
@@ -95,7 +98,8 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
         return;
       }
 
-      const { populatedResponse, populatedContext } = populateResult;
+      // const { populatedResponse, populatedContext } = populateResult;
+      const { populatedResponse } = populateResult;
 
       // Call to buildForm to pre-populate the QR which repaints the entire BaseRenderer view
       await buildFormWrapper(
@@ -105,9 +109,9 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
         terminologyServerUrl,
         { patient }
       );
-      if (populatedContext) {
-        setPopulatedContext(populatedContext);
-      }
+      // if (populatedContext) {
+      //   setPopulatedContext(populatedContext);
+      // }
 
       setIsPopulating(false);
     });
@@ -174,34 +178,33 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
 
       console.log('Preparing response for extraction:', updatableResponse);
       const preparedResponse = prepareResponseForExtraction(updatableResponse, patient?.id || 'unknown');
-      console.log('Prepared response:', preparedResponse);
+      // Convert linkIds to codes before extraction
+      const convertedResponse = convertQuestionnaireResponseLinkIds(preparedResponse);
+      console.log('Prepared response (after prepareResponseForExtraction and convertQuestionnaireResponseLinkIds):', convertedResponse);
+      console.log('Source questionnaire:', sourceQuestionnaire);
 
-      const { result, error, debugInfo: extractionDebugInfo } = await extractTemplateBased(sourceQuestionnaire, preparedResponse);
-      console.log('Extraction result:', result);
-      console.log('Extraction error:', error);
-      console.log('Extraction debug info:', extractionDebugInfo);
-
+      const { result, debugInfo: extractionDebugInfo, error } = await extract({
+        questionnaire: sourceQuestionnaire,
+        questionnaireResponse: convertedResponse
+      });
+      console.log('Extraction result from sdc-template-extract:', result);
+      console.log('Extraction error from sdc-template-extract:', error);
+      console.log('Extraction debug info from sdc-template-extract:', extractionDebugInfo);
+      
       if (error) {
         setExtractionError(error);
         setDebugInfo(extractionDebugInfo);
         return;
       }
-
-      if (result && result.length > 0) {
-        // Convert Observation[] to QuestionnaireResponse
-        const qr: QuestionnaireResponse = {
-          resourceType: 'QuestionnaireResponse',
-          status: 'completed',
-          subject: patient?.id ? {
-            reference: `Patient/${patient.id}`
-          } : undefined,
-          item: [],
-          contained: result
-        };
-        setExtractionResult(qr);
+      
+      if (result) {
+        // Set the extraction result directly to the raw result (Bundle or Resource)
+        console.log('Setting extractionResult to raw extraction result:', result);
+        setExtractionResult(result);
         setDebugInfo(extractionDebugInfo);
       } else {
-        setExtractionError('No observations were generated from the extraction');
+        console.warn('No resources were generated from the extraction');
+        setExtractionError('No resources were generated from the extraction');
         setDebugInfo(extractionDebugInfo);
       }
     } catch (error) {

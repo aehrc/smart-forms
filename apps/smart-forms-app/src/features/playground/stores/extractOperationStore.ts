@@ -16,17 +16,17 @@
  */
 
 import { createStore } from 'zustand/vanilla';
-import type { StructureMap, QuestionnaireResponse } from 'fhir/r4';
+import type { StructureMap, QuestionnaireResponse, Resource, Bundle } from 'fhir/r4';
 import { createSelectors } from '../../../stores/selector.ts';
 
 export interface ExtractOperationStoreType {
   targetStructureMap: StructureMap | null;
-  extractionResult: QuestionnaireResponse | null;
+  extractionResult: QuestionnaireResponse | Resource | Bundle | null;
   extractionError: string | null;
   debugInfo: any | null;
   isExtractionStarted: boolean;
   setTargetStructureMap: (structureMap: StructureMap | null) => void;
-  setExtractionResult: (result: QuestionnaireResponse | null) => void;
+  setExtractionResult: (result: QuestionnaireResponse | Resource | Bundle | null) => void;
   setExtractionError: (error: string | null) => void;
   setDebugInfo: (info: any | null) => void;
   startExtraction: () => void;
@@ -41,7 +41,7 @@ export const extractOperationStore = createStore<ExtractOperationStoreType>()((s
   isExtractionStarted: false,
   setTargetStructureMap: (structureMap: StructureMap | null) =>
     set(() => ({ targetStructureMap: structureMap })),
-  setExtractionResult: (result: QuestionnaireResponse | null) =>
+  setExtractionResult: (result: QuestionnaireResponse | Resource | Bundle | null) =>
     set(() => ({ extractionResult: result, extractionError: null })),
   setExtractionError: (error: string | null) =>
     set(() => ({ extractionError: error, extractionResult: null })),

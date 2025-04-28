@@ -34,9 +34,9 @@ function TemplateExtractionDebug() {
     if (!debugInfo?.contentAnalysis) return 'Validating template configuration...';
     
     // Separate resource templates from clinical patterns
-    const resourceTemplates = debugInfo.contentAnalysis.patterns?.filter((p: string) => 
-      p.includes(':')
-    ) || [];
+    // const resourceTemplates = debugInfo.contentAnalysis.patterns?.filter((p: string) => 
+    //   p.includes(':')
+    // ) || [];
     
     const clinicalPatterns = debugInfo.contentAnalysis.patterns?.filter((p: string) => 
       !p.includes(':') && p.includes('Measurement')
@@ -257,15 +257,28 @@ function TemplateExtractionDebug() {
     },
     {
       label: 'Observation Generation',
-      description: extractionResult 
-        ? `Successfully generated ${extractionResult.contained?.length || 0} observations\n` +
-          (debugInfo?.resultGeneration?.warnings?.length 
-            ? `Warnings: ${debugInfo.resultGeneration.warnings.join(', ')}`
-            : '') +
-          (extractionResult.contained?.length 
-            ? `\n\nGenerated Observations:\n${JSON.stringify(extractionResult.contained, null, 2)}`
-            : '')
-        : extractionError || 'Failed to generate observations'
+      description: (() => {
+        if (!extractionResult) return extractionError || 'Failed to generate observations';
+        if (
+          (extractionResult as any).resourceType === 'Bundle' &&
+          Array.isArray((extractionResult as any).entry)
+        ) {
+          const entry = (extractionResult as any).entry;
+          return (
+            `Successfully generated ${entry.length || 0} observations\n` +
+            (debugInfo?.resultGeneration?.warnings?.length
+              ? `Warnings: ${debugInfo.resultGeneration.warnings.join(', ')}`
+              : '') +
+            (entry.length
+              ? `\n\nGenerated Observations:\n${JSON.stringify(entry.map((e: any) => e.resource), null, 2)}`
+              : '')
+          );
+        } else {
+          return (
+            `Successfully generated 1 observation\n\nGenerated Observation:\n${JSON.stringify(extractionResult, null, 2)}`
+          );
+        }
+      })()
     }
   ];
 
