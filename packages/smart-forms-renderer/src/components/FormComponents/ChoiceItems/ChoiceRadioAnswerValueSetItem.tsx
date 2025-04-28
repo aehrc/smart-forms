@@ -111,7 +111,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
         valueRadio={valueRadio}
         feedback={feedback}
         readOnly={readOnly}
-        expressionUpdated={calcExpUpdated || dynamicCodingsUpdated}
+        expressionUpdated={calcExpUpdated || dynamicCodingsUpdated || answerOptionsToggleExpUpdated}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
         terminologyError={terminologyError}
         onCheckedChange={handleChange}
@@ -136,7 +136,9 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
             valueRadio={valueRadio}
             feedback={feedback}
             readOnly={readOnly}
-            expressionUpdated={calcExpUpdated || dynamicCodingsUpdated}
+            expressionUpdated={
+              calcExpUpdated || dynamicCodingsUpdated || answerOptionsToggleExpUpdated
+            }
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             terminologyError={terminologyError}
             onCheckedChange={handleChange}
