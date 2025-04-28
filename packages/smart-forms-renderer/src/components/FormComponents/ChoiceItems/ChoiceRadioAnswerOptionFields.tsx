@@ -16,15 +16,8 @@
  */
 
 import React from 'react';
-import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import RadioOptionList from '../ItemParts/RadioOptionList';
-import { StyledRadioGroup, StyledRequiredTypography } from '../Item.styles';
-import { getChoiceOrientation } from '../../../utils/choice';
-import Box from '@mui/material/Box';
-import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
-import ClearInputButton from '../ItemParts/ClearInputButton';
-import { useRendererStylingStore } from '../../../stores';
+import ChoiceRadioGroup from './ChoiceRadioGroup';
 
 interface ChoiceRadioAnswerOptionFieldsProps {
   qItem: QuestionnaireItem;
@@ -51,58 +44,18 @@ function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps
     onClear
   } = props;
 
-  const inputsFlexGrow = useRendererStylingStore.use.inputsFlexGrow();
-  const hideClearButton = useRendererStylingStore.use.hideClearButton();
-
-  const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
-
   return (
-    <>
-      <Box
-        display="flex"
-        sx={{
-          justifyContent: 'space-between',
-          alignItems: { xs: 'start', sm: 'center' },
-          flexDirection: { xs: 'column', sm: 'row' }
-        }}>
-        <Box
-          display="flex"
-          alignItems="center"
-          sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
-          <StyledRadioGroup
-            id={qItem.type + '-' + qItem.linkId}
-            row={orientation === ChoiceItemOrientation.Horizontal}
-            sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
-            onChange={(e) => {
-              // If item.readOnly=true, do not allow any changes
-              if (readOnly) {
-                return;
-              }
-
-              onCheckedChange(e.target.value);
-            }}
-            value={valueRadio}
-            data-test="q-item-radio-group">
-            <RadioOptionList
-              options={options}
-              readOnly={readOnly}
-              fullWidth={inputsFlexGrow}
-              answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
-            />
-          </StyledRadioGroup>
-
-          <Box flexGrow={1} />
-
-          <FadingCheckIcon fadeIn={expressionUpdated} disabled={readOnly} />
-        </Box>
-
-        {hideClearButton ? null : (
-          <ClearInputButton buttonShown={!!valueRadio} readOnly={readOnly} onClear={onClear} />
-        )}
-      </Box>
-
-      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
-    </>
+    <ChoiceRadioGroup
+      qItem={qItem}
+      options={options}
+      valueRadio={valueRadio}
+      feedback={feedback}
+      readOnly={readOnly}
+      expressionUpdated={expressionUpdated}
+      answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+      onCheckedChange={onCheckedChange}
+      onClear={onClear}
+    />
   );
 }
 
