@@ -24,12 +24,20 @@ interface CheckboxOptionListProps {
   options: QuestionnaireItemAnswerOption[];
   answers: QuestionnaireResponseItemAnswer[];
   readOnly: boolean;
+  fullWidth: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   onCheckedChange: (newValue: string) => void;
 }
 
 function CheckboxOptionList(props: CheckboxOptionListProps) {
-  const { options, answers, readOnly, answerOptionsToggleExpressionsMap, onCheckedChange } = props;
+  const {
+    options,
+    answers,
+    readOnly,
+    fullWidth,
+    answerOptionsToggleExpressionsMap,
+    onCheckedChange
+  } = props;
 
   return (
     <>
@@ -46,6 +54,7 @@ function CheckboxOptionList(props: CheckboxOptionListProps) {
               value={option.valueCoding.code ?? option.valueCoding.display ?? ''}
               label={option.valueCoding.display ?? `${option.valueCoding.code}`}
               readOnly={readOnly || optionDisabledViaToggleExpression}
+              fullWidth={fullWidth}
               isChecked={answers.some(
                 (answer) => JSON.stringify(answer) === JSON.stringify(option)
               )}
@@ -61,6 +70,7 @@ function CheckboxOptionList(props: CheckboxOptionListProps) {
               value={option.valueString}
               label={option.valueString}
               readOnly={readOnly || optionDisabledViaToggleExpression}
+              fullWidth={fullWidth}
               isChecked={answers.some((answer) => answer.valueString === option.valueString)}
               onCheckedChange={onCheckedChange}
             />
@@ -74,6 +84,7 @@ function CheckboxOptionList(props: CheckboxOptionListProps) {
               value={option.valueInteger.toString()}
               label={option.valueInteger.toString()}
               readOnly={readOnly || optionDisabledViaToggleExpression}
+              fullWidth={fullWidth}
               isChecked={answers.some((answer) => answer.valueInteger === option.valueInteger)}
               onCheckedChange={onCheckedChange}
             />

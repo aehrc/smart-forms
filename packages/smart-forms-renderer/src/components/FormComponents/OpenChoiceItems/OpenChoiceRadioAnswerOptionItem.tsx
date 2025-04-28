@@ -35,6 +35,7 @@ import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import ItemLabel from '../ItemParts/ItemLabel';
+import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 
 interface OpenChoiceRadioAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
@@ -65,6 +66,10 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
   const openLabelText = getOpenLabelText(qItem);
 
   const options = qItem.answerOption ?? [];
+
+  // Process answerOptionsToggleExpressions
+  const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
+    useAnswerOptionsToggleExpressions(qItem.linkId);
 
   // Init empty open label
   let initialOpenLabelValue = '';
@@ -137,6 +142,10 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
     }
   }
 
+  function handleClear() {
+    onQrItemChange(createEmptyQrItem(qItem, answerKey));
+  }
+
   return (
     <FullWidthFormComponentBox
       data-test="q-item-open-choice-radio-answer-option-box"
@@ -156,7 +165,10 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
             openLabelSelected={openLabelSelected}
             feedback={feedback}
             readOnly={readOnly}
+            expressionUpdated={answerOptionsToggleExpUpdated}
+            answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             onValueChange={handleValueChange}
+            onClear={handleClear}
           />
         }
       />

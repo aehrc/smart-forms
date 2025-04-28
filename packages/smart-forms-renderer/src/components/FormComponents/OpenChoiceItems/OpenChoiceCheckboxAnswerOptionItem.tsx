@@ -89,7 +89,8 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
 
   // Process answerOptionsToggleExpressions
   // TODO use answerOptionsToggleExpUpdated to trigger a "refresh" icon when codings are dynamically updated
-  const { answerOptionsToggleExpressionsMap } = useAnswerOptionsToggleExpressions(qItem.linkId);
+  const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
+    useAnswerOptionsToggleExpressions(qItem.linkId);
 
   // Event handlers
 
@@ -155,6 +156,10 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
     [handleOpenLabelChange]
   ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
 
+  function handleClear() {
+    onQrItemChange(createEmptyQrItem(qItem, answerKey));
+  }
+
   if (showMinimalView) {
     return (
       <>
@@ -167,10 +172,12 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
           openLabelChecked={openLabelChecked}
           feedback={feedback}
           readOnly={readOnly}
+          expressionUpdated={answerOptionsToggleExpUpdated}
           answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
           onOptionChange={handleOptionChange}
           onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
           onOpenLabelInputChange={handleOpenLabelInputChange}
+          onClear={handleClear}
         />
         <DisplayInstructions readOnly={readOnly}>{displayInstructions}</DisplayInstructions>
       </>
@@ -196,10 +203,12 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
             openLabelChecked={openLabelChecked}
             feedback={feedback}
             readOnly={readOnly}
+            expressionUpdated={answerOptionsToggleExpUpdated}
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             onOptionChange={handleOptionChange}
             onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
             onOpenLabelInputChange={handleOpenLabelInputChange}
+            onClear={handleClear}
           />
         }
       />

@@ -87,8 +87,8 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
   // This will be done after the choice/open-choice refactoring
 
   // Process answerOptionsToggleExpressions
-  // TODO use answerOptionsToggleExpUpdated to trigger a "refresh" icon when codings are dynamically updated
-  const { answerOptionsToggleExpressionsMap } = useAnswerOptionsToggleExpressions(qItem.linkId);
+  const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
+    useAnswerOptionsToggleExpressions(qItem.linkId);
 
   // Event handlers
   function handleCheckedChange(changedValue: string) {
@@ -111,6 +111,10 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
     }
   }
 
+  function handleClear() {
+    onQrItemChange(createEmptyQrItem(qItem, answerKey));
+  }
+
   if (showMinimalView) {
     return (
       <>
@@ -120,9 +124,11 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
           answers={answers}
           feedback={feedback}
           readOnly={readOnly}
+          expressionUpdated={answerOptionsToggleExpUpdated}
           answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
           terminologyError={terminologyError}
           onCheckedChange={handleCheckedChange}
+          onClear={handleClear}
         />
         <DisplayInstructions readOnly={readOnly}>{displayInstructions}</DisplayInstructions>
       </>
@@ -145,9 +151,11 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
             answers={answers}
             feedback={feedback}
             readOnly={readOnly}
+            expressionUpdated={answerOptionsToggleExpUpdated}
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             terminologyError={terminologyError}
             onCheckedChange={handleCheckedChange}
+            onClear={handleClear}
           />
         }
       />

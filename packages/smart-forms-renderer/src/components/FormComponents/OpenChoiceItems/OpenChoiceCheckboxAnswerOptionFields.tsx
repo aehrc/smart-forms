@@ -27,6 +27,9 @@ import { getChoiceOrientation } from '../../../utils/choice';
 import { StyledFormGroup, StyledRequiredTypography } from '../Item.styles';
 import CheckboxOptionList from '../ChoiceItems/CheckboxOptionList';
 import { Box } from '@mui/material';
+import { useRendererStylingStore } from '../../../stores';
+import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
+import ClearInputButton from '../ItemParts/ClearInputButton';
 
 interface OpenChoiceCheckboxAnswerOptionFieldsProps {
   qItem: QuestionnaireItem;
@@ -37,10 +40,12 @@ interface OpenChoiceCheckboxAnswerOptionFieldsProps {
   openLabelChecked: boolean;
   feedback: string;
   readOnly: boolean;
+  expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   onOptionChange: (changedOptionValue: string) => void;
   onOpenLabelCheckedChange: (checked: boolean) => void;
   onOpenLabelInputChange: (input: string) => void;
+  onClear: () => void;
 }
 
 function OpenChoiceCheckboxAnswerOptionFields(props: OpenChoiceCheckboxAnswerOptionFieldsProps) {
@@ -53,39 +58,71 @@ function OpenChoiceCheckboxAnswerOptionFields(props: OpenChoiceCheckboxAnswerOpt
     openLabelChecked,
     feedback,
     readOnly,
+    expressionUpdated,
     answerOptionsToggleExpressionsMap,
     onOptionChange,
     onOpenLabelCheckedChange,
-    onOpenLabelInputChange
+    onOpenLabelInputChange,
+    onClear
   } = props;
+
+  const inputsFlexGrow = useRendererStylingStore.use.inputsFlexGrow();
+  const hideClearButton = useRendererStylingStore.use.hideClearButton();
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
-  return (
-    <Box id={qItem.type + '-' + qItem.linkId}>
-      <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
-        <CheckboxOptionList
-          options={options}
-          answers={answers}
-          readOnly={readOnly}
-          answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
-          onCheckedChange={onOptionChange}
-        />
+  const answersEmpty = answers.length === 0;
 
-        {openLabelText !== null ? (
-          <CheckboxSingleWithOpenLabel
-            value={openLabelValue}
-            label={openLabelText}
-            readOnly={readOnly}
-            isChecked={openLabelChecked}
-            onCheckedChange={onOpenLabelCheckedChange}
-            onInputChange={onOpenLabelInputChange}
-          />
-        ) : null}
-      </StyledFormGroup>
+  return (
+    <>
+      <Box
+        display="flex"
+        sx={{
+          justifyContent: 'space-between',
+          alignItems: { xs: 'start', sm: 'center' },
+          flexDirection: { xs: 'column', sm: 'row' }
+        }}>
+        <Box
+          display="flex"
+          alignItems="center"
+          sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
+          <StyledFormGroup
+            id={qItem.type + '-' + qItem.linkId}
+            row={orientation === ChoiceItemOrientation.Horizontal}
+            sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
+            <CheckboxOptionList
+              options={options}
+              answers={answers}
+              readOnly={readOnly}
+              fullWidth={inputsFlexGrow}
+              answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+              onCheckedChange={onOptionChange}
+            />
+
+            {openLabelText !== null ? (
+              <CheckboxSingleWithOpenLabel
+                value={openLabelValue}
+                label={openLabelText}
+                readOnly={readOnly}
+                isChecked={openLabelChecked}
+                onCheckedChange={onOpenLabelCheckedChange}
+                onInputChange={onOpenLabelInputChange}
+              />
+            ) : null}
+          </StyledFormGroup>
+
+          <Box flexGrow={1} />
+
+          <FadingCheckIcon fadeIn={expressionUpdated} disabled={readOnly} />
+        </Box>
+
+        {hideClearButton ? null : (
+          <ClearInputButton buttonShown={!answersEmpty} readOnly={readOnly} onClear={onClear} />
+        )}
+      </Box>
 
       {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
-    </Box>
+    </>
   );
 }
 

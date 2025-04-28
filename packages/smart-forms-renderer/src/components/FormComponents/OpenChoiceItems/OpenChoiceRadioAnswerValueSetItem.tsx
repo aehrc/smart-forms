@@ -77,8 +77,8 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
   const options = useMemo(() => convertCodingsToAnswerOptions(codings), [codings]);
 
   // Process answerOptionsToggleExpressions
-  // TODO use answerOptionsToggleExpUpdated to trigger a "refresh" icon when codings are dynamically updated
-  const { answerOptionsToggleExpressionsMap } = useAnswerOptionsToggleExpressions(qItem.linkId);
+  const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
+    useAnswerOptionsToggleExpressions(qItem.linkId);
 
   // Init empty open label
   let initialOpenLabelValue = '';
@@ -151,6 +151,10 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
     }
   }
 
+  function handleClear() {
+    onQrItemChange(createEmptyQrItem(qItem, answerKey));
+  }
+
   return (
     <FullWidthFormComponentBox
       data-test="q-item-open-choice-radio-answer-option-box"
@@ -170,9 +174,11 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
             openLabelSelected={openLabelSelected}
             feedback={feedback}
             readOnly={readOnly}
+            expressionUpdated={answerOptionsToggleExpUpdated}
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             terminologyError={terminologyError}
             onValueChange={handleValueChange}
+            onClear={handleClear}
           />
         }
       />
