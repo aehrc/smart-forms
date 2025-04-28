@@ -88,9 +88,14 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
   );
 
   // Process answerOptionsToggleExpressions
-  // TODO use answerOptionsToggleExpUpdated to trigger a "refresh" icon when codings are dynamically updated
   const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
     useAnswerOptionsToggleExpressions(qItem.linkId);
+
+  // Clear open label if answerOptionsToggleExpressions are updated AND if openLabelChecked is true
+  // Note: This adjusts the state during rendering https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
+  if (openLabelChecked && answerOptionsToggleExpUpdated) {
+    setOpenLabelChecked(false);
+  }
 
   // Event handlers
 
@@ -158,6 +163,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
 
   function handleClear() {
     onQrItemChange(createEmptyQrItem(qItem, answerKey));
+    setOpenLabelChecked(false);
   }
 
   if (showMinimalView) {

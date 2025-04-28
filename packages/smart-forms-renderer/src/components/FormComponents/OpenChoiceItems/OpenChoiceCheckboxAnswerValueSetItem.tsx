@@ -82,8 +82,7 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: OpenChoiceCheckboxAnswerVal
   const openLabelText = getOpenLabelText(qItem);
 
   // Get codings/options from valueSet
-  // TODO use dynamicCodingsUpdated to trigger a "refresh" icon when codings are dynamically updated
-  const { codings, terminologyError } = useValueSetCodings(qItem);
+  const { codings, terminologyError, dynamicCodingsUpdated } = useValueSetCodings(qItem);
 
   const options = useMemo(() => convertCodingsToAnswerOptions(codings), [codings]);
 
@@ -95,6 +94,12 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: OpenChoiceCheckboxAnswerVal
   // Process answerOptionsToggleExpressions
   const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
     useAnswerOptionsToggleExpressions(qItem.linkId);
+
+  // Clear open label if answerOptionsToggleExpressions are updated AND if openLabelChecked is true
+  // Note: This adjusts the state during rendering https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
+  if (openLabelChecked && answerOptionsToggleExpUpdated) {
+    setOpenLabelChecked(false);
+  }
 
   // Event handlers
 
@@ -162,6 +167,7 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: OpenChoiceCheckboxAnswerVal
 
   function handleClear() {
     onQrItemChange(createEmptyQrItem(qItem, answerKey));
+    setOpenLabelChecked(false);
   }
 
   if (showMinimalView) {
@@ -176,7 +182,7 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: OpenChoiceCheckboxAnswerVal
           openLabelChecked={openLabelChecked}
           feedback={feedback}
           readOnly={readOnly}
-          expressionUpdated={answerOptionsToggleExpUpdated}
+          expressionUpdated={dynamicCodingsUpdated || answerOptionsToggleExpUpdated}
           answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
           terminologyError={terminologyError}
           onOptionChange={handleOptionChange}
@@ -208,7 +214,7 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: OpenChoiceCheckboxAnswerVal
             openLabelChecked={openLabelChecked}
             feedback={feedback}
             readOnly={readOnly}
-            expressionUpdated={answerOptionsToggleExpUpdated}
+            expressionUpdated={dynamicCodingsUpdated || answerOptionsToggleExpUpdated}
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             terminologyError={terminologyError}
             onOptionChange={handleOptionChange}

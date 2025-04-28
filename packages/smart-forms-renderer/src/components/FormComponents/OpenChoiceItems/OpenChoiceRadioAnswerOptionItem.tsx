@@ -67,10 +67,6 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
 
   const options = qItem.answerOption ?? [];
 
-  // Process answerOptionsToggleExpressions
-  const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
-    useAnswerOptionsToggleExpressions(qItem.linkId);
-
   // Init empty open label
   let initialOpenLabelValue = '';
   let initialOpenLabelSelected = false;
@@ -89,6 +85,16 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
   // Allow open label to remain selected even if its input was cleared
   if (openLabelSelected && valueRadio === null) {
     valueRadio = '';
+  }
+
+  // Process answerOptionsToggleExpressions
+  const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
+    useAnswerOptionsToggleExpressions(qItem.linkId);
+
+  // Clear open label if answerOptionsToggleExpressions are updated AND if openLabelSelected is true
+  // Note: This adjusts the state during rendering https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
+  if (openLabelSelected && answerOptionsToggleExpUpdated) {
+    setOpenLabelSelected(false);
   }
 
   // Event handlers
@@ -144,6 +150,7 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
 
   function handleClear() {
     onQrItemChange(createEmptyQrItem(qItem, answerKey));
+    setOpenLabelSelected(false);
   }
 
   return (

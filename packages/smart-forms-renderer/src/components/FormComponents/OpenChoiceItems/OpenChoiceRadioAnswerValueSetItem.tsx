@@ -71,14 +71,9 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
   const openLabelText = getOpenLabelText(qItem);
 
   // Get codings/options from valueSet
-  // TODO use dynamicCodingsUpdated to trigger a "refresh" icon when codings are dynamically updated
-  const { codings, terminologyError } = useValueSetCodings(qItem);
+  const { codings, terminologyError, dynamicCodingsUpdated } = useValueSetCodings(qItem);
 
   const options = useMemo(() => convertCodingsToAnswerOptions(codings), [codings]);
-
-  // Process answerOptionsToggleExpressions
-  const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
-    useAnswerOptionsToggleExpressions(qItem.linkId);
 
   // Init empty open label
   let initialOpenLabelValue = '';
@@ -98,6 +93,16 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
   // Allow open label to remain selected even if its input was cleared
   if (openLabelSelected && valueRadio === null) {
     valueRadio = '';
+  }
+
+  // Process answerOptionsToggleExpressions
+  const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
+    useAnswerOptionsToggleExpressions(qItem.linkId);
+
+  // Clear open label if answerOptionsToggleExpressions are updated AND if openLabelSelected is true
+  // Note: This adjusts the state during rendering https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
+  if (openLabelSelected && answerOptionsToggleExpUpdated) {
+    setOpenLabelSelected(false);
   }
 
   // Event handlers
@@ -153,6 +158,7 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
 
   function handleClear() {
     onQrItemChange(createEmptyQrItem(qItem, answerKey));
+    setOpenLabelSelected(false);
   }
 
   return (
@@ -174,7 +180,7 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
             openLabelSelected={openLabelSelected}
             feedback={feedback}
             readOnly={readOnly}
-            expressionUpdated={answerOptionsToggleExpUpdated}
+            expressionUpdated={dynamicCodingsUpdated || answerOptionsToggleExpUpdated}
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             terminologyError={terminologyError}
             onValueChange={handleValueChange}
