@@ -242,7 +242,7 @@ function initialiseItemCalculatedExpressionValueRecursive(
     );
     return constructGroupItem(
       qItem,
-      updatedQrItems
+      updatedQrItems && updatedQrItems.length > 0
         ? {
             linkId: qItem.linkId,
             text: qItem.text,
@@ -256,8 +256,11 @@ function initialiseItemCalculatedExpressionValueRecursive(
   let qrItem = qrItemOrItems;
   const childQItems = qItem.item;
   if (childQItems && childQItems.length > 0) {
-    qrItem = qrItemOrItems ?? structuredClone(createEmptyQrGroup(qItem));
-    const childQrItems = qrItem.item ?? [];
+    // If item.type is 'group', create empty group qrItem
+    if (qItem.type === 'group') {
+      qrItem = qrItemOrItems ?? structuredClone(createEmptyQrGroup(qItem));
+    }
+    const childQrItems = qrItem?.item ?? [];
 
     const indexMap = mapQItemsIndex(qItem);
     const qrItemsByIndex = getQrItemsIndex(childQItems, childQrItems, indexMap);
@@ -281,7 +284,7 @@ function initialiseItemCalculatedExpressionValueRecursive(
               linkId: childQItem.linkId,
               qrItems: updatedChildQRItemOrItems
             },
-            qrItem,
+            qrItem ?? structuredClone(createEmptyQrGroup(qItem)),
             indexMap
           );
         }
@@ -291,7 +294,12 @@ function initialiseItemCalculatedExpressionValueRecursive(
       // Update QR items in non-repeating group
       const updatedChildQRItem = updatedChildQRItemOrItems;
       if (updatedChildQRItem) {
-        updateQrItemsInGroup(updatedChildQRItem, null, qrItem, indexMap);
+        updateQrItemsInGroup(
+          updatedChildQRItem,
+          null,
+          qrItem ?? structuredClone(createEmptyQrGroup(qItem)),
+          indexMap
+        );
       }
     }
 
