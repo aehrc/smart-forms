@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 
-import React, { ChangeEvent, useMemo } from 'react';
+import type { ChangeEvent } from 'react';
+import React, { useMemo } from 'react';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { StyledRadioGroup, StyledRequiredTypography } from '../Item.styles';

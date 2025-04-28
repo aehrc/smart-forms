@@ -27,7 +27,7 @@ import type { TargetConstraint } from '../interfaces/targetConstraint.interface'
 import type { Variables, VariableXFhirQuery } from '../interfaces';
 import { evaluateDynamicValueSets } from './parameterisedValueSets';
 import type { ComputedQRItemUpdates } from '../interfaces/computedUpdates.interface';
-import { AnswerOptionsToggleExpression } from '../interfaces/answerOptionsToggleExpression.interface';
+import type { AnswerOptionsToggleExpression } from '../interfaces/answerOptionsToggleExpression.interface';
 import { evaluateAnswerOptionsToggleExpressions } from './answerOptionsToggleExpressions';
 
 interface EvaluateUpdatedExpressionsParams {

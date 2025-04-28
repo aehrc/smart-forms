@@ -17,10 +17,8 @@
 
 import type { Expression, Extension, QuestionnaireItem } from 'fhir/r4';
 import type { CalculatedExpression } from '../interfaces/calculatedExpression.interface';
-import {
-  AnswerOptionsToggleExpression,
-  type RestrictedAnswerOption
-} from '../interfaces/answerOptionsToggleExpression.interface';
+import type { AnswerOptionsToggleExpression } from '../interfaces/answerOptionsToggleExpression.interface';
+import { type RestrictedAnswerOption } from '../interfaces/answerOptionsToggleExpression.interface';
 import { optionIsAnswerOptionsToggleExpressionOption } from './questionnaireStoreUtils/extractAnswerOptionsToggleExpressions';
 
 /**

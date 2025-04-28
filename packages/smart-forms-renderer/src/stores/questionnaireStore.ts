@@ -54,7 +54,7 @@ import type { TargetConstraint } from '../interfaces/targetConstraint.interface'
 import { readTargetConstraintLocationLinkIds } from '../utils/targetConstraint';
 import type { ProcessedValueSet } from '../interfaces/valueSet.interface';
 import type { ComputedQRItemUpdates } from '../interfaces/computedUpdates.interface';
-import { AnswerOptionsToggleExpression } from '../interfaces/answerOptionsToggleExpression.interface';
+import type { AnswerOptionsToggleExpression } from '../interfaces/answerOptionsToggleExpression.interface';
 
 /**
  * QuestionnaireStore properties and methods
