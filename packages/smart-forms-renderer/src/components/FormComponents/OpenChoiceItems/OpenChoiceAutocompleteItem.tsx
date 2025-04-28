@@ -66,7 +66,7 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem, answerKey);
 
   // Init input value

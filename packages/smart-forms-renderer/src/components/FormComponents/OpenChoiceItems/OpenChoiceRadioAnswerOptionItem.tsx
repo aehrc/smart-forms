@@ -53,7 +53,7 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   // Init answers
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   const qrOpenChoiceRadio = qrItem ?? createEmptyQrItem(qItem, answerKey);
   let valueRadio: string | null = getQrChoiceValue(qrOpenChoiceRadio, true);
   const answers = qrOpenChoiceRadio.answer ?? [];

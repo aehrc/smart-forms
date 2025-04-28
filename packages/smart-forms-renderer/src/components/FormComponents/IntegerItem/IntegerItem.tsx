@@ -53,7 +53,7 @@ function IntegerItem(props: IntegerItemProps) {
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   let valueInteger = 0;
   let initialInput = '';
   if (qrItem?.answer) {

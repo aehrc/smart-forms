@@ -71,7 +71,7 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
   const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   const qrChoice = qrItem ?? createEmptyQrItem(qItem, answerKey);
   const valueChoice = getQrChoiceValue(qrChoice);
 

@@ -65,7 +65,7 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   const qrChoiceCheckbox = qrItem ?? createEmptyQrItem(qItem, answerKey);
   const answers = qrChoiceCheckbox.answer ?? [];
 

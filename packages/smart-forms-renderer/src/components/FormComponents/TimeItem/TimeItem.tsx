@@ -50,7 +50,7 @@ function TimeItem(props: TimeItemProps) {
   const { displayPrompt, entryFormat } = renderingExtensions;
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   let timeString: string | null = null;
   if (qrItem?.answer && qrItem?.answer[0].valueTime) {
     timeString = qrItem.answer[0].valueTime;
