@@ -24,7 +24,7 @@ interface OpenChoiceRadioAnswerOptionFieldsProps {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
   valueRadio: string | null;
-  openLabelText: string | null;
+  openLabelText: string;
   openLabelValue: string | null;
   openLabelSelected: boolean;
   feedback: string;
@@ -62,17 +62,13 @@ function OpenChoiceRadioAnswerOptionFields(props: OpenChoiceRadioAnswerOptionFie
       answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
       onCheckedChange={(newValue) => onValueChange(newValue, null)}
       onClear={onClear}>
-      <>
-        {openLabelText ? (
-          <RadioButtonWithOpenLabel
-            value={openLabelValue}
-            label={openLabelText}
-            readOnly={readOnly}
-            isSelected={openLabelSelected}
-            onInputChange={(input) => onValueChange(null, input)}
-          />
-        ) : null}
-      </>
+      <RadioButtonWithOpenLabel
+        value={openLabelValue}
+        label={openLabelText}
+        readOnly={readOnly}
+        isSelected={openLabelSelected}
+        onInputChange={(input) => onValueChange(null, input)}
+      />
     </RadioFormGroup>
   );
 }

@@ -28,7 +28,7 @@ interface OpenChoiceCheckboxAnswerOptionFieldsProps {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
   answers: QuestionnaireResponseItemAnswer[];
-  openLabelText: string | null;
+  openLabelText: string;
   openLabelValue: string;
   openLabelChecked: boolean;
   feedback: string;
@@ -70,18 +70,14 @@ function OpenChoiceCheckboxAnswerOptionFields(props: OpenChoiceCheckboxAnswerOpt
       answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
       onCheckedChange={onOptionChange}
       onClear={onClear}>
-      <>
-        {openLabelText !== null ? (
-          <CheckboxSingleWithOpenLabel
-            value={openLabelValue}
-            label={openLabelText}
-            readOnly={readOnly}
-            isChecked={openLabelChecked}
-            onCheckedChange={onOpenLabelCheckedChange}
-            onInputChange={onOpenLabelInputChange}
-          />
-        ) : null}
-      </>
+      <CheckboxSingleWithOpenLabel
+        value={openLabelValue}
+        label={openLabelText}
+        readOnly={readOnly}
+        isChecked={openLabelChecked}
+        onCheckedChange={onOpenLabelCheckedChange}
+        onInputChange={onOpenLabelInputChange}
+      />
     </CheckboxFormGroup>
   );
 }
