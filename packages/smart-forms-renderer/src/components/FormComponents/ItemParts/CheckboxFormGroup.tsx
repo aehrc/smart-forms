@@ -41,6 +41,7 @@ function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
     children
   } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const inputsFlexGrow = useRendererStylingStore.use.inputsFlexGrow();
   const hideClearButton = useRendererStylingStore.use.hideClearButton();
 
@@ -63,8 +64,10 @@ function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
           sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
           <StyledFormGroup
             id={qItem.type + '-' + qItem.linkId}
+            aria-labelledby={'label-' + qItem.linkId}
             row={orientation === ChoiceItemOrientation.Horizontal}
-            sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
+            sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
+            aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}>
             <CheckboxOptionList
               options={options}
               answers={answers}

@@ -37,6 +37,7 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
     children
   } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const inputsFlexGrow = useRendererStylingStore.use.inputsFlexGrow();
   const hideClearButton = useRendererStylingStore.use.hideClearButton();
 
@@ -57,8 +58,10 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
           sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
           <StyledRadioGroup
             id={qItem.type + '-' + qItem.linkId}
+            aria-labelledby={'label-' + qItem.linkId}
             row={orientation === ChoiceItemOrientation.Horizontal}
             sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
+            aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
             onChange={(e) => {
               // If item.readOnly=true, do not allow any changes
               if (readOnly) {
