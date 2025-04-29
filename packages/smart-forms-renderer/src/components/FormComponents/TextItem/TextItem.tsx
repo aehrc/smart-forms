@@ -47,7 +47,7 @@ function TextItem(props: TextItemProps) {
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   let valueText = '';
   if (qrItem?.answer && qrItem?.answer[0].valueString) {
     valueText = qrItem.answer[0].valueString;

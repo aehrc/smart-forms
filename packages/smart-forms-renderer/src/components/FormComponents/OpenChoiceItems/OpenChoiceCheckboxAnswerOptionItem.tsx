@@ -40,6 +40,7 @@ import { updateChoiceCheckboxAnswers } from '../../../utils/choice';
 import OpenChoiceCheckboxAnswerOptionFields from './OpenChoiceCheckboxAnswerOptionFields';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import ItemLabel from '../ItemParts/ItemLabel';
+import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 
 interface OpenChoiceCheckboxAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
@@ -67,7 +68,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   const qrOpenChoiceCheckbox = qrItem ?? createEmptyQrItem(qItem, answerKey);
   const answers = qrOpenChoiceCheckbox.answer ?? [];
 
@@ -85,6 +86,16 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
     options,
     answers
   );
+
+  // Process answerOptionsToggleExpressions
+  const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
+    useAnswerOptionsToggleExpressions(qItem.linkId);
+
+  // Clear open label if answerOptionsToggleExpressions are updated AND if openLabelChecked is true
+  // Note: This adjusts the state during rendering https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
+  if (openLabelChecked && answerOptionsToggleExpUpdated) {
+    setOpenLabelChecked(false);
+  }
 
   // Event handlers
 
@@ -150,6 +161,11 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
     [handleOpenLabelChange]
   ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
 
+  function handleClear() {
+    onQrItemChange(createEmptyQrItem(qItem, answerKey));
+    setOpenLabelChecked(false);
+  }
+
   if (showMinimalView) {
     return (
       <>
@@ -162,9 +178,12 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
           openLabelChecked={openLabelChecked}
           feedback={feedback}
           readOnly={readOnly}
+          expressionUpdated={answerOptionsToggleExpUpdated}
+          answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
           onOptionChange={handleOptionChange}
           onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
           onOpenLabelInputChange={handleOpenLabelInputChange}
+          onClear={handleClear}
         />
         <DisplayInstructions readOnly={readOnly}>{displayInstructions}</DisplayInstructions>
       </>
@@ -190,9 +209,12 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
             openLabelChecked={openLabelChecked}
             feedback={feedback}
             readOnly={readOnly}
+            expressionUpdated={answerOptionsToggleExpUpdated}
+            answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             onOptionChange={handleOptionChange}
             onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
             onOpenLabelInputChange={handleOpenLabelInputChange}
+            onClear={handleClear}
           />
         }
       />

@@ -126,10 +126,11 @@ export function hasHiddenExtension(qItem: QuestionnaireItem): boolean {
 
 /**
  * Check if the extension has url for items that use open label
+ * Default open label text to "Other"
  *
  * @author Sean Fong
  */
-export function getOpenLabelText(qItem: QuestionnaireItem): string | null {
+export function getOpenLabelText(qItem: QuestionnaireItem): string {
   const itemControl = qItem.extension?.find(
     (extension: Extension) =>
       extension.url === 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-openLabel'
@@ -139,7 +140,8 @@ export function getOpenLabelText(qItem: QuestionnaireItem): string | null {
       return itemControl.valueString;
     }
   }
-  return null;
+
+  return 'Other';
 }
 
 /**

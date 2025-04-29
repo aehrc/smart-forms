@@ -17,6 +17,9 @@
 
 import type { Expression, Extension, QuestionnaireItem } from 'fhir/r4';
 import type { CalculatedExpression } from '../interfaces/calculatedExpression.interface';
+import type { AnswerOptionsToggleExpression } from '../interfaces/answerOptionsToggleExpression.interface';
+import { type RestrictedAnswerOption } from '../interfaces/answerOptionsToggleExpression.interface';
+import { optionIsAnswerOptionsToggleExpressionOption } from './questionnaireStoreUtils/extractAnswerOptionsToggleExpressions';
 
 /**
  * Get enableWhenExpression.valueExpression if its present in item
@@ -112,16 +115,87 @@ function findCqfExpressionsInExtensions(extensions: Extension[]): Extension[] {
  * @author Sean Fong
  */
 export function getAnswerExpression(qItem: QuestionnaireItem): Expression | null {
-  const itemControl = qItem.extension?.find(
+  const answerExpressionExtension = qItem.extension?.find(
     (extension: Extension) =>
       extension.url ===
         'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerExpression' &&
       extension.valueExpression?.language === 'text/fhirpath'
   );
-  if (itemControl) {
-    if (itemControl.valueExpression) {
-      return itemControl.valueExpression;
+  if (answerExpressionExtension) {
+    if (answerExpressionExtension.valueExpression) {
+      return answerExpressionExtension.valueExpression;
     }
   }
+  return null;
+}
+
+/**
+ * Get answerOptionsToggleExpressions if its present in item
+ *
+ * @author Sean Fong
+ */
+export function getAnswerOptionsToggleExpressions(
+  qItem: QuestionnaireItem
+): AnswerOptionsToggleExpression[] | null {
+  const answerOptionsToggleExpressionExtensions = qItem.extension?.filter(
+    (extension: Extension) =>
+      extension.url ===
+        'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerOptionsToggleExpression' &&
+      extension.extension &&
+      extension.extension.length > 0
+  );
+
+  if (answerOptionsToggleExpressionExtensions) {
+    const answerOptionsToggleExpressions: AnswerOptionsToggleExpression[] = [];
+    for (const answerOptionsToggleExpressionExtension of answerOptionsToggleExpressionExtensions) {
+      const optionExtensions = answerOptionsToggleExpressionExtension.extension?.filter(
+        (ext) => ext.url === 'option'
+      );
+      const expressionExtension = answerOptionsToggleExpressionExtension.extension?.find(
+        (ext) => ext.url === 'expression' && ext.valueExpression
+      );
+
+      if (
+        optionExtensions &&
+        optionExtensions.length > 0 &&
+        expressionExtension &&
+        expressionExtension.valueExpression
+      ) {
+        const options: RestrictedAnswerOption[] = [];
+        for (const optionExtension of optionExtensions) {
+          // Check if optionExtension has valueCoding, valueString or valueInteger
+          if (optionIsAnswerOptionsToggleExpressionOption(optionExtension)) {
+            const option: RestrictedAnswerOption = {};
+            if (optionExtension.valueCoding !== undefined) {
+              option.valueCoding = optionExtension.valueCoding;
+            }
+            if (optionExtension.valueString !== undefined) {
+              option.valueString = optionExtension.valueString;
+            }
+            if (optionExtension.valueInteger !== undefined) {
+              option.valueInteger = optionExtension.valueInteger;
+            }
+
+            options.push(option);
+          }
+        }
+
+        // If there are any options, create an answerOptionsToggleExpression
+        if (options.length > 0) {
+          answerOptionsToggleExpressions.push({
+            linkId: qItem.linkId,
+            options: options,
+            valueExpression: expressionExtension.valueExpression
+          });
+        }
+      }
+    }
+
+    // If there are any answerOptionsToggleExpressions, return them
+    if (answerOptionsToggleExpressions.length > 0) {
+      return answerOptionsToggleExpressions;
+    }
+  }
+
   return null;
 }

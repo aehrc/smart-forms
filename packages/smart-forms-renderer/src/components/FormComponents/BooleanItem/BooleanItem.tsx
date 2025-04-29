@@ -53,7 +53,7 @@ function BooleanItem(props: BooleanItemProps) {
   const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   let valueBoolean: boolean | undefined = undefined;
   if (qrItem?.answer?.[0]?.valueBoolean !== undefined) {
     valueBoolean = qrItem.answer[0].valueBoolean;

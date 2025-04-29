@@ -14,7 +14,7 @@ const questionnaireResponseStoreStatePropertyNames: string[] = [
 ];
 
 function QuestionnaireResponseStoreViewer() {
-  const [selectedProperty, setSelectedProperty] = useState('sourceResponse');
+  const [selectedProperty, setSelectedProperty] = useState('updatableResponse');
   const [showJsonTree, setShowJsonTree] = useState(false);
 
   const propertyObject = useShowQuestionnaireResponseStoreProperty(selectedProperty);

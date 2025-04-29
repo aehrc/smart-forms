@@ -27,11 +27,14 @@ import type { TargetConstraint } from '../interfaces/targetConstraint.interface'
 import type { Variables, VariableXFhirQuery } from '../interfaces';
 import { evaluateDynamicValueSets } from './parameterisedValueSets';
 import type { ComputedQRItemUpdates } from '../interfaces/computedUpdates.interface';
+import type { AnswerOptionsToggleExpression } from '../interfaces/answerOptionsToggleExpression.interface';
+import { evaluateAnswerOptionsToggleExpressions } from './answerOptionsToggleExpressions';
 
 interface EvaluateUpdatedExpressionsParams {
   updatedResponse: QuestionnaireResponse;
   updatedResponseItemMap: Record<string, QuestionnaireResponseItem[]>;
   targetConstraints: Record<string, TargetConstraint>;
+  answerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
   calculatedExpressions: Record<string, CalculatedExpression[]>;
   enableWhenExpressions: EnableWhenExpressions;
   variables: Variables;
@@ -46,6 +49,7 @@ export async function evaluateUpdatedExpressions(
 ): Promise<{
   isUpdated: boolean;
   updatedTargetConstraints: Record<string, TargetConstraint>;
+  updatedAnswerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
   updatedEnableWhenExpressions: EnableWhenExpressions;
   updatedCalculatedExpressions: Record<string, CalculatedExpression[]>;
   updatedProcessedValueSets: Record<string, any>;
@@ -57,6 +61,7 @@ export async function evaluateUpdatedExpressions(
     updatedResponse,
     updatedResponseItemMap,
     targetConstraints,
+    answerOptionsToggleExpressions,
     enableWhenExpressions,
     calculatedExpressions,
     processedValueSets,
@@ -73,6 +78,7 @@ export async function evaluateUpdatedExpressions(
     return {
       isUpdated: false,
       updatedTargetConstraints: targetConstraints,
+      updatedAnswerOptionsToggleExpressions: answerOptionsToggleExpressions,
       updatedEnableWhenExpressions: enableWhenExpressions,
       updatedCalculatedExpressions: calculatedExpressions,
       updatedProcessedValueSets: processedValueSets,
@@ -100,6 +106,18 @@ export async function evaluateUpdatedExpressions(
     updatedFhirPathContext,
     fhirPathTerminologyCache,
     targetConstraints,
+    terminologyServerUrl
+  );
+
+  // Update answerOptionsToggleExpressions
+  const {
+    answerOptionsToggleExpressionsIsUpdated,
+    updatedAnswerOptionsToggleExpressions,
+    computedNewAnswers: computedNewAnswersAnswerOptionsToggleExpressions
+  } = await evaluateAnswerOptionsToggleExpressions(
+    updatedFhirPathContext,
+    fhirPathTerminologyCache,
+    answerOptionsToggleExpressions,
     terminologyServerUrl
   );
 
@@ -140,15 +158,21 @@ export async function evaluateUpdatedExpressions(
     computedQRItemUpdates[linkId] = null;
   }
 
+  for (const linkId in computedNewAnswersAnswerOptionsToggleExpressions) {
+    computedQRItemUpdates[linkId] = null;
+  }
+
   const isUpdated =
     enableWhenExpsIsUpdated ||
     calculatedExpsIsUpdated ||
     targetConstraintsIsUpdated ||
+    answerOptionsToggleExpressionsIsUpdated ||
     processedValueSetsIsUpdated;
 
   return {
     isUpdated,
     updatedTargetConstraints,
+    updatedAnswerOptionsToggleExpressions,
     updatedEnableWhenExpressions,
     updatedCalculatedExpressions,
     updatedProcessedValueSets,

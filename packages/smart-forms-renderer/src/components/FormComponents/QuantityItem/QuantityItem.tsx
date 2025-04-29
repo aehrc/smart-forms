@@ -64,7 +64,7 @@ function QuantityItem(props: QuantityItemProps) {
   }
 
   // Init inputs
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   let valueQuantity: Quantity = {};
   let initialValueInput = '';
   let initialComparatorInput: Quantity['comparator'] | null = null;

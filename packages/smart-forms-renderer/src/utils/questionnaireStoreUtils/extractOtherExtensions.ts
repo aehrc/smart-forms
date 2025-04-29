@@ -45,12 +45,14 @@ import { emptyResponse } from '../emptyResource';
 import { evaluateEnableWhenRepeatExpressionInstance } from '../enableWhenExpression';
 import {
   getAnswerExpression,
+  getAnswerOptionsToggleExpressions,
   getCalculatedExpressions,
   getEnableWhenExpression,
   getInitialExpression
 } from '../getExpressionsFromItem';
 import type { InitialExpression } from '../../interfaces/initialExpression.interface';
 import { addBindingParametersToValueSetUrl, getBindingParameters } from '../parameterisedValueSets';
+import type { AnswerOptionsToggleExpression } from '../../interfaces/answerOptionsToggleExpression.interface';
 
 interface ReturnParamsRecursive {
   variables: Variables;
@@ -63,6 +65,7 @@ interface ReturnParamsRecursive {
   processedValueSets: Record<string, ProcessedValueSet>;
   cachedValueSetCodings: Record<string, Coding[]>;
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
+  answerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
 }
 
 export async function extractOtherExtensions(
@@ -83,6 +86,7 @@ export async function extractOtherExtensions(
   const initialExpressions: Record<string, InitialExpression> = {};
   const answerExpressions: Record<string, AnswerExpression> = {};
   const answerOptions: Record<string, QuestionnaireItemAnswerOption[]> = {};
+  const answerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]> = {};
 
   if (!questionnaire.item || questionnaire.item.length === 0) {
     return {
@@ -96,6 +100,7 @@ export async function extractOtherExtensions(
       initialExpressions: {},
       answerExpressions: {},
       answerOptions: {},
+      answerOptionsToggleExpressions: {},
       valueSetPromises: valueSetPromises,
       processedValueSets: processedValueSets,
       cachedValueSetCodings: cachedValueSetCodings
@@ -114,6 +119,7 @@ export async function extractOtherExtensions(
       initialExpressions,
       answerExpressions,
       answerOptions,
+      answerOptionsToggleExpressions,
       valueSetPromises,
       processedValueSets,
       cachedValueSetCodings,
@@ -131,6 +137,7 @@ export async function extractOtherExtensions(
     initialExpressions,
     answerExpressions,
     answerOptions,
+    answerOptionsToggleExpressions,
     valueSetPromises,
     processedValueSets,
     cachedValueSetCodings
@@ -147,6 +154,7 @@ interface extractExtensionsFromItemRecursiveParams {
   initialExpressions: Record<string, InitialExpression>;
   answerExpressions: Record<string, AnswerExpression>;
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
+  answerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
   valueSetPromises: Record<string, ValueSetPromise>;
   processedValueSets: Record<string, ProcessedValueSet>;
   cachedValueSetCodings: Record<string, Coding[]>;
@@ -168,6 +176,7 @@ async function extractExtensionsFromItemRecursive(
     initialExpressions,
     answerExpressions,
     answerOptions,
+    answerOptionsToggleExpressions,
     valueSetPromises,
     processedValueSets,
     cachedValueSetCodings,
@@ -257,6 +266,7 @@ async function extractExtensionsFromItemRecursive(
     answerOptions[item.linkId] = options;
   }
 
+  // Get answerValueSets
   const initialValueSetUrl = item.answerValueSet;
   if (initialValueSetUrl) {
     const bindingParameters = getBindingParameters(item, initialValueSetUrl);
@@ -294,6 +304,13 @@ async function extractExtensionsFromItemRecursive(
     }
   }
 
+  // Get answerOptionsToggleExpressions
+  const itemAnswerOptionsToggleExpressions = getAnswerOptionsToggleExpressions(item);
+  if (itemAnswerOptionsToggleExpressions) {
+    answerOptionsToggleExpressions[item.linkId] = itemAnswerOptionsToggleExpressions;
+  }
+
+  // Get item-level variables
   if (item.extension) {
     variables.fhirPathVariables[item.linkId] = getFhirPathVariables(item.extension);
 
@@ -314,6 +331,7 @@ async function extractExtensionsFromItemRecursive(
     initialExpressions,
     answerExpressions,
     answerOptions,
+    answerOptionsToggleExpressions,
     valueSetPromises,
     processedValueSets,
     cachedValueSetCodings

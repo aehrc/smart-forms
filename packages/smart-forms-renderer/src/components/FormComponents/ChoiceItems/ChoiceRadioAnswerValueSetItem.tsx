@@ -35,6 +35,7 @@ import { useQuestionnaireStore } from '../../../stores';
 import useCodingCalculatedExpression from '../../../hooks/useCodingCalculatedExpression';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import ItemLabel from '../ItemParts/ItemLabel';
+import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 
 interface ChoiceRadioAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
@@ -52,7 +53,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   const qrChoiceRadio = qrItem ?? createEmptyQrItem(qItem, answerKey);
 
   let valueRadio: string | null = null;
@@ -84,6 +85,10 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
     }
   });
 
+  // Process answerOptionsToggleExpressions
+  const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
+    useAnswerOptionsToggleExpressions(qItem.linkId);
+
   function handleChange(newValue: string) {
     if (codings.length > 0) {
       const qrAnswer = findInAnswerOptions(options, newValue);
@@ -106,7 +111,8 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
         valueRadio={valueRadio}
         feedback={feedback}
         readOnly={readOnly}
-        expressionUpdated={calcExpUpdated || dynamicCodingsUpdated}
+        expressionUpdated={calcExpUpdated || dynamicCodingsUpdated || answerOptionsToggleExpUpdated}
+        answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
         terminologyError={terminologyError}
         onCheckedChange={handleChange}
         onClear={handleClear}
@@ -130,7 +136,10 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
             valueRadio={valueRadio}
             feedback={feedback}
             readOnly={readOnly}
-            expressionUpdated={calcExpUpdated || dynamicCodingsUpdated}
+            expressionUpdated={
+              calcExpUpdated || dynamicCodingsUpdated || answerOptionsToggleExpUpdated
+            }
+            answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             terminologyError={terminologyError}
             onCheckedChange={handleChange}
             onClear={handleClear}
