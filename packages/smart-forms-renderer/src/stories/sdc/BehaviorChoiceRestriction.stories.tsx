@@ -20,6 +20,7 @@ import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperF
 import {
   qAnswerExpression,
   qAnswerOption,
+  qAnswerOptionToggleExpression,
   qAnswerValueSet,
   qReadOnlyDuplicate,
   qRepeatsDuplicate,
@@ -54,6 +55,11 @@ export const AnswerValueSet: Story = {
 export const AnswerExpression: Story = {
   args: {
     questionnaire: qAnswerExpression
+  }
+};
+export const AnswerOptionToggleExpression: Story = {
+  args: {
+    questionnaire: qAnswerOptionToggleExpression
   }
 };
 

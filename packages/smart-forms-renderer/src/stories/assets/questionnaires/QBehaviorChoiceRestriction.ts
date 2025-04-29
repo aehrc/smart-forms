@@ -193,6 +193,273 @@ export const qAnswerExpression: Questionnaire = {
   ]
 };
 
+export const qAnswerOptionToggleExpression: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'AnswerOptionToggleExpression',
+  name: 'AnswerOptionToggleExpression',
+  title: 'AnswerOptionToggleExpression',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-05-01',
+  url: 'https://smartforms.csiro.au/docs/behavior/choice-restrictions/answer-option-toggle-expression',
+  extension: [
+    {
+      url: 'http://hl7.org/fhir/StructureDefinition/variable',
+      valueExpression: {
+        name: 'isNotNoneCode',
+        language: 'text/fhirpath',
+        expression:
+          "%resource.item.where(linkId='hallucination-type').answer.value.empty() or %resource.item.where(linkId='hallucination-type').answer.value.code != 'none'"
+      }
+    }
+  ],
+  item: [
+    {
+      linkId: 'hallucination-type',
+      text: 'Type of Hallucination',
+      type: 'choice',
+      answerOption: [
+        {
+          valueCoding: {
+            code: 'none',
+            display: 'None'
+          }
+        },
+        {
+          valueCoding: {
+            code: 'visual',
+            display: 'Visual'
+          }
+        },
+        {
+          valueCoding: {
+            code: 'tactile',
+            display: 'Tactile'
+          }
+        }
+      ]
+    },
+    {
+      linkId: 'hallucination-details-dropdown',
+      text: 'Hallucinations (dropdown)',
+      type: 'choice',
+      answerOption: [
+        {
+          valueCoding: {
+            code: 'lucid',
+            display: 'Lucid'
+          }
+        },
+        {
+          valueCoding: {
+            code: 'infrequent',
+            display: 'Infrequent'
+          }
+        },
+        {
+          valueCoding: {
+            code: 'brief',
+            display: 'Brief'
+          }
+        }
+      ],
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerOptionsToggleExpression',
+          extension: [
+            {
+              url: 'option',
+              valueCoding: {
+                code: 'infrequent',
+                display: 'Infrequent'
+              }
+            },
+            {
+              url: 'expression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%isNotNoneCode'
+              }
+            }
+          ]
+        },
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerOptionsToggleExpression',
+          extension: [
+            {
+              url: 'option',
+              valueCoding: {
+                code: 'brief',
+                display: 'Brief'
+              }
+            },
+            {
+              url: 'expression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%isNotNoneCode'
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      linkId: 'hallucination-details-checkbox',
+      text: 'Hallucinations (checkbox)',
+      type: 'choice',
+      answerOption: [
+        {
+          valueCoding: {
+            code: 'lucid',
+            display: 'Lucid'
+          }
+        },
+        {
+          valueCoding: {
+            code: 'infrequent',
+            display: 'Infrequent'
+          }
+        },
+        {
+          valueCoding: {
+            code: 'brief',
+            display: 'Brief'
+          }
+        }
+      ],
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: 'http://hl7.org/fhir/questionnaire-item-control',
+                code: 'check-box'
+              }
+            ]
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerOptionsToggleExpression',
+          extension: [
+            {
+              url: 'option',
+              valueCoding: {
+                code: 'infrequent',
+                display: 'Infrequent'
+              }
+            },
+            {
+              url: 'expression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%isNotNoneCode'
+              }
+            }
+          ]
+        },
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerOptionsToggleExpression',
+          extension: [
+            {
+              url: 'option',
+              valueCoding: {
+                code: 'brief',
+                display: 'Brief'
+              }
+            },
+            {
+              url: 'expression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%isNotNoneCode'
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      linkId: 'hallucination-details-radio',
+      text: 'Hallucinations (radio)',
+      type: 'choice',
+      answerOption: [
+        {
+          valueCoding: {
+            code: 'lucid',
+            display: 'Lucid'
+          }
+        },
+        {
+          valueCoding: {
+            code: 'infrequent',
+            display: 'Infrequent'
+          }
+        },
+        {
+          valueCoding: {
+            code: 'brief',
+            display: 'Brief'
+          }
+        }
+      ],
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: 'http://hl7.org/fhir/questionnaire-item-control',
+                code: 'radio-button'
+              }
+            ]
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerOptionsToggleExpression',
+          extension: [
+            {
+              url: 'option',
+              valueCoding: {
+                code: 'infrequent',
+                display: 'Infrequent'
+              }
+            },
+            {
+              url: 'expression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%isNotNoneCode'
+              }
+            }
+          ]
+        },
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerOptionsToggleExpression',
+          extension: [
+            {
+              url: 'option',
+              valueCoding: {
+                code: 'brief',
+                display: 'Brief'
+              }
+            },
+            {
+              url: 'expression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%isNotNoneCode'
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
 export const qRequiredDuplicate: Questionnaire = {
   resourceType: 'Questionnaire',
   id: 'RequiredDuplicate',

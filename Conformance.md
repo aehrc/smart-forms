@@ -35,7 +35,7 @@ View the source here: http://hl7.org/fhir/uv/sdc/expressions.html
 - [ ] contextExpression
 - [x] calculatedExpression
 - [x] enableWhenExpression
-- [ ] answerOptionToggleExpression
+- [x] answerOptionToggleExpression
 - [x] itemPopulationContext
 - [ ] itemExtractionContext
 - [ ] constraint
