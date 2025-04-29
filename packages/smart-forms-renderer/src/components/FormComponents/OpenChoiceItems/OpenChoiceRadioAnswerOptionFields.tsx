@@ -50,6 +50,7 @@ function OpenChoiceRadioAnswerOptionFields(props: OpenChoiceRadioAnswerOptionFie
     onValueChange
   } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const inputsFlexGrow = useRendererStylingStore.use.inputsFlexGrow();
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
@@ -60,6 +61,7 @@ function OpenChoiceRadioAnswerOptionFields(props: OpenChoiceRadioAnswerOptionFie
         id={qItem.type + '-' + qItem.linkId}
         row={orientation === ChoiceItemOrientation.Horizontal}
         sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
+        aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
         onChange={(e: ChangeEvent<HTMLInputElement>) => {
           // If item.readOnly=true, do not allow any changes
           if (readOnly) {

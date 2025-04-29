@@ -55,6 +55,7 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
     onClear
   } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const inputsFlexGrow = useRendererStylingStore.use.inputsFlexGrow();
   const hideClearButton = useRendererStylingStore.use.hideClearButton();
 
@@ -78,6 +79,7 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
               id={qItem.type + '-' + qItem.linkId}
               row={orientation === ChoiceItemOrientation.Horizontal}
               sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
+              aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
               onChange={(e) => {
                 // If item.readOnly=true, do not allow any changes
                 if (readOnly) {
