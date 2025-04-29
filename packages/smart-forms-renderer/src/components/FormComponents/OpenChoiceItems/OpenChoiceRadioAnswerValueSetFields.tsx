@@ -66,6 +66,7 @@ function OpenChoiceRadioAnswerValueSetFields(props: OpenChoiceRadioAnswerValueSe
       <>
         <StyledRadioGroup
           id={qItem.type + '-' + qItem.linkId}
+          aria-labelledby={'label-' + qItem.linkId}
           row={orientation === ChoiceItemOrientation.Horizontal}
           sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
           aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
