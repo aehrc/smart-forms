@@ -20,7 +20,8 @@ import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperF
 import {
   qAnswerExpression,
   qAnswerOption,
-  qAnswerOptionToggleExpression,
+  qAnswerOptionToggleExpressionAnswerOption,
+  qAnswerOptionToggleExpressionContained,
   qAnswerValueSet,
   qReadOnlyDuplicate,
   qRepeatsDuplicate,
@@ -57,9 +58,16 @@ export const AnswerExpression: Story = {
     questionnaire: qAnswerExpression
   }
 };
-export const AnswerOptionToggleExpression: Story = {
+
+export const AnswerOptionToggleExpressionAnswerOption: Story = {
   args: {
-    questionnaire: qAnswerOptionToggleExpression
+    questionnaire: qAnswerOptionToggleExpressionAnswerOption
+  }
+};
+
+export const AnswerOptionToggleExpressionAnswerValueSetContained: Story = {
+  args: {
+    questionnaire: qAnswerOptionToggleExpressionContained
   }
 };
 

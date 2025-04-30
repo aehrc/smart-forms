@@ -193,16 +193,16 @@ export const qAnswerExpression: Questionnaire = {
   ]
 };
 
-export const qAnswerOptionToggleExpression: Questionnaire = {
+export const qAnswerOptionToggleExpressionAnswerOption: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'AnswerOptionToggleExpression',
-  name: 'AnswerOptionToggleExpression',
-  title: 'AnswerOptionToggleExpression',
+  id: 'AnswerOptionToggleExpressionAO',
+  name: 'AnswerOptionToggleExpressionAO',
+  title: 'AnswerOptionToggleExpression Answer Options',
   version: '0.1.0',
   status: 'draft',
   publisher: 'AEHRC CSIRO',
   date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/choice-restrictions/answer-option-toggle-expression',
+  url: 'https://smartforms.csiro.au/docs/behavior/choice-restrictions/answer-option-toggle-expression-1',
   extension: [
     {
       url: 'http://hl7.org/fhir/StructureDefinition/variable',
@@ -442,6 +442,289 @@ export const qAnswerOptionToggleExpression: Questionnaire = {
             {
               url: 'option',
               valueCoding: {
+                code: 'brief',
+                display: 'Brief'
+              }
+            },
+            {
+              url: 'expression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%isNotNoneCode'
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+export const qAnswerOptionToggleExpressionContained: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'AnswerOptionToggleExpressionContained',
+  name: 'AnswerOptionToggleExpressionContained',
+  title: 'AnswerOptionToggleExpressionContained',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-05-01',
+  url: 'https://smartforms.csiro.au/docs/behavior/choice-restrictions/answer-option-toggle-expression-2',
+  contained: [
+    {
+      resourceType: 'ValueSet',
+      id: 'HallucinationType',
+      url: 'https://smartforms.csiro.au/ValueSet/HallucinationType',
+      name: 'HallucinationType',
+      title: 'Type of Hallucination',
+      status: 'draft',
+      description: 'Options for type of hallucinations',
+      compose: {
+        include: [
+          {
+            system: 'https://smartforms.csiro.au/CodeSystem/hallucination-type',
+            concept: [
+              { code: 'none', display: 'None' },
+              { code: 'visual', display: 'Visual' },
+              { code: 'tactile', display: 'Tactile' }
+            ]
+          }
+        ]
+      },
+      expansion: {
+        identifier: 'urn:uuid:hallucination-type-expansion',
+        timestamp: '2024-05-01T00:00:00Z',
+        contains: [
+          {
+            system: 'https://smartforms.csiro.au/CodeSystem/hallucination-type',
+            code: 'none',
+            display: 'None'
+          },
+          {
+            system: 'https://smartforms.csiro.au/CodeSystem/hallucination-type',
+            code: 'visual',
+            display: 'Visual'
+          },
+          {
+            system: 'https://smartforms.csiro.au/CodeSystem/hallucination-type',
+            code: 'tactile',
+            display: 'Tactile'
+          }
+        ]
+      }
+    },
+    {
+      resourceType: 'ValueSet',
+      id: 'HallucinationDetail',
+      url: 'https://smartforms.csiro.au/ValueSet/HallucinationDetail',
+      name: 'HallucinationDetail',
+      title: 'Hallucination Details',
+      status: 'draft',
+      description: 'Detailed descriptors for hallucination experiences',
+      compose: {
+        include: [
+          {
+            system: 'https://smartforms.csiro.au/CodeSystem/hallucination-detail',
+            concept: [
+              { code: 'lucid', display: 'Lucid' },
+              { code: 'infrequent', display: 'Infrequent' },
+              { code: 'brief', display: 'Brief' }
+            ]
+          }
+        ]
+      },
+      expansion: {
+        identifier: 'urn:uuid:hallucination-detail-expansion',
+        timestamp: '2024-05-01T00:00:00Z',
+        contains: [
+          {
+            system: 'https://smartforms.csiro.au/CodeSystem/hallucination-detail',
+            code: 'lucid',
+            display: 'Lucid'
+          },
+          {
+            system: 'https://smartforms.csiro.au/CodeSystem/hallucination-detail',
+            code: 'infrequent',
+            display: 'Infrequent'
+          },
+          {
+            system: 'https://smartforms.csiro.au/CodeSystem/hallucination-detail',
+            code: 'brief',
+            display: 'Brief'
+          }
+        ]
+      }
+    }
+  ],
+  extension: [
+    {
+      url: 'http://hl7.org/fhir/StructureDefinition/variable',
+      valueExpression: {
+        name: 'isNotNoneCode',
+        language: 'text/fhirpath',
+        expression:
+          "%resource.item.where(linkId='hallucination-type').answer.value.empty() or %resource.item.where(linkId='hallucination-type').answer.value.code != 'none'"
+      }
+    }
+  ],
+  item: [
+    {
+      linkId: 'hallucination-type',
+      text: 'Type of Hallucination',
+      type: 'choice',
+      answerValueSet: '#HallucinationType'
+    },
+    {
+      linkId: 'hallucination-details-dropdown',
+      text: 'Hallucinations (dropdown)',
+      type: 'choice',
+      answerValueSet: '#HallucinationDetail',
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerOptionsToggleExpression',
+          extension: [
+            {
+              url: 'option',
+              valueCoding: {
+                system: 'https://smartforms.csiro.au/CodeSystem/hallucination-detail',
+                code: 'infrequent',
+                display: 'Infrequent'
+              }
+            },
+            {
+              url: 'expression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%isNotNoneCode'
+              }
+            }
+          ]
+        },
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerOptionsToggleExpression',
+          extension: [
+            {
+              url: 'option',
+              valueCoding: {
+                system: 'https://smartforms.csiro.au/CodeSystem/hallucination-detail',
+                code: 'brief',
+                display: 'Brief'
+              }
+            },
+            {
+              url: 'expression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%isNotNoneCode'
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      linkId: 'hallucination-details-checkbox',
+      text: 'Hallucinations (checkbox)',
+      type: 'choice',
+      answerValueSet: '#HallucinationDetail',
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: 'http://hl7.org/fhir/questionnaire-item-control',
+                code: 'check-box'
+              }
+            ]
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerOptionsToggleExpression',
+          extension: [
+            {
+              url: 'option',
+              valueCoding: {
+                system: 'https://smartforms.csiro.au/CodeSystem/hallucination-detail',
+                code: 'infrequent',
+                display: 'Infrequent'
+              }
+            },
+            {
+              url: 'expression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%isNotNoneCode'
+              }
+            }
+          ]
+        },
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerOptionsToggleExpression',
+          extension: [
+            {
+              url: 'option',
+              valueCoding: {
+                system: 'https://smartforms.csiro.au/CodeSystem/hallucination-detail',
+                code: 'brief',
+                display: 'Brief'
+              }
+            },
+            {
+              url: 'expression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%isNotNoneCode'
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      linkId: 'hallucination-details-radio',
+      text: 'Hallucinations (radio)',
+      type: 'choice',
+      answerValueSet: '#HallucinationDetail',
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: 'http://hl7.org/fhir/questionnaire-item-control',
+                code: 'radio-button'
+              }
+            ]
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerOptionsToggleExpression',
+          extension: [
+            {
+              url: 'option',
+              valueCoding: {
+                system: 'https://smartforms.csiro.au/CodeSystem/hallucination-detail',
+                code: 'infrequent',
+                display: 'Infrequent'
+              }
+            },
+            {
+              url: 'expression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%isNotNoneCode'
+              }
+            }
+          ]
+        },
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerOptionsToggleExpression',
+          extension: [
+            {
+              url: 'option',
+              valueCoding: {
+                system: 'https://smartforms.csiro.au/CodeSystem/hallucination-detail',
                 code: 'brief',
                 display: 'Brief'
               }
