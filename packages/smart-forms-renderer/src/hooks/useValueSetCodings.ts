@@ -112,13 +112,6 @@ function useValueSetCodings(qItem: QuestionnaireItem): {
             async: false
           });
 
-          // Check for Promise and throw an error
-          if (evaluated instanceof Promise) {
-            throw new Error(
-              'Unexpected Promise returned from fhirpath.evaluate in the useValueSetCodings hook. Expected synchronous evaluation.'
-            );
-          }
-
           if (evaluated[0].system || evaluated[0].code) {
             // determine if the evaluated array is a coding array
             return evaluated;
@@ -154,15 +147,18 @@ function useValueSetCodings(qItem: QuestionnaireItem): {
 
   // Get options from parameterised/dynamic value sets when the updatableValueSetUrl changes (p-param is updated via fhirpath)
   const updatableValueSetUrl = processedValueSets[answerValueSetUrl ?? '']?.updatableValueSetUrl;
-  useEffect(
-    () => {
-      if (!qItem.answerValueSet || !qItem._answerValueSet) {
-        return;
-      }
+  useEffect(() => {
+    if (!qItem.answerValueSet || !qItem._answerValueSet) {
+      return;
+    }
 
-      if (!updatableValueSetUrl) {
-        return;
-      }
+    if (!updatableValueSetUrl) {
+      return;
+    }
+
+    // attempt to get codings from cached queried value sets
+    if (cachedValueSetCodings[updatableValueSetUrl]) {
+      setCodings(cachedValueSetCodings[updatableValueSetUrl]);
 
       // Update ui to show calculated value changes
       setDynamicCodingsUpdated(true);
@@ -170,43 +166,41 @@ function useValueSetCodings(qItem: QuestionnaireItem): {
         setDynamicCodingsUpdated(false);
       }, 500);
 
-      // attempt to get codings from cached queried value sets
-      if (cachedValueSetCodings[updatableValueSetUrl]) {
-        setCodings(cachedValueSetCodings[updatableValueSetUrl]);
-        return () => clearTimeout(timeoutId);
-      }
+      return () => clearTimeout(timeoutId);
+    }
 
-      const promise = getValueSetPromise(updatableValueSetUrl, terminologyServerUrl);
-      if (promise) {
-        promise
-          .then(async (valueSet: ValueSet) => {
-            const newCodings = getValueSetCodings(valueSet);
-            addDisplayToCodingArray(newCodings, terminologyServerUrl)
-              .then((codingsWithDisplay) => {
-                if (codingsWithDisplay.length > 0) {
-                  addCodingToCache(updatableValueSetUrl, codingsWithDisplay);
-                  setCodings(newCodings);
-                } else {
-                  addCodingToCache(updatableValueSetUrl, codingsWithDisplay);
-                  setCodings([]);
-                }
-                return () => clearTimeout(timeoutId);
-              })
-              .catch((error: Error) => {
-                setServerError(error);
-                return () => clearTimeout(timeoutId);
-              });
-          })
-          .catch((error: Error) => {
-            setServerError(error);
-            return () => clearTimeout(timeoutId);
-          });
-      }
-    },
-    // Omit clearAnswer from dependencies to avoid infinite loop
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [addCodingToCache, cachedValueSetCodings, qItem, terminologyServerUrl, updatableValueSetUrl]
-  );
+    const promise = getValueSetPromise(updatableValueSetUrl, terminologyServerUrl);
+    if (promise) {
+      promise
+        .then(async (valueSet: ValueSet) => {
+          const newCodings = getValueSetCodings(valueSet);
+          addDisplayToCodingArray(newCodings, terminologyServerUrl)
+            .then((codingsWithDisplay) => {
+              if (codingsWithDisplay.length > 0) {
+                addCodingToCache(updatableValueSetUrl, codingsWithDisplay);
+                setCodings(newCodings);
+              } else {
+                addCodingToCache(updatableValueSetUrl, codingsWithDisplay);
+                setCodings([]);
+              }
+
+              // Update ui to show calculated value changes
+              setDynamicCodingsUpdated(true);
+              const timeoutId = setTimeout(() => {
+                setDynamicCodingsUpdated(false);
+              }, 500);
+
+              return () => clearTimeout(timeoutId);
+            })
+            .catch((error: Error) => {
+              setServerError(error);
+            });
+        })
+        .catch((error: Error) => {
+          setServerError(error);
+        });
+    }
+  }, [addCodingToCache, cachedValueSetCodings, qItem, terminologyServerUrl, updatableValueSetUrl]);
 
   // Acts as a fallback - get options from answerValueSet in real-time if it's not pre-processed or cached which is very unlikely
   useEffect(() => {
