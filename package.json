@@ -19,6 +19,6 @@
     "@typescript-eslint/eslint-plugin": "^7.8.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
-    "eslint-plugin-react-refresh": "^0.4.7"
+    "eslint-plugin-react-refresh": "^0.4.20"
   }
 }
