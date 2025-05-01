@@ -8,8 +8,8 @@
     ]
   },
   "url": "https://smartforms.csiro.au/ig/Questionnaire/ACDCPlusNQIPClinicalQI",
-  "title": "ACDC+ NQIP Clinical QI Dataset - v2.7",
-  "description": "ACDC+ NQIP Clinical QI Dataset - v2.7",
+  "title": "ACDC+ NQIP Clinical QI Dataset - v2.8",
+  "description": "ACDC+ NQIP Clinical QI Dataset - v2.8",
   "extension": [
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
@@ -2606,7 +2606,7 @@
               "valueExpression": {
                 "name": "BarthelIndexRepeat",
                 "language": "text/fhirpath",
-                "expression": "%BarthelIndex.entry.resource.where(effective.toDate() > (today() - 120 days))"
+                "expression": "%BarthelIndex.entry.resource.where(effective > (today() - 120 days))"
               }
             }
           ],
@@ -2647,7 +2647,7 @@
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%BarthelIndexRepeat.effective.ofType(date) | effective.ofType(dateTime)"
+                    "expression": "%BarthelIndexRepeat.effective.ofType(date) | %BarthelIndexRepeat.effective.ofType(dateTime)"
                   }
                 }
               ],
@@ -3198,7 +3198,7 @@
               "valueExpression": {
                 "name": "WeightRepeat",
                 "language": "text/fhirpath",
-                "expression": "%Weight.entry.resource.where(effective.toDate() > (today() - 120 days))"
+                "expression": "%Weight.entry.resource.where(effective > (today() - 120 days))"
               }
             },
             {
