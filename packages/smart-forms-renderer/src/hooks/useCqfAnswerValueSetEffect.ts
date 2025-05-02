@@ -17,7 +17,7 @@
 
 import { useQuestionnaireStore } from '../stores';
 import type { Coding, QuestionnaireItem, ValueSet } from 'fhir/r4';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { getValueSetCodings, getValueSetPromise } from '../utils/valueSet';
 import { addDisplayToCodingArray } from '../utils/questionnaireStoreUtils/addDisplayToCodings';
 
@@ -36,6 +36,8 @@ function useCqfAnswerValueSetEffect(
     (exp) => exp.from === 'item._answerValueSet'
   );
 
+  const lastUpdatableValueSetUrlRef = useRef<string | null>(qItem.answerValueSet ?? null);
+
   useEffect(() => {
     if (!qItem.answerValueSet || !qItem._answerValueSet) {
       return;
@@ -53,6 +55,14 @@ function useCqfAnswerValueSetEffect(
     ) {
       updatableValueSetUrl = cqfAnswerValueSetCqfExpression.value;
     }
+
+    // Skip if same as last updatableValueSetUrl value
+    if (lastUpdatableValueSetUrlRef.current === updatableValueSetUrl) {
+      return;
+    }
+
+    // Update ref to new value
+    lastUpdatableValueSetUrlRef.current = updatableValueSetUrl;
 
     // attempt to get codings from cached queried value sets
     if (cachedValueSetCodings[updatableValueSetUrl]) {
