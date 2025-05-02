@@ -29,6 +29,7 @@ import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import { useQuestionnaireStore, useSmartConfigStore, useTerminologyServerStore } from '../stores';
 import { addDisplayToCodingArray } from '../utils/questionnaireStoreUtils/addDisplayToCodings';
 import useDynamicValueSetEffect from './useDynamicValueSetEffect';
+import useCqfAnswerValueSetEffect from './useCqfAnswerValueSetEffect';
 
 export interface TerminologyError {
   error: Error | null;
@@ -152,6 +153,16 @@ function useValueSetCodings(qItem: QuestionnaireItem): {
     answerValueSetUrl,
     terminologyServerUrl,
     processedValueSets,
+    cachedValueSetCodings,
+    setCodings,
+    setDynamicCodingsUpdated,
+    setServerError
+  );
+
+  // Get options from cqf-expression in _answerValueSet
+  useCqfAnswerValueSetEffect(
+    qItem,
+    terminologyServerUrl,
     cachedValueSetCodings,
     setCodings,
     setDynamicCodingsUpdated,
