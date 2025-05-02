@@ -22,7 +22,12 @@ import Fade from '@mui/material/Fade';
 import Tooltip from '@mui/material/Tooltip';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import { StandardTextField } from '../Textfield.styles';
-import { Done, Error, Info, Search, WarningAmber } from '@mui/icons-material';
+import SearchIcon from '@mui/icons-material/Search';
+import InfoIcon from '@mui/icons-material/Info';
+// @ts-expect-error: Module has no declaration file. Not sure why WarningAmber.d.ts is not present in MUI icons 7.0.2
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import DoneIcon from '@mui/icons-material/Done';
+import ErrorIcon from '@mui/icons-material/Error';
 import type {
   PropsWithIsTabledRequiredAttribute,
   PropsWithParentIsReadOnlyAttribute,
@@ -96,7 +101,7 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
               readOnly: readOnly && readOnlyVisualStyle === 'readonly',
               startAdornment: (
                 <>
-                  {!valueCoding ? <Search fontSize="small" sx={{ ml: 0.5 }} /> : null}
+                  {!valueCoding ? <SearchIcon fontSize="small" sx={{ ml: 0.5 }} /> : null}
                   {params.InputProps.startAdornment}
                 </>
               ),
@@ -109,10 +114,10 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
                       <Tooltip title={feedback.message} arrow sx={{ ml: 1 }}>
                         {
                           {
-                            info: <Info fontSize="small" color="info" />,
-                            warning: <WarningAmber fontSize="small" color="warning" />,
-                            success: <Done fontSize="small" color="success" />,
-                            error: <Error fontSize="small" color="error" />
+                            info: <InfoIcon fontSize="small" color="info" />,
+                            warning: <WarningAmberIcon fontSize="small" color="warning" />,
+                            success: <DoneIcon fontSize="small" color="success" />,
+                            error: <ErrorIcon fontSize="small" color="error" />
                           }[feedback.color]
                         }
                       </Tooltip>
