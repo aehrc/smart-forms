@@ -89,7 +89,23 @@ export function getCalculatedExpressions(qItem: QuestionnaireItem): CalculatedEx
     )
     .filter((calculatedExpression) => calculatedExpression.expression !== '');
 
-  return [...calculatedExpressionsInItem, ...calculatedAndCqfExpressionsInText];
+  // For item._answerValueSet - cqfExpressions
+  const cqfExpressionsInAnswerValueSet = [
+    ...findCqfExpressionsInExtensions(qItem._answerValueSet?.extension ?? [])
+  ]
+    .map(
+      (calculatedExpression): CalculatedExpression => ({
+        expression: calculatedExpression.valueExpression?.expression ?? '',
+        from: 'item._answerValueSet'
+      })
+    )
+    .filter((calculatedExpression) => calculatedExpression.expression !== '');
+
+  return [
+    ...calculatedExpressionsInItem,
+    ...calculatedAndCqfExpressionsInText,
+    ...cqfExpressionsInAnswerValueSet
+  ];
 }
 
 export function findCalculatedExpressionsInExtensions(extensions: Extension[]): Extension[] {

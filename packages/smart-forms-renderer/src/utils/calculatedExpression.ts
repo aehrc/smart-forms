@@ -34,6 +34,7 @@ import dayjs from 'dayjs';
 import { updateQuestionnaireResponse } from './genericRecursive';
 import isEqual from 'lodash.isequal';
 import type { Variables } from '../interfaces';
+import type { ComputedNewAnswers } from '../interfaces/computedUpdates.interface';
 
 interface EvaluateInitialCalculatedExpressionsParams {
   initialResponse: QuestionnaireResponse;
@@ -74,9 +75,14 @@ export async function evaluateInitialCalculatedExpressions(
     };
   }
 
-  const initialCalculatedExpressions: Record<string, CalculatedExpression[]> = {
+  let initialCalculatedExpressions: Record<string, CalculatedExpression[]> = {
     ...calculatedExpressions
   };
+
+  // If 'value' key does not exist in calculated expressions, initialise it to null
+  initialCalculatedExpressions = initialiseCalculatedExpressionValuesToNull(
+    initialCalculatedExpressions
+  );
 
   const fhirPathEvalResult = await createFhirPathContext(
     initialResponse,
@@ -135,6 +141,25 @@ export async function evaluateInitialCalculatedExpressions(
   };
 }
 
+// If 'value' key does not exist in calculated expressions, initialise it to null
+// This is so it doesn't trigger a UI change when calcExpression.value goes from "undefined" to "null"
+// This might potentially introduce unintended issues? - need to keep an eye on this function
+function initialiseCalculatedExpressionValuesToNull(
+  calculatedExpressions: Record<string, CalculatedExpression[]>
+) {
+  for (const linkId in calculatedExpressions) {
+    const itemCalcExpressions = calculatedExpressions[linkId];
+
+    for (const calcExpression of itemCalcExpressions) {
+      if (!('value' in calcExpression)) {
+        calcExpression.value = null;
+      }
+    }
+  }
+
+  return calculatedExpressions;
+}
+
 export async function evaluateCalculatedExpressions(
   fhirPathContext: Record<string, any>,
   fhirPathTerminologyCache: Record<string, any>,
@@ -143,12 +168,14 @@ export async function evaluateCalculatedExpressions(
 ): Promise<{
   calculatedExpsIsUpdated: boolean;
   updatedCalculatedExpressions: Record<string, CalculatedExpression[]>;
+  computedNewAnswers: ComputedNewAnswers;
 }> {
   const updatedCalculatedExpressions: Record<string, CalculatedExpression[]> = {
     ...calculatedExpressions
   };
 
   let isUpdated = false;
+  const computedNewAnswers: ComputedNewAnswers = {};
   for (const linkId in calculatedExpressions) {
     const itemCalcExpressions = calculatedExpressions[linkId];
 
@@ -181,12 +208,22 @@ export async function evaluateCalculatedExpressions(
         if (result.length > 0 && !isEqual(calcExpression.value, result[0])) {
           isUpdated = true;
           calcExpression.value = result[0];
+
+          // Update computedNewAnswers if the expression is a cqf-expression for _answerValueSet - clear answers (similar to dynamic value sets)
+          if (calcExpression.from === 'item._answerValueSet') {
+            computedNewAnswers[linkId] = null;
+          }
         }
 
         // Update calculatedExpression value to null if no result is returned
         if (result.length === 0 && calcExpression.value !== null) {
           isUpdated = true;
           calcExpression.value = null;
+
+          // Update computedNewAnswers if the expression is a cqf-expression for _answerValueSet - clear answers (similar to dynamic value sets)
+          if (calcExpression.from === 'item._answerValueSet') {
+            computedNewAnswers[linkId] = null;
+          }
         }
       } catch (e) {
         console.warn(e.message, `LinkId: ${linkId}\nExpression: ${calcExpression.expression}`);
@@ -198,7 +235,8 @@ export async function evaluateCalculatedExpressions(
 
   return {
     calculatedExpsIsUpdated: isUpdated,
-    updatedCalculatedExpressions: updatedCalculatedExpressions
+    updatedCalculatedExpressions: updatedCalculatedExpressions,
+    computedNewAnswers: computedNewAnswers
   };
 }
 
