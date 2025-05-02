@@ -7,6 +7,10 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.51 and 1.0.0-alpha.52] - 2025-05-02
+### Changed
+- Use individual MUI icon imports in ChoiceAutocompleteField.tsx and ChoiceAutocompleteField.tsx.
+
 ## [1.0.0-alpha.50] - 2025-04-29
 ### Added
 - Added support for answerOptionToggleExpressions.
