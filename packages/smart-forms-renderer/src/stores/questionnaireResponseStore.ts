@@ -70,7 +70,7 @@ export interface QuestionnaireResponseStoreType {
   ) => void;
   buildSourceResponse: (response: QuestionnaireResponse) => void;
   setUpdatableResponseAsPopulated: (populatedResponse: QuestionnaireResponse) => void;
-  updateResponse: (updatedResponse: QuestionnaireResponse) => void;
+  updateResponse: (updatedResponse: QuestionnaireResponse, debugType: 'initial' | 'async') => void;
   setUpdatableResponseAsSaved: (savedResponse: QuestionnaireResponse) => void;
   setUpdatableResponseAsEmpty: (clearedResponse: QuestionnaireResponse) => void;
   destroySourceResponse: () => void;
@@ -141,7 +141,8 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
         responseIsValid: Object.keys(updatedInvalidItems).length === 0
       }));
     },
-    updateResponse: (updatedResponse: QuestionnaireResponse) => {
+    updateResponse: (updatedResponse: QuestionnaireResponse, type) => {
+      console.log('updateResponse called', type, structuredClone(updatedResponse.item));
       const sourceQuestionnaire = questionnaireStore.getState().sourceQuestionnaire;
       const formChanges = diff(get().updatableResponse, updatedResponse) ?? null;
       const updatedInvalidItems = validateForm(sourceQuestionnaire, updatedResponse);
