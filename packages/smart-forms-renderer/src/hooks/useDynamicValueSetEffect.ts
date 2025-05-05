@@ -1,13 +1,13 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { getValueSetCodings, getValueSetPromise } from '../utils/valueSet';
 import type { Coding, QuestionnaireItem, ValueSet } from 'fhir/r4';
 import { addDisplayToCodingArray } from '../utils/questionnaireStoreUtils/addDisplayToCodings';
 import type { ProcessedValueSet } from '../interfaces/valueSet.interface';
 import { useQuestionnaireStore } from '../stores';
+import type { CalculatedExpression } from '../interfaces';
 
 function useDynamicValueSetEffect(
   qItem: QuestionnaireItem,
-  answerValueSetUrl: string | undefined,
   terminologyServerUrl: string,
   processedValueSets: Record<string, ProcessedValueSet>,
   cachedValueSetCodings: Record<string, Coding[]>,
@@ -15,28 +15,34 @@ function useDynamicValueSetEffect(
   onSetDynamicCodingsUpdated: (updated: boolean) => void,
   onSetServerError: (error: Error) => void
 ) {
+  const calculatedExpressions = useQuestionnaireStore.use.calculatedExpressions();
   const addCodingToCache = useQuestionnaireStore.use.addCodingToCache();
+  const lastUpdatableValueSetUrlRef = useRef<string | null>(null);
 
-  const updatableValueSetUrl = processedValueSets[answerValueSetUrl ?? '']?.updatableValueSetUrl;
+  // Compute updatableValueSetUrl
+  const updatableValueSetUrl = getUpdatableValueSetUrl(
+    qItem,
+    calculatedExpressions,
+    processedValueSets
+  );
+
   useEffect(() => {
-    if (!qItem.answerValueSet || !qItem._answerValueSet) {
+    if (!qItem.answerValueSet || !qItem._answerValueSet || updatableValueSetUrl === '') {
       return;
     }
 
-    if (!updatableValueSetUrl) {
+    // Skip if same as last updatableValueSetUrl value
+    if (lastUpdatableValueSetUrlRef.current === updatableValueSetUrl) {
       return;
     }
+    lastUpdatableValueSetUrlRef.current = updatableValueSetUrl;
 
-    // attempt to get codings from cached queried value sets
-    if (cachedValueSetCodings[updatableValueSetUrl]) {
-      onSetCodings(cachedValueSetCodings[updatableValueSetUrl]);
-
-      // Update ui to show calculated value changes
+    // Check cached codings first
+    const cached = cachedValueSetCodings[updatableValueSetUrl];
+    if (cached) {
+      onSetCodings(cached);
       onSetDynamicCodingsUpdated(true);
-      const timeoutId = setTimeout(() => {
-        onSetDynamicCodingsUpdated(false);
-      }, 500);
-
+      const timeoutId = setTimeout(() => onSetDynamicCodingsUpdated(false), 500);
       return () => clearTimeout(timeoutId);
     }
 
@@ -49,19 +55,17 @@ function useDynamicValueSetEffect(
       .then(async (valueSet: ValueSet) => {
         const newCodings = getValueSetCodings(valueSet);
         try {
-          const codingsWithDisplay = await addDisplayToCodingArray(
+          const newCodingsWithDisplay = await addDisplayToCodingArray(
             newCodings,
             terminologyServerUrl
           );
 
-          addCodingToCache(updatableValueSetUrl, codingsWithDisplay);
-          onSetCodings(codingsWithDisplay.length > 0 ? newCodings : []);
+          addCodingToCache(updatableValueSetUrl, newCodingsWithDisplay);
+          onSetCodings(newCodingsWithDisplay.length > 0 ? newCodingsWithDisplay : []);
 
           // Update UI to show calculated value changes
           onSetDynamicCodingsUpdated(true);
-          const timeoutId = setTimeout(() => {
-            onSetDynamicCodingsUpdated(false);
-          }, 500);
+          const timeoutId = setTimeout(() => onSetDynamicCodingsUpdated(false), 500);
 
           return () => clearTimeout(timeoutId);
         } catch (error) {
@@ -81,6 +85,26 @@ function useDynamicValueSetEffect(
     terminologyServerUrl,
     updatableValueSetUrl
   ]);
+}
+
+// Get updatableValueSetUrl from cqfAnswerValueSetCqfExpression or processedValueSets's updatableValueSetUrl, otherwise return empty string
+export function getUpdatableValueSetUrl(
+  qItem: QuestionnaireItem,
+  calculatedExpressions: Record<string, CalculatedExpression[]>,
+  processedValueSets: Record<string, ProcessedValueSet>
+) {
+  const cqfAnswerValueSetCqfExpression = calculatedExpressions[qItem.linkId]?.find(
+    (exp) => exp.from === 'item._answerValueSet'
+  );
+  if (
+    cqfAnswerValueSetCqfExpression &&
+    typeof cqfAnswerValueSetCqfExpression?.value === 'string' &&
+    cqfAnswerValueSetCqfExpression.value !== ''
+  ) {
+    return cqfAnswerValueSetCqfExpression.value;
+  }
+
+  return processedValueSets[qItem.answerValueSet ?? '']?.updatableValueSetUrl ?? '';
 }
 
 export default useDynamicValueSetEffect;
