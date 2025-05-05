@@ -22,30 +22,66 @@ import { useQuestionnaireResponseStore } from './questionnaireResponseStore';
 import { applyComputedUpdates } from '../utils/computedUpdates';
 import { createSelectors } from './selector';
 
+/**
+ * A single form update task, representing a `QuestionnaireResponse` that should be processed.
+ */
 export interface UpdateTask {
+  /** The `QuestionnaireResponse` snapshot used to evaluate calculated expressions */
   questionnaireResponse: QuestionnaireResponse;
 }
 
+/**
+ * Zustand store for managing queued, sequential updates to a FHIR form.
+ */
 export interface FormUpdateQueueStoreType {
+  /** Queue of form update tasks (FIFO) */
   queue: UpdateTask[];
+
+  /** Flag indicating if a task is currently being processed */
   isProcessing: boolean;
+
+  /**
+   * Adds a new form update task to the end of the queue.
+   * Triggers the queue processor if not already running.
+   *
+   * @param task - The form update task to enqueue
+   */
   enqueueFormUpdate: (task: UpdateTask) => void;
+
+  /**
+   * Replaces all pending tasks with the latest task.
+   * If a task is being processed, it is preserved at the head of the queue.
+   * Useful for calculated fields where only the latest state matters.
+   *
+   * @param task - The most recent form update task to keep
+   */
   replaceLatestFormUpdate: (task: UpdateTask) => void;
+
+  /**
+   * Internal processor that handles one task at a time, in order.
+   *
+   * - Applies the `updateExpressions` function to the `questionnaireResponse`.
+   * - Applies the resulting computed updates.
+   * - Updates the `QuestionnaireResponse` store in two phases: immediate and async.
+   * - Automatically proceeds to the next task in the queue.
+   */
   _startProcessing: () => void;
 }
 
 /**
- * FormUpdateQueueStore manages serialization of asynchronous form update logic.
+ * `formUpdateQueueStore` is a Zustand store that serializes asynchronous form update logic.
  *
- * - enqueue: adds an update task to the queue (FIFO).
- * - replaceLatest: replaces all pending tasks with the latest task (useful for calculated fields).
- * - internal process handles sequential async resolution.
+ * It ensures that each form update task is processed sequentially, one at a time,
+ * to avoid race conditions and inconsistent state during expression evaluation.
  *
- * This is a vanilla Zustand store for use in FHIR form renderers with async dependencies.
+ * - `enqueueFormUpdate` adds a new task to the end of the queue.
+ * - `replaceLatestFormUpdate` drops all pending tasks in favor of the latest one.
+ * - `_startProcessing` handles processing each task and re-triggers itself as needed.
  */
 export const formUpdateQueueStore = createStore<FormUpdateQueueStoreType>()((set, get) => ({
   queue: [],
   isProcessing: false,
+
   enqueueFormUpdate: (task: UpdateTask) => {
     set((state) => ({ queue: [...state.queue, task] }));
     get()._startProcessing();
@@ -76,7 +112,7 @@ export const formUpdateQueueStore = createStore<FormUpdateQueueStoreType>()((set
 
     const { questionnaireResponse } = queue[0];
 
-    updateResponse(questionnaireResponse, 'initial'); // Immediate update
+    updateResponse(questionnaireResponse, 'initial'); // Immediate update (pre-computed)
 
     const computedUpdates = await updateExpressions(questionnaireResponse);
     const applied = applyComputedUpdates(
@@ -92,7 +128,7 @@ export const formUpdateQueueStore = createStore<FormUpdateQueueStoreType>()((set
       isProcessing: false
     }));
 
-    get()._startProcessing(); // Process next task
+    get()._startProcessing(); // Process next task in the queue
   }
 }));
 
