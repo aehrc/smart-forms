@@ -59,7 +59,7 @@ function DecimalItem(props: DecimalItemProps) {
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   let valueDecimal = 0.0;
   let initialInput = '';
   if (qrItem?.answer) {

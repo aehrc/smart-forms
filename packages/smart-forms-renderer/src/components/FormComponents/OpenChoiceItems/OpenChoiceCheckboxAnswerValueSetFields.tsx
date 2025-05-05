@@ -16,35 +16,34 @@
  */
 
 import React from 'react';
-import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import CheckboxSingleWithOpenLabel from '../ItemParts/CheckboxSingleWithOpenLabel';
 import type {
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
-import { getChoiceOrientation } from '../../../utils/choice';
-import { StyledFormGroup, StyledRequiredTypography } from '../Item.styles';
-import CheckboxOptionList from '../ChoiceItems/CheckboxOptionList';
 import { StyledAlert } from '../../Alert.styles';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Typography from '@mui/material/Typography';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
-import { Box } from '@mui/material';
+import CheckboxFormGroup from '../ItemParts/CheckboxFormGroup';
 
 interface OpenChoiceCheckboxFieldsProps {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
   answers: QuestionnaireResponseItemAnswer[];
-  openLabelText: string | null;
+  openLabelText: string;
   openLabelValue: string;
   openLabelChecked: boolean;
   feedback: string;
   readOnly: boolean;
+  expressionUpdated: boolean;
+  answerOptionsToggleExpressionsMap: Map<string, boolean>;
   terminologyError: TerminologyError;
   onOptionChange: (changedOptionValue: string) => void;
   onOpenLabelCheckedChange: (checked: boolean) => void;
   onOpenLabelInputChange: (input: string) => void;
+  onClear: () => void;
 }
 
 function OpenChoiceCheckboxAnswerValueSetFields(props: OpenChoiceCheckboxFieldsProps) {
@@ -57,39 +56,36 @@ function OpenChoiceCheckboxAnswerValueSetFields(props: OpenChoiceCheckboxFieldsP
     openLabelChecked,
     feedback,
     readOnly,
+    expressionUpdated,
+    answerOptionsToggleExpressionsMap,
     terminologyError,
     onOptionChange,
     onOpenLabelCheckedChange,
-    onOpenLabelInputChange
+    onOpenLabelInputChange,
+    onClear
   } = props;
-
-  const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
   if (options.length > 0) {
     return (
-      <Box id={qItem.type + '-' + qItem.linkId}>
-        <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
-          <CheckboxOptionList
-            options={options}
-            answers={answers}
-            readOnly={readOnly}
-            onCheckedChange={onOptionChange}
-          />
-
-          {openLabelText !== null ? (
-            <CheckboxSingleWithOpenLabel
-              value={openLabelValue}
-              label={openLabelText}
-              readOnly={readOnly}
-              isChecked={openLabelChecked}
-              onCheckedChange={onOpenLabelCheckedChange}
-              onInputChange={onOpenLabelInputChange}
-            />
-          ) : null}
-        </StyledFormGroup>
-
-        {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
-      </Box>
+      <CheckboxFormGroup
+        qItem={qItem}
+        options={options}
+        answers={answers}
+        feedback={feedback}
+        readOnly={readOnly}
+        expressionUpdated={expressionUpdated}
+        answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+        onCheckedChange={onOptionChange}
+        onClear={onClear}>
+        <CheckboxSingleWithOpenLabel
+          value={openLabelValue}
+          label={openLabelText}
+          readOnly={readOnly}
+          isChecked={openLabelChecked}
+          onCheckedChange={onOpenLabelCheckedChange}
+          onInputChange={onOpenLabelInputChange}
+        />
+      </CheckboxFormGroup>
     );
   }
 

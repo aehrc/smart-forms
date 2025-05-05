@@ -70,7 +70,7 @@ function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionIte
   const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   const answerOptions = qItem.answerOption;
   if (!answerOptions) return null;
 

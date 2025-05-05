@@ -67,7 +67,7 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
   const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem, answerKey);
 
   let valueSelect: Coding | string | null = null;

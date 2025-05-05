@@ -28,6 +28,7 @@ import { isSpecificItemControl } from '../../../utils';
 import ClearInputButton from '../ItemParts/ClearInputButton';
 import { useRendererStylingStore } from '../../../stores';
 import { StandardCheckbox } from '../../Checkbox.styles';
+import { ariaCheckedMap } from '../../../utils/checkbox';
 
 interface BooleanFieldProps {
   qItem: QuestionnaireItem;
@@ -55,6 +56,8 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
 
   const selection = valueBoolean === undefined ? null : valueBoolean.toString();
 
+  const ariaCheckedValue = ariaCheckedMap.get(selection ?? 'false');
+
   return (
     <>
       <Box
@@ -74,6 +77,9 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
                 size="small"
                 checked={selection === 'true'}
                 readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
+                aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
+                role="checkbox"
+                aria-checked={ariaCheckedValue}
                 onChange={() => {
                   // If item.readOnly=true, do not allow any changes
                   if (readOnly) {
@@ -99,8 +105,10 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
             sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
             <StyledRadioGroup
               id={qItem.type + '-' + qItem.linkId}
+              aria-labelledby={'label-' + qItem.linkId}
               row={orientation === ChoiceItemOrientation.Horizontal}
               sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
+              aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
               onChange={(e) => {
                 // If item.readOnly=true, do not allow any changes
                 if (readOnly) {

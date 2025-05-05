@@ -47,7 +47,7 @@ function UrlItem(props: UrlItemProps) {
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   let valueUri = '';
   if (qrItem?.answer && qrItem?.answer[0].valueUri) {
     valueUri = qrItem.answer[0].valueUri;

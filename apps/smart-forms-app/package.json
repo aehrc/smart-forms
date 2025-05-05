@@ -26,7 +26,7 @@
   "dependencies": {
     "@aehrc/sdc-assemble": "^2.0.1",
     "@aehrc/sdc-populate": "^4.0.1",
-    "@aehrc/smart-forms-renderer": "^1.0.0-alpha.46",
+    "@aehrc/smart-forms-renderer": "^1.0.0-alpha.53",
     "@dnd-kit/core": "^6.3.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
@@ -93,7 +93,7 @@
     "prettier": "^3.5.3",
     "ts-jest": "^29.2.6",
     "typescript": "^5.8.3",
-    "vite": "^5.4.18",
+    "vite": "^5.4.19",
     "vite-plugin-svgr": "^4.3.0",
     "yui-lint": "^0.2.0"
   },

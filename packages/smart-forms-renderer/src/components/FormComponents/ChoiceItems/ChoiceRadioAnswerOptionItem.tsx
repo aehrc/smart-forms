@@ -39,6 +39,7 @@ import useCodingCalculatedExpression from '../../../hooks/useCodingCalculatedExp
 import ChoiceRadioAnswerOptionView from './ChoiceRadioAnswerOptionView';
 import ChoiceSelectAnswerOptionView from './ChoiceSelectAnswerOptionView';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 
 interface ChoiceRadioAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
@@ -66,7 +67,7 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   const qrChoice = qrItem ?? createEmptyQrItem(qItem, answerKey);
   const valueChoice = getQrChoiceValue(qrChoice);
 
@@ -88,6 +89,10 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
       onQrItemChange(createEmptyQrItem(qItem, answerKey));
     }
   });
+
+  // Process answerOptionsToggleExpressions
+  const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
+    useAnswerOptionsToggleExpressions(qItem.linkId);
 
   // Event handlers
   function handleChange(newValue: QuestionnaireItemAnswerOption | string | null) {
@@ -134,7 +139,8 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
           feedback={feedback}
           isRepeated={isRepeated}
           readOnly={readOnly}
-          calcExpUpdated={calcExpUpdated}
+          expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
+          answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
           onFocusLinkId={() => onFocusLinkId(qItem.linkId)}
           onCheckedChange={handleChange}
           onClear={handleClear}
@@ -152,8 +158,9 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
           isRepeated={isRepeated}
           isTabled={isTabled}
           readOnly={readOnly}
-          calcExpUpdated={calcExpUpdated}
+          expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
           renderingExtensions={renderingExtensions}
+          answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
           onFocusLinkId={() => onFocusLinkId(qItem.linkId)}
           onSelectChange={handleChange}
         />

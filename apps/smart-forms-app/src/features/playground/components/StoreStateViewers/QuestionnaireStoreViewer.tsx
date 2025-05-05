@@ -15,6 +15,7 @@ const questionnaireStoreStatePropertyNames: string[] = [
   'launchContexts',
   'targetConstraints',
   'targetConstraintLinkIds',
+  'answerOptionsToggleExpressions',
   'enableWhenItems',
   'enableWhenLinkedQuestions',
   'enableWhenIsActivated',

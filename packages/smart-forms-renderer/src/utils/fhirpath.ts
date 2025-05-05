@@ -27,11 +27,14 @@ import type { TargetConstraint } from '../interfaces/targetConstraint.interface'
 import type { Variables, VariableXFhirQuery } from '../interfaces';
 import { evaluateDynamicValueSets } from './parameterisedValueSets';
 import type { ComputedQRItemUpdates } from '../interfaces/computedUpdates.interface';
+import type { AnswerOptionsToggleExpression } from '../interfaces/answerOptionsToggleExpression.interface';
+import { evaluateAnswerOptionsToggleExpressions } from './answerOptionsToggleExpressions';
 
 interface EvaluateUpdatedExpressionsParams {
   updatedResponse: QuestionnaireResponse;
   updatedResponseItemMap: Record<string, QuestionnaireResponseItem[]>;
   targetConstraints: Record<string, TargetConstraint>;
+  answerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
   calculatedExpressions: Record<string, CalculatedExpression[]>;
   enableWhenExpressions: EnableWhenExpressions;
   variables: Variables;
@@ -46,6 +49,7 @@ export async function evaluateUpdatedExpressions(
 ): Promise<{
   isUpdated: boolean;
   updatedTargetConstraints: Record<string, TargetConstraint>;
+  updatedAnswerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
   updatedEnableWhenExpressions: EnableWhenExpressions;
   updatedCalculatedExpressions: Record<string, CalculatedExpression[]>;
   updatedProcessedValueSets: Record<string, any>;
@@ -57,6 +61,7 @@ export async function evaluateUpdatedExpressions(
     updatedResponse,
     updatedResponseItemMap,
     targetConstraints,
+    answerOptionsToggleExpressions,
     enableWhenExpressions,
     calculatedExpressions,
     processedValueSets,
@@ -73,6 +78,7 @@ export async function evaluateUpdatedExpressions(
     return {
       isUpdated: false,
       updatedTargetConstraints: targetConstraints,
+      updatedAnswerOptionsToggleExpressions: answerOptionsToggleExpressions,
       updatedEnableWhenExpressions: enableWhenExpressions,
       updatedCalculatedExpressions: calculatedExpressions,
       updatedProcessedValueSets: processedValueSets,
@@ -103,6 +109,18 @@ export async function evaluateUpdatedExpressions(
     terminologyServerUrl
   );
 
+  // Update answerOptionsToggleExpressions
+  const {
+    answerOptionsToggleExpressionsIsUpdated,
+    updatedAnswerOptionsToggleExpressions,
+    computedNewAnswers: computedNewAnswersAnswerOptionsToggleExpressions
+  } = await evaluateAnswerOptionsToggleExpressions(
+    updatedFhirPathContext,
+    fhirPathTerminologyCache,
+    answerOptionsToggleExpressions,
+    terminologyServerUrl
+  );
+
   // Update enableWhenExpressions
   const { enableWhenExpsIsUpdated, updatedEnableWhenExpressions } =
     await evaluateEnableWhenExpressions(
@@ -113,13 +131,16 @@ export async function evaluateUpdatedExpressions(
     );
 
   // Update calculatedExpressions
-  const { calculatedExpsIsUpdated, updatedCalculatedExpressions } =
-    await evaluateCalculatedExpressions(
-      updatedFhirPathContext,
-      fhirPathTerminologyCache,
-      calculatedExpressions,
-      terminologyServerUrl
-    );
+  const {
+    calculatedExpsIsUpdated,
+    updatedCalculatedExpressions,
+    computedNewAnswers: computedNewAnswersCalculatedExpressions
+  } = await evaluateCalculatedExpressions(
+    updatedFhirPathContext,
+    fhirPathTerminologyCache,
+    calculatedExpressions,
+    terminologyServerUrl
+  );
 
   // Update dynamic value sets
   const {
@@ -136,7 +157,18 @@ export async function evaluateUpdatedExpressions(
   // Have a process here to find their QRItems and assign updates based on the computedNewAnswers
   // In the case of dynamic value sets, just clear the existing answers
   // Eventually we want to expand this to calculatedExpressions
+  for (const linkId in computedNewAnswersCalculatedExpressions) {
+    // FIXME - this implementation is designed to only work on null for now, if we want to actually apply new answer updates, need to have Questionnaire input param
+    if (computedNewAnswersCalculatedExpressions[linkId] === null) {
+      computedQRItemUpdates[linkId] = null;
+    }
+  }
+
   for (const linkId in computedNewAnswersDynamicValueSets) {
+    computedQRItemUpdates[linkId] = null;
+  }
+
+  for (const linkId in computedNewAnswersAnswerOptionsToggleExpressions) {
     computedQRItemUpdates[linkId] = null;
   }
 
@@ -144,11 +176,13 @@ export async function evaluateUpdatedExpressions(
     enableWhenExpsIsUpdated ||
     calculatedExpsIsUpdated ||
     targetConstraintsIsUpdated ||
+    answerOptionsToggleExpressionsIsUpdated ||
     processedValueSetsIsUpdated;
 
   return {
     isUpdated,
     updatedTargetConstraints,
+    updatedAnswerOptionsToggleExpressions,
     updatedEnableWhenExpressions,
     updatedCalculatedExpressions,
     updatedProcessedValueSets,

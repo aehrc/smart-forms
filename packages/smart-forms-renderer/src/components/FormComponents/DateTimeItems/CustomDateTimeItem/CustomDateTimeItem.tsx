@@ -57,7 +57,7 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
   const { displayPrompt, entryFormat } = renderingExtensions;
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   const qrDateTime = qrItem ?? createEmptyQrItem(qItem, answerKey);
 
   let valueDate: string = '';

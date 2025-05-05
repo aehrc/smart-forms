@@ -18,26 +18,33 @@
 import React from 'react';
 import ChoiceRadioSingle from '../ChoiceItems/ChoiceRadioSingle';
 import type { QuestionnaireItemAnswerOption } from 'fhir/r4';
+import { isOptionDisabled } from '../../../utils/choice';
 
 interface RadioOptionListProps {
   options: QuestionnaireItemAnswerOption[];
   readOnly: boolean;
   fullWidth: boolean;
+  answerOptionsToggleExpressionsMap: Map<string, boolean>;
 }
 
 function RadioOptionList(props: RadioOptionListProps) {
-  const { options, readOnly, fullWidth } = props;
+  const { options, readOnly, fullWidth, answerOptionsToggleExpressionsMap } = props;
 
   return (
     <>
       {options.map((option) => {
+        const optionDisabledViaToggleExpression = isOptionDisabled(
+          option,
+          answerOptionsToggleExpressionsMap
+        );
+
         if (option['valueCoding']) {
           return (
             <ChoiceRadioSingle
               key={option.valueCoding.code ?? ''}
               value={option.valueCoding.code ?? ''}
               label={option.valueCoding.display ?? `${option.valueCoding.code}`}
-              readOnly={readOnly}
+              readOnly={readOnly || optionDisabledViaToggleExpression}
               fullWidth={fullWidth}
             />
           );
@@ -49,7 +56,7 @@ function RadioOptionList(props: RadioOptionListProps) {
               key={option.valueString}
               value={option.valueString}
               label={option.valueString}
-              readOnly={readOnly}
+              readOnly={readOnly || optionDisabledViaToggleExpression}
               fullWidth={fullWidth}
             />
           );
@@ -61,7 +68,7 @@ function RadioOptionList(props: RadioOptionListProps) {
               key={option.valueInteger}
               value={option.valueInteger.toString()}
               label={option.valueInteger.toString()}
-              readOnly={readOnly}
+              readOnly={readOnly || optionDisabledViaToggleExpression}
               fullWidth={fullWidth}
             />
           );

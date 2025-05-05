@@ -7,6 +7,60 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.51 and 1.0.0-alpha.52] - 2025-05-02
+### Changed
+- Use individual MUI icon imports in ChoiceAutocompleteField.tsx and ChoiceAutocompleteField.tsx.
+
+## [1.0.0-alpha.50] - 2025-04-29
+### Added
+- Added support for answerOptionToggleExpressions.
+- Added partial support for the facing sync icons when expressions are updated in choice/open-choice checkboxes and radio buttons e.g. dynamicValueSets, answerOptionToggleExpressions.
+
+### Changed
+- Refactored a bunch of choice/open-choice checkboxes and radio buttons to make them cleaner and reduce code duplication.
+
+## [1.0.0-alpha.49] - 2025-04-29
+### Fixed
+- Fixed an issue where the initial QuestionnaireResponse has empty `item` arrays in `group` items. This was causing client-side and server-side validation errors.
+
+## [1.0.0-alpha.48] - 2025-04-29
+### Added
+- Added partial accessibility support for checkboxes and radio buttons, notably:
+- Read-only elements with role="radiogroup" be given aria-readonly="true"
+- Checkboxes has role="checkbox" and if they are read-only elements, aria-readonly="true" as well.
+- Prevent the cursor from changing to "pointer" when read-only checkboxes and radio buttons are hovered, ripple effects on interaction are also removed.
+- Item labels now have `id` of `'label-' + qItem.linkId`.
+- Checkbox FormGroups and RadioGroups have `aria-labelledby` set to the item label id.
+
+## [1.0.0-alpha.47] - 2025-04-14
+Note: this version doesn't build properly, use v1.0.0-alpha.48 instead.
+
+## [1.0.0-alpha.46] - 2025-04-11
+### Fixed
+- Fixed an issue where open-choice dropdown items do not properly capture the value of the selected option. See commit [fc0e1a1](https://github.com/aehrc/smart-forms/commit/fc0e1a13a40d4a1f75b539c51668b9c7f0becbba#diff-db6a1b159d5bc1503013db341ace31a9369a24e9c8ef2098d59f19422d809aa6).
+
+## [1.0.0-alpha.44 and 1.0.0-alpha.45] - 2025-04-10
+### Fixed
+- Use `<div>` or `<span>`  tags to all MUI Typography instances, so they won't be renderer as <p> tags. Some apps might apply CSS styles to <p> tags that will affect their rendering.
+
+## [1.0.0-alpha.43] - 2025-04-10
+### Fixed
+- Fixed an issue where quantity unit and comparator dropdown fields are bugging out in read-only mode.
+
+## [1.0.0-alpha.42] - 2025-04-10
+_(WARNING: Possible major breaking changes with MUI, MUI theming, Tanstack React Query, SDC-Populate, SDC-Assemble)_
+### Changed (See https://github.com/aehrc/smart-forms/pull/1182#issuecomment-2795771013)
+- Upgraded to Material-UI v7. Follow the [migration guide](https://mui.com/material-ui/migration/upgrade-to-v7/) to update your MUI to v7. [Grid](https://mui.com/material-ui/react-grid/) is especially one to pay attention to.
+- Upgraded to React Query v5. Follow the [migration guide](https://tanstack.com/query/latest/docs/framework/react/guides/migrating-to-v5) to update your React Query to v5.
+- All peer dependencies have become dependencies except for `react` and `react-dom`. See https://github.com/aehrc/smart-forms/issues/1179. This is because Angular and Vue apps consuming this library do not usually have React-specific libraries like MUI or React Query.
+- Only supports React 18 and React 19 officially. It might work on React 17, but you might need to do `npm i --legacy-peer-deps` or `npm i --force`.
+- SDC-Populate and SDC-Assemble interface changes: `FetchResourceCallback`, `FetchTerminologyCallback`, `FetchResourceRequestConfig`, `FetchTerminologyRequestConfig`.
+- It is now a requirement for `FetchResourceRequestConfig` to have a sourceServerUrl as the FHIR server URL to fetch resources from.
+- It is now a requirement for `FetchTerminologyRequestConfig` to have a terminologyServerUrl as the FHIR Terminology server URL to fetch terminology from.
+
+### Fixed
+- Revert non-readOnly text-based fields to old border colour (MUI default grey-ish).
+
 ## [1.0.0-alpha.41] - 2025-04-08
 ### Changed
 - Capped peer React version at ^18.0.0. Reason being there are multiple dependencies that are not compatible with React 19.x.x.

@@ -7,7 +7,7 @@ import type {
 import type { ComputedQRItemUpdates } from '../interfaces/computedUpdates.interface';
 import { updateQuestionnaireResponse } from './genericRecursive';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
-import { updateQrItemsInGroup } from './qrItem';
+import { createEmptyQrGroup, createEmptyQrItem, updateQrItemsInGroup } from './qrItem';
 
 export function applyComputedUpdates(
   questionnaire: Questionnaire,
@@ -32,13 +32,7 @@ function applyComputedUpdateRecursive(
   qrItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[] | null,
   computedUpdates: ComputedQRItemUpdates
 ): QuestionnaireResponseItem | QuestionnaireResponseItem[] | null {
-  const update = computedUpdates[qItem.linkId];
-
-  if (update === null) {
-    // If update is null, remove the item (or group of items)
-    return null;
-  }
-
+  // For repeat groups
   const hasMultipleAnswers = Array.isArray(qrItemOrItems);
   if (hasMultipleAnswers) {
     // Process repeating groups: Apply updates to each item in the group
@@ -65,17 +59,42 @@ function applyComputedUpdateRecursive(
         computedUpdates
       );
 
-      // For non-repeating child items, apply the update
-      if (!Array.isArray(updatedChildQRItemOrItems)) {
-        const updatedChildQRItem = updatedChildQRItemOrItems;
-        if (updatedChildQRItem) {
+      // Update QR items in repeating group
+      if (Array.isArray(updatedChildQRItemOrItems)) {
+        if (updatedChildQRItemOrItems.length > 0) {
           updateQrItemsInGroup(
-            updatedChildQRItem,
             null,
-            qrItem ?? { linkId: qItem.linkId, text: qItem.text, item: [] },
+            {
+              linkId: childQItem.linkId,
+              qrItems: updatedChildQRItemOrItems
+            },
+            qrItem ?? structuredClone(createEmptyQrGroup(qItem)),
             indexMap
           );
         }
+        continue;
+      }
+
+      // Update QR items in non-repeating group
+      const updatedChildQRItem = updatedChildQRItemOrItems;
+      if (updatedChildQRItem) {
+        updateQrItemsInGroup(
+          updatedChildQRItem,
+          null,
+          qrItem ?? structuredClone(createEmptyQrGroup(qItem)),
+          indexMap
+        );
+        continue;
+      }
+
+      // Update QR items where updatedChildQRItem is null
+      if (updatedChildQRItem === null) {
+        updateQrItemsInGroup(
+          createEmptyQrItem(childQItem, undefined),
+          null,
+          qrItem ?? structuredClone(createEmptyQrGroup(qItem)),
+          indexMap
+        );
       }
     }
 
@@ -112,10 +131,17 @@ function constructGroupItem(
     return qrItem ?? null;
   }
 
-  if (!computedUpdate) {
+  // No computed update, return the existing item
+  if (computedUpdate === undefined) {
     return qrItem ?? null;
   }
 
+  // If computed update is null, remove the item
+  if (computedUpdate === null) {
+    return null;
+  }
+
+  // If computed update is present, update the item
   if (qrItem) {
     return {
       ...qrItem,
@@ -136,10 +162,17 @@ function constructSingleItem(
   computedUpdates: ComputedQRItemUpdates
 ): QuestionnaireResponseItem | null {
   const computedUpdate = computedUpdates[qItem.linkId];
-  if (!computedUpdate) {
+  // No computed update, return the existing item
+  if (computedUpdate === undefined) {
     return qrItem ?? null;
   }
 
+  // If computed update is null, remove the item
+  if (computedUpdate === null) {
+    return null;
+  }
+
+  // If computed update is present, update the item
   return {
     linkId: qItem.linkId,
     text: qItem.text,

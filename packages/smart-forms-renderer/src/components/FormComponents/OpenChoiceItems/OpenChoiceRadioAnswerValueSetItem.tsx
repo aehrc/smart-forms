@@ -40,6 +40,7 @@ import { useQuestionnaireStore } from '../../../stores';
 import useValueSetCodings from '../../../hooks/useValueSetCodings';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import ItemLabel from '../ItemParts/ItemLabel';
+import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 
 interface OpenChoiceRadioAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
@@ -57,7 +58,7 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   // Init answers
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   const qrOpenChoiceRadio = qrItem ?? createEmptyQrItem(qItem, answerKey);
   let valueRadio: string | null = getQrChoiceValue(qrOpenChoiceRadio, true);
   const answers = qrOpenChoiceRadio.answer ?? [];
@@ -70,8 +71,7 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
   const openLabelText = getOpenLabelText(qItem);
 
   // Get codings/options from valueSet
-  // TODO use dynamicCodingsUpdated to trigger a "refresh" icon when codings are dynamically updated
-  const { codings, terminologyError } = useValueSetCodings(qItem);
+  const { codings, terminologyError, dynamicCodingsUpdated } = useValueSetCodings(qItem);
 
   const options = useMemo(() => convertCodingsToAnswerOptions(codings), [codings]);
 
@@ -93,6 +93,16 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
   // Allow open label to remain selected even if its input was cleared
   if (openLabelSelected && valueRadio === null) {
     valueRadio = '';
+  }
+
+  // Process answerOptionsToggleExpressions
+  const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
+    useAnswerOptionsToggleExpressions(qItem.linkId);
+
+  // Clear open label if answerOptionsToggleExpressions are updated AND if openLabelSelected is true
+  // Note: This adjusts the state during rendering https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
+  if (openLabelSelected && answerOptionsToggleExpUpdated) {
+    setOpenLabelSelected(false);
   }
 
   // Event handlers
@@ -146,6 +156,11 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
     }
   }
 
+  function handleClear() {
+    onQrItemChange(createEmptyQrItem(qItem, answerKey));
+    setOpenLabelSelected(false);
+  }
+
   return (
     <FullWidthFormComponentBox
       data-test="q-item-open-choice-radio-answer-option-box"
@@ -165,8 +180,11 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
             openLabelSelected={openLabelSelected}
             feedback={feedback}
             readOnly={readOnly}
+            expressionUpdated={dynamicCodingsUpdated || answerOptionsToggleExpUpdated}
+            answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             terminologyError={terminologyError}
             onValueChange={handleValueChange}
+            onClear={handleClear}
           />
         }
       />

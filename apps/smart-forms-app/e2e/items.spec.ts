@@ -152,11 +152,8 @@ test('enter inputs into BitOfEverything questionnaire', async ({ page }) => {
 
   // Check QR if our inputs are valid
   await page.getByTestId('see-store-state-button-playground').click();
-  await page
-    .getByTestId('specific-state-picker-playground')
-    .locator('button[value="updatableResponse"]')
-    .click();
 
+  // Assuming debug viewer is already on "updatableResponse" tab
   const debugViewerText = await page.getByTestId('debug-viewer').innerText();
   expect(debugViewerText.includes(`"valueString": "${stringInput}"`)).toBeTruthy();
   expect(debugViewerText.includes(`"valueString": "${textInput}"`)).toBeTruthy();

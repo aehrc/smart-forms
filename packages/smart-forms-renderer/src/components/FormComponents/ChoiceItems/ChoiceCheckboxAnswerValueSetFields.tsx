@@ -25,11 +25,7 @@ import { StyledAlert } from '../../Alert.styles';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Typography from '@mui/material/Typography';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
-import { getChoiceOrientation } from '../../../utils/choice';
-import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
-import CheckboxOptionList from './CheckboxOptionList';
-import { StyledFormGroup, StyledRequiredTypography } from '../Item.styles';
-import { Box } from '@mui/material';
+import CheckboxFormGroup from '../ItemParts/CheckboxFormGroup';
 
 interface ChoiceCheckboxAnswerValueSetFieldsProps {
   qItem: QuestionnaireItem;
@@ -37,29 +33,40 @@ interface ChoiceCheckboxAnswerValueSetFieldsProps {
   answers: QuestionnaireResponseItemAnswer[];
   feedback: string;
   readOnly: boolean;
+  expressionUpdated: boolean;
+  answerOptionsToggleExpressionsMap: Map<string, boolean>;
   terminologyError: TerminologyError;
   onCheckedChange: (newValue: string) => void;
+  onClear: () => void;
 }
 
 function ChoiceCheckboxAnswerValueSetFields(props: ChoiceCheckboxAnswerValueSetFieldsProps) {
-  const { qItem, options, answers, feedback, readOnly, terminologyError, onCheckedChange } = props;
-
-  const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
+  const {
+    qItem,
+    options,
+    answers,
+    feedback,
+    readOnly,
+    expressionUpdated,
+    answerOptionsToggleExpressionsMap,
+    terminologyError,
+    onCheckedChange,
+    onClear
+  } = props;
 
   if (options.length > 0) {
     return (
-      <Box id={qItem.type + '-' + qItem.linkId}>
-        <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
-          <CheckboxOptionList
-            options={options}
-            answers={answers}
-            readOnly={readOnly}
-            onCheckedChange={onCheckedChange}
-          />
-        </StyledFormGroup>
-
-        {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
-      </Box>
+      <CheckboxFormGroup
+        qItem={qItem}
+        options={options}
+        answers={answers}
+        feedback={feedback}
+        readOnly={readOnly}
+        expressionUpdated={expressionUpdated}
+        answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+        onCheckedChange={onCheckedChange}
+        onClear={onClear}
+      />
     );
   }
 
