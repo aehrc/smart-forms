@@ -17,6 +17,7 @@ interface QuantityFieldProps extends PropsWithIsTabledRequiredAttribute {
   readOnly: boolean;
   calcExpUpdated: boolean;
   onInputChange: (value: string) => void;
+  onBlur: () => void;
 }
 
 function QuantityField(props: QuantityFieldProps) {
@@ -31,7 +32,8 @@ function QuantityField(props: QuantityFieldProps) {
     readOnly,
     calcExpUpdated,
     isTabled,
-    onInputChange
+    onInputChange,
+    onBlur
   } = props;
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
@@ -43,6 +45,7 @@ function QuantityField(props: QuantityFieldProps) {
       value={input}
       error={!!feedback}
       onChange={(event) => onInputChange(event.target.value)}
+      onBlur={onBlur}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       label={displayPrompt}
       placeholder={entryFormat === '' ? '0.0' : entryFormat}

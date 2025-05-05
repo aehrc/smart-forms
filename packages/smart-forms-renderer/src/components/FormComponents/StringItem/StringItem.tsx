@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /*
  * Copyright 2024 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
@@ -73,6 +74,8 @@ function StringItem(props: StringItemProps) {
   }
 
   const [input, setInput] = useState(valueString);
+  const [showFeedback, setShowFeedback] = useState(true); //provides a way to hide the feedback when the user is typing
+
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   // Perform validation checks
@@ -97,8 +100,13 @@ function StringItem(props: StringItemProps) {
 
   // Event handlers
   function handleChange(newInput: string) {
-    setInput(newInput);
-    updateQrItemWithDebounce(newInput);
+     setInput(newInput);
+     updateQrItemWithDebounce(newInput);
+     setShowFeedback(false);
+  }
+
+  function handleBlur() {
+    setShowFeedback(true);
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -120,13 +128,14 @@ function StringItem(props: StringItemProps) {
         linkId={qItem.linkId}
         itemType={qItem.type}
         input={input}
-        feedback={feedback}
+        feedback={showFeedback ? feedback : ''}
         displayPrompt={displayPrompt}
         displayUnit={displayUnit}
         entryFormat={entryFormat}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         onInputChange={handleChange}
+        onBlur={handleBlur}
         isTabled={isTabled}
       />
     );
@@ -145,13 +154,14 @@ function StringItem(props: StringItemProps) {
             linkId={qItem.linkId}
             itemType={qItem.type}
             input={input}
-            feedback={feedback}
+            feedback={showFeedback ? feedback : ''}
             displayPrompt={displayPrompt}
             displayUnit={displayUnit}
             entryFormat={entryFormat}
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}
             onInputChange={handleChange}
+            onBlur={handleBlur}
             isTabled={isTabled}
           />
         }

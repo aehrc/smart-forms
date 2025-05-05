@@ -54,6 +54,7 @@ function TextItem(props: TextItemProps) {
   }
 
   const [input, setInput] = useState(valueText);
+  const [showFeedback, setShowFeedback] = useState(true); //provides a way to hide the feedback when the user is typing
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
@@ -80,7 +81,12 @@ function TextItem(props: TextItemProps) {
   // Event handlers
   function handleInputChange(newInput: string) {
     setInput(newInput);
+    setShowFeedback(false);
     updateQrItemWithDebounce(newInput);
+  }
+
+  function handleBlur() {
+    setShowFeedback(true);
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -102,13 +108,14 @@ function TextItem(props: TextItemProps) {
         linkId={qItem.linkId}
         itemType={qItem.type}
         input={input}
-        feedback={feedback}
+        feedback={showFeedback ? feedback : ''}
         displayPrompt={displayPrompt}
         displayUnit={displayUnit}
         entryFormat={entryFormat}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         onInputChange={handleInputChange}
+        onBlur={handleBlur}
       />
     );
   }
@@ -127,13 +134,14 @@ function TextItem(props: TextItemProps) {
             linkId={qItem.linkId}
             itemType={qItem.type}
             input={input}
-            feedback={feedback}
+            feedback={showFeedback ? feedback : ''}
             displayPrompt={displayPrompt}
             displayUnit={displayUnit}
             entryFormat={entryFormat}
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}
             onInputChange={handleInputChange}
+            onBlur={handleBlur}
           />
         }
         feedback={feedback}

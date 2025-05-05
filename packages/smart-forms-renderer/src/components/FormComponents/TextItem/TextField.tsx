@@ -33,6 +33,7 @@ interface TextFieldProps {
   readOnly: boolean;
   calcExpUpdated: boolean;
   onInputChange: (value: string) => void;
+  onBlur: () => void;
 }
 
 function TextField(props: TextFieldProps) {
@@ -46,7 +47,8 @@ function TextField(props: TextFieldProps) {
     entryFormat,
     readOnly,
     calcExpUpdated,
-    onInputChange
+    onInputChange,
+    onBlur
   } = props;
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
@@ -57,6 +59,7 @@ function TextField(props: TextFieldProps) {
       value={input}
       error={!!feedback}
       onChange={(event) => onInputChange(event.target.value)}
+      onBlur={onBlur}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       label={displayPrompt}
       placeholder={entryFormat}

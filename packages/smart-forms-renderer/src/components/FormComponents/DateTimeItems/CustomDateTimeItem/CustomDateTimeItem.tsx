@@ -86,6 +86,7 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
   const [timeInput, setTimeInput] = useState(displayTime);
   const [periodInput, setPeriodInput] = useState(displayPeriod);
   const [dateFocused, setDateFocused] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(true); //provides a way to hide the feedback when the user is typing
 
   // Perform validation checks
   let dateFeedback = useDateValidation(dateInput, dateParseFail);
@@ -104,6 +105,7 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
 
   function handleDateInputChange(newDateInput: string) {
     setDateInput(newDateInput);
+    setShowFeedback(false);
 
     if (newDateInput === '') {
       onQrItemChange(createEmptyQrItem(qItem, answerKey));
@@ -116,10 +118,14 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
 
     updateQRDateTime(newDateInput, timeInput, periodInput, is24HourNotation);
   }
+  function handleDateBlur() {
+    setShowFeedback(true);
+  }
 
   function handleTimeInputChange(newTimeInput: string, newPeriodInput: string) {
     setTimeInput(newTimeInput);
     setPeriodInput(newPeriodInput);
+    setShowFeedback(false);
 
     if (newTimeInput === '') {
       updateQRDateTime(dateInput, '', '', false);
@@ -132,6 +138,10 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
     }
 
     updateQRDateTime(dateInput, newTimeInput, newPeriodInput, is24HourNotation);
+  }
+
+  function handleTimeBlur() {
+    setShowFeedback(true);
   }
 
   function updateQRDateTime(
@@ -175,8 +185,8 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
           timeInput={timeInput}
           periodInput={periodInput}
           is24HourNotation={is24HourNotation}
-          dateFeedback={dateFeedback ?? ''}
-          timeFeedback={timeFeedback ?? ''}
+          dateFeedback={showFeedback ? (dateFeedback ?? '') : ''}
+          timeFeedback={showFeedback ? (timeFeedback ?? '') : ''}
           dateFocused={dateFocused}
           displayPrompt={displayPrompt}
           entryFormat={entryFormat}
@@ -186,6 +196,9 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
           onSelectDate={handleSelectDate}
           setDateFocused={setDateFocused}
           onTimeInputChange={handleTimeInputChange}
+          onDateBlur={handleDateBlur}
+          onTimeBlur={handleTimeBlur}
+          showFeedback={showFeedback}
         />
       </Stack>
     );
@@ -220,6 +233,9 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
             onSelectDate={handleSelectDate}
             setDateFocused={setDateFocused}
             onTimeInputChange={handleTimeInputChange}
+            onDateBlur={handleDateBlur}
+            onTimeBlur={handleTimeBlur}
+            showFeedback={showFeedback}
           />
         }
         dateFeedback={dateFeedback ?? undefined}
