@@ -76,7 +76,6 @@ function StringItem(props: StringItemProps) {
   const [input, setInput] = useState(valueString);
   const [showFeedback, setShowFeedback] = useState(true); //provides a way to hide the feedback when the user is typing
 
-
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent, input);
@@ -100,9 +99,9 @@ function StringItem(props: StringItemProps) {
 
   // Event handlers
   function handleChange(newInput: string) {
-     setInput(newInput);
-     updateQrItemWithDebounce(newInput);
-     setShowFeedback(false);
+    setInput(newInput);
+    updateQrItemWithDebounce(newInput);
+    setShowFeedback(false);
   }
 
   function handleBlur() {
