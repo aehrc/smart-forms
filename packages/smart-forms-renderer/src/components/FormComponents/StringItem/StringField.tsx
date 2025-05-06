@@ -34,6 +34,7 @@ interface StringFieldProps extends PropsWithIsTabledRequiredAttribute {
   readOnly: boolean;
   calcExpUpdated: boolean;
   onInputChange: (value: string) => void;
+  onBlur: () => void;
 }
 
 function StringField(props: StringFieldProps) {
@@ -48,7 +49,8 @@ function StringField(props: StringFieldProps) {
     readOnly,
     isTabled,
     calcExpUpdated,
-    onInputChange
+    onInputChange,
+    onBlur
   } = props;
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
@@ -62,6 +64,7 @@ function StringField(props: StringFieldProps) {
       isTabled={isTabled}
       value={input}
       error={!!feedback}
+      onBlur={onBlur} // Trigger validation on blur
       onChange={(event) => onInputChange(event.target.value)}
       label={displayPrompt}
       placeholder={entryFormat}

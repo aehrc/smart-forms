@@ -101,6 +101,7 @@ function QuantityItem(props: QuantityItemProps) {
   const [unitInput, setUnitInput] = useState<QuestionnaireItemAnswerOption | null>(
     initialUnitInput
   );
+  const [showFeedback, setShowFeedback] = useState(true); //provides a way to hide the feedback when the user is typing
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
@@ -168,6 +169,7 @@ function QuantityItem(props: QuantityItemProps) {
   // Event handlers
   function handleComparatorInputChange(newComparatorInput: Quantity['comparator'] | null) {
     setComparatorInput(newComparatorInput);
+    setShowFeedback(false);
 
     if (!valueInput) return;
 
@@ -185,7 +187,7 @@ function QuantityItem(props: QuantityItemProps) {
 
   function handleUnitInputChange(newUnitInput: QuestionnaireItemAnswerOption | null) {
     setUnitInput(newUnitInput);
-
+    setShowFeedback(false);
     if (!valueInput) return;
 
     onQrItemChange({
@@ -204,7 +206,11 @@ function QuantityItem(props: QuantityItemProps) {
     const parsedNewInput: string = parseDecimalStringWithPrecision(newInput, precision);
 
     setValueInput(parsedNewInput);
+    setShowFeedback(false);
     updateQrItemWithDebounce(parsedNewInput);
+  }
+  function handleBlur() {
+    setShowFeedback(true);
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -250,7 +256,7 @@ function QuantityItem(props: QuantityItemProps) {
           linkId={qItem.linkId}
           itemType={qItem.type}
           input={valueInput}
-          feedback={feedback}
+          feedback={showFeedback ? feedback : ''}
           displayPrompt={displayPrompt}
           displayUnit={displayUnit}
           entryFormat={entryFormat}
@@ -258,6 +264,7 @@ function QuantityItem(props: QuantityItemProps) {
           calcExpUpdated={calcExpUpdated}
           isTabled={isTabled}
           onInputChange={handleValueInputChange}
+          onBlur={handleBlur}
         />
         {showUnitOptions ? (
           <QuantityUnitField
@@ -298,7 +305,7 @@ function QuantityItem(props: QuantityItemProps) {
               linkId={qItem.linkId}
               itemType={qItem.type}
               input={valueInput}
-              feedback={feedback}
+              feedback={showFeedback ? feedback : ''}
               displayPrompt={displayPrompt}
               displayUnit={displayUnit}
               entryFormat={entryFormat}
@@ -306,6 +313,7 @@ function QuantityItem(props: QuantityItemProps) {
               calcExpUpdated={calcExpUpdated}
               isTabled={isTabled}
               onInputChange={handleValueInputChange}
+              onBlur={handleBlur}
             />
             {showUnitOptions ? (
               <QuantityUnitField

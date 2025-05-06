@@ -34,6 +34,7 @@ interface DecimalFieldProps extends PropsWithIsTabledRequiredAttribute {
   readOnly: boolean;
   calcExpUpdated: boolean;
   onInputChange: (value: string) => void;
+  onBlur: () => void;
 }
 
 function DecimalField(props: DecimalFieldProps) {
@@ -48,7 +49,8 @@ function DecimalField(props: DecimalFieldProps) {
     readOnly,
     calcExpUpdated,
     isTabled,
-    onInputChange
+    onInputChange,
+    onBlur
   } = props;
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
@@ -60,6 +62,7 @@ function DecimalField(props: DecimalFieldProps) {
       value={input}
       error={!!feedback}
       onChange={(event) => onInputChange(event.target.value)}
+      onBlur={onBlur}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       label={displayPrompt}
       placeholder={entryFormat === '' ? '0.0' : entryFormat}

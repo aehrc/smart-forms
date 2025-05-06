@@ -69,6 +69,7 @@ function IntegerItem(props: IntegerItemProps) {
   }
 
   const [input, setInput] = useState(initialInput);
+  const [showFeedback, setShowFeedback] = useState(true); //provides a way to hide the feedback when the user is typing
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
@@ -97,7 +98,11 @@ function IntegerItem(props: IntegerItemProps) {
     const parsedNewInput = parseIntegerString(newInput);
 
     setInput(parsedNewInput);
+    setShowFeedback(false);
     updateQrItemWithDebounce(parsedNewInput);
+  }
+  function handleBlur() {
+    setShowFeedback(true);
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -121,7 +126,7 @@ function IntegerItem(props: IntegerItemProps) {
         linkId={qItem.linkId}
         itemType={qItem.type}
         input={input}
-        feedback={feedback}
+        feedback={showFeedback ? feedback : ''}
         displayPrompt={displayPrompt}
         displayUnit={displayUnit}
         entryFormat={entryFormat}
@@ -129,6 +134,7 @@ function IntegerItem(props: IntegerItemProps) {
         calcExpUpdated={calcExpUpdated}
         isTabled={isTabled}
         onInputChange={handleInputChange}
+        onBlur={handleBlur}
       />
     );
   }
@@ -147,7 +153,7 @@ function IntegerItem(props: IntegerItemProps) {
             linkId={qItem.linkId}
             itemType={qItem.type}
             input={input}
-            feedback={feedback}
+            feedback={showFeedback ? feedback : ''}
             displayPrompt={displayPrompt}
             displayUnit={displayUnit}
             entryFormat={entryFormat}
@@ -155,6 +161,7 @@ function IntegerItem(props: IntegerItemProps) {
             calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}
             onInputChange={handleInputChange}
+            onBlur={handleBlur}
           />
         }
         feedback={feedback}

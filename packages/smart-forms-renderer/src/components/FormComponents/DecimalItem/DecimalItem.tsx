@@ -75,6 +75,7 @@ function DecimalItem(props: DecimalItemProps) {
   }
 
   const [input, setInput] = useState(initialInput);
+  const [showFeedback, setShowFeedback] = useState(true); //provides a way to hide the feedback when the user is typing
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
@@ -108,7 +109,11 @@ function DecimalItem(props: DecimalItemProps) {
     const parsedNewInput: string = parseDecimalStringWithPrecision(newInput, precision);
 
     setInput(parsedNewInput);
+    setShowFeedback(false);
     updateQrItemWithDebounce(parsedNewInput);
+  }
+  function handleBlur() {
+    setShowFeedback(true);
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -149,6 +154,7 @@ function DecimalItem(props: DecimalItemProps) {
           calcExpUpdated={calcExpUpdated}
           isTabled={isTabled}
           onInputChange={handleInputChange}
+          onBlur={handleBlur}
         />
       </Box>
     );
@@ -168,7 +174,7 @@ function DecimalItem(props: DecimalItemProps) {
             linkId={qItem.linkId}
             itemType={qItem.type}
             input={input}
-            feedback={feedback}
+            feedback={showFeedback ? feedback : ''}
             displayPrompt={displayPrompt}
             displayUnit={displayUnit}
             entryFormat={entryFormat}
@@ -176,6 +182,7 @@ function DecimalItem(props: DecimalItemProps) {
             calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}
             onInputChange={handleInputChange}
+            onBlur={handleBlur}
           />
         }
         feedback={feedback}
