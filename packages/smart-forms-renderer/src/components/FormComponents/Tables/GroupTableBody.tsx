@@ -21,6 +21,7 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
 import type {
   PropsWithIsRepeatedAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
@@ -29,9 +30,11 @@ import type { DropResult } from 'react-beautiful-dnd';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { reorderRows } from '../../../utils/groupTable';
 import TableBody from '@mui/material/TableBody';
+import { extendItemPath } from '../../../utils/itemPath';
 
 interface GroupTableBodyProps
-  extends PropsWithIsRepeatedAttribute,
+  extends PropsWithItemPathAttribute,
+    PropsWithIsRepeatedAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithShowMinimalViewAttribute {
   tableQItem: QuestionnaireItem;
@@ -52,6 +55,7 @@ function GroupTableBody(props: GroupTableBodyProps) {
     tableRows,
     selectedIds,
     qItemsIndexMap,
+    itemPath,
     isRepeated,
     showMinimalView,
     parentIsReadOnly,
@@ -102,6 +106,7 @@ function GroupTableBody(props: GroupTableBodyProps) {
                   itemIsSelected={itemIsSelected}
                   selectedIds={selectedIds}
                   qItemsIndexMap={qItemsIndexMap}
+                  itemPath={extendItemPath(itemPath, tableQItem.linkId, index)}
                   showMinimalView={showMinimalView}
                   parentIsReadOnly={parentIsReadOnly}
                   onRowChange={onRowChange}

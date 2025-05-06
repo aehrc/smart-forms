@@ -19,6 +19,7 @@ import React from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
   PropsWithIsRepeatedAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
@@ -35,7 +36,8 @@ import { Draggable } from 'react-beautiful-dnd';
 import { StyledGroupTableRow } from './Table.styles';
 
 interface GroupTableRowProps
-  extends PropsWithIsRepeatedAttribute,
+  extends PropsWithItemPathAttribute,
+    PropsWithIsRepeatedAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
     TableRowProps {
@@ -69,6 +71,7 @@ function GroupTableRow(props: GroupTableRowProps) {
     tableRows,
     itemIsSelected,
     qItemsIndexMap,
+    itemPath,
     showMinimalView,
     parentIsReadOnly,
     onRowChange,
@@ -114,6 +117,7 @@ function GroupTableRow(props: GroupTableRowProps) {
               qItem={tableQItem}
               qrItem={answeredQrItem}
               qItemsIndexMap={qItemsIndexMap}
+              itemPath={itemPath}
               parentIsReadOnly={parentIsReadOnly}
               onQrItemChange={(newQrGroup) => onRowChange(newQrGroup, index)}
             />
@@ -158,6 +162,7 @@ function GroupTableRow(props: GroupTableRowProps) {
         qItem={tableQItem}
         qrItem={answeredQrItem}
         qItemsIndexMap={qItemsIndexMap}
+        itemPath={itemPath}
         parentIsReadOnly={parentIsReadOnly}
         onQrItemChange={(newQrGroup) => onRowChange(newQrGroup, index)}
       />

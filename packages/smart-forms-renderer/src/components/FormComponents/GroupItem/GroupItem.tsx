@@ -21,6 +21,7 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
 import type {
   PropsWithIsRepeatedAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
   PropsWithQrItemChangeHandler
@@ -36,6 +37,7 @@ import PageButtonsWrapper from './PageButtonWrapper';
 
 interface GroupItemProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithParentIsRepeatGroupAttribute {
@@ -56,6 +58,7 @@ function GroupItem(props: GroupItemProps) {
   const {
     qItem,
     qrItem,
+    itemPath,
     isRepeated,
     groupCardElevation,
     disableCardView,
@@ -131,6 +134,7 @@ function GroupItem(props: GroupItemProps) {
       qItem={qItem}
       childQItems={qItems}
       qrItemsByIndex={qrItemsByIndex}
+      itemPath={itemPath}
       isRepeated={isRepeated}
       groupCardElevation={groupCardElevation}
       disableCardView={disableCardView}
@@ -143,9 +147,9 @@ function GroupItem(props: GroupItemProps) {
       parentIsReadOnly={parentIsReadOnly}
       parentIsRepeatGroup={parentIsRepeatGroup}
       parentRepeatGroupIndex={parentRepeatGroupIndex}
+      parentStyles={parentStyles}
       onQrItemChange={handleQrItemChange}
       onQrRepeatGroupChange={handleQrRepeatGroupChange}
-      parentStyles={parentStyles}
     />
   );
 }

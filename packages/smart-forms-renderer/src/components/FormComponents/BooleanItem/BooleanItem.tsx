@@ -38,6 +38,7 @@ function BooleanItem(props: BooleanItemProps) {
   const {
     qItem,
     qrItem,
+    itemPath,
     isRepeated,
     isTabled,
     parentIsReadOnly,
@@ -64,13 +65,16 @@ function BooleanItem(props: BooleanItemProps) {
     qItem: qItem,
     booleanValue: valueBoolean,
     onChangeByCalcExpressionBoolean: (newValueBoolean: boolean) => {
-      onQrItemChange({
-        ...createEmptyQrItem(qItem, answerKey),
-        answer: [{ id: answerKey, valueBoolean: newValueBoolean }]
-      });
+      onQrItemChange(
+        {
+          ...createEmptyQrItem(qItem, answerKey),
+          answer: [{ id: answerKey, valueBoolean: newValueBoolean }]
+        },
+        itemPath
+      );
     },
     onChangeByCalcExpressionNull: () => {
-      onQrItemChange(createEmptyQrItem(qItem, answerKey));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
     }
   });
 

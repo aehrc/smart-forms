@@ -21,6 +21,7 @@ import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledRequiredAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
   PropsWithQrItemChangeHandler,
@@ -31,9 +32,11 @@ import useHidden from '../../../hooks/useHidden';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { shouldRenderNestedItems } from '../../../utils/itemControl';
 import SingleItemView from './SingleItemView';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
 interface SingleItemProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledRequiredAttribute,
     PropsWithShowMinimalViewAttribute,
@@ -56,6 +59,7 @@ function SingleItem(props: SingleItemProps) {
   const {
     qItem,
     qrItem,
+    itemPath,
     isRepeated = false,
     isTabled = false,
     groupCardElevation,
@@ -64,14 +68,14 @@ function SingleItem(props: SingleItemProps) {
     feedbackFromParent,
     parentIsRepeatGroup,
     parentRepeatGroupIndex,
-    onQrItemChange,
-    parentStyles
+    parentStyles,
+    onQrItemChange
   } = props;
 
   const updateEnableWhenItem = useQuestionnaireStore.use.updateEnableWhenItem();
 
   const handleQrItemChange = useCallback(
-    (newQrItem: QuestionnaireResponseItem) => {
+    (newQrItem: QuestionnaireResponseItem, targetItemPath?: ItemPath) => {
       updateEnableWhenItem(
         qItem.linkId,
         newQrItem.answer,
@@ -79,9 +83,9 @@ function SingleItem(props: SingleItemProps) {
       );
 
       if (qrItem && qrItem.item && qrItem.item.length > 0) {
-        onQrItemChange({ ...newQrItem, item: qrItem.item });
+        onQrItemChange({ ...newQrItem, item: qrItem.item }, targetItemPath);
       } else {
-        onQrItemChange(newQrItem);
+        onQrItemChange(newQrItem, targetItemPath);
       }
     },
     [
@@ -95,9 +99,9 @@ function SingleItem(props: SingleItemProps) {
   );
 
   const handleQrItemChangeWithNestedItems = useCallback(
-    (newQrItem: QuestionnaireResponseItem) => {
+    (newQrItem: QuestionnaireResponseItem, targetItemPath?: ItemPath) => {
       const updatedQrItem = qrItem ? { ...qrItem, item: newQrItem.item } : newQrItem;
-      onQrItemChange(updatedQrItem);
+      onQrItemChange(updatedQrItem, targetItemPath);
     },
     [qrItem, onQrItemChange]
   );
@@ -114,6 +118,7 @@ function SingleItem(props: SingleItemProps) {
     <SingleItemView
       qItem={qItem}
       qrItem={qrItem}
+      itemPath={itemPath}
       itemIsHidden={itemIsHidden}
       itemHasNestedItems={itemHasNestedItems}
       isRepeated={isRepeated}
@@ -122,9 +127,9 @@ function SingleItem(props: SingleItemProps) {
       showMinimalView={showMinimalView}
       parentIsReadOnly={readOnly}
       feedbackFromParent={feedbackFromParent}
+      parentStyles={parentStyles}
       onQrItemChange={handleQrItemChange}
       onQrItemChangeWithNestedItems={handleQrItemChangeWithNestedItems}
-      parentStyles={parentStyles}
     />
   );
 }

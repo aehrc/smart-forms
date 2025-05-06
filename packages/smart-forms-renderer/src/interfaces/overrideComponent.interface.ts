@@ -19,10 +19,12 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type { QrRepeatGroup } from './repeatGroup.interface';
 import type { RenderingExtensions } from '../hooks/useRenderingExtensions';
 import type { JSX } from 'react';
+import type { ItemPath } from './itemPath.interface';
 
 export interface QItemOverrideComponentProps {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | QuestionnaireResponseItem[] | null;
+  itemPath: ItemPath;
   isRepeated: boolean;
   isTabled?: boolean;
   renderingExtensions?: RenderingExtensions;

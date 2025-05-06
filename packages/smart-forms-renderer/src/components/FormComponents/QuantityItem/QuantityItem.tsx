@@ -37,6 +37,7 @@ function QuantityItem(props: QuantityItemProps) {
   const {
     qItem,
     qrItem,
+    itemPath,
     isRepeated,
     isTabled,
     renderingExtensions,
@@ -118,20 +119,23 @@ function QuantityItem(props: QuantityItemProps) {
           ? newValueDecimal.toFixed(precision)
           : newValueDecimal.toString()
       );
-      onQrItemChange({
-        ...createEmptyQrItem(qItem, answerKey),
-        answer: [
-          {
-            id: answerKey,
-            valueQuantity: {
-              value: newValueDecimal,
-              unit: unitInput?.valueCoding?.display,
-              system: unitInput?.valueCoding?.system,
-              code: unitInput?.valueCoding?.code
+      onQrItemChange(
+        {
+          ...createEmptyQrItem(qItem, answerKey),
+          answer: [
+            {
+              id: answerKey,
+              valueQuantity: {
+                value: newValueDecimal,
+                unit: unitInput?.valueCoding?.display,
+                system: unitInput?.valueCoding?.system,
+                code: unitInput?.valueCoding?.code
+              }
             }
-          }
-        ]
-      });
+          ]
+        },
+        itemPath
+      );
     },
     onChangeByCalcExpressionQuantity: (
       newValueDecimal: number,
@@ -144,24 +148,27 @@ function QuantityItem(props: QuantityItemProps) {
           ? newValueDecimal.toFixed(precision)
           : newValueDecimal.toString()
       );
-      onQrItemChange({
-        ...createEmptyQrItem(qItem, answerKey),
-        answer: [
-          {
-            id: answerKey,
-            valueQuantity: {
-              value: newValueDecimal,
-              unit: newUnitDisplay,
-              system: newUnitSystem,
-              code: newUnitCode
+      onQrItemChange(
+        {
+          ...createEmptyQrItem(qItem, answerKey),
+          answer: [
+            {
+              id: answerKey,
+              valueQuantity: {
+                value: newValueDecimal,
+                unit: newUnitDisplay,
+                system: newUnitSystem,
+                code: newUnitCode
+              }
             }
-          }
-        ]
-      });
+          ]
+        },
+        itemPath
+      );
     },
     onChangeByCalcExpressionNull: () => {
       setValueInput('');
-      onQrItemChange(createEmptyQrItem(qItem, answerKey));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
     }
   });
 

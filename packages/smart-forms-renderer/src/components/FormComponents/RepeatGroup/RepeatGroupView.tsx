@@ -17,6 +17,7 @@
 
 import React from 'react';
 import type {
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
   PropsWithShowMinimalViewAttribute
@@ -38,9 +39,11 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import GroupHeading from '../GroupItem/GroupHeading';
+import { extendItemPath } from '../../../utils/itemPath';
 
 interface RepeatGroupViewProps
-  extends PropsWithShowMinimalViewAttribute,
+  extends PropsWithItemPathAttribute,
+    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithParentIsRepeatGroupAttribute {
   qItem: QuestionnaireItem;
@@ -62,13 +65,14 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
   const {
     qItem,
     repeatGroups,
+    itemPath,
     groupCardElevation,
     showMinimalView,
     parentIsReadOnly,
+    parentStyles,
     onAnswerChange,
     onAddItem,
-    onDeleteItem,
-    parentStyles
+    onDeleteItem
   } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
@@ -95,6 +99,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
                 answeredQrItem={answeredQrItem}
                 nullableQrItem={nullableQrItem}
                 numOfRepeatGroups={repeatGroups.length}
+                itemPath={extendItemPath(itemPath, qItem.linkId, index)}
                 groupCardElevation={groupCardElevation}
                 showMinimalView={showMinimalView}
                 parentIsReadOnly={parentIsReadOnly}
@@ -146,6 +151,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
                     answeredQrItem={answeredQrItem}
                     nullableQrItem={nullableQrItem}
                     numOfRepeatGroups={repeatGroups.length}
+                    itemPath={extendItemPath(itemPath, qItem.linkId, index)}
                     groupCardElevation={groupCardElevation}
                     parentIsReadOnly={parentIsReadOnly}
                     onDeleteItem={() => onDeleteItem(index)}
@@ -194,6 +200,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
                   answeredQrItem={answeredQrItem}
                   nullableQrItem={nullableQrItem}
                   numOfRepeatGroups={repeatGroups.length}
+                  itemPath={extendItemPath(itemPath, qItem.linkId, index)}
                   groupCardElevation={groupCardElevation}
                   parentIsReadOnly={parentIsReadOnly}
                   onDeleteItem={() => onDeleteItem(index)}

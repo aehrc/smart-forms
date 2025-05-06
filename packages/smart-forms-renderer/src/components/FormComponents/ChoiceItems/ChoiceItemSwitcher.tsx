@@ -30,6 +30,7 @@ import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledRequiredAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentStylesAttribute,
   PropsWithQrItemChangeHandler,
@@ -40,6 +41,7 @@ import Typography from '@mui/material/Typography';
 
 interface ChoiceItemSwitcherProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledRequiredAttribute,
     PropsWithRenderingExtensionsAttribute,
@@ -55,6 +57,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
   const {
     qItem,
     qrItem,
+    itemPath,
     isRepeated,
     isTabled,
     renderingExtensions,
@@ -73,6 +76,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
           <ChoiceRadioAnswerOptionItem
             qItem={qItem}
             qrItem={qrItem}
+            itemPath={itemPath}
             isRepeated={isRepeated}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
@@ -86,6 +90,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
           <ChoiceRadioAnswerValueSetItem
             qItem={qItem}
             qrItem={qrItem}
+            itemPath={itemPath}
             isRepeated={isRepeated}
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
@@ -100,6 +105,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
           <ChoiceCheckboxAnswerOptionItem
             qItem={qItem}
             qrItem={qrItem}
+            itemPath={itemPath}
             isRepeated={qItem.repeats ?? false}
             renderingExtensions={renderingExtensions}
             showMinimalView={showMinimalView}
@@ -113,6 +119,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
           <ChoiceCheckboxAnswerValueSetItem
             qItem={qItem}
             qrItem={qrItem}
+            itemPath={itemPath}
             isRepeated={qItem.repeats ?? false}
             renderingExtensions={renderingExtensions}
             showMinimalView={showMinimalView}
@@ -127,6 +134,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
         <ChoiceAutocompleteItem
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -141,6 +149,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
           <ChoiceSelectAnswerOptionItem
             qItem={qItem}
             qrItem={qrItem}
+            itemPath={itemPath}
             isRepeated={isRepeated}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
@@ -154,6 +163,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
           <ChoiceSelectAnswerValueSetItem
             qItem={qItem}
             qrItem={qrItem}
+            itemPath={itemPath}
             isRepeated={isRepeated}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}

@@ -20,6 +20,7 @@ import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledRequiredAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithRenderingExtensionsAttribute
@@ -39,6 +40,7 @@ import ItemLabel from '../ItemParts/ItemLabel';
 
 interface StringItemProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledRequiredAttribute,
     PropsWithRenderingExtensionsAttribute,
@@ -52,13 +54,14 @@ function StringItem(props: StringItemProps) {
   const {
     qItem,
     qrItem,
+    itemPath,
     isRepeated,
     isTabled,
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
-    onQrItemChange,
-    parentStyles
+    parentStyles,
+    onQrItemChange
   } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
@@ -84,14 +87,17 @@ function StringItem(props: StringItemProps) {
     inputValue: input,
     onChangeByCalcExpressionString: (newValueString: string) => {
       setInput(newValueString);
-      onQrItemChange({
-        ...createEmptyQrItem(qItem, answerKey),
-        answer: [{ id: answerKey, valueString: newValueString }]
-      });
+      onQrItemChange(
+        {
+          ...createEmptyQrItem(qItem, answerKey),
+          answer: [{ id: answerKey, valueString: newValueString }]
+        },
+        itemPath
+      );
     },
     onChangeByCalcExpressionNull: () => {
       setInput('');
-      onQrItemChange(createEmptyQrItem(qItem, answerKey));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
     }
   });
 

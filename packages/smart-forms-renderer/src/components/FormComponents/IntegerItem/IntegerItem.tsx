@@ -40,6 +40,7 @@ function IntegerItem(props: IntegerItemProps) {
   const {
     qItem,
     qrItem,
+    itemPath,
     isRepeated,
     isTabled,
     renderingExtensions,
@@ -81,14 +82,17 @@ function IntegerItem(props: IntegerItemProps) {
     inputValue: input,
     onChangeByCalcExpressionInteger: (newValueInteger: number) => {
       setInput(newValueInteger.toString());
-      onQrItemChange({
-        ...createEmptyQrItem(qItem, answerKey),
-        answer: [{ id: answerKey, valueInteger: newValueInteger }]
-      });
+      onQrItemChange(
+        {
+          ...createEmptyQrItem(qItem, answerKey),
+          answer: [{ id: answerKey, valueInteger: newValueInteger }]
+        },
+        itemPath
+      );
     },
     onChangeByCalcExpressionNull: () => {
       setInput('');
-      onQrItemChange(createEmptyQrItem(qItem, answerKey));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
     }
   });
 

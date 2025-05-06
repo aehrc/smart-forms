@@ -17,6 +17,7 @@
 
 import React, { useState } from 'react';
 import type {
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
   PropsWithQrRepeatGroupChangeHandler,
@@ -30,6 +31,7 @@ import { generateNewRepeatId } from '../../../utils/repeatId';
 
 interface RepeatGroupProps
   extends PropsWithQrRepeatGroupChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithParentIsRepeatGroupAttribute {
@@ -49,6 +51,7 @@ function RepeatGroup(props: RepeatGroupProps) {
   const {
     qItem,
     qrItems,
+    itemPath,
     groupCardElevation,
     showMinimalView,
     parentIsReadOnly,
@@ -114,6 +117,7 @@ function RepeatGroup(props: RepeatGroupProps) {
     <RepeatGroupView
       qItem={qItem}
       repeatGroups={repeatGroups}
+      itemPath={itemPath}
       groupCardElevation={groupCardElevation}
       showMinimalView={showMinimalView}
       parentIsReadOnly={parentIsReadOnly}

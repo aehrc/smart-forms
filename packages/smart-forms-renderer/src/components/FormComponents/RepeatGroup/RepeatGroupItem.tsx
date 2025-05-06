@@ -20,6 +20,7 @@ import { RepeatGroupContainerStack } from '../RepeatItem/RepeatItem.styles';
 import Box from '@mui/material/Box';
 import GroupItem from '../GroupItem/GroupItem';
 import type {
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithShowMinimalViewAttribute
@@ -30,6 +31,7 @@ import useReadOnly from '../../../hooks/useReadOnly';
 
 interface RepeatGroupItemProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
@@ -48,6 +50,7 @@ function RepeatGroupItem(props: RepeatGroupItemProps) {
     answeredQrItem,
     nullableQrItem,
     numOfRepeatGroups,
+    itemPath,
     groupCardElevation,
     showMinimalView,
     parentIsReadOnly,
@@ -63,6 +66,7 @@ function RepeatGroupItem(props: RepeatGroupItemProps) {
         <GroupItem
           qItem={qItem}
           qrItem={answeredQrItem}
+          itemPath={itemPath}
           isRepeated={true}
           parentIsRepeatGroup={true}
           parentRepeatGroupIndex={repeatGroupIndex}

@@ -5,15 +5,18 @@ import TabContext from '@mui/lab/TabContext';
 import TabPanel from '@mui/lab/TabPanel';
 import GroupItem from '../FormComponents/GroupItem/GroupItem';
 import type {
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../stores';
 import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';
 import { createEmptyQrGroup, updateQrItemsInGroup } from '../../utils/qrItem';
+import { extendItemPath } from '../../utils/itemPath';
 
 interface FormBodyPageContainerProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithParentIsReadOnlyAttribute {
   topLevelQItem: QuestionnaireItem;
   topLevelQRItem: QuestionnaireResponseItem | null;
@@ -27,7 +30,7 @@ interface FormBodyPageContainerProps
  * Note: This will only be used if wholeFormIsPaginated=false
  */
 function FormBodyPageContainer(props: FormBodyPageContainerProps) {
-  const { topLevelQItem, topLevelQRItem, parentIsReadOnly, onQrItemChange } = props;
+  const { topLevelQItem, topLevelQRItem, itemPath, parentIsReadOnly, onQrItemChange } = props;
 
   const pages = useQuestionnaireStore.use.pages();
   const currentPage = useQuestionnaireStore.use.currentPageIndex();
@@ -80,6 +83,7 @@ function FormBodyPageContainer(props: FormBodyPageContainerProps) {
                 <GroupItem
                   qItem={qItem}
                   qrItem={qrItem ?? null}
+                  itemPath={extendItemPath(itemPath, qItem.linkId)}
                   isRepeated={isRepeated}
                   groupCardElevation={1}
                   pageIsMarkedAsComplete={pageIsMarkedAsComplete}

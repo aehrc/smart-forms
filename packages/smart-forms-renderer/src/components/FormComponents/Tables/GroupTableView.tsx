@@ -30,6 +30,7 @@ import AddRowButton from './AddRowButton';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
   PropsWithIsRepeatedAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
@@ -46,6 +47,7 @@ import { StandardCheckbox } from '../../Checkbox.styles';
 
 interface GroupTableViewProps
   extends PropsWithIsRepeatedAttribute,
+    PropsWithItemPathAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
@@ -74,15 +76,16 @@ function GroupTableView(props: GroupTableViewProps) {
     tableRows,
     selectedIds,
     itemLabels,
+    itemPath,
     showMinimalView,
     parentIsReadOnly,
+    parentStyles,
     onAddRow,
     onRowChange,
     onRemoveRow,
     onSelectRow,
     onSelectAll,
-    onReorderRows,
-    parentStyles
+    onReorderRows
   } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
@@ -137,6 +140,7 @@ function GroupTableView(props: GroupTableViewProps) {
                     tableRows={tableRows}
                     selectedIds={selectedIds}
                     qItemsIndexMap={qItemsIndexMap}
+                    itemPath={itemPath}
                     isRepeated={isRepeated}
                     showMinimalView={showMinimalView}
                     parentIsReadOnly={parentIsReadOnly}
@@ -205,6 +209,7 @@ function GroupTableView(props: GroupTableViewProps) {
                 tableRows={tableRows}
                 selectedIds={selectedIds}
                 qItemsIndexMap={qItemsIndexMap}
+                itemPath={itemPath}
                 isRepeated={isRepeated}
                 showMinimalView={showMinimalView}
                 parentIsReadOnly={parentIsReadOnly}
@@ -247,6 +252,7 @@ function GroupTableView(props: GroupTableViewProps) {
                 tableRows={tableRows}
                 selectedIds={selectedIds}
                 qItemsIndexMap={qItemsIndexMap}
+                itemPath={itemPath}
                 isRepeated={isRepeated}
                 showMinimalView={showMinimalView}
                 parentIsReadOnly={parentIsReadOnly}
@@ -313,6 +319,7 @@ function GroupTableView(props: GroupTableViewProps) {
             tableRows={tableRows}
             selectedIds={selectedIds}
             qItemsIndexMap={qItemsIndexMap}
+            itemPath={itemPath}
             isRepeated={isRepeated}
             showMinimalView={showMinimalView}
             parentIsReadOnly={parentIsReadOnly}

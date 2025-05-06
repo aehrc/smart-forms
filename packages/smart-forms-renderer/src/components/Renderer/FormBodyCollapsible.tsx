@@ -21,21 +21,24 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';
 import { createEmptyQrGroup, updateQrItemsInGroup } from '../../utils/qrItem';
 import type {
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../stores';
 import FormBodySingleCollapsibleWrapper from './FormBodySingleCollapsibleWrapper';
+import { extendItemPath } from '../../utils/itemPath';
 
 interface FormBodyCollapsibleProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithParentIsReadOnlyAttribute {
   topLevelQItem: QuestionnaireItem;
   topLevelQRItem: QuestionnaireResponseItem | null;
 }
 
 function FormBodyCollapsibleWrapper(props: FormBodyCollapsibleProps) {
-  const { topLevelQItem, topLevelQRItem, parentIsReadOnly, onQrItemChange } = props;
+  const { topLevelQItem, topLevelQRItem, itemPath, parentIsReadOnly, onQrItemChange } = props;
 
   const tabs = useQuestionnaireStore.use.tabs();
   const currentTab = useQuestionnaireStore.use.currentTabIndex();
@@ -90,6 +93,7 @@ function FormBodyCollapsibleWrapper(props: FormBodyCollapsibleProps) {
             qrItem={qrItem ?? null}
             index={i}
             selectedIndex={currentTab}
+            itemPath={extendItemPath(itemPath, qItem.linkId)}
             parentIsReadOnly={parentIsReadOnly}
             onToggleExpand={handleToggleExpand}
             onQrItemChange={handleQrGroupChange}

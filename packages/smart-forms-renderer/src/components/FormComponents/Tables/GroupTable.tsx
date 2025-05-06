@@ -21,6 +21,7 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { mapQItemsIndex } from '../../../utils/mapItem';
 import type {
   PropsWithIsRepeatedAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrRepeatGroupChangeHandler,
   PropsWithShowMinimalViewAttribute
@@ -36,6 +37,7 @@ import useInitialiseGroupTableRows from '../../../hooks/useInitialiseGroupTableR
 
 interface GroupTableProps
   extends PropsWithQrRepeatGroupChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
@@ -55,12 +57,13 @@ function GroupTable(props: GroupTableProps) {
   const {
     qItem,
     qrItems,
+    itemPath,
     groupCardElevation,
     isRepeated,
     showMinimalView,
     parentIsReadOnly,
-    onQrRepeatGroupChange,
-    parentStyles
+    parentStyles,
+    onQrRepeatGroupChange
   } = props;
 
   const initialGroupTableRows = useInitialiseGroupTableRows(qItem.linkId, qrItems);
@@ -173,6 +176,7 @@ function GroupTable(props: GroupTableProps) {
     <GroupTableView
       qItem={qItem}
       qItemsIndexMap={qItemsIndexMap}
+      itemPath={itemPath}
       groupCardElevation={groupCardElevation}
       isRepeated={isRepeated}
       readOnly={readOnly}
@@ -181,13 +185,13 @@ function GroupTable(props: GroupTableProps) {
       itemLabels={itemLabels}
       showMinimalView={showMinimalView}
       parentIsReadOnly={parentIsReadOnly}
+      parentStyles={parentStyles}
       onAddRow={handleAddRow}
       onRowChange={handleRowChange}
       onRemoveRow={handleRemoveRow}
       onSelectRow={handleSelectRow}
       onSelectAll={handleSelectAll}
       onReorderRows={handleReorderRows}
-      parentStyles={parentStyles}
     />
   );
 }

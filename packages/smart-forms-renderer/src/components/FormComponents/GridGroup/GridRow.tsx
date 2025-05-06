@@ -18,6 +18,7 @@
 import React, { useMemo } from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
@@ -27,8 +28,12 @@ import SingleItem from '../SingleItem/SingleItem';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../utils/mapItem';
 import Typography from '@mui/material/Typography';
 import useHidden from '../../../hooks/useHidden';
+import { extendItemPath } from '../../../utils/itemPath';
 
-interface GridRowProps extends PropsWithQrItemChangeHandler, PropsWithParentIsReadOnlyAttribute {
+interface GridRowProps
+  extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
   columnLabels: string[];
@@ -36,7 +41,8 @@ interface GridRowProps extends PropsWithQrItemChangeHandler, PropsWithParentIsRe
 }
 
 function GridRow(props: GridRowProps) {
-  const { qItem, qrItem, columnLabels, numOfColumns, parentIsReadOnly, onQrItemChange } = props;
+  const { qItem, qrItem, itemPath, columnLabels, numOfColumns, parentIsReadOnly, onQrItemChange } =
+    props;
 
   const rowQItems = qItem.item;
   const row = qrItem && qrItem.item ? qrItem : createEmptyQrGroup(qItem);
@@ -85,6 +91,7 @@ function GridRow(props: GridRowProps) {
             <SingleItem
               qItem={cellQItem}
               qrItem={cellQrItem ?? null}
+              itemPath={extendItemPath(itemPath, cellQItem.linkId)}
               isRepeated={true}
               isTabled={true}
               groupCardElevation={1}
