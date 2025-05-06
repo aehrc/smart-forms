@@ -30,7 +30,7 @@ import type { DropResult } from 'react-beautiful-dnd';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { reorderRows } from '../../../utils/groupTable';
 import TableBody from '@mui/material/TableBody';
-import { extendItemPath } from '../../../utils/itemPath';
+import { appendRepeatIndexToLastSegment } from '../../../utils/itemPath';
 
 interface GroupTableBodyProps
   extends PropsWithItemPathAttribute,
@@ -106,7 +106,7 @@ function GroupTableBody(props: GroupTableBodyProps) {
                   itemIsSelected={itemIsSelected}
                   selectedIds={selectedIds}
                   qItemsIndexMap={qItemsIndexMap}
-                  itemPath={extendItemPath(itemPath, tableQItem.linkId, index)}
+                  itemPath={appendRepeatIndexToLastSegment(itemPath, index)}
                   showMinimalView={showMinimalView}
                   parentIsReadOnly={parentIsReadOnly}
                   onRowChange={onRowChange}

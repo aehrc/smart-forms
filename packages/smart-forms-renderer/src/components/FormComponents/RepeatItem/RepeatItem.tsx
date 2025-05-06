@@ -35,7 +35,7 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import { generateExistingRepeatId, generateNewRepeatId } from '../../../utils/repeatId';
 import ItemLabel from '../ItemParts/ItemLabel';
-import { extendItemPath } from '../../../utils/itemPath';
+import { appendRepeatIndexToLastSegment } from '../../../utils/itemPath';
 
 interface RepeatItemProps
   extends PropsWithQrItemChangeHandler,
@@ -116,7 +116,7 @@ function RepeatItem(props: RepeatItemProps) {
               qrItem={repeatAnswerQrItem}
               answer={answer}
               numOfRepeatAnswers={repeatAnswers.length}
-              itemPath={extendItemPath(itemPath, qItem.linkId, index)}
+              itemPath={appendRepeatIndexToLastSegment(itemPath, index)}
               groupCardElevation={groupCardElevation}
               parentIsReadOnly={parentIsReadOnly}
               showMinimalView={showMinimalView}
@@ -155,7 +155,7 @@ function RepeatItem(props: RepeatItemProps) {
                     qrItem={repeatAnswerQrItem}
                     answer={answer}
                     numOfRepeatAnswers={repeatAnswers.length}
-                    itemPath={extendItemPath(itemPath, qItem.linkId, index)}
+                    itemPath={appendRepeatIndexToLastSegment(itemPath, index)}
                     groupCardElevation={groupCardElevation}
                     parentIsReadOnly={parentIsReadOnly}
                     showMinimalView={showMinimalView}

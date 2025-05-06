@@ -39,7 +39,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import GroupHeading from '../GroupItem/GroupHeading';
-import { extendItemPath } from '../../../utils/itemPath';
+import { appendRepeatIndexToLastSegment } from '../../../utils/itemPath';
 
 interface RepeatGroupViewProps
   extends PropsWithItemPathAttribute,
@@ -99,7 +99,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
                 answeredQrItem={answeredQrItem}
                 nullableQrItem={nullableQrItem}
                 numOfRepeatGroups={repeatGroups.length}
-                itemPath={extendItemPath(itemPath, qItem.linkId, index)}
+                itemPath={appendRepeatIndexToLastSegment(itemPath, index)}
                 groupCardElevation={groupCardElevation}
                 showMinimalView={showMinimalView}
                 parentIsReadOnly={parentIsReadOnly}
@@ -151,7 +151,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
                     answeredQrItem={answeredQrItem}
                     nullableQrItem={nullableQrItem}
                     numOfRepeatGroups={repeatGroups.length}
-                    itemPath={extendItemPath(itemPath, qItem.linkId, index)}
+                    itemPath={appendRepeatIndexToLastSegment(itemPath, index)}
                     groupCardElevation={groupCardElevation}
                     parentIsReadOnly={parentIsReadOnly}
                     onDeleteItem={() => onDeleteItem(index)}
@@ -200,7 +200,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
                   answeredQrItem={answeredQrItem}
                   nullableQrItem={nullableQrItem}
                   numOfRepeatGroups={repeatGroups.length}
-                  itemPath={extendItemPath(itemPath, qItem.linkId, index)}
+                  itemPath={appendRepeatIndexToLastSegment(itemPath, index)}
                   groupCardElevation={groupCardElevation}
                   parentIsReadOnly={parentIsReadOnly}
                   onDeleteItem={() => onDeleteItem(index)}

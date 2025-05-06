@@ -1,4 +1,4 @@
-import type { ItemPath, ItemPathSegment } from '../interfaces/itemPath.interface';
+import type { ItemPath } from '../interfaces/itemPath.interface';
 
 /**
  * Creates an `ItemPath` containing a single segment for the given `linkId`.
@@ -24,21 +24,56 @@ export function createSingleItemPath(linkId: string, repeatIndex?: number): Item
 
 /**
  * Creates a new `ItemPath` by extending the given path with a new segment for the provided `linkId`.
+ * This version does NOT include a `repeatIndex`. If repeat handling is needed,
+ * use `appendRepeatIndexToLastSegment` after extending.
  *
  * @param currentPath - The existing item path.
  * @param linkId - The `linkId` to use in the new path segment.
- * @param repeatIndex - (Optional) The index if this is a repeated item.
  * @returns A new `ItemPath` with the added segment.
  */
-export function extendItemPath(
-  currentPath: ItemPath,
-  linkId: string,
-  repeatIndex?: number
-): ItemPath {
-  const segment: ItemPathSegment = {
-    linkId,
-    ...(repeatIndex !== undefined ? { repeatIndex } : {})
-  };
+export function extendItemPath(currentPath: ItemPath, linkId: string): ItemPath {
+  return [...currentPath, { linkId }];
+}
 
-  return [...currentPath, segment];
+/**
+ * Returns a new `ItemPath` with a `repeatIndex` applied to the last segment.
+ * Useful for denoting which repetition of a group is being accessed.
+ *
+ * @param path - The item path to modify.
+ * @param repeatIndex - The index to assign to the final segment.
+ * @returns A new `ItemPath` with the last segment modified to include `repeatIndex`.
+ *
+ * @example
+ * const basePath = [{ linkId: 'groupA' }, { linkId: 'groupB' }];
+ * appendRepeatIndexToLastSegment(basePath, 2);
+ * // → [{ linkId: 'groupA' }, { linkId: 'groupB', repeatIndex: 2 }]
+ */
+export function appendRepeatIndexToLastSegment(path: ItemPath, repeatIndex: number): ItemPath {
+  if (path.length === 0) return [];
+
+  const newPath = [...path];
+  newPath[path.length - 1] = { ...newPath[path.length - 1], repeatIndex };
+  return newPath;
+}
+
+/**
+ * Converts an `ItemPath` to a FHIRPath-compatible string.
+ *
+ * For example, the path:
+ * [
+ *   { linkId: 'groupA' },
+ *   { linkId: 'repeatingGroup', repeatIndex: 1 },
+ *   { linkId: 'questionB' }
+ * ]
+ *
+ * Returns: "item.where(linkId='groupA').item.where(linkId='repeatingGroup')[1].item.where(linkId='questionB')"
+ */
+export function itemPathToFhirPathString(path: ItemPath): string {
+  return path
+    .map((segment, index) => {
+      const base = `where(linkId='${segment.linkId}')`;
+      const repeat = segment.repeatIndex !== undefined ? `[${segment.repeatIndex}]` : '';
+      return (index === 0 ? 'item.' : '') + base + repeat;
+    })
+    .join('.item.');
 }
