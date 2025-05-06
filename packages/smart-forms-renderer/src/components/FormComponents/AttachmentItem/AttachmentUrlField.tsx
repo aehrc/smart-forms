@@ -80,6 +80,9 @@ function AttachmentUrlField(props: AttachmentUrlFieldProps) {
                   ) : null}
                 </InputAdornment>
               )
+            },
+            htmlInput: {
+              'aria-label': 'URL'
             }
           }}
         />

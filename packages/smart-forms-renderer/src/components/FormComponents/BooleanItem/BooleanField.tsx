@@ -94,6 +94,11 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
                     onCheckedChange('true');
                   }
                 }}
+                slotProps={{
+                  input: {
+                    'aria-labelledby': 'label-' + qItem.linkId
+                  }
+                }}
               />
             }
             label=""

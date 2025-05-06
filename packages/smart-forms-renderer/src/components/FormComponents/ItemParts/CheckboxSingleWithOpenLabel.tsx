@@ -55,6 +55,11 @@ function CheckboxSingleWithOpenLabel(props: Props) {
             role="checkbox"
             aria-checked={isChecked}
             onChange={handleCheckedChange}
+            slotProps={{
+              input: {
+                'aria-label': label
+              }
+            }}
           />
         }
         label={label + ':'}

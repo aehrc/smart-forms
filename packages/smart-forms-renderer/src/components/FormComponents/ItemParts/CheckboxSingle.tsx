@@ -61,6 +61,11 @@ function CheckboxSingle(props: Props) {
 
             onCheckedChange(value);
           }}
+          slotProps={{
+            input: {
+              'aria-label': label
+            }
+          }}
         />
       }
       label={label}

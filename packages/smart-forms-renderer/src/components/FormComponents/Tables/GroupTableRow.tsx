@@ -107,6 +107,7 @@ function GroupTableRow(props: GroupTableRowProps) {
                   isChecked={itemIsSelected}
                   readOnly={readOnly}
                   onSelectItem={() => onSelectRow(rowId)}
+                  ariaLabelText={'Select row with ID ' + rowId}
                 />
               </>
             )}
@@ -151,6 +152,8 @@ function GroupTableRow(props: GroupTableRowProps) {
             isChecked={itemIsSelected}
             readOnly={readOnly}
             onSelectItem={() => onSelectRow(rowId)}
+            ariaLabelText={'Select row with ID ' + rowId}
+
           />
         </>
       )}

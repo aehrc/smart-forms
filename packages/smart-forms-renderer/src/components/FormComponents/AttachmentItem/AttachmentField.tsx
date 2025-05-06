@@ -103,6 +103,9 @@ function AttachmentField(props: AttachmentFieldProps) {
             slotProps={{
               input: {
                 readOnly: readOnly && readOnlyVisualStyle === 'readonly'
+              },
+              htmlInput: {
+                'aria-label': 'File name (optional)'
               }
             }}
           />
