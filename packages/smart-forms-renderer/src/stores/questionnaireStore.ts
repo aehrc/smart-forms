@@ -413,6 +413,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   toggleEnableWhenActivation: (isActivated: boolean) =>
     set(() => ({ enableWhenIsActivated: isActivated })),
   updateExpressions: async (updatedResponse: QuestionnaireResponse) => {
+    const updateResponse = questionnaireResponseStore.getState().updateResponse;
     const updatedResponseItemMap = createQuestionnaireResponseItemMap(
       get().sourceQuestionnaire,
       updatedResponse
@@ -446,13 +447,14 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
      * Before this, we were updating the store before applying the computed updates. This may cause downstream useEffects to use a stale QR.
      * By applying the computed updates first, we ensure that the QR is up-to-date when downstream useEffects are fired.
      */
-    const updateResponse = questionnaireResponseStore.getState().updateResponse;
-    const applied = applyComputedUpdates(
-      get().sourceQuestionnaire,
-      updatedResponse,
-      computedQRItemUpdates
-    );
-    updateResponse(applied, 'async');
+    if (Object.keys(computedQRItemUpdates).length > 0) {
+      const applied = applyComputedUpdates(
+        get().sourceQuestionnaire,
+        updatedResponse,
+        computedQRItemUpdates
+      );
+      updateResponse(applied, 'async');
+    }
 
     if (isUpdated) {
       set(() => ({

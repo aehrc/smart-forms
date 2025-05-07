@@ -141,8 +141,7 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
         responseIsValid: Object.keys(updatedInvalidItems).length === 0
       }));
     },
-    updateResponse: (updatedResponse: QuestionnaireResponse, type) => {
-      console.log('updateResponse called', type, structuredClone(updatedResponse.item));
+    updateResponse: (updatedResponse: QuestionnaireResponse) => {
       const sourceQuestionnaire = questionnaireStore.getState().sourceQuestionnaire;
       const formChanges = diff(get().updatableResponse, updatedResponse) ?? null;
       const updatedInvalidItems = validateForm(sourceQuestionnaire, updatedResponse);
