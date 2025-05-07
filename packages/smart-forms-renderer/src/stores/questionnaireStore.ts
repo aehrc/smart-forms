@@ -448,12 +448,12 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
      * By applying the computed updates first, we ensure that the QR is up-to-date when downstream useEffects are fired.
      */
     if (Object.keys(computedQRItemUpdates).length > 0) {
-      const applied = applyComputedUpdates(
+      const responseWithAppliedComputedUpdates = applyComputedUpdates(
         get().sourceQuestionnaire,
         updatedResponse,
         computedQRItemUpdates
       );
-      updateResponse(applied, 'async');
+      updateResponse(responseWithAppliedComputedUpdates, 'async');
     }
 
     if (isUpdated) {
