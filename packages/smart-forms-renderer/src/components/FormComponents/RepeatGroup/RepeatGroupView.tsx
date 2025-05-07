@@ -17,6 +17,7 @@
 
 import React from 'react';
 import type {
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
   PropsWithShowMinimalViewAttribute
@@ -38,15 +39,22 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import GroupHeading from '../GroupItem/GroupHeading';
+import { appendRepeatIndexToLastSegment } from '../../../utils/itemPath';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
 interface RepeatGroupViewProps
-  extends PropsWithShowMinimalViewAttribute,
+  extends PropsWithItemPathAttribute,
+    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithParentIsRepeatGroupAttribute {
   qItem: QuestionnaireItem;
   repeatGroups: RepeatGroupSingleModel[];
   groupCardElevation: number;
-  onAnswerChange: (newQrItem: QuestionnaireResponseItem, index: number) => void;
+  onAnswerChange: (
+    newQrItem: QuestionnaireResponseItem,
+    index: number,
+    targetItemPath?: ItemPath
+  ) => void;
   onAddItem: () => void;
   onDeleteItem: (index: number) => void;
   parentStyles?: Record<string, string>;
@@ -62,13 +70,14 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
   const {
     qItem,
     repeatGroups,
+    itemPath,
     groupCardElevation,
     showMinimalView,
     parentIsReadOnly,
+    parentStyles,
     onAnswerChange,
     onAddItem,
-    onDeleteItem,
-    parentStyles
+    onDeleteItem
   } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
@@ -95,11 +104,14 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
                 answeredQrItem={answeredQrItem}
                 nullableQrItem={nullableQrItem}
                 numOfRepeatGroups={repeatGroups.length}
+                itemPath={appendRepeatIndexToLastSegment(itemPath, index)}
                 groupCardElevation={groupCardElevation}
                 showMinimalView={showMinimalView}
                 parentIsReadOnly={parentIsReadOnly}
                 onDeleteItem={() => onDeleteItem(index)}
-                onQrItemChange={(newQrItem) => onAnswerChange(newQrItem, index)}
+                onQrItemChange={(newQrItem, targetItemPath) =>
+                  onAnswerChange(newQrItem, index, targetItemPath)
+                }
               />
             );
           })}
@@ -146,10 +158,13 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
                     answeredQrItem={answeredQrItem}
                     nullableQrItem={nullableQrItem}
                     numOfRepeatGroups={repeatGroups.length}
+                    itemPath={appendRepeatIndexToLastSegment(itemPath, index)}
                     groupCardElevation={groupCardElevation}
                     parentIsReadOnly={parentIsReadOnly}
                     onDeleteItem={() => onDeleteItem(index)}
-                    onQrItemChange={(newQrItem) => onAnswerChange(newQrItem, index)}
+                    onQrItemChange={(newQrItem, targetItemPath) =>
+                      onAnswerChange(newQrItem, index, targetItemPath)
+                    }
                   />
                 </Collapse>
               );
@@ -194,10 +209,13 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
                   answeredQrItem={answeredQrItem}
                   nullableQrItem={nullableQrItem}
                   numOfRepeatGroups={repeatGroups.length}
+                  itemPath={appendRepeatIndexToLastSegment(itemPath, index)}
                   groupCardElevation={groupCardElevation}
                   parentIsReadOnly={parentIsReadOnly}
                   onDeleteItem={() => onDeleteItem(index)}
-                  onQrItemChange={(newQrItem) => onAnswerChange(newQrItem, index)}
+                  onQrItemChange={(newQrItem, targetItemPath) =>
+                    onAnswerChange(newQrItem, index, targetItemPath)
+                  }
                 />
               </Collapse>
             );

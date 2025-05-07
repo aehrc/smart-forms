@@ -21,6 +21,7 @@ import { useState } from 'react';
 import InputAdornment from '@mui/material/InputAdornment';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import { verifyFhirServer } from '../api/verifyFhirServer.ts';
+// @ts-ignore: Module has no declaration file. Not sure why Verified.d.ts is not present in MUI icons 7.0.2
 import VerifiedIcon from '@mui/icons-material/Verified';
 import ErrorIcon from '@mui/icons-material/Error';
 

@@ -35,6 +35,7 @@ function TextItem(props: TextItemProps) {
   const {
     qItem,
     qrItem,
+    itemPath,
     isRepeated,
     renderingExtensions,
     parentIsReadOnly,
@@ -66,14 +67,17 @@ function TextItem(props: TextItemProps) {
     inputValue: input,
     onChangeByCalcExpressionString: (newValueString: string) => {
       setInput(newValueString);
-      onQrItemChange({
-        ...createEmptyQrItem(qItem, answerKey),
-        answer: [{ id: answerKey, valueString: newValueString }]
-      });
+      onQrItemChange(
+        {
+          ...createEmptyQrItem(qItem, answerKey),
+          answer: [{ id: answerKey, valueString: newValueString }]
+        },
+        itemPath
+      );
     },
     onChangeByCalcExpressionNull: () => {
       setInput('');
-      onQrItemChange(createEmptyQrItem(qItem, answerKey));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
     }
   });
 

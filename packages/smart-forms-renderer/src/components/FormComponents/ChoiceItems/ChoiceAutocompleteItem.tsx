@@ -26,6 +26,7 @@ import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledRequiredAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithRenderingExtensionsAttribute
@@ -41,6 +42,7 @@ import ItemLabel from '../ItemParts/ItemLabel';
 
 interface ChoiceAutocompleteItemProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledRequiredAttribute,
     PropsWithParentIsReadOnlyAttribute,
@@ -79,6 +81,10 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
   const debouncedInput = useDebounce(input, AUTOCOMPLETE_DEBOUNCE_DURATION);
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
+
+  // TODO Process calculated expressions
+  // This requires its own hook, because in the case of multi-select, we need to check if the value is already checked to prevent an infinite loop
+  // This will be done after the choice/open-choice refactoring
 
   // Perform validation checks
   const validationFeedback = useValidationFeedback(qItem, feedbackFromParent, '');

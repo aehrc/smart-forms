@@ -28,6 +28,7 @@ import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledRequiredAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentStylesAttribute,
   PropsWithQrItemChangeHandler,
@@ -45,7 +46,8 @@ interface OpenChoiceItemSwitcherProps
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithFeedbackFromParentAttribute,
-    PropsWithParentStylesAttribute {
+    PropsWithParentStylesAttribute,
+    PropsWithItemPathAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
@@ -54,6 +56,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
   const {
     qItem,
     qrItem,
+    itemPath,
     isRepeated,
     isTabled,
     renderingExtensions,
@@ -70,6 +73,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
           <OpenChoiceCheckboxAnswerValueSetItem
             qItem={qItem}
             qrItem={qrItem}
+            itemPath={itemPath}
             isRepeated={qItem['repeats'] ?? false}
             renderingExtensions={renderingExtensions}
             showMinimalView={showMinimalView}
@@ -83,6 +87,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
           <OpenChoiceCheckboxAnswerOptionItem
             qItem={qItem}
             qrItem={qrItem}
+            itemPath={itemPath}
             isRepeated={qItem['repeats'] ?? false}
             renderingExtensions={renderingExtensions}
             showMinimalView={showMinimalView}
@@ -98,6 +103,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
           <OpenChoiceRadioAnswerValueSetItem
             qItem={qItem}
             qrItem={qrItem}
+            itemPath={itemPath}
             isRepeated={qItem['repeats'] ?? false}
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
@@ -110,6 +116,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
           <OpenChoiceRadioAnswerOptionItem
             qItem={qItem}
             qrItem={qrItem}
+            itemPath={itemPath}
             isRepeated={qItem['repeats'] ?? false}
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
@@ -123,6 +130,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
         <OpenChoiceAutocompleteItem
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -137,6 +145,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
           <OpenChoiceSelectAnswerValueSetItem
             qItem={qItem}
             qrItem={qrItem}
+            itemPath={itemPath}
             isRepeated={isRepeated}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
@@ -150,6 +159,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
           <OpenChoiceSelectAnswerOptionItem
             qItem={qItem}
             qrItem={qrItem}
+            itemPath={itemPath}
             isRepeated={isRepeated}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}

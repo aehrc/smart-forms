@@ -26,13 +26,16 @@ import GridRow from './GridRow';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { getQrItemsIndex } from '../../../utils/mapItem';
 import type {
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
+import { extendItemPath } from '../../../utils/itemPath';
 
 interface GridTableProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItems: QuestionnaireItem[];
@@ -47,6 +50,7 @@ function GridTable(props: GridTableProps) {
     qrItems,
     qItemsIndexMap,
     columnLabels,
+    itemPath,
     showMinimalView,
     parentIsReadOnly,
     onQrItemChange
@@ -91,6 +95,7 @@ function GridTable(props: GridTableProps) {
                 qrItem={qrItem ?? null}
                 columnLabels={columnLabels}
                 numOfColumns={numOfColumns}
+                itemPath={extendItemPath(itemPath, qItem.linkId)}
                 parentIsReadOnly={parentIsReadOnly}
                 onQrItemChange={onQrItemChange}
               />

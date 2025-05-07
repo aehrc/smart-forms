@@ -43,6 +43,7 @@ function RepopulateSingleItem(props: RepopulateSingleItemProps) {
                 text: qItem.text
               }
             }
+            itemPath={[]}
             isRepeated={true}
             isTabled={false}
             groupCardElevation={1}
@@ -59,6 +60,7 @@ function RepopulateSingleItem(props: RepopulateSingleItemProps) {
           <SingleItem
             qItem={qItem}
             qrItem={newQRItem ?? null}
+            itemPath={[]}
             isRepeated={true}
             isTabled={false}
             groupCardElevation={1}

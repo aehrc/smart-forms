@@ -37,6 +37,7 @@ function RepopulateRepeatGroup(props: RepopulateRepeatGroupProps) {
         <RepeatGroup
           qItem={qItem}
           qrItems={oldQRItems ?? []}
+          itemPath={[]}
           groupCardElevation={1}
           showMinimalView={true}
           parentIsReadOnly={true}
@@ -50,6 +51,7 @@ function RepopulateRepeatGroup(props: RepopulateRepeatGroupProps) {
         <RepeatGroup
           qItem={qItem}
           qrItems={newQRItems ?? []}
+          itemPath={[]}
           groupCardElevation={1}
           showMinimalView={true}
           parentIsReadOnly={true}

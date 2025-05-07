@@ -42,6 +42,7 @@ function RepopulateRepeatItem(props: RepopulateRepeatItemProps) {
               text: qItem.text
             }
           }
+          itemPath={[]}
           groupCardElevation={1}
           showMinimalView={true}
           onQrItemChange={() => void 0}
@@ -54,6 +55,7 @@ function RepopulateRepeatItem(props: RepopulateRepeatItemProps) {
         <RepeatItem
           qItem={qItem}
           qrItem={newQRItem ?? null}
+          itemPath={[]}
           groupCardElevation={1}
           showMinimalView={true}
           onQrItemChange={() => void 0}

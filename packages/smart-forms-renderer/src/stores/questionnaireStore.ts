@@ -53,8 +53,8 @@ import type { ComponentType } from 'react';
 import type { TargetConstraint } from '../interfaces/targetConstraint.interface';
 import { readTargetConstraintLocationLinkIds } from '../utils/targetConstraint';
 import type { ProcessedValueSet } from '../interfaces/valueSet.interface';
-import type { ComputedQRItemUpdates } from '../interfaces/computedUpdates.interface';
 import type { AnswerOptionsToggleExpression } from '../interfaces/answerOptionsToggleExpression.interface';
+import { applyComputedUpdates } from '../utils/computedUpdates';
 
 /**
  * QuestionnaireStore properties and methods
@@ -160,7 +160,7 @@ export interface QuestionnaireStoreType {
     actionType: 'add' | 'remove'
   ) => void;
   toggleEnableWhenActivation: (isActivated: boolean) => void;
-  updateExpressions: (updatedResponse: QuestionnaireResponse) => Promise<ComputedQRItemUpdates>;
+  updateExpressions: (updatedResponse: QuestionnaireResponse) => Promise<void>;
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) => void;
   updatePopulatedProperties: (
     populatedResponse: QuestionnaireResponse,
@@ -413,6 +413,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   toggleEnableWhenActivation: (isActivated: boolean) =>
     set(() => ({ enableWhenIsActivated: isActivated })),
   updateExpressions: async (updatedResponse: QuestionnaireResponse) => {
+    const updateResponse = questionnaireResponseStore.getState().updateResponse;
     const updatedResponseItemMap = createQuestionnaireResponseItemMap(
       get().sourceQuestionnaire,
       updatedResponse
@@ -441,6 +442,20 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       terminologyServerUrl: terminologyServerStore.getState().url
     });
 
+    /**
+     * Applies computed updates to the QR before updating the store.
+     * Before this, we were updating the store before applying the computed updates. This may cause downstream useEffects to use a stale QR.
+     * By applying the computed updates first, we ensure that the QR is up-to-date when downstream useEffects are fired.
+     */
+    if (Object.keys(computedQRItemUpdates).length > 0) {
+      const responseWithAppliedComputedUpdates = applyComputedUpdates(
+        get().sourceQuestionnaire,
+        updatedResponse,
+        computedQRItemUpdates
+      );
+      updateResponse(responseWithAppliedComputedUpdates, 'async');
+    }
+
     if (isUpdated) {
       set(() => ({
         targetConstraints: updatedTargetConstraints,
@@ -451,14 +466,12 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
         fhirPathContext: updatedFhirPathContext,
         fhirPathTerminologyCache: fhirPathTerminologyCache
       }));
-      return computedQRItemUpdates;
     }
 
     set(() => ({
       fhirPathContext: updatedFhirPathContext,
       fhirPathTerminologyCache: fhirPathTerminologyCache
     }));
-    return computedQRItemUpdates;
   },
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) =>
     set(() => ({

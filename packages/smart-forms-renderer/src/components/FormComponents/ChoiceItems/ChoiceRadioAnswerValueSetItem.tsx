@@ -24,6 +24,7 @@ import useValueSetCodings from '../../../hooks/useValueSetCodings';
 import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithRenderingExtensionsAttribute
@@ -39,6 +40,7 @@ import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsTo
 
 interface ChoiceRadioAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
     PropsWithRenderingExtensionsAttribute,
     PropsWithParentIsReadOnlyAttribute,
@@ -48,7 +50,15 @@ interface ChoiceRadioAnswerValueSetItemProps
 }
 
 function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps) {
-  const { qItem, qrItem, isRepeated, parentIsReadOnly, feedbackFromParent, onQrItemChange } = props;
+  const {
+    qItem,
+    qrItem,
+    itemPath,
+    isRepeated,
+    parentIsReadOnly,
+    feedbackFromParent,
+    onQrItemChange
+  } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
@@ -78,10 +88,10 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
     qItem: qItem,
     valueInString: valueRadio ?? '',
     onChangeByCalcExpressionString: (newValueString: string) => {
-      handleChange(newValueString);
+      handleChange(newValueString, true);
     },
     onChangeByCalcExpressionNull: () => {
-      onQrItemChange(createEmptyQrItem(qItem, answerKey));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
     }
   });
 
@@ -89,12 +99,18 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
   const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
     useAnswerOptionsToggleExpressions(qItem.linkId);
 
-  function handleChange(newValue: string) {
+  function handleChange(
+    newValue: string,
+    includeItemPath: boolean = false // only include when this is called from useCalculatedExpression hook
+  ) {
+    const targetItemPath = includeItemPath ? itemPath : undefined;
+
     if (codings.length > 0) {
       const qrAnswer = findInAnswerOptions(options, newValue);
       const emptyQrItem = createEmptyQrItem(qItem, answerKey);
       onQrItemChange(
-        qrAnswer ? { ...emptyQrItem, answer: [{ ...qrAnswer, id: answerKey }] } : emptyQrItem
+        qrAnswer ? { ...emptyQrItem, answer: [{ ...qrAnswer, id: answerKey }] } : emptyQrItem,
+        targetItemPath
       );
     }
   }

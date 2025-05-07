@@ -29,6 +29,7 @@ import {
 import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithRenderingExtensionsAttribute
@@ -44,6 +45,7 @@ import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsTo
 
 interface OpenChoiceRadioAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithRenderingExtensionsAttribute,
