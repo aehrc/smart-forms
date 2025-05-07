@@ -27,7 +27,7 @@ import type { QrRepeatGroup } from '../../interfaces/repeatGroup.interface';
 import FormBodyPaginated from './FormBodyPaginated';
 import { Container } from '@mui/material';
 import { useFormUpdateQueueStore } from '../../stores/formUpdateQueueStore';
-import { ItemPath } from '../../interfaces/itemPath.interface';
+import type { ItemPath } from '../../interfaces/itemPath.interface';
 import { createSingleItemPath } from '../../utils/itemPath';
 
 /**
@@ -52,11 +52,13 @@ function BaseRenderer() {
     targetItemPath?: ItemPath
   ) {
     const updatedResponse: QuestionnaireResponse = structuredClone(updatableResponse);
-    console.log(targetItemPath);
 
     updateQrItemsInGroup(newTopLevelQRItem, null, updatedResponse, qItemsIndexMap);
 
-    replaceLatestFormUpdate({ questionnaireResponse: updatedResponse });
+    replaceLatestFormUpdate({
+      questionnaireResponse: updatedResponse,
+      targetItemPath: targetItemPath
+    });
   }
 
   function handleTopLevelQRItemMultipleChange(
@@ -64,11 +66,13 @@ function BaseRenderer() {
     targetItemPath?: ItemPath
   ) {
     const updatedResponse: QuestionnaireResponse = structuredClone(updatableResponse);
-    console.log(targetItemPath);
 
     updateQrItemsInGroup(null, newTopLevelQRItems, updatedResponse, qItemsIndexMap);
 
-    replaceLatestFormUpdate({ questionnaireResponse: updatedResponse });
+    replaceLatestFormUpdate({
+      questionnaireResponse: updatedResponse,
+      targetItemPath: targetItemPath
+    });
   }
 
   const topLevelQItems = sourceQuestionnaire.item;

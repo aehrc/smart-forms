@@ -19,8 +19,8 @@ import { createStore } from 'zustand/vanilla';
 import type { QuestionnaireResponse } from 'fhir/r4';
 import { questionnaireStore } from './questionnaireStore';
 import { useQuestionnaireResponseStore } from './questionnaireResponseStore';
-import { applyComputedUpdates } from '../utils/computedUpdates';
 import { createSelectors } from './selector';
+import type { ItemPath } from '../interfaces/itemPath.interface';
 
 /**
  * A single form update task, representing a `QuestionnaireResponse` that should be processed.
@@ -28,6 +28,9 @@ import { createSelectors } from './selector';
 export interface UpdateTask {
   /** The `QuestionnaireResponse` snapshot used to evaluate calculated expressions */
   questionnaireResponse: QuestionnaireResponse;
+
+  /** Optional path to the item that triggered the update. This can be really useful in the future as it provides the FHIRPath string */
+  targetItemPath?: ItemPath;
 }
 
 /**
@@ -100,7 +103,6 @@ export const formUpdateQueueStore = createStore<FormUpdateQueueStoreType>()((set
   _startProcessing: async () => {
     const { isProcessing, queue } = get();
 
-    const sourceQuestionnaire = questionnaireStore.getState().sourceQuestionnaire;
     const updateExpressions = questionnaireStore.getState().updateExpressions;
     const updateResponse = useQuestionnaireResponseStore.getState().updateResponse;
 
@@ -114,14 +116,7 @@ export const formUpdateQueueStore = createStore<FormUpdateQueueStoreType>()((set
 
     updateResponse(questionnaireResponse, 'initial'); // Immediate update (pre-computed)
 
-    const computedUpdates = await updateExpressions(questionnaireResponse);
-    const applied = applyComputedUpdates(
-      sourceQuestionnaire,
-      questionnaireResponse,
-      computedUpdates
-    );
-
-    updateResponse(applied, 'async'); // Deferred computed update
+    await updateExpressions(questionnaireResponse);
 
     set((state) => ({
       queue: state.queue.slice(1),
