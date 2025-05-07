@@ -28,6 +28,7 @@ import type {
 import { useQuestionnaireStore } from '../../stores';
 import FormBodySingleCollapsibleWrapper from './FormBodySingleCollapsibleWrapper';
 import { extendItemPath } from '../../utils/itemPath';
+import type { ItemPath } from '../../interfaces/itemPath.interface';
 
 interface FormBodyCollapsibleProps
   extends PropsWithQrItemChangeHandler,
@@ -54,9 +55,9 @@ function FormBodyCollapsibleWrapper(props: FormBodyCollapsibleProps) {
   const qItems = topLevelQItem.item;
   const qrItems = nonNullTopLevelQRItem.item;
 
-  function handleQrGroupChange(qrItem: QuestionnaireResponseItem) {
+  function handleQrGroupChange(qrItem: QuestionnaireResponseItem, targetItemPath?: ItemPath) {
     updateQrItemsInGroup(qrItem, null, nonNullTopLevelQRItem, indexMap);
-    onQrItemChange(nonNullTopLevelQRItem);
+    onQrItemChange(nonNullTopLevelQRItem, targetItemPath);
   }
 
   if (!qItems || !qrItems) {

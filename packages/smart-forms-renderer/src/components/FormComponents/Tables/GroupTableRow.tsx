@@ -34,6 +34,7 @@ import TableCell from '@mui/material/TableCell';
 import Box from '@mui/material/Box';
 import { Draggable } from 'react-beautiful-dnd';
 import { StyledGroupTableRow } from './Table.styles';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
 interface GroupTableRowProps
   extends PropsWithItemPathAttribute,
@@ -53,7 +54,11 @@ interface GroupTableRowProps
   itemIsSelected: boolean;
   selectedIds: string[];
   qItemsIndexMap: Record<string, number>;
-  onRowChange: (newQrRow: QuestionnaireResponseItem, index: number) => void;
+  onRowChange: (
+    newQrRow: QuestionnaireResponseItem,
+    index: number,
+    targetItemPath?: ItemPath
+  ) => void;
   onRemoveRow: (index: number) => void;
   onSelectRow: (nanoId: string) => void;
 }
@@ -119,7 +124,9 @@ function GroupTableRow(props: GroupTableRowProps) {
               qItemsIndexMap={qItemsIndexMap}
               itemPath={itemPath}
               parentIsReadOnly={parentIsReadOnly}
-              onQrItemChange={(newQrGroup) => onRowChange(newQrGroup, index)}
+              onQrItemChange={(newQrGroup, targetItemPath) =>
+                onRowChange(newQrGroup, index, targetItemPath)
+              }
             />
             {showMinimalView || !isRepeated ? (
               <TableCell padding="checkbox" />
@@ -164,7 +171,9 @@ function GroupTableRow(props: GroupTableRowProps) {
         qItemsIndexMap={qItemsIndexMap}
         itemPath={itemPath}
         parentIsReadOnly={parentIsReadOnly}
-        onQrItemChange={(newQrGroup) => onRowChange(newQrGroup, index)}
+        onQrItemChange={(newQrGroup, targetItemPath) =>
+          onRowChange(newQrGroup, index, targetItemPath)
+        }
       />
       {showMinimalView || !isRepeated ? (
         <TableCell padding="checkbox" />

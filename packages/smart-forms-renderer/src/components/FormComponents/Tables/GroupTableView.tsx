@@ -44,6 +44,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import GroupHeading from '../GroupItem/GroupHeading';
 import { StandardCheckbox } from '../../Checkbox.styles';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
 interface GroupTableViewProps
   extends PropsWithIsRepeatedAttribute,
@@ -58,7 +59,11 @@ interface GroupTableViewProps
   selectedIds: string[];
   itemLabels: string[];
   onAddRow: () => void;
-  onRowChange: (newQrRow: QuestionnaireResponseItem, index: number) => void;
+  onRowChange: (
+    newQrRow: QuestionnaireResponseItem,
+    index: number,
+    targetItemPath?: ItemPath
+  ) => void;
   onRemoveRow: (index: number) => void;
   onSelectRow: (rowId: string) => void;
   onSelectAll: () => void;

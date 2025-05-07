@@ -13,6 +13,7 @@ import { useQuestionnaireStore } from '../../stores';
 import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';
 import { createEmptyQrGroup, updateQrItemsInGroup } from '../../utils/qrItem';
 import { extendItemPath } from '../../utils/itemPath';
+import type { ItemPath } from '../../interfaces/itemPath.interface';
 
 interface FormBodyPageContainerProps
   extends PropsWithQrItemChangeHandler,
@@ -45,9 +46,9 @@ function FormBodyPageContainer(props: FormBodyPageContainerProps) {
   const qItems = topLevelQItem.item;
   const qrItems = nonNullTopLevelQRItem.item;
 
-  function handleQrGroupChange(qrItem: QuestionnaireResponseItem) {
+  function handleQrGroupChange(qrItem: QuestionnaireResponseItem, targetItemPath?: ItemPath) {
     updateQrItemsInGroup(qrItem, null, nonNullTopLevelQRItem, indexMap);
-    onQrItemChange(nonNullTopLevelQRItem);
+    onQrItemChange(nonNullTopLevelQRItem, targetItemPath);
   }
 
   if (!qItems || !qrItems) {

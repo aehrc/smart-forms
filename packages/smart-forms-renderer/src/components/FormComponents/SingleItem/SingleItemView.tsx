@@ -42,6 +42,7 @@ import {
 import useReadOnly from '../../../hooks/useReadOnly';
 import Box from '@mui/material/Box';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
 interface SingleItemViewProps
   extends PropsWithQrItemChangeHandler,
@@ -56,7 +57,10 @@ interface SingleItemViewProps
   itemIsHidden: boolean;
   itemHasNestedItems: boolean;
   groupCardElevation: number;
-  onQrItemChangeWithNestedItems: (qrItem: QuestionnaireResponseItem) => void;
+  onQrItemChangeWithNestedItems: (
+    qrItem: QuestionnaireResponseItem,
+    targetItemPath?: ItemPath
+  ) => void;
   parentStyles?: Record<string, string>;
 }
 

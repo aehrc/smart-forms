@@ -28,6 +28,7 @@ import type {
 import type { QrRepeatGroup } from '../../../interfaces/repeatGroup.interface';
 import Box from '@mui/material/Box';
 import { extendItemPath } from '../../../utils/itemPath';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
 interface SingleNestedItemsProps
   extends PropsWithQrItemChangeHandler,
@@ -48,16 +49,16 @@ function SingleNestedItems(props: SingleNestedItemsProps) {
   const qrItems = qrGroup.item;
 
   // Event Handlers
-  function handleQrItemChange(newQrItem: QuestionnaireResponseItem) {
+  function handleQrItemChange(newQrItem: QuestionnaireResponseItem, targetItemPath?: ItemPath) {
     const updatedQrGroup: QuestionnaireResponseItem = { ...qrGroup };
     updateQrItemsInGroup(newQrItem, null, updatedQrGroup, qItemsIndexMap);
-    onQrItemChange(updatedQrGroup);
+    onQrItemChange(updatedQrGroup, targetItemPath);
   }
 
-  function handleQrRepeatGroupChange(qrRepeatGroup: QrRepeatGroup) {
+  function handleQrRepeatGroupChange(qrRepeatGroup: QrRepeatGroup, targetItemPath?: ItemPath) {
     const updatedQrGroup: QuestionnaireResponseItem = { ...qrGroup };
     updateQrItemsInGroup(null, qrRepeatGroup, updatedQrGroup, qItemsIndexMap);
-    onQrItemChange(updatedQrGroup);
+    onQrItemChange(updatedQrGroup, targetItemPath);
   }
 
   if (!qItems || !qrItems) {

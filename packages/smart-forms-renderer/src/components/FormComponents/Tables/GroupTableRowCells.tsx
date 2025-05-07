@@ -27,6 +27,7 @@ import type {
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import { extendItemPath } from '../../../utils/itemPath';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
 interface GroupTableRowCellsProps
   extends PropsWithQrItemChangeHandler,
@@ -48,10 +49,13 @@ function GroupTableRowCells(props: GroupTableRowCellsProps) {
     return null;
   }
 
-  function handleQrRowItemChange(newQrRowItem: QuestionnaireResponseItem) {
+  function handleQrRowItemChange(
+    newQrRowItem: QuestionnaireResponseItem,
+    targetItemPath?: ItemPath
+  ) {
     const qrRow: QuestionnaireResponseItem = { ...row };
     updateQrItemsInGroup(newQrRowItem, null, qrRow, qItemsIndexMap);
-    onQrItemChange(qrRow);
+    onQrItemChange(qrRow, targetItemPath);
   }
 
   const qrItemsByIndex = getQrItemsIndex(rowItems, rowQrItems, qItemsIndexMap);

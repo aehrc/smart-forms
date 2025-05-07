@@ -40,6 +40,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import GroupHeading from '../GroupItem/GroupHeading';
 import { appendRepeatIndexToLastSegment } from '../../../utils/itemPath';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
 interface RepeatGroupViewProps
   extends PropsWithItemPathAttribute,
@@ -49,7 +50,11 @@ interface RepeatGroupViewProps
   qItem: QuestionnaireItem;
   repeatGroups: RepeatGroupSingleModel[];
   groupCardElevation: number;
-  onAnswerChange: (newQrItem: QuestionnaireResponseItem, index: number) => void;
+  onAnswerChange: (
+    newQrItem: QuestionnaireResponseItem,
+    index: number,
+    targetItemPath?: ItemPath
+  ) => void;
   onAddItem: () => void;
   onDeleteItem: (index: number) => void;
   parentStyles?: Record<string, string>;
@@ -104,7 +109,9 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
                 showMinimalView={showMinimalView}
                 parentIsReadOnly={parentIsReadOnly}
                 onDeleteItem={() => onDeleteItem(index)}
-                onQrItemChange={(newQrItem) => onAnswerChange(newQrItem, index)}
+                onQrItemChange={(newQrItem, targetItemPath) =>
+                  onAnswerChange(newQrItem, index, targetItemPath)
+                }
               />
             );
           })}
@@ -155,7 +162,9 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
                     groupCardElevation={groupCardElevation}
                     parentIsReadOnly={parentIsReadOnly}
                     onDeleteItem={() => onDeleteItem(index)}
-                    onQrItemChange={(newQrItem) => onAnswerChange(newQrItem, index)}
+                    onQrItemChange={(newQrItem, targetItemPath) =>
+                      onAnswerChange(newQrItem, index, targetItemPath)
+                    }
                   />
                 </Collapse>
               );
@@ -204,7 +213,9 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
                   groupCardElevation={groupCardElevation}
                   parentIsReadOnly={parentIsReadOnly}
                   onDeleteItem={() => onDeleteItem(index)}
-                  onQrItemChange={(newQrItem) => onAnswerChange(newQrItem, index)}
+                  onQrItemChange={(newQrItem, targetItemPath) =>
+                    onAnswerChange(newQrItem, index, targetItemPath)
+                  }
                 />
               </Collapse>
             );

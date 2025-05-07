@@ -34,6 +34,7 @@ import useGroupTableRows from '../../../hooks/useGroupTableRows';
 import { flushSync } from 'react-dom';
 import { generateNewRepeatId } from '../../../utils/repeatId';
 import useInitialiseGroupTableRows from '../../../hooks/useInitialiseGroupTableRows';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
 interface GroupTableProps
   extends PropsWithQrRepeatGroupChangeHandler,
@@ -87,7 +88,11 @@ function GroupTable(props: GroupTableProps) {
   }
 
   // Event Handlers
-  function handleRowChange(newQrRow: QuestionnaireResponseItem, index: number) {
+  function handleRowChange(
+    newQrRow: QuestionnaireResponseItem,
+    index: number,
+    targetItemPath?: ItemPath
+  ) {
     const updatedTableRows = [...tableRows];
 
     if (newQrRow.item) {
@@ -99,10 +104,15 @@ function GroupTable(props: GroupTableProps) {
     }
 
     setTableRows(updatedTableRows);
-    onQrRepeatGroupChange({
-      linkId: qItem.linkId,
-      qrItems: getGroupTableItemsToUpdate(updatedTableRows, selectedIds)
-    });
+
+    // Include targetItemPath because an answer is changed
+    onQrRepeatGroupChange(
+      {
+        linkId: qItem.linkId,
+        qrItems: getGroupTableItemsToUpdate(updatedTableRows, selectedIds)
+      },
+      targetItemPath
+    );
   }
 
   function handleRemoveRow(index: number) {
@@ -114,6 +124,8 @@ function GroupTable(props: GroupTableProps) {
     updatedTableRows.splice(index, 1);
 
     setTableRows(updatedTableRows);
+
+    // Don't need to include targetItemPath, only include targetItemPath if an answer is changed
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
       qrItems: getGroupTableItemsToUpdate(updatedTableRows, updatedSelectedIds)
@@ -138,6 +150,8 @@ function GroupTable(props: GroupTableProps) {
     const updatedTableIds =
       selectedIds.length === tableRows.length ? [] : tableRows.map((tableRow) => tableRow.id);
     setSelectedIds(updatedTableIds);
+
+    // Don't need to include targetItemPath, only include targetItemPath if an answer is changed
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
       qrItems: getGroupTableItemsToUpdate(tableRows, updatedTableIds)
@@ -155,6 +169,8 @@ function GroupTable(props: GroupTableProps) {
     }
 
     setSelectedIds(updatedSelectedIds);
+
+    // Don't need to include targetItemPath, only include targetItemPath if an answer is changed
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
       qrItems: getGroupTableItemsToUpdate(tableRows, updatedSelectedIds)
@@ -166,6 +182,8 @@ function GroupTable(props: GroupTableProps) {
     flushSync(() => {
       setTableRows(newTableRows);
     });
+
+    // Don't need to include targetItemPath, only include targetItemPath if an answer is changed
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
       qrItems: getGroupTableItemsToUpdate(newTableRows, selectedIds)

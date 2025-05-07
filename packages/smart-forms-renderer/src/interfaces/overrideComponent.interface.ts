@@ -34,8 +34,8 @@ export interface QItemOverrideComponentProps {
   parentIsRepeatGroup?: boolean;
   parentRepeatGroupIndex?: number;
   parentStyles?: Record<string, string>;
-  onQrItemChange: (qrItem: QuestionnaireResponseItem) => unknown;
-  onQrRepeatGroupChange: (qrRepeatGroup: QrRepeatGroup) => unknown;
+  onQrItemChange: (qrItem: QuestionnaireResponseItem, targetItemPath?: ItemPath) => unknown;
+  onQrRepeatGroupChange: (qrRepeatGroup: QrRepeatGroup, targetItemPath?: ItemPath) => unknown;
 }
 
 export interface SdcUiOverrideComponentProps {

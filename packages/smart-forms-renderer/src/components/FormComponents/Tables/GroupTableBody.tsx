@@ -31,6 +31,7 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { reorderRows } from '../../../utils/groupTable';
 import TableBody from '@mui/material/TableBody';
 import { appendRepeatIndexToLastSegment } from '../../../utils/itemPath';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
 interface GroupTableBodyProps
   extends PropsWithItemPathAttribute,
@@ -42,7 +43,11 @@ interface GroupTableBodyProps
   tableRows: GroupTableRowModel[];
   selectedIds: string[];
   qItemsIndexMap: Record<string, number>;
-  onRowChange: (newQrRow: QuestionnaireResponseItem, index: number) => void;
+  onRowChange: (
+    newQrRow: QuestionnaireResponseItem,
+    index: number,
+    targetItemPath?: ItemPath
+  ) => void;
   onRemoveRow: (index: number) => void;
   onSelectRow: (rowId: string) => void;
   onReorderRows: (newTableRows: GroupTableRowModel[]) => void;

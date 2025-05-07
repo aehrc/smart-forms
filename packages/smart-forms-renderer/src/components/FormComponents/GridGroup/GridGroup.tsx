@@ -34,6 +34,7 @@ import GridTable from './GridTable';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import GroupHeading from '../GroupItem/GroupHeading';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
 interface GridGroupProps
   extends PropsWithQrItemChangeHandler,
@@ -93,10 +94,10 @@ function GridGroup(props: GridGroupProps) {
   }
 
   // Event Handlers
-  function handleRowChange(newQrItem: QuestionnaireResponseItem) {
+  function handleRowChange(newQrItem: QuestionnaireResponseItem, targetItemPath?: ItemPath) {
     const updatedQrGroup: QuestionnaireResponseItem = { ...qrGroup };
     updateQrItemsInGroup(newQrItem, null, updatedQrGroup, qItemsIndexMap);
-    onQrItemChange(updatedQrGroup);
+    onQrItemChange(updatedQrGroup, targetItemPath);
   }
 
   if (showMinimalView) {
