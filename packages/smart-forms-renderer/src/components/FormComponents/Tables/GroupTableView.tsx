@@ -30,6 +30,7 @@ import AddRowButton from './AddRowButton';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
   PropsWithIsRepeatedAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
@@ -43,9 +44,11 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import GroupHeading from '../GroupItem/GroupHeading';
 import { StandardCheckbox } from '../../Checkbox.styles';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
 interface GroupTableViewProps
   extends PropsWithIsRepeatedAttribute,
+    PropsWithItemPathAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
@@ -56,7 +59,11 @@ interface GroupTableViewProps
   selectedIds: string[];
   itemLabels: string[];
   onAddRow: () => void;
-  onRowChange: (newQrRow: QuestionnaireResponseItem, index: number) => void;
+  onRowChange: (
+    newQrRow: QuestionnaireResponseItem,
+    index: number,
+    targetItemPath?: ItemPath
+  ) => void;
   onRemoveRow: (index: number) => void;
   onSelectRow: (rowId: string) => void;
   onSelectAll: () => void;
@@ -74,15 +81,16 @@ function GroupTableView(props: GroupTableViewProps) {
     tableRows,
     selectedIds,
     itemLabels,
+    itemPath,
     showMinimalView,
     parentIsReadOnly,
+    parentStyles,
     onAddRow,
     onRowChange,
     onRemoveRow,
     onSelectRow,
     onSelectAll,
-    onReorderRows,
-    parentStyles
+    onReorderRows
   } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
@@ -90,6 +98,10 @@ function GroupTableView(props: GroupTableViewProps) {
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
 
   const groupCollapsibleValue = getGroupCollapsible(qItem);
+
+  const indeterminateValue = selectedIds.length > 0 && selectedIds.length < tableRows.length;
+  const checkedValue = tableRows.length > 0 && selectedIds.length === tableRows.length;
+  const ariaCheckedValue = indeterminateValue ? 'mixed' : checkedValue ? 'true' : 'false';
 
   // If the table is collapsible, wrap it in an accordion
   if (groupCollapsibleValue) {
@@ -133,6 +145,7 @@ function GroupTableView(props: GroupTableViewProps) {
                     tableRows={tableRows}
                     selectedIds={selectedIds}
                     qItemsIndexMap={qItemsIndexMap}
+                    itemPath={itemPath}
                     isRepeated={isRepeated}
                     showMinimalView={showMinimalView}
                     parentIsReadOnly={parentIsReadOnly}
@@ -178,12 +191,13 @@ function GroupTableView(props: GroupTableViewProps) {
                       <StandardCheckbox
                         color="primary"
                         size="small"
-                        indeterminate={
-                          selectedIds.length > 0 && selectedIds.length < tableRows.length
-                        }
-                        checked={tableRows.length > 0 && selectedIds.length === tableRows.length}
+                        indeterminate={indeterminateValue}
+                        checked={checkedValue}
                         disabled={readOnly && readOnlyVisualStyle === 'disabled'}
                         readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
+                        aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
+                        role="checkbox"
+                        aria-checked={ariaCheckedValue}
                         onChange={onSelectAll}
                       />
                     </HeaderTableCell>
@@ -200,6 +214,7 @@ function GroupTableView(props: GroupTableViewProps) {
                 tableRows={tableRows}
                 selectedIds={selectedIds}
                 qItemsIndexMap={qItemsIndexMap}
+                itemPath={itemPath}
                 isRepeated={isRepeated}
                 showMinimalView={showMinimalView}
                 parentIsReadOnly={parentIsReadOnly}
@@ -242,6 +257,7 @@ function GroupTableView(props: GroupTableViewProps) {
                 tableRows={tableRows}
                 selectedIds={selectedIds}
                 qItemsIndexMap={qItemsIndexMap}
+                itemPath={itemPath}
                 isRepeated={isRepeated}
                 showMinimalView={showMinimalView}
                 parentIsReadOnly={parentIsReadOnly}
@@ -285,10 +301,13 @@ function GroupTableView(props: GroupTableViewProps) {
                   <StandardCheckbox
                     color="primary"
                     size="small"
-                    indeterminate={selectedIds.length > 0 && selectedIds.length < tableRows.length}
-                    checked={tableRows.length > 0 && selectedIds.length === tableRows.length}
+                    indeterminate={indeterminateValue}
+                    checked={checkedValue}
                     disabled={readOnly && readOnlyVisualStyle === 'disabled'}
                     readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
+                    aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
+                    role="checkbox"
+                    aria-checked={ariaCheckedValue}
                     onChange={onSelectAll}
                   />
                 </HeaderTableCell>
@@ -305,6 +324,7 @@ function GroupTableView(props: GroupTableViewProps) {
             tableRows={tableRows}
             selectedIds={selectedIds}
             qItemsIndexMap={qItemsIndexMap}
+            itemPath={itemPath}
             isRepeated={isRepeated}
             showMinimalView={showMinimalView}
             parentIsReadOnly={parentIsReadOnly}

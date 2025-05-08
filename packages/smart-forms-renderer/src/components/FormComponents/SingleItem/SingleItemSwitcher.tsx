@@ -24,6 +24,7 @@ import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledRequiredAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentStylesAttribute,
   PropsWithQrItemChangeHandler,
@@ -48,6 +49,7 @@ import { useQuestionnaireStore } from '../../../stores';
 
 interface SingleItemSwitcherProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledRequiredAttribute,
     PropsWithRenderingExtensionsAttribute,
@@ -63,14 +65,15 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
   const {
     qItem,
     qrItem,
+    itemPath,
     isRepeated,
     isTabled,
     renderingExtensions,
     showMinimalView,
     parentIsReadOnly,
     feedbackFromParent,
-    onQrItemChange,
-    parentStyles
+    parentStyles,
+    onQrItemChange
   } = props;
 
   const qItemOverrideComponents = useQuestionnaireStore.use.qItemOverrideComponents();
@@ -83,6 +86,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
       <QItemOverrideComponent
         qItem={qItem}
         qrItem={qrItem}
+        itemPath={itemPath}
         isRepeated={isRepeated}
         isTabled={isTabled}
         renderingExtensions={renderingExtensions}
@@ -100,7 +104,6 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
       return (
         <DisplayItem
           qItem={qItem}
-          qrItem={qrItem}
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           parentStyles={parentStyles}
@@ -111,6 +114,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         <BooleanItem
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -125,6 +129,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         <DecimalItem
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -140,6 +145,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           <SliderItem
             qItem={qItem}
             qrItem={qrItem}
+            itemPath={itemPath}
             isRepeated={isRepeated}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
@@ -155,6 +161,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         <IntegerItem
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -169,6 +176,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         <CustomDateItem
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -183,6 +191,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         <CustomDateTimeItem
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -197,6 +206,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         <TimeItem
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -211,6 +221,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         <StringItem
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -225,6 +236,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         <TextItem
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -239,6 +251,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         <UrlItem
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -253,6 +266,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         <ChoiceItemSwitcher
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -268,6 +282,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         <OpenChoiceItemSwitcher
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -283,6 +298,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         <AttachmentItem
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -298,6 +314,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         <StringItem
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -312,6 +329,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         <QuantityItem
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}

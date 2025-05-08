@@ -20,6 +20,7 @@ import { SpeedDialAction } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
 import EditIcon from '@mui/icons-material/Edit';
+// @ts-ignore: Module has no declaration file. Not sure why Visibility.d.ts is not present in MUI icons 7.0.2
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import RendererOperationItem from '../RendererNav/RendererOperationItem.tsx';
 

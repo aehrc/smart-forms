@@ -20,6 +20,7 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { QGroupContainerBox } from '../../Box.styles';
 import type {
   PropsWithIsRepeatedAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
   PropsWithQrItemChangeHandler,
@@ -40,9 +41,11 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import { GroupAccordion } from './GroupAccordion.styles';
 import PageButtonsWrapper from './PageButtonWrapper';
 import { useParseXhtml } from '../../../hooks/useParseXhtml';
+import { extendItemPath } from '../../../utils/itemPath';
 
 interface GroupItemViewProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithQrRepeatGroupChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithParentIsReadOnlyAttribute,
@@ -66,6 +69,7 @@ function GroupItemView(props: GroupItemViewProps) {
     qItem,
     childQItems,
     qrItemsByIndex,
+    itemPath,
     isRepeated = false,
     groupCardElevation,
     disableCardView,
@@ -78,9 +82,9 @@ function GroupItemView(props: GroupItemViewProps) {
     parentIsReadOnly,
     parentIsRepeatGroup,
     parentRepeatGroupIndex,
+    parentStyles,
     onQrItemChange,
-    onQrRepeatGroupChange,
-    parentStyles
+    onQrRepeatGroupChange
   } = props;
 
   // If XHTML has styles, pass them to the GroupItemView so it cna be applied down the tree
@@ -125,21 +129,22 @@ function GroupItemView(props: GroupItemViewProps) {
         <AccordionDetails sx={{ pt: 0 }}>
           {qItem.text ? <Divider sx={{ mb: 1.5, opacity: 0.6 }} /> : null}
           <>
-            {childQItems.map((qItem: QuestionnaireItem, i) => {
+            {childQItems.map((childQItem: QuestionnaireItem, i) => {
               const qrItemOrItems = qrItemsByIndex[i];
 
               return (
                 <GroupItemSwitcher
-                  key={qItem.linkId}
-                  qItem={qItem}
+                  key={childQItem.linkId}
+                  qItem={childQItem}
                   qrItemOrItems={qrItemOrItems}
+                  itemPath={extendItemPath(itemPath, childQItem.linkId)}
                   groupCardElevation={groupCardElevation + 1}
                   parentIsReadOnly={readOnly}
                   parentIsRepeatGroup={parentIsRepeatGroup}
                   parentRepeatGroupIndex={parentRepeatGroupIndex}
+                  parentStyles={combinedStyles}
                   onQrItemChange={onQrItemChange}
                   onQrRepeatGroupChange={onQrRepeatGroupChange}
-                  parentStyles={combinedStyles}
                 />
               );
             })}
@@ -174,21 +179,22 @@ function GroupItemView(props: GroupItemViewProps) {
             {qItem.text ? <Divider sx={{ mt: 1, mb: 1.5, opacity: 0.6 }} /> : null}
           </>
         )}
-        {childQItems.map((qItem: QuestionnaireItem, i) => {
+        {childQItems.map((childQItem: QuestionnaireItem, i) => {
           const qrItemOrItems = qrItemsByIndex[i];
 
           return (
             <GroupItemSwitcher
-              key={qItem.linkId}
-              qItem={qItem}
+              key={childQItem.linkId}
+              qItem={childQItem}
               qrItemOrItems={qrItemOrItems}
+              itemPath={extendItemPath(itemPath, childQItem.linkId)}
               groupCardElevation={groupCardElevation + 1}
               parentIsReadOnly={readOnly}
               parentIsRepeatGroup={parentIsRepeatGroup}
               parentRepeatGroupIndex={parentRepeatGroupIndex}
+              parentStyles={combinedStyles}
               onQrItemChange={onQrItemChange}
               onQrRepeatGroupChange={onQrRepeatGroupChange}
-              parentStyles={combinedStyles}
             />
           );
         })}
@@ -221,21 +227,22 @@ function GroupItemView(props: GroupItemViewProps) {
             {qItem.text ? <Divider sx={{ mt: 1, mb: 1.5, opacity: 0.6 }} /> : null}
           </>
         )}
-        {childQItems.map((qItem: QuestionnaireItem, i) => {
+        {childQItems.map((childQItem: QuestionnaireItem, i) => {
           const qrItemOrItems = qrItemsByIndex[i];
 
           return (
             <GroupItemSwitcher
-              key={qItem.linkId}
-              qItem={qItem}
+              key={childQItem.linkId}
+              qItem={childQItem}
               qrItemOrItems={qrItemOrItems}
+              itemPath={extendItemPath(itemPath, childQItem.linkId)}
               groupCardElevation={groupCardElevation + 1}
               parentIsReadOnly={readOnly}
               parentIsRepeatGroup={parentIsRepeatGroup}
               parentRepeatGroupIndex={parentRepeatGroupIndex}
+              parentStyles={combinedStyles}
               onQrItemChange={onQrItemChange}
               onQrRepeatGroupChange={onQrRepeatGroupChange}
-              parentStyles={combinedStyles}
             />
           );
         })}

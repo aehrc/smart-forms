@@ -38,6 +38,7 @@ function BooleanItem(props: BooleanItemProps) {
   const {
     qItem,
     qrItem,
+    itemPath,
     isRepeated,
     isTabled,
     parentIsReadOnly,
@@ -53,7 +54,7 @@ function BooleanItem(props: BooleanItemProps) {
   const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   let valueBoolean: boolean | undefined = undefined;
   if (qrItem?.answer?.[0]?.valueBoolean !== undefined) {
     valueBoolean = qrItem.answer[0].valueBoolean;
@@ -64,13 +65,16 @@ function BooleanItem(props: BooleanItemProps) {
     qItem: qItem,
     booleanValue: valueBoolean,
     onChangeByCalcExpressionBoolean: (newValueBoolean: boolean) => {
-      onQrItemChange({
-        ...createEmptyQrItem(qItem, answerKey),
-        answer: [{ id: answerKey, valueBoolean: newValueBoolean }]
-      });
+      onQrItemChange(
+        {
+          ...createEmptyQrItem(qItem, answerKey),
+          answer: [{ id: answerKey, valueBoolean: newValueBoolean }]
+        },
+        itemPath
+      );
     },
     onChangeByCalcExpressionNull: () => {
-      onQrItemChange(createEmptyQrItem(qItem, answerKey));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
     }
   });
 

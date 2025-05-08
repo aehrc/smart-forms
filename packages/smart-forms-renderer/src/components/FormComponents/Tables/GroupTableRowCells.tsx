@@ -22,12 +22,16 @@ import SingleItem from '../SingleItem/SingleItem';
 import { getQrItemsIndex } from '../../../utils/mapItem';
 import { StandardTableCell } from './Table.styles';
 import type {
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
+import { extendItemPath } from '../../../utils/itemPath';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
 interface GroupTableRowCellsProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
@@ -35,7 +39,7 @@ interface GroupTableRowCellsProps
 }
 
 function GroupTableRowCells(props: GroupTableRowCellsProps) {
-  const { qItem, qrItem, qItemsIndexMap, parentIsReadOnly, onQrItemChange } = props;
+  const { qItem, qrItem, qItemsIndexMap, itemPath, parentIsReadOnly, onQrItemChange } = props;
 
   const rowItems = qItem.item;
   const row = qrItem && qrItem.item ? qrItem : createEmptyQrGroup(qItem);
@@ -45,10 +49,13 @@ function GroupTableRowCells(props: GroupTableRowCellsProps) {
     return null;
   }
 
-  function handleQrRowItemChange(newQrRowItem: QuestionnaireResponseItem) {
+  function handleQrRowItemChange(
+    newQrRowItem: QuestionnaireResponseItem,
+    targetItemPath?: ItemPath
+  ) {
     const qrRow: QuestionnaireResponseItem = { ...row };
     updateQrItemsInGroup(newQrRowItem, null, qrRow, qItemsIndexMap);
-    onQrItemChange(qrRow);
+    onQrItemChange(qrRow, targetItemPath);
   }
 
   const qrItemsByIndex = getQrItemsIndex(rowItems, rowQrItems, qItemsIndexMap);
@@ -65,9 +72,10 @@ function GroupTableRowCells(props: GroupTableRowCellsProps) {
         return (
           <StandardTableCell key={index} numOfColumns={rowItems.length}>
             <SingleItem
-              key={qItem.linkId}
+              key={rowItem.linkId}
               qItem={rowItem}
               qrItem={qrItem ?? null}
+              itemPath={extendItemPath(itemPath, rowItem.linkId)}
               isRepeated={true}
               isTabled={true}
               groupCardElevation={1}

@@ -69,8 +69,12 @@ const ItemLabel = memo(function ItemLabel(props: ItemLabelProps) {
         {/* Added 0.5 marginTop (4px) because item labels doesn't look in line with their fields */}
         {/* flexGrow: 1 is important if xhtml and markdown rendering has width: 100% */}
         <Typography
+          id={'label-' + qItem.linkId}
           component={component}
           variant={variant}
+          // TODO: Delete this section later after testing.
+          // based on the qItem type if it is choice, or open-choice, boolean  then don't display the htmlFor
+          // htmlFor={qItem.type === 'choice' || qItem.type === 'open-choice' || qItem.type === 'boolean' ? undefined : qItem.type + '-' + qItem.linkId}
           htmlFor={qItem.type + '-' + qItem.linkId}
           color={textColor}
           sx={{ mt: 0.5, flexGrow: 1, ...(parentStyles || {}) }}>

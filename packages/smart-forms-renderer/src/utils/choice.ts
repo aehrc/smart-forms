@@ -25,6 +25,7 @@ import type {
 import { ChoiceItemControl, ChoiceItemOrientation } from '../interfaces/choice.enum';
 import { isSpecificItemControl } from './itemControl';
 import { getRelevantCodingProperties } from './valueSet';
+import { generateOptionKey } from '../hooks/useAnswerOptionsToggleExpressions';
 
 /**
  * Convert codings to Questionnaire answer options
@@ -234,4 +235,20 @@ export function getChoiceOrientation(qItem: QuestionnaireItem): ChoiceItemOrient
   }
 
   return null;
+}
+
+export function isOptionDisabled(
+  option: QuestionnaireItemAnswerOption,
+  answerOptionsToggleExpressionsMap: Map<string, boolean>
+): boolean {
+  // all options are enabled by default if answerOptionsToggleExpressions are present
+  if (answerOptionsToggleExpressionsMap.size === 0) {
+    return false;
+  }
+
+  const optionKey = generateOptionKey(option);
+  return (
+    answerOptionsToggleExpressionsMap.has(optionKey) &&
+    !answerOptionsToggleExpressionsMap.get(optionKey)
+  );
 }

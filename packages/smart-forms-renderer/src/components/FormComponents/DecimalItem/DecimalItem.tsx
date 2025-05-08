@@ -45,6 +45,7 @@ function DecimalItem(props: DecimalItemProps) {
   const {
     qItem,
     qrItem,
+    itemPath,
     isRepeated,
     isTabled,
     renderingExtensions,
@@ -59,7 +60,7 @@ function DecimalItem(props: DecimalItemProps) {
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   let valueDecimal = 0.0;
   let initialInput = '';
   if (qrItem?.answer) {
@@ -92,14 +93,17 @@ function DecimalItem(props: DecimalItemProps) {
           ? newValueDecimal.toFixed(precision)
           : newValueDecimal.toString()
       );
-      onQrItemChange({
-        ...createEmptyQrItem(qItem, answerKey),
-        answer: [{ id: answerKey, valueDecimal: newValueDecimal }]
-      });
+      onQrItemChange(
+        {
+          ...createEmptyQrItem(qItem, answerKey),
+          answer: [{ id: answerKey, valueDecimal: newValueDecimal }]
+        },
+        itemPath
+      );
     },
     onChangeByCalcExpressionNull: () => {
       setInput('');
-      onQrItemChange(createEmptyQrItem(qItem, answerKey));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
     }
   });
 

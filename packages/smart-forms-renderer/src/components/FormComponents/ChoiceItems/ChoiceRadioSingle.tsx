@@ -37,7 +37,8 @@ function ChoiceRadioSingle(props: ChoiceRadioSingleProps) {
       sx={{
         width: fullWidth ? '100%' : 'unset',
         ...(readOnly && {
-          color: readOnlyVisualStyle === 'readonly' ? 'text.secondary' : undefined
+          color: readOnlyVisualStyle === 'readonly' ? 'text.secondary' : undefined,
+          cursor: 'default'
         })
       }}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}

@@ -18,6 +18,7 @@
 import React, { useMemo } from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithShowMinimalViewAttribute
@@ -33,9 +34,11 @@ import GridTable from './GridTable';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import GroupHeading from '../GroupItem/GroupHeading';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
 interface GridGroupProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
@@ -54,11 +57,12 @@ function GridGroup(props: GridGroupProps) {
   const {
     qItem,
     qrItem,
+    itemPath,
     groupCardElevation,
     showMinimalView,
     parentIsReadOnly,
-    onQrItemChange,
-    parentStyles
+    parentStyles,
+    onQrItemChange
   } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
@@ -90,10 +94,10 @@ function GridGroup(props: GridGroupProps) {
   }
 
   // Event Handlers
-  function handleRowChange(newQrItem: QuestionnaireResponseItem) {
+  function handleRowChange(newQrItem: QuestionnaireResponseItem, targetItemPath?: ItemPath) {
     const updatedQrGroup: QuestionnaireResponseItem = { ...qrGroup };
     updateQrItemsInGroup(newQrItem, null, updatedQrGroup, qItemsIndexMap);
-    onQrItemChange(updatedQrGroup);
+    onQrItemChange(updatedQrGroup, targetItemPath);
   }
 
   if (showMinimalView) {
@@ -109,6 +113,7 @@ function GridGroup(props: GridGroupProps) {
             qrItems={qrRowItems}
             qItemsIndexMap={qItemsIndexMap}
             columnLabels={columnLabels}
+            itemPath={itemPath}
             showMinimalView={showMinimalView}
             parentIsReadOnly={parentIsReadOnly}
             onQrItemChange={handleRowChange}
@@ -139,6 +144,7 @@ function GridGroup(props: GridGroupProps) {
           qrItems={qrRowItems}
           qItemsIndexMap={qItemsIndexMap}
           columnLabels={columnLabels}
+          itemPath={itemPath}
           parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={handleRowChange}
         />

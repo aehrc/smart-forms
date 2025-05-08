@@ -53,7 +53,8 @@ import type { ComponentType } from 'react';
 import type { TargetConstraint } from '../interfaces/targetConstraint.interface';
 import { readTargetConstraintLocationLinkIds } from '../utils/targetConstraint';
 import type { ProcessedValueSet } from '../interfaces/valueSet.interface';
-import type { ComputedQRItemUpdates } from '../interfaces/computedUpdates.interface';
+import type { AnswerOptionsToggleExpression } from '../interfaces/answerOptionsToggleExpression.interface';
+import { applyComputedUpdates } from '../utils/computedUpdates';
 
 /**
  * QuestionnaireStore properties and methods
@@ -71,6 +72,7 @@ import type { ComputedQRItemUpdates } from '../interfaces/computedUpdates.interf
  * @property launchContexts - Key-value pair of launch contexts `Record<launch context name, launch context properties>`
  * @property targetConstraints - Key-value pair of target constraints `Record<target constraint key, target constraint properties>`
  * @property targetConstraintLinkIds - Key-value pair of linkIds against target constraint key(s) `Record<linkId, target constraint keys>`
+ * @property answerOptionsToggleExpressions - Key-value pair of answer options toggle expressions `Record<linkId, array of answer options toggle expressions>`
  * @property enableWhenItems - EnableWhenItems object containing enableWhen items and their linked questions
  * @property enableWhenLinkedQuestions - Key-value pair of linked questions to enableWhen items `Record<linkId, linkIds of linked questions>`
  * @property enableWhenIsActivated - Flag to turn enableWhen checks on/off
@@ -116,6 +118,7 @@ export interface QuestionnaireStoreType {
   launchContexts: Record<string, LaunchContext>;
   targetConstraints: Record<string, TargetConstraint>;
   targetConstraintLinkIds: Record<string, string[]>;
+  answerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
   enableWhenItems: EnableWhenItems;
   enableWhenLinkedQuestions: Record<string, string[]>;
   enableWhenIsActivated: boolean;
@@ -157,7 +160,7 @@ export interface QuestionnaireStoreType {
     actionType: 'add' | 'remove'
   ) => void;
   toggleEnableWhenActivation: (isActivated: boolean) => void;
-  updateExpressions: (updatedResponse: QuestionnaireResponse) => Promise<ComputedQRItemUpdates>;
+  updateExpressions: (updatedResponse: QuestionnaireResponse) => Promise<void>;
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) => void;
   updatePopulatedProperties: (
     populatedResponse: QuestionnaireResponse,
@@ -191,6 +194,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   launchContexts: {},
   targetConstraints: {},
   targetConstraintLinkIds: {},
+  answerOptionsToggleExpressions: {},
   calculatedExpressions: {},
   initialExpressions: {},
   enableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} },
@@ -242,6 +246,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       initialEnableWhenExpressions,
       initialCalculatedExpressions,
       initialProcessedValueSets,
+      initialAnswerOptionsToggleExpressions,
       firstVisibleTab,
       firstVisiblePage,
       updatedFhirPathContext,
@@ -253,6 +258,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       enableWhenItems: questionnaireModel.enableWhenItems,
       enableWhenExpressions: questionnaireModel.enableWhenExpressions,
       calculatedExpressions: questionnaireModel.calculatedExpressions,
+      answerOptionsToggleExpressions: questionnaireModel.answerOptionsToggleExpressions,
       variables: questionnaireModel.variables,
       processedValueSets: questionnaireModel.processedValueSets,
       tabs: questionnaireModel.tabs,
@@ -280,6 +286,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       launchContexts: questionnaireModel.launchContexts,
       targetConstraints: initialTargetConstraints,
       targetConstraintLinkIds: targetConstraintLinkIds,
+      answerOptionsToggleExpressions: initialAnswerOptionsToggleExpressions,
       enableWhenItems: initialEnableWhenItems,
       enableWhenLinkedQuestions: initialEnableWhenLinkedQuestions,
       enableWhenExpressions: initialEnableWhenExpressions,
@@ -308,6 +315,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       launchContexts: {},
       targetConstraints: {},
       targetConstraintLinkIds: {},
+      answerOptionsToggleExpressions: {},
       enableWhenItems: { singleItems: {}, repeatItems: {} },
       enableWhenLinkedQuestions: {},
       enableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} },
@@ -405,6 +413,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   toggleEnableWhenActivation: (isActivated: boolean) =>
     set(() => ({ enableWhenIsActivated: isActivated })),
   updateExpressions: async (updatedResponse: QuestionnaireResponse) => {
+    const updateResponse = questionnaireResponseStore.getState().updateResponse;
     const updatedResponseItemMap = createQuestionnaireResponseItemMap(
       get().sourceQuestionnaire,
       updatedResponse
@@ -412,6 +421,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     const {
       isUpdated,
       updatedTargetConstraints,
+      updatedAnswerOptionsToggleExpressions,
       updatedEnableWhenExpressions,
       updatedCalculatedExpressions,
       updatedProcessedValueSets,
@@ -422,6 +432,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       updatedResponse,
       updatedResponseItemMap,
       targetConstraints: get().targetConstraints,
+      answerOptionsToggleExpressions: get().answerOptionsToggleExpressions,
       enableWhenExpressions: get().enableWhenExpressions,
       calculatedExpressions: get().calculatedExpressions,
       processedValueSets: get().processedValueSets,
@@ -431,23 +442,36 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       terminologyServerUrl: terminologyServerStore.getState().url
     });
 
+    /**
+     * Applies computed updates to the QR before updating the store.
+     * Before this, we were updating the store before applying the computed updates. This may cause downstream useEffects to use a stale QR.
+     * By applying the computed updates first, we ensure that the QR is up-to-date when downstream useEffects are fired.
+     */
+    if (Object.keys(computedQRItemUpdates).length > 0) {
+      const responseWithAppliedComputedUpdates = applyComputedUpdates(
+        get().sourceQuestionnaire,
+        updatedResponse,
+        computedQRItemUpdates
+      );
+      updateResponse(responseWithAppliedComputedUpdates, 'async');
+    }
+
     if (isUpdated) {
       set(() => ({
         targetConstraints: updatedTargetConstraints,
+        answerOptionsToggleExpressions: updatedAnswerOptionsToggleExpressions,
         enableWhenExpressions: updatedEnableWhenExpressions,
         calculatedExpressions: updatedCalculatedExpressions,
         processedValueSets: updatedProcessedValueSets,
         fhirPathContext: updatedFhirPathContext,
         fhirPathTerminologyCache: fhirPathTerminologyCache
       }));
-      return computedQRItemUpdates;
     }
 
     set(() => ({
       fhirPathContext: updatedFhirPathContext,
       fhirPathTerminologyCache: fhirPathTerminologyCache
     }));
-    return computedQRItemUpdates;
   },
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) =>
     set(() => ({
@@ -493,6 +517,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       initialEnableWhenItems,
       initialEnableWhenLinkedQuestions,
       initialEnableWhenExpressions,
+      initialAnswerOptionsToggleExpressions,
       firstVisibleTab,
       firstVisiblePage
     } = await initialiseFormFromResponse({
@@ -502,6 +527,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       enableWhenItems: get().enableWhenItems,
       enableWhenExpressions: get().enableWhenExpressions,
       calculatedExpressions: initialCalculatedExpressions,
+      answerOptionsToggleExpressions: get().answerOptionsToggleExpressions,
       variables: get().variables,
       processedValueSets: get().processedValueSets,
       tabs: get().tabs,
@@ -515,6 +541,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
 
     set(() => ({
       targetConstraints: initialTargetConstraints,
+      answerOptionsToggleExpressions: initialAnswerOptionsToggleExpressions,
       enableWhenItems: initialEnableWhenItems,
       enableWhenLinkedQuestions: initialEnableWhenLinkedQuestions,
       enableWhenExpressions: initialEnableWhenExpressions,
