@@ -122,11 +122,10 @@ function GroupTableRow(props: GroupTableRowProps) {
               qItem={tableQItem}
               qrItem={answeredQrItem}
               qItemsIndexMap={qItemsIndexMap}
+
               itemPath={itemPath}
-              parentIsReadOnly={parentIsReadOnly}
-              onQrItemChange={(newQrGroup, targetItemPath) =>
-                onRowChange(newQrGroup, index, targetItemPath)
-              }
+              parentIsReadOnly={readOnly}
+              onQrItemChange={(newQrGroup) => onRowChange(newQrGroup, index)}
             />
             {showMinimalView || !isRepeated ? (
               <TableCell padding="checkbox" />
@@ -169,11 +168,11 @@ function GroupTableRow(props: GroupTableRowProps) {
         qItem={tableQItem}
         qrItem={answeredQrItem}
         qItemsIndexMap={qItemsIndexMap}
+
         itemPath={itemPath}
-        parentIsReadOnly={parentIsReadOnly}
-        onQrItemChange={(newQrGroup, targetItemPath) =>
-          onRowChange(newQrGroup, index, targetItemPath)
-        }
+
+        parentIsReadOnly={readOnly}
+        onQrItemChange={(newQrGroup) => onRowChange(newQrGroup, index)}
       />
       {showMinimalView || !isRepeated ? (
         <TableCell padding="checkbox" />
