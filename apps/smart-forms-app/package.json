@@ -49,7 +49,7 @@
     "he": "^1.2.0",
     "html-react-parser": "4.2.10",
     "lodash.clonedeep": "^4.5.0",
-    "material-ui-popup-state": "^5.3.3",
+    "material-ui-popup-state": "^5.3.5",
     "moment": "^2.30.1",
     "monaco-editor": "^0.52.2",
     "nanoid": "^5.1.2",
