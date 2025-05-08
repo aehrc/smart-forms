@@ -114,7 +114,7 @@ function GroupTableRow(props: GroupTableRowProps) {
               qItem={tableQItem}
               qrItem={answeredQrItem}
               qItemsIndexMap={qItemsIndexMap}
-              parentIsReadOnly={parentIsReadOnly}
+              parentIsReadOnly={readOnly}
               onQrItemChange={(newQrGroup) => onRowChange(newQrGroup, index)}
             />
             {showMinimalView || !isRepeated ? (
@@ -158,7 +158,7 @@ function GroupTableRow(props: GroupTableRowProps) {
         qItem={tableQItem}
         qrItem={answeredQrItem}
         qItemsIndexMap={qItemsIndexMap}
-        parentIsReadOnly={parentIsReadOnly}
+        parentIsReadOnly={readOnly}
         onQrItemChange={(newQrGroup) => onRowChange(newQrGroup, index)}
       />
       {showMinimalView || !isRepeated ? (
