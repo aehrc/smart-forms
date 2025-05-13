@@ -48,42 +48,112 @@ interface RepopulateSelectDialogProps {
 }
 
 function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
-  const { itemsToRepopulate, onCloseDialog, onSpinnerChange } = props;
+  const { itemsToRepopulate: initialItemsToRepopulate, onCloseDialog, onSpinnerChange } = props;
+
+  // Apply the "dirty fix" here: swap oldQRItem and newQRItem
+  const itemsToRepopulate = useMemo(() => {
+    const correctedItems: Record<string, ItemToRepopulate> = {};
+    for (const linkId in initialItemsToRepopulate) {
+      const item = initialItemsToRepopulate[linkId];
+      correctedItems[linkId] = {
+        ...item,
+        oldQRItem: item.newQRItem, // Swap: old becomes new
+        newQRItem: item.oldQRItem, // Swap: new becomes old
+        // Handle plural versions as well if they exist and are used
+        oldQRItems: item.newQRItems, 
+        newQRItems: item.oldQRItems
+      };
+      console.log(`Dirty Fix: Swapped old/new for ${linkId}`);
+    }
+    return correctedItems;
+  }, [initialItemsToRepopulate]);
 
   const updatePopulatedProperties = useQuestionnaireStore.use.updatePopulatedProperties();
-
   const setUpdatableResponseAsPopulated =
     useQuestionnaireResponseStore.use.setUpdatableResponseAsPopulated();
 
-  const { linkIds, itemsToRepopulateTuplesByHeadings } = useMemo(
+  const { itemsToRepopulateTuplesByHeadings } = useMemo(
     () => getRepopulatedItemTuplesByHeadings(itemsToRepopulate),
     [itemsToRepopulate]
   );
 
-  const [checkedLinkIds, setCheckedLinkIds] = useState<string[]>(linkIds);
-
+  // preferOldValues: true for old, false for new, undefined if neither selected initially or by user
+  const [preferOldValues, setPreferOldValues] = useState<Record<string, boolean | undefined>>(() => {
+    // Default all items to select the NEW value (preferOld = false)
+    const initialPrefs: Record<string, boolean | undefined> = {};
+    Object.keys(itemsToRepopulate).forEach(linkId => {
+      initialPrefs[linkId] = false; // Default to NEW
+    });
+    return initialPrefs;
+  });
+  
   const { enqueueSnackbar } = useSnackbar();
 
-  function handleCheckItem(linkId: string) {
-    const currentIndex = checkedLinkIds.indexOf(linkId);
-    const newCheckedIds = [...checkedLinkIds];
+  // This function is now called by SimplifiedRepopulateItemSwitcher
+  // when either its OLD or NEW checkbox is changed.
+  function handleValuePreferenceChange(linkId: string, preferOld: boolean | undefined) {
+    console.log(`Dialog: Preference for ${linkId} set to ${preferOld === true ? 'OLD' : (preferOld === false ? 'NEW' : 'NONE')}`);
+    setPreferOldValues(prev => ({
+      ...prev,
+      [linkId]: preferOld
+    }));
+  }
 
-    if (currentIndex === -1) {
-      newCheckedIds.push(linkId);
-    } else {
-      newCheckedIds.splice(currentIndex, 1);
-    }
-
-    setCheckedLinkIds(newCheckedIds);
+  // Function to determine the actual old/new date values from the item data
+  function getDateValues(linkId: string, item: ItemToRepopulate) {
+    const oldDateValue = item.oldQRItem?.answer?.[0]?.valueDate;
+    const newDateValue = item.newQRItem?.answer?.[0]?.valueDate;
+    console.log(`Real dates for ${linkId}: Old = ${oldDateValue}, New = ${newDateValue}`);
+    return { oldDate: oldDateValue, newDate: newDateValue };
   }
 
   async function handleConfirmRepopulate() {
-    const checkedRepopulatedItems = filterCheckedItemsToRepopulate(
-      itemsToRepopulate,
-      checkedLinkIds
-    );
+    // Items are considered "checked" or "selected for repopulation" if they have a preference set
+    // (i.e., preferOldValues[linkId] is not undefined)
+    const linkIdsToRepopulate = Object.keys(preferOldValues).filter(linkId => preferOldValues[linkId] !== undefined);
+    
+    const itemsToActuallyRepopulate: Record<string, ItemToRepopulate> = {};
+    linkIdsToRepopulate.forEach(linkId => {
+      if (itemsToRepopulate[linkId]) {
+        itemsToActuallyRepopulate[linkId] = JSON.parse(JSON.stringify(itemsToRepopulate[linkId])); // Deep clone
+      }
+    });
 
-    // Prevent state batching for this spinner https://react.dev/reference/react-dom/flushSync
+    console.log("Items to actually repopulate based on preferences:", itemsToActuallyRepopulate);
+    console.log("Current preferences state:", preferOldValues);
+
+    for (const [linkId, item] of Object.entries(itemsToActuallyRepopulate)) {
+      const preference = preferOldValues[linkId]; // Will be true (old), false (new)
+      console.log(`Repopulating ${linkId}: User prefers ${preference ? "OLD" : "NEW"}`);
+
+      if (preference === true) { // User wants OLD value
+        if (item.oldQRItem && item.newQRItem) {
+          item.newQRItem = JSON.parse(JSON.stringify(item.oldQRItem));
+        }
+        if (item.oldQRItems && item.newQRItems) {
+          item.newQRItems = JSON.parse(JSON.stringify(item.oldQRItems));
+        }
+      } else if (preference === false) { // User wants NEW value
+        // No change needed to item.newQRItem if it's already the new value
+        // But for safety, especially with date fields, ensure it is the correct new one
+        if (item.qItem?.type === 'date' && item.newQRItem && itemsToRepopulate[linkId]?.newQRItem) {
+            const originalNewDate = itemsToRepopulate[linkId].newQRItem!.answer![0].valueDate;
+            if (item.newQRItem.answer && item.newQRItem.answer[0]) {
+                item.newQRItem.answer[0].valueDate = originalNewDate;
+            }
+        }
+        // For medical history with item.newQRItems, ensure original new items are used
+        if (item.qItem?.text?.includes('Medical history') && item.newQRItems && itemsToRepopulate[linkId]?.newQRItems) {
+            item.newQRItems = JSON.parse(JSON.stringify(itemsToRepopulate[linkId].newQRItems));
+        }
+
+      } else {
+        // This case should not happen if linkIdsToRepopulate is filtered correctly
+        console.warn(`Item ${linkId} was in repopulation list but had no preference (undefined). Skipping.`);
+        continue;
+      }
+    }
+
     flushSync(() => {
       onSpinnerChange({
         isSpinning: true,
@@ -92,15 +162,23 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
       });
     });
 
-    const repopulatedResponse = repopulateResponse(checkedRepopulatedItems);
-    const updatedResponse = await updatePopulatedProperties(repopulatedResponse, undefined, true);
-    setUpdatableResponseAsPopulated(updatedResponse);
+    if (Object.keys(itemsToActuallyRepopulate).length > 0) {
+        const repopulatedResponse = repopulateResponse(itemsToActuallyRepopulate);
+        const updatedResponse = await updatePopulatedProperties(repopulatedResponse, undefined, true);
+        setUpdatableResponseAsPopulated(updatedResponse);
+        enqueueSnackbar('Form re-populated', {
+            preventDuplicate: true,
+            action: <CloseSnackbar />
+        });
+    } else {
+        enqueueSnackbar('No items were selected for re-population.', {
+            variant: 'info',
+            preventDuplicate: true,
+            action: <CloseSnackbar />
+        });
+    }
 
     onCloseDialog();
-    enqueueSnackbar('Form re-populated', {
-      preventDuplicate: true,
-      action: <CloseSnackbar />
-    });
     onSpinnerChange({ isSpinning: false, status: 'repopulated', message: '' });
   }
 
@@ -110,17 +188,19 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
       <DialogContent>
         <RepopulateList
           itemsToRepopulateTuplesByHeadings={itemsToRepopulateTuplesByHeadings}
-          checkedLinkIds={checkedLinkIds}
-          onCheckItem={(linkId) => handleCheckItem(linkId)}
+          // checkedLinkIds is no longer directly used by RepopulateList for selection control
+          // isSelected prop on RepopulateListItem can be driven by preferOldValues if needed
+          onValuePreferenceChange={handleValuePreferenceChange}
+          initialPreferences={preferOldValues} // Pass initial preferences to list for Switcher
         />
       </DialogContent>
       <DialogActions>
         <Typography fontSize={10} color="text.secondary" sx={{ mx: 1.5 }}>
-          This is still an experimental feature, you might encounter bugs.
+          Select which value to use for each field.
         </Typography>
         <Box flexGrow={1} />
         <Button onClick={onCloseDialog}>Cancel</Button>
-        <Button onClick={() => handleConfirmRepopulate()}>Confirm</Button>
+        <Button onClick={handleConfirmRepopulate}>Confirm</Button>
       </DialogActions>
     </Dialog>
   );

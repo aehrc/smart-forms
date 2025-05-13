@@ -23,12 +23,16 @@ import RepopulateListItem from './RepopulateListItem.tsx';
 
 interface RepopulateListProps {
   itemsToRepopulateTuplesByHeadings: [string, ItemToRepopulate[]][];
-  checkedLinkIds: string[];
-  onCheckItem: (linkId: string) => void;
+  onValuePreferenceChange: (linkId: string, preferOld: boolean | undefined) => void;
+  initialPreferences: Record<string, boolean | undefined>;
 }
 
 function RepopulateList(props: RepopulateListProps) {
-  const { itemsToRepopulateTuplesByHeadings, checkedLinkIds, onCheckItem } = props;
+  const { 
+    itemsToRepopulateTuplesByHeadings, 
+    onValuePreferenceChange,
+    initialPreferences
+  } = props;
 
   return (
     <>
@@ -36,11 +40,13 @@ function RepopulateList(props: RepopulateListProps) {
         <Fragment key={heading}>
           <List
             dense
-            sx={{ width: '100%', minWidth: 360 }}
+            sx={{ width: '100%', minWidth: 360, pt: 0, pb: 0.5 }}
             subheader={
-              <Typography variant="subtitle1" color="text.secondary">
-                {heading}
-              </Typography>
+              heading ? (
+                <Typography variant="subtitle1" color="text.secondary" sx={{ pl: 1, pt: 1, pb: 0.5 }}>
+                  {heading}
+                </Typography>
+              ) : null
             }>
             {itemsToRepopulate.map((itemToRepopulate) => {
               const { qItem, newQRItem, oldQRItem, newQRItems, oldQRItems } = itemToRepopulate;
@@ -57,14 +63,14 @@ function RepopulateList(props: RepopulateListProps) {
                   newQRItem={newQRItem}
                   oldQRItems={oldQRItems}
                   newQRItems={newQRItems}
-                  checkedIds={checkedLinkIds}
-                  onCheckItem={() => onCheckItem(qItem.linkId)}
+                  onValuePreferenceChange={onValuePreferenceChange}
+                  initialPreference={initialPreferences[qItem.linkId]}
                 />
               );
             })}
           </List>
-          {index !== itemsToRepopulateTuplesByHeadings.length - 1 && (
-            <Divider sx={{ mb: 1.5 }} light />
+          {index < itemsToRepopulateTuplesByHeadings.length - 1 && itemsToRepopulate.length > 0 && (
+            <Divider sx={{ mb: 1, mt: 0.5 }} light />
           )}
         </Fragment>
       ))}

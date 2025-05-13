@@ -16,60 +16,71 @@
  */
 
 import ListItem from '@mui/material/ListItem';
-import { Checkbox, ListItemButton, ListItemIcon, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import ListItemText from '@mui/material/ListItemText';
 import { useHidden } from '@aehrc/smart-forms-renderer';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import RepopulateItemSwitcher from './RepopulateItemSwitcher.tsx';
+import SimplifiedRepopulateItemSwitcher from './SimplifiedRepopulateItemSwitcher.tsx';
 
 interface RepopulateListItemProps {
-  checkedIds: string[];
   qItem: QuestionnaireItem;
   newQRItem?: QuestionnaireResponseItem;
   oldQRItem?: QuestionnaireResponseItem;
   newQRItems?: QuestionnaireResponseItem[];
   oldQRItems?: QuestionnaireResponseItem[];
-  onCheckItem: () => void;
+  onValuePreferenceChange: (linkId: string, preferOld: boolean | undefined) => void;
+  isSelected?: boolean;
+  initialPreference?: boolean;
 }
 
 function RepopulateListItem(props: RepopulateListItemProps) {
-  const { qItem, oldQRItem, newQRItem, newQRItems, oldQRItems, checkedIds, onCheckItem } = props;
+  const {
+    qItem,
+    oldQRItem,
+    newQRItem,
+    newQRItems,
+    oldQRItems,
+    onValuePreferenceChange,
+    isSelected,
+    initialPreference
+  } = props;
 
   const itemIsHidden = useHidden(qItem);
   if (itemIsHidden) {
     return null;
   }
 
-  const qItemToRepopulate = structuredClone({ ...qItem, readOnly: true });
+  const qItemToRepopulate = { ...qItem, readOnly: true };
   const linkId = qItemToRepopulate.linkId;
   const itemText = qItemToRepopulate.text ?? '';
 
   return (
-    <ListItem disablePadding>
-      <ListItemButton onClick={onCheckItem} disableRipple>
-        <ListItemIcon>
-          <Checkbox
-            edge="start"
-            checked={checkedIds.indexOf(linkId) !== -1}
-            tabIndex={-1}
-            disableRipple
+    <ListItem
+      disablePadding
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        pt: 0.5,
+        pb: 1.5,
+      }}
+    >
+      <ListItemText
+        primary={<Typography variant="subtitle2" sx={{ mb: 0.5 }}>{itemText}</Typography>}
+        secondaryTypographyProps={{ component: 'div' }}
+        secondary={
+          <SimplifiedRepopulateItemSwitcher
+            qItem={qItemToRepopulate}
+            oldQRItem={oldQRItem}
+            newQRItem={newQRItem}
+            newQRItems={newQRItems}
+            oldQRItems={oldQRItems}
+            onValuePreferenceChange={onValuePreferenceChange}
+            initialPreference={initialPreference}
           />
-        </ListItemIcon>
-        <ListItemText
-          primary={<Typography variant="subtitle2">{itemText}</Typography>}
-          secondary={
-            <Typography component="span">
-              <RepopulateItemSwitcher
-                qItem={qItemToRepopulate}
-                oldQRItem={oldQRItem}
-                newQRItem={newQRItem}
-                newQRItems={newQRItems}
-                oldQRItems={oldQRItems}
-              />
-            </Typography>
-          }
-        />
-      </ListItemButton>
+        }
+        sx={{ width: '100%' }}
+      />
     </ListItem>
   );
 }
