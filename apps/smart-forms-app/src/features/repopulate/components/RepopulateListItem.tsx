@@ -51,8 +51,18 @@ function RepopulateListItem(props: RepopulateListItemProps) {
   }
 
   const qItemToRepopulate = { ...qItem, readOnly: true };
-  const linkId = qItemToRepopulate.linkId;
   const itemText = qItemToRepopulate.text ?? '';
+
+  if (qItem.text?.includes('Medical history')) {
+    console.log(`RepopulateListItem: Passing to Switcher for ${qItem.linkId} (${itemText}):`,
+      {
+        serverSuggestedQRItem: newQRItem,
+        currentUserFormQRItem: oldQRItem,
+        serverSuggestedQRItems: newQRItems,
+        currentUserFormQRItems: oldQRItems,
+      }
+    );
+  }
 
   return (
     <ListItem
@@ -71,12 +81,12 @@ function RepopulateListItem(props: RepopulateListItemProps) {
         secondary={
           <SimplifiedRepopulateItemSwitcher
             qItem={qItemToRepopulate}
-            oldQRItem={oldQRItem}
-            newQRItem={newQRItem}
-            newQRItems={newQRItems}
-            oldQRItems={oldQRItems}
+            serverSuggestedQRItem={props.newQRItem}
+            currentUserFormQRItem={props.oldQRItem}
+            serverSuggestedQRItems={props.newQRItems}
+            currentUserFormQRItems={props.oldQRItems}
             onValuePreferenceChange={onValuePreferenceChange}
-            initialPreference={initialPreference}
+            initialUserFormPreference={initialPreference}
           />
         }
         sx={{ width: '100%' }}

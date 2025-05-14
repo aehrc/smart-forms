@@ -48,8 +48,10 @@ function RepopulateList(props: RepopulateListProps) {
                 </Typography>
               ) : null
             }>
-            {itemsToRepopulate.map((itemToRepopulate) => {
-              const { qItem, newQRItem, oldQRItem, newQRItems, oldQRItems } = itemToRepopulate;
+            {itemsToRepopulate.map((itemToRepopulateData) => {
+              console.log('RepopulateList: Processing itemToRepopulateData:', JSON.stringify(itemToRepopulateData, null, 2));
+              
+              const { qItem, newQRItem, oldQRItem, newQRItems, oldQRItems } = itemToRepopulateData;
 
               if (!qItem) {
                 return null;

@@ -33,7 +33,6 @@ import {
 import RepopulateList from './RepopulateList.tsx';
 import { useMemo, useState } from 'react';
 import {
-  filterCheckedItemsToRepopulate,
   getRepopulatedItemTuplesByHeadings
 } from '../utils/repopulateSorting.ts';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
@@ -59,82 +58,90 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
     [itemsToRepopulate]
   );
 
-  // preferOldValues: true for old, false for new, undefined if neither selected initially or by user
-  const [preferOldValues, setPreferOldValues] = useState<Record<string, boolean | undefined>>(() => {
-    // Default all items to select the NEW value (preferOld = false)
+  // userPrefersTheirCurrentFormValue[linkId]:
+  // true = user wants THEIR CURRENT FORM value (from itemsToRepopulate[linkId].oldQRItem)
+  // false = user wants the SERVER'S SUGGESTED value (from itemsToRepopulate[linkId].newQRItem)
+  const [userPrefersTheirCurrentFormValue, setUserPrefersTheirCurrentFormValue] = useState<Record<string, boolean | undefined>>(() => {
     const initialPrefs: Record<string, boolean | undefined> = {};
     Object.keys(itemsToRepopulate).forEach(linkId => {
-      initialPrefs[linkId] = false; // Default to NEW
+      initialPrefs[linkId] = true; // Default to user preferring THEIR CURRENT FORM VALUE
     });
     return initialPrefs;
   });
   
   const { enqueueSnackbar } = useSnackbar();
 
-  // This function is now called by SimplifiedRepopulateItemSwitcher
-  // when either its OLD or NEW checkbox is changed.
-  function handleValuePreferenceChange(linkId: string, preferOld: boolean | undefined) {
-    console.log(`Dialog: Preference for ${linkId} set to ${preferOld === true ? 'OLD' : (preferOld === false ? 'NEW' : 'NONE')}`);
-    setPreferOldValues(prev => ({
+  // This callback is triggered by SimplifiedRepopulateItemSwitcher
+  // iPrefersTheirFormVal: true if user ticked "YOUR CURRENT VALUE" checkbox
+  function handleValuePreferenceChange(linkId: string, iPreferMyCurrentFormValue: boolean | undefined) {
+    console.log(`Dialog: Preference for ${linkId} - User Prefers THEIR CURRENT FORM Value = ${iPreferMyCurrentFormValue}`);
+    setUserPrefersTheirCurrentFormValue(prev => ({
       ...prev,
-      [linkId]: preferOld
+      [linkId]: iPreferMyCurrentFormValue 
     }));
   }
 
-  // Function to determine the actual old/new date values from the item data
-  function getDateValues(linkId: string, item: ItemToRepopulate) {
-    const oldDateValue = item.oldQRItem?.answer?.[0]?.valueDate;
-    const newDateValue = item.newQRItem?.answer?.[0]?.valueDate;
-    console.log(`Real dates for ${linkId}: Old = ${oldDateValue}, New = ${newDateValue}`);
-    return { oldDate: oldDateValue, newDate: newDateValue };
-  }
-
   async function handleConfirmRepopulate() {
-    // Items are considered "checked" or "selected for repopulation" if they have a preference set
-    // (i.e., preferOldValues[linkId] is not undefined)
-    const linkIdsToRepopulate = Object.keys(preferOldValues).filter(linkId => preferOldValues[linkId] !== undefined);
+    const linkIdsToRepopulate = Object.keys(userPrefersTheirCurrentFormValue).filter(linkId => userPrefersTheirCurrentFormValue[linkId] !== undefined);
     
     const itemsToActuallyRepopulate: Record<string, ItemToRepopulate> = {};
     linkIdsToRepopulate.forEach(linkId => {
       if (itemsToRepopulate[linkId]) {
-        itemsToActuallyRepopulate[linkId] = JSON.parse(JSON.stringify(itemsToRepopulate[linkId])); // Deep clone
+        itemsToActuallyRepopulate[linkId] = JSON.parse(JSON.stringify(itemsToRepopulate[linkId]));
       }
     });
 
-    console.log("Items to actually repopulate based on preferences:", itemsToActuallyRepopulate);
-    console.log("Current preferences state:", preferOldValues);
+    console.log("Final items considered for repopulation:", JSON.stringify(itemsToActuallyRepopulate, null, 2));
+    console.log("Final preference state (userPrefersTheirCurrentFormValue map):", userPrefersTheirCurrentFormValue);
 
     for (const [linkId, item] of Object.entries(itemsToActuallyRepopulate)) {
-      const preference = preferOldValues[linkId]; // Will be true (old), false (new)
-      console.log(`Repopulating ${linkId}: User prefers ${preference ? "OLD" : "NEW"}`);
+      const userWantsTheirCurrentValue = userPrefersTheirCurrentFormValue[linkId]; 
+      
+      console.log(`Repopulating ${linkId}: User preference is to use THEIR CURRENT FORM VALUE = ${userWantsTheirCurrentValue}`);
 
-      if (preference === true) { // User wants OLD value
-        if (item.oldQRItem && item.newQRItem) {
-          item.newQRItem = JSON.parse(JSON.stringify(item.oldQRItem));
-        }
-        if (item.oldQRItems && item.newQRItems) {
-          item.newQRItems = JSON.parse(JSON.stringify(item.oldQRItems));
-        }
-      } else if (preference === false) { // User wants NEW value
-        // No change needed to item.newQRItem if it's already the new value
-        // But for safety, especially with date fields, ensure it is the correct new one
-        if (item.qItem?.type === 'date' && item.newQRItem && itemsToRepopulate[linkId]?.newQRItem) {
-            const originalNewDate = itemsToRepopulate[linkId].newQRItem!.answer![0].valueDate;
-            if (item.newQRItem.answer && item.newQRItem.answer[0]) {
-                item.newQRItem.answer[0].valueDate = originalNewDate;
-            }
-        }
-        // For medical history with item.newQRItems, ensure original new items are used
-        if (item.qItem?.text?.includes('Medical history') && item.newQRItems && itemsToRepopulate[linkId]?.newQRItems) {
-            item.newQRItems = JSON.parse(JSON.stringify(itemsToRepopulate[linkId].newQRItems));
-        }
+      // Based on senior dev: item.oldQRItem IS USER'S CURRENT, item.newQRItem IS SERVER'S SUGGESTION
+      const userCurrentData = item.oldQRItem;    
+      const serverSuggestedData = item.newQRItem;  
+      const userCurrentItemsData = item.oldQRItems;  
+      const serverSuggestedItemsData = item.newQRItems; 
 
+      console.log(`  For ${linkId} - User Current Data (from renderer oldQRItem/Items):`, JSON.stringify(userCurrentData || userCurrentItemsData, null, 2));
+      console.log(`  For ${linkId} - Server Suggested Data (from renderer newQRItem/Items):`, JSON.stringify(serverSuggestedData || serverSuggestedItemsData, null, 2));
+
+      if (userWantsTheirCurrentValue === true) { 
+        console.log(`  ACTION: Applying USER'S CURRENT FORM value for ${linkId}`);
+        if (userCurrentData && item.newQRItem) { // item.newQRItem will be used for the new response, so populate it with user's current data
+          item.newQRItem = JSON.parse(JSON.stringify(userCurrentData));
+        }
+        if (userCurrentItemsData && item.newQRItems) { 
+          item.newQRItems = JSON.parse(JSON.stringify(userCurrentItemsData));
+        }
+      } else if (userWantsTheirCurrentValue === false) { // User wants SERVER'S SUGGESTED value
+        console.log(`  ACTION: Applying SERVER SUGGESTED value for ${linkId}`);
+        if (serverSuggestedData && item.newQRItem) {
+            item.newQRItem = JSON.parse(JSON.stringify(serverSuggestedData));
+        }
+        if (serverSuggestedItemsData && item.newQRItems) {
+            item.newQRItems = JSON.parse(JSON.stringify(serverSuggestedItemsData));
+        }
       } else {
-        // This case should not happen if linkIdsToRepopulate is filtered correctly
-        console.warn(`Item ${linkId} was in repopulation list but had no preference (undefined). Skipping.`);
-        continue;
+        console.warn(`Item ${linkId} had UNDEFINED preference. Defaulting to USER'S CURRENT FORM value.`);
+        if (userCurrentData && item.newQRItem) {
+            item.newQRItem = JSON.parse(JSON.stringify(userCurrentData));
+        }
+        if (userCurrentItemsData && item.newQRItems) {
+            item.newQRItems = JSON.parse(JSON.stringify(userCurrentItemsData));
+        }
       }
+      console.log(`  For ${linkId}, after applying preference, item.newQRItem/Items that will be used for repopulateResponse:`, 
+        JSON.stringify(item.newQRItem, null, 2), 
+        JSON.stringify(item.newQRItems, null, 2)
+      );
     }
+
+    console.log("FINAL itemsToActuallyRepopulate being sent to repopulateResponse:", 
+      JSON.stringify(itemsToActuallyRepopulate, null, 2)
+    );
 
     flushSync(() => {
       onSpinnerChange({
@@ -170,10 +177,8 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
       <DialogContent>
         <RepopulateList
           itemsToRepopulateTuplesByHeadings={itemsToRepopulateTuplesByHeadings}
-          // checkedLinkIds is no longer directly used by RepopulateList for selection control
-          // isSelected prop on RepopulateListItem can be driven by preferOldValues if needed
           onValuePreferenceChange={handleValuePreferenceChange}
-          initialPreferences={preferOldValues} // Pass initial preferences to list for Switcher
+          initialPreferences={userPrefersTheirCurrentFormValue}
         />
       </DialogContent>
       <DialogActions>
