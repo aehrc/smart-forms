@@ -299,19 +299,20 @@ function SimplifiedRepopulateItemSwitcher(props: SimplifiedRepopulateItemSwitche
     );
   }
 
+  // Show a side-by-side comparison for non-date fields
   return (
     <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, mt: 0.25, alignItems: 'center' }}>
-      {/* OLD Value Box */}
+      {/* YOUR CURRENT VALUE Box */}
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
         <FormControlLabel
           control={
             <Checkbox
               size="small"
-              checked={preferOldInState === true}
-              onChange={(e) => handleSelection(true)}
+              checked={preferOldInState === true} // This represents selecting "Your Current Value"
+              onChange={() => handleSelection(true)} 
             />
           }
-          label={<Typography variant="overline" fontSize={8} color="text.secondary">OLD VALUE</Typography>}
+          label={<Typography variant="overline" fontSize={8} color="text.secondary">YOUR CURRENT VALUE</Typography>}
           sx={{ ml: 0, mb: 0.5, alignSelf: 'flex-start' }}
         />
         <Box sx={{
@@ -324,29 +325,29 @@ function SimplifiedRepopulateItemSwitcher(props: SimplifiedRepopulateItemSwitche
         }}>
           {displayOldValues.length > 0 ? (
             displayOldValues.map((value, index) => (
-              <Typography key={index} variant="body2" sx={{ color: '#d32f2f', fontWeight: 'medium' }}>
+              <Typography key={index} variant="body2" sx={{ color: preferOldInState === true ? 'primary.main' : '#d32f2f', fontWeight: 'medium' }}>
                 {value}
               </Typography>
             ))
           ) : (
             <Typography variant="body2" color="text.secondary" fontStyle="italic">
-              {isDateField ? (oldValues.join(',') || '-') : 'No value removed'}
+              {isDateField ? (oldValues.join(',') || '-') : 'No value'}
             </Typography>
           )}
         </Box>
       </Box>
 
-      {/* NEW Value Box */}
+      {/* SUGGESTED VALUE (FROM SERVER) Box */}
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
         <FormControlLabel
           control={
             <Checkbox
               size="small"
-              checked={preferOldInState === false}
-              onChange={(e) => handleSelection(false)}
+              checked={preferOldInState === false} // This represents selecting "Suggested Value"
+              onChange={() => handleSelection(false)}
             />
           }
-          label={<Typography variant="overline" fontSize={8} color="text.secondary">NEW VALUE</Typography>}
+          label={<Typography variant="overline" fontSize={8} color="text.secondary">SUGGESTED VALUE (FROM SERVER)</Typography>}
           sx={{ ml: 0, mb: 0.5, alignSelf: 'flex-start' }}
         />
         <Box sx={{
@@ -359,13 +360,13 @@ function SimplifiedRepopulateItemSwitcher(props: SimplifiedRepopulateItemSwitche
         }}>
           {displayNewValues.length > 0 ? (
             displayNewValues.map((value, index) => (
-              <Typography key={index} variant="body2" sx={{ color: '#2e7d32', fontWeight: 'medium' }}>
+              <Typography key={index} variant="body2" sx={{ color: preferOldInState === false ? 'primary.main' : '#2e7d32', fontWeight: 'medium' }}>
                 {value}
               </Typography>
             ))
           ) : (
             <Typography variant="body2" color="text.secondary" fontStyle="italic">
-              {isDateField ? (newValues.join(',') || '-') : 'No value added'}
+              {isDateField ? (newValues.join(',') || '-') : 'No value'}
             </Typography>
           )}
         </Box>

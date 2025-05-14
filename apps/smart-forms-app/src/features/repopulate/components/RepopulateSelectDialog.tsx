@@ -48,25 +48,7 @@ interface RepopulateSelectDialogProps {
 }
 
 function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
-  const { itemsToRepopulate: initialItemsToRepopulate, onCloseDialog, onSpinnerChange } = props;
-
-  // Apply the "dirty fix" here: swap oldQRItem and newQRItem
-  const itemsToRepopulate = useMemo(() => {
-    const correctedItems: Record<string, ItemToRepopulate> = {};
-    for (const linkId in initialItemsToRepopulate) {
-      const item = initialItemsToRepopulate[linkId];
-      correctedItems[linkId] = {
-        ...item,
-        oldQRItem: item.newQRItem, // Swap: old becomes new
-        newQRItem: item.oldQRItem, // Swap: new becomes old
-        // Handle plural versions as well if they exist and are used
-        oldQRItems: item.newQRItems, 
-        newQRItems: item.oldQRItems
-      };
-      console.log(`Dirty Fix: Swapped old/new for ${linkId}`);
-    }
-    return correctedItems;
-  }, [initialItemsToRepopulate]);
+  const { itemsToRepopulate, onCloseDialog, onSpinnerChange } = props;
 
   const updatePopulatedProperties = useQuestionnaireStore.use.updatePopulatedProperties();
   const setUpdatableResponseAsPopulated =
