@@ -24,6 +24,7 @@ import useValueSetCodings from '../../../hooks/useValueSetCodings';
 import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithRenderingExtensionsAttribute
@@ -42,13 +43,22 @@ interface ChoiceRadioAnswerValueSetItemProps
     PropsWithIsRepeatedAttribute,
     PropsWithRenderingExtensionsAttribute,
     PropsWithParentIsReadOnlyAttribute,
-    PropsWithFeedbackFromParentAttribute {
+    PropsWithFeedbackFromParentAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
 
 function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps) {
-  const { qItem, qrItem, isRepeated, parentIsReadOnly, feedbackFromParent, onQrItemChange } = props;
+  const {
+    qItem,
+    qrItem,
+    isRepeated,
+    parentIsReadOnly,
+    feedbackFromParent,
+    isTabled,
+    onQrItemChange
+  } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
@@ -114,6 +124,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
         expressionUpdated={calcExpUpdated || dynamicCodingsUpdated || answerOptionsToggleExpUpdated}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
         terminologyError={terminologyError}
+        isTabled={isTabled}
         onCheckedChange={handleChange}
         onClear={handleClear}
       />
@@ -141,6 +152,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
             }
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             terminologyError={terminologyError}
+            isTabled={isTabled}
             onCheckedChange={handleChange}
             onClear={handleClear}
           />

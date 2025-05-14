@@ -18,6 +18,7 @@ interface ChoiceRadioGroupProps {
   readOnly: boolean;
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
+  isTabled: boolean;
   onCheckedChange: (newValue: string) => void;
   onClear: () => void;
   children?: ReactNode; // Mainly used for open-choice openLabel field
@@ -32,6 +33,7 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
     readOnly,
     expressionUpdated,
     answerOptionsToggleExpressionsMap,
+    isTabled,
     onCheckedChange,
     onClear,
     children
@@ -58,10 +60,12 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
           sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
           <StyledRadioGroup
             id={qItem.type + '-' + qItem.linkId}
-            aria-labelledby={'label-' + qItem.linkId}
+            {...(!isTabled
+              ? { 'aria-labelledby': 'label-' + qItem.linkId }
+              : { 'aria-label': qItem.text })}
+            role="group"
             row={orientation === ChoiceItemOrientation.Horizontal}
             sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
-            aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
             onChange={(e) => {
               // If item.readOnly=true, do not allow any changes
               if (readOnly) {
@@ -73,6 +77,7 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
             value={valueRadio}
             data-test="q-item-radio-group">
             <RadioOptionList
+              aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
               options={options}
               readOnly={readOnly}
               fullWidth={inputsFlexGrow}

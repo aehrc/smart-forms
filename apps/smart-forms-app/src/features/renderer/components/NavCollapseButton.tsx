@@ -30,7 +30,11 @@ function NavExpandButton(props: NavExpandButtonProps) {
   const isLgUp = useResponsive({ query: 'up', start: 'lg' });
 
   return desktopNavCollapsed && isLgUp ? (
-    <IconButton onClick={onExpandNav} sx={{ position: 'fixed', bottom: 16, left: 16 }}>
+    <IconButton
+      onClick={onExpandNav}
+      sx={{ position: 'fixed', bottom: 16, left: 16 }}
+      style={{ color: 'black' }}
+      aria-label="Expand">
       <KeyboardDoubleArrowRightIcon fontSize="small" />
     </IconButton>
   ) : null;

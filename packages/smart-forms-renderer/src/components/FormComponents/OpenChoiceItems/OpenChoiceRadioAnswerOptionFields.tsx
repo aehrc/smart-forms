@@ -31,6 +31,7 @@ interface OpenChoiceRadioAnswerOptionFieldsProps {
   readOnly: boolean;
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
+  isTabled: boolean;
   onValueChange: (changedOptionValue: string | null, changedOpenLabelValue: string | null) => void;
   onClear: () => void;
 }
@@ -47,6 +48,7 @@ function OpenChoiceRadioAnswerOptionFields(props: OpenChoiceRadioAnswerOptionFie
     readOnly,
     expressionUpdated,
     answerOptionsToggleExpressionsMap,
+    isTabled,
     onValueChange,
     onClear
   } = props;
@@ -60,6 +62,7 @@ function OpenChoiceRadioAnswerOptionFields(props: OpenChoiceRadioAnswerOptionFie
       readOnly={readOnly}
       expressionUpdated={expressionUpdated}
       answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+      isTabled={isTabled}
       onCheckedChange={(newValue) => onValueChange(newValue, null)}
       onClear={onClear}>
       <RadioButtonWithOpenLabel

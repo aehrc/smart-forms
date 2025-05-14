@@ -29,6 +29,7 @@ import {
 import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithRenderingExtensionsAttribute
@@ -47,13 +48,14 @@ interface OpenChoiceRadioAnswerValueSetItemProps
     PropsWithIsRepeatedAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithRenderingExtensionsAttribute,
-    PropsWithFeedbackFromParentAttribute {
+    PropsWithFeedbackFromParentAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
 
 function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetItemProps) {
-  const { qItem, qrItem, parentIsReadOnly, feedbackFromParent, onQrItemChange } = props;
+  const { qItem, qrItem, parentIsReadOnly, feedbackFromParent, isTabled, onQrItemChange } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
@@ -183,6 +185,7 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
             expressionUpdated={dynamicCodingsUpdated || answerOptionsToggleExpUpdated}
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             terminologyError={terminologyError}
+            isTabled={isTabled}
             onValueChange={handleValueChange}
             onClear={handleClear}
           />

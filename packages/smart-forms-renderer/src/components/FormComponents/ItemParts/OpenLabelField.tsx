@@ -7,10 +7,11 @@ interface OpenLabelFieldProps {
   readOnly: boolean;
   openLabelOptionSelected: boolean;
   onInputChange: (input: string) => unknown;
+  label: string;
 }
 
 function OpenLabelField(props: OpenLabelFieldProps) {
-  const { value, readOnly, openLabelOptionSelected, onInputChange } = props;
+  const { value, readOnly, openLabelOptionSelected, onInputChange, label } = props;
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
@@ -33,6 +34,9 @@ function OpenLabelField(props: OpenLabelFieldProps) {
       slotProps={{
         input: {
           readOnly: fieldReadOnly && readOnlyVisualStyle === 'readonly'
+        },
+        htmlInput: {
+          'aria-label': label
         }
       }}
     />

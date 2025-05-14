@@ -43,7 +43,6 @@ function CheckboxSingle(props: Props) {
         })
       }}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
-      aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
       value={value}
       control={
         <StandardCheckbox

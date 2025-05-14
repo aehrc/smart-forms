@@ -25,6 +25,7 @@ import debounce from 'lodash.debounce';
 import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithRenderingExtensionsAttribute,
@@ -49,7 +50,8 @@ interface OpenChoiceCheckboxAnswerValueSetItemProps
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithRenderingExtensionsAttribute,
-    PropsWithFeedbackFromParentAttribute {
+    PropsWithFeedbackFromParentAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
@@ -63,6 +65,7 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: OpenChoiceCheckboxAnswerVal
     showMinimalView = false,
     parentIsReadOnly,
     feedbackFromParent,
+    isTabled,
     onQrItemChange
   } = props;
 
@@ -185,6 +188,7 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: OpenChoiceCheckboxAnswerVal
           expressionUpdated={dynamicCodingsUpdated || answerOptionsToggleExpUpdated}
           answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
           terminologyError={terminologyError}
+          isTabled={isTabled}
           onOptionChange={handleOptionChange}
           onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
           onOpenLabelInputChange={handleOpenLabelInputChange}
@@ -217,6 +221,7 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: OpenChoiceCheckboxAnswerVal
             expressionUpdated={dynamicCodingsUpdated || answerOptionsToggleExpUpdated}
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             terminologyError={terminologyError}
+            isTabled={isTabled}
             onOptionChange={handleOptionChange}
             onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
             onOpenLabelInputChange={handleOpenLabelInputChange}

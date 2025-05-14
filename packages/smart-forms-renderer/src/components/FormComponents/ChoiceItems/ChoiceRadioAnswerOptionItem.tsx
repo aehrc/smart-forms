@@ -141,6 +141,7 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
           readOnly={readOnly}
           expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
           answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+          isTabled={isTabled}
           onFocusLinkId={() => onFocusLinkId(qItem.linkId)}
           onCheckedChange={handleChange}
           onClear={handleClear}

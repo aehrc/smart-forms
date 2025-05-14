@@ -125,6 +125,7 @@ function StringItem(props: StringItemProps) {
   if (isRepeated) {
     return (
       <StringField
+        qItem={qItem}
         linkId={qItem.linkId}
         itemType={qItem.type}
         input={input}
@@ -151,6 +152,7 @@ function StringItem(props: StringItemProps) {
         labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} parentStyles={parentStyles} />}
         fieldChildren={
           <StringField
+            qItem={qItem}
             linkId={qItem.linkId}
             itemType={qItem.type}
             input={input}

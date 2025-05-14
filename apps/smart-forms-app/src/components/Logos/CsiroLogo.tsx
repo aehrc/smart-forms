@@ -34,6 +34,7 @@ function CsiroLogo() {
       <Box display="flex" justifyContent="center" alignItems="center" gap={1.5}>
         <Typography sx={{ color: 'text.secondary' }}>By</Typography>
         <Box
+          alt="CSIRO Logo"
           component="img"
           maxHeight={35}
           maxWidth={35}

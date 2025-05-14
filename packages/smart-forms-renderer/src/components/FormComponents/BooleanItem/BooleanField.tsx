@@ -69,11 +69,10 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
         }}>
         {booleanAsCheckbox ? (
           <FormControlLabel
-            id={qItem.type + '-' + qItem.linkId}
             disabled={readOnly && readOnlyVisualStyle === 'disabled'}
-            aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
             control={
               <StandardCheckbox
+                id={qItem.type + '-' + qItem.linkId}
                 size="small"
                 checked={selection === 'true'}
                 readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
@@ -94,14 +93,9 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
                     onCheckedChange('true');
                   }
                 }}
-                slotProps={{
-                  input: {
-                    'aria-labelledby': 'label-' + qItem.linkId
-                  }
-                }}
               />
             }
-            label=""
+            label={qItem.text}
           />
         ) : (
           <Box

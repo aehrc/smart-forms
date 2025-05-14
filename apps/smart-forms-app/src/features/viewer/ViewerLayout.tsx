@@ -53,7 +53,7 @@ function ViewerLayout() {
         </Main>
         <BackToTopButton>
           <Fab size="medium" sx={{ backgroundColor: '#D6EBFC' }}>
-            <KeyboardArrowUpIcon />
+            <KeyboardArrowUpIcon aria-label="Arrow Up" />
           </Fab>
         </BackToTopButton>
       </StyledRoot>

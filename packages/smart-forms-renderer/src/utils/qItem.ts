@@ -87,6 +87,18 @@ export function isRepeatItemAndNotCheckbox(qItem: QuestionnaireItem): boolean {
   return !!qItem['repeats'] && !isCheckbox;
 }
 
+/**
+ * Check if qItem is a is a checkbox item
+ *
+ */
+export function isCheckbox(qItem: QuestionnaireItem): boolean {
+  // In reality this should never happen
+  if (!qItem) {
+    return false;
+  }
+  return getChoiceControlType(qItem) === ChoiceItemControl.Checkbox;
+}
+
 export function getXHtmlStringFromQuestionnaire(questionnaire: Questionnaire): string | null {
   const itemControl = questionnaire._title?.extension?.find(
     (extension: Extension) =>

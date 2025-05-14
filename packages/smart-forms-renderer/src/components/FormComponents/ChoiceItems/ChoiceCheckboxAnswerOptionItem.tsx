@@ -23,6 +23,7 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithRenderingExtensionsAttribute,
@@ -43,7 +44,8 @@ interface ChoiceCheckboxAnswerOptionItemProps
     PropsWithRenderingExtensionsAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
-    PropsWithFeedbackFromParentAttribute {
+    PropsWithFeedbackFromParentAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
@@ -53,6 +55,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
     qItem,
     qrItem,
     isRepeated,
+    isTabled,
     renderingExtensions,
     showMinimalView = false,
     parentIsReadOnly,
@@ -120,6 +123,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
           readOnly={readOnly}
           expressionUpdated={answerOptionsToggleExpUpdated}
           answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+          isTabled={isTabled}
           onCheckedChange={handleCheckedChange}
           onClear={handleClear}
         />
@@ -146,6 +150,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
             readOnly={readOnly}
             expressionUpdated={answerOptionsToggleExpUpdated}
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+            isTabled={isTabled}
             onCheckedChange={handleCheckedChange}
             onClear={handleClear}
           />
