@@ -51,10 +51,17 @@ export function hasExtractTemplateExtension(item: QuestionnaireItem | Questionna
     }
 
     if (isTemplateExtensionSlice(slice)) {
-      if (templateCount === 0) {
-        extractTemplate.template = slice;
+      const ref = slice.valueReference?.reference;
+      if (ref && ref.startsWith('#')) {
+        if (templateCount === 0) {
+          extractTemplate.templateId = ref.substring(1); // remove leading '#'
+        }
+        templateCount++;
+      } else {
+        cardinalityWarningStrings.push(
+          `Invalid "template" reference format in ${itemId}: must start with '#'`
+        );
       }
-      templateCount++;
       continue;
     }
 
@@ -68,37 +75,37 @@ export function hasExtractTemplateExtension(item: QuestionnaireItem | Questionna
     seenSliceNames.add(slice.url);
 
     if (isFullUrlExtensionSlice(slice)) {
-      extractTemplate.fullUrl = slice;
+      extractTemplate.fullUrl = slice.valueString;
       continue;
     }
 
     if (isResourceIdExtensionSlice(slice)) {
-      extractTemplate.resourceId = slice;
+      extractTemplate.resourceId = slice.valueString;
       continue;
     }
 
     if (isIfNoneMatchExtensionSlice(slice)) {
-      extractTemplate.ifNoneMatch = slice;
+      extractTemplate.ifNoneMatch = slice.valueString;
       continue;
     }
 
     if (isIfModifiedSinceExtensionSlice(slice)) {
-      extractTemplate.ifModifiedSince = slice;
+      extractTemplate.ifModifiedSince = slice.valueString;
       continue;
     }
 
     if (isIfMatchExtensionSlice(slice)) {
-      extractTemplate.ifMatch = slice;
+      extractTemplate.ifMatch = slice.valueString;
       continue;
     }
 
     if (isIfNoneExistExtensionSlice(slice)) {
-      extractTemplate.ifNoneExist = slice;
+      extractTemplate.ifNoneExist = slice.valueString;
     }
   }
 
-  // extension.template slice is required, and it should only appear once
-  if (!extractTemplate.template) {
+  // Extension.template slice is required, and it should only appear once
+  if (!extractTemplate.templateId) {
     return {
       extractTemplate: null,
       warning: createInvalidWarningIssue(

@@ -43,12 +43,50 @@ export interface IfNoneExistExtensionSlice extends Extension {
   valueString: string;
 }
 
+/**
+ * Represents extracted values from a `templateExtract` extension on a Questionnaire or QuestionnaireItem.
+ */
 export interface ExtractTemplate {
-  template: TemplateExtensionSlice;
-  fullUrl?: FullUrlExtensionSlice;
-  resourceId?: ResourceIdExtensionSlice;
-  ifNoneMatch?: IfNoneMatchExtensionSlice;
-  ifModifiedSince?: IfModifiedSinceExtensionSlice;
-  ifMatch?: IfMatchExtensionSlice;
-  ifNoneExist?: IfNoneExistExtensionSlice;
+  /**
+   * The ID of the referenced contained resource template.
+   * Extracted from the `valueReference.reference` field of the `template` slice.
+   * Must start with `#` (i.e., a local reference).
+   */
+  templateId: string;
+
+  /**
+   * FHIRPath expression string used to populate the `fullUrl` field of a `Bundle.entry`.
+   * Extracted from the `valueString` of the `fullUrl` slice.
+   */
+  fullUrl?: string;
+
+  /**
+   * FHIRPath expression string used to populate the `resource.id` of a resource.
+   * Extracted from the `valueString` of the `resourceId` slice.
+   */
+  resourceId?: string;
+
+  /**
+   * FHIRPath expression string used to populate the `ifNoneMatch` field in the `request` of a `Bundle.entry`.
+   * Extracted from the `valueString` of the `ifNoneMatch` slice.
+   */
+  ifNoneMatch?: string;
+
+  /**
+   * FHIRPath expression string used to populate the `ifModifiedSince` field in the `request` of a `Bundle.entry`.
+   * Extracted from the `valueString` of the `ifModifiedSince` slice.
+   */
+  ifModifiedSince?: string;
+
+  /**
+   * FHIRPath expression string used to populate the `ifMatch` field in the `request` of a `Bundle.entry`.
+   * Extracted from the `valueString` of the `ifMatch` slice.
+   */
+  ifMatch?: string;
+
+  /**
+   * FHIRPath expression string used to populate the `ifNoneExist` field in the `request` of a `Bundle.entry`.
+   * Extracted from the `valueString` of the `ifNoneExist` slice.
+   */
+  ifNoneExist?: string;
 }
