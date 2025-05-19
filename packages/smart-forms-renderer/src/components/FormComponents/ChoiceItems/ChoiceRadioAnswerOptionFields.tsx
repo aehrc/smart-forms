@@ -19,18 +19,19 @@ import React from 'react';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import RadioOptionList from '../ItemParts/RadioOptionList';
-import { StyledRadioGroup, StyledRequiredTypography } from '../Item.styles';
+import { StyledRadioGroup } from '../Item.styles';
 import { getChoiceOrientation } from '../../../utils/choice';
 import Box from '@mui/material/Box';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
-import ClearInputButton from '../ItemParts/ClearInputButton';
-import { useRendererStylingStore } from '../../../stores';
+import Fade from '@mui/material/Fade';
+import Tooltip from '@mui/material/Tooltip';
+import Button from '@mui/material/Button';
+import { grey } from '@mui/material/colors';
 
 interface ChoiceRadioAnswerOptionFieldsProps {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
   valueRadio: string | null;
-  feedback: string;
   readOnly: boolean;
   calcExpUpdated: boolean;
   onCheckedChange: (newValue: string) => void;
@@ -38,57 +39,49 @@ interface ChoiceRadioAnswerOptionFieldsProps {
 }
 
 function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps) {
-  const {
-    qItem,
-    options,
-    valueRadio,
-    feedback,
-    readOnly,
-    calcExpUpdated,
-    onCheckedChange,
-    onClear
-  } = props;
-
-  const inputsFlexGrow = useRendererStylingStore.use.inputsFlexGrow();
-  const hideClearButton = useRendererStylingStore.use.hideClearButton();
+  const { qItem, options, valueRadio, readOnly, calcExpUpdated, onCheckedChange, onClear } = props;
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
   return (
-    <>
-      <Box
-        display="flex"
-        sx={{
-          justifyContent: 'space-between',
-          alignItems: { xs: 'start', sm: 'center' },
-          flexDirection: { xs: 'column', sm: 'row' }
-        }}>
-        <Box
-          display="flex"
-          alignItems="center"
-          sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
-          <StyledRadioGroup
-            id={qItem.type + '-' + qItem.linkId}
-            row={orientation === ChoiceItemOrientation.Horizontal}
-            sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
-            onChange={(e) => onCheckedChange(e.target.value)}
-            value={valueRadio}
-            data-test="q-item-radio-group">
-            <RadioOptionList options={options} readOnly={readOnly} fullWidth={inputsFlexGrow} />
-          </StyledRadioGroup>
+    <Box
+      display="flex"
+      sx={{
+        justifyContent: 'space-between',
+        alignItems: { xs: 'start', sm: 'center' },
+        flexDirection: { xs: 'column', sm: 'row' }
+      }}>
+      <Box display="flex">
+        <StyledRadioGroup
+          id={qItem.linkId}
+          row={orientation === ChoiceItemOrientation.Horizontal}
+          name={qItem.text}
+          onChange={(e) => onCheckedChange(e.target.value)}
+          value={valueRadio}
+          data-test="q-item-radio-group">
+          <RadioOptionList options={options} readOnly={readOnly} />
+        </StyledRadioGroup>
 
-          <Box flexGrow={1} />
+        <Box flexGrow={1} />
 
-          <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-        </Box>
-
-        {hideClearButton ? null : (
-          <ClearInputButton buttonShown={!!valueRadio} readOnly={readOnly} onClear={onClear} />
-        )}
+        <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
       </Box>
-
-      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
-    </>
+      <Fade in={!!valueRadio} timeout={100}>
+        <Tooltip title="Set question as unanswered">
+          <span>
+            <Button
+              sx={{
+                color: grey['500'],
+                '&:hover': { backgroundColor: grey['200'] }
+              }}
+              disabled={readOnly}
+              onClick={onClear}>
+              Clear
+            </Button>
+          </span>
+        </Tooltip>
+      </Fade>
+    </Box>
   );
 }
 

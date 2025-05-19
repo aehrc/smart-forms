@@ -19,7 +19,7 @@ import React from 'react';
 import Typography from '@mui/material/Typography';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import { StyledRadioGroup, StyledRequiredTypography } from '../Item.styles';
+import { StyledRadioGroup } from '../Item.styles';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { StyledAlert } from '../../Alert.styles';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
@@ -27,14 +27,15 @@ import { getChoiceOrientation } from '../../../utils/choice';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import Box from '@mui/material/Box';
 import RadioOptionList from '../ItemParts/RadioOptionList';
-import ClearInputButton from '../ItemParts/ClearInputButton';
-import { useRendererStylingStore } from '../../../stores';
+import Tooltip from '@mui/material/Tooltip';
+import Button from '@mui/material/Button';
+import { grey } from '@mui/material/colors';
+import Fade from '@mui/material/Fade';
 
 interface ChoiceRadioAnswerValueSetFieldsProps {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
   valueRadio: string | null;
-  feedback: string;
   readOnly: boolean;
   calcExpUpdated: boolean;
   terminologyError: TerminologyError;
@@ -47,7 +48,6 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
     qItem,
     options,
     valueRadio,
-    feedback,
     readOnly,
     calcExpUpdated,
     terminologyError,
@@ -55,47 +55,48 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
     onClear
   } = props;
 
-  const inputsFlexGrow = useRendererStylingStore.use.inputsFlexGrow();
-  const hideClearButton = useRendererStylingStore.use.hideClearButton();
-
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
   if (options.length > 0) {
     return (
-      <>
-        <Box
-          display="flex"
-          sx={{
-            justifyContent: 'space-between',
-            alignItems: { xs: 'start', sm: 'center' },
-            flexDirection: { xs: 'column', sm: 'row' }
-          }}>
-          <Box
-            display="flex"
-            alignItems="center"
-            sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
-            <StyledRadioGroup
-              id={qItem.type + '-' + qItem.linkId}
-              row={orientation === ChoiceItemOrientation.Horizontal}
-              sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
-              onChange={(e) => onCheckedChange(e.target.value)}
-              value={valueRadio}
-              data-test="q-item-radio-group">
-              <RadioOptionList options={options} readOnly={readOnly} fullWidth={inputsFlexGrow} />
-            </StyledRadioGroup>
+      <Box
+        display="flex"
+        sx={{
+          justifyContent: 'space-between',
+          alignItems: { xs: 'start', sm: 'center' },
+          flexDirection: { xs: 'column', sm: 'row' }
+        }}>
+        <Box display="flex">
+          <StyledRadioGroup
+            id={qItem.linkId}
+            row={orientation === ChoiceItemOrientation.Horizontal}
+            name={qItem.text}
+            onChange={(e) => onCheckedChange(e.target.value)}
+            value={valueRadio}
+            data-test="q-item-radio-group">
+            <RadioOptionList options={options} readOnly={readOnly} />
+          </StyledRadioGroup>
 
-            <Box flexGrow={1} />
+          <Box flexGrow={1} />
 
-            <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-          </Box>
-
-          {hideClearButton ? null : (
-            <ClearInputButton buttonShown={!!valueRadio} readOnly={readOnly} onClear={onClear} />
-          )}
+          <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
         </Box>
-
-        {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
-      </>
+        <Fade in={!!valueRadio} timeout={100}>
+          <Tooltip title="Set question as unanswered">
+            <span>
+              <Button
+                sx={{
+                  color: grey['500'],
+                  '&:hover': { backgroundColor: grey['200'] }
+                }}
+                disabled={readOnly}
+                onClick={onClear}>
+                Clear
+              </Button>
+            </span>
+          </Tooltip>
+        </Fade>
+      </Box>
     );
   }
 
@@ -103,7 +104,7 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
     return (
       <StyledAlert color="error">
         <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-        <Typography>
+        <Typography variant="subtitle2">
           There was an error fetching options from the terminology server for{' '}
           {terminologyError.answerValueSet}
         </Typography>
@@ -114,7 +115,9 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
   return (
     <StyledAlert color="error">
       <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-      <Typography>Unable to fetch options from the questionnaire or launch context</Typography>
+      <Typography variant="subtitle2">
+        Unable to fetch options from the questionnaire or launch context
+      </Typography>
     </StyledAlert>
   );
 }

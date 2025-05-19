@@ -128,7 +128,12 @@ function SaveProgressAction(props: SaveProgressSpeedDialActionProps) {
     );
   }
 
-  const buttonIsDisabled = !smartClient || formChangesHistory.length === 0 || isSaving;
+  const buttonIsDisabled =
+    !smartClient ||
+    formChangesHistory.length === 0 ||
+    !updatableResponse.item ||
+    updatableResponse.item.length === 0 ||
+    isSaving;
 
   return (
     <RendererOperationItem

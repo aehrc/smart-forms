@@ -73,6 +73,13 @@ export function findInAnswerOptions(
           }
         };
       }
+
+      // handle case where valueCoding.code is not present
+      if (valueInString === option.valueCoding.display) {
+        return {
+          valueCoding: option.valueCoding
+        };
+      }
     }
 
     if (option.valueString) {

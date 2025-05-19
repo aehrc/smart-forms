@@ -1,12 +1,9 @@
-name: Smart Forms Docs + Storybook Deployment Workflow
+name: Smart Forms Docs Deployment Workflow
 
 on:
   push:
     # Only run this workflow when changes are pushed to the main branch
     branches: ['main']
-
-env:
-  VITE_PRESERVE_SYM_LINKS: true
 
 permissions:
   contents: read
@@ -20,10 +17,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Use Node.js 18.x
+      - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
           cache: npm
 
       - name: Configure AWS credentials
@@ -40,34 +37,3 @@ jobs:
 
       - name: Upload static Docusaurus site to S3
         run: aws s3 sync documentation/build s3://smart-forms-docs/docs --cache-control no-cache
-
-  deploy-storybook-s3:
-    name: Deploy Storybook to S3
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Use Node.js 18.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-          cache: npm
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::209248795938:role/SmartFormsReactAppDeployment
-          aws-region: ap-southeast-2
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build application
-        run: npm run build-storybook -w packages/smart-forms-renderer
-
-      - name: Upload static Storybook site to S3
-        run: aws s3 sync packages/smart-forms-renderer/storybook-static s3://smart-forms-storybook/storybook

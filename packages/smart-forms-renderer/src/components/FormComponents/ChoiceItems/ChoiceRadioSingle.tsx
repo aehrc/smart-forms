@@ -23,15 +23,13 @@ interface ChoiceRadioSingleProps {
   value: string;
   label: string;
   readOnly: boolean;
-  fullWidth: boolean;
 }
 
 function ChoiceRadioSingle(props: ChoiceRadioSingleProps) {
-  const { value, label, readOnly, fullWidth } = props;
+  const { value, label, readOnly } = props;
 
   return (
     <FormControlLabel
-      sx={{ width: fullWidth ? '100%' : 'unset' }}
       disabled={readOnly}
       value={value}
       control={<Radio size="small" />}

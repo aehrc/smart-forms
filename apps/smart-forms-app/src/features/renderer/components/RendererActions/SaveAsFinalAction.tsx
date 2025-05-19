@@ -54,7 +54,11 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
   }
 
   const responseWasSaved = !!updatableResponse.authored && !!updatableResponse.author;
-  const buttonIsDisabled = !responseWasSaved && formChangesHistory.length === 0;
+  const buttonIsDisabled =
+    !responseWasSaved &&
+    (formChangesHistory.length === 0 ||
+      !updatableResponse.item ||
+      updatableResponse.item.length === 0);
 
   const writeBackEnabled = !!targetStructureMap;
 

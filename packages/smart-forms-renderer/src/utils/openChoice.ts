@@ -106,10 +106,21 @@ export function updateOpenLabelAnswer(
   }
 
   // New open label answer is different from old open label answer, update it
-  oldOpenLabelAnswer.valueString = changedOpenLabelValue;
+  const updatedAnswers = oldQrItem.answer?.map((answer) => {
+    const { valueString } = answer;
+    if (valueString === oldOpenLabelAnswer.valueString) {
+      return {
+        ...answer,
+        valueString: changedOpenLabelValue // Update the valueString
+      };
+    }
+
+    return answer; // Keep the other answers unchanged
+  });
+
   return {
     ...oldQrItem,
-    answer: oldQrItem.answer
+    answer: updatedAnswers
   };
 }
 
