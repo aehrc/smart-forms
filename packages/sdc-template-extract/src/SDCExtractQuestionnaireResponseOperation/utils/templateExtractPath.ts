@@ -51,7 +51,9 @@ export function createTemplateExtractPathMap(
   for (const templateExtractEntryPath of templateExtractPathMap.keys()) {
     const evaluateResult = fhirPathEvaluate({
       fhirData: resource,
-      path: templateExtractEntryPath
+      path: templateExtractEntryPath,
+      envVars: {},
+      warnings: walkTemplateWarnings
     });
     const subtree = evaluateResult[0];
     if (typeof subtree === 'object' && subtree !== null) {
@@ -143,15 +145,15 @@ export function logTemplateExtractPaths(
 ) {
   const table: {
     entryPath: string;
-    contextPath: string;
-    contextExpression: string;
-    valuePath: string;
-    valueExpression: string;
+    contextPath: string | null;
+    contextExpression: string | null;
+    valuePath: string | null;
+    valueExpression: string | null;
   }[] = [];
 
   for (const [entryPath, { contextPathTuple, valuePathMap }] of templateExtractPathMap.entries()) {
-    const contextLoc = contextPathTuple?.[0] ?? '';
-    const contextExpr = contextPathTuple?.[1] ?? '';
+    const contextLoc = contextPathTuple?.[0] ?? null;
+    const contextExpr = contextPathTuple?.[1] ?? null;
 
     for (const [valuePath, valueExpr] of valuePathMap.entries()) {
       table.push({
@@ -168,8 +170,8 @@ export function logTemplateExtractPaths(
         entryPath: entryPath,
         contextPath: contextLoc,
         contextExpression: contextExpr,
-        valuePath: '',
-        valueExpression: ''
+        valuePath: null,
+        valueExpression: null
       });
     }
   }

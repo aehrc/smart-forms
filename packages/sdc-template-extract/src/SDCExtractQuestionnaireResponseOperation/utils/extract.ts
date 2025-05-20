@@ -1,6 +1,5 @@
 import { InputParameters } from '../interfaces/inputParameters.interface';
 import { OutputParameters } from '../interfaces/outputParameters.interface';
-import type { DebugInfo } from '../types';
 import {
   FetchResourceCallback,
   FetchResourceRequestConfig
@@ -12,6 +11,11 @@ import { createErrorOutcome, createInvalidWarningIssue } from './operationOutcom
 import { collectTemplateExtractRefs } from './templateExtractRef';
 import { createContainedTemplateMap } from './templateMap';
 import { populateIntoTemplate } from './populateIntoTemplate';
+import { allocateIdsForExtract } from './extractAllocateId';
+
+// FIXME resolve %resource.id ??
+// FIXME resolve %resource.authored ??
+// FIXME resolve %resource.author ??
 
 export async function extract(
   parameters: InputParameters | QuestionnaireResponse,
@@ -37,27 +41,8 @@ export async function extract(
     return questionnaire;
   }
 
-  const debugInfo: DebugInfo = {
-    contentAnalysis: {
-      detectedTemplates: [],
-      confidence: 'Valid',
-      patterns: []
-    },
-    fieldMapping: {
-      mappedFields: {},
-      assumptions: [],
-      alternatives: []
-    },
-    valueProcessing: {
-      values: {},
-      transformations: [],
-      qualityChecks: []
-    },
-    resultGeneration: {
-      status: 'Pending',
-      observations: []
-    }
-  };
+  // set extractAllocateIds to UUIDs
+  const extractAllocateIdMap = allocateIdsForExtract(questionnaire);
 
   // Validation
   if (!questionnaire.item || questionnaire.item.length === 0) {
@@ -98,7 +83,7 @@ export async function extract(
   );
 
   // Populate answers from questionnaireResponse into contained templates
-  populateIntoTemplate(questionnaireResponse, containedTemplateMap);
+  populateIntoTemplate(questionnaireResponse, containedTemplateMap, extractAllocateIdMap);
 
   return Promise.resolve(createErrorOutcome(`Not implemented`));
 }

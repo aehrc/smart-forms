@@ -98,7 +98,9 @@ function addTemplateExtractContexts(
       // e.g. Patient.identifier[0].extension[0]
       templateExtractPathMap.set(currentPath, {
         contextPathTuple: [logicalPath, templateExtractContext.valueString],
-        valuePathMap: new Map<string, string>()
+        contextResult: [],
+        valuePathMap: new Map<string, string>(),
+        valueResult: []
       });
     } else {
       walkTemplateWarnings.push(
@@ -222,7 +224,9 @@ function addTemplateExtractContextValues(
       } else {
         templateExtractPathMap.set(currentPath, {
           contextPathTuple: null,
-          valuePathMap: new Map<string, string>([[logicalPath, templateExtractValue.valueString]])
+          contextResult: null,
+          valuePathMap: new Map<string, string>([[logicalPath, templateExtractValue.valueString]]),
+          valueResult: []
         });
       }
     } else {
@@ -352,7 +356,9 @@ function addTemplateExtractStandaloneValues(
       // e.g. Patient.identifier[0].extension[0]
       templateExtractPathMap.set(currentPath, {
         contextPathTuple: null,
-        valuePathMap: new Map<string, string>([[logicalPath, templateExtractValue.valueString]])
+        contextResult: null,
+        valuePathMap: new Map<string, string>([[logicalPath, templateExtractValue.valueString]]),
+        valueResult: []
       });
     } else {
       walkTemplateWarnings.push(

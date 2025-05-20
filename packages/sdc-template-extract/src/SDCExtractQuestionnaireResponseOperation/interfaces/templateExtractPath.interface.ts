@@ -32,6 +32,7 @@ export interface TemplateDetails {
    */
   targetQRItemFhirPath?: string;
 }
+
 export interface TemplateDetails {
   templateResource: FhirResource;
   targetLinkId: string;
@@ -55,4 +56,14 @@ export interface TemplateExtractPath {
    * the logical path defined by the `templateExtractValue` (e.g., `Patient.nationalId`).
    */
   valuePathMap: Map<string, string>;
+
+  /**
+   * Result of evaluating the context path; null if no context path exists.
+   */
+  contextResult: any[] | null;
+
+  /**
+   * Result of evaluating the value path(s); initially empty.
+   */
+  valueResult: any[];
 }
