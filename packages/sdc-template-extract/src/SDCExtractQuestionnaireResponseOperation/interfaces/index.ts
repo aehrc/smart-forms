@@ -1,1 +1,1 @@
-export { SampleInterface } from './sample.interface';
+// export { SampleInterface } from './sample.interface';
