@@ -1,1 +1,1 @@
-export { sampleFunction } from './sample';
+export { extract } from './extract';

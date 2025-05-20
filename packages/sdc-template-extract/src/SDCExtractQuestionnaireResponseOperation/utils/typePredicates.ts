@@ -29,7 +29,7 @@ import type {
   IfNoneMatchExtensionSlice,
   ResourceIdExtensionSlice,
   TemplateExtensionSlice
-} from '../interfaces/templateExtract.interface';
+} from '../interfaces/templateExtractReference.interface';
 
 export function isQuestionnaireResponseParameter(
   parameter: ParametersParameter

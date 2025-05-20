@@ -46,7 +46,7 @@ export interface IfNoneExistExtensionSlice extends Extension {
 /**
  * Represents extracted values from a `templateExtract` extension on a Questionnaire or QuestionnaireItem.
  */
-export interface ExtractTemplate {
+export interface TemplateExtractReference {
   /**
    * The ID of the referenced contained resource template.
    * Extracted from the `valueReference.reference` field of the `template` slice.
