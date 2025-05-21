@@ -199,6 +199,10 @@ build: {
 resolve: { preserveSymlinks: false }
 ```
 
+
+## Dependency notes
+- `date-fns` with version "^4.1.0" in `apps/smart-forms-app/package.json` is not used in the source code. It is used to prevent CommonJS issues when building the Smart Forms app in docker.
+
 ## Common issues
 NPM workspaces can be a bit inconsistent at times, so it is a good idea to run `npm install` in the directory you are working on to ensure dependencies are installed correctly.
 If `npm install` doesn't resolve the issue, try deleting the `node_modules` directory (or `package-lock.json` at times) and running `npm install` again.
