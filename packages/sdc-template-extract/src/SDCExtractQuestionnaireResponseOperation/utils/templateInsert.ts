@@ -57,6 +57,12 @@ export function insertValuesToTemplate(
     }
   }
 
+  // Remove resource.id from mutatedTemplate
+  // Refer https://build.fhir.org/ig/HL7/sdc/extraction.html#template-based-extraction step 4
+  if (mutatedTemplate.id) {
+    delete mutatedTemplate.id;
+  }
+
   return mutatedTemplate;
 }
 
@@ -110,6 +116,11 @@ function insertValueAtPath(
     throw new Error(
       `Invalid final segment from ${fullPath}, value is undefined: ${finalSegment} from insertValueAtPath().`
     );
+  }
+
+  // valueToInsert is undefined, skip assignment
+  if (valueToInsert === undefined) {
+    return;
   }
 
   // Assign value at the resolved location

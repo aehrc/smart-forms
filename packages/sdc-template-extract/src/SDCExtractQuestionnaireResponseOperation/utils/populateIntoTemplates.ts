@@ -1,18 +1,16 @@
 import { TemplateDetails } from '../interfaces/templateExtractPath.interface';
-import { OperationOutcomeIssue, QuestionnaireResponse } from 'fhir/r4';
+import { FhirResource, OperationOutcomeIssue, QuestionnaireResponse } from 'fhir/r4';
 import { createTemplateExtractPathMap } from './templateExtractPath';
 import { evaluateTemplateExtractPaths } from './evaluateTemplateExtractPath';
 import { insertValuesToTemplate } from './templateInsert';
 
-export function populateIntoTemplate(
+export function populateIntoTemplates(
   questionnaireResponse: QuestionnaireResponse,
   templateMap: Map<string, TemplateDetails>,
-  extractAllocateIdMap: Map<string, string>
-) {
+  extractAllocateIds: Record<string, string>
+): Map<string, FhirResource> {
+  const extractedResourceMap: Map<string, FhirResource> = new Map<string, FhirResource>();
   const populateIntoTemplateWarnings: OperationOutcomeIssue[] = [];
-
-  // Convert extractAllocateIdMap into a Record<string, string>
-  const extractAllocateIds = Object.fromEntries(extractAllocateIdMap);
 
   for (const [templateId, templateDetails] of templateMap.entries()) {
     const { templateResource, targetQRItemFhirPath } = templateDetails;
@@ -33,6 +31,9 @@ export function populateIntoTemplate(
       );
     }
 
-    insertValuesToTemplate(templateResource, templateExtractPathMap);
+    const extractResource = insertValuesToTemplate(templateResource, templateExtractPathMap);
+    extractedResourceMap.set(templateId, extractResource);
   }
+
+  return extractedResourceMap;
 }

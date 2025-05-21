@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { Questionnaire } from 'fhir/r4';
 
-export function allocateIdsForExtract(questionnaire: Questionnaire): Map<string, string> {
+export function allocateIdsForExtract(questionnaire: Questionnaire): Record<string, string> {
   const extractAllocateIds = getExtractAllocateIds(questionnaire);
   const extractAllocateIdMap = new Map<string, string>();
 
@@ -9,7 +9,8 @@ export function allocateIdsForExtract(questionnaire: Questionnaire): Map<string,
     extractAllocateIdMap.set(extractAllocateId, uuidv4());
   }
 
-  return extractAllocateIdMap;
+  // Convert extractAllocateIdMap into a Record<string, string>
+  return Object.fromEntries(extractAllocateIdMap);
 }
 
 /**

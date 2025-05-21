@@ -10,8 +10,9 @@ import { fetchQuestionnaire } from './fetchQuestionnaire';
 import { createErrorOutcome, createInvalidWarningIssue } from './operationOutcome';
 import { collectTemplateExtractRefs } from './templateExtractRef';
 import { createContainedTemplateMap } from './templateMap';
-import { populateIntoTemplate } from './populateIntoTemplate';
+import { populateIntoTemplates } from './populateIntoTemplates';
 import { allocateIdsForExtract } from './extractAllocateId';
+import { buildTransactionBundle } from './buildBundle';
 
 // FIXME resolve %resource.id ??
 // FIXME resolve %resource.authored ??
@@ -42,7 +43,7 @@ export async function extract(
   }
 
   // set extractAllocateIds to UUIDs
-  const extractAllocateIdMap = allocateIdsForExtract(questionnaire);
+  const extractAllocateIds = allocateIdsForExtract(questionnaire);
 
   // Validation
   if (!questionnaire.item || questionnaire.item.length === 0) {
@@ -83,7 +84,21 @@ export async function extract(
   );
 
   // Populate answers from questionnaireResponse into contained templates
-  populateIntoTemplate(questionnaireResponse, containedTemplateMap, extractAllocateIdMap);
+  const extractedResourceMap = populateIntoTemplates(
+    questionnaireResponse,
+    containedTemplateMap,
+    extractAllocateIds
+  );
+
+  const bundle = buildTransactionBundle(
+    extractedResourceMap,
+    containedTemplateMap,
+    extractAllocateIds
+  );
+
+  console.log(bundle);
+
+  // TODO Collate warnings and all debug material
 
   return Promise.resolve(createErrorOutcome(`Not implemented`));
 }

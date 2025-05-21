@@ -67,9 +67,11 @@ export function createContainedTemplateMap(
           targetLinkId
         );
 
-        if (targetQItem) {
+        const templateExtractReference = linkIdToTemplateExtractRefMap.get(targetLinkId);
+        if (targetQItem && templateExtractReference) {
           templateMap.set(containedResource.id, {
             templateResource: containedResource,
+            templateExtractReference: templateExtractReference,
             targetLinkId: targetLinkId,
             targetQItem: targetQItem,
             ...(targetQRItem && { targetQRItem }),
