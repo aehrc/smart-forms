@@ -42,28 +42,51 @@ export interface TemplateDetails {
 }
 
 /**
+ * Result of evaluating the `contextExpression` from the `templateExtractContext` extension.
+ * e.g. `{
+ *   "linkId": "name",
+ *   "text": "Name",
+ *   "item": [
+ *     {
+ *       "linkId": "family",
+ *       "text": "Family/Surname",
+ *       "answer": [
+ *         {
+ *           "valueString": "Doe"
+ *         }
+ *       ]
+ *     }
+ *   ]
+ * }`
+ */
+export interface TemplateExtractContextEvaluation {
+  contextExpression: string;
+  contextResult: any;
+}
+
+/**
+ * Result of evaluating a `valueExpression` from the `templateExtractValue` extension.
+ * e.g. `"item.where(linkId = 'family').answer.value.first()"` → `"Doe"`
+ */
+export interface TemplateExtractValueEvaluation {
+  valueExpression: string;
+  valueResult: any;
+}
+
+/**
  * Represents the full extraction mapping for a single entry in a template, including both context and value extraction paths and expressions.
  */
 export interface TemplateExtractPath {
   /**
-   * A tuple of [contextPath, valuePath] for extractions that use context;
+   * A tuple of [contextPath, {contextExpression, contextResult}] from the `templateExtractContext` extension.
+   * e.g. `<"Patient.name[0].extension[0]", "	item.where(linkId = 'name')">`
    * `null` when the extraction is based on a standalone value path only.
    */
-  contextPathTuple: [string, string] | null;
+  contextPathTuple: [string, TemplateExtractContextEvaluation] | null;
 
   /**
-   * Maps the absolute FHIR path (e.g., `Patient.identifier[0].extension[1]`) to
-   * the logical path defined by the `templateExtractValue` (e.g., `Patient.nationalId`).
+   * A map of <valuePath, {valueExpression, valueResult}> pairs from the `templateExtractValue` extension.
+   * e.g. `<"Patient.name[0]._family.extension[0]", "item.where(linkId = 'family').answer.value.first()">`
    */
-  valuePathMap: Map<string, string>;
-
-  /**
-   * Result of evaluating the context path; null if no context path exists.
-   */
-  contextResult: any[] | null;
-
-  /**
-   * Result of evaluating the value path(s); initially empty.
-   */
-  valueResult: any[];
+  valuePathMap: Map<string, TemplateExtractValueEvaluation>;
 }

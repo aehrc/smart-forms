@@ -104,78 +104,10 @@ function flattenValuePathMaps(
   const valuePathMap = new Map<string, string>();
 
   for (const templateExtractPath of templateExtractPaths.values()) {
-    for (const [logicalPath, value] of templateExtractPath.valuePathMap.entries()) {
-      valuePathMap.set(logicalPath, value);
+    for (const [logicalPath, valueEvaluation] of templateExtractPath.valuePathMap.entries()) {
+      valuePathMap.set(logicalPath, valueEvaluation.valueExpression);
     }
   }
 
   return valuePathMap;
-}
-
-/**
- * Logs a summary table of all extractable context and value paths from a given template.
- * Useful for debugging or inspecting the structure of a `TemplateExtractPath` map.
- *
- * Each row of the table includes:
- * - the entry path (FHIRPath to the context element),
- * - the context location and expression,
- * - the value path and corresponding extract expression.
- *
- * @param {string} templateId - The identifier for the template being logged.
- * @param {Map<string, TemplateExtractPath>} templateExtractPathMap - A map of FHIRPath entries to `TemplateExtractPath` objects, representing extract contexts and value expressions.
- *
- * @example
- * Example output:
- *
- * ```
- * 🔢 Template Extract Paths for: PatientTemplate
- *
- * | entryPath              | contextPath                       | contextExpression                                  | valuePath                                 | valueExpression                                                      |
- * |------------------------|-----------------------------------|----------------------------------------------------|-------------------------------------------|----------------------------------------------------------------------|
- * | Patient.identifier[0]  | Patient.identifier[0].extension[0]| item.where(linkId = 'ihi').answer.value            | Patient.identifier[0]._value.extension[0] | first()                                                              |
- * | Patient.name[0]        | Patient.name[0].extension[0]      | item.where(linkId = 'name')                        | Patient.name[0]._text.extension[0]        | item.where(linkId='given' or linkId='family').answer.value.join(' ') |
- * | Patient.name[0]        | Patient.name[0].extension[0]      | item.where(linkId = 'name')                        | Patient.name[0]._family.extension[0]      | item.where(linkId = 'family').answer.value.first()                   |
- * | Patient.telecom[0]     | Patient.telecom[0].extension[0]   | item.where(linkId = 'mobile-phone').answer.value   | Patient.telecom[0]._value.extension[0]    | first()                                                              |
- * | Patient._gender        | <empty string>                    | <empty string>                                     | Patient._gender.extension[0]              | item.where(linkId = 'gender').answer.value.first().code              |
- * ```
- */
-export function logTemplateExtractPaths(
-  templateId: string,
-  templateExtractPathMap: Map<string, TemplateExtractPath>
-) {
-  const table: {
-    entryPath: string;
-    contextPath: string | null;
-    contextExpression: string | null;
-    valuePath: string | null;
-    valueExpression: string | null;
-  }[] = [];
-
-  for (const [entryPath, { contextPathTuple, valuePathMap }] of templateExtractPathMap.entries()) {
-    const contextLoc = contextPathTuple?.[0] ?? null;
-    const contextExpr = contextPathTuple?.[1] ?? null;
-
-    for (const [valuePath, valueExpr] of valuePathMap.entries()) {
-      table.push({
-        entryPath: entryPath,
-        contextPath: contextLoc,
-        contextExpression: contextExpr,
-        valuePath: valuePath,
-        valueExpression: valueExpr
-      });
-    }
-
-    if (valuePathMap.size === 0) {
-      table.push({
-        entryPath: entryPath,
-        contextPath: contextLoc,
-        contextExpression: contextExpr,
-        valuePath: null,
-        valueExpression: null
-      });
-    }
-  }
-
-  console.log(`\n🔢Template Extract Paths for: ${templateId}`);
-  console.table(table);
 }

@@ -1,6 +1,9 @@
 import type { OperationOutcomeIssue } from 'fhir/r4';
 import { createInvalidWarningIssue } from './operationOutcome';
-import type { TemplateExtractPath } from '../interfaces/templateExtractPath.interface';
+import type {
+  TemplateExtractPath,
+  TemplateExtractValueEvaluation
+} from '../interfaces/templateExtractPath.interface';
 
 /* TemplateExtractContext */
 
@@ -97,10 +100,11 @@ function addTemplateExtractContexts(
     if (templateExtractContext?.valueString) {
       // e.g. Patient.identifier[0].extension[0]
       templateExtractPathMap.set(currentPath, {
-        contextPathTuple: [logicalPath, templateExtractContext.valueString],
-        contextResult: [],
-        valuePathMap: new Map<string, string>(),
-        valueResult: []
+        contextPathTuple: [
+          logicalPath,
+          { contextExpression: templateExtractContext.valueString, contextResult: null }
+        ],
+        valuePathMap: new Map<string, TemplateExtractValueEvaluation>()
       });
     } else {
       walkTemplateWarnings.push(
@@ -216,17 +220,21 @@ function addTemplateExtractContextValues(
     const logicalPath = `${childPath}[${templateExtractValueIndex}]`;
     if (templateExtractValue?.valueString) {
       // e.g. Patient.identifier[0].extension[0]
+      const valueEvaluation: TemplateExtractValueEvaluation = {
+        valueExpression: templateExtractValue.valueString,
+        valueResult: null
+      };
       if (templateExtractPathMap.has(templateExtractEntryPath)) {
         const templateExtractPath = templateExtractPathMap.get(templateExtractEntryPath);
         if (templateExtractPath) {
-          templateExtractPath.valuePathMap.set(logicalPath, templateExtractValue.valueString);
+          templateExtractPath.valuePathMap.set(logicalPath, valueEvaluation);
         }
       } else {
         templateExtractPathMap.set(currentPath, {
           contextPathTuple: null,
-          contextResult: null,
-          valuePathMap: new Map<string, string>([[logicalPath, templateExtractValue.valueString]]),
-          valueResult: []
+          valuePathMap: new Map<string, TemplateExtractValueEvaluation>([
+            [logicalPath, valueEvaluation]
+          ])
         });
       }
     } else {
@@ -356,9 +364,9 @@ function addTemplateExtractStandaloneValues(
       // e.g. Patient.identifier[0].extension[0]
       templateExtractPathMap.set(currentPath, {
         contextPathTuple: null,
-        contextResult: null,
-        valuePathMap: new Map<string, string>([[logicalPath, templateExtractValue.valueString]]),
-        valueResult: []
+        valuePathMap: new Map<string, TemplateExtractValueEvaluation>([
+          [logicalPath, { valueExpression: templateExtractValue.valueString, valueResult: null }]
+        ])
       });
     } else {
       walkTemplateWarnings.push(
