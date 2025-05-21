@@ -2,12 +2,13 @@ name: Build and Push Docker Image
 
 on:
   push:
-    branches-ignore:
-      - main
-      - alpha
+#    branches-ignore:
+#      - main
+#      - alpha
     paths:
       - 'apps/smart-forms-app/Dockerfile' # Trigger only if Dockerfile is modified
       - 'apps/smart-forms-app/src/**' # Trigger if anything in the src folder is changed.
+      - 'apps/smart-forms-app/default.conf' # Trigger if the nginx config has changed.
 
 jobs:
   build_and_push:
@@ -37,11 +38,13 @@ jobs:
           # list of Docker images to build
           images: ghcr.io/${{ github.repository }}/smart-forms
           # generate Docker tags based on Git refs
+          # set latest tag for default branch
           tags: |
             type=ref,event=branch
             type=ref,event=tag
             type=sha,prefix=sha-
             type=semver,pattern={{version}}
+            type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
