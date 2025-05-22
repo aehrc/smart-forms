@@ -1,6 +1,5 @@
 import type { InputParameters } from '../interfaces/inputParameters.interface';
-import type { TemplateExtractDebugInfo } from '../interfaces';
-import type { OutputParameters } from '../interfaces';
+import type { OutputParameters, TemplateExtractDebugInfo } from '../interfaces';
 import type {
   FetchResourceCallback,
   FetchResourceRequestConfig

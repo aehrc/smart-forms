@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { Extension, ParametersParameter } from 'fhir/r4';
+import type { Coding, Extension, ParametersParameter } from 'fhir/r4';
 import type {
   CustomQuestionnaireParameter,
   QuestionnaireResponseParameter
@@ -94,4 +94,12 @@ export function isIfNoneExistExtensionSlice(
   extension: Extension
 ): extension is IfNoneExistExtensionSlice {
   return extension.url === 'ifNoneExist' && !!extension.valueString;
+}
+
+export function valueIsCoding(value: any): value is Coding {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    ('system' in value || 'code' in value || 'display' in value)
+  );
 }

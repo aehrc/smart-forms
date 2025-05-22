@@ -1,6 +1,7 @@
 import type { OperationOutcomeIssue, QuestionnaireResponse } from 'fhir/r4';
 import { fhirPathEvaluate } from './fhirpathEvaluate';
 import type { TemplateExtractPath } from '../interfaces/templateExtractPath.interface';
+import { createFhirPathContext } from './createFhirPathContext';
 
 export function evaluateTemplateExtractPaths(
   questionnaireResponse: QuestionnaireResponse,
@@ -12,13 +13,15 @@ export function evaluateTemplateExtractPaths(
   const { contextPathTuple, valuePathMap } = templateExtractPath;
   const contextExpression = contextPathTuple?.[1].contextExpression ?? null;
 
+  const fhirPathContext = createFhirPathContext(questionnaireResponse, extractAllocateIds);
+
   // Context path exists, use contextExpression to frame evaluation scope
   if (contextExpression) {
     const combinedContextPath = getCombinedExpression(targetQRItemFhirPath, contextExpression);
     const contextResult = getTemplateExtractValueResult({
       fhirDataToEvaluate: questionnaireResponse,
       valueExpression: combinedContextPath,
-      extractAllocateIds: extractAllocateIds,
+      fhirPathContext: fhirPathContext,
       warnings: populateIntoTemplateWarnings
     });
 
@@ -27,7 +30,7 @@ export function evaluateTemplateExtractPaths(
       const valueResult = getTemplateExtractValueResult({
         fhirDataToEvaluate: contextResult,
         valueExpression: valueEvaluation.valueExpression,
-        extractAllocateIds: extractAllocateIds,
+        fhirPathContext: fhirPathContext,
         warnings: populateIntoTemplateWarnings
       });
 
@@ -49,7 +52,7 @@ export function evaluateTemplateExtractPaths(
     const valueResult = getTemplateExtractValueResult({
       fhirDataToEvaluate: questionnaireResponse,
       valueExpression: combinedValueExpression,
-      extractAllocateIds: extractAllocateIds,
+      fhirPathContext: fhirPathContext,
       warnings: populateIntoTemplateWarnings
     });
 
@@ -68,8 +71,8 @@ export interface TemplateExtractValueParams {
   /** The value expression to evaluate (FHIRPath or `%<key>` reference) - equivalent to `path` from fhirpath.evaluate(). */
   valueExpression: string;
 
-  /** Map of allocated IDs for substitution in expressions. */
-  extractAllocateIds: Record<string, string>;
+  /** FHIRPath context for evaluation - equivalent to `envVars` from fhirpath.evaluate(). */
+  fhirPathContext: Record<string, any>;
 
   /** Collector for any evaluation warnings or issues. */
   warnings: OperationOutcomeIssue[];
@@ -77,25 +80,18 @@ export interface TemplateExtractValueParams {
 
 /**
  * Evaluates a value expression for template extraction.
- *
- * Supports `%<key>` substitution using `extractAllocateIds`, or full FHIRPath evaluation.
  */
 function getTemplateExtractValueResult(
   templateExtractValueParams: TemplateExtractValueParams
 ): any {
-  const { fhirDataToEvaluate, valueExpression, extractAllocateIds, warnings } =
+  const { fhirDataToEvaluate, valueExpression, fhirPathContext, warnings } =
     templateExtractValueParams;
-  // Expression starts with %, treat it as a reference to an allocated ID
-  if (valueExpression.startsWith('%')) {
-    const extractAllocateIdKey = valueExpression.substring(1);
-    return extractAllocateIds[extractAllocateIdKey];
-  }
 
   // Otherwise, evaluate it as a FHIRPath expression
   return fhirPathEvaluate({
     fhirData: fhirDataToEvaluate,
     path: valueExpression,
-    envVars: extractAllocateIds,
+    envVars: fhirPathContext,
     warnings: warnings
   });
 }

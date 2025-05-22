@@ -14,31 +14,25 @@ export function parseFhirPathToWritableSegments(fhirPath: string): (string | num
   // Produces matches like: "Patient", "name", 0, "_family", "extension", 0
   const segments = parseFhirPath(fhirPath);
 
-  // Strip trailing `_field.extension[x]` pattern to get the writable path
-  const writableSegments: (string | number)[] = [];
-  for (let i = 0; i < segments.length; i++) {
-    const current = segments[i];
-    const next = segments[i + 1];
-    const afterNext = segments[i + 2];
+  // Produce writable segments
+  // 1. If the path ends in '.extension[x]', strip the last two segments
+  // 2. If the third last segment starts with '_', strip the underscore to get the base field
+  const writableSegments: (string | number)[] = [...segments];
 
-    // Detect pattern like: "_field", "extension", number
-    if (
-      typeof current === 'string' &&
-      current.startsWith('_') &&
-      next === 'extension' &&
-      typeof afterNext === 'number'
-    ) {
-      writableSegments.push(current.slice(1)); // Replace "_field" → "field"
-      break; // Stop here — rest is templating structure
-    }
+  // Check if the last three segments are: '_field', 'extension', number
+  const len = writableSegments.length;
+  if (
+    len >= 3 &&
+    writableSegments[len - 2] === 'extension' &&
+    typeof writableSegments[len - 1] === 'number'
+  ) {
+    // Remove trailing `.extension[x]`
+    writableSegments.splice(len - 2, 2);
 
-    // Final "_field" (e.g., Patient._gender) — just strip underscore
-    if (typeof current === 'string' && current.startsWith('_') && i === segments.length - 1) {
-      writableSegments.push(current.slice(1));
-    }
-    // Otherwise, just add the current segment as usual, with a guard against undefined
-    else if (current !== undefined) {
-      writableSegments.push(current);
+    // If the third last segment (currently the last segment) is a primitive wrapper (e.g. '_valueBoolean'), strip the underscore
+    const last = writableSegments[writableSegments.length - 1];
+    if (typeof last === 'string' && last.startsWith('_')) {
+      writableSegments[writableSegments.length - 1] = last.slice(1); // '_field' → 'field'
     }
   }
 

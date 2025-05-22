@@ -2,6 +2,7 @@ import type { Bundle, FhirResource } from 'fhir/r4';
 import type { TemplateDetails } from '../interfaces/templateExtractPath.interface';
 import { fhirPathEvaluate } from './fhirpathEvaluate';
 import { v4 as uuidv4 } from 'uuid';
+import cleanDeep from 'clean-deep';
 
 /**
  * Builds a FHIR transaction Bundle from extracted resources using the templateExtract extension.
@@ -43,6 +44,14 @@ export function buildTransactionBundle(
         continue;
       }
 
+      // Clean extracted resource
+      const cleanedExtractedResource = cleanDeep(extractedResource, {
+        emptyObjects: true,
+        emptyArrays: true,
+        nullValues: true,
+        undefinedValues: true
+      }) as FhirResource;
+
       // resourceId
       const resourceId = templateExtractReference.resourceId;
       const hasResourceId = typeof resourceId === 'string' && resourceId !== '';
@@ -71,12 +80,12 @@ export function buildTransactionBundle(
 
       bundle.entry.push({
         fullUrl: fullUrl,
-        resource: extractedResource,
+        resource: cleanedExtractedResource,
         request: {
           method: hasResourceId ? 'PUT' : 'POST',
           url: hasResourceId
-            ? `${extractedResource.resourceType}/${resourceId}`
-            : extractedResource.resourceType,
+            ? `${cleanedExtractedResource.resourceType}/${resourceId}`
+            : cleanedExtractedResource.resourceType,
 
           // ifNoneMatch, ifModifiedSince, ifMatch, ifNoneExist optional properties
           ...(ifNoneMatch && { ifNoneMatch: ifNoneMatch }),
