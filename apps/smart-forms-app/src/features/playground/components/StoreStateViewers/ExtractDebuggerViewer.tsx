@@ -9,7 +9,7 @@ import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
 import useShowExtractDebuggerStoreProperty from '../../hooks/useShowExtractDebuggerStoreProperty.ts';
 import TemplateExtractDebugTable from './TemplateExtractDebugTable.tsx';
 import type { TemplateExtractDebugInfo } from '@aehrc/sdc-template-extract';
-import type { FhirResource } from 'fhir/r4';
+import type { FhirResource, Observation } from 'fhir/r4';
 
 const extractDebuggerPropertyNames: string[] = [
   'observationExtractResult',
@@ -126,7 +126,7 @@ function ExtractDebuggerViewer(props: ExtractDebuggerViewerProps) {
 export default ExtractDebuggerViewer;
 
 function propertyObjectIsTemplateExtractDebugInfo(
-  propertyObject: FhirResource | TemplateExtractDebugInfo | null
+  propertyObject: Observation[] | FhirResource | TemplateExtractDebugInfo | null
 ): propertyObject is TemplateExtractDebugInfo {
   if (!propertyObject) {
     return false;
