@@ -19,7 +19,6 @@ import { useState } from 'react';
 import PrePopButtonForPlayground from './PrePopButtonForPlayground.tsx';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { BaseRenderer, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
-
 import { fetchResourceCallback } from './PrePopCallbackForPlayground.tsx';
 import type { Patient, Practitioner } from 'fhir/r4';
 import { Box, Typography } from '@mui/material';
@@ -88,8 +87,7 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
         sourceQuestionnaire,
         populatedResponse,
         undefined,
-        terminologyServerUrl,
-        { patient }
+        terminologyServerUrl
       );
       if (populatedContext) {
         setPopulatedContext(populatedContext, true);

@@ -16,14 +16,14 @@
  */
 
 import { createStore } from 'zustand/vanilla';
-import type { FhirResource, OperationOutcome, StructureMap } from 'fhir/r4';
+import type { FhirResource, Observation, OperationOutcome, StructureMap } from 'fhir/r4';
 import { createSelectors } from '../../../stores/selector.ts';
 import type { TemplateExtractDebugInfo } from '@aehrc/sdc-template-extract';
 
 export interface ExtractDebuggerStoreType {
   // Observation-based
-  observationExtractResult: FhirResource | null;
-  setObservationExtractResult: (result: FhirResource | null) => void;
+  observationExtractResult: Observation[] | null;
+  setObservationExtractResult: (result: Observation[] | null) => void;
 
   // Template-based
   templateExtractResult: FhirResource | null;
@@ -46,7 +46,7 @@ export interface ExtractDebuggerStoreType {
 export const extractDebuggerStore = createStore<ExtractDebuggerStoreType>()((set) => ({
   // Observation-based
   observationExtractResult: null,
-  setObservationExtractResult: (result: FhirResource | null) =>
+  setObservationExtractResult: (result: Observation[] | null) =>
     set(() => ({ observationExtractResult: result })),
 
   // Template-based

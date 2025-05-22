@@ -36,7 +36,7 @@ interface StoreStateViewerProps {
 }
 
 function StoreStateViewer(props: StoreStateViewerProps) {
-  const { selectedStore } = props;
+  const { selectedStore, sourceFhirServerUrl } = props;
 
   if (selectedStore === 'questionnaireStore') {
     return <QuestionnaireStoreViewer />;
@@ -55,7 +55,7 @@ function StoreStateViewer(props: StoreStateViewerProps) {
   }
 
   if (selectedStore === 'extractDebugger') {
-    return <ExtractDebuggerViewer sourceFhirServerUrl={props.sourceFhirServerUrl} />;
+    return <ExtractDebuggerViewer sourceFhirServerUrl={sourceFhirServerUrl} />;
   }
 
   return <Typography variant="h5">No store selected</Typography>;

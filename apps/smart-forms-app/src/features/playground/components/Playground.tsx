@@ -39,7 +39,7 @@ import RendererDebugFooter from '../../renderer/components/RendererDebugFooter/R
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
 import PlaygroundPicker from './PlaygroundPicker.tsx';
-import type { Patient, Practitioner, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import type { Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import PlaygroundHeader from './PlaygroundHeader.tsx';
 import { HEADERS } from '../../../api/headers.ts';
 import { useExtractDebuggerStore } from '../stores/extractDebuggerStore.ts';
@@ -207,13 +207,7 @@ function Playground() {
   // Observation $extract
   function handleObservationExtract() {
     const observations = extractObservationBased(sourceQuestionnaire, updatableResponse);
-    const qr: QuestionnaireResponse = {
-      resourceType: 'QuestionnaireResponse',
-      status: 'completed',
-      item: [],
-      contained: observations
-    };
-    setObservationExtractResult(qr);
+    setObservationExtractResult(observations);
 
     if (observations.length > 0) {
       enqueueSnackbar(
