@@ -78,7 +78,6 @@ function GroupTableRow(props: GroupTableRowProps) {
     qItemsIndexMap,
     itemPath,
     showMinimalView,
-    parentIsReadOnly,
     onRowChange,
     onRemoveRow,
     onSelectRow
