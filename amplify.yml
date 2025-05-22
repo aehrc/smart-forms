@@ -13,6 +13,7 @@ applications:
 
               npm run build -w packages/sdc-assemble
               npm run build -w packages/sdc-populate
+              npm run build -w packages/sdc-template-extract
               npm run build -w packages/smart-forms-renderer
               npm run build -w apps/smart-forms-app
         postBuild:
