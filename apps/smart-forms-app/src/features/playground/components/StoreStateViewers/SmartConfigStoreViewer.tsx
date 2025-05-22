@@ -1,15 +1,23 @@
 import { useState } from 'react';
 import GenericStatePropertyPicker from './GenericStatePropertyPicker.tsx';
 import GenericViewer from './GenericViewer.tsx';
-import useShowSmartConfigStoreProperty from '../../hooks/useShowSmartConfigStoreProperty.ts';
+import useShowQuestionnaireResponseStoreProperty from '../../hooks/useShowQuestionnaireResponseStoreProperty.ts';
 
 const smartConfigStoreStatePropertyNames: string[] = ['client', 'patient', 'user', 'encounter'];
 
 function SmartConfigStoreViewer() {
   const [selectedProperty, setSelectedProperty] = useState('client');
-  const [showJsonTree, setShowJsonTree] = useState(false);
+  const [viewMode, setViewMode] = useState<'text' | 'jsonTree' | 'table'>('text');
 
-  const propertyObject = useShowSmartConfigStoreProperty(selectedProperty);
+  const propertyObject = useShowQuestionnaireResponseStoreProperty(selectedProperty);
+
+  function handleViewModeChange(newViewMethod: 'text' | 'jsonTree' | 'table' | null) {
+    if (newViewMethod === null) {
+      return;
+    }
+
+    setViewMode(newViewMethod);
+  }
 
   return (
     <>
@@ -21,8 +29,8 @@ function SmartConfigStoreViewer() {
       <GenericViewer
         propertyName={selectedProperty}
         propertyObject={propertyObject}
-        showJsonTree={showJsonTree}
-        onToggleShowJsonTree={setShowJsonTree}
+        viewMode={viewMode}
+        onViewModeChange={handleViewModeChange}
       />
     </>
   );

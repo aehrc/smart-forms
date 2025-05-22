@@ -2,19 +2,24 @@ import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import NotesIcon from '@mui/icons-material/Notes';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import GridOnIcon from '@mui/icons-material/GridOn';
 import DebugResponseView from '../../../renderer/components/RendererDebugFooter/DebugResponseView.tsx';
 import type { ReactNode } from 'react';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import ToggleButton from '@mui/material/ToggleButton';
 
 interface GenericViewerProps {
   propertyName: string;
   propertyObject: any;
-  showJsonTree: boolean;
-  onToggleShowJsonTree: (toggleShowJsonTree: boolean) => void;
+  viewMode: 'text' | 'jsonTree' | 'table';
+  onViewModeChange: (newViewMode: 'text' | 'jsonTree' | 'table') => void;
+  showTableView?: boolean; // Only for ExtractDebuggerViewer "templateExtractDebugInfo" property
   children?: ReactNode;
 }
 
 function GenericViewer(props: GenericViewerProps) {
-  const { propertyName, propertyObject, showJsonTree, onToggleShowJsonTree, children } = props;
+  const { propertyName, propertyObject, viewMode, onViewModeChange, showTableView, children } =
+    props;
 
   if (propertyName === null) {
     return (
@@ -29,14 +34,28 @@ function GenericViewer(props: GenericViewerProps) {
       <Stack direction="row" justifyContent="space-between">
         <Stack direction="row" alignItems="center">
           <Typography variant="h5">{propertyName}</Typography>
-          <Tooltip title={showJsonTree ? 'Toggle text view' : 'Toggle JSON tree view'}>
-            <IconButton
-              onClick={() => {
-                onToggleShowJsonTree(!showJsonTree);
-              }}>
-              {showJsonTree ? <NotesIcon /> : <AccountTreeIcon />}
-            </IconButton>
-          </Tooltip>
+          <ToggleButtonGroup
+            size="small"
+            color="primary"
+            value={viewMode}
+            exclusive
+            sx={{ m: 0.5, height: 36 }}
+            onChange={(_, newViewMode) => {
+              onViewModeChange(newViewMode);
+            }}
+            aria-label="view mode">
+            <ToggleButton value="text" aria-label="text">
+              <NotesIcon />
+            </ToggleButton>
+            <ToggleButton value="jsonTree" aria-label="jsonTree">
+              <AccountTreeIcon />
+            </ToggleButton>
+            {showTableView ? (
+              <ToggleButton value="table" aria-label="table">
+                <GridOnIcon />
+              </ToggleButton>
+            ) : null}
+          </ToggleButtonGroup>
           <Tooltip title="Copy to clipboard">
             <IconButton
               onClick={() => {
@@ -58,11 +77,15 @@ function GenericViewer(props: GenericViewerProps) {
 
       <Box p={0.5} pb={100}>
         <Typography color="text.secondary" pb={1}>
-          {showJsonTree
-            ? 'Use JSON Tree for selective debugging. For more detailed debugging, copy tree nodes to a text editor.'
-            : 'Use text view for fast Ctrl+F debugging.'}
+          {viewMode === 'text' ? 'Text view is good for fast Ctrl+F debugging.' : null}
+          {viewMode === 'jsonTree'
+            ? 'JSON Tree is good for selective debugging. For more detailed debugging, copy tree nodes to a text editor.'
+            : null}
+          {viewMode === 'table'
+            ? 'Table view is good for a visual view of contexts and values within a template. Only available for "templateExtractDebugInfo".  '
+            : null}
         </Typography>
-        <DebugResponseView displayObject={propertyObject} showJsonTree={showJsonTree} />
+        <DebugResponseView displayObject={propertyObject} viewMode={viewMode} />
         {children}
       </Box>
     </Stack>

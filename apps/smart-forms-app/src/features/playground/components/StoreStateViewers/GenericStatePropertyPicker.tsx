@@ -45,7 +45,13 @@ function GenericStatePropertyPicker(props: GenericStatePropertyPickerProps) {
         sx={{ height: 28 }}
         exclusive
         data-test="specific-state-picker-playground"
-        onChange={(_, newSelectedProperty) => onSelectProperty(newSelectedProperty)}>
+        onChange={(_, newSelectedProperty) => {
+          if (newSelectedProperty === null) {
+            return;
+          }
+
+          onSelectProperty(newSelectedProperty);
+        }}>
         {statePropertyNames.map((property) => (
           <ToggleButton
             key={property}

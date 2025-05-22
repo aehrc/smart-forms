@@ -33,6 +33,7 @@ interface PlaygroundRendererProps {
   terminologyServerUrl: string;
   isExtracting: boolean;
   onObservationExtract: () => void;
+  onTemplateExtract: () => void;
   onStructureMapExtract: () => void;
 }
 
@@ -44,6 +45,7 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
     terminologyServerUrl,
     isExtracting,
     onObservationExtract,
+    onTemplateExtract,
     onStructureMapExtract
   } = props;
 
@@ -107,9 +109,9 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
           isExtracting={isExtracting}
           onObservationExtract={onObservationExtract}
           onStructureMapExtract={onStructureMapExtract}
+          onTemplateExtract={onTemplateExtract}
         />
         <Box flexGrow={1} />
-
         {patientName ? (
           <Typography variant="subtitle2" color="text.secondary">
             Patient: {patientName}

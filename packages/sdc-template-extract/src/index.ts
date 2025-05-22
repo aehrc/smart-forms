@@ -15,18 +15,5 @@
  * limitations under the License.
  */
 
-import { useExtractOperationStore } from '../stores/extractOperationStore.ts';
-
-function useShowExtractedOperationStoreProperty(selectedProperty: string) {
-  const extractedResource = useExtractOperationStore.use.extractedResource();
-  const targetStructureMap = useExtractOperationStore.use.targetStructureMap();
-
-  return (
-    {
-      extractedResource,
-      targetStructureMap
-    }[selectedProperty] || null
-  );
-}
-
-export default useShowExtractedOperationStoreProperty;
+export * from './SDCExtractQuestionnaireResponseOperation';
+export * from './inAppExtraction';

@@ -42,8 +42,16 @@ import PlaygroundPicker from './PlaygroundPicker.tsx';
 import type { Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import PlaygroundHeader from './PlaygroundHeader.tsx';
 import { HEADERS } from '../../../api/headers.ts';
-import { useExtractOperationStore } from '../stores/extractOperationStore.ts';
+import { useExtractDebuggerStore } from '../stores/extractDebuggerStore.ts';
 import { buildFormWrapper, destroyFormWrapper } from '../../../utils/manageForm.ts';
+import type {
+  CustomDebugInfoParameter,
+  IssuesParameter,
+  ReturnParameter
+} from '@aehrc/sdc-template-extract';
+import { extract } from '@aehrc/sdc-template-extract';
+import { fetchResourceCallback } from './PrePopCallbackForPlayground.tsx';
+import { Base64 } from 'js-base64';
 
 const defaultFhirServerUrl = 'https://hapi.fhir.org/baseR4';
 const defaultExtractEndpoint = 'https://proxy.smartforms.io/fhir';
@@ -68,13 +76,23 @@ function Playground() {
   const [jsonString, setJsonString] = useLocalStorage('playgroundJsonString', '');
   const [buildingState, setBuildingState] = useState<BuildState>('idle');
 
+  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
+  const updatableResponseKey = useQuestionnaireResponseStore.use.key();
+
   // $extract-related states
   const [isExtracting, setExtracting] = useState(false);
 
-  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
-  const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
+  // Observation-based
+  const setObservationExtractResult = useExtractDebuggerStore.use.setObservationExtractResult();
 
-  const setExtractedResource = useExtractOperationStore.use.setExtractedResource();
+  // Template-based
+  const setTemplateExtractResult = useExtractDebuggerStore.use.setTemplateExtractResult();
+  const setTemplateExtractDebugInfo = useExtractDebuggerStore.use.setTemplateExtractDebugInfo();
+  const setTemplateExtractIssues = useExtractDebuggerStore.use.setTemplateExtractIssues();
+
+  // Structured Map-based
+  const setStructuredMapExtractResult = useExtractDebuggerStore.use.setStructuredMapExtractResult();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -142,18 +160,32 @@ function Playground() {
         if (typeof jsonString === 'string') {
           setJsonString(jsonString);
           const questionnaire = JSON.parse(jsonString);
+
+          // Add more detailed validation
+          if (!questionnaire) {
+            throw new Error('Empty questionnaire');
+          }
+
+          if (!isQuestionnaire(questionnaire)) {
+            throw new Error(
+              'Invalid questionnaire format. Must have resourceType: "Questionnaire"'
+            );
+          }
+
           await buildFormWrapper(questionnaire, undefined, undefined, terminologyServerUrl);
           setBuildingState('built');
         } else {
-          enqueueSnackbar('There was an issue with the attached JSON file.', {
+          enqueueSnackbar('There was an issue reading the file content.', {
             variant: 'error',
             preventDuplicate: true,
             action: <CloseSnackbar />
           });
           setBuildingState('idle');
         }
-      } catch (error) {
-        enqueueSnackbar('Attached file has invalid JSON format', {
+      } catch (error: unknown) {
+        console.error('Error parsing questionnaire:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+        enqueueSnackbar(`Error loading questionnaire: ${errorMessage}`, {
           variant: 'error',
           preventDuplicate: true,
           action: <CloseSnackbar />
@@ -161,12 +193,21 @@ function Playground() {
         setBuildingState('idle');
       }
     };
+
+    reader.onerror = () => {
+      enqueueSnackbar('Error reading file', {
+        variant: 'error',
+        preventDuplicate: true,
+        action: <CloseSnackbar />
+      });
+      setBuildingState('idle');
+    };
   }
 
   // Observation $extract
   function handleObservationExtract() {
     const observations = extractObservationBased(sourceQuestionnaire, updatableResponse);
-    setExtractedResource(observations);
+    setObservationExtractResult(observations);
 
     if (observations.length > 0) {
       enqueueSnackbar(
@@ -202,7 +243,7 @@ function Playground() {
         preventDuplicate: true,
         action: <CloseSnackbar />
       });
-      setExtractedResource(null);
+      setStructuredMapExtractResult(null);
     } else {
       enqueueSnackbar(
         'Extract successful. See Advanced Properties > Extracted to view extracted resource.',
@@ -213,7 +254,104 @@ function Playground() {
         }
       );
       const extractedResource = await response.json();
-      setExtractedResource(extractedResource);
+      setStructuredMapExtractResult(extractedResource);
+    }
+  }
+
+  // Template-based $extract
+  async function handleTemplateExtract() {
+    if (!sourceFhirServerUrl) {
+      enqueueSnackbar('Failed to run template-based extraction. No source server provided', {
+        variant: 'error',
+        preventDuplicate: true,
+        action: <CloseSnackbar />
+      });
+      return;
+    }
+
+    // Augment QR to add %resource.id, %resource.authored, %resource.author
+    const responseToExtract = structuredClone(updatableResponse);
+    responseToExtract.id = updatableResponseKey;
+    responseToExtract.authored = new Date().toISOString();
+    if (user && user.id) {
+      responseToExtract.author = {
+        reference: `Practitioner/${user?.id}`
+      };
+    }
+
+    const templateExtractOutputParameters = await extract(
+      {
+        resourceType: 'Parameters',
+        parameter: [
+          {
+            name: 'questionnaire-response',
+            resource: responseToExtract
+          },
+          {
+            name: 'questionnaire',
+            resource: sourceQuestionnaire
+          }
+        ]
+      },
+      fetchResourceCallback,
+      {
+        sourceServerUrl: sourceFhirServerUrl,
+        authToken: null
+      }
+    );
+
+    if (templateExtractOutputParameters.resourceType === 'OperationOutcome') {
+      enqueueSnackbar(
+        'Ran template-based extraction but an error occurred. See console for error details.',
+        {
+          variant: 'error',
+          preventDuplicate: true,
+          action: <CloseSnackbar />
+        }
+      );
+      console.error(templateExtractOutputParameters);
+      return;
+    }
+
+    // At this point outputParameters is a Parameters resource
+    const returnParameter = templateExtractOutputParameters.parameter.find(
+      (param) => param.name === 'return'
+    ) as ReturnParameter;
+    const issuesParameter = templateExtractOutputParameters.parameter.find(
+      (param) => param.name === 'issues'
+    ) as IssuesParameter | undefined;
+    const customDebugInfoParameter = templateExtractOutputParameters.parameter.find(
+      (param) => param.name === 'debugInfo-custom'
+    ) as CustomDebugInfoParameter | undefined;
+
+    // Handle returnParameter
+    console.log('Extracted bundle from template-based extraction:', returnParameter.resource);
+    const hasIssues =
+      !!issuesParameter?.resource?.issue && issuesParameter?.resource?.issue?.length > 0;
+    const hasIssuesMessage = hasIssues ? ' with issues' : '';
+    const plusIssuesMessage = hasIssues ? ' + issues' : '';
+    enqueueSnackbar(
+      `Successful template-based extraction${hasIssuesMessage}. See Advanced Properties > Extracted to view extracted bundle${plusIssuesMessage}.`,
+      {
+        preventDuplicate: true,
+        action: <CloseSnackbar />,
+        autoHideDuration: 8000
+      }
+    );
+    setTemplateExtractResult(returnParameter.resource);
+
+    // Handle issuesParameter
+    if (hasIssues) {
+      setTemplateExtractIssues(issuesParameter.resource);
+    }
+
+    // Handle customDebugInfoParameter
+    if (customDebugInfoParameter?.valueAttachment.data) {
+      const debugInfo = JSON.parse(Base64.decode(customDebugInfoParameter.valueAttachment.data));
+
+      if (typeof debugInfo === 'object' && debugInfo !== null) {
+        setTemplateExtractDebugInfo(debugInfo);
+      }
     }
   }
 
@@ -248,6 +386,7 @@ function Playground() {
                 terminologyServerUrl={terminologyServerUrl}
                 isExtracting={isExtracting}
                 onObservationExtract={handleObservationExtract}
+                onTemplateExtract={handleTemplateExtract}
                 onStructureMapExtract={handleStructureMapExtract}
               />
             ) : buildingState === 'building' ? (

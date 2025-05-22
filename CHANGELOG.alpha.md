@@ -5,7 +5,21 @@ This log documents significant changes for [@aehrc/smart-forms-renderer's alpha 
 
 This changelog only includes changes from version 1.0.0-alpha.1 onwards. For stable releases, refer to the main [CHANGELOG.md](CHANGELOG.md).
 
+
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
+
+## [1.0.0-alpha.55] - 2025-05-07
+### Added
+- Updated @aehrc/sdc-populate to 4.1.0. It now uses the same removeEmptyAnswers() implementation as the renderer, which is more battle tested.
+
+## [1.0.0-alpha.54] - 2025-05-07
+### Fixed
+- Dynamic _answerValueSet options now updates consistently.
+- Whenever dynamic _answerValueSet options change, the item fields is now cleared consistently.
+
+## [1.0.0-alpha.53] - 2025-05-02
+### Added
+- Support for dynamic _answerValueSet in choice and open-choice items. Allows a dynamic answerValueSet URL that dynamic updates the answer options.
 
 ## [1.0.0-alpha.51 and 1.0.0-alpha.52] - 2025-05-02
 ### Changed
