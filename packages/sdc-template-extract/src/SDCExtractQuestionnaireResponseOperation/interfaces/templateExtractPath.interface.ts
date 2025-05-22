@@ -92,3 +92,11 @@ export interface TemplateExtractPath {
    */
   valuePathMap: Map<string, TemplateExtractValueEvaluation>;
 }
+
+/*
+ * An exact copy of `TemplateExtractPath` in `templateExtractPath.interface.ts` but in plain object form.
+ */
+export interface TemplateExtractPathJsObject {
+  contextPathTuple: [string, TemplateExtractContextEvaluation] | null;
+  valuePathMap: Record<string, TemplateExtractValueEvaluation>;
+}

@@ -1,10 +1,11 @@
 import { InputParameters } from '../interfaces/inputParameters.interface';
-import { OutputParameters } from '../interfaces/outputParameters.interface';
+import type { TemplateExtractDebugInfo } from '../interfaces';
+import { OutputParameters } from '../interfaces';
 import {
   FetchResourceCallback,
   FetchResourceRequestConfig
 } from '../interfaces/callback.interface';
-import type { OperationOutcome, QuestionnaireResponse } from 'fhir/r4';
+import type { OperationOutcome, OperationOutcomeIssue, QuestionnaireResponse } from 'fhir/r4';
 import { getQuestionnaireResponse } from './getQuestionnaireResponse';
 import { fetchQuestionnaire } from './fetchQuestionnaire';
 import { createErrorOutcome, createInvalidWarningIssue } from './operationOutcome';
@@ -13,10 +14,7 @@ import { createContainedTemplateMap } from './templateMap';
 import { populateIntoTemplates } from './populateIntoTemplates';
 import { allocateIdsForExtract } from './extractAllocateId';
 import { buildTransactionBundle } from './buildBundle';
-
-// FIXME resolve %resource.id ??
-// FIXME resolve %resource.authored ??
-// FIXME resolve %resource.author ??
+import { createOutputParameters } from './createOutputParameters';
 
 export async function extract(
   parameters: InputParameters | QuestionnaireResponse,
@@ -62,6 +60,8 @@ export async function extract(
     );
   }
 
+  const combinedWarnings: OperationOutcomeIssue[] = [];
+
   // Get extract templates from questionnaire and all its items
   const { templateExtractRefMap: linkIdToTemplateExtractRefMap, templateExtractRefWarnings } =
     collectTemplateExtractRefs(questionnaire);
@@ -75,6 +75,7 @@ export async function extract(
       ]
     };
   }
+  combinedWarnings.push(...templateExtractRefWarnings);
 
   // Create a template details map with details like templateResource, targetLinkId, targetQItem, targetQRItem (if available)
   const containedTemplateMap = createContainedTemplateMap(
@@ -84,11 +85,9 @@ export async function extract(
   );
 
   // Populate answers from questionnaireResponse into contained templates
-  const extractedResourceMap = populateIntoTemplates(
-    questionnaireResponse,
-    containedTemplateMap,
-    extractAllocateIds
-  );
+  const { extractedResourceMap, populateIntoTemplateWarnings, templateIdToExtractPaths } =
+    populateIntoTemplates(questionnaireResponse, containedTemplateMap, extractAllocateIds);
+  combinedWarnings.push(...populateIntoTemplateWarnings);
 
   const bundle = buildTransactionBundle(
     extractedResourceMap,
@@ -96,9 +95,10 @@ export async function extract(
     extractAllocateIds
   );
 
-  console.log(bundle);
+  const customDebugInfo: TemplateExtractDebugInfo = {
+    templateIdToExtractPaths: templateIdToExtractPaths
+  };
 
-  // TODO Collate warnings and all debug material
-
-  return Promise.resolve(createErrorOutcome(`Not implemented`));
+  // Create output parameters
+  return createOutputParameters(bundle, combinedWarnings, customDebugInfo);
 }

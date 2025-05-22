@@ -7,25 +7,43 @@ import { useSnackbar } from 'notistack';
 import { extractedResourceIsBatchBundle } from '../../api/extract.ts';
 import { HEADERS } from '../../../../api/headers.ts';
 import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
-import useShowExtractedOperationStoreProperty from '../../hooks/useShowExtractedOperationStoreProperty.ts';
+import useShowExtractDebuggerStoreProperty from '../../hooks/useShowExtractDebuggerStoreProperty.ts';
+import TemplateExtractDebugTable from './TemplateExtractDebugTable.tsx';
+import { TemplateExtractDebugInfo } from '@aehrc/sdc-template-extract';
+import { FhirResource } from 'fhir/r4';
 
-const extractedSectionPropertyNames: string[] = ['extractionResult', 'targetStructureMap'];
+const extractDebuggerPropertyNames: string[] = [
+  'observationExtractResult',
+  'templateExtractResult',
+  'templateExtractDebugInfo',
+  'templateExtractIssues',
+  'structuredMapExtractMap',
+  'structuredMapExtractResult'
+];
 
-interface ExtractedSectionViewerProps {
+interface ExtractDebuggerViewerProps {
   sourceFhirServerUrl: string;
 }
 
-function ExtractedSectionViewer(props: ExtractedSectionViewerProps) {
+function ExtractDebuggerViewer(props: ExtractDebuggerViewerProps) {
   const { sourceFhirServerUrl } = props;
-  const [selectedProperty, setSelectedProperty] = useState('extractionResult');
-  const [showJsonTree, setShowJsonTree] = useState(false);
+  const [selectedProperty, setSelectedProperty] = useState('templateExtractResult');
+  const [viewMode, setViewMode] = useState<'text' | 'jsonTree' | 'table'>('text');
+
   const [writingBack, setWritingBack] = useState(false);
 
-  const propertyObject = useShowExtractedOperationStoreProperty(selectedProperty);
-  console.log('ExtractedResourceViewer propertyObject:', propertyObject);
+  const propertyObject = useShowExtractDebuggerStoreProperty(selectedProperty);
   const writeBackEnabled = extractedResourceIsBatchBundle(propertyObject);
 
   const { enqueueSnackbar } = useSnackbar();
+
+  function handleViewModeChange(newViewMethod: 'text' | 'jsonTree' | 'table' | null) {
+    if (newViewMethod === null) {
+      return;
+    }
+
+    setViewMode(newViewMethod);
+  }
 
   // Write back extracted resource
   async function handleExtract() {
@@ -59,19 +77,27 @@ function ExtractedSectionViewer(props: ExtractedSectionViewerProps) {
     }
   }
 
+  const writeBackButtonShown =
+    selectedProperty === 'observationExtractResult' ||
+    selectedProperty === 'templateExtractResult' ||
+    selectedProperty === 'structuredMapExtractResult';
+
+  const templateExtractPathTableShown = selectedProperty === 'templateExtractDebugInfo';
+
   return (
     <>
       <GenericStatePropertyPicker
-        statePropertyNames={extractedSectionPropertyNames}
+        statePropertyNames={extractDebuggerPropertyNames}
         selectedProperty={selectedProperty}
         onSelectProperty={setSelectedProperty}
       />
       <GenericViewer
         propertyName={selectedProperty}
         propertyObject={propertyObject}
-        showJsonTree={showJsonTree}
-        onToggleShowJsonTree={setShowJsonTree}>
-        {selectedProperty === 'extractionResult' ? (
+        viewMode={viewMode}
+        showTableView={selectedProperty === 'templateExtractDebugInfo'}
+        onViewModeChange={handleViewModeChange}>
+        {writeBackButtonShown ? (
           <Box display="flex" justifyContent="end">
             <Tooltip
               title={
@@ -90,17 +116,28 @@ function ExtractedSectionViewer(props: ExtractedSectionViewerProps) {
             </Tooltip>
           </Box>
         ) : null}
-        {/* Fallback debug view for extracted resource */}
-        {propertyObject ? (
-          <Box mt={2}>
-            <pre style={{ maxHeight: 300, overflow: 'auto', background: '#f5f5f5', padding: 8 }}>
-              {JSON.stringify(propertyObject, null, 2)}
-            </pre>
-          </Box>
+        {/* Show TemplateExtractDebugInfo in table view */}
+        {templateExtractPathTableShown &&
+        viewMode === 'table' &&
+        propertyObjectIsTemplateExtractDebugInfo(propertyObject) ? (
+          <TemplateExtractDebugTable templateExtractDebugInfo={propertyObject} />
         ) : null}
       </GenericViewer>
     </>
   );
 }
 
-export default ExtractedSectionViewer;
+export default ExtractDebuggerViewer;
+
+function propertyObjectIsTemplateExtractDebugInfo(
+  propertyObject: FhirResource | TemplateExtractDebugInfo | null
+): propertyObject is TemplateExtractDebugInfo {
+  if (!propertyObject) {
+    return false;
+  }
+
+  return (
+    'templateIdToExtractPaths' in propertyObject &&
+    typeof propertyObject.templateIdToExtractPaths === 'object'
+  );
+}

@@ -20,6 +20,7 @@
   "homepage": "https://github.com/aehrc/smart-forms#readme",
   "dependencies": {
     "axios": "^1.7.9",
+    "js-base64": "^3.7.7",
     "uuid": "^11.1.0"
   },
   "devDependencies": {

@@ -36,7 +36,7 @@ import useAuthRedirectHook from '../hooks/useAuthRedirectHook.ts';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
-import { useExtractOperationStore } from '../../playground/stores/extractOperationStore.ts';
+import { useExtractDebuggerStore } from '../../playground/stores/extractDebuggerStore.ts';
 import { fetchTargetStructureMap } from '../../playground/api/extract.ts';
 
 function authReducer(state: AuthState, action: AuthActions): AuthState {
@@ -81,7 +81,7 @@ function Authorisation() {
   const setTerminologyServerUrl = useTerminologyServerStore.use.setUrl();
   const resetTerminologyServerUrl = useTerminologyServerStore.use.resetUrl();
 
-  const setTargetStructureMap = useExtractOperationStore.use.setTargetStructureMap();
+  const setStructuredMapExtractMap = useExtractDebuggerStore.use.setStructuredMapExtractMap();
 
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -148,7 +148,7 @@ function Authorisation() {
                     // Set target StructureMap for $extract operation
                     const targetStructureMap = await fetchTargetStructureMap(questionnaire);
                     if (targetStructureMap) {
-                      setTargetStructureMap(targetStructureMap);
+                      setStructuredMapExtractMap(targetStructureMap);
                     }
 
                     await buildSourceQuestionnaire(

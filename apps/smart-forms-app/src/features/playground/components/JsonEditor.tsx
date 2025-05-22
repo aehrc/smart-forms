@@ -103,11 +103,17 @@ function JsonEditor(props: JsonEditorProps) {
                   sx={{ height: 32 }}
                   exclusive
                   data-test="store-state-toggle-playground"
-                  onChange={(_, newSelectedStore) => setSelectedStore(newSelectedStore)}>
+                  onChange={(_, newSelectedStore) => {
+                    if (newSelectedStore === null) {
+                      return;
+                    }
+
+                    setSelectedStore(newSelectedStore);
+                  }}>
                   <ToggleButton value="questionnaireStore">Q</ToggleButton>
                   <ToggleButton value="questionnaireResponseStore">QR</ToggleButton>
                   <ToggleButton value="terminologyServerStore">Terminology</ToggleButton>
-                  <ToggleButton value="extractionResult">Extracted</ToggleButton>
+                  <ToggleButton value="extractDebugger">Extract</ToggleButton>
                 </ToggleButtonGroup>
               </Stack>
             )}

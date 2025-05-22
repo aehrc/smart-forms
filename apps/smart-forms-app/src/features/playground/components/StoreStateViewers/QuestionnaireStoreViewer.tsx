@@ -35,9 +35,17 @@ const questionnaireStoreStatePropertyNames: string[] = [
 
 function QuestionnaireStoreViewer() {
   const [selectedProperty, setSelectedProperty] = useState('sourceQuestionnaire');
-  const [showJsonTree, setShowJsonTree] = useState(false);
+  const [viewMode, setViewMode] = useState<'text' | 'jsonTree' | 'table'>('text');
 
   const propertyObject = useShowQuestionnaireStoreProperty(selectedProperty);
+
+  function handleViewModeChange(newViewMethod: 'text' | 'jsonTree' | 'table' | null) {
+    if (newViewMethod === null) {
+      return;
+    }
+
+    setViewMode(newViewMethod);
+  }
 
   return (
     <>
@@ -49,8 +57,8 @@ function QuestionnaireStoreViewer() {
       <GenericViewer
         propertyName={selectedProperty}
         propertyObject={propertyObject}
-        showJsonTree={showJsonTree}
-        onToggleShowJsonTree={setShowJsonTree}
+        viewMode={viewMode}
+        onViewModeChange={handleViewModeChange}
       />
     </>
   );

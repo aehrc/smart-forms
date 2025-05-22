@@ -18,22 +18,14 @@
 import { useState } from 'react';
 import PrePopButtonForPlayground from './PrePopButtonForPlayground.tsx';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
-import { 
-  BaseRenderer, 
-  useQuestionnaireStore, 
-  useQuestionnaireResponseStore, 
-} from '@aehrc/smart-forms-renderer';
-import { extract } from '@aehrc/sdc-template-extract';
+import { BaseRenderer, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 
 import { fetchResourceCallback } from './PrePopCallbackForPlayground.tsx';
-import type { Patient, Practitioner, QuestionnaireResponse } from 'fhir/r4';
+import type { Patient, Practitioner } from 'fhir/r4';
 import { Box, Typography } from '@mui/material';
 import useLaunchContextNames from '../hooks/useLaunchContextNames.ts';
 import { buildFormWrapper } from '../../../utils/manageForm.ts';
 import ExtractMenu from './ExtractMenu.tsx';
-import TemplateExtractionDebug from './TemplateExtractionDebug';
-import { useExtractOperationStore } from '../stores/extractOperationStore.ts';
-import { convertQuestionnaireResponseLinkIds } from '../utils/linkIdToCodeConverter';
 
 interface PlaygroundRendererProps {
   sourceFhirServerUrl: string | null;
@@ -42,6 +34,7 @@ interface PlaygroundRendererProps {
   terminologyServerUrl: string;
   isExtracting: boolean;
   onObservationExtract: () => void;
+  onTemplateExtract: () => void;
   onStructureMapExtract: () => void;
 }
 
@@ -53,20 +46,11 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
     terminologyServerUrl,
     isExtracting,
     onObservationExtract,
+    onTemplateExtract,
     onStructureMapExtract
   } = props;
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
-  const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
-  const setExtractionResult = useExtractOperationStore.use.setExtractionResult();
-  const setExtractionError = useExtractOperationStore.use.setExtractionError();
-  const setDebugInfo = useExtractOperationStore.use.setDebugInfo();
-  const startExtraction = useExtractOperationStore.use.startExtraction();
-  // const clearExtraction = useExtractOperationStore.use.clearExtraction();
-  // const extractionResult = useExtractOperationStore.use.extractionResult();
-  // const extractionError = useExtractOperationStore.use.extractionError();
-  // const debugInfo = useExtractOperationStore.use.debugInfo();
-  // const isExtractionStarted = useExtractOperationStore.use.isExtractionStarted();
 
   const [isPopulating, setIsPopulating] = useState(false);
   // const [populatedContext, setPopulatedContext] = useState<Record<string, object> | null>(null);
@@ -117,123 +101,6 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
     });
   }
 
-  const prepareResponseForExtraction = (response: QuestionnaireResponse, patientId: string): QuestionnaireResponse => {
-    if (!response) {
-      throw new Error('Missing questionnaire response');
-    }
-    if (!patientId) {
-      throw new Error('Missing patient ID');
-    }
-    return {
-      ...response,
-      resourceType: 'QuestionnaireResponse',
-      status: 'completed',
-      subject: {
-        reference: `Patient/${patientId}`
-      },
-      item: response.item || [],
-      authored: response.authored || new Date().toISOString(),
-      author: response.author || {
-        reference: `Practitioner/${user?.id || 'unknown'}`
-      }
-    };
-  };
-
-  const handleTemplateExtract = async () => {
-    if (!sourceQuestionnaire) {
-      console.error('Missing sourceQuestionnaire');
-      setExtractionError('Missing questionnaire');
-      return;
-    }
-    if (!updatableResponse) {
-      console.error('Missing updatableResponse');
-      setExtractionError('Missing response');
-      return;
-    }
-
-    try {
-      // Start extraction and show debug info immediately
-      startExtraction();
-      setDebugInfo({
-        contentAnalysis: {
-          detectedTemplates: [],
-          patterns: [],
-          confidence: 'Analyzing...'
-        },
-        fieldMapping: {
-          mappedFields: {},
-          assumptions: [],
-          alternatives: []
-        },
-        valueProcessing: {
-          values: {},
-          transformations: [],
-          qualityChecks: []
-        },
-        resultGeneration: {
-          status: 'Pending',
-          observations: []
-        }
-      });
-
-      console.log('Preparing response for extraction:', updatableResponse);
-      const preparedResponse = prepareResponseForExtraction(updatableResponse, patient?.id || 'unknown');
-      // Convert linkIds to codes before extraction
-      const convertedResponse = convertQuestionnaireResponseLinkIds(preparedResponse);
-      console.log('Prepared response (after prepareResponseForExtraction and convertQuestionnaireResponseLinkIds):', convertedResponse);
-      console.log('Source questionnaire:', sourceQuestionnaire);
-
-      const { result, debugInfo: extractionDebugInfo, error } = await extract({
-        questionnaire: sourceQuestionnaire,
-        questionnaireResponse: convertedResponse
-      });
-      console.log('Extraction result from sdc-template-extract:', result);
-      console.log('Extraction error from sdc-template-extract:', error);
-      console.log('Extraction debug info from sdc-template-extract:', extractionDebugInfo);
-      
-      if (error) {
-        setExtractionError(error);
-        setDebugInfo(extractionDebugInfo);
-        return;
-      }
-      
-      if (result) {
-        // Set the extraction result directly to the raw result (Bundle or Resource)
-        console.log('Setting extractionResult to raw extraction result:', result);
-        setExtractionResult(result);
-        setDebugInfo(extractionDebugInfo);
-      } else {
-        console.warn('No resources were generated from the extraction');
-        setExtractionError('No resources were generated from the extraction');
-        setDebugInfo(extractionDebugInfo);
-      }
-    } catch (error) {
-      console.error('Error during template extraction:', error);
-      setExtractionError(error instanceof Error ? error.message : 'Unknown error during extraction');
-      setDebugInfo({
-        contentAnalysis: {
-          detectedTemplates: [],
-          patterns: [],
-          confidence: 'Error'
-        },
-        fieldMapping: {
-          mappedFields: {},
-          assumptions: [],
-          alternatives: []
-        },
-        valueProcessing: {
-          values: {},
-          transformations: [],
-          qualityChecks: []
-        },
-        resultGeneration: {
-          status: 'Error',
-          observations: []
-        }
-      });
-    }
-  };
-
   return (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <Box display="flex" alignItems="center" columnGap={1.5} mx={1}>
@@ -246,7 +113,7 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
           isExtracting={isExtracting}
           onObservationExtract={onObservationExtract}
           onStructureMapExtract={onStructureMapExtract}
-          onTemplateExtract={handleTemplateExtract}
+          onTemplateExtract={onTemplateExtract}
         />
         <Box flexGrow={1} />
         {patientName ? (
@@ -265,7 +132,6 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
           <BaseRenderer />
         </Box>
       )}
-      <TemplateExtractionDebug />
     </Box>
   );
 }

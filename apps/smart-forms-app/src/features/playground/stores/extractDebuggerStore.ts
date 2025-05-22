@@ -1,0 +1,69 @@
+/*
+ * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Organisation (CSIRO) ABN 41 687 119 230.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { createStore } from 'zustand/vanilla';
+import type { FhirResource, OperationOutcome, StructureMap } from 'fhir/r4';
+import { createSelectors } from '../../../stores/selector.ts';
+import type { TemplateExtractDebugInfo } from '@aehrc/sdc-template-extract';
+
+export interface ExtractDebuggerStoreType {
+  // Observation-based
+  observationExtractResult: FhirResource | null;
+  setObservationExtractResult: (result: FhirResource | null) => void;
+
+  // Template-based
+  templateExtractResult: FhirResource | null;
+  templateExtractDebugInfo: TemplateExtractDebugInfo | null;
+  templateExtractIssues: OperationOutcome | null;
+  setTemplateExtractResult: (result: FhirResource | null) => void;
+  setTemplateExtractDebugInfo: (templateExtractDebugInfo: TemplateExtractDebugInfo) => void;
+  setTemplateExtractIssues: (templateExtractIssues: OperationOutcome) => void;
+
+  // Structured-map based
+  structuredMapExtractMap: StructureMap | null;
+  structuredMapExtractResult: FhirResource | null;
+  setStructuredMapExtractMap: (structureMap: StructureMap | null) => void;
+  setStructuredMapExtractResult: (result: FhirResource | null) => void;
+}
+
+export const extractDebuggerStore = createStore<ExtractDebuggerStoreType>()((set) => ({
+  // Observation-based
+  observationExtractResult: null,
+  setObservationExtractResult: (result: FhirResource | null) =>
+    set(() => ({ observationExtractResult: result })),
+
+  // Template-based
+  templateExtractResult: null,
+  templateExtractDebugInfo: null,
+  templateExtractIssues: null,
+  setTemplateExtractResult: (result: FhirResource | null) =>
+    set(() => ({ templateExtractResult: result })),
+  setTemplateExtractDebugInfo: (templateExtractDebugInfo: TemplateExtractDebugInfo) =>
+    set(() => ({ templateExtractDebugInfo })),
+  setTemplateExtractIssues: (templateExtractIssues: OperationOutcome) =>
+    set(() => ({ templateExtractIssues })),
+
+  // Structured-map based
+  structuredMapExtractMap: null,
+  structuredMapExtractResult: null,
+  setStructuredMapExtractMap: (structureMap: StructureMap | null) =>
+    set(() => ({ structuredMapExtractMap: structureMap })),
+  setStructuredMapExtractResult: (result: FhirResource | null) =>
+    set(() => ({ structuredMapExtractResult: result }))
+}));
+
+export const useExtractDebuggerStore = createSelectors(extractDebuggerStore);

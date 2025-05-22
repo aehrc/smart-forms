@@ -1,15 +1,23 @@
 import { useState } from 'react';
 import GenericStatePropertyPicker from './GenericStatePropertyPicker.tsx';
 import GenericViewer from './GenericViewer.tsx';
-import useShowTerminologyServerStoreProperty from '../../hooks/useShowTerminologyServerStoreProperty.ts';
+import useShowQuestionnaireResponseStoreProperty from '../../hooks/useShowQuestionnaireResponseStoreProperty.ts';
 
 const terminologyServerStorePropertyNames: string[] = ['url'];
 
 function TerminologyServerStoreViewer() {
   const [selectedProperty, setSelectedProperty] = useState('url');
-  const [showJsonTree, setShowJsonTree] = useState(false);
+  const [viewMode, setViewMode] = useState<'text' | 'jsonTree' | 'table'>('text');
 
-  const propertyObject = useShowTerminologyServerStoreProperty(selectedProperty);
+  const propertyObject = useShowQuestionnaireResponseStoreProperty(selectedProperty);
+
+  function handleViewModeChange(newViewMethod: 'text' | 'jsonTree' | 'table' | null) {
+    if (newViewMethod === null) {
+      return;
+    }
+
+    setViewMode(newViewMethod);
+  }
 
   return (
     <>
@@ -21,8 +29,8 @@ function TerminologyServerStoreViewer() {
       <GenericViewer
         propertyName={selectedProperty}
         propertyObject={propertyObject}
-        showJsonTree={showJsonTree}
-        onToggleShowJsonTree={setShowJsonTree}
+        viewMode={viewMode}
+        onViewModeChange={handleViewModeChange}
       />
     </>
   );

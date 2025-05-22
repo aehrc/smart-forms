@@ -17,10 +17,10 @@
 
 import type {
   Attachment,
+  FhirResource,
   OperationOutcome,
   Parameters,
-  ParametersParameter,
-  QuestionnaireResponse
+  ParametersParameter
 } from 'fhir/r4';
 
 /**
@@ -39,7 +39,7 @@ type OutputParamArray =
 
 export interface ReturnParameter extends ParametersParameter {
   name: 'return';
-  resource: QuestionnaireResponse;
+  resource: FhirResource;
 }
 
 export interface IssuesParameter extends ParametersParameter {

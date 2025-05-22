@@ -1,4 +1,7 @@
-import type { TemplateExtractPath } from '../interfaces/templateExtractPath.interface';
+import type {
+  TemplateExtractPath,
+  TemplateExtractPathJsObject
+} from '../interfaces/templateExtractPath.interface';
 
 /**
  * Logs a summary table of all extractable context and value paths from a given template.
@@ -73,14 +76,61 @@ export function logTemplateExtractPathMapFull(
     }
   }
 
-  console.log(`\n🔢All columns for: ${templateId}`);
+  console.log(`\n📋 Contexts and values for template: ${templateId}`);
   console.table(table);
 }
 
-export interface TemplateExtractResultDebugRow {
-  entryPath: string;
-  contextResult: any;
-  valueResult: any;
+// JS Object version
+export function logTemplateExtractPathMapJsObjectFull(
+  templateId: string,
+  templateExtractPathMap: Record<string, TemplateExtractPathJsObject>
+) {
+  const table: {
+    entryPath: string;
+    contextPath: string | null;
+    contextExpression: string | null;
+    contextResult: any;
+    valuePath: string | null;
+    valueExpression: string | null;
+    valueResult: any;
+  }[] = [];
+
+  for (const [entryPath, { contextPathTuple, valuePathMap }] of Object.entries(
+    templateExtractPathMap
+  )) {
+    const contextPath = contextPathTuple?.[0] ?? null;
+    const contextExpression = contextPathTuple?.[1]?.contextExpression ?? null;
+    const contextResult = contextPathTuple?.[1]?.contextResult ?? null;
+
+    const valuePaths = Object.entries(valuePathMap ?? {});
+
+    if (valuePaths.length > 0) {
+      for (const [valuePath, { valueExpression, valueResult }] of valuePaths) {
+        table.push({
+          entryPath,
+          contextPath,
+          contextExpression,
+          contextResult,
+          valuePath,
+          valueExpression,
+          valueResult
+        });
+      }
+    } else {
+      table.push({
+        entryPath,
+        contextPath,
+        contextExpression,
+        contextResult,
+        valuePath: null,
+        valueExpression: null,
+        valueResult: null
+      });
+    }
+  }
+
+  console.log(`\n📋 Contexts and values for template: ${templateId}`);
+  console.table(table);
 }
 
 /**
@@ -143,6 +193,44 @@ export function logTemplateExtractPathMapResults(
     }
   }
 
-  console.log(`\n🔹Result columns for: ${templateId}`);
+  console.log(`\n🔹Context and value results for: ${templateId}`);
+  console.table(table);
+}
+
+// JS Object version
+export function logTemplateExtractPathMapJsObjectResults(
+  templateId: string,
+  templateExtractPathMap: Record<string, TemplateExtractPathJsObject>
+) {
+  const table: {
+    entryPath: string;
+    contextResult: any;
+    valueResult: any;
+  }[] = [];
+
+  for (const [entryPath, { contextPathTuple, valuePathMap }] of Object.entries(
+    templateExtractPathMap
+  )) {
+    const contextResult = contextPathTuple?.[1]?.contextResult ?? null;
+
+    const valuePaths = Object.values(valuePathMap ?? {});
+    if (valuePaths.length > 0) {
+      for (const { valueResult } of valuePaths) {
+        table.push({
+          entryPath,
+          contextResult,
+          valueResult
+        });
+      }
+    } else {
+      table.push({
+        entryPath,
+        contextResult,
+        valueResult: null
+      });
+    }
+  }
+
+  console.log(`\n🔹Context and value results for: ${templateId}`);
   console.table(table);
 }

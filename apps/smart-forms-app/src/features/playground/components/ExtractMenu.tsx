@@ -22,10 +22,9 @@ import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 import { useState } from 'react';
 import { CircularProgress, Fade, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import { useExtractOperationStore } from '../stores/extractOperationStore.ts';
+import { useExtractDebuggerStore } from '../stores/extractDebuggerStore.ts';
 import { FORMS_SERVER_URL } from '../../../globals.ts';
 import Iconify from '../../../components/Iconify/Iconify.tsx';
-// import { extract } from '@aehrc/sdc-template-extract';
 
 interface ExtractMenuProps {
   isExtracting: boolean;
@@ -37,7 +36,7 @@ interface ExtractMenuProps {
 function ExtractMenu(props: ExtractMenuProps) {
   const { isExtracting, onObservationExtract, onStructureMapExtract, onTemplateExtract } = props;
 
-  const targetStructureMap = useExtractOperationStore.use.targetStructureMap();
+  const structuredMapExtractMap = useExtractDebuggerStore.use.structuredMapExtractMap();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -50,23 +49,7 @@ function ExtractMenu(props: ExtractMenuProps) {
     setAnchorEl(null);
   };
 
-  const handleTemplateExtract = async () => {
-    try {
-      // const sampleText = sampleFunction();
-      // console.log(
-      //   `${sampleText} text from the sdc-template-extract library, if you see this then the library is working correctly`
-      // );
-      await onTemplateExtract();
-    } catch (error) {
-      console.error('Template extraction failed:', error);
-      alert(
-        'Template extraction failed: ' + (error instanceof Error ? error.message : 'Unknown error')
-      );
-    }
-    handleClose();
-  };
-
-  const structuredMapExtractEnabled = targetStructureMap !== null;
+  const structuredMapExtractEnabled = structuredMapExtractMap !== null;
   const structuredMapToolTipText = structuredMapExtractEnabled
     ? ''
     : `The current questionnaire does not have a target StructureMap for $extract, or the target StructureMap cannot be found on ${FORMS_SERVER_URL}`;
@@ -135,7 +118,11 @@ function ExtractMenu(props: ExtractMenuProps) {
             </MenuItem>
           </span>
         </Tooltip>
-        <MenuItem onClick={handleTemplateExtract}>
+        <MenuItem
+          onClick={() => {
+            onTemplateExtract();
+            handleClose();
+          }}>
           <ListItemIcon>
             <Iconify icon="mdi:file-document-edit" />
           </ListItemIcon>
