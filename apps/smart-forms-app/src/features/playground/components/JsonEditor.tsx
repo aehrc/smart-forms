@@ -148,12 +148,7 @@ function JsonEditor(props: JsonEditorProps) {
           }}
         />
       ) : (
-        <Box sx={{ height: '100%', overflow: 'auto' }}>
-          <StoreStateViewer
-            selectedStore={selectedStore}
-            sourceFhirServerUrl={sourceFhirServerUrl}
-          />
-        </Box>
+        <StoreStateViewer selectedStore={selectedStore} sourceFhirServerUrl={sourceFhirServerUrl} />
       )}
     </Box>
   );
