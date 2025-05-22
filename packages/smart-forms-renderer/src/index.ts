@@ -41,8 +41,7 @@ export type {
   SmartConfigStoreType,
   TerminologyServerStoreType,
   RendererStyling,
-  RendererStylingStoreType,
-  ExtractOperationStoreType
+  RendererStylingStoreType
 } from './stores';
 export {
   questionnaireStore,
@@ -54,9 +53,7 @@ export {
   terminologyServerStore,
   useTerminologyServerStore,
   rendererStylingStore,
-  useRendererStylingStore,
-  extractOperationStore,
-  useExtractOperationStore
+  useRendererStylingStore
 } from './stores';
 
 // hooks exports
