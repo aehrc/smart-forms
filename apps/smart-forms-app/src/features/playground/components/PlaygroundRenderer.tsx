@@ -51,10 +51,9 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
   } = props;
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const setPopulatedContext = useQuestionnaireStore.use.setPopulatedContext();
 
   const [isPopulating, setIsPopulating] = useState(false);
-  // const [populatedContext, setPopulatedContext] = useState<Record<string, object> | null>(null);
-  // const [setPopulatedContext] = useState<Record<string, object> | null>(null);
 
   const { patientName, userName } = useLaunchContextNames(patient, user);
 
@@ -82,8 +81,7 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
         return;
       }
 
-      // const { populatedResponse, populatedContext } = populateResult;
-      const { populatedResponse } = populateResult;
+      const { populatedResponse, populatedContext } = populateResult;
 
       // Call to buildForm to pre-populate the QR which repaints the entire BaseRenderer view
       await buildFormWrapper(
@@ -93,16 +91,16 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
         terminologyServerUrl,
         { patient }
       );
-      // if (populatedContext) {
-      //   setPopulatedContext(populatedContext);
-      // }
+      if (populatedContext) {
+        setPopulatedContext(populatedContext, true);
+      }
 
       setIsPopulating(false);
     });
   }
 
   return (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <>
       <Box display="flex" alignItems="center" columnGap={1.5} mx={1}>
         <PrePopButtonForPlayground
           prePopEnabled={prePopEnabled}
@@ -132,7 +130,7 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
           <BaseRenderer />
         </Box>
       )}
-    </Box>
+    </>
   );
 }
 

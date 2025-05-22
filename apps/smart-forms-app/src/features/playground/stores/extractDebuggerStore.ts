@@ -38,6 +38,9 @@ export interface ExtractDebuggerStoreType {
   structuredMapExtractResult: FhirResource | null;
   setStructuredMapExtractMap: (structureMap: StructureMap | null) => void;
   setStructuredMapExtractResult: (result: FhirResource | null) => void;
+
+  // Reset store
+  resetStore: () => void;
 }
 
 export const extractDebuggerStore = createStore<ExtractDebuggerStoreType>()((set) => ({
@@ -63,7 +66,18 @@ export const extractDebuggerStore = createStore<ExtractDebuggerStoreType>()((set
   setStructuredMapExtractMap: (structureMap: StructureMap | null) =>
     set(() => ({ structuredMapExtractMap: structureMap })),
   setStructuredMapExtractResult: (result: FhirResource | null) =>
-    set(() => ({ structuredMapExtractResult: result }))
+    set(() => ({ structuredMapExtractResult: result })),
+
+  // Reset store
+  resetStore: () =>
+    set(() => ({
+      observationExtractResult: null,
+      templateExtractResult: null,
+      templateExtractDebugInfo: null,
+      templateExtractIssues: null,
+      structuredMapExtractMap: null,
+      structuredMapExtractResult: null
+    }))
 }));
 
 export const useExtractDebuggerStore = createSelectors(extractDebuggerStore);
