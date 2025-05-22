@@ -70,7 +70,9 @@ function TemplateExtractDebugTable(props: TemplateExtractDebugTableProps) {
 
         return (
           <div key={templateId} style={{ marginBottom: '2rem' }}>
-            <h3>Template "{templateId}" contexts and values</h3>
+            <h3>
+              Template <b>{templateId}</b> contexts and values
+            </h3>
             <div style={{ overflowX: 'auto' }}>
               <table className="console-table">
                 <thead>

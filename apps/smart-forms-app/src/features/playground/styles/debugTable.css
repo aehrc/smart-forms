@@ -1,23 +1,23 @@
 .console-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: monospace;
-    font-size: 10px;
+  width: 100%;
+  border-collapse: collapse;
+  font-family: monospace;
+  font-size: 10px;
 }
 
 .console-table th,
 .console-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
 }
 
 .console-table th {
-    background-color: #f4f4f4;
-    color: #333;
-    font-weight: bold;
+  background-color: #f4f4f4;
+  color: #333;
+  font-weight: bold;
 }
 
 .console-table tr:nth-child(even) {
-    background-color: #f9f9f9;
+  background-color: #f9f9f9;
 }

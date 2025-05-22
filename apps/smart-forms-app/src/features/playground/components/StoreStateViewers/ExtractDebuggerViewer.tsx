@@ -1,16 +1,15 @@
 import { useState } from 'react';
 import GenericStatePropertyPicker from './GenericStatePropertyPicker.tsx';
 import GenericViewer from './GenericViewer.tsx';
-import { Box, Tooltip } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
+import { Box, Button, Tooltip } from '@mui/material';
 import { useSnackbar } from 'notistack';
 import { extractedResourceIsBatchBundle } from '../../api/extract.ts';
 import { HEADERS } from '../../../../api/headers.ts';
 import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
 import useShowExtractDebuggerStoreProperty from '../../hooks/useShowExtractDebuggerStoreProperty.ts';
 import TemplateExtractDebugTable from './TemplateExtractDebugTable.tsx';
-import { TemplateExtractDebugInfo } from '@aehrc/sdc-template-extract';
-import { FhirResource } from 'fhir/r4';
+import type { TemplateExtractDebugInfo } from '@aehrc/sdc-template-extract';
+import type { FhirResource } from 'fhir/r4';
 
 const extractDebuggerPropertyNames: string[] = [
   'observationExtractResult',
@@ -106,12 +105,9 @@ function ExtractDebuggerViewer(props: ExtractDebuggerViewerProps) {
                   : 'No extracted resource to write back, or resource is not a batch/tranaction bundle.'
               }>
               <span>
-                <LoadingButton
-                  loading={writingBack}
-                  disabled={!writeBackEnabled}
-                  onClick={handleExtract}>
+                <Button loading={writingBack} disabled={!writeBackEnabled} onClick={handleExtract}>
                   Write back
-                </LoadingButton>
+                </Button>
               </span>
             </Tooltip>
           </Box>
