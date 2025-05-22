@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Questionnaire } from 'fhir/r4';
+import type { Questionnaire } from 'fhir/r4';
 
 export function allocateIdsForExtract(questionnaire: Questionnaire): Record<string, string> {
   const extractAllocateIds = getExtractAllocateIds(questionnaire);

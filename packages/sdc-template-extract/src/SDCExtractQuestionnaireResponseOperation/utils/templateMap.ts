@@ -22,7 +22,7 @@ import {
   getQuestionnaireResponseItem,
   getQuestionnaireResponseItemFhirPath
 } from './misc';
-import { TemplateExtractReference } from '../interfaces/templateExtractReference.interface';
+import type { TemplateExtractReference } from '../interfaces/templateExtractReference.interface';
 
 /**
  * Builds a map of contained template resources (by `id`) to their contextual metadata

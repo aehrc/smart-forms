@@ -1,8 +1,8 @@
-import {
+import type {
   TemplateDetails,
   TemplateExtractPathJsObject
 } from '../interfaces/templateExtractPath.interface';
-import { FhirResource, OperationOutcomeIssue, QuestionnaireResponse } from 'fhir/r4';
+import type { FhirResource, OperationOutcomeIssue, QuestionnaireResponse } from 'fhir/r4';
 import { createTemplateExtractPathMap } from './templateExtractPath';
 import { evaluateTemplateExtractPaths } from './evaluateTemplateExtractPath';
 import { insertValuesToTemplate } from './templateInsert';

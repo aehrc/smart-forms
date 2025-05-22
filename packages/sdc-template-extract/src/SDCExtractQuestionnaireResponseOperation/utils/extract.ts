@@ -1,7 +1,7 @@
-import { InputParameters } from '../interfaces/inputParameters.interface';
+import type { InputParameters } from '../interfaces/inputParameters.interface';
 import type { TemplateExtractDebugInfo } from '../interfaces';
-import { OutputParameters } from '../interfaces';
-import {
+import type { OutputParameters } from '../interfaces';
+import type {
   FetchResourceCallback,
   FetchResourceRequestConfig
 } from '../interfaces/callback.interface';

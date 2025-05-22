@@ -1,6 +1,6 @@
 import fhirpath, { type Model } from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
-import { OperationOutcomeIssue } from 'fhir/r4';
+import type { OperationOutcomeIssue } from 'fhir/r4';
 import { createInvalidWarningIssue } from './operationOutcome';
 
 /**

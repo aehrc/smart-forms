@@ -1,5 +1,5 @@
-import { Bundle, FhirResource } from 'fhir/r4';
-import { TemplateDetails } from '../interfaces/templateExtractPath.interface';
+import type { Bundle, FhirResource } from 'fhir/r4';
+import type { TemplateDetails } from '../interfaces/templateExtractPath.interface';
 import { fhirPathEvaluate } from './fhirpathEvaluate';
 import { v4 as uuidv4 } from 'uuid';
 

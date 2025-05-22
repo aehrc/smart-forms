@@ -1,5 +1,5 @@
-import { FhirResource, OperationOutcomeIssue } from 'fhir/r4';
-import { TemplateExtractPath } from '../interfaces/templateExtractPath.interface';
+import type { FhirResource, OperationOutcomeIssue } from 'fhir/r4';
+import type { TemplateExtractPath } from '../interfaces/templateExtractPath.interface';
 import {
   walkTemplateForContexts,
   walkTemplateForContextValues,

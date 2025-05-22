@@ -1,5 +1,5 @@
 import type { FhirResource, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { TemplateExtractReference } from './templateExtractReference.interface';
+import type { TemplateExtractReference } from './templateExtractReference.interface';
 
 /**
  * Represents the key details of a template used in a Questionnaire `contained` resource.
