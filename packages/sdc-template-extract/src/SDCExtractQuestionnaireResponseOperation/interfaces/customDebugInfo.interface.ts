@@ -1,5 +1,5 @@
-import type { TemplateExtractPathJsObject } from './templateExtractPath.interface';
+import type { TemplateExtractPathJsObjectTuple } from './templateExtractPath.interface';
 
 export interface TemplateExtractDebugInfo {
-  templateIdToExtractPaths: Record<string, Record<string, TemplateExtractPathJsObject>>;
+  templateIdToExtractPathTuples: Record<string, TemplateExtractPathJsObjectTuple[]>;
 }

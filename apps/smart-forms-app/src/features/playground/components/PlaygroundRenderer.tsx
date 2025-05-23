@@ -99,7 +99,19 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
 
   return (
     <>
-      <Box display="flex" alignItems="center" columnGap={1.5} mx={1}>
+      <Box
+        display="flex"
+        alignItems="center"
+        columnGap={1}
+        px={1}
+        sx={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 10,
+          backgroundColor: 'white',
+          borderBottom: '1px solid',
+          borderColor: 'divider'
+        }}>
         <PrePopButtonForPlayground
           prePopEnabled={prePopEnabled}
           isPopulating={isPopulating}

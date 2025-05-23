@@ -123,7 +123,7 @@ function getQuestionnaireResponseItemRecursive(
  *
  * @param questionnaireResponse - The QuestionnaireResponse to search through.
  * @param targetLinkId - The linkId of the item to find.
- * @returns A FHIRPath string to the item if found (e.g., "QuestionnaireResponse.item[0].item[2]"), or null if not found.
+ * @returns A FHIRPath string using .item.where(linkId='...') syntax, or null if not found.
  */
 export function getQuestionnaireResponseItemFhirPath(
   questionnaireResponse: QuestionnaireResponse,
@@ -134,8 +134,12 @@ export function getQuestionnaireResponseItemFhirPath(
     return null;
   }
 
-  for (const [i, item] of topLevelQRItems.entries()) {
-    const path = getQuestionnaireResponseItemFhirPathRecursive(item, targetLinkId, `item[${i}]`);
+  for (const item of topLevelQRItems) {
+    const path = getQuestionnaireResponseItemFhirPathRecursive(
+      item,
+      targetLinkId,
+      `item.where(linkId='${item.linkId}')`
+    );
     if (path) {
       return path;
     }
@@ -149,7 +153,7 @@ export function getQuestionnaireResponseItemFhirPath(
  *
  * @param qrItem - The current QuestionnaireResponseItem being traversed.
  * @param targetLinkId - The target linkId to match.
- * @param currentPath - The current FHIRPath traversal string (e.g., "item[1].item[2]").
+ * @param currentPath - The current FHIRPath traversal string using .where(linkId='...')
  * @returns A full FHIRPath string to the target item if found, or null if not found.
  */
 function getQuestionnaireResponseItemFhirPathRecursive(
@@ -163,11 +167,12 @@ function getQuestionnaireResponseItemFhirPathRecursive(
 
   const childQRItems = qrItem.item;
   if (childQRItems) {
-    for (const [i, childQRItem] of childQRItems.entries()) {
+    for (const childQRItem of childQRItems) {
+      const nextPath = `${currentPath}.item.where(linkId='${childQRItem.linkId}')`;
       const childPath = getQuestionnaireResponseItemFhirPathRecursive(
         childQRItem,
         targetLinkId,
-        `${currentPath}.item[${i}]`
+        nextPath
       );
       if (childPath) {
         return childPath;

@@ -4,7 +4,8 @@ import {
   parseFhirPathToWritableSegments
 } from './parseFhirPath';
 import type { TemplateExtractPath } from '../interfaces/templateExtractPath.interface';
-import type { FhirResource } from 'fhir/r4'; // Use your existing FHIRPath parser
+import type { FhirResource } from 'fhir/r4';
+import { valueIsCoding } from './typePredicates'; // Use your existing FHIRPath parser
 
 /**
  * Insert extracted value results to a deep clone of the given FHIR template,
@@ -20,19 +21,8 @@ export function insertValuesToTemplate(
 ): any {
   const mutatedTemplate = structuredClone(template); // Deep copy the template
 
-  // Insert values into the template
-  for (const [, { valuePathMap }] of templateExtractPathMap.entries()) {
-    for (const [valuePath, { valueResult }] of valuePathMap.entries()) {
-      const writableSegments = parseFhirPathToWritableSegments(valuePath);
-      insertValueAtPath(mutatedTemplate, valuePath, writableSegments, valueResult);
-    }
-  }
-
   // Cleanup template artifacts e.g. templateExtractContext and templateExtractValue extensions
-  for (const [
-    templateExtractPath,
-    { contextPathTuple, valuePathMap }
-  ] of templateExtractPathMap.entries()) {
+  for (const [entryPath, { contextPathTuple, valuePathMap }] of templateExtractPathMap.entries()) {
     // Delete templateExtractValue extension
     for (const [valuePath] of valuePathMap.entries()) {
       const valuePathSegments = parseFhirPath(valuePath);
@@ -41,9 +31,8 @@ export function insertValuesToTemplate(
         valuePathSegments,
         'value'
       );
-      deleteExtensionAtPath(mutatedTemplate, templateExtractPath, adjustedDeletePathSegments);
+      deleteExtensionAtPath(mutatedTemplate, entryPath, adjustedDeletePathSegments);
     }
-
     // Delete templateExtractContext extension
     const contextPath = contextPathTuple?.[0] ?? null;
     if (contextPath) {
@@ -53,7 +42,15 @@ export function insertValuesToTemplate(
         contextPathSegments,
         'context'
       );
-      deleteExtensionAtPath(mutatedTemplate, templateExtractPath, adjustedDeletePathSegments);
+      deleteExtensionAtPath(mutatedTemplate, entryPath, adjustedDeletePathSegments);
+    }
+  }
+
+  // Insert values into the template
+  for (const [, { valuePathMap }] of templateExtractPathMap.entries()) {
+    for (const [valuePath, { valueResult }] of valuePathMap.entries()) {
+      const writableSegments = parseFhirPathToWritableSegments(valuePath);
+      insertValueAtPath(mutatedTemplate, valuePath, writableSegments, valueResult);
     }
   }
 
@@ -72,13 +69,13 @@ export function insertValuesToTemplate(
  * @param {any} obj - The FHIR resource or nested object to walk. Can be an array, object, primitive, or null.
  * @param {string} fullPath - The full FHIRPath-style path for error reporting.
  * @param {(string | number)[]} pathSegments - The FHIRPath-style path as segments.
- * @param {any} valueToInsert - The value to assign at the last segment of the path.
+ * @param {any} valueResultToInsert - The value to assign at the last segment of the path.
  */
 function insertValueAtPath(
   obj: any,
   fullPath: string,
   pathSegments: (string | number)[],
-  valueToInsert: any
+  valueResultToInsert: any
 ): void {
   if (!obj || typeof obj !== 'object') {
     return;
@@ -118,27 +115,44 @@ function insertValueAtPath(
     );
   }
 
+  const value = getValueFromResult(valueResultToInsert);
+
   // valueToInsert is undefined, skip assignment
-  if (valueToInsert === undefined) {
+  if (value === undefined) {
     return;
   }
 
   // Assign value at the resolved location
-  current[finalSegment] = stringifyValue(valueToInsert);
+  current[finalSegment] = value;
 }
 
 /**
- * Converts a value (array, object, primitive) to a string.
- * Returns the first element if it's a 1-item array.
+ * Extracts a usable value from a valueResult returned by a FHIRPath evaluation.
  *
- * @param {any} value
- * @returns {string}
+ * - If the result is a single-item array:
+ *   - If the item is a FHIR `Coding`, returns an object with only defined fields (`code`, `display`, `system`).
+ *   - Otherwise, returns the single item directly.
+ * - If the result is an array with multiple values or unexpected structure, returns a JSON stringified version. FIXME
+ *
+ * @param {any} valueResult - The result of a FHIRPath evaluation. Usually an array.
+ * @returns {string | number | object} A simplified value ready for assignment to the extracted template location.
  */
-function stringifyValue(value: any): string {
-  if (Array.isArray(value) && value.length === 1) {
-    return String(value[0]);
+function getValueFromResult(valueResult: any): string | number | object | undefined {
+  if (Array.isArray(valueResult) && valueResult.length === 1) {
+    const value = valueResult[0];
+    if (valueIsCoding(value)) {
+      return {
+        ...(value.system && { system: value.system }),
+        ...(value.code && { code: value.code }),
+        ...(value.display && { display: value.display })
+      };
+    }
+
+    return value;
   }
-  return JSON.stringify(value);
+
+  // Return badly formed valueResult as undefined
+  return undefined;
 }
 
 /**

@@ -17,11 +17,7 @@
 
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import type { TemplateDetails } from '../interfaces/templateExtractPath.interface';
-import {
-  getQuestionnaireItem,
-  getQuestionnaireResponseItem,
-  getQuestionnaireResponseItemFhirPath
-} from './misc';
+import { getQuestionnaireItem, getQuestionnaireResponseItemFhirPath } from './misc';
 import type { TemplateExtractReference } from '../interfaces/templateExtractReference.interface';
 
 /**
@@ -61,7 +57,6 @@ export function createContainedTemplateMap(
         const targetLinkId = templateIdToLinkIdMap.get(containedResource.id) ?? '';
 
         const targetQItem = getQuestionnaireItem(questionnaire, targetLinkId);
-        const targetQRItem = getQuestionnaireResponseItem(questionnaireResponse, targetLinkId);
         const targetQRItemFhirPath = getQuestionnaireResponseItemFhirPath(
           questionnaireResponse,
           targetLinkId
@@ -74,7 +69,6 @@ export function createContainedTemplateMap(
             templateExtractReference: templateExtractReference,
             targetLinkId: targetLinkId,
             targetQItem: targetQItem,
-            ...(targetQRItem && { targetQRItem }),
             ...(targetQRItemFhirPath && { targetQRItemFhirPath })
           });
         }

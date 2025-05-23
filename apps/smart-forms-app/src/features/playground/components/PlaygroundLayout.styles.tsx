@@ -24,6 +24,7 @@ export const PlaygroundMain = styled(Box)(({ theme }) => ({
   overflow: 'auto',
   minHeight: '100%',
   paddingTop: APP_BAR_PLAYGROUND,
+  backgroundColor: theme.palette.background.paper,
   [theme.breakpoints.up('md')]: {
     paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(1)

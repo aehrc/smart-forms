@@ -30,8 +30,19 @@ function GenericViewer(props: GenericViewerProps) {
   }
 
   return (
-    <Stack px={0.5}>
-      <Stack direction="row" justifyContent="space-between">
+    <Stack sx={{ height: '100%' }}>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        px={0.5}
+        sx={{
+          position: 'sticky',
+          top: 43,
+          backgroundColor: 'white',
+          zIndex: 5,
+          borderBottom: '1px solid',
+          borderColor: 'divider'
+        }}>
         <Stack direction="row" alignItems="center">
           <Typography variant="h5">{propertyName}</Typography>
           <ToggleButtonGroup
@@ -39,7 +50,7 @@ function GenericViewer(props: GenericViewerProps) {
             color="primary"
             value={viewMode}
             exclusive
-            sx={{ m: 0.5, height: 36 }}
+            sx={{ mx: 0.5, height: 32 }}
             onChange={(_, newViewMode) => {
               onViewModeChange(newViewMode);
             }}
@@ -58,6 +69,7 @@ function GenericViewer(props: GenericViewerProps) {
           </ToggleButtonGroup>
           <Tooltip title="Copy to clipboard">
             <IconButton
+              size="small"
               onClick={() => {
                 navigator.clipboard
                   .writeText(JSON.stringify(propertyObject, null, 2))
@@ -73,9 +85,9 @@ function GenericViewer(props: GenericViewerProps) {
           </Tooltip>
         </Stack>
       </Stack>
-      <Box display="flex" columnGap={1}></Box>
+      <Box display="flex" columnGap={1} />
 
-      <Box p={0.5} pb={100}>
+      <Box p={0.5} pb={30} sx={{ overflow: 'auto' }}>
         <Typography color="text.secondary" pb={1}>
           {viewMode === 'text' ? 'Text view is good for fast Ctrl+F debugging.' : null}
           {viewMode === 'jsonTree'

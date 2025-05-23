@@ -1,10 +1,12 @@
 import type {
   TemplateExtractDebugInfo,
-  TemplateExtractPathJsObject
+  TemplateExtractPathJsObjectTuple
 } from '@aehrc/sdc-template-extract';
 import { logTemplateExtractPathMapJsObjectFull } from '@aehrc/sdc-template-extract';
 import '../../styles/debugTable.css';
+import { Fragment } from 'react';
 import { Button } from '@mui/material';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 
 interface TemplateExtractDebugTableProps {
   templateExtractDebugInfo: TemplateExtractDebugInfo;
@@ -12,108 +14,168 @@ interface TemplateExtractDebugTableProps {
 
 function TemplateExtractDebugTable(props: TemplateExtractDebugTableProps) {
   const { templateExtractDebugInfo } = props;
-  const templateIdToExtractPaths: Record<
-    string,
-    Record<string, TemplateExtractPathJsObject>
-  > = templateExtractDebugInfo.templateIdToExtractPaths;
+  const templateIdToExtractPathTuples: Record<string, TemplateExtractPathJsObjectTuple[]> =
+    templateExtractDebugInfo.templateIdToExtractPathTuples;
 
   return (
     <>
-      {Object.entries(templateIdToExtractPaths).map(([templateId, templateExtractPaths]) => {
-        const rows: {
-          index: number;
-          entryPath: string;
-          contextPath: string | null;
-          contextExpression: string | null;
-          contextResult: string | null;
-          valuePath: string | null;
-          valueExpression: string | null;
-          valueResult: string | null;
-        }[] = [];
+      {Object.entries(templateIdToExtractPathTuples).map(
+        ([templateId, templateExtractPathTupleInstances]) =>
+          templateExtractPathTupleInstances.map(
+            ([fullUrl, templateExtractPaths], instanceIndex) => {
+              const rows: {
+                index: number;
+                entryPath: string;
+                contextPath: string | null;
+                contextExpression: string | null;
+                contextResult: any | null;
+                valuePath: string | null;
+                valueExpression: string | null;
+                valueResult: any | null;
+              }[] = [];
 
-        let index = 0;
-        for (const [entryPath, templateExtractPath] of Object.entries(templateExtractPaths)) {
-          const contextPath = templateExtractPath.contextPathTuple?.[0] ?? null;
-          const contextExpression =
-            templateExtractPath.contextPathTuple?.[1]?.contextExpression ?? null;
-          const contextResult = templateExtractPath.contextPathTuple?.[1]?.contextResult ?? null;
+              let index = 0;
+              for (const [entryPath, templateExtractPath] of Object.entries(templateExtractPaths)) {
+                const contextPath = templateExtractPath.contextPathTuple?.[0] ?? null;
+                const contextExpression =
+                  templateExtractPath.contextPathTuple?.[1]?.contextExpression ?? null;
+                const contextResult =
+                  templateExtractPath.contextPathTuple?.[1]?.contextResult ?? null;
 
-          const valueMap = templateExtractPath.valuePathMap ?? {};
-          const valuePaths = Object.entries(valueMap);
+                const valueMap = templateExtractPath.valuePathMap ?? {};
+                const valuePaths = Object.entries(valueMap);
 
-          if (valuePaths.length === 0) {
-            rows.push({
-              index: index++,
-              entryPath,
-              contextPath,
-              contextExpression,
-              contextResult: JSON.stringify(contextResult),
-              valuePath: null,
-              valueExpression: null,
-              valueResult: null
-            });
-          } else {
-            for (const [valuePath, { valueExpression, valueResult }] of valuePaths) {
-              rows.push({
-                index: index++,
-                entryPath,
-                contextPath,
-                contextExpression,
-                contextResult: JSON.stringify(contextResult),
-                valuePath,
-                valueExpression,
-                valueResult: JSON.stringify(valueResult)
-              });
+                if (valuePaths.length === 0) {
+                  rows.push({
+                    index: index++,
+                    entryPath,
+                    contextPath,
+                    contextExpression,
+                    contextResult,
+                    valuePath: null,
+                    valueExpression: null,
+                    valueResult: null
+                  });
+                } else {
+                  for (const [valuePath, { valueExpression, valueResult }] of valuePaths) {
+                    rows.push({
+                      index: index++,
+                      entryPath,
+                      contextPath,
+                      contextExpression,
+                      contextResult,
+                      valuePath,
+                      valueExpression,
+                      valueResult
+                    });
+                  }
+                }
+              }
+
+              return (
+                <div key={`${templateId}-${fullUrl}`} style={{ marginBottom: '2rem' }}>
+                  <div style={{ marginBottom: '0.5rem' }}>
+                    <b>{templateId}</b> [{fullUrl ?? `#${instanceIndex + 1}`}] contexts and values
+                  </div>
+                  <div style={{ overflowX: 'auto' }}>
+                    <table className="console-table">
+                      <thead>
+                        <tr>
+                          <th>entryPath</th>
+                          <th>contextPath</th>
+                          <th>contextExpression</th>
+                          <th>contextResult</th>
+                          <th>valuePath</th>
+                          <th>valueExpression</th>
+                          <th>valueResult</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {rows.map((row) => (
+                          <tr key={row.index}>
+                            <td>{renderFhirPathMultiline(row.entryPath)}</td>
+                            <td>{renderFhirPathMultiline(row.contextPath)}</td>
+                            <td>{renderFhirPathMultiline(row.contextExpression)}</td>
+                            <td
+                              style={{
+                                minWidth: '300px'
+                              }}>
+                              {row.contextResult ? (
+                                <SyntaxHighlighter
+                                  data-test="debug-viewer"
+                                  language="json"
+                                  customStyle={{
+                                    wordWrap: 'break-word',
+                                    whiteSpace: 'pre-wrap',
+                                    fontSize: 9.5,
+                                    backgroundColor: 'white'
+                                  }}>
+                                  {JSON.stringify(row.contextResult, null, 2)}
+                                </SyntaxHighlighter>
+                              ) : null}
+                            </td>
+                            <td>{renderFhirPathMultiline(row.valuePath)}</td>
+                            <td>{renderFhirPathMultiline(row.valueExpression)}</td>
+                            <td style={{ minWidth: '300px' }}>
+                              {row.valueResult ? (
+                                <SyntaxHighlighter
+                                  data-test="debug-viewer"
+                                  language="json"
+                                  customStyle={{
+                                    wordWrap: 'break-word',
+                                    whiteSpace: 'pre-wrap',
+                                    fontSize: 9.5,
+                                    backgroundColor: 'white'
+                                  }}>
+                                  {JSON.stringify(row.valueResult, null, 2)}
+                                </SyntaxHighlighter>
+                              ) : (
+                                <pre>{null}</pre>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <Button
+                    onClick={() => {
+                      logTemplateExtractPathMapJsObjectFull(templateId, templateExtractPaths);
+                    }}>
+                    Log table to console
+                  </Button>
+                </div>
+              );
             }
-          }
-        }
-
-        return (
-          <div key={templateId} style={{ marginBottom: '2rem' }}>
-            <h3>
-              Template <b>{templateId}</b> contexts and values
-            </h3>
-            <div style={{ overflowX: 'auto' }}>
-              <table className="console-table">
-                <thead>
-                  <tr>
-                    <th>index</th>
-                    <th>entryPath</th>
-                    <th>contextPath</th>
-                    <th>contextExpression</th>
-                    <th>contextResult</th>
-                    <th>valuePath</th>
-                    <th>valueExpression</th>
-                    <th>valueResult</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rows.map((row) => (
-                    <tr key={row.index}>
-                      <td>{row.index}</td>
-                      <td>{row.entryPath}</td>
-                      <td>{row.contextPath}</td>
-                      <td>{row.contextExpression}</td>
-                      <td>{row.contextResult}</td>
-                      <td>{row.valuePath}</td>
-                      <td>{row.valueExpression}</td>
-                      <td>{row.valueResult}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <Button
-              onClick={() => {
-                logTemplateExtractPathMapJsObjectFull(templateId, templateExtractPaths);
-              }}>
-              Log table to console
-            </Button>
-          </div>
-        );
-      })}
+          )
+      )}
     </>
   );
 }
 
 export default TemplateExtractDebugTable;
+
+/**
+ * Splits a FHIRPath string by dot (.) and renders each part on a new line.
+ *
+ * @param path - The FHIRPath string.
+ * @returns Multiline JSX output.
+ */
+function renderFhirPathMultiline(path: string | null) {
+  if (!path) {
+    return null;
+  }
+
+  const segments = path.split('.');
+  return (
+    <>
+      {segments.map((seg, index) => (
+        <Fragment key={index}>
+          {index > 0 && <br />}
+          {index > 0 && '.'}
+          {seg}
+        </Fragment>
+      ))}
+    </>
+  );
+}

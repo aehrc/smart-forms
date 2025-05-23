@@ -7,20 +7,22 @@ import { createTemplateExtractPathMap } from './templateExtractPath';
 import { evaluateTemplateExtractPaths } from './evaluateTemplateExtractPath';
 import { insertValuesToTemplate } from './templateInsert';
 import { templateExtractPathMapToRecord } from './mapToRecord';
+import { addIndexToTargetPath, getNumberOfTargetInstances } from './expressionManipulation';
 
 export function populateIntoTemplates(
   questionnaireResponse: QuestionnaireResponse,
   templateMap: Map<string, TemplateDetails>,
   extractAllocateIds: Record<string, string>
 ): {
-  extractedResourceMap: Map<string, FhirResource>;
+  extractedResourceMap: Map<string, FhirResource[]>;
   populateIntoTemplateWarnings: OperationOutcomeIssue[];
-  templateIdToExtractPaths: Record<string, Record<string, TemplateExtractPathJsObject>>;
+  templateIdToExtractPaths: Record<string, Record<string, TemplateExtractPathJsObject>[]>;
 } {
-  const extractedResourceMap: Map<string, FhirResource> = new Map<string, FhirResource>();
+  const extractedResourceMap: Map<string, FhirResource[]> = new Map<string, FhirResource[]>();
   const combinedWalkTemplateWarnings: OperationOutcomeIssue[] = [];
   const dataEvaluationWarnings: OperationOutcomeIssue[] = [];
-  const templateIdToExtractPaths: Record<string, Record<string, TemplateExtractPathJsObject>> = {};
+  const templateIdToExtractPaths: Record<string, Record<string, TemplateExtractPathJsObject>[]> =
+    {};
 
   for (const [templateId, templateDetails] of templateMap.entries()) {
     const { templateResource, targetQRItemFhirPath } = templateDetails;
@@ -31,22 +33,47 @@ export function populateIntoTemplates(
       templateResource
     );
     combinedWalkTemplateWarnings.push(...walkTemplateWarnings);
-    templateIdToExtractPaths[templateId] = templateExtractPathMapToRecord(templateExtractPathMap);
+    templateIdToExtractPaths[templateId] = [];
 
-    // Extract data from questionnaireResponse by evaluating templateExtractPaths
-    for (const [, templateExtractPath] of templateExtractPathMap.entries()) {
-      evaluateTemplateExtractPaths(
-        questionnaireResponse,
-        targetQRItemFhirPath,
-        templateExtractPath,
-        extractAllocateIds,
-        dataEvaluationWarnings
+    // Get number of instances for the target path
+    const numberOfTargetInstances = getNumberOfTargetInstances(
+      questionnaireResponse,
+      targetQRItemFhirPath,
+      dataEvaluationWarnings
+    );
+
+    // Evaluate template extract paths for each matching QRItem instance (e.g., multiple allergy items)
+    const extractedResourcesByTemplateId: FhirResource[] = [];
+    const extractPathsByTemplateId: Record<string, TemplateExtractPathJsObject>[] = [];
+    for (let i = 0; i < numberOfTargetInstances; i++) {
+      const templateExtractPathMapInstance = structuredClone(templateExtractPathMap);
+      const targetQRItemFhirPathWithIndex = addIndexToTargetPath(targetQRItemFhirPath, i);
+
+      // Evaluate each template extract path e.g. AllergyIntolerance.code, AllergyIntolerance.note
+      for (const [, templateExtractPath] of templateExtractPathMapInstance.entries()) {
+        evaluateTemplateExtractPaths(
+          questionnaireResponse,
+          targetQRItemFhirPathWithIndex,
+          templateExtractPath,
+          extractAllocateIds,
+          dataEvaluationWarnings
+        );
+      }
+
+      // Insert evaluated values into templates to get a complete resource instance
+      const extractedResource = insertValuesToTemplate(
+        templateResource,
+        templateExtractPathMapInstance
       );
+
+      // Add extracted resource and templateExtractPathMap instances to their respective arrays
+      extractedResourcesByTemplateId.push(extractedResource);
+      extractPathsByTemplateId.push(templateExtractPathMapToRecord(templateExtractPathMapInstance));
     }
 
-    // Insert evaluated values into templates to get complete resources
-    const extractResource = insertValuesToTemplate(templateResource, templateExtractPathMap);
-    extractedResourceMap.set(templateId, extractResource);
+    // Collate extracted resources and templateExtractPathMap instances
+    extractedResourceMap.set(templateId, extractedResourcesByTemplateId);
+    templateIdToExtractPaths[templateId] = extractPathsByTemplateId;
   }
 
   return {
