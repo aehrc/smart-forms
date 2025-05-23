@@ -1,5 +1,5 @@
 import type { Bundle, FhirResource } from 'fhir/r4';
-import {
+import type {
   TemplateDetails,
   TemplateExtractPathJsObject,
   TemplateExtractPathJsObjectTuple

@@ -1,4 +1,4 @@
-import {
+import type {
   TemplateDetails,
   TemplateExtractPathJsObject
 } from '../interfaces/templateExtractPath.interface';

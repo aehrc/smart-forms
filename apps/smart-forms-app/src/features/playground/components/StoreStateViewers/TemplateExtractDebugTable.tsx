@@ -1,8 +1,8 @@
-import {
-  logTemplateExtractPathMapJsObjectFull,
+import type {
   TemplateExtractDebugInfo,
   TemplateExtractPathJsObjectTuple
 } from '@aehrc/sdc-template-extract';
+import { logTemplateExtractPathMapJsObjectFull } from '@aehrc/sdc-template-extract';
 import '../../styles/debugTable.css';
 import { Fragment } from 'react';
 import { Button } from '@mui/material';
@@ -100,7 +100,7 @@ function TemplateExtractDebugTable(props: TemplateExtractDebugTableProps) {
                               style={{
                                 minWidth: '300px'
                               }}>
-                              {!!row.contextResult ? (
+                              {row.contextResult ? (
                                 <SyntaxHighlighter
                                   data-test="debug-viewer"
                                   language="json"
@@ -117,7 +117,7 @@ function TemplateExtractDebugTable(props: TemplateExtractDebugTableProps) {
                             <td>{renderFhirPathMultiline(row.valuePath)}</td>
                             <td>{renderFhirPathMultiline(row.valueExpression)}</td>
                             <td style={{ minWidth: '300px' }}>
-                              {!!row.valueResult ? (
+                              {row.valueResult ? (
                                 <SyntaxHighlighter
                                   data-test="debug-viewer"
                                   language="json"
