@@ -60,7 +60,7 @@ function useFetchQuestionnaires(
 
   const questionnaires: Questionnaire[] = useMemo(
     () => filterQuestionnaires(bundle, includeSubquestionnaires),
-    [bundle]
+    [bundle, includeSubquestionnaires]
   );
 
   return {
