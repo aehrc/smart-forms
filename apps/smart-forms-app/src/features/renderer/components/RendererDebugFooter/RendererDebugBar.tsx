@@ -17,6 +17,7 @@
 
 import { Box, FormControlLabel, Switch, Typography } from '@mui/material';
 import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import { useLocation } from 'react-router-dom';
 
 interface RendererDebugBarProps {
   isHidden: boolean;
@@ -26,14 +27,26 @@ interface RendererDebugBarProps {
 function RendererDebugBar(props: RendererDebugBarProps) {
   const { isHidden, toggleIsHidden } = props;
 
+  const { pathname } = useLocation();
+
+  const pathIsPlayground = pathname === '/playground';
+
   const enableWhenIsActivated = useQuestionnaireStore.use.enableWhenIsActivated();
   const toggleEnableWhenActivation = useQuestionnaireStore.use.toggleEnableWhenActivation();
 
   return (
-    <Box display="flex" flexDirection="row-reverse">
+    <Box
+      display="flex"
+      flexDirection="row-reverse"
+      sx={{
+        borderTop: '1px solid #ccc',
+        backdropFilter: 'blur(1px)',
+        backgroundColor: 'rgba(255, 255, 255, 0.7)'
+      }}>
       <FormControlLabel
         control={
           <Switch
+            size="small"
             onChange={(event) => toggleEnableWhenActivation(event.target.checked)}
             checked={enableWhenIsActivated}
           />
@@ -44,16 +57,22 @@ function RendererDebugBar(props: RendererDebugBarProps) {
           </Typography>
         }
       />
-      <FormControlLabel
-        control={
-          <Switch onChange={(event) => toggleIsHidden(event.target.checked)} checked={isHidden} />
-        }
-        label={
-          <Typography variant="overline">
-            {isHidden ? 'Debug panel hidden' : 'Debug panel shown'}
-          </Typography>
-        }
-      />
+      {pathIsPlayground ? null : (
+        <FormControlLabel
+          control={
+            <Switch
+              size="small"
+              onChange={(event) => toggleIsHidden(event.target.checked)}
+              checked={isHidden}
+            />
+          }
+          label={
+            <Typography variant="overline">
+              {isHidden ? 'Debug panel hidden' : 'Debug panel shown'}
+            </Typography>
+          }
+        />
+      )}
     </Box>
   );
 }
