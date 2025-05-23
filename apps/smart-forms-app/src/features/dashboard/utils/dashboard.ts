@@ -101,19 +101,27 @@ export function createQuestionnaireTitle(questionnaire: Questionnaire): string {
     : 'Untitled';
 }
 
-export function filterQuestionnaires(bundle: Bundle | undefined): Questionnaire[] {
+export function filterQuestionnaires(
+  bundle: Bundle | undefined,
+  includeSubquestionnaires: boolean
+): Questionnaire[] {
   if (!bundle || !bundle.entry || bundle.entry.length === 0) return [];
 
   return bundle.entry
     .filter((entry) => {
       if (entry.resource && entry.resource.resourceType === 'Questionnaire') {
+        // If includeSubquestionnaires flag=true, include subquestionnaires too
+        if (includeSubquestionnaires) {
+          return true;
+        }
+
         // filter questionnaires with extension of sdc-assemble-expectation
-        const assembledExpectation = entry.resource.extension?.find(
+        const hasAssembleExpectation = entry.resource.extension?.find(
           (extension) =>
             extension.url ===
             'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assemble-expectation'
         );
-        return !assembledExpectation;
+        return !hasAssembleExpectation;
       }
       return false;
     })

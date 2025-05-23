@@ -133,7 +133,7 @@ function propertyObjectIsTemplateExtractDebugInfo(
   }
 
   return (
-    'templateIdToExtractPaths' in propertyObject &&
-    typeof propertyObject.templateIdToExtractPaths === 'object'
+    'templateIdToExtractPathTuples' in propertyObject &&
+    typeof propertyObject.templateIdToExtractPathTuples === 'object'
   );
 }

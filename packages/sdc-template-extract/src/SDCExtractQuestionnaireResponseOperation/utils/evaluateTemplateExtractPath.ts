@@ -2,6 +2,7 @@ import type { OperationOutcomeIssue, QuestionnaireResponse } from 'fhir/r4';
 import { fhirPathEvaluate } from './fhirpathEvaluate';
 import type { TemplateExtractPath } from '../interfaces/templateExtractPath.interface';
 import { createFhirPathContext } from './createFhirPathContext';
+import { getCombinedExpression } from './expressionManipulation';
 
 export function evaluateTemplateExtractPaths(
   questionnaireResponse: QuestionnaireResponse,
@@ -18,7 +19,7 @@ export function evaluateTemplateExtractPaths(
   // Context path exists, use contextExpression to frame evaluation scope
   if (contextExpression) {
     const combinedContextPath = getCombinedExpression(targetQRItemFhirPath, contextExpression);
-    const contextResult = getTemplateExtractValueResult({
+    const contextResult = getTemplateExtractEvalResult({
       fhirDataToEvaluate: questionnaireResponse,
       valueExpression: combinedContextPath,
       fhirPathContext: fhirPathContext,
@@ -27,9 +28,13 @@ export function evaluateTemplateExtractPaths(
 
     // Evaluate each valueExpression within the current template context
     for (const [, valueEvaluation] of valuePathMap.entries()) {
-      const valueResult = getTemplateExtractValueResult({
-        fhirDataToEvaluate: contextResult,
-        valueExpression: valueEvaluation.valueExpression,
+      const combinedValueExpression = getCombinedExpression(
+        combinedContextPath,
+        valueEvaluation.valueExpression
+      );
+      const valueResult = getTemplateExtractEvalResult({
+        fhirDataToEvaluate: questionnaireResponse,
+        valueExpression: combinedValueExpression,
         fhirPathContext: fhirPathContext,
         warnings: populateIntoTemplateWarnings
       });
@@ -49,7 +54,7 @@ export function evaluateTemplateExtractPaths(
       targetQRItemFhirPath,
       valueEvaluation.valueExpression
     );
-    const valueResult = getTemplateExtractValueResult({
+    const valueResult = getTemplateExtractEvalResult({
       fhirDataToEvaluate: questionnaireResponse,
       valueExpression: combinedValueExpression,
       fhirPathContext: fhirPathContext,
@@ -81,9 +86,7 @@ export interface TemplateExtractValueParams {
 /**
  * Evaluates a value expression for template extraction.
  */
-function getTemplateExtractValueResult(
-  templateExtractValueParams: TemplateExtractValueParams
-): any {
+function getTemplateExtractEvalResult(templateExtractValueParams: TemplateExtractValueParams): any {
   const { fhirDataToEvaluate, valueExpression, fhirPathContext, warnings } =
     templateExtractValueParams;
 
@@ -94,25 +97,4 @@ function getTemplateExtractValueResult(
     envVars: fhirPathContext,
     warnings: warnings
   });
-}
-
-/**
- * Combines a base FHIRPath with an appended expression.
- * Returns the appended expression directly if it's a variable reference.
- */
-function getCombinedExpression(
-  targetQRItemFhirPath: string | undefined,
-  expressionToAppend: string
-): string {
-  // Use variable reference as-is
-  if (expressionToAppend.startsWith('%')) {
-    return expressionToAppend;
-  }
-
-  // targetQRItemFhirPath empty, return expression directly
-  if (targetQRItemFhirPath === '' || targetQRItemFhirPath === undefined) {
-    return expressionToAppend;
-  }
-
-  return targetQRItemFhirPath + '.' + expressionToAppend; // Append to base path
 }

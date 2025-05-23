@@ -40,7 +40,11 @@ function PlaygroundQuestionnairePicker(props: PlaygroundQuestionnairePickerProps
 
   const [selectedQuestionnaireId, setSelectedQuestionnaireId] = useState('');
 
-  const { questionnaires, fetchStatus, isLoading, isFetching } = useFetchQuestionnaires('', '');
+  const { questionnaires, fetchStatus, isLoading, isFetching } = useFetchQuestionnaires(
+    '',
+    '',
+    true
+  );
 
   const questionnaireIds = useMemo(
     () => questionnaires.map((questionnaire) => questionnaire.id),

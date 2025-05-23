@@ -38,7 +38,7 @@ function ResponseListToolbarSearch(props: ResponseListToolbarSearchProps) {
   const [input, setInput] = useState('');
   const [debouncedInput] = useDebounceValue(input, 300);
 
-  const { questionnaires, isFetching } = useFetchQuestionnaires(input, debouncedInput, 2);
+  const { questionnaires, isFetching } = useFetchQuestionnaires(input, debouncedInput, false, 2);
 
   const theme = useTheme();
 

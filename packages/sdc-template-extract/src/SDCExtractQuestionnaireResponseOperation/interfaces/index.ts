@@ -7,5 +7,6 @@ export {
 export { TemplateExtractDebugInfo } from './customDebugInfo.interface';
 export {
   TemplateExtractPathJsObject,
-  TemplateExtractValueEvaluation
+  TemplateExtractValueEvaluation,
+  TemplateExtractPathJsObjectTuple
 } from './templateExtractPath.interface';

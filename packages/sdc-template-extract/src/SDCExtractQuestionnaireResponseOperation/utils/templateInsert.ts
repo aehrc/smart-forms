@@ -33,7 +33,6 @@ export function insertValuesToTemplate(
       );
       deleteExtensionAtPath(mutatedTemplate, entryPath, adjustedDeletePathSegments);
     }
-
     // Delete templateExtractContext extension
     const contextPath = contextPathTuple?.[0] ?? null;
     if (contextPath) {
@@ -143,9 +142,9 @@ function getValueFromResult(valueResult: any): string | number | object | undefi
     const value = valueResult[0];
     if (valueIsCoding(value)) {
       return {
+        ...(value.system && { system: value.system }),
         ...(value.code && { code: value.code }),
-        ...(value.display && { display: value.display }),
-        ...(value.system && { system: value.system })
+        ...(value.display && { display: value.display })
       };
     }
 

@@ -93,4 +93,10 @@ export interface TemplateExtractPath {
 export interface TemplateExtractPathJsObject {
   contextPathTuple: [string, TemplateExtractContextEvaluation] | null;
   valuePathMap: Record<string, TemplateExtractValueEvaluation>;
+  generatedFullId?: string;
 }
+
+export type TemplateExtractPathJsObjectTuple = [
+  string,
+  Record<string, TemplateExtractPathJsObject>
+];

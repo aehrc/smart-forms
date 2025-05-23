@@ -33,9 +33,10 @@ interface useFetchQuestionnairesReturnParams {
 function useFetchQuestionnaires(
   searchInput: string,
   debouncedInput: string,
+  includeSubquestionnaires: boolean,
   minLengthToQuery?: number
 ): useFetchQuestionnairesReturnParams {
-  const numOfSearchEntries = 100;
+  const numOfSearchEntries = 300;
 
   let queryUrl = `/Questionnaire?_count=${numOfSearchEntries}&_sort=-date&`;
   if (debouncedInput) {
@@ -57,7 +58,10 @@ function useFetchQuestionnaires(
     enabled: queryIsLongEnough && debouncedInput === searchInput
   });
 
-  const questionnaires: Questionnaire[] = useMemo(() => filterQuestionnaires(bundle), [bundle]);
+  const questionnaires: Questionnaire[] = useMemo(
+    () => filterQuestionnaires(bundle, includeSubquestionnaires),
+    [bundle]
+  );
 
   return {
     questionnaires,
