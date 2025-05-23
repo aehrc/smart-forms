@@ -105,8 +105,7 @@ function TemplateExtractDebugTable(props: TemplateExtractDebugTableProps) {
                                   data-test="debug-viewer"
                                   language="json"
                                   customStyle={{
-                                    wordWrap: 'break-word',
-                                    whiteSpace: 'pre-wrap',
+                                    maxWidth: '400px',
                                     fontSize: 9.5,
                                     backgroundColor: 'white'
                                   }}>
@@ -122,8 +121,7 @@ function TemplateExtractDebugTable(props: TemplateExtractDebugTableProps) {
                                   data-test="debug-viewer"
                                   language="json"
                                   customStyle={{
-                                    wordWrap: 'break-word',
-                                    whiteSpace: 'pre-wrap',
+                                    maxWidth: '400px',
                                     fontSize: 9.5,
                                     backgroundColor: 'white'
                                   }}>
