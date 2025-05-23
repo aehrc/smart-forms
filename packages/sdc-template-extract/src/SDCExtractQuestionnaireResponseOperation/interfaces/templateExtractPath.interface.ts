@@ -1,4 +1,4 @@
-import type { FhirResource, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { FhirResource, QuestionnaireItem } from 'fhir/r4';
 import type { TemplateExtractReference } from './templateExtractReference.interface';
 
 /**
@@ -24,11 +24,6 @@ export interface TemplateDetails {
   targetQItem: QuestionnaireItem;
 
   /**
-   * The matching `QuestionnaireResponseItem` from the response (if available).
-   */
-  targetQRItem?: QuestionnaireResponseItem;
-
-  /**
    * The FHIRPath to the `QuestionnaireResponseItem` in the response tree (if available).
    */
   targetQRItemFhirPath?: string;
@@ -39,7 +34,6 @@ export interface TemplateDetails {
   templateExtractReference: TemplateExtractReference;
   targetLinkId: string;
   targetQItem: QuestionnaireItem;
-  targetQRItem?: QuestionnaireResponseItem;
   targetQRItemFhirPath?: string;
 }
 
