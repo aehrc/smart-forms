@@ -66,9 +66,9 @@ export function filterCheckedItemsToRepopulate(
   itemsToRepopulate: Record<string, ItemToRepopulate>,
   checkedLinkIds: string[]
 ): Record<string, ItemToRepopulate> {
-  console.log("FILTER - Available items:", Object.keys(itemsToRepopulate));
-  console.log("FILTER - Checked IDs:", checkedLinkIds);
-  
+  console.log('FILTER - Available items:', Object.keys(itemsToRepopulate));
+  console.log('FILTER - Checked IDs:', checkedLinkIds);
+
   return Object.keys(itemsToRepopulate)
     .filter((linkId) => checkedLinkIds.includes(linkId))
     .reduce((acc: Record<string, ItemToRepopulate>, linkId) => {

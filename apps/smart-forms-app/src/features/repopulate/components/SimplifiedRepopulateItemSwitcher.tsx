@@ -32,7 +32,7 @@ interface SimplifiedRepopulateItemSwitcherProps {
 
 interface ChangeEntry {
   fieldLabelQItem: QuestionnaireItem; // e.g., The "Weight" group item, or "Systolic Blood Pressure" for a simple item
-  qSubItem: QuestionnaireItem;       // e.g., The "Value" item under "Weight", or same as fieldLabelQItem for simple items
+  qSubItem: QuestionnaireItem; // e.g., The "Value" item under "Weight", or same as fieldLabelQItem for simple items
   serverValue: string | null;
   userFormValue: string | null;
   rowIndex?: number;
@@ -51,20 +51,29 @@ function SimplifiedRepopulateItemSwitcher(props: SimplifiedRepopulateItemSwitche
     currentUserFormQRItems,
     onValuePreferenceChange
   } = props;
-  
+
   const [fieldPreferences, setFieldPreferences] = useState<Record<string, boolean>>({});
 
-  const handleComplexFieldPreferenceChange = (rowKeyOrFieldLinkId: string, subFieldLinkId: string | null, userPrefersTheirFormVal: boolean) => {
+  const handleComplexFieldPreferenceChange = (
+    rowKeyOrFieldLinkId: string,
+    subFieldLinkId: string | null,
+    userPrefersTheirFormVal: boolean
+  ) => {
     const key = subFieldLinkId ? `${rowKeyOrFieldLinkId}:${subFieldLinkId}` : rowKeyOrFieldLinkId;
-    console.log(`🔧 SWITCHER FIX: Field preference change for ${qItem.text || qItem.linkId} (${qItem.linkId})`);
+    console.log(
+      `🔧 SWITCHER FIX: Field preference change for ${qItem.text || qItem.linkId} (${qItem.linkId})`
+    );
     console.log(`  Internal key: ${key}`);
     console.log(`  Callback linkId: ${key}`);
     console.log(`  User prefers their form value: ${userPrefersTheirFormVal}`);
-    setFieldPreferences(prev => ({ ...prev, [key]: userPrefersTheirFormVal }));
+    setFieldPreferences((prev) => ({ ...prev, [key]: userPrefersTheirFormVal }));
     onValuePreferenceChange(key, userPrefersTheirFormVal);
   };
 
-  const isPreferringUserFormValueForField = (rowKeyOrFieldLinkId: string, subFieldLinkId: string | null): boolean => {
+  const isPreferringUserFormValueForField = (
+    rowKeyOrFieldLinkId: string,
+    subFieldLinkId: string | null
+  ): boolean => {
     const key = subFieldLinkId ? `${rowKeyOrFieldLinkId}:${subFieldLinkId}` : rowKeyOrFieldLinkId;
     return fieldPreferences[key] === undefined ? true : fieldPreferences[key];
   };
@@ -81,7 +90,10 @@ function SimplifiedRepopulateItemSwitcher(props: SimplifiedRepopulateItemSwitche
       rowContextLabel?: string
     ) {
       const isSimpleType = currentQItemDefinition.type !== 'group';
-      const isChoiceGroup = currentQItemDefinition.type === 'group' && currentQItemDefinition.answerOption && currentQItemDefinition.answerOption.length > 0;
+      const isChoiceGroup =
+        currentQItemDefinition.type === 'group' &&
+        currentQItemDefinition.answerOption &&
+        currentQItemDefinition.answerOption.length > 0;
 
       if (isSimpleType || isChoiceGroup) {
         const serverAnswer = currentServerQRItem?.answer?.[0];
@@ -91,8 +103,8 @@ function SimplifiedRepopulateItemSwitcher(props: SimplifiedRepopulateItemSwitche
 
         if (serverValStr !== userValStr) {
           changes.push({
-            fieldLabelQItem: parentFieldGroupQItem, 
-            qSubItem: currentQItemDefinition,    
+            fieldLabelQItem: parentFieldGroupQItem,
+            qSubItem: currentQItemDefinition,
             serverValue: serverValStr,
             userFormValue: userValStr,
             rowIndex,
@@ -102,16 +114,22 @@ function SimplifiedRepopulateItemSwitcher(props: SimplifiedRepopulateItemSwitche
       }
 
       if (currentQItemDefinition.item && currentQItemDefinition.item.length > 0) {
-        currentQItemDefinition.item.forEach(subQItemDef => {
-          const serverSubQRItem = currentServerQRItem?.item?.find(i => i.linkId === subQItemDef.linkId);
-          const clientSubQRItem = currentClientQRItem?.item?.find(i => i.linkId === subQItemDef.linkId);
+        currentQItemDefinition.item.forEach((subQItemDef) => {
+          const serverSubQRItem = currentServerQRItem?.item?.find(
+            (i) => i.linkId === subQItemDef.linkId
+          );
+          const clientSubQRItem = currentClientQRItem?.item?.find(
+            (i) => i.linkId === subQItemDef.linkId
+          );
 
           let nextParentFieldGroup = parentFieldGroupQItem;
-          if (currentQItemDefinition.type === 'group' && 
-              !currentQItemDefinition.repeats && 
-              !isSpecificItemControl(currentQItemDefinition, 'grid') && 
-              currentQItemDefinition.linkId !== qItem.linkId) {
-                nextParentFieldGroup = currentQItemDefinition;
+          if (
+            currentQItemDefinition.type === 'group' &&
+            !currentQItemDefinition.repeats &&
+            !isSpecificItemControl(currentQItemDefinition, 'grid') &&
+            currentQItemDefinition.linkId !== qItem.linkId
+          ) {
+            nextParentFieldGroup = currentQItemDefinition;
           }
 
           findChangesRecursive(
@@ -131,28 +149,41 @@ function SimplifiedRepopulateItemSwitcher(props: SimplifiedRepopulateItemSwitche
       for (let rowIdx = 0; rowIdx < maxRows; rowIdx++) {
         const serverRow = serverSuggestedQRItems[rowIdx];
         const userRow = currentUserFormQRItems[rowIdx];
-        
+
         let dynamicRowLabel = `Row ${rowIdx + 1}`;
         if (qItem.item && qItem.item.length > 0) {
           const firstColForLabel = qItem.item[0];
-          const serverCellForLabel = serverRow?.item?.find(i => i.linkId === firstColForLabel.linkId);
-          const userCellForLabel = userRow?.item?.find(i => i.linkId === firstColForLabel.linkId);
+          const serverCellForLabel = serverRow?.item?.find(
+            (i) => i.linkId === firstColForLabel.linkId
+          );
+          const userCellForLabel = userRow?.item?.find((i) => i.linkId === firstColForLabel.linkId);
           const cellForLabelValue = (serverCellForLabel || userCellForLabel)?.answer?.[0];
           if (cellForLabelValue) {
-              dynamicRowLabel = `${firstColForLabel.text || firstColForLabel.linkId}: ${getAnswerValueAsString(cellForLabelValue)}`;
+            dynamicRowLabel = `${firstColForLabel.text || firstColForLabel.linkId}: ${getAnswerValueAsString(cellForLabelValue)}`;
           }
         }
 
-        (qItem.item || []).forEach(columnQItemDefinition => {
-          const serverCellItem = serverRow?.item?.find(i => i.linkId === columnQItemDefinition.linkId);
-          const userCellItem = userRow?.item?.find(i => i.linkId === columnQItemDefinition.linkId);
-          findChangesRecursive(columnQItemDefinition, columnQItemDefinition, serverCellItem, userCellItem, rowIdx, dynamicRowLabel);
+        (qItem.item || []).forEach((columnQItemDefinition) => {
+          const serverCellItem = serverRow?.item?.find(
+            (i) => i.linkId === columnQItemDefinition.linkId
+          );
+          const userCellItem = userRow?.item?.find(
+            (i) => i.linkId === columnQItemDefinition.linkId
+          );
+          findChangesRecursive(
+            columnQItemDefinition,
+            columnQItemDefinition,
+            serverCellItem,
+            userCellItem,
+            rowIdx,
+            dynamicRowLabel
+          );
         });
       }
     } else {
       findChangesRecursive(qItem, qItem, serverSuggestedQRItem, currentUserFormQRItem);
     }
-    
+
     return changes;
   };
 
@@ -160,26 +191,36 @@ function SimplifiedRepopulateItemSwitcher(props: SimplifiedRepopulateItemSwitche
 
   // Send default preferences for all detected changes to the dialog
   React.useEffect(() => {
-    console.log(`🔧 SWITCHER INIT: Setting up default preferences for ${qItem.text || qItem.linkId}`);
+    console.log(
+      `🔧 SWITCHER INIT: Setting up default preferences for ${qItem.text || qItem.linkId}`
+    );
     console.log(`🔧 SWITCHER INIT: Found ${changes.length} changes`);
-    
-    changes.forEach(change => {
-      const preferenceKeyBase = qItem.linkId + (change.rowIndex !== undefined ? `-row${change.rowIndex}` : '');
-      const preferenceKeySuffix = change.fieldLabelQItem.linkId === change.qSubItem.linkId 
-                                  ? change.qSubItem.linkId 
-                                  : `${change.fieldLabelQItem.linkId}:${change.qSubItem.linkId}`;
+
+    changes.forEach((change) => {
+      const preferenceKeyBase =
+        qItem.linkId + (change.rowIndex !== undefined ? `-row${change.rowIndex}` : '');
+      const preferenceKeySuffix =
+        change.fieldLabelQItem.linkId === change.qSubItem.linkId
+          ? change.qSubItem.linkId
+          : `${change.fieldLabelQItem.linkId}:${change.qSubItem.linkId}`;
       const fullKey = `${preferenceKeyBase}:${preferenceKeySuffix}`;
-      
+
       // Only send default preference if not already set by user interaction
       if (fieldPreferences[fullKey] === undefined) {
-        console.log(`🔧 SWITCHER INIT: Setting default preference for ${fullKey} = true (user prefers their current value)`);
+        console.log(
+          `🔧 SWITCHER INIT: Setting default preference for ${fullKey} = true (user prefers their current value)`
+        );
         onValuePreferenceChange(fullKey, true);
       }
     });
   }, [changes.length, qItem.linkId, onValuePreferenceChange]); // Re-run if changes or qItem changes
 
   if (changes.length === 0) {
-    return <Typography sx={{p:1, fontStyle: 'italic'}} variant="body2">No changes in: {qItem.text || qItem.linkId}</Typography>;
+    return (
+      <Typography sx={{ p: 1, fontStyle: 'italic' }} variant="body2">
+        No changes in: {qItem.text || qItem.linkId}
+      </Typography>
+    );
   }
 
   return (
@@ -187,15 +228,19 @@ function SimplifiedRepopulateItemSwitcher(props: SimplifiedRepopulateItemSwitche
       {(() => {
         if (qItem.repeats) {
           // Group changes by row for repeating items
-          const groupedByRow: Array<{ rowIndex: number; rowLabelForRow: string; itemsInRow: ChangeEntry[] }> = [];
+          const groupedByRow: Array<{
+            rowIndex: number;
+            rowLabelForRow: string;
+            itemsInRow: ChangeEntry[];
+          }> = [];
           const rowMap = new Map<number, { rowLabelForRow: string; itemsInRow: ChangeEntry[] }>();
 
-          changes.forEach(change => {
+          changes.forEach((change) => {
             if (change.rowIndex !== undefined) {
               if (!rowMap.has(change.rowIndex)) {
-                rowMap.set(change.rowIndex, { 
-                  rowLabelForRow: change.rowLabelForRow || `Row ${change.rowIndex + 1}`, 
-                  itemsInRow: [] 
+                rowMap.set(change.rowIndex, {
+                  rowLabelForRow: change.rowLabelForRow || `Row ${change.rowIndex + 1}`,
+                  itemsInRow: []
                 });
               }
               rowMap.get(change.rowIndex)!.itemsInRow.push(change);
@@ -205,34 +250,154 @@ function SimplifiedRepopulateItemSwitcher(props: SimplifiedRepopulateItemSwitche
           rowMap.forEach((value, key) => {
             groupedByRow.push({ rowIndex: key, ...value });
           });
-          groupedByRow.sort((a,b) => a.rowIndex - b.rowIndex); // Ensure rows are ordered
+          groupedByRow.sort((a, b) => a.rowIndex - b.rowIndex); // Ensure rows are ordered
 
           return groupedByRow.map((rowGroup, groupIdx) => (
             <React.Fragment key={`rowgroup-${rowGroup.rowIndex}-${groupIdx}`}>
-              <Typography variant="subtitle2" sx={{ mt: groupIdx === 0 ? 0.5 : 2, mb: 0.5, pl: 1, fontWeight: 'bold' }}>
+              <Typography
+                variant="subtitle2"
+                sx={{ mt: groupIdx === 0 ? 0.5 : 2, mb: 0.5, pl: 1, fontWeight: 'bold' }}>
                 {rowGroup.rowLabelForRow}
               </Typography>
               {rowGroup.itemsInRow.map((change, itemIdx) => {
-                const preferenceKeyBase = qItem.linkId + (change.rowIndex !== undefined ? `-row${change.rowIndex}` : '');
-                const preferenceKeySuffix = change.fieldLabelQItem.linkId === change.qSubItem.linkId 
-                                            ? change.qSubItem.linkId 
-                                            : `${change.fieldLabelQItem.linkId}:${change.qSubItem.linkId}`;
-                console.log(`🔧 MEDICAL HISTORY DEBUG: Row ${change.rowIndex}, Field: ${change.qSubItem.text} (${change.qSubItem.linkId})`);
+                const preferenceKeyBase =
+                  qItem.linkId + (change.rowIndex !== undefined ? `-row${change.rowIndex}` : '');
+                const preferenceKeySuffix =
+                  change.fieldLabelQItem.linkId === change.qSubItem.linkId
+                    ? change.qSubItem.linkId
+                    : `${change.fieldLabelQItem.linkId}:${change.qSubItem.linkId}`;
+                console.log(
+                  `🔧 MEDICAL HISTORY DEBUG: Row ${change.rowIndex}, Field: ${change.qSubItem.text} (${change.qSubItem.linkId})`
+                );
                 console.log(`  Preference key base: ${preferenceKeyBase}`);
                 console.log(`  Preference key suffix: ${preferenceKeySuffix}`);
                 console.log(`  Full preference key: ${preferenceKeyBase}:${preferenceKeySuffix}`);
                 return (
-                  <Box key={`${preferenceKeyBase}-${preferenceKeySuffix}-${itemIdx}`} sx={{ display: 'flex', flexDirection: 'row', gap: 2, mt: 0.5, alignItems: 'flex-start', pl: 2 /* Indent fields under row heading */ }}>
-                    <Typography variant="body2" sx={{ width: '280px', fontWeight: 'medium', pt: '6px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  <Box
+                    key={`${preferenceKeyBase}-${preferenceKeySuffix}-${itemIdx}`}
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      gap: 2,
+                      mt: 0.5,
+                      alignItems: 'flex-start',
+                      pl: 2 /* Indent fields under row heading */
+                    }}>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        width: '280px',
+                        fontWeight: 'medium',
+                        pt: '6px',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis'
+                      }}>
                       {`${change.fieldLabelQItem.text || change.fieldLabelQItem.linkId}:`}
                     </Typography>
-                    <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
-                      <FormControlLabel control={<Checkbox size="small" checked={isPreferringUserFormValueForField(preferenceKeyBase, preferenceKeySuffix)} onChange={() => handleComplexFieldPreferenceChange(preferenceKeyBase, preferenceKeySuffix, true)} sx={{p:0, mr:0.5}} />} label={<Typography variant="overline" fontSize={8} color="text.secondary">YOUR CURRENT VALUE</Typography>} sx={{ ml: 0, mb: 0.5, alignSelf: 'flex-start' }}/>
-                      <Box sx={{ padding: 1, border: '1px solid #eee', borderRadius: 1, minHeight: '36px', bgcolor: isPreferringUserFormValueForField(preferenceKeyBase, preferenceKeySuffix) ? 'rgba(25, 118, 210, 0.08)' : 'transparent', width: '100%' }}><Typography variant="body2" sx={{ color: '#2e7d32' }}>{change.userFormValue || 'Not set'}</Typography></Box>
+                    <Box
+                      sx={{
+                        flex: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'stretch'
+                      }}>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            size="small"
+                            checked={isPreferringUserFormValueForField(
+                              preferenceKeyBase,
+                              preferenceKeySuffix
+                            )}
+                            onChange={() =>
+                              handleComplexFieldPreferenceChange(
+                                preferenceKeyBase,
+                                preferenceKeySuffix,
+                                true
+                              )
+                            }
+                            sx={{ p: 0, mr: 0.5 }}
+                          />
+                        }
+                        label={
+                          <Typography variant="overline" fontSize={8} color="text.secondary">
+                            YOUR CURRENT VALUE
+                          </Typography>
+                        }
+                        sx={{ ml: 0, mb: 0.5, alignSelf: 'flex-start' }}
+                      />
+                      <Box
+                        sx={{
+                          padding: 1,
+                          border: '1px solid #eee',
+                          borderRadius: 1,
+                          minHeight: '36px',
+                          bgcolor: isPreferringUserFormValueForField(
+                            preferenceKeyBase,
+                            preferenceKeySuffix
+                          )
+                            ? 'rgba(25, 118, 210, 0.08)'
+                            : 'transparent',
+                          width: '100%'
+                        }}>
+                        <Typography variant="body2" sx={{ color: '#2e7d32' }}>
+                          {change.userFormValue || 'Not set'}
+                        </Typography>
+                      </Box>
                     </Box>
-                    <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
-                      <FormControlLabel control={<Checkbox size="small" checked={!isPreferringUserFormValueForField(preferenceKeyBase, preferenceKeySuffix)} onChange={() => handleComplexFieldPreferenceChange(preferenceKeyBase, preferenceKeySuffix, false)} sx={{p:0, mr:0.5}} />} label={<Typography variant="overline" fontSize={8} color="text.secondary">SUGGESTED (SERVER)</Typography>} sx={{ ml: 0, mb: 0.5, alignSelf: 'flex-start' }}/>
-                      <Box sx={{ padding: 1, border: '1px solid #eee', borderRadius: 1, minHeight: '36px', bgcolor: !isPreferringUserFormValueForField(preferenceKeyBase, preferenceKeySuffix) ? 'rgba(25, 118, 210, 0.08)' : 'transparent', width: '100%' }}><Typography variant="body2" sx={{ color: '#d32f2f' }}>{change.serverValue || 'Not set'}</Typography></Box>
+                    <Box
+                      sx={{
+                        flex: 1,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'stretch'
+                      }}>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            size="small"
+                            checked={
+                              !isPreferringUserFormValueForField(
+                                preferenceKeyBase,
+                                preferenceKeySuffix
+                              )
+                            }
+                            onChange={() =>
+                              handleComplexFieldPreferenceChange(
+                                preferenceKeyBase,
+                                preferenceKeySuffix,
+                                false
+                              )
+                            }
+                            sx={{ p: 0, mr: 0.5 }}
+                          />
+                        }
+                        label={
+                          <Typography variant="overline" fontSize={8} color="text.secondary">
+                            SUGGESTED (SERVER)
+                          </Typography>
+                        }
+                        sx={{ ml: 0, mb: 0.5, alignSelf: 'flex-start' }}
+                      />
+                      <Box
+                        sx={{
+                          padding: 1,
+                          border: '1px solid #eee',
+                          borderRadius: 1,
+                          minHeight: '36px',
+                          bgcolor: !isPreferringUserFormValueForField(
+                            preferenceKeyBase,
+                            preferenceKeySuffix
+                          )
+                            ? 'rgba(25, 118, 210, 0.08)'
+                            : 'transparent',
+                          width: '100%'
+                        }}>
+                        <Typography variant="body2" sx={{ color: '#d32f2f' }}>
+                          {change.serverValue || 'Not set'}
+                        </Typography>
+                      </Box>
                     </Box>
                   </Box>
                 );
@@ -243,29 +408,147 @@ function SimplifiedRepopulateItemSwitcher(props: SimplifiedRepopulateItemSwitche
           // Original rendering for non-repeating items
           return changes.map((change, idx) => {
             const preferenceKeyBase = qItem.linkId; // No rowIndex for non-repeating
-            const preferenceKeySuffix = change.fieldLabelQItem.linkId === change.qSubItem.linkId 
-                                        ? change.qSubItem.linkId 
-                                        : `${change.fieldLabelQItem.linkId}:${change.qSubItem.linkId}`;
+            const preferenceKeySuffix =
+              change.fieldLabelQItem.linkId === change.qSubItem.linkId
+                ? change.qSubItem.linkId
+                : `${change.fieldLabelQItem.linkId}:${change.qSubItem.linkId}`;
             let label = change.fieldLabelQItem.text || change.fieldLabelQItem.linkId;
-            if (change.qSubItem.linkId !== change.fieldLabelQItem.linkId && change.qSubItem.text && change.qSubItem.text.toLowerCase() !== 'value') {
+            if (
+              change.qSubItem.linkId !== change.fieldLabelQItem.linkId &&
+              change.qSubItem.text &&
+              change.qSubItem.text.toLowerCase() !== 'value'
+            ) {
               label += ` - ${change.qSubItem.text}`;
             }
             label += ':';
 
             return (
               <React.Fragment key={`${preferenceKeyBase}-${preferenceKeySuffix}-${idx}`}>
-                <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2, mt: 1, alignItems: 'flex-start', pl:1}}>
-                  <Typography variant="body2" sx={{ width: '280px', fontWeight: 'medium', pt: '6px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    gap: 2,
+                    mt: 1,
+                    alignItems: 'flex-start',
+                    pl: 1
+                  }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      width: '280px',
+                      fontWeight: 'medium',
+                      pt: '6px',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis'
+                    }}>
                     {label}
                   </Typography>
-                  <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
-                      <FormControlLabel control={<Checkbox size="small" checked={isPreferringUserFormValueForField(preferenceKeyBase, preferenceKeySuffix)} onChange={() => handleComplexFieldPreferenceChange(preferenceKeyBase, preferenceKeySuffix, true)} sx={{p:0, mr:0.5}} />} label={<Typography variant="overline" fontSize={8} color="text.secondary">YOUR CURRENT VALUE</Typography>} sx={{ ml: 0, mb: 0.5, alignSelf: 'flex-start' }}/>
-                      <Box sx={{ padding: 1, border: '1px solid #eee', borderRadius: 1, minHeight: '36px', bgcolor: isPreferringUserFormValueForField(preferenceKeyBase, preferenceKeySuffix) ? 'rgba(25, 118, 210, 0.08)' : 'transparent', width: '100%' }}><Typography variant="body2" sx={{ color: '#2e7d32' }}>{change.userFormValue || 'Not set'}</Typography></Box>
+                  <Box
+                    sx={{
+                      flex: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'stretch'
+                    }}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          size="small"
+                          checked={isPreferringUserFormValueForField(
+                            preferenceKeyBase,
+                            preferenceKeySuffix
+                          )}
+                          onChange={() =>
+                            handleComplexFieldPreferenceChange(
+                              preferenceKeyBase,
+                              preferenceKeySuffix,
+                              true
+                            )
+                          }
+                          sx={{ p: 0, mr: 0.5 }}
+                        />
+                      }
+                      label={
+                        <Typography variant="overline" fontSize={8} color="text.secondary">
+                          YOUR CURRENT VALUE
+                        </Typography>
+                      }
+                      sx={{ ml: 0, mb: 0.5, alignSelf: 'flex-start' }}
+                    />
+                    <Box
+                      sx={{
+                        padding: 1,
+                        border: '1px solid #eee',
+                        borderRadius: 1,
+                        minHeight: '36px',
+                        bgcolor: isPreferringUserFormValueForField(
+                          preferenceKeyBase,
+                          preferenceKeySuffix
+                        )
+                          ? 'rgba(25, 118, 210, 0.08)'
+                          : 'transparent',
+                        width: '100%'
+                      }}>
+                      <Typography variant="body2" sx={{ color: '#2e7d32' }}>
+                        {change.userFormValue || 'Not set'}
+                      </Typography>
                     </Box>
-                    <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
-                      <FormControlLabel control={<Checkbox size="small" checked={!isPreferringUserFormValueForField(preferenceKeyBase, preferenceKeySuffix)} onChange={() => handleComplexFieldPreferenceChange(preferenceKeyBase, preferenceKeySuffix, false)} sx={{p:0, mr:0.5}} />} label={<Typography variant="overline" fontSize={8} color="text.secondary">SUGGESTED (SERVER)</Typography>} sx={{ ml: 0, mb: 0.5, alignSelf: 'flex-start' }}/>
-                      <Box sx={{ padding: 1, border: '1px solid #eee', borderRadius: 1, minHeight: '36px', bgcolor: !isPreferringUserFormValueForField(preferenceKeyBase, preferenceKeySuffix) ? 'rgba(25, 118, 210, 0.08)' : 'transparent', width: '100%' }}><Typography variant="body2" sx={{ color: '#d32f2f' }}>{change.serverValue || 'Not set'}</Typography></Box>
+                  </Box>
+                  <Box
+                    sx={{
+                      flex: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'stretch'
+                    }}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          size="small"
+                          checked={
+                            !isPreferringUserFormValueForField(
+                              preferenceKeyBase,
+                              preferenceKeySuffix
+                            )
+                          }
+                          onChange={() =>
+                            handleComplexFieldPreferenceChange(
+                              preferenceKeyBase,
+                              preferenceKeySuffix,
+                              false
+                            )
+                          }
+                          sx={{ p: 0, mr: 0.5 }}
+                        />
+                      }
+                      label={
+                        <Typography variant="overline" fontSize={8} color="text.secondary">
+                          SUGGESTED (SERVER)
+                        </Typography>
+                      }
+                      sx={{ ml: 0, mb: 0.5, alignSelf: 'flex-start' }}
+                    />
+                    <Box
+                      sx={{
+                        padding: 1,
+                        border: '1px solid #eee',
+                        borderRadius: 1,
+                        minHeight: '36px',
+                        bgcolor: !isPreferringUserFormValueForField(
+                          preferenceKeyBase,
+                          preferenceKeySuffix
+                        )
+                          ? 'rgba(25, 118, 210, 0.08)'
+                          : 'transparent',
+                        width: '100%'
+                      }}>
+                      <Typography variant="body2" sx={{ color: '#d32f2f' }}>
+                        {change.serverValue || 'Not set'}
+                      </Typography>
                     </Box>
+                  </Box>
                 </Box>
               </React.Fragment>
             );
@@ -276,4 +559,4 @@ function SimplifiedRepopulateItemSwitcher(props: SimplifiedRepopulateItemSwitche
   );
 }
 
-export default SimplifiedRepopulateItemSwitcher; 
+export default SimplifiedRepopulateItemSwitcher;

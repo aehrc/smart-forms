@@ -5,6 +5,16 @@ import { createTheme } from '@mui/material/styles';
 import { SnackbarProvider } from 'notistack';
 import RepopulateSelectDialog from '../components/RepopulateSelectDialog';
 
+// Mock the repopulateResponse function
+vi.mock('@aehrc/smart-forms-renderer', () => ({
+  repopulateResponse: vi.fn()
+}));
+
+import { repopulateResponse } from '@aehrc/smart-forms-renderer';
+
+// Get the mocked function with proper typing
+const mockedRepopulateResponse = repopulateResponse as any;
+
 describe('Vitest Setup Verification', () => {
   it('should pass a basic test', () => {
     expect(1 + 1).toBe(2);
@@ -69,7 +79,7 @@ describe('RepopulateSelectDialog Single Date Field Scenarios', () => {
   });
 
   it('Scenario 1: Select field, choose OLD value, and confirm', async () => {
-    const { container } = renderDialog(mockSingleDateItemToRepopulate);
+    renderDialog(mockSingleDateItemToRepopulate);
 
     // 1. Check the main item checkbox
     const mainCheckbox = screen.getByRole('checkbox', { name: /Single Date Field/i });
@@ -79,26 +89,27 @@ describe('RepopulateSelectDialog Single Date Field Scenarios', () => {
     // Radio buttons are best found by their label or value if name is shared
     // We assume radio buttons have distinct values "old" and "new" for their group
     // And the radio group is associated with the item's text
-    
+
     // Find the radio buttons within the context of "Single Date Field"
     const listItem = screen.getByText('Single Date Field').closest('li');
     expect(listItem).not.toBeNull();
 
     if (listItem) {
-        const oldValueRadio = within(listItem).getByLabelText(/OLD VALUE/i) as HTMLInputElement;
-        fireEvent.click(oldValueRadio);
-        expect(oldValueRadio.checked).toBe(true);
+      const oldValueRadio = within(listItem).getByLabelText(/OLD VALUE/i) as HTMLInputElement;
+      fireEvent.click(oldValueRadio);
+      expect(oldValueRadio.checked).toBe(true);
     }
-    
+
     // 3. Click Confirm
     fireEvent.click(screen.getByRole('button', { name: /Confirm/i }));
 
     // 4. Verify repopulateResponse is called with the OLD value
     await waitFor(() => {
-      const repopulateFn = require('@aehrc/smart-forms-renderer').repopulateResponse;
-      expect(repopulateFn).toHaveBeenCalled();
-      const calledWithItems = repopulateFn.mock.calls[0][0];
-      expect(calledWithItems[singleDateFieldItem.linkId].newQRItem.answer[0].valueDate).toBe('2023-01-01');
+      expect(mockedRepopulateResponse).toHaveBeenCalled();
+      const calledWithItems = mockedRepopulateResponse.mock.calls[0][0];
+      expect(calledWithItems[singleDateFieldItem.linkId].newQRItem.answer[0].valueDate).toBe(
+        '2023-01-01'
+      );
     });
 
     expect(mockOnCloseDialog).toHaveBeenCalled();
@@ -106,20 +117,20 @@ describe('RepopulateSelectDialog Single Date Field Scenarios', () => {
   });
 
   it('Scenario 2: Select field, choose NEW value, and confirm', async () => {
-    const { container } = renderDialog(mockSingleDateItemToRepopulate);
+    renderDialog(mockSingleDateItemToRepopulate);
 
     // 1. Check the main item checkbox
     const mainCheckbox = screen.getByRole('checkbox', { name: /Single Date Field/i });
     fireEvent.click(mainCheckbox);
-    
+
     // 2. Select the "NEW VALUE" radio button
     const listItem = screen.getByText('Single Date Field').closest('li');
     expect(listItem).not.toBeNull();
 
     if (listItem) {
-        const newValueRadio = within(listItem).getByLabelText(/NEW VALUE/i) as HTMLInputElement;
-        fireEvent.click(newValueRadio);
-        expect(newValueRadio.checked).toBe(true);
+      const newValueRadio = within(listItem).getByLabelText(/NEW VALUE/i) as HTMLInputElement;
+      fireEvent.click(newValueRadio);
+      expect(newValueRadio.checked).toBe(true);
     }
 
     // 3. Click Confirm
@@ -127,11 +138,12 @@ describe('RepopulateSelectDialog Single Date Field Scenarios', () => {
 
     // 4. Verify repopulateResponse is called with the NEW value
     await waitFor(() => {
-      const repopulateFn = require('@aehrc/smart-forms-renderer').repopulateResponse;
-      expect(repopulateFn).toHaveBeenCalled();
-      const calledWithItems = repopulateFn.mock.calls[0][0];
+      expect(mockedRepopulateResponse).toHaveBeenCalled();
+      const calledWithItems = mockedRepopulateResponse.mock.calls[0][0];
       // The newQRItem should remain as is or be explicitly set to the new value
-      expect(calledWithItems[singleDateFieldItem.linkId].newQRItem.answer[0].valueDate).toBe('2023-01-15');
+      expect(calledWithItems[singleDateFieldItem.linkId].newQRItem.answer[0].valueDate).toBe(
+        '2023-01-15'
+      );
     });
     expect(mockOnCloseDialog).toHaveBeenCalled();
     expect(mockOnSpinnerChange).toHaveBeenCalledTimes(2);
@@ -141,7 +153,9 @@ describe('RepopulateSelectDialog Single Date Field Scenarios', () => {
     renderDialog(mockSingleDateItemToRepopulate);
 
     // 1. Main item checkbox remains UNCHECKED
-    const mainCheckbox = screen.getByRole('checkbox', { name: /Single Date Field/i }) as HTMLInputElement;
+    const mainCheckbox = screen.getByRole('checkbox', {
+      name: /Single Date Field/i
+    }) as HTMLInputElement;
     expect(mainCheckbox.checked).toBe(false); // Default state should be unchecked as per typical dialog behavior
 
     // 2. Click Confirm
@@ -149,15 +163,14 @@ describe('RepopulateSelectDialog Single Date Field Scenarios', () => {
 
     // 3. Verify repopulateResponse is called with an empty object or without this item
     await waitFor(() => {
-      const repopulateFn = require('@aehrc/smart-forms-renderer').repopulateResponse;
-      expect(repopulateFn).toHaveBeenCalled();
-      const calledWithItems = repopulateFn.mock.calls[0][0];
+      expect(mockedRepopulateResponse).toHaveBeenCalled();
+      const calledWithItems = mockedRepopulateResponse.mock.calls[0][0];
       expect(calledWithItems[singleDateFieldItem.linkId]).toBeUndefined();
       // Or, if it must be called with an empty object when nothing is selected:
-      // expect(Object.keys(calledWithItems).length).toBe(0); 
+      // expect(Object.keys(calledWithItems).length).toBe(0);
     });
     expect(mockOnCloseDialog).toHaveBeenCalled();
     // Spinner might still change if the operation proceeds with no items
-    expect(mockOnSpinnerChange).toHaveBeenCalledTimes(2); 
+    expect(mockOnSpinnerChange).toHaveBeenCalledTimes(2);
   });
-}); 
+});

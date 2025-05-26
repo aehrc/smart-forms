@@ -34,34 +34,23 @@ interface RepopulateListItemProps {
 }
 
 function RepopulateListItem(props: RepopulateListItemProps) {
-  const {
-    qItem,
-    oldQRItem,
-    newQRItem,
-    newQRItems,
-    oldQRItems,
-    onValuePreferenceChange,
-    isSelected,
-    initialPreference
-  } = props;
+  const { qItem, oldQRItem, newQRItem, newQRItems, oldQRItems, onValuePreferenceChange } = props;
 
   const itemIsHidden = useHidden(qItem);
   if (itemIsHidden) {
     return null;
   }
 
-  const qItemToRepopulate = { ...qItem, readOnly: true };
+  const qItemToRepopulate = qItem;
   const itemText = qItemToRepopulate.text ?? '';
 
   if (qItem.text?.includes('Medical history')) {
-    console.log(`RepopulateListItem: Passing to Switcher for ${qItem.linkId} (${itemText}):`,
-      {
-        serverSuggestedQRItem: newQRItem,
-        currentUserFormQRItem: oldQRItem,
-        serverSuggestedQRItems: newQRItems,
-        currentUserFormQRItems: oldQRItems,
-      }
-    );
+    console.log(`RepopulateListItem: Passing to Switcher for ${qItem.linkId} (${itemText}):`, {
+      serverSuggestedQRItem: newQRItem,
+      currentUserFormQRItem: oldQRItem,
+      serverSuggestedQRItems: newQRItems,
+      currentUserFormQRItems: oldQRItems
+    });
   }
 
   return (
@@ -72,11 +61,14 @@ function RepopulateListItem(props: RepopulateListItemProps) {
         flexDirection: 'column',
         alignItems: 'flex-start',
         pt: 0.5,
-        pb: 1.5,
-      }}
-    >
+        pb: 1.5
+      }}>
       <ListItemText
-        primary={<Typography variant="subtitle2" sx={{ mb: 0.5 }}>{itemText}</Typography>}
+        primary={
+          <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
+            {itemText}
+          </Typography>
+        }
         secondaryTypographyProps={{ component: 'div' }}
         secondary={
           <SimplifiedRepopulateItemSwitcher
@@ -86,7 +78,6 @@ function RepopulateListItem(props: RepopulateListItemProps) {
             serverSuggestedQRItems={props.newQRItems}
             currentUserFormQRItems={props.oldQRItems}
             onValuePreferenceChange={onValuePreferenceChange}
-            initialUserFormPreference={initialPreference}
           />
         }
         sx={{ width: '100%' }}

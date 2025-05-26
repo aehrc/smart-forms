@@ -28,11 +28,7 @@ interface RepopulateListProps {
 }
 
 function RepopulateList(props: RepopulateListProps) {
-  const { 
-    itemsToRepopulateTuplesByHeadings, 
-    onValuePreferenceChange,
-    initialPreferences
-  } = props;
+  const { itemsToRepopulateTuplesByHeadings, onValuePreferenceChange, initialPreferences } = props;
 
   return (
     <>
@@ -43,14 +39,20 @@ function RepopulateList(props: RepopulateListProps) {
             sx={{ width: '100%', minWidth: 360, pt: 0, pb: 0.5 }}
             subheader={
               heading ? (
-                <Typography variant="subtitle1" color="text.secondary" sx={{ pl: 1, pt: 1, pb: 0.5 }}>
+                <Typography
+                  variant="subtitle1"
+                  color="text.secondary"
+                  sx={{ pl: 1, pt: 1, pb: 0.5 }}>
                   {heading}
                 </Typography>
               ) : null
             }>
             {itemsToRepopulate.map((itemToRepopulateData) => {
-              console.log('RepopulateList: Processing itemToRepopulateData:', JSON.stringify(itemToRepopulateData, null, 2));
-              
+              console.log(
+                'RepopulateList: Processing itemToRepopulateData:',
+                JSON.stringify(itemToRepopulateData, null, 2)
+              );
+
               const { qItem, newQRItem, oldQRItem, newQRItems, oldQRItems } = itemToRepopulateData;
 
               if (!qItem) {
