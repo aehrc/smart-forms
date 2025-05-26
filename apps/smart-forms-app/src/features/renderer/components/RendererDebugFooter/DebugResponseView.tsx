@@ -16,7 +16,6 @@
  */
 
 import ReactJson from '@microlink/react-json-view';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 
 interface DebugResponseViewProps {
   displayObject: any;
@@ -43,17 +42,16 @@ function DebugResponseView(props: DebugResponseViewProps) {
 
   if (viewMode === 'text') {
     return (
-      <SyntaxHighlighter
+      <pre
         data-test="debug-viewer"
-        language="json"
-        customStyle={{
+        style={{
           wordWrap: 'break-word',
           whiteSpace: 'pre-wrap',
-          fontSize: 10,
+          fontSize: 9.5,
           backgroundColor: 'white'
         }}>
         {JSON.stringify(displayObject, null, 2)}
-      </SyntaxHighlighter>
+      </pre>
     );
   }
 
