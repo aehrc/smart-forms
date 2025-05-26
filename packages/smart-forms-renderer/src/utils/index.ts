@@ -34,4 +34,4 @@ export { generateItemsToRepopulate } from './repopulateItems';
 export { repopulateResponse } from './repopulateIntoResponse';
 export { extractObservationBased } from './extractObservation';
 
-export { getQuestionnaireItem } from './misc';
+export { getQuestionnaireItem, getSectionHeading } from './misc';
