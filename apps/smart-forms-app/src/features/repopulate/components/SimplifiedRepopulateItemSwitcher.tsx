@@ -56,8 +56,12 @@ function SimplifiedRepopulateItemSwitcher(props: SimplifiedRepopulateItemSwitche
 
   const handleComplexFieldPreferenceChange = (rowKeyOrFieldLinkId: string, subFieldLinkId: string | null, userPrefersTheirFormVal: boolean) => {
     const key = subFieldLinkId ? `${rowKeyOrFieldLinkId}:${subFieldLinkId}` : rowKeyOrFieldLinkId;
+    console.log(`🔧 SWITCHER FIX: Field preference change for ${qItem.text || qItem.linkId} (${qItem.linkId})`);
+    console.log(`  Internal key: ${key}`);
+    console.log(`  Callback linkId: ${key}`);
+    console.log(`  User prefers their form value: ${userPrefersTheirFormVal}`);
     setFieldPreferences(prev => ({ ...prev, [key]: userPrefersTheirFormVal }));
-    onValuePreferenceChange(qItem.linkId + (subFieldLinkId ? `:${subFieldLinkId}` : '') , userPrefersTheirFormVal);
+    onValuePreferenceChange(key, userPrefersTheirFormVal);
   };
 
   const isPreferringUserFormValueForField = (rowKeyOrFieldLinkId: string, subFieldLinkId: string | null): boolean => {
@@ -154,6 +158,26 @@ function SimplifiedRepopulateItemSwitcher(props: SimplifiedRepopulateItemSwitche
 
   const changes = detectChanges();
 
+  // Send default preferences for all detected changes to the dialog
+  React.useEffect(() => {
+    console.log(`🔧 SWITCHER INIT: Setting up default preferences for ${qItem.text || qItem.linkId}`);
+    console.log(`🔧 SWITCHER INIT: Found ${changes.length} changes`);
+    
+    changes.forEach(change => {
+      const preferenceKeyBase = qItem.linkId + (change.rowIndex !== undefined ? `-row${change.rowIndex}` : '');
+      const preferenceKeySuffix = change.fieldLabelQItem.linkId === change.qSubItem.linkId 
+                                  ? change.qSubItem.linkId 
+                                  : `${change.fieldLabelQItem.linkId}:${change.qSubItem.linkId}`;
+      const fullKey = `${preferenceKeyBase}:${preferenceKeySuffix}`;
+      
+      // Only send default preference if not already set by user interaction
+      if (fieldPreferences[fullKey] === undefined) {
+        console.log(`🔧 SWITCHER INIT: Setting default preference for ${fullKey} = true (user prefers their current value)`);
+        onValuePreferenceChange(fullKey, true);
+      }
+    });
+  }, [changes.length, qItem.linkId, onValuePreferenceChange]); // Re-run if changes or qItem changes
+
   if (changes.length === 0) {
     return <Typography sx={{p:1, fontStyle: 'italic'}} variant="body2">No changes in: {qItem.text || qItem.linkId}</Typography>;
   }
@@ -193,6 +217,10 @@ function SimplifiedRepopulateItemSwitcher(props: SimplifiedRepopulateItemSwitche
                 const preferenceKeySuffix = change.fieldLabelQItem.linkId === change.qSubItem.linkId 
                                             ? change.qSubItem.linkId 
                                             : `${change.fieldLabelQItem.linkId}:${change.qSubItem.linkId}`;
+                console.log(`🔧 MEDICAL HISTORY DEBUG: Row ${change.rowIndex}, Field: ${change.qSubItem.text} (${change.qSubItem.linkId})`);
+                console.log(`  Preference key base: ${preferenceKeyBase}`);
+                console.log(`  Preference key suffix: ${preferenceKeySuffix}`);
+                console.log(`  Full preference key: ${preferenceKeyBase}:${preferenceKeySuffix}`);
                 return (
                   <Box key={`${preferenceKeyBase}-${preferenceKeySuffix}-${itemIdx}`} sx={{ display: 'flex', flexDirection: 'row', gap: 2, mt: 0.5, alignItems: 'flex-start', pl: 2 /* Indent fields under row heading */ }}>
                     <Typography variant="body2" sx={{ width: '280px', fontWeight: 'medium', pt: '6px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
