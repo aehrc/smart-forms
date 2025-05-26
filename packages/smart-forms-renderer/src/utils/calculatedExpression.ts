@@ -32,7 +32,7 @@ import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import { createEmptyQrGroup, updateQrItemsInGroup } from './qrItem';
 import dayjs from 'dayjs';
 import { updateQuestionnaireResponse } from './genericRecursive';
-import isEqual from 'lodash.isequal';
+import { deepEqual } from 'fast-equals';
 import type { Variables } from '../interfaces';
 import type { ComputedNewAnswers } from '../interfaces/computedUpdates.interface';
 
@@ -65,7 +65,7 @@ export async function evaluateInitialCalculatedExpressions(
 
   // Return early if initialResponse is empty or there are no calculated expressions to evaluate
   if (
-    isEqual(initialResponse, structuredClone(emptyResponse)) ||
+    deepEqual(initialResponse, structuredClone(emptyResponse)) ||
     Object.keys(calculatedExpressions).length === 0
   ) {
     return {
@@ -123,7 +123,7 @@ export async function evaluateInitialCalculatedExpressions(
         }
 
         // Only update calculatedExpressions if length of result array > 0
-        if (result.length > 0 && !isEqual(calcExpression.value, result[0])) {
+        if (result.length > 0 && !deepEqual(calcExpression.value, result[0])) {
           calcExpression.value = result[0];
         }
       } catch (e) {
@@ -203,9 +203,17 @@ export async function evaluateCalculatedExpressions(
           fhirPathTerminologyCache[cacheKey] = result;
         }
 
+        if (
+          typeof calcExpression.value === 'string' &&
+          calcExpression.value.startsWith('Blood tests')
+        ) {
+          console.log(calcExpression.value, structuredClone(result), calcExpression.expression);
+        }
+
         // Update calculatedExpressions if length of result array > 0
         // Only update when current calcExpression value is different from the result, otherwise it will result in an infinite loop as per issue #733
-        if (result.length > 0 && !isEqual(calcExpression.value, result[0])) {
+        if (result.length > 0 && !deepEqual(calcExpression.value, result[0])) {
+          // console.log(calcExpression.value, structuredClone(result));
           isUpdated = true;
           calcExpression.value = result[0];
 

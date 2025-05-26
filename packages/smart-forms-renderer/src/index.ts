@@ -96,7 +96,8 @@ export {
   generateItemsToRepopulate,
   repopulateResponse,
   extractObservationBased,
-  getQuestionnaireItem
+  getQuestionnaireItem,
+  getSectionHeading
 } from './utils';
 
 // theme provider exports

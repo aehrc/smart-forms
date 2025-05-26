@@ -8,6 +8,13 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.56] - 2025-05-26
+### Added
+- Exposed getSectionHeading() as a library function
+
+### Changed
+- Use fast-equals deepEqual() instead of lodash.isEqual() for better performance.
+
 ## [1.0.0-alpha.55] - 2025-05-07
 ### Added
 - Updated @aehrc/sdc-populate to 4.1.0. It now uses the same removeEmptyAnswers() implementation as the renderer, which is more battle tested.
