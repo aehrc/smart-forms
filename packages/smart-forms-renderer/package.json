@@ -43,7 +43,7 @@
     "deep-diff": "^1.0.2",
     "fast-equals": "^5.2.2",
     "fhirclient": "^2.5.5",
-    "fhirpath": "3.18.0",
+    "fhirpath": "4.3.0",
     "html-react-parser": "^4.2.10",
     "js-base64": "^3.7.7",
     "lodash.debounce": "^4.0.8",
