@@ -27,6 +27,7 @@ import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
+import useShowFeedback from '../../../hooks/useShowFeedback';
 
 interface UrlItemProps extends BaseItemProps {}
 
@@ -54,21 +55,30 @@ function UrlItem(props: UrlItemProps) {
   }
 
   const [input, setInput] = useState(valueUri);
-  const [showFeedback, setShowFeedback] = useState(true); //provides a way to hide the feedback when the user is typing
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent, input);
 
+  // Provides a way to hide the feedback when the user is typing
+  const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
+
   // Event handlers
   function handleChange(newInput: string) {
     setInput(newInput);
-    setShowFeedback(false);
+
+    // Only suppress feedback once (before first blur)
+    if (!hasBlurred) {
+      setShowFeedback(false);
+    }
+
     updateQrItemWithDebounce(newInput);
   }
+
   function handleBlur() {
     setShowFeedback(true);
+    setHasBlurred(true); // From now on, feedback should stay visible
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -27,6 +27,7 @@ import {
 import QuantityComparatorField from './QuantityComparatorField';
 import useQuantityCalculatedExpression from '../../../hooks/useQuantityCalculatedExpression';
 import ItemLabel from '../ItemParts/ItemLabel';
+import useShowFeedback from '../../../hooks/useShowFeedback';
 
 interface QuantityItemProps extends BaseItemProps {
   qItem: QuestionnaireItem;
@@ -101,12 +102,14 @@ function QuantityItem(props: QuantityItemProps) {
   const [unitInput, setUnitInput] = useState<QuestionnaireItemAnswerOption | null>(
     initialUnitInput
   );
-  const [showFeedback, setShowFeedback] = useState(true); //provides a way to hide the feedback when the user is typing
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent, valueInput);
+
+  // Provides a way to hide the feedback when the user is typing
+  const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
 
   // Process calculated expressions
   const { calcExpUpdated } = useQuantityCalculatedExpression({
@@ -169,7 +172,11 @@ function QuantityItem(props: QuantityItemProps) {
   // Event handlers
   function handleComparatorInputChange(newComparatorInput: Quantity['comparator'] | null) {
     setComparatorInput(newComparatorInput);
-    setShowFeedback(false);
+
+    // Only suppress feedback once (before first blur)
+    if (!hasBlurred) {
+      setShowFeedback(false);
+    }
 
     if (!valueInput) return;
 
@@ -187,7 +194,12 @@ function QuantityItem(props: QuantityItemProps) {
 
   function handleUnitInputChange(newUnitInput: QuestionnaireItemAnswerOption | null) {
     setUnitInput(newUnitInput);
-    setShowFeedback(false);
+
+    // Only suppress feedback once (before first blur)
+    if (!hasBlurred) {
+      setShowFeedback(false);
+    }
+
     if (!valueInput) return;
 
     onQrItemChange({
@@ -206,11 +218,18 @@ function QuantityItem(props: QuantityItemProps) {
     const parsedNewInput: string = parseDecimalStringWithPrecision(newInput, precision);
 
     setValueInput(parsedNewInput);
-    setShowFeedback(false);
+
+    // Only suppress feedback once (before first blur)
+    if (!hasBlurred) {
+      setShowFeedback(false);
+    }
+
     updateQrItemWithDebounce(parsedNewInput);
   }
+
   function handleBlur() {
     setShowFeedback(true);
+    setHasBlurred(true); // From now on, feedback should stay visible
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

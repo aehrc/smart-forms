@@ -30,6 +30,7 @@ import useDateValidation from '../../../../hooks/useDateValidation';
 import CustomDateField from './CustomDateField';
 import { useQuestionnaireStore } from '../../../../stores';
 import ItemLabel from '../../ItemParts/ItemLabel';
+import useShowFeedback from '../../../../hooks/useShowFeedback';
 
 interface CustomDateItemProps extends BaseItemProps {}
 
@@ -52,8 +53,6 @@ function CustomDateItem(props: CustomDateItemProps) {
   // Init input value
   const answerKey = qrItem?.answer?.[0]?.id;
   const qrDate = qrItem ?? createEmptyQrItem(qItem, answerKey);
-  const [showFeedback, setShowFeedback] = useState(true); //provides a way to hide the feedback when the user is typing
-
   let valueDate: string = '';
   if (qrDate.answer) {
     if (qrDate.answer[0].valueDate) {
@@ -71,6 +70,9 @@ function CustomDateItem(props: CustomDateItemProps) {
   // Perform validation checks
   const errorFeedback = useDateValidation(input, dateParseFail);
 
+  // Provides a way to hide the feedback when the user is typing
+  const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
+
   function handleSelectDate(selectedDate: string) {
     setInput(selectedDate);
     onQrItemChange({
@@ -81,7 +83,11 @@ function CustomDateItem(props: CustomDateItemProps) {
 
   function handleInputChange(newInput: string) {
     setInput(newInput);
-    setShowFeedback(false);
+
+    // Only suppress feedback once (before first blur)
+    if (!hasBlurred) {
+      setShowFeedback(false);
+    }
 
     if (newInput === '') {
       onQrItemChange(createEmptyQrItem(qItem, answerKey));
@@ -98,6 +104,7 @@ function CustomDateItem(props: CustomDateItemProps) {
 
   function handleDateBlur() {
     setShowFeedback(true);
+    setHasBlurred(true); // From now on, feedback should stay visible
   }
 
   if (isRepeated) {

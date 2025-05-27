@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 /*
  * Copyright 2024 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
@@ -37,6 +36,7 @@ import useStringCalculatedExpression from '../../../hooks/useStringCalculatedExp
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
+import useShowFeedback from '../../../hooks/useShowFeedback';
 
 interface StringItemProps
   extends PropsWithQrItemChangeHandler,
@@ -74,11 +74,14 @@ function StringItem(props: StringItemProps) {
   }
 
   const [input, setInput] = useState(valueString);
-  const [showFeedback, setShowFeedback] = useState(true); //provides a way to hide the feedback when the user is typing
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
+
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent, input);
+
+  // Provides a way to hide the feedback when the user is typing
+  const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
 
   // Process calculated expressions
   const { calcExpUpdated } = useStringCalculatedExpression({
@@ -100,12 +103,18 @@ function StringItem(props: StringItemProps) {
   // Event handlers
   function handleChange(newInput: string) {
     setInput(newInput);
+
+    // Only suppress feedback once (before first blur)
+    if (!hasBlurred) {
+      setShowFeedback(false);
+    }
+
     updateQrItemWithDebounce(newInput);
-    setShowFeedback(false);
   }
 
   function handleBlur() {
     setShowFeedback(true);
+    setHasBlurred(true); // From now on, feedback should stay visible
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

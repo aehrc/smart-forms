@@ -35,6 +35,7 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import Box from '@mui/material/Box';
 import ItemLabel from '../ItemParts/ItemLabel';
+import useShowFeedback from '../../../hooks/useShowFeedback';
 
 interface DecimalItemProps extends BaseItemProps {
   qItem: QuestionnaireItem;
@@ -75,12 +76,14 @@ function DecimalItem(props: DecimalItemProps) {
   }
 
   const [input, setInput] = useState(initialInput);
-  const [showFeedback, setShowFeedback] = useState(true); //provides a way to hide the feedback when the user is typing
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks - there's no string-based input here
   const feedback = useValidationFeedback(qItem, feedbackFromParent, input);
+
+  // Provides a way to hide the feedback when the user is typing
+  const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
 
   // Process calculated expressions
   const { calcExpUpdated } = useDecimalCalculatedExpression({
@@ -109,11 +112,18 @@ function DecimalItem(props: DecimalItemProps) {
     const parsedNewInput: string = parseDecimalStringWithPrecision(newInput, precision);
 
     setInput(parsedNewInput);
-    setShowFeedback(false);
+
+    // Only suppress feedback once (before first blur)
+    if (!hasBlurred) {
+      setShowFeedback(false);
+    }
+
     updateQrItemWithDebounce(parsedNewInput);
   }
+
   function handleBlur() {
     setShowFeedback(true);
+    setHasBlurred(true); // From now on, feedback should stay visible
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
