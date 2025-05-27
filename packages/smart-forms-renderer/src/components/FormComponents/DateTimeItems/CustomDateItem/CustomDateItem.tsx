@@ -30,6 +30,7 @@ import useDateValidation from '../../../../hooks/useDateValidation';
 import CustomDateField from './CustomDateField';
 import { useQuestionnaireStore } from '../../../../stores';
 import ItemLabel from '../../ItemParts/ItemLabel';
+import useShowFeedback from '../../../../hooks/useShowFeedback';
 
 interface CustomDateItemProps extends BaseItemProps {}
 
@@ -52,7 +53,6 @@ function CustomDateItem(props: CustomDateItemProps) {
   // Init input value
   const answerKey = qrItem?.answer?.[0]?.id;
   const qrDate = qrItem ?? createEmptyQrItem(qItem, answerKey);
-
   let valueDate: string = '';
   if (qrDate.answer) {
     if (qrDate.answer[0].valueDate) {
@@ -70,6 +70,9 @@ function CustomDateItem(props: CustomDateItemProps) {
   // Perform validation checks
   const errorFeedback = useDateValidation(input, dateParseFail);
 
+  // Provides a way to hide the feedback when the user is typing
+  const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
+
   function handleSelectDate(selectedDate: string) {
     setInput(selectedDate);
     onQrItemChange({
@@ -81,10 +84,14 @@ function CustomDateItem(props: CustomDateItemProps) {
   function handleInputChange(newInput: string) {
     setInput(newInput);
 
+    // Only suppress feedback once (before first blur)
+    if (!hasBlurred) {
+      setShowFeedback(false);
+    }
+
     if (newInput === '') {
       onQrItemChange(createEmptyQrItem(qItem, answerKey));
     }
-
     if (!validateDateInput(newInput)) {
       return;
     }
@@ -95,6 +102,11 @@ function CustomDateItem(props: CustomDateItemProps) {
     });
   }
 
+  function handleDateBlur() {
+    setShowFeedback(true);
+    setHasBlurred(true); // From now on, feedback should stay visible
+  }
+
   if (isRepeated) {
     return (
       <CustomDateField
@@ -102,7 +114,7 @@ function CustomDateItem(props: CustomDateItemProps) {
         itemType={qItem.type}
         valueDate={displayDate}
         input={input}
-        feedback={errorFeedback ?? ''}
+        feedback={showFeedback ? (errorFeedback ?? '') : ''}
         isFocused={focused}
         displayPrompt={displayPrompt}
         entryFormat={entryFormat}
@@ -111,6 +123,7 @@ function CustomDateItem(props: CustomDateItemProps) {
         isTabled={isTabled}
         setFocused={setFocused}
         onInputChange={handleInputChange}
+        onDateBlur={handleDateBlur}
         onSelectDate={handleSelectDate}
       />
     );
@@ -131,7 +144,7 @@ function CustomDateItem(props: CustomDateItemProps) {
             itemType={qItem.type}
             valueDate={displayDate}
             input={input}
-            feedback={errorFeedback ?? ''}
+            feedback={showFeedback ? (errorFeedback ?? '') : ''}
             isFocused={focused}
             displayPrompt={displayPrompt}
             entryFormat={entryFormat}
@@ -140,6 +153,7 @@ function CustomDateItem(props: CustomDateItemProps) {
             isTabled={isTabled}
             setFocused={setFocused}
             onInputChange={handleInputChange}
+            onDateBlur={handleDateBlur}
             onSelectDate={handleSelectDate}
           />
         }

@@ -37,6 +37,7 @@ import useStringCalculatedExpression from '../../../hooks/useStringCalculatedExp
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
+import useShowFeedback from '../../../hooks/useShowFeedback';
 
 interface StringItemProps
   extends PropsWithQrItemChangeHandler,
@@ -78,8 +79,12 @@ function StringItem(props: StringItemProps) {
   const [input, setInput] = useState(valueString);
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
+
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent, input);
+
+  // Provides a way to hide the feedback when the user is typing
+  const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
 
   // Process calculated expressions
   const { calcExpUpdated } = useStringCalculatedExpression({
@@ -104,7 +109,18 @@ function StringItem(props: StringItemProps) {
   // Event handlers
   function handleChange(newInput: string) {
     setInput(newInput);
+
+    // Only suppress feedback once (before first blur)
+    if (!hasBlurred) {
+      setShowFeedback(false);
+    }
+
     updateQrItemWithDebounce(newInput);
+  }
+
+  function handleBlur() {
+    setShowFeedback(true);
+    setHasBlurred(true); // From now on, feedback should stay visible
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -126,13 +142,14 @@ function StringItem(props: StringItemProps) {
         linkId={qItem.linkId}
         itemType={qItem.type}
         input={input}
-        feedback={feedback}
+        feedback={showFeedback ? feedback : ''}
         displayPrompt={displayPrompt}
         displayUnit={displayUnit}
         entryFormat={entryFormat}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         onInputChange={handleChange}
+        onBlur={handleBlur}
         isTabled={isTabled}
       />
     );
@@ -151,13 +168,14 @@ function StringItem(props: StringItemProps) {
             linkId={qItem.linkId}
             itemType={qItem.type}
             input={input}
-            feedback={feedback}
+            feedback={showFeedback ? feedback : ''}
             displayPrompt={displayPrompt}
             displayUnit={displayUnit}
             entryFormat={entryFormat}
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}
             onInputChange={handleChange}
+            onBlur={handleBlur}
             isTabled={isTabled}
           />
         }

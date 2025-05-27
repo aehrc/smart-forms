@@ -37,6 +37,7 @@ interface CustomDateFieldProps extends PropsWithIsTabledRequiredAttribute {
   isPartOfDateTime: boolean;
   setFocused: Dispatch<SetStateAction<boolean>>;
   onInputChange: (newInput: string) => void;
+  onDateBlur: () => void;
   onSelectDate: (newDateValue: string) => void;
 }
 
@@ -55,6 +56,7 @@ function CustomDateField(props: CustomDateFieldProps) {
     isTabled,
     setFocused,
     onInputChange,
+    onDateBlur,
     onSelectDate
   } = props;
 
@@ -83,7 +85,10 @@ function CustomDateField(props: CustomDateFieldProps) {
         size="small"
         focused={isFocused}
         onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
+        onBlur={() => {
+          onDateBlur();
+          setFocused(false);
+        }}
         slotProps={{
           input: {
             readOnly: readOnly && readOnlyVisualStyle === 'readonly',

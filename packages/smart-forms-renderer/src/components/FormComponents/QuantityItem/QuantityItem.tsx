@@ -27,6 +27,7 @@ import {
 import QuantityComparatorField from './QuantityComparatorField';
 import useQuantityCalculatedExpression from '../../../hooks/useQuantityCalculatedExpression';
 import ItemLabel from '../ItemParts/ItemLabel';
+import useShowFeedback from '../../../hooks/useShowFeedback';
 
 interface QuantityItemProps extends BaseItemProps {
   qItem: QuestionnaireItem;
@@ -108,6 +109,9 @@ function QuantityItem(props: QuantityItemProps) {
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent, valueInput);
 
+  // Provides a way to hide the feedback when the user is typing
+  const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
+
   // Process calculated expressions
   const { calcExpUpdated } = useQuantityCalculatedExpression({
     qItem: qItem,
@@ -176,6 +180,11 @@ function QuantityItem(props: QuantityItemProps) {
   function handleComparatorInputChange(newComparatorInput: Quantity['comparator'] | null) {
     setComparatorInput(newComparatorInput);
 
+    // Only suppress feedback once (before first blur)
+    if (!hasBlurred) {
+      setShowFeedback(false);
+    }
+
     if (!valueInput) return;
 
     onQrItemChange({
@@ -192,6 +201,11 @@ function QuantityItem(props: QuantityItemProps) {
 
   function handleUnitInputChange(newUnitInput: QuestionnaireItemAnswerOption | null) {
     setUnitInput(newUnitInput);
+
+    // Only suppress feedback once (before first blur)
+    if (!hasBlurred) {
+      setShowFeedback(false);
+    }
 
     if (!valueInput) return;
 
@@ -211,7 +225,18 @@ function QuantityItem(props: QuantityItemProps) {
     const parsedNewInput: string = parseDecimalStringWithPrecision(newInput, precision);
 
     setValueInput(parsedNewInput);
+
+    // Only suppress feedback once (before first blur)
+    if (!hasBlurred) {
+      setShowFeedback(false);
+    }
+
     updateQrItemWithDebounce(parsedNewInput);
+  }
+
+  function handleBlur() {
+    setShowFeedback(true);
+    setHasBlurred(true); // From now on, feedback should stay visible
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -257,7 +282,7 @@ function QuantityItem(props: QuantityItemProps) {
           linkId={qItem.linkId}
           itemType={qItem.type}
           input={valueInput}
-          feedback={feedback}
+          feedback={showFeedback ? feedback : ''}
           displayPrompt={displayPrompt}
           displayUnit={displayUnit}
           entryFormat={entryFormat}
@@ -265,6 +290,7 @@ function QuantityItem(props: QuantityItemProps) {
           calcExpUpdated={calcExpUpdated}
           isTabled={isTabled}
           onInputChange={handleValueInputChange}
+          onBlur={handleBlur}
         />
         {showUnitOptions ? (
           <QuantityUnitField
@@ -305,7 +331,7 @@ function QuantityItem(props: QuantityItemProps) {
               linkId={qItem.linkId}
               itemType={qItem.type}
               input={valueInput}
-              feedback={feedback}
+              feedback={showFeedback ? feedback : ''}
               displayPrompt={displayPrompt}
               displayUnit={displayUnit}
               entryFormat={entryFormat}
@@ -313,6 +339,7 @@ function QuantityItem(props: QuantityItemProps) {
               calcExpUpdated={calcExpUpdated}
               isTabled={isTabled}
               onInputChange={handleValueInputChange}
+              onBlur={handleBlur}
             />
             {showUnitOptions ? (
               <QuantityUnitField

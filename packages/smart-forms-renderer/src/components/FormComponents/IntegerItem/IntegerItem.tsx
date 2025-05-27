@@ -30,6 +30,7 @@ import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
+import useShowFeedback from '../../../hooks/useShowFeedback';
 
 interface IntegerItemProps extends BaseItemProps {
   qItem: QuestionnaireItem;
@@ -76,6 +77,9 @@ function IntegerItem(props: IntegerItemProps) {
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent, input);
 
+  // Provides a way to hide the feedback when the user is typing
+  const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
+
   // Process calculated expressions
   const { calcExpUpdated } = useIntegerCalculatedExpression({
     qItem: qItem,
@@ -101,7 +105,18 @@ function IntegerItem(props: IntegerItemProps) {
     const parsedNewInput = parseIntegerString(newInput);
 
     setInput(parsedNewInput);
+
+    // Only suppress feedback once (before first blur)
+    if (!hasBlurred) {
+      setShowFeedback(false);
+    }
+
     updateQrItemWithDebounce(parsedNewInput);
+  }
+
+  function handleBlur() {
+    setShowFeedback(true);
+    setHasBlurred(true); // From now on, feedback should stay visible
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -125,7 +140,7 @@ function IntegerItem(props: IntegerItemProps) {
         linkId={qItem.linkId}
         itemType={qItem.type}
         input={input}
-        feedback={feedback}
+        feedback={showFeedback ? feedback : ''}
         displayPrompt={displayPrompt}
         displayUnit={displayUnit}
         entryFormat={entryFormat}
@@ -133,6 +148,7 @@ function IntegerItem(props: IntegerItemProps) {
         calcExpUpdated={calcExpUpdated}
         isTabled={isTabled}
         onInputChange={handleInputChange}
+        onBlur={handleBlur}
       />
     );
   }
@@ -151,7 +167,7 @@ function IntegerItem(props: IntegerItemProps) {
             linkId={qItem.linkId}
             itemType={qItem.type}
             input={input}
-            feedback={feedback}
+            feedback={showFeedback ? feedback : ''}
             displayPrompt={displayPrompt}
             displayUnit={displayUnit}
             entryFormat={entryFormat}
@@ -159,6 +175,7 @@ function IntegerItem(props: IntegerItemProps) {
             calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}
             onInputChange={handleInputChange}
+            onBlur={handleBlur}
           />
         }
         feedback={feedback}

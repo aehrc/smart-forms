@@ -27,6 +27,7 @@ import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
+import useShowFeedback from '../../../hooks/useShowFeedback';
 
 interface UrlItemProps extends BaseItemProps {}
 
@@ -60,10 +61,24 @@ function UrlItem(props: UrlItemProps) {
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent, input);
 
+  // Provides a way to hide the feedback when the user is typing
+  const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
+
   // Event handlers
   function handleChange(newInput: string) {
     setInput(newInput);
+
+    // Only suppress feedback once (before first blur)
+    if (!hasBlurred) {
+      setShowFeedback(false);
+    }
+
     updateQrItemWithDebounce(newInput);
+  }
+
+  function handleBlur() {
+    setShowFeedback(true);
+    setHasBlurred(true); // From now on, feedback should stay visible
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -85,12 +100,13 @@ function UrlItem(props: UrlItemProps) {
         linkId={qItem.linkId}
         itemType={qItem.type}
         input={input}
-        feedback={feedback}
+        feedback={showFeedback ? feedback : ''}
         displayPrompt={displayPrompt}
         displayUnit={displayUnit}
         entryFormat={entryFormat}
         readOnly={readOnly}
         onInputChange={handleChange}
+        onBlur={handleBlur}
         isTabled={isTabled}
       />
     );
@@ -109,12 +125,13 @@ function UrlItem(props: UrlItemProps) {
             linkId={qItem.linkId}
             itemType={qItem.type}
             input={input}
-            feedback={feedback}
+            feedback={showFeedback ? feedback : ''}
             displayPrompt={displayPrompt}
             displayUnit={displayUnit}
             entryFormat={entryFormat}
             readOnly={readOnly}
             onInputChange={handleChange}
+            onBlur={handleBlur}
             isTabled={isTabled}
           />
         }
