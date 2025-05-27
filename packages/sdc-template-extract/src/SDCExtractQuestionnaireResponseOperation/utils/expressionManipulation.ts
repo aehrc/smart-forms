@@ -19,6 +19,12 @@ export function getCombinedExpression(
     return expressionToAppend;
   }
 
+  // valuePath starts with $this, wrap with select()
+  if (expressionToAppend.startsWith('$this')) {
+    return baseFhirPath + '.' + `select(${expressionToAppend})`; // Append to base path
+  }
+
+  // Default append behavior
   return baseFhirPath + '.' + expressionToAppend; // Append to base path
 }
 

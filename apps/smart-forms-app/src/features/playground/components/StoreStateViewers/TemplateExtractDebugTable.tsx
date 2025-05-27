@@ -82,10 +82,8 @@ function TemplateExtractDebugTable(props: TemplateExtractDebugTableProps) {
                       <thead>
                         <tr>
                           <th>entryPath</th>
-                          <th>contextPath</th>
                           <th>contextExpression</th>
                           <th>contextResult</th>
-                          <th>valuePath</th>
                           <th>valueExpression</th>
                           <th>valueResult</th>
                         </tr>
@@ -94,18 +92,14 @@ function TemplateExtractDebugTable(props: TemplateExtractDebugTableProps) {
                         {rows.map((row) => (
                           <tr key={row.index}>
                             <td>{renderFhirPathMultiline(row.entryPath)}</td>
-                            <td>{renderFhirPathMultiline(row.contextPath)}</td>
                             <td>{renderFhirPathMultiline(row.contextExpression)}</td>
-                            <td
-                              style={{
-                                minWidth: '300px'
-                              }}>
+                            <td>
                               {row.contextResult ? (
                                 <SyntaxHighlighter
                                   data-test="debug-viewer"
                                   language="json"
                                   customStyle={{
-                                    maxWidth: '400px',
+                                    maxWidth: '300px',
                                     fontSize: 9.5,
                                     backgroundColor: 'white'
                                   }}>
@@ -113,15 +107,14 @@ function TemplateExtractDebugTable(props: TemplateExtractDebugTableProps) {
                                 </SyntaxHighlighter>
                               ) : null}
                             </td>
-                            <td>{renderFhirPathMultiline(row.valuePath)}</td>
                             <td>{renderFhirPathMultiline(row.valueExpression)}</td>
-                            <td style={{ minWidth: '300px' }}>
+                            <td>
                               {row.valueResult ? (
                                 <SyntaxHighlighter
                                   data-test="debug-viewer"
                                   language="json"
                                   customStyle={{
-                                    maxWidth: '400px',
+                                    maxWidth: '300px',
                                     fontSize: 9.5,
                                     backgroundColor: 'white'
                                   }}>
