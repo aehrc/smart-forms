@@ -62,3 +62,64 @@ export function addIndexToTargetPath(
 
   return baseFhirPath + `[${index}]`; // Append to base path
 }
+
+/**
+ * Derives the relative value path segments for a value from the full writable path and the entry path.
+ *
+ * @param entryPathSegments - Segments pointing to the entry location (e.g. ["MedicationStatement", "reasonCode", 0])
+ * @param writablePathSegments - Segments pointing to the writable value location (e.g. ["MedicationStatement", "reasonCode", 0, "coding", 0])
+ * @returns The relative value path segments (e.g. ["coding", 0])
+ */
+export function getRelativeValuePathSegments(
+  entryPathSegments: (string | number)[],
+  writablePathSegments: (string | number)[]
+): (string | number)[] {
+  // Safety check: entrySegments must be a prefix of writableSegments
+  for (let i = 0; i < entryPathSegments.length; i++) {
+    if (entryPathSegments[i] !== entryPathSegments[i]) {
+      throw new Error(
+        `entryPathSegments must be a prefix of writablePathSegments. Mismatch at index ${i}.`
+      );
+    }
+  }
+
+  // Return the relative path after the entry point
+  return writablePathSegments.slice(entryPathSegments.length);
+}
+
+/**
+ * Removes leading underscore from a string segment (e.g. '_field' → 'field').
+ * Returns non-string segments unchanged.
+ */
+export function stripUnderscorePrefix(segment: string | number): string | number {
+  if (typeof segment === 'string' && segment.startsWith('_')) {
+    return segment.slice(1);
+  }
+  return segment;
+}
+
+/**
+ * Returns updated entry and writable segments:
+ * - Replaces the last entry segment with index if it's a number
+ * - Strips underscore prefix from the last segment if it's a string starting with '_'
+ */
+export function cleanEntryPathSegments(
+  entryPathSegments: (string | number)[],
+  index: number
+): (string | number)[] {
+  // Last segment is a number (an array index), replace it with the provided index
+  const lastIndex = entryPathSegments.length - 1;
+  if (typeof entryPathSegments[lastIndex] === 'number') {
+    entryPathSegments[lastIndex] = index;
+  }
+
+  // Last segment is a _field, strip underscore prefix (e.g. '_field' → 'field').
+  if (
+    typeof entryPathSegments[lastIndex] === 'string' &&
+    entryPathSegments[lastIndex].startsWith('_')
+  ) {
+    entryPathSegments[lastIndex] = stripUnderscorePrefix(entryPathSegments[lastIndex]);
+  }
+
+  return entryPathSegments;
+}

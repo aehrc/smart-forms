@@ -88,6 +88,7 @@ export async function extract(
     populateIntoTemplates(questionnaireResponse, containedTemplateMap, extractAllocateIds);
   combinedWarnings.push(...populateIntoTemplateWarnings);
 
+  // Build transaction bundle with extracted resources
   const { outputBundle, templateIdToExtractPathTuples } = buildTransactionBundle(
     extractedResourceMap,
     containedTemplateMap,

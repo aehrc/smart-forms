@@ -1,4 +1,5 @@
 import { fhirPathEvaluate } from './fhirpathEvaluate';
+import { stripUnderscorePrefix } from './expressionManipulation';
 
 /**
  * Parses a FHIRPath-style path into a "writable" path array of property names and indices.
@@ -32,7 +33,7 @@ export function parseFhirPathToWritableSegments(fhirPath: string): (string | num
     // If the third last segment (currently the last segment) is a primitive wrapper (e.g. '_valueBoolean'), strip the underscore
     const last = writableSegments[writableSegments.length - 1];
     if (typeof last === 'string' && last.startsWith('_')) {
-      writableSegments[writableSegments.length - 1] = last.slice(1); // '_field' → 'field'
+      writableSegments[writableSegments.length - 1] = stripUnderscorePrefix(last); // '_field' → 'field'
     }
   }
 

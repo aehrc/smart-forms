@@ -1,11 +1,8 @@
-import {
-  getAdjustedDeletePathSegments,
-  parseFhirPath,
-  parseFhirPathToWritableSegments
-} from './parseFhirPath';
+import { getAdjustedDeletePathSegments, parseFhirPath } from './parseFhirPath';
 import type { TemplateExtractPath } from '../interfaces/templateExtractPath.interface';
 import type { FhirResource } from 'fhir/r4';
-import { valueIsCoding } from './typePredicates'; // Use your existing FHIRPath parser
+import { buildValuesToInsert } from './buildValueToInsert';
+import { cleanEntryPathSegments } from './expressionManipulation';
 
 /**
  * Insert extracted value results to a deep clone of the given FHIR template,
@@ -33,6 +30,7 @@ export function insertValuesToTemplate(
       );
       deleteExtensionAtPath(mutatedTemplate, entryPath, adjustedDeletePathSegments);
     }
+
     // Delete templateExtractContext extension
     const contextPath = contextPathTuple?.[0] ?? null;
     if (contextPath) {
@@ -47,10 +45,17 @@ export function insertValuesToTemplate(
   }
 
   // Insert values into the template
-  for (const [, { valuePathMap }] of templateExtractPathMap.entries()) {
+  for (const [entryPath, { valuePathMap }] of templateExtractPathMap.entries()) {
     for (const [valuePath, { valueResult }] of valuePathMap.entries()) {
-      const writableSegments = parseFhirPathToWritableSegments(valuePath);
-      insertValueAtPath(mutatedTemplate, valuePath, writableSegments, valueResult);
+      const entryPathSegments = parseFhirPath(entryPath);
+
+      const valuesToInsert = buildValuesToInsert(entryPathSegments, valuePath, valueResult);
+
+      // Insert each valueToInsert instance into template at the correct location
+      for (let i = 0; i < valuesToInsert.length; i++) {
+        const cleanedEntryPathSegments = cleanEntryPathSegments(entryPathSegments, i);
+        insertValueAtPath(mutatedTemplate, entryPath, cleanedEntryPathSegments, valuesToInsert[i]);
+      }
     }
   }
 
@@ -67,15 +72,15 @@ export function insertValuesToTemplate(
  * Walks the object along the path and assigns the stringified value at the final location.
  *
  * @param {any} obj - The FHIR resource or nested object to walk. Can be an array, object, primitive, or null.
- * @param {string} fullPath - The full FHIRPath-style path for error reporting.
- * @param {(string | number)[]} pathSegments - The FHIRPath-style path as segments.
- * @param {any} valueResultToInsert - The value to assign at the last segment of the path.
+ * @param {string} entryPath - The full FHIRPath-style entryPath for error reporting.
+ * @param {(string | number)[]} entryPathSegments - The FHIRPath-style entryPath as segments.
+ * @param {any} valueToInsert - The built value to assign at the last segment of the path.
  */
 function insertValueAtPath(
   obj: any,
-  fullPath: string,
-  pathSegments: (string | number)[],
-  valueResultToInsert: any
+  entryPath: string,
+  entryPathSegments: (string | number)[],
+  valueToInsert: any
 ): void {
   if (!obj || typeof obj !== 'object') {
     return;
@@ -84,20 +89,20 @@ function insertValueAtPath(
   let current = obj;
 
   // Start from index "1" because we skip the first segment - usually the resourceType (e.g. "Patient")
-  for (let i = 1; i < pathSegments.length - 1; i++) {
-    const segment = pathSegments[i];
+  for (let i = 1; i < entryPathSegments.length - 1; i++) {
+    const segment = entryPathSegments[i];
 
     // Check for malformed paths e.g. caused by invalid FHIRPath input or array index out of bounds
     if (segment === undefined) {
       throw new Error(
-        `Invalid path segment from ${fullPath}, value is undefined: ${segment}, index: ${i} from insertValueAtPath().`
+        `Invalid path segment from ${entryPath}, value is undefined: ${segment}, index: ${i} from insertValueAtPath().`
       );
     }
 
     // If the path segment doesn't exist, create the structure:
     // If the next segment is a number, assume it's an array. Otherwise, assume it's an object
     if (typeof current === 'object' && current !== null && !(segment in current)) {
-      const nextSegment = pathSegments[i + 1];
+      const nextSegment = entryPathSegments[i + 1];
       current[segment] = typeof nextSegment === 'number' ? [] : {};
     }
 
@@ -106,53 +111,22 @@ function insertValueAtPath(
   }
 
   // Final segment: this should be an actual element name (`gender`) to write to
-  const finalSegment = pathSegments[pathSegments.length - 1];
+  const finalSegment = entryPathSegments[entryPathSegments.length - 1];
 
   // Validate final segment
   if (finalSegment === undefined) {
     throw new Error(
-      `Invalid final segment from ${fullPath}, value is undefined: ${finalSegment} from insertValueAtPath().`
+      `Invalid final segment from ${entryPath}, value is undefined: ${finalSegment} from insertValueAtPath().`
     );
   }
 
-  const value = getValueFromResult(valueResultToInsert);
-
   // valueToInsert is undefined, skip assignment
-  if (value === undefined) {
+  if (valueToInsert === undefined) {
     return;
   }
 
   // Assign value at the resolved location
-  current[finalSegment] = value;
-}
-
-/**
- * Extracts a usable value from a valueResult returned by a FHIRPath evaluation.
- *
- * - If the result is a single-item array:
- *   - If the item is a FHIR `Coding`, returns an object with only defined fields (`code`, `display`, `system`).
- *   - Otherwise, returns the single item directly.
- * - If the result is an array with multiple values or unexpected structure, returns a JSON stringified version. FIXME
- *
- * @param {any} valueResult - The result of a FHIRPath evaluation. Usually an array.
- * @returns {string | number | object} A simplified value ready for assignment to the extracted template location.
- */
-function getValueFromResult(valueResult: any): string | number | object | undefined {
-  if (Array.isArray(valueResult) && valueResult.length === 1) {
-    const value = valueResult[0];
-    if (valueIsCoding(value)) {
-      return {
-        ...(value.system && { system: value.system }),
-        ...(value.code && { code: value.code }),
-        ...(value.display && { display: value.display })
-      };
-    }
-
-    return value;
-  }
-
-  // Return badly formed valueResult as undefined
-  return undefined;
+  current[finalSegment] = valueToInsert;
 }
 
 /**
