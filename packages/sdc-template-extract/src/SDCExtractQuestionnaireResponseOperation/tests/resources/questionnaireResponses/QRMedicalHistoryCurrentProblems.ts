@@ -2,6 +2,7 @@ import type { QuestionnaireResponse } from 'fhir/r4';
 
 export const QRMedicalHistoryCurrentProblems: QuestionnaireResponse = {
   resourceType: 'QuestionnaireResponse',
+  id: 'QR-1748412484376-1-a4eba970bccc48',
   status: 'in-progress',
   questionnaire: 'http://www.health.gov.au/assessments/mbs/715/MedicalHistoryCurrentProblems',
   item: [
@@ -499,6 +500,10 @@ export const QRMedicalHistoryCurrentProblems: QuestionnaireResponse = {
   subject: {
     type: 'Patient',
     reference: 'Patient/pat-sf'
+  },
+  authored: '2025-05-28T06:29:32.454Z',
+  author: {
+    reference: 'Practitioner/bobrester-bob'
   },
   meta: {
     source: 'https://smartforms.csiro.au'

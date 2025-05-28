@@ -1,7 +1,8 @@
 import type { QuestionnaireResponse } from 'fhir/r4';
 
-export const complexTemplateResponse: QuestionnaireResponse = {
+export const QRComplexTemplateExtract: QuestionnaireResponse = {
   resourceType: 'QuestionnaireResponse',
+  id: 'QR-1748412484376-1-a4eba970bccc48',
   status: 'in-progress',
   questionnaire: 'http://hl7.org/fhir/uv/sdc/Questionnaire/extract-complex-template|4.0.0-ballot',
   item: [
@@ -18,8 +19,7 @@ export const complexTemplateResponse: QuestionnaireResponse = {
               text: 'Given Name(s)',
               answer: [
                 {
-                  id: 'given-repeat-2t7L3RYrA-y3o06jZNoml',
-                  valueString: 'Peppa'
+                  valueString: 'Smart'
                 }
               ]
             },
@@ -28,7 +28,7 @@ export const complexTemplateResponse: QuestionnaireResponse = {
               text: 'Family/Surname',
               answer: [
                 {
-                  valueString: 'Pig'
+                  valueString: 'Form'
                 }
               ]
             }
@@ -52,7 +52,7 @@ export const complexTemplateResponse: QuestionnaireResponse = {
           text: 'Date of Birth',
           answer: [
             {
-              valueDate: '2025-04-03'
+              valueDate: '1968-10-11'
             }
           ]
         },
@@ -61,7 +61,7 @@ export const complexTemplateResponse: QuestionnaireResponse = {
           text: 'National Identifier (IHI)',
           answer: [
             {
-              valueString: '123'
+              valueString: '8003608833357361'
             }
           ]
         },
@@ -70,7 +70,7 @@ export const complexTemplateResponse: QuestionnaireResponse = {
           text: 'Mobile Phone number',
           answer: [
             {
-              valueString: '0411223344'
+              valueString: '0491 572 665'
             }
           ]
         }
@@ -85,7 +85,7 @@ export const complexTemplateResponse: QuestionnaireResponse = {
           text: 'Name',
           answer: [
             {
-              valueString: 'Daddy Pig'
+              valueString: 'Ms Phone A Friend'
             }
           ]
         },
@@ -96,19 +96,8 @@ export const complexTemplateResponse: QuestionnaireResponse = {
             {
               valueCoding: {
                 system: 'http://terminology.hl7.org/CodeSystem/v2-0131',
-                code: 'CP',
-                display: 'Contact person',
-                extension: [
-                  {
-                    url: 'http://ontoserver.csiro.au/profiles/expansion',
-                    extension: [
-                      {
-                        url: 'inactive',
-                        valueBoolean: true
-                      }
-                    ]
-                  }
-                ]
+                code: 'C',
+                display: 'Emergency Contact'
               }
             }
           ]
@@ -118,7 +107,7 @@ export const complexTemplateResponse: QuestionnaireResponse = {
           text: 'Phone',
           answer: [
             {
-              valueString: '0988776655'
+              valueString: '0987654321'
             }
           ]
         }
@@ -133,7 +122,7 @@ export const complexTemplateResponse: QuestionnaireResponse = {
           text: 'What is your current height (m)',
           answer: [
             {
-              valueDecimal: 159
+              valueDecimal: 163
             }
           ]
         },
@@ -142,7 +131,7 @@ export const complexTemplateResponse: QuestionnaireResponse = {
           text: 'What is your current weight (kg)',
           answer: [
             {
-              valueDecimal: 75
+              valueDecimal: 77.3
             }
           ]
         },
@@ -151,11 +140,22 @@ export const complexTemplateResponse: QuestionnaireResponse = {
           text: 'Have you had a Sigmoidoscopy Complication (concern with invasive procedure, for example)',
           answer: [
             {
-              valueBoolean: false
+              valueBoolean: true
             }
           ]
         }
       ]
     }
-  ]
+  ],
+  subject: {
+    type: 'Patient',
+    reference: 'Patient/pat-sf'
+  },
+  authored: '2025-05-28T06:29:32.454Z',
+  author: {
+    reference: 'Practitioner/bobrester-bob'
+  },
+  meta: {
+    source: 'https://smartforms.csiro.au'
+  }
 };
