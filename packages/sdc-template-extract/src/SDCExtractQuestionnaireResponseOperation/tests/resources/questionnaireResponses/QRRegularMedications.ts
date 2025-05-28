@@ -125,6 +125,15 @@ export const QRRegularMedications: QuestionnaireResponse = {
                   ]
                 },
                 {
+                  linkId: 'regularmedications-summary-new-dosage',
+                  text: 'Dosage',
+                  answer: [
+                    {
+                      valueString: 'Twice a day'
+                    }
+                  ]
+                },
+                {
                   linkId: 'regularmedications-summary-new-reasoncode',
                   text: 'Clinical indication',
                   answer: [
@@ -172,6 +181,15 @@ export const QRRegularMedications: QuestionnaireResponse = {
                   ]
                 },
                 {
+                  linkId: 'regularmedications-summary-new-dosage',
+                  text: 'Dosage',
+                  answer: [
+                    {
+                      valueString: 'Once a day'
+                    }
+                  ]
+                },
+                {
                   linkId: 'regularmedications-summary-new-reasoncode',
                   text: 'Clinical indication',
                   answer: [
@@ -183,11 +201,10 @@ export const QRRegularMedications: QuestionnaireResponse = {
                       }
                     },
                     {
-                      valueCoding: {
-                        system: 'http://snomed.info/sct',
-                        code: '386661006',
-                        display: 'Fever'
-                      }
+                      valueString: 'Fever (text)'
+                    },
+                    {
+                      valueString: 'really bad pain (text)'
                     }
                   ]
                 },

@@ -1,9 +1,8 @@
 import type { Bundle } from 'fhir/r4';
 
-// TODO Add dosage answers
 export const extractedRegularMedications: Bundle = {
   resourceType: 'Bundle',
-  id: 'sdc-template-extract-e958fd16c6e6',
+  id: 'sdc-template-extract-1d83cf325a6c',
   meta: {
     tag: [
       {
@@ -12,10 +11,10 @@ export const extractedRegularMedications: Bundle = {
     ]
   },
   type: 'transaction',
-  timestamp: '2025-05-28T00:46:40.712Z',
+  timestamp: '2025-05-28T12:43:51.137Z',
   entry: [
     {
-      fullUrl: 'urn:uuid:c1511f99-8831-43fd-a3c4-97437a073f8f',
+      fullUrl: 'urn:uuid:5455d37a-aa09-4ab1-ab98-c39047062ddc',
       resource: {
         resourceType: 'MedicationStatement',
         meta: {
@@ -59,7 +58,12 @@ export const extractedRegularMedications: Bundle = {
             text: 'comment'
           }
         ],
-        dateAsserted: '2025-05-28T10:16:40.703+09:30'
+        dosage: [
+          {
+            text: 'Twice a day'
+          }
+        ],
+        dateAsserted: '2025-05-28T22:13:51.124+09:30'
       },
       request: {
         method: 'POST',
@@ -67,7 +71,7 @@ export const extractedRegularMedications: Bundle = {
       }
     },
     {
-      fullUrl: 'urn:uuid:2d9366b4-0258-4b0d-ae4c-dc03d68cca55',
+      fullUrl: 'urn:uuid:e874b38a-4bae-4798-b209-9aa0b8f44aa2',
       resource: {
         resourceType: 'MedicationStatement',
         meta: {
@@ -97,18 +101,20 @@ export const extractedRegularMedications: Bundle = {
             ]
           },
           {
-            coding: [
-              {
-                system: 'http://snomed.info/sct',
-                code: '386661006',
-                display: 'Fever'
-              }
-            ]
+            text: 'Fever (text)'
+          },
+          {
+            text: 'really bad pain (text)'
           }
         ],
         note: [
           {
             text: 'hope it works'
+          }
+        ],
+        dosage: [
+          {
+            text: 'Once a day'
           }
         ],
         dateAsserted: '2025-05-28T10:16:40.710+09:30'
