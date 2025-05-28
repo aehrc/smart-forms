@@ -14,6 +14,7 @@ import { populateIntoTemplates } from './populateIntoTemplates';
 import { allocateIdsForExtract } from './extractAllocateId';
 import { buildTransactionBundle } from './buildBundle';
 import { createOutputParameters } from './createOutputParameters';
+import { createFhirPathContext } from './createFhirPathContext';
 
 export async function extract(
   parameters: InputParameters | QuestionnaireResponse,
@@ -83,16 +84,19 @@ export async function extract(
     linkIdToTemplateExtractRefMap
   );
 
+  // Create a fhirPathContext object that acts as envVars for fhirpath.evaluate
+  const fhirPathContext = createFhirPathContext(questionnaireResponse, extractAllocateIds);
+
   // Populate answers from questionnaireResponse into contained templates
   const { extractedResourceMap, populateIntoTemplateWarnings, templateIdToExtractPaths } =
-    populateIntoTemplates(questionnaireResponse, containedTemplateMap, extractAllocateIds);
+    populateIntoTemplates(questionnaireResponse, containedTemplateMap, fhirPathContext);
   combinedWarnings.push(...populateIntoTemplateWarnings);
 
   // Build transaction bundle with extracted resources
   const { outputBundle, templateIdToExtractPathTuples } = buildTransactionBundle(
     extractedResourceMap,
     containedTemplateMap,
-    extractAllocateIds,
+    fhirPathContext,
     templateIdToExtractPaths
   );
 

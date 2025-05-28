@@ -1,20 +1,17 @@
 import type { OperationOutcomeIssue, QuestionnaireResponse } from 'fhir/r4';
 import { fhirPathEvaluate } from './fhirpathEvaluate';
 import type { TemplateExtractPath } from '../interfaces/templateExtractPath.interface';
-import { createFhirPathContext } from './createFhirPathContext';
 import { getCombinedExpression } from './expressionManipulation';
 
 export function evaluateTemplateExtractPaths(
   questionnaireResponse: QuestionnaireResponse,
   targetQRItemFhirPath: string | undefined,
   templateExtractPath: TemplateExtractPath,
-  extractAllocateIds: Record<string, string>,
+  fhirPathContext: Record<string, any>,
   populateIntoTemplateWarnings: OperationOutcomeIssue[]
 ) {
   const { contextPathTuple, valuePathMap } = templateExtractPath;
   const contextExpression = contextPathTuple?.[1].contextExpression ?? null;
-
-  const fhirPathContext = createFhirPathContext(questionnaireResponse, extractAllocateIds);
 
   // Context path exists, use contextExpression to frame evaluation scope
   if (contextExpression) {

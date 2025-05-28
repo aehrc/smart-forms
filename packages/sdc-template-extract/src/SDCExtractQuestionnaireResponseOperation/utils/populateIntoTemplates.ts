@@ -12,7 +12,7 @@ import { addIndexToTargetPath, getNumberOfTargetInstances } from './expressionMa
 export function populateIntoTemplates(
   questionnaireResponse: QuestionnaireResponse,
   templateMap: Map<string, TemplateDetails>,
-  extractAllocateIds: Record<string, string>
+  fhirPathContext: Record<string, any>
 ): {
   extractedResourceMap: Map<string, FhirResource[]>;
   populateIntoTemplateWarnings: OperationOutcomeIssue[];
@@ -55,7 +55,7 @@ export function populateIntoTemplates(
           questionnaireResponse,
           targetQRItemFhirPathWithIndex,
           templateExtractPath,
-          extractAllocateIds,
+          fhirPathContext,
           dataEvaluationWarnings
         );
       }
