@@ -122,7 +122,7 @@ export const QRComplexTemplateExtract: QuestionnaireResponse = {
           text: 'What is your current height (m)',
           answer: [
             {
-              valueDecimal: 163
+              valueDecimal: 1.63
             }
           ]
         },

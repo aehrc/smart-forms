@@ -20,16 +20,23 @@ export const extractedComplexTemplateExtract: Bundle = {
         id: '7579e19d-4e79-4305-aad4-531147ee710f',
         identifier: [
           {
+            type: {
+              text: 'National Identifier (IHI)'
+            },
+            system: 'http://example.org/nhio',
             value: '8003608833357361'
           }
         ],
         name: [
           {
+            text: 'Smart Form',
             family: 'Form'
           }
         ],
         telecom: [
           {
+            system: 'phone',
+            use: 'mobile',
             value: '0491 572 665'
           }
         ],
@@ -65,6 +72,8 @@ export const extractedComplexTemplateExtract: Bundle = {
         ],
         telecom: [
           {
+            system: 'phone',
+            use: 'mobile',
             value: '0987654321'
           }
         ]
@@ -111,7 +120,7 @@ export const extractedComplexTemplateExtract: Bundle = {
           unit: 'cm',
           system: 'http://unitsofmeasure.org',
           code: 'cm',
-          value: 16300
+          value: 163
         },
         issued: '2025-05-28T05:11:40.833Z'
       },
