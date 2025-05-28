@@ -82,7 +82,13 @@ function insertValueAtPath(
   entryPathSegments: (string | number)[],
   valueToInsert: any
 ): void {
+  // Check if the object is valid
   if (!obj || typeof obj !== 'object') {
+    return;
+  }
+
+  // valueToInsert is undefined, skip whole traversal
+  if (valueToInsert === undefined) {
     return;
   }
 
@@ -120,12 +126,33 @@ function insertValueAtPath(
     );
   }
 
-  // valueToInsert is undefined, skip assignment
-  if (valueToInsert === undefined) {
+  const existingNode = current[finalSegment];
+
+  // Existing node is null or undefined, insert the value directly
+  if (existingNode === null || existingNode === undefined) {
+    current[finalSegment] = valueToInsert;
     return;
   }
 
-  // Assign value at the resolved location
+  // Existing node is an array, and we are inserting an array, concatenate them
+  if (Array.isArray(existingNode) && Array.isArray(valueToInsert)) {
+    current[finalSegment] = [...existingNode, ...valueToInsert];
+    return;
+  }
+
+  // Existing node is an array, and we are inserting a single value, push it to the array
+  if (Array.isArray(existingNode)) {
+    existingNode.push(valueToInsert);
+    return;
+  }
+
+  // Existing node is an object, and we are inserting an object, merge them
+  if (typeof existingNode === 'object' && typeof valueToInsert === 'object') {
+    current[finalSegment] = { ...existingNode, ...valueToInsert };
+    return;
+  }
+
+  // Fallback: overwrite primitive or incompatible types
   current[finalSegment] = valueToInsert;
 }
 
