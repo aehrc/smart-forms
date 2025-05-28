@@ -30,7 +30,7 @@ export interface InputParameters extends Parameters {
   parameter: InputParamArray;
 }
 
-type InputParamArray =
+export type InputParamArray =
   | [QuestionnaireResponseParameter, CustomQuestionnaireParameter]
   | [QuestionnaireResponseParameter];
 
