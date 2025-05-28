@@ -10,7 +10,7 @@ export function getCombinedExpression(
   expressionToAppend: string
 ): string {
   // Use variable reference as-is
-  if (expressionToAppend.startsWith('%')) {
+  if (expressionToAppend.includes('%')) {
     return expressionToAppend;
   }
 
