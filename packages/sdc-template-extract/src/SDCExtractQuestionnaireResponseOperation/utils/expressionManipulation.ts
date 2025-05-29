@@ -28,7 +28,7 @@ export function getCombinedExpression(
   return baseFhirPath + '.' + expressionToAppend; // Append to base path
 }
 
-export function getNumberOfTargetInstances(
+export function getNumberOfTemplateInstances(
   questionnaireResponse: QuestionnaireResponse,
   targetQRItemFhirPath: string | undefined,
   warnings: OperationOutcomeIssue[]

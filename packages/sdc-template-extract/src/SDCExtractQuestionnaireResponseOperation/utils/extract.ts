@@ -87,7 +87,7 @@ export async function extract(
   // Create a fhirPathContext object that acts as envVars for fhirpath.evaluate
   const fhirPathContext = createFhirPathContext(questionnaireResponse, extractAllocateIds);
 
-  // Populate answers from questionnaireResponse into contained templates
+  // Evaluate and populate answers from questionnaireResponse into contained templates
   const { extractedResourceMap, populateIntoTemplateWarnings, templateIdToExtractPaths } =
     populateIntoTemplates(questionnaireResponse, containedTemplateMap, fhirPathContext);
   combinedWarnings.push(...populateIntoTemplateWarnings);

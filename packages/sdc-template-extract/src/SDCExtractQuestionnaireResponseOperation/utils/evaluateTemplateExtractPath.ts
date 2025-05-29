@@ -1,32 +1,39 @@
-import type { OperationOutcomeIssue, QuestionnaireResponse } from 'fhir/r4';
+import type { FhirResource, OperationOutcomeIssue, QuestionnaireResponse } from 'fhir/r4';
 import { fhirPathEvaluate } from './fhirpathEvaluate';
-import type { TemplateExtractPath } from '../interfaces/templateExtractPath.interface';
-import { getCombinedExpression } from './expressionManipulation';
+import type {
+  FhirPathEvalResult,
+  TemplateExtractValueEvaluation
+} from '../interfaces/templateExtractPath.interface';
+import { addIndexToTargetPath, getCombinedExpression } from './expressionManipulation';
+import { insertValuesToTemplate } from './templateInsert';
 
-export function evaluateTemplateExtractPaths(
+export function evaluateAndInsertWithContext(
   questionnaireResponse: QuestionnaireResponse,
-  targetQRItemFhirPath: string | undefined,
-  templateExtractPath: TemplateExtractPath,
+  entryPath: string,
+  combinedContextPath: string,
+  valuePathMap: Map<string, TemplateExtractValueEvaluation>,
   fhirPathContext: Record<string, any>,
+  templateToMutate: FhirResource,
   populateIntoTemplateWarnings: OperationOutcomeIssue[]
 ) {
-  const { contextPathTuple, valuePathMap } = templateExtractPath;
-  const contextExpression = contextPathTuple?.[1].contextExpression ?? null;
+  // Evaluate context expression to get context result
+  const contextResult = getTemplateExtractEvalResult({
+    fhirDataToEvaluate: questionnaireResponse,
+    valueExpression: combinedContextPath,
+    fhirPathContext: fhirPathContext,
+    warnings: populateIntoTemplateWarnings
+  });
 
-  // Context path exists, use contextExpression to frame evaluation scope
-  if (contextExpression) {
-    const combinedContextPath = getCombinedExpression(targetQRItemFhirPath, contextExpression);
-    const contextResult = getTemplateExtractEvalResult({
-      fhirDataToEvaluate: questionnaireResponse,
-      valueExpression: combinedContextPath,
-      fhirPathContext: fhirPathContext,
-      warnings: populateIntoTemplateWarnings
-    });
+  const numberOfContextInstances = contextResult.length;
 
-    // Evaluate each valueExpression within the current template context
-    for (const [, valueEvaluation] of valuePathMap.entries()) {
+  // Evaluate each valueExpression within the current template context instance
+  for (let contextIndex = 0; contextIndex < numberOfContextInstances; contextIndex++) {
+    const combinedContextPathWithIndex = addIndexToTargetPath(combinedContextPath, contextIndex);
+
+    // const entryPathCountMap = new Map<string, number>();
+    for (const [valuePath, valueEvaluation] of valuePathMap.entries()) {
       const combinedValueExpression = getCombinedExpression(
-        combinedContextPath,
+        combinedContextPathWithIndex,
         valueEvaluation.valueExpression
       );
       const valueResult = getTemplateExtractEvalResult({
@@ -36,17 +43,23 @@ export function evaluateTemplateExtractPaths(
         warnings: populateIntoTemplateWarnings
       });
 
-      // Assign evaluated results to templateExtractPath
-      if (templateExtractPath.contextPathTuple) {
-        templateExtractPath.contextPathTuple[1].contextResult = contextResult;
-      }
-      valueEvaluation.valueResult = valueResult;
+      insertValuesToTemplate(entryPath, valuePath, valueResult, templateToMutate, contextIndex);
     }
-    return;
   }
+}
 
+export function evaluateAndInsertWithoutContext(
+  questionnaireResponse: QuestionnaireResponse,
+  entryPath: string,
+  targetQRItemFhirPath: string | undefined,
+  valuePathMap: Map<string, TemplateExtractValueEvaluation>,
+  fhirPathContext: Record<string, any>,
+  templateToMutate: FhirResource,
+  populateIntoTemplateWarnings: OperationOutcomeIssue[]
+) {
   // At this point, context path doesn't exist, evaluate each valueExpression directly
-  for (const [, valueEvaluation] of valuePathMap.entries()) {
+  // const entryPathCountMap = new Map<string, number>();
+  for (const [valuePath, valueEvaluation] of valuePathMap.entries()) {
     const combinedValueExpression = getCombinedExpression(
       targetQRItemFhirPath,
       valueEvaluation.valueExpression
@@ -58,8 +71,7 @@ export function evaluateTemplateExtractPaths(
       warnings: populateIntoTemplateWarnings
     });
 
-    // Assign evaluated result to templateExtractPath
-    valueEvaluation.valueResult = valueResult;
+    insertValuesToTemplate(entryPath, valuePath, valueResult, templateToMutate);
   }
 }
 
@@ -83,7 +95,9 @@ export interface TemplateExtractValueParams {
 /**
  * Evaluates a value expression for template extraction.
  */
-function getTemplateExtractEvalResult(templateExtractValueParams: TemplateExtractValueParams): any {
+function getTemplateExtractEvalResult(
+  templateExtractValueParams: TemplateExtractValueParams
+): FhirPathEvalResult {
   const { fhirDataToEvaluate, valueExpression, fhirPathContext, warnings } =
     templateExtractValueParams;
 
