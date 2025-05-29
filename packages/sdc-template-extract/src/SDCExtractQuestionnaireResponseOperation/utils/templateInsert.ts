@@ -2,7 +2,7 @@ import { getAdjustedDeletePathSegments, parseFhirPath } from './parseFhirPath';
 import type { TemplateExtractPath } from '../interfaces/templateExtractPath.interface';
 import type { FhirResource } from 'fhir/r4';
 import { buildValuesToInsert } from './buildValueToInsert';
-import { cleanEntryPathSegments } from './expressionManipulation';
+import { cleanEntryPathSegments, stripTrailingIndexFromPath } from './expressionManipulation';
 
 /**
  * Insert extracted value results to a deep clone of the given FHIR template,
@@ -45,16 +45,23 @@ export function insertValuesToTemplate(
   }
 
   // Insert values into the template
+  const entryPathCountMap = new Map<string, number>();
   for (const [entryPath, { valuePathMap }] of templateExtractPathMap.entries()) {
     for (const [valuePath, { valueResult }] of valuePathMap.entries()) {
+      const pathKey = stripTrailingIndexFromPath(entryPath);
       const entryPathSegments = parseFhirPath(entryPath);
 
       const valuesToInsert = buildValuesToInsert(entryPathSegments, valuePath, valueResult);
 
       // Insert each valueToInsert instance into template at the correct location
-      for (let i = 0; i < valuesToInsert.length; i++) {
-        const cleanedEntryPathSegments = cleanEntryPathSegments(entryPathSegments, i);
-        insertValueAtPath(mutatedTemplate, entryPath, cleanedEntryPathSegments, valuesToInsert[i]);
+      for (const valueToInsert of valuesToInsert) {
+        // Track how many times we've inserted at this path
+        const currentIndex = entryPathCountMap.get(pathKey) ?? 0;
+        entryPathCountMap.set(pathKey, currentIndex + 1);
+
+        const cleanedEntryPathSegments = cleanEntryPathSegments(entryPathSegments, currentIndex);
+
+        insertValueAtPath(mutatedTemplate, entryPath, cleanedEntryPathSegments, valueToInsert);
       }
     }
   }

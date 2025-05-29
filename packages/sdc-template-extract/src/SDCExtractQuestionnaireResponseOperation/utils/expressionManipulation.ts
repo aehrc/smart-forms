@@ -107,19 +107,27 @@ export function cleanEntryPathSegments(
   entryPathSegments: (string | number)[],
   index: number
 ): (string | number)[] {
+  const newSegments = [...entryPathSegments];
+
   // Last segment is a number (an array index), replace it with the provided index
-  const lastIndex = entryPathSegments.length - 1;
-  if (typeof entryPathSegments[lastIndex] === 'number') {
-    entryPathSegments[lastIndex] = index;
+  const lastIndex = newSegments.length - 1;
+  if (typeof newSegments[lastIndex] === 'number') {
+    newSegments[lastIndex] = index;
   }
 
   // Last segment is a _field, strip underscore prefix (e.g. '_field' → 'field').
-  if (
-    typeof entryPathSegments[lastIndex] === 'string' &&
-    entryPathSegments[lastIndex].startsWith('_')
-  ) {
-    entryPathSegments[lastIndex] = stripUnderscorePrefix(entryPathSegments[lastIndex]);
+  if (typeof newSegments[lastIndex] === 'string' && newSegments[lastIndex].startsWith('_')) {
+    newSegments[lastIndex] = stripUnderscorePrefix(newSegments[lastIndex]);
   }
 
-  return entryPathSegments;
+  return newSegments;
+}
+
+/**
+ * Removes a trailing array index from a FHIRPath string (e.g. `foo.bar[2]` → `foo.bar`)
+ * @param path - FHIRPath string
+ * @returns Path without trailing index
+ */
+export function stripTrailingIndexFromPath(path: string): string {
+  return path.replace(/\[\d+\]$/, '');
 }
