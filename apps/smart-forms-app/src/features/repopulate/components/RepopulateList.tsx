@@ -25,10 +25,11 @@ interface RepopulateListProps {
   itemsToRepopulateTuplesByHeadings: [string, ItemToRepopulate[]][];
   onValuePreferenceChange: (linkId: string, preferOld: boolean | undefined) => void;
   initialPreferences: Record<string, boolean | undefined>;
+  fieldPreferences: Record<string, boolean | undefined>;
 }
 
 function RepopulateList(props: RepopulateListProps) {
-  const { itemsToRepopulateTuplesByHeadings, onValuePreferenceChange, initialPreferences } = props;
+  const { itemsToRepopulateTuplesByHeadings, onValuePreferenceChange, initialPreferences, fieldPreferences } = props;
 
   return (
     <>
@@ -69,6 +70,7 @@ function RepopulateList(props: RepopulateListProps) {
                   newQRItems={newQRItems}
                   onValuePreferenceChange={onValuePreferenceChange}
                   initialPreference={initialPreferences[qItem.linkId]}
+                  fieldPreferences={fieldPreferences}
                 />
               );
             })}

@@ -88,7 +88,9 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
     );
 
     // Check if this is a granular preference (contains special characters indicating sub-field)
-    const isGranularPreference = linkId.includes(':') || linkId.includes('-row');
+    // Simple fields have format "linkId:linkId", granular preferences have "linkId-row0:fieldId" or "linkId:differentFieldId"
+    const isGranularPreference = linkId.includes('-row') || 
+      (linkId.includes(':') && linkId.split(':')[0] !== linkId.split(':')[1]);
 
     if (isGranularPreference) {
       // Store granular preference
@@ -108,12 +110,14 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
 
       // Don't update the main preference here - we'll aggregate later
     } else {
-      // Regular top-level preference
-      console.log(`  📝 Storing regular preference: ${linkId} = ${iPreferMyCurrentFormValue}`);
+      // Regular top-level preference (including simple fields with format "linkId:linkId")
+      // For simple fields, extract the main linkId from the full key
+      const mainLinkId = linkId.includes(':') ? linkId.split(':')[0] : linkId;
+      console.log(`  📝 Storing regular preference: ${mainLinkId} = ${iPreferMyCurrentFormValue}`);
       setUserPrefersTheirCurrentFormValue((prev) => {
         const updated = {
           ...prev,
-          [linkId]: iPreferMyCurrentFormValue
+          [mainLinkId]: iPreferMyCurrentFormValue
         };
         console.log(`  📝 Updated regular preferences:`, updated);
         return updated;
@@ -407,6 +411,7 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
           itemsToRepopulateTuplesByHeadings={itemsToRepopulateTuplesByHeadings}
           onValuePreferenceChange={handleValuePreferenceChange}
           initialPreferences={userPrefersTheirCurrentFormValue}
+          fieldPreferences={userPrefersTheirCurrentFormValue}
         />
       </DialogContent>
       <DialogActions>

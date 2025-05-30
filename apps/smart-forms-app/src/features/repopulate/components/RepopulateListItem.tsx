@@ -31,10 +31,11 @@ interface RepopulateListItemProps {
   onValuePreferenceChange: (linkId: string, preferOld: boolean | undefined) => void;
   isSelected?: boolean;
   initialPreference?: boolean;
+  fieldPreferences: Record<string, boolean | undefined>;
 }
 
 function RepopulateListItem(props: RepopulateListItemProps) {
-  const { qItem, oldQRItem, newQRItem, newQRItems, oldQRItems, onValuePreferenceChange } = props;
+  const { qItem, oldQRItem, newQRItem, newQRItems, oldQRItems, onValuePreferenceChange, fieldPreferences } = props;
 
   const itemIsHidden = useHidden(qItem);
   if (itemIsHidden) {
@@ -78,6 +79,7 @@ function RepopulateListItem(props: RepopulateListItemProps) {
             serverSuggestedQRItems={props.newQRItems}
             currentUserFormQRItems={props.oldQRItems}
             onValuePreferenceChange={onValuePreferenceChange}
+            fieldPreferences={fieldPreferences}
           />
         }
         sx={{ width: '100%' }}
