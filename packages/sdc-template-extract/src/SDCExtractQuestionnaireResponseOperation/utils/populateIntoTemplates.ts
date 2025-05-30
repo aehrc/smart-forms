@@ -4,10 +4,7 @@ import type {
 } from '../interfaces/templateExtractPath.interface';
 import type { FhirResource, OperationOutcomeIssue, QuestionnaireResponse } from 'fhir/r4';
 import { createTemplateExtractPathMap } from './templateExtractPath';
-import {
-  evaluateAndInsertWithContext,
-  evaluateAndInsertWithoutContext
-} from './evaluateTemplateExtractPath';
+import { evaluateAndInsertIntoPath } from './evaluateTemplateExtractPath';
 import { templateExtractPathMapToRecord } from './mapToRecord';
 import {
   addIndexToTargetPath,
@@ -15,6 +12,8 @@ import {
   getNumberOfTemplateInstances
 } from './expressionManipulation';
 import { removeTemplateArtifacts } from './removeTemplateArtifacts';
+import cleanDeep from 'clean-deep';
+import type { EntryPathPosition } from '../interfaces/entryPathPosition.interface';
 
 export function populateIntoTemplates(
   questionnaireResponse: QuestionnaireResponse,
@@ -31,11 +30,11 @@ export function populateIntoTemplates(
   const templateIdToExtractPaths: Record<string, Record<string, TemplateExtractPathJsObject>[]> =
     {};
 
-  // Iterate over each template
+  // Iterate over each template e.g. patTemplate, AllergyIntoleranceTemplate
   for (const [templateId, templateDetails] of templateMap.entries()) {
     const { templateResource, targetQRItemFhirPath } = templateDetails;
 
-    // Builds a map of FHIRPath expressions for templateExtractContexts and templateExtractValues
+    // Step 1: Build a map of FHIRPath expressions for templateExtractContexts and templateExtractValues
     const { templateExtractPathMap, walkTemplateWarnings } = createTemplateExtractPathMap(
       templateId,
       templateResource
@@ -43,61 +42,71 @@ export function populateIntoTemplates(
     combinedWalkTemplateWarnings.push(...walkTemplateWarnings);
     templateIdToExtractPaths[templateId] = [];
 
-    // Get number of template instances for the target path
+    // Step 2: Get number of template instances for the target path
     const numberOfTemplateInstances = getNumberOfTemplateInstances(
       questionnaireResponse,
       targetQRItemFhirPath,
       dataEvaluationWarnings
     );
 
-    // Evaluate template extract paths for each matching QRItem instance (e.g., multiple allergy items)
+    // Iterate each matching QRItem instance (e.g., multiple allergy items)
     const extractedResourcesByTemplateId: FhirResource[] = [];
     const extractPathsByTemplateId: Record<string, TemplateExtractPathJsObject>[] = [];
     for (let i = 0; i < numberOfTemplateInstances; i++) {
       const templateExtractPathMapInstance = structuredClone(templateExtractPathMap);
       const targetQRItemFhirPathWithIndex = addIndexToTargetPath(targetQRItemFhirPath, i);
 
-      // Evaluate and populate each template extract path e.g. AllergyIntolerance.code, AllergyIntolerance.note
-      const templateToMutate = structuredClone(templateResource); // Deep copy the template
+      // Step 3: Each new template instance should be deep copied to prevent mutating original template
+      let templateToMutate = structuredClone(templateResource);
+
+      // Step 4: Remove templateExtract artifacts from template instance e.g. templateExtractContext and templateExtractValue extensions
+      const entryPathPositionMap: Map<string, EntryPathPosition[]> = new Map<
+        string,
+        EntryPathPosition[]
+      >();
       for (const [entryPath, templateExtractPath] of templateExtractPathMapInstance.entries()) {
         const { contextPathTuple, valuePathMap } = templateExtractPath;
         const contextPath = contextPathTuple?.[0] ?? null;
+        removeTemplateArtifacts(entryPath, contextPath, valuePathMap, templateToMutate);
+      }
+
+      // Step 5: Remove empty objects, arrays, null, and undefined after removing artifacts
+      templateToMutate = cleanDeep(templateToMutate, {
+        emptyObjects: true,
+        emptyArrays: true,
+        nullValues: true,
+        undefinedValues: true
+      }) as FhirResource;
+
+      // Step 6: Prepare a clean template for reading static template data
+      const cleanTemplate = structuredClone(templateToMutate);
+
+      // Step 6: Evaluate and populate each templateExtractPath e.g. AllergyIntolerance.code, AllergyIntolerance.note
+      for (const [entryPath, templateExtractPath] of templateExtractPathMapInstance.entries()) {
+        const { contextPathTuple, valuePathMap } = templateExtractPath;
         const contextExpression = contextPathTuple?.[1].contextExpression ?? null;
 
-        // Remove templateExtract artifacts from template e.g. templateExtractContext and templateExtractValue extensions
-        removeTemplateArtifacts(entryPath, contextPath, valuePathMap, templateToMutate);
-
         // Context path exists, use contextExpression to frame evaluation scope
-        if (contextExpression) {
-          const combinedContextPath = getCombinedExpression(
-            targetQRItemFhirPathWithIndex,
-            contextExpression
-          );
-          evaluateAndInsertWithContext(
-            questionnaireResponse,
-            entryPath,
-            combinedContextPath,
-            valuePathMap,
-            fhirPathContext,
-            templateToMutate,
-            dataEvaluationWarnings
-          );
-          continue;
-        }
+        // Otherwise, use targetQRItemFhirPathWithIndex as the context path
+        const contextPath = contextExpression
+          ? getCombinedExpression(targetQRItemFhirPathWithIndex, contextExpression)
+          : targetQRItemFhirPathWithIndex;
 
-        // At this point context path doesn't exist, evaluate each valueExpression directly without context
-        evaluateAndInsertWithoutContext(
+        // Evaluate and insert values into templateToMutate
+        evaluateAndInsertIntoPath(
           questionnaireResponse,
           entryPath,
-          targetQRItemFhirPathWithIndex,
+          contextPath,
           valuePathMap,
+          entryPathPositionMap,
           fhirPathContext,
           templateToMutate,
+          cleanTemplate,
           dataEvaluationWarnings
         );
       }
 
-      // Remove resource.id from mutatedTemplate
+      // Remove resource.id from templateToMutate
       // Refer https://build.fhir.org/ig/HL7/sdc/extraction.html#template-based-extraction step 4
       if (templateToMutate.id) {
         delete templateToMutate.id;
@@ -108,7 +117,7 @@ export function populateIntoTemplates(
       extractPathsByTemplateId.push(templateExtractPathMapToRecord(templateExtractPathMapInstance));
     }
 
-    // Collate extracted resources and templateExtractPathMap instances
+    // Step 7: Collate extracted resources and templateExtractPathMap instances
     extractedResourceMap.set(templateId, extractedResourcesByTemplateId);
     templateIdToExtractPaths[templateId] = extractPathsByTemplateId;
   }

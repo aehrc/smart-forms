@@ -1,19 +1,23 @@
 import { parseFhirPathToWritableSegments } from './parseFhirPath';
 import { valueIsCoding } from './typePredicates';
 import { getRelativeValuePathSegments } from './expressionManipulation';
+import { combineStaticTemplateData } from './staticTemplateData';
 
 /**
  * Builds an array of insertable values by applying value results to their relative path segments.
+ * This function also combines values with static template data.
  *
  * @param entryPathSegments - Segments pointing to the entry location (e.g. ["Observation", "code"])
  * @param valuePath - Full FHIRPath string to the target value
  * @param valueResultsToInsert - Raw value results to insert
+ * @param staticTemplateData - Static template data at valuePath to combine with each value
  * @returns Array of values shaped for insertion
  */
 export function buildValuesToInsert(
   entryPathSegments: (string | number)[],
   valuePath: string,
-  valueResultsToInsert: any
+  valueResultsToInsert: any,
+  staticTemplateData: object
 ): any[] {
   // Get value path segments relative to the entry path
   const writableSegments = parseFhirPathToWritableSegments(valuePath);
@@ -32,7 +36,8 @@ export function buildValuesToInsert(
     for (const valueResult of valueResultsToInsert) {
       const value = getValueFromResult([valueResult]);
       const valueToInsert = buildSingleValueToInsertRecursive(relativeValuePathSegments, value);
-      valuesToInsert.push(valueToInsert);
+      const fullValueToInsert = combineStaticTemplateData(staticTemplateData, valueToInsert);
+      valuesToInsert.push(fullValueToInsert);
     }
   }
 
