@@ -1,9 +1,6 @@
 import type { FhirResource, OperationOutcomeIssue, QuestionnaireResponse } from 'fhir/r4';
 import { fhirPathEvaluate } from './fhirpathEvaluate';
-import type {
-  FhirPathEvalResult,
-  TemplateExtractPath
-} from '../interfaces/templateExtractPath.interface';
+import type { TemplateExtractPath } from '../interfaces/templateExtractPath.interface';
 import { getCombinedExpression } from './expressionManipulation';
 import { insertValuesToPath } from './templateInsert';
 import type { EntryPathPosition } from '../interfaces/entryPathPosition.interface';
@@ -25,7 +22,7 @@ export function evaluateAndInsertIntoPath(
   questionnaireResponse: QuestionnaireResponse,
   entryPath: string,
   templateExtractPath: TemplateExtractPath,
-  targetQRItemFhirPathWithIndex: string | undefined,
+  targetQRItemFhirPathWithIndex: string,
   entryPathPositionMap: Map<string, EntryPathPosition[]>,
   fhirPathContext: Record<string, any>,
   templateToMutate: FhirResource,
@@ -41,15 +38,20 @@ export function evaluateAndInsertIntoPath(
     ? getCombinedExpression(targetQRItemFhirPathWithIndex, contextExpression)
     : targetQRItemFhirPathWithIndex;
 
+  // Evaluate context path to get the context result
+  const contextResult = fhirPathEvaluate({
+    fhirData: questionnaireResponse,
+    path: contextPath,
+    envVars: fhirPathContext,
+    warnings: populateIntoTemplateWarnings
+  });
+
   for (const [valuePath, valueEvaluation] of valuePathMap.entries()) {
-    const combinedValueExpression = getCombinedExpression(
-      contextPath,
-      valueEvaluation.valueExpression
-    );
-    const valueResult = getTemplateExtractEvalResult({
-      fhirDataToEvaluate: questionnaireResponse,
-      valueExpression: combinedValueExpression,
-      fhirPathContext: fhirPathContext,
+    // Use context result to evaluate the value expression
+    const valueResult = fhirPathEvaluate({
+      fhirData: contextResult,
+      path: valueEvaluation.valueExpression,
+      envVars: fhirPathContext,
       warnings: populateIntoTemplateWarnings
     });
 
@@ -67,39 +69,4 @@ export function evaluateAndInsertIntoPath(
     // Collect value evaluation results for debugging
     valueEvaluation.valueResult = valueResult;
   }
-}
-
-/**
- * Input parameters for `getTemplateExtractValueResult`.
- */
-export interface TemplateExtractValueParams {
-  /** The FHIR data context used for evaluating the expression - equivalent to `fhirData` from fhirpath.evaluate(). */
-  fhirDataToEvaluate: any;
-
-  /** The value expression to evaluate (FHIRPath or `%<key>` reference) - equivalent to `path` from fhirpath.evaluate(). */
-  valueExpression: string;
-
-  /** FHIRPath context for evaluation - equivalent to `envVars` from fhirpath.evaluate(). */
-  fhirPathContext: Record<string, any>;
-
-  /** Collector for any evaluation warnings or issues. */
-  warnings: OperationOutcomeIssue[];
-}
-
-/**
- * Evaluates a value expression for template extraction.
- */
-function getTemplateExtractEvalResult(
-  templateExtractValueParams: TemplateExtractValueParams
-): FhirPathEvalResult {
-  const { fhirDataToEvaluate, valueExpression, fhirPathContext, warnings } =
-    templateExtractValueParams;
-
-  // Otherwise, evaluate it as a FHIRPath expression
-  return fhirPathEvaluate({
-    fhirData: fhirDataToEvaluate,
-    path: valueExpression,
-    envVars: fhirPathContext,
-    warnings: warnings
-  });
 }

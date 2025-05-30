@@ -5,32 +5,39 @@ import { fhirPathEvaluate } from './fhirpathEvaluate';
  * Combines a base FHIRPath with an appended expression.
  * Returns the appended expression directly if it's a variable reference.
  */
-export function getCombinedExpression(
-  baseFhirPath: string | undefined,
-  expressionToAppend: string
-): string {
+export function getCombinedExpression(baseFhirPath: string, expressionToAppend: string): string {
   // Use variable reference as-is
   if (expressionToAppend.includes('%')) {
-    return expressionToAppend;
+    return normaliseExpression(expressionToAppend);
   }
 
   // baseFhirPath empty, return expression directly
-  if (baseFhirPath === '' || baseFhirPath === undefined) {
-    return expressionToAppend;
-  }
-
-  // valuePath starts with $this, wrap with select()
-  if (expressionToAppend.startsWith('$this')) {
-    return baseFhirPath + '.' + `select(${expressionToAppend})`; // Append to base path
+  if (baseFhirPath === '') {
+    return normaliseExpression(expressionToAppend);
   }
 
   // Default append behavior
-  return baseFhirPath + '.' + expressionToAppend; // Append to base path
+  return baseFhirPath + '.' + normaliseExpression(expressionToAppend); // Append to base path
+}
+
+/**
+ * Normalizes a FHIRPath expression by handling special cases like `$this`.
+ * If the expression starts with `$this`, it wraps it in `select(...)` and appends to the base path.
+ * Otherwise, it appends the expression directly to the base path.
+ */
+export function normaliseExpression(expression: string) {
+  // expression starts with $this, wrap with select()
+  if (expression.includes('$this')) {
+    return `select(${expression})`;
+  }
+
+  // Otherwise, return the expression as is
+  return expression;
 }
 
 export function getNumberOfTemplateInstances(
   questionnaireResponse: QuestionnaireResponse,
-  targetQRItemFhirPath: string | undefined,
+  targetQRItemFhirPath: string,
   warnings: OperationOutcomeIssue[]
 ): number {
   if (targetQRItemFhirPath) {
@@ -51,12 +58,9 @@ export function getNumberOfTemplateInstances(
   return 0;
 }
 
-export function addIndexToTargetPath(
-  baseFhirPath: string | undefined,
-  index: number
-): string | undefined {
+export function addIndexToTargetPath(baseFhirPath: string, index: number): string {
   // baseFhirPath empty, return expression directly
-  if (baseFhirPath === '' || baseFhirPath === undefined) {
+  if (baseFhirPath === '') {
     return baseFhirPath;
   }
 

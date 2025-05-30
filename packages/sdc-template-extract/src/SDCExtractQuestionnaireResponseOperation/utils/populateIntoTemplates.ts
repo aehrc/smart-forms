@@ -10,6 +10,7 @@ import { addIndexToTargetPath, getNumberOfTemplateInstances } from './expression
 import { removeTemplateArtifacts } from './removeTemplateArtifacts';
 import cleanDeep from 'clean-deep';
 import type { EntryPathPosition } from '../interfaces/entryPathPosition.interface';
+import { createInvalidWarningIssue } from './operationOutcome';
 
 export function populateIntoTemplates(
   questionnaireResponse: QuestionnaireResponse,
@@ -29,6 +30,12 @@ export function populateIntoTemplates(
   // Iterate over each template e.g. patTemplate, AllergyIntoleranceTemplate
   for (const [templateId, templateDetails] of templateMap.entries()) {
     const { templateResource, targetQRItemFhirPath } = templateDetails;
+    if (!targetQRItemFhirPath) {
+      populateIntoTemplateWarnings.push(
+        createInvalidWarningIssue(`Template ${templateId} does not have a target QR item FHIRPath.`)
+      );
+      continue;
+    }
 
     // Step 1: Build a map of FHIRPath expressions for templateExtractContexts and templateExtractValues
     const { templateExtractPathMap, walkTemplateWarnings } = createTemplateExtractPathMap(
