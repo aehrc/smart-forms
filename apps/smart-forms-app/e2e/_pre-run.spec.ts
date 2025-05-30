@@ -28,7 +28,7 @@ test('launch without questionnaire context, select a questionnaire and create a 
 }) => {
   // Launch app without questionnaire context
   const fetchQPromise = page.waitForResponse(
-    `${PLAYWRIGHT_FORMS_SERVER_URL}/Questionnaire?_count=100&_sort=-date&`
+    `${PLAYWRIGHT_FORMS_SERVER_URL}/Questionnaire?_count=300&_sort=-date&`
   );
 
   const launchUrl = `${PLAYWRIGHT_APP_URL}/launch?iss=https%3A%2F%2Fproxy.smartforms.io%2Fv%2Fr4%2Ffhir&launch=${LAUNCH_PARAM_WITHOUT_Q}`;
@@ -37,7 +37,7 @@ test('launch without questionnaire context, select a questionnaire and create a 
 
   // Search MBS715 title
   const fetchQByTitlePromise = page.waitForResponse(
-    `${PLAYWRIGHT_FORMS_SERVER_URL}/Questionnaire?_count=100&_sort=-date&title:contains=Aboriginal%20and%20Torres%20Strait%20Islander%20Health%20Check`
+    `${PLAYWRIGHT_FORMS_SERVER_URL}/Questionnaire?_count=300&_sort=-date&title:contains=Aboriginal%20and%20Torres%20Strait%20Islander%20Health%20Check`
   );
   await page
     .getByTestId('search-field-questionnaires')
