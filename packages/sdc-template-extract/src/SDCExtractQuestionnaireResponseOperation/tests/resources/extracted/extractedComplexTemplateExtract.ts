@@ -52,7 +52,7 @@ export const extractedComplexTemplateExtract: Bundle = {
       resource: {
         resourceType: 'RelatedPerson',
         patient: {
-          reference: '7579e19d-4e79-4305-aad4-531147ee710f'
+          reference: 'Patient/7579e19d-4e79-4305-aad4-531147ee710f'
         },
         relationship: [
           {
@@ -108,7 +108,7 @@ export const extractedComplexTemplateExtract: Bundle = {
           ]
         },
         subject: {
-          reference: '7579e19d-4e79-4305-aad4-531147ee710f'
+          reference: 'Patient/7579e19d-4e79-4305-aad4-531147ee710f'
         },
         effectiveDateTime: '2025-05-28T05:11:40.833Z',
         performer: [
@@ -154,7 +154,7 @@ export const extractedComplexTemplateExtract: Bundle = {
           ]
         },
         subject: {
-          reference: '7579e19d-4e79-4305-aad4-531147ee710f'
+          reference: 'Patient/7579e19d-4e79-4305-aad4-531147ee710f'
         },
         effectiveDateTime: '2025-05-28T05:11:40.833Z',
         performer: [
@@ -189,7 +189,7 @@ export const extractedComplexTemplateExtract: Bundle = {
           ]
         },
         subject: {
-          reference: '7579e19d-4e79-4305-aad4-531147ee710f'
+          reference: 'Patient/7579e19d-4e79-4305-aad4-531147ee710f'
         },
         effectiveDateTime: '2025-05-28T05:11:40.833Z',
         performer: [
