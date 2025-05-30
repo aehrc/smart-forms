@@ -38,29 +38,6 @@ export interface TemplateDetails {
 }
 
 /**
- * Result of evaluating the `contextExpression` from the `templateExtractContext` extension.
- * e.g. `{
- *   "linkId": "name",
- *   "text": "Name",
- *   "item": [
- *     {
- *       "linkId": "family",
- *       "text": "Family/Surname",
- *       "answer": [
- *         {
- *           "valueString": "Doe"
- *         }
- *       ]
- *     }
- *   ]
- * }`
- */
-export interface TemplateExtractContextEvaluation {
-  contextExpression: string;
-  contextResult: any;
-}
-
-/**
  * Result of evaluating a FHIRPath expression. Usually an array of FHIR values, elements, or primitives.
  */
 export type FhirPathEvalResult = any[];
@@ -79,11 +56,11 @@ export interface TemplateExtractValueEvaluation {
  */
 export interface TemplateExtractPath {
   /**
-   * A tuple of [contextPath, {contextExpression, contextResult}] from the `templateExtractContext` extension.
+   * A tuple of [contextPath, contextExpression] from the `templateExtractContext` extension.
    * e.g. `<"Patient.name[0].extension[0]", "	item.where(linkId = 'name')">`
    * `null` when the extraction is based on a standalone value path only.
    */
-  contextPathTuple: [string, TemplateExtractContextEvaluation] | null;
+  contextPathTuple: [string, string] | null;
 
   /**
    * A map of <valuePath, {valueExpression, valueResult}> pairs from the `templateExtractValue` extension.
@@ -96,7 +73,7 @@ export interface TemplateExtractPath {
  * An exact copy of `TemplateExtractPath` in `templateExtractPath.interface.ts` but in plain object form.
  */
 export interface TemplateExtractPathJsObject {
-  contextPathTuple: [string, TemplateExtractContextEvaluation] | null;
+  contextPathTuple: [string, string] | null;
   valuePathMap: Record<string, TemplateExtractValueEvaluation>;
   generatedFullId?: string;
 }

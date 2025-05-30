@@ -21,13 +21,13 @@ import type {
  * ```
  * 🔢 All columns for: PatientTemplate
  *
- * | entryPath             | contextPath                        | contextExpression                                | contextResult          | valuePath                                 | valueExpression                                                      | valueResult            |
- * |-----------------------|----------------------------------- |------------------------------------------------- |------------------------|------------------------------------------ |--------------------------------------------------------------------- |------------------------|
- * | Patient.identifier[0] | Patient.identifier[0].extension[0] | item.where(linkId = 'ihi').answer.value          | [ "8003608833357361" ] | Patient.identifier[0]._value.extension[0] | first()                                                              | [ "8003608833357361" ] |
- * | Patient.name[0]       | Patient.name[0].extension[0]       | item.where(linkId = 'name')                      | (object)               | Patient.name[0]._text.extension[0]        | item.where(linkId='given' or linkId='family').answer.value.join(' ') | [ "Jane" ]             |
- * | Patient.name[0]       | Patient.name[0].extension[0]       | item.where(linkId = 'name')                      | (object)               | Patient.name[0]._family.extension[0]      | item.where(linkId = 'family').answer.value.first()                   | [ "Doe" ]              |
- * | Patient.telecom[0]    | Patient.telecom[0].extension[0]    | item.where(linkId = 'mobile-phone').answer.value | [ "0491 572 665" ]     | Patient.telecom[0]._value.extension[0]    | first()                                                              | [ "0491 572 665" ]     |
- * | Patient._gender       | null                               | null                                             | null                   | Patient._gender.extension[0]              | item.where(linkId = 'gender').answer.value.first().code              | [ "female" ]           |
+ * | entryPath             | contextPath                        | contextExpression                                | valuePath                                 | valueExpression                                                      | valueResult            |
+ * |-----------------------|----------------------------------- |------------------------------------------------- |------------------------------------------ |--------------------------------------------------------------------- |------------------------|
+ * | Patient.identifier[0] | Patient.identifier[0].extension[0] | item.where(linkId = 'ihi').answer.value          | Patient.identifier[0]._value.extension[0] | first()                                                              | [ "8003608833357361" ] |
+ * | Patient.name[0]       | Patient.name[0].extension[0]       | item.where(linkId = 'name')                      | Patient.name[0]._text.extension[0]        | item.where(linkId='given' or linkId='family').answer.value.join(' ') | [ "Jane" ]             |
+ * | Patient.name[0]       | Patient.name[0].extension[0]       | item.where(linkId = 'name')                      | Patient.name[0]._family.extension[0]      | item.where(linkId = 'family').answer.value.first()                   | [ "Doe" ]              |
+ * | Patient.telecom[0]    | Patient.telecom[0].extension[0]    | item.where(linkId = 'mobile-phone').answer.value | Patient.telecom[0]._value.extension[0]    | first()                                                              | [ "0491 572 665" ]     |
+ * | Patient._gender       | null                               | null                                             | Patient._gender.extension[0]              | item.where(linkId = 'gender').answer.value.first().code              | [ "female" ]           |
  * ```
  */
 export function logTemplateExtractPathMapFull(
@@ -38,7 +38,6 @@ export function logTemplateExtractPathMapFull(
     entryPath: string;
     contextPath: string | null;
     contextExpression: string | null;
-    contextResult: any;
     valuePath: string | null;
     valueExpression: string | null;
     valueResult: any;
@@ -46,8 +45,7 @@ export function logTemplateExtractPathMapFull(
 
   for (const [entryPath, { contextPathTuple, valuePathMap }] of templateExtractPathMap.entries()) {
     const contextPath = contextPathTuple?.[0] ?? null;
-    const contextExpression = contextPathTuple?.[1].contextExpression ?? null;
-    const contextResult = contextPathTuple?.[1].contextResult ?? null;
+    const contextExpression = contextPathTuple?.[1] ?? null;
 
     for (const [valuePath, valueEvaluation] of valuePathMap.entries()) {
       const { valueExpression, valueResult } = valueEvaluation;
@@ -55,12 +53,10 @@ export function logTemplateExtractPathMapFull(
         entryPath: entryPath,
         contextPath: contextPath,
         contextExpression: contextExpression,
-        contextResult: contextResult,
         valuePath: valuePath,
         valueExpression: valueExpression,
         valueResult: valueResult
       });
-      // console.log(fhirpath.parse(valueExpression));
     }
 
     if (valuePathMap.size === 0) {
@@ -68,7 +64,6 @@ export function logTemplateExtractPathMapFull(
         entryPath: entryPath,
         contextPath: contextPath,
         contextExpression: contextExpression,
-        contextResult: contextResult,
         valuePath: null,
         valueExpression: null,
         valueResult: null
@@ -89,7 +84,6 @@ export function logTemplateExtractPathMapJsObjectFull(
     entryPath: string;
     contextPath: string | null;
     contextExpression: string | null;
-    contextResult: any;
     valuePath: string | null;
     valueExpression: string | null;
     valueResult: any;
@@ -99,8 +93,7 @@ export function logTemplateExtractPathMapJsObjectFull(
     templateExtractPathMap
   )) {
     const contextPath = contextPathTuple?.[0] ?? null;
-    const contextExpression = contextPathTuple?.[1]?.contextExpression ?? null;
-    const contextResult = contextPathTuple?.[1]?.contextResult ?? null;
+    const contextExpression = contextPathTuple?.[1] ?? null;
 
     const valuePaths = Object.entries(valuePathMap ?? {});
 
@@ -110,7 +103,6 @@ export function logTemplateExtractPathMapJsObjectFull(
           entryPath,
           contextPath,
           contextExpression,
-          contextResult,
           valuePath,
           valueExpression,
           valueResult
@@ -121,7 +113,6 @@ export function logTemplateExtractPathMapJsObjectFull(
         entryPath,
         contextPath,
         contextExpression,
-        contextResult,
         valuePath: null,
         valueExpression: null,
         valueResult: null
@@ -141,7 +132,6 @@ export function logTemplateExtractPathMapJsObjectFull(
  *
  * Each row includes:
  * - `entryPath`: The FHIRPath location in the resource,
- * - `contextResult`: The result of evaluating the context expression,
  * - `valueResult`: The result of evaluating the value expression.
  *
  * @param {string} templateId - The identifier for the template being logged.
@@ -153,13 +143,13 @@ export function logTemplateExtractPathMapJsObjectFull(
  * ```
  * 🔹 Result columns for: PatientTemplate
  *
- * | entryPath             | contextResult          | valueResult           |
- * |-----------------------|------------------------|------------------------|
- * | Patient.identifier[0] | [ "8003608833357361" ] | [ "8003608833357361" ] |
- * | Patient.name[0]       | (object)               | [ "Jane" ]             |
- * | Patient.name[0]       | (object)               | [ "Doe" ]              |
- * | Patient.telecom[0]    | [ "0491 572 665" ]     | [ "0491 572 665" ]     |
- * | Patient._gender       | null                   | [ "female" ]           |
+ * | entryPath             | valueResult            |
+ * |-----------------------|------------------------|
+ * | Patient.identifier[0] | [ "8003608833357361" ] |
+ * | Patient.name[0]       | [ "Jane" ]             |
+ * | Patient.name[0]       | [ "Doe" ]              |
+ * | Patient.telecom[0]    | [ "0491 572 665" ]     |
+ * | Patient._gender       | [ "female" ]           |
  * ```
  */
 export function logTemplateExtractPathMapResults(
@@ -168,18 +158,16 @@ export function logTemplateExtractPathMapResults(
 ) {
   const table: {
     entryPath: string;
-    contextResult: any;
     valueResult: any;
   }[] = [];
 
-  for (const [entryPath, { contextPathTuple, valuePathMap }] of templateExtractPathMap.entries()) {
-    const contextResult = contextPathTuple?.[1].contextResult ?? null;
+  for (const [entryPath, templateExtractPath] of templateExtractPathMap.entries()) {
+    const { valuePathMap } = templateExtractPath;
 
     for (const [, valueEvaluation] of valuePathMap.entries()) {
       const { valueResult } = valueEvaluation;
       table.push({
         entryPath,
-        contextResult,
         valueResult
       });
     }
@@ -187,7 +175,6 @@ export function logTemplateExtractPathMapResults(
     if (valuePathMap.size === 0) {
       table.push({
         entryPath,
-        contextResult,
         valueResult: null
       });
     }
@@ -204,28 +191,23 @@ export function logTemplateExtractPathMapJsObjectResults(
 ) {
   const table: {
     entryPath: string;
-    contextResult: any;
     valueResult: any;
   }[] = [];
 
-  for (const [entryPath, { contextPathTuple, valuePathMap }] of Object.entries(
-    templateExtractPathMap
-  )) {
-    const contextResult = contextPathTuple?.[1]?.contextResult ?? null;
+  for (const [entryPath, templateExtractPath] of Object.entries(templateExtractPathMap)) {
+    const { valuePathMap } = templateExtractPath;
 
     const valuePaths = Object.values(valuePathMap ?? {});
     if (valuePaths.length > 0) {
       for (const { valueResult } of valuePaths) {
         table.push({
           entryPath,
-          contextResult,
           valueResult
         });
       }
     } else {
       table.push({
         entryPath,
-        contextResult,
         valueResult: null
       });
     }

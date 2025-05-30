@@ -6,11 +6,7 @@ import type { FhirResource, OperationOutcomeIssue, QuestionnaireResponse } from 
 import { createTemplateExtractPathMap } from './templateExtractPath';
 import { evaluateAndInsertIntoPath } from './evaluateTemplateExtractPath';
 import { templateExtractPathMapToRecord } from './mapToRecord';
-import {
-  addIndexToTargetPath,
-  getCombinedExpression,
-  getNumberOfTemplateInstances
-} from './expressionManipulation';
+import { addIndexToTargetPath, getNumberOfTemplateInstances } from './expressionManipulation';
 import { removeTemplateArtifacts } from './removeTemplateArtifacts';
 import cleanDeep from 'clean-deep';
 import type { EntryPathPosition } from '../interfaces/entryPathPosition.interface';
@@ -89,21 +85,11 @@ export function populateIntoTemplates(
 
       // Step 6: Evaluate and populate each templateExtractPath e.g. AllergyIntolerance.code, AllergyIntolerance.note
       for (const [entryPath, templateExtractPath] of templateExtractPathMapInstance.entries()) {
-        const { contextPathTuple, valuePathMap } = templateExtractPath;
-        const contextExpression = contextPathTuple?.[1].contextExpression ?? null;
-
-        // Context path exists, use contextExpression to frame evaluation scope
-        // Otherwise, use targetQRItemFhirPathWithIndex as the context path
-        const contextPath = contextExpression
-          ? getCombinedExpression(targetQRItemFhirPathWithIndex, contextExpression)
-          : targetQRItemFhirPathWithIndex;
-
-        // Evaluate and insert values into templateToMutate
         evaluateAndInsertIntoPath(
           questionnaireResponse,
           entryPath,
-          contextPath,
-          valuePathMap,
+          templateExtractPath,
+          targetQRItemFhirPathWithIndex,
           entryPathPositionMap,
           fhirPathContext,
           templateToMutate,

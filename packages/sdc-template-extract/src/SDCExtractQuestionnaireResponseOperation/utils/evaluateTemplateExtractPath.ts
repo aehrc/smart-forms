@@ -2,7 +2,7 @@ import type { FhirResource, OperationOutcomeIssue, QuestionnaireResponse } from 
 import { fhirPathEvaluate } from './fhirpathEvaluate';
 import type {
   FhirPathEvalResult,
-  TemplateExtractValueEvaluation
+  TemplateExtractPath
 } from '../interfaces/templateExtractPath.interface';
 import { getCombinedExpression } from './expressionManipulation';
 import { insertValuesToPath } from './templateInsert';
@@ -13,8 +13,8 @@ import type { EntryPathPosition } from '../interfaces/entryPathPosition.interfac
  *
  * @param questionnaireResponse - The source QuestionnaireResponse used as input for evaluation.
  * @param entryPath - Entry path where values should be inserted (e.g., "MedicationStatement.reasonCode[0]").
- * @param contextPath - Optional FHIRPath expression defining context scope to be combined with value expressions.
- * @param valuePathMap - Map of value paths to their corresponding expressions and evaluated results.
+ * @param templateExtractPath - The template extract path entry containing context and value expressions to evaluate.
+ * @param targetQRItemFhirPathWithIndex - The FHIRPath-style path for the target QuestionnaireResponse item, potentially with an index.
  * @param entryPathPositionMap - Tracks how many values were inserted at each entry path.
  * @param fhirPathContext - Additional FHIRPath variables or context used during evaluation.
  * @param templateToMutate - The target FHIR resource to be populated with evaluated values.
@@ -24,14 +24,23 @@ import type { EntryPathPosition } from '../interfaces/entryPathPosition.interfac
 export function evaluateAndInsertIntoPath(
   questionnaireResponse: QuestionnaireResponse,
   entryPath: string,
-  contextPath: string | undefined,
-  valuePathMap: Map<string, TemplateExtractValueEvaluation>,
+  templateExtractPath: TemplateExtractPath,
+  targetQRItemFhirPathWithIndex: string | undefined,
   entryPathPositionMap: Map<string, EntryPathPosition[]>,
   fhirPathContext: Record<string, any>,
   templateToMutate: FhirResource,
   cleanTemplate: FhirResource,
   populateIntoTemplateWarnings: OperationOutcomeIssue[]
 ) {
+  const { contextPathTuple, valuePathMap } = templateExtractPath;
+  const contextExpression = contextPathTuple?.[1] ?? null;
+
+  // Context path exists, use contextExpression to frame evaluation scope
+  // Otherwise, use targetQRItemFhirPathWithIndex as the context path
+  const contextPath = contextExpression
+    ? getCombinedExpression(targetQRItemFhirPathWithIndex, contextExpression)
+    : targetQRItemFhirPathWithIndex;
+
   for (const [valuePath, valueEvaluation] of valuePathMap.entries()) {
     const combinedValueExpression = getCombinedExpression(
       contextPath,
@@ -44,6 +53,7 @@ export function evaluateAndInsertIntoPath(
       warnings: populateIntoTemplateWarnings
     });
 
+    // Insert values to the specified entry path
     insertValuesToPath(
       entryPath,
       valuePath,
@@ -53,6 +63,9 @@ export function evaluateAndInsertIntoPath(
       cleanTemplate,
       populateIntoTemplateWarnings
     );
+
+    // Collect value evaluation results for debugging
+    valueEvaluation.valueResult = valueResult;
   }
 }
 

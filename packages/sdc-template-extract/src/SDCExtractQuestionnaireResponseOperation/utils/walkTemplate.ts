@@ -98,10 +98,7 @@ function addTemplateExtractContexts(
     if (templateExtractContext?.valueString) {
       // e.g. Patient.identifier[0].extension[0]
       templateExtractPathMap.set(currentPath, {
-        contextPathTuple: [
-          logicalPath,
-          { contextExpression: templateExtractContext.valueString, contextResult: null }
-        ],
+        contextPathTuple: [logicalPath, templateExtractContext.valueString],
         valuePathMap: new Map<string, TemplateExtractValueEvaluation>()
       });
     } else {
