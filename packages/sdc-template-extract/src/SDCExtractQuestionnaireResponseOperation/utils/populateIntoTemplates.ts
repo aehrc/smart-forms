@@ -26,7 +26,7 @@ export function populateIntoTemplates(
 } {
   const extractedResourceMap: Map<string, FhirResource[]> = new Map<string, FhirResource[]>();
   const combinedWalkTemplateWarnings: OperationOutcomeIssue[] = [];
-  const dataEvaluationWarnings: OperationOutcomeIssue[] = [];
+  const populateIntoTemplateWarnings: OperationOutcomeIssue[] = [];
   const templateIdToExtractPaths: Record<string, Record<string, TemplateExtractPathJsObject>[]> =
     {};
 
@@ -46,7 +46,7 @@ export function populateIntoTemplates(
     const numberOfTemplateInstances = getNumberOfTemplateInstances(
       questionnaireResponse,
       targetQRItemFhirPath,
-      dataEvaluationWarnings
+      populateIntoTemplateWarnings
     );
 
     // Iterate each matching QRItem instance (e.g., multiple allergy items)
@@ -67,7 +67,13 @@ export function populateIntoTemplates(
       for (const [entryPath, templateExtractPath] of templateExtractPathMapInstance.entries()) {
         const { contextPathTuple, valuePathMap } = templateExtractPath;
         const contextPath = contextPathTuple?.[0] ?? null;
-        removeTemplateArtifacts(entryPath, contextPath, valuePathMap, templateToMutate);
+        removeTemplateArtifacts(
+          entryPath,
+          contextPath,
+          valuePathMap,
+          templateToMutate,
+          populateIntoTemplateWarnings
+        );
       }
 
       // Step 5: Remove empty objects, arrays, null, and undefined after removing artifacts
@@ -102,7 +108,7 @@ export function populateIntoTemplates(
           fhirPathContext,
           templateToMutate,
           cleanTemplate,
-          dataEvaluationWarnings
+          populateIntoTemplateWarnings
         );
       }
 
@@ -124,7 +130,10 @@ export function populateIntoTemplates(
 
   return {
     extractedResourceMap,
-    populateIntoTemplateWarnings: [...combinedWalkTemplateWarnings, ...dataEvaluationWarnings],
+    populateIntoTemplateWarnings: [
+      ...combinedWalkTemplateWarnings,
+      ...populateIntoTemplateWarnings
+    ],
     templateIdToExtractPaths
   };
 }

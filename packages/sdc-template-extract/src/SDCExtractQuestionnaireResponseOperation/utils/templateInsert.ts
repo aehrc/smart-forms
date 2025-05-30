@@ -1,5 +1,5 @@
 import { getAdjustedDeletePathSegments, parseFhirPath } from './parseFhirPath';
-import type { FhirResource } from 'fhir/r4';
+import type { FhirResource, OperationOutcomeIssue } from 'fhir/r4';
 import { cleanEntryPathSegments, stripTrailingIndexFromPath } from './expressionManipulation';
 import { buildValuesToInsert } from './buildValueToInsert';
 import type { EntryPathPosition } from '../interfaces/entryPathPosition.interface';
@@ -9,13 +9,15 @@ import { getStaticTemplateDataAtPath } from './staticTemplateData';
 export function removeTemplateExtractValueExtension(
   entryPath: string,
   valuePath: string,
-  templateToMutate: FhirResource
+  templateToMutate: FhirResource,
+  populateIntoTemplateWarnings: OperationOutcomeIssue[]
 ) {
   const valuePathSegments = parseFhirPath(valuePath);
   const adjustedDeletePathSegments = getAdjustedDeletePathSegments(
     templateToMutate,
     valuePathSegments,
-    'value'
+    'value',
+    populateIntoTemplateWarnings
   );
   deleteExtensionAtPath(templateToMutate, entryPath, adjustedDeletePathSegments);
 }
@@ -23,13 +25,15 @@ export function removeTemplateExtractValueExtension(
 export function removeTemplateExtractContextExtension(
   entryPath: string,
   contextPath: string,
-  templateToMutate: FhirResource
+  templateToMutate: FhirResource,
+  populateIntoTemplateWarnings: OperationOutcomeIssue[]
 ) {
   const contextPathSegments = parseFhirPath(contextPath);
   const adjustedDeletePathSegments = getAdjustedDeletePathSegments(
     templateToMutate,
     contextPathSegments,
-    'context'
+    'context',
+    populateIntoTemplateWarnings
   );
   deleteExtensionAtPath(templateToMutate, entryPath, adjustedDeletePathSegments);
 }
@@ -43,6 +47,7 @@ export function removeTemplateExtractContextExtension(
  * @param entryPathPositionMap - Tracks how many values were inserted at each entry path.
  * @param templateToMutate - The target FHIR resource to be populated with evaluated values.
  * @param cleanTemplate - A clean version of the template with static template data.
+ * @param populateIntoTemplateWarnings - Collects warnings or issues encountered during evaluation or insertion.
  */
 export function insertValuesToPath(
   entryPath: string,
@@ -50,11 +55,16 @@ export function insertValuesToPath(
   valueResult: any,
   entryPathPositionMap: Map<string, EntryPathPosition[]>,
   templateToMutate: FhirResource,
-  cleanTemplate: FhirResource
+  cleanTemplate: FhirResource,
+  populateIntoTemplateWarnings: OperationOutcomeIssue[]
 ) {
   const entryPathSegments = parseFhirPath(entryPath);
 
-  const staticTemplateData = getStaticTemplateDataAtPath(entryPath, cleanTemplate);
+  const staticTemplateData = getStaticTemplateDataAtPath(
+    entryPath,
+    cleanTemplate,
+    populateIntoTemplateWarnings
+  );
   const valuesToInsert = buildValuesToInsert(
     entryPathSegments,
     valuePath,

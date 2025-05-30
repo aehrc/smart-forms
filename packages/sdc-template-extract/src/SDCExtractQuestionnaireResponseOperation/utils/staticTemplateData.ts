@@ -1,4 +1,4 @@
-import type { FhirResource } from 'fhir/r4';
+import type { FhirResource, OperationOutcomeIssue } from 'fhir/r4';
 import { fhirPathEvaluate } from './fhirpathEvaluate';
 
 /**
@@ -6,17 +6,19 @@ import { fhirPathEvaluate } from './fhirpathEvaluate';
  *
  * @param entryPath - Entry path to evaluate (e.g., "MedicationStatement.reasonCode[0]").
  * @param cleanTemplate - A clean version of the template with static template data.
+ * @param populateIntoTemplateWarnings - Collects warnings or issues encountered during static template data evaluation.
  * @returns The object at the path if found and valid, otherwise an empty object.
  */
 export function getStaticTemplateDataAtPath(
   entryPath: string,
-  cleanTemplate: FhirResource
+  cleanTemplate: FhirResource,
+  populateIntoTemplateWarnings: OperationOutcomeIssue[]
 ): object {
   const staticTemplateDataResult = fhirPathEvaluate({
     fhirData: cleanTemplate,
     path: entryPath,
     envVars: {},
-    warnings: []
+    warnings: populateIntoTemplateWarnings
   });
   if (
     Array.isArray(staticTemplateDataResult) &&

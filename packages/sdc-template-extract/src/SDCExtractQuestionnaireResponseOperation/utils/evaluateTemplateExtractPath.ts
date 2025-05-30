@@ -50,7 +50,8 @@ export function evaluateAndInsertIntoPath(
       valueResult,
       entryPathPositionMap,
       templateToMutate,
-      cleanTemplate
+      cleanTemplate,
+      populateIntoTemplateWarnings
     );
   }
 }
