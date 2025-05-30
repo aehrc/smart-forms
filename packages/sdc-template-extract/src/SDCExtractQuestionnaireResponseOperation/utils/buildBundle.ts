@@ -240,6 +240,7 @@ function addResourceIdToResource(
   existingResource: FhirResource,
   resourceId: string | undefined
 ): FhirResource {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { resourceType, id, ...rest } = existingResource;
 
   if (!resourceId) {
