@@ -189,7 +189,7 @@ function getFullUrl(
     });
 
     if (result.length > 0 && result[0] && typeof result[0] === 'string') {
-      return `urn:uuid:${result[0]}`;
+      return `${result[0]}`;
     }
   }
 
