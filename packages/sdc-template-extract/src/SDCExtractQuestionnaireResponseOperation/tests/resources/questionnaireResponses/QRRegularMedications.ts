@@ -205,6 +205,13 @@ export const QRRegularMedications: QuestionnaireResponse = {
                     },
                     {
                       valueString: 'really bad pain (text)'
+                    },
+                    {
+                      valueCoding: {
+                        system: 'http://snomed.info/sct',
+                        code: '386661006',
+                        display: 'Fever'
+                      }
                     }
                   ]
                 },

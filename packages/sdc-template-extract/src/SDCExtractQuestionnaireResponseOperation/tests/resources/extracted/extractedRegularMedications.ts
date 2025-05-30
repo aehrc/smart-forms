@@ -101,6 +101,15 @@ export const extractedRegularMedications: Bundle = {
             ]
           },
           {
+            coding: [
+              {
+                system: 'http://snomed.info/sct',
+                code: '386661006',
+                display: 'Fever'
+              }
+            ]
+          },
+          {
             text: 'Fever (text)'
           },
           {
