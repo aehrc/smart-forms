@@ -14,6 +14,7 @@ import { extractedAllergiesAdverseReactions } from './resources/extracted/extrac
 import { extractedImmunisation } from './resources/extracted/extractedImmunisation';
 import { extractedMedicalHistoryCurrentProblems } from './resources/extracted/extractedMedicalHistoryCurrentProblems';
 import { extractedRegularMedications } from './resources/extracted/extractedRegularMedications';
+import { extractedRegularMedicationsModified } from './resources/extracted/extractedRegularMedicationsModified';
 import { extractedComplexTemplateExtract } from './resources/extracted/extractedComplexTemplateExtract';
 
 // QuestionnaireResponses
@@ -21,6 +22,7 @@ import { QRAllergiesAdverseReactions } from './resources/questionnaireResponses/
 import { QRImmunisation } from './resources/questionnaireResponses/QRImmunisation';
 import { QRMedicalHistoryCurrentProblems } from './resources/questionnaireResponses/QRMedicalHistoryCurrentProblems';
 import { QRRegularMedications } from './resources/questionnaireResponses/QRRegularMedications';
+import { QRRegularMedicationsModified } from './resources/questionnaireResponses/QRRegularMedicationsModified';
 import { QRComplexTemplateExtract } from './resources/questionnaireResponses/QRComplexTemplateExtract';
 
 // Questionnaires
@@ -28,6 +30,7 @@ import { QAllergiesAdverseReactions } from './resources/questionnaires/QAllergie
 import { QImmunisation } from './resources/questionnaires/QImmunisation';
 import { QMedicalHistoryCurrentProblems } from './resources/questionnaires/QMedicalHistoryCurrentProblems';
 import { QRegularMedications } from './resources/questionnaires/QRegularMedications';
+import { QRegularMedicationsModified } from './resources/questionnaires/QRegularMedicationsModified';
 import { QComplexTemplateExtract } from './resources/questionnaires/QComplexTemplateExtract';
 
 // Test against 715 templates
@@ -121,6 +124,37 @@ describe('extract RegularMedications', () => {
     // Deep comparison of the extracted resources vs expected resources in extractedRegularMedications
     const extracted = returnParam?.resource as Bundle;
     const expected = extractedRegularMedications;
+    expect(stripDateAsserted(extracted.entry?.[0]?.resource)).toEqual(
+      stripDateAsserted(expected?.entry?.[0]?.resource)
+    );
+    expect(stripDateAsserted(extracted.entry?.[1]?.resource)).toEqual(
+      stripDateAsserted(expected?.entry?.[1]?.resource)
+    );
+  });
+});
+
+describe('extract RegularMedicationsModified', () => {
+  // _dateAsserted uses FHIRPath expressions of "now()", so dates generated will be different - strip it out for comparison purposes
+  function stripDateAsserted(resource: any): any {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { dateAsserted, ...rest } = resource ?? {};
+    return rest;
+  }
+
+  it('extracted result should match extractedRegularMedicationsModified.ts expected resources', async () => {
+    const result = await extract(
+      createInputParameters(QRRegularMedicationsModified, QRegularMedicationsModified),
+      fetchResourceCallbackTest,
+      requestConfigTest
+    );
+
+    const returnParam = (result as OutputParameters).parameter.find(
+      (p): p is ReturnParameter => p.name === 'return'
+    );
+
+    // Deep comparison of the extracted resources vs expected resources in extractedRegularMedications
+    const extracted = returnParam?.resource as Bundle;
+    const expected = extractedRegularMedicationsModified;
     expect(stripDateAsserted(extracted.entry?.[0]?.resource)).toEqual(
       stripDateAsserted(expected?.entry?.[0]?.resource)
     );
