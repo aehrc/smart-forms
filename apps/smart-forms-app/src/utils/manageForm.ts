@@ -1,4 +1,4 @@
-import { buildForm, destroyForm } from '@aehrc/smart-forms-renderer';
+import { buildForm, destroyForm, questionnaireStore } from '@aehrc/smart-forms-renderer';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { fetchTargetStructureMap } from '../features/playground/api/extract.ts';
 import { extractDebuggerStore } from '../features/playground/stores/extractDebuggerStore.ts';
@@ -15,6 +15,9 @@ export async function buildFormWrapper(
   if (targetStructureMap) {
     extractDebuggerStore.getState().setStructuredMapExtractMap(targetStructureMap);
   }
+
+  // Destroy previous questionnaire state before building a new one
+  questionnaireStore.getState().destroySourceQuestionnaire();
 
   return buildForm(
     questionnaire,

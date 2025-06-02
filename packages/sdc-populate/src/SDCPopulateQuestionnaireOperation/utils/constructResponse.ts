@@ -526,17 +526,24 @@ async function constructRepeatGroupInstances(
   const terminologyServerUrl = fetchTerminologyRequestConfig?.terminologyServerUrl ?? null;
 
   // Look in initialExpressions of each of the child items to relate back to the itemPopulationContext its using
-  // FIXME eventually need to consider initialExpressions other than the first one
-  const itemPopulationContextExpression =
-    initialExpressions[qRepeatGroupParent.item[0].linkId]?.expression;
+  let itemPopulationContextExpression: string | undefined;
+  let itemPopulationContext: ItemPopulationContext | undefined;
+  for (const childItem of qRepeatGroupParent.item) {
+    const expression = initialExpressions[childItem.linkId]?.expression;
+    if (!expression) continue;
 
-  if (!itemPopulationContextExpression) {
-    return [];
+    const contextName = getItemPopulationContextName(expression);
+    const context = contextName ? itemPopulationContexts[contextName] : undefined;
+
+    if (context && context.value) {
+      itemPopulationContextExpression = expression;
+      itemPopulationContext = context;
+      break; // Stop at the first valid match
+    }
   }
 
-  const itemPopulationContextName = getItemPopulationContextName(itemPopulationContextExpression);
-  const itemPopulationContext = itemPopulationContexts[itemPopulationContextName];
-  if (!itemPopulationContext || !itemPopulationContext.value) {
+  // No itemPopulationContext is found, return an empty array
+  if (!itemPopulationContextExpression || !itemPopulationContext || !itemPopulationContext.value) {
     return [];
   }
 
