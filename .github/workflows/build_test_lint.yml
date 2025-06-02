@@ -58,7 +58,6 @@ jobs:
         run: npm run test -w packages/smart-forms-renderer
       - uses: codecov/codecov-action@v4
 
-
   jest-extract-tests:
     name: Jest Tests - Template-Based Extract
     runs-on: ubuntu-latest
