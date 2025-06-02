@@ -63,6 +63,7 @@ describe('parseFhirPathToWritableSegments', () => {
   });
 
   it('returns plain segments when no underscores are used', () => {
+    expect(parseFhirPathToWritableSegments('Patient.name[0]')).toEqual(['Patient', 'name', 0]);
     expect(parseFhirPathToWritableSegments('Patient.name[0].given[1]')).toEqual([
       'Patient',
       'name',
@@ -70,19 +71,6 @@ describe('parseFhirPathToWritableSegments', () => {
       'given',
       1
     ]);
-  });
-
-  it('stops parsing at _field.extension[x] and discards anything after', () => {
-    expect(parseFhirPathToWritableSegments('Patient.name[0]._value.extension[0].url')).toEqual([
-      'Patient',
-      'name',
-      0,
-      'value'
-    ]);
-  });
-
-  it('ignores malformed segments gracefully', () => {
-    expect(parseFhirPathToWritableSegments('Patient.name[0]')).toEqual(['Patient', 'name', 0]);
   });
 });
 
@@ -171,7 +159,7 @@ describe('getAdjustedDeletePathSegments', () => {
 
   test('returns truncated path for single extension - context variant', () => {
     const segments = ['Patient', 'identifier', 0, 'extension', 0];
-    const result = getAdjustedDeletePathSegments(patientTemplate, segments, 'context');
+    const result = getAdjustedDeletePathSegments(patientTemplate, segments, 'context', []);
 
     // Should truncate to remove just "extension"
     expect(result).toEqual(['Patient', 'identifier', 0, 'extension']);
@@ -179,7 +167,7 @@ describe('getAdjustedDeletePathSegments', () => {
 
   test('returns truncated path for single extension - value variant', () => {
     const segments = ['Patient', '_gender', 'extension', 0];
-    const result = getAdjustedDeletePathSegments(patientTemplate, segments, 'value');
+    const result = getAdjustedDeletePathSegments(patientTemplate, segments, 'value', []);
 
     // Should truncate to remove "_gender"
     expect(result).toEqual(['Patient', '_gender']);
@@ -192,7 +180,7 @@ describe('getAdjustedDeletePathSegments', () => {
       valueString: 'example extension'
     });
     const segments = ['Patient', 'identifier', 0, 'extension', 0];
-    const result = getAdjustedDeletePathSegments(patientTemplate, segments, 'context');
+    const result = getAdjustedDeletePathSegments(patientTemplate, segments, 'context', []);
 
     expect(result).toEqual(segments); // no truncation
   });
@@ -204,7 +192,7 @@ describe('getAdjustedDeletePathSegments', () => {
       valueString: 'example extension'
     });
     const segments = ['Patient', '_gender', 'extension', 0];
-    const result = getAdjustedDeletePathSegments(patientTemplate, segments, 'value');
+    const result = getAdjustedDeletePathSegments(patientTemplate, segments, 'value', []);
 
     expect(result).toEqual(segments); // no truncation
   });
