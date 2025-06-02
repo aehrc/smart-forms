@@ -1,4 +1,5 @@
 import { fhirPathEvaluate } from './fhirpathEvaluate';
+import type { OperationOutcomeIssue } from 'fhir/r4';
 import { stripUnderscorePrefix } from './expressionManipulation';
 
 /**
@@ -29,12 +30,12 @@ export function parseFhirPathToWritableSegments(fhirPath: string): (string | num
   ) {
     // Remove trailing `.extension[x]`
     writableSegments.splice(len - 2, 2);
+  }
 
-    // If the third last segment (currently the last segment) is a primitive wrapper (e.g. '_valueBoolean'), strip the underscore
-    const last = writableSegments[writableSegments.length - 1];
-    if (typeof last === 'string' && last.startsWith('_')) {
-      writableSegments[writableSegments.length - 1] = stripUnderscorePrefix(last); // '_field' → 'field'
-    }
+  // If the third last segment (currently the last segment) is a primitive wrapper (e.g. '_valueBoolean'), strip the underscore
+  const last = writableSegments[writableSegments.length - 1];
+  if (typeof last === 'string' && last.startsWith('_')) {
+    writableSegments[writableSegments.length - 1] = stripUnderscorePrefix(last); // '_field' → 'field'
   }
 
   return writableSegments;
@@ -70,12 +71,14 @@ export function parseFhirPath(fhirPath: string): (string | number)[] {
  * @param {any} resource - The root FHIR resource object to evaluate.
  * @param {(string | number)[]} segments - The FHIRPath-style path as an array of segments, e.g. ["Patient", "_gender", "extension", 0].
  * @param {'context' | 'value'} variant - The variant type, either 'context' or 'value'.
+ * @param {OperationOutcomeIssue[]} populateIntoTemplateWarnings - An array to collect any warnings encountered during evaluation.
  * @returns {(string | number)[]} - The adjusted path to use for deletion. Either the original full path or a truncated one if only one extension exists.
  */
 export function getAdjustedDeletePathSegments(
   resource: any,
   segments: (string | number)[],
-  variant: 'context' | 'value'
+  variant: 'context' | 'value',
+  populateIntoTemplateWarnings: OperationOutcomeIssue[]
 ): (string | number)[] {
   // Get path to the extension array
   const lastNodeExtensionsPath = segments
@@ -88,7 +91,7 @@ export function getAdjustedDeletePathSegments(
     fhirData: resource,
     path: lastNodeExtensionsPath,
     envVars: {},
-    warnings: []
+    warnings: populateIntoTemplateWarnings
   });
 
   // Target extension is the only extension in the array, return the path to a parent node

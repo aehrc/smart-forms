@@ -2,6 +2,7 @@ import fhirpath, { type Model } from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import type { OperationOutcomeIssue } from 'fhir/r4';
 import { createInvalidWarningIssue } from './operationOutcome';
+import { normaliseExpression } from './expressionManipulation';
 
 /**
  * Input parameters for evaluating a FHIRPath expression.
@@ -24,13 +25,20 @@ export interface FhirPathEvaluateParams {
 export function fhirPathEvaluate(params: FhirPathEvaluateParams): any[] {
   const { fhirData, path, envVars, warnings } = params;
   try {
-    return fhirpath.evaluate(fhirData, path, envVars, fhirpath_r4_model as Model, {
-      async: false
-    });
+    return fhirpath.evaluate(
+      fhirData,
+      normaliseExpression(path),
+      envVars,
+      fhirpath_r4_model as Model,
+      {
+        async: false
+      }
+    );
   } catch (e) {
     if (e instanceof Error) {
       console.warn(
-        `SDC-template-extract Error: fhirpath evaluation failed for ${path}. Details below:` + e
+        `SDC-template-extract error:\nFHIRPath evaluation failed for ${path}.\n\nDetails below: ` +
+          e
       );
       warnings.push(createInvalidWarningIssue(e.message));
     }

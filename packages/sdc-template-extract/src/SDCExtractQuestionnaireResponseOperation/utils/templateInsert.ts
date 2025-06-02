@@ -1,71 +1,100 @@
 import { getAdjustedDeletePathSegments, parseFhirPath } from './parseFhirPath';
-import type { TemplateExtractPath } from '../interfaces/templateExtractPath.interface';
-import type { FhirResource } from 'fhir/r4';
+import type { FhirResource, OperationOutcomeIssue } from 'fhir/r4';
+import { cleanEntryPathSegments, stripTrailingIndexFromPath } from './expressionManipulation';
 import { buildValuesToInsert } from './buildValueToInsert';
-import { cleanEntryPathSegments } from './expressionManipulation';
+import type { EntryPathPosition } from '../interfaces/entryPathPosition.interface';
+import { addCurrentEntryPathPosition, getStartingIndex } from './entryPathPosition';
+import { getStaticTemplateDataAtPath } from './staticTemplateData';
+
+export function removeTemplateExtractValueExtension(
+  entryPath: string,
+  valuePath: string,
+  templateToMutate: FhirResource,
+  populateIntoTemplateWarnings: OperationOutcomeIssue[]
+) {
+  const valuePathSegments = parseFhirPath(valuePath);
+  const adjustedDeletePathSegments = getAdjustedDeletePathSegments(
+    templateToMutate,
+    valuePathSegments,
+    'value',
+    populateIntoTemplateWarnings
+  );
+  deleteExtensionAtPath(templateToMutate, entryPath, adjustedDeletePathSegments);
+}
+
+export function removeTemplateExtractContextExtension(
+  entryPath: string,
+  contextPath: string,
+  templateToMutate: FhirResource,
+  populateIntoTemplateWarnings: OperationOutcomeIssue[]
+) {
+  const contextPathSegments = parseFhirPath(contextPath);
+  const adjustedDeletePathSegments = getAdjustedDeletePathSegments(
+    templateToMutate,
+    contextPathSegments,
+    'context',
+    populateIntoTemplateWarnings
+  );
+  deleteExtensionAtPath(templateToMutate, entryPath, adjustedDeletePathSegments);
+}
 
 /**
- * Insert extracted value results to a deep clone of the given FHIR template,
- * assigning all values as strings to their corresponding `valuePath`s.
+ * Inserts one or more evaluated values into the template at specified entry path.
  *
- * @param {any} template - The original FHIR template to clone and populate.
- * @param {Map<string, TemplateExtractPath>} templateExtractPathMap - Map of paths and evaluated results.
- * @returns {any} - A new template with extracted values assigned into place.
+ * @param entryPath - Entry path where values should be inserted (e.g., "MedicationStatement.reasonCode[0]").
+ * @param valuePath - The original valuePath used to derive the evaluated result.
+ * @param valueResult - The evaluated result(s) from the FHIRPath expression.
+ * @param entryPathPositionMap - Tracks how many values were inserted at each entry path.
+ * @param templateToMutate - The target FHIR resource to be populated with evaluated values.
+ * @param cleanTemplate - A clean version of the template with static template data.
+ * @param populateIntoTemplateWarnings - Collects warnings or issues encountered during evaluation or insertion.
  */
-export function insertValuesToTemplate(
-  template: FhirResource,
-  templateExtractPathMap: Map<string, TemplateExtractPath>
-): any {
-  const mutatedTemplate = structuredClone(template); // Deep copy the template
+export function insertValuesToPath(
+  entryPath: string,
+  valuePath: string,
+  valueResult: any,
+  entryPathPositionMap: Map<string, EntryPathPosition[]>,
+  templateToMutate: FhirResource,
+  cleanTemplate: FhirResource,
+  populateIntoTemplateWarnings: OperationOutcomeIssue[]
+) {
+  const entryPathSegments = parseFhirPath(entryPath);
 
-  // Cleanup template artifacts e.g. templateExtractContext and templateExtractValue extensions
-  for (const [entryPath, { contextPathTuple, valuePathMap }] of templateExtractPathMap.entries()) {
-    // Delete templateExtractValue extension
-    for (const [valuePath] of valuePathMap.entries()) {
-      const valuePathSegments = parseFhirPath(valuePath);
-      const adjustedDeletePathSegments = getAdjustedDeletePathSegments(
-        mutatedTemplate,
-        valuePathSegments,
-        'value'
-      );
-      deleteExtensionAtPath(mutatedTemplate, entryPath, adjustedDeletePathSegments);
-    }
+  const staticTemplateData = getStaticTemplateDataAtPath(
+    entryPath,
+    cleanTemplate,
+    populateIntoTemplateWarnings
+  );
+  const valuesToInsert = buildValuesToInsert(
+    entryPathSegments,
+    valuePath,
+    valueResult,
+    staticTemplateData
+  );
+  const baseEntryPath = stripTrailingIndexFromPath(entryPath);
+  const startingIndex = getStartingIndex(baseEntryPath, entryPath, entryPathPositionMap);
 
-    // Delete templateExtractContext extension
-    const contextPath = contextPathTuple?.[0] ?? null;
-    if (contextPath) {
-      const contextPathSegments = parseFhirPath(contextPath);
-      const adjustedDeletePathSegments = getAdjustedDeletePathSegments(
-        mutatedTemplate,
-        contextPathSegments,
-        'context'
-      );
-      deleteExtensionAtPath(mutatedTemplate, entryPath, adjustedDeletePathSegments);
-    }
+  addCurrentEntryPathPosition(
+    baseEntryPath,
+    entryPath,
+    startingIndex,
+    valuesToInsert.length,
+    entryPathPositionMap
+  );
+
+  // Insert each valueToInsert instance into template at the correct location, taking into account context index
+  for (let i = 0; i < valuesToInsert.length; i++) {
+    const valueToInsert = valuesToInsert[i];
+    const insertIndex = startingIndex + i;
+    const cleanedEntryPathSegments = cleanEntryPathSegments(entryPathSegments, insertIndex);
+
+    walkTemplateAndInsertValue(
+      templateToMutate,
+      entryPath,
+      cleanedEntryPathSegments,
+      valueToInsert
+    );
   }
-
-  // Insert values into the template
-  for (const [entryPath, { valuePathMap }] of templateExtractPathMap.entries()) {
-    for (const [valuePath, { valueResult }] of valuePathMap.entries()) {
-      const entryPathSegments = parseFhirPath(entryPath);
-
-      const valuesToInsert = buildValuesToInsert(entryPathSegments, valuePath, valueResult);
-
-      // Insert each valueToInsert instance into template at the correct location
-      for (let i = 0; i < valuesToInsert.length; i++) {
-        const cleanedEntryPathSegments = cleanEntryPathSegments(entryPathSegments, i);
-        insertValueAtPath(mutatedTemplate, entryPath, cleanedEntryPathSegments, valuesToInsert[i]);
-      }
-    }
-  }
-
-  // Remove resource.id from mutatedTemplate
-  // Refer https://build.fhir.org/ig/HL7/sdc/extraction.html#template-based-extraction step 4
-  if (mutatedTemplate.id) {
-    delete mutatedTemplate.id;
-  }
-
-  return mutatedTemplate;
 }
 
 /**
@@ -76,13 +105,19 @@ export function insertValuesToTemplate(
  * @param {(string | number)[]} entryPathSegments - The FHIRPath-style entryPath as segments.
  * @param {any} valueToInsert - The built value to assign at the last segment of the path.
  */
-function insertValueAtPath(
+export function walkTemplateAndInsertValue(
   obj: any,
   entryPath: string,
   entryPathSegments: (string | number)[],
   valueToInsert: any
 ): void {
+  // Check if the object is valid
   if (!obj || typeof obj !== 'object') {
+    return;
+  }
+
+  // valueToInsert is undefined, skip whole traversal
+  if (valueToInsert === undefined) {
     return;
   }
 
@@ -120,12 +155,33 @@ function insertValueAtPath(
     );
   }
 
-  // valueToInsert is undefined, skip assignment
-  if (valueToInsert === undefined) {
+  const existingNode = current[finalSegment];
+
+  // Existing node is null or undefined, insert the value directly
+  if (existingNode === null || existingNode === undefined) {
+    current[finalSegment] = valueToInsert;
     return;
   }
 
-  // Assign value at the resolved location
+  // Existing node is an array, and we are inserting an array, concatenate them
+  if (Array.isArray(existingNode) && Array.isArray(valueToInsert)) {
+    current[finalSegment] = [...existingNode, ...valueToInsert];
+    return;
+  }
+
+  // Existing node is an array, and we are inserting a single value, push it to the array
+  if (Array.isArray(existingNode)) {
+    existingNode.push(valueToInsert);
+    return;
+  }
+
+  // Existing node is an object, and we are inserting an object, merge them
+  if (typeof existingNode === 'object' && typeof valueToInsert === 'object') {
+    current[finalSegment] = { ...existingNode, ...valueToInsert };
+    return;
+  }
+
+  // Fallback: overwrite primitive or incompatible types
   current[finalSegment] = valueToInsert;
 }
 
@@ -137,7 +193,7 @@ function insertValueAtPath(
  * @param {string} fullPath - The full FHIRPath-style path for error reporting.
  * @param {(string | number)[]} pathSegments - The FHIRPath-style path as segments.
  */
-function deleteExtensionAtPath(
+export function deleteExtensionAtPath(
   obj: any,
   fullPath: string,
   pathSegments: (string | number)[]

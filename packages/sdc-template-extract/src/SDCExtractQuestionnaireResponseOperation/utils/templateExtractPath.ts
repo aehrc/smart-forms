@@ -101,13 +101,13 @@ export function createTemplateExtractPathMap(
 function flattenValuePathMaps(
   templateExtractPaths: Map<string, TemplateExtractPath>
 ): Map<string, string> {
-  const valuePathMap = new Map<string, string>();
+  const valuePathToValueExpressionMap = new Map<string, string>();
 
   for (const templateExtractPath of templateExtractPaths.values()) {
     for (const [logicalPath, valueEvaluation] of templateExtractPath.valuePathMap.entries()) {
-      valuePathMap.set(logicalPath, valueEvaluation.valueExpression);
+      valuePathToValueExpressionMap.set(logicalPath, valueEvaluation.valueExpression);
     }
   }
 
-  return valuePathMap;
+  return valuePathToValueExpressionMap;
 }

@@ -5,8 +5,6 @@ import type {
   TemplateExtractValueEvaluation
 } from '../interfaces/templateExtractPath.interface';
 
-/* TemplateExtractContext */
-
 /**
  * Recursively traverses a FHIR resource or JSON structure to identify and record
  * all `templateExtractContext` extensions within `extension` arrays. Builds a map of
@@ -100,10 +98,7 @@ function addTemplateExtractContexts(
     if (templateExtractContext?.valueString) {
       // e.g. Patient.identifier[0].extension[0]
       templateExtractPathMap.set(currentPath, {
-        contextPathTuple: [
-          logicalPath,
-          { contextExpression: templateExtractContext.valueString, contextResult: null }
-        ],
+        contextPathTuple: [logicalPath, templateExtractContext.valueString],
         valuePathMap: new Map<string, TemplateExtractValueEvaluation>()
       });
     } else {
@@ -258,7 +253,7 @@ function addTemplateExtractContextValues(
  *
  * Each standalone value discovered is added to `templateExtractPathMap`
  * under its own `currentPath` key, unless that logical path already exists
- * in `valuePathMap` (indicating it was captured earlier while walking
+ * in `valuePathToValueExpressionMap` (indicating it was captured earlier while walking
  * context-based values).
  *
  * @param {any} obj - The current node being traversed (array, object, primitive, etc.).
@@ -266,7 +261,7 @@ function addTemplateExtractContextValues(
  * @param {string} templateId - Identifier of the template being processed (used in warnings).
  * @param {Map<string, TemplateExtractPath>} templateExtractPathMap - Collector for context/value mappings.
  * @param {OperationOutcomeIssue[]} walkTemplateWarnings - Accumulates warnings for malformed extensions.
- * @param {Map<string, string>} valuePathMap - Flat map of logical paths → value expressions gathered so far; used to avoid duplicates.
+ * @param {Map<string, string>} valuePathToValueExpressionMap - Flat map of logical paths → value expressions gathered so far; used to avoid duplicates.
  */
 export function walkTemplateForStandaloneValues(
   obj: any, // This is any because it can refer to anything, a FHIR resource, an extension (array), string, identifier, dateTime, JSON object, etc.
@@ -274,7 +269,7 @@ export function walkTemplateForStandaloneValues(
   templateId: string,
   templateExtractPathMap: Map<string, TemplateExtractPath>,
   walkTemplateWarnings: OperationOutcomeIssue[],
-  valuePathMap: Map<string, string>
+  valuePathToValueExpressionMap: Map<string, string>
 ): void {
   // obj is an array
   if (Array.isArray(obj)) {
@@ -285,7 +280,7 @@ export function walkTemplateForStandaloneValues(
         templateId,
         templateExtractPathMap,
         walkTemplateWarnings,
-        valuePathMap
+        valuePathToValueExpressionMap
       )
     );
     return;
@@ -305,7 +300,7 @@ export function walkTemplateForStandaloneValues(
           templateId,
           templateExtractPathMap,
           walkTemplateWarnings,
-          valuePathMap
+          valuePathToValueExpressionMap
         );
       }
 
@@ -315,7 +310,7 @@ export function walkTemplateForStandaloneValues(
         templateId,
         templateExtractPathMap,
         walkTemplateWarnings,
-        valuePathMap
+        valuePathToValueExpressionMap
       );
     }
   }

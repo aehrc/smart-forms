@@ -1,4 +1,4 @@
-import type { Bundle, FhirResource } from 'fhir/r4';
+import type { Bundle, FhirResource, OperationOutcomeIssue } from 'fhir/r4';
 import type {
   TemplateDetails,
   TemplateExtractPathJsObject,
@@ -15,20 +15,22 @@ import cleanDeep from 'clean-deep';
  *
  * @param extractedResourceMap - Map of template IDs to extracted FHIR resources.
  * @param containedTemplateMap - Map of template IDs to TemplateDetails including templateExtract metadata.
- * @param extractAllocateIds - Record of resource references to allocated UUIDs used for fullUrl generation.
+ * @param fhirPathContext - FHIRPath context object that acts as envVars for fhirpath.evaluate
  * @param templateIdToExtractPaths - Map of template IDs to their respective TemplateExtractPathJsObject. We inject fullUrl in this function to help debugging.
  * @returns {Bundle} - A FHIR transaction Bundle containing all extracted resources with appropriate request entries.
  */
 export function buildTransactionBundle(
   extractedResourceMap: Map<string, FhirResource[]>,
   containedTemplateMap: Map<string, TemplateDetails>,
-  extractAllocateIds: Record<string, string>,
+  fhirPathContext: Record<string, string>,
   templateIdToExtractPaths: Record<string, Record<string, TemplateExtractPathJsObject>[]>
 ): {
   outputBundle: Bundle;
   templateIdToExtractPathTuples: Record<string, TemplateExtractPathJsObjectTuple[]>;
 } {
   const templateIdToExtractPathTuples: Record<string, TemplateExtractPathJsObjectTuple[]> = {};
+  const buildBundleWarnings: OperationOutcomeIssue[] = [];
+
   const bundle: Bundle = {
     resourceType: 'Bundle',
     id: `sdc-template-extract-${generateShortId()}`,
@@ -73,40 +75,55 @@ export function buildTransactionBundle(
       }) as FhirResource;
 
       // resourceId
-      const resourceId = templateExtractReference.resourceId;
+      const resourceId = getResourceId(
+        fhirPathContext,
+        buildBundleWarnings,
+        templateExtractReference.resourceId
+      );
       const hasResourceId = typeof resourceId === 'string' && resourceId !== '';
 
       // fullUrl
       // Otherwise, evaluate it as a FHIRPath expression
-      const fullUrl = getFullUrl(extractAllocateIds, templateExtractReference.fullUrl);
+      const fullUrl = getFullUrl(
+        fhirPathContext,
+        buildBundleWarnings,
+        templateExtractReference.fullUrl
+      );
 
       // ifNoneMatch, ifModifiedSince, ifMatch, ifNoneExist
       const ifNoneMatch = getOptionalBundleEntryRequestProperty(
-        extractAllocateIds,
+        fhirPathContext,
+        buildBundleWarnings,
         templateExtractReference.ifNoneMatch
       );
       const ifModifiedSince = getOptionalBundleEntryRequestProperty(
-        extractAllocateIds,
+        fhirPathContext,
+        buildBundleWarnings,
         templateExtractReference.ifModifiedSince
       );
       const ifMatch = getOptionalBundleEntryRequestProperty(
-        extractAllocateIds,
+        fhirPathContext,
+        buildBundleWarnings,
         templateExtractReference.ifMatch
       );
       const ifNoneExist = getOptionalBundleEntryRequestProperty(
-        extractAllocateIds,
+        fhirPathContext,
+        buildBundleWarnings,
         templateExtractReference.ifNoneExist
       );
+
+      // Add resourceId to resource
+      const resourceToAdd = addResourceIdToResource(cleanedExtractedResource, resourceId);
 
       // Add entry to the bundle
       bundle.entry.push({
         fullUrl: fullUrl,
-        resource: cleanedExtractedResource,
+        resource: resourceToAdd,
         request: {
           method: hasResourceId ? 'PUT' : 'POST',
           url: hasResourceId
-            ? `${cleanedExtractedResource.resourceType}/${resourceId}`
-            : cleanedExtractedResource.resourceType,
+            ? `${resourceToAdd.resourceType}/${resourceId}`
+            : resourceToAdd.resourceType,
 
           // ifNoneMatch, ifModifiedSince, ifMatch, ifNoneExist optional properties
           ...(ifNoneMatch && { ifNoneMatch: ifNoneMatch }),
@@ -131,8 +148,35 @@ export function buildTransactionBundle(
   return { outputBundle: bundle, templateIdToExtractPathTuples: templateIdToExtractPathTuples };
 }
 
+function getResourceId(
+  fhirPathContext: Record<string, any>,
+  buildBundleWarnings: OperationOutcomeIssue[],
+  resourceIdFromTemplateDetails?: string
+): string | undefined {
+  // templateExtract extension:fullUrl FHIRPath expressions available
+  if (resourceIdFromTemplateDetails) {
+    const result = fhirPathEvaluate({
+      fhirData: {},
+      path: resourceIdFromTemplateDetails,
+      envVars: fhirPathContext,
+      warnings: buildBundleWarnings
+    });
+
+    if (result.length > 0 && result[0] && typeof result[0] === 'string' && result[0] !== '') {
+      return result[0];
+    }
+  }
+
+  // templateExtract extension:fullUrl unavailable or cannot be evaluated
+  return undefined;
+}
+
+/**
+ * Resolves a fullUrl using a FHIRPath expression from template details, falling back to a generated UUID if not available.
+ */
 function getFullUrl(
-  extractAllocateIds: Record<string, string>,
+  fhirPathContext: Record<string, any>,
+  buildBundleWarnings: OperationOutcomeIssue[],
   fullUrlFromTemplateDetails?: string
 ): string {
   // templateExtract extension:fullUrl FHIRPath expressions available
@@ -140,12 +184,12 @@ function getFullUrl(
     const result = fhirPathEvaluate({
       fhirData: {},
       path: fullUrlFromTemplateDetails,
-      envVars: extractAllocateIds,
-      warnings: []
+      envVars: fhirPathContext,
+      warnings: buildBundleWarnings
     });
 
-    if (result.length > 0 && result[0] && typeof result[0].id === 'string') {
-      return `urn:uuid:${result[0].id}`;
+    if (result.length > 0 && result[0] && typeof result[0] === 'string') {
+      return `${result[0]}`;
     }
   }
 
@@ -153,20 +197,24 @@ function getFullUrl(
   return generateUUIDForFullUrl();
 }
 
+/**
+ * Generates a full UUID-based `urn:uuid:` string for use in Bundle.fullUrl.
+ */
 function generateUUIDForFullUrl(): string {
   return `urn:uuid:${uuidv4()}`;
 }
 
 function getOptionalBundleEntryRequestProperty(
-  extractAllocateIds: Record<string, string>,
+  fhirPathContext: Record<string, any>,
+  buildBundleWarnings: OperationOutcomeIssue[],
   optionalProperty?: string
 ) {
   if (optionalProperty) {
     const result = fhirPathEvaluate({
       fhirData: {},
       path: optionalProperty,
-      envVars: extractAllocateIds,
-      warnings: []
+      envVars: fhirPathContext,
+      warnings: buildBundleWarnings
     });
 
     if (result.length > 0 && result[0] && typeof result[0].id === 'string') {
@@ -177,6 +225,31 @@ function getOptionalBundleEntryRequestProperty(
   return null;
 }
 
+/**
+ * Generates a short UUID segment to avoid HAPI FHIR fullUrl length restrictions.
+ */
 function generateShortId(): string {
   return uuidv4().split('-').pop() ?? '';
+}
+
+/**
+ * Returns a new FHIR resource with the given resourceId, preserving order of resourceType, id, and other properties.
+ * If no resourceId is provided, returns the original resource.
+ */
+function addResourceIdToResource(
+  existingResource: FhirResource,
+  resourceId: string | undefined
+): FhirResource {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { resourceType, id, ...rest } = existingResource;
+
+  if (!resourceId) {
+    return existingResource;
+  }
+
+  return {
+    resourceType,
+    id: resourceId,
+    ...rest
+  } as FhirResource;
 }

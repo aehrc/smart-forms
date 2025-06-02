@@ -38,27 +38,9 @@ export interface TemplateDetails {
 }
 
 /**
- * Result of evaluating the `contextExpression` from the `templateExtractContext` extension.
- * e.g. `{
- *   "linkId": "name",
- *   "text": "Name",
- *   "item": [
- *     {
- *       "linkId": "family",
- *       "text": "Family/Surname",
- *       "answer": [
- *         {
- *           "valueString": "Doe"
- *         }
- *       ]
- *     }
- *   ]
- * }`
+ * Result of evaluating a FHIRPath expression. Usually an array of FHIR values, elements, or primitives.
  */
-export interface TemplateExtractContextEvaluation {
-  contextExpression: string;
-  contextResult: any;
-}
+export type FhirPathEvalResult = any[];
 
 /**
  * Result of evaluating a `valueExpression` from the `templateExtractValue` extension.
@@ -74,15 +56,15 @@ export interface TemplateExtractValueEvaluation {
  */
 export interface TemplateExtractPath {
   /**
-   * A tuple of [contextPath, {contextExpression, contextResult}] from the `templateExtractContext` extension.
+   * A tuple of [contextPath, contextExpression] from the `templateExtractContext` extension.
    * e.g. `<"Patient.name[0].extension[0]", "	item.where(linkId = 'name')">`
    * `null` when the extraction is based on a standalone value path only.
    */
-  contextPathTuple: [string, TemplateExtractContextEvaluation] | null;
+  contextPathTuple: [string, string] | null;
 
   /**
    * A map of <valuePath, {valueExpression, valueResult}> pairs from the `templateExtractValue` extension.
-   * e.g. `<"Patient.name[0]._family.extension[0]", "item.where(linkId = 'family').answer.value.first()">`
+   * e.g. `<"Patient.name[0]._family.extension[0]", {valueExpression: "item.where(linkId = 'family').answer.value.first()", valueResult: ["Doe"]}>`
    */
   valuePathMap: Map<string, TemplateExtractValueEvaluation>;
 }
@@ -91,7 +73,7 @@ export interface TemplateExtractPath {
  * An exact copy of `TemplateExtractPath` in `templateExtractPath.interface.ts` but in plain object form.
  */
 export interface TemplateExtractPathJsObject {
-  contextPathTuple: [string, TemplateExtractContextEvaluation] | null;
+  contextPathTuple: [string, string] | null;
   valuePathMap: Record<string, TemplateExtractValueEvaluation>;
   generatedFullId?: string;
 }

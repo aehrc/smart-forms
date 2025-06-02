@@ -28,7 +28,6 @@ function TemplateExtractDebugTable(props: TemplateExtractDebugTableProps) {
                 entryPath: string;
                 contextPath: string | null;
                 contextExpression: string | null;
-                contextResult: any | null;
                 valuePath: string | null;
                 valueExpression: string | null;
                 valueResult: any | null;
@@ -37,10 +36,7 @@ function TemplateExtractDebugTable(props: TemplateExtractDebugTableProps) {
               let index = 0;
               for (const [entryPath, templateExtractPath] of Object.entries(templateExtractPaths)) {
                 const contextPath = templateExtractPath.contextPathTuple?.[0] ?? null;
-                const contextExpression =
-                  templateExtractPath.contextPathTuple?.[1]?.contextExpression ?? null;
-                const contextResult =
-                  templateExtractPath.contextPathTuple?.[1]?.contextResult ?? null;
+                const contextExpression = templateExtractPath.contextPathTuple?.[1] ?? null;
 
                 const valueMap = templateExtractPath.valuePathMap ?? {};
                 const valuePaths = Object.entries(valueMap);
@@ -51,7 +47,6 @@ function TemplateExtractDebugTable(props: TemplateExtractDebugTableProps) {
                     entryPath,
                     contextPath,
                     contextExpression,
-                    contextResult,
                     valuePath: null,
                     valueExpression: null,
                     valueResult: null
@@ -63,7 +58,6 @@ function TemplateExtractDebugTable(props: TemplateExtractDebugTableProps) {
                       entryPath,
                       contextPath,
                       contextExpression,
-                      contextResult,
                       valuePath,
                       valueExpression,
                       valueResult
@@ -83,7 +77,6 @@ function TemplateExtractDebugTable(props: TemplateExtractDebugTableProps) {
                         <tr>
                           <th>entryPath</th>
                           <th>contextExpression</th>
-                          <th>contextResult</th>
                           <th>valueExpression</th>
                           <th>valueResult</th>
                         </tr>
@@ -93,20 +86,6 @@ function TemplateExtractDebugTable(props: TemplateExtractDebugTableProps) {
                           <tr key={row.index}>
                             <td>{renderFhirPathMultiline(row.entryPath)}</td>
                             <td>{renderFhirPathMultiline(row.contextExpression)}</td>
-                            <td>
-                              {row.contextResult ? (
-                                <SyntaxHighlighter
-                                  data-test="debug-viewer"
-                                  language="json"
-                                  customStyle={{
-                                    maxWidth: '300px',
-                                    fontSize: 9.5,
-                                    backgroundColor: 'white'
-                                  }}>
-                                  {JSON.stringify(row.contextResult, null, 2)}
-                                </SyntaxHighlighter>
-                              ) : null}
-                            </td>
                             <td>{renderFhirPathMultiline(row.valueExpression)}</td>
                             <td>
                               {row.valueResult ? (
