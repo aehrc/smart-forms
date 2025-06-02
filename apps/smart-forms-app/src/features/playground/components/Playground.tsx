@@ -269,15 +269,9 @@ function Playground() {
       return;
     }
 
-    // Augment QR to add %resource.id, %resource.authored, %resource.author
+    // Augment QR to add %resource.id
     const responseToExtract = structuredClone(updatableResponse);
     responseToExtract.id = updatableResponseKey;
-    responseToExtract.authored = new Date().toISOString();
-    if (user && user.id) {
-      responseToExtract.author = {
-        reference: `Practitioner/${user?.id}`
-      };
-    }
 
     const templateExtractOutputParameters = await extract(
       {
