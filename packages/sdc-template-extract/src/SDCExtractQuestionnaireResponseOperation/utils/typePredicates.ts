@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { Coding, Extension, ParametersParameter } from 'fhir/r4';
+import type { Coding, Extension, Parameters, ParametersParameter } from 'fhir/r4';
 import type {
   CustomQuestionnaireParameter,
   QuestionnaireResponseParameter
@@ -28,8 +28,10 @@ import type {
   IfNoneExistExtensionSlice,
   IfNoneMatchExtensionSlice,
   ResourceIdExtensionSlice,
+  ResourceTypeExtensionSlice,
   TemplateExtensionSlice
 } from '../interfaces/templateExtractReference.interface';
+import type { FhirPatchParameters } from '../interfaces/fhirpatch.interface';
 
 export function isQuestionnaireResponseParameter(
   parameter: ParametersParameter
@@ -96,10 +98,37 @@ export function isIfNoneExistExtensionSlice(
   return extension.url === 'ifNoneExist' && !!extension.valueString;
 }
 
+export function isResourceTypeExtensionSlice(
+  extension: Extension
+): extension is ResourceTypeExtensionSlice {
+  return extension.url === 'resourceType' && !!extension.valueString;
+}
+
 export function valueIsCoding(value: any): value is Coding {
   return (
     typeof value === 'object' &&
     value !== null &&
     ('system' in value || 'code' in value || 'display' in value)
   );
+}
+
+export const validFhirPatchTypes = new Set(['add', 'insert', 'delete', 'replace', 'move']);
+
+export function parametersIsFhirPatch(parameters: Parameters): parameters is FhirPatchParameters {
+  if (parameters.resourceType !== 'Parameters' || !Array.isArray(parameters.parameter)) {
+    return false;
+  }
+
+  return parameters.parameter.every((param) => {
+    // If part exists, it must be an array
+    if (!Array.isArray(param.part)) return false;
+
+    // Based on https://build.fhir.org/fhirpath-patch.html, there is no mandatory elements, but we enforce ourselves that a  FHIRPatch needs to have a "type" part with a valid operation type.
+    const typePart = param.part.find((p) => p.name === 'type' && typeof p.valueCode === 'string');
+    if (!typePart || typeof typePart.valueCode !== 'string') {
+      return false;
+    }
+
+    return validFhirPatchTypes.has(typePart.valueCode);
+  });
 }

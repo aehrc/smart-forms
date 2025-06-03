@@ -43,6 +43,12 @@ export interface IfNoneExistExtensionSlice extends Extension {
   valueString: string;
 }
 
+// FHIRPath expression string indicating the resource type of an extracted resource to populate request.url property in `Bundle.entry`
+export interface ResourceTypeExtensionSlice extends Extension {
+  name: 'resourceType';
+  valueString: string;
+}
+
 /**
  * Represents extracted values from a `templateExtract` extension on a Questionnaire or QuestionnaireItem.
  */
@@ -89,4 +95,11 @@ export interface TemplateExtractReference {
    * Extracted from the `valueString` of the `ifNoneExist` slice.
    */
   ifNoneExist?: string;
+
+  /**
+   * A custom slice. FHIRPath expression string indicating the resource type of an extracted resource, if the template's resourceType is different e.g. Parameters.
+   * Currently used to populate the `url` field in the `request` of a `Bundle.entry`.
+   * Extracted from the `valueString` of the custom `resourceType` slice.
+   */
+  resourceType?: string;
 }
