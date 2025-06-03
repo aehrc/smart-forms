@@ -10,3 +10,4 @@ export {
   TemplateExtractValueEvaluation,
   TemplateExtractPathJsObjectTuple
 } from './templateExtractPath.interface';
+export { InputParameters } from './inputParameters.interface';

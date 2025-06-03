@@ -46,6 +46,7 @@ import { useExtractDebuggerStore } from '../stores/extractDebuggerStore.ts';
 import { buildFormWrapper, destroyFormWrapper } from '../../../utils/manageForm.ts';
 import type {
   CustomDebugInfoParameter,
+  InputParameters,
   IssuesParameter,
   ReturnParameter
 } from '@aehrc/sdc-template-extract';
@@ -77,6 +78,7 @@ function Playground() {
   const [buildingState, setBuildingState] = useState<BuildState>('idle');
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
   const updatableResponseKey = useQuestionnaireResponseStore.use.key();
 
@@ -259,7 +261,7 @@ function Playground() {
   }
 
   // Template-based $extract
-  async function handleTemplateExtract() {
+  async function handleTemplateExtract(modifiedOnly: boolean) {
     if (!sourceFhirServerUrl) {
       enqueueSnackbar('Failed to run template-based extraction. No source server provided', {
         variant: 'error',
@@ -273,20 +275,28 @@ function Playground() {
     const responseToExtract = structuredClone(updatableResponse);
     responseToExtract.id = updatableResponseKey;
 
+    const templateExtractInputParameters: InputParameters = {
+      resourceType: 'Parameters',
+      parameter: [
+        {
+          name: 'questionnaire-response',
+          resource: responseToExtract
+        },
+        {
+          name: 'questionnaire',
+          resource: sourceQuestionnaire
+        }
+      ]
+    };
+    if (modifiedOnly) {
+      templateExtractInputParameters.parameter.push({
+        // @ts-ignore TODO fix this TypeScript issue later
+        name: 'comparison-source-response',
+        resource: sourceResponse
+      });
+    }
     const templateExtractOutputParameters = await extract(
-      {
-        resourceType: 'Parameters',
-        parameter: [
-          {
-            name: 'questionnaire-response',
-            resource: responseToExtract
-          },
-          {
-            name: 'questionnaire',
-            resource: sourceQuestionnaire
-          }
-        ]
-      },
+      templateExtractInputParameters,
       fetchResourceCallback,
       {
         sourceServerUrl: sourceFhirServerUrl,

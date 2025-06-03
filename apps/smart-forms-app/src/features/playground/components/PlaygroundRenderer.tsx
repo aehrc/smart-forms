@@ -33,7 +33,7 @@ interface PlaygroundRendererProps {
   terminologyServerUrl: string;
   isExtracting: boolean;
   onObservationExtract: () => void;
-  onTemplateExtract: () => void;
+  onTemplateExtract: (modifiedOnly: boolean) => void;
   onStructureMapExtract: () => void;
 }
 

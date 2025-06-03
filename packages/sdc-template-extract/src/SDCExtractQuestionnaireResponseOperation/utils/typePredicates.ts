@@ -17,6 +17,7 @@
 
 import type { Coding, Extension, Parameters, ParametersParameter } from 'fhir/r4';
 import type {
+  CustomComparisonSourceResponseParameter,
   CustomQuestionnaireParameter,
   QuestionnaireResponseParameter
 } from '../interfaces/inputParameters.interface';
@@ -46,6 +47,15 @@ export function isCustomQuestionnaireParameter(
   parameter: ParametersParameter
 ): parameter is CustomQuestionnaireParameter {
   return parameter.name === 'questionnaire' && parameter.resource?.resourceType === 'Questionnaire';
+}
+
+export function isCustomComparisonSourceResponseParameter(
+  parameter: ParametersParameter
+): parameter is CustomComparisonSourceResponseParameter {
+  return (
+    parameter.name === 'comparison-source-response' &&
+    parameter.resource?.resourceType === 'QuestionnaireResponse'
+  );
 }
 
 export function isCanonicalParameter(
@@ -120,6 +130,8 @@ export function parametersIsFhirPatch(parameters: Parameters): parameters is Fhi
   }
 
   return parameters.parameter.every((param) => {
+    if (param.name !== 'operation') return false;
+
     // If part exists, it must be an array
     if (!Array.isArray(param.part)) return false;
 

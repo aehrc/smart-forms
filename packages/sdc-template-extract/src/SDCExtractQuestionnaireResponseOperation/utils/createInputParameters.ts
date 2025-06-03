@@ -29,7 +29,7 @@ import type {
  */
 export function createInputParameters(
   questionnaireResponse: QuestionnaireResponse,
-  questionnaire?: Questionnaire
+  questionnaire: Questionnaire | undefined
 ): InputParameters {
   return {
     resourceType: 'Parameters',
@@ -43,7 +43,7 @@ export function createInputParameters(
  */
 function createInputParamArray(
   questionnaireResponse: QuestionnaireResponse,
-  questionnaire?: Questionnaire
+  questionnaire: Questionnaire | undefined
 ): InputParamArray {
   const questionnaireResponseParameter: QuestionnaireResponseParameter = {
     name: 'questionnaire-response',
