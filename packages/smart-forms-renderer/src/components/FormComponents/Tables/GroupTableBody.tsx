@@ -43,6 +43,7 @@ interface GroupTableBodyProps
   tableRows: GroupTableRowModel[];
   selectedIds: string[];
   qItemsIndexMap: Record<string, number>;
+  visibleItemLabels: string[];
   onRowChange: (
     newQrRow: QuestionnaireResponseItem,
     index: number,
@@ -60,6 +61,7 @@ function GroupTableBody(props: GroupTableBodyProps) {
     tableRows,
     selectedIds,
     qItemsIndexMap,
+    visibleItemLabels,
     itemPath,
     isRepeated,
     showMinimalView,
@@ -111,6 +113,7 @@ function GroupTableBody(props: GroupTableBodyProps) {
                   itemIsSelected={itemIsSelected}
                   selectedIds={selectedIds}
                   qItemsIndexMap={qItemsIndexMap}
+                  visibleItemLabels={visibleItemLabels}
                   itemPath={appendRepeatIndexToLastSegment(itemPath, index)}
                   showMinimalView={showMinimalView}
                   parentIsReadOnly={parentIsReadOnly}

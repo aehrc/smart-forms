@@ -8,6 +8,17 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.58] - 2025-06-03
+### Fixed
+- Fixed number of columns shown and widths when a group table has a hidden item.
+- Updated sdc-populate to v4.3.0. Changes as follows:
+- Fixed an [issue](https://github.com/aehrc/smart-forms/issues/1258) where a repeating group using ItemPopulationContext only looks at the first item in the group to determine the itemPopulationContext used.
+- Include author and authored property when creating a QuestionnaireResponse.
+
+## [1.0.0-alpha.57] - 2025-05-27
+### Changed
+- Changed inline validation messages to be shown when the field loses focus. See [issue](https://github.com/aehrc/smart-forms/issues/1219).
+
 ## [1.0.0-alpha.56] - 2025-05-26
 ### Added
 - Exposed getSectionHeading() as a library function

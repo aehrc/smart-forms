@@ -57,7 +57,7 @@ interface GroupTableViewProps
   readOnly: boolean;
   tableRows: GroupTableRowModel[];
   selectedIds: string[];
-  itemLabels: string[];
+  visibleItemLabels: string[];
   onAddRow: () => void;
   onRowChange: (
     newQrRow: QuestionnaireResponseItem,
@@ -80,7 +80,7 @@ function GroupTableView(props: GroupTableViewProps) {
     readOnly,
     tableRows,
     selectedIds,
-    itemLabels,
+    visibleItemLabels,
     itemPath,
     showMinimalView,
     parentIsReadOnly,
@@ -130,9 +130,9 @@ function GroupTableView(props: GroupTableViewProps) {
               <Table size="small">
                 <TableHead>
                   <TableRow>
-                    {itemLabels.map((itemLabel) => (
-                      <HeaderTableCell key={itemLabel} size="medium">
-                        {itemLabel}
+                    {visibleItemLabels.map((visibleItemLabel) => (
+                      <HeaderTableCell key={visibleItemLabel} size="medium">
+                        {visibleItemLabel}
                       </HeaderTableCell>
                     ))}
                     <TableCell />
@@ -145,6 +145,7 @@ function GroupTableView(props: GroupTableViewProps) {
                     tableRows={tableRows}
                     selectedIds={selectedIds}
                     qItemsIndexMap={qItemsIndexMap}
+                    visibleItemLabels={visibleItemLabels}
                     itemPath={itemPath}
                     isRepeated={isRepeated}
                     showMinimalView={showMinimalView}
@@ -202,8 +203,8 @@ function GroupTableView(props: GroupTableViewProps) {
                       />
                     </HeaderTableCell>
                   ) : null}
-                  {itemLabels.map((itemLabel) => (
-                    <HeaderTableCell key={itemLabel}>{itemLabel}</HeaderTableCell>
+                  {visibleItemLabels.map((visibleItemLabel) => (
+                    <HeaderTableCell key={visibleItemLabel}>{visibleItemLabel}</HeaderTableCell>
                   ))}
                   <TableCell padding="checkbox" />
                 </TableRow>
@@ -214,6 +215,7 @@ function GroupTableView(props: GroupTableViewProps) {
                 tableRows={tableRows}
                 selectedIds={selectedIds}
                 qItemsIndexMap={qItemsIndexMap}
+                visibleItemLabels={visibleItemLabels}
                 itemPath={itemPath}
                 isRepeated={isRepeated}
                 showMinimalView={showMinimalView}
@@ -242,9 +244,9 @@ function GroupTableView(props: GroupTableViewProps) {
           <Table size="small">
             <TableHead>
               <TableRow>
-                {itemLabels.map((itemLabel) => (
-                  <HeaderTableCell key={itemLabel} size="medium">
-                    {itemLabel}
+                {visibleItemLabels.map((visibleItemLabel) => (
+                  <HeaderTableCell key={visibleItemLabel} size="medium">
+                    {visibleItemLabel}
                   </HeaderTableCell>
                 ))}
                 <TableCell />
@@ -257,6 +259,7 @@ function GroupTableView(props: GroupTableViewProps) {
                 tableRows={tableRows}
                 selectedIds={selectedIds}
                 qItemsIndexMap={qItemsIndexMap}
+                visibleItemLabels={visibleItemLabels}
                 itemPath={itemPath}
                 isRepeated={isRepeated}
                 showMinimalView={showMinimalView}
@@ -312,8 +315,8 @@ function GroupTableView(props: GroupTableViewProps) {
                   />
                 </HeaderTableCell>
               ) : null}
-              {itemLabels.map((itemLabel) => (
-                <HeaderTableCell key={itemLabel}>{itemLabel}</HeaderTableCell>
+              {visibleItemLabels.map((visibleItemLabel) => (
+                <HeaderTableCell key={visibleItemLabel}>{visibleItemLabel}</HeaderTableCell>
               ))}
               <TableCell padding="checkbox" />
             </TableRow>
@@ -324,6 +327,7 @@ function GroupTableView(props: GroupTableViewProps) {
             tableRows={tableRows}
             selectedIds={selectedIds}
             qItemsIndexMap={qItemsIndexMap}
+            visibleItemLabels={visibleItemLabels}
             itemPath={itemPath}
             isRepeated={isRepeated}
             showMinimalView={showMinimalView}
