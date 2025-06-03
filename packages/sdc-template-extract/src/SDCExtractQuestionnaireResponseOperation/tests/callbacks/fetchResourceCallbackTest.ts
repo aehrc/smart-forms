@@ -16,20 +16,20 @@
  */
 
 import type {
-  FetchResourceCallback,
-  FetchResourceRequestConfig
+  FetchQuestionnaireCallback,
+  FetchQuestionnaireRequestConfig
 } from '../../interfaces/callback.interface';
 
 const ABSOLUTE_URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
 
-export const requestConfigTest: FetchResourceRequestConfig = {
-  sourceServerUrl: 'https://proxy.smartforms.io/fhir',
+export const requestConfigTest: FetchQuestionnaireRequestConfig = {
+  sourceServerUrl: 'https://smartforms.csiro.au/api/fhir',
   authToken: null
 };
 
-export const fetchResourceCallbackTest: FetchResourceCallback = async (
+export const fetchResourceCallbackTest: FetchQuestionnaireCallback = async (
   query: string,
-  requestConfig: FetchResourceRequestConfig
+  requestConfig: FetchQuestionnaireRequestConfig
 ) => {
   let { sourceServerUrl } = requestConfig;
   const { authToken } = requestConfig;
