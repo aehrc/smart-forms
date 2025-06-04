@@ -15,15 +15,18 @@
  * limitations under the License.
  */
 
-export default function Paper() {
+import type { Theme } from '@mui/material/styles';
+import { alpha } from '@mui/material/styles';
+
+export function backdropOverride(theme: Theme) {
   return {
-    MuiPaper: {
-      defaultProps: {
-        elevation: 0
-      },
+    MuiBackdrop: {
       styleOverrides: {
         root: {
-          backgroundImage: 'none'
+          backgroundColor: alpha(theme.palette.grey[800], 0.33)
+        },
+        invisible: {
+          background: 'transparent'
         }
       }
     }

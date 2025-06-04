@@ -15,18 +15,15 @@
  * limitations under the License.
  */
 
-import { alpha } from '@mui/material/styles';
-import type { Theme } from '@mui/material';
+import type { Theme } from '@mui/material/styles';
 
-export default function Backdrop(theme: Theme) {
+export function dialogOverride(theme: Theme) {
   return {
-    MuiBackdrop: {
+    MuiDialog: {
       styleOverrides: {
-        root: {
-          backgroundColor: alpha(theme.palette.grey[800], 0.33)
-        },
-        invisible: {
-          background: 'transparent'
+        paper: {
+          boxShadow: theme.shadows[12], // Customize the shadow
+          borderRadius: Number(theme.shape.borderRadius) * 1.5
         }
       }
     }

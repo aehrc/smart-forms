@@ -17,26 +17,36 @@
 
 import type { Theme } from '@mui/material/styles';
 import { alpha } from '@mui/material/styles';
-import { grey } from '@mui/material/colors';
 
-export default function Table(theme: Theme) {
+export function buttonOverride(theme: Theme) {
   return {
-    MuiTableCell: {
-      styleOverrides: {
-        head: {
-          color: theme.palette.text.secondary,
-          backgroundColor: '#F4F6F8',
-          borderBottom: '1px solid #e5e7eb'
-        }
-      }
-    },
-    MuiTableContainer: {
+    MuiButton: {
       styleOverrides: {
         root: {
-          boxShadow: `0 0 2px 0 ${alpha(grey[500], 0.2)}, 0 12px 24px -4px ${alpha(
-            grey[500],
-            0.16
-          )}`
+          '&:hover': {
+            boxShadow: 'none'
+          }
+        },
+        sizeLarge: {
+          height: 48
+        },
+        containedInherit: {
+          color: theme.palette.grey[800],
+          boxShadow: theme.shadows[8],
+          '&:hover': {
+            backgroundColor: theme.palette.grey[400]
+          }
+        },
+        outlinedInherit: {
+          border: `1px solid ${alpha(theme.palette.grey[500], 0.32)}`,
+          '&:hover': {
+            backgroundColor: theme.palette.action.hover
+          }
+        },
+        textInherit: {
+          '&:hover': {
+            backgroundColor: theme.palette.action.hover
+          }
         }
       }
     }

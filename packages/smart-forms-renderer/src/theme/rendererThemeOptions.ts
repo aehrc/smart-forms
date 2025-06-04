@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 
-import type { ThemeOptions } from '@mui/material/styles';
+import type { ThemeOptions } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import typography from './typography';
 import { grey } from '@mui/material/colors';
 
-export const themeOptions: ThemeOptions = {
+export const rendererThemeOptions: ThemeOptions = {
   palette: {
     secondary: {
       light: '#7ac298',
