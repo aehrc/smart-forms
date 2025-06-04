@@ -38,12 +38,10 @@ interface GridRowProps
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
   columnLabels: string[];
-  numOfColumns: number;
 }
 
 function GridRow(props: GridRowProps) {
-  const { qItem, qrItem, itemPath, columnLabels, numOfColumns, parentIsReadOnly, onQrItemChange } =
-    props;
+  const { qItem, qrItem, itemPath, columnLabels, parentIsReadOnly, onQrItemChange } = props;
 
   const rowQItems = qItem.item;
   const row = qrItem && qrItem.item ? qrItem : createEmptyQrGroup(qItem);
@@ -71,6 +69,7 @@ function GridRow(props: GridRowProps) {
 
   const qrItemsByIndex = getQrItemsIndex(rowQItems, rowQrItems, qItemsIndexMap);
 
+  const numOfColumns = columnLabels.length;
   return (
     <>
       <GridTextTableCell>
@@ -78,20 +77,24 @@ function GridRow(props: GridRowProps) {
           {qItem.text}
         </Typography>
       </GridTextTableCell>
-      {rowQItems.map((cellQItem, index) => {
-        const cellQrItem = qrItemsByIndex[index];
+      {columnLabels.map((label, colIndex) => {
+        // Find the QuestionnaireItem in this row that matches the current column label
+        const matchingCellQItemIndex = rowQItems.findIndex((item) => item.text === label);
 
-        // Don't render cell if column label does not match - "sparse-ness" of grid
-        if (columnLabels[index] !== cellQItem.text) {
-          return null;
+        // Render empty cell for sparsity
+        if (matchingCellQItemIndex === -1) {
+          return <GridAnswerTableCell key={colIndex} numOfColumns={numOfColumns} />;
         }
+
+        const cellQItem = rowQItems[matchingCellQItemIndex];
+        const cellQrItem = qrItemsByIndex[matchingCellQItemIndex];
 
         if (Array.isArray(cellQrItem)) {
           return null;
         }
 
         return (
-          <GridAnswerTableCell key={index} numOfColumns={numOfColumns}>
+          <GridAnswerTableCell key={colIndex} numOfColumns={numOfColumns}>
             <SingleItem
               qItem={cellQItem}
               qrItem={cellQrItem ?? null}

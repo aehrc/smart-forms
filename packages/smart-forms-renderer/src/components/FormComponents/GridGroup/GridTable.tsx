@@ -58,8 +58,6 @@ function GridTable(props: GridTableProps) {
 
   const qrItemsByIndex = getQrItemsIndex(qItems, qrItems, qItemsIndexMap);
 
-  const numOfColumns = columnLabels.length;
-
   const minimalViewHeaderCellSx = showMinimalView ? { py: 2 } : null;
 
   return (
@@ -94,7 +92,6 @@ function GridTable(props: GridTableProps) {
                 qItem={qItem}
                 qrItem={qrItem ?? null}
                 columnLabels={columnLabels}
-                numOfColumns={numOfColumns}
                 itemPath={extendItemPath(itemPath, qItem.linkId)}
                 parentIsReadOnly={parentIsReadOnly}
                 onQrItemChange={onQrItemChange}
