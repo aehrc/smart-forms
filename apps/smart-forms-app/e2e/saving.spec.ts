@@ -18,6 +18,7 @@
 import { expect, test } from '@playwright/test';
 import { LAUNCH_PARAM_WITH_Q, PLAYWRIGHT_APP_URL, PLAYWRIGHT_EHR_URL } from './globals';
 
+// We use the actual Aboriginal and Torres Strait Islander Health Check (2025) for this e2e test
 const questionnaireTitle = 'Aboriginal and Torres Strait Islander Health Check';
 
 test.beforeEach(async ({ page }) => {
@@ -26,7 +27,9 @@ test.beforeEach(async ({ page }) => {
     new RegExp(/^https:\/\/proxy\.smartforms\.io\/v\/r4\/fhir\/(Observation|Condition)\?.+$/)
   );
   const launchUrl = `${PLAYWRIGHT_APP_URL}/launch?iss=https%3A%2F%2Fproxy.smartforms.io%2Fv%2Fr4%2Ffhir&launch=${LAUNCH_PARAM_WITH_Q}`;
+  console.log('Playwright navigating to: ', launchUrl);
   await page.goto(launchUrl);
+
   const populateResponse = await populatePromise;
   expect(populateResponse.status()).toBe(200);
 });

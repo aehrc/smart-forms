@@ -20,6 +20,7 @@ import { useQuery } from '@tanstack/react-query';
 import type { Bundle, Practitioner } from 'fhir/r4';
 import { useMemo } from 'react';
 import { fetchFhirResources } from '../api/fetchFhirResources.ts';
+import { NUM_OF_PRACTITIONERS_TO_FETCH_PLAYGROUND } from '../../../globals.ts';
 
 interface useFetchPractitionersReturnParams {
   practitioners: Practitioner[];
@@ -30,7 +31,7 @@ interface useFetchPractitionersReturnParams {
 }
 
 function useFetchPractitioners(endpointUrl: string): useFetchPractitionersReturnParams {
-  const numOfSearchEntries = 100;
+  const numOfSearchEntries = NUM_OF_PRACTITIONERS_TO_FETCH_PLAYGROUND;
 
   const queryUrl = `/Practitioner?_count=${numOfSearchEntries}`;
 

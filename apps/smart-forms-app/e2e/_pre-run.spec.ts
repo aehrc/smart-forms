@@ -28,32 +28,33 @@ test('launch without questionnaire context, select a questionnaire and create a 
 }) => {
   // Launch app without questionnaire context
   const fetchQPromise = page.waitForResponse(
-    `${PLAYWRIGHT_FORMS_SERVER_URL}/Questionnaire?_count=100&_sort=-date&`
+    (response) =>
+      response.url().startsWith(`${PLAYWRIGHT_FORMS_SERVER_URL}/Questionnaire`) &&
+      response.url().includes('_sort=-date')
   );
 
   const launchUrl = `${PLAYWRIGHT_APP_URL}/launch?iss=https%3A%2F%2Fproxy.smartforms.io%2Fv%2Fr4%2Ffhir&launch=${LAUNCH_PARAM_WITHOUT_Q}`;
+  console.log('Playwright navigating to: ', launchUrl);
   await page.goto(launchUrl);
+
   expect((await fetchQPromise).status()).toBe(200);
 
   // Search MBS715 title
   const fetchQByTitlePromise = page.waitForResponse(
-    `${PLAYWRIGHT_FORMS_SERVER_URL}/Questionnaire?_count=100&_sort=-date&title:contains=Aboriginal%20and%20Torres%20Strait%20Islander%20Health%20Check`
+    (response) =>
+      response.url().startsWith(`${PLAYWRIGHT_FORMS_SERVER_URL}/Questionnaire`) &&
+      response.url().includes('_sort=-date') &&
+      response.url().includes('title:contains=Dev715')
   );
-  await page
-    .getByTestId('search-field-questionnaires')
-    .locator('input')
-    .fill('Aboriginal and Torres Strait Islander Health Check');
+
+  await page.getByTestId('search-field-questionnaires').locator('input').fill('Dev715');
   await fetchQByTitlePromise;
 
   // Open first MBS715 questionnaire
   const populatePromise = page.waitForResponse(
     new RegExp(/^https:\/\/proxy\.smartforms\.io\/v\/r4\/fhir\/(Observation|Condition)\?.+$/)
   );
-  await page
-    .getByTestId('questionnaire-list-row')
-    .getByText('Aboriginal and Torres Strait Islander Health Check')
-    .first()
-    .click();
+  await page.getByTestId('questionnaire-list-row').getByText('Dev715').first().click();
   await page.getByTestId('button-create-response').click();
   expect((await populatePromise).status()).toBe(200);
 
