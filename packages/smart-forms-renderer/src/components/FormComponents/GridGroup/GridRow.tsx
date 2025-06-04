@@ -27,6 +27,7 @@ import { GridAnswerTableCell, GridTextTableCell } from '../Tables/Table.styles';
 import SingleItem from '../SingleItem/SingleItem';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../utils/mapItem';
 import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 import useHidden from '../../../hooks/useHidden';
 import { extendItemPath } from '../../../utils/itemPath';
 import type { ItemPath } from '../../../interfaces/itemPath.interface';
@@ -95,17 +96,19 @@ function GridRow(props: GridRowProps) {
 
         return (
           <GridAnswerTableCell key={colIndex} numOfColumns={numOfColumns}>
-            <SingleItem
-              qItem={cellQItem}
-              qrItem={cellQrItem ?? null}
-              itemPath={extendItemPath(itemPath, cellQItem.linkId)}
-              isRepeated={true}
-              isTabled={true}
-              groupCardElevation={1}
-              showMinimalView={true}
-              parentIsReadOnly={parentIsReadOnly}
-              onQrItemChange={handleQrRowItemChange}
-            />
+            <Box display="flex" alignItems="center" justifyContent="center">
+              <SingleItem
+                qItem={cellQItem}
+                qrItem={cellQrItem ?? null}
+                itemPath={extendItemPath(itemPath, cellQItem.linkId)}
+                isRepeated={true}
+                isTabled={true}
+                groupCardElevation={1}
+                showMinimalView={true}
+                parentIsReadOnly={parentIsReadOnly}
+                onQrItemChange={handleQrRowItemChange}
+              />
+            </Box>
           </GridAnswerTableCell>
         );
       })}

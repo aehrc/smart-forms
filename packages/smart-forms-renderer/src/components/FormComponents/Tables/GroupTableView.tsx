@@ -18,6 +18,7 @@
 import React from 'react';
 import { QGroupContainerBox } from '../../Box.styles';
 import TableContainer from '@mui/material/TableContainer';
+import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
@@ -132,7 +133,9 @@ function GroupTableView(props: GroupTableViewProps) {
                   <TableRow>
                     {visibleItemLabels.map((visibleItemLabel) => (
                       <HeaderTableCell key={visibleItemLabel} size="medium">
-                        {visibleItemLabel}
+                        <Box display="flex" alignItems="center" justifyContent="center">
+                          {visibleItemLabel}
+                        </Box>
                       </HeaderTableCell>
                     ))}
                     <TableCell />
