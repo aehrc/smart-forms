@@ -63,7 +63,6 @@ function GroupTable(props: GroupTableProps) {
     itemPath,
     groupCardElevation,
     isRepeated,
-    showMinimalView,
     parentIsReadOnly,
     parentStyles,
     onQrRepeatGroupChange
@@ -96,7 +95,7 @@ function GroupTable(props: GroupTableProps) {
             )
         )
         .map((item) => item.text ?? '') ?? [],
-    [qItems]
+    [enableWhenAsReadOnly, enableWhenExpressions, enableWhenIsActivated, enableWhenItems, qItems]
   );
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
@@ -220,7 +219,6 @@ function GroupTable(props: GroupTableProps) {
       tableRows={tableRows}
       selectedIds={selectedIds}
       visibleItemLabels={visibleItemLabels}
-      showMinimalView={showMinimalView}
       parentIsReadOnly={parentIsReadOnly}
       parentStyles={parentStyles}
       onAddRow={handleAddRow}
