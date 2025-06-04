@@ -35,7 +35,6 @@ import {
   useQuestionnaireResponseStore,
   useQuestionnaireStore
 } from '@aehrc/smart-forms-renderer';
-import RendererDebugFooter from '../../renderer/components/RendererDebugFooter/RendererDebugFooter.tsx';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
 import PlaygroundPicker from './PlaygroundPicker.tsx';
@@ -366,7 +365,6 @@ function Playground() {
             onDestroyForm={handleDestroyForm}
           />
         </Allotment>
-        <RendererDebugFooter />
       </DndProvider>
     </>
   );
