@@ -25,5 +25,12 @@ export const StandardTextField = styled(TextField, {
   // Set textFieldWidth (defaults to 320 in rendererStylingStore) as the standard width for a field
   // Set a theoretical infinite maxWidth (3000) if field is within a table to fill the table row
   maxWidth: !isTabled ? textFieldWidth : 3000,
-  minWidth: 160
+  minWidth: 160,
+  // When text field is read-only, prevent text/input I-beam cursor
+  '& .MuiOutlinedInput-root.Mui-readOnly': {
+    cursor: 'default',
+    '& .MuiInputBase-input': {
+      cursor: 'default'
+    }
+  }
 }));
