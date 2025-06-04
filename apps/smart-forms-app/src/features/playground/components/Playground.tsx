@@ -44,15 +44,7 @@ import PlaygroundHeader from './PlaygroundHeader.tsx';
 import { HEADERS } from '../../../api/headers.ts';
 import { useExtractDebuggerStore } from '../stores/extractDebuggerStore.ts';
 import { buildFormWrapper, destroyFormWrapper } from '../../../utils/manageForm.ts';
-import type {
-  CustomDebugInfoParameter,
-  InputParameters,
-  IssuesParameter,
-  ReturnParameter
-} from '@aehrc/sdc-template-extract';
-import { extract } from '@aehrc/sdc-template-extract';
-import { fetchResourceCallback } from './PrePopCallbackForPlayground.tsx';
-import { Base64 } from 'js-base64';
+import { extractResultIsOperationOutcome, inAppExtract } from '@aehrc/sdc-template-extract';
 
 const defaultFhirServerUrl = 'https://hapi.fhir.org/baseR4';
 const defaultExtractEndpoint = 'https://proxy.smartforms.io/fhir';
@@ -80,7 +72,6 @@ function Playground() {
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
   const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
-  const updatableResponseKey = useQuestionnaireResponseStore.use.key();
 
   // $extract-related states
   const [isExtracting, setExtracting] = useState(false);
@@ -271,40 +262,16 @@ function Playground() {
       return;
     }
 
-    // Augment QR to add %resource.id
     const responseToExtract = structuredClone(updatableResponse);
-    responseToExtract.id = updatableResponseKey;
-
-    const templateExtractInputParameters: InputParameters = {
-      resourceType: 'Parameters',
-      parameter: [
-        {
-          name: 'questionnaire-response',
-          resource: responseToExtract
-        },
-        {
-          name: 'questionnaire',
-          resource: sourceQuestionnaire
-        }
-      ]
-    };
-    if (modifiedOnly) {
-      templateExtractInputParameters.parameter.push({
-        // @ts-ignore TODO fix this TypeScript issue later
-        name: 'comparison-source-response',
-        resource: sourceResponse
-      });
-    }
-    const templateExtractOutputParameters = await extract(
-      templateExtractInputParameters,
-      fetchResourceCallback,
-      {
-        sourceServerUrl: sourceFhirServerUrl,
-        authToken: null
-      }
+    const inAppExtractOutput = await inAppExtract(
+      responseToExtract,
+      sourceQuestionnaire,
+      modifiedOnly ? sourceResponse : null
     );
 
-    if (templateExtractOutputParameters.resourceType === 'OperationOutcome') {
+    const { extractResult } = inAppExtractOutput;
+
+    if (extractResultIsOperationOutcome(extractResult)) {
       enqueueSnackbar(
         'Ran template-based extraction but an error occurred. See console for error details.',
         {
@@ -313,49 +280,35 @@ function Playground() {
           action: <CloseSnackbar />
         }
       );
-      console.error(templateExtractOutputParameters);
+      console.error(extractResult);
       return;
     }
 
-    // At this point outputParameters is a Parameters resource
-    const returnParameter = templateExtractOutputParameters.parameter.find(
-      (param) => param.name === 'return'
-    ) as ReturnParameter;
-    const issuesParameter = templateExtractOutputParameters.parameter.find(
-      (param) => param.name === 'issues'
-    ) as IssuesParameter | undefined;
-    const customDebugInfoParameter = templateExtractOutputParameters.parameter.find(
-      (param) => param.name === 'debugInfo-custom'
-    ) as CustomDebugInfoParameter | undefined;
-
     // Handle returnParameter
-    console.log('Extracted bundle from template-based extraction:', returnParameter.resource);
+    console.log(
+      `Extracted bundle from template-based extraction ${modifiedOnly ? '(modified only)' : ''}:`,
+      extractResult.extractedBundle
+    );
     const hasIssues =
-      !!issuesParameter?.resource?.issue && issuesParameter?.resource?.issue?.length > 0;
-    const hasIssuesMessage = hasIssues ? ' with issues' : '';
-    const plusIssuesMessage = hasIssues ? ' + issues' : '';
+      extractResult.issues && extractResult.issues.resourceType === 'OperationOutcome';
     enqueueSnackbar(
-      `Successful template-based extraction${hasIssuesMessage}. See Advanced Properties > Extracted to view extracted bundle${plusIssuesMessage}.`,
+      `Successful template-based extraction${hasIssues ? ' with issues' : ''}. See Advanced Properties > Extracted to view extracted bundle${hasIssues ? ' + issues' : ''}.`,
       {
         preventDuplicate: true,
         action: <CloseSnackbar />,
         autoHideDuration: 8000
       }
     );
-    setTemplateExtractResult(returnParameter.resource);
+    setTemplateExtractResult(extractResult.extractedBundle);
 
     // Handle issuesParameter
-    if (hasIssues) {
-      setTemplateExtractIssues(issuesParameter.resource);
+    if (extractResult.issues) {
+      setTemplateExtractIssues(extractResult.issues);
     }
 
     // Handle customDebugInfoParameter
-    if (customDebugInfoParameter?.valueAttachment.data) {
-      const debugInfo = JSON.parse(Base64.decode(customDebugInfoParameter.valueAttachment.data));
-
-      if (typeof debugInfo === 'object' && debugInfo !== null) {
-        setTemplateExtractDebugInfo(debugInfo);
-      }
+    if (extractResult.debugInfo) {
+      setTemplateExtractDebugInfo(extractResult.debugInfo);
     }
   }
 

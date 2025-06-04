@@ -17,6 +17,7 @@
 
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import type {
+  CustomComparisonSourceResponseParameter,
   CustomQuestionnaireParameter,
   InputParamArray,
   InputParameters,
@@ -29,11 +30,12 @@ import type {
  */
 export function createInputParameters(
   questionnaireResponse: QuestionnaireResponse,
-  questionnaire: Questionnaire | undefined
+  questionnaire: Questionnaire | undefined,
+  comparisonSourceResponse: QuestionnaireResponse | undefined
 ): InputParameters {
   return {
     resourceType: 'Parameters',
-    parameter: createInputParamArray(questionnaireResponse, questionnaire)
+    parameter: createInputParamArray(questionnaireResponse, questionnaire, comparisonSourceResponse)
   };
 }
 
@@ -43,26 +45,34 @@ export function createInputParameters(
  */
 function createInputParamArray(
   questionnaireResponse: QuestionnaireResponse,
-  questionnaire: Questionnaire | undefined
+  questionnaire: Questionnaire | undefined,
+  comparisonSourceResponse: QuestionnaireResponse | undefined
 ): InputParamArray {
-  const questionnaireResponseParameter: QuestionnaireResponseParameter = {
+  const questionnaireResponseParam: QuestionnaireResponseParameter = {
     name: 'questionnaire-response',
     resource: questionnaireResponse
   };
 
-  if (!questionnaire) {
-    return [
-      {
-        name: 'questionnaire-response',
-        resource: questionnaireResponse
-      }
-    ];
+  const questionnaireParam: CustomQuestionnaireParameter | undefined = questionnaire
+    ? { name: 'questionnaire', resource: questionnaire }
+    : undefined;
+
+  const comparisonResponseParam: CustomComparisonSourceResponseParameter | undefined =
+    comparisonSourceResponse
+      ? { name: 'comparison-source-response', resource: comparisonSourceResponse }
+      : undefined;
+
+  if (questionnaireParam && comparisonResponseParam) {
+    return [questionnaireResponseParam, questionnaireParam, comparisonResponseParam];
   }
 
-  const customQuestionnaireParameter: CustomQuestionnaireParameter = {
-    name: 'questionnaire',
-    resource: questionnaire
-  };
+  if (questionnaireParam) {
+    return [questionnaireResponseParam, questionnaireParam];
+  }
 
-  return [questionnaireResponseParameter, customQuestionnaireParameter];
+  if (comparisonResponseParam) {
+    return [questionnaireResponseParam, comparisonResponseParam];
+  }
+
+  return [questionnaireResponseParam];
 }
