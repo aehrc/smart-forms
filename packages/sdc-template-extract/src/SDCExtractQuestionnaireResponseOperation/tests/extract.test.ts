@@ -37,7 +37,7 @@ import { QComplexTemplateExtract } from './resources/questionnaires/QComplexTemp
 describe('extract AllergiesAdverseReactions', () => {
   it('extracted result should match extractedAllergiesAdverseReactions.ts expected resources', async () => {
     const result = await extract(
-      createInputParameters(QRAllergiesAdverseReactions, QAllergiesAdverseReactions, null),
+      createInputParameters(QRAllergiesAdverseReactions, QAllergiesAdverseReactions, undefined),
       fetchResourceCallbackTest,
       requestConfigTest
     );
@@ -58,7 +58,7 @@ describe('extract AllergiesAdverseReactions', () => {
 describe('extract Immunisation', () => {
   it('extracted result should match extractedImmunisation.ts expected resources', async () => {
     const result = await extract(
-      createInputParameters(QRImmunisation, QImmunisation, null),
+      createInputParameters(QRImmunisation, QImmunisation, undefined),
       fetchResourceCallbackTest,
       requestConfigTest
     );
@@ -79,7 +79,11 @@ describe('extract Immunisation', () => {
 describe('extract MedicalHistoryCurrentProblems', () => {
   it('extracted result should match extractedMedicalHistoryCurrentProblems.ts expected resources', async () => {
     const result = await extract(
-      createInputParameters(QRMedicalHistoryCurrentProblems, QMedicalHistoryCurrentProblems, null),
+      createInputParameters(
+        QRMedicalHistoryCurrentProblems,
+        QMedicalHistoryCurrentProblems,
+        undefined
+      ),
       fetchResourceCallbackTest,
       requestConfigTest
     );
@@ -112,7 +116,7 @@ describe('extract RegularMedications', () => {
 
   it('extracted result should match extractedRegularMedications.ts expected resources', async () => {
     const result = await extract(
-      createInputParameters(QRRegularMedications, QRegularMedications, null),
+      createInputParameters(QRRegularMedications, QRegularMedications, undefined),
       fetchResourceCallbackTest,
       requestConfigTest
     );
@@ -143,7 +147,7 @@ describe('extract RegularMedicationsModified', () => {
 
   it('extracted result should match extractedRegularMedicationsModified.ts expected resources', async () => {
     const result = await extract(
-      createInputParameters(QRRegularMedicationsModified, QRegularMedicationsModified, null),
+      createInputParameters(QRRegularMedicationsModified, QRegularMedicationsModified, undefined),
       fetchResourceCallbackTest,
       requestConfigTest
     );
@@ -171,7 +175,7 @@ describe('extract ComplexTemplateExtract', () => {
 
   beforeAll(async () => {
     const result = await extract(
-      createInputParameters(QRComplexTemplateExtract, QComplexTemplateExtract, null),
+      createInputParameters(QRComplexTemplateExtract, QComplexTemplateExtract, undefined),
       fetchResourceCallbackTest,
       requestConfigTest
     );
