@@ -8,6 +8,12 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+
+## [1.0.0-alpha.59] - 2025-06-04
+### Added
+- CSS read-only (different from Questionnaire item.readOnly) text-based input items now have cursor set to [`default`](https://developer.mozilla.org/en-US/docs/Web/CSS/cursor#values).
+
+
 ## [1.0.0-alpha.58] - 2025-06-03
 ### Fixed
 - Fixed number of columns shown and widths when a group table has a hidden item.
