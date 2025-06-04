@@ -7,6 +7,8 @@ import type {
 import { fhirPathEvaluate } from './fhirpathEvaluate';
 import { v4 as uuidv4 } from 'uuid';
 import cleanDeep from 'clean-deep';
+import { parametersIsFhirPatch } from './typePredicates';
+import type { BundleRequestType } from '../interfaces/bundle.interface';
 
 /**
  * Builds a FHIR transaction Bundle from extracted resources using the templateExtract extension.
@@ -82,6 +84,12 @@ export function buildTransactionBundle(
       );
       const hasResourceId = typeof resourceId === 'string' && resourceId !== '';
 
+      // resourceType (custom)
+      let resourceType = cleanedExtractedResource.resourceType;
+      if (templateExtractReference.resourceType) {
+        resourceType = templateExtractReference.resourceType as FhirResource['resourceType'];
+      }
+
       // fullUrl
       // Otherwise, evaluate it as a FHIRPath expression
       const fullUrl = getFullUrl(
@@ -112,18 +120,23 @@ export function buildTransactionBundle(
         templateExtractReference.ifNoneExist
       );
 
+      // Request method
+      const requestMethod = getRequestMethod(cleanedExtractedResource, hasResourceId);
+
       // Add resourceId to resource
-      const resourceToAdd = addResourceIdToResource(cleanedExtractedResource, resourceId);
+      const resourceToAdd = addResourceIdToResource(
+        cleanedExtractedResource,
+        resourceId,
+        requestMethod
+      );
 
       // Add entry to the bundle
       bundle.entry.push({
         fullUrl: fullUrl,
         resource: resourceToAdd,
         request: {
-          method: hasResourceId ? 'PUT' : 'POST',
-          url: hasResourceId
-            ? `${resourceToAdd.resourceType}/${resourceId}`
-            : resourceToAdd.resourceType,
+          method: requestMethod,
+          url: hasResourceId ? `${resourceType}/${resourceId}` : resourceType,
 
           // ifNoneMatch, ifModifiedSince, ifMatch, ifNoneExist optional properties
           ...(ifNoneMatch && { ifNoneMatch: ifNoneMatch }),
@@ -238,12 +251,13 @@ function generateShortId(): string {
  */
 function addResourceIdToResource(
   existingResource: FhirResource,
-  resourceId: string | undefined
+  resourceId: string | undefined,
+  requestMethod: BundleRequestType
 ): FhirResource {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { resourceType, id, ...rest } = existingResource;
 
-  if (!resourceId) {
+  if (!resourceId || requestMethod === 'PATCH') {
     return existingResource;
   }
 
@@ -252,4 +266,18 @@ function addResourceIdToResource(
     id: resourceId,
     ...rest
   } as FhirResource;
+}
+
+function getRequestMethod(resource: FhirResource, hasResourceId: boolean): BundleRequestType {
+  // If order for request.method to be PATCH:
+  // 1. ResourceType must be 'Parameters'
+  // 2. Resource must conform to the FHIRPathPatchProfile https://build.fhir.org/fhirpath-patch.html
+  if (resource.resourceType === 'Parameters') {
+    if (parametersIsFhirPatch(resource)) {
+      return 'PATCH';
+    }
+  }
+
+  // if the resource created has no ID property, then the method will be POST, otherwise it will be PUT
+  return hasResourceId ? 'PUT' : 'POST';
 }

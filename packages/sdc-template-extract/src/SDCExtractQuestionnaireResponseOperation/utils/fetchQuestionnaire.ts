@@ -20,15 +20,15 @@ import type { Bundle, OperationOutcome, Questionnaire, QuestionnaireResponse } f
 import { createErrorOutcome } from './operationOutcome';
 import type { InputParameters } from '../interfaces/inputParameters.interface';
 import type {
-  FetchResourceCallback,
-  FetchResourceRequestConfig
+  FetchQuestionnaireCallback,
+  FetchQuestionnaireRequestConfig
 } from '../interfaces/callback.interface';
 
 export async function fetchQuestionnaire(
   inputParameters: InputParameters | QuestionnaireResponse,
   questionnaireResponse: QuestionnaireResponse,
-  fetchQuestionnaireCallback: FetchResourceCallback,
-  fetchResourceRequestConfig: FetchResourceRequestConfig
+  fetchQuestionnaireCallback: FetchQuestionnaireCallback,
+  fetchQuestionnaireRequestConfig: FetchQuestionnaireRequestConfig
 ): Promise<Questionnaire | OperationOutcome> {
   // Check if we have a questionnaire parameter that provides us the Questionnaire resource upfront
   if (inputParameters.resourceType === 'Parameters') {
@@ -55,7 +55,7 @@ export async function fetchQuestionnaire(
   const query = `Questionnaire?url=${questionnaireCanonical}`;
   const response: Questionnaire | Bundle | OperationOutcome = await fetchQuestionnaireCallback(
     query,
-    fetchResourceRequestConfig
+    fetchQuestionnaireRequestConfig
   );
 
   if (response.resourceType === 'Questionnaire') {

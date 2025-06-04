@@ -23,7 +23,13 @@ import type {
   InputParameters,
   OutputParameters
 } from '../interfaces';
-import type { Encounter, OperationOutcome, OperationOutcomeIssue, Reference } from 'fhir/r4';
+import type {
+  Encounter,
+  FhirResource,
+  OperationOutcome,
+  OperationOutcomeIssue,
+  Reference
+} from 'fhir/r4';
 import { fetchQuestionnaire } from '../api/fetchQuestionnaire';
 import { isSubjectParameter } from './index';
 import { createFhirPathContext } from './createFhirPathContext';
@@ -33,7 +39,7 @@ import { sortResourceArrays } from './sortResourceArrays';
 import { constructResponse } from './constructResponse';
 import { createOutputParameters } from './createOutputParameters';
 import { removeEmptyAnswersFromResponse } from './removeEmptyAnswers';
-import { isEncounterContextParameter } from './typePredicates';
+import { isEncounterContextParameter, isUserContextParameter } from './typePredicates';
 import { addDisplayToInitialExpressionsCodings } from './addDisplayToCodings';
 
 /**
@@ -67,6 +73,8 @@ export async function populate(
 
   const subjectReference = parameters.parameter.find((param) => isSubjectParameter(param))
     ?.valueReference as Reference;
+  const user = parameters.parameter.find((param) => isUserContextParameter(param))?.part?.[1]
+    .resource as FhirResource | undefined;
   const encounter = parameters.parameter.find((param) => isEncounterContextParameter(param))
     ?.part?.[1].resource as Encounter | undefined;
 
@@ -117,6 +125,7 @@ export async function populate(
       initialExpressions: completeInitialExpressions,
       itemPopulationContexts: evaluatedItemPopulationContexts
     },
+    user,
     encounter,
     fetchTerminologyCallback,
     fetchTerminologyRequestConfig

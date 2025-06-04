@@ -30,7 +30,7 @@ interface ExtractMenuProps {
   isExtracting: boolean;
   onObservationExtract: () => void;
   onStructureMapExtract: () => void;
-  onTemplateExtract: () => void;
+  onTemplateExtract: (modifiedOnly: boolean) => void;
 }
 
 function ExtractMenu(props: ExtractMenuProps) {
@@ -120,13 +120,23 @@ function ExtractMenu(props: ExtractMenuProps) {
         </Tooltip>
         <MenuItem
           onClick={() => {
-            onTemplateExtract();
+            onTemplateExtract(false);
+            handleClose();
+          }}>
+          <ListItemIcon>
+            <Iconify icon="mdi:file-document" />
+          </ListItemIcon>
+          <ListItemText>Template-based $extract</ListItemText>
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            onTemplateExtract(true);
             handleClose();
           }}>
           <ListItemIcon>
             <Iconify icon="mdi:file-document-edit" />
           </ListItemIcon>
-          <ListItemText>Template-based $extract</ListItemText>
+          <ListItemText>Template-based $extract (modified only)</ListItemText>
         </MenuItem>
       </Menu>
 

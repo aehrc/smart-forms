@@ -18,9 +18,7 @@
 import React from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
-import SingleItem from '../SingleItem/SingleItem';
 import { getQrItemsIndex } from '../../../utils/mapItem';
-import { StandardTableCell } from './Table.styles';
 import type {
   PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
@@ -28,6 +26,8 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import { extendItemPath } from '../../../utils/itemPath';
 import type { ItemPath } from '../../../interfaces/itemPath.interface';
+import { SingleItem } from '../SingleItem';
+import { StandardTableCell } from './Table.styles';
 
 interface GroupTableRowCellsProps
   extends PropsWithQrItemChangeHandler,
@@ -36,10 +36,19 @@ interface GroupTableRowCellsProps
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
   qItemsIndexMap: Record<string, number>;
+  visibleItemLabels: string[];
 }
 
 function GroupTableRowCells(props: GroupTableRowCellsProps) {
-  const { qItem, qrItem, qItemsIndexMap, itemPath, parentIsReadOnly, onQrItemChange } = props;
+  const {
+    qItem,
+    qrItem,
+    qItemsIndexMap,
+    visibleItemLabels,
+    itemPath,
+    parentIsReadOnly,
+    onQrItemChange
+  } = props;
 
   const rowItems = qItem.item;
   const row = qrItem && qrItem.item ? qrItem : createEmptyQrGroup(qItem);
@@ -65,12 +74,18 @@ function GroupTableRowCells(props: GroupTableRowCellsProps) {
       {rowItems.map((rowItem, index) => {
         const qrItem = qrItemsByIndex[index];
 
+        // Something went wrong here
         if (Array.isArray(qrItem)) {
           return null;
         }
 
+        // If the cell is not visible, skip rendering it
+        if (!visibleItemLabels.includes(rowItem.text ?? '')) {
+          return null;
+        }
+
         return (
-          <StandardTableCell key={index} numOfColumns={rowItems.length}>
+          <StandardTableCell key={index} numOfColumns={visibleItemLabels.length}>
             <SingleItem
               key={rowItem.linkId}
               qItem={rowItem}

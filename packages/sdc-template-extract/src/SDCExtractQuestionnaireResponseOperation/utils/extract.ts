@@ -1,8 +1,8 @@
 import type { InputParameters } from '../interfaces/inputParameters.interface';
 import type { OutputParameters, TemplateExtractDebugInfo } from '../interfaces';
 import type {
-  FetchResourceCallback,
-  FetchResourceRequestConfig
+  FetchQuestionnaireCallback,
+  FetchQuestionnaireRequestConfig
 } from '../interfaces/callback.interface';
 import type { OperationOutcome, OperationOutcomeIssue, QuestionnaireResponse } from 'fhir/r4';
 import { getQuestionnaireResponse } from './getQuestionnaireResponse';
@@ -15,14 +15,15 @@ import { allocateIdsForExtract } from './extractAllocateId';
 import { buildTransactionBundle } from './buildBundle';
 import { createOutputParameters } from './createOutputParameters';
 import { createFhirPathContext } from './createFhirPathContext';
+import { filterResources } from './filterResources';
 
 export async function extract(
-  parameters: InputParameters | QuestionnaireResponse,
-  fetchResourceCallback: FetchResourceCallback,
-  fetchResourceRequestConfig: FetchResourceRequestConfig
+  inputParameters: InputParameters | QuestionnaireResponse,
+  fetchQuestionnaireCallback: FetchQuestionnaireCallback,
+  fetchQuestionnaireRequestConfig: FetchQuestionnaireRequestConfig
 ): Promise<OutputParameters | OperationOutcome> {
   // Get QuestionnaireResponse from input parameters
-  const questionnaireResponse = getQuestionnaireResponse(parameters);
+  const questionnaireResponse = getQuestionnaireResponse(inputParameters);
   if (questionnaireResponse.resourceType === 'OperationOutcome') {
     // Return as FHIR OperationOutcome
     return questionnaireResponse;
@@ -30,10 +31,10 @@ export async function extract(
 
   // Get Questionnaire from input parameters or from QuestionnaireResponse.questionnaire
   const questionnaire = await fetchQuestionnaire(
-    parameters,
+    inputParameters,
     questionnaireResponse,
-    fetchResourceCallback,
-    fetchResourceRequestConfig
+    fetchQuestionnaireCallback,
+    fetchQuestionnaireRequestConfig
   );
   if (questionnaire.resourceType === 'OperationOutcome') {
     // Return as FHIR OperationOutcome
@@ -92,9 +93,20 @@ export async function extract(
     populateIntoTemplates(questionnaireResponse, containedTemplateMap, fhirPathContext);
   combinedWarnings.push(...populateIntoTemplateWarnings);
 
+  // Filter out resources based on two criteria:
+  // 1. Ensure FHIRPatch "value" part has value[x] field.
+  // 2. If a comparison-source-response (i.e. a pre-populated questionnaireResponse) is provided, only include changes compared to that response.
+  const filteredExtractedResourceMap = filterResources(
+    extractedResourceMap,
+    containedTemplateMap,
+    templateIdToExtractPaths,
+    fhirPathContext,
+    inputParameters
+  );
+
   // Build transaction bundle with extracted resources
   const { outputBundle, templateIdToExtractPathTuples } = buildTransactionBundle(
-    extractedResourceMap,
+    filteredExtractedResourceMap,
     containedTemplateMap,
     fhirPathContext,
     templateIdToExtractPaths

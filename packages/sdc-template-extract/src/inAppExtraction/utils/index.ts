@@ -15,20 +15,5 @@
  * limitations under the License.
  */
 
-export type {
-  OutputParameters,
-  ReturnParameter,
-  IssuesParameter,
-  CustomDebugInfoParameter
-} from './outputParameters.interface';
-export type { TemplateExtractDebugInfo } from './customDebugInfo.interface';
-export type {
-  TemplateExtractPathJsObject,
-  TemplateExtractValueEvaluation,
-  TemplateExtractPathJsObjectTuple
-} from './templateExtractPath.interface';
-export type { InputParameters } from './inputParameters.interface';
-export type {
-  FetchQuestionnaireRequestConfig,
-  FetchQuestionnaireCallback
-} from './callback.interface';
+export { inAppExtract } from './extract';
+export { extractResultIsOperationOutcome, objIsTemplateExtractDebugInfo } from './typePredicates';

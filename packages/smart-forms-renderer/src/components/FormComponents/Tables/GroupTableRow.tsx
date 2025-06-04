@@ -54,6 +54,7 @@ interface GroupTableRowProps
   itemIsSelected: boolean;
   selectedIds: string[];
   qItemsIndexMap: Record<string, number>;
+  visibleItemLabels: string[];
   onRowChange: (
     newQrRow: QuestionnaireResponseItem,
     index: number,
@@ -76,6 +77,7 @@ function GroupTableRow(props: GroupTableRowProps) {
     tableRows,
     itemIsSelected,
     qItemsIndexMap,
+    visibleItemLabels,
     itemPath,
     showMinimalView,
     onRowChange,
@@ -121,6 +123,7 @@ function GroupTableRow(props: GroupTableRowProps) {
               qItem={tableQItem}
               qrItem={answeredQrItem}
               qItemsIndexMap={qItemsIndexMap}
+              visibleItemLabels={visibleItemLabels}
               itemPath={itemPath}
               parentIsReadOnly={readOnly}
               onQrItemChange={(newQrGroup) => onRowChange(newQrGroup, index)}
@@ -166,6 +169,7 @@ function GroupTableRow(props: GroupTableRowProps) {
         qItem={tableQItem}
         qrItem={answeredQrItem}
         qItemsIndexMap={qItemsIndexMap}
+        visibleItemLabels={visibleItemLabels}
         itemPath={itemPath}
         parentIsReadOnly={readOnly}
         onQrItemChange={(newQrGroup) => onRowChange(newQrGroup, index)}

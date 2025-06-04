@@ -7,6 +7,7 @@ import {
   isIfNoneExistExtensionSlice,
   isIfNoneMatchExtensionSlice,
   isResourceIdExtensionSlice,
+  isResourceTypeExtensionSlice,
   isTemplateExtensionSlice
 } from './typePredicates';
 import { createInvalidWarningIssue } from './operationOutcome';
@@ -119,6 +120,10 @@ export function hasTemplateExtractRefExtension(item: QuestionnaireItem | Questio
 
     if (isIfNoneExistExtensionSlice(slice)) {
       templateExtractRef.ifNoneExist = slice.valueString;
+    }
+
+    if (isResourceTypeExtensionSlice(slice)) {
+      templateExtractRef.resourceType = slice.valueString;
     }
   }
 

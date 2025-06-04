@@ -15,5 +15,42 @@
  * limitations under the License.
  */
 
-export * from './SDCExtractQuestionnaireResponseOperation';
-export * from './inAppExtraction';
+// Export inAppExtraction interfaces
+export type {
+  QuestionnaireOrCallback,
+  FetchQuestionnaireResolver,
+  ExtractResult,
+  InAppExtractOutput
+} from './inAppExtraction';
+
+// Export inAppExtraction utils
+export {
+  inAppExtract,
+  extractResultIsOperationOutcome,
+  objIsTemplateExtractDebugInfo
+} from './inAppExtraction';
+
+// Export SDCExtractQuestionnaireResponseOperation interfaces
+export type {
+  OutputParameters,
+  ReturnParameter,
+  IssuesParameter,
+  CustomDebugInfoParameter,
+  TemplateExtractDebugInfo,
+  TemplateExtractPathJsObject,
+  TemplateExtractValueEvaluation,
+  TemplateExtractPathJsObjectTuple,
+  InputParameters,
+  FetchQuestionnaireRequestConfig,
+  FetchQuestionnaireCallback
+} from './SDCExtractQuestionnaireResponseOperation';
+
+// Export SDCExtractQuestionnaireResponseOperation utils
+export {
+  extract,
+  createInputParameters,
+  logTemplateExtractPathMapFull,
+  logTemplateExtractPathMapJsObjectFull,
+  logTemplateExtractPathMapResults,
+  logTemplateExtractPathMapJsObjectResults
+} from './SDCExtractQuestionnaireResponseOperation';

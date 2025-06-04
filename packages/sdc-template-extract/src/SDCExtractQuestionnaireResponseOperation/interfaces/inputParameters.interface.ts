@@ -30,9 +30,14 @@ export interface InputParameters extends Parameters {
   parameter: InputParamArray;
 }
 
-export type InputParamArray =
-  | [QuestionnaireResponseParameter, CustomQuestionnaireParameter]
-  | [QuestionnaireResponseParameter];
+type InputParamOptionalExtras =
+  | []
+  | [CustomQuestionnaireParameter]
+  | [CustomComparisonSourceResponseParameter]
+  | [CustomQuestionnaireParameter, CustomComparisonSourceResponseParameter]
+  | [CustomComparisonSourceResponseParameter, CustomQuestionnaireParameter];
+
+export type InputParamArray = [QuestionnaireResponseParameter, ...InputParamOptionalExtras];
 
 export interface QuestionnaireResponseParameter extends ParametersParameter {
   name: 'questionnaire-response';
@@ -43,4 +48,10 @@ export interface QuestionnaireResponseParameter extends ParametersParameter {
 export interface CustomQuestionnaireParameter extends ParametersParameter {
   name: 'questionnaire';
   resource: Questionnaire;
+}
+
+// This is used for providing a pre-populated QuestionnaireResponse to perform comparisons, this parameter does not exist in the FHIR spec
+export interface CustomComparisonSourceResponseParameter extends ParametersParameter {
+  name: 'comparison-source-response';
+  resource: QuestionnaireResponse;
 }

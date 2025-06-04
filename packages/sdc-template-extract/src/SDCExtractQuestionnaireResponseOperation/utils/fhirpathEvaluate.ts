@@ -3,6 +3,7 @@ import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import type { OperationOutcomeIssue } from 'fhir/r4';
 import { createInvalidWarningIssue } from './operationOutcome';
 import { normaliseExpression } from './expressionManipulation';
+import type { FhirPathEvalResult } from '../interfaces/templateExtractPath.interface';
 
 /**
  * Input parameters for evaluating a FHIRPath expression.
@@ -22,7 +23,7 @@ export interface FhirPathEvaluateParams {
  * @param params - Object containing the FHIR resource (`fhirData`) and the FHIRPath expression (`path`).
  * @returns The result of the FHIRPath evaluation as an array of matched values.
  */
-export function fhirPathEvaluate(params: FhirPathEvaluateParams): any[] {
+export function fhirPathEvaluate(params: FhirPathEvaluateParams): FhirPathEvalResult {
   const { fhirData, path, envVars, warnings } = params;
   try {
     return fhirpath.evaluate(
