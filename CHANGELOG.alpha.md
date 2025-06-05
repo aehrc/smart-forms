@@ -8,16 +8,25 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+
+## [1.0.0-alpha.62] - 2025-06-05
+### Added
+- Added "X" clear buttons to text-based input fields, update renderer to alpha.62.
+
+### Fixed
+- Fixed an issue where items in a group table cell doesn't use all available space.
+- Centred group table headers.
+
 ## [1.0.0-alpha.61] - 2025-06-05
 ### Fixed
 - Fixed colour differences between readOnly and editable text-based input fields.
-- Fix an issue where group table and grid child items can be edited even when the parent group is readOnly.
+- Fixed an issue where group table and grid child items can be edited even when the parent group is readOnly.
 - Removed add, remove, drag, check interactions for readOnly group tables.
 - Prevent rendering of "Clear" button for radio and checkbox items when they are readOnly.
-- Centre cell content in group table and grid table.
+- Centred cell content in group table and grid table.
 
 ### Changed
-- Change all usages of MUI LoadingButton to Button - see https://mui.com/material-ui/migration/upgrade-to-v6/#button-with-loading-state
+- Changed all usages of MUI LoadingButton to Button - see https://mui.com/material-ui/migration/upgrade-to-v6/#button-with-loading-state.
 
 ## [1.0.0-alpha.60] - 2025-06-04
 ### Fixed
@@ -32,7 +41,7 @@ WARNING: Alpha releases are not stable and may contain breaking changes. Changes
 - Fixed number of columns shown and widths when a group table has a hidden item.
 - Updated sdc-populate to v4.3.0. Changes as follows:
 - Fixed an [issue](https://github.com/aehrc/smart-forms/issues/1258) where a repeating group using ItemPopulationContext only looks at the first item in the group to determine the itemPopulationContext used.
-- Include author and authored property when creating a QuestionnaireResponse.
+- Included author and authored property when creating a QuestionnaireResponse.
 
 ## [1.0.0-alpha.57] - 2025-05-27
 ### Changed
