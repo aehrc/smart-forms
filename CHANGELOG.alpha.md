@@ -8,6 +8,9 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.63] - 2025-06-05
+### Fixed
+- Fixed an issue where group table cells content is not centre-aligned.
 
 ## [1.0.0-alpha.62] - 2025-06-05
 ### Added

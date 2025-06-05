@@ -88,20 +88,18 @@ function GroupTableRowCells(props: GroupTableRowCellsProps) {
         return (
           <StandardTableCell key={index} numOfColumns={visibleItemLabels.length}>
             <Box display="flex" alignItems="center" justifyContent="center">
-              <Box flexGrow={1}>
-                <SingleItem
-                  key={rowItem.linkId}
-                  qItem={rowItem}
-                  qrItem={qrItem ?? null}
-                  itemPath={extendItemPath(itemPath, rowItem.linkId)}
-                  isRepeated={true}
-                  isTabled={true}
-                  groupCardElevation={1}
-                  showMinimalView={true}
-                  parentIsReadOnly={parentIsReadOnly}
-                  onQrItemChange={handleQrRowItemChange}
-                />
-              </Box>
+              <SingleItem
+                key={rowItem.linkId}
+                qItem={rowItem}
+                qrItem={qrItem ?? null}
+                itemPath={extendItemPath(itemPath, rowItem.linkId)}
+                isRepeated={true}
+                isTabled={true}
+                groupCardElevation={1}
+                showMinimalView={true}
+                parentIsReadOnly={parentIsReadOnly}
+                onQrItemChange={handleQrRowItemChange}
+              />
             </Box>
           </StandardTableCell>
         );
