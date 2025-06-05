@@ -33,7 +33,13 @@ const questionnaireStoreStatePropertyNames: string[] = [
   'readOnly'
 ];
 
-function QuestionnaireStoreViewer() {
+interface QuestionnaireStoreViewerProps {
+  statePropNameFilter: string;
+}
+
+function QuestionnaireStoreViewer(props: QuestionnaireStoreViewerProps) {
+  const { statePropNameFilter } = props;
+
   const [selectedProperty, setSelectedProperty] = useState('sourceQuestionnaire');
   const [viewMode, setViewMode] = useState<'text' | 'jsonTree' | 'table'>('text');
 
@@ -51,6 +57,7 @@ function QuestionnaireStoreViewer() {
     <>
       <GenericStatePropertyPicker
         statePropertyNames={questionnaireStoreStatePropertyNames}
+        statePropNameFilter={statePropNameFilter}
         selectedProperty={selectedProperty}
         onSelectProperty={setSelectedProperty}
       />

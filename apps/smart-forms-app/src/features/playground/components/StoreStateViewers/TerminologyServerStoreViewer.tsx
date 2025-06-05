@@ -5,7 +5,13 @@ import useShowQuestionnaireResponseStoreProperty from '../../hooks/useShowQuesti
 
 const terminologyServerStorePropertyNames: string[] = ['url'];
 
-function TerminologyServerStoreViewer() {
+interface TerminologyServerStoreViewerProps {
+  statePropNameFilter: string;
+}
+
+function TerminologyServerStoreViewer(props: TerminologyServerStoreViewerProps) {
+  const { statePropNameFilter } = props;
+
   const [selectedProperty, setSelectedProperty] = useState('url');
   const [viewMode, setViewMode] = useState<'text' | 'jsonTree' | 'table'>('text');
 
@@ -23,6 +29,7 @@ function TerminologyServerStoreViewer() {
     <>
       <GenericStatePropertyPicker
         statePropertyNames={terminologyServerStorePropertyNames}
+        statePropNameFilter={statePropNameFilter}
         selectedProperty={selectedProperty}
         onSelectProperty={setSelectedProperty}
       />

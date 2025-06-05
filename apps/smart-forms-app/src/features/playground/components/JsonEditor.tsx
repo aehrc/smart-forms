@@ -21,10 +21,9 @@ import type { editor } from 'monaco-editor';
 import { Box, Button, Divider, IconButton, Stack, Tooltip } from '@mui/material';
 import type { StateStore } from './StoreStateViewer.tsx';
 import StoreStateViewer from './StoreStateViewer.tsx';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import ToggleButton from '@mui/material/ToggleButton';
 import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft';
 import PlaygroundEnableWhenToggle from './PlaygroundEnableWhenToggle.tsx';
+import PlaygroundAdvancedPropsMenu from './PlaygroundAdvancedPropsMenu.tsx';
 
 interface JsonEditorProps {
   jsonString: string;
@@ -47,6 +46,7 @@ function JsonEditor(props: JsonEditorProps) {
 
   const [view, setView] = useState<'editor' | 'storeState'>('editor');
   const [selectedStore, setSelectedStore] = useState<StateStore>('questionnaireResponseStore');
+  const [statePropNameFilter, setstatePropNameFilter] = useState<string>('');
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
   function handleEditorChange(value: string | undefined) {
@@ -95,33 +95,13 @@ function JsonEditor(props: JsonEditorProps) {
                 Advanced props
               </Button>
             ) : (
-              <Stack direction="row" alignItems="center" gap={0.55}>
-                <Button
-                  onClick={() => {
-                    setView('editor');
-                  }}>
-                  Show editor
-                </Button>
-                <ToggleButtonGroup
-                  size="small"
-                  color="primary"
-                  value={selectedStore}
-                  sx={{ height: 32 }}
-                  exclusive
-                  data-test="store-state-toggle-playground"
-                  onChange={(_, newSelectedStore) => {
-                    if (newSelectedStore === null) {
-                      return;
-                    }
-
-                    setSelectedStore(newSelectedStore);
-                  }}>
-                  <ToggleButton value="questionnaireStore">Q</ToggleButton>
-                  <ToggleButton value="questionnaireResponseStore">QR</ToggleButton>
-                  <ToggleButton value="terminologyServerStore">Terminology</ToggleButton>
-                  <ToggleButton value="extractDebugger">Extract</ToggleButton>
-                </ToggleButtonGroup>
-              </Stack>
+              <PlaygroundAdvancedPropsMenu
+                selectedStore={selectedStore}
+                statePropNameFilter={statePropNameFilter}
+                onSetView={setView}
+                onSetSelectedStore={(selectedStore) => setSelectedStore(selectedStore)}
+                onSetstatePropNameFilter={(filterString) => setstatePropNameFilter(filterString)}
+              />
             )}
             <Box flexGrow={1} />
             <PlaygroundEnableWhenToggle />
@@ -166,10 +146,16 @@ function JsonEditor(props: JsonEditorProps) {
             }}
           />
         </Box>
-        <Box sx={{ display: view === 'storeState' ? 'block' : 'none', height: '100%' }}>
+        <Box
+          sx={{
+            display: view === 'storeState' ? 'block' : 'none',
+            height: '100%',
+            marginLeft: '1px'
+          }}>
           <StoreStateViewer
             selectedStore={selectedStore}
             sourceFhirServerUrl={sourceFhirServerUrl}
+            statePropNameFilter={statePropNameFilter}
           />
         </Box>
       </Box>

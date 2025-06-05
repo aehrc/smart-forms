@@ -22,10 +22,12 @@ const extractDebuggerPropertyNames: string[] = [
 
 interface ExtractDebuggerViewerProps {
   sourceFhirServerUrl: string;
+  statePropNameFilter: string;
 }
 
 function ExtractDebuggerViewer(props: ExtractDebuggerViewerProps) {
-  const { sourceFhirServerUrl } = props;
+  const { sourceFhirServerUrl, statePropNameFilter } = props;
+
   const [selectedProperty, setSelectedProperty] = useState('templateExtractResult');
   const [viewMode, setViewMode] = useState<'text' | 'jsonTree' | 'table'>('text');
 
@@ -87,6 +89,7 @@ function ExtractDebuggerViewer(props: ExtractDebuggerViewerProps) {
     <>
       <GenericStatePropertyPicker
         statePropertyNames={extractDebuggerPropertyNames}
+        statePropNameFilter={statePropNameFilter}
         selectedProperty={selectedProperty}
         onSelectProperty={setSelectedProperty}
       />
