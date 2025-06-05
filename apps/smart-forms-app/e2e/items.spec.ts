@@ -21,10 +21,15 @@ import { PLAYWRIGHT_APP_URL, PLAYWRIGHT_FORMS_SERVER_URL } from './globals';
 test.beforeEach(async ({ page }) => {
   // Go to playground
   const fetchQPromise = page.waitForResponse(
-    `${PLAYWRIGHT_FORMS_SERVER_URL}/Questionnaire?_count=100&_sort=-date&`
+    (response) =>
+      response.url().startsWith(`${PLAYWRIGHT_FORMS_SERVER_URL}/Questionnaire`) &&
+      response.url().includes('_sort=-date')
   );
+
   const launchUrl = `${PLAYWRIGHT_APP_URL}/playground`;
+  console.log('Playwright navigating to: ', launchUrl);
   await page.goto(launchUrl);
+
   const fetchQResponse = await fetchQPromise;
   expect(fetchQResponse.status()).toBe(200);
 });

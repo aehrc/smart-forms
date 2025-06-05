@@ -72,7 +72,7 @@ function QuestionnaireTableView(props: QuestionnaireTableViewProps) {
         onSearch={onSearch}
       />
 
-      <TableContainer sx={{ minWidth: 575 }}>
+      <TableContainer sx={{ minWidth: 575, boxShadow: 'none' }}>
         <MuiTable stickyHeader>
           <DashboardTableHead headers={headers} />
           <TableBody>

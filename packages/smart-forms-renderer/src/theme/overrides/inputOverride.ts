@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
+import type { Theme } from '@mui/material/styles';
 import { alpha } from '@mui/material/styles';
-import type { Theme } from '@mui/material';
 
-export default function Input(theme: Theme) {
+export function inputOverride(theme: Theme) {
   return {
     MuiInputBase: {
       styleOverrides: {
@@ -69,11 +69,25 @@ export default function Input(theme: Theme) {
       styleOverrides: {
         root: {
           '& .MuiOutlinedInput-notchedOutline': {
-            borderColor: alpha(theme.palette.grey[500], 0.32)
+            borderColor: alpha(theme.palette.grey[500], 0.8)
           },
           '&.Mui-disabled': {
             '& .MuiOutlinedInput-notchedOutline': {
               borderColor: theme.palette.action.disabledBackground
+            }
+          },
+          '&.Mui-readOnly': {
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'rgb(220, 223, 228)'
+            },
+            '&:hover .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'rgb(220, 223, 228)'
+            },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'rgb(220, 223, 228)'
+            },
+            '&.Mui-visited .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'rgb(220, 223, 228)'
             }
           }
         }

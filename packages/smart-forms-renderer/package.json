@@ -1,6 +1,6 @@
 {
   "name": "@aehrc/smart-forms-renderer",
-  "version": "1.0.0-alpha.60",
+  "version": "1.0.0-alpha.61",
   "description": "FHIR Structured Data Captured (SDC) rendering engine for Smart Forms",
   "main": "lib/index.js",
   "scripts": {
@@ -34,9 +34,9 @@
     "@fontsource/material-icons": "^5.2.5",
     "@fontsource/roboto": "^5.2.5",
     "@iconify/react": "^5.2.1",
-    "@mui/icons-material": "^7.0.2",
-    "@mui/lab": "^7.0.0-beta.11",
-    "@mui/material": "^7.0.2",
+    "@mui/icons-material": "^7.1.1",
+    "@mui/lab": "^7.0.0-beta.13",
+    "@mui/material": "^7.1.1",
     "@mui/x-date-pickers": "^7.28.3",
     "@tanstack/react-query": "^5.72.1",
     "dayjs": "^1.11.13",

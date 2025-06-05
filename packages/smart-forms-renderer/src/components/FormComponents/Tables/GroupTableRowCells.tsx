@@ -28,6 +28,7 @@ import { extendItemPath } from '../../../utils/itemPath';
 import type { ItemPath } from '../../../interfaces/itemPath.interface';
 import { SingleItem } from '../SingleItem';
 import { StandardTableCell } from './Table.styles';
+import Box from '@mui/material/Box';
 
 interface GroupTableRowCellsProps
   extends PropsWithQrItemChangeHandler,
@@ -86,18 +87,20 @@ function GroupTableRowCells(props: GroupTableRowCellsProps) {
 
         return (
           <StandardTableCell key={index} numOfColumns={visibleItemLabels.length}>
-            <SingleItem
-              key={rowItem.linkId}
-              qItem={rowItem}
-              qrItem={qrItem ?? null}
-              itemPath={extendItemPath(itemPath, rowItem.linkId)}
-              isRepeated={true}
-              isTabled={true}
-              groupCardElevation={1}
-              showMinimalView={true}
-              parentIsReadOnly={parentIsReadOnly}
-              onQrItemChange={handleQrRowItemChange}
-            />
+            <Box display="flex" alignItems="center" justifyContent="center">
+              <SingleItem
+                key={rowItem.linkId}
+                qItem={rowItem}
+                qrItem={qrItem ?? null}
+                itemPath={extendItemPath(itemPath, rowItem.linkId)}
+                isRepeated={true}
+                isTabled={true}
+                groupCardElevation={1}
+                showMinimalView={true}
+                parentIsReadOnly={parentIsReadOnly}
+                onQrItemChange={handleQrRowItemChange}
+              />
+            </Box>
           </StandardTableCell>
         );
       })}

@@ -8,6 +8,16 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.61] - 2025-06-05
+### Fixed
+- Fixed colour differences between readOnly and editable text-based input fields.
+- Fix an issue where group table and grid child items can be edited even when the parent group is readOnly.
+- Removed add, remove, drag, check interactions for readOnly group tables.
+- Prevent rendering of "Clear" button for radio and checkbox items when they are readOnly.
+- Centre cell content in group table and grid table.
+
+### Changed
+- Change all usages of MUI LoadingButton to Button - see https://mui.com/material-ui/migration/upgrade-to-v6/#button-with-loading-state
 
 ## [1.0.0-alpha.60] - 2025-06-04
 ### Fixed

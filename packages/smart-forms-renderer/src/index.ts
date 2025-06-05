@@ -101,7 +101,19 @@ export {
 } from './utils';
 
 // theme provider exports
-export { RendererThemeProvider, themeOptions } from './theme';
+export {
+  RendererThemeProvider,
+  rendererThemeComponentOverrides,
+  accordionOverride,
+  autocompleteOverride,
+  buttonOverride,
+  cardOverride,
+  inputOverride,
+  paperOverride,
+  speedDialOverride,
+  tableOverride,
+  rendererThemeOptions
+} from './theme';
 
 // wrapper exports - only for smartforms.csiro.au/standalone use
 export type { InitialiseFormWrapperProps } from './stories/storybookWrappers';

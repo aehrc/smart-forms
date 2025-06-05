@@ -30,7 +30,7 @@ function GenericViewer(props: GenericViewerProps) {
   }
 
   return (
-    <Stack sx={{ height: '90%' }}>
+    <Stack sx={{ height: 'calc(100% - 68px)' }}>
       <Stack
         direction="row"
         justifyContent="space-between"

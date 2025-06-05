@@ -15,16 +15,15 @@
  * limitations under the License.
  */
 
-import type { Theme } from '@mui/material/styles';
-
-export default function Table(theme: Theme) {
+export function paperOverride() {
   return {
-    MuiTableCell: {
+    MuiPaper: {
+      defaultProps: {
+        elevation: 0
+      },
       styleOverrides: {
-        head: {
-          color: theme.palette.text.secondary,
-          backgroundColor: '#F4F6F8',
-          borderBottom: '1px solid #e5e7eb'
+        root: {
+          backgroundImage: 'none'
         }
       }
     }

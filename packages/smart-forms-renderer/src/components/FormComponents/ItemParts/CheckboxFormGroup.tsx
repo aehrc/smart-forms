@@ -43,7 +43,6 @@ function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const inputsFlexGrow = useRendererStylingStore.use.inputsFlexGrow();
-  const hideClearButton = useRendererStylingStore.use.hideClearButton();
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
@@ -84,9 +83,7 @@ function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
           <FadingCheckIcon fadeIn={expressionUpdated} disabled={readOnly} />
         </Box>
 
-        {hideClearButton ? null : (
-          <ClearInputButton buttonShown={!answersEmpty} readOnly={readOnly} onClear={onClear} />
-        )}
+        <ClearInputButton buttonShown={!answersEmpty} readOnly={readOnly} onClear={onClear} />
       </Box>
 
       {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}

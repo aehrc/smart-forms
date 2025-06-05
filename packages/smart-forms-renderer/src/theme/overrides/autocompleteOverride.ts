@@ -17,18 +17,12 @@
 
 import type { Theme } from '@mui/material/styles';
 
-export default function SpeedDial(theme: Theme) {
+export function autocompleteOverride(theme: Theme) {
   return {
-    MuiSpeedDialAction: {
+    MuiAutocomplete: {
       styleOverrides: {
-        staticTooltipLabel: {
-          backgroundColor: theme.palette.grey[600],
-          color: theme.palette.common.white,
-          fontSize: theme.typography.subtitle2.fontSize,
-          fontWeight: theme.typography.subtitle2.fontWeight,
-          boxShadow: theme.shadows[8],
-          maxWidth: 200,
-          whiteSpace: 'nowrap'
+        paper: {
+          boxShadow: theme.shadows[12]
         }
       }
     }

@@ -32,6 +32,7 @@ import type {
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
 import { extendItemPath } from '../../../utils/itemPath';
+import { Box } from '@mui/material';
 
 interface GridTableProps
   extends PropsWithQrItemChangeHandler,
@@ -67,7 +68,9 @@ function GridTable(props: GridTableProps) {
           <HeaderTableCell />
           {columnLabels.map((label) => (
             <HeaderTableCell key={label} size="medium" sx={{ ...minimalViewHeaderCellSx }}>
-              {label}
+              <Box display="flex" alignItems="center" justifyContent="center">
+                {label}
+              </Box>
             </HeaderTableCell>
           ))}
           <TableCell />

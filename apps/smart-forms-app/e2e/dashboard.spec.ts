@@ -18,15 +18,20 @@
 import { expect, test } from '@playwright/test';
 import { LAUNCH_PARAM_WITHOUT_Q, PLAYWRIGHT_APP_URL, PLAYWRIGHT_FORMS_SERVER_URL } from './globals';
 
-const questionnaireTitle = 'Aboriginal and Torres Strait Islander Health Check';
+const questionnaireTitle = 'Dev715';
 
 test.beforeEach(async ({ page }) => {
   // Launch app without questionnaire context
   const fetchQPromise = page.waitForResponse(
-    `${PLAYWRIGHT_FORMS_SERVER_URL}/Questionnaire?_count=100&_sort=-date&`
+    (response) =>
+      response.url().startsWith(`${PLAYWRIGHT_FORMS_SERVER_URL}/Questionnaire`) &&
+      response.url().includes('_sort=-date')
   );
+
   const launchUrl = `${PLAYWRIGHT_APP_URL}/launch?iss=https%3A%2F%2Fproxy.smartforms.io%2Fv%2Fr4%2Ffhir&launch=${LAUNCH_PARAM_WITHOUT_Q}`;
+  console.log('Playwright navigating to: ', launchUrl);
   await page.goto(launchUrl);
+
   expect((await fetchQPromise).status()).toBe(200);
 
   // Wait for responses to load

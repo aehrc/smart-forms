@@ -15,27 +15,25 @@
  * limitations under the License.
  */
 
-import Card from './Card';
-import Paper from './Paper';
-import Input from './Input';
-import Table from './Table';
-import Button from './Button';
-import Autocomplete from './Autocomplete';
-import Accordion from './Accordion';
-import SpeedDial from './SpeedDial';
 import type { Theme } from '@mui/material/styles';
+import { accordionOverride } from './accordionOverride';
+import { autocompleteOverride } from './autocompleteOverride';
+import { buttonOverride } from './buttonOverride';
+import { cardOverride } from './cardOverride';
+import { inputOverride } from './inputOverride';
+import { paperOverride } from './paperOverride';
+import { speedDialOverride } from './speedDialOverride';
+import { tableOverride } from './tableOverride';
 
-function ComponentsOverrides(theme: Theme) {
+export function rendererThemeComponentOverrides(theme: Theme) {
   return Object.assign(
-    Accordion(theme),
-    Card(theme),
-    Table(theme),
-    Input(theme),
-    Paper(),
-    Button(theme),
-    Autocomplete(theme),
-    SpeedDial(theme)
+    accordionOverride(theme),
+    autocompleteOverride(theme),
+    buttonOverride(theme),
+    cardOverride(theme),
+    inputOverride(theme),
+    paperOverride(),
+    speedDialOverride(theme),
+    tableOverride(theme)
   );
 }
-
-export default ComponentsOverrides;

@@ -28,7 +28,6 @@ import {
   IconButton,
   Tooltip
 } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
 import {
   removeEmptyAnswersFromResponse,
   useQuestionnaireResponseStore,
@@ -129,9 +128,9 @@ function TokenTimerDialog(props: TokenTimerDialogProps) {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <LoadingButton loading={isSaving} onClick={handleSave}>
+        <Button loading={isSaving} onClick={handleSave}>
           Save Progress
-        </LoadingButton>
+        </Button>
       </DialogActions>
     </Dialog>
   );

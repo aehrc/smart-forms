@@ -20,6 +20,7 @@ import { useQuery } from '@tanstack/react-query';
 import type { Bundle, Questionnaire } from 'fhir/r4';
 import { filterQuestionnaires, getFormsServerBundlePromise } from '../utils/dashboard.ts';
 import { useMemo } from 'react';
+import { NUM_OF_QUESTIONNAIRES_TO_FETCH } from '../../../globals.ts';
 
 interface useFetchQuestionnairesReturnParams {
   questionnaires: Questionnaire[];
@@ -36,7 +37,7 @@ function useFetchQuestionnaires(
   includeSubquestionnaires: boolean,
   minLengthToQuery?: number
 ): useFetchQuestionnairesReturnParams {
-  const numOfSearchEntries = 300;
+  const numOfSearchEntries = NUM_OF_QUESTIONNAIRES_TO_FETCH;
 
   let queryUrl = `/Questionnaire?_count=${numOfSearchEntries}&_sort=-date&`;
   if (debouncedInput) {

@@ -15,15 +15,20 @@
  * limitations under the License.
  */
 
-export default function Paper() {
+import type { Theme } from '@mui/material/styles';
+
+export function speedDialOverride(theme: Theme) {
   return {
-    MuiPaper: {
-      defaultProps: {
-        elevation: 0
-      },
+    MuiSpeedDialAction: {
       styleOverrides: {
-        root: {
-          backgroundImage: 'none'
+        staticTooltipLabel: {
+          backgroundColor: theme.palette.grey[600],
+          color: theme.palette.common.white,
+          fontSize: theme.typography.subtitle2.fontSize,
+          fontWeight: theme.typography.subtitle2.fontWeight,
+          boxShadow: theme.shadows[8],
+          maxWidth: 200,
+          whiteSpace: 'nowrap'
         }
       }
     }

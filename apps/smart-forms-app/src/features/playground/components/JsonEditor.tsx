@@ -18,11 +18,13 @@
 import Editor, { useMonaco } from '@monaco-editor/react';
 import { useState } from 'react';
 import type { editor } from 'monaco-editor';
-import { Box, Button, Divider, Stack } from '@mui/material';
+import { Box, Button, Divider, IconButton, Stack, Tooltip } from '@mui/material';
 import type { StateStore } from './StoreStateViewer.tsx';
 import StoreStateViewer from './StoreStateViewer.tsx';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
+import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft';
+import PlaygroundEnableWhenToggle from './PlaygroundEnableWhenToggle.tsx';
 
 interface JsonEditorProps {
   jsonString: string;
@@ -63,7 +65,11 @@ function JsonEditor(props: JsonEditorProps) {
 
   return (
     <Box height="100%">
-      <Stack direction="row" gap={0.5} sx={{ py: 0.25, px: 1, overflowX: 'auto' }}>
+      <Stack
+        direction="row"
+        alignItems="center"
+        gap={0.5}
+        sx={{ py: 0.25, px: 1, overflowX: 'auto' }}>
         <Button
           disabled={errorMessages.length > 0 || jsonString === ''}
           onClick={() => onBuildForm(jsonString)}>
@@ -86,7 +92,7 @@ function JsonEditor(props: JsonEditorProps) {
                 onClick={() => {
                   setView('storeState');
                 }}>
-                See advanced properties
+                Advanced props
               </Button>
             ) : (
               <Stack direction="row" alignItems="center" gap={0.55}>
@@ -118,38 +124,55 @@ function JsonEditor(props: JsonEditorProps) {
               </Stack>
             )}
             <Box flexGrow={1} />
+            <PlaygroundEnableWhenToggle />
             {view === 'editor' ? (
-              <Button
-                disabled={errorMessages.length > 0 || jsonString === ''}
-                onClick={() => {
-                  if (monaco) {
-                    const formattedJson = JSON.stringify(JSON.parse(jsonString), null, 2);
-                    const editor = monaco.editor.getModels()[0];
-                    editor.setValue(formattedJson);
-                  }
-                }}>
-                Format JSON
-              </Button>
+              <Tooltip title="Format JSON">
+                <span>
+                  <IconButton
+                    disabled={errorMessages.length > 0 || jsonString === ''}
+                    size="small"
+                    color="primary"
+                    onClick={() => {
+                      if (monaco) {
+                        const formattedJson = JSON.stringify(JSON.parse(jsonString), null, 2);
+                        const editor = monaco.editor.getModels()[0];
+                        editor.setValue(formattedJson);
+                      }
+                    }}>
+                    <FormatAlignLeftIcon fontSize="small" />
+                  </IconButton>
+                </span>
+              </Tooltip>
             ) : null}
           </>
         ) : null}
       </Stack>
       <Divider />
-      {view === 'editor' ? (
-        <Editor
-          height="100%"
-          defaultLanguage="json"
-          defaultValue="// alternatively, paste questionnaire JSON string here (only JSON is supported at the moment!)"
-          onChange={handleEditorChange}
-          value={jsonString}
-          onValidate={handleEditorValidation}
-          options={{
-            minimap: { enabled: false }
-          }}
-        />
-      ) : (
-        <StoreStateViewer selectedStore={selectedStore} sourceFhirServerUrl={sourceFhirServerUrl} />
-      )}
+      <Box sx={{ height: '100%' }}>
+        <Box
+          sx={{
+            display: view === 'editor' ? 'block' : 'none',
+            height: '100%'
+          }}>
+          <Editor
+            height="calc(100% - 40px)"
+            defaultLanguage="json"
+            defaultValue="// alternatively, paste questionnaire JSON string here (only JSON is supported!)"
+            onChange={handleEditorChange}
+            value={jsonString}
+            onValidate={handleEditorValidation}
+            options={{
+              minimap: { enabled: false }
+            }}
+          />
+        </Box>
+        <Box sx={{ display: view === 'storeState' ? 'block' : 'none', height: '100%' }}>
+          <StoreStateViewer
+            selectedStore={selectedStore}
+            sourceFhirServerUrl={sourceFhirServerUrl}
+          />
+        </Box>
+      </Box>
     </Box>
   );
 }

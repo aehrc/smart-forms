@@ -115,7 +115,7 @@ function GridGroup(props: GridGroupProps) {
             columnLabels={columnLabels}
             itemPath={itemPath}
             showMinimalView={showMinimalView}
-            parentIsReadOnly={parentIsReadOnly}
+            parentIsReadOnly={readOnly}
             onQrItemChange={handleRowChange}
           />
         </TableContainer>
@@ -145,7 +145,7 @@ function GridGroup(props: GridGroupProps) {
           qItemsIndexMap={qItemsIndexMap}
           columnLabels={columnLabels}
           itemPath={itemPath}
-          parentIsReadOnly={parentIsReadOnly}
+          parentIsReadOnly={readOnly}
           onQrItemChange={handleRowChange}
         />
       </TableContainer>
