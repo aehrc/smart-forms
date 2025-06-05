@@ -8,6 +8,15 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.64] - 2025-06-05
+### Fixed
+- Fixed an issue where cqfExpressions are not evaluated when the QuestionnaireResponse is first initialised.
+
+### Changed
+- Changed how additionalVariables in buildForm() (and it's variants) work. Instead of <name, extension obj> which doesn't provide much value, 
+  it now works more like a fhirPathContext <name, value> where `value` is the evaluated value from fhirpath.evaluate(). additionalVariables likely will come from a pre-population module (like sdc-populate) which then can be injected into the renderer's fhirPathContext.
+
+
 ## [1.0.0-alpha.63] - 2025-06-05
 ### Fixed
 - Fixed an issue where group table cells content is not centre-aligned.

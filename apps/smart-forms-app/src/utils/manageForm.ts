@@ -8,7 +8,7 @@ export async function buildFormWrapper(
   questionnaireResponse?: QuestionnaireResponse,
   readOnly?: boolean,
   terminologyServerUrl?: string,
-  additionalVariables?: Record<string, object>
+  additionalVariables?: Record<string, any>
 ) {
   extractDebuggerStore.getState().resetStore();
   const targetStructureMap = await fetchTargetStructureMap(questionnaire);
