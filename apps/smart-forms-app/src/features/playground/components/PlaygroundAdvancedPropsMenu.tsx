@@ -1,4 +1,4 @@
-import { Button, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Stack, TextField, Typography } from '@mui/material';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import type { StateStore } from './StoreStateViewer.tsx';
@@ -21,7 +21,7 @@ function PlaygroundAdvancedPropsMenu(props: PlaygroundAdvancedPropsMenuProps) {
   } = props;
 
   return (
-    <Stack direction="row" alignItems="center" gap={0.55}>
+    <Stack direction="row" alignItems="center" gap={0.5}>
       <Button
         onClick={() => {
           onSetView('editor');
@@ -64,32 +64,34 @@ function PlaygroundAdvancedPropsMenu(props: PlaygroundAdvancedPropsMenuProps) {
           </Typography>
         </ToggleButton>
       </ToggleButtonGroup>
-      <TextField
-        value={statePropNameFilter}
-        placeholder="Filter properties"
-        size="small"
-        slotProps={{
-          input: {
-            style: {
+      <Box width="120px">
+        <TextField
+          value={statePropNameFilter}
+          placeholder="Filter properties"
+          size="small"
+          slotProps={{
+            input: {
+              style: {
+                height: '24px',
+                fontSize: '12px',
+                width: '120px'
+              }
+            }
+          }}
+          sx={{
+            '& .MuiOutlinedInput-root': {
               height: '24px',
-              fontSize: '12px',
-              width: '120px'
+              '& fieldset': {
+                borderWidth: '1px',
+                borderColor: 'rgba(0, 0, 0, 0.23)'
+              }
             }
-          }
-        }}
-        sx={{
-          '& .MuiOutlinedInput-root': {
-            height: '24px',
-            '& fieldset': {
-              borderWidth: '1px',
-              borderColor: 'rgba(0, 0, 0, 0.23)'
-            }
-          }
-        }}
-        onChange={(e) => {
-          onSetstatePropNameFilter(e.target.value);
-        }}
-      />
+          }}
+          onChange={(e) => {
+            onSetstatePropNameFilter(e.target.value);
+          }}
+        />
+      </Box>
     </Stack>
   );
 }
