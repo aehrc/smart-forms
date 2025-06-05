@@ -32,5 +32,18 @@ export const StandardTextField = styled(TextField, {
     '& .MuiInputBase-input': {
       cursor: 'default'
     }
+  },
+  '& .MuiOutlinedInput-root': {
+    paddingRight: 6 // Down from the default 14px
+  },
+  '& .StandardTextField-clearIndicator': {
+    // Hidden by default, visibility driven by "& .MuiOutlinedInput-root:hover .StandardTextField-clearIndicator"
+    visibility: 'hidden'
+  },
+  '& .MuiOutlinedInput-root:hover .StandardTextField-clearIndicator': {
+    visibility: 'visible'
+  },
+  '& .MuiOutlinedInput-root.Mui-focused .StandardTextField-clearIndicator': {
+    visibility: 'visible'
   }
 }));

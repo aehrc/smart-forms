@@ -23,10 +23,10 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import useAttachmentUrlValidation from '../../../hooks/useAttachmentUrlValidation';
 import InputAdornment from '@mui/material/InputAdornment';
-import Tooltip from '@mui/material/Tooltip';
 import CheckIcon from '@mui/icons-material/Check';
 import DangerousIcon from '@mui/icons-material/Dangerous';
 import { useRendererStylingStore } from '../../../stores';
+import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 
 interface AttachmentUrlFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -68,16 +68,20 @@ function AttachmentUrlField(props: AttachmentUrlFieldProps) {
               endAdornment: (
                 <InputAdornment position="end">
                   {url != '' ? (
-                    <Tooltip title={urlIsValid ? 'URL is valid!' : 'Invalid URL'} placement="right">
-                      <Box mt={0.5}>
-                        {urlIsValid ? (
-                          <CheckIcon color="success" fontSize="small" />
-                        ) : (
-                          <DangerousIcon color="error" fontSize="small" />
-                        )}
-                      </Box>
-                    </Tooltip>
+                    <Box sx={{ pt: 0.75 }} title={urlIsValid ? 'URL is valid!' : 'Invalid URL'}>
+                      {urlIsValid ? (
+                        <CheckIcon color="success" fontSize="small" />
+                      ) : (
+                        <DangerousIcon color="error" fontSize="small" />
+                      )}
+                    </Box>
                   ) : null}
+                  <ClearButtonAdornment
+                    readOnly={readOnly}
+                    onClear={() => {
+                      onUrlChange('');
+                    }}
+                  />
                 </InputAdornment>
               )
             }

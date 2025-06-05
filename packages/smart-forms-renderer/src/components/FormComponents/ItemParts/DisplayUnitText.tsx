@@ -15,7 +15,10 @@ function DisplayUnitText(props: DisplayUnitTextProps) {
   const readOnlyTextColor = readOnlyVisualStyle === 'disabled' ? 'text.disabled' : 'text.secondary';
 
   return (
-    <Typography component="span" color={readOnly ? readOnlyTextColor : 'text.secondary'}>
+    <Typography
+      component="span"
+      color={readOnly ? readOnlyTextColor : 'text.secondary'}
+      sx={{ px: 0.5 }}>
       {children}
     </Typography>
   );

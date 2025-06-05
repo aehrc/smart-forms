@@ -5,6 +5,7 @@ import { StandardTextField } from '../Textfield.styles';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import { useRendererStylingStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
+import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 
 interface QuantityFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -60,6 +61,12 @@ function QuantityField(props: QuantityFieldProps) {
           endAdornment: (
             <InputAdornment position={'end'}>
               <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+              <ClearButtonAdornment
+                readOnly={readOnly}
+                onClear={() => {
+                  onInputChange('');
+                }}
+              />
               <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>
           )

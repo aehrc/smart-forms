@@ -22,6 +22,7 @@ import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/ren
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import { useRendererStylingStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
+import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 
 interface IntegerFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -78,6 +79,12 @@ function IntegerField(props: IntegerFieldProps) {
           endAdornment: (
             <InputAdornment position={'end'}>
               <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+              <ClearButtonAdornment
+                readOnly={readOnly}
+                onClear={() => {
+                  onInputChange('');
+                }}
+              />
               <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>
           )
