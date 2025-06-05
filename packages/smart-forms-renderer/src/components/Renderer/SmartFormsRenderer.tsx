@@ -43,7 +43,7 @@ import RendererThemeProvider from '../../theme/RendererThemeProvider';
 export interface SmartFormsRendererProps {
   questionnaire: Questionnaire;
   questionnaireResponse?: QuestionnaireResponse;
-  additionalVariables?: Record<string, object>;
+  additionalVariables?: Record<string, any>;
   terminologyServerUrl?: string;
   fhirClient?: Client;
   readOnly?: boolean;

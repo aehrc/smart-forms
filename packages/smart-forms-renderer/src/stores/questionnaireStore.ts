@@ -138,7 +138,7 @@ export interface QuestionnaireStoreType {
   buildSourceQuestionnaire: (
     questionnaire: Questionnaire,
     questionnaireResponse?: QuestionnaireResponse,
-    additionalVariables?: Record<string, object>,
+    additionalVariables?: Record<string, any>,
     terminologyServerUrl?: string,
     readOnly?: boolean,
     qItemOverrideComponents?: Record<string, ComponentType<QItemOverrideComponentProps>>,
@@ -168,6 +168,7 @@ export interface QuestionnaireStoreType {
     persistTabIndex?: boolean
   ) => Promise<QuestionnaireResponse>;
   onFocusLinkId: (linkId: string) => void;
+  // TODO - to be deprecated, use `additionalVariables` in buildSourceQuestionnaire(), also directly set in updatedPopulatedProperties
   setPopulatedContext: (
     newPopulatedContext: Record<string, any>,
     addToFhirPathContext?: boolean
@@ -220,11 +221,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     qItemOverrideComponents = {},
     sdcUiOverrideComponents = {}
   ) => {
-    const questionnaireModel = await createQuestionnaireModel(
-      questionnaire,
-      additionalVariables,
-      terminologyServerUrl
-    );
+    const questionnaireModel = await createQuestionnaireModel(questionnaire, terminologyServerUrl);
 
     // Insert answerOptions with displays into questionnaire
     questionnaire = insertCompleteAnswerOptionsIntoQuestionnaire(
@@ -234,7 +231,15 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
 
     // If existing fhirPathContext is empty, use the one from the questionnaire model
     // Mostly existing fhirPathContext will be empty, but in some cases it may not be e.g. after pre-population
-    const fhirPathContext = get().fhirPathContext ?? questionnaireModel.fhirPathContext;
+    let fhirPathContext = get().fhirPathContext ?? questionnaireModel.fhirPathContext;
+
+    // TODO reminder to have documentation when upgrading to 1.0.0 - 05/06/2025
+    // TODO This is something new - the definition of additionalVariables is now <"name", "value">, which allows it to be injected into the renderer's fhirPathContext.
+    // TODO as an example, populatedContext from a pre-pop module can now be inserted into the renderer for further use.
+    fhirPathContext = {
+      ...fhirPathContext,
+      ...additionalVariables
+    };
     const fhirPathTerminologyCache =
       get().fhirPathTerminologyCache ?? questionnaireModel.fhirPathTerminologyCache;
 
@@ -487,6 +492,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     persistPageIndex?: boolean
   ) => {
     const sourceQuestionnaire = get().sourceQuestionnaire;
+    const fhirPathContext = { ...get().fhirPathContext, ...(populatedContext ?? {}) };
     const initialResponseItemMap = createQuestionnaireResponseItemMap(
       sourceQuestionnaire,
       populatedResponse
@@ -497,7 +503,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       initialResponseItemMap: initialResponseItemMap,
       calculatedExpressions: get().calculatedExpressions,
       variables: get().variables,
-      existingFhirPathContext: get().fhirPathContext,
+      existingFhirPathContext: fhirPathContext,
       fhirPathTerminologyCache: get().fhirPathTerminologyCache,
       terminologyServerUrl: terminologyServerStore.getState().url
     });

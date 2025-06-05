@@ -28,7 +28,6 @@ import { extractContainedValueSets } from './extractContainedValueSets';
 import { extractOtherExtensions } from './extractOtherExtensions';
 import type { Variables } from '../../interfaces/variables.interface';
 import { resolveValueSets } from './resolveValueSets';
-import { addAdditionalVariables } from './addAdditionalVariables';
 import { getLinkIdPreferredTerminologyServerTuples, getLinkIdTypeTuples } from '../qItem';
 import { addDisplayToAnswerOptions, addDisplayToCacheCodings } from './addDisplayToCodings';
 import type { TargetConstraint } from '../../interfaces/targetConstraint.interface';
@@ -36,7 +35,6 @@ import { extractTargetConstraints } from './extractTargetConstraint';
 
 export async function createQuestionnaireModel(
   questionnaire: Questionnaire,
-  additionalVariables: Record<string, object>,
   terminologyServerUrl: string
 ): Promise<QuestionnaireModel> {
   if (!questionnaire.item) {
@@ -55,7 +53,12 @@ export async function createQuestionnaireModel(
     extractTargetConstraints(questionnaire);
 
   let variables: Variables = extractQuestionnaireLevelVariables(questionnaire);
-  variables = addAdditionalVariables(variables, additionalVariables);
+
+  // TODO reminder to remove/have documentation when upgrading to 1.0.0 - 05/06/2025
+  // TODO additionalVariables is defined to be <"name", "extension"> previously, which provides no real value.
+  // TODO the definition of additionalVariables is now <"name", "value">, which allows it to be injected into the renderer's fhirPathContext.
+  // TODO as an example, populatedContext from a pre-pop module can now be inserted into the renderer for further use.
+  // variables = addAdditionalVariables(variables, additionalVariables);
 
   const extractContainedValueSetsResult = extractContainedValueSets(
     questionnaire,

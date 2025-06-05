@@ -87,8 +87,11 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
         sourceQuestionnaire,
         populatedResponse,
         undefined,
-        terminologyServerUrl
+        terminologyServerUrl,
+        populatedContext
       );
+
+      // TODO eventually we want to deprecate this in 1.0.0, populatedContext is now passed to buildFormWrapper and is automatically added to the FhirPathContext
       if (populatedContext) {
         setPopulatedContext(populatedContext, true);
       }
