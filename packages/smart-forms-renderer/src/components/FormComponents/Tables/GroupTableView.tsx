@@ -43,6 +43,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import GroupHeading from '../GroupItem/GroupHeading';
 import { StandardCheckbox } from '../../Checkbox.styles';
 import type { ItemPath } from '../../../interfaces/itemPath.interface';
+import { Box } from '@mui/material';
 
 interface GroupTableViewProps
   extends PropsWithIsRepeatedAttribute,
@@ -144,7 +145,11 @@ function GroupTableView(props: GroupTableViewProps) {
                     </HeaderTableCell>
                   ) : null}
                   {visibleItemLabels.map((visibleItemLabel) => (
-                    <HeaderTableCell key={visibleItemLabel}>{visibleItemLabel}</HeaderTableCell>
+                    <HeaderTableCell key={visibleItemLabel}>
+                      <Box display="flex" alignItems="center" justifyContent="center">
+                        {visibleItemLabel}
+                      </Box>
+                    </HeaderTableCell>
                   ))}
                   <TableCell padding="checkbox" />
                 </TableRow>
@@ -213,7 +218,11 @@ function GroupTableView(props: GroupTableViewProps) {
                 </HeaderTableCell>
               ) : null}
               {visibleItemLabels.map((visibleItemLabel) => (
-                <HeaderTableCell key={visibleItemLabel}>{visibleItemLabel}</HeaderTableCell>
+                <HeaderTableCell key={visibleItemLabel}>
+                  <Box display="flex" alignItems="center" justifyContent="center">
+                    {visibleItemLabel}
+                  </Box>
+                </HeaderTableCell>
               ))}
               <TableCell padding="checkbox" />
             </TableRow>
