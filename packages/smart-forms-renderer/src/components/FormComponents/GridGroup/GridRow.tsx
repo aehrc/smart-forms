@@ -97,17 +97,19 @@ function GridRow(props: GridRowProps) {
         return (
           <GridAnswerTableCell key={colIndex} numOfColumns={numOfColumns}>
             <Box display="flex" alignItems="center" justifyContent="center">
-              <SingleItem
-                qItem={cellQItem}
-                qrItem={cellQrItem ?? null}
-                itemPath={extendItemPath(itemPath, cellQItem.linkId)}
-                isRepeated={true}
-                isTabled={true}
-                groupCardElevation={1}
-                showMinimalView={true}
-                parentIsReadOnly={parentIsReadOnly}
-                onQrItemChange={handleQrRowItemChange}
-              />
+              <Box flexGrow={1}>
+                <SingleItem
+                  qItem={cellQItem}
+                  qrItem={cellQrItem ?? null}
+                  itemPath={extendItemPath(itemPath, cellQItem.linkId)}
+                  isRepeated={true}
+                  isTabled={true}
+                  groupCardElevation={1}
+                  showMinimalView={true}
+                  parentIsReadOnly={parentIsReadOnly}
+                  onQrItemChange={handleQrRowItemChange}
+                />
+              </Box>
             </Box>
           </GridAnswerTableCell>
         );
