@@ -5,7 +5,13 @@ import useShowQuestionnaireResponseStoreProperty from '../../hooks/useShowQuesti
 
 const smartConfigStoreStatePropertyNames: string[] = ['client', 'patient', 'user', 'encounter'];
 
-function SmartConfigStoreViewer() {
+interface QuestionnaireResponseStoreViewerProps {
+  statePropNameFilter: string;
+}
+
+function SmartConfigStoreViewer(props: QuestionnaireResponseStoreViewerProps) {
+  const { statePropNameFilter } = props;
+
   const [selectedProperty, setSelectedProperty] = useState('client');
   const [viewMode, setViewMode] = useState<'text' | 'jsonTree' | 'table'>('text');
 
@@ -23,6 +29,7 @@ function SmartConfigStoreViewer() {
     <>
       <GenericStatePropertyPicker
         statePropertyNames={smartConfigStoreStatePropertyNames}
+        statePropNameFilter={statePropNameFilter}
         selectedProperty={selectedProperty}
         onSelectProperty={setSelectedProperty}
       />
