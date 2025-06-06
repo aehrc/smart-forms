@@ -53,8 +53,8 @@ import type { ComponentType } from 'react';
 import type { TargetConstraint } from '../interfaces/targetConstraint.interface';
 import { readTargetConstraintLocationLinkIds } from '../utils/targetConstraint';
 import type { ProcessedValueSet } from '../interfaces/valueSet.interface';
-import type { ComputedQRItemUpdates } from '../interfaces/computedUpdates.interface';
 import type { AnswerOptionsToggleExpression } from '../interfaces/answerOptionsToggleExpression.interface';
+import { applyComputedUpdates } from '../utils/computedUpdates';
 
 /**
  * QuestionnaireStore properties and methods
@@ -138,7 +138,7 @@ export interface QuestionnaireStoreType {
   buildSourceQuestionnaire: (
     questionnaire: Questionnaire,
     questionnaireResponse?: QuestionnaireResponse,
-    additionalVariables?: Record<string, object>,
+    additionalVariables?: Record<string, any>,
     terminologyServerUrl?: string,
     readOnly?: boolean,
     qItemOverrideComponents?: Record<string, ComponentType<QItemOverrideComponentProps>>,
@@ -160,7 +160,7 @@ export interface QuestionnaireStoreType {
     actionType: 'add' | 'remove'
   ) => void;
   toggleEnableWhenActivation: (isActivated: boolean) => void;
-  updateExpressions: (updatedResponse: QuestionnaireResponse) => Promise<ComputedQRItemUpdates>;
+  updateExpressions: (updatedResponse: QuestionnaireResponse) => Promise<void>;
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) => void;
   updatePopulatedProperties: (
     populatedResponse: QuestionnaireResponse,
@@ -168,6 +168,7 @@ export interface QuestionnaireStoreType {
     persistTabIndex?: boolean
   ) => Promise<QuestionnaireResponse>;
   onFocusLinkId: (linkId: string) => void;
+  // TODO - to be deprecated, use `additionalVariables` in buildSourceQuestionnaire(), also directly set in updatedPopulatedProperties
   setPopulatedContext: (
     newPopulatedContext: Record<string, any>,
     addToFhirPathContext?: boolean
@@ -220,11 +221,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     qItemOverrideComponents = {},
     sdcUiOverrideComponents = {}
   ) => {
-    const questionnaireModel = await createQuestionnaireModel(
-      questionnaire,
-      additionalVariables,
-      terminologyServerUrl
-    );
+    const questionnaireModel = await createQuestionnaireModel(questionnaire, terminologyServerUrl);
 
     // Insert answerOptions with displays into questionnaire
     questionnaire = insertCompleteAnswerOptionsIntoQuestionnaire(
@@ -234,7 +231,15 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
 
     // If existing fhirPathContext is empty, use the one from the questionnaire model
     // Mostly existing fhirPathContext will be empty, but in some cases it may not be e.g. after pre-population
-    const fhirPathContext = get().fhirPathContext ?? questionnaireModel.fhirPathContext;
+    let fhirPathContext = get().fhirPathContext ?? questionnaireModel.fhirPathContext;
+
+    // TODO reminder to have documentation when upgrading to 1.0.0 - 05/06/2025
+    // TODO This is something new - the definition of additionalVariables is now <"name", "value">, which allows it to be injected into the renderer's fhirPathContext.
+    // TODO as an example, populatedContext from a pre-pop module can now be inserted into the renderer for further use.
+    fhirPathContext = {
+      ...fhirPathContext,
+      ...additionalVariables
+    };
     const fhirPathTerminologyCache =
       get().fhirPathTerminologyCache ?? questionnaireModel.fhirPathTerminologyCache;
 
@@ -413,6 +418,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   toggleEnableWhenActivation: (isActivated: boolean) =>
     set(() => ({ enableWhenIsActivated: isActivated })),
   updateExpressions: async (updatedResponse: QuestionnaireResponse) => {
+    const updateResponse = questionnaireResponseStore.getState().updateResponse;
     const updatedResponseItemMap = createQuestionnaireResponseItemMap(
       get().sourceQuestionnaire,
       updatedResponse
@@ -441,6 +447,20 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       terminologyServerUrl: terminologyServerStore.getState().url
     });
 
+    /**
+     * Applies computed updates to the QR before updating the store.
+     * Before this, we were updating the store before applying the computed updates. This may cause downstream useEffects to use a stale QR.
+     * By applying the computed updates first, we ensure that the QR is up-to-date when downstream useEffects are fired.
+     */
+    if (Object.keys(computedQRItemUpdates).length > 0) {
+      const responseWithAppliedComputedUpdates = applyComputedUpdates(
+        get().sourceQuestionnaire,
+        updatedResponse,
+        computedQRItemUpdates
+      );
+      updateResponse(responseWithAppliedComputedUpdates, 'async');
+    }
+
     if (isUpdated) {
       set(() => ({
         targetConstraints: updatedTargetConstraints,
@@ -451,14 +471,12 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
         fhirPathContext: updatedFhirPathContext,
         fhirPathTerminologyCache: fhirPathTerminologyCache
       }));
-      return computedQRItemUpdates;
     }
 
     set(() => ({
       fhirPathContext: updatedFhirPathContext,
       fhirPathTerminologyCache: fhirPathTerminologyCache
     }));
-    return computedQRItemUpdates;
   },
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) =>
     set(() => ({
@@ -474,6 +492,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     persistPageIndex?: boolean
   ) => {
     const sourceQuestionnaire = get().sourceQuestionnaire;
+    const fhirPathContext = { ...get().fhirPathContext, ...(populatedContext ?? {}) };
     const initialResponseItemMap = createQuestionnaireResponseItemMap(
       sourceQuestionnaire,
       populatedResponse
@@ -484,7 +503,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       initialResponseItemMap: initialResponseItemMap,
       calculatedExpressions: get().calculatedExpressions,
       variables: get().variables,
-      existingFhirPathContext: get().fhirPathContext,
+      existingFhirPathContext: fhirPathContext,
       fhirPathTerminologyCache: get().fhirPathTerminologyCache,
       terminologyServerUrl: terminologyServerStore.getState().url
     });

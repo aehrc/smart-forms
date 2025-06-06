@@ -1,0 +1,37 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "id": "bp-response-1",
+  "questionnaire": "https://smartforms.csiro.au/docs/Questionnaire/blood-pressure",
+  "status": "completed",
+  "subject": {
+    "reference": "Patient/123",
+    "display": "John Doe"
+  },
+  "authored": "2024-03-20T10:00:00Z",
+  "item": [
+    {
+      "linkId": "blood-pressure",
+      "text": "Blood Pressure Measurement",
+      "item": [
+        {
+          "linkId": "systolic",
+          "text": "Systolic Blood Pressure",
+          "answer": [
+            {
+              "valueInteger": 120
+            }
+          ]
+        },
+        {
+          "linkId": "diastolic",
+          "text": "Diastolic Blood Pressure",
+          "answer": [
+            {
+              "valueInteger": 80
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

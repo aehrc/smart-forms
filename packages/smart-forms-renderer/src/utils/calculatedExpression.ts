@@ -32,8 +32,9 @@ import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import { createEmptyQrGroup, updateQrItemsInGroup } from './qrItem';
 import dayjs from 'dayjs';
 import { updateQuestionnaireResponse } from './genericRecursive';
-import isEqual from 'lodash.isequal';
+import { deepEqual } from 'fast-equals';
 import type { Variables } from '../interfaces';
+import type { ComputedNewAnswers } from '../interfaces/computedUpdates.interface';
 
 interface EvaluateInitialCalculatedExpressionsParams {
   initialResponse: QuestionnaireResponse;
@@ -64,7 +65,7 @@ export async function evaluateInitialCalculatedExpressions(
 
   // Return early if initialResponse is empty or there are no calculated expressions to evaluate
   if (
-    isEqual(initialResponse, structuredClone(emptyResponse)) ||
+    deepEqual(initialResponse, structuredClone(emptyResponse)) ||
     Object.keys(calculatedExpressions).length === 0
   ) {
     return {
@@ -74,9 +75,14 @@ export async function evaluateInitialCalculatedExpressions(
     };
   }
 
-  const initialCalculatedExpressions: Record<string, CalculatedExpression[]> = {
+  let initialCalculatedExpressions: Record<string, CalculatedExpression[]> = {
     ...calculatedExpressions
   };
+
+  // If 'value' key does not exist in calculated expressions, initialise it to null
+  initialCalculatedExpressions = initialiseCalculatedExpressionValuesToNull(
+    initialCalculatedExpressions
+  );
 
   const fhirPathEvalResult = await createFhirPathContext(
     initialResponse,
@@ -117,7 +123,7 @@ export async function evaluateInitialCalculatedExpressions(
         }
 
         // Only update calculatedExpressions if length of result array > 0
-        if (result.length > 0 && !isEqual(calcExpression.value, result[0])) {
+        if (result.length > 0 && !deepEqual(calcExpression.value, result[0])) {
           calcExpression.value = result[0];
         }
       } catch (e) {
@@ -135,6 +141,25 @@ export async function evaluateInitialCalculatedExpressions(
   };
 }
 
+// If 'value' key does not exist in calculated expressions, initialise it to null
+// This is so it doesn't trigger a UI change when calcExpression.value goes from "undefined" to "null"
+// This might potentially introduce unintended issues? - need to keep an eye on this function
+function initialiseCalculatedExpressionValuesToNull(
+  calculatedExpressions: Record<string, CalculatedExpression[]>
+) {
+  for (const linkId in calculatedExpressions) {
+    const itemCalcExpressions = calculatedExpressions[linkId];
+
+    for (const calcExpression of itemCalcExpressions) {
+      if (!('value' in calcExpression)) {
+        calcExpression.value = null;
+      }
+    }
+  }
+
+  return calculatedExpressions;
+}
+
 export async function evaluateCalculatedExpressions(
   fhirPathContext: Record<string, any>,
   fhirPathTerminologyCache: Record<string, any>,
@@ -143,12 +168,14 @@ export async function evaluateCalculatedExpressions(
 ): Promise<{
   calculatedExpsIsUpdated: boolean;
   updatedCalculatedExpressions: Record<string, CalculatedExpression[]>;
+  computedNewAnswers: ComputedNewAnswers;
 }> {
   const updatedCalculatedExpressions: Record<string, CalculatedExpression[]> = {
     ...calculatedExpressions
   };
 
   let isUpdated = false;
+  const computedNewAnswers: ComputedNewAnswers = {};
   for (const linkId in calculatedExpressions) {
     const itemCalcExpressions = calculatedExpressions[linkId];
 
@@ -176,17 +203,35 @@ export async function evaluateCalculatedExpressions(
           fhirPathTerminologyCache[cacheKey] = result;
         }
 
+        if (
+          typeof calcExpression.value === 'string' &&
+          calcExpression.value.startsWith('Blood tests')
+        ) {
+          console.log(calcExpression.value, structuredClone(result), calcExpression.expression);
+        }
+
         // Update calculatedExpressions if length of result array > 0
         // Only update when current calcExpression value is different from the result, otherwise it will result in an infinite loop as per issue #733
-        if (result.length > 0 && !isEqual(calcExpression.value, result[0])) {
+        if (result.length > 0 && !deepEqual(calcExpression.value, result[0])) {
+          // console.log(calcExpression.value, structuredClone(result));
           isUpdated = true;
           calcExpression.value = result[0];
+
+          // Update computedNewAnswers if the expression is a cqf-expression for _answerValueSet - clear answers (similar to dynamic value sets)
+          if (calcExpression.from === 'item._answerValueSet') {
+            computedNewAnswers[linkId] = null;
+          }
         }
 
         // Update calculatedExpression value to null if no result is returned
         if (result.length === 0 && calcExpression.value !== null) {
           isUpdated = true;
           calcExpression.value = null;
+
+          // Update computedNewAnswers if the expression is a cqf-expression for _answerValueSet - clear answers (similar to dynamic value sets)
+          if (calcExpression.from === 'item._answerValueSet') {
+            computedNewAnswers[linkId] = null;
+          }
         }
       } catch (e) {
         console.warn(e.message, `LinkId: ${linkId}\nExpression: ${calcExpression.expression}`);
@@ -198,7 +243,8 @@ export async function evaluateCalculatedExpressions(
 
   return {
     calculatedExpsIsUpdated: isUpdated,
-    updatedCalculatedExpressions: updatedCalculatedExpressions
+    updatedCalculatedExpressions: updatedCalculatedExpressions,
+    computedNewAnswers: computedNewAnswers
   };
 }
 

@@ -41,7 +41,6 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const inputsFlexGrow = useRendererStylingStore.use.inputsFlexGrow();
-  const hideClearButton = useRendererStylingStore.use.hideClearButton();
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
@@ -91,9 +90,7 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
           <FadingCheckIcon fadeIn={expressionUpdated} disabled={readOnly} />
         </Box>
 
-        {hideClearButton ? null : (
-          <ClearInputButton buttonShown={!!valueRadio} readOnly={readOnly} onClear={onClear} />
-        )}
+        <ClearInputButton buttonShown={!!valueRadio} readOnly={readOnly} onClear={onClear} />
       </Box>
 
       {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}

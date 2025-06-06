@@ -20,6 +20,7 @@ import { useQuery } from '@tanstack/react-query';
 import type { Bundle, Patient } from 'fhir/r4';
 import { useMemo } from 'react';
 import { fetchFhirResources } from '../api/fetchFhirResources.ts';
+import { NUM_OF_PATIENTS_TO_FETCH_PLAYGROUND } from '../../../globals.ts';
 
 interface useFetchPatientsReturnParams {
   patients: Patient[];
@@ -30,7 +31,7 @@ interface useFetchPatientsReturnParams {
 }
 
 function useFetchPatients(endpointUrl: string): useFetchPatientsReturnParams {
-  const numOfSearchEntries = 100;
+  const numOfSearchEntries = NUM_OF_PATIENTS_TO_FETCH_PLAYGROUND;
 
   const queryUrl = `/Patient?_count=${numOfSearchEntries}`;
 
@@ -41,7 +42,7 @@ function useFetchPatients(endpointUrl: string): useFetchPatientsReturnParams {
     error,
     isFetching
   } = useQuery<Bundle>({
-    queryKey: ['patients', endpointUrl, queryUrl],
+    queryKey: ['patients' + numOfSearchEntries.toString(), endpointUrl, queryUrl],
     queryFn: () => fetchFhirResources(endpointUrl, queryUrl)
   });
 

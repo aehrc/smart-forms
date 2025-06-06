@@ -1,6 +1,8 @@
 import React, { type ChangeEvent } from 'react';
 import { StandardTextField } from '../Textfield.styles';
 import { useRendererStylingStore } from '../../../stores';
+import InputAdornment from '@mui/material/InputAdornment';
+import { ClearButtonAdornment } from './ClearButtonAdornment';
 
 interface OpenLabelFieldProps {
   value: string | null;
@@ -33,7 +35,17 @@ function OpenLabelField(props: OpenLabelFieldProps) {
       size="small"
       slotProps={{
         input: {
-          readOnly: fieldReadOnly && readOnlyVisualStyle === 'readonly'
+          readOnly: fieldReadOnly && readOnlyVisualStyle === 'readonly',
+          endAdornment: (
+            <InputAdornment position="end">
+              <ClearButtonAdornment
+                readOnly={fieldReadOnly}
+                onClear={() => {
+                  onInputChange('');
+                }}
+              />
+            </InputAdornment>
+          )
         },
         htmlInput: {
           'aria-label': label

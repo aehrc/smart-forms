@@ -5,7 +5,79 @@ This log documents significant changes for [@aehrc/smart-forms-renderer's alpha 
 
 This changelog only includes changes from version 1.0.0-alpha.1 onwards. For stable releases, refer to the main [CHANGELOG.md](CHANGELOG.md).
 
+
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
+
+## [1.0.0-alpha.64] - 2025-06-05
+### Fixed
+- Fixed an issue where cqfExpressions are not evaluated when the QuestionnaireResponse is first initialised.
+
+### Changed
+- Changed how additionalVariables in buildForm() (and it's variants) work. Instead of <name, extension obj> which doesn't provide much value, 
+  it now works more like a fhirPathContext <name, value> where `value` is the evaluated value from fhirpath.evaluate(). additionalVariables likely will come from a pre-population module (like sdc-populate) which then can be injected into the renderer's fhirPathContext.
+
+
+## [1.0.0-alpha.63] - 2025-06-05
+### Fixed
+- Fixed an issue where group table cells content is not centre-aligned.
+
+## [1.0.0-alpha.62] - 2025-06-05
+### Added
+- Added "X" clear buttons to text-based input fields, update renderer to alpha.62.
+
+### Fixed
+- Fixed an issue where items in a group table cell doesn't use all available space.
+- Centred group table headers.
+
+## [1.0.0-alpha.61] - 2025-06-05
+### Fixed
+- Fixed colour differences between readOnly and editable text-based input fields.
+- Fixed an issue where group table and grid child items can be edited even when the parent group is readOnly.
+- Removed add, remove, drag, check interactions for readOnly group tables.
+- Prevent rendering of "Clear" button for radio and checkbox items when they are readOnly.
+- Centred cell content in group table and grid table.
+
+### Changed
+- Changed all usages of MUI LoadingButton to Button - see https://mui.com/material-ui/migration/upgrade-to-v6/#button-with-loading-state.
+
+## [1.0.0-alpha.60] - 2025-06-04
+### Fixed
+- Fixed an issue where "sparsity" of grid group cells doesn't work as expected.
+
+## [1.0.0-alpha.59] - 2025-06-04
+### Added
+- CSS read-only (different from Questionnaire item.readOnly) text-based input items now have cursor set to [`default`](https://developer.mozilla.org/en-US/docs/Web/CSS/cursor#values).
+
+## [1.0.0-alpha.58] - 2025-06-03
+### Fixed
+- Fixed number of columns shown and widths when a group table has a hidden item.
+- Updated sdc-populate to v4.3.0. Changes as follows:
+- Fixed an [issue](https://github.com/aehrc/smart-forms/issues/1258) where a repeating group using ItemPopulationContext only looks at the first item in the group to determine the itemPopulationContext used.
+- Included author and authored property when creating a QuestionnaireResponse.
+
+## [1.0.0-alpha.57] - 2025-05-27
+### Changed
+- Changed inline validation messages to be shown when the field loses focus. See [issue](https://github.com/aehrc/smart-forms/issues/1219).
+
+## [1.0.0-alpha.56] - 2025-05-26
+### Added
+- Exposed getSectionHeading() as a library function
+
+### Changed
+- Use fast-equals deepEqual() instead of lodash.isEqual() for better performance.
+
+## [1.0.0-alpha.55] - 2025-05-07
+### Added
+- Updated @aehrc/sdc-populate to 4.1.0. It now uses the same removeEmptyAnswers() implementation as the renderer, which is more battle tested.
+
+## [1.0.0-alpha.54] - 2025-05-07
+### Fixed
+- Dynamic _answerValueSet options now updates consistently.
+- Whenever dynamic _answerValueSet options change, the item fields is now cleared consistently.
+
+## [1.0.0-alpha.53] - 2025-05-02
+### Added
+- Support for dynamic _answerValueSet in choice and open-choice items. Allows a dynamic answerValueSet URL that dynamic updates the answer options.
 
 ## [1.0.0-alpha.51 and 1.0.0-alpha.52] - 2025-05-02
 ### Changed

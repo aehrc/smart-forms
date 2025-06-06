@@ -20,26 +20,32 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
 import type {
-  PropsWithIsRepeatedAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithShowMinimalViewAttribute
+  PropsWithItemPathAttribute,
+  PropsWithParentIsReadOnlyAttribute
 } from '../../../interfaces/renderProps.interface';
 import GroupTableRow from './GroupTableRow';
 import type { DropResult } from 'react-beautiful-dnd';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { reorderRows } from '../../../utils/groupTable';
 import TableBody from '@mui/material/TableBody';
+import { appendRepeatIndexToLastSegment } from '../../../utils/itemPath';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
 interface GroupTableBodyProps
-  extends PropsWithIsRepeatedAttribute,
-    PropsWithParentIsReadOnlyAttribute,
-    PropsWithShowMinimalViewAttribute {
+  extends PropsWithItemPathAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   tableQItem: QuestionnaireItem;
   readOnly: boolean;
   tableRows: GroupTableRowModel[];
   selectedIds: string[];
   qItemsIndexMap: Record<string, number>;
-  onRowChange: (newQrRow: QuestionnaireResponseItem, index: number) => void;
+  visibleItemLabels: string[];
+  showExtraGTableInteractions: boolean;
+  onRowChange: (
+    newQrRow: QuestionnaireResponseItem,
+    index: number,
+    targetItemPath?: ItemPath
+  ) => void;
   onRemoveRow: (index: number) => void;
   onSelectRow: (rowId: string) => void;
   onReorderRows: (newTableRows: GroupTableRowModel[]) => void;
@@ -52,8 +58,9 @@ function GroupTableBody(props: GroupTableBodyProps) {
     tableRows,
     selectedIds,
     qItemsIndexMap,
-    isRepeated,
-    showMinimalView,
+    visibleItemLabels,
+    showExtraGTableInteractions,
+    itemPath,
     parentIsReadOnly,
     onRowChange,
     onRemoveRow,
@@ -96,13 +103,14 @@ function GroupTableBody(props: GroupTableBodyProps) {
                   answeredQrItem={answeredQrItem}
                   nullableQrItem={nullableQrItem}
                   readOnly={readOnly}
-                  isRepeated={isRepeated}
                   hoverDisabled={snapshot.isDraggingOver}
                   tableRows={tableRows}
                   itemIsSelected={itemIsSelected}
                   selectedIds={selectedIds}
                   qItemsIndexMap={qItemsIndexMap}
-                  showMinimalView={showMinimalView}
+                  visibleItemLabels={visibleItemLabels}
+                  showExtraGTableInteractions={showExtraGTableInteractions}
+                  itemPath={appendRepeatIndexToLastSegment(itemPath, index)}
                   parentIsReadOnly={parentIsReadOnly}
                   onRowChange={onRowChange}
                   onRemoveRow={onRemoveRow}

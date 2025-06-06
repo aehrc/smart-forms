@@ -47,7 +47,6 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const inputsFlexGrow = useRendererStylingStore.use.inputsFlexGrow();
   const reverseBooleanYesNo = useRendererStylingStore.use.reverseBooleanYesNo();
-  const hideClearButton = useRendererStylingStore.use.hideClearButton();
 
   const booleanAsCheckbox = isSpecificItemControl(qItem, 'check-box');
 
@@ -156,13 +155,11 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
           </Box>
         )}
 
-        {hideClearButton ? null : (
-          <ClearInputButton
-            buttonShown={valueBoolean !== undefined}
-            readOnly={readOnly}
-            onClear={onClear}
-          />
-        )}
+        <ClearInputButton
+          buttonShown={valueBoolean !== undefined}
+          readOnly={readOnly}
+          onClear={onClear}
+        />
       </Box>
 
       {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}

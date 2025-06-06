@@ -18,6 +18,7 @@
 import React, { useMemo } from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
@@ -26,17 +27,22 @@ import { GridAnswerTableCell, GridTextTableCell } from '../Tables/Table.styles';
 import SingleItem from '../SingleItem/SingleItem';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../utils/mapItem';
 import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 import useHidden from '../../../hooks/useHidden';
+import { extendItemPath } from '../../../utils/itemPath';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
-interface GridRowProps extends PropsWithQrItemChangeHandler, PropsWithParentIsReadOnlyAttribute {
+interface GridRowProps
+  extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
+    PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
   columnLabels: string[];
-  numOfColumns: number;
 }
 
 function GridRow(props: GridRowProps) {
-  const { qItem, qrItem, columnLabels, numOfColumns, parentIsReadOnly, onQrItemChange } = props;
+  const { qItem, qrItem, itemPath, columnLabels, parentIsReadOnly, onQrItemChange } = props;
 
   const rowQItems = qItem.item;
   const row = qrItem && qrItem.item ? qrItem : createEmptyQrGroup(qItem);
@@ -53,14 +59,18 @@ function GridRow(props: GridRowProps) {
     return null;
   }
 
-  function handleQrRowItemChange(newQrRowItem: QuestionnaireResponseItem) {
+  function handleQrRowItemChange(
+    newQrRowItem: QuestionnaireResponseItem,
+    targetItemPath?: ItemPath
+  ) {
     const qrRow: QuestionnaireResponseItem = { ...row };
     updateQrItemsInGroup(newQrRowItem, null, qrRow, qItemsIndexMap);
-    onQrItemChange(qrRow);
+    onQrItemChange(qrRow, targetItemPath);
   }
 
   const qrItemsByIndex = getQrItemsIndex(rowQItems, rowQrItems, qItemsIndexMap);
 
+  const numOfColumns = columnLabels.length;
   return (
     <>
       <GridTextTableCell>
@@ -68,30 +78,37 @@ function GridRow(props: GridRowProps) {
           {qItem.text}
         </Typography>
       </GridTextTableCell>
-      {rowQItems.map((cellQItem, index) => {
-        const cellQrItem = qrItemsByIndex[index];
+      {columnLabels.map((label, colIndex) => {
+        // Find the QuestionnaireItem in this row that matches the current column label
+        const matchingCellQItemIndex = rowQItems.findIndex((item) => item.text === label);
 
-        // Don't render cell if column label does not match - "sparse-ness" of grid
-        if (columnLabels[index] !== cellQItem.text) {
-          return null;
+        // Render empty cell for sparsity
+        if (matchingCellQItemIndex === -1) {
+          return <GridAnswerTableCell key={colIndex} numOfColumns={numOfColumns} />;
         }
+
+        const cellQItem = rowQItems[matchingCellQItemIndex];
+        const cellQrItem = qrItemsByIndex[matchingCellQItemIndex];
 
         if (Array.isArray(cellQrItem)) {
           return null;
         }
 
         return (
-          <GridAnswerTableCell key={index} numOfColumns={numOfColumns}>
-            <SingleItem
-              qItem={cellQItem}
-              qrItem={cellQrItem ?? null}
-              isRepeated={true}
-              isTabled={true}
-              groupCardElevation={1}
-              showMinimalView={true}
-              parentIsReadOnly={parentIsReadOnly}
-              onQrItemChange={handleQrRowItemChange}
-            />
+          <GridAnswerTableCell key={colIndex} numOfColumns={numOfColumns}>
+            <Box display="flex" alignItems="center" justifyContent="center">
+              <SingleItem
+                qItem={cellQItem}
+                qrItem={cellQrItem ?? null}
+                itemPath={extendItemPath(itemPath, cellQItem.linkId)}
+                isRepeated={true}
+                isTabled={true}
+                groupCardElevation={1}
+                showMinimalView={true}
+                parentIsReadOnly={parentIsReadOnly}
+                onQrItemChange={handleQrRowItemChange}
+              />
+            </Box>
           </GridAnswerTableCell>
         );
       })}

@@ -37,7 +37,7 @@ function QuestionnaireTable() {
   const [debouncedInput] = useDebounceValue(searchInput, 300);
 
   const { questionnaires, fetchStatus, fetchError, isLoading, isFetching, refetchQuestionnaires } =
-    useFetchQuestionnaires(searchInput, debouncedInput);
+    useFetchQuestionnaires(searchInput, debouncedInput, false);
 
   const columns = useMemo(() => createQuestionnaireTableColumns(), []);
 

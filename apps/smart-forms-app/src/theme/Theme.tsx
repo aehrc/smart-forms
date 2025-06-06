@@ -27,12 +27,12 @@ import {
 import palette from './palette';
 import typography from './typography';
 import GlobalStyles from './globalStyles';
-import componentsOverride from './overrides/Overrides';
+import { combinedComponentOverrides } from './overrides/combinedComponentOverrides.ts';
 import { grey } from '@mui/material/colors';
 
 const transparent = alpha(grey[500], 0.16);
 
-const themeOptions: ThemeOptions = {
+const appThemeOptions: ThemeOptions = {
   palette,
   shape: { borderRadius: 6 },
   typography: typography,
@@ -75,8 +75,8 @@ const themeOptions: ThemeOptions = {
 };
 
 function AppThemeProvider({ children }: { children: ReactNode }) {
-  const theme = createTheme(themeOptions);
-  theme.components = componentsOverride(theme);
+  const theme = createTheme(appThemeOptions);
+  theme.components = combinedComponentOverrides(theme);
 
   return (
     <StyledEngineProvider injectFirst>

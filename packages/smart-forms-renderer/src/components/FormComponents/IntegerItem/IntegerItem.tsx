@@ -30,6 +30,7 @@ import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
+import useShowFeedback from '../../../hooks/useShowFeedback';
 
 interface IntegerItemProps extends BaseItemProps {
   qItem: QuestionnaireItem;
@@ -40,6 +41,7 @@ function IntegerItem(props: IntegerItemProps) {
   const {
     qItem,
     qrItem,
+    itemPath,
     isRepeated,
     isTabled,
     renderingExtensions,
@@ -69,12 +71,14 @@ function IntegerItem(props: IntegerItemProps) {
   }
 
   const [input, setInput] = useState(initialInput);
-  const [showFeedback, setShowFeedback] = useState(true); //provides a way to hide the feedback when the user is typing
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent, input);
+
+  // Provides a way to hide the feedback when the user is typing
+  const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
 
   // Process calculated expressions
   const { calcExpUpdated } = useIntegerCalculatedExpression({
@@ -82,14 +86,17 @@ function IntegerItem(props: IntegerItemProps) {
     inputValue: input,
     onChangeByCalcExpressionInteger: (newValueInteger: number) => {
       setInput(newValueInteger.toString());
-      onQrItemChange({
-        ...createEmptyQrItem(qItem, answerKey),
-        answer: [{ id: answerKey, valueInteger: newValueInteger }]
-      });
+      onQrItemChange(
+        {
+          ...createEmptyQrItem(qItem, answerKey),
+          answer: [{ id: answerKey, valueInteger: newValueInteger }]
+        },
+        itemPath
+      );
     },
     onChangeByCalcExpressionNull: () => {
       setInput('');
-      onQrItemChange(createEmptyQrItem(qItem, answerKey));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
     }
   });
 
@@ -98,11 +105,18 @@ function IntegerItem(props: IntegerItemProps) {
     const parsedNewInput = parseIntegerString(newInput);
 
     setInput(parsedNewInput);
-    setShowFeedback(false);
+
+    // Only suppress feedback once (before first blur)
+    if (!hasBlurred) {
+      setShowFeedback(false);
+    }
+
     updateQrItemWithDebounce(parsedNewInput);
   }
+
   function handleBlur() {
     setShowFeedback(true);
+    setHasBlurred(true); // From now on, feedback should stay visible
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

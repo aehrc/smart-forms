@@ -21,14 +21,18 @@ import { getQrItemsIndex, mapQItemsIndex } from '../../../utils/mapItem';
 import GroupItemSwitcher from '../GroupItem/GroupItemSwitcher';
 import { createEmptyQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
 import type {
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import type { QrRepeatGroup } from '../../../interfaces/repeatGroup.interface';
 import Box from '@mui/material/Box';
+import { extendItemPath } from '../../../utils/itemPath';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
 interface SingleNestedItemsProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
@@ -36,7 +40,7 @@ interface SingleNestedItemsProps
 }
 
 function SingleNestedItems(props: SingleNestedItemsProps) {
-  const { qItem, qrItem, groupCardElevation, parentIsReadOnly, onQrItemChange } = props;
+  const { qItem, qrItem, itemPath, groupCardElevation, parentIsReadOnly, onQrItemChange } = props;
 
   const qItemsIndexMap: Record<string, number> = useMemo(() => mapQItemsIndex(qItem), [qItem]);
 
@@ -45,16 +49,16 @@ function SingleNestedItems(props: SingleNestedItemsProps) {
   const qrItems = qrGroup.item;
 
   // Event Handlers
-  function handleQrItemChange(newQrItem: QuestionnaireResponseItem) {
+  function handleQrItemChange(newQrItem: QuestionnaireResponseItem, targetItemPath?: ItemPath) {
     const updatedQrGroup: QuestionnaireResponseItem = { ...qrGroup };
     updateQrItemsInGroup(newQrItem, null, updatedQrGroup, qItemsIndexMap);
-    onQrItemChange(updatedQrGroup);
+    onQrItemChange(updatedQrGroup, targetItemPath);
   }
 
-  function handleQrRepeatGroupChange(qrRepeatGroup: QrRepeatGroup) {
+  function handleQrRepeatGroupChange(qrRepeatGroup: QrRepeatGroup, targetItemPath?: ItemPath) {
     const updatedQrGroup: QuestionnaireResponseItem = { ...qrGroup };
     updateQrItemsInGroup(null, qrRepeatGroup, updatedQrGroup, qItemsIndexMap);
-    onQrItemChange(updatedQrGroup);
+    onQrItemChange(updatedQrGroup, targetItemPath);
   }
 
   if (!qItems || !qrItems) {
@@ -80,6 +84,7 @@ function SingleNestedItems(props: SingleNestedItemsProps) {
               key={qItem.linkId}
               qItem={qItem}
               qrItemOrItems={qrItemOrItems}
+              itemPath={extendItemPath(itemPath, qItem.linkId)}
               groupCardElevation={groupCardElevation + 1}
               parentIsReadOnly={parentIsReadOnly}
               onQrItemChange={handleQrItemChange}

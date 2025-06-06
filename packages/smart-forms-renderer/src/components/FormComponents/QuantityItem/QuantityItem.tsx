@@ -27,6 +27,7 @@ import {
 import QuantityComparatorField from './QuantityComparatorField';
 import useQuantityCalculatedExpression from '../../../hooks/useQuantityCalculatedExpression';
 import ItemLabel from '../ItemParts/ItemLabel';
+import useShowFeedback from '../../../hooks/useShowFeedback';
 
 interface QuantityItemProps extends BaseItemProps {
   qItem: QuestionnaireItem;
@@ -37,6 +38,7 @@ function QuantityItem(props: QuantityItemProps) {
   const {
     qItem,
     qrItem,
+    itemPath,
     isRepeated,
     isTabled,
     renderingExtensions,
@@ -101,12 +103,14 @@ function QuantityItem(props: QuantityItemProps) {
   const [unitInput, setUnitInput] = useState<QuestionnaireItemAnswerOption | null>(
     initialUnitInput
   );
-  const [showFeedback, setShowFeedback] = useState(true); //provides a way to hide the feedback when the user is typing
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent, valueInput);
+
+  // Provides a way to hide the feedback when the user is typing
+  const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
 
   // Process calculated expressions
   const { calcExpUpdated } = useQuantityCalculatedExpression({
@@ -119,20 +123,23 @@ function QuantityItem(props: QuantityItemProps) {
           ? newValueDecimal.toFixed(precision)
           : newValueDecimal.toString()
       );
-      onQrItemChange({
-        ...createEmptyQrItem(qItem, answerKey),
-        answer: [
-          {
-            id: answerKey,
-            valueQuantity: {
-              value: newValueDecimal,
-              unit: unitInput?.valueCoding?.display,
-              system: unitInput?.valueCoding?.system,
-              code: unitInput?.valueCoding?.code
+      onQrItemChange(
+        {
+          ...createEmptyQrItem(qItem, answerKey),
+          answer: [
+            {
+              id: answerKey,
+              valueQuantity: {
+                value: newValueDecimal,
+                unit: unitInput?.valueCoding?.display,
+                system: unitInput?.valueCoding?.system,
+                code: unitInput?.valueCoding?.code
+              }
             }
-          }
-        ]
-      });
+          ]
+        },
+        itemPath
+      );
     },
     onChangeByCalcExpressionQuantity: (
       newValueDecimal: number,
@@ -145,31 +152,38 @@ function QuantityItem(props: QuantityItemProps) {
           ? newValueDecimal.toFixed(precision)
           : newValueDecimal.toString()
       );
-      onQrItemChange({
-        ...createEmptyQrItem(qItem, answerKey),
-        answer: [
-          {
-            id: answerKey,
-            valueQuantity: {
-              value: newValueDecimal,
-              unit: newUnitDisplay,
-              system: newUnitSystem,
-              code: newUnitCode
+      onQrItemChange(
+        {
+          ...createEmptyQrItem(qItem, answerKey),
+          answer: [
+            {
+              id: answerKey,
+              valueQuantity: {
+                value: newValueDecimal,
+                unit: newUnitDisplay,
+                system: newUnitSystem,
+                code: newUnitCode
+              }
             }
-          }
-        ]
-      });
+          ]
+        },
+        itemPath
+      );
     },
     onChangeByCalcExpressionNull: () => {
       setValueInput('');
-      onQrItemChange(createEmptyQrItem(qItem, answerKey));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
     }
   });
 
   // Event handlers
   function handleComparatorInputChange(newComparatorInput: Quantity['comparator'] | null) {
     setComparatorInput(newComparatorInput);
-    setShowFeedback(false);
+
+    // Only suppress feedback once (before first blur)
+    if (!hasBlurred) {
+      setShowFeedback(false);
+    }
 
     if (!valueInput) return;
 
@@ -187,7 +201,12 @@ function QuantityItem(props: QuantityItemProps) {
 
   function handleUnitInputChange(newUnitInput: QuestionnaireItemAnswerOption | null) {
     setUnitInput(newUnitInput);
-    setShowFeedback(false);
+
+    // Only suppress feedback once (before first blur)
+    if (!hasBlurred) {
+      setShowFeedback(false);
+    }
+
     if (!valueInput) return;
 
     onQrItemChange({
@@ -206,11 +225,18 @@ function QuantityItem(props: QuantityItemProps) {
     const parsedNewInput: string = parseDecimalStringWithPrecision(newInput, precision);
 
     setValueInput(parsedNewInput);
-    setShowFeedback(false);
+
+    // Only suppress feedback once (before first blur)
+    if (!hasBlurred) {
+      setShowFeedback(false);
+    }
+
     updateQrItemWithDebounce(parsedNewInput);
   }
+
   function handleBlur() {
     setShowFeedback(true);
+    setHasBlurred(true); // From now on, feedback should stay visible
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

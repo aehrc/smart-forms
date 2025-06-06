@@ -51,6 +51,7 @@ import { TERMINOLOGY_SERVER_URL } from '../../globals';
  * @param questionnaire - The questionnaire resource to construct a response from
  * @param subject - A subject reference to form the subject within the response
  * @param populationExpressions - expressions used for pre-population i.e. initialExpressions, itemPopulationContexts
+ * @param user - An optional FHIR resource representing the user to form the questionnaireResponse.author property
  * @param encounter - An optional encounter resource to form the questionnaireResponse.encounter property
  * @param fetchTerminologyCallback - An optional callback function to fetch terminology resources
  * @param fetchTerminologyRequestConfig - An optional configuration object to pass to the fetchTerminologyCallback
@@ -62,6 +63,7 @@ export async function constructResponse(
   questionnaire: Questionnaire,
   subject: Reference,
   populationExpressions: PopulationExpressions,
+  user?: FhirResource,
   encounter?: Encounter,
   fetchTerminologyCallback?: FetchTerminologyCallback,
   fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
@@ -130,6 +132,15 @@ export async function constructResponse(
   questionnaireResponse.questionnaire = createQuestionnaireReference(questionnaire);
   questionnaireResponse.item = updatedTopLevelQRItems;
   questionnaireResponse.subject = subject;
+
+  // Add user reference to "author" and current dateTime to "authored" if user context present
+  if (user && user.id && user.resourceType) {
+    questionnaireResponse.author = {
+      type: user.resourceType,
+      reference: `${user.resourceType}/${user.id}`
+    };
+    questionnaireResponse.authored = new Date().toISOString();
+  }
 
   // Add encounter reference if present
   if (encounter && encounter.id) {
@@ -526,17 +537,24 @@ async function constructRepeatGroupInstances(
   const terminologyServerUrl = fetchTerminologyRequestConfig?.terminologyServerUrl ?? null;
 
   // Look in initialExpressions of each of the child items to relate back to the itemPopulationContext its using
-  // FIXME eventually need to consider initialExpressions other than the first one
-  const itemPopulationContextExpression =
-    initialExpressions[qRepeatGroupParent.item[0].linkId]?.expression;
+  let itemPopulationContextExpression: string | undefined;
+  let itemPopulationContext: ItemPopulationContext | undefined;
+  for (const childItem of qRepeatGroupParent.item) {
+    const expression = initialExpressions[childItem.linkId]?.expression;
+    if (!expression) continue;
 
-  if (!itemPopulationContextExpression) {
-    return [];
+    const contextName = getItemPopulationContextName(expression);
+    const context = contextName ? itemPopulationContexts[contextName] : undefined;
+
+    if (context && context.value) {
+      itemPopulationContextExpression = expression;
+      itemPopulationContext = context;
+      break; // Stop at the first valid match
+    }
   }
 
-  const itemPopulationContextName = getItemPopulationContextName(itemPopulationContextExpression);
-  const itemPopulationContext = itemPopulationContexts[itemPopulationContextName];
-  if (!itemPopulationContext || !itemPopulationContext.value) {
+  // No itemPopulationContext is found, return an empty array
+  if (!itemPopulationContextExpression || !itemPopulationContext || !itemPopulationContext.value) {
     return [];
   }
 

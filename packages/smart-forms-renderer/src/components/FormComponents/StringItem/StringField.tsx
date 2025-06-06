@@ -22,6 +22,7 @@ import { StandardTextField } from '../Textfield.styles';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import { useRendererStylingStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
+import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 import type { QuestionnaireItem } from 'fhir/r4';
 
 interface StringFieldProps extends PropsWithIsTabledRequiredAttribute {
@@ -58,6 +59,7 @@ function StringField(props: StringFieldProps) {
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+
   return (
     <StandardTextField
       id={itemType + '-' + linkId}
@@ -78,6 +80,12 @@ function StringField(props: StringFieldProps) {
           endAdornment: (
             <InputAdornment position="end">
               <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+              <ClearButtonAdornment
+                readOnly={readOnly}
+                onClear={() => {
+                  onInputChange('');
+                }}
+              />
               <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>
           ),

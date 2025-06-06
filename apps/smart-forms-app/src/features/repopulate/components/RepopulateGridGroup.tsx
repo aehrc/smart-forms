@@ -52,6 +52,7 @@ function RepopulateGridGroup(props: RepopulateGridGroupProps) {
         <GridGroup
           qItem={qItem}
           qrItem={oldQRItemWithRowsToRepopulate}
+          itemPath={[]}
           groupCardElevation={1}
           showMinimalView={true}
           parentIsReadOnly={true}
@@ -70,6 +71,7 @@ function RepopulateGridGroup(props: RepopulateGridGroupProps) {
               text: qItem.text
             }
           }
+          itemPath={[]}
           groupCardElevation={1}
           showMinimalView={true}
           parentIsReadOnly={true}

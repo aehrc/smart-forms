@@ -23,7 +23,7 @@ import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { useState } from 'react';
 import RendererSaveAsFinalDialog from './RendererSaveAsFinalDialog.tsx';
 import RendererOperationItem from '../RendererNav/RendererOperationItem.tsx';
-import { useExtractOperationStore } from '../../../playground/stores/extractOperationStore.ts';
+import { useExtractDebuggerStore } from '../../../playground/stores/extractDebuggerStore.ts';
 import RendererSaveAsFinalWriteBackDialog from './RendererSaveAsFinalWriteBackDialog.tsx';
 
 interface SaveAsFinalActionProps extends SpeedDialActionProps {
@@ -41,7 +41,7 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
   const formChangesHistory = useQuestionnaireResponseStore.use.formChangesHistory();
 
-  const targetStructureMap = useExtractOperationStore.use.targetStructureMap();
+  const structuredMapExtractMap = useExtractDebuggerStore.use.structuredMapExtractMap();
 
   function handleOpenDialog() {
     if (onClose) {
@@ -56,7 +56,7 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
   const responseWasSaved = !!updatableResponse.authored && !!updatableResponse.author;
   const buttonIsDisabled = !responseWasSaved && formChangesHistory.length === 0;
 
-  const writeBackEnabled = !!targetStructureMap;
+  const writeBackEnabled = !!structuredMapExtractMap;
 
   return (
     <>

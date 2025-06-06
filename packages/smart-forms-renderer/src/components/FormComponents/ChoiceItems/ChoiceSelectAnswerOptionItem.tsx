@@ -28,6 +28,7 @@ import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledRequiredAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithRenderingExtensionsAttribute
@@ -42,6 +43,7 @@ import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsTo
 // TODO eventually merge this item with ChoiceRadioAnswerOptionItem
 interface ChoiceSelectAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledRequiredAttribute,
     PropsWithRenderingExtensionsAttribute,
@@ -55,6 +57,7 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
   const {
     qItem,
     qrItem,
+    itemPath,
     isRepeated,
     isTabled,
     renderingExtensions,
@@ -82,10 +85,10 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
     qItem: qItem,
     valueInString: valueChoice ?? '',
     onChangeByCalcExpressionString: (newValueString: string) => {
-      handleChange(newValueString);
+      handleChange(newValueString, true);
     },
     onChangeByCalcExpressionNull: () => {
-      onQrItemChange(createEmptyQrItem(qItem, answerKey));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
     }
   });
 
@@ -93,10 +96,15 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
   const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
     useAnswerOptionsToggleExpressions(qItem.linkId);
 
-  function handleChange(newValue: QuestionnaireItemAnswerOption | string | null) {
+  function handleChange(
+    newValue: QuestionnaireItemAnswerOption | string | null,
+    includeItemPath: boolean = false // only include when this is called from useCalculatedExpression hook
+  ) {
+    const targetItemPath = includeItemPath ? itemPath : undefined;
+
     // No options present or newValue is type null
     if (options.length === 0 || newValue === null) {
-      onQrItemChange(createEmptyQrItem(qItem, answerKey));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey), targetItemPath);
       return;
     }
 
@@ -106,7 +114,8 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
       onQrItemChange(
         qrAnswer
           ? { ...createEmptyQrItem(qItem, answerKey), answer: [{ ...qrAnswer, id: answerKey }] }
-          : createEmptyQrItem(qItem, answerKey)
+          : createEmptyQrItem(qItem, answerKey),
+        targetItemPath
       );
       return;
     }
@@ -115,7 +124,8 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
     onQrItemChange(
       newValue
         ? { ...createEmptyQrItem(qItem, answerKey), answer: [{ ...newValue, id: answerKey }] }
-        : createEmptyQrItem(qItem, answerKey)
+        : createEmptyQrItem(qItem, answerKey),
+      targetItemPath
     );
   }
 

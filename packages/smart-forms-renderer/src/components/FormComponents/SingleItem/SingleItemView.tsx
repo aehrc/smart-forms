@@ -21,6 +21,7 @@ import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledRequiredAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithShowMinimalViewAttribute
@@ -41,9 +42,11 @@ import {
 import useReadOnly from '../../../hooks/useReadOnly';
 import Box from '@mui/material/Box';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
 interface SingleItemViewProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledRequiredAttribute,
     PropsWithShowMinimalViewAttribute,
@@ -54,7 +57,10 @@ interface SingleItemViewProps
   itemIsHidden: boolean;
   itemHasNestedItems: boolean;
   groupCardElevation: number;
-  onQrItemChangeWithNestedItems: (qrItem: QuestionnaireResponseItem) => void;
+  onQrItemChangeWithNestedItems: (
+    qrItem: QuestionnaireResponseItem,
+    targetItemPath?: ItemPath
+  ) => void;
   parentStyles?: Record<string, string>;
 }
 
@@ -62,6 +68,7 @@ function SingleItemView(props: SingleItemViewProps) {
   const {
     qItem,
     qrItem,
+    itemPath,
     itemIsHidden,
     itemHasNestedItems,
     isRepeated,
@@ -70,9 +77,9 @@ function SingleItemView(props: SingleItemViewProps) {
     showMinimalView,
     parentIsReadOnly,
     feedbackFromParent,
+    parentStyles,
     onQrItemChange,
-    onQrItemChangeWithNestedItems,
-    parentStyles
+    onQrItemChangeWithNestedItems
   } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
@@ -102,14 +109,15 @@ function SingleItemView(props: SingleItemViewProps) {
                 <SingleItemSwitcher
                   qItem={qItem}
                   qrItem={qrItem}
+                  itemPath={itemPath}
                   isRepeated={isRepeated}
                   isTabled={isTabled}
                   renderingExtensions={renderingExtensions}
                   showMinimalView={showMinimalView}
                   parentIsReadOnly={readOnly}
                   feedbackFromParent={feedbackFromParent}
-                  onQrItemChange={onQrItemChange}
                   parentStyles={parentStyles}
+                  onQrItemChange={onQrItemChange}
                 />
               </StopPropagationWrapper>
             </Box>
@@ -121,6 +129,7 @@ function SingleItemView(props: SingleItemViewProps) {
               <SingleNestedItems
                 qItem={qItem}
                 qrItem={qrItem}
+                itemPath={itemPath}
                 groupCardElevation={groupCardElevation}
                 parentIsReadOnly={readOnly}
                 onQrItemChange={onQrItemChangeWithNestedItems}
@@ -146,18 +155,20 @@ function SingleItemView(props: SingleItemViewProps) {
           <SingleItemSwitcher
             qItem={qItem}
             qrItem={qrItem}
+            itemPath={itemPath}
             isRepeated={isRepeated}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
             showMinimalView={showMinimalView}
             parentIsReadOnly={readOnly}
             feedbackFromParent={feedbackFromParent}
-            onQrItemChange={onQrItemChange}
             parentStyles={parentStyles}
+            onQrItemChange={onQrItemChange}
           />
           <SingleNestedItems
             qItem={qItem}
             qrItem={qrItem}
+            itemPath={itemPath}
             groupCardElevation={groupCardElevation}
             parentIsReadOnly={readOnly}
             onQrItemChange={onQrItemChangeWithNestedItems}
@@ -177,8 +188,9 @@ function SingleItemView(props: SingleItemViewProps) {
       showMinimalView={showMinimalView}
       parentIsReadOnly={readOnly}
       feedbackFromParent={feedbackFromParent}
-      onQrItemChange={onQrItemChange}
       parentStyles={parentStyles}
+      itemPath={itemPath}
+      onQrItemChange={onQrItemChange}
     />
   );
 }

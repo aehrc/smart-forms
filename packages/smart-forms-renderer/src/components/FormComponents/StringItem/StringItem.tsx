@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 /*
  * Copyright 2024 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
@@ -21,6 +20,7 @@ import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledRequiredAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithRenderingExtensionsAttribute
@@ -37,9 +37,11 @@ import useStringCalculatedExpression from '../../../hooks/useStringCalculatedExp
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
+import useShowFeedback from '../../../hooks/useShowFeedback';
 
 interface StringItemProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledRequiredAttribute,
     PropsWithRenderingExtensionsAttribute,
@@ -53,13 +55,14 @@ function StringItem(props: StringItemProps) {
   const {
     qItem,
     qrItem,
+    itemPath,
     isRepeated,
     isTabled,
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
-    onQrItemChange,
-    parentStyles
+    parentStyles,
+    onQrItemChange
   } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
@@ -74,12 +77,14 @@ function StringItem(props: StringItemProps) {
   }
 
   const [input, setInput] = useState(valueString);
-  const [showFeedback, setShowFeedback] = useState(true); //provides a way to hide the feedback when the user is typing
-
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
+
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent, input);
+
+  // Provides a way to hide the feedback when the user is typing
+  const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
 
   // Process calculated expressions
   const { calcExpUpdated } = useStringCalculatedExpression({
@@ -87,26 +92,35 @@ function StringItem(props: StringItemProps) {
     inputValue: input,
     onChangeByCalcExpressionString: (newValueString: string) => {
       setInput(newValueString);
-      onQrItemChange({
-        ...createEmptyQrItem(qItem, answerKey),
-        answer: [{ id: answerKey, valueString: newValueString }]
-      });
+      onQrItemChange(
+        {
+          ...createEmptyQrItem(qItem, answerKey),
+          answer: [{ id: answerKey, valueString: newValueString }]
+        },
+        itemPath
+      );
     },
     onChangeByCalcExpressionNull: () => {
       setInput('');
-      onQrItemChange(createEmptyQrItem(qItem, answerKey));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
     }
   });
 
   // Event handlers
   function handleChange(newInput: string) {
-     setInput(newInput);
-     updateQrItemWithDebounce(newInput);
-     setShowFeedback(false);
+    setInput(newInput);
+
+    // Only suppress feedback once (before first blur)
+    if (!hasBlurred) {
+      setShowFeedback(false);
+    }
+
+    updateQrItemWithDebounce(newInput);
   }
 
   function handleBlur() {
     setShowFeedback(true);
+    setHasBlurred(true); // From now on, feedback should stay visible
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

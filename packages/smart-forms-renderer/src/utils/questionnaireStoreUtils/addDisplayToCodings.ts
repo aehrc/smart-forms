@@ -17,7 +17,7 @@
 
 import type { Coding, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type { CodeSystemLookupPromise } from '../../interfaces/lookup.interface';
-import * as FHIR from 'fhirclient';
+import { client } from 'fhirclient';
 
 // Use this for QuestionnaireStore.cachedValueSetCodings
 export async function addDisplayToCacheCodings(
@@ -125,7 +125,7 @@ export async function addDisplayToCodingArray(
 }
 
 export function getCodeSystemLookupPromise(query: string, terminologyServerUrl: string) {
-  return FHIR.client({ serverUrl: terminologyServerUrl }).request({
+  return client({ serverUrl: terminologyServerUrl }).request({
     url: `CodeSystem/$lookup?${query}`
   });
 }

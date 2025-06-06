@@ -37,6 +37,7 @@ function RepopulateGroupTable(props: RepopulateRepeatGroupProps) {
         <GroupTable
           qItem={qItem}
           qrItems={oldQRItems ?? []}
+          itemPath={[]}
           groupCardElevation={1}
           isRepeated={true}
           showMinimalView={true}
@@ -51,6 +52,7 @@ function RepopulateGroupTable(props: RepopulateRepeatGroupProps) {
         <GroupTable
           qItem={qItem}
           qrItems={newQRItems ?? []}
+          itemPath={[]}
           groupCardElevation={1}
           isRepeated={true}
           showMinimalView={true}

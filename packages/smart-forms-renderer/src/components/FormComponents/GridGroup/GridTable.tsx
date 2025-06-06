@@ -26,13 +26,17 @@ import GridRow from './GridRow';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { getQrItemsIndex } from '../../../utils/mapItem';
 import type {
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
+import { extendItemPath } from '../../../utils/itemPath';
+import { Box } from '@mui/material';
 
 interface GridTableProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItems: QuestionnaireItem[];
@@ -47,14 +51,13 @@ function GridTable(props: GridTableProps) {
     qrItems,
     qItemsIndexMap,
     columnLabels,
+    itemPath,
     showMinimalView,
     parentIsReadOnly,
     onQrItemChange
   } = props;
 
   const qrItemsByIndex = getQrItemsIndex(qItems, qrItems, qItemsIndexMap);
-
-  const numOfColumns = columnLabels.length;
 
   const minimalViewHeaderCellSx = showMinimalView ? { py: 2 } : null;
 
@@ -65,7 +68,9 @@ function GridTable(props: GridTableProps) {
           <HeaderTableCell />
           {columnLabels.map((label) => (
             <HeaderTableCell key={label} size="medium" sx={{ ...minimalViewHeaderCellSx }}>
-              {label}
+              <Box display="flex" alignItems="center" justifyContent="center">
+                {label}
+              </Box>
             </HeaderTableCell>
           ))}
           <TableCell />
@@ -90,7 +95,7 @@ function GridTable(props: GridTableProps) {
                 qItem={qItem}
                 qrItem={qrItem ?? null}
                 columnLabels={columnLabels}
-                numOfColumns={numOfColumns}
+                itemPath={extendItemPath(itemPath, qItem.linkId)}
                 parentIsReadOnly={parentIsReadOnly}
                 onQrItemChange={onQrItemChange}
               />

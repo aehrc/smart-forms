@@ -27,7 +27,6 @@ import {
   DialogContentText,
   DialogTitle
 } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import { saveAsFinalSuccessMessage, saveErrorMessage } from '../../../../utils/snackbar.ts';
@@ -98,9 +97,9 @@ function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <LoadingButton loading={isSaving} onClick={handleSave}>
+        <Button loading={isSaving} onClick={handleSave}>
           Save as final
-        </LoadingButton>
+        </Button>
       </DialogActions>
     </Dialog>
   );

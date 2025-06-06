@@ -131,13 +131,16 @@ export async function evaluateUpdatedExpressions(
     );
 
   // Update calculatedExpressions
-  const { calculatedExpsIsUpdated, updatedCalculatedExpressions } =
-    await evaluateCalculatedExpressions(
-      updatedFhirPathContext,
-      fhirPathTerminologyCache,
-      calculatedExpressions,
-      terminologyServerUrl
-    );
+  const {
+    calculatedExpsIsUpdated,
+    updatedCalculatedExpressions,
+    computedNewAnswers: computedNewAnswersCalculatedExpressions
+  } = await evaluateCalculatedExpressions(
+    updatedFhirPathContext,
+    fhirPathTerminologyCache,
+    calculatedExpressions,
+    terminologyServerUrl
+  );
 
   // Update dynamic value sets
   const {
@@ -154,6 +157,13 @@ export async function evaluateUpdatedExpressions(
   // Have a process here to find their QRItems and assign updates based on the computedNewAnswers
   // In the case of dynamic value sets, just clear the existing answers
   // Eventually we want to expand this to calculatedExpressions
+  for (const linkId in computedNewAnswersCalculatedExpressions) {
+    // FIXME - this implementation is designed to only work on null for now, if we want to actually apply new answer updates, need to have Questionnaire input param
+    if (computedNewAnswersCalculatedExpressions[linkId] === null) {
+      computedQRItemUpdates[linkId] = null;
+    }
+  }
+
   for (const linkId in computedNewAnswersDynamicValueSets) {
     computedQRItemUpdates[linkId] = null;
   }

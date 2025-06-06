@@ -32,7 +32,7 @@ import { createQuestionnaireResponseItemMap } from './questionnaireResponseStore
 import { getQuestionnaireItem, getSectionHeading } from './misc';
 import difference from 'lodash.difference';
 import intersection from 'lodash.intersection';
-import isEqual from 'lodash.isequal';
+import { deepEqual } from 'fast-equals';
 
 /**
  * ItemToRepopulate interface
@@ -459,7 +459,7 @@ function retrieveSingleOldQRItem(
     return;
   }
 
-  if (isEqual(oldQRItem, newQRItem)) {
+  if (deepEqual(oldQRItem, newQRItem)) {
     delete itemsToRepopulate[qItem.linkId];
     return;
   }
@@ -481,7 +481,7 @@ function retrieveRepeatGroupOldQRItems(
     return;
   }
 
-  if (isEqual(oldQRItems, newQRItems)) {
+  if (deepEqual(oldQRItems, newQRItems)) {
     delete itemsToRepopulate[qItem.linkId];
     return;
   }
@@ -526,7 +526,7 @@ function retrieveGridGroupOldQRItems(
       continue;
     }
 
-    if (isEqual(oldGridChildQrItem, newGridChildQRItem)) {
+    if (deepEqual(oldGridChildQrItem, newGridChildQRItem)) {
       newGridChildQRItemMap.delete(gridChildQItem.linkId);
     } else {
       oldGridChildQRItems.push(oldGridChildQrItem);

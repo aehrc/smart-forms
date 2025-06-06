@@ -27,7 +27,6 @@ import {
   DialogContentText,
   DialogTitle
 } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import { saveAsFinalSuccessMessage, saveErrorMessage } from '../../../../utils/snackbar.ts';
@@ -208,20 +207,20 @@ function RendererSaveAsFinalWriteBackDialog(props: RendererSaveAsFinalWriteBackD
         <Button onClick={handleClose} disabled={isSavingOnly || isSavingWriteBack}>
           Cancel
         </Button>
-        <LoadingButton
+        <Button
           data-test="save-as-final-button"
           loading={isSavingOnly}
           disabled={isSavingWriteBack}
           onClick={handleSaveAsFinalOnly}>
           Save as Final Only
-        </LoadingButton>
-        <LoadingButton
+        </Button>
+        <Button
           data-test="save-as-final-write-back-button"
           loading={isSavingWriteBack}
           disabled={isSavingOnly}
           onClick={handleSaveAsFinalWriteBack}>
           Save as Final & Write Back
-        </LoadingButton>
+        </Button>
       </DialogActions>
     </Dialog>
   );

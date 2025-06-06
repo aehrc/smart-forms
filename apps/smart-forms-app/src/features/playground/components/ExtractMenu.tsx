@@ -19,11 +19,10 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
-import type { SetStateAction } from 'react';
 import { useState } from 'react';
 import { CircularProgress, Fade, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import { useExtractOperationStore } from '../stores/extractOperationStore.ts';
+import { useExtractDebuggerStore } from '../stores/extractDebuggerStore.ts';
 import { FORMS_SERVER_URL } from '../../../globals.ts';
 import Iconify from '../../../components/Iconify/Iconify.tsx';
 
@@ -31,23 +30,26 @@ interface ExtractMenuProps {
   isExtracting: boolean;
   onObservationExtract: () => void;
   onStructureMapExtract: () => void;
+  onTemplateExtract: (modifiedOnly: boolean) => void;
 }
 
 function ExtractMenu(props: ExtractMenuProps) {
-  const { isExtracting, onObservationExtract, onStructureMapExtract } = props;
+  const { isExtracting, onObservationExtract, onStructureMapExtract, onTemplateExtract } = props;
 
-  const targetStructureMap = useExtractOperationStore.use.targetStructureMap();
+  const structuredMapExtractMap = useExtractDebuggerStore.use.structuredMapExtractMap();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const handleClick = (event: { currentTarget: SetStateAction<HTMLElement | null> }) => {
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
 
-  const structuredMapExtractEnabled = targetStructureMap !== null;
+  const structuredMapExtractEnabled = structuredMapExtractMap !== null;
   const structuredMapToolTipText = structuredMapExtractEnabled
     ? ''
     : `The current questionnaire does not have a target StructureMap for $extract, or the target StructureMap cannot be found on ${FORMS_SERVER_URL}`;
@@ -78,7 +80,9 @@ function ExtractMenu(props: ExtractMenuProps) {
         onClose={handleClose}
         MenuListProps={{
           'aria-labelledby': 'extract-button'
-        }}>
+        }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
         <MenuItem
           onClick={() => {
             onObservationExtract();
@@ -114,6 +118,26 @@ function ExtractMenu(props: ExtractMenuProps) {
             </MenuItem>
           </span>
         </Tooltip>
+        <MenuItem
+          onClick={() => {
+            onTemplateExtract(false);
+            handleClose();
+          }}>
+          <ListItemIcon>
+            <Iconify icon="mdi:file-document" />
+          </ListItemIcon>
+          <ListItemText>Template-based $extract</ListItemText>
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            onTemplateExtract(true);
+            handleClose();
+          }}>
+          <ListItemIcon>
+            <Iconify icon="mdi:file-document-edit" />
+          </ListItemIcon>
+          <ListItemText>Template-based $extract (modified only)</ListItemText>
+        </MenuItem>
       </Menu>
 
       {isExtracting ? (

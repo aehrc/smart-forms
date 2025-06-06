@@ -25,6 +25,7 @@ import { findInAnswerOptions, getQrChoiceValue } from '../../../utils/choice';
 import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
+  PropsWithItemPathAttribute,
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
@@ -40,6 +41,7 @@ import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsTo
 
 interface OpenChoiceRadioAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithRenderingExtensionsAttribute,
@@ -88,6 +90,10 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
   if (openLabelSelected && valueRadio === null) {
     valueRadio = '';
   }
+
+  // TODO Process calculated expressions
+  // This requires its own hook, because in the case of multi-select, we need to check if the value is already checked to prevent an infinite loop
+  // This will be done after the choice/open-choice refactoring
 
   // Process answerOptionsToggleExpressions
   const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =

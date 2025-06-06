@@ -16,7 +16,6 @@
  */
 
 import React from 'react';
-import Box from '@mui/material/Box';
 import type { AutocompleteChangeReason } from '@mui/material/Autocomplete';
 import Autocomplete from '@mui/material/Autocomplete';
 import { StandardTextField } from '../Textfield.styles';
@@ -76,79 +75,77 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
   return (
-    <Box display="flex">
-      <Autocomplete
-        {...(!isTabled && { id: `${qItem.type}-${qItem.linkId}` })}
-        value={valueAutocomplete}
-        options={options}
-        getOptionLabel={(option) =>
-          typeof option === 'string' ? option : (option.display ?? `${option.code}`)
-        }
-        disabled={readOnly && readOnlyVisualStyle === 'disabled'}
-        readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
-        loading={loading}
-        loadingText={'Fetching results...'}
-        clearOnEscape
-        freeSolo
-        sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 220, flexGrow: 1 }}
-        onChange={(_, newValue, reason) => onValueChange(newValue, reason)}
-        onInputChange={(_, newValue, reason) => onValueChange(newValue, reason)}
-        filterOptions={(x) => x}
-        renderInput={(params) => (
-          <StandardTextField
-            {...params}
-            value={input}
-            textFieldWidth={textFieldWidth}
-            isTabled={isTabled}
-            label={displayPrompt}
-            size="small"
-            placeholder={entryFormat}
-            slotProps={{
-              input: {
-                ...params.InputProps,
-                readOnly: readOnly && readOnlyVisualStyle === 'readonly',
-                startAdornment: (
-                  <>
-                    {!valueAutocomplete || valueAutocomplete === '' ? (
-                      <SearchIcon fontSize="small" sx={{ ml: 0.5 }} />
-                    ) : null}
-                    {params.InputProps.startAdornment}
-                  </>
-                ),
-                // Warning indicator should not show up in open-choice autocomplete
-                endAdornment: (
-                  <>
-                    {loading ? (
-                      <CircularProgress color="inherit" size={16} />
-                    ) : feedback && feedback.color !== 'warning' ? (
-                      <Fade in={!!feedback} timeout={300}>
-                        <Tooltip title={feedback.message} arrow sx={{ ml: 1 }}>
+    <Autocomplete
+      {...(!isTabled && { id: `${qItem.type}-${qItem.linkId}` })}
+      value={valueAutocomplete}
+      options={options}
+      getOptionLabel={(option) =>
+        typeof option === 'string' ? option : (option.display ?? `${option.code}`)
+      }
+      disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+      readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
+      loading={loading}
+      loadingText={'Fetching results...'}
+      clearOnEscape
+      freeSolo
+      sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 220, flexGrow: 1 }}
+      onChange={(_, newValue, reason) => onValueChange(newValue, reason)}
+      onInputChange={(_, newValue, reason) => onValueChange(newValue, reason)}
+      filterOptions={(x) => x}
+      renderInput={(params) => (
+        <StandardTextField
+          {...params}
+          value={input}
+          textFieldWidth={textFieldWidth}
+          isTabled={isTabled}
+          label={displayPrompt}
+          size="small"
+          placeholder={entryFormat}
+          slotProps={{
+            input: {
+              ...params.InputProps,
+              readOnly: readOnly && readOnlyVisualStyle === 'readonly',
+              startAdornment: (
+                <>
+                  {!valueAutocomplete || valueAutocomplete === '' ? (
+                    <SearchIcon fontSize="small" sx={{ ml: 0.5 }} />
+                  ) : null}
+                  {params.InputProps.startAdornment}
+                </>
+              ),
+              // Warning indicator should not show up in open-choice autocomplete
+              endAdornment: (
+                <>
+                  {loading ? (
+                    <CircularProgress color="inherit" size={16} />
+                  ) : feedback && feedback.color !== 'warning' ? (
+                    <Fade in={!!feedback} timeout={300}>
+                      <Tooltip title={feedback.message} arrow sx={{ ml: 1 }}>
+                        {
                           {
-                            {
-                              info: <InfoIcon fontSize="small" color="info" />,
-                              warning: <WarningAmberIcon fontSize="small" color="warning" />,
-                              success: <DoneIcon fontSize="small" color="success" />,
-                              error: <ErrorIcon fontSize="small" color="error" />
-                            }[feedback.color]
-                          }
-                        </Tooltip>
-                      </Fade>
-                    ) : null}
-                    {params.InputProps.endAdornment}
-                    <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
-                  </>
-                ),
-                inputProps: {
-                  ...params.inputProps,
-                  'aria-label': displayPrompt || 'Autocomplete input'
-                }
+                            info: <InfoIcon fontSize="small" color="info" />,
+                            warning: <WarningAmberIcon fontSize="small" color="warning" />,
+                            success: <DoneIcon fontSize="small" color="success" />,
+                            error: <ErrorIcon fontSize="small" color="error" />
+                          }[feedback.color]
+                        }
+                      </Tooltip>
+                    </Fade>
+                  ) : null}
+                  {params.InputProps.endAdornment}
+                  <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
+                </>
+              ),
+              inputProps: {
+                ...params.inputProps,
+                'aria-label': displayPrompt || 'Autocomplete input'
               }
-            }}
-            data-test="q-item-open-choice-autocomplete-field"
-          />
-        )}
-      />
-    </Box>
+            }
+          }}
+          data-test="q-item-open-choice-autocomplete-field"
+        />
+      )}
+    />
   );
 }
 

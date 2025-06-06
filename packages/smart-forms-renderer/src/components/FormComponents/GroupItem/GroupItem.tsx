@@ -21,6 +21,7 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
 import type {
   PropsWithIsRepeatedAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
   PropsWithQrItemChangeHandler
@@ -33,9 +34,11 @@ import GroupItemView from './GroupItemView';
 import { QGroupContainerBox } from '../../Box.styles';
 import { GroupCard } from './GroupItem.styles';
 import PageButtonsWrapper from './PageButtonWrapper';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
 interface GroupItemProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithParentIsRepeatGroupAttribute {
@@ -56,6 +59,7 @@ function GroupItem(props: GroupItemProps) {
   const {
     qItem,
     qrItem,
+    itemPath,
     isRepeated,
     groupCardElevation,
     disableCardView,
@@ -84,16 +88,16 @@ function GroupItem(props: GroupItemProps) {
   const qrItems = qrGroup.item;
 
   // Event Handlers
-  function handleQrItemChange(newQrItem: QuestionnaireResponseItem) {
+  function handleQrItemChange(newQrItem: QuestionnaireResponseItem, targetItemPath?: ItemPath) {
     const updatedQrGroup: QuestionnaireResponseItem = { ...qrGroup };
     updateQrItemsInGroup(newQrItem, null, updatedQrGroup, qItemsIndexMap);
-    onQrItemChange(updatedQrGroup);
+    onQrItemChange(updatedQrGroup, targetItemPath);
   }
 
-  function handleQrRepeatGroupChange(qrRepeatGroup: QrRepeatGroup) {
+  function handleQrRepeatGroupChange(qrRepeatGroup: QrRepeatGroup, targetItemPath?: ItemPath) {
     const updatedQrGroup: QuestionnaireResponseItem = { ...qrGroup };
     updateQrItemsInGroup(null, qrRepeatGroup, updatedQrGroup, qItemsIndexMap);
-    onQrItemChange(updatedQrGroup);
+    onQrItemChange(updatedQrGroup, targetItemPath);
   }
 
   if (!qItems || !qrItems) {
@@ -131,6 +135,7 @@ function GroupItem(props: GroupItemProps) {
       qItem={qItem}
       childQItems={qItems}
       qrItemsByIndex={qrItemsByIndex}
+      itemPath={itemPath}
       isRepeated={isRepeated}
       groupCardElevation={groupCardElevation}
       disableCardView={disableCardView}
@@ -143,9 +148,9 @@ function GroupItem(props: GroupItemProps) {
       parentIsReadOnly={parentIsReadOnly}
       parentIsRepeatGroup={parentIsRepeatGroup}
       parentRepeatGroupIndex={parentRepeatGroupIndex}
+      parentStyles={parentStyles}
       onQrItemChange={handleQrItemChange}
       onQrRepeatGroupChange={handleQrRepeatGroupChange}
-      parentStyles={parentStyles}
     />
   );
 }

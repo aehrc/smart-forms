@@ -21,6 +21,7 @@ import { getClientBundlePromise, getResponsesFromBundle } from '../utils/dashboa
 import { useMemo } from 'react';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
 import useSelectedQuestionnaire from './useSelectedQuestionnaire.ts';
+import { NUM_OF_EXISTING_RESPONSES_TO_FETCH } from '../../../globals.ts';
 
 interface useFetchExistingResponsesReturnParams {
   existingResponses: QuestionnaireResponse[];
@@ -32,7 +33,7 @@ interface useFetchExistingResponsesReturnParams {
 function useFetchExistingResponses(): useFetchExistingResponsesReturnParams {
   const { selectedQuestionnaire } = useSelectedQuestionnaire();
 
-  const numOfSearchEntries = 100;
+  const numOfSearchEntries = NUM_OF_EXISTING_RESPONSES_TO_FETCH;
 
   const { smartClient, patient, launchQuestionnaire } = useSmartClient();
   const questionnaire = selectedQuestionnaire ?? launchQuestionnaire;

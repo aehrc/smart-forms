@@ -63,7 +63,7 @@ export const LAUNCH_PARAM_WITH_Q = btoa(
     '',
     0,
     1,
-    '{"role":"questionnaire-render-on-launch","canonical":"http://www.health.gov.au/assessments/mbs/715|0.2.0-assembled","type":"Questionnaire"}',
+    '{"role":"questionnaire-render-on-launch","canonical":"http://www.health.gov.au/assessments/mbs/715|0.3.0-assembled","type":"Questionnaire"}',
     false
   ])
 );

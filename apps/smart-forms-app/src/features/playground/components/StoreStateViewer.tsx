@@ -19,43 +19,49 @@ import QuestionnaireStoreViewer from './StoreStateViewers/QuestionnaireStoreView
 import SmartConfigStoreViewer from './StoreStateViewers/SmartConfigStoreViewer.tsx';
 import QuestionnaireResponseStoreViewer from './StoreStateViewers/QuestionnaireResponseStoreViewer.tsx';
 import TerminologyServerStoreViewer from './StoreStateViewers/TerminologyServerStoreViewer.tsx';
+import ExtractDebuggerViewer from './StoreStateViewers/ExtractDebuggerViewer.tsx';
 import { Typography } from '@mui/material';
-import ExtractedSectionViewer from './StoreStateViewers/ExtractedResourceViewer.tsx';
 
 export type StateStore =
   | 'questionnaireStore'
   | 'questionnaireResponseStore'
   | 'smartConfigStore'
   | 'terminologyServerStore'
-  | 'extractedResource'
+  | 'extractDebugger'
   | null;
 
 interface StoreStateViewerProps {
   selectedStore: StateStore;
   sourceFhirServerUrl: string;
+  statePropNameFilter: string;
 }
 
 function StoreStateViewer(props: StoreStateViewerProps) {
-  const { selectedStore, sourceFhirServerUrl } = props;
+  const { selectedStore, sourceFhirServerUrl, statePropNameFilter } = props;
 
   if (selectedStore === 'questionnaireStore') {
-    return <QuestionnaireStoreViewer />;
+    return <QuestionnaireStoreViewer statePropNameFilter={statePropNameFilter} />;
   }
 
   if (selectedStore === 'questionnaireResponseStore') {
-    return <QuestionnaireResponseStoreViewer />;
+    return <QuestionnaireResponseStoreViewer statePropNameFilter={statePropNameFilter} />;
   }
 
   if (selectedStore === 'smartConfigStore') {
-    return <SmartConfigStoreViewer />;
+    return <SmartConfigStoreViewer statePropNameFilter={statePropNameFilter} />;
   }
 
   if (selectedStore === 'terminologyServerStore') {
-    return <TerminologyServerStoreViewer />;
+    return <TerminologyServerStoreViewer statePropNameFilter={statePropNameFilter} />;
   }
 
-  if (selectedStore === 'extractedResource') {
-    return <ExtractedSectionViewer sourceFhirServerUrl={sourceFhirServerUrl} />;
+  if (selectedStore === 'extractDebugger') {
+    return (
+      <ExtractDebuggerViewer
+        sourceFhirServerUrl={sourceFhirServerUrl}
+        statePropNameFilter={statePropNameFilter}
+      />
+    );
   }
 
   return <Typography variant="h5">No store selected</Typography>;

@@ -25,6 +25,8 @@ import type {
 } from 'fhir/r4';
 import type { Tabs } from '../interfaces';
 import { getShortText } from './itemControl';
+import fhirpath from 'fhirpath';
+import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 
 // Get QuestionnaireItem from Questionnaire based on linkId
 export function getQuestionnaireItem(
@@ -257,8 +259,13 @@ function getRepeatGroupParentItemRecursive(
   return null;
 }
 
-/*
- Used for getting the tab section heading for Smart Form's re-population
+/**
+ * Returns the section heading text for a given linkId in a questionnaire, used to label tab sections.
+ *
+ * @param questionnaire - The FHIR Questionnaire to search through.
+ * @param targetLinkId - The linkId of the target item.
+ * @param tabs - Tab definitions used to match section headings.
+ * @returns The section heading text if found, otherwise null.
  */
 export function getSectionHeading(
   questionnaire: Questionnaire,
@@ -310,4 +317,21 @@ export function getSectionHeadingRecursive(
 
   // No heading found in the current item or its child items, return null
   return null;
+}
+
+/**
+ * Retrieves a `QuestionnaireResponseItem` using a FHIRPath-compatible path string.
+ *
+ * @param questionnaireResponse - The `QuestionnaireResponse` resource to search.
+ * @param fhirPathString - A FHIRPath string that locates the item, e.g., "item.where(linkId='g1').item.where(linkId='q1')[0]"
+ * @returns The matching `QuestionnaireResponseItem` or `null` if not found.
+ */
+export function getQuestionnaireResponseItemViaFhirPath(
+  questionnaireResponse: QuestionnaireResponse,
+  fhirPathString: string
+): QuestionnaireResponseItem | null {
+  const result = fhirpath.evaluate(questionnaireResponse, fhirPathString, {}, fhirpath_r4_model, {
+    async: false
+  });
+  return (result.length > 0 ? result[0] : null) as QuestionnaireResponseItem | null;
 }

@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
+import type { Theme } from '@mui/material/styles';
 import { alpha, styled } from '@mui/material/styles';
-import type { Theme } from '@mui/material';
 import { OutlinedInput, Toolbar } from '@mui/material';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
