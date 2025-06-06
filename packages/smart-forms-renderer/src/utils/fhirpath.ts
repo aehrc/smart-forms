@@ -17,6 +17,7 @@
 
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
+import { lookupCode } from './calculatedExpression';
 import type { Expression, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import type { CalculatedExpression } from '../interfaces/calculatedExpression.interface';
 import type { EnableWhenExpressions } from '../interfaces/enableWhen.interface';
@@ -290,6 +291,8 @@ export async function evaluateLinkIdVariables(
       }
 
       try {
+        console.log('FP294');
+
         const fhirPathResult = fhirpath.evaluate(
           qrItem ?? {},
           {
@@ -297,10 +300,23 @@ export async function evaluateLinkIdVariables(
             expression: variable.expression
           },
           fhirPathContext,
+
           fhirpath_r4_model,
           {
             async: true,
-            terminologyUrl: terminologyServerUrl
+            terminologyUrl: terminologyServerUrl,
+            userInvocationTable: {
+              lookup: {
+                // The function actually gets 3 parameters one is the main object iteslf which we don't need
+                fn: (someObj: any, system: string, code: string) => {
+                  console.log('lookup called with system:', system, 'code:', code);
+                  return lookupCode(system, code, terminologyServerUrl); 
+                },
+                arity: {
+                  2: ['String', 'String']
+                }
+              }
+            }
           }
         );
         fhirPathContext[`${variable.name}`] = await handleFhirPathResult(fhirPathResult);
@@ -351,7 +367,19 @@ export async function evaluateQuestionnaireLevelVariables(
           fhirpath_r4_model,
           {
             async: true,
-            terminologyUrl: terminologyServerUrl
+            terminologyUrl: terminologyServerUrl,
+            userInvocationTable: {
+              lookup: {
+                // The function actually gets 3 parameters one is the main object iteslf which we don't need
+                fn: (someObj: any, system: string, code: string) => {
+                  console.log('lookup called with system:', system, 'code:', code);
+                  return lookupCode(system, code, terminologyServerUrl); 
+                },
+                arity: {
+                  2: ['String', 'String']
+                }
+              }
+            }
           }
         );
 

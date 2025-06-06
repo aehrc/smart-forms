@@ -36,6 +36,36 @@ import isEqual from 'lodash.isequal';
 import type { Variables } from '../interfaces';
 import type { ComputedNewAnswers } from '../interfaces/computedUpdates.interface';
 
+// Lookup CodeSystem $lookup utility for Coding display
+export async function lookupCode(
+  system: string,
+  code: string,
+  terminologyServerUrl: string
+): Promise<{ display: string | null; parameters: any[] }> {
+  const url = `${terminologyServerUrl}/CodeSystem/$lookup?system=${encodeURIComponent(system)}&code=${encodeURIComponent(code)}`;
+  try {
+    const response = await fetch(url, {
+      headers: {
+        Accept: 'application/fhir+json'
+      }
+    });
+    if (!response.ok) {
+      console.warn(`$lookup failed with status ${response.status}`);
+      return { display: null, parameters: [] };
+    }
+    const result = await response.json();
+    const displayParam = result.parameter?.find((p: any) => p.name === 'display');
+    const parameters = result.parameter || [];
+    return {
+      display: displayParam?.valueString || null,
+      parameters
+    };
+  } catch (error) {
+    console.error('Lookup failed:', error);
+    return { display: null, parameters: [] };
+  }
+}
+
 interface EvaluateInitialCalculatedExpressionsParams {
   initialResponse: QuestionnaireResponse;
   initialResponseItemMap: Record<string, QuestionnaireResponseItem[]>;
@@ -112,7 +142,19 @@ export async function evaluateInitialCalculatedExpressions(
           fhirpath_r4_model,
           {
             async: true,
-            terminologyUrl: terminologyServerUrl
+            terminologyUrl: terminologyServerUrl,
+            userInvocationTable: {
+              lookup: {
+                // The function actually gets 3 parameters one is the main object iteslf which we don't need
+                fn: (someObj: any, system: string, code: string) => {
+                  console.log('lookup called with system:', system, 'code:', code);
+                  return lookupCode(system, code, terminologyServerUrl);
+                },
+                arity: {
+                  2: ['String', 'String']
+                }
+              }
+            }
           }
         );
         const result = await handleFhirPathResult(fhirPathResult);
@@ -181,9 +223,12 @@ export async function evaluateCalculatedExpressions(
 
     for (const calcExpression of itemCalcExpressions) {
       const cacheKey = JSON.stringify(calcExpression.expression); // Use expression as cache key
-      if (fhirPathTerminologyCache[cacheKey]) {
-        continue;
-      }
+
+      //TODO: Jana : The cache is not allowing future $lookup calls. So we are disabling for now.
+
+      // if (fhirPathTerminologyCache[cacheKey]) {
+      //   continue;
+      // }
 
       try {
         const fhirPathResult = fhirpath.evaluate(
@@ -193,7 +238,19 @@ export async function evaluateCalculatedExpressions(
           fhirpath_r4_model,
           {
             async: true,
-            terminologyUrl: terminologyServerUrl
+            terminologyUrl: terminologyServerUrl,
+            userInvocationTable: {
+              lookup: {
+                // The function actually gets 3 parameters one is the main object iteslf which we don't need
+                fn: (someObj: any, system: string, code: string) => {
+                  console.log('lookup called with system:', system, 'code:', code);
+                  return lookupCode(system, code, terminologyServerUrl);
+                },
+                arity: {
+                  2: ['String', 'String']
+                }
+              }
+            }
           }
         );
         const result = await handleFhirPathResult(fhirPathResult);
