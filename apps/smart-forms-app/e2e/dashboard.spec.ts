@@ -25,7 +25,8 @@ test.beforeEach(async ({ page }) => {
   const fetchQsPromise = page.waitForResponse(
     (response) =>
       response.url().startsWith(`${PLAYWRIGHT_FORMS_SERVER_URL}/Questionnaire`) &&
-      response.url().includes('_sort=-date')
+      response.url().includes('_sort=-date') &&
+      response.request().method() === 'GET'
   );
 
   const launchUrl = `${PLAYWRIGHT_APP_URL}/launch?iss=https%3A%2F%2Fproxy.smartforms.io%2Fv%2Fr4%2Ffhir&launch=${LAUNCH_PARAM_WITHOUT_Q}`;
@@ -39,8 +40,12 @@ test.beforeEach(async ({ page }) => {
 test('Select Dev715 and view its first response', async ({ page }) => {
   // Select Dev715 and view its responses
   const fetchQROfSelectedQPromise = page.waitForResponse(
-    new RegExp(/^https:\/\/proxy\.smartforms\.io\/v\/r4\/fhir\/QuestionnaireResponse\?.+$/)
+    (response) =>
+      /^https:\/\/proxy\.smartforms\.io\/v\/r4\/fhir\/QuestionnaireResponse\?.+$/.test(
+        response.url()
+      ) && response.request().method() === 'GET'
   );
+
   await page.getByTestId('dashboard-table-pagination').locator('div').getByRole('combobox').click();
   await page.getByRole('option', { name: '50' }).click();
   await page.getByTestId('questionnaire-list-row').getByText(questionnaireTitle).first().click();

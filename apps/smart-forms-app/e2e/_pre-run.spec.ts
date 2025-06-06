@@ -30,7 +30,8 @@ test('Launch without questionnaire context, select a questionnaire and create a 
   const fetchQsPromise = page.waitForResponse(
     (response) =>
       response.url().startsWith(`${PLAYWRIGHT_FORMS_SERVER_URL}/Questionnaire`) &&
-      response.url().includes('_sort=-date')
+      response.url().includes('_sort=-date') &&
+      response.request().method() === 'GET'
   );
 
   const launchUrl = `${PLAYWRIGHT_APP_URL}/launch?iss=https%3A%2F%2Fproxy.smartforms.io%2Fv%2Fr4%2Ffhir&launch=${LAUNCH_PARAM_WITHOUT_Q}`;
@@ -45,7 +46,8 @@ test('Launch without questionnaire context, select a questionnaire and create a 
     (response) =>
       response.url().startsWith(`${PLAYWRIGHT_FORMS_SERVER_URL}/Questionnaire`) &&
       response.url().includes('_sort=-date') &&
-      response.url().includes('title:contains=Dev715')
+      response.url().includes('title:contains=Dev715') &&
+      response.request().method() === 'GET'
   );
 
   await page.getByTestId('search-field-questionnaires').locator('input').fill('Dev715');
@@ -54,9 +56,13 @@ test('Launch without questionnaire context, select a questionnaire and create a 
   expect(fetchQDev715Response.status()).toBe(200);
 
   // Open first Dev715 questionnaire, pre-population should be triggered
-  const populatePromise = page.waitForResponse(
-    new RegExp(/^https:\/\/proxy\.smartforms\.io\/v\/r4\/fhir\/(Observation|Condition)\?.+$/)
-  );
+  const populatePromise = page.waitForResponse((response) => {
+    return (
+      /^https:\/\/proxy\.smartforms\.io\/v\/r4\/fhir\/(Observation|Condition)\?.+$/.test(
+        response.url()
+      ) && response.request().method() === 'GET'
+    );
+  });
   await page.getByTestId('questionnaire-list-row').getByText('Dev715').first().click();
   await page.getByTestId('button-create-response').click();
   const populateResponse = await populatePromise;
@@ -71,7 +77,11 @@ test('Launch without questionnaire context, select a questionnaire and create a 
   await expect(page.getByTestId('updating-indicator')).toBeInViewport();
 
   // Save as draft
-  const saveAsDraftPromise = page.waitForResponse(`${PLAYWRIGHT_EHR_URL}/QuestionnaireResponse`);
+  const saveAsDraftPromise = page.waitForResponse(
+    (response) =>
+      response.url() === `${PLAYWRIGHT_EHR_URL}/QuestionnaireResponse` &&
+      response.request().method() === 'POST'
+  );
   await page.getByTestId('renderer-operation-item').getByText('Save Progress').click();
   const saveAsDraftPromiseResponse = await saveAsDraftPromise;
   expect(saveAsDraftPromiseResponse.status()).toBe(201);

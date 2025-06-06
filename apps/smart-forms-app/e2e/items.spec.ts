@@ -44,7 +44,8 @@ test.describe('BitOfEverything questionnaire', () => {
       (response) =>
         response.url().startsWith(`${PLAYWRIGHT_FORMS_SERVER_URL}/Questionnaire`) &&
         response.url().includes('_sort=-date') &&
-        response.url().includes('title:contains=Bit')
+        response.url().includes('title:contains=Bit') &&
+        response.request().method() === 'GET'
     );
 
     await page.getByTestId('search-field-questionnaires').locator('input').fill('Bit');

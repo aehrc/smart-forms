@@ -32,7 +32,10 @@ test.beforeEach(async ({ page }) => {
     .fill(PLAYWRIGHT_EHR_URL);
 
   // Validate source FHIR server url
-  const metadataPromise = page.waitForResponse(`${PLAYWRIGHT_EHR_URL}/metadata`);
+  const metadataPromise = page.waitForResponse(
+    (response) =>
+      response.url() === `${PLAYWRIGHT_EHR_URL}/metadata` && response.request().method() === 'GET'
+  );
   await page.getByTestId('validate-url-button-playground').click();
   const metadataResponse = await metadataPromise;
   expect(metadataResponse.status()).toBe(200);
@@ -41,8 +44,17 @@ test.beforeEach(async ({ page }) => {
   );
 
   // Set source FHIR server url
-  const patientPromise = page.waitForResponse(`${PLAYWRIGHT_EHR_URL}/Patient?_count=100`);
-  const practitionerPromise = page.waitForResponse(`${PLAYWRIGHT_EHR_URL}/Practitioner?_count=100`);
+  const patientPromise = page.waitForResponse(
+    (response) =>
+      response.url().startsWith(`${PLAYWRIGHT_EHR_URL}/Patient`) &&
+      response.request().method() === 'GET'
+  );
+
+  const practitionerPromise = page.waitForResponse(
+    (response) =>
+      response.url().startsWith(`${PLAYWRIGHT_EHR_URL}/Practitioner`) &&
+      response.request().method() === 'GET'
+  );
   await page.getByTestId('set-fhir-server-button-playground').click();
   const patientResponse = await patientPromise;
   expect(patientResponse.status()).toBe(200);
@@ -73,7 +85,10 @@ test('Pre-pop into CVDRiskCalculator questionnaire', async ({ page }) => {
 
   // Perform pre-population
   const populatePromise = page.waitForResponse(
-    new RegExp(/^https:\/\/proxy\.smartforms\.io\/v\/r4\/fhir\/(Observation|Condition)\?.+$/)
+    (response) =>
+      /^https:\/\/proxy\.smartforms\.io\/v\/r4\/fhir\/(Observation|Condition)\?.+$/.test(
+        response.url()
+      ) && response.request().method() === 'GET'
   );
   await page.getByTestId('prepop-button-playground').click();
   const populateResponse = await populatePromise;
@@ -101,7 +116,9 @@ test('Pre-pop to test terminology resolving logic', async ({ page }) => {
 
   // Perform pre-population
   const expandPromise = page.waitForResponse(
-    new RegExp(/^https:\/\/tx\.ontoserver\.csiro\.au\/fhir\/ValueSet\/\$expand\?.+$/)
+    (response) =>
+      /^https:\/\/tx\.ontoserver\.csiro\.au\/fhir\/ValueSet\/\$expand\?.+$/.test(response.url()) &&
+      response.request().method() === 'GET'
   );
 
   await page.getByTestId('prepop-button-playground').click();

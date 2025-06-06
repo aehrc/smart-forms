@@ -24,7 +24,10 @@ const questionnaireTitle = 'Aboriginal and Torres Strait Islander Health Check';
 test.beforeEach(async ({ page }) => {
   // Launch from Smart EHR launcher (with MBS715 questionnaire context)
   const populatePromise = page.waitForResponse(
-    new RegExp(/^https:\/\/proxy\.smartforms\.io\/v\/r4\/fhir\/(Observation|Condition)\?.+$/)
+    (response) =>
+      /^https:\/\/proxy\.smartforms\.io\/v\/r4\/fhir\/(Observation|Condition)\?.+$/.test(
+        response.url()
+      ) && response.request().method() === 'GET'
   );
   const launchUrl = `${PLAYWRIGHT_APP_URL}/launch?iss=https%3A%2F%2Fproxy.smartforms.io%2Fv%2Fr4%2Ffhir&launch=${LAUNCH_PARAM_WITH_Q}`;
   console.log('Playwright navigating to: ', launchUrl);
@@ -44,9 +47,13 @@ test('Saving a response as draft then final', async ({ page }) => {
   await page.getByTestId('q-item-boolean-box').first().locator('input').first().click();
 
   // Save as draft
-  const saveDraftPromise = page.waitForResponse(`${PLAYWRIGHT_EHR_URL}/QuestionnaireResponse`);
+  const saveAsDraftPromise = page.waitForResponse(
+    (response) =>
+      response.url() === `${PLAYWRIGHT_EHR_URL}/QuestionnaireResponse` &&
+      response.request().method() === 'POST'
+  );
   await page.getByTestId('renderer-operation-item').getByText('Save Progress').click();
-  const saveDraftResponse = await saveDraftPromise;
+  const saveDraftResponse = await saveAsDraftPromise;
   expect(saveDraftResponse.status()).toBe(201);
   await expect(page.getByText('Response saved')).toBeInViewport();
 
@@ -65,8 +72,10 @@ test('Saving a response as draft then final', async ({ page }) => {
   await expect(page).toHaveURL(`${PLAYWRIGHT_APP_URL}/renderer`);
 
   // Save as final
-  const saveFinalPromise = page.waitForResponse((response) =>
-    response.url().startsWith(`${PLAYWRIGHT_EHR_URL}/QuestionnaireResponse/`)
+  const saveFinalPromise = page.waitForResponse(
+    (response) =>
+      response.url().startsWith(`${PLAYWRIGHT_EHR_URL}/QuestionnaireResponse/`) &&
+      response.request().method() === 'PUT'
   );
   await page.getByTestId('renderer-operation-item').getByText('Save as Final').click();
   await page.getByTestId('save-as-final-button').click();

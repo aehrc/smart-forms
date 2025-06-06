@@ -7,7 +7,8 @@ export async function goToPlayground(page: Page) {
   const fetchQsPromise = page.waitForResponse(
     (response) =>
       response.url().startsWith(`${PLAYWRIGHT_FORMS_SERVER_URL}/Questionnaire`) &&
-      response.url().includes('_sort=-date')
+      response.url().includes('_sort=-date') &&
+      response.request().method() === 'GET'
   );
 
   const launchUrl = `${PLAYWRIGHT_APP_URL}/playground`;
