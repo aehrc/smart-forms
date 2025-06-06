@@ -22,12 +22,38 @@ export const PLAYWRIGHT_APP_URL = process.env.CI
   ? 'http://localhost:4173'
   : 'http://localhost:5173';
 
+/*
+ * This is the base64 encoded version of the following array. Refer to https://github.com/aehrc/SMART-EHR-Launcher/blob/main/src/lib/codec.ts
+ *
+ * [
+ *   launchTypeIndex (indexOf ["provider-ehr", "patient-portal", "provider-standalone", "patient-standalone", "backend-service"], use 0 for "provider-ehr"),
+ *   patientId,
+ *   providerId,
+ *   encounterId,
+ *   skip_login (use fixed value 0 for bool false)
+ *   skip_auth (use fixed value 0 for bool false)
+ *   sim_ehr (use fixed value 0 for bool false)
+ *   scope,
+ *   redirect_uris (comma separated),
+ *   client_id,
+ *   client_secret (use fixed value ""),
+ *   auth_error (use fixed value ""),
+ *   jwks_url (use fixed value ""),
+ *   jwks (use fixed value ""),
+ *   clientTypes (indexOf ["public", "confidential-symmetric", "confidential-asymmetric", "backend-service"], use 0 for "public"),
+ *   PKCEValidationTypes (indexOf ["none", "auto", "always"], use 1 for "auto"),
+ *   fhir_context (object but stringified),
+ *   source_fhir_server,
+ *   is_embedded_view (boolean)
+ * ]
+ *
+ */
 export const LAUNCH_PARAM_WITHOUT_Q = btoa(
   JSON.stringify([
     0,
     'pat-sf',
     'primary-peter',
-    'AUTO',
+    'health-check-pat-sf',
     0,
     0,
     0,
@@ -41,6 +67,7 @@ export const LAUNCH_PARAM_WITHOUT_Q = btoa(
     0,
     1,
     '',
+    'https://proxy.smartforms.io/v/r4/fhir',
     false
   ])
 );
@@ -50,7 +77,7 @@ export const LAUNCH_PARAM_WITH_Q = btoa(
     0,
     'pat-sf',
     'primary-peter',
-    'AUTO',
+    'health-check-pat-sf',
     0,
     0,
     0,
@@ -64,6 +91,7 @@ export const LAUNCH_PARAM_WITH_Q = btoa(
     0,
     1,
     '{"role":"questionnaire-render-on-launch","canonical":"http://www.health.gov.au/assessments/mbs/715|0.3.0-assembled","type":"Questionnaire"}',
+    'https://proxy.smartforms.io/v/r4/fhir',
     false
   ])
 );

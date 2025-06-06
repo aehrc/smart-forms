@@ -21,8 +21,8 @@ import { LAUNCH_PARAM_WITHOUT_Q, PLAYWRIGHT_APP_URL, PLAYWRIGHT_FORMS_SERVER_URL
 const questionnaireTitle = 'Dev715';
 
 test.beforeEach(async ({ page }) => {
-  // Launch app without questionnaire context
-  const fetchQPromise = page.waitForResponse(
+  // Launch from Smart EHR launcher (without questionnaire context)
+  const fetchQsPromise = page.waitForResponse(
     (response) =>
       response.url().startsWith(`${PLAYWRIGHT_FORMS_SERVER_URL}/Questionnaire`) &&
       response.url().includes('_sort=-date')
@@ -32,32 +32,45 @@ test.beforeEach(async ({ page }) => {
   console.log('Playwright navigating to: ', launchUrl);
   await page.goto(launchUrl);
 
-  expect((await fetchQPromise).status()).toBe(200);
+  const fetchQsResponse = await fetchQsPromise;
+  expect(fetchQsResponse.status()).toBe(200);
+});
 
-  // Wait for responses to load
-  const fetchQRPromise = page.waitForResponse(
+test('Select Dev715 and view its first response', async ({ page }) => {
+  // Select Dev715 and view its responses
+  const fetchQROfSelectedQPromise = page.waitForResponse(
     new RegExp(/^https:\/\/proxy\.smartforms\.io\/v\/r4\/fhir\/QuestionnaireResponse\?.+$/)
   );
   await page.getByTestId('dashboard-table-pagination').locator('div').getByRole('combobox').click();
   await page.getByRole('option', { name: '50' }).click();
   await page.getByTestId('questionnaire-list-row').getByText(questionnaireTitle).first().click();
-  const fetchQRResponse = await fetchQRPromise;
-  expect(fetchQRResponse.status()).toBe(200);
-});
 
-test('View response from MBS715', async ({ page }) => {
+  const fetchQRResponse = await fetchQROfSelectedQPromise;
+  expect(fetchQRResponse.status()).toBe(200);
+
+  // Click on "View Responses" button
   await expect(page.getByTestId('button-view-responses')).toBeEnabled();
   await page.getByTestId('button-view-responses').click();
 
-  // Open responses page
+  // Click on the first response in the list and open it
   await expect(page.getByTestId('responses-list-toolbar')).toContainText(questionnaireTitle);
   await page.getByTestId('response-list-row').getByText(questionnaireTitle).first().click();
 
-  // Open response
   await expect(page.getByTestId('button-open-response')).toBeEnabled();
   await page.getByTestId('button-open-response').click();
 
-  //
+  // On /viewer route, the response preview should be displayed
   await expect(page).toHaveURL(`${PLAYWRIGHT_APP_URL}/viewer`);
   await expect(page.getByTestId('response-preview-box')).toContainText(questionnaireTitle);
+});
+
+test('View all responses for patient in context', async ({ page }) => {
+  const responsesButton = page.locator('a[data-test="renderer-operation-item"]', {
+    hasText: 'Responses'
+  });
+  await expect(responsesButton).toBeEnabled();
+  await responsesButton.click();
+
+  // On /responses route, the responses list should be displayed
+  await expect(page).toHaveURL(`${PLAYWRIGHT_APP_URL}/dashboard/responses`);
 });

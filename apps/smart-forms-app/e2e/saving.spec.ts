@@ -22,7 +22,7 @@ import { LAUNCH_PARAM_WITH_Q, PLAYWRIGHT_APP_URL, PLAYWRIGHT_EHR_URL } from './g
 const questionnaireTitle = 'Aboriginal and Torres Strait Islander Health Check';
 
 test.beforeEach(async ({ page }) => {
-  // Open first MBS715 questionnaire via launch context
+  // Launch from Smart EHR launcher (with MBS715 questionnaire context)
   const populatePromise = page.waitForResponse(
     new RegExp(/^https:\/\/proxy\.smartforms\.io\/v\/r4\/fhir\/(Observation|Condition)\?.+$/)
   );
@@ -70,8 +70,10 @@ test('Saving a response as draft then final', async ({ page }) => {
   );
   await page.getByTestId('renderer-operation-item').getByText('Save as Final').click();
   await page.getByTestId('save-as-final-button').click();
+
   const saveFinalResponse = await saveFinalPromise;
   expect(saveFinalResponse.status()).toBe(200);
+
   await expect(page.getByText('Response saved as final')).toBeInViewport();
   await expect(page).toHaveURL(`${PLAYWRIGHT_APP_URL}/dashboard/existing`);
 });
