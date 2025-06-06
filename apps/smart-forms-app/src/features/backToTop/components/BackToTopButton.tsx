@@ -15,16 +15,10 @@
  * limitations under the License.
  */
 
-import type { ReactElement } from 'react';
-import { Box, Fade, useScrollTrigger } from '@mui/material';
+import { Box, Fab, Fade, useScrollTrigger } from '@mui/material';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
-interface Props {
-  children: ReactElement;
-}
-
-function BackToTopButton(props: Props) {
-  const { children } = props;
-
+function BackToTopButton() {
   const trigger = useScrollTrigger({
     disableHysteresis: true,
     threshold: 100
@@ -35,12 +29,14 @@ function BackToTopButton(props: Props) {
   };
 
   return (
-    <Fade in={trigger} role="region" aria-label="Scroll to top button">
+    <Fade in={trigger} role="region" aria-label="Scroll to top button fade wrapper">
       <Box
         onClick={handleClick}
         sx={{ position: 'fixed', bottom: 12, right: 12 }}
         aria-disabled={true}>
-        {children}
+        <Fab size="medium" color="primary" aria-label="Scroll to top button">
+          <KeyboardArrowUpIcon aria-label="Arrow Up" />
+        </Fab>
       </Box>
     </Fade>
   );

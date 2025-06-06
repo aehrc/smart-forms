@@ -19,8 +19,6 @@ import { createContext, useRef, useState } from 'react';
 import { Main, StyledRoot } from '../../components/Layout/Layout.styles.ts';
 import { Outlet } from 'react-router-dom';
 import BackToTopButton from '../backToTop/components/BackToTopButton.tsx';
-import { Fab } from '@mui/material';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import ViewerNav from './ViewerNav/ViewerNav.tsx';
 
 import type { PrintComponentRefContextType } from '../../types/printComponentRefContext.type.ts';
@@ -51,11 +49,7 @@ function ViewerLayout() {
           {/* Debug footer */}
           {debugModeEnabled ? <RendererDebugFooter /> : null}
         </Main>
-        <BackToTopButton>
-          <Fab size="medium" sx={{ backgroundColor: '#D6EBFC' }}>
-            <KeyboardArrowUpIcon aria-label="Arrow Up" />
-          </Fab>
-        </BackToTopButton>
+        <BackToTopButton />
       </StyledRoot>
     </PrintComponentRefContext.Provider>
   );

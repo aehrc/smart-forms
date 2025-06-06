@@ -22,8 +22,6 @@ import { StyledRoot } from '../../../components/Layout/Layout.styles.ts';
 import { Main } from './RendererLayout.styles.ts';
 import { Outlet } from 'react-router-dom';
 import BackToTopButton from '../../backToTop/components/BackToTopButton.tsx';
-import { Fab } from '@mui/material';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import BlockerUnsavedFormDialog from './RendererNav/BlockerUnsavedFormDialog.tsx';
 import NavExpandButton from './NavCollapseButton.tsx';
 import PopulationProgressSpinner from '../../../components/Spinners/PopulationProgressSpinner.tsx';
@@ -109,11 +107,7 @@ function RendererLayout() {
       />
 
       {isLgUp ? (
-        <BackToTopButton>
-          <Fab size="medium" aria-label="Scroll Back to Top">
-            <KeyboardArrowUpIcon />
-          </Fab>
-        </BackToTopButton>
+        <BackToTopButton />
       ) : (
         <RendererEmbeddedSpeedDial
           spinner={spinner}
