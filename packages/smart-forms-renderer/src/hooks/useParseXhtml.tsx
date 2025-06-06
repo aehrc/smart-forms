@@ -34,11 +34,13 @@ export function useParseXhtml(qItem: QuestionnaireItem): ParsedXhtml | null {
     if (xHtmlString === null || xHtmlString === '') {
       return null;
     }
-    //replace <img with alt text - only if there are no alt tags
-    const altText = "<img alt='" + qItem.text + "'";
+
+    // Replace <img with alt text - only if there are no alt tags
     if (!xHtmlString.includes('alt=') && !xHtmlString.includes('alt =')) {
+      const altText = `<img alt='${qItem.text}'`;
       xHtmlString = xHtmlString.replace('<img', altText);
     }
+
     // Extract global styles from the XHTML
     let extractedStyles: Record<string, string> | undefined;
 
