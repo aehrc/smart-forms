@@ -23,55 +23,70 @@ import {
   PLAYWRIGHT_FORMS_SERVER_URL
 } from './globals';
 
-test('launch without questionnaire context, select a questionnaire and create a new response', async ({
+test('Launch without questionnaire context, select a questionnaire and create a new response', async ({
   page
 }) => {
-  // Launch app without questionnaire context
-  const fetchQPromise = page.waitForResponse(
+  // Launch from Smart EHR launcher (without questionnaire context)
+  const fetchQsPromise = page.waitForResponse(
     (response) =>
       response.url().startsWith(`${PLAYWRIGHT_FORMS_SERVER_URL}/Questionnaire`) &&
-      response.url().includes('_sort=-date')
+      response.url().includes('_sort=-date') &&
+      response.request().method() === 'GET'
   );
 
   const launchUrl = `${PLAYWRIGHT_APP_URL}/launch?iss=https%3A%2F%2Fproxy.smartforms.io%2Fv%2Fr4%2Ffhir&launch=${LAUNCH_PARAM_WITHOUT_Q}`;
   console.log('Playwright navigating to: ', launchUrl);
   await page.goto(launchUrl);
 
-  expect((await fetchQPromise).status()).toBe(200);
+  const fetchQsResponse = await fetchQsPromise;
+  expect(fetchQsResponse.status()).toBe(200);
 
-  // Search MBS715 title
-  const fetchQByTitlePromise = page.waitForResponse(
+  // On /dashboard/questionnaires route, search for Dev715
+  const fetchQDev715Promise = page.waitForResponse(
     (response) =>
       response.url().startsWith(`${PLAYWRIGHT_FORMS_SERVER_URL}/Questionnaire`) &&
       response.url().includes('_sort=-date') &&
-      response.url().includes('title:contains=Dev715')
+      response.url().includes('title:contains=Dev715') &&
+      response.request().method() === 'GET'
   );
 
   await page.getByTestId('search-field-questionnaires').locator('input').fill('Dev715');
-  await fetchQByTitlePromise;
+  const fetchQDev715Response = await fetchQDev715Promise;
 
-  // Open first MBS715 questionnaire
-  const populatePromise = page.waitForResponse(
-    new RegExp(/^https:\/\/proxy\.smartforms\.io\/v\/r4\/fhir\/(Observation|Condition)\?.+$/)
-  );
+  expect(fetchQDev715Response.status()).toBe(200);
+
+  // Open first Dev715 questionnaire, pre-population should be triggered
+  const populatePromise = page.waitForResponse((response) => {
+    return (
+      /^https:\/\/proxy\.smartforms\.io\/v\/r4\/fhir\/(Observation|Condition)\?.+$/.test(
+        response.url()
+      ) && response.request().method() === 'GET'
+    );
+  });
   await page.getByTestId('questionnaire-list-row').getByText('Dev715').first().click();
   await page.getByTestId('button-create-response').click();
-  expect((await populatePromise).status()).toBe(200);
+  const populateResponse = await populatePromise;
 
-  // Test radio item
+  expect(populateResponse.status()).toBe(200);
+
+  // Test radio item to see if questionnaire is rendered correctly
   await expect(page.getByTestId('q-item-choice-radio-answer-value-set-box')).toContainText(
     'Eligible for health check'
   );
   await page.getByTestId('q-item-choice-radio-answer-value-set-box').first().click();
   await expect(page.getByTestId('updating-indicator')).toBeInViewport();
 
-  // Save progress
-  const savePromise = page.waitForResponse(`${PLAYWRIGHT_EHR_URL}/QuestionnaireResponse`);
+  // Save as draft
+  const saveAsDraftPromise = page.waitForResponse(
+    (response) =>
+      response.url() === `${PLAYWRIGHT_EHR_URL}/QuestionnaireResponse` &&
+      response.request().method() === 'POST'
+  );
   await page.getByTestId('renderer-operation-item').getByText('Save Progress').click();
-  const saveResponse = await savePromise;
-  expect(saveResponse.status()).toBe(201);
+  const saveAsDraftPromiseResponse = await saveAsDraftPromise;
+  expect(saveAsDraftPromiseResponse.status()).toBe(201);
   await expect(page.getByText('Response saved')).toBeInViewport();
 
-  // Go back to questionnaires
+  // Go back to /dashboard/questionnaires
   await page.getByTestId('renderer-operation-item').getByText('Back to Questionnaires').click();
 });

@@ -1,12 +1,12 @@
 name: Smart Forms Build-Test-Lint Workflow
 
-on:
-  push:
+on: [workflow_dispatch, push]
 
 jobs:
   build-smart-forms-app:
     name: Build Smart Forms App
     runs-on: ubuntu-latest
+    # Run this regardless of "if: github.actor != 'dependabot[bot]'" condition on other jobs to see if dependabot PRs breaks the build
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 20.x
@@ -30,6 +30,8 @@ jobs:
   build-demo-app:
     name: Build Demo App
     runs-on: ubuntu-latest
+    # Conditional logic to skip if workflow is triggered by Dependabot
+    if: github.actor != 'dependabot[bot]'
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 20.x
@@ -45,6 +47,8 @@ jobs:
   jest-renderer-tests:
     name: Jest Tests - Renderer
     runs-on: ubuntu-latest
+    # Conditional logic to skip if workflow is triggered by Dependabot
+    if: github.actor != 'dependabot[bot]'
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 20.x
@@ -61,6 +65,8 @@ jobs:
   jest-extract-tests:
     name: Jest Tests - Template-Based Extract
     runs-on: ubuntu-latest
+    # Conditional logic to skip if workflow is triggered by Dependabot
+    if: github.actor != 'dependabot[bot]'
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 20.x
@@ -78,6 +84,8 @@ jobs:
     name: Playwright Tests
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    # Conditional logic to skip if workflow is triggered by Dependabot
+    if: github.actor != 'dependabot[bot]'
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 20.x
@@ -105,15 +113,15 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          build: npm run build -w apps/smart-forms-app
-          start: npm run preview -w apps/smart-forms-app
           name: playwright-report
-          path: playwright-report/
+          path: apps/smart-forms-app/playwright-report/
           retention-days: 30
 
   lint:
     name: Lint
     runs-on: ubuntu-latest
+    # Conditional logic to skip if workflow is triggered by Dependabot
+    if: github.actor != 'dependabot[bot]'
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 20.x
