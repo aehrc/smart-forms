@@ -14,6 +14,8 @@ jobs:
   deploy-docusaurus-s3:
     name: Deploy Docusaurus to S3
     runs-on: ubuntu-latest
+    # Conditional logic to skip if workflow is triggered by Dependabot
+    if: github.actor != 'dependabot[bot]'
     steps:
       - uses: actions/checkout@v4
 
@@ -45,6 +47,8 @@ jobs:
       contents: read
       pages: write
       id-token: write
+    # Conditional logic to skip if workflow is triggered by Dependabot
+    if: github.actor != 'dependabot[bot]'
     steps:
       - uses: actions/checkout@v4
 

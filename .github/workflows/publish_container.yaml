@@ -18,7 +18,8 @@ jobs:
     permissions:
       packages: write
       contents: read # needed to checkout the repo
-
+    # Conditional logic to skip if workflow is triggered by Dependabot
+    if: github.actor != 'dependabot[bot]'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
