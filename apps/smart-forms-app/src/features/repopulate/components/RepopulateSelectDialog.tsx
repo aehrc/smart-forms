@@ -279,8 +279,15 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
                         JSON.stringify(processedRows[rowIndex].item![fieldIndex], null, 2)
                       );
                     } else {
+                      // Field doesn't exist in server data, but user has data for it
+                      // This happens when user filled a field that was initially empty
                       console.log(
-                        `        ❌ Field ${fieldLinkId} not found in server row ${rowIndex}`
+                        `        ➕ Field ${fieldLinkId} not found in server row ${rowIndex}, ADDING user data`
+                      );
+                      processedRows[rowIndex].item!.push(JSON.parse(JSON.stringify(userFieldData)));
+                      console.log(
+                        `        ✅ ADDED user field data:`,
+                        JSON.stringify(userFieldData, null, 2)
                       );
                     }
                   } else {
@@ -411,7 +418,10 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
           itemsToRepopulateTuplesByHeadings={itemsToRepopulateTuplesByHeadings}
           onValuePreferenceChange={handleValuePreferenceChange}
           initialPreferences={userPrefersTheirCurrentFormValue}
-          fieldPreferences={userPrefersTheirCurrentFormValue}
+          fieldPreferences={{
+            ...userPrefersTheirCurrentFormValue,
+            ...granularPreferences
+          }}
         />
       </DialogContent>
       <DialogActions>
