@@ -115,6 +115,9 @@ function AttachmentField(props: AttachmentFieldProps) {
                     />
                   </InputAdornment>
                 )
+              },
+              htmlInput: {
+                'aria-label': 'File name (optional)'
               }
             }}
           />

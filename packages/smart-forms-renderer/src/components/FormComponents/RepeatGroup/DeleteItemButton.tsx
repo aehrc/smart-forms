@@ -34,9 +34,14 @@ function DeleteItemButton(props: DeleteItemButtonProps) {
   const isDisabled = nullableQrItem === null || numOfRepeatGroups === 1 || readOnly;
 
   return (
-    <RepeatDeleteTooltip className="repeat-group-delete" title="Remove item">
+    <RepeatDeleteTooltip className="repeat-group-delete" title="Remove item" aria-label={undefined}>
       <span>
-        <IconButton size="small" color="error" disabled={isDisabled} onClick={onDeleteItem}>
+        <IconButton
+          size="small"
+          color="error"
+          disabled={isDisabled}
+          onClick={onDeleteItem}
+          aria-label="Remove Item">
           <RemoveCircleOutlineIcon />
         </IconButton>
       </span>

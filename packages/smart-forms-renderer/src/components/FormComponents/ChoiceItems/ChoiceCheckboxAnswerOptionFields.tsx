@@ -31,6 +31,7 @@ interface ChoiceCheckboxAnswerOptionFieldsProps {
   readOnly: boolean;
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
+  isTabled: boolean;
   onCheckedChange: (newValue: string) => void;
   onClear: () => void;
 }
@@ -44,6 +45,7 @@ function ChoiceCheckboxAnswerOptionFields(props: ChoiceCheckboxAnswerOptionField
     readOnly,
     expressionUpdated,
     answerOptionsToggleExpressionsMap,
+    isTabled,
     onCheckedChange,
     onClear
   } = props;
@@ -57,6 +59,7 @@ function ChoiceCheckboxAnswerOptionFields(props: ChoiceCheckboxAnswerOptionField
       readOnly={readOnly}
       expressionUpdated={expressionUpdated}
       answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+      isTabled={isTabled}
       onCheckedChange={onCheckedChange}
       onClear={onClear}
     />

@@ -47,6 +47,7 @@ const RendererHeader = memo(function RendererHeader(props: RendererHeaderProps) 
       <StyledToolbar>
         {isLgUp ? (
           <IconButton
+            aria-label="Expand"
             onClick={onOpenMobileNav}
             sx={{
               color: 'text.primary',

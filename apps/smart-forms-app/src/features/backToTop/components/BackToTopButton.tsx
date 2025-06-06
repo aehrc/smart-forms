@@ -35,8 +35,11 @@ function BackToTopButton(props: Props) {
   };
 
   return (
-    <Fade in={trigger}>
-      <Box onClick={handleClick} sx={{ position: 'fixed', bottom: 12, right: 12 }}>
+    <Fade in={trigger} role="region" aria-label="Scroll to top button">
+      <Box
+        onClick={handleClick}
+        sx={{ position: 'fixed', bottom: 12, right: 12 }}
+        aria-disabled={true}>
         {children}
       </Box>
     </Fade>

@@ -79,6 +79,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
             showMinimalView={showMinimalView}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
+            isTabled={isTabled}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -93,6 +94,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
             showMinimalView={showMinimalView}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
+            isTabled={isTabled}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -108,6 +110,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
+            isTabled={isTabled}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -121,6 +124,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
+            isTabled={isTabled}
             onQrItemChange={onQrItemChange}
           />
         );

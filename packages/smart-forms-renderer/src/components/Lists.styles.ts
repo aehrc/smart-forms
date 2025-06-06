@@ -20,7 +20,8 @@ import { alpha, styled } from '@mui/material/styles';
 
 export const PrimarySelectableList = styled(List)(({ theme }) => ({
   '&& .Mui-selected': {
-    color: theme.palette.primary.dark,
+    // color: theme.palette.primary.dark,
+    color: '#000',
     backgroundColor: alpha(theme.palette.primary.main, 0.2),
     borderRadius: 30,
     '& .MuiTypography-root': {
@@ -28,7 +29,8 @@ export const PrimarySelectableList = styled(List)(({ theme }) => ({
     }
   },
   '& .MuiListItemButton-root': {
-    color: '#444746',
+    // color: '#444746',
+    color: '#000',
     borderRadius: 30
   },
   '& .MuiListItemButton-root:hover': {

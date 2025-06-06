@@ -39,6 +39,7 @@ function ShowCompletedTabsSection(props: ShowCompletedTabsSectionProps) {
         Completed tabs {completedTabsExpanded ? 'shown' : 'hidden'}
       </Typography>
       <IconButton
+        aria-label={'Completed tabs ' + (completedTabsExpanded ? 'shown' : 'hidden')}
         size="small"
         onClick={() => {
           setCompletedTabsExpanded(!completedTabsExpanded);

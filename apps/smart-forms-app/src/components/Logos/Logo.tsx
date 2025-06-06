@@ -34,7 +34,14 @@ const Logo = memo(function Logo(props: LogoProps) {
 
   return (
     <Box display="flex" alignItems="center" columnGap={1.5}>
-      <Box component="img" src={AppLogo} display="inline-flex" width={36} height={36} />
+      <Box
+        alt="Smart Forms Logo"
+        component="img"
+        src={AppLogo}
+        display="inline-flex"
+        width={36}
+        height={36}
+      />
       {showLogoNameOnHeader || isNav ? <Typography variant="h6">Smart Forms</Typography> : null}
     </Box>
   );

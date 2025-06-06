@@ -40,6 +40,7 @@ function RadioButtonWithOpenLabel(props: RadioButtonWithOpenLabelProps) {
         fullWidth={false}
       />
       <OpenLabelField
+        label={label + ':'}
         value={value}
         readOnly={readOnly}
         openLabelOptionSelected={isSelected}

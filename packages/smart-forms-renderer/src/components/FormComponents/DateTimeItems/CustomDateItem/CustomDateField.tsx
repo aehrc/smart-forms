@@ -69,9 +69,9 @@ function CustomDateField(props: CustomDateFieldProps) {
   const id = isPartOfDateTime ? itemType + '-' + linkId + '-date' : itemType + '-' + linkId;
 
   return (
-    <Tooltip title={isTabled ? feedback : ''}>
+    <Tooltip title={null}>
       <StandardTextField
-        id={id}
+        {...(!isTabled && { id: id })}
         ref={anchorRef}
         fullWidth
         textFieldWidth={textFieldWidth}

@@ -34,9 +34,14 @@ function RemoveItemButton(props: RemoveItemButtonProps) {
   const isDisabled = answer === null || numOfRepeatAnswers === 1 || readOnly;
 
   return (
-    <RepeatDeleteTooltip className="repeat-item-delete" title="Remove item">
-      <span>
-        <IconButton size="small" color="error" disabled={isDisabled} onClick={onDeleteAnswer}>
+    <RepeatDeleteTooltip className="repeat-item-delete" title="Remove item" aria-label={undefined}>
+      <span role="button">
+        <IconButton
+          size="small"
+          color="error"
+          disabled={isDisabled}
+          onClick={onDeleteAnswer}
+          aria-label="Remove item">
           <RemoveCircleOutlineIcon fontSize="small" />
         </IconButton>
       </span>

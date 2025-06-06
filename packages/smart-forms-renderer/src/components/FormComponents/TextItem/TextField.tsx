@@ -61,7 +61,6 @@ function TextField(props: TextFieldProps) {
       onChange={(event) => onInputChange(event.target.value)}
       onBlur={onBlur}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
-      label={displayPrompt}
       placeholder={entryFormat}
       fullWidth
       multiline
@@ -76,6 +75,12 @@ function TextField(props: TextFieldProps) {
               <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>
           )
+        },
+        inputLabel: {
+          shrink: false
+        },
+        htmlInput: {
+          'aria-labelledby': 'label-' + linkId
         }
       }}
       helperText={feedback}

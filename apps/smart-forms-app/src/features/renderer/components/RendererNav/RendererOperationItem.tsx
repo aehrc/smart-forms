@@ -24,12 +24,12 @@ function RendererOperationItem(props: OperationItem) {
 
   return (
     <NavListItemButton
+      role="button"
       disableGutters
       onClick={onClick}
       disabled={disabled}
       data-test="renderer-operation-item">
       <StyledNavItemIcon>{icon}</StyledNavItemIcon>
-
       <ListItemText disableTypography primary={title} />
     </NavListItemButton>
   );

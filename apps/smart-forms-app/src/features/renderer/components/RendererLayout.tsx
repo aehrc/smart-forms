@@ -110,7 +110,7 @@ function RendererLayout() {
 
       {isLgUp ? (
         <BackToTopButton>
-          <Fab size="medium">
+          <Fab size="medium" aria-label="Scroll Back to Top">
             <KeyboardArrowUpIcon />
           </Fab>
         </BackToTopButton>

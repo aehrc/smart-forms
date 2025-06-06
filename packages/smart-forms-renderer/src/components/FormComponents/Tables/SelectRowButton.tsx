@@ -24,6 +24,7 @@ interface SelectRowButtonProps {
   isChecked: boolean;
   readOnly: boolean;
   onSelectItem: () => void;
+  ariaLabelText: string;
 }
 
 function SelectRowButton(props: SelectRowButtonProps) {
@@ -43,6 +44,11 @@ function SelectRowButton(props: SelectRowButtonProps) {
         role="checkbox"
         aria-checked={isChecked}
         onChange={onSelectItem}
+        slotProps={{
+          input: {
+            'aria-label': props.ariaLabelText
+          }
+        }}
       />
     </TableCell>
   );

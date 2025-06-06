@@ -17,7 +17,7 @@
 
 import { Box, Drawer } from '@mui/material';
 import Logo from '../../../../components/Logos/Logo.tsx';
-import Scrollbar from '../../../../components/Scrollbar/Scrollbar.tsx';
+// import Scrollbar from '../../../../components/Scrollbar/Scrollbar.tsx';
 import DashboardNavSection from './DashboardNavSection.tsx';
 import NavPatientDetails from '../../../../components/Nav/NavPatientDetails.tsx';
 import NavErrorAlert from '../../../../components/Nav/NavErrorAlert.tsx';
@@ -29,6 +29,7 @@ import { NAV_WIDTH } from '../../../../components/Header/Header.styles.ts';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import useDebugMode from '../../../../hooks/useDebugMode.ts';
 import { useResponsive } from '@aehrc/smart-forms-renderer';
+import ScrollbarAccessible from '../../../../components/Scrollbar/ScrollbarAccessible.tsx';
 
 interface DashboardNavProps {
   openNav: boolean;
@@ -46,11 +47,7 @@ export default function DashboardNav(props: DashboardNavProps) {
   const isNotLaunched = !smartClient;
 
   const renderContent = (
-    <Scrollbar
-      sx={{
-        height: 1,
-        '& .simplebar-content': { height: 1, display: 'flex', flexDirection: 'column' }
-      }}>
+    <ScrollbarAccessible>
       <NavLogoWrapper>
         <Logo isNav />
       </NavLogoWrapper>
@@ -71,11 +68,13 @@ export default function DashboardNav(props: DashboardNavProps) {
       <CsiroLogoWrapper>
         <CsiroLogo />
       </CsiroLogoWrapper>
-    </Scrollbar>
+    </ScrollbarAccessible>
   );
 
   return (
     <Box
+      role="complementary"
+      aria-label="Primary navigation sidebar"
       component="nav"
       sx={{
         flexShrink: { lg: 0 },

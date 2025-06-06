@@ -68,7 +68,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
     return (
       <>
         <Autocomplete
-          id={qItem.type + '-' + qItem.linkId}
+          {...(!isTabled && { id: `${qItem.type}-${qItem.linkId}` })}
           options={codings}
           getOptionLabel={(option) => option.display ?? `${option.code}`}
           value={valueCoding ?? null}
@@ -96,7 +96,11 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
                       <FadingCheckIcon fadeIn={expressionUpdated} disabled={readOnly} />
                       <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
                     </>
-                  )
+                  ),
+                  inputProps: {
+                    ...params.inputProps,
+                    'aria-label': qItem.text
+                  }
                 }
               }}
               data-test="q-item-choice-select-answer-value-set-field"

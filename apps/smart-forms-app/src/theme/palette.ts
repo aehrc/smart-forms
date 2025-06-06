@@ -18,6 +18,7 @@
 import type { PaletteOptions } from '@mui/material/styles';
 import { alpha } from '@mui/material/styles';
 import { grey } from '@mui/material/colors';
+import black from '@mui/material/colors/common';
 
 const SECONDARY = {
   light: '#7ac298',
@@ -31,18 +32,24 @@ const palette: PaletteOptions = {
   secondary: SECONDARY,
   divider: alpha(grey['500'], 0.24),
   text: {
-    primary: grey['800'],
-    secondary: grey['600'],
-    disabled: grey['500']
+    // primary: grey['800'],
+    primary: '#000',
+    secondary: '#000',
+    disabled: '#000'
+    // secondary: grey['600'],
+    // disabled: grey['500']
   },
   background: {
     paper: '#fff',
-    default: '#fafafa'
+    // default: '#fafafa'
+    default: '#fff'
   },
   action: {
-    active: grey['600'],
+    active: '#fff',
+    // active: grey['600'],
     hover: alpha(grey['500'], 0.08),
-    selected: alpha(grey['500'], 0.16),
+    // selected: alpha(grey['500'], 0.16),
+    // selected: alpha(grey['500'], 0.16),
     disabled: alpha(grey['500'], 0.8),
     disabledBackground: alpha(grey['500'], 0.24),
     focus: alpha(grey['500'], 0.24),

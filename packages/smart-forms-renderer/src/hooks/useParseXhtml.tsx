@@ -29,12 +29,16 @@ export interface ParsedXhtml {
 
 export function useParseXhtml(qItem: QuestionnaireItem): ParsedXhtml | null {
   return useMemo(() => {
-    const xHtmlString = getXHtmlString(qItem);
+    let xHtmlString = getXHtmlString(qItem);
 
     if (xHtmlString === null || xHtmlString === '') {
       return null;
     }
-
+    //replace <img with alt text - only if there are no alt tags
+    const altText = "<img alt='" + qItem.text + "'";
+    if (!xHtmlString.includes('alt=') && !xHtmlString.includes('alt =')) {
+      xHtmlString = xHtmlString.replace('<img', altText);
+    }
     // Extract global styles from the XHTML
     let extractedStyles: Record<string, string> | undefined;
 

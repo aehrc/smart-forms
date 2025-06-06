@@ -17,17 +17,17 @@
 
 import type { ReactNode } from 'react';
 import { memo } from 'react';
-import type { SxProps, Theme } from '@mui/material';
 import { Box } from '@mui/material';
-import { StyledRootScrollbar, StyledScrollbar } from './Scrollbar.styles';
+// import { StyledRootScrollbar } from './Scrollbar.styles';
+// import SimpleBar from 'simplebar-react';
 
-interface ScrollbarProps {
+interface ScrollbarAccessibleProps {
   children: ReactNode;
-  sx?: SxProps<Theme>;
+  //   sx?: SxProps<Theme>;
 }
 
-const Scrollbar = memo(function Scrollbar(props: ScrollbarProps) {
-  const { children, sx, ...other } = props;
+const ScrollbarAccessible = memo(function Scrollbar(props: ScrollbarAccessibleProps) {
+  const { children, ...other } = props;
 
   const userAgent = typeof navigator === 'undefined' ? 'SSR' : navigator.userAgent;
 
@@ -35,19 +35,17 @@ const Scrollbar = memo(function Scrollbar(props: ScrollbarProps) {
 
   if (isMobile) {
     return (
-      <Box sx={{ overflowX: 'auto', ...sx }} {...other}>
+      <Box sx={{ overflowX: 'auto' }} {...other}>
         {children}
       </Box>
     );
   }
 
   return (
-    <StyledRootScrollbar role="complementary" aria-label="Sidebar">
-      <StyledScrollbar clickOnTrack={false} sx={sx} {...other}>
-        {children}
-      </StyledScrollbar>
-    </StyledRootScrollbar>
+    <Box sx={{ overflowX: 'auto' }} {...other}>
+      {children}
+    </Box>
   );
 });
 
-export default Scrollbar;
+export default ScrollbarAccessible;
