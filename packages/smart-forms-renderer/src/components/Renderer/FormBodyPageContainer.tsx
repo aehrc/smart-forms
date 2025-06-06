@@ -77,8 +77,7 @@ function FormBodyPageContainer(props: FormBodyPageContainerProps) {
 
             return (
               <TabPanel
-                aria-label="Test Label"
-                aria-labelledby=""
+                aria-label={`${qItem.text ?? 'Unnamed'} page`}
                 key={qItem.linkId}
                 sx={{ p: 0 }}
                 value={i.toString()}

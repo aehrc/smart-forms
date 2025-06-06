@@ -54,7 +54,7 @@ function GenericViewer(props: GenericViewerProps) {
             onChange={(_, newViewMode) => {
               onViewModeChange(newViewMode);
             }}
-            aria-label="view mode">
+            aria-label="Switch view modes">
             <ToggleButton value="text" aria-label="text">
               <NotesIcon />
             </ToggleButton>

@@ -81,12 +81,7 @@ function PreviewAction(props: PreviewSpeedDiaActionProps) {
 
   // location pathname is /renderer/preview
   return (
-    <RendererOperationItem
-      role=""
-      title="Editor"
-      icon={<EditIcon />}
-      onClick={handleNavigateRenderer}
-    />
+    <RendererOperationItem title="Editor" icon={<EditIcon />} onClick={handleNavigateRenderer} />
   );
 }
 

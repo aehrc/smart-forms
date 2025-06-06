@@ -36,7 +36,7 @@ function RemoveRowButton(props: RemoveRowButtonProps) {
   const isDisabled = nullableQrItem === null || numOfRows === 1 || readOnly;
   return (
     <DeleteButtonTableCell>
-      <Tooltip title="Remove item" aria-label={undefined}>
+      <Tooltip title="Remove item">
         <span role="button">
           <IconButton
             size="small"

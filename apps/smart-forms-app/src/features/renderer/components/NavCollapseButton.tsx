@@ -33,7 +33,7 @@ function NavExpandButton(props: NavExpandButtonProps) {
     <IconButton
       onClick={onExpandNav}
       sx={{ position: 'fixed', bottom: 16, left: 16 }}
-      aria-label="Expand">
+      aria-label="Expand navigation">
       <KeyboardDoubleArrowRightIcon fontSize="small" />
     </IconButton>
   ) : null;

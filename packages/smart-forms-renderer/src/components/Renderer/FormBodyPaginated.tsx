@@ -110,8 +110,7 @@ function FormBodyPaginated(props: FormBodyPaginatedProps) {
               if (itemIsGroup) {
                 return (
                   <TabPanel
-                    aria-label="Test Label"
-                    aria-labelledby=""
+                    aria-label={`${qItem.text ?? 'Unnamed'} page`}
                     key={qItem.linkId}
                     sx={{ p: 0 }}
                     value={i.toString()}
@@ -136,8 +135,7 @@ function FormBodyPaginated(props: FormBodyPaginatedProps) {
               // Page consists of a non-group item
               return (
                 <TabPanel
-                  aria-label="Test Label"
-                  aria-labelledby=""
+                  aria-label={`${qItem.text ?? 'Unnamed'} page`}
                   key={qItem.linkId}
                   sx={{ p: 0 }}
                   value={i.toString()}
@@ -147,8 +145,7 @@ function FormBodyPaginated(props: FormBodyPaginatedProps) {
                     isRepeated={isRepeated}
                     data-test="q-item-group-box"
                     role="region"
-                    aria-label={qItem.text ?? 'Nested item for item: ' + qItem.type + '-' + 1} //TODO-define proper aria-label
-                  >
+                    aria-label={qItem.text ?? 'Unnamed group'}>
                     {disableCardView ? (
                       <>
                         <SingleItem

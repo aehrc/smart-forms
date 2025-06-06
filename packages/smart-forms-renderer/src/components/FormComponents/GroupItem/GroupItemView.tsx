@@ -166,7 +166,7 @@ function GroupItemView(props: GroupItemViewProps) {
         isRepeated={isRepeated}
         data-test="q-item-group-box"
         role="region"
-        aria-label={qItem.text ?? 'Nested item for item: ' + qItem.type + '-' + groupCardElevation} //TODO-define proper aria-label
+        aria-label={qItem.text ?? 'Unnamed group'}
         style={combinedStyles || undefined}>
         {isRepeated ? null : (
           <>
@@ -213,8 +213,7 @@ function GroupItemView(props: GroupItemViewProps) {
       isRepeated={isRepeated}
       data-test="q-item-group-box"
       role="region"
-      aria-label={qItem.text ?? 'Nested item for item: ' + qItem.type + '-' + groupCardElevation} //TODO-define proper aria-label
-    >
+      aria-label={qItem.text ?? 'Unnamed group'}>
       <GroupCard
         elevation={groupCardElevation}
         isRepeated={isRepeated}

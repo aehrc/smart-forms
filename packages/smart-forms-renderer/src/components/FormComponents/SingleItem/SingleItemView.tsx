@@ -149,8 +149,7 @@ function SingleItemView(props: SingleItemViewProps) {
         isRepeated={isRepeated}
         data-test="q-item-group-box"
         role="region"
-        aria-label={qItem.text ?? 'Nested item for item: ' + qItem.type + '-' + groupCardElevation} //TODO-define proper aria-label
-      >
+        aria-label={qItem.text ?? 'Unnamed item with nested items'}>
         <GroupCard elevation={groupCardElevation} isRepeated={isRepeated}>
           <SingleItemSwitcher
             qItem={qItem}

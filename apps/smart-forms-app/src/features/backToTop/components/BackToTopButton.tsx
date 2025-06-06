@@ -29,13 +29,13 @@ function BackToTopButton() {
   };
 
   return (
-    <Fade in={trigger} role="region" aria-label="Scroll to top button fade wrapper">
+    <Fade in={trigger} role="region" aria-label="Scroll to top wrapper">
       <Box
         onClick={handleClick}
         sx={{ position: 'fixed', bottom: 12, right: 12 }}
         aria-disabled={true}>
-        <Fab size="medium" color="primary" aria-label="Scroll to top button">
-          <KeyboardArrowUpIcon aria-label="Arrow Up" />
+        <Fab size="medium" color="primary" aria-label="Scroll to top">
+          <KeyboardArrowUpIcon />
         </Fab>
       </Box>
     </Fade>
