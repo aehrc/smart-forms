@@ -82,7 +82,7 @@ function RendererNav(props: RendererNavProps) {
             {navIsShown ? (
               <Box display="flex" justifyContent="end" alignItems="center">
                 <Tooltip title="Collapse Sidebar" placement="right">
-                  <IconButton onClick={onCollapseNav} style={{ color: 'black' }}>
+                  <IconButton onClick={onCollapseNav}>
                     <KeyboardDoubleArrowLeftIcon fontSize="small" />
                   </IconButton>
                 </Tooltip>
