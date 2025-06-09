@@ -38,11 +38,11 @@ import type { ComputedNewAnswers } from '../interfaces/computedUpdates.interface
 
 // Lookup CodeSystem $lookup utility for Coding display
 export async function lookupCode(
-  system: string,
   code: string,
+  urlParams: string,
   terminologyServerUrl: string
 ): Promise<{ display: string | null; parameters: any[] }> {
-  const url = `${terminologyServerUrl}/CodeSystem/$lookup?system=${encodeURIComponent(system)}&code=${encodeURIComponent(code)}`;
+  const url = `${terminologyServerUrl}/CodeSystem/$lookup?&code=${encodeURIComponent(code)}&${urlParams}`;
   try {
     const response = await fetch(url, {
       headers: {
@@ -146,9 +146,8 @@ export async function evaluateInitialCalculatedExpressions(
             userInvocationTable: {
               lookup: {
                 // The function actually gets 3 parameters one is the main object iteslf which we don't need
-                fn: (someObj: any, system: string, code: string) => {
-                  console.log('lookup called with system:', system, 'code:', code);
-                  return lookupCode(system, code, terminologyServerUrl);
+                fn: (someObj: any, code: string, urlParams: string) => {
+                  return lookupCode(code, urlParams, terminologyServerUrl);
                 },
                 arity: {
                   2: ['String', 'String']
@@ -242,9 +241,8 @@ export async function evaluateCalculatedExpressions(
             userInvocationTable: {
               lookup: {
                 // The function actually gets 3 parameters one is the main object iteslf which we don't need
-                fn: (someObj: any, system: string, code: string) => {
-                  console.log('lookup called with system:', system, 'code:', code);
-                  return lookupCode(system, code, terminologyServerUrl);
+                fn: (someObj: any, code: string, urlParams: string) => {
+                  return lookupCode(code, urlParams, terminologyServerUrl);
                 },
                 arity: {
                   2: ['String', 'String']

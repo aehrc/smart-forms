@@ -308,9 +308,8 @@ export async function evaluateLinkIdVariables(
             userInvocationTable: {
               lookup: {
                 // The function actually gets 3 parameters one is the main object iteslf which we don't need
-                fn: (someObj: any, system: string, code: string) => {
-                  console.log('lookup called with system:', system, 'code:', code);
-                  return lookupCode(system, code, terminologyServerUrl); 
+                fn: (someObj: any, code: string, urlParams: string) => {
+                  return lookupCode(code, urlParams, terminologyServerUrl);
                 },
                 arity: {
                   2: ['String', 'String']
@@ -371,9 +370,8 @@ export async function evaluateQuestionnaireLevelVariables(
             userInvocationTable: {
               lookup: {
                 // The function actually gets 3 parameters one is the main object iteslf which we don't need
-                fn: (someObj: any, system: string, code: string) => {
-                  console.log('lookup called with system:', system, 'code:', code);
-                  return lookupCode(system, code, terminologyServerUrl); 
+                fn: (someObj: any, code: string, urlParams: string) => {
+                  return lookupCode(code, urlParams, terminologyServerUrl);
                 },
                 arity: {
                   2: ['String', 'String']
