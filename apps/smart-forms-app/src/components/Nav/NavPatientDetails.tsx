@@ -34,9 +34,7 @@ function NavPatientDetails() {
       <FaceIcon fontSize="large" sx={{ color: theme.palette.primary.dark }} />
 
       <Box>
-        <Typography fontSize={10} variant="subtitle1" color={'text.secondary'}>
-          Patient
-        </Typography>
+        <Typography fontSize={11}>Patient</Typography>
         <AccountNameTypography name={patient ? constructName(patient.name) : 'No Patient'} />
         {patient ? (
           <>

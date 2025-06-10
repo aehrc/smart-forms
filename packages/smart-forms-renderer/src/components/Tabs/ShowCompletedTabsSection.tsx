@@ -33,10 +33,10 @@ function ShowCompletedTabsSection(props: ShowCompletedTabsSectionProps) {
   const buttonLabel = `Completed tabs ${completedTabsExpanded ? 'shown' : 'hidden'}`;
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" mx={2} columnGap={0.5}>
+    <Box display="flex" justifyContent="center" alignItems="center" mx={1.25} columnGap={0.25}>
       <Typography
         variant="overline"
-        fontSize={9}
+        fontSize={10}
         color={completedTabsExpanded ? 'text.secondary' : 'text.disabled'}>
         {buttonLabel}
       </Typography>

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import csiroLogo from '../../data/images/csiro-logo.png';
 import { useSnackbar } from 'notistack';
 import useClickCounter from '../../features/easterEgg/hooks/useClickCounter.ts';
@@ -32,7 +32,7 @@ function CsiroLogo() {
   return (
     <>
       <Box display="flex" justifyContent="center" alignItems="center" gap={1.5}>
-        <Typography sx={{ color: 'text.secondary' }}>By</Typography>
+        By
         <Box
           alt="CSIRO Logo"
           component="img"
