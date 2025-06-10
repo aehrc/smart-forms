@@ -82,7 +82,7 @@ function ExtractMenu(props: ExtractMenuProps) {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         slotProps={{
           list: {
-            'aria-label': 'Extract menu'
+            'aria-labelledby': 'extract-button'
           }
         }}>
         <MenuItem
