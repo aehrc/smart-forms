@@ -49,15 +49,6 @@ export function useParseXhtml(qItem: QuestionnaireItem): ParsedXhtml | null {
       replace: (domNode: { attribs: Attributes; name: string; children: any[]; type?: string }) => {
         if (!domNode.attribs) return;
 
-        // Extract CSS styles from style tags
-        if (domNode.name === 'style' && domNode.children && domNode.children.length > 0) {
-          const styleContent = domNode.children[0].data;
-          if (styleContent) {
-            // We don't return anything for style tags as they will be applied globally
-            return <></>;
-          }
-        }
-
         // Extract external CSS styles from class attributes
         // To use this, define your stylesheet where you are calling <BaseRenderer/> in your app
         if (domNode.name === 'div' && domNode.attribs.class) {
