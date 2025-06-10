@@ -62,7 +62,7 @@ function CheckboxSingle(props: Props) {
           }}
           slotProps={{
             input: {
-              'aria-label': label
+              'aria-label': label ?? 'Unnamed checkbox'
             }
           }}
         />
