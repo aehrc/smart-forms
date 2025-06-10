@@ -48,6 +48,7 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
     <>
       <Box
         display="flex"
+        width="100%"
         sx={{
           justifyContent: 'space-between',
           alignItems: { xs: 'start', sm: 'center' },
