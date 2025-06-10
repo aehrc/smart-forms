@@ -8,20 +8,24 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.66] - 2025-06-10
+#### Fixed
+- Fixed an issue where decimal, dateTime, slider, radio button items are not taking up full space in a grid table.
+
 ## [1.0.0-alpha.65] - 2025-06-10
 #### Fixed
-* Added ARIA attributes to various components.
-* Updated various components to have a more descriptive ARIA label.
-* Various fixes to typography to meet accessibility requirements - font size, font color changes
-* Augment XHTML renderings (from Questionnaire definition) by adding `alt` attribute to <img> tags.
-* Updated MUI component code segments that will be deprecated soon i.e. updated to slotProps.
+- Added ARIA attributes to various components.
+- Updated various components to have a more descriptive ARIA label.
+- Various fixes to typography to meet accessibility requirements - font size, font color changes
+- Augment XHTML renderings (from Questionnaire definition) by adding `alt` attribute to <img> tags.
+- Updated MUI component code segments that will be deprecated soon i.e. updated to slotProps.
 
 ### Changed
-* Removed `simplebar-react` dependency and all associated custom scrollbar components (`Scrollbar.tsx` and `Scrollbar.styles.ts`). Updated `DashboardNav` to use native scroll behavior instead.
-* Downgraded `react-router-dom` from version `7.2.0` to `6.11.2` because `useBlocker` is broken in the later versions.
+- Removed `simplebar-react` dependency and all associated custom scrollbar components (`Scrollbar.tsx` and `Scrollbar.styles.ts`). Updated `DashboardNav` to use native scroll behavior instead.
+- Downgraded `react-router-dom` from version `7.2.0` to `6.11.2` because `useBlocker` is broken in the later versions.
 
 ### Known accessibility issues that will never be fixed:
-* [Label text is located before its associated checkbox or radio button element](https://unpkg.com/accessibility-checker-engine@4.0.5/help/en-US/input_label_after.html#%7B%22message%22%3A%22Label%20text%20is%20located%20before%20its%20associated%20checkbox%20or%20radio%20button%20element%22%2C%22msgArgs%22%3A%5B%22%7B0%7D%22%2C%22%7B1%7D%22%2C%22%7B3%7D%22%2C%22%7B4%7D%22%5D%2C%22value%22%3A%5B%22VIOLATION%22%2C%22FAIL%22%5D%2C%22reasonId%22%3A%22Fail_2%22%7D)
+- [Label text is located before its associated checkbox or radio button element](https://unpkg.com/accessibility-checker-engine@4.0.5/help/en-US/input_label_after.html#%7B%22message%22%3A%22Label%20text%20is%20located%20before%20its%20associated%20checkbox%20or%20radio%20button%20element%22%2C%22msgArgs%22%3A%5B%22%7B0%7D%22%2C%22%7B1%7D%22%2C%22%7B3%7D%22%2C%22%7B4%7D%22%5D%2C%22value%22%3A%5B%22VIOLATION%22%2C%22FAIL%22%5D%2C%22reasonId%22%3A%22Fail_2%22%7D)
 
 ### Changed
 - Changed how additionalVariables in buildForm() (and it's variants) work. Instead of <name, extension obj> which doesn't provide much value,
