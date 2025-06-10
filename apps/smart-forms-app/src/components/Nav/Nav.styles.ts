@@ -27,15 +27,12 @@ export const NavSectionHeadingWrapper = styled(Box)({
 });
 
 export const NavSectionHeading = styled(Typography)(({ theme }) => ({
-  ...theme.typography.overline,
-  color: theme.palette.text.secondary
+  ...theme.typography.overline
 }));
 
 export const NavListItemButton = styled(ListItemButton)(({ theme }) => ({
-  ...theme.typography.subtitle2,
   height: 46,
   textTransform: 'capitalize',
-  color: theme.palette.text.secondary,
   borderRadius: Number(theme.shape.borderRadius)
 }));
 

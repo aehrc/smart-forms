@@ -17,7 +17,6 @@
 
 import { Box, Drawer } from '@mui/material';
 import Logo from '../../../components/Logos/Logo.tsx';
-import Scrollbar from '../../../components/Scrollbar/Scrollbar.tsx';
 import NavPatientDetails from '../../../components/Nav/NavPatientDetails.tsx';
 import ViewerNavSection from './ViewerNavSection.tsx';
 import ViewerOperationSection from './ViewerOperationSection.tsx';
@@ -53,19 +52,13 @@ function ViewerNav(props: Props) {
   const isNotLaunched = !smartClient;
 
   const renderContent = (
-    <Scrollbar
-      sx={{
-        height: 1,
-        '& .simplebar-content': { height: 1, display: 'flex', flexDirection: 'column' }
-      }}>
+    <>
       <NavLogoWrapper>
         <Logo isNav />
       </NavLogoWrapper>
 
       <NavPatientDetails />
       {launchQuestionnaireExists ? <ViewerLaunchQuestionnaireNavSection /> : <ViewerNavSection />}
-
-      {/*<ViewerNavSection />*/}
 
       {smartClient && sourceQuestionnaire.item && sourceResponse.item ? (
         <ViewerOperationSection />
@@ -82,7 +75,7 @@ function ViewerNav(props: Props) {
       <CsiroLogoWrapper>
         <CsiroLogo />
       </CsiroLogoWrapper>
-    </Scrollbar>
+    </>
   );
 
   return (

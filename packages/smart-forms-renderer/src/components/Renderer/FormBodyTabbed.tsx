@@ -107,6 +107,7 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
 
             return (
               <TabPanel
+                aria-labelledby={`tab-${i}`}
                 key={qItem.linkId}
                 sx={{ p: 0 }}
                 value={i.toString()}

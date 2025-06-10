@@ -26,7 +26,7 @@ import type {
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import DeleteItemButton from './DeleteItemButton';
+import RemoveItemButton from './RemoveItemButton';
 import useReadOnly from '../../../hooks/useReadOnly';
 
 interface RepeatGroupItemProps
@@ -40,7 +40,7 @@ interface RepeatGroupItemProps
   nullableQrItem: QuestionnaireResponseItem | null;
   numOfRepeatGroups: number;
   groupCardElevation: number;
-  onDeleteItem: () => void;
+  onRemoveItem: () => void;
 }
 
 function RepeatGroupItem(props: RepeatGroupItemProps) {
@@ -54,7 +54,7 @@ function RepeatGroupItem(props: RepeatGroupItemProps) {
     groupCardElevation,
     showMinimalView,
     parentIsReadOnly,
-    onDeleteItem,
+    onRemoveItem,
     onQrItemChange
   } = props;
 
@@ -76,11 +76,11 @@ function RepeatGroupItem(props: RepeatGroupItemProps) {
         />
       </Box>
       {showMinimalView ? null : (
-        <DeleteItemButton
+        <RemoveItemButton
           nullableQrItem={nullableQrItem}
           numOfRepeatGroups={numOfRepeatGroups}
           readOnly={readOnly}
-          onDeleteItem={onDeleteItem}
+          onRemoveItem={onRemoveItem}
         />
       )}
     </RepeatGroupContainerStack>

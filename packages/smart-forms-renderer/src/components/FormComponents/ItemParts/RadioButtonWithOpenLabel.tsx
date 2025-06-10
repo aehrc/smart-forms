@@ -43,6 +43,7 @@ function RadioButtonWithOpenLabel(props: RadioButtonWithOpenLabelProps) {
         value={value}
         readOnly={readOnly}
         openLabelOptionSelected={isSelected}
+        label={label}
         onInputChange={onInputChange}
       />
     </Box>

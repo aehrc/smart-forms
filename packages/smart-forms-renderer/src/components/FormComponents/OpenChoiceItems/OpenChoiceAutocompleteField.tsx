@@ -76,7 +76,7 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
 
   return (
     <Autocomplete
-      id={qItem.type + '-' + qItem.linkId}
+      {...(!isTabled && { id: `${qItem.type}-${qItem.linkId}` })}
       value={valueAutocomplete}
       options={options}
       getOptionLabel={(option) =>
@@ -98,9 +98,8 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
           value={input}
           textFieldWidth={textFieldWidth}
           isTabled={isTabled}
-          label={displayPrompt}
           size="small"
-          placeholder={entryFormat}
+          placeholder={entryFormat || displayPrompt}
           slotProps={{
             input: {
               ...params.InputProps,
@@ -135,7 +134,11 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
                   {params.InputProps.endAdornment}
                   <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
                 </>
-              )
+              ),
+              inputProps: {
+                ...params.inputProps,
+                ...(isTabled ? {} : { 'aria-label': qItem.text ?? `Unnamed ${qItem.type} item` })
+              }
             }
           }}
           data-test="q-item-open-choice-autocomplete-field"

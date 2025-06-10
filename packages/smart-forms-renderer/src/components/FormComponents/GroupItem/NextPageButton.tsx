@@ -28,7 +28,11 @@ function NextPageButton(props: NextPageButtonProps) {
   const { isDisabled, onNextPageClick } = props;
 
   return (
-    <SecondaryFab size="small" aria-label="next" disabled={isDisabled} onClick={onNextPageClick}>
+    <SecondaryFab
+      size="small"
+      aria-label="Next page"
+      disabled={isDisabled}
+      onClick={onNextPageClick}>
       <Iconify icon="material-symbols:chevron-right-rounded" />
     </SecondaryFab>
   );

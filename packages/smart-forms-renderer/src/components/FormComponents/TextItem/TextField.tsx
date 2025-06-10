@@ -61,8 +61,7 @@ function TextField(props: TextFieldProps) {
       onChange={(event) => onInputChange(event.target.value)}
       onBlur={onBlur}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
-      label={displayPrompt}
-      placeholder={entryFormat}
+      placeholder={entryFormat || displayPrompt}
       fullWidth
       multiline
       size="small"

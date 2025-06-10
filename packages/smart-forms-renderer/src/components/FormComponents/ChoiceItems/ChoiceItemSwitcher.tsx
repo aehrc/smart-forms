@@ -95,6 +95,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
+            isTabled={isTabled}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -111,6 +112,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
             showMinimalView={showMinimalView}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
+            isTabled={isTabled}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -125,6 +127,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
             showMinimalView={showMinimalView}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
+            isTabled={isTabled}
             onQrItemChange={onQrItemChange}
           />
         );

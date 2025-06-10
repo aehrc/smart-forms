@@ -67,8 +67,7 @@ function StringField(props: StringFieldProps) {
       error={!!feedback}
       onBlur={onBlur} // Trigger validation on blur
       onChange={(event) => onInputChange(event.target.value)}
-      label={displayPrompt}
-      placeholder={entryFormat}
+      placeholder={entryFormat || displayPrompt}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       size="small"
       slotProps={{

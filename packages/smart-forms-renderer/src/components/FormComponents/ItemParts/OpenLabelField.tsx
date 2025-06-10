@@ -8,11 +8,12 @@ interface OpenLabelFieldProps {
   value: string | null;
   readOnly: boolean;
   openLabelOptionSelected: boolean;
+  label: string;
   onInputChange: (input: string) => unknown;
 }
 
 function OpenLabelField(props: OpenLabelFieldProps) {
-  const { value, readOnly, openLabelOptionSelected, onInputChange } = props;
+  const { value, readOnly, openLabelOptionSelected, label, onInputChange } = props;
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
@@ -45,6 +46,9 @@ function OpenLabelField(props: OpenLabelFieldProps) {
               />
             </InputAdornment>
           )
+        },
+        htmlInput: {
+          'aria-label': label ?? 'Unnamed open label field'
         }
       }}
     />

@@ -40,7 +40,7 @@ function ClearInputButton(props: ClearInputButtonProps) {
 
   return (
     <Fade in={buttonShown} timeout={100}>
-      <Tooltip title="Set question as unanswered">
+      <Tooltip role="button" title="Clear">
         <Button
           sx={{
             color: grey['500'],

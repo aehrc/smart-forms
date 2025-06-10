@@ -78,11 +78,13 @@ function ExtractMenu(props: ExtractMenuProps) {
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        MenuListProps={{
-          'aria-labelledby': 'extract-button'
-        }}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        slotProps={{
+          list: {
+            'aria-labelledby': 'extract-button'
+          }
+        }}>
         <MenuItem
           onClick={() => {
             onObservationExtract();

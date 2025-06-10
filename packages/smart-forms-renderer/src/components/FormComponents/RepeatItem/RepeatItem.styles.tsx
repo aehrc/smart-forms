@@ -19,7 +19,7 @@ import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
 import Tooltip from '@mui/material/Tooltip';
 
-export const RepeatDeleteTooltip = styled(Tooltip)(() => ({
+export const RepeatRemoveTooltip = styled(Tooltip)(() => ({
   marginLeft: 8
 }));
 

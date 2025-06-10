@@ -43,7 +43,6 @@ function CheckboxSingle(props: Props) {
         })
       }}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
-      aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
       value={value}
       control={
         <StandardCheckbox
@@ -60,6 +59,11 @@ function CheckboxSingle(props: Props) {
             }
 
             onCheckedChange(value);
+          }}
+          slotProps={{
+            input: {
+              'aria-label': label ?? 'Unnamed checkbox'
+            }
           }}
         />
       }

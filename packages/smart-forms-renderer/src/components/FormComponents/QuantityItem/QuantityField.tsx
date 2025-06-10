@@ -40,6 +40,15 @@ function QuantityField(props: QuantityFieldProps) {
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
+  let placeholderText = '0.0';
+  if (displayPrompt) {
+    placeholderText = displayPrompt;
+  }
+
+  if (entryFormat) {
+    placeholderText = entryFormat;
+  }
+
   return (
     <StandardTextField
       id={itemType + '-' + linkId + '-input'}
@@ -48,8 +57,7 @@ function QuantityField(props: QuantityFieldProps) {
       onChange={(event) => onInputChange(event.target.value)}
       onBlur={onBlur}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
-      label={displayPrompt}
-      placeholder={entryFormat === '' ? '0.0' : entryFormat}
+      placeholder={placeholderText}
       fullWidth
       textFieldWidth={textFieldWidth}
       isTabled={isTabled}

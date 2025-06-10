@@ -7,6 +7,7 @@ function ViewerOperationItem(props: OperationItem) {
 
   return (
     <NavListItemButton
+      role="button"
       disableGutters
       onClick={onClick}
       disabled={disabled}

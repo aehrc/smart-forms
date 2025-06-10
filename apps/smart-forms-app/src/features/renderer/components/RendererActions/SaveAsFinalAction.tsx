@@ -63,10 +63,14 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
       {isSpeedDial ? (
         <SpeedDialAction
           icon={<TaskAltIcon />}
-          tooltipTitle={`Save as Final ${writeBackEnabled ? '& Write Back' : ''}`}
-          tooltipOpen
           onClick={handleOpenDialog}
           {...speedDialActionProps}
+          slotProps={{
+            tooltip: {
+              title: `Save as Final ${writeBackEnabled ? '& Write Back' : ''}`,
+              open: true
+            }
+          }}
         />
       ) : (
         <RendererOperationItem

@@ -20,8 +20,9 @@ import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import { grey } from '@mui/material/colors';
 
-export const HeaderTableCell = styled(TableCell)(() => ({
+export const HeaderTableCell = styled(TableCell)(({ theme }) => ({
   fontSize: 13,
+  color: theme.palette.text.primary,
   lineHeight: 'normal'
 }));
 
@@ -33,7 +34,7 @@ export const StandardTableCell = styled(TableCell, {
   paddingRight: 4
 }));
 
-export const DeleteButtonTableCell = styled(TableCell)(() => ({
+export const RemoveButtonTableCell = styled(TableCell)(() => ({
   paddingLeft: 0,
   paddingRight: 4
 }));

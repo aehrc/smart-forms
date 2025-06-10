@@ -16,32 +16,37 @@
  */
 
 import React from 'react';
-import { RepeatDeleteTooltip } from '../RepeatItem/RepeatItem.styles';
+import { RepeatRemoveTooltip } from '../RepeatItem/RepeatItem.styles';
 import IconButton from '@mui/material/IconButton';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import type { QuestionnaireResponseItem } from 'fhir/r4';
 
-interface DeleteItemButtonProps {
+interface RemoveItemButtonProps {
   nullableQrItem: QuestionnaireResponseItem | null;
   numOfRepeatGroups: number;
   readOnly: boolean;
-  onDeleteItem: () => void;
+  onRemoveItem: () => void;
 }
 
-function DeleteItemButton(props: DeleteItemButtonProps) {
-  const { nullableQrItem, numOfRepeatGroups, readOnly, onDeleteItem } = props;
+function RemoveItemButton(props: RemoveItemButtonProps) {
+  const { nullableQrItem, numOfRepeatGroups, readOnly, onRemoveItem } = props;
 
   const isDisabled = nullableQrItem === null || numOfRepeatGroups === 1 || readOnly;
 
   return (
-    <RepeatDeleteTooltip className="repeat-group-delete" title="Remove item">
-      <span>
-        <IconButton size="small" color="error" disabled={isDisabled} onClick={onDeleteItem}>
+    <RepeatRemoveTooltip title="Remove item">
+      <span role="button">
+        <IconButton
+          size="small"
+          color="error"
+          disabled={isDisabled}
+          onClick={onRemoveItem}
+          aria-label="Remove item">
           <RemoveCircleOutlineIcon />
         </IconButton>
       </span>
-    </RepeatDeleteTooltip>
+    </RepeatRemoveTooltip>
   );
 }
 
-export default DeleteItemButton;
+export default RemoveItemButton;

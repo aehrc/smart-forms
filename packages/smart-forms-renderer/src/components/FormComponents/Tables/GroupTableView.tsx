@@ -141,6 +141,12 @@ function GroupTableView(props: GroupTableViewProps) {
                         role="checkbox"
                         aria-checked={ariaCheckedValue}
                         onChange={onSelectAll}
+                        slotProps={{
+                          input: {
+                            'aria-label':
+                              'Select all rows in ' + (qItem.text ?? `Unnamed ${qItem.type} item`)
+                          }
+                        }}
                       />
                     </HeaderTableCell>
                   ) : null}
@@ -214,6 +220,12 @@ function GroupTableView(props: GroupTableViewProps) {
                     role="checkbox"
                     aria-checked={ariaCheckedValue}
                     onChange={onSelectAll}
+                    slotProps={{
+                      input: {
+                        'aria-label':
+                          'Select all rows in ' + (qItem.text ?? `Unnamed ${qItem.type} item`)
+                      }
+                    }}
                   />
                 </HeaderTableCell>
               ) : null}

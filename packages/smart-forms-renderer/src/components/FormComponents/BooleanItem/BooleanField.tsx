@@ -29,6 +29,7 @@ import ClearInputButton from '../ItemParts/ClearInputButton';
 import { useRendererStylingStore } from '../../../stores';
 import { StandardCheckbox } from '../../Checkbox.styles';
 import { ariaCheckedMap } from '../../../utils/checkbox';
+import { SrOnly } from '../SrOnly.styles';
 
 interface BooleanFieldProps {
   qItem: QuestionnaireItem;
@@ -68,11 +69,10 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
         }}>
         {booleanAsCheckbox ? (
           <FormControlLabel
-            id={qItem.type + '-' + qItem.linkId}
             disabled={readOnly && readOnlyVisualStyle === 'disabled'}
-            aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
             control={
               <StandardCheckbox
+                id={qItem.type + '-' + qItem.linkId}
                 size="small"
                 checked={selection === 'true'}
                 readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
@@ -95,7 +95,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
                 }}
               />
             }
-            label=""
+            label={<SrOnly>{qItem.text}</SrOnly>}
           />
         ) : (
           <Box

@@ -25,6 +25,7 @@ import Stack from '@mui/material/Stack';
 interface DateTimeFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
   itemType: string;
+  itemText: string | undefined;
   displayDate: string;
   dateInput: string;
   timeInput: string;
@@ -49,6 +50,7 @@ function DateTimeField(props: DateTimeFieldProps) {
   const {
     linkId,
     itemType,
+    itemText,
     displayDate,
     dateInput,
     timeInput,
@@ -75,6 +77,7 @@ function DateTimeField(props: DateTimeFieldProps) {
       <CustomDateField
         linkId={linkId}
         itemType={itemType}
+        itemText={itemText}
         valueDate={displayDate}
         input={dateInput}
         feedback={showFeedback ? (dateFeedback ?? '') : ''}

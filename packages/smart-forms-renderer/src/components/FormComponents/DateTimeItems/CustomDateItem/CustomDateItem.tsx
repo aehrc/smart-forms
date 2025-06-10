@@ -112,6 +112,7 @@ function CustomDateItem(props: CustomDateItemProps) {
       <CustomDateField
         linkId={qItem.linkId}
         itemType={qItem.type}
+        itemText={qItem.text}
         valueDate={displayDate}
         input={input}
         feedback={showFeedback ? (errorFeedback ?? '') : ''}
@@ -142,6 +143,7 @@ function CustomDateItem(props: CustomDateItemProps) {
           <CustomDateField
             linkId={qItem.linkId}
             itemType={qItem.type}
+            itemText={qItem.text}
             valueDate={displayDate}
             input={input}
             feedback={showFeedback ? (errorFeedback ?? '') : ''}

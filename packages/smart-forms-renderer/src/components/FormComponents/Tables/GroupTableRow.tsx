@@ -94,6 +94,7 @@ function GroupTableRow(props: GroupTableRowProps) {
             <>
               <TableCell padding="none">
                 <Box
+                  aria-label="Drag row"
                   display="flex"
                   alignItems="center"
                   justifyContent="center"
@@ -105,6 +106,7 @@ function GroupTableRow(props: GroupTableRowProps) {
                 </Box>
               </TableCell>
               <SelectRowButton
+                qItem={tableQItem}
                 isChecked={itemIsSelected}
                 readOnly={readOnly}
                 onSelectItem={() => onSelectRow(rowId)}
