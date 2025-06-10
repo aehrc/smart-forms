@@ -33,7 +33,6 @@ import { getDecimalPrecision } from '../../../utils/itemControl';
 import useDecimalCalculatedExpression from '../../../hooks/useDecimalCalculatedExpression';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
-import Box from '@mui/material/Box';
 import ItemLabel from '../ItemParts/ItemLabel';
 import useShowFeedback from '../../../hooks/useShowFeedback';
 
@@ -155,22 +154,20 @@ function DecimalItem(props: DecimalItemProps) {
 
   if (isRepeated) {
     return (
-      <Box data-test="q-item-decimal-box">
-        <DecimalField
-          linkId={qItem.linkId}
-          itemType={qItem.type}
-          input={input}
-          feedback={feedback}
-          displayPrompt={displayPrompt}
-          displayUnit={displayUnit}
-          entryFormat={entryFormat}
-          readOnly={readOnly}
-          calcExpUpdated={calcExpUpdated}
-          isTabled={isTabled}
-          onInputChange={handleInputChange}
-          onBlur={handleBlur}
-        />
-      </Box>
+      <DecimalField
+        linkId={qItem.linkId}
+        itemType={qItem.type}
+        input={input}
+        feedback={showFeedback ? feedback : ''}
+        displayPrompt={displayPrompt}
+        displayUnit={displayUnit}
+        entryFormat={entryFormat}
+        readOnly={readOnly}
+        calcExpUpdated={calcExpUpdated}
+        isTabled={isTabled}
+        onInputChange={handleInputChange}
+        onBlur={handleBlur}
+      />
     );
   }
 

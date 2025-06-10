@@ -71,12 +71,13 @@ function DecimalField(props: DecimalFieldProps) {
       id={itemType + '-' + linkId}
       value={input}
       error={!!feedback}
+      helperText={feedback}
       onChange={(event) => onInputChange(event.target.value)}
       onBlur={onBlur}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       placeholder={placeholderText}
-      textFieldWidth={textFieldWidth}
       fullWidth
+      textFieldWidth={textFieldWidth}
       isTabled={isTabled}
       size="small"
       slotProps={{
@@ -100,7 +101,6 @@ function DecimalField(props: DecimalFieldProps) {
           )
         }
       }}
-      helperText={feedback}
       data-test="q-item-decimal-field"
     />
   );

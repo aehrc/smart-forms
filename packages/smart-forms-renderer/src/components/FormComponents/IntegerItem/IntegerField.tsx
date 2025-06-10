@@ -82,7 +82,10 @@ function IntegerField(props: IntegerFieldProps) {
       isTabled={isTabled}
       size="small"
       slotProps={{
-        htmlInput: { inputMode: 'numeric', pattern: '[0-9]*' },
+        htmlInput: {
+          inputMode: 'numeric',
+          pattern: '[0-9]*'
+        },
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (

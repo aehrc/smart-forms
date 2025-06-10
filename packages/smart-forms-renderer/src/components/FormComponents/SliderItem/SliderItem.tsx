@@ -78,7 +78,7 @@ function SliderItem(props: SliderItemProps) {
 
   if (isRepeated) {
     return (
-      <Box px={4}>
+      <Box px={1} width="100%">
         <SliderField
           linkId={qItem.linkId}
           itemType={qItem.type}
