@@ -54,11 +54,11 @@ export const qRenderingXhtmlBooleanItem: Questionnaire = {
               'padding: 0.875rem;\r\n            ' +
               'margin-bottom: 1rem;\r\n            ' +
               'font-size: 0.875rem;\r\n            ' +
-              'color: #2E7D32;\r\n            ' +
+              'color: #29712D;\r\n            ' +
               'border-radius: 0.5rem;\r\n            ' +
-              'background-color: #d5e5d6;\r\n            ' +
+              'background-color: #D9E8DA;\r\n            ' +
               'font-weight: 700;\r\n        ' +
-              'max-width: 195px;\r\n        ' +
+              'max-width: 205px;\r\n        ' +
               '}\r\n    ' +
               '</style>\r\n' +
               '</head>\r\n' +
