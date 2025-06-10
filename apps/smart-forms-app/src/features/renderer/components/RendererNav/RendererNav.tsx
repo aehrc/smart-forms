@@ -72,7 +72,7 @@ function RendererNav(props: RendererNavProps) {
         </NavErrorAlertWrapper>
       ) : null}
 
-      <Box sx={{ mx: 0.5, pb: 2, bottom: '0px' }}>
+      <Box sx={{ mx: 0.5, pb: 2 }}>
         <Grid container alignItems="center">
           <Grid size={{ xs: 4 }} />
           <Grid size={{ xs: 4 }}>
@@ -81,8 +81,8 @@ function RendererNav(props: RendererNavProps) {
           <Grid size={{ xs: 4 }}>
             {navIsShown ? (
               <Box display="flex" justifyContent="end" alignItems="center">
-                <Tooltip title="Collapse Sidebar" placement="right">
-                  <IconButton onClick={onCollapseNav}>
+                <Tooltip title="Collapse sidebar" placement="right">
+                  <IconButton onClick={onCollapseNav} aria-label="Collapse sidebar">
                     <KeyboardDoubleArrowLeftIcon fontSize="small" />
                   </IconButton>
                 </Tooltip>

@@ -143,7 +143,8 @@ function GroupTableView(props: GroupTableViewProps) {
                         onChange={onSelectAll}
                         slotProps={{
                           input: {
-                            'aria-label': 'Select Row: ' + qItem._text
+                            'aria-label':
+                              'Select all rows in ' + (qItem.text ?? `Unnamed ${qItem.type} item`)
                           }
                         }}
                       />
@@ -221,7 +222,8 @@ function GroupTableView(props: GroupTableViewProps) {
                     onChange={onSelectAll}
                     slotProps={{
                       input: {
-                        'aria-label': 'Select Row: ' + qItem._text
+                        'aria-label':
+                          'Select all rows in ' + (qItem.text ?? `Unnamed ${qItem.type} item`)
                       }
                     }}
                   />

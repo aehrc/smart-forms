@@ -89,8 +89,7 @@ export function isRepeatItemAndNotCheckbox(qItem: QuestionnaireItem): boolean {
 }
 
 /**
- * Check if qItem is a is a checkbox item
- *
+ * Check if qItem is a checkbox item
  */
 export function isCheckbox(qItem: QuestionnaireItem): boolean {
   // In reality this should never happen

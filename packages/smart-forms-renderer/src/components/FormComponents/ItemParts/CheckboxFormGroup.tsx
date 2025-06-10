@@ -67,7 +67,7 @@ function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
             id={qItem.type + '-' + qItem.linkId}
             {...(!isTabled
               ? { 'aria-labelledby': 'label-' + qItem.linkId }
-              : { 'aria-label': qItem.text })}
+              : { 'aria-label': qItem.text ?? 'Unnamed checkbox list' })}
             role="group"
             row={orientation === ChoiceItemOrientation.Horizontal}
             sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>

@@ -99,7 +99,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
                   ),
                   inputProps: {
                     ...params.inputProps,
-                    'aria-label': qItem.text
+                    'aria-label': qItem.text ?? 'Unnamed choice dropdown'
                   }
                 }
               }}

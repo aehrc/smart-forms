@@ -61,7 +61,7 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
             id={qItem.type + '-' + qItem.linkId}
             {...(!isTabled
               ? { 'aria-labelledby': 'label-' + qItem.linkId }
-              : { 'aria-label': qItem.text })}
+              : { 'aria-label': qItem.text ?? 'Unnamed radio group' })}
             role="group"
             row={orientation === ChoiceItemOrientation.Horizontal}
             sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}

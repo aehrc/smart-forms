@@ -106,10 +106,10 @@ function GroupTableRow(props: GroupTableRowProps) {
                 </Box>
               </TableCell>
               <SelectRowButton
+                qItem={tableQItem}
                 isChecked={itemIsSelected}
                 readOnly={readOnly}
                 onSelectItem={() => onSelectRow(rowId)}
-                ariaLabelText="Select row"
               />
             </>
             <GroupTableRowCells

@@ -138,7 +138,7 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
               ),
               inputProps: {
                 ...params.inputProps,
-                'aria-label': displayPrompt || 'Autocomplete input'
+                'aria-label': qItem.text ?? 'Unnamed autocomplete input'
               }
             }
           }}

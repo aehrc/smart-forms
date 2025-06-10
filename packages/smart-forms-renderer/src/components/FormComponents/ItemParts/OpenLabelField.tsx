@@ -48,7 +48,7 @@ function OpenLabelField(props: OpenLabelFieldProps) {
           )
         },
         htmlInput: {
-          'aria-label': label
+          'aria-label': label ?? 'Unnamed open label field'
         }
       }}
     />

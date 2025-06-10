@@ -42,6 +42,7 @@ function ChoiceRadioSingle(props: ChoiceRadioSingleProps) {
         })
       }}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+      aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
       value={value}
       control={
         <StandardRadio size="small" readOnly={readOnly && readOnlyVisualStyle === 'readonly'} />

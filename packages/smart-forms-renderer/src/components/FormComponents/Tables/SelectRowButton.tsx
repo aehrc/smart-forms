@@ -19,16 +19,17 @@ import React from 'react';
 import TableCell from '@mui/material/TableCell';
 import { StandardCheckbox } from '../../Checkbox.styles';
 import { useRendererStylingStore } from '../../../stores';
+import type { QuestionnaireItem } from 'fhir/r4';
 
 interface SelectRowButtonProps {
+  qItem: QuestionnaireItem;
   isChecked: boolean;
   readOnly: boolean;
   onSelectItem: () => void;
-  ariaLabelText: string;
 }
 
 function SelectRowButton(props: SelectRowButtonProps) {
-  const { isChecked, readOnly, onSelectItem } = props;
+  const { qItem, isChecked, readOnly, onSelectItem } = props;
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
 
@@ -46,7 +47,7 @@ function SelectRowButton(props: SelectRowButtonProps) {
         onChange={onSelectItem}
         slotProps={{
           input: {
-            'aria-label': props.ariaLabelText
+            'aria-label': 'Select row ' + (qItem.text ?? `Unnamed ${qItem.type} item`)
           }
         }}
       />

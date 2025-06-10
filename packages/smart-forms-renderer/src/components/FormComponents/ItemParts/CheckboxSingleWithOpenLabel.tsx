@@ -56,7 +56,7 @@ function CheckboxSingleWithOpenLabel(props: Props) {
             onChange={handleCheckedChange}
             slotProps={{
               input: {
-                'aria-label': label
+                'aria-label': label ?? 'Unnamed checkbox'
               }
             }}
           />
