@@ -70,6 +70,15 @@ function CustomDateField(props: CustomDateFieldProps) {
   // If this reusable date field is part of a DateTime component, the id should be appended with '-date'
   const id = isPartOfDateTime ? itemType + '-' + linkId + '-date' : itemType + '-' + linkId;
 
+  let placeholderText = 'DD/MM/YYYY';
+  if (displayPrompt !== '') {
+    placeholderText = displayPrompt;
+  }
+
+  if (entryFormat !== '') {
+    placeholderText = entryFormat;
+  }
+
   return (
     <Tooltip title={null}>
       <StandardTextField
@@ -81,8 +90,7 @@ function CustomDateField(props: CustomDateFieldProps) {
         value={input}
         error={!!feedback}
         onChange={(e: ChangeEvent<HTMLInputElement>) => onInputChange(e.target.value)}
-        label={displayPrompt}
-        placeholder={entryFormat !== '' ? entryFormat : 'DD/MM/YYYY'}
+        placeholder={placeholderText}
         disabled={readOnly && readOnlyVisualStyle === 'disabled'}
         size="small"
         focused={isFocused}

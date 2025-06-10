@@ -64,8 +64,7 @@ function UrlField(props: UrlFieldProps) {
       error={!!feedback}
       onChange={(event) => onInputChange(event.target.value)}
       onBlur={onBlur}
-      label={displayPrompt}
-      placeholder={entryFormat}
+      placeholder={entryFormat || displayPrompt}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       size="small"
       slotProps={{

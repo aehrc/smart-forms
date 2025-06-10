@@ -98,9 +98,8 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
           value={input}
           textFieldWidth={textFieldWidth}
           isTabled={isTabled}
-          label={displayPrompt}
           size="small"
-          placeholder={entryFormat}
+          placeholder={entryFormat || displayPrompt}
           slotProps={{
             input: {
               ...params.InputProps,

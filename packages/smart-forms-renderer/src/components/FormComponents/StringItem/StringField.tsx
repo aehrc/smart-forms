@@ -23,10 +23,8 @@ import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import { useRendererStylingStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
-import type { QuestionnaireItem } from 'fhir/r4';
 
 interface StringFieldProps extends PropsWithIsTabledRequiredAttribute {
-  qItem: QuestionnaireItem;
   linkId: string;
   itemType: string;
   input: string;
@@ -42,7 +40,6 @@ interface StringFieldProps extends PropsWithIsTabledRequiredAttribute {
 
 function StringField(props: StringFieldProps) {
   const {
-    qItem,
     linkId,
     itemType,
     input,
@@ -70,8 +67,7 @@ function StringField(props: StringFieldProps) {
       error={!!feedback}
       onBlur={onBlur} // Trigger validation on blur
       onChange={(event) => onInputChange(event.target.value)}
-      label={displayPrompt}
-      placeholder={entryFormat}
+      placeholder={entryFormat || displayPrompt}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       size="small"
       slotProps={{
