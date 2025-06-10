@@ -190,7 +190,7 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
 
   if (isRepeated) {
     return (
-      <Stack>
+      <Stack width="100%">
         <DateTimeField
           linkId={qItem.linkId}
           itemType={qItem.type}

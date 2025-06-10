@@ -268,6 +268,7 @@ function QuantityItem(props: QuantityItemProps) {
         id={qItem.type + '-' + qItem.linkId}
         data-test="q-item-quantity-box"
         display="flex"
+        width="100%"
         gap={1}>
         <QuantityComparatorField
           linkId={qItem.linkId}
