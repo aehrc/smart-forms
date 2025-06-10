@@ -88,10 +88,7 @@ function StringField(props: StringFieldProps) {
               />
               <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>
-          ),
-          inputProps: {
-            'aria-label': qItem.text
-          }
+          )
         }
       }}
       helperText={feedback}

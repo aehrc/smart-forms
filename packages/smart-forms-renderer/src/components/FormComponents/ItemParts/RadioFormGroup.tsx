@@ -62,7 +62,7 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
             {...(!isTabled
               ? { 'aria-labelledby': 'label-' + qItem.linkId }
               : { 'aria-label': qItem.text ?? 'Unnamed radio group' })}
-            role="group"
+            aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
             row={orientation === ChoiceItemOrientation.Horizontal}
             sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
             onChange={(e) => {
@@ -76,7 +76,6 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
             value={valueRadio}
             data-test="q-item-radio-group">
             <RadioOptionList
-              aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
               options={options}
               readOnly={readOnly}
               fullWidth={inputsFlexGrow}

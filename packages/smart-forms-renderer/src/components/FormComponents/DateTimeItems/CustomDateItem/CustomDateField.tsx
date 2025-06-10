@@ -27,6 +27,7 @@ import { useRendererStylingStore } from '../../../../stores';
 interface CustomDateFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
   itemType: string;
+  itemText: string | undefined;
   valueDate: string;
   input: string;
   feedback: string;
@@ -45,6 +46,7 @@ function CustomDateField(props: CustomDateFieldProps) {
   const {
     linkId,
     itemType,
+    itemText,
     valueDate,
     input,
     feedback,
@@ -104,7 +106,10 @@ function CustomDateField(props: CustomDateFieldProps) {
                   onFocus={(focus) => setFocused(focus)}
                 />
               </>
-            )
+            ),
+            inputProps: {
+              ...(isTabled ? {} : { 'aria-label': itemText ?? `Unnamed ${itemType} item` })
+            }
           }
         }}
         helperText={isTabled ? '' : feedback}

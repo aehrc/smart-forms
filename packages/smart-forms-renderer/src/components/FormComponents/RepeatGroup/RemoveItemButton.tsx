@@ -35,7 +35,7 @@ function RemoveItemButton(props: RemoveItemButtonProps) {
 
   return (
     <RepeatRemoveTooltip title="Remove item">
-      <span>
+      <span role="button">
         <IconButton
           size="small"
           color="error"
