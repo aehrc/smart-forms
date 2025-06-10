@@ -82,11 +82,13 @@ export default function DashboardNav(props: DashboardNavProps) {
         <Drawer
           open
           variant="permanent"
-          PaperProps={{
-            sx: {
-              width: NAV_WIDTH,
-              bgcolor: 'background.default',
-              borderRightStyle: 'dashed'
+          slotProps={{
+            paper: {
+              sx: {
+                width: NAV_WIDTH,
+                bgcolor: 'background.default',
+                borderRightStyle: 'dashed'
+              }
             }
           }}>
           {renderContent}
@@ -98,8 +100,10 @@ export default function DashboardNav(props: DashboardNavProps) {
           ModalProps={{
             keepMounted: true
           }}
-          PaperProps={{
-            sx: { width: NAV_WIDTH }
+          slotProps={{
+            paper: {
+              sx: { width: NAV_WIDTH }
+            }
           }}>
           {renderContent}
         </Drawer>
