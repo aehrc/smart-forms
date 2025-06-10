@@ -33,7 +33,7 @@ export const StandardTableCell = styled(TableCell, {
   paddingRight: 4
 }));
 
-export const DeleteButtonTableCell = styled(TableCell)(() => ({
+export const RemoveButtonTableCell = styled(TableCell)(() => ({
   paddingLeft: 0,
   paddingRight: 4
 }));

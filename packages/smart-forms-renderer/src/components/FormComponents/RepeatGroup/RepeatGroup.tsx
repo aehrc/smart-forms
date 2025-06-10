@@ -95,7 +95,7 @@ function RepeatGroup(props: RepeatGroupProps) {
     );
   }
 
-  function handleDeleteItem(index: number) {
+  function handleRemoveItem(index: number) {
     const updatedRepeatGroups = [...repeatGroups];
     updatedRepeatGroups.splice(index, 1);
 
@@ -135,7 +135,7 @@ function RepeatGroup(props: RepeatGroupProps) {
       parentIsReadOnly={parentIsReadOnly}
       onAnswerChange={handleAnswerChange}
       onAddItem={handleAddItem}
-      onDeleteItem={handleDeleteItem}
+      onRemoveItem={handleRemoveItem}
       parentStyles={parentStyles}
     />
   );

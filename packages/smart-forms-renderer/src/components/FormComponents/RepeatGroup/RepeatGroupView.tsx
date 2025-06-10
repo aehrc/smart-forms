@@ -56,7 +56,7 @@ interface RepeatGroupViewProps
     targetItemPath?: ItemPath
   ) => void;
   onAddItem: () => void;
-  onDeleteItem: (index: number) => void;
+  onRemoveItem: (index: number) => void;
   parentStyles?: Record<string, string>;
 }
 
@@ -77,7 +77,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
     parentStyles,
     onAnswerChange,
     onAddItem,
-    onDeleteItem
+    onRemoveItem
   } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
@@ -108,7 +108,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
                 groupCardElevation={groupCardElevation}
                 showMinimalView={showMinimalView}
                 parentIsReadOnly={parentIsReadOnly}
-                onDeleteItem={() => onDeleteItem(index)}
+                onRemoveItem={() => onRemoveItem(index)}
                 onQrItemChange={(newQrItem, targetItemPath) =>
                   onAnswerChange(newQrItem, index, targetItemPath)
                 }
@@ -161,7 +161,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
                     itemPath={appendRepeatIndexToLastSegment(itemPath, index)}
                     groupCardElevation={groupCardElevation}
                     parentIsReadOnly={parentIsReadOnly}
-                    onDeleteItem={() => onDeleteItem(index)}
+                    onRemoveItem={() => onRemoveItem(index)}
                     onQrItemChange={(newQrItem, targetItemPath) =>
                       onAnswerChange(newQrItem, index, targetItemPath)
                     }
@@ -212,7 +212,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
                   itemPath={appendRepeatIndexToLastSegment(itemPath, index)}
                   groupCardElevation={groupCardElevation}
                   parentIsReadOnly={parentIsReadOnly}
-                  onDeleteItem={() => onDeleteItem(index)}
+                  onRemoveItem={() => onRemoveItem(index)}
                   onQrItemChange={(newQrItem, targetItemPath) =>
                     onAnswerChange(newQrItem, index, targetItemPath)
                   }

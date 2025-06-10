@@ -16,7 +16,7 @@
  */
 
 import React from 'react';
-import { DeleteButtonTableCell } from './Table.styles';
+import { RemoveButtonTableCell } from './Table.styles';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 
@@ -35,7 +35,7 @@ function RemoveRowButton(props: RemoveRowButtonProps) {
 
   const isDisabled = nullableQrItem === null || numOfRows === 1 || readOnly;
   return (
-    <DeleteButtonTableCell>
+    <RemoveButtonTableCell>
       <Tooltip title="Remove item">
         <span role="button">
           <IconButton
@@ -48,7 +48,7 @@ function RemoveRowButton(props: RemoveRowButtonProps) {
           </IconButton>
         </span>
       </Tooltip>
-    </DeleteButtonTableCell>
+    </RemoveButtonTableCell>
   );
 }
 

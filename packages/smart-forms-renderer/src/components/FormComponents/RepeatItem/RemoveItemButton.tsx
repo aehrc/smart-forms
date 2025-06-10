@@ -16,7 +16,7 @@
  */
 
 import React from 'react';
-import { RepeatDeleteTooltip } from './RepeatItem.styles';
+import { RepeatRemoveTooltip } from './RepeatItem.styles';
 import IconButton from '@mui/material/IconButton';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import type { QuestionnaireResponseItemAnswer } from 'fhir/r4';
@@ -25,27 +25,27 @@ interface RemoveItemButtonProps {
   answer: QuestionnaireResponseItemAnswer | null;
   numOfRepeatAnswers: number;
   readOnly: boolean;
-  onDeleteAnswer: () => void;
+  onRemoveAnswer: () => void;
 }
 
 function RemoveItemButton(props: RemoveItemButtonProps) {
-  const { answer, numOfRepeatAnswers, readOnly, onDeleteAnswer } = props;
+  const { answer, numOfRepeatAnswers, readOnly, onRemoveAnswer } = props;
 
   const isDisabled = answer === null || numOfRepeatAnswers === 1 || readOnly;
 
   return (
-    <RepeatDeleteTooltip title="Remove item">
+    <RepeatRemoveTooltip title="Remove item">
       <span role="button">
         <IconButton
           size="small"
           color="error"
           disabled={isDisabled}
-          onClick={onDeleteAnswer}
+          onClick={onRemoveAnswer}
           aria-label="Remove item">
           <RemoveCircleOutlineIcon fontSize="small" />
         </IconButton>
       </span>
-    </RepeatDeleteTooltip>
+    </RepeatRemoveTooltip>
   );
 }
 

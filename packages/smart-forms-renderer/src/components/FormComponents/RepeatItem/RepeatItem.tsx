@@ -89,7 +89,7 @@ function RepeatItem(props: RepeatItemProps) {
     );
   }
 
-  function handleDeleteItem(index: number) {
+  function handleRemoveItem(index: number) {
     const updatedRepeatAnswers = [...repeatAnswers];
 
     updatedRepeatAnswers.splice(index, 1);
@@ -131,7 +131,7 @@ function RepeatItem(props: RepeatItemProps) {
               groupCardElevation={groupCardElevation}
               parentIsReadOnly={parentIsReadOnly}
               showMinimalView={showMinimalView}
-              onDeleteAnswer={() => handleDeleteItem(index)}
+              onRemoveAnswer={() => handleRemoveItem(index)}
               onQrItemChange={(newQrItem, targetItemPath) =>
                 handleAnswerChange(newQrItem, index, targetItemPath)
               }
@@ -172,7 +172,7 @@ function RepeatItem(props: RepeatItemProps) {
                     groupCardElevation={groupCardElevation}
                     parentIsReadOnly={parentIsReadOnly}
                     showMinimalView={showMinimalView}
-                    onDeleteAnswer={() => handleDeleteItem(index)}
+                    onRemoveAnswer={() => handleRemoveItem(index)}
                     onQrItemChange={(newQrItem, targetItemPath) =>
                       handleAnswerChange(newQrItem, index, targetItemPath)
                     }
