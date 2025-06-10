@@ -194,6 +194,7 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
         <DateTimeField
           linkId={qItem.linkId}
           itemType={qItem.type}
+          itemText={qItem.text}
           displayDate={displayDate}
           dateInput={dateInput}
           timeInput={timeInput}
@@ -231,6 +232,7 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
           <DateTimeField
             linkId={qItem.linkId}
             itemType={qItem.type}
+            itemText={qItem.text}
             displayDate={displayDate}
             dateInput={dateInput}
             timeInput={timeInput}
