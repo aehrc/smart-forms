@@ -64,10 +64,10 @@ function CheckboxSingleWithOpenLabel(props: Props) {
         label={label + ':'}
       />
       <OpenLabelField
-        label={label}
         value={value}
         readOnly={readOnly}
         openLabelOptionSelected={isChecked}
+        label={label}
         onInputChange={onInputChange}
       />
     </Box>

@@ -8,12 +8,12 @@ interface OpenLabelFieldProps {
   value: string | null;
   readOnly: boolean;
   openLabelOptionSelected: boolean;
-  onInputChange: (input: string) => unknown;
   label: string;
+  onInputChange: (input: string) => unknown;
 }
 
 function OpenLabelField(props: OpenLabelFieldProps) {
-  const { value, readOnly, openLabelOptionSelected, onInputChange, label } = props;
+  const { value, readOnly, openLabelOptionSelected, label, onInputChange } = props;
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
