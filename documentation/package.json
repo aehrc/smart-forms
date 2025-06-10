@@ -18,7 +18,7 @@
     "@aehrc/smart-forms-renderer": "^1.0.0-alpha.50",
     "@docusaurus/core": "^3.4.0",
     "@docusaurus/preset-classic": "^3.4.0",
-    "@docusaurus/theme-live-codeblock": "^3.4.0",
+    "@docusaurus/theme-live-codeblock": "^3.8.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@iconify/react": "^5.2.1",
