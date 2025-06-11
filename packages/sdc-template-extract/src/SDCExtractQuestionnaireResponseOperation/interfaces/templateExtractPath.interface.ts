@@ -14,6 +14,11 @@ export interface TemplateDetails {
   templateResource: FhirResource;
 
   /**
+   * Contains details from `templateExtract` extension https://build.fhir.org/ig/HL7/sdc/StructureDefinition-sdc-questionnaire-templateExtract.
+   */
+  templateExtractReference: TemplateExtractReference;
+
+  /**
    * The `linkId` of the `Questionnaire.item` to which the template is attached via extension.
    */
   targetLinkId: string;
@@ -26,14 +31,6 @@ export interface TemplateDetails {
   /**
    * The FHIRPath to the `QuestionnaireResponseItem` in the response tree (if available).
    */
-  targetQRItemFhirPath?: string;
-}
-
-export interface TemplateDetails {
-  templateResource: FhirResource;
-  templateExtractReference: TemplateExtractReference;
-  targetLinkId: string;
-  targetQItem: QuestionnaireItem;
   targetQRItemFhirPath?: string;
 }
 

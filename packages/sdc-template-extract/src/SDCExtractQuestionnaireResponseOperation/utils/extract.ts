@@ -108,8 +108,9 @@ export async function extract(
   const { outputBundle, templateIdToExtractPathTuples } = buildTransactionBundle(
     filteredExtractedResourceMap,
     containedTemplateMap,
+    templateIdToExtractPaths,
     fhirPathContext,
-    templateIdToExtractPaths
+    questionnaireResponse
   );
 
   const customDebugInfo: TemplateExtractDebugInfo = {
