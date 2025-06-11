@@ -11,6 +11,7 @@ import cleanDeep from 'clean-deep';
 import { parametersIsFhirPatch } from './typePredicates';
 import type { BundleRequestType } from '../interfaces/bundle.interface';
 import { addIndexToTargetPath } from './expressionManipulation';
+import { shouldIncludeResource } from './filterResources';
 
 /**
  * Builds a FHIR transaction Bundle from extracted resources using the templateExtract extension.
@@ -18,6 +19,7 @@ import { addIndexToTargetPath } from './expressionManipulation';
  * The resulting Bundle includes properly populated fullUrl, request.method, request.url, and optional request metadata.
  *
  * @param extractedResourceMap - Map of template IDs to extracted FHIR resources.
+ * @param comparisonResourceMap - Map of template IDs to comparison FHIR resources, if available. Used for filtering out unchanged resources.
  * @param containedTemplateMap - Map of template IDs to TemplateDetails including templateExtract metadata.
  * @param templateIdToExtractPaths - Map of template IDs to their respective TemplateExtractPathJsObject. We inject fullUrl in this function to help debugging.
  * @param fhirPathContext - FHIRPath context object that acts as envVars for fhirpath.evaluate
@@ -26,6 +28,7 @@ import { addIndexToTargetPath } from './expressionManipulation';
  */
 export function buildTransactionBundle(
   extractedResourceMap: Map<string, FhirResource[]>,
+  comparisonResourceMap: Map<string, FhirResource[]> | null,
   containedTemplateMap: Map<string, TemplateDetails>,
   templateIdToExtractPaths: Record<string, Record<string, TemplateExtractPathJsObject>[]>,
   fhirPathContext: Record<string, string>,
@@ -64,14 +67,26 @@ export function buildTransactionBundle(
     const extractPathsByTemplateId = templateIdToExtractPaths[templateId];
 
     const extractedResources = extractedResourceMap.get(templateId);
+    const comparisonResources = comparisonResourceMap?.get(templateId);
     if (!extractedResources || extractedResources.length === 0 || !extractPathsByTemplateId) {
       continue;
     }
 
     // Iterate over each extracted resource for the current template
     const templateExtractPathTuples: TemplateExtractPathJsObjectTuple[] = [];
-    for (const [indexInstance, extractedResource] of extractedResources.entries()) {
-      const extractPathsByTemplateIdInstance = extractPathsByTemplateId[indexInstance];
+    for (let i = 0; i < extractedResources.length; i++) {
+      const extractedResource = extractedResources[i];
+      const comparisonResource = comparisonResources?.[i];
+      if (!extractedResource) {
+        continue;
+      }
+
+      // Filter out resources based on two criteria:
+      // 1. Ensure FHIRPatch "value" part has value[x] field.
+      // 2. If a comparison-source-response (i.e. a pre-populated questionnaireResponse) is provided, only include changes compared to that response.
+      if (!shouldIncludeResource(extractedResource, comparisonResource ?? null)) {
+        continue;
+      }
 
       // Clean extracted resource
       const cleanedExtractedResource = cleanDeep(extractedResource, {
@@ -85,7 +100,7 @@ export function buildTransactionBundle(
       let contextScopeResult = createTemplateExtractContextScope(
         questionnaireResponse,
         targetQRItemFhirPath,
-        indexInstance,
+        i,
         fhirPathContext,
         buildBundleWarnings
       );
@@ -169,6 +184,7 @@ export function buildTransactionBundle(
       });
 
       // Inject fullUrl into templateIdToExtractPaths for debugging
+      const extractPathsByTemplateIdInstance = extractPathsByTemplateId[i];
       if (extractPathsByTemplateIdInstance) {
         templateExtractPathTuples.push([fullUrl, extractPathsByTemplateIdInstance]);
       }

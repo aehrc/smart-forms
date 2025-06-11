@@ -4,7 +4,12 @@ import type {
   FetchQuestionnaireCallback,
   FetchQuestionnaireRequestConfig
 } from '../interfaces/callback.interface';
-import type { OperationOutcome, OperationOutcomeIssue, QuestionnaireResponse } from 'fhir/r4';
+import type {
+  FhirResource,
+  OperationOutcome,
+  OperationOutcomeIssue,
+  QuestionnaireResponse
+} from 'fhir/r4';
 import { getQuestionnaireResponse } from './getQuestionnaireResponse';
 import { fetchQuestionnaire } from './fetchQuestionnaire';
 import { createErrorOutcome, createInvalidWarningIssue } from './operationOutcome';
@@ -15,7 +20,7 @@ import { allocateIdsForExtract } from './extractAllocateId';
 import { buildTransactionBundle } from './buildBundle';
 import { createOutputParameters } from './createOutputParameters';
 import { createFhirPathContext } from './createFhirPathContext';
-import { filterResources } from './filterResources';
+import { getComparisonSourceResponse } from './getComparisonSourceResponse';
 
 export async function extract(
   inputParameters: InputParameters | QuestionnaireResponse,
@@ -93,20 +98,22 @@ export async function extract(
     populateIntoTemplates(questionnaireResponse, containedTemplateMap, fhirPathContext);
   combinedWarnings.push(...populateIntoTemplateWarnings);
 
-  // Filter out resources based on two criteria:
-  // 1. Ensure FHIRPatch "value" part has value[x] field.
-  // 2. If a comparison-source-response (i.e. a pre-populated questionnaireResponse) is provided, only include changes compared to that response.
-  const filteredExtractedResourceMap = filterResources(
-    extractedResourceMap,
-    containedTemplateMap,
-    templateIdToExtractPaths,
-    fhirPathContext,
-    inputParameters
-  );
+  // If a comparison-source-response is provided, use it for comparisons during the filtering process
+  // We run another evaluation + populate step, but for comparisonSourceResponse to generate a comparisonResourceMap
+  const comparisonSourceResponse = getComparisonSourceResponse(inputParameters);
+  let comparisonResourceMap: Map<string, FhirResource[]> | null = null;
+  if (comparisonSourceResponse) {
+    comparisonResourceMap = populateIntoTemplates(
+      comparisonSourceResponse,
+      containedTemplateMap,
+      fhirPathContext
+    ).extractedResourceMap;
+  }
 
   // Build transaction bundle with extracted resources
   const { outputBundle, templateIdToExtractPathTuples } = buildTransactionBundle(
-    filteredExtractedResourceMap,
+    extractedResourceMap,
+    comparisonResourceMap,
     containedTemplateMap,
     templateIdToExtractPaths,
     fhirPathContext,
