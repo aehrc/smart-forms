@@ -1,13 +1,5 @@
 import type { Questionnaire } from 'fhir/r4';
 
-// 1. We need to know the full URL - https://proxy.smartforms.io/fhir/Condition/asthma-patchdev-pat-sf
-
-// TODO if the Condition resource doesn't have a clinicalStatus, it will not be create one if you are doing a replace "Condition.clinicalStatus.coding".
-// TODO to get around this, you can do a replace "Condition.clinicalStatus", which will automatically create it.
-// TODO if the value doesn't exist, it will still create a Parameters resource but without values
-// TODO how do you get the ID of the original resource across? Even in a PUT scenario, how?
-// TODO Want to be smart on doing a "conditional" create, if there are changes from the original resource, then do a PATCH, otherwise do nothing.
-
 export const QMedicalHistoryCurrentProblemsWithPatch: Questionnaire = {
   resourceType: 'Questionnaire',
   id: 'MedicalHistoryCurrentProblemsWithPatch',
@@ -190,81 +182,6 @@ export const QMedicalHistoryCurrentProblemsWithPatch: Questionnaire = {
                 value: '32570581000036105'
               }
             ]
-          }
-        ]
-      }
-    },
-    {
-      resourceType: 'Condition',
-      id: 'ConditionTemplate',
-      meta: {
-        profile: ['http://hl7.org.au/fhir/core/StructureDefinition/au-core-condition']
-      },
-      clinicalStatus: {
-        coding: [
-          {
-            extension: [
-              {
-                url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue',
-                valueString:
-                  "item.where(linkId='a7e056be-fb6f-4f7f-b04d-5b809e1e18e3').answer.value.first()"
-              }
-            ]
-          }
-        ]
-      },
-      category: [
-        {
-          coding: [
-            {
-              system: 'http://terminology.hl7.org/CodeSystem/condition-category',
-              code: 'problem-list-item'
-            }
-          ]
-        }
-      ],
-      code: {
-        extension: [
-          {
-            url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext',
-            valueString: "item.where(linkId='2da85994-2d5e-42f1-8a81-abf44f397468').answer.value"
-          }
-        ],
-        coding: [
-          {
-            extension: [
-              {
-                url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue',
-                valueString: 'ofType(Coding)'
-              }
-            ]
-          }
-        ],
-        _text: {
-          extension: [
-            {
-              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue',
-              valueString: 'ofType(string)'
-            }
-          ]
-        }
-      },
-      subject: {
-        _reference: {
-          extension: [
-            {
-              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue',
-              valueString: '%resource.subject.reference'
-            }
-          ]
-        }
-      },
-      _onsetDateTime: {
-        extension: [
-          {
-            url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue',
-            valueString:
-              "item.where(linkId='4d55bffb-3286-4a23-a785-3b9c346d464d').answer.value.toDateTime()"
           }
         ]
       }
@@ -726,8 +643,16 @@ export const QMedicalHistoryCurrentProblemsWithPatch: Questionnaire = {
                     {
                       url: 'template',
                       valueReference: {
-                        reference: '#ConditionPatchTemplate' // TODO swap this out
+                        reference: '#ConditionPatchTemplate'
                       }
+                    },
+                    {
+                      url: 'resourceId',
+                      valueString: "item.where(linkId='conditionId').answer.value"
+                    },
+                    {
+                      url: 'resourceType',
+                      valueString: 'Condition'
                     }
                   ]
                 }
@@ -736,6 +661,23 @@ export const QMedicalHistoryCurrentProblemsWithPatch: Questionnaire = {
               type: 'group',
               repeats: true,
               item: [
+                {
+                  extension: [
+                    {
+                      url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-hidden',
+                      valueBoolean: true
+                    },
+                    {
+                      url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression',
+                      valueExpression: {
+                        language: 'text/fhirpath',
+                        expression: '%ConditionRepeat.id'
+                      }
+                    }
+                  ],
+                  linkId: 'conditionId',
+                  type: 'string'
+                },
                 {
                   extension: [
                     {
