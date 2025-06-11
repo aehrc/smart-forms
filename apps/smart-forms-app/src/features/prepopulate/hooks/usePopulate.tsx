@@ -81,7 +81,10 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
     .then(async ({ populateSuccess, populateResult }) => {
       if (!populateSuccess || !populateResult) {
         onStopSpinner();
-        enqueueSnackbar('Form not populated', { action: <CloseSnackbar />, variant: 'warning' });
+        enqueueSnackbar('Form not populated', {
+          variant: 'warning',
+          action: <CloseSnackbar variant="warning" />
+        });
         return;
       }
 
@@ -110,7 +113,10 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
     })
     .catch(() => {
       onStopSpinner();
-      enqueueSnackbar('Form not populated', { action: <CloseSnackbar />, variant: 'warning' });
+      enqueueSnackbar('Form not populated', {
+        variant: 'warning',
+        action: <CloseSnackbar variant="warning" />
+      });
     });
 }
 

@@ -42,7 +42,7 @@ const FileCollector = memo(function FileCollector(props: FileCollectorProps) {
           enqueueSnackbar('Only one file allowed', {
             variant: 'warning',
             preventDuplicate: true,
-            action: <CloseSnackbar />
+            action: <CloseSnackbar variant="warning" />
           });
         }
 

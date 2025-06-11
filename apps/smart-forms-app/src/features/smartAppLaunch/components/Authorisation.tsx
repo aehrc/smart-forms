@@ -107,7 +107,7 @@ function Authorisation() {
                 'Fail to fetch patient or user launch context. Try launching the app again',
                 {
                   variant: 'error',
-                  action: <CloseSnackbar />
+                  action: <CloseSnackbar variant="error" />
                 }
               );
             }
@@ -162,7 +162,7 @@ function Authorisation() {
                   } else {
                     enqueueSnackbar(
                       'An error occurred while fetching initially specified questionnaire',
-                      { variant: 'error', action: <CloseSnackbar /> }
+                      { variant: 'error', action: <CloseSnackbar variant="error" /> }
                     );
                     dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: false });
                   }
@@ -171,7 +171,7 @@ function Authorisation() {
               .catch(() => {
                 enqueueSnackbar('An error occurred while fetching Questionnaire launch context', {
                   variant: 'error',
-                  action: <CloseSnackbar />
+                  action: <CloseSnackbar variant="error" />
                 });
                 dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: false });
               });
@@ -204,7 +204,7 @@ function Authorisation() {
             dispatch({ type: 'FAIL_AUTH', payload: error.message });
             enqueueSnackbar('An error occurred while launching the app', {
               variant: 'error',
-              action: <CloseSnackbar />
+              action: <CloseSnackbar variant="error" />
             });
           }
         });

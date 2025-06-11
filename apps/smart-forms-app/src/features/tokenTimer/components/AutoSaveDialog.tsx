@@ -65,13 +65,16 @@ function AutoSaveDialog(props: AutoSaveDialogProps) {
         setUpdatableResponseAsSaved(savedResponse);
         enqueueSnackbar(saveSuccessMessage, {
           variant: 'success',
-          action: <CloseSnackbar />
+          action: <CloseSnackbar variant="success" />
         });
         onAutoSave();
       })
       .catch((error) => {
         console.error(error);
-        enqueueSnackbar(saveErrorMessage, { variant: 'error', action: <CloseSnackbar /> });
+        enqueueSnackbar(saveErrorMessage, {
+          variant: 'error',
+          action: <CloseSnackbar variant="error" />
+        });
         onAutoSave();
       });
   }

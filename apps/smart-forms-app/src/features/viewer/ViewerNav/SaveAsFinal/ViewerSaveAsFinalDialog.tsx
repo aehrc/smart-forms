@@ -75,14 +75,17 @@ function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
         handleClose();
         enqueueSnackbar(saveAsFinalSuccessMessage, {
           variant: 'success',
-          action: <CloseSnackbar />
+          action: <CloseSnackbar variant="success" />
         });
         navigate(launchQuestionnaireExists ? '/dashboard/existing' : '/dashboard/responses');
       })
       .catch((error) => {
         console.error(error);
         setIsSaving(false);
-        enqueueSnackbar(saveErrorMessage, { variant: 'error', action: <CloseSnackbar /> });
+        enqueueSnackbar(saveErrorMessage, {
+          variant: 'error',
+          action: <CloseSnackbar variant="error" />
+        });
         handleClose();
       });
   }

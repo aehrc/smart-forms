@@ -22,7 +22,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Allotment } from 'allotment';
 import 'allotment/dist/style.css';
 import { useState } from 'react';
-import { useSnackbar } from 'notistack';
+import { useSnackbar, VariantType } from 'notistack';
 import PlaygroundRenderer from './PlaygroundRenderer.tsx';
 import { Box } from '@mui/material';
 import PopulationProgressSpinner from '../../../components/Spinners/PopulationProgressSpinner.tsx';
@@ -38,7 +38,7 @@ import {
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
 import PlaygroundPicker from './PlaygroundPicker.tsx';
-import type { Patient, Practitioner, Questionnaire } from 'fhir/r4';
+import type { OperationOutcomeIssue, Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import PlaygroundHeader from './PlaygroundHeader.tsx';
 import { HEADERS } from '../../../api/headers.ts';
 import { useExtractDebuggerStore } from '../stores/extractDebuggerStore.ts';
@@ -107,7 +107,7 @@ function Playground() {
         enqueueSnackbar('JSON string does not represent a questionnaire', {
           variant: 'error',
           preventDuplicate: true,
-          action: <CloseSnackbar />
+          action: <CloseSnackbar variant="error" />
         });
         setBuildingState('idle');
       }
@@ -116,7 +116,7 @@ function Playground() {
       enqueueSnackbar('JSON string invalid', {
         variant: 'error',
         preventDuplicate: true,
-        action: <CloseSnackbar />
+        action: <CloseSnackbar variant="error" />
       });
       setBuildingState('idle');
     }
@@ -138,7 +138,7 @@ function Playground() {
       enqueueSnackbar('Attached file must be a JSON file', {
         variant: 'error',
         preventDuplicate: true,
-        action: <CloseSnackbar />
+        action: <CloseSnackbar variant="error" />
       });
       setBuildingState('idle');
       return;
@@ -170,7 +170,7 @@ function Playground() {
           enqueueSnackbar('There was an issue reading the file content.', {
             variant: 'error',
             preventDuplicate: true,
-            action: <CloseSnackbar />
+            action: <CloseSnackbar variant="error" />
           });
           setBuildingState('idle');
         }
@@ -180,7 +180,7 @@ function Playground() {
         enqueueSnackbar(`Error loading questionnaire: ${errorMessage}`, {
           variant: 'error',
           preventDuplicate: true,
-          action: <CloseSnackbar />
+          action: <CloseSnackbar variant="error" />
         });
         setBuildingState('idle');
       }
@@ -190,7 +190,7 @@ function Playground() {
       enqueueSnackbar('Error reading file', {
         variant: 'error',
         preventDuplicate: true,
-        action: <CloseSnackbar />
+        action: <CloseSnackbar variant="error" />
       });
       setBuildingState('idle');
     };
@@ -233,7 +233,7 @@ function Playground() {
       enqueueSnackbar('Failed to extract resource', {
         variant: 'error',
         preventDuplicate: true,
-        action: <CloseSnackbar />
+        action: <CloseSnackbar variant="error" />
       });
       setStructuredMapExtractResult(null);
     } else {
@@ -256,7 +256,7 @@ function Playground() {
       enqueueSnackbar('Failed to run template-based extraction. No source server provided', {
         variant: 'error',
         preventDuplicate: true,
-        action: <CloseSnackbar />
+        action: <CloseSnackbar variant="error" />
       });
       return;
     }
@@ -271,12 +271,32 @@ function Playground() {
     const { extractResult } = inAppExtractOutput;
 
     if (extractResultIsOperationOutcome(extractResult)) {
+      // If there is only one issue in the OperationOutcome, show its details directly in the snackbar
+      if (extractResult.issue.length === 1) {
+        const variantMap: Record<OperationOutcomeIssue['severity'], VariantType> = {
+          error: 'error',
+          warning: 'warning',
+          fatal: 'error',
+          information: 'info'
+        };
+
+        const variant = variantMap[extractResult.issue[0].severity] || 'error';
+        enqueueSnackbar(`${extractResult.issue[0].details?.text}`, {
+          variant: variant,
+          preventDuplicate: true,
+          action: <CloseSnackbar variant={variant} />
+        });
+        console.warn(extractResult);
+        return;
+      }
+
+      // Multiple issues, show a generic error message
       enqueueSnackbar(
         'Ran template-based extraction but an error occurred. See console for error details.',
         {
           variant: 'error',
           preventDuplicate: true,
-          action: <CloseSnackbar />
+          action: <CloseSnackbar variant="error" />
         }
       );
       console.error(extractResult);

@@ -94,14 +94,17 @@ function RendererSaveAsFinalWriteBackDialog(props: RendererSaveAsFinalWriteBackD
     if (!savedResponse) {
       enqueueSnackbar(saveErrorMessage, {
         variant: 'error',
-        action: <CloseSnackbar />
+        action: <CloseSnackbar variant="error" />
       });
       handleClose();
       return;
     }
 
     setUpdatableResponseAsSaved(savedResponse);
-    enqueueSnackbar(saveAsFinalSuccessMessage, { variant: 'success', action: <CloseSnackbar /> });
+    enqueueSnackbar(saveAsFinalSuccessMessage, {
+      variant: 'success',
+      action: <CloseSnackbar variant="success" />
+    });
     handleCloseWithNavigation();
   }
 
@@ -126,7 +129,7 @@ function RendererSaveAsFinalWriteBackDialog(props: RendererSaveAsFinalWriteBackD
     if (!savedResponse) {
       enqueueSnackbar(saveErrorMessage, {
         variant: 'error',
-        action: <CloseSnackbar />
+        action: <CloseSnackbar variant="error" />
       });
       handleClose();
       return;
@@ -146,7 +149,7 @@ function RendererSaveAsFinalWriteBackDialog(props: RendererSaveAsFinalWriteBackD
       enqueueSnackbar('Response saved but failed to extract resource. Write back failed.', {
         variant: 'warning',
         preventDuplicate: true,
-        action: <CloseSnackbar />
+        action: <CloseSnackbar variant="warning" />
       });
       handleCloseWithNavigation();
       return;
@@ -158,7 +161,7 @@ function RendererSaveAsFinalWriteBackDialog(props: RendererSaveAsFinalWriteBackD
         {
           variant: 'warning',
           preventDuplicate: true,
-          action: <CloseSnackbar />
+          action: <CloseSnackbar variant="warning" />
         }
       );
 
@@ -179,7 +182,7 @@ function RendererSaveAsFinalWriteBackDialog(props: RendererSaveAsFinalWriteBackD
         {
           variant: 'warning',
           preventDuplicate: true,
-          action: <CloseSnackbar />
+          action: <CloseSnackbar variant="warning" />
         }
       );
       handleCloseWithNavigation();
@@ -190,7 +193,7 @@ function RendererSaveAsFinalWriteBackDialog(props: RendererSaveAsFinalWriteBackD
     enqueueSnackbar('Response saved and write back successful', {
       variant: 'success',
       preventDuplicate: true,
-      action: <CloseSnackbar />
+      action: <CloseSnackbar variant="success" />
     });
     handleCloseWithNavigation();
   }

@@ -78,14 +78,17 @@ function RendererSaveAsFinalDialog(props: RendererSaveAsFinalDialogProps) {
     if (!savedResponse) {
       enqueueSnackbar(saveErrorMessage, {
         variant: 'error',
-        action: <CloseSnackbar />
+        action: <CloseSnackbar variant="error" />
       });
       handleClose();
       return;
     }
 
     setUpdatableResponseAsSaved(savedResponse);
-    enqueueSnackbar(saveAsFinalSuccessMessage, { variant: 'success', action: <CloseSnackbar /> });
+    enqueueSnackbar(saveAsFinalSuccessMessage, {
+      variant: 'success',
+      action: <CloseSnackbar variant="success" />
+    });
 
     // Wait until renderer.hasChanges is set to false before navigating away
     setTimeout(() => {
