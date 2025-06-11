@@ -12,8 +12,8 @@ import type {
 } from 'fhir/r4';
 import { getQuestionnaireResponse } from './getQuestionnaireResponse';
 import { fetchQuestionnaire } from './fetchQuestionnaire';
-import { createErrorOutcome, createInvalidWarningIssue } from './operationOutcome';
-import { collectTemplateExtractRefs } from './templateExtractRef';
+import { createErrorOutcome, createWarningOutcomeWithInvalid } from './operationOutcome';
+import { canBeTemplateExtracted, collectTemplateExtractRefs } from './templateExtractRef';
 import { createContainedTemplateMap } from './templateMap';
 import { populateIntoTemplates } from './populateIntoTemplates';
 import { allocateIdsForExtract } from './extractAllocateId';
@@ -54,15 +54,24 @@ export async function extract(
     return createErrorOutcome(`Questionnaire.item is empty, there are no items to process`);
   }
 
-  if (!questionnaire.contained || questionnaire.contained.length === 0) {
-    return createErrorOutcome(
-      `Questionnaire.contained is empty, an extraction template should be provided as a contained resource`
+  // Check if questionnaire can be template-extracted
+  if (!canBeTemplateExtracted(questionnaire)) {
+    return createWarningOutcomeWithInvalid(
+      `Questionnaire does not contain any "sdc-questionnaire-templateExtract" extensions. Skipping extraction.`
     );
   }
 
+  // Check if questionnaire.contained is provided and not empty
+  if (!questionnaire.contained || questionnaire.contained.length === 0) {
+    return createWarningOutcomeWithInvalid(
+      `Questionnaire.contained is empty, an extraction template should be provided as a contained resource. Skipping extraction.`
+    );
+  }
+
+  // Check if questionnaireResponse.item is provided and not empty
   if (!questionnaireResponse.item || questionnaireResponse.item.length === 0) {
-    return createErrorOutcome(
-      `QuestionnaireResponse.item is empty, there are no answers to process`
+    return createWarningOutcomeWithInvalid(
+      `QuestionnaireResponse.item is empty, there are no answers to process. Skipping extraction.`
     );
   }
 
@@ -72,14 +81,9 @@ export async function extract(
   const { templateExtractRefMap: linkIdToTemplateExtractRefMap, templateExtractRefWarnings } =
     collectTemplateExtractRefs(questionnaire);
   if (linkIdToTemplateExtractRefMap.size === 0) {
-    return {
-      resourceType: 'OperationOutcome',
-      issue: [
-        createInvalidWarningIssue(
-          'No "sdc-questionnaire-templateExtract" extension found in the questionnaire, skipping extraction'
-        )
-      ]
-    };
+    return createWarningOutcomeWithInvalid(
+      `Questionnaire does not contain any "sdc-questionnaire-templateExtract" extensions. Skipping extraction.`
+    );
   }
   combinedWarnings.push(...templateExtractRefWarnings);
 

@@ -17,6 +17,7 @@
 
 export { extract } from './extract';
 export { createInputParameters } from './createInputParameters';
+export { canBeTemplateExtracted } from './templateExtractRef';
 export {
   logTemplateExtractPathMapFull,
   logTemplateExtractPathMapJsObjectFull,

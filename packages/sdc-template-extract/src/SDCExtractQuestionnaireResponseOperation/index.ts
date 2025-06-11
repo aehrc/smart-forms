@@ -34,6 +34,7 @@ export type {
 export {
   extract,
   createInputParameters,
+  canBeTemplateExtracted,
   logTemplateExtractPathMapFull,
   logTemplateExtractPathMapJsObjectFull,
   logTemplateExtractPathMapResults,
