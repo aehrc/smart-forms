@@ -17,7 +17,8 @@
 
 import { IconButton, Tooltip } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { useSnackbar, VariantType } from 'notistack';
+import type { VariantType } from 'notistack';
+import { useSnackbar } from 'notistack';
 import { useTheme } from '@mui/material/styles';
 import { useMemo } from 'react';
 import { grey } from '@mui/material/colors';

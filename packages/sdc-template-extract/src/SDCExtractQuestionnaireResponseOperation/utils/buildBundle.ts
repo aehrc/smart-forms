@@ -97,7 +97,7 @@ export function buildTransactionBundle(
       }) as FhirResource;
 
       // Create context scope from QR where the "templateExtract" extension is defined for downstream FHIRPath evaluation
-      let contextScopeResult = createTemplateExtractContextScope(
+      const contextScopeResult = createTemplateExtractContextScope(
         questionnaireResponse,
         targetQRItemFhirPath,
         i,
