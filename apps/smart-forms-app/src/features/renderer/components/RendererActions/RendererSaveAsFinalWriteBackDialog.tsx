@@ -37,8 +37,8 @@ import {
   responseIsOperationOutcome
 } from '../../../../utils/extract.ts';
 import type { ExtractMechanism } from '../../utils/extract.ts';
-import Client from 'fhirclient/lib/Client';
-import { QuestionnaireResponse } from 'fhir/r4';
+import type Client from 'fhirclient/lib/Client';
+import type { QuestionnaireResponse } from 'fhir/r4';
 import { extractResultIsOperationOutcome, inAppExtract } from '@aehrc/sdc-template-extract';
 
 export interface RendererSaveAsFinalWriteBackDialogProps {

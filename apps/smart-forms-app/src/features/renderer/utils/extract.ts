@@ -12,7 +12,7 @@ export function getExtractMechanism(
     return 'template-based';
   }
 
-  if (!!structuredMapExtractMap) {
+  if (structuredMapExtractMap) {
     return 'structured-map';
   }
 
