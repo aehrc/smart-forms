@@ -1,5 +1,6 @@
-import type { Bundle, FhirResource, OperationOutcomeIssue } from 'fhir/r4';
+import type { Bundle, FhirResource, OperationOutcomeIssue, QuestionnaireResponse } from 'fhir/r4';
 import type {
+  FhirPathEvalResult,
   TemplateDetails,
   TemplateExtractPathJsObject,
   TemplateExtractPathJsObjectTuple
@@ -9,6 +10,8 @@ import { v4 as uuidv4 } from 'uuid';
 import cleanDeep from 'clean-deep';
 import { parametersIsFhirPatch } from './typePredicates';
 import type { BundleRequestType } from '../interfaces/bundle.interface';
+import { addIndexToTargetPath } from './expressionManipulation';
+import { shouldIncludeResource } from './filterResources';
 
 /**
  * Builds a FHIR transaction Bundle from extracted resources using the templateExtract extension.
@@ -16,16 +19,20 @@ import type { BundleRequestType } from '../interfaces/bundle.interface';
  * The resulting Bundle includes properly populated fullUrl, request.method, request.url, and optional request metadata.
  *
  * @param extractedResourceMap - Map of template IDs to extracted FHIR resources.
+ * @param comparisonResourceMap - Map of template IDs to comparison FHIR resources, if available. Used for filtering out unchanged resources.
  * @param containedTemplateMap - Map of template IDs to TemplateDetails including templateExtract metadata.
- * @param fhirPathContext - FHIRPath context object that acts as envVars for fhirpath.evaluate
  * @param templateIdToExtractPaths - Map of template IDs to their respective TemplateExtractPathJsObject. We inject fullUrl in this function to help debugging.
+ * @param fhirPathContext - FHIRPath context object that acts as envVars for fhirpath.evaluate
+ * @param questionnaireResponse - The QuestionnaireResponse resource that contains the answers to be extracted.
  * @returns {Bundle} - A FHIR transaction Bundle containing all extracted resources with appropriate request entries.
  */
 export function buildTransactionBundle(
   extractedResourceMap: Map<string, FhirResource[]>,
+  comparisonResourceMap: Map<string, FhirResource[]> | null,
   containedTemplateMap: Map<string, TemplateDetails>,
+  templateIdToExtractPaths: Record<string, Record<string, TemplateExtractPathJsObject>[]>,
   fhirPathContext: Record<string, string>,
-  templateIdToExtractPaths: Record<string, Record<string, TemplateExtractPathJsObject>[]>
+  questionnaireResponse: QuestionnaireResponse
 ): {
   outputBundle: Bundle;
   templateIdToExtractPathTuples: Record<string, TemplateExtractPathJsObjectTuple[]>;
@@ -55,18 +62,31 @@ export function buildTransactionBundle(
 
   // Add entries to the bundle from the extracted resources
   for (const [templateId, templateDetails] of containedTemplateMap.entries()) {
-    const { templateExtractReference } = templateDetails;
+    const { templateExtractReference, targetQRItemFhirPath } = templateDetails;
 
     const extractPathsByTemplateId = templateIdToExtractPaths[templateId];
 
     const extractedResources = extractedResourceMap.get(templateId);
+    const comparisonResources = comparisonResourceMap?.get(templateId);
     if (!extractedResources || extractedResources.length === 0 || !extractPathsByTemplateId) {
       continue;
     }
 
+    // Iterate over each extracted resource for the current template
     const templateExtractPathTuples: TemplateExtractPathJsObjectTuple[] = [];
-    for (const [indexInstance, extractedResource] of extractedResources.entries()) {
-      const extractPathsByTemplateIdInstance = extractPathsByTemplateId[indexInstance];
+    for (let i = 0; i < extractedResources.length; i++) {
+      const extractedResource = extractedResources[i];
+      const comparisonResource = comparisonResources?.[i];
+      if (!extractedResource) {
+        continue;
+      }
+
+      // Filter out resources based on two criteria:
+      // 1. Ensure FHIRPatch "value" part has value[x] field.
+      // 2. If a comparison-source-response (i.e. a pre-populated questionnaireResponse) is provided, only include changes compared to that response.
+      if (!shouldIncludeResource(extractedResource, comparisonResource ?? null)) {
+        continue;
+      }
 
       // Clean extracted resource
       const cleanedExtractedResource = cleanDeep(extractedResource, {
@@ -76,8 +96,18 @@ export function buildTransactionBundle(
         undefinedValues: true
       }) as FhirResource;
 
+      // Create context scope from QR where the "templateExtract" extension is defined for downstream FHIRPath evaluation
+      const contextScopeResult = createTemplateExtractContextScope(
+        questionnaireResponse,
+        targetQRItemFhirPath,
+        i,
+        fhirPathContext,
+        buildBundleWarnings
+      );
+
       // resourceId
       const resourceId = getResourceId(
+        contextScopeResult,
         fhirPathContext,
         buildBundleWarnings,
         templateExtractReference.resourceId
@@ -93,6 +123,7 @@ export function buildTransactionBundle(
       // fullUrl
       // Otherwise, evaluate it as a FHIRPath expression
       const fullUrl = getFullUrl(
+        contextScopeResult,
         fhirPathContext,
         buildBundleWarnings,
         templateExtractReference.fullUrl
@@ -100,21 +131,25 @@ export function buildTransactionBundle(
 
       // ifNoneMatch, ifModifiedSince, ifMatch, ifNoneExist
       const ifNoneMatch = getOptionalBundleEntryRequestProperty(
+        contextScopeResult,
         fhirPathContext,
         buildBundleWarnings,
         templateExtractReference.ifNoneMatch
       );
       const ifModifiedSince = getOptionalBundleEntryRequestProperty(
+        contextScopeResult,
         fhirPathContext,
         buildBundleWarnings,
         templateExtractReference.ifModifiedSince
       );
       const ifMatch = getOptionalBundleEntryRequestProperty(
+        contextScopeResult,
         fhirPathContext,
         buildBundleWarnings,
         templateExtractReference.ifMatch
       );
       const ifNoneExist = getOptionalBundleEntryRequestProperty(
+        contextScopeResult,
         fhirPathContext,
         buildBundleWarnings,
         templateExtractReference.ifNoneExist
@@ -149,6 +184,7 @@ export function buildTransactionBundle(
       });
 
       // Inject fullUrl into templateIdToExtractPaths for debugging
+      const extractPathsByTemplateIdInstance = extractPathsByTemplateId[i];
       if (extractPathsByTemplateIdInstance) {
         templateExtractPathTuples.push([fullUrl, extractPathsByTemplateIdInstance]);
       }
@@ -161,7 +197,29 @@ export function buildTransactionBundle(
   return { outputBundle: bundle, templateIdToExtractPathTuples: templateIdToExtractPathTuples };
 }
 
+function createTemplateExtractContextScope(
+  questionnaireResponse: QuestionnaireResponse,
+  targetQRItemFhirPath: string | undefined,
+  indexInstance: number,
+  fhirPathContext: Record<string, any>,
+  buildBundleWarnings: OperationOutcomeIssue[]
+): FhirPathEvalResult {
+  if (targetQRItemFhirPath) {
+    const targetQRItemFhirPathWithIndex = addIndexToTargetPath(targetQRItemFhirPath, indexInstance);
+    return fhirPathEvaluate({
+      fhirData: questionnaireResponse,
+      path: targetQRItemFhirPathWithIndex,
+      envVars: fhirPathContext,
+      warnings: buildBundleWarnings
+    });
+  }
+
+  // TargetQRItemFhirPath not defined, return an empty array
+  return [];
+}
+
 function getResourceId(
+  contextScopeResult: FhirPathEvalResult,
   fhirPathContext: Record<string, any>,
   buildBundleWarnings: OperationOutcomeIssue[],
   resourceIdFromTemplateDetails?: string
@@ -169,7 +227,7 @@ function getResourceId(
   // templateExtract extension:fullUrl FHIRPath expressions available
   if (resourceIdFromTemplateDetails) {
     const result = fhirPathEvaluate({
-      fhirData: {},
+      fhirData: contextScopeResult,
       path: resourceIdFromTemplateDetails,
       envVars: fhirPathContext,
       warnings: buildBundleWarnings
@@ -188,6 +246,7 @@ function getResourceId(
  * Resolves a fullUrl using a FHIRPath expression from template details, falling back to a generated UUID if not available.
  */
 function getFullUrl(
+  contextScopeResult: FhirPathEvalResult,
   fhirPathContext: Record<string, any>,
   buildBundleWarnings: OperationOutcomeIssue[],
   fullUrlFromTemplateDetails?: string
@@ -195,7 +254,7 @@ function getFullUrl(
   // templateExtract extension:fullUrl FHIRPath expressions available
   if (fullUrlFromTemplateDetails) {
     const result = fhirPathEvaluate({
-      fhirData: {},
+      fhirData: contextScopeResult,
       path: fullUrlFromTemplateDetails,
       envVars: fhirPathContext,
       warnings: buildBundleWarnings
@@ -218,13 +277,14 @@ function generateUUIDForFullUrl(): string {
 }
 
 function getOptionalBundleEntryRequestProperty(
+  contextScopeResult: FhirPathEvalResult,
   fhirPathContext: Record<string, any>,
   buildBundleWarnings: OperationOutcomeIssue[],
   optionalProperty?: string
 ) {
   if (optionalProperty) {
     const result = fhirPathEvaluate({
-      fhirData: {},
+      fhirData: contextScopeResult,
       path: optionalProperty,
       envVars: fhirPathContext,
       warnings: buildBundleWarnings

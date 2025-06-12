@@ -111,7 +111,7 @@ function TokenTimerDialog(props: TokenTimerDialogProps) {
         console.error(error);
         enqueueSnackbar(saveErrorMessage, {
           variant: 'error',
-          action: <CloseSnackbar />
+          action: <CloseSnackbar variant="error" />
         });
       });
   }

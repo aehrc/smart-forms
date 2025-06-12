@@ -1,7 +1,13 @@
 import { extract } from '../utils';
 import type { OutputParameters, ReturnParameter } from '../interfaces';
 import { createInputParameters } from '../utils/createInputParameters';
-import type { Bundle, Observation, RelatedPerson } from 'fhir/r4';
+import type {
+  Bundle,
+  Observation,
+  Parameters,
+  QuestionnaireResponseItemAnswer,
+  RelatedPerson
+} from 'fhir/r4';
 
 // Callbacks
 import {
@@ -13,6 +19,7 @@ import {
 import { extractedAllergiesAdverseReactions } from './resources/extracted/extractedAllergiesAdverseReactions';
 import { extractedImmunisation } from './resources/extracted/extractedImmunisation';
 import { extractedMedicalHistoryCurrentProblems } from './resources/extracted/extractedMedicalHistoryCurrentProblems';
+import { extractedMedicalHistoryCurrentProblemsWithPatch } from './resources/extracted/extractedMedicalHistoryCurrentProblemsWithPatch';
 import { extractedRegularMedications } from './resources/extracted/extractedRegularMedications';
 import { extractedRegularMedicationsModified } from './resources/extracted/extractedRegularMedicationsModified';
 import { extractedComplexTemplateExtract } from './resources/extracted/extractedComplexTemplateExtract';
@@ -21,6 +28,7 @@ import { extractedComplexTemplateExtract } from './resources/extracted/extracted
 import { QRAllergiesAdverseReactions } from './resources/questionnaireResponses/QRAllergiesAdverseReactions';
 import { QRImmunisation } from './resources/questionnaireResponses/QRImmunisation';
 import { QRMedicalHistoryCurrentProblems } from './resources/questionnaireResponses/QRMedicalHistoryCurrentProblems';
+import { QRMedicalHistoryCurrentProblemsWithPatch } from './resources/questionnaireResponses/QRMedicalHistoryCurrentProblemsWithPatch';
 import { QRRegularMedications } from './resources/questionnaireResponses/QRRegularMedications';
 import { QRRegularMedicationsModified } from './resources/questionnaireResponses/QRRegularMedicationsModified';
 import { QRComplexTemplateExtract } from './resources/questionnaireResponses/QRComplexTemplateExtract';
@@ -29,9 +37,11 @@ import { QRComplexTemplateExtract } from './resources/questionnaireResponses/QRC
 import { QAllergiesAdverseReactions } from './resources/questionnaires/QAllergiesAdverseReactions';
 import { QImmunisation } from './resources/questionnaires/QImmunisation';
 import { QMedicalHistoryCurrentProblems } from './resources/questionnaires/QMedicalHistoryCurrentProblems';
+import { QMedicalHistoryCurrentProblemsWithPatch } from './resources/questionnaires/QMedicalHistoryCurrentProblemsWithPatch';
 import { QRegularMedications } from './resources/questionnaires/QRegularMedications';
 import { QRegularMedicationsModified } from './resources/questionnaires/QRegularMedicationsModified';
 import { QComplexTemplateExtract } from './resources/questionnaires/QComplexTemplateExtract';
+import { parametersIsFhirPatch } from '../utils/typePredicates';
 
 // Test against 715 templates
 describe('extract AllergiesAdverseReactions', () => {
@@ -103,6 +113,109 @@ describe('extract MedicalHistoryCurrentProblems', () => {
     expect(extracted.entry?.[5]?.resource).toEqual(expected?.entry?.[5]?.resource);
     expect(extracted.entry?.[6]?.resource).toEqual(expected?.entry?.[6]?.resource);
     expect(extracted.entry?.[7]?.resource).toEqual(expected?.entry?.[7]?.resource);
+  });
+});
+
+describe('extract MedicalHistoryCurrentProblemsWithPatch', () => {
+  it('extracted result should match extractedMedicalHistoryCurrentProblemsWithPatch.ts expected resources', async () => {
+    const result = await extract(
+      createInputParameters(
+        QRMedicalHistoryCurrentProblemsWithPatch,
+        QMedicalHistoryCurrentProblemsWithPatch,
+        undefined
+      ),
+      fetchResourceCallbackTest,
+      requestConfigTest
+    );
+
+    const returnParam = (result as OutputParameters).parameter.find(
+      (p): p is ReturnParameter => p.name === 'return'
+    );
+
+    // Deep comparison of the extracted resources vs expected resources in extractedMedicalHistoryCurrentProblems
+    const extracted = returnParam?.resource as Bundle;
+    const expected = extractedMedicalHistoryCurrentProblemsWithPatch;
+
+    const extracted0 = extracted.entry?.[0]?.resource as Parameters;
+    const extracted1 = extracted.entry?.[1]?.resource as Parameters;
+    const extracted2 = extracted.entry?.[2]?.resource as Parameters;
+    const extracted3 = extracted.entry?.[3]?.resource as Parameters;
+
+    expect(extracted0).toEqual(expected?.entry?.[0]?.resource);
+    expect(extracted1).toEqual(expected?.entry?.[1]?.resource);
+    expect(extracted2).toEqual(expected?.entry?.[2]?.resource);
+    expect(extracted3).toEqual(expected?.entry?.[3]?.resource);
+
+    // Extracted resources should be a FHIRPatch with method PATCH
+    expect(parametersIsFhirPatch(extracted0)).toBe(true);
+    expect(extracted.entry?.[0]?.request?.method).toEqual('PATCH');
+
+    expect(parametersIsFhirPatch(extracted1)).toBe(true);
+    expect(extracted.entry?.[1]?.request?.method).toEqual('PATCH');
+
+    expect(parametersIsFhirPatch(extracted2)).toBe(true);
+    expect(extracted.entry?.[2]?.request?.method).toEqual('PATCH');
+
+    expect(parametersIsFhirPatch(extracted3)).toBe(true);
+    expect(extracted.entry?.[3]?.request?.method).toEqual('PATCH');
+  });
+
+  it('extracted result should match extractedMedicalHistoryCurrentProblemsWithPatch.ts expected resources (modified only)', async () => {
+    const newUtiClinicalStatusAnswer: QuestionnaireResponseItemAnswer = {
+      valueCoding: {
+        system: 'http://terminology.hl7.org/CodeSystem/condition-clinical',
+        code: 'inactive',
+        display: 'Inactive'
+      }
+    };
+
+    const comparisonSourceResponse = structuredClone(QRMedicalHistoryCurrentProblemsWithPatch);
+
+    // Change Condition ID "uti-pat-sf" clinical status from "active" to "inactive"
+    if (
+      QRMedicalHistoryCurrentProblemsWithPatch.item?.[0]?.item?.[1]?.item?.[9]?.item?.[2]?.answer
+    ) {
+      QRMedicalHistoryCurrentProblemsWithPatch.item[0].item[1].item[9].item[2].answer = [
+        newUtiClinicalStatusAnswer
+      ];
+    }
+    const result = await extract(
+      createInputParameters(
+        QRMedicalHistoryCurrentProblemsWithPatch,
+        QMedicalHistoryCurrentProblemsWithPatch,
+        comparisonSourceResponse
+      ),
+      fetchResourceCallbackTest,
+      requestConfigTest
+    );
+
+    const returnParam = (result as OutputParameters).parameter.find(
+      (p): p is ReturnParameter => p.name === 'return'
+    );
+
+    // Deep comparison of the extracted resources vs expected resources in extractedMedicalHistoryCurrentProblems
+    const extracted = returnParam?.resource as Bundle;
+
+    // Extracted should only produce one entry - FHIRPatch with method PATCH, resourceId must be "uti-pat-sf"
+    expect(extracted.entry?.[0]?.resource?.resourceType).toEqual('Parameters');
+    expect(
+      (extracted.entry?.[0]?.resource as Parameters)?.parameter?.[0]?.part?.[3]
+        ?.valueCodeableConcept
+    ).toEqual({
+      coding: [
+        {
+          system: 'http://terminology.hl7.org/CodeSystem/condition-clinical',
+          code: 'inactive',
+          display: 'Inactive'
+        }
+      ],
+      text: 'Inactive'
+    });
+    expect(extracted.entry?.[0]?.request?.method).toEqual('PATCH');
+    expect(extracted.entry?.[0]?.request?.url).toEqual('Condition/uti-pat-sf');
+
+    // There should be no second entry
+    expect(extracted.entry?.[1]?.resource).toEqual(undefined);
   });
 });
 

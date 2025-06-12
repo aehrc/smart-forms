@@ -4,18 +4,23 @@ import type {
   FetchQuestionnaireCallback,
   FetchQuestionnaireRequestConfig
 } from '../interfaces/callback.interface';
-import type { OperationOutcome, OperationOutcomeIssue, QuestionnaireResponse } from 'fhir/r4';
+import type {
+  FhirResource,
+  OperationOutcome,
+  OperationOutcomeIssue,
+  QuestionnaireResponse
+} from 'fhir/r4';
 import { getQuestionnaireResponse } from './getQuestionnaireResponse';
 import { fetchQuestionnaire } from './fetchQuestionnaire';
-import { createErrorOutcome, createInvalidWarningIssue } from './operationOutcome';
-import { collectTemplateExtractRefs } from './templateExtractRef';
+import { createErrorOutcome, createWarningOutcomeWithInvalid } from './operationOutcome';
+import { canBeTemplateExtracted, collectTemplateExtractRefs } from './templateExtractRef';
 import { createContainedTemplateMap } from './templateMap';
 import { populateIntoTemplates } from './populateIntoTemplates';
 import { allocateIdsForExtract } from './extractAllocateId';
 import { buildTransactionBundle } from './buildBundle';
 import { createOutputParameters } from './createOutputParameters';
 import { createFhirPathContext } from './createFhirPathContext';
-import { filterResources } from './filterResources';
+import { getComparisonSourceResponse } from './getComparisonSourceResponse';
 
 export async function extract(
   inputParameters: InputParameters | QuestionnaireResponse,
@@ -49,15 +54,24 @@ export async function extract(
     return createErrorOutcome(`Questionnaire.item is empty, there are no items to process`);
   }
 
-  if (!questionnaire.contained || questionnaire.contained.length === 0) {
-    return createErrorOutcome(
-      `Questionnaire.contained is empty, an extraction template should be provided as a contained resource`
+  // Check if questionnaire can be template-extracted
+  if (!canBeTemplateExtracted(questionnaire)) {
+    return createWarningOutcomeWithInvalid(
+      `Questionnaire does not contain any "sdc-questionnaire-templateExtract" extensions. Skipping extraction.`
     );
   }
 
+  // Check if questionnaire.contained is provided and not empty
+  if (!questionnaire.contained || questionnaire.contained.length === 0) {
+    return createWarningOutcomeWithInvalid(
+      `Questionnaire.contained is empty, an extraction template should be provided as a contained resource. Skipping extraction.`
+    );
+  }
+
+  // Check if questionnaireResponse.item is provided and not empty
   if (!questionnaireResponse.item || questionnaireResponse.item.length === 0) {
-    return createErrorOutcome(
-      `QuestionnaireResponse.item is empty, there are no answers to process`
+    return createWarningOutcomeWithInvalid(
+      `QuestionnaireResponse.item is empty, there are no answers to process. Skipping extraction.`
     );
   }
 
@@ -67,14 +81,9 @@ export async function extract(
   const { templateExtractRefMap: linkIdToTemplateExtractRefMap, templateExtractRefWarnings } =
     collectTemplateExtractRefs(questionnaire);
   if (linkIdToTemplateExtractRefMap.size === 0) {
-    return {
-      resourceType: 'OperationOutcome',
-      issue: [
-        createInvalidWarningIssue(
-          'No "sdc-questionnaire-templateExtract" extension found in the questionnaire, skipping extraction'
-        )
-      ]
-    };
+    return createWarningOutcomeWithInvalid(
+      `Questionnaire does not contain any "sdc-questionnaire-templateExtract" extensions. Skipping extraction.`
+    );
   }
   combinedWarnings.push(...templateExtractRefWarnings);
 
@@ -93,23 +102,26 @@ export async function extract(
     populateIntoTemplates(questionnaireResponse, containedTemplateMap, fhirPathContext);
   combinedWarnings.push(...populateIntoTemplateWarnings);
 
-  // Filter out resources based on two criteria:
-  // 1. Ensure FHIRPatch "value" part has value[x] field.
-  // 2. If a comparison-source-response (i.e. a pre-populated questionnaireResponse) is provided, only include changes compared to that response.
-  const filteredExtractedResourceMap = filterResources(
-    extractedResourceMap,
-    containedTemplateMap,
-    templateIdToExtractPaths,
-    fhirPathContext,
-    inputParameters
-  );
+  // If a comparison-source-response is provided, use it for comparisons during the filtering process
+  // We run another evaluation + populate step, but for comparisonSourceResponse to generate a comparisonResourceMap
+  const comparisonSourceResponse = getComparisonSourceResponse(inputParameters);
+  let comparisonResourceMap: Map<string, FhirResource[]> | null = null;
+  if (comparisonSourceResponse) {
+    comparisonResourceMap = populateIntoTemplates(
+      comparisonSourceResponse,
+      containedTemplateMap,
+      fhirPathContext
+    ).extractedResourceMap;
+  }
 
   // Build transaction bundle with extracted resources
   const { outputBundle, templateIdToExtractPathTuples } = buildTransactionBundle(
-    filteredExtractedResourceMap,
+    extractedResourceMap,
+    comparisonResourceMap,
     containedTemplateMap,
+    templateIdToExtractPaths,
     fhirPathContext,
-    templateIdToExtractPaths
+    questionnaireResponse
   );
 
   const customDebugInfo: TemplateExtractDebugInfo = {

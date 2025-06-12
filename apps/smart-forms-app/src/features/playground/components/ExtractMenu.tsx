@@ -19,12 +19,14 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { CircularProgress, Fade, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { useExtractDebuggerStore } from '../stores/extractDebuggerStore.ts';
 import { FORMS_SERVER_URL } from '../../../globals.ts';
 import Iconify from '../../../components/Iconify/Iconify.tsx';
+import { canBeTemplateExtracted } from '@aehrc/sdc-template-extract';
+import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 
 interface ExtractMenuProps {
   isExtracting: boolean;
@@ -36,6 +38,7 @@ interface ExtractMenuProps {
 function ExtractMenu(props: ExtractMenuProps) {
   const { isExtracting, onObservationExtract, onStructureMapExtract, onTemplateExtract } = props;
 
+  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
   const structuredMapExtractMap = useExtractDebuggerStore.use.structuredMapExtractMap();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -49,8 +52,18 @@ function ExtractMenu(props: ExtractMenuProps) {
     setAnchorEl(null);
   };
 
+  // Check if questionnaire can be template-based extracted
+  const templateBasedExtractEnabled = useMemo(
+    () => canBeTemplateExtracted(sourceQuestionnaire),
+    [sourceQuestionnaire]
+  );
+  const templateBasedExtractToolTipText = templateBasedExtractEnabled
+    ? ''
+    : `The current questionnaire does not contain any "sdc-questionnaire-templateExtract" extensions`;
+
+  // Check if questionnaire can be structured-map-based extracted
   const structuredMapExtractEnabled = structuredMapExtractMap !== null;
-  const structuredMapToolTipText = structuredMapExtractEnabled
+  const structuredMapExtractToolTipText = structuredMapExtractEnabled
     ? ''
     : `The current questionnaire does not have a target StructureMap for $extract, or the target StructureMap cannot be found on ${FORMS_SERVER_URL}`;
 
@@ -95,6 +108,7 @@ function ExtractMenu(props: ExtractMenuProps) {
           </ListItemIcon>
           <ListItemText>Observation-based $extract</ListItemText>
         </MenuItem>
+
         <Tooltip title="Not implemented" placement="right">
           <span>
             <MenuItem disabled={true}>
@@ -105,7 +119,39 @@ function ExtractMenu(props: ExtractMenuProps) {
             </MenuItem>
           </span>
         </Tooltip>
-        <Tooltip title={structuredMapToolTipText} placement="right">
+
+        <Tooltip title={templateBasedExtractToolTipText} placement="right">
+          <span>
+            <MenuItem
+              disabled={!templateBasedExtractEnabled}
+              onClick={() => {
+                onTemplateExtract(false);
+                handleClose();
+              }}>
+              <ListItemIcon>
+                <Iconify icon="mdi:file-document" />
+              </ListItemIcon>
+              <ListItemText>Template-based $extract</ListItemText>
+            </MenuItem>
+          </span>
+        </Tooltip>
+        <Tooltip title={templateBasedExtractToolTipText} placement="right">
+          <span>
+            <MenuItem
+              disabled={!templateBasedExtractEnabled}
+              onClick={() => {
+                onTemplateExtract(true);
+                handleClose();
+              }}>
+              <ListItemIcon>
+                <Iconify icon="mdi:file-document-edit" />
+              </ListItemIcon>
+              <ListItemText>Template-based $extract (modified only)</ListItemText>
+            </MenuItem>
+          </span>
+        </Tooltip>
+
+        <Tooltip title={structuredMapExtractToolTipText} placement="right">
           <span>
             <MenuItem
               disabled={!structuredMapExtractEnabled}
@@ -120,26 +166,6 @@ function ExtractMenu(props: ExtractMenuProps) {
             </MenuItem>
           </span>
         </Tooltip>
-        <MenuItem
-          onClick={() => {
-            onTemplateExtract(false);
-            handleClose();
-          }}>
-          <ListItemIcon>
-            <Iconify icon="mdi:file-document" />
-          </ListItemIcon>
-          <ListItemText>Template-based $extract</ListItemText>
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            onTemplateExtract(true);
-            handleClose();
-          }}>
-          <ListItemIcon>
-            <Iconify icon="mdi:file-document-edit" />
-          </ListItemIcon>
-          <ListItemText>Template-based $extract (modified only)</ListItemText>
-        </MenuItem>
       </Menu>
 
       {isExtracting ? (

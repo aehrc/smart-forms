@@ -35,10 +35,5 @@ export function extractResultIsOperationOutcome(
 }
 
 export function objIsTemplateExtractDebugInfo(obj: object): obj is TemplateExtractDebugInfo {
-  return (
-    typeof obj === 'object' &&
-    obj !== null &&
-    'templateIdToExtractPathTuples' in obj &&
-    'templateExtractDebugInfo' in obj
-  );
+  return typeof obj === 'object' && obj !== null && 'templateIdToExtractPathTuples' in obj;
 }

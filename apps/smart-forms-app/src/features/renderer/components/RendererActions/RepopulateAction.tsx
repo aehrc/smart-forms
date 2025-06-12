@@ -89,8 +89,8 @@ function RepopulateAction(props: RepopulateActionProps) {
       if (!populateSuccess || !populateResult) {
         onSpinnerChange({ isSpinning: false, status: null, message: '' });
         enqueueSnackbar('There is an error while retrieving latest data for re-population.', {
-          action: <CloseSnackbar />,
-          variant: 'warning'
+          variant: 'warning',
+          action: <CloseSnackbar variant="warning" />
         });
         return;
       }
@@ -118,8 +118,8 @@ function RepopulateAction(props: RepopulateActionProps) {
     onError: () => {
       onSpinnerChange({ isSpinning: false, status: null, message: '' });
       enqueueSnackbar('There is an error while retrieving latest data for re-population.', {
-        action: <CloseSnackbar />,
-        variant: 'warning'
+        variant: 'warning',
+        action: <CloseSnackbar variant="warning" />
       });
     }
   });

@@ -158,6 +158,40 @@ export function hasTemplateExtractRefExtension(item: QuestionnaireItem | Questio
 }
 
 /**
+ * Checks whether a Questionnaire or any of its items contains a valid `sdc-questionnaire-templateExtract` extension with a required `template` slice.
+ * Array.prototype.some() is short-circuiting, so it will return true as soon as it finds a valid extension.
+ *
+ * @param questionnaire - The FHIR Questionnaire to check.
+ * @returns `true` if at least one valid template extract reference exists.
+ */
+export function canBeTemplateExtracted(questionnaire: Questionnaire): boolean {
+  // Check Questionnaire-level extension
+  const { templateExtractRef } = hasTemplateExtractRefExtension(questionnaire);
+  if (templateExtractRef) {
+    return true;
+  }
+
+  // Check item-level extensions recursively
+  if (questionnaire.item) {
+    return questionnaire.item.some((item) => hasTemplateExtractRefExtensionRecursive(item));
+  }
+
+  return false;
+}
+/**
+ * Recursively checks whether a `QuestionnaireItem` or any of its child items contains a `sdc-questionnaire-templateExtract` extension with a required `template` slice.
+ * Array.prototype.some() is short-circuiting, so it will return true as soon as it finds a valid extension.
+ */
+function hasTemplateExtractRefExtensionRecursive(item: QuestionnaireItem): boolean {
+  const { templateExtractRef } = hasTemplateExtractRefExtension(item);
+  if (templateExtractRef) {
+    return true;
+  }
+
+  return item.item?.some((child) => hasTemplateExtractRefExtensionRecursive(child)) ?? false;
+}
+
+/**
  * Traverses a FHIR Questionnaire and collects all `sdc-questionnaire-templateExtract` extensions
  * that contain a required `template` slice. Also includes the Questionnaire-level extension if present.
  *

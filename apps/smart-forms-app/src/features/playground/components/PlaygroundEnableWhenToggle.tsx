@@ -8,7 +8,7 @@ function PlaygroundEnableWhenToggle() {
   const toggleEnableWhenActivation = useQuestionnaireStore.use.toggleEnableWhenActivation();
 
   return (
-    <Tooltip title="Show all items regardless of enableWhen">
+    <Tooltip title="Show all items regardless of enableWhen/enableWhenExpression">
       <span>
         <ToggleButton
           value={enableWhenIsActivated}

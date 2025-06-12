@@ -67,7 +67,7 @@ function OpenResponseButton(props: Props) {
     console.error(error);
     enqueueSnackbar('There might be an issue with this response', {
       variant: 'warning',
-      action: <CloseSnackbar />
+      action: <CloseSnackbar variant="warning" />
     });
   }
 
@@ -78,14 +78,17 @@ function OpenResponseButton(props: Props) {
 
   async function handleClick() {
     if (!selectedResponse) {
-      enqueueSnackbar('No response selected.', { variant: 'error', action: <CloseSnackbar /> });
+      enqueueSnackbar('No response selected.', {
+        variant: 'error',
+        action: <CloseSnackbar variant="error" />
+      });
       return;
     }
 
     if (!referencedQuestionnaire) {
       enqueueSnackbar('Referenced questionnaire of selected response not found', {
         variant: 'error',
-        action: <CloseSnackbar />
+        action: <CloseSnackbar variant="error" />
       });
       return;
     }
@@ -99,7 +102,7 @@ function OpenResponseButton(props: Props) {
       console.error(error);
       enqueueSnackbar('Referenced questionnaire not found. Unable to open response', {
         variant: 'error',
-        action: <CloseSnackbar />
+        action: <CloseSnackbar variant="error" />
       });
       setIsLoading(false);
       return;

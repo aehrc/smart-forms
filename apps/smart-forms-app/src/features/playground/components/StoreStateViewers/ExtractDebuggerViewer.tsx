@@ -64,7 +64,7 @@ function ExtractDebuggerViewer(props: ExtractDebuggerViewerProps) {
       enqueueSnackbar('Failed to write back resource', {
         variant: 'error',
         preventDuplicate: true,
-        action: <CloseSnackbar />
+        action: <CloseSnackbar variant="error" />
       });
     } else {
       enqueueSnackbar(
@@ -72,7 +72,7 @@ function ExtractDebuggerViewer(props: ExtractDebuggerViewerProps) {
         {
           variant: 'success',
           preventDuplicate: true,
-          action: <CloseSnackbar />
+          action: <CloseSnackbar variant="success" />
         }
       );
     }
