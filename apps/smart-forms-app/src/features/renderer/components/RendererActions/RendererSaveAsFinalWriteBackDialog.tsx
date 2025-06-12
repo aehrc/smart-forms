@@ -36,18 +36,24 @@ import {
   extractedResourceIsBundle,
   responseIsOperationOutcome
 } from '../../../../utils/extract.ts';
+import type { ExtractMechanism } from '../../utils/extract.ts';
+import Client from 'fhirclient/lib/Client';
+import { QuestionnaireResponse } from 'fhir/r4';
+import { extractResultIsOperationOutcome, inAppExtract } from '@aehrc/sdc-template-extract';
 
 export interface RendererSaveAsFinalWriteBackDialogProps {
   open: boolean;
+  extractMechanism: ExtractMechanism;
   closeDialog: () => unknown;
 }
 
 function RendererSaveAsFinalWriteBackDialog(props: RendererSaveAsFinalWriteBackDialogProps) {
-  const { open, closeDialog } = props;
+  const { open, extractMechanism, closeDialog } = props;
 
   const { smartClient, patient, user, launchQuestionnaire } = useSmartClient();
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
   const setUpdatableResponseAsSaved =
     useQuestionnaireResponseStore.use.setUpdatableResponseAsSaved();
@@ -137,7 +143,99 @@ function RendererSaveAsFinalWriteBackDialog(props: RendererSaveAsFinalWriteBackD
 
     setUpdatableResponseAsSaved(savedResponse);
 
-    // Perform $extract
+    if (extractMechanism === 'template-based') {
+      await performTemplateBasedExtractAndWriteBack(smartClient, savedResponse);
+      return;
+    }
+
+    if (extractMechanism === 'structured-map') {
+      await performStructureMapBasedExtractAndWriteBack(smartClient, savedResponse);
+      return;
+    }
+  }
+
+  async function performTemplateBasedExtractAndWriteBack(
+    smartClient: Client,
+    savedResponse: QuestionnaireResponse
+  ) {
+    const responseToExtract = structuredClone(savedResponse);
+    const inAppExtractOutput = await inAppExtract(
+      responseToExtract,
+      sourceQuestionnaire,
+      sourceResponse // Always pass in a sourceResponse since we want to extract resources only if they are modified in the form
+    );
+
+    const { extractResult } = inAppExtractOutput;
+
+    // ExtractResult is an OperationOutcome
+    if (extractResultIsOperationOutcome(extractResult)) {
+      enqueueSnackbar(
+        'Response saved but there are errors in creating new resources or updating existing resources. Patient record not updated.',
+        {
+          variant: 'warning',
+          preventDuplicate: true,
+          action: <CloseSnackbar variant="warning" />
+        }
+      );
+      console.error(extractResult);
+      handleCloseWithNavigation();
+      return;
+    }
+
+    // At this point, ExtractResult is valid
+    // Handle returnParameter
+    console.log(
+      `Extracted bundle from template-based extraction (modified only): `,
+      extractResult.extractedBundle
+    );
+    const { extractedBundle } = extractResult;
+
+    const writeBackResponse = await smartClient.request({
+      url: '',
+      method: 'POST',
+      body: JSON.stringify(extractedBundle),
+      headers: { ...HEADERS, 'Content-Type': 'application/fhir+json' }
+    });
+
+    // POST for transaction bundle failed
+    if (responseIsOperationOutcome(writeBackResponse)) {
+      enqueueSnackbar(
+        'Response saved but failed to write back newly created/updated resources.  Patient record not updated.',
+        {
+          variant: 'warning',
+          preventDuplicate: true,
+          action: <CloseSnackbar variant="warning" />
+        }
+      );
+      handleCloseWithNavigation();
+      return;
+    }
+
+    console.log(writeBackResponse);
+
+    // POST for transaction bundle successful
+    enqueueSnackbar(
+      'Response saved and newly created/updated resources are successfully saved to the Patient record.',
+      {
+        variant: 'success',
+        preventDuplicate: true,
+        action: <CloseSnackbar variant="success" />
+      }
+    );
+    handleCloseWithNavigation();
+
+    // TODO cant show this to the user, but still we need to inform the user what resources are created/updated - https://github.com/aehrc/smart-forms/issues/1275
+    // Handle issuesParameter
+    if (extractResult.issues) {
+      console.warn(extractResult.issues);
+    }
+  }
+
+  async function performStructureMapBasedExtractAndWriteBack(
+    smartClient: Client,
+    savedResponse: QuestionnaireResponse
+  ) {
+    // Perform structure map-based $extract
     const extractedResource = await smartClient.request({
       url: 'QuestionnaireResponse/$extract',
       method: 'POST',
@@ -151,6 +249,7 @@ function RendererSaveAsFinalWriteBackDialog(props: RendererSaveAsFinalWriteBackD
         preventDuplicate: true,
         action: <CloseSnackbar variant="warning" />
       });
+      console.error(extractedResource);
       handleCloseWithNavigation();
       return;
     }
@@ -164,7 +263,7 @@ function RendererSaveAsFinalWriteBackDialog(props: RendererSaveAsFinalWriteBackD
           action: <CloseSnackbar variant="warning" />
         }
       );
-
+      console.error(extractedResource);
       handleCloseWithNavigation();
       return;
     }
@@ -173,7 +272,7 @@ function RendererSaveAsFinalWriteBackDialog(props: RendererSaveAsFinalWriteBackD
       url: '',
       method: 'POST',
       body: JSON.stringify(extractedResource),
-      headers: { ...HEADERS, 'Content-Type': 'application/json' }
+      headers: { ...HEADERS, 'Content-Type': 'application/fhir+json' }
     });
 
     if (responseIsOperationOutcome(writeBackResponse)) {

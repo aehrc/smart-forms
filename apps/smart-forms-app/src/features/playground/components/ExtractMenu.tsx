@@ -61,6 +61,7 @@ function ExtractMenu(props: ExtractMenuProps) {
     ? ''
     : `The current questionnaire does not contain any "sdc-questionnaire-templateExtract" extensions`;
 
+  // Check if questionnaire can be structured-map-based extracted
   const structuredMapExtractEnabled = structuredMapExtractMap !== null;
   const structuredMapExtractToolTipText = structuredMapExtractEnabled
     ? ''
