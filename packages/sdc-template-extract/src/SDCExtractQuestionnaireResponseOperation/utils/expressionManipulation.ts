@@ -21,18 +21,28 @@ export function getCombinedExpression(baseFhirPath: string, expressionToAppend: 
 }
 
 /**
- * Normalizes a FHIRPath expression by handling special cases like `$this`.
- * If the expression starts with `$this`, it wraps it in `select(...)` and appends to the base path.
- * Otherwise, it appends the expression directly to the base path.
+ * Normalizes a FHIRPath expression by handling special cases like `$this` and `ofType()`.
+ * If the expression starts with `$this`, it wraps it in `select(...)` and appends to the base path. Otherwise, it appends the expression directly to the base path.
+ * ofType() expressions are converted from FHIR primitive types to System types to ease questionnaire-authoring. See https://github.com/HL7/fhirpath.js/issues/168#issuecomment-2964663757.
  */
 export function normaliseExpression(expression: string) {
+  let normalisedExpression = expression;
+
   // expression starts with $this, wrap with select()
   if (expression.includes('$this')) {
-    return `select(${expression})`;
+    normalisedExpression = `select(${expression})`;
+  }
+
+  // expression has "ofType", handle it by converting FHIR primitive types to System types
+  if (expression.includes('ofType(')) {
+    normalisedExpression = normalisedExpression.replace(
+      /ofType\(([^)]+)\)/g,
+      (_, fhirType) => `ofType(${convertFhirTypeToSystemType(fhirType)})`
+    );
   }
 
   // Otherwise, return the expression as is
-  return expression;
+  return normalisedExpression;
 }
 
 export function getNumberOfTemplateInstances(
@@ -134,4 +144,65 @@ export function cleanEntryPathSegments(
  */
 export function stripTrailingIndexFromPath(path: string): string {
   return path.replace(/\[\d+\]$/, '');
+}
+
+type FhirType =
+  | 'boolean'
+  | 'string'
+  | 'uri'
+  | 'code'
+  | 'oid'
+  | 'id'
+  | 'uuid'
+  | 'markdown'
+  | 'base64Binary'
+  | 'integer'
+  | 'unsignedInt'
+  | 'positiveInt'
+  | 'integer64'
+  | 'decimal'
+  | 'date'
+  | 'dateTime'
+  | 'instant'
+  | 'time'
+  | 'Quantity';
+
+type FhirSystemType =
+  | 'Boolean'
+  | 'String'
+  | 'Integer'
+  | 'Long'
+  | 'Decimal'
+  | 'DateTime'
+  | 'Time'
+  | 'Quantity';
+
+const fhirTypeToSystemTypeMap: Record<FhirType, FhirSystemType> = {
+  boolean: 'Boolean',
+  string: 'String',
+  uri: 'String',
+  code: 'String',
+  oid: 'String',
+  id: 'String',
+  uuid: 'String',
+  markdown: 'String',
+  base64Binary: 'String',
+  integer: 'Integer',
+  unsignedInt: 'Integer',
+  positiveInt: 'Integer',
+  integer64: 'Long',
+  decimal: 'Decimal',
+  date: 'DateTime',
+  dateTime: 'DateTime',
+  instant: 'DateTime',
+  time: 'Time',
+  Quantity: 'Quantity'
+};
+
+/**
+ * Defines automatic conversion of FHIR types to FHIRPath(System) types. Map lifted from https://github.com/HL7/fhirpath.js/blob/master/src/types.js.
+ * See https://hl7.org/fhir/fhirpath.html#types.
+ */
+function convertFhirTypeToSystemType(type: string): string {
+  return fhirTypeToSystemTypeMap[type as FhirType] ?? type;
 }
