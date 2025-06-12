@@ -82,13 +82,7 @@ export const extractedAllergiesAdverseReactions: Bundle = {
           ]
         },
         code: {
-          coding: [
-            {
-              system: 'http://snomed.info/sct',
-              code: '228659004',
-              display: 'Dried flowers'
-            }
-          ]
+          text: 'Dried flowers'
         },
         patient: {
           reference: 'Patient/pat-sf'

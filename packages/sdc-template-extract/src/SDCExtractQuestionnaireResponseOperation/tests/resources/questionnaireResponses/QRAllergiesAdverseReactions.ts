@@ -173,11 +173,7 @@ export const QRAllergiesAdverseReactions: QuestionnaireResponse = {
                   text: 'Substance',
                   answer: [
                     {
-                      valueCoding: {
-                        system: 'http://snomed.info/sct',
-                        code: '228659004',
-                        display: 'Dried flowers'
-                      }
+                      valueString: 'Dried flowers'
                     }
                   ]
                 },
