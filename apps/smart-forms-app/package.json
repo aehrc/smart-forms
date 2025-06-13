@@ -73,7 +73,7 @@
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
-    "@playwright/test": "^1.52.0",
+    "@playwright/test": "^1.53.0",
     "@sentry/cli": "^2.42.2",
     "@types/fhir": "^0.0.41",
     "@types/he": "^1.2.3",
