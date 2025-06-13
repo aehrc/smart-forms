@@ -29,8 +29,8 @@ import type {
   IfNoneExistExtensionSlice,
   IfNoneMatchExtensionSlice,
   ResourceIdExtensionSlice,
-  ResourceTypeExtensionSlice,
-  TemplateExtensionSlice
+  TemplateExtensionSlice,
+  TypeExtensionSlice
 } from '../interfaces/templateExtractReference.interface';
 import type { FhirPatchParameters } from '../interfaces/fhirpatch.interface';
 
@@ -108,10 +108,8 @@ export function isIfNoneExistExtensionSlice(
   return extension.url === 'ifNoneExist' && !!extension.valueString;
 }
 
-export function isResourceTypeExtensionSlice(
-  extension: Extension
-): extension is ResourceTypeExtensionSlice {
-  return extension.url === 'resourceType' && !!extension.valueString;
+export function isTypeExtensionSlice(extension: Extension): extension is TypeExtensionSlice {
+  return extension.url === 'type' && !!extension.valueCode;
 }
 
 export function valueIsCoding(value: any): value is Coding {
