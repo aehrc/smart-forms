@@ -651,8 +651,8 @@ export const QMedicalHistoryCurrentProblemsWithPatch: Questionnaire = {
                       valueString: "item.where(linkId='conditionId').answer.value"
                     },
                     {
-                      url: 'resourceType',
-                      valueString: 'Condition'
+                      url: 'type',
+                      valueCode: 'Condition'
                     }
                   ]
                 }
