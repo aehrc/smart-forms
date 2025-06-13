@@ -230,15 +230,72 @@ export function createObservation(
           ...removeIfNull('display', c.display)
         })) ?? []
     },
-    ...removeIfNull('basedOn', questionnaireResponse.basedOn),
-    ...removeIfNull('partOf', questionnaireResponse.partOf),
-    ...removeIfNull('subject', questionnaireResponse.subject),
-    ...removeIfNull('encounter', questionnaireResponse.encounter),
     derivedFrom: [{ reference: qrRef }],
-    ...removeIfNull('effectiveDateTime', questionnaireResponse.authored),
-    ...removeIfNull('issued', questionnaireResponse.authored),
-    ...removeIfNull('author', questionnaireResponse.author)
   };
+
+  // Add comprehensive checks for all QuestionnaireResponse fields
+  if (questionnaireResponse.basedOn) {
+    observation.basedOn = questionnaireResponse.basedOn;
+  }
+
+  if (questionnaireResponse.partOf) {
+    observation.partOf = questionnaireResponse.partOf;
+  }
+
+  if (questionnaireResponse.subject) {
+    observation.subject = questionnaireResponse.subject;
+  }
+
+  if (questionnaireResponse.encounter) {
+    observation.encounter = questionnaireResponse.encounter;
+  }
+
+  if (questionnaireResponse.authored) {
+    observation.effectiveDateTime = questionnaireResponse.authored;
+    observation.issued = questionnaireResponse.authored;
+  }
+
+  if (questionnaireResponse.author) {
+    observation.performer = [questionnaireResponse.author];
+  }
+
+  // Additional checks for other QuestionnaireResponse fields
+  if (questionnaireResponse.identifier) {
+    // Ensure identifier is an array for Observation
+    observation.identifier = Array.isArray(questionnaireResponse.identifier) 
+      ? questionnaireResponse.identifier 
+      : [questionnaireResponse.identifier];
+  }
+
+  if (questionnaireResponse.questionnaire) {
+    // Add questionnaire reference as a component or note if needed
+    if (!observation.note) {
+      observation.note = [];
+    }
+    observation.note.push({
+      text: `Based on questionnaire: ${questionnaireResponse.questionnaire}`
+    });
+  }
+
+  if (questionnaireResponse.status && questionnaireResponse.status !== 'completed') {
+    // Map QuestionnaireResponse status to Observation status if different from default
+    switch (questionnaireResponse.status) {
+      case 'in-progress':
+        observation.status = 'preliminary';
+        break;
+      case 'amended':
+        observation.status = 'amended';
+        break;
+      case 'entered-in-error':
+        observation.status = 'entered-in-error';
+        break;
+      case 'stopped':
+        observation.status = 'cancelled';
+        break;
+      default:
+        observation.status = 'final';
+    }
+  }
 
   // Set the value of the Observation based on the answer type
   if (answer.valueQuantity) {
