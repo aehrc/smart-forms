@@ -43,7 +43,8 @@ export interface IfNoneExistExtensionSlice extends Extension {
   valueString: string;
 }
 
-// FHIRPath expression string indicating the resource type of an extracted resource to populate request.url property in `Bundle.entry`
+// ValueCode indicating the resource type of an extracted resource to populate request.url property in `Bundle.entry`.
+// Must be binded to http://hl7.org/fhir/R4/valueset-resource-types.html.
 export interface TypeExtensionSlice extends Extension {
   name: 'type';
   valueCode: string;
@@ -97,8 +98,8 @@ export interface TemplateExtractReference {
   ifNoneExist?: string;
 
   /**
-   * A custom slice. FHIRPath expression string indicating the resource type of an extracted resource, if the template's resourceType is different e.g. Parameters.
-   * Should be binded to http://hl7.org/fhir/R4/valueset-resource-types.html.
+   * A custom slice. ValueCode indicating the resource type of an extracted resource, if the template's resourceType is different e.g. Parameters.
+   * Must be binded to http://hl7.org/fhir/R4/valueset-resource-types.html.
    * Currently used to populate the `url` field in the `request` of a `Bundle.entry`.
    * Extracted from the `valueCode` of the custom `type` slice.
    */

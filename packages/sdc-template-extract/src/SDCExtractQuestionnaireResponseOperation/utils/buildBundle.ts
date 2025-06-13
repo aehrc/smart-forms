@@ -117,7 +117,6 @@ export function buildTransactionBundle(
       // resourceType (custom)
       let resourceType = cleanedExtractedResource.resourceType;
       if (templateExtractReference.type) {
-        console.log(templateExtractReference.type);
         resourceType = templateExtractReference.type as FhirResource['resourceType'];
       }
 

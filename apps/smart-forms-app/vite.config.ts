@@ -11,7 +11,10 @@ export default ({ mode }) => {
   return defineConfig({
     plugins: [react(), svgr()],
     define: {
-      RENDERER_VERSION: JSON.stringify(packageJson.dependencies['@aehrc/smart-forms-renderer'])
+      RENDERER_VERSION: JSON.stringify(packageJson.dependencies['@aehrc/smart-forms-renderer']),
+      TEMPLATE_EXTRACT_VERSION: JSON.stringify(
+        packageJson.dependencies['@aehrc/sdc-template-extract']
+      )
     }
   });
 };

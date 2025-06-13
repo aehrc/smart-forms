@@ -131,7 +131,7 @@ function ExtractMenu(props: ExtractMenuProps) {
               <ListItemIcon>
                 <Iconify icon="mdi:file-document" />
               </ListItemIcon>
-              <ListItemText>Template-based $extract</ListItemText>
+              <ListItemText>Template-based $extract [{TEMPLATE_EXTRACT_VERSION}]</ListItemText>
             </MenuItem>
           </span>
         </Tooltip>
@@ -146,7 +146,9 @@ function ExtractMenu(props: ExtractMenuProps) {
               <ListItemIcon>
                 <Iconify icon="mdi:file-document-edit" />
               </ListItemIcon>
-              <ListItemText>Template-based $extract (modified only)</ListItemText>
+              <ListItemText>
+                Template-based $extract (modified only) [{TEMPLATE_EXTRACT_VERSION}]
+              </ListItemText>
             </MenuItem>
           </span>
         </Tooltip>
