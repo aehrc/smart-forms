@@ -8,6 +8,10 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.67] - 2025-06-16
+#### Fixed
+- Fixed an issue where items with dynamicValueSets with expansion coding of 0 will trigger a fallback expansion against their qItem.answerValueSet.
+
 ## [1.0.0-alpha.66] - 2025-06-10
 #### Fixed
 - Fixed an issue where decimal, dateTime, slider, radio button items are not taking up full space in a grid table.
