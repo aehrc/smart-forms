@@ -230,7 +230,7 @@ export function createObservation(
           ...removeIfNull('display', c.display)
         })) ?? []
     },
-    derivedFrom: [{ reference: qrRef }],
+    derivedFrom: [{ reference: qrRef }]
   };
 
   // Add comprehensive checks for all QuestionnaireResponse fields
@@ -262,39 +262,9 @@ export function createObservation(
   // Additional checks for other QuestionnaireResponse fields
   if (questionnaireResponse.identifier) {
     // Ensure identifier is an array for Observation
-    observation.identifier = Array.isArray(questionnaireResponse.identifier) 
-      ? questionnaireResponse.identifier 
+    observation.identifier = Array.isArray(questionnaireResponse.identifier)
+      ? questionnaireResponse.identifier
       : [questionnaireResponse.identifier];
-  }
-
-  if (questionnaireResponse.questionnaire) {
-    // Add questionnaire reference as a component or note if needed
-    if (!observation.note) {
-      observation.note = [];
-    }
-    observation.note.push({
-      text: `Based on questionnaire: ${questionnaireResponse.questionnaire}`
-    });
-  }
-
-  if (questionnaireResponse.status && questionnaireResponse.status !== 'completed') {
-    // Map QuestionnaireResponse status to Observation status if different from default
-    switch (questionnaireResponse.status) {
-      case 'in-progress':
-        observation.status = 'preliminary';
-        break;
-      case 'amended':
-        observation.status = 'amended';
-        break;
-      case 'entered-in-error':
-        observation.status = 'entered-in-error';
-        break;
-      case 'stopped':
-        observation.status = 'cancelled';
-        break;
-      default:
-        observation.status = 'final';
-    }
   }
 
   // Set the value of the Observation based on the answer type
