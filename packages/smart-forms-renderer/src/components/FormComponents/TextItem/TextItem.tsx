@@ -30,9 +30,7 @@ import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
 import useShowFeedback from '../../../hooks/useShowFeedback';
 
-interface TextItemProps extends BaseItemProps {}
-
-function TextItem(props: TextItemProps) {
+function TextItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,

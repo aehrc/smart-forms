@@ -448,12 +448,12 @@ function isAnswerEffectivelyEmpty(answers: QuestionnaireResponseItemAnswer[]): b
     return true;
   }
 
-  return answers.every(answer => {
+  return answers.every((answer) => {
     // For string answers, check if they're empty or contain only whitespace
     if (answer.valueString !== undefined) {
       return answer.valueString.trim() === '';
     }
-    
+
     // For other answer types, they're not empty if they exist
     return false;
   });

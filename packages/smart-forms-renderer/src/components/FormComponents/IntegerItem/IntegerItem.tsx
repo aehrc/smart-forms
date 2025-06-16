@@ -17,7 +17,6 @@
 
 import React, { useCallback, useState } from 'react';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import debounce from 'lodash.debounce';
 import { createEmptyQrItem } from '../../../utils/qrItem';
@@ -32,12 +31,7 @@ import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
 import useShowFeedback from '../../../hooks/useShowFeedback';
 
-interface IntegerItemProps extends BaseItemProps {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
-}
-
-function IntegerItem(props: IntegerItemProps) {
+function IntegerItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,

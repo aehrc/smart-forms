@@ -17,7 +17,6 @@
 
 import React, { useCallback, useState } from 'react';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import debounce from 'lodash.debounce';
@@ -36,12 +35,7 @@ import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
 import useShowFeedback from '../../../hooks/useShowFeedback';
 
-interface DecimalItemProps extends BaseItemProps {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
-}
-
-function DecimalItem(props: DecimalItemProps) {
+function DecimalItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,

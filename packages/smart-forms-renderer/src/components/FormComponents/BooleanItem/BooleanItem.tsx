@@ -17,7 +17,6 @@
 
 import React from 'react';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
@@ -29,12 +28,7 @@ import useBooleanCalculatedExpression from '../../../hooks/useBooleanCalculatedE
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import ItemLabel from '../ItemParts/ItemLabel';
 
-interface BooleanItemProps extends BaseItemProps {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
-}
-
-function BooleanItem(props: BooleanItemProps) {
+function BooleanItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
