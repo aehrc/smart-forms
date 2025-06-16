@@ -230,15 +230,42 @@ export function createObservation(
           ...removeIfNull('display', c.display)
         })) ?? []
     },
-    ...removeIfNull('basedOn', questionnaireResponse.basedOn),
-    ...removeIfNull('partOf', questionnaireResponse.partOf),
-    ...removeIfNull('subject', questionnaireResponse.subject),
-    ...removeIfNull('encounter', questionnaireResponse.encounter),
-    derivedFrom: [{ reference: qrRef }],
-    ...removeIfNull('effectiveDateTime', questionnaireResponse.authored),
-    ...removeIfNull('issued', questionnaireResponse.authored),
-    ...removeIfNull('author', questionnaireResponse.author)
+    derivedFrom: [{ reference: qrRef }]
   };
+
+  // Add comprehensive checks for all QuestionnaireResponse fields
+  if (questionnaireResponse.basedOn) {
+    observation.basedOn = questionnaireResponse.basedOn;
+  }
+
+  if (questionnaireResponse.partOf) {
+    observation.partOf = questionnaireResponse.partOf;
+  }
+
+  if (questionnaireResponse.subject) {
+    observation.subject = questionnaireResponse.subject;
+  }
+
+  if (questionnaireResponse.encounter) {
+    observation.encounter = questionnaireResponse.encounter;
+  }
+
+  if (questionnaireResponse.authored) {
+    observation.effectiveDateTime = questionnaireResponse.authored;
+    observation.issued = questionnaireResponse.authored;
+  }
+
+  if (questionnaireResponse.author) {
+    observation.performer = [questionnaireResponse.author];
+  }
+
+  // Additional checks for other QuestionnaireResponse fields
+  if (questionnaireResponse.identifier) {
+    // Ensure identifier is an array for Observation
+    observation.identifier = Array.isArray(questionnaireResponse.identifier)
+      ? questionnaireResponse.identifier
+      : [questionnaireResponse.identifier];
+  }
 
   // Set the value of the Observation based on the answer type
   if (answer.valueQuantity) {

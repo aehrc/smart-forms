@@ -1,11 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
-import type {
-  Quantity,
-  QuestionnaireItem,
-  QuestionnaireItemAnswerOption,
-  QuestionnaireResponseItem
-} from 'fhir/r4';
+import type { Quantity, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import debounce from 'lodash.debounce';
@@ -29,12 +24,7 @@ import useQuantityCalculatedExpression from '../../../hooks/useQuantityCalculate
 import ItemLabel from '../ItemParts/ItemLabel';
 import useShowFeedback from '../../../hooks/useShowFeedback';
 
-interface QuantityItemProps extends BaseItemProps {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
-}
-
-function QuantityItem(props: QuantityItemProps) {
+function QuantityItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,

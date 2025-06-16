@@ -39,9 +39,7 @@ import DateTimeField from './DateTimeField';
 import ItemLabel from '../../ItemParts/ItemLabel';
 import useShowFeedback from '../../../../hooks/useShowFeedback';
 
-interface CustomDateTimeItemProps extends BaseItemProps {}
-
-function CustomDateTimeItem(props: CustomDateTimeItemProps) {
+function CustomDateTimeItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,

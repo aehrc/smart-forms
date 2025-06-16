@@ -32,9 +32,7 @@ import { useQuestionnaireStore } from '../../../../stores';
 import ItemLabel from '../../ItemParts/ItemLabel';
 import useShowFeedback from '../../../../hooks/useShowFeedback';
 
-interface CustomDateItemProps extends BaseItemProps {}
-
-function CustomDateItem(props: CustomDateItemProps) {
+function CustomDateItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,

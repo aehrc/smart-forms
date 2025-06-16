@@ -29,9 +29,7 @@ import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
 import useShowFeedback from '../../../hooks/useShowFeedback';
 
-interface UrlItemProps extends BaseItemProps {}
-
-function UrlItem(props: UrlItemProps) {
+function UrlItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,

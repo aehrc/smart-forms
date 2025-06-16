@@ -8,6 +8,11 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.68] - 2025-06-16
+#### Fixed
+- Fixed an issue where Observation-based extraction is mapping QR.author to Obs.author (should be Obs.performer).
+- Fixed an issue where empty strings in text-based fields are passing validation.
+
 ## [1.0.0-alpha.67] - 2025-06-16
 #### Fixed
 - Fixed an issue where items with dynamicValueSets with expansion coding of 0 will trigger a fallback expansion against their qItem.answerValueSet.

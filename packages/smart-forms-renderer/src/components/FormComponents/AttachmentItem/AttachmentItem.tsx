@@ -33,9 +33,7 @@ export interface AttachmentValues {
   fileName: string;
 }
 
-interface AttachmentItemProps extends BaseItemProps {}
-
-function AttachmentItem(props: AttachmentItemProps) {
+function AttachmentItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,

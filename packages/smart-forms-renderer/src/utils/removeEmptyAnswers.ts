@@ -152,5 +152,5 @@ function removeEmptyAnswersFromItem(
 }
 
 function isEmptyAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
-  return answer?.valueString === '' || answer?.item?.length === 0;
+  return answer?.valueString?.trim() === '' || answer?.item?.length === 0;
 }
