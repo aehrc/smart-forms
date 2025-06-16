@@ -104,6 +104,14 @@ function OpenChoiceCheckboxAnswerValueSetFields(props: OpenChoiceCheckboxFieldsP
     );
   }
 
+  if (options.length === 0) {
+    return (
+      <Typography sx={{ py: 0.5 }} fontWeight={600} fontSize={13}>
+        No options available.
+      </Typography>
+    );
+  }
+
   return (
     <StyledAlert color="error">
       <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
