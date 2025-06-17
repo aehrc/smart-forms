@@ -72,7 +72,7 @@ export const extractedMedicalHistoryCurrentProblemsWithPatch2: Bundle = {
       },
       request: {
         method: 'PATCH',
-        url: 'Parameters/uti-pat-sf'
+        url: 'Condition/uti-pat-sf'
       }
     },
     {
@@ -105,7 +105,7 @@ export const extractedMedicalHistoryCurrentProblemsWithPatch2: Bundle = {
       },
       request: {
         method: 'PATCH',
-        url: 'Parameters/diabetes-pat-sf'
+        url: 'Condition/diabetes-pat-sf'
       }
     }
   ]
