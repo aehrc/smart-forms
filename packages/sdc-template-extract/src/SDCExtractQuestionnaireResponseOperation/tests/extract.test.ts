@@ -5,6 +5,7 @@ import type {
   Bundle,
   Observation,
   Parameters,
+  QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
   RelatedPerson
 } from 'fhir/r4';
@@ -29,6 +30,7 @@ import { QRAllergiesAdverseReactions } from './resources/questionnaireResponses/
 import { QRImmunisation } from './resources/questionnaireResponses/QRImmunisation';
 import { QRMedicalHistoryCurrentProblems } from './resources/questionnaireResponses/QRMedicalHistoryCurrentProblems';
 import { QRMedicalHistoryCurrentProblemsWithPatch } from './resources/questionnaireResponses/QRMedicalHistoryCurrentProblemsWithPatch';
+import { QRMedicalHistoryCurrentProblemsWithPatch2 } from './resources/questionnaireResponses/QRMedicalHistoryCurrentProblemsWithPatch2';
 import { QRRegularMedications } from './resources/questionnaireResponses/QRRegularMedications';
 import { QRRegularMedicationsModified } from './resources/questionnaireResponses/QRRegularMedicationsModified';
 import { QRComplexTemplateExtract } from './resources/questionnaireResponses/QRComplexTemplateExtract';
@@ -38,6 +40,7 @@ import { QAllergiesAdverseReactions } from './resources/questionnaires/QAllergie
 import { QImmunisation } from './resources/questionnaires/QImmunisation';
 import { QMedicalHistoryCurrentProblems } from './resources/questionnaires/QMedicalHistoryCurrentProblems';
 import { QMedicalHistoryCurrentProblemsWithPatch } from './resources/questionnaires/QMedicalHistoryCurrentProblemsWithPatch';
+import { QMedicalHistoryCurrentProblemsWithPatch2 } from './resources/questionnaires/QMedicalHistoryCurrentProblemsWithPatch2';
 import { QRegularMedications } from './resources/questionnaires/QRegularMedications';
 import { QRegularMedicationsModified } from './resources/questionnaires/QRegularMedicationsModified';
 import { QComplexTemplateExtract } from './resources/questionnaires/QComplexTemplateExtract';
@@ -216,6 +219,103 @@ describe('extract MedicalHistoryCurrentProblemsWithPatch', () => {
 
     // There should be no second entry
     expect(extracted.entry?.[1]?.resource).toEqual(undefined);
+  });
+});
+
+describe('extract MedicalHistoryCurrentProblemsWithPatch2', () => {
+  // This tests Change detection in FHIRPatch Parameters. it should check changes in each "operation" parameter
+  it('extracted result should match extractedMedicalHistoryCurrentProblemsWithPatch2.ts expected resources (modified only)', async () => {
+    const newUtiClinicalStatusAnswer: QuestionnaireResponseItemAnswer = {
+      valueCoding: {
+        system: 'http://terminology.hl7.org/CodeSystem/condition-clinical',
+        code: 'inactive',
+        display: 'Inactive'
+      }
+    };
+    const newAbatementDateItem: QuestionnaireResponseItem = {
+      linkId: 'e4524654-f6de-4717-b288-34919394d46b',
+      text: 'Abatement date',
+      answer: [
+        {
+          valueDate: '2025-06-04'
+        }
+      ]
+    };
+
+    const comparisonSourceResponse = structuredClone(QRMedicalHistoryCurrentProblemsWithPatch2);
+
+    // Change Condition ID "uti-pat-sf" clinical status from "active" to "inactive"
+    if (
+      QRMedicalHistoryCurrentProblemsWithPatch2.item?.[0]?.item?.[1]?.item?.[2]?.item?.[2]?.answer
+    ) {
+      QRMedicalHistoryCurrentProblemsWithPatch2.item[0].item[1].item[2].item[2].answer = [
+        newUtiClinicalStatusAnswer
+      ];
+    }
+
+    // Add abatement date to Condition ID "uti-pat-sf"
+    if (QRMedicalHistoryCurrentProblemsWithPatch2.item?.[0]?.item?.[1]?.item?.[2]?.item) {
+      QRMedicalHistoryCurrentProblemsWithPatch2.item?.[0]?.item?.[1]?.item?.[2]?.item.push(
+        newAbatementDateItem
+      );
+    }
+
+    // Add abatement date to Condition ID "diabetes-pat-sf"
+    if (QRMedicalHistoryCurrentProblemsWithPatch2.item?.[0]?.item?.[1]?.item?.[3]?.item) {
+      QRMedicalHistoryCurrentProblemsWithPatch2.item[0].item[1].item[3]?.item.push(
+        newAbatementDateItem
+      );
+    }
+
+    const result = await extract(
+      createInputParameters(
+        QRMedicalHistoryCurrentProblemsWithPatch2,
+        QMedicalHistoryCurrentProblemsWithPatch2,
+        comparisonSourceResponse
+      ),
+      fetchResourceCallbackTest,
+      requestConfigTest
+    );
+
+    const returnParam = (result as OutputParameters).parameter.find(
+      (p): p is ReturnParameter => p.name === 'return'
+    );
+
+    // Deep comparison of the extracted resources vs expected resources in extractedMedicalHistoryCurrentProblemsWithPatch2
+    const extracted = returnParam?.resource as Bundle;
+
+    // Extracted should produce two entries - FHIRPatch with method PATCH
+    // 1st resource must be "uti-pat-sf" with two operations - change clinical status and add abatement date
+    expect(extracted.entry?.[0]?.resource?.resourceType).toEqual('Parameters');
+    expect(
+      (extracted.entry?.[0]?.resource as Parameters)?.parameter?.[0]?.part?.[3]
+        ?.valueCodeableConcept
+    ).toEqual({
+      coding: [
+        {
+          system: 'http://terminology.hl7.org/CodeSystem/condition-clinical',
+          code: 'inactive',
+          display: 'Inactive'
+        }
+      ]
+    });
+
+    expect(
+      (extracted.entry?.[0]?.resource as Parameters)?.parameter?.[1]?.part?.[3]?.valueDateTime
+    ).toEqual('2025-06-04');
+    expect(extracted.entry?.[0]?.request?.method).toEqual('PATCH');
+    expect(extracted.entry?.[0]?.request?.url).toEqual('Condition/uti-pat-sf');
+
+    // 2nd resource must be "diabetes-pat-sf" with one operation - add abatement date
+    expect(extracted.entry?.[1]?.resource?.resourceType).toEqual('Parameters');
+    expect(
+      (extracted.entry?.[1]?.resource as Parameters)?.parameter?.[0]?.part?.[3]?.valueDateTime
+    ).toEqual('2025-06-04');
+    expect(extracted.entry?.[1]?.request?.method).toEqual('PATCH');
+    expect(extracted.entry?.[1]?.request?.url).toEqual('Condition/diabetes-pat-sf');
+
+    // There should be no third entry
+    expect(extracted.entry?.[2]?.resource).toEqual(undefined);
   });
 });
 
