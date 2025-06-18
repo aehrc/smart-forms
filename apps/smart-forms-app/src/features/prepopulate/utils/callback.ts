@@ -84,14 +84,17 @@ export const fetchResourceCallback: FetchResourceCallback = async (
       if (pageCount >= maxPages) {
         nextUrl = null;
       }
-      // console.log(nextUrl);
     } catch (error) {
       // Return the original promise when an error occurs without any interruption
       console.error('Error processing FHIR resource:', error);
 
       return response.json();
     }
-  } while (nextUrl);
+  } while (
+    // Continue fetching until there are no more pages, only if requestUrl does not contain "_count"
+    nextUrl &&
+    !requestUrl.includes('_count=')
+  );
 
   // At this point, fhirData is always a Bundle
   // Create a combined bundle with all entries
