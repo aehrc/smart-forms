@@ -465,7 +465,7 @@ function getAnswerValues(
 ): { newValues: QuestionnaireResponseItemAnswer[]; expandRequired: boolean } {
   let expandRequired = false;
 
-  const newValues = initialValues.map((value: any) => {
+  let newValues = initialValues.map((value: any) => {
     const parsedAnswer = parseValueToAnswer(qItem, value);
     if (parsedAnswer.valueString && qItem.answerValueSet && !qItem.answerValueSet.startsWith('#')) {
       expandRequired = true;
@@ -473,6 +473,11 @@ function getAnswerValues(
 
     return parsedAnswer;
   });
+
+  // If qItem.repeats=false, it cannot have multiple answers
+  if (!qItem.repeats && newValues[0]) {
+    newValues = [newValues[0]];
+  }
 
   return { newValues, expandRequired };
 }
