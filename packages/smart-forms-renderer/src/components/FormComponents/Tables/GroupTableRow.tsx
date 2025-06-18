@@ -18,10 +18,8 @@
 import React from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
-  PropsWithIsRepeatedAttribute,
   PropsWithItemPathAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithShowMinimalViewAttribute
+  PropsWithParentIsReadOnlyAttribute
 } from '../../../interfaces/renderProps.interface';
 import type { TableRowProps } from '@mui/material/TableRow';
 import TableRow from '@mui/material/TableRow';
@@ -38,8 +36,6 @@ import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
 interface GroupTableRowProps
   extends PropsWithItemPathAttribute,
-    PropsWithIsRepeatedAttribute,
-    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
     TableRowProps {
   rowId: string;
@@ -48,12 +44,13 @@ interface GroupTableRowProps
   answeredQrItem: QuestionnaireResponseItem;
   nullableQrItem: QuestionnaireResponseItem | null;
   readOnly: boolean;
-  isRepeated: boolean;
   hoverDisabled: boolean;
   tableRows: GroupTableRowModel[];
   itemIsSelected: boolean;
   selectedIds: string[];
   qItemsIndexMap: Record<string, number>;
+  visibleItemLabels: string[];
+  showExtraGTableInteractions: boolean;
   onRowChange: (
     newQrRow: QuestionnaireResponseItem,
     index: number,
@@ -71,19 +68,19 @@ function GroupTableRow(props: GroupTableRowProps) {
     answeredQrItem,
     nullableQrItem,
     readOnly,
-    isRepeated,
     hoverDisabled,
     tableRows,
     itemIsSelected,
     qItemsIndexMap,
+    visibleItemLabels,
+    showExtraGTableInteractions,
     itemPath,
-    showMinimalView,
     onRowChange,
     onRemoveRow,
     onSelectRow
   } = props;
 
-  if (isRepeated) {
+  if (showExtraGTableInteractions) {
     return (
       <Draggable draggableId={rowId} index={index}>
         {(draggableProvided, snapshot) => (
@@ -94,47 +91,42 @@ function GroupTableRow(props: GroupTableRowProps) {
             hover={!hoverDisabled}
             ref={draggableProvided.innerRef}
             {...draggableProvided.draggableProps}>
-            {showMinimalView || !isRepeated ? (
-              <TableCell padding="checkbox" />
-            ) : (
-              <>
-                <TableCell padding="none">
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    {...(readOnly ? {} : draggableProvided.dragHandleProps)}>
-                    <DragIndicator
-                      fontSize="small"
-                      sx={{ color: readOnly ? 'text.disabled' : 'inherit' }}
-                    />
-                  </Box>
-                </TableCell>
-                <SelectRowButton
-                  isChecked={itemIsSelected}
-                  readOnly={readOnly}
-                  onSelectItem={() => onSelectRow(rowId)}
-                />
-              </>
-            )}
+            <>
+              <TableCell padding="none">
+                <Box
+                  aria-label="Drag row"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  {...(readOnly ? {} : draggableProvided.dragHandleProps)}>
+                  <DragIndicator
+                    fontSize="small"
+                    sx={{ color: readOnly ? 'text.disabled' : 'inherit' }}
+                  />
+                </Box>
+              </TableCell>
+              <SelectRowButton
+                qItem={tableQItem}
+                isChecked={itemIsSelected}
+                readOnly={readOnly}
+                onSelectItem={() => onSelectRow(rowId)}
+              />
+            </>
             <GroupTableRowCells
               qItem={tableQItem}
               qrItem={answeredQrItem}
               qItemsIndexMap={qItemsIndexMap}
+              visibleItemLabels={visibleItemLabels}
               itemPath={itemPath}
               parentIsReadOnly={readOnly}
               onQrItemChange={(newQrGroup) => onRowChange(newQrGroup, index)}
             />
-            {showMinimalView || !isRepeated ? (
-              <TableCell padding="checkbox" />
-            ) : (
-              <RemoveRowButton
-                nullableQrItem={nullableQrItem}
-                numOfRows={tableRows.length}
-                readOnly={readOnly}
-                onRemoveItem={() => onRemoveRow(index)}
-              />
-            )}
+            <RemoveRowButton
+              nullableQrItem={nullableQrItem}
+              numOfRows={tableRows.length}
+              readOnly={readOnly}
+              onRemoveItem={() => onRemoveRow(index)}
+            />
           </StyledGroupTableRow>
         )}
       </Draggable>
@@ -143,43 +135,17 @@ function GroupTableRow(props: GroupTableRowProps) {
 
   return (
     <TableRow>
-      {showMinimalView || !isRepeated ? (
-        <TableCell padding="checkbox" />
-      ) : (
-        <>
-          <TableCell padding="none">
-            <Box display="flex" alignItems="center" justifyContent="center">
-              <DragIndicator
-                fontSize="small"
-                sx={{ color: readOnly ? 'text.disabled' : 'inherit' }}
-              />
-            </Box>
-          </TableCell>
-          <SelectRowButton
-            isChecked={itemIsSelected}
-            readOnly={readOnly}
-            onSelectItem={() => onSelectRow(rowId)}
-          />
-        </>
-      )}
+      <TableCell padding="checkbox" />
       <GroupTableRowCells
         qItem={tableQItem}
         qrItem={answeredQrItem}
         qItemsIndexMap={qItemsIndexMap}
+        visibleItemLabels={visibleItemLabels}
         itemPath={itemPath}
         parentIsReadOnly={readOnly}
         onQrItemChange={(newQrGroup) => onRowChange(newQrGroup, index)}
       />
-      {showMinimalView || !isRepeated ? (
-        <TableCell padding="checkbox" />
-      ) : (
-        <RemoveRowButton
-          nullableQrItem={nullableQrItem}
-          numOfRows={tableRows.length}
-          readOnly={readOnly}
-          onRemoveItem={() => onRemoveRow(index)}
-        />
-      )}
+      <TableCell padding="checkbox" />
     </TableRow>
   );
 }

@@ -22,6 +22,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Allotment } from 'allotment';
 import 'allotment/dist/style.css';
 import { useState } from 'react';
+import type { VariantType } from 'notistack';
 import { useSnackbar } from 'notistack';
 import PlaygroundRenderer from './PlaygroundRenderer.tsx';
 import { Box } from '@mui/material';
@@ -35,15 +36,15 @@ import {
   useQuestionnaireResponseStore,
   useQuestionnaireStore
 } from '@aehrc/smart-forms-renderer';
-import RendererDebugFooter from '../../renderer/components/RendererDebugFooter/RendererDebugFooter.tsx';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
 import PlaygroundPicker from './PlaygroundPicker.tsx';
-import type { Patient, Practitioner, Questionnaire } from 'fhir/r4';
+import type { OperationOutcomeIssue, Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import PlaygroundHeader from './PlaygroundHeader.tsx';
 import { HEADERS } from '../../../api/headers.ts';
-import { useExtractOperationStore } from '../stores/extractOperationStore.ts';
+import { useExtractDebuggerStore } from '../stores/extractDebuggerStore.ts';
 import { buildFormWrapper, destroyFormWrapper } from '../../../utils/manageForm.ts';
+import { extractResultIsOperationOutcome, inAppExtract } from '@aehrc/sdc-template-extract';
 
 const defaultFhirServerUrl = 'https://hapi.fhir.org/baseR4';
 const defaultExtractEndpoint = 'https://proxy.smartforms.io/fhir';
@@ -68,13 +69,23 @@ function Playground() {
   const [jsonString, setJsonString] = useLocalStorage('playgroundJsonString', '');
   const [buildingState, setBuildingState] = useState<BuildState>('idle');
 
+  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
+  const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
+
   // $extract-related states
   const [isExtracting, setExtracting] = useState(false);
 
-  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
-  const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
+  // Observation-based
+  const setObservationExtractResult = useExtractDebuggerStore.use.setObservationExtractResult();
 
-  const setExtractedResource = useExtractOperationStore.use.setExtractedResource();
+  // Template-based
+  const setTemplateExtractResult = useExtractDebuggerStore.use.setTemplateExtractResult();
+  const setTemplateExtractDebugInfo = useExtractDebuggerStore.use.setTemplateExtractDebugInfo();
+  const setTemplateExtractIssues = useExtractDebuggerStore.use.setTemplateExtractIssues();
+
+  // Structured Map-based
+  const setStructuredMapExtractResult = useExtractDebuggerStore.use.setStructuredMapExtractResult();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -97,7 +108,7 @@ function Playground() {
         enqueueSnackbar('JSON string does not represent a questionnaire', {
           variant: 'error',
           preventDuplicate: true,
-          action: <CloseSnackbar />
+          action: <CloseSnackbar variant="error" />
         });
         setBuildingState('idle');
       }
@@ -106,7 +117,7 @@ function Playground() {
       enqueueSnackbar('JSON string invalid', {
         variant: 'error',
         preventDuplicate: true,
-        action: <CloseSnackbar />
+        action: <CloseSnackbar variant="error" />
       });
       setBuildingState('idle');
     }
@@ -128,7 +139,7 @@ function Playground() {
       enqueueSnackbar('Attached file must be a JSON file', {
         variant: 'error',
         preventDuplicate: true,
-        action: <CloseSnackbar />
+        action: <CloseSnackbar variant="error" />
       });
       setBuildingState('idle');
       return;
@@ -142,31 +153,54 @@ function Playground() {
         if (typeof jsonString === 'string') {
           setJsonString(jsonString);
           const questionnaire = JSON.parse(jsonString);
+
+          // Add more detailed validation
+          if (!questionnaire) {
+            throw new Error('Empty questionnaire');
+          }
+
+          if (!isQuestionnaire(questionnaire)) {
+            throw new Error(
+              'Invalid questionnaire format. Must have resourceType: "Questionnaire"'
+            );
+          }
+
           await buildFormWrapper(questionnaire, undefined, undefined, terminologyServerUrl);
           setBuildingState('built');
         } else {
-          enqueueSnackbar('There was an issue with the attached JSON file.', {
+          enqueueSnackbar('There was an issue reading the file content.', {
             variant: 'error',
             preventDuplicate: true,
-            action: <CloseSnackbar />
+            action: <CloseSnackbar variant="error" />
           });
           setBuildingState('idle');
         }
-      } catch (error) {
-        enqueueSnackbar('Attached file has invalid JSON format', {
+      } catch (error: unknown) {
+        console.error('Error parsing questionnaire:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+        enqueueSnackbar(`Error loading questionnaire: ${errorMessage}`, {
           variant: 'error',
           preventDuplicate: true,
-          action: <CloseSnackbar />
+          action: <CloseSnackbar variant="error" />
         });
         setBuildingState('idle');
       }
+    };
+
+    reader.onerror = () => {
+      enqueueSnackbar('Error reading file', {
+        variant: 'error',
+        preventDuplicate: true,
+        action: <CloseSnackbar variant="error" />
+      });
+      setBuildingState('idle');
     };
   }
 
   // Observation $extract
   function handleObservationExtract() {
     const observations = extractObservationBased(sourceQuestionnaire, updatableResponse);
-    setExtractedResource(observations);
+    setObservationExtractResult(observations);
 
     if (observations.length > 0) {
       enqueueSnackbar(
@@ -200,9 +234,9 @@ function Playground() {
       enqueueSnackbar('Failed to extract resource', {
         variant: 'error',
         preventDuplicate: true,
-        action: <CloseSnackbar />
+        action: <CloseSnackbar variant="error" />
       });
-      setExtractedResource(null);
+      setStructuredMapExtractResult(null);
     } else {
       enqueueSnackbar(
         'Extract successful. See Advanced Properties > Extracted to view extracted resource.',
@@ -213,7 +247,88 @@ function Playground() {
         }
       );
       const extractedResource = await response.json();
-      setExtractedResource(extractedResource);
+      setStructuredMapExtractResult(extractedResource);
+    }
+  }
+
+  // Template-based $extract
+  async function handleTemplateExtract(modifiedOnly: boolean) {
+    if (!sourceFhirServerUrl) {
+      enqueueSnackbar('Failed to run template-based extraction. No source server provided', {
+        variant: 'error',
+        preventDuplicate: true,
+        action: <CloseSnackbar variant="error" />
+      });
+      return;
+    }
+
+    const responseToExtract = structuredClone(updatableResponse);
+    const inAppExtractOutput = await inAppExtract(
+      responseToExtract,
+      sourceQuestionnaire,
+      modifiedOnly ? sourceResponse : null
+    );
+
+    const { extractResult } = inAppExtractOutput;
+
+    if (extractResultIsOperationOutcome(extractResult)) {
+      // If there is only one issue in the OperationOutcome, show its details directly in the snackbar
+      if (extractResult.issue.length === 1) {
+        const variantMap: Record<OperationOutcomeIssue['severity'], VariantType> = {
+          error: 'error',
+          warning: 'warning',
+          fatal: 'error',
+          information: 'info'
+        };
+
+        const variant = variantMap[extractResult.issue[0].severity] || 'error';
+        enqueueSnackbar(`${extractResult.issue[0].details?.text}`, {
+          variant: variant,
+          preventDuplicate: true,
+          action: <CloseSnackbar variant={variant} />
+        });
+        console.warn(extractResult);
+        return;
+      }
+
+      // Multiple issues, show a generic error message
+      enqueueSnackbar(
+        'Ran template-based extraction but an error occurred. See console for error details.',
+        {
+          variant: 'error',
+          preventDuplicate: true,
+          action: <CloseSnackbar variant="error" />
+        }
+      );
+      console.error(extractResult);
+      return;
+    }
+
+    // Handle returnParameter
+    console.log(
+      `Extracted bundle from template-based extraction ${modifiedOnly ? '(modified only)' : ''}:`,
+      extractResult.extractedBundle
+    );
+    const hasIssues =
+      extractResult.issues && extractResult.issues.resourceType === 'OperationOutcome';
+    enqueueSnackbar(
+      `Successful template-based extraction${hasIssues ? ' with issues' : ''}. See Advanced Properties > Extracted to view extracted bundle${hasIssues ? ' + issues' : ''}.`,
+      {
+        preventDuplicate: true,
+        action: <CloseSnackbar />,
+        autoHideDuration: 8000
+      }
+    );
+    setTemplateExtractResult(extractResult.extractedBundle);
+
+    // Handle issuesParameter
+    if (extractResult.issues) {
+      setTemplateExtractIssues(extractResult.issues);
+    }
+
+    // Handle customDebugInfoParameter
+    if (extractResult.debugInfo) {
+      setTemplateExtractDebugInfo(extractResult.debugInfo);
     }
   }
 
@@ -248,6 +363,7 @@ function Playground() {
                 terminologyServerUrl={terminologyServerUrl}
                 isExtracting={isExtracting}
                 onObservationExtract={handleObservationExtract}
+                onTemplateExtract={handleTemplateExtract}
                 onStructureMapExtract={handleStructureMapExtract}
               />
             ) : buildingState === 'building' ? (
@@ -270,7 +386,6 @@ function Playground() {
             onDestroyForm={handleDestroyForm}
           />
         </Allotment>
-        <RendererDebugFooter />
       </DndProvider>
     </>
   );

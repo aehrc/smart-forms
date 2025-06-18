@@ -259,8 +259,13 @@ function getRepeatGroupParentItemRecursive(
   return null;
 }
 
-/*
- Used for getting the tab section heading for Smart Form's re-population
+/**
+ * Returns the section heading text for a given linkId in a questionnaire, used to label tab sections.
+ *
+ * @param questionnaire - The FHIR Questionnaire to search through.
+ * @param targetLinkId - The linkId of the target item.
+ * @param tabs - Tab definitions used to match section headings.
+ * @returns The section heading text if found, otherwise null.
  */
 export function getSectionHeading(
   questionnaire: Questionnaire,

@@ -37,7 +37,7 @@ function ViewExistingResponsesButton() {
     enqueueSnackbar('An error occurred while fetching existing responses', {
       variant: 'error',
       preventDuplicate: true,
-      action: <CloseSnackbar />
+      action: <CloseSnackbar variant="error" />
     });
   }
 

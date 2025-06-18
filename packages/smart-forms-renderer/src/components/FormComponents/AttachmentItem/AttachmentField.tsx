@@ -26,6 +26,8 @@ import type { AttachmentValues } from './AttachmentItem';
 import AttachmentUrlField from './AttachmentUrlField';
 import { useRendererStylingStore } from '../../../stores';
 import { StyledRequiredTypography } from '../Item.styles';
+import InputAdornment from '@mui/material/InputAdornment';
+import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 
 interface AttachmentFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -102,7 +104,20 @@ function AttachmentField(props: AttachmentFieldProps) {
             data-test="q-item-attachment-field"
             slotProps={{
               input: {
-                readOnly: readOnly && readOnlyVisualStyle === 'readonly'
+                readOnly: readOnly && readOnlyVisualStyle === 'readonly',
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <ClearButtonAdornment
+                      readOnly={readOnly}
+                      onClear={() => {
+                        onFileNameChange('');
+                      }}
+                    />
+                  </InputAdornment>
+                )
+              },
+              htmlInput: {
+                'aria-label': 'File name (optional)'
               }
             }}
           />

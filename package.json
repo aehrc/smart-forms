@@ -3,6 +3,7 @@
   "scripts": {
     "lint": "eslint -c .eslintrc.json .",
     "lint-fix": "eslint -c .eslintrc.json --fix .",
+    "lint-fix-errors": "eslint -c .eslintrc.json --fix --quiet .",
     "prettier": "prettier --check .",
     "prettier-fix": "prettier --write .",
     "clean-folders": "find . -type d \\( -name \"node_modules\" -o -name \"dist\" -o -name \"lib\" \\) -exec rm -rf {} +"
@@ -16,11 +17,9 @@
     "documentation"
   ],
   "devDependencies": {
-    "@types/testing-library__react": "^10.0.1",
-    "@typescript-eslint/eslint-plugin": "^7.8.0",
+    "@typescript-eslint/eslint-plugin": "^8.34.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
-    "eslint-plugin-react-refresh": "^0.4.20",
-    "vitest": "^3.1.3"
+    "eslint-plugin-react-refresh": "^0.4.20"
   }
 }

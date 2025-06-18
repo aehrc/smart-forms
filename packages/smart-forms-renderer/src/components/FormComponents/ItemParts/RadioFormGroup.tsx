@@ -18,6 +18,7 @@ interface ChoiceRadioGroupProps {
   readOnly: boolean;
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
+  isTabled: boolean;
   onCheckedChange: (newValue: string) => void;
   onClear: () => void;
   children?: ReactNode; // Mainly used for open-choice openLabel field
@@ -32,6 +33,7 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
     readOnly,
     expressionUpdated,
     answerOptionsToggleExpressionsMap,
+    isTabled,
     onCheckedChange,
     onClear,
     children
@@ -39,7 +41,6 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const inputsFlexGrow = useRendererStylingStore.use.inputsFlexGrow();
-  const hideClearButton = useRendererStylingStore.use.hideClearButton();
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
@@ -47,6 +48,7 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
     <>
       <Box
         display="flex"
+        width="100%"
         sx={{
           justifyContent: 'space-between',
           alignItems: { xs: 'start', sm: 'center' },
@@ -58,10 +60,12 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
           sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
           <StyledRadioGroup
             id={qItem.type + '-' + qItem.linkId}
-            aria-labelledby={'label-' + qItem.linkId}
+            {...(!isTabled
+              ? { 'aria-labelledby': 'label-' + qItem.linkId }
+              : { 'aria-label': qItem.text ?? 'Unnamed radio group' })}
+            aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
             row={orientation === ChoiceItemOrientation.Horizontal}
             sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
-            aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
             onChange={(e) => {
               // If item.readOnly=true, do not allow any changes
               if (readOnly) {
@@ -86,9 +90,7 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
           <FadingCheckIcon fadeIn={expressionUpdated} disabled={readOnly} />
         </Box>
 
-        {hideClearButton ? null : (
-          <ClearInputButton buttonShown={!!valueRadio} readOnly={readOnly} onClear={onClear} />
-        )}
+        <ClearInputButton buttonShown={!!valueRadio} readOnly={readOnly} onClear={onClear} />
       </Box>
 
       {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}

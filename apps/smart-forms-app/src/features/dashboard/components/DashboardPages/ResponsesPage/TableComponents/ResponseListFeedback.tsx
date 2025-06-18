@@ -48,7 +48,7 @@ function ResponseListFeedback(props: Props) {
     enqueueSnackbar('An error occurred while fetching responses', {
       variant: 'error',
       preventDuplicate: true,
-      action: <CloseSnackbar />
+      action: <CloseSnackbar variant="error" />
     });
   }
 

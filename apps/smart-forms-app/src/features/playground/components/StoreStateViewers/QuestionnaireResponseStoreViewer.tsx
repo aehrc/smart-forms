@@ -13,24 +13,39 @@ const questionnaireResponseStoreStatePropertyNames: string[] = [
   'responseIsValid'
 ];
 
-function QuestionnaireResponseStoreViewer() {
+interface QuestionnaireResponseStoreViewerProps {
+  statePropNameFilter: string;
+}
+
+function QuestionnaireResponseStoreViewer(props: QuestionnaireResponseStoreViewerProps) {
+  const { statePropNameFilter } = props;
+
   const [selectedProperty, setSelectedProperty] = useState('updatableResponse');
-  const [showJsonTree, setShowJsonTree] = useState(false);
+  const [viewMode, setViewMode] = useState<'text' | 'jsonTree' | 'table'>('text');
 
   const propertyObject = useShowQuestionnaireResponseStoreProperty(selectedProperty);
+
+  function handleViewModeChange(newViewMethod: 'text' | 'jsonTree' | 'table' | null) {
+    if (newViewMethod === null) {
+      return;
+    }
+
+    setViewMode(newViewMethod);
+  }
 
   return (
     <>
       <GenericStatePropertyPicker
         statePropertyNames={questionnaireResponseStoreStatePropertyNames}
+        statePropNameFilter={statePropNameFilter}
         selectedProperty={selectedProperty}
         onSelectProperty={setSelectedProperty}
       />
       <GenericViewer
         propertyName={selectedProperty}
         propertyObject={propertyObject}
-        showJsonTree={showJsonTree}
-        onToggleShowJsonTree={setShowJsonTree}
+        viewMode={viewMode}
+        onViewModeChange={handleViewModeChange}
       />
     </>
   );

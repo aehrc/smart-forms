@@ -74,7 +74,7 @@ export interface PropsWithIsRepeatedAttribute {
 }
 
 export interface PropsWithIsTabledAttribute {
-  isTabled?: boolean;
+  isTabled: boolean;
 }
 
 export interface PropsWithIsTabledRequiredAttribute {

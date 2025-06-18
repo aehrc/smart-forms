@@ -22,6 +22,7 @@ interface ChoiceCheckboxFormGroupProps {
   readOnly: boolean;
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
+  isTabled: boolean;
   onCheckedChange: (newValue: string) => void;
   onClear: () => void;
   children?: ReactNode; // Mainly used for open-choice openLabel field
@@ -36,6 +37,7 @@ function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
     readOnly,
     expressionUpdated,
     answerOptionsToggleExpressionsMap,
+    isTabled,
     onCheckedChange,
     onClear,
     children
@@ -43,7 +45,6 @@ function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const inputsFlexGrow = useRendererStylingStore.use.inputsFlexGrow();
-  const hideClearButton = useRendererStylingStore.use.hideClearButton();
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
@@ -64,11 +65,14 @@ function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
           sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
           <StyledFormGroup
             id={qItem.type + '-' + qItem.linkId}
-            aria-labelledby={'label-' + qItem.linkId}
+            {...(!isTabled
+              ? { 'aria-labelledby': 'label-' + qItem.linkId }
+              : { 'aria-label': qItem.text ?? 'Unnamed checkbox list' })}
+            role="group"
             row={orientation === ChoiceItemOrientation.Horizontal}
-            sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
-            aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}>
+            sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
             <CheckboxOptionList
+              aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
               options={options}
               answers={answers}
               readOnly={readOnly}
@@ -84,9 +88,7 @@ function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
           <FadingCheckIcon fadeIn={expressionUpdated} disabled={readOnly} />
         </Box>
 
-        {hideClearButton ? null : (
-          <ClearInputButton buttonShown={!answersEmpty} readOnly={readOnly} onClear={onClear} />
-        )}
+        <ClearInputButton buttonShown={!answersEmpty} readOnly={readOnly} onClear={onClear} />
       </Box>
 
       {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}

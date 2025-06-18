@@ -40,6 +40,7 @@ interface OpenChoiceCheckboxFieldsProps {
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   terminologyError: TerminologyError;
+  isTabled: boolean;
   onOptionChange: (changedOptionValue: string) => void;
   onOpenLabelCheckedChange: (checked: boolean) => void;
   onOpenLabelInputChange: (input: string) => void;
@@ -59,6 +60,7 @@ function OpenChoiceCheckboxAnswerValueSetFields(props: OpenChoiceCheckboxFieldsP
     expressionUpdated,
     answerOptionsToggleExpressionsMap,
     terminologyError,
+    isTabled,
     onOptionChange,
     onOpenLabelCheckedChange,
     onOpenLabelInputChange,
@@ -75,6 +77,7 @@ function OpenChoiceCheckboxAnswerValueSetFields(props: OpenChoiceCheckboxFieldsP
         readOnly={readOnly}
         expressionUpdated={expressionUpdated}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+        isTabled={isTabled}
         onCheckedChange={onOptionChange}
         onClear={onClear}>
         <CheckboxSingleWithOpenLabel
@@ -98,6 +101,14 @@ function OpenChoiceCheckboxAnswerValueSetFields(props: OpenChoiceCheckboxFieldsP
           {terminologyError.answerValueSet}
         </Typography>
       </StyledAlert>
+    );
+  }
+
+  if (options.length === 0) {
+    return (
+      <Typography sx={{ py: 0.5 }} fontWeight={600} fontSize={13}>
+        No options available.
+      </Typography>
     );
   }
 

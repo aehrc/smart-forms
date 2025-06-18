@@ -33,7 +33,7 @@ export interface InitialiseFormWrapperProps {
   questionnaireResponse?: QuestionnaireResponse;
   readOnly?: boolean;
   terminologyServerUrl?: string;
-  additionalVariables?: Record<string, object>;
+  additionalVariables?: Record<string, any>;
   fhirClient?: Client;
 }
 

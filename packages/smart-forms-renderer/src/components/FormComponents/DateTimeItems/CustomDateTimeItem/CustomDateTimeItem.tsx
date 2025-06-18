@@ -37,10 +37,9 @@ import useTimeValidation from '../../../../hooks/useTimeValidation';
 import useDateNonEmptyValidation from '../../../../hooks/useDateTimeNonEmpty';
 import DateTimeField from './DateTimeField';
 import ItemLabel from '../../ItemParts/ItemLabel';
+import useShowFeedback from '../../../../hooks/useShowFeedback';
 
-interface CustomDateTimeItemProps extends BaseItemProps {}
-
-function CustomDateTimeItem(props: CustomDateTimeItemProps) {
+function CustomDateTimeItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
@@ -97,6 +96,9 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
 
   dateFeedback = useDateNonEmptyValidation(dateInput, timeInput, dateFeedback, timeFeedback);
 
+  // Provides a way to hide the feedback when the user is typing
+  const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
+
   function handleSelectDate(selectedDate: string) {
     setDateInput(selectedDate);
     updateQRDateTime(selectedDate, timeInput, periodInput, is24HourNotation);
@@ -104,6 +106,11 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
 
   function handleDateInputChange(newDateInput: string) {
     setDateInput(newDateInput);
+
+    // Only suppress feedback once (before first blur)
+    if (!hasBlurred) {
+      setShowFeedback(false);
+    }
 
     if (newDateInput === '') {
       onQrItemChange(createEmptyQrItem(qItem, answerKey));
@@ -117,9 +124,19 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
     updateQRDateTime(newDateInput, timeInput, periodInput, is24HourNotation);
   }
 
+  function handleDateBlur() {
+    setShowFeedback(true);
+    setHasBlurred(true); // From now on, feedback should stay visible
+  }
+
   function handleTimeInputChange(newTimeInput: string, newPeriodInput: string) {
     setTimeInput(newTimeInput);
     setPeriodInput(newPeriodInput);
+
+    // Only suppress feedback once (before first blur)
+    if (!hasBlurred) {
+      setShowFeedback(false);
+    }
 
     if (newTimeInput === '') {
       updateQRDateTime(dateInput, '', '', false);
@@ -132,6 +149,11 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
     }
 
     updateQRDateTime(dateInput, newTimeInput, newPeriodInput, is24HourNotation);
+  }
+
+  function handleTimeBlur() {
+    setShowFeedback(true);
+    setHasBlurred(true); // From now on, feedback should stay visible
   }
 
   function updateQRDateTime(
@@ -166,17 +188,18 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
 
   if (isRepeated) {
     return (
-      <Stack>
+      <Stack width="100%">
         <DateTimeField
           linkId={qItem.linkId}
           itemType={qItem.type}
+          itemText={qItem.text}
           displayDate={displayDate}
           dateInput={dateInput}
           timeInput={timeInput}
           periodInput={periodInput}
           is24HourNotation={is24HourNotation}
-          dateFeedback={dateFeedback ?? ''}
-          timeFeedback={timeFeedback ?? ''}
+          dateFeedback={showFeedback ? (dateFeedback ?? '') : ''}
+          timeFeedback={showFeedback ? (timeFeedback ?? '') : ''}
           dateFocused={dateFocused}
           displayPrompt={displayPrompt}
           entryFormat={entryFormat}
@@ -186,6 +209,9 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
           onSelectDate={handleSelectDate}
           setDateFocused={setDateFocused}
           onTimeInputChange={handleTimeInputChange}
+          onDateBlur={handleDateBlur}
+          onTimeBlur={handleTimeBlur}
+          showFeedback={showFeedback}
         />
       </Stack>
     );
@@ -204,6 +230,7 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
           <DateTimeField
             linkId={qItem.linkId}
             itemType={qItem.type}
+            itemText={qItem.text}
             displayDate={displayDate}
             dateInput={dateInput}
             timeInput={timeInput}
@@ -220,6 +247,9 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
             onSelectDate={handleSelectDate}
             setDateFocused={setDateFocused}
             onTimeInputChange={handleTimeInputChange}
+            onDateBlur={handleDateBlur}
+            onTimeBlur={handleTimeBlur}
+            showFeedback={showFeedback}
           />
         }
         dateFeedback={dateFeedback ?? undefined}

@@ -16,10 +16,11 @@
  */
 
 import React from 'react';
-import { Tooltip } from '@mui/material';
+import Tooltip from '@mui/material/Tooltip';
 import Button from '@mui/material/Button';
 import { grey } from '@mui/material/colors';
 import Fade from '@mui/material/Fade';
+import { useRendererStylingStore } from '../../../stores';
 
 interface ClearInputButtonProps {
   buttonShown: boolean;
@@ -30,23 +31,24 @@ interface ClearInputButtonProps {
 function ClearInputButton(props: ClearInputButtonProps) {
   const { buttonShown, readOnly, onClear } = props;
 
+  const hideClearButton = useRendererStylingStore.use.hideClearButton();
+
+  // If "hideClearButton" config is true OR if item.readOnly is true, do not render button
+  if (hideClearButton || readOnly) {
+    return null;
+  }
+
   return (
     <Fade in={buttonShown} timeout={100}>
-      <Tooltip title="Set question as unanswered">
-        <span
-          style={{
-            cursor: readOnly ? 'not-allowed' : 'pointer'
-          }}>
-          <Button
-            sx={{
-              color: grey['500'],
-              '&:hover': { backgroundColor: grey['200'] }
-            }}
-            disabled={readOnly}
-            onClick={onClear}>
-            Clear
-          </Button>
-        </span>
+      <Tooltip role="button" title="Clear">
+        <Button
+          sx={{
+            color: grey['500'],
+            '&:hover': { backgroundColor: grey['200'] }
+          }}
+          onClick={onClear}>
+          Clear
+        </Button>
       </Tooltip>
     </Fade>
   );

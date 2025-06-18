@@ -19,117 +19,127 @@ import type {
   Questionnaire,
   QuestionnaireItem,
   QuestionnaireResponse,
-  QuestionnaireResponseItem
+  QuestionnaireResponseItem,
+  QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
+import { updateQuestionnaireResponse } from './genericRecursive';
+import { getQrItemsIndex, mapQItemsIndex } from './misc';
 
 export function removeEmptyAnswersFromResponse(
   questionnaire: Questionnaire,
   questionnaireResponse: QuestionnaireResponse
 ): QuestionnaireResponse {
-  const topLevelQItems = questionnaire.item;
-  const topLevelQRItems = questionnaireResponse.item;
-  if (
-    !topLevelQItems ||
-    topLevelQItems.length === 0 ||
-    !topLevelQRItems ||
-    topLevelQRItems.length === 0
-  ) {
-    return questionnaireResponse;
-  }
-
-  const newQuestionnaireResponse: QuestionnaireResponse = { ...questionnaireResponse, item: [] };
-  for (const [i, topLevelQRItem] of topLevelQRItems.entries()) {
-    const qItem = topLevelQItems[i];
-    if (!qItem) {
-      continue;
-    }
-
-    // If QR item don't have either item.item and item.answer, continue
-    if (!qrItemHasItemsOrAnswer(topLevelQRItem)) {
-      continue;
-    }
-
-    const newTopLevelQRItem = removeEmptyAnswersFromItemRecursive(qItem, topLevelQRItem);
-    if (newTopLevelQRItem && newQuestionnaireResponse.item) {
-      newQuestionnaireResponse.item.push(newTopLevelQRItem);
-    }
-  }
-
-  return newQuestionnaireResponse;
+  return updateQuestionnaireResponse(
+    questionnaire,
+    questionnaireResponse,
+    removeEmptyAnswersFromItemRecursive,
+    null
+  );
 }
 
-function removeEmptyAnswersFromItemRecursive(
+/**
+ * Recursively go through the questionnaireResponse and remove qrItems whose qItems are empty in the form
+ *
+ * @author Sean Fong
+ */
+export function removeEmptyAnswersFromItemRecursive(
   qItem: QuestionnaireItem,
-  qrItem: QuestionnaireResponseItem
-): QuestionnaireResponseItem | null {
+  qrItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[] | null
+): QuestionnaireResponseItem | QuestionnaireResponseItem[] | null {
+  // Process repeating group items separately
+  const hasMultipleAnswers = Array.isArray(qrItemOrItems);
+  if (hasMultipleAnswers) {
+    return removeEmptyAnswersFromRepeatGroup(qItem, qrItemOrItems);
+  }
+
+  // At this point, qrItemOrItems is a single QuestionnaireResponseItem
+  const qrItem = qrItemOrItems;
+
+  // If QR item is null, return null
+  if (qrItem === null) {
+    return null;
+  }
+
   // If QR item don't have either item.item and item.answer, return null
   if (!qrItemHasItemsOrAnswer(qrItem)) {
     return null;
   }
 
-  const qItems = qItem.item;
-  const qrItems = qrItem.item;
+  // Process items with child items
+  const childQItems = qItem.item ?? [];
+  const childQrItems = qrItem?.item ?? [];
+  const updatedChildQrItems: QuestionnaireResponseItem[] = [];
+  if (childQItems.length > 0) {
+    const indexMap = mapQItemsIndex(qItem);
+    const qrItemsByIndex = getQrItemsIndex(childQItems, childQrItems, indexMap);
 
-  // Process group items
-  if (qItems && qItems.length > 0) {
-    if (qrItems && qrItems.length > 0) {
-      const newQrItems: QuestionnaireResponseItem[] = [];
+    // Iterate child items
+    for (const [index, childQItem] of childQItems.entries()) {
+      const childQRItemOrItems = qrItemsByIndex[index];
 
-      // Loop over qItems - but end loop if we either reach the end of qItems or qrItems
-      // Under normal circumstances we will reach the end of both arrays together
-      for (
-        let qItemIndex = 0, qrItemIndex = 0;
-        qItemIndex < qItems.length || qrItemIndex < qrItems.length;
-        qItemIndex++
-      ) {
-        const childQItem = qItems[qItemIndex];
-        const childQrItem = qrItems[qrItemIndex];
+      const updatedChildQRItemOrItems = removeEmptyAnswersFromItemRecursive(
+        childQItem,
+        childQRItemOrItems ?? null
+      );
 
-        // Save qrItem if linkIds of current qItem and qrItem are the same
-        if (childQItem && childQrItem && childQItem?.linkId === childQrItem?.linkId) {
-          // if (!qItems[qrItemIndex]) {
-          //   continue;
-          // }
-
-          const newQrItem = removeEmptyAnswersFromItemRecursive(childQItem, childQrItem);
-          if (newQrItem) {
-            newQrItems.push(newQrItem);
-          }
-
-          // Decrement qItem index if the next qrItem is an answer from a repeatGroup
-          // Essentially persisting the current qItem linked to be matched up with the next qrItem linkId
-          if (
-            qrItems.length !== qrItemIndex + 1 &&
-            childQrItem.linkId === qrItems[qrItemIndex + 1]?.linkId
-          ) {
-            qItemIndex--;
-          }
-
-          // Only Increment qrItem index whenever the current qrItem linkId matches up with the current qItem
-          qrItemIndex++;
+      if (Array.isArray(updatedChildQRItemOrItems)) {
+        if (updatedChildQRItemOrItems.length > 0) {
+          updatedChildQrItems.push(...updatedChildQRItemOrItems);
         }
+        continue;
       }
-      return { ...qrItem, item: newQrItems };
-    }
 
-    // Also perform checks if answer exists
-    return answerIsEmpty(qrItem) ? null : qrItem;
+      if (updatedChildQRItemOrItems) {
+        updatedChildQrItems.push(updatedChildQRItemOrItems);
+      }
+    }
   }
 
-  // Process non-group items
-  return answerIsEmpty(qrItem) ? null : { ...qrItem };
+  // Construct updated qrItem
+  return removeEmptyAnswersFromItem(qItem, qrItem, updatedChildQrItems);
 }
 
-function answerIsEmpty(qrItem: QuestionnaireResponseItem) {
-  if (!qrItem.answer) {
-    return true;
+function removeEmptyAnswersFromRepeatGroup(
+  qItem: QuestionnaireItem,
+  qrItems: QuestionnaireResponseItem[]
+) {
+  if (!qItem.item) {
+    return [];
   }
 
-  if (qrItem.answer[0]?.valueString === '') {
-    return true;
+  return qrItems
+    .flatMap((childQrItem) => removeEmptyAnswersFromItemRecursive(qItem, childQrItem))
+    .filter((childQRItem): childQRItem is QuestionnaireResponseItem => !!childQRItem);
+}
+
+function removeEmptyAnswersFromItem(
+  qItem: QuestionnaireItem,
+  qrItem: QuestionnaireResponseItem | null,
+  childQrItems: QuestionnaireResponseItem[]
+): QuestionnaireResponseItem | null {
+  if (!qrItem) {
+    return null;
   }
 
-  return false;
+  // Remove empty answers
+  const updatedAnswers: QuestionnaireResponseItemAnswer[] =
+    qrItem.answer?.filter((answer) => !isEmptyAnswer(answer)) ?? [];
+
+  // Remove item if it has no answers and no children
+  if (updatedAnswers.length === 0 && childQrItems.length === 0) {
+    return null;
+  }
+
+  return {
+    linkId: qItem.linkId,
+    ...(qItem.text && { text: qItem.text }),
+    ...(childQrItems.length > 0 && { item: childQrItems }),
+    ...(updatedAnswers.length > 0 && { answer: updatedAnswers })
+  };
+}
+
+function isEmptyAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
+  return answer?.valueString === '' || answer?.item?.length === 0;
 }
 
 /**
@@ -137,6 +147,6 @@ function answerIsEmpty(qrItem: QuestionnaireResponseItem) {
  *
  * @author Sean Fong
  */
-function qrItemHasItemsOrAnswer(qrItem: QuestionnaireResponseItem): boolean {
+export function qrItemHasItemsOrAnswer(qrItem: QuestionnaireResponseItem): boolean {
   return (!!qrItem.item && qrItem.item.length > 0) || (!!qrItem.answer && qrItem.answer.length > 0);
 }

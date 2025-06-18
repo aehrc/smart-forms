@@ -43,6 +43,7 @@ function ItemFieldGrid(props: ItemFieldGridProps) {
 
   return (
     <Grid container columnSpacing={columnGapPixels + 'px'} rowGap={rowGapPixels + 'px'}>
+      {/* NOTE: Boolean checkboxes now have labels which uses <SrOnly/>, similar to tailwind's sr-only class  */}
       <Grid size={{ ...labelBreakpoints }}>
         <>{labelChildren}</>
       </Grid>

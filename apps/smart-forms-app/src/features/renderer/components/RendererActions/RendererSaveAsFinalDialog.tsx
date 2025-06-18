@@ -27,7 +27,6 @@ import {
   DialogContentText,
   DialogTitle
 } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import { saveAsFinalSuccessMessage, saveErrorMessage } from '../../../../utils/snackbar.ts';
@@ -79,14 +78,17 @@ function RendererSaveAsFinalDialog(props: RendererSaveAsFinalDialogProps) {
     if (!savedResponse) {
       enqueueSnackbar(saveErrorMessage, {
         variant: 'error',
-        action: <CloseSnackbar />
+        action: <CloseSnackbar variant="error" />
       });
       handleClose();
       return;
     }
 
     setUpdatableResponseAsSaved(savedResponse);
-    enqueueSnackbar(saveAsFinalSuccessMessage, { variant: 'success', action: <CloseSnackbar /> });
+    enqueueSnackbar(saveAsFinalSuccessMessage, {
+      variant: 'success',
+      action: <CloseSnackbar variant="success" />
+    });
 
     // Wait until renderer.hasChanges is set to false before navigating away
     setTimeout(() => {
@@ -106,12 +108,9 @@ function RendererSaveAsFinalDialog(props: RendererSaveAsFinalDialogProps) {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <LoadingButton
-          data-test="save-as-final-button"
-          loading={isSaving}
-          onClick={handleSaveAsFinal}>
+        <Button data-test="save-as-final-button" loading={isSaving} onClick={handleSaveAsFinal}>
           Save as final
-        </LoadingButton>
+        </Button>
       </DialogActions>
     </Dialog>
   );

@@ -20,6 +20,7 @@ import { getChoiceControlType } from './choice';
 import { ChoiceItemControl, OpenChoiceItemControl } from '../interfaces/choice.enum';
 import { getOpenChoiceControlType } from './openChoice';
 import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enableWhen.interface';
+import { structuredDataCapture } from 'fhir-sdc-helpers';
 
 interface isHiddenByEnableWhensParams {
   linkId: string;
@@ -85,6 +86,17 @@ export function isRepeatItemAndNotCheckbox(qItem: QuestionnaireItem): boolean {
     getOpenChoiceControlType(qItem) === OpenChoiceItemControl.Checkbox;
 
   return !!qItem['repeats'] && !isCheckbox;
+}
+
+/**
+ * Check if qItem is a checkbox item
+ */
+export function isCheckbox(qItem: QuestionnaireItem): boolean {
+  // In reality this should never happen
+  if (!qItem) {
+    return false;
+  }
+  return getChoiceControlType(qItem) === ChoiceItemControl.Checkbox;
 }
 
 export function getXHtmlStringFromQuestionnaire(questionnaire: Questionnaire): string | null {
@@ -220,4 +232,41 @@ export function getGroupCollapsible(qItem: QuestionnaireItem): CollapsibleType |
   }
 
   return null;
+}
+
+/**
+ * Plain function to determine if a QuestionnaireItem is hidden via item.hidden, enableWhens, enableWhenExpressions.
+ * When checking for repeating group enableWhen items, the parentRepeatGroupIndex should be provided.
+ * Recommended to use the `useHidden` hook instead for React components, where applicable.
+ *
+ * @author Sean Fong
+ */
+export function isItemHidden(
+  qItem: QuestionnaireItem,
+  enableWhenIsActivated: boolean,
+  enableWhenItems: EnableWhenItems,
+  enableWhenExpressions: EnableWhenExpressions,
+  enableWhenAsReadOnly: boolean | Set<QuestionnaireItem['type']>,
+  parentRepeatGroupIndex?: number
+): boolean {
+  if (structuredDataCapture.getHidden(qItem)) {
+    return true;
+  }
+
+  // If enableWhenAsReadOnly is true, then items hidden by enableWhen should be displayed, but set as readOnly
+  // If enableWhenAsReadOnly is a Set, all item types in the set should be displayed, but set as readOnly
+  if (
+    enableWhenAsReadOnly === true ||
+    (enableWhenAsReadOnly instanceof Set && enableWhenAsReadOnly.has(qItem.type))
+  ) {
+    return false;
+  }
+
+  return isHiddenByEnableWhen({
+    linkId: qItem.linkId,
+    enableWhenIsActivated,
+    enableWhenItems,
+    enableWhenExpressions,
+    parentRepeatGroupIndex
+  });
 }

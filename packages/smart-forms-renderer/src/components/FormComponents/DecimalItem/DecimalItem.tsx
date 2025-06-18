@@ -17,7 +17,6 @@
 
 import React, { useCallback, useState } from 'react';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import debounce from 'lodash.debounce';
@@ -33,15 +32,10 @@ import { getDecimalPrecision } from '../../../utils/itemControl';
 import useDecimalCalculatedExpression from '../../../hooks/useDecimalCalculatedExpression';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
-import Box from '@mui/material/Box';
 import ItemLabel from '../ItemParts/ItemLabel';
+import useShowFeedback from '../../../hooks/useShowFeedback';
 
-interface DecimalItemProps extends BaseItemProps {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
-}
-
-function DecimalItem(props: DecimalItemProps) {
+function DecimalItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
@@ -82,6 +76,9 @@ function DecimalItem(props: DecimalItemProps) {
   // Perform validation checks - there's no string-based input here
   const feedback = useValidationFeedback(qItem, feedbackFromParent, input);
 
+  // Provides a way to hide the feedback when the user is typing
+  const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
+
   // Process calculated expressions
   const { calcExpUpdated } = useDecimalCalculatedExpression({
     qItem: qItem,
@@ -112,7 +109,18 @@ function DecimalItem(props: DecimalItemProps) {
     const parsedNewInput: string = parseDecimalStringWithPrecision(newInput, precision);
 
     setInput(parsedNewInput);
+
+    // Only suppress feedback once (before first blur)
+    if (!hasBlurred) {
+      setShowFeedback(false);
+    }
+
     updateQrItemWithDebounce(parsedNewInput);
+  }
+
+  function handleBlur() {
+    setShowFeedback(true);
+    setHasBlurred(true); // From now on, feedback should stay visible
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -140,21 +148,20 @@ function DecimalItem(props: DecimalItemProps) {
 
   if (isRepeated) {
     return (
-      <Box data-test="q-item-decimal-box">
-        <DecimalField
-          linkId={qItem.linkId}
-          itemType={qItem.type}
-          input={input}
-          feedback={feedback}
-          displayPrompt={displayPrompt}
-          displayUnit={displayUnit}
-          entryFormat={entryFormat}
-          readOnly={readOnly}
-          calcExpUpdated={calcExpUpdated}
-          isTabled={isTabled}
-          onInputChange={handleInputChange}
-        />
-      </Box>
+      <DecimalField
+        linkId={qItem.linkId}
+        itemType={qItem.type}
+        input={input}
+        feedback={showFeedback ? feedback : ''}
+        displayPrompt={displayPrompt}
+        displayUnit={displayUnit}
+        entryFormat={entryFormat}
+        readOnly={readOnly}
+        calcExpUpdated={calcExpUpdated}
+        isTabled={isTabled}
+        onInputChange={handleInputChange}
+        onBlur={handleBlur}
+      />
     );
   }
 
@@ -172,7 +179,7 @@ function DecimalItem(props: DecimalItemProps) {
             linkId={qItem.linkId}
             itemType={qItem.type}
             input={input}
-            feedback={feedback}
+            feedback={showFeedback ? feedback : ''}
             displayPrompt={displayPrompt}
             displayUnit={displayUnit}
             entryFormat={entryFormat}
@@ -180,6 +187,7 @@ function DecimalItem(props: DecimalItemProps) {
             calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}
             onInputChange={handleInputChange}
+            onBlur={handleBlur}
           />
         }
         feedback={feedback}

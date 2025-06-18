@@ -22,6 +22,7 @@ import { StandardTextField } from '../Textfield.styles';
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import { useRendererStylingStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
+import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 
 interface StringFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -34,6 +35,7 @@ interface StringFieldProps extends PropsWithIsTabledRequiredAttribute {
   readOnly: boolean;
   calcExpUpdated: boolean;
   onInputChange: (value: string) => void;
+  onBlur: () => void;
 }
 
 function StringField(props: StringFieldProps) {
@@ -48,7 +50,8 @@ function StringField(props: StringFieldProps) {
     readOnly,
     isTabled,
     calcExpUpdated,
-    onInputChange
+    onInputChange,
+    onBlur
   } = props;
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
@@ -62,9 +65,9 @@ function StringField(props: StringFieldProps) {
       isTabled={isTabled}
       value={input}
       error={!!feedback}
+      onBlur={onBlur} // Trigger validation on blur
       onChange={(event) => onInputChange(event.target.value)}
-      label={displayPrompt}
-      placeholder={entryFormat}
+      placeholder={entryFormat || displayPrompt}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       size="small"
       slotProps={{
@@ -73,6 +76,12 @@ function StringField(props: StringFieldProps) {
           endAdornment: (
             <InputAdornment position="end">
               <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+              <ClearButtonAdornment
+                readOnly={readOnly}
+                onClear={() => {
+                  onInputChange('');
+                }}
+              />
               <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>
           )

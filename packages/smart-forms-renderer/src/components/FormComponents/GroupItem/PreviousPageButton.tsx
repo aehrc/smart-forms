@@ -30,7 +30,7 @@ function PreviousPageButton(props: PreviousPageButtonProps) {
   return (
     <SecondaryFab
       size="small"
-      aria-label="back"
+      aria-label="Previous page"
       disabled={isDisabled}
       onClick={onPreviousPageClick}>
       <Iconify icon="material-symbols:chevron-left-rounded" />

@@ -29,6 +29,7 @@ import ClearInputButton from '../ItemParts/ClearInputButton';
 import { useRendererStylingStore } from '../../../stores';
 import { StandardCheckbox } from '../../Checkbox.styles';
 import { ariaCheckedMap } from '../../../utils/checkbox';
+import { SrOnly } from '../SrOnly.styles';
 
 interface BooleanFieldProps {
   qItem: QuestionnaireItem;
@@ -47,7 +48,6 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const inputsFlexGrow = useRendererStylingStore.use.inputsFlexGrow();
   const reverseBooleanYesNo = useRendererStylingStore.use.reverseBooleanYesNo();
-  const hideClearButton = useRendererStylingStore.use.hideClearButton();
 
   const booleanAsCheckbox = isSpecificItemControl(qItem, 'check-box');
 
@@ -69,11 +69,10 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
         }}>
         {booleanAsCheckbox ? (
           <FormControlLabel
-            id={qItem.type + '-' + qItem.linkId}
             disabled={readOnly && readOnlyVisualStyle === 'disabled'}
-            aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
             control={
               <StandardCheckbox
+                id={qItem.type + '-' + qItem.linkId}
                 size="small"
                 checked={selection === 'true'}
                 readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
@@ -96,7 +95,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
                 }}
               />
             }
-            label=""
+            label={<SrOnly>{qItem.text}</SrOnly>}
           />
         ) : (
           <Box
@@ -157,13 +156,11 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
           </Box>
         )}
 
-        {hideClearButton ? null : (
-          <ClearInputButton
-            buttonShown={valueBoolean !== undefined}
-            readOnly={readOnly}
-            onClear={onClear}
-          />
-        )}
+        <ClearInputButton
+          buttonShown={valueBoolean !== undefined}
+          readOnly={readOnly}
+          onClear={onClear}
+        />
       </Box>
 
       {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}

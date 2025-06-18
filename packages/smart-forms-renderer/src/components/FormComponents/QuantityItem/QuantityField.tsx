@@ -5,6 +5,7 @@ import { StandardTextField } from '../Textfield.styles';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import { useRendererStylingStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
+import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 
 interface QuantityFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -17,6 +18,7 @@ interface QuantityFieldProps extends PropsWithIsTabledRequiredAttribute {
   readOnly: boolean;
   calcExpUpdated: boolean;
   onInputChange: (value: string) => void;
+  onBlur: () => void;
 }
 
 function QuantityField(props: QuantityFieldProps) {
@@ -31,11 +33,21 @@ function QuantityField(props: QuantityFieldProps) {
     readOnly,
     calcExpUpdated,
     isTabled,
-    onInputChange
+    onInputChange,
+    onBlur
   } = props;
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+
+  let placeholderText = '0.0';
+  if (displayPrompt) {
+    placeholderText = displayPrompt;
+  }
+
+  if (entryFormat) {
+    placeholderText = entryFormat;
+  }
 
   return (
     <StandardTextField
@@ -43,9 +55,9 @@ function QuantityField(props: QuantityFieldProps) {
       value={input}
       error={!!feedback}
       onChange={(event) => onInputChange(event.target.value)}
+      onBlur={onBlur}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
-      label={displayPrompt}
-      placeholder={entryFormat === '' ? '0.0' : entryFormat}
+      placeholder={placeholderText}
       fullWidth
       textFieldWidth={textFieldWidth}
       isTabled={isTabled}
@@ -57,6 +69,12 @@ function QuantityField(props: QuantityFieldProps) {
           endAdornment: (
             <InputAdornment position={'end'}>
               <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+              <ClearButtonAdornment
+                readOnly={readOnly}
+                onClear={() => {
+                  onInputChange('');
+                }}
+              />
               <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>
           )

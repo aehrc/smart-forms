@@ -165,6 +165,8 @@ function GroupItemView(props: GroupItemViewProps) {
         cardElevation={groupCardElevation}
         isRepeated={isRepeated}
         data-test="q-item-group-box"
+        role="region"
+        aria-label={qItem.text ?? 'Unnamed group'}
         style={combinedStyles || undefined}>
         {isRepeated ? null : (
           <>
@@ -209,7 +211,9 @@ function GroupItemView(props: GroupItemViewProps) {
     <QGroupContainerBox
       cardElevation={groupCardElevation}
       isRepeated={isRepeated}
-      data-test="q-item-group-box">
+      data-test="q-item-group-box"
+      role="region"
+      aria-label={qItem.text ?? 'Unnamed group'}>
       <GroupCard
         elevation={groupCardElevation}
         isRepeated={isRepeated}

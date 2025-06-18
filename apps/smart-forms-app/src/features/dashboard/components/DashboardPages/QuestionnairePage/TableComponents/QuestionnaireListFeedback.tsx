@@ -47,7 +47,7 @@ function QuestionnaireListFeedback(props: Props) {
     enqueueSnackbar('An error occurred while fetching questionnaires', {
       variant: 'error',
       preventDuplicate: true,
-      action: <CloseSnackbar />
+      action: <CloseSnackbar variant="error" />
     });
   }
 

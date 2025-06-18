@@ -37,7 +37,7 @@ function NotFound() {
         <Logo />
         <Box flexGrow={1} />
         <Box display="flex" alignItems="center" columnGap={1}>
-          <Typography sx={{ color: 'text.secondary' }}>By</Typography>
+          By
           <Box component="img" maxHeight={35} maxWidth={35} src={csiroLogo} />
         </Box>
       </Box>

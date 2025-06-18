@@ -383,7 +383,7 @@ function validateSingleItem(
   }
 
   // Validate item.required first before every other validation check
-  if (qItem.required && !qrItem.answer) {
+  if (qItem.required && (!qrItem.answer || isAnswerEffectivelyEmpty(qrItem.answer))) {
     invalidItems[qItem.linkId] = createValidationOperationOutcome(
       ValidationResult.required,
       qItem,
@@ -438,6 +438,25 @@ function validateSingleItem(
   }
 
   return invalidItems;
+}
+
+/**
+ * Check if an answer array is effectively empty (no answers or all string answers are empty/whitespace-only)
+ */
+function isAnswerEffectivelyEmpty(answers: QuestionnaireResponseItemAnswer[]): boolean {
+  if (!answers || answers.length === 0) {
+    return true;
+  }
+
+  return answers.every((answer) => {
+    // For string answers, check if they're empty or contain only whitespace
+    if (answer.valueString !== undefined) {
+      return answer.valueString.trim() === '';
+    }
+
+    // For other answer types, they're not empty if they exist
+    return false;
+  });
 }
 
 function getInputInString(answer?: QuestionnaireResponseItemAnswer) {

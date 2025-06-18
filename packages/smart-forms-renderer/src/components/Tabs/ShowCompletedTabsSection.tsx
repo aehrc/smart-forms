@@ -30,15 +30,18 @@ interface ShowCompletedTabsSectionProps {
 function ShowCompletedTabsSection(props: ShowCompletedTabsSectionProps) {
   const { completedTabsExpanded, setCompletedTabsExpanded } = props;
 
+  const buttonLabel = `Completed tabs ${completedTabsExpanded ? 'shown' : 'hidden'}`;
+
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" mx={2} columnGap={0.5}>
+    <Box display="flex" justifyContent="center" alignItems="center" mx={1.25} columnGap={0.25}>
       <Typography
         variant="overline"
-        fontSize={8.5}
+        fontSize={10}
         color={completedTabsExpanded ? 'text.secondary' : 'text.disabled'}>
-        Completed tabs {completedTabsExpanded ? 'shown' : 'hidden'}
+        {buttonLabel}
       </Typography>
       <IconButton
+        aria-label={buttonLabel}
         size="small"
         onClick={() => {
           setCompletedTabsExpanded(!completedTabsExpanded);

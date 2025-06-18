@@ -16,7 +16,7 @@
  */
 
 import { useState } from 'react';
-import type { Blocker } from 'react-router-dom';
+import type { unstable_Blocker as Blocker } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import {
   Button,
@@ -27,7 +27,6 @@ import {
   DialogTitle
 } from '@mui/material';
 import { saveQuestionnaireResponse } from '../../../../api/saveQr.ts';
-import { LoadingButton } from '@mui/lab';
 import {
   removeEmptyAnswersFromResponse,
   useQuestionnaireResponseStore,
@@ -110,9 +109,9 @@ function BlockerUnsavedFormDialog(props: Props) {
         <Button onClick={handleCancel}>Cancel</Button>
         <Button onClick={handleProceed}>Proceed anyway</Button>
         {isLaunched ? (
-          <LoadingButton loading={isSaving} onClick={handleSave}>
+          <Button loading={isSaving} onClick={handleSave}>
             Save and proceed
-          </LoadingButton>
+          </Button>
         ) : null}
       </DialogActions>
     </Dialog>

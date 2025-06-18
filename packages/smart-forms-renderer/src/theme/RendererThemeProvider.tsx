@@ -23,8 +23,8 @@ import {
   ThemeProvider as MUIThemeProvider
 } from '@mui/material/styles';
 import CustomGlobalStyles from './customGlobalStyles';
-import componentsOverride from './overrides/Overrides';
-import { themeOptions } from './themeOptions';
+import { rendererThemeComponentOverrides } from './overrides/rendererThemeComponentOverrides';
+import { rendererThemeOptions } from './rendererThemeOptions';
 
 /**
  * Default theme used by the renderer using Material UI. You can customise your own theme by defining a new ThemeProvider.
@@ -33,8 +33,8 @@ import { themeOptions } from './themeOptions';
  * @author Sean Fong
  */
 export function RendererThemeProvider({ children }: { children: ReactNode }) {
-  const theme = createTheme(themeOptions);
-  theme.components = componentsOverride(theme);
+  const theme = createTheme(rendererThemeOptions);
+  theme.components = rendererThemeComponentOverrides(theme);
 
   return (
     <StyledEngineProvider injectFirst>

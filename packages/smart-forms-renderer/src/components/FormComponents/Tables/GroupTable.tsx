@@ -35,6 +35,8 @@ import { flushSync } from 'react-dom';
 import { generateNewRepeatId } from '../../../utils/repeatId';
 import useInitialiseGroupTableRows from '../../../hooks/useInitialiseGroupTableRows';
 import type { ItemPath } from '../../../interfaces/itemPath.interface';
+import { isItemHidden } from '../../../utils/qItem';
+import { useQuestionnaireStore, useRendererStylingStore } from '../../../stores';
 
 interface GroupTableProps
   extends PropsWithQrRepeatGroupChangeHandler,
@@ -61,11 +63,15 @@ function GroupTable(props: GroupTableProps) {
     itemPath,
     groupCardElevation,
     isRepeated,
-    showMinimalView,
     parentIsReadOnly,
     parentStyles,
     onQrRepeatGroupChange
   } = props;
+
+  const enableWhenIsActivated = useQuestionnaireStore.use.enableWhenIsActivated();
+  const enableWhenItems = useQuestionnaireStore.use.enableWhenItems();
+  const enableWhenExpressions = useQuestionnaireStore.use.enableWhenExpressions();
+  const enableWhenAsReadOnly = useRendererStylingStore.use.enableWhenAsReadOnly();
 
   const initialGroupTableRows = useInitialiseGroupTableRows(qItem.linkId, qrItems);
   const { tableRows, selectedIds, setTableRows, setSelectedIds } =
@@ -75,9 +81,21 @@ function GroupTable(props: GroupTableProps) {
 
   // Generate item labels as table headers
   const qItems = qItem.item;
-  const itemLabels: string[] = useMemo(
-    () => qItems?.map((item) => item.text ?? '') ?? [],
-    [qItems]
+  const visibleItemLabels: string[] = useMemo(
+    () =>
+      qItems
+        ?.filter(
+          (item) =>
+            !isItemHidden(
+              item,
+              enableWhenIsActivated,
+              enableWhenItems,
+              enableWhenExpressions,
+              enableWhenAsReadOnly
+            )
+        )
+        .map((item) => item.text ?? '') ?? [],
+    [enableWhenAsReadOnly, enableWhenExpressions, enableWhenIsActivated, enableWhenItems, qItems]
   );
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
@@ -200,8 +218,7 @@ function GroupTable(props: GroupTableProps) {
       readOnly={readOnly}
       tableRows={tableRows}
       selectedIds={selectedIds}
-      itemLabels={itemLabels}
-      showMinimalView={showMinimalView}
+      visibleItemLabels={visibleItemLabels}
       parentIsReadOnly={parentIsReadOnly}
       parentStyles={parentStyles}
       onAddRow={handleAddRow}

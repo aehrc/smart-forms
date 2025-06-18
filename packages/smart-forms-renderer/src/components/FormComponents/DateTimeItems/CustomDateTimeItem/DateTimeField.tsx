@@ -25,6 +25,7 @@ import Stack from '@mui/material/Stack';
 interface DateTimeFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
   itemType: string;
+  itemText: string | undefined;
   displayDate: string;
   dateInput: string;
   timeInput: string;
@@ -37,15 +38,19 @@ interface DateTimeFieldProps extends PropsWithIsTabledRequiredAttribute {
   entryFormat: string;
   readOnly: boolean;
   onDateInputChange: (newDateInput: string) => void;
+  onDateBlur: () => void;
   onSelectDate: (selectedDate: string) => void;
   setDateFocused: Dispatch<SetStateAction<boolean>>;
   onTimeInputChange: (newTimeInput: string, newPeriodInput: string) => void;
+  onTimeBlur: () => void;
+  showFeedback: boolean;
 }
 
 function DateTimeField(props: DateTimeFieldProps) {
   const {
     linkId,
     itemType,
+    itemText,
     displayDate,
     dateInput,
     timeInput,
@@ -59,9 +64,12 @@ function DateTimeField(props: DateTimeFieldProps) {
     readOnly,
     isTabled,
     onDateInputChange,
+    onDateBlur,
     onSelectDate,
     setDateFocused,
-    onTimeInputChange
+    onTimeInputChange,
+    onTimeBlur,
+    showFeedback
   } = props;
 
   return (
@@ -69,9 +77,10 @@ function DateTimeField(props: DateTimeFieldProps) {
       <CustomDateField
         linkId={linkId}
         itemType={itemType}
+        itemText={itemText}
         valueDate={displayDate}
         input={dateInput}
-        feedback={dateFeedback ?? ''}
+        feedback={showFeedback ? (dateFeedback ?? '') : ''}
         isFocused={dateFocused}
         displayPrompt={displayPrompt}
         entryFormat={entryFormat}
@@ -80,6 +89,7 @@ function DateTimeField(props: DateTimeFieldProps) {
         isTabled={isTabled}
         setFocused={setDateFocused}
         onInputChange={onDateInputChange}
+        onDateBlur={onDateBlur}
         onSelectDate={onSelectDate}
       />
       <CustomTimeField
@@ -88,13 +98,14 @@ function DateTimeField(props: DateTimeFieldProps) {
         timeInput={timeInput}
         periodInput={periodInput}
         is24HourNotation={is24HourNotation}
-        feedback={timeFeedback ?? ''}
+        feedback={showFeedback ? (timeFeedback ?? '') : ''}
         displayPrompt={displayPrompt}
         readOnly={readOnly}
         isPartOfDateTime={true}
         isTabled={isTabled}
         onTimeInputChange={(newTimeInput) => onTimeInputChange(newTimeInput, periodInput)}
         onPeriodChange={(newPeriodInput) => onTimeInputChange(timeInput, newPeriodInput)}
+        onTimeBlur={onTimeBlur}
       />
     </Stack>
   );

@@ -33,6 +33,7 @@ interface PlaygroundRendererProps {
   terminologyServerUrl: string;
   isExtracting: boolean;
   onObservationExtract: () => void;
+  onTemplateExtract: (modifiedOnly: boolean) => void;
   onStructureMapExtract: () => void;
 }
 
@@ -44,6 +45,7 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
     terminologyServerUrl,
     isExtracting,
     onObservationExtract,
+    onTemplateExtract,
     onStructureMapExtract
   } = props;
 
@@ -85,8 +87,11 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
         sourceQuestionnaire,
         populatedResponse,
         undefined,
-        terminologyServerUrl
+        terminologyServerUrl,
+        populatedContext
       );
+
+      // TODO eventually we want to deprecate this in 1.0.0, populatedContext is now passed to buildFormWrapper and is automatically added to the FhirPathContext
       if (populatedContext) {
         setPopulatedContext(populatedContext, true);
       }
@@ -97,7 +102,19 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
 
   return (
     <>
-      <Box display="flex" alignItems="center" columnGap={1.5} mx={1}>
+      <Box
+        display="flex"
+        alignItems="center"
+        columnGap={1}
+        px={1}
+        sx={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 10,
+          backgroundColor: 'white',
+          borderBottom: '1px solid',
+          borderColor: 'divider'
+        }}>
         <PrePopButtonForPlayground
           prePopEnabled={prePopEnabled}
           isPopulating={isPopulating}
@@ -107,9 +124,9 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
           isExtracting={isExtracting}
           onObservationExtract={onObservationExtract}
           onStructureMapExtract={onStructureMapExtract}
+          onTemplateExtract={onTemplateExtract}
         />
         <Box flexGrow={1} />
-
         {patientName ? (
           <Typography variant="subtitle2" color="text.secondary">
             Patient: {patientName}

@@ -27,6 +27,7 @@ import { useRendererStylingStore } from '../../../../stores';
 interface CustomDateFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
   itemType: string;
+  itemText: string | undefined;
   valueDate: string;
   input: string;
   feedback: string;
@@ -37,6 +38,7 @@ interface CustomDateFieldProps extends PropsWithIsTabledRequiredAttribute {
   isPartOfDateTime: boolean;
   setFocused: Dispatch<SetStateAction<boolean>>;
   onInputChange: (newInput: string) => void;
+  onDateBlur: () => void;
   onSelectDate: (newDateValue: string) => void;
 }
 
@@ -44,6 +46,7 @@ function CustomDateField(props: CustomDateFieldProps) {
   const {
     linkId,
     itemType,
+    itemText,
     valueDate,
     input,
     feedback,
@@ -55,6 +58,7 @@ function CustomDateField(props: CustomDateFieldProps) {
     isTabled,
     setFocused,
     onInputChange,
+    onDateBlur,
     onSelectDate
   } = props;
 
@@ -66,10 +70,19 @@ function CustomDateField(props: CustomDateFieldProps) {
   // If this reusable date field is part of a DateTime component, the id should be appended with '-date'
   const id = isPartOfDateTime ? itemType + '-' + linkId + '-date' : itemType + '-' + linkId;
 
+  let placeholderText = 'DD/MM/YYYY';
+  if (displayPrompt !== '') {
+    placeholderText = displayPrompt;
+  }
+
+  if (entryFormat !== '') {
+    placeholderText = entryFormat;
+  }
+
   return (
-    <Tooltip title={isTabled ? feedback : ''}>
+    <Tooltip title={null}>
       <StandardTextField
-        id={id}
+        {...(!isTabled && { id: id })}
         ref={anchorRef}
         fullWidth
         textFieldWidth={textFieldWidth}
@@ -77,13 +90,15 @@ function CustomDateField(props: CustomDateFieldProps) {
         value={input}
         error={!!feedback}
         onChange={(e: ChangeEvent<HTMLInputElement>) => onInputChange(e.target.value)}
-        label={displayPrompt}
-        placeholder={entryFormat !== '' ? entryFormat : 'DD/MM/YYYY'}
+        placeholder={placeholderText}
         disabled={readOnly && readOnlyVisualStyle === 'disabled'}
         size="small"
         focused={isFocused}
         onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
+        onBlur={() => {
+          onDateBlur();
+          setFocused(false);
+        }}
         slotProps={{
           input: {
             readOnly: readOnly && readOnlyVisualStyle === 'readonly',
@@ -99,7 +114,10 @@ function CustomDateField(props: CustomDateFieldProps) {
                   onFocus={(focus) => setFocused(focus)}
                 />
               </>
-            )
+            ),
+            inputProps: {
+              ...(isTabled ? {} : { 'aria-label': itemText ?? `Unnamed ${itemType} item` })
+            }
           }
         }}
         helperText={isTabled ? '' : feedback}

@@ -22,6 +22,7 @@ import { StandardTextField } from '../Textfield.styles';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import { useRendererStylingStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
+import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 
 interface DecimalFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -34,6 +35,7 @@ interface DecimalFieldProps extends PropsWithIsTabledRequiredAttribute {
   readOnly: boolean;
   calcExpUpdated: boolean;
   onInputChange: (value: string) => void;
+  onBlur: () => void;
 }
 
 function DecimalField(props: DecimalFieldProps) {
@@ -48,38 +50,57 @@ function DecimalField(props: DecimalFieldProps) {
     readOnly,
     calcExpUpdated,
     isTabled,
-    onInputChange
+    onInputChange,
+    onBlur
   } = props;
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+
+  let placeholderText = '0.0';
+  if (displayPrompt) {
+    placeholderText = displayPrompt;
+  }
+
+  if (entryFormat) {
+    placeholderText = entryFormat;
+  }
 
   return (
     <StandardTextField
       id={itemType + '-' + linkId}
       value={input}
       error={!!feedback}
+      helperText={feedback}
       onChange={(event) => onInputChange(event.target.value)}
+      onBlur={onBlur}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
-      label={displayPrompt}
-      placeholder={entryFormat === '' ? '0.0' : entryFormat}
-      textFieldWidth={textFieldWidth}
+      placeholder={placeholderText}
       fullWidth
+      textFieldWidth={textFieldWidth}
       isTabled={isTabled}
       size="small"
       slotProps={{
-        htmlInput: { inputMode: 'numeric', pattern: '[0-9]*' },
+        htmlInput: {
+          inputMode: 'numeric',
+          pattern: '[0-9]*'
+        },
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
             <InputAdornment position="end">
               <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+              <ClearButtonAdornment
+                readOnly={readOnly}
+                onClear={() => {
+                  onInputChange('');
+                }}
+              />
               <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>
           )
         }
       }}
-      helperText={feedback}
       data-test="q-item-decimal-field"
     />
   );

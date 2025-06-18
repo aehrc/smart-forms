@@ -26,6 +26,7 @@ import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithItemPathAttribute,
+  PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithRenderingExtensionsAttribute
@@ -44,13 +45,14 @@ interface OpenChoiceRadioAnswerOptionItemProps
     PropsWithIsRepeatedAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithRenderingExtensionsAttribute,
-    PropsWithFeedbackFromParentAttribute {
+    PropsWithFeedbackFromParentAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
 
 function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemProps) {
-  const { qItem, qrItem, parentIsReadOnly, feedbackFromParent, onQrItemChange } = props;
+  const { qItem, qrItem, parentIsReadOnly, feedbackFromParent, isTabled, onQrItemChange } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
@@ -180,6 +182,7 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
             readOnly={readOnly}
             expressionUpdated={answerOptionsToggleExpUpdated}
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+            isTabled={isTabled}
             onValueChange={handleValueChange}
             onClear={handleClear}
           />

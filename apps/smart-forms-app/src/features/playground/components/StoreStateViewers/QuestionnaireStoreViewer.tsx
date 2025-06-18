@@ -33,24 +33,39 @@ const questionnaireStoreStatePropertyNames: string[] = [
   'readOnly'
 ];
 
-function QuestionnaireStoreViewer() {
+interface QuestionnaireStoreViewerProps {
+  statePropNameFilter: string;
+}
+
+function QuestionnaireStoreViewer(props: QuestionnaireStoreViewerProps) {
+  const { statePropNameFilter } = props;
+
   const [selectedProperty, setSelectedProperty] = useState('sourceQuestionnaire');
-  const [showJsonTree, setShowJsonTree] = useState(false);
+  const [viewMode, setViewMode] = useState<'text' | 'jsonTree' | 'table'>('text');
 
   const propertyObject = useShowQuestionnaireStoreProperty(selectedProperty);
+
+  function handleViewModeChange(newViewMethod: 'text' | 'jsonTree' | 'table' | null) {
+    if (newViewMethod === null) {
+      return;
+    }
+
+    setViewMode(newViewMethod);
+  }
 
   return (
     <>
       <GenericStatePropertyPicker
         statePropertyNames={questionnaireStoreStatePropertyNames}
+        statePropNameFilter={statePropNameFilter}
         selectedProperty={selectedProperty}
         onSelectProperty={setSelectedProperty}
       />
       <GenericViewer
         propertyName={selectedProperty}
         propertyObject={propertyObject}
-        showJsonTree={showJsonTree}
-        onToggleShowJsonTree={setShowJsonTree}
+        viewMode={viewMode}
+        onViewModeChange={handleViewModeChange}
       />
     </>
   );

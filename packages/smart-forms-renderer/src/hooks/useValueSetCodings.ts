@@ -28,7 +28,7 @@ import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import { useQuestionnaireStore, useSmartConfigStore, useTerminologyServerStore } from '../stores';
 import { addDisplayToCodingArray } from '../utils/questionnaireStoreUtils/addDisplayToCodings';
-import useDynamicValueSetEffect from './useDynamicValueSetEffect';
+import useDynamicValueSetEffect, { getUpdatableValueSetUrl } from './useDynamicValueSetEffect';
 
 export interface TerminologyError {
   error: Error | null;
@@ -47,6 +47,7 @@ function useValueSetCodings(qItem: QuestionnaireItem): {
   const launchContexts = useQuestionnaireStore.use.launchContexts();
   const processedValueSets = useQuestionnaireStore.use.processedValueSets();
   const cachedValueSetCodings = useQuestionnaireStore.use.cachedValueSetCodings();
+  const calculatedExpressions = useQuestionnaireStore.use.calculatedExpressions();
   const addCodingToCache = useQuestionnaireStore.use.addCodingToCache();
   const { xFhirQueryVariables } = useQuestionnaireStore.use.variables();
   const itemPreferredTerminologyServers =
@@ -160,7 +161,14 @@ function useValueSetCodings(qItem: QuestionnaireItem): {
   // Acts as a fallback - get options from answerValueSet in real-time if it's not pre-processed or cached which is very unlikely
   useEffect(() => {
     const valueSetUrl = qItem.answerValueSet;
+    // Only proceed if we have a valueSetUrl and no codings are already set
     if (!valueSetUrl || codingsCount > 0) {
+      return;
+    }
+
+    // Only proceed if updatableValueSetUrl is equal to qItem.answerValueSet
+    // If we don't have this check, dynamicValueSetEffect that returns 0 codings are going to fallback-expand against their original qItem.answerValueSet, which is not what we want
+    if (getUpdatableValueSetUrl(qItem, calculatedExpressions, processedValueSets) !== valueSetUrl) {
       return;
     }
 
@@ -184,7 +192,14 @@ function useValueSetCodings(qItem: QuestionnaireItem): {
           setServerError(error);
         });
     }
-  }, [addCodingToCache, codingsCount, qItem, terminologyServerUrl]);
+  }, [
+    addCodingToCache,
+    calculatedExpressions,
+    codingsCount,
+    processedValueSets,
+    qItem,
+    terminologyServerUrl
+  ]);
 
   return {
     codings,

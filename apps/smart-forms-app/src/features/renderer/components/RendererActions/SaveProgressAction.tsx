@@ -92,7 +92,7 @@ function SaveProgressAction(props: SaveProgressSpeedDialActionProps) {
     if (savedResponse === null || savedResponse === undefined) {
       enqueueSnackbar(saveErrorMessage, {
         variant: 'error',
-        action: <CloseSnackbar />
+        action: <CloseSnackbar variant="error" />
       });
       return;
     }

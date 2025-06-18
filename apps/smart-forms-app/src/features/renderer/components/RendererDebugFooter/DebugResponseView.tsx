@@ -19,13 +19,13 @@ import ReactJson from '@microlink/react-json-view';
 
 interface DebugResponseViewProps {
   displayObject: any;
-  showJsonTree: boolean;
+  viewMode: 'text' | 'jsonTree' | 'table';
 }
 
 function DebugResponseView(props: DebugResponseViewProps) {
-  const { displayObject, showJsonTree } = props;
+  const { displayObject, viewMode } = props;
 
-  if (showJsonTree) {
+  if (viewMode === 'jsonTree') {
     return (
       <ReactJson
         src={displayObject as object}
@@ -40,18 +40,22 @@ function DebugResponseView(props: DebugResponseViewProps) {
     );
   }
 
-  return (
-    <pre
-      data-test="debug-viewer"
-      style={{
-        wordWrap: 'break-word',
-        whiteSpace: 'pre-wrap',
-        fontSize: 9.5,
-        backgroundColor: 'white'
-      }}>
-      {JSON.stringify(displayObject, null, 2)}
-    </pre>
-  );
+  if (viewMode === 'text') {
+    return (
+      <pre
+        data-test="debug-viewer"
+        style={{
+          wordWrap: 'break-word',
+          whiteSpace: 'pre-wrap',
+          fontSize: 9.5,
+          backgroundColor: 'white'
+        }}>
+        {JSON.stringify(displayObject, null, 2)}
+      </pre>
+    );
+  }
+
+  return null;
 }
 
 export default DebugResponseView;

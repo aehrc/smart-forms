@@ -32,6 +32,7 @@ interface ChoiceRadioAnswerValueSetFieldsProps {
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   terminologyError: TerminologyError;
+  isTabled: boolean;
   onCheckedChange: (newValue: string) => void;
   onClear: () => void;
 }
@@ -46,6 +47,7 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
     expressionUpdated,
     answerOptionsToggleExpressionsMap,
     terminologyError,
+    isTabled,
     onCheckedChange,
     onClear
   } = props;
@@ -60,6 +62,7 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
         readOnly={readOnly}
         expressionUpdated={expressionUpdated}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+        isTabled={isTabled}
         onCheckedChange={onCheckedChange}
         onClear={onClear}
       />
@@ -75,6 +78,14 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
           {terminologyError.answerValueSet}
         </Typography>
       </StyledAlert>
+    );
+  }
+
+  if (options.length === 0) {
+    return (
+      <Typography sx={{ py: 0.5 }} fontWeight={600} fontSize={13}>
+        No options available.
+      </Typography>
     );
   }
 

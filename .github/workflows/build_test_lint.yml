@@ -1,12 +1,12 @@
 name: Smart Forms Build-Test-Lint Workflow
 
-on:
-  push:
+on: [workflow_dispatch, push]
 
 jobs:
   build-smart-forms-app:
     name: Build Smart Forms App
     runs-on: ubuntu-latest
+    # Run this regardless of "if: github.actor != 'dependabot[bot]'" condition on other jobs to see if dependabot PRs breaks the build
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 20.x
@@ -21,6 +21,7 @@ jobs:
         run: |
           npm run build -w packages/sdc-assemble
           npm run build -w packages/sdc-populate
+          npm run build -w packages/sdc-template-extract
           npm run build -w packages/smart-forms-renderer
 
       - name: Build application
@@ -29,6 +30,8 @@ jobs:
   build-demo-app:
     name: Build Demo App
     runs-on: ubuntu-latest
+    # Conditional logic to skip if workflow is triggered by Dependabot
+    if: github.actor != 'dependabot[bot]'
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 20.x
@@ -41,9 +44,11 @@ jobs:
       - name: Build application
         run: cd apps/demo-renderer-app && npm run build
 
-  jest-test:
-    name: Jest Tests (only runs on node 18)
+  jest-renderer-tests:
+    name: Jest Tests - Renderer
     runs-on: ubuntu-latest
+    # Conditional logic to skip if workflow is triggered by Dependabot
+    if: github.actor != 'dependabot[bot]'
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 20.x
@@ -57,10 +62,30 @@ jobs:
         run: npm run test -w packages/smart-forms-renderer
       - uses: codecov/codecov-action@v4
 
+  jest-extract-tests:
+    name: Jest Tests - Template-Based Extract
+    runs-on: ubuntu-latest
+    # Conditional logic to skip if workflow is triggered by Dependabot
+    if: github.actor != 'dependabot[bot]'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Run jest tests
+        run: npm run test -w packages/sdc-template-extract
+      - uses: codecov/codecov-action@v4
+
   playwright-test:
     name: Playwright Tests
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    # Conditional logic to skip if workflow is triggered by Dependabot
+    if: github.actor != 'dependabot[bot]'
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 20.x
@@ -76,6 +101,7 @@ jobs:
         run: |
           npm run build -w packages/sdc-assemble
           npm run build -w packages/sdc-populate
+          npm run build -w packages/sdc-template-extract
           npm run build -w packages/smart-forms-renderer
 
       - name: Install Playwright Browsers
@@ -87,15 +113,15 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          build: npm run build -w apps/smart-forms-app
-          start: npm run preview -w apps/smart-forms-app
           name: playwright-report
-          path: playwright-report/
+          path: apps/smart-forms-app/playwright-report/
           retention-days: 30
 
   lint:
     name: Lint
     runs-on: ubuntu-latest
+    # Conditional logic to skip if workflow is triggered by Dependabot
+    if: github.actor != 'dependabot[bot]'
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 20.x

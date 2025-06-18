@@ -20,10 +20,8 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
 import type {
-  PropsWithIsRepeatedAttribute,
   PropsWithItemPathAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithShowMinimalViewAttribute
+  PropsWithParentIsReadOnlyAttribute
 } from '../../../interfaces/renderProps.interface';
 import GroupTableRow from './GroupTableRow';
 import type { DropResult } from 'react-beautiful-dnd';
@@ -35,14 +33,14 @@ import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
 interface GroupTableBodyProps
   extends PropsWithItemPathAttribute,
-    PropsWithIsRepeatedAttribute,
-    PropsWithParentIsReadOnlyAttribute,
-    PropsWithShowMinimalViewAttribute {
+    PropsWithParentIsReadOnlyAttribute {
   tableQItem: QuestionnaireItem;
   readOnly: boolean;
   tableRows: GroupTableRowModel[];
   selectedIds: string[];
   qItemsIndexMap: Record<string, number>;
+  visibleItemLabels: string[];
+  showExtraGTableInteractions: boolean;
   onRowChange: (
     newQrRow: QuestionnaireResponseItem,
     index: number,
@@ -60,9 +58,9 @@ function GroupTableBody(props: GroupTableBodyProps) {
     tableRows,
     selectedIds,
     qItemsIndexMap,
+    visibleItemLabels,
+    showExtraGTableInteractions,
     itemPath,
-    isRepeated,
-    showMinimalView,
     parentIsReadOnly,
     onRowChange,
     onRemoveRow,
@@ -105,14 +103,14 @@ function GroupTableBody(props: GroupTableBodyProps) {
                   answeredQrItem={answeredQrItem}
                   nullableQrItem={nullableQrItem}
                   readOnly={readOnly}
-                  isRepeated={isRepeated}
                   hoverDisabled={snapshot.isDraggingOver}
                   tableRows={tableRows}
                   itemIsSelected={itemIsSelected}
                   selectedIds={selectedIds}
                   qItemsIndexMap={qItemsIndexMap}
+                  visibleItemLabels={visibleItemLabels}
+                  showExtraGTableInteractions={showExtraGTableInteractions}
                   itemPath={appendRepeatIndexToLastSegment(itemPath, index)}
-                  showMinimalView={showMinimalView}
                   parentIsReadOnly={parentIsReadOnly}
                   onRowChange={onRowChange}
                   onRemoveRow={onRemoveRow}

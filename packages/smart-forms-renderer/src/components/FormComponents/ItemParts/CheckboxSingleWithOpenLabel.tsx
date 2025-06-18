@@ -45,7 +45,6 @@ function CheckboxSingleWithOpenLabel(props: Props) {
     <Box data-test="q-item-checkbox-open-label-box">
       <FormControlLabel
         disabled={readOnly && readOnlyVisualStyle === 'disabled'}
-        aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
         control={
           <StandardCheckbox
             size="small"
@@ -55,6 +54,11 @@ function CheckboxSingleWithOpenLabel(props: Props) {
             role="checkbox"
             aria-checked={isChecked}
             onChange={handleCheckedChange}
+            slotProps={{
+              input: {
+                'aria-label': label ?? 'Unnamed checkbox'
+              }
+            }}
           />
         }
         label={label + ':'}
@@ -63,6 +67,7 @@ function CheckboxSingleWithOpenLabel(props: Props) {
         value={value}
         readOnly={readOnly}
         openLabelOptionSelected={isChecked}
+        label={label}
         onInputChange={onInputChange}
       />
     </Box>

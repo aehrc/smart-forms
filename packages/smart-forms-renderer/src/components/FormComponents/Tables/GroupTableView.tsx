@@ -24,15 +24,13 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { HeaderTableCell } from './Table.styles';
 import TableCell from '@mui/material/TableCell';
-import TableBody from '@mui/material/TableBody';
 import Divider from '@mui/material/Divider';
 import AddRowButton from './AddRowButton';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithItemPathAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithShowMinimalViewAttribute
+  PropsWithParentIsReadOnlyAttribute
 } from '../../../interfaces/renderProps.interface';
 import type { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
 import GroupTableBody from './GroupTableBody';
@@ -45,11 +43,11 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import GroupHeading from '../GroupItem/GroupHeading';
 import { StandardCheckbox } from '../../Checkbox.styles';
 import type { ItemPath } from '../../../interfaces/itemPath.interface';
+import { Box } from '@mui/material';
 
 interface GroupTableViewProps
   extends PropsWithIsRepeatedAttribute,
     PropsWithItemPathAttribute,
-    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qItemsIndexMap: Record<string, number>;
@@ -57,7 +55,7 @@ interface GroupTableViewProps
   readOnly: boolean;
   tableRows: GroupTableRowModel[];
   selectedIds: string[];
-  itemLabels: string[];
+  visibleItemLabels: string[];
   onAddRow: () => void;
   onRowChange: (
     newQrRow: QuestionnaireResponseItem,
@@ -80,9 +78,8 @@ function GroupTableView(props: GroupTableViewProps) {
     readOnly,
     tableRows,
     selectedIds,
-    itemLabels,
+    visibleItemLabels,
     itemPath,
-    showMinimalView,
     parentIsReadOnly,
     parentStyles,
     onAddRow,
@@ -103,66 +100,11 @@ function GroupTableView(props: GroupTableViewProps) {
   const checkedValue = tableRows.length > 0 && selectedIds.length === tableRows.length;
   const ariaCheckedValue = indeterminateValue ? 'mixed' : checkedValue ? 'true' : 'false';
 
+  const showExtraGTableInteractions = isRepeated && !readOnly;
+
   // If the table is collapsible, wrap it in an accordion
   if (groupCollapsibleValue) {
     const isDefaultOpen = groupCollapsibleValue === 'default-open';
-
-    // Minimal + Accordion
-    if (showMinimalView) {
-      return (
-        <GroupAccordion
-          disableGutters
-          defaultExpanded={isDefaultOpen}
-          elevation={groupCardElevation}
-          slotProps={{
-            transition: { unmountOnExit: true, timeout: 250 }
-          }}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ minHeight: '28px' }}>
-            <GroupHeading
-              qItem={qItem}
-              readOnly={readOnly}
-              groupCardElevation={groupCardElevation}
-            />
-          </AccordionSummary>
-          <AccordionDetails sx={{ pt: 0 }}>
-            {qItem.text ? <Divider sx={{ mb: 1.5, opacity: 0.6 }} /> : null}
-            <TableContainer component={Paper} elevation={groupCardElevation}>
-              <Table size="small">
-                <TableHead>
-                  <TableRow>
-                    {itemLabels.map((itemLabel) => (
-                      <HeaderTableCell key={itemLabel} size="medium">
-                        {itemLabel}
-                      </HeaderTableCell>
-                    ))}
-                    <TableCell />
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <GroupTableBody
-                    tableQItem={qItem}
-                    readOnly={readOnly}
-                    tableRows={tableRows}
-                    selectedIds={selectedIds}
-                    qItemsIndexMap={qItemsIndexMap}
-                    itemPath={itemPath}
-                    isRepeated={isRepeated}
-                    showMinimalView={showMinimalView}
-                    parentIsReadOnly={parentIsReadOnly}
-                    onRowChange={onRowChange}
-                    onRemoveRow={onRemoveRow}
-                    onSelectRow={onSelectRow}
-                    onReorderRows={onReorderRows}
-                  />
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </AccordionDetails>
-        </GroupAccordion>
-      );
-    }
-
-    // Non-minimal Accordion
     return (
       <GroupAccordion
         disableGutters
@@ -178,7 +120,7 @@ function GroupTableView(props: GroupTableViewProps) {
           {qItem.text ? <Divider sx={{ mb: 1.5, opacity: 0.6 }} /> : null}
           <TableContainer component={Paper} elevation={groupCardElevation}>
             <Table>
-              {isRepeated ? (
+              {showExtraGTableInteractions ? (
                 <caption>
                   <AddRowButton repeatGroups={tableRows} readOnly={readOnly} onAddItem={onAddRow} />
                 </caption>
@@ -186,7 +128,7 @@ function GroupTableView(props: GroupTableViewProps) {
               <TableHead>
                 <TableRow>
                   <HeaderTableCell padding="none" />
-                  {isRepeated ? (
+                  {showExtraGTableInteractions ? (
                     <HeaderTableCell padding="none">
                       <StandardCheckbox
                         color="primary"
@@ -199,11 +141,21 @@ function GroupTableView(props: GroupTableViewProps) {
                         role="checkbox"
                         aria-checked={ariaCheckedValue}
                         onChange={onSelectAll}
+                        slotProps={{
+                          input: {
+                            'aria-label':
+                              'Select all rows in ' + (qItem.text ?? `Unnamed ${qItem.type} item`)
+                          }
+                        }}
                       />
                     </HeaderTableCell>
                   ) : null}
-                  {itemLabels.map((itemLabel) => (
-                    <HeaderTableCell key={itemLabel}>{itemLabel}</HeaderTableCell>
+                  {visibleItemLabels.map((visibleItemLabel) => (
+                    <HeaderTableCell key={visibleItemLabel}>
+                      <Box display="flex" alignItems="center" justifyContent="center">
+                        {visibleItemLabel}
+                      </Box>
+                    </HeaderTableCell>
                   ))}
                   <TableCell padding="checkbox" />
                 </TableRow>
@@ -214,9 +166,9 @@ function GroupTableView(props: GroupTableViewProps) {
                 tableRows={tableRows}
                 selectedIds={selectedIds}
                 qItemsIndexMap={qItemsIndexMap}
+                visibleItemLabels={visibleItemLabels}
+                showExtraGTableInteractions={showExtraGTableInteractions}
                 itemPath={itemPath}
-                isRepeated={isRepeated}
-                showMinimalView={showMinimalView}
                 parentIsReadOnly={parentIsReadOnly}
                 onRowChange={onRowChange}
                 onRemoveRow={onRemoveRow}
@@ -230,50 +182,7 @@ function GroupTableView(props: GroupTableViewProps) {
     );
   }
 
-  // Minimal + Regular GTable
-  if (showMinimalView) {
-    return (
-      <QGroupContainerBox
-        cardElevation={groupCardElevation}
-        isRepeated={false}
-        py={1}
-        style={parentStyles || undefined}>
-        <TableContainer component={Paper} elevation={groupCardElevation}>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                {itemLabels.map((itemLabel) => (
-                  <HeaderTableCell key={itemLabel} size="medium">
-                    {itemLabel}
-                  </HeaderTableCell>
-                ))}
-                <TableCell />
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <GroupTableBody
-                tableQItem={qItem}
-                readOnly={readOnly}
-                tableRows={tableRows}
-                selectedIds={selectedIds}
-                qItemsIndexMap={qItemsIndexMap}
-                itemPath={itemPath}
-                isRepeated={isRepeated}
-                showMinimalView={showMinimalView}
-                parentIsReadOnly={parentIsReadOnly}
-                onRowChange={onRowChange}
-                onRemoveRow={onRemoveRow}
-                onSelectRow={onSelectRow}
-                onReorderRows={onReorderRows}
-              />
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </QGroupContainerBox>
-    );
-  }
-
-  // Regular GTable (not minimal)
+  // Regular GTable
   return (
     <QGroupContainerBox
       cardElevation={groupCardElevation}
@@ -282,13 +191,15 @@ function GroupTableView(props: GroupTableViewProps) {
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}
       style={parentStyles || undefined}>
-      <>
-        <GroupHeading qItem={qItem} readOnly={readOnly} groupCardElevation={groupCardElevation} />
-        <Divider sx={{ my: 1, opacity: 0.6 }} />
-      </>
+      {qItem.text ? (
+        <>
+          <GroupHeading qItem={qItem} readOnly={readOnly} groupCardElevation={groupCardElevation} />
+          <Divider sx={{ my: 1, opacity: 0.6 }} />
+        </>
+      ) : null}
       <TableContainer component={Paper} elevation={groupCardElevation}>
         <Table>
-          {isRepeated ? (
+          {showExtraGTableInteractions ? (
             <caption>
               <AddRowButton repeatGroups={tableRows} readOnly={readOnly} onAddItem={onAddRow} />
             </caption>
@@ -296,7 +207,7 @@ function GroupTableView(props: GroupTableViewProps) {
           <TableHead>
             <TableRow>
               <HeaderTableCell padding="none" />
-              {isRepeated ? (
+              {showExtraGTableInteractions ? (
                 <HeaderTableCell padding="none">
                   <StandardCheckbox
                     color="primary"
@@ -309,11 +220,21 @@ function GroupTableView(props: GroupTableViewProps) {
                     role="checkbox"
                     aria-checked={ariaCheckedValue}
                     onChange={onSelectAll}
+                    slotProps={{
+                      input: {
+                        'aria-label':
+                          'Select all rows in ' + (qItem.text ?? `Unnamed ${qItem.type} item`)
+                      }
+                    }}
                   />
                 </HeaderTableCell>
               ) : null}
-              {itemLabels.map((itemLabel) => (
-                <HeaderTableCell key={itemLabel}>{itemLabel}</HeaderTableCell>
+              {visibleItemLabels.map((visibleItemLabel) => (
+                <HeaderTableCell key={visibleItemLabel}>
+                  <Box display="flex" alignItems="center" justifyContent="center">
+                    {visibleItemLabel}
+                  </Box>
+                </HeaderTableCell>
               ))}
               <TableCell padding="checkbox" />
             </TableRow>
@@ -324,9 +245,9 @@ function GroupTableView(props: GroupTableViewProps) {
             tableRows={tableRows}
             selectedIds={selectedIds}
             qItemsIndexMap={qItemsIndexMap}
+            visibleItemLabels={visibleItemLabels}
+            showExtraGTableInteractions={showExtraGTableInteractions}
             itemPath={itemPath}
-            isRepeated={isRepeated}
-            showMinimalView={showMinimalView}
             parentIsReadOnly={parentIsReadOnly}
             onRowChange={onRowChange}
             onRemoveRow={onRemoveRow}

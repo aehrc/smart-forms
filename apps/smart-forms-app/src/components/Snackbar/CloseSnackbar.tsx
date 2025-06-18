@@ -17,15 +17,40 @@
 
 import { IconButton, Tooltip } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import type { VariantType } from 'notistack';
 import { useSnackbar } from 'notistack';
+import { useTheme } from '@mui/material/styles';
+import { useMemo } from 'react';
+import { grey } from '@mui/material/colors';
 
-function CloseSnackbar() {
+interface CloseSnackbarProps {
+  variant?: VariantType;
+}
+
+function CloseSnackbar(props: CloseSnackbarProps) {
+  const { variant } = props;
+
   const { closeSnackbar } = useSnackbar();
+  const theme = useTheme();
+
+  const colorMap = useMemo(
+    () => ({
+      default: grey[500],
+      success: grey[200],
+      error: grey[200],
+      warning: grey[200],
+      info: grey[200]
+    }),
+    [theme.palette]
+  );
 
   return (
     <>
       <Tooltip title="Close">
         <IconButton
+          sx={{
+            ...(variant && colorMap[variant] && { color: colorMap[variant] })
+          }}
           onClick={() => {
             closeSnackbar();
           }}>

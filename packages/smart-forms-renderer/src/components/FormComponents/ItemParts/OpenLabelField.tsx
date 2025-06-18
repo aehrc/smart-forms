@@ -1,16 +1,19 @@
 import React, { type ChangeEvent } from 'react';
 import { StandardTextField } from '../Textfield.styles';
 import { useRendererStylingStore } from '../../../stores';
+import InputAdornment from '@mui/material/InputAdornment';
+import { ClearButtonAdornment } from './ClearButtonAdornment';
 
 interface OpenLabelFieldProps {
   value: string | null;
   readOnly: boolean;
   openLabelOptionSelected: boolean;
+  label: string;
   onInputChange: (input: string) => unknown;
 }
 
 function OpenLabelField(props: OpenLabelFieldProps) {
-  const { value, readOnly, openLabelOptionSelected, onInputChange } = props;
+  const { value, readOnly, openLabelOptionSelected, label, onInputChange } = props;
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
@@ -32,7 +35,20 @@ function OpenLabelField(props: OpenLabelFieldProps) {
       size="small"
       slotProps={{
         input: {
-          readOnly: fieldReadOnly && readOnlyVisualStyle === 'readonly'
+          readOnly: fieldReadOnly && readOnlyVisualStyle === 'readonly',
+          endAdornment: (
+            <InputAdornment position="end">
+              <ClearButtonAdornment
+                readOnly={fieldReadOnly}
+                onClear={() => {
+                  onInputChange('');
+                }}
+              />
+            </InputAdornment>
+          )
+        },
+        htmlInput: {
+          'aria-label': label ?? 'Unnamed open label field'
         }
       }}
     />

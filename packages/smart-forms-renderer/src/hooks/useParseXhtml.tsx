@@ -29,10 +29,16 @@ export interface ParsedXhtml {
 
 export function useParseXhtml(qItem: QuestionnaireItem): ParsedXhtml | null {
   return useMemo(() => {
-    const xHtmlString = getXHtmlString(qItem);
+    let xHtmlString = getXHtmlString(qItem);
 
     if (xHtmlString === null || xHtmlString === '') {
       return null;
+    }
+
+    // Replace <img with alt text - only if there are no alt tags
+    if (!xHtmlString.includes('alt=') && !xHtmlString.includes('alt =')) {
+      const altText = `<img alt='${qItem.text}'`;
+      xHtmlString = xHtmlString.replace('<img', altText);
     }
 
     // Extract global styles from the XHTML
@@ -42,15 +48,6 @@ export function useParseXhtml(qItem: QuestionnaireItem): ParsedXhtml | null {
       // Limited to work with document.getElementById manipulation only
       replace: (domNode: { attribs: Attributes; name: string; children: any[]; type?: string }) => {
         if (!domNode.attribs) return;
-
-        // Extract CSS styles from style tags
-        if (domNode.name === 'style' && domNode.children && domNode.children.length > 0) {
-          const styleContent = domNode.children[0].data;
-          if (styleContent) {
-            // We don't return anything for style tags as they will be applied globally
-            return <></>;
-          }
-        }
 
         // Extract external CSS styles from class attributes
         // To use this, define your stylesheet where you are calling <BaseRenderer/> in your app

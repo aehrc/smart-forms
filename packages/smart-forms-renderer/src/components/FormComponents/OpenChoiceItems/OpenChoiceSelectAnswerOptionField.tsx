@@ -64,8 +64,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
           <StandardTextField
             textFieldWidth={textFieldWidth}
             isTabled={isTabled}
-            label={displayPrompt}
-            placeholder={entryFormat}
+            placeholder={entryFormat || displayPrompt}
             {...params}
             slotProps={{
               input: {

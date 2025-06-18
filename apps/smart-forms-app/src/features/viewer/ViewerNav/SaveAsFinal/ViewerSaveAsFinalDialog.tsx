@@ -27,7 +27,6 @@ import {
   DialogContentText,
   DialogTitle
 } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import { saveAsFinalSuccessMessage, saveErrorMessage } from '../../../../utils/snackbar.ts';
@@ -76,14 +75,17 @@ function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
         handleClose();
         enqueueSnackbar(saveAsFinalSuccessMessage, {
           variant: 'success',
-          action: <CloseSnackbar />
+          action: <CloseSnackbar variant="success" />
         });
         navigate(launchQuestionnaireExists ? '/dashboard/existing' : '/dashboard/responses');
       })
       .catch((error) => {
         console.error(error);
         setIsSaving(false);
-        enqueueSnackbar(saveErrorMessage, { variant: 'error', action: <CloseSnackbar /> });
+        enqueueSnackbar(saveErrorMessage, {
+          variant: 'error',
+          action: <CloseSnackbar variant="error" />
+        });
         handleClose();
       });
   }
@@ -98,9 +100,9 @@ function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <LoadingButton loading={isSaving} onClick={handleSave}>
+        <Button loading={isSaving} onClick={handleSave}>
           Save as final
-        </LoadingButton>
+        </Button>
       </DialogActions>
     </Dialog>
   );

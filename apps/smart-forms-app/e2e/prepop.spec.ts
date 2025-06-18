@@ -16,17 +16,12 @@
  */
 
 import { expect, test } from '@playwright/test';
-import { PLAYWRIGHT_APP_URL, PLAYWRIGHT_EHR_URL, PLAYWRIGHT_FORMS_SERVER_URL } from './globals';
+import { PLAYWRIGHT_EHR_URL } from './globals';
+import { goToPlayground, selectQuestionnaireInPlayground } from './utils/playground';
 
 test.beforeEach(async ({ page }) => {
   // Go to playground
-  const fetchQPromise = page.waitForResponse(
-    `${PLAYWRIGHT_FORMS_SERVER_URL}/Questionnaire?_count=100&_sort=-date&`
-  );
-  const launchUrl = `${PLAYWRIGHT_APP_URL}/playground`;
-  await page.goto(launchUrl);
-  const fetchQResponse = await fetchQPromise;
-  expect(fetchQResponse.status()).toBe(200);
+  await goToPlayground(page);
 
   // Configure launch settings
   await page.getByTestId('launch-settings-button-playground').click();
@@ -37,7 +32,10 @@ test.beforeEach(async ({ page }) => {
     .fill(PLAYWRIGHT_EHR_URL);
 
   // Validate source FHIR server url
-  const metadataPromise = page.waitForResponse(`${PLAYWRIGHT_EHR_URL}/metadata`);
+  const metadataPromise = page.waitForResponse(
+    (response) =>
+      response.url() === `${PLAYWRIGHT_EHR_URL}/metadata` && response.request().method() === 'GET'
+  );
   await page.getByTestId('validate-url-button-playground').click();
   const metadataResponse = await metadataPromise;
   expect(metadataResponse.status()).toBe(200);
@@ -46,8 +44,17 @@ test.beforeEach(async ({ page }) => {
   );
 
   // Set source FHIR server url
-  const patientPromise = page.waitForResponse(`${PLAYWRIGHT_EHR_URL}/Patient?_count=100`);
-  const practitionerPromise = page.waitForResponse(`${PLAYWRIGHT_EHR_URL}/Practitioner?_count=100`);
+  const patientPromise = page.waitForResponse(
+    (response) =>
+      response.url().startsWith(`${PLAYWRIGHT_EHR_URL}/Patient`) &&
+      response.request().method() === 'GET'
+  );
+
+  const practitionerPromise = page.waitForResponse(
+    (response) =>
+      response.url().startsWith(`${PLAYWRIGHT_EHR_URL}/Practitioner`) &&
+      response.request().method() === 'GET'
+  );
   await page.getByTestId('set-fhir-server-button-playground').click();
   const patientResponse = await patientPromise;
   expect(patientResponse.status()).toBe(200);
@@ -63,26 +70,13 @@ test.beforeEach(async ({ page }) => {
   await page.getByTestId('save-launch-settings-button-playground').click();
 });
 
-test('pre-pop into CVDRiskCalculator questionnaire', async ({ page }) => {
-  // Select CVDRiskCalculator questionnaire
-  await page
-    .getByTestId('questionnaire-picker-playground')
-    .locator('input')
-    .fill('calculatedexpressioncvdriskcalculatorprepop');
-  await page.keyboard.press('Enter');
-  await expect(page.getByTestId('questionnaire-details-playground')).toContainText(
-    'CalculatedExpressionCvdRiskCalculatorPrepop'
-  );
-  await expect(page.getByTestId('questionnaire-details-playground')).toContainText(
-    'https://smartforms.csiro.au/docs/sdc/population/calculated-expression-2'
-  );
-
-  // Build CVDRiskCalculator questionnaire
-  await page.getByTestId('picker-build-form-button-playground').click();
-  await expect(page.getByText('"resourceType": "Questionnaire"')).toBeInViewport();
-  await expect(
-    page.getByText('"id": "CalculatedExpressionCvdRiskCalculatorPrepop"')
-  ).toBeInViewport();
+test('Pre-pop into CVDRiskCalculator questionnaire', async ({ page }) => {
+  // Select and build CVDRiskCalculator questionnaire in playground
+  await selectQuestionnaireInPlayground(page, {
+    pickerInput: 'calculatedexpressioncvdriskcalculatorprepop',
+    questionnaireId: 'CalculatedExpressionCvdRiskCalculatorPrepop',
+    questionnaireUrl: 'https://smartforms.csiro.au/docs/sdc/population/calculated-expression-2'
+  });
 
   // Ensure questionnaire is built
   await expect(page.getByTestId('q-item-display-box')).toContainText(
@@ -91,7 +85,10 @@ test('pre-pop into CVDRiskCalculator questionnaire', async ({ page }) => {
 
   // Perform pre-population
   const populatePromise = page.waitForResponse(
-    new RegExp(/^https:\/\/proxy\.smartforms\.io\/v\/r4\/fhir\/(Observation|Condition)\?.+$/)
+    (response) =>
+      /^https:\/\/proxy\.smartforms\.io\/v\/r4\/fhir\/(Observation|Condition)\?.+$/.test(
+        response.url()
+      ) && response.request().method() === 'GET'
   );
   await page.getByTestId('prepop-button-playground').click();
   const populateResponse = await populatePromise;
@@ -104,24 +101,13 @@ test('pre-pop into CVDRiskCalculator questionnaire', async ({ page }) => {
   ).toHaveValue('23');
 });
 
-test('pre-pop to test terminology resolving logic', async ({ page }) => {
-  // Select SelectivePrePopTester questionnaire
-  await page
-    .getByTestId('questionnaire-picker-playground')
-    .locator('input')
-    .fill('selectiveprepoptester');
-  await page.keyboard.press('Enter');
-  await expect(page.getByTestId('questionnaire-details-playground')).toContainText(
-    'SelectivePrePopTester'
-  );
-  await expect(page.getByTestId('questionnaire-details-playground')).toContainText(
-    'https://smartforms.csiro.au/docs/tester/prepop-1'
-  );
-
-  // Build SelectivePrePopTester questionnaire
-  await page.getByTestId('picker-build-form-button-playground').click();
-  await expect(page.getByText('"resourceType": "Questionnaire"')).toBeInViewport();
-  await expect(page.getByText('"id": "SelectivePrePopTester"')).toBeInViewport();
+test('Pre-pop to test terminology resolving logic', async ({ page }) => {
+  // Select and build SelectivePrePopTester questionnaire in playground
+  await selectQuestionnaireInPlayground(page, {
+    pickerInput: 'selectiveprepoptester',
+    questionnaireId: 'SelectivePrePopTester',
+    questionnaireUrl: 'https://smartforms.csiro.au/docs/tester/prepop-1'
+  });
 
   // Ensure questionnaire is built
   await expect(page.getByTestId('q-item-display-box')).toContainText(
@@ -130,7 +116,9 @@ test('pre-pop to test terminology resolving logic', async ({ page }) => {
 
   // Perform pre-population
   const expandPromise = page.waitForResponse(
-    new RegExp(/^https:\/\/tx\.ontoserver\.csiro\.au\/fhir\/ValueSet\/\$expand\?.+$/)
+    (response) =>
+      /^https:\/\/tx\.ontoserver\.csiro\.au\/fhir\/ValueSet\/\$expand\?.+$/.test(response.url()) &&
+      response.request().method() === 'GET'
   );
 
   await page.getByTestId('prepop-button-playground').click();

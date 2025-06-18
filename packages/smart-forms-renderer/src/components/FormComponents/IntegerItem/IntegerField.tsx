@@ -22,6 +22,7 @@ import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/ren
 import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import { useRendererStylingStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
+import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 
 interface IntegerFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -34,6 +35,7 @@ interface IntegerFieldProps extends PropsWithIsTabledRequiredAttribute {
   readOnly: boolean;
   calcExpUpdated: boolean;
   onInputChange: (value: string) => void;
+  onBlur: () => void;
 }
 
 function IntegerField(props: IntegerFieldProps) {
@@ -48,11 +50,21 @@ function IntegerField(props: IntegerFieldProps) {
     readOnly,
     calcExpUpdated,
     isTabled,
-    onInputChange
+    onInputChange,
+    onBlur
   } = props;
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+
+  let placeholderText = '0';
+  if (displayPrompt) {
+    placeholderText = displayPrompt;
+  }
+
+  if (entryFormat) {
+    placeholderText = entryFormat;
+  }
 
   return (
     <StandardTextField
@@ -61,20 +73,30 @@ function IntegerField(props: IntegerFieldProps) {
       error={!!feedback}
       helperText={feedback}
       onChange={(event) => onInputChange(event.target.value)}
+      onBlur={onBlur}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       label={displayPrompt}
-      placeholder={entryFormat === '' ? '0' : entryFormat}
+      placeholder={placeholderText}
       fullWidth
       textFieldWidth={textFieldWidth}
       isTabled={isTabled}
       size="small"
       slotProps={{
-        htmlInput: { inputMode: 'numeric', pattern: '[0-9]*' },
+        htmlInput: {
+          inputMode: 'numeric',
+          pattern: '[0-9]*'
+        },
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
             <InputAdornment position={'end'}>
               <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+              <ClearButtonAdornment
+                readOnly={readOnly}
+                onClear={() => {
+                  onInputChange('');
+                }}
+              />
               <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>
           )

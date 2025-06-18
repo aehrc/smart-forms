@@ -17,7 +17,6 @@
 
 import React from 'react';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
@@ -29,12 +28,7 @@ import { useQuestionnaireStore } from '../../../stores';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import ItemLabel from '../ItemParts/ItemLabel';
 
-interface SliderItemProps extends BaseItemProps {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
-}
-
-function SliderItem(props: SliderItemProps) {
+function SliderItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
@@ -78,7 +72,7 @@ function SliderItem(props: SliderItemProps) {
 
   if (isRepeated) {
     return (
-      <Box px={4}>
+      <Box px={1} width="100%">
         <SliderField
           linkId={qItem.linkId}
           itemType={qItem.type}

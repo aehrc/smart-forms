@@ -58,6 +58,18 @@ export function isSubjectParameter(parameter: ParametersParameter): parameter is
   return parameter.name === 'subject' && !!parameter.valueReference;
 }
 
+export function isUserContextParameter(
+  parameter: ParametersParameter
+): parameter is ContextParameter {
+  return (
+    parameter.name === 'context' &&
+    parameter.part?.[0]?.name === 'name' &&
+    parameter.part?.[0]?.valueString === 'user' &&
+    parameter.part?.[1]?.name === 'content' &&
+    !!parameter.part?.[1]?.resource
+  );
+}
+
 export function isEncounterContextParameter(
   parameter: ParametersParameter
 ): parameter is ContextParameter {

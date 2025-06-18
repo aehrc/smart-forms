@@ -17,14 +17,15 @@
 
 import type { SpeedDialActionProps } from '@mui/material';
 import { SpeedDialAction } from '@mui/material';
-import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
+import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import RendererSaveAsFinalDialog from './RendererSaveAsFinalDialog.tsx';
 import RendererOperationItem from '../RendererNav/RendererOperationItem.tsx';
-import { useExtractOperationStore } from '../../../playground/stores/extractOperationStore.ts';
+import { useExtractDebuggerStore } from '../../../playground/stores/extractDebuggerStore.ts';
 import RendererSaveAsFinalWriteBackDialog from './RendererSaveAsFinalWriteBackDialog.tsx';
+import { getExtractMechanism } from '../../utils/extract.ts';
 
 interface SaveAsFinalActionProps extends SpeedDialActionProps {
   isSpeedDial?: boolean;
@@ -38,10 +39,11 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
 
   const [saveAsFinalDialogOpen, setSaveAsFinalDialogOpen] = useState(false);
 
+  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
   const formChangesHistory = useQuestionnaireResponseStore.use.formChangesHistory();
 
-  const targetStructureMap = useExtractOperationStore.use.targetStructureMap();
+  const structuredMapExtractMap = useExtractDebuggerStore.use.structuredMapExtractMap();
 
   function handleOpenDialog() {
     if (onClose) {
@@ -56,17 +58,26 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
   const responseWasSaved = !!updatableResponse.authored && !!updatableResponse.author;
   const buttonIsDisabled = !responseWasSaved && formChangesHistory.length === 0;
 
-  const writeBackEnabled = !!targetStructureMap;
+  // Check if questionnaire can be template-based extracted
+  const extractMechanism = useMemo(
+    () => getExtractMechanism(sourceQuestionnaire, structuredMapExtractMap),
+    [sourceQuestionnaire, structuredMapExtractMap]
+  );
+  const writeBackEnabled = !!extractMechanism;
 
   return (
     <>
       {isSpeedDial ? (
         <SpeedDialAction
           icon={<TaskAltIcon />}
-          tooltipTitle={`Save as Final ${writeBackEnabled ? '& Write Back' : ''}`}
-          tooltipOpen
           onClick={handleOpenDialog}
           {...speedDialActionProps}
+          slotProps={{
+            tooltip: {
+              title: `Save as Final ${writeBackEnabled ? '& Write Back' : ''}`,
+              open: true
+            }
+          }}
         />
       ) : (
         <RendererOperationItem
@@ -79,6 +90,7 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
       {writeBackEnabled ? (
         <RendererSaveAsFinalWriteBackDialog
           open={saveAsFinalDialogOpen}
+          extractMechanism={extractMechanism}
           closeDialog={() => setSaveAsFinalDialogOpen(false)}
         />
       ) : (

@@ -17,7 +17,6 @@
 
 import { Box, Drawer } from '@mui/material';
 import Logo from '../../../../components/Logos/Logo.tsx';
-import Scrollbar from '../../../../components/Scrollbar/Scrollbar.tsx';
 import DashboardNavSection from './DashboardNavSection.tsx';
 import NavPatientDetails from '../../../../components/Nav/NavPatientDetails.tsx';
 import NavErrorAlert from '../../../../components/Nav/NavErrorAlert.tsx';
@@ -46,11 +45,7 @@ export default function DashboardNav(props: DashboardNavProps) {
   const isNotLaunched = !smartClient;
 
   const renderContent = (
-    <Scrollbar
-      sx={{
-        height: 1,
-        '& .simplebar-content': { height: 1, display: 'flex', flexDirection: 'column' }
-      }}>
+    <>
       <NavLogoWrapper>
         <Logo isNav />
       </NavLogoWrapper>
@@ -71,11 +66,13 @@ export default function DashboardNav(props: DashboardNavProps) {
       <CsiroLogoWrapper>
         <CsiroLogo />
       </CsiroLogoWrapper>
-    </Scrollbar>
+    </>
   );
 
   return (
     <Box
+      role="complementary"
+      aria-label="Primary navigation sidebar"
       component="nav"
       sx={{
         flexShrink: { lg: 0 },
@@ -85,11 +82,13 @@ export default function DashboardNav(props: DashboardNavProps) {
         <Drawer
           open
           variant="permanent"
-          PaperProps={{
-            sx: {
-              width: NAV_WIDTH,
-              bgcolor: 'background.default',
-              borderRightStyle: 'dashed'
+          slotProps={{
+            paper: {
+              sx: {
+                width: NAV_WIDTH,
+                bgcolor: 'background.default',
+                borderRightStyle: 'dashed'
+              }
             }
           }}>
           {renderContent}
@@ -101,8 +100,10 @@ export default function DashboardNav(props: DashboardNavProps) {
           ModalProps={{
             keepMounted: true
           }}
-          PaperProps={{
-            sx: { width: NAV_WIDTH }
+          slotProps={{
+            paper: {
+              sx: { width: NAV_WIDTH }
+            }
           }}>
           {renderContent}
         </Drawer>

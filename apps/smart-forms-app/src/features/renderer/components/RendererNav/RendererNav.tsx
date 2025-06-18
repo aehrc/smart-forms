@@ -23,7 +23,6 @@ import { NavErrorAlertWrapper } from '../../../../components/Nav/Nav.styles.ts';
 import NavErrorAlert from '../../../../components/Nav/NavErrorAlert.tsx';
 import CsiroLogo from '../../../../components/Logos/CsiroLogo.tsx';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
-import Scrollbar from '../../../../components/Scrollbar/Scrollbar.tsx';
 import type { RendererSpinner } from '../../types/rendererSpinner.ts';
 import RendererNavStandardActions from './RendererNavStandardActions.tsx';
 import RendererNavLaunchQuestionnaireActions from './RendererNavLaunchQuestionnaireActions.tsx';
@@ -43,10 +42,12 @@ function RendererNav(props: RendererNavProps) {
   const { launchQuestionnaire } = useSmartClient();
 
   return (
-    <Scrollbar
+    <Box
       sx={{
-        height: 1,
-        '& .simplebar-content': { height: 1, display: 'flex', flexDirection: 'column' }
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        overflowX: 'auto'
       }}>
       <NavLogoWrapper>
         <Logo isNav />
@@ -80,19 +81,17 @@ function RendererNav(props: RendererNavProps) {
           <Grid size={{ xs: 4 }}>
             {navIsShown ? (
               <Box display="flex" justifyContent="end" alignItems="center">
-                <Tooltip title="Collapse Sidebar" placement="right">
-                  <span>
-                    <IconButton onClick={onCollapseNav}>
-                      <KeyboardDoubleArrowLeftIcon fontSize="small" />
-                    </IconButton>
-                  </span>
+                <Tooltip title="Collapse sidebar" placement="right">
+                  <IconButton onClick={onCollapseNav} aria-label="Collapse sidebar">
+                    <KeyboardDoubleArrowLeftIcon fontSize="small" />
+                  </IconButton>
                 </Tooltip>
               </Box>
             ) : null}
           </Grid>
         </Grid>
       </Box>
-    </Scrollbar>
+    </Box>
   );
 }
 
