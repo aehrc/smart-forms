@@ -10,6 +10,8 @@ import useShowExtractDebuggerStoreProperty from '../../hooks/useShowExtractDebug
 import TemplateExtractDebugTable from './TemplateExtractDebugTable.tsx';
 import type { TemplateExtractDebugInfo } from '@aehrc/sdc-template-extract';
 import type { FhirResource, Observation } from 'fhir/r4';
+import WriteBackBundleSelector from '../WriteBackBundleSelector.tsx';
+import { isBundle } from '../../typePredicates/isBundle.ts';
 
 const extractDebuggerPropertyNames: string[] = [
   'observationExtractResult',
@@ -85,6 +87,9 @@ function ExtractDebuggerViewer(props: ExtractDebuggerViewerProps) {
 
   const templateExtractPathTableShown = selectedProperty === 'templateExtractDebugInfo';
 
+  const showWriteBackDialog =
+    isBundle(propertyObject) && !!propertyObject.entry && propertyObject.entry.length > 0;
+
   return (
     <>
       <GenericStatePropertyPicker
@@ -113,8 +118,10 @@ function ExtractDebuggerViewer(props: ExtractDebuggerViewerProps) {
                 </Button>
               </span>
             </Tooltip>
+            {showWriteBackDialog ? <WriteBackBundleSelector bundle={propertyObject} /> : null}
           </Box>
         ) : null}
+
         {/* Show TemplateExtractDebugInfo in table view */}
         {templateExtractPathTableShown &&
         viewMode === 'table' &&

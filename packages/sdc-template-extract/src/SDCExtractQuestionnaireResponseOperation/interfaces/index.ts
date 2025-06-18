@@ -32,3 +32,4 @@ export type {
   FetchQuestionnaireRequestConfig,
   FetchQuestionnaireCallback
 } from './callback.interface';
+export type { FhirPatchParameters, FhirPatchParameterEntry } from './fhirpatch.interface';
