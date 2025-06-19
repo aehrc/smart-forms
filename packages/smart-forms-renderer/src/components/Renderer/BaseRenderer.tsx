@@ -29,6 +29,13 @@ import { Container } from '@mui/material';
 import { useFormUpdateQueueStore } from '../../stores/formUpdateQueueStore';
 import type { ItemPath } from '../../interfaces/itemPath.interface';
 import { createSingleItemPath } from '../../utils/itemPath';
+import dayjs from 'dayjs';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+// Setup DayJs extensions when BaseRenderer.tsx is called
+dayjs.extend(localizedFormat);
+dayjs.extend(customParseFormat);
 
 /**
  * Main component of the form-rendering engine.

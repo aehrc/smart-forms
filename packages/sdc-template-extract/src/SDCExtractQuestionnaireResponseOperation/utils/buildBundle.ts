@@ -11,7 +11,7 @@ import cleanDeep from 'clean-deep';
 import { parametersIsFhirPatch } from './typePredicates';
 import type { BundleRequestType } from '../interfaces/bundle.interface';
 import { addIndexToTargetPath } from './expressionManipulation';
-import { shouldIncludeResource } from './filterResources';
+import { applyFilters } from './filterResources';
 
 /**
  * Builds a FHIR transaction Bundle from extracted resources using the templateExtract extension.
@@ -81,10 +81,11 @@ export function buildTransactionBundle(
         continue;
       }
 
-      // Filter out resources based on two criteria:
+      // Filter resources (or parameter entries if the resource is a Parameters) based on two criteria:
       // 1. Ensure FHIRPatch "value" part has value[x] field.
       // 2. If a comparison-source-response (i.e. a pre-populated questionnaireResponse) is provided, only include changes compared to that response.
-      if (!shouldIncludeResource(extractedResource, comparisonResource ?? null)) {
+      const retainedResource = applyFilters(extractedResource, comparisonResource ?? null);
+      if (!retainedResource) {
         continue;
       }
 

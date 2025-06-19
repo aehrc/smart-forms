@@ -7,14 +7,13 @@ export interface AnswerOptionsToggleExpression {
   isEnabled?: boolean;
 }
 
-export interface RestrictedAnswerOption
-  extends Omit<
-    QuestionnaireItemAnswerOption,
-    | 'initialSelected'
-    | '_initialSelected'
-    | 'valueDate'
-    | '_valueDate'
-    | 'valueTime'
-    | '_valueTime'
-    | 'valueReference'
-  > {}
+export type RestrictedAnswerOption = Omit<
+  QuestionnaireItemAnswerOption,
+  | 'initialSelected'
+  | '_initialSelected'
+  | 'valueDate'
+  | '_valueDate'
+  | 'valueTime'
+  | '_valueTime'
+  | 'valueReference'
+>;
