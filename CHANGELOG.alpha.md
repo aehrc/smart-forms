@@ -8,6 +8,13 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.69] - 2025-06-18
+#### Fixed
+- Move dayjs.extend() localisation and parse format functions to BaseRenderer.tsx so they are immediately invoked.
+
+#### Updated sdc-populate to v4.3.1. Changes as follows:
+- In non-repeating QuestionnaireItems, strictly only populate one answer (the first answer), even if initialExpression evaluates to multiple answers.
+
 ## [1.0.0-alpha.68] - 2025-06-16
 #### Fixed
 - Fixed an issue where Observation-based extraction is mapping QR.author to Obs.author (should be Obs.performer).
