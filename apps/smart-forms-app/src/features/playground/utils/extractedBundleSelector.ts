@@ -1,18 +1,136 @@
-import type { FhirResource } from 'fhir/r4';
+import type { BundleEntry, BundleEntryRequest, FhirResource } from 'fhir/r4';
 import { constructName } from '../../smartAppLaunch/utils/launchContext.ts';
 import type { FhirPatchParameterEntry } from '@aehrc/sdc-template-extract';
 import { parametersIsFhirPatch } from '@aehrc/sdc-template-extract';
 
-export function getMethodLabel(method: string): string {
+export function createSelectionKey(bundleEntryIndex: number, operationEntryIndex?: number): string {
+  return typeof operationEntryIndex === 'number'
+    ? `bundle-${bundleEntryIndex}-operation-${operationEntryIndex}`
+    : `bundle-${bundleEntryIndex}`;
+}
+
+export function getOperationEntryCounts(
+  bundleEntryIndex: number,
+  selectedEntries: Set<string>,
+  allValidEntries: Set<string>
+): { numOfSelectedOperations: number; numOfValidOperations: number } {
+  const operationPrefix = `bundle-${bundleEntryIndex}-operation-`;
+
+  const numOfSelectedOperations = Array.from(selectedEntries).filter((key) =>
+    key.startsWith(operationPrefix)
+  ).length;
+
+  const numOfValidOperations = Array.from(allValidEntries).filter((key) =>
+    key.startsWith(operationPrefix)
+  ).length;
+
+  return { numOfSelectedOperations, numOfValidOperations };
+}
+
+// Exclude entries with these three criteria:
+// 1. BundleEntry no resource or request
+// 2. BundleEntry resource is a Parameters resource but is not a valid FHIRPatch
+// 3. BundleEntry resource is a FHIRPatch but has no "type", "path" or "value" in the operation parts
+export function getValidEntries(bundleEntries: BundleEntry[]): Set<string> {
+  const validEntries: Set<string> = new Set();
+  for (const [bundleEntryIndex, bundleEntry] of bundleEntries.entries()) {
+    // 1. Skip if the entry doesn't have a resource and request
+    if (!bundleEntry.resource || !bundleEntry.request) {
+      continue;
+    }
+
+    const resource = bundleEntry.resource;
+    if (resource.resourceType === 'Parameters') {
+      // 2. Skip if the resource is a Parameters resource but is not a valid FHIRPatch
+      if (!parametersIsFhirPatch(resource)) {
+        continue;
+      }
+
+      for (const [operationEntryIndex, operation] of resource.parameter.entries()) {
+        const {
+          type: operationType,
+          path: operationPath,
+          valuePart: operationValuePart
+        } = getFhirPatchOperationParts(operation);
+
+        // 3. Skip if the resource is a FHIRPatch but has no "type", "path" or "value" in the operation parts
+        if (!operationType || !operationPath || !operationValuePart) {
+          continue;
+        }
+
+        // Add FHIRPatch operations that pass the initial selection criteria
+        validEntries.add(createSelectionKey(bundleEntryIndex, operationEntryIndex));
+      }
+    } else {
+      // Add non-FHIRPatch resources that pass the initial selection criteria
+      validEntries.add(createSelectionKey(bundleEntryIndex));
+    }
+  }
+
+  return validEntries;
+}
+
+export function getFilteredBundleEntries(
+  selectedEntries: Set<string>,
+  allBundleEntries: BundleEntry[]
+): BundleEntry[] {
+  const filteredBundleEntries: BundleEntry[] = [];
+
+  for (const [bundleEntryIndex, entry] of allBundleEntries.entries()) {
+    const resource = entry.resource;
+
+    // Skip if no resource
+    if (!resource) {
+      continue;
+    }
+
+    // FHIRPatch: filter its operations
+    if (resource.resourceType === 'Parameters' && parametersIsFhirPatch(resource)) {
+      const selectedOperations = resource.parameter
+        .map((operation, operationEntryIndex) => ({
+          operation,
+          key: createSelectionKey(bundleEntryIndex, operationEntryIndex)
+        }))
+        .filter(({ key }) => selectedEntries.has(key))
+        .map(({ operation }) => operation) as FhirPatchParameterEntry[];
+
+      if (selectedOperations.length > 0) {
+        // Deep copy to avoid mutating original entry
+        filteredBundleEntries.push({
+          ...entry,
+          resource: {
+            ...resource,
+            parameter: selectedOperations
+          }
+        });
+      }
+
+      continue;
+    }
+
+    // Non-FHIRPatch: include only if the entry itself is valid
+    const key = createSelectionKey(bundleEntryIndex);
+    if (selectedEntries.has(key)) {
+      filteredBundleEntries.push(entry);
+    }
+  }
+
+  return filteredBundleEntries;
+}
+
+export function getChipMethodDetails(method: string): {
+  label: string;
+  colorVariant: 'primary' | 'secondary';
+} {
   switch (method) {
     case 'POST':
-      return 'New';
+      return { label: 'new', colorVariant: 'secondary' };
     case 'PUT':
-      return 'Update';
+      return { label: 'update', colorVariant: 'primary' };
     case 'PATCH':
-      return 'Update';
+      return { label: 'update', colorVariant: 'primary' };
     default:
-      return method;
+      return { label: method, colorVariant: 'primary' };
   }
 }
 
@@ -38,90 +156,125 @@ export function getResourceDisplay(resource: FhirResource) {
 
   if (resource.resourceType === 'Encounter') {
     const encounterClass = resource.class;
-    return `${encounterClass?.display || 'Encounter'} (${resource.status})`;
+    return `${encounterClass?.display || 'Unknown'} (${resource.status})`;
   }
 
   if (resource.resourceType === 'Condition') {
+    // https://build.fhir.org/ig/hl7au/au-fhir-core/StructureDefinition-au-core-condition.html - Condition.code 1..1
     const conditionCode = resource.code;
-    return conditionCode?.coding?.[0]?.display || conditionCode?.text || 'Condition';
+    return conditionCode?.coding?.[0]?.display || conditionCode?.text || 'Unknown';
   }
 
   if (resource.resourceType === 'MedicationStatement') {
     const medicationCode = resource.medicationCodeableConcept;
-    return medicationCode?.coding?.[0]?.display || medicationCode?.text || 'Medication Statement';
+    return medicationCode?.coding?.[0]?.display || medicationCode?.text || 'Unknown';
   }
 
   if (resource.resourceType === 'AllergyIntolerance') {
+    // https://build.fhir.org/ig/hl7au/au-fhir-core/StructureDefinition-au-core-allergyintolerance.html - AllergyIntolerance.code 1..1
     const allergyCode = resource.code;
-    return allergyCode?.coding?.[0]?.display || allergyCode?.text || 'Allergy Intolerance';
+    return allergyCode?.coding?.[0]?.display || allergyCode?.text || 'Unknown';
   }
 
   if (resource.resourceType === 'Procedure') {
     const procedureCode = resource.code;
-    return procedureCode?.coding?.[0]?.display || procedureCode?.text || 'Procedure';
+    return procedureCode?.coding?.[0]?.display || procedureCode?.text || 'Unknown';
   }
 
   if (resource.resourceType === 'Immunization') {
     const vaccineCode = resource.vaccineCode;
-    return vaccineCode?.coding?.[0]?.display || vaccineCode?.text || 'Immunization';
+    return vaccineCode?.coding?.[0]?.display || vaccineCode?.text || 'Unknown';
   }
 
   if (resource.resourceType === 'Observation') {
+    // (Example observation) https://build.fhir.org/ig/hl7au/au-fhir-core/StructureDefinition-au-core-bloodpressure.html - Observation.code 1..1
     const observationCode = resource.code;
-    return observationCode?.coding?.[0]?.display || observationCode?.text || 'Observation';
+    return observationCode?.coding?.[0]?.display || observationCode?.text || 'Unknown';
   }
 
   // Fallback to resourceType if no specific display is available
-  return `${resource.resourceType} (Not implemented)`;
+  return `${resource.resourceType}`;
 }
 
-export function getFhirPatchParametersDisplays(
-  resource: FhirResource,
-  resourceType: FhirResource['resourceType']
-): string[] {
-  if (!resource || !resource.resourceType) {
-    return [];
-  }
-
-  if (resource.resourceType === 'Parameters' && parametersIsFhirPatch(resource)) {
-    const fhirPatchParameterEntries = resource.parameter as FhirPatchParameterEntry[] | undefined;
-    const operations = fhirPatchParameterEntries?.filter(
-      (parameter) => parameter.name === 'operation'
-    );
-    if (!operations || operations.length === 0) {
-      return [];
-    }
-
-    const operationDisplays = operations.map((operation) =>
-      getFhirPatchOperationDisplay(operation, resourceType)
-    );
-
-    console.log(operationDisplays);
-    return operationDisplays;
-  }
-
-  return [];
-}
-
-function getFhirPatchOperationDisplay(
-  operation: FhirPatchParameterEntry,
-  resourceType: FhirResource['resourceType']
+export function getFhirPatchResourceDisplay(
+  bundleRequest: BundleEntryRequest,
+  populatedResourceMap: Map<string, FhirResource>
 ): string {
+  const resourceType = bundleRequest.url.split('/')[0] as FhirResource['resourceType'];
+  const resourceId = bundleRequest.url.split('/')[1];
+
+  if (!resourceType || !resourceId) {
+    return 'Unknown';
+  }
+
+  const populatedResource = populatedResourceMap.get(resourceId);
+  if (populatedResource) {
+    return getResourceDisplay(populatedResource);
+  }
+
+  return `Unknown`;
+}
+
+export function getFhirPatchOperationParts(operation: FhirPatchParameterEntry): {
+  type?: string;
+  path?: string;
+  name?: string;
+  valuePart?: { [key: string]: any };
+  index?: number;
+  source?: number;
+  destination?: number;
+} {
+  const type = operation.part.find((part) => part.name === 'type')?.valueCode;
   const path = operation.part.find((part) => part.name === 'path')?.valueString;
-  const fieldName = operation.part.find((part) => part.name === 'name')?.valueString;
+  const name = operation.part.find((part) => part.name === 'name')?.valueString;
   const valuePart = operation.part.find((part) => part.name === 'value');
+  const index = operation.part.find((part) => part.name === 'index')?.valueInteger;
+  const source = operation.part.find((part) => part.name === 'source')?.valueInteger;
+  const destination = operation.part.find((part) => part.name === 'destination')?.valueInteger;
 
-  if (!valuePart) {
-    return `FHIRPatch for ${resourceType}`;
+  return {
+    type,
+    path,
+    name,
+    valuePart,
+    index,
+    source,
+    destination
+  };
+}
+
+export function getFhirPatchOperationPathDisplay(
+  operationPath: string | undefined,
+  operationName: string | undefined
+): string {
+  if (!operationPath) {
+    return '';
   }
 
-  const valueKey = Object.keys(valuePart).find((k) => k.startsWith('value') && k !== 'value');
-  if (!valueKey) {
-    return `FHIRPatch for ${resourceType}`;
+  if (!operationName) {
+    return operationPath;
   }
 
-  const valueType = valueKey.replace('value', '').toLowerCase();
-  const operationDisplay = `${resourceType} at ${path || ''} ${fieldName ? `(${fieldName})` : ''} ${valueType ?? ''}`;
+  // If operationName is the last segment of the path e.g. name = "clinicalStatus" and path = "Condition.clinicalStatus"
+  const pathLastSegment = operationPath.split('.').pop() || '';
+  if (operationName === pathLastSegment) {
+    return operationPath;
+  }
 
-  return operationDisplay;
+  return operationName + ' ' + pathLastSegment;
+}
+
+export function getPopulatedResourceMap(populatedContext: Record<string, any>) {
+  const populatedResourceMap: Map<string, FhirResource> = new Map();
+  for (const value of Object.values(populatedContext)) {
+    if (value && value.entry) {
+      value.entry.forEach((entry: { resource: FhirResource }) => {
+        if (entry.resource && entry.resource.id) {
+          populatedResourceMap.set(entry.resource.id, entry.resource);
+        }
+      });
+    }
+  }
+
+  return populatedResourceMap;
 }

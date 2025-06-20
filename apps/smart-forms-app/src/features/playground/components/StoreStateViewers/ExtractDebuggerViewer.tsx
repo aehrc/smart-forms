@@ -9,9 +9,9 @@ import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
 import useShowExtractDebuggerStoreProperty from '../../hooks/useShowExtractDebuggerStoreProperty.ts';
 import TemplateExtractDebugTable from './TemplateExtractDebugTable.tsx';
 import type { TemplateExtractDebugInfo } from '@aehrc/sdc-template-extract';
-import type { FhirResource, Observation } from 'fhir/r4';
+import type { Bundle, FhirResource, Observation } from 'fhir/r4';
 import WriteBackBundleSelector from '../WriteBackBundleSelector.tsx';
-import { isBundle } from '../../typePredicates/isBundle.ts';
+import { isNonEmptyBundle } from '../../typePredicates/isNonEmptyBundle.ts';
 
 const extractDebuggerPropertyNames: string[] = [
   'observationExtractResult',
@@ -49,7 +49,7 @@ function ExtractDebuggerViewer(props: ExtractDebuggerViewerProps) {
   }
 
   // Write back extracted resource
-  async function handleExtract() {
+  async function handleWriteBack(bundleToWriteBack: Bundle) {
     if (!writeBackEnabled) {
       return;
     }
@@ -58,7 +58,7 @@ function ExtractDebuggerViewer(props: ExtractDebuggerViewerProps) {
     const response = await fetch(sourceFhirServerUrl, {
       method: 'POST',
       headers: { ...HEADERS, 'Content-Type': 'application/json;charset=utf-8' },
-      body: JSON.stringify(propertyObject)
+      body: JSON.stringify(bundleToWriteBack)
     });
     setWritingBack(false);
 
@@ -88,7 +88,10 @@ function ExtractDebuggerViewer(props: ExtractDebuggerViewerProps) {
   const templateExtractPathTableShown = selectedProperty === 'templateExtractDebugInfo';
 
   const showWriteBackDialog =
-    isBundle(propertyObject) && !!propertyObject.entry && propertyObject.entry.length > 0;
+    !!propertyObject &&
+    isNonEmptyBundle(propertyObject) &&
+    !!propertyObject.entry &&
+    propertyObject.entry.length > 0;
 
   return (
     <>
@@ -113,12 +116,26 @@ function ExtractDebuggerViewer(props: ExtractDebuggerViewerProps) {
                   : 'No extracted resource to write back, or resource is not a batch/tranaction bundle.'
               }>
               <span>
-                <Button loading={writingBack} disabled={!writeBackEnabled} onClick={handleExtract}>
+                <Button
+                  loading={writingBack}
+                  disabled={!writeBackEnabled}
+                  onClick={async () => {
+                    if (isNonEmptyBundle(propertyObject)) {
+                      await handleWriteBack(propertyObject);
+                    }
+                  }}>
                   Write back
                 </Button>
               </span>
             </Tooltip>
-            {showWriteBackDialog ? <WriteBackBundleSelector bundle={propertyObject} /> : null}
+            {showWriteBackDialog && propertyObject ? (
+              <WriteBackBundleSelector
+                bundle={propertyObject}
+                onGenerateBundleToWriteBack={async (bundleToWriteBack) => {
+                  await handleWriteBack(bundleToWriteBack);
+                }}
+              />
+            ) : null}
           </Box>
         ) : null}
 

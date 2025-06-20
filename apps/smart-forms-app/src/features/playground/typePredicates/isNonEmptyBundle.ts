@@ -17,6 +17,6 @@
 
 import type { Bundle } from 'fhir/r4';
 
-export function isBundle(jsonObject: any): jsonObject is Bundle {
-  return jsonObject.resourceType === 'Bundle';
+export function isNonEmptyBundle(jsonObject: any): jsonObject is Bundle {
+  return jsonObject.resourceType === 'Bundle' && jsonObject.entry && jsonObject.entry.length > 0;
 }

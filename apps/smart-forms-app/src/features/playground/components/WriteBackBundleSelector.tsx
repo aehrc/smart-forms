@@ -1,88 +1,163 @@
-import React, { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Box,
   Button,
-  Checkbox,
-  Chip,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Divider,
   IconButton,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
   Typography
 } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import {
-  getFhirPatchParametersDisplays,
-  getMethodLabel,
-  getResourceDisplay
+  createSelectionKey,
+  getFilteredBundleEntries,
+  getPopulatedResourceMap,
+  getValidEntries
 } from '../utils/extractedBundleSelector.ts';
-import type { Bundle, FhirResource } from 'fhir/r4';
-import { parametersIsFhirPatch } from '@aehrc/sdc-template-extract';
+import type { Bundle, BundleEntry } from 'fhir/r4';
+import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import WriteBackBundleSelectorItem from './WriteBackBundleSelectorItem.tsx';
 
 interface WriteBackBundleSelectorProps {
   bundle: Bundle;
+  onGenerateBundleToWriteBack: (bundleToWriteBack: Bundle) => void;
 }
 export default function WriteBackBundleSelector(props: WriteBackBundleSelectorProps) {
-  const { bundle } = props;
+  const { bundle, onGenerateBundleToWriteBack } = props;
 
-  const bundleEntries = bundle.entry || [];
+  const populatedContext = useQuestionnaireStore.use.populatedContext();
 
-  const [open, setOpen] = useState(false);
-  const [selectedEntries, setSelectedEntries] = useState<number[]>(
-    // Initially select all entries
-    Array.from({ length: bundleEntries.length }, (_, i) => i)
+  // Get a map of populated resources so we can link FHIRPatch Parameters to their actual resource names
+  const populatedResourceMap = useMemo(
+    () => getPopulatedResourceMap(populatedContext),
+    [populatedContext]
   );
 
-  const handleToggle = (index: number) => {
-    const currentIndex = selectedEntries.indexOf(index);
-    const newSelected = [...selectedEntries];
+  const [dialogOpen, setDialogOpen] = useState(false);
 
-    if (currentIndex === -1) {
-      newSelected.push(index);
-    } else {
-      newSelected.splice(currentIndex, 1);
+  const allBundleEntries: BundleEntry[] = useMemo(() => bundle.entry ?? [], [bundle.entry]);
+
+  // Exclude entries with these three criteria:
+  // 1. BundleEntry no resource or request
+  // 2. BundleEntry resource is a Parameters resource but is not a valid FHIRPatch
+  // 3. BundleEntry resource is a FHIRPatch but has no "type", "path" or "value" in the operation parts
+  const allValidEntries: Set<string> = useMemo(
+    () => getValidEntries(allBundleEntries),
+    [allBundleEntries]
+  );
+
+  const [selectedEntries, setSelectedEntries] = useState<Set<string>>(allValidEntries);
+
+  function isEntrySelected(
+    bundleEntryIndex: number,
+    operationEntryIndex?: number
+  ): boolean | 'indeterminate' {
+    const key = createSelectionKey(bundleEntryIndex, operationEntryIndex);
+
+    // 1: Specific operation entry
+    if (operationEntryIndex !== undefined) {
+      return selectedEntries.has(key);
     }
 
-    setSelectedEntries(newSelected);
-  };
+    // Get all operation keys for provided bundleEntry
+    const operationKeys = Array.from(allValidEntries).filter((k) =>
+      k.startsWith(`bundle-${bundleEntryIndex}-operation-`)
+    );
 
-  const handleSelectAll = () => {
-    if (selectedEntries.length === bundleEntries.length) {
-      setSelectedEntries([]);
-    } else {
-      setSelectedEntries(Array.from({ length: bundleEntries.length }, (_, i) => i));
+    // 2: bundle with operations — selected only if all its operations are selected
+    if (operationKeys.length > 0) {
+      const numOfSelectedOperations = operationKeys.filter((k) => selectedEntries.has(k)).length;
+      if (numOfSelectedOperations === operationKeys.length) {
+        return true; // All operations selected
+      }
+
+      if (numOfSelectedOperations === 0) {
+        return false;
+      }
+
+      if (numOfSelectedOperations < operationKeys.length) {
+        return 'indeterminate';
+      }
     }
-  };
 
-  const handleGenerateBundle = () => {
-    const modifiedBundle = {
+    // 3: standalone bundle — check direct selection
+    return selectedEntries.has(key);
+  }
+
+  function handleToggleCheckbox(bundleEntryIndex: number, operationEntryIndex?: number) {
+    const key = createSelectionKey(bundleEntryIndex, operationEntryIndex);
+    setSelectedEntries((prev) => {
+      const next = new Set(prev);
+
+      // Get all operation keys for provided bundleEntry
+      const operationKeys: string[] = Array.from(allValidEntries).filter((k) =>
+        k.startsWith(`bundle-${bundleEntryIndex}-operation-`)
+      );
+
+      // 1. BundleEntry doesn't have operations — toggle just the bundleEntry
+      if (operationKeys.length === 0 && allValidEntries.has(key)) {
+        if (next.has(key)) {
+          next.delete(key);
+        } else {
+          next.add(key);
+        }
+
+        return next;
+      }
+
+      // 2. BundleEntry has operations but operationEntryIndex not provided — toggle all operations
+      if (operationEntryIndex === undefined) {
+        // If all operations are selected, deselect all; otherwise, select all
+        const allSelected = operationKeys.every((k) => next.has(k));
+        operationKeys.forEach((k) => (allSelected ? next.delete(k) : next.add(k)));
+
+        return next;
+      }
+
+      // 3. BundleEntry has operations and operationEntryIndex provided — toggle just the operation
+      if (next.has(key)) {
+        next.delete(key);
+      } else {
+        next.add(key);
+      }
+
+      return next;
+    });
+  }
+
+  function handleSelectAll() {
+    setSelectedEntries(allValidEntries);
+  }
+
+  function handleDeselectAll() {
+    setSelectedEntries(new Set());
+  }
+
+  // Generate a new FHIR Bundle based on selected entries
+  function handleGenerateBundleToWriteBack() {
+    const filteredEntries = getFilteredBundleEntries(selectedEntries, allBundleEntries);
+    onGenerateBundleToWriteBack({
       ...bundle,
-      entry: bundleEntries.filter((_, index) => selectedEntries.includes(index))
-    };
+      entry: filteredEntries
+    });
+    setDialogOpen(false);
+  }
 
-    console.log('Modified FHIR Bundle:', JSON.stringify(modifiedBundle, null, 2));
-    console.log(`Selected ${selectedEntries.length} out of ${bundleEntries.length} entries`);
-    setOpen(false);
-  };
+  const allValidEntriesSelected = selectedEntries.size === allValidEntries.size;
 
   return (
     <>
-      <Button variant="contained" onClick={() => setOpen(true)} size="small">
-        Configure FHIR Bundle ({bundleEntries.length} entries)
+      <Button variant="contained" onClick={() => setDialogOpen(true)} size="small">
+        Review write back items
       </Button>
 
-      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="md" fullWidth>
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="md" fullWidth>
         <DialogTitle>
           <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Typography variant="h6">Select Bundle Entries (WIP)</Typography>
-            <IconButton onClick={() => setOpen(false)} size="small">
+            <Typography variant="h6">Select items to write back</Typography>
+            <IconButton onClick={() => setDialogOpen(false)} size="small">
               <CloseIcon />
             </IconButton>
           </Box>
@@ -90,105 +165,43 @@ export default function WriteBackBundleSelector(props: WriteBackBundleSelectorPr
 
         <DialogContent dividers>
           <Box mb={2}>
-            <Button onClick={handleSelectAll} variant="outlined" size="small">
-              {selectedEntries.length === bundleEntries.length ? 'Deselect All' : 'Select All'}
+            <Button
+              onClick={allValidEntriesSelected ? handleDeselectAll : handleSelectAll}
+              variant="outlined"
+              size="small">
+              {allValidEntriesSelected ? 'Deselect All' : 'Select All'}
             </Button>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-              {selectedEntries.length} of {bundleEntries.length} entries selected
+            <Typography component="div" variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+              {selectedEntries.size} of {allValidEntries.size} valid entries selected
             </Typography>
           </Box>
 
-          <List>
-            {bundleEntries.map((bundleEntry, index) => {
-              const isSelected = selectedEntries.includes(index);
-              const resource = bundleEntry.resource;
-              const request = bundleEntry.request;
-
-              if (!resource || !resource.resourceType || !request) {
-                return null; // Skip entries without resource or request
-              }
-
-              // Get resourceType
-              let resourceType = resource.resourceType;
-              if (resource.resourceType === 'Parameters' && parametersIsFhirPatch(resource)) {
-                resourceType = request.url.split('/')[0] as FhirResource['resourceType'];
-              }
-
-              // Get resource displays based on whether it's a FHIRPatch or not
-              const resourceDisplays: string[] = [];
-              if (resource.resourceType === 'Parameters' && parametersIsFhirPatch(resource)) {
-                const resourceTypeFromRequest = request.url.split('/')[0];
-                resourceDisplays.push(
-                  ...getFhirPatchParametersDisplays(
-                    resource,
-                    resourceTypeFromRequest as FhirResource['resourceType']
-                  )
-                );
-              } else {
-                resourceDisplays.push(getResourceDisplay(resource));
-              }
-
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
+            {allBundleEntries.map((bundleEntry, bundleEntryIndex) => {
               return (
-                <React.Fragment key={index}>
-                  <ListItem disablePadding>
-                    <ListItemButton onClick={() => handleToggle(index)} dense>
-                      <ListItemIcon>
-                        <Checkbox edge="start" checked={isSelected} tabIndex={-1} disableRipple />
-                      </ListItemIcon>
-
-                      <ListItemText
-                        primary={
-                          <Box display="flex" alignItems="center" gap={1}>
-                            <Typography variant="subtitle1" component="span">
-                              {resourceType}
-                            </Typography>
-                            <Chip
-                              label={getMethodLabel(request.method)}
-                              size="small"
-                              sx={{
-                                textTransform: 'lowercase',
-                                height: '20px',
-                                fontSize: '0.75rem'
-                              }}
-                              color="primary"
-                            />
-                            {resource.id && (
-                              <Chip label={`ID: ${resource.id}`} size="small" variant="outlined" />
-                            )}
-                          </Box>
-                        }
-                        secondary={
-                          <Box py={0.5}>
-                            <Typography variant="body2" color="text.secondary">
-                              <strong>URL:</strong> {request.url} // Change to actual name?
-                            </Typography>
-                            {resourceDisplays.map((resourceDisplay) => (
-                              <Typography
-                                key={resourceDisplay}
-                                variant="body2"
-                                color="text.secondary">
-                                <strong>{resourceDisplay}</strong>
-                              </Typography>
-                            ))}
-                          </Box>
-                        }
-                      />
-                    </ListItemButton>
-                  </ListItem>
-                  {index < bundleEntries.length - 1 && <Divider />}
-                </React.Fragment>
+                <WriteBackBundleSelectorItem
+                  key={bundleEntryIndex}
+                  bundleEntry={bundleEntry}
+                  bundleEntryIndex={bundleEntryIndex}
+                  selectedEntries={selectedEntries}
+                  allValidEntries={allValidEntries}
+                  populatedResourceMap={populatedResourceMap}
+                  isEntrySelected={isEntrySelected}
+                  onToggleCheckbox={handleToggleCheckbox}
+                />
               );
             })}
-          </List>
+          </Box>
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={() => setOpen(false)}>Cancel</Button>
+          <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
           <Button
-            onClick={handleGenerateBundle}
-            variant="contained"
-            disabled={selectedEntries.length === 0}>
-            Generate Bundle ({selectedEntries.length} entries)
+            onClick={() => {
+              handleGenerateBundleToWriteBack();
+            }}
+            disabled={selectedEntries.size === 0}>
+            Confirm Write Back ({selectedEntries.size} entries)
           </Button>
         </DialogActions>
       </Dialog>
