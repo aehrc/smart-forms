@@ -57,7 +57,7 @@ function ExtractDebuggerViewer(props: ExtractDebuggerViewerProps) {
 
     const response = await fetch(sourceFhirServerUrl, {
       method: 'POST',
-      headers: { ...HEADERS, 'Content-Type': 'application/json;charset=utf-8' },
+      headers: { ...HEADERS },
       body: JSON.stringify(bundleToWriteBack)
     });
     setWritingBack(false);

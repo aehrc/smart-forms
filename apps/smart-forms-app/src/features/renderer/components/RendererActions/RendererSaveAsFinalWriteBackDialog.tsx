@@ -240,7 +240,7 @@ function RendererSaveAsFinalWriteBackDialog(props: RendererSaveAsFinalWriteBackD
       url: 'QuestionnaireResponse/$extract',
       method: 'POST',
       body: JSON.stringify(savedResponse),
-      headers: { ...HEADERS, 'Content-Type': 'application/json' }
+      headers: { ...HEADERS }
     });
 
     if (!extractedResource) {

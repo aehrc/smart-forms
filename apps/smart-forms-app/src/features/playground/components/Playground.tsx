@@ -225,7 +225,7 @@ function Playground() {
 
     const response = await fetch(defaultExtractEndpoint + '/QuestionnaireResponse/$extract', {
       method: 'POST',
-      headers: { ...HEADERS, 'Content-Type': 'application/json;charset=utf-8' },
+      headers: { ...HEADERS },
       body: JSON.stringify(removeEmptyAnswersFromResponse(sourceQuestionnaire, updatableResponse))
     });
     setExtracting(false);
