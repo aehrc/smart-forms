@@ -15,13 +15,8 @@
  * limitations under the License.
  */
 
-export { extract } from './extract';
-export { createInputParameters } from './createInputParameters';
-export { canBeTemplateExtracted } from './templateExtractRef';
-export {
-  logTemplateExtractPathMapFull,
-  logTemplateExtractPathMapJsObjectFull,
-  logTemplateExtractPathMapResults,
-  logTemplateExtractPathMapJsObjectResults
-} from './logging';
-export { parametersIsFhirPatch } from './typePredicates';
+import type { Bundle } from 'fhir/r4';
+
+export function isNonEmptyBundle(jsonObject: any): jsonObject is Bundle {
+  return jsonObject.resourceType === 'Bundle' && jsonObject.entry && jsonObject.entry.length > 0;
+}

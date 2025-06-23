@@ -23,7 +23,8 @@ const config: Config = {
   transform: {
     '^.+\\.ts?$': 'ts-jest'
   },
-  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.ts?$',
+  // Exclude "spec" folder
+  testRegex: '(/__tests__/.*|(\\.|/)(test))\\.ts?$',
   moduleFileExtensions: ['ts', 'js', 'json', 'node'],
   collectCoverage: true,
   clearMocks: true,

@@ -1,6 +1,6 @@
 import type { FhirResource } from 'fhir/r4';
 import { parametersIsFhirPatch } from './typePredicates';
-import { FhirPatchParameterEntry } from '../interfaces/fhirpatch.interface';
+import type { FhirPatchParameterEntry } from '../interfaces/fhirpatch.interface';
 
 /**
  * Determines whether a single extracted FHIR resource should be included in the bundle.
