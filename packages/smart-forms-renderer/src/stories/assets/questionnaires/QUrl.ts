@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { Questionnaire } from 'fhir/r4';
+import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
 export const qUrlBasic: Questionnaire = {
   resourceType: 'Questionnaire',
@@ -29,10 +29,48 @@ export const qUrlBasic: Questionnaire = {
   url: 'https://smartforms.csiro.au/docs/components/url/basic',
   item: [
     {
-      linkId: 'website-url',
+      linkId: 'url-empty',
       type: 'url',
       repeats: false,
-      text: 'Website URL'
+      text: 'Website URL (empty state)'
+    },
+    {
+      linkId: 'url-filled',
+      type: 'url',
+      repeats: false,
+      text: 'Website URL (filled state)'
+    },
+    {
+      linkId: 'url-invalid',
+      type: 'url',
+      repeats: false,
+      text: 'Website URL (invalid - will show validation)'
     }
   ]
+};
+
+export const qrUrlBasic: QuestionnaireResponse = {
+  resourceType: 'QuestionnaireResponse',
+  status: 'in-progress',
+  item: [
+    {
+      linkId: 'url-filled',
+      text: 'Website URL (filled state)',
+      answer: [
+        {
+          valueUri: 'https://smartforms.csiro.au'
+        }
+      ]
+    },
+    {
+      linkId: 'url-invalid',
+      text: 'Website URL (invalid - will show validation)',
+      answer: [
+        {
+          valueUri: 'not-a-valid-url'
+        }
+      ]
+    }
+  ],
+  questionnaire: 'https://smartforms.csiro.au/docs/components/url/basic'
 };

@@ -117,3 +117,46 @@ export const qIntegerCalculation: Questionnaire = {
     }
   ]
 };
+
+export const qIntegerCombined: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'IntegerCombined',
+  name: 'IntegerCombined',
+  title: 'Integer Combined Examples',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-05-01',
+  url: 'https://smartforms.csiro.au/docs/components/integer/combined',
+  item: [
+    {
+      linkId: 'integer-empty',
+      type: 'integer',
+      repeats: false,
+      text: 'Integer (empty state)'
+    },
+    {
+      linkId: 'integer-filled',
+      type: 'integer',
+      repeats: false,
+      text: 'Integer (filled state)'
+    }
+  ]
+};
+
+export const qrIntegerCombined: QuestionnaireResponse = {
+  resourceType: 'QuestionnaireResponse',
+  status: 'in-progress',
+  item: [
+    {
+      linkId: 'integer-filled',
+      text: 'Integer (filled state)',
+      answer: [
+        {
+          valueInteger: 42
+        }
+      ]
+    }
+  ],
+  questionnaire: 'https://smartforms.csiro.au/docs/components/integer/combined'
+};

@@ -17,7 +17,7 @@
 
 import type { Meta, StoryObj } from '@storybook/react';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { qrStringBasicResponse, qStringBasic, qStringCalculation } from '../assets/questionnaires';
+import { qrStringBasicResponse, qStringBasic, qStringCalculation, qStringCombined, qrStringCombined } from '../assets/questionnaires';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -32,15 +32,10 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const StringBasic: Story = {
+export const StringCombined: Story = {
   args: {
-    questionnaire: qStringBasic
-  }
-};
-export const StringBasicResponse: Story = {
-  args: {
-    questionnaire: qStringBasic,
-    questionnaireResponse: qrStringBasicResponse
+    questionnaire: qStringCombined,
+    questionnaireResponse: qrStringCombined
   }
 };
 

@@ -21,7 +21,9 @@ import {
   qBooleanCalculation,
   qBooleanCheckbox,
   qrBooleanBasicResponse,
-  qrBooleanCheckboxResponse
+  qrBooleanCheckboxResponse,
+  qBooleanCombined,
+  qrBooleanCombined
 } from '../assets/questionnaires';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook'; // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 
@@ -38,23 +40,10 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const BooleanBasic: Story = {
+export const BooleanCombined: Story = {
   args: {
-    questionnaire: qBooleanBasic
-  }
-};
-
-export const BooleanBasicResponse: Story = {
-  args: {
-    questionnaire: qBooleanBasic,
-    questionnaireResponse: qrBooleanBasicResponse
-  }
-};
-
-export const BooleanCheckboxResponse: Story = {
-  args: {
-    questionnaire: qBooleanCheckbox,
-    questionnaireResponse: qrBooleanCheckboxResponse
+    questionnaire: qBooleanCombined,
+    questionnaireResponse: qrBooleanCombined
   }
 };
 

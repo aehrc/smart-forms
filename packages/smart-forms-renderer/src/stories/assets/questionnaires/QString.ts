@@ -129,3 +129,46 @@ export const qStringCalculation: Questionnaire = {
     }
   ]
 };
+
+export const qStringCombined: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'StringCombined',
+  name: 'StringCombined',
+  title: 'String Combined Examples',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-05-01',
+  url: 'https://smartforms.csiro.au/docs/components/string/combined',
+  item: [
+    {
+      linkId: 'string-empty',
+      type: 'string',
+      repeats: false,
+      text: 'String (empty state)'
+    },
+    {
+      linkId: 'string-filled',
+      type: 'string',
+      repeats: false,
+      text: 'String (filled state)'
+    }
+  ]
+};
+
+export const qrStringCombined: QuestionnaireResponse = {
+  resourceType: 'QuestionnaireResponse',
+  status: 'in-progress',
+  item: [
+    {
+      linkId: 'string-filled',
+      text: 'String (filled state)',
+      answer: [
+        {
+          valueString: 'John Doe'
+        }
+      ]
+    }
+  ],
+  questionnaire: 'https://smartforms.csiro.au/docs/components/string/combined'
+};

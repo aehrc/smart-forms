@@ -178,3 +178,74 @@ export const qBooleanCalculation: Questionnaire = {
     }
   ]
 };
+
+export const qBooleanCombined: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'BooleanCombined',
+  name: 'BooleanCombined',
+  title: 'Boolean Combined Examples',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-05-01',
+  url: 'https://smartforms.csiro.au/docs/components/boolean/combined',
+  item: [
+    {
+      linkId: 'boolean-empty',
+      type: 'boolean',
+      repeats: false,
+      text: 'Boolean (empty state)'
+    },
+    {
+      linkId: 'boolean-filled',
+      type: 'boolean',
+      repeats: false,
+      text: 'Boolean (filled state)'
+    },
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: 'http://hl7.org/fhir/questionnaire-item-control',
+                code: 'check-box'
+              }
+            ]
+          }
+        }
+      ],
+      linkId: 'boolean-checkbox',
+      type: 'boolean',
+      repeats: false,
+      text: 'Boolean (checkbox style)'
+    }
+  ]
+};
+
+export const qrBooleanCombined: QuestionnaireResponse = {
+  resourceType: 'QuestionnaireResponse',
+  status: 'in-progress',
+  item: [
+    {
+      linkId: 'boolean-filled',
+      text: 'Boolean (filled state)',
+      answer: [
+        {
+          valueBoolean: true
+        }
+      ]
+    },
+    {
+      linkId: 'boolean-checkbox',
+      text: 'Boolean (checkbox style)',
+      answer: [
+        {
+          valueBoolean: false
+        }
+      ]
+    }
+  ],
+  questionnaire: 'https://smartforms.csiro.au/docs/components/boolean/combined'
+};
