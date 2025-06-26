@@ -39,6 +39,8 @@ function CheckboxSingle(props: Props) {
       sx={{
         width: fullWidth ? '100%' : 'unset',
         ...(readOnly && {
+          // Remove 'pointer' cursor when readOnly
+          cursor: 'default',
           color: readOnlyVisualStyle === 'readonly' ? 'text.secondary' : undefined
         })
       }}
