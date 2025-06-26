@@ -17,12 +17,12 @@ The list can be found here: http://hl7.org/fhir/R4/valueset-item-type.html
 - [x] time
 - [x] string
 - [x] text
-- [ ] url (partial implementation - using string UI component currently)
+- [x] url
 - [x] choice
 - [x] open-choice
 - [x] attachment 
 - [ ] reference (partial implementation - using string UI component currently)
-- [ ] quantity (partial implementation - using decimal UI component currently)
+- [x] quantity
 
 ### Using Expressions
 View the source here: http://hl7.org/fhir/uv/sdc/expressions.html
@@ -123,8 +123,8 @@ View the source here: http://hl7.org/fhir/uv/sdc/behavior.html
 - [x] regex
 - [x] minValue
 - [x] maxValue
-- [ ] minQuantity
-- [ ] maxQuantity
+- [x] minQuantity
+- [x] maxQuantity
 - [x] maxDecimalPlaces
 - [ ] mimeType
 - [ ] maxSize
