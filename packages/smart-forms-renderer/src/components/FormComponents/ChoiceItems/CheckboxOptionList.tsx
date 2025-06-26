@@ -53,7 +53,8 @@ function CheckboxOptionList(props: CheckboxOptionListProps) {
               key={option.valueCoding.code ?? option.valueCoding.display ?? ''}
               value={option.valueCoding.code ?? option.valueCoding.display ?? ''}
               label={option.valueCoding.display ?? `${option.valueCoding.code}`}
-              readOnly={readOnly || optionDisabledViaToggleExpression}
+              readOnly={readOnly}
+              disabledViaToggleExpression={optionDisabledViaToggleExpression}
               fullWidth={fullWidth}
               isChecked={answers.some(
                 (answer) => JSON.stringify(answer) === JSON.stringify(option)
@@ -69,7 +70,8 @@ function CheckboxOptionList(props: CheckboxOptionListProps) {
               key={option.valueString}
               value={option.valueString}
               label={option.valueString}
-              readOnly={readOnly || optionDisabledViaToggleExpression}
+              readOnly={readOnly}
+              disabledViaToggleExpression={optionDisabledViaToggleExpression}
               fullWidth={fullWidth}
               isChecked={answers.some((answer) => answer.valueString === option.valueString)}
               onCheckedChange={onCheckedChange}
@@ -83,7 +85,8 @@ function CheckboxOptionList(props: CheckboxOptionListProps) {
               key={option.valueInteger}
               value={option.valueInteger.toString()}
               label={option.valueInteger.toString()}
-              readOnly={readOnly || optionDisabledViaToggleExpression}
+              readOnly={readOnly}
+              disabledViaToggleExpression={optionDisabledViaToggleExpression}
               fullWidth={fullWidth}
               isChecked={answers.some((answer) => answer.valueInteger === option.valueInteger)}
               onCheckedChange={onCheckedChange}
