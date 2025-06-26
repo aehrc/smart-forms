@@ -22,6 +22,8 @@ The elements/extensions that fall under this subsection are:
 - [minValue](http://hl7.org/fhir/uv/sdc/behavior.html#minValue)
 - [maxValue](http://hl7.org/fhir/uv/sdc/behavior.html#maxValue)
 - [maxDecimalPlaces](http://hl7.org/fhir/uv/sdc/behavior.html#maxDecimalPlaces)
+- [minQuantity](http://hl7.org/fhir/uv/sdc/behavior.html#minQuantity)
+- [maxQuantity](http://hl7.org/fhir/uv/sdc/behavior.html#maxQuantity)
 
 :::tip
 Elements/extensions in this subsection invokes form validation in the renderer. OperationOutcome resources are generated when the current state of the form does not meet the constraints defined in the Questionnaire.
@@ -112,5 +114,31 @@ MaxDecimalPlaces is only supported on **decimal** items.
 
 <IframeContainer
   storyId="sdc-9-1-1-form-behavior-value-constraints--max-decimal-places"
+  initialHeight={272}
+/>
+
+### MinQuantity
+
+The minimum quantity value allowed for the answer to this question.
+
+MinQuantity is only supported on **quantity** items and provides validation against the specified minimum quantity constraint.
+
+#### Basic Usage
+
+<IframeContainer
+  storyId="sdc-9-1-1-form-behavior-value-constraints--min-quantity"
+  initialHeight={272}
+/>
+
+### MaxQuantity
+
+The maximum quantity value allowed for the answer to this question.
+
+MaxQuantity is only supported on **quantity** items and provides validation against the specified maximum quantity constraint.
+
+#### Basic Usage
+
+<IframeContainer
+  storyId="sdc-9-1-1-form-behavior-value-constraints--max-quantity"
   initialHeight={272}
 />

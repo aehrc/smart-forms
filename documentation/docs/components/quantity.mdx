@@ -12,11 +12,7 @@ There is an extension "http://hl7.org/fhir/StructureDefinition/questionnaire-uni
 
 You can use the [UnitOption](/docs/sdc/terminology#unitoption) extension to specify a list of options for the unit of a quantity item.
 
-:::warning
-
-This component is not thoroughly tested yet. Please use it with caution.
-
-:::
+The Quantity component provides full support for quantity values with units, comparators, and validation constraints including minimum and maximum quantity limits.
 
 ### Basic usage
 
@@ -62,3 +58,5 @@ This component is not thoroughly tested yet. Please use it with caution.
 | enableBehavior       | item.enableBehavior                                                                                                                                           |
 | text                 | item.text                                                                                                                                                     |
 | unitOption           | http://hl7.org/fhir/R4/extension-questionnaire-unitoption.html                                                                                                |
+| minQuantity          | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-minQuantity                                                                                  |
+| maxQuantity          | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-maxQuantity                                                                                  |
