@@ -44,7 +44,8 @@ function RadioOptionList(props: RadioOptionListProps) {
               key={option.valueCoding.code ?? ''}
               value={option.valueCoding.code ?? ''}
               label={option.valueCoding.display ?? `${option.valueCoding.code}`}
-              readOnly={readOnly || optionDisabledViaToggleExpression}
+              readOnly={readOnly}
+              disabledViaToggleExpression={optionDisabledViaToggleExpression}
               fullWidth={fullWidth}
             />
           );
@@ -56,7 +57,8 @@ function RadioOptionList(props: RadioOptionListProps) {
               key={option.valueString}
               value={option.valueString}
               label={option.valueString}
-              readOnly={readOnly || optionDisabledViaToggleExpression}
+              readOnly={readOnly}
+              disabledViaToggleExpression={optionDisabledViaToggleExpression}
               fullWidth={fullWidth}
             />
           );
@@ -68,7 +70,8 @@ function RadioOptionList(props: RadioOptionListProps) {
               key={option.valueInteger}
               value={option.valueInteger.toString()}
               label={option.valueInteger.toString()}
-              readOnly={readOnly || optionDisabledViaToggleExpression}
+              readOnly={readOnly}
+              disabledViaToggleExpression={optionDisabledViaToggleExpression}
               fullWidth={fullWidth}
             />
           );

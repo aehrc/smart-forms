@@ -37,6 +37,11 @@ function CheckboxSingleWithOpenLabel(props: Props) {
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
 
+  // When an option is disabled via toggle expression, it should truly be "disabled", regardless of readOnlyVisualStyle.
+  // Both isDisabled and isReadOnly are mutually exclusive.
+  const isHtmlDisabled = readOnly && readOnlyVisualStyle === 'disabled';
+  const isHtmlReadOnly = readOnly && readOnlyVisualStyle === 'readonly';
+
   function handleCheckedChange(event: ChangeEvent<HTMLInputElement>) {
     onCheckedChange(event.target.checked);
   }
@@ -44,13 +49,19 @@ function CheckboxSingleWithOpenLabel(props: Props) {
   return (
     <Box data-test="q-item-checkbox-open-label-box">
       <FormControlLabel
-        disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+        sx={{
+          ...(isHtmlReadOnly && {
+            cursor: 'default',
+            color: 'text.secondary'
+          })
+        }}
+        disabled={isHtmlDisabled}
         control={
           <StandardCheckbox
             size="small"
             checked={isChecked}
-            readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
-            aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
+            readOnly={isHtmlReadOnly}
+            aria-readonly={isHtmlReadOnly}
             role="checkbox"
             aria-checked={isChecked}
             onChange={handleCheckedChange}

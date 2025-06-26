@@ -24,28 +24,35 @@ interface ChoiceRadioSingleProps {
   value: string;
   label: string;
   readOnly: boolean;
+  disabledViaToggleExpression: boolean;
   fullWidth: boolean;
 }
 
 function ChoiceRadioSingle(props: ChoiceRadioSingleProps) {
-  const { value, label, readOnly, fullWidth } = props;
+  const { value, label, readOnly, disabledViaToggleExpression, fullWidth } = props;
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+
+  // When an option is disabled via answerOptionsToggleExpression, it should truly be "disabled", regardless of readOnlyVisualStyle.
+  // Both isHtmlDisabled and isHtmlReadOnly are mutually exclusive.
+  const readOnlyWithDisabledStyle = readOnly && readOnlyVisualStyle === 'disabled';
+  const readOnlyWithReadOnlyStyle = readOnly && readOnlyVisualStyle === 'readonly';
+
+  const isHtmlDisabled = readOnlyWithDisabledStyle || disabledViaToggleExpression;
+  const isHtmlReadOnly = readOnlyWithReadOnlyStyle && !disabledViaToggleExpression;
 
   return (
     <FormControlLabel
       sx={{
         width: fullWidth ? '100%' : 'unset',
-        ...(readOnly && {
-          color: readOnlyVisualStyle === 'readonly' ? 'text.secondary' : undefined,
-          cursor: 'default'
+        ...(isHtmlReadOnly && {
+          cursor: 'default',
+          color: 'text.secondary'
         })
       }}
-      disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+      disabled={isHtmlDisabled}
       value={value}
-      control={
-        <StandardRadio size="small" readOnly={readOnly && readOnlyVisualStyle === 'readonly'} />
-      }
+      control={<StandardRadio size="small" readOnly={isHtmlReadOnly} />}
       label={label}
     />
   );
