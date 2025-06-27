@@ -97,7 +97,7 @@ function PlaygroundUserPicker(props: PlaygroundPractitionerPickerProps) {
       <Box display="flex" pt={1} px={0.5} alignItems="center">
         {selectedUser ? (
           <>
-            <Grid container>
+            <Grid container sx={{ flex: 1 }}>
               <Grid size={{ xs: 2 }}>ID:</Grid>
               <Grid size={{ xs: 10 }}>
                 <Typography mb={1}>{selectedUser.id}</Typography>
