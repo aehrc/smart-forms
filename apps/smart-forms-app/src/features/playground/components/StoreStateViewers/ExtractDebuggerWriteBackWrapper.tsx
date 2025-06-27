@@ -56,6 +56,8 @@ function ExtractDebuggerWriteBackWrapper(props: ExtractDebuggerWriteBackWrapperP
         }
       );
     }
+
+    setDialogOpen(false);
   }
 
   const showWriteBackDialog =
