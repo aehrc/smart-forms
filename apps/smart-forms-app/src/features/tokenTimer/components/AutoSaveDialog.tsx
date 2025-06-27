@@ -81,7 +81,7 @@ function AutoSaveDialog(props: AutoSaveDialogProps) {
 
   return (
     <Dialog open={true} maxWidth="xl">
-      <DialogTitle variant="h5">Autosaving...</DialogTitle>
+      <DialogTitle variant="h6">Autosaving...</DialogTitle>
       <DialogContent sx={{ mb: 2 }}>
         <DialogContentText>
           Due to inactivity, your form is currently being autosaved as a draft.

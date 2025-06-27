@@ -15,15 +15,7 @@
  * limitations under the License.
  */
 
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Typography
-} from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent, Typography } from '@mui/material';
 import type { ItemToRepopulate } from '@aehrc/smart-forms-renderer';
 import {
   repopulateResponse,
@@ -40,6 +32,7 @@ import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import { useSnackbar } from 'notistack';
 import type { RendererSpinner } from '../../renderer/types/rendererSpinner.ts';
 import { flushSync } from 'react-dom';
+import StandardDialogTitle from '../../../components/Dialog/StandardDialogTitle.tsx';
 
 interface RepopulateSelectDialogProps {
   itemsToRepopulate: Record<string, ItemToRepopulate>;
@@ -106,7 +99,9 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
 
   return (
     <Dialog open={true} onClose={onCloseDialog} maxWidth="xl" fullWidth>
-      <DialogTitle variant="h5">Select items to be re-populated</DialogTitle>
+      <StandardDialogTitle onCloseDialog={onCloseDialog}>
+        Select items to be re-populated
+      </StandardDialogTitle>
       <DialogContent>
         <RepopulateList
           itemsToRepopulateTuplesByHeadings={itemsToRepopulateTuplesByHeadings}

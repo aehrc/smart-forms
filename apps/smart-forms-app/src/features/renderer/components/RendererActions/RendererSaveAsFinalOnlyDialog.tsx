@@ -19,18 +19,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { saveProgress } from '../../../../api/saveQr.ts';
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle
-} from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText } from '@mui/material';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import { saveAsFinalSuccessMessage, saveErrorMessage } from '../../../../utils/snackbar.ts';
 import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
+import StandardDialogTitle from '../../../../components/Dialog/StandardDialogTitle.tsx';
 
 export interface RendererSaveAsFinalDialogProps {
   open: boolean;
@@ -109,7 +103,7 @@ function RendererSaveAsFinalOnlyDialog(props: RendererSaveAsFinalDialogProps) {
 
   return (
     <Dialog open={open} onClose={handleClose} data-test="dialog-confirm-save">
-      <DialogTitle variant="h5">Confirm save as final</DialogTitle>
+      <StandardDialogTitle onCloseDialog={handleClose}>Confirm save as final</StandardDialogTitle>
       <DialogContent>
         <DialogContentText>{customContentText}</DialogContentText>
       </DialogContent>

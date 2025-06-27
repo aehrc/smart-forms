@@ -18,14 +18,7 @@
 import { useState } from 'react';
 import type { unstable_Blocker as Blocker } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle
-} from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText } from '@mui/material';
 import { saveQuestionnaireResponse } from '../../../../api/saveQr.ts';
 import {
   removeEmptyAnswersFromResponse,
@@ -33,6 +26,7 @@ import {
   useQuestionnaireStore
 } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
+import StandardDialogTitle from '../../../../components/Dialog/StandardDialogTitle.tsx';
 
 export interface Props {
   blocker: Blocker;
@@ -99,7 +93,7 @@ function BlockerUnsavedFormDialog(props: Props) {
 
   return (
     <Dialog open={open} onClose={closeDialog}>
-      <DialogTitle variant="h5">Unsaved changes</DialogTitle>
+      <StandardDialogTitle onCloseDialog={handleCancel}>Unsaved changes</StandardDialogTitle>
       <DialogContent>
         <DialogContentText>
           {'The form has unsaved changes. Are you sure you want to exit?'}

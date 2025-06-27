@@ -1,15 +1,5 @@
 import { useMemo, useState } from 'react';
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  Typography
-} from '@mui/material';
-import { Close as CloseIcon } from '@mui/icons-material';
+import { Box, Button, Dialog, DialogActions, DialogContent, Typography } from '@mui/material';
 import type { Bundle, BundleEntry } from 'fhir/r4';
 import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import {
@@ -20,6 +10,7 @@ import {
 } from '../utils/extractedBundleSelector.ts';
 import WriteBackBundleSelectorItem from './WriteBackBundleSelectorItem.tsx';
 import type { SavingWriteBackMode } from '../../renderer/utils/extract.ts';
+import StandardDialogTitle from '../../../components/Dialog/StandardDialogTitle.tsx';
 
 interface WriteBackBundleSelectorProps {
   viewMode: 'renderer' | 'playground';
@@ -180,14 +171,9 @@ function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
           onExited: onDialogExited
         }
       }}>
-      <DialogTitle>
-        <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant="h6">Select items to write back to patient record</Typography>
-          <IconButton onClick={onCloseDialog} size="small">
-            <CloseIcon />
-          </IconButton>
-        </Box>
-      </DialogTitle>
+      <StandardDialogTitle onCloseDialog={onCloseDialog}>
+        Select items to write back to patient record
+      </StandardDialogTitle>
 
       <DialogContent dividers>
         <Button
