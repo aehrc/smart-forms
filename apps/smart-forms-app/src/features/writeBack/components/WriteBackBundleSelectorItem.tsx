@@ -105,43 +105,31 @@ function WriteBackBundleSelectorItem(props: WriteBackBundleSelectorItemProps) {
           />
         )}
 
-        {/* Show resource display name (e.g. Condition code.display) and resourceType */}
         <Box
           sx={{
-            width: '250px'
+            display: 'flex',
+            flexGrow: 1,
+            alignItems: 'center',
+            justifyContent: 'space-between'
           }}>
-          <Typography
-            variant="h6"
-            component="span"
-            sx={{
-              whiteSpace: 'normal',
-              wordBreak: 'break-word',
-              overflowWrap: 'anywhere'
-            }}>
-            {resourceDisplay}
-          </Typography>
-          <Typography color="text.secondary">{resourceType}</Typography>
-        </Box>
+          {/* Show resource display name (e.g. Condition code.display) and resourceType */}
+          <Box>
+            <Typography
+              variant="h6"
+              component="span"
+              sx={{
+                whiteSpace: 'normal',
+                wordBreak: 'break-word',
+                overflowWrap: 'anywhere'
+              }}>
+              {resourceDisplay}
+            </Typography>
+            <Typography color="text.secondary">{resourceType}</Typography>
+          </Box>
 
-        {/* Show request.method label */}
-        <Box
-          display="flex"
-          justifyContent="center"
-          sx={{
-            width: '60px'
-          }}>
+          {/* Show request.method label */}
           <Chip label={chipLabel} color={chipColorVariant} size="small" />
         </Box>
-
-        {/* If request.method is an update, show details to update */}
-        {bundleEntryRequest.method === 'PUT' || bundleEntryRequest.method === 'PATCH' ? (
-          <Box sx={{ flex: 1 }}>
-            <Typography variant="body2" color="text.secondary">
-              Resource ID:
-            </Typography>
-            <Typography>{bundleEntryRequest.url}</Typography>
-          </Box>
-        ) : null}
       </Box>
 
       {/* Render FhirPatchEntries */}

@@ -61,7 +61,8 @@ function WriteBackSelectorFhirPatchEntries(props: WriteBackSelectorFhirPatchItem
           type: operationType,
           path: operationPath,
           name: operationName,
-          valuePart: operationValuePart
+          valuePart: operationValuePart,
+          pathLabel: operationPathLabel
         } = getFhirPatchOperationParts(param);
 
         const operationEntrySelected = isEntrySelected(bundleEntryIndex, operationEntryIndex);
@@ -72,7 +73,8 @@ function WriteBackSelectorFhirPatchEntries(props: WriteBackSelectorFhirPatchItem
             sx={{
               ml: 0.5,
               mt: 1,
-              p: 1,
+              px: 1,
+              py: 0.5,
               backgroundColor: alpha(theme.palette.background.default, 0.9),
               borderRadius: 1,
               borderLeft: 3,
@@ -83,6 +85,7 @@ function WriteBackSelectorFhirPatchEntries(props: WriteBackSelectorFhirPatchItem
               operationPath={operationPath}
               operationValuePart={operationValuePart}
               operationName={operationName}
+              operationPathLabel={operationPathLabel}
               bundleEntryIndex={bundleEntryIndex}
               operationEntryIndex={operationEntryIndex}
               operationEntrySelected={

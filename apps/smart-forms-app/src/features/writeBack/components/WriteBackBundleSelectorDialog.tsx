@@ -190,19 +190,14 @@ function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
       </DialogTitle>
 
       <DialogContent dividers>
-        <Box mb={2}>
-          <Button
-            onClick={allValidEntriesSelected ? handleDeselectAll : handleSelectAll}
-            variant="outlined"
-            size="small">
-            {allValidEntriesSelected ? 'Deselect All' : 'Select All'}
-          </Button>
-          <Typography component="div" variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-            {selectedEntries.size} of {allValidEntries.size} valid entries selected
-          </Typography>
-        </Box>
+        <Button
+          onClick={allValidEntriesSelected ? handleDeselectAll : handleSelectAll}
+          variant="outlined"
+          size="small">
+          {allValidEntriesSelected ? 'Deselect All' : 'Select All'}
+        </Button>
 
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
           {allBundleEntries.map((bundleEntry, bundleEntryIndex) => {
             return (
               <WriteBackBundleSelectorItem
@@ -221,28 +216,43 @@ function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onCloseDialog} disabled={!!isSaving}>
-          Cancel
-        </Button>
-        {showSaveOnlyButton ? (
-          <Button
-            loading={isSaving === 'saving-only'}
-            onClick={() => {
-              handleWriteBack('saving-only');
-            }}
-            disabled={isSaving === 'saving-write-back'}>
-            Save as final only
-          </Button>
-        ) : null}
-        <Button
-          loading={isSaving === 'saving-write-back'}
-          onClick={() => {
-            handleWriteBack('saving-write-back');
-          }}
-          disabled={selectedEntries.size === 0 || isSaving === 'saving-only'}>
-          {writeBackButtonText} ({selectedEntries.size}{' '}
-          {selectedEntries.size === 1 ? 'entry' : 'entries'})
-        </Button>
+        <Box
+          sx={{
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            pl: 1
+          }}>
+          <Typography component="div" variant="body2" color="text.secondary">
+            {selectedEntries.size} of {allValidEntries.size} valid entries selected
+          </Typography>
+
+          <Box display="flex" gap={1}>
+            <Button onClick={onCloseDialog} disabled={!!isSaving}>
+              Cancel
+            </Button>
+            {showSaveOnlyButton ? (
+              <Button
+                loading={isSaving === 'saving-only'}
+                onClick={() => {
+                  handleWriteBack('saving-only');
+                }}
+                disabled={isSaving === 'saving-write-back'}>
+                Save as final only
+              </Button>
+            ) : null}
+            <Button
+              loading={isSaving === 'saving-write-back'}
+              onClick={() => {
+                handleWriteBack('saving-write-back');
+              }}
+              disabled={selectedEntries.size === 0 || isSaving === 'saving-only'}>
+              {writeBackButtonText} ({selectedEntries.size}{' '}
+              {selectedEntries.size === 1 ? 'entry' : 'entries'})
+            </Button>
+          </Box>
+        </Box>
       </DialogActions>
     </Dialog>
   );

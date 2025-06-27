@@ -1,4 +1,4 @@
-import type { BundleEntry, BundleEntryRequest, FhirResource } from 'fhir/r4';
+import type { BundleEntry, BundleEntryRequest, FhirResource, ParametersParameter } from 'fhir/r4';
 import { constructName } from '../../smartAppLaunch/utils/launchContext.ts';
 import type { FhirPatchParameterEntry } from '@aehrc/sdc-template-extract';
 import { parametersIsFhirPatch } from '@aehrc/sdc-template-extract';
@@ -269,6 +269,7 @@ export function getFhirPatchOperationParts(operation: FhirPatchParameterEntry): 
   index?: number;
   source?: number;
   destination?: number;
+  pathLabel?: string;
 } {
   const type = operation.part.find((part) => part.name === 'type')?.valueCode;
   const path = operation.part.find((part) => part.name === 'path')?.valueString;
@@ -278,6 +279,11 @@ export function getFhirPatchOperationParts(operation: FhirPatchParameterEntry): 
   const source = operation.part.find((part) => part.name === 'source')?.valueInteger;
   const destination = operation.part.find((part) => part.name === 'destination')?.valueInteger;
 
+  // Custom "pathLabel" for a human-readable label of the path
+  const pathLabel = (operation as ParametersParameter).part?.find(
+    (part) => part.name === 'pathLabel'
+  )?.valueString;
+
   return {
     type,
     path,
@@ -285,10 +291,12 @@ export function getFhirPatchOperationParts(operation: FhirPatchParameterEntry): 
     valuePart,
     index,
     source,
-    destination
+    destination,
+    pathLabel
   };
 }
 
+// Fallback if pathLabel is not available
 export function getFhirPatchOperationPathDisplay(
   operationPath: string | undefined,
   operationName: string | undefined
@@ -308,6 +316,180 @@ export function getFhirPatchOperationPathDisplay(
   }
 
   return operationName + ' ' + pathLastSegment;
+}
+
+const primitiveDataTypes = [
+  'valueBase64Binary',
+  'valueBoolean',
+  'valueCode',
+  'valueDate',
+  'valueDateTime',
+  'valueDecimal',
+  'valueId',
+  'valueInstant',
+  'valueInteger',
+  'valueInteger64',
+  'valueMarkdown',
+  'valueOid',
+  'valuePositiveInt',
+  'valueString',
+  'valueTime',
+  'valueUnsignedInt',
+  'valueUri',
+  'valueUrl',
+  'valueUuid'
+];
+
+// This can probably be moved to a shared utility file since it generally generates display strings for FHIR datatypes.
+export function getFhirPatchOperationValueDisplay(
+  operationValuePart: { [key: string]: any } | undefined
+): string {
+  if (!operationValuePart) {
+    return '';
+  }
+
+  const valueKey = Object.keys(operationValuePart).find((k) => k.startsWith('value'));
+  const valueObj = operationValuePart[valueKey ?? ''];
+  if (valueKey && valueObj) {
+    // 1. Handle primitive data types
+    if (primitiveDataTypes.includes(valueKey)) {
+      return String(valueObj);
+    }
+
+    // 2. Handle CodeableConcept
+    if (valueKey === 'valueCodeableConcept') {
+      if (valueObj?.coding?.[0]?.display) {
+        return valueObj.coding[0].display;
+      }
+
+      if (valueObj?.text) {
+        return valueObj.text;
+      }
+
+      if (valueObj?.coding?.[0]?.code) {
+        return valueObj.coding[0].code;
+      }
+    }
+
+    // 3. Handle Coding
+    if (valueKey === 'valueCoding') {
+      if (valueObj?.display) {
+        return valueObj.display;
+      }
+
+      if (valueObj?.code) {
+        return valueObj.code;
+      }
+    }
+
+    // 4. Handle Reference
+    if (valueKey === 'valueReference') {
+      if (valueObj?.display) {
+        return valueObj.display;
+      }
+
+      if (valueObj?.reference) {
+        return valueObj.reference;
+      }
+    }
+
+    // 5. Handle Quantity, Money, Count, Age, Distance, Duration
+    if (
+      [
+        'valueQuantity',
+        'valueMoney',
+        'valueCount',
+        'valueAge',
+        'valueDistance',
+        'valueDuration'
+      ].includes(valueKey)
+    ) {
+      // Display as "value unit" (e.g., "5 mg")
+      const val = valueObj.value !== undefined ? valueObj.value : '';
+      const unit = valueObj.unit || valueObj.code || '';
+      return [val, unit].filter(Boolean).join(' ');
+    }
+
+    // 6. Handle HumanName
+    if (valueKey === 'valueHumanName') {
+      return constructName(valueObj);
+    }
+
+    // 7. Handle Address
+    if (valueKey === 'valueAddress') {
+      const lines = [
+        ...(valueObj.line || []),
+        valueObj.city,
+        valueObj.state,
+        valueObj.postalCode,
+        valueObj.country
+      ].filter(Boolean);
+      return lines.join(', ');
+    }
+
+    // 8. Handle Period
+    if (valueKey === 'valuePeriod') {
+      return `${valueObj.start || ''} – ${valueObj.end || ''}`.trim();
+    }
+
+    // 9. Handle Range
+    if (valueKey === 'valueRange') {
+      const low = valueObj.low ? `${valueObj.low.value} ${valueObj.low.unit || ''}` : '';
+      const high = valueObj.high ? `${valueObj.high.value} ${valueObj.high.unit || ''}` : '';
+      return [low, high].filter(Boolean).join(' – ');
+    }
+
+    // 10. Handle Ratio
+    if (valueKey === 'valueRatio') {
+      const num = valueObj.numerator
+        ? `${valueObj.numerator.value} ${valueObj.numerator.unit || ''}`.trim()
+        : '';
+      const denom = valueObj.denominator
+        ? `${valueObj.denominator.value} ${valueObj.denominator.unit || ''}`.trim()
+        : '';
+      return num && denom ? `${num} / ${denom}` : num || denom;
+    }
+
+    // 11. Handle Attachment
+    if (valueKey === 'valueAttachment') {
+      return valueObj.title || valueObj.url || valueObj.contentType || 'Attachment';
+    }
+
+    // 12. Handle Identifier
+    if (valueKey === 'valueIdentifier') {
+      return [valueObj.system, valueObj.value].filter(Boolean).join(' | ');
+    }
+
+    // 13. Handle ContactPoint
+    if (valueKey === 'valueContactPoint') {
+      return [valueObj.system, valueObj.value].filter(Boolean).join(': ');
+    }
+
+    // 14. Handle Annotation
+    if (valueKey === 'valueAnnotation') {
+      return valueObj.text || JSON.stringify(valueObj);
+    }
+
+    // 15. Handle Timing
+    if (valueKey === 'valueTiming') {
+      return valueObj.code?.text || valueObj.repeat?.frequency || 'Timing';
+    }
+
+    // 16. Handle SampledData
+    if (valueKey === 'valueSampledData') {
+      return `SampledData: ${valueObj.data?.slice(0, 20)}...`;
+    }
+
+    // 17. Handle Meta
+    if (valueKey === 'valueMeta') {
+      return valueObj.versionId || valueObj.lastUpdated || 'Meta';
+    }
+
+    // Otherwise, return the JSON stringified value
+    return JSON.stringify(operationValuePart, null, 2);
+  }
+
+  return '';
 }
 
 export function getPopulatedResourceMap(populatedContext: Record<string, any>) {
