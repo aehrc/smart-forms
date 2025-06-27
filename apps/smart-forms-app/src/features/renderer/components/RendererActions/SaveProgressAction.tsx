@@ -31,12 +31,12 @@ import { useState } from 'react';
 
 interface SaveProgressSpeedDialActionProps extends SpeedDialActionProps {
   isSpeedDial?: boolean;
-  onClose?: () => void;
+  onCloseSpeedDial?: () => void;
   refetchResponses?: () => void;
 }
 
 function SaveProgressAction(props: SaveProgressSpeedDialActionProps) {
-  const { isSpeedDial, onClose, refetchResponses, ...speedDialActionProps } = props;
+  const { isSpeedDial, onCloseSpeedDial, refetchResponses, ...speedDialActionProps } = props;
 
   const { smartClient, patient, user, launchQuestionnaire } = useSmartClient();
 
@@ -68,8 +68,8 @@ function SaveProgressAction(props: SaveProgressSpeedDialActionProps) {
   }
 
   async function handleSaveProgress() {
-    if (onClose) {
-      onClose();
+    if (onCloseSpeedDial) {
+      onCloseSpeedDial();
     }
 
     closeSnackbar();

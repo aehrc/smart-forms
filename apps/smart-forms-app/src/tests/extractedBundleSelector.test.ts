@@ -4,7 +4,7 @@ import {
   getFilteredBundleEntries,
   getOperationEntryCounts,
   getValidEntries
-} from '../features/playground/utils/extractedBundleSelector.ts';
+} from '../features/writeBack/utils/extractedBundleSelector.ts';
 import { randomBundleEntries } from './resources/randomBundleEntries.ts';
 import { extractedMedicalHistoryCurrentProblemsWithPatch } from './resources/extractedMedicalHistoryCurrentProblemsWithPatch.ts';
 import type { FhirPatchParameters } from '@aehrc/sdc-template-extract';

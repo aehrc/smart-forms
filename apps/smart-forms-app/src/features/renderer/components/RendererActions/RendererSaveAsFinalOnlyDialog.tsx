@@ -34,11 +34,16 @@ import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
 
 export interface RendererSaveAsFinalDialogProps {
   open: boolean;
+  customContentText?: string;
   closeDialog: () => unknown;
 }
 
-function RendererSaveAsFinalDialog(props: RendererSaveAsFinalDialogProps) {
-  const { open, closeDialog } = props;
+function RendererSaveAsFinalOnlyDialog(props: RendererSaveAsFinalDialogProps) {
+  const {
+    open,
+    customContentText = "Are you sure you want to save this form as final? You won't be able to edit it after.",
+    closeDialog
+  } = props;
 
   const { smartClient, patient, user, launchQuestionnaire } = useSmartClient();
 
@@ -56,6 +61,15 @@ function RendererSaveAsFinalDialog(props: RendererSaveAsFinalDialogProps) {
   // Event Handlers
   function handleClose() {
     closeDialog();
+  }
+
+  function handleCloseWithNavigation() {
+    // Wait until renderer.hasChanges is set to false before navigating away
+    setTimeout(() => {
+      navigate(launchQuestionnaire ? '/dashboard/existing' : '/dashboard/responses');
+      setIsSaving(false);
+      handleClose();
+    }, 1000);
   }
 
   async function handleSaveAsFinal() {
@@ -90,21 +104,14 @@ function RendererSaveAsFinalDialog(props: RendererSaveAsFinalDialogProps) {
       action: <CloseSnackbar variant="success" />
     });
 
-    // Wait until renderer.hasChanges is set to false before navigating away
-    setTimeout(() => {
-      navigate(launchQuestionnaire ? '/dashboard/existing' : '/dashboard/responses');
-      setIsSaving(false);
-      handleClose();
-    }, 1000);
+    handleCloseWithNavigation();
   }
 
   return (
     <Dialog open={open} onClose={handleClose} data-test="dialog-confirm-save">
-      <DialogTitle variant="h5">Confirm save</DialogTitle>
+      <DialogTitle variant="h5">Confirm save as final</DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          {"Are you sure you want to save this form as final? You won't be able to edit it after."}
-        </DialogContentText>
+        <DialogContentText>{customContentText}</DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
@@ -116,4 +123,4 @@ function RendererSaveAsFinalDialog(props: RendererSaveAsFinalDialogProps) {
   );
 }
 
-export default RendererSaveAsFinalDialog;
+export default RendererSaveAsFinalOnlyDialog;

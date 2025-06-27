@@ -3,12 +3,18 @@ import { constructName } from '../../smartAppLaunch/utils/launchContext.ts';
 import type { FhirPatchParameterEntry } from '@aehrc/sdc-template-extract';
 import { parametersIsFhirPatch } from '@aehrc/sdc-template-extract';
 
+/**
+ * Creates a unique selection key for a bundle entry or its operation for WriteBackSelector.
+ */
 export function createSelectionKey(bundleEntryIndex: number, operationEntryIndex?: number): string {
   return typeof operationEntryIndex === 'number'
     ? `bundle-${bundleEntryIndex}-operation-${operationEntryIndex}`
     : `bundle-${bundleEntryIndex}`;
 }
 
+/**
+ * Counts how many operations within a bundle entry are selected vs. valid for WriteBackSelector.
+ */
 export function getOperationEntryCounts(
   bundleEntryIndex: number,
   selectedEntries: Set<string>,
@@ -27,12 +33,17 @@ export function getOperationEntryCounts(
   return { numOfSelectedOperations, numOfValidOperations };
 }
 
-// Exclude entries with these three criteria:
-// 1. BundleEntry no resource or request
-// 2. BundleEntry resource is a Parameters resource but is not a valid FHIRPatch
-// 3. BundleEntry resource is a FHIRPatch but has no "type", "path" or "value" in the operation parts
+/**
+ * Returns a set of valid selection keys for bundle entries and FHIRPatch operations for WriteBackSelector.
+ *
+ * Exclude entries with these three criteria:
+ * 1. BundleEntry no resource or request
+ * 2. BundleEntry resource is a Parameters resource but is not a valid FHIRPatch
+ * 3. BundleEntry resource is a FHIRPatch but has no "type", "path" or "value" in the operation parts
+ */
 export function getValidEntries(bundleEntries: BundleEntry[]): Set<string> {
   const validEntries: Set<string> = new Set();
+
   for (const [bundleEntryIndex, bundleEntry] of bundleEntries.entries()) {
     // 1. Skip if the entry doesn't have a resource and request
     if (!bundleEntry.resource || !bundleEntry.request) {
@@ -70,6 +81,42 @@ export function getValidEntries(bundleEntries: BundleEntry[]): Set<string> {
   return validEntries;
 }
 
+/**
+ * Returns a set of all bundle entry and operation keys from the bundle, without exclusions.
+ * This is more for the dialog that contains WriteBackSelector, since most likely the bundle is already filtered by the user.
+ *
+ * - Includes all bundle entries that have a resource.
+ * - If the resource is a Parameters (FHIRPatch), includes all its operations.
+ */
+export function getAllEntries(bundleEntries: BundleEntry[]): Set<string> {
+  const allEntries: Set<string> = new Set();
+
+  for (const [bundleEntryIndex, bundleEntry] of bundleEntries.entries()) {
+    const resource = bundleEntry.resource;
+
+    if (!resource) {
+      continue;
+    }
+
+    if (resource.resourceType === 'Parameters' && Array.isArray(resource.parameter)) {
+      for (const [operationEntryIndex] of resource.parameter.entries()) {
+        allEntries.add(createSelectionKey(bundleEntryIndex, operationEntryIndex));
+      }
+    } else {
+      allEntries.add(createSelectionKey(bundleEntryIndex));
+    }
+  }
+
+  return allEntries;
+}
+
+/**
+ * Filters the bundle entries to include only selected resources and operations for WriteBackSelector.
+ *
+ * - For FHIRPatch (Parameters) entries: includes only selected operations.
+ * - For non-FHIRPatch resources: includes the entry if its key is selected.
+ * - Skips entries without a resource.
+ */
 export function getFilteredBundleEntries(
   selectedEntries: Set<string>,
   allBundleEntries: BundleEntry[]
@@ -95,7 +142,6 @@ export function getFilteredBundleEntries(
         .map(({ operation }) => operation) as FhirPatchParameterEntry[];
 
       if (selectedOperations.length > 0) {
-        // Deep copy to avoid mutating original entry
         filteredBundleEntries.push({
           ...entry,
           resource: {

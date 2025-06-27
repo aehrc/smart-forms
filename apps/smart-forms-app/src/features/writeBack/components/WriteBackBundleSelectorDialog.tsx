@@ -10,22 +10,36 @@ import {
   Typography
 } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
+import type { Bundle, BundleEntry } from 'fhir/r4';
+import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import {
   createSelectionKey,
   getFilteredBundleEntries,
   getPopulatedResourceMap,
   getValidEntries
 } from '../utils/extractedBundleSelector.ts';
-import type { Bundle, BundleEntry } from 'fhir/r4';
-import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import WriteBackBundleSelectorItem from './WriteBackBundleSelectorItem.tsx';
+import type { SavingWriteBackMode } from '../../renderer/utils/extract.ts';
 
 interface WriteBackBundleSelectorProps {
-  bundle: Bundle;
-  onGenerateBundleToWriteBack: (bundleToWriteBack: Bundle) => void;
+  viewMode: 'renderer' | 'playground';
+  dialogOpen: boolean;
+  isSaving: SavingWriteBackMode;
+  extractedBundle: Bundle;
+  onCloseDialog: () => void;
+  onWriteBackBundle: (bundleToWriteBack: Bundle, savingWriteBackMode: SavingWriteBackMode) => void;
+  onDialogExited?: () => void;
 }
-export default function WriteBackBundleSelector(props: WriteBackBundleSelectorProps) {
-  const { bundle, onGenerateBundleToWriteBack } = props;
+
+function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
+  const {
+    dialogOpen,
+    isSaving,
+    extractedBundle,
+    onCloseDialog,
+    onWriteBackBundle,
+    onDialogExited
+  } = props;
 
   const populatedContext = useQuestionnaireStore.use.populatedContext();
 
@@ -35,9 +49,10 @@ export default function WriteBackBundleSelector(props: WriteBackBundleSelectorPr
     [populatedContext]
   );
 
-  const [dialogOpen, setDialogOpen] = useState(false);
-
-  const allBundleEntries: BundleEntry[] = useMemo(() => bundle.entry ?? [], [bundle.entry]);
+  const allBundleEntries: BundleEntry[] = useMemo(
+    () => extractedBundle.entry ?? [],
+    [extractedBundle.entry]
+  );
 
   // Exclude entries with these three criteria:
   // 1. BundleEntry no resource or request
@@ -135,76 +150,102 @@ export default function WriteBackBundleSelector(props: WriteBackBundleSelectorPr
     setSelectedEntries(new Set());
   }
 
-  // Generate a new FHIR Bundle based on selected entries
-  function handleGenerateBundleToWriteBack() {
+  // Write back FHIR Bundle based on selected entries
+  function handleWriteBack(savingWriteBackMode: SavingWriteBackMode) {
     const filteredEntries = getFilteredBundleEntries(selectedEntries, allBundleEntries);
-    onGenerateBundleToWriteBack({
-      ...bundle,
-      entry: filteredEntries
-    });
-    setDialogOpen(false);
+    onWriteBackBundle(
+      {
+        ...extractedBundle,
+        entry: filteredEntries
+      },
+      savingWriteBackMode
+    );
   }
 
   const allValidEntriesSelected = selectedEntries.size === allValidEntries.size;
 
+  // Button texts based on if view mode is in renderer or playground
+  const writeBackButtonText =
+    props.viewMode === 'renderer' ? 'Save as final and write back' : 'Write Back';
+  const showSaveOnlyButton = props.viewMode === 'renderer';
+
   return (
-    <>
-      <Button variant="contained" onClick={() => setDialogOpen(true)} size="small">
-        Review write back items
-      </Button>
+    <Dialog
+      open={dialogOpen}
+      onClose={onCloseDialog}
+      maxWidth="md"
+      fullWidth
+      slotProps={{
+        transition: {
+          onExited: onDialogExited
+        }
+      }}>
+      <DialogTitle>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography variant="h6">Select items to write back to patient record</Typography>
+          <IconButton onClick={onCloseDialog} size="small">
+            <CloseIcon />
+          </IconButton>
+        </Box>
+      </DialogTitle>
 
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="md" fullWidth>
-        <DialogTitle>
-          <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Typography variant="h6">Select items to write back</Typography>
-            <IconButton onClick={() => setDialogOpen(false)} size="small">
-              <CloseIcon />
-            </IconButton>
-          </Box>
-        </DialogTitle>
-
-        <DialogContent dividers>
-          <Box mb={2}>
-            <Button
-              onClick={allValidEntriesSelected ? handleDeselectAll : handleSelectAll}
-              variant="outlined"
-              size="small">
-              {allValidEntriesSelected ? 'Deselect All' : 'Select All'}
-            </Button>
-            <Typography component="div" variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-              {selectedEntries.size} of {allValidEntries.size} valid entries selected
-            </Typography>
-          </Box>
-
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
-            {allBundleEntries.map((bundleEntry, bundleEntryIndex) => {
-              return (
-                <WriteBackBundleSelectorItem
-                  key={bundleEntryIndex}
-                  bundleEntry={bundleEntry}
-                  bundleEntryIndex={bundleEntryIndex}
-                  selectedEntries={selectedEntries}
-                  allValidEntries={allValidEntries}
-                  populatedResourceMap={populatedResourceMap}
-                  isEntrySelected={isEntrySelected}
-                  onToggleCheckbox={handleToggleCheckbox}
-                />
-              );
-            })}
-          </Box>
-        </DialogContent>
-
-        <DialogActions>
-          <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
+      <DialogContent dividers>
+        <Box mb={2}>
           <Button
-            onClick={() => {
-              handleGenerateBundleToWriteBack();
-            }}
-            disabled={selectedEntries.size === 0}>
-            Confirm Write Back ({selectedEntries.size} entries)
+            onClick={allValidEntriesSelected ? handleDeselectAll : handleSelectAll}
+            variant="outlined"
+            size="small">
+            {allValidEntriesSelected ? 'Deselect All' : 'Select All'}
           </Button>
-        </DialogActions>
-      </Dialog>
-    </>
+          <Typography component="div" variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+            {selectedEntries.size} of {allValidEntries.size} valid entries selected
+          </Typography>
+        </Box>
+
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
+          {allBundleEntries.map((bundleEntry, bundleEntryIndex) => {
+            return (
+              <WriteBackBundleSelectorItem
+                key={bundleEntryIndex}
+                bundleEntry={bundleEntry}
+                bundleEntryIndex={bundleEntryIndex}
+                selectedEntries={selectedEntries}
+                allValidEntries={allValidEntries}
+                populatedResourceMap={populatedResourceMap}
+                isEntrySelected={isEntrySelected}
+                onToggleCheckbox={handleToggleCheckbox}
+              />
+            );
+          })}
+        </Box>
+      </DialogContent>
+
+      <DialogActions>
+        <Button onClick={onCloseDialog} disabled={!!isSaving}>
+          Cancel
+        </Button>
+        {showSaveOnlyButton ? (
+          <Button
+            loading={isSaving === 'saving-only'}
+            onClick={() => {
+              handleWriteBack('saving-only');
+            }}
+            disabled={isSaving === 'saving-write-back'}>
+            Save as final only
+          </Button>
+        ) : null}
+        <Button
+          loading={isSaving === 'saving-write-back'}
+          onClick={() => {
+            handleWriteBack('saving-write-back');
+          }}
+          disabled={selectedEntries.size === 0 || isSaving === 'saving-only'}>
+          {writeBackButtonText} ({selectedEntries.size}{' '}
+          {selectedEntries.size === 1 ? 'entry' : 'entries'})
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }
+
+export default WriteBackBundleSelectorDialog;
