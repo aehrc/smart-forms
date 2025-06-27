@@ -102,7 +102,7 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
       <StandardDialogTitle onCloseDialog={onCloseDialog}>
         Select items to be re-populated
       </StandardDialogTitle>
-      <DialogContent>
+      <DialogContent dividers>
         <RepopulateList
           itemsToRepopulateTuplesByHeadings={itemsToRepopulateTuplesByHeadings}
           checkedLinkIds={checkedLinkIds}

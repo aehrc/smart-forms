@@ -116,7 +116,7 @@ function PlaygroundSettingsDialog(props: PlaygroundSettingsDialogProps) {
       <StandardDialogTitle onCloseDialog={handleCancel}>
         Launch Context Settings
       </StandardDialogTitle>
-      <DialogContent>
+      <DialogContent dividers>
         {/* Source FHIR Server url config */}
         <PlaygroundFhirServerUrlInput
           fhirServerId="source"
