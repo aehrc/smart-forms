@@ -39,8 +39,6 @@ export interface RendererSaveAsFinalWriteBackDialogProps {
 function RendererSaveAsFinalWriteBackDialog(props: RendererSaveAsFinalWriteBackDialogProps) {
   const { dialogOpen, extractedBundle, onCloseDialog, onDialogExited } = props;
 
-  // FIXME test against structured map
-
   const { smartClient, patient, user, launchQuestionnaire } = useSmartClient();
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();

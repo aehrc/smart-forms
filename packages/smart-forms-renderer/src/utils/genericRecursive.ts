@@ -135,21 +135,21 @@ export function readQuestionnaireResponse<T, U>(
   return readValueArray;
 }
 
-export type RecursiveTranverseFunction<U> = (
+export type RecursiveTraverseFunction<U> = (
   qItem: QuestionnaireItem,
   root?: Questionnaire,
   parent?: QuestionnaireItem,
   extraData?: U
 ) => void;
 
-export function transverseQuestionnaire<U>(
+export function traverseQuestionnaire<U>(
   questionnaire: Questionnaire,
-  recursiveTranverseFunction: RecursiveTranverseFunction<U>,
+  recursiveTraverseFunction: RecursiveTraverseFunction<U>,
   extraData?: U
 ): void {
   if (!questionnaire.item || questionnaire.item.length === 0) return;
 
   for (const topLevelQItem of questionnaire.item) {
-    recursiveTranverseFunction(topLevelQItem, questionnaire, undefined, extraData);
+    recursiveTraverseFunction(topLevelQItem, questionnaire, undefined, extraData);
   }
 }

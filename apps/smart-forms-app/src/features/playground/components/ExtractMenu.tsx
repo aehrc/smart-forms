@@ -24,7 +24,7 @@ import { CircularProgress, Fade, ListItemIcon, ListItemText, Tooltip } from '@mu
 import Typography from '@mui/material/Typography';
 import Iconify from '../../../components/Iconify/Iconify.tsx';
 import { canBeTemplateExtracted } from '@aehrc/sdc-template-extract';
-import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import { canBeObservationExtracted, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 
 interface ExtractMenuProps {
   isExtracting: boolean;
@@ -47,6 +47,15 @@ function ExtractMenu(props: ExtractMenuProps) {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  // Check if questionnaire can be observation-based extracted
+  const observationBasedExtractEnabled = useMemo(
+    () => canBeObservationExtracted(sourceQuestionnaire),
+    [sourceQuestionnaire]
+  );
+  const observationBasedExtractToolTipText = observationBasedExtractEnabled
+    ? ''
+    : `The current questionnaire does not contain any "sdc-questionnaire-observationExtract" extensions`;
 
   // Check if questionnaire can be template-based extracted
   const templateBasedExtractEnabled = useMemo(
@@ -88,16 +97,20 @@ function ExtractMenu(props: ExtractMenuProps) {
             'aria-labelledby': 'extract-button'
           }
         }}>
-        <MenuItem
-          onClick={() => {
-            onObservationExtract();
-            handleClose();
-          }}>
-          <ListItemIcon>
-            <Iconify icon="ion:binoculars" />
-          </ListItemIcon>
-          <ListItemText>Observation-based $extract</ListItemText>
-        </MenuItem>
+        <Tooltip title={observationBasedExtractToolTipText} placement="right">
+          <span>
+            <MenuItem
+              onClick={() => {
+                onObservationExtract();
+                handleClose();
+              }}>
+              <ListItemIcon>
+                <Iconify icon="ion:binoculars" />
+              </ListItemIcon>
+              <ListItemText>Observation-based $extract</ListItemText>
+            </MenuItem>
+          </span>
+        </Tooltip>
 
         <Tooltip title="Not implemented" placement="right">
           <span>

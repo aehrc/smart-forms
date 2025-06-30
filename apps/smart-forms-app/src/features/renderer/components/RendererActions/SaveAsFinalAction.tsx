@@ -16,7 +16,12 @@
  */
 
 import type { SpeedDialActionProps } from '@mui/material';
-import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import {
+  buildBundleFromObservationArray,
+  extractObservationBased,
+  useQuestionnaireResponseStore,
+  useQuestionnaireStore
+} from '@aehrc/smart-forms-renderer';
 import { useMemo, useState } from 'react';
 import { getExtractMechanism } from '../../utils/extract.ts';
 import SaveAsFinalActionButton from './SaveAsFinalActionButton.tsx';
@@ -81,11 +86,10 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
     handleOpenDialog();
   }
 
-  // FIXME implement handleObservationExtract
-  async function handleObservationExtract() {
-    setExtracting(true);
-
-    // Observation $extract
+  function handleObservationExtract() {
+    const extractedObservations = extractObservationBased(sourceQuestionnaire, updatableResponse);
+    const bundleFromObservations = buildBundleFromObservationArray(extractedObservations);
+    setExtractedBundle(bundleFromObservations);
 
     // Open dialog after extraction is complete
     handleOpenDialog();
@@ -136,9 +140,6 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
   );
   const writeBackEnabled = !!extractMechanism;
 
-  // Write back enabled for this questionnaire, include write back dialog
-  // if (writeBackEnabled) {
-
   const numOfExtractedBundleEntries = extractedBundle?.entry?.length || 0;
 
   if (writeBackEnabled) {
@@ -154,7 +155,7 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
               await handleTemplateExtract();
             }
 
-            if (extractMechanism === 'observation') {
+            if (extractMechanism === 'observation-based') {
               handleObservationExtract();
             }
           }}
