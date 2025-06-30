@@ -45,8 +45,16 @@ function RendererEmbeddedStandardActions(props: RendererEmbeddedStandardActionsP
       <>
         <BackToQuestionnairesAction isSpeedDial={true} {...speedDialActionProps} />
         <PreviewAction isSpeedDial={true} {...speedDialActionProps} />
-        <SaveProgressAction isSpeedDial={true} onClose={onClose} {...speedDialActionProps} />
-        <SaveAsFinalAction isSpeedDial={true} onClose={onClose} {...speedDialActionProps} />
+        <SaveProgressAction
+          isSpeedDial={true}
+          onCloseSpeedDial={onClose}
+          {...speedDialActionProps}
+        />
+        <SaveAsFinalAction
+          isSpeedDial={true}
+          onCloseSpeedDial={onClose}
+          {...speedDialActionProps}
+        />
         <RepopulateAction
           spinner={spinner}
           onSpinnerChange={onSpinnerChange}

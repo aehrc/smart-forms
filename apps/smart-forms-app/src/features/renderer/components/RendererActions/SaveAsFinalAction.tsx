@@ -16,43 +16,107 @@
  */
 
 import type { SpeedDialActionProps } from '@mui/material';
-import { SpeedDialAction } from '@mui/material';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
-import useSmartClient from '../../../../hooks/useSmartClient.ts';
-import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import { useMemo, useState } from 'react';
-import RendererSaveAsFinalDialog from './RendererSaveAsFinalDialog.tsx';
-import RendererOperationItem from '../RendererNav/RendererOperationItem.tsx';
 import { useExtractDebuggerStore } from '../../../playground/stores/extractDebuggerStore.ts';
-import RendererSaveAsFinalWriteBackDialog from './RendererSaveAsFinalWriteBackDialog.tsx';
 import { getExtractMechanism } from '../../utils/extract.ts';
+import SaveAsFinalActionButton from './SaveAsFinalActionButton.tsx';
+import useSmartClient from '../../../../hooks/useSmartClient.ts';
+import { extractResultIsOperationOutcome, inAppExtract } from '@aehrc/sdc-template-extract';
+import type { Bundle } from 'fhir/r4';
+import RendererSaveAsFinalOnlyDialog from './RendererSaveAsFinalOnlyDialog.tsx';
+import RendererSaveAsFinalWriteBackDialog from './RendererSaveAsFinalWriteBackDialog.tsx';
 
 interface SaveAsFinalActionProps extends SpeedDialActionProps {
   isSpeedDial?: boolean;
-  onClose?: () => void;
+  onCloseSpeedDial?: () => void;
 }
 
 function SaveAsFinalAction(props: SaveAsFinalActionProps) {
-  const { isSpeedDial, onClose, ...speedDialActionProps } = props;
+  const { isSpeedDial, onCloseSpeedDial, ...speedDialActionProps } = props;
 
   const { smartClient } = useSmartClient();
 
   const [saveAsFinalDialogOpen, setSaveAsFinalDialogOpen] = useState(false);
+  const [isExtracting, setExtracting] = useState(false);
+  const [extractedBundle, setExtractedBundle] = useState<Bundle | null>(null);
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
   const formChangesHistory = useQuestionnaireResponseStore.use.formChangesHistory();
 
   const structuredMapExtractMap = useExtractDebuggerStore.use.structuredMapExtractMap();
 
-  function handleOpenDialog() {
-    if (onClose) {
-      onClose();
+  // Events handlers
+  async function handleTemplateExtract() {
+    // In the user-facing UI, always perform a modified-only extraction
+    const modifiedOnly = true;
+
+    setExtracting(true);
+
+    // FhirClient not available, skip whole save process
+    if (!smartClient) {
+      setExtracting(false);
+      return;
     }
 
+    // Perform template-based extracted to get a transaction bundle
+    const responseToExtract = structuredClone(updatableResponse);
+    const inAppExtractOutput = await inAppExtract(
+      responseToExtract,
+      sourceQuestionnaire,
+      modifiedOnly ? sourceResponse : null
+    );
+
+    const { extractResult } = inAppExtractOutput;
+
+    if (extractResultIsOperationOutcome(extractResult)) {
+      console.error(extractResult);
+      setExtracting(false);
+      return;
+    }
+
+    setExtractedBundle(extractResult.extractedBundle);
+    setExtracting(false);
+
+    // Open dialog after extraction is complete
+    handleOpenDialog();
+  }
+
+  function handleOpenDialog() {
+    // Close speedDial (if open)
+    if (onCloseSpeedDial) {
+      onCloseSpeedDial();
+    }
+
+    // Open dialog
     if (smartClient) {
       setSaveAsFinalDialogOpen(true);
     }
+  }
+
+  function handleCloseDialog() {
+    // Close speedDial (if open)
+    if (onCloseSpeedDial) {
+      onCloseSpeedDial();
+    }
+
+    // Close dialog
+    setSaveAsFinalDialogOpen(false);
+  }
+
+  // This is for the write back dialog's onExited event.
+  // e.g.
+  // slotProps={{
+  //   transition: {
+  //     onExited: onDialogExited
+  //   }
+  // }}
+  function handleDialogExited() {
+    // Reset extract-related states back to false
+    setExtracting(false);
+    setExtractedBundle(null);
   }
 
   const responseWasSaved = !!updatableResponse.authored && !!updatableResponse.author;
@@ -65,40 +129,56 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
   );
   const writeBackEnabled = !!extractMechanism;
 
+  // Write back enabled for this questionnaire, include write back dialog
+  // if (writeBackEnabled) {
+
+  const numOfExtractedBundleEntries = extractedBundle?.entry?.length || 0;
+
+  if (extractMechanism === 'template-based') {
+    return (
+      <>
+        <SaveAsFinalActionButton
+          isSpeedDial={!!isSpeedDial}
+          isExtracting={isExtracting}
+          isDisabled={buttonIsDisabled}
+          writeBackEnabled={writeBackEnabled}
+          onSaveAsFinalActionClick={handleTemplateExtract}
+          {...speedDialActionProps}
+        />
+
+        {extractedBundle && numOfExtractedBundleEntries > 0 ? (
+          // An extracted bundle exists and have at least one entry
+          <RendererSaveAsFinalWriteBackDialog
+            dialogOpen={saveAsFinalDialogOpen}
+            extractedBundle={extractedBundle}
+            onCloseDialog={handleCloseDialog}
+            onDialogExited={handleDialogExited}
+          />
+        ) : (
+          // Extraction failed or no entries in the extracted bundle
+          <RendererSaveAsFinalOnlyDialog
+            open={saveAsFinalDialogOpen}
+            customContentText={
+              'There are no items to write back to the patient record. Are you sure you want to save this form as final? You will not be able to make further changes.'
+            }
+            closeDialog={handleCloseDialog}
+          />
+        )}
+      </>
+    );
+  }
+
   return (
     <>
-      {isSpeedDial ? (
-        <SpeedDialAction
-          icon={<TaskAltIcon />}
-          onClick={handleOpenDialog}
-          {...speedDialActionProps}
-          slotProps={{
-            tooltip: {
-              title: `Save as Final ${writeBackEnabled ? '& Write Back' : ''}`,
-              open: true
-            }
-          }}
-        />
-      ) : (
-        <RendererOperationItem
-          title={`Save as Final ${writeBackEnabled ? '& Write Back' : ''}`}
-          icon={<TaskAltIcon />}
-          disabled={buttonIsDisabled}
-          onClick={handleOpenDialog}
-        />
-      )}
-      {writeBackEnabled ? (
-        <RendererSaveAsFinalWriteBackDialog
-          open={saveAsFinalDialogOpen}
-          extractMechanism={extractMechanism}
-          closeDialog={() => setSaveAsFinalDialogOpen(false)}
-        />
-      ) : (
-        <RendererSaveAsFinalDialog
-          open={saveAsFinalDialogOpen}
-          closeDialog={() => setSaveAsFinalDialogOpen(false)}
-        />
-      )}
+      <SaveAsFinalActionButton
+        isSpeedDial={!!isSpeedDial}
+        isExtracting={false}
+        isDisabled={buttonIsDisabled}
+        writeBackEnabled={writeBackEnabled}
+        onSaveAsFinalActionClick={handleOpenDialog}
+        {...speedDialActionProps}
+      />
+      <RendererSaveAsFinalOnlyDialog open={saveAsFinalDialogOpen} closeDialog={handleCloseDialog} />
     </>
   );
 }

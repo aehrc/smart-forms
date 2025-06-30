@@ -19,26 +19,25 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { saveProgress } from '../../../../api/saveQr.ts';
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle
-} from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText } from '@mui/material';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import { saveAsFinalSuccessMessage, saveErrorMessage } from '../../../../utils/snackbar.ts';
 import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
+import StandardDialogTitle from '../../../../components/Dialog/StandardDialogTitle.tsx';
 
 export interface RendererSaveAsFinalDialogProps {
   open: boolean;
+  customContentText?: string;
   closeDialog: () => unknown;
 }
 
-function RendererSaveAsFinalDialog(props: RendererSaveAsFinalDialogProps) {
-  const { open, closeDialog } = props;
+function RendererSaveAsFinalOnlyDialog(props: RendererSaveAsFinalDialogProps) {
+  const {
+    open,
+    customContentText = "Are you sure you want to save this form as final? You won't be able to edit it after.",
+    closeDialog
+  } = props;
 
   const { smartClient, patient, user, launchQuestionnaire } = useSmartClient();
 
@@ -56,6 +55,15 @@ function RendererSaveAsFinalDialog(props: RendererSaveAsFinalDialogProps) {
   // Event Handlers
   function handleClose() {
     closeDialog();
+  }
+
+  function handleCloseWithNavigation() {
+    // Wait until renderer.hasChanges is set to false before navigating away
+    setTimeout(() => {
+      navigate(launchQuestionnaire ? '/dashboard/existing' : '/dashboard/responses');
+      setIsSaving(false);
+      handleClose();
+    }, 1000);
   }
 
   async function handleSaveAsFinal() {
@@ -90,21 +98,14 @@ function RendererSaveAsFinalDialog(props: RendererSaveAsFinalDialogProps) {
       action: <CloseSnackbar variant="success" />
     });
 
-    // Wait until renderer.hasChanges is set to false before navigating away
-    setTimeout(() => {
-      navigate(launchQuestionnaire ? '/dashboard/existing' : '/dashboard/responses');
-      setIsSaving(false);
-      handleClose();
-    }, 1000);
+    handleCloseWithNavigation();
   }
 
   return (
     <Dialog open={open} onClose={handleClose} data-test="dialog-confirm-save">
-      <DialogTitle variant="h5">Confirm save</DialogTitle>
+      <StandardDialogTitle onCloseDialog={handleClose}>Confirm save as final</StandardDialogTitle>
       <DialogContent>
-        <DialogContentText>
-          {"Are you sure you want to save this form as final? You won't be able to edit it after."}
-        </DialogContentText>
+        <DialogContentText>{customContentText}</DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
@@ -116,4 +117,4 @@ function RendererSaveAsFinalDialog(props: RendererSaveAsFinalDialogProps) {
   );
 }
 
-export default RendererSaveAsFinalDialog;
+export default RendererSaveAsFinalOnlyDialog;

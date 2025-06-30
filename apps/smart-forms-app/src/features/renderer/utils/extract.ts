@@ -1,6 +1,8 @@
 import type { Questionnaire, StructureMap } from 'fhir/r4';
 import { canBeTemplateExtracted } from '@aehrc/sdc-template-extract';
 
+export type SavingWriteBackMode = 'saving-only' | 'saving-write-back' | false;
+
 export type ExtractMechanism = 'template-based' | 'structured-map' | null;
 
 export function getExtractMechanism(
