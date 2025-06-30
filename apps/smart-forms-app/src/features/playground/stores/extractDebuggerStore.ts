@@ -16,7 +16,7 @@
  */
 
 import { createStore } from 'zustand/vanilla';
-import type { FhirResource, Observation, OperationOutcome, StructureMap } from 'fhir/r4';
+import type { FhirResource, Observation, OperationOutcome } from 'fhir/r4';
 import { createSelectors } from '../../../stores/selector.ts';
 import type { TemplateExtractDebugInfo } from '@aehrc/sdc-template-extract';
 
@@ -32,12 +32,6 @@ export interface ExtractDebuggerStoreType {
   setTemplateExtractResult: (result: FhirResource | null) => void;
   setTemplateExtractDebugInfo: (templateExtractDebugInfo: TemplateExtractDebugInfo) => void;
   setTemplateExtractIssues: (templateExtractIssues: OperationOutcome) => void;
-
-  // Structured-map based
-  structuredMapExtractMap: StructureMap | null;
-  structuredMapExtractResult: FhirResource | null;
-  setStructuredMapExtractMap: (structureMap: StructureMap | null) => void;
-  setStructuredMapExtractResult: (result: FhirResource | null) => void;
 
   // Reset store
   resetStore: () => void;
@@ -60,23 +54,13 @@ export const extractDebuggerStore = createStore<ExtractDebuggerStoreType>()((set
   setTemplateExtractIssues: (templateExtractIssues: OperationOutcome) =>
     set(() => ({ templateExtractIssues })),
 
-  // Structured-map based
-  structuredMapExtractMap: null,
-  structuredMapExtractResult: null,
-  setStructuredMapExtractMap: (structureMap: StructureMap | null) =>
-    set(() => ({ structuredMapExtractMap: structureMap })),
-  setStructuredMapExtractResult: (result: FhirResource | null) =>
-    set(() => ({ structuredMapExtractResult: result })),
-
   // Reset store
   resetStore: () =>
     set(() => ({
       observationExtractResult: null,
       templateExtractResult: null,
       templateExtractDebugInfo: null,
-      templateExtractIssues: null,
-      structuredMapExtractMap: null,
-      structuredMapExtractResult: null
+      templateExtractIssues: null
     }))
 }));
 

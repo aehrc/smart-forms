@@ -34,7 +34,6 @@ interface PlaygroundRendererProps {
   isExtracting: boolean;
   onObservationExtract: () => void;
   onTemplateExtract: (modifiedOnly: boolean) => void;
-  onStructureMapExtract: () => void;
 }
 
 function PlaygroundRenderer(props: PlaygroundRendererProps) {
@@ -45,8 +44,7 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
     terminologyServerUrl,
     isExtracting,
     onObservationExtract,
-    onTemplateExtract,
-    onStructureMapExtract
+    onTemplateExtract
   } = props;
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
@@ -123,7 +121,6 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
         <ExtractMenu
           isExtracting={isExtracting}
           onObservationExtract={onObservationExtract}
-          onStructureMapExtract={onStructureMapExtract}
           onTemplateExtract={onTemplateExtract}
         />
         <Box flexGrow={1} />

@@ -11,9 +11,7 @@ const extractDebuggerPropertyNames: string[] = [
   'observationExtractResult',
   'templateExtractResult',
   'templateExtractDebugInfo',
-  'templateExtractIssues',
-  'structuredMapExtractMap',
-  'structuredMapExtractResult'
+  'templateExtractIssues'
 ];
 
 interface ExtractDebuggerViewerProps {
@@ -38,9 +36,7 @@ function ExtractDebuggerViewer(props: ExtractDebuggerViewerProps) {
   }
 
   const writeBackButtonShown =
-    selectedProperty === 'observationExtractResult' ||
-    selectedProperty === 'templateExtractResult' ||
-    selectedProperty === 'structuredMapExtractResult';
+    selectedProperty === 'observationExtractResult' || selectedProperty === 'templateExtractResult';
 
   const templateExtractPathTableShown = selectedProperty === 'templateExtractDebugInfo';
 
