@@ -26,8 +26,8 @@
   "dependencies": {
     "@aehrc/sdc-assemble": "^2.0.1",
     "@aehrc/sdc-populate": "^4.3.1",
-    "@aehrc/sdc-template-extract": "^1.0.4",
-    "@aehrc/smart-forms-renderer": "^1.0.0-alpha.70",
+    "@aehrc/sdc-template-extract": "^1.0.5",
+    "@aehrc/smart-forms-renderer": "^1.0.0-alpha.71",
     "@dnd-kit/core": "^6.3.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
