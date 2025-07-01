@@ -16,11 +16,12 @@
  */
 
 import type { Coding, QuestionnaireItem, ValueSet } from 'fhir/r4';
-import { getTerminologyServerUrl, getValueSetCodings, getValueSetPromise } from '../utils/valueSet';
+import { getValueSetCodings, getValueSetPromise } from '../utils/valueSet';
 
 import type { AlertColor } from '@mui/material/Alert';
 import { useQuestionnaireStore, useTerminologyServerStore } from '../stores';
 import { useQuery } from '@tanstack/react-query';
+import { getItemTerminologyServerToUse } from '../utils/preferredTerminologyServer';
 
 function useTerminologyServerQuery(
   qItem: QuestionnaireItem,
@@ -63,9 +64,11 @@ function useTerminologyServerQuery(
   }
 
   // Perform query
-  const preferredTerminologyServerUrl = itemPreferredTerminologyServers[qItem.linkId];
-  const terminologyServerUrl =
-    getTerminologyServerUrl(qItem) ?? preferredTerminologyServerUrl ?? defaultTerminologyServerUrl;
+  const terminologyServerUrl = getItemTerminologyServerToUse(
+    qItem,
+    itemPreferredTerminologyServers,
+    defaultTerminologyServerUrl
+  );
 
   const { isFetching, error, data } = useQuery<ValueSet>({
     queryKey: ['expandValueSet', fullUrl],

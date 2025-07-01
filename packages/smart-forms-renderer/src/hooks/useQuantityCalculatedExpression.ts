@@ -17,14 +17,14 @@
 
 import { useEffect, useState } from 'react';
 import type { QuestionnaireItem } from 'fhir/r4';
-import { useQuestionnaireStore } from '../stores';
+import { useQuestionnaireStore, useTerminologyServerStore } from '../stores';
 import { validateCodePromise } from '../utils/valueSet';
-import { TERMINOLOGY_SERVER_URL } from '../globals';
 import type {
   CodeParameter,
   DisplayParameter,
   SystemParameter
 } from '../interfaces/valueSet.interface';
+import { getItemTerminologyServerToUse } from '../utils/preferredTerminologyServer';
 
 interface UseQuantityCalculatedExpression {
   calcExpUpdated: boolean;
@@ -57,6 +57,10 @@ function useQuantityCalculatedExpression(
   } = props;
 
   const calculatedExpressions = useQuestionnaireStore.use.calculatedExpressions();
+
+  const itemPreferredTerminologyServers =
+    useQuestionnaireStore.use.itemPreferredTerminologyServers();
+  const defaultTerminologyServerUrl = useTerminologyServerStore.use.url();
 
   const [calcExpUpdated, setCalcExpUpdated] = useState(false);
 
@@ -119,11 +123,17 @@ function useQuantityCalculatedExpression(
             const ucumValueSet = 'http://hl7.org/fhir/ValueSet/ucum-units';
             const ucumSystem = 'http://unitsofmeasure.org';
 
+            const terminologyServerUrl = getItemTerminologyServerToUse(
+              qItem,
+              itemPreferredTerminologyServers,
+              defaultTerminologyServerUrl
+            );
+
             validateCodePromise(
               ucumValueSet,
               ucumSystem,
               unitCodeFormatted,
-              TERMINOLOGY_SERVER_URL
+              terminologyServerUrl
             ).then((validateCodeResponse) => {
               // Return early if validate-code request fails
               if (!validateCodeResponse) {

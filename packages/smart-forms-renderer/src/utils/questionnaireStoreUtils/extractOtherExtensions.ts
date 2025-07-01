@@ -36,7 +36,7 @@ import type {
 } from '../../interfaces/enableWhen.interface';
 import type { AnswerExpression } from '../../interfaces/answerExpression.interface';
 import type { ProcessedValueSet, ValueSetPromise } from '../../interfaces/valueSet.interface';
-import { getTerminologyServerUrl, getValueSetPromise } from '../valueSet';
+import { getValueSetPromise } from '../valueSet';
 import type { Variables } from '../../interfaces/variables.interface';
 import { getFhirPathVariables, getXFhirQueryVariables } from './extractVariables';
 import { getRepeatGroupParentItem } from '../misc';
@@ -53,6 +53,7 @@ import {
 import type { InitialExpression } from '../../interfaces/initialExpression.interface';
 import { addBindingParametersToValueSetUrl, getBindingParameters } from '../parameterisedValueSets';
 import type { AnswerOptionsToggleExpression } from '../../interfaces/answerOptionsToggleExpression.interface';
+import { getItemTerminologyServerToUse } from '../preferredTerminologyServer';
 
 interface ReturnParamsRecursive {
   variables: Variables;
@@ -215,10 +216,12 @@ async function extractExtensionsFromItemRecursive(
     }
   }
 
-  // Get preferred terminology server URL of the item
-  const preferredTerminologyServerUrl = itemPreferredTerminologyServers[item.linkId];
-  const terminologyServerUrl =
-    getTerminologyServerUrl(item) ?? preferredTerminologyServerUrl ?? defaultTerminologyServerUrl;
+  // Get terminology server URL to use for the item
+  const terminologyServerUrl = getItemTerminologyServerToUse(
+    item,
+    itemPreferredTerminologyServers,
+    defaultTerminologyServerUrl
+  );
 
   const initialisedEnableWhenExpressions = await initialiseEnableWhenExpression(
     item,

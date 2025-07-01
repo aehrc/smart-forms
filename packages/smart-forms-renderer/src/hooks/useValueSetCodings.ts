@@ -19,7 +19,6 @@ import { useEffect, useMemo, useState } from 'react';
 import type { Coding, FhirResource, QuestionnaireItem, ValueSet } from 'fhir/r4';
 import {
   getResourceFromLaunchContext,
-  getTerminologyServerUrl,
   getValueSetCodings,
   getValueSetPromise
 } from '../utils/valueSet';
@@ -29,6 +28,7 @@ import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import { useQuestionnaireStore, useSmartConfigStore, useTerminologyServerStore } from '../stores';
 import { addDisplayToCodingArray } from '../utils/questionnaireStoreUtils/addDisplayToCodings';
 import useDynamicValueSetEffect, { getUpdatableValueSetUrl } from './useDynamicValueSetEffect';
+import { getItemTerminologyServerToUse } from '../utils/preferredTerminologyServer';
 
 export interface TerminologyError {
   error: Error | null;
@@ -143,9 +143,11 @@ function useValueSetCodings(qItem: QuestionnaireItem): {
   const [dynamicCodingsUpdated, setDynamicCodingsUpdated] = useState(false);
 
   const codingsCount = codings.length;
-  const preferredTerminologyServerUrl = itemPreferredTerminologyServers[qItem.linkId];
-  const terminologyServerUrl =
-    getTerminologyServerUrl(qItem) ?? preferredTerminologyServerUrl ?? defaultTerminologyServerUrl;
+  const terminologyServerUrl = getItemTerminologyServerToUse(
+    qItem,
+    itemPreferredTerminologyServers,
+    defaultTerminologyServerUrl
+  );
 
   // Get options from parameterised/dynamic value sets when the updatableValueSetUrl changes (p-param is updated via fhirpath) or from cqf-expression in _answerValueSet
   useDynamicValueSetEffect(
