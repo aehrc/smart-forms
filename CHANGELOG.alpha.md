@@ -8,6 +8,11 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.72] - 2025-07-01
+#### Fixed
+- Added getItemTerminologyServerToUse() as a cleaner way to an item to decide which terminology server to use.
+- UseQuantityCalculatedExpression() hook now takes into account preferredTerminologyServer when looking up ucum-units.
+
 ## [1.0.0-alpha.71] - 2025-06-30
 #### Added
 - Added observation-based extraction helper functions canBeObservationExtracted() and buildBundleFromObservationArray() as library functions.

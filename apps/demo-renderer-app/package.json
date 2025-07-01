@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@aehrc/sdc-populate": "^4.0.0",
-    "@aehrc/smart-forms-renderer": "^1.0.0-alpha.69",
+    "@aehrc/smart-forms-renderer": "^1.0.0-alpha.71",
     "@radix-ui/react-collapsible": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.2",
     "@radix-ui/react-switch": "^1.1.0",
