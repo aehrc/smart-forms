@@ -67,7 +67,7 @@
     "react-router-dom": "6.11.2",
     "react-spinners": "^0.17.0",
     "react-syntax-highlighter": "^15.6.1",
-    "react-to-print": "^3.0.5",
+    "react-to-print": "^3.1.1",
     "usehooks-ts": "^3.1.1",
     "zustand": "^5.0.5"
   },
