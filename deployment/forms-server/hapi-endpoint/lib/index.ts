@@ -44,8 +44,8 @@ export class HapiEndpoint extends Construct {
       }),
       environment: {
         use_apache_address_strategy: 'true',
-        'hapi.fhir.openapi_enabled': 'false',
-        'hapi.fhir.cr.enabled': 'true'
+        'hapi.fhir.openapi_enabled': 'false'
+        // 'hapi.fhir.cr.enabled': 'true' // If you want to use the Clinical Reasoning module
       }
     });
 

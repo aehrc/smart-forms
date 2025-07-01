@@ -1,34 +1,35 @@
 # EHR Proxy Architecture - AWS Deployment via Fargate
 
-This folder contains the **ehr-proxy** services architecture for deploying a FHIR proxy solution using AWS ECS.
+This folder contains the **ehr-proxy** services architecture for deploying a plain HAPI server with a SMART on FHIR layer sitting on top using AWS ECS and Fargate.
 
 ## Components
-
 ### ehr-proxy-app
-  Runs on AWS Fargate as the main orchestrator application.
+Runs on AWS Fargate as the main orchestrator application.
 
 ### hapi-endpoint
-  A microservice running in Docker that serves as the plain HAPI FHIR server.
-  From: https://github.com/hapifhir/hapi-fhir-jpaserver-starter
+A microservice running in Docker that serves as the plain HAPI FHIR server.
 
-  Base URL: `https://proxy.smartforms.io/fhir/`
+From: https://github.com/hapifhir/hapi-fhir-jpaserver-starter
+
+Base URL: `https://proxy.smartforms.io/fhir/`
 
 ### smart-proxy
-  A microservice running in Docker that acts as a SMART on FHIR plugin layered on top of the HAPI server.
-  It requires the `FHIR_SERVER_R4` environment variable pointing to the HAPI server.
-  From: https://github.com/aehrc/smart-launcher-v2/
+A microservice running in Docker that acts as a SMART on FHIR plugin layered on top of the HAPI server.
+It requires the `FHIR_SERVER_R4` environment variable pointing to the HAPI server.
 
-  The `smart-proxy` container expects the following environment variable:
+From: https://github.com/aehrc/smart-launcher-v2/
 
-  ```bash
-  FHIR_SERVER_R4=https://proxy.smartforms.io/fhir
-  ```
+The `smart-proxy` container expects the following environment variable:
 
-### Working example
+```bash
+FHIR_SERVER_R4=https://proxy.smartforms.io/fhir
+ ```
+
+## Working example
 
 SMART-enabled FHIR Server: `https://proxy.smartforms.io/v/r4/fhir/`
 
-### Deployment steps
+## Deployment steps
 Run steps 1, 2, and 3-6 in three separate terminal windows respectively.
 
 1. `npm i` and `npm run watch` in hapi-endpoint.
