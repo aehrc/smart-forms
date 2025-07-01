@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { isNonEmptyBundle } from '../../typePredicates/isNonEmptyBundle.ts';
-import type { Bundle } from 'fhir/r4';
+import type { Bundle, Observation } from 'fhir/r4';
 import { HEADERS } from '../../../../api/headers.ts';
 import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
-import { Box, Button } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import WriteBackBundleSelectorDialog from '../../../writeBack/components/WriteBackBundleSelectorDialog.tsx';
 import { useSnackbar } from 'notistack';
 import { extractedResourceIsBatchBundle } from '../../api/extract.ts';
+import { buildBundleFromObservationArray } from '@aehrc/smart-forms-renderer';
 
 interface ExtractDebuggerWriteBackWrapperProps {
   sourceFhirServerUrl: string;
@@ -19,11 +20,34 @@ function ExtractDebuggerWriteBackWrapper(props: ExtractDebuggerWriteBackWrapperP
   const [dialogOpen, setDialogOpen] = useState(false);
   const [writingBack, setWritingBack] = useState(false);
 
-  const writeBackEnabled = extractedResourceIsBatchBundle(propertyObject);
+  const { bundleToWriteBack, propertyObjIsObservationArray } = useMemo(() => {
+    // PropertyObject is a Bundle, return it directly
+    if (extractedResourceIsBatchBundle(propertyObject)) {
+      return { bundleToWriteBack: propertyObject as Bundle, propertyObjIsObservationArray: false };
+    }
+
+    // PropertyObject is an Observation array, convert it to a Bundle
+    if (
+      Array.isArray(propertyObject) &&
+      propertyObject.length > 0 &&
+      propertyObject.every((item) => item.resourceType === 'Observation')
+    ) {
+      return {
+        bundleToWriteBack: buildBundleFromObservationArray(propertyObject as Observation[]),
+        propertyObjIsObservationArray: true
+      };
+    }
+
+    // Otherwise, return null
+    return {
+      bundleToWriteBack: null,
+      propertyObjIsObservationArray: false
+    };
+  }, [propertyObject]);
+
+  const writeBackEnabled = extractedResourceIsBatchBundle(bundleToWriteBack);
 
   const { enqueueSnackbar } = useSnackbar();
-
-  // FIXME test against structured map
 
   // Write back extracted resource
   async function handleWriteBack(bundleToWriteBack: Bundle) {
@@ -35,7 +59,7 @@ function ExtractDebuggerWriteBackWrapper(props: ExtractDebuggerWriteBackWrapperP
 
     const response = await fetch(sourceFhirServerUrl, {
       method: 'POST',
-      headers: { ...HEADERS, 'Content-Type': 'application/json;charset=utf-8' },
+      headers: HEADERS,
       body: JSON.stringify(bundleToWriteBack)
     });
     setWritingBack(false);
@@ -61,18 +85,25 @@ function ExtractDebuggerWriteBackWrapper(props: ExtractDebuggerWriteBackWrapperP
   }
 
   const showWriteBackDialog =
-    !!propertyObject &&
-    isNonEmptyBundle(propertyObject) &&
-    !!propertyObject.entry &&
-    propertyObject.entry.length > 0;
+    !!bundleToWriteBack &&
+    isNonEmptyBundle(bundleToWriteBack) &&
+    !!bundleToWriteBack.entry &&
+    bundleToWriteBack.entry.length > 0;
 
   return (
     <Box display="flex" justifyContent="end">
-      {showWriteBackDialog && propertyObject ? (
+      {showWriteBackDialog && bundleToWriteBack ? (
         <>
-          <Button variant="contained" onClick={() => setDialogOpen(true)} size="small">
-            Review write back items
-          </Button>
+          <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'end', gap: 0.5 }}>
+            <Button variant="contained" onClick={() => setDialogOpen(true)} size="small">
+              Review write back items
+            </Button>
+            {propertyObjIsObservationArray ? (
+              <Typography variant="body2" color="text.secondary">
+                Observation array converted to Bundle for write back
+              </Typography>
+            ) : null}
+          </Box>
 
           {/* Doing this shows the fade-in animation but the dialog unmounts immediately so no fade-out animation. We can do this in Playground, it's not user facing so that's fine.
           We need to unmount to reset states within the dialog. In the user facing environment, there is fade-out animations as we are using onDialogExited prop to reset state. */}
@@ -81,7 +112,7 @@ function ExtractDebuggerWriteBackWrapper(props: ExtractDebuggerWriteBackWrapperP
               viewMode="playground"
               dialogOpen={dialogOpen}
               isSaving={writingBack ? 'saving-write-back' : false}
-              extractedBundle={propertyObject}
+              extractedBundle={bundleToWriteBack}
               onCloseDialog={() => setDialogOpen(false)}
               onWriteBackBundle={async (bundleToWriteBack) => {
                 await handleWriteBack(bundleToWriteBack);

@@ -28,11 +28,17 @@ export class SmartProxy extends Construct {
       memoryMiB: '512'
     });
 
+    // This must match the domainName in services/ehr-proxy/ehr-proxy-app/lib/ehr-proxy-app-stack.ts - 'proxy.smartforms.io'
+    const fhirServerBaseUrl = 'https://proxy.smartforms.io/fhir';
+
     // Create the cache container.
     taskDefinition.addContainer('EhrProxySmartProxyContainer', {
       containerName: this.containerName,
       image: ContainerImage.fromRegistry('aehrc/smart-launcher-v2:latest'),
-      portMappings: [{ containerPort: this.containerPort }]
+      portMappings: [{ containerPort: this.containerPort }],
+      environment: {
+        FHIR_SERVER_R4: fhirServerBaseUrl
+      }
     });
 
     this.service = new FargateService(this, 'EhrProxySmartProxyService', {

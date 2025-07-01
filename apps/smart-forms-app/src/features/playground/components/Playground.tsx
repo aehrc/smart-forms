@@ -41,13 +41,11 @@ import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
 import PlaygroundPicker from './PlaygroundPicker.tsx';
 import type { OperationOutcomeIssue, Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import PlaygroundHeader from './PlaygroundHeader.tsx';
-import { HEADERS } from '../../../api/headers.ts';
 import { useExtractDebuggerStore } from '../stores/extractDebuggerStore.ts';
 import { buildFormWrapper, destroyFormWrapper } from '../../../utils/manageForm.ts';
 import { extractResultIsOperationOutcome, inAppExtract } from '@aehrc/sdc-template-extract';
 
 const defaultFhirServerUrl = 'https://hapi.fhir.org/baseR4';
-const defaultExtractEndpoint = 'https://proxy.smartforms.io/fhir';
 
 const defaultTerminologyServerUrl = TERMINOLOGY_SERVER_URL;
 
@@ -83,9 +81,6 @@ function Playground() {
   const setTemplateExtractResult = useExtractDebuggerStore.use.setTemplateExtractResult();
   const setTemplateExtractDebugInfo = useExtractDebuggerStore.use.setTemplateExtractDebugInfo();
   const setTemplateExtractIssues = useExtractDebuggerStore.use.setTemplateExtractIssues();
-
-  // Structured Map-based
-  const setStructuredMapExtractResult = useExtractDebuggerStore.use.setStructuredMapExtractResult();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -219,38 +214,6 @@ function Playground() {
     }
   }
 
-  // StructureMap $extract
-  async function handleStructureMapExtract() {
-    setExtracting(true);
-
-    const response = await fetch(defaultExtractEndpoint + '/QuestionnaireResponse/$extract', {
-      method: 'POST',
-      headers: { ...HEADERS },
-      body: JSON.stringify(removeEmptyAnswersFromResponse(sourceQuestionnaire, updatableResponse))
-    });
-    setExtracting(false);
-
-    if (!response.ok) {
-      enqueueSnackbar('Failed to extract resource', {
-        variant: 'error',
-        preventDuplicate: true,
-        action: <CloseSnackbar variant="error" />
-      });
-      setStructuredMapExtractResult(null);
-    } else {
-      enqueueSnackbar(
-        'Extract successful. See Advanced Properties > Extracted to view extracted resource.',
-        {
-          preventDuplicate: true,
-          action: <CloseSnackbar />,
-          autoHideDuration: 8000
-        }
-      );
-      const extractedResource = await response.json();
-      setStructuredMapExtractResult(extractedResource);
-    }
-  }
-
   // Template-based $extract
   async function handleTemplateExtract(modifiedOnly: boolean) {
     if (!sourceFhirServerUrl) {
@@ -262,12 +225,17 @@ function Playground() {
       return;
     }
 
-    const responseToExtract = structuredClone(updatableResponse);
+    setExtracting(true);
+    const responseToExtract = removeEmptyAnswersFromResponse(
+      sourceQuestionnaire,
+      structuredClone(updatableResponse)
+    );
     const inAppExtractOutput = await inAppExtract(
       responseToExtract,
       sourceQuestionnaire,
       modifiedOnly ? sourceResponse : null
     );
+    setExtracting(false);
 
     const { extractResult } = inAppExtractOutput;
 
@@ -364,7 +332,6 @@ function Playground() {
                 isExtracting={isExtracting}
                 onObservationExtract={handleObservationExtract}
                 onTemplateExtract={handleTemplateExtract}
-                onStructureMapExtract={handleStructureMapExtract}
               />
             ) : buildingState === 'building' ? (
               <PopulationProgressSpinner message={'Building form'} />

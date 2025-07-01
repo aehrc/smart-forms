@@ -32,6 +32,10 @@ export { parseDecimalStringToFloat, parseDecimalStringWithPrecision } from './pa
 export type { ItemToRepopulate } from './repopulateItems';
 export { generateItemsToRepopulate } from './repopulateItems';
 export { repopulateResponse } from './repopulateIntoResponse';
-export { extractObservationBased } from './extractObservation';
+export {
+  extractObservationBased,
+  canBeObservationExtracted,
+  buildBundleFromObservationArray
+} from './extractObservation';
 
 export { getQuestionnaireItem, getSectionHeading } from './misc';

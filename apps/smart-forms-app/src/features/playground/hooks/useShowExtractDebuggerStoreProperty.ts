@@ -22,17 +22,13 @@ function useShowExtractDebuggerStoreProperty(selectedProperty: string) {
   const templateExtractResult = useExtractDebuggerStore.use.templateExtractResult();
   const templateExtractDebugInfo = useExtractDebuggerStore.use.templateExtractDebugInfo();
   const templateExtractIssues = useExtractDebuggerStore.use.templateExtractIssues();
-  const structuredMapExtractMap = useExtractDebuggerStore.use.structuredMapExtractMap();
-  const structuredMapExtractResult = useExtractDebuggerStore.use.structuredMapExtractResult();
 
   return (
     {
       observationExtractResult,
       templateExtractResult,
       templateExtractDebugInfo,
-      templateExtractIssues,
-      structuredMapExtractMap,
-      structuredMapExtractResult
+      templateExtractIssues
     }[selectedProperty] || null
   );
 }

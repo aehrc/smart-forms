@@ -47,8 +47,7 @@ app.use(
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// Allows the app to work behind reverse proxies, forwarding the correct req.protocol to the /StructureMap/$transform call
-// Without this, doing a HTTPS $extract call will result in a HTTP $transform call
+// Allows the app to work behind reverse proxies
 app.set('trust proxy', true);
 
 app.get('/fhir/Questionnaire/\\$assemble', (_, res) => {

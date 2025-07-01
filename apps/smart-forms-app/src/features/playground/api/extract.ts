@@ -15,47 +15,7 @@
  * limitations under the License.
  */
 
-import { HEADERS } from '../../../api/headers.ts';
-import type { Bundle, Questionnaire, StructureMap } from 'fhir/r4';
-import * as FHIR from 'fhirclient';
-import { FORMS_SERVER_URL } from '../../../globals.ts';
-
-export async function fetchTargetStructureMap(
-  questionnaire: Questionnaire
-): Promise<StructureMap | null> {
-  let targetStructureMapCanonical = questionnaire.extension?.find(
-    (extension) =>
-      extension.url ===
-      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-targetStructureMap'
-  )?.valueCanonical;
-
-  if (!targetStructureMapCanonical) {
-    return null;
-  }
-
-  targetStructureMapCanonical = targetStructureMapCanonical.replace('|', '&version=');
-  const requestUrl = `/StructureMap?url=${targetStructureMapCanonical}&_sort=_lastUpdated`;
-  const resource = await FHIR.client(FORMS_SERVER_URL).request({
-    url: requestUrl,
-    headers: HEADERS
-  });
-
-  // Response isn't a resource, exit early
-  if (!resource.resourceType) {
-    return null;
-  }
-
-  if (resource.resourceType === 'Bundle') {
-    return resource.entry?.find((entry: any) => entry.resource?.resourceType === 'StructureMap')
-      ?.resource as StructureMap;
-  }
-
-  if (resource.resourceType === 'StructureMap') {
-    return resource as StructureMap;
-  }
-
-  return null;
-}
+import type { Bundle } from 'fhir/r4';
 
 export function extractedResourceIsBatchBundle(
   extractedResource: any

@@ -16,9 +16,13 @@
  */
 
 import type { SpeedDialActionProps } from '@mui/material';
-import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import {
+  buildBundleFromObservationArray,
+  extractObservationBased,
+  useQuestionnaireResponseStore,
+  useQuestionnaireStore
+} from '@aehrc/smart-forms-renderer';
 import { useMemo, useState } from 'react';
-import { useExtractDebuggerStore } from '../../../playground/stores/extractDebuggerStore.ts';
 import { getExtractMechanism } from '../../utils/extract.ts';
 import SaveAsFinalActionButton from './SaveAsFinalActionButton.tsx';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
@@ -45,8 +49,6 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
   const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
   const formChangesHistory = useQuestionnaireResponseStore.use.formChangesHistory();
-
-  const structuredMapExtractMap = useExtractDebuggerStore.use.structuredMapExtractMap();
 
   // Events handlers
   async function handleTemplateExtract() {
@@ -79,6 +81,15 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
 
     setExtractedBundle(extractResult.extractedBundle);
     setExtracting(false);
+
+    // Open dialog after extraction is complete
+    handleOpenDialog();
+  }
+
+  function handleObservationExtract() {
+    const extractedObservations = extractObservationBased(sourceQuestionnaire, updatableResponse);
+    const bundleFromObservations = buildBundleFromObservationArray(extractedObservations);
+    setExtractedBundle(bundleFromObservations);
 
     // Open dialog after extraction is complete
     handleOpenDialog();
@@ -124,17 +135,14 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
 
   // Check if questionnaire can be template-based extracted
   const extractMechanism = useMemo(
-    () => getExtractMechanism(sourceQuestionnaire, structuredMapExtractMap),
-    [sourceQuestionnaire, structuredMapExtractMap]
+    () => getExtractMechanism(sourceQuestionnaire),
+    [sourceQuestionnaire]
   );
   const writeBackEnabled = !!extractMechanism;
 
-  // Write back enabled for this questionnaire, include write back dialog
-  // if (writeBackEnabled) {
-
   const numOfExtractedBundleEntries = extractedBundle?.entry?.length || 0;
 
-  if (extractMechanism === 'template-based') {
+  if (writeBackEnabled) {
     return (
       <>
         <SaveAsFinalActionButton
@@ -142,7 +150,15 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
           isExtracting={isExtracting}
           isDisabled={buttonIsDisabled}
           writeBackEnabled={writeBackEnabled}
-          onSaveAsFinalActionClick={handleTemplateExtract}
+          onSaveAsFinalActionClick={async () => {
+            if (extractMechanism === 'template-based') {
+              await handleTemplateExtract();
+            }
+
+            if (extractMechanism === 'observation-based') {
+              handleObservationExtract();
+            }
+          }}
           {...speedDialActionProps}
         />
 

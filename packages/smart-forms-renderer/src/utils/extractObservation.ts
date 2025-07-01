@@ -1,4 +1,5 @@
 import type {
+  Bundle,
   CodeableConcept,
   Observation,
   Questionnaire,
@@ -7,9 +8,10 @@ import type {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
-import { readQuestionnaireResponse, transverseQuestionnaire } from './genericRecursive';
+import { readQuestionnaireResponse, traverseQuestionnaire } from './genericRecursive';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import { getRelevantCodingProperties } from './valueSet';
+import { nanoid } from 'nanoid';
 
 /**
  * Extract an array of Observations from a QuestionnaireResponse and its source Questionnaire.
@@ -152,7 +154,7 @@ export function mapQItemsExtractable(questionnaire: Questionnaire): Record<strin
     }
   };
 
-  transverseQuestionnaire(questionnaire, mapQItemsExtractableRecursive, initialExtractMap);
+  traverseQuestionnaire(questionnaire, mapQItemsExtractableRecursive, initialExtractMap);
 
   return initialExtractMap;
 }
@@ -161,29 +163,30 @@ function mapQItemsExtractableRecursive(
   qItem: QuestionnaireItem,
   root?: Questionnaire,
   parent?: QuestionnaireItem,
-  qItemExtrableMap?: Record<string, Extractable>
+  qItemExtractableMap?: Record<string, Extractable>
 ): void {
-  if (!qItemExtrableMap) return;
+  if (!qItemExtractableMap) return;
 
-  if (!qItemExtrableMap[qItem.linkId]) {
-    qItemExtrableMap[qItem.linkId] = { extractable: false, extractCategories: [] };
+  if (!qItemExtractableMap[qItem.linkId]) {
+    qItemExtractableMap[qItem.linkId] = { extractable: false, extractCategories: [] };
   }
 
-  // Check if questionnaire extractable
+  // Check if questionnaireItem is observation-extractable
   const extension = qItem.extension?.find((e) => e.url === FHIR_OBSERVATION_EXTRACT_EXTENSION);
 
   if (extension?.valueBoolean || extension?.valueBoolean === false) {
-    qItemExtrableMap[qItem.linkId].extractable = extension?.valueBoolean ?? false;
-  } else if (parent && qItemExtrableMap[parent.linkId]) {
-    qItemExtrableMap[qItem.linkId].extractable = qItemExtrableMap[parent.linkId].extractable;
-  } else if (root && qItemExtrableMap[root.id ?? 'root']) {
-    qItemExtrableMap[qItem.linkId].extractable = qItemExtrableMap[root?.id ?? 'root'].extractable;
+    qItemExtractableMap[qItem.linkId].extractable = extension?.valueBoolean ?? false;
+  } else if (parent && qItemExtractableMap[parent.linkId]) {
+    qItemExtractableMap[qItem.linkId].extractable = qItemExtractableMap[parent.linkId].extractable;
+  } else if (root && qItemExtractableMap[root.id ?? 'root']) {
+    qItemExtractableMap[qItem.linkId].extractable =
+      qItemExtractableMap[root?.id ?? 'root'].extractable;
   } else {
-    qItemExtrableMap[qItem.linkId].extractable = false;
+    qItemExtractableMap[qItem.linkId].extractable = false;
   }
 
   // if questionnaire extractable, check for extract category
-  if (qItemExtrableMap[qItem.linkId].extractable) {
+  if (qItemExtractableMap[qItem.linkId].extractable) {
     const extractCategoryExts = qItem.extension
       ?.filter(
         (e) => e.url === FHIR_OBSERVATION_EXTRACT_CATEGORY_EXTENSION && e.valueCodeableConcept
@@ -191,21 +194,21 @@ function mapQItemsExtractableRecursive(
       ?.map((e) => e.valueCodeableConcept) as CodeableConcept[] | undefined;
 
     if (extractCategoryExts) {
-      qItemExtrableMap[qItem.linkId].extractCategories = extractCategoryExts;
-    } else if (parent && qItemExtrableMap[parent.linkId].extractCategories.length) {
-      qItemExtrableMap[qItem.linkId].extractCategories =
-        qItemExtrableMap[parent.linkId].extractCategories;
-    } else if (root && qItemExtrableMap[root.id ?? 'root'].extractCategories.length) {
-      qItemExtrableMap[qItem.linkId].extractCategories =
-        qItemExtrableMap[root?.id ?? 'root'].extractCategories;
+      qItemExtractableMap[qItem.linkId].extractCategories = extractCategoryExts;
+    } else if (parent && qItemExtractableMap[parent.linkId].extractCategories.length) {
+      qItemExtractableMap[qItem.linkId].extractCategories =
+        qItemExtractableMap[parent.linkId].extractCategories;
+    } else if (root && qItemExtractableMap[root.id ?? 'root'].extractCategories.length) {
+      qItemExtractableMap[qItem.linkId].extractCategories =
+        qItemExtractableMap[root?.id ?? 'root'].extractCategories;
     } else {
-      qItemExtrableMap[qItem.linkId].extractCategories = [];
+      qItemExtractableMap[qItem.linkId].extractCategories = [];
     }
   }
 
   if (qItem.item && qItem.item.length !== 0) {
     for (const qChildItem of qItem.item) {
-      mapQItemsExtractableRecursive(qChildItem, root, qItem, qItemExtrableMap);
+      mapQItemsExtractableRecursive(qChildItem, root, qItem, qItemExtractableMap);
     }
   }
 }
@@ -311,4 +314,85 @@ function removeIfNull<T, U>(
   if (expectedValue) return { [key]: expectedValue };
 
   return { [key]: value };
+}
+
+/**
+ * Checks whether a Questionnaire or any of its items contains a valid `sdc-questionnaire-observationExtract` extension (and if it's at the item level, a valid item.code too).
+ * Array.prototype.some() is short-circuiting, so it will return true as soon as it finds a valid extension.
+ *
+ * @param questionnaire - The FHIR Questionnaire to check.
+ * @returns `true` if at least one valid observationExtract extension exists.
+ */
+export function canBeObservationExtracted(questionnaire: Questionnaire): boolean {
+  // Check Questionnaire-level extension
+  const isObservationExtractable = hasObservationExtractExtension(questionnaire);
+  if (isObservationExtractable) {
+    return true;
+  }
+
+  // Check item-level extensions recursively
+  if (questionnaire.item) {
+    return questionnaire.item.some((item) => hasObservationExtractExtensionRecursive(item));
+  }
+
+  return false;
+}
+
+/**
+ * Recursively checks whether a `QuestionnaireItem` or any of its child items contains a `sdc-questionnaire-observationExtract` extension (and if it's at the item level, a valid item.code too).
+ * Array.prototype.some() is short-circuiting, so it will return true as soon as it finds a valid extension.
+ */
+function hasObservationExtractExtensionRecursive(item: QuestionnaireItem): boolean {
+  const isObservationExtractable = hasObservationExtractExtension(item);
+  if (isObservationExtractable) {
+    return true;
+  }
+
+  return item.item?.some((child) => hasObservationExtractExtensionRecursive(child)) ?? false;
+}
+
+/**
+ * Checks if a Questionnaire or QuestionnaireItem has a `sdc-questionnaire-observationExtract` extension.
+ * For items, also ensures that there is an item.code.
+ */
+function hasObservationExtractExtension(item: QuestionnaireItem | Questionnaire): boolean {
+  const observationExtractPresent = !!item.extension?.find(
+    (ext) => ext.url === FHIR_OBSERVATION_EXTRACT_EXTENSION
+  );
+
+  // Check if the item has a linkId (means it's a QuestionnaireItem), item.code must be present
+  // This does not apply to the Questionnaire-level, hence itemCodePresent defaults to true
+  let itemCodePresent = true;
+  if ('linkId' in item) {
+    itemCodePresent = !!item.code && item.code.length > 0;
+  }
+
+  return observationExtractPresent && itemCodePresent;
+}
+
+export function buildBundleFromObservationArray(observations: Observation[]): Bundle {
+  return {
+    resourceType: 'Bundle',
+    id: `sdc-observation-extract-${nanoid()}`,
+    meta: {
+      tag: [
+        {
+          code: '@aehrc/smart-forms-renderer:generated'
+        }
+      ]
+    },
+    type: 'transaction',
+    timestamp: new Date().toISOString(),
+    entry: observations.map((observation) => {
+      const observationId = observation.id || `obs-${nanoid()}`;
+      return {
+        fullUrl: `Observation/${observationId}`,
+        resource: observation,
+        request: {
+          method: 'POST',
+          url: 'Observation'
+        }
+      };
+    })
+  };
 }

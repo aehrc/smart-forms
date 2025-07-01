@@ -23,13 +23,17 @@ import {
   CircularProgress,
   Divider,
   Grid,
+  Link,
   Stack,
   TextField,
   Typography
 } from '@mui/material';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import type { Questionnaire } from 'fhir/r4';
 import useFetchQuestionnaires from '../../dashboard/hooks/useFetchQuestionnaires';
 import { StyledAlert } from '../../../components/Nav/Nav.styles.ts';
+import { FORMS_SERVER_URL } from '../../../globals.ts';
 
 interface PlaygroundQuestionnairePickerProps {
   onBuild: (questionnaire: Questionnaire) => void;
@@ -79,6 +83,8 @@ function PlaygroundQuestionnairePicker(props: PlaygroundQuestionnairePickerProps
     );
   }
 
+  const resolvableUrl = `${FORMS_SERVER_URL}/Questionnaire/${selectedQuestionnaireId}`;
+
   return (
     <>
       {selectedQuestionnaireId === '' ? (
@@ -106,31 +112,56 @@ function PlaygroundQuestionnairePicker(props: PlaygroundQuestionnairePickerProps
         {selectedQuestionnaire ? (
           <>
             <Grid container>
-              <Grid size={{ xs: 1.5 }}>ID:</Grid>
-              <Grid size={{ xs: 10.5 }}>
+              <Grid size={{ xs: 2 }}>
+                <b>ID:</b>
+              </Grid>
+              <Grid size={{ xs: 10 }}>
                 <Typography mb={1}>{selectedQuestionnaire.id}</Typography>
               </Grid>
 
-              <Grid size={{ xs: 1.5 }}>Title:</Grid>
-              <Grid size={{ xs: 10.5 }}>
+              <Grid size={{ xs: 2 }}>
+                <b>Title:</b>
+              </Grid>
+              <Grid size={{ xs: 10 }}>
                 <Typography mb={1}>{selectedQuestionnaire.title}</Typography>
               </Grid>
 
-              <Grid size={{ xs: 1.5 }}>URL:</Grid>
-              <Grid size={{ xs: 10.5 }}>
+              <Grid size={{ xs: 2 }}>
+                <b>Canonical URL:</b>
+              </Grid>
+              <Grid size={{ xs: 10 }}>
                 <Typography mb={1}>{selectedQuestionnaire.url}</Typography>
               </Grid>
 
-              <Grid size={{ xs: 1.5 }}>Version:</Grid>
-              <Grid size={{ xs: 10.5 }}>
+              <Grid size={{ xs: 2 }}>
+                <b>Version:</b>
+              </Grid>
+              <Grid size={{ xs: 10 }}>
                 <Typography mb={1}>{selectedQuestionnaire.version}</Typography>
               </Grid>
+
+              <Grid size={{ xs: 2 }}>
+                <b>Resolvable URL:</b>
+              </Grid>
+              <Grid size={{ xs: 10 }}>
+                <Link href={resolvableUrl} target="_blank" rel="noreferrer">
+                  {resolvableUrl}
+                </Link>
+              </Grid>
             </Grid>
-            <Box display="flex">
-              <Box flexGrow={1} />
+            <Box display="flex" justifyContent="end" mt={1} gap={1}>
+              <Button
+                component="a"
+                href={`https://fhirpath-lab.com/Questionnaire/tester?tab=questionnaire,csiro%20renderer&id=${resolvableUrl}`}
+                target="_blank"
+                rel="noopener"
+                endIcon={<OpenInNewIcon />}>
+                Open in fhirpath-lab
+              </Button>
               <Button
                 data-test="picker-build-form-button-playground"
-                onClick={() => onBuild(selectedQuestionnaire)}>
+                onClick={() => onBuild(selectedQuestionnaire)}
+                endIcon={<PlayCircleIcon />}>
                 Build Form
               </Button>
             </Box>
