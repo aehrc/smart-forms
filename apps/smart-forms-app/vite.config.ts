@@ -12,6 +12,7 @@ export default ({ mode }) => {
     plugins: [react(), svgr()],
     define: {
       RENDERER_VERSION: JSON.stringify(packageJson.dependencies['@aehrc/smart-forms-renderer']),
+      POPULATE_VERSION: JSON.stringify(packageJson.dependencies['@aehrc/sdc-populate']),
       TEMPLATE_EXTRACT_VERSION: JSON.stringify(
         packageJson.dependencies['@aehrc/sdc-template-extract']
       )
