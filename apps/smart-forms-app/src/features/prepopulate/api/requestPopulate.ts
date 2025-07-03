@@ -55,7 +55,7 @@ export async function requestPopulate(
         body: JSON.stringify(inputParameters),
         headers: {
           ...HEADERS,
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/fhir+json;charset=utf-8',
           Authorization: `Bearer ${fetchResourceRequestConfig.authToken}`
         }
       });

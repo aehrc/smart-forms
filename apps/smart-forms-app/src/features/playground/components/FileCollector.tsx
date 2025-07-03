@@ -22,6 +22,7 @@ import { Box, IconButton, Stack, Tooltip } from '@mui/material';
 import Iconify from '../../../components/Iconify/Iconify.tsx';
 import { useSnackbar } from 'notistack';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 
 interface FileCollectorProps {
   onBuild: (file: File) => unknown;
@@ -98,7 +99,7 @@ const FileCollector = memo(function FileCollector(props: FileCollectorProps) {
                   onBuild(uploadedFile);
                 }
               }}>
-              <Iconify icon="ph:hammer" />
+              <PlayCircleIcon fontSize="small" />
             </IconButton>
           </span>
         </Tooltip>

@@ -20,36 +20,54 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { StandardCheckbox } from '../../Checkbox.styles';
 import { useRendererStylingStore } from '../../../stores';
 
-interface Props {
+interface CheckboxSingleProps {
   value: string;
   label: string;
   readOnly: boolean;
+  disabledViaToggleExpression: boolean;
   fullWidth: boolean;
   isChecked: boolean;
   onCheckedChange: (value: string) => unknown;
 }
 
-function CheckboxSingle(props: Props) {
-  const { value, label, readOnly, fullWidth, isChecked, onCheckedChange } = props;
+function CheckboxSingle(props: CheckboxSingleProps) {
+  const {
+    value,
+    label,
+    readOnly,
+    disabledViaToggleExpression,
+    fullWidth,
+    isChecked,
+    onCheckedChange
+  } = props;
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+
+  // When an option is disabled via toggle expression, it should truly be "disabled", regardless of readOnlyVisualStyle.
+  // Both isDisabled and isReadOnly are mutually exclusive.
+  const readOnlyWithDisabledStyle = readOnly && readOnlyVisualStyle === 'disabled';
+  const readOnlyWithReadOnlyStyle = readOnly && readOnlyVisualStyle === 'readonly';
+
+  const isHtmlDisabled = readOnlyWithDisabledStyle || disabledViaToggleExpression;
+  const isHtmlReadOnly = readOnlyWithReadOnlyStyle && !disabledViaToggleExpression;
 
   return (
     <FormControlLabel
       sx={{
         width: fullWidth ? '100%' : 'unset',
-        ...(readOnly && {
-          color: readOnlyVisualStyle === 'readonly' ? 'text.secondary' : undefined
+        ...(isHtmlReadOnly && {
+          cursor: 'default',
+          color: 'text.secondary'
         })
       }}
-      disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+      disabled={isHtmlDisabled}
       value={value}
       control={
         <StandardCheckbox
           size="small"
           checked={isChecked}
-          readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
-          aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
+          readOnly={isHtmlReadOnly}
+          aria-readonly={isHtmlReadOnly}
           role="checkbox"
           aria-checked={isChecked}
           onChange={() => {

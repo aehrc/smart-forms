@@ -24,3 +24,4 @@ export {
   logTemplateExtractPathMapResults,
   logTemplateExtractPathMapJsObjectResults
 } from './logging';
+export { parametersIsFhirPatch } from './typePredicates';

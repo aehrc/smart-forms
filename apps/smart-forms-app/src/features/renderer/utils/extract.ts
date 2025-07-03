@@ -1,19 +1,19 @@
-import type { Questionnaire, StructureMap } from 'fhir/r4';
+import type { Questionnaire } from 'fhir/r4';
 import { canBeTemplateExtracted } from '@aehrc/sdc-template-extract';
+import { canBeObservationExtracted } from '@aehrc/smart-forms-renderer';
 
-export type ExtractMechanism = 'template-based' | 'structured-map' | null;
+export type SavingWriteBackMode = 'saving-only' | 'saving-write-back' | false;
 
-export function getExtractMechanism(
-  sourceQuestionnaire: Questionnaire,
-  structuredMapExtractMap: StructureMap | null
-): 'template-based' | 'structured-map' | null {
+export type ExtractMechanism = 'template-based' | 'observation-based' | null;
+
+export function getExtractMechanism(sourceQuestionnaire: Questionnaire): ExtractMechanism {
   // Check if questionnaire can be template-based extracted
   if (canBeTemplateExtracted(sourceQuestionnaire)) {
     return 'template-based';
   }
 
-  if (structuredMapExtractMap) {
-    return 'structured-map';
+  if (canBeObservationExtracted(sourceQuestionnaire)) {
+    return 'observation-based';
   }
 
   return null;

@@ -123,12 +123,14 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
                     value="false"
                     label="No"
                     readOnly={readOnly}
+                    disabledViaToggleExpression={false}
                     fullWidth={inputsFlexGrow}
                   />
                   <ChoiceRadioSingle
                     value="true"
                     label="Yes"
                     readOnly={readOnly}
+                    disabledViaToggleExpression={false}
                     fullWidth={inputsFlexGrow}
                   />
                 </>
@@ -138,12 +140,14 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
                     value="true"
                     label="Yes"
                     readOnly={readOnly}
+                    disabledViaToggleExpression={false}
                     fullWidth={inputsFlexGrow}
                   />
                   <ChoiceRadioSingle
                     value="false"
                     label="No"
                     readOnly={readOnly}
+                    disabledViaToggleExpression={false}
                     fullWidth={inputsFlexGrow}
                   />
                 </>

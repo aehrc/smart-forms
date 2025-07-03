@@ -1,5 +1,5 @@
 import { useQuestionnaireStore } from '../stores';
-import type { QuestionnaireItemAnswerOption } from 'fhir/r4';
+import type { Coding, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { useEffect, useRef, useState } from 'react';
 
 function useAnswerOptionsToggleExpressions(linkId: string): {
@@ -83,6 +83,16 @@ export function generateOptionKey(option: QuestionnaireItemAnswerOption): string
   }
 
   return ''; // In case no valid value is found
+}
+
+// An exact copy of isOptionDisabled, except instead of using QuestionnaireItemAnswerOption it usings codings.
+// It makes sense to align these two functions when we refactor choice/open-choice items https://github.com/aehrc/smart-forms/issues/1205
+export function generateCodingKey(coding: Coding): string {
+  const systemKey = coding.system ?? ' ';
+  const codeKey = coding.code ?? ' ';
+  const displayKey = coding.display ?? ' ';
+
+  return `coding:${systemKey}-${codeKey}-${displayKey}`;
 }
 
 export default useAnswerOptionsToggleExpressions;

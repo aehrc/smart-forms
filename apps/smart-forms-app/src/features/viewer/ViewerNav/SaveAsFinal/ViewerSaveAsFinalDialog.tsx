@@ -19,18 +19,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { saveQuestionnaireResponse } from '../../../../api/saveQr.ts';
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle
-} from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText } from '@mui/material';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import { saveAsFinalSuccessMessage, saveErrorMessage } from '../../../../utils/snackbar.ts';
 import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
+import StandardDialogTitle from '../../../../components/Dialog/StandardDialogTitle.tsx';
 
 export interface ViewerSaveAsFinalDialogProps {
   open: boolean;
@@ -92,7 +86,7 @@ function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
 
   return (
     <Dialog open={open} onClose={handleClose} data-test="dialog-confirm-save">
-      <DialogTitle variant="h5">Confirm save</DialogTitle>
+      <StandardDialogTitle onCloseDialog={handleClose}>Confirm save</StandardDialogTitle>
       <DialogContent>
         <DialogContentText>
           {"Are you sure you want to save this form as final? You won't be able to edit it after."}

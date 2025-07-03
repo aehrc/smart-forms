@@ -31,6 +31,7 @@ import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import { useRendererStylingStore } from '../../../stores';
 import { StyledRequiredTypography } from '../Item.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
+import { isCodingDisabled } from '../../../utils/choice';
 
 interface ChoiceSelectAnswerValueSetFieldsProps
   extends PropsWithIsTabledRequiredAttribute,
@@ -42,6 +43,7 @@ interface ChoiceSelectAnswerValueSetFieldsProps
   feedback: string;
   readOnly: boolean;
   expressionUpdated: boolean;
+  answerOptionsToggleExpressionsMap: Map<string, boolean>;
   onSelectChange: (newValue: Coding | null) => void;
 }
 
@@ -56,6 +58,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
     expressionUpdated,
     isTabled,
     renderingExtensions,
+    answerOptionsToggleExpressionsMap,
     onSelectChange
   } = props;
 
@@ -70,6 +73,9 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
         <Autocomplete
           {...(!isTabled && { id: `${qItem.type}-${qItem.linkId}` })}
           options={codings}
+          getOptionDisabled={(coding) =>
+            isCodingDisabled(coding, answerOptionsToggleExpressionsMap)
+          }
           getOptionLabel={(option) => option.display ?? `${option.code}`}
           value={valueCoding ?? null}
           onChange={(_, newValue) => onSelectChange(newValue)}

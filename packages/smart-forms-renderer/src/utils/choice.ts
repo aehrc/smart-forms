@@ -25,7 +25,7 @@ import type {
 import { ChoiceItemControl, ChoiceItemOrientation } from '../interfaces/choice.enum';
 import { isSpecificItemControl } from './itemControl';
 import { getRelevantCodingProperties } from './valueSet';
-import { generateOptionKey } from '../hooks/useAnswerOptionsToggleExpressions';
+import { generateCodingKey, generateOptionKey } from '../hooks/useAnswerOptionsToggleExpressions';
 
 /**
  * Convert codings to Questionnaire answer options
@@ -247,6 +247,24 @@ export function isOptionDisabled(
   }
 
   const optionKey = generateOptionKey(option);
+  return (
+    answerOptionsToggleExpressionsMap.has(optionKey) &&
+    !answerOptionsToggleExpressionsMap.get(optionKey)
+  );
+}
+
+// An exact copy of isOptionDisabled, except instead of using QuestionnaireItemAnswerOption it usings codings.
+// It makes sense to align these two functions when we refactor choice/open-choice items https://github.com/aehrc/smart-forms/issues/1205
+export function isCodingDisabled(
+  coding: Coding,
+  answerOptionsToggleExpressionsMap: Map<string, boolean>
+): boolean {
+  // all options are enabled by default if answerOptionsToggleExpressions are present
+  if (answerOptionsToggleExpressionsMap.size === 0) {
+    return false;
+  }
+
+  const optionKey = generateCodingKey(coding);
   return (
     answerOptionsToggleExpressionsMap.has(optionKey) &&
     !answerOptionsToggleExpressionsMap.get(optionKey)

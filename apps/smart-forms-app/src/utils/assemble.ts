@@ -52,7 +52,7 @@ export async function assembleQuestionnaire(
       url: 'Questionnaire/$assemble',
       method: 'POST',
       body: JSON.stringify(parameters),
-      headers: { ...HEADERS, 'Content-Type': 'application/json' }
+      headers: { ...HEADERS }
     });
 
     if (outputAssembleParams.parameter[0].resource.resourceType !== 'Questionnaire') {

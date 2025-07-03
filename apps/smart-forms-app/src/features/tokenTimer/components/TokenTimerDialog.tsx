@@ -24,7 +24,6 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
   IconButton,
   Tooltip
 } from '@mui/material';
@@ -38,6 +37,7 @@ import { saveQuestionnaireResponse } from '../../../api/saveQr.ts';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
 import { saveErrorMessage, saveSuccessMessage } from '../../../utils/snackbar.ts';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
+import StandardDialogTitle from '../../../components/Dialog/StandardDialogTitle.tsx';
 
 export interface TokenTimerDialogProps {
   open: boolean;
@@ -118,7 +118,7 @@ function TokenTimerDialog(props: TokenTimerDialogProps) {
 
   return (
     <Dialog open={open}>
-      <DialogTitle variant="h5">Session expiring soon</DialogTitle>
+      <StandardDialogTitle onCloseDialog={handleClose}>Session expiring soon</StandardDialogTitle>
       <DialogContent>
         <DialogContentText>
           {

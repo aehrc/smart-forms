@@ -38,6 +38,7 @@ import useCodingCalculatedExpression from '../../../hooks/useCodingCalculatedExp
 import { convertCodingsToAnswerOptions, findInAnswerOptions } from '../../../utils/choice';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import ItemLabel from '../ItemParts/ItemLabel';
+import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 
 interface ChoiceSelectAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
@@ -126,6 +127,10 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
     }
   });
 
+  // Process answerOptionsToggleExpressions
+  const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
+    useAnswerOptionsToggleExpressions(qItem.linkId);
+
   // Event handlers
   function handleChange(newValue: Coding | null) {
     if (newValue) {
@@ -147,9 +152,10 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
         terminologyError={terminologyError}
         feedback={feedback}
         readOnly={readOnly}
-        expressionUpdated={calcExpUpdated || dynamicCodingsUpdated}
+        expressionUpdated={calcExpUpdated || dynamicCodingsUpdated || answerOptionsToggleExpUpdated}
         isTabled={isTabled}
         renderingExtensions={renderingExtensions}
+        answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
         onSelectChange={handleChange}
       />
     );
@@ -174,6 +180,7 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
             expressionUpdated={calcExpUpdated || dynamicCodingsUpdated}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
+            answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             onSelectChange={handleChange}
           />
         }

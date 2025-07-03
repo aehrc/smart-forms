@@ -58,11 +58,15 @@ function RendererEmbeddedLaunchQuestionnaireActions(
         <PreviewAction isSpeedDial={true} {...speedDialActionProps} />
         <SaveProgressAction
           isSpeedDial={true}
-          onClose={onClose}
+          onCloseSpeedDial={onClose}
           refetchResponses={refetchResponses}
           {...speedDialActionProps}
         />
-        <SaveAsFinalAction isSpeedDial={true} onClose={onClose} {...speedDialActionProps} />
+        <SaveAsFinalAction
+          isSpeedDial={true}
+          onCloseSpeedDial={onClose}
+          {...speedDialActionProps}
+        />
         <RepopulateAction
           spinner={spinner}
           onSpinnerChange={onSpinnerChange}

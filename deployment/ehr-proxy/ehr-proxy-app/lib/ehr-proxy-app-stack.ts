@@ -14,8 +14,6 @@ import { ARecord, HostedZone, RecordTarget } from 'aws-cdk-lib/aws-route53';
 import { LoadBalancerTarget } from 'aws-cdk-lib/aws-route53-targets';
 import { HapiEndpoint } from 'ehr-proxy-hapi-endpoint';
 import { SmartProxy } from 'ehr-proxy-smart-proxy';
-import { TransformEndpoint } from 'ehr-proxy-transform-endpoint';
-import { ExtractEndpoint } from 'ehr-proxy-extract-endpoint';
 
 export class EhrProxyAppStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -37,6 +35,7 @@ export class EhrProxyAppStack extends cdk.Stack {
     });
 
     const certificate = new Certificate(this, 'EhrProxyCertificate', {
+      // This must match the fhirServerBaseUrl in services/ehr-proxy/smart-proxy/lib/index.ts - 'proxy.smartforms.io' + '/fhir'
       domainName: 'proxy.smartforms.io',
       validation: CertificateValidation.fromDns(hostedZone)
     });
@@ -55,10 +54,13 @@ export class EhrProxyAppStack extends cdk.Stack {
 
     const hapi = new HapiEndpoint(this, 'EhrProxyHapi', { cluster });
     const smartProxy = new SmartProxy(this, 'EhrProxySmartProxy', { cluster });
-    const transform = new TransformEndpoint(this, 'EhrProxyTransform', { cluster });
-    const extract = new ExtractEndpoint(this, 'EhrProxyExtract', { cluster });
 
-    // Create a target for the extract service
+    // === DECOMMISSIONED as of 1 July 2025 ===
+    // See: https://github.com/aehrc/smart-forms/issues/1337
+    // This block was previously used to configure $extract and $transform routes.
+    // It is now left here for reference only and should be removed in future cleanup.
+
+    /*
     const extractTarget = extract.service.loadBalancerTarget({
       containerName: extract.containerName,
       containerPort: extract.containerPort
@@ -81,7 +83,6 @@ export class EhrProxyAppStack extends cdk.Stack {
       ]
     });
 
-    // Create a target for the transform service
     const transformTarget = transform.service.loadBalancerTarget({
       containerName: transform.containerName,
       containerPort: transform.containerPort
@@ -98,6 +99,7 @@ export class EhrProxyAppStack extends cdk.Stack {
       priority: 2,
       conditions: [ListenerCondition.pathPatterns(['/fhir/StructureMap/$transform'])]
     });
+    */
 
     // Create a target for the HAPI FHIR API service
     const hapiTarget = hapi.service.loadBalancerTarget({

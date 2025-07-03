@@ -37,6 +37,7 @@ function RadioButtonWithOpenLabel(props: RadioButtonWithOpenLabelProps) {
         value={value ?? ''}
         label={label + ':'}
         readOnly={readOnly}
+        disabledViaToggleExpression={false}
         fullWidth={false}
       />
       <OpenLabelField

@@ -19,7 +19,7 @@
 import React from 'react';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { Box, IconButton, Tooltip } from '@mui/material';
-import Iconify from '../../components/Iconify/Iconify';
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import { buildForm } from '../../utils';
 import { STORYBOOK_TERMINOLOGY_SERVER_URL } from './globals';
 
@@ -43,8 +43,8 @@ function BuildFormButtonForStorybook(props: BuildFormButtonProps) {
   return (
     <Box display="flex" mb={0.5} alignItems="center" columnGap={3}>
       <Tooltip title="Build form with questionnaire response" placement="right">
-        <IconButton onClick={handleBuildForm} size="small" color="primary">
-          <Iconify icon="ph:hammer" />
+        <IconButton onClick={handleBuildForm} size="small" color="primary" component="label">
+          <PlayCircleIcon fontSize="small" />
         </IconButton>
       </Tooltip>
     </Box>

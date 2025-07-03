@@ -42,7 +42,9 @@ export type {
   TemplateExtractPathJsObjectTuple,
   InputParameters,
   FetchQuestionnaireRequestConfig,
-  FetchQuestionnaireCallback
+  FetchQuestionnaireCallback,
+  FhirPatchParameters,
+  FhirPatchParameterEntry
 } from './SDCExtractQuestionnaireResponseOperation';
 
 // Export SDCExtractQuestionnaireResponseOperation utils
@@ -53,5 +55,6 @@ export {
   logTemplateExtractPathMapFull,
   logTemplateExtractPathMapJsObjectFull,
   logTemplateExtractPathMapResults,
-  logTemplateExtractPathMapJsObjectResults
+  logTemplateExtractPathMapJsObjectResults,
+  parametersIsFhirPatch
 } from './SDCExtractQuestionnaireResponseOperation';

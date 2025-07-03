@@ -15,12 +15,13 @@
  * limitations under the License.
  */
 
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent } from '@mui/material';
 import PlaygroundPatientPicker from './PlaygroundPatientPicker.tsx';
 import type { Patient, Practitioner } from 'fhir/r4';
 import { useState } from 'react';
 import PlaygroundUserPicker from './PlaygroundUserPicker.tsx';
 import PlaygroundFhirServerUrlInput from './PlaygroundFhirServerInput.tsx';
+import StandardDialogTitle from '../../../components/Dialog/StandardDialogTitle.tsx';
 
 export interface PlaygroundSettingsDialogProps {
   open: boolean;
@@ -111,9 +112,11 @@ function PlaygroundSettingsDialog(props: PlaygroundSettingsDialogProps) {
     terminologyServerUrlInput !== terminologyServerUrl && terminologyServerUrlInputValid === true;
 
   return (
-    <Dialog open={open} slotProps={{ paper: { sx: { minWidth: 500 } } }}>
-      <DialogTitle variant="h5">Launch Context Settings</DialogTitle>
-      <DialogContent>
+    <Dialog open={open} maxWidth="md" fullWidth slotProps={{ paper: { sx: { minWidth: 500 } } }}>
+      <StandardDialogTitle onCloseDialog={handleCancel}>
+        Launch Context Settings
+      </StandardDialogTitle>
+      <DialogContent dividers>
         {/* Source FHIR Server url config */}
         <PlaygroundFhirServerUrlInput
           fhirServerId="source"

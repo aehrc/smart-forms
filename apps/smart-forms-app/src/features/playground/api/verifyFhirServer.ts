@@ -26,7 +26,7 @@ export async function verifyFhirServer(
       url: 'metadata',
       headers: {
         'Content-Type': 'application/fhir+json;charset=utf-8',
-        Accept: 'application/json;charset=utf-8'
+        Accept: 'application/fhir+json;charset=utf-8'
       }
     });
 

@@ -8,6 +8,24 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.72] - 2025-07-01
+#### Fixed
+- Added getItemTerminologyServerToUse() as a cleaner way to an item to decide which terminology server to use.
+- UseQuantityCalculatedExpression() hook now takes into account preferredTerminologyServer when looking up ucum-units.
+
+## [1.0.0-alpha.71] - 2025-06-30
+#### Added
+- Added observation-based extraction helper functions canBeObservationExtracted() and buildBundleFromObservationArray() as library functions.
+
+
+## [1.0.0-alpha.70] - 2025-06-26
+#### Added
+- Added support for answerOptionToggleExpression in answerValueSet dropdowns.
+
+#### Fixed
+- Fixed an issue where cursor is not set to "default" when hovering over HTML-readonly checkbox labels
+- Fixed an issue where `readOnlyVisualStyle` is set to "readonly", radio and checkbox inputs are not truly disabled when they are disabled via answerOptionsToggleExpressions.
+
 ## [1.0.0-alpha.69] - 2025-06-18
 #### Fixed
 - Move dayjs.extend() localisation and parse format functions to BaseRenderer.tsx so they are immediately invoked.

@@ -35,7 +35,7 @@ export const fetchResourceCallback: FetchResourceCallback = async (
   const { authToken } = requestConfig;
 
   const headers: Record<string, string> = {
-    Accept: 'application/json;charset=utf-8'
+    Accept: 'application/fhir+json;charset=utf-8'
   };
 
   if (authToken) {
@@ -159,7 +159,7 @@ export const fetchTerminologyCallback: FetchTerminologyCallback = async (
   let { terminologyServerUrl } = terminologyRequestConfig;
 
   const headers = {
-    Accept: 'application/json;charset=utf-8'
+    Accept: 'application/fhir+json;charset=utf-8'
   };
 
   if (!terminologyServerUrl.endsWith('/')) {

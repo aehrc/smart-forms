@@ -95,7 +95,7 @@ function PlaygroundPatientPicker(props: PlaygroundPatientPickerProps) {
       <Box display="flex" pt={1} px={0.5} alignItems="center">
         {selectedPatient ? (
           <>
-            <Grid container>
+            <Grid container sx={{ flex: 1 }}>
               <Grid size={{ xs: 2 }}>ID:</Grid>
               <Grid size={{ xs: 10 }}>
                 <Typography mb={1}>{selectedPatient.id}</Typography>

@@ -96,6 +96,8 @@ export {
   generateItemsToRepopulate,
   repopulateResponse,
   extractObservationBased,
+  canBeObservationExtracted,
+  buildBundleFromObservationArray,
   getQuestionnaireItem,
   getSectionHeading
 } from './utils';

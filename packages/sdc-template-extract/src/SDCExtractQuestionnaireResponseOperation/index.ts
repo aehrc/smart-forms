@@ -27,7 +27,9 @@ export type {
   TemplateExtractPathJsObjectTuple,
   InputParameters,
   FetchQuestionnaireRequestConfig,
-  FetchQuestionnaireCallback
+  FetchQuestionnaireCallback,
+  FhirPatchParameters,
+  FhirPatchParameterEntry
 } from './interfaces';
 
 // Export utils
@@ -38,5 +40,6 @@ export {
   logTemplateExtractPathMapFull,
   logTemplateExtractPathMapJsObjectFull,
   logTemplateExtractPathMapResults,
-  logTemplateExtractPathMapJsObjectResults
+  logTemplateExtractPathMapJsObjectResults,
+  parametersIsFhirPatch
 } from './utils';

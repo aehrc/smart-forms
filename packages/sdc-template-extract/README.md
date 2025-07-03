@@ -1,6 +1,6 @@
 # SDC-Template-based Extract
 
-A Typescript reference implementation of the [$extract](https://build.fhir.org/ig/HL7/sdc/OperationDefinition-QuestionnaireResponse-extract.html) operation from the [HL7 FHIR Structured Data Capture Specification](http://hl7.org/fhir/uv/sdc/ImplementationGuide/hl7.fhir.uv.sdc) and is designed for [Modular Questionnaires](http://hl7.org/fhir/uv/sdc/modular.html#modular-questionnaires).
+A Typescript reference implementation of the [$extract](https://build.fhir.org/ig/HL7/sdc/OperationDefinition-QuestionnaireResponse-extract.html) operation from the [HL7 FHIR Structured Data Capture Specification](http://hl7.org/fhir/uv/sdc/ImplementationGuide/hl7.fhir.uv.sdc). This only covers [template-based extraction](https://build.fhir.org/ig/HL7/sdc/extraction.html#template-based-extraction).
 
 ## Usage
 There are two ways to use this package:

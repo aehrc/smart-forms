@@ -9,7 +9,7 @@ import type { TemplateExtractReference } from './templateExtractReference.interf
  */
 export interface TemplateDetails {
   /**
-   * The contained FHIR resource representing the template (e.g., a Questionnaire, StructureMap, etc.).
+   * The contained FHIR resource representing the template (e.g., a Condition, Observation, etc.).
    */
   templateResource: FhirResource;
 

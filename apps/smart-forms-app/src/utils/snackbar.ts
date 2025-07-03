@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-export const saveErrorMessage = 'An error occurred while saving. Try again later.';
+export const saveErrorMessage = 'An error occurred while saving.';
 
 export const saveSuccessMessage = 'Response saved';
 export const saveAsFinalSuccessMessage = 'Response saved as final';
