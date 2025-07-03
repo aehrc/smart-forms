@@ -16,15 +16,13 @@
  */
 
 import { useState } from 'react';
-import PrePopButtonForPlayground from './PrePopButtonForPlayground.tsx';
-import { populateQuestionnaire } from '@aehrc/sdc-populate';
-import { BaseRenderer, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
-import { fetchResourceCallback } from './PrePopCallbackForPlayground.tsx';
+import { BaseRenderer } from '@aehrc/smart-forms-renderer';
 import type { Patient, Practitioner } from 'fhir/r4';
 import { Box, Typography } from '@mui/material';
 import useLaunchContextNames from '../hooks/useLaunchContextNames.ts';
-import { buildFormWrapper } from '../../../utils/manageForm.ts';
 import ExtractMenu from './ExtractMenu.tsx';
+import PopulateMenu from './PopulateMenu.tsx';
+import type { RendererSpinner } from '../../renderer/types/rendererSpinner.ts';
 
 interface PlaygroundRendererProps {
   sourceFhirServerUrl: string | null;
@@ -47,56 +45,13 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
     onTemplateExtract
   } = props;
 
-  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
-  const setPopulatedContext = useQuestionnaireStore.use.setPopulatedContext();
-
-  const [isPopulating, setIsPopulating] = useState(false);
+  const initialSpinner: RendererSpinner = { isSpinning: false, status: 'prepopulate', message: '' };
+  const [spinner, setSpinner] = useState<RendererSpinner>(initialSpinner);
 
   const { patientName, userName } = useLaunchContextNames(patient, user);
 
-  const prePopEnabled = sourceFhirServerUrl !== null && patient !== null;
-
-  function handlePrepopulate() {
-    if (!prePopEnabled) {
-      return;
-    }
-
-    setIsPopulating(true);
-
-    populateQuestionnaire({
-      questionnaire: sourceQuestionnaire,
-      fetchResourceCallback: fetchResourceCallback,
-      fetchResourceRequestConfig: {
-        sourceServerUrl: sourceFhirServerUrl,
-        authToken: null
-      },
-      patient: patient,
-      user: user ?? undefined
-    }).then(async ({ populateSuccess, populateResult }) => {
-      if (!populateSuccess || !populateResult) {
-        setIsPopulating(false);
-        return;
-      }
-
-      const { populatedResponse, populatedContext } = populateResult;
-
-      // Call to buildForm to pre-populate the QR which repaints the entire BaseRenderer view
-      await buildFormWrapper(
-        sourceQuestionnaire,
-        populatedResponse,
-        undefined,
-        terminologyServerUrl,
-        populatedContext
-      );
-
-      // TODO eventually we want to deprecate this in 1.0.0, populatedContext is now passed to buildFormWrapper and is automatically added to the FhirPathContext
-      if (populatedContext) {
-        setPopulatedContext(populatedContext, true);
-      }
-
-      setIsPopulating(false);
-    });
-  }
+  const isPrePopulating = spinner.isSpinning && spinner.status === 'prepopulate';
+  const isRePopulateWriting = spinner.isSpinning && spinner.status === 'repopulate-write';
 
   return (
     <>
@@ -113,10 +68,13 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
           borderBottom: '1px solid',
           borderColor: 'divider'
         }}>
-        <PrePopButtonForPlayground
-          prePopEnabled={prePopEnabled}
-          isPopulating={isPopulating}
-          onPopulate={handlePrepopulate}
+        <PopulateMenu
+          sourceFhirServerUrl={sourceFhirServerUrl}
+          patient={patient}
+          user={user}
+          terminologyServerUrl={terminologyServerUrl}
+          spinner={spinner}
+          onSpinnerChange={(newSpinner) => setSpinner(newSpinner)}
         />
         <ExtractMenu
           isExtracting={isExtracting}
@@ -135,7 +93,7 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
           </Typography>
         ) : null}
       </Box>
-      {isPopulating ? null : (
+      {isPrePopulating || isRePopulateWriting ? null : (
         <Box px={1}>
           <BaseRenderer />
         </Box>
