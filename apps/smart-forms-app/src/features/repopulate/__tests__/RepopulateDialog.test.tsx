@@ -1,10 +1,10 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ThemeProvider } from '@mui/material/styles';
-import { createTheme } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { SnackbarProvider } from 'notistack';
 import RepopulateSelectDialog from '../components/RepopulateSelectDialog';
+import { repopulateResponse } from '@aehrc/smart-forms-renderer';
 
 // Mock the smart-forms-renderer module with all necessary exports
 vi.mock('@aehrc/smart-forms-renderer', () => ({
@@ -22,8 +22,6 @@ vi.mock('@aehrc/smart-forms-renderer', () => ({
   useHidden: vi.fn(() => false),
   isSpecificItemControl: vi.fn(() => false)
 }));
-
-import { repopulateResponse } from '@aehrc/smart-forms-renderer';
 
 // Get the mocked function with proper typing
 const mockedRepopulateResponse = repopulateResponse as any;
@@ -53,12 +51,12 @@ describe('RepopulateSelectDialog Single Date Field Scenarios', () => {
     [singleDateFieldItem.linkId]: {
       qItem: singleDateFieldItem,
       heading: 'Test Section',
-      oldQRItem: {
+      currentQRItem: {
         linkId: singleDateFieldItem.linkId,
         text: singleDateFieldItem.text,
         answer: [{ valueDate: '2023-01-01' }]
       },
-      newQRItem: {
+      serverQRItem: {
         linkId: singleDateFieldItem.linkId,
         text: singleDateFieldItem.text,
         answer: [{ valueDate: '2023-01-15' }]
@@ -109,7 +107,7 @@ describe('RepopulateSelectDialog Single Date Field Scenarios', () => {
       expect(mockedRepopulateResponse).toHaveBeenCalled();
       const calledWithItems = mockedRepopulateResponse.mock.calls[0][0];
       // When user prefers their current value, the system should replace server data with user data
-      expect(calledWithItems[singleDateFieldItem.linkId].newQRItem.answer[0].valueDate).toBe(
+      expect(calledWithItems[singleDateFieldItem.linkId].serverQRItem.answer[0].valueDate).toBe(
         '2023-01-01'
       );
     });
@@ -138,8 +136,8 @@ describe('RepopulateSelectDialog Single Date Field Scenarios', () => {
     await waitFor(() => {
       expect(mockedRepopulateResponse).toHaveBeenCalled();
       const calledWithItems = mockedRepopulateResponse.mock.calls[0][0];
-      // The newQRItem should remain as is with the server value
-      expect(calledWithItems[singleDateFieldItem.linkId].newQRItem.answer[0].valueDate).toBe(
+      // The serverQRItem should remain as is with the server value
+      expect(calledWithItems[singleDateFieldItem.linkId].serverQRItem.answer[0].valueDate).toBe(
         '2023-01-15'
       );
     });
@@ -156,9 +154,13 @@ describe('RepopulateSelectDialog Single Date Field Scenarios', () => {
     expect(fieldSection).not.toBeNull();
 
     if (fieldSection) {
-      const userCheckbox = within(fieldSection).getByLabelText(/YOUR CURRENT VALUE/i) as HTMLInputElement;
-      const serverCheckbox = within(fieldSection).getByLabelText(/SUGGESTED \(SERVER\)/i) as HTMLInputElement;
-      
+      const userCheckbox = within(fieldSection).getByLabelText(
+        /YOUR CURRENT VALUE/i
+      ) as HTMLInputElement;
+      const serverCheckbox = within(fieldSection).getByLabelText(
+        /SUGGESTED \(SERVER\)/i
+      ) as HTMLInputElement;
+
       // By default, user current value should be checked
       expect(userCheckbox.checked).toBe(true);
       expect(serverCheckbox.checked).toBe(false);
@@ -171,7 +173,7 @@ describe('RepopulateSelectDialog Single Date Field Scenarios', () => {
     await waitFor(() => {
       expect(mockedRepopulateResponse).toHaveBeenCalled();
       const calledWithItems = mockedRepopulateResponse.mock.calls[0][0];
-      expect(calledWithItems[singleDateFieldItem.linkId].newQRItem.answer[0].valueDate).toBe(
+      expect(calledWithItems[singleDateFieldItem.linkId].serverQRItem.answer[0].valueDate).toBe(
         '2023-01-01'
       );
     });

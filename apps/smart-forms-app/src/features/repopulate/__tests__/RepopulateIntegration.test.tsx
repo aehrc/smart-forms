@@ -15,11 +15,10 @@
  * limitations under the License.
  */
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ThemeProvider } from '@mui/material/styles';
-import { createTheme } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { SnackbarProvider } from 'notistack';
 import RepopulateSelectDialog from '../components/RepopulateSelectDialog';
 import type { ItemToRepopulate } from '@aehrc/smart-forms-renderer';
@@ -59,12 +58,12 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
         type: 'string' as const
       },
       heading: 'Patient Demographics',
-      oldQRItem: {
+      currentQRItem: {
         linkId: 'patient-name',
         text: 'Patient Name',
         answer: [{ valueString: 'John Doe' }]
       },
-      newQRItem: {
+      serverQRItem: {
         linkId: 'patient-name',
         text: 'Patient Name',
         answer: [{ valueString: 'Clever Form' }] // From repop-tester
@@ -77,12 +76,12 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
         type: 'choice' as const
       },
       heading: 'Patient Demographics',
-      oldQRItem: {
+      currentQRItem: {
         linkId: 'patient-gender',
         text: 'Gender',
         answer: [{ valueCoding: { code: 'male', display: 'Male' } }]
       },
-      newQRItem: {
+      serverQRItem: {
         linkId: 'patient-gender',
         text: 'Gender',
         answer: [{ valueCoding: { code: 'female', display: 'Female' } }] // From repop-tester
@@ -91,55 +90,55 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
   };
 
   const vitalSignsMockData = {
-    'weight': {
+    weight: {
       qItem: {
         linkId: 'weight',
         text: 'Weight (kg)',
         type: 'decimal' as const
       },
       heading: 'Vital Signs',
-      oldQRItem: {
+      currentQRItem: {
         linkId: 'weight',
         text: 'Weight (kg)',
         answer: [{ valueDecimal: 75.5 }]
       },
-      newQRItem: {
+      serverQRItem: {
         linkId: 'weight',
         text: 'Weight (kg)',
         answer: [{ valueDecimal: 67.0 }] // From repop-tester
       }
     },
-    'height': {
+    height: {
       qItem: {
         linkId: 'height',
         text: 'Height (cm)',
         type: 'decimal' as const
       },
       heading: 'Vital Signs',
-      oldQRItem: {
+      currentQRItem: {
         linkId: 'height',
         text: 'Height (cm)',
         answer: [{ valueDecimal: 175.0 }]
       },
-      newQRItem: {
+      serverQRItem: {
         linkId: 'height',
         text: 'Height (cm)',
         answer: [{ valueDecimal: 203.0 }] // From repop-tester
       }
     },
-    'bmi': {
+    bmi: {
       qItem: {
         linkId: 'bmi',
         text: 'BMI (kg/m²)',
         type: 'decimal' as const
       },
       heading: 'Vital Signs',
-      oldQRItem: {
+      currentQRItem: {
         linkId: 'bmi',
         text: 'BMI (kg/m²)',
         answer: [{ valueDecimal: 24.7 }]
       },
-      newQRItem: {
+      serverQRItem: {
         linkId: 'bmi',
         text: 'BMI (kg/m²)',
         answer: [{ valueDecimal: 16.2 }] // From repop-tester
@@ -152,12 +151,12 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
         type: 'integer' as const
       },
       heading: 'Vital Signs',
-      oldQRItem: {
+      currentQRItem: {
         linkId: 'heart-rate',
         text: 'Heart Rate (bpm)',
         answer: [{ valueInteger: 72 }]
       },
-      newQRItem: {
+      serverQRItem: {
         linkId: 'heart-rate',
         text: 'Heart Rate (bpm)',
         answer: [{ valueInteger: 44 }] // From repop-tester
@@ -196,12 +195,15 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
         ]
       },
       heading: 'Medical History',
-      oldQRItems: [
+      currentQRItems: [
         {
           linkId: 'medical-history',
           item: [
             { linkId: 'condition', answer: [{ valueString: 'Diabetes' }] },
-            { linkId: 'clinical-status', answer: [{ valueCoding: { code: 'active', display: 'Active' } }] },
+            {
+              linkId: 'clinical-status',
+              answer: [{ valueCoding: { code: 'active', display: 'Active' } }]
+            },
             { linkId: 'onset-date', answer: [{ valueDate: '2020-01-01' }] },
             { linkId: 'recorded-date', answer: [{ valueDate: '2020-01-01' }] }
           ]
@@ -210,18 +212,24 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
           linkId: 'medical-history',
           item: [
             { linkId: 'condition', answer: [{ valueString: 'Hypertension' }] },
-            { linkId: 'clinical-status', answer: [{ valueCoding: { code: 'active', display: 'Active' } }] },
+            {
+              linkId: 'clinical-status',
+              answer: [{ valueCoding: { code: 'active', display: 'Active' } }]
+            },
             { linkId: 'onset-date', answer: [{ valueDate: '2019-06-15' }] },
             { linkId: 'recorded-date', answer: [{ valueDate: '2019-06-15' }] }
           ]
         }
       ],
-      newQRItems: [
+      serverQRItems: [
         {
           linkId: 'medical-history',
           item: [
             { linkId: 'condition', answer: [{ valueString: 'Chronic kidney disease stage 3B' }] },
-            { linkId: 'clinical-status', answer: [{ valueCoding: { code: 'active', display: 'Active' } }] },
+            {
+              linkId: 'clinical-status',
+              answer: [{ valueCoding: { code: 'active', display: 'Active' } }]
+            },
             { linkId: 'onset-date', answer: [{ valueDate: '2022-05-10' }] },
             { linkId: 'recorded-date', answer: [{ valueDate: '2022-05-10' }] }
           ]
@@ -230,7 +238,10 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
           linkId: 'medical-history',
           item: [
             { linkId: 'condition', answer: [{ valueString: 'Diabetes mellitus type 2' }] },
-            { linkId: 'clinical-status', answer: [{ valueCoding: { code: 'active', display: 'Active' } }] },
+            {
+              linkId: 'clinical-status',
+              answer: [{ valueCoding: { code: 'active', display: 'Active' } }]
+            },
             { linkId: 'onset-date', answer: [{ valueDate: '2022-05-10' }] },
             { linkId: 'recorded-date', answer: [{ valueDate: '2022-05-10' }] }
           ]
@@ -239,7 +250,10 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
           linkId: 'medical-history',
           item: [
             { linkId: 'condition', answer: [{ valueString: 'Remittent fever' }] },
-            { linkId: 'clinical-status', answer: [{ valueCoding: { code: 'active', display: 'Active' } }] },
+            {
+              linkId: 'clinical-status',
+              answer: [{ valueCoding: { code: 'active', display: 'Active' } }]
+            },
             { linkId: 'onset-date', answer: [{ valueDate: '2022-05-10' }] },
             { linkId: 'recorded-date', answer: [{ valueDate: '2022-05-10' }] }
           ]
@@ -249,7 +263,7 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
   };
 
   const allergiesMockData = {
-    'allergies': {
+    allergies: {
       qItem: {
         linkId: 'allergies',
         text: 'Allergies and Intolerances',
@@ -269,7 +283,7 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
         ]
       },
       heading: 'Allergies',
-      oldQRItems: [
+      currentQRItems: [
         {
           linkId: 'allergies',
           item: [
@@ -278,7 +292,7 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
           ]
         }
       ],
-      newQRItems: [
+      serverQRItems: [
         {
           linkId: 'allergies',
           item: [
@@ -362,14 +376,18 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
       await waitFor(() => {
         expect(mockedRepopulateResponse).toHaveBeenCalled();
         const calledWithItems = mockedRepopulateResponse.mock.calls[0][0];
-        
+
         // Name should use server value
-        expect(calledWithItems['patient-name']?.newQRItem?.answer?.[0]?.valueString).toBe('Clever Form');
-        
-        // Gender should use user value - but the newQRItem will still contain server data
-        // The preference system works by modifying the newQRItem based on user preference
+        expect(calledWithItems['patient-name']?.serverQRItem?.answer?.[0]?.valueString).toBe(
+          'Clever Form'
+        );
+
+        // Gender should use user value - but the serverQRItem will still contain server data
+        // The preference system works by modifying the serverQRItem based on user preference
         // When user prefers their current value, the system should replace server data with user data
-        expect(calledWithItems['patient-gender']?.newQRItem?.answer?.[0]?.valueCoding?.code).toBe('male');
+        expect(
+          calledWithItems['patient-gender']?.serverQRItem?.answer?.[0]?.valueCoding?.code
+        ).toBe('male');
       });
     });
   });
@@ -409,12 +427,12 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
       await waitFor(() => {
         expect(mockedRepopulateResponse).toHaveBeenCalled();
         const calledWithItems = mockedRepopulateResponse.mock.calls[0][0];
-        
+
         // All should use server values
-        expect(calledWithItems['weight']?.newQRItem?.answer?.[0]?.valueDecimal).toBe(67.0);
-        expect(calledWithItems['height']?.newQRItem?.answer?.[0]?.valueDecimal).toBe(203.0);
-        expect(calledWithItems['bmi']?.newQRItem?.answer?.[0]?.valueDecimal).toBe(16.2);
-        expect(calledWithItems['heart-rate']?.newQRItem?.answer?.[0]?.valueInteger).toBe(44);
+        expect(calledWithItems['weight']?.serverQRItem?.answer?.[0]?.valueDecimal).toBe(67.0);
+        expect(calledWithItems['height']?.serverQRItem?.answer?.[0]?.valueDecimal).toBe(203.0);
+        expect(calledWithItems['bmi']?.serverQRItem?.answer?.[0]?.valueDecimal).toBe(16.2);
+        expect(calledWithItems['heart-rate']?.serverQRItem?.answer?.[0]?.valueInteger).toBe(44);
       });
     });
   });
@@ -457,7 +475,7 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
       }
 
       // For second row (Diabetes): keep all server values (default)
-      
+
       // For third row (Remittent fever): choose user values for all fields
       const feverRow = screen.getByText(/Condition: Remittent fever/).closest('div');
       if (feverRow) {
@@ -472,10 +490,10 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
       await waitFor(() => {
         expect(mockedRepopulateResponse).toHaveBeenCalled();
         const calledWithItems = mockedRepopulateResponse.mock.calls[0][0];
-        
+
         // Verify the medical history item was processed
         expect(calledWithItems['medical-history']).toBeDefined();
-        expect(calledWithItems['medical-history'].newQRItems).toBeDefined();
+        expect(calledWithItems['medical-history'].serverQRItems).toBeDefined();
       });
     });
   });
@@ -485,7 +503,7 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
       renderDialog(allergiesMockData);
 
       expect(screen.getByText('Allergies and Intolerances')).not.toBeNull();
-      
+
       // Check server-suggested allergies are shown
       expect(screen.getByText(/Allergen: Bee venom/)).not.toBeNull();
       expect(screen.getByText(/Allergen: Penicillin/)).not.toBeNull();
@@ -526,7 +544,7 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
       }
 
       // Medical History: Keep defaults (server values)
-      
+
       // Allergies: Keep defaults (server values)
 
       await user.click(screen.getByRole('button', { name: /Confirm/i }));
@@ -534,11 +552,13 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
       await waitFor(() => {
         expect(mockedRepopulateResponse).toHaveBeenCalled();
         const calledWithItems = mockedRepopulateResponse.mock.calls[0][0];
-        
+
         // Verify mixed preferences were applied correctly
-        expect(calledWithItems['patient-name']?.newQRItem?.answer?.[0]?.valueString).toBe('Clever Form');
-        expect(calledWithItems['weight']?.newQRItem?.answer?.[0]?.valueDecimal).toBe(67.0);
-        expect(calledWithItems['height']?.newQRItem?.answer?.[0]?.valueDecimal).toBe(175.0); // User value since user clicked user checkbox
+        expect(calledWithItems['patient-name']?.serverQRItem?.answer?.[0]?.valueString).toBe(
+          'Clever Form'
+        );
+        expect(calledWithItems['weight']?.serverQRItem?.answer?.[0]?.valueDecimal).toBe(67.0);
+        expect(calledWithItems['height']?.serverQRItem?.answer?.[0]?.valueDecimal).toBe(175.0); // User value since user clicked user checkbox
         expect(calledWithItems['medical-history']).toBeDefined();
         expect(calledWithItems['allergies']).toBeDefined();
       });
@@ -573,12 +593,12 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
             type: 'string' as const
           },
           heading: 'Test',
-          oldQRItem: {
+          currentQRItem: {
             linkId: 'empty-field',
             text: 'Empty Field',
             answer: []
           },
-          newQRItem: {
+          serverQRItem: {
             linkId: 'empty-field',
             text: 'Empty Field',
             answer: [{ valueString: 'New Value' }]
@@ -602,12 +622,12 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
             type: 'string' as const
           },
           heading: 'Test',
-          oldQRItem: {
+          currentQRItem: {
             linkId: 'no-change-field',
             text: 'No Change Field',
             answer: [{ valueString: 'Same Value' }]
           },
-          newQRItem: {
+          serverQRItem: {
             linkId: 'no-change-field',
             text: 'No Change Field',
             answer: [{ valueString: 'Same Value' }]
@@ -626,7 +646,7 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
 
       // Should still show dialog with confirm button
       expect(screen.getByRole('button', { name: /Confirm/i })).not.toBeNull();
-      
+
       await user.click(screen.getByRole('button', { name: /Confirm/i }));
 
       // When there are no items, repopulateResponse should NOT be called
@@ -634,7 +654,7 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
       await waitFor(() => {
         expect(screen.getByText('No items were selected for re-population.')).not.toBeNull();
       });
-      
+
       expect(mockedRepopulateResponse).not.toHaveBeenCalled();
     });
   });
@@ -663,7 +683,7 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
           ]
         },
         heading: 'Medical History',
-        oldQRItems: [
+        currentQRItems: [
           {
             linkId: 'medical-history',
             item: [
@@ -672,7 +692,7 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
             ]
           }
         ],
-        newQRItems: [
+        serverQRItems: [
           {
             linkId: 'medical-history',
             item: [
@@ -696,7 +716,7 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
         // For the onset date field, choose to keep user's current value
         const onsetDateFields = within(feverRow).getAllByText('Onset Date:');
         expect(onsetDateFields.length).toBeGreaterThan(0);
-        
+
         const onsetDateSection = onsetDateFields[0].closest('div');
         if (onsetDateSection) {
           const userCheckbox = within(onsetDateSection).getByLabelText(/YOUR CURRENT VALUE/i);
@@ -709,18 +729,20 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
       await waitFor(() => {
         expect(mockedRepopulateResponse).toHaveBeenCalled();
         const calledWithItems = mockedRepopulateResponse.mock.calls[0][0];
-        
+
         // Verify that the user's date (2023-01-15) is preserved, not the server's date (2022-05-10)
         expect(calledWithItems['medical-history']).toBeDefined();
-        expect(calledWithItems['medical-history'].newQRItems).toBeDefined();
-        
+        expect(calledWithItems['medical-history'].serverQRItems).toBeDefined();
+
         // The specific bug was that the user's date would be overwritten by server date
         // This test ensures the fix is working
-        const processedItems = calledWithItems['medical-history'].newQRItems;
+        const processedItems = calledWithItems['medical-history'].serverQRItems;
         expect(processedItems).toHaveLength(1);
-        
+
         if (processedItems && processedItems.length > 0) {
-          const onsetDateItem = processedItems[0].item?.find((item: any) => item.linkId === 'onset-date');
+          const onsetDateItem = processedItems[0].item?.find(
+            (item: any) => item.linkId === 'onset-date'
+          );
           expect(onsetDateItem).toBeDefined();
           if (onsetDateItem && onsetDateItem.answer && onsetDateItem.answer.length > 0) {
             expect(onsetDateItem.answer[0].valueDate).toBe('2023-01-15'); // User's date should be preserved
@@ -741,7 +763,7 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
         // For the onset date field, choose server's suggested value
         const onsetDateFields = within(feverRow).getAllByText('Onset Date:');
         expect(onsetDateFields.length).toBeGreaterThan(0);
-        
+
         const onsetDateSection = onsetDateFields[0].closest('div');
         if (onsetDateSection) {
           const serverCheckbox = within(onsetDateSection).getByLabelText(/SUGGESTED \(SERVER\)/i);
@@ -754,12 +776,14 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
       await waitFor(() => {
         expect(mockedRepopulateResponse).toHaveBeenCalled();
         const calledWithItems = mockedRepopulateResponse.mock.calls[0][0];
-        
-        const processedItems = calledWithItems['medical-history'].newQRItems;
+
+        const processedItems = calledWithItems['medical-history'].serverQRItems;
         expect(processedItems).toHaveLength(1);
-        
+
         if (processedItems && processedItems.length > 0) {
-          const onsetDateItem = processedItems[0].item?.find((item: any) => item.linkId === 'onset-date');
+          const onsetDateItem = processedItems[0].item?.find(
+            (item: any) => item.linkId === 'onset-date'
+          );
           expect(onsetDateItem).toBeDefined();
           if (onsetDateItem && onsetDateItem.answer && onsetDateItem.answer.length > 0) {
             expect(onsetDateItem.answer[0].valueDate).toBe('2022-05-10'); // Server's date should be used
@@ -768,4 +792,4 @@ describe('Repopulate Integration Tests - repop-tester Patient Data', () => {
       });
     });
   });
-}); 
+});

@@ -110,14 +110,14 @@ function constructGroupItem(
     return null;
   }
 
-  if (!itemToRepopulate.newQRItem) {
+  if (!itemToRepopulate.serverQRItem) {
     return null;
   }
 
   return {
     linkId: qItem.linkId,
     text: qItem.text,
-    answer: itemToRepopulate.newQRItem.answer
+    answer: itemToRepopulate.serverQRItem.answer
   };
 }
 
@@ -132,21 +132,21 @@ function constructSingleItem(
     return qrItem ?? null;
   }
 
-  if (qrItem && itemToRepopulate.newQRItem) {
+  if (qrItem && itemToRepopulate.serverQRItem) {
     return {
       ...qrItem,
-      answer: itemToRepopulate.newQRItem.answer
+      answer: itemToRepopulate.serverQRItem.answer
     };
   }
 
-  if (!itemToRepopulate.newQRItem) {
+  if (!itemToRepopulate.serverQRItem) {
     return null;
   }
 
   return {
     linkId: qItem.linkId,
     text: qItem.text,
-    answer: itemToRepopulate.newQRItem.answer
+    answer: itemToRepopulate.serverQRItem.answer
   };
 }
 
@@ -157,19 +157,19 @@ function constructGridGroup(
 ) {
   const itemToRepopulate = checkedItemsToRepopulate[qItem.linkId];
 
-  if (!itemToRepopulate || !itemToRepopulate.newQRItem) {
+  if (!itemToRepopulate || !itemToRepopulate.serverQRItem) {
     return qrItem;
   }
 
-  const qrItemsToRepopulate = itemToRepopulate.newQRItem.item;
+  const qrItemsToRepopulate = itemToRepopulate.serverQRItem.item;
 
   if (!qrItemsToRepopulate) {
     return qrItem;
   }
 
-  const oldQrItems = qrItem?.item;
+  const currentQRItems = qrItem?.item;
 
-  if (!oldQrItems) {
+  if (!currentQRItems) {
     return {
       linkId: qItem.linkId,
       text: qItem.text,
@@ -185,15 +185,15 @@ function constructGridGroup(
     {}
   );
 
-  const repopulatedQrItems = oldQrItems.map((oldQrItem) => {
-    const qrItemToRepopulate = qrItemsToRepopulateMap[oldQrItem.linkId];
+  const repopulatedQrItems = currentQRItems.map((currentQRItem) => {
+    const qrItemToRepopulate = qrItemsToRepopulateMap[currentQRItem.linkId];
 
     if (!qrItemToRepopulate) {
-      return oldQrItem;
+      return currentQRItem;
     }
 
     return {
-      ...oldQrItem,
+      ...currentQRItem,
       item: qrItemToRepopulate.item
     };
   });
@@ -208,9 +208,9 @@ function constructRepeatGroup(
 ): QuestionnaireResponseItem[] {
   const itemToRepopulate = checkedItemsToRepopulate[qItem.linkId];
 
-  if (!itemToRepopulate || !itemToRepopulate.newQRItems) {
+  if (!itemToRepopulate || !itemToRepopulate.serverQRItems) {
     return qrItems;
   }
 
-  return itemToRepopulate.newQRItems;
+  return itemToRepopulate.serverQRItems;
 }

@@ -1,11 +1,11 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ThemeProvider } from '@mui/material/styles';
-import { createTheme } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { SnackbarProvider } from 'notistack';
 import RepopulateSelectDialog from '../components/RepopulateSelectDialog';
 import type { ItemToRepopulate } from '@aehrc/smart-forms-renderer';
+import { repopulateResponse } from '@aehrc/smart-forms-renderer';
 
 // Mock the smart-forms-renderer module with all necessary exports
 vi.mock('@aehrc/smart-forms-renderer', () => ({
@@ -24,17 +24,15 @@ vi.mock('@aehrc/smart-forms-renderer', () => ({
   isSpecificItemControl: vi.fn(() => false)
 }));
 
-import { repopulateResponse } from '@aehrc/smart-forms-renderer';
-
 // Get the mocked function with proper typing
 const mockedRepopulateResponse = repopulateResponse as any;
 
 /**
  * Comprehensive Repopulate Tests for "repop-tester" Patient Data
- * 
+ *
  * This test suite covers all repopulate scenarios using the patient data
  * that was successfully created in the FHIR server with ID "repop-tester".
- * 
+ *
  * Patient Data Summary:
  * - Patient: Clever Form (repop-tester)
  * - 1 Encounter (health check)
@@ -75,12 +73,12 @@ describe('Comprehensive Repopulate Tests - repop-tester Patient', () => {
           type: 'string' as const
         },
         heading: 'Patient Demographics',
-        oldQRItem: {
+        currentQRItem: {
           linkId: 'patient-name',
           text: 'Patient Name',
           answer: [{ valueString: 'John Doe' }]
         },
-        newQRItem: {
+        serverQRItem: {
           linkId: 'patient-name',
           text: 'Patient Name',
           answer: [{ valueString: 'Clever Form' }]
@@ -111,7 +109,9 @@ describe('Comprehensive Repopulate Tests - repop-tester Patient', () => {
       await waitFor(() => {
         expect(mockedRepopulateResponse).toHaveBeenCalled();
         const calledWithItems = mockedRepopulateResponse.mock.calls[0][0];
-        expect(calledWithItems['patient-name'].newQRItem.answer[0].valueString).toBe('Clever Form');
+        expect(calledWithItems['patient-name'].serverQRItem.answer[0].valueString).toBe(
+          'Clever Form'
+        );
       });
     });
 
@@ -119,7 +119,7 @@ describe('Comprehensive Repopulate Tests - repop-tester Patient', () => {
       const noChangeData = {
         'patient-name': {
           ...stringFieldMockData['patient-name'],
-          newQRItem: {
+          serverQRItem: {
             linkId: 'patient-name',
             text: 'Patient Name',
             answer: [{ valueString: 'John Doe' }] // Same as old value
@@ -128,7 +128,7 @@ describe('Comprehensive Repopulate Tests - repop-tester Patient', () => {
       };
 
       renderDialog(noChangeData);
-      
+
       // Should show "No changes" message when values are the same
       expect(screen.queryByText(/No changes in:/i)).not.toBeNull();
       // Use getAllByText to handle multiple elements with same text
@@ -139,19 +139,19 @@ describe('Comprehensive Repopulate Tests - repop-tester Patient', () => {
 
   describe('2. Numeric Data Types (decimal/integer)', () => {
     const numericMockData = {
-      'weight': {
+      weight: {
         qItem: {
           linkId: 'weight',
           text: 'Weight (kg)',
           type: 'decimal' as const
         },
         heading: 'Vital Signs',
-        oldQRItem: {
+        currentQRItem: {
           linkId: 'weight',
           text: 'Weight (kg)',
           answer: [{ valueDecimal: 75.5 }]
         },
-        newQRItem: {
+        serverQRItem: {
           linkId: 'weight',
           text: 'Weight (kg)',
           answer: [{ valueDecimal: 77.3 }] // From repop-tester data
@@ -164,12 +164,12 @@ describe('Comprehensive Repopulate Tests - repop-tester Patient', () => {
           type: 'integer' as const
         },
         heading: 'Vital Signs',
-        oldQRItem: {
+        currentQRItem: {
           linkId: 'heart-rate',
           text: 'Heart Rate (bpm)',
           answer: [{ valueInteger: 72 }]
         },
-        newQRItem: {
+        serverQRItem: {
           linkId: 'heart-rate',
           text: 'Heart Rate (bpm)',
           answer: [{ valueInteger: 88 }] // From repop-tester data
@@ -196,7 +196,7 @@ describe('Comprehensive Repopulate Tests - repop-tester Patient', () => {
       await waitFor(() => {
         expect(mockedRepopulateResponse).toHaveBeenCalled();
         const calledWithItems = mockedRepopulateResponse.mock.calls[0][0];
-        expect(calledWithItems['weight'].newQRItem.answer[0].valueDecimal).toBe(77.3);
+        expect(calledWithItems['weight'].serverQRItem.answer[0].valueDecimal).toBe(77.3);
       });
     });
 
@@ -215,7 +215,7 @@ describe('Comprehensive Repopulate Tests - repop-tester Patient', () => {
       await waitFor(() => {
         expect(mockedRepopulateResponse).toHaveBeenCalled();
         const calledWithItems = mockedRepopulateResponse.mock.calls[0][0];
-        expect(calledWithItems['heart-rate'].newQRItem.answer[0].valueInteger).toBe(88);
+        expect(calledWithItems['heart-rate'].serverQRItem.answer[0].valueInteger).toBe(88);
       });
     });
   });
@@ -229,12 +229,12 @@ describe('Comprehensive Repopulate Tests - repop-tester Patient', () => {
           type: 'boolean' as const
         },
         heading: 'Lifestyle',
-        oldQRItem: {
+        currentQRItem: {
           linkId: 'current-smoker',
           text: 'Current Smoker',
           answer: [{ valueBoolean: false }]
         },
-        newQRItem: {
+        serverQRItem: {
           linkId: 'current-smoker',
           text: 'Current Smoker',
           answer: [{ valueBoolean: true }] // From repop-tester data
@@ -257,7 +257,7 @@ describe('Comprehensive Repopulate Tests - repop-tester Patient', () => {
       await waitFor(() => {
         expect(mockedRepopulateResponse).toHaveBeenCalled();
         const calledWithItems = mockedRepopulateResponse.mock.calls[0][0];
-        expect(calledWithItems['current-smoker'].newQRItem.answer[0].valueBoolean).toBe(true);
+        expect(calledWithItems['current-smoker'].serverQRItem.answer[0].valueBoolean).toBe(true);
       });
     });
   });
@@ -271,12 +271,12 @@ describe('Comprehensive Repopulate Tests - repop-tester Patient', () => {
           type: 'date' as const
         },
         heading: 'Medical History',
-        oldQRItem: {
+        currentQRItem: {
           linkId: 'remittent-fever-onset',
           text: 'Remittent Fever Onset Date',
           answer: [{ valueDate: '2022-01-01' }]
         },
-        newQRItem: {
+        serverQRItem: {
           linkId: 'remittent-fever-onset',
           text: 'Remittent Fever Onset Date',
           answer: [{ valueDate: '2022-05-10' }] // From repop-tester data
@@ -299,7 +299,9 @@ describe('Comprehensive Repopulate Tests - repop-tester Patient', () => {
       await waitFor(() => {
         expect(mockedRepopulateResponse).toHaveBeenCalled();
         const calledWithItems = mockedRepopulateResponse.mock.calls[0][0];
-        expect(calledWithItems['remittent-fever-onset'].newQRItem.answer[0].valueDate).toBe('2022-05-10');
+        expect(calledWithItems['remittent-fever-onset'].serverQRItem.answer[0].valueDate).toBe(
+          '2022-05-10'
+        );
       });
     });
   });
@@ -313,12 +315,12 @@ describe('Comprehensive Repopulate Tests - repop-tester Patient', () => {
           type: 'choice' as const
         },
         heading: 'Allergies',
-        oldQRItem: {
+        currentQRItem: {
           linkId: 'allergy-severity',
           text: 'Allergy Severity',
           answer: [{ valueCoding: { code: 'mild', display: 'Mild' } }]
         },
-        newQRItem: {
+        serverQRItem: {
           linkId: 'allergy-severity',
           text: 'Allergy Severity',
           answer: [{ valueCoding: { code: 'severe', display: 'Severe' } }] // From repop-tester data
@@ -341,7 +343,9 @@ describe('Comprehensive Repopulate Tests - repop-tester Patient', () => {
       await waitFor(() => {
         expect(mockedRepopulateResponse).toHaveBeenCalled();
         const calledWithItems = mockedRepopulateResponse.mock.calls[0][0];
-        expect(calledWithItems['allergy-severity'].newQRItem.answer[0].valueCoding.code).toBe('severe');
+        expect(calledWithItems['allergy-severity'].serverQRItem.answer[0].valueCoding.code).toBe(
+          'severe'
+        );
       });
     });
   });
@@ -355,12 +359,12 @@ describe('Comprehensive Repopulate Tests - repop-tester Patient', () => {
           type: 'quantity' as const
         },
         heading: 'Vital Signs',
-        oldQRItem: {
+        currentQRItem: {
           linkId: 'blood-pressure',
           text: 'Blood Pressure',
           answer: [{ valueQuantity: { value: 120, unit: 'mmHg' } }]
         },
-        newQRItem: {
+        serverQRItem: {
           linkId: 'blood-pressure',
           text: 'Blood Pressure',
           answer: [{ valueQuantity: { value: 140, unit: 'mmHg' } }] // From repop-tester data
@@ -383,7 +387,9 @@ describe('Comprehensive Repopulate Tests - repop-tester Patient', () => {
       await waitFor(() => {
         expect(mockedRepopulateResponse).toHaveBeenCalled();
         const calledWithItems = mockedRepopulateResponse.mock.calls[0][0];
-        expect(calledWithItems['blood-pressure'].newQRItem.answer[0].valueQuantity.value).toBe(140);
+        expect(calledWithItems['blood-pressure'].serverQRItem.answer[0].valueQuantity.value).toBe(
+          140
+        );
       });
     });
   });
@@ -398,14 +404,14 @@ describe('Comprehensive Repopulate Tests - repop-tester Patient', () => {
           repeats: true
         },
         heading: 'Allergies',
-        oldQRItems: [
+        currentQRItems: [
           {
             linkId: 'known-allergies',
             text: 'Known Allergies',
             answer: [{ valueString: 'Peanuts' }]
           }
         ],
-        newQRItems: [
+        serverQRItems: [
           {
             linkId: 'known-allergies',
             text: 'Known Allergies',
@@ -447,7 +453,7 @@ describe('Comprehensive Repopulate Tests - repop-tester Patient', () => {
           repeats: true
         },
         heading: 'Medical History',
-        oldQRItems: [
+        currentQRItems: [
           {
             linkId: 'medical-history',
             item: [
@@ -456,7 +462,7 @@ describe('Comprehensive Repopulate Tests - repop-tester Patient', () => {
             ]
           }
         ],
-        newQRItems: [
+        serverQRItems: [
           {
             linkId: 'medical-history',
             item: [
@@ -489,37 +495,37 @@ describe('Comprehensive Repopulate Tests - repop-tester Patient', () => {
 
   describe('9. Mixed Preferences Scenario', () => {
     const mixedMockData = {
-      'weight': {
+      weight: {
         qItem: {
           linkId: 'weight',
           text: 'Weight (kg)',
           type: 'decimal' as const
         },
         heading: 'Vital Signs',
-        oldQRItem: {
+        currentQRItem: {
           linkId: 'weight',
           text: 'Weight (kg)',
           answer: [{ valueDecimal: 75.5 }]
         },
-        newQRItem: {
+        serverQRItem: {
           linkId: 'weight',
           text: 'Weight (kg)',
           answer: [{ valueDecimal: 77.3 }]
         }
       },
-      'height': {
+      height: {
         qItem: {
           linkId: 'height',
           text: 'Height (cm)',
           type: 'decimal' as const
         },
         heading: 'Vital Signs',
-        oldQRItem: {
+        currentQRItem: {
           linkId: 'height',
           text: 'Height (cm)',
           answer: [{ valueDecimal: 175.0 }]
         },
-        newQRItem: {
+        serverQRItem: {
           linkId: 'height',
           text: 'Height (cm)',
           answer: [{ valueDecimal: 180.0 }]
@@ -550,12 +556,12 @@ describe('Comprehensive Repopulate Tests - repop-tester Patient', () => {
       await waitFor(() => {
         expect(mockedRepopulateResponse).toHaveBeenCalled();
         const calledWithItems = mockedRepopulateResponse.mock.calls[0][0];
-        
+
         // Weight should use server value
-        expect(calledWithItems['weight'].newQRItem.answer[0].valueDecimal).toBe(77.3);
-        
+        expect(calledWithItems['weight'].serverQRItem.answer[0].valueDecimal).toBe(77.3);
+
         // Height should use user value
-        expect(calledWithItems['height'].newQRItem.answer[0].valueDecimal).toBe(175.0);
+        expect(calledWithItems['height'].serverQRItem.answer[0].valueDecimal).toBe(175.0);
       });
     });
   });
@@ -569,12 +575,12 @@ describe('Comprehensive Repopulate Tests - repop-tester Patient', () => {
           type: 'string' as const
         },
         heading: 'Test',
-        oldQRItem: {
+        currentQRItem: {
           linkId: 'test-field',
           text: 'Test Field',
           answer: [{ valueString: 'old value' }]
         },
-        newQRItem: {
+        serverQRItem: {
           linkId: 'test-field',
           text: 'Test Field',
           answer: [{ valueString: 'new value' }]
@@ -617,14 +623,14 @@ describe('Comprehensive Repopulate Tests - repop-tester Patient', () => {
           type: 'group' as const
         },
         heading: 'Demographics',
-        oldQRItem: {
+        currentQRItem: {
           linkId: 'patient-demographics',
           item: [
             { linkId: 'family-name', answer: [{ valueString: 'Doe' }] },
             { linkId: 'given-name', answer: [{ valueString: 'John' }] }
           ]
         },
-        newQRItem: {
+        serverQRItem: {
           linkId: 'patient-demographics',
           item: [
             { linkId: 'family-name', answer: [{ valueString: 'Form' }] },
@@ -653,4 +659,4 @@ describe('Comprehensive Repopulate Tests - repop-tester Patient', () => {
       expect(mockOnSpinnerChange).toHaveBeenCalledTimes(2);
     });
   });
-}); 
+});

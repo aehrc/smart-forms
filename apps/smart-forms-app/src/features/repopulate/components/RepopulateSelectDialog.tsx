@@ -50,8 +50,8 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
   );
 
   // userPrefersTheirCurrentFormValue[linkId]:
-  // true = user wants THEIR CURRENT FORM value (from itemsToRepopulate[linkId].oldQRItem)
-  // false = user wants the SERVER'S SUGGESTED value (from itemsToRepopulate[linkId].newQRItem)
+  // true = user wants THEIR CURRENT FORM value (from itemsToRepopulate[linkId].currentQRItem)
+  // false = user wants the SERVER'S SUGGESTED value (from itemsToRepopulate[linkId].serverQRItem)
   // For complex fields, we also track granular preferences like "linkId:fieldId" or "linkId-row0:fieldId"
   const [userPrefersTheirCurrentFormValue, setUserPrefersTheirCurrentFormValue] = useState<
     Record<string, boolean | undefined>
@@ -82,7 +82,8 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
 
     // Check if this is a granular preference (contains special characters indicating sub-field)
     // Simple fields have format "linkId:linkId", granular preferences have "linkId-row0:fieldId" or "linkId:differentFieldId"
-    const isGranularPreference = linkId.includes('-row') || 
+    const isGranularPreference =
+      linkId.includes('-row') ||
       (linkId.includes(':') && linkId.split(':')[0] !== linkId.split(':')[1]);
 
     if (isGranularPreference) {
@@ -181,13 +182,13 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
 
         // Handle complex field with granular preferences
         // For complex fields, we need to selectively apply preferences
-        if (item.newQRItems && item.oldQRItems) {
+        if (item.serverQRItems && item.currentQRItems) {
           // Handle repeating groups (like medical history table)
           console.log(
-            `  Processing repeating group with ${item.newQRItems.length} server rows and ${item.oldQRItems.length} user rows`
+            `  Processing repeating group with ${item.serverQRItems.length} server rows and ${item.currentQRItems.length} user rows`
           );
 
-          const processedRows = [...item.newQRItems]; // Start with server data
+          const processedRows = [...item.serverQRItems]; // Start with server data
 
           // When we have granular preferences, we need to ensure ALL fields are handled correctly
           // Fields with explicit granular preferences will be processed below
@@ -223,15 +224,15 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
 
               console.log(`      Parsed rowIndex: ${rowIndex}, fieldLinkId: ${fieldLinkId}`);
 
-              if (rowIndex !== null && fieldLinkId && item.oldQRItems) {
+              if (rowIndex !== null && fieldLinkId && item.currentQRItems) {
                 console.log(
                   `      Applying user preference for row ${rowIndex}, field ${fieldLinkId}`
                 );
-                console.log(`      Available oldQRItems rows: ${item.oldQRItems.length}`);
+                console.log(`      Available currentQRItems rows: ${item.currentQRItems.length}`);
                 console.log(`      Available processedRows: ${processedRows.length}`);
 
-                if (rowIndex < item.oldQRItems.length && rowIndex < processedRows.length) {
-                  const userRowData = item.oldQRItems[rowIndex];
+                if (rowIndex < item.currentQRItems.length && rowIndex < processedRows.length) {
+                  const userRowData = item.currentQRItems[rowIndex];
                   console.log(
                     `      User row data for row ${rowIndex}:`,
                     JSON.stringify(userRowData, null, 2)
@@ -292,12 +293,12 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
                   }
                 } else {
                   console.log(
-                    `        ❌ Row index ${rowIndex} out of bounds (oldQRItems: ${item.oldQRItems.length}, processedRows: ${processedRows.length})`
+                    `        ❌ Row index ${rowIndex} out of bounds (currentQRItems: ${item.currentQRItems.length}, processedRows: ${processedRows.length})`
                   );
                 }
               } else {
                 console.log(
-                  `        ❌ Invalid parsing result - rowIndex: ${rowIndex}, fieldLinkId: ${fieldLinkId}, oldQRItems exists: ${!!item.oldQRItems}`
+                  `        ❌ Invalid parsing result - rowIndex: ${rowIndex}, fieldLinkId: ${fieldLinkId}, currentQRItems exists: ${!!item.currentQRItems}`
                 );
               }
             } else if (preference === false) {
@@ -315,58 +316,58 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
             `  Final processed rows for ${linkId}:`,
             JSON.stringify(processedRows, null, 2)
           );
-          item.newQRItems = processedRows;
-        } else if (item.newQRItem && item.oldQRItem) {
+          item.serverQRItems = processedRows;
+        } else if (item.serverQRItem && item.currentQRItem) {
           // Handle single complex items
           console.log(`  Processing single complex item`);
           // Similar logic could be applied for non-repeating complex fields if needed
         }
       } else {
         // No granular preferences, use the original logic
-        const userCurrentData = item.oldQRItem;
-        const serverSuggestedData = item.newQRItem;
-        const userCurrentItemsData = item.oldQRItems;
-        const serverSuggestedItemsData = item.newQRItems;
+        const userCurrentData = item.currentQRItem;
+        const serverSuggestedData = item.serverQRItem;
+        const userCurrentItemsData = item.currentQRItems;
+        const serverSuggestedItemsData = item.serverQRItems;
 
         console.log(
-          `  For ${linkId} - User Current Data (from renderer oldQRItem/Items):`,
+          `  For ${linkId} - User Current Data (from renderer currentQRItem/Items):`,
           JSON.stringify(userCurrentData || userCurrentItemsData, null, 2)
         );
         console.log(
-          `  For ${linkId} - Server Suggested Data (from renderer newQRItem/Items):`,
+          `  For ${linkId} - Server Suggested Data (from renderer serverQRItem/Items):`,
           JSON.stringify(serverSuggestedData || serverSuggestedItemsData, null, 2)
         );
 
         if (userWantsTheirCurrentValue === true) {
           console.log(`  ACTION: Applying USER'S CURRENT FORM value for ${linkId}`);
           // User wants their current value, so replace server suggestion with user's current data
-          if (userCurrentData && item.newQRItem) {
-            item.newQRItem = JSON.parse(JSON.stringify(userCurrentData));
+          if (userCurrentData && item.serverQRItem) {
+            item.serverQRItem = JSON.parse(JSON.stringify(userCurrentData));
           }
-          if (userCurrentItemsData && item.newQRItems) {
-            item.newQRItems = JSON.parse(JSON.stringify(userCurrentItemsData));
+          if (userCurrentItemsData && item.serverQRItems) {
+            item.serverQRItems = JSON.parse(JSON.stringify(userCurrentItemsData));
           }
         } else if (userWantsTheirCurrentValue === false) {
           console.log(`  ACTION: Applying SERVER SUGGESTED value for ${linkId}`);
-          // User wants server's suggested value, so keep newQRItem/newQRItems as they are (they already contain server data)
-          // No action needed - newQRItem and newQRItems already contain the server's suggested data
+          // User wants server's suggested value, so keep serverQRItem/serverQRItems as they are (they already contain server data)
+          // No action needed - serverQRItem and serverQRItems already contain the server's suggested data
         } else {
           console.warn(
             `Item ${linkId} had UNDEFINED preference. Defaulting to USER'S CURRENT FORM value.`
           );
-          if (userCurrentData && item.newQRItem) {
-            item.newQRItem = JSON.parse(JSON.stringify(userCurrentData));
+          if (userCurrentData && item.serverQRItem) {
+            item.serverQRItem = JSON.parse(JSON.stringify(userCurrentData));
           }
-          if (userCurrentItemsData && item.newQRItems) {
-            item.newQRItems = JSON.parse(JSON.stringify(userCurrentItemsData));
+          if (userCurrentItemsData && item.serverQRItems) {
+            item.serverQRItems = JSON.parse(JSON.stringify(userCurrentItemsData));
           }
         }
       }
 
       console.log(
-        `  For ${linkId}, after applying preference, item.newQRItem/Items that will be used for repopulateResponse:`,
-        JSON.stringify(item.newQRItem, null, 2),
-        JSON.stringify(item.newQRItems, null, 2)
+        `  For ${linkId}, after applying preference, item.serverQRItem/Items that will be used for repopulateResponse:`,
+        JSON.stringify(item.serverQRItem, null, 2),
+        JSON.stringify(item.serverQRItems, null, 2)
       );
     }
 
@@ -406,7 +407,7 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
   return (
     <Dialog open={true} onClose={onCloseDialog} maxWidth="xl" fullWidth>
       <StandardDialogTitle onCloseDialog={onCloseDialog}>
-        Select items to be re-populated
+        Select items to re-populate into the form
       </StandardDialogTitle>
       <DialogContent dividers>
         <RepopulateList
@@ -421,11 +422,11 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
       </DialogContent>
       <DialogActions>
         <Typography fontSize={10} color="text.secondary" sx={{ mx: 1.5 }}>
-          Select which value to use for each field.
+          3 of 3 entries selected FIXME
         </Typography>
         <Box flexGrow={1} />
         <Button onClick={onCloseDialog}>Cancel</Button>
-        <Button onClick={handleConfirmRepopulate}>Confirm</Button>
+        <Button onClick={handleConfirmRepopulate}>Re-populate form (3 entries)</Button>
       </DialogActions>
     </Dialog>
   );

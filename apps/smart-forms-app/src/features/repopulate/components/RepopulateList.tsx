@@ -29,7 +29,12 @@ interface RepopulateListProps {
 }
 
 function RepopulateList(props: RepopulateListProps) {
-  const { itemsToRepopulateTuplesByHeadings, onValuePreferenceChange, initialPreferences, fieldPreferences } = props;
+  const {
+    itemsToRepopulateTuplesByHeadings,
+    onValuePreferenceChange,
+    initialPreferences,
+    fieldPreferences
+  } = props;
 
   return (
     <>
@@ -54,7 +59,8 @@ function RepopulateList(props: RepopulateListProps) {
                 JSON.stringify(itemToRepopulateData, null, 2)
               );
 
-              const { qItem, newQRItem, oldQRItem, newQRItems, oldQRItems } = itemToRepopulateData;
+              const { qItem, serverQRItem, currentQRItem, serverQRItems, currentQRItems } =
+                itemToRepopulateData;
 
               if (!qItem) {
                 return null;
@@ -64,10 +70,10 @@ function RepopulateList(props: RepopulateListProps) {
                 <RepopulateListItem
                   key={qItem.linkId}
                   qItem={qItem}
-                  oldQRItem={oldQRItem}
-                  newQRItem={newQRItem}
-                  oldQRItems={oldQRItems}
-                  newQRItems={newQRItems}
+                  currentQRItem={currentQRItem}
+                  serverQRItem={serverQRItem}
+                  currentQRItems={currentQRItems}
+                  serverQRItems={serverQRItems}
                   onValuePreferenceChange={onValuePreferenceChange}
                   initialPreference={initialPreferences[qItem.linkId]}
                   fieldPreferences={fieldPreferences}

@@ -39,10 +39,10 @@ import { deepEqual } from 'fast-equals';
  *
  * @property qItem - The QuestionnaireItem to repopulate
  * @property heading - The heading of the group to repopulate
- * @property newQRItem - The new QuestionnaireResponseItem to replace the old one
- * @property oldQRItem - The old QuestionnaireResponseItem to be replaced
- * @property newQRItems - The new QuestionnaireResponseItems to replace the old ones
- * @property oldQRItems - The old QuestionnaireResponseItems to be replaced
+ * @property serverQRItem - The new QuestionnaireResponseItem to replace the old one
+ * @property currentQRItem - The old QuestionnaireResponseItem to be replaced
+ * @property serverQRItems - The new QuestionnaireResponseItems to replace the old ones
+ * @property currentQRItems - The old QuestionnaireResponseItems to be replaced
  *
  * @author Sean Fong
  */
@@ -51,12 +51,12 @@ export interface ItemToRepopulate {
   heading: string | null;
 
   // for non-repeat groups
-  newQRItem?: QuestionnaireResponseItem;
-  oldQRItem?: QuestionnaireResponseItem;
+  serverQRItem?: QuestionnaireResponseItem;
+  currentQRItem?: QuestionnaireResponseItem;
 
   // for repeat groups
-  newQRItems?: QuestionnaireResponseItem[];
-  oldQRItems?: QuestionnaireResponseItem[];
+  serverQRItems?: QuestionnaireResponseItem[];
+  currentQRItems?: QuestionnaireResponseItem[];
 }
 
 interface getItemsToRepopulateParams {
@@ -114,7 +114,7 @@ export function generateItemsToRepopulate(populatedResponse: QuestionnaireRespon
       itemsToRepopulate[linkId] = {
         qItem: getQuestionnaireItem(sourceQuestionnaire, linkId),
         heading: getSectionHeading(sourceQuestionnaire, linkId, tabs),
-        oldQRItem: updatableResponseItems[linkId][0]
+        currentQRItem: updatableResponseItems[linkId][0]
       };
     }
   }
@@ -185,12 +185,12 @@ export function getItemsToRepopulate(
     qItemsIndexMap
   );
   for (const [index, topLevelQItem] of topLevelQItems.entries()) {
-    const oldQrItemOrItems = oldTopLevelQRItemsByIndex[index];
-    if (!oldQrItemOrItems) {
+    const currentQRItemOrItems = oldTopLevelQRItemsByIndex[index];
+    if (!currentQRItemOrItems) {
       continue;
     }
 
-    checkCorrespondingOldItemsRecursive(topLevelQItem, oldQrItemOrItems, itemsToRepopulate);
+    checkCorrespondingOldItemsRecursive(topLevelQItem, currentQRItemOrItems, itemsToRepopulate);
   }
 
   return itemsToRepopulate;
@@ -319,8 +319,8 @@ function getSingleItemToRepopulate(
   itemsToRepopulate[qItem.linkId] = {
     qItem: qItem,
     heading: heading,
-    newQRItem: qrItem,
-    newQRItems: []
+    serverQRItem: qrItem,
+    serverQRItems: []
   };
 }
 
@@ -333,10 +333,10 @@ function getRepeatGroupToRepopulate(
   itemsToRepopulate[qItem.linkId] = {
     qItem: qItem,
     heading: heading,
-    newQRItem: {
+    serverQRItem: {
       linkId: qItem.linkId
     },
-    newQRItems: qrItems
+    serverQRItems: qrItems
   };
 }
 
@@ -392,44 +392,44 @@ function getGridTableToRepopulate(params: getGridTableToRepopulateParams) {
   itemsToRepopulate[qItem.linkId] = {
     qItem: qItem,
     heading: heading,
-    newQRItem: {
+    serverQRItem: {
       linkId: qItem.linkId,
       text: qItem.text,
       item: gridChildQRItemsToRepopulate
     },
-    newQRItems: []
+    serverQRItems: []
   };
 }
 
 function checkCorrespondingOldItemsRecursive(
   qItem: QuestionnaireItem,
-  oldQrItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[],
+  currentQRItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[],
   itemsToRepopulate: Record<string, ItemToRepopulate>
 ) {
   // For repeat groups
-  const hasMultipleAnswers = Array.isArray(oldQrItemOrItems);
+  const hasMultipleAnswers = Array.isArray(currentQRItemOrItems);
   if (hasMultipleAnswers) {
-    retrieveRepeatGroupOldQRItems(qItem, oldQrItemOrItems, itemsToRepopulate);
+    retrieveRepeatGroupcurrentQRItems(qItem, currentQRItemOrItems, itemsToRepopulate);
     return;
   }
 
   const childQItems = qItem.item;
-  const oldChildQRItems = oldQrItemOrItems.item;
+  const oldChildQRItems = currentQRItemOrItems.item;
 
   if (childQItems && childQItems.length > 0 && oldChildQRItems) {
     const qItemsIndexMap = mapQItemsIndex(qItem);
-    const oldQRItemsByIndex = getQrItemsIndex(childQItems, oldChildQRItems, qItemsIndexMap);
+    const currentQRItemsByIndex = getQrItemsIndex(childQItems, oldChildQRItems, qItemsIndexMap);
 
     // For grid groups
     const itemIsGrid = isSpecificItemControl(qItem, 'grid');
     if (itemIsGrid) {
-      retrieveGridGroupOldQRItems(qItem, childQItems, oldQRItemsByIndex, itemsToRepopulate);
+      retrieveGridGroupcurrentQRItems(qItem, childQItems, currentQRItemsByIndex, itemsToRepopulate);
       return;
     }
 
     // For normal groups with children
     for (const [index, childQItem] of childQItems.entries()) {
-      const oldChildQrItemOrItems = oldQRItemsByIndex[index];
+      const oldChildQrItemOrItems = currentQRItemsByIndex[index];
       if (!oldChildQrItemOrItems) {
         continue;
       }
@@ -437,59 +437,59 @@ function checkCorrespondingOldItemsRecursive(
       checkCorrespondingOldItemsRecursive(childQItem, oldChildQrItemOrItems, itemsToRepopulate);
     }
 
-    const hasSingleAnswer = !Array.isArray(oldQrItemOrItems);
-    if (hasSingleAnswer && oldQrItemOrItems.answer) {
-      retrieveSingleOldQRItem(qItem, oldQrItemOrItems, itemsToRepopulate);
+    const hasSingleAnswer = !Array.isArray(currentQRItemOrItems);
+    if (hasSingleAnswer && currentQRItemOrItems.answer) {
+      retrieveSingleCurrentQRItem(qItem, currentQRItemOrItems, itemsToRepopulate);
     }
     return;
   }
 
   // For single items without children
-  retrieveSingleOldQRItem(qItem, oldQrItemOrItems, itemsToRepopulate);
+  retrieveSingleCurrentQRItem(qItem, currentQRItemOrItems, itemsToRepopulate);
 }
 
-function retrieveSingleOldQRItem(
+function retrieveSingleCurrentQRItem(
   qItem: QuestionnaireItem,
-  oldQRItem: QuestionnaireResponseItem,
+  currentQRItem: QuestionnaireResponseItem,
   itemsToRepopulate: Record<string, ItemToRepopulate>
 ) {
-  const newQRItem = itemsToRepopulate[qItem.linkId]?.newQRItem;
+  const serverQRItem = itemsToRepopulate[qItem.linkId]?.serverQRItem;
 
-  if (!newQRItem) {
+  if (!serverQRItem) {
     return;
   }
 
-  if (deepEqual(oldQRItem, newQRItem)) {
+  if (deepEqual(currentQRItem, serverQRItem)) {
     delete itemsToRepopulate[qItem.linkId];
     return;
   }
 
-  itemsToRepopulate[qItem.linkId].oldQRItem = oldQRItem;
+  itemsToRepopulate[qItem.linkId].currentQRItem = currentQRItem;
 }
 
-function retrieveRepeatGroupOldQRItems(
+function retrieveRepeatGroupcurrentQRItems(
   qItem: QuestionnaireItem,
-  oldQRItems: QuestionnaireResponseItem[],
+  currentQRItems: QuestionnaireResponseItem[],
   itemsToRepopulate: Record<string, ItemToRepopulate>
 ) {
-  if (!(qItem && oldQRItems && oldQRItems.length > 0)) {
+  if (!(qItem && currentQRItems && currentQRItems.length > 0)) {
     return;
   }
 
-  const newQRItems = itemsToRepopulate[qItem.linkId]?.newQRItems;
-  if (!newQRItems) {
+  const serverQRItems = itemsToRepopulate[qItem.linkId]?.serverQRItems;
+  if (!serverQRItems) {
     return;
   }
 
-  if (deepEqual(oldQRItems, newQRItems)) {
+  if (deepEqual(currentQRItems, serverQRItems)) {
     delete itemsToRepopulate[qItem.linkId];
     return;
   }
 
-  itemsToRepopulate[qItem.linkId].oldQRItems = oldQRItems;
+  itemsToRepopulate[qItem.linkId].currentQRItems = currentQRItems;
 }
 
-function retrieveGridGroupOldQRItems(
+function retrieveGridGroupcurrentQRItems(
   qItem: QuestionnaireItem,
   gridChildQItems: QuestionnaireItem[],
   oldGridQRItemsByIndex: (QuestionnaireResponseItem | QuestionnaireResponseItem[] | undefined)[],
@@ -499,7 +499,7 @@ function retrieveGridGroupOldQRItems(
     return;
   }
 
-  const newGridQRItem = itemsToRepopulate[qItem.linkId]?.newQRItem;
+  const newGridQRItem = itemsToRepopulate[qItem.linkId]?.serverQRItem;
   if (!newGridQRItem || !newGridQRItem.item) {
     return;
   }
@@ -541,12 +541,12 @@ function retrieveGridGroupOldQRItems(
   }
 
   // Otherwise create both old and new grid qr item
-  itemsToRepopulate[qItem.linkId].newQRItem = {
+  itemsToRepopulate[qItem.linkId].serverQRItem = {
     linkId: qItem.linkId,
     text: qItem.text,
     item: newGridChildQRItemsToRepopulate
   };
-  itemsToRepopulate[qItem.linkId].oldQRItem = {
+  itemsToRepopulate[qItem.linkId].currentQRItem = {
     linkId: qItem.linkId,
     text: qItem.text,
     item: oldGridChildQRItems

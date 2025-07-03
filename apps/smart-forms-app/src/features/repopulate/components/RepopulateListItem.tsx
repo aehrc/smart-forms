@@ -24,10 +24,10 @@ import SimplifiedRepopulateItemSwitcher from './SimplifiedRepopulateItemSwitcher
 
 interface RepopulateListItemProps {
   qItem: QuestionnaireItem;
-  newQRItem?: QuestionnaireResponseItem;
-  oldQRItem?: QuestionnaireResponseItem;
-  newQRItems?: QuestionnaireResponseItem[];
-  oldQRItems?: QuestionnaireResponseItem[];
+  serverQRItem?: QuestionnaireResponseItem;
+  currentQRItem?: QuestionnaireResponseItem;
+  serverQRItems?: QuestionnaireResponseItem[];
+  currentQRItems?: QuestionnaireResponseItem[];
   onValuePreferenceChange: (linkId: string, preferOld: boolean | undefined) => void;
   isSelected?: boolean;
   initialPreference?: boolean;
@@ -35,7 +35,15 @@ interface RepopulateListItemProps {
 }
 
 function RepopulateListItem(props: RepopulateListItemProps) {
-  const { qItem, oldQRItem, newQRItem, newQRItems, oldQRItems, onValuePreferenceChange, fieldPreferences } = props;
+  const {
+    qItem,
+    currentQRItem,
+    serverQRItem,
+    serverQRItems,
+    currentQRItems,
+    onValuePreferenceChange,
+    fieldPreferences
+  } = props;
 
   const itemIsHidden = useHidden(qItem);
   if (itemIsHidden) {
@@ -47,10 +55,10 @@ function RepopulateListItem(props: RepopulateListItemProps) {
 
   if (qItem.text?.includes('Medical history')) {
     console.log(`RepopulateListItem: Passing to Switcher for ${qItem.linkId} (${itemText}):`, {
-      serverSuggestedQRItem: newQRItem,
-      currentUserFormQRItem: oldQRItem,
-      serverSuggestedQRItems: newQRItems,
-      currentUserFormQRItems: oldQRItems
+      serverSuggestedQRItem: serverQRItem,
+      currentUserFormQRItem: currentQRItem,
+      serverSuggestedQRItems: serverQRItems,
+      currentUserFormQRItems: currentQRItems
     });
   }
 
@@ -74,10 +82,10 @@ function RepopulateListItem(props: RepopulateListItemProps) {
         secondary={
           <SimplifiedRepopulateItemSwitcher
             qItem={qItemToRepopulate}
-            serverSuggestedQRItem={props.newQRItem}
-            currentUserFormQRItem={props.oldQRItem}
-            serverSuggestedQRItems={props.newQRItems}
-            currentUserFormQRItems={props.oldQRItems}
+            serverSuggestedQRItem={props.serverQRItem}
+            currentUserFormQRItem={props.currentQRItem}
+            serverSuggestedQRItems={props.serverQRItems}
+            currentUserFormQRItems={props.currentQRItems}
             onValuePreferenceChange={onValuePreferenceChange}
             fieldPreferences={fieldPreferences}
           />
