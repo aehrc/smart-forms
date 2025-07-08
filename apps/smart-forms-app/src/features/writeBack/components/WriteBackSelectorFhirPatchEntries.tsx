@@ -6,13 +6,12 @@ import {
   getOperationEntryCounts
 } from '../utils/extractedBundleSelector.ts';
 import WriteBackSelectorFhirPatchEntry from './WriteBackSelectorFhirPatchEntry.tsx';
-import { alpha, useTheme } from '@mui/material/styles';
 
 interface WriteBackSelectorFhirPatchItemProps {
   bundleEntryIndex: number;
   resource: FhirResource;
-  selectedEntries: Set<string>;
-  allValidEntries: Set<string>;
+  selectedKeys: Set<string>;
+  allValidKeys: Set<string>;
   isEntrySelected: (
     bundleEntryIndex: number,
     operationEntryIndex?: number
@@ -24,13 +23,11 @@ function WriteBackSelectorFhirPatchEntries(props: WriteBackSelectorFhirPatchItem
   const {
     bundleEntryIndex,
     resource,
-    selectedEntries,
-    allValidEntries,
+    selectedKeys,
+    allValidKeys,
     isEntrySelected,
     onToggleCheckbox
   } = props;
-
-  const theme = useTheme();
 
   // Determine if resource is a FHIRPatch Parameters resource
   const resourceIsFhirPatch =
@@ -47,8 +44,8 @@ function WriteBackSelectorFhirPatchEntries(props: WriteBackSelectorFhirPatchItem
   // Get number of selected operations and valid operations
   const { numOfSelectedOperations, numOfValidOperations } = getOperationEntryCounts(
     bundleEntryIndex,
-    selectedEntries,
-    allValidEntries
+    selectedKeys,
+    allValidKeys
   );
 
   return (
@@ -75,7 +72,7 @@ function WriteBackSelectorFhirPatchEntries(props: WriteBackSelectorFhirPatchItem
               mt: 1,
               px: 1,
               py: 0.5,
-              backgroundColor: alpha(theme.palette.background.default, 0.9),
+              backgroundColor: 'grey.50',
               borderRadius: 1,
               borderLeft: 3,
               borderLeftColor: 'primary.main'

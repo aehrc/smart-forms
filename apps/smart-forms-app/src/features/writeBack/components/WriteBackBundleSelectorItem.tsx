@@ -11,8 +11,8 @@ import WriteBackSelectorFhirPatchEntries from './WriteBackSelectorFhirPatchEntri
 interface WriteBackBundleSelectorItemProps {
   bundleEntry: BundleEntry;
   bundleEntryIndex: number;
-  selectedEntries: Set<string>;
-  allValidEntries: Set<string>;
+  selectedKeys: Set<string>;
+  allValidKeys: Set<string>;
   populatedResourceMap: Map<string, FhirResource>;
   isEntrySelected: (
     bundleEntryIndex: number,
@@ -25,8 +25,8 @@ function WriteBackBundleSelectorItem(props: WriteBackBundleSelectorItemProps) {
   const {
     bundleEntry,
     bundleEntryIndex,
-    selectedEntries,
-    allValidEntries,
+    selectedKeys,
+    allValidKeys,
     isEntrySelected,
     populatedResourceMap,
     onToggleCheckbox
@@ -97,7 +97,6 @@ function WriteBackBundleSelectorItem(props: WriteBackBundleSelectorItemProps) {
             />
           </Box>
         ) : (
-          // Check why this isnt working
           <Checkbox
             checked={checkboxIsChecked}
             indeterminate={checkboxIsIndeterminate}
@@ -138,8 +137,8 @@ function WriteBackBundleSelectorItem(props: WriteBackBundleSelectorItemProps) {
           <WriteBackSelectorFhirPatchEntries
             bundleEntryIndex={bundleEntryIndex}
             resource={resource}
-            selectedEntries={selectedEntries}
-            allValidEntries={allValidEntries}
+            selectedKeys={selectedKeys}
+            allValidKeys={allValidKeys}
             isEntrySelected={isEntrySelected}
             onToggleCheckbox={onToggleCheckbox}
           />

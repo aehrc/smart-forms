@@ -4,9 +4,9 @@ import type { Bundle, BundleEntry } from 'fhir/r4';
 import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import {
   createSelectionKey,
+  getEntriesValidKeys,
   getFilteredBundleEntries,
-  getPopulatedResourceMap,
-  getValidEntries
+  getPopulatedResourceMap
 } from '../utils/extractedBundleSelector.ts';
 import WriteBackBundleSelectorItem from './WriteBackBundleSelectorItem.tsx';
 import type { SavingWriteBackMode } from '../../renderer/utils/extract.ts';
@@ -49,12 +49,12 @@ function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
   // 1. BundleEntry no resource or request
   // 2. BundleEntry resource is a Parameters resource but is not a valid FHIRPatch
   // 3. BundleEntry resource is a FHIRPatch but has no "type", "path" or "value" in the operation parts
-  const allValidEntries: Set<string> = useMemo(
-    () => getValidEntries(allBundleEntries),
+  const allValidKeys: Set<string> = useMemo(
+    () => getEntriesValidKeys(allBundleEntries),
     [allBundleEntries]
   );
 
-  const [selectedEntries, setSelectedEntries] = useState<Set<string>>(allValidEntries);
+  const [selectedKeys, setSelectedKeys] = useState<Set<string>>(allValidKeys);
 
   function isEntrySelected(
     bundleEntryIndex: number,
@@ -64,17 +64,17 @@ function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
 
     // 1: Specific operation entry
     if (operationEntryIndex !== undefined) {
-      return selectedEntries.has(key);
+      return selectedKeys.has(key);
     }
 
     // Get all operation keys for provided bundleEntry
-    const operationKeys = Array.from(allValidEntries).filter((k) =>
+    const operationKeys = Array.from(allValidKeys).filter((k) =>
       k.startsWith(`bundle-${bundleEntryIndex}-operation-`)
     );
 
     // 2: bundle with operations — selected only if all its operations are selected
     if (operationKeys.length > 0) {
-      const numOfSelectedOperations = operationKeys.filter((k) => selectedEntries.has(k)).length;
+      const numOfSelectedOperations = operationKeys.filter((k) => selectedKeys.has(k)).length;
       if (numOfSelectedOperations === operationKeys.length) {
         return true; // All operations selected
       }
@@ -89,21 +89,21 @@ function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
     }
 
     // 3: standalone bundle — check direct selection
-    return selectedEntries.has(key);
+    return selectedKeys.has(key);
   }
 
   function handleToggleCheckbox(bundleEntryIndex: number, operationEntryIndex?: number) {
     const key = createSelectionKey(bundleEntryIndex, operationEntryIndex);
-    setSelectedEntries((prev) => {
+    setSelectedKeys((prev) => {
       const next = new Set(prev);
 
       // Get all operation keys for provided bundleEntry
-      const operationKeys: string[] = Array.from(allValidEntries).filter((k) =>
+      const operationKeys: string[] = Array.from(allValidKeys).filter((k) =>
         k.startsWith(`bundle-${bundleEntryIndex}-operation-`)
       );
 
       // 1. BundleEntry doesn't have operations — toggle just the bundleEntry
-      if (operationKeys.length === 0 && allValidEntries.has(key)) {
+      if (operationKeys.length === 0 && allValidKeys.has(key)) {
         if (next.has(key)) {
           next.delete(key);
         } else {
@@ -115,7 +115,7 @@ function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
 
       // 2. BundleEntry has operations but operationEntryIndex not provided — toggle all operations
       if (operationEntryIndex === undefined) {
-        // If all operations are selected, deselect all; otherwise, select all
+        // If all operations are selected, unselect all; otherwise, select all
         const allSelected = operationKeys.every((k) => next.has(k));
         operationKeys.forEach((k) => (allSelected ? next.delete(k) : next.add(k)));
 
@@ -134,16 +134,16 @@ function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
   }
 
   function handleSelectAll() {
-    setSelectedEntries(allValidEntries);
+    setSelectedKeys(allValidKeys);
   }
 
-  function handleDeselectAll() {
-    setSelectedEntries(new Set());
+  function handleUnselectAll() {
+    setSelectedKeys(new Set());
   }
 
   // Write back FHIR Bundle based on selected entries
   function handleWriteBack(savingWriteBackMode: SavingWriteBackMode) {
-    const filteredEntries = getFilteredBundleEntries(selectedEntries, allBundleEntries);
+    const filteredEntries = getFilteredBundleEntries(selectedKeys, allBundleEntries);
     onWriteBackBundle(
       {
         ...extractedBundle,
@@ -153,7 +153,7 @@ function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
     );
   }
 
-  const allValidEntriesSelected = selectedEntries.size === allValidEntries.size;
+  const allValidKeysSelected = selectedKeys.size === allValidKeys.size;
 
   // Button texts based on if view mode is in renderer or playground
   const writeBackButtonText =
@@ -177,10 +177,10 @@ function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
 
       <DialogContent dividers>
         <Button
-          onClick={allValidEntriesSelected ? handleDeselectAll : handleSelectAll}
+          onClick={allValidKeysSelected ? handleUnselectAll : handleSelectAll}
           variant="outlined"
           size="small">
-          {allValidEntriesSelected ? 'Deselect All' : 'Select All'}
+          {allValidKeysSelected ? 'Unselect All' : 'Select All'}
         </Button>
 
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
@@ -190,8 +190,8 @@ function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
                 key={bundleEntryIndex}
                 bundleEntry={bundleEntry}
                 bundleEntryIndex={bundleEntryIndex}
-                selectedEntries={selectedEntries}
-                allValidEntries={allValidEntries}
+                selectedKeys={selectedKeys}
+                allValidKeys={allValidKeys}
                 populatedResourceMap={populatedResourceMap}
                 isEntrySelected={isEntrySelected}
                 onToggleCheckbox={handleToggleCheckbox}
@@ -211,7 +211,7 @@ function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
             pl: 1
           }}>
           <Typography component="div" variant="body2" color="text.secondary">
-            {selectedEntries.size} of {allValidEntries.size} valid entries selected
+            {selectedKeys.size} of {allValidKeys.size} valid entries selected
           </Typography>
 
           <Box display="flex" gap={1}>
@@ -233,9 +233,9 @@ function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
               onClick={() => {
                 handleWriteBack('saving-write-back');
               }}
-              disabled={selectedEntries.size === 0 || isSaving === 'saving-only'}>
-              {writeBackButtonText} ({selectedEntries.size}{' '}
-              {selectedEntries.size === 1 ? 'entry' : 'entries'})
+              disabled={selectedKeys.size === 0 || isSaving === 'saving-only'}>
+              {writeBackButtonText} ({selectedKeys.size}{' '}
+              {selectedKeys.size === 1 ? 'entry' : 'entries'})
             </Button>
           </Box>
         </Box>

@@ -41,8 +41,8 @@ export function getOperationEntryCounts(
  * 2. BundleEntry resource is a Parameters resource but is not a valid FHIRPatch
  * 3. BundleEntry resource is a FHIRPatch but has no "type", "path" or "value" in the operation parts
  */
-export function getValidEntries(bundleEntries: BundleEntry[]): Set<string> {
-  const validEntries: Set<string> = new Set();
+export function getEntriesValidKeys(bundleEntries: BundleEntry[]): Set<string> {
+  const validKeys: Set<string> = new Set();
 
   for (const [bundleEntryIndex, bundleEntry] of bundleEntries.entries()) {
     // 1. Skip if the entry doesn't have a resource and request
@@ -70,44 +70,15 @@ export function getValidEntries(bundleEntries: BundleEntry[]): Set<string> {
         }
 
         // Add FHIRPatch operations that pass the initial selection criteria
-        validEntries.add(createSelectionKey(bundleEntryIndex, operationEntryIndex));
+        validKeys.add(createSelectionKey(bundleEntryIndex, operationEntryIndex));
       }
     } else {
       // Add non-FHIRPatch resources that pass the initial selection criteria
-      validEntries.add(createSelectionKey(bundleEntryIndex));
+      validKeys.add(createSelectionKey(bundleEntryIndex));
     }
   }
 
-  return validEntries;
-}
-
-/**
- * Returns a set of all bundle entry and operation keys from the bundle, without exclusions.
- * This is more for the dialog that contains WriteBackSelector, since most likely the bundle is already filtered by the user.
- *
- * - Includes all bundle entries that have a resource.
- * - If the resource is a Parameters (FHIRPatch), includes all its operations.
- */
-export function getAllEntries(bundleEntries: BundleEntry[]): Set<string> {
-  const allEntries: Set<string> = new Set();
-
-  for (const [bundleEntryIndex, bundleEntry] of bundleEntries.entries()) {
-    const resource = bundleEntry.resource;
-
-    if (!resource) {
-      continue;
-    }
-
-    if (resource.resourceType === 'Parameters' && Array.isArray(resource.parameter)) {
-      for (const [operationEntryIndex] of resource.parameter.entries()) {
-        allEntries.add(createSelectionKey(bundleEntryIndex, operationEntryIndex));
-      }
-    } else {
-      allEntries.add(createSelectionKey(bundleEntryIndex));
-    }
-  }
-
-  return allEntries;
+  return validKeys;
 }
 
 /**
