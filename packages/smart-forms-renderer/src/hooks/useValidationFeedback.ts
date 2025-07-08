@@ -48,8 +48,8 @@ function useValidationFeedback(
     for (const targetConstraintKey of targetConstraintKeys) {
       const targetConstraint = targetConstraints[targetConstraintKey];
       if (targetConstraint) {
-        const { isEnabled, human } = targetConstraint;
-        if (isEnabled) {
+        const { isInvalid, human } = targetConstraint;
+        if (isInvalid) {
           return human;
         }
       }

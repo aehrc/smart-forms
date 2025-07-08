@@ -64,10 +64,7 @@ export interface QuestionnaireResponseStoreType {
   invalidItems: Record<string, OperationOutcome>;
   requiredItemsIsHighlighted: boolean;
   responseIsValid: boolean;
-  validateQuestionnaire: (
-    questionnaire: Questionnaire,
-    updatedResponse: QuestionnaireResponse
-  ) => void;
+  validateResponse: (questionnaire: Questionnaire, updatedResponse: QuestionnaireResponse) => void;
   buildSourceResponse: (response: QuestionnaireResponse) => void;
   setUpdatableResponseAsPopulated: (populatedResponse: QuestionnaireResponse) => void;
   updateResponse: (updatedResponse: QuestionnaireResponse, debugType: 'initial' | 'async') => void;
@@ -94,10 +91,7 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
     invalidItems: {},
     requiredItemsIsHighlighted: false,
     responseIsValid: true,
-    validateQuestionnaire: (
-      questionnaire: Questionnaire,
-      updatedResponse: QuestionnaireResponse
-    ) => {
+    validateResponse: (questionnaire: Questionnaire, updatedResponse: QuestionnaireResponse) => {
       const updatedInvalidItems = validateForm(questionnaire, updatedResponse);
 
       set(() => ({
