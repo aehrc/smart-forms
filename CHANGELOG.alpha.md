@@ -8,6 +8,12 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.73] - 2025-07-08
+#### Fixed
+- Fix an issue where invalidItems not updated immediately when target constraint is unmet.
+- Fix an issue where in the Playground, existing RendererStylingStore state is wiped (and reverts to the default values) when a button that calls `setRendererStylingStore()` is clicked.
+
+
 ## [1.0.0-alpha.72] - 2025-07-01
 #### Fixed
 - Added getItemTerminologyServerToUse() as a cleaner way to an item to decide which terminology server to use.

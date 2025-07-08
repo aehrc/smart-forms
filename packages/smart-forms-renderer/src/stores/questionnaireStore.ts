@@ -418,9 +418,11 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   toggleEnableWhenActivation: (isActivated: boolean) =>
     set(() => ({ enableWhenIsActivated: isActivated })),
   updateExpressions: async (updatedResponse: QuestionnaireResponse) => {
+    const sourceQuestionnaire = get().sourceQuestionnaire;
     const updateResponse = questionnaireResponseStore.getState().updateResponse;
+    const validateResponse = questionnaireResponseStore.getState().validateResponse;
     const updatedResponseItemMap = createQuestionnaireResponseItemMap(
-      get().sourceQuestionnaire,
+      sourceQuestionnaire,
       updatedResponse
     );
     const {
@@ -452,13 +454,15 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
      * Before this, we were updating the store before applying the computed updates. This may cause downstream useEffects to use a stale QR.
      * By applying the computed updates first, we ensure that the QR is up-to-date when downstream useEffects are fired.
      */
+
+    let lastUpdatedResponse = structuredClone(updatedResponse);
     if (Object.keys(computedQRItemUpdates).length > 0) {
-      const responseWithAppliedComputedUpdates = applyComputedUpdates(
+      lastUpdatedResponse = applyComputedUpdates(
         get().sourceQuestionnaire,
         updatedResponse,
         computedQRItemUpdates
       );
-      updateResponse(responseWithAppliedComputedUpdates, 'async');
+      updateResponse(lastUpdatedResponse, 'async');
     }
 
     if (isUpdated) {
@@ -471,6 +475,9 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
         fhirPathContext: updatedFhirPathContext,
         fhirPathTerminologyCache: fhirPathTerminologyCache
       }));
+
+      // Besides setting QuestionnaireStore state, we also need to update `invalidItems` and `responseIsValid` in QuestionnaireResponseStore
+      validateResponse(sourceQuestionnaire, lastUpdatedResponse); // Validate the updated response asynchronously
     }
 
     set(() => ({
