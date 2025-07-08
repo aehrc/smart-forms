@@ -35,26 +35,32 @@ import intersection from 'lodash.intersection';
 import { deepEqual } from 'fast-equals';
 
 /**
- * ItemToRepopulate interface
+ * Represents an item within a questionnaire that can be re-populated with updated data from the patient record.
  *
- * @property qItem - The QuestionnaireItem to repopulate
- * @property heading - The heading of the group to repopulate
- * @property serverQRItem - The new QuestionnaireResponseItem to replace the old one
- * @property currentQRItem - The old QuestionnaireResponseItem to be replaced
- * @property serverQRItems - The new QuestionnaireResponseItems to replace the old ones
- * @property currentQRItems - The old QuestionnaireResponseItems to be replaced
+ * @property qItem - QuestionnaireItem definition for this item
+ * @property heading - Heading or group item.text this item belongs to
  *
- * @author Sean Fong
+ * // For non-repeating items:
+ * @property serverQRItem - QuestionnaireResponseItem from server (optional)
+ * @property currentQRItem - Current QuestionnaireResponseItem in form (optional)
+ *
+ * // For repeating groups:
+ * @property serverQRItems  - Array of QuestionnaireResponseItems from server (optional)
+ * @property currentQRItems - Array of current QuestionnaireResponseItems in form (optional)
+ *
+ * Use serverQRItem/currentQRItem for single items, and serverQRItems/currentQRItems for repeat groups.
  */
 export interface ItemToRepopulate {
+  /* QuestionnaireItem definition for this item */
   qItem: QuestionnaireItem | null;
+  /* Group heading or section item.text this item belongs to */
   heading: string | null;
 
-  // for non-repeat groups
+  /* Server and current response item for non-repeat items */
   serverQRItem?: QuestionnaireResponseItem;
   currentQRItem?: QuestionnaireResponseItem;
 
-  // for repeat groups
+  /* Server and current response items for repeat groups */
   serverQRItems?: QuestionnaireResponseItem[];
   currentQRItems?: QuestionnaireResponseItem[];
 }

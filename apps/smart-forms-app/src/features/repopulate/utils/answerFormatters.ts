@@ -16,6 +16,7 @@
  */
 
 import type { QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import dayjs from 'dayjs';
 
 /**
  * Converts a QuestionnaireResponseItemAnswer to a string representation
@@ -41,14 +42,11 @@ export function getAnswerValueAsString(answer: QuestionnaireResponseItemAnswer):
   }
 
   if (answer.valueDate !== undefined) {
-    // Normalize date format - keep YYYY-MM-DD format for consistency
-    return standardizeDateFormat(answer.valueDate);
+    return dayjs(answer.valueDate).format('DD/MM/YYYY');
   }
 
   if (answer.valueDateTime !== undefined) {
-    // Extract just the date portion and standardize format
-    const datePart = answer.valueDateTime.split('T')[0];
-    return standardizeDateFormat(datePart);
+    return dayjs(answer.valueDateTime).format('DD/MM/YYYY hh:mm A');
   }
 
   if (answer.valueTime !== undefined) {
@@ -76,33 +74,4 @@ export function getAnswerValueAsString(answer: QuestionnaireResponseItemAnswer):
   }
 
   return '';
-}
-
-/**
- * Ensures consistent date format by converting between common formats
- * @param dateString - A date string in any common format
- * @returns - Standardized date in YYYY-MM-DD format
- */
-function standardizeDateFormat(dateString: string): string {
-  // If already in YYYY-MM-DD format, return as is
-  if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
-    return dateString;
-  }
-
-  // Handle DD/MM/YYYY format
-  if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateString)) {
-    const parts = dateString.split('/');
-    return `${parts[2]}-${parts[1]}-${parts[0]}`;
-  }
-
-  // Handle MM/DD/YYYY format
-  if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateString)) {
-    const parts = dateString.split('/');
-    const month = parts[0].padStart(2, '0');
-    const day = parts[1].padStart(2, '0');
-    return `${parts[2]}-${month}-${day}`;
-  }
-
-  // If we can't parse it, return the original
-  return dateString;
 }
