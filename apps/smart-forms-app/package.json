@@ -9,13 +9,6 @@
     "start": "vite",
     "build": "tsc && CI=false vite build",
     "test": "jest --config ./jest.config.ts",
-    "test:vitest": "vitest",
-    "test:vitest:run": "vitest run",
-    "test:vitest:watch": "vitest --watch",
-    "test:vitest:ui": "vitest --ui",
-    "test:vitest:coverage": "vitest run --coverage",
-    "test:repopulate": "vitest run src/features/repopulate/__tests__/",
-    "test:repopulate:watch": "vitest --watch src/features/repopulate/__tests__/",
     "preview": "vite preview --port 4173",
     "playwright": "npx playwright test",
     "playwright-ui": "npx playwright test --ui"
