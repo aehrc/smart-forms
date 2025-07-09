@@ -16,8 +16,8 @@
  */
 
 import { Box, Button, Dialog, DialogActions, DialogContent, Typography } from '@mui/material';
+import type { ItemToRepopulate } from '@aehrc/smart-forms-renderer';
 import {
-  ItemToRepopulate,
   repopulateResponse,
   useQuestionnaireResponseStore,
   useQuestionnaireStore
@@ -151,54 +151,12 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
     setSelectedKeys(new Set());
   }
 
-  async function handleConfirmRepopulate() {
+  async function handleRepopulateIntoResponse() {
     const filteredItemsToRepopulate = getFilteredItemsToRepopulate(
       itemsToRepopulateTuplesByHeadingsMap,
       selectedKeys,
       itemsToRepopulate
     );
-    // // TODO implement form repopulation logic here
-    // console.log('Re-populating form with selected items:', Array.from(selectedKeys));
-    //
-    // if (itemsToRepopulate['92bd7d05-9b5e-4cf9-900b-703f361dad9d']) {
-    //   console.log(
-    //     'Server clinical statuses:',
-    //     itemsToRepopulate['92bd7d05-9b5e-4cf9-900b-703f361dad9d']?.serverQRItems?.map(
-    //       (qrItem) =>
-    //         qrItem.item?.find((item) => item.linkId === '88bcfad7-386b-4d87-b34b-2e50482e4d2c')
-    //           ?.answer?.[0].valueCoding?.code
-    //     )
-    //   );
-    //   console.log(
-    //     'Current clinical statuses:',
-    //     itemsToRepopulate['92bd7d05-9b5e-4cf9-900b-703f361dad9d']?.currentQRItems?.map(
-    //       (qrItem) =>
-    //         qrItem.item?.find((item) => item.linkId === '88bcfad7-386b-4d87-b34b-2e50482e4d2c')
-    //           ?.answer?.[0].valueCoding?.code
-    //     )
-    //   );
-    // }
-
-    // if (filteredItemsToRepopulate['92bd7d05-9b5e-4cf9-900b-703f361dad9d']) {
-    //   console.log(
-    //     'Server clinical statuses:',
-    //     filteredItemsToRepopulate['92bd7d05-9b5e-4cf9-900b-703f361dad9d']?.serverQRItems?.map(
-    //       (qrItem) =>
-    //         qrItem.item?.find((item) => item.linkId === '88bcfad7-386b-4d87-b34b-2e50482e4d2c')
-    //           ?.answer?.[0].valueCoding?.code
-    //     )
-    //   );
-    //   console.log(
-    //     'Current clinical statuses:',
-    //     filteredItemsToRepopulate['92bd7d05-9b5e-4cf9-900b-703f361dad9d']?.currentQRItems?.map(
-    //       (qrItem) =>
-    //         qrItem.item?.find((item) => item.linkId === '88bcfad7-386b-4d87-b34b-2e50482e4d2c')
-    //           ?.answer?.[0].valueCoding?.code
-    //     )
-    //   );
-    // }
-    // console.log(itemsToRepopulate);
-    // console.log(filteredItemsToRepopulate);
 
     // Prevent state batching for this spinner https://react.dev/reference/react-dom/flushSync
     flushSync(() => {
@@ -280,7 +238,7 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
             <Button
               disabled={selectedKeys.size === 0}
               onClick={async () => {
-                await handleConfirmRepopulate();
+                await handleRepopulateIntoResponse();
               }}>
               Re-populate form ({selectedKeys.size} {selectedKeys.size === 1 ? 'item' : 'items'})
             </Button>

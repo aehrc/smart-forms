@@ -1,5 +1,6 @@
 import type { ItemToRepopulate } from '@aehrc/smart-forms-renderer';
 import { deepEqual } from 'fast-equals';
+import { QuestionnaireResponseItem } from 'fhir/r4';
 
 export type ItemToRepopulateAnswers = {
   itemText: string | null;
@@ -178,12 +179,31 @@ export function getFilteredItemsToRepopulate(
         for (let childIndex = 0; childIndex < maxItemsCount; childIndex++) {
           const childKey = `heading-${headingIndex}-parent-${parentItemIndex}-child-${childIndex}`;
           if (selectedKeys.has(childKey)) {
-            // Add childItems from currentQRItems and serverQRItems to the filtered result
+            // Add childItems from currentQRItems to the filtered result
             if (itemToRepopulate.currentQRItems?.[childIndex]) {
               selectedCurrentQRItems[childIndex] = itemToRepopulate.currentQRItems[childIndex];
             }
+
+            // Add childItems from serverQRItems to the filtered result
             if (itemToRepopulate.serverQRItems?.[childIndex]) {
               selectedServerQRItems[childIndex] = itemToRepopulate.serverQRItems[childIndex];
+            }
+            // If the case where an item is deleted in the patient record, mark explicit deletion if the child was selected (but server value is missing given it is deleted)
+            // If the current item exists but server item does not, it means it was deleted
+            else if (
+              itemToRepopulate.currentQRItems?.[childIndex] &&
+              !itemToRepopulate.serverQRItems?.[childIndex]
+            ) {
+              selectedServerQRItems[childIndex] = {
+                ...itemToRepopulate.currentQRItems[childIndex],
+                extension: [
+                  ...(itemToRepopulate.currentQRItems[childIndex].extension || []),
+                  {
+                    url: 'https://smartforms.csiro.au/custom-functionality/repopulation/mark-as-deleted',
+                    valueBoolean: true
+                  }
+                ]
+              };
             }
           }
         }
@@ -231,9 +251,19 @@ export function getFilteredItemsToRepopulate(
         }
 
         for (let i = 0; i < maxNumberOfItems; i++) {
-          // If this child was not selected (i.e. not present), use the current value
           if (filteredItem.serverQRItems[i] === undefined && originalItem.currentQRItems[i]) {
             filteredItem.serverQRItems[i] = originalItem.currentQRItems[i];
+          }
+
+          // If the original item is marked as deleted (has the https://smartforms.csiro.au/custom-functionality/repopulation/mark-as-deleted extension), remove the deleted item
+          if (filteredItem.serverQRItems[i]) {
+            const hasDeletedExtension = itemHasMarkAsDeletedExtension(
+              filteredItem.serverQRItems[i]
+            );
+
+            if (hasDeletedExtension) {
+              filteredItem.serverQRItems.splice(i, 1);
+            }
           }
         }
       }
@@ -241,6 +271,14 @@ export function getFilteredItemsToRepopulate(
   }
 
   return filteredItemsToRepopulate;
+}
+
+function itemHasMarkAsDeletedExtension(qrItem: QuestionnaireResponseItem): boolean {
+  return !!qrItem.extension?.find(
+    (ext) =>
+      ext.url === 'https://smartforms.csiro.au/custom-functionality/repopulation/mark-as-deleted' &&
+      ext.valueBoolean === true
+  );
 }
 
 export type ValueChangeMode = 'new' | 'updated' | 'removed';
