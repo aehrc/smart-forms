@@ -1,6 +1,6 @@
 import type { ItemToRepopulate } from '@aehrc/smart-forms-renderer';
 import { deepEqual } from 'fast-equals';
-import { QuestionnaireResponseItem } from 'fhir/r4';
+import type { QuestionnaireResponseItem } from 'fhir/r4';
 
 export type ItemToRepopulateAnswers = {
   itemText: string | null;
