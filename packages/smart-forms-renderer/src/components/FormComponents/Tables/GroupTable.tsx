@@ -164,7 +164,7 @@ function GroupTable(props: GroupTableProps) {
   }
 
   function handleSelectAll() {
-    // deselect all if all are selected, otherwise select all
+    // unselect all if all are selected, otherwise select all
     const updatedTableIds =
       selectedIds.length === tableRows.length ? [] : tableRows.map((tableRow) => tableRow.id);
     setSelectedIds(updatedTableIds);

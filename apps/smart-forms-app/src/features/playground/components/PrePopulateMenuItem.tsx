@@ -62,6 +62,7 @@ function PrePopulateMenuItem(props: PrePopulateMenuItemProps) {
       const { populatedResponse, populatedContext } = populateResult;
 
       // Call to buildForm to pre-populate the QR which repaints the entire BaseRenderer view
+      // Also passes the populatedContext to the FhirPathContext
       await buildFormWrapper(
         sourceQuestionnaire,
         populatedResponse,

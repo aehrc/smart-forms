@@ -32,14 +32,17 @@ import useSmartClient from '../../../../../../hooks/useSmartClient.ts';
 import CloseSnackbar from '../../../../../../components/Snackbar/CloseSnackbar.tsx';
 import { TERMINOLOGY_SERVER_URL } from '../../../../../../globals.ts';
 import { buildFormWrapper } from '../../../../../../utils/manageForm.ts';
+import { fetchResourceCallback } from '../../../../../playground/components/PrePopCallbackForPlayground.tsx';
+import { populateQuestionnaire } from '@aehrc/sdc-populate';
 
-interface Props {
+interface OpenResponseButtonProps {
   selectedResponse: QuestionnaireResponse | null;
 }
-function OpenResponseButton(props: Props) {
+
+function OpenResponseButton(props: OpenResponseButtonProps) {
   const { selectedResponse } = props;
 
-  const { smartClient } = useSmartClient();
+  const { smartClient, patient, user, encounter } = useSmartClient();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -92,12 +95,21 @@ function OpenResponseButton(props: Props) {
       });
       return;
     }
+
+    if (!smartClient || !patient) {
+      enqueueSnackbar('App not launched via SMART App Launch, unable to open response', {
+        variant: 'error',
+        action: <CloseSnackbar variant="error" />
+      });
+      return;
+    }
+
     setIsLoading(true);
 
-    // assemble questionnaire if selected response is linked to an assemble-root questionnaire
+    // Assemble questionnaire if selected response is linked to an assemble-root questionnaire
     referencedQuestionnaire = await assembleIfRequired(referencedQuestionnaire);
 
-    // return early if assembly cannot be performed
+    // Return early if assembly cannot be performed
     if (!referencedQuestionnaire) {
       console.error(error);
       enqueueSnackbar('Referenced questionnaire not found. Unable to open response', {
@@ -109,16 +121,31 @@ function OpenResponseButton(props: Props) {
     }
 
     // Post questionnaire to client if it is SMART Health IT
-    if (smartClient?.state.serverUrl.includes('https://launch.smarthealthit.org/v/r4/fhir')) {
+    if (smartClient.state.serverUrl.includes('https://launch.smarthealthit.org/v/r4/fhir')) {
       referencedQuestionnaire.id = referencedQuestionnaire.id + '-SMARTcopy';
       postQuestionnaireToSMARTHealthIT(smartClient, referencedQuestionnaire);
     }
 
+    // Do a population step to bring in the latest populated context - to update cqf-expressions
+    const populateRes = await populateQuestionnaire({
+      questionnaire: referencedQuestionnaire,
+      fetchResourceCallback: fetchResourceCallback,
+      fetchResourceRequestConfig: {
+        sourceServerUrl: smartClient.state.serverUrl,
+        authToken: smartClient.state.tokenResponse?.access_token
+      },
+      patient: patient,
+      user: user ?? undefined,
+      encounter: encounter ?? undefined
+    });
+
+    const newPopulatedContext = populateRes.populateResult?.populatedContext;
     await buildFormWrapper(
       referencedQuestionnaire,
       selectedResponse,
       undefined,
-      TERMINOLOGY_SERVER_URL
+      TERMINOLOGY_SERVER_URL,
+      newPopulatedContext
     );
 
     navigate('/viewer');

@@ -97,9 +97,9 @@ function RepopulateAction(props: RepopulateActionProps) {
 
       const { populated, hasWarnings, populatedContext } = populateResult;
 
-      // If populatedContext is provided, update it in QuestionnaireStore so it gets updated in debug panel
+      // If populatedContext is provided, update it in QuestionnaireStore and add it to FhirPathContext so it updates cqfExpressions
       if (populatedContext) {
-        setPopulatedContext(populatedContext);
+        setPopulatedContext(populatedContext, true);
       }
 
       const itemToRepopulate = generateItemsToRepopulate(populated);
@@ -155,7 +155,7 @@ function RepopulateAction(props: RepopulateActionProps) {
             {...speedDialActionProps}
             slotProps={{
               tooltip: {
-                title: 'Repopulate Form',
+                title: 'Re-populate Form',
                 open: true
               }
             }}
@@ -168,7 +168,7 @@ function RepopulateAction(props: RepopulateActionProps) {
           disableHoverListener={shouldRepopulate}>
           <div>
             <RendererOperationItem
-              title="Repopulate Form"
+              title="Re-populate Form"
               icon={<CloudSyncIcon />}
               disabled={!shouldRepopulate || spinner.isSpinning}
               onClick={handleRepopulate}

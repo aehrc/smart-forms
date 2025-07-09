@@ -100,6 +100,7 @@ function ExtractMenu(props: ExtractMenuProps) {
         <Tooltip title={observationBasedExtractToolTipText} placement="right">
           <span>
             <MenuItem
+              disabled={!observationBasedExtractEnabled}
               onClick={() => {
                 onObservationExtract();
                 handleClose();

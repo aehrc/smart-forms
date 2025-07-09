@@ -24,7 +24,7 @@ import type {
   QuestionnaireResponseItem
 } from 'fhir/r4';
 import type { Tabs } from '../interfaces';
-import { getShortText } from './itemControl';
+import { getShortText, isSpecificItemControl } from './itemControl';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 
@@ -317,6 +317,61 @@ export function getSectionHeadingRecursive(
 
   // No heading found in the current item or its child items, return null
   return null;
+}
+
+// TODO test this unit test
+/**
+ * Checks whether the item with the given linkId is nested under a grid item in the questionnaire.
+ * The item itself is not considered — only its ancestors are checked.
+ *
+ * @param questionnaire - The FHIR Questionnaire to search through
+ * @param targetLinkId - The linkId of the item to check
+ * @returns True if the item is nested under a grid item, false otherwise
+ */
+export function isItemInGrid(questionnaire: Questionnaire, targetLinkId: string): boolean {
+  // Search through the top level items recursively
+  const topLevelQItems = questionnaire.item;
+  if (topLevelQItems) {
+    for (const topLevelQItem of topLevelQItems) {
+      const currentItemIsGrid = isSpecificItemControl(topLevelQItem, 'grid');
+
+      const isInGrid = isItemInGridRecursive(topLevelQItem, targetLinkId, currentItemIsGrid);
+
+      if (isInGrid) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function isItemInGridRecursive(
+  qItem: QuestionnaireItem,
+  targetLinkId: string,
+  hasGridAncestor: boolean
+): boolean {
+  // Target linkId found in current item
+  if (qItem.linkId === targetLinkId) {
+    return hasGridAncestor;
+  }
+
+  // Search through its child items recursively
+  const childItems = qItem.item;
+  if (childItems) {
+    const currentItemIsGrid = isSpecificItemControl(qItem, 'grid');
+    const updatedHasGridAncestor = hasGridAncestor || currentItemIsGrid;
+
+    for (const child of childItems) {
+      const isInGrid = isItemInGridRecursive(child, targetLinkId, updatedHasGridAncestor);
+      if (isInGrid) {
+        return true;
+      }
+    }
+  }
+
+  // No matching item found in the current item or its child items
+  return false;
 }
 
 /**
