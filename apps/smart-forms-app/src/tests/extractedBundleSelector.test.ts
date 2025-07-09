@@ -1,9 +1,9 @@
 import { describe, expect } from '@jest/globals';
 import {
   createSelectionKey,
+  getEntriesValidKeys,
   getFilteredBundleEntries,
-  getOperationEntryCounts,
-  getValidEntries
+  getOperationEntryCounts
 } from '../features/writeBack/utils/extractedBundleSelector.ts';
 import { randomBundleEntries } from './resources/randomBundleEntries.ts';
 import { extractedMedicalHistoryCurrentProblemsWithPatch } from './resources/extractedMedicalHistoryCurrentProblemsWithPatch.ts';
@@ -74,7 +74,7 @@ describe('getOperationEntryCounts', () => {
 describe('getValidEntries', () => {
   it('includes only valid bundle entries based on inclusion criteria', () => {
     const patchBundleEntries = extractedMedicalHistoryCurrentProblemsWithPatch.entry ?? [];
-    const result = getValidEntries([...randomBundleEntries, ...patchBundleEntries]);
+    const result = getEntriesValidKeys([...randomBundleEntries, ...patchBundleEntries]);
 
     expect(result).toEqual(
       new Set([
@@ -95,10 +95,10 @@ describe('getValidEntries', () => {
 describe('getFilteredBundleEntries', () => {
   const patchBundleEntries = extractedMedicalHistoryCurrentProblemsWithPatch.entry ?? [];
   const allBundleEntries = [...randomBundleEntries, ...patchBundleEntries];
-  const validEntries = getValidEntries(allBundleEntries);
+  const validKeys = getEntriesValidKeys(allBundleEntries);
 
   it('returns all entries and operations when all valid entries are selected', () => {
-    const result = getFilteredBundleEntries(validEntries, allBundleEntries);
+    const result = getFilteredBundleEntries(validKeys, allBundleEntries);
 
     // Check total count roughly matches non-empty filtered entries (some ops removed)
     expect(result.length).toBeGreaterThan(0);
