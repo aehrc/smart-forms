@@ -50,6 +50,12 @@ function RepopulateSelectorRepeatGroup(props: RepopulateSelectorRepeatGroupProps
     allValidKeys
   );
 
+  // Compute item display name
+  let itemDisplay = itemToRepopulate.qItem?.text || 'Unnamed item';
+  if (itemToRepopulate.isInGrid && itemToRepopulate.parentItemText) {
+    itemDisplay = `${itemToRepopulate.parentItemText} - ${itemDisplay}`;
+  }
+
   return (
     <Box sx={{ border: 1, borderColor: 'grey.300', borderRadius: 1, p: 2 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -76,7 +82,7 @@ function RepopulateSelectorRepeatGroup(props: RepopulateSelectorRepeatGroupProps
                 wordBreak: 'break-word',
                 overflowWrap: 'anywhere'
               }}>
-              {itemToRepopulate.qItem?.text || 'Unnamed item'}
+              {itemDisplay}
             </Typography>
           </Box>
         </Box>

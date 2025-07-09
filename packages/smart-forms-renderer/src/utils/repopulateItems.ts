@@ -29,7 +29,7 @@ import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enabl
 import { isHiddenByEnableWhen } from './qItem';
 import { questionnaireResponseStore, questionnaireStore } from '../stores';
 import { createQuestionnaireResponseItemMap } from './questionnaireResponseStoreUtils/updatableResponseItems';
-import { getQuestionnaireItem, getSectionHeading } from './misc';
+import { getParentItem, getQuestionnaireItem, getSectionHeading, isItemInGrid } from './misc';
 import difference from 'lodash.difference';
 import intersection from 'lodash.intersection';
 import { deepEqual } from 'fast-equals';
@@ -38,7 +38,11 @@ import { deepEqual } from 'fast-equals';
  * Represents an item within a questionnaire that can be re-populated with updated data from the patient record.
  *
  * @property qItem - QuestionnaireItem definition for this item
- * @property heading - Heading or group item.text this item belongs to
+ *
+ * @property sectionItemText - Top-level group item.text this item belongs to
+ *
+ * @property parentItemText - Immediate parent item.text
+ * @property isInGrid - Whether this item is part of a grid
  *
  * // For non-repeating items:
  * @property serverQRItem - QuestionnaireResponseItem from server (optional)
@@ -53,8 +57,13 @@ import { deepEqual } from 'fast-equals';
 export interface ItemToRepopulate {
   /* QuestionnaireItem definition for this item */
   qItem: QuestionnaireItem | null;
-  /* Group heading or section item.text this item belongs to */
-  heading: string | null;
+
+  /* Top-level group item.text this item belongs to */
+  sectionItemText: string | null;
+
+  /* Immediate parent item.text and whether it is in a grid - if it is, parentItemText wil come in handy as contextual information */
+  parentItemText: string | null;
+  isInGrid: boolean;
 
   /* Server and current response item for non-repeat items */
   serverQRItem?: QuestionnaireResponseItem;
@@ -117,9 +126,12 @@ export function generateItemsToRepopulate(populatedResponse: QuestionnaireRespon
   );
   for (const linkId of diffLinkIdsWithInitialExpressions) {
     if (linkId in updatableResponseItems) {
+      const parentItem = getParentItem(sourceQuestionnaire, linkId);
       itemsToRepopulate[linkId] = {
         qItem: getQuestionnaireItem(sourceQuestionnaire, linkId),
-        heading: getSectionHeading(sourceQuestionnaire, linkId, tabs),
+        sectionItemText: getSectionHeading(sourceQuestionnaire, linkId, tabs),
+        parentItemText: parentItem?.text ?? null,
+        isInGrid: isItemInGrid(sourceQuestionnaire, linkId),
         currentQRItem: updatableResponseItems[linkId][0]
       };
     }
@@ -169,13 +181,16 @@ export function getItemsToRepopulate(
       continue;
     }
 
-    const heading = topLevelQItem.text ?? null;
+    const itemText = topLevelQItem.text ?? null;
     const hasTabs = isTabContainer(topLevelQItem) || containsTabs(topLevelQItem);
+    const itemIsGrid = isSpecificItemControl(topLevelQItem, 'grid');
 
     getItemsToRepopulateRecursive({
       qItem: topLevelQItem,
       qrItemOrItems: populatedQrItemOrItems,
-      heading,
+      sectionItemText: itemText,
+      parentItemText: itemText,
+      isInGrid: itemIsGrid,
       tabs,
       hasTabs,
       itemsToRepopulate,
@@ -205,7 +220,9 @@ export function getItemsToRepopulate(
 interface getItemsToRepopulateRecursiveParams {
   qItem: QuestionnaireItem;
   qrItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[];
-  heading: string | null;
+  sectionItemText: string | null;
+  parentItemText: string | null;
+  isInGrid: boolean;
   tabs: Tabs;
   hasTabs: boolean;
   itemsToRepopulate: Record<string, ItemToRepopulate>;
@@ -223,6 +240,7 @@ function getItemsToRepopulateRecursive(params: getItemsToRepopulateRecursivePara
   const {
     qItem,
     qrItemOrItems,
+    parentItemText,
     tabs,
     hasTabs,
     itemsToRepopulate,
@@ -230,7 +248,7 @@ function getItemsToRepopulateRecursive(params: getItemsToRepopulateRecursivePara
     enableWhenItems,
     enableWhenExpressions
   } = params;
-  let { heading } = params;
+  let { sectionItemText, isInGrid } = params;
 
   if (!qrItemOrItems) {
     return;
@@ -252,7 +270,14 @@ function getItemsToRepopulateRecursive(params: getItemsToRepopulateRecursivePara
   const hasMultipleAnswers = Array.isArray(qrItemOrItems);
   if (hasMultipleAnswers) {
     if (qrItemOrItems.length > 0) {
-      getRepeatGroupToRepopulate(qItem, qrItemOrItems, heading, itemsToRepopulate);
+      getRepeatGroupToRepopulate(
+        qItem,
+        qrItemOrItems,
+        sectionItemText,
+        parentItemText,
+        isInGrid,
+        itemsToRepopulate
+      );
     }
     return;
   }
@@ -260,30 +285,24 @@ function getItemsToRepopulateRecursive(params: getItemsToRepopulateRecursivePara
   const childQItems = qItem.item;
   const childQRItems = qrItemOrItems.item;
 
+  // Iterate through child items
   if (childQItems && childQItems.length > 0 && childQRItems) {
-    const isTab = !!tabs[qItem.linkId];
-    if (isTab) {
-      heading = getShortText(qItem) ?? qItem.text ?? null;
+    // If parent item is a tab, use shortText if available, otherwise use text
+    const parentIsTab = !!tabs[qItem.linkId];
+    if (parentIsTab) {
+      sectionItemText = getShortText(qItem) ?? qItem.text ?? null;
+    }
+
+    // Get parent item text
+    const parentItemText = qItem.text ?? null;
+
+    // Check if parent item is a grid if it is not already "true"
+    if (!isInGrid) {
+      isInGrid = isSpecificItemControl(qItem, 'grid');
     }
 
     const qItemsIndexMap = mapQItemsIndex(qItem);
     const populatedQRItemsByIndex = getQrItemsIndex(childQItems, childQRItems, qItemsIndexMap);
-
-    // For grid groups
-    const itemIsGrid = isSpecificItemControl(qItem, 'grid');
-    if (itemIsGrid) {
-      getGridTableToRepopulate({
-        qItem,
-        gridChildQItems: childQItems,
-        gridChildQRItemsByIndex: populatedQRItemsByIndex,
-        heading,
-        itemsToRepopulate,
-        enableWhenIsActivated,
-        enableWhenItems,
-        enableWhenExpressions
-      });
-      return;
-    }
 
     // For normal groups with children
     for (const [index, childQItem] of childQItems.entries()) {
@@ -295,7 +314,9 @@ function getItemsToRepopulateRecursive(params: getItemsToRepopulateRecursivePara
       getItemsToRepopulateRecursive({
         qItem: childQItem,
         qrItemOrItems: childQrItemOrItems,
-        heading,
+        sectionItemText,
+        parentItemText,
+        isInGrid,
         tabs,
         hasTabs,
         itemsToRepopulate,
@@ -307,24 +328,42 @@ function getItemsToRepopulateRecursive(params: getItemsToRepopulateRecursivePara
 
     const hasSingleAnswer = !Array.isArray(qrItemOrItems);
     if (hasSingleAnswer && qrItemOrItems.answer) {
-      getSingleItemToRepopulate(qItem, qrItemOrItems, heading, itemsToRepopulate);
+      getSingleItemToRepopulate(
+        qItem,
+        qrItemOrItems,
+        sectionItemText,
+        parentItemText,
+        isInGrid,
+        itemsToRepopulate
+      );
     }
     return;
   }
 
   // For single items without children
-  getSingleItemToRepopulate(qItem, qrItemOrItems, heading, itemsToRepopulate);
+  getSingleItemToRepopulate(
+    qItem,
+    qrItemOrItems,
+    sectionItemText,
+    parentItemText,
+    isInGrid,
+    itemsToRepopulate
+  );
 }
 
 function getSingleItemToRepopulate(
   qItem: QuestionnaireItem,
   qrItem: QuestionnaireResponseItem,
-  heading: string | null,
+  sectionItemText: string | null,
+  parentItemText: string | null,
+  isInGrid: boolean,
   itemsToRepopulate: Record<string, ItemToRepopulate>
 ) {
   itemsToRepopulate[qItem.linkId] = {
     qItem: qItem,
-    heading: heading,
+    sectionItemText: sectionItemText,
+    parentItemText: parentItemText,
+    isInGrid: isInGrid,
     serverQRItem: qrItem,
     serverQRItems: []
   };
@@ -333,77 +372,20 @@ function getSingleItemToRepopulate(
 function getRepeatGroupToRepopulate(
   qItem: QuestionnaireItem,
   qrItems: QuestionnaireResponseItem[],
-  heading: string | null,
+  sectionItemText: string | null,
+  parentItemText: string | null,
+  isInGrid: boolean,
   itemsToRepopulate: Record<string, ItemToRepopulate>
 ) {
   itemsToRepopulate[qItem.linkId] = {
     qItem: qItem,
-    heading: heading,
+    sectionItemText: sectionItemText,
+    parentItemText: parentItemText,
+    isInGrid: isInGrid,
     serverQRItem: {
       linkId: qItem.linkId
     },
     serverQRItems: qrItems
-  };
-}
-
-interface getGridTableToRepopulateParams {
-  qItem: QuestionnaireItem;
-  gridChildQItems: QuestionnaireItem[];
-  gridChildQRItemsByIndex: (QuestionnaireResponseItem | QuestionnaireResponseItem[] | undefined)[];
-  heading: string | null;
-  itemsToRepopulate: Record<string, ItemToRepopulate>;
-  enableWhenIsActivated: boolean;
-  enableWhenItems: EnableWhenItems;
-  enableWhenExpressions: EnableWhenExpressions;
-}
-
-function getGridTableToRepopulate(params: getGridTableToRepopulateParams) {
-  const {
-    qItem,
-    gridChildQItems,
-    gridChildQRItemsByIndex,
-    heading,
-    itemsToRepopulate,
-    enableWhenIsActivated,
-    enableWhenItems,
-    enableWhenExpressions
-  } = params;
-
-  if (gridChildQItems.length === 0) {
-    return;
-  }
-
-  const gridChildQRItemsToRepopulate = gridChildQItems
-    .map((qItem, index) => {
-      if (
-        isHiddenByEnableWhen({
-          linkId: qItem.linkId,
-          enableWhenIsActivated,
-          enableWhenItems,
-          enableWhenExpressions
-        })
-      ) {
-        return null;
-      }
-
-      const gridChildQrItemOrItems = gridChildQRItemsByIndex?.[index];
-      if (gridChildQrItemOrItems && !Array.isArray(gridChildQrItemOrItems)) {
-        return gridChildQrItemOrItems;
-      }
-
-      return null;
-    })
-    .filter((item) => item !== null) as QuestionnaireResponseItem[];
-
-  itemsToRepopulate[qItem.linkId] = {
-    qItem: qItem,
-    heading: heading,
-    serverQRItem: {
-      linkId: qItem.linkId,
-      text: qItem.text,
-      item: gridChildQRItemsToRepopulate
-    },
-    serverQRItems: []
   };
 }
 
@@ -415,7 +397,7 @@ function checkCorrespondingOldItemsRecursive(
   // For repeat groups
   const hasMultipleAnswers = Array.isArray(currentQRItemOrItems);
   if (hasMultipleAnswers) {
-    retrieveRepeatGroupcurrentQRItems(qItem, currentQRItemOrItems, itemsToRepopulate);
+    retrieveRepeatGroupCurrentQRItems(qItem, currentQRItemOrItems, itemsToRepopulate);
     return;
   }
 
@@ -425,13 +407,6 @@ function checkCorrespondingOldItemsRecursive(
   if (childQItems && childQItems.length > 0 && oldChildQRItems) {
     const qItemsIndexMap = mapQItemsIndex(qItem);
     const currentQRItemsByIndex = getQrItemsIndex(childQItems, oldChildQRItems, qItemsIndexMap);
-
-    // For grid groups
-    const itemIsGrid = isSpecificItemControl(qItem, 'grid');
-    if (itemIsGrid) {
-      retrieveGridGroupcurrentQRItems(qItem, childQItems, currentQRItemsByIndex, itemsToRepopulate);
-      return;
-    }
 
     // For normal groups with children
     for (const [index, childQItem] of childQItems.entries()) {
@@ -473,7 +448,7 @@ function retrieveSingleCurrentQRItem(
   itemsToRepopulate[qItem.linkId].currentQRItem = currentQRItem;
 }
 
-function retrieveRepeatGroupcurrentQRItems(
+function retrieveRepeatGroupCurrentQRItems(
   qItem: QuestionnaireItem,
   currentQRItems: QuestionnaireResponseItem[],
   itemsToRepopulate: Record<string, ItemToRepopulate>
@@ -493,68 +468,4 @@ function retrieveRepeatGroupcurrentQRItems(
   }
 
   itemsToRepopulate[qItem.linkId].currentQRItems = currentQRItems;
-}
-
-function retrieveGridGroupcurrentQRItems(
-  qItem: QuestionnaireItem,
-  gridChildQItems: QuestionnaireItem[],
-  oldGridQRItemsByIndex: (QuestionnaireResponseItem | QuestionnaireResponseItem[] | undefined)[],
-  itemsToRepopulate: Record<string, ItemToRepopulate>
-) {
-  if (gridChildQItems.length === 0) {
-    return;
-  }
-
-  const newGridQRItem = itemsToRepopulate[qItem.linkId]?.serverQRItem;
-  if (!newGridQRItem || !newGridQRItem.item) {
-    return;
-  }
-
-  const newGridChildQRItemMap = new Map<string, QuestionnaireResponseItem>();
-
-  for (const newGridChildQRItem of newGridQRItem.item) {
-    newGridChildQRItemMap.set(newGridChildQRItem.linkId, newGridChildQRItem);
-  }
-
-  // Get old qr items that are different from the new qr items
-  const oldGridChildQRItems: QuestionnaireResponseItem[] = [];
-  for (const [index, gridChildQItem] of gridChildQItems.entries()) {
-    const oldGridChildQrItemOrItems = oldGridQRItemsByIndex[index];
-    if (!oldGridChildQrItemOrItems || Array.isArray(oldGridChildQrItemOrItems)) {
-      continue;
-    }
-
-    // At this point we have a single qrItem
-    const oldGridChildQrItem = oldGridChildQrItemOrItems;
-    const newGridChildQRItem = newGridChildQRItemMap.get(gridChildQItem.linkId);
-
-    if (!newGridChildQRItem) {
-      continue;
-    }
-
-    if (deepEqual(oldGridChildQrItem, newGridChildQRItem)) {
-      newGridChildQRItemMap.delete(gridChildQItem.linkId);
-    } else {
-      oldGridChildQRItems.push(oldGridChildQrItem);
-    }
-  }
-
-  const newGridChildQRItemsToRepopulate = [...newGridChildQRItemMap.values()];
-  // Nothing to repopulate, delete whole item
-  if (newGridChildQRItemsToRepopulate.length === 0) {
-    delete itemsToRepopulate[qItem.linkId];
-    return;
-  }
-
-  // Otherwise create both old and new grid qr item
-  itemsToRepopulate[qItem.linkId].serverQRItem = {
-    linkId: qItem.linkId,
-    text: qItem.text,
-    item: newGridChildQRItemsToRepopulate
-  };
-  itemsToRepopulate[qItem.linkId].currentQRItem = {
-    linkId: qItem.linkId,
-    text: qItem.text,
-    item: oldGridChildQRItems
-  };
 }

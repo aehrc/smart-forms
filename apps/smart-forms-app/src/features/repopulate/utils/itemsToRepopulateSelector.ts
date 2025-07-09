@@ -11,14 +11,14 @@ export type ItemsToRepopulateTuplesByHeadings = Map<string, Array<[string, ItemT
 
 export function getRepopulatedItemTuplesByHeadingsMap(
   itemsToRepopulate: Record<string, ItemToRepopulate>
-): Map<string, Array<[string, ItemToRepopulate]>> {
+): ItemsToRepopulateTuplesByHeadings {
   const itemsToRepopulateTuplesByHeadings: ItemsToRepopulateTuplesByHeadings = new Map<
     string,
     Array<[string, ItemToRepopulate]>
   >();
 
   for (const [itemKey, item] of Object.entries(itemsToRepopulate)) {
-    const heading = item.heading ?? '';
+    const heading = item.sectionItemText ?? '';
     if (!itemsToRepopulateTuplesByHeadings.has(heading)) {
       itemsToRepopulateTuplesByHeadings.set(heading, []);
     }
@@ -74,7 +74,7 @@ export function getChildItemEntryCounts(
  * 1. A child item's current and server values are the same
  */
 export function getItemsToRepopulateValidKeys(
-  itemsToRepopulateTuplesByHeadings: Map<string, Array<[string, ItemToRepopulate]>>
+  itemsToRepopulateTuplesByHeadings: ItemsToRepopulateTuplesByHeadings
 ): Set<string> {
   const selectableItems: Set<string> = new Set();
 
