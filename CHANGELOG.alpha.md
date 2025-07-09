@@ -8,6 +8,13 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.74] - 2025-07-09
+#### Changed
+- Changed how re-population works:
+- Grid items are now re-populated one by one like regular items instead of being repopulated as a whole. 
+- `ItemToRepopulate` interface now contains `sectionItemText` (replaces `heading`), `parentItemText` and `isInGrid`. Items in a grid usually have their item.text as column headings e.g. Value, Date recorded which does not provide much context. In this case, `parentItemText` can be used to provide more context for the item being re-populated.
+- A new library function `isItemInGrid()` is added to check if an item is in a grid (if any of its ancestors is a grid item).
+
 ## [1.0.0-alpha.73] - 2025-07-08
 #### Fixed
 - Fix an issue where invalidItems not updated immediately when target constraint is unmet.
