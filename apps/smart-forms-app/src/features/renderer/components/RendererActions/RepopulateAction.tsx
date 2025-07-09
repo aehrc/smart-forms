@@ -97,9 +97,9 @@ function RepopulateAction(props: RepopulateActionProps) {
 
       const { populated, hasWarnings, populatedContext } = populateResult;
 
-      // If populatedContext is provided, update it in QuestionnaireStore so it gets updated in debug panel
+      // If populatedContext is provided, update it in QuestionnaireStore and add it to FhirPathContext so it updates cqfExpressions
       if (populatedContext) {
-        setPopulatedContext(populatedContext);
+        setPopulatedContext(populatedContext, true);
       }
 
       const itemToRepopulate = generateItemsToRepopulate(populated);
