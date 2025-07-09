@@ -1,6 +1,6 @@
 import type { FhirResource } from 'fhir/r4';
 import { parametersIsFhirPatch } from './typePredicates';
-import type { FhirPatchParameterEntry } from '../interfaces/fhirpatch.interface';
+import type { FhirPatchParameterEntry, FhirPatchPart } from '../interfaces/fhirpatch.interface';
 
 /**
  * Determines whether a single extracted FHIR resource should be included in the bundle.
@@ -64,13 +64,20 @@ export function applyFilters(
   return extractedResource;
 }
 
+// Type predicate to check if a FHIRPatch part is a value part
+function isValuePart(
+  part: FhirPatchPart | undefined
+): part is { [key: string]: unknown; name: 'value' } {
+  return part?.name === 'value';
+}
+
 // Filter out entries where the value[x] is empty
 function filterFhirPatchEmptyValues(
   fhirPatchParameterEntries: FhirPatchParameterEntry[]
 ): FhirPatchParameterEntry[] {
   return fhirPatchParameterEntries.filter((param) => {
     const valuePart = param.part?.find((part) => part.name === 'value');
-    return !fhirPatchValueIsEmpty(valuePart); // keep only if value is NOT empty
+    return isValuePart(valuePart) && !fhirPatchValueIsEmpty(valuePart); // keep only if value is NOT empty
   });
 }
 

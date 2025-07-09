@@ -125,13 +125,14 @@ export function cleanEntryPathSegments(
 
   // Last segment is a number (an array index), replace it with the provided index
   const lastIndex = newSegments.length - 1;
-  if (typeof newSegments[lastIndex] === 'number') {
+  const lastSegment = newSegments[lastIndex];
+  if (typeof lastSegment === 'number') {
     newSegments[lastIndex] = index;
   }
 
   // Last segment is a _field, strip underscore prefix (e.g. '_field' → 'field').
-  if (typeof newSegments[lastIndex] === 'string' && newSegments[lastIndex].startsWith('_')) {
-    newSegments[lastIndex] = stripUnderscorePrefix(newSegments[lastIndex]);
+  if (typeof lastSegment === 'string' && lastSegment.startsWith('_')) {
+    newSegments[lastIndex] = stripUnderscorePrefix(lastSegment);
   }
 
   return newSegments;

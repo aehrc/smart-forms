@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import ValidationFormTesterWrapper from '../storybookWrappers/FormValidationTesterWrapperForStorybook';
 import { qValidateTester } from '../assets/questionnaires/QValidateTester';
 
