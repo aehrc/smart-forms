@@ -55,7 +55,7 @@
     "react-beautiful-dnd": "^13.1.1",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
-    "react-markdown": "^8.0.7",
+    "react-markdown": "^10.1.0",
     "style-to-js": "^1.1.16",
     "zustand": "^5.0.5"
   },
