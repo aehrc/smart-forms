@@ -108,7 +108,7 @@ export function validateTargetConstraint(): Record<string, OperationOutcome> {
   const targetConstraints = questionnaireStore.getState().targetConstraints;
   const invalidItems: Record<string, OperationOutcome> = {};
   for (const [, targetConstraint] of Object.entries(targetConstraints)) {
-    if (targetConstraint.isEnabled) {
+    if (targetConstraint.isInvalid) {
       const locationExpression = targetConstraint.location
         ? `${targetConstraint.valueExpression.expression ?? 'unknown FHIRPath expression'} at ${
             targetConstraint.location

@@ -61,7 +61,7 @@ export async function evaluateInitialTargetConstraints(
   fhirPathTerminologyCache = fhirPathEvalResult.fhirPathTerminologyCache;
 
   for (const key in targetConstraints) {
-    const initialValue = targetConstraints[key].isEnabled;
+    const initialValue = targetConstraints[key].isInvalid;
     const expression = targetConstraints[key].valueExpression?.expression;
     if (!expression) {
       continue;
@@ -86,19 +86,19 @@ export async function evaluateInitialTargetConstraints(
       const result = await handleFhirPathResult(fhirPathResult);
 
       // Update targetConstraints if length of result array > 0
-      // Only update when current isEnabled value is different from the result, otherwise it will result in am infinite loop as per #733
+      // Only update when current isInvalid value is different from the result, otherwise it will result in am infinite loop as per #733
       if (result.length > 0 && initialValue !== result[0] && typeof result[0] === 'boolean') {
-        targetConstraints[key].isEnabled = result[0];
+        targetConstraints[key].isInvalid = result[0];
       }
 
-      // Update isEnabled value to false if no result is returned
+      // Update isInvalid value to false if no result is returned
       if (result.length === 0 && initialValue !== false) {
-        targetConstraints[key].isEnabled = false;
+        targetConstraints[key].isInvalid = false;
       }
 
       // handle intersect edge case - evaluate() returns empty array if result is false
       if (expression.includes('intersect') && result.length === 0 && initialValue !== false) {
-        targetConstraints[key].isEnabled = false;
+        targetConstraints[key].isInvalid = false;
       }
 
       // If fhirPathResult is an async terminology call, cache the result
@@ -128,7 +128,7 @@ export async function evaluateTargetConstraints(
 }> {
   let isUpdated = false;
   for (const key in targetConstraints) {
-    const initialValue = targetConstraints[key].isEnabled;
+    const initialValue = targetConstraints[key].isInvalid;
     const expression = targetConstraints[key].valueExpression?.expression;
     if (!expression) {
       continue;
@@ -147,21 +147,21 @@ export async function evaluateTargetConstraints(
       const result = await handleFhirPathResult(fhirPathResult);
 
       // Update targetConstraints if length of result array > 0
-      // Only update when current isEnabled value is different from the result, otherwise it will result in am infinite loop as per #733
+      // Only update when current isInvalid value is different from the result, otherwise it will result in am infinite loop as per #733
       if (result.length > 0 && initialValue !== result[0] && typeof result[0] === 'boolean') {
-        targetConstraints[key].isEnabled = result[0];
+        targetConstraints[key].isInvalid = result[0];
         isUpdated = true;
       }
 
-      // Update isEnabled value to false if no result is returned
+      // Update isInvalid value to false if no result is returned
       if (result.length === 0 && initialValue !== false) {
-        targetConstraints[key].isEnabled = false;
+        targetConstraints[key].isInvalid = false;
         isUpdated = true;
       }
 
       // handle intersect edge case - evaluate() returns empty array if result is false
       if (expression.includes('intersect') && result.length === 0 && initialValue !== false) {
-        targetConstraints[key].isEnabled = false;
+        targetConstraints[key].isInvalid = false;
         isUpdated = true;
       }
 

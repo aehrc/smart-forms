@@ -164,29 +164,23 @@ export const rendererStylingStore = createStore<RendererStylingStoreType>()((set
   disablePageButtons: false,
   disableTabButtons: false,
   setRendererStyling: (params: RendererStyling) => {
-    set(() => ({
-      readOnlyVisualStyle: params.readOnlyVisualStyle ?? 'disabled',
-      requiredIndicatorPosition: params.requiredIndicatorPosition ?? 'start',
-      itemResponsive: params.itemResponsive ?? {
-        labelBreakpoints: { xs: 12, md: 4 },
-        fieldBreakpoints: { xs: 12, md: 8 },
-        columnGapPixels: 32,
-        rowGapPixels: 4
-      },
-      tabListWidthOrResponsive: params.tabListWidthOrResponsive ?? {
-        tabListBreakpoints: { xs: 12, md: 3, lg: 2.75 },
-        tabContentBreakpoints: { xs: 12, md: 9, lg: 9.25 }
-      },
-      showTabbedFormAt: params.showTabbedFormAt ?? { query: 'up', start: 'md' },
-      textFieldWidth: params.textFieldWidth ?? 320,
-      inputsFlexGrow: params.inputsFlexGrow ?? false,
-      reverseBooleanYesNo: params.reverseBooleanYesNo ?? false,
-      hideClearButton: params.hideClearButton ?? false,
-      hideQuantityComparatorField: params.hideQuantityComparatorField ?? false,
-      enableWhenAsReadOnly: params.enableWhenAsReadOnly ?? false,
-      disablePageCardView: params.disablePageCardView ?? false,
-      disablePageButtons: params.disablePageButtons ?? false,
-      disableTabButtons: params.disableTabButtons ?? false
+    set((state) => ({
+      readOnlyVisualStyle: params.readOnlyVisualStyle ?? state.readOnlyVisualStyle,
+      requiredIndicatorPosition:
+        params.requiredIndicatorPosition ?? state.requiredIndicatorPosition,
+      itemResponsive: params.itemResponsive ?? state.itemResponsive,
+      tabListWidthOrResponsive: params.tabListWidthOrResponsive ?? state.tabListWidthOrResponsive,
+      showTabbedFormAt: params.showTabbedFormAt ?? state.showTabbedFormAt,
+      textFieldWidth: params.textFieldWidth ?? state.textFieldWidth,
+      inputsFlexGrow: params.inputsFlexGrow ?? state.inputsFlexGrow,
+      reverseBooleanYesNo: params.reverseBooleanYesNo ?? state.reverseBooleanYesNo,
+      hideClearButton: params.hideClearButton ?? state.hideClearButton,
+      hideQuantityComparatorField:
+        params.hideQuantityComparatorField ?? state.hideQuantityComparatorField,
+      enableWhenAsReadOnly: params.enableWhenAsReadOnly ?? state.enableWhenAsReadOnly,
+      disablePageCardView: params.disablePageCardView ?? state.disablePageCardView,
+      disablePageButtons: params.disablePageButtons ?? state.disablePageButtons,
+      disableTabButtons: params.disableTabButtons ?? state.disableTabButtons
     }));
   }
 }));
