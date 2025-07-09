@@ -73,6 +73,7 @@
     "allotment": "^1.20.3",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
+    "fhir-sdc-helpers": "^0.1.0",
     "fhirclient": "^2.6.0",
     "he": "^1.2.0",
     "html-react-parser": "4.2.10",
