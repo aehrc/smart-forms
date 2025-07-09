@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import PrePopWrapperForStorybook from '../storybookWrappers/PrePopWrapperForStorybook';
 import { mockFhirClient } from '../assets/fhirClient/mockFhirClient';
 import { patSmartForm } from '../assets/patients/PatSmartForm';
