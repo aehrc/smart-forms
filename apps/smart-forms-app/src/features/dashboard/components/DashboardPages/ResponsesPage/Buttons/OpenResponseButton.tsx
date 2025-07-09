@@ -34,7 +34,6 @@ import { TERMINOLOGY_SERVER_URL } from '../../../../../../globals.ts';
 import { buildFormWrapper } from '../../../../../../utils/manageForm.ts';
 import { fetchResourceCallback } from '../../../../../playground/components/PrePopCallbackForPlayground.tsx';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
-import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 
 interface OpenResponseButtonProps {
   selectedResponse: QuestionnaireResponse | null;
@@ -42,8 +41,6 @@ interface OpenResponseButtonProps {
 
 function OpenResponseButton(props: OpenResponseButtonProps) {
   const { selectedResponse } = props;
-
-  const setPopulatedContext = useQuestionnaireStore.use.setPopulatedContext();
 
   const { smartClient, patient, user, encounter } = useSmartClient();
 
@@ -143,10 +140,6 @@ function OpenResponseButton(props: OpenResponseButtonProps) {
     });
 
     const newPopulatedContext = populateRes.populateResult?.populatedContext;
-    if (newPopulatedContext) {
-      setPopulatedContext(newPopulatedContext, true);
-    }
-
     await buildFormWrapper(
       referencedQuestionnaire,
       selectedResponse,
