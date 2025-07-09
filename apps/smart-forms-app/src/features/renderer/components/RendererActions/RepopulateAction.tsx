@@ -155,7 +155,7 @@ function RepopulateAction(props: RepopulateActionProps) {
             {...speedDialActionProps}
             slotProps={{
               tooltip: {
-                title: 'Repopulate Form',
+                title: 'Re-populate Form',
                 open: true
               }
             }}
@@ -168,7 +168,7 @@ function RepopulateAction(props: RepopulateActionProps) {
           disableHoverListener={shouldRepopulate}>
           <div>
             <RendererOperationItem
-              title="Repopulate Form"
+              title="Re-populate Form"
               icon={<CloudSyncIcon />}
               disabled={!shouldRepopulate || spinner.isSpinning}
               onClick={handleRepopulate}

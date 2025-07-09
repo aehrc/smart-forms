@@ -76,7 +76,7 @@ function RePopulateMenuItem(props: RePopulateMenuItemProps) {
       <ListItemIcon>
         <CloudSyncIcon fontSize="small" />
       </ListItemIcon>
-      <ListItemText>Repopulate form (Update selected fields) [{POPULATE_VERSION}]</ListItemText>
+      <ListItemText>Re-populate form (Update selected fields) [{POPULATE_VERSION}]</ListItemText>
     </MenuItem>
   );
 }

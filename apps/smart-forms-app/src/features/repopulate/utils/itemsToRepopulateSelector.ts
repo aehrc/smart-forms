@@ -120,6 +120,129 @@ export function getItemsToRepopulateValidKeys(
   return selectableItems;
 }
 
+/**
+ * Filters a Map of questionnaire items based on checklist selections, in preparation for downstream repopulation.
+ *
+ * This function operates in two main steps:
+ *
+ * 1. Selection Filtering:
+ * Iterates through all items and repeat group children, including only those whose selection keys are present in the provided `selectedKeys` set. For repeat groups, only selected children are included.
+ *
+ * 2. Value Restoration:
+ * Because unselected repeat group children are omitted from the filtered arrays, a second step is required.
+ * In this step, the original (current) values for any unselected children must be injected back into their positions. This ensures that unselected data is preserved and not overwritten by server values.
+ *
+ */
+export function getFilteredItemsToRepopulate(
+  itemsToRepopulateTuplesByHeadingsMap: Map<string, Array<[string, ItemToRepopulate]>>,
+  selectedKeys: Set<string>,
+  originalItemsToRepopulate: Record<string, ItemToRepopulate>
+): Record<string, ItemToRepopulate> {
+  const filteredItemsToRepopulate: Record<string, ItemToRepopulate> = {};
+
+  /* 1. Selection Filtering */
+  // Convert to array (actually a tuple) to access index
+  const itemsToRepopulateTuplesByHeadingsTuples = Array.from(
+    itemsToRepopulateTuplesByHeadingsMap.entries()
+  );
+
+  // Iterate through each heading and its items
+  for (
+    let headingIndex = 0;
+    headingIndex < itemsToRepopulateTuplesByHeadingsTuples.length;
+    headingIndex++
+  ) {
+    const [, itemsToRepopulateTuples] = itemsToRepopulateTuplesByHeadingsTuples[headingIndex];
+
+    // Iterate through each parent item
+    for (
+      let parentItemIndex = 0;
+      parentItemIndex < itemsToRepopulateTuples.length;
+      parentItemIndex++
+    ) {
+      const [linkId, itemToRepopulate] = itemsToRepopulateTuples[parentItemIndex];
+
+      // Repeat group: check for selected children
+      if (
+        (itemToRepopulate.currentQRItems && itemToRepopulate.currentQRItems.length > 0) ||
+        (itemToRepopulate.serverQRItems && itemToRepopulate.serverQRItems.length > 0)
+      ) {
+        const currentItemsCount = itemToRepopulate.currentQRItems?.length ?? 0;
+        const serverItemsCount = itemToRepopulate.serverQRItems?.length ?? 0;
+        const maxItemsCount = Math.max(currentItemsCount, serverItemsCount);
+
+        // Gather only selected children
+        const selectedCurrentQRItems: typeof itemToRepopulate.currentQRItems = [];
+        const selectedServerQRItems: typeof itemToRepopulate.serverQRItems = [];
+
+        for (let childIndex = 0; childIndex < maxItemsCount; childIndex++) {
+          const childKey = `heading-${headingIndex}-parent-${parentItemIndex}-child-${childIndex}`;
+          if (selectedKeys.has(childKey)) {
+            // Add childItems from currentQRItems and serverQRItems to the filtered result
+            if (itemToRepopulate.currentQRItems?.[childIndex]) {
+              selectedCurrentQRItems[childIndex] = itemToRepopulate.currentQRItems[childIndex];
+            }
+            if (itemToRepopulate.serverQRItems?.[childIndex]) {
+              selectedServerQRItems[childIndex] = itemToRepopulate.serverQRItems[childIndex];
+            }
+          }
+        }
+
+        // Only add to filtered results if at least one child was selected
+        if (selectedCurrentQRItems.length > 0 || selectedServerQRItems.length > 0) {
+          filteredItemsToRepopulate[linkId] = {
+            ...itemToRepopulate,
+            currentQRItems: selectedCurrentQRItems.length > 0 ? selectedCurrentQRItems : undefined,
+            serverQRItems: selectedServerQRItems.length > 0 ? selectedServerQRItems : undefined
+          };
+        }
+      } else {
+        // Non-repeat group: check parent selection key
+        const parentKey = `heading-${headingIndex}-parent-${parentItemIndex}`;
+        if (selectedKeys.has(parentKey)) {
+          filteredItemsToRepopulate[linkId] = { ...itemToRepopulate };
+        }
+      }
+    }
+  }
+
+  /* 2. Value Restoration */
+  for (const linkId in filteredItemsToRepopulate) {
+    const filteredItem = filteredItemsToRepopulate[linkId];
+    const originalItem = originalItemsToRepopulate[linkId];
+
+    // Only process repeat groups with arrays
+    if (
+      (filteredItem.currentQRItems || filteredItem.serverQRItems) &&
+      (originalItem?.currentQRItems || originalItem?.serverQRItems)
+    ) {
+      // Value Restoration step 1: Use currentQRItems from the original item directly
+      filteredItem.currentQRItems = originalItem.currentQRItems;
+
+      // Value Restoration step 2: For serverQRItems, fill in unselected children with current values
+      if (originalItem.currentQRItems) {
+        const maxNumberOfItems = Math.max(
+          filteredItem.serverQRItems?.length ?? 0,
+          originalItem.currentQRItems.length
+        );
+
+        if (!filteredItem.serverQRItems) {
+          filteredItem.serverQRItems = [];
+        }
+
+        for (let i = 0; i < maxNumberOfItems; i++) {
+          // If this child was not selected (i.e. not present), use the current value
+          if (filteredItem.serverQRItems[i] === undefined && originalItem.currentQRItems[i]) {
+            filteredItem.serverQRItems[i] = originalItem.currentQRItems[i];
+          }
+        }
+      }
+    }
+  }
+
+  return filteredItemsToRepopulate;
+}
+
 export type ValueChangeMode = 'new' | 'updated' | 'removed';
 
 /**

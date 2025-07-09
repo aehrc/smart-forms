@@ -16,16 +16,25 @@
  */
 
 import { Box, Button, Dialog, DialogActions, DialogContent, Typography } from '@mui/material';
-import type { ItemToRepopulate } from '@aehrc/smart-forms-renderer';
+import {
+  ItemToRepopulate,
+  repopulateResponse,
+  useQuestionnaireResponseStore,
+  useQuestionnaireStore
+} from '@aehrc/smart-forms-renderer';
 import { useMemo, useState } from 'react';
 import type { RendererSpinner } from '../../renderer/types/rendererSpinner.ts';
 import StandardDialogTitle from '../../../components/Dialog/StandardDialogTitle.tsx';
 import {
   createSelectionKey,
+  getFilteredItemsToRepopulate,
   getItemsToRepopulateValidKeys,
   getRepopulatedItemTuplesByHeadingsMap
 } from '../utils/itemsToRepopulateSelector.ts';
 import RepopulateSelectorItem from './RepopulateSelectorItem.tsx';
+import { useSnackbar } from 'notistack';
+import { flushSync } from 'react-dom';
+import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 
 interface RepopulateSelectDialogProps {
   itemsToRepopulate: Record<string, ItemToRepopulate>;
@@ -35,6 +44,10 @@ interface RepopulateSelectDialogProps {
 
 function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
   const { itemsToRepopulate, onCloseDialog, onSpinnerChange } = props;
+
+  const updatePopulatedProperties = useQuestionnaireStore.use.updatePopulatedProperties();
+  const setUpdatableResponseAsPopulated =
+    useQuestionnaireResponseStore.use.setUpdatableResponseAsPopulated();
 
   // Categorise itemsToRepopulate by headings for visual grouping in the UI
   const itemsToRepopulateTuplesByHeadingsMap = useMemo(
@@ -49,13 +62,9 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
     [itemsToRepopulateTuplesByHeadingsMap]
   );
 
-  // TODO figure out how to convert itemsToRepopulateTuplesByHeadingsMap back into the itemsToRepopulate format so it can be written into the form
-  // TODO might need to refer to how it's previously done
-
-  console.log(itemsToRepopulate);
-  console.log(allValidKeys);
-
   const [selectedKeys, setSelectedKeys] = useState<Set<string>>(allValidKeys);
+
+  const { enqueueSnackbar } = useSnackbar();
 
   function isEntrySelected(
     headingIndex: number,
@@ -142,7 +151,75 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
     setSelectedKeys(new Set());
   }
 
-  // TODO handle confirm repopulate
+  async function handleConfirmRepopulate() {
+    const filteredItemsToRepopulate = getFilteredItemsToRepopulate(
+      itemsToRepopulateTuplesByHeadingsMap,
+      selectedKeys,
+      itemsToRepopulate
+    );
+    // // TODO implement form repopulation logic here
+    // console.log('Re-populating form with selected items:', Array.from(selectedKeys));
+    //
+    // if (itemsToRepopulate['92bd7d05-9b5e-4cf9-900b-703f361dad9d']) {
+    //   console.log(
+    //     'Server clinical statuses:',
+    //     itemsToRepopulate['92bd7d05-9b5e-4cf9-900b-703f361dad9d']?.serverQRItems?.map(
+    //       (qrItem) =>
+    //         qrItem.item?.find((item) => item.linkId === '88bcfad7-386b-4d87-b34b-2e50482e4d2c')
+    //           ?.answer?.[0].valueCoding?.code
+    //     )
+    //   );
+    //   console.log(
+    //     'Current clinical statuses:',
+    //     itemsToRepopulate['92bd7d05-9b5e-4cf9-900b-703f361dad9d']?.currentQRItems?.map(
+    //       (qrItem) =>
+    //         qrItem.item?.find((item) => item.linkId === '88bcfad7-386b-4d87-b34b-2e50482e4d2c')
+    //           ?.answer?.[0].valueCoding?.code
+    //     )
+    //   );
+    // }
+
+    // if (filteredItemsToRepopulate['92bd7d05-9b5e-4cf9-900b-703f361dad9d']) {
+    //   console.log(
+    //     'Server clinical statuses:',
+    //     filteredItemsToRepopulate['92bd7d05-9b5e-4cf9-900b-703f361dad9d']?.serverQRItems?.map(
+    //       (qrItem) =>
+    //         qrItem.item?.find((item) => item.linkId === '88bcfad7-386b-4d87-b34b-2e50482e4d2c')
+    //           ?.answer?.[0].valueCoding?.code
+    //     )
+    //   );
+    //   console.log(
+    //     'Current clinical statuses:',
+    //     filteredItemsToRepopulate['92bd7d05-9b5e-4cf9-900b-703f361dad9d']?.currentQRItems?.map(
+    //       (qrItem) =>
+    //         qrItem.item?.find((item) => item.linkId === '88bcfad7-386b-4d87-b34b-2e50482e4d2c')
+    //           ?.answer?.[0].valueCoding?.code
+    //     )
+    //   );
+    // }
+    // console.log(itemsToRepopulate);
+    // console.log(filteredItemsToRepopulate);
+
+    // Prevent state batching for this spinner https://react.dev/reference/react-dom/flushSync
+    flushSync(() => {
+      onSpinnerChange({
+        isSpinning: true,
+        status: 'repopulate-write',
+        message: 'Re-populating form...'
+      });
+    });
+
+    const repopulatedResponse = repopulateResponse(filteredItemsToRepopulate);
+    const updatedResponse = await updatePopulatedProperties(repopulatedResponse, undefined, true);
+    setUpdatableResponseAsPopulated(updatedResponse);
+
+    onCloseDialog();
+    enqueueSnackbar('Form re-populated', {
+      preventDuplicate: true,
+      action: <CloseSnackbar />
+    });
+    onSpinnerChange({ isSpinning: false, status: 'repopulated', message: '' });
+  }
 
   const allSelectorKeysSelected = selectedKeys.size === allValidKeys.size;
 
@@ -199,23 +276,13 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
           </Typography>
 
           <Box display="flex" gap={1}>
-            {/*// TODO disabled={!!isSaving}*/}
             <Button onClick={onCloseDialog}>Cancel</Button>
-            {/* <Button
-              loading={isSaving === 'saving-write-back'}
-              onClick={() => {
-                handleWriteBack('saving-write-back');
-              }}
-              disabled={selectedKeys.size === 0 || isSaving === 'saving-only'}>
-              {writeBackButtonText} ({selectedKeys.size}{' '}
-              {selectedKeys.size === 1 ? 'entry' : 'entries'})
-            </Button>*/}
-
             <Button
-              onClick={() => {
-                console.log('jey');
+              disabled={selectedKeys.size === 0}
+              onClick={async () => {
+                await handleConfirmRepopulate();
               }}>
-              Re-populate form (3 entries)
+              Re-populate form ({selectedKeys.size} {selectedKeys.size === 1 ? 'item' : 'items'})
             </Button>
           </Box>
         </Box>
