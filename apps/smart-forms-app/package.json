@@ -49,7 +49,7 @@
     "fhir-sdc-helpers": "^0.1.0",
     "fhirclient": "^2.6.0",
     "he": "^1.2.0",
-    "html-react-parser": "4.2.10",
+    "html-react-parser": "5.2.5",
     "lodash.clonedeep": "^4.5.0",
     "material-ui-popup-state": "^5.3.3",
     "moment": "^2.30.1",
