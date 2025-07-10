@@ -11,7 +11,7 @@ WARNING: Alpha releases are not stable and may contain breaking changes. Changes
 ## [1.0.0-alpha.75] - 2025-07-10
 #### Added
 - Updated sdc-populate to v4.4.0. Changes as follows:
-- Add support child items consuming itemPopulationContext to access fhirPathContext.
+- Add support for child items consuming itemPopulationContext to access fhirPathContext.
 
 ## [1.0.0-alpha.74] - 2025-07-09
 #### Changed
