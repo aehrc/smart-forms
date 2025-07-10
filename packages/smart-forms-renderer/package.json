@@ -33,7 +33,7 @@
     "@fontsource/inter": "^5.2.6",
     "@fontsource/material-icons": "^5.2.5",
     "@fontsource/roboto": "^5.2.6",
-    "@iconify/react": "^5.2.1",
+    "@iconify/react": "^6.0.0",
     "@mui/icons-material": "^7.1.1",
     "@mui/lab": "^7.0.0-beta.13",
     "@mui/material": "^7.1.1",
