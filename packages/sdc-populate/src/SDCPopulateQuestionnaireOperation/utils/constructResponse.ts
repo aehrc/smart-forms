@@ -51,6 +51,7 @@ import { TERMINOLOGY_SERVER_URL } from '../../globals';
  * @param questionnaire - The questionnaire resource to construct a response from
  * @param subject - A subject reference to form the subject within the response
  * @param populationExpressions - expressions used for pre-population i.e. initialExpressions, itemPopulationContexts
+ * @param fhirPathContext - A FHIRContext object to be used for FHIRPath evaluation
  * @param user - An optional FHIR resource representing the user to form the questionnaireResponse.author property
  * @param encounter - An optional encounter resource to form the questionnaireResponse.encounter property
  * @param fetchTerminologyCallback - An optional callback function to fetch terminology resources
@@ -63,6 +64,7 @@ export async function constructResponse(
   questionnaire: Questionnaire,
   subject: Reference,
   populationExpressions: PopulationExpressions,
+  fhirPathContext: Record<string, any>,
   user?: FhirResource,
   encounter?: Encounter,
   fetchTerminologyCallback?: FetchTerminologyCallback,
@@ -96,6 +98,7 @@ export async function constructResponse(
       },
       qContainedResources: containedResources,
       populationExpressions,
+      fhirPathContext,
       valueSetPromises,
       answerOptions,
       containedValueSets,
@@ -165,6 +168,7 @@ interface ConstructResponseItemRecursiveParams {
   qrItem: QuestionnaireResponseItem;
   qContainedResources: FhirResource[];
   populationExpressions: PopulationExpressions;
+  fhirPathContext: Record<string, any>;
   valueSetPromises: Record<string, ValueSetPromise>;
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
   containedValueSets: Record<string, ValueSet>;
@@ -185,6 +189,7 @@ async function constructResponseItemRecursive(
     qrItem,
     qContainedResources,
     populationExpressions,
+    fhirPathContext,
     valueSetPromises,
     answerOptions,
     containedValueSets,
@@ -205,6 +210,7 @@ async function constructResponseItemRecursive(
         qItem,
         qContainedResources,
         populationExpressions,
+        fhirPathContext,
         valueSetPromises,
         answerOptions,
         containedValueSets,
@@ -220,6 +226,7 @@ async function constructResponseItemRecursive(
         qrItem,
         qContainedResources,
         populationExpressions,
+        fhirPathContext,
         valueSetPromises,
         answerOptions,
         containedValueSets,
@@ -527,6 +534,7 @@ async function constructRepeatGroupInstances(
   qRepeatGroupParent: QuestionnaireItem,
   qContainedResources: FhirResource[],
   populationExpressions: PopulationExpressions,
+  fhirPathContext: Record<string, any>,
   valueSetPromises: Record<string, ValueSetPromise>,
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>,
   containedValueSets: Record<string, ValueSet>,
@@ -596,11 +604,17 @@ async function constructRepeatGroupInstances(
       // Populate answers from initialExpressions
       const initialExpression = initialExpressions[childItem.linkId];
       if (initialExpression) {
+        // Allow child items consuming itemPopulationContext to access renderer-wide variables via fhirPathContext
+        const fhirPathContextWithItemPopulationContext = {
+          ...fhirPathContext,
+          [itemPopulationContext.name]: [itemPopulationContextValue]
+        };
+
         try {
           const fhirPathResult = fhirpath.evaluate(
             {},
             initialExpression.expression,
-            { [itemPopulationContext.name]: [itemPopulationContextValue] },
+            fhirPathContextWithItemPopulationContext,
             fhirpath_r4_model,
             {
               async: true,
@@ -656,6 +670,7 @@ async function constructRepeatGroupInstances(
               [associatedItemPopulationContext.name]: associatedItemPopulationContext
             }
           },
+          fhirPathContext,
           valueSetPromises,
           answerOptions,
           containedValueSets

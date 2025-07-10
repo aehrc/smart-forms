@@ -125,6 +125,7 @@ export async function populate(
       initialExpressions: completeInitialExpressions,
       itemPopulationContexts: evaluatedItemPopulationContexts
     },
+    fhirPathContext,
     user,
     encounter,
     fetchTerminologyCallback,
