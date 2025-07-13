@@ -94,7 +94,7 @@ export function getNumOfSeparators(valueDate: string, seperator: string) {
 }
 
 /**
- * Parse a FHIR date string to a date to be consumed and displayed by the DateItem component.
+ * Parse a FHIR date string to a human-readable display format.
  *
  * @author Sean Fong
  */
@@ -128,6 +128,30 @@ export function parseFhirDateToDisplayDate(fhirDate: string): {
   }
 
   return { displayDate: fhirDate, dateParseFail: true };
+}
+
+/**
+ * Parse a FHIR dateTime string to a human-readable display format.
+ * Supports full and partial FHIR dateTime values.
+ *
+ * @author Sean Fong
+ */
+export function parseFhirDateTimeToDisplayDateTime(fhirDateTime: string): {
+  displayDateTime: string;
+  dateParseFail?: boolean;
+} {
+  if (fhirDateTime.length === 0) {
+    return { displayDateTime: '' };
+  }
+
+  const fullDateTime = dayjs(fhirDateTime);
+  if (fullDateTime.isValid()) {
+    return { displayDateTime: fullDateTime.format('DD/MM/YYYY HH:mm') };
+  }
+
+  const parseFhirDateToDisplayDateResult = parseFhirDateToDisplayDate(fhirDateTime);
+
+  return { displayDateTime: parseFhirDateToDisplayDateResult.displayDate, dateParseFail: parseFhirDateToDisplayDateResult.dateParseFail };
 }
 
 export function parseInputDateToFhirDate(displayDate: string) {

@@ -10,7 +10,8 @@ import {
   getQrItemsIndex,
   isSpecificItemControl,
   mapQItemsIndex,
-  parseFhirDateToDisplayDate
+  parseFhirDateToDisplayDate,
+  parseFhirDateTimeToDisplayDateTime
 } from '@aehrc/smart-forms-renderer';
 
 
@@ -320,15 +321,23 @@ function answerToString(answer: QuestionnaireResponseItemAnswer): string {
 
   if (answer.valueDate) {
     const { displayDate, dateParseFail } = parseFhirDateToDisplayDate(answer.valueDate);
+
     if (!dateParseFail) {
       return `${displayDate}`;
     }
 
+    // Fallback to raw valueDate if parsing fails
     return answer.valueDate;
   }
 
   if (answer.valueDateTime) {
-    // TODO date time item - parse to fhirDateTime
+    const { displayDateTime, dateParseFail } = parseFhirDateTimeToDisplayDateTime(answer.valueDateTime);
+
+    if (!dateParseFail) {
+      return `${displayDateTime}`;
+    }
+
+    // Fallback to raw valueDateTime if parsing fails
     return answer.valueDateTime;
   }
 

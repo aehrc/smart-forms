@@ -15,4 +15,5 @@
  * limitations under the License.
  */
 
-export { parseFhirDateToDisplayDate } from './parseDate';
+export { parseFhirDateToDisplayDate, parseFhirDateTimeToDisplayDateTime } from './parseDate';
+

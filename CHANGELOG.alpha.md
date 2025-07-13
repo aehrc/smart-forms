@@ -8,6 +8,10 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.76] - 2025-07-13
+#### Added
+- Added parseFhirDateTimeToDisplayDateTime() as a library function that parses a FHIR dateTime to a human-readable format.
+
 ## [1.0.0-alpha.75] - 2025-07-10
 #### Added
 - Updated sdc-populate to v4.4.0. Changes as follows:
