@@ -99,7 +99,7 @@ export function renderMetadataHtml(questionnaireResponse: QuestionnaireResponse)
 
   // Date Authored
   if (questionnaireResponse.authored) {
-    const { displayDate, dateParseFail } = parseFhirDateToDisplayDate(
+    const { displayDate, dateParseFail } = parseFhirDateTimeToDisplayDateTime(
       questionnaireResponse.authored
     );
     const authoredDisplay = !dateParseFail ? displayDate : questionnaireResponse.authored;
