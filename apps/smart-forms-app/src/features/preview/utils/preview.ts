@@ -13,6 +13,7 @@ import {
   parseFhirDateToDisplayDate,
   parseFhirDateTimeToDisplayDateTime
 } from '@aehrc/smart-forms-renderer';
+import { structuredDataCapture } from 'fhir-sdc-helpers';
 
 /**
  * Converts a FHIR Questionnaire and corresponding QuestionnaireResponse into styled XHTML using GitHub-flavored Markdown styles applied as inline styles.
@@ -135,6 +136,11 @@ function renderItemHtmlRecursive(
   groupNestLevel: number,
   html: string
 ): string {
+  // Skip hidden items (and their children)
+  if (structuredDataCapture.getHidden(qItem)) {
+    return html;
+  }
+
   // Render group heading if text exists
   const qrItemOrItemsIsSingleItem = !Array.isArray(qrItemOrItems) && qrItemOrItems !== null;
   const qrItemOrItemsIsNonEmptyArray = Array.isArray(qrItemOrItems) && qrItemOrItems.length > 0;
@@ -269,7 +275,10 @@ function renderRepeatGroupHtml(
   }
 
   // Table headers from child questions
-  const headers = qItem.item?.map((child) => he.encode(child.text ?? '')) ?? [];
+  const headers =
+    qItem.item
+      ?.filter((child) => !structuredDataCapture.getHidden(child))
+      .map((child) => he.encode(child.text ?? '')) ?? [];
 
   // Render headers
   let html = `<table style="margin-top:0;margin-bottom:1rem;font-weight:400;border-spacing:0;border-collapse:collapse;display:block;width:max-content;max-width:100%;overflow:auto;font-variant:tabular-nums;">`;
@@ -290,7 +299,11 @@ function renderRepeatGroupHtml(
     const qrItemsByIndex = getQrItemsIndex(childQItems, childQRItems, indexMap);
 
     html += `<tr style="background-color:#fff;border-top:1px solid #d1d9e0b3;">`;
-    for (const [index] of childQItems.entries()) {
+    for (const [index, childQItem] of childQItems.entries()) {
+      if (structuredDataCapture.getHidden(childQItem)) {
+        continue;
+      }
+
       const childQRItem = qrItemsByIndex[index];
 
       // Do not support repeat group nesting for now
