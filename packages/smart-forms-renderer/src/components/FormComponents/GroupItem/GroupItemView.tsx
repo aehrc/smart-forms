@@ -23,6 +23,7 @@ import type {
   PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
+  PropsWithParentStylesAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithQrRepeatGroupChangeHandler
 } from '../../../interfaces/renderProps.interface';
@@ -49,7 +50,8 @@ interface GroupItemViewProps
     PropsWithQrRepeatGroupChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithParentIsReadOnlyAttribute,
-    PropsWithParentIsRepeatGroupAttribute {
+    PropsWithParentIsRepeatGroupAttribute,
+    PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   childQItems: QuestionnaireItem[];
   qrItemsByIndex: (QuestionnaireResponseItem | QuestionnaireResponseItem[] | undefined)[];
@@ -61,7 +63,6 @@ interface GroupItemViewProps
   pageIsMarkedAsComplete?: boolean;
   pages?: Pages;
   currentPageIndex?: number;
-  parentStyles?: Record<string, string>;
 }
 
 function GroupItemView(props: GroupItemViewProps) {

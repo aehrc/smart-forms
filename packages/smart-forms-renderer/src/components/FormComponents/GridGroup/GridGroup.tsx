@@ -20,6 +20,7 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
   PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
+  PropsWithParentStylesAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
@@ -40,11 +41,11 @@ interface GridGroupProps
   extends PropsWithQrItemChangeHandler,
     PropsWithItemPathAttribute,
     PropsWithShowMinimalViewAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
   groupCardElevation: number;
-  parentStyles?: Record<string, string>;
 }
 
 /**
@@ -146,6 +147,7 @@ function GridGroup(props: GridGroupProps) {
           columnLabels={columnLabels}
           itemPath={itemPath}
           parentIsReadOnly={readOnly}
+          // parentStyles={parentStyles}
           onQrItemChange={handleRowChange}
         />
       </TableContainer>

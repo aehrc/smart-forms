@@ -22,6 +22,7 @@ import type {
   PropsWithIsTabledRequiredAttribute,
   PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
+  PropsWithParentStylesAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
@@ -46,10 +47,10 @@ interface StringItemProps
     PropsWithIsTabledRequiredAttribute,
     PropsWithRenderingExtensionsAttribute,
     PropsWithParentIsReadOnlyAttribute,
-    PropsWithFeedbackFromParentAttribute {
+    PropsWithFeedbackFromParentAttribute,
+    PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
-  parentStyles?: Record<string, string>;
 }
 function StringItem(props: StringItemProps) {
   const {
