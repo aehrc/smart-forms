@@ -9,7 +9,7 @@ export function getDisplayName(name: HumanName[] | undefined): string {
   const givenName = name?.[0]?.given?.[0] ?? '';
   const familyName = name?.[0]?.family ?? '';
 
-  const fullName = `${prefix} ${givenName} ${familyName}`;
+  const fullName = [prefix, givenName, familyName].filter(Boolean).join(' ');
 
   if (fullName.length === 0) {
     return 'null';
