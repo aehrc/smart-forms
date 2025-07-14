@@ -149,9 +149,9 @@ export function parseFhirDateTimeToDisplayDateTime(fhirDateTime: string): {
     return { displayDateTime: fullDateTime.format('DD/MM/YYYY HH:mm') };
   }
 
-  const parseFhirDateToDisplayDateResult = parseFhirDateToDisplayDate(fhirDateTime);
+  const { displayDate, dateParseFail } = parseFhirDateToDisplayDate(fhirDateTime);
 
-  return { displayDateTime: parseFhirDateToDisplayDateResult.displayDate, dateParseFail: parseFhirDateToDisplayDateResult.dateParseFail };
+  return { displayDateTime: displayDate, dateParseFail };
 }
 
 export function parseInputDateToFhirDate(displayDate: string) {
