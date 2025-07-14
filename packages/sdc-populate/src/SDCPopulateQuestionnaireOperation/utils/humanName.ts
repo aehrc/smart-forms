@@ -1,7 +1,7 @@
 import type { HumanName } from 'fhir/r4';
 
 export function getDisplayName(name: HumanName[] | undefined): string {
-  if (name?.[0]?.['text']) {
+  if (name?.[0]?.text) {
     return `${name?.[0].text ?? null}`;
   }
 
