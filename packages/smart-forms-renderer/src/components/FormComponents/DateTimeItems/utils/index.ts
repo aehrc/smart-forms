@@ -16,4 +16,3 @@
  */
 
 export { parseFhirDateToDisplayDate, parseFhirDateTimeToDisplayDateTime } from './parseDate';
-

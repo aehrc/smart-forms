@@ -14,7 +14,6 @@ import {
   parseFhirDateTimeToDisplayDateTime
 } from '@aehrc/smart-forms-renderer';
 
-
 /**
  * Converts a FHIR Questionnaire and corresponding QuestionnaireResponse into styled XHTML using GitHub-flavored Markdown styles applied as inline styles.
  * GitHub-flavored Markdown styles lifted from https://github.com/sindresorhus/github-markdown-css/blob/main/github-markdown-light.css
@@ -36,7 +35,9 @@ export function qrToHTML(
     return '';
   }
 
-  let html = `<article class="markdown-body" style="color-scheme: light; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; margin: 0; color: #1f2328; background-color: #ffffff; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans',Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji'; font-size: 16px; line-height: 1.5; word-wrap: break-word;">`;
+  // Start with a base HTML <article> structure
+  // Left styles inline for all HTML tags because the styles do not apply when used in a JS string variable
+  let html = `<article style="color-scheme: light; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; margin: 0; color: #1f2328; background-color: #ffffff; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans',Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji'; font-size: 16px; line-height: 1.5; word-wrap: break-word;">`;
 
   // Title as h1
   html += `<h1 style="margin-top: 0; margin-bottom: .67em; font-weight: 600; padding-bottom: .3em; font-size: 2em; border-bottom: 1px solid #d1d9e0b3;">
@@ -85,7 +86,9 @@ export function renderMetadataHtml(questionnaireResponse: QuestionnaireResponse)
   if (questionnaireResponse.subject) {
     const subjectDisplay = questionnaireResponse.subject.display;
     if (subjectDisplay) {
-      lines.push(`<strong style="font-weight: 600;">Patient</strong>: ${he.encode(subjectDisplay)}`);
+      lines.push(
+        `<strong style="font-weight: 600;">Patient</strong>: ${he.encode(subjectDisplay)}`
+      );
     }
   }
 
@@ -99,12 +102,14 @@ export function renderMetadataHtml(questionnaireResponse: QuestionnaireResponse)
 
   // Date Authored
   if (questionnaireResponse.authored) {
-    const { displayDate, dateParseFail } = parseFhirDateTimeToDisplayDateTime(
+    const { displayDateTime, dateParseFail } = parseFhirDateTimeToDisplayDateTime(
       questionnaireResponse.authored
     );
-    const authoredDisplay = !dateParseFail ? displayDate : questionnaireResponse.authored;
+    const authoredDisplay = !dateParseFail ? displayDateTime : questionnaireResponse.authored;
 
-    lines.push(`<strong style="font-weight: 600;">Date Authored</strong>: ${he.encode(authoredDisplay)}`);
+    lines.push(
+      `<strong style="font-weight: 600;">Date Authored</strong>: ${he.encode(authoredDisplay)}`
+    );
   }
 
   if (lines.length === 0) {
@@ -192,7 +197,10 @@ function renderItemHtmlRecursive(
       html += `</ul>`;
     } else {
       html += qrItem.answer
-        .map((a) => `<p style="margin-top: 0; margin-bottom: 1rem; font-weight: 400;"><strong style="font-weight: 600;">${label}</strong><br/>${he.encode(answerToString(a))}</p>`)
+        .map(
+          (a) =>
+            `<p style="margin-top: 0; margin-bottom: 1rem; font-weight: 400;"><strong style="font-weight: 600;">${label}</strong><br/>${he.encode(answerToString(a))}</p>`
+        )
         .join('');
     }
   }
@@ -225,17 +233,20 @@ function getGroupHeading(qItem: QuestionnaireItem, nestedLevel: number): string 
   switch (nestedLevel) {
     case 1:
       headingTag = 'h2';
-      inlineStyle = 'margin-top:1.5rem;margin-bottom:1rem;font-weight:600;line-height:1.25;padding-bottom:.3em;font-size:1.5em;border-bottom:1px solid #d1d9e0b3;';
+      inlineStyle =
+        'margin-top:1.5rem;margin-bottom:1rem;font-weight:600;line-height:1.25;padding-bottom:.3em;font-size:1.5em;border-bottom:1px solid #d1d9e0b3;';
       break;
     case 2:
       headingTag = 'h3';
-      inlineStyle = 'margin-top:1.5rem;margin-bottom:1rem;font-weight:600;line-height:1.25;font-size:1.25em;';
+      inlineStyle =
+        'margin-top:1.5rem;margin-bottom:1rem;font-weight:600;line-height:1.25;font-size:1.25em;';
       break;
     case 3:
     case 4:
     default:
       headingTag = 'h4';
-      inlineStyle = 'margin-top:1.5rem;margin-bottom:1rem;font-weight:600;line-height:1.25;font-size:1em;';
+      inlineStyle =
+        'margin-top:1.5rem;margin-bottom:1rem;font-weight:600;line-height:1.25;font-size:1em;';
       break;
   }
 
@@ -263,7 +274,7 @@ function renderRepeatGroupHtml(
   // Render headers
   let html = `<table style="margin-top:0;margin-bottom:1rem;font-weight:400;border-spacing:0;border-collapse:collapse;display:block;width:max-content;max-width:100%;overflow:auto;font-variant:tabular-nums;">`;
   html += `<thead><tr style="background-color:#f6f8fa;border-top:1px solid #d1d9e0b3;">`;
-  
+
   for (const header of headers) {
     html += `<th style="padding:6px 13px;border:1px solid #d1d9e0;font-weight:600;">${header}</th>`;
   }
@@ -331,7 +342,9 @@ function answerToString(answer: QuestionnaireResponseItemAnswer): string {
   }
 
   if (answer.valueDateTime) {
-    const { displayDateTime, dateParseFail } = parseFhirDateTimeToDisplayDateTime(answer.valueDateTime);
+    const { displayDateTime, dateParseFail } = parseFhirDateTimeToDisplayDateTime(
+      answer.valueDateTime
+    );
 
     if (!dateParseFail) {
       return `${displayDateTime}`;

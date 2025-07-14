@@ -40,8 +40,8 @@ function ResponsePreview() {
   }
 
   // Use existing narrative HTML if available, otherwise generate it on the fly
-  const responseHtmlDiv = 
-    sourceResponse.text?.div ?? 
+  const responseHtmlDiv =
+    sourceResponse.text?.div ??
     qrToHTML(
       sourceQuestionnaire,
       removeEmptyAnswersFromResponse(sourceQuestionnaire, sourceResponse)
