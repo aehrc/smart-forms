@@ -25,6 +25,7 @@ export {
   GroupTable,
   GridGroup,
   parseFhirDateToDisplayDate,
+  parseFhirDateTimeToDisplayDateTime,
   ItemFieldGrid,
   ItemLabel,
   BooleanField,

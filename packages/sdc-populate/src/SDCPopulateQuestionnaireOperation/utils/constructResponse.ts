@@ -44,6 +44,7 @@ import { getValueSetPromise } from '../api/expandValueset';
 import type { FetchTerminologyCallback, FetchTerminologyRequestConfig } from '../interfaces';
 import { handleFhirPathResult } from './createFhirPathContext';
 import { TERMINOLOGY_SERVER_URL } from '../../globals';
+import { getDisplayName } from './humanName';
 
 /**
  * Constructs a questionnaireResponse recursively from a specified questionnaire, its subject and its initialExpressions
@@ -138,9 +139,16 @@ export async function constructResponse(
 
   // Add user reference to "author" and current dateTime to "authored" if user context present
   if (user && user.id && user.resourceType) {
+    const displayName =
+      user.resourceType === 'Practitioner' ||
+      user.resourceType === 'RelatedPerson' ||
+      user.resourceType === 'Patient'
+        ? getDisplayName(user.name)
+        : undefined;
     questionnaireResponse.author = {
       type: user.resourceType,
-      reference: `${user.resourceType}/${user.id}`
+      reference: `${user.resourceType}/${user.id}`,
+      ...(displayName && { display: displayName })
     };
     questionnaireResponse.authored = new Date().toISOString();
   }

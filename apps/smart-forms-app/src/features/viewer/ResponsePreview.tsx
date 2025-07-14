@@ -39,8 +39,15 @@ function ResponsePreview() {
     return <ViewerInvalid questionnaire={sourceQuestionnaire} />;
   }
 
-  const responseCleaned = removeEmptyAnswersFromResponse(sourceQuestionnaire, sourceResponse);
-  const parsedHTML = parse(qrToHTML(sourceQuestionnaire, responseCleaned));
+  // Use existing narrative HTML if available, otherwise generate it on the fly
+  const responseHtmlDiv =
+    sourceResponse.text?.div ??
+    qrToHTML(
+      sourceQuestionnaire,
+      removeEmptyAnswersFromResponse(sourceQuestionnaire, sourceResponse)
+    );
+
+  const parsedHTML = parse(responseHtmlDiv);
 
   return (
     <>

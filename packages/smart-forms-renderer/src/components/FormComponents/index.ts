@@ -21,7 +21,7 @@ export { RepeatItem } from './RepeatItem';
 export { RepeatGroup } from './RepeatGroup';
 export { GroupTable } from './Tables';
 export { GridGroup } from './GridGroup';
-export { parseFhirDateToDisplayDate } from './DateTimeItems';
+export { parseFhirDateToDisplayDate, parseFhirDateTimeToDisplayDateTime } from './DateTimeItems';
 export { ItemFieldGrid, ItemLabel } from './ItemParts';
 
 // item type components

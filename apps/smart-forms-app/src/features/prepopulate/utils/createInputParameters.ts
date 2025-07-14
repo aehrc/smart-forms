@@ -31,6 +31,7 @@ import type {
   QuestionnaireLevelXFhirQueryVariable,
   SourceQuery
 } from '../types/populate.interface.ts';
+import { constructName } from '../../smartAppLaunch/utils/launchContext.ts';
 
 function createPatientSubject(questionnaire: Questionnaire, patient: Patient): Reference | null {
   const subjectTypes = questionnaire.subjectType;
@@ -45,7 +46,8 @@ function createPatientSubject(questionnaire: Questionnaire, patient: Patient): R
 
   return {
     type: 'Patient',
-    reference: 'Patient/' + patient.id
+    reference: 'Patient/' + patient.id,
+    display: constructName(patient.name)
   };
 }
 

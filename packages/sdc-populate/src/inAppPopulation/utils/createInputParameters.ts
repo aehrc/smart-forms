@@ -31,6 +31,7 @@ import type {
   QuestionnaireLevelXFhirQueryVariable,
   SourceQuery
 } from '../interfaces/inAppPopulation.interface';
+import { getDisplayName } from '../../SDCPopulateQuestionnaireOperation/utils/humanName';
 
 export function createPopulateInputParameters(
   questionnaire: Questionnaire,
@@ -125,7 +126,8 @@ function createPatientSubject(questionnaire: Questionnaire, patient: Patient): R
 
   return {
     type: 'Patient',
-    reference: 'Patient/' + patient.id
+    reference: 'Patient/' + patient.id,
+    display: getDisplayName(patient.name)
   };
 }
 
