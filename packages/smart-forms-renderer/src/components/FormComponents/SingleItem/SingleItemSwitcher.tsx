@@ -28,8 +28,7 @@ import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentStylesAttribute,
   PropsWithQrItemChangeHandler,
-  PropsWithRenderingExtensionsAttribute,
-  PropsWithShowMinimalViewAttribute
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import StringItem from '../StringItem/StringItem';
 import BooleanItem from '../BooleanItem/BooleanItem';
@@ -53,7 +52,6 @@ interface SingleItemSwitcherProps
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledRequiredAttribute,
     PropsWithRenderingExtensionsAttribute,
-    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithFeedbackFromParentAttribute,
     PropsWithParentStylesAttribute {
@@ -69,7 +67,6 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
     isRepeated,
     isTabled,
     renderingExtensions,
-    showMinimalView,
     parentIsReadOnly,
     feedbackFromParent,
     parentStyles,
@@ -270,7 +267,6 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
-          showMinimalView={showMinimalView}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
@@ -286,7 +282,6 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
-          showMinimalView={showMinimalView}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}

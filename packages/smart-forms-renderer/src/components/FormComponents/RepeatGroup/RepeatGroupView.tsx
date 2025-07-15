@@ -20,8 +20,7 @@ import type {
   PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
-  PropsWithParentStylesAttribute,
-  PropsWithShowMinimalViewAttribute
+  PropsWithParentStylesAttribute
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { QGroupContainerBox } from '../../Box.styles';
@@ -45,7 +44,6 @@ import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
 interface RepeatGroupViewProps
   extends PropsWithItemPathAttribute,
-    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithParentIsRepeatGroupAttribute,
     PropsWithParentStylesAttribute {
@@ -73,7 +71,6 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
     repeatGroups,
     itemPath,
     groupCardElevation,
-    showMinimalView,
     parentIsReadOnly,
     parentStyles,
     onAnswerChange,
@@ -82,44 +79,6 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
   } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-
-  if (showMinimalView) {
-    return (
-      <QGroupContainerBox
-        key={qItem.linkId}
-        cardElevation={groupCardElevation}
-        isRepeated={true}
-        style={parentStyles || undefined}>
-        <Card elevation={groupCardElevation} sx={{ p: 2 }}>
-          {repeatGroups.map(({ id, qrItem: nullableQrItem }, index) => {
-            const answeredQrItem = createEmptyQrItem(qItem, undefined);
-            if (nullableQrItem) {
-              answeredQrItem.item = nullableQrItem.item;
-            }
-
-            return (
-              <RepeatGroupItem
-                key={id}
-                qItem={qItem}
-                repeatGroupIndex={index}
-                answeredQrItem={answeredQrItem}
-                nullableQrItem={nullableQrItem}
-                numOfRepeatGroups={repeatGroups.length}
-                itemPath={appendRepeatIndexToLastSegment(itemPath, index)}
-                groupCardElevation={groupCardElevation}
-                showMinimalView={showMinimalView}
-                parentIsReadOnly={parentIsReadOnly}
-                onRemoveItem={() => onRemoveItem(index)}
-                onQrItemChange={(newQrItem, targetItemPath) =>
-                  onAnswerChange(newQrItem, index, targetItemPath)
-                }
-              />
-            );
-          })}
-        </Card>
-      </QGroupContainerBox>
-    );
-  }
 
   const groupCollapsibleValue = getGroupCollapsible(qItem);
   if (groupCollapsibleValue) {

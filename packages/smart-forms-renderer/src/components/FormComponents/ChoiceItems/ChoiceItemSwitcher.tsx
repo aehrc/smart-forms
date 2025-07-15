@@ -34,8 +34,7 @@ import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentStylesAttribute,
   PropsWithQrItemChangeHandler,
-  PropsWithRenderingExtensionsAttribute,
-  PropsWithShowMinimalViewAttribute
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import Typography from '@mui/material/Typography';
 
@@ -45,7 +44,6 @@ interface ChoiceItemSwitcherProps
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledRequiredAttribute,
     PropsWithRenderingExtensionsAttribute,
-    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithFeedbackFromParentAttribute,
     PropsWithParentStylesAttribute {
@@ -61,7 +59,6 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
     isRepeated,
     isTabled,
     renderingExtensions,
-    showMinimalView,
     parentIsReadOnly,
     feedbackFromParent,
     onQrItemChange
@@ -109,7 +106,6 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
             itemPath={itemPath}
             isRepeated={qItem.repeats ?? false}
             renderingExtensions={renderingExtensions}
-            showMinimalView={showMinimalView}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
             isTabled={isTabled}
@@ -124,7 +120,6 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
             itemPath={itemPath}
             isRepeated={qItem.repeats ?? false}
             renderingExtensions={renderingExtensions}
-            showMinimalView={showMinimalView}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
             isTabled={isTabled}

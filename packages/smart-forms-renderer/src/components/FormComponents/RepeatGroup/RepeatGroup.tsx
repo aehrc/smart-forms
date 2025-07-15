@@ -21,8 +21,7 @@ import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
   PropsWithParentStylesAttribute,
-  PropsWithQrRepeatGroupChangeHandler,
-  PropsWithShowMinimalViewAttribute
+  PropsWithQrRepeatGroupChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useInitialiseRepeatGroups from '../../../hooks/useInitialiseRepeatGroups';
@@ -34,7 +33,6 @@ import type { ItemPath } from '../../../interfaces/itemPath.interface';
 interface RepeatGroupProps
   extends PropsWithQrRepeatGroupChangeHandler,
     PropsWithItemPathAttribute,
-    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithParentIsRepeatGroupAttribute,
     PropsWithParentStylesAttribute {
@@ -55,7 +53,6 @@ function RepeatGroup(props: RepeatGroupProps) {
     qrItems,
     itemPath,
     groupCardElevation,
-    showMinimalView,
     parentIsReadOnly,
     onQrRepeatGroupChange,
     parentStyles
@@ -132,7 +129,6 @@ function RepeatGroup(props: RepeatGroupProps) {
       repeatGroups={repeatGroups}
       itemPath={itemPath}
       groupCardElevation={groupCardElevation}
-      showMinimalView={showMinimalView}
       parentIsReadOnly={parentIsReadOnly}
       onAnswerChange={handleAnswerChange}
       onAddItem={handleAddItem}

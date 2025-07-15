@@ -24,8 +24,7 @@ import type {
   PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentStylesAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithShowMinimalViewAttribute
+  PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import SingleItemSwitcher from './SingleItemSwitcher';
 import SingleNestedItems from './SingleNestedItems';
@@ -50,7 +49,6 @@ interface SingleItemViewProps
     PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledRequiredAttribute,
-    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithFeedbackFromParentAttribute,
     PropsWithParentStylesAttribute {
@@ -75,7 +73,6 @@ function SingleItemView(props: SingleItemViewProps) {
     isRepeated,
     isTabled,
     groupCardElevation,
-    showMinimalView,
     parentIsReadOnly,
     feedbackFromParent,
     parentStyles,
@@ -114,7 +111,6 @@ function SingleItemView(props: SingleItemViewProps) {
                   isRepeated={isRepeated}
                   isTabled={isTabled}
                   renderingExtensions={renderingExtensions}
-                  showMinimalView={showMinimalView}
                   parentIsReadOnly={readOnly}
                   feedbackFromParent={feedbackFromParent}
                   parentStyles={parentStyles}
@@ -159,7 +155,6 @@ function SingleItemView(props: SingleItemViewProps) {
             isRepeated={isRepeated}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
-            showMinimalView={showMinimalView}
             parentIsReadOnly={readOnly}
             feedbackFromParent={feedbackFromParent}
             parentStyles={parentStyles}
@@ -185,7 +180,6 @@ function SingleItemView(props: SingleItemViewProps) {
       isRepeated={isRepeated}
       isTabled={isTabled}
       renderingExtensions={renderingExtensions}
-      showMinimalView={showMinimalView}
       parentIsReadOnly={readOnly}
       feedbackFromParent={feedbackFromParent}
       parentStyles={parentStyles}

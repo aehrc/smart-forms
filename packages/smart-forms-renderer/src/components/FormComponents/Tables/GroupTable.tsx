@@ -23,8 +23,7 @@ import type {
   PropsWithIsRepeatedAttribute,
   PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrRepeatGroupChangeHandler,
-  PropsWithShowMinimalViewAttribute
+  PropsWithQrRepeatGroupChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import useReadOnly from '../../../hooks/useReadOnly';
 import GroupTableView from './GroupTableView';
@@ -42,7 +41,6 @@ interface GroupTableProps
   extends PropsWithQrRepeatGroupChangeHandler,
     PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
-    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItems: QuestionnaireResponseItem[];

@@ -81,10 +81,6 @@ export interface PropsWithIsTabledRequiredAttribute {
   isTabled: boolean;
 }
 
-export interface PropsWithShowMinimalViewAttribute {
-  showMinimalView?: boolean;
-}
-
 export interface PropsWithParentIsReadOnlyAttribute {
   parentIsReadOnly?: boolean;
 }

@@ -27,8 +27,7 @@ import type {
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
-  PropsWithRenderingExtensionsAttribute,
-  PropsWithShowMinimalViewAttribute
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import useReadOnly from '../../../hooks/useReadOnly';
@@ -44,7 +43,6 @@ interface ChoiceCheckboxAnswerOptionItemProps
     PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
     PropsWithRenderingExtensionsAttribute,
-    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithFeedbackFromParentAttribute,
     PropsWithIsTabledAttribute {
@@ -59,7 +57,6 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
     isRepeated,
     isTabled,
     renderingExtensions,
-    showMinimalView = false,
     parentIsReadOnly,
     feedbackFromParent,
     onQrItemChange
@@ -114,7 +111,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
     onQrItemChange(createEmptyQrItem(qItem, answerKey));
   }
 
-  if (showMinimalView) {
+  if (isTabled) {
     return (
       <>
         <ChoiceCheckboxAnswerOptionFields

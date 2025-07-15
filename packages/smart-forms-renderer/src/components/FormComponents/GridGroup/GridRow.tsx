@@ -117,7 +117,6 @@ function GridRow(props: GridRowProps) {
                 isRepeated={true}
                 isTabled={true}
                 groupCardElevation={1}
-                showMinimalView={true}
                 parentIsReadOnly={parentIsReadOnly}
                 parentStyles={gridCellStyles}
                 onQrItemChange={handleQrRowItemChange}

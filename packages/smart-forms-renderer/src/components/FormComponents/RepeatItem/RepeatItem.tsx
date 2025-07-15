@@ -19,8 +19,7 @@ import React from 'react';
 import type {
   PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithShowMinimalViewAttribute
+  PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
@@ -41,7 +40,6 @@ import type { ItemPath } from '../../../interfaces/itemPath.interface';
 interface RepeatItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithItemPathAttribute,
-    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
@@ -54,15 +52,7 @@ interface RepeatItemProps
  * @author Sean Fong
  */
 function RepeatItem(props: RepeatItemProps) {
-  const {
-    qItem,
-    qrItem,
-    itemPath,
-    groupCardElevation,
-    showMinimalView,
-    parentIsReadOnly,
-    onQrItemChange
-  } = props;
+  const { qItem, qrItem, itemPath, groupCardElevation, parentIsReadOnly, onQrItemChange } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
@@ -111,37 +101,6 @@ function RepeatItem(props: RepeatItemProps) {
     });
   }
 
-  if (showMinimalView) {
-    return (
-      <>
-        {repeatAnswers.map((answer, index) => {
-          const repeatAnswerQrItem = createEmptyQrItem(qItem, answer?.id);
-          if (answer) {
-            repeatAnswerQrItem.answer = [answer];
-          }
-
-          return (
-            <RepeatField
-              key={answer?.id ?? generateExistingRepeatId(qItem.linkId, index)}
-              qItem={qItem}
-              qrItem={repeatAnswerQrItem}
-              answer={answer}
-              numOfRepeatAnswers={repeatAnswers.length}
-              itemPath={appendRepeatIndexToLastSegment(itemPath, index)}
-              groupCardElevation={groupCardElevation}
-              parentIsReadOnly={parentIsReadOnly}
-              showMinimalView={showMinimalView}
-              onRemoveAnswer={() => handleRemoveItem(index)}
-              onQrItemChange={(newQrItem, targetItemPath) =>
-                handleAnswerChange(newQrItem, index, targetItemPath)
-              }
-            />
-          );
-        })}
-      </>
-    );
-  }
-
   return (
     <FullWidthFormComponentBox
       data-test="q-item-repeat-box"
@@ -171,7 +130,6 @@ function RepeatItem(props: RepeatItemProps) {
                     itemPath={appendRepeatIndexToLastSegment(itemPath, index)}
                     groupCardElevation={groupCardElevation}
                     parentIsReadOnly={parentIsReadOnly}
-                    showMinimalView={showMinimalView}
                     onRemoveAnswer={() => handleRemoveItem(index)}
                     onQrItemChange={(newQrItem, targetItemPath) =>
                       handleAnswerChange(newQrItem, index, targetItemPath)
