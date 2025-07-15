@@ -20,7 +20,8 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
   PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithParentStylesAttribute
 } from '../../../interfaces/renderProps.interface';
 import { createEmptyQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
 import { GridAnswerTableCell, GridTextTableCell } from '../Tables/Table.styles';
@@ -35,14 +36,23 @@ import type { ItemPath } from '../../../interfaces/itemPath.interface';
 interface GridRowProps
   extends PropsWithQrItemChangeHandler,
     PropsWithItemPathAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
-  columnLabels: string[];
+  columnHeaderLabels: string[];
 }
 
 function GridRow(props: GridRowProps) {
-  const { qItem, qrItem, itemPath, columnLabels, parentIsReadOnly, onQrItemChange } = props;
+  const {
+    qItem,
+    qrItem,
+    itemPath,
+    columnHeaderLabels,
+    parentIsReadOnly,
+    parentStyles,
+    onQrItemChange
+  } = props;
 
   const rowQItems = qItem.item;
   const row = qrItem && qrItem.item ? qrItem : createEmptyQrGroup(qItem);
@@ -55,9 +65,12 @@ function GridRow(props: GridRowProps) {
     return null;
   }
 
-  if (!rowQItems || !rowQrItems) {
+  if (!rowQItems || !rowQrItems || rowQItems.length === 0) {
     return null;
   }
+
+  // Add textAlign center style to all grid cells and pass it as parentStyles to the next item
+  const gridCellStyles = { ...parentStyles, textAlign: 'center' };
 
   function handleQrRowItemChange(
     newQrRowItem: QuestionnaireResponseItem,
@@ -70,7 +83,7 @@ function GridRow(props: GridRowProps) {
 
   const qrItemsByIndex = getQrItemsIndex(rowQItems, rowQrItems, qItemsIndexMap);
 
-  const numOfColumns = columnLabels.length;
+  const numOfColumns = columnHeaderLabels.length;
   return (
     <>
       <GridTextTableCell>
@@ -78,7 +91,7 @@ function GridRow(props: GridRowProps) {
           {qItem.text}
         </Typography>
       </GridTextTableCell>
-      {columnLabels.map((label, colIndex) => {
+      {columnHeaderLabels.map((label, colIndex) => {
         // Find the QuestionnaireItem in this row that matches the current column label
         const matchingCellQItemIndex = rowQItems.findIndex((item) => item.text === label);
 
@@ -106,6 +119,7 @@ function GridRow(props: GridRowProps) {
                 groupCardElevation={1}
                 showMinimalView={true}
                 parentIsReadOnly={parentIsReadOnly}
+                parentStyles={gridCellStyles}
                 onQrItemChange={handleQrRowItemChange}
               />
             </Box>
