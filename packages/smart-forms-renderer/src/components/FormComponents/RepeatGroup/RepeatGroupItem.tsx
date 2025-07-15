@@ -22,8 +22,7 @@ import GroupItem from '../GroupItem/GroupItem';
 import type {
   PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithShowMinimalViewAttribute
+  PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import RemoveItemButton from './RemoveItemButton';
@@ -32,7 +31,6 @@ import useReadOnly from '../../../hooks/useReadOnly';
 interface RepeatGroupItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithItemPathAttribute,
-    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   repeatGroupIndex: number;
@@ -52,7 +50,6 @@ function RepeatGroupItem(props: RepeatGroupItemProps) {
     numOfRepeatGroups,
     itemPath,
     groupCardElevation,
-    showMinimalView,
     parentIsReadOnly,
     onRemoveItem,
     onQrItemChange
@@ -75,14 +72,12 @@ function RepeatGroupItem(props: RepeatGroupItemProps) {
           onQrItemChange={onQrItemChange}
         />
       </Box>
-      {showMinimalView ? null : (
-        <RemoveItemButton
-          nullableQrItem={nullableQrItem}
-          numOfRepeatGroups={numOfRepeatGroups}
-          readOnly={readOnly}
-          onRemoveItem={onRemoveItem}
-        />
-      )}
+      <RemoveItemButton
+        nullableQrItem={nullableQrItem}
+        numOfRepeatGroups={numOfRepeatGroups}
+        readOnly={readOnly}
+        onRemoveItem={onRemoveItem}
+      />
     </RepeatGroupContainerStack>
   );
 }

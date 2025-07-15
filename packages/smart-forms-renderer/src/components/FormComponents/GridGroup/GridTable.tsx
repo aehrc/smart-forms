@@ -29,7 +29,6 @@ import type {
   PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
-  PropsWithShowMinimalViewAttribute,
   PropsWithParentStylesAttribute
 } from '../../../interfaces/renderProps.interface';
 import { extendItemPath } from '../../../utils/itemPath';
@@ -38,7 +37,6 @@ import { default as parseStyleToJs } from 'style-to-js';
 interface GridTableProps
   extends PropsWithQrItemChangeHandler,
     PropsWithItemPathAttribute,
-    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithParentStylesAttribute {
   qItems: QuestionnaireItem[];
@@ -57,7 +55,6 @@ function GridTable(props: GridTableProps) {
     qItemsIndexMap,
     columnHeaders,
     itemPath,
-    showMinimalView,
     parentIsReadOnly,
     parentStyles,
     onQrItemChange
@@ -103,11 +100,6 @@ function GridTable(props: GridTableProps) {
           const qrItem = qrItemsByIndex[index];
 
           if (Array.isArray(qrItem)) {
-            return null;
-          }
-
-          // In minimal view, don't display items with no answers
-          if (showMinimalView && !qrItem) {
             return null;
           }
 

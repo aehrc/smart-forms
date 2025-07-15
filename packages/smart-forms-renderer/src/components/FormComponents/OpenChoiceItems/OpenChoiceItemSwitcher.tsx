@@ -32,8 +32,7 @@ import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentStylesAttribute,
   PropsWithQrItemChangeHandler,
-  PropsWithRenderingExtensionsAttribute,
-  PropsWithShowMinimalViewAttribute
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import OpenChoiceCheckboxAnswerValueSetItem from './OpenChoiceCheckboxAnswerValueSetItem';
 import OpenChoiceRadioAnswerValueSetItem from './OpenChoiceRadioAnswerValueSetItem';
@@ -43,7 +42,6 @@ interface OpenChoiceItemSwitcherProps
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledRequiredAttribute,
     PropsWithRenderingExtensionsAttribute,
-    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithFeedbackFromParentAttribute,
     PropsWithParentStylesAttribute,
@@ -60,7 +58,6 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
     isRepeated,
     isTabled,
     renderingExtensions,
-    showMinimalView,
     parentIsReadOnly,
     feedbackFromParent,
     onQrItemChange
@@ -76,7 +73,6 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
             itemPath={itemPath}
             isRepeated={qItem['repeats'] ?? false}
             renderingExtensions={renderingExtensions}
-            showMinimalView={showMinimalView}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
             isTabled={isTabled}
@@ -91,7 +87,6 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
             itemPath={itemPath}
             isRepeated={qItem['repeats'] ?? false}
             renderingExtensions={renderingExtensions}
-            showMinimalView={showMinimalView}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
             isTabled={isTabled}

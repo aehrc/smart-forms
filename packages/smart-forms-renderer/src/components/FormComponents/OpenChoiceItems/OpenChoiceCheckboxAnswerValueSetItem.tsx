@@ -29,8 +29,7 @@ import type {
   PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
-  PropsWithRenderingExtensionsAttribute,
-  PropsWithShowMinimalViewAttribute
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
@@ -49,7 +48,6 @@ interface OpenChoiceCheckboxAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
-    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithRenderingExtensionsAttribute,
     PropsWithFeedbackFromParentAttribute,
@@ -64,7 +62,6 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: OpenChoiceCheckboxAnswerVal
     qrItem,
     isRepeated,
     renderingExtensions,
-    showMinimalView = false,
     parentIsReadOnly,
     feedbackFromParent,
     isTabled,
@@ -179,7 +176,7 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: OpenChoiceCheckboxAnswerVal
     setOpenLabelChecked(false);
   }
 
-  if (showMinimalView) {
+  if (isTabled) {
     return (
       <>
         <OpenChoiceCheckboxAnswerValueSetFields

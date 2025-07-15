@@ -27,8 +27,7 @@ import type {
 import type {
   PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithShowMinimalViewAttribute
+  PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import RemoveItemButton from './RemoveItemButton';
 import useReadOnly from '../../../hooks/useReadOnly';
@@ -36,7 +35,6 @@ import useReadOnly from '../../../hooks/useReadOnly';
 interface RepeatFieldProps
   extends PropsWithQrItemChangeHandler,
     PropsWithItemPathAttribute,
-    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
@@ -55,7 +53,6 @@ function RepeatField(props: RepeatFieldProps) {
     numOfRepeatAnswers,
     groupCardElevation,
     parentIsReadOnly,
-    showMinimalView,
     onRemoveAnswer,
     onQrItemChange
   } = props;
@@ -72,19 +69,16 @@ function RepeatField(props: RepeatFieldProps) {
           isRepeated={qItem.repeats ?? false}
           isTabled={false}
           groupCardElevation={groupCardElevation}
-          showMinimalView={showMinimalView}
           parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
       </Box>
-      {showMinimalView ? null : (
-        <RemoveItemButton
-          answer={answer}
-          numOfRepeatAnswers={numOfRepeatAnswers}
-          readOnly={readOnly}
-          onRemoveAnswer={onRemoveAnswer}
-        />
-      )}
+      <RemoveItemButton
+        answer={answer}
+        numOfRepeatAnswers={numOfRepeatAnswers}
+        readOnly={readOnly}
+        onRemoveAnswer={onRemoveAnswer}
+      />
     </RepeatItemContainerStack>
   );
 }

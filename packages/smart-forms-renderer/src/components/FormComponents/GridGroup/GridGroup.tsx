@@ -21,8 +21,7 @@ import type {
   PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentStylesAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithShowMinimalViewAttribute
+  PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import { createEmptyQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
 import useHidden from '../../../hooks/useHidden';
@@ -41,7 +40,6 @@ import { structuredDataCapture } from 'fhir-sdc-helpers';
 interface GridGroupProps
   extends PropsWithQrItemChangeHandler,
     PropsWithItemPathAttribute,
-    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
@@ -61,7 +59,6 @@ function GridGroup(props: GridGroupProps) {
     qrItem,
     itemPath,
     groupCardElevation,
-    showMinimalView,
     parentIsReadOnly,
     parentStyles,
     onQrItemChange
@@ -108,29 +105,6 @@ function GridGroup(props: GridGroupProps) {
     const updatedQrGroup: QuestionnaireResponseItem = { ...qrGroup };
     updateQrItemsInGroup(newQrItem, null, updatedQrGroup, qItemsIndexMap);
     onQrItemChange(updatedQrGroup, targetItemPath);
-  }
-
-  if (showMinimalView) {
-    return (
-      <QGroupContainerBox
-        cardElevation={groupCardElevation}
-        isRepeated={false}
-        py={1}
-        style={parentStyles || undefined}>
-        <TableContainer component={Paper} elevation={groupCardElevation}>
-          <GridTable
-            qItems={qRowItems}
-            qrItems={qrRowItems}
-            qItemsIndexMap={qItemsIndexMap}
-            columnHeaders={columnHeaders}
-            itemPath={itemPath}
-            showMinimalView={showMinimalView}
-            parentIsReadOnly={readOnly}
-            onQrItemChange={handleRowChange}
-          />
-        </TableContainer>
-      </QGroupContainerBox>
-    );
   }
 
   return (

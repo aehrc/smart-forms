@@ -25,8 +25,7 @@ import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
   PropsWithParentStylesAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithShowMinimalViewAttribute
+  PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
 import useHidden from '../../../hooks/useHidden';
@@ -40,7 +39,6 @@ interface SingleItemProps
     PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledRequiredAttribute,
-    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithParentIsRepeatGroupAttribute,
     PropsWithFeedbackFromParentAttribute,
@@ -64,7 +62,6 @@ function SingleItem(props: SingleItemProps) {
     isRepeated = false,
     isTabled = false,
     groupCardElevation,
-    showMinimalView = false,
     parentIsReadOnly,
     feedbackFromParent,
     parentIsRepeatGroup,
@@ -125,7 +122,6 @@ function SingleItem(props: SingleItemProps) {
       isRepeated={isRepeated}
       isTabled={isTabled}
       groupCardElevation={groupCardElevation}
-      showMinimalView={showMinimalView}
       parentIsReadOnly={readOnly}
       feedbackFromParent={feedbackFromParent}
       parentStyles={parentStyles}
