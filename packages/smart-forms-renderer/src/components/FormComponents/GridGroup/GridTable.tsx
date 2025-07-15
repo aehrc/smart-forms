@@ -33,7 +33,6 @@ import type {
   PropsWithParentStylesAttribute
 } from '../../../interfaces/renderProps.interface';
 import { extendItemPath } from '../../../utils/itemPath';
-import { Box } from '@mui/material';
 import { default as parseStyleToJs } from 'style-to-js';
 
 interface GridTableProps
