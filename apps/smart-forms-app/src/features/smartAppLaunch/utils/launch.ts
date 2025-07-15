@@ -86,11 +86,17 @@ export function getQuestionnaireReferences(client: Client): FhirContext[] {
   const tokenResponse = client.state.tokenResponse as tokenResponseCustomised;
   const fhirContext = tokenResponse.fhirContext;
 
-  if (!fhirContext) return [];
+  if (!fhirContext) {
+    return [];
+  }
 
-  // Temporarily recognise relative and canonical references only
+  // Use Australian Digital Health namespace with the "new" role for fhirContext:
+  // https://confluence.hl7.org/spaces/FHIRI/pages/202409650/fhirContext+Role+Registry#:~:text=N/A-,http%3A//ns.electronichealth.net.au/smart/role/new,-URL%20made%20more
   return fhirContext.filter(
-    (context) => context.reference?.includes('Questionnaire') || context.canonical
+    (context) =>
+      context.role === 'http://ns.electronichealth.net.au/smart/role/new' &&
+      context.type === 'Questionnaire' &&
+      !!context.canonical
   );
 }
 
