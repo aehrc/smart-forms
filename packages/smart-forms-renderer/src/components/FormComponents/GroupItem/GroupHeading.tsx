@@ -27,15 +27,14 @@ import RequiredAsterisk from '../ItemParts/RequiredAsterisk';
 import ItemTextSwitcher from '../ItemParts/ItemTextSwitcher';
 import FlyoverItem from '../ItemParts/FlyoverItem';
 import { getHeadingTag } from '../../../utils/headingVariant';
+import type { PropsWithParentStylesAttribute } from '../../../interfaces/renderProps.interface';
 
-interface GroupHeadingProps {
+interface GroupHeadingProps extends PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   readOnly: boolean;
   groupCardElevation: number;
   tabIsMarkedAsComplete?: boolean;
   pageIsMarkedAsComplete?: boolean;
-  onStylesExtracted?: (styles: Record<string, any>) => void;
-  parentStyles?: Record<string, string>;
 }
 
 const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
@@ -45,7 +44,6 @@ const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
     groupCardElevation,
     tabIsMarkedAsComplete,
     pageIsMarkedAsComplete,
-    onStylesExtracted,
     parentStyles
   } = props;
 
@@ -84,7 +82,7 @@ const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
             display="flex"
             alignItems="center"
             sx={{ flexGrow: 1, ...(parentStyles || {}) }}>
-            <ItemTextSwitcher qItem={qItem} onStylesExtracted={onStylesExtracted} />
+            <ItemTextSwitcher qItem={qItem} />
 
             {/* Required asterisk position is behind text */}
             {required && requiredIndicatorPosition === 'end' ? (

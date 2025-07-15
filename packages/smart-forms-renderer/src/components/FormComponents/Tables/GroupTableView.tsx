@@ -30,7 +30,8 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithItemPathAttribute,
-  PropsWithParentIsReadOnlyAttribute
+  PropsWithParentIsReadOnlyAttribute,
+  PropsWithParentStylesAttribute
 } from '../../../interfaces/renderProps.interface';
 import type { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
 import GroupTableBody from './GroupTableBody';
@@ -48,7 +49,8 @@ import { Box } from '@mui/material';
 interface GroupTableViewProps
   extends PropsWithIsRepeatedAttribute,
     PropsWithItemPathAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   qItemsIndexMap: Record<string, number>;
   groupCardElevation: number;
@@ -66,7 +68,6 @@ interface GroupTableViewProps
   onSelectRow: (rowId: string) => void;
   onSelectAll: () => void;
   onReorderRows: (newTableRows: GroupTableRowModel[]) => void;
-  parentStyles?: Record<string, string>;
 }
 
 function GroupTableView(props: GroupTableViewProps) {

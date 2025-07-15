@@ -24,6 +24,7 @@ import type {
   PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
+  PropsWithParentStylesAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import type { QrRepeatGroup } from '../../../interfaces/repeatGroup.interface';
@@ -41,7 +42,8 @@ interface GroupItemProps
     PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
     PropsWithParentIsReadOnlyAttribute,
-    PropsWithParentIsRepeatGroupAttribute {
+    PropsWithParentIsRepeatGroupAttribute,
+    PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
   groupCardElevation: number;
@@ -52,7 +54,6 @@ interface GroupItemProps
   pageIsMarkedAsComplete?: boolean;
   pages?: Pages;
   currentPageIndex?: number;
-  parentStyles?: Record<string, string>;
 }
 
 function GroupItem(props: GroupItemProps) {

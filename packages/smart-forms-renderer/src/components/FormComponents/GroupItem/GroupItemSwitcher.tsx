@@ -20,6 +20,7 @@ import type {
   PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
+  PropsWithParentStylesAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithQrRepeatGroupChangeHandler
 } from '../../../interfaces/renderProps.interface';
@@ -39,11 +40,11 @@ interface GroupItemSwitcherProps
     PropsWithItemPathAttribute,
     PropsWithQrRepeatGroupChangeHandler,
     PropsWithParentIsReadOnlyAttribute,
-    PropsWithParentIsRepeatGroupAttribute {
+    PropsWithParentIsRepeatGroupAttribute,
+    PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   qrItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[] | undefined;
   groupCardElevation: number;
-  parentStyles?: Record<string, string>;
 }
 
 function GroupItemSwitcher(props: GroupItemSwitcherProps) {

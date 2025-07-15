@@ -20,6 +20,7 @@ import type {
   PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
+  PropsWithParentStylesAttribute,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
@@ -46,7 +47,8 @@ interface RepeatGroupViewProps
   extends PropsWithItemPathAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
-    PropsWithParentIsRepeatGroupAttribute {
+    PropsWithParentIsRepeatGroupAttribute,
+    PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   repeatGroups: RepeatGroupSingleModel[];
   groupCardElevation: number;
@@ -57,7 +59,6 @@ interface RepeatGroupViewProps
   ) => void;
   onAddItem: () => void;
   onRemoveItem: (index: number) => void;
-  parentStyles?: Record<string, string>;
 }
 
 /**

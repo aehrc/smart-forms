@@ -20,6 +20,7 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
   PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
+  PropsWithParentStylesAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
@@ -35,16 +36,17 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import GroupHeading from '../GroupItem/GroupHeading';
 import type { ItemPath } from '../../../interfaces/itemPath.interface';
+import { structuredDataCapture } from 'fhir-sdc-helpers';
 
 interface GridGroupProps
   extends PropsWithQrItemChangeHandler,
     PropsWithItemPathAttribute,
     PropsWithShowMinimalViewAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
   groupCardElevation: number;
-  parentStyles?: Record<string, string>;
 }
 
 /**
@@ -73,8 +75,16 @@ function GridGroup(props: GridGroupProps) {
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
 
-  const columnLabels: string[] = useMemo(
-    () => qRowItems?.[0].item?.map((firstItem) => firstItem.text ?? ' ') ?? [],
+  // Get column headers from first row item.text
+  const columnHeaders: {
+    label: string;
+    styleString: string | null;
+  }[] = useMemo(
+    () =>
+      qRowItems?.[0].item?.map((firstItem) => ({
+        label: firstItem.text ?? ' ',
+        styleString: structuredDataCapture.getStyle(firstItem._text) ?? null
+      })) ?? [],
     [qRowItems]
   );
 
@@ -112,7 +122,7 @@ function GridGroup(props: GridGroupProps) {
             qItems={qRowItems}
             qrItems={qrRowItems}
             qItemsIndexMap={qItemsIndexMap}
-            columnLabels={columnLabels}
+            columnHeaders={columnHeaders}
             itemPath={itemPath}
             showMinimalView={showMinimalView}
             parentIsReadOnly={readOnly}
@@ -143,9 +153,10 @@ function GridGroup(props: GridGroupProps) {
           qItems={qRowItems}
           qrItems={qrRowItems}
           qItemsIndexMap={qItemsIndexMap}
-          columnLabels={columnLabels}
+          columnHeaders={columnHeaders}
           itemPath={itemPath}
           parentIsReadOnly={readOnly}
+          parentStyles={parentStyles}
           onQrItemChange={handleRowChange}
         />
       </TableContainer>

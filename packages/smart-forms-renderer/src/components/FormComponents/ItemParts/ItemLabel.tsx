@@ -26,12 +26,14 @@ import ContextDisplayItem from './ContextDisplayItem';
 import ItemTextSwitcher from './ItemTextSwitcher';
 import Typography from '@mui/material/Typography';
 import FlyoverItem from './FlyoverItem';
+import type { PropsWithParentStylesAttribute } from '../../../interfaces/renderProps.interface';
+import { structuredDataCapture } from 'fhir-sdc-helpers';
+import { default as parseStyleToJs } from 'style-to-js';
 
-interface ItemLabelProps {
+interface ItemLabelProps extends PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   readOnly: boolean;
   isDisplayItem?: boolean;
-  parentStyles?: Record<string, string>;
 }
 
 const ItemLabel = memo(function ItemLabel(props: ItemLabelProps) {
@@ -48,9 +50,12 @@ const ItemLabel = memo(function ItemLabel(props: ItemLabelProps) {
   const variant = isDisplayItem ? undefined : 'label';
 
   // Get text color from parent styles if available
-
   const readOnlyTextColor = readOnlyVisualStyle === 'disabled' ? 'text.disabled' : 'text.secondary';
   const textColor = parentStyles?.color || (readOnly ? readOnlyTextColor : 'text.primary');
+
+  // Get styles from qItem._text
+  const stylesString = structuredDataCapture.getStyle(qItem._text);
+  const itemStyles = stylesString ? parseStyleToJs(stylesString) : {};
 
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -77,7 +82,12 @@ const ItemLabel = memo(function ItemLabel(props: ItemLabelProps) {
           // htmlFor={qItem.type === 'choice' || qItem.type === 'open-choice' || qItem.type === 'boolean' ? undefined : qItem.type + '-' + qItem.linkId}
           htmlFor={qItem.type + '-' + qItem.linkId}
           color={textColor}
-          sx={{ mt: 0.5, flexGrow: 1, ...(parentStyles || {}) }}>
+          sx={{
+            mt: 0.5,
+            flexGrow: 1,
+            ...(parentStyles || {}),
+            ...itemStyles
+          }}>
           <ItemTextSwitcher qItem={qItem} />
 
           {/* Required asterisk position is behind text */}

@@ -23,6 +23,7 @@ import type {
   PropsWithIsTabledRequiredAttribute,
   PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
+  PropsWithParentStylesAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
@@ -51,7 +52,8 @@ interface SingleItemViewProps
     PropsWithIsTabledRequiredAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
-    PropsWithFeedbackFromParentAttribute {
+    PropsWithFeedbackFromParentAttribute,
+    PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
   itemIsHidden: boolean;
@@ -61,7 +63,6 @@ interface SingleItemViewProps
     qrItem: QuestionnaireResponseItem,
     targetItemPath?: ItemPath
   ) => void;
-  parentStyles?: Record<string, string>;
 }
 
 function SingleItemView(props: SingleItemViewProps) {

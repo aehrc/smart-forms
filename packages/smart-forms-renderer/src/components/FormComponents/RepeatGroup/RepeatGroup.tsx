@@ -20,6 +20,7 @@ import type {
   PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
+  PropsWithParentStylesAttribute,
   PropsWithQrRepeatGroupChangeHandler,
   PropsWithShowMinimalViewAttribute
 } from '../../../interfaces/renderProps.interface';
@@ -35,11 +36,11 @@ interface RepeatGroupProps
     PropsWithItemPathAttribute,
     PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute,
-    PropsWithParentIsRepeatGroupAttribute {
+    PropsWithParentIsRepeatGroupAttribute,
+    PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   qrItems: QuestionnaireResponseItem[];
   groupCardElevation: number;
-  parentStyles?: Record<string, string>;
 }
 
 /**

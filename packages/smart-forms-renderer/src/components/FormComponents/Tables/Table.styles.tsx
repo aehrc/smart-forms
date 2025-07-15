@@ -23,7 +23,9 @@ import { grey } from '@mui/material/colors';
 export const HeaderTableCell = styled(TableCell)(({ theme }) => ({
   fontSize: 13,
   color: theme.palette.text.primary,
-  lineHeight: 'normal'
+  lineHeight: 'normal',
+  paddingLeft: 5,
+  paddingRight: 5
 }));
 
 export const StandardTableCell = styled(TableCell, {

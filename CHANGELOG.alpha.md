@@ -8,6 +8,9 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.78] - 2025-07-15
+#### Added
+- Added support for renderer-styling usage in Grid tables.
 
 ## [1.0.0-alpha.77] - 2025-07-14
 #### Added
