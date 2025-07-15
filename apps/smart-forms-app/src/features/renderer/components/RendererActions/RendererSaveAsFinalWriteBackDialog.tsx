@@ -155,7 +155,7 @@ function RendererSaveAsFinalWriteBackDialog(props: RendererSaveAsFinalWriteBackD
     }
 
     // Happy path
-    enqueueSnackbar('Response saved and items are successful written back.', {
+    enqueueSnackbar('Response saved and items are written back successfully.', {
       variant: 'success',
       preventDuplicate: true,
       action: <CloseSnackbar variant="success" />
