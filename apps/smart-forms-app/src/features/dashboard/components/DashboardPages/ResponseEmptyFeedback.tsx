@@ -33,7 +33,7 @@ function ResponseEmptyFeedback(props: ResponseEmptyFeedbackProps) {
       {searchedQuestionnaire === null ? (
         <Typography>
           No responses found.
-          <br /> It doesn&apos;t seem like you have any responses yet.
+          <br /> Start by creating a new response.
         </Typography>
       ) : (
         <Typography>
