@@ -37,7 +37,7 @@ interface ItemLabelProps extends PropsWithParentStylesAttribute {
 }
 
 const ItemLabel = memo(function ItemLabel(props: ItemLabelProps) {
-  let { qItem, readOnly, isDisplayItem, parentStyles } = props;
+  const { qItem, readOnly, isDisplayItem, parentStyles } = props;
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const requiredIndicatorPosition = useRendererStylingStore.use.requiredIndicatorPosition();
