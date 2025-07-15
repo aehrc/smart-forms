@@ -33,7 +33,7 @@ function useAuthRedirectHook(authState: AuthState) {
   useEffect(() => {
     if (authIsSuccessful) {
       if (questionnaireContextExist) {
-        navigate('/renderer');
+        navigate('/dashboard/existing');
       } else {
         navigate('/dashboard/questionnaires');
       }

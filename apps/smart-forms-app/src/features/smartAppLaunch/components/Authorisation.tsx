@@ -134,19 +134,6 @@ function Authorisation() {
                       postQuestionnaireToSMARTHealthIT(client, questionnaire);
                     }
 
-                    // Set terminology server url
-                    if (TERMINOLOGY_SERVER_URL) {
-                      setTerminologyServerUrl(TERMINOLOGY_SERVER_URL);
-                    } else {
-                      resetTerminologyServerUrl();
-                    }
-
-                    await buildSourceQuestionnaire(
-                      questionnaire,
-                      undefined,
-                      undefined,
-                      TERMINOLOGY_SERVER_URL
-                    );
                     setQuestionnaireLaunchContext(questionnaire);
                     dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: true });
                   } else {
