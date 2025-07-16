@@ -8,12 +8,14 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## sdc-template-extract [1.0.6] - 2025-07-16
+#### Added
+- Allow `getFhirPatchResourceDisplay()` to support non-Bundle resources e.g. patient, user, encounter etc from launch context.
 
 ## [1.0.0-alpha.79] - 2025-07-15
 _(WARNING: Possible breaking changes)_
 #### Removed
 - Removed all usages of `showMinimalView`.
-
 
 ## [1.0.0-alpha.78] - 2025-07-15
 #### Added
