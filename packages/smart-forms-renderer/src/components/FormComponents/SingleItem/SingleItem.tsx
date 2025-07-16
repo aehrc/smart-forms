@@ -30,7 +30,7 @@ import type {
 import { useQuestionnaireStore } from '../../../stores';
 import useHidden from '../../../hooks/useHidden';
 import useReadOnly from '../../../hooks/useReadOnly';
-import { shouldRenderNestedItems } from '../../../utils/itemControl';
+import { shouldRenderNestedItems } from '../../../utils/extensions';
 import SingleItemView from './SingleItemView';
 import type { ItemPath } from '../../../interfaces/itemPath.interface';
 

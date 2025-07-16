@@ -25,7 +25,7 @@ import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { getContextDisplays } from '../../utils/tabs';
 import type { QuestionnaireItem } from 'fhir/r4';
-import { getShortText } from '../../utils/itemControl';
+import { getShortText } from '../../utils/extensions';
 import ContextDisplayItem from '../FormComponents/ItemParts/ContextDisplayItem';
 
 interface FormBodySingleCollapsibleProps {

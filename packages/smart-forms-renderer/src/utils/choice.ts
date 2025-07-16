@@ -23,7 +23,7 @@ import type {
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
 import { ChoiceItemControl, ChoiceItemOrientation } from '../interfaces/choice.enum';
-import { isSpecificItemControl } from './itemControl';
+import { isSpecificItemControl } from './extensions';
 import { getRelevantCodingProperties } from './valueSet';
 import { generateCodingKey, generateOptionKey } from '../hooks/useAnswerOptionsToggleExpressions';
 

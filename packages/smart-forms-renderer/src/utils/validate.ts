@@ -36,7 +36,7 @@ import {
   getRegexString,
   getRegexValidation,
   getShortText
-} from './itemControl';
+} from './extensions';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 import type { RegexValidation } from '../interfaces/regex.interface';
 import { parseDecimalStringToFloat } from './parseInputs';

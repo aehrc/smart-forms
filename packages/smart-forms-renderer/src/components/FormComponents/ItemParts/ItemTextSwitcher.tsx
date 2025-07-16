@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { getMarkdownString } from '../../../utils/itemControl';
+import { getMarkdownString } from '../../../utils/extensions';
 import { useParseXhtml } from '../../../hooks/useParseXhtml';
 import useDisplayCqfAndCalculatedExpression from '../../../hooks/useDisplayCqfAndCalculatedExpression';
 import type { QuestionnaireItem } from 'fhir/r4';

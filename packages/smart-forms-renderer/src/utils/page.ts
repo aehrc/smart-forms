@@ -1,7 +1,7 @@
 import type { Pages } from '../interfaces/page.interface';
 import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enableWhen.interface';
 import type { QuestionnaireItem } from 'fhir/r4';
-import { isSpecificItemControl } from './itemControl';
+import { isSpecificItemControl } from './extensions';
 import { isHiddenByEnableWhen } from './qItem';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 

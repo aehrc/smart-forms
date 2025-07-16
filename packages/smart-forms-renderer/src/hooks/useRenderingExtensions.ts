@@ -21,7 +21,7 @@ import {
   getTextDisplayInstructions,
   getTextDisplayPrompt,
   getTextDisplayUnit
-} from '../utils/itemControl';
+} from '../utils/extensions';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 import type { JSX } from 'react';

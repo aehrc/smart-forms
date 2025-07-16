@@ -18,7 +18,7 @@
 import React, { memo } from 'react';
 import Collapse from '@mui/material/Collapse';
 import { TransitionGroup } from 'react-transition-group';
-import { getShortText } from '../../utils/itemControl';
+import { getShortText } from '../../utils/extensions';
 import type { QuestionnaireItem } from 'fhir/r4';
 import FormBodySingleTab from './FormBodySingleTab';
 import type { Tabs } from '../../interfaces/tab.interface';

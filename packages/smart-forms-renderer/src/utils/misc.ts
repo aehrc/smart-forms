@@ -24,7 +24,7 @@ import type {
   QuestionnaireResponseItem
 } from 'fhir/r4';
 import type { Tabs } from '../interfaces';
-import { getShortText, isSpecificItemControl } from './itemControl';
+import { getShortText, isSpecificItemControl } from './extensions';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 
