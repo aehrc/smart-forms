@@ -409,7 +409,7 @@ export function getMinValue(qItem: QuestionnaireItem): string | number | undefin
 export function getMinValueFeedback(qItem: QuestionnaireItem): string | null {
   const extension = qItem.extension?.find(
     (extension: Extension) =>
-      extension.url === 'https://smartforms.csiro.au/ig/StructureDefinition/minValue-feedback'
+      extension.url === 'https://smartforms.csiro.au/docs/custom-extension/minValue-feedback'
   );
 
   return extension?.valueString ?? null;
@@ -441,7 +441,7 @@ export function getMaxValue(qItem: QuestionnaireItem): string | number | undefin
 export function getMaxValueFeedback(qItem: QuestionnaireItem): string | null {
   const extension = qItem.extension?.find(
     (extension: Extension) =>
-      extension.url === 'https://smartforms.csiro.au/ig/StructureDefinition/maxValue-feedback'
+      extension.url === 'https://smartforms.csiro.au/docs/custom-extension/maxValue-feedback'
   );
 
   return extension?.valueString ?? null;
@@ -450,7 +450,7 @@ export function getMaxValueFeedback(qItem: QuestionnaireItem): string | null {
 export function getRequiredFeedback(qItem: QuestionnaireItem): string | null {
   const extension = qItem.extension?.find(
     (extension: Extension) =>
-      extension.url === 'https://smartforms.csiro.au/ig/StructureDefinition/required-feedback'
+      extension.url === 'https://smartforms.csiro.au/docs/custom-extension/required-feedback'
   );
 
   return extension?.valueString ?? null;
@@ -492,7 +492,7 @@ export function getMinQuantityValueFeedback(qItem: QuestionnaireItem): string | 
   const extension = qItem.extension?.find(
     (extension: Extension) =>
       extension.url ===
-      'https://smartforms.csiro.au/ig/StructureDefinition/minQuantityValue-feedback'
+      'https://smartforms.csiro.au/docs/custom-extension/minQuantityValue-feedback'
   );
 
   return extension?.valueString ?? null;
@@ -535,7 +535,7 @@ export function getMaxQuantityValueFeedback(qItem: QuestionnaireItem): string | 
   const extension = qItem.extension?.find(
     (extension: Extension) =>
       extension.url ===
-      'https://smartforms.csiro.au/ig/StructureDefinition/maxQuantityValue-feedback'
+      'https://smartforms.csiro.au/docs/custom-extension/maxQuantityValue-feedback'
   );
 
   return extension?.valueString ?? null;
@@ -551,7 +551,7 @@ export function isItemTextHidden(qItem: QuestionnaireItem): boolean {
   const extension = qItem._text?.extension?.find(
     (extension: Extension) =>
       extension.url ===
-      'https://smartforms.csiro.au/ig/StructureDefinition/questionnaire-item-text-hidden'
+      'https://smartforms.csiro.au/docs/custom-extension/questionnaire-item-text-hidden'
   );
 
   return !!extension?.valueBoolean;
