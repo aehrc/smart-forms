@@ -463,15 +463,33 @@ export function getFhirPatchOperationValueDisplay(
   return '';
 }
 
+/**
+ * Extracts and flattens FHIR resources from a populated context into a Map, keyed by their resource `id`.
+ * Support downstream functions like getFhirPatchResourceDisplay().
+ *
+ * This function supports both individual FHIR resources and Bundles. If the
+ * context value is a single FHIR resource (not a Bundle), it is added directly
+ * to the map. If it is a Bundle, each `entry.resource` is added individually.
+ *
+ */
 export function getPopulatedResourceMap(populatedContext: Record<string, any>) {
   const populatedResourceMap: Map<string, FhirResource> = new Map();
   for (const value of Object.values(populatedContext)) {
-    if (value && value.entry) {
-      value.entry.forEach((entry: { resource: FhirResource }) => {
-        if (entry.resource && entry.resource.id) {
-          populatedResourceMap.set(entry.resource.id, entry.resource);
-        }
-      });
+    if (value && value.resourceType) {
+      // Save resource directly if it's not a Bundle
+      if (value.resourceType !== 'Bundle' && value.id) {
+        populatedResourceMap.set(value.id, value as FhirResource);
+        continue;
+      }
+
+      // If resource is a Bundle, save each entry resource individually
+      if (value && value.resourceType === 'Bundle' && value.entry) {
+        value.entry.forEach((entry: BundleEntry) => {
+          if (entry.resource && entry.resource.id) {
+            populatedResourceMap.set(entry.resource.id, entry.resource);
+          }
+        });
+      }
     }
   }
 
