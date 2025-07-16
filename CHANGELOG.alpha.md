@@ -8,6 +8,23 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.80] - 2025-07-15
+_(WARNING: Possible breaking changes with Questionnaires definitions)_
+#### Changed
+- Changed all instances of custom extensions to use the "https://smartforms.csiro.au/docs/custom-extension/*" convention. Affected extensions:
+
+| Old Extension URL                                                                 | New Extension URL                                                                  |
+|-----------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
+| https://smartforms.csiro.au/ig/StructureDefinition/minValue-feedback             | https://smartforms.csiro.au/docs/custom-extension/minValue-feedback               |
+| https://smartforms.csiro.au/ig/StructureDefinition/maxValue-feedback             | https://smartforms.csiro.au/docs/custom-extension/maxValue-feedback               |
+| https://smartforms.csiro.au/ig/StructureDefinition/required-feedback             | https://smartforms.csiro.au/docs/custom-extension/required-feedback               |
+| https://smartforms.csiro.au/ig/StructureDefinition/minQuantityValue-feedback     | https://smartforms.csiro.au/docs/custom-extension/minQuantityValue-feedback       |
+| https://smartforms.csiro.au/ig/StructureDefinition/maxQuantityValue-feedback     | https://smartforms.csiro.au/docs/custom-extension/maxQuantityValue-feedback       |
+
+
+#### Added
+- Added support for new custom extension `https://smartforms.csiro.au/docs/custom-extension/questionnaire-item-text-hidden` to prevent rendering of item.text in the renderer. This extension is used when you want to specify item.text for metadata purposes but do not want it displayed in the rendered form.
+
 ## sdc-template-extract [1.0.6] - 2025-07-16
 #### Added
 - Allow `getFhirPatchResourceDisplay()` to support non-Bundle resources e.g. patient, user, encounter etc from launch context.
