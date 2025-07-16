@@ -27,6 +27,7 @@ import { getContextDisplays } from '../../utils/tabs';
 import type { QuestionnaireItem } from 'fhir/r4';
 import { getShortText } from '../../utils/extensions';
 import ContextDisplayItem from '../FormComponents/ItemParts/ContextDisplayItem';
+import { getItemTextToDisplay } from '../../utils/itemText';
 
 interface FormBodySingleCollapsibleProps {
   qItem: QuestionnaireItem;
@@ -43,7 +44,7 @@ const FormBodySingleCollapsible = memo(function FormBodySingleCollapsible(
 
   const contextDisplayItems = getContextDisplays(qItem);
 
-  const collapsibleLabel = getShortText(qItem) ?? qItem.text ?? '';
+  const collapsibleLabel = getShortText(qItem) ?? getItemTextToDisplay(qItem) ?? '';
 
   const isExpanded = selectedIndex === index;
 

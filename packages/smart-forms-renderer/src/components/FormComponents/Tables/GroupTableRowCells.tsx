@@ -81,7 +81,7 @@ function GroupTableRowCells(props: GroupTableRowCellsProps) {
         }
 
         // If the cell is not visible, skip rendering it
-        if (!visibleItemLabels.includes(rowItem.text ?? '')) {
+        if (!rowItem.text || !visibleItemLabels.includes(rowItem.text)) {
           return null;
         }
 

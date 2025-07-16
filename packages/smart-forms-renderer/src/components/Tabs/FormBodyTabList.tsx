@@ -24,6 +24,7 @@ import FormBodySingleTab from './FormBodySingleTab';
 import type { Tabs } from '../../interfaces/tab.interface';
 import { useQuestionnaireStore } from '../../stores';
 import { isTabHidden } from '../../utils/tabs';
+import { getItemTextToDisplay } from '../../utils/itemText';
 
 interface FormBodyTabListProps {
   topLevelItems: QuestionnaireItem[];
@@ -62,7 +63,7 @@ const FormBodyTabList = memo(function FormBodyTabList(props: FormBodyTabListProp
         }
 
         const tabIsSelected = currentTabIndex.toString() === i.toString();
-        const tabLabel = getShortText(qItem) ?? qItem.text ?? '';
+        const tabLabel = getShortText(qItem) ?? getItemTextToDisplay(qItem) ?? '';
 
         return (
           <Collapse key={qItem.linkId} timeout={100}>

@@ -45,6 +45,7 @@ import GroupHeading from '../GroupItem/GroupHeading';
 import { StandardCheckbox } from '../../Checkbox.styles';
 import type { ItemPath } from '../../../interfaces/itemPath.interface';
 import { Box } from '@mui/material';
+import { getItemTextToDisplay } from '../../../utils/itemText';
 
 interface GroupTableViewProps
   extends PropsWithIsRepeatedAttribute,
@@ -103,6 +104,8 @@ function GroupTableView(props: GroupTableViewProps) {
 
   const showExtraGTableInteractions = isRepeated && !readOnly;
 
+  const itemTextToDisplay = getItemTextToDisplay(qItem);
+
   // If the table is collapsible, wrap it in an accordion
   if (groupCollapsibleValue) {
     const isDefaultOpen = groupCollapsibleValue === 'default-open';
@@ -115,10 +118,16 @@ function GroupTableView(props: GroupTableViewProps) {
           transition: { unmountOnExit: true, timeout: 250 }
         }}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ minHeight: '28px' }}>
-          <GroupHeading qItem={qItem} readOnly={readOnly} groupCardElevation={groupCardElevation} />
+          {itemTextToDisplay ? (
+            <GroupHeading
+              qItem={qItem}
+              readOnly={readOnly}
+              groupCardElevation={groupCardElevation}
+            />
+          ) : null}
         </AccordionSummary>
         <AccordionDetails sx={{ pt: 0 }}>
-          {qItem.text ? <Divider sx={{ mb: 1.5, opacity: 0.6 }} /> : null}
+          {itemTextToDisplay ? <Divider sx={{ mb: 1.5, opacity: 0.6 }} /> : null}
           <TableContainer component={Paper} elevation={groupCardElevation}>
             <Table>
               {showExtraGTableInteractions ? (
@@ -192,7 +201,7 @@ function GroupTableView(props: GroupTableViewProps) {
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}
       style={parentStyles || undefined}>
-      {qItem.text ? (
+      {itemTextToDisplay ? (
         <>
           <GroupHeading qItem={qItem} readOnly={readOnly} groupCardElevation={groupCardElevation} />
           <Divider sx={{ my: 1, opacity: 0.6 }} />

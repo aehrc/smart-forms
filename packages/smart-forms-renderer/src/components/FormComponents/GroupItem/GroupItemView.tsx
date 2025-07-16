@@ -43,6 +43,7 @@ import { GroupAccordion } from './GroupAccordion.styles';
 import PageButtonsWrapper from './PageButtonWrapper';
 import { useParseXhtml } from '../../../hooks/useParseXhtml';
 import { extendItemPath } from '../../../utils/itemPath';
+import { getItemTextToDisplay } from '../../../utils/itemText';
 
 interface GroupItemViewProps
   extends PropsWithQrItemChangeHandler,
@@ -103,6 +104,9 @@ function GroupItemView(props: GroupItemViewProps) {
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly, parentRepeatGroupIndex);
 
+  // Get item.text as display label
+  const itemTextToDisplay = getItemTextToDisplay(qItem);
+
   // Render collapsible group item
   // If group item is a repeating instance, do not render group item as collapsible
   const groupCollapsibleValue = getGroupCollapsible(qItem);
@@ -118,17 +122,20 @@ function GroupItemView(props: GroupItemViewProps) {
         }}
         style={combinedStyles || undefined}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ minHeight: '28px' }}>
-          <GroupHeading
-            qItem={qItem}
-            readOnly={readOnly}
-            groupCardElevation={groupCardElevation}
-            tabIsMarkedAsComplete={tabIsMarkedAsComplete}
-            pageIsMarkedAsComplete={pageIsMarkedAsComplete}
-            parentStyles={combinedStyles}
-          />
+          {/* Show group heading when itemTextToDisplay is valid */}
+          {itemTextToDisplay ? (
+            <GroupHeading
+              qItem={qItem}
+              readOnly={readOnly}
+              groupCardElevation={groupCardElevation}
+              tabIsMarkedAsComplete={tabIsMarkedAsComplete}
+              pageIsMarkedAsComplete={pageIsMarkedAsComplete}
+              parentStyles={combinedStyles}
+            />
+          ) : null}
         </AccordionSummary>
         <AccordionDetails sx={{ pt: 0 }}>
-          {qItem.text ? <Divider sx={{ mb: 1.5, opacity: 0.6 }} /> : null}
+          {itemTextToDisplay ? <Divider sx={{ mb: 1.5, opacity: 0.6 }} /> : null}
           <>
             {childQItems.map((childQItem: QuestionnaireItem, i) => {
               const qrItemOrItems = qrItemsByIndex[i];
@@ -169,19 +176,20 @@ function GroupItemView(props: GroupItemViewProps) {
         role="region"
         aria-label={qItem.text ?? 'Unnamed group'}
         style={combinedStyles || undefined}>
-        {isRepeated ? null : (
+        {/* Show group heading when item.repeats=false AND itemTextToDisplay is valid */}
+        {!isRepeated && itemTextToDisplay ? (
           <>
             <GroupHeading
               qItem={qItem}
               readOnly={readOnly}
+              groupCardElevation={groupCardElevation}
               tabIsMarkedAsComplete={tabIsMarkedAsComplete}
               pageIsMarkedAsComplete={pageIsMarkedAsComplete}
-              groupCardElevation={groupCardElevation}
               parentStyles={combinedStyles}
             />
-            {qItem.text ? <Divider sx={{ mt: 1, mb: 1.5, opacity: 0.6 }} /> : null}
+            <Divider sx={{ mt: 1, mb: 1.5, opacity: 0.6 }} />
           </>
-        )}
+        ) : null}
         {childQItems.map((childQItem: QuestionnaireItem, i) => {
           const qrItemOrItems = qrItemsByIndex[i];
 
@@ -219,19 +227,20 @@ function GroupItemView(props: GroupItemViewProps) {
         elevation={groupCardElevation}
         isRepeated={isRepeated}
         style={combinedStyles || undefined}>
-        {isRepeated ? null : (
+        {/* Show group heading when item.repeats=false AND itemTextToDisplay is valid */}
+        {!isRepeated && itemTextToDisplay ? (
           <>
             <GroupHeading
               qItem={qItem}
               readOnly={readOnly}
+              groupCardElevation={groupCardElevation}
               tabIsMarkedAsComplete={tabIsMarkedAsComplete}
               pageIsMarkedAsComplete={pageIsMarkedAsComplete}
-              groupCardElevation={groupCardElevation}
               parentStyles={combinedStyles}
             />
-            {qItem.text ? <Divider sx={{ mt: 1, mb: 1.5, opacity: 0.6 }} /> : null}
+            <Divider sx={{ mt: 1, mb: 1.5, opacity: 0.6 }} />
           </>
-        )}
+        ) : null}
         {childQItems.map((childQItem: QuestionnaireItem, i) => {
           const qrItemOrItems = qrItemsByIndex[i];
 
