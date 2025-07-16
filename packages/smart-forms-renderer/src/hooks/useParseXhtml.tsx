@@ -16,7 +16,7 @@
  */
 
 import React, { useMemo } from 'react';
-import { getXHtmlString } from '../utils/itemControl';
+import { getXHtmlString } from '../utils/extensions';
 import type { QuestionnaireItem } from 'fhir/r4';
 import type { HTMLReactParserOptions } from 'html-react-parser';
 import { attributesToProps, default as htmlParse, domToReact } from 'html-react-parser';

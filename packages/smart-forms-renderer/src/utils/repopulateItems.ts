@@ -23,7 +23,7 @@ import type {
 } from 'fhir/r4';
 import type { Tabs } from '../interfaces/tab.interface';
 import { containsTabs, isTabContainer } from './tabs';
-import { getShortText, isSpecificItemControl } from './itemControl';
+import { getShortText, isSpecificItemControl } from './extensions';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enableWhen.interface';
 import { isHiddenByEnableWhen } from './qItem';

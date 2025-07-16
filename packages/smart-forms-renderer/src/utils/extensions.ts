@@ -48,19 +48,14 @@ export function shouldRenderNestedItems(qItem: QuestionnaireItem): boolean {
  * @author Sean Fong
  */
 export function isSpecificItemControl(qItem: QuestionnaireItem, itemControlCode: string): boolean {
-  const itemControl = qItem?.extension?.find(
+  const extension = qItem?.extension?.find(
     (extension: Extension) =>
       extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl'
   );
-  if (itemControl) {
-    const code = itemControl.valueCodeableConcept?.coding?.find(
-      (coding: Coding) => coding.code === itemControlCode
-    );
-    if (code) {
-      return true;
-    }
-  }
-  return false;
+
+  return !!extension?.valueCodeableConcept?.coding?.some(
+    (coding: Coding) => coding.code === itemControlCode
+  );
 }
 
 /**
@@ -70,21 +65,16 @@ export function isSpecificItemControl(qItem: QuestionnaireItem, itemControlCode:
  */
 export function isSpecificDisplayCategory(
   qItem: QuestionnaireItem,
-  itemControlCode: string
+  displayCategoryCode: string
 ): boolean {
-  const displayCategory = qItem.extension?.find(
+  const extension = qItem.extension?.find(
     (extension: Extension) =>
       extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory'
   );
-  if (displayCategory) {
-    const code = displayCategory.valueCodeableConcept?.coding?.find(
-      (coding: Coding) => coding.code === itemControlCode
-    );
-    if (code) {
-      return true;
-    }
-  }
-  return false;
+
+  return !!extension?.valueCodeableConcept?.coding?.some(
+    (coding: Coding) => coding.code === displayCategoryCode
+  );
 }
 
 /**
@@ -93,16 +83,12 @@ export function isSpecificDisplayCategory(
  * @author Sean Fong
  */
 export function getShortText(qItem: QuestionnaireItem): string | null {
-  const itemControl = qItem.extension?.find(
+  const extension = qItem.extension?.find(
     (extension: Extension) =>
       extension.url === 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText'
   );
-  if (itemControl) {
-    if (itemControl.valueString) {
-      return itemControl.valueString;
-    }
-  }
-  return null;
+
+  return extension?.valueString ?? null;
 }
 
 /**
@@ -111,17 +97,12 @@ export function getShortText(qItem: QuestionnaireItem): string | null {
  * @author Sean Fong
  */
 export function hasHiddenExtension(qItem: QuestionnaireItem): boolean {
-  const itemControl = qItem.extension?.find(
+  const extension = qItem.extension?.find(
     (extension: Extension) =>
       extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-hidden'
   );
 
-  if (itemControl) {
-    if (itemControl.valueBoolean) {
-      return true;
-    }
-  }
-  return false;
+  return !!extension?.valueBoolean;
 }
 
 /**
@@ -131,17 +112,12 @@ export function hasHiddenExtension(qItem: QuestionnaireItem): boolean {
  * @author Sean Fong
  */
 export function getOpenLabelText(qItem: QuestionnaireItem): string {
-  const itemControl = qItem.extension?.find(
+  const extension = qItem.extension?.find(
     (extension: Extension) =>
       extension.url === 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-openLabel'
   );
-  if (itemControl) {
-    if (itemControl.valueString) {
-      return itemControl.valueString;
-    }
-  }
 
-  return 'Other';
+  return extension?.valueString ?? 'Other';
 }
 
 /**
@@ -150,16 +126,12 @@ export function getOpenLabelText(qItem: QuestionnaireItem): string {
  * @author Sean Fong
  */
 export function getDecimalPrecision(qItem: QuestionnaireItem): number | null {
-  const itemControl = qItem.extension?.find(
+  const extension = qItem.extension?.find(
     (extension: Extension) =>
       extension.url === 'http://hl7.org/fhir/StructureDefinition/quantity-precision'
   );
-  if (itemControl) {
-    if (itemControl.valueInteger) {
-      return itemControl.valueInteger;
-    }
-  }
-  return null;
+
+  return extension?.valueInteger ?? null;
 }
 
 /**
@@ -187,18 +159,12 @@ export function getXHtmlString(qItem: QuestionnaireItem): string | null {
 }
 
 export function getXHtmlStringFromExtension(extensions: Extension[]): string | null {
-  const itemControl = extensions?.find(
+  const extension = extensions?.find(
     (extension: Extension) =>
       extension.url === 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml'
   );
 
-  if (itemControl) {
-    if (itemControl.valueString) {
-      return itemControl.valueString;
-    }
-  }
-
-  return null;
+  return extension?.valueString ?? null;
 }
 
 /**
@@ -207,17 +173,12 @@ export function getXHtmlStringFromExtension(extensions: Extension[]): string | n
  * @author Sean Fong
  */
 export function getMarkdownString(qItem: QuestionnaireItem): string | null {
-  const itemControl = qItem._text?.extension?.find(
+  const extension = qItem._text?.extension?.find(
     (extension: Extension) =>
       extension.url === 'http://hl7.org/fhir/StructureDefinition/rendering-markdown'
   );
 
-  if (itemControl) {
-    if (itemControl.valueMarkdown) {
-      return itemControl.valueMarkdown;
-    }
-  }
-  return null;
+  return extension?.valueMarkdown ?? null;
 }
 
 /**
@@ -234,22 +195,43 @@ export function getTextDisplayPrompt(qItem: QuestionnaireItem): string {
       }
     }
   }
+
   return '';
 }
 
 /**
  * Get Quantity unit for items with itemControlCode unit and has a unit childItem
  *
+ * Example extension:
+ * {
+ *   "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
+ *   "valueCoding": {
+ *     "system": "http://unitsofmeasure.org",
+ *     "code": "kg",
+ *     "display": "kg"
+ *   }
+ * }
+ *
+ * Example Output (omit the url):
+ *  {
+ *   "valueCoding": {
+ *     "system": "http://unitsofmeasure.org",
+ *     "code": "kg",
+ *     "display": "kg"
+ *   }
+ * }
+ *
  * @author Sean Fong
  */
 export function getQuantityUnit(qItem: QuestionnaireItem): QuestionnaireItemAnswerOption | null {
-  // Otherwise, check if the item has a unit extension
-  const itemControl = qItem.extension?.find(
+  const extension = qItem.extension?.find(
     (extension: Extension) =>
       extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit'
   );
-  if (itemControl && itemControl.valueCoding) {
-    return itemControl;
+
+  // Return as { valueCoding } for QuestionnaireItemAnswerOption, omitting url
+  if (extension?.valueCoding) {
+    return { valueCoding: extension.valueCoding };
   }
 
   return null;
@@ -271,12 +253,13 @@ export function getTextDisplayUnit(qItem: QuestionnaireItem): string {
   }
 
   // Otherwise, check if the item has a unit extension
-  const itemControl = qItem.extension?.find(
+  const extension = qItem.extension?.find(
     (extension: Extension) =>
       extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit'
   );
-  if (itemControl && itemControl.valueCoding) {
-    return itemControl.valueCoding.display ?? '';
+
+  if (extension?.valueCoding) {
+    return extension.valueCoding.display ?? '';
   }
 
   return '';
@@ -295,6 +278,7 @@ export function getTextDisplayLower(qItem: QuestionnaireItem): string {
       }
     }
   }
+
   return '';
 }
 
@@ -311,6 +295,7 @@ export function getTextDisplayUpper(qItem: QuestionnaireItem): string {
       }
     }
   }
+
   return '';
 }
 
@@ -327,6 +312,7 @@ export function getTextDisplayInstructions(qItem: QuestionnaireItem): string {
       }
     }
   }
+
   return '';
 }
 
@@ -373,12 +359,12 @@ export function getRegexValidation(qItem: QuestionnaireItem): RegexValidation | 
 }
 
 export function getRegexString(qItem: QuestionnaireItem): string | null {
-  const itemControl = qItem.extension?.find(
+  const extension = qItem.extension?.find(
     (extension: Extension) => extension.url === 'http://hl7.org/fhir/StructureDefinition/regex'
   );
 
-  if (itemControl) {
-    const extensionString = itemControl.valueString;
+  if (extension) {
+    const extensionString = extension.valueString;
     if (extensionString) {
       let regexString;
       if (extensionString.includes('matches(')) {
@@ -397,7 +383,7 @@ export function getRegexString(qItem: QuestionnaireItem): string | null {
   return null;
 }
 
-export function getMinValue(qItem: QuestionnaireItem) {
+export function getMinValue(qItem: QuestionnaireItem): string | number | undefined {
   switch (qItem.type) {
     case 'integer':
       return structuredDataCapture.getMinValueAsInteger(qItem);
@@ -420,22 +406,16 @@ export function getMinValue(qItem: QuestionnaireItem) {
   }
 }
 
-export function getMinValueFeedback(qItem: QuestionnaireItem) {
-  const itemControl = qItem.extension?.find(
+export function getMinValueFeedback(qItem: QuestionnaireItem): string | null {
+  const extension = qItem.extension?.find(
     (extension: Extension) =>
-      extension.url === 'https://smartforms.csiro.au/ig/StructureDefinition/minValue-feedback'
+      extension.url === 'https://smartforms.csiro.au/docs/custom-extension/minValue-feedback'
   );
-  if (itemControl) {
-    const extensionString = itemControl.valueString;
-    if (extensionString) {
-      return extensionString;
-    }
-  }
 
-  return null;
+  return extension?.valueString ?? null;
 }
 
-export function getMaxValue(qItem: QuestionnaireItem) {
+export function getMaxValue(qItem: QuestionnaireItem): string | number | undefined {
   switch (qItem.type) {
     case 'integer':
       return structuredDataCapture.getMaxValueAsInteger(qItem);
@@ -458,130 +438,121 @@ export function getMaxValue(qItem: QuestionnaireItem) {
   }
 }
 
-export function getMaxValueFeedback(qItem: QuestionnaireItem) {
-  const itemControl = qItem.extension?.find(
+export function getMaxValueFeedback(qItem: QuestionnaireItem): string | null {
+  const extension = qItem.extension?.find(
     (extension: Extension) =>
-      extension.url === 'https://smartforms.csiro.au/ig/StructureDefinition/maxValue-feedback'
+      extension.url === 'https://smartforms.csiro.au/docs/custom-extension/maxValue-feedback'
   );
-  if (itemControl) {
-    const extensionString = itemControl.valueString;
-    if (extensionString) {
-      return extensionString;
-    }
-  }
 
-  return null;
+  return extension?.valueString ?? null;
 }
 
-export function getRequiredFeedback(qItem: QuestionnaireItem) {
-  const itemControl = qItem.extension?.find(
+export function getRequiredFeedback(qItem: QuestionnaireItem): string | null {
+  const extension = qItem.extension?.find(
     (extension: Extension) =>
-      extension.url === 'https://smartforms.csiro.au/ig/StructureDefinition/required-feedback'
+      extension.url === 'https://smartforms.csiro.au/docs/custom-extension/required-feedback'
   );
-  if (itemControl) {
-    const extensionString = itemControl.valueString;
-    if (extensionString) {
-      return extensionString;
-    }
-  }
 
-  return null;
+  return extension?.valueString ?? null;
 }
-
 /**
- * Check if the item  has a sdc-questionnaire-minQuantity and minQuantity extension
+ * Check if the item has a sdc-questionnaire-minQuantity and minQuantity extension
+ *
+ * @param {QuestionnaireItem} qItem - The QuestionnaireItem to check.
+ * @returns {number | undefined} The numeric value of the minQuantity extension, if present.
+ *
  * @author Janardhan Vignarajan
- * @export
- * @param {QuestionnaireItem} qItem
- * @return {*}  {(number | undefined)}
  */
 export function getMinQuantityValue(qItem: QuestionnaireItem): number | undefined {
-  const itemControl = qItem.extension?.find(
+  const extension = qItem.extension?.find(
     (extension: Extension) =>
       extension.url ===
       'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-minQuantity'
   );
 
-  if (itemControl && itemControl.valueQuantity) {
-    //check if valueQuantity exists in the extension
-    if (typeof itemControl.valueQuantity.value === 'number') {
-      //check if valueQuantity.value exists in the extension
-      return itemControl.valueQuantity.value;
+  // Check if valueQuantity exists and if value is a "number" type
+  if (extension?.valueQuantity) {
+    if (typeof extension.valueQuantity.value === 'number') {
+      return extension.valueQuantity.value;
     }
   }
+
   return undefined;
 }
 
 /**
- * Check if the item  has a sdc-questionnaire-minQuantity feedback extension
+ * Check if the item has a sdc-questionnaire-minQuantity feedback extension
+ *
+ * @param {QuestionnaireItem} qItem - The QuestionnaireItem to check.
+ * @returns {string | null} The value of the extension if found, otherwise null.
  *
  * @author Janardhan Vignarajan
- * @export
- * @param {QuestionnaireItem} qItem
- * @return {*}
  */
-export function getMinQuantityValueFeedback(qItem: QuestionnaireItem) {
-  const itemControl = qItem.extension?.find(
+export function getMinQuantityValueFeedback(qItem: QuestionnaireItem): string | null {
+  const extension = qItem.extension?.find(
     (extension: Extension) =>
       extension.url ===
-      'https://smartforms.csiro.au/ig/StructureDefinition/minQuantityValue-feedback'
+      'https://smartforms.csiro.au/docs/custom-extension/minQuantityValue-feedback'
   );
-  if (itemControl) {
-    const extensionString = itemControl.valueString;
-    if (extensionString) {
-      return extensionString;
-    }
-  }
 
-  return null;
+  return extension?.valueString ?? null;
 }
 
 /**
- * Check if the item  has a sdc-questionnaire-maxQuantity  extension
+ * Check if the item has a sdc-questionnaire-maxQuantity extension
+ *
+ * @param {QuestionnaireItem} qItem - The QuestionnaireItem to check.
+ * @returns {number | undefined} The numeric value of the maxQuantity extension, if present.
  *
  * @author Janardhan Vignarajan
- * @export
- * @param {QuestionnaireItem} qItem
- * @return {*}  {(number | undefined)}
  */
 export function getMaxQuantityValue(qItem: QuestionnaireItem): number | undefined {
-  const itemControl = qItem.extension?.find(
+  const extension = qItem.extension?.find(
     (extension: Extension) =>
       extension.url ===
       'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-maxQuantity'
   );
 
-  if (itemControl && itemControl.valueQuantity) {
-    //check if valueQuantity exists in the extension
-    if (typeof itemControl.valueQuantity.value === 'number') {
-      //check if valueQuantity.value exists in the extension
-      return itemControl.valueQuantity.value;
+  // Check if valueQuantity exists and if value is a "number" type
+  if (extension?.valueQuantity) {
+    if (typeof extension.valueQuantity.value === 'number') {
+      return extension.valueQuantity.value;
     }
   }
+
   return undefined;
 }
 
 /**
- * Check if the item  has a sdc-questionnaire-maxQuantity Feedback extension
+ * Check if the item has a sdc-questionnaire-maxQuantity feedback extension
+ *
+ * @param {QuestionnaireItem} qItem - The QuestionnaireItem to check.
+ * @returns {string | null} The value of the extension if found, otherwise null.
  *
  * @author Janardhan Vignarajan
- 
- * @export
- * @param {QuestionnaireItem} qItem
- * @return {*} 
  */
-export function getMaxQuantityValueFeedback(qItem: QuestionnaireItem) {
-  const itemControl = qItem.extension?.find(
+export function getMaxQuantityValueFeedback(qItem: QuestionnaireItem): string | null {
+  const extension = qItem.extension?.find(
     (extension: Extension) =>
       extension.url ===
-      'https://smartforms.csiro.au/ig/StructureDefinition/maxQuantityValue-feedback'
+      'https://smartforms.csiro.au/docs/custom-extension/maxQuantityValue-feedback'
   );
-  if (itemControl) {
-    const extensionString = itemControl.valueString;
-    if (extensionString) {
-      return extensionString;
-    }
-  }
 
-  return null;
+  return extension?.valueString ?? null;
+}
+
+/**
+ * Check if the QuestionnaireItem has a 'item.text hidden' extension on the '_text' field.
+ *
+ * @param {QuestionnaireItem} qItem - The QuestionnaireItem to check.
+ * @returns {boolean} True if the item text is hidden, otherwise false.
+ */
+export function isItemTextHidden(qItem: QuestionnaireItem): boolean {
+  const extension = qItem._text?.extension?.find(
+    (extension: Extension) =>
+      extension.url ===
+      'https://smartforms.csiro.au/docs/custom-extension/questionnaire-item-text-hidden'
+  );
+
+  return !!extension?.valueBoolean;
 }

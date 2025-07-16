@@ -22,7 +22,7 @@ import type {
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
 import { OpenChoiceItemControl } from '../interfaces/choice.enum';
-import { isSpecificItemControl } from './itemControl';
+import { isSpecificItemControl } from './extensions';
 import { deepEqual } from 'fast-equals';
 import differenceWith from 'lodash.differencewith';
 

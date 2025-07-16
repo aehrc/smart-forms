@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { getTextDisplayLower, getTextDisplayUpper } from '../utils/itemControl';
+import { getTextDisplayLower, getTextDisplayUpper } from '../utils/extensions';
 import type { QuestionnaireItem } from 'fhir/r4';
 import { getMaxValue, getMinValue, getSliderStepValue } from '../utils/slider';
 

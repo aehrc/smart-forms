@@ -8,7 +8,7 @@ import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { parseDecimalStringWithPrecision } from '../../../utils/parseInputs';
-import { getDecimalPrecision } from '../../../utils/itemControl';
+import { getDecimalPrecision } from '../../../utils/extensions';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import Box from '@mui/material/Box';

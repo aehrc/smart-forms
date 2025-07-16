@@ -28,7 +28,7 @@ import {
   getMinValueFeedback,
   getRegexValidation,
   getRequiredFeedback
-} from '../utils/itemControl';
+} from '../utils/extensions';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '../stores';
 

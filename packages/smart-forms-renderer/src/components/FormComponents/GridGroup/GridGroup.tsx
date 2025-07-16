@@ -36,6 +36,7 @@ import { useQuestionnaireStore } from '../../../stores';
 import GroupHeading from '../GroupItem/GroupHeading';
 import type { ItemPath } from '../../../interfaces/itemPath.interface';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
+import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
 
 interface GridGroupProps
   extends PropsWithQrItemChangeHandler,
@@ -79,7 +80,7 @@ function GridGroup(props: GridGroupProps) {
   }[] = useMemo(
     () =>
       qRowItems?.[0].item?.map((firstItem) => ({
-        label: firstItem.text ?? ' ',
+        label: getItemTextToDisplay(firstItem) ?? ' ',
         styleString: structuredDataCapture.getStyle(firstItem._text) ?? null
       })) ?? [],
     [qRowItems]
@@ -107,6 +108,9 @@ function GridGroup(props: GridGroupProps) {
     onQrItemChange(updatedQrGroup, targetItemPath);
   }
 
+  // Get item.text as display label
+  const itemTextToDisplay = getItemTextToDisplay(qItem);
+
   return (
     <QGroupContainerBox
       cardElevation={groupCardElevation}
@@ -115,7 +119,7 @@ function GridGroup(props: GridGroupProps) {
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}
       style={parentStyles || undefined}>
-      {qItem.text ? (
+      {itemTextToDisplay ? (
         <>
           <GroupHeading qItem={qItem} readOnly={readOnly} groupCardElevation={groupCardElevation} />
           <Divider sx={{ my: 1, opacity: 0.6 }} />

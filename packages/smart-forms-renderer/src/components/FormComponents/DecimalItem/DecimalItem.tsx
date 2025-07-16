@@ -28,7 +28,7 @@ import {
   parseDecimalStringToFloat,
   parseDecimalStringWithPrecision
 } from '../../../utils/parseInputs';
-import { getDecimalPrecision } from '../../../utils/itemControl';
+import { getDecimalPrecision } from '../../../utils/extensions';
 import useDecimalCalculatedExpression from '../../../hooks/useDecimalCalculatedExpression';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';

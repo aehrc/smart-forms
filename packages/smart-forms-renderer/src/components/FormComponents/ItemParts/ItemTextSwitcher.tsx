@@ -1,21 +1,22 @@
 import React, { memo } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { getMarkdownString } from '../../../utils/itemControl';
+import { getMarkdownString } from '../../../utils/extensions';
 import { useParseXhtml } from '../../../hooks/useParseXhtml';
 import useDisplayCqfAndCalculatedExpression from '../../../hooks/useDisplayCqfAndCalculatedExpression';
 import type { QuestionnaireItem } from 'fhir/r4';
+import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
 
 interface ItemTextSwitcherProps {
   qItem: QuestionnaireItem;
 }
 
 const ItemTextSwitcher = memo(function ItemTextSwitcher({ qItem }: ItemTextSwitcherProps) {
-  let itemText = qItem.text ?? '';
+  let itemTextToDisplay = getItemTextToDisplay(qItem);
 
   // Use calculatedExpressionString if available
   const calculatedExpressionString = useDisplayCqfAndCalculatedExpression(qItem) ?? '';
   if (calculatedExpressionString) {
-    itemText = calculatedExpressionString;
+    itemTextToDisplay = calculatedExpressionString;
   }
 
   // parse XHTML if found
@@ -35,12 +36,12 @@ const ItemTextSwitcher = memo(function ItemTextSwitcher({ qItem }: ItemTextSwitc
   }
 
   // labelText is empty, return null
-  if (!itemText) {
+  if (!itemTextToDisplay) {
     return null;
   }
 
   // parse regular text
-  return <span>{itemText}</span>;
+  return <span>{itemTextToDisplay}</span>;
 });
 
 export default ItemTextSwitcher;

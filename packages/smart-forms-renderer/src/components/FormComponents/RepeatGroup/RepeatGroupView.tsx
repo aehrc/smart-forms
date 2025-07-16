@@ -41,6 +41,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import GroupHeading from '../GroupItem/GroupHeading';
 import { appendRepeatIndexToLastSegment } from '../../../utils/itemPath';
 import type { ItemPath } from '../../../interfaces/itemPath.interface';
+import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
 
 interface RepeatGroupViewProps
   extends PropsWithItemPathAttribute,
@@ -80,6 +81,9 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
+  // Get item.text as display label
+  const itemTextToDisplay = getItemTextToDisplay(qItem);
+
   const groupCollapsibleValue = getGroupCollapsible(qItem);
   if (groupCollapsibleValue) {
     const isDefaultOpen = groupCollapsibleValue === 'default-open';
@@ -93,7 +97,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
         }}
         style={parentStyles || undefined}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ minHeight: '28px' }}>
-          {qItem.text ? (
+          {itemTextToDisplay ? (
             <GroupHeading
               qItem={qItem}
               readOnly={readOnly}
@@ -102,7 +106,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
           ) : null}
         </AccordionSummary>
         <AccordionDetails sx={{ pt: 0 }}>
-          {qItem.text ? <Divider sx={{ mb: 1.5, opacity: 0.6 }} /> : null}
+          {itemTextToDisplay ? <Divider sx={{ mb: 1.5, opacity: 0.6 }} /> : null}
           <TransitionGroup>
             {repeatGroups.map(({ id, qrItem: nullableQrItem }, index) => {
               const answeredQrItem = createEmptyQrItem(qItem, undefined);
@@ -144,7 +148,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
       isRepeated={true}
       style={parentStyles || undefined}>
       <Card elevation={groupCardElevation} sx={{ p: 3, py: 2.5, mb: 3.5 }}>
-        {qItem.text ? (
+        {itemTextToDisplay ? (
           <>
             <GroupHeading
               qItem={qItem}

@@ -20,8 +20,8 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
   PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithParentStylesAttribute
+  PropsWithParentStylesAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import { createEmptyQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
 import { GridAnswerTableCell, GridTextTableCell } from '../Tables/Table.styles';
@@ -32,6 +32,7 @@ import Box from '@mui/material/Box';
 import useHidden from '../../../hooks/useHidden';
 import { extendItemPath } from '../../../utils/itemPath';
 import type { ItemPath } from '../../../interfaces/itemPath.interface';
+import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
 
 interface GridRowProps
   extends PropsWithQrItemChangeHandler,
@@ -84,11 +85,15 @@ function GridRow(props: GridRowProps) {
   const qrItemsByIndex = getQrItemsIndex(rowQItems, rowQrItems, qItemsIndexMap);
 
   const numOfColumns = columnHeaderLabels.length;
+
+  // Get item.text as display label
+  const itemTextToDisplay = getItemTextToDisplay(qItem);
+
   return (
     <>
       <GridTextTableCell>
         <Typography component="span" fontWeight="bold">
-          {qItem.text}
+          {itemTextToDisplay}
         </Typography>
       </GridTextTableCell>
       {columnHeaderLabels.map((label, colIndex) => {
