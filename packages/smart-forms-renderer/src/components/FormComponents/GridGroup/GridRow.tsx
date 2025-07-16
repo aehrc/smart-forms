@@ -32,7 +32,7 @@ import Box from '@mui/material/Box';
 import useHidden from '../../../hooks/useHidden';
 import { extendItemPath } from '../../../utils/itemPath';
 import type { ItemPath } from '../../../interfaces/itemPath.interface';
-import { getItemTextToDisplay } from '../../../utils/itemText';
+import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
 
 interface GridRowProps
   extends PropsWithQrItemChangeHandler,

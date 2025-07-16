@@ -4,7 +4,7 @@ import { getMarkdownString } from '../../../utils/extensions';
 import { useParseXhtml } from '../../../hooks/useParseXhtml';
 import useDisplayCqfAndCalculatedExpression from '../../../hooks/useDisplayCqfAndCalculatedExpression';
 import type { QuestionnaireItem } from 'fhir/r4';
-import { getItemTextToDisplay } from '../../../utils/itemText';
+import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
 
 interface ItemTextSwitcherProps {
   qItem: QuestionnaireItem;

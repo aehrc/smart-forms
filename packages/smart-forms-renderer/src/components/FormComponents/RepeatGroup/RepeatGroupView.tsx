@@ -41,7 +41,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import GroupHeading from '../GroupItem/GroupHeading';
 import { appendRepeatIndexToLastSegment } from '../../../utils/itemPath';
 import type { ItemPath } from '../../../interfaces/itemPath.interface';
-import { getItemTextToDisplay } from '../../../utils/itemText';
+import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
 
 interface RepeatGroupViewProps
   extends PropsWithItemPathAttribute,

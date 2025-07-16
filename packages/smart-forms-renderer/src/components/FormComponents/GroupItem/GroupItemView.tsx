@@ -43,7 +43,7 @@ import { GroupAccordion } from './GroupAccordion.styles';
 import PageButtonsWrapper from './PageButtonWrapper';
 import { useParseXhtml } from '../../../hooks/useParseXhtml';
 import { extendItemPath } from '../../../utils/itemPath';
-import { getItemTextToDisplay } from '../../../utils/itemText';
+import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
 
 interface GroupItemViewProps
   extends PropsWithQrItemChangeHandler,

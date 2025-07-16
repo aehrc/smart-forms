@@ -36,7 +36,7 @@ import { useQuestionnaireStore } from '../../../stores';
 import GroupHeading from '../GroupItem/GroupHeading';
 import type { ItemPath } from '../../../interfaces/itemPath.interface';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
-import { getItemTextToDisplay } from '../../../utils/itemText';
+import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
 
 interface GridGroupProps
   extends PropsWithQrItemChangeHandler,

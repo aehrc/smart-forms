@@ -27,7 +27,7 @@ import { getContextDisplays } from '../../utils/tabs';
 import type { QuestionnaireItem } from 'fhir/r4';
 import { getShortText } from '../../utils/extensions';
 import ContextDisplayItem from '../FormComponents/ItemParts/ContextDisplayItem';
-import { getItemTextToDisplay } from '../../utils/itemText';
+import { getItemTextToDisplay } from '../../utils/itemTextToDisplay';
 
 interface FormBodySingleCollapsibleProps {
   qItem: QuestionnaireItem;

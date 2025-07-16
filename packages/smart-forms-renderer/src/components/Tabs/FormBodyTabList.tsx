@@ -24,7 +24,7 @@ import FormBodySingleTab from './FormBodySingleTab';
 import type { Tabs } from '../../interfaces/tab.interface';
 import { useQuestionnaireStore } from '../../stores';
 import { isTabHidden } from '../../utils/tabs';
-import { getItemTextToDisplay } from '../../utils/itemText';
+import { getItemTextToDisplay } from '../../utils/itemTextToDisplay';
 
 interface FormBodyTabListProps {
   topLevelItems: QuestionnaireItem[];

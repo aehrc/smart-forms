@@ -45,7 +45,7 @@ import GroupHeading from '../GroupItem/GroupHeading';
 import { StandardCheckbox } from '../../Checkbox.styles';
 import type { ItemPath } from '../../../interfaces/itemPath.interface';
 import { Box } from '@mui/material';
-import { getItemTextToDisplay } from '../../../utils/itemText';
+import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
 
 interface GroupTableViewProps
   extends PropsWithIsRepeatedAttribute,
