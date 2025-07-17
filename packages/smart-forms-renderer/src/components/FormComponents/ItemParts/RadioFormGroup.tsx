@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import Box from '@mui/material/Box';
-import { StyledRadioGroup, StyledRequiredTypography } from '../Item.styles';
+import RadioGroup from '@mui/material/RadioGroup';
+import { StyledRequiredTypography } from '../Item.styles';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import RadioOptionList from './RadioOptionList';
 import ExpressionUpdateFadingIcon from './ExpressionUpdateFadingIcon';
@@ -57,7 +58,7 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
           display="flex"
           alignItems="center"
           sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
-          <StyledRadioGroup
+          <RadioGroup
             id={qItem.type + '-' + qItem.linkId}
             {...(!isTabled
               ? { 'aria-labelledby': 'label-' + qItem.linkId }
@@ -82,7 +83,7 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
               answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             />
             {children}
-          </StyledRadioGroup>
+          </RadioGroup>
 
           <Box flexGrow={1} />
 

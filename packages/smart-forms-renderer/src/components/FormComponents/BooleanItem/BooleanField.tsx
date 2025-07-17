@@ -15,12 +15,13 @@
  * limitations under the License.
  */
 
-import React, { memo } from 'react';
+import { memo } from 'react';
 import Box from '@mui/material/Box';
+import RadioGroup from '@mui/material/RadioGroup';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem } from 'fhir/r4';
 import ChoiceRadioSingle from '../ChoiceItems/ChoiceRadioSingle';
-import { StyledRadioGroup, StyledRequiredTypography } from '../Item.styles';
+import { StyledRequiredTypography } from '../Item.styles';
 import { getChoiceOrientation } from '../../../utils/choice';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -102,7 +103,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
             display="flex"
             alignItems="center"
             sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
-            <StyledRadioGroup
+            <RadioGroup
               id={qItem.type + '-' + qItem.linkId}
               aria-labelledby={'label-' + qItem.linkId}
               row={orientation === ChoiceItemOrientation.Horizontal}
@@ -152,7 +153,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
                   />
                 </>
               )}
-            </StyledRadioGroup>
+            </RadioGroup>
 
             <Box flexGrow={1} />
 
