@@ -70,55 +70,53 @@ function CustomTimeField(props: CustomTimeFieldProps) {
   const periodId = itemType + '-' + linkId + '-period';
 
   return (
-    <Tooltip title={isTabled ? feedback : ''}>
-      <>
-        <Box
-          id={itemId}
-          display="flex"
-          alignItems="center"
-          columnGap={1}
-          sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160 }}>
-          <MuiTextField
-            id={timeId}
-            value={timeInput}
-            error={!!feedback}
-            fullWidth
-            sx={{ flex: 1 }}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => onTimeInputChange(e.target.value)}
-            onBlur={onTimeBlur}
-            label={displayPrompt}
-            placeholder="--:--"
-            disabled={readOnly && readOnlyVisualStyle === 'disabled'}
-            size="small"
-            slotProps={{
-              input: {
-                readOnly: readOnly && readOnlyVisualStyle === 'readonly'
-              }
-            }}
-          />
-          <Select
-            id={periodId}
-            value={is24HourNotation ? '' : periodInput}
-            error={!!feedback}
-            disabled={(readOnly && readOnlyVisualStyle === 'disabled') || is24HourNotation}
-            readOnly={(readOnly && readOnlyVisualStyle === 'readonly') || is24HourNotation}
-            displayEmpty
-            size="small"
-            sx={{ flex: 1 }}
-            onChange={(e) => onPeriodChange(e.target.value)}
-            onBlur={onTimeBlur}>
-            <MenuItem value="">
-              <span style={{ color: grey['500'] }}>{is24HourNotation ? '-' : 'AM/PM'}</span>
-            </MenuItem>
-            <MenuItem value="AM">AM</MenuItem>
-            <MenuItem value="PM">PM</MenuItem>
-          </Select>
-        </Box>
-        <Typography component="span" variant="caption" color="error" sx={{ ml: 1.75, mt: -0.5 }}>
-          {isTabled ? '' : feedback}
-        </Typography>
-      </>
-    </Tooltip>
+    <>
+      <Box
+        id={itemId}
+        display="flex"
+        alignItems="center"
+        columnGap={1}
+        sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160 }}>
+        <MuiTextField
+          id={timeId}
+          value={timeInput}
+          error={!!feedback}
+          fullWidth
+          sx={{ flex: 1 }}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => onTimeInputChange(e.target.value)}
+          onBlur={onTimeBlur}
+          label={displayPrompt}
+          placeholder="--:--"
+          disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+          size="small"
+          slotProps={{
+            input: {
+              readOnly: readOnly && readOnlyVisualStyle === 'readonly'
+            }
+          }}
+        />
+        <Select
+          id={periodId}
+          value={is24HourNotation ? '' : periodInput}
+          error={!!feedback}
+          disabled={(readOnly && readOnlyVisualStyle === 'disabled') || is24HourNotation}
+          readOnly={(readOnly && readOnlyVisualStyle === 'readonly') || is24HourNotation}
+          displayEmpty
+          size="small"
+          sx={{ flex: 1 }}
+          onChange={(e) => onPeriodChange(e.target.value)}
+          onBlur={onTimeBlur}>
+          <MenuItem value="">
+            <span style={{ color: grey['500'] }}>{is24HourNotation ? '-' : 'AM/PM'}</span>
+          </MenuItem>
+          <MenuItem value="AM">AM</MenuItem>
+          <MenuItem value="PM">PM</MenuItem>
+        </Select>
+      </Box>
+      <Typography component="span" variant="caption" color="error" sx={{ ml: 1.75, mt: -0.5 }}>
+        {feedback}
+      </Typography>
+    </>
   );
 }
 

@@ -84,50 +84,48 @@ function CustomDateField(props: CustomDateFieldProps) {
   }
 
   return (
-    <Tooltip title={null}>
-      <StandardTextField
-        {...(!isTabled && { id: id })}
-        ref={anchorRef}
-        fullWidth
-        textFieldWidth={textFieldWidth}
-        isTabled={isTabled}
-        value={input}
-        error={!!feedback}
-        onChange={(e: ChangeEvent<HTMLInputElement>) => onInputChange(e.target.value)}
-        placeholder={placeholderText}
-        disabled={readOnly && readOnlyVisualStyle === 'disabled'}
-        size="small"
-        focused={isFocused}
-        onFocus={() => setFocused(true)}
-        onBlur={() => {
-          onDateBlur();
-          setFocused(false);
-        }}
-        slotProps={{
-          input: {
-            readOnly: readOnly && readOnlyVisualStyle === 'readonly',
-            endAdornment: (
-              <InputAdornment position="end">
-                <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-                <DatePicker
-                  valueString={valueDate}
-                  readOnly={readOnly}
-                  anchorEl={anchorRef.current}
-                  onSelectDate={(valueDayjs: Dayjs) => {
-                    onSelectDate(valueDayjs.format('DD/MM/YYYY'));
-                  }}
-                  onFocus={(focus) => setFocused(focus)}
-                />
-              </InputAdornment>
-            ),
-            inputProps: {
-              ...(isTabled ? {} : { 'aria-label': itemText ?? `Unnamed ${itemType} item` })
-            }
+    <StandardTextField
+      {...(!isTabled && { id: id })}
+      ref={anchorRef}
+      fullWidth
+      textFieldWidth={textFieldWidth}
+      isTabled={isTabled}
+      value={input}
+      error={!!feedback}
+      onChange={(e: ChangeEvent<HTMLInputElement>) => onInputChange(e.target.value)}
+      placeholder={placeholderText}
+      disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+      size="small"
+      focused={isFocused}
+      onFocus={() => setFocused(true)}
+      onBlur={() => {
+        onDateBlur();
+        setFocused(false);
+      }}
+      slotProps={{
+        input: {
+          readOnly: readOnly && readOnlyVisualStyle === 'readonly',
+          endAdornment: (
+            <InputAdornment position="end">
+              <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+              <DatePicker
+                valueString={valueDate}
+                readOnly={readOnly}
+                anchorEl={anchorRef.current}
+                onSelectDate={(valueDayjs: Dayjs) => {
+                  onSelectDate(valueDayjs.format('DD/MM/YYYY'));
+                }}
+                onFocus={(focus) => setFocused(focus)}
+              />
+            </InputAdornment>
+          ),
+          inputProps: {
+            ...(isTabled ? {} : { 'aria-label': itemText ?? `Unnamed ${itemType} item` })
           }
-        }}
-        helperText={isTabled ? '' : feedback}
-      />
-    </Tooltip>
+        }
+      }}
+      helperText={feedback}
+    />
   );
 }
 
