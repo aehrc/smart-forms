@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { QuestionnaireItem } from 'fhir/r4';
 import { useQuestionnaireStore } from '../stores';
 
@@ -38,56 +38,6 @@ function useStringCalculatedExpression(
   const calculatedExpressions = useQuestionnaireStore.use.calculatedExpressions();
 
   const [calcExpUpdated, setCalcExpUpdated] = useState(false);
-
-  useEffect(
-    () => {
-      const calcExpression = calculatedExpressions[qItem.linkId]?.find(
-        (exp) => exp.from === 'item'
-      );
-
-      if (!calcExpression) {
-        return;
-      }
-
-      // If both input and calculated value are falsy, there is nothing to update
-      const inputAndCalcValueAreBothFalsy = inputValue === '' && !calcExpression.value;
-      if (inputAndCalcValueAreBothFalsy) {
-        return;
-      }
-
-      // only update if calculated value is different from current value
-      if (
-        calcExpression.value !== inputValue &&
-        (typeof calcExpression.value === 'string' ||
-          typeof calcExpression.value === 'number' ||
-          calcExpression.value === null)
-      ) {
-        // update ui to show calculated value changes
-        setCalcExpUpdated(true);
-        const timeoutId = setTimeout(() => {
-          setCalcExpUpdated(false);
-        }, 500);
-
-        // calculatedExpression value is null
-        if (calcExpression.value === null) {
-          onChangeByCalcExpressionNull();
-          return () => clearTimeout(timeoutId);
-        }
-
-        // calculatedExpression value is a string or number
-        const newInputValue =
-          typeof calcExpression.value === 'string'
-            ? calcExpression.value
-            : calcExpression.value.toString();
-
-        onChangeByCalcExpressionString(newInputValue);
-        return () => clearTimeout(timeoutId);
-      }
-    },
-    // Only trigger this effect if calculatedExpression of item changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [calculatedExpressions]
-  );
 
   return { calcExpUpdated: calcExpUpdated };
 }

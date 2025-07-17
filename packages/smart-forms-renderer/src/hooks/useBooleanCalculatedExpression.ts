@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { QuestionnaireItem } from 'fhir/r4';
 import { useQuestionnaireStore } from '../stores';
 
@@ -39,43 +39,6 @@ function useBooleanCalculatedExpression(
   const calculatedExpressions = useQuestionnaireStore.use.calculatedExpressions();
 
   const [calcExpUpdated, setCalcExpUpdated] = useState(false);
-
-  useEffect(
-    () => {
-      const calcExpression = calculatedExpressions[qItem.linkId]?.find(
-        (exp) => exp.from === 'item'
-      );
-
-      if (!calcExpression) {
-        return;
-      }
-
-      // only update if calculated value is different from current value
-      if (
-        calcExpression.value !== booleanValue &&
-        (typeof calcExpression.value === 'boolean' || calcExpression.value === null)
-      ) {
-        // update ui to show calculated value changes
-        setCalcExpUpdated(true);
-        const timeoutId = setTimeout(() => {
-          setCalcExpUpdated(false);
-        }, 500);
-
-        // calculatedExpression value is null
-        if (calcExpression.value === null) {
-          onChangeByCalcExpressionNull();
-          return () => clearTimeout(timeoutId);
-        }
-
-        // calculatedExpression value is boolean
-        onChangeByCalcExpressionBoolean(calcExpression.value);
-        return () => clearTimeout(timeoutId);
-      }
-    },
-    // Only trigger this effect if calculatedExpression of item changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [calculatedExpressions]
-  );
 
   return { calcExpUpdated: calcExpUpdated };
 }
