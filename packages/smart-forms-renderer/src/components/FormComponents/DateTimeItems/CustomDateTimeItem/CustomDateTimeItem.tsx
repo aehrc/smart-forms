@@ -121,7 +121,7 @@ function CustomDateTimeItem(props: BaseItemProps) {
 
       onQrItemChange({
         ...createEmptyQrItem(qItem, answerKey),
-        answer: [{ id: answerKey, valueDate: newValueDateTimeFhir }]
+        answer: [{ id: answerKey, valueDateTime: newValueDateTimeFhir }]
       });
     },
     onChangeByCalcExpressionNull: () => {
