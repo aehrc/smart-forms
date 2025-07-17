@@ -8,6 +8,16 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.81] - 2025-07-17
+#### Added
+- Added support for calculatedExpressions to `date` and `dateTime` items.
+
+#### Fixed
+- Show date and dateTime error messages when parent group is a gtable/grid.
+
+#### Changed
+- Due to space constraints for textfield-based items in gtables/grids, expression update animations for textfield-based items are now changed to a faint green glow. Animations are unchanged for radio and checkbox items.
+
 ## [1.0.0-alpha.80] - 2025-07-15
 _(WARNING: Possible breaking changes with Questionnaires definitions)_
 #### Changed
