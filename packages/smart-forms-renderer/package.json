@@ -91,7 +91,7 @@
     "tslib": "^2.8.1",
     "tsup": "^8.5.0",
     "typescript": "^5.8.3",
-    "eslint-plugin-storybook": "9.0.16",
+    "eslint-plugin-storybook": "9.0.17",
     "@storybook/addon-docs": "^9.0.16"
   }
 }
