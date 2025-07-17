@@ -103,6 +103,7 @@ function DateTimeField(props: DateTimeFieldProps) {
         feedback={showFeedback ? (timeFeedback ?? '') : ''}
         displayPrompt={displayPrompt}
         readOnly={readOnly}
+        calcExpUpdated={calcExpUpdated}
         isPartOfDateTime={true}
         isTabled={isTabled}
         onTimeInputChange={(newTimeInput) => onTimeInputChange(newTimeInput, periodInput)}

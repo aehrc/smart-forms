@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import InputAdornment from '@mui/material/InputAdornment';
 import { StandardTextField } from '../Textfield.styles';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
@@ -23,6 +22,7 @@ import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import { useRendererStylingStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
+import { expressionUpdateFadingGlow } from '../../ExpressionUpdateFadingGlow.styles';
 
 interface IntegerFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -81,6 +81,7 @@ function IntegerField(props: IntegerFieldProps) {
       textFieldWidth={textFieldWidth}
       isTabled={isTabled}
       size="small"
+      sx={[expressionUpdateFadingGlow(calcExpUpdated)]}
       slotProps={{
         htmlInput: {
           inputMode: 'numeric',
@@ -90,7 +91,6 @@ function IntegerField(props: IntegerFieldProps) {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
             <InputAdornment position={'end'}>
-              <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
               <ClearButtonAdornment
                 readOnly={readOnly}
                 onClear={() => {

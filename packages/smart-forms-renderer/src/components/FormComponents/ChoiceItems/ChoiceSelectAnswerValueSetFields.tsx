@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
 import { StandardTextField } from '../Textfield.styles';
 import { StyledAlert } from '../../Alert.styles';
@@ -27,11 +26,11 @@ import type {
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
-import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import { useRendererStylingStore } from '../../../stores';
 import { StyledRequiredTypography } from '../Item.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { isCodingDisabled } from '../../../utils/choice';
+import { expressionUpdateFadingGlow } from '../../ExpressionUpdateFadingGlow.styles';
 
 interface ChoiceSelectAnswerValueSetFieldsProps
   extends PropsWithIsTabledRequiredAttribute,
@@ -81,7 +80,10 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
           onChange={(_, newValue) => onSelectChange(newValue)}
           openOnFocus
           autoHighlight
-          sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }}
+          sx={[
+            expressionUpdateFadingGlow(expressionUpdated),
+            { maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }
+          ]}
           size="small"
           disabled={readOnly && readOnlyVisualStyle === 'disabled'}
           readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
@@ -98,7 +100,6 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
                   endAdornment: (
                     <>
                       {params.InputProps.endAdornment}
-                      <FadingCheckIcon fadeIn={expressionUpdated} disabled={readOnly} />
                       <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
                     </>
                   ),

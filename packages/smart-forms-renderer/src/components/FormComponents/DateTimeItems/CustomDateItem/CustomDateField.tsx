@@ -18,13 +18,12 @@
 import { useRef } from 'react';
 import type { Dayjs } from 'dayjs';
 import InputAdornment from '@mui/material/InputAdornment';
-import FadingCheckIcon from '../../ItemParts/FadingCheckIcon';
 import type { ChangeEvent, Dispatch, SetStateAction } from 'react';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../../interfaces/renderProps.interface';
 import { StandardTextField } from '../../Textfield.styles';
 import DatePicker from './DatePicker';
-import Tooltip from '@mui/material/Tooltip';
 import { useRendererStylingStore } from '../../../../stores';
+import { expressionUpdateFadingGlow } from '../../../ExpressionUpdateFadingGlow.styles';
 
 interface CustomDateFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -102,12 +101,12 @@ function CustomDateField(props: CustomDateFieldProps) {
         onDateBlur();
         setFocused(false);
       }}
+      sx={[expressionUpdateFadingGlow(calcExpUpdated)]}
       slotProps={{
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
             <InputAdornment position="end">
-              <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
               <DatePicker
                 valueString={valueDate}
                 readOnly={readOnly}

@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import Fade from '@mui/material/Fade';
 import SyncIcon from '@mui/icons-material/Sync';
 
@@ -32,7 +31,14 @@ function FadingCheckIcon(props: FadingCheckIconProps) {
       <SyncIcon
         color="success"
         fontSize="small"
-        sx={{ ...(disabled ? { color: 'text.disabled' } : null) }}
+        sx={{
+          ...(disabled ? { color: 'text.disabled' } : null),
+          animation: 'spin 1s linear infinite',
+          '@keyframes spin': {
+            '0%': { transform: 'rotate(0deg)' },
+            '100%': { transform: 'rotate(360deg)' }
+          }
+        }}
       />
     </Fade>
   );
