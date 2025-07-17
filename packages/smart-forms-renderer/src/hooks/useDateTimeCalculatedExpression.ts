@@ -78,7 +78,7 @@ function useDateTimeCalculatedExpression(
     [calculatedExpressions]
   );
 
-  return { calcExpUpdated: calcExpUpdated };
+  return { calcExpUpdated };
 }
 
 export default useDateTimeCalculatedExpression;
