@@ -73,7 +73,7 @@
     "zustand": "^5.0.5"
   },
   "devDependencies": {
-    "@jest/globals": "^29.7.0",
+    "@jest/globals": "^30.0.4",
     "@playwright/test": "^1.54.1",
     "@sentry/cli": "^2.42.2",
     "@testing-library/jest-dom": "^6.6.3",
