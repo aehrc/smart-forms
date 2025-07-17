@@ -31,6 +31,7 @@ import CustomDateField from './CustomDateField';
 import { useQuestionnaireStore } from '../../../../stores';
 import ItemLabel from '../../ItemParts/ItemLabel';
 import useShowFeedback from '../../../../hooks/useShowFeedback';
+import useDateCalculatedExpression from '../../../../hooks/useDateCalculatedExpression';
 
 function CustomDateItem(props: BaseItemProps) {
   const {
@@ -70,6 +71,24 @@ function CustomDateItem(props: BaseItemProps) {
 
   // Provides a way to hide the feedback when the user is typing
   const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
+
+  // Process calculated expressions
+  const { calcExpUpdated } = useDateCalculatedExpression({
+    qItem: qItem,
+    valueDateFhir: valueDate,
+    onChangeByCalcExpressionString: (newValueDateFhir: string) => {
+      const { displayDate } = parseFhirDateToDisplayDate(newValueDateFhir);
+      setInput(displayDate);
+      onQrItemChange({
+        ...createEmptyQrItem(qItem, answerKey),
+        answer: [{ id: answerKey, valueDate: parseInputDateToFhirDate(newValueDateFhir) }]
+      });
+    },
+    onChangeByCalcExpressionNull: () => {
+      setInput('');
+      onQrItemChange(createEmptyQrItem(qItem, answerKey));
+    }
+  });
 
   function handleSelectDate(selectedDate: string) {
     setInput(selectedDate);
@@ -118,6 +137,7 @@ function CustomDateItem(props: BaseItemProps) {
         displayPrompt={displayPrompt}
         entryFormat={entryFormat}
         readOnly={readOnly}
+        calcExpUpdated={calcExpUpdated}
         isPartOfDateTime={false}
         isTabled={isTabled}
         setFocused={setFocused}
@@ -149,6 +169,7 @@ function CustomDateItem(props: BaseItemProps) {
             displayPrompt={displayPrompt}
             entryFormat={entryFormat}
             readOnly={readOnly}
+            calcExpUpdated={calcExpUpdated}
             isPartOfDateTime={false}
             isTabled={isTabled}
             setFocused={setFocused}

@@ -15,9 +15,11 @@
  * limitations under the License.
  */
 
+import { useRef } from 'react';
 import type { Dayjs } from 'dayjs';
+import InputAdornment from '@mui/material/InputAdornment';
+import FadingCheckIcon from '../../ItemParts/FadingCheckIcon';
 import type { ChangeEvent, Dispatch, SetStateAction } from 'react';
-import React, { useRef } from 'react';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../../interfaces/renderProps.interface';
 import { StandardTextField } from '../../Textfield.styles';
 import DatePicker from './DatePicker';
@@ -35,6 +37,7 @@ interface CustomDateFieldProps extends PropsWithIsTabledRequiredAttribute {
   displayPrompt: string;
   entryFormat: string;
   readOnly: boolean;
+  calcExpUpdated: boolean;
   isPartOfDateTime: boolean;
   setFocused: Dispatch<SetStateAction<boolean>>;
   onInputChange: (newInput: string) => void;
@@ -54,6 +57,7 @@ function CustomDateField(props: CustomDateFieldProps) {
     displayPrompt,
     entryFormat,
     readOnly,
+    calcExpUpdated,
     isPartOfDateTime,
     isTabled,
     setFocused,
@@ -103,7 +107,8 @@ function CustomDateField(props: CustomDateFieldProps) {
           input: {
             readOnly: readOnly && readOnlyVisualStyle === 'readonly',
             endAdornment: (
-              <>
+              <InputAdornment position="end">
+                <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
                 <DatePicker
                   valueString={valueDate}
                   readOnly={readOnly}
@@ -113,7 +118,7 @@ function CustomDateField(props: CustomDateFieldProps) {
                   }}
                   onFocus={(focus) => setFocused(focus)}
                 />
-              </>
+              </InputAdornment>
             ),
             inputProps: {
               ...(isTabled ? {} : { 'aria-label': itemText ?? `Unnamed ${itemType} item` })

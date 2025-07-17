@@ -16,7 +16,6 @@
  */
 
 import type { Dispatch, SetStateAction } from 'react';
-import React from 'react';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../../interfaces/renderProps.interface';
 import CustomDateField from '../CustomDateItem/CustomDateField';
 import CustomTimeField from './CustomTimeField';
@@ -37,6 +36,7 @@ interface DateTimeFieldProps extends PropsWithIsTabledRequiredAttribute {
   displayPrompt: string;
   entryFormat: string;
   readOnly: boolean;
+  calcExpUpdated: boolean;
   onDateInputChange: (newDateInput: string) => void;
   onDateBlur: () => void;
   onSelectDate: (selectedDate: string) => void;
@@ -62,6 +62,7 @@ function DateTimeField(props: DateTimeFieldProps) {
     displayPrompt,
     entryFormat,
     readOnly,
+    calcExpUpdated,
     isTabled,
     onDateInputChange,
     onDateBlur,
@@ -85,6 +86,7 @@ function DateTimeField(props: DateTimeFieldProps) {
         displayPrompt={displayPrompt}
         entryFormat={entryFormat}
         readOnly={readOnly}
+        calcExpUpdated={calcExpUpdated}
         isPartOfDateTime={true}
         isTabled={isTabled}
         setFocused={setDateFocused}
