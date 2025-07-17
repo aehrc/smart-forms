@@ -15,14 +15,13 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import InputAdornment from '@mui/material/InputAdornment';
 import { StandardTextField } from '../Textfield.styles';
-import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import { useRendererStylingStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
+import { expressionUpdateFadingGlow } from '../../ExpressionUpdateFadingGlow.styles';
 
 interface StringFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -70,12 +69,12 @@ function StringField(props: StringFieldProps) {
       placeholder={entryFormat || displayPrompt}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       size="small"
+      sx={[expressionUpdateFadingGlow(calcExpUpdated)]}
       slotProps={{
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
             <InputAdornment position="end">
-              <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
               <ClearButtonAdornment
                 readOnly={readOnly}
                 onClear={() => {

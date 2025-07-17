@@ -137,7 +137,10 @@ function JsonEditor(props: JsonEditorProps) {
           <Editor
             height="calc(100% - 40px)"
             defaultLanguage="json"
-            defaultValue="// alternatively, paste questionnaire JSON string here (only JSON is supported!)"
+            defaultValue={`// Alternatively, paste questionnaire JSON string here (only JSON is supported!)
+// The contents of this editor are saved automatically in your browser's local storage.
+// Your changes will persist across sessions.
+`}
             onChange={handleEditorChange}
             value={jsonString}
             onValidate={handleEditorValidation}

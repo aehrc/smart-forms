@@ -38,6 +38,7 @@ import useDateNonEmptyValidation from '../../../../hooks/useDateTimeNonEmpty';
 import DateTimeField from './DateTimeField';
 import ItemLabel from '../../ItemParts/ItemLabel';
 import useShowFeedback from '../../../../hooks/useShowFeedback';
+import useDateTimeCalculatedExpression from '../../../../hooks/useDateTimeCalculatedExpression';
 
 function CustomDateTimeItem(props: BaseItemProps) {
   const {
@@ -59,26 +60,33 @@ function CustomDateTimeItem(props: BaseItemProps) {
   const answerKey = qrItem?.answer?.[0]?.id;
   const qrDateTime = qrItem ?? createEmptyQrItem(qItem, answerKey);
 
-  let valueDate: string = '';
+  // Store dateTime in FHIR and DayJs formats for downstream parsing
+  let valueDateTimeFhir: string = '';
   let dateTimeDayJs: Dayjs | null = null;
+
+  // Seperately store date in FHIR
+  let valueDateFhir: string = '';
+
+  // Extract valueDateTimeFhir, dateTimeDayJs and valueDateFhir from qrDateTime
   if (qrDateTime.answer) {
-    let tempDateTime = '';
     if (qrDateTime.answer[0].valueDate) {
-      tempDateTime = qrDateTime.answer[0].valueDate;
+      valueDateTimeFhir = qrDateTime.answer[0].valueDate;
     } else if (qrDateTime.answer[0].valueDateTime) {
-      tempDateTime = qrDateTime.answer[0].valueDateTime;
+      valueDateTimeFhir = qrDateTime.answer[0].valueDateTime;
     }
 
-    // split date and time at "T", 2015-02-07T13:28:17-05:00
-    if (tempDateTime.includes('T')) {
-      valueDate = tempDateTime.split('T')[0];
-      dateTimeDayJs = dayjs(tempDateTime);
-    } else {
-      valueDate = tempDateTime;
+    // Split date and time at "T", 2015-02-07T13:28:17-05:00
+    if (valueDateTimeFhir.includes('T')) {
+      valueDateTimeFhir = valueDateTimeFhir.split('T')[0];
+      dateTimeDayJs = dayjs(valueDateTimeFhir);
+    }
+    // valueDateTimeFhir does not contain "T", that means it's a date only
+    else {
+      valueDateFhir = valueDateTimeFhir;
     }
   }
 
-  const { displayDate, dateParseFail } = parseFhirDateToDisplayDate(valueDate);
+  const { displayDate, dateParseFail } = parseFhirDateToDisplayDate(valueDateFhir);
   const { displayTime, displayPeriod, timeParseFail } = parseDateTimeToDisplayTime(dateTimeDayJs);
 
   const [dateInput, setDateInput] = useState(displayDate);
@@ -98,6 +106,31 @@ function CustomDateTimeItem(props: BaseItemProps) {
 
   // Provides a way to hide the feedback when the user is typing
   const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
+
+  // Process calculated expressions
+  const { calcExpUpdated } = useDateTimeCalculatedExpression({
+    qItem: qItem,
+    valueDateTimeFhir: valueDateTimeFhir,
+    onChangeByCalcExpressionString: (newValueDateTimeFhir: string) => {
+      const { displayDate } = parseFhirDateToDisplayDate(newValueDateTimeFhir);
+      const { displayTime, displayPeriod } = parseDateTimeToDisplayTime(dateTimeDayJs);
+
+      setDateInput(displayDate);
+      setTimeInput(displayTime);
+      setPeriodInput(displayPeriod);
+
+      onQrItemChange({
+        ...createEmptyQrItem(qItem, answerKey),
+        answer: [{ id: answerKey, valueDateTime: newValueDateTimeFhir }]
+      });
+    },
+    onChangeByCalcExpressionNull: () => {
+      setDateInput('');
+      setTimeInput('');
+      setPeriodInput('');
+      onQrItemChange(createEmptyQrItem(qItem, answerKey));
+    }
+  });
 
   function handleSelectDate(selectedDate: string) {
     setDateInput(selectedDate);
@@ -204,6 +237,7 @@ function CustomDateTimeItem(props: BaseItemProps) {
           displayPrompt={displayPrompt}
           entryFormat={entryFormat}
           readOnly={readOnly}
+          calcExpUpdated={calcExpUpdated}
           isTabled={isTabled}
           onDateInputChange={handleDateInputChange}
           onSelectDate={handleSelectDate}
@@ -242,6 +276,7 @@ function CustomDateTimeItem(props: BaseItemProps) {
             displayPrompt={displayPrompt}
             entryFormat={entryFormat}
             readOnly={readOnly}
+            calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}
             onDateInputChange={handleDateInputChange}
             onSelectDate={handleSelectDate}

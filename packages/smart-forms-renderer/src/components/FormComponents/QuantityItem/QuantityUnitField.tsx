@@ -1,10 +1,10 @@
-import React from 'react';
 import { getAnswerOptionLabel } from '../../../utils/openChoice';
 import { StandardTextField } from '../Textfield.styles';
 import Autocomplete from '@mui/material/Autocomplete';
 import type { QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import { useRendererStylingStore } from '../../../stores';
+import { expressionUpdateFadingGlow } from '../../ExpressionUpdateFadingGlow.styles';
 
 interface QuantityUnitFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -12,11 +12,13 @@ interface QuantityUnitFieldProps extends PropsWithIsTabledRequiredAttribute {
   options: QuestionnaireItemAnswerOption[];
   valueSelect: QuestionnaireItemAnswerOption | null;
   readOnly: boolean;
+  calcExpUpdated: boolean;
   onChange: (newValue: QuestionnaireItemAnswerOption | null) => void;
 }
 
 function QuantityUnitField(props: QuantityUnitFieldProps) {
-  const { linkId, itemType, options, valueSelect, readOnly, isTabled, onChange } = props;
+  const { linkId, itemType, options, valueSelect, readOnly, calcExpUpdated, isTabled, onChange } =
+    props;
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
@@ -32,7 +34,10 @@ function QuantityUnitField(props: QuantityUnitFieldProps) {
       getOptionLabel={(option) => getAnswerOptionLabel(option)}
       onChange={(_, newValue) => onChange(newValue as QuestionnaireItemAnswerOption | null)}
       autoHighlight
-      sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }}
+      sx={[
+        expressionUpdateFadingGlow(calcExpUpdated),
+        { maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }
+      ]}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
       size="small"

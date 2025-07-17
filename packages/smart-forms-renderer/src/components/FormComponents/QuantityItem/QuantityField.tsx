@@ -1,11 +1,10 @@
-import React from 'react';
 import InputAdornment from '@mui/material/InputAdornment';
-import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import { StandardTextField } from '../Textfield.styles';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import { useRendererStylingStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
+import { expressionUpdateFadingGlow } from '../../ExpressionUpdateFadingGlow.styles';
 
 interface QuantityFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -62,13 +61,13 @@ function QuantityField(props: QuantityFieldProps) {
       textFieldWidth={textFieldWidth}
       isTabled={isTabled}
       size="small"
+      sx={[expressionUpdateFadingGlow(calcExpUpdated)]}
       slotProps={{
         htmlInput: { inputMode: 'numeric', pattern: '[0-9]*' },
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
             <InputAdornment position={'end'}>
-              <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
               <ClearButtonAdornment
                 readOnly={readOnly}
                 onClear={() => {

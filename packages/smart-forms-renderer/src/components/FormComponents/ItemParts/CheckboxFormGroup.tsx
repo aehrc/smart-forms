@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
-import React from 'react';
 import { Box } from '@mui/material';
-import { StyledFormGroup, StyledRequiredTypography } from '../Item.styles';
+import FormGroup from '@mui/material/FormGroup';
+import { StyledRequiredTypography } from '../Item.styles';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
-import FadingCheckIcon from './FadingCheckIcon';
+import ExpressionUpdateFadingIcon from './ExpressionUpdateFadingIcon';
 import ClearInputButton from './ClearInputButton';
 import type {
   QuestionnaireItem,
@@ -63,7 +63,7 @@ function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
           display="flex"
           alignItems="center"
           sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
-          <StyledFormGroup
+          <FormGroup
             id={qItem.type + '-' + qItem.linkId}
             {...(!isTabled
               ? { 'aria-labelledby': 'label-' + qItem.linkId }
@@ -81,11 +81,11 @@ function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
               onCheckedChange={onCheckedChange}
             />
             {children}
-          </StyledFormGroup>
+          </FormGroup>
 
           <Box flexGrow={1} />
 
-          <FadingCheckIcon fadeIn={expressionUpdated} disabled={readOnly} />
+          <ExpressionUpdateFadingIcon fadeIn={expressionUpdated} disabled={readOnly} />
         </Box>
 
         <ClearInputButton buttonShown={!answersEmpty} readOnly={readOnly} onClear={onClear} />

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import type { Quantity, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { FullWidthFormComponentBox } from '../../Box.styles';
@@ -266,6 +266,7 @@ function QuantityItem(props: BaseItemProps) {
           options={quantityComparators}
           valueSelect={comparatorInput}
           readOnly={readOnly}
+          calcExpUpdated={calcExpUpdated}
           isTabled={isTabled}
           onChange={handleComparatorInputChange}
         />
@@ -290,6 +291,7 @@ function QuantityItem(props: BaseItemProps) {
             options={unitOptions}
             valueSelect={unitInput}
             readOnly={readOnly}
+            calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}
             onChange={handleUnitInputChange}
           />
@@ -315,6 +317,7 @@ function QuantityItem(props: BaseItemProps) {
               options={quantityComparators}
               valueSelect={comparatorInput}
               readOnly={readOnly}
+              calcExpUpdated={calcExpUpdated}
               isTabled={isTabled}
               onChange={handleComparatorInputChange}
             />
@@ -339,6 +342,7 @@ function QuantityItem(props: BaseItemProps) {
                 options={unitOptions}
                 valueSelect={unitInput}
                 readOnly={readOnly}
+                calcExpUpdated={calcExpUpdated}
                 isTabled={isTabled}
                 onChange={handleUnitInputChange}
               />

@@ -15,14 +15,15 @@
  * limitations under the License.
  */
 
+import { useRef } from 'react';
 import type { Dayjs } from 'dayjs';
+import InputAdornment from '@mui/material/InputAdornment';
 import type { ChangeEvent, Dispatch, SetStateAction } from 'react';
-import React, { useRef } from 'react';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../../interfaces/renderProps.interface';
 import { StandardTextField } from '../../Textfield.styles';
 import DatePicker from './DatePicker';
-import Tooltip from '@mui/material/Tooltip';
 import { useRendererStylingStore } from '../../../../stores';
+import { expressionUpdateFadingGlow } from '../../../ExpressionUpdateFadingGlow.styles';
 
 interface CustomDateFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -35,6 +36,7 @@ interface CustomDateFieldProps extends PropsWithIsTabledRequiredAttribute {
   displayPrompt: string;
   entryFormat: string;
   readOnly: boolean;
+  calcExpUpdated: boolean;
   isPartOfDateTime: boolean;
   setFocused: Dispatch<SetStateAction<boolean>>;
   onInputChange: (newInput: string) => void;
@@ -54,6 +56,7 @@ function CustomDateField(props: CustomDateFieldProps) {
     displayPrompt,
     entryFormat,
     readOnly,
+    calcExpUpdated,
     isPartOfDateTime,
     isTabled,
     setFocused,
@@ -80,49 +83,48 @@ function CustomDateField(props: CustomDateFieldProps) {
   }
 
   return (
-    <Tooltip title={null}>
-      <StandardTextField
-        {...(!isTabled && { id: id })}
-        ref={anchorRef}
-        fullWidth
-        textFieldWidth={textFieldWidth}
-        isTabled={isTabled}
-        value={input}
-        error={!!feedback}
-        onChange={(e: ChangeEvent<HTMLInputElement>) => onInputChange(e.target.value)}
-        placeholder={placeholderText}
-        disabled={readOnly && readOnlyVisualStyle === 'disabled'}
-        size="small"
-        focused={isFocused}
-        onFocus={() => setFocused(true)}
-        onBlur={() => {
-          onDateBlur();
-          setFocused(false);
-        }}
-        slotProps={{
-          input: {
-            readOnly: readOnly && readOnlyVisualStyle === 'readonly',
-            endAdornment: (
-              <>
-                <DatePicker
-                  valueString={valueDate}
-                  readOnly={readOnly}
-                  anchorEl={anchorRef.current}
-                  onSelectDate={(valueDayjs: Dayjs) => {
-                    onSelectDate(valueDayjs.format('DD/MM/YYYY'));
-                  }}
-                  onFocus={(focus) => setFocused(focus)}
-                />
-              </>
-            ),
-            inputProps: {
-              ...(isTabled ? {} : { 'aria-label': itemText ?? `Unnamed ${itemType} item` })
-            }
+    <StandardTextField
+      {...(!isTabled && { id: id })}
+      ref={anchorRef}
+      fullWidth
+      textFieldWidth={textFieldWidth}
+      isTabled={isTabled}
+      value={input}
+      error={!!feedback}
+      onChange={(e: ChangeEvent<HTMLInputElement>) => onInputChange(e.target.value)}
+      placeholder={placeholderText}
+      disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+      size="small"
+      focused={isFocused}
+      onFocus={() => setFocused(true)}
+      onBlur={() => {
+        onDateBlur();
+        setFocused(false);
+      }}
+      sx={[expressionUpdateFadingGlow(calcExpUpdated)]}
+      slotProps={{
+        input: {
+          readOnly: readOnly && readOnlyVisualStyle === 'readonly',
+          endAdornment: (
+            <InputAdornment position="end">
+              <DatePicker
+                valueString={valueDate}
+                readOnly={readOnly}
+                anchorEl={anchorRef.current}
+                onSelectDate={(valueDayjs: Dayjs) => {
+                  onSelectDate(valueDayjs.format('DD/MM/YYYY'));
+                }}
+                onFocus={(focus) => setFocused(focus)}
+              />
+            </InputAdornment>
+          ),
+          inputProps: {
+            ...(isTabled ? {} : { 'aria-label': itemText ?? `Unnamed ${itemType} item` })
           }
-        }}
-        helperText={isTabled ? '' : feedback}
-      />
-    </Tooltip>
+        }
+      }}
+      helperText={feedback}
+    />
   );
 }
 

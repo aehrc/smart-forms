@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
-import React from 'react';
 import Box from '@mui/material/Box';
-import { StyledRadioGroup, StyledRequiredTypography } from '../Item.styles';
+import RadioGroup from '@mui/material/RadioGroup';
+import { StyledRequiredTypography } from '../Item.styles';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import RadioOptionList from './RadioOptionList';
-import FadingCheckIcon from './FadingCheckIcon';
+import ExpressionUpdateFadingIcon from './ExpressionUpdateFadingIcon';
 import ClearInputButton from './ClearInputButton';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { useRendererStylingStore } from '../../../stores';
@@ -58,7 +58,7 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
           display="flex"
           alignItems="center"
           sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
-          <StyledRadioGroup
+          <RadioGroup
             id={qItem.type + '-' + qItem.linkId}
             {...(!isTabled
               ? { 'aria-labelledby': 'label-' + qItem.linkId }
@@ -83,11 +83,11 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
               answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             />
             {children}
-          </StyledRadioGroup>
+          </RadioGroup>
 
           <Box flexGrow={1} />
 
-          <FadingCheckIcon fadeIn={expressionUpdated} disabled={readOnly} />
+          <ExpressionUpdateFadingIcon fadeIn={expressionUpdated} disabled={readOnly} />
         </Box>
 
         <ClearInputButton buttonShown={!!valueRadio} readOnly={readOnly} onClear={onClear} />

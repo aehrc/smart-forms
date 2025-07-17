@@ -15,12 +15,11 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import InputAdornment from '@mui/material/InputAdornment';
 import MuiTextField from './MuiTextField';
-import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { useRendererStylingStore } from '../../../stores';
+import { expressionUpdateFadingGlow } from '../../ExpressionUpdateFadingGlow.styles';
 
 interface TextFieldProps {
   linkId: string;
@@ -66,12 +65,12 @@ function TextField(props: TextFieldProps) {
       multiline
       size="small"
       minRows={3}
+      sx={[expressionUpdateFadingGlow(calcExpUpdated)]}
       slotProps={{
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
             <InputAdornment position="end">
-              <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
               <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>
           )

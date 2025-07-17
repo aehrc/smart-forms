@@ -1,4 +1,3 @@
-import React from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import MuiTextField from '../TextItem/MuiTextField';
@@ -6,6 +5,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import type { Quantity } from 'fhir/r4';
 import { useRendererStylingStore } from '../../../stores';
+import { expressionUpdateFadingGlow } from '../../ExpressionUpdateFadingGlow.styles';
 
 interface QuantityComparatorFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -13,11 +13,12 @@ interface QuantityComparatorFieldProps extends PropsWithIsTabledRequiredAttribut
   options: Quantity['comparator'][];
   valueSelect: Quantity['comparator'] | null;
   readOnly: boolean;
+  calcExpUpdated: boolean;
   onChange: (newValue: Quantity['comparator'] | null) => void;
 }
 
 function QuantityComparatorField(props: QuantityComparatorFieldProps) {
-  const { linkId, itemType, options, valueSelect, readOnly, onChange } = props;
+  const { linkId, itemType, options, valueSelect, readOnly, calcExpUpdated, onChange } = props;
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const hideQuantityComparatorField = useRendererStylingStore.use.hideQuantityComparatorField();
@@ -33,7 +34,7 @@ function QuantityComparatorField(props: QuantityComparatorFieldProps) {
         options={options}
         onChange={(_, newValue) => onChange(newValue as Quantity['comparator'])}
         autoHighlight
-        sx={{ width: 88 }}
+        sx={[expressionUpdateFadingGlow(calcExpUpdated), { width: 88 }]}
         disabled={readOnly && readOnlyVisualStyle === 'disabled'}
         readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
         size="small"

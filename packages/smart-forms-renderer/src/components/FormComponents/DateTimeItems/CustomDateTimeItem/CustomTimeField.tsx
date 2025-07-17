@@ -16,9 +16,7 @@
  */
 
 import type { ChangeEvent } from 'react';
-import React from 'react';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../../interfaces/renderProps.interface';
-import Tooltip from '@mui/material/Tooltip';
 import Box from '@mui/material/Box';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
@@ -26,6 +24,8 @@ import MuiTextField from '../../TextItem/MuiTextField';
 import { grey } from '@mui/material/colors';
 import Typography from '@mui/material/Typography';
 import { useRendererStylingStore } from '../../../../stores';
+import { expressionUpdateFadingGlow } from '../../../ExpressionUpdateFadingGlow.styles';
+import FormControl from '@mui/material/FormControl';
 
 interface CustomTimeFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -36,6 +36,7 @@ interface CustomTimeFieldProps extends PropsWithIsTabledRequiredAttribute {
   feedback: string;
   displayPrompt: string;
   readOnly: boolean;
+  calcExpUpdated: boolean;
   isPartOfDateTime: boolean;
   onTimeInputChange: (newInput: string) => void;
   onPeriodChange: (newPeriod: string) => void;
@@ -52,6 +53,7 @@ function CustomTimeField(props: CustomTimeFieldProps) {
     feedback,
     displayPrompt,
     readOnly,
+    calcExpUpdated,
     isPartOfDateTime,
     isTabled,
     onTimeInputChange,
@@ -70,32 +72,32 @@ function CustomTimeField(props: CustomTimeFieldProps) {
   const periodId = itemType + '-' + linkId + '-period';
 
   return (
-    <Tooltip title={isTabled ? feedback : ''}>
-      <>
-        <Box
-          id={itemId}
-          display="flex"
-          alignItems="center"
-          columnGap={1}
-          sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160 }}>
-          <MuiTextField
-            id={timeId}
-            value={timeInput}
-            error={!!feedback}
-            fullWidth
-            sx={{ flex: 1 }}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => onTimeInputChange(e.target.value)}
-            onBlur={onTimeBlur}
-            label={displayPrompt}
-            placeholder="--:--"
-            disabled={readOnly && readOnlyVisualStyle === 'disabled'}
-            size="small"
-            slotProps={{
-              input: {
-                readOnly: readOnly && readOnlyVisualStyle === 'readonly'
-              }
-            }}
-          />
+    <>
+      <Box
+        id={itemId}
+        display="flex"
+        alignItems="center"
+        columnGap={1}
+        sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160 }}>
+        <MuiTextField
+          id={timeId}
+          value={timeInput}
+          error={!!feedback}
+          fullWidth
+          sx={[expressionUpdateFadingGlow(calcExpUpdated), { flex: 1 }]}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => onTimeInputChange(e.target.value)}
+          onBlur={onTimeBlur}
+          label={displayPrompt}
+          placeholder="--:--"
+          disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+          size="small"
+          slotProps={{
+            input: {
+              readOnly: readOnly && readOnlyVisualStyle === 'readonly'
+            }
+          }}
+        />
+        <FormControl sx={[expressionUpdateFadingGlow(calcExpUpdated), { flex: 1 }]}>
           <Select
             id={periodId}
             value={is24HourNotation ? '' : periodInput}
@@ -104,7 +106,6 @@ function CustomTimeField(props: CustomTimeFieldProps) {
             readOnly={(readOnly && readOnlyVisualStyle === 'readonly') || is24HourNotation}
             displayEmpty
             size="small"
-            sx={{ flex: 1 }}
             onChange={(e) => onPeriodChange(e.target.value)}
             onBlur={onTimeBlur}>
             <MenuItem value="">
@@ -113,12 +114,12 @@ function CustomTimeField(props: CustomTimeFieldProps) {
             <MenuItem value="AM">AM</MenuItem>
             <MenuItem value="PM">PM</MenuItem>
           </Select>
-        </Box>
-        <Typography component="span" variant="caption" color="error" sx={{ ml: 1.75, mt: -0.5 }}>
-          {isTabled ? '' : feedback}
-        </Typography>
-      </>
-    </Tooltip>
+        </FormControl>
+      </Box>
+      <Typography component="span" variant="caption" color="error" sx={{ ml: 1.75, mt: -0.5 }}>
+        {feedback}
+      </Typography>
+    </>
   );
 }
 
