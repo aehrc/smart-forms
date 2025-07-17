@@ -18,12 +18,12 @@
 import Fade from '@mui/material/Fade';
 import SyncIcon from '@mui/icons-material/Sync';
 
-interface FadingCheckIconProps {
+interface ExpressionUpdateFadingIconProps {
   fadeIn: boolean;
   disabled: boolean;
 }
 
-function FadingCheckIcon(props: FadingCheckIconProps) {
+function ExpressionUpdateFadingIcon(props: ExpressionUpdateFadingIconProps) {
   const { fadeIn, disabled } = props;
 
   return (
@@ -44,4 +44,4 @@ function FadingCheckIcon(props: FadingCheckIconProps) {
   );
 }
 
-export default FadingCheckIcon;
+export default ExpressionUpdateFadingIcon;

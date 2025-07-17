@@ -22,7 +22,7 @@ import type { QuestionnaireItem } from 'fhir/r4';
 import ChoiceRadioSingle from '../ChoiceItems/ChoiceRadioSingle';
 import { StyledRadioGroup, StyledRequiredTypography } from '../Item.styles';
 import { getChoiceOrientation } from '../../../utils/choice';
-import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
+import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { isSpecificItemControl } from '../../../utils';
 import ClearInputButton from '../ItemParts/ClearInputButton';
@@ -156,7 +156,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
 
             <Box flexGrow={1} />
 
-            <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+            <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
           </Box>
         )}
 

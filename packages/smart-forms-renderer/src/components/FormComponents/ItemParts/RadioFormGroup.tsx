@@ -1,10 +1,9 @@
 import type { ReactNode } from 'react';
-import React from 'react';
 import Box from '@mui/material/Box';
 import { StyledRadioGroup, StyledRequiredTypography } from '../Item.styles';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import RadioOptionList from './RadioOptionList';
-import FadingCheckIcon from './FadingCheckIcon';
+import ExpressionUpdateFadingIcon from './ExpressionUpdateFadingIcon';
 import ClearInputButton from './ClearInputButton';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { useRendererStylingStore } from '../../../stores';
@@ -87,7 +86,7 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
 
           <Box flexGrow={1} />
 
-          <FadingCheckIcon fadeIn={expressionUpdated} disabled={readOnly} />
+          <ExpressionUpdateFadingIcon fadeIn={expressionUpdated} disabled={readOnly} />
         </Box>
 
         <ClearInputButton buttonShown={!!valueRadio} readOnly={readOnly} onClear={onClear} />
