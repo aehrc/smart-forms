@@ -19,6 +19,7 @@ import type { CalculatedExpression } from '../interfaces/calculatedExpression.in
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import type {
+  Coding,
   Questionnaire,
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
@@ -29,12 +30,16 @@ import type {
 import { emptyResponse } from './emptyResource';
 import { createFhirPathContext, handleFhirPathResult } from './fhirpath';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
-import { createEmptyQrGroup, updateQrItemsInGroup } from './qrItem';
+import { createEmptyQrGroup, createEmptyQrItem, updateQrItemsInGroup } from './qrItem';
 import dayjs from 'dayjs';
 import { updateQuestionnaireResponse } from './genericRecursive';
 import { deepEqual } from 'fast-equals';
 import type { Variables } from '../interfaces';
 import type { ComputedNewAnswers } from '../interfaces/computedUpdates.interface';
+import { createQuestionnaireResponseItemMap } from './questionnaireResponseStoreUtils/updatableResponseItems';
+import { nanoid } from 'nanoid';
+import { getDecimalPrecision } from './extensions';
+import { getRelevantCodingProperties } from './valueSet';
 
 interface EvaluateInitialCalculatedExpressionsParams {
   initialResponse: QuestionnaireResponse;
@@ -160,7 +165,7 @@ function initialiseCalculatedExpressionValuesToNull(
   return calculatedExpressions;
 }
 
-export async function evaluateCalculatedExpressions(
+export async function evaluateCalculatedExpressionsFhirPath(
   fhirPathContext: Record<string, any>,
   fhirPathTerminologyCache: Record<string, any>,
   calculatedExpressions: Record<string, CalculatedExpression[]>,
@@ -203,13 +208,6 @@ export async function evaluateCalculatedExpressions(
           fhirPathTerminologyCache[cacheKey] = result;
         }
 
-        if (
-          typeof calcExpression.value === 'string' &&
-          calcExpression.value.startsWith('Blood tests')
-        ) {
-          console.log(calcExpression.value, structuredClone(result), calcExpression.expression);
-        }
-
         // Update calculatedExpressions if length of result array > 0
         // Only update when current calcExpression value is different from the result, otherwise it will result in an infinite loop as per issue #733
         if (result.length > 0 && !deepEqual(calcExpression.value, result[0])) {
@@ -248,9 +246,19 @@ export async function evaluateCalculatedExpressions(
   };
 }
 
-export function initialiseCalculatedExpressionValues(
+/**
+ * Applies evaluated calculated expression values into a QuestionnaireResponse.
+ * Filters out calculated expressions that has value=undefined because in our prior processing step, items without values are set to null.
+ * Uses the generic updateQuestionnaireResponse function to recursively apply the values.
+ *
+ * @param questionnaire - The Questionnaire definition object.
+ * @param initialResponse - The target QuestionnaireResponse to be updated.
+ * @param calculatedExpressions - A mapping from linkId to array of CalculatedExpression objects to be applied.
+ * @returns The updated QuestionnaireResponse with calculated expression values applied.
+ */
+export function applyCalculatedExpressionValuesToResponse(
   questionnaire: Questionnaire,
-  populatedResponse: QuestionnaireResponse,
+  initialResponse: QuestionnaireResponse,
   calculatedExpressions: Record<string, CalculatedExpression[]>
 ): QuestionnaireResponse {
   // Filter calculated expressions, only preserve key-value pairs with values
@@ -265,15 +273,27 @@ export function initialiseCalculatedExpressionValues(
     }
   }
 
+  console.log(calculatedExpressionsWithValues);
   return updateQuestionnaireResponse(
     questionnaire,
-    populatedResponse,
-    initialiseItemCalculatedExpressionValueRecursive,
+    initialResponse,
+    applyCalculatedExpressionValuesRecursive,
     calculatedExpressionsWithValues
   );
 }
 
-function initialiseItemCalculatedExpressionValueRecursive(
+/**
+ * Recursively applies calculated expression values to items within a QuestionnaireResponse structure.
+ *
+ * This function navigates both group and leaf nodes of Questionnaire/QuestionnaireResponse pairs,
+ * and integrates evaluated calculated expression values (from calculatedExpressions) into the appropriate QuestionnaireResponseItem(s).
+ *
+ * @param qItem - The current QuestionnaireItem being processed.
+ * @param qrItemOrItems - The corresponding QuestionnaireResponseItem, or array for repeating groups, or null if not present.
+ * @param calculatedExpressions - A mapping from linkId to array of CalculatedExpression objects to be applied.
+ * @returns The updated QuestionnaireResponseItem, array (for repeating groups), or null if none were updated.
+ */
+function applyCalculatedExpressionValuesRecursive(
   qItem: QuestionnaireItem,
   qrItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[] | null,
   calculatedExpressions: Record<string, CalculatedExpression[]>
@@ -281,12 +301,12 @@ function initialiseItemCalculatedExpressionValueRecursive(
   // For repeat groups
   const hasMultipleAnswers = Array.isArray(qrItemOrItems);
   if (hasMultipleAnswers) {
-    const updatedQrItems = initialiseItemCalculatedExpressionValueInRepeatGroup(
+    const updatedQrItems = applyCalculatedExpressionValuesInRepeatGroup(
       qItem,
       qrItemOrItems,
       calculatedExpressions
     );
-    return constructGroupItem(
+    return applyCalculatedExpressionValuesInNonLeafItem(
       qItem,
       updatedQrItems && updatedQrItems.length > 0
         ? {
@@ -315,7 +335,7 @@ function initialiseItemCalculatedExpressionValueRecursive(
     for (const [index, childQItem] of childQItems.entries()) {
       const childQRItemOrItems = qrItemsByIndex[index];
 
-      const updatedChildQRItemOrItems = initialiseItemCalculatedExpressionValueRecursive(
+      const updatedChildQRItemOrItems = applyCalculatedExpressionValuesRecursive(
         childQItem,
         childQRItemOrItems ?? null,
         calculatedExpressions
@@ -349,13 +369,24 @@ function initialiseItemCalculatedExpressionValueRecursive(
       }
     }
 
-    return constructGroupItem(qItem, qrItem, calculatedExpressions);
+    return applyCalculatedExpressionValuesInNonLeafItem(qItem, qrItem, calculatedExpressions);
   }
 
-  return constructSingleItem(qItem, qrItem, calculatedExpressions);
+  return applyCalculatedExpressionValuesInLeafItem(qItem, qrItem, calculatedExpressions);
 }
 
-function initialiseItemCalculatedExpressionValueInRepeatGroup(
+/**
+ * Recursively applies calculated expression values to items within a repeating (array) QuestionnaireResponse group.
+ *
+ * Iterates through each child QuestionnaireItem of the provided group, updating the corresponding QuestionnaireResponseItems
+ * with evaluated calculated expressions as needed. This enables proper support for repeated groups within questionnaire structures.
+ *
+ * @param qItem - The QuestionnaireItem representing the repeat group (must have child items).
+ * @param qrItems - The array of QuestionnaireResponseItems corresponding to the repeated items in the response.
+ * @param calculatedExpressions - A mapping from linkId to array of CalculatedExpression objects to be applied.
+ * @returns An array of updated QuestionnaireResponseItems, or null if none were updated.
+ */
+function applyCalculatedExpressionValuesInRepeatGroup(
   qItem: QuestionnaireItem,
   qrItems: QuestionnaireResponseItem[],
   calculatedExpressions: Record<string, CalculatedExpression[]>
@@ -371,7 +402,7 @@ function initialiseItemCalculatedExpressionValueInRepeatGroup(
   for (const [index, childQItem] of qItem.item.entries()) {
     const childQRItemOrItems = qrItemsByIndex[index] ?? null;
 
-    const updatedChildQRItemOrItems = initialiseItemCalculatedExpressionValueRecursive(
+    const updatedChildQRItemOrItems = applyCalculatedExpressionValuesRecursive(
       childQItem,
       childQRItemOrItems,
       calculatedExpressions
@@ -387,124 +418,261 @@ function initialiseItemCalculatedExpressionValueInRepeatGroup(
   return updatedQrItems.length > 0 ? updatedQrItems : null;
 }
 
-function getCalculatedExpressionAnswer(
+/**
+ * Constructs a `QuestionnaireResponseItem` for a given `QuestionnaireItem` based on a calculated expression.
+ *
+ * If a calculated expression (with `from: 'item'`) exists for the given item and has a defined value, it is parsed
+ * into a `QuestionnaireResponseItemAnswer` and returned within a `QuestionnaireResponseItem`.
+ *
+ * - If no relevant expression exists or the value is `undefined`, the function returns `undefined` (leaves existing response unchanged).
+ * - If the value is `null`, an empty `QuestionnaireResponseItem` is returned.
+ * - If the value is defined and successfully parsed, a populated `QuestionnaireResponseItem` with an `answer` is returned.
+ * - If parsing fails, the function returns `undefined`.
+ *
+ * @param qItem - The `QuestionnaireItem` for which to obtain the calculated answer.
+ * @param calculatedExpressions - A mapping from `linkId` to array of `CalculatedExpression` objects to be applied.
+ * @returns A constructed `QuestionnaireResponseItem`, or `undefined` if no valid expression or answer exists.
+ */
+function constructItemFromCalculatedExpression(
   qItem: QuestionnaireItem,
   calculatedExpressions: Record<string, CalculatedExpression[]>
-): QuestionnaireResponseItemAnswer | undefined {
+): QuestionnaireResponseItem | undefined {
   const calcExpressionFromItem = calculatedExpressions[qItem.linkId]?.find(
     (calcExpression) => calcExpression.from === 'item'
   );
 
-  if (calcExpressionFromItem) {
-    // If value is undefined or null, do not return anything
-    if (calcExpressionFromItem?.value === undefined || calcExpressionFromItem.value === null) {
-      return;
+  // No calcExpressionFromItem or calcExpressionFromItem.value is undefined, return undefined (do not change existing QR item)
+  if (!calcExpressionFromItem || calcExpressionFromItem.value === undefined) {
+    return;
+  }
+
+  const generatedAnswerKey = generateCalculatedExpressionsAnswerKey(qItem.linkId);
+
+  // calcExpressionFromItem.value is null, return empty item
+  if (calcExpressionFromItem.value === null) {
+    return createEmptyQrItem(qItem, generatedAnswerKey);
+  }
+
+  // At this point calcExpressionFromItem.value should have an evaluated value
+  // Parse evaluated value to QuestionnaireResponseItemAnswer
+  const parsedAnswer = parseValueToAnswer(qItem, calcExpressionFromItem.value);
+
+  // Shouldn't really happen, but if it does, do not return anything
+  if (!parsedAnswer) {
+    return;
+  }
+
+  // Create a new QuestionnaireResponseItem with the parsed answer
+  return {
+    ...createEmptyQrItem(qItem, generatedAnswerKey),
+    answer: [{ id: generatedAnswerKey, ...parsedAnswer }]
+  };
+}
+
+function applyCalculatedExpressionValuesInNonLeafItem(
+  qItem: QuestionnaireItem,
+  qrItem: QuestionnaireResponseItem | null,
+  calculatedExpressions: Record<string, CalculatedExpression[]>
+): QuestionnaireResponseItem | null {
+  const constructedItemFromCalculatedExpression = constructItemFromCalculatedExpression(
+    qItem,
+    calculatedExpressions
+  );
+
+  // If no constructed item, return previous item if it exists
+  if (!constructedItemFromCalculatedExpression) {
+    return qrItem ?? null;
+  }
+
+  // Existing qrItem has child items, merge them with the constructed item
+  const existingChildItems = qrItem?.item ?? [];
+  return {
+    ...constructedItemFromCalculatedExpression,
+    ...(existingChildItems.length > 0 && { item: existingChildItems })
+  };
+}
+
+function applyCalculatedExpressionValuesInLeafItem(
+  qItem: QuestionnaireItem,
+  qrItem: QuestionnaireResponseItem | null,
+  calculatedExpressions: Record<string, CalculatedExpression[]>
+): QuestionnaireResponseItem | null {
+  const constructedItemFromCalculatedExpression = constructItemFromCalculatedExpression(
+    qItem,
+    calculatedExpressions
+  );
+
+  // If no constructed item, return previous item if it exists
+  if (!constructedItemFromCalculatedExpression) {
+    return qrItem ?? null;
+  }
+
+  // Return constructed item as the new qrItem
+  return constructedItemFromCalculatedExpression;
+}
+
+function objMatchesCoding(coding: Coding | undefined, obj: any): boolean {
+  if (!coding || !obj || typeof obj !== 'object') {
+    return false;
+  }
+
+  return (
+    obj &&
+    obj.code === coding.code &&
+    obj.display === coding.display &&
+    obj.system === coding.system
+  );
+}
+
+function getMatchingAnswerFromAnswerOptions(
+  answerOptions: QuestionnaireItemAnswerOption[],
+  value: any
+): QuestionnaireResponseItemAnswer | null {
+  for (const option of answerOptions) {
+    // Handle answerOption.valueInteger
+    if ('valueInteger' in option && option.valueInteger === value) {
+      return { valueInteger: option.valueInteger };
     }
 
-    // Otherwise there is a value (including 0 and empty strings)
-    return parseValueToAnswer(qItem, calcExpressionFromItem.value);
+    // Handle answerOption.valueDate
+    if ('valueDate' in option && option.valueDate === value) {
+      return { valueDate: option.valueDate };
+    }
+
+    // Handle answerOption.valueTime
+    if ('valueTime' in option && option.valueTime === value) {
+      return { valueTime: option.valueTime };
+    }
+
+    // Handle answerOption.valueString
+    if ('valueString' in option && option.valueString === value) {
+      return { valueString: option.valueString };
+    }
+
+    // Handle answerOption.valueCoding
+    if ('valueCoding' in option) {
+      if (
+        option.valueCoding &&
+        // Handle case where value matches valueCoding.code
+        (option.valueCoding?.code === value?.code ||
+          // Handle case where value matches the whole valueCoding object
+          objMatchesCoding(option.valueCoding, value) ||
+          // Handle case where value matches valueCoding.code.display
+          option.valueCoding?.display === value?.display)
+      ) {
+        return { valueCoding: getRelevantCodingProperties(option.valueCoding) };
+      }
+    }
   }
 
-  return;
-}
+  // FIXME No support for valueReference
 
-function constructGroupItem(
-  qItem: QuestionnaireItem,
-  qrItem: QuestionnaireResponseItem | null,
-  calculatedExpressions: Record<string, CalculatedExpression[]>
-): QuestionnaireResponseItem | null {
-  const calculatedExpressionAnswer = getCalculatedExpressionAnswer(qItem, calculatedExpressions);
-
-  // If group item has an existing answer, do not overwrite it with calculated expression value
-  if (qrItem?.answer && qrItem?.answer.length > 0) {
-    return qrItem ?? null;
-  }
-
-  if (!calculatedExpressionAnswer) {
-    return qrItem ?? null;
-  }
-
-  if (qrItem) {
-    return {
-      ...qrItem,
-      answer: [calculatedExpressionAnswer]
-    };
-  }
-
-  return {
-    linkId: qItem.linkId,
-    text: qItem.text,
-    answer: [calculatedExpressionAnswer]
-  };
-}
-
-function constructSingleItem(
-  qItem: QuestionnaireItem,
-  qrItem: QuestionnaireResponseItem | null,
-  calculatedExpressions: Record<string, CalculatedExpression[]>
-): QuestionnaireResponseItem | null {
-  const calculatedExpressionAnswer = getCalculatedExpressionAnswer(qItem, calculatedExpressions);
-  if (!calculatedExpressionAnswer) {
-    return qrItem ?? null;
-  }
-
-  return {
-    linkId: qItem.linkId,
-    text: qItem.text,
-    answer: [calculatedExpressionAnswer]
-  };
+  return null;
 }
 
 // duplicate functions in sdc-populate
-function parseValueToAnswer(qItem: QuestionnaireItem, value: any): QuestionnaireResponseItemAnswer {
-  if (qItem.answerOption) {
-    const answerOption = qItem.answerOption.find(
-      (option: QuestionnaireItemAnswerOption) =>
-        option.valueCoding?.code === value?.code ||
-        // Handle case where valueCoding.code is not available
-        (!option.valueCoding?.code && option.valueCoding?.display === value?.display)
-    );
-
-    if (answerOption) {
-      return answerOption;
-    }
-  }
-
-  if (typeof value === 'boolean' && qItem.type === 'boolean') {
+function parseValueToAnswer(
+  qItem: QuestionnaireItem,
+  value: any
+): QuestionnaireResponseItemAnswer | null {
+  // Boolean support
+  if (qItem.type === 'boolean' && typeof value === 'boolean') {
     return { valueBoolean: value };
   }
 
-  if (typeof value === 'number') {
-    if (qItem.type === 'decimal') {
-      return { valueDecimal: value };
+  // Decimal support
+  if (qItem.type === 'decimal' && typeof value === 'number') {
+    // Handle precision if available
+    const precision = getDecimalPrecision(qItem);
+    if (typeof precision === 'number') {
+      value = parseFloat(value.toFixed(precision));
     }
-    if (qItem.type === 'integer') {
-      return { valueInteger: value };
-    }
+
+    return { valueDecimal: value };
   }
 
-  if (typeof value === 'object' && value.unit) {
-    return { valueQuantity: value };
+  // Integer support
+  if (qItem.type === 'integer' && typeof value === 'number') {
+    return { valueInteger: value };
   }
 
-  if (typeof value === 'object' && value.system && value.code) {
-    return { valueCoding: value };
-  }
-
-  // Value is string at this point
-  if (qItem.type === 'date' && checkIsDateTime(value)) {
+  // Date support
+  if (qItem.type === 'date' && typeof value === 'string' && checkIsDateTime(value)) {
     return { valueDate: value };
   }
 
-  if (qItem.type === 'dateTime' && checkIsDateTime(value)) {
+  // DateTime support
+  if (qItem.type === 'dateTime' && typeof value === 'string' && checkIsDateTime(value)) {
     return { valueDateTime: value };
   }
 
-  if (qItem.type === 'time' && checkIsTime(value)) {
+  // Time support
+  if (qItem.type === 'time' && typeof value === 'string' && checkIsTime(value)) {
     return { valueTime: value };
   }
 
-  return { valueString: value };
+  // String and text support
+  if (qItem.type === 'string' || (qItem.type === 'text' && typeof value === 'string')) {
+    return { valueString: value };
+  }
+
+  // Url support
+  if (qItem.type === 'url' && typeof value === 'string') {
+    return { valueUri: value };
+  }
+
+  // Choice and open-choice support
+  if (qItem.type === 'choice' || qItem.type === 'open-choice') {
+    // Handle answerOption matching
+    if (qItem.answerOption) {
+      const matchingAnswer = getMatchingAnswerFromAnswerOptions(qItem.answerOption, value);
+      if (matchingAnswer) {
+        console.log(qItem.linkId, matchingAnswer);
+      }
+
+      if (matchingAnswer) {
+        return matchingAnswer;
+      }
+    }
+
+    // If it hasn't matched answerOption, it's values is coming from an answerValueSet. In this case, it will always take the form of a Coding
+    // Handle valueCoding
+    // TODO in this case we will need to know the codings beforehand...
+    if (typeof value === 'object') {
+      return { valueCoding: value };
+    }
+
+    // Handle valueString
+    if (typeof value === 'string') {
+      // if (option.valueCoding?.code === value || option.valueCoding?.display === value) {
+      //
+      // }
+      return { valueString: value };
+    }
+  }
+
+  // FIXME No support for Attachment and Reference
+
+  // Quantity support
+  if (qItem.type === 'quantity') {
+    if (typeof value === 'number') {
+      // Handle precision if available
+      const precision = getDecimalPrecision(qItem);
+      if (typeof precision === 'number') {
+        value = parseFloat(value.toFixed(precision));
+      }
+
+      return { valueQuantity: { value: value } };
+    }
+
+    // TODO implement string for Quantity calcExpressions here
+    // if (typeof value === 'string') {
+    //
+    //   return { valueQuantity: value };
+    // }
+  }
+
+  return null;
 }
 
 /**
@@ -526,4 +694,95 @@ export function checkIsDateTime(value: string): boolean {
 export function checkIsTime(value: string): boolean {
   const timeRegex = /^([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?$/;
   return timeRegex.test(value);
+}
+
+/**
+ * Evaluate calculated expressions with chaining support.
+ * Iteratively evaluates calculated expressions until no more changes occur,
+ * ensuring that chained expressions are properly resolved.
+ */
+export async function processCalculatedExpressions(
+  questionnaire: Questionnaire,
+  questionnaireResponse: QuestionnaireResponse,
+  calculatedExpressions: Record<string, CalculatedExpression[]>,
+  variables: Variables,
+  existingFhirPathContext: Record<string, any>,
+  fhirPathTerminologyCache: Record<string, any>,
+  terminologyServerUrl: string
+): Promise<{
+  updatedResponse: QuestionnaireResponse;
+  updatedCalculatedExpressions: Record<string, CalculatedExpression[]>;
+}> {
+  let currentResponse = structuredClone(questionnaireResponse);
+  let currentCalculatedExpressions = structuredClone(calculatedExpressions);
+
+  let hasChanges = true;
+  let iterationCount = 0;
+  const maxIterations = 10; // Prevent infinite loops
+
+  // Loop to chain calculated expression updates until stable or limit reached
+  while (hasChanges && iterationCount < maxIterations) {
+    iterationCount++;
+    hasChanges = false;
+
+    // Create updated response item map for current iteration
+    const currentResponseItemMap = createQuestionnaireResponseItemMap(
+      questionnaire,
+      currentResponse
+    );
+
+    // Create updated FHIRPath context for current iteration
+    const fhirPathEvalResult = await createFhirPathContext(
+      currentResponse,
+      currentResponseItemMap,
+      variables,
+      existingFhirPathContext,
+      fhirPathTerminologyCache,
+      terminologyServerUrl
+    );
+    const { fhirPathContext: updatedFhirPathContext } = fhirPathEvalResult;
+
+    // Evaluate calculated expressions with current context
+    const { calculatedExpsIsUpdated, updatedCalculatedExpressions } =
+      await evaluateCalculatedExpressionsFhirPath(
+        updatedFhirPathContext,
+        fhirPathTerminologyCache,
+        calculatedExpressions,
+        terminologyServerUrl
+      );
+    currentCalculatedExpressions = updatedCalculatedExpressions;
+
+    if (calculatedExpsIsUpdated) {
+      hasChanges = true;
+
+      console.log(structuredClone(updatedCalculatedExpressions));
+      // Apply calculated expression values directly to the response
+      currentResponse = applyCalculatedExpressionValuesToResponse(
+        questionnaire,
+        currentResponse,
+        updatedCalculatedExpressions
+      );
+    }
+  }
+
+  if (iterationCount >= maxIterations) {
+    console.warn(
+      'Calculated expression chaining reached maximum iterations. Possible circular dependency detected.'
+    );
+  }
+
+  return {
+    updatedResponse: currentResponse,
+    updatedCalculatedExpressions: currentCalculatedExpressions
+  };
+}
+
+/**
+ * Generates a unique repeat ID for a calculated expression answer.
+ *
+ * @param linkId - The item's linkId.
+ * @returns A unique calculatedExpression ID.
+ */
+export function generateCalculatedExpressionsAnswerKey(linkId: string): string {
+  return `${linkId}-calculatedExpression-${nanoid()}`;
 }

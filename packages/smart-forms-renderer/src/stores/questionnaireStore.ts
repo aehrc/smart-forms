@@ -33,10 +33,11 @@ import {
   mutateRepeatEnableWhenItemInstances,
   updateEnableWhenItemAnswer
 } from '../utils/enableWhen';
-import { evaluateUpdatedExpressions } from '../utils/fhirpath';
+import { evaluateOtherExpressions } from '../utils/fhirpath';
 import {
+  applyCalculatedExpressionValuesToResponse,
   evaluateInitialCalculatedExpressions,
-  initialiseCalculatedExpressionValues
+  processCalculatedExpressions
 } from '../utils/calculatedExpression';
 import { createQuestionnaireModel } from '../utils/questionnaireStoreUtils/createQuestionaireModel';
 import { initialiseFormFromResponse } from '../utils/initialise';
@@ -70,6 +71,9 @@ import { applyComputedUpdates } from '../utils/computedUpdates';
  * @property currentPageIndex - Index of the current page
  * @property variables - Questionnaire variables object containing FHIRPath and x-fhir-query variables
  * @property launchContexts - Key-value pair of launch contexts `Record<launch context name, launch context properties>`
+ * @property initialExpressions - Key-value pair of initial expressions `Record<linkId, InitialExpression>`
+ * @property answerExpressions - Key-value pair of answer expressions `Record<linkId, answer expression properties>`
+ * @property calculatedExpressions - Key-value pair of calculated expressions `Record<linkId, array of calculated expression properties>`
  * @property targetConstraints - Key-value pair of target constraints `Record<target constraint key, target constraint properties>`
  * @property targetConstraintLinkIds - Key-value pair of linkIds against target constraint key(s) `Record<linkId, target constraint keys>`
  * @property answerOptionsToggleExpressions - Key-value pair of answer options toggle expressions `Record<linkId, array of answer options toggle expressions>`
@@ -77,8 +81,6 @@ import { applyComputedUpdates } from '../utils/computedUpdates';
  * @property enableWhenLinkedQuestions - Key-value pair of linked questions to enableWhen items `Record<linkId, linkIds of linked questions>`
  * @property enableWhenIsActivated - Flag to turn enableWhen checks on/off
  * @property enableWhenExpressions - EnableWhenExpressions object containing enableWhen expressions
- * @property calculatedExpressions - Key-value pair of calculated expressions `Record<linkId, array of calculated expression properties>`
- * @property answerExpressions - Key-value pair of answer expressions `Record<linkId, answer expression properties>`
  * @property processedValueSets - Key-value pair of (pre-)processed value set codings `Record<valueSetUrl, ProcessedValueSet>`
  * @property cachedValueSetCodings - Key-value pair of cached value set codings `Record<valueSetUrl, codings>`
  * @property fhirPathContext - Key-value pair of evaluated FHIRPath values `Record<variable name, evaluated value(s)>`
@@ -116,16 +118,16 @@ export interface QuestionnaireStoreType {
   currentPageIndex: number;
   variables: Variables;
   launchContexts: Record<string, LaunchContext>;
+  initialExpressions: Record<string, InitialExpression>;
+  answerExpressions: Record<string, AnswerExpression>;
+  calculatedExpressions: Record<string, CalculatedExpression[]>;
   targetConstraints: Record<string, TargetConstraint>;
   targetConstraintLinkIds: Record<string, string[]>;
-  answerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
   enableWhenItems: EnableWhenItems;
   enableWhenLinkedQuestions: Record<string, string[]>;
   enableWhenIsActivated: boolean;
   enableWhenExpressions: EnableWhenExpressions;
-  calculatedExpressions: Record<string, CalculatedExpression[]>;
-  initialExpressions: Record<string, InitialExpression>;
-  answerExpressions: Record<string, AnswerExpression>;
+  answerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
   processedValueSets: Record<string, ProcessedValueSet>;
   cachedValueSetCodings: Record<string, Coding[]>;
   fhirPathContext: Record<string, any>;
@@ -421,68 +423,102 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     const sourceQuestionnaire = get().sourceQuestionnaire;
     const updateResponse = questionnaireResponseStore.getState().updateResponse;
     const validateResponse = questionnaireResponseStore.getState().validateResponse;
+
+    /* Expression evaluation and application workflow
+    1. Evaluate calculatedExpressions to update answers in the QuestionnaireResponse.
+       - This must happen first, as these answers may affect subsequent expressions.
+       - Call updateResponse() once before proceeding to the next steps.
+
+    2. Evaluate other expressions using the QR with updated calculated answers.
+       - Target constraints
+       - Enable when expressions
+       - Answer options toggle expressions
+       - Dynamic valueSets (e.g. parameterised valueSets)
+
+    3. Apply computed updates from answerOptionsToggleExpressions and updated Dynamic ValueSets into the QuestionnaireResponse.
+
+    4. Re-run calculatedExpressions as a final step to ensure all calculations are up-to-date, incorporating any toggled options or dynamic value set changes.
+    */
+
+    // Step 1: Evaluate calculatedExpressions to update answers in the QuestionnaireResponse
+    const processCalculatedExpressionsResult = await processCalculatedExpressions(
+      sourceQuestionnaire,
+      updatedResponse,
+      get().calculatedExpressions,
+      get().variables,
+      get().fhirPathContext,
+      get().fhirPathTerminologyCache,
+      terminologyServerStore.getState().url
+    );
+    let lastUpdatedResponse = processCalculatedExpressionsResult.updatedResponse;
+    const updatedCalculatedExpressions =
+      processCalculatedExpressionsResult.updatedCalculatedExpressions;
+
+    // Update the response with all calculated expression results applied
+    updateResponse(lastUpdatedResponse);
+
+    // Step 2: Evaluate other expressions using the QR with updated calculated answers
     const updatedResponseItemMap = createQuestionnaireResponseItemMap(
       sourceQuestionnaire,
-      updatedResponse
+      lastUpdatedResponse
     );
     const {
-      isUpdated,
+      otherExpressionsUpdated,
+      updatedFhirPathContext,
+      updatedFhirPathTerminologyCache,
       updatedTargetConstraints,
       updatedAnswerOptionsToggleExpressions,
       updatedEnableWhenExpressions,
-      updatedCalculatedExpressions,
       updatedProcessedValueSets,
-      updatedFhirPathContext,
-      fhirPathTerminologyCache,
       computedQRItemUpdates
-    } = await evaluateUpdatedExpressions({
-      updatedResponse,
+    } = await evaluateOtherExpressions(
+      lastUpdatedResponse,
       updatedResponseItemMap,
-      targetConstraints: get().targetConstraints,
-      answerOptionsToggleExpressions: get().answerOptionsToggleExpressions,
-      enableWhenExpressions: get().enableWhenExpressions,
-      calculatedExpressions: get().calculatedExpressions,
-      processedValueSets: get().processedValueSets,
-      variables: get().variables,
-      existingFhirPathContext: get().fhirPathContext,
-      fhirPathTerminologyCache: get().fhirPathTerminologyCache,
-      terminologyServerUrl: terminologyServerStore.getState().url
-    });
+      get().variables,
+      get().targetConstraints,
+      get().fhirPathContext,
+      get().fhirPathTerminologyCache,
+      get().enableWhenExpressions,
+      get().answerOptionsToggleExpressions,
+      get().processedValueSets,
+      terminologyServerStore.getState().url
+    );
 
-    /**
-     * Applies computed updates to the QR before updating the store.
-     * Before this, we were updating the store before applying the computed updates. This may cause downstream useEffects to use a stale QR.
-     * By applying the computed updates first, we ensure that the QR is up-to-date when downstream useEffects are fired.
-     */
-
-    let lastUpdatedResponse = structuredClone(updatedResponse);
+    // Step 3: Apply computed updates from answerOptionsToggleExpressions and updated Dynamic ValueSets into the QuestionnaireResponse
     if (Object.keys(computedQRItemUpdates).length > 0) {
       lastUpdatedResponse = applyComputedUpdates(
         get().sourceQuestionnaire,
-        updatedResponse,
+        lastUpdatedResponse,
         computedQRItemUpdates
       );
-      updateResponse(lastUpdatedResponse, 'async');
+      updateResponse(lastUpdatedResponse);
     }
 
-    if (isUpdated) {
+    // TODO Step 4: Re-run calculatedExpressions as a final step to ensure all calculations are up-to-date, incorporating any toggled options or dynamic value set changes
+    // ...
+
+    if (otherExpressionsUpdated) {
       set(() => ({
         targetConstraints: updatedTargetConstraints,
-        answerOptionsToggleExpressions: updatedAnswerOptionsToggleExpressions,
         enableWhenExpressions: updatedEnableWhenExpressions,
-        calculatedExpressions: updatedCalculatedExpressions,
+        answerOptionsToggleExpressions: updatedAnswerOptionsToggleExpressions,
         processedValueSets: updatedProcessedValueSets,
+        calculatedExpressions: updatedCalculatedExpressions,
         fhirPathContext: updatedFhirPathContext,
-        fhirPathTerminologyCache: fhirPathTerminologyCache
+        fhirPathTerminologyCache: updatedFhirPathTerminologyCache
       }));
 
       // Besides setting QuestionnaireStore state, we also need to update `invalidItems` and `responseIsValid` in QuestionnaireResponseStore
       validateResponse(sourceQuestionnaire, lastUpdatedResponse); // Validate the updated response asynchronously
+      return;
     }
 
+    // Always update fhirPathContext, fhirPathTerminologyCache
+    // Also always update calculatedExpressions
     set(() => ({
+      calculatedExpressions: updatedCalculatedExpressions,
       fhirPathContext: updatedFhirPathContext,
-      fhirPathTerminologyCache: fhirPathTerminologyCache
+      fhirPathTerminologyCache: updatedFhirPathTerminologyCache
     }));
   },
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) =>
@@ -519,7 +555,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     let fhirPathTerminologyCache =
       evaluateInitialCalculatedExpressionsResult.fhirPathTerminologyCache;
 
-    const updatedResponse = initialiseCalculatedExpressionValues(
+    const updatedResponse = applyCalculatedExpressionValuesToResponse(
       sourceQuestionnaire,
       populatedResponse,
       initialCalculatedExpressions
