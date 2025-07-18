@@ -253,18 +253,20 @@ export async function evaluateCalculatedExpressionsFhirPath(
  *
  * @param questionnaire - The Questionnaire definition object.
  * @param initialResponse - The target QuestionnaireResponse to be updated.
- * @param calculatedExpressions - A mapping from linkId to array of CalculatedExpression objects to be applied.
+ * @param previousCalculatedExpressions - A mapping from linkId to array of CalculatedExpression objects that were previously applied.
+ * @param updatedCalculatedExpressions - A mapping from linkId to array of CalculatedExpression objects to be applied.
  * @returns The updated QuestionnaireResponse with calculated expression values applied.
  */
 export function applyCalculatedExpressionValuesToResponse(
   questionnaire: Questionnaire,
   initialResponse: QuestionnaireResponse,
-  calculatedExpressions: Record<string, CalculatedExpression[]>
+  previousCalculatedExpressions: Record<string, CalculatedExpression[]>,
+  updatedCalculatedExpressions: Record<string, CalculatedExpression[]>
 ): QuestionnaireResponse {
   // Filter calculated expressions, only preserve key-value pairs with values
   const calculatedExpressionsWithValues: Record<string, CalculatedExpression[]> = {};
-  for (const linkId in calculatedExpressions) {
-    const itemCalcExpressionsWithValues = calculatedExpressions[linkId].filter(
+  for (const linkId in updatedCalculatedExpressions) {
+    const itemCalcExpressionsWithValues = updatedCalculatedExpressions[linkId].filter(
       (calcExpression) => calcExpression.value !== undefined
     );
 
@@ -273,12 +275,35 @@ export function applyCalculatedExpressionValuesToResponse(
     }
   }
 
-  console.log(calculatedExpressionsWithValues);
+  // Get the difference between previous and updated calculated expressions
+  const diffCalculatedExpressions: Record<string, CalculatedExpression[]> = {};
+  for (const [linkId, calculatedExpressionWithValue] of Object.entries(
+    calculatedExpressionsWithValues
+  )) {
+    const calcExpressionFromItem = calculatedExpressionWithValue.find(
+      (calcExpression) => calcExpression.from === 'item'
+    );
+    const existingCalcExpressionFromItem = previousCalculatedExpressions[linkId]?.find(
+      (calcExpression) => calcExpression.from === 'item'
+    );
+
+    // Calculated expression not present previously, so include it
+    if (!existingCalcExpressionFromItem) {
+      diffCalculatedExpressions[linkId] = calculatedExpressionWithValue;
+      continue;
+    }
+
+    // If the calculated expression from item has changed, add it to the diff
+    if (!deepEqual(calcExpressionFromItem.value, existingCalcExpressionFromItem.value)) {
+      diffCalculatedExpressions[linkId] = calculatedExpressionWithValue;
+    }
+  }
+
   return updateQuestionnaireResponse(
     questionnaire,
     initialResponse,
     applyCalculatedExpressionValuesRecursive,
-    calculatedExpressionsWithValues
+    diffCalculatedExpressions
   );
 }
 
@@ -707,13 +732,14 @@ export async function processCalculatedExpressions(
   calculatedExpressions: Record<string, CalculatedExpression[]>,
   variables: Variables,
   existingFhirPathContext: Record<string, any>,
-  fhirPathTerminologyCache: Record<string, any>,
+  existingFhirPathTerminologyCache: Record<string, any>,
   terminologyServerUrl: string
 ): Promise<{
   updatedResponse: QuestionnaireResponse;
   updatedCalculatedExpressions: Record<string, CalculatedExpression[]>;
 }> {
   let currentResponse = structuredClone(questionnaireResponse);
+  let previousCalculatedExpressions = structuredClone(calculatedExpressions);
   let currentCalculatedExpressions = structuredClone(calculatedExpressions);
 
   let hasChanges = true;
@@ -737,7 +763,7 @@ export async function processCalculatedExpressions(
       currentResponseItemMap,
       variables,
       existingFhirPathContext,
-      fhirPathTerminologyCache,
+      existingFhirPathTerminologyCache,
       terminologyServerUrl
     );
     const { fhirPathContext: updatedFhirPathContext } = fhirPathEvalResult;
@@ -746,8 +772,8 @@ export async function processCalculatedExpressions(
     const { calculatedExpsIsUpdated, updatedCalculatedExpressions } =
       await evaluateCalculatedExpressionsFhirPath(
         updatedFhirPathContext,
-        fhirPathTerminologyCache,
-        calculatedExpressions,
+        existingFhirPathTerminologyCache,
+        currentCalculatedExpressions,
         terminologyServerUrl
       );
     currentCalculatedExpressions = updatedCalculatedExpressions;
@@ -755,13 +781,16 @@ export async function processCalculatedExpressions(
     if (calculatedExpsIsUpdated) {
       hasChanges = true;
 
-      console.log(structuredClone(updatedCalculatedExpressions));
       // Apply calculated expression values directly to the response
       currentResponse = applyCalculatedExpressionValuesToResponse(
         questionnaire,
         currentResponse,
-        updatedCalculatedExpressions
+        previousCalculatedExpressions,
+        currentCalculatedExpressions
       );
+
+      // Update previousCalculatedExpressions for the next iteration
+      previousCalculatedExpressions = structuredClone(currentCalculatedExpressions);
     }
   }
 
