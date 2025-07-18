@@ -73,6 +73,10 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
     onQrItemChange
   } = props;
 
+  // Get answer key from the qrItem.answer, if it exists
+  // This is used to force re-rendering of the component when the answer changes via an external event i.e. calculatedExpression
+  const answerKey = qrItem?.answer?.[0]?.id;
+
   const qItemOverrideComponents = useQuestionnaireStore.use.qItemOverrideComponents();
   const QItemOverrideComponent = qItemOverrideComponents[qItem.linkId];
 
@@ -81,6 +85,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
   if (QItemOverrideComponent && typeof QItemOverrideComponent === 'function') {
     return (
       <QItemOverrideComponent
+        key={answerKey}
         qItem={qItem}
         qrItem={qrItem}
         itemPath={itemPath}
@@ -100,6 +105,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
     case 'display':
       return (
         <DisplayItem
+          key={answerKey}
           qItem={qItem}
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
@@ -109,6 +115,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
     case 'boolean':
       return (
         <BooleanItem
+          key={answerKey}
           qItem={qItem}
           qrItem={qrItem}
           itemPath={itemPath}
@@ -124,6 +131,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
     case 'decimal':
       return (
         <DecimalItem
+          key={answerKey}
           qItem={qItem}
           qrItem={qrItem}
           itemPath={itemPath}
@@ -140,6 +148,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
       if (isSpecificItemControl(qItem, 'slider')) {
         return (
           <SliderItem
+            key={answerKey}
             qItem={qItem}
             qrItem={qrItem}
             itemPath={itemPath}
@@ -156,6 +165,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
 
       return (
         <IntegerItem
+          key={answerKey}
           qItem={qItem}
           qrItem={qrItem}
           itemPath={itemPath}
@@ -171,6 +181,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
     case 'date':
       return (
         <CustomDateItem
+          key={answerKey}
           qItem={qItem}
           qrItem={qrItem}
           itemPath={itemPath}
@@ -186,6 +197,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
     case 'dateTime':
       return (
         <CustomDateTimeItem
+          key={answerKey}
           qItem={qItem}
           qrItem={qrItem}
           itemPath={itemPath}
@@ -201,6 +213,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
     case 'time':
       return (
         <TimeItem
+          key={answerKey}
           qItem={qItem}
           qrItem={qrItem}
           itemPath={itemPath}
@@ -216,6 +229,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
     case 'string':
       return (
         <StringItem
+          key={answerKey}
           qItem={qItem}
           qrItem={qrItem}
           itemPath={itemPath}
@@ -231,6 +245,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
     case 'text':
       return (
         <TextItem
+          key={answerKey}
           qItem={qItem}
           qrItem={qrItem}
           itemPath={itemPath}
@@ -246,6 +261,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
     case 'url':
       return (
         <UrlItem
+          key={answerKey}
           qItem={qItem}
           qrItem={qrItem}
           itemPath={itemPath}
@@ -261,6 +277,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
     case 'choice':
       return (
         <ChoiceItemSwitcher
+          key={answerKey}
           qItem={qItem}
           qrItem={qrItem}
           itemPath={itemPath}
@@ -276,6 +293,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
     case 'open-choice':
       return (
         <OpenChoiceItemSwitcher
+          key={answerKey}
           qItem={qItem}
           qrItem={qrItem}
           itemPath={itemPath}
@@ -291,6 +309,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
     case 'attachment':
       return (
         <AttachmentItem
+          key={answerKey}
           qItem={qItem}
           qrItem={qrItem}
           itemPath={itemPath}
@@ -307,6 +326,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
       // FIXME reference item uses the same component as string item currently
       return (
         <StringItem
+          key={answerKey}
           qItem={qItem}
           qrItem={qrItem}
           itemPath={itemPath}
@@ -322,6 +342,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
     case 'quantity':
       return (
         <QuantityItem
+          key={answerKey}
           qItem={qItem}
           qrItem={qrItem}
           itemPath={itemPath}
