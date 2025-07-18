@@ -67,7 +67,7 @@ export interface QuestionnaireResponseStoreType {
   validateResponse: (questionnaire: Questionnaire, updatedResponse: QuestionnaireResponse) => void;
   buildSourceResponse: (response: QuestionnaireResponse) => void;
   setUpdatableResponseAsPopulated: (populatedResponse: QuestionnaireResponse) => void;
-  updateResponse: (updatedResponse: QuestionnaireResponse, debugType: 'initial' | 'async') => void;
+  updateResponse: (updatedResponse: QuestionnaireResponse) => void;
   setUpdatableResponseAsSaved: (savedResponse: QuestionnaireResponse) => void;
   setUpdatableResponseAsEmpty: (clearedResponse: QuestionnaireResponse) => void;
   destroySourceResponse: () => void;

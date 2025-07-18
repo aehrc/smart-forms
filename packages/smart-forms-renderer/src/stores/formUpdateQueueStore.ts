@@ -114,7 +114,8 @@ export const formUpdateQueueStore = createStore<FormUpdateQueueStoreType>()((set
 
     const { questionnaireResponse } = queue[0];
 
-    updateResponse(questionnaireResponse, 'initial'); // Immediate update (pre-computed)
+    // Perform an immediate update first before processing expressions
+    updateResponse(questionnaireResponse);
 
     await updateExpressions(questionnaireResponse);
 
