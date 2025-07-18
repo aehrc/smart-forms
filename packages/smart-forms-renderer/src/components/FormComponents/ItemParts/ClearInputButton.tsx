@@ -19,7 +19,6 @@ import React from 'react';
 import Tooltip from '@mui/material/Tooltip';
 import Button from '@mui/material/Button';
 import { grey } from '@mui/material/colors';
-import Fade from '@mui/material/Fade';
 import { useRendererStylingStore } from '../../../stores';
 
 interface ClearInputButtonProps {
@@ -38,19 +37,21 @@ function ClearInputButton(props: ClearInputButtonProps) {
     return null;
   }
 
+  if (!buttonShown) {
+    return;
+  }
+
   return (
-    <Fade in={buttonShown} timeout={100}>
-      <Tooltip role="button" title="Clear">
-        <Button
-          sx={{
-            color: grey['500'],
-            '&:hover': { backgroundColor: grey['200'] }
-          }}
-          onClick={onClear}>
-          Clear
-        </Button>
-      </Tooltip>
-    </Fade>
+    <Tooltip role="button" title="Clear">
+      <Button
+        sx={{
+          color: grey['500'],
+          '&:hover': { backgroundColor: grey['200'] }
+        }}
+        onClick={onClear}>
+        Clear
+      </Button>
+    </Tooltip>
   );
 }
 
