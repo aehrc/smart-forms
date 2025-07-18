@@ -93,8 +93,9 @@ export const formUpdateQueueStore = createStore<FormUpdateQueueStoreType>()((set
   replaceLatestFormUpdate: (task: UpdateTask) => {
     const { isProcessing } = get();
 
-    // If already processing, keep current task and replace pending ones
+    // If already processing, keep current task and replace pending ones for performance
     set(() => ({
+      // FIXME Instead of taking the latest one and throwing away the rest, do we want to have a set limit on the queue i.e. 5?
       queue: isProcessing ? [get().queue[0], task] : [task]
     }));
     get()._startProcessing();
