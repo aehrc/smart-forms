@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import RadioButtonWithOpenLabel from '../ItemParts/RadioButtonWithOpenLabel';
 import RadioFormGroup from '../ItemParts/RadioFormGroup';
@@ -29,7 +28,7 @@ interface OpenChoiceRadioAnswerOptionFieldsProps {
   openLabelSelected: boolean;
   feedback: string;
   readOnly: boolean;
-  expressionUpdated: boolean;
+  exprAnimating: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   isTabled: boolean;
   onValueChange: (changedOptionValue: string | null, changedOpenLabelValue: string | null) => void;
@@ -46,7 +45,7 @@ function OpenChoiceRadioAnswerOptionFields(props: OpenChoiceRadioAnswerOptionFie
     openLabelSelected,
     feedback,
     readOnly,
-    expressionUpdated,
+    exprAnimating,
     answerOptionsToggleExpressionsMap,
     isTabled,
     onValueChange,
@@ -60,7 +59,7 @@ function OpenChoiceRadioAnswerOptionFields(props: OpenChoiceRadioAnswerOptionFie
       valueRadio={valueRadio}
       feedback={feedback}
       readOnly={readOnly}
-      expressionUpdated={expressionUpdated}
+      exprAnimating={exprAnimating}
       answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
       isTabled={isTabled}
       onCheckedChange={(newValue) => onValueChange(newValue, null)}

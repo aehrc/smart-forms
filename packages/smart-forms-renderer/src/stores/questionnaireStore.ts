@@ -15,47 +15,47 @@
  * limitations under the License.
  */
 
-import { createStore } from 'zustand/vanilla';
 import type {
   Coding,
   Questionnaire,
   QuestionnaireResponse,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
-import type { Variables } from '../interfaces/variables.interface';
-import type { LaunchContext } from '../interfaces/populate.interface';
+import type { ComponentType } from 'react';
+import { createStore } from 'zustand/vanilla';
+import type { QItemOverrideComponentProps, SdcUiOverrideComponentProps } from '../interfaces';
+import type { AnswerExpression } from '../interfaces/answerExpression.interface';
+import type { AnswerOptionsToggleExpression } from '../interfaces/answerOptionsToggleExpression.interface';
 import type { CalculatedExpression } from '../interfaces/calculatedExpression.interface';
 import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enableWhen.interface';
-import type { AnswerExpression } from '../interfaces/answerExpression.interface';
-import type { Tabs } from '../interfaces/tab.interface';
+import type { InitialExpression } from '../interfaces/initialExpression.interface';
 import type { Pages } from '../interfaces/page.interface';
-import {
-  mutateRepeatEnableWhenItemInstances,
-  updateEnableWhenItemAnswer
-} from '../utils/enableWhen';
-import { evaluateOtherExpressions } from '../utils/fhirpath';
+import type { LaunchContext } from '../interfaces/populate.interface';
+import type { Tabs } from '../interfaces/tab.interface';
+import type { TargetConstraint } from '../interfaces/targetConstraint.interface';
+import type { ProcessedValueSet } from '../interfaces/valueSet.interface';
+import type { Variables } from '../interfaces/variables.interface';
 import {
   applyCalculatedExpressionValuesToResponse,
   evaluateInitialCalculatedExpressions,
   processCalculatedExpressions
 } from '../utils/calculatedExpression';
-import { createQuestionnaireModel } from '../utils/questionnaireStoreUtils/createQuestionaireModel';
-import { initialiseFormFromResponse } from '../utils/initialise';
-import { emptyQuestionnaire, emptyResponse } from '../utils/emptyResource';
-import { terminologyServerStore } from './terminologyServerStore';
-import { createSelectors } from './selector';
-import { mutateRepeatEnableWhenExpressionInstances } from '../utils/enableWhenExpression';
-import { questionnaireResponseStore } from './questionnaireResponseStore';
-import { createQuestionnaireResponseItemMap } from '../utils/questionnaireResponseStoreUtils/updatableResponseItems';
-import { insertCompleteAnswerOptionsIntoQuestionnaire } from '../utils/questionnaireStoreUtils/insertAnswerOptions';
-import type { InitialExpression } from '../interfaces/initialExpression.interface';
-import type { QItemOverrideComponentProps, SdcUiOverrideComponentProps } from '../interfaces';
-import type { ComponentType } from 'react';
-import type { TargetConstraint } from '../interfaces/targetConstraint.interface';
-import { readTargetConstraintLocationLinkIds } from '../utils/targetConstraint';
-import type { ProcessedValueSet } from '../interfaces/valueSet.interface';
-import type { AnswerOptionsToggleExpression } from '../interfaces/answerOptionsToggleExpression.interface';
 import { applyComputedUpdates } from '../utils/computedUpdates';
+import { emptyQuestionnaire, emptyResponse } from '../utils/emptyResource';
+import {
+  mutateRepeatEnableWhenItemInstances,
+  updateEnableWhenItemAnswer
+} from '../utils/enableWhen';
+import { mutateRepeatEnableWhenExpressionInstances } from '../utils/enableWhenExpression';
+import { evaluateOtherExpressions } from '../utils/fhirpath';
+import { initialiseFormFromResponse } from '../utils/initialise';
+import { createQuestionnaireResponseItemMap } from '../utils/questionnaireResponseStoreUtils/updatableResponseItems';
+import { createQuestionnaireModel } from '../utils/questionnaireStoreUtils/createQuestionaireModel';
+import { insertCompleteAnswerOptionsIntoQuestionnaire } from '../utils/questionnaireStoreUtils/insertAnswerOptions';
+import { readTargetConstraintLocationLinkIds } from '../utils/targetConstraint';
+import { questionnaireResponseStore } from './questionnaireResponseStore';
+import { createSelectors } from './selector';
+import { terminologyServerStore } from './terminologyServerStore';
 
 /**
  * QuestionnaireStore properties and methods
@@ -441,6 +441,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     */
 
     // Step 1: Evaluate calculatedExpressions to update answers in the QuestionnaireResponse
+    console.log(structuredClone(get().calculatedExpressions));
     const processCalculatedExpressionsResult = await processCalculatedExpressions(
       sourceQuestionnaire,
       updatedResponse,
@@ -558,6 +559,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     const updatedResponse = applyCalculatedExpressionValuesToResponse(
       sourceQuestionnaire,
       populatedResponse,
+      {},
       initialCalculatedExpressions
     );
 

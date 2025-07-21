@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import RadioFormGroup from '../ItemParts/RadioFormGroup';
 
@@ -25,7 +24,7 @@ interface ChoiceRadioAnswerOptionFieldsProps {
   valueRadio: string | null;
   feedback: string;
   readOnly: boolean;
-  expressionUpdated: boolean;
+  exprAnimating: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   isTabled: boolean;
   onCheckedChange: (newValue: string) => void;
@@ -39,7 +38,7 @@ function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps
     valueRadio,
     feedback,
     readOnly,
-    expressionUpdated,
+    exprAnimating,
     answerOptionsToggleExpressionsMap,
     isTabled,
     onCheckedChange,
@@ -53,7 +52,7 @@ function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps
       valueRadio={valueRadio}
       feedback={feedback}
       readOnly={readOnly}
-      expressionUpdated={expressionUpdated}
+      exprAnimating={exprAnimating}
       answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
       isTabled={isTabled}
       onCheckedChange={onCheckedChange}

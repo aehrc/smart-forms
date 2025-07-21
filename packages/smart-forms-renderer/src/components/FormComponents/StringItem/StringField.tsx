@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import InputAdornment from '@mui/material/InputAdornment';
-import { StandardTextField } from '../Textfield.styles';
+import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import { useRendererStylingStore } from '../../../stores';
-import DisplayUnitText from '../ItemParts/DisplayUnitText';
-import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 import { expressionUpdateFadingGlow } from '../../ExpressionUpdateFadingGlow.styles';
+import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
+import DisplayUnitText from '../ItemParts/DisplayUnitText';
+import { StandardTextField } from '../Textfield.styles';
 
 interface StringFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -32,7 +32,7 @@ interface StringFieldProps extends PropsWithIsTabledRequiredAttribute {
   displayUnit: string;
   entryFormat: string;
   readOnly: boolean;
-  calcExpUpdated: boolean;
+  calcExprAnimating: boolean;
   onInputChange: (value: string) => void;
   onBlur: () => void;
 }
@@ -48,7 +48,7 @@ function StringField(props: StringFieldProps) {
     entryFormat,
     readOnly,
     isTabled,
-    calcExpUpdated,
+    calcExprAnimating,
     onInputChange,
     onBlur
   } = props;
@@ -69,7 +69,7 @@ function StringField(props: StringFieldProps) {
       placeholder={entryFormat || displayPrompt}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       size="small"
-      sx={[expressionUpdateFadingGlow(calcExpUpdated)]}
+      sx={[expressionUpdateFadingGlow(calcExprAnimating)]}
       slotProps={{
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',

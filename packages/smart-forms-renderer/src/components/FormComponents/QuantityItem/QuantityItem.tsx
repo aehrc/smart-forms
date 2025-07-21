@@ -1,28 +1,27 @@
-import { useCallback, useMemo, useState } from 'react';
-import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
-import type { Quantity, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import { FullWidthFormComponentBox } from '../../Box.styles';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
-import debounce from 'lodash.debounce';
-import { DEBOUNCE_DURATION } from '../../../utils/debounce';
-import { createEmptyQrItem } from '../../../utils/qrItem';
-import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
-import { parseDecimalStringWithPrecision } from '../../../utils/parseInputs';
-import { getDecimalPrecision } from '../../../utils/extensions';
-import useReadOnly from '../../../hooks/useReadOnly';
-import { useQuestionnaireStore } from '../../../stores';
 import Box from '@mui/material/Box';
-import QuantityField from './QuantityField';
-import QuantityUnitField from './QuantityUnitField';
+import type { Quantity, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import debounce from 'lodash.debounce';
+import { useCallback, useMemo, useState } from 'react';
+import useReadOnly from '../../../hooks/useReadOnly';
+import useShowFeedback from '../../../hooks/useShowFeedback';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
+import { useQuestionnaireStore } from '../../../stores';
+import { DEBOUNCE_DURATION } from '../../../utils/debounce';
+import { getDecimalPrecision } from '../../../utils/extensions';
+import { parseDecimalStringWithPrecision } from '../../../utils/parseInputs';
+import { createEmptyQrItem } from '../../../utils/qrItem';
 import {
   createQuantityItemAnswer,
   quantityComparators,
   stringIsComparator
 } from '../../../utils/quantity';
-import QuantityComparatorField from './QuantityComparatorField';
-import useQuantityCalculatedExpression from '../../../hooks/useQuantityCalculatedExpression';
+import { FullWidthFormComponentBox } from '../../Box.styles';
+import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
-import useShowFeedback from '../../../hooks/useShowFeedback';
+import QuantityComparatorField from './QuantityComparatorField';
+import QuantityField from './QuantityField';
+import QuantityUnitField from './QuantityUnitField';
 
 function QuantityItem(props: BaseItemProps) {
   const {
@@ -34,6 +33,7 @@ function QuantityItem(props: BaseItemProps) {
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
+    calcExprAnimating,
     onQrItemChange
   } = props;
 
@@ -101,70 +101,6 @@ function QuantityItem(props: BaseItemProps) {
 
   // Provides a way to hide the feedback when the user is typing
   const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
-
-  // Process calculated expressions
-  const { calcExpUpdated } = useQuantityCalculatedExpression({
-    qItem: qItem,
-    inputValue: valueInput,
-    precision: precision,
-    onChangeByCalcExpressionDecimal: (newValueDecimal: number) => {
-      setValueInput(
-        typeof precision === 'number'
-          ? newValueDecimal.toFixed(precision)
-          : newValueDecimal.toString()
-      );
-      onQrItemChange(
-        {
-          ...createEmptyQrItem(qItem, answerKey),
-          answer: [
-            {
-              id: answerKey,
-              valueQuantity: {
-                value: newValueDecimal,
-                unit: unitInput?.valueCoding?.display,
-                system: unitInput?.valueCoding?.system,
-                code: unitInput?.valueCoding?.code
-              }
-            }
-          ]
-        },
-        itemPath
-      );
-    },
-    onChangeByCalcExpressionQuantity: (
-      newValueDecimal: number,
-      newUnitSystem,
-      newUnitCode,
-      newUnitDisplay
-    ) => {
-      setValueInput(
-        typeof precision === 'number'
-          ? newValueDecimal.toFixed(precision)
-          : newValueDecimal.toString()
-      );
-      onQrItemChange(
-        {
-          ...createEmptyQrItem(qItem, answerKey),
-          answer: [
-            {
-              id: answerKey,
-              valueQuantity: {
-                value: newValueDecimal,
-                unit: newUnitDisplay,
-                system: newUnitSystem,
-                code: newUnitCode
-              }
-            }
-          ]
-        },
-        itemPath
-      );
-    },
-    onChangeByCalcExpressionNull: () => {
-      setValueInput('');
-      onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
-    }
-  });
 
   // Event handlers
   function handleComparatorInputChange(newComparatorInput: Quantity['comparator'] | null) {
@@ -266,7 +202,7 @@ function QuantityItem(props: BaseItemProps) {
           options={quantityComparators}
           valueSelect={comparatorInput}
           readOnly={readOnly}
-          calcExpUpdated={calcExpUpdated}
+          calcExprAnimating={calcExprAnimating}
           isTabled={isTabled}
           onChange={handleComparatorInputChange}
         />
@@ -279,7 +215,7 @@ function QuantityItem(props: BaseItemProps) {
           displayUnit={displayUnit}
           entryFormat={entryFormat}
           readOnly={readOnly}
-          calcExpUpdated={calcExpUpdated}
+          calcExprAnimating={calcExprAnimating}
           isTabled={isTabled}
           onInputChange={handleValueInputChange}
           onBlur={handleBlur}
@@ -291,7 +227,7 @@ function QuantityItem(props: BaseItemProps) {
             options={unitOptions}
             valueSelect={unitInput}
             readOnly={readOnly}
-            calcExpUpdated={calcExpUpdated}
+            calcExprAnimating={calcExprAnimating}
             isTabled={isTabled}
             onChange={handleUnitInputChange}
           />
@@ -317,7 +253,7 @@ function QuantityItem(props: BaseItemProps) {
               options={quantityComparators}
               valueSelect={comparatorInput}
               readOnly={readOnly}
-              calcExpUpdated={calcExpUpdated}
+              calcExprAnimating={calcExprAnimating}
               isTabled={isTabled}
               onChange={handleComparatorInputChange}
             />
@@ -330,7 +266,7 @@ function QuantityItem(props: BaseItemProps) {
               displayUnit={displayUnit}
               entryFormat={entryFormat}
               readOnly={readOnly}
-              calcExpUpdated={calcExpUpdated}
+              calcExprAnimating={calcExprAnimating}
               isTabled={isTabled}
               onInputChange={handleValueInputChange}
               onBlur={handleBlur}
@@ -342,7 +278,7 @@ function QuantityItem(props: BaseItemProps) {
                 options={unitOptions}
                 valueSelect={unitInput}
                 readOnly={readOnly}
-                calcExpUpdated={calcExpUpdated}
+                calcExprAnimating={calcExprAnimating}
                 isTabled={isTabled}
                 onChange={handleUnitInputChange}
               />

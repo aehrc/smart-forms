@@ -23,7 +23,6 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import TextField from './TextField';
-import useStringCalculatedExpression from '../../../hooks/useStringCalculatedExpression';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
@@ -39,6 +38,7 @@ function TextItem(props: BaseItemProps) {
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
+    calcExprAnimating,
     onQrItemChange
   } = props;
 
@@ -62,26 +62,6 @@ function TextItem(props: BaseItemProps) {
 
   // Provides a way to hide the feedback when the user is typing
   const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
-
-  // Process calculated expressions
-  const { calcExpUpdated } = useStringCalculatedExpression({
-    qItem: qItem,
-    inputValue: input,
-    onChangeByCalcExpressionString: (newValueString: string) => {
-      setInput(newValueString);
-      onQrItemChange(
-        {
-          ...createEmptyQrItem(qItem, answerKey),
-          answer: [{ id: answerKey, valueString: newValueString }]
-        },
-        itemPath
-      );
-    },
-    onChangeByCalcExpressionNull: () => {
-      setInput('');
-      onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
-    }
-  });
 
   // Event handlers
   function handleInputChange(newInput: string) {
@@ -124,7 +104,7 @@ function TextItem(props: BaseItemProps) {
         displayUnit={displayUnit}
         entryFormat={entryFormat}
         readOnly={readOnly}
-        calcExpUpdated={calcExpUpdated}
+        calcExprAnimating={calcExprAnimating}
         onInputChange={handleInputChange}
         onBlur={handleBlur}
       />
@@ -150,7 +130,7 @@ function TextItem(props: BaseItemProps) {
             displayUnit={displayUnit}
             entryFormat={entryFormat}
             readOnly={readOnly}
-            calcExpUpdated={calcExpUpdated}
+            calcExprAnimating={calcExprAnimating}
             onInputChange={handleInputChange}
             onBlur={handleBlur}
           />

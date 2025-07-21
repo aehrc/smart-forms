@@ -1,14 +1,14 @@
-import type { ReactNode } from 'react';
 import Box from '@mui/material/Box';
 import RadioGroup from '@mui/material/RadioGroup';
-import { StyledRequiredTypography } from '../Item.styles';
-import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
-import RadioOptionList from './RadioOptionList';
-import ExpressionUpdateFadingIcon from './ExpressionUpdateFadingIcon';
-import ClearInputButton from './ClearInputButton';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import type { ReactNode } from 'react';
+import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import { useRendererStylingStore } from '../../../stores';
 import { getChoiceOrientation } from '../../../utils/choice';
+import { StyledRequiredTypography } from '../Item.styles';
+import ClearInputButton from './ClearInputButton';
+import ExpressionUpdateFadingIcon from './ExpressionUpdateFadingIcon';
+import RadioOptionList from './RadioOptionList';
 
 interface ChoiceRadioGroupProps {
   qItem: QuestionnaireItem;
@@ -16,7 +16,7 @@ interface ChoiceRadioGroupProps {
   valueRadio: string | null;
   feedback: string;
   readOnly: boolean;
-  expressionUpdated: boolean;
+  exprAnimating: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   isTabled: boolean;
   onCheckedChange: (newValue: string) => void;
@@ -31,7 +31,7 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
     valueRadio,
     feedback,
     readOnly,
-    expressionUpdated,
+    exprAnimating,
     answerOptionsToggleExpressionsMap,
     isTabled,
     onCheckedChange,
@@ -87,7 +87,7 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
 
           <Box flexGrow={1} />
 
-          <ExpressionUpdateFadingIcon fadeIn={expressionUpdated} disabled={readOnly} />
+          <ExpressionUpdateFadingIcon fadeIn={exprAnimating} disabled={readOnly} />
         </Box>
 
         <ClearInputButton buttonShown={!!valueRadio} readOnly={readOnly} onClear={onClear} />

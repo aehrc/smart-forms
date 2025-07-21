@@ -15,11 +15,9 @@
  * limitations under the License.
  */
 
-import React from 'react';
-import ChoiceItemSwitcher from '../ChoiceItems/ChoiceItemSwitcher';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import OpenChoiceItemSwitcher from '../OpenChoiceItems/OpenChoiceItemSwitcher';
 import Typography from '@mui/material/Typography';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import { useCalculatedExpressionAnimating } from '../../../hooks/useCalculatedExpressionAnimating';
 import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
@@ -30,21 +28,23 @@ import type {
   PropsWithQrItemChangeHandler,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
-import StringItem from '../StringItem/StringItem';
-import BooleanItem from '../BooleanItem/BooleanItem';
-import TimeItem from '../TimeItem/TimeItem';
-import TextItem from '../TextItem/TextItem';
-import DisplayItem from '../DisplayItem/DisplayItem';
-import DecimalItem from '../DecimalItem/DecimalItem';
-import UrlItem from '../UrlItem/UrlItem';
-import CustomDateItem from '../DateTimeItems/CustomDateItem/CustomDateItem';
-import { isSpecificItemControl } from '../../../utils';
-import SliderItem from '../SliderItem/SliderItem';
-import IntegerItem from '../IntegerItem/IntegerItem';
-import AttachmentItem from '../AttachmentItem/AttachmentItem';
-import CustomDateTimeItem from '../DateTimeItems/CustomDateTimeItem/CustomDateTimeItem';
-import QuantityItem from '../QuantityItem/QuantityItem';
 import { useQuestionnaireStore } from '../../../stores';
+import { isSpecificItemControl } from '../../../utils';
+import AttachmentItem from '../AttachmentItem/AttachmentItem';
+import BooleanItem from '../BooleanItem/BooleanItem';
+import ChoiceItemSwitcher from '../ChoiceItems/ChoiceItemSwitcher';
+import CustomDateItem from '../DateTimeItems/CustomDateItem/CustomDateItem';
+import CustomDateTimeItem from '../DateTimeItems/CustomDateTimeItem/CustomDateTimeItem';
+import DecimalItem from '../DecimalItem/DecimalItem';
+import DisplayItem from '../DisplayItem/DisplayItem';
+import IntegerItem from '../IntegerItem/IntegerItem';
+import OpenChoiceItemSwitcher from '../OpenChoiceItems/OpenChoiceItemSwitcher';
+import QuantityItem from '../QuantityItem/QuantityItem';
+import SliderItem from '../SliderItem/SliderItem';
+import StringItem from '../StringItem/StringItem';
+import TextItem from '../TextItem/TextItem';
+import TimeItem from '../TimeItem/TimeItem';
+import UrlItem from '../UrlItem/UrlItem';
 
 interface SingleItemSwitcherProps
   extends PropsWithQrItemChangeHandler,
@@ -77,6 +77,8 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
   // This is used to force re-rendering of the component when the answer changes via an external event i.e. calculatedExpression
   const answerKey = qrItem?.answer?.[0]?.id;
 
+  const calcExprAnimating = useCalculatedExpressionAnimating(answerKey);
+
   const qItemOverrideComponents = useQuestionnaireStore.use.qItemOverrideComponents();
   const QItemOverrideComponent = qItemOverrideComponents[qItem.linkId];
 
@@ -94,6 +96,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         renderingExtensions={renderingExtensions}
         parentIsReadOnly={parentIsReadOnly}
         feedbackFromParent={feedbackFromParent}
+        // FIXME add calcExprAnimating here
         onQrItemChange={onQrItemChange}
         onQrRepeatGroupChange={() => {}} // Not needed for single items, use empty function
       />
@@ -124,6 +127,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
+          calcExprAnimating={calcExprAnimating}
           onQrItemChange={onQrItemChange}
           parentStyles={parentStyles}
         />
@@ -140,6 +144,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
+          calcExprAnimating={calcExprAnimating}
           onQrItemChange={onQrItemChange}
           parentStyles={parentStyles}
         />
@@ -157,6 +162,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
+            calcExprAnimating={calcExprAnimating}
             onQrItemChange={onQrItemChange}
             parentStyles={parentStyles}
           />
@@ -174,6 +180,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
+          calcExprAnimating={calcExprAnimating}
           onQrItemChange={onQrItemChange}
           parentStyles={parentStyles}
         />
@@ -190,6 +197,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
+          calcExprAnimating={calcExprAnimating}
           onQrItemChange={onQrItemChange}
           parentStyles={parentStyles}
         />
@@ -206,6 +214,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
+          calcExprAnimating={calcExprAnimating}
           onQrItemChange={onQrItemChange}
           parentStyles={parentStyles}
         />
@@ -222,6 +231,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
+          calcExprAnimating={calcExprAnimating}
           onQrItemChange={onQrItemChange}
           parentStyles={parentStyles}
         />
@@ -238,6 +248,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
+          calcExprAnimating={calcExprAnimating}
           onQrItemChange={onQrItemChange}
           parentStyles={parentStyles}
         />
@@ -254,6 +265,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
+          calcExprAnimating={calcExprAnimating}
           onQrItemChange={onQrItemChange}
           parentStyles={parentStyles}
         />
@@ -270,6 +282,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
+          calcExprAnimating={calcExprAnimating}
           onQrItemChange={onQrItemChange}
           parentStyles={parentStyles}
         />
@@ -286,6 +299,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
+          calcExprAnimating={calcExprAnimating}
           onQrItemChange={onQrItemChange}
           parentStyles={parentStyles}
         />
@@ -302,6 +316,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
+          calcExprAnimating={calcExprAnimating}
           onQrItemChange={onQrItemChange}
           parentStyles={parentStyles}
         />
@@ -318,6 +333,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
+          calcExprAnimating={calcExprAnimating}
           onQrItemChange={onQrItemChange}
           parentStyles={parentStyles}
         />
@@ -335,6 +351,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
+          calcExprAnimating={calcExprAnimating}
           onQrItemChange={onQrItemChange}
           parentStyles={parentStyles}
         />
@@ -351,6 +368,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
+          calcExprAnimating={calcExprAnimating}
           onQrItemChange={onQrItemChange}
           parentStyles={parentStyles}
         />

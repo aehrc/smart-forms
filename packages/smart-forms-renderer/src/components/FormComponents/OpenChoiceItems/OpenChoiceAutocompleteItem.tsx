@@ -15,46 +15,26 @@
  * limitations under the License.
  */
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { Coding } from 'fhir/r4';
 
+import type { AutocompleteChangeReason } from '@mui/material';
+import type { AlertColor } from '@mui/material/Alert';
+import useDebounce from '../../../hooks/useDebounce';
+import useReadOnly from '../../../hooks/useReadOnly';
+import useTerminologyServerQuery from '../../../hooks/useTerminologyServerQuery';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
+import { useQuestionnaireStore } from '../../../stores';
+import { AUTOCOMPLETE_DEBOUNCE_DURATION } from '../../../utils/debounce';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
-import useDebounce from '../../../hooks/useDebounce';
-import useTerminologyServerQuery from '../../../hooks/useTerminologyServerQuery';
-import type {
-  PropsWithFeedbackFromParentAttribute,
-  PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledRequiredAttribute,
-  PropsWithItemPathAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithRenderingExtensionsAttribute
-} from '../../../interfaces/renderProps.interface';
-import { AUTOCOMPLETE_DEBOUNCE_DURATION } from '../../../utils/debounce';
-import OpenChoiceAutocompleteField from './OpenChoiceAutocompleteField';
-import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
-import { useQuestionnaireStore } from '../../../stores';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
-import type { AlertColor } from '@mui/material/Alert';
 import ItemLabel from '../ItemParts/ItemLabel';
-import type { AutocompleteChangeReason } from '@mui/material';
+import OpenChoiceAutocompleteField from './OpenChoiceAutocompleteField';
 
-interface OpenChoiceAutocompleteItemProps
-  extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
-    PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledRequiredAttribute,
-    PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute,
-    PropsWithFeedbackFromParentAttribute {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
-}
-
-function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
+function OpenChoiceAutocompleteItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
@@ -63,6 +43,7 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
     renderingExtensions,
     feedbackFromParent,
     parentIsReadOnly,
+    calcExprAnimating,
     onQrItemChange
   } = props;
 

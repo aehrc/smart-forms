@@ -37,13 +37,13 @@ interface BooleanFieldProps {
   readOnly: boolean;
   valueBoolean: boolean | undefined;
   feedback: string;
-  calcExpUpdated: boolean;
+  calcExprAnimating: boolean;
   onCheckedChange: (newValue: string) => void;
   onClear: () => void;
 }
 
 const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
-  const { qItem, readOnly, valueBoolean, feedback, calcExpUpdated, onCheckedChange, onClear } =
+  const { qItem, readOnly, valueBoolean, feedback, calcExprAnimating, onCheckedChange, onClear } =
     props;
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
@@ -157,7 +157,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
 
             <Box flexGrow={1} />
 
-            <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+            <ExpressionUpdateFadingIcon fadeIn={calcExprAnimating} disabled={readOnly} />
           </Box>
         )}
 

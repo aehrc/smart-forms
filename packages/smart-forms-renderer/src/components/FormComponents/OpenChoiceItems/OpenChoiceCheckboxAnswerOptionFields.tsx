@@ -15,14 +15,13 @@
  * limitations under the License.
  */
 
-import React from 'react';
-import CheckboxSingleWithOpenLabel from '../ItemParts/CheckboxSingleWithOpenLabel';
 import type {
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
 import CheckboxFormGroup from '../ItemParts/CheckboxFormGroup';
+import CheckboxSingleWithOpenLabel from '../ItemParts/CheckboxSingleWithOpenLabel';
 
 interface OpenChoiceCheckboxAnswerOptionFieldsProps {
   qItem: QuestionnaireItem;
@@ -33,7 +32,7 @@ interface OpenChoiceCheckboxAnswerOptionFieldsProps {
   openLabelChecked: boolean;
   feedback: string;
   readOnly: boolean;
-  expressionUpdated: boolean;
+  exprAnimating: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   isTabled: boolean;
   onOptionChange: (changedOptionValue: string) => void;
@@ -52,7 +51,7 @@ function OpenChoiceCheckboxAnswerOptionFields(props: OpenChoiceCheckboxAnswerOpt
     openLabelChecked,
     feedback,
     readOnly,
-    expressionUpdated,
+    exprAnimating,
     answerOptionsToggleExpressionsMap,
     isTabled,
     onOptionChange,
@@ -68,7 +67,7 @@ function OpenChoiceCheckboxAnswerOptionFields(props: OpenChoiceCheckboxAnswerOpt
       answers={answers}
       feedback={feedback}
       readOnly={readOnly}
-      expressionUpdated={expressionUpdated}
+      exprAnimating={exprAnimating}
       answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
       isTabled={isTabled}
       onCheckedChange={onOptionChange}

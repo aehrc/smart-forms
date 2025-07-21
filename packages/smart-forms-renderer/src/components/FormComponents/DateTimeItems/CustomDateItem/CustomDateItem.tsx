@@ -15,23 +15,22 @@
  * limitations under the License.
  */
 
-import React, { useState } from 'react';
-import type { BaseItemProps } from '../../../../interfaces/renderProps.interface';
+import { useState } from 'react';
+import useDateValidation from '../../../../hooks/useDateValidation';
 import useReadOnly from '../../../../hooks/useReadOnly';
+import useShowFeedback from '../../../../hooks/useShowFeedback';
+import type { BaseItemProps } from '../../../../interfaces/renderProps.interface';
+import { useQuestionnaireStore } from '../../../../stores';
+import { createEmptyQrItem } from '../../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../../Box.styles';
 import ItemFieldGrid from '../../ItemParts/ItemFieldGrid';
+import ItemLabel from '../../ItemParts/ItemLabel';
 import {
   parseFhirDateToDisplayDate,
   parseInputDateToFhirDate,
   validateDateInput
 } from '../utils/parseDate';
-import { createEmptyQrItem } from '../../../../utils/qrItem';
-import useDateValidation from '../../../../hooks/useDateValidation';
 import CustomDateField from './CustomDateField';
-import { useQuestionnaireStore } from '../../../../stores';
-import ItemLabel from '../../ItemParts/ItemLabel';
-import useShowFeedback from '../../../../hooks/useShowFeedback';
-import useDateCalculatedExpression from '../../../../hooks/useDateCalculatedExpression';
 
 function CustomDateItem(props: BaseItemProps) {
   const {
@@ -41,6 +40,7 @@ function CustomDateItem(props: BaseItemProps) {
     isTabled,
     renderingExtensions,
     parentIsReadOnly,
+    calcExprAnimating,
     onQrItemChange
   } = props;
 
@@ -71,24 +71,6 @@ function CustomDateItem(props: BaseItemProps) {
 
   // Provides a way to hide the feedback when the user is typing
   const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
-
-  // Process calculated expressions
-  const { calcExpUpdated } = useDateCalculatedExpression({
-    qItem: qItem,
-    valueDateFhir: valueDate,
-    onChangeByCalcExpressionString: (newValueDateFhir: string) => {
-      const { displayDate } = parseFhirDateToDisplayDate(newValueDateFhir);
-      setInput(displayDate);
-      onQrItemChange({
-        ...createEmptyQrItem(qItem, answerKey),
-        answer: [{ id: answerKey, valueDate: parseInputDateToFhirDate(newValueDateFhir) }]
-      });
-    },
-    onChangeByCalcExpressionNull: () => {
-      setInput('');
-      onQrItemChange(createEmptyQrItem(qItem, answerKey));
-    }
-  });
 
   function handleSelectDate(selectedDate: string) {
     setInput(selectedDate);
@@ -137,7 +119,7 @@ function CustomDateItem(props: BaseItemProps) {
         displayPrompt={displayPrompt}
         entryFormat={entryFormat}
         readOnly={readOnly}
-        calcExpUpdated={calcExpUpdated}
+        calcExprAnimating={calcExprAnimating}
         isPartOfDateTime={false}
         isTabled={isTabled}
         setFocused={setFocused}
@@ -169,7 +151,7 @@ function CustomDateItem(props: BaseItemProps) {
             displayPrompt={displayPrompt}
             entryFormat={entryFormat}
             readOnly={readOnly}
-            calcExpUpdated={calcExpUpdated}
+            calcExprAnimating={calcExprAnimating}
             isPartOfDateTime={false}
             isTabled={isTabled}
             setFocused={setFocused}

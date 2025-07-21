@@ -1,18 +1,18 @@
-import type { ReactNode } from 'react';
 import { Box } from '@mui/material';
 import FormGroup from '@mui/material/FormGroup';
-import { StyledRequiredTypography } from '../Item.styles';
-import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
-import ExpressionUpdateFadingIcon from './ExpressionUpdateFadingIcon';
-import ClearInputButton from './ClearInputButton';
 import type {
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
+import type { ReactNode } from 'react';
+import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import { useRendererStylingStore } from '../../../stores';
 import { getChoiceOrientation } from '../../../utils/choice';
 import CheckboxOptionList from '../ChoiceItems/CheckboxOptionList';
+import { StyledRequiredTypography } from '../Item.styles';
+import ClearInputButton from './ClearInputButton';
+import ExpressionUpdateFadingIcon from './ExpressionUpdateFadingIcon';
 
 interface ChoiceCheckboxFormGroupProps {
   qItem: QuestionnaireItem;
@@ -20,7 +20,7 @@ interface ChoiceCheckboxFormGroupProps {
   answers: QuestionnaireResponseItemAnswer[];
   feedback: string;
   readOnly: boolean;
-  expressionUpdated: boolean;
+  exprAnimating: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   isTabled: boolean;
   onCheckedChange: (newValue: string) => void;
@@ -35,7 +35,7 @@ function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
     answers,
     feedback,
     readOnly,
-    expressionUpdated,
+    exprAnimating,
     answerOptionsToggleExpressionsMap,
     isTabled,
     onCheckedChange,
@@ -85,7 +85,7 @@ function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
 
           <Box flexGrow={1} />
 
-          <ExpressionUpdateFadingIcon fadeIn={expressionUpdated} disabled={readOnly} />
+          <ExpressionUpdateFadingIcon fadeIn={exprAnimating} disabled={readOnly} />
         </Box>
 
         <ClearInputButton buttonShown={!answersEmpty} readOnly={readOnly} onClear={onClear} />

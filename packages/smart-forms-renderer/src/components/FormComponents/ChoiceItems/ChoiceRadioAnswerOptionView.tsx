@@ -15,13 +15,12 @@
  * limitations under the License.
  */
 
-import React from 'react';
-import ChoiceRadioAnswerOptionFields from './ChoiceRadioAnswerOptionFields';
+import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import type { PropsWithIsRepeatedAttribute } from '../../../interfaces/renderProps.interface';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
-import type { PropsWithIsRepeatedAttribute } from '../../../interfaces/renderProps.interface';
-import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import ItemLabel from '../ItemParts/ItemLabel';
+import ChoiceRadioAnswerOptionFields from './ChoiceRadioAnswerOptionFields';
 
 interface ChoiceRadioAnswerOptionViewProps extends PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
@@ -29,7 +28,7 @@ interface ChoiceRadioAnswerOptionViewProps extends PropsWithIsRepeatedAttribute 
   valueChoice: string | null;
   feedback: string;
   readOnly: boolean;
-  expressionUpdated: boolean;
+  exprAnimating: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   isTabled: boolean;
   onCheckedChange: (linkId: string) => void;
@@ -45,7 +44,7 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
     feedback,
     isRepeated,
     readOnly,
-    expressionUpdated,
+    exprAnimating,
     answerOptionsToggleExpressionsMap,
     isTabled,
     onFocusLinkId,
@@ -61,7 +60,7 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
         valueRadio={valueChoice}
         feedback={feedback}
         readOnly={readOnly}
-        expressionUpdated={expressionUpdated}
+        exprAnimating={exprAnimating}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
         isTabled={isTabled}
         onCheckedChange={onCheckedChange}
@@ -86,7 +85,7 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
             valueRadio={valueChoice}
             feedback={feedback}
             readOnly={readOnly}
-            expressionUpdated={expressionUpdated}
+            exprAnimating={exprAnimating}
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             isTabled={isTabled}
             onCheckedChange={onCheckedChange}

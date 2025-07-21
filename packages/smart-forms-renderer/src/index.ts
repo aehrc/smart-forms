@@ -67,10 +67,7 @@ export {
   useRenderingExtensions,
   useValidationFeedback,
   useValueSetCodings,
-  useStringCalculatedExpression,
   useDisplayCqfAndCalculatedExpression,
-  useCodingCalculatedExpression,
-  objectIsCoding,
   useResponsive
 } from './hooks';
 

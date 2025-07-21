@@ -15,18 +15,16 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import Box from '@mui/material/Box';
+import useReadOnly from '../../../hooks/useReadOnly';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
+import { useQuestionnaireStore } from '../../../stores';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
-import BooleanField from './BooleanField';
-import Box from '@mui/material/Box';
-import useReadOnly from '../../../hooks/useReadOnly';
-import { useQuestionnaireStore } from '../../../stores';
-import useBooleanCalculatedExpression from '../../../hooks/useBooleanCalculatedExpression';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import ItemLabel from '../ItemParts/ItemLabel';
+import BooleanField from './BooleanField';
 
 function BooleanItem(props: BaseItemProps) {
   const {
@@ -37,6 +35,7 @@ function BooleanItem(props: BaseItemProps) {
     isTabled,
     parentIsReadOnly,
     feedbackFromParent,
+    calcExprAnimating,
     onQrItemChange
   } = props;
 
@@ -53,24 +52,6 @@ function BooleanItem(props: BaseItemProps) {
   if (qrItem?.answer?.[0]?.valueBoolean !== undefined) {
     valueBoolean = qrItem.answer[0].valueBoolean;
   }
-
-  // Process calculated expressions
-  const { calcExpUpdated } = useBooleanCalculatedExpression({
-    qItem: qItem,
-    booleanValue: valueBoolean,
-    onChangeByCalcExpressionBoolean: (newValueBoolean: boolean) => {
-      onQrItemChange(
-        {
-          ...createEmptyQrItem(qItem, answerKey),
-          answer: [{ id: answerKey, valueBoolean: newValueBoolean }]
-        },
-        itemPath
-      );
-    },
-    onChangeByCalcExpressionNull: () => {
-      onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
-    }
-  });
 
   // Event handlers
   function handleValueChange(newValue: string) {
@@ -105,7 +86,7 @@ function BooleanItem(props: BaseItemProps) {
           readOnly={readOnly}
           valueBoolean={valueBoolean}
           feedback={feedback}
-          calcExpUpdated={calcExpUpdated}
+          calcExprAnimating={calcExprAnimating}
           onCheckedChange={handleValueChange}
           onClear={handleClear}
         />
@@ -120,7 +101,7 @@ function BooleanItem(props: BaseItemProps) {
         readOnly={readOnly}
         valueBoolean={valueBoolean}
         feedback={feedback}
-        calcExpUpdated={calcExpUpdated}
+        calcExprAnimating={calcExprAnimating}
         onCheckedChange={handleValueChange}
         onClear={handleClear}
       />
@@ -142,7 +123,7 @@ function BooleanItem(props: BaseItemProps) {
             readOnly={readOnly}
             valueBoolean={valueBoolean}
             feedback={feedback}
-            calcExpUpdated={calcExpUpdated}
+            calcExprAnimating={calcExprAnimating}
             onCheckedChange={handleValueChange}
             onClear={handleClear}
           />

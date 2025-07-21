@@ -15,19 +15,19 @@
  * limitations under the License.
  */
 
+import Autocomplete from '@mui/material/Autocomplete';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type {
   PropsWithIsTabledRequiredAttribute,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
-import { StandardTextField } from '../Textfield.styles';
-import Autocomplete from '@mui/material/Autocomplete';
-import { getAnswerOptionLabel } from '../../../utils/openChoice';
-import { compareAnswerOptionValue, isOptionDisabled } from '../../../utils/choice';
 import { useRendererStylingStore } from '../../../stores';
+import { compareAnswerOptionValue, isOptionDisabled } from '../../../utils/choice';
+import { getAnswerOptionLabel } from '../../../utils/openChoice';
+import { expressionUpdateFadingGlow } from '../../ExpressionUpdateFadingGlow.styles';
 import { StyledRequiredTypography } from '../Item.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
-import { expressionUpdateFadingGlow } from '../../ExpressionUpdateFadingGlow.styles';
+import { StandardTextField } from '../Textfield.styles';
 
 interface ChoiceSelectAnswerOptionFieldsProps
   extends PropsWithIsTabledRequiredAttribute,
@@ -37,7 +37,7 @@ interface ChoiceSelectAnswerOptionFieldsProps
   valueSelect: QuestionnaireItemAnswerOption | null;
   feedback: string;
   readOnly: boolean;
-  expressionUpdated: boolean;
+  exprAnimating: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   onSelectChange: (newValue: QuestionnaireItemAnswerOption | null) => void;
 }
@@ -49,7 +49,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
     valueSelect,
     feedback,
     readOnly,
-    expressionUpdated,
+    exprAnimating,
     isTabled,
     renderingExtensions,
     answerOptionsToggleExpressionsMap,
@@ -74,7 +74,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
         openOnFocus
         autoHighlight
         sx={[
-          expressionUpdateFadingGlow(expressionUpdated),
+          expressionUpdateFadingGlow(exprAnimating),
           { maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }
         ]}
         size="small"

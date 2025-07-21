@@ -15,12 +15,11 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Typography from '@mui/material/Typography';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import { StyledAlert } from '../../Alert.styles';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
+import { StyledAlert } from '../../Alert.styles';
 import RadioFormGroup from '../ItemParts/RadioFormGroup';
 
 interface ChoiceRadioAnswerValueSetFieldsProps {
@@ -29,7 +28,7 @@ interface ChoiceRadioAnswerValueSetFieldsProps {
   valueRadio: string | null;
   feedback: string;
   readOnly: boolean;
-  expressionUpdated: boolean;
+  exprAnimating: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   terminologyError: TerminologyError;
   isTabled: boolean;
@@ -44,7 +43,7 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
     valueRadio,
     feedback,
     readOnly,
-    expressionUpdated,
+    exprAnimating,
     answerOptionsToggleExpressionsMap,
     terminologyError,
     isTabled,
@@ -60,7 +59,7 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
         valueRadio={valueRadio}
         feedback={feedback}
         readOnly={readOnly}
-        expressionUpdated={expressionUpdated}
+        exprAnimating={exprAnimating}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
         isTabled={isTabled}
         onCheckedChange={onCheckedChange}

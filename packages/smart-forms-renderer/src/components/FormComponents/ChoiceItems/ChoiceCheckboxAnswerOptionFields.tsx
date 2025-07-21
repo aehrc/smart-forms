@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import type {
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
@@ -29,7 +28,7 @@ interface ChoiceCheckboxAnswerOptionFieldsProps {
   answers: QuestionnaireResponseItemAnswer[];
   feedback: string;
   readOnly: boolean;
-  expressionUpdated: boolean;
+  exprAnimating: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   isTabled: boolean;
   onCheckedChange: (newValue: string) => void;
@@ -43,7 +42,7 @@ function ChoiceCheckboxAnswerOptionFields(props: ChoiceCheckboxAnswerOptionField
     answers,
     feedback,
     readOnly,
-    expressionUpdated,
+    exprAnimating,
     answerOptionsToggleExpressionsMap,
     isTabled,
     onCheckedChange,
@@ -57,7 +56,7 @@ function ChoiceCheckboxAnswerOptionFields(props: ChoiceCheckboxAnswerOptionField
       answers={answers}
       feedback={feedback}
       readOnly={readOnly}
-      expressionUpdated={expressionUpdated}
+      exprAnimating={exprAnimating}
       answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
       isTabled={isTabled}
       onCheckedChange={onCheckedChange}

@@ -15,18 +15,18 @@
  * limitations under the License.
  */
 
-import React, { useMemo } from 'react';
-import { FullWidthFormComponentBox } from '../../Box.styles';
-import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import { useMemo } from 'react';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledRequiredAttribute,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
-import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { findInAnswerOptions } from '../../../utils/choice';
-import ChoiceSelectAnswerOptionFields from './ChoiceSelectAnswerOptionFields';
+import { FullWidthFormComponentBox } from '../../Box.styles';
+import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
+import ChoiceSelectAnswerOptionFields from './ChoiceSelectAnswerOptionFields';
 
 interface ChoiceSelectAnswerOptionViewProps
   extends PropsWithIsRepeatedAttribute,
@@ -37,7 +37,7 @@ interface ChoiceSelectAnswerOptionViewProps
   valueChoice: string | null;
   feedback: string;
   readOnly: boolean;
-  expressionUpdated: boolean;
+  exprAnimating: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   onSelectChange: (newValue: QuestionnaireItemAnswerOption | null) => void;
   onFocusLinkId: () => void;
@@ -53,7 +53,7 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
     isTabled,
     renderingExtensions,
     readOnly,
-    expressionUpdated,
+    exprAnimating,
     answerOptionsToggleExpressionsMap,
     onFocusLinkId,
     onSelectChange
@@ -72,7 +72,7 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
         valueSelect={valueSelect}
         feedback={feedback}
         readOnly={readOnly}
-        expressionUpdated={expressionUpdated}
+        exprAnimating={exprAnimating}
         isTabled={isTabled}
         renderingExtensions={renderingExtensions}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
@@ -97,7 +97,7 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
             valueSelect={valueSelect}
             feedback={feedback}
             readOnly={readOnly}
-            expressionUpdated={expressionUpdated}
+            exprAnimating={exprAnimating}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}

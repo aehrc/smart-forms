@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
+import Stack from '@mui/material/Stack';
 import type { Dispatch, SetStateAction } from 'react';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../../interfaces/renderProps.interface';
 import CustomDateField from '../CustomDateItem/CustomDateField';
 import CustomTimeField from './CustomTimeField';
-import Stack from '@mui/material/Stack';
 
 interface DateTimeFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -36,7 +36,7 @@ interface DateTimeFieldProps extends PropsWithIsTabledRequiredAttribute {
   displayPrompt: string;
   entryFormat: string;
   readOnly: boolean;
-  calcExpUpdated: boolean;
+  calcExprAnimating: boolean;
   onDateInputChange: (newDateInput: string) => void;
   onDateBlur: () => void;
   onSelectDate: (selectedDate: string) => void;
@@ -62,7 +62,7 @@ function DateTimeField(props: DateTimeFieldProps) {
     displayPrompt,
     entryFormat,
     readOnly,
-    calcExpUpdated,
+    calcExprAnimating,
     isTabled,
     onDateInputChange,
     onDateBlur,
@@ -86,7 +86,7 @@ function DateTimeField(props: DateTimeFieldProps) {
         displayPrompt={displayPrompt}
         entryFormat={entryFormat}
         readOnly={readOnly}
-        calcExpUpdated={calcExpUpdated}
+        calcExprAnimating={calcExprAnimating}
         isPartOfDateTime={true}
         isTabled={isTabled}
         setFocused={setDateFocused}
@@ -103,7 +103,7 @@ function DateTimeField(props: DateTimeFieldProps) {
         feedback={showFeedback ? (timeFeedback ?? '') : ''}
         displayPrompt={displayPrompt}
         readOnly={readOnly}
-        calcExpUpdated={calcExpUpdated}
+        calcExprAnimating={calcExprAnimating}
         isPartOfDateTime={true}
         isTabled={isTabled}
         onTimeInputChange={(newTimeInput) => onTimeInputChange(newTimeInput, periodInput)}

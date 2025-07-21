@@ -15,44 +15,22 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
-import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { Coding } from 'fhir/r4';
+import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
+import useReadOnly from '../../../hooks/useReadOnly';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useValueSetCodings from '../../../hooks/useValueSetCodings';
+import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
+import { useQuestionnaireStore } from '../../../stores';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
-import useValueSetCodings from '../../../hooks/useValueSetCodings';
-import type {
-  PropsWithFeedbackFromParentAttribute,
-  PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledRequiredAttribute,
-  PropsWithItemPathAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithRenderingExtensionsAttribute
-} from '../../../interfaces/renderProps.interface';
-import ChoiceSelectAnswerValueSetFields from './ChoiceSelectAnswerValueSetFields';
-import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
-import { useQuestionnaireStore } from '../../../stores';
-import useCodingCalculatedExpression from '../../../hooks/useCodingCalculatedExpression';
-import { convertCodingsToAnswerOptions, findInAnswerOptions } from '../../../utils/choice';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import ItemLabel from '../ItemParts/ItemLabel';
-import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
+import ChoiceSelectAnswerValueSetFields from './ChoiceSelectAnswerValueSetFields';
 
-interface ChoiceSelectAnswerValueSetItemProps
-  extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
-    PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledRequiredAttribute,
-    PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute,
-    PropsWithFeedbackFromParentAttribute {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
-}
-
-function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemProps) {
+function ChoiceSelectAnswerValueSetItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
@@ -62,6 +40,7 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
+    calcExprAnimating,
     onQrItemChange
   } = props;
 
@@ -105,28 +84,6 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
     []
   );
 
-  const answerOptions = useMemo(() => convertCodingsToAnswerOptions(codings), [codings]);
-
-  // Process calculated expressions
-  const { calcExpUpdated } = useCodingCalculatedExpression({
-    qItem: qItem,
-    valueInString: valueCoding?.code ?? valueCoding?.display ?? '',
-    onChangeByCalcExpressionString: (newValueString) => {
-      if (codings.length > 0) {
-        const qrAnswer = findInAnswerOptions(answerOptions, newValueString);
-        onQrItemChange(
-          qrAnswer
-            ? { ...createEmptyQrItem(qItem, answerKey), answer: [{ ...qrAnswer, id: answerKey }] }
-            : createEmptyQrItem(qItem, answerKey),
-          itemPath
-        );
-      }
-    },
-    onChangeByCalcExpressionNull: () => {
-      onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
-    }
-  });
-
   // Process answerOptionsToggleExpressions
   const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
     useAnswerOptionsToggleExpressions(qItem.linkId);
@@ -152,7 +109,7 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
         terminologyError={terminologyError}
         feedback={feedback}
         readOnly={readOnly}
-        expressionUpdated={calcExpUpdated || dynamicCodingsUpdated || answerOptionsToggleExpUpdated}
+        exprAnimating={calcExprAnimating || dynamicCodingsUpdated || answerOptionsToggleExpUpdated}
         isTabled={isTabled}
         renderingExtensions={renderingExtensions}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
@@ -177,7 +134,7 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
             terminologyError={terminologyError}
             feedback={feedback}
             readOnly={readOnly}
-            expressionUpdated={calcExpUpdated || dynamicCodingsUpdated}
+            exprAnimating={calcExprAnimating || dynamicCodingsUpdated}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}

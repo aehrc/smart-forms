@@ -15,21 +15,20 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useState } from 'react';
-import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import debounce from 'lodash.debounce';
-import { createEmptyQrItem } from '../../../utils/qrItem';
-import { DEBOUNCE_DURATION } from '../../../utils/debounce';
-import { FullWidthFormComponentBox } from '../../Box.styles';
-import IntegerField from './IntegerField';
-import useIntegerCalculatedExpression from '../../../hooks/useIntegerCalculatedExpression';
-import { parseIntegerString } from '../../../utils/parseInputs';
-import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import { useCallback, useState } from 'react';
 import useReadOnly from '../../../hooks/useReadOnly';
-import { useQuestionnaireStore } from '../../../stores';
-import ItemLabel from '../ItemParts/ItemLabel';
 import useShowFeedback from '../../../hooks/useShowFeedback';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
+import { useQuestionnaireStore } from '../../../stores';
+import { DEBOUNCE_DURATION } from '../../../utils/debounce';
+import { parseIntegerString } from '../../../utils/parseInputs';
+import { createEmptyQrItem } from '../../../utils/qrItem';
+import { FullWidthFormComponentBox } from '../../Box.styles';
+import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import ItemLabel from '../ItemParts/ItemLabel';
+import IntegerField from './IntegerField';
 
 function IntegerItem(props: BaseItemProps) {
   const {
@@ -41,6 +40,7 @@ function IntegerItem(props: BaseItemProps) {
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
+    calcExprAnimating,
     onQrItemChange
   } = props;
 
@@ -73,26 +73,6 @@ function IntegerItem(props: BaseItemProps) {
 
   // Provides a way to hide the feedback when the user is typing
   const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
-
-  // Process calculated expressions
-  const { calcExpUpdated } = useIntegerCalculatedExpression({
-    qItem: qItem,
-    inputValue: input,
-    onChangeByCalcExpressionInteger: (newValueInteger: number) => {
-      setInput(newValueInteger.toString());
-      onQrItemChange(
-        {
-          ...createEmptyQrItem(qItem, answerKey),
-          answer: [{ id: answerKey, valueInteger: newValueInteger }]
-        },
-        itemPath
-      );
-    },
-    onChangeByCalcExpressionNull: () => {
-      setInput('');
-      onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
-    }
-  });
 
   // Event handlers
   function handleInputChange(newInput: string) {
@@ -139,7 +119,7 @@ function IntegerItem(props: BaseItemProps) {
         displayUnit={displayUnit}
         entryFormat={entryFormat}
         readOnly={readOnly}
-        calcExpUpdated={calcExpUpdated}
+        calcExprAnimating={calcExprAnimating}
         isTabled={isTabled}
         onInputChange={handleInputChange}
         onBlur={handleBlur}
@@ -166,7 +146,7 @@ function IntegerItem(props: BaseItemProps) {
             displayUnit={displayUnit}
             entryFormat={entryFormat}
             readOnly={readOnly}
-            calcExpUpdated={calcExpUpdated}
+            calcExprAnimating={calcExprAnimating}
             isTabled={isTabled}
             onInputChange={handleInputChange}
             onBlur={handleBlur}

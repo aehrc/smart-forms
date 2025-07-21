@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-export function useCalculatedExpressionAnimation(answerKey: string | undefined): boolean {
+export function useCalculatedExpressionAnimating(answerKey: string | undefined): boolean {
   const [animating, setAnimating] = useState(false);
   const previousAnswerKey = useRef<string | null>(null);
 

@@ -15,18 +15,17 @@
  * limitations under the License.
  */
 
-import React from 'react';
-import CheckboxSingleWithOpenLabel from '../ItemParts/CheckboxSingleWithOpenLabel';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import Typography from '@mui/material/Typography';
 import type {
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
-import { StyledAlert } from '../../Alert.styles';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import Typography from '@mui/material/Typography';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
+import { StyledAlert } from '../../Alert.styles';
 import CheckboxFormGroup from '../ItemParts/CheckboxFormGroup';
+import CheckboxSingleWithOpenLabel from '../ItemParts/CheckboxSingleWithOpenLabel';
 
 interface OpenChoiceCheckboxFieldsProps {
   qItem: QuestionnaireItem;
@@ -37,7 +36,7 @@ interface OpenChoiceCheckboxFieldsProps {
   openLabelChecked: boolean;
   feedback: string;
   readOnly: boolean;
-  expressionUpdated: boolean;
+  exprAnimating: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   terminologyError: TerminologyError;
   isTabled: boolean;
@@ -57,7 +56,7 @@ function OpenChoiceCheckboxAnswerValueSetFields(props: OpenChoiceCheckboxFieldsP
     openLabelChecked,
     feedback,
     readOnly,
-    expressionUpdated,
+    exprAnimating,
     answerOptionsToggleExpressionsMap,
     terminologyError,
     isTabled,
@@ -75,7 +74,7 @@ function OpenChoiceCheckboxAnswerValueSetFields(props: OpenChoiceCheckboxFieldsP
         answers={answers}
         feedback={feedback}
         readOnly={readOnly}
-        expressionUpdated={expressionUpdated}
+        exprAnimating={exprAnimating}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
         isTabled={isTabled}
         onCheckedChange={onOptionChange}

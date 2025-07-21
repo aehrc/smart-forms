@@ -15,16 +15,15 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import Typography from '@mui/material/Typography';
 import type {
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
-import { StyledAlert } from '../../Alert.styles';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import Typography from '@mui/material/Typography';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
+import { StyledAlert } from '../../Alert.styles';
 import CheckboxFormGroup from '../ItemParts/CheckboxFormGroup';
 
 interface ChoiceCheckboxAnswerValueSetFieldsProps {
@@ -33,7 +32,7 @@ interface ChoiceCheckboxAnswerValueSetFieldsProps {
   answers: QuestionnaireResponseItemAnswer[];
   feedback: string;
   readOnly: boolean;
-  expressionUpdated: boolean;
+  exprAnimating: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   terminologyError: TerminologyError;
   isTabled: boolean;
@@ -48,7 +47,7 @@ function ChoiceCheckboxAnswerValueSetFields(props: ChoiceCheckboxAnswerValueSetF
     answers,
     feedback,
     readOnly,
-    expressionUpdated,
+    exprAnimating,
     answerOptionsToggleExpressionsMap,
     terminologyError,
     isTabled,
@@ -64,7 +63,7 @@ function ChoiceCheckboxAnswerValueSetFields(props: ChoiceCheckboxAnswerValueSetF
         answers={answers}
         feedback={feedback}
         readOnly={readOnly}
-        expressionUpdated={expressionUpdated}
+        exprAnimating={exprAnimating}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
         isTabled={isTabled}
         onCheckedChange={onCheckedChange}

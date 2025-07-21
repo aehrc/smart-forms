@@ -30,7 +30,7 @@ interface TextFieldProps {
   displayUnit: string;
   entryFormat: string;
   readOnly: boolean;
-  calcExpUpdated: boolean;
+  calcExprAnimating: boolean;
   onInputChange: (value: string) => void;
   onBlur: () => void;
 }
@@ -45,7 +45,7 @@ function TextField(props: TextFieldProps) {
     displayUnit,
     entryFormat,
     readOnly,
-    calcExpUpdated,
+    calcExprAnimating,
     onInputChange,
     onBlur
   } = props;
@@ -65,7 +65,7 @@ function TextField(props: TextFieldProps) {
       multiline
       size="small"
       minRows={3}
-      sx={[expressionUpdateFadingGlow(calcExpUpdated)]}
+      sx={[expressionUpdateFadingGlow(calcExprAnimating)]}
       slotProps={{
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',

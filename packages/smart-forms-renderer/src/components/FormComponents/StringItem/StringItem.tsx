@@ -15,8 +15,14 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useState } from 'react';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import debounce from 'lodash.debounce';
+import { useCallback, useState } from 'react';
+import useReadOnly from '../../../hooks/useReadOnly';
+import useShowFeedback from '../../../hooks/useShowFeedback';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import type {
+  PropsWithCalculatedExpressionAnimatingAttribute,
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledRequiredAttribute,
@@ -26,19 +32,13 @@ import type {
   PropsWithQrItemChangeHandler,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
-import debounce from 'lodash.debounce';
-import { createEmptyQrItem } from '../../../utils/qrItem';
-import { DEBOUNCE_DURATION } from '../../../utils/debounce';
-import { FullWidthFormComponentBox } from '../../Box.styles';
-import StringField from './StringField';
-import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
-import useStringCalculatedExpression from '../../../hooks/useStringCalculatedExpression';
-import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
+import { DEBOUNCE_DURATION } from '../../../utils/debounce';
+import { createEmptyQrItem } from '../../../utils/qrItem';
+import { FullWidthFormComponentBox } from '../../Box.styles';
+import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
-import useShowFeedback from '../../../hooks/useShowFeedback';
+import StringField from './StringField';
 
 interface StringItemProps
   extends PropsWithQrItemChangeHandler,
@@ -48,10 +48,12 @@ interface StringItemProps
     PropsWithRenderingExtensionsAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithFeedbackFromParentAttribute,
+    PropsWithCalculatedExpressionAnimatingAttribute,
     PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
+
 function StringItem(props: StringItemProps) {
   const {
     qItem,
@@ -62,6 +64,7 @@ function StringItem(props: StringItemProps) {
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
+    calcExprAnimating,
     parentStyles,
     onQrItemChange
   } = props;
@@ -86,26 +89,6 @@ function StringItem(props: StringItemProps) {
 
   // Provides a way to hide the feedback when the user is typing
   const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
-
-  // Process calculated expressions
-  const { calcExpUpdated } = useStringCalculatedExpression({
-    qItem: qItem,
-    inputValue: input,
-    onChangeByCalcExpressionString: (newValueString: string) => {
-      setInput(newValueString);
-      onQrItemChange(
-        {
-          ...createEmptyQrItem(qItem, answerKey),
-          answer: [{ id: answerKey, valueString: newValueString }]
-        },
-        itemPath
-      );
-    },
-    onChangeByCalcExpressionNull: () => {
-      setInput('');
-      onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
-    }
-  });
 
   // Event handlers
   function handleChange(newInput: string) {
@@ -148,7 +131,7 @@ function StringItem(props: StringItemProps) {
         displayUnit={displayUnit}
         entryFormat={entryFormat}
         readOnly={readOnly}
-        calcExpUpdated={calcExpUpdated}
+        calcExprAnimating={calcExprAnimating}
         onInputChange={handleChange}
         onBlur={handleBlur}
         isTabled={isTabled}
@@ -174,7 +157,7 @@ function StringItem(props: StringItemProps) {
             displayUnit={displayUnit}
             entryFormat={entryFormat}
             readOnly={readOnly}
-            calcExpUpdated={calcExpUpdated}
+            calcExprAnimating={calcExprAnimating}
             onInputChange={handleChange}
             onBlur={handleBlur}
             isTabled={isTabled}

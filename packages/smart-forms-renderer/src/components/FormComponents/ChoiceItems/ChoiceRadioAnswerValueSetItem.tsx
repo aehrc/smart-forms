@@ -15,51 +15,30 @@
  * limitations under the License.
  */
 
-import React, { useMemo } from 'react';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import { useMemo } from 'react';
+import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
+import useReadOnly from '../../../hooks/useReadOnly';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useValueSetCodings from '../../../hooks/useValueSetCodings';
+import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
+import { useQuestionnaireStore } from '../../../stores';
 import { convertCodingsToAnswerOptions, findInAnswerOptions } from '../../../utils/choice';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
-import useValueSetCodings from '../../../hooks/useValueSetCodings';
-import type {
-  PropsWithFeedbackFromParentAttribute,
-  PropsWithIsRepeatedAttribute,
-  PropsWithItemPathAttribute,
-  PropsWithIsTabledAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithRenderingExtensionsAttribute
-} from '../../../interfaces/renderProps.interface';
-import ChoiceRadioAnswerValueSetFields from './ChoiceRadioAnswerValueSetFields';
-import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
-import { useQuestionnaireStore } from '../../../stores';
-import useCodingCalculatedExpression from '../../../hooks/useCodingCalculatedExpression';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import ItemLabel from '../ItemParts/ItemLabel';
-import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
+import ChoiceRadioAnswerValueSetFields from './ChoiceRadioAnswerValueSetFields';
 
-interface ChoiceRadioAnswerValueSetItemProps
-  extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
-    PropsWithIsRepeatedAttribute,
-    PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute,
-    PropsWithFeedbackFromParentAttribute,
-    PropsWithIsTabledAttribute {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
-}
-
-function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps) {
+function ChoiceRadioAnswerValueSetItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
     itemPath,
     isRepeated,
+    isTabled,
     parentIsReadOnly,
     feedbackFromParent,
-    isTabled,
+    calcExprAnimating,
     onQrItemChange
   } = props;
 
@@ -86,17 +65,6 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
   const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
 
   const options = useMemo(() => convertCodingsToAnswerOptions(codings), [codings]);
-
-  const { calcExpUpdated } = useCodingCalculatedExpression({
-    qItem: qItem,
-    valueInString: valueRadio ?? '',
-    onChangeByCalcExpressionString: (newValueString: string) => {
-      handleChange(newValueString, true);
-    },
-    onChangeByCalcExpressionNull: () => {
-      onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
-    }
-  });
 
   // Process answerOptionsToggleExpressions
   const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
@@ -130,7 +98,7 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
         valueRadio={valueRadio}
         feedback={feedback}
         readOnly={readOnly}
-        expressionUpdated={calcExpUpdated || dynamicCodingsUpdated || answerOptionsToggleExpUpdated}
+        exprAnimating={calcExprAnimating || dynamicCodingsUpdated || answerOptionsToggleExpUpdated}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
         terminologyError={terminologyError}
         isTabled={isTabled}
@@ -156,8 +124,8 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
             valueRadio={valueRadio}
             feedback={feedback}
             readOnly={readOnly}
-            expressionUpdated={
-              calcExpUpdated || dynamicCodingsUpdated || answerOptionsToggleExpUpdated
+            exprAnimating={
+              calcExprAnimating || dynamicCodingsUpdated || answerOptionsToggleExpUpdated
             }
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             terminologyError={terminologyError}

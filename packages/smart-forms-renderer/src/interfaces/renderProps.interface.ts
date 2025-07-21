@@ -94,6 +94,10 @@ export interface PropsWithParentIsRepeatGroupAttribute {
   parentRepeatGroupIndex?: number;
 }
 
+export interface PropsWithCalculatedExpressionAnimatingAttribute {
+  calcExprAnimating: boolean;
+}
+
 export interface PropsWithParentStylesAttribute {
   parentStyles?: Record<string, string>;
 }
@@ -106,6 +110,7 @@ export interface BaseItemProps
     PropsWithRenderingExtensionsAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithFeedbackFromParentAttribute,
+    PropsWithCalculatedExpressionAnimatingAttribute,
     PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;

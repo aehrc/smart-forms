@@ -15,22 +15,22 @@
  * limitations under the License.
  */
 
-import Autocomplete from '@mui/material/Autocomplete';
-import { StandardTextField } from '../Textfield.styles';
-import { StyledAlert } from '../../Alert.styles';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import Autocomplete from '@mui/material/Autocomplete';
 import Typography from '@mui/material/Typography';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
+import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 import type {
   PropsWithIsTabledRequiredAttribute,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
-import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 import { useRendererStylingStore } from '../../../stores';
+import { isCodingDisabled } from '../../../utils/choice';
+import { StyledAlert } from '../../Alert.styles';
+import { expressionUpdateFadingGlow } from '../../ExpressionUpdateFadingGlow.styles';
 import { StyledRequiredTypography } from '../Item.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
-import { isCodingDisabled } from '../../../utils/choice';
-import { expressionUpdateFadingGlow } from '../../ExpressionUpdateFadingGlow.styles';
+import { StandardTextField } from '../Textfield.styles';
 
 interface ChoiceSelectAnswerValueSetFieldsProps
   extends PropsWithIsTabledRequiredAttribute,
@@ -41,7 +41,7 @@ interface ChoiceSelectAnswerValueSetFieldsProps
   terminologyError: TerminologyError;
   feedback: string;
   readOnly: boolean;
-  expressionUpdated: boolean;
+  exprAnimating: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   onSelectChange: (newValue: Coding | null) => void;
 }
@@ -54,7 +54,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
     terminologyError,
     feedback,
     readOnly,
-    expressionUpdated,
+    exprAnimating,
     isTabled,
     renderingExtensions,
     answerOptionsToggleExpressionsMap,
@@ -81,7 +81,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
           openOnFocus
           autoHighlight
           sx={[
-            expressionUpdateFadingGlow(expressionUpdated),
+            expressionUpdateFadingGlow(exprAnimating),
             { maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }
           ]}
           size="small"

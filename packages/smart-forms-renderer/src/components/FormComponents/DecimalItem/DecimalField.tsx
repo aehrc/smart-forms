@@ -16,12 +16,12 @@
  */
 
 import InputAdornment from '@mui/material/InputAdornment';
-import { StandardTextField } from '../Textfield.styles';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import { useRendererStylingStore } from '../../../stores';
-import DisplayUnitText from '../ItemParts/DisplayUnitText';
-import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 import { expressionUpdateFadingGlow } from '../../ExpressionUpdateFadingGlow.styles';
+import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
+import DisplayUnitText from '../ItemParts/DisplayUnitText';
+import { StandardTextField } from '../Textfield.styles';
 
 interface DecimalFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -32,7 +32,7 @@ interface DecimalFieldProps extends PropsWithIsTabledRequiredAttribute {
   displayUnit: string;
   entryFormat: string;
   readOnly: boolean;
-  calcExpUpdated: boolean;
+  calcExprAnimating: boolean;
   onInputChange: (value: string) => void;
   onBlur: () => void;
 }
@@ -47,7 +47,7 @@ function DecimalField(props: DecimalFieldProps) {
     displayUnit,
     entryFormat,
     readOnly,
-    calcExpUpdated,
+    calcExprAnimating,
     isTabled,
     onInputChange,
     onBlur
@@ -79,7 +79,7 @@ function DecimalField(props: DecimalFieldProps) {
       textFieldWidth={textFieldWidth}
       isTabled={isTabled}
       size="small"
-      sx={[expressionUpdateFadingGlow(calcExpUpdated)]}
+      sx={[expressionUpdateFadingGlow(calcExprAnimating)]}
       slotProps={{
         htmlInput: {
           inputMode: 'numeric',

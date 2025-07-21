@@ -15,13 +15,12 @@
  * limitations under the License.
  */
 
-import React from 'react';
-import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import RadioButtonWithOpenLabel from '../ItemParts/RadioButtonWithOpenLabel';
-import type { TerminologyError } from '../../../hooks/useValueSetCodings';
-import { StyledAlert } from '../../Alert.styles';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Typography from '@mui/material/Typography';
+import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import type { TerminologyError } from '../../../hooks/useValueSetCodings';
+import { StyledAlert } from '../../Alert.styles';
+import RadioButtonWithOpenLabel from '../ItemParts/RadioButtonWithOpenLabel';
 import RadioFormGroup from '../ItemParts/RadioFormGroup';
 
 interface OpenChoiceRadioAnswerValueSetFieldsProps {
@@ -33,7 +32,7 @@ interface OpenChoiceRadioAnswerValueSetFieldsProps {
   openLabelSelected: boolean;
   feedback: string;
   readOnly: boolean;
-  expressionUpdated: boolean;
+  exprAnimating: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   terminologyError: TerminologyError;
   isTabled: boolean;
@@ -51,7 +50,7 @@ function OpenChoiceRadioAnswerValueSetFields(props: OpenChoiceRadioAnswerValueSe
     openLabelSelected,
     feedback,
     readOnly,
-    expressionUpdated,
+    exprAnimating,
     answerOptionsToggleExpressionsMap,
     terminologyError,
     isTabled,
@@ -67,7 +66,7 @@ function OpenChoiceRadioAnswerValueSetFields(props: OpenChoiceRadioAnswerValueSe
         valueRadio={valueRadio}
         feedback={feedback}
         readOnly={readOnly}
-        expressionUpdated={expressionUpdated}
+        exprAnimating={exprAnimating}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
         isTabled={isTabled}
         onCheckedChange={(newValue) => onValueChange(newValue, null)}

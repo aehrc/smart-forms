@@ -287,6 +287,11 @@ export function applyCalculatedExpressionValuesToResponse(
       (calcExpression) => calcExpression.from === 'item'
     );
 
+    // No calculated expression from item, skip this linkId
+    if (!calcExpressionFromItem) {
+      continue;
+    }
+
     // Calculated expression not present previously, so include it
     if (!existingCalcExpressionFromItem) {
       diffCalculatedExpressions[linkId] = calculatedExpressionWithValue;

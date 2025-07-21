@@ -15,17 +15,17 @@
  * limitations under the License.
  */
 
+import Box from '@mui/material/Box';
+import { grey } from '@mui/material/colors';
+import FormControl from '@mui/material/FormControl';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import Typography from '@mui/material/Typography';
 import type { ChangeEvent } from 'react';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../../interfaces/renderProps.interface';
-import Box from '@mui/material/Box';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import MuiTextField from '../../TextItem/MuiTextField';
-import { grey } from '@mui/material/colors';
-import Typography from '@mui/material/Typography';
 import { useRendererStylingStore } from '../../../../stores';
 import { expressionUpdateFadingGlow } from '../../../ExpressionUpdateFadingGlow.styles';
-import FormControl from '@mui/material/FormControl';
+import MuiTextField from '../../TextItem/MuiTextField';
 
 interface CustomTimeFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -36,7 +36,7 @@ interface CustomTimeFieldProps extends PropsWithIsTabledRequiredAttribute {
   feedback: string;
   displayPrompt: string;
   readOnly: boolean;
-  calcExpUpdated: boolean;
+  calcExprAnimating: boolean;
   isPartOfDateTime: boolean;
   onTimeInputChange: (newInput: string) => void;
   onPeriodChange: (newPeriod: string) => void;
@@ -53,7 +53,7 @@ function CustomTimeField(props: CustomTimeFieldProps) {
     feedback,
     displayPrompt,
     readOnly,
-    calcExpUpdated,
+    calcExprAnimating,
     isPartOfDateTime,
     isTabled,
     onTimeInputChange,
@@ -84,7 +84,7 @@ function CustomTimeField(props: CustomTimeFieldProps) {
           value={timeInput}
           error={!!feedback}
           fullWidth
-          sx={[expressionUpdateFadingGlow(calcExpUpdated), { flex: 1 }]}
+          sx={[expressionUpdateFadingGlow(calcExprAnimating), { flex: 1 }]}
           onChange={(e: ChangeEvent<HTMLInputElement>) => onTimeInputChange(e.target.value)}
           onBlur={onTimeBlur}
           label={displayPrompt}
@@ -97,7 +97,7 @@ function CustomTimeField(props: CustomTimeFieldProps) {
             }
           }}
         />
-        <FormControl sx={[expressionUpdateFadingGlow(calcExpUpdated), { flex: 1 }]}>
+        <FormControl sx={[expressionUpdateFadingGlow(calcExprAnimating), { flex: 1 }]}>
           <Select
             id={periodId}
             value={is24HourNotation ? '' : periodInput}
