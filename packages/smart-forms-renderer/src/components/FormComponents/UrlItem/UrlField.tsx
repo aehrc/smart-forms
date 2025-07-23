@@ -57,6 +57,7 @@ function UrlField(props: UrlFieldProps) {
   return (
     <StandardTextField
       id={itemType + '-' + linkId}
+      multiline
       fullWidth
       textFieldWidth={textFieldWidth}
       isTabled={isTabled}

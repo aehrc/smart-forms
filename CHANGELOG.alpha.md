@@ -8,6 +8,11 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+
+## [1.0.0-alpha.82] - 2025-07-23
+#### Added
+- Add multiline support to non-numeric text field-based components.
+
 ## [1.0.0-alpha.81] - 2025-07-17
 #### Added
 - Added support for calculatedExpressions to `date` and `dateTime` items.

@@ -73,6 +73,8 @@ function RepopulateAction(props: RepopulateActionProps) {
 
       return populateQuestionnaire(
         sourceQuestionnaire,
+        // SmartClient is always defined due to `shouldRepopulate`
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         smartClient!,
         newPatient,
         newUser,

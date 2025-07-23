@@ -59,6 +59,7 @@ function StringField(props: StringFieldProps) {
   return (
     <StandardTextField
       id={itemType + '-' + linkId}
+      multiline
       fullWidth
       textFieldWidth={textFieldWidth}
       isTabled={isTabled}

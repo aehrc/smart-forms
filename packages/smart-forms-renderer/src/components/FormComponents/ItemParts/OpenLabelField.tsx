@@ -26,6 +26,7 @@ function OpenLabelField(props: OpenLabelFieldProps) {
 
   return (
     <StandardTextField
+      multiline
       disabled={fieldReadOnly && readOnlyVisualStyle === 'disabled'}
       value={value}
       onChange={handleInputChange}

@@ -46,7 +46,6 @@ interface IframeResizerProps extends IframeHTMLAttributes<HTMLIFrameElement> {
 }
 
 function IframeResizer(props: IframeResizerProps & { forwardRef?: any }) {
-  // eslint-disable-next-line react/prop-types
   const { forwardRef, ...rest } = props;
   const filteredProps = filterIframeAttribs(props);
   const iframeRef = useRef(null);

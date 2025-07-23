@@ -93,6 +93,7 @@ function AttachmentField(props: AttachmentFieldProps) {
             File name (optional)
           </Typography>
           <StandardTextField
+            multiline
             fullWidth
             textFieldWidth={textFieldWidth}
             isTabled={isTabled}
