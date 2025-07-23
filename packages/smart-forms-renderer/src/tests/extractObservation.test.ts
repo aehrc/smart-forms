@@ -24,6 +24,7 @@ describe('extractObservationBased', () => {
     const singleExtractExtension: Questionnaire = JSON.parse(
       JSON.stringify(qObservationSampleWithExtractExtension)
     );
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     singleExtractExtension.item!.at(0)!.extension!.at(0)!.valueBoolean = false;
 
     const observations = extractObservationBased(singleExtractExtension, qrObservationSample);
@@ -35,6 +36,7 @@ describe('extractObservationBased', () => {
     const topLevelExtract: Questionnaire = JSON.parse(
       JSON.stringify(qObservationSampleWithExtractExtension)
     );
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     topLevelExtract.extension!.at(0)!.valueBoolean = true;
 
     const observations = extractObservationBased(topLevelExtract, qrObservationSample);
@@ -110,6 +112,7 @@ describe('mapQItemsExtractable', () => {
 
   it('should correctly return extractionMap even with topLevel observation-extract extensions true', () => {
     const topLevelExtract: Questionnaire = JSON.parse(JSON.stringify(qExtractSample));
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     topLevelExtract.extension!.at(0)!.valueBoolean = true;
 
     const extractionMap = mapQItemsExtractable(topLevelExtract);
