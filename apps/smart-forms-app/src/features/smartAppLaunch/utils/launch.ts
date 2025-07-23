@@ -69,7 +69,7 @@ export async function readCommonLaunchContexts(
   };
 }
 
-interface FhirContext {
+export interface FhirContext {
   reference?: string;
   role?: string;
   canonical?: string;
@@ -77,21 +77,14 @@ interface FhirContext {
   identifier?: Identifier;
 }
 
-interface tokenResponseCustomised extends fhirclient.TokenResponse {
+export interface tokenResponseCustomised extends fhirclient.TokenResponse {
   fhirContext?: FhirContext[];
   intent?: string;
 }
 
-export function getQuestionnaireReferences(client: Client): FhirContext[] {
-  const tokenResponse = client.state.tokenResponse as tokenResponseCustomised;
-  const fhirContext = tokenResponse.fhirContext;
-
-  if (!fhirContext) {
-    return [];
-  }
-
-  // Use Australian Digital Health namespace with the "new" role for fhirContext:
-  // https://confluence.hl7.org/spaces/FHIRI/pages/202409650/fhirContext+Role+Registry#:~:text=N/A-,http%3A//ns.electronichealth.net.au/smart/role/new,-URL%20made%20more
+// Use Australian Digital Health namespace with the "new" role for fhirContext:
+// https://confluence.hl7.org/spaces/FHIRI/pages/202409650/fhirContext+Role+Registry#:~:text=N/A-,http%3A//ns.electronichealth.net.au/smart/role/new,-URL%20made%20more
+export function getQuestionnaireReferences(fhirContext: FhirContext[]): FhirContext[] {
   return fhirContext.filter(
     (context) =>
       context.role === 'http://ns.electronichealth.net.au/smart/role/new' &&

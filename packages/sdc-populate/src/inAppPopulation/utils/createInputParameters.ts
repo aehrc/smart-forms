@@ -32,17 +32,26 @@ import type {
   SourceQuery
 } from '../interfaces/inAppPopulation.interface';
 import { getDisplayName } from '../../SDCPopulateQuestionnaireOperation/utils/humanName';
+import type { FhirContext } from '../interfaces/fhirContext.interface';
+import { resolveFhirContextReferences } from './resolveFhirContexts';
+import type {
+  FetchResourceCallback,
+  FetchResourceRequestConfig
+} from '../../SDCPopulateQuestionnaireOperation';
 
-export function createPopulateInputParameters(
+export async function createPopulateInputParameters(
   questionnaire: Questionnaire,
   patient: Patient,
   user: Practitioner | null,
   encounter: Encounter | null,
+  fhirContext: FhirContext[] | null,
   launchContexts: LaunchContext[],
   sourceQueries: SourceQuery[],
   questionnaireLevelVariables: QuestionnaireLevelXFhirQueryVariable[],
-  context: Record<string, any>
-): Parameters | null {
+  fhirPathContext: Record<string, any>,
+  fetchResourceCallback: FetchResourceCallback,
+  fetchResourceRequestConfig: FetchResourceRequestConfig
+): Promise<Parameters | null> {
   const patientSubject = createPatientSubject(questionnaire, patient);
   if (!patientSubject) {
     return null;
@@ -69,6 +78,14 @@ export function createPopulateInputParameters(
 
   // contexts
   const contexts: ParametersParameter[] = [];
+
+  // resolve fhirContexts references if provided
+  const resolvedFhirContextReferences = await resolveFhirContextReferences(
+    fhirContext,
+    fetchResourceCallback,
+    fetchResourceRequestConfig
+  );
+
   // add launch contexts
   if (launchContexts.length > 0) {
     for (const launchContext of launchContexts) {
@@ -77,7 +94,8 @@ export function createPopulateInputParameters(
         patient,
         user,
         encounter,
-        context
+        resolvedFhirContextReferences,
+        fhirPathContext
       );
       if (launchContextParam) {
         contexts.push(launchContextParam);
@@ -152,6 +170,7 @@ function createLaunchContextParam(
   patient: Patient,
   user: Practitioner | null,
   encounter: Encounter | null,
+  resolvedFhirContextReferences: Record<string, FhirResource>,
   fhirPathContext: Record<string, any>
 ): ParametersParameter | null {
   const name = launchContext.extension[0].valueId ?? launchContext.extension[0].valueCoding?.code;
@@ -160,7 +179,8 @@ function createLaunchContextParam(
   }
 
   const resourceType = launchContext.extension[1].valueCode;
-  let resource: FhirResource | null;
+  let resource: FhirResource | null = null;
+
   if (name === 'patient' && resourceType === 'Patient') {
     resource = patient;
   } else if (name === 'user' && resourceType === 'Practitioner' && user) {
@@ -168,7 +188,12 @@ function createLaunchContextParam(
   } else if (name === 'encounter' && resourceType === 'Encounter' && encounter) {
     resource = encounter;
   } else {
-    return null;
+    // Check resolved resources from FHIR context references
+    // This assumes that there is one resource per resourceType in fhirContext
+    const resolvedResource = resolvedFhirContextReferences[resourceType];
+    if (resolvedResource) {
+      resource = resolvedResource;
+    }
   }
 
   if (!resource) {

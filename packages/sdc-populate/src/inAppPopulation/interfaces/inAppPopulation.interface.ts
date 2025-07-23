@@ -41,12 +41,12 @@ interface LaunchContextNameCoding extends Extension {
 }
 
 interface LaunchContextNameCodingValueCoding extends Coding {
-  code: 'patient' | 'encounter' | 'location' | 'user' | 'study';
+  code: 'patient' | 'encounter' | 'location' | 'user' | 'study' | string;
 }
 
 interface LaunchContextType extends Extension {
   url: 'type';
-  valueCode: string;
+  valueCode: string; // Must be resourceType
 }
 
 interface LaunchContextDescription extends Extension {

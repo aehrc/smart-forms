@@ -21,7 +21,8 @@ import {
   getQuestionnaireReferences,
   readCommonLaunchContexts,
   readQuestionnaireContext,
-  responseToQuestionnaireResource
+  responseToQuestionnaireResource,
+  tokenResponseCustomised
 } from '../utils/launch.ts';
 import { postQuestionnaireToSMARTHealthIT } from '../../../api/saveQr.ts';
 import GoToTestLauncher from '../../../components/Snackbar/GoToTestLauncher.tsx';
@@ -69,7 +70,7 @@ const initialAuthState: AuthState = {
 function Authorisation() {
   const [authState, dispatch] = useReducer(authReducer, initialAuthState);
 
-  const { setSmartClient, setCommonLaunchContexts, setQuestionnaireLaunchContext } =
+  const { setSmartClient, setCommonLaunchContexts, setQuestionnaireLaunchContext, setFhirContext } =
     useSmartClient();
 
   const { enqueueSnackbar } = useSnackbar();
@@ -85,6 +86,8 @@ function Authorisation() {
           sessionStorage.setItem('authorised', 'true');
           dispatch({ type: 'UPDATE_HAS_CLIENT', payload: true });
 
+          // Read common launch contexts e.g. patient, user, encounter
+          // via built-in FHIR client methods e.g. client.patient.read()
           readCommonLaunchContexts(client).then(({ patient, user, encounter }) => {
             dispatch({ type: 'UPDATE_HAS_PATIENT', payload: !!patient });
             dispatch({ type: 'UPDATE_HAS_USER', payload: !!user });
@@ -102,8 +105,16 @@ function Authorisation() {
             }
           });
 
-          // Set questionnaire launch context if available
-          const questionnaireReferences = getQuestionnaireReferences(client);
+          // Read FhirContext from the token response
+          const fhirContext =
+            (client.state.tokenResponse as tokenResponseCustomised)?.fhirContext ?? null;
+          if (fhirContext) {
+            setFhirContext(fhirContext);
+          }
+
+          // Get Questionnaire context from fhirContext array
+          // the set questionnaire launch context if available
+          const questionnaireReferences = getQuestionnaireReferences(fhirContext ?? []);
           if (questionnaireReferences.length > 0) {
             readQuestionnaireContext(client, questionnaireReferences)
               .then((response) => {
