@@ -15,5 +15,4 @@
  * limitations under the License.
  */
 
-export * from './interfaces';
-export * from './utils';
+export type { FhirContext } from './fhirContext.interface';
