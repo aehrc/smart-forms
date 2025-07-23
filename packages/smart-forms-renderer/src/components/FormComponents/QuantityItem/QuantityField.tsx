@@ -51,7 +51,6 @@ function QuantityField(props: QuantityFieldProps) {
   return (
     <StandardTextField
       id={itemType + '-' + linkId + '-input'}
-      multiline
       value={input}
       error={!!feedback}
       onChange={(event) => onInputChange(event.target.value)}
