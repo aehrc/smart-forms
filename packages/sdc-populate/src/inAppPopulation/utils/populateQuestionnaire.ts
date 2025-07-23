@@ -284,25 +284,11 @@ function isLaunchContext(extension: Extension): extension is LaunchContext {
     extension.url ===
       'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext' &&
     !!extension.extension?.find(
-      (ext) =>
-        ext.url === 'name' &&
-        (ext.valueId ||
-          (ext.valueCoding &&
-            (ext.valueCoding.code === 'patient' ||
-              ext.valueCoding.code === 'encounter' ||
-              ext.valueCoding.code === 'location' ||
-              ext.valueCoding.code === 'user' ||
-              ext.valueCoding.code === 'study' ||
-              ext.valueCoding.code === 'sourceQueries')))
+      (ext) => ext.url === 'name' && (ext.valueId || (ext.valueCoding && ext.valueCoding.code))
     );
 
   const hasLaunchContextType = !!extension.extension?.find(
-    (ext) =>
-      ext.url === 'type' &&
-      ext.valueCode &&
-      (ext.valueCode === 'Patient' ||
-        ext.valueCode === 'Practitioner' ||
-        ext.valueCode === 'Encounter')
+    (ext) => ext.url === 'type' && ext.valueCode
   );
 
   return (
