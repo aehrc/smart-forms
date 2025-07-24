@@ -15,43 +15,24 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useState } from 'react';
-import type {
-  PropsWithFeedbackFromParentAttribute,
-  PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledRequiredAttribute,
-  PropsWithItemPathAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithParentStylesAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithRenderingExtensionsAttribute
-} from '../../../interfaces/renderProps.interface';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import React, { useCallback, useState, useEffect } from 'react';
+import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
+import useSynchronizedValidation from '../../../hooks/useSynchronizedValidation';
 import debounce from 'lodash.debounce';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import StringField from './StringField';
-import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useStringCalculatedExpression from '../../../hooks/useStringCalculatedExpression';
+import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
 import useShowFeedback from '../../../hooks/useShowFeedback';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
 
-interface StringItemProps
-  extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
-    PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledRequiredAttribute,
-    PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute,
-    PropsWithFeedbackFromParentAttribute,
-    PropsWithParentStylesAttribute {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
-}
+interface StringItemProps extends BaseItemProps {}
+
 function StringItem(props: StringItemProps) {
   const {
     qItem,
@@ -81,11 +62,24 @@ function StringItem(props: StringItemProps) {
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
-  // Perform validation checks
-  const feedback = useValidationFeedback(qItem, feedbackFromParent, input);
-
   // Provides a way to hide the feedback when the user is typing
   const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
+
+  // Use synchronized validation to fix timing mismatch while preserving original behavior
+  const { feedback, syncValidation } = useSynchronizedValidation({
+    qItem,
+    feedbackFromParent,
+    input,
+    hasBlurred
+  });
+
+  // Automatically show feedback when there are validation errors
+  // This ensures errors are always visible immediately
+  useEffect(() => {
+    if (feedback !== '') {
+      setShowFeedback(true);
+    }
+  }, [feedback, setShowFeedback]);
 
   // Process calculated expressions
   const { calcExpUpdated } = useStringCalculatedExpression({
@@ -111,7 +105,8 @@ function StringItem(props: StringItemProps) {
   function handleChange(newInput: string) {
     setInput(newInput);
 
-    // Only suppress feedback once (before first blur)
+    // Only suppress feedback once (before first blur) for valid inputs
+    // Validation errors will be shown automatically by the useEffect above
     if (!hasBlurred) {
       setShowFeedback(false);
     }
@@ -122,6 +117,9 @@ function StringItem(props: StringItemProps) {
   function handleBlur() {
     setShowFeedback(true);
     setHasBlurred(true); // From now on, feedback should stay visible
+    
+    // Immediately sync validation on blur to ensure consistency
+    syncValidation();
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
