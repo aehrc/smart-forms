@@ -66,6 +66,7 @@ export interface PopulateResult {
  * @property fhirContext - An array of contextual resources within a launch. See https://build.fhir.org/ig/HL7/smart-app-launch/scopes-and-launch-context.html#fhircontext-exp
  * @property fetchTerminologyCallback - A callback function to fetch terminology resources, optional
  * @property fetchTerminologyRequestConfig - Any request configuration to be passed to the fetchTerminologyCallback i.e. headers, auth etc., optional
+ * @property timeoutMs - Timeout in milliseconds for the $populate operation, default is 10000ms (10 seconds)
  *
  * @author Sean Fong
  */
@@ -79,6 +80,7 @@ export interface PopulateQuestionnaireParams {
   fhirContext?: FhirContext[];
   fetchTerminologyCallback?: FetchTerminologyCallback;
   fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig;
+  timeoutMs?: number;
 }
 
 /**
@@ -106,7 +108,8 @@ export async function populateQuestionnaire(params: PopulateQuestionnaireParams)
     encounter,
     fhirContext,
     fetchTerminologyCallback,
-    fetchTerminologyRequestConfig
+    fetchTerminologyRequestConfig,
+    timeoutMs = 10000
   } = params;
 
   // FHIRPath Context map that will be used to evaluate FHIRPath expressions, this is different from the fhirContext in the params.
@@ -140,7 +143,8 @@ export async function populateQuestionnaire(params: PopulateQuestionnaireParams)
     questionnaireLevelVariables,
     fhirPathContext,
     fetchResourceCallback,
-    fetchResourceRequestConfig
+    fetchResourceRequestConfig,
+    timeoutMs
   );
 
   if (!inputParameters) {
@@ -162,6 +166,7 @@ export async function populateQuestionnaire(params: PopulateQuestionnaireParams)
     inputParameters,
     fetchResourceCallback,
     fetchResourceRequestConfig,
+    timeoutMs,
     fetchTerminologyCallback,
     fetchTerminologyRequestConfig
   );
@@ -210,6 +215,7 @@ async function performInAppPopulation(
   inputParameters: InputParameters,
   fetchResourceCallback: FetchResourceCallback,
   fetchResourceRequestConfig: FetchResourceRequestConfig,
+  timeoutMs: number,
   fetchTerminologyCallback?: FetchTerminologyCallback,
   fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
 ): Promise<OutputParameters | OperationOutcome> {
@@ -222,7 +228,7 @@ async function performInAppPopulation(
   );
 
   try {
-    const promiseResult = await addTimeoutToPromise(populatePromise, 10000);
+    const promiseResult = await addTimeoutToPromise(populatePromise, timeoutMs);
 
     if (promiseResult.timeout) {
       return {

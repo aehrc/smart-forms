@@ -50,7 +50,8 @@ export async function createPopulateInputParameters(
   questionnaireLevelVariables: QuestionnaireLevelXFhirQueryVariable[],
   fhirPathContext: Record<string, any>,
   fetchResourceCallback: FetchResourceCallback,
-  fetchResourceRequestConfig: FetchResourceRequestConfig
+  fetchResourceRequestConfig: FetchResourceRequestConfig,
+  timeoutMs: number
 ): Promise<Parameters | null> {
   const patientSubject = createPatientSubject(questionnaire, patient);
   if (!patientSubject) {
@@ -83,7 +84,8 @@ export async function createPopulateInputParameters(
   const resolvedFhirContextReferences = await resolveFhirContextReferences(
     fhirContext,
     fetchResourceCallback,
-    fetchResourceRequestConfig
+    fetchResourceRequestConfig,
+    timeoutMs
   );
 
   // add launch contexts

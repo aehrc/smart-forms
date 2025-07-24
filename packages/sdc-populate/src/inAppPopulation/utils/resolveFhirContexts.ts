@@ -26,14 +26,12 @@ import { addTimeoutToPromise } from './populateQuestionnaire';
 export async function resolveFhirContextReferences(
   fhirContext: FhirContext[] | null,
   fetchResourceCallback: FetchResourceCallback,
-  fetchResourceRequestConfig: FetchResourceRequestConfig
+  fetchResourceRequestConfig: FetchResourceRequestConfig,
+  timeoutMs: number
 ): Promise<Record<string, FhirResource>> {
   if (!fhirContext || fhirContext.length === 0) {
     return {};
   }
-
-  // Timeout to fetch fhirContext resources
-  const timeoutMs = 10000;
 
   // Filter contexts that have a internal `reference` and a `type`
   const contextsWithReferences = fhirContext.filter(
