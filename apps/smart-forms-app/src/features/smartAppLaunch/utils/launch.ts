@@ -70,11 +70,12 @@ export async function readCommonLaunchContexts(
 }
 
 export interface FhirContext {
-  reference?: string;
   role?: string;
-  canonical?: string;
   type?: string;
+  canonical?: string;
+  reference?: string;
   identifier?: Identifier;
+  [key: string]: unknown;
 }
 
 export interface tokenResponseCustomised extends fhirclient.TokenResponse {
