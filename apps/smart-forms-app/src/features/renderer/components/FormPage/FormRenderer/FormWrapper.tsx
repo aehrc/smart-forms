@@ -25,6 +25,7 @@ import {
 } from '@aehrc/smart-forms-renderer';
 import useDebugMode from '../../../../../hooks/useDebugMode.ts';
 import { Box } from '@mui/material';
+import RendererInfoFooter from '../../../../footer/components/RendererInfoFooter.tsx';
 
 function FormWrapper() {
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
@@ -52,6 +53,7 @@ function FormWrapper() {
       <Box px={3}>
         <BaseRenderer />
       </Box>
+      <RendererInfoFooter />
 
       {/* Debug footer */}
       {debugModeEnabled ? <RendererDebugFooter /> : null}
