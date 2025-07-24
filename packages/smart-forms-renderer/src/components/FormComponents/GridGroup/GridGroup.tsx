@@ -73,17 +73,31 @@ function GridGroup(props: GridGroupProps) {
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
 
+  // Prepare visible first-row items
+
+  // TODO : Using React Hooks inside ,map or filter functions causes the following message :  React Hook "useHidden" cannot be called inside a callback. React Hooks must be called in a React function component or a custom React Hook function.eslintreact-hooks/rules-of-hooks
+
+  const firstRowItems = qRowItems?.[0]?.item ?? [];
+  // Get the items and ignore hidden columns as they are automatically added to the columnHeaders as empty space.
+  const visibleColumnItems = firstRowItems
+    .map((item) => ({
+      item,
+      hidden: useHidden(item)
+    }))
+    .filter(({ hidden }) => !hidden)
+    .map(({ item }) => item);
+
   // Get column headers from first row item.text
   const columnHeaders: {
     label: string;
     styleString: string | null;
   }[] = useMemo(
     () =>
-      qRowItems?.[0].item?.map((firstItem) => ({
+      visibleColumnItems.map((firstItem) => ({
         label: getItemTextToDisplay(firstItem) ?? ' ',
         styleString: structuredDataCapture.getStyle(firstItem._text) ?? null
       })) ?? [],
-    [qRowItems]
+    [visibleColumnItems]
   );
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
