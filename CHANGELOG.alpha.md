@@ -8,6 +8,12 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.83] - 2025-07-24
+#### Added
+- Updated sdc-populate to v4.6.0. Changes as follows:
+- Add fhirContext handling when creating $populate input parameters.
+- Increase tolerance of isLaunchContext() so that it can handle more launch contexts beyond the ones defined in https://hl7.org/fhir/uv/sdc/ValueSet-launchContext.html.
+- Add timeoutMs parameter to populateQuestionnaire() input parameters.
 
 ## [1.0.0-alpha.82] - 2025-07-23
 #### Added

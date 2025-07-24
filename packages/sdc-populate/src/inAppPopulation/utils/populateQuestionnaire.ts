@@ -48,6 +48,7 @@ import type {
   SourceQuery
 } from '../interfaces/inAppPopulation.interface';
 import { Base64 } from 'js-base64';
+import type { FhirContext } from '../interfaces/fhirContext.interface';
 
 export interface PopulateResult {
   populatedResponse: QuestionnaireResponse;
@@ -62,8 +63,10 @@ export interface PopulateResult {
  * @property patient - Patient resource as patient in context
  * @property user - Practitioner resource as user in context, optional
  * @property encounter - Encounter resource as encounter in context, optional
+ * @property fhirContext - An array of contextual resources within a launch. See https://build.fhir.org/ig/HL7/smart-app-launch/scopes-and-launch-context.html#fhircontext-exp
  * @property fetchTerminologyCallback - A callback function to fetch terminology resources, optional
  * @property fetchTerminologyRequestConfig - Any request configuration to be passed to the fetchTerminologyCallback i.e. headers, auth etc., optional
+ * @property timeoutMs - Timeout in milliseconds for the $populate operation, default is 10000ms (10 seconds)
  *
  * @author Sean Fong
  */
@@ -74,8 +77,10 @@ export interface PopulateQuestionnaireParams {
   patient: Patient;
   user?: Practitioner;
   encounter?: Encounter;
+  fhirContext?: FhirContext[];
   fetchTerminologyCallback?: FetchTerminologyCallback;
   fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig;
+  timeoutMs?: number;
 }
 
 /**
@@ -101,10 +106,13 @@ export async function populateQuestionnaire(params: PopulateQuestionnaireParams)
     patient,
     user,
     encounter,
+    fhirContext,
     fetchTerminologyCallback,
-    fetchTerminologyRequestConfig
+    fetchTerminologyRequestConfig,
+    timeoutMs = 10000
   } = params;
 
+  // FHIRPath Context map that will be used to evaluate FHIRPath expressions, this is different from the fhirContext in the params.
   const fhirPathContext: Record<string, any> = {};
 
   // Get launch contexts, source queries and questionnaire-level variables
@@ -124,15 +132,19 @@ export async function populateQuestionnaire(params: PopulateQuestionnaireParams)
   }
 
   // Define population input parameters from launch contexts, source queries and questionnaire-level variables
-  const inputParameters = createPopulateInputParameters(
+  const inputParameters = await createPopulateInputParameters(
     questionnaire,
     patient,
     user ?? null,
     encounter ?? null,
+    fhirContext ?? null,
     launchContexts,
     sourceQueries,
     questionnaireLevelVariables,
-    fhirPathContext
+    fhirPathContext,
+    fetchResourceCallback,
+    fetchResourceRequestConfig,
+    timeoutMs
   );
 
   if (!inputParameters) {
@@ -154,6 +166,7 @@ export async function populateQuestionnaire(params: PopulateQuestionnaireParams)
     inputParameters,
     fetchResourceCallback,
     fetchResourceRequestConfig,
+    timeoutMs,
     fetchTerminologyCallback,
     fetchTerminologyRequestConfig
   );
@@ -202,6 +215,7 @@ async function performInAppPopulation(
   inputParameters: InputParameters,
   fetchResourceCallback: FetchResourceCallback,
   fetchResourceRequestConfig: FetchResourceRequestConfig,
+  timeoutMs: number,
   fetchTerminologyCallback?: FetchTerminologyCallback,
   fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
 ): Promise<OutputParameters | OperationOutcome> {
@@ -214,7 +228,7 @@ async function performInAppPopulation(
   );
 
   try {
-    const promiseResult = await addTimeoutToPromise(populatePromise, 10000);
+    const promiseResult = await addTimeoutToPromise(populatePromise, timeoutMs);
 
     if (promiseResult.timeout) {
       return {
@@ -260,7 +274,7 @@ async function performInAppPopulation(
   }
 }
 
-async function addTimeoutToPromise(promise: Promise<any>, timeoutMs: number) {
+export async function addTimeoutToPromise(promise: Promise<any>, timeoutMs: number) {
   const timeoutPromise = new Promise((_, reject) => {
     setTimeout(() => {
       reject(new Error(`Promise timed out after ${timeoutMs} milliseconds`));
@@ -276,25 +290,11 @@ function isLaunchContext(extension: Extension): extension is LaunchContext {
     extension.url ===
       'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext' &&
     !!extension.extension?.find(
-      (ext) =>
-        ext.url === 'name' &&
-        (ext.valueId ||
-          (ext.valueCoding &&
-            (ext.valueCoding.code === 'patient' ||
-              ext.valueCoding.code === 'encounter' ||
-              ext.valueCoding.code === 'location' ||
-              ext.valueCoding.code === 'user' ||
-              ext.valueCoding.code === 'study' ||
-              ext.valueCoding.code === 'sourceQueries')))
+      (ext) => ext.url === 'name' && (ext.valueId || (ext.valueCoding && ext.valueCoding.code))
     );
 
   const hasLaunchContextType = !!extension.extension?.find(
-    (ext) =>
-      ext.url === 'type' &&
-      ext.valueCode &&
-      (ext.valueCode === 'Patient' ||
-        ext.valueCode === 'Practitioner' ||
-        ext.valueCode === 'Encounter')
+    (ext) => ext.url === 'type' && ext.valueCode
   );
 
   return (
