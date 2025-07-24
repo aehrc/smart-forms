@@ -17,12 +17,12 @@
 
 import { useEffect, useReducer } from 'react';
 import { oauth2 } from 'fhirclient';
+import type { tokenResponseCustomised } from '../utils/launch.ts';
 import {
   getQuestionnaireReferences,
   readCommonLaunchContexts,
   readQuestionnaireContext,
-  responseToQuestionnaireResource,
-  tokenResponseCustomised
+  responseToQuestionnaireResource
 } from '../utils/launch.ts';
 import { postQuestionnaireToSMARTHealthIT } from '../../../api/saveQr.ts';
 import GoToTestLauncher from '../../../components/Snackbar/GoToTestLauncher.tsx';
