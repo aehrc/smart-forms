@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,15 +16,8 @@
  */
 
 import React, { useState } from 'react';
-import type {
-  PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler
-} from '../../../../interfaces/renderProps.interface';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { BaseItemProps } from '../../../../interfaces/renderProps.interface';
 import useReadOnly from '../../../../hooks/useReadOnly';
-import useRenderingExtensions from '../../../../hooks/useRenderingExtensions';
 import { FullWidthFormComponentBox } from '../../../Box.styles';
 import ItemFieldGrid from '../../ItemParts/ItemFieldGrid';
 import { createEmptyQrItem } from '../../../../utils/qrItem';
@@ -43,54 +36,62 @@ import {
 import useTimeValidation from '../../../../hooks/useTimeValidation';
 import useDateNonEmptyValidation from '../../../../hooks/useDateTimeNonEmpty';
 import DateTimeField from './DateTimeField';
-import useStringInput from '../../../../hooks/useStringInput';
+import ItemLabel from '../../ItemParts/ItemLabel';
+import useShowFeedback from '../../../../hooks/useShowFeedback';
+import useDateTimeCalculatedExpression from '../../../../hooks/useDateTimeCalculatedExpression';
 
-interface CustomDateTimeItemProps
-  extends PropsWithQrItemChangeHandler,
-    PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute,
-    PropsWithParentIsReadOnlyAttribute {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
-}
-
-function CustomDateTimeItem(props: CustomDateTimeItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
+function CustomDateTimeItem(props: BaseItemProps) {
+  const {
+    qItem,
+    qrItem,
+    isRepeated,
+    isTabled,
+    renderingExtensions,
+    parentIsReadOnly,
+    onQrItemChange
+  } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayPrompt, entryFormat } = useRenderingExtensions(qItem);
+  const { displayPrompt, entryFormat } = renderingExtensions;
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   const qrDateTime = qrItem ?? createEmptyQrItem(qItem, answerKey);
 
-  let valueDate: string = '';
+  // Store dateTime in FHIR and DayJs formats for downstream parsing
+  let valueDateTimeFhir: string = '';
   let dateTimeDayJs: Dayjs | null = null;
+
+  // Seperately store date in FHIR
+  let valueDateFhir: string = '';
+
+  // Extract valueDateTimeFhir, dateTimeDayJs and valueDateFhir from qrDateTime
   if (qrDateTime.answer) {
-    let tempDateTime = '';
     if (qrDateTime.answer[0].valueDate) {
-      tempDateTime = qrDateTime.answer[0].valueDate;
+      valueDateTimeFhir = qrDateTime.answer[0].valueDate;
     } else if (qrDateTime.answer[0].valueDateTime) {
-      tempDateTime = qrDateTime.answer[0].valueDateTime;
+      valueDateTimeFhir = qrDateTime.answer[0].valueDateTime;
     }
 
-    // split date and time at "T", 2015-02-07T13:28:17-05:00
-    if (tempDateTime.includes('T')) {
-      valueDate = tempDateTime.split('T')[0];
-      dateTimeDayJs = dayjs(tempDateTime);
-    } else {
-      valueDate = tempDateTime;
+    // Split date and time at "T", 2015-02-07T13:28:17-05:00
+    if (valueDateTimeFhir.includes('T')) {
+      valueDateTimeFhir = valueDateTimeFhir.split('T')[0];
+      dateTimeDayJs = dayjs(valueDateTimeFhir);
+    }
+    // valueDateTimeFhir does not contain "T", that means it's a date only
+    else {
+      valueDateFhir = valueDateTimeFhir;
     }
   }
 
-  const { displayDate, dateParseFail } = parseFhirDateToDisplayDate(valueDate);
+  const { displayDate, dateParseFail } = parseFhirDateToDisplayDate(valueDateFhir);
   const { displayTime, displayPeriod, timeParseFail } = parseDateTimeToDisplayTime(dateTimeDayJs);
 
-  const [dateInput, setDateInput] = useStringInput(displayDate);
-  const [timeInput, setTimeInput] = useStringInput(displayTime);
-  const [periodInput, setPeriodInput] = useStringInput(displayPeriod);
+  const [dateInput, setDateInput] = useState(displayDate);
+  const [timeInput, setTimeInput] = useState(displayTime);
+  const [periodInput, setPeriodInput] = useState(displayPeriod);
   const [dateFocused, setDateFocused] = useState(false);
 
   // Perform validation checks
@@ -103,6 +104,34 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
 
   dateFeedback = useDateNonEmptyValidation(dateInput, timeInput, dateFeedback, timeFeedback);
 
+  // Provides a way to hide the feedback when the user is typing
+  const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
+
+  // Process calculated expressions
+  const { calcExpUpdated } = useDateTimeCalculatedExpression({
+    qItem: qItem,
+    valueDateTimeFhir: valueDateTimeFhir,
+    onChangeByCalcExpressionString: (newValueDateTimeFhir: string) => {
+      const { displayDate } = parseFhirDateToDisplayDate(newValueDateTimeFhir);
+      const { displayTime, displayPeriod } = parseDateTimeToDisplayTime(dateTimeDayJs);
+
+      setDateInput(displayDate);
+      setTimeInput(displayTime);
+      setPeriodInput(displayPeriod);
+
+      onQrItemChange({
+        ...createEmptyQrItem(qItem, answerKey),
+        answer: [{ id: answerKey, valueDateTime: newValueDateTimeFhir }]
+      });
+    },
+    onChangeByCalcExpressionNull: () => {
+      setDateInput('');
+      setTimeInput('');
+      setPeriodInput('');
+      onQrItemChange(createEmptyQrItem(qItem, answerKey));
+    }
+  });
+
   function handleSelectDate(selectedDate: string) {
     setDateInput(selectedDate);
     updateQRDateTime(selectedDate, timeInput, periodInput, is24HourNotation);
@@ -110,6 +139,11 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
 
   function handleDateInputChange(newDateInput: string) {
     setDateInput(newDateInput);
+
+    // Only suppress feedback once (before first blur)
+    if (!hasBlurred) {
+      setShowFeedback(false);
+    }
 
     if (newDateInput === '') {
       onQrItemChange(createEmptyQrItem(qItem, answerKey));
@@ -123,9 +157,19 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
     updateQRDateTime(newDateInput, timeInput, periodInput, is24HourNotation);
   }
 
+  function handleDateBlur() {
+    setShowFeedback(true);
+    setHasBlurred(true); // From now on, feedback should stay visible
+  }
+
   function handleTimeInputChange(newTimeInput: string, newPeriodInput: string) {
     setTimeInput(newTimeInput);
     setPeriodInput(newPeriodInput);
+
+    // Only suppress feedback once (before first blur)
+    if (!hasBlurred) {
+      setShowFeedback(false);
+    }
 
     if (newTimeInput === '') {
       updateQRDateTime(dateInput, '', '', false);
@@ -138,6 +182,11 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
     }
 
     updateQRDateTime(dateInput, newTimeInput, newPeriodInput, is24HourNotation);
+  }
+
+  function handleTimeBlur() {
+    setShowFeedback(true);
+    setHasBlurred(true); // From now on, feedback should stay visible
   }
 
   function updateQRDateTime(
@@ -172,25 +221,31 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
 
   if (isRepeated) {
     return (
-      <Stack>
+      <Stack width="100%">
         <DateTimeField
           linkId={qItem.linkId}
+          itemType={qItem.type}
+          itemText={qItem.text}
           displayDate={displayDate}
           dateInput={dateInput}
           timeInput={timeInput}
           periodInput={periodInput}
           is24HourNotation={is24HourNotation}
-          dateFeedback={dateFeedback ?? ''}
-          timeFeedback={timeFeedback ?? ''}
+          dateFeedback={showFeedback ? (dateFeedback ?? '') : ''}
+          timeFeedback={showFeedback ? (timeFeedback ?? '') : ''}
           dateFocused={dateFocused}
           displayPrompt={displayPrompt}
           entryFormat={entryFormat}
           readOnly={readOnly}
+          calcExpUpdated={calcExpUpdated}
           isTabled={isTabled}
           onDateInputChange={handleDateInputChange}
           onSelectDate={handleSelectDate}
           setDateFocused={setDateFocused}
           onTimeInputChange={handleTimeInputChange}
+          onDateBlur={handleDateBlur}
+          onTimeBlur={handleTimeBlur}
+          showFeedback={showFeedback}
         />
       </Stack>
     );
@@ -201,27 +256,40 @@ function CustomDateTimeItem(props: CustomDateTimeItemProps) {
       data-test="q-item-datetime-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <DateTimeField
-          linkId={qItem.linkId}
-          displayDate={displayDate}
-          dateInput={dateInput}
-          timeInput={timeInput}
-          periodInput={periodInput}
-          is24HourNotation={is24HourNotation}
-          dateFeedback={dateFeedback ?? ''}
-          timeFeedback={timeFeedback ?? ''}
-          dateFocused={dateFocused}
-          displayPrompt={displayPrompt}
-          entryFormat={entryFormat}
-          readOnly={readOnly}
-          isTabled={isTabled}
-          onDateInputChange={handleDateInputChange}
-          onSelectDate={handleSelectDate}
-          setDateFocused={setDateFocused}
-          onTimeInputChange={handleTimeInputChange}
-        />
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <DateTimeField
+            linkId={qItem.linkId}
+            itemType={qItem.type}
+            itemText={qItem.text}
+            displayDate={displayDate}
+            dateInput={dateInput}
+            timeInput={timeInput}
+            periodInput={periodInput}
+            is24HourNotation={is24HourNotation}
+            dateFeedback={dateFeedback ?? ''}
+            timeFeedback={timeFeedback ?? ''}
+            dateFocused={dateFocused}
+            displayPrompt={displayPrompt}
+            entryFormat={entryFormat}
+            readOnly={readOnly}
+            calcExpUpdated={calcExpUpdated}
+            isTabled={isTabled}
+            onDateInputChange={handleDateInputChange}
+            onSelectDate={handleSelectDate}
+            setDateFocused={setDateFocused}
+            onTimeInputChange={handleTimeInputChange}
+            onDateBlur={handleDateBlur}
+            onTimeBlur={handleTimeBlur}
+            showFeedback={showFeedback}
+          />
+        }
+        dateFeedback={dateFeedback ?? undefined}
+        timeFeedback={timeFeedback ?? undefined}
+      />
     </FullWidthFormComponentBox>
   );
 }

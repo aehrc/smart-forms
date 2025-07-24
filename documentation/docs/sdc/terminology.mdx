@@ -14,9 +14,10 @@ The elements/extensions that fall under this category are:
 - [answerValueSet](http://hl7.org/fhir/uv/sdc/behavior.html#answerValueSet)
 - [answerExpression](http://hl7.org/fhir/uv/sdc/expressions.html#answerExpression)
 
-There is also another extension that can be used to define the unit of a quantity item:
+Other related extensions:
 
-- [unitOption](https://hl7.org/fhir/uv/sdc/behavior.html#unitOption)
+- [unitOption](https://hl7.org/fhir/uv/sdc/behavior.html#unitOption) - Provide selection choices for the unit of a quantity item
+- [preferredTerminologyServer](https://build.fhir.org/ig/HL7/sdc/StructureDefinition-sdc-questionnaire-preferredTerminologyServer.html) - Specify the preferred terminology server to use for terminology requests
 
 :::note
 
@@ -152,13 +153,10 @@ Support for this extension is not thoroughly tested yet.
 
 #### Basic usage
 
-<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-9-1-2-form-behavior-choice-restriction--answer-expression">
-  <iframe
-    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-9-1-2-form-behavior-choice-restriction--answer-expression"
-    width="100%"
-    height="500"
-  />
-</IframeContainer>
+<IframeContainer
+  storyId="sdc-9-1-2-form-behavior-choice-restriction--answer-expression"
+  initialHeight={280}
+/>
 
 ### UnitOption
 
@@ -168,10 +166,12 @@ This can be used when the unit is not fixed, and allows the user to choose from 
 
 #### Basic usage
 
-<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-quantity--quantity-unit-option-response">
-  <iframe
-    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-quantity--quantity-unit-option-response"
-    width="100%"
-    height="270"
-  />
-</IframeContainer>
+<IframeContainer storyId="itemtype-quantity--quantity-unit-option-response" initialHeight={280} />
+
+### PreferredTerminologyServer
+
+PreferredTerminologyServer is used to specify the preferred terminology server to use for terminology requests associated with the whole questionnaire or a particular group or question within the questionnaire (depending on where the extension appears).
+
+#### Basic usage
+
+<IframeContainer storyId="sdc-other-extensions--preferred-terminology-server" initialHeight={280} />

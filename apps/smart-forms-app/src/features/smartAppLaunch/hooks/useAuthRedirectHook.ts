@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,7 +33,7 @@ function useAuthRedirectHook(authState: AuthState) {
   useEffect(() => {
     if (authIsSuccessful) {
       if (questionnaireContextExist) {
-        navigate('/renderer');
+        navigate('/dashboard/existing');
       } else {
         navigate('/dashboard/questionnaires');
       }

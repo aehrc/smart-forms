@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,38 +15,27 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { nanoid } from 'nanoid';
-import type { RepeatGroupSingle } from '../interfaces/repeatGroup.interface';
+import type { QuestionnaireResponseItem } from 'fhir/r4';
+import type { RepeatGroupSingleModel } from '../interfaces/repeatGroup.interface';
 import { useMemo } from 'react';
+import { generateExistingRepeatId, generateNewRepeatId } from '../utils/repeatId';
 
 function useInitialiseRepeatGroups(
-  qItem: QuestionnaireItem,
+  linkId: string,
   qrItems: QuestionnaireResponseItem[]
-): RepeatGroupSingle[] {
-  return useMemo(
-    () => {
-      let initialRepeatGroupAnswers: RepeatGroupSingle[] = [
-        {
-          nanoId: nanoid(),
-          qrItem: null
-        }
-      ];
+): RepeatGroupSingleModel[] {
+  return useMemo(() => {
+    if (qrItems.length === 0) {
+      return [{ id: generateNewRepeatId(linkId), qrItem: null }];
+    }
 
-      if (qrItems.length > 0) {
-        initialRepeatGroupAnswers = qrItems.map((qrItem) => {
-          return {
-            nanoId: nanoid(),
-            qrItem
-          };
-        });
-      }
-      return initialRepeatGroupAnswers;
-    },
-    // Requires checking of both qItem and qrItems
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [qItem, qrItems]
-  );
+    return qrItems.map((qrItem, index) => {
+      return {
+        id: generateExistingRepeatId(linkId, index),
+        qrItem
+      };
+    });
+  }, [linkId, qrItems]);
 }
 
 export default useInitialiseRepeatGroups;

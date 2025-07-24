@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,7 @@
  */
 
 import type {
+  Coding,
   Expression,
   Questionnaire,
   QuestionnaireItem,
@@ -34,22 +35,25 @@ import type {
   EnableWhenSingleLinkedItem
 } from '../../interfaces/enableWhen.interface';
 import type { AnswerExpression } from '../../interfaces/answerExpression.interface';
-import type { ValueSetPromise } from '../../interfaces/valueSet.interface';
-import { getTerminologyServerUrl, getValueSetPromise } from '../valueSet';
+import type { ProcessedValueSet, ValueSetPromise } from '../../interfaces/valueSet.interface';
+import { getValueSetPromise } from '../valueSet';
 import type { Variables } from '../../interfaces/variables.interface';
 import { getFhirPathVariables, getXFhirQueryVariables } from './extractVariables';
 import { getRepeatGroupParentItem } from '../misc';
 import { checkItemIsEnabledRepeat } from '../enableWhen';
-import cloneDeep from 'lodash.clonedeep';
 import { emptyResponse } from '../emptyResource';
 import { evaluateEnableWhenRepeatExpressionInstance } from '../enableWhenExpression';
 import {
   getAnswerExpression,
+  getAnswerOptionsToggleExpressions,
   getCalculatedExpressions,
   getEnableWhenExpression,
   getInitialExpression
 } from '../getExpressionsFromItem';
 import type { InitialExpression } from '../../interfaces/initialExpression.interface';
+import { addBindingParametersToValueSetUrl, getBindingParameters } from '../parameterisedValueSets';
+import type { AnswerOptionsToggleExpression } from '../../interfaces/answerOptionsToggleExpression.interface';
+import { getItemTerminologyServerToUse } from '../preferredTerminologyServer';
 
 interface ReturnParamsRecursive {
   variables: Variables;
@@ -59,15 +63,21 @@ interface ReturnParamsRecursive {
   initialExpressions: Record<string, InitialExpression>;
   answerExpressions: Record<string, AnswerExpression>;
   valueSetPromises: Record<string, ValueSetPromise>;
+  processedValueSets: Record<string, ProcessedValueSet>;
+  cachedValueSetCodings: Record<string, Coding[]>;
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
+  answerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
 }
 
-export function extractOtherExtensions(
+export async function extractOtherExtensions(
   questionnaire: Questionnaire,
   variables: Variables,
   valueSetPromises: Record<string, ValueSetPromise>,
+  processedValueSets: Record<string, ProcessedValueSet>,
+  cachedValueSetCodings: Record<string, Coding[]>,
+  itemPreferredTerminologyServers: Record<string, string>,
   terminologyServerUrl: string
-): ReturnParamsRecursive {
+): Promise<ReturnParamsRecursive> {
   const enableWhenItems: EnableWhenItems = { singleItems: {}, repeatItems: {} };
   const enableWhenExpressions: EnableWhenExpressions = {
     singleExpressions: {},
@@ -77,6 +87,7 @@ export function extractOtherExtensions(
   const initialExpressions: Record<string, InitialExpression> = {};
   const answerExpressions: Record<string, AnswerExpression> = {};
   const answerOptions: Record<string, QuestionnaireItemAnswerOption[]> = {};
+  const answerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]> = {};
 
   if (!questionnaire.item || questionnaire.item.length === 0) {
     return {
@@ -90,13 +101,16 @@ export function extractOtherExtensions(
       initialExpressions: {},
       answerExpressions: {},
       answerOptions: {},
-      valueSetPromises: valueSetPromises
+      answerOptionsToggleExpressions: {},
+      valueSetPromises: valueSetPromises,
+      processedValueSets: processedValueSets,
+      cachedValueSetCodings: cachedValueSetCodings
     };
   }
 
   for (const topLevelItem of questionnaire.item) {
     const isRepeatGroup = !!topLevelItem.repeats && topLevelItem.type === 'group';
-    extractExtensionsFromItemRecursive({
+    await extractExtensionsFromItemRecursive({
       questionnaire,
       item: topLevelItem,
       variables,
@@ -106,7 +120,11 @@ export function extractOtherExtensions(
       initialExpressions,
       answerExpressions,
       answerOptions,
+      answerOptionsToggleExpressions,
       valueSetPromises,
+      processedValueSets,
+      cachedValueSetCodings,
+      itemPreferredTerminologyServers,
       defaultTerminologyServerUrl: terminologyServerUrl,
       parentRepeatGroupLinkId: isRepeatGroup ? topLevelItem.linkId : undefined
     });
@@ -120,7 +138,10 @@ export function extractOtherExtensions(
     initialExpressions,
     answerExpressions,
     answerOptions,
-    valueSetPromises
+    answerOptionsToggleExpressions,
+    valueSetPromises,
+    processedValueSets,
+    cachedValueSetCodings
   };
 }
 
@@ -134,14 +155,18 @@ interface extractExtensionsFromItemRecursiveParams {
   initialExpressions: Record<string, InitialExpression>;
   answerExpressions: Record<string, AnswerExpression>;
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
+  answerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
   valueSetPromises: Record<string, ValueSetPromise>;
+  processedValueSets: Record<string, ProcessedValueSet>;
+  cachedValueSetCodings: Record<string, Coding[]>;
+  itemPreferredTerminologyServers: Record<string, string>;
   defaultTerminologyServerUrl: string;
   parentRepeatGroupLinkId?: string;
 }
 
-function extractExtensionsFromItemRecursive(
+async function extractExtensionsFromItemRecursive(
   params: extractExtensionsFromItemRecursiveParams
-): ReturnParamsRecursive {
+): Promise<ReturnParamsRecursive> {
   const {
     questionnaire,
     item,
@@ -152,7 +177,11 @@ function extractExtensionsFromItemRecursive(
     initialExpressions,
     answerExpressions,
     answerOptions,
+    answerOptionsToggleExpressions,
     valueSetPromises,
+    processedValueSets,
+    cachedValueSetCodings,
+    itemPreferredTerminologyServers,
     defaultTerminologyServerUrl,
     parentRepeatGroupLinkId
   } = params;
@@ -162,7 +191,7 @@ function extractExtensionsFromItemRecursive(
   if (items && items.length > 0) {
     // iterate through items of item recursively
     for (const childItem of items) {
-      extractExtensionsFromItemRecursive({
+      await extractExtensionsFromItemRecursive({
         ...params,
         item: childItem,
         parentRepeatGroupLinkId: isRepeatGroup ? item.linkId : parentRepeatGroupLinkId
@@ -187,9 +216,17 @@ function extractExtensionsFromItemRecursive(
     }
   }
 
-  const initialisedEnableWhenExpressions = initialiseEnableWhenExpression(
+  // Get terminology server URL to use for the item
+  const terminologyServerUrl = getItemTerminologyServerToUse(
+    item,
+    itemPreferredTerminologyServers,
+    defaultTerminologyServerUrl
+  );
+
+  const initialisedEnableWhenExpressions = await initialiseEnableWhenExpression(
     item,
     questionnaire,
+    terminologyServerUrl,
     parentRepeatGroupLinkId
   );
   if (initialisedEnableWhenExpressions) {
@@ -232,16 +269,51 @@ function extractExtensionsFromItemRecursive(
     answerOptions[item.linkId] = options;
   }
 
-  const valueSetUrl = item.answerValueSet;
-  if (valueSetUrl) {
-    if (!valueSetPromises[valueSetUrl] && !valueSetUrl.startsWith('#')) {
-      const terminologyServerUrl = getTerminologyServerUrl(item) ?? defaultTerminologyServerUrl;
-      valueSetPromises[valueSetUrl] = {
-        promise: getValueSetPromise(valueSetUrl, terminologyServerUrl)
-      };
+  // Get answerValueSets
+  const initialValueSetUrl = item.answerValueSet;
+  if (initialValueSetUrl) {
+    const bindingParameters = getBindingParameters(item, initialValueSetUrl);
+    const fixedBindingParameters = bindingParameters.filter((param) => !param.fhirPathExpression);
+    const isDynamic = bindingParameters.length !== fixedBindingParameters.length;
+    const valueSetUrlWithParams = addBindingParametersToValueSetUrl(
+      initialValueSetUrl,
+      fixedBindingParameters
+    );
+
+    // Only continue to process if answerValueSetUrl is not a reference, because we have already processed it earlier
+    if (!initialValueSetUrl.startsWith('#')) {
+      // Get valueSet promise to be resolved
+      // Note: this entry uses valueSetUrlWithParams as the key
+      if (!valueSetPromises[initialValueSetUrl]) {
+        valueSetPromises[valueSetUrlWithParams] = {
+          promise: getValueSetPromise(valueSetUrlWithParams, terminologyServerUrl)
+        };
+      }
+
+      // Create entries in processedValueSets and cachedValueSetCodings
+      // Note: initialValueSetUrl is key for processedValueSets, while valueSetUrlWithParams is key for cachedValueSetCodings
+      if (!processedValueSets[initialValueSetUrl]) {
+        processedValueSets[initialValueSetUrl] = {
+          initialValueSetUrl: initialValueSetUrl,
+          updatableValueSetUrl: valueSetUrlWithParams,
+          bindingParameters: bindingParameters,
+          isDynamic: isDynamic,
+          linkIds: [item.linkId]
+        };
+      } else {
+        processedValueSets[initialValueSetUrl].linkIds.push(item.linkId);
+      }
+      cachedValueSetCodings[valueSetUrlWithParams] = [];
     }
   }
 
+  // Get answerOptionsToggleExpressions
+  const itemAnswerOptionsToggleExpressions = getAnswerOptionsToggleExpressions(item);
+  if (itemAnswerOptionsToggleExpressions) {
+    answerOptionsToggleExpressions[item.linkId] = itemAnswerOptionsToggleExpressions;
+  }
+
+  // Get item-level variables
   if (item.extension) {
     variables.fhirPathVariables[item.linkId] = getFhirPathVariables(item.extension);
 
@@ -262,7 +334,10 @@ function extractExtensionsFromItemRecursive(
     initialExpressions,
     answerExpressions,
     answerOptions,
-    valueSetPromises
+    answerOptionsToggleExpressions,
+    valueSetPromises,
+    processedValueSets,
+    cachedValueSetCodings
   };
 }
 
@@ -399,14 +474,15 @@ function initialiseEnableWhenExpressionRepeat(
   return null;
 }
 
-function initialiseEnableWhenExpression(
+async function initialiseEnableWhenExpression(
   qItem: QuestionnaireItem,
   questionnaire: Questionnaire,
+  terminologyServerUrl: string,
   parentLinkId?: string
-): {
+): Promise<{
   enableWhenExpressionType: 'single' | 'repeat';
   enableWhenExpression: EnableWhenSingleExpression | EnableWhenRepeatExpression;
-} | null {
+} | null> {
   const enableWhenExpression = getEnableWhenExpression(qItem);
   if (!enableWhenExpression) {
     return null;
@@ -427,12 +503,13 @@ function initialiseEnableWhenExpression(
         enabledIndexes: [false]
       };
 
-      const { isEnabled } = evaluateEnableWhenRepeatExpressionInstance(
+      const { isEnabled } = await evaluateEnableWhenRepeatExpressionInstance(
         qItem.linkId,
-        { resource: cloneDeep(emptyResponse) },
+        { resource: structuredClone(emptyResponse) },
         enableWhenRepeatExpression,
         enableWhenRepeatExpression.expression.lastIndexOf('.where(linkId'),
-        0
+        0,
+        terminologyServerUrl
       );
 
       if (typeof isEnabled === 'boolean') {

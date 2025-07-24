@@ -32,34 +32,16 @@ function fetchQuestionnaireCallback (canonicalUrl: string, requestConfig: any) {
 };
 ```
 
-Both of these interfaces are required to be implement as arguments to the ```assemble()``` function.
+Both of these interfaces are required to be implemented as arguments to the ```assemble()``` function.
 
-### Note for Vite users (or if you facing CommonJS/ESM issues)
-If you are using Vite, you might need to add the following to your ```vite.config.ts``` file:
-This package is a CommonJS module for backwards compatibility with Node.js, so this configuration is required so that Vite can correctly bundle the module.
-```ts
-export default defineConfig({
-  // ...
-  optimizeDeps: {
-    include: [
-      '@aehrc/sdc-assemble',
-      // other modules as required...
-    ],
-  },
-  build: {
-    commonjsOptions: {
-      include: [
-        /node_modules/, 
-        '@aehrc/sdc-assemble',
-        // other modules as required...
-      ]
-    }
-  },
-  resolve: { preserveSymlinks: true }
-});
-```
+### Local development notes
+It's recommended to run this library within a web app or a service if you're doing local development.
+This library compiles to both CommonJS and ES Modules, so there is no problems in using it across web frameworks and Node-based backends.
 
-During development, please change the `module` element in `tsconfig.json` to `"ES6"` and comment out the above changes. Otherwise `tsc -w` will not work properly.
+To compile the code, use `npm run compile`.
+To watch for changes, use `npm run watch`.
+
+Note: Do not use `tsc` or `tsc -w` as it will only compile to ES Modules, which means it will not work with CommonJS-based implementations.
 
 
 ## Sample implementation

@@ -2,6 +2,7 @@ name: Smart Forms App Deployment Workflow
 
 on:
   push:
+    # Only run this workflow when changes are pushed to the main branch
     branches: ['main']
 
 permissions:
@@ -13,13 +14,14 @@ jobs:
   build:
     name: Deploy Smart Forms app to S3
     runs-on: ubuntu-latest
+    # Conditional logic to skip if workflow is triggered by Dependabot
+    if: github.actor != 'dependabot[bot]'
     steps:
       - uses: actions/checkout@v4
-
-      - name: Use Node.js 16.x
+      - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 20
           cache: npm
 
       - name: Configure AWS credentials
@@ -48,15 +50,17 @@ jobs:
   chromatic:
     name: Run Chromatic
     runs-on: ubuntu-latest
+    # Conditional logic to skip if workflow is triggered by Dependabot
+    if: github.actor != 'dependabot[bot]'
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Use Node.js 18.x
+      - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
           cache: npm
 
       - name: Install dependencies

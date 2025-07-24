@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,35 +25,35 @@ import type {
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
 import type {
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithShowMinimalViewAttribute
+  PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import RemoveItemButton from './RemoveItemButton';
 import useReadOnly from '../../../hooks/useReadOnly';
 
 interface RepeatFieldProps
   extends PropsWithQrItemChangeHandler,
-    PropsWithShowMinimalViewAttribute,
+    PropsWithItemPathAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
   answer: QuestionnaireResponseItemAnswer | null;
   numOfRepeatAnswers: number;
   groupCardElevation: number;
-  onDeleteAnswer: () => void;
+  onRemoveAnswer: () => void;
 }
 
 function RepeatField(props: RepeatFieldProps) {
   const {
     qItem,
     qrItem,
+    itemPath,
     answer,
     numOfRepeatAnswers,
     groupCardElevation,
     parentIsReadOnly,
-    showMinimalView,
-    onDeleteAnswer,
+    onRemoveAnswer,
     onQrItemChange
   } = props;
 
@@ -65,22 +65,20 @@ function RepeatField(props: RepeatFieldProps) {
         <SingleItem
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={qItem.repeats ?? false}
           isTabled={false}
           groupCardElevation={groupCardElevation}
-          showMinimalView={showMinimalView}
           parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
         />
       </Box>
-      {showMinimalView ? null : (
-        <RemoveItemButton
-          answer={answer}
-          numOfRepeatAnswers={numOfRepeatAnswers}
-          readOnly={readOnly}
-          onDeleteAnswer={onDeleteAnswer}
-        />
-      )}
+      <RemoveItemButton
+        answer={answer}
+        numOfRepeatAnswers={numOfRepeatAnswers}
+        readOnly={readOnly}
+        onRemoveAnswer={onRemoveAnswer}
+      />
     </RepeatItemContainerStack>
   );
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,6 @@ import { useEffect, useMemo, useState } from 'react';
 import type { Coding, FhirResource, QuestionnaireItem, ValueSet } from 'fhir/r4';
 import {
   getResourceFromLaunchContext,
-  getTerminologyServerUrl,
   getValueSetCodings,
   getValueSetPromise
 } from '../utils/valueSet';
@@ -28,6 +27,8 @@ import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import { useQuestionnaireStore, useSmartConfigStore, useTerminologyServerStore } from '../stores';
 import { addDisplayToCodingArray } from '../utils/questionnaireStoreUtils/addDisplayToCodings';
+import useDynamicValueSetEffect, { getUpdatableValueSetUrl } from './useDynamicValueSetEffect';
+import { getItemTerminologyServerToUse } from '../utils/preferredTerminologyServer';
 
 export interface TerminologyError {
   error: Error | null;
@@ -37,41 +38,51 @@ export interface TerminologyError {
 function useValueSetCodings(qItem: QuestionnaireItem): {
   codings: Coding[];
   terminologyError: TerminologyError;
+  dynamicCodingsUpdated: boolean;
 } {
   const patient = useSmartConfigStore.use.patient();
   const user = useSmartConfigStore.use.user();
   const encounter = useSmartConfigStore.use.encounter();
 
   const launchContexts = useQuestionnaireStore.use.launchContexts();
-  const processedValueSetCodings = useQuestionnaireStore.use.processedValueSetCodings();
+  const processedValueSets = useQuestionnaireStore.use.processedValueSets();
   const cachedValueSetCodings = useQuestionnaireStore.use.cachedValueSetCodings();
+  const calculatedExpressions = useQuestionnaireStore.use.calculatedExpressions();
   const addCodingToCache = useQuestionnaireStore.use.addCodingToCache();
   const { xFhirQueryVariables } = useQuestionnaireStore.use.variables();
+  const itemPreferredTerminologyServers =
+    useQuestionnaireStore.use.itemPreferredTerminologyServers();
 
   const defaultTerminologyServerUrl = useTerminologyServerStore.use.url();
 
-  const valueSetUrl = qItem.answerValueSet;
+  const answerValueSetUrl = qItem.answerValueSet;
   let initialCodings = useMemo(() => {
     // set options from cached answer options if present
-    if (valueSetUrl) {
-      let cleanValueSetUrl = valueSetUrl;
+    if (answerValueSetUrl) {
+      let valueSetUrl = answerValueSetUrl;
+
+      // answerValueSetUrl is a reference to a contained value set
+      // If found, return early
       if (valueSetUrl.startsWith('#')) {
-        cleanValueSetUrl = valueSetUrl.slice(1);
+        const valueSetReference = answerValueSetUrl.slice(1);
+        if (cachedValueSetCodings[valueSetReference]) {
+          return cachedValueSetCodings[valueSetReference];
+        }
       }
 
-      // attempt to get codings from value sets preprocessed when loading questionnaire
-      if (processedValueSetCodings[cleanValueSetUrl]) {
-        return processedValueSetCodings[cleanValueSetUrl];
+      // Get updatableValueSetUrl and use it as the current valueSetUrl
+      if (processedValueSets[valueSetUrl]?.updatableValueSetUrl) {
+        valueSetUrl = processedValueSets[valueSetUrl].updatableValueSetUrl;
       }
 
       // attempt to get codings from cached queried value sets
-      if (cachedValueSetCodings[cleanValueSetUrl]) {
-        return cachedValueSetCodings[cleanValueSetUrl];
+      if (cachedValueSetCodings[valueSetUrl]) {
+        return cachedValueSetCodings[valueSetUrl];
       }
     }
 
     return [];
-  }, [cachedValueSetCodings, processedValueSetCodings, valueSetUrl]);
+  }, [cachedValueSetCodings, processedValueSets, answerValueSetUrl]);
 
   // Attempt to get codings from answer expression
   const answerExpression = getAnswerExpression(qItem)?.expression;
@@ -99,12 +110,9 @@ function useValueSetCodings(qItem: QuestionnaireItem): {
 
       if (contextMap[variable]) {
         try {
-          const evaluated: any[] = fhirpath.evaluate(
-            {},
-            answerExpression,
-            contextMap,
-            fhirpath_r4_model
-          );
+          const evaluated = fhirpath.evaluate({}, answerExpression, contextMap, fhirpath_r4_model, {
+            async: false
+          });
 
           if (evaluated[0].system || evaluated[0].code) {
             // determine if the evaluated array is a coding array
@@ -132,23 +140,50 @@ function useValueSetCodings(qItem: QuestionnaireItem): {
 
   const [codings, setCodings] = useState<Coding[]>(initialCodings);
   const [serverError, setServerError] = useState<Error | null>(null);
+  const [dynamicCodingsUpdated, setDynamicCodingsUpdated] = useState(false);
 
-  // get options from answerValueSet on render
+  const codingsCount = codings.length;
+  const terminologyServerUrl = getItemTerminologyServerToUse(
+    qItem,
+    itemPreferredTerminologyServers,
+    defaultTerminologyServerUrl
+  );
+
+  // Get options from parameterised/dynamic value sets when the updatableValueSetUrl changes (p-param is updated via fhirpath) or from cqf-expression in _answerValueSet
+  useDynamicValueSetEffect(
+    qItem,
+    terminologyServerUrl,
+    processedValueSets,
+    cachedValueSetCodings,
+    setCodings,
+    setDynamicCodingsUpdated,
+    setServerError
+  );
+
+  // Acts as a fallback - get options from answerValueSet in real-time if it's not pre-processed or cached which is very unlikely
   useEffect(() => {
     const valueSetUrl = qItem.answerValueSet;
-    if (!valueSetUrl || codings.length > 0) return;
+    // Only proceed if we have a valueSetUrl and no codings are already set
+    if (!valueSetUrl || codingsCount > 0) {
+      return;
+    }
 
-    const terminologyServerUrl = getTerminologyServerUrl(qItem) ?? defaultTerminologyServerUrl;
+    // Only proceed if updatableValueSetUrl is equal to qItem.answerValueSet
+    // If we don't have this check, dynamicValueSetEffect that returns 0 codings are going to fallback-expand against their original qItem.answerValueSet, which is not what we want
+    if (getUpdatableValueSetUrl(qItem, calculatedExpressions, processedValueSets) !== valueSetUrl) {
+      return;
+    }
+
     const promise = getValueSetPromise(valueSetUrl, terminologyServerUrl);
     if (promise) {
       promise
         .then(async (valueSet: ValueSet) => {
-          const codings = getValueSetCodings(valueSet);
-          addDisplayToCodingArray(codings, terminologyServerUrl)
+          const newCodings = getValueSetCodings(valueSet);
+          addDisplayToCodingArray(newCodings, terminologyServerUrl)
             .then((codingsWithDisplay) => {
               if (codingsWithDisplay.length > 0) {
                 addCodingToCache(valueSetUrl, codingsWithDisplay);
-                setCodings(codings);
+                setCodings(codingsWithDisplay);
               }
             })
             .catch((error: Error) => {
@@ -159,9 +194,20 @@ function useValueSetCodings(qItem: QuestionnaireItem): {
           setServerError(error);
         });
     }
-  }, [qItem]);
+  }, [
+    addCodingToCache,
+    calculatedExpressions,
+    codingsCount,
+    processedValueSets,
+    qItem,
+    terminologyServerUrl
+  ]);
 
-  return { codings, terminologyError: { error: serverError, answerValueSet: valueSetUrl ?? '' } };
+  return {
+    codings,
+    terminologyError: { error: serverError, answerValueSet: answerValueSetUrl ?? '' },
+    dynamicCodingsUpdated
+  };
 }
 
 export default useValueSetCodings;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,16 +15,10 @@
  * limitations under the License.
  */
 
-import type { ReactElement } from 'react';
-import { Box, Fade, useScrollTrigger } from '@mui/material';
+import { Box, Fab, Fade, useScrollTrigger } from '@mui/material';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
-interface Props {
-  children: ReactElement;
-}
-
-function BackToTopButton(props: Props) {
-  const { children } = props;
-
+function BackToTopButton() {
   const trigger = useScrollTrigger({
     disableHysteresis: true,
     threshold: 100
@@ -35,9 +29,14 @@ function BackToTopButton(props: Props) {
   };
 
   return (
-    <Fade in={trigger}>
-      <Box onClick={handleClick} sx={{ position: 'fixed', bottom: 12, right: 12 }}>
-        {children}
+    <Fade in={trigger} role="region" aria-label="Scroll to top wrapper">
+      <Box
+        onClick={handleClick}
+        sx={{ position: 'fixed', bottom: 12, right: 12 }}
+        aria-disabled={true}>
+        <Fab size="medium" color="primary" aria-label="Scroll to top">
+          <KeyboardArrowUpIcon />
+        </Fab>
       </Box>
     </Fade>
   );

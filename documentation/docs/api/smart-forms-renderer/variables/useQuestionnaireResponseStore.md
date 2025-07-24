@@ -1,14 +1,9 @@
 # Variable: useQuestionnaireResponseStore
 
-> `const` **useQuestionnaireResponseStore**: `StoreApi` \<[`QuestionnaireResponseStoreType`](../interfaces/QuestionnaireResponseStoreType.md)\> & `object`
+> `const` **useQuestionnaireResponseStore**: `StoreApi`\<[`QuestionnaireResponseStoreType`](../interfaces/QuestionnaireResponseStoreType.md)\> & `object`
 
 QuestionnaireResponse state management store which contains all properties and methods to manage the state of the questionnaire.
 This is the React version of the store which can be used as React hooks in React functional components.
-
-## See
-
- - QuestionnaireResponseStoreType for available properties and methods.
- - questionnaireResponseStore for the vanilla store.
 
 ## Type declaration
 
@@ -16,171 +11,184 @@ This is the React version of the store which can be used as React hooks in React
 
 > **use**: `object`
 
-### use.buildSourceResponse()
+#### use.buildSourceResponse()
 
 > **buildSourceResponse**: () => (`response`) => `void`
 
-#### Returns
+##### Returns
 
 `Function`
 
-##### Parameters
+###### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `response` | `QuestionnaireResponse` |
 
-##### Returns
+###### Returns
 
 `void`
 
-### use.destroySourceResponse()
+#### use.destroySourceResponse()
 
 > **destroySourceResponse**: () => () => `void`
 
-#### Returns
+##### Returns
 
 `Function`
 
-##### Returns
+###### Returns
 
 `void`
 
-### use.formChangesHistory()
+#### use.formChangesHistory()
 
 > **formChangesHistory**: () => (`null` \| `Diff`\<`QuestionnaireResponse`, `QuestionnaireResponse`\>[])[]
 
-#### Returns
+##### Returns
 
 (`null` \| `Diff`\<`QuestionnaireResponse`, `QuestionnaireResponse`\>[])[]
 
-### use.invalidItems()
+#### use.invalidItems()
 
 > **invalidItems**: () => `Record`\<`string`, `OperationOutcome`\>
 
-#### Returns
+##### Returns
 
 `Record`\<`string`, `OperationOutcome`\>
 
-### use.responseIsValid()
+#### use.key()
+
+> **key**: () => `string`
+
+##### Returns
+
+`string`
+
+#### use.responseIsValid()
 
 > **responseIsValid**: () => `boolean`
 
-#### Returns
+##### Returns
 
 `boolean`
 
-### use.setUpdatableResponseAsEmpty()
+#### use.setUpdatableResponseAsEmpty()
 
 > **setUpdatableResponseAsEmpty**: () => (`clearedResponse`) => `void`
 
-#### Returns
+##### Returns
 
 `Function`
 
-##### Parameters
+###### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `clearedResponse` | `QuestionnaireResponse` |
 
-##### Returns
+###### Returns
 
 `void`
 
-### use.setUpdatableResponseAsPopulated()
+#### use.setUpdatableResponseAsPopulated()
 
 > **setUpdatableResponseAsPopulated**: () => (`populatedResponse`) => `void`
 
-#### Returns
+##### Returns
 
 `Function`
 
-##### Parameters
+###### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `populatedResponse` | `QuestionnaireResponse` |
 
-##### Returns
+###### Returns
 
 `void`
 
-### use.setUpdatableResponseAsSaved()
+#### use.setUpdatableResponseAsSaved()
 
 > **setUpdatableResponseAsSaved**: () => (`savedResponse`) => `void`
 
-#### Returns
+##### Returns
 
 `Function`
 
-##### Parameters
+###### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `savedResponse` | `QuestionnaireResponse` |
 
-##### Returns
+###### Returns
 
 `void`
 
-### use.sourceResponse()
+#### use.sourceResponse()
 
 > **sourceResponse**: () => `QuestionnaireResponse`
 
-#### Returns
+##### Returns
 
 `QuestionnaireResponse`
 
-### use.updatableResponse()
+#### use.updatableResponse()
 
 > **updatableResponse**: () => `QuestionnaireResponse`
 
-#### Returns
+##### Returns
 
 `QuestionnaireResponse`
 
-### use.updatableResponseItems()
+#### use.updatableResponseItems()
 
 > **updatableResponseItems**: () => `Record`\<`string`, `QuestionnaireResponseItem`[]\>
 
-#### Returns
+##### Returns
 
 `Record`\<`string`, `QuestionnaireResponseItem`[]\>
 
-### use.updateResponse()
+#### use.updateResponse()
 
 > **updateResponse**: () => (`updatedResponse`) => `void`
 
-#### Returns
+##### Returns
 
 `Function`
 
-##### Parameters
+###### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `updatedResponse` | `QuestionnaireResponse` |
 
-##### Returns
+###### Returns
 
 `void`
 
-### use.validateQuestionnaire()
+#### use.validateQuestionnaire()
 
 > **validateQuestionnaire**: () => (`questionnaire`, `updatedResponse`) => `void`
 
-#### Returns
+##### Returns
 
 `Function`
 
-##### Parameters
+###### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `questionnaire` | `Questionnaire` |
 | `updatedResponse` | `QuestionnaireResponse` |
 
-##### Returns
+###### Returns
 
 `void`
+
+## See
+
+ - QuestionnaireResponseStoreType for available properties and methods.
+ - questionnaireResponseStore for the vanilla store.

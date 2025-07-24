@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,14 +21,14 @@ import { alpha, styled } from '@mui/material/styles';
 export const PrimarySelectableList = styled(List)(({ theme }) => ({
   '&& .Mui-selected': {
     color: theme.palette.primary.dark,
-    backgroundColor: alpha(theme.palette.primary.main, 0.2),
+    backgroundColor: alpha(theme.palette.primary.main, 0.15),
     borderRadius: 30,
     '& .MuiTypography-root': {
       fontWeight: 'bold'
     }
   },
   '& .MuiListItemButton-root': {
-    color: '#444746',
+    color: theme.palette.text.primary,
     borderRadius: 30
   },
   '& .MuiListItemButton-root:hover': {

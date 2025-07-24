@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,7 @@
 
 import { IconButton } from '@mui/material';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import useResponsive from '../../../hooks/useResponsive.ts';
+import { useResponsive } from '@aehrc/smart-forms-renderer';
 
 interface NavExpandButtonProps {
   desktopNavCollapsed: boolean;
@@ -27,10 +27,13 @@ interface NavExpandButtonProps {
 function NavExpandButton(props: NavExpandButtonProps) {
   const { desktopNavCollapsed, onExpandNav } = props;
 
-  const isDesktop = useResponsive('up', 'lg');
+  const isLgUp = useResponsive({ query: 'up', start: 'lg' });
 
-  return desktopNavCollapsed && isDesktop ? (
-    <IconButton onClick={onExpandNav} sx={{ position: 'fixed', bottom: 16, left: 16 }}>
+  return desktopNavCollapsed && isLgUp ? (
+    <IconButton
+      onClick={onExpandNav}
+      sx={{ position: 'fixed', bottom: 16, left: 16 }}
+      aria-label="Expand navigation">
       <KeyboardDoubleArrowRightIcon fontSize="small" />
     </IconButton>
   ) : null;

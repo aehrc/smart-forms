@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,17 +20,17 @@ import { RepeatGroupContainerStack } from '../RepeatItem/RepeatItem.styles';
 import Box from '@mui/material/Box';
 import GroupItem from '../GroupItem/GroupItem';
 import type {
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithShowMinimalViewAttribute
+  PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import DeleteItemButton from './DeleteItemButton';
+import RemoveItemButton from './RemoveItemButton';
 import useReadOnly from '../../../hooks/useReadOnly';
 
 interface RepeatGroupItemProps
   extends PropsWithQrItemChangeHandler,
-    PropsWithShowMinimalViewAttribute,
+    PropsWithItemPathAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   repeatGroupIndex: number;
@@ -38,7 +38,7 @@ interface RepeatGroupItemProps
   nullableQrItem: QuestionnaireResponseItem | null;
   numOfRepeatGroups: number;
   groupCardElevation: number;
-  onDeleteItem: () => void;
+  onRemoveItem: () => void;
 }
 
 function RepeatGroupItem(props: RepeatGroupItemProps) {
@@ -48,14 +48,14 @@ function RepeatGroupItem(props: RepeatGroupItemProps) {
     answeredQrItem,
     nullableQrItem,
     numOfRepeatGroups,
+    itemPath,
     groupCardElevation,
-    showMinimalView,
     parentIsReadOnly,
-    onDeleteItem,
+    onRemoveItem,
     onQrItemChange
   } = props;
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const readOnly = useReadOnly(qItem, parentIsReadOnly, repeatGroupIndex);
 
   return (
     <RepeatGroupContainerStack direction="row" justifyContent="end">
@@ -63,22 +63,21 @@ function RepeatGroupItem(props: RepeatGroupItemProps) {
         <GroupItem
           qItem={qItem}
           qrItem={answeredQrItem}
+          itemPath={itemPath}
           isRepeated={true}
           parentIsRepeatGroup={true}
           parentRepeatGroupIndex={repeatGroupIndex}
           parentIsReadOnly={parentIsReadOnly}
-          groupCardElevation={groupCardElevation + 1}
+          groupCardElevation={groupCardElevation}
           onQrItemChange={onQrItemChange}
         />
       </Box>
-      {showMinimalView ? null : (
-        <DeleteItemButton
-          nullableQrItem={nullableQrItem}
-          numOfRepeatGroups={numOfRepeatGroups}
-          readOnly={readOnly}
-          onDeleteItem={onDeleteItem}
-        />
-      )}
+      <RemoveItemButton
+        nullableQrItem={nullableQrItem}
+        numOfRepeatGroups={numOfRepeatGroups}
+        readOnly={readOnly}
+        onRemoveItem={onRemoveItem}
+      />
     </RepeatGroupContainerStack>
   );
 }

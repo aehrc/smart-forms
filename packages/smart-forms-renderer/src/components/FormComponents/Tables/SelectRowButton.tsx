@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,26 +16,40 @@
  */
 
 import React from 'react';
-import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
+import { StandardCheckbox } from '../../Checkbox.styles';
+import { useRendererStylingStore } from '../../../stores';
+import type { QuestionnaireItem } from 'fhir/r4';
 
 interface SelectRowButtonProps {
-  isSelected: boolean;
+  qItem: QuestionnaireItem;
+  isChecked: boolean;
   readOnly: boolean;
   onSelectItem: () => void;
 }
 
 function SelectRowButton(props: SelectRowButtonProps) {
-  const { isSelected, readOnly, onSelectItem } = props;
+  const { qItem, isChecked, readOnly, onSelectItem } = props;
+
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
 
   return (
     <TableCell padding="none">
-      <Checkbox
+      <StandardCheckbox
         color="primary"
         size="small"
-        checked={isSelected}
-        disabled={readOnly}
+        checked={isChecked}
+        disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+        readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
+        aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
+        role="checkbox"
+        aria-checked={isChecked}
         onChange={onSelectItem}
+        slotProps={{
+          input: {
+            'aria-label': 'Select row ' + (qItem.text ?? `Unnamed ${qItem.type} item`)
+          }
+        }}
       />
     </TableCell>
   );

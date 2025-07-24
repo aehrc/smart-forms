@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,28 +16,32 @@
  */
 
 import React from 'react';
-import Box from '@mui/material/Box';
+import type { AutocompleteChangeReason } from '@mui/material/Autocomplete';
 import Autocomplete from '@mui/material/Autocomplete';
-import { StandardTextField, TEXT_FIELD_WIDTH } from '../Textfield.styles';
-import SearchIcon from '@mui/icons-material/Search';
+import { StandardTextField } from '../Textfield.styles';
 import CircularProgress from '@mui/material/CircularProgress';
 import Fade from '@mui/material/Fade';
 import Tooltip from '@mui/material/Tooltip';
+import SearchIcon from '@mui/icons-material/Search';
 import InfoIcon from '@mui/icons-material/Info';
+// @ts-ignore: Module has no declaration file. Not sure why WarningAmber.d.ts is not present in MUI icons 7.0.2
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import DoneIcon from '@mui/icons-material/Done';
 import ErrorIcon from '@mui/icons-material/Error';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import type {
-  PropsWithIsTabledAttribute,
-  PropsWithParentIsReadOnlyAttribute
+  PropsWithIsTabledRequiredAttribute,
+  PropsWithParentIsReadOnlyAttribute,
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
-import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type { AlertColor } from '@mui/material/Alert';
+import { useRendererStylingStore } from '../../../stores';
+import DisplayUnitText from '../ItemParts/DisplayUnitText';
 
 interface OpenChoiceAutocompleteFieldProps
-  extends PropsWithIsTabledAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+  extends PropsWithIsTabledRequiredAttribute,
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithRenderingExtensionsAttribute {
   qItem: QuestionnaireItem;
   options: Coding[];
   valueAutocomplete: string | Coding;
@@ -45,9 +49,10 @@ interface OpenChoiceAutocompleteFieldProps
   loading: boolean;
   feedback: { message: string; color: AlertColor } | null;
   readOnly: boolean;
-  onInputChange: (newInput: string) => void;
-  onValueChange: (newValue: Coding | string | null) => void;
-  onUnfocus: () => void;
+  onValueChange: (
+    newValue: Coding | string | null,
+    reason: AutocompleteChangeReason | string
+  ) => void;
 }
 
 function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
@@ -60,42 +65,46 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
     feedback,
     readOnly,
     isTabled,
-    onInputChange,
-    onValueChange,
-    onUnfocus
+    renderingExtensions,
+    onValueChange
   } = props;
 
-  const { displayUnit, displayPrompt, entryFormat } = useRenderingExtensions(qItem);
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+
+  const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
   return (
-    <Box display="flex">
-      <Autocomplete
-        id={qItem.linkId}
-        value={valueAutocomplete}
-        options={options}
-        getOptionLabel={(option) =>
-          typeof option === 'string' ? option : option.display ?? `${option.code}`
-        }
-        disabled={readOnly}
-        loading={loading}
-        loadingText={'Fetching results...'}
-        clearOnEscape
-        freeSolo
-        sx={{ maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000, minWidth: 220, flexGrow: 1 }}
-        onChange={(_, newValue) => onValueChange(newValue)}
-        filterOptions={(x) => x}
-        renderInput={(params) => (
-          <StandardTextField
-            {...params}
-            value={input}
-            onBlur={onUnfocus}
-            onChange={(e) => onInputChange(e.target.value)}
-            isTabled={isTabled}
-            label={displayPrompt}
-            size="small"
-            placeholder={entryFormat}
-            InputProps={{
+    <Autocomplete
+      {...(!isTabled && { id: `${qItem.type}-${qItem.linkId}` })}
+      value={valueAutocomplete}
+      options={options}
+      getOptionLabel={(option) =>
+        typeof option === 'string' ? option : (option.display ?? `${option.code}`)
+      }
+      disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+      readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
+      loading={loading}
+      loadingText={'Fetching results...'}
+      clearOnEscape
+      freeSolo
+      sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 220, flexGrow: 1 }}
+      onChange={(_, newValue, reason) => onValueChange(newValue, reason)}
+      onInputChange={(_, newValue, reason) => onValueChange(newValue, reason)}
+      filterOptions={(x) => x}
+      renderInput={(params) => (
+        <StandardTextField
+          {...params}
+          multiline
+          value={input}
+          textFieldWidth={textFieldWidth}
+          isTabled={isTabled}
+          size="small"
+          placeholder={entryFormat || displayPrompt}
+          slotProps={{
+            input: {
               ...params.InputProps,
+              readOnly: readOnly && readOnlyVisualStyle === 'readonly',
               startAdornment: (
                 <>
                   {!valueAutocomplete || valueAutocomplete === '' ? (
@@ -124,15 +133,19 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
                     </Fade>
                   ) : null}
                   {params.InputProps.endAdornment}
-                  {displayUnit}
+                  <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
                 </>
-              )
-            }}
-            data-test="q-item-open-choice-autocomplete-field"
-          />
-        )}
-      />
-    </Box>
+              ),
+              inputProps: {
+                ...params.inputProps,
+                ...(isTabled ? {} : { 'aria-label': qItem.text ?? `Unnamed ${qItem.type} item` })
+              }
+            }
+          }}
+          data-test="q-item-open-choice-autocomplete-field"
+        />
+      )}
+    />
   );
 }
 

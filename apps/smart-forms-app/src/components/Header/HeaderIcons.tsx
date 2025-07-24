@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,15 +19,15 @@ import DesktopHeaderIcons from './DesktopHeaderIcons.tsx';
 import MobileHeaderIcons from './MobileHeaderIcons.tsx';
 import { Stack } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import useResponsive from '../../hooks/useResponsive.ts';
+import { useResponsive } from '@aehrc/smart-forms-renderer';
 
 function HeaderIcons() {
   const theme = useTheme();
-  const isDesktop = useResponsive('up', 'lg');
+  const isLgUp = useResponsive({ query: 'up', start: 'lg' });
 
   return (
     <Stack direction="row" alignItems="center" sx={{ color: theme.palette.grey['700'] }}>
-      {isDesktop ? <DesktopHeaderIcons /> : <MobileHeaderIcons />}
+      {isLgUp ? <DesktopHeaderIcons /> : <MobileHeaderIcons />}
     </Stack>
   );
 }

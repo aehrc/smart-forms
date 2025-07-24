@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,67 +15,161 @@
  * limitations under the License.
  */
 
-import React, { memo } from 'react';
+import { memo } from 'react';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import { grey } from '@mui/material/colors';
-import Fade from '@mui/material/Fade';
-import Tooltip from '@mui/material/Tooltip';
+import RadioGroup from '@mui/material/RadioGroup';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem } from 'fhir/r4';
 import ChoiceRadioSingle from '../ChoiceItems/ChoiceRadioSingle';
-import { StyledRadioGroup } from '../Item.styles';
+import { StyledRequiredTypography } from '../Item.styles';
 import { getChoiceOrientation } from '../../../utils/choice';
-import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
+import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import { isSpecificItemControl } from '../../../utils';
+import ClearInputButton from '../ItemParts/ClearInputButton';
+import { useRendererStylingStore } from '../../../stores';
+import { StandardCheckbox } from '../../Checkbox.styles';
+import { ariaCheckedMap } from '../../../utils/checkbox';
+import { SrOnly } from '../SrOnly.styles';
 
 interface BooleanFieldProps {
   qItem: QuestionnaireItem;
   readOnly: boolean;
   valueBoolean: boolean | undefined;
+  feedback: string;
   calcExpUpdated: boolean;
   onCheckedChange: (newValue: string) => void;
   onClear: () => void;
 }
 
 const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
-  const { qItem, readOnly, valueBoolean, calcExpUpdated, onCheckedChange, onClear } = props;
+  const { qItem, readOnly, valueBoolean, feedback, calcExpUpdated, onCheckedChange, onClear } =
+    props;
+
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+  const inputsFlexGrow = useRendererStylingStore.use.inputsFlexGrow();
+  const reverseBooleanYesNo = useRendererStylingStore.use.reverseBooleanYesNo();
+
+  const booleanAsCheckbox = isSpecificItemControl(qItem, 'check-box');
 
   // defaults to horizontal, only set to vertical if explicitly set
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Horizontal;
 
   const selection = valueBoolean === undefined ? null : valueBoolean.toString();
 
+  const ariaCheckedValue = ariaCheckedMap.get(selection ?? 'false');
+
   return (
-    <Box display="flex" alignItems="center">
-      <StyledRadioGroup
-        id={qItem.linkId}
-        row={orientation === ChoiceItemOrientation.Horizontal}
-        name={qItem.text}
-        onChange={(e) => onCheckedChange(e.target.value)}
-        value={selection}>
-        <ChoiceRadioSingle value="true" label="Yes" readOnly={readOnly} />
-        <ChoiceRadioSingle value="false" label="No" readOnly={readOnly} />
-      </StyledRadioGroup>
+    <>
+      <Box
+        display="flex"
+        sx={{
+          justifyContent: 'space-between',
+          alignItems: { xs: 'start', sm: 'center' },
+          flexDirection: { xs: 'column', sm: 'row' }
+        }}>
+        {booleanAsCheckbox ? (
+          <FormControlLabel
+            disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+            control={
+              <StandardCheckbox
+                id={qItem.type + '-' + qItem.linkId}
+                size="small"
+                checked={selection === 'true'}
+                readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
+                aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
+                role="checkbox"
+                aria-checked={ariaCheckedValue}
+                onChange={() => {
+                  // If item.readOnly=true, do not allow any changes
+                  if (readOnly) {
+                    return;
+                  }
 
-      <Box flexGrow={1} />
+                  if (selection === 'true') {
+                    onCheckedChange('false');
+                  }
 
-      <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-      <Fade in={valueBoolean !== undefined} timeout={100}>
-        <Tooltip title="Set question as unanswered">
-          <span>
-            <Button
-              sx={{
-                color: grey['500'],
-                '&:hover': { backgroundColor: grey['200'] }
+                  if (selection === 'false' || selection === null) {
+                    onCheckedChange('true');
+                  }
+                }}
+              />
+            }
+            label={<SrOnly>{qItem.text}</SrOnly>}
+          />
+        ) : (
+          <Box
+            display="flex"
+            alignItems="center"
+            sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
+            <RadioGroup
+              id={qItem.type + '-' + qItem.linkId}
+              aria-labelledby={'label-' + qItem.linkId}
+              row={orientation === ChoiceItemOrientation.Horizontal}
+              sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
+              aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
+              onChange={(e) => {
+                // If item.readOnly=true, do not allow any changes
+                if (readOnly) {
+                  return;
+                }
+
+                onCheckedChange(e.target.value);
               }}
-              disabled={readOnly}
-              onClick={onClear}>
-              Clear
-            </Button>
-          </span>
-        </Tooltip>
-      </Fade>
-    </Box>
+              value={selection}>
+              {reverseBooleanYesNo ? (
+                <>
+                  <ChoiceRadioSingle
+                    value="false"
+                    label="No"
+                    readOnly={readOnly}
+                    disabledViaToggleExpression={false}
+                    fullWidth={inputsFlexGrow}
+                  />
+                  <ChoiceRadioSingle
+                    value="true"
+                    label="Yes"
+                    readOnly={readOnly}
+                    disabledViaToggleExpression={false}
+                    fullWidth={inputsFlexGrow}
+                  />
+                </>
+              ) : (
+                <>
+                  <ChoiceRadioSingle
+                    value="true"
+                    label="Yes"
+                    readOnly={readOnly}
+                    disabledViaToggleExpression={false}
+                    fullWidth={inputsFlexGrow}
+                  />
+                  <ChoiceRadioSingle
+                    value="false"
+                    label="No"
+                    readOnly={readOnly}
+                    disabledViaToggleExpression={false}
+                    fullWidth={inputsFlexGrow}
+                  />
+                </>
+              )}
+            </RadioGroup>
+
+            <Box flexGrow={1} />
+
+            <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+          </Box>
+        )}
+
+        <ClearInputButton
+          buttonShown={valueBoolean !== undefined}
+          readOnly={readOnly}
+          onClear={onClear}
+        />
+      </Box>
+
+      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
+    </>
   );
 });
 

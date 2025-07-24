@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,6 @@
  */
 
 import React from 'react';
-import RendererThemeProvider from '../../theme/Theme';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import useInitialiseForm from '../../hooks/useInitialiseForm';
 import Box from '@mui/material/Box';
@@ -27,6 +26,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import useRendererQueryClient from '../../hooks/useRendererQueryClient';
 import BaseRenderer from './BaseRenderer';
 import type Client from 'fhirclient/lib/Client';
+import RendererThemeProvider from '../../theme/RendererThemeProvider';
 
 /**
  * SmartFormsRenderer properties
@@ -43,13 +43,11 @@ import type Client from 'fhirclient/lib/Client';
 export interface SmartFormsRendererProps {
   questionnaire: Questionnaire;
   questionnaireResponse?: QuestionnaireResponse;
-  additionalVariables?: Record<string, object>;
+  additionalVariables?: Record<string, any>;
   terminologyServerUrl?: string;
   fhirClient?: Client;
   readOnly?: boolean;
 }
-
-// Will be deprecated in version 1.0.0. Use alternative() instead. //FIXME add alternative
 
 /**
  * A self-initialising wrapper around the BaseRenderer rendering engine.

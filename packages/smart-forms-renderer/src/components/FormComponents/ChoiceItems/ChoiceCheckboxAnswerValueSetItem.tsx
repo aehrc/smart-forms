@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,24 +21,32 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import useValueSetCodings from '../../../hooks/useValueSetCodings';
 import { convertCodingsToAnswerOptions, updateChoiceCheckboxAnswers } from '../../../utils/choice';
 import { FullWidthFormComponentBox } from '../../Box.styles';
-import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
+  PropsWithItemPathAttribute,
+  PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
-  PropsWithShowMinimalViewAttribute
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import ChoiceCheckboxAnswerValueSetFields from './ChoiceCheckboxAnswerValueSetFields';
 import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import ItemLabel from '../ItemParts/ItemLabel';
+import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 
 interface ChoiceCheckboxAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
-    PropsWithShowMinimalViewAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithRenderingExtensionsAttribute,
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
   showText?: boolean;
@@ -49,22 +57,29 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
     qItem,
     qrItem,
     isRepeated,
-    showMinimalView = false,
+    renderingExtensions,
     parentIsReadOnly,
+    feedbackFromParent,
+    isTabled,
     onQrItemChange
   } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   const qrChoiceCheckbox = qrItem ?? createEmptyQrItem(qItem, answerKey);
   const answers = qrChoiceCheckbox.answer ?? [];
 
+  const { displayInstructions } = renderingExtensions;
+
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayInstructions } = useRenderingExtensions(qItem);
+
+  // Perform validation checks
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
 
   // Get codings/options from valueSet
+  // TODO use dynamicCodingsUpdated to trigger a "refresh" icon when codings are dynamically updated
   const { codings, terminologyError } = useValueSetCodings(qItem);
 
   const options = useMemo(() => convertCodingsToAnswerOptions(codings), [codings]);
@@ -72,6 +87,10 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
   // TODO Process calculated expressions
   // This requires its own hook, because in the case of multi-select, we need to check if the value is already checked to prevent an infinite loop
   // This will be done after the choice/open-choice refactoring
+
+  // Process answerOptionsToggleExpressions
+  const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
+    useAnswerOptionsToggleExpressions(qItem.linkId);
 
   // Event handlers
   function handleCheckedChange(changedValue: string) {
@@ -94,18 +113,27 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
     }
   }
 
-  if (showMinimalView) {
+  function handleClear() {
+    onQrItemChange(createEmptyQrItem(qItem, answerKey));
+  }
+
+  if (isTabled) {
     return (
       <>
         <ChoiceCheckboxAnswerValueSetFields
           qItem={qItem}
           options={options}
           answers={answers}
+          feedback={feedback}
           readOnly={readOnly}
+          expressionUpdated={answerOptionsToggleExpUpdated}
+          answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
           terminologyError={terminologyError}
+          isTabled={isTabled}
           onCheckedChange={handleCheckedChange}
+          onClear={handleClear}
         />
-        <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
+        <DisplayInstructions readOnly={readOnly}>{displayInstructions}</DisplayInstructions>
       </>
     );
   }
@@ -115,16 +143,26 @@ function ChoiceCheckboxAnswerValueSetItem(props: ChoiceCheckboxAnswerValueSetIte
       data-test="q-item-choice-checkbox-answer-value-set-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <ChoiceCheckboxAnswerValueSetFields
-          qItem={qItem}
-          options={options}
-          answers={answers}
-          readOnly={readOnly}
-          terminologyError={terminologyError}
-          onCheckedChange={handleCheckedChange}
-        />
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <ChoiceCheckboxAnswerValueSetFields
+            qItem={qItem}
+            options={options}
+            answers={answers}
+            feedback={feedback}
+            readOnly={readOnly}
+            expressionUpdated={answerOptionsToggleExpUpdated}
+            answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+            terminologyError={terminologyError}
+            isTabled={isTabled}
+            onCheckedChange={handleCheckedChange}
+            onClear={handleClear}
+          />
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

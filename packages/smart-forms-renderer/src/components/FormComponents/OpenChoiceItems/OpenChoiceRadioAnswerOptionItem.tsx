@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,40 +18,55 @@
 import React, { useState } from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
-import { getOpenLabelText } from '../../../utils/itemControl';
+import { getOpenLabelText } from '../../../utils/extensions';
 import { getOldOpenLabelAnswer } from '../../../utils/openChoice';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../utils/choice';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
+  PropsWithItemPathAttribute,
+  PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import OpenChoiceRadioAnswerOptionFields from './OpenChoiceRadioAnswerOptionFields';
 import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import ItemLabel from '../ItemParts/ItemLabel';
+import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 
 interface OpenChoiceRadioAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithRenderingExtensionsAttribute,
+    PropsWithFeedbackFromParentAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
 
 function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemProps) {
-  const { qItem, qrItem, parentIsReadOnly, onQrItemChange } = props;
+  const { qItem, qrItem, parentIsReadOnly, feedbackFromParent, isTabled, onQrItemChange } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   // Init answers
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   const qrOpenChoiceRadio = qrItem ?? createEmptyQrItem(qItem, answerKey);
   let valueRadio: string | null = getQrChoiceValue(qrOpenChoiceRadio, true);
   const answers = qrOpenChoiceRadio.answer ?? [];
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
+
+  // Perform validation checks
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
+
   const openLabelText = getOpenLabelText(qItem);
 
   const options = qItem.answerOption ?? [];
@@ -74,6 +89,20 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
   // Allow open label to remain selected even if its input was cleared
   if (openLabelSelected && valueRadio === null) {
     valueRadio = '';
+  }
+
+  // TODO Process calculated expressions
+  // This requires its own hook, because in the case of multi-select, we need to check if the value is already checked to prevent an infinite loop
+  // This will be done after the choice/open-choice refactoring
+
+  // Process answerOptionsToggleExpressions
+  const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
+    useAnswerOptionsToggleExpressions(qItem.linkId);
+
+  // Clear open label if answerOptionsToggleExpressions are updated AND if openLabelSelected is true
+  // Note: This adjusts the state during rendering https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
+  if (openLabelSelected && answerOptionsToggleExpUpdated) {
+    setOpenLabelSelected(false);
   }
 
   // Event handlers
@@ -127,23 +156,38 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
     }
   }
 
+  function handleClear() {
+    onQrItemChange(createEmptyQrItem(qItem, answerKey));
+    setOpenLabelSelected(false);
+  }
+
   return (
     <FullWidthFormComponentBox
       data-test="q-item-open-choice-radio-answer-option-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <OpenChoiceRadioAnswerOptionFields
-          qItem={qItem}
-          options={options}
-          valueRadio={valueRadio}
-          openLabelText={openLabelText}
-          openLabelValue={openLabelValue}
-          openLabelSelected={openLabelSelected}
-          readOnly={readOnly}
-          onValueChange={handleValueChange}
-        />
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <OpenChoiceRadioAnswerOptionFields
+            qItem={qItem}
+            options={options}
+            valueRadio={valueRadio}
+            openLabelText={openLabelText}
+            openLabelValue={openLabelValue}
+            openLabelSelected={openLabelSelected}
+            feedback={feedback}
+            readOnly={readOnly}
+            expressionUpdated={answerOptionsToggleExpUpdated}
+            answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+            isTabled={isTabled}
+            onValueChange={handleValueChange}
+            onClear={handleClear}
+          />
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

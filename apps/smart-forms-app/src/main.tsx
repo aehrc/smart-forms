@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,16 +18,18 @@
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import type { DefaultOptions } from '@tanstack/react-query';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { keepPreviousData, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as Sentry from '@sentry/react';
-import { BrowserTracing } from '@sentry/browser';
+import { browserTracingIntegration } from '@sentry/browser';
+
+const integration = browserTracingIntegration();
 
 if (process.env.NODE_ENV === 'production') {
   Sentry.init({
     dsn: process.env.REACT_APP_SENTRY_DSN,
     environment: process.env.REACT_APP_SENTRY_ENVIRONMENT,
     release: process.env.REACT_APP_SENTRY_RELEASE,
-    integrations: [new BrowserTracing()],
+    integrations: [integration],
     tracesSampleRate: 1.0
   });
 }
@@ -35,7 +37,7 @@ if (process.env.NODE_ENV === 'production') {
 const DEFAULT_QUERY_OPTIONS: DefaultOptions = {
   queries: {
     refetchOnWindowFocus: false,
-    keepPreviousData: true
+    placeholderData: keepPreviousData
   }
 };
 

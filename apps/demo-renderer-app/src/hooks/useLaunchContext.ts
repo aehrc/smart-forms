@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,21 +21,17 @@ import { fetchResource } from '../utils/fetchResource.ts';
 import { PATIENT_QUERY, PRACTITIONER_QUERY } from '../utils/apiConstants.ts';
 
 function useLaunchContext(bearerToken: string | null) {
-  const { data: patientBundle, isFetching: isFetchingPatient } = useQuery<Bundle>(
-    ['patientBundle'],
-    () => fetchResource(PATIENT_QUERY, bearerToken),
-    {
-      enabled: bearerToken !== null
-    }
-  );
+  const { data: patientBundle, isFetching: isFetchingPatient } = useQuery<Bundle>({
+    queryKey: ['patientBundle'],
+    queryFn: () => fetchResource(PATIENT_QUERY, bearerToken),
+    enabled: bearerToken !== null
+  });
 
-  const { data: practitionerBundle, isFetching: isFetchingPractitioner } = useQuery<Bundle>(
-    ['practitionerBundle'],
-    () => fetchResource(PRACTITIONER_QUERY, bearerToken),
-    {
-      enabled: bearerToken !== null
-    }
-  );
+  const { data: practitionerBundle, isFetching: isFetchingPractitioner } = useQuery<Bundle>({
+    queryKey: ['practitionerBundle'],
+    queryFn: () => fetchResource(PRACTITIONER_QUERY, bearerToken),
+    enabled: bearerToken !== null
+  });
 
   return {
     patientBundle,

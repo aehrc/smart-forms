@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,16 +15,18 @@
  * limitations under the License.
  */
 
+import type { UseQueryResult } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
 import type { Bundle, Questionnaire } from 'fhir/r4';
 import { filterQuestionnaires, getFormsServerBundlePromise } from '../utils/dashboard.ts';
 import { useMemo } from 'react';
+import { NUM_OF_QUESTIONNAIRES_TO_FETCH } from '../../../globals.ts';
 
 interface useFetchQuestionnairesReturnParams {
   questionnaires: Questionnaire[];
-  fetchStatus: 'error' | 'success' | 'loading';
+  fetchStatus: UseQueryResult['status'];
   fetchError: unknown;
-  isInitialLoading: boolean;
+  isLoading: boolean;
   isFetching: boolean;
   refetchQuestionnaires: () => void;
 }
@@ -32,9 +34,10 @@ interface useFetchQuestionnairesReturnParams {
 function useFetchQuestionnaires(
   searchInput: string,
   debouncedInput: string,
+  includeSubquestionnaires: boolean,
   minLengthToQuery?: number
 ): useFetchQuestionnairesReturnParams {
-  const numOfSearchEntries = 100;
+  const numOfSearchEntries = NUM_OF_QUESTIONNAIRES_TO_FETCH;
 
   let queryUrl = `/Questionnaire?_count=${numOfSearchEntries}&_sort=-date&`;
   if (debouncedInput) {
@@ -46,25 +49,26 @@ function useFetchQuestionnaires(
   const {
     data: bundle,
     status,
-    isInitialLoading,
+    isLoading,
     error,
     isFetching,
     refetch
-  } = useQuery<Bundle>(
-    ['questionnaires' + numOfSearchEntries.toString(), queryUrl],
-    () => getFormsServerBundlePromise(queryUrl),
-    {
-      enabled: queryIsLongEnough && debouncedInput === searchInput
-    }
-  );
+  } = useQuery<Bundle>({
+    queryKey: ['questionnaires' + numOfSearchEntries.toString(), queryUrl],
+    queryFn: () => getFormsServerBundlePromise(queryUrl),
+    enabled: queryIsLongEnough && debouncedInput === searchInput
+  });
 
-  const questionnaires: Questionnaire[] = useMemo(() => filterQuestionnaires(bundle), [bundle]);
+  const questionnaires: Questionnaire[] = useMemo(
+    () => filterQuestionnaires(bundle, includeSubquestionnaires),
+    [bundle, includeSubquestionnaires]
+  );
 
   return {
     questionnaires,
     fetchStatus: status,
     fetchError: error,
-    isInitialLoading,
+    isLoading,
     isFetching,
     refetchQuestionnaires: refetch
   };

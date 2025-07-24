@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,11 +25,12 @@ import type { Table } from '@tanstack/react-table';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { createResponseListItem } from '../../../utils/dashboard.ts';
 import RefetchButton from '../../../../../components/Button/RefetchButton.tsx';
+import type { UseQueryResult } from '@tanstack/react-query';
 
 interface ResponsesTableViewProps {
   table: Table<QuestionnaireResponse>;
   searchedQuestionnaire: Questionnaire | null;
-  fetchStatus: 'error' | 'success' | 'loading';
+  fetchStatus: UseQueryResult['status'];
   isFetching: boolean;
   fetchError: unknown;
   selectedResponse: QuestionnaireResponse | null;
@@ -55,7 +56,7 @@ function ResponsesTableView(props: ResponsesTableViewProps) {
 
   const headers = table.getHeaderGroups()[0].headers;
 
-  const isEmpty = table.getRowModel().rows.length === 0 && fetchStatus !== 'loading';
+  const isEmpty = table.getRowModel().rows.length === 0 && fetchStatus !== 'pending';
 
   return (
     <>
@@ -67,7 +68,7 @@ function ResponsesTableView(props: ResponsesTableViewProps) {
         onChangeSearchedQuestionnaire={onChangeSearchedQuestionnaire}
       />
 
-      <TableContainer sx={{ minWidth: 575 }}>
+      <TableContainer sx={{ minWidth: 575, boxShadow: 'none' }}>
         <MuiTable>
           <DashboardTableHead headers={headers} />
           <TableBody>
@@ -87,7 +88,7 @@ function ResponsesTableView(props: ResponsesTableViewProps) {
             })}
           </TableBody>
 
-          {(isEmpty || fetchStatus === 'error' || fetchStatus === 'loading') &&
+          {(isEmpty || fetchStatus === 'error' || fetchStatus === 'pending') &&
           table.getRowModel().rows.length === 0 ? (
             <ResponseListFeedback
               isEmpty={isEmpty}

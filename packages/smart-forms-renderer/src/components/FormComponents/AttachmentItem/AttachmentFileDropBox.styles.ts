@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,15 +17,41 @@
 
 import { styled } from '@mui/material/styles';
 import { Box } from '@mui/material';
-import { TEXT_FIELD_WIDTH } from '../Textfield.styles';
 
 export const AttachmentFileDropBoxWrapper = styled(Box, {
-  shouldForwardProp: (prop) => prop !== 'isActive' && prop !== 'isTabled'
-})<{ isActive: boolean; isTabled: boolean }>(({ theme, isActive, isTabled }) => ({
-  backgroundColor: theme.palette.background.paper,
-  border: '2px dashed',
-  borderColor: isActive ? theme.palette.secondary.main : theme.palette.primary.main,
-  borderRadius: '4px',
-  maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000,
-  minWidth: 160
-}));
+  shouldForwardProp: (prop) =>
+    prop !== 'isActive' && prop !== 'isTabled' && prop !== 'textFieldWidth'
+})<{ isActive: boolean; isTabled: boolean; textFieldWidth: number }>(
+  ({ theme, isActive, isTabled, textFieldWidth }) => ({
+    backgroundColor: theme.palette.background.paper,
+    border: '2px dashed',
+    borderColor: isActive ? theme.palette.secondary.main : theme.palette.primary.main,
+    borderRadius: '4px',
+    maxWidth: !isTabled ? textFieldWidth : 3000,
+    minWidth: 160,
+    ref: HTMLElement
+  })
+);
+AttachmentFileDropBoxWrapper.displayName = 'AttachmentFileDropBoxWrapper';
+
+// Forwarding ref to Box
+// export const AttachmentFileDropBoxWrapper = React.forwardRef<
+//   HTMLDivElement,
+//   { isActive: boolean; isTabled: boolean; textFieldWidth: number }
+// >(({ isActive, isTabled, textFieldWidth, ...props }, ref) => {
+//   const StyledBox = styled(Box, {
+//     shouldForwardProp: (prop) =>
+//       prop !== 'isActive' && prop !== 'isTabled' && prop !== 'textFieldWidth'
+//   })(({ theme }) => ({
+//     backgroundColor: theme.palette.background.paper,
+//     border: '2px dashed',
+//     borderColor: isActive ? theme.palette.secondary.main : theme.palette.primary.main,
+//     borderRadius: '4px',
+//     maxWidth: !isTabled ? textFieldWidth : 3000,
+//     minWidth: 160
+//   }));
+
+//   return <StyledBox ref={ref} {...props} />;
+// });
+
+// AttachmentFileDropBoxWrapper.displayName = 'AttachmentFileDropBoxWrapper';

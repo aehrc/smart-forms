@@ -1,48 +1,82 @@
 name: Smart Forms Build-Test-Lint Workflow
 
-on:
-  push:
+on: [workflow_dispatch, push]
 
 jobs:
   build-smart-forms-app:
-    name: Build
+    name: Build Smart Forms App
     runs-on: ubuntu-latest
+    # Run this regardless of "if: github.actor != 'dependabot[bot]'" condition on other jobs to see if dependabot PRs breaks the build
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js 16.x
+      - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 20
           cache: npm
       - name: Install dependencies
         run: npm ci
+
+      - name: Build workspace packages
+        run: |
+          npm run build -w packages/sdc-assemble
+          npm run build -w packages/sdc-populate
+          npm run build -w packages/sdc-template-extract
+          npm run build -w packages/smart-forms-renderer
+
       - name: Build application
         run: npm run build -w apps/smart-forms-app
 
   build-demo-app:
-    name: Build
+    name: Build Demo App
     runs-on: ubuntu-latest
+    # Conditional logic to skip if workflow is triggered by Dependabot
+    if: github.actor != 'dependabot[bot]'
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js 16.x
+      - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 20
           cache: npm
       - name: Install dependencies
-        run: npm ci
+        run: cd apps/demo-renderer-app && npm ci
       - name: Build application
         run: cd apps/demo-renderer-app && npm run build
 
-  jest-test:
-    name: Jest Tests
+  jest-smart-forms-app-tests:
+    name: Jest Tests - Smart Forms App
     runs-on: ubuntu-latest
+    # Conditional logic to skip if workflow is triggered by Dependabot
+    if: github.actor != 'dependabot[bot]'
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js 16.x
+      - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build workspace packages
+        run: npm run build -w packages/sdc-template-extract
+
+      - name: Run jest tests
+        run: npm run test -w apps/smart-forms-app
+      - uses: codecov/codecov-action@v4
+
+  jest-renderer-tests:
+    name: Jest Tests - Renderer
+    runs-on: ubuntu-latest
+    # Conditional logic to skip if workflow is triggered by Dependabot
+    if: github.actor != 'dependabot[bot]'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
           cache: npm
       - name: Install dependencies
         run: npm ci
@@ -50,40 +84,72 @@ jobs:
         run: npm run test -w packages/smart-forms-renderer
       - uses: codecov/codecov-action@v4
 
+  jest-extract-tests:
+    name: Jest Tests - Template-Based Extract
+    runs-on: ubuntu-latest
+    # Conditional logic to skip if workflow is triggered by Dependabot
+    if: github.actor != 'dependabot[bot]'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Run jest tests
+        run: npm run test -w packages/sdc-template-extract
+      - uses: codecov/codecov-action@v4
+
   playwright-test:
     name: Playwright Tests
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    # Conditional logic to skip if workflow is triggered by Dependabot
+    if: github.actor != 'dependabot[bot]'
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 20
           cache: npm
+
       - name: Install dependencies
         run: npm ci
+
+      - name: Build workspace packages
+        run: |
+          npm run build -w packages/sdc-assemble
+          npm run build -w packages/sdc-populate
+          npm run build -w packages/sdc-template-extract
+          npm run build -w packages/smart-forms-renderer
+
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
+
       - name: Run Playwright tests
         run: npm run playwright -w apps/smart-forms-app
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          build: npm run build -w apps/smart-forms-app
-          start: npm run preview -w apps/smart-forms-app
           name: playwright-report
-          path: playwright-report/
+          path: apps/smart-forms-app/playwright-report/
           retention-days: 30
 
   lint:
     name: Lint
     runs-on: ubuntu-latest
+    # Conditional logic to skip if workflow is triggered by Dependabot
+    if: github.actor != 'dependabot[bot]'
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js 16.x
+      - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 20
           cache: npm
 
       - name: Install dependencies
@@ -92,36 +158,5 @@ jobs:
       - name: Run linter
         run: npm run lint
 
-      - name: Check formatting
-        run: npm run check-formatting
-
-  deploy-storybook:
-    name: Deploy Storybook to S3
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Use Node.js 18.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-          cache: npm
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::209248795938:role/SmartFormsReactAppDeployment
-          aws-region: ap-southeast-2
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build application
-        run: npm run build-storybook -w packages/smart-forms-renderer
-
-      - name: Upload static Storybook site to S3
-        run: aws s3 sync packages/smart-forms-renderer/storybook-static s3://smart-forms-storybook/storybook
+      - name: Run prettier
+        run: npm run prettier

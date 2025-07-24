@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,9 +24,10 @@ import type {
 import type { Dayjs } from 'dayjs';
 import IconButton from '@mui/material/IconButton';
 import EventIcon from '@mui/icons-material/Event';
+import { useRendererStylingStore } from '../../../../stores';
 
 interface DatePickerButtonProps
-  extends BaseSingleInputFieldProps<Dayjs | null, Dayjs, FieldSection, DateValidationError> {
+  extends BaseSingleInputFieldProps<Dayjs | null, Dayjs, FieldSection, false, DateValidationError> {
   onOpen?: () => void;
   readOnly?: boolean;
 }
@@ -34,10 +35,14 @@ interface DatePickerButtonProps
 function DatePickerButton(props: DatePickerButtonProps) {
   const { onOpen, readOnly } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+
   return (
     <IconButton
-      sx={{ height: 30, width: 30 }}
-      disabled={readOnly}
+      sx={{ height: 30, width: 30, color: 'text.secondary' }}
+      disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+      aria-label="Pick a date"
+      tabIndex={readOnly ? -1 : 0}
       onClick={(e) => {
         e.stopPropagation();
         onOpen?.();

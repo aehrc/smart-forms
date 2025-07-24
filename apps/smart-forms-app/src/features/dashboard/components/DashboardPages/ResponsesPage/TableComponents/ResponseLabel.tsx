@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,7 @@
 
 import type { ReactNode } from 'react';
 import { forwardRef } from 'react';
-import { useTheme } from '@mui/material/styles';
+// import { useTheme } from '@mui/material/styles';
 import type { SxProps, Theme } from '@mui/material';
 import { Box } from '@mui/material';
 import { ResponseStyledLabel } from './ResponseLabel.styles.ts';
@@ -34,7 +34,7 @@ interface Props {
 const ResponseLabel = forwardRef((props: Props, ref) => {
   const { color, startIcon, endIcon, children, sx, ...other } = props;
 
-  const theme = useTheme();
+  // const theme = useTheme();
 
   const iconStyle = {
     width: 16,
@@ -45,14 +45,14 @@ const ResponseLabel = forwardRef((props: Props, ref) => {
   return (
     <ResponseStyledLabel
       ref={ref}
-      component="span"
+      as="span"
       color={color}
       sx={{
         ...(startIcon && { pl: 0.75 }),
         ...(endIcon && { pr: 0.75 }),
         ...sx
       }}
-      theme={theme}
+      // theme={theme}
       {...other}>
       {startIcon && <Box sx={{ mr: 0.75, ...iconStyle }}> {startIcon} </Box>}
 

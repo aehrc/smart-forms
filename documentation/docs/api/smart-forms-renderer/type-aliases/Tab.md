@@ -1,4 +1,4 @@
-# Type alias: Tab
+# Type Alias: Tab
 
 > **Tab**: `object`
 

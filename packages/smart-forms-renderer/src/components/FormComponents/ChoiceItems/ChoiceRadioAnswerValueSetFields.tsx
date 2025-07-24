@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,28 +17,22 @@
 
 import React from 'react';
 import Typography from '@mui/material/Typography';
-import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import { StyledRadioGroup } from '../Item.styles';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { StyledAlert } from '../../Alert.styles';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
-import { getChoiceOrientation } from '../../../utils/choice';
-import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
-import Box from '@mui/material/Box';
-import RadioOptionList from '../ItemParts/RadioOptionList';
-import Tooltip from '@mui/material/Tooltip';
-import Button from '@mui/material/Button';
-import { grey } from '@mui/material/colors';
-import Fade from '@mui/material/Fade';
+import RadioFormGroup from '../ItemParts/RadioFormGroup';
 
 interface ChoiceRadioAnswerValueSetFieldsProps {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
   valueRadio: string | null;
+  feedback: string;
   readOnly: boolean;
-  calcExpUpdated: boolean;
+  expressionUpdated: boolean;
+  answerOptionsToggleExpressionsMap: Map<string, boolean>;
   terminologyError: TerminologyError;
+  isTabled: boolean;
   onCheckedChange: (newValue: string) => void;
   onClear: () => void;
 }
@@ -48,47 +42,30 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
     qItem,
     options,
     valueRadio,
+    feedback,
     readOnly,
-    calcExpUpdated,
+    expressionUpdated,
+    answerOptionsToggleExpressionsMap,
     terminologyError,
+    isTabled,
     onCheckedChange,
     onClear
   } = props;
 
-  const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
-
   if (options.length > 0) {
     return (
-      <Box display="flex" alignItems="center">
-        <StyledRadioGroup
-          id={qItem.linkId}
-          row={orientation === ChoiceItemOrientation.Horizontal}
-          name={qItem.text}
-          onChange={(e) => onCheckedChange(e.target.value)}
-          value={valueRadio}
-          data-test="q-item-radio-group">
-          <RadioOptionList options={options} readOnly={readOnly} />
-        </StyledRadioGroup>
-
-        <Box flexGrow={1} />
-
-        <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-        <Fade in={!!valueRadio} timeout={100}>
-          <Tooltip title="Set question as unanswered">
-            <span>
-              <Button
-                sx={{
-                  color: grey['500'],
-                  '&:hover': { backgroundColor: grey['200'] }
-                }}
-                disabled={readOnly}
-                onClick={onClear}>
-                Clear
-              </Button>
-            </span>
-          </Tooltip>
-        </Fade>
-      </Box>
+      <RadioFormGroup
+        qItem={qItem}
+        options={options}
+        valueRadio={valueRadio}
+        feedback={feedback}
+        readOnly={readOnly}
+        expressionUpdated={expressionUpdated}
+        answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+        isTabled={isTabled}
+        onCheckedChange={onCheckedChange}
+        onClear={onClear}
+      />
     );
   }
 
@@ -96,7 +73,7 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
     return (
       <StyledAlert color="error">
         <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-        <Typography variant="subtitle2">
+        <Typography component="div">
           There was an error fetching options from the terminology server for{' '}
           {terminologyError.answerValueSet}
         </Typography>
@@ -104,10 +81,18 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
     );
   }
 
+  if (options.length === 0) {
+    return (
+      <Typography sx={{ py: 0.5 }} fontWeight={600} fontSize={13}>
+        No options available.
+      </Typography>
+    );
+  }
+
   return (
     <StyledAlert color="error">
       <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-      <Typography variant="subtitle2">
+      <Typography component="div">
         Unable to fetch options from the questionnaire or launch context
       </Typography>
     </StyledAlert>

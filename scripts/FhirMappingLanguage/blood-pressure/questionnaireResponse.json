@@ -1,0 +1,35 @@
+{
+  "resourceType": "QuestionnaireResponse",
+  "status": "completed",
+  "subject": {
+    "reference": "Patient/123"
+  },
+  "item": [
+    {
+      "linkId": "systolic",
+      "answer": [
+        {
+          "valueQuantity": {
+            "value": 18,
+            "unit": "mmHg",
+            "system": "http://unitsofmeasure.org",
+            "code": "mm[Hg]"
+          }
+        }
+      ]
+    },
+    {
+      "linkId": "diastolic",
+      "answer": [
+        {
+          "valueQuantity": {
+            "value": 9,
+            "unit": "mmHg",
+            "system": "http://unitsofmeasure.org",
+            "code": "mm[Hg]"
+          }
+        }
+      ]
+    }
+  ]
+}

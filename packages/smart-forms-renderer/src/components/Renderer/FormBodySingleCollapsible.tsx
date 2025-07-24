@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,8 +25,9 @@ import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { getContextDisplays } from '../../utils/tabs';
 import type { QuestionnaireItem } from 'fhir/r4';
-import { getShortText } from '../../utils/itemControl';
+import { getShortText } from '../../utils/extensions';
 import ContextDisplayItem from '../FormComponents/ItemParts/ContextDisplayItem';
+import { getItemTextToDisplay } from '../../utils/itemTextToDisplay';
 
 interface FormBodySingleCollapsibleProps {
   qItem: QuestionnaireItem;
@@ -43,7 +44,7 @@ const FormBodySingleCollapsible = memo(function FormBodySingleCollapsible(
 
   const contextDisplayItems = getContextDisplays(qItem);
 
-  const collapsibleLabel = getShortText(qItem) ?? qItem.text ?? '';
+  const collapsibleLabel = getShortText(qItem) ?? getItemTextToDisplay(qItem) ?? '';
 
   const isExpanded = selectedIndex === index;
 
@@ -56,7 +57,7 @@ const FormBodySingleCollapsible = memo(function FormBodySingleCollapsible(
       onChange={() => onToggleExpand(index)}>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Box display="flex" alignItems="center" justifyContent="space-between" width="100%" mr={3}>
-          <Typography variant="subtitle2">{collapsibleLabel}</Typography>
+          <Typography>{collapsibleLabel}</Typography>
           <Box display="flex" columnGap={0.5}>
             {contextDisplayItems.map((item) => {
               return <ContextDisplayItem key={item.linkId} displayItem={item} />;
@@ -64,7 +65,9 @@ const FormBodySingleCollapsible = memo(function FormBodySingleCollapsible(
           </Box>
         </Box>
       </AccordionSummary>
-      <AccordionDetails>{children}</AccordionDetails>
+      <AccordionDetails>
+        <>{children}</>
+      </AccordionDetails>
     </Accordion>
   );
 });

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +20,10 @@ import ClearIcon from '@mui/icons-material/Clear';
 import Iconify from '../../../../../../components/Iconify/Iconify.tsx';
 import { constructName } from '../../../../../smartAppLaunch/utils/launchContext.ts';
 import OpenResponseButton from '../Buttons/OpenResponseButton.tsx';
-import useResponsive from '../../../../../../hooks/useResponsive.ts';
 import type { QuestionnaireResponse } from 'fhir/r4';
 import useSmartClient from '../../../../../../hooks/useSmartClient.ts';
 import useSelectedQuestionnaire from '../../../../hooks/useSelectedQuestionnaire.ts';
+import { useResponsive } from '@aehrc/smart-forms-renderer';
 
 interface ResponseListToolbarButtonsProps {
   selectedResponse: QuestionnaireResponse | null;
@@ -38,7 +38,7 @@ function ResponseListToolbarButtons(props: ResponseListToolbarButtonsProps) {
 
   const { patient } = useSmartClient();
 
-  const isDesktop = useResponsive('up', 'lg');
+  const isLgUp = useResponsive({ query: 'up', start: 'lg' });
 
   if (selectedResponse) {
     return (
@@ -80,7 +80,7 @@ function ResponseListToolbarButtons(props: ResponseListToolbarButtonsProps) {
   }
 
   return (
-    <Typography variant="subtitle1" fontSize={isDesktop ? 12 : 11}>
+    <Typography variant="subtitle1" fontSize={isLgUp ? 12 : 11}>
       Showing responses for <b>{constructName(patient?.name)}</b>
     </Typography>
   );

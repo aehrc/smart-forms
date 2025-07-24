@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,6 @@
 
 import Iconify from '../../../../components/Iconify/Iconify.tsx';
 import { useTheme } from '@mui/material/styles';
-import useResponsive from '../../../../hooks/useResponsive.ts';
 import Logo from '../../../../components/Logos/Logo.tsx';
 import { Box, IconButton, Typography } from '@mui/material';
 import UpdatingIndicator from './UpdatingIndicator.tsx';
@@ -25,7 +24,7 @@ import { LogoWrapper } from '../../../../components/Logos/Logo.styles.ts';
 import { StyledRoot, StyledToolbar } from '../../../../components/Header/Header.styles.ts';
 import { memo } from 'react';
 import HeaderIcons from '../../../../components/Header/HeaderIcons.tsx';
-import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import { useQuestionnaireStore, useResponsive } from '@aehrc/smart-forms-renderer';
 import TokenTimer from '../../../tokenTimer/components/TokenTimer.tsx';
 
 interface RendererHeaderProps {
@@ -39,15 +38,16 @@ const RendererHeader = memo(function RendererHeader(props: RendererHeaderProps) 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
 
   const theme = useTheme();
-  const isDesktop = useResponsive('up', 'lg');
+  const isLgUp = useResponsive({ query: 'up', start: 'lg' });
 
   const navIsExpanded = !desktopNavCollapsed;
 
   return (
-    <StyledRoot sx={{ boxShadow: theme.customShadows.z4 }} navCollapsed={desktopNavCollapsed}>
+    <StyledRoot sx={{ boxShadow: theme.shadows[4] }} navCollapsed={desktopNavCollapsed}>
       <StyledToolbar>
-        {isDesktop ? (
+        {isLgUp ? (
           <IconButton
+            aria-label="Expand navigation"
             onClick={onOpenMobileNav}
             sx={{
               color: 'text.primary',
@@ -58,14 +58,14 @@ const RendererHeader = memo(function RendererHeader(props: RendererHeaderProps) 
           </IconButton>
         ) : null}
 
-        {isDesktop && navIsExpanded ? null : (
+        {isLgUp && navIsExpanded ? null : (
           <LogoWrapper>
             <Logo isRendererHeader />
           </LogoWrapper>
         )}
 
         <Box m={0.5}>
-          <Typography variant="subtitle1" color="text.primary" fontSize={isDesktop ? 13 : 11}>
+          <Typography variant="subtitle1" color="text.primary" fontSize={isLgUp ? 13 : 11}>
             {sourceQuestionnaire.title}
           </Typography>
         </Box>

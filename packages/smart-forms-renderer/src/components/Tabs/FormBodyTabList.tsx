@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,12 +18,13 @@
 import React, { memo } from 'react';
 import Collapse from '@mui/material/Collapse';
 import { TransitionGroup } from 'react-transition-group';
-import { getShortText } from '../../utils/itemControl';
+import { getShortText } from '../../utils/extensions';
 import type { QuestionnaireItem } from 'fhir/r4';
 import FormBodySingleTab from './FormBodySingleTab';
 import type { Tabs } from '../../interfaces/tab.interface';
 import { useQuestionnaireStore } from '../../stores';
 import { isTabHidden } from '../../utils/tabs';
+import { getItemTextToDisplay } from '../../utils/itemTextToDisplay';
 
 interface FormBodyTabListProps {
   topLevelItems: QuestionnaireItem[];
@@ -62,7 +63,7 @@ const FormBodyTabList = memo(function FormBodyTabList(props: FormBodyTabListProp
         }
 
         const tabIsSelected = currentTabIndex.toString() === i.toString();
-        const tabLabel = getShortText(qItem) ?? qItem.text ?? '';
+        const tabLabel = getShortText(qItem) ?? getItemTextToDisplay(qItem) ?? '';
 
         return (
           <Collapse key={qItem.linkId} timeout={100}>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,3 +19,8 @@ export type { Tab, Tabs } from './tab.interface';
 export type { Variables, VariableXFhirQuery } from './variables.interface';
 export type { LaunchContext } from './populate.interface';
 export type { EnableWhenItems, EnableWhenExpressions } from './enableWhen.interface';
+export type { CalculatedExpression } from './calculatedExpression.interface';
+export type {
+  QItemOverrideComponentProps,
+  SdcUiOverrideComponentProps
+} from './overrideComponent.interface';

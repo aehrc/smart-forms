@@ -7,7 +7,7 @@ Main component to render a Group Table (gtable) Questionnaire item.
 ## Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `props` | `GroupTableProps` |
 
 ## Returns

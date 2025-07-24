@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,8 +17,10 @@
 
 import React from 'react';
 import type {
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
+  PropsWithParentStylesAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithQrRepeatGroupChangeHandler
 } from '../../../interfaces/renderProps.interface';
@@ -31,12 +33,15 @@ import SingleItem from '../SingleItem/SingleItem';
 import useHidden from '../../../hooks/useHidden';
 import GroupItem from './GroupItem';
 import GridGroup from '../GridGroup/GridGroup';
+import { useQuestionnaireStore } from '../../../stores';
 
 interface GroupItemSwitcherProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithQrRepeatGroupChangeHandler,
     PropsWithParentIsReadOnlyAttribute,
-    PropsWithParentIsRepeatGroupAttribute {
+    PropsWithParentIsRepeatGroupAttribute,
+    PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   qrItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[] | undefined;
   groupCardElevation: number;
@@ -46,17 +51,46 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
   const {
     qItem,
     qrItemOrItems,
+    itemPath,
     groupCardElevation,
     parentIsReadOnly,
     parentIsRepeatGroup,
     parentRepeatGroupIndex,
     onQrItemChange,
-    onQrRepeatGroupChange
+    onQrRepeatGroupChange,
+    parentStyles
   } = props;
+
+  const qItemOverrideComponents = useQuestionnaireStore.use.qItemOverrideComponents();
+  const QItemOverrideComponent = qItemOverrideComponents[qItem.linkId];
 
   const itemIsHidden = useHidden(qItem, parentRepeatGroupIndex);
   if (itemIsHidden) {
     return null;
+  }
+
+  // If a qItem (type=group) override component is defined for this item, render it
+  // Don't get too strict with the "typeof" checks for now
+  if (
+    qItem.type === 'group' &&
+    QItemOverrideComponent &&
+    typeof QItemOverrideComponent === 'function'
+  ) {
+    return (
+      <QItemOverrideComponent
+        qItem={qItem}
+        qrItem={qrItemOrItems ?? null}
+        itemPath={itemPath}
+        isRepeated={!!qItem.repeats}
+        groupCardElevation={groupCardElevation}
+        parentIsReadOnly={parentIsReadOnly}
+        parentIsRepeatGroup={parentIsRepeatGroup}
+        parentRepeatGroupIndex={parentRepeatGroupIndex}
+        onQrItemChange={onQrItemChange}
+        onQrRepeatGroupChange={onQrRepeatGroupChange}
+        parentStyles={parentStyles}
+      />
+    );
   }
 
   // If there are multiple answers
@@ -75,10 +109,12 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
         <GroupTable
           qItem={qItem}
           qrItems={qrItems}
-          groupCardElevation={groupCardElevation + 1}
+          itemPath={itemPath}
+          groupCardElevation={groupCardElevation}
           isRepeated={true}
           parentIsReadOnly={parentIsReadOnly}
           onQrRepeatGroupChange={onQrRepeatGroupChange}
+          parentStyles={parentStyles}
         />
       );
     }
@@ -87,9 +123,11 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
       <RepeatGroup
         qItem={qItem}
         qrItems={qrItems}
-        groupCardElevation={groupCardElevation + 1}
+        itemPath={itemPath}
+        groupCardElevation={groupCardElevation}
         parentIsReadOnly={parentIsReadOnly}
         onQrRepeatGroupChange={onQrRepeatGroupChange}
+        parentStyles={parentStyles}
       />
     );
   }
@@ -102,9 +140,11 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
       <GridGroup
         qItem={qItem}
         qrItem={qrItem ?? null}
+        itemPath={itemPath}
         groupCardElevation={groupCardElevation}
         parentIsReadOnly={parentIsReadOnly}
         onQrItemChange={onQrItemChange}
+        parentStyles={parentStyles}
       />
     );
   }
@@ -119,10 +159,12 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
           <GroupTable
             qItem={qItem}
             qrItems={[]}
-            groupCardElevation={groupCardElevation + 1}
+            itemPath={itemPath}
+            groupCardElevation={groupCardElevation}
             isRepeated={true}
             parentIsReadOnly={parentIsReadOnly}
             onQrRepeatGroupChange={onQrRepeatGroupChange}
+            parentStyles={parentStyles}
           />
         );
       }
@@ -131,9 +173,11 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
         <RepeatGroup
           qItem={qItem}
           qrItems={[]}
-          groupCardElevation={groupCardElevation + 1}
+          itemPath={itemPath}
+          groupCardElevation={groupCardElevation}
           parentIsReadOnly={parentIsReadOnly}
           onQrRepeatGroupChange={onQrRepeatGroupChange}
+          parentStyles={parentStyles}
         />
       );
     }
@@ -142,7 +186,8 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
       <RepeatItem
         qItem={qItem}
         qrItem={qrItem ?? null}
-        groupCardElevation={groupCardElevation + 1}
+        itemPath={itemPath}
+        groupCardElevation={groupCardElevation}
         parentIsReadOnly={parentIsReadOnly}
         onQrItemChange={onQrItemChange}
       />
@@ -157,10 +202,12 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
         <GroupTable
           qItem={qItem}
           qrItems={qrItem ? [qrItem] : []}
-          groupCardElevation={groupCardElevation + 1}
+          itemPath={itemPath}
+          groupCardElevation={groupCardElevation}
           isRepeated={false}
           parentIsReadOnly={parentIsReadOnly}
           onQrRepeatGroupChange={onQrRepeatGroupChange}
+          parentStyles={parentStyles}
         />
       );
     }
@@ -169,12 +216,14 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
       <GroupItem
         qItem={qItem}
         qrItem={qrItem ?? null}
+        itemPath={itemPath}
         isRepeated={false}
-        groupCardElevation={groupCardElevation + 1}
+        groupCardElevation={groupCardElevation}
         parentIsReadOnly={parentIsReadOnly}
         parentIsRepeatGroup={parentIsRepeatGroup}
         parentRepeatGroupIndex={parentRepeatGroupIndex}
         onQrItemChange={onQrItemChange}
+        parentStyles={parentStyles}
       />
     );
   }
@@ -184,13 +233,15 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
     <SingleItem
       qItem={qItem}
       qrItem={qrItem ?? null}
+      itemPath={itemPath}
       isRepeated={false}
       isTabled={false}
-      groupCardElevation={groupCardElevation + 1}
+      groupCardElevation={groupCardElevation}
       parentIsReadOnly={parentIsReadOnly}
       parentIsRepeatGroup={parentIsRepeatGroup}
       parentRepeatGroupIndex={parentRepeatGroupIndex}
       onQrItemChange={onQrItemChange}
+      parentStyles={parentStyles}
     />
   );
 }

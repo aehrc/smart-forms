@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,43 +19,49 @@ import QuestionnaireStoreViewer from './StoreStateViewers/QuestionnaireStoreView
 import SmartConfigStoreViewer from './StoreStateViewers/SmartConfigStoreViewer.tsx';
 import QuestionnaireResponseStoreViewer from './StoreStateViewers/QuestionnaireResponseStoreViewer.tsx';
 import TerminologyServerStoreViewer from './StoreStateViewers/TerminologyServerStoreViewer.tsx';
+import ExtractDebuggerViewer from './StoreStateViewers/ExtractDebuggerViewer.tsx';
 import { Typography } from '@mui/material';
-import ExtractedSectionViewer from './StoreStateViewers/ExtractedResourceViewer.tsx';
 
 export type StateStore =
   | 'questionnaireStore'
   | 'questionnaireResponseStore'
   | 'smartConfigStore'
   | 'terminologyServerStore'
-  | 'extractedResource'
+  | 'extractDebugger'
   | null;
 
 interface StoreStateViewerProps {
   selectedStore: StateStore;
-  fhirServerUrl: string;
+  sourceFhirServerUrl: string;
+  statePropNameFilter: string;
 }
 
 function StoreStateViewer(props: StoreStateViewerProps) {
-  const { selectedStore, fhirServerUrl } = props;
+  const { selectedStore, sourceFhirServerUrl, statePropNameFilter } = props;
 
   if (selectedStore === 'questionnaireStore') {
-    return <QuestionnaireStoreViewer />;
+    return <QuestionnaireStoreViewer statePropNameFilter={statePropNameFilter} />;
   }
 
   if (selectedStore === 'questionnaireResponseStore') {
-    return <QuestionnaireResponseStoreViewer />;
+    return <QuestionnaireResponseStoreViewer statePropNameFilter={statePropNameFilter} />;
   }
 
   if (selectedStore === 'smartConfigStore') {
-    return <SmartConfigStoreViewer />;
+    return <SmartConfigStoreViewer statePropNameFilter={statePropNameFilter} />;
   }
 
   if (selectedStore === 'terminologyServerStore') {
-    return <TerminologyServerStoreViewer />;
+    return <TerminologyServerStoreViewer statePropNameFilter={statePropNameFilter} />;
   }
 
-  if (selectedStore === 'extractedResource') {
-    return <ExtractedSectionViewer fhirServerUrl={fhirServerUrl} />;
+  if (selectedStore === 'extractDebugger') {
+    return (
+      <ExtractDebuggerViewer
+        sourceFhirServerUrl={sourceFhirServerUrl}
+        statePropNameFilter={statePropNameFilter}
+      />
+    );
   }
 
   return <Typography variant="h5">No store selected</Typography>;

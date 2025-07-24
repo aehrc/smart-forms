@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -231,7 +231,7 @@ export const qSelectivePrePopTester: Questionnaire = {
             {
               url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
               valueString:
-                '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <div style="font-size:0.875em"> This questionnaire is used by Playwright to do regression testing of the <pre style="display: inline">@aehrc/sdc-populate</pre> library\'s pre-population logic. Items will be incrementally added as needed.</div><br/></div>'
+                '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <div> This questionnaire is used by Playwright to do regression testing of the <pre style="display: inline">@aehrc/sdc-populate</pre> library\'s pre-population logic. Items will be incrementally added as needed.</div><br/></div>'
             }
           ],
           text: "This questionnaire is used by Playwright to do regression testing of the @aehrc/sdc-populate library's pre-population logic. Items will be incrementally added as needed.",

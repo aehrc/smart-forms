@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,9 +17,10 @@
 
 import React from 'react';
 import type {
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
-  PropsWithShowMinimalViewAttribute
+  PropsWithParentStylesAttribute
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { QGroupContainerBox } from '../../Box.styles';
@@ -30,26 +31,33 @@ import { TransitionGroup } from 'react-transition-group';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import RepeatGroupItem from './RepeatGroupItem';
 import AddItemButton from './AddItemButton';
-import LabelWrapper from '../ItemParts/ItemLabelWrapper';
-import Typography from '@mui/material/Typography';
-import type { RepeatGroupSingle } from '../../../interfaces/repeatGroup.interface';
+import type { RepeatGroupSingleModel } from '../../../interfaces/repeatGroup.interface';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { getGroupCollapsible } from '../../../utils/qItem';
 import { GroupAccordion } from '../GroupItem/GroupAccordion.styles';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccordionDetails from '@mui/material/AccordionDetails';
+import GroupHeading from '../GroupItem/GroupHeading';
+import { appendRepeatIndexToLastSegment } from '../../../utils/itemPath';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
+import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
 
 interface RepeatGroupViewProps
-  extends PropsWithShowMinimalViewAttribute,
+  extends PropsWithItemPathAttribute,
     PropsWithParentIsReadOnlyAttribute,
-    PropsWithParentIsRepeatGroupAttribute {
+    PropsWithParentIsRepeatGroupAttribute,
+    PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
-  repeatGroups: RepeatGroupSingle[];
+  repeatGroups: RepeatGroupSingleModel[];
   groupCardElevation: number;
-  onAnswerChange: (newQrItem: QuestionnaireResponseItem, index: number) => void;
+  onAnswerChange: (
+    newQrItem: QuestionnaireResponseItem,
+    index: number,
+    targetItemPath?: ItemPath
+  ) => void;
   onAddItem: () => void;
-  onDeleteItem: (index: number) => void;
+  onRemoveItem: (index: number) => void;
 }
 
 /**
@@ -62,46 +70,19 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
   const {
     qItem,
     repeatGroups,
+    itemPath,
     groupCardElevation,
-    showMinimalView,
     parentIsReadOnly,
+    parentStyles,
     onAnswerChange,
     onAddItem,
-    onDeleteItem
+    onRemoveItem
   } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
-  if (showMinimalView) {
-    return (
-      <QGroupContainerBox key={qItem.linkId} cardElevation={groupCardElevation} isRepeated={true}>
-        <Card elevation={groupCardElevation} sx={{ p: 2 }}>
-          {repeatGroups.map(({ nanoId, qrItem: nullableQrItem }, index) => {
-            const answeredQrItem = createEmptyQrItem(qItem, undefined);
-            if (nullableQrItem) {
-              answeredQrItem.item = nullableQrItem.item;
-            }
-
-            return (
-              <RepeatGroupItem
-                key={nanoId}
-                qItem={qItem}
-                repeatGroupIndex={index}
-                answeredQrItem={answeredQrItem}
-                nullableQrItem={nullableQrItem}
-                numOfRepeatGroups={repeatGroups.length}
-                groupCardElevation={groupCardElevation + 1}
-                showMinimalView={showMinimalView}
-                parentIsReadOnly={parentIsReadOnly}
-                onDeleteItem={() => onDeleteItem(index)}
-                onQrItemChange={(newQrItem) => onAnswerChange(newQrItem, index)}
-              />
-            );
-          })}
-        </Card>
-      </QGroupContainerBox>
-    );
-  }
+  // Get item.text as display label
+  const itemTextToDisplay = getItemTextToDisplay(qItem);
 
   const groupCollapsibleValue = getGroupCollapsible(qItem);
   if (groupCollapsibleValue) {
@@ -111,40 +92,43 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
         disableGutters
         defaultExpanded={isDefaultOpen}
         elevation={groupCardElevation}
-        isRepeated={true}
         slotProps={{
           transition: { unmountOnExit: true, timeout: 250 }
-        }}>
+        }}
+        style={parentStyles || undefined}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ minHeight: '28px' }}>
-          {qItem.text ? (
-            <>
-              <Typography variant="h6" color={readOnly ? 'text.secondary' : 'text.primary'}>
-                <LabelWrapper qItem={qItem} readOnly={readOnly} />
-              </Typography>
-            </>
+          {itemTextToDisplay ? (
+            <GroupHeading
+              qItem={qItem}
+              readOnly={readOnly}
+              groupCardElevation={groupCardElevation}
+            />
           ) : null}
         </AccordionSummary>
         <AccordionDetails sx={{ pt: 0 }}>
-          {qItem.text ? <Divider sx={{ mb: 1.5 }} light /> : null}
+          {itemTextToDisplay ? <Divider sx={{ mb: 1.5, opacity: 0.6 }} /> : null}
           <TransitionGroup>
-            {repeatGroups.map(({ nanoId, qrItem: nullableQrItem }, index) => {
+            {repeatGroups.map(({ id, qrItem: nullableQrItem }, index) => {
               const answeredQrItem = createEmptyQrItem(qItem, undefined);
               if (nullableQrItem) {
                 answeredQrItem.item = nullableQrItem.item;
               }
 
               return (
-                <Collapse key={nanoId} timeout={200}>
+                <Collapse key={id} timeout={200}>
                   <RepeatGroupItem
                     qItem={qItem}
                     repeatGroupIndex={index}
                     answeredQrItem={answeredQrItem}
                     nullableQrItem={nullableQrItem}
                     numOfRepeatGroups={repeatGroups.length}
-                    groupCardElevation={groupCardElevation + 1}
+                    itemPath={appendRepeatIndexToLastSegment(itemPath, index)}
+                    groupCardElevation={groupCardElevation}
                     parentIsReadOnly={parentIsReadOnly}
-                    onDeleteItem={() => onDeleteItem(index)}
-                    onQrItemChange={(newQrItem) => onAnswerChange(newQrItem, index)}
+                    onRemoveItem={() => onRemoveItem(index)}
+                    onQrItemChange={(newQrItem, targetItemPath) =>
+                      onAnswerChange(newQrItem, index, targetItemPath)
+                    }
                   />
                 </Collapse>
               );
@@ -158,35 +142,44 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
   }
 
   return (
-    <QGroupContainerBox key={qItem.linkId} cardElevation={groupCardElevation} isRepeated={true}>
+    <QGroupContainerBox
+      key={qItem.linkId}
+      cardElevation={groupCardElevation}
+      isRepeated={true}
+      style={parentStyles || undefined}>
       <Card elevation={groupCardElevation} sx={{ p: 3, py: 2.5, mb: 3.5 }}>
-        {qItem.text ? (
+        {itemTextToDisplay ? (
           <>
-            <Typography variant="h6" color={readOnly ? 'text.secondary' : 'text.primary'}>
-              <LabelWrapper qItem={qItem} readOnly={readOnly} />
-            </Typography>
-            <Divider sx={{ mt: 1, mb: 1.5 }} light />
+            <GroupHeading
+              qItem={qItem}
+              readOnly={readOnly}
+              groupCardElevation={groupCardElevation}
+            />
+            <Divider sx={{ mt: 1, mb: 1.5, opacity: 0.6 }} />
           </>
         ) : null}
         <TransitionGroup>
-          {repeatGroups.map(({ nanoId, qrItem: nullableQrItem }, index) => {
+          {repeatGroups.map(({ id, qrItem: nullableQrItem }, index) => {
             const answeredQrItem = createEmptyQrItem(qItem, undefined);
             if (nullableQrItem) {
               answeredQrItem.item = nullableQrItem.item;
             }
 
             return (
-              <Collapse key={nanoId} timeout={200}>
+              <Collapse key={id} timeout={200}>
                 <RepeatGroupItem
                   qItem={qItem}
                   repeatGroupIndex={index}
                   answeredQrItem={answeredQrItem}
                   nullableQrItem={nullableQrItem}
                   numOfRepeatGroups={repeatGroups.length}
-                  groupCardElevation={groupCardElevation + 1}
+                  itemPath={appendRepeatIndexToLastSegment(itemPath, index)}
+                  groupCardElevation={groupCardElevation}
                   parentIsReadOnly={parentIsReadOnly}
-                  onDeleteItem={() => onDeleteItem(index)}
-                  onQrItemChange={(newQrItem) => onAnswerChange(newQrItem, index)}
+                  onRemoveItem={() => onRemoveItem(index)}
+                  onQrItemChange={(newQrItem, targetItemPath) =>
+                    onAnswerChange(newQrItem, index, targetItemPath)
+                  }
                 />
               </Collapse>
             );

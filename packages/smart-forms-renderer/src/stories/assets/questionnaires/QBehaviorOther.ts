@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -315,6 +315,98 @@ export const qEnableWhen: Questionnaire = {
   ]
 };
 
+export const qEnableWhenMultiCheckbox: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'EnableWhenMultiCheckbox',
+  name: 'EnableWhenMultiCheckbox',
+  title: 'EnableWhen Multi-select Checkbox',
+  version: '0.1.0',
+  status: 'draft',
+  date: '2024-05-01',
+  url: 'https://smartforms.csiro.au/docs/behavior/other/enable-when-multi-checkbox',
+  item: [
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: 'http://hl7.org/fhir/questionnaire-item-control',
+                code: 'check-box'
+              }
+            ]
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-openLabel',
+          valueString: 'Other, please specify'
+        }
+      ],
+      linkId: 'select-conditions-list',
+      text: 'Select one or more conditions',
+      type: 'open-choice',
+      repeats: true,
+      answerOption: [
+        {
+          valueString: 'Condition A (Displays Clinical guidance: Condition A question)'
+        },
+        {
+          valueString: 'Condition B (Displays Clinical guidance: Condition B question)'
+        },
+        {
+          valueString: 'Condition C (Displays Clinical guidance: Condition C question)'
+        },
+        {
+          valueString: 'Condition D'
+        },
+        {
+          valueString: 'Condition E'
+        },
+        {
+          valueString: 'Condition F'
+        }
+      ]
+    },
+    {
+      linkId: 'clinical-guidance-a',
+      text: 'Clinical guidance: Condition A',
+      type: 'display',
+      enableWhen: [
+        {
+          question: 'select-conditions-list',
+          operator: '=',
+          answerString: 'Condition A (Displays Clinical guidance: Condition A question)'
+        }
+      ]
+    },
+    {
+      linkId: 'clinical-guidance-b',
+      text: 'Clinical guidance: Condition B',
+      type: 'display',
+      enableWhen: [
+        {
+          question: 'select-conditions-list',
+          operator: '=',
+          answerString: 'Condition B (Displays Clinical guidance: Condition B question)'
+        }
+      ]
+    },
+    {
+      linkId: 'clinical-guidance-c',
+      text: 'Clinical guidance: Condition C',
+      type: 'display',
+      enableWhen: [
+        {
+          question: 'select-conditions-list',
+          operator: '=',
+          answerString: 'Condition C (Displays Clinical guidance: Condition C question)'
+        }
+      ]
+    }
+  ]
+};
+
 export const qEnableBehaviorAll: Questionnaire = {
   resourceType: 'Questionnaire',
   id: 'EnableBehaviorAll',
@@ -496,7 +588,7 @@ export const qEnableWhenExpressionSimple: Questionnaire = {
               {
                 url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
                 valueString:
-                  '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p style="font-size:0.875em">Feel free to play around with the age value according to different age groups:</p><ul style="font-size:0.875em">\r\n      <li >Less or equal to 5</li>\r\n      <li>6 to 12</li>\r\n      <li>12 to 24</li>\r\n      <li>24 to 49</li>\r\n      <li>More or equal to 49</li>\r\n</ul></div>'
+                  '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Feel free to play around with the age value according to different age groups:</p><ul>\r\n      <li >Less or equal to 5</li>\r\n      <li>6 to 12</li>\r\n      <li>12 to 24</li>\r\n      <li>24 to 49</li>\r\n      <li>More or equal to 49</li>\r\n</ul></div>'
               }
             ]
           },
@@ -946,7 +1038,7 @@ export const qEnableWhenExpressionTabs: Questionnaire = {
                   {
                     url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
                     valueString:
-                      '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p style="font-size:0.875em">Feel free to play around with the age value according to different age groups:</p><ul style="font-size:0.875em">\r\n      <li >Less or equal to 5</li>\r\n      <li>6 to 12</li>\r\n      <li>13 to 24</li>\r\n      <li>25 to 49</li>\r\n      <li>More or equal to 49</li>\r\n</ul></div>'
+                      '<div xmlns="http://www.w3.org/1999/xhtml">\r\n<p>Feel free to play around with the age value according to different age groups:</p><ul>\r\n      <li >Less or equal to 5</li>\r\n      <li>6 to 12</li>\r\n      <li>13 to 24</li>\r\n      <li>25 to 49</li>\r\n      <li>More or equal to 49</li>\r\n</ul></div>'
                   }
                 ]
               },
@@ -1137,7 +1229,7 @@ export const qText: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p>This sentence is an example of a text using the rendering-xhtml extension.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p style="font-size:1.25rem">This sentence is an example of a text using the rendering-xhtml extension.</p></div>'
           }
         ]
       },

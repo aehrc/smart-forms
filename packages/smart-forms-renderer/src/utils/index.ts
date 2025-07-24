@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,10 +15,27 @@
  * limitations under the License.
  */
 
-export { buildForm, destroyForm, getResponse, removeEmptyAnswersFromResponse } from './manageForm';
+export {
+  buildForm,
+  destroyForm,
+  getResponse,
+  removeEmptyAnswersFromResponse,
+  removeInternalIdsFromResponse
+} from './manageForm';
 export { initialiseQuestionnaireResponse } from './initialise';
-export { isSpecificItemControl } from './itemControl';
-export { isRepeatItemAndNotCheckbox } from './qItem';
+export { createEmptyQrItem, createEmptyQrGroup, updateQrItemsInGroup } from './qrItem';
+export { mapQItemsIndex, getQrItemsIndex } from './mapItem';
+
+export { isSpecificItemControl, getDecimalPrecision } from './extensions';
+export { isRepeatItemAndNotCheckbox, isHiddenByEnableWhen } from './qItem';
+export { parseDecimalStringToFloat, parseDecimalStringWithPrecision } from './parseInputs';
 export type { ItemToRepopulate } from './repopulateItems';
 export { generateItemsToRepopulate } from './repopulateItems';
 export { repopulateResponse } from './repopulateIntoResponse';
+export {
+  extractObservationBased,
+  canBeObservationExtracted,
+  buildBundleFromObservationArray
+} from './extractObservation';
+
+export { getQuestionnaireItem, getSectionHeading } from './misc';

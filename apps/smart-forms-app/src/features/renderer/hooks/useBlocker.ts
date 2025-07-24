@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,9 +16,9 @@
  */
 
 import { useLayoutEffect } from 'react';
-import type { unstable_Blocker as Blocker } from 'react-router';
-import { unstable_useBlocker as useBlocker } from 'react-router';
 import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
+import type { unstable_Blocker as Blocker } from 'react-router-dom';
+import { unstable_useBlocker as useBlocker } from 'react-router-dom';
 
 function useLeavePageBlocker(): Blocker {
   const formChangesHistory = useQuestionnaireResponseStore.use.formChangesHistory();

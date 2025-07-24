@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,21 +15,24 @@
  * limitations under the License.
  */
 
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
   qDisplayCategoryInstructions,
   qHidden,
   qOpenLabel,
-  qRenderingStyleBooleanCheckboxItem,
-  qRenderingXhtmlBooleanCheckboxItem,
+  qRenderingStyleBooleanItem,
+  qRenderingXhtmlBooleanItem,
   qRenderingXhtmlDisplayBase64ImageItem,
-  qRenderingXhtmlDisplayListItem
+  qRenderingXhtmlDisplayListItem,
+  qRenderingXhtmlGroupPropagationClassStyles,
+  qRenderingXhtmlGroupPropagationInlineStyles,
+  qRenderingXhtmlGroupPropagationNested
 } from '../assets/questionnaires';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'Component/SDC/8.1.1 Advanced Text Appearance',
+  title: 'SDC/8.1.1 Advanced Text Appearance',
   component: BuildFormWrapperForStorybook,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []
@@ -40,15 +43,15 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const RenderingStyleBooleanCheckbox: Story = {
+export const RenderingStyleBoolean: Story = {
   args: {
-    questionnaire: qRenderingStyleBooleanCheckboxItem
+    questionnaire: qRenderingStyleBooleanItem
   }
 };
 
-export const RenderingXHTMLBooleanCheckbox: Story = {
+export const RenderingXHTMLBoolean: Story = {
   args: {
-    questionnaire: qRenderingXhtmlBooleanCheckboxItem
+    questionnaire: qRenderingXhtmlBooleanItem
   }
 };
 
@@ -61,6 +64,24 @@ export const RenderingXHTMLDisplayList: Story = {
 export const RenderingXHTMLDisplayBase64Image: Story = {
   args: {
     questionnaire: qRenderingXhtmlDisplayBase64ImageItem
+  }
+};
+
+export const RenderingXHTMLGroupPropagationNested: Story = {
+  args: {
+    questionnaire: qRenderingXhtmlGroupPropagationNested
+  }
+};
+
+export const RenderingXHTMLGroupPropagationInlineStyles: Story = {
+  args: {
+    questionnaire: qRenderingXhtmlGroupPropagationInlineStyles
+  }
+};
+
+export const RenderingXHTMLGroupPropagationClassStyles: Story = {
+  args: {
+    questionnaire: qRenderingXhtmlGroupPropagationClassStyles
   }
 };
 

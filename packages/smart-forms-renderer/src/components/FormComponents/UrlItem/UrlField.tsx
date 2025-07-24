@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,12 +16,16 @@
  */
 
 import React from 'react';
-import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import InputAdornment from '@mui/material/InputAdornment';
 import { StandardTextField } from '../Textfield.styles';
+import { useRendererStylingStore } from '../../../stores';
+import DisplayUnitText from '../ItemParts/DisplayUnitText';
+import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 
-interface UrlFieldProps extends PropsWithIsTabledAttribute {
+interface UrlFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
+  itemType: string;
   input: string;
   feedback: string;
   displayPrompt: string;
@@ -29,11 +33,13 @@ interface UrlFieldProps extends PropsWithIsTabledAttribute {
   entryFormat: string;
   readOnly: boolean;
   onInputChange: (value: string) => void;
+  onBlur: () => void;
 }
 
 function UrlField(props: UrlFieldProps) {
   const {
     linkId,
+    itemType,
     input,
     feedback,
     displayPrompt,
@@ -41,22 +47,43 @@ function UrlField(props: UrlFieldProps) {
     entryFormat,
     readOnly,
     isTabled,
-    onInputChange
+    onInputChange,
+    onBlur
   } = props;
+
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
   return (
     <StandardTextField
+      id={itemType + '-' + linkId}
+      multiline
       fullWidth
+      textFieldWidth={textFieldWidth}
       isTabled={isTabled}
-      id={linkId}
       value={input}
       error={!!feedback}
       onChange={(event) => onInputChange(event.target.value)}
-      label={displayPrompt}
-      placeholder={entryFormat}
-      disabled={readOnly}
+      onBlur={onBlur}
+      placeholder={entryFormat || displayPrompt}
+      disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       size="small"
-      InputProps={{ endAdornment: <InputAdornment position={'end'}>{displayUnit}</InputAdornment> }}
+      slotProps={{
+        input: {
+          readOnly: readOnly && readOnlyVisualStyle === 'readonly',
+          endAdornment: (
+            <InputAdornment position="end">
+              <ClearButtonAdornment
+                readOnly={readOnly}
+                onClear={() => {
+                  onInputChange('');
+                }}
+              />
+              <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
+            </InputAdornment>
+          )
+        }
+      }}
       helperText={feedback}
       data-test="q-item-url-field"
     />

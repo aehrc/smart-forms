@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -26,19 +26,26 @@ import GridRow from './GridRow';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { getQrItemsIndex } from '../../../utils/mapItem';
 import type {
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
-  PropsWithShowMinimalViewAttribute
+  PropsWithParentStylesAttribute
 } from '../../../interfaces/renderProps.interface';
+import { extendItemPath } from '../../../utils/itemPath';
+import { default as parseStyleToJs } from 'style-to-js';
 
 interface GridTableProps
   extends PropsWithQrItemChangeHandler,
-    PropsWithShowMinimalViewAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithItemPathAttribute,
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithParentStylesAttribute {
   qItems: QuestionnaireItem[];
   qrItems: QuestionnaireResponseItem[];
   qItemsIndexMap: Record<string, number>;
-  columnLabels: string[];
+  columnHeaders: {
+    label: string;
+    styleString: string | null;
+  }[];
 }
 
 function GridTable(props: GridTableProps) {
@@ -46,28 +53,45 @@ function GridTable(props: GridTableProps) {
     qItems,
     qrItems,
     qItemsIndexMap,
-    columnLabels,
-    showMinimalView,
+    columnHeaders,
+    itemPath,
     parentIsReadOnly,
+    parentStyles,
     onQrItemChange
   } = props;
 
   const qrItemsByIndex = getQrItemsIndex(qItems, qrItems, qItemsIndexMap);
 
-  const numOfColumns = columnLabels.length;
-
-  const minimalViewHeaderCellSx = showMinimalView ? { py: 2 } : null;
+  const columnHeaderLabels = useMemo(
+    () => columnHeaders.map(({ label }) => label),
+    [columnHeaders]
+  );
 
   return (
-    <Table size={showMinimalView ? 'small' : 'medium'}>
+    <Table>
       <TableHead>
         <TableRow>
           <HeaderTableCell />
-          {columnLabels.map((label) => (
-            <HeaderTableCell key={label} size="medium" sx={{ ...minimalViewHeaderCellSx }}>
-              {label}
-            </HeaderTableCell>
-          ))}
+          {/* Render column headers (with combined styles) */}
+          {columnHeaders.map(({ label, styleString }) => {
+            // Add default textAlign center style to all grid headers
+            const defaultStyle: React.CSSProperties = {
+              textAlign: 'center'
+            };
+
+            const itemStyles = styleString ? parseStyleToJs(styleString) : {};
+            const combinedStyle = {
+              ...defaultStyle,
+              ...parentStyles,
+              ...itemStyles
+            };
+
+            return (
+              <HeaderTableCell key={label} size="medium" style={combinedStyle}>
+                {label}
+              </HeaderTableCell>
+            );
+          })}
           <TableCell />
         </TableRow>
       </TableHead>
@@ -79,19 +103,15 @@ function GridTable(props: GridTableProps) {
             return null;
           }
 
-          // In minimal view, don't display items with no answers
-          if (showMinimalView && !qrItem) {
-            return null;
-          }
-
           return (
             <TableRow key={qItem.linkId}>
               <GridRow
                 qItem={qItem}
                 qrItem={qrItem ?? null}
-                columnLabels={columnLabels}
-                numOfColumns={numOfColumns}
+                columnHeaderLabels={columnHeaderLabels}
+                itemPath={extendItemPath(itemPath, qItem.linkId)}
                 parentIsReadOnly={parentIsReadOnly}
+                parentStyles={parentStyles}
                 onQrItemChange={onQrItemChange}
               />
             </TableRow>

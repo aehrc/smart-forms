@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,11 +21,14 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import OpenChoiceItemSwitcher from '../OpenChoiceItems/OpenChoiceItemSwitcher';
 import Typography from '@mui/material/Typography';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
+  PropsWithIsTabledRequiredAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
+  PropsWithParentStylesAttribute,
   PropsWithQrItemChangeHandler,
-  PropsWithShowMinimalViewAttribute
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import StringItem from '../StringItem/StringItem';
 import BooleanItem from '../BooleanItem/BooleanItem';
@@ -41,33 +44,81 @@ import IntegerItem from '../IntegerItem/IntegerItem';
 import AttachmentItem from '../AttachmentItem/AttachmentItem';
 import CustomDateTimeItem from '../DateTimeItems/CustomDateTimeItem/CustomDateTimeItem';
 import QuantityItem from '../QuantityItem/QuantityItem';
+import { useQuestionnaireStore } from '../../../stores';
 
 interface SingleItemSwitcherProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute,
-    PropsWithShowMinimalViewAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithIsTabledRequiredAttribute,
+    PropsWithRenderingExtensionsAttribute,
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute,
+    PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
 
 function SingleItemSwitcher(props: SingleItemSwitcherProps) {
-  const { qItem, qrItem, isRepeated, isTabled, showMinimalView, parentIsReadOnly, onQrItemChange } =
-    props;
+  const {
+    qItem,
+    qrItem,
+    itemPath,
+    isRepeated,
+    isTabled,
+    renderingExtensions,
+    parentIsReadOnly,
+    feedbackFromParent,
+    parentStyles,
+    onQrItemChange
+  } = props;
 
+  const qItemOverrideComponents = useQuestionnaireStore.use.qItemOverrideComponents();
+  const QItemOverrideComponent = qItemOverrideComponents[qItem.linkId];
+
+  // If a qItem override component is defined for this item, render it
+  // Don't get too strict with the "typeof" checks for now
+  if (QItemOverrideComponent && typeof QItemOverrideComponent === 'function') {
+    return (
+      <QItemOverrideComponent
+        qItem={qItem}
+        qrItem={qrItem}
+        itemPath={itemPath}
+        isRepeated={isRepeated}
+        isTabled={isTabled}
+        renderingExtensions={renderingExtensions}
+        parentIsReadOnly={parentIsReadOnly}
+        feedbackFromParent={feedbackFromParent}
+        onQrItemChange={onQrItemChange}
+        onQrRepeatGroupChange={() => {}} // Not needed for single items, use empty function
+      />
+    );
+  }
+
+  // Otherwise, render the default form component based on the item type
   switch (qItem.type) {
     case 'display':
-      return <DisplayItem qItem={qItem} />;
+      return (
+        <DisplayItem
+          qItem={qItem}
+          renderingExtensions={renderingExtensions}
+          parentIsReadOnly={parentIsReadOnly}
+          parentStyles={parentStyles}
+        />
+      );
     case 'boolean':
       return (
         <BooleanItem
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
+          feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
         />
       );
     case 'decimal':
@@ -75,10 +126,14 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         <DecimalItem
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
+          feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
         />
       );
     case 'integer':
@@ -87,10 +142,14 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           <SliderItem
             qItem={qItem}
             qrItem={qrItem}
+            itemPath={itemPath}
             isRepeated={isRepeated}
             isTabled={isTabled}
+            renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
+            feedbackFromParent={feedbackFromParent}
             onQrItemChange={onQrItemChange}
+            parentStyles={parentStyles}
           />
         );
       }
@@ -99,10 +158,14 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         <IntegerItem
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
+          feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
         />
       );
     case 'date':
@@ -110,10 +173,14 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         <CustomDateItem
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
+          feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
         />
       );
     case 'dateTime':
@@ -121,10 +188,14 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         <CustomDateTimeItem
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
+          feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
         />
       );
     case 'time':
@@ -132,10 +203,14 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         <TimeItem
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
+          feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
         />
       );
     case 'string':
@@ -143,10 +218,14 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         <StringItem
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
+          feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
         />
       );
     case 'text':
@@ -154,9 +233,14 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         <TextItem
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
+          isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
+          feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
         />
       );
     case 'url':
@@ -164,10 +248,14 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         <UrlItem
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
+          feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
         />
       );
     case 'choice':
@@ -175,11 +263,14 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         <ChoiceItemSwitcher
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
-          showMinimalView={showMinimalView}
+          renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
+          feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
         />
       );
     case 'open-choice':
@@ -187,11 +278,14 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         <OpenChoiceItemSwitcher
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
-          showMinimalView={showMinimalView}
+          renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
+          feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
         />
       );
     case 'attachment':
@@ -199,10 +293,14 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         <AttachmentItem
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
+          feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
         />
       );
     case 'reference':
@@ -211,22 +309,29 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         <StringItem
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
+          feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
         />
       );
     case 'quantity':
-      // FIXME quantity item uses the same component as decimal item currently
       return (
         <QuantityItem
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
+          feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
+          parentStyles={parentStyles}
         />
       );
     default:

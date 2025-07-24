@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,53 +21,116 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import useValueSetCodings from '../../../hooks/useValueSetCodings';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
+  PropsWithIsTabledRequiredAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import OpenChoiceSelectAnswerValueSetField from './OpenChoiceSelectAnswerValueSetField';
 import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import ItemLabel from '../ItemParts/ItemLabel';
+import type { AutocompleteChangeReason } from '@mui/material';
 
 interface OpenChoiceSelectAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithIsTabledRequiredAttribute,
+    PropsWithRenderingExtensionsAttribute,
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
 
 function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSetItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
+  const {
+    qItem,
+    qrItem,
+    isRepeated,
+    isTabled,
+    renderingExtensions,
+    parentIsReadOnly,
+    feedbackFromParent,
+    onQrItemChange
+  } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
+  // Perform validation checks
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
+
   // Init input value
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem, answerKey);
 
-  let valueSelect: Coding | null = null;
+  let valueSelect: Coding | string | null = null;
   if (qrOpenChoice['answer']) {
-    valueSelect = qrOpenChoice['answer'][0].valueCoding ?? null;
+    //check if answer has valueCoding or valueString and assign it to valueSelect and null if not present
+    if (qrOpenChoice['answer'][0].valueString) {
+      valueSelect = qrOpenChoice['answer'][0].valueString;
+    } else if (qrOpenChoice['answer'][0].valueCoding) {
+      valueSelect = qrOpenChoice['answer'][0].valueCoding;
+    } else {
+      valueSelect = null;
+    }
   }
 
+  // TODO Process calculated expressions
+  // This requires its own hook, because in the case of multi-select, we need to check if the value is already checked to prevent an infinite loop
+  // This will be done after the choice/open-choice refactoring
+
   // Get codings/options from valueSet
+  // TODO use dynamicCodingsUpdated to trigger a "refresh" icon when codings are dynamically updated
   const { codings, terminologyError } = useValueSetCodings(qItem);
 
   // Event handlers
-  function handleValueChange(newValue: Coding | string | null) {
+  // Handler function which handles both input change and selection change
+  function handleValueChange(
+    newValue: Coding | string | null,
+    reason: AutocompleteChangeReason | string
+  ) {
+    //if the reason is reset, then we don't change the value, otherwise you will end up with looped setState calls
+
+    if (reason === 'reset') {
+      return;
+    }
+
     if (newValue) {
       if (typeof newValue === 'string') {
-        onQrItemChange({
-          ...qrOpenChoice,
-          answer: [{ id: answerKey, valueString: newValue }]
+        // Check if the newValue in in the options, first check options.display, then check options.code
+        const foundOption = codings.find((option) => {
+          if (option.display) {
+            return option.display === newValue;
+          }
+          return option.code === newValue;
         });
-      } else {
+
+        //if the option.display is not present, then compare to code.
+
+        if (foundOption) {
+          newValue = foundOption;
+          onQrItemChange({
+            ...qrOpenChoice,
+            answer: [{ id: answerKey, valueCoding: newValue }]
+          });
+        } //if newValue is not in the options list, treat it as a string
+        else {
+          onQrItemChange({
+            ...qrOpenChoice,
+            answer: [{ id: answerKey, valueString: newValue }]
+          });
+        }
+      } //if the newValue is not a string, then it is coding
+      else {
         onQrItemChange({
           ...qrOpenChoice,
           answer: [{ id: answerKey, valueCoding: newValue }]
@@ -86,7 +149,9 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
         options={codings}
         valueSelect={valueSelect}
         terminologyError={terminologyError}
+        feedback={feedback}
         isTabled={isTabled}
+        renderingExtensions={renderingExtensions}
         readOnly={readOnly}
         onValueChange={handleValueChange}
       />
@@ -98,17 +163,24 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
       data-test="q-item-open-choice-select-answer-value-set-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <OpenChoiceSelectAnswerValueSetField
-          qItem={qItem}
-          options={codings}
-          valueSelect={valueSelect}
-          terminologyError={terminologyError}
-          isTabled={isTabled}
-          readOnly={readOnly}
-          onValueChange={handleValueChange}
-        />
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <OpenChoiceSelectAnswerValueSetField
+            qItem={qItem}
+            options={codings}
+            valueSelect={valueSelect}
+            terminologyError={terminologyError}
+            feedback={feedback}
+            isTabled={isTabled}
+            renderingExtensions={renderingExtensions}
+            readOnly={readOnly}
+            onValueChange={handleValueChange}
+          />
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

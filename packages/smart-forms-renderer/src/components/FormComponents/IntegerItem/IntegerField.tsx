@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,14 +15,17 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import InputAdornment from '@mui/material/InputAdornment';
 import { StandardTextField } from '../Textfield.styles';
-import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
-import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
+import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
+import { useRendererStylingStore } from '../../../stores';
+import DisplayUnitText from '../ItemParts/DisplayUnitText';
+import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
+import { expressionUpdateFadingGlow } from '../../ExpressionUpdateFadingGlow.styles';
 
-interface IntegerFieldProps extends PropsWithIsTabledAttribute {
+interface IntegerFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
+  itemType: string;
   input: string;
   feedback: string;
   displayPrompt: string;
@@ -31,11 +34,13 @@ interface IntegerFieldProps extends PropsWithIsTabledAttribute {
   readOnly: boolean;
   calcExpUpdated: boolean;
   onInputChange: (value: string) => void;
+  onBlur: () => void;
 }
 
 function IntegerField(props: IntegerFieldProps) {
   const {
     linkId,
+    itemType,
     input,
     feedback,
     displayPrompt,
@@ -44,30 +49,57 @@ function IntegerField(props: IntegerFieldProps) {
     readOnly,
     calcExpUpdated,
     isTabled,
-    onInputChange
+    onInputChange,
+    onBlur
   } = props;
+
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+
+  let placeholderText = '0';
+  if (displayPrompt) {
+    placeholderText = displayPrompt;
+  }
+
+  if (entryFormat) {
+    placeholderText = entryFormat;
+  }
 
   return (
     <StandardTextField
-      id={linkId}
+      id={itemType + '-' + linkId}
       value={input}
       error={!!feedback}
       helperText={feedback}
       onChange={(event) => onInputChange(event.target.value)}
-      disabled={readOnly}
+      onBlur={onBlur}
+      disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       label={displayPrompt}
-      placeholder={entryFormat === '' ? '0' : entryFormat}
+      placeholder={placeholderText}
       fullWidth
+      textFieldWidth={textFieldWidth}
       isTabled={isTabled}
       size="small"
-      inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position={'end'}>
-            <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-            {displayUnit}
-          </InputAdornment>
-        )
+      sx={[expressionUpdateFadingGlow(calcExpUpdated)]}
+      slotProps={{
+        htmlInput: {
+          inputMode: 'numeric',
+          pattern: '[0-9]*'
+        },
+        input: {
+          readOnly: readOnly && readOnlyVisualStyle === 'readonly',
+          endAdornment: (
+            <InputAdornment position={'end'}>
+              <ClearButtonAdornment
+                readOnly={readOnly}
+                onClear={() => {
+                  onInputChange('');
+                }}
+              />
+              <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
+            </InputAdornment>
+          )
+        }
       }}
       data-test="q-item-integer-field"
     />

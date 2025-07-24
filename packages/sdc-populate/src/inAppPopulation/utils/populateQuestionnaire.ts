@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,6 +28,9 @@ import type {
 import type {
   CustomContextResultParameter,
   FetchResourceCallback,
+  FetchResourceRequestConfig,
+  FetchTerminologyCallback,
+  FetchTerminologyRequestConfig,
   InputParameters,
   IssuesParameter,
   OutputParameters,
@@ -45,6 +48,7 @@ import type {
   SourceQuery
 } from '../interfaces/inAppPopulation.interface';
 import { Base64 } from 'js-base64';
+import type { FhirContext } from '../interfaces/fhirContext.interface';
 
 export interface PopulateResult {
   populatedResponse: QuestionnaireResponse;
@@ -54,25 +58,29 @@ export interface PopulateResult {
 
 /**
  * @property questionnaire - Questionnaire to populate
- * @property fetchResourceCallback - A callback function to fetch resources
- * @property requestConfig - Any request configuration to be passed to the fetchResourceCallback i.e. headers, auth etc.
+ * @property fetchResourceCallback - A callback function to fetch resources from your FHIR server
+ * @property fetchResourceRequestConfig - Any request configuration to be passed to the fetchResourceCallback i.e. headers, auth etc.
  * @property patient - Patient resource as patient in context
- * @property user - Practitioner resource as user in context
+ * @property user - Practitioner resource as user in context, optional
  * @property encounter - Encounter resource as encounter in context, optional
- * @property terminologyCallback - A callback function to fetch terminology resources, optional
- * @property terminologyRequestConfig - Any request configuration to be passed to the terminologyCallback i.e. headers, auth etc., optional
+ * @property fhirContext - An array of contextual resources within a launch. See https://build.fhir.org/ig/HL7/smart-app-launch/scopes-and-launch-context.html#fhircontext-exp
+ * @property fetchTerminologyCallback - A callback function to fetch terminology resources, optional
+ * @property fetchTerminologyRequestConfig - Any request configuration to be passed to the fetchTerminologyCallback i.e. headers, auth etc., optional
+ * @property timeoutMs - Timeout in milliseconds for the $populate operation, default is 10000ms (10 seconds)
  *
  * @author Sean Fong
  */
 export interface PopulateQuestionnaireParams {
   questionnaire: Questionnaire;
   fetchResourceCallback: FetchResourceCallback;
-  requestConfig: any;
+  fetchResourceRequestConfig: FetchResourceRequestConfig;
   patient: Patient;
   user?: Practitioner;
   encounter?: Encounter;
-  terminologyCallback?: FetchResourceCallback;
-  terminologyRequestConfig?: any;
+  fhirContext?: FhirContext[];
+  fetchTerminologyCallback?: FetchTerminologyCallback;
+  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig;
+  timeoutMs?: number;
 }
 
 /**
@@ -94,15 +102,18 @@ export async function populateQuestionnaire(params: PopulateQuestionnaireParams)
   const {
     questionnaire,
     fetchResourceCallback,
-    requestConfig,
+    fetchResourceRequestConfig,
     patient,
     user,
     encounter,
-    terminologyCallback,
-    terminologyRequestConfig
+    fhirContext,
+    fetchTerminologyCallback,
+    fetchTerminologyRequestConfig,
+    timeoutMs = 10000
   } = params;
 
-  const context: Record<string, any> = {};
+  // FHIRPath Context map that will be used to evaluate FHIRPath expressions, this is different from the fhirContext in the params.
+  const fhirPathContext: Record<string, any> = {};
 
   // Get launch contexts, source queries and questionnaire-level variables
   const launchContexts = getLaunchContexts(questionnaire);
@@ -121,15 +132,19 @@ export async function populateQuestionnaire(params: PopulateQuestionnaireParams)
   }
 
   // Define population input parameters from launch contexts, source queries and questionnaire-level variables
-  const inputParameters = createPopulateInputParameters(
+  const inputParameters = await createPopulateInputParameters(
     questionnaire,
     patient,
     user ?? null,
     encounter ?? null,
+    fhirContext ?? null,
     launchContexts,
     sourceQueries,
     questionnaireLevelVariables,
-    context
+    fhirPathContext,
+    fetchResourceCallback,
+    fetchResourceRequestConfig,
+    timeoutMs
   );
 
   if (!inputParameters) {
@@ -150,9 +165,10 @@ export async function populateQuestionnaire(params: PopulateQuestionnaireParams)
   const outputParameters = await performInAppPopulation(
     inputParameters,
     fetchResourceCallback,
-    requestConfig,
-    terminologyCallback,
-    terminologyRequestConfig
+    fetchResourceRequestConfig,
+    timeoutMs,
+    fetchTerminologyCallback,
+    fetchTerminologyRequestConfig
   );
 
   if (outputParameters.resourceType === 'OperationOutcome') {
@@ -198,20 +214,21 @@ export async function populateQuestionnaire(params: PopulateQuestionnaireParams)
 async function performInAppPopulation(
   inputParameters: InputParameters,
   fetchResourceCallback: FetchResourceCallback,
-  requestConfig: any,
-  terminologyCallback?: FetchResourceCallback,
-  terminologyRequestConfig?: any
+  fetchResourceRequestConfig: FetchResourceRequestConfig,
+  timeoutMs: number,
+  fetchTerminologyCallback?: FetchTerminologyCallback,
+  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
 ): Promise<OutputParameters | OperationOutcome> {
   const populatePromise = populate(
     inputParameters,
     fetchResourceCallback,
-    requestConfig,
-    terminologyCallback,
-    terminologyRequestConfig
+    fetchResourceRequestConfig,
+    fetchTerminologyCallback,
+    fetchTerminologyRequestConfig
   );
 
   try {
-    const promiseResult = await addTimeoutToPromise(populatePromise, 10000);
+    const promiseResult = await addTimeoutToPromise(populatePromise, timeoutMs);
 
     if (promiseResult.timeout) {
       return {
@@ -257,7 +274,7 @@ async function performInAppPopulation(
   }
 }
 
-async function addTimeoutToPromise(promise: Promise<any>, timeoutMs: number) {
+export async function addTimeoutToPromise(promise: Promise<any>, timeoutMs: number) {
   const timeoutPromise = new Promise((_, reject) => {
     setTimeout(() => {
       reject(new Error(`Promise timed out after ${timeoutMs} milliseconds`));
@@ -273,25 +290,11 @@ function isLaunchContext(extension: Extension): extension is LaunchContext {
     extension.url ===
       'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext' &&
     !!extension.extension?.find(
-      (ext) =>
-        ext.url === 'name' &&
-        (ext.valueId ||
-          (ext.valueCoding &&
-            (ext.valueCoding.code === 'patient' ||
-              ext.valueCoding.code === 'encounter' ||
-              ext.valueCoding.code === 'location' ||
-              ext.valueCoding.code === 'user' ||
-              ext.valueCoding.code === 'study' ||
-              ext.valueCoding.code === 'sourceQueries')))
+      (ext) => ext.url === 'name' && (ext.valueId || (ext.valueCoding && ext.valueCoding.code))
     );
 
   const hasLaunchContextType = !!extension.extension?.find(
-    (ext) =>
-      ext.url === 'type' &&
-      ext.valueCode &&
-      (ext.valueCode === 'Patient' ||
-        ext.valueCode === 'Practitioner' ||
-        ext.valueCode === 'Encounter')
+    (ext) => ext.url === 'type' && ext.valueCode
   );
 
   return (

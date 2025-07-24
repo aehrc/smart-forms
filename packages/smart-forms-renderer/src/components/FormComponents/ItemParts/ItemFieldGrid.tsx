@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,31 +17,42 @@
 
 import type { ReactNode } from 'react';
 import React from 'react';
-import Grid from '@mui/material/Grid';
 import type { QuestionnaireItem } from 'fhir/r4';
-import DisplayInstructions from '../DisplayItem/DisplayInstructions';
-import LabelWrapper from './ItemLabelWrapper';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
+import { useRendererStylingStore } from '../../../stores';
+import DisplayInstructions from '../DisplayItem/DisplayInstructions';
+import Grid from '@mui/material/Grid';
 
 interface ItemFieldGridProps {
-  children: ReactNode;
   qItem: QuestionnaireItem;
   readOnly: boolean;
+  labelChildren?: ReactNode;
+  fieldChildren?: ReactNode;
+  feedback?: string;
+  dateFeedback?: string;
+  timeFeedback?: string;
 }
 
 function ItemFieldGrid(props: ItemFieldGridProps) {
-  const { children, qItem, readOnly } = props;
+  const { qItem, readOnly, labelChildren, fieldChildren } = props;
+
+  const itemResponsive = useRendererStylingStore.use.itemResponsive();
+  const { labelBreakpoints, fieldBreakpoints, columnGapPixels, rowGapPixels } = itemResponsive;
 
   const { displayInstructions } = useRenderingExtensions(qItem);
 
   return (
-    <Grid container columnSpacing={4}>
-      <Grid item xs={4}>
-        <LabelWrapper qItem={qItem} readOnly={readOnly} />
+    <Grid container columnSpacing={columnGapPixels + 'px'} rowGap={rowGapPixels + 'px'}>
+      {/* NOTE: Boolean checkboxes now have labels which uses <SrOnly/>, similar to tailwind's sr-only class  */}
+      <Grid size={{ ...labelBreakpoints }}>
+        <>{labelChildren}</>
       </Grid>
-      <Grid item xs={8}>
-        {children}
-        <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
+      <Grid size={{ ...fieldBreakpoints }}>
+        <>{fieldChildren}</>
+        {/* Only show display instructions if there is no feedback of any type */}
+        {!props.feedback && !props.dateFeedback && !props.timeFeedback && (
+          <DisplayInstructions readOnly={readOnly}>{displayInstructions}</DisplayInstructions>
+        )}
       </Grid>
     </Grid>
   );

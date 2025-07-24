@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,10 +18,11 @@
 import React, { memo } from 'react';
 import Box from '@mui/material/Box';
 import type { Tabs } from '../../../interfaces/tab.interface';
-import { useQuestionnaireStore } from '../../../stores';
+import { useQuestionnaireStore, useRendererStylingStore } from '../../../stores';
 import NextTabButton from './NextTabButton';
 import PreviousTabButton from './PreviousTabButton';
 import useNextAndPreviousVisibleTabs from '../../../hooks/useNextAndPreviousVisibleTabs';
+import { useFocusTabHeading } from '../../../hooks/useFocusTabHeading';
 
 interface TabButtonsWrapperProps {
   currentTabIndex?: number;
@@ -32,11 +33,14 @@ const TabButtonsWrapper = memo(function TabButtonsWrapper(props: TabButtonsWrapp
   const { currentTabIndex, tabs } = props;
 
   const switchTab = useQuestionnaireStore.use.switchTab();
+  const disableTabButtons = useRendererStylingStore.use.disableTabButtons();
 
   const { previousTabIndex, nextTabIndex, numOfVisibleTabs } = useNextAndPreviousVisibleTabs(
     currentTabIndex,
     tabs
   );
+
+  const focusHeading = useFocusTabHeading();
 
   const tabsNotDefined = currentTabIndex === undefined || tabs === undefined;
 
@@ -50,6 +54,11 @@ const TabButtonsWrapper = memo(function TabButtonsWrapper(props: TabButtonsWrapp
 
     // Scroll to top of page
     window.scrollTo(0, 0);
+
+    // Focus the first heading in the new tab panel
+    setTimeout(() => {
+      focusHeading(`tabpanel-${previousTabIndex}`);
+    }, 100); // Small delay to ensure panel is rendered
   }
 
   function handleNextTabButtonClick() {
@@ -61,9 +70,19 @@ const TabButtonsWrapper = memo(function TabButtonsWrapper(props: TabButtonsWrapp
 
     // Scroll to top of page
     window.scrollTo(0, 0);
+
+    // Focus the first heading in the new tab panel
+    setTimeout(() => {
+      focusHeading(`tabpanel-${nextTabIndex}`);
+    }, 100); // Small delay to ensure panel is rendered
   }
 
   if (tabsNotDefined) {
+    return null;
+  }
+
+  // Disable tab buttons - currently only available via disableTabButtons API
+  if (disableTabButtons) {
     return null;
   }
 

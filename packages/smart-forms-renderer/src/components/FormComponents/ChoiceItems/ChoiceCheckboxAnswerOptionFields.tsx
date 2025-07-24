@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,38 +21,49 @@ import type {
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
-import { getChoiceOrientation } from '../../../utils/choice';
-import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
-import CheckboxOptionList from './CheckboxOptionList';
-import { StyledFormGroup } from '../Item.styles';
+import CheckboxFormGroup from '../ItemParts/CheckboxFormGroup';
 
 interface ChoiceCheckboxAnswerOptionFieldsProps {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
   answers: QuestionnaireResponseItemAnswer[];
+  feedback: string;
   readOnly: boolean;
+  expressionUpdated: boolean;
+  answerOptionsToggleExpressionsMap: Map<string, boolean>;
+  isTabled: boolean;
   onCheckedChange: (newValue: string) => void;
+  onClear: () => void;
 }
 
 function ChoiceCheckboxAnswerOptionFields(props: ChoiceCheckboxAnswerOptionFieldsProps) {
-  const { qItem, options, answers, readOnly, onCheckedChange } = props;
+  const {
+    qItem,
+    options,
+    answers,
+    feedback,
+    readOnly,
+    expressionUpdated,
+    answerOptionsToggleExpressionsMap,
+    isTabled,
+    onCheckedChange,
+    onClear
+  } = props;
 
-  const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
-
-  if (options.length > 0) {
-    return (
-      <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
-        <CheckboxOptionList
-          options={options}
-          answers={answers}
-          readOnly={readOnly}
-          onCheckedChange={onCheckedChange}
-        />
-      </StyledFormGroup>
-    );
-  }
-
-  return null;
+  return (
+    <CheckboxFormGroup
+      qItem={qItem}
+      options={options}
+      answers={answers}
+      feedback={feedback}
+      readOnly={readOnly}
+      expressionUpdated={expressionUpdated}
+      answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+      isTabled={isTabled}
+      onCheckedChange={onCheckedChange}
+      onClear={onClear}
+    />
+  );
 }
 
 export default ChoiceCheckboxAnswerOptionFields;

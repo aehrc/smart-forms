@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,18 +16,13 @@
  */
 
 import { defineConfig } from 'vite';
+// @ts-ignore
+import { version } from './package.json';
 
 // This Vite config is for storybook usage only.
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [],
-  optimizeDeps: {
-    include: ['@aehrc/sdc-populate']
-  },
-  build: {
-    commonjsOptions: {
-      include: [/node_modules/, '@aehrc/sdc-populate']
-    }
-  },
-  resolve: { preserveSymlinks: true }
+  define: {
+    'import.meta.env.VITE_RENDERER_VERSION': JSON.stringify(version ?? 'unspecified')
+  }
 });

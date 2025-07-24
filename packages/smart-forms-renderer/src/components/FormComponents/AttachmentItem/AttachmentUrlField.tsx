@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,18 +16,19 @@
  */
 
 import React from 'react';
-import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import { StandardTextField } from '../Textfield.styles';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import useAttachmentUrlValidation from '../../../hooks/useAttachmentUrlValidation';
 import InputAdornment from '@mui/material/InputAdornment';
-import Tooltip from '@mui/material/Tooltip';
 import CheckIcon from '@mui/icons-material/Check';
 import DangerousIcon from '@mui/icons-material/Dangerous';
+import { useRendererStylingStore } from '../../../stores';
+import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 
-interface AttachmentUrlFieldProps extends PropsWithIsTabledAttribute {
+interface AttachmentUrlFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
   url: string;
   readOnly: boolean;
@@ -37,39 +38,57 @@ interface AttachmentUrlFieldProps extends PropsWithIsTabledAttribute {
 function AttachmentUrlField(props: AttachmentUrlFieldProps) {
   const { linkId, url, readOnly, isTabled, onUrlChange } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+
   const urlIsValid = useAttachmentUrlValidation(url);
 
   return (
     <Box>
-      <Typography variant="body2" color={readOnly ? 'text.disabled' : 'text.primary'}>
+      <Typography
+        component="div"
+        variant="body2"
+        color={readOnly ? 'text.secondary' : 'text.primary'}>
         URL
       </Typography>
       <Stack direction="row" alignItems="center">
         <StandardTextField
+          multiline
           fullWidth
+          textFieldWidth={textFieldWidth}
           isTabled={isTabled}
           id={linkId}
           value={url}
           onChange={(event) => onUrlChange(event.target.value)}
-          disabled={readOnly}
+          disabled={readOnly && readOnlyVisualStyle === 'disabled'}
           size="small"
           data-test="q-item-attachment-field"
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                {url != '' ? (
-                  <Tooltip title={urlIsValid ? 'URL is valid!' : 'Invalid URL'} placement="right">
-                    <Box mt={0.5}>
+          slotProps={{
+            input: {
+              readOnly: readOnly && readOnlyVisualStyle === 'readonly',
+              endAdornment: (
+                <InputAdornment position="end">
+                  {url != '' ? (
+                    <Box sx={{ pt: 0.75 }} title={urlIsValid ? 'URL is valid!' : 'Invalid URL'}>
                       {urlIsValid ? (
                         <CheckIcon color="success" fontSize="small" />
                       ) : (
                         <DangerousIcon color="error" fontSize="small" />
                       )}
                     </Box>
-                  </Tooltip>
-                ) : null}
-              </InputAdornment>
-            )
+                  ) : null}
+                  <ClearButtonAdornment
+                    readOnly={readOnly}
+                    onClear={() => {
+                      onUrlChange('');
+                    }}
+                  />
+                </InputAdornment>
+              )
+            },
+            htmlInput: {
+              'aria-label': 'URL'
+            }
           }}
         />
       </Stack>

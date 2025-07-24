@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,33 +16,35 @@
  */
 
 import React from 'react';
-import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import CheckboxSingleWithOpenLabel from '../ItemParts/CheckboxSingleWithOpenLabel';
 import type {
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
-import { getChoiceOrientation } from '../../../utils/choice';
-import { StyledFormGroup } from '../Item.styles';
-import CheckboxOptionList from '../ChoiceItems/CheckboxOptionList';
 import { StyledAlert } from '../../Alert.styles';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Typography from '@mui/material/Typography';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
+import CheckboxFormGroup from '../ItemParts/CheckboxFormGroup';
 
 interface OpenChoiceCheckboxFieldsProps {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
   answers: QuestionnaireResponseItemAnswer[];
-  openLabelText: string | null;
+  openLabelText: string;
   openLabelValue: string;
   openLabelChecked: boolean;
+  feedback: string;
   readOnly: boolean;
+  expressionUpdated: boolean;
+  answerOptionsToggleExpressionsMap: Map<string, boolean>;
   terminologyError: TerminologyError;
+  isTabled: boolean;
   onOptionChange: (changedOptionValue: string) => void;
   onOpenLabelCheckedChange: (checked: boolean) => void;
   onOpenLabelInputChange: (input: string) => void;
+  onClear: () => void;
 }
 
 function OpenChoiceCheckboxAnswerValueSetFields(props: OpenChoiceCheckboxFieldsProps) {
@@ -53,35 +55,40 @@ function OpenChoiceCheckboxAnswerValueSetFields(props: OpenChoiceCheckboxFieldsP
     openLabelText,
     openLabelValue,
     openLabelChecked,
+    feedback,
     readOnly,
+    expressionUpdated,
+    answerOptionsToggleExpressionsMap,
     terminologyError,
+    isTabled,
     onOptionChange,
     onOpenLabelCheckedChange,
-    onOpenLabelInputChange
+    onOpenLabelInputChange,
+    onClear
   } = props;
-
-  const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
   if (options.length > 0) {
     return (
-      <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
-        <CheckboxOptionList
-          options={options}
-          answers={answers}
+      <CheckboxFormGroup
+        qItem={qItem}
+        options={options}
+        answers={answers}
+        feedback={feedback}
+        readOnly={readOnly}
+        expressionUpdated={expressionUpdated}
+        answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+        isTabled={isTabled}
+        onCheckedChange={onOptionChange}
+        onClear={onClear}>
+        <CheckboxSingleWithOpenLabel
+          value={openLabelValue}
+          label={openLabelText}
           readOnly={readOnly}
-          onCheckedChange={onOptionChange}
+          isChecked={openLabelChecked}
+          onCheckedChange={onOpenLabelCheckedChange}
+          onInputChange={onOpenLabelInputChange}
         />
-
-        {openLabelText !== null ? (
-          <CheckboxSingleWithOpenLabel
-            value={openLabelValue}
-            label={openLabelText}
-            isChecked={openLabelChecked}
-            onCheckedChange={onOpenLabelCheckedChange}
-            onInputChange={onOpenLabelInputChange}
-          />
-        ) : null}
-      </StyledFormGroup>
+      </CheckboxFormGroup>
     );
   }
 
@@ -89,7 +96,7 @@ function OpenChoiceCheckboxAnswerValueSetFields(props: OpenChoiceCheckboxFieldsP
     return (
       <StyledAlert color="error">
         <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-        <Typography variant="subtitle2">
+        <Typography component="div">
           There was an error fetching options from the terminology server for{' '}
           {terminologyError.answerValueSet}
         </Typography>
@@ -97,12 +104,18 @@ function OpenChoiceCheckboxAnswerValueSetFields(props: OpenChoiceCheckboxFieldsP
     );
   }
 
+  if (options.length === 0) {
+    return (
+      <Typography sx={{ py: 0.5 }} fontWeight={600} fontSize={13}>
+        No options available.
+      </Typography>
+    );
+  }
+
   return (
     <StyledAlert color="error">
       <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-      <Typography variant="subtitle2">
-        Unable to fetch options from the questionnaire or launch context
-      </Typography>
+      <Typography>Unable to fetch options from the questionnaire or launch context</Typography>
     </StyledAlert>
   );
 }

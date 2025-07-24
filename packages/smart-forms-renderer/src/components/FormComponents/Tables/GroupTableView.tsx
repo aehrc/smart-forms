@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,37 +24,49 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { HeaderTableCell } from './Table.styles';
 import TableCell from '@mui/material/TableCell';
-import TableBody from '@mui/material/TableBody';
-import Typography from '@mui/material/Typography';
-import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import Divider from '@mui/material/Divider';
 import AddRowButton from './AddRowButton';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
   PropsWithIsRepeatedAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithShowMinimalViewAttribute
+  PropsWithParentStylesAttribute
 } from '../../../interfaces/renderProps.interface';
 import type { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
 import GroupTableBody from './GroupTableBody';
-import Checkbox from '@mui/material/Checkbox';
-import { useQuestionnaireStore } from '../../../stores';
+import { useQuestionnaireStore, useRendererStylingStore } from '../../../stores';
+import { getGroupCollapsible } from '../../../utils/qItem';
+import { GroupAccordion } from '../GroupItem/GroupAccordion.styles';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import GroupHeading from '../GroupItem/GroupHeading';
+import { StandardCheckbox } from '../../Checkbox.styles';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
+import { Box } from '@mui/material';
+import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
 
 interface GroupTableViewProps
   extends PropsWithIsRepeatedAttribute,
-    PropsWithShowMinimalViewAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithItemPathAttribute,
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   qItemsIndexMap: Record<string, number>;
   groupCardElevation: number;
   readOnly: boolean;
   tableRows: GroupTableRowModel[];
   selectedIds: string[];
-  itemLabels: string[];
+  visibleItemLabels: string[];
   onAddRow: () => void;
-  onRowChange: (newQrRow: QuestionnaireResponseItem, index: number) => void;
+  onRowChange: (
+    newQrRow: QuestionnaireResponseItem,
+    index: number,
+    targetItemPath?: ItemPath
+  ) => void;
   onRemoveRow: (index: number) => void;
-  onSelectRow: (nanoId: string) => void;
+  onSelectRow: (rowId: string) => void;
   onSelectAll: () => void;
   onReorderRows: (newTableRows: GroupTableRowModel[]) => void;
 }
@@ -68,9 +80,10 @@ function GroupTableView(props: GroupTableViewProps) {
     readOnly,
     tableRows,
     selectedIds,
-    itemLabels,
-    showMinimalView,
+    visibleItemLabels,
+    itemPath,
     parentIsReadOnly,
+    parentStyles,
     onAddRow,
     onRowChange,
     onRemoveRow,
@@ -81,59 +94,122 @@ function GroupTableView(props: GroupTableViewProps) {
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
-  if (showMinimalView) {
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+
+  const groupCollapsibleValue = getGroupCollapsible(qItem);
+
+  const indeterminateValue = selectedIds.length > 0 && selectedIds.length < tableRows.length;
+  const checkedValue = tableRows.length > 0 && selectedIds.length === tableRows.length;
+  const ariaCheckedValue = indeterminateValue ? 'mixed' : checkedValue ? 'true' : 'false';
+
+  const showExtraGTableInteractions = isRepeated && !readOnly;
+
+  const itemTextToDisplay = getItemTextToDisplay(qItem);
+
+  // If the table is collapsible, wrap it in an accordion
+  if (groupCollapsibleValue) {
+    const isDefaultOpen = groupCollapsibleValue === 'default-open';
     return (
-      <QGroupContainerBox cardElevation={groupCardElevation} isRepeated={false} py={1}>
-        <TableContainer component={Paper} elevation={groupCardElevation}>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                {itemLabels.map((itemLabel) => (
-                  <HeaderTableCell key={itemLabel} size="medium">
-                    {itemLabel}
-                  </HeaderTableCell>
-                ))}
-                <TableCell />
-              </TableRow>
-            </TableHead>
-            <TableBody>
+      <GroupAccordion
+        disableGutters
+        defaultExpanded={isDefaultOpen}
+        elevation={groupCardElevation}
+        slotProps={{
+          transition: { unmountOnExit: true, timeout: 250 }
+        }}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ minHeight: '28px' }}>
+          {itemTextToDisplay ? (
+            <GroupHeading
+              qItem={qItem}
+              readOnly={readOnly}
+              groupCardElevation={groupCardElevation}
+            />
+          ) : null}
+        </AccordionSummary>
+        <AccordionDetails sx={{ pt: 0 }}>
+          {itemTextToDisplay ? <Divider sx={{ mb: 1.5, opacity: 0.6 }} /> : null}
+          <TableContainer component={Paper} elevation={groupCardElevation}>
+            <Table>
+              {showExtraGTableInteractions ? (
+                <caption>
+                  <AddRowButton repeatGroups={tableRows} readOnly={readOnly} onAddItem={onAddRow} />
+                </caption>
+              ) : null}
+              <TableHead>
+                <TableRow>
+                  <HeaderTableCell padding="none" />
+                  {showExtraGTableInteractions ? (
+                    <HeaderTableCell padding="none">
+                      <StandardCheckbox
+                        color="primary"
+                        size="small"
+                        indeterminate={indeterminateValue}
+                        checked={checkedValue}
+                        disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+                        readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
+                        aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
+                        role="checkbox"
+                        aria-checked={ariaCheckedValue}
+                        onChange={onSelectAll}
+                        slotProps={{
+                          input: {
+                            'aria-label':
+                              'Select all rows in ' + (qItem.text ?? `Unnamed ${qItem.type} item`)
+                          }
+                        }}
+                      />
+                    </HeaderTableCell>
+                  ) : null}
+                  {visibleItemLabels.map((visibleItemLabel) => (
+                    <HeaderTableCell key={visibleItemLabel}>
+                      <Box display="flex" alignItems="center" justifyContent="center">
+                        {visibleItemLabel}
+                      </Box>
+                    </HeaderTableCell>
+                  ))}
+                  <TableCell padding="checkbox" />
+                </TableRow>
+              </TableHead>
               <GroupTableBody
                 tableQItem={qItem}
                 readOnly={readOnly}
                 tableRows={tableRows}
                 selectedIds={selectedIds}
                 qItemsIndexMap={qItemsIndexMap}
-                isRepeated={isRepeated}
-                showMinimalView={showMinimalView}
+                visibleItemLabels={visibleItemLabels}
+                showExtraGTableInteractions={showExtraGTableInteractions}
+                itemPath={itemPath}
                 parentIsReadOnly={parentIsReadOnly}
                 onRowChange={onRowChange}
                 onRemoveRow={onRemoveRow}
                 onSelectRow={onSelectRow}
                 onReorderRows={onReorderRows}
               />
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </QGroupContainerBox>
+            </Table>
+          </TableContainer>
+        </AccordionDetails>
+      </GroupAccordion>
     );
   }
 
+  // Regular GTable
   return (
     <QGroupContainerBox
       cardElevation={groupCardElevation}
       isRepeated={false}
       py={3}
       data-linkid={qItem.linkId}
-      onClick={() => onFocusLinkId(qItem.linkId)}>
-      <>
-        <Typography fontSize={13} variant="h6" color={readOnly ? 'text.secondary' : 'text.primary'}>
-          <LabelWrapper qItem={qItem} readOnly={readOnly} />
-        </Typography>
-        <Divider sx={{ my: 1 }} light />
-      </>
+      onClick={() => onFocusLinkId(qItem.linkId)}
+      style={parentStyles || undefined}>
+      {itemTextToDisplay ? (
+        <>
+          <GroupHeading qItem={qItem} readOnly={readOnly} groupCardElevation={groupCardElevation} />
+          <Divider sx={{ my: 1, opacity: 0.6 }} />
+        </>
+      ) : null}
       <TableContainer component={Paper} elevation={groupCardElevation}>
         <Table>
-          {isRepeated ? (
+          {showExtraGTableInteractions ? (
             <caption>
               <AddRowButton repeatGroups={tableRows} readOnly={readOnly} onAddItem={onAddRow} />
             </caption>
@@ -141,20 +217,34 @@ function GroupTableView(props: GroupTableViewProps) {
           <TableHead>
             <TableRow>
               <HeaderTableCell padding="none" />
-              {isRepeated ? (
+              {showExtraGTableInteractions ? (
                 <HeaderTableCell padding="none">
-                  <Checkbox
+                  <StandardCheckbox
                     color="primary"
                     size="small"
-                    indeterminate={selectedIds.length > 0 && selectedIds.length < tableRows.length}
-                    checked={tableRows.length > 0 && selectedIds.length === tableRows.length}
-                    disabled={readOnly}
+                    indeterminate={indeterminateValue}
+                    checked={checkedValue}
+                    disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+                    readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
+                    aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
+                    role="checkbox"
+                    aria-checked={ariaCheckedValue}
                     onChange={onSelectAll}
+                    slotProps={{
+                      input: {
+                        'aria-label':
+                          'Select all rows in ' + (qItem.text ?? `Unnamed ${qItem.type} item`)
+                      }
+                    }}
                   />
                 </HeaderTableCell>
               ) : null}
-              {itemLabels.map((itemLabel) => (
-                <HeaderTableCell key={itemLabel}>{itemLabel}</HeaderTableCell>
+              {visibleItemLabels.map((visibleItemLabel) => (
+                <HeaderTableCell key={visibleItemLabel}>
+                  <Box display="flex" alignItems="center" justifyContent="center">
+                    {visibleItemLabel}
+                  </Box>
+                </HeaderTableCell>
               ))}
               <TableCell padding="checkbox" />
             </TableRow>
@@ -165,8 +255,9 @@ function GroupTableView(props: GroupTableViewProps) {
             tableRows={tableRows}
             selectedIds={selectedIds}
             qItemsIndexMap={qItemsIndexMap}
-            isRepeated={isRepeated}
-            showMinimalView={showMinimalView}
+            visibleItemLabels={visibleItemLabels}
+            showExtraGTableInteractions={showExtraGTableInteractions}
+            itemPath={itemPath}
             parentIsReadOnly={parentIsReadOnly}
             onRowChange={onRowChange}
             onRemoveRow={onRemoveRow}

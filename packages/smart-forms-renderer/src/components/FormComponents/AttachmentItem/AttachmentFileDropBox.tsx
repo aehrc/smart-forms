@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,11 @@ import { Box, Typography } from '@mui/material';
 import useFileDrop from '../../../hooks/UseFileDrop';
 import { AttachmentFileDropBoxWrapper } from './AttachmentFileDropBox.styles';
 import React from 'react';
-import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import { getFileSize } from '../../../utils/fileUtils';
+import { useRendererStylingStore } from '../../../stores';
 
-export interface AttachmentFileDropBoxProps extends PropsWithIsTabledAttribute {
+export interface AttachmentFileDropBoxProps extends PropsWithIsTabledRequiredAttribute {
   file: File | null;
   onDrop: (item: { files: any[] }) => void;
   errorMessage: string;
@@ -32,13 +33,18 @@ export interface AttachmentFileDropBoxProps extends PropsWithIsTabledAttribute {
 function AttachmentFileDropBox(props: AttachmentFileDropBoxProps) {
   const { file, onDrop, errorMessage, readOnly, isTabled } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+
+  const readOnlyTextColor = readOnlyVisualStyle === 'disabled' ? 'text.disabled' : 'text.secondary';
+
   const { canDrop, isOver, dropTarget } = useFileDrop(onDrop);
 
   const isActive = canDrop && isOver;
 
   let boxMessage = 'No file selected';
   if (readOnly) {
-    boxMessage = 'Item is read only';
+    boxMessage = 'Attachment item is read only';
   } else if (isActive) {
     boxMessage = 'Release to drop file';
   } else if (errorMessage) {
@@ -49,17 +55,24 @@ function AttachmentFileDropBox(props: AttachmentFileDropBoxProps) {
 
   return (
     <AttachmentFileDropBoxWrapper
-      ref={dropTarget}
+      ref={dropTarget as unknown as React.Ref<any>} // works in runtime, but produces error TS2322: Type 'ConnectDropTarget' is not assignable to type 'Ref<unknown> | undefined' at compile time
       display="flex"
       isActive={isActive}
+      textFieldWidth={textFieldWidth}
       isTabled={isTabled}>
       <Box p={1.5}>
-        <Typography color={readOnly ? 'text.disabled' : 'text.primary'}>{boxMessage}</Typography>
+        <Typography component="div" color={readOnly ? readOnlyTextColor : 'text.primary'}>
+          {boxMessage}
+        </Typography>
 
         {file ? (
           <Box pt={1}>
-            <Typography fontSize={10}>Size: {getFileSize(file.size.toString() ?? '0')}</Typography>
-            <Typography fontSize={10}>Type: {file.type}</Typography>
+            <Typography component="div" fontSize={10}>
+              Size: {getFileSize(file.size.toString() ?? '0')}
+            </Typography>
+            <Typography component="div" fontSize={10}>
+              Type: {file.type}
+            </Typography>
           </Box>
         ) : null}
       </Box>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,19 +16,20 @@
  */
 
 import type {
+  FetchResourceCallback,
+  FetchResourceRequestConfig,
   IdentifierParameter,
   InputParameters,
   QuestionnaireRefParameter
-} from '../interfaces/inputParameters.interface';
-import { isCanonicalParameter } from '../utils/typePredicates';
+} from '../interfaces';
+import { isCanonicalParameter } from '../utils';
 import type { Bundle, OperationOutcome, Questionnaire } from 'fhir/r4';
-import type { FetchResourceCallback } from '../interfaces/callback.interface';
 import { createErrorOutcome } from '../utils/operationOutcome';
 
 export async function fetchQuestionnaire(
   parameters: InputParameters,
   fetchQuestionnaireCallback: FetchResourceCallback,
-  requestConfig: any
+  fetchResourceRequestConfig: FetchResourceRequestConfig
 ): Promise<Questionnaire | OperationOutcome> {
   const questionnaireData = parameters.parameter[0];
   if (questionnaireData.name === 'questionnaire') {
@@ -40,7 +41,7 @@ export async function fetchQuestionnaire(
   const query = getQueryString(questionnaireData, canonical);
   const response: Questionnaire | Bundle | OperationOutcome = await fetchQuestionnaireCallback(
     query,
-    requestConfig
+    fetchResourceRequestConfig
   );
 
   if (response.resourceType === 'Questionnaire') {

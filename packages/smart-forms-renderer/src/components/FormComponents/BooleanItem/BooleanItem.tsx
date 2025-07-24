@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,13 +16,7 @@
  */
 
 import React from 'react';
-import type {
-  PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler
-} from '../../../interfaces/renderProps.interface';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
@@ -31,25 +25,30 @@ import Box from '@mui/material/Box';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import useBooleanCalculatedExpression from '../../../hooks/useBooleanCalculatedExpression';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import ItemLabel from '../ItemParts/ItemLabel';
 
-interface BooleanItemProps
-  extends PropsWithQrItemChangeHandler,
-    PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute,
-    PropsWithParentIsReadOnlyAttribute {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
-}
-
-function BooleanItem(props: BooleanItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
+function BooleanItem(props: BaseItemProps) {
+  const {
+    qItem,
+    qrItem,
+    itemPath,
+    isRepeated,
+    isTabled,
+    parentIsReadOnly,
+    feedbackFromParent,
+    onQrItemChange
+  } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
+  // Perform validation checks - there's no string-based input here
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
+
   // Init input value
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   let valueBoolean: boolean | undefined = undefined;
   if (qrItem?.answer?.[0]?.valueBoolean !== undefined) {
     valueBoolean = qrItem.answer[0].valueBoolean;
@@ -60,13 +59,16 @@ function BooleanItem(props: BooleanItemProps) {
     qItem: qItem,
     booleanValue: valueBoolean,
     onChangeByCalcExpressionBoolean: (newValueBoolean: boolean) => {
-      onQrItemChange({
-        ...createEmptyQrItem(qItem, answerKey),
-        answer: [{ id: answerKey, valueBoolean: newValueBoolean }]
-      });
+      onQrItemChange(
+        {
+          ...createEmptyQrItem(qItem, answerKey),
+          answer: [{ id: answerKey, valueBoolean: newValueBoolean }]
+        },
+        itemPath
+      );
     },
     onChangeByCalcExpressionNull: () => {
-      onQrItemChange(createEmptyQrItem(qItem, answerKey));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
     }
   });
 
@@ -102,6 +104,7 @@ function BooleanItem(props: BooleanItemProps) {
           qItem={qItem}
           readOnly={readOnly}
           valueBoolean={valueBoolean}
+          feedback={feedback}
           calcExpUpdated={calcExpUpdated}
           onCheckedChange={handleValueChange}
           onClear={handleClear}
@@ -116,27 +119,35 @@ function BooleanItem(props: BooleanItemProps) {
         qItem={qItem}
         readOnly={readOnly}
         valueBoolean={valueBoolean}
+        feedback={feedback}
         calcExpUpdated={calcExpUpdated}
         onCheckedChange={handleValueChange}
         onClear={handleClear}
       />
     );
   }
+
   return (
     <FullWidthFormComponentBox
       data-test="q-item-boolean-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <BooleanField
-          qItem={qItem}
-          readOnly={readOnly}
-          valueBoolean={valueBoolean}
-          calcExpUpdated={calcExpUpdated}
-          onCheckedChange={handleValueChange}
-          onClear={handleClear}
-        />
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <BooleanField
+            qItem={qItem}
+            readOnly={readOnly}
+            valueBoolean={valueBoolean}
+            feedback={feedback}
+            calcExpUpdated={calcExpUpdated}
+            onCheckedChange={handleValueChange}
+            onClear={handleClear}
+          />
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

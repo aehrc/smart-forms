@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
+import type { Theme } from '@mui/material/styles';
 import { alpha, styled } from '@mui/material/styles';
-import type { Theme } from '@mui/material';
 import { OutlinedInput, Toolbar } from '@mui/material';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
@@ -36,7 +36,7 @@ export const StyledSearch = styled(OutlinedInput)(({ theme }) => ({
   }),
   '&.Mui-focused': {
     width: '100%',
-    boxShadow: theme.customShadows.z4
+    boxShadow: theme.shadows[4]
   },
   '& fieldset': {
     borderWidth: `1px !important`,
@@ -51,7 +51,7 @@ export function getResponseSearchStyles(theme: Theme) {
       duration: theme.transitions.duration.shorter
     }),
     '&.Mui-focused': {
-      boxShadow: theme.customShadows.z4
+      boxShadow: theme.shadows[4]
     },
     '& fieldset': {
       borderWidth: `1px !important`,
@@ -68,14 +68,14 @@ export function getResponseToolBarColors(
   if (selected) {
     return {
       color: 'primary.main',
-      bgcolor: 'pale.primary'
+      bgcolor: '#D6EBFC'
     };
   }
 
   if (selectedQuestionnaire && existingResponses.length > 0) {
     return {
       color: 'secondary.main',
-      bgcolor: 'pale.secondary'
+      bgcolor: '#D3EBDD'
     };
   }
 
@@ -86,7 +86,7 @@ export function getQuestionnaireToolBarColors(selected: Questionnaire | null) {
   return {
     ...(selected && {
       color: 'primary.main',
-      bgcolor: 'pale.primary'
+      bgcolor: '#D6EBFC'
     })
   };
 }
@@ -96,11 +96,11 @@ export function getExistingResponsesToolBarColors(selected: QuestionnaireRespons
     ...(selected
       ? {
           color: 'primary.main',
-          bgcolor: 'pale.primary'
+          bgcolor: '#D6EBFC'
         }
       : {
           color: 'secondary.main',
-          bgcolor: 'pale.secondary'
+          bgcolor: '#D3EBDD'
         })
   };
 }

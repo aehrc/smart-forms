@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,17 +18,18 @@
 import Editor, { useMonaco } from '@monaco-editor/react';
 import { useState } from 'react';
 import type { editor } from 'monaco-editor';
-import { Box, Button, Divider, Stack } from '@mui/material';
+import { Box, Button, Divider, IconButton, Stack, Tooltip } from '@mui/material';
 import type { StateStore } from './StoreStateViewer.tsx';
 import StoreStateViewer from './StoreStateViewer.tsx';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import ToggleButton from '@mui/material/ToggleButton';
+import FormatAlignLeftIcon from '@mui/icons-material/FormatAlignLeft';
+import PlaygroundCustomisationToggles from './PlaygroundCustomisationToggles.tsx';
+import PlaygroundAdvancedPropsMenu from './PlaygroundAdvancedPropsMenu.tsx';
 
 interface JsonEditorProps {
   jsonString: string;
   onJsonStringChange: (jsonString: string) => void;
   buildingState: 'idle' | 'building' | 'built';
-  fhirServerUrl: string;
+  sourceFhirServerUrl: string;
   onBuildForm: (jsonString: string) => unknown;
   onDestroyForm: () => unknown;
 }
@@ -38,13 +39,14 @@ function JsonEditor(props: JsonEditorProps) {
     jsonString,
     onJsonStringChange,
     buildingState,
-    fhirServerUrl,
+    sourceFhirServerUrl,
     onBuildForm,
     onDestroyForm
   } = props;
 
   const [view, setView] = useState<'editor' | 'storeState'>('editor');
   const [selectedStore, setSelectedStore] = useState<StateStore>('questionnaireResponseStore');
+  const [statePropNameFilter, setstatePropNameFilter] = useState<string>('');
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
   function handleEditorChange(value: string | undefined) {
@@ -63,7 +65,11 @@ function JsonEditor(props: JsonEditorProps) {
 
   return (
     <Box height="100%">
-      <Stack direction="row" gap={0.5} sx={{ py: 0.25, px: 1, overflowX: 'auto' }}>
+      <Stack
+        direction="row"
+        alignItems="center"
+        gap={0.5}
+        sx={{ py: 0.25, px: 1, overflowX: 'auto' }}>
         <Button
           disabled={errorMessages.length > 0 || jsonString === ''}
           onClick={() => onBuildForm(jsonString)}>
@@ -86,63 +92,76 @@ function JsonEditor(props: JsonEditorProps) {
                 onClick={() => {
                   setView('storeState');
                 }}>
-                See advanced properties
+                Advanced props
               </Button>
             ) : (
-              <Stack direction="row" alignItems="center" gap={0.55}>
-                <Button
-                  onClick={() => {
-                    setView('editor');
-                  }}>
-                  Show editor
-                </Button>
-                <ToggleButtonGroup
-                  size="small"
-                  color="primary"
-                  value={selectedStore}
-                  sx={{ height: 32 }}
-                  exclusive
-                  data-test="store-state-toggle-playground"
-                  onChange={(_, newSelectedStore) => setSelectedStore(newSelectedStore)}>
-                  <ToggleButton value="questionnaireStore">Q</ToggleButton>
-                  <ToggleButton value="questionnaireResponseStore">QR</ToggleButton>
-                  <ToggleButton value="terminologyServerStore">Terminology</ToggleButton>
-                  <ToggleButton value="extractedResource">Extracted</ToggleButton>
-                </ToggleButtonGroup>
-              </Stack>
+              <PlaygroundAdvancedPropsMenu
+                selectedStore={selectedStore}
+                statePropNameFilter={statePropNameFilter}
+                onSetView={setView}
+                onSetSelectedStore={(selectedStore) => setSelectedStore(selectedStore)}
+                onSetstatePropNameFilter={(filterString) => setstatePropNameFilter(filterString)}
+              />
             )}
             <Box flexGrow={1} />
+            <PlaygroundCustomisationToggles />
             {view === 'editor' ? (
-              <Button
-                disabled={errorMessages.length > 0 || jsonString === ''}
-                onClick={() => {
-                  if (monaco) {
-                    const formattedJson = JSON.stringify(JSON.parse(jsonString), null, 2);
-                    const editor = monaco.editor.getModels()[0];
-                    editor.setValue(formattedJson);
-                  }
-                }}>
-                Format JSON
-              </Button>
+              <Tooltip title="Format JSON">
+                <span>
+                  <IconButton
+                    disabled={errorMessages.length > 0 || jsonString === ''}
+                    size="small"
+                    color="primary"
+                    onClick={() => {
+                      if (monaco) {
+                        const formattedJson = JSON.stringify(JSON.parse(jsonString), null, 2);
+                        const editor = monaco.editor.getModels()[0];
+                        editor.setValue(formattedJson);
+                      }
+                    }}>
+                    <FormatAlignLeftIcon fontSize="small" />
+                  </IconButton>
+                </span>
+              </Tooltip>
             ) : null}
           </>
         ) : null}
       </Stack>
       <Divider />
-      {view === 'editor' ? (
-        <Editor
-          height="100%"
-          defaultLanguage="json"
-          defaultValue="// alternatively, paste questionnaire JSON string here (only JSON is supported at the moment!)"
-          onChange={handleEditorChange}
-          value={jsonString}
-          onValidate={handleEditorValidation}
-        />
-      ) : (
-        <Box sx={{ height: '100%', overflow: 'auto' }}>
-          <StoreStateViewer selectedStore={selectedStore} fhirServerUrl={fhirServerUrl} />
+      <Box sx={{ height: '100%' }}>
+        <Box
+          sx={{
+            display: view === 'editor' ? 'block' : 'none',
+            height: '100%'
+          }}>
+          <Editor
+            height="calc(100% - 40px)"
+            defaultLanguage="json"
+            defaultValue={`// Alternatively, paste questionnaire JSON string here (only JSON is supported!)
+// The contents of this editor are saved automatically in your browser's local storage.
+// Your changes will persist across sessions.
+`}
+            onChange={handleEditorChange}
+            value={jsonString}
+            onValidate={handleEditorValidation}
+            options={{
+              minimap: { enabled: false }
+            }}
+          />
         </Box>
-      )}
+        <Box
+          sx={{
+            display: view === 'storeState' ? 'block' : 'none',
+            height: '100%',
+            marginLeft: '1px'
+          }}>
+          <StoreStateViewer
+            selectedStore={selectedStore}
+            sourceFhirServerUrl={sourceFhirServerUrl}
+            statePropNameFilter={statePropNameFilter}
+          />
+        </Box>
+      </Box>
     </Box>
   );
 }

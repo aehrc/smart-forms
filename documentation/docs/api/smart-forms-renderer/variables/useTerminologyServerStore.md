@@ -1,14 +1,10 @@
 # Variable: useTerminologyServerStore
 
-> `const` **useTerminologyServerStore**: `StoreApi` \<[`TerminologyServerStoreType`](../interfaces/TerminologyServerStoreType.md)\> & `object`
+> `const` **useTerminologyServerStore**: `StoreApi`\<[`TerminologyServerStoreType`](../interfaces/TerminologyServerStoreType.md)\> & `object`
 
 Terminology server state management store. This is used for resolving valueSets externally.
 Defaults to use https://tx.ontoserver.csiro.au/fhir.
 This is the React version of the store which can be used as React hooks in React functional components.
-
-## See
-
-TerminologyServerStoreType for available properties and methods.
 
 ## Type declaration
 
@@ -16,40 +12,44 @@ TerminologyServerStoreType for available properties and methods.
 
 > **use**: `object`
 
-### use.resetUrl()
+#### use.resetUrl()
 
 > **resetUrl**: () => () => `void`
 
-#### Returns
+##### Returns
 
 `Function`
 
-##### Returns
+###### Returns
 
 `void`
 
-### use.setUrl()
+#### use.setUrl()
 
 > **setUrl**: () => (`newUrl`) => `void`
 
-#### Returns
+##### Returns
 
 `Function`
 
-##### Parameters
+###### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `newUrl` | `string` |
 
-##### Returns
+###### Returns
 
 `void`
 
-### use.url()
+#### use.url()
 
 > **url**: () => `string`
 
-#### Returns
+##### Returns
 
 `string`
+
+## See
+
+TerminologyServerStoreType for available properties and methods.

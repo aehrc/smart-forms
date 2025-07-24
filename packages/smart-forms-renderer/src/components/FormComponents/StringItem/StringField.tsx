@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,14 +15,17 @@
  * limitations under the License.
  */
 
-import React from 'react';
-import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import InputAdornment from '@mui/material/InputAdornment';
 import { StandardTextField } from '../Textfield.styles';
-import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
+import { useRendererStylingStore } from '../../../stores';
+import DisplayUnitText from '../ItemParts/DisplayUnitText';
+import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
+import { expressionUpdateFadingGlow } from '../../ExpressionUpdateFadingGlow.styles';
 
-interface StringFieldProps extends PropsWithIsTabledAttribute {
+interface StringFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
+  itemType: string;
   input: string;
   feedback: string;
   displayPrompt: string;
@@ -31,11 +34,13 @@ interface StringFieldProps extends PropsWithIsTabledAttribute {
   readOnly: boolean;
   calcExpUpdated: boolean;
   onInputChange: (value: string) => void;
+  onBlur: () => void;
 }
 
 function StringField(props: StringFieldProps) {
   const {
     linkId,
+    itemType,
     input,
     feedback,
     displayPrompt,
@@ -44,28 +49,43 @@ function StringField(props: StringFieldProps) {
     readOnly,
     isTabled,
     calcExpUpdated,
-    onInputChange
+    onInputChange,
+    onBlur
   } = props;
+
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
   return (
     <StandardTextField
+      id={itemType + '-' + linkId}
+      multiline
       fullWidth
+      textFieldWidth={textFieldWidth}
       isTabled={isTabled}
-      id={linkId}
       value={input}
       error={!!feedback}
+      onBlur={onBlur} // Trigger validation on blur
       onChange={(event) => onInputChange(event.target.value)}
-      label={displayPrompt}
-      placeholder={entryFormat}
-      disabled={readOnly}
+      placeholder={entryFormat || displayPrompt}
+      disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       size="small"
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end">
-            <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-            {displayUnit}
-          </InputAdornment>
-        )
+      sx={[expressionUpdateFadingGlow(calcExpUpdated)]}
+      slotProps={{
+        input: {
+          readOnly: readOnly && readOnlyVisualStyle === 'readonly',
+          endAdornment: (
+            <InputAdornment position="end">
+              <ClearButtonAdornment
+                readOnly={readOnly}
+                onClear={() => {
+                  onInputChange('');
+                }}
+              />
+              <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
+            </InputAdornment>
+          )
+        }
       }}
       helperText={feedback}
       data-test="q-item-string-field"

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import csiroLogo from '../../data/images/csiro-logo.png';
 import { useSnackbar } from 'notistack';
-import ConfettiExplosion from 'react-confetti-explosion';
 import useClickCounter from '../../features/easterEgg/hooks/useClickCounter.ts';
 import useDebugMode from '../../hooks/useDebugMode.ts';
 import CloseSnackbar from '../Snackbar/CloseSnackbar.tsx';
@@ -33,8 +32,9 @@ function CsiroLogo() {
   return (
     <>
       <Box display="flex" justifyContent="center" alignItems="center" gap={1.5}>
-        <Typography sx={{ color: 'text.secondary' }}>By</Typography>
+        By
         <Box
+          alt="CSIRO Logo"
           component="img"
           maxHeight={35}
           maxWidth={35}
@@ -53,9 +53,6 @@ function CsiroLogo() {
           }}
         />
       </Box>
-      {counter === 3 ? (
-        <ConfettiExplosion particleCount={400} width={2000} duration={3000} />
-      ) : null}
     </>
   );
 }

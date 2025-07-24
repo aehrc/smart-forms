@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import PrePopWrapperForStorybook from '../storybookWrappers/PrePopWrapperForStorybook';
 import {
   qCalculatedExpressionBMICalculatorPrepop,
@@ -31,7 +31,7 @@ import { pracPrimaryPeter } from '../assets/practitioners/PracPrimaryPeter';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'Component/SDC/12 Form Population',
+  title: 'SDC/12 Form Population',
   component: PrePopWrapperForStorybook,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []

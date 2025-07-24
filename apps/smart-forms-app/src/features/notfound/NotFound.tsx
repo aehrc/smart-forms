@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,12 +20,12 @@ import useSmartClient from '../../hooks/useSmartClient.ts';
 import Logo from '../../components/Logos/Logo.tsx';
 import csiroLogo from '../../data/images/csiro-logo.png';
 import NotFoundSelections from './NotFoundSelections.tsx';
-import useResponsive from '../../hooks/useResponsive.ts';
+import { useResponsive } from '@aehrc/smart-forms-renderer';
 
 function NotFound() {
   const { smartClient } = useSmartClient();
 
-  const isDesktop = useResponsive('up', 'lg');
+  const isLgUp = useResponsive({ query: 'up', start: 'lg' });
 
   const isNotLaunched = !smartClient;
 
@@ -37,12 +37,12 @@ function NotFound() {
         <Logo />
         <Box flexGrow={1} />
         <Box display="flex" alignItems="center" columnGap={1}>
-          <Typography sx={{ color: 'text.secondary' }}>By</Typography>
+          By
           <Box component="img" maxHeight={35} maxWidth={35} src={csiroLogo} />
         </Box>
       </Box>
 
-      <Box mb={isDesktop ? 10 : 5} />
+      <Box mb={isLgUp ? 10 : 5} />
 
       <Stack justifyContent="center" alignItems="center">
         <Container>

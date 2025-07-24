@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,14 @@
  */
 
 import type { ValueSet } from 'fhir/r4';
+
+export interface ProcessedValueSet {
+  initialValueSetUrl: string;
+  updatableValueSetUrl: string;
+  bindingParameters: BindingParameter[];
+  isDynamic: boolean;
+  linkIds: string[];
+}
 
 export interface ValueSetPromise {
   promise: Promise<ValueSet>;
@@ -39,4 +47,12 @@ export interface CodeParameter {
 export interface DisplayParameter {
   name: 'display';
   valueString: string;
+}
+
+// For parameterised value sets
+// See https://build.fhir.org/ig/FHIR/fhir-tools-ig/StructureDefinition-binding-parameter.html
+export interface BindingParameter {
+  name: string;
+  value: string; // This is either the fixed value or an evaluated value from the fhirPathExpression, defaults to '' if no evaluated value
+  fhirPathExpression?: string;
 }

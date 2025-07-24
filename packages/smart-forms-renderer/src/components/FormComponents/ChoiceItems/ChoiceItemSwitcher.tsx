@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,27 +27,42 @@ import { getChoiceControlType } from '../../../utils/choice';
 import ChoiceRadioAnswerValueSetItem from './ChoiceRadioAnswerValueSetItem';
 import ChoiceCheckboxAnswerValueSetItem from './ChoiceCheckboxAnswerValueSetItem';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
+  PropsWithIsTabledRequiredAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
+  PropsWithParentStylesAttribute,
   PropsWithQrItemChangeHandler,
-  PropsWithShowMinimalViewAttribute
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import Typography from '@mui/material/Typography';
 
 interface ChoiceItemSwitcherProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute,
-    PropsWithShowMinimalViewAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithIsTabledRequiredAttribute,
+    PropsWithRenderingExtensionsAttribute,
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute,
+    PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
 
 function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
-  const { qItem, qrItem, isRepeated, isTabled, showMinimalView, parentIsReadOnly, onQrItemChange } =
-    props;
+  const {
+    qItem,
+    qrItem,
+    itemPath,
+    isRepeated,
+    isTabled,
+    renderingExtensions,
+    parentIsReadOnly,
+    feedbackFromParent,
+    onQrItemChange
+  } = props;
 
   const choiceControlType = getChoiceControlType(qItem);
 
@@ -58,9 +73,12 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
           <ChoiceRadioAnswerOptionItem
             qItem={qItem}
             qrItem={qrItem}
+            itemPath={itemPath}
             isRepeated={isRepeated}
             isTabled={isTabled}
+            renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
+            feedbackFromParent={feedbackFromParent}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -69,8 +87,12 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
           <ChoiceRadioAnswerValueSetItem
             qItem={qItem}
             qrItem={qrItem}
+            itemPath={itemPath}
             isRepeated={isRepeated}
+            renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
+            feedbackFromParent={feedbackFromParent}
+            isTabled={isTabled}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -81,9 +103,12 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
           <ChoiceCheckboxAnswerOptionItem
             qItem={qItem}
             qrItem={qrItem}
+            itemPath={itemPath}
             isRepeated={qItem.repeats ?? false}
-            showMinimalView={showMinimalView}
+            renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
+            feedbackFromParent={feedbackFromParent}
+            isTabled={isTabled}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -92,9 +117,12 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
           <ChoiceCheckboxAnswerValueSetItem
             qItem={qItem}
             qrItem={qrItem}
+            itemPath={itemPath}
             isRepeated={qItem.repeats ?? false}
-            showMinimalView={showMinimalView}
+            renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
+            feedbackFromParent={feedbackFromParent}
+            isTabled={isTabled}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -104,9 +132,12 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
         <ChoiceAutocompleteItem
           qItem={qItem}
           qrItem={qrItem}
+          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
+          renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
+          feedbackFromParent={feedbackFromParent}
           onQrItemChange={onQrItemChange}
         />
       );
@@ -116,9 +147,12 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
           <ChoiceSelectAnswerOptionItem
             qItem={qItem}
             qrItem={qrItem}
+            itemPath={itemPath}
             isRepeated={isRepeated}
             isTabled={isTabled}
+            renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
+            feedbackFromParent={feedbackFromParent}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -127,16 +161,19 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
           <ChoiceSelectAnswerValueSetItem
             qItem={qItem}
             qrItem={qrItem}
+            itemPath={itemPath}
             isRepeated={isRepeated}
             isTabled={isTabled}
+            renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
+            feedbackFromParent={feedbackFromParent}
             onQrItemChange={onQrItemChange}
           />
         );
       }
     default:
       return (
-        <Typography>
+        <Typography component="div">
           Something has went wrong when parsing item {qItem.linkId} - {qItem.text}
         </Typography>
       );

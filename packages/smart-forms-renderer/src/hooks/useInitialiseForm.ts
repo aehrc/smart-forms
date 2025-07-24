@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,7 +43,7 @@ function useInitialiseForm(
   questionnaireResponse?: QuestionnaireResponse,
   readOnly?: boolean,
   terminologyServerUrl?: string,
-  additionalVariables?: Record<string, object>,
+  additionalVariables?: Record<string, any>,
   fhirClient?: Client
 ): boolean {
   const [isFhirClientReady, setIsFhirClientReady] = useState(true);

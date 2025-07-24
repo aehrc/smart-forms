@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,10 +20,11 @@ import ResponseFeedbackMessage from './ResponseFeedbackMessage.tsx';
 import { useSnackbar } from 'notistack';
 import type { Questionnaire } from 'fhir/r4';
 import CloseSnackbar from '../../../../../../components/Snackbar/CloseSnackbar.tsx';
+import type { UseQueryResult } from '@tanstack/react-query';
 
 interface Props {
   isEmpty: boolean;
-  status: 'loading' | 'error' | 'success';
+  status: UseQueryResult['status'];
   searchedQuestionnaire: Questionnaire | null;
   error?: unknown;
 }
@@ -36,7 +37,7 @@ function ResponseListFeedback(props: Props) {
   let feedbackType: 'error' | 'empty' | 'loading' | null = null;
   if (status === 'error') {
     feedbackType = 'error';
-  } else if (status === 'loading') {
+  } else if (status === 'pending') {
     feedbackType = 'loading';
   } else if (isEmpty) {
     feedbackType = 'empty';
@@ -47,7 +48,7 @@ function ResponseListFeedback(props: Props) {
     enqueueSnackbar('An error occurred while fetching responses', {
       variant: 'error',
       preventDuplicate: true,
-      action: <CloseSnackbar />
+      action: <CloseSnackbar variant="error" />
     });
   }
 

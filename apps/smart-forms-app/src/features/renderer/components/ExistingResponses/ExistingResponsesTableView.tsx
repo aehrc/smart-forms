@@ -42,7 +42,7 @@ function ExistingResponsesTableView(props: ExistingResponsesTableViewProps) {
         onClearSelection={() => onSelectResponse(null)}
       />
 
-      <TableContainer sx={{ minWidth: 575 }}>
+      <TableContainer sx={{ minWidth: 575, boxShadow: 'none' }}>
         <MuiTable>
           <DashboardTableHead headers={headers} />
           <TableBody>

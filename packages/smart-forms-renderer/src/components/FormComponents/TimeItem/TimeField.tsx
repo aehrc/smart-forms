@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,13 +16,15 @@
  */
 
 import React from 'react';
-import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import type { Dayjs } from 'dayjs';
 import { LocalizationProvider, TimePicker as MuiTimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { TEXT_FIELD_WIDTH } from '../Textfield.styles';
+import { useRendererStylingStore } from '../../../stores';
 
-interface TimeFieldProps extends PropsWithIsTabledAttribute {
+interface TimeFieldProps extends PropsWithIsTabledRequiredAttribute {
+  linkId: string;
+  itemType: string;
   value: Dayjs | null;
   displayPrompt: string;
   entryFormat: string;
@@ -31,16 +33,22 @@ interface TimeFieldProps extends PropsWithIsTabledAttribute {
 }
 
 function TimeField(props: TimeFieldProps) {
-  const { value, displayPrompt, entryFormat, readOnly, isTabled, onTimeChange } = props;
+  const { linkId, itemType, value, displayPrompt, entryFormat, readOnly, isTabled, onTimeChange } =
+    props;
+
+  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <MuiTimePicker
+        // TODO no way to add an id attribute to this time input field
+        // TODO ignore this - we will be creating our own custom time field anyway
+        name={itemType + '-' + linkId}
         format={entryFormat !== '' ? entryFormat : 'hh:mm a'}
         value={value}
         disabled={readOnly}
         label={displayPrompt}
-        sx={{ maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000, minWidth: 160 }}
+        sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160 }}
         slotProps={{
           textField: {
             fullWidth: true

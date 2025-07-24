@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,13 +27,13 @@ import type {
   Reference
 } from 'fhir/r4';
 import type {
+  FetchResourceRequestConfig,
   InputParameters,
   IssuesParameter,
   OutputParameters,
   ResponseParameter
 } from '@aehrc/sdc-populate';
 import { isInputParameters, isOutputParameters, populate } from '@aehrc/sdc-populate';
-import type { RequestConfig } from './populateCallback';
 import { fetchResourceCallback } from './populateCallback';
 import { createPopulateInputParameters } from './populateInputParams';
 
@@ -46,7 +46,7 @@ export async function populateQuestionnaire(
   questionnaire: Questionnaire,
   patient: Patient,
   user: Practitioner,
-  requestConfig: RequestConfig
+  requestConfig: FetchResourceRequestConfig
 ): Promise<{
   populateSuccess: boolean;
   populateResult: PopulateResult | null;
@@ -137,7 +137,7 @@ export async function populateQuestionnaire(
 
 export async function requestPopulate(
   inputParameters: InputParameters,
-  requestConfig: RequestConfig
+  requestConfig: FetchResourceRequestConfig
 ): Promise<OutputParameters | OperationOutcome> {
   const populatePromise = populate(inputParameters, fetchResourceCallback, requestConfig);
 

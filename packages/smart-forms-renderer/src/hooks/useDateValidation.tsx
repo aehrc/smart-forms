@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -55,8 +55,8 @@ function useDateValidation(input: string, parseFail: boolean = false): string | 
 
     const matches = input.split('/');
 
-    if (validateTwoMatches(matches[0], matches[1])) {
-      return null;
+    if (!validateTwoMatches(matches[0], matches[1])) {
+      return 'Input is an invalid date.';
     }
 
     return null;

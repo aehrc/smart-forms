@@ -7,7 +7,7 @@ Check if the extension has an itemControl code equal to the given itemControlCod
 ## Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `qItem` | `QuestionnaireItem` |
 | `itemControlCode` | `string` |
 

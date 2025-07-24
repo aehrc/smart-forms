@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,11 +19,11 @@
  * CalculatedExpression interface
  *
  * @property expression - CalculatedExpression FHIRPath expression
- * @property from - Whether the expressions is for the item itself or for item._text
+ * @property from - Whether the expressions is for the item itself, for item._text or item._answerValueSet
  * @property value - Evaluated value of the expression via FHIRPath
  */
 export interface CalculatedExpression {
   expression: string;
-  from: 'item' | 'item._text';
+  from: 'item' | 'item._text' | 'item._answerValueSet';
   value?: number | string | boolean | object | null;
 }

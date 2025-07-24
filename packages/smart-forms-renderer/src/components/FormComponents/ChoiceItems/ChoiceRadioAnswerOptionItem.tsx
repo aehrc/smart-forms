@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,10 +24,13 @@ import type {
 import { findInAnswerOptions, getChoiceControlType, getQrChoiceValue } from '../../../utils/choice';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
+  PropsWithIsTabledRequiredAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
@@ -36,27 +39,45 @@ import Typography from '@mui/material/Typography';
 import useCodingCalculatedExpression from '../../../hooks/useCodingCalculatedExpression';
 import ChoiceRadioAnswerOptionView from './ChoiceRadioAnswerOptionView';
 import ChoiceSelectAnswerOptionView from './ChoiceSelectAnswerOptionView';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 
 interface ChoiceRadioAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithIsTabledRequiredAttribute,
+    PropsWithRenderingExtensionsAttribute,
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
 
 function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
+  const {
+    qItem,
+    qrItem,
+    itemPath,
+    isRepeated,
+    isTabled,
+    renderingExtensions,
+    parentIsReadOnly,
+    feedbackFromParent,
+    onQrItemChange
+  } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   const qrChoice = qrItem ?? createEmptyQrItem(qItem, answerKey);
   const valueChoice = getQrChoiceValue(qrChoice);
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
+
+  // Perform validation checks - there's no string-based input here
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
 
   const options = qItem.answerOption ?? [];
 
@@ -65,18 +86,27 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
     qItem: qItem,
     valueInString: valueChoice ?? '',
     onChangeByCalcExpressionString: (newValueString: string) => {
-      handleChange(newValueString);
+      handleChange(newValueString, true);
     },
     onChangeByCalcExpressionNull: () => {
-      onQrItemChange(createEmptyQrItem(qItem, answerKey));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
     }
   });
 
+  // Process answerOptionsToggleExpressions
+  const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
+    useAnswerOptionsToggleExpressions(qItem.linkId);
+
   // Event handlers
-  function handleChange(newValue: QuestionnaireItemAnswerOption | string | null) {
+  function handleChange(
+    newValue: QuestionnaireItemAnswerOption | string | null,
+    includeItemPath: boolean = false // only include when this is called from useCalculatedExpression hook
+  ) {
+    const targetItemPath = includeItemPath ? itemPath : undefined;
+
     // No options present or newValue is type null
     if (options.length === 0 || newValue === null) {
-      onQrItemChange(createEmptyQrItem(qItem, answerKey));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey), targetItemPath);
       return;
     }
 
@@ -86,7 +116,8 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
       onQrItemChange(
         qrAnswer
           ? { ...createEmptyQrItem(qItem, answerKey), answer: [{ ...qrAnswer, id: answerKey }] }
-          : createEmptyQrItem(qItem, answerKey)
+          : createEmptyQrItem(qItem, answerKey),
+        targetItemPath
       );
       return;
     }
@@ -95,7 +126,8 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
     onQrItemChange(
       newValue
         ? { ...createEmptyQrItem(qItem, answerKey), answer: [{ ...newValue, id: answerKey }] }
-        : createEmptyQrItem(qItem, answerKey)
+        : createEmptyQrItem(qItem, answerKey),
+      targetItemPath
     );
   }
 
@@ -107,16 +139,19 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
   const choiceControlType = getChoiceControlType(qItem);
 
   switch (choiceControlType) {
-    // TODO At the moment only this case will be executed because this switch statment was already in the parent components
+    // TODO At the moment only this case will be executed because this switch statement was already in the parent components
     case ChoiceItemControl.Radio: {
       return (
         <ChoiceRadioAnswerOptionView
           qItem={qItem}
           options={options}
           valueChoice={valueChoice}
+          feedback={feedback}
           isRepeated={isRepeated}
           readOnly={readOnly}
-          calcExpUpdated={calcExpUpdated}
+          expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
+          answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+          isTabled={isTabled}
           onFocusLinkId={() => onFocusLinkId(qItem.linkId)}
           onCheckedChange={handleChange}
           onClear={handleClear}
@@ -130,10 +165,13 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
           qItem={qItem}
           options={options}
           valueChoice={valueChoice}
+          feedback={feedback}
           isRepeated={isRepeated}
           isTabled={isTabled}
           readOnly={readOnly}
-          calcExpUpdated={calcExpUpdated}
+          expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
+          renderingExtensions={renderingExtensions}
+          answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
           onFocusLinkId={() => onFocusLinkId(qItem.linkId)}
           onSelectChange={handleChange}
         />

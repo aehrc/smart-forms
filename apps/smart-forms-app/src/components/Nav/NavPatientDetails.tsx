@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,9 +34,7 @@ function NavPatientDetails() {
       <FaceIcon fontSize="large" sx={{ color: theme.palette.primary.dark }} />
 
       <Box>
-        <Typography fontSize={10} variant="subtitle1" color={'text.secondary'}>
-          Patient
-        </Typography>
+        <Typography fontSize={11}>Patient</Typography>
         <AccountNameTypography name={patient ? constructName(patient.name) : 'No Patient'} />
         {patient ? (
           <>

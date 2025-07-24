@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,21 +18,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import cloneDeep from 'lodash.clonedeep';
 import { saveQuestionnaireResponse } from '../../../../api/saveQr.ts';
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle
-} from '@mui/material';
-import { LoadingButton } from '@mui/lab';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText } from '@mui/material';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import { saveAsFinalSuccessMessage, saveErrorMessage } from '../../../../utils/snackbar.ts';
 import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
+import StandardDialogTitle from '../../../../components/Dialog/StandardDialogTitle.tsx';
 
 export interface ViewerSaveAsFinalDialogProps {
   open: boolean;
@@ -67,7 +59,7 @@ function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
 
     setIsSaving(true);
 
-    const responseToSave = cloneDeep(updatableResponse);
+    const responseToSave = structuredClone(updatableResponse);
     responseToSave.status = 'completed';
 
     saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
@@ -77,21 +69,24 @@ function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
         handleClose();
         enqueueSnackbar(saveAsFinalSuccessMessage, {
           variant: 'success',
-          action: <CloseSnackbar />
+          action: <CloseSnackbar variant="success" />
         });
         navigate(launchQuestionnaireExists ? '/dashboard/existing' : '/dashboard/responses');
       })
       .catch((error) => {
         console.error(error);
         setIsSaving(false);
-        enqueueSnackbar(saveErrorMessage, { variant: 'error', action: <CloseSnackbar /> });
+        enqueueSnackbar(saveErrorMessage, {
+          variant: 'error',
+          action: <CloseSnackbar variant="error" />
+        });
         handleClose();
       });
   }
 
   return (
     <Dialog open={open} onClose={handleClose} data-test="dialog-confirm-save">
-      <DialogTitle variant="h5">Confirm save</DialogTitle>
+      <StandardDialogTitle onCloseDialog={handleClose}>Confirm save</StandardDialogTitle>
       <DialogContent>
         <DialogContentText>
           {"Are you sure you want to save this form as final? You won't be able to edit it after."}
@@ -99,9 +94,9 @@ function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <LoadingButton loading={isSaving} onClick={handleSave}>
+        <Button loading={isSaving} onClick={handleSave}>
           Save as final
-        </LoadingButton>
+        </Button>
       </DialogActions>
     </Dialog>
   );

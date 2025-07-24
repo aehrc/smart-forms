@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,6 +21,7 @@ import { getClientBundlePromise, getResponsesFromBundle } from '../utils/dashboa
 import { useMemo } from 'react';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
 import useSelectedQuestionnaire from './useSelectedQuestionnaire.ts';
+import { NUM_OF_EXISTING_RESPONSES_TO_FETCH } from '../../../globals.ts';
 
 interface useFetchExistingResponsesReturnParams {
   existingResponses: QuestionnaireResponse[];
@@ -32,7 +33,7 @@ interface useFetchExistingResponsesReturnParams {
 function useFetchExistingResponses(): useFetchExistingResponsesReturnParams {
   const { selectedQuestionnaire } = useSelectedQuestionnaire();
 
-  const numOfSearchEntries = 100;
+  const numOfSearchEntries = NUM_OF_EXISTING_RESPONSES_TO_FETCH;
 
   const { smartClient, patient, launchQuestionnaire } = useSmartClient();
   const questionnaire = selectedQuestionnaire ?? launchQuestionnaire;
@@ -63,15 +64,13 @@ function useFetchExistingResponses(): useFetchExistingResponsesReturnParams {
     questionnaireRefParam +
     patientIdParam;
 
-  const { data, isFetching, error, refetch } = useQuery<Bundle>(
-    ['existingResponses', queryUrl],
+  const { data, isFetching, error, refetch } = useQuery<Bundle>({
+    queryKey: ['existingResponses', queryUrl],
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    () => getClientBundlePromise(smartClient!, queryUrl),
-    {
-      enabled:
-        !!questionnaire && questionnaireRefParam !== '' && patientIdParam !== '' && !!smartClient
-    }
-  );
+    queryFn: () => getClientBundlePromise(smartClient!, queryUrl),
+    enabled:
+      !!questionnaire && questionnaireRefParam !== '' && patientIdParam !== '' && !!smartClient
+  });
 
   const existingResponses: QuestionnaireResponse[] = useMemo(
     () => getResponsesFromBundle(data),

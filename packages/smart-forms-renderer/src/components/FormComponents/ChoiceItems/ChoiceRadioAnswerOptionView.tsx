@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,13 +21,17 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import type { PropsWithIsRepeatedAttribute } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import ItemLabel from '../ItemParts/ItemLabel';
 
 interface ChoiceRadioAnswerOptionViewProps extends PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
   valueChoice: string | null;
+  feedback: string;
   readOnly: boolean;
-  calcExpUpdated: boolean;
+  expressionUpdated: boolean;
+  answerOptionsToggleExpressionsMap: Map<string, boolean>;
+  isTabled: boolean;
   onCheckedChange: (linkId: string) => void;
   onFocusLinkId: () => void;
   onClear: () => void;
@@ -38,9 +42,12 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
     qItem,
     options,
     valueChoice,
+    feedback,
     isRepeated,
     readOnly,
-    calcExpUpdated,
+    expressionUpdated,
+    answerOptionsToggleExpressionsMap,
+    isTabled,
     onFocusLinkId,
     onCheckedChange,
     onClear
@@ -52,8 +59,11 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
         qItem={qItem}
         options={options}
         valueRadio={valueChoice}
+        feedback={feedback}
         readOnly={readOnly}
-        calcExpUpdated={calcExpUpdated}
+        expressionUpdated={expressionUpdated}
+        answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+        isTabled={isTabled}
         onCheckedChange={onCheckedChange}
         onClear={onClear}
       />
@@ -65,17 +75,25 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
       data-test="q-item-choice-radio-answer-option-box"
       data-linkid={qItem.linkId}
       onClick={onFocusLinkId}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <ChoiceRadioAnswerOptionFields
-          qItem={qItem}
-          options={options}
-          valueRadio={valueChoice}
-          readOnly={readOnly}
-          calcExpUpdated={calcExpUpdated}
-          onCheckedChange={onCheckedChange}
-          onClear={onClear}
-        />
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <ChoiceRadioAnswerOptionFields
+            qItem={qItem}
+            options={options}
+            valueRadio={valueChoice}
+            feedback={feedback}
+            readOnly={readOnly}
+            expressionUpdated={expressionUpdated}
+            answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+            isTabled={isTabled}
+            onCheckedChange={onCheckedChange}
+            onClear={onClear}
+          />
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -80,8 +80,8 @@ export function getQrItemsIndex(
 }
 
 /**
- * Generate a dictionary of QuestionnaireItems linkIds mapped to their respective array indexes <linkId, QItemIndex>
- * i.e. { ee2589d5: 0, f9aaa187: 1, 88cab112: 2 }
+ * Generate a dictionary of QuestionnaireItems linkIds mapped to their respective array indexes `<linkId, QItemIndex>`
+ * i.e. `{ ee2589d5: 0, f9aaa187: 1, 88cab112: 2 }`
  * where ee2589d5, f9aaa187 and 88cab112 are linkIds of QItem0, QItem1 and QItem2 respectively
  *
  * @author Sean Fong

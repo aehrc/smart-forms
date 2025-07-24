@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,13 +16,7 @@
  */
 
 import React from 'react';
-import type {
-  PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler
-} from '../../../interfaces/renderProps.interface';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
@@ -31,28 +25,28 @@ import SliderField from './SliderField';
 import useSliderExtensions from '../../../hooks/useSliderExtensions';
 import Box from '@mui/material/Box';
 import { useQuestionnaireStore } from '../../../stores';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import ItemLabel from '../ItemParts/ItemLabel';
 
-interface SliderItemProps
-  extends PropsWithQrItemChangeHandler,
-    PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute,
-    PropsWithParentIsReadOnlyAttribute {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
-}
-
-function SliderItem(props: SliderItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
+function SliderItem(props: BaseItemProps) {
+  const {
+    qItem,
+    qrItem,
+    isRepeated,
+    isTabled,
+    parentIsReadOnly,
+    feedbackFromParent,
+    onQrItemChange
+  } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const { minValue, maxValue, stepValue, minLabel, maxLabel } = useSliderExtensions(qItem);
 
   const isInteracted = !!qrItem?.answer;
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   let valueInteger = 0;
   if (qrItem?.answer) {
     if (qrItem?.answer[0].valueInteger) {
@@ -62,6 +56,11 @@ function SliderItem(props: SliderItemProps) {
       valueInteger = Math.round(qrItem.answer[0].valueDecimal);
     }
   }
+
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+
+  // Perform validation checks
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
 
   // Event handlers
   function handleValueChange(newValue: number) {
@@ -73,9 +72,10 @@ function SliderItem(props: SliderItemProps) {
 
   if (isRepeated) {
     return (
-      <Box px={4}>
+      <Box px={1} width="100%">
         <SliderField
           linkId={qItem.linkId}
+          itemType={qItem.type}
           value={valueInteger}
           minValue={minValue}
           maxValue={maxValue}
@@ -83,6 +83,7 @@ function SliderItem(props: SliderItemProps) {
           minLabel={minLabel}
           maxLabel={maxLabel}
           isInteracted={isInteracted}
+          feedback={feedback}
           readOnly={readOnly}
           isTabled={isTabled}
           onValueChange={handleValueChange}
@@ -96,23 +97,30 @@ function SliderItem(props: SliderItemProps) {
       data-test="q-item-slider-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <Box px={4}>
-          <SliderField
-            linkId={qItem.linkId}
-            value={valueInteger}
-            minValue={minValue}
-            maxValue={maxValue}
-            stepValue={stepValue}
-            minLabel={minLabel}
-            maxLabel={maxLabel}
-            isInteracted={isInteracted}
-            readOnly={readOnly}
-            isTabled={isTabled}
-            onValueChange={handleValueChange}
-          />
-        </Box>
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <Box px={4}>
+            <SliderField
+              linkId={qItem.linkId}
+              itemType={qItem.type}
+              value={valueInteger}
+              minValue={minValue}
+              maxValue={maxValue}
+              stepValue={stepValue}
+              minLabel={minLabel}
+              maxLabel={maxLabel}
+              isInteracted={isInteracted}
+              feedback={feedback}
+              readOnly={readOnly}
+              isTabled={isTabled}
+              onValueChange={handleValueChange}
+            />
+          </Box>
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

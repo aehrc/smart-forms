@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -92,6 +92,10 @@ const typography = {
   body2: {
     lineHeight: 22 / 14,
     fontSize: pxToRem(11)
+  },
+  groupHeading: {
+    fontSize: pxToRem(13),
+    fontWeight: 600
   },
   caption: {
     lineHeight: 1.5,

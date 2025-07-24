@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-export const saveErrorMessage = 'An error occurred while saving. Try again later.';
+export const saveErrorMessage = 'An error occurred while saving.';
 
 export const saveSuccessMessage = 'Response saved';
 export const saveAsFinalSuccessMessage = 'Response saved as final';

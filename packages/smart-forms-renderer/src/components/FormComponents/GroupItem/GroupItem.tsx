@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,8 +21,10 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
 import type {
   PropsWithIsRepeatedAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
+  PropsWithParentStylesAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import type { QrRepeatGroup } from '../../../interfaces/repeatGroup.interface';
@@ -30,15 +32,22 @@ import useHidden from '../../../hooks/useHidden';
 import type { Tabs } from '../../../interfaces/tab.interface';
 import type { Pages } from '../../../interfaces/page.interface';
 import GroupItemView from './GroupItemView';
+import { QGroupContainerBox } from '../../Box.styles';
+import { GroupCard } from './GroupItem.styles';
+import PageButtonsWrapper from './PageButtonWrapper';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
 interface GroupItemProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
     PropsWithParentIsReadOnlyAttribute,
-    PropsWithParentIsRepeatGroupAttribute {
+    PropsWithParentIsRepeatGroupAttribute,
+    PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
   groupCardElevation: number;
+  disableCardView?: boolean;
   tabIsMarkedAsComplete?: boolean;
   tabs?: Tabs;
   currentTabIndex?: number;
@@ -51,8 +60,10 @@ function GroupItem(props: GroupItemProps) {
   const {
     qItem,
     qrItem,
+    itemPath,
     isRepeated,
     groupCardElevation,
+    disableCardView,
     tabIsMarkedAsComplete,
     tabs,
     currentTabIndex,
@@ -62,7 +73,8 @@ function GroupItem(props: GroupItemProps) {
     parentIsReadOnly,
     parentIsRepeatGroup,
     parentRepeatGroupIndex,
-    onQrItemChange
+    onQrItemChange,
+    parentStyles
   } = props;
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
@@ -77,19 +89,42 @@ function GroupItem(props: GroupItemProps) {
   const qrItems = qrGroup.item;
 
   // Event Handlers
-  function handleQrItemChange(newQrItem: QuestionnaireResponseItem) {
+  function handleQrItemChange(newQrItem: QuestionnaireResponseItem, targetItemPath?: ItemPath) {
     const updatedQrGroup: QuestionnaireResponseItem = { ...qrGroup };
     updateQrItemsInGroup(newQrItem, null, updatedQrGroup, qItemsIndexMap);
-    onQrItemChange(updatedQrGroup);
+    onQrItemChange(updatedQrGroup, targetItemPath);
   }
 
-  function handleQrRepeatGroupChange(qrRepeatGroup: QrRepeatGroup) {
+  function handleQrRepeatGroupChange(qrRepeatGroup: QrRepeatGroup, targetItemPath?: ItemPath) {
     const updatedQrGroup: QuestionnaireResponseItem = { ...qrGroup };
     updateQrItemsInGroup(null, qrRepeatGroup, updatedQrGroup, qItemsIndexMap);
-    onQrItemChange(updatedQrGroup);
+    onQrItemChange(updatedQrGroup, targetItemPath);
   }
 
   if (!qItems || !qrItems) {
+    // If there are pages passed through, render this invalid group as a card to at least allow the user to see the error
+    if (pages) {
+      return (
+        <QGroupContainerBox cardElevation={groupCardElevation} isRepeated={isRepeated}>
+          <GroupCard elevation={groupCardElevation} isRepeated={isRepeated}>
+            <>
+              Group Item: Unable to load group, something has gone terribly wrong. If you are seeing
+              this error message, see{' '}
+              <a
+                href="https://hl7.org/fhir/extensions/CodeSystem-questionnaire-item-control.html#questionnaire-item-control-page"
+                target="_blank"
+                rel="noreferrer">
+                https://hl7.org/fhir/extensions/CodeSystem-questionnaire-item-control.html#questionnaire-item-control-page
+              </a>{' '}
+              for a standards-based way to use pages.
+            </>
+          </GroupCard>
+          <PageButtonsWrapper currentPageIndex={currentPageIndex} pages={pages} />
+        </QGroupContainerBox>
+      );
+    }
+
+    // Otherwise, render the regular error message
     return <>Group Item: Unable to load group, something has gone terribly wrong.</>;
   }
 
@@ -101,8 +136,10 @@ function GroupItem(props: GroupItemProps) {
       qItem={qItem}
       childQItems={qItems}
       qrItemsByIndex={qrItemsByIndex}
+      itemPath={itemPath}
       isRepeated={isRepeated}
       groupCardElevation={groupCardElevation}
+      disableCardView={disableCardView}
       tabIsMarkedAsComplete={tabIsMarkedAsComplete}
       tabs={tabs}
       currentTabIndex={currentTabIndex}
@@ -112,6 +149,7 @@ function GroupItem(props: GroupItemProps) {
       parentIsReadOnly={parentIsReadOnly}
       parentIsRepeatGroup={parentIsRepeatGroup}
       parentRepeatGroupIndex={parentRepeatGroupIndex}
+      parentStyles={parentStyles}
       onQrItemChange={handleQrItemChange}
       onQrRepeatGroupChange={handleQrRepeatGroupChange}
     />

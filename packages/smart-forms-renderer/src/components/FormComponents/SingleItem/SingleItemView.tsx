@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,11 +18,13 @@
 import React from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
+  PropsWithIsTabledRequiredAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithShowMinimalViewAttribute
+  PropsWithParentStylesAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import SingleItemSwitcher from './SingleItemSwitcher';
 import SingleNestedItems from './SingleNestedItems';
@@ -39,37 +41,47 @@ import {
 } from './NestedSingleItemAccordion.styles';
 import useReadOnly from '../../../hooks/useReadOnly';
 import Box from '@mui/material/Box';
+import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
 interface SingleItemViewProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute,
-    PropsWithShowMinimalViewAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithIsTabledRequiredAttribute,
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute,
+    PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
   itemIsHidden: boolean;
   itemHasNestedItems: boolean;
   groupCardElevation: number;
-  onQrItemChangeWithNestedItems: (newQrItem: QuestionnaireResponseItem) => void;
+  onQrItemChangeWithNestedItems: (
+    qrItem: QuestionnaireResponseItem,
+    targetItemPath?: ItemPath
+  ) => void;
 }
 
 function SingleItemView(props: SingleItemViewProps) {
   const {
     qItem,
     qrItem,
+    itemPath,
     itemIsHidden,
     itemHasNestedItems,
     isRepeated,
     isTabled,
     groupCardElevation,
-    showMinimalView,
     parentIsReadOnly,
+    feedbackFromParent,
+    parentStyles,
     onQrItemChange,
     onQrItemChangeWithNestedItems
   } = props;
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const renderingExtensions = useRenderingExtensions(qItem);
   const groupCollapsibleValue = getGroupCollapsible(qItem);
 
   // Item hidden, do not render
@@ -95,10 +107,13 @@ function SingleItemView(props: SingleItemViewProps) {
                 <SingleItemSwitcher
                   qItem={qItem}
                   qrItem={qrItem}
+                  itemPath={itemPath}
                   isRepeated={isRepeated}
                   isTabled={isTabled}
-                  showMinimalView={showMinimalView}
+                  renderingExtensions={renderingExtensions}
                   parentIsReadOnly={readOnly}
+                  feedbackFromParent={feedbackFromParent}
+                  parentStyles={parentStyles}
                   onQrItemChange={onQrItemChange}
                 />
               </StopPropagationWrapper>
@@ -111,6 +126,7 @@ function SingleItemView(props: SingleItemViewProps) {
               <SingleNestedItems
                 qItem={qItem}
                 qrItem={qrItem}
+                itemPath={itemPath}
                 groupCardElevation={groupCardElevation}
                 parentIsReadOnly={readOnly}
                 onQrItemChange={onQrItemChangeWithNestedItems}
@@ -128,20 +144,26 @@ function SingleItemView(props: SingleItemViewProps) {
       <QGroupContainerBox
         cardElevation={groupCardElevation}
         isRepeated={isRepeated}
-        data-test="q-item-group-box">
+        data-test="q-item-group-box"
+        role="region"
+        aria-label={qItem.text ?? 'Unnamed item with nested items'}>
         <GroupCard elevation={groupCardElevation} isRepeated={isRepeated}>
           <SingleItemSwitcher
             qItem={qItem}
             qrItem={qrItem}
+            itemPath={itemPath}
             isRepeated={isRepeated}
             isTabled={isTabled}
-            showMinimalView={showMinimalView}
+            renderingExtensions={renderingExtensions}
             parentIsReadOnly={readOnly}
+            feedbackFromParent={feedbackFromParent}
+            parentStyles={parentStyles}
             onQrItemChange={onQrItemChange}
           />
           <SingleNestedItems
             qItem={qItem}
             qrItem={qrItem}
+            itemPath={itemPath}
             groupCardElevation={groupCardElevation}
             parentIsReadOnly={readOnly}
             onQrItemChange={onQrItemChangeWithNestedItems}
@@ -152,17 +174,18 @@ function SingleItemView(props: SingleItemViewProps) {
   }
 
   return (
-    <>
-      <SingleItemSwitcher
-        qItem={qItem}
-        qrItem={qrItem}
-        isRepeated={isRepeated}
-        isTabled={isTabled}
-        showMinimalView={showMinimalView}
-        parentIsReadOnly={readOnly}
-        onQrItemChange={onQrItemChange}
-      />
-    </>
+    <SingleItemSwitcher
+      qItem={qItem}
+      qrItem={qrItem}
+      isRepeated={isRepeated}
+      isTabled={isTabled}
+      renderingExtensions={renderingExtensions}
+      parentIsReadOnly={readOnly}
+      feedbackFromParent={feedbackFromParent}
+      parentStyles={parentStyles}
+      itemPath={itemPath}
+      onQrItemChange={onQrItemChange}
+    />
   );
 }
 

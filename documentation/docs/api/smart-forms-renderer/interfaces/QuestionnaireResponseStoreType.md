@@ -15,7 +15,7 @@ Used to build the source response when the form is first initialised
 #### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `response` | `QuestionnaireResponse` |
 
 #### Returns
@@ -52,6 +52,14 @@ Key-value pair of invalid items based on defined value constraints in the questi
 
 ***
 
+### key
+
+> **key**: `string`
+
+The React key of the questionnaireResponse, used internally for refreshing the BaseRenderer
+
+***
+
 ### responseIsValid
 
 > **responseIsValid**: `boolean`
@@ -69,7 +77,7 @@ Used to set an empty response as the current response
 #### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `clearedResponse` | `QuestionnaireResponse` |
 
 #### Returns
@@ -87,7 +95,7 @@ Used to set a pre-populated response as the current response
 #### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `populatedResponse` | `QuestionnaireResponse` |
 
 #### Returns
@@ -105,7 +113,7 @@ Used to set a saved response as the current response
 #### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `savedResponse` | `QuestionnaireResponse` |
 
 #### Returns
@@ -147,7 +155,7 @@ Used to update the current response
 #### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `updatedResponse` | `QuestionnaireResponse` |
 
 #### Returns
@@ -165,7 +173,7 @@ Used to validate the questionnaire response based on the questionnaire
 #### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `questionnaire` | `Questionnaire` |
 | `updatedResponse` | `QuestionnaireResponse` |
 

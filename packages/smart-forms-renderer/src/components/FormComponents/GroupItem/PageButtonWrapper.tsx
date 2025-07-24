@@ -6,6 +6,7 @@ import { useQuestionnaireStore } from '../../../stores';
 import NextPageButton from './NextPageButton';
 import PreviousPageButton from './PreviousPageButton';
 import useNextAndPreviousVisiblePages from '../../../hooks/useNextAndPreviousVisiblePages';
+import { useRendererStylingStore } from '../../../stores/rendererStylingStore';
 
 interface PageButtonsWrapperProps {
   currentPageIndex?: number;
@@ -16,6 +17,7 @@ const PageButtonsWrapper = memo(function PageButtonsWrapper(props: PageButtonsWr
   const { currentPageIndex, pages } = props;
 
   const switchPage = useQuestionnaireStore.use.switchPage();
+  const disablePageButtons = useRendererStylingStore.use.disablePageButtons();
 
   const { previousPageIndex, nextPageIndex, numOfVisiblePages } = useNextAndPreviousVisiblePages(
     currentPageIndex,
@@ -47,7 +49,13 @@ const PageButtonsWrapper = memo(function PageButtonsWrapper(props: PageButtonsWr
     window.scrollTo(0, 0);
   }
 
+  // No pages defined, do not render page buttons
   if (pagesNotDefined) {
+    return null;
+  }
+
+  // Disable page buttons - currently only available via disablePageButtons API
+  if (disablePageButtons) {
     return null;
   }
 
@@ -60,7 +68,7 @@ const PageButtonsWrapper = memo(function PageButtonsWrapper(props: PageButtonsWr
   return (
     <Box display="flex" mt={3} gap={2} alignItems="center">
       <Box flexGrow={1} />
-      <Typography variant="subtitle2" color="text.secondary">
+      <Typography component="span" color="text.secondary">
         Page {`${currentPageIndex + 1} / ${numOfVisiblePages}`}
       </Typography>
       <PreviousPageButton

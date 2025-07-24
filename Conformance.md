@@ -35,7 +35,7 @@ View the source here: http://hl7.org/fhir/uv/sdc/expressions.html
 - [ ] contextExpression
 - [x] calculatedExpression
 - [x] enableWhenExpression
-- [ ] answerOptionToggleExpression
+- [x] answerOptionToggleExpression
 - [x] itemPopulationContext
 - [ ] itemExtractionContext
 - [ ] constraint
@@ -123,8 +123,8 @@ View the source here: http://hl7.org/fhir/uv/sdc/behavior.html
 - [x] regex
 - [x] minValue
 - [x] maxValue
-- [ ] minQuantity
-- [ ] maxQuantity
+- [x] minQuantity
+- [x] maxQuantity
 - [x] maxDecimalPlaces
 - [ ] mimeType
 - [ ] maxSize

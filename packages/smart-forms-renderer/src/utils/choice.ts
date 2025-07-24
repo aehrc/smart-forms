@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,9 @@ import type {
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
 import { ChoiceItemControl, ChoiceItemOrientation } from '../interfaces/choice.enum';
-import { isSpecificItemControl } from './itemControl';
+import { isSpecificItemControl } from './extensions';
+import { getRelevantCodingProperties } from './valueSet';
+import { generateCodingKey, generateOptionKey } from '../hooks/useAnswerOptionsToggleExpressions';
 
 /**
  * Convert codings to Questionnaire answer options
@@ -33,11 +35,7 @@ import { isSpecificItemControl } from './itemControl';
 export function convertCodingsToAnswerOptions(codings: Coding[]): QuestionnaireItemAnswerOption[] {
   return codings.map(
     (coding): QuestionnaireItemAnswerOption => ({
-      valueCoding: {
-        system: coding.system,
-        code: coding.code,
-        display: coding.display
-      }
+      valueCoding: getRelevantCodingProperties(coding)
     })
   );
 }
@@ -55,7 +53,14 @@ export function findInAnswerOptions(
     if (option.valueCoding) {
       if (valueInString === option.valueCoding.code) {
         return {
-          valueCoding: option.valueCoding
+          valueCoding: getRelevantCodingProperties(option.valueCoding)
+        };
+      }
+
+      // handle case where valueCoding.code is not present
+      if (valueInString === option.valueCoding.display) {
+        return {
+          valueCoding: getRelevantCodingProperties(option.valueCoding)
         };
       }
     }
@@ -101,8 +106,13 @@ export function compareAnswerOptionValue(
     return option.valueInteger === value.valueInteger;
   }
 
-  if (value.valueCoding && value.valueCoding.code) {
-    return option.valueCoding?.code === value.valueCoding.code;
+  if (value.valueCoding) {
+    if (value.valueCoding.code) {
+      return option.valueCoding?.code === value.valueCoding.code;
+    }
+
+    // handle case where valueCoding.code is not present
+    return option.valueCoding?.display === value.valueCoding.display;
   }
 
   return false;
@@ -145,7 +155,7 @@ export function getQrChoiceValue(
   if (qrChoice.answer && qrChoice.answer.length > 0) {
     const answer = qrChoice['answer'][0];
     if (answer['valueCoding']) {
-      return answer.valueCoding.code ? answer.valueCoding.code : '';
+      return answer.valueCoding.code ?? answer.valueCoding.display ?? '';
     } else if (answer['valueString'] !== undefined) {
       return answer.valueString;
     } else if (answer['valueInteger']) {
@@ -225,4 +235,38 @@ export function getChoiceOrientation(qItem: QuestionnaireItem): ChoiceItemOrient
   }
 
   return null;
+}
+
+export function isOptionDisabled(
+  option: QuestionnaireItemAnswerOption,
+  answerOptionsToggleExpressionsMap: Map<string, boolean>
+): boolean {
+  // all options are enabled by default if answerOptionsToggleExpressions are present
+  if (answerOptionsToggleExpressionsMap.size === 0) {
+    return false;
+  }
+
+  const optionKey = generateOptionKey(option);
+  return (
+    answerOptionsToggleExpressionsMap.has(optionKey) &&
+    !answerOptionsToggleExpressionsMap.get(optionKey)
+  );
+}
+
+// An exact copy of isOptionDisabled, except instead of using QuestionnaireItemAnswerOption it usings codings.
+// It makes sense to align these two functions when we refactor choice/open-choice items https://github.com/aehrc/smart-forms/issues/1205
+export function isCodingDisabled(
+  coding: Coding,
+  answerOptionsToggleExpressionsMap: Map<string, boolean>
+): boolean {
+  // all options are enabled by default if answerOptionsToggleExpressions are present
+  if (answerOptionsToggleExpressionsMap.size === 0) {
+    return false;
+  }
+
+  const optionKey = generateCodingKey(coding);
+  return (
+    answerOptionsToggleExpressionsMap.has(optionKey) &&
+    !answerOptionsToggleExpressionsMap.get(optionKey)
+  );
 }

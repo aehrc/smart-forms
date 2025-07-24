@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,26 +16,23 @@
  */
 
 import type { QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
-import { nanoid } from 'nanoid';
 import { useMemo } from 'react';
+import { generateExistingRepeatId, generateNewRepeatId } from '../utils/repeatId';
 
 function useInitialiseRepeatAnswers(
+  linkId: string,
   qrItem: QuestionnaireResponseItem | null
 ): (QuestionnaireResponseItemAnswer | null)[] {
   return useMemo(() => {
-    let initialRepeatAnswers: (QuestionnaireResponseItemAnswer | null)[] = [{ id: nanoid() }];
-
-    if (qrItem?.answer) {
-      initialRepeatAnswers = qrItem.answer.map((answer) => {
-        if (!answer.id) {
-          answer.id = nanoid();
-        }
-        return answer;
-      });
+    if (!qrItem?.answer) {
+      return [{ id: generateNewRepeatId(linkId) }];
     }
 
-    return initialRepeatAnswers;
-  }, [qrItem]);
+    return qrItem.answer.map((answer, index) => ({
+      ...answer,
+      id: answer.id ?? generateExistingRepeatId(linkId, index)
+    }));
+  }, [linkId, qrItem]);
 }
 
 export default useInitialiseRepeatAnswers;

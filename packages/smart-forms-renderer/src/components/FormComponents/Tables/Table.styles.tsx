@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,9 +20,12 @@ import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import { grey } from '@mui/material/colors';
 
-export const HeaderTableCell = styled(TableCell)(() => ({
+export const HeaderTableCell = styled(TableCell)(({ theme }) => ({
   fontSize: 13,
-  lineHeight: 'normal'
+  color: theme.palette.text.primary,
+  lineHeight: 'normal',
+  paddingLeft: 5,
+  paddingRight: 5
 }));
 
 export const StandardTableCell = styled(TableCell, {
@@ -33,7 +36,7 @@ export const StandardTableCell = styled(TableCell, {
   paddingRight: 4
 }));
 
-export const DeleteButtonTableCell = styled(TableCell)(() => ({
+export const RemoveButtonTableCell = styled(TableCell)(() => ({
   paddingLeft: 0,
   paddingRight: 4
 }));
@@ -68,7 +71,7 @@ export const StyledGroupTableRow = styled(TableRow, {
         }),
     ...(itemIsDragged
       ? {
-          boxShadow: theme.customShadows.z8,
+          boxShadow: theme.shadows[8],
           opacity: 1,
           backgroundColor: itemIsSelected ? '#edf4ff' : '#fafafa'
         }

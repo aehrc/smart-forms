@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,35 +25,51 @@ import { StyledAlert } from '../../Alert.styles';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Typography from '@mui/material/Typography';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
-import { getChoiceOrientation } from '../../../utils/choice';
-import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
-import CheckboxOptionList from './CheckboxOptionList';
-import { StyledFormGroup } from '../Item.styles';
+import CheckboxFormGroup from '../ItemParts/CheckboxFormGroup';
 
 interface ChoiceCheckboxAnswerValueSetFieldsProps {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
   answers: QuestionnaireResponseItemAnswer[];
+  feedback: string;
   readOnly: boolean;
+  expressionUpdated: boolean;
+  answerOptionsToggleExpressionsMap: Map<string, boolean>;
   terminologyError: TerminologyError;
+  isTabled: boolean;
   onCheckedChange: (newValue: string) => void;
+  onClear: () => void;
 }
 
 function ChoiceCheckboxAnswerValueSetFields(props: ChoiceCheckboxAnswerValueSetFieldsProps) {
-  const { qItem, options, answers, readOnly, terminologyError, onCheckedChange } = props;
-
-  const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
+  const {
+    qItem,
+    options,
+    answers,
+    feedback,
+    readOnly,
+    expressionUpdated,
+    answerOptionsToggleExpressionsMap,
+    terminologyError,
+    isTabled,
+    onCheckedChange,
+    onClear
+  } = props;
 
   if (options.length > 0) {
     return (
-      <StyledFormGroup row={orientation === ChoiceItemOrientation.Horizontal}>
-        <CheckboxOptionList
-          options={options}
-          answers={answers}
-          readOnly={readOnly}
-          onCheckedChange={onCheckedChange}
-        />
-      </StyledFormGroup>
+      <CheckboxFormGroup
+        qItem={qItem}
+        options={options}
+        answers={answers}
+        feedback={feedback}
+        readOnly={readOnly}
+        expressionUpdated={expressionUpdated}
+        answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+        isTabled={isTabled}
+        onCheckedChange={onCheckedChange}
+        onClear={onClear}
+      />
     );
   }
 
@@ -61,7 +77,7 @@ function ChoiceCheckboxAnswerValueSetFields(props: ChoiceCheckboxAnswerValueSetF
     return (
       <StyledAlert color="error">
         <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-        <Typography variant="subtitle2">
+        <Typography component="div">
           There was an error fetching options from the terminology server for{' '}
           {terminologyError.answerValueSet}
         </Typography>
@@ -69,12 +85,18 @@ function ChoiceCheckboxAnswerValueSetFields(props: ChoiceCheckboxAnswerValueSetF
     );
   }
 
+  if (options.length === 0) {
+    return (
+      <Typography sx={{ py: 0.5 }} fontWeight={600} fontSize={13}>
+        No options available.
+      </Typography>
+    );
+  }
+
   return (
     <StyledAlert color="error">
       <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-      <Typography variant="subtitle2">
-        Unable to fetch options from the questionnaire or launch context
-      </Typography>
+      <Typography>Unable to fetch options from the questionnaire or launch context</Typography>
     </StyledAlert>
   );
 }

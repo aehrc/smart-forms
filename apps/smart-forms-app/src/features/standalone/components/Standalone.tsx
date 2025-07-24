@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -65,7 +65,7 @@ function Standalone() {
 
   return (
     <Grid container>
-      <Grid item xs={12} xl={resourcesShown ? 8 : 12}>
+      <Grid size={{ xs: 12, xl: resourcesShown ? 8 : 12 }}>
         <Stack my={3} rowGap={2}>
           <StandaloneQuestionnairePicker
             rendererPropsState={state}
@@ -99,11 +99,9 @@ function Standalone() {
         </Stack>
       </Grid>
       {resourcesShown ? (
-        <>
-          <Grid item xs={12} xl={4}>
-            <StandaloneResourceViewer rendererPropsState={state} />
-          </Grid>
-        </>
+        <Grid size={{ xs: 12, xl: 4 }}>
+          <StandaloneResourceViewer rendererPropsState={state} />
+        </Grid>
       ) : null}
     </Grid>
   );

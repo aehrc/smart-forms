@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,18 +15,76 @@
  * limitations under the License.
  */
 
-import { getInputInvalidType, ValidationResult } from '../utils/validateQuestionnaire';
+import { getInputInvalidType, ValidationResult } from '../utils/validate';
 import type { QuestionnaireItem } from 'fhir/r4';
-import { getMaxValue, getMinValue, getRegexValidation } from '../utils/itemControl';
+import {
+  getMaxQuantityValue,
+  getMaxQuantityValueFeedback,
+  getMaxValue,
+  getMaxValueFeedback,
+  getMinQuantityValue,
+  getMinQuantityValueFeedback,
+  getMinValue,
+  getMinValueFeedback,
+  getRegexValidation,
+  getRequiredFeedback
+} from '../utils/extensions';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
+import { useQuestionnaireResponseStore, useQuestionnaireStore } from '../stores';
 
-function useValidationFeedback(qItem: QuestionnaireItem, input: string): string {
+function useValidationFeedback(
+  qItem: QuestionnaireItem,
+  feedbackFromParent: string | undefined,
+  input: string
+): string {
+  const invalidItems = useQuestionnaireResponseStore.use.invalidItems();
+  const requiredItemsIsHighlighted = useQuestionnaireResponseStore.use.requiredItemsIsHighlighted();
+
+  // Target constraint-based validation
+  const targetConstraints = useQuestionnaireStore.use.targetConstraints();
+  const targetConstraintLinkIds = useQuestionnaireStore.use.targetConstraintLinkIds();
+  const targetConstraintKeys = targetConstraintLinkIds[qItem.linkId];
+  if (targetConstraintKeys && targetConstraintKeys.length > 0) {
+    for (const targetConstraintKey of targetConstraintKeys) {
+      const targetConstraint = targetConstraints[targetConstraintKey];
+      if (targetConstraint) {
+        const { isInvalid, human } = targetConstraint;
+        if (isInvalid) {
+          return human;
+        }
+      }
+    }
+  }
+
+  // Feedback from parent
+  if (feedbackFromParent) {
+    return feedbackFromParent;
+  }
+
+  // Required-based validation
+  // User needs to manually invoke required items to be highlighted
+  if (requiredItemsIsHighlighted) {
+    const invalidOperationOutcome = invalidItems[qItem.linkId];
+    if (invalidOperationOutcome) {
+      const requiredIssue = invalidOperationOutcome.issue.find(
+        (issue) => issue.code === 'required'
+      );
+      if (requiredIssue) {
+        const requiredFeedback = getRequiredFeedback(qItem);
+        return requiredFeedback ?? 'This field is required.';
+      }
+    }
+  }
+
+  // Extension-based validation
   const regexValidation = getRegexValidation(qItem);
   const minLength = structuredDataCapture.getMinLength(qItem);
   const maxLength = qItem.maxLength;
   const maxDecimalPlaces = structuredDataCapture.getMaxDecimalPlaces(qItem);
   const minValue = getMinValue(qItem);
   const maxValue = getMaxValue(qItem);
+  const minQuantityValue = getMinQuantityValue(qItem); // gets the minQuantity value from the questionnaire item
+  const maxQuantityValue = getMaxQuantityValue(qItem); // gets the maxQuantity value from the questionnaire item
 
   const invalidType = getInputInvalidType({
     qItem,
@@ -36,11 +94,15 @@ function useValidationFeedback(qItem: QuestionnaireItem, input: string): string 
     maxLength,
     maxDecimalPlaces,
     minValue,
-    maxValue
+    maxValue,
+    minQuantityValue, // Min Quantity validation type
+    maxQuantityValue // Max Quantity validation type
   });
 
   if (!invalidType) {
     return '';
+  } else {
+    //invalid type exists, so we proceed
   }
 
   if (invalidType === ValidationResult.regex && regexValidation) {
@@ -67,7 +129,8 @@ function useValidationFeedback(qItem: QuestionnaireItem, input: string): string 
     invalidType === ValidationResult.minValue &&
     (typeof minValue === 'string' || typeof minValue === 'number')
   ) {
-    return `Input is lower than the expected minimum value of ${minValue}.`;
+    const minValueFeedback = getMinValueFeedback(qItem);
+    return minValueFeedback ?? `Input is lower than the expected minimum value of ${minValue}.`;
   }
 
   // Test max value
@@ -75,9 +138,27 @@ function useValidationFeedback(qItem: QuestionnaireItem, input: string): string 
     invalidType === ValidationResult.maxValue &&
     (typeof maxValue === 'string' || typeof maxValue === 'number')
   ) {
-    return `Input exceeds permitted maximum value of ${maxValue}.`;
+    const maxValueFeedback = getMaxValueFeedback(qItem);
+    return maxValueFeedback ?? `Input exceeds permitted maximum value of ${maxValue}.`;
   }
 
+  // Test min quantity
+  if (invalidType === ValidationResult.minQuantityValue && typeof minQuantityValue === 'number') {
+    const minQuantityFeedback = getMinQuantityValueFeedback(qItem); // get the feedback for minQuantity if it exists
+    return (
+      minQuantityFeedback ??
+      `Input is lower than the expected minimum quantity value of ${minQuantityValue}.`
+    );
+  }
+
+  // Test max quantity
+  if (invalidType === ValidationResult.maxQuantityValue && typeof maxQuantityValue === 'number') {
+    const maxQuantityFeedback = getMaxQuantityValueFeedback(qItem); // get the feedback for maxQuantity if it exists
+    return (
+      maxQuantityFeedback ??
+      `Input exceeds permitted maximum quantity value of ${maxQuantityValue}.`
+    );
+  }
   return '';
 }
 

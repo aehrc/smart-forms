@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +28,11 @@ function NextPageButton(props: NextPageButtonProps) {
   const { isDisabled, onNextPageClick } = props;
 
   return (
-    <SecondaryFab size="small" aria-label="next" disabled={isDisabled} onClick={onNextPageClick}>
+    <SecondaryFab
+      size="small"
+      aria-label="Next page"
+      disabled={isDisabled}
+      onClick={onNextPageClick}>
       <Iconify icon="material-symbols:chevron-right-rounded" />
     </SecondaryFab>
   );

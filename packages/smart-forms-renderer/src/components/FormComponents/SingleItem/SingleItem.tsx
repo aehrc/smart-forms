@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,26 +18,31 @@
 import React, { useCallback, useMemo } from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
+  PropsWithIsTabledRequiredAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithShowMinimalViewAttribute
+  PropsWithParentStylesAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
 import useHidden from '../../../hooks/useHidden';
 import useReadOnly from '../../../hooks/useReadOnly';
-import { shouldRenderNestedItems } from '../../../utils/itemControl';
+import { shouldRenderNestedItems } from '../../../utils/extensions';
 import SingleItemView from './SingleItemView';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
 interface SingleItemProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute,
-    PropsWithShowMinimalViewAttribute,
+    PropsWithIsTabledRequiredAttribute,
     PropsWithParentIsReadOnlyAttribute,
-    PropsWithParentIsRepeatGroupAttribute {
+    PropsWithParentIsRepeatGroupAttribute,
+    PropsWithFeedbackFromParentAttribute,
+    PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
   groupCardElevation: number;
@@ -53,30 +58,32 @@ function SingleItem(props: SingleItemProps) {
   const {
     qItem,
     qrItem,
-    isRepeated,
-    isTabled,
+    itemPath,
+    isRepeated = false,
+    isTabled = false,
     groupCardElevation,
-    showMinimalView,
     parentIsReadOnly,
+    feedbackFromParent,
     parentIsRepeatGroup,
     parentRepeatGroupIndex,
+    parentStyles,
     onQrItemChange
   } = props;
 
   const updateEnableWhenItem = useQuestionnaireStore.use.updateEnableWhenItem();
 
   const handleQrItemChange = useCallback(
-    (newQrItem: QuestionnaireResponseItem) => {
+    (newQrItem: QuestionnaireResponseItem, targetItemPath?: ItemPath) => {
       updateEnableWhenItem(
         qItem.linkId,
         newQrItem.answer,
-        parentIsRepeatGroup ? parentRepeatGroupIndex ?? null : null
+        parentIsRepeatGroup ? (parentRepeatGroupIndex ?? null) : null
       );
 
       if (qrItem && qrItem.item && qrItem.item.length > 0) {
-        onQrItemChange({ ...newQrItem, item: qrItem.item });
+        onQrItemChange({ ...newQrItem, item: qrItem.item }, targetItemPath);
       } else {
-        onQrItemChange(newQrItem);
+        onQrItemChange(newQrItem, targetItemPath);
       }
     },
     [
@@ -90,9 +97,9 @@ function SingleItem(props: SingleItemProps) {
   );
 
   const handleQrItemChangeWithNestedItems = useCallback(
-    (newQrItem: QuestionnaireResponseItem) => {
+    (newQrItem: QuestionnaireResponseItem, targetItemPath?: ItemPath) => {
       const updatedQrItem = qrItem ? { ...qrItem, item: newQrItem.item } : newQrItem;
-      onQrItemChange(updatedQrItem);
+      onQrItemChange(updatedQrItem, targetItemPath);
     },
     [qrItem, onQrItemChange]
   );
@@ -102,20 +109,22 @@ function SingleItem(props: SingleItemProps) {
     [qItem]
   );
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const readOnly = useReadOnly(qItem, parentIsReadOnly, parentRepeatGroupIndex);
   const itemIsHidden = useHidden(qItem, parentRepeatGroupIndex);
 
   return (
     <SingleItemView
       qItem={qItem}
       qrItem={qrItem}
+      itemPath={itemPath}
       itemIsHidden={itemIsHidden}
       itemHasNestedItems={itemHasNestedItems}
       isRepeated={isRepeated}
       isTabled={isTabled}
       groupCardElevation={groupCardElevation}
-      showMinimalView={showMinimalView}
       parentIsReadOnly={readOnly}
+      feedbackFromParent={feedbackFromParent}
+      parentStyles={parentStyles}
       onQrItemChange={handleQrItemChange}
       onQrItemChangeWithNestedItems={handleQrItemChangeWithNestedItems}
     />

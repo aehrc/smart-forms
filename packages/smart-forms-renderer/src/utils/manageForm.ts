@@ -6,9 +6,13 @@ import {
   terminologyServerStore
 } from '../stores';
 import { initialiseQuestionnaireResponse } from './initialise';
-import { removeEmptyAnswers } from './removeEmptyAnswers';
+import { removeEmptyAnswersFromItemRecursive } from './removeEmptyAnswers';
 import { readEncounter, readPatient, readUser } from '../api/smartClient';
 import type Client from 'fhirclient/lib/Client';
+import { updateQuestionnaireResponse } from './genericRecursive';
+import { removeInternalRepeatIdsRecursive } from './removeRepeatId';
+import type { ComponentType } from 'react';
+import type { QItemOverrideComponentProps, SdcUiOverrideComponentProps } from '../interfaces';
 
 /**
  * Build the form with an initial Questionnaire and an optional filled QuestionnaireResponse.
@@ -19,7 +23,9 @@ import type Client from 'fhirclient/lib/Client';
  * @param questionnaireResponse - Pre-populated/draft/loaded QuestionnaireResponse to be rendered (optional)
  * @param readOnly - Applies read-only mode to all items in the form view
  * @param terminologyServerUrl - Terminology server url to fetch terminology. If not provided, the default terminology server will be used. (optional)
- * @param additionalVariables - Additional key-value pair of SDC variables `Record<name, variable extension>` for testing (optional)
+ * @param additionalVariables - Additional key-value pair of SDC variables + values to be fed into the renderer's FhirPathContext `Record<name, value>` (likely coming from a pre-population module) e.g. `{ 'ObsBodyHeight': <Bundle of height observations> } }`.
+ * @param qItemOverrideComponents - Key-value pair of React component overrides for Questionnaire Items via linkId `Record<linkId, React component>`
+ * @param sdcUiOverrideComponents - Key-value pair of React component overrides for SDC UI Controls https://hl7.org/fhir/extensions/ValueSet-questionnaire-item-control.html `Record<SDC UI code, React component>`
  *
  * @author Sean Fong
  */
@@ -28,7 +34,9 @@ export async function buildForm(
   questionnaireResponse?: QuestionnaireResponse,
   readOnly?: boolean,
   terminologyServerUrl?: string,
-  additionalVariables?: Record<string, object>
+  additionalVariables?: Record<string, any>,
+  qItemOverrideComponents?: Record<string, ComponentType<QItemOverrideComponentProps>>,
+  sdcUiOverrideComponents?: Record<string, ComponentType<SdcUiOverrideComponentProps>>
 ): Promise<void> {
   // Reset terminology server
   if (terminologyServerUrl) {
@@ -40,14 +48,25 @@ export async function buildForm(
   // QR is set to undefined here to prevent it from being initialised twice. This is defined like that for backward compatibility purposes.
   await questionnaireStore
     .getState()
-    .buildSourceQuestionnaire(questionnaire, undefined, additionalVariables, terminologyServerUrl);
+    .buildSourceQuestionnaire(
+      questionnaire,
+      undefined,
+      additionalVariables,
+      terminologyServerUrl,
+      undefined,
+      qItemOverrideComponents,
+      sdcUiOverrideComponents
+    );
 
   const initialisedQuestionnaireResponse = initialiseQuestionnaireResponse(
     questionnaire,
     questionnaireResponse
   );
   questionnaireResponseStore.getState().buildSourceResponse(initialisedQuestionnaireResponse);
-  questionnaireStore.getState().updatePopulatedProperties(initialisedQuestionnaireResponse);
+  await questionnaireStore.getState().updatePopulatedProperties(initialisedQuestionnaireResponse);
+
+  // Adding another call to buildSourceResponse so invalidItems is truly updated - not great, but a cheap fix
+  questionnaireResponseStore.getState().buildSourceResponse(initialisedQuestionnaireResponse);
 
   if (readOnly) {
     questionnaireStore.getState().setFormAsReadOnly(readOnly);
@@ -95,7 +114,11 @@ export async function initialiseFhirClient(fhirClient: Client): Promise<void> {
  * @author Sean Fong
  */
 export function getResponse(): QuestionnaireResponse {
-  return questionnaireResponseStore.getState().updatableResponse;
+  const cleanResponse = removeInternalIdsFromResponse(
+    questionnaireStore.getState().sourceQuestionnaire,
+    questionnaireResponseStore.getState().updatableResponse
+  );
+  return structuredClone(cleanResponse);
 }
 
 /**
@@ -113,13 +136,36 @@ export function removeEmptyAnswersFromResponse(
   const enableWhenItems = questionnaireStore.getState().enableWhenItems;
   const enableWhenExpressions = questionnaireStore.getState().enableWhenExpressions;
 
-  return removeEmptyAnswers({
+  return updateQuestionnaireResponse(
     questionnaire,
     questionnaireResponse,
-    enableWhenIsActivated,
-    enableWhenItems,
-    enableWhenExpressions
-  });
+    removeEmptyAnswersFromItemRecursive,
+    {
+      enableWhenIsActivated,
+      enableWhenItems,
+      enableWhenExpressions
+    }
+  );
+}
+
+/**
+ * Remove all instances of item.answer.id from the filled QuestionnaireResponse.
+ * These IDs are used internally for rendering repeating items, and can be safely left out of the final response.
+ *
+ * @author Sean Fong
+ */
+export function removeInternalIdsFromResponse(
+  questionnaire: Questionnaire,
+  questionnaireResponse: QuestionnaireResponse
+): QuestionnaireResponse {
+  const questionnaireResponseToUpdate = structuredClone(questionnaireResponse);
+
+  return updateQuestionnaireResponse(
+    questionnaire,
+    questionnaireResponseToUpdate,
+    removeInternalRepeatIdsRecursive,
+    undefined
+  );
 }
 
 /**

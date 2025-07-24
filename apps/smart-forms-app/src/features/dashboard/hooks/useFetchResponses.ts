@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+import type { UseQueryResult } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
 import type { Bundle, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { constructBundle, filterResponses, getClientBundlePromise } from '../utils/dashboard.ts';
@@ -24,7 +25,7 @@ import useSelectedQuestionnaire from './useSelectedQuestionnaire.ts';
 
 interface useFetchResponsesReturnParams {
   responses: QuestionnaireResponse[];
-  fetchStatus: 'error' | 'success' | 'loading';
+  fetchStatus: UseQueryResult['status'];
   fetchError: unknown;
   isFetching: boolean;
   refetchResponses: () => void;
@@ -59,14 +60,12 @@ function useFetchResponses(
     error,
     isFetching,
     refetch
-  } = useQuery<Bundle>(
-    ['response', queryUrl],
+  } = useQuery<Bundle>({
+    queryKey: ['response', queryUrl],
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    () => getClientBundlePromise(smartClient!, queryUrl),
-    {
-      enabled: !!smartClient
-    }
-  );
+    queryFn: () => getClientBundlePromise(smartClient!, queryUrl),
+    enabled: !!smartClient
+  });
 
   // create existing responses from a selectedResponse questionnaire if exists
   const existingResponseBundle: Bundle = useMemo(

@@ -1,6 +1,6 @@
 # Variable: terminologyServerStore
 
-> `const` **terminologyServerStore**: `StoreApi` \<[`TerminologyServerStoreType`](../interfaces/TerminologyServerStoreType.md)\>
+> `const` **terminologyServerStore**: `StoreApi`\<[`TerminologyServerStoreType`](../interfaces/TerminologyServerStoreType.md)\>
 
 Terminology server state management store. This is used for resolving valueSets externally.
 Defaults to use https://tx.ontoserver.csiro.au/fhir.

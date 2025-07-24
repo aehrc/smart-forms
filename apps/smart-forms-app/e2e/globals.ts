@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,10 +22,76 @@ export const PLAYWRIGHT_APP_URL = process.env.CI
   ? 'http://localhost:4173'
   : 'http://localhost:5173';
 
-export const LAUNCH_PARAM_WITHOUT_Q = process.env.CI
-  ? 'WzAsInBhdC1zZiIsInByaW1hcnktcGV0ZXIiLCJBVVRPIiwwLDAsMCwiZmhpclVzZXIgb25saW5lX2FjY2VzcyBvcGVuaWQgcHJvZmlsZSBwYXRpZW50L0NvbmRpdGlvbi5ycyBwYXRpZW50L09ic2VydmF0aW9uLnJzIGxhdW5jaCBwYXRpZW50L0VuY291bnRlci5ycyBwYXRpZW50L1F1ZXN0aW9ubmFpcmVSZXNwb25zZS5jcnVkcyBwYXRpZW50L1BhdGllbnQucnMiLCJodHRwOi8vbG9jYWxob3N0OjQxNzMvIiwiYTU3ZDkwZTMtNWY2OS00YjkyLWFhMmUtMjk5MjE4MDg2M2MxIiwiIiwiIiwiIiwiIiwwLDEsIiIsZmFsc2Vd'
-  : 'WzAsInBhdC1zZiIsInByaW1hcnktcGV0ZXIiLCJBVVRPIiwwLDAsMCwiZmhpclVzZXIgb25saW5lX2FjY2VzcyBvcGVuaWQgcHJvZmlsZSBwYXRpZW50L0NvbmRpdGlvbi5ycyBwYXRpZW50L09ic2VydmF0aW9uLnJzIGxhdW5jaCBwYXRpZW50L0VuY291bnRlci5ycyBwYXRpZW50L1F1ZXN0aW9ubmFpcmVSZXNwb25zZS5jcnVkcyBwYXRpZW50L1BhdGllbnQucnMiLCJodHRwOi8vbG9jYWxob3N0OjUxNzMvIiwiMWZmN2JkYzItMzZiMi00MzAzLThjMDUtYzU3MzQyYzViMDQzIiwiIiwiIiwiIiwiIiwwLDEsIiIsZmFsc2Vd';
+/*
+ * This is the base64 encoded version of the following array. Refer to https://github.com/aehrc/SMART-EHR-Launcher/blob/main/src/lib/codec.ts
+ *
+ * [
+ *   launchTypeIndex (indexOf ["provider-ehr", "patient-portal", "provider-standalone", "patient-standalone", "backend-service"], use 0 for "provider-ehr"),
+ *   patientId,
+ *   providerId,
+ *   encounterId,
+ *   skip_login (use fixed value 0 for bool false)
+ *   skip_auth (use fixed value 0 for bool false)
+ *   sim_ehr (use fixed value 0 for bool false)
+ *   scope,
+ *   redirect_uris (comma separated),
+ *   client_id,
+ *   client_secret (use fixed value ""),
+ *   auth_error (use fixed value ""),
+ *   jwks_url (use fixed value ""),
+ *   jwks (use fixed value ""),
+ *   clientTypes (indexOf ["public", "confidential-symmetric", "confidential-asymmetric", "backend-service"], use 0 for "public"),
+ *   PKCEValidationTypes (indexOf ["none", "auto", "always"], use 1 for "auto"),
+ *   fhir_context (object but stringified),
+ *   source_fhir_server,
+ *   is_embedded_view (boolean)
+ * ]
+ *
+ */
+export const LAUNCH_PARAM_WITHOUT_Q = btoa(
+  JSON.stringify([
+    0,
+    'pat-sf',
+    'primary-peter',
+    'health-check-pat-sf',
+    0,
+    0,
+    0,
+    'fhirUser online_access openid profile patient/Condition.rs patient/Observation.rs launch patient/Encounter.rs patient/QuestionnaireResponse.cruds patient/Patient.rs',
+    PLAYWRIGHT_APP_URL,
+    'a57d90e3-5f69-4b92-aa2e-2992180863c1',
+    '',
+    '',
+    '',
+    '',
+    0,
+    1,
+    '',
+    'https://proxy.smartforms.io/v/r4/fhir',
+    false
+  ])
+);
 
-export const LAUNCH_PARAM_WITH_Q = process.env.CI
-  ? 'WzAsInBhdC1zZiIsInByaW1hcnktcGV0ZXIiLCJBVVRPIiwwLDAsMCwiZmhpclVzZXIgb25saW5lX2FjY2VzcyBvcGVuaWQgcHJvZmlsZSBwYXRpZW50L0NvbmRpdGlvbi5ycyBwYXRpZW50L09ic2VydmF0aW9uLnJzIGxhdW5jaCBwYXRpZW50L0VuY291bnRlci5ycyBwYXRpZW50L1F1ZXN0aW9ubmFpcmVSZXNwb25zZS5jcnVkcyBwYXRpZW50L1BhdGllbnQucnMiLCJodHRwOi8vbG9jYWxob3N0OjQxNzMvIiwiYTU3ZDkwZTMtNWY2OS00YjkyLWFhMmUtMjk5MjE4MDg2M2MxIiwiIiwiIiwiIiwiIiwwLDEsIntcInJvbGVcIjpcInF1ZXN0aW9ubmFpcmUtcmVuZGVyLW9uLWxhdW5jaFwiLFwiY2Fub25pY2FsXCI6XCJodHRwOi8vd3d3LmhlYWx0aC5nb3YuYXUvYXNzZXNzbWVudHMvbWJzLzcxNXwwLjEuMC1hc3NlbWJsZWRcIixcInR5cGVcIjpcIlF1ZXN0aW9ubmFpcmVcIn0iLGZhbHNlXQ'
-  : 'WzAsInBhdC1zZiIsInByaW1hcnktcGV0ZXIiLCJBVVRPIiwwLDAsMCwiZmhpclVzZXIgb25saW5lX2FjY2VzcyBvcGVuaWQgcHJvZmlsZSBwYXRpZW50L0NvbmRpdGlvbi5ycyBwYXRpZW50L09ic2VydmF0aW9uLnJzIGxhdW5jaCBwYXRpZW50L0VuY291bnRlci5ycyBwYXRpZW50L1F1ZXN0aW9ubmFpcmVSZXNwb25zZS5jcnVkcyBwYXRpZW50L1BhdGllbnQucnMiLCJodHRwOi8vbG9jYWxob3N0OjUxNzMvIiwiMWZmN2JkYzItMzZiMi00MzAzLThjMDUtYzU3MzQyYzViMDQzIiwiIiwiIiwiIiwiIiwwLDEsIntcInJvbGVcIjpcInF1ZXN0aW9ubmFpcmUtcmVuZGVyLW9uLWxhdW5jaFwiLFwiY2Fub25pY2FsXCI6XCJodHRwOi8vd3d3LmhlYWx0aC5nb3YuYXUvYXNzZXNzbWVudHMvbWJzLzcxNXwwLjEuMC1hc3NlbWJsZWRcIixcInR5cGVcIjpcIlF1ZXN0aW9ubmFpcmVcIn0iLGZhbHNlXQ';
+export const LAUNCH_PARAM_WITH_Q = btoa(
+  JSON.stringify([
+    0,
+    'pat-sf',
+    'primary-peter',
+    'health-check-pat-sf',
+    0,
+    0,
+    0,
+    'fhirUser online_access openid profile patient/Condition.rs patient/Observation.rs launch patient/Encounter.rs patient/QuestionnaireResponse.cruds patient/Patient.rs',
+    PLAYWRIGHT_APP_URL,
+    'a57d90e3-5f69-4b92-aa2e-2992180863c1',
+    '',
+    '',
+    '',
+    '',
+    0,
+    1,
+    '{"role":"questionnaire-render-on-launch","canonical":"http://www.health.gov.au/assessments/mbs/715|0.3.0-assembled","type":"Questionnaire"}',
+    'https://proxy.smartforms.io/v/r4/fhir',
+    false
+  ])
+);

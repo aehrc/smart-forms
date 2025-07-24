@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import type { Expression, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
-import { createFhirPathContext } from './fhirpath';
+import type { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
+import { createFhirPathContext, handleFhirPathResult } from './fhirpath';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import type {
@@ -24,47 +24,60 @@ import type {
   EnableWhenRepeatExpression,
   EnableWhenSingleExpression
 } from '../interfaces/enableWhen.interface';
+import type { Variables } from '../interfaces';
 
 interface EvaluateInitialEnableWhenExpressionsParams {
   initialResponse: QuestionnaireResponse;
   initialResponseItemMap: Record<string, QuestionnaireResponseItem[]>;
   enableWhenExpressions: EnableWhenExpressions;
-  variablesFhirPath: Record<string, Expression[]>;
+  variables: Variables;
   existingFhirPathContext: Record<string, any>;
+  fhirPathTerminologyCache: Record<string, any>;
+  terminologyServerUrl: string;
 }
 
-export function evaluateInitialEnableWhenExpressions(
+export async function evaluateInitialEnableWhenExpressions(
   params: EvaluateInitialEnableWhenExpressionsParams
-): {
+): Promise<{
   initialEnableWhenExpressions: EnableWhenExpressions;
   updatedFhirPathContext: Record<string, any>;
-} {
+  fhirPathTerminologyCache: Record<string, any>;
+}> {
   const {
     initialResponse,
     initialResponseItemMap,
     enableWhenExpressions,
-    variablesFhirPath,
-    existingFhirPathContext
+    variables,
+    existingFhirPathContext,
+    terminologyServerUrl
   } = params;
+  let { fhirPathTerminologyCache } = params;
 
   const initialEnableWhenExpressions: EnableWhenExpressions = {
     ...enableWhenExpressions
   };
-  const updatedFhirPathContext = createFhirPathContext(
+  const fhirPathEvalResult = await createFhirPathContext(
     initialResponse,
     initialResponseItemMap,
-    variablesFhirPath,
-    existingFhirPathContext
+    variables,
+    existingFhirPathContext,
+    fhirPathTerminologyCache,
+    terminologyServerUrl
   );
+  const updatedFhirPathContext = fhirPathEvalResult.fhirPathContext;
+  fhirPathTerminologyCache = fhirPathEvalResult.fhirPathTerminologyCache;
 
-  const initialEnableWhenSingleExpressions = evaluateEnableWhenSingleExpressions(
+  const initialEnableWhenSingleExpressions = await evaluateEnableWhenSingleExpressions(
     initialEnableWhenExpressions.singleExpressions,
-    updatedFhirPathContext
+    updatedFhirPathContext,
+    fhirPathTerminologyCache,
+    terminologyServerUrl
   );
 
-  const initialEnableWhenRepeatExpressions = evaluateEnableWhenRepeatExpressions(
+  const initialEnableWhenRepeatExpressions = await evaluateEnableWhenRepeatExpressions(
     initialEnableWhenExpressions.repeatExpressions,
-    updatedFhirPathContext
+    updatedFhirPathContext,
+    terminologyServerUrl
   );
 
   return {
@@ -72,24 +85,47 @@ export function evaluateInitialEnableWhenExpressions(
       singleExpressions: initialEnableWhenSingleExpressions.updatedExpressions,
       repeatExpressions: initialEnableWhenRepeatExpressions.updatedExpressions
     },
-    updatedFhirPathContext
+    updatedFhirPathContext,
+    fhirPathTerminologyCache
   };
 }
 
-function evaluateEnableWhenSingleExpressions(
+async function evaluateEnableWhenSingleExpressions(
   enableWhenSingleExpressions: Record<string, EnableWhenSingleExpression>,
-  updatedFhirPathContext: Record<string, any>
-): {
+  updatedFhirPathContext: Record<string, any>,
+  fhirPathTerminologyCache: Record<string, any>,
+  terminologyServerUrl: string
+): Promise<{
   updatedExpressions: Record<string, EnableWhenSingleExpression>;
   isUpdated: boolean;
-} {
+}> {
   let isUpdated = false;
   for (const linkId in enableWhenSingleExpressions) {
     const initialValue = enableWhenSingleExpressions[linkId].isEnabled;
     const expression = enableWhenSingleExpressions[linkId].expression;
 
+    const cacheKey = JSON.stringify(expression); // Use expression as cache key
+    if (fhirPathTerminologyCache[cacheKey]) {
+      continue;
+    }
+
     try {
-      const result = fhirpath.evaluate('', expression, updatedFhirPathContext, fhirpath_r4_model);
+      const fhirPathResult = fhirpath.evaluate(
+        {},
+        expression,
+        updatedFhirPathContext,
+        fhirpath_r4_model,
+        {
+          async: true,
+          terminologyUrl: terminologyServerUrl
+        }
+      );
+      const result = await handleFhirPathResult(fhirPathResult);
+
+      // If fhirPathResult is an async terminology call, cache the result
+      if (fhirPathResult instanceof Promise) {
+        fhirPathTerminologyCache[cacheKey] = result;
+      }
 
       // Update enableWhenExpressions if length of result array > 0
       // Only update when current isEnabled value is different from the result, otherwise it will result in an infinite loop as per issue #733
@@ -124,35 +160,43 @@ function evaluateEnableWhenSingleExpressions(
   return { updatedExpressions: enableWhenSingleExpressions, isUpdated };
 }
 
-function getNumOfEnableWhenExpressionItemInstances(
+async function getNumOfEnableWhenExpressionItemInstances(
   enableWhenExpression: EnableWhenRepeatExpression,
-  fhirPathContext: Record<string, any>
+  fhirPathContext: Record<string, any>,
+  terminologyServerUrl: string
 ) {
-  const result = fhirpath.evaluate(
-    '',
+  const fhirPathResult = fhirpath.evaluate(
+    {},
     `%resource.descendants().where(linkId = '${enableWhenExpression.parentLinkId}').count()`,
     fhirPathContext,
-    fhirpath_r4_model
+    fhirpath_r4_model,
+    {
+      async: true,
+      terminologyUrl: terminologyServerUrl
+    }
   );
+  const result = await handleFhirPathResult(fhirPathResult);
 
   return typeof result[0] === 'number' ? result[0] : null;
 }
 
-function evaluateEnableWhenRepeatExpressions(
+async function evaluateEnableWhenRepeatExpressions(
   enableWhenRepeatExpressions: Record<string, EnableWhenRepeatExpression>,
-  fhirPathContext: Record<string, any>
-): {
+  fhirPathContext: Record<string, any>,
+  terminologyServerUrl: string
+): Promise<{
   updatedExpressions: Record<string, EnableWhenRepeatExpression>;
   isUpdated: boolean;
-} {
+}> {
   let aggregatedUpdated = false;
   for (const linkId in enableWhenRepeatExpressions) {
     // Get number of repeat group instances in the QR
     const enableWhenExpression = enableWhenRepeatExpressions[linkId];
 
-    const numOfInstances = getNumOfEnableWhenExpressionItemInstances(
+    const numOfInstances = await getNumOfEnableWhenExpressionItemInstances(
       enableWhenExpression,
-      fhirPathContext
+      fhirPathContext,
+      terminologyServerUrl
     );
     if (!numOfInstances) {
       continue;
@@ -164,12 +208,13 @@ function evaluateEnableWhenRepeatExpressions(
     }
 
     for (let i = 0; i < numOfInstances; i++) {
-      const { isEnabled, isUpdated } = evaluateEnableWhenRepeatExpressionInstance(
+      const { isEnabled, isUpdated } = await evaluateEnableWhenRepeatExpressionInstance(
         linkId,
         fhirPathContext,
         enableWhenExpression,
         lastLinkIdIndex,
-        i
+        i,
+        terminologyServerUrl
       );
 
       if (typeof isEnabled === 'boolean') {
@@ -183,13 +228,14 @@ function evaluateEnableWhenRepeatExpressions(
   return { updatedExpressions: enableWhenRepeatExpressions, isUpdated: aggregatedUpdated };
 }
 
-export function evaluateEnableWhenRepeatExpressionInstance(
+export async function evaluateEnableWhenRepeatExpressionInstance(
   linkId: string,
   fhirPathContext: Record<string, any>,
   enableWhenRepeatExpression: EnableWhenRepeatExpression,
   lastLinkIdIndex: number,
-  instanceIndex: number
-): { isEnabled: boolean | null; isUpdated: boolean } {
+  instanceIndex: number,
+  terminologyServerUrl: string
+): Promise<{ isEnabled: boolean | null; isUpdated: boolean }> {
   const expression = enableWhenRepeatExpression.expression;
   const parentLinkId = enableWhenRepeatExpression.parentLinkId;
   const initialValue = enableWhenRepeatExpression.enabledIndexes[instanceIndex];
@@ -202,7 +248,17 @@ export function evaluateEnableWhenRepeatExpressionInstance(
   let isEnabled = null;
   let isUpdated = false;
   try {
-    const result = fhirpath.evaluate('', modifiedExpression, fhirPathContext, fhirpath_r4_model);
+    const fhirPathResult = fhirpath.evaluate(
+      {},
+      modifiedExpression,
+      fhirPathContext,
+      fhirpath_r4_model,
+      {
+        async: true,
+        terminologyUrl: terminologyServerUrl
+      }
+    );
+    const result = await handleFhirPathResult(fhirPathResult);
 
     // Update enableWhenExpressions if length of result array > 0
     // Only update when current isEnabled value is different from the result, otherwise it will result in am infinite loop as per #733
@@ -229,25 +285,30 @@ export function evaluateEnableWhenRepeatExpressionInstance(
   return { isEnabled, isUpdated };
 }
 
-export function evaluateEnableWhenExpressions(
+export async function evaluateEnableWhenExpressions(
   fhirPathContext: Record<string, any>,
-  enableWhenExpressions: EnableWhenExpressions
-): {
+  fhirPathTerminologyCache: Record<string, any>,
+  enableWhenExpressions: EnableWhenExpressions,
+  terminologyServerUrl: string
+): Promise<{
   enableWhenExpsIsUpdated: boolean;
   updatedEnableWhenExpressions: EnableWhenExpressions;
-} {
+}> {
   const updatedEnableWhenExpressions: EnableWhenExpressions = {
     ...enableWhenExpressions
   };
 
-  const updatedEnableWhenSingleExpressions = evaluateEnableWhenSingleExpressions(
+  const updatedEnableWhenSingleExpressions = await evaluateEnableWhenSingleExpressions(
     updatedEnableWhenExpressions.singleExpressions,
-    fhirPathContext
+    fhirPathContext,
+    fhirPathTerminologyCache,
+    terminologyServerUrl
   );
 
-  const updatedEnableWhenRepeatExpressions = evaluateEnableWhenRepeatExpressions(
+  const updatedEnableWhenRepeatExpressions = await evaluateEnableWhenRepeatExpressions(
     updatedEnableWhenExpressions.repeatExpressions,
-    fhirPathContext
+    fhirPathContext,
+    terminologyServerUrl
   );
 
   const isUpdated =
@@ -265,36 +326,44 @@ export function evaluateEnableWhenExpressions(
 interface MutateRepeatEnableWhenExpressionInstancesParams {
   questionnaireResponse: QuestionnaireResponse;
   questionnaireResponseItemMap: Record<string, QuestionnaireResponseItem[]>;
-  variablesFhirPath: Record<string, Expression[]>;
+  variables: Variables;
   existingFhirPathContext: Record<string, any>;
+  fhirPathTerminologyCache: Record<string, any>;
   enableWhenExpressions: EnableWhenExpressions;
   parentRepeatGroupLinkId: string;
   parentRepeatGroupIndex: number;
   actionType: 'add' | 'remove';
+  terminologyServerUrl: string;
 }
 
-export function mutateRepeatEnableWhenExpressionInstances(
+export async function mutateRepeatEnableWhenExpressionInstances(
   params: MutateRepeatEnableWhenExpressionInstancesParams
-): { updatedEnableWhenExpressions: EnableWhenExpressions; isUpdated: boolean } {
+): Promise<{ updatedEnableWhenExpressions: EnableWhenExpressions; isUpdated: boolean }> {
   const {
     questionnaireResponse,
     questionnaireResponseItemMap,
-    variablesFhirPath,
+    variables,
+    fhirPathTerminologyCache,
     existingFhirPathContext,
     enableWhenExpressions,
     parentRepeatGroupLinkId,
     parentRepeatGroupIndex,
-    actionType
+    actionType,
+    terminologyServerUrl
   } = params;
 
   const { repeatExpressions } = enableWhenExpressions;
 
-  const updatedFhirPathContext = createFhirPathContext(
+  const fhirPathEvalResult = await createFhirPathContext(
     questionnaireResponse,
     questionnaireResponseItemMap,
-    variablesFhirPath,
-    existingFhirPathContext
+    variables,
+    existingFhirPathContext,
+    fhirPathTerminologyCache,
+    terminologyServerUrl
   );
+
+  const updatedFhirPathContext = fhirPathEvalResult.fhirPathContext;
 
   let isUpdated = false;
   for (const linkId in repeatExpressions) {
@@ -303,12 +372,13 @@ export function mutateRepeatEnableWhenExpressionInstances(
     }
 
     if (actionType === 'add') {
-      const { isEnabled } = evaluateEnableWhenRepeatExpressionInstance(
+      const { isEnabled } = await evaluateEnableWhenRepeatExpressionInstance(
         linkId,
         updatedFhirPathContext,
         repeatExpressions[linkId],
         repeatExpressions[linkId].expression.lastIndexOf('.where(linkId'),
-        parentRepeatGroupIndex
+        parentRepeatGroupIndex,
+        terminologyServerUrl
       );
 
       if (typeof isEnabled === 'boolean') {

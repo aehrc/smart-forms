@@ -7,7 +7,7 @@ Main component to render a Group Grid (grid) Questionnaire item.
 ## Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `props` | `GridGroupProps` |
 
 ## Returns

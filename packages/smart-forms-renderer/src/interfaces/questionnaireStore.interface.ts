@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,20 +24,27 @@ import type { CalculatedExpression } from './calculatedExpression.interface';
 import type { AnswerExpression } from './answerExpression.interface';
 import type { Coding, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type { InitialExpression } from './initialExpression.interface';
+import type { TargetConstraint } from './targetConstraint.interface';
+import type { ProcessedValueSet } from './valueSet.interface';
+import type { AnswerOptionsToggleExpression } from './answerOptionsToggleExpression.interface';
 
 export interface QuestionnaireModel {
   itemTypes: Record<string, string>;
+  itemPreferredTerminologyServers: Record<string, string>;
   tabs: Tabs;
   pages: Pages;
   variables: Variables;
   launchContexts: Record<string, LaunchContext>;
+  targetConstraints: Record<string, TargetConstraint>;
   enableWhenItems: EnableWhenItems;
   enableWhenExpressions: EnableWhenExpressions;
   calculatedExpressions: Record<string, CalculatedExpression[]>;
   initialExpressions: Record<string, InitialExpression>;
   answerExpressions: Record<string, AnswerExpression>;
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
-  processedValueSetCodings: Record<string, Coding[]>;
-  processedValueSetUrls: Record<string, string>;
+  answerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
+  processedValueSets: Record<string, ProcessedValueSet>;
+  cachedValueSetCodings: Record<string, Coding[]>;
   fhirPathContext: Record<string, any>;
+  fhirPathTerminologyCache: Record<string, any>;
 }

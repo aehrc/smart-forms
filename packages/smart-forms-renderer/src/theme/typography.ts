@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,97 +15,109 @@
  * limitations under the License.
  */
 
-export function pxToRem(value: number) {
-  return `${value / 16}rem`;
+import type { TypographyVariantsOptions } from '@mui/material';
+import type { CSSProperties } from 'react';
+
+declare module '@mui/material/styles' {
+  // noinspection JSUnusedGlobalSymbols
+  interface TypographyVariants {
+    label: CSSProperties;
+    groupHeading: CSSProperties;
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  interface TypographyVariantsOptions {
+    label?: CSSProperties;
+    groupHeading?: CSSProperties;
+  }
 }
 
-export function responsiveFontSizes(props: { sm: number; md: number; lg: number }) {
-  const { sm, md, lg } = props;
-  return {
-    '@media (min-width:600px)': {
-      fontSize: pxToRem(sm)
-    },
-    '@media (min-width:900px)': {
-      fontSize: pxToRem(md)
-    },
-    '@media (min-width:1200px)': {
-      fontSize: pxToRem(lg)
-    }
-  };
+declare module '@mui/material/Typography' {
+  // noinspection JSUnusedGlobalSymbols
+  interface TypographyPropsVariantOverrides {
+    label: true;
+    groupHeading: true;
+  }
 }
 
 // ----------------------------------------------------------------------
 
-const typography = {
+const typography: TypographyVariantsOptions = {
   fontFamily: ['Inter', 'sans-serif', 'Helvetica', 'Arial', 'Roboto', '"Helvetica Neue"'].join(','),
-  fontWeightRegular: 500,
   h1: {
-    fontWeight: 800,
-    lineHeight: 80 / 64,
-    fontSize: pxToRem(36),
-    ...responsiveFontSizes({ sm: 40, md: 48, lg: 54 })
+    fontSize: '2rem', // 32px
+    fontWeight: 700,
+    lineHeight: '40px'
   },
   h2: {
-    fontWeight: 800,
-    lineHeight: 64 / 48,
-    fontSize: pxToRem(28),
-    ...responsiveFontSizes({ sm: 32, md: 34, lg: 36 })
+    fontSize: '1.75rem', // 28px
+    fontWeight: 600,
+    lineHeight: '34px'
   },
   h3: {
-    fontWeight: 700,
-    lineHeight: 1.5,
-    fontSize: pxToRem(20),
-    ...responsiveFontSizes({ sm: 22, md: 26, lg: 28 })
+    fontSize: '1.625rem', // 26px
+    fontWeight: 600,
+    lineHeight: '32px'
   },
   h4: {
+    fontSize: '1.5rem', // 24px
     fontWeight: 700,
-    lineHeight: 1.5,
-    fontSize: pxToRem(16),
-    ...responsiveFontSizes({ sm: 18, md: 20, lg: 20 })
+    lineHeight: '30px'
   },
   h5: {
+    fontSize: '1.375rem', // 22px
     fontWeight: 700,
-    lineHeight: 1.5,
-    fontSize: pxToRem(14),
-    ...responsiveFontSizes({ sm: 15, md: 16, lg: 16 })
+    lineHeight: '28px'
   },
   h6: {
+    fontSize: '1.125rem', // 18px
     fontWeight: 700,
-    lineHeight: 28 / 18,
-    fontSize: pxToRem(13.5),
-    ...responsiveFontSizes({ sm: 14, md: 14, lg: 14 })
+    lineHeight: '24px'
   },
   subtitle1: {
+    fontSize: '1rem', // 16px
     fontWeight: 600,
-    lineHeight: 1.5,
-    fontSize: pxToRem(13.5)
+    lineHeight: '20px'
   },
   subtitle2: {
+    fontSize: '0.875rem', // 14px
     fontWeight: 600,
-    lineHeight: 22 / 14,
-    fontSize: pxToRem(12)
+    lineHeight: '18px'
   },
   body1: {
-    lineHeight: 1.5,
-    fontSize: pxToRem(13)
+    fontSize: '0.875rem', // 14px
+    fontWeight: 400,
+    lineHeight: '20px'
   },
   body2: {
-    lineHeight: 22 / 14,
-    fontSize: pxToRem(11.5)
+    fontSize: '0.75rem', // 12px
+    fontWeight: 400,
+    lineHeight: '18px'
+  },
+  groupHeading: {
+    fontSize: '0.875rem', // 14px
+    fontWeight: 600,
+    lineHeight: '20px'
+  },
+  label: {
+    fontSize: '0.875rem', // 14px
+    fontWeight: 400,
+    lineHeight: '20px'
   },
   caption: {
-    lineHeight: 1.5,
-    fontSize: pxToRem(10.5)
+    fontSize: '0.75rem', // 12px
+    fontWeight: 500,
+    lineHeight: '18px'
   },
   overline: {
+    fontSize: '0.8125rem', // 13px
     fontWeight: 700,
-    lineHeight: 1.5,
-    fontSize: pxToRem(10.5)
+    lineHeight: '20px'
   },
   button: {
+    fontSize: '0.8125rem', // 13px
     fontWeight: 700,
-    lineHeight: 24 / 14,
-    fontSize: pxToRem(12.5)
+    lineHeight: '20px'
   }
 };
 

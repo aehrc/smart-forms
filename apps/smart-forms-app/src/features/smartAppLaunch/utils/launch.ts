@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -69,28 +69,28 @@ export async function readCommonLaunchContexts(
   };
 }
 
-interface FhirContext {
-  reference?: string;
+export interface FhirContext {
   role?: string;
-  canonical?: string;
   type?: string;
+  canonical?: string;
+  reference?: string;
   identifier?: Identifier;
+  [key: string]: unknown;
 }
 
-interface tokenResponseCustomised extends fhirclient.TokenResponse {
+export interface tokenResponseCustomised extends fhirclient.TokenResponse {
   fhirContext?: FhirContext[];
   intent?: string;
 }
 
-export function getQuestionnaireReferences(client: Client): FhirContext[] {
-  const tokenResponse = client.state.tokenResponse as tokenResponseCustomised;
-  const fhirContext = tokenResponse.fhirContext;
-
-  if (!fhirContext) return [];
-
-  // Temporarily recognise relative and canonical references only
+// Use Australian Digital Health namespace with the "new" role for fhirContext:
+// https://confluence.hl7.org/spaces/FHIRI/pages/202409650/fhirContext+Role+Registry#:~:text=N/A-,http%3A//ns.electronichealth.net.au/smart/role/new,-URL%20made%20more
+export function getQuestionnaireReferences(fhirContext: FhirContext[]): FhirContext[] {
   return fhirContext.filter(
-    (context) => context.reference?.includes('Questionnaire') || context.canonical
+    (context) =>
+      context.role === 'http://ns.electronichealth.net.au/smart/role/new' &&
+      context.type === 'Questionnaire' &&
+      !!context.canonical
   );
 }
 

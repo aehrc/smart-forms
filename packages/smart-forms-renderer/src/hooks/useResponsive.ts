@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,14 +15,61 @@
  * limitations under the License.
  */
 
+import type { Breakpoint } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
-function useResponsive(
-  query: 'up' | 'down' | 'between' | 'only',
-  start: 'xs' | 'sm' | 'md' | 'lg' | 'xl',
-  end: 'xs' | 'sm' | 'md' | 'lg' | 'xl' = 'xl'
-) {
+/**
+ * Props for the useResponsive() hook -  used to determine if the screen size matches a given breakpoint query.
+ *
+ * @param {'up' | 'down' | 'between' | 'only'} query - The type of query:
+ *   - `'up'`: Matches screen sizes above and including `start`.
+ *   - `'down'`: Matches screen sizes below and including `start`.
+ *   - `'between'`: Matches screen sizes between `start` and `end` (inclusive).
+ *   - `'only'`: Matches exactly the `start` size.
+ * @param {'xs' | 'sm' | 'md' | 'lg' | 'xl'} start - The starting breakpoint - can be extended via MUI BreakpointOverrides.
+ * @param {'xs' | 'sm' | 'md' | 'lg' | 'xl'} end - The ending breakpoint (required if `query` is `'between'`) - can be extended via MUI BreakpointOverrides.
+ *
+ * @example
+ * // Check if the screen size is at least 'md' (medium)
+ * const isMdUp = useResponsive({ query: 'up', start: 'md' });
+ *
+ * @example
+ * // Check if the screen size is exactly 'lg' (large)
+ * const isLgOnly = useResponsive({ query: 'only', start: 'lg' });
+ *
+ * @example
+ * // Check if the screen size is at least 'tablet' - this is a custom breakpoint https://mui.com/material-ui/customization/breakpoints/#custom-breakpoints
+ * const isTabletUp = useResponsive({ query: 'up', start: 'tablet' });
+ **/
+export interface UseResponsiveProps {
+  query: 'up' | 'down' | 'between' | 'only';
+  start: Breakpoint;
+  end?: Breakpoint;
+}
+
+/**
+ * A hook to determine if the screen size matches a given breakpoint query.
+ *
+ * @param props - The responsive query options.
+ *
+ * @returns {boolean} `true` if the current screen size matches the query, otherwise `false`.
+ *
+ * @example
+ * // Check if the screen size is at least 'md' (medium)
+ * const isMdUp = useResponsive({ query: 'up', start: 'md' });
+ *
+ * @example
+ * // Check if the screen size is exactly 'lg' (large)
+ * const isLgOnly = useResponsive({ query: 'only', start: 'lg' });
+ *
+ * @example
+ * // Check if the screen size is at least 'tablet' - this is a custom breakpoint https://mui.com/material-ui/customization/breakpoints/#custom-breakpoints
+ * const isTabletUp = useResponsive({ query: 'up', start: 'tablet' });
+ */
+function useResponsive(props: UseResponsiveProps): boolean {
+  const { query, start, end = 'xl' } = props;
+
   const theme = useTheme();
 
   const mediaUp = useMediaQuery(theme.breakpoints.up(start));

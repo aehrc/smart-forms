@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,6 @@ import type {
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
-import cloneDeep from 'lodash.clonedeep';
 import type {
   EnableWhenItems,
   EnableWhenRepeatItemProperties,
@@ -123,6 +122,18 @@ export function isEnabledAnswerTypeSwitcher(
     return answerOperatorSwitcher(
       enableWhen.answerCoding.code,
       answer.valueCoding.code,
+      enableWhen.operator
+    );
+  }
+
+  // Handle case where valueCoding.code is not present
+  if (
+    typeof enableWhen.answerCoding?.display === 'string' &&
+    typeof answer.valueCoding?.display === 'string'
+  ) {
+    return answerOperatorSwitcher(
+      enableWhen.answerCoding.display,
+      answer.valueCoding.display,
       enableWhen.operator
     );
   }
@@ -257,7 +268,7 @@ export function setInitialAnswers(
   items: EnableWhenItems,
   linkedQuestionsMap: Record<string, string[]>
 ): EnableWhenItems {
-  let updatedItems = cloneDeep(items);
+  let updatedItems = structuredClone(items);
 
   if (initialAnswers) {
     for (const linkId in initialAnswers) {
@@ -314,6 +325,7 @@ export function updateEnableWhenItemAnswer(
           if (newAnswer) {
             linkedItem.answers[parentRepeatGroupIndex] = newAnswer[0] ?? undefined;
           } else {
+            // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
             delete linkedItem.answers[parentRepeatGroupIndex];
           }
         }
@@ -340,19 +352,29 @@ export function checkItemIsEnabledSingle(
 ): boolean {
   const checkedIsEnabledItems: boolean[] = [];
 
+  // Check if linked item satisfies enableWhen condition
   for (const linkedItem of enableWhenItemProperties.linked) {
+    let isEnabledForThisLinkedItem = false;
+
+    // Linked item has answers
     if (linkedItem.answer && linkedItem.answer.length > 0) {
+      // Check if linked answer within item satisfies enableWhen condition
+      // Exit early once a linked answer is found to satisfy the condition
       for (const answer of linkedItem.answer) {
-        const isEnabledForThisLinkedItem = isEnabledAnswerTypeSwitcher(
+        const isEnabledForThisLinkedAnswer = isEnabledAnswerTypeSwitcher(
           linkedItem.enableWhen,
           answer
         );
 
-        // In a repeat item, if at least one answer satisfies the condition, the item is enabled
-        // FIXME need to look further at this
-        checkedIsEnabledItems.push(isEnabledForThisLinkedItem);
-        break;
+        if (isEnabledForThisLinkedAnswer) {
+          isEnabledForThisLinkedItem = true;
+          break;
+        }
       }
+
+      // Push result of the linked item to the checkedIsEnabledItems array
+      checkedIsEnabledItems.push(isEnabledForThisLinkedItem);
+
       continue;
     }
 

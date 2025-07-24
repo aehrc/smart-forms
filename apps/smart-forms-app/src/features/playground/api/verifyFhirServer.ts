@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,6 @@
  */
 
 import * as FHIR from 'fhirclient';
-import { HEADERS } from '../../../api/headers.ts';
 import type { CapabilityStatement } from 'fhir/r4';
 
 export async function verifyFhirServer(
@@ -25,7 +24,10 @@ export async function verifyFhirServer(
   try {
     const metadata = await FHIR.client(endpointUrl).request({
       url: 'metadata',
-      headers: HEADERS
+      headers: {
+        'Content-Type': 'application/fhir+json;charset=utf-8',
+        Accept: 'application/fhir+json;charset=utf-8'
+      }
     });
 
     return metadataResponseIsValid(metadata)

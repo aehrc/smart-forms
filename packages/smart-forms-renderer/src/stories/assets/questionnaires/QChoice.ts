@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -247,7 +247,7 @@ export const qChoiceAnswerOptionCalculation: Questionnaire = {
           url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
           valueExpression: {
             language: 'text/fhirpath',
-            expression: "iif(%painLevel.empty(), '', iif(%painLevel < 5, 'Y', 'N'))"
+            expression: "iif(%painLevel.empty(), 'Y', iif(%painLevel < 5, 'Y', 'N'))"
           }
         }
       ],
@@ -459,7 +459,7 @@ export const qChoiceAnswerValueSetCalculation: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <div style="font-size:0.875em">Feel free to play around with the following state codes:</div>\r\n    <ul style="font-size:0.875em">\r\n      <li>ACT</li>\r\n      <li>NSW</li>\r\n      <li>NT</li>\r\n      <li>OTHER</li>\r\n      <li>QLD</li>\r\n      <li>SA</li>\r\n      <li>TAS</li>\r\n      <li>VIC</li>\r\n      <li>WA</li>\r\n    </ul>\r\n    </div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <div>Feel free to play around with the following state codes:</div>\r\n    <ul>\r\n      <li>ACT</li>\r\n      <li>NSW</li>\r\n      <li>NT</li>\r\n      <li>OTHER</li>\r\n      <li>QLD</li>\r\n      <li>SA</li>\r\n      <li>TAS</li>\r\n      <li>VIC</li>\r\n      <li>WA</li>\r\n    </ul>\r\n    </div>'
           }
         ]
       },
@@ -488,6 +488,51 @@ export const qChoiceAnswerValueSetCalculation: Questionnaire = {
       repeats: false,
       readOnly: true,
       answerValueSet: '#australian-states-territories-2'
+    }
+  ]
+};
+
+export const qChoiceAnswerInitialSelected: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'TestChoiceSelectAnswerOptionsUsingInitialSelected',
+  language: 'en-AU',
+
+  url: 'http://ns.electronichealth.net.au/fhir/Questionnaire/variation-tester',
+  version: '0.1.0',
+  name: 'ChoiceSelectAnswerOptionsUsingInitialSelected',
+  title: 'ChoiceSelectAnswerOptionsUsingInitialSelected',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+
+  subjectType: ['Patient'],
+  description:
+    'This Questionnaire instance includes a variety of topical tests, experiments and variations.',
+  item: [
+    {
+      text: 'Type',
+      type: 'choice',
+      linkId: 'awsHallucinationType',
+      repeats: false,
+      required: true,
+
+      answerOption: [
+        {
+          valueCoding: {
+            code: 'N',
+            system: 'http://fhir.medirecords.com/CodeSystem/awsHallucinationType',
+            display: 'None'
+          }
+        },
+
+        {
+          valueCoding: {
+            code: 'T',
+            system: 'http://fhir.medirecords.com/CodeSystem/awsHallucinationType',
+            display: 'Test-Selected'
+          },
+          initialSelected: true
+        }
+      ]
     }
   ]
 };

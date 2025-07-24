@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,14 +15,8 @@
  * limitations under the License.
  */
 
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle
-} from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText } from '@mui/material';
+import StandardDialogTitle from '../../../components/Dialog/StandardDialogTitle.tsx';
 
 interface RepopulateEmptyDialogProps {
   onCloseDialog: () => void;
@@ -33,7 +27,7 @@ function RepopulateEmptyDialog(props: RepopulateEmptyDialogProps) {
 
   return (
     <Dialog open={true} onClose={onCloseDialog} maxWidth="xl">
-      <DialogTitle variant="h5">Form is up to date</DialogTitle>
+      <StandardDialogTitle onCloseDialog={onCloseDialog}>Form is up to date</StandardDialogTitle>
       <DialogContent>
         <DialogContentText>
           No updates performed. Form is up to date with the latest information.

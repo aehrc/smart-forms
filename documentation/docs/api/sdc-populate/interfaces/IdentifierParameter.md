@@ -216,6 +216,8 @@ There can be no stigma associated with the use of extensions by any application,
 
 > **name**: `"identifier"`
 
+The name of the parameter (reference to the operation definition).
+
 #### Overrides
 
 `ParametersParameter.name`
@@ -537,6 +539,8 @@ If the parameter is a data type.
 ### valueIdentifier
 
 > **valueIdentifier**: `Identifier`
+
+If the parameter is a data type.
 
 #### Overrides
 

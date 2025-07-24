@@ -1,4 +1,4 @@
-# Type alias: Tabs
+# Type Alias: Tabs
 
 > **Tabs**: `Record`\<`string`, [`Tab`](Tab.md)\>
 

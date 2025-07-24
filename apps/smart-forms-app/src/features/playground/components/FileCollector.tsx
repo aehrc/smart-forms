@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,7 @@ import { Box, IconButton, Stack, Tooltip } from '@mui/material';
 import Iconify from '../../../components/Iconify/Iconify.tsx';
 import { useSnackbar } from 'notistack';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 
 interface FileCollectorProps {
   onBuild: (file: File) => unknown;
@@ -42,7 +43,7 @@ const FileCollector = memo(function FileCollector(props: FileCollectorProps) {
           enqueueSnackbar('Only one file allowed', {
             variant: 'warning',
             preventDuplicate: true,
-            action: <CloseSnackbar />
+            action: <CloseSnackbar variant="warning" />
           });
         }
 
@@ -98,7 +99,7 @@ const FileCollector = memo(function FileCollector(props: FileCollectorProps) {
                   onBuild(uploadedFile);
                 }
               }}>
-              <Iconify icon="ph:hammer" />
+              <PlayCircleIcon fontSize="small" />
             </IconButton>
           </span>
         </Tooltip>

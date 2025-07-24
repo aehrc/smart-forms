@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,9 +15,13 @@
  * limitations under the License.
  */
 
+import type { ComponentType } from 'react';
 import { useLayoutEffect, useState } from 'react';
 import { buildForm } from '../utils';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import type { RendererStyling } from '../stores/rendererStylingStore';
+import { useRendererStylingStore } from '../stores/rendererStylingStore';
+import type { QItemOverrideComponentProps, SdcUiOverrideComponentProps } from '../interfaces';
 
 /**
  * React hook wrapping around the buildForm() function to build a form from a questionnaire and an optional QuestionnaireResponse.
@@ -27,7 +31,11 @@ import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
  * @param questionnaireResponse - Pre-populated/draft/loaded QuestionnaireResponse to be rendered (optional)
  * @param readOnly - Applies read-only mode to all items in the form view
  * @param terminologyServerUrl - Terminology server url to fetch terminology. If not provided, the default terminology server will be used. (optional)
- * @param additionalVariables - Additional key-value pair of SDC variables `Record<name, variable extension>` for testing (optional)
+ * @param additionalVariables - Additional key-value pair of SDC variables + values to be fed into the renderer's FhirPathContext `Record<name, value>` (likely coming from a pre-population module) e.g. `{ 'ObsBodyHeight': <Bundle of height observations> } }`.
+ * @param rendererStylingOptions - Renderer styling to be applied to the form. See docs for styling options. (optional)
+ * @param qItemOverrideComponents - Key-value pair of React component overrides for Questionnaire Items via linkId `Record<linkId, React component>`
+ * @param sdcUiOverrideComponents - Key-value pair of React component overrides for SDC UI Controls https://hl7.org/fhir/extensions/ValueSet-questionnaire-item-control.html `Record<SDC UI code, React component>`
+ *
  *
  * @author Sean Fong
  */
@@ -36,21 +44,43 @@ function useBuildForm(
   questionnaireResponse?: QuestionnaireResponse,
   readOnly?: boolean,
   terminologyServerUrl?: string,
-  additionalVariables?: Record<string, object>
+  additionalVariables?: Record<string, any>,
+  rendererStylingOptions?: RendererStyling,
+  qItemOverrideComponents?: Record<string, ComponentType<QItemOverrideComponentProps>>,
+  sdcUiOverrideComponents?: Record<string, ComponentType<SdcUiOverrideComponentProps>>
 ) {
   const [isBuilding, setIsBuilding] = useState(true);
 
+  const setRendererStyling = useRendererStylingStore.use.setRendererStyling();
+
   useLayoutEffect(() => {
+    // Set optional renderer styling
+    if (rendererStylingOptions) {
+      setRendererStyling(rendererStylingOptions);
+    }
+
     buildForm(
       questionnaire,
       questionnaireResponse,
       readOnly,
       terminologyServerUrl,
-      additionalVariables
+      additionalVariables,
+      qItemOverrideComponents,
+      sdcUiOverrideComponents
     ).then(() => {
       setIsBuilding(false);
     });
-  }, [additionalVariables, questionnaire, questionnaireResponse, readOnly, terminologyServerUrl]);
+  }, [
+    questionnaire,
+    questionnaireResponse,
+    readOnly,
+    terminologyServerUrl,
+    additionalVariables,
+    rendererStylingOptions,
+    qItemOverrideComponents,
+    sdcUiOverrideComponents,
+    setRendererStyling
+  ]);
 
   return isBuilding;
 }

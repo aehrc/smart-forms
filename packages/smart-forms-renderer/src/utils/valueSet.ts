@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,7 @@ import type {
   QuestionnaireItem,
   ValueSet
 } from 'fhir/r4';
-import * as FHIR from 'fhirclient';
+import { client } from 'fhirclient';
 import type { FhirResourceString } from '../interfaces/populate.interface';
 import type { VariableXFhirQuery } from '../interfaces/variables.interface';
 import type { ValidateCodeResponse, ValueSetPromise } from '../interfaces/valueSet.interface';
@@ -36,6 +36,7 @@ const VALID_VALUE_SET_URL_REGEX =
 
 const VALID_FHIRPATH_VARIABLE_REGEX = /%(.*?)\./;
 
+// Mainly for backwards compatibility, doesn't exist in the SDC spec anymore
 export function getTerminologyServerUrl(qItem: QuestionnaireItem): string | undefined {
   const itemControl = qItem.extension?.find(
     (extension: Extension) =>
@@ -60,7 +61,7 @@ export function getValueSetPromise(url: string, terminologyServerUrl: string): P
 
   valueSetUrl = valueSetUrl.replace('|', '&version=');
 
-  return FHIR.client({ serverUrl: terminologyServerUrl }).request({
+  return client({ serverUrl: terminologyServerUrl }).request({
     url: 'ValueSet/$expand?url=' + valueSetUrl
   });
 }
@@ -85,7 +86,7 @@ export async function validateCodePromise(
   code: string,
   terminologyServerUrl: string
 ): Promise<ValidateCodeResponse | null> {
-  const validateCodeResponse = await FHIR.client({ serverUrl: terminologyServerUrl }).request({
+  const validateCodeResponse = await client({ serverUrl: terminologyServerUrl }).request({
     url: `ValueSet/$validate-code?url=${url}&system=${system}&code=${code}`
   });
 
@@ -144,7 +145,22 @@ export async function resolveValueSetPromises(
  * @author Sean Fong
  */
 export function getValueSetCodings(valueSet: ValueSet): Coding[] {
-  return valueSet.expansion?.contains?.map((coding) => coding) ?? [];
+  return valueSet.expansion?.contains?.map((coding) => getRelevantCodingProperties(coding)) ?? [];
+}
+
+/**
+ * Retrieves only the relevant properties of a Coding object.
+ * Reason: https://tx.ontoserver.csiro.au/fhir returns a Coding with designation element, which is not in the FHIR spec, causing QRs with it to fail validation.
+ *
+ * @author Sean Fong
+ */
+export function getRelevantCodingProperties(coding: Coding): Coding {
+  return {
+    system: coding.system,
+    code: coding.code,
+    display: coding.display,
+    ...(coding.extension && { extension: coding.extension })
+  };
 }
 
 /**

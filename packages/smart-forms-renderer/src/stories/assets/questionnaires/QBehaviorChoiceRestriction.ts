@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,7 +37,7 @@ export const qAnswerOption: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p style="font-size:0.875em"> Please refer to the <strong>Advanced Control Appearance - Item Control Question</strong> section for the full list of answerOption examples.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n Please refer to the <strong>Advanced Control Appearance - Item Control Question</strong> section for the full list of answerOption examples.</p></div>'
           }
         ]
       },
@@ -121,7 +121,7 @@ export const qAnswerValueSet: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p style="font-size:0.875em">Please refer to the <strong>Advanced Control Appearance - Item Control Question</strong> section for the full list of answerValueSet examples.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to the <strong>Advanced Control Appearance - Item Control Question</strong> section for the full list of answerValueSet examples.</p></div>'
           }
         ]
       },
@@ -193,6 +193,556 @@ export const qAnswerExpression: Questionnaire = {
   ]
 };
 
+export const qAnswerOptionToggleExpressionAnswerOption: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'AnswerOptionToggleExpressionAO',
+  name: 'AnswerOptionToggleExpressionAO',
+  title: 'AnswerOptionToggleExpression Answer Options',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-05-01',
+  url: 'https://smartforms.csiro.au/docs/behavior/choice-restrictions/answer-option-toggle-expression-1',
+  extension: [
+    {
+      url: 'http://hl7.org/fhir/StructureDefinition/variable',
+      valueExpression: {
+        name: 'isNotNoneCode',
+        language: 'text/fhirpath',
+        expression:
+          "%resource.item.where(linkId='hallucination-type').answer.value.empty() or %resource.item.where(linkId='hallucination-type').answer.value.code != 'none'"
+      }
+    }
+  ],
+  item: [
+    {
+      linkId: 'hallucination-type',
+      text: 'Type of Hallucination',
+      type: 'choice',
+      answerOption: [
+        {
+          valueCoding: {
+            code: 'none',
+            display: 'None'
+          }
+        },
+        {
+          valueCoding: {
+            code: 'visual',
+            display: 'Visual'
+          }
+        },
+        {
+          valueCoding: {
+            code: 'tactile',
+            display: 'Tactile'
+          }
+        }
+      ]
+    },
+    {
+      linkId: 'hallucination-details-dropdown',
+      text: 'Hallucinations (dropdown)',
+      type: 'choice',
+      answerOption: [
+        {
+          valueCoding: {
+            code: 'lucid',
+            display: 'Lucid'
+          }
+        },
+        {
+          valueCoding: {
+            code: 'infrequent',
+            display: 'Infrequent'
+          }
+        },
+        {
+          valueCoding: {
+            code: 'brief',
+            display: 'Brief'
+          }
+        }
+      ],
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerOptionsToggleExpression',
+          extension: [
+            {
+              url: 'option',
+              valueCoding: {
+                code: 'infrequent',
+                display: 'Infrequent'
+              }
+            },
+            {
+              url: 'expression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%isNotNoneCode'
+              }
+            }
+          ]
+        },
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerOptionsToggleExpression',
+          extension: [
+            {
+              url: 'option',
+              valueCoding: {
+                code: 'brief',
+                display: 'Brief'
+              }
+            },
+            {
+              url: 'expression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%isNotNoneCode'
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      linkId: 'hallucination-details-checkbox',
+      text: 'Hallucinations (checkbox)',
+      type: 'choice',
+      answerOption: [
+        {
+          valueCoding: {
+            code: 'lucid',
+            display: 'Lucid'
+          }
+        },
+        {
+          valueCoding: {
+            code: 'infrequent',
+            display: 'Infrequent'
+          }
+        },
+        {
+          valueCoding: {
+            code: 'brief',
+            display: 'Brief'
+          }
+        }
+      ],
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: 'http://hl7.org/fhir/questionnaire-item-control',
+                code: 'check-box'
+              }
+            ]
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerOptionsToggleExpression',
+          extension: [
+            {
+              url: 'option',
+              valueCoding: {
+                code: 'infrequent',
+                display: 'Infrequent'
+              }
+            },
+            {
+              url: 'expression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%isNotNoneCode'
+              }
+            }
+          ]
+        },
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerOptionsToggleExpression',
+          extension: [
+            {
+              url: 'option',
+              valueCoding: {
+                code: 'brief',
+                display: 'Brief'
+              }
+            },
+            {
+              url: 'expression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%isNotNoneCode'
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      linkId: 'hallucination-details-radio',
+      text: 'Hallucinations (radio)',
+      type: 'choice',
+      answerOption: [
+        {
+          valueCoding: {
+            code: 'lucid',
+            display: 'Lucid'
+          }
+        },
+        {
+          valueCoding: {
+            code: 'infrequent',
+            display: 'Infrequent'
+          }
+        },
+        {
+          valueCoding: {
+            code: 'brief',
+            display: 'Brief'
+          }
+        }
+      ],
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: 'http://hl7.org/fhir/questionnaire-item-control',
+                code: 'radio-button'
+              }
+            ]
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerOptionsToggleExpression',
+          extension: [
+            {
+              url: 'option',
+              valueCoding: {
+                code: 'infrequent',
+                display: 'Infrequent'
+              }
+            },
+            {
+              url: 'expression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%isNotNoneCode'
+              }
+            }
+          ]
+        },
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerOptionsToggleExpression',
+          extension: [
+            {
+              url: 'option',
+              valueCoding: {
+                code: 'brief',
+                display: 'Brief'
+              }
+            },
+            {
+              url: 'expression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%isNotNoneCode'
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+export const qAnswerOptionToggleExpressionContained: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'AnswerOptionToggleExpressionContained',
+  name: 'AnswerOptionToggleExpressionContained',
+  title: 'AnswerOptionToggleExpressionContained',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-05-01',
+  url: 'https://smartforms.csiro.au/docs/behavior/choice-restrictions/answer-option-toggle-expression-2',
+  contained: [
+    {
+      resourceType: 'ValueSet',
+      id: 'HallucinationType',
+      url: 'https://smartforms.csiro.au/ValueSet/HallucinationType',
+      name: 'HallucinationType',
+      title: 'Type of Hallucination',
+      status: 'draft',
+      description: 'Options for type of hallucinations',
+      compose: {
+        include: [
+          {
+            system: 'https://smartforms.csiro.au/CodeSystem/hallucination-type',
+            concept: [
+              { code: 'none', display: 'None' },
+              { code: 'visual', display: 'Visual' },
+              { code: 'tactile', display: 'Tactile' }
+            ]
+          }
+        ]
+      },
+      expansion: {
+        identifier: 'urn:uuid:hallucination-type-expansion',
+        timestamp: '2024-05-01T00:00:00Z',
+        contains: [
+          {
+            system: 'https://smartforms.csiro.au/CodeSystem/hallucination-type',
+            code: 'none',
+            display: 'None'
+          },
+          {
+            system: 'https://smartforms.csiro.au/CodeSystem/hallucination-type',
+            code: 'visual',
+            display: 'Visual'
+          },
+          {
+            system: 'https://smartforms.csiro.au/CodeSystem/hallucination-type',
+            code: 'tactile',
+            display: 'Tactile'
+          }
+        ]
+      }
+    },
+    {
+      resourceType: 'ValueSet',
+      id: 'HallucinationDetail',
+      url: 'https://smartforms.csiro.au/ValueSet/HallucinationDetail',
+      name: 'HallucinationDetail',
+      title: 'Hallucination Details',
+      status: 'draft',
+      description: 'Detailed descriptors for hallucination experiences',
+      compose: {
+        include: [
+          {
+            system: 'https://smartforms.csiro.au/CodeSystem/hallucination-detail',
+            concept: [
+              { code: 'lucid', display: 'Lucid' },
+              { code: 'infrequent', display: 'Infrequent' },
+              { code: 'brief', display: 'Brief' }
+            ]
+          }
+        ]
+      },
+      expansion: {
+        identifier: 'urn:uuid:hallucination-detail-expansion',
+        timestamp: '2024-05-01T00:00:00Z',
+        contains: [
+          {
+            system: 'https://smartforms.csiro.au/CodeSystem/hallucination-detail',
+            code: 'lucid',
+            display: 'Lucid'
+          },
+          {
+            system: 'https://smartforms.csiro.au/CodeSystem/hallucination-detail',
+            code: 'infrequent',
+            display: 'Infrequent'
+          },
+          {
+            system: 'https://smartforms.csiro.au/CodeSystem/hallucination-detail',
+            code: 'brief',
+            display: 'Brief'
+          }
+        ]
+      }
+    }
+  ],
+  extension: [
+    {
+      url: 'http://hl7.org/fhir/StructureDefinition/variable',
+      valueExpression: {
+        name: 'isNotNoneCode',
+        language: 'text/fhirpath',
+        expression:
+          "%resource.item.where(linkId='hallucination-type').answer.value.empty() or %resource.item.where(linkId='hallucination-type').answer.value.code != 'none'"
+      }
+    }
+  ],
+  item: [
+    {
+      linkId: 'hallucination-type',
+      text: 'Type of Hallucination',
+      type: 'choice',
+      answerValueSet: '#HallucinationType'
+    },
+    {
+      linkId: 'hallucination-details-dropdown',
+      text: 'Hallucinations (dropdown)',
+      type: 'choice',
+      answerValueSet: '#HallucinationDetail',
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerOptionsToggleExpression',
+          extension: [
+            {
+              url: 'option',
+              valueCoding: {
+                system: 'https://smartforms.csiro.au/CodeSystem/hallucination-detail',
+                code: 'infrequent',
+                display: 'Infrequent'
+              }
+            },
+            {
+              url: 'expression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%isNotNoneCode'
+              }
+            }
+          ]
+        },
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerOptionsToggleExpression',
+          extension: [
+            {
+              url: 'option',
+              valueCoding: {
+                system: 'https://smartforms.csiro.au/CodeSystem/hallucination-detail',
+                code: 'brief',
+                display: 'Brief'
+              }
+            },
+            {
+              url: 'expression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%isNotNoneCode'
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      linkId: 'hallucination-details-checkbox',
+      text: 'Hallucinations (checkbox)',
+      type: 'choice',
+      answerValueSet: '#HallucinationDetail',
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: 'http://hl7.org/fhir/questionnaire-item-control',
+                code: 'check-box'
+              }
+            ]
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerOptionsToggleExpression',
+          extension: [
+            {
+              url: 'option',
+              valueCoding: {
+                system: 'https://smartforms.csiro.au/CodeSystem/hallucination-detail',
+                code: 'infrequent',
+                display: 'Infrequent'
+              }
+            },
+            {
+              url: 'expression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%isNotNoneCode'
+              }
+            }
+          ]
+        },
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerOptionsToggleExpression',
+          extension: [
+            {
+              url: 'option',
+              valueCoding: {
+                system: 'https://smartforms.csiro.au/CodeSystem/hallucination-detail',
+                code: 'brief',
+                display: 'Brief'
+              }
+            },
+            {
+              url: 'expression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%isNotNoneCode'
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      linkId: 'hallucination-details-radio',
+      text: 'Hallucinations (radio)',
+      type: 'choice',
+      answerValueSet: '#HallucinationDetail',
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: 'http://hl7.org/fhir/questionnaire-item-control',
+                code: 'radio-button'
+              }
+            ]
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerOptionsToggleExpression',
+          extension: [
+            {
+              url: 'option',
+              valueCoding: {
+                system: 'https://smartforms.csiro.au/CodeSystem/hallucination-detail',
+                code: 'infrequent',
+                display: 'Infrequent'
+              }
+            },
+            {
+              url: 'expression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%isNotNoneCode'
+              }
+            }
+          ]
+        },
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerOptionsToggleExpression',
+          extension: [
+            {
+              url: 'option',
+              valueCoding: {
+                system: 'https://smartforms.csiro.au/CodeSystem/hallucination-detail',
+                code: 'brief',
+                display: 'Brief'
+              }
+            },
+            {
+              url: 'expression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%isNotNoneCode'
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
 export const qRequiredDuplicate: Questionnaire = {
   resourceType: 'Questionnaire',
   id: 'RequiredDuplicate',
@@ -211,7 +761,7 @@ export const qRequiredDuplicate: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p style="font-size:0.875em"> Please refer to the <strong>Advanced Form Rendering - Other</strong> section for the full list of required examples.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to the <strong>Advanced Form Rendering - Other</strong> section for the full list of required examples.</p></div>'
           }
         ]
       },
@@ -240,7 +790,7 @@ export const qRepeatsDuplicate: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p style="font-size:0.875em"> Please refer to the <strong>Advanced Form Rendering - Other</strong> section for the full list of repeats examples.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to the <strong>Advanced Form Rendering - Other</strong> section for the full list of repeats examples.</p></div>'
           }
         ]
       },
@@ -269,7 +819,7 @@ export const qReadOnlyDuplicate: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p style="font-size:0.875em"> Please refer to the <strong>Advanced Form Rendering - Other</strong> section for the full list of readOnly examples.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to the <strong>Advanced Form Rendering - Other</strong> section for the full list of readOnly examples.</p></div>'
           }
         ]
       },

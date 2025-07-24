@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-import '../styles.css';
 import { populateQuestionnaire } from '../utils/populate.ts';
 import type { Patient, Practitioner, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { useState } from 'react';
 import { ISS } from '../utils/apiConstants.ts';
+import { Button } from '@/components/ui/button.tsx';
 
 interface PrePopButtonProps {
   questionnaire: Questionnaire;
@@ -42,7 +42,7 @@ function PrePopButton(props: PrePopButtonProps) {
     setIsPopulating(true);
 
     const { populateResult } = await populateQuestionnaire(questionnaire, patient, practitioner, {
-      clientEndpoint: ISS,
+      sourceServerUrl: ISS,
       authToken: bearerToken
     });
 
@@ -53,19 +53,22 @@ function PrePopButton(props: PrePopButtonProps) {
   }
 
   if (!patient || !practitioner) {
-    return <button disabled>Pre-populate!</button>;
+    return (
+      <div>
+        <Button variant="outline" disabled={true}>
+          Pre-populate!
+        </Button>
+      </div>
+    );
   }
 
   return (
-    <>
-      <button
-        className="increase-button-hitbox"
-        onClick={handlePrepopulate}
-        disabled={isPopulating}>
+    <div>
+      <Button disabled={isPopulating} onClick={handlePrepopulate}>
         Pre-populate!
-      </button>
-      {isPopulating ? <span style={{ marginLeft: '1em' }}>Pre-populating...</span> : null}
-    </>
+      </Button>
+      {isPopulating ? <span className="ml-1">Pre-populating...</span> : null}
+    </div>
   );
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,9 +16,7 @@
  */
 
 import { Box, Drawer } from '@mui/material';
-import useResponsive from '../../../hooks/useResponsive.ts';
 import Logo from '../../../components/Logos/Logo.tsx';
-import Scrollbar from '../../../components/Scrollbar/Scrollbar.tsx';
 import NavPatientDetails from '../../../components/Nav/NavPatientDetails.tsx';
 import ViewerNavSection from './ViewerNavSection.tsx';
 import ViewerOperationSection from './ViewerOperationSection.tsx';
@@ -28,7 +26,11 @@ import { CsiroLogoWrapper, NavLogoWrapper } from '../../../components/Logos/Logo
 import { NavErrorAlertWrapper } from '../../../components/Nav/Nav.styles.ts';
 import { NAV_WIDTH } from '../../../components/Header/Header.styles.ts';
 import ViewerLaunchQuestionnaireNavSection from './ViewerLaunchQuestionnaireNavSection.tsx';
-import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import {
+  useQuestionnaireResponseStore,
+  useQuestionnaireStore,
+  useResponsive
+} from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
 
 interface Props {
@@ -44,25 +46,19 @@ function ViewerNav(props: Props) {
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
   const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
 
-  const isDesktop = useResponsive('up', 'lg');
+  const isLgUp = useResponsive({ query: 'up', start: 'lg' });
 
   const launchQuestionnaireExists = !!launchQuestionnaire;
   const isNotLaunched = !smartClient;
 
   const renderContent = (
-    <Scrollbar
-      sx={{
-        height: 1,
-        '& .simplebar-content': { height: 1, display: 'flex', flexDirection: 'column' }
-      }}>
+    <>
       <NavLogoWrapper>
         <Logo isNav />
       </NavLogoWrapper>
 
       <NavPatientDetails />
       {launchQuestionnaireExists ? <ViewerLaunchQuestionnaireNavSection /> : <ViewerNavSection />}
-
-      {/*<ViewerNavSection />*/}
 
       {smartClient && sourceQuestionnaire.item && sourceResponse.item ? (
         <ViewerOperationSection />
@@ -79,7 +75,7 @@ function ViewerNav(props: Props) {
       <CsiroLogoWrapper>
         <CsiroLogo />
       </CsiroLogoWrapper>
-    </Scrollbar>
+    </>
   );
 
   return (
@@ -89,7 +85,7 @@ function ViewerNav(props: Props) {
         flexShrink: { lg: 0 },
         width: { lg: NAV_WIDTH }
       }}>
-      {isDesktop ? (
+      {isLgUp ? (
         <Drawer
           open
           variant="permanent"

@@ -78,56 +78,9 @@ This method of running the app does not allow you to save responses as it is not
 
 NOTE: The app will not be able to view or save responses as it is not connected to a CMS client.
 
-## Configuration
+## Local Development
+Refer to [LOCAL_DEVELOPMENT.md](LOCAL_DEVELOPMENT.md) for instructions on local development and running.
 
-### Environment
-
-The default configuration is set to:
-```
-# Ontoserver endpoint for $expand operations
-# To run your own Ontoserver instance, contact us at https://ontoserver.csiro.au/site/contact-us/ontoserver-contact-form/
-VITE_ONTOSERVER_URL=https://tx.ontoserver.csiro.au/fhir
-
-# Questionnaire-hosting FHIR server
-VITE_FORMS_SERVER_URL=https://smartforms.csiro.au/api/fhir
-
-# Debug mode - set to true in dev mode
-VITE_SHOW_DEBUG_MODE=false
-
-# SMART App Launch scopes and launch contexts
-# It will be necessary to tweak these variables if you are connecting the app to your own SMART on FHIR enabled CMS/EHR
-VITE_LAUNCH_SCOPE=launch/patient patient/*.read offline_access openid fhirUser
-VITE_LAUNCH_CLIENT_ID=smart-forms
-
-```
-
-In development mode, create a `.env.local` file in the `apps/smart-forms-app` directory and tweak the environment variables as needed.
-
-
-
-### Run app locally
-
-1. Clone this Git source repository onto your local machine from https://github.com/aehrc/smart-forms.
-
-2. Install dependencies.
-
-```sh
-npm install
-```
-
-3. Change directory into the directory containing the Smart Forms app.
-
-```sh
-cd apps/smart-forms-app
-```
-
-4. Start the local server.
-
-```sh
-npm start
-```
-
-5. Follow the instructions [here](https://github.com/aehrc/smart-forms#usage) but replace https://smartforms.csiro.au/launch with http://localhost:5173/launch
 
 ## Feature requests and bug reports
 
@@ -147,7 +100,7 @@ Any questionnnaire/SDC-related discussion can be raised in the questionnaire str
 
 ## Licensing and attribution
 
-Smart Forms is copyright © 2022-2023, Commonwealth Scientific and Industrial
+Smart Forms is copyright © 2022-2024, Commonwealth Scientific and Industrial
 Research Organisation
 (CSIRO) ABN 41 687 119 230. Licensed under
 the [Apache License, version 2.0](https://www.apache.org/licenses/LICENSE-2.0).

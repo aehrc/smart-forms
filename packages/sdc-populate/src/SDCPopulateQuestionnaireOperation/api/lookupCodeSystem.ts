@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,21 +17,22 @@
 
 import type { Coding } from 'fhir/r4';
 import type { CodeSystemLookupPromise } from '../interfaces/expressions.interface';
-import type { FetchResourceCallback } from '../interfaces';
+import type { FetchTerminologyCallback, FetchTerminologyRequestConfig } from '../interfaces';
 import { defaultTerminologyRequest } from './expandValueset';
 
 export function getCodeSystemLookupPromise(
   coding: Coding,
   codeSystemLookupPromiseMap: Record<string, CodeSystemLookupPromise>,
-  terminologyCallback?: FetchResourceCallback,
-  terminologyRequestConfig?: any
+  fetchTerminologyCallback?: FetchTerminologyCallback,
+  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
 ) {
   const key = `system=${coding.system}&code=${coding.code}`;
   const query = `CodeSystem/$lookup?${key}`;
 
-  const lookupPromise = terminologyCallback
-    ? terminologyCallback(query, terminologyRequestConfig)
-    : defaultTerminologyRequest(query);
+  const lookupPromise =
+    fetchTerminologyCallback && fetchTerminologyRequestConfig
+      ? fetchTerminologyCallback(query, fetchTerminologyRequestConfig)
+      : defaultTerminologyRequest(query);
 
   codeSystemLookupPromiseMap[key] = {
     promise: lookupPromise,

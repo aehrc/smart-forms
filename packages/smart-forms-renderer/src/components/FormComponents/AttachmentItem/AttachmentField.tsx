@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,7 @@
  */
 
 import React from 'react';
-import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import { StandardTextField } from '../Textfield.styles';
 import AttachmentFileCollector from './AttachmentFileCollector';
 import Typography from '@mui/material/Typography';
@@ -24,10 +24,16 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import type { AttachmentValues } from './AttachmentItem';
 import AttachmentUrlField from './AttachmentUrlField';
+import { useRendererStylingStore } from '../../../stores';
+import { StyledRequiredTypography } from '../Item.styles';
+import InputAdornment from '@mui/material/InputAdornment';
+import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 
-interface AttachmentFieldProps extends PropsWithIsTabledAttribute {
+interface AttachmentFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
+  itemType: string;
   attachmentValues: AttachmentValues;
+  feedback: string;
   readOnly: boolean;
   onUploadFile: (file: File | null) => void;
   onUrlChange: (url: string) => void;
@@ -37,7 +43,9 @@ interface AttachmentFieldProps extends PropsWithIsTabledAttribute {
 function AttachmentField(props: AttachmentFieldProps) {
   const {
     linkId,
+    itemType,
     attachmentValues,
+    feedback,
     readOnly,
     isTabled,
     onUploadFile,
@@ -45,12 +53,19 @@ function AttachmentField(props: AttachmentFieldProps) {
     onFileNameChange
   } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+
+  const readOnlyTextColor = readOnlyVisualStyle === 'disabled' ? 'text.disabled' : 'text.secondary';
+
   const { uploadedFile, url, fileName } = attachmentValues;
+
+  // TODO: Consider accessible items for attachment fields too if #1096 is fixed.
 
   return (
     <>
-      <Stack rowGap={1}>
-        <Typography variant="subtitle2" color={readOnly ? 'text.disabled' : 'text.primary'}>
+      <Stack rowGap={1} id={itemType + '-' + linkId}>
+        <Typography component="div" color={readOnly ? readOnlyTextColor : 'text.primary'}>
           An attachment must either have a file or a URL, or both.
         </Typography>
         <Box>
@@ -71,27 +86,52 @@ function AttachmentField(props: AttachmentFieldProps) {
         />
 
         <Box>
-          <Typography variant="body2" color={readOnly ? 'text.disabled' : 'text.primary'}>
+          <Typography
+            component="div"
+            variant="body2"
+            color={readOnly ? readOnlyTextColor : 'text.primary'}>
             File name (optional)
           </Typography>
           <StandardTextField
+            multiline
             fullWidth
+            textFieldWidth={textFieldWidth}
             isTabled={isTabled}
             id={linkId}
             value={fileName}
             onChange={(event) => onFileNameChange(event.target.value)}
-            disabled={readOnly}
+            disabled={readOnly && readOnlyVisualStyle === 'disabled'}
             size="small"
             data-test="q-item-attachment-field"
+            slotProps={{
+              input: {
+                readOnly: readOnly && readOnlyVisualStyle === 'readonly',
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <ClearButtonAdornment
+                      readOnly={readOnly}
+                      onClear={() => {
+                        onFileNameChange('');
+                      }}
+                    />
+                  </InputAdornment>
+                )
+              },
+              htmlInput: {
+                'aria-label': 'File name (optional)'
+              }
+            }}
           />
         </Box>
 
         {uploadedFile && url ? (
-          <Typography variant="subtitle2" color={readOnly ? 'text.disabled' : 'text.primary'}>
+          <Typography component="div" color={readOnly ? readOnlyTextColor : 'text.primary'}>
             Ensure that the attached file and URL has the same content.
           </Typography>
         ) : null}
       </Stack>
+
+      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
     </>
   );
 }

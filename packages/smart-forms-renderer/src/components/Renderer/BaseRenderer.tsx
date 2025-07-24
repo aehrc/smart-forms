@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,17 +16,26 @@
  */
 
 import React, { useMemo } from 'react';
-import Container from '@mui/material/Container';
 import Fade from '@mui/material/Fade';
 import FormTopLevelItem from './FormTopLevelItem';
 import type { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '../../stores';
-import cloneDeep from 'lodash.clonedeep';
 import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';
 import { updateQrItemsInGroup } from '../../utils/qrItem';
-import { everyIsPages } from '../../utils/page';
+import { isPaginatedForm } from '../../utils/page';
 import type { QrRepeatGroup } from '../../interfaces/repeatGroup.interface';
-import FormTopLevelPage from './FormTopLevelPage';
+import FormBodyPaginated from './FormBodyPaginated';
+import { Container } from '@mui/material';
+import { useFormUpdateQueueStore } from '../../stores/formUpdateQueueStore';
+import type { ItemPath } from '../../interfaces/itemPath.interface';
+import { createSingleItemPath } from '../../utils/itemPath';
+import dayjs from 'dayjs';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+// Setup DayJs extensions when BaseRenderer.tsx is called
+dayjs.extend(localizedFormat);
+dayjs.extend(customParseFormat);
 
 /**
  * Main component of the form-rendering engine.
@@ -37,37 +46,44 @@ import FormTopLevelPage from './FormTopLevelPage';
  */
 function BaseRenderer() {
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
-  const updateExpressions = useQuestionnaireStore.use.updateExpressions();
   const readOnly = useQuestionnaireStore.use.readOnly();
 
+  const responseKey = useQuestionnaireResponseStore.use.key();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
-  const validateQuestionnaire = useQuestionnaireResponseStore.use.validateQuestionnaire();
-  const updateResponse = useQuestionnaireResponseStore.use.updateResponse();
+  const replaceLatestFormUpdate = useFormUpdateQueueStore.use.replaceLatestFormUpdate();
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(sourceQuestionnaire), [sourceQuestionnaire]);
 
-  function handleTopLevelQRItemSingleChange(newTopLevelQRItem: QuestionnaireResponseItem) {
-    const updatedResponse: QuestionnaireResponse = cloneDeep(updatableResponse);
+  function handleTopLevelQRItemSingleChange(
+    newTopLevelQRItem: QuestionnaireResponseItem,
+    targetItemPath?: ItemPath
+  ) {
+    const updatedResponse: QuestionnaireResponse = structuredClone(updatableResponse);
 
     updateQrItemsInGroup(newTopLevelQRItem, null, updatedResponse, qItemsIndexMap);
 
-    updateExpressions(updatedResponse);
-    validateQuestionnaire(sourceQuestionnaire, updatedResponse);
-    updateResponse(updatedResponse);
+    replaceLatestFormUpdate({
+      questionnaireResponse: updatedResponse,
+      targetItemPath: targetItemPath
+    });
   }
 
-  function handleTopLevelQRItemMultipleChange(newTopLevelQRItems: QrRepeatGroup) {
-    const updatedResponse: QuestionnaireResponse = cloneDeep(updatableResponse);
+  function handleTopLevelQRItemMultipleChange(
+    newTopLevelQRItems: QrRepeatGroup,
+    targetItemPath?: ItemPath
+  ) {
+    const updatedResponse: QuestionnaireResponse = structuredClone(updatableResponse);
 
     updateQrItemsInGroup(null, newTopLevelQRItems, updatedResponse, qItemsIndexMap);
 
-    updateExpressions(updatedResponse);
-    validateQuestionnaire(sourceQuestionnaire, updatedResponse);
-    updateResponse(updatedResponse);
+    replaceLatestFormUpdate({
+      questionnaireResponse: updatedResponse,
+      targetItemPath: targetItemPath
+    });
   }
 
   const topLevelQItems = sourceQuestionnaire.item;
-  const topLevelQRItems = cloneDeep(updatableResponse.item) ?? [];
+  const topLevelQRItems = structuredClone(updatableResponse.item) ?? [];
 
   if (!topLevelQItems) {
     return <>Questionnaire does not have any items</>;
@@ -76,18 +92,18 @@ function BaseRenderer() {
   // If an item has multiple answers, it is a repeat group
   const topLevelQRItemsByIndex = getQrItemsIndex(topLevelQItems, topLevelQRItems, qItemsIndexMap);
 
-  const everyItemIsPage = everyIsPages(topLevelQItems);
-
-  if (everyItemIsPage) {
+  const wholeFormIsPaginated = isPaginatedForm(topLevelQItems);
+  if (wholeFormIsPaginated) {
     return (
       <Fade in={true} timeout={500}>
-        <Container maxWidth="xl">
-          <FormTopLevelPage
+        <Container disableGutters maxWidth="xl" key={responseKey}>
+          <FormBodyPaginated
             topLevelQItems={topLevelQItems}
             topLevelQRItems={topLevelQRItemsByIndex}
+            itemPath={[]}
             parentIsReadOnly={readOnly}
-            onQrItemChange={(newTopLevelQRItem) =>
-              handleTopLevelQRItemSingleChange(newTopLevelQRItem)
+            onQrItemChange={(newTopLevelQRItem, targetItemPath) =>
+              handleTopLevelQRItemSingleChange(newTopLevelQRItem, targetItemPath)
             }
           />
         </Container>
@@ -97,7 +113,7 @@ function BaseRenderer() {
 
   return (
     <Fade in={true} timeout={500}>
-      <Container maxWidth="xl">
+      <Container disableGutters maxWidth="xl" key={responseKey}>
         {topLevelQItems.map((qItem, index) => {
           const qrItemOrItems = topLevelQRItemsByIndex[index];
 
@@ -107,11 +123,13 @@ function BaseRenderer() {
               topLevelQItem={qItem}
               topLevelQRItemOrItems={qrItemOrItems ?? null}
               parentIsReadOnly={readOnly}
-              onQrItemChange={(newTopLevelQRItem) =>
-                handleTopLevelQRItemSingleChange(newTopLevelQRItem)
+              wholeFormIsPaginated={wholeFormIsPaginated}
+              itemPath={createSingleItemPath(qItem.linkId)}
+              onQrItemChange={(newTopLevelQRItem, targetItemPath) =>
+                handleTopLevelQRItemSingleChange(newTopLevelQRItem, targetItemPath)
               }
-              onQrRepeatGroupChange={(newTopLevelQRItems) =>
-                handleTopLevelQRItemMultipleChange(newTopLevelQRItems)
+              onQrRepeatGroupChange={(newTopLevelQRItems, targetItemPath) =>
+                handleTopLevelQRItemMultipleChange(newTopLevelQRItems, targetItemPath)
               }
             />
           );

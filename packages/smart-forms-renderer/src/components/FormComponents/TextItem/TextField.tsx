@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,13 +15,15 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import InputAdornment from '@mui/material/InputAdornment';
 import MuiTextField from './MuiTextField';
-import FadingCheckIcon from '../ItemParts/FadingCheckIcon';
+import DisplayUnitText from '../ItemParts/DisplayUnitText';
+import { useRendererStylingStore } from '../../../stores';
+import { expressionUpdateFadingGlow } from '../../ExpressionUpdateFadingGlow.styles';
 
 interface TextFieldProps {
   linkId: string;
+  itemType: string;
   input: string;
   feedback: string;
   displayPrompt: string;
@@ -30,11 +32,13 @@ interface TextFieldProps {
   readOnly: boolean;
   calcExpUpdated: boolean;
   onInputChange: (value: string) => void;
+  onBlur: () => void;
 }
 
 function TextField(props: TextFieldProps) {
   const {
     linkId,
+    itemType,
     input,
     feedback,
     displayPrompt,
@@ -42,29 +46,35 @@ function TextField(props: TextFieldProps) {
     entryFormat,
     readOnly,
     calcExpUpdated,
-    onInputChange
+    onInputChange,
+    onBlur
   } = props;
+
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
 
   return (
     <MuiTextField
-      id={linkId}
+      id={itemType + '-' + linkId}
       value={input}
       error={!!feedback}
       onChange={(event) => onInputChange(event.target.value)}
-      disabled={readOnly}
-      label={displayPrompt}
-      placeholder={entryFormat}
+      onBlur={onBlur}
+      disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+      placeholder={entryFormat || displayPrompt}
       fullWidth
       multiline
       size="small"
       minRows={3}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position={'end'}>
-            <FadingCheckIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-            {displayUnit}
-          </InputAdornment>
-        )
+      sx={[expressionUpdateFadingGlow(calcExpUpdated)]}
+      slotProps={{
+        input: {
+          readOnly: readOnly && readOnlyVisualStyle === 'readonly',
+          endAdornment: (
+            <InputAdornment position="end">
+              <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
+            </InputAdornment>
+          )
+        }
       }}
       helperText={feedback}
       data-test="q-item-text-field"

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,16 +15,20 @@
  * limitations under the License.
  */
 
+import { useRef } from 'react';
 import type { Dayjs } from 'dayjs';
-import type { ChangeEvent, Dispatch, RefObject, SetStateAction } from 'react';
-import React, { useRef } from 'react';
-import type { PropsWithIsTabledAttribute } from '../../../../interfaces/renderProps.interface';
+import InputAdornment from '@mui/material/InputAdornment';
+import type { ChangeEvent, Dispatch, SetStateAction } from 'react';
+import type { PropsWithIsTabledRequiredAttribute } from '../../../../interfaces/renderProps.interface';
 import { StandardTextField } from '../../Textfield.styles';
 import DatePicker from './DatePicker';
-import Tooltip from '@mui/material/Tooltip';
+import { useRendererStylingStore } from '../../../../stores';
+import { expressionUpdateFadingGlow } from '../../../ExpressionUpdateFadingGlow.styles';
 
-interface CustomDateFieldProps extends PropsWithIsTabledAttribute {
+interface CustomDateFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
+  itemType: string;
+  itemText: string | undefined;
   valueDate: string;
   input: string;
   feedback: string;
@@ -32,14 +36,19 @@ interface CustomDateFieldProps extends PropsWithIsTabledAttribute {
   displayPrompt: string;
   entryFormat: string;
   readOnly: boolean;
+  calcExpUpdated: boolean;
+  isPartOfDateTime: boolean;
   setFocused: Dispatch<SetStateAction<boolean>>;
   onInputChange: (newInput: string) => void;
+  onDateBlur: () => void;
   onSelectDate: (newDateValue: string) => void;
 }
 
 function CustomDateField(props: CustomDateFieldProps) {
   const {
     linkId,
+    itemType,
+    itemText,
     valueDate,
     input,
     feedback,
@@ -47,34 +56,57 @@ function CustomDateField(props: CustomDateFieldProps) {
     displayPrompt,
     entryFormat,
     readOnly,
+    calcExpUpdated,
+    isPartOfDateTime,
     isTabled,
     setFocused,
     onInputChange,
+    onDateBlur,
     onSelectDate
   } = props;
 
-  const anchorRef: RefObject<HTMLDivElement> = useRef(null);
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+
+  const anchorRef = useRef<HTMLDivElement | null>(null);
+
+  // If this reusable date field is part of a DateTime component, the id should be appended with '-date'
+  const id = isPartOfDateTime ? itemType + '-' + linkId + '-date' : itemType + '-' + linkId;
+
+  let placeholderText = 'DD/MM/YYYY';
+  if (displayPrompt !== '') {
+    placeholderText = displayPrompt;
+  }
+
+  if (entryFormat !== '') {
+    placeholderText = entryFormat;
+  }
 
   return (
-    <Tooltip title={isTabled ? feedback : ''}>
-      <StandardTextField
-        id={linkId + '-date'}
-        ref={anchorRef}
-        fullWidth
-        isTabled={isTabled}
-        value={input}
-        error={!!feedback}
-        onChange={(e: ChangeEvent<HTMLInputElement>) => onInputChange(e.target.value)}
-        label={displayPrompt}
-        placeholder={entryFormat !== '' ? entryFormat : 'DD/MM/YYYY'}
-        disabled={readOnly}
-        size="small"
-        focused={isFocused}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
-        InputProps={{
+    <StandardTextField
+      {...(!isTabled && { id: id })}
+      ref={anchorRef}
+      fullWidth
+      textFieldWidth={textFieldWidth}
+      isTabled={isTabled}
+      value={input}
+      error={!!feedback}
+      onChange={(e: ChangeEvent<HTMLInputElement>) => onInputChange(e.target.value)}
+      placeholder={placeholderText}
+      disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+      size="small"
+      focused={isFocused}
+      onFocus={() => setFocused(true)}
+      onBlur={() => {
+        onDateBlur();
+        setFocused(false);
+      }}
+      sx={[expressionUpdateFadingGlow(calcExpUpdated)]}
+      slotProps={{
+        input: {
+          readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
-            <>
+            <InputAdornment position="end">
               <DatePicker
                 valueString={valueDate}
                 readOnly={readOnly}
@@ -84,12 +116,15 @@ function CustomDateField(props: CustomDateFieldProps) {
                 }}
                 onFocus={(focus) => setFocused(focus)}
               />
-            </>
-          )
-        }}
-        helperText={isTabled ? '' : feedback}
-      />
-    </Tooltip>
+            </InputAdornment>
+          ),
+          inputProps: {
+            ...(isTabled ? {} : { 'aria-label': itemText ?? `Unnamed ${itemType} item` })
+          }
+        }
+      }}
+      helperText={feedback}
+    />
   );
 }
 

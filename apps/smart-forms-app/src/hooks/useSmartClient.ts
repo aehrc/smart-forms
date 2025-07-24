@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,7 @@ import { SmartClientContext } from '../contexts/SmartClientContext.tsx';
 import type { Encounter, Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import { useSmartConfigStore } from '@aehrc/smart-forms-renderer';
 import type Client from 'fhirclient/lib/Client';
+import type { FhirContext } from '../features/smartAppLaunch/utils/launch.ts';
 
 function useSmartClient() {
   const { state, dispatch } = useContext(SmartClientContext);
@@ -71,11 +72,19 @@ function useSmartClient() {
     });
   }
 
+  function setFhirContext(fhirContext: FhirContext[]) {
+    dispatch({
+      type: 'SET_FHIR_CONTEXT',
+      payload: fhirContext
+    });
+  }
+
   const smartClient = state.smartClient;
   const patient = state.patient;
   const user = state.user;
   const encounter = state.encounter;
   const launchQuestionnaire = state.launchQuestionnaire;
+  const fhirContext = state.fhirContext;
   const tokenReceivedTimestamp = state.tokenReceivedTimestamp;
 
   return {
@@ -84,10 +93,12 @@ function useSmartClient() {
     user,
     encounter,
     launchQuestionnaire,
+    fhirContext,
     tokenReceivedTimestamp,
     setSmartClient,
     setCommonLaunchContexts,
-    setQuestionnaireLaunchContext
+    setQuestionnaireLaunchContext,
+    setFhirContext
   };
 }
 

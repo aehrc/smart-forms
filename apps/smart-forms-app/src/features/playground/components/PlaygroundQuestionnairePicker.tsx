@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 10.59 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,13 +23,17 @@ import {
   CircularProgress,
   Divider,
   Grid,
+  Link,
   Stack,
   TextField,
   Typography
 } from '@mui/material';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import type { Questionnaire } from 'fhir/r4';
 import useFetchQuestionnaires from '../../dashboard/hooks/useFetchQuestionnaires';
 import { StyledAlert } from '../../../components/Nav/Nav.styles.ts';
+import { FORMS_SERVER_URL } from '../../../globals.ts';
 
 interface PlaygroundQuestionnairePickerProps {
   onBuild: (questionnaire: Questionnaire) => void;
@@ -40,9 +44,10 @@ function PlaygroundQuestionnairePicker(props: PlaygroundQuestionnairePickerProps
 
   const [selectedQuestionnaireId, setSelectedQuestionnaireId] = useState('');
 
-  const { questionnaires, fetchStatus, isInitialLoading, isFetching } = useFetchQuestionnaires(
+  const { questionnaires, fetchStatus, isLoading, isFetching } = useFetchQuestionnaires(
     '',
-    ''
+    '',
+    true
   );
 
   const questionnaireIds = useMemo(
@@ -55,7 +60,7 @@ function PlaygroundQuestionnairePicker(props: PlaygroundQuestionnairePickerProps
     [questionnaires, selectedQuestionnaireId]
   );
 
-  if (isInitialLoading || isFetching) {
+  if (isLoading || isFetching) {
     return (
       <Stack
         direction="row"
@@ -77,6 +82,8 @@ function PlaygroundQuestionnairePicker(props: PlaygroundQuestionnairePickerProps
       </StyledAlert>
     );
   }
+
+  const resolvableUrl = `${FORMS_SERVER_URL}/Questionnaire/${selectedQuestionnaireId}`;
 
   return (
     <>
@@ -105,39 +112,56 @@ function PlaygroundQuestionnairePicker(props: PlaygroundQuestionnairePickerProps
         {selectedQuestionnaire ? (
           <>
             <Grid container>
-              <Grid item xs={1.5}>
-                ID:
+              <Grid size={{ xs: 2 }}>
+                <b>ID:</b>
               </Grid>
-              <Grid item xs={10.5}>
+              <Grid size={{ xs: 10 }}>
                 <Typography mb={1}>{selectedQuestionnaire.id}</Typography>
               </Grid>
 
-              <Grid item xs={1.5}>
-                Title:
+              <Grid size={{ xs: 2 }}>
+                <b>Title:</b>
               </Grid>
-              <Grid item xs={10.5}>
+              <Grid size={{ xs: 10 }}>
                 <Typography mb={1}>{selectedQuestionnaire.title}</Typography>
               </Grid>
 
-              <Grid item xs={1.5}>
-                URL:
+              <Grid size={{ xs: 2 }}>
+                <b>Canonical URL:</b>
               </Grid>
-              <Grid item xs={10.5}>
+              <Grid size={{ xs: 10 }}>
                 <Typography mb={1}>{selectedQuestionnaire.url}</Typography>
               </Grid>
 
-              <Grid item xs={1.5}>
-                Version:
+              <Grid size={{ xs: 2 }}>
+                <b>Version:</b>
               </Grid>
-              <Grid item xs={10.5}>
+              <Grid size={{ xs: 10 }}>
                 <Typography mb={1}>{selectedQuestionnaire.version}</Typography>
               </Grid>
+
+              <Grid size={{ xs: 2 }}>
+                <b>Resolvable URL:</b>
+              </Grid>
+              <Grid size={{ xs: 10 }}>
+                <Link href={resolvableUrl} target="_blank" rel="noreferrer">
+                  {resolvableUrl}
+                </Link>
+              </Grid>
             </Grid>
-            <Box display="flex">
-              <Box flexGrow={1} />
+            <Box display="flex" justifyContent="end" mt={1} gap={1}>
+              <Button
+                component="a"
+                href={`https://fhirpath-lab.com/Questionnaire/tester?tab=questionnaire,csiro%20renderer&id=${resolvableUrl}`}
+                target="_blank"
+                rel="noopener"
+                endIcon={<OpenInNewIcon />}>
+                Open in fhirpath-lab
+              </Button>
               <Button
                 data-test="picker-build-form-button-playground"
-                onClick={() => onBuild(selectedQuestionnaire)}>
+                onClick={() => onBuild(selectedQuestionnaire)}
+                endIcon={<PlayCircleIcon />}>
                 Build Form
               </Button>
             </Box>

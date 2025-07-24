@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,6 +23,7 @@ import Typography from '@mui/material/Typography';
 import { useQuestionnaireStore } from '../../stores';
 import type { QuestionnaireItem } from 'fhir/r4';
 import ContextDisplayItem from '../FormComponents/ItemParts/ContextDisplayItem';
+import { useFocusTabHeading } from '../../hooks/useFocusTabHeading';
 
 interface FormBodySingleTabProps {
   contextDisplayItems: QuestionnaireItem[];
@@ -35,10 +36,16 @@ const FormBodySingleTab = memo(function FormBodySingleTab(props: FormBodySingleT
   const { contextDisplayItems, selected, tabLabel, listIndex } = props;
 
   const switchTab = useQuestionnaireStore.use.switchTab();
+  const focusHeading = useFocusTabHeading();
 
   function handleTabClick() {
     switchTab(listIndex);
     window.scrollTo(0, 0);
+
+    // Focus the first heading in the new tab panel
+    setTimeout(() => {
+      focusHeading(`tabpanel-${listIndex}`);
+    }, 100); // Small delay to ensure panel is rendered
   }
 
   return (
@@ -50,7 +57,13 @@ const FormBodySingleTab = memo(function FormBodySingleTab(props: FormBodySingleT
         <ListItemText
           primary={
             <Box display="flex" alignItems="center" justifyContent="space-between">
-              <Typography variant="subtitle2">{tabLabel}</Typography>
+              <Typography
+                id={`tab-${listIndex}`}
+                component="span"
+                fontWeight={600}
+                fontSize="0.8125rem">
+                {tabLabel}
+              </Typography>
               <Box display="flex" minHeight={24} minWidth={24} ml={1}>
                 {contextDisplayItems.map((item) => {
                   return <ContextDisplayItem key={item.linkId} displayItem={item} />;

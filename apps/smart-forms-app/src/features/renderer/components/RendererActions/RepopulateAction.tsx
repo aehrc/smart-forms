@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,18 +18,27 @@
 import RendererOperationItem from '../RendererNav/RendererOperationItem.tsx';
 import CloudSyncIcon from '@mui/icons-material/CloudSync';
 import { useSnackbar } from 'notistack';
-import { populateQuestionnaire } from '../../../prepopulate/utils/populate.ts';
+import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
 import type { SpeedDialActionProps } from '@mui/material';
 import { SpeedDialAction, Tooltip } from '@mui/material';
 import type { RendererSpinner } from '../../types/rendererSpinner.ts';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
-import { generateItemsToRepopulate, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import {
+  generateItemsToRepopulate,
+  useQuestionnaireStore,
+  useTerminologyServerStore
+} from '@aehrc/smart-forms-renderer';
 import RepopulateDialog from '../../../repopulate/components/RepopulateDialog.tsx';
 import type { Encounter, Patient, Practitioner } from 'fhir/r4';
 import { useMutation } from '@tanstack/react-query';
 import { readCommonLaunchContexts } from '../../../smartAppLaunch/utils/launch.ts';
 import { useRepopulationStore } from '../../../repopulate/stores/RepopulationStore.ts';
+import {
+  fetchResourceCallback,
+  fetchTerminologyCallback
+} from '../../../prepopulate/utils/callback.ts';
+import type Client from 'fhirclient/lib/Client';
 
 interface RepopulateActionProps extends SpeedDialActionProps {
   spinner: RendererSpinner;
@@ -40,17 +49,18 @@ interface RepopulateActionProps extends SpeedDialActionProps {
 function RepopulateAction(props: RepopulateActionProps) {
   const { spinner, isSpeedDial, onSpinnerChange, ...speedDialActionProps } = props;
 
-  const { smartClient, patient, user } = useSmartClient();
+  const { smartClient, patient, user, fhirContext } = useSmartClient();
 
   const setItemsToRepopulate = useRepopulationStore.use.setItemsToRepopulate();
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
-  const fhirPathContext = useQuestionnaireStore.use.fhirPathContext();
   const setPopulatedContext = useQuestionnaireStore.use.setPopulatedContext();
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const repopulateFetchEnded = !spinner.isSpinning && spinner.status === 'repopulate-fetch';
+
+  const defaultTerminologyServerUrl = useTerminologyServerStore.use.url();
 
   /*
    * Perform re-population if all the following requirements are fulfilled:
@@ -65,20 +75,30 @@ function RepopulateAction(props: RepopulateActionProps) {
 
   const { mutate: repopulateMutation } = useMutation({
     mutationFn: (params: {
+      client: Client;
       newPatient: Patient;
       newUser: Practitioner;
       newEncounter: Encounter | null;
     }) => {
-      const { newPatient, newUser, newEncounter } = params;
+      const { client, newPatient, newUser, newEncounter } = params;
 
-      return populateQuestionnaire(
-        sourceQuestionnaire,
-        smartClient!,
-        newPatient,
-        newUser,
-        newEncounter,
-        fhirPathContext
-      );
+      return populateQuestionnaire({
+        questionnaire: sourceQuestionnaire,
+        fetchResourceCallback: fetchResourceCallback,
+        fetchResourceRequestConfig: {
+          sourceServerUrl: client.state.serverUrl,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          authToken: client.state.tokenResponse!.access_token!
+        },
+        patient: newPatient,
+        user: newUser,
+        encounter: newEncounter ?? undefined,
+        fhirContext: fhirContext ?? undefined,
+        fetchTerminologyCallback: fetchTerminologyCallback,
+        fetchTerminologyRequestConfig: {
+          terminologyServerUrl: defaultTerminologyServerUrl
+        }
+      });
     },
     onSuccess: ({ populateSuccess, populateResult }) => {
       // Repopulate operation has already been cancelled, don't show repopulate dialog
@@ -89,37 +109,38 @@ function RepopulateAction(props: RepopulateActionProps) {
       if (!populateSuccess || !populateResult) {
         onSpinnerChange({ isSpinning: false, status: null, message: '' });
         enqueueSnackbar('There is an error while retrieving latest data for re-population.', {
-          action: <CloseSnackbar />,
-          variant: 'warning'
+          variant: 'warning',
+          action: <CloseSnackbar variant="warning" />
         });
         return;
       }
 
-      const { populated, hasWarnings, populatedContext } = populateResult;
+      const { populatedResponse, issues, populatedContext } = populateResult;
 
-      // If populatedContext is provided, update it in QuestionnaireStore so it gets updated in debug panel
+      // If populatedContext is provided, update it in QuestionnaireStore and add it to FhirPathContext so it updates cqfExpressions
       if (populatedContext) {
-        setPopulatedContext(populatedContext);
+        setPopulatedContext(populatedContext, true);
       }
 
-      const itemToRepopulate = generateItemsToRepopulate(populated);
+      const itemToRepopulate = generateItemsToRepopulate(populatedResponse);
 
       setItemsToRepopulate(itemToRepopulate);
 
       onSpinnerChange({ isSpinning: false, status: 'repopulate-fetch', message: '' });
-      if (hasWarnings) {
+      if (issues) {
         enqueueSnackbar(
           'There might be issues while retrieving the latest information, data is partially retrieved. View console for details.',
           { action: <CloseSnackbar /> }
         );
+        console.warn(issues);
         return;
       }
     },
     onError: () => {
       onSpinnerChange({ isSpinning: false, status: null, message: '' });
       enqueueSnackbar('There is an error while retrieving latest data for re-population.', {
-        action: <CloseSnackbar />,
-        variant: 'warning'
+        variant: 'warning',
+        action: <CloseSnackbar variant="warning" />
       });
     }
   });
@@ -139,6 +160,7 @@ function RepopulateAction(props: RepopulateActionProps) {
     const { patient, user, encounter } = await readCommonLaunchContexts(smartClient);
 
     repopulateMutation({
+      client: smartClient,
       newPatient: patient as Patient,
       newUser: user as Practitioner,
       newEncounter: encounter
@@ -151,24 +173,29 @@ function RepopulateAction(props: RepopulateActionProps) {
         shouldRepopulate ? (
           <SpeedDialAction
             icon={<CloudSyncIcon />}
-            tooltipTitle="Repopulate Form"
-            tooltipOpen
             onClick={handleRepopulate}
             {...speedDialActionProps}
+            slotProps={{
+              tooltip: {
+                title: 'Re-populate Form',
+                open: true
+              }
+            }}
           />
         ) : null
       ) : (
         <Tooltip
+          role="tooltip"
           title="Form does not support pre-population"
           disableHoverListener={shouldRepopulate}>
-          <span>
+          <div>
             <RendererOperationItem
-              title="Repopulate Form"
+              title="Re-populate Form"
               icon={<CloudSyncIcon />}
               disabled={!shouldRepopulate || spinner.isSpinning}
               onClick={handleRepopulate}
             />
-          </span>
+          </div>
         </Tooltip>
       )}
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@
 import type { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 
 import type { QrRepeatGroup } from '../interfaces/repeatGroup.interface';
+import { qrItemHasItemsOrAnswer } from './manageForm';
 
 /**
  * Remove items with no answers from a given questionnaireResponse
@@ -120,7 +121,10 @@ export function updateQrItemsInGroup(
       // Add qrItem at the end of qrGroup if it is larger than the other indexes
       if (newQrItemIndex > qrItemsRealIndexArr[i]) {
         if (i === qrItemsRealIndexArr.length - 1) {
-          qrItems.push(newQrItem);
+          // As of 07-05-2025, added this here to prevent adding empty items - only add if an item has items or answers
+          if (qrItemHasItemsOrAnswer(newQrItem)) {
+            qrItems.push(newQrItem);
+          }
         }
         continue;
       }

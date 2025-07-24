@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,34 +24,51 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import useDebounce from '../../../hooks/useDebounce';
 import useTerminologyServerQuery from '../../../hooks/useTerminologyServerQuery';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
+  PropsWithIsTabledRequiredAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import { AUTOCOMPLETE_DEBOUNCE_DURATION } from '../../../utils/debounce';
 import OpenChoiceAutocompleteField from './OpenChoiceAutocompleteField';
 import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import type { AlertColor } from '@mui/material/Alert';
+import ItemLabel from '../ItemParts/ItemLabel';
+import type { AutocompleteChangeReason } from '@mui/material';
 
 interface OpenChoiceAutocompleteItemProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithIsTabledRequiredAttribute,
+    PropsWithRenderingExtensionsAttribute,
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
 
 function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
+  const {
+    qItem,
+    qrItem,
+    isRepeated,
+    isTabled,
+    renderingExtensions,
+    feedbackFromParent,
+    parentIsReadOnly,
+    onQrItemChange
+  } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
-
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem, answerKey);
 
   // Init input value
@@ -70,19 +87,48 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
   const [input, setInput] = useState('');
   const debouncedInput = useDebounce(input, AUTOCOMPLETE_DEBOUNCE_DURATION);
 
-  const { options, loading, feedback } = useTerminologyServerQuery(
-    qItem,
-    maxList,
-    input,
-    debouncedInput
-  );
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+
+  // TODO Process calculated expressions
+  // This requires its own hook, because in the case of multi-select, we need to check if the value is already checked to prevent an infinite loop
+  // This will be done after the choice/open-choice refactoring
+
+  // Perform validation checks
+  const validationFeedback = useValidationFeedback(qItem, feedbackFromParent, '');
+
+  const {
+    options,
+    loading,
+    feedback: terminologyFeedback
+  } = useTerminologyServerQuery(qItem, maxList, input, debouncedInput);
+
+  let feedback: { message: string; color: AlertColor } | null = null;
+  if (terminologyFeedback) {
+    feedback = terminologyFeedback;
+  } else if (validationFeedback !== '') {
+    feedback = { message: validationFeedback, color: 'error' };
+  }
 
   if (!qItem.answerValueSet) {
     return null;
   }
 
   // Event handlers
-  function handleValueChange(newValue: Coding | string | null) {
+  // Handler function which handles both input change and selection change
+  function handleValueChange(
+    newValue: Coding | string | null,
+    reason: AutocompleteChangeReason | string
+  ) {
+    //if the reason is reset, then we don't change the value, otherwise you will end up with looped setState calls
+    if (reason === 'reset') {
+      return;
+    }
+    //if the text input is changed, and only if hte input is a string the set the state.
+    if (newValue && typeof newValue === 'string' && reason === 'input') {
+      setInput(newValue);
+      // return;
+    }
+
     if (newValue === null) {
       setInput('');
       newValue = '';
@@ -90,10 +136,26 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
 
     if (typeof newValue === 'string') {
       if (newValue !== '') {
-        onQrItemChange({
-          ...createEmptyQrItem(qItem, answerKey),
-          answer: [{ id: answerKey, valueString: newValue }]
+        // Check if the newValue in in the options, first check options.display, then check options.code
+        const foundOption = options.find((option) => {
+          if (option.display) {
+            return option.display === newValue;
+          }
+          return option.code === newValue;
         });
+        if (foundOption) {
+          newValue = foundOption;
+          onQrItemChange({
+            ...qrOpenChoice,
+            answer: [{ id: answerKey, valueCoding: newValue }]
+          });
+        } //if newValue is not in the options list, treat it as a string
+        else {
+          onQrItemChange({
+            ...createEmptyQrItem(qItem, answerKey),
+            answer: [{ id: answerKey, valueString: newValue }]
+          });
+        }
       } else {
         onQrItemChange(createEmptyQrItem(qItem, answerKey));
       }
@@ -101,16 +163,6 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
       onQrItemChange({
         ...createEmptyQrItem(qItem, answerKey),
         answer: [{ id: answerKey, valueCoding: newValue }]
-      });
-    }
-  }
-
-  function handleUnfocus() {
-    // set answer to current input when text field is unfocused
-    if (!valueAutocomplete && input !== '') {
-      onQrItemChange({
-        ...createEmptyQrItem(qItem, answerKey),
-        answer: [{ id: answerKey, valueString: input }]
       });
     }
   }
@@ -123,12 +175,11 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
         valueAutocomplete={valueAutocomplete}
         input={input}
         loading={loading}
-        feedback={feedback ?? null}
+        feedback={feedback}
         readOnly={readOnly}
         isTabled={isTabled}
-        onInputChange={(newValue) => setInput(newValue)}
+        renderingExtensions={renderingExtensions}
         onValueChange={handleValueChange}
-        onUnfocus={handleUnfocus}
       />
     );
   }
@@ -138,21 +189,25 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
       data-test="q-item-open-choice-autocomplete-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <OpenChoiceAutocompleteField
-          qItem={qItem}
-          options={options}
-          valueAutocomplete={valueAutocomplete}
-          input={input}
-          loading={loading}
-          feedback={feedback ?? null}
-          readOnly={readOnly}
-          isTabled={isTabled}
-          onInputChange={(newValue) => setInput(newValue)}
-          onValueChange={handleValueChange}
-          onUnfocus={handleUnfocus}
-        />
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <OpenChoiceAutocompleteField
+            qItem={qItem}
+            options={options}
+            valueAutocomplete={valueAutocomplete}
+            input={input}
+            loading={loading}
+            feedback={feedback}
+            readOnly={readOnly}
+            isTabled={isTabled}
+            renderingExtensions={renderingExtensions}
+            onValueChange={handleValueChange}
+          />
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

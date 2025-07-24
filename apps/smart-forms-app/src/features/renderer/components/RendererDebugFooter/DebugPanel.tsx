@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -152,7 +152,10 @@ function DebugPanel(props: Props) {
             ? 'Use JSON Tree for selective debugging. For more detailed debugging, copy tree nodes to a text editor.'
             : 'Use text view for fast Ctrl+F debugging.'}
         </Typography>
-        <DebugResponseView displayObject={displayObject} showJsonTree={showJsonTree} />
+        <DebugResponseView
+          displayObject={displayObject}
+          viewMode={showJsonTree ? 'jsonTree' : 'text'}
+        />
       </Box>
     </Stack>
   );

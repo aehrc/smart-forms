@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,17 +17,17 @@
 
 import type { Coding, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type { CodeSystemLookupPromise } from '../../interfaces/lookup.interface';
-import * as FHIR from 'fhirclient';
+import { client } from 'fhirclient';
 
-// Use this for QuestionnaireStore.ProcessedCodings
-export async function addDisplayToProcessedCodings(
-  processedCodings: Record<string, Coding[]>,
+// Use this for QuestionnaireStore.cachedValueSetCodings
+export async function addDisplayToCacheCodings(
+  cachedValueSetCodings: Record<string, Coding[]>,
   terminologyServerUrl: string
 ): Promise<Record<string, Coding[]>> {
   // Store code system lookup promises for codings without displays
   const codeSystemLookupPromises: Record<string, CodeSystemLookupPromise> = {};
-  for (const key in processedCodings) {
-    const codings = processedCodings[key];
+  for (const key in cachedValueSetCodings) {
+    const codings = cachedValueSetCodings[key];
     for (const coding of codings) {
       if (!coding.display) {
         const query = `system=${coding.system}&code=${coding.code}`;
@@ -41,9 +41,8 @@ export async function addDisplayToProcessedCodings(
 
   // Resolves lookup promises in one go and assign newCodings to processedCodings
   const resolvedCodeSystemLookupPromises = await resolveLookupPromises(codeSystemLookupPromises);
-  for (const key in processedCodings) {
-    const codings = processedCodings[key];
-
+  for (const key in cachedValueSetCodings) {
+    const codings = cachedValueSetCodings[key];
     for (const coding of codings) {
       const lookUpKey = `system=${coding.system}&code=${coding.code}`;
       const resolvedLookup = resolvedCodeSystemLookupPromises[lookUpKey];
@@ -53,7 +52,7 @@ export async function addDisplayToProcessedCodings(
     }
   }
 
-  return processedCodings;
+  return cachedValueSetCodings;
 }
 
 // Use this for a Record<linkId, answerOption[]>
@@ -126,7 +125,7 @@ export async function addDisplayToCodingArray(
 }
 
 export function getCodeSystemLookupPromise(query: string, terminologyServerUrl: string) {
-  return FHIR.client({ serverUrl: terminologyServerUrl }).request({
+  return client({ serverUrl: terminologyServerUrl }).request({
     url: `CodeSystem/$lookup?${query}`
   });
 }

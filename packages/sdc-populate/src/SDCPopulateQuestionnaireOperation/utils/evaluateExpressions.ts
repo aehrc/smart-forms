@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,6 +23,9 @@ import type {
 } from '../interfaces/expressions.interface';
 import type { OperationOutcomeIssue } from 'fhir/r4';
 import { createInvalidWarningIssue } from './operationOutcome';
+import type { FetchTerminologyRequestConfig } from '../interfaces';
+import { handleFhirPathResult } from './createFhirPathContext';
+import { TERMINOLOGY_SERVER_URL } from '../../globals';
 
 /**
  * Use FHIRPath.js to evaluate initialExpressions and generate its values to be populated into the questionnaireResponse.
@@ -30,12 +33,15 @@ import { createInvalidWarningIssue } from './operationOutcome';
  *
  * @author Sean Fong
  */
-export function generateExpressionValues(
+export async function generateExpressionValues(
   populationExpressions: PopulationExpressions,
   contextMap: Record<string, any>,
-  issues: OperationOutcomeIssue[]
+  issues: OperationOutcomeIssue[],
+  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
 ) {
   const { initialExpressions, itemPopulationContexts } = populationExpressions;
+
+  const terminologyServerUrl = fetchTerminologyRequestConfig?.terminologyServerUrl ?? null;
 
   for (const linkId in initialExpressions) {
     const initialExpression = initialExpressions[linkId];
@@ -44,11 +50,17 @@ export function generateExpressionValues(
 
       // Evaluate expression by LaunchPatient or PrePopQuery
       try {
-        initialExpression.value = fhirpath.evaluate({}, expression, contextMap, fhirpath_r4_model);
+        const fhirPathResult = fhirpath.evaluate({}, expression, contextMap, fhirpath_r4_model, {
+          async: true,
+          terminologyUrl: terminologyServerUrl ?? TERMINOLOGY_SERVER_URL
+        });
+
+        initialExpression.value = await handleFhirPathResult(fhirPathResult);
       } catch (e) {
         if (e instanceof Error) {
           console.warn(
-            'Error: fhirpath evaluation for InitialExpression failed. Details below:' + e
+            'SDC-Populate Error: fhirpath evaluation for InitialExpression failed. Details below:' +
+              e
           );
           issues.push(createInvalidWarningIssue(e.message));
         }
@@ -65,16 +77,16 @@ export function generateExpressionValues(
       const expression = itemPopulationContext.expression;
 
       try {
-        itemPopulationContext.value = fhirpath.evaluate(
-          {},
-          expression,
-          contextMap,
-          fhirpath_r4_model
-        );
+        const fhirPathResult = fhirpath.evaluate({}, expression, contextMap, fhirpath_r4_model, {
+          async: true,
+          terminologyUrl: terminologyServerUrl ?? TERMINOLOGY_SERVER_URL
+        });
+        itemPopulationContext.value = await handleFhirPathResult(fhirPathResult);
       } catch (e) {
         if (e instanceof Error) {
           console.warn(
-            'Error: fhirpath evaluation for ItemPopulationContext failed. Details below:' + e
+            'SDC-Populate Error: fhirpath evaluation for ItemPopulationContext failed. Details below:' +
+              e
           );
           issues.push(createInvalidWarningIssue(e.message));
         }
@@ -98,11 +110,14 @@ export function generateExpressionValues(
  *
  * @author Sean Fong
  */
-export function evaluateItemPopulationContexts(
+export async function evaluateItemPopulationContexts(
   itemPopulationContexts: Record<string, ItemPopulationContext>,
   contextMap: Record<string, any>,
-  issues: OperationOutcomeIssue[]
-): Record<string, any> {
+  issues: OperationOutcomeIssue[],
+  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
+): Promise<Record<string, any>> {
+  const terminologyServerUrl = fetchTerminologyRequestConfig?.terminologyServerUrl ?? null;
+
   for (const name in itemPopulationContexts) {
     const itemPopulationContext = itemPopulationContexts[name];
     if (itemPopulationContext) {
@@ -111,11 +126,16 @@ export function evaluateItemPopulationContexts(
 
       // Evaluate expression by LaunchPatient or PrePopQuery
       try {
-        evaluatedResult = fhirpath.evaluate({}, expression, contextMap, fhirpath_r4_model);
+        const fhirPathResult = fhirpath.evaluate({}, expression, contextMap, fhirpath_r4_model, {
+          async: true,
+          terminologyUrl: terminologyServerUrl ?? TERMINOLOGY_SERVER_URL
+        });
+        evaluatedResult = await handleFhirPathResult(fhirPathResult);
       } catch (e) {
         if (e instanceof Error) {
           console.warn(
-            'Error: fhirpath evaluation for ItemPopulationContext failed. Details below:' + e
+            'SDC-Populate Error: fhirpath evaluation for ItemPopulationContext failed. Details below:' +
+              e
           );
           issues.push(createInvalidWarningIssue(e.message));
         }

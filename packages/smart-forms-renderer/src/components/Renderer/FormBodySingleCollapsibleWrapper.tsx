@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,7 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import GroupItem from '../FormComponents/GroupItem/GroupItem';
 import FormBodySingleCollapsible from './FormBodySingleCollapsible';
 import type {
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../interfaces/renderProps.interface';
@@ -27,6 +28,7 @@ import useHidden from '../../hooks/useHidden';
 
 interface FormBodySingleCollapsibleProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
@@ -36,8 +38,16 @@ interface FormBodySingleCollapsibleProps
 }
 
 function FormBodySingleCollapsibleWrapper(props: FormBodySingleCollapsibleProps) {
-  const { qItem, qrItem, index, selectedIndex, parentIsReadOnly, onToggleExpand, onQrItemChange } =
-    props;
+  const {
+    qItem,
+    qrItem,
+    index,
+    selectedIndex,
+    parentIsReadOnly,
+    itemPath,
+    onToggleExpand,
+    onQrItemChange
+  } = props;
 
   const itemIsHidden = useHidden(qItem);
   if (itemIsHidden) {
@@ -54,6 +64,7 @@ function FormBodySingleCollapsibleWrapper(props: FormBodySingleCollapsibleProps)
       <GroupItem
         qItem={qItem}
         qrItem={qrItem}
+        itemPath={itemPath}
         isRepeated={true}
         groupCardElevation={1}
         parentIsReadOnly={parentIsReadOnly}

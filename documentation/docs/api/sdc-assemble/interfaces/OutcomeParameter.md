@@ -222,6 +222,8 @@ There can be no stigma associated with the use of extensions by any application,
 
 > **name**: `"outcome"`
 
+The name of the parameter (reference to the operation definition).
+
 #### Overrides
 
 `ParametersParameter.name`
@@ -243,6 +245,8 @@ Only one level of nested parameters is allowed.
 ### resource
 
 > **resource**: `OperationOutcome`
+
+When resolving references in resources, the operation definition may specify how references may be resolved between parameters. If a reference cannot be resolved between the parameters, the application should fall back to it's general resource resolution methods.
 
 #### Overrides
 

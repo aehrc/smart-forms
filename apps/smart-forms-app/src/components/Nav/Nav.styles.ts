@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,15 +27,12 @@ export const NavSectionHeadingWrapper = styled(Box)({
 });
 
 export const NavSectionHeading = styled(Typography)(({ theme }) => ({
-  ...theme.typography.overline,
-  color: theme.palette.text.secondary
+  ...theme.typography.overline
 }));
 
 export const NavListItemButton = styled(ListItemButton)(({ theme }) => ({
-  ...theme.typography.subtitle2,
   height: 46,
   textTransform: 'capitalize',
-  color: theme.palette.text.secondary,
   borderRadius: Number(theme.shape.borderRadius)
 }));
 

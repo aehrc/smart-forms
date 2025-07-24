@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -104,8 +104,33 @@ export const qQuantityUnitOption: Questionnaire = {
   url: 'https://smartforms.csiro.au/docs/components/quantity/unit-option',
   item: [
     {
-      linkId: 'duration',
-      text: 'Duration',
+      linkId: 'duration-single-unit-guidance',
+      text: 'If there is only one unitOption, it will be rendered as if a "http://hl7.org/fhir/StructureDefinition/questionnaire-unit" extension is used.',
+      type: 'display'
+    },
+    {
+      linkId: 'duration-single-unit',
+      text: 'Duration (single unit)',
+      type: 'quantity',
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 'd',
+            display: 'Day(s)'
+          }
+        }
+      ]
+    },
+    {
+      linkId: 'duration-multi-unit-guidance',
+      text: 'If there are multiple unitOptions, they will be rendered in a separate dropdown field.',
+      type: 'display'
+    },
+    {
+      linkId: 'duration-multi-unit',
+      text: 'Duration (multiple units)',
       type: 'quantity',
       extension: [
         {
@@ -167,8 +192,8 @@ export const qQuantityUnitOption: Questionnaire = {
       ]
     },
     {
-      linkId: 'duration-comparator',
-      text: 'Duration (with comparator symbol)',
+      linkId: 'duration-multi-unit-comparator',
+      text: 'Duration (multiple units, with comparator symbol)',
       type: 'quantity',
       extension: [
         {
@@ -237,7 +262,21 @@ export const qrQuantityUnitOptionResponse: QuestionnaireResponse = {
   status: 'in-progress',
   item: [
     {
-      linkId: 'duration',
+      linkId: 'duration-single-unit',
+      answer: [
+        {
+          valueQuantity: {
+            value: 2,
+            unit: 'Day(s)',
+            system: 'http://unitsofmeasure.org',
+            code: 'd'
+          }
+        }
+      ],
+      text: 'Duration'
+    },
+    {
+      linkId: 'duration-multi-unit',
       answer: [
         {
           valueQuantity: {
@@ -251,7 +290,7 @@ export const qrQuantityUnitOptionResponse: QuestionnaireResponse = {
       text: 'Duration'
     },
     {
-      linkId: 'duration-comparator',
+      linkId: 'duration-multi-unit-comparator',
       answer: [
         {
           valueQuantity: {

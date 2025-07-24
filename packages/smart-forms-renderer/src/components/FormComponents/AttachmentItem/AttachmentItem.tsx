@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,22 +16,16 @@
  */
 
 import React, { useCallback, useState } from 'react';
-import type {
-  PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler
-} from '../../../interfaces/renderProps.interface';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import debounce from 'lodash.debounce';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
-import useStringInput from '../../../hooks/useStringInput';
 import useReadOnly from '../../../hooks/useReadOnly';
 import AttachmentFieldWrapper from './AttachmentFieldWrapper';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import { createAttachmentAnswer } from '../../../utils/fileUtils';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
 
 export interface AttachmentValues {
   uploadedFile: File | null;
@@ -39,30 +33,32 @@ export interface AttachmentValues {
   fileName: string;
 }
 
-interface AttachmentItemProps
-  extends PropsWithQrItemChangeHandler,
-    PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute,
-    PropsWithParentIsReadOnlyAttribute {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
-}
-
-function AttachmentItem(props: AttachmentItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
-
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+function AttachmentItem(props: BaseItemProps) {
+  const {
+    qItem,
+    qrItem,
+    isRepeated,
+    isTabled,
+    parentIsReadOnly,
+    feedbackFromParent,
+    onQrItemChange
+  } = props;
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   let valueString = '';
   if (qrItem?.answer && qrItem?.answer[0].valueString) {
     valueString = qrItem.answer[0].valueString;
   }
 
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [url, setUrl] = useStringInput(valueString);
-  const [fileName, setFileName] = useStringInput(valueString);
+  const [url, setUrl] = useState(valueString);
+  const [fileName, setFileName] = useState(valueString);
+
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+
+  // Perform validation checks
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
 
   // Event handlers
   async function handleUploadFile(newUploadedFile: File | null) {
@@ -111,6 +107,7 @@ function AttachmentItem(props: AttachmentItemProps) {
       <AttachmentFieldWrapper
         qItem={qItem}
         attachmentValues={{ uploadedFile: uploadedFile, url: url, fileName: fileName }}
+        feedback={feedback}
         readOnly={readOnly}
         isRepeated={isRepeated}
         isTabled={isTabled}

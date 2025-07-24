@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,17 +22,14 @@ import { StyledRoot } from '../../../components/Layout/Layout.styles.ts';
 import { Main } from './RendererLayout.styles.ts';
 import { Outlet } from 'react-router-dom';
 import BackToTopButton from '../../backToTop/components/BackToTopButton.tsx';
-import { Fab } from '@mui/material';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import BlockerUnsavedFormDialog from './RendererNav/BlockerUnsavedFormDialog.tsx';
 import NavExpandButton from './NavCollapseButton.tsx';
 import PopulationProgressSpinner from '../../../components/Spinners/PopulationProgressSpinner.tsx';
 import useLeavePageBlocker from '../hooks/useBlocker.ts';
 import useBackToTop from '../../backToTop/hooks/useBackToTop.ts';
 import RendererEmbeddedSpeedDial from './RendererEmbeddedSpeedDial/RendererEmbeddedSpeedDial.tsx';
-import useResponsive from '../../../hooks/useResponsive.ts';
 import usePopulate from '../../prepopulate/hooks/usePopulate.tsx';
-import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
+import { useQuestionnaireResponseStore, useResponsive } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
 import type { RendererSpinner } from '../types/rendererSpinner.ts';
 import RepopulateBackdrop from '../../repopulate/components/RepopulateBackdrop.tsx';
@@ -63,7 +60,7 @@ function RendererLayout() {
     setDialogOpen(true);
   }
 
-  const isDesktop = useResponsive('up', 'lg');
+  const isLgUp = useResponsive({ query: 'up', start: 'lg' });
 
   useBackToTop();
 
@@ -109,12 +106,8 @@ function RendererLayout() {
         onExpandNav={() => setDesktopNavCollapsed(false)}
       />
 
-      {isDesktop ? (
-        <BackToTopButton>
-          <Fab size="medium">
-            <KeyboardArrowUpIcon />
-          </Fab>
-        </BackToTopButton>
+      {isLgUp ? (
+        <BackToTopButton />
       ) : (
         <RendererEmbeddedSpeedDial
           spinner={spinner}

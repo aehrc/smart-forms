@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import type { Coding } from 'fhir/r4';
 import {
   createValueSetToXFhirQueryVariableNameMap,
   getValueSetCodings,
@@ -24,13 +23,17 @@ import {
 } from '../valueSet';
 import type { Variables } from '../../interfaces/variables.interface';
 import type { ValueSetPromise } from '../../interfaces/valueSet.interface';
+import type { Coding } from 'fhir/r4';
 
 export async function resolveValueSets(
   variables: Variables,
   valueSetPromises: Record<string, ValueSetPromise>,
-  processedValueSetCodings: Record<string, Coding[]>,
+  cachedValueSetCodings: Record<string, Coding[]>,
   terminologyServerUrl: string
-): Promise<{ variables: Variables; processedValueSetCodings: Record<string, Coding[]> }> {
+): Promise<{
+  variables: Variables;
+  cachedValueSetCodings: Record<string, Coding[]>;
+}> {
   // Create a <valueSetUrl, XFhirQueryVariableName> map
   const valueSetToXFhirQueryVariableNameMap: Record<string, string> =
     createValueSetToXFhirQueryVariableNameMap(variables.xFhirQueryVariables);
@@ -43,15 +46,15 @@ export async function resolveValueSets(
     }
   }
 
-  // Resolve promises and store valueSet codings in preprocessedValueSetCodings AND XFhirQueryVariables
+  // Resolve promises and store valueSet codings in XFhirQueryVariables and cachedValueSetCodings
   const resolvedPromises = await resolveValueSetPromises(valueSetPromises);
 
   for (const valueSetUrl in resolvedPromises) {
     const valueSet = resolvedPromises[valueSetUrl]?.valueSet;
 
     if (valueSet) {
+      // valueSetUrl is in x-fhir-query variables, save to variable
       if (valueSetToXFhirQueryVariableNameMap[valueSetUrl]) {
-        // valueSetUrl is in x-fhir-query variables, save to variable
         const variableName = valueSetToXFhirQueryVariableNameMap[valueSetUrl];
         if (variableName) {
           const variable = variables.xFhirQueryVariables[variableName];
@@ -62,12 +65,12 @@ export async function resolveValueSets(
             };
           }
         }
-      } else {
-        // valueSetUrl is in x-fhir-query variables, save to preprocessedValueSetCodings
-        processedValueSetCodings[valueSetUrl] = getValueSetCodings(valueSet);
       }
+
+      // Store codings in cachedValueSetCodings
+      cachedValueSetCodings[valueSetUrl] = getValueSetCodings(valueSet);
     }
   }
 
-  return { variables, processedValueSetCodings };
+  return { variables, cachedValueSetCodings };
 }

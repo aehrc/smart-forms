@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 10.59 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,15 +26,15 @@ import { constructName } from '../../smartAppLaunch/utils/launchContext.ts';
 import Button from '@mui/material/Button';
 
 interface PlaygroundPatientPickerProps {
-  fhirServerUrl: string;
+  sourceFhirServerUrl: string;
   selectedPatient: Patient | null;
   onSelectPatient: (patient: Patient | null) => void;
 }
 
 function PlaygroundPatientPicker(props: PlaygroundPatientPickerProps) {
-  const { fhirServerUrl, selectedPatient, onSelectPatient } = props;
+  const { sourceFhirServerUrl, selectedPatient, onSelectPatient } = props;
 
-  const { patients, isInitialLoading } = useFetchPatients(fhirServerUrl);
+  const { patients, isLoading } = useFetchPatients(sourceFhirServerUrl);
 
   const selectedPatientId = useMemo(
     () => patients.find((p) => p.id === selectedPatient?.id)?.id,
@@ -50,7 +50,7 @@ function PlaygroundPatientPicker(props: PlaygroundPatientPickerProps) {
     onSelectPatient(null);
   }
 
-  if (isInitialLoading) {
+  if (isLoading) {
     return (
       <Fade in={true} timeout={300}>
         <Stack
@@ -95,32 +95,24 @@ function PlaygroundPatientPicker(props: PlaygroundPatientPickerProps) {
       <Box display="flex" pt={1} px={0.5} alignItems="center">
         {selectedPatient ? (
           <>
-            <Grid container>
-              <Grid item xs={2}>
-                ID:
-              </Grid>
-              <Grid item xs={10}>
+            <Grid container sx={{ flex: 1 }}>
+              <Grid size={{ xs: 2 }}>ID:</Grid>
+              <Grid size={{ xs: 10 }}>
                 <Typography mb={1}>{selectedPatient.id}</Typography>
               </Grid>
 
-              <Grid item xs={2}>
-                Name:
-              </Grid>
-              <Grid item xs={10}>
+              <Grid size={{ xs: 2 }}>Name:</Grid>
+              <Grid size={{ xs: 10 }}>
                 <Typography mb={1}>{constructName(selectedPatient.name)}</Typography>
               </Grid>
 
-              <Grid item xs={2}>
-                Gender:
-              </Grid>
-              <Grid item xs={10}>
+              <Grid size={{ xs: 2 }}>Gender:</Grid>
+              <Grid size={{ xs: 10 }}>
                 <Typography mb={1}>{selectedPatient.gender}</Typography>
               </Grid>
 
-              <Grid item xs={2}>
-                Birthdate:
-              </Grid>
-              <Grid item xs={10}>
+              <Grid size={{ xs: 2 }}>Birthdate:</Grid>
+              <Grid size={{ xs: 10 }}>
                 <Typography mb={1}>{selectedPatient.birthDate}</Typography>
               </Grid>
             </Grid>

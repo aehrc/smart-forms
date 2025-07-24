@@ -78,13 +78,7 @@ Here's the output of the above code. Click on the "Input Questionnaire" tab to s
     { label: 'Input Questionnaire', value: 'questionnaire' }
   ]}>
   <TabItem value="output">
-    <IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-boolean--boolean-basic">
-      <iframe
-        src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-boolean--boolean-basic"
-        width="100%"
-        height="100"
-      />
-    </IframeContainer>
+    <IframeContainer storyId="itemtype-boolean--boolean-basic" initialHeight={120} />
   </TabItem>
   <TabItem value="questionnaire">
     ```json
@@ -164,13 +158,7 @@ Here's the output of the above code after adding the QuestionnaireResponse prop.
     { label: 'Input QuestionnaireResponse', value: 'questionnaireResponse' }
   ]}>
   <TabItem value="output">
-    <IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-itemtype-boolean--boolean-basic-response">
-      <iframe
-        src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-itemtype-boolean--boolean-basic-response"
-        width="100%"
-        height="100"
-      />
-    </IframeContainer>
+    <IframeContainer storyId="itemtype-boolean--boolean-basic-response" initialHeight={120} />
   </TabItem>
   <TabItem value="questionnaire">
     ```json
@@ -310,13 +298,7 @@ The button will look different in the output, but it still functions the same wa
     { label: 'Input QuestionnaireResponse', value: 'questionnaireResponse' }
   ]}>
   <TabItem value="output">
-    <IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-testing-build-form-button-tester--build-form-button-tester">
-      <iframe
-        src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-testing-build-form-button-tester--build-form-button-tester"
-        width="100%"
-        height="130"
-      />
-    </IframeContainer>
+    <IframeContainer storyId="testing-build-form-button-tester--build-form-button-tester" initialHeight={1372}  />
   </TabItem>
   <TabItem value="questionnaire">
     ```json
@@ -467,13 +449,7 @@ Below is the output of the above modified code.
     { label: 'Input Questionnaire', value: 'questionnaire' }
   ]}>
   <TabItem value="output">
-    <IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-12-form-population--calculated-expression-bmi-calculator-prepop">
-      <iframe
-        src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-12-form-population--calculated-expression-bmi-calculator-prepop"
-        width="100%"
-        height="310"
-      />
-    </IframeContainer>
+    <IframeContainer storyId="sdc-12-form-population--calculated-expression-bmi-calculator-prepop" initialHeight={392} />
   </TabItem>
   <TabItem value="questionnaire">
     ```json
@@ -680,7 +656,7 @@ function YourBaseRendererWrapper() {
 Click on the "Retrieve QuestionnaireResponse" button to see the output QuestionnaireResponse resource.
 
 Alternatively, you can use store hooks exposed by the renderer to dynamically retrieve the QuestionnaireResponse resource as it updates.
-For more information on store hooks or stores in general, refer to ...
+For more information on store hooks or stores in general, refer to the [Renderer Store Hooks](/docs/dev/storehooks) section.
 
 ```tsx live
 function YourBaseRendererWrapper() {

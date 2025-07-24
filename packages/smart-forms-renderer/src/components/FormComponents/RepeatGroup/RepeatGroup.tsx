@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,26 +15,27 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import type {
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
-  PropsWithQrRepeatGroupChangeHandler,
-  PropsWithShowMinimalViewAttribute
+  PropsWithParentStylesAttribute,
+  PropsWithQrRepeatGroupChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useInitialiseRepeatGroups from '../../../hooks/useInitialiseRepeatGroups';
-import { nanoid } from 'nanoid';
-import cloneDeep from 'lodash.clonedeep';
 import { useQuestionnaireStore } from '../../../stores';
-import useRepeatGroups from '../../../hooks/useRepeatGroups';
 import RepeatGroupView from './RepeatGroupView';
+import { generateNewRepeatId } from '../../../utils/repeatId';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
 interface RepeatGroupProps
   extends PropsWithQrRepeatGroupChangeHandler,
-    PropsWithShowMinimalViewAttribute,
+    PropsWithItemPathAttribute,
     PropsWithParentIsReadOnlyAttribute,
-    PropsWithParentIsRepeatGroupAttribute {
+    PropsWithParentIsRepeatGroupAttribute,
+    PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   qrItems: QuestionnaireResponseItem[];
   groupCardElevation: number;
@@ -50,19 +51,24 @@ function RepeatGroup(props: RepeatGroupProps) {
   const {
     qItem,
     qrItems,
+    itemPath,
     groupCardElevation,
-    showMinimalView,
     parentIsReadOnly,
-    onQrRepeatGroupChange
+    onQrRepeatGroupChange,
+    parentStyles
   } = props;
 
   const mutateRepeatEnableWhenItems = useQuestionnaireStore.use.mutateRepeatEnableWhenItems();
 
-  const initialRepeatGroups = useInitialiseRepeatGroups(qItem, qrItems);
+  const initialRepeatGroups = useInitialiseRepeatGroups(qItem.linkId, qrItems);
 
-  const [repeatGroups, setRepeatGroups] = useRepeatGroups(initialRepeatGroups);
+  const [repeatGroups, setRepeatGroups] = useState(initialRepeatGroups);
 
-  function handleAnswerChange(newQrItem: QuestionnaireResponseItem, index: number) {
+  function handleAnswerChange(
+    newQrItem: QuestionnaireResponseItem,
+    index: number,
+    targetItemPath?: ItemPath
+  ) {
     const updatedRepeatGroups = [...repeatGroups];
 
     if (newQrItem.item) {
@@ -74,15 +80,20 @@ function RepeatGroup(props: RepeatGroupProps) {
     }
 
     setRepeatGroups(updatedRepeatGroups);
-    onQrRepeatGroupChange({
-      linkId: qItem.linkId,
-      qrItems: updatedRepeatGroups.flatMap((singleGroup) =>
-        singleGroup.qrItem ? [cloneDeep(singleGroup.qrItem)] : []
-      )
-    });
+
+    // Include targetItemPath because an answer is changed
+    onQrRepeatGroupChange(
+      {
+        linkId: qItem.linkId,
+        qrItems: updatedRepeatGroups.flatMap((singleGroup) =>
+          singleGroup.qrItem ? [structuredClone(singleGroup.qrItem)] : []
+        )
+      },
+      targetItemPath
+    );
   }
 
-  function handleDeleteItem(index: number) {
+  function handleRemoveItem(index: number) {
     const updatedRepeatGroups = [...repeatGroups];
     updatedRepeatGroups.splice(index, 1);
 
@@ -90,10 +101,12 @@ function RepeatGroup(props: RepeatGroupProps) {
     mutateRepeatEnableWhenItems(qItem.linkId, newLastItemIndex, 'remove');
 
     setRepeatGroups(updatedRepeatGroups);
+
+    // Don't need to include targetItemPath because we are deleting the whole QRItem, only include targetItemPath if an answer is changed
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
       qrItems: updatedRepeatGroups.flatMap((singleGroup) =>
-        singleGroup.qrItem ? [cloneDeep(singleGroup.qrItem)] : []
+        singleGroup.qrItem ? [structuredClone(singleGroup.qrItem)] : []
       )
     });
   }
@@ -104,7 +117,7 @@ function RepeatGroup(props: RepeatGroupProps) {
     setRepeatGroups([
       ...repeatGroups,
       {
-        nanoId: nanoid(),
+        id: generateNewRepeatId(qItem.linkId),
         qrItem: null
       }
     ]);
@@ -114,12 +127,13 @@ function RepeatGroup(props: RepeatGroupProps) {
     <RepeatGroupView
       qItem={qItem}
       repeatGroups={repeatGroups}
+      itemPath={itemPath}
       groupCardElevation={groupCardElevation}
-      showMinimalView={showMinimalView}
       parentIsReadOnly={parentIsReadOnly}
       onAnswerChange={handleAnswerChange}
       onAddItem={handleAddItem}
-      onDeleteItem={handleDeleteItem}
+      onRemoveItem={handleRemoveItem}
+      parentStyles={parentStyles}
     />
   );
 }

@@ -27,7 +27,7 @@ Set the terminology server URL
 #### Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `newUrl` | `string` |
 
 #### Returns

@@ -1,5 +1,17 @@
+// Import self-host typography Inter font
+import '@fontsource/inter';
+
 // interface exports
-export type { Tab, Tabs, Variables, VariableXFhirQuery, LaunchContext } from './interfaces';
+export type {
+  Tab,
+  Tabs,
+  Variables,
+  VariableXFhirQuery,
+  LaunchContext,
+  CalculatedExpression,
+  QItemOverrideComponentProps,
+  SdcUiOverrideComponentProps
+} from './interfaces';
 
 // component exports
 export type { SmartFormsRendererProps } from './components';
@@ -7,11 +19,20 @@ export {
   SmartFormsRenderer,
   BaseRenderer,
   SingleItem,
+  GroupItem,
   RepeatItem,
   RepeatGroup,
   GroupTable,
   GridGroup,
-  parseFhirDateToDisplayDate
+  parseFhirDateToDisplayDate,
+  parseFhirDateTimeToDisplayDateTime,
+  ItemFieldGrid,
+  ItemLabel,
+  BooleanField,
+  DecimalField,
+  StringField,
+  ChoiceRadioSingle,
+  FullWidthFormComponentBox
 } from './components';
 
 // state management store exports
@@ -19,7 +40,9 @@ export type {
   QuestionnaireStoreType,
   QuestionnaireResponseStoreType,
   SmartConfigStoreType,
-  TerminologyServerStoreType
+  TerminologyServerStoreType,
+  RendererStyling,
+  RendererStylingStoreType
 } from './stores';
 export {
   questionnaireStore,
@@ -29,11 +52,27 @@ export {
   smartConfigStore,
   useSmartConfigStore,
   terminologyServerStore,
-  useTerminologyServerStore
+  useTerminologyServerStore,
+  rendererStylingStore,
+  useRendererStylingStore
 } from './stores';
 
 // hooks exports
-export { useHidden, useBuildForm, useRendererQueryClient } from './hooks';
+export type { UseResponsiveProps } from './hooks';
+export {
+  useHidden,
+  useReadOnly,
+  useBuildForm,
+  useRendererQueryClient,
+  useRenderingExtensions,
+  useValidationFeedback,
+  useValueSetCodings,
+  useStringCalculatedExpression,
+  useDisplayCqfAndCalculatedExpression,
+  useCodingCalculatedExpression,
+  objectIsCoding,
+  useResponsive
+} from './hooks';
 
 // utils exports
 export type { ItemToRepopulate } from './utils';
@@ -42,15 +81,42 @@ export {
   destroyForm,
   getResponse,
   removeEmptyAnswersFromResponse,
+  removeInternalIdsFromResponse,
+  createEmptyQrItem,
+  createEmptyQrGroup,
+  updateQrItemsInGroup,
+  mapQItemsIndex,
+  getQrItemsIndex,
   isSpecificItemControl,
+  getDecimalPrecision,
   isRepeatItemAndNotCheckbox,
+  parseDecimalStringToFloat,
+  parseDecimalStringWithPrecision,
+  isHiddenByEnableWhen,
   initialiseQuestionnaireResponse,
   generateItemsToRepopulate,
-  repopulateResponse
+  repopulateResponse,
+  extractObservationBased,
+  canBeObservationExtracted,
+  buildBundleFromObservationArray,
+  getQuestionnaireItem,
+  getSectionHeading
 } from './utils';
 
 // theme provider exports
-export { RendererThemeProvider } from './theme';
+export {
+  RendererThemeProvider,
+  rendererThemeComponentOverrides,
+  accordionOverride,
+  autocompleteOverride,
+  buttonOverride,
+  cardOverride,
+  inputOverride,
+  paperOverride,
+  speedDialOverride,
+  tableOverride,
+  rendererThemeOptions
+} from './theme';
 
 // wrapper exports - only for smartforms.csiro.au/standalone use
 export type { InitialiseFormWrapperProps } from './stories/storybookWrappers';

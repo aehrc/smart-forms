@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,20 +20,25 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import type {
   PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute
+  PropsWithIsTabledRequiredAttribute,
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { findInAnswerOptions } from '../../../utils/choice';
 import ChoiceSelectAnswerOptionFields from './ChoiceSelectAnswerOptionFields';
+import ItemLabel from '../ItemParts/ItemLabel';
 
 interface ChoiceSelectAnswerOptionViewProps
   extends PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute {
+    PropsWithIsTabledRequiredAttribute,
+    PropsWithRenderingExtensionsAttribute {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
   valueChoice: string | null;
+  feedback: string;
   readOnly: boolean;
-  calcExpUpdated: boolean;
+  expressionUpdated: boolean;
+  answerOptionsToggleExpressionsMap: Map<string, boolean>;
   onSelectChange: (newValue: QuestionnaireItemAnswerOption | null) => void;
   onFocusLinkId: () => void;
 }
@@ -43,10 +48,13 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
     qItem,
     options,
     valueChoice,
+    feedback,
     isRepeated,
     isTabled,
+    renderingExtensions,
     readOnly,
-    calcExpUpdated,
+    expressionUpdated,
+    answerOptionsToggleExpressionsMap,
     onFocusLinkId,
     onSelectChange
   } = props;
@@ -62,9 +70,12 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
         qItem={qItem}
         options={options}
         valueSelect={valueSelect}
+        feedback={feedback}
         readOnly={readOnly}
-        calcExpUpdated={calcExpUpdated}
+        expressionUpdated={expressionUpdated}
         isTabled={isTabled}
+        renderingExtensions={renderingExtensions}
+        answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
         onSelectChange={onSelectChange}
       />
     );
@@ -75,17 +86,25 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
       data-test="q-item-choice-select-answer-option-box"
       data-linkid={qItem.linkId}
       onClick={onFocusLinkId}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <ChoiceSelectAnswerOptionFields
-          qItem={qItem}
-          options={options}
-          valueSelect={valueSelect}
-          readOnly={readOnly}
-          calcExpUpdated={calcExpUpdated}
-          isTabled={isTabled}
-          onSelectChange={onSelectChange}
-        />
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <ChoiceSelectAnswerOptionFields
+            qItem={qItem}
+            options={options}
+            valueSelect={valueSelect}
+            feedback={feedback}
+            readOnly={readOnly}
+            expressionUpdated={expressionUpdated}
+            isTabled={isTabled}
+            renderingExtensions={renderingExtensions}
+            answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+            onSelectChange={onSelectChange}
+          />
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

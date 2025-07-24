@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,16 +21,17 @@ import {
   getTextDisplayInstructions,
   getTextDisplayPrompt,
   getTextDisplayUnit
-} from '../utils/itemControl';
+} from '../utils/extensions';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
+import type { JSX } from 'react';
 import { useMemo } from 'react';
 
-interface RenderingExtensions {
+export interface RenderingExtensions {
   displayUnit: string;
   displayPrompt: string;
   displayInstructions: string;
-  displayFlyover: string;
+  displayFlyover: string | JSX.Element | JSX.Element[];
   readOnly: boolean;
   entryFormat: string;
   required: boolean;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import type { Questionnaire } from 'fhir/r4';
 import { InputAdornment, TextField } from '@mui/material';
 import { createResponseSearchOption } from '../../../../utils/dashboard.ts';
-import { useDebounce } from 'usehooks-ts';
+import { useDebounceValue } from 'usehooks-ts';
 import { useTheme } from '@mui/material/styles';
 import { getResponseSearchStyles } from '../../QuestionnairePage/TableComponents/QuestionnaireListToolbar.styles.ts';
 import Iconify from '../../../../../../components/Iconify/Iconify.tsx';
@@ -36,9 +36,9 @@ function ResponseListToolbarSearch(props: ResponseListToolbarSearchProps) {
   const { searchedQuestionnaire, onChangeQuestionnaire } = props;
 
   const [input, setInput] = useState('');
-  const debouncedInput = useDebounce(input, 300);
+  const [debouncedInput] = useDebounceValue(input, 300);
 
-  const { questionnaires, isFetching } = useFetchQuestionnaires(input, debouncedInput, 2);
+  const { questionnaires, isFetching } = useFetchQuestionnaires(input, debouncedInput, false, 2);
 
   const theme = useTheme();
 

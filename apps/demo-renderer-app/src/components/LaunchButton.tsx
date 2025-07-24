@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,8 +16,8 @@
  */
 
 import { oauth2 } from 'fhirclient';
-import '../styles.css';
 import { CLIENT_ID, ISS, SCOPES } from '../utils/apiConstants.ts';
+import { Button } from '@/components/ui/button.tsx';
 
 function LaunchButton() {
   function launch() {
@@ -34,9 +34,9 @@ function LaunchButton() {
 
   return (
     <div>
-      <button className="increase-button-hitbox" onClick={() => launch()}>
+      <Button variant="outline" onClick={() => launch()}>
         Get new bearer token from demo server {ISS}
-      </button>
+      </Button>
     </div>
   );
 }

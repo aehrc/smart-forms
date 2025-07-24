@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,7 @@
 
 import { useEffect, useReducer } from 'react';
 import { oauth2 } from 'fhirclient';
+import type { tokenResponseCustomised } from '../utils/launch.ts';
 import {
   getQuestionnaireReferences,
   readCommonLaunchContexts,
@@ -31,13 +32,9 @@ import { StyledRoot } from './Authorisation.styles.tsx';
 import type { AuthActions, AuthState } from '../types/authorisation.interface.ts';
 import RenderAuthStatus from './RenderAuthStatus.tsx';
 import { assembleIfRequired } from '../../../utils/assemble.ts';
-import { useQuestionnaireStore, useTerminologyServerStore } from '@aehrc/smart-forms-renderer';
 import useAuthRedirectHook from '../hooks/useAuthRedirectHook.ts';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
-import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
-import { useExtractOperationStore } from '../../playground/stores/extractOperationStore.ts';
-import { fetchTargetStructureMap } from '../../playground/api/extract.ts';
 
 function authReducer(state: AuthState, action: AuthActions): AuthState {
   switch (action.type) {
@@ -73,15 +70,8 @@ const initialAuthState: AuthState = {
 function Authorisation() {
   const [authState, dispatch] = useReducer(authReducer, initialAuthState);
 
-  const { setSmartClient, setCommonLaunchContexts, setQuestionnaireLaunchContext } =
+  const { setSmartClient, setCommonLaunchContexts, setQuestionnaireLaunchContext, setFhirContext } =
     useSmartClient();
-
-  const buildSourceQuestionnaire = useQuestionnaireStore.use.buildSourceQuestionnaire();
-
-  const setTerminologyServerUrl = useTerminologyServerStore.use.setUrl();
-  const resetTerminologyServerUrl = useTerminologyServerStore.use.resetUrl();
-
-  const setTargetStructureMap = useExtractOperationStore.use.setTargetStructureMap();
 
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -96,6 +86,8 @@ function Authorisation() {
           sessionStorage.setItem('authorised', 'true');
           dispatch({ type: 'UPDATE_HAS_CLIENT', payload: true });
 
+          // Read common launch contexts e.g. patient, user, encounter
+          // via built-in FHIR client methods e.g. client.patient.read()
           readCommonLaunchContexts(client).then(({ patient, user, encounter }) => {
             dispatch({ type: 'UPDATE_HAS_PATIENT', payload: !!patient });
             dispatch({ type: 'UPDATE_HAS_USER', payload: !!user });
@@ -107,14 +99,22 @@ function Authorisation() {
                 'Fail to fetch patient or user launch context. Try launching the app again',
                 {
                   variant: 'error',
-                  action: <CloseSnackbar />
+                  action: <CloseSnackbar variant="error" />
                 }
               );
             }
           });
 
-          // Set questionnaire launch context if available
-          const questionnaireReferences = getQuestionnaireReferences(client);
+          // Read FhirContext from the token response
+          const fhirContext =
+            (client.state.tokenResponse as tokenResponseCustomised)?.fhirContext ?? null;
+          if (fhirContext) {
+            setFhirContext(fhirContext);
+          }
+
+          // Get Questionnaire context from fhirContext array
+          // the set questionnaire launch context if available
+          const questionnaireReferences = getQuestionnaireReferences(fhirContext ?? []);
           if (questionnaireReferences.length > 0) {
             readQuestionnaireContext(client, questionnaireReferences)
               .then((response) => {
@@ -138,31 +138,12 @@ function Authorisation() {
                       postQuestionnaireToSMARTHealthIT(client, questionnaire);
                     }
 
-                    // Set terminology server url
-                    if (TERMINOLOGY_SERVER_URL) {
-                      setTerminologyServerUrl(TERMINOLOGY_SERVER_URL);
-                    } else {
-                      resetTerminologyServerUrl();
-                    }
-
-                    // Set target StructureMap for $extract operation
-                    const targetStructureMap = await fetchTargetStructureMap(questionnaire);
-                    if (targetStructureMap) {
-                      setTargetStructureMap(targetStructureMap);
-                    }
-
-                    await buildSourceQuestionnaire(
-                      questionnaire,
-                      undefined,
-                      undefined,
-                      TERMINOLOGY_SERVER_URL
-                    );
                     setQuestionnaireLaunchContext(questionnaire);
                     dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: true });
                   } else {
                     enqueueSnackbar(
                       'An error occurred while fetching initially specified questionnaire',
-                      { variant: 'error', action: <CloseSnackbar /> }
+                      { variant: 'error', action: <CloseSnackbar variant="error" /> }
                     );
                     dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: false });
                   }
@@ -171,7 +152,7 @@ function Authorisation() {
               .catch(() => {
                 enqueueSnackbar('An error occurred while fetching Questionnaire launch context', {
                   variant: 'error',
-                  action: <CloseSnackbar />
+                  action: <CloseSnackbar variant="error" />
                 });
                 dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: false });
               });
@@ -204,7 +185,7 @@ function Authorisation() {
             dispatch({ type: 'FAIL_AUTH', payload: error.message });
             enqueueSnackbar('An error occurred while launching the app', {
               variant: 'error',
-              action: <CloseSnackbar />
+              action: <CloseSnackbar variant="error" />
             });
           }
         });

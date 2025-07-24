@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,15 +17,14 @@
 
 import { useEffect, useState } from 'react';
 import { Fade, Typography } from '@mui/material';
-import useResponsive from '../../../../hooks/useResponsive.ts';
-import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
+import { useQuestionnaireResponseStore, useResponsive } from '@aehrc/smart-forms-renderer';
 
 function UpdatingIndicator() {
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
 
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const isDesktop = useResponsive('up', 'lg');
+  const isLgUp = useResponsive({ query: 'up', start: 'lg' });
 
   useEffect(() => {
     setIsUpdating(true);
@@ -41,8 +40,8 @@ function UpdatingIndicator() {
       <Typography
         variant="subtitle2"
         color="text.secondary"
-        fontSize={isDesktop ? 12 : 9}
-        sx={{ mx: isDesktop ? 2 : 0.5 }}
+        fontSize={isLgUp ? 12 : 9}
+        sx={{ mx: isLgUp ? 2 : 0.5 }}
         data-test="updating-indicator">
         Updating...
       </Typography>

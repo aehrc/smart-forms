@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,46 +24,81 @@ import type {
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
+  PropsWithIsTabledRequiredAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import OpenChoiceSelectAnswerOptionField from './OpenChoiceSelectAnswerOptionField';
 import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import ItemLabel from '../ItemParts/ItemLabel';
+import type { AutocompleteChangeReason } from '@mui/material';
 
 interface OpenChoiceSelectAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithIsTabledRequiredAttribute,
+    PropsWithRenderingExtensionsAttribute,
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
 
 function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
+  const {
+    qItem,
+    qrItem,
+    isRepeated,
+    isTabled,
+    renderingExtensions,
+    parentIsReadOnly,
+    feedbackFromParent,
+    onQrItemChange
+  } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
+  // Perform validation checks
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
+
   // Init input value
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   const answerOptions = qItem.answerOption;
   if (!answerOptions) return null;
 
   const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem, answerKey);
-  let valueSelect: QuestionnaireItemAnswerOption | null = null;
+  let valueSelect: QuestionnaireItemAnswerOption | string | null = null;
   if (qrOpenChoice.answer) {
     valueSelect = qrOpenChoice.answer[0] ?? null;
   }
 
+  // TODO Process calculated expressions
+  // This requires its own hook, because in the case of multi-select, we need to check if the value is already checked to prevent an infinite loop
+  // This will be done after the choice/open-choice refactoring
+
   // Event handlers
-  function handleChange(newValue: QuestionnaireItemAnswerOption | string | null) {
+  // Handler function which handles both input change and selection change
+  function handleValueChange(
+    newValue: QuestionnaireItemAnswerOption | string | null,
+    reason: AutocompleteChangeReason | string
+  ) {
+    //if the reason is reset, then we don't change the value, otherwise you will end up with looped setState calls
+    if (reason === 'reset') {
+      // console.log("Reason: ", reason)
+      return;
+    }
     if (newValue) {
+      //If the value is a string (i.e from freeSolo input)
       if (typeof newValue === 'string') {
         onQrItemChange({
           ...qrOpenChoice,
@@ -71,7 +106,7 @@ function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionIte
         });
         return;
       }
-
+      //If the value is not a string, then it is a coding.
       const option = newValue;
       if (option['valueCoding']) {
         onQrItemChange({
@@ -100,9 +135,11 @@ function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionIte
         qItem={qItem}
         options={answerOptions}
         valueSelect={valueSelect}
+        feedback={feedback}
         readOnly={readOnly}
         isTabled={isTabled}
-        onChange={handleChange}
+        renderingExtensions={renderingExtensions}
+        onValueChange={handleValueChange}
       />
     );
   }
@@ -112,16 +149,23 @@ function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionIte
       data-test="q-item-open-choice-select-answer-option-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <OpenChoiceSelectAnswerOptionField
-          qItem={qItem}
-          options={answerOptions}
-          valueSelect={valueSelect}
-          readOnly={readOnly}
-          isTabled={isTabled}
-          onChange={handleChange}
-        />
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <OpenChoiceSelectAnswerOptionField
+            qItem={qItem}
+            options={answerOptions}
+            valueSelect={valueSelect}
+            feedback={feedback}
+            readOnly={readOnly}
+            isTabled={isTabled}
+            renderingExtensions={renderingExtensions}
+            onValueChange={handleValueChange}
+          />
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

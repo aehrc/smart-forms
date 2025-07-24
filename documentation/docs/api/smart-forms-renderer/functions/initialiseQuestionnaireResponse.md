@@ -8,7 +8,7 @@ optionally takes in an existing questionnaireResponse to be initialised
 ## Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `questionnaire` | `Questionnaire` |
 | `questionnaireResponse`? | `QuestionnaireResponse` |
 

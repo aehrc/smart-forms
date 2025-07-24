@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,6 @@ import { constructName } from '../features/smartAppLaunch/utils/launchContext.ts
 import dayjs from 'dayjs';
 import { qrToHTML } from '../features/preview/utils/preview.ts';
 import { fetchQuestionnaireById } from './client.ts';
-import cloneDeep from 'lodash.clonedeep';
 import { HEADERS } from './headers.ts';
 import { removeEmptyAnswersFromResponse } from '@aehrc/smart-forms-renderer';
 
@@ -57,7 +56,7 @@ export async function saveProgress(
 ) {
   const responseToSave = removeEmptyAnswersFromResponse(
     questionnaire,
-    cloneDeep(questionnaireResponse)
+    structuredClone(questionnaireResponse)
   );
 
   responseToSave.status = saveStatus;
@@ -90,7 +89,7 @@ export async function saveQuestionnaireResponse(
 ) {
   let requestUrl = 'QuestionnaireResponse';
   let method = 'POST';
-  let questionnaireResponseToSave: QuestionnaireResponse = cloneDeep(questionnaireResponse);
+  let questionnaireResponseToSave: QuestionnaireResponse = structuredClone(questionnaireResponse);
 
   questionnaireResponseToSave = {
     ...questionnaireResponseToSave,

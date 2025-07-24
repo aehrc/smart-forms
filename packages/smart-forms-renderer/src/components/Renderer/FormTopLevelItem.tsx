@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,12 +18,11 @@
 import React from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import FormBodyTabbed from './FormBodyTabbed';
-import FormBodyPage from './FormBodyPage';
 import { containsTabs, isTabContainer } from '../../utils/tabs';
-import { containsPages, isPage } from '../../utils/page';
 import GroupItem from '../FormComponents/GroupItem/GroupItem';
 import SingleItem from '../FormComponents/SingleItem/SingleItem';
 import type {
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithQrRepeatGroupChangeHandler
@@ -34,22 +33,31 @@ import useHidden from '../../hooks/useHidden';
 import GroupItemSwitcher from '../FormComponents/GroupItem/GroupItemSwitcher';
 import useReadOnly from '../../hooks/useReadOnly';
 import Box from '@mui/material/Box';
-import { isSpecificItemControl } from '../../utils';
+import { isRepeatItemAndNotCheckbox, isSpecificItemControl } from '../../utils';
 import GroupTable from '../FormComponents/Tables/GroupTable';
+import RepeatItem from '../FormComponents/RepeatItem/RepeatItem';
+import GridGroup from '../FormComponents/GridGroup/GridGroup';
+import { useRendererStylingStore } from '../../stores';
+import { isPage } from '../../utils/page';
+import FormBodyPageContainer from './FormBodyPageContainer';
 
 interface FormTopLevelItemProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithQrRepeatGroupChangeHandler,
     PropsWithParentIsReadOnlyAttribute {
   topLevelQItem: QuestionnaireItem;
   topLevelQRItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[] | null;
+  wholeFormIsPaginated: boolean;
 }
 
 function FormTopLevelItem(props: FormTopLevelItemProps) {
   const {
     topLevelQItem,
     topLevelQRItemOrItems,
+    itemPath,
     parentIsReadOnly,
+    wholeFormIsPaginated,
     onQrItemChange,
     onQrRepeatGroupChange
   } = props;
@@ -57,10 +65,13 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
   const itemIsTabContainer = isTabContainer(topLevelQItem);
   const itemContainsTabs = containsTabs(topLevelQItem);
 
+  // itemIsPageContainer is there for backwards compatibility only - see https://github.com/aehrc/smart-forms/issues/1041
+  // The proper way to do it ATM is to make every single top-level item a page
+  // Unfortunately, "header" and "footer" itemControl is not supported.
   const itemIsPageContainer = isPage(topLevelQItem);
-  const itemContainsPages = containsPages(topLevelQItem);
 
-  const isTablet = useResponsive('up', 'md');
+  const showTabbedFormAt = useRendererStylingStore.use.showTabbedFormAt();
+  const isTabbedForm = useResponsive(showTabbedFormAt);
 
   const itemIsGroup = topLevelQItem.type === 'group';
 
@@ -77,6 +88,7 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
       <GroupItemSwitcher
         qItem={topLevelQItem}
         qrItemOrItems={topLevelQRItemOrItems}
+        itemPath={itemPath}
         groupCardElevation={1}
         parentIsReadOnly={readOnly}
         onQrItemChange={onQrItemChange}
@@ -90,12 +102,13 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
 
   // If form is tabbed, it is rendered as a tabbed form
   if (itemContainsTabs || itemIsTabContainer) {
-    if (isTablet) {
+    if (isTabbedForm) {
       return (
         <FormBodyTabbed
           key={topLevelQItem.linkId}
           topLevelQItem={topLevelQItem}
           topLevelQRItem={topLevelQRItem}
+          itemPath={itemPath}
           parentIsReadOnly={readOnly}
           onQrItemChange={onQrItemChange}
         />
@@ -107,18 +120,27 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
         key={topLevelQItem.linkId}
         topLevelQItem={topLevelQItem}
         topLevelQRItem={topLevelQRItem}
+        itemPath={itemPath}
         parentIsReadOnly={readOnly}
         onQrItemChange={onQrItemChange}
       />
     );
   }
 
-  if (itemContainsPages || itemIsPageContainer) {
+  /* Using "page" item as a page-container - only preserved for backwards compatibility (not complaint with https://hl7.org/fhir/extensions/CodeSystem-questionnaire-item-control.html#questionnaire-item-control-page)
+   * - The first "page" item in the questionnaire will be considered as a page-container, and all its children will be considered as pages
+   * - All other pages will be ignored by the renderer
+   * - You can have non-page items in the same level as the page-container to be used as faux headers or footers
+   * - Ensure that only group items are in the page-container
+   * Note: This will only be used if wholeFormIsPaginated=false
+   */
+  if (!wholeFormIsPaginated && itemIsPageContainer) {
     return (
-      <FormBodyPage
+      <FormBodyPageContainer
         key={topLevelQItem.linkId}
         topLevelQItem={topLevelQItem}
         topLevelQRItem={topLevelQRItem}
+        itemPath={itemPath}
         parentIsReadOnly={readOnly}
         onQrItemChange={onQrItemChange}
       />
@@ -127,6 +149,21 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
 
   // If form is untabbed, it is rendered as a regular group
   if (itemIsGroup) {
+    // Item is 'grid'
+    const itemIsGrid = isSpecificItemControl(topLevelQItem, 'grid');
+    if (itemIsGrid) {
+      return (
+        <GridGroup
+          qItem={topLevelQItem}
+          qrItem={topLevelQRItem}
+          itemPath={itemPath}
+          groupCardElevation={1}
+          parentIsReadOnly={parentIsReadOnly}
+          onQrItemChange={onQrItemChange}
+        />
+      );
+    }
+
     // GroupTable "gtable" can be rendered with either repeats:true or false
     if (isSpecificItemControl(topLevelQItem, 'gtable')) {
       return (
@@ -134,6 +171,7 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
           key={topLevelQItem.linkId}
           qItem={topLevelQItem}
           qrItems={topLevelQRItem ? [topLevelQRItem] : []}
+          itemPath={itemPath}
           groupCardElevation={1}
           isRepeated={false}
           parentIsReadOnly={parentIsReadOnly}
@@ -147,6 +185,7 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
         key={topLevelQItem.linkId}
         qItem={topLevelQItem}
         qrItem={topLevelQRItem}
+        itemPath={itemPath}
         groupCardElevation={1}
         isRepeated={false}
         parentIsReadOnly={readOnly}
@@ -156,12 +195,30 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
   }
 
   // Otherwise, it is rendered as a non-group item
+  const itemRepeatsAndIsNotCheckbox = isRepeatItemAndNotCheckbox(topLevelQItem);
+  if (itemRepeatsAndIsNotCheckbox) {
+    return (
+      <Box mt={1}>
+        <RepeatItem
+          key={topLevelQItem.linkId}
+          qItem={topLevelQItem}
+          qrItem={topLevelQRItem}
+          itemPath={itemPath}
+          groupCardElevation={1}
+          parentIsReadOnly={readOnly}
+          onQrItemChange={onQrItemChange}
+        />
+      </Box>
+    );
+  }
+
   return (
     <Box mt={1}>
       <SingleItem
         key={topLevelQItem.linkId}
         qItem={topLevelQItem}
         qrItem={topLevelQRItem}
+        itemPath={itemPath}
         isRepeated={false}
         isTabled={false}
         groupCardElevation={1}

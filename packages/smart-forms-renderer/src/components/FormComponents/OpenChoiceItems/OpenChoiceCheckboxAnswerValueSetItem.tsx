@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,16 +18,18 @@
 import React, { useCallback, useMemo } from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
-import { getOpenLabelText } from '../../../utils/itemControl';
+import { getOpenLabelText } from '../../../utils/extensions';
 import { updateOpenLabelAnswer } from '../../../utils/openChoice';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import debounce from 'lodash.debounce';
-import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
+  PropsWithItemPathAttribute,
+  PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
-  PropsWithShowMinimalViewAttribute
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
@@ -38,12 +40,18 @@ import { useQuestionnaireStore } from '../../../stores';
 import useOpenLabel from '../../../hooks/useOpenLabel';
 import { convertCodingsToAnswerOptions, updateChoiceCheckboxAnswers } from '../../../utils/choice';
 import useValueSetCodings from '../../../hooks/useValueSetCodings';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import ItemLabel from '../ItemParts/ItemLabel';
+import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 
 interface OpenChoiceCheckboxAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
-    PropsWithShowMinimalViewAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithRenderingExtensionsAttribute,
+    PropsWithFeedbackFromParentAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
@@ -53,24 +61,30 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: OpenChoiceCheckboxAnswerVal
     qItem,
     qrItem,
     isRepeated,
-    showMinimalView = false,
+    renderingExtensions,
     parentIsReadOnly,
+    feedbackFromParent,
+    isTabled,
     onQrItemChange
   } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   const qrOpenChoiceCheckbox = qrItem ?? createEmptyQrItem(qItem, answerKey);
   const answers = qrOpenChoiceCheckbox.answer ?? [];
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayInstructions } = useRenderingExtensions(qItem);
+
+  // Perform validation checks
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
+
+  const { displayInstructions } = renderingExtensions;
   const openLabelText = getOpenLabelText(qItem);
 
   // Get codings/options from valueSet
-  const { codings, terminologyError } = useValueSetCodings(qItem);
+  const { codings, terminologyError, dynamicCodingsUpdated } = useValueSetCodings(qItem);
 
   const options = useMemo(() => convertCodingsToAnswerOptions(codings), [codings]);
 
@@ -78,6 +92,20 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: OpenChoiceCheckboxAnswerVal
     options,
     answers
   );
+
+  // TODO Process calculated expressions
+  // This requires its own hook, because in the case of multi-select, we need to check if the value is already checked to prevent an infinite loop
+  // This will be done after the choice/open-choice refactoring
+
+  // Process answerOptionsToggleExpressions
+  const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
+    useAnswerOptionsToggleExpressions(qItem.linkId);
+
+  // Clear open label if answerOptionsToggleExpressions are updated AND if openLabelChecked is true
+  // Note: This adjusts the state during rendering https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
+  if (openLabelChecked && answerOptionsToggleExpUpdated) {
+    setOpenLabelChecked(false);
+  }
 
   // Event handlers
 
@@ -143,7 +171,12 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: OpenChoiceCheckboxAnswerVal
     [handleOpenLabelChange]
   ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
 
-  if (showMinimalView) {
+  function handleClear() {
+    onQrItemChange(createEmptyQrItem(qItem, answerKey));
+    setOpenLabelChecked(false);
+  }
+
+  if (isTabled) {
     return (
       <>
         <OpenChoiceCheckboxAnswerValueSetFields
@@ -153,37 +186,52 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: OpenChoiceCheckboxAnswerVal
           openLabelText={openLabelText}
           openLabelValue={openLabelValue}
           openLabelChecked={openLabelChecked}
+          feedback={feedback}
           readOnly={readOnly}
+          expressionUpdated={dynamicCodingsUpdated || answerOptionsToggleExpUpdated}
+          answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
           terminologyError={terminologyError}
+          isTabled={isTabled}
           onOptionChange={handleOptionChange}
           onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
           onOpenLabelInputChange={handleOpenLabelInputChange}
+          onClear={handleClear}
         />
-        <DisplayInstructions displayInstructions={displayInstructions} readOnly={readOnly} />
+        <DisplayInstructions readOnly={readOnly}>{displayInstructions}</DisplayInstructions>
       </>
     );
   }
 
   return (
     <FullWidthFormComponentBox
-      data-test="q-item-open-choice-checkbox-answer-option-box"
+      data-test="q-item-open-choice-checkbox-answer-value-set-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <OpenChoiceCheckboxAnswerValueSetFields
-          qItem={qItem}
-          options={options}
-          answers={answers}
-          openLabelText={openLabelText}
-          openLabelValue={openLabelValue}
-          openLabelChecked={openLabelChecked}
-          readOnly={readOnly}
-          terminologyError={terminologyError}
-          onOptionChange={handleOptionChange}
-          onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
-          onOpenLabelInputChange={handleOpenLabelInputChange}
-        />
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <OpenChoiceCheckboxAnswerValueSetFields
+            qItem={qItem}
+            options={options}
+            answers={answers}
+            openLabelText={openLabelText}
+            openLabelValue={openLabelValue}
+            openLabelChecked={openLabelChecked}
+            feedback={feedback}
+            readOnly={readOnly}
+            expressionUpdated={dynamicCodingsUpdated || answerOptionsToggleExpUpdated}
+            answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+            terminologyError={terminologyError}
+            isTabled={isTabled}
+            onOptionChange={handleOptionChange}
+            onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
+            onOpenLabelInputChange={handleOpenLabelInputChange}
+            onClear={handleClear}
+          />
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

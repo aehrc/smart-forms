@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,10 +22,13 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import useValueSetCodings from '../../../hooks/useValueSetCodings';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
+  PropsWithIsTabledRequiredAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import ChoiceSelectAnswerValueSetFields from './ChoiceSelectAnswerValueSetFields';
 import useReadOnly from '../../../hooks/useReadOnly';
@@ -33,25 +36,39 @@ import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
 import useCodingCalculatedExpression from '../../../hooks/useCodingCalculatedExpression';
 import { convertCodingsToAnswerOptions, findInAnswerOptions } from '../../../utils/choice';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import ItemLabel from '../ItemParts/ItemLabel';
+import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 
 interface ChoiceSelectAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithIsTabledRequiredAttribute,
+    PropsWithRenderingExtensionsAttribute,
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
 
 function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemProps) {
-  const { qItem, qrItem, isRepeated, isTabled, parentIsReadOnly, onQrItemChange } = props;
+  const {
+    qItem,
+    qrItem,
+    itemPath,
+    isRepeated,
+    isTabled,
+    renderingExtensions,
+    parentIsReadOnly,
+    feedbackFromParent,
+    onQrItemChange
+  } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
-
   // Init input value
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   const qrChoiceSelect = qrItem ?? createEmptyQrItem(qItem, answerKey);
 
   let valueCoding: Coding | null = null;
@@ -59,8 +76,13 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
     valueCoding = qrChoiceSelect.answer[0].valueCoding ?? null;
   }
 
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+
+  // Perform validation checks
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
+
   // Get codings/options from valueSet
-  const { codings, terminologyError } = useValueSetCodings(qItem);
+  const { codings, terminologyError, dynamicCodingsUpdated } = useValueSetCodings(qItem);
 
   valueCoding = useMemo(() => {
     const updatedValueCoding = codings.find(
@@ -88,21 +110,26 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
   // Process calculated expressions
   const { calcExpUpdated } = useCodingCalculatedExpression({
     qItem: qItem,
-    valueInString: valueCoding?.code ?? '',
+    valueInString: valueCoding?.code ?? valueCoding?.display ?? '',
     onChangeByCalcExpressionString: (newValueString) => {
       if (codings.length > 0) {
         const qrAnswer = findInAnswerOptions(answerOptions, newValueString);
         onQrItemChange(
           qrAnswer
             ? { ...createEmptyQrItem(qItem, answerKey), answer: [{ ...qrAnswer, id: answerKey }] }
-            : createEmptyQrItem(qItem, answerKey)
+            : createEmptyQrItem(qItem, answerKey),
+          itemPath
         );
       }
     },
     onChangeByCalcExpressionNull: () => {
-      onQrItemChange(createEmptyQrItem(qItem, answerKey));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
     }
   });
+
+  // Process answerOptionsToggleExpressions
+  const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
+    useAnswerOptionsToggleExpressions(qItem.linkId);
 
   // Event handlers
   function handleChange(newValue: Coding | null) {
@@ -123,9 +150,12 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
         codings={codings}
         valueCoding={valueCoding}
         terminologyError={terminologyError}
+        feedback={feedback}
         readOnly={readOnly}
-        calcExpUpdated={calcExpUpdated}
+        expressionUpdated={calcExpUpdated || dynamicCodingsUpdated || answerOptionsToggleExpUpdated}
         isTabled={isTabled}
+        renderingExtensions={renderingExtensions}
+        answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
         onSelectChange={handleChange}
       />
     );
@@ -135,18 +165,26 @@ function ChoiceSelectAnswerValueSetItem(props: ChoiceSelectAnswerValueSetItemPro
     <FullWidthFormComponentBox
       data-test="q-item-choice-select-answer-value-set-box"
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <ChoiceSelectAnswerValueSetFields
-          qItem={qItem}
-          codings={codings}
-          valueCoding={valueCoding}
-          terminologyError={terminologyError}
-          readOnly={readOnly}
-          calcExpUpdated={calcExpUpdated}
-          isTabled={isTabled}
-          onSelectChange={handleChange}
-        />
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <ChoiceSelectAnswerValueSetFields
+            qItem={qItem}
+            codings={codings}
+            valueCoding={valueCoding}
+            terminologyError={terminologyError}
+            feedback={feedback}
+            readOnly={readOnly}
+            expressionUpdated={calcExpUpdated || dynamicCodingsUpdated}
+            isTabled={isTabled}
+            renderingExtensions={renderingExtensions}
+            answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+            onSelectChange={handleChange}
+          />
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

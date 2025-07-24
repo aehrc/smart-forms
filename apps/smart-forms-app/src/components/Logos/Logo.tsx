@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,7 @@
 import { memo } from 'react';
 import { Box, Typography } from '@mui/material';
 import AppLogo from '../../data/images/logo.svg';
-import useResponsive from '../../hooks/useResponsive.ts';
+import { useResponsive } from '@aehrc/smart-forms-renderer';
 
 interface LogoProps {
   isNav?: boolean;
@@ -28,13 +28,20 @@ interface LogoProps {
 const Logo = memo(function Logo(props: LogoProps) {
   const { isNav, isRendererHeader } = props;
 
-  const isDesktop = useResponsive('up', 'lg');
+  const isLgUp = useResponsive({ query: 'up', start: 'lg' });
 
-  const showLogoNameOnHeader = isDesktop && !isRendererHeader;
+  const showLogoNameOnHeader = isLgUp && !isRendererHeader;
 
   return (
     <Box display="flex" alignItems="center" columnGap={1.5}>
-      <Box component="img" src={AppLogo} display="inline-flex" width={36} height={36} />
+      <Box
+        alt="Smart Forms Logo"
+        component="img"
+        src={AppLogo}
+        display="inline-flex"
+        width={36}
+        height={36}
+      />
       {showLogoNameOnHeader || isNav ? <Typography variant="h6">Smart Forms</Typography> : null}
     </Box>
   );

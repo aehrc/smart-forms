@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,27 +18,44 @@
 import React from 'react';
 import type { QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import CheckboxSingle from '../ItemParts/CheckboxSingle';
+import { isOptionDisabled } from '../../../utils/choice';
 
 interface CheckboxOptionListProps {
   options: QuestionnaireItemAnswerOption[];
   answers: QuestionnaireResponseItemAnswer[];
   readOnly: boolean;
+  fullWidth: boolean;
+  answerOptionsToggleExpressionsMap: Map<string, boolean>;
   onCheckedChange: (newValue: string) => void;
 }
 
 function CheckboxOptionList(props: CheckboxOptionListProps) {
-  const { options, answers, readOnly, onCheckedChange } = props;
+  const {
+    options,
+    answers,
+    readOnly,
+    fullWidth,
+    answerOptionsToggleExpressionsMap,
+    onCheckedChange
+  } = props;
 
   return (
     <>
       {options.map((option) => {
+        const optionDisabledViaToggleExpression = isOptionDisabled(
+          option,
+          answerOptionsToggleExpressionsMap
+        );
+
         if (option['valueCoding']) {
           return (
             <CheckboxSingle
-              key={option.valueCoding.code ?? ''}
-              value={option.valueCoding.code ?? ''}
+              key={option.valueCoding.code ?? option.valueCoding.display ?? ''}
+              value={option.valueCoding.code ?? option.valueCoding.display ?? ''}
               label={option.valueCoding.display ?? `${option.valueCoding.code}`}
               readOnly={readOnly}
+              disabledViaToggleExpression={optionDisabledViaToggleExpression}
+              fullWidth={fullWidth}
               isChecked={answers.some(
                 (answer) => JSON.stringify(answer) === JSON.stringify(option)
               )}
@@ -54,6 +71,8 @@ function CheckboxOptionList(props: CheckboxOptionListProps) {
               value={option.valueString}
               label={option.valueString}
               readOnly={readOnly}
+              disabledViaToggleExpression={optionDisabledViaToggleExpression}
+              fullWidth={fullWidth}
               isChecked={answers.some((answer) => answer.valueString === option.valueString)}
               onCheckedChange={onCheckedChange}
             />
@@ -67,6 +86,8 @@ function CheckboxOptionList(props: CheckboxOptionListProps) {
               value={option.valueInteger.toString()}
               label={option.valueInteger.toString()}
               readOnly={readOnly}
+              disabledViaToggleExpression={optionDisabledViaToggleExpression}
+              fullWidth={fullWidth}
               isChecked={answers.some((answer) => answer.valueInteger === option.valueInteger)}
               onCheckedChange={onCheckedChange}
             />

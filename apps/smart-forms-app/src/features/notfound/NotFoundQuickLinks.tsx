@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -75,14 +75,12 @@ function NotFoundQuickLinks() {
   return (
     <Grid container spacing={2}>
       {quickLinkCards.map((card) => (
-        <Grid key={card.link} item xs={12} sm={6} md={4}>
+        <Grid key={card.link} size={{ xs: 12, sm: 6, md: 4 }}>
           <Card sx={{ p: 3, pb: 2.5, height: '100%' }}>
             <Stack justifyContent="space-between" height="inherit">
               <Grid container spacing={1}>
-                <Grid item xs={2}>
-                  {card.icon}
-                </Grid>
-                <Grid item xs={10}>
+                <Grid size={{ xs: 2 }}>{card.icon}</Grid>
+                <Grid size={{ xs: 10 }}>
                   <Typography variant="h5" mb={1}>
                     {card.title}
                   </Typography>

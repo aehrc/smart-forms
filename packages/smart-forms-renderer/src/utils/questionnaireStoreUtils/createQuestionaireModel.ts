@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,13 +28,13 @@ import { extractContainedValueSets } from './extractContainedValueSets';
 import { extractOtherExtensions } from './extractOtherExtensions';
 import type { Variables } from '../../interfaces/variables.interface';
 import { resolveValueSets } from './resolveValueSets';
-import { addAdditionalVariables } from './addAdditionalVariables';
-import { getLinkIdTypeTuples } from '../qItem';
-import { addDisplayToAnswerOptions, addDisplayToProcessedCodings } from './addDisplayToCodings';
+import { getLinkIdPreferredTerminologyServerTuples, getLinkIdTypeTuples } from '../qItem';
+import { addDisplayToAnswerOptions, addDisplayToCacheCodings } from './addDisplayToCodings';
+import type { TargetConstraint } from '../../interfaces/targetConstraint.interface';
+import { extractTargetConstraints } from './extractTargetConstraint';
 
 export async function createQuestionnaireModel(
   questionnaire: Questionnaire,
-  additionalVariables: Record<string, object>,
   terminologyServerUrl: string
 ): Promise<QuestionnaireModel> {
   if (!questionnaire.item) {
@@ -42,26 +42,39 @@ export async function createQuestionnaireModel(
   }
 
   const itemTypes: Record<string, string> = Object.fromEntries(getLinkIdTypeTuples(questionnaire));
+  const itemPreferredTerminologyServers: Record<string, string> = Object.fromEntries(
+    getLinkIdPreferredTerminologyServerTuples(questionnaire)
+  );
   const tabs: Tabs = extractTabs(questionnaire);
   const pages: Pages = extractPages(questionnaire);
 
   const launchContexts: Record<string, LaunchContext> = extractLaunchContexts(questionnaire);
+  const targetConstraints: Record<string, TargetConstraint> =
+    extractTargetConstraints(questionnaire);
 
   let variables: Variables = extractQuestionnaireLevelVariables(questionnaire);
-  variables = addAdditionalVariables(variables, additionalVariables);
+
+  // TODO reminder to remove/have documentation when upgrading to 1.0.0 - 05/06/2025
+  // TODO additionalVariables is defined to be <"name", "extension"> previously, which provides no real value.
+  // TODO the definition of additionalVariables is now <"name", "value">, which allows it to be injected into the renderer's fhirPathContext.
+  // TODO as an example, populatedContext from a pre-pop module can now be inserted into the renderer for further use.
+  // variables = addAdditionalVariables(variables, additionalVariables);
 
   const extractContainedValueSetsResult = extractContainedValueSets(
     questionnaire,
     terminologyServerUrl
   );
   let valueSetPromises = extractContainedValueSetsResult.valueSetPromises;
-  let processedValueSetCodings = extractContainedValueSetsResult.processedValueSetCodings;
-  const processedValueSetUrls = extractContainedValueSetsResult.processedValueSetUrls;
+  let processedValueSets = extractContainedValueSetsResult.processedValueSets;
+  let cachedValueSetCodings = extractContainedValueSetsResult.cachedValueSetCodings;
 
-  const extractOtherExtensionsResult = extractOtherExtensions(
+  const extractOtherExtensionsResult = await extractOtherExtensions(
     questionnaire,
     variables,
     valueSetPromises,
+    processedValueSets,
+    cachedValueSetCodings,
+    itemPreferredTerminologyServers,
     terminologyServerUrl
   );
 
@@ -71,24 +84,27 @@ export async function createQuestionnaireModel(
     calculatedExpressions,
     initialExpressions,
     answerExpressions,
-    answerOptions
+    answerOptions,
+    answerOptionsToggleExpressions
   } = extractOtherExtensionsResult;
   variables = extractOtherExtensionsResult.variables;
   valueSetPromises = extractOtherExtensionsResult.valueSetPromises;
+  processedValueSets = extractOtherExtensionsResult.processedValueSets;
+  cachedValueSetCodings = extractOtherExtensionsResult.cachedValueSetCodings;
 
   const resolveValueSetsResult = await resolveValueSets(
     variables,
     valueSetPromises,
-    processedValueSetCodings,
+    cachedValueSetCodings,
     terminologyServerUrl
   );
 
   variables = resolveValueSetsResult.variables;
-  processedValueSetCodings = resolveValueSetsResult.processedValueSetCodings;
+  cachedValueSetCodings = resolveValueSetsResult.cachedValueSetCodings;
 
   // In processedCodings, add display values to codings lacking them
-  processedValueSetCodings = await addDisplayToProcessedCodings(
-    processedValueSetCodings,
+  cachedValueSetCodings = await addDisplayToCacheCodings(
+    cachedValueSetCodings,
     terminologyServerUrl
   );
 
@@ -100,37 +116,45 @@ export async function createQuestionnaireModel(
 
   return {
     itemTypes,
+    itemPreferredTerminologyServers,
     tabs,
     pages,
     variables,
     launchContexts,
+    targetConstraints,
     enableWhenItems,
     enableWhenExpressions,
     calculatedExpressions,
     initialExpressions,
     answerExpressions,
     answerOptions: completeAnswerOptions,
-    processedValueSetCodings,
-    processedValueSetUrls,
-    fhirPathContext: {}
+    answerOptionsToggleExpressions: answerOptionsToggleExpressions,
+    processedValueSets,
+    cachedValueSetCodings,
+    fhirPathContext: {},
+    fhirPathTerminologyCache: {}
   };
 }
 
 function createEmptyModel(): QuestionnaireModel {
   return {
     itemTypes: {},
+    itemPreferredTerminologyServers: {},
     tabs: {},
     pages: {},
     variables: { fhirPathVariables: {}, xFhirQueryVariables: {} },
     launchContexts: {},
+    targetConstraints: {},
     calculatedExpressions: {},
     initialExpressions: {},
     enableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} },
     answerExpressions: {},
     answerOptions: {},
+    answerOptionsToggleExpressions: {},
     enableWhenItems: { singleItems: {}, repeatItems: {} },
-    processedValueSetCodings: {},
-    processedValueSetUrls: {},
-    fhirPathContext: {}
+    processedValueSets: {},
+    cachedValueSetCodings: {},
+    fhirPathContext: {},
+    fhirPathTerminologyCache: {}
   };
 }

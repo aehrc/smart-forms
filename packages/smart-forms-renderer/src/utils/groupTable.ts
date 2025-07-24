@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,6 @@
  */
 
 import type { GroupTableRowModel } from '../interfaces/groupTable.interface';
-import cloneDeep from 'lodash.clonedeep';
 
 export function reorderRows(
   rows: GroupTableRowModel[],
@@ -32,6 +31,6 @@ export function reorderRows(
 
 export function getGroupTableItemsToUpdate(tableRows: GroupTableRowModel[], selectedIds: string[]) {
   return tableRows
-    .filter((row) => selectedIds.includes(row.nanoId))
-    .flatMap((singleRow) => (singleRow.qrItem ? [cloneDeep(singleRow.qrItem)] : []));
+    .filter((row) => selectedIds.includes(row.id))
+    .flatMap((singleRow) => (singleRow.qrItem ? [structuredClone(singleRow.qrItem)] : []));
 }

@@ -14,7 +14,7 @@ Additional key-value pair of SDC variables `Record<name, variable extension>` fo
 
 ### fhirClient?
 
-> `optional` **fhirClient**: `default`
+> `optional` **fhirClient**: `Client`
 
 FHIRClient object to perform further FHIR calls. At the moment it's only used in answerExpressions (optional)
 

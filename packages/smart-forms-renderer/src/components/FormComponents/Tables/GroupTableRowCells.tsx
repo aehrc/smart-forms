@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,24 +18,38 @@
 import React from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
-import SingleItem from '../SingleItem/SingleItem';
 import { getQrItemsIndex } from '../../../utils/mapItem';
-import { StandardTableCell } from './Table.styles';
 import type {
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
+import { extendItemPath } from '../../../utils/itemPath';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
+import { SingleItem } from '../SingleItem';
+import { StandardTableCell } from './Table.styles';
+import Box from '@mui/material/Box';
 
 interface GroupTableRowCellsProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
   qItemsIndexMap: Record<string, number>;
+  visibleItemLabels: string[];
 }
 
 function GroupTableRowCells(props: GroupTableRowCellsProps) {
-  const { qItem, qrItem, qItemsIndexMap, parentIsReadOnly, onQrItemChange } = props;
+  const {
+    qItem,
+    qrItem,
+    qItemsIndexMap,
+    visibleItemLabels,
+    itemPath,
+    parentIsReadOnly,
+    onQrItemChange
+  } = props;
 
   const rowItems = qItem.item;
   const row = qrItem && qrItem.item ? qrItem : createEmptyQrGroup(qItem);
@@ -45,10 +59,13 @@ function GroupTableRowCells(props: GroupTableRowCellsProps) {
     return null;
   }
 
-  function handleQrRowItemChange(newQrRowItem: QuestionnaireResponseItem) {
+  function handleQrRowItemChange(
+    newQrRowItem: QuestionnaireResponseItem,
+    targetItemPath?: ItemPath
+  ) {
     const qrRow: QuestionnaireResponseItem = { ...row };
     updateQrItemsInGroup(newQrRowItem, null, qrRow, qItemsIndexMap);
-    onQrItemChange(qrRow);
+    onQrItemChange(qrRow, targetItemPath);
   }
 
   const qrItemsByIndex = getQrItemsIndex(rowItems, rowQrItems, qItemsIndexMap);
@@ -58,23 +75,31 @@ function GroupTableRowCells(props: GroupTableRowCellsProps) {
       {rowItems.map((rowItem, index) => {
         const qrItem = qrItemsByIndex[index];
 
+        // Something went wrong here
         if (Array.isArray(qrItem)) {
           return null;
         }
 
+        // If the cell is not visible, skip rendering it
+        if (!rowItem.text || !visibleItemLabels.includes(rowItem.text)) {
+          return null;
+        }
+
         return (
-          <StandardTableCell key={index} numOfColumns={rowItems.length}>
-            <SingleItem
-              key={qItem.linkId}
-              qItem={rowItem}
-              qrItem={qrItem ?? null}
-              isRepeated={true}
-              isTabled={true}
-              groupCardElevation={1}
-              showMinimalView={true}
-              parentIsReadOnly={parentIsReadOnly}
-              onQrItemChange={handleQrRowItemChange}
-            />
+          <StandardTableCell key={index} numOfColumns={visibleItemLabels.length}>
+            <Box display="flex" alignItems="center" justifyContent="center">
+              <SingleItem
+                key={rowItem.linkId}
+                qItem={rowItem}
+                qrItem={qrItem ?? null}
+                itemPath={extendItemPath(itemPath, rowItem.linkId)}
+                isRepeated={true}
+                isTabled={true}
+                groupCardElevation={1}
+                parentIsReadOnly={parentIsReadOnly}
+                onQrItemChange={handleQrRowItemChange}
+              />
+            </Box>
           </StandardTableCell>
         );
       })}

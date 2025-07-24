@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,23 +18,15 @@
 import { useState } from 'react';
 import type { unstable_Blocker as Blocker } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle
-} from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText } from '@mui/material';
 import { saveQuestionnaireResponse } from '../../../../api/saveQr.ts';
-import cloneDeep from 'lodash.clonedeep';
-import { LoadingButton } from '@mui/lab';
 import {
   removeEmptyAnswersFromResponse,
   useQuestionnaireResponseStore,
   useQuestionnaireStore
 } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
+import StandardDialogTitle from '../../../../components/Dialog/StandardDialogTitle.tsx';
 
 export interface Props {
   blocker: Blocker;
@@ -78,7 +70,7 @@ function BlockerUnsavedFormDialog(props: Props) {
 
     setIsSaving(true);
 
-    let responseToSave = cloneDeep(updatableResponse);
+    let responseToSave = structuredClone(updatableResponse);
     responseToSave = removeEmptyAnswersFromResponse(sourceQuestionnaire, responseToSave);
 
     setIsSaving(true);
@@ -101,7 +93,7 @@ function BlockerUnsavedFormDialog(props: Props) {
 
   return (
     <Dialog open={open} onClose={closeDialog}>
-      <DialogTitle variant="h5">Unsaved changes</DialogTitle>
+      <StandardDialogTitle onCloseDialog={handleCancel}>Unsaved changes</StandardDialogTitle>
       <DialogContent>
         <DialogContentText>
           {'The form has unsaved changes. Are you sure you want to exit?'}
@@ -111,9 +103,9 @@ function BlockerUnsavedFormDialog(props: Props) {
         <Button onClick={handleCancel}>Cancel</Button>
         <Button onClick={handleProceed}>Proceed anyway</Button>
         {isLaunched ? (
-          <LoadingButton loading={isSaving} onClick={handleSave}>
+          <Button loading={isSaving} onClick={handleSave}>
             Save and proceed
-          </LoadingButton>
+          </Button>
         ) : null}
       </DialogActions>
     </Dialog>

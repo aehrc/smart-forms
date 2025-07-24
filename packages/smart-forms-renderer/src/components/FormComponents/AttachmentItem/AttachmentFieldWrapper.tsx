@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,27 +15,25 @@
  * limitations under the License.
  */
 
-// import { HTML5Backend } from 'react-dnd-html5-backend';
-//
-// <DndProvider backend={HTML5Backend}>
-
 import React from 'react';
 import AttachmentField from './AttachmentField';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import type {
   PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute
+  PropsWithIsTabledRequiredAttribute
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem } from 'fhir/r4';
 import type { AttachmentValues } from './AttachmentItem';
 import { useQuestionnaireStore } from '../../../stores';
+import ItemLabel from '../ItemParts/ItemLabel';
 
 interface AttachmentFieldWrapperProps
   extends PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute {
+    PropsWithIsTabledRequiredAttribute {
   qItem: QuestionnaireItem;
   attachmentValues: AttachmentValues;
+  feedback: string;
   readOnly: boolean;
   onUploadFile: (file: File | null) => void;
   onUrlChange: (url: string) => void;
@@ -46,6 +44,7 @@ function AttachmentFieldWrapper(props: AttachmentFieldWrapperProps) {
   const {
     qItem,
     attachmentValues,
+    feedback,
     readOnly,
     isRepeated,
     isTabled,
@@ -60,7 +59,9 @@ function AttachmentFieldWrapper(props: AttachmentFieldWrapperProps) {
     return (
       <AttachmentField
         linkId={qItem.linkId}
+        itemType={qItem.type}
         attachmentValues={attachmentValues}
+        feedback={feedback}
         readOnly={readOnly}
         isTabled={isTabled}
         onUploadFile={onUploadFile}
@@ -75,17 +76,24 @@ function AttachmentFieldWrapper(props: AttachmentFieldWrapperProps) {
       data-test="q-item-attachment-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <AttachmentField
-          linkId={qItem.linkId}
-          attachmentValues={attachmentValues}
-          readOnly={readOnly}
-          isTabled={isTabled}
-          onUploadFile={onUploadFile}
-          onUrlChange={onUrlChange}
-          onFileNameChange={onFileNameChange}
-        />
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <AttachmentField
+            linkId={qItem.linkId}
+            itemType={qItem.type}
+            attachmentValues={attachmentValues}
+            feedback={feedback}
+            readOnly={readOnly}
+            isTabled={isTabled}
+            onUploadFile={onUploadFile}
+            onUrlChange={onUrlChange}
+            onFileNameChange={onFileNameChange}
+          />
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

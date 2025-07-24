@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +17,7 @@
 
 import { Typography } from '@mui/material';
 import { formatDisplayTime } from '../utils/formatDisplayTime.ts';
-import useResponsive from '../../../hooks/useResponsive.ts';
+import { useResponsive } from '@aehrc/smart-forms-renderer';
 
 interface TokenTimerIndicatorProps {
   showRemainingTime: boolean;
@@ -28,7 +28,7 @@ interface TokenTimerIndicatorProps {
 function TokenTimerIndicator(props: TokenTimerIndicatorProps) {
   const { showRemainingTime, timeLeft, isAutoSaving } = props;
 
-  const isDesktop = useResponsive('up', 'lg');
+  const isLgUp = useResponsive({ query: 'up', start: 'lg' });
 
   if (!showRemainingTime || timeLeft === null) {
     return null;
@@ -38,8 +38,8 @@ function TokenTimerIndicator(props: TokenTimerIndicatorProps) {
     <Typography
       variant="subtitle2"
       color="text.secondary"
-      fontSize={isDesktop ? 12 : 9}
-      sx={{ mx: isDesktop ? 2 : 0.5 }}>
+      fontSize={isLgUp ? 12 : 9}
+      sx={{ mx: isLgUp ? 2 : 0.5 }}>
       {getIndicatorText(isAutoSaving, timeLeft)}
     </Typography>
   );

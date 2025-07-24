@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,8 @@
 
 import { expect, test } from '@playwright/test';
 import { PLAYWRIGHT_APP_URL, PLAYWRIGHT_FORMS_SERVER_URL } from './globals';
+import { fillBitOfEverything } from './utils/fillBitOfEverything';
+import { goToPlayground, selectQuestionnaireInPlayground } from './utils/playground';
 
 const stringInput = 'Test string input';
 const textInput = 'Test text input';
@@ -32,148 +34,218 @@ const urlInput = 'https://www.google.com';
 const choiceAnswerOptionInput = 'option A';
 const choiceAnswerValueSetInput = 'Tasmania';
 
-test('enter inputs into BitOfEverything questionnaire', async ({ page }) => {
-  // Go to playground
-  const fetchQPromise = page.waitForResponse(
-    `${PLAYWRIGHT_FORMS_SERVER_URL}/Questionnaire?_count=100&_sort=-date&`
-  );
-  const launchUrl = `${PLAYWRIGHT_APP_URL}/playground`;
-  await page.goto(launchUrl);
-  const fetchQResponse = await fetchQPromise;
-  expect(fetchQResponse.status()).toBe(200);
+test.describe('BitOfEverything questionnaire', () => {
+  test('enter inputs in /renderer', async ({ page }) => {
+    // Go to Smart Forms app without launching from EHR
+    await page.goto(PLAYWRIGHT_APP_URL);
 
-  // Select BitOfEverything questionnaire
-  await page
-    .getByTestId('questionnaire-picker-playground')
-    .locator('input')
-    .fill('bitofeverything');
-  await page.keyboard.press('Enter');
-  await expect(page.getByTestId('questionnaire-details-playground')).toContainText(
-    'BitOfEverything'
-  );
-  await expect(page.getByTestId('questionnaire-details-playground')).toContainText(
-    'http://fhir.telstrahealth.com/fast-forms/Questionnaire/bit-of-everything'
-  );
+    // On /dashboard/questionnaires route, search for BitOfEverything and create a new response
+    const fetchQBitOfEverythingPromise = page.waitForResponse(
+      (response) =>
+        response.url().startsWith(`${PLAYWRIGHT_FORMS_SERVER_URL}/Questionnaire`) &&
+        response.url().includes('_sort=-date') &&
+        response.url().includes('title:contains=Bit') &&
+        response.request().method() === 'GET'
+    );
 
-  // Build BitOfEverything questionnaire
-  await page.getByTestId('picker-build-form-button-playground').click();
-  await expect(page.getByText('"resourceType": "Questionnaire"')).toBeInViewport();
-  await expect(page.getByText('"id": "BitOfEverything"')).toBeInViewport();
+    await page.getByTestId('search-field-questionnaires').locator('input').fill('Bit');
+    const fetchQBitOfEverythingResponse = await fetchQBitOfEverythingPromise;
+    expect(fetchQBitOfEverythingResponse.status()).toBe(200);
 
-  // Enter inputs
-  // Display
-  await expect(page.getByTestId('q-item-display-box')).toContainText('display label');
+    await page.getByTestId('questionnaire-list-row').getByText('Bit of everything').first().click();
+    await page.getByTestId('button-create-response').click();
 
-  // String
-  const stringItemLinkId = 'Item-string';
-  await page
-    .getByTestId('q-item-string-box')
-    .getByTestId('q-item-string-field')
-    .locator(`#${stringItemLinkId}`)
-    .fill(stringInput);
+    // Fill in the BitOfEverything questionnaire
+    await fillBitOfEverything(page, {
+      stringInput,
+      textInput,
+      dateInput,
+      dtDateInput,
+      dtTimeInput,
+      dtPeriodInput,
+      integerInput,
+      decimalInput,
+      urlInput
+    });
+  });
 
-  // Text
-  const textItemLinkId = 'Item-text';
-  await page
-    .getByTestId('q-item-text-box')
-    .getByTestId('q-item-text-field')
-    .locator(`#${textItemLinkId}`)
-    .fill(textInput);
+  test('enter inputs in /playground', async ({ page }) => {
+    // Select and build BitOfEverything questionnaire in playground
+    await goToPlayground(page);
+    await selectQuestionnaireInPlayground(page, {
+      pickerInput: 'bitofeverything',
+      questionnaireId: 'BitOfEverything',
+      questionnaireUrl: 'http://fhir.telstrahealth.com/fast-forms/Questionnaire/bit-of-everything'
+    });
 
-  // Boolean
-  const booleanItemLinkId = 'Item-bool';
-  await page
-    .getByTestId('q-item-boolean-box')
-    .locator(`#${booleanItemLinkId}`)
-    .locator('input')
-    .first()
-    .click();
+    // Fill in the BitOfEverything questionnaire
+    await fillBitOfEverything(page, {
+      stringInput,
+      textInput,
+      dateInput,
+      dtDateInput,
+      dtTimeInput,
+      dtPeriodInput,
+      integerInput,
+      decimalInput,
+      urlInput
+    });
 
-  // Date
-  const dateItemLinkId = 'Item-date';
-  await page
-    .getByTestId('q-item-date-box')
-    .locator(`#${dateItemLinkId}-date`)
-    .pressSequentially(dateInput, { delay: 100 });
+    // Check QR if our inputs are valid
+    await page.getByTestId('see-store-state-button-playground').click();
 
-  // DateTime
-  const dateTimeItemLinkId = 'Item-datetime';
-  await page
-    .getByTestId('q-item-datetime-box')
-    .locator(`#${dateTimeItemLinkId}-date`)
-    .pressSequentially(dtDateInput, { delay: 100 });
+    // Assuming debug viewer is already on "updatableResponse" tab
+    const debugViewerText = await page.getByTestId('debug-viewer').innerText();
+    expect(debugViewerText.includes(`"valueString": "${stringInput}"`)).toBeTruthy();
+    expect(debugViewerText.includes(`"valueString": "${textInput}"`)).toBeTruthy();
+    expect(debugViewerText.includes(`"valueBoolean": true`)).toBeTruthy();
 
-  await page
-    .getByTestId('q-item-datetime-box')
-    .locator(`#${dateTimeItemLinkId}-time`)
-    .fill(dtTimeInput);
-  await page.getByTestId('q-item-datetime-box').locator(`#${dateTimeItemLinkId}-period`).click();
-  await page.getByRole('option', { name: dtPeriodInput, exact: true }).click();
+    expect(debugViewerText.includes(`"valueDate": "2023-12-25"`)).toBeTruthy();
+    expect(debugViewerText.includes(`"valueDateTime": "2023-12-25T11:30:00`)).toBeTruthy();
 
-  // Skipping Time for now
+    expect(debugViewerText.includes(`"valueInteger": ${integerInput}`)).toBeTruthy();
+    expect(debugViewerText.includes(`"valueDecimal": ${decimalInput}`)).toBeTruthy();
+    expect(debugViewerText.includes(`"valueUri": "${urlInput}"`)).toBeTruthy();
 
-  // Integer
-  const integerItemLinkId = 'Item-integer';
-  await page.getByTestId('q-item-integer-box').locator(`#${integerItemLinkId}`).fill(integerInput);
+    expect(debugViewerText.includes(`"system": "http://example.org/coding-test"`)).toBeTruthy();
+    expect(debugViewerText.includes(`"code": "a"`)).toBeTruthy();
+    expect(debugViewerText.includes(`"display": "${choiceAnswerOptionInput}"`)).toBeTruthy();
 
-  // Decimal
-  const decimalItemLinkId = 'Item-decimal';
-  await page.getByTestId('q-item-decimal-box').locator(`#${decimalItemLinkId}`).fill(decimalInput);
-  await expect(page.getByTestId('q-item-decimal-box').first()).toContainText('meters'); // first() is hacky
+    expect(
+      debugViewerText.includes(`"system": "http://fhir.telstrahealth.com/tcm/CodeSystem/ARE_local"`)
+    ).toBeTruthy();
+    expect(debugViewerText.includes(`"code": "6"`)).toBeTruthy();
+    expect(debugViewerText.includes(`"display": "${choiceAnswerValueSetInput}"`)).toBeTruthy();
+  });
+});
 
-  // Url
-  const urlItemLinkId = 'Item-url';
-  await page.getByTestId('q-item-url-box').locator(`#${urlItemLinkId}`).fill(urlInput);
+test.describe('OpenChoiceCheckboxAVS questionnaire', () => {
+  test('enter inputs in /playground', async ({ page }) => {
+    // Select and build OpenChoiceCheckboxAVS questionnaire in playground
+    await goToPlayground(page);
+    await selectQuestionnaireInPlayground(page, {
+      pickerInput: 'OpenChoiceCheckboxAVS',
+      questionnaireId: 'OpenChoiceCheckboxAVS',
+      questionnaireUrl:
+        'https://smartforms.csiro.au/docs/advanced/control/itemcontrol/question/open-choice-checkbox-avs'
+    });
 
-  // Skipping Reference for now
+    const openChoiceCheckboxLinkId = 'state-multi';
 
-  // Skipping Attachment for now
+    // Test multi-select checkbox
+    // Check on a defined option followed by the open label and see if it removes the initial option
+    // Check two checkboxes
+    await page
+      .locator(
+        `div[data-test="q-item-open-choice-checkbox-answer-value-set-box"][data-linkid="${openChoiceCheckboxLinkId}"]`
+      )
+      .locator('label:has-text("Australian Capital Territory")')
+      .check();
 
-  // Skipping Quantity for now
+    await page
+      .locator(
+        `div[data-test="q-item-open-choice-checkbox-answer-value-set-box"][data-linkid="${openChoiceCheckboxLinkId}"]`
+      )
+      .locator('label:has-text("Queensland")')
+      .check();
 
-  // Choice answerOption - option A
-  const choiceItemAnswerOptionLinkId = 'Item-rb-local';
-  await page.getByTestId('q-item-choice-select-answer-option-box').first().scrollIntoViewIfNeeded();
-  await page
-    .getByTestId('q-item-choice-select-answer-option-box')
-    .locator(`#${choiceItemAnswerOptionLinkId}`)
-    .pressSequentially('option a', { delay: 100 });
-  await page.keyboard.press('Enter');
+    // Assert that both checkboxes are checked
+    const isACTChecked = await page
+      .locator(
+        `div[data-test="q-item-open-choice-checkbox-answer-value-set-box"][data-linkid="${openChoiceCheckboxLinkId}"]`
+      )
+      .locator('label:has-text("Australian Capital Territory")')
+      .locator('input[type="checkbox"]') // Assuming the checkbox is the input element inside the label
+      .isChecked();
 
-  // Choice answerValueSet - Tasmania
-  const choiceItemAnswerValueSetLinkId = 'Item10';
-  await page
-    .getByTestId('q-item-choice-select-answer-value-set-box')
-    .locator(`#${choiceItemAnswerValueSetLinkId}`)
-    .pressSequentially('tasmania', { delay: 100 });
-  await page.keyboard.press('Enter');
+    const isQueenslandChecked = await page
+      .locator(
+        `div[data-test="q-item-open-choice-checkbox-answer-value-set-box"][data-linkid="${openChoiceCheckboxLinkId}"]`
+      )
+      .locator('label:has-text("Queensland")')
+      .locator('input[type="checkbox"]')
+      .isChecked();
 
-  // Check QR if our inputs are valid
-  await page.getByTestId('see-store-state-button-playground').click();
-  await page
-    .getByTestId('specific-state-picker-playground')
-    .locator('button[value="updatableResponse"]')
-    .click();
+    expect(isACTChecked).toBe(true);
+    expect(isQueenslandChecked).toBe(true);
 
-  const debugViewerText = await page.getByTestId('debug-viewer').innerText();
-  expect(debugViewerText.includes(`"valueString": "${stringInput}"`)).toBeTruthy();
-  expect(debugViewerText.includes(`"valueString": "${textInput}"`)).toBeTruthy();
-  expect(debugViewerText.includes(`"valueBoolean": true`)).toBeTruthy();
+    // Check Open Label checkbox
+    await page
+      .locator(
+        `div[data-test="q-item-open-choice-checkbox-answer-value-set-box"][data-linkid="${openChoiceCheckboxLinkId}"]`
+      )
+      .locator('label:has-text("Overseas state, please specify")')
+      .check();
 
-  expect(debugViewerText.includes(`"valueDate": "2023-12-25"`)).toBeTruthy();
-  expect(debugViewerText.includes(`"valueDateTime": "2023-12-25T11:30:00`)).toBeTruthy();
+    // Assert that both checkboxes are checked once more, to verify the open label checkbox did not affect the other checkboxes
+    const isACTCheckedAgain = await page
+      .locator(
+        `div[data-test="q-item-open-choice-checkbox-answer-value-set-box"][data-linkid="${openChoiceCheckboxLinkId}"]`
+      )
+      .locator('label:has-text("Australian Capital Territory")')
+      .locator('input[type="checkbox"]')
+      .isChecked();
 
-  expect(debugViewerText.includes(`"valueInteger": ${integerInput}`)).toBeTruthy();
-  expect(debugViewerText.includes(`"valueDecimal": ${decimalInput}`)).toBeTruthy();
-  expect(debugViewerText.includes(`"valueUri": "${urlInput}"`)).toBeTruthy();
+    const isQueenslandCheckedAgain = await page
+      .locator(
+        `div[data-test="q-item-open-choice-checkbox-answer-value-set-box"][data-linkid="${openChoiceCheckboxLinkId}"]`
+      )
+      .locator('label:has-text("Queensland")')
+      .locator('input[type="checkbox"]')
+      .isChecked();
 
-  expect(debugViewerText.includes(`"system": "http://example.org/coding-test"`)).toBeTruthy();
-  expect(debugViewerText.includes(`"code": "a"`)).toBeTruthy();
-  expect(debugViewerText.includes(`"display": "${choiceAnswerOptionInput}"`)).toBeTruthy();
+    expect(isACTCheckedAgain).toBe(true);
+    expect(isQueenslandCheckedAgain).toBe(true);
+  });
+});
 
-  expect(
-    debugViewerText.includes(`"system": "http://fhir.telstrahealth.com/tcm/CodeSystem/ARE_local"`)
-  ).toBeTruthy();
-  expect(debugViewerText.includes(`"code": "6"`)).toBeTruthy();
-  expect(debugViewerText.includes(`"display": "${choiceAnswerValueSetInput}"`)).toBeTruthy();
+test.describe('EnableWhenMultiCheckbox questionnaire (also test repeating items)', () => {
+  test('enter inputs in /playground', async ({ page }) => {
+    // Select and build OpenChoiceCheckboxAVS questionnaire in playground
+    await goToPlayground(page);
+    await selectQuestionnaireInPlayground(page, {
+      pickerInput: 'EnableWhenMultiCheckbox',
+      questionnaireId: 'EnableWhenMultiCheckbox',
+      questionnaireUrl: 'https://smartforms.csiro.au/docs/behavior/other/enable-when-multi-checkbox'
+    });
+
+    const openChoiceCheckboxLinkId = 'select-conditions-list';
+
+    // Check on a single option, then check for displayed enableWhen display question
+    await page
+      .locator(
+        `div[data-test="q-item-open-choice-checkbox-answer-option-box"][data-linkid="${openChoiceCheckboxLinkId}"]`
+      )
+      .locator('label:has-text("Condition A (Displays Clinical guidance: Condition A question)")')
+      .check();
+
+    await expect(page.getByTestId('q-item-display-box')).toContainText(
+      'Clinical guidance: Condition A'
+    );
+
+    // Check on options A. B. C, then check for all displayed enableWhen display questions
+    await page
+      .locator(
+        `div[data-test="q-item-open-choice-checkbox-answer-option-box"][data-linkid="${openChoiceCheckboxLinkId}"]`
+      )
+      .locator('label:has-text("Condition B (Displays Clinical guidance: Condition B question)")')
+      .check();
+
+    await page
+      .locator(
+        `div[data-test="q-item-open-choice-checkbox-answer-option-box"][data-linkid="${openChoiceCheckboxLinkId}"]`
+      )
+      .locator('label:has-text("Condition C (Displays Clinical guidance: Condition C question)")')
+      .check();
+
+    await expect(page.getByTestId('q-item-display-box').first()).toContainText(
+      'Clinical guidance: Condition A'
+    );
+    await expect(page.getByTestId('q-item-display-box').nth(1)).toContainText(
+      'Clinical guidance: Condition B'
+    );
+    await expect(page.getByTestId('q-item-display-box').nth(2)).toContainText(
+      'Clinical guidance: Condition C'
+    );
+  });
 });

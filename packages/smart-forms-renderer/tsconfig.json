@@ -9,7 +9,7 @@
     "useUnknownInCatchVariables": false,
     "strict": true,
     "skipLibCheck": true,
-    "jsx": "react",
+    "jsx": "react-jsx",
     "sourceMap": true,
     "allowJs": true,
     "outDir": "lib",
@@ -18,5 +18,5 @@
     "resolveJsonModule": true
   },
   "include": ["src"],
-  "exclude": ["src/**/*.test.ts", "src/stories/**/*", "src/setup-jest.*", "lib"]
+  "exclude": ["src/**/*.test.ts", "src/stories/**/*", "src/setup-jest.*", "lib", "dist"]
 }

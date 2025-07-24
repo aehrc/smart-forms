@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,11 +15,10 @@
  * limitations under the License.
  */
 
-import type { ChangeEvent } from 'react';
 import React from 'react';
 import Box from '@mui/material/Box';
-import { StandardTextField } from '../Textfield.styles';
 import ChoiceRadioSingle from '../ChoiceItems/ChoiceRadioSingle';
+import OpenLabelField from './OpenLabelField';
 
 interface RadioButtonWithOpenLabelProps {
   value: string | null;
@@ -31,21 +30,22 @@ interface RadioButtonWithOpenLabelProps {
 
 function RadioButtonWithOpenLabel(props: RadioButtonWithOpenLabelProps) {
   const { value, label, readOnly, isSelected, onInputChange } = props;
-  function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
-    onInputChange(event.target.value);
-  }
 
   return (
     <Box data-test="q-item-radio-open-label-box">
-      <ChoiceRadioSingle value={value ?? ''} label={label + ':'} readOnly={readOnly} />
-      <StandardTextField
-        disabled={!isSelected}
+      <ChoiceRadioSingle
+        value={value ?? ''}
+        label={label + ':'}
+        readOnly={readOnly}
+        disabledViaToggleExpression={false}
+        fullWidth={false}
+      />
+      <OpenLabelField
         value={value}
-        onChange={handleInputChange}
-        fullWidth
-        isTabled={false}
-        size="small"
-        data-test="q-item-radio-open-label-field"
+        readOnly={readOnly}
+        openLabelOptionSelected={isSelected}
+        label={label}
+        onInputChange={onInputChange}
       />
     </Box>
   );

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,13 +25,14 @@ import type { Table } from '@tanstack/react-table';
 import type { Questionnaire } from 'fhir/r4';
 import { createQuestionnaireListItem } from '../../../utils/dashboard.ts';
 import RefetchButton from '../../../../../components/Button/RefetchButton.tsx';
+import type { UseQueryResult } from '@tanstack/react-query';
 
 interface QuestionnaireTableViewProps {
   table: Table<Questionnaire>;
   searchInput: string;
   debouncedInput: string;
-  fetchStatus: 'error' | 'success' | 'loading';
-  isInitialLoading: boolean;
+  fetchStatus: UseQueryResult['status'];
+  isLoading: boolean;
   isFetching: boolean;
   fetchError: unknown;
   selectedQuestionnaire: Questionnaire | null;
@@ -47,7 +48,7 @@ function QuestionnaireTableView(props: QuestionnaireTableViewProps) {
     searchInput,
     debouncedInput,
     fetchStatus,
-    isInitialLoading,
+    isLoading,
     isFetching,
     fetchError,
     selectedQuestionnaire,
@@ -60,7 +61,7 @@ function QuestionnaireTableView(props: QuestionnaireTableViewProps) {
   const headers = table.getHeaderGroups()[0].headers;
 
   const isEmpty =
-    table.getRowModel().rows.length === 0 && !!debouncedInput && fetchStatus !== 'loading';
+    table.getRowModel().rows.length === 0 && !!debouncedInput && fetchStatus !== 'pending';
 
   return (
     <>
@@ -71,7 +72,7 @@ function QuestionnaireTableView(props: QuestionnaireTableViewProps) {
         onSearch={onSearch}
       />
 
-      <TableContainer sx={{ minWidth: 575 }}>
+      <TableContainer sx={{ minWidth: 575, boxShadow: 'none' }}>
         <MuiTable stickyHeader>
           <DashboardTableHead headers={headers} />
           <TableBody>
@@ -91,10 +92,10 @@ function QuestionnaireTableView(props: QuestionnaireTableViewProps) {
             })}
           </TableBody>
 
-          {isEmpty || fetchStatus === 'error' || isInitialLoading ? (
+          {isEmpty || fetchStatus === 'error' || isLoading ? (
             <QuestionnaireListFeedback
               isEmpty={isEmpty}
-              isInitialLoading={isInitialLoading}
+              isLoading={isLoading}
               status={fetchStatus}
               searchInput={searchInput}
               error={fetchError}

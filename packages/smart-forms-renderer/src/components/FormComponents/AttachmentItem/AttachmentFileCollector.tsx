@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,9 +20,9 @@ import React, { memo, useCallback } from 'react';
 import { Box, IconButton, Stack, Tooltip } from '@mui/material';
 import AttachmentFileDropBox from './AttachmentFileDropBox';
 import Iconify from '../../Iconify/Iconify';
-import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 
-interface AttachmentFileCollectorProps extends PropsWithIsTabledAttribute {
+interface AttachmentFileCollectorProps extends PropsWithIsTabledRequiredAttribute {
   uploadedFile: File | null;
   readOnly: boolean;
   onUploadFile: (file: File | null) => void;
@@ -49,7 +49,7 @@ const AttachmentFileCollector = memo(function AttachmentFileCollector(
         }
       }
     },
-    [onUploadFile]
+    [onUploadFile, readOnly]
   );
 
   function handleAttachFile(event: ChangeEvent<HTMLInputElement>) {

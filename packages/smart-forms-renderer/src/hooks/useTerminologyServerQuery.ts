@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,12 +15,13 @@
  * limitations under the License.
  */
 
-import { useQuery } from '@tanstack/react-query';
 import type { Coding, QuestionnaireItem, ValueSet } from 'fhir/r4';
-import { getTerminologyServerUrl, getValueSetCodings, getValueSetPromise } from '../utils/valueSet';
+import { getValueSetCodings, getValueSetPromise } from '../utils/valueSet';
 
 import type { AlertColor } from '@mui/material/Alert';
 import { useQuestionnaireStore, useTerminologyServerStore } from '../stores';
+import { useQuery } from '@tanstack/react-query';
+import { getItemTerminologyServerToUse } from '../utils/preferredTerminologyServer';
 
 function useTerminologyServerQuery(
   qItem: QuestionnaireItem,
@@ -28,7 +29,9 @@ function useTerminologyServerQuery(
   input: string,
   searchTerm: string
 ): { options: Coding[]; loading: boolean; feedback?: { message: string; color: AlertColor } } {
-  const processedValueSetUrls = useQuestionnaireStore.use.processedValueSetUrls();
+  const processedValueSets = useQuestionnaireStore.use.processedValueSets();
+  const itemPreferredTerminologyServers =
+    useQuestionnaireStore.use.itemPreferredTerminologyServers();
   const defaultTerminologyServerUrl = useTerminologyServerStore.use.url();
 
   let fullUrl = '';
@@ -39,7 +42,7 @@ function useTerminologyServerQuery(
     feedback = undefined;
   }
 
-  if (searchTerm.length < 2 && searchTerm.length > 0) {
+  if (searchTerm.length < 1 && searchTerm.length > 0) {
     feedback = { message: 'Enter at least 2 characters to search for results.', color: 'info' };
   }
 
@@ -51,8 +54,8 @@ function useTerminologyServerQuery(
     }
 
     // attempt to get url from contained value sets when loading questionnaire
-    if (processedValueSetUrls[answerValueSetUrl]) {
-      answerValueSetUrl = processedValueSetUrls[answerValueSetUrl];
+    if (processedValueSets[answerValueSetUrl]?.updatableValueSetUrl) {
+      answerValueSetUrl = processedValueSets[answerValueSetUrl].updatableValueSetUrl;
     }
 
     const urlWithTrailingAmpersand =
@@ -61,14 +64,17 @@ function useTerminologyServerQuery(
   }
 
   // Perform query
-  const terminologyServerUrl = getTerminologyServerUrl(qItem) ?? defaultTerminologyServerUrl;
-  const { isFetching, error, data } = useQuery<ValueSet>(
-    ['expandValueSet', fullUrl],
-    () => getValueSetPromise(fullUrl, terminologyServerUrl),
-    {
-      enabled: searchTerm.length >= 2 && answerValueSetUrl !== undefined
-    }
+  const terminologyServerUrl = getItemTerminologyServerToUse(
+    qItem,
+    itemPreferredTerminologyServers,
+    defaultTerminologyServerUrl
   );
+
+  const { isFetching, error, data } = useQuery<ValueSet>({
+    queryKey: ['expandValueSet', fullUrl],
+    queryFn: () => getValueSetPromise(fullUrl, terminologyServerUrl),
+    enabled: searchTerm.length >= 2 && answerValueSetUrl !== undefined
+  });
 
   if (error) {
     console.warn('Ontoserver query failed. Details below: \n' + error);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,9 +18,10 @@
 import React, { useMemo } from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithShowMinimalViewAttribute
+  PropsWithParentStylesAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import { createEmptyQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
 import useHidden from '../../../hooks/useHidden';
@@ -28,17 +29,20 @@ import { QGroupContainerBox } from '../../Box.styles';
 import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';
 import TableContainer from '@mui/material/TableContainer';
-import Typography from '@mui/material/Typography';
 import { mapQItemsIndex } from '../../../utils/mapItem';
 import GridTable from './GridTable';
-import LabelWrapper from '../ItemParts/ItemLabelWrapper';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
+import GroupHeading from '../GroupItem/GroupHeading';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
+import { structuredDataCapture } from 'fhir-sdc-helpers';
+import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
 
 interface GridGroupProps
   extends PropsWithQrItemChangeHandler,
-    PropsWithShowMinimalViewAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithItemPathAttribute,
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
   groupCardElevation: number;
@@ -51,8 +55,15 @@ interface GridGroupProps
  * @author Sean Fong
  */
 function GridGroup(props: GridGroupProps) {
-  const { qItem, qrItem, groupCardElevation, showMinimalView, parentIsReadOnly, onQrItemChange } =
-    props;
+  const {
+    qItem,
+    qrItem,
+    itemPath,
+    groupCardElevation,
+    parentIsReadOnly,
+    parentStyles,
+    onQrItemChange
+  } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
@@ -62,8 +73,16 @@ function GridGroup(props: GridGroupProps) {
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
 
-  const columnLabels: string[] = useMemo(
-    () => qRowItems?.[0].item?.map((firstItem) => firstItem.text ?? ' ') ?? [],
+  // Get column headers from first row item.text
+  const columnHeaders: {
+    label: string;
+    styleString: string | null;
+  }[] = useMemo(
+    () =>
+      qRowItems?.[0].item?.map((firstItem) => ({
+        label: getItemTextToDisplay(firstItem) ?? ' ',
+        styleString: structuredDataCapture.getStyle(firstItem._text) ?? null
+      })) ?? [],
     [qRowItems]
   );
 
@@ -83,29 +102,14 @@ function GridGroup(props: GridGroupProps) {
   }
 
   // Event Handlers
-  function handleRowChange(newQrItem: QuestionnaireResponseItem) {
+  function handleRowChange(newQrItem: QuestionnaireResponseItem, targetItemPath?: ItemPath) {
     const updatedQrGroup: QuestionnaireResponseItem = { ...qrGroup };
     updateQrItemsInGroup(newQrItem, null, updatedQrGroup, qItemsIndexMap);
-    onQrItemChange(updatedQrGroup);
+    onQrItemChange(updatedQrGroup, targetItemPath);
   }
 
-  if (showMinimalView) {
-    return (
-      <QGroupContainerBox cardElevation={groupCardElevation} isRepeated={false} py={1}>
-        <TableContainer component={Paper} elevation={groupCardElevation}>
-          <GridTable
-            qItems={qRowItems}
-            qrItems={qrRowItems}
-            qItemsIndexMap={qItemsIndexMap}
-            columnLabels={columnLabels}
-            showMinimalView={showMinimalView}
-            parentIsReadOnly={parentIsReadOnly}
-            onQrItemChange={handleRowChange}
-          />
-        </TableContainer>
-      </QGroupContainerBox>
-    );
-  }
+  // Get item.text as display label
+  const itemTextToDisplay = getItemTextToDisplay(qItem);
 
   return (
     <QGroupContainerBox
@@ -113,16 +117,12 @@ function GridGroup(props: GridGroupProps) {
       isRepeated={false}
       py={3}
       data-linkid={qItem.linkId}
-      onClick={() => onFocusLinkId(qItem.linkId)}>
-      {qItem.text ? (
+      onClick={() => onFocusLinkId(qItem.linkId)}
+      style={parentStyles || undefined}>
+      {itemTextToDisplay ? (
         <>
-          <Typography
-            fontSize={13}
-            variant="h6"
-            color={readOnly ? 'text.secondary' : 'text.primary'}>
-            <LabelWrapper qItem={qItem} readOnly={readOnly} />
-          </Typography>
-          <Divider sx={{ my: 1 }} light />
+          <GroupHeading qItem={qItem} readOnly={readOnly} groupCardElevation={groupCardElevation} />
+          <Divider sx={{ my: 1, opacity: 0.6 }} />
         </>
       ) : null}
 
@@ -131,8 +131,10 @@ function GridGroup(props: GridGroupProps) {
           qItems={qRowItems}
           qrItems={qrRowItems}
           qItemsIndexMap={qItemsIndexMap}
-          columnLabels={columnLabels}
-          parentIsReadOnly={parentIsReadOnly}
+          columnHeaders={columnHeaders}
+          itemPath={itemPath}
+          parentIsReadOnly={readOnly}
+          parentStyles={parentStyles}
           onQrItemChange={handleRowChange}
         />
       </TableContainer>

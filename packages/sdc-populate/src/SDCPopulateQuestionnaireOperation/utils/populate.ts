@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +15,21 @@
  * limitations under the License.
  */
 
-import type { FetchResourceCallback, InputParameters, OutputParameters } from '../interfaces';
-import type { Encounter, OperationOutcome, OperationOutcomeIssue, Reference } from 'fhir/r4';
+import type {
+  FetchResourceCallback,
+  FetchResourceRequestConfig,
+  FetchTerminologyCallback,
+  FetchTerminologyRequestConfig,
+  InputParameters,
+  OutputParameters
+} from '../interfaces';
+import type {
+  Encounter,
+  FhirResource,
+  OperationOutcome,
+  OperationOutcomeIssue,
+  Reference
+} from 'fhir/r4';
 import { fetchQuestionnaire } from '../api/fetchQuestionnaire';
 import { isSubjectParameter } from './index';
 import { createFhirPathContext } from './createFhirPathContext';
@@ -26,7 +39,7 @@ import { sortResourceArrays } from './sortResourceArrays';
 import { constructResponse } from './constructResponse';
 import { createOutputParameters } from './createOutputParameters';
 import { removeEmptyAnswersFromResponse } from './removeEmptyAnswers';
-import { isEncounterContextParameter } from './typePredicates';
+import { isEncounterContextParameter, isUserContextParameter } from './typePredicates';
 import { addDisplayToInitialExpressionsCodings } from './addDisplayToCodings';
 
 /**
@@ -42,9 +55,9 @@ import { addDisplayToInitialExpressionsCodings } from './addDisplayToCodings';
 export async function populate(
   parameters: InputParameters,
   fetchResourceCallback: FetchResourceCallback,
-  fetchResourceRequestConfig: any,
-  terminologyCallback?: FetchResourceCallback,
-  terminologyRequestConfig?: any
+  fetchResourceRequestConfig: FetchResourceRequestConfig,
+  fetchTerminologyCallback?: FetchTerminologyCallback,
+  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
 ): Promise<OutputParameters | OperationOutcome> {
   const issues: OperationOutcomeIssue[] = [];
 
@@ -60,6 +73,8 @@ export async function populate(
 
   const subjectReference = parameters.parameter.find((param) => isSubjectParameter(param))
     ?.valueReference as Reference;
+  const user = parameters.parameter.find((param) => isUserContextParameter(param))?.part?.[1]
+    .resource as FhirResource | undefined;
   const encounter = parameters.parameter.find((param) => isEncounterContextParameter(param))
     ?.part?.[1].resource as Encounter | undefined;
 
@@ -69,7 +84,8 @@ export async function populate(
     questionnaire,
     fetchResourceCallback,
     fetchResourceRequestConfig,
-    issues
+    issues,
+    fetchTerminologyRequestConfig
   );
 
   // Read expressions to be populated from questionnaire recursively
@@ -77,25 +93,28 @@ export async function populate(
   const populationExpressions = readPopulationExpressions(questionnaire);
 
   // Evaluate itemPopulationContexts and add them to contextMap
-  fhirPathContext = evaluateItemPopulationContexts(
+  fhirPathContext = await evaluateItemPopulationContexts(
     populationExpressions.itemPopulationContexts,
     fhirPathContext,
-    issues
+    issues,
+    fetchTerminologyRequestConfig
   );
   fhirPathContext = sortResourceArrays(fhirPathContext);
 
   // Get values for expressions
-  const { evaluatedInitialExpressions, evaluatedItemPopulationContexts } = generateExpressionValues(
-    populationExpressions,
-    fhirPathContext,
-    issues
-  );
+  const { evaluatedInitialExpressions, evaluatedItemPopulationContexts } =
+    await generateExpressionValues(
+      populationExpressions,
+      fhirPathContext,
+      issues,
+      fetchTerminologyRequestConfig
+    );
 
   // In evaluatedInitialExpressions, add display values to codings lacking them
   const completeInitialExpressions = await addDisplayToInitialExpressionsCodings(
     evaluatedInitialExpressions,
-    terminologyCallback,
-    terminologyRequestConfig
+    fetchTerminologyCallback,
+    fetchTerminologyRequestConfig
   );
 
   // Construct response from initialExpressions
@@ -106,9 +125,11 @@ export async function populate(
       initialExpressions: completeInitialExpressions,
       itemPopulationContexts: evaluatedItemPopulationContexts
     },
+    fhirPathContext,
+    user,
     encounter,
-    terminologyCallback,
-    terminologyRequestConfig
+    fetchTerminologyCallback,
+    fetchTerminologyRequestConfig
   );
 
   const cleanQuestionnaireResponse = removeEmptyAnswersFromResponse(

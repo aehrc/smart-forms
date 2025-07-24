@@ -1,6 +1,6 @@
 # Function: populateQuestionnaire()
 
-> **populateQuestionnaire**(`params`): `Promise`\<`object`\>
+> **populateQuestionnaire**(`params`): `Promise`\<\{ `populateResult`: [`PopulateResult`](../interfaces/PopulateResult.md) \| `null`; `populateSuccess`: `boolean`; \}\>
 
 Performs an in-app population of the provided questionnaire.
 By in-app, it means that a callback function is provided to fetch resources instead of it calling to a $populate service.
@@ -10,21 +10,13 @@ If you already have them, use https://github.com/aehrc/smart-forms/blob/main/pac
 ## Parameters
 
 | Parameter | Type | Description |
-| :------ | :------ | :------ |
+| ------ | ------ | ------ |
 | `params` | [`PopulateQuestionnaireParams`](../interfaces/PopulateQuestionnaireParams.md) | Refer to PopulateQuestionnaireParams interface |
 
 ## Returns
 
-`Promise`\<`object`\>
+`Promise`\<\{ `populateResult`: [`PopulateResult`](../interfaces/PopulateResult.md) \| `null`; `populateSuccess`: `boolean`; \}\>
 
 populateSuccess - A boolean indicating if the population was successful
 
 populateResult - An object containing populated response and issues if any
-
-### populateResult
-
-> **populateResult**: [`PopulateResult`](../interfaces/PopulateResult.md) \| `null`
-
-### populateSuccess
-
-> **populateSuccess**: `boolean`

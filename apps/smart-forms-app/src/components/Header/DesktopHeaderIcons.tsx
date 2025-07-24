@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,9 +32,7 @@ function DesktopHeaderIcons() {
         <MedicalServicesIcon sx={{ color: theme.palette.common.white }} />
       </Avatar>
       <Box>
-        <Typography fontSize={10} variant="subtitle1" color={'text.secondary'}>
-          User
-        </Typography>
+        <Typography fontSize={11}>User</Typography>
         <AccountNameTypography name={user ? constructName(user.name) : 'No User'} />
         {user && user.gender ? <AccountDetailsTypography details={`${user.gender}`} /> : null}
       </Box>

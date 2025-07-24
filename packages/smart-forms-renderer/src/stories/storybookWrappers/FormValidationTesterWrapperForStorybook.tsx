@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -54,10 +54,10 @@ function FormValidationTesterWrapperForStorybook(
       <QueryClientProvider client={queryClient}>
         <div>
           <Grid container>
-            <Grid item xs={6}>
+            <Grid size={{ xs: 6 }}>
               <BaseRenderer />
             </Grid>
-            <Grid item xs={6}>
+            <Grid size={{ xs: 6 }}>
               <FormValidationViewerForStorybook />
             </Grid>
           </Grid>

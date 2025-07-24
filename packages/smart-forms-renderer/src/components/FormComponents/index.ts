@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,8 +16,16 @@
  */
 
 export { SingleItem } from './SingleItem';
+export { GroupItem } from './GroupItem';
 export { RepeatItem } from './RepeatItem';
 export { RepeatGroup } from './RepeatGroup';
 export { GroupTable } from './Tables';
 export { GridGroup } from './GridGroup';
-export { parseFhirDateToDisplayDate } from './DateTimeItems';
+export { parseFhirDateToDisplayDate, parseFhirDateTimeToDisplayDateTime } from './DateTimeItems';
+export { ItemFieldGrid, ItemLabel } from './ItemParts';
+
+// item type components
+export { BooleanField } from './BooleanItem';
+export { StringField } from './StringItem';
+export { DecimalField } from './DecimalItem';
+export { ChoiceRadioSingle } from './ChoiceItems';

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +22,7 @@ import type {
 } from 'fhir/r4';
 import { findInAnswerOptions } from './answerOption';
 import { checkIsDateTime, checkIsTime, convertDateTimeToDate } from './constructResponse';
+import { getRelevantCodingProperties } from './codingProperties';
 
 export function parseItemInitialToAnswer(
   initial: QuestionnaireItemInitial
@@ -63,7 +64,9 @@ export function parseItemInitialToAnswer(
   }
 
   if (initial.valueCoding) {
-    return { valueCoding: initial.valueCoding };
+    return {
+      valueCoding: getRelevantCodingProperties(initial.valueCoding)
+    };
   }
 
   if (initial.valueQuantity) {
@@ -107,7 +110,9 @@ export function parseValueToAnswer(
   }
 
   if (typeof value === 'object' && value.system && value.code) {
-    return { valueCoding: value };
+    return {
+      valueCoding: getRelevantCodingProperties(value)
+    };
   }
 
   // Value is string at this point

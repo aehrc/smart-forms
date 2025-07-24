@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +28,8 @@ test('item.initial is properly pre-filled into QuestionnaireResponse', () => {
   expect(outputResponse?.item?.[0].item?.[0].item?.[0].item?.[0].answer?.[0]).toStrictEqual({
     valueCoding: {
       system: 'http://snomed.info/sct',
-      code: '373066001'
+      code: '373066001',
+      display: undefined
     }
   });
 });

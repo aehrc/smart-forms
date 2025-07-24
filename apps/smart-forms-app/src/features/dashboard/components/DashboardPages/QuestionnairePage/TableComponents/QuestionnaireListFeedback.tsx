@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,23 +19,24 @@ import { Stack, TableBody, TableCell, TableRow } from '@mui/material';
 import QuestionnaireFeedbackMessage from './QuestionnaireFeedbackMessage.tsx';
 import { useSnackbar } from 'notistack';
 import CloseSnackbar from '../../../../../../components/Snackbar/CloseSnackbar.tsx';
+import type { UseQueryResult } from '@tanstack/react-query';
 
 interface Props {
   isEmpty: boolean;
-  isInitialLoading: boolean;
-  status: 'loading' | 'error' | 'success';
+  isLoading: boolean;
+  status: UseQueryResult['status'];
   searchInput: string;
   error?: unknown;
 }
 function QuestionnaireListFeedback(props: Props) {
-  const { isEmpty, isInitialLoading, status, searchInput, error } = props;
+  const { isEmpty, isLoading, status, searchInput, error } = props;
 
   const { enqueueSnackbar } = useSnackbar();
 
   let feedbackType: 'error' | 'empty' | 'loading' | null = null;
   if (status === 'error') {
     feedbackType = 'error';
-  } else if (isInitialLoading) {
+  } else if (isLoading) {
     feedbackType = 'loading';
   } else if (isEmpty) {
     feedbackType = 'empty';
@@ -46,7 +47,7 @@ function QuestionnaireListFeedback(props: Props) {
     enqueueSnackbar('An error occurred while fetching questionnaires', {
       variant: 'error',
       preventDuplicate: true,
-      action: <CloseSnackbar />
+      action: <CloseSnackbar variant="error" />
     });
   }
 

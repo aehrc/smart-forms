@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,26 +15,26 @@
  * limitations under the License.
  */
 
-import type { ReactElement } from 'react';
+import type { ReactNode } from 'react';
 import React, { memo } from 'react';
 import Typography from '@mui/material/Typography';
 import { DisplayInstructionsWrapper } from './DisplayInstructions.styles';
 
 interface DisplayInstructionsProps {
-  displayInstructions: string | ReactElement;
   readOnly: boolean;
+  children?: ReactNode;
 }
 
 const DisplayInstructions = memo(function DisplayInstructions(props: DisplayInstructionsProps) {
-  const { displayInstructions, readOnly } = props;
+  const { readOnly, children } = props;
 
-  return displayInstructions ? (
+  return children ? (
     <DisplayInstructionsWrapper>
       <Typography
+        component="span"
         variant="caption"
-        fontSize={10.5}
         color={readOnly ? 'text.secondary' : 'text.primary'}>
-        {displayInstructions}
+        <>{children}</>
       </Typography>
     </DisplayInstructionsWrapper>
   ) : null;

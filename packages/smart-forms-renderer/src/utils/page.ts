@@ -1,7 +1,7 @@
 import type { Pages } from '../interfaces/page.interface';
 import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enableWhen.interface';
 import type { QuestionnaireItem } from 'fhir/r4';
-import { isSpecificItemControl } from './itemControl';
+import { isSpecificItemControl } from './extensions';
 import { isHiddenByEnableWhen } from './qItem';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 
@@ -36,18 +36,19 @@ export function getFirstVisiblePage(
 }
 
 /**
- * Checks if all of the items in a qItem array is a page item
- * Returns true if all items is page item
+ * Checks if all items in a qItem array is a page item, header item, or footer item
+ * Returns true if all items is page item, header item, or footer item
  * Returns false if only have one item
  *
- * @author Riza Nafis
+ * @author Riza Nafis, Sean Fong
  */
-export function everyIsPages(topLevelQItem: QuestionnaireItem[] | undefined): boolean {
-  if (!topLevelQItem) return false;
+export function isPaginatedForm(topLevelQItems: QuestionnaireItem[] | undefined): boolean {
+  if (!topLevelQItems) return false;
 
-  if (isPageContainer(topLevelQItem)) return false;
-
-  return topLevelQItem.every((i: QuestionnaireItem) => isPage(i));
+  return topLevelQItems.every(
+    (topLevelQItem: QuestionnaireItem) =>
+      isPage(topLevelQItem) || isHeader(topLevelQItem) || isFooter(topLevelQItem)
+  );
 }
 
 export function isPageContainer(topLevelQItem: QuestionnaireItem[] | undefined): boolean {
@@ -83,30 +84,49 @@ export function isPage(item: QuestionnaireItem) {
 }
 
 /**
+ * Check if a qItem is a header item
+ *
+ * @author Sean Fong
+ */
+export function isHeader(item: QuestionnaireItem) {
+  return isSpecificItemControl(item, 'header');
+}
+
+/**
+ * Check if a qItem is a footer item
+ *
+ * @author Sean Fong
+ */
+export function isFooter(item: QuestionnaireItem) {
+  return isSpecificItemControl(item, 'footer');
+}
+
+/**
  * Create a `Record<linkId, Pages>` key-value pair for all page items in a qItem array
  *
  * @author Riza Nafis
  */
 export function constructPagesWithProperties(
   qItems: QuestionnaireItem[] | undefined,
-  hasPageContainer: boolean
+  allChildItemsArePages: boolean
 ): Pages {
   if (!qItems) return {};
 
-  const qItemPages = hasPageContainer ? qItems : qItems.filter(isPage);
-
   const pages: Pages = {};
-  for (const [i, qItem] of qItemPages.entries()) {
-    pages[qItem.linkId] = {
-      pageIndex: i,
-      isComplete: false,
-      isHidden: structuredDataCapture.getHidden(qItem) ?? false
-    };
+  for (const [i, qItem] of qItems.entries()) {
+    // allChildItemsArePages will only be true if we are using the backwards-compatible method, it should be false most of the time
+    if (allChildItemsArePages || isPage(qItem)) {
+      pages[qItem.linkId] = {
+        pageIndex: i,
+        isComplete: false,
+        isHidden: structuredDataCapture.getHidden(qItem) ?? false
+      };
+    }
   }
   return pages;
 }
 
-interface contructPagesWithVisibilityParams {
+interface constructPagesWithVisibilityParams {
   pages: Pages;
   enableWhenIsActivated: boolean;
   enableWhenItems: EnableWhenItems;
@@ -114,7 +134,7 @@ interface contructPagesWithVisibilityParams {
 }
 
 export function constructPagesWithVisibility(
-  params: contructPagesWithVisibilityParams
+  params: constructPagesWithVisibilityParams
 ): { linkId: string; isVisible: boolean }[] {
   const { pages, enableWhenIsActivated, enableWhenItems, enableWhenExpressions } = params;
 

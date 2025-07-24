@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,6 @@ import { evaluateInitialEnableWhenExpressions } from './enableWhenExpression';
 import { getFirstVisibleTab } from './tabs';
 import { getFirstVisiblePage } from './page';
 import type {
-  Expression,
   Questionnaire,
   QuestionnaireItem,
   QuestionnaireItemInitial,
@@ -36,6 +35,14 @@ import { evaluateInitialCalculatedExpressions } from './calculatedExpression';
 import { createQuestionnaireResponseItemMap } from './questionnaireResponseStoreUtils/updatableResponseItems';
 import { readQuestionnaireResponse } from './genericRecursive';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
+import type { TargetConstraint } from '../interfaces/targetConstraint.interface';
+import { evaluateInitialTargetConstraints } from './targetConstraint';
+import type { Variables } from '../interfaces';
+import { getRelevantCodingProperties } from './valueSet';
+import type { ProcessedValueSet } from '../interfaces/valueSet.interface';
+import { evaluateInitialDynamicValueSets } from './parameterisedValueSets';
+import type { AnswerOptionsToggleExpression } from '../interfaces/answerOptionsToggleExpression.interface';
+import { evaluateInitialAnswerOptionsToggleExpressions } from './answerOptionsToggleExpressions';
 
 /**
  * Initialise a questionnaireResponse from a given questionnaire
@@ -188,7 +195,7 @@ function getInitialValueAnswers(qItem: QuestionnaireItem): QuestionnaireResponse
       .map((option): QuestionnaireResponseItemAnswer | null => {
         if (option.valueCoding) {
           return {
-            valueCoding: option.valueCoding
+            valueCoding: getRelevantCodingProperties(option.valueCoding)
           };
         }
 
@@ -260,7 +267,7 @@ export function parseItemInitialToAnswer(
   }
 
   if (initial.valueCoding) {
-    return { valueCoding: initial.valueCoding };
+    return { valueCoding: getRelevantCodingProperties(initial.valueCoding) };
   }
 
   if (initial.valueQuantity) {
@@ -310,36 +317,56 @@ function createNewRepeatGroupQuestionnaireResponseItem(
 }
 
 export interface initialFormFromResponseParams {
+  sourceQuestionnaire: Questionnaire;
   questionnaireResponse: QuestionnaireResponse;
+  targetConstraints: Record<string, TargetConstraint>;
   enableWhenItems: EnableWhenItems;
   enableWhenExpressions: EnableWhenExpressions;
   calculatedExpressions: Record<string, CalculatedExpression[]>;
-  variablesFhirPath: Record<string, Expression[]>;
+  answerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
+  variables: Variables;
+  processedValueSets: Record<string, ProcessedValueSet>;
   tabs: Tabs;
   pages: Pages;
   fhirPathContext: Record<string, any>;
+  fhirPathTerminologyCache: Record<string, any>;
+  terminologyServerUrl: string;
 }
 
-export function initialiseFormFromResponse(params: initialFormFromResponseParams): {
+export async function initialiseFormFromResponse(params: initialFormFromResponseParams): Promise<{
+  initialTargetConstraints: Record<string, TargetConstraint>;
   initialEnableWhenItems: EnableWhenItems;
   initialEnableWhenLinkedQuestions: Record<string, string[]>;
   initialEnableWhenExpressions: EnableWhenExpressions;
   initialCalculatedExpressions: Record<string, CalculatedExpression[]>;
+  initialAnswerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
+  initialProcessedValueSets: Record<string, ProcessedValueSet>;
   firstVisibleTab: number;
   firstVisiblePage: number;
   updatedFhirPathContext: Record<string, any>;
-} {
+  fhirPathTerminologyCache: Record<string, any>;
+}> {
   const {
+    sourceQuestionnaire,
     questionnaireResponse,
+    targetConstraints,
     enableWhenItems,
     enableWhenExpressions,
     calculatedExpressions,
-    variablesFhirPath,
+    answerOptionsToggleExpressions,
+    variables,
+    processedValueSets,
     tabs,
     pages,
-    fhirPathContext
+    fhirPathContext,
+    terminologyServerUrl
   } = params;
-  const initialResponseItemMap = createQuestionnaireResponseItemMap(questionnaireResponse);
+  let { fhirPathTerminologyCache } = params;
+
+  const initialResponseItemMap = createQuestionnaireResponseItemMap(
+    sourceQuestionnaire,
+    questionnaireResponse
+  );
   let updatedFhirPathContext = {};
 
   const { initialisedItems, linkedQuestions } = assignPopulatedAnswersToEnableWhen(
@@ -347,22 +374,70 @@ export function initialiseFormFromResponse(params: initialFormFromResponseParams
     questionnaireResponse
   );
 
-  const evaluateInitialEnableWhenExpressionsResult = evaluateInitialEnableWhenExpressions({
+  // Initialise target constraints
+  const evaluateInitialTargetConstraintsResult = await evaluateInitialTargetConstraints({
+    initialResponse: questionnaireResponse,
+    initialResponseItemMap: initialResponseItemMap,
+    targetConstraints: targetConstraints,
+    variables: variables,
+    existingFhirPathContext: fhirPathContext,
+    fhirPathTerminologyCache: fhirPathTerminologyCache,
+    terminologyServerUrl
+  });
+  const { initialTargetConstraints } = evaluateInitialTargetConstraintsResult;
+  fhirPathTerminologyCache = evaluateInitialTargetConstraintsResult.fhirPathTerminologyCache;
+
+  // Initialise answerOptionsToggleExpressions
+  const evaluateInitialAnswerOptionsToggleExpressionsResult =
+    await evaluateInitialAnswerOptionsToggleExpressions({
+      initialResponse: questionnaireResponse,
+      initialResponseItemMap: initialResponseItemMap,
+      answerOptionsToggleExpressions: answerOptionsToggleExpressions,
+      variables: variables,
+      existingFhirPathContext: fhirPathContext,
+      fhirPathTerminologyCache: fhirPathTerminologyCache,
+      terminologyServerUrl
+    });
+  const { initialAnswerOptionsToggleExpressions } =
+    evaluateInitialAnswerOptionsToggleExpressionsResult;
+  fhirPathTerminologyCache =
+    evaluateInitialAnswerOptionsToggleExpressionsResult.fhirPathTerminologyCache;
+
+  // Initialise dynamicValueSets
+  const evaluateInitialDynamicValueSetsResult = await evaluateInitialDynamicValueSets({
+    initialResponse: questionnaireResponse,
+    initialResponseItemMap: initialResponseItemMap,
+    processedValueSets: processedValueSets,
+    variables: variables,
+    existingFhirPathContext: fhirPathContext,
+    fhirPathTerminologyCache: fhirPathTerminologyCache,
+    terminologyServerUrl
+  });
+  const { initialProcessedValueSets } = evaluateInitialDynamicValueSetsResult;
+  fhirPathTerminologyCache = evaluateInitialDynamicValueSetsResult.fhirPathTerminologyCache;
+
+  // Initialise enableWhenExpressions
+  const evaluateInitialEnableWhenExpressionsResult = await evaluateInitialEnableWhenExpressions({
     initialResponse: questionnaireResponse,
     initialResponseItemMap: initialResponseItemMap,
     enableWhenExpressions: enableWhenExpressions,
-    variablesFhirPath: variablesFhirPath,
-    existingFhirPathContext: fhirPathContext
+    variables: variables,
+    existingFhirPathContext: fhirPathContext,
+    fhirPathTerminologyCache: fhirPathTerminologyCache,
+    terminologyServerUrl: terminologyServerUrl
   });
   const { initialEnableWhenExpressions } = evaluateInitialEnableWhenExpressionsResult;
-  updatedFhirPathContext = evaluateInitialEnableWhenExpressionsResult.updatedFhirPathContext;
+  fhirPathTerminologyCache = evaluateInitialEnableWhenExpressionsResult.fhirPathTerminologyCache;
 
-  const evaluateInitialCalculatedExpressionsResult = evaluateInitialCalculatedExpressions({
+  // Initialise calculatedExpressions
+  const evaluateInitialCalculatedExpressionsResult = await evaluateInitialCalculatedExpressions({
     initialResponse: questionnaireResponse,
     initialResponseItemMap: initialResponseItemMap,
     calculatedExpressions: calculatedExpressions,
-    variablesFhirPath: variablesFhirPath,
-    existingFhirPathContext: fhirPathContext
+    variables: variables,
+    existingFhirPathContext: fhirPathContext,
+    fhirPathTerminologyCache: fhirPathTerminologyCache,
+    terminologyServerUrl
   });
   const { initialCalculatedExpressions } = evaluateInitialCalculatedExpressionsResult;
   updatedFhirPathContext = evaluateInitialEnableWhenExpressionsResult.updatedFhirPathContext;
@@ -378,12 +453,16 @@ export function initialiseFormFromResponse(params: initialFormFromResponseParams
       : 0;
 
   return {
+    initialTargetConstraints,
     initialEnableWhenItems: initialisedItems,
     initialEnableWhenLinkedQuestions: linkedQuestions,
     initialEnableWhenExpressions,
     initialCalculatedExpressions,
+    initialAnswerOptionsToggleExpressions,
+    initialProcessedValueSets,
     firstVisibleTab,
     firstVisiblePage,
-    updatedFhirPathContext
+    updatedFhirPathContext,
+    fhirPathTerminologyCache
   };
 }

@@ -21,7 +21,10 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+
+    /* Debugging */
+    "sourceMap": true
   },
   "include": ["src", "cypress"],
   "references": [{ "path": "./tsconfig.node.json" }]

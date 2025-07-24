@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,26 +21,31 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { mapQItemsIndex } from '../../../utils/mapItem';
 import type {
   PropsWithIsRepeatedAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrRepeatGroupChangeHandler,
-  PropsWithShowMinimalViewAttribute
+  PropsWithQrRepeatGroupChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import { nanoid } from 'nanoid';
 import useReadOnly from '../../../hooks/useReadOnly';
 import GroupTableView from './GroupTableView';
 import type { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
 import { getGroupTableItemsToUpdate } from '../../../utils/groupTable';
 import useGroupTableRows from '../../../hooks/useGroupTableRows';
 import { flushSync } from 'react-dom';
+import { generateNewRepeatId } from '../../../utils/repeatId';
+import useInitialiseGroupTableRows from '../../../hooks/useInitialiseGroupTableRows';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
+import { isItemHidden } from '../../../utils/qItem';
+import { useQuestionnaireStore, useRendererStylingStore } from '../../../stores';
 
 interface GroupTableProps
   extends PropsWithQrRepeatGroupChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
-    PropsWithShowMinimalViewAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItems: QuestionnaireResponseItem[];
   groupCardElevation: number;
+  parentStyles?: Record<string, string>;
 }
 
 /**
@@ -53,22 +58,42 @@ function GroupTable(props: GroupTableProps) {
   const {
     qItem,
     qrItems,
+    itemPath,
     groupCardElevation,
     isRepeated,
-    showMinimalView,
     parentIsReadOnly,
+    parentStyles,
     onQrRepeatGroupChange
   } = props;
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const enableWhenIsActivated = useQuestionnaireStore.use.enableWhenIsActivated();
+  const enableWhenItems = useQuestionnaireStore.use.enableWhenItems();
+  const enableWhenExpressions = useQuestionnaireStore.use.enableWhenExpressions();
+  const enableWhenAsReadOnly = useRendererStylingStore.use.enableWhenAsReadOnly();
 
-  const { tableRows, selectedIds, setTableRows, setSelectedIds } = useGroupTableRows(qrItems);
+  const initialGroupTableRows = useInitialiseGroupTableRows(qItem.linkId, qrItems);
+  const { tableRows, selectedIds, setTableRows, setSelectedIds } =
+    useGroupTableRows(initialGroupTableRows);
+
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Generate item labels as table headers
   const qItems = qItem.item;
-  const itemLabels: string[] = useMemo(
-    () => qItems?.map((item) => item.text ?? '') ?? [],
-    [qItems]
+  const visibleItemLabels: string[] = useMemo(
+    () =>
+      qItems
+        ?.filter(
+          (item) =>
+            !isItemHidden(
+              item,
+              enableWhenIsActivated,
+              enableWhenItems,
+              enableWhenExpressions,
+              enableWhenAsReadOnly
+            )
+        )
+        .map((item) => item.text ?? '') ?? [],
+    [enableWhenAsReadOnly, enableWhenExpressions, enableWhenIsActivated, enableWhenItems, qItems]
   );
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
@@ -79,7 +104,11 @@ function GroupTable(props: GroupTableProps) {
   }
 
   // Event Handlers
-  function handleRowChange(newQrRow: QuestionnaireResponseItem, index: number) {
+  function handleRowChange(
+    newQrRow: QuestionnaireResponseItem,
+    index: number,
+    targetItemPath?: ItemPath
+  ) {
     const updatedTableRows = [...tableRows];
 
     if (newQrRow.item) {
@@ -91,21 +120,28 @@ function GroupTable(props: GroupTableProps) {
     }
 
     setTableRows(updatedTableRows);
-    onQrRepeatGroupChange({
-      linkId: qItem.linkId,
-      qrItems: getGroupTableItemsToUpdate(updatedTableRows, selectedIds)
-    });
+
+    // Include targetItemPath because an answer is changed
+    onQrRepeatGroupChange(
+      {
+        linkId: qItem.linkId,
+        qrItems: getGroupTableItemsToUpdate(updatedTableRows, selectedIds)
+      },
+      targetItemPath
+    );
   }
 
   function handleRemoveRow(index: number) {
     const updatedTableRows = [...tableRows];
 
     const rowToRemove = updatedTableRows[index];
-    const updatedSelectedIds = selectedIds.filter((id) => id !== rowToRemove.nanoId);
+    const updatedSelectedIds = selectedIds.filter((id) => id !== rowToRemove.id);
 
     updatedTableRows.splice(index, 1);
 
     setTableRows(updatedTableRows);
+
+    // Don't need to include targetItemPath, only include targetItemPath if an answer is changed
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
       qrItems: getGroupTableItemsToUpdate(updatedTableRows, updatedSelectedIds)
@@ -114,39 +150,43 @@ function GroupTable(props: GroupTableProps) {
   }
 
   function handleAddRow() {
-    const newRowNanoId = nanoid();
+    const newRowId = generateNewRepeatId(qItem.linkId);
     setTableRows([
       ...tableRows,
       {
-        nanoId: newRowNanoId,
+        id: newRowId,
         qrItem: null
       }
     ]);
-    setSelectedIds([...selectedIds, newRowNanoId]);
+    setSelectedIds([...selectedIds, newRowId]);
   }
 
   function handleSelectAll() {
-    // deselect all if all are selected, otherwise select all
+    // unselect all if all are selected, otherwise select all
     const updatedTableIds =
-      selectedIds.length === tableRows.length ? [] : tableRows.map((tableRow) => tableRow.nanoId);
+      selectedIds.length === tableRows.length ? [] : tableRows.map((tableRow) => tableRow.id);
     setSelectedIds(updatedTableIds);
+
+    // Don't need to include targetItemPath, only include targetItemPath if an answer is changed
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
       qrItems: getGroupTableItemsToUpdate(tableRows, updatedTableIds)
     });
   }
 
-  function handleSelectRow(nanoId: string) {
+  function handleSelectRow(rowId: string) {
     const updatedSelectedIds = [...selectedIds];
 
-    const index = updatedSelectedIds.indexOf(nanoId);
+    const index = updatedSelectedIds.indexOf(rowId);
     if (index === -1) {
-      updatedSelectedIds.push(nanoId);
+      updatedSelectedIds.push(rowId);
     } else {
       updatedSelectedIds.splice(index, 1);
     }
 
     setSelectedIds(updatedSelectedIds);
+
+    // Don't need to include targetItemPath, only include targetItemPath if an answer is changed
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
       qrItems: getGroupTableItemsToUpdate(tableRows, updatedSelectedIds)
@@ -158,6 +198,8 @@ function GroupTable(props: GroupTableProps) {
     flushSync(() => {
       setTableRows(newTableRows);
     });
+
+    // Don't need to include targetItemPath, only include targetItemPath if an answer is changed
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
       qrItems: getGroupTableItemsToUpdate(newTableRows, selectedIds)
@@ -168,14 +210,15 @@ function GroupTable(props: GroupTableProps) {
     <GroupTableView
       qItem={qItem}
       qItemsIndexMap={qItemsIndexMap}
+      itemPath={itemPath}
       groupCardElevation={groupCardElevation}
       isRepeated={isRepeated}
       readOnly={readOnly}
       tableRows={tableRows}
       selectedIds={selectedIds}
-      itemLabels={itemLabels}
-      showMinimalView={showMinimalView}
+      visibleItemLabels={visibleItemLabels}
       parentIsReadOnly={parentIsReadOnly}
+      parentStyles={parentStyles}
       onAddRow={handleAddRow}
       onRowChange={handleRowChange}
       onRemoveRow={handleRemoveRow}

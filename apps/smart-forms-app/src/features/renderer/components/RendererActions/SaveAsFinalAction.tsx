@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,77 +16,185 @@
  */
 
 import type { SpeedDialActionProps } from '@mui/material';
-import { SpeedDialAction } from '@mui/material';
-import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
+import {
+  buildBundleFromObservationArray,
+  extractObservationBased,
+  useQuestionnaireResponseStore,
+  useQuestionnaireStore
+} from '@aehrc/smart-forms-renderer';
+import { useMemo, useState } from 'react';
+import { getExtractMechanism } from '../../utils/extract.ts';
+import SaveAsFinalActionButton from './SaveAsFinalActionButton.tsx';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
-import TaskAltIcon from '@mui/icons-material/TaskAlt';
-import { useState } from 'react';
-import RendererSaveAsFinalDialog from './RendererSaveAsFinalDialog.tsx';
-import RendererOperationItem from '../RendererNav/RendererOperationItem.tsx';
-import { useExtractOperationStore } from '../../../playground/stores/extractOperationStore.ts';
+import { extractResultIsOperationOutcome, inAppExtract } from '@aehrc/sdc-template-extract';
+import type { Bundle } from 'fhir/r4';
+import RendererSaveAsFinalOnlyDialog from './RendererSaveAsFinalOnlyDialog.tsx';
 import RendererSaveAsFinalWriteBackDialog from './RendererSaveAsFinalWriteBackDialog.tsx';
 
 interface SaveAsFinalActionProps extends SpeedDialActionProps {
   isSpeedDial?: boolean;
-  onClose?: () => void;
+  onCloseSpeedDial?: () => void;
 }
 
 function SaveAsFinalAction(props: SaveAsFinalActionProps) {
-  const { isSpeedDial, onClose, ...speedDialActionProps } = props;
+  const { isSpeedDial, onCloseSpeedDial, ...speedDialActionProps } = props;
 
   const { smartClient } = useSmartClient();
 
   const [saveAsFinalDialogOpen, setSaveAsFinalDialogOpen] = useState(false);
+  const [isExtracting, setExtracting] = useState(false);
+  const [extractedBundle, setExtractedBundle] = useState<Bundle | null>(null);
 
+  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
   const formChangesHistory = useQuestionnaireResponseStore.use.formChangesHistory();
 
-  const targetStructureMap = useExtractOperationStore.use.targetStructureMap();
+  // Events handlers
+  async function handleTemplateExtract() {
+    // In the user-facing UI, always perform a modified-only extraction
+    const modifiedOnly = true;
 
-  function handleOpenDialog() {
-    if (onClose) {
-      onClose();
+    setExtracting(true);
+
+    // FhirClient not available, skip whole save process
+    if (!smartClient) {
+      setExtracting(false);
+      return;
     }
 
+    // Perform template-based extracted to get a transaction bundle
+    const responseToExtract = structuredClone(updatableResponse);
+    const inAppExtractOutput = await inAppExtract(
+      responseToExtract,
+      sourceQuestionnaire,
+      modifiedOnly ? sourceResponse : null
+    );
+
+    const { extractResult } = inAppExtractOutput;
+
+    if (extractResultIsOperationOutcome(extractResult)) {
+      console.error(extractResult);
+      setExtracting(false);
+      return;
+    }
+
+    setExtractedBundle(extractResult.extractedBundle);
+    setExtracting(false);
+
+    // Open dialog after extraction is complete
+    handleOpenDialog();
+  }
+
+  function handleObservationExtract() {
+    const extractedObservations = extractObservationBased(sourceQuestionnaire, updatableResponse);
+    const bundleFromObservations = buildBundleFromObservationArray(extractedObservations);
+    setExtractedBundle(bundleFromObservations);
+
+    // Open dialog after extraction is complete
+    handleOpenDialog();
+  }
+
+  function handleOpenDialog() {
+    // Close speedDial (if open)
+    if (onCloseSpeedDial) {
+      onCloseSpeedDial();
+    }
+
+    // Open dialog
     if (smartClient) {
       setSaveAsFinalDialogOpen(true);
     }
   }
 
+  function handleCloseDialog() {
+    // Close speedDial (if open)
+    if (onCloseSpeedDial) {
+      onCloseSpeedDial();
+    }
+
+    // Close dialog
+    setSaveAsFinalDialogOpen(false);
+  }
+
+  // This is for the write back dialog's onExited event.
+  // e.g.
+  // slotProps={{
+  //   transition: {
+  //     onExited: onDialogExited
+  //   }
+  // }}
+  function handleDialogExited() {
+    // Reset extract-related states back to false
+    setExtracting(false);
+    setExtractedBundle(null);
+  }
+
   const responseWasSaved = !!updatableResponse.authored && !!updatableResponse.author;
   const buttonIsDisabled = !responseWasSaved && formChangesHistory.length === 0;
 
-  const writeBackEnabled = !!targetStructureMap;
+  // Check if questionnaire can be template-based extracted
+  const extractMechanism = useMemo(
+    () => getExtractMechanism(sourceQuestionnaire),
+    [sourceQuestionnaire]
+  );
+  const writeBackEnabled = !!extractMechanism;
+
+  const numOfExtractedBundleEntries = extractedBundle?.entry?.length || 0;
+
+  if (writeBackEnabled) {
+    return (
+      <>
+        <SaveAsFinalActionButton
+          isSpeedDial={!!isSpeedDial}
+          isExtracting={isExtracting}
+          isDisabled={buttonIsDisabled}
+          writeBackEnabled={writeBackEnabled}
+          onSaveAsFinalActionClick={async () => {
+            if (extractMechanism === 'template-based') {
+              await handleTemplateExtract();
+            }
+
+            if (extractMechanism === 'observation-based') {
+              handleObservationExtract();
+            }
+          }}
+          {...speedDialActionProps}
+        />
+
+        {extractedBundle && numOfExtractedBundleEntries > 0 ? (
+          // An extracted bundle exists and have at least one entry
+          <RendererSaveAsFinalWriteBackDialog
+            dialogOpen={saveAsFinalDialogOpen}
+            extractedBundle={extractedBundle}
+            onCloseDialog={handleCloseDialog}
+            onDialogExited={handleDialogExited}
+          />
+        ) : (
+          // Extraction failed or no entries in the extracted bundle
+          <RendererSaveAsFinalOnlyDialog
+            open={saveAsFinalDialogOpen}
+            customContentText={
+              'There are no items to write back to the patient record. Are you sure you want to save this form as final? You will not be able to make further changes.'
+            }
+            closeDialog={handleCloseDialog}
+          />
+        )}
+      </>
+    );
+  }
 
   return (
     <>
-      {isSpeedDial ? (
-        <SpeedDialAction
-          icon={<TaskAltIcon />}
-          tooltipTitle={`Save as Final ${writeBackEnabled ? '& Write Back' : ''}`}
-          tooltipOpen
-          onClick={handleOpenDialog}
-          {...speedDialActionProps}
-        />
-      ) : (
-        <RendererOperationItem
-          title={`Save as Final ${writeBackEnabled ? '& Write Back' : ''}`}
-          icon={<TaskAltIcon />}
-          disabled={buttonIsDisabled}
-          onClick={handleOpenDialog}
-        />
-      )}
-      {writeBackEnabled ? (
-        <RendererSaveAsFinalWriteBackDialog
-          open={saveAsFinalDialogOpen}
-          closeDialog={() => setSaveAsFinalDialogOpen(false)}
-        />
-      ) : (
-        <RendererSaveAsFinalDialog
-          open={saveAsFinalDialogOpen}
-          closeDialog={() => setSaveAsFinalDialogOpen(false)}
-        />
-      )}
+      <SaveAsFinalActionButton
+        isSpeedDial={!!isSpeedDial}
+        isExtracting={false}
+        isDisabled={buttonIsDisabled}
+        writeBackEnabled={writeBackEnabled}
+        onSaveAsFinalActionClick={handleOpenDialog}
+        {...speedDialActionProps}
+      />
+      <RendererSaveAsFinalOnlyDialog open={saveAsFinalDialogOpen} closeDialog={handleCloseDialog} />
     </>
   );
 }

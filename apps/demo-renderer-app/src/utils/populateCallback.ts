@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,24 +15,18 @@
  * limitations under the License.
  */
 
-import type { FetchResourceCallback } from '@aehrc/sdc-populate';
-import axios from 'axios';
+import type { FetchResourceCallback, FetchResourceRequestConfig } from '@aehrc/sdc-populate';
 
 const ABSOLUTE_URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
 
-export interface RequestConfig {
-  clientEndpoint: string;
-  authToken: string | null;
-}
-
-export const fetchResourceCallback: FetchResourceCallback = (
+export const fetchResourceCallback: FetchResourceCallback = async (
   query: string,
-  requestConfig: RequestConfig
+  requestConfig: FetchResourceRequestConfig
 ) => {
-  let { clientEndpoint } = requestConfig;
+  let { sourceServerUrl } = requestConfig;
   const { authToken } = requestConfig;
 
-  const headers = {
+  const headers: Record<string, string> = {
     Accept: 'application/json;charset=utf-8'
   };
 
@@ -40,17 +34,16 @@ export const fetchResourceCallback: FetchResourceCallback = (
     headers['Authorization'] = `Bearer ${authToken}`;
   }
 
-  if (!clientEndpoint.endsWith('/')) {
-    clientEndpoint += '/';
+  if (!sourceServerUrl.endsWith('/')) {
+    sourceServerUrl += '/';
   }
 
-  if (ABSOLUTE_URL_REGEX.test(query)) {
-    return axios.get(query, {
-      headers: headers
-    });
+  const requestUrl = ABSOLUTE_URL_REGEX.test(query) ? query : `${sourceServerUrl}${query}`;
+  const response = await fetch(requestUrl, { headers });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error when performing ${requestUrl}. Status: ${response.status}`);
   }
 
-  return axios.get(clientEndpoint + query, {
-    headers: headers
-  });
+  return response.json();
 };

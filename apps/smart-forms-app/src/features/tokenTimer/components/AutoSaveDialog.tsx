@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,6 @@ import {
   useQuestionnaireResponseStore,
   useQuestionnaireStore
 } from '@aehrc/smart-forms-renderer';
-import cloneDeep from 'lodash.clonedeep';
 import { saveQuestionnaireResponse } from '../../../api/saveQr.ts';
 import { useSnackbar } from 'notistack';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
@@ -57,7 +56,7 @@ function AutoSaveDialog(props: AutoSaveDialogProps) {
 
     const responseToSave = removeEmptyAnswersFromResponse(
       sourceQuestionnaire,
-      cloneDeep(updatableResponse)
+      structuredClone(updatableResponse)
     );
 
     responseToSave.status = 'in-progress';
@@ -66,20 +65,23 @@ function AutoSaveDialog(props: AutoSaveDialogProps) {
         setUpdatableResponseAsSaved(savedResponse);
         enqueueSnackbar(saveSuccessMessage, {
           variant: 'success',
-          action: <CloseSnackbar />
+          action: <CloseSnackbar variant="success" />
         });
         onAutoSave();
       })
       .catch((error) => {
         console.error(error);
-        enqueueSnackbar(saveErrorMessage, { variant: 'error', action: <CloseSnackbar /> });
+        enqueueSnackbar(saveErrorMessage, {
+          variant: 'error',
+          action: <CloseSnackbar variant="error" />
+        });
         onAutoSave();
       });
   }
 
   return (
     <Dialog open={true} maxWidth="xl">
-      <DialogTitle variant="h5">Autosaving...</DialogTitle>
+      <DialogTitle variant="h6">Autosaving...</DialogTitle>
       <DialogContent sx={{ mb: 2 }}>
         <DialogContentText>
           Due to inactivity, your form is currently being autosaved as a draft.

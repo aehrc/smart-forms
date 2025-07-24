@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,12 +24,12 @@ function RendererOperationItem(props: OperationItem) {
 
   return (
     <NavListItemButton
+      role="button"
       disableGutters
       onClick={onClick}
       disabled={disabled}
       data-test="renderer-operation-item">
       <StyledNavItemIcon>{icon}</StyledNavItemIcon>
-
       <ListItemText disableTypography primary={title} />
     </NavListItemButton>
   );

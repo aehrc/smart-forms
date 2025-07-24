@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,94 +16,72 @@
  */
 
 import { useState } from 'react';
-import PrePopButtonForPlayground from './PrePopButtonForPlayground.tsx';
-import { populateQuestionnaire } from '@aehrc/sdc-populate';
-import { BaseRenderer, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
-import { fetchResourceCallback } from './PrePopCallbackForPlayground.tsx';
+import { BaseRenderer } from '@aehrc/smart-forms-renderer';
 import type { Patient, Practitioner } from 'fhir/r4';
 import { Box, Typography } from '@mui/material';
 import useLaunchContextNames from '../hooks/useLaunchContextNames.ts';
-import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
-import ExtractButtonForPlayground from './ExtractButtonForPlayground.tsx';
-import { useExtractOperationStore } from '../stores/extractOperationStore.ts';
-import { buildFormWrapper } from '../../../utils/manageForm.ts';
+import ExtractMenu from './ExtractMenu.tsx';
+import PopulateMenu from './PopulateMenu.tsx';
+import type { RendererSpinner } from '../../renderer/types/rendererSpinner.ts';
 
 interface PlaygroundRendererProps {
-  endpointUrl: string | null;
+  sourceFhirServerUrl: string | null;
   patient: Patient | null;
   user: Practitioner | null;
+  terminologyServerUrl: string;
   isExtracting: boolean;
-  onExtract: () => void;
+  onObservationExtract: () => void;
+  onTemplateExtract: (modifiedOnly: boolean) => void;
 }
 
 function PlaygroundRenderer(props: PlaygroundRendererProps) {
-  const { endpointUrl, patient, user, isExtracting, onExtract } = props;
+  const {
+    sourceFhirServerUrl,
+    patient,
+    user,
+    terminologyServerUrl,
+    isExtracting,
+    onObservationExtract,
+    onTemplateExtract
+  } = props;
 
-  const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
-  const targetStructureMap = useExtractOperationStore.use.targetStructureMap();
-  const setPopulatedContext = useQuestionnaireStore.use.setPopulatedContext();
-
-  const [isPopulating, setIsPopulating] = useState(false);
+  const initialSpinner: RendererSpinner = { isSpinning: false, status: 'prepopulate', message: '' };
+  const [spinner, setSpinner] = useState<RendererSpinner>(initialSpinner);
 
   const { patientName, userName } = useLaunchContextNames(patient, user);
 
-  const prePopEnabled = endpointUrl !== null && patient !== null;
-  const extractEnabled = targetStructureMap !== null;
-
-  function handlePrepopulate() {
-    if (!prePopEnabled) {
-      return;
-    }
-
-    setIsPopulating(true);
-
-    populateQuestionnaire({
-      questionnaire: sourceQuestionnaire,
-      fetchResourceCallback: fetchResourceCallback,
-      requestConfig: {
-        clientEndpoint: endpointUrl,
-        authToken: null
-      },
-      patient: patient,
-      user: user ?? undefined
-    }).then(async ({ populateSuccess, populateResult }) => {
-      if (!populateSuccess || !populateResult) {
-        setIsPopulating(false);
-        return;
-      }
-
-      const { populatedResponse, populatedContext } = populateResult;
-
-      // Call to buildForm to pre-populate the QR which repaints the entire BaseRenderer view
-      await buildFormWrapper(
-        sourceQuestionnaire,
-        populatedResponse,
-        undefined,
-        TERMINOLOGY_SERVER_URL
-      );
-      if (populatedContext) {
-        setPopulatedContext(populatedContext);
-      }
-
-      setIsPopulating(false);
-    });
-  }
+  const isPrePopulating = spinner.isSpinning && spinner.status === 'prepopulate';
+  const isRePopulateWriting = spinner.isSpinning && spinner.status === 'repopulate-write';
 
   return (
     <>
-      <Box display="flex" alignItems="center" columnGap={1.5} mx={1}>
-        <PrePopButtonForPlayground
-          prePopEnabled={prePopEnabled}
-          isPopulating={isPopulating}
-          onPopulate={handlePrepopulate}
+      <Box
+        display="flex"
+        alignItems="center"
+        columnGap={1}
+        px={1}
+        sx={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 10,
+          backgroundColor: 'white',
+          borderBottom: '1px solid',
+          borderColor: 'divider'
+        }}>
+        <PopulateMenu
+          sourceFhirServerUrl={sourceFhirServerUrl}
+          patient={patient}
+          user={user}
+          terminologyServerUrl={terminologyServerUrl}
+          spinner={spinner}
+          onSpinnerChange={(newSpinner) => setSpinner(newSpinner)}
         />
-        <ExtractButtonForPlayground
-          extractEnabled={extractEnabled}
+        <ExtractMenu
           isExtracting={isExtracting}
-          onExtract={onExtract}
+          onObservationExtract={onObservationExtract}
+          onTemplateExtract={onTemplateExtract}
         />
         <Box flexGrow={1} />
-
         {patientName ? (
           <Typography variant="subtitle2" color="text.secondary">
             Patient: {patientName}
@@ -115,7 +93,11 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
           </Typography>
         ) : null}
       </Box>
-      {isPopulating ? null : <BaseRenderer />}
+      {isPrePopulating || isRePopulateWriting ? null : (
+        <Box px={1}>
+          <BaseRenderer />
+        </Box>
+      )}
     </>
   );
 }

@@ -7,7 +7,7 @@ Check if the given parameters is a valid InputParameters for $assemble
 ## Parameters
 
 | Parameter | Type | Description |
-| :------ | :------ | :------ |
+| ------ | ------ | ------ |
 | `parameters` | `Parameters` | a given Parameters resource |
 
 ## Returns

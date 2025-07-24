@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,7 +41,6 @@ import {
 import { createQuestionnaireModel } from '../utils/questionnaireStoreUtils/createQuestionaireModel';
 import { initialiseFormFromResponse } from '../utils/initialise';
 import { emptyQuestionnaire, emptyResponse } from '../utils/emptyResource';
-import cloneDeep from 'lodash.clonedeep';
 import { terminologyServerStore } from './terminologyServerStore';
 import { createSelectors } from './selector';
 import { mutateRepeatEnableWhenExpressionInstances } from '../utils/enableWhenExpression';
@@ -49,6 +48,13 @@ import { questionnaireResponseStore } from './questionnaireResponseStore';
 import { createQuestionnaireResponseItemMap } from '../utils/questionnaireResponseStoreUtils/updatableResponseItems';
 import { insertCompleteAnswerOptionsIntoQuestionnaire } from '../utils/questionnaireStoreUtils/insertAnswerOptions';
 import type { InitialExpression } from '../interfaces/initialExpression.interface';
+import type { QItemOverrideComponentProps, SdcUiOverrideComponentProps } from '../interfaces';
+import type { ComponentType } from 'react';
+import type { TargetConstraint } from '../interfaces/targetConstraint.interface';
+import { readTargetConstraintLocationLinkIds } from '../utils/targetConstraint';
+import type { ProcessedValueSet } from '../interfaces/valueSet.interface';
+import type { AnswerOptionsToggleExpression } from '../interfaces/answerOptionsToggleExpression.interface';
+import { applyComputedUpdates } from '../utils/computedUpdates';
 
 /**
  * QuestionnaireStore properties and methods
@@ -57,23 +63,29 @@ import type { InitialExpression } from '../interfaces/initialExpression.interfac
  *
  * @property sourceQuestionnaire - FHIR R4 Questionnaire to render
  * @property itemTypes - Key-value pair of item types `Record<linkId, item.type>`
+ * @property itemPreferredTerminologyServers - Key-value pair of item types `Record<linkId, preferred terminology servers>`
  * @property tabs - Key-value pair of tabs `Record<linkId, Tab>`
  * @property currentTabIndex - Index of the current tab
  * @property pages - Key-value pair of pages `Record<linkId, Page>`
  * @property currentPageIndex - Index of the current page
  * @property variables - Questionnaire variables object containing FHIRPath and x-fhir-query variables
  * @property launchContexts - Key-value pair of launch contexts `Record<launch context name, launch context properties>`
+ * @property targetConstraints - Key-value pair of target constraints `Record<target constraint key, target constraint properties>`
+ * @property targetConstraintLinkIds - Key-value pair of linkIds against target constraint key(s) `Record<linkId, target constraint keys>`
+ * @property answerOptionsToggleExpressions - Key-value pair of answer options toggle expressions `Record<linkId, array of answer options toggle expressions>`
  * @property enableWhenItems - EnableWhenItems object containing enableWhen items and their linked questions
  * @property enableWhenLinkedQuestions - Key-value pair of linked questions to enableWhen items `Record<linkId, linkIds of linked questions>`
  * @property enableWhenIsActivated - Flag to turn enableWhen checks on/off
  * @property enableWhenExpressions - EnableWhenExpressions object containing enableWhen expressions
  * @property calculatedExpressions - Key-value pair of calculated expressions `Record<linkId, array of calculated expression properties>`
  * @property answerExpressions - Key-value pair of answer expressions `Record<linkId, answer expression properties>`
- * @property processedValueSetCodings - Key-value pair of processed value set codings `Record<valueSetUrl, codings>`
- * @property processedValueSetUrls - Key-value pair of contained value set urls `Record<valueSetName, valueSetUrl>`
+ * @property processedValueSets - Key-value pair of (pre-)processed value set codings `Record<valueSetUrl, ProcessedValueSet>`
  * @property cachedValueSetCodings - Key-value pair of cached value set codings `Record<valueSetUrl, codings>`
  * @property fhirPathContext - Key-value pair of evaluated FHIRPath values `Record<variable name, evaluated value(s)>`
+ * @property fhirPathTerminologyCache - Key-value pair of cached FHIRPath Terminology results `Record<cacheKey, cached terminology result>`
  * @property populatedContext - Key-value pair of one-off pre-populated FHIRPath values `Record<variable/launchContext/sourceQueries batch name, evaluated value(s)>`
+ * @property qItemOverrideComponents - Key-value pair of React component overrides for Questionnaire Items via linkId `Record<linkId, React component>`
+ * @property sdcUiOverrideComponents - Key-value pair of React component overrides for SDC UI Controls https://hl7.org/fhir/extensions/ValueSet-questionnaire-item-control.html `Record<SDC UI code, React component>`
  * @property focusedLinkId - LinkId of the currently focused item
  * @property readOnly - Flag to set the form to read-only mode
  * @property buildSourceQuestionnaire - Used to build the source questionnaire with the provided questionnaire and optionally questionnaire response, additional variables, terminology server url and readyOnly flag
@@ -89,7 +101,7 @@ import type { InitialExpression } from '../interfaces/initialExpression.interfac
  * @property addCodingToCache - Used to add a coding to the cached value set codings
  * @property updatePopulatedProperties - Used to update all SDC expressions based on a pre-populated questionnaire response
  * @property onFocusLinkId - Used to set the focused linkId
- * @property setPopulatedContext - Used to set the populated contexts (launchContext, sourceQueries, x-fhir-query vars) for debugging purposes
+ * @property setPopulatedContext - Used to set the populated contexts (launchContext, sourceQueries, x-fhir-query vars) for debugging purposes, and optionally add to the FHIRPath context
  * @property setFormAsReadOnly - Used to set the form as read-only
  *
  * @author Sean Fong
@@ -97,12 +109,16 @@ import type { InitialExpression } from '../interfaces/initialExpression.interfac
 export interface QuestionnaireStoreType {
   sourceQuestionnaire: Questionnaire;
   itemTypes: Record<string, string>;
+  itemPreferredTerminologyServers: Record<string, string>;
   tabs: Tabs;
   currentTabIndex: number;
   pages: Pages;
   currentPageIndex: number;
   variables: Variables;
   launchContexts: Record<string, LaunchContext>;
+  targetConstraints: Record<string, TargetConstraint>;
+  targetConstraintLinkIds: Record<string, string[]>;
+  answerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
   enableWhenItems: EnableWhenItems;
   enableWhenLinkedQuestions: Record<string, string[]>;
   enableWhenIsActivated: boolean;
@@ -110,19 +126,23 @@ export interface QuestionnaireStoreType {
   calculatedExpressions: Record<string, CalculatedExpression[]>;
   initialExpressions: Record<string, InitialExpression>;
   answerExpressions: Record<string, AnswerExpression>;
-  processedValueSetCodings: Record<string, Coding[]>;
-  processedValueSetUrls: Record<string, string>;
+  processedValueSets: Record<string, ProcessedValueSet>;
   cachedValueSetCodings: Record<string, Coding[]>;
   fhirPathContext: Record<string, any>;
+  fhirPathTerminologyCache: Record<string, any>;
   populatedContext: Record<string, any>;
+  qItemOverrideComponents: Record<string, ComponentType<QItemOverrideComponentProps>>;
+  sdcUiOverrideComponents: Record<string, ComponentType<SdcUiOverrideComponentProps>>;
   focusedLinkId: string;
   readOnly: boolean;
   buildSourceQuestionnaire: (
     questionnaire: Questionnaire,
     questionnaireResponse?: QuestionnaireResponse,
-    additionalVariables?: Record<string, object>,
+    additionalVariables?: Record<string, any>,
     terminologyServerUrl?: string,
-    readOnly?: boolean
+    readOnly?: boolean,
+    qItemOverrideComponents?: Record<string, ComponentType<QItemOverrideComponentProps>>,
+    sdcUiOverrideComponents?: Record<string, ComponentType<SdcUiOverrideComponentProps>>
   ) => Promise<void>;
   destroySourceQuestionnaire: () => void;
   switchTab: (newTabIndex: number) => void;
@@ -140,15 +160,19 @@ export interface QuestionnaireStoreType {
     actionType: 'add' | 'remove'
   ) => void;
   toggleEnableWhenActivation: (isActivated: boolean) => void;
-  updateExpressions: (updatedResponse: QuestionnaireResponse) => void;
+  updateExpressions: (updatedResponse: QuestionnaireResponse) => Promise<void>;
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) => void;
   updatePopulatedProperties: (
     populatedResponse: QuestionnaireResponse,
     populatedContext?: Record<string, any>,
     persistTabIndex?: boolean
-  ) => QuestionnaireResponse;
+  ) => Promise<QuestionnaireResponse>;
   onFocusLinkId: (linkId: string) => void;
-  setPopulatedContext: (newPopulatedContext: Record<string, any>) => void;
+  // TODO - to be deprecated, use `additionalVariables` in buildSourceQuestionnaire(), also directly set in updatedPopulatedProperties
+  setPopulatedContext: (
+    newPopulatedContext: Record<string, any>,
+    addToFhirPathContext?: boolean
+  ) => void;
   setFormAsReadOnly: (readOnly: boolean) => void;
 }
 
@@ -160,14 +184,18 @@ export interface QuestionnaireStoreType {
  * @author Sean Fong
  */
 export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, get) => ({
-  sourceQuestionnaire: cloneDeep(emptyQuestionnaire),
+  sourceQuestionnaire: structuredClone(emptyQuestionnaire),
   itemTypes: {},
+  itemPreferredTerminologyServers: {},
   tabs: {},
   currentTabIndex: 0,
   pages: {},
   currentPageIndex: 0,
   variables: { fhirPathVariables: {}, xFhirQueryVariables: {} },
   launchContexts: {},
+  targetConstraints: {},
+  targetConstraintLinkIds: {},
+  answerOptionsToggleExpressions: {},
   calculatedExpressions: {},
   initialExpressions: {},
   enableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} },
@@ -175,25 +203,25 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   enableWhenItems: { singleItems: {}, repeatItems: {} },
   enableWhenLinkedQuestions: {},
   enableWhenIsActivated: true,
-  processedValueSetCodings: {},
-  processedValueSetUrls: {},
+  processedValueSets: {},
   cachedValueSetCodings: {},
   fhirPathContext: {},
+  fhirPathTerminologyCache: {},
   populatedContext: {},
+  qItemOverrideComponents: {},
+  sdcUiOverrideComponents: {},
   focusedLinkId: '',
   readOnly: false,
   buildSourceQuestionnaire: async (
     questionnaire,
-    questionnaireResponse = cloneDeep(emptyResponse),
+    questionnaireResponse = structuredClone(emptyResponse),
     additionalVariables = {},
     terminologyServerUrl = terminologyServerStore.getState().url,
-    readOnly = false
+    readOnly = false,
+    qItemOverrideComponents = {},
+    sdcUiOverrideComponents = {}
   ) => {
-    const questionnaireModel = await createQuestionnaireModel(
-      questionnaire,
-      additionalVariables,
-      terminologyServerUrl
-    );
+    const questionnaireModel = await createQuestionnaireModel(questionnaire, terminologyServerUrl);
 
     // Insert answerOptions with displays into questionnaire
     questionnaire = insertCompleteAnswerOptionsIntoQuestionnaire(
@@ -201,66 +229,109 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       questionnaireModel.answerOptions
     );
 
+    // If existing fhirPathContext is empty, use the one from the questionnaire model
+    // Mostly existing fhirPathContext will be empty, but in some cases it may not be e.g. after pre-population
+    let fhirPathContext = get().fhirPathContext ?? questionnaireModel.fhirPathContext;
+
+    // TODO reminder to have documentation when upgrading to 1.0.0 - 05/06/2025
+    // TODO This is something new - the definition of additionalVariables is now <"name", "value">, which allows it to be injected into the renderer's fhirPathContext.
+    // TODO as an example, populatedContext from a pre-pop module can now be inserted into the renderer for further use.
+    fhirPathContext = {
+      ...fhirPathContext,
+      ...additionalVariables
+    };
+    const fhirPathTerminologyCache =
+      get().fhirPathTerminologyCache ?? questionnaireModel.fhirPathTerminologyCache;
+
     // Initialise form with questionnaire response and properties in questionnaire model
     const {
+      initialTargetConstraints,
       initialEnableWhenItems,
       initialEnableWhenLinkedQuestions,
       initialEnableWhenExpressions,
       initialCalculatedExpressions,
+      initialProcessedValueSets,
+      initialAnswerOptionsToggleExpressions,
       firstVisibleTab,
       firstVisiblePage,
-      updatedFhirPathContext
-    } = initialiseFormFromResponse({
+      updatedFhirPathContext,
+      fhirPathTerminologyCache: updatedFhirPathTerminologyCache
+    } = await initialiseFormFromResponse({
+      sourceQuestionnaire: questionnaire,
       questionnaireResponse,
+      targetConstraints: questionnaireModel.targetConstraints,
       enableWhenItems: questionnaireModel.enableWhenItems,
       enableWhenExpressions: questionnaireModel.enableWhenExpressions,
       calculatedExpressions: questionnaireModel.calculatedExpressions,
-      variablesFhirPath: questionnaireModel.variables.fhirPathVariables,
+      answerOptionsToggleExpressions: questionnaireModel.answerOptionsToggleExpressions,
+      variables: questionnaireModel.variables,
+      processedValueSets: questionnaireModel.processedValueSets,
       tabs: questionnaireModel.tabs,
       pages: questionnaireModel.pages,
-      fhirPathContext: questionnaireModel.fhirPathContext
+      fhirPathContext: fhirPathContext,
+      fhirPathTerminologyCache: fhirPathTerminologyCache,
+      terminologyServerUrl: terminologyServerUrl
     });
+
+    // Read target constraint locations
+    const targetConstraintLinkIds = readTargetConstraintLocationLinkIds(
+      questionnaire,
+      initialTargetConstraints
+    );
 
     set({
       sourceQuestionnaire: questionnaire,
       itemTypes: questionnaireModel.itemTypes,
+      itemPreferredTerminologyServers: questionnaireModel.itemPreferredTerminologyServers,
       tabs: questionnaireModel.tabs,
       currentTabIndex: firstVisibleTab,
       pages: questionnaireModel.pages,
       currentPageIndex: firstVisiblePage,
       variables: questionnaireModel.variables,
       launchContexts: questionnaireModel.launchContexts,
+      targetConstraints: initialTargetConstraints,
+      targetConstraintLinkIds: targetConstraintLinkIds,
+      answerOptionsToggleExpressions: initialAnswerOptionsToggleExpressions,
       enableWhenItems: initialEnableWhenItems,
       enableWhenLinkedQuestions: initialEnableWhenLinkedQuestions,
       enableWhenExpressions: initialEnableWhenExpressions,
       calculatedExpressions: initialCalculatedExpressions,
       initialExpressions: questionnaireModel.initialExpressions,
       answerExpressions: questionnaireModel.answerExpressions,
-      processedValueSetCodings: questionnaireModel.processedValueSetCodings,
-      processedValueSetUrls: questionnaireModel.processedValueSetUrls,
+      processedValueSets: initialProcessedValueSets,
+      cachedValueSetCodings: questionnaireModel.cachedValueSetCodings,
       fhirPathContext: updatedFhirPathContext,
+      fhirPathTerminologyCache: updatedFhirPathTerminologyCache,
+      qItemOverrideComponents: qItemOverrideComponents,
+      sdcUiOverrideComponents: sdcUiOverrideComponents,
       readOnly: readOnly
     });
   },
   destroySourceQuestionnaire: () =>
     set({
-      sourceQuestionnaire: cloneDeep(emptyQuestionnaire),
+      sourceQuestionnaire: structuredClone(emptyQuestionnaire),
       itemTypes: {},
+      itemPreferredTerminologyServers: {},
       tabs: {},
       currentTabIndex: 0,
       pages: {},
       currentPageIndex: 0,
       variables: { fhirPathVariables: {}, xFhirQueryVariables: {} },
       launchContexts: {},
+      targetConstraints: {},
+      targetConstraintLinkIds: {},
+      answerOptionsToggleExpressions: {},
       enableWhenItems: { singleItems: {}, repeatItems: {} },
       enableWhenLinkedQuestions: {},
       enableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} },
       calculatedExpressions: {},
       initialExpressions: {},
       answerExpressions: {},
-      processedValueSetCodings: {},
-      processedValueSetUrls: {},
-      fhirPathContext: {}
+      processedValueSets: {},
+      fhirPathContext: {},
+      fhirPathTerminologyCache: {},
+      qItemOverrideComponents: {},
+      sdcUiOverrideComponents: {}
     }),
   switchTab: (newTabIndex: number) => set(() => ({ currentTabIndex: newTabIndex })),
   switchPage: (newPageIndex: number) => set(() => ({ currentPageIndex: newPageIndex })),
@@ -306,7 +377,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       enableWhenItems: updatedEnableWhenItems
     }));
   },
-  mutateRepeatEnableWhenItems: (
+  mutateRepeatEnableWhenItems: async (
     parentRepeatGroupLinkId: string,
     parentRepeatGroupIndex: number,
     actionType: 'add' | 'remove'
@@ -323,16 +394,19 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       actionType
     );
 
-    const { updatedEnableWhenExpressions, isUpdated } = mutateRepeatEnableWhenExpressionInstances({
-      questionnaireResponse: questionnaireResponseStore.getState().updatableResponse,
-      questionnaireResponseItemMap: questionnaireResponseStore.getState().updatableResponseItems,
-      variablesFhirPath: get().variables.fhirPathVariables,
-      existingFhirPathContext: get().fhirPathContext,
-      enableWhenExpressions: enableWhenExpressions,
-      parentRepeatGroupLinkId,
-      parentRepeatGroupIndex,
-      actionType
-    });
+    const { updatedEnableWhenExpressions, isUpdated } =
+      await mutateRepeatEnableWhenExpressionInstances({
+        questionnaireResponse: questionnaireResponseStore.getState().updatableResponse,
+        questionnaireResponseItemMap: questionnaireResponseStore.getState().updatableResponseItems,
+        variables: get().variables,
+        existingFhirPathContext: get().fhirPathContext,
+        fhirPathTerminologyCache: get().fhirPathTerminologyCache,
+        enableWhenExpressions: enableWhenExpressions,
+        parentRepeatGroupLinkId,
+        parentRepeatGroupIndex,
+        actionType,
+        terminologyServerUrl: terminologyServerStore.getState().url
+      });
 
     if (isUpdated) {
       set(() => ({
@@ -343,33 +417,72 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   },
   toggleEnableWhenActivation: (isActivated: boolean) =>
     set(() => ({ enableWhenIsActivated: isActivated })),
-  updateExpressions: (updatedResponse: QuestionnaireResponse) => {
-    const updatedResponseItemMap = createQuestionnaireResponseItemMap(updatedResponse);
+  updateExpressions: async (updatedResponse: QuestionnaireResponse) => {
+    const sourceQuestionnaire = get().sourceQuestionnaire;
+    const updateResponse = questionnaireResponseStore.getState().updateResponse;
+    const validateResponse = questionnaireResponseStore.getState().validateResponse;
+    const updatedResponseItemMap = createQuestionnaireResponseItemMap(
+      sourceQuestionnaire,
+      updatedResponse
+    );
     const {
       isUpdated,
+      updatedTargetConstraints,
+      updatedAnswerOptionsToggleExpressions,
       updatedEnableWhenExpressions,
       updatedCalculatedExpressions,
-      updatedFhirPathContext
-    } = evaluateUpdatedExpressions({
+      updatedProcessedValueSets,
+      updatedFhirPathContext,
+      fhirPathTerminologyCache,
+      computedQRItemUpdates
+    } = await evaluateUpdatedExpressions({
       updatedResponse,
       updatedResponseItemMap,
+      targetConstraints: get().targetConstraints,
+      answerOptionsToggleExpressions: get().answerOptionsToggleExpressions,
       enableWhenExpressions: get().enableWhenExpressions,
       calculatedExpressions: get().calculatedExpressions,
-      variablesFhirPath: get().variables.fhirPathVariables,
-      existingFhirPathContext: get().fhirPathContext
+      processedValueSets: get().processedValueSets,
+      variables: get().variables,
+      existingFhirPathContext: get().fhirPathContext,
+      fhirPathTerminologyCache: get().fhirPathTerminologyCache,
+      terminologyServerUrl: terminologyServerStore.getState().url
     });
+
+    /**
+     * Applies computed updates to the QR before updating the store.
+     * Before this, we were updating the store before applying the computed updates. This may cause downstream useEffects to use a stale QR.
+     * By applying the computed updates first, we ensure that the QR is up-to-date when downstream useEffects are fired.
+     */
+
+    let lastUpdatedResponse = structuredClone(updatedResponse);
+    if (Object.keys(computedQRItemUpdates).length > 0) {
+      lastUpdatedResponse = applyComputedUpdates(
+        get().sourceQuestionnaire,
+        updatedResponse,
+        computedQRItemUpdates
+      );
+      updateResponse(lastUpdatedResponse, 'async');
+    }
 
     if (isUpdated) {
       set(() => ({
+        targetConstraints: updatedTargetConstraints,
+        answerOptionsToggleExpressions: updatedAnswerOptionsToggleExpressions,
         enableWhenExpressions: updatedEnableWhenExpressions,
         calculatedExpressions: updatedCalculatedExpressions,
-        fhirPathContext: updatedFhirPathContext
+        processedValueSets: updatedProcessedValueSets,
+        fhirPathContext: updatedFhirPathContext,
+        fhirPathTerminologyCache: fhirPathTerminologyCache
       }));
-      return 0;
+
+      // Besides setting QuestionnaireStore state, we also need to update `invalidItems` and `responseIsValid` in QuestionnaireResponseStore
+      validateResponse(sourceQuestionnaire, lastUpdatedResponse); // Validate the updated response asynchronously
     }
 
     set(() => ({
-      fhirPathContext: updatedFhirPathContext
+      fhirPathContext: updatedFhirPathContext,
+      fhirPathTerminologyCache: fhirPathTerminologyCache
     }));
   },
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) =>
@@ -379,49 +492,69 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
         [valueSetUrl]: codings
       }
     })),
-  updatePopulatedProperties: (
+  updatePopulatedProperties: async (
     populatedResponse: QuestionnaireResponse,
     populatedContext?: Record<string, any>,
     persistTabIndex?: boolean,
     persistPageIndex?: boolean
   ) => {
-    const initialResponseItemMap = createQuestionnaireResponseItemMap(populatedResponse);
+    const sourceQuestionnaire = get().sourceQuestionnaire;
+    const fhirPathContext = { ...get().fhirPathContext, ...(populatedContext ?? {}) };
+    const initialResponseItemMap = createQuestionnaireResponseItemMap(
+      sourceQuestionnaire,
+      populatedResponse
+    );
 
-    const evaluateInitialCalculatedExpressionsResult = evaluateInitialCalculatedExpressions({
+    const evaluateInitialCalculatedExpressionsResult = await evaluateInitialCalculatedExpressions({
       initialResponse: populatedResponse,
       initialResponseItemMap: initialResponseItemMap,
       calculatedExpressions: get().calculatedExpressions,
-      variablesFhirPath: get().variables.fhirPathVariables,
-      existingFhirPathContext: get().fhirPathContext
+      variables: get().variables,
+      existingFhirPathContext: fhirPathContext,
+      fhirPathTerminologyCache: get().fhirPathTerminologyCache,
+      terminologyServerUrl: terminologyServerStore.getState().url
     });
     const { initialCalculatedExpressions } = evaluateInitialCalculatedExpressionsResult;
     let updatedFhirPathContext = evaluateInitialCalculatedExpressionsResult.updatedFhirPathContext;
+    let fhirPathTerminologyCache =
+      evaluateInitialCalculatedExpressionsResult.fhirPathTerminologyCache;
 
     const updatedResponse = initialiseCalculatedExpressionValues(
-      get().sourceQuestionnaire,
+      sourceQuestionnaire,
       populatedResponse,
       initialCalculatedExpressions
     );
 
     const {
+      initialTargetConstraints,
       initialEnableWhenItems,
       initialEnableWhenLinkedQuestions,
       initialEnableWhenExpressions,
+      initialAnswerOptionsToggleExpressions,
       firstVisibleTab,
       firstVisiblePage
-    } = initialiseFormFromResponse({
+    } = await initialiseFormFromResponse({
+      sourceQuestionnaire,
       questionnaireResponse: updatedResponse,
+      targetConstraints: get().targetConstraints,
       enableWhenItems: get().enableWhenItems,
       enableWhenExpressions: get().enableWhenExpressions,
       calculatedExpressions: initialCalculatedExpressions,
-      variablesFhirPath: get().variables.fhirPathVariables,
+      answerOptionsToggleExpressions: get().answerOptionsToggleExpressions,
+      variables: get().variables,
+      processedValueSets: get().processedValueSets,
       tabs: get().tabs,
       pages: get().pages,
-      fhirPathContext: updatedFhirPathContext
+      fhirPathContext: updatedFhirPathContext,
+      fhirPathTerminologyCache: fhirPathTerminologyCache,
+      terminologyServerUrl: terminologyServerStore.getState().url
     });
     updatedFhirPathContext = evaluateInitialCalculatedExpressionsResult.updatedFhirPathContext;
+    fhirPathTerminologyCache = evaluateInitialCalculatedExpressionsResult.fhirPathTerminologyCache;
 
     set(() => ({
+      targetConstraints: initialTargetConstraints,
+      answerOptionsToggleExpressions: initialAnswerOptionsToggleExpressions,
       enableWhenItems: initialEnableWhenItems,
       enableWhenLinkedQuestions: initialEnableWhenLinkedQuestions,
       enableWhenExpressions: initialEnableWhenExpressions,
@@ -429,6 +562,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       currentTabIndex: persistTabIndex ? get().currentTabIndex : firstVisibleTab,
       currentPageIndex: persistPageIndex ? get().currentPageIndex : firstVisiblePage,
       fhirPathContext: updatedFhirPathContext,
+      fhirPathTerminologyCache: fhirPathTerminologyCache,
       populatedContext: populatedContext ?? get().populatedContext
     }));
 
@@ -438,10 +572,23 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     set(() => ({
       focusedLinkId: linkId
     })),
-  setPopulatedContext: (newPopulatedContext: Record<string, any>) =>
+  setPopulatedContext: (
+    newPopulatedContext: Record<string, any>,
+    addToFhirPathContext?: boolean
+  ) => {
+    if (addToFhirPathContext) {
+      const newFhirPathContext = { ...get().fhirPathContext, ...newPopulatedContext };
+      set(() => ({
+        populatedContext: newPopulatedContext,
+        fhirPathContext: newFhirPathContext
+      }));
+      return;
+    }
+
     set(() => ({
       populatedContext: newPopulatedContext
-    })),
+    }));
+  },
   setFormAsReadOnly: (readOnly: boolean) =>
     set(() => ({
       readOnly: readOnly

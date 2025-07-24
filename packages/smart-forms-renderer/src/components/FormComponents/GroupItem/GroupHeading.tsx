@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,50 +17,94 @@
 
 import React, { memo } from 'react';
 import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
-import type { PropsWithIsRepeatedAttribute } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem } from 'fhir/r4';
 import { getContextDisplays } from '../../../utils/tabs';
 import ContextDisplayItem from '../ItemParts/ContextDisplayItem';
-import ItemLabelText from '../ItemParts/ItemLabelText';
+import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
+import { useRendererStylingStore } from '../../../stores';
+import RequiredAsterisk from '../ItemParts/RequiredAsterisk';
+import ItemTextSwitcher from '../ItemParts/ItemTextSwitcher';
+import FlyoverItem from '../ItemParts/FlyoverItem';
+import { getHeadingTag } from '../../../utils/headingVariant';
+import type { PropsWithParentStylesAttribute } from '../../../interfaces/renderProps.interface';
 
-interface GroupHeadingProps extends PropsWithIsRepeatedAttribute {
+interface GroupHeadingProps extends PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   readOnly: boolean;
+  groupCardElevation: number;
   tabIsMarkedAsComplete?: boolean;
   pageIsMarkedAsComplete?: boolean;
 }
 
 const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
-  const { qItem, readOnly, tabIsMarkedAsComplete, pageIsMarkedAsComplete, isRepeated } = props;
+  const {
+    qItem,
+    readOnly,
+    groupCardElevation,
+    tabIsMarkedAsComplete,
+    pageIsMarkedAsComplete,
+    parentStyles
+  } = props;
 
+  const requiredIndicatorPosition = useRendererStylingStore.use.requiredIndicatorPosition();
+
+  const { required, displayFlyover } = useRenderingExtensions(qItem);
   const contextDisplayItems = getContextDisplays(qItem);
-
-  if (isRepeated) {
-    return null;
-  }
 
   const isTabHeading = tabIsMarkedAsComplete !== undefined;
   const isPageHeading = pageIsMarkedAsComplete !== undefined;
 
+  // Get text color from parent styles if available
+  const textColor =
+    parentStyles?.color ||
+    (readOnly && (!isTabHeading || !isPageHeading) ? 'text.secondary' : 'text.primary');
+
   return (
     <>
       <Box display="flex" alignItems="center" width="100%">
-        <Typography
-          variant="h6"
-          fontSize={isTabHeading || isPageHeading ? 16 : 15}
-          color={readOnly && (!isTabHeading || !isPageHeading) ? 'text.secondary' : 'text.primary'}>
-          <ItemLabelText qItem={qItem} />
-        </Typography>
-        <Box flexGrow={1} />
-        <Box display="flex" columnGap={0.5} mx={1}>
+        <Box position="relative" display="flex" flexGrow={1} alignItems="center">
+          {/* Required asterisk position is in front of text */}
+          {required && requiredIndicatorPosition === 'start' ? (
+            <RequiredAsterisk
+              sx={{ position: 'absolute', top: 0, left: -8 }} // Adjust top and left values as needed
+            >
+              *
+            </RequiredAsterisk>
+          ) : null}
+
+          {/* Group Heading typography */}
+          {/* flexGrow: 1 is important if xhtml and markdown rendering has width: 100% */}
+          <Typography
+            component={getHeadingTag(groupCardElevation)}
+            variant="groupHeading"
+            color={textColor}
+            display="flex"
+            alignItems="center"
+            sx={{ flexGrow: 1, ...(parentStyles || {}) }}>
+            <ItemTextSwitcher qItem={qItem} />
+
+            {/* Required asterisk position is behind text */}
+            {required && requiredIndicatorPosition === 'end' ? (
+              <RequiredAsterisk readOnly={readOnly} variant="groupHeading">
+                *
+              </RequiredAsterisk>
+            ) : null}
+            {/* Flyover */}
+            {displayFlyover !== '' ? (
+              <Typography component="span" sx={{ ml: 0.75 }}>
+                <FlyoverItem displayFlyover={displayFlyover} readOnly={readOnly} />
+              </Typography>
+            ) : null}
+          </Typography>
+        </Box>
+
+        <Box display="flex" columnGap={0.5}>
           {contextDisplayItems.map((item) => {
             return <ContextDisplayItem key={item.linkId} displayItem={item} />;
           })}
         </Box>
       </Box>
-      {qItem.text ? <Divider sx={{ mt: 1, mb: 1.5 }} light /> : null}
     </>
   );
 });

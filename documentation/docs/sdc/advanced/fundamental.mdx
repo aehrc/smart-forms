@@ -29,13 +29,7 @@ Also appears in the [Value Constraints](/docs/sdc/advanced/constraint) subsectio
 
 #### Basic Usage
 
-<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-4-advanced-other--required">
-  <iframe
-    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-4-advanced-other--required"
-    width="100%"
-    height="100"
-  />
-</IframeContainer>
+<IframeContainer storyId="sdc-8-1-4-advanced-other--required" initialHeight={120} />
 
 ### Repeats
 
@@ -45,33 +39,13 @@ An indication, if true, that the item may occur multiple times in the response, 
 
 Most question items with `item.repeats = true` are presented in this manner. An add and remove button is provided to manage additional instances of the item.
 
-<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-4-advanced-other--repeats-autocomplete">
-  <iframe
-    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-4-advanced-other--repeats-autocomplete"
-    width="100%"
-    height="580"
-  />
-</IframeContainer>
-
-:::danger
-
-There is currently a known issue which requires repeating items to have a parent group item, otherwise it will be rendered as a non-repeating item.
-
-For more information, refer to https://github.com/aehrc/smart-forms/issues/788.
-
-:::
+<IframeContainer storyId="sdc-8-1-4-advanced-other--repeats-autocomplete" initialHeight={280} />
 
 #### Checkbox Usage
 
 If a question is a checkbox and `item.repeats = true`, a different view is presented. Instead of having add and remove buttons, multiple selections can be made in the checkbox.
 
-<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-4-advanced-other--repeats-checkbox">
-  <iframe
-    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-4-advanced-other--repeats-checkbox"
-    width="100%"
-    height="180"
-  />
-</IframeContainer>
+<IframeContainer storyId="sdc-8-1-4-advanced-other--repeats-checkbox" initialHeight={216} />
 
 :::tip
 
@@ -85,13 +59,7 @@ For more information, refer to https://developer.mozilla.org/en-US/docs/Web/HTML
 
 Similar to the basic usage, a repeating group provides add and remove buttons to manage additional instances of the group item.
 
-<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-4-advanced-other--repeats-group">
-  <iframe
-    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-4-advanced-other--repeats-group"
-    width="100%"
-    height="750"
-  />
-</IframeContainer>
+<IframeContainer storyId="sdc-8-1-4-advanced-other--repeats-group" initialHeight={508} />
 
 #### Nested Group Usage
 
@@ -99,13 +67,7 @@ You can nest repeating groups(or any other components, really) within another re
 
 It is recommended to view this example in Storybook in full screen mode.
 
-<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-4-advanced-other--repeats-group-nested">
-  <iframe
-    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-4-advanced-other--repeats-group-nested"
-    width="100%"
-    height="980"
-  />
-</IframeContainer>
+<IframeContainer storyId="sdc-8-1-4-advanced-other--repeats-group-nested" initialHeight={1140} />
 
 ### ReadOnly
 
@@ -115,13 +77,7 @@ It is generally used with calculations or pre-filled values.
 
 #### Basic Usage
 
-<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-4-advanced-other--read-only">
-  <iframe
-    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-4-advanced-other--read-only"
-    width="100%"
-    height="100"
-  />
-</IframeContainer>
+<IframeContainer storyId="sdc-8-1-4-advanced-other--read-only" initialHeight={120} />
 
 ### Initial
 
@@ -137,23 +93,17 @@ Multiple initial values can be used in repeating items. There can only be one in
 
 #### Basic Usage
 
-<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-9-1-4-form-behavior-other-control--initial-single">
-  <iframe
-    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-9-1-4-form-behavior-other-control--initial-single"
-    width="100%"
-    height="100"
-  />
-</IframeContainer>
+<IframeContainer
+  storyId="sdc-9-1-4-form-behavior-other-control--initial-single"
+  initialHeight={120}
+/>
 
 #### Repeats Usage
 
-<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-9-1-4-form-behavior-other-control--initial-repeats">
-  <iframe
-    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-9-1-4-form-behavior-other-control--initial-repeats"
-    width="100%"
-    height="390"
-  />
-</IframeContainer>
+<IframeContainer
+  storyId="sdc-9-1-4-form-behavior-other-control--initial-repeats"
+  initialHeight={384}
+/>
 
 ### Hidden
 
@@ -163,10 +113,4 @@ This is useful for answers to be captured behind the scenes via pre-fill and cal
 
 #### Basic Usage
 
-<IframeContainer storyUrl="https://smartforms.csiro.au/storybook/index.html?path=/story/component-sdc-8-1-1-advanced-text-appearance--hidden">
-  <iframe
-    src="https://smartforms.csiro.au/storybook/iframe.html?args=&id=component-sdc-8-1-1-advanced-text-appearance--hidden"
-    width="100%"
-    height="100"
-  />
-</IframeContainer>
+<IframeContainer storyId="sdc-8-1-1-advanced-text-appearance--hidden" initialHeight={120} />

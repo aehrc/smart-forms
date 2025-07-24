@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,7 +35,7 @@ export const qLaunchContext: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p style="font-size:0.875em"> Please refer to the <strong>Form Population</strong> section for the usage of launch context.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to the <strong>Form Population</strong> section for the usage of launch context.</p></div>'
           }
         ]
       },
@@ -64,7 +64,7 @@ export const qVariable: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p style="font-size:0.875em"> Please refer to the <strong>Calculated Expression</strong> examples above or the <strong>Form Population</strong> section for the usage of variables.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to the <strong>Calculated Expression</strong> examples above or the <strong>Form Population</strong> section for the usage of variables.</p></div>'
           }
         ]
       },
@@ -93,7 +93,7 @@ export const qInitialExpression: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n    <p style="font-size:0.875em"> Please refer to the <strong>Form Population</strong> section for the usage of initial expressions.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to the <strong>Form Population</strong> section for the usage of initial expressions.</p></div>'
           }
         ]
       },
@@ -414,7 +414,7 @@ export const qCalculatedExpressionCvdRiskCalculator: Questionnaire = {
               {
                 url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
                 valueString:
-                  '<div xmlns="http://www.w3.org/1999/xhtml">\r\n        <b><p style="font-size:0.875em">NOTE: The Australian guideline for assessing and managing cardiovascular disease risk recommends the use of the online <a href="https://www.cvdcheck.org.au/calculator" target="_blank">Australian CVD risk calculator</a>.</p></b>\r\n        <p style="font-size:0.875em">The calculator below should only be used for technology demonstration purposes.</p>\r\n</div>'
+                  '<div xmlns="http://www.w3.org/1999/xhtml">\r\n        <b><p>NOTE: The Australian guideline for assessing and managing cardiovascular disease risk recommends the use of the online <a href="https://www.cvdcheck.org.au/calculator" target="_blank">Australian CVD risk calculator</a>.</p></b>\r\n    The calculator below should only be used for technology demonstration purposes.</p>\r\n</div>'
               }
             ]
           },

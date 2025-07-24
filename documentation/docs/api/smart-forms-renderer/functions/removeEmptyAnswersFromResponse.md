@@ -9,7 +9,7 @@ This does not remove items that are hidden by the http://hl7.org/fhir/StructureD
 ## Parameters
 
 | Parameter | Type |
-| :------ | :------ |
+| ------ | ------ |
 | `questionnaire` | `Questionnaire` |
 | `questionnaireResponse` | `QuestionnaireResponse` |
 

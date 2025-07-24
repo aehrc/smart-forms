@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,7 @@
  */
 
 import React, { useMemo } from 'react';
-import Grid from '@mui/material/Grid';
+import { Grid } from '@mui/material';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import TabContext from '@mui/lab/TabContext';
 import TabPanel from '@mui/lab/TabPanel';
@@ -25,23 +25,30 @@ import GroupItem from '../FormComponents/GroupItem/GroupItem';
 import { createEmptyQrGroup, updateQrItemsInGroup } from '../../utils/qrItem';
 import FormBodyTabListWrapper from '../Tabs/FormBodyTabListWrapper';
 import type {
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../interfaces/renderProps.interface';
-import { useQuestionnaireStore } from '../../stores';
+import { useQuestionnaireStore, useRendererStylingStore } from '../../stores';
+import type { GridProps } from '@mui/material/Grid';
+import { extendItemPath } from '../../utils/itemPath';
+import type { ItemPath } from '../../interfaces/itemPath.interface';
 
 interface FormBodyTabbedProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithParentIsReadOnlyAttribute {
   topLevelQItem: QuestionnaireItem;
   topLevelQRItem: QuestionnaireResponseItem | null;
 }
 
 function FormBodyTabbed(props: FormBodyTabbedProps) {
-  const { topLevelQItem, topLevelQRItem, parentIsReadOnly, onQrItemChange } = props;
+  const { topLevelQItem, topLevelQRItem, itemPath, parentIsReadOnly, onQrItemChange } = props;
 
   const tabs = useQuestionnaireStore.use.tabs();
   const currentTab = useQuestionnaireStore.use.currentTabIndex();
+
+  const tabListWidthOrResponsive = useRendererStylingStore.use.tabListWidthOrResponsive();
 
   const indexMap: Record<string, number> = useMemo(
     () => mapQItemsIndex(topLevelQItem),
@@ -53,9 +60,9 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
   const qItems = topLevelQItem.item;
   const qrItems = nonNullTopLevelQRItem.item;
 
-  function handleQrGroupChange(qrItem: QuestionnaireResponseItem) {
+  function handleQrGroupChange(qrItem: QuestionnaireResponseItem, targetItemPath?: ItemPath) {
     updateQrItemsInGroup(qrItem, null, nonNullTopLevelQRItem, indexMap);
-    onQrItemChange(nonNullTopLevelQRItem);
+    onQrItemChange(nonNullTopLevelQRItem, targetItemPath);
   }
 
   if (!qItems || !qrItems) {
@@ -64,14 +71,26 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
 
   const qrItemsByIndex = getQrItemsIndex(qItems, qrItems, indexMap);
 
+  // If tabListWidthOrBreakpoints is a number, it is a fixed width of the tab list - set a fixed width and prevent shrinking
+  // If tabListWidthOrBreakpoints is an object, it is a MUI Breakpoints object
+  const tabListWrapperProps: GridProps =
+    typeof tabListWidthOrResponsive === 'number'
+      ? { sx: { width: tabListWidthOrResponsive, flexShrink: 0 } }
+      : { size: { ...tabListWidthOrResponsive.tabListBreakpoints } };
+
+  const qItemTabPanelProps: GridProps =
+    typeof tabListWidthOrResponsive === 'number'
+      ? { sx: { flexGrow: 1 } }
+      : { size: { ...tabListWidthOrResponsive.tabContentBreakpoints } };
+
   return (
-    <Grid container spacing={1.5}>
+    <Grid container spacing={1.5} sx={{ flexWrap: 'nowrap' }}>
       <TabContext value={currentTab.toString()}>
-        <Grid item xs={12} md={3} lg={2.75}>
+        <Grid {...tabListWrapperProps}>
           <FormBodyTabListWrapper topLevelItems={qItems} currentTabIndex={currentTab} tabs={tabs} />
         </Grid>
 
-        <Grid item xs={12} md={9} lg={9.25}>
+        <Grid {...qItemTabPanelProps}>
           {qItems.map((qItem, i) => {
             const qrItem = qrItemsByIndex[i];
 
@@ -88,9 +107,11 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
 
             return (
               <TabPanel
+                aria-labelledby={`tab-${i}`}
                 key={qItem.linkId}
                 sx={{ p: 0 }}
                 value={i.toString()}
+                id={`tabpanel-${i}`}
                 data-test="renderer-tab-panel">
                 <GroupItem
                   qItem={qItem}
@@ -101,6 +122,7 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
                   tabs={tabs}
                   currentTabIndex={currentTab}
                   parentIsReadOnly={parentIsReadOnly}
+                  itemPath={extendItemPath(itemPath, qItem.linkId)}
                   onQrItemChange={handleQrGroupChange}
                 />
               </TabPanel>

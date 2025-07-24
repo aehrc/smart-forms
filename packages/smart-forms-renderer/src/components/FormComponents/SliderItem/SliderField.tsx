@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,16 +16,18 @@
  */
 
 import React from 'react';
-import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
-import Slider from '@mui/material/Slider';
+import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import { getSliderMarks } from '../../../utils/slider';
 import Stack from '@mui/material/Stack';
 import SliderLabels from './SliderLabels';
 import SliderDisplayValue from './SliderDisplayValue';
-import { TEXT_FIELD_WIDTH } from '../Textfield.styles';
+import { useRendererStylingStore } from '../../../stores';
+import { StyledRequiredTypography } from '../Item.styles';
+import { StandardSlider } from './Slider.styles';
 
-interface SliderFieldProps extends PropsWithIsTabledAttribute {
+interface SliderFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
+  itemType: string;
   value: number;
   minValue: number;
   minLabel: string;
@@ -33,6 +35,7 @@ interface SliderFieldProps extends PropsWithIsTabledAttribute {
   maxLabel: string;
   stepValue: number;
   isInteracted: boolean;
+  feedback: string;
   readOnly: boolean;
   onValueChange: (newValue: number) => void;
 }
@@ -40,6 +43,7 @@ interface SliderFieldProps extends PropsWithIsTabledAttribute {
 function SliderField(props: SliderFieldProps) {
   const {
     linkId,
+    itemType,
     value,
     minValue,
     maxValue,
@@ -47,42 +51,57 @@ function SliderField(props: SliderFieldProps) {
     minLabel,
     maxLabel,
     isInteracted,
+    feedback,
     readOnly,
     isTabled,
     onValueChange
   } = props;
 
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+
   const sliderMarks = getSliderMarks(minValue, maxValue, minLabel, maxLabel, stepValue);
 
   const sliderSx = {
-    maxWidth: !isTabled ? TEXT_FIELD_WIDTH : 3000,
+    maxWidth: !isTabled ? textFieldWidth : 3000,
     minWidth: 160
   };
 
   const hasLabels = !!(minLabel || maxLabel);
 
   return (
-    <Stack sx={{ ...sliderSx }}>
-      <SliderDisplayValue value={value} hasLabels={hasLabels} isInteracted={isInteracted} />
-      {hasLabels ? <SliderLabels minLabel={minLabel} maxLabel={maxLabel} /> : null}
-      <Slider
-        id={linkId}
-        value={value}
-        min={minValue}
-        max={maxValue}
-        step={stepValue}
-        marks={sliderMarks}
-        sx={{ ...sliderSx }}
-        onChange={(_, newValue) => {
-          if (typeof newValue === 'number') {
-            onValueChange(newValue);
-          }
-        }}
-        disabled={readOnly}
-        valueLabelDisplay="auto"
-        data-test="q-item-slider-field"
-      />
-    </Stack>
+    <>
+      <Stack sx={{ ...sliderSx }}>
+        <SliderDisplayValue value={value} hasLabels={hasLabels} isInteracted={isInteracted} />
+        {hasLabels ? <SliderLabels minLabel={minLabel} maxLabel={maxLabel} /> : null}
+        <StandardSlider
+          id={itemType + '-' + linkId}
+          value={value}
+          min={minValue}
+          max={maxValue}
+          step={stepValue}
+          marks={sliderMarks}
+          sx={{ ...sliderSx }}
+          onChange={(_, newValue) => {
+            // If item.readOnly=true, do not allow any changes
+            if (readOnly) {
+              return;
+            }
+
+            if (typeof newValue === 'number') {
+              onValueChange(newValue);
+            }
+          }}
+          disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+          readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
+          aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
+          valueLabelDisplay="auto"
+          data-test="q-item-slider-field"
+        />
+      </Stack>
+
+      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
+    </>
   );
 }
 

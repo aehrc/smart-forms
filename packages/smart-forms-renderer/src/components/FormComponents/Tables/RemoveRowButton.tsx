@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,7 @@
  */
 
 import React from 'react';
-import { DeleteButtonTableCell } from './Table.styles';
+import { RemoveButtonTableCell } from './Table.styles';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 
@@ -35,15 +35,20 @@ function RemoveRowButton(props: RemoveRowButtonProps) {
 
   const isDisabled = nullableQrItem === null || numOfRows === 1 || readOnly;
   return (
-    <DeleteButtonTableCell>
+    <RemoveButtonTableCell>
       <Tooltip title="Remove item">
-        <span>
-          <IconButton size="small" color="error" disabled={isDisabled} onClick={onRemoveItem}>
+        <span role="button">
+          <IconButton
+            size="small"
+            color="error"
+            disabled={isDisabled}
+            onClick={onRemoveItem}
+            aria-label="Remove item">
             <RemoveCircleOutlineIcon fontSize="small" />
           </IconButton>
         </span>
       </Tooltip>
-    </DeleteButtonTableCell>
+    </RemoveButtonTableCell>
   );
 }
 

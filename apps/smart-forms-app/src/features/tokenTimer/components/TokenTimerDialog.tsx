@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,18 +18,15 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import cloneDeep from 'lodash.clonedeep';
 import {
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
   IconButton,
   Tooltip
 } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
 import {
   removeEmptyAnswersFromResponse,
   useQuestionnaireResponseStore,
@@ -40,6 +37,7 @@ import { saveQuestionnaireResponse } from '../../../api/saveQr.ts';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
 import { saveErrorMessage, saveSuccessMessage } from '../../../utils/snackbar.ts';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
+import StandardDialogTitle from '../../../components/Dialog/StandardDialogTitle.tsx';
 
 export interface TokenTimerDialogProps {
   open: boolean;
@@ -78,7 +76,7 @@ function TokenTimerDialog(props: TokenTimerDialogProps) {
     setIsSaving(true);
     const responseToSave = removeEmptyAnswersFromResponse(
       sourceQuestionnaire,
-      cloneDeep(updatableResponse)
+      structuredClone(updatableResponse)
     );
 
     responseToSave.status = 'in-progress';
@@ -113,14 +111,14 @@ function TokenTimerDialog(props: TokenTimerDialogProps) {
         console.error(error);
         enqueueSnackbar(saveErrorMessage, {
           variant: 'error',
-          action: <CloseSnackbar />
+          action: <CloseSnackbar variant="error" />
         });
       });
   }
 
   return (
     <Dialog open={open}>
-      <DialogTitle variant="h5">Session expiring soon</DialogTitle>
+      <StandardDialogTitle onCloseDialog={handleClose}>Session expiring soon</StandardDialogTitle>
       <DialogContent>
         <DialogContentText>
           {
@@ -130,9 +128,9 @@ function TokenTimerDialog(props: TokenTimerDialogProps) {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <LoadingButton loading={isSaving} onClick={handleSave}>
+        <Button loading={isSaving} onClick={handleSave}>
           Save Progress
-        </LoadingButton>
+        </Button>
       </DialogActions>
     </Dialog>
   );

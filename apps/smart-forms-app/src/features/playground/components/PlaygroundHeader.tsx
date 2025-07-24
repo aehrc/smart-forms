@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,17 +30,27 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import UpdatingIndicator from '../../renderer/components/RendererHeader/UpdatingIndicator.tsx';
 
 interface PlaygroundHeaderProps {
-  fhirServerUrl: string;
+  sourceFhirServerUrl: string;
   patient: Patient | null;
   user: Practitioner | null;
-  onFhirServerUrlChange: (url: string) => void;
+  terminologyServerUrl: string;
+  onSourceFhirServerUrlChange: (url: string) => void;
   onPatientChange: (patient: Patient | null) => void;
   onUserChange: (practitioner: Practitioner | null) => void;
+  onTerminologyServerUrlChange: (url: string) => void;
 }
 
 const PlaygroundHeader = memo(function PlaygroundHeader(props: PlaygroundHeaderProps) {
-  const { fhirServerUrl, patient, user, onFhirServerUrlChange, onPatientChange, onUserChange } =
-    props;
+  const {
+    sourceFhirServerUrl,
+    patient,
+    user,
+    terminologyServerUrl,
+    onSourceFhirServerUrlChange,
+    onPatientChange,
+    onUserChange,
+    onTerminologyServerUrlChange
+  } = props;
 
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
 
@@ -52,7 +62,7 @@ const PlaygroundHeader = memo(function PlaygroundHeader(props: PlaygroundHeaderP
   const navigate = useNavigate();
 
   return (
-    <StyledRoot sx={{ boxShadow: theme.customShadows.z4 }} navCollapsed={true}>
+    <StyledRoot sx={{ boxShadow: theme.shadows[4] }} navCollapsed={true}>
       <StyledToolbar>
         <Tooltip title="Exit playground">
           <IconButton
@@ -75,7 +85,7 @@ const PlaygroundHeader = memo(function PlaygroundHeader(props: PlaygroundHeaderP
           </LogoWrapper>
         </Box>
         <Typography variant="h6" color="text.primary" sx={{ mx: 0.5 }}>
-          Playground
+          Playground [{RENDERER_VERSION}]
         </Typography>
 
         <Box flexGrow={1} />
@@ -99,12 +109,14 @@ const PlaygroundHeader = memo(function PlaygroundHeader(props: PlaygroundHeaderP
           closeDialog={() => {
             setSettingsDialogOpen(false);
           }}
-          fhirServerUrl={fhirServerUrl}
+          sourceFhirServerUrl={sourceFhirServerUrl}
           patient={patient}
           user={user}
-          onFhirServerUrlChange={onFhirServerUrlChange}
+          terminologyServerUrl={terminologyServerUrl}
+          onSourceFhirServerUrlChange={onSourceFhirServerUrlChange}
           onPatientChange={onPatientChange}
           onUserChange={onUserChange}
+          onTerminologyServerUrlChange={onTerminologyServerUrlChange}
         />
       </StyledToolbar>
     </StyledRoot>

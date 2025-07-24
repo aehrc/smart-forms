@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,9 @@
 import React, { useMemo } from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
+  PropsWithParentStylesAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import { createEmptyQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
@@ -26,17 +28,32 @@ import { GridAnswerTableCell, GridTextTableCell } from '../Tables/Table.styles';
 import SingleItem from '../SingleItem/SingleItem';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../utils/mapItem';
 import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 import useHidden from '../../../hooks/useHidden';
+import { extendItemPath } from '../../../utils/itemPath';
+import type { ItemPath } from '../../../interfaces/itemPath.interface';
+import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
 
-interface GridRowProps extends PropsWithQrItemChangeHandler, PropsWithParentIsReadOnlyAttribute {
+interface GridRowProps
+  extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
-  columnLabels: string[];
-  numOfColumns: number;
+  columnHeaderLabels: string[];
 }
 
 function GridRow(props: GridRowProps) {
-  const { qItem, qrItem, columnLabels, numOfColumns, parentIsReadOnly, onQrItemChange } = props;
+  const {
+    qItem,
+    qrItem,
+    itemPath,
+    columnHeaderLabels,
+    parentIsReadOnly,
+    parentStyles,
+    onQrItemChange
+  } = props;
 
   const rowQItems = qItem.item;
   const row = qrItem && qrItem.item ? qrItem : createEmptyQrGroup(qItem);
@@ -49,47 +66,67 @@ function GridRow(props: GridRowProps) {
     return null;
   }
 
-  if (!rowQItems || !rowQrItems) {
+  if (!rowQItems || !rowQrItems || rowQItems.length === 0) {
     return null;
   }
 
-  function handleQrRowItemChange(newQrRowItem: QuestionnaireResponseItem) {
+  // Add textAlign center style to all grid cells and pass it as parentStyles to the next item
+  const gridCellStyles = { ...parentStyles, textAlign: 'center' };
+
+  function handleQrRowItemChange(
+    newQrRowItem: QuestionnaireResponseItem,
+    targetItemPath?: ItemPath
+  ) {
     const qrRow: QuestionnaireResponseItem = { ...row };
     updateQrItemsInGroup(newQrRowItem, null, qrRow, qItemsIndexMap);
-    onQrItemChange(qrRow);
+    onQrItemChange(qrRow, targetItemPath);
   }
 
   const qrItemsByIndex = getQrItemsIndex(rowQItems, rowQrItems, qItemsIndexMap);
 
+  const numOfColumns = columnHeaderLabels.length;
+
+  // Get item.text as display label
+  const itemTextToDisplay = getItemTextToDisplay(qItem);
+
   return (
     <>
       <GridTextTableCell>
-        <Typography fontWeight="bold">{qItem.text}</Typography>
+        <Typography component="span" fontWeight="bold">
+          {itemTextToDisplay}
+        </Typography>
       </GridTextTableCell>
-      {rowQItems.map((cellQItem, index) => {
-        const cellQrItem = qrItemsByIndex[index];
+      {columnHeaderLabels.map((label, colIndex) => {
+        // Find the QuestionnaireItem in this row that matches the current column label
+        const matchingCellQItemIndex = rowQItems.findIndex((item) => item.text === label);
 
-        // Don't render cell if column label does not match - "sparse-ness" of grid
-        if (columnLabels[index] !== cellQItem.text) {
-          return null;
+        // Render empty cell for sparsity
+        if (matchingCellQItemIndex === -1) {
+          return <GridAnswerTableCell key={colIndex} numOfColumns={numOfColumns} />;
         }
+
+        const cellQItem = rowQItems[matchingCellQItemIndex];
+        const cellQrItem = qrItemsByIndex[matchingCellQItemIndex];
 
         if (Array.isArray(cellQrItem)) {
           return null;
         }
 
         return (
-          <GridAnswerTableCell key={index} numOfColumns={numOfColumns}>
-            <SingleItem
-              qItem={cellQItem}
-              qrItem={cellQrItem ?? null}
-              isRepeated={true}
-              isTabled={true}
-              groupCardElevation={1}
-              showMinimalView={true}
-              parentIsReadOnly={parentIsReadOnly}
-              onQrItemChange={handleQrRowItemChange}
-            />
+          <GridAnswerTableCell key={colIndex} numOfColumns={numOfColumns}>
+            <Box display="flex" alignItems="center" justifyContent="center">
+              <SingleItem
+                qItem={cellQItem}
+                qrItem={cellQrItem ?? null}
+                itemPath={extendItemPath(itemPath, cellQItem.linkId)}
+                isRepeated={true}
+                isTabled={true}
+                groupCardElevation={1}
+                parentIsReadOnly={parentIsReadOnly}
+                parentStyles={gridCellStyles}
+                onQrItemChange={handleQrRowItemChange}
+              />
+            </Box>
           </GridAnswerTableCell>
         );
       })}

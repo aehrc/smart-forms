@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,24 +15,25 @@
  * limitations under the License.
  */
 
-import type { ChangeEvent } from 'react';
 import React from 'react';
-import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import { StyledRadioGroup } from '../Item.styles';
 import RadioButtonWithOpenLabel from '../ItemParts/RadioButtonWithOpenLabel';
-import RadioOptionList from '../ItemParts/RadioOptionList';
-import { getChoiceOrientation } from '../../../utils/choice';
+import RadioFormGroup from '../ItemParts/RadioFormGroup';
 
 interface OpenChoiceRadioAnswerOptionFieldsProps {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
   valueRadio: string | null;
-  openLabelText: string | null;
+  openLabelText: string;
   openLabelValue: string | null;
   openLabelSelected: boolean;
+  feedback: string;
   readOnly: boolean;
+  expressionUpdated: boolean;
+  answerOptionsToggleExpressionsMap: Map<string, boolean>;
+  isTabled: boolean;
   onValueChange: (changedOptionValue: string | null, changedOpenLabelValue: string | null) => void;
+  onClear: () => void;
 }
 
 function OpenChoiceRadioAnswerOptionFields(props: OpenChoiceRadioAnswerOptionFieldsProps) {
@@ -43,32 +44,35 @@ function OpenChoiceRadioAnswerOptionFields(props: OpenChoiceRadioAnswerOptionFie
     openLabelText,
     openLabelValue,
     openLabelSelected,
+    feedback,
     readOnly,
-    onValueChange
+    expressionUpdated,
+    answerOptionsToggleExpressionsMap,
+    isTabled,
+    onValueChange,
+    onClear
   } = props;
 
-  const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
-
   return (
-    <StyledRadioGroup
-      id={qItem.linkId}
-      row={orientation === ChoiceItemOrientation.Horizontal}
-      name={qItem.text}
-      onChange={(e: ChangeEvent<HTMLInputElement>) => onValueChange(e.target.value, null)}
-      value={valueRadio}
-      data-test="q-item-radio-group">
-      <RadioOptionList options={options} readOnly={readOnly} />
-
-      {openLabelText ? (
-        <RadioButtonWithOpenLabel
-          value={openLabelValue}
-          label={openLabelText}
-          readOnly={readOnly}
-          isSelected={openLabelSelected}
-          onInputChange={(input) => onValueChange(null, input)}
-        />
-      ) : null}
-    </StyledRadioGroup>
+    <RadioFormGroup
+      qItem={qItem}
+      options={options}
+      valueRadio={valueRadio}
+      feedback={feedback}
+      readOnly={readOnly}
+      expressionUpdated={expressionUpdated}
+      answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+      isTabled={isTabled}
+      onCheckedChange={(newValue) => onValueChange(newValue, null)}
+      onClear={onClear}>
+      <RadioButtonWithOpenLabel
+        value={openLabelValue}
+        label={openLabelText}
+        readOnly={readOnly}
+        isSelected={openLabelSelected}
+        onInputChange={(input) => onValueChange(null, input)}
+      />
+    </RadioFormGroup>
   );
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,25 +16,44 @@
  */
 
 import React from 'react';
-import Radio from '@mui/material/Radio';
-import { StyledFormControlLabel } from '../../Box.styles';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import { useRendererStylingStore } from '../../../stores';
+import { StandardRadio } from '../../Radio.styles';
 
 interface ChoiceRadioSingleProps {
   value: string;
   label: string;
   readOnly: boolean;
+  disabledViaToggleExpression: boolean;
+  fullWidth: boolean;
 }
 
 function ChoiceRadioSingle(props: ChoiceRadioSingleProps) {
-  const { value, label, readOnly } = props;
+  const { value, label, readOnly, disabledViaToggleExpression, fullWidth } = props;
+
+  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+
+  // When an option is disabled via answerOptionsToggleExpression, it should truly be "disabled", regardless of readOnlyVisualStyle.
+  // Both isHtmlDisabled and isHtmlReadOnly are mutually exclusive.
+  const readOnlyWithDisabledStyle = readOnly && readOnlyVisualStyle === 'disabled';
+  const readOnlyWithReadOnlyStyle = readOnly && readOnlyVisualStyle === 'readonly';
+
+  const isHtmlDisabled = readOnlyWithDisabledStyle || disabledViaToggleExpression;
+  const isHtmlReadOnly = readOnlyWithReadOnlyStyle && !disabledViaToggleExpression;
 
   return (
-    <StyledFormControlLabel
-      disabled={readOnly}
+    <FormControlLabel
+      sx={{
+        width: fullWidth ? '100%' : 'unset',
+        ...(isHtmlReadOnly && {
+          cursor: 'default',
+          color: 'text.secondary'
+        })
+      }}
+      disabled={isHtmlDisabled}
       value={value}
-      control={<Radio size="small" />}
+      control={<StandardRadio size="small" readOnly={isHtmlReadOnly} />}
       label={label}
-      sx={{ mr: 3 }}
     />
   );
 }

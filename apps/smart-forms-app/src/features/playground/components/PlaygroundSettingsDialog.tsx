@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,40 +15,50 @@
  * limitations under the License.
  */
 
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { Box, Button, Dialog, DialogActions, DialogContent } from '@mui/material';
 import PlaygroundPatientPicker from './PlaygroundPatientPicker.tsx';
 import type { Patient, Practitioner } from 'fhir/r4';
 import { useState } from 'react';
 import PlaygroundUserPicker from './PlaygroundUserPicker.tsx';
-import PlaygroundFhirServerUrlInput from './PlaygroundSourceFhirServerInput.tsx';
+import PlaygroundFhirServerUrlInput from './PlaygroundFhirServerInput.tsx';
+import StandardDialogTitle from '../../../components/Dialog/StandardDialogTitle.tsx';
 
-export interface Props {
+export interface PlaygroundSettingsDialogProps {
   open: boolean;
   closeDialog: () => unknown;
-  fhirServerUrl: string;
+  sourceFhirServerUrl: string;
   patient: Patient | null;
   user: Practitioner | null;
-  onFhirServerUrlChange: (url: string) => unknown;
+  terminologyServerUrl: string;
+  onSourceFhirServerUrlChange: (url: string) => unknown;
   onPatientChange: (patient: Patient | null) => unknown;
   onUserChange: (practitioner: Practitioner | null) => unknown;
+  onTerminologyServerUrlChange: (url: string) => unknown;
 }
 
-function PlaygroundSettingsDialog(props: Props) {
+function PlaygroundSettingsDialog(props: PlaygroundSettingsDialogProps) {
   const {
     open,
     closeDialog,
-    fhirServerUrl,
+    sourceFhirServerUrl,
     patient,
     user,
-    onFhirServerUrlChange,
+    terminologyServerUrl,
+    onSourceFhirServerUrlChange,
     onPatientChange,
-    onUserChange
+    onUserChange,
+    onTerminologyServerUrlChange
   } = props;
 
-  const [fhirServerUrlInput, setFhirServerUrlInput] = useState(fhirServerUrl);
-  const [fhirServerUrlInputValid, setFhirServerUrlInputValid] = useState<boolean | 'unchecked'>(
-    true
-  );
+  const [sourceFhirServerUrlInput, setSourceFhirServerUrlInput] = useState(sourceFhirServerUrl);
+  const [sourceFhirServerUrlInputValid, setSourceFhirServerUrlInputValid] = useState<
+    boolean | 'unchecked'
+  >(true);
+
+  const [terminologyServerUrlInput, setTerminologyServerUrlInput] = useState(terminologyServerUrl);
+  const [terminologyServerUrlInputValid, setTerminologyServerUrlInputValid] = useState<
+    boolean | 'unchecked'
+  >(true);
 
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(patient);
   const [selectedUser, setSelectedUser] = useState<Practitioner | null>(user);
@@ -56,68 +66,106 @@ function PlaygroundSettingsDialog(props: Props) {
   // Event handlers
   function handleCancel() {
     closeDialog();
-    setFhirServerUrlInput(fhirServerUrl);
+    setSourceFhirServerUrlInput(sourceFhirServerUrl);
+    setTerminologyServerUrlInput(terminologyServerUrl);
     setSelectedPatient(patient);
     setSelectedUser(user);
   }
 
   function handleSave() {
-    // Set FHIR Server URL to the input value if it is valid, otherwise use the current value
-    onFhirServerUrlChange(fhirServerUrlInputValid === true ? fhirServerUrlInput : fhirServerUrl);
-
+    // Set Source FHIR Server URL to the input value if it is valid, otherwise use the current value
+    onSourceFhirServerUrlChange(
+      sourceFhirServerUrlInputValid === true ? sourceFhirServerUrlInput : sourceFhirServerUrl
+    );
     onPatientChange(selectedPatient);
     onUserChange(selectedUser);
+
+    // Set Terminology Server URL to the input value if it is valid, otherwise use the current value
+    onTerminologyServerUrlChange(
+      terminologyServerUrlInputValid === true ? terminologyServerUrlInput : terminologyServerUrl
+    );
 
     closeDialog();
   }
 
-  function handleSetFhirServerUrl() {
-    onFhirServerUrlChange(fhirServerUrlInput);
+  function handleSetSourceFhirServerUrl() {
+    onSourceFhirServerUrlChange(sourceFhirServerUrlInput);
     setSelectedPatient(null);
     setSelectedUser(null);
   }
 
-  function handleValidateFhirServerUrl(isValid: boolean | 'unchecked') {
-    setFhirServerUrlInputValid(isValid);
+  function handleValidateSourceFhirServerUrl(isValid: boolean | 'unchecked') {
+    setSourceFhirServerUrlInputValid(isValid);
   }
 
   // SourceFhirServerEndpoint, Patient or Practitioner has changed
   const changesMade =
-    fhirServerUrlInput !== fhirServerUrl ||
+    sourceFhirServerUrlInput !== sourceFhirServerUrl ||
+    terminologyServerUrlInput !== terminologyServerUrl ||
     selectedPatient?.id !== patient?.id ||
     selectedUser?.id !== user?.id;
 
-  const setFhirServerButtonIsEnabled =
-    fhirServerUrlInput !== fhirServerUrl && fhirServerUrlInputValid === true;
+  const sourceFhirServerButtonIsEnabled =
+    sourceFhirServerUrlInput !== sourceFhirServerUrl && sourceFhirServerUrlInputValid === true;
+
+  const terminologyServerButtonIsEnabled =
+    terminologyServerUrlInput !== terminologyServerUrl && terminologyServerUrlInputValid === true;
 
   return (
-    <Dialog open={open}>
-      <DialogTitle variant="h5">Launch Context Settings</DialogTitle>
-      <DialogContent>
+    <Dialog open={open} maxWidth="md" fullWidth slotProps={{ paper: { sx: { minWidth: 500 } } }}>
+      <StandardDialogTitle onCloseDialog={handleCancel}>
+        Launch Context Settings
+      </StandardDialogTitle>
+      <DialogContent dividers>
+        {/* Source FHIR Server url config */}
         <PlaygroundFhirServerUrlInput
-          fhirServerUrlInput={fhirServerUrlInput}
-          fhirServerUrlInputValid={fhirServerUrlInputValid}
-          onFhirServerUrlInputChange={(changedInput) => setFhirServerUrlInput(changedInput)}
-          onValidateFhirServerUrlInput={handleValidateFhirServerUrl}
+          fhirServerId="source"
+          fhirServerUrlInput={sourceFhirServerUrlInput}
+          fhirServerUrlInputValid={sourceFhirServerUrlInputValid}
+          onFhirServerUrlInputChange={(changedInput) => setSourceFhirServerUrlInput(changedInput)}
+          onValidateFhirServerUrlInput={handleValidateSourceFhirServerUrl}
         />
+
         <Box display="flex" justifyContent="right" mt={0.5}>
           <Button
-            disabled={!setFhirServerButtonIsEnabled}
+            disabled={!sourceFhirServerButtonIsEnabled}
             data-test="set-fhir-server-button-playground"
-            onClick={handleSetFhirServerUrl}>
-            Save URL as FHIR Server
+            onClick={handleSetSourceFhirServerUrl}>
+            Save URL as Source FHIR Server
           </Button>
         </Box>
 
         <Box my={3} />
+
+        {/* Terminology Server url config */}
+        <PlaygroundFhirServerUrlInput
+          fhirServerId="terminology"
+          fhirServerUrlInput={terminologyServerUrlInput}
+          fhirServerUrlInputValid={terminologyServerUrlInputValid}
+          onFhirServerUrlInputChange={(changedInput) => setTerminologyServerUrlInput(changedInput)}
+          onValidateFhirServerUrlInput={(isValid) => setTerminologyServerUrlInputValid(isValid)}
+        />
+        <Box display="flex" justifyContent="right" mt={0.5}>
+          <Button
+            disabled={!terminologyServerButtonIsEnabled}
+            data-test="set-terminology-server-button-playground"
+            onClick={() => {
+              onTerminologyServerUrlChange(terminologyServerUrlInput);
+            }}>
+            Save URL as Terminology Server
+          </Button>
+        </Box>
+
+        <Box my={3} />
+
         <PlaygroundPatientPicker
-          fhirServerUrl={fhirServerUrl}
+          sourceFhirServerUrl={sourceFhirServerUrl}
           selectedPatient={selectedPatient}
           onSelectPatient={(patient) => setSelectedPatient(patient)}
         />
         <Box my={4} />
         <PlaygroundUserPicker
-          fhirServerUrl={fhirServerUrl}
+          sourceFhirServerUrl={sourceFhirServerUrl}
           selectedUser={selectedUser}
           onSelectUser={(practitioner) => setSelectedUser(practitioner)}
         />

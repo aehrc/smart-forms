@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,42 +22,68 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import useValueSetCodings from '../../../hooks/useValueSetCodings';
 import type {
+  PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
+  PropsWithItemPathAttribute,
+  PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler
+  PropsWithQrItemChangeHandler,
+  PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import ChoiceRadioAnswerValueSetFields from './ChoiceRadioAnswerValueSetFields';
 import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import { useQuestionnaireStore } from '../../../stores';
 import useCodingCalculatedExpression from '../../../hooks/useCodingCalculatedExpression';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import ItemLabel from '../ItemParts/ItemLabel';
+import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 
 interface ChoiceRadioAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
+    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+    PropsWithRenderingExtensionsAttribute,
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute,
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
 
 function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps) {
-  const { qItem, qrItem, isRepeated, parentIsReadOnly, onQrItemChange } = props;
+  const {
+    qItem,
+    qrItem,
+    itemPath,
+    isRepeated,
+    parentIsReadOnly,
+    feedbackFromParent,
+    isTabled,
+    onQrItemChange
+  } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
-
   // Init input value
-  const answerKey = qrItem?.answer?.[0].id;
+  const answerKey = qrItem?.answer?.[0]?.id;
   const qrChoiceRadio = qrItem ?? createEmptyQrItem(qItem, answerKey);
 
   let valueRadio: string | null = null;
   if (qrChoiceRadio.answer) {
-    valueRadio = qrChoiceRadio.answer[0].valueCoding?.code ?? null;
+    valueRadio =
+      qrChoiceRadio.answer[0].valueCoding?.code ??
+      qrChoiceRadio.answer[0].valueCoding?.display ??
+      null;
   }
 
   // Get codings/options from valueSet
-  const { codings, terminologyError } = useValueSetCodings(qItem);
+  const { codings, terminologyError, dynamicCodingsUpdated } = useValueSetCodings(qItem);
+
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+
+  // Perform validation checks - there's no string-based input here
+  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
 
   const options = useMemo(() => convertCodingsToAnswerOptions(codings), [codings]);
 
@@ -65,19 +91,29 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
     qItem: qItem,
     valueInString: valueRadio ?? '',
     onChangeByCalcExpressionString: (newValueString: string) => {
-      handleChange(newValueString);
+      handleChange(newValueString, true);
     },
     onChangeByCalcExpressionNull: () => {
-      onQrItemChange(createEmptyQrItem(qItem, answerKey));
+      onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
     }
   });
 
-  function handleChange(newValue: string) {
+  // Process answerOptionsToggleExpressions
+  const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
+    useAnswerOptionsToggleExpressions(qItem.linkId);
+
+  function handleChange(
+    newValue: string,
+    includeItemPath: boolean = false // only include when this is called from useCalculatedExpression hook
+  ) {
+    const targetItemPath = includeItemPath ? itemPath : undefined;
+
     if (codings.length > 0) {
       const qrAnswer = findInAnswerOptions(options, newValue);
       const emptyQrItem = createEmptyQrItem(qItem, answerKey);
       onQrItemChange(
-        qrAnswer ? { ...emptyQrItem, answer: [{ ...qrAnswer, id: answerKey }] } : emptyQrItem
+        qrAnswer ? { ...emptyQrItem, answer: [{ ...qrAnswer, id: answerKey }] } : emptyQrItem,
+        targetItemPath
       );
     }
   }
@@ -92,9 +128,12 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
         qItem={qItem}
         options={options}
         valueRadio={valueRadio}
+        feedback={feedback}
         readOnly={readOnly}
-        calcExpUpdated={calcExpUpdated}
+        expressionUpdated={calcExpUpdated || dynamicCodingsUpdated || answerOptionsToggleExpUpdated}
+        answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
         terminologyError={terminologyError}
+        isTabled={isTabled}
         onCheckedChange={handleChange}
         onClear={handleClear}
       />
@@ -106,18 +145,28 @@ function ChoiceRadioAnswerValueSetItem(props: ChoiceRadioAnswerValueSetItemProps
       data-test="q-item-choice-radio-answer-value-set-box"
       data-linkid={qItem.linkId}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid qItem={qItem} readOnly={readOnly}>
-        <ChoiceRadioAnswerValueSetFields
-          qItem={qItem}
-          options={options}
-          valueRadio={valueRadio}
-          readOnly={readOnly}
-          calcExpUpdated={calcExpUpdated}
-          terminologyError={terminologyError}
-          onCheckedChange={handleChange}
-          onClear={handleClear}
-        />
-      </ItemFieldGrid>
+      <ItemFieldGrid
+        qItem={qItem}
+        readOnly={readOnly}
+        labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
+        fieldChildren={
+          <ChoiceRadioAnswerValueSetFields
+            qItem={qItem}
+            options={options}
+            valueRadio={valueRadio}
+            feedback={feedback}
+            readOnly={readOnly}
+            expressionUpdated={
+              calcExpUpdated || dynamicCodingsUpdated || answerOptionsToggleExpUpdated
+            }
+            answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+            terminologyError={terminologyError}
+            isTabled={isTabled}
+            onCheckedChange={handleChange}
+            onClear={handleClear}
+          />
+        }
+      />
     </FullWidthFormComponentBox>
   );
 }

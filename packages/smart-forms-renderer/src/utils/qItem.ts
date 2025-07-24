@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,11 +15,12 @@
  * limitations under the License.
  */
 
-import type { Extension, Questionnaire, QuestionnaireItem } from 'fhir/r4';
+import type { BackboneElement, Extension, Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import { getChoiceControlType } from './choice';
 import { ChoiceItemControl, OpenChoiceItemControl } from '../interfaces/choice.enum';
 import { getOpenChoiceControlType } from './openChoice';
 import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enableWhen.interface';
+import { structuredDataCapture } from 'fhir-sdc-helpers';
 
 interface isHiddenByEnableWhensParams {
   linkId: string;
@@ -74,11 +75,28 @@ export function isHiddenByEnableWhen(params: isHiddenByEnableWhensParams): boole
  * @author Sean Fong
  */
 export function isRepeatItemAndNotCheckbox(qItem: QuestionnaireItem): boolean {
+  // Prevents form from crashing due to mismatched Q and QR
+  // In reality this should never happen
+  if (!qItem) {
+    return false;
+  }
+
   const isCheckbox =
     getChoiceControlType(qItem) === ChoiceItemControl.Checkbox ||
     getOpenChoiceControlType(qItem) === OpenChoiceItemControl.Checkbox;
 
   return !!qItem['repeats'] && !isCheckbox;
+}
+
+/**
+ * Check if qItem is a checkbox item
+ */
+export function isCheckbox(qItem: QuestionnaireItem): boolean {
+  // In reality this should never happen
+  if (!qItem) {
+    return false;
+  }
+  return getChoiceControlType(qItem) === ChoiceItemControl.Checkbox;
 }
 
 export function getXHtmlStringFromQuestionnaire(questionnaire: Questionnaire): string | null {
@@ -124,6 +142,74 @@ export function getLinkIdTypeTuplesFromItemRecursive(qItem: QuestionnaireItem): 
   return linkIds;
 }
 
+function getPreferredTerminologyServer(element: BackboneElement): string | null {
+  const preferredTerminologyServerExtension = element.extension?.find(
+    (ext) =>
+      ext.url ===
+      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-preferredTerminologyServer'
+  );
+
+  if (preferredTerminologyServerExtension) {
+    return (
+      preferredTerminologyServerExtension.valueUrl ??
+      preferredTerminologyServerExtension.valueUri ??
+      preferredTerminologyServerExtension.valueString ??
+      null
+    );
+  }
+
+  return null;
+}
+
+export function getLinkIdPreferredTerminologyServerTuples(
+  questionnaire: Questionnaire
+): [string, string][] {
+  if (!questionnaire.item || questionnaire.item.length === 0) {
+    return [];
+  }
+
+  const preferredTerminologyServer = getPreferredTerminologyServer(questionnaire);
+
+  const linkIds: [string, string][] = [];
+  for (const topLevelItem of questionnaire.item) {
+    linkIds.push(
+      ...getLinkIdPreferredTerminologyServerTuplesRecursive(
+        topLevelItem,
+        preferredTerminologyServer
+      )
+    );
+  }
+
+  return linkIds;
+}
+
+function getLinkIdPreferredTerminologyServerTuplesRecursive(
+  qItem: QuestionnaireItem,
+  parentPreferredTerminologyServer: string | null
+): [string, string][] {
+  const linkIds: [string, string][] = [];
+
+  let preferredTerminologyServer = null;
+  if (qItem.linkId) {
+    preferredTerminologyServer =
+      getPreferredTerminologyServer(qItem) ?? parentPreferredTerminologyServer ?? null;
+
+    if (preferredTerminologyServer) {
+      linkIds.push([qItem.linkId, preferredTerminologyServer]);
+    }
+  }
+
+  if (qItem.item) {
+    for (const childItem of qItem.item) {
+      linkIds.push(
+        ...getLinkIdPreferredTerminologyServerTuplesRecursive(childItem, preferredTerminologyServer)
+      );
+    }
+  }
+
+  return linkIds;
+}
+
 export type CollapsibleType = 'default-open' | 'default-closed';
 
 function valueCodeIsCollapsibleType(valueCode: string): valueCode is CollapsibleType {
@@ -146,4 +232,41 @@ export function getGroupCollapsible(qItem: QuestionnaireItem): CollapsibleType |
   }
 
   return null;
+}
+
+/**
+ * Plain function to determine if a QuestionnaireItem is hidden via item.hidden, enableWhens, enableWhenExpressions.
+ * When checking for repeating group enableWhen items, the parentRepeatGroupIndex should be provided.
+ * Recommended to use the `useHidden` hook instead for React components, where applicable.
+ *
+ * @author Sean Fong
+ */
+export function isItemHidden(
+  qItem: QuestionnaireItem,
+  enableWhenIsActivated: boolean,
+  enableWhenItems: EnableWhenItems,
+  enableWhenExpressions: EnableWhenExpressions,
+  enableWhenAsReadOnly: boolean | Set<QuestionnaireItem['type']>,
+  parentRepeatGroupIndex?: number
+): boolean {
+  if (structuredDataCapture.getHidden(qItem)) {
+    return true;
+  }
+
+  // If enableWhenAsReadOnly is true, then items hidden by enableWhen should be displayed, but set as readOnly
+  // If enableWhenAsReadOnly is a Set, all item types in the set should be displayed, but set as readOnly
+  if (
+    enableWhenAsReadOnly === true ||
+    (enableWhenAsReadOnly instanceof Set && enableWhenAsReadOnly.has(qItem.type))
+  ) {
+    return false;
+  }
+
+  return isHiddenByEnableWhen({
+    linkId: qItem.linkId,
+    enableWhenIsActivated,
+    enableWhenItems,
+    enableWhenExpressions,
+    parentRepeatGroupIndex
+  });
 }

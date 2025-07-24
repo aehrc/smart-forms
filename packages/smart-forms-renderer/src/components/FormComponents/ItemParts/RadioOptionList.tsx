@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,18 +18,26 @@
 import React from 'react';
 import ChoiceRadioSingle from '../ChoiceItems/ChoiceRadioSingle';
 import type { QuestionnaireItemAnswerOption } from 'fhir/r4';
+import { isOptionDisabled } from '../../../utils/choice';
 
 interface RadioOptionListProps {
   options: QuestionnaireItemAnswerOption[];
   readOnly: boolean;
+  fullWidth: boolean;
+  answerOptionsToggleExpressionsMap: Map<string, boolean>;
 }
 
 function RadioOptionList(props: RadioOptionListProps) {
-  const { options, readOnly } = props;
+  const { options, readOnly, fullWidth, answerOptionsToggleExpressionsMap } = props;
 
   return (
     <>
       {options.map((option) => {
+        const optionDisabledViaToggleExpression = isOptionDisabled(
+          option,
+          answerOptionsToggleExpressionsMap
+        );
+
         if (option['valueCoding']) {
           return (
             <ChoiceRadioSingle
@@ -37,6 +45,8 @@ function RadioOptionList(props: RadioOptionListProps) {
               value={option.valueCoding.code ?? ''}
               label={option.valueCoding.display ?? `${option.valueCoding.code}`}
               readOnly={readOnly}
+              disabledViaToggleExpression={optionDisabledViaToggleExpression}
+              fullWidth={fullWidth}
             />
           );
         }
@@ -48,6 +58,8 @@ function RadioOptionList(props: RadioOptionListProps) {
               value={option.valueString}
               label={option.valueString}
               readOnly={readOnly}
+              disabledViaToggleExpression={optionDisabledViaToggleExpression}
+              fullWidth={fullWidth}
             />
           );
         }
@@ -59,6 +71,8 @@ function RadioOptionList(props: RadioOptionListProps) {
               value={option.valueInteger.toString()}
               label={option.valueInteger.toString()}
               readOnly={readOnly}
+              disabledViaToggleExpression={optionDisabledViaToggleExpression}
+              fullWidth={fullWidth}
             />
           );
         }
