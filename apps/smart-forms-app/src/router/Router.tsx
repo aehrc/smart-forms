@@ -15,15 +15,13 @@
  * limitations under the License.
  */
 
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import DashboardLayout from '../features/dashboard/layout/DashboardLayout.tsx';
 import Launch from '../features/smartAppLaunch/components/Launch.tsx';
 import QuestionnairesPage from '../features/dashboard/components/DashboardPages/QuestionnairePage/QuestionnairesPage.tsx';
 import RendererLayout from '../features/renderer/components/RendererLayout.tsx';
 import FormWrapper from '../features/renderer/components/FormPage/FormRenderer/FormWrapper.tsx';
-import FormPreview from '../features/renderer/components/FormPreviewPage/FormPreview.tsx';
 import ViewerLayout from '../features/viewer/ViewerLayout.tsx';
-import ResponsePreview from '../features/viewer/ResponsePreview.tsx';
 import Authorisation from '../features/smartAppLaunch/components/Authorisation.tsx';
 import PlaygroundLayout from '../features/playground/components/PlaygroundLayout.tsx';
 import Playground from '../features/playground/components/Playground.tsx';
@@ -31,7 +29,7 @@ import ResponsesPage from '../features/dashboard/components/DashboardPages/Respo
 import NotFound from '../features/notfound/NotFound.tsx';
 import ExistingResponsesPage from '../features/renderer/components/ExistingResponses/ExistingResponsesPage.tsx';
 import Standalone from '../features/standalone/components/Standalone.tsx';
-
+import GenericFormResponsePreview from '../features/viewer/GenericFormResponsePreview.tsx';
 export default function Router() {
   const router = createBrowserRouter([
     {
@@ -51,15 +49,29 @@ export default function Router() {
       path: '/renderer',
       element: <RendererLayout />,
       children: [
-        { path: '', element: <FormWrapper /> },
-        { path: 'preview', element: <FormPreview /> }
+        { path: '', element: <FormWrapper /> }
+        // { path: 'preview', element: <GenericFormResponsePreview /> }
       ]
+    },
+    {
+      path: '/renderer/preview',
+      element: <Navigate to="/viewer/viaRendererPreview" replace />
     },
     {
       path: '/viewer',
       element: <ViewerLayout />,
-      children: [{ path: '', element: <ResponsePreview /> }]
+      children: [
+        {
+          path: 'viaRendererPreview',
+          element: <GenericFormResponsePreview />
+        },
+        {
+          path: '',
+          element: <GenericFormResponsePreview />
+        }
+      ]
     },
+
     {
       path: '/playground',
       element: <PlaygroundLayout />,

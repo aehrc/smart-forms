@@ -23,6 +23,106 @@ import { structuredDataCapture } from 'fhir-sdc-helpers';
  * @param {QuestionnaireResponse} questionnaireResponse - The response data to populate into the HTML.
  * @returns {string} An XHTML string containing the rendered questionnaire response in styled HTML format.
  */
+
+// Common set of CSS styling used in the preview page. Warning: When you add comments within the CSS, the script breaks for some reason.
+const common_css = `
+
+@page {
+  margin-top: 1cm;
+  margin-bottom: 1cm;
+  margin-left: 1.5cm;
+  margin-right: 1.5cm;
+}
+
+ article {
+ color-scheme: light;
+  -ms-text-size-adjust: 100%; 
+  -webkit-text-size-adjust: 100%; 
+  margin: 0; color: #1f2328; 
+  background-color:rgb(255, 255, 255); 
+  font-family: -apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans',Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji'; line-height: 1.5; word-wrap: break-word;
+  font-size: 1.0em;
+  // 16px was the orginal
+  }
+
+ div:has(> h2:first-child) {
+      page-break-inside: avoid;
+    }
+  h1{
+  margin-top: 0.5em; margin-bottom: .67em; font-weight: 600; padding-bottom: .3em; font-size: 1.75em; border-bottom: 1px solid #d1d9e0b3;}
+  
+  h2{
+  margin-top:0.5em;margin-bottom:0.5em;font-weight:600;line-height:1.25;padding-bottom:.3em;font-size:1.5em; border-bottom:1px solid #d1d9e0b3;
+  }
+
+  h3{
+  margin-top:0.5em;margin-bottom:0.5em;font-weight:600;line-height:1.25;font-size:1.25em;
+  }
+  h4{
+  margin-top:0.5em;margin-bottom:0.5em;font-weight:600;line-height:1.25;font-size:1em;
+  font-color:blue;
+  }
+
+   h5{
+  margin-top:0.5em;margin-bottom:0.5em;font-weight:600;line-height:1.25;font-size:1.0em;
+  }
+   h6{
+  margin-top:0.5em;margin-bottom:0.5em;font-weight:600;line-height:1.25;font-size:1.0em;
+  }
+
+  strong{
+  font-weight: 600;}
+
+  p{
+  margin-top: 0; margin-bottom: 0.5em; font-weight: 400;
+  
+  }
+
+  ul{
+  margin-top:0;margin-bottom:0.5em;font-weight:400;padding-left:2em;
+  }
+
+  table{
+  margin-top:0;
+  margin-bottom:0.5em;
+  font-weight:400;
+  border-spacing:0;
+  border-collapse:collapse;
+  display:block;
+  width:max-content;
+  max-width:100%;
+  overflow:auto;
+  font-variant:tabular-nums;
+// page-break-inside: avoid;
+  }
+
+  tr
+{
+  background-color:#f6f8fa;border-top:1px solid #d1d9e0b3;
+  }
+
+  tr.repeated-row{
+  background-color:#fff;border-top:1px solid #d1d9e0b3;
+  }
+
+th{
+padding:6px 13px;border:1px solid #d1d9e0;font-weight:600;
+}
+
+
+td.child-QR-item{
+
+padding:6px 13px;border:1px solid #d1d9e0;
+}
+
+td.child-QR-answer{
+
+padding:6px 13px;border:1px solid #d1d9e0;
+}
+
+
+`;
+
 export function qrToHTML(
   questionnaire: Questionnaire,
   questionnaireResponse: QuestionnaireResponse
@@ -38,10 +138,10 @@ export function qrToHTML(
 
   // Start with a base HTML <article> structure
   // Left styles inline for all HTML tags because the styles do not apply when used in a JS string variable
-  let html = `<article style="color-scheme: light; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; margin: 0; color: #1f2328; background-color: #ffffff; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans',Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji'; font-size: 16px; line-height: 1.5; word-wrap: break-word;">`;
+  let html = `<article><style>${common_css}</style>`;
 
   // Title as h1
-  html += `<h1 style="margin-top: 0; margin-bottom: .67em; font-weight: 600; padding-bottom: .3em; font-size: 2em; border-bottom: 1px solid #d1d9e0b3;">
+  html += `<h1> CUSTOM_JV
   ${he.encode(questionnaire.title ?? 'Questionnaire Response')}
   </h1>`;
 
@@ -87,9 +187,7 @@ export function renderMetadataHtml(questionnaireResponse: QuestionnaireResponse)
   if (questionnaireResponse.subject) {
     const subjectDisplay = questionnaireResponse.subject.display;
     if (subjectDisplay) {
-      lines.push(
-        `<strong style="font-weight: 600;">Patient</strong>: ${he.encode(subjectDisplay)}`
-      );
+      lines.push(`<strong>Patient</strong>: ${he.encode(subjectDisplay)}`);
     }
   }
 
@@ -97,7 +195,7 @@ export function renderMetadataHtml(questionnaireResponse: QuestionnaireResponse)
   if (questionnaireResponse.author) {
     const authorDisplay = questionnaireResponse.author.display;
     if (authorDisplay) {
-      lines.push(`<strong style="font-weight: 600;">Author</strong>: ${he.encode(authorDisplay)}`);
+      lines.push(`<strong>Author</strong>: ${he.encode(authorDisplay)}`);
     }
   }
 
@@ -117,7 +215,7 @@ export function renderMetadataHtml(questionnaireResponse: QuestionnaireResponse)
     return '';
   }
 
-  return `<p style="margin-top: 0; margin-bottom: 1rem; font-weight: 400;">${lines.join('<br />')}</p>`;
+  return `<p>${lines.join('<br />')}</p>`;
 }
 
 /**
@@ -144,9 +242,9 @@ function renderItemHtmlRecursive(
   // Render group heading if text exists
   const qrItemOrItemsIsSingleItem = !Array.isArray(qrItemOrItems) && qrItemOrItems !== null;
   const qrItemOrItemsIsNonEmptyArray = Array.isArray(qrItemOrItems) && qrItemOrItems.length > 0;
+  let groupHeading = '';
   if (qItem.type === 'group' && (qrItemOrItemsIsSingleItem || qrItemOrItemsIsNonEmptyArray)) {
-    const groupHeading = getGroupHeading(qItem, groupNestLevel);
-    html += groupHeading;
+    groupHeading = getGroupHeading(qItem, groupNestLevel);
   }
 
   // If item.type=group, render children recursively
@@ -162,25 +260,25 @@ function renderItemHtmlRecursive(
       }
     }
 
-    // Process repeating group items separately - TODO
+    // Process repeating group items separately
     if (qItem.type === 'group' && qItem.repeats && childQRItems.length > 0) {
+      html += `<div style="page-break-inside: avoid;">`; //Add page break for the heading of the table
+      html += groupHeading;
       html += renderRepeatGroupHtml(qItem, childQRItems);
+      html += `</div>`;
       return html;
     }
 
-    const indexMap = mapQItemsIndex(qItem);
-    const qrItemsByIndex = getQrItemsIndex(childQItems, childQRItems, indexMap);
-
-    for (const [index, childQItem] of childQItems.entries()) {
-      const childQRItemOrItems = qrItemsByIndex[index];
-
-      html = renderItemHtmlRecursive(
-        childQItem,
-        childQRItemOrItems ?? null,
-        groupNestLevel + 1,
-        html
-      );
+    //If the item is a group and is a QRItem with a heading, then we render the html with it's children.
+    if (qItem.type === 'group' && qrItemOrItemsIsSingleItem) {
+      html += `<div>`; //This div is required because the avoide page break in print view is applied through css.
+      html += groupHeading;
+      html = renderChildItems(qItem, childQItems, childQRItems, html, groupNestLevel);
+      html += `</div>`;
+      return html;
     }
+    // The following code will get executed when there are no more group elements.
+    html = renderChildItems(qItem, childQItems, childQRItems, html, groupNestLevel);
   }
 
   // At this point qrItemOrItems should be a single qrItem
@@ -195,22 +293,49 @@ function renderItemHtmlRecursive(
 
     if (qItem.repeats && qItem.type !== 'group') {
       // TODO Add margin below (later) when changing styles to inline
-      html += `<div style="margin-bottom: 0.5em;"><strong style="font-weight: 600;">${label}</strong></div>`;
-      html += `<ul style="margin-top:0;margin-bottom:1rem;font-weight:400;padding-left:2em;">`;
+      html += `<div  style="margin-bottom: 0.5em;"><strong >${label}</strong></div>`;
+      html += `<ul>`;
       for (const a of qrItem.answer) {
         html += `<li>${he.encode(answerToString(a))}</li>`;
       }
       html += `</ul>`;
     } else {
       html += qrItem.answer
-        .map(
-          (a) =>
-            `<p style="margin-top: 0; margin-bottom: 1rem; font-weight: 400;"><strong style="font-weight: 600;">${label}</strong><br/>${he.encode(answerToString(a))}</p>`
-        )
+        .map((a) => `<p ><strong >${label}</strong><br/>${he.encode(answerToString(a))}</p>`)
         .join('');
     }
   }
+  return html;
+}
 
+/**
+ * Renders the Child Items by recursively calling the renderItemHtmlRecursive
+ *
+ * @param {QuestionnaireItem} qItem - The parent QuestionnaireItem containing the child items.
+ * @param {QuestionnaireItem[]} childQItems - The array of child QuestionnaireItems to render.
+ * @param {QuestionnaireResponseItem[]} childQRItems - The corresponding QuestionnaireResponseItems for the child items.
+ * @param {string} html - The current accumulated HTML string to append rendered output to.
+ * @param {number} groupNestLevel - The nesting depth used to determine heading levels and styling.
+ * @returns {string} Updated HTML string including the rendered child items.
+ */
+function renderChildItems(
+  qItem: QuestionnaireItem,
+  childQItems: QuestionnaireItem[],
+  childQRItems: QuestionnaireResponseItem[],
+  html: string,
+  groupNestLevel: number
+) {
+  const indexMap = mapQItemsIndex(qItem);
+  const qrItemsByIndex = getQrItemsIndex(childQItems, childQRItems, indexMap);
+  for (const [index, childQItem] of childQItems.entries()) {
+    const childQRItemOrItems = qrItemsByIndex[index];
+    html = renderItemHtmlRecursive(
+      childQItem,
+      childQRItemOrItems ?? null,
+      groupNestLevel + 1,
+      html
+    );
+  }
   return html;
 }
 
@@ -222,6 +347,10 @@ function renderItemHtmlRecursive(
  * @returns {string} An HTML heading tag string or empty string if level is 0 or no text is present.
  */
 function getGroupHeading(qItem: QuestionnaireItem, nestedLevel: number): string {
+  if (qItem.type == 'group' && qItem.linkId == '2e82032a-dc28-45f2-916e-862303d39fe5') {
+    console.log(` Pre ${qItem.linkId} - ${qItem.text} - ${nestedLevel}`);
+  }
+
   // if item is tab-container, it will only have a nestedLevel of 0, hence do not render a heading
   // <h1> is really only reserved for the main title of the Questionnaire
   if (nestedLevel === 0) {
@@ -235,28 +364,27 @@ function getGroupHeading(qItem: QuestionnaireItem, nestedLevel: number): string 
   const headingText = qItem.text;
 
   let headingTag: string;
-  let inlineStyle = '';
+  // let inlineStyle = '';
   switch (nestedLevel) {
     case 1:
       headingTag = 'h2';
-      inlineStyle =
-        'margin-top:1.5rem;margin-bottom:1rem;font-weight:600;line-height:1.25;padding-bottom:.3em;font-size:1.5em;border-bottom:1px solid #d1d9e0b3;';
+      // inlineStyle ='';
       break;
     case 2:
       headingTag = 'h3';
-      inlineStyle =
-        'margin-top:1.5rem;margin-bottom:1rem;font-weight:600;line-height:1.25;font-size:1.25em;';
+      // inlineStyle ='';
       break;
     case 3:
     case 4:
     default:
       headingTag = 'h4';
-      inlineStyle =
-        'margin-top:1.5rem;margin-bottom:1rem;font-weight:600;line-height:1.25;font-size:1em;';
+      // inlineStyle ='';
       break;
   }
-
-  return `<${headingTag} style="${inlineStyle}">${he.encode(headingText)}</${headingTag}>`;
+  if (qItem.type == 'group' && qItem.linkId == '2e82032a-dc28-45f2-916e-862303d39fe5') {
+    console.log(` Post ${qItem.linkId} - ${qItem.text} - ${headingTag} - ${nestedLevel}`);
+  }
+  return `<${headingTag}>${he.encode(headingText)}</${headingTag}>`;
 }
 
 /**
@@ -281,11 +409,12 @@ function renderRepeatGroupHtml(
       .map((child) => he.encode(child.text ?? '')) ?? [];
 
   // Render headers
-  let html = `<table style="margin-top:0;margin-bottom:1rem;font-weight:400;border-spacing:0;border-collapse:collapse;display:block;width:max-content;max-width:100%;overflow:auto;font-variant:tabular-nums;">`;
-  html += `<thead><tr style="background-color:#f6f8fa;border-top:1px solid #d1d9e0b3;">`;
+  let html = `<table>`;
+  // let html = `<div style="page-break-inside: avoid; page-break-after: always;"><table style="width: 100%; page-break-inside: avoid;">`;
+  html += `<thead><tr>`;
 
   for (const header of headers) {
-    html += `<th style="padding:6px 13px;border:1px solid #d1d9e0;font-weight:600;">${header}</th>`;
+    html += `<th>${header}</th>`;
   }
   html += `</tr></thead>`;
 
@@ -298,7 +427,7 @@ function renderRepeatGroupHtml(
     const indexMap = mapQItemsIndex(qItem);
     const qrItemsByIndex = getQrItemsIndex(childQItems, childQRItems, indexMap);
 
-    html += `<tr style="background-color:#fff;border-top:1px solid #d1d9e0b3;">`;
+    html += `<tr class="repeated-row">`;
     for (const [index, childQItem] of childQItems.entries()) {
       if (structuredDataCapture.getHidden(childQItem)) {
         continue;
@@ -308,13 +437,13 @@ function renderRepeatGroupHtml(
 
       // Do not support repeat group nesting for now
       if (Array.isArray(childQRItem)) {
-        html += `<td style="padding:6px 13px;border:1px solid #d1d9e0;" colspan="${childQRItem.length}">Nested repeat groups not supported in narrative</td>`;
+        html += `<td class="child-QR-item" colspan="${childQRItem.length}">Nested repeat groups not supported in narrative</td>`;
         continue;
       }
 
       const answer = childQRItem?.answer?.[0];
       const value = answer ? answerToString(answer) : '';
-      html += `<td style="padding:6px 13px;border:1px solid #d1d9e0;">${he.encode(value)}</td>`;
+      html += `<td class="child-QR-answer" >${he.encode(value)}</td>`;
     }
     html += `</tr>`;
   }
