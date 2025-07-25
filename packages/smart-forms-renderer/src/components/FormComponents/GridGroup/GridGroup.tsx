@@ -32,11 +32,12 @@ import TableContainer from '@mui/material/TableContainer';
 import { mapQItemsIndex } from '../../../utils/mapItem';
 import GridTable from './GridTable';
 import useReadOnly from '../../../hooks/useReadOnly';
-import { useQuestionnaireStore } from '../../../stores';
+import { useQuestionnaireStore, useRendererStylingStore } from '../../../stores';
 import GroupHeading from '../GroupItem/GroupHeading';
 import type { ItemPath } from '../../../interfaces/itemPath.interface';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
+import { isItemHidden } from '../../../utils/qItem';
 
 interface GridGroupProps
   extends PropsWithQrItemChangeHandler,
@@ -72,20 +73,36 @@ function GridGroup(props: GridGroupProps) {
   const qrRowItems = qrGroup.item;
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
+  // imports to fascilitate store use
+  const enableWhenIsActivated = useQuestionnaireStore.use.enableWhenIsActivated();
+  const enableWhenItems = useQuestionnaireStore.use.enableWhenItems();
+  const enableWhenExpressions = useQuestionnaireStore.use.enableWhenExpressions();
+  const enableWhenAsReadOnly = useRendererStylingStore.use.enableWhenAsReadOnly();
 
-  // Prepare visible first-row items
-
-  // TODO : Using React Hooks inside ,map or filter functions causes the following message :  React Hook "useHidden" cannot be called inside a callback. React Hooks must be called in a React function component or a custom React Hook function.eslintreact-hooks/rules-of-hooks
-
-  const firstRowItems = qRowItems?.[0]?.item ?? [];
+  // Prepare visible first-row items. we use useMemo because we are using it inside useMemo later.
+  const firstRowItems: QuestionnaireItem[] = useMemo(() => qRowItems?.[0]?.item ?? [], [qRowItems]);
   // Get the items and ignore hidden columns as they are automatically added to the columnHeaders as empty space.
-  const visibleColumnItems = firstRowItems
-    .map((item) => ({
-      item,
-      hidden: useHidden(item)
-    }))
-    .filter(({ hidden }) => !hidden)
-    .map(({ item }) => item);
+
+  const visibleColumnItems: QuestionnaireItem[] = useMemo(
+    () =>
+      firstRowItems?.filter(
+        (item) =>
+          !isItemHidden(
+            item,
+            enableWhenIsActivated,
+            enableWhenItems,
+            enableWhenExpressions,
+            enableWhenAsReadOnly
+          )
+      ),
+    [
+      enableWhenAsReadOnly,
+      enableWhenExpressions,
+      enableWhenIsActivated,
+      enableWhenItems,
+      firstRowItems
+    ]
+  );
 
   // Get column headers from first row item.text
   const columnHeaders: {
