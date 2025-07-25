@@ -15,9 +15,10 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import { useDebounceValue } from 'usehooks-ts';
 import debounce from 'lodash.debounce';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
@@ -58,10 +59,26 @@ function TextItem(props: BaseItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, feedbackFromParent, input);
+  const immediateFeedback = useValidationFeedback(qItem, feedbackFromParent, input);
 
   // Provides a way to hide the feedback when the user is typing
   const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
+  
+  // Debounce the feedback to sync timing with store validation updates
+  const [debouncedFeedback] = useDebounceValue(immediateFeedback, DEBOUNCE_DURATION);
+  
+  // Show immediate validation errors, but use debounced timing for when errors disappear
+  // This ensures errors appear immediately but disappear in sync with store validation
+  const feedback = hasBlurred 
+    ? immediateFeedback  // Always immediate after blur
+    : (immediateFeedback !== '' ? immediateFeedback : debouncedFeedback); // Show errors immediately, but delay when they disappear
+
+  // Automatically show feedback when there are validation errors
+  useEffect(() => {
+    if (immediateFeedback !== '') {
+      setShowFeedback(true);
+    }
+  }, [immediateFeedback, setShowFeedback]);
 
   // Process calculated expressions
   const { calcExpUpdated } = useStringCalculatedExpression({
@@ -87,9 +104,12 @@ function TextItem(props: BaseItemProps) {
   function handleInputChange(newInput: string) {
     setInput(newInput);
 
-    // Only suppress feedback once (before first blur)
-    if (!hasBlurred) {
+    // Show feedback immediately for validation errors, or if user has already blurred
+    // Only suppress feedback for valid inputs before first blur
+    if (!hasBlurred && feedback === '') {
       setShowFeedback(false);
+    } else {
+      setShowFeedback(true);
     }
 
     updateQrItemWithDebounce(newInput);
