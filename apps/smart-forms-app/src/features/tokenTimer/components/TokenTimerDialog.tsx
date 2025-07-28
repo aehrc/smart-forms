@@ -35,7 +35,7 @@ import {
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import { saveQuestionnaireResponse } from '../../../api/saveQr.ts';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
-import { saveErrorMessage, saveSuccessMessage } from '../../../utils/snackbar.ts';
+import { saveErrorMessage, saveSuccessMessage } from '../../../interfaces/snackbar.interface.ts';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import StandardDialogTitle from '../../../components/Dialog/StandardDialogTitle.tsx';
 

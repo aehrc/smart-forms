@@ -17,7 +17,7 @@
 
 import type { Patient, Practitioner, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import type Client from 'fhirclient/lib/Client';
-import { constructName } from '../features/smartAppLaunch/utils/launchContext.ts';
+import { constructName } from '../utils/humanName.ts';
 import dayjs from 'dayjs';
 import { qrToHTML } from '../features/preview/utils/preview.ts';
 import { fetchQuestionnaireById } from './client.ts';

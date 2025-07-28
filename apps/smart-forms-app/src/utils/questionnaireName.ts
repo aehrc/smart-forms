@@ -15,28 +15,7 @@
  * limitations under the License.
  */
 
-import type { Coding, Extension, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
-
-/**
- * Check if the extension has an itemControl code equal to the given itemControlCode
- *
- * @author Sean Fong
- */
-export function isSpecificItemControl(qItem: QuestionnaireItem, itemControlCode: string): boolean {
-  const itemControl = qItem.extension?.find(
-    (extension: Extension) =>
-      extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl'
-  );
-  if (itemControl) {
-    const code = itemControl.valueCodeableConcept?.coding?.find(
-      (coding: Coding) => coding.code === itemControlCode
-    );
-    if (code) {
-      return true;
-    }
-  }
-  return false;
-}
+import type { Extension, QuestionnaireResponse } from 'fhir/r4';
 
 /**
  * Get questionnaire name from questionnaireResponse

@@ -15,10 +15,8 @@
  * limitations under the License.
  */
 
-export function isRecord(obj: any): obj is Record<string, any> {
-  if (!obj) {
-    return false;
-  }
+import type { MutableRefObject } from 'react';
 
-  return Object.keys(obj).every((key) => typeof key === 'string');
-}
+export type PrintComponentRefContextInterface = {
+  componentRef: MutableRefObject<HTMLDivElement | null> | null;
+};

@@ -17,7 +17,7 @@
 
 import { Box, IconButton, Stack, Typography } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
-import { constructName } from '../../../../../smartAppLaunch/utils/launchContext.ts';
+import { constructName } from '../../../../../../utils/humanName.ts';
 import OpenResponseButton from '../Buttons/OpenResponseButton.tsx';
 import type { QuestionnaireResponse } from 'fhir/r4';
 import useSmartClient from '../../../../../../hooks/useSmartClient.ts';

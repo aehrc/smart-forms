@@ -21,13 +21,16 @@ import { useSnackbar } from 'notistack';
 import { saveProgress } from '../../../../api/saveQr.ts';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
-import { saveAsFinalSuccessMessage, saveErrorMessage } from '../../../../utils/snackbar.ts';
+import {
+  saveAsFinalSuccessMessage,
+  saveErrorMessage
+} from '../../../../interfaces/snackbar.interface.ts';
 import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
 import type { Bundle } from 'fhir/r4';
 import { HEADERS } from '../../../../api/headers.ts';
 import WriteBackBundleSelectorDialog from '../../../writeBack/components/WriteBackBundleSelectorDialog.tsx';
 import type { SavingWriteBackMode } from '../../utils/extract.ts';
-import { responseIsOperationOutcome } from '../../../../utils/extract.ts';
+import { responseIsOperationOutcome } from '../../../../utils/operationOutcome.ts';
 
 export interface RendererSaveAsFinalWriteBackDialogProps {
   dialogOpen: boolean;

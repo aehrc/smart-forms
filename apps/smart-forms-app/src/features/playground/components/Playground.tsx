@@ -28,7 +28,7 @@ import PlaygroundRenderer from './PlaygroundRenderer.tsx';
 import { Box } from '@mui/material';
 import PopulationProgressSpinner from '../../../components/Spinners/PopulationProgressSpinner.tsx';
 import { isQuestionnaire } from '../typePredicates/isQuestionnaire.ts';
-import type { BuildState } from '../types/buildState.interface.ts';
+import type { BuildState } from '../interfaces/buildState.interface.ts';
 import { useLocalStorage } from 'usehooks-ts';
 import {
   extractObservationBased,
