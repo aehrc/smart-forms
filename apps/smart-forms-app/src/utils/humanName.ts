@@ -23,15 +23,15 @@ import type { HumanName } from 'fhir/r4';
  * @author Sean Fong
  */
 export function constructName(name: HumanName[] | undefined): string {
-  if (name?.[0]['text']) {
-    return `${name?.[0].text}`;
+  if (name?.[0]?.text) {
+    return `${name?.[0].text ?? null}`;
   }
 
-  const prefix = name?.[0].prefix?.[0] ?? '';
-  const givenName = name?.[0].given?.[0] ?? '';
-  const familyName = name?.[0].family ?? '';
+  const prefix = name?.[0]?.prefix?.[0] ?? '';
+  const givenName = name?.[0]?.given?.[0] ?? '';
+  const familyName = name?.[0]?.family ?? '';
 
-  const fullName = `${prefix} ${givenName} ${familyName}`;
+  const fullName = [prefix, givenName, familyName].filter(Boolean).join(' ');
 
   if (fullName.length === 0) {
     return 'null';
@@ -41,12 +41,27 @@ export function constructName(name: HumanName[] | undefined): string {
 }
 
 export function constructShortName(name: HumanName[] | undefined): string {
-  if (name?.[0]['text']) {
-    return `${name?.[0].text}`;
-  } else {
-    const givenName = name?.[0].given?.[0][0] ?? '';
-    const familyName = name?.[0].family ?? '';
-
-    return `${givenName}.${familyName}`;
+  if (name?.[0]?.text) {
+    return `${name[0].text ?? null}`;
   }
+
+  const givenInitial = name?.[0]?.given?.[0]?.[0] ?? '';
+  const familyName = name?.[0]?.family ?? '';
+
+  if (!givenInitial && !familyName) {
+    return 'null';
+  }
+
+  // only family name, no dot
+  if (!givenInitial) {
+    return familyName;
+  }
+
+  // only given initial, dot after initial
+  if (!familyName) {
+    return `${givenInitial}.`;
+  }
+
+  // both given and family present, joined by dot
+  return `${givenInitial}.${familyName}`;
 }

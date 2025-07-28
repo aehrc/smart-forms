@@ -14,9 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { QuestionnaireResponse } from 'fhir/r4';
 
-export const emptyResponse: QuestionnaireResponse = {
-  resourceType: 'QuestionnaireResponse',
-  status: 'in-progress'
-};
+import { act, renderHook } from '@testing-library/react';
+import useClickCounter from '../hooks/useClickCounter';
+
+describe('useClickCounter', () => {
+  it('starts counter at 0', () => {
+    const { result } = renderHook(() => useClickCounter());
+    expect(result.current.counter).toBe(0);
+  });
+
+  it('increments counter when addOneToCounter is called', () => {
+    const { result } = renderHook(() => useClickCounter());
+    act(() => {
+      result.current.addOneToCounter();
+    });
+    expect(result.current.counter).toBe(1);
+
+    act(() => {
+      result.current.addOneToCounter();
+    });
+    expect(result.current.counter).toBe(2);
+  });
+});

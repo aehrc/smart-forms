@@ -25,7 +25,7 @@ import type {
 } from 'fhir/r4';
 import randomColor from 'randomcolor';
 import dayjs from 'dayjs';
-import { getQuestionnaireNameFromResponse } from '../../renderer/utils/itemControl.ts';
+import { getQuestionnaireNameFromResponse } from '../../../utils/questionnaireName.ts';
 import type Client from 'fhirclient/lib/Client';
 import type { QuestionnaireListItem, ResponseListItem } from '../types/list.interface.ts';
 import { HEADERS } from '../../../api/headers.ts';
@@ -95,6 +95,7 @@ export function createQuestionnaireListItem(
   };
 }
 
+///
 export function createQuestionnaireTitle(questionnaire: Questionnaire): string {
   return questionnaire.title
     ? questionnaire.title.charAt(0).toUpperCase() + questionnaire.title.slice(1)

@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import type { MutableRefObject } from 'react';
+import type { OperationOutcome } from 'fhir/r4';
 
-export type PrintComponentRefContextType = {
-  componentRef: MutableRefObject<HTMLDivElement | null> | null;
-};
+export function responseIsOperationOutcome(response: any): response is OperationOutcome {
+  return response?.resourceType === 'OperationOutcome';
+}
