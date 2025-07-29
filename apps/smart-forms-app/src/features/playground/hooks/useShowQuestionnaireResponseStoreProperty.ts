@@ -26,17 +26,17 @@ function useShowQuestionnaireResponseStoreProperty(selectedProperty: string) {
   const invalidItems = useQuestionnaireResponseStore.use.invalidItems();
   const responseIsValid = useQuestionnaireResponseStore.use.responseIsValid();
 
-  return (
-    {
-      key,
-      sourceResponse,
-      updatableResponse,
-      updatableResponseItems,
-      formChangesHistory,
-      invalidItems,
-      responseIsValid
-    }[selectedProperty] || null
-  );
+  const valueMap = {
+    key,
+    sourceResponse,
+    updatableResponse,
+    updatableResponseItems,
+    formChangesHistory,
+    invalidItems,
+    responseIsValid
+  };
+
+  return selectedProperty in valueMap ? valueMap[selectedProperty as keyof typeof valueMap] : null;
 }
 
 export default useShowQuestionnaireResponseStoreProperty;

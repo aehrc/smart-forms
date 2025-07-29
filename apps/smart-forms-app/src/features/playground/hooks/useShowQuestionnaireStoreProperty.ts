@@ -48,38 +48,38 @@ function useShowQuestionnaireStoreProperty(selectedProperty: string) {
   const focusedLinkId = useQuestionnaireStore.use.focusedLinkId();
   const readOnly = useQuestionnaireStore.use.readOnly();
 
-  return (
-    {
-      sourceQuestionnaire,
-      itemTypes,
-      itemPreferredTerminologyServers,
-      tabs,
-      currentTabIndex,
-      pages,
-      currentPageIndex,
-      variables,
-      launchContexts,
-      targetConstraints,
-      targetConstraintLinkIds,
-      answerOptionsToggleExpressions,
-      enableWhenItems,
-      enableWhenLinkedQuestions,
-      enableWhenIsActivated,
-      enableWhenExpressions,
-      calculatedExpressions,
-      initialExpressions,
-      answerExpressions,
-      processedValueSets,
-      cachedValueSetCodings,
-      fhirPathContext,
-      fhirPathTerminologyCache,
-      populatedContext,
-      qItemOverrideComponents,
-      sdcUiOverrideComponents,
-      focusedLinkId,
-      readOnly
-    }[selectedProperty] || null
-  );
+  const valueMap = {
+    sourceQuestionnaire,
+    itemTypes,
+    itemPreferredTerminologyServers,
+    tabs,
+    currentTabIndex,
+    pages,
+    currentPageIndex,
+    variables,
+    launchContexts,
+    targetConstraints,
+    targetConstraintLinkIds,
+    answerOptionsToggleExpressions,
+    enableWhenItems,
+    enableWhenLinkedQuestions,
+    enableWhenIsActivated,
+    enableWhenExpressions,
+    calculatedExpressions,
+    initialExpressions,
+    answerExpressions,
+    processedValueSets,
+    cachedValueSetCodings,
+    fhirPathContext,
+    fhirPathTerminologyCache,
+    populatedContext,
+    qItemOverrideComponents,
+    sdcUiOverrideComponents,
+    focusedLinkId,
+    readOnly
+  };
+
+  return selectedProperty in valueMap ? valueMap[selectedProperty as keyof typeof valueMap] : null;
 }
 
 export default useShowQuestionnaireStoreProperty;
