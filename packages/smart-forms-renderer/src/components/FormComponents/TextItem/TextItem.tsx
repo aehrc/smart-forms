@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import { useDebounceValue } from 'usehooks-ts';
@@ -63,15 +63,17 @@ function TextItem(props: BaseItemProps) {
 
   // Provides a way to hide the feedback when the user is typing
   const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
-  
+
   // Debounce the feedback to sync timing with store validation updates
   const [debouncedFeedback] = useDebounceValue(immediateFeedback, DEBOUNCE_DURATION);
-  
+
   // Show immediate validation errors, but use debounced timing for when errors disappear
   // This ensures errors appear immediately but disappear in sync with store validation
-  const feedback = hasBlurred 
-    ? immediateFeedback  // Always immediate after blur
-    : (immediateFeedback !== '' ? immediateFeedback : debouncedFeedback); // Show errors immediately, but delay when they disappear
+  const feedback = hasBlurred
+    ? immediateFeedback // Always immediate after blur
+    : immediateFeedback !== ''
+      ? immediateFeedback
+      : debouncedFeedback; // Show errors immediately, but delay when they disappear
 
   // Automatically show feedback when there are validation errors
   useEffect(() => {
