@@ -17,7 +17,7 @@
 
 import { expect, test } from '@jest/globals';
 import { initialiseQuestionnaireResponse } from '../utils';
-import { qInitialValueSample } from './test-data/initialValueSample';
+import { qInitialValueSample } from './data/initialValueSample';
 
 test('item.initial is properly pre-filled into QuestionnaireResponse', () => {
   const outputResponse = initialiseQuestionnaireResponse(qInitialValueSample);
