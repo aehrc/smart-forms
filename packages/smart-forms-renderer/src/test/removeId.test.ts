@@ -17,7 +17,7 @@
 
 import { expect, test } from '@jest/globals';
 import { removeInternalIdsFromResponse } from '../utils';
-import { qrRemoveIdResult, qrRemoveIdSample } from './test-data/removeIdSample';
+import { qrRemoveIdResult, qrRemoveIdSample } from './data/removeIdSample';
 import { qMyPatient } from '../stories/assets/questionnaires/QIdRemoverDebugger';
 
 test('item.initial is properly pre-filled into QuestionnaireResponse', () => {
