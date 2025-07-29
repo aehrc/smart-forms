@@ -87,7 +87,7 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
   // This will be done after the choice/open-choice refactoring
 
   // Perform validation checks
-  const validationFeedback = useValidationFeedback(qItem, feedbackFromParent, '');
+  const validationFeedback = useValidationFeedback(qItem, feedbackFromParent);
 
   const {
     options,

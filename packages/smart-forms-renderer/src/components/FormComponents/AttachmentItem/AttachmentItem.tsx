@@ -58,7 +58,7 @@ function AttachmentItem(props: BaseItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
+  const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
   // Event handlers
   async function handleUploadFile(newUploadedFile: File | null) {
