@@ -26,7 +26,7 @@ import type {
 } from 'fhir/r4';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enableWhen.interface';
-import { isHiddenByEnableWhen } from './qItem';
+import { isItemHidden } from './qItem';
 import {
   getDecimalPrecision,
   getMaxQuantityValue,
@@ -41,7 +41,7 @@ import { structuredDataCapture } from 'fhir-sdc-helpers';
 import type { RegexValidation } from '../interfaces/regex.interface';
 import { parseDecimalStringToFloat } from './parseInputs';
 import dayjs from 'dayjs';
-import { questionnaireStore } from '../stores';
+import { questionnaireStore, rendererStylingStore } from '../stores';
 
 export enum ValidationResult {
   unknown = 'unknown', // Unknown validation result
@@ -107,6 +107,8 @@ export function validateForm(
 export function validateTargetConstraint(): Record<string, OperationOutcome> {
   const targetConstraints = questionnaireStore.getState().targetConstraints;
   const invalidItems: Record<string, OperationOutcome> = {};
+
+  // Iterate through the target constraints and check if they are invalid
   for (const [, targetConstraint] of Object.entries(targetConstraints)) {
     if (targetConstraint.isInvalid) {
       const locationExpression = targetConstraint.location
@@ -128,6 +130,9 @@ export function validateTargetConstraint(): Record<string, OperationOutcome> {
       invalidItems[invalidItemKey] = validationOutcome;
     }
   }
+
+  // Filter out any items that are hidden
+  // TODO replace this with isHidden which covers questionnaire-hidden too
 
   return invalidItems;
 }
@@ -151,6 +156,7 @@ export function validateQuestionnaireResponse(
   const enableWhenIsActivated = questionnaireStore.getState().enableWhenIsActivated;
   const enableWhenItems = questionnaireStore.getState().enableWhenItems;
   const enableWhenExpressions = questionnaireStore.getState().enableWhenExpressions;
+  const enableWhenAsReadOnly = rendererStylingStore.getState().enableWhenAsReadOnly;
 
   if (!questionnaire.item || questionnaire.item.length === 0) {
     return {};
@@ -197,6 +203,7 @@ export function validateQuestionnaireResponse(
       enableWhenIsActivated,
       enableWhenItems,
       enableWhenExpressions,
+      enableWhenAsReadOnly,
       isRepeatGroupInstance: false
     });
 
@@ -221,7 +228,9 @@ interface ValidateItemRecursiveParams {
   enableWhenIsActivated: boolean;
   enableWhenItems: EnableWhenItems;
   enableWhenExpressions: EnableWhenExpressions;
+  enableWhenAsReadOnly: boolean | Set<QuestionnaireItem['type']>;
   isRepeatGroupInstance: boolean;
+  parentRepeatGroupIndex?: number;
 }
 
 function validateItemRecursive(params: ValidateItemRecursiveParams) {
@@ -233,7 +242,9 @@ function validateItemRecursive(params: ValidateItemRecursiveParams) {
     enableWhenIsActivated,
     enableWhenItems,
     enableWhenExpressions,
-    isRepeatGroupInstance
+    enableWhenAsReadOnly,
+    isRepeatGroupInstance,
+    parentRepeatGroupIndex
   } = params;
   let { locationExpression } = params;
 
@@ -244,12 +255,14 @@ function validateItemRecursive(params: ValidateItemRecursiveParams) {
 
   // If item is hidden by enableWhen, skip validation
   if (
-    isHiddenByEnableWhen({
-      linkId: qItem.linkId,
+    isItemHidden(
+      qItem,
       enableWhenIsActivated,
       enableWhenItems,
-      enableWhenExpressions
-    })
+      enableWhenExpressions,
+      enableWhenAsReadOnly,
+      parentRepeatGroupIndex
+    )
   ) {
     return;
   }
@@ -266,6 +279,7 @@ function validateItemRecursive(params: ValidateItemRecursiveParams) {
         enableWhenIsActivated,
         enableWhenItems,
         enableWhenExpressions,
+        enableWhenAsReadOnly,
         isRepeatGroupInstance: false
       });
       return;
@@ -321,6 +335,7 @@ function validateItemRecursive(params: ValidateItemRecursiveParams) {
         enableWhenIsActivated,
         enableWhenItems,
         enableWhenExpressions,
+        enableWhenAsReadOnly,
         isRepeatGroupInstance: false
       });
     }
@@ -344,7 +359,8 @@ function validateRepeatGroupRecursive(params: ValidateItemRecursiveParams) {
     invalidItems,
     enableWhenIsActivated,
     enableWhenItems,
-    enableWhenExpressions
+    enableWhenExpressions,
+    enableWhenAsReadOnly
   } = params;
 
   if (!qItem.item || qItem.item.length === 0 || !qrItem.item || qrItem.item.length === 0) {
@@ -366,7 +382,9 @@ function validateRepeatGroupRecursive(params: ValidateItemRecursiveParams) {
       enableWhenIsActivated,
       enableWhenItems,
       enableWhenExpressions,
-      isRepeatGroupInstance: true
+      enableWhenAsReadOnly,
+      isRepeatGroupInstance: true,
+      parentRepeatGroupIndex: index
     });
   }
 }
