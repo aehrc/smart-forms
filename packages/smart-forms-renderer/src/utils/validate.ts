@@ -105,18 +105,26 @@ export function validateForm(
 }
 
 export function validateTargetConstraint(): Record<string, OperationOutcome> {
+  const itemMap = questionnaireStore.getState().itemMap;
   const targetConstraints = questionnaireStore.getState().targetConstraints;
-  const invalidItems: Record<string, OperationOutcome> = {};
+
+  const enableWhenIsActivated = questionnaireStore.getState().enableWhenIsActivated;
+  const enableWhenItems = questionnaireStore.getState().enableWhenItems;
+  const enableWhenExpressions = questionnaireStore.getState().enableWhenExpressions;
+  const enableWhenAsReadOnly = rendererStylingStore.getState().enableWhenAsReadOnly;
 
   // Iterate through the target constraints and check if they are invalid
+  const allInvalidItems: Record<string, OperationOutcome> = {};
   for (const [, targetConstraint] of Object.entries(targetConstraints)) {
     if (targetConstraint.isInvalid) {
+      // Generate location expression for the validation outcome
       const locationExpression = targetConstraint.location
         ? `${targetConstraint.valueExpression.expression ?? 'unknown FHIRPath expression'} at ${
             targetConstraint.location
           }`
         : `${targetConstraint.valueExpression.expression ?? 'unknown FHIRPath expression'}`;
 
+      // Create the validation operation outcome
       const validationOutcome = createValidationOperationOutcome(
         ValidationResult.invariant,
         null as unknown as QuestionnaireItem, // We don't need a QuestionnaireItem here
@@ -127,14 +135,32 @@ export function validateTargetConstraint(): Record<string, OperationOutcome> {
       );
 
       const invalidItemKey = targetConstraint.linkId ?? `target-constraint-${targetConstraint.key}`;
-      invalidItems[invalidItemKey] = validationOutcome;
+      allInvalidItems[invalidItemKey] = validationOutcome;
     }
   }
 
   // Filter out any items that are hidden
-  // TODO replace this with isHidden which covers questionnaire-hidden too
+  const filteredInvalidItems: Record<string, OperationOutcome> = {};
+  for (const linkId of Object.keys(allInvalidItems)) {
+    const qItem = itemMap[linkId];
 
-  return invalidItems;
+    const itemIsVisible =
+      qItem &&
+      !isItemHidden(
+        qItem,
+        enableWhenIsActivated,
+        enableWhenItems,
+        enableWhenExpressions,
+        enableWhenAsReadOnly
+      );
+
+    // If the item is not hidden, add it to the filteredInvalidItems
+    if (itemIsVisible) {
+      filteredInvalidItems[linkId] = allInvalidItems[linkId];
+    }
+  }
+
+  return filteredInvalidItems;
 }
 
 interface ValidateQuestionnaireResponseParams {
