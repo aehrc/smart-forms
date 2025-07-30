@@ -16,9 +16,11 @@
  */
 
 import { styled } from '@mui/material/styles';
-import TextField from '@mui/material/TextField'; // Always use this accompanied by the TextField prop fullWidth
+import TextField from '@mui/material/TextField';
 
-// Always use this accompanied by the TextField prop fullWidth
+/**
+ * Always use this with the TextField `fullWidth` prop to ensure proper layout and alignment.
+ */
 export const StandardTextField = styled(TextField, {
   shouldForwardProp: (prop) => prop !== 'isTabled' && prop !== 'textFieldWidth'
 })<{ isTabled: boolean; textFieldWidth: number }>(({ isTabled, textFieldWidth }) => ({
