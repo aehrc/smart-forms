@@ -24,7 +24,6 @@ import MuiTextField from '../../TextItem/MuiTextField';
 import { grey } from '@mui/material/colors';
 import Typography from '@mui/material/Typography';
 import { useRendererStylingStore } from '../../../../stores';
-import { expressionUpdateFadingGlow } from '../../../ExpressionUpdateFadingGlow.styles';
 import FormControl from '@mui/material/FormControl';
 
 interface CustomTimeFieldProps extends PropsWithIsTabledRequiredAttribute {
@@ -53,7 +52,7 @@ function CustomTimeField(props: CustomTimeFieldProps) {
     feedback,
     displayPrompt,
     readOnly,
-    calcExpUpdated,
+    calcExpUpdated, // TODO this component doesn't have a calcExpUpdated update animation
     isPartOfDateTime,
     isTabled,
     onTimeInputChange,
@@ -84,7 +83,7 @@ function CustomTimeField(props: CustomTimeFieldProps) {
           value={timeInput}
           error={!!feedback}
           fullWidth
-          sx={[expressionUpdateFadingGlow(calcExpUpdated), { flex: 1 }]}
+          sx={{ flex: 1 }}
           onChange={(e: ChangeEvent<HTMLInputElement>) => onTimeInputChange(e.target.value)}
           onBlur={onTimeBlur}
           label={displayPrompt}
@@ -97,7 +96,7 @@ function CustomTimeField(props: CustomTimeFieldProps) {
             }
           }}
         />
-        <FormControl sx={[expressionUpdateFadingGlow(calcExpUpdated), { flex: 1 }]}>
+        <FormControl sx={{ flex: 1 }}>
           <Select
             id={periodId}
             value={is24HourNotation ? '' : periodInput}
