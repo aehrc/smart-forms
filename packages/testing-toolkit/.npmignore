@@ -1,0 +1,12 @@
+# Ignore stories
+.storybook
+
+
+# Ignore temp file if present
+temp
+
+# Ignore storybook build
+storybook-static
+storybook.log
+doctor-storybook.log
+build-storybook.log

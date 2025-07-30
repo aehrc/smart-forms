@@ -27,9 +27,12 @@ import {
   qrChoiceAnswerValueSetBasicResponse
 } from '../assets/questionnaires';
 
+//import {chooseSelectOption} from '@aehrc/testing-toolkit'
+import { expect, within } from 'storybook/test';
+
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'ItemType/Choice',
+  title: 'ItemType/Choice', 
   component: BuildFormWrapperForStorybook,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []
@@ -43,7 +46,23 @@ type Story = StoryObj<typeof meta>;
 export const ChoiceAnswerOptionBasic: Story = {
   args: {
     questionnaire: qChoiceAnswerOptionBasic
-  }
+  },
+ play: async ({ canvasElement, userEvent }) => {
+  const canvas = within(canvasElement);
+
+  
+  const i = canvas.getByDisplayValue('');
+  console.log(i)
+
+  
+
+  // Кликаем по опции
+  await userEvent.selectOptions(i,);
+
+  // Проверяем, что значение установлено
+  const input = canvas.getByRole('combobox');
+  await expect(input).toHaveValue('Smoker');
+}
 };
 
 export const ChoiceAnswerOptionBasicResponse: Story = {
