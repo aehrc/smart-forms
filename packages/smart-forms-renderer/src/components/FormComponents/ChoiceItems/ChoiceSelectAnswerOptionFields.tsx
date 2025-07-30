@@ -79,6 +79,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
         readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
         renderInput={(params) => (
           <StandardTextField
+            multiline
             textFieldWidth={textFieldWidth}
             isTabled={isTabled}
             placeholder={entryFormat || displayPrompt}
