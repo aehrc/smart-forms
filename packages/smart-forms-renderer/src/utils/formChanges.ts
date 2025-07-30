@@ -110,7 +110,7 @@ function getItemChange(
 
   const qItem = itemMap[diffItem.linkId];
   const operation = answerDiffOperationSwitcher(operator);
-  if (operation) {
+  if (qItem && operation) {
     changedItems[diffItem.linkId] = {
       linkId: diffItem.linkId,
       itemType: qItem.type,
