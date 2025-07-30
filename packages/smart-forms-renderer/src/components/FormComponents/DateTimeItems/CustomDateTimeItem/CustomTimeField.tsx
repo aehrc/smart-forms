@@ -52,13 +52,13 @@ function CustomTimeField(props: CustomTimeFieldProps) {
     feedback,
     displayPrompt,
     readOnly,
-    calcExpUpdated, // TODO this component doesn't have a calcExpUpdated update animation
     isPartOfDateTime,
     isTabled,
     onTimeInputChange,
     onPeriodChange,
     onTimeBlur
   } = props;
+  // TODO this component doesn't have a calcExpUpdated update animation
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();

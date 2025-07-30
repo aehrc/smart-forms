@@ -34,7 +34,7 @@ interface QuantityComparatorFieldProps extends PropsWithIsTabledRequiredAttribut
 }
 
 function QuantityComparatorField(props: QuantityComparatorFieldProps) {
-  const { linkId, itemType, options, valueSelect, readOnly, calcExpUpdated, onChange } = props;
+  const { linkId, itemType, options, valueSelect, readOnly, onChange } = props;
   // TODO this component doesn't have a calcExpUpdated update animation
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();

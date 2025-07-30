@@ -33,8 +33,7 @@ interface QuantityUnitFieldProps extends PropsWithIsTabledRequiredAttribute {
 }
 
 function QuantityUnitField(props: QuantityUnitFieldProps) {
-  const { linkId, itemType, options, valueSelect, readOnly, calcExpUpdated, isTabled, onChange } =
-    props;
+  const { linkId, itemType, options, valueSelect, readOnly, isTabled, onChange } = props;
   // TODO this component doesn't have a calcExpUpdated update animation
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
