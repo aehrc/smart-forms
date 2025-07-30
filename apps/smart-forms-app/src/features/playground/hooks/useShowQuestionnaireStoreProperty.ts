@@ -19,7 +19,7 @@ import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 
 function useShowQuestionnaireStoreProperty(selectedProperty: string) {
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
-  const itemTypes = useQuestionnaireStore.use.itemTypes();
+  const itemMap = useQuestionnaireStore.use.itemMap();
   const itemPreferredTerminologyServers =
     useQuestionnaireStore.use.itemPreferredTerminologyServers();
   const tabs = useQuestionnaireStore.use.tabs();
@@ -50,7 +50,7 @@ function useShowQuestionnaireStoreProperty(selectedProperty: string) {
 
   const valueMap = {
     sourceQuestionnaire,
-    itemTypes,
+    itemMap,
     itemPreferredTerminologyServers,
     tabs,
     currentTabIndex,

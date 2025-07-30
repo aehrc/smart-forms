@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 type JsonDiffOperator = '+' | '-' | '~' | ' ';
 
@@ -38,7 +38,10 @@ interface ItemChange {
   value: QuestionnaireResponseItemAnswer;
 }
 
-export function readFormChanges(formChanges: object, itemTypes: Record<string, string>) {
+export function readFormChanges(
+  formChanges: object,
+  itemMap: Record<string, Omit<QuestionnaireItem, 'item'>>
+) {
   if (!('item' in formChanges)) {
     return {};
   }
@@ -46,7 +49,7 @@ export function readFormChanges(formChanges: object, itemTypes: Record<string, s
   const changedItems: Record<string, ItemChange | null> = {};
   const diffArrays = formChanges.item as QuestionnaireResponseItemDiffArray[];
   for (const diffArray of diffArrays) {
-    readItemChangesRecursive(diffArray, itemTypes, changedItems);
+    readItemChangesRecursive(diffArray, itemMap, changedItems);
   }
 
   return changedItems;
@@ -54,7 +57,7 @@ export function readFormChanges(formChanges: object, itemTypes: Record<string, s
 
 export function readItemChangesRecursive(
   diffArray: QuestionnaireResponseItemDiffArray,
-  itemTypes: Record<string, string>,
+  itemMap: Record<string, Omit<QuestionnaireItem, 'item'>>,
   changedItems: Record<string, ItemChange | null>
 ) {
   const operator = diffArray[0];
@@ -69,7 +72,7 @@ export function readItemChangesRecursive(
   const childDiffArrays = diffItem.item;
   if (childDiffArrays && childDiffArrays.length > 0) {
     for (const childDiffArray of childDiffArrays) {
-      readItemChangesRecursive(childDiffArray, itemTypes, changedItems);
+      readItemChangesRecursive(childDiffArray, itemMap, changedItems);
     }
   }
 
@@ -85,7 +88,7 @@ export function readItemChangesRecursive(
   const answerDiffArrays = diffItem.answer;
   if (answerDiffArrays && isAnswerDiffArray(answerDiffArrays)) {
     for (const answerDiffArray of answerDiffArrays) {
-      getItemChange(diffItem, answerDiffArray, itemTypes, changedItems);
+      getItemChange(diffItem, answerDiffArray, itemMap, changedItems);
     }
   }
 
@@ -95,7 +98,7 @@ export function readItemChangesRecursive(
 function getItemChange(
   diffItem: QuestionnaireResponseDiffItem,
   answerDiffArray: QuestionnaireResponseItemAnswerDiffArray,
-  itemTypes: Record<string, string>,
+  itemMap: Record<string, Omit<QuestionnaireItem, 'item'>>,
   changedItems: Record<string, ItemChange | null>
 ) {
   const operator = answerDiffArray[0];
@@ -105,12 +108,12 @@ function getItemChange(
     return;
   }
 
-  const itemType = itemTypes[diffItem.linkId];
+  const qItem = itemMap[diffItem.linkId];
   const operation = answerDiffOperationSwitcher(operator);
   if (operation) {
     changedItems[diffItem.linkId] = {
       linkId: diffItem.linkId,
-      itemType: itemType,
+      itemType: qItem.type,
       operation: operation,
       value: answer
     };
