@@ -8,6 +8,14 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.85] - 2025-07-30
+#### Changed
+- Reverted visual expression update animations to the previous behaviour (Last change was in 1.0.0-alpha.81).
+
+#### Fixed
+- Add check for falsy input values in calculatedExpression hook updates to prevent unintended visual calculatedExpression updates when nothing has actually changed.
+
+
 ## [1.0.0-alpha.84] - 2025-07-30
 _(WARNING: Possible breaking changes with QuestionnaireStore.itemTypes)_
 #### Changed
