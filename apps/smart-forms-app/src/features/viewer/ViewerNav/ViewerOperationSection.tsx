@@ -30,6 +30,38 @@ import {
   NavSectionWrapper
 } from '../../../components/Nav/Nav.styles.ts';
 import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
+import { getQuestionnaireNameFromResponse } from '../../renderer/utils/itemControl.ts'; /*
+  Prevent content from breaking inside these section containers.
+
+  These classes should wrap content grouped by heading level
+  (e.g., each <h2> and its related content inside a .h2-section).
+
+  - For h4 headings: avoid page breaks immediately after.
+  - For h3 headings: avoid breaks immediately after, but allow them to start on a new page if needed.
+  - For h2 headings: apply the same logic as h3 — avoid breaking right after, but allow a break before.
+*/
+
+/*
+  Prevent content from breaking inside these section containers.
+
+  These classes should wrap content grouped by heading level
+  (e.g., each <h2> and its related content inside a .h2-section).
+
+  - For h4 headings: avoid page breaks immediately after.
+  - For h3 headings: avoid breaks immediately after, but allow them to start on a new page if needed.
+  - For h2 headings: apply the same logic as h3 — avoid breaking right after, but allow a break before.
+*/
+const pageStyle: string = `
+  @media print {
+    .h2-section, .h3-section, .h4-section {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    h4 { break-after: avoid; }
+    h3 { break-after: avoid; break-before: auto; }
+    h2 { break-after: avoid; break-before: auto; }
+  }
+`;
 
 function ViewerOperationSection() {
   const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
@@ -37,8 +69,11 @@ function ViewerOperationSection() {
   const navigate = useNavigate();
 
   const { componentRef } = useContext(PrintComponentRefContext);
+
   const handlePrint = useReactToPrint({
-    contentRef: componentRef ?? undefined
+    contentRef: componentRef ?? undefined,
+    pageStyle: pageStyle,
+    documentTitle: getQuestionnaireNameFromResponse(sourceResponse)
   });
 
   return (
