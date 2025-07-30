@@ -18,9 +18,11 @@
 import type { QuestionnaireItem } from 'fhir/r4';
 import {
   getMaxQuantityValue,
+  getMaxQuantityValueFeedback,
   getMaxValue,
   getMaxValueFeedback,
   getMinQuantityValue,
+  getMinQuantityValueFeedback,
   getMinValue,
   getMinValueFeedback,
   getRegexValidation,
@@ -177,7 +179,7 @@ function useValidationFeedback(
 
     // http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-maxQuantity
     if (validationCode === 'maxQuantityValue') {
-      const maxQuantityFeedback = getMaxValueFeedback(qItem);
+      const maxQuantityFeedback = getMaxQuantityValueFeedback(qItem);
       if (maxQuantityFeedback) {
         return maxQuantityFeedback;
       }
@@ -190,11 +192,11 @@ function useValidationFeedback(
       return 'Input exceeds the maximum quantity allowed.';
     }
 
-    // No specific issue code, so we return a generic invalid input message
-    return 'Input is invalid.';
+    // No specific issue code, continue to the next issue
   }
 
-  return '';
+  // No specific issue code, fallback to a generic invalid input message
+  return 'Input is invalid.';
 }
 
 export default useValidationFeedback;
