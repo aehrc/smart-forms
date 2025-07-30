@@ -39,7 +39,7 @@ import {
   evaluateInitialCalculatedExpressions,
   initialiseCalculatedExpressionValues
 } from '../utils/calculatedExpression';
-import { createQuestionnaireModel } from '../utils/questionnaireStoreUtils/createQuestionaireModel';
+import { createQuestionnaireModel } from '../utils/questionnaireStoreUtils/createQuestionnaireModel';
 import { initialiseFormFromResponse } from '../utils/initialise';
 import { emptyQuestionnaire, emptyResponse } from '../utils/emptyResource';
 import { terminologyServerStore } from './terminologyServerStore';
