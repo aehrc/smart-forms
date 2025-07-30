@@ -8,13 +8,17 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.86] - 2025-07-30
+#### Fixed
+- Standardise generic `StandardTextField` to accommodate multiline inputs - so that all fields have the same height. This fixes an issue where adding multiline support (in alpha.82) in text-based fields increases their height.
+- Added multiline support to dropdown fields too.
+
 ## [1.0.0-alpha.85] - 2025-07-30
 #### Changed
 - Reverted visual expression update animations to the previous behaviour (Last change was in 1.0.0-alpha.81).
 
 #### Fixed
 - Add check for falsy input values in calculatedExpression hook updates to prevent unintended visual calculatedExpression updates when nothing has actually changed.
-
 
 ## [1.0.0-alpha.84] - 2025-07-30
 _(WARNING: Possible breaking changes with QuestionnaireStore.itemTypes)_
@@ -35,7 +39,7 @@ _(WARNING: Possible breaking changes with QuestionnaireStore.itemTypes)_
 
 ## [1.0.0-alpha.82] - 2025-07-23
 #### Added
-- Add multiline support to non-numeric text field-based components.
+- Add multiline support to non-numeric text field-based components. This allows text to auto-wrap when it exceeds the width of the text field.
 
 ## [1.0.0-alpha.81] - 2025-07-17
 #### Added
