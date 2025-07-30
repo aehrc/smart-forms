@@ -162,7 +162,7 @@ function useValidationFeedback(
 
     // http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-minQuantity
     if (validationCode === 'minQuantityValue') {
-      const minQuantityFeedback = getMinValueFeedback(qItem);
+      const minQuantityFeedback = getMinQuantityValueFeedback(qItem);
       if (minQuantityFeedback) {
         return minQuantityFeedback;
       }
