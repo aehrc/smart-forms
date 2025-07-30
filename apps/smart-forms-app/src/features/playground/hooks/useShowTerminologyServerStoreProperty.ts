@@ -19,8 +19,9 @@ import { useTerminologyServerStore } from '@aehrc/smart-forms-renderer';
 
 function useShowTerminologyServerStoreProperty(selectedProperty: string) {
   const url = useTerminologyServerStore.use.url();
+  const valueMap = { url };
 
-  return { url }[selectedProperty] || null;
+  return selectedProperty in valueMap ? valueMap[selectedProperty as keyof typeof valueMap] : null;
 }
 
 export default useShowTerminologyServerStoreProperty;
