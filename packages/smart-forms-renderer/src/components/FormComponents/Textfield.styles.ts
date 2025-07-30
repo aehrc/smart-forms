@@ -16,7 +16,7 @@
  */
 
 import { styled } from '@mui/material/styles';
-import TextField from '@mui/material/TextField';
+import TextField from '@mui/material/TextField'; // Always use this accompanied by the TextField prop fullWidth
 
 // Always use this accompanied by the TextField prop fullWidth
 export const StandardTextField = styled(TextField, {
@@ -26,6 +26,13 @@ export const StandardTextField = styled(TextField, {
   // Set a theoretical infinite maxWidth (3000) if field is within a table to fill the table row
   maxWidth: !isTabled ? textFieldWidth : 3000,
   minWidth: 160,
+  '& .MuiInputBase-root': {
+    padding: 0
+  },
+  '& .MuiInputBase-inputMultiline': {
+    padding: '8.5px 14px', // match MUI input padding
+    lineHeight: '1.5em'
+  },
   // When text field is read-only, prevent text/input I-beam cursor
   '& .MuiOutlinedInput-root.Mui-readOnly': {
     cursor: 'default',
