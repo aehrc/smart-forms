@@ -8,6 +8,10 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.87] - 2025-07-31
+#### Fixed
+- Fixed number of columns shown and widths when a grid group has a hidden item.
+
 ## [1.0.0-alpha.86] - 2025-07-30
 #### Fixed
 - Standardise generic `StandardTextField` to accommodate multiline inputs - so that all fields have the same height. This fixes an issue where adding multiline support (in alpha.82) in text-based fields increases their height.
