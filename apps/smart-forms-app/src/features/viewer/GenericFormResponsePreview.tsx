@@ -81,10 +81,6 @@ export default function GenericFormResponsePreview() {
 
   const { componentRef } = useContext(PrintComponentRefContext);
 
-  if (!sourceQuestionnaire.item || !updatableResponse.item) {
-    return <FormInvalid />;
-  }
-
   if (
     !sourceQuestionnaire.item ||
     !updatableResponse.item ||
