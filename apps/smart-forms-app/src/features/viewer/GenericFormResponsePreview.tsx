@@ -54,7 +54,7 @@ export default function GenericFormResponsePreview() {
 
   // Parse the HTML narrative string to a printable JSX element
   const parsedPrintableHTML = useMemo(() => {
-    let htmlNarrative;
+    let htmlNarrative: string;
 
     // In the renderer preview route, generate a real-time narrative from the updatable response
     if (isRendererPreviewRoute) {
@@ -64,12 +64,9 @@ export default function GenericFormResponsePreview() {
       );
     } else {
       // In the viewer route, use the snapshot narrative from response.text.div
-      // htmlNarrative = updatableResponse?.text?.div ?? '';
-
-      htmlNarrative = qrToHTML(
-        sourceQuestionnaire,
-        removeEmptyAnswersFromResponse(sourceQuestionnaire, updatableResponse)
-      );
+      htmlNarrative =
+        updatableResponse?.text?.div ??
+        '<p>No narrative available from QuestionnaireResponse.text.div.</p>';
     }
 
     // Pre-process HTML narrative for printing
@@ -84,8 +81,7 @@ export default function GenericFormResponsePreview() {
   if (
     !sourceQuestionnaire.item ||
     !updatableResponse.item ||
-    sourceQuestionnaire.item.length === 0 ||
-    updatableResponse.item.length === 0
+    (sourceQuestionnaire.item.length === 0 && updatableResponse.item.length === 0)
   ) {
     return <FormInvalid />;
   }
