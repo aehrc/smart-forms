@@ -66,6 +66,11 @@ function GridGroup(props: GridGroupProps) {
     onQrItemChange
   } = props;
 
+  const enableWhenIsActivated = useQuestionnaireStore.use.enableWhenIsActivated();
+  const enableWhenItems = useQuestionnaireStore.use.enableWhenItems();
+  const enableWhenExpressions = useQuestionnaireStore.use.enableWhenExpressions();
+  const enableWhenAsReadOnly = useRendererStylingStore.use.enableWhenAsReadOnly();
+
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const qRowItems = qItem.item;
@@ -73,16 +78,11 @@ function GridGroup(props: GridGroupProps) {
   const qrRowItems = qrGroup.item;
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
-  // imports to fascilitate store use
-  const enableWhenIsActivated = useQuestionnaireStore.use.enableWhenIsActivated();
-  const enableWhenItems = useQuestionnaireStore.use.enableWhenItems();
-  const enableWhenExpressions = useQuestionnaireStore.use.enableWhenExpressions();
-  const enableWhenAsReadOnly = useRendererStylingStore.use.enableWhenAsReadOnly();
 
   // Prepare visible first-row items. we use useMemo because we are using it inside useMemo later.
   const firstRowItems: QuestionnaireItem[] = useMemo(() => qRowItems?.[0]?.item ?? [], [qRowItems]);
-  // Get the items and ignore hidden columns as they are automatically added to the columnHeaders as empty space.
 
+  // Get the items and ignore hidden columns as they are automatically added to the columnHeaders as empty space.
   const visibleColumnItems: QuestionnaireItem[] = useMemo(
     () =>
       firstRowItems?.filter(
