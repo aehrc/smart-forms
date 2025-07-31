@@ -21,7 +21,7 @@ import { StandardTextField } from '../Textfield.styles';
 import { useRendererStylingStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
-import { expressionUpdateFadingGlow } from '../../ExpressionUpdateFadingGlow.styles';
+import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 
 interface StringFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -59,6 +59,7 @@ function StringField(props: StringFieldProps) {
   return (
     <StandardTextField
       id={itemType + '-' + linkId}
+      multiline
       fullWidth
       textFieldWidth={textFieldWidth}
       isTabled={isTabled}
@@ -69,12 +70,12 @@ function StringField(props: StringFieldProps) {
       placeholder={entryFormat || displayPrompt}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       size="small"
-      sx={[expressionUpdateFadingGlow(calcExpUpdated)]}
       slotProps={{
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
             <InputAdornment position="end">
+              <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
               <ClearButtonAdornment
                 readOnly={readOnly}
                 onClear={() => {

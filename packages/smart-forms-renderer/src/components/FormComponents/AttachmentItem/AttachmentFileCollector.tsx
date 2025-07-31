@@ -49,7 +49,7 @@ const AttachmentFileCollector = memo(function AttachmentFileCollector(
         }
       }
     },
-    [onUploadFile]
+    [onUploadFile, readOnly]
   );
 
   function handleAttachFile(event: ChangeEvent<HTMLInputElement>) {

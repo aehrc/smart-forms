@@ -16,22 +16,25 @@
  */
 
 import { useState } from 'react';
-import { populateQuestionnaire } from '../utils/populate.ts';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import { useSnackbar } from 'notistack';
-import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import {
+  useQuestionnaireResponseStore,
+  useQuestionnaireStore,
+  useTerminologyServerStore
+} from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
 import type { RendererSpinner } from '../../renderer/types/rendererSpinner.ts';
+import { populateQuestionnaire } from '@aehrc/sdc-populate';
+import { fetchResourceCallback, fetchTerminologyCallback } from '../utils/callback.ts';
 
 function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void {
   const { isSpinning, status } = spinner;
 
-  const { smartClient, patient, user, encounter } = useSmartClient();
+  const { smartClient, patient, user, encounter, fhirContext } = useSmartClient();
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
   const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
-
-  const fhirPathContext = useQuestionnaireStore.use.fhirPathContext();
 
   const updatePopulatedProperties = useQuestionnaireStore.use.updatePopulatedProperties();
   const setPopulatedContext = useQuestionnaireStore.use.setPopulatedContext();
@@ -39,6 +42,8 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
   const setUpdatableResponseAsPopulated =
     useQuestionnaireResponseStore.use.setUpdatableResponseAsPopulated();
   const formChangesHistory = useQuestionnaireResponseStore.use.formChangesHistory();
+
+  const defaultTerminologyServerUrl = useTerminologyServerStore.use.url();
 
   const [isPopulated, setIsPopulated] = useState(false);
 
@@ -77,9 +82,25 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
   }
 
   setIsPopulated(true);
-  populateQuestionnaire(sourceQuestionnaire, smartClient, patient, user, encounter, fhirPathContext)
-    .then(async ({ populateSuccess, populateResult }) => {
-      if (!populateSuccess || !populateResult) {
+  populateQuestionnaire({
+    questionnaire: sourceQuestionnaire,
+    fetchResourceCallback: fetchResourceCallback,
+    fetchResourceRequestConfig: {
+      sourceServerUrl: smartClient.state.serverUrl,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      authToken: smartClient.state.tokenResponse!.access_token!
+    },
+    patient: patient,
+    user: user,
+    encounter: encounter ?? undefined,
+    fhirContext: fhirContext ?? undefined,
+    fetchTerminologyCallback: fetchTerminologyCallback,
+    fetchTerminologyRequestConfig: {
+      terminologyServerUrl: defaultTerminologyServerUrl
+    }
+  })
+    .then(async (populateRes) => {
+      if (!populateRes) {
         onStopSpinner();
         enqueueSnackbar('Form not populated', {
           variant: 'warning',
@@ -88,8 +109,18 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
         return;
       }
 
-      const { populated, hasWarnings, populatedContext } = populateResult;
-      const updatedResponse = await updatePopulatedProperties(populated, populatedContext);
+      const { populateSuccess, populateResult } = populateRes;
+      if (!populateResult || !populateSuccess) {
+        onStopSpinner();
+        enqueueSnackbar('Form not populated', {
+          variant: 'warning',
+          action: <CloseSnackbar variant="warning" />
+        });
+        return;
+      }
+
+      const { populatedResponse, issues, populatedContext } = populateResult;
+      const updatedResponse = await updatePopulatedProperties(populatedResponse, populatedContext);
       setUpdatableResponseAsPopulated(updatedResponse);
 
       // Add populatedContext to FhirPathContext so that it can be used in FHIRPath variables
@@ -98,11 +129,12 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
       }
 
       onStopSpinner();
-      if (hasWarnings) {
+      if (issues) {
         enqueueSnackbar(
           'Form partially populated, there might be pre-population issues. View console for details.',
           { action: <CloseSnackbar /> }
         );
+        console.warn(issues);
         return;
       }
 

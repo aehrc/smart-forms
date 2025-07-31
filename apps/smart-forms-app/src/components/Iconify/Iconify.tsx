@@ -29,7 +29,6 @@ interface IconifyProps {
 
 const Iconify = memo(
   forwardRef(function Iconify(props: IconifyProps, ref) {
-    // eslint-disable-next-line react/prop-types
     const { icon, width = 20, height = 20, sx } = props;
     return <Box ref={ref} component={Icon} icon={icon} sx={{ width, height, ...sx }} />;
   })

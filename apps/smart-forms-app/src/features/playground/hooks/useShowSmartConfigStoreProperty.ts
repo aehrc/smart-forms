@@ -23,14 +23,9 @@ function useShowSmartConfigStoreProperty(selectedProperty: string) {
   const user = useSmartConfigStore.use.user();
   const encounter = useSmartConfigStore.use.encounter();
 
-  return (
-    {
-      client,
-      patient,
-      user,
-      encounter
-    }[selectedProperty] || null
-  );
+  const valueMap = { client, patient, user, encounter };
+
+  return selectedProperty in valueMap ? valueMap[selectedProperty as keyof typeof valueMap] : null;
 }
 
 export default useShowSmartConfigStoreProperty;

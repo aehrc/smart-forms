@@ -89,6 +89,7 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
       renderInput={(params) => (
         <StandardTextField
           {...params}
+          multiline
           onChange={(e) => onInputChange(e.target.value)}
           textFieldWidth={textFieldWidth}
           isTabled={isTabled}

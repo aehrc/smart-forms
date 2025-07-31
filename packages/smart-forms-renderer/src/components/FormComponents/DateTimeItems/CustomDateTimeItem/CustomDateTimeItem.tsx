@@ -231,8 +231,8 @@ function CustomDateTimeItem(props: BaseItemProps) {
           timeInput={timeInput}
           periodInput={periodInput}
           is24HourNotation={is24HourNotation}
-          dateFeedback={showFeedback ? (dateFeedback ?? '') : ''}
-          timeFeedback={showFeedback ? (timeFeedback ?? '') : ''}
+          dateFeedback={showFeedback ? dateFeedback : ''}
+          timeFeedback={showFeedback ? timeFeedback : ''}
           dateFocused={dateFocused}
           displayPrompt={displayPrompt}
           entryFormat={entryFormat}
@@ -270,8 +270,8 @@ function CustomDateTimeItem(props: BaseItemProps) {
             timeInput={timeInput}
             periodInput={periodInput}
             is24HourNotation={is24HourNotation}
-            dateFeedback={dateFeedback ?? ''}
-            timeFeedback={timeFeedback ?? ''}
+            dateFeedback={showFeedback ? dateFeedback : ''}
+            timeFeedback={showFeedback ? timeFeedback : ''}
             dateFocused={dateFocused}
             displayPrompt={displayPrompt}
             entryFormat={entryFormat}
@@ -287,8 +287,8 @@ function CustomDateTimeItem(props: BaseItemProps) {
             showFeedback={showFeedback}
           />
         }
-        dateFeedback={dateFeedback ?? undefined}
-        timeFeedback={timeFeedback ?? undefined}
+        dateFeedback={showFeedback ? dateFeedback : undefined}
+        timeFeedback={showFeedback ? timeFeedback : undefined}
       />
     </FullWidthFormComponentBox>
   );

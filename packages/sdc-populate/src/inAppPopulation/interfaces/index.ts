@@ -15,17 +15,4 @@
  * limitations under the License.
  */
 
-function useDateNonEmptyValidation(
-  dateInput: string,
-  timeInput: string,
-  dateFeedback: string,
-  timeFeedback: string
-): string {
-  if (!dateFeedback && !timeFeedback && timeInput && dateInput === '') {
-    return 'Date is required';
-  }
-
-  return dateFeedback;
-}
-
-export default useDateNonEmptyValidation;
+export type { FhirContext } from './fhirContext.interface';

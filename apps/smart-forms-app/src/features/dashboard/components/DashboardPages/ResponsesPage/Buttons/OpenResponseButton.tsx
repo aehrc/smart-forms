@@ -32,8 +32,8 @@ import useSmartClient from '../../../../../../hooks/useSmartClient.ts';
 import CloseSnackbar from '../../../../../../components/Snackbar/CloseSnackbar.tsx';
 import { TERMINOLOGY_SERVER_URL } from '../../../../../../globals.ts';
 import { buildFormWrapper } from '../../../../../../utils/manageForm.ts';
-import { fetchResourceCallback } from '../../../../../playground/components/PrePopCallbackForPlayground.tsx';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
+import { fetchResourceCallback } from '../../../../../prepopulate/utils/callback.ts';
 
 interface OpenResponseButtonProps {
   selectedResponse: QuestionnaireResponse | null;

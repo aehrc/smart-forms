@@ -34,6 +34,7 @@ export async function requestPopulate(
 ): Promise<OutputParameters | OperationOutcome> {
   const fetchResourceRequestConfig: FetchResourceRequestConfig = {
     sourceServerUrl: fhirClient.state.serverUrl,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     authToken: fhirClient.state.tokenResponse!.access_token!
   };
 

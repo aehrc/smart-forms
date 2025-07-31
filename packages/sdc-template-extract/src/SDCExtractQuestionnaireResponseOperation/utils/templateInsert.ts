@@ -243,6 +243,7 @@ export function deleteExtensionAtPath(
   }
   // Check if it's an object property deletion (e.g., ._gender)
   else if (typeof finalSegment === 'string' && current && typeof current === 'object') {
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete current[finalSegment];
   }
 }

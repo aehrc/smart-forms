@@ -50,6 +50,12 @@ function useDateTimeCalculatedExpression(
         return;
       }
 
+      // If both input and calculated value are falsy, there is nothing to update
+      const inputAndCalcValueAreBothFalsy = valueDateTimeFhir === '' && !calcExpression.value;
+      if (inputAndCalcValueAreBothFalsy) {
+        return;
+      }
+
       // only update if calculated value is different from current value
       if (
         calcExpression.value !== valueDateTimeFhir &&

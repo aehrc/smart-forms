@@ -66,6 +66,7 @@ function useFetchExistingResponses(): useFetchExistingResponsesReturnParams {
 
   const { data, isFetching, error, refetch } = useQuery<Bundle>({
     queryKey: ['existingResponses', queryUrl],
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     queryFn: () => getClientBundlePromise(smartClient!, queryUrl),
     enabled:
       !!questionnaire && questionnaireRefParam !== '' && patientIdParam !== '' && !!smartClient

@@ -23,6 +23,7 @@ export function getRepopulatedItemTuplesByHeadingsMap(
     if (!itemsToRepopulateTuplesByHeadings.has(heading)) {
       itemsToRepopulateTuplesByHeadings.set(heading, []);
     }
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     itemsToRepopulateTuplesByHeadings.get(heading)!.push([itemKey, item]);
   }
 

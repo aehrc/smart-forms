@@ -325,6 +325,7 @@ export function updateEnableWhenItemAnswer(
           if (newAnswer) {
             linkedItem.answers[parentRepeatGroupIndex] = newAnswer[0] ?? undefined;
           } else {
+            // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
             delete linkedItem.answers[parentRepeatGroupIndex];
           }
         }
