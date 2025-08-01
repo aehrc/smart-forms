@@ -28,11 +28,12 @@ import {
 } from '../assets/questionnaires';
 
 //import {chooseSelectOption} from '@aehrc/testing-toolkit'
-import { expect, within } from 'storybook/test';
+
+import { chooseSelectOption } from '@aehrc/testing-toolkit';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'ItemType/Choice', 
+  title: 'ItemType/Choice',
   component: BuildFormWrapperForStorybook,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []
@@ -47,22 +48,13 @@ export const ChoiceAnswerOptionBasic: Story = {
   args: {
     questionnaire: qChoiceAnswerOptionBasic
   },
- play: async ({ canvasElement, userEvent }) => {
-  const canvas = within(canvasElement);
+  play: async ({ canvasElement, userEvent, step }) => {
+    await step('ChooseSelectOption', async () => {
+      await chooseSelectOption(canvasElement, userEvent, 'smoking-status', 'Never smoked')
+    })
 
-  
-  const i = canvas.getByDisplayValue('');
-  console.log(i)
 
-  
-
-  // Кликаем по опции
-  await userEvent.selectOptions(i,);
-
-  // Проверяем, что значение установлено
-  const input = canvas.getByRole('combobox');
-  await expect(input).toHaveValue('Smoker');
-}
+  }
 };
 
 export const ChoiceAnswerOptionBasicResponse: Story = {

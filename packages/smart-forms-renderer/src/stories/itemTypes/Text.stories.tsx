@@ -18,9 +18,11 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import { qrTextBasicResponse, qTextBasic, qTextCalculation } from '../assets/questionnaires';
+import { inputText } from '@aehrc/testing-toolkit'
 
-import { expect, within } from 'storybook/test';
+
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
+
 const meta = {
   title: 'ItemType/Text',
   component: BuildFormWrapperForStorybook,
@@ -37,13 +39,11 @@ export const TextBasic: Story = {
   args: {
     questionnaire: qTextBasic
   },
-  play: async({ canvasElement, userEvent })=>{
-    const canvas = within(canvasElement);
-    console.log(canvas)
-    // const textField = canvas.getByText('');
-    // await expect(textField).toHaveValue(''); 
+  play: async ({ canvasElement, userEvent }) => {
+    await inputText(canvasElement, userEvent, 'details', 'mytext')
   }
 };
+
 export const TextBasicResponse: Story = {
   args: {
     questionnaire: qTextBasic,

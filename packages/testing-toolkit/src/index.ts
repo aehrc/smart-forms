@@ -1,20 +1,27 @@
-import { screen, fireEvent } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 
-export async function chooseSelectOption(questionId: string, optionLabel: string) {
-  const questionElement = await screen.findByTestId(questionId);
+export async function inputText(canvasElement: any, linkId: string, mytext: string) {
+  const questionElement = await canvasElement.querySelector(`[data-linkid=${linkId}]`);
+  const input = questionElement.querySelector('input') ?? questionElement.querySelector('textarea');
+
+  if (!input) throw new Error('Input bug');
+
+  fireEvent.change(input, { target: { value: mytext } });
+}
+
+export async function chooseSelectOption(canvasElement: any, linkId: string, optionLabel: string) {
+  const questionElement = await canvasElement.querySelector(`[data-linkid=${linkId}]`);
   const input = questionElement.querySelector('input');
-  if (!input) throw new Error(`Input not found in question ${questionId}`);
+
+  if (!input) throw new Error('Input bug');
+
   fireEvent.focus(input);
   fireEvent.keyDown(input, { key: 'ArrowDown', code: 40 });
 
-  const optionLabelMatcher = (_content: string, element: Element | null) =>
-    element?.textContent === optionLabel;
-  const option = await screen.findByText(optionLabelMatcher, {
-    selector: '.react-select__option'
-  });
-
+  const option = await screen.findByText(optionLabel);
   fireEvent.click(option);
-  await screen.findByText(optionLabelMatcher, {
-    selector: '.react-select__single-value,.react-select__multi-value'
-  });
+
+  if ((input.value = optionLabel)) return;
+
+  throw new Error('Option test failed');
 }
