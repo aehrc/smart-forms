@@ -2,8 +2,4 @@ node_modules
 lib
 dist
 temp
-storybook-static
 
-storybook.log
-doctor-storybook.log
-build-storybook.log
