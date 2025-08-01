@@ -15,15 +15,16 @@
  * limitations under the License.
  */
 
-// PopulateInputParameter private functions
 import type {
   Encounter,
+  Extension,
   FhirResource,
   Parameters,
   ParametersParameter,
   Patient,
   Practitioner,
   Questionnaire,
+  QuestionnaireItem,
   Reference
 } from 'fhir/r4';
 import type {
@@ -39,7 +40,159 @@ import type {
   FetchResourceRequestConfig
 } from '../../SDCPopulateQuestionnaireOperation';
 
-export async function createPopulateInputParameters(
+/**
+ * Prepares input parameters and FHIRPath context for questionnaire population or evaluation.
+ *
+ * This function collects launch context variables, source queries, and x-fhir-query variables from the questionnaire,
+ * and constructs a `Parameters` resource that can be used for FHIRPath evaluation or population.
+ */
+export async function initialiseInputParameters(
+  questionnaire: Questionnaire,
+  patient: Patient,
+  user: Practitioner | null,
+  encounter: Encounter | null,
+  fhirContext: FhirContext[] | null,
+  fetchResourceCallback: FetchResourceCallback,
+  fetchResourceRequestConfig: FetchResourceRequestConfig,
+  timeoutMs: number
+): Promise<{
+  inputParameters: Parameters | null;
+  fhirPathContext: Record<string, any>;
+}> {
+  // FHIRPath Context map that will be used to evaluate FHIRPath expressions, this is different from the fhirContext in the params.
+  const fhirPathContext: Record<string, any> = {};
+
+  // Get launch contexts, source queries and questionnaire-level variables
+  const launchContexts = getLaunchContexts(questionnaire);
+  const sourceQueries = getSourceQueries(questionnaire);
+  const questionnaireLevelVariables = getXFhirQueryVariables(questionnaire);
+
+  if (
+    launchContexts.length === 0 &&
+    sourceQueries.length === 0 &&
+    questionnaireLevelVariables.length === 0
+  ) {
+    return { inputParameters: null, fhirPathContext: fhirPathContext };
+  }
+
+  // Define population input parameters from launch contexts, source queries and questionnaire-level variables
+  const inputParameters = await constructPopulateInputParameters(
+    questionnaire,
+    patient,
+    user,
+    encounter,
+    fhirContext,
+    launchContexts,
+    sourceQueries,
+    questionnaireLevelVariables,
+    fhirPathContext,
+    fetchResourceCallback,
+    fetchResourceRequestConfig,
+    timeoutMs
+  );
+
+  return { inputParameters, fhirPathContext };
+}
+
+function isLaunchContext(extension: Extension): extension is LaunchContext {
+  const hasLaunchContextName =
+    extension.url ===
+      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext' &&
+    !!extension.extension?.find(
+      (ext) => ext.url === 'name' && (ext.valueId || (ext.valueCoding && ext.valueCoding.code))
+    );
+
+  const hasLaunchContextType = !!extension.extension?.find(
+    (ext) => ext.url === 'type' && ext.valueCode
+  );
+
+  return (
+    extension.url ===
+      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext' &&
+    hasLaunchContextName &&
+    hasLaunchContextType
+  );
+}
+
+function getLaunchContexts(questionnaire: Questionnaire): LaunchContext[] {
+  if (questionnaire.extension && questionnaire.extension.length > 0) {
+    return questionnaire.extension.filter((extension) =>
+      isLaunchContext(extension)
+    ) as LaunchContext[];
+  }
+
+  return [];
+}
+
+function isSourceQuery(extension: Extension): extension is SourceQuery {
+  return (
+    extension.url ===
+      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-sourceQueries' &&
+    !!extension.valueReference
+  );
+}
+
+function getSourceQueries(questionnaire: Questionnaire): SourceQuery[] {
+  if (questionnaire.extension && questionnaire.extension.length > 0) {
+    return questionnaire.extension.filter((extension) => isSourceQuery(extension)) as SourceQuery[];
+  }
+
+  return [];
+}
+
+function isXFhirQueryVariable(
+  extension: Extension
+): extension is QuestionnaireLevelXFhirQueryVariable {
+  return (
+    extension.url === 'http://hl7.org/fhir/StructureDefinition/variable' &&
+    !!extension.valueExpression?.name &&
+    extension.valueExpression?.language === 'application/x-fhir-query' &&
+    !!extension.valueExpression?.expression
+  );
+}
+
+function getXFhirQueryVariables(
+  questionnaire: Questionnaire
+): QuestionnaireLevelXFhirQueryVariable[] {
+  const xFhirQueryVariables: QuestionnaireLevelXFhirQueryVariable[] = [];
+  if (questionnaire.extension && questionnaire.extension.length > 0) {
+    xFhirQueryVariables.push(
+      ...(questionnaire.extension.filter((extension) =>
+        isXFhirQueryVariable(extension)
+      ) as QuestionnaireLevelXFhirQueryVariable[])
+    );
+  }
+
+  if (questionnaire.item && questionnaire.item.length > 0) {
+    for (const qItem of questionnaire.item) {
+      xFhirQueryVariables.push(
+        ...(getXFhirQueryVariablesRecursive(qItem) as QuestionnaireLevelXFhirQueryVariable[])
+      );
+    }
+  }
+
+  return xFhirQueryVariables;
+}
+
+function getXFhirQueryVariablesRecursive(qItem: QuestionnaireItem) {
+  let xFhirQueryVariables: Extension[] = [];
+
+  if (qItem.item) {
+    for (const childItem of qItem.item) {
+      xFhirQueryVariables = xFhirQueryVariables.concat(getXFhirQueryVariablesRecursive(childItem));
+    }
+  }
+
+  if (qItem.extension) {
+    xFhirQueryVariables.push(
+      ...qItem.extension.filter((extension) => isXFhirQueryVariable(extension))
+    );
+  }
+
+  return xFhirQueryVariables;
+}
+
+export async function constructPopulateInputParameters(
   questionnaire: Questionnaire,
   patient: Patient,
   user: Practitioner | null,

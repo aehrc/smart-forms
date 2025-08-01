@@ -15,6 +15,10 @@
  * limitations under the License.
  */
 
-export type { PopulateResult, PopulateQuestionnaireParams } from './populateQuestionnaire';
-export { populateQuestionnaire } from './populateQuestionnaire';
-export { syncXFhirQueries } from './syncXFhirQueries';
+export function isRecord(obj: any): obj is Record<string, any> {
+  if (!obj) {
+    return false;
+  }
+
+  return Object.keys(obj).every((key) => typeof key === 'string');
+}
