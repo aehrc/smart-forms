@@ -42,6 +42,7 @@ import GroupHeading from '../GroupItem/GroupHeading';
 import { appendRepeatIndexToLastSegment } from '../../../utils/itemPath';
 import type { ItemPath } from '../../../interfaces/itemPath.interface';
 import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
+import { isGroupAddItemButtonHidden } from '../../../utils/extensions';
 
 interface RepeatGroupViewProps
   extends PropsWithItemPathAttribute,
@@ -135,7 +136,9 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
             })}
           </TransitionGroup>
 
-          <AddItemButton repeatGroups={repeatGroups} readOnly={readOnly} onAddItem={onAddItem} />
+          {!isGroupAddItemButtonHidden(qItem) && (
+            <AddItemButton repeatGroups={repeatGroups} readOnly={readOnly} onAddItem={onAddItem} />
+          )}
         </AccordionDetails>
       </GroupAccordion>
     );
@@ -186,7 +189,9 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
           })}
         </TransitionGroup>
 
-        <AddItemButton repeatGroups={repeatGroups} readOnly={readOnly} onAddItem={onAddItem} />
+        {!isGroupAddItemButtonHidden(qItem) && (
+          <AddItemButton repeatGroups={repeatGroups} readOnly={readOnly} onAddItem={onAddItem} />
+        )}
       </Card>
     </QGroupContainerBox>
   );
