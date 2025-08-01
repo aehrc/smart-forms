@@ -4,7 +4,8 @@ export async function inputText(canvasElement: any, linkId: string, mytext: stri
   const questionElement = await canvasElement.querySelector(`[data-linkid=${linkId}]`);
   const input = questionElement.querySelector('input') ?? questionElement.querySelector('textarea');
 
-  if (!input) throw new Error('Input bug');
+  if (!input)
+    throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
 
   fireEvent.change(input, { target: { value: mytext } });
 }
@@ -13,7 +14,7 @@ export async function chooseSelectOption(canvasElement: any, linkId: string, opt
   const questionElement = await canvasElement.querySelector(`[data-linkid=${linkId}]`);
   const input = questionElement.querySelector('input');
 
-  if (!input) throw new Error('Input bug');
+  if (!input) throw new Error(`There is no input inside [data-linkid=${linkId}] block`);
 
   fireEvent.focus(input);
   fireEvent.keyDown(input, { key: 'ArrowDown', code: 40 });
@@ -23,5 +24,5 @@ export async function chooseSelectOption(canvasElement: any, linkId: string, opt
 
   if ((input.value = optionLabel)) return;
 
-  throw new Error('Option test failed');
+  throw new Error(`Option ${optionLabel} was not set into input value`);
 }
