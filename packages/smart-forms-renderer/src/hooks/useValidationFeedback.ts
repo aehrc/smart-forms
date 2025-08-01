@@ -195,8 +195,8 @@ function useValidationFeedback(
     // No specific issue code, continue to the next issue
   }
 
-  // No specific issue code, fallback to a generic invalid input message
-  return 'Input is invalid.';
+  // No specific issue code from all issues, fallback to empty string
+  return '';
 }
 
 export default useValidationFeedback;
