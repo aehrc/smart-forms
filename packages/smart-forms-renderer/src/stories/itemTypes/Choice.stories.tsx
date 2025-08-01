@@ -48,9 +48,9 @@ export const ChoiceAnswerOptionBasic: Story = {
   args: {
     questionnaire: qChoiceAnswerOptionBasic
   },
-  play: async ({ canvasElement, userEvent, step }) => {
+  play: async ({ canvasElement, step }) => {
     await step('ChooseSelectOption', async () => {
-      await chooseSelectOption(canvasElement, userEvent, 'smoking-status', 'Never smoked')
+      await chooseSelectOption(canvasElement, 'smoking-status', 'Never smoked')
     })
 
 
