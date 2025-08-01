@@ -8,6 +8,11 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+
+## [1.0.0-alpha.88] - 2025-08-01
+#### Fixed
+- Resolves an issue where the `useValidationFeedback` hook was incorrectly falling back to a generic error message in a required item and when `requiredItemsIsHighlighted` is false.
+
 ## [1.0.0-alpha.87] - 2025-07-31
 #### Fixed
 - Fixed number of columns shown and widths when a grid group has a hidden item.
