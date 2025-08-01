@@ -168,6 +168,7 @@ export interface QuestionnaireStoreType {
     populatedContext?: Record<string, any>,
     persistTabIndex?: boolean
   ) => Promise<QuestionnaireResponse>;
+  // updateXFhirQueries: (syncedQueries: Record<string, any>) => Promise<QuestionnaireResponse>;
   onFocusLinkId: (linkId: string) => void;
   // TODO - to be deprecated, use `additionalVariables` in buildSourceQuestionnaire(), also directly set in updatedPopulatedProperties
   setPopulatedContext: (
@@ -569,6 +570,63 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
 
     return updatedResponse;
   },
+  // FIXME POC - to be refactored in #1400
+  // FIXME Design - need to consider if calculatedExpression can use this too
+  // FIXME Design - looks like we are gonna do a single initialExpression update -> calculatedExpression -> rest of the expressions update
+  // updateXFhirQueries: async (syncedQueries: Record<string, any>) => {
+  //   const sourceQuestionnaire = get().sourceQuestionnaire;
+  //   const updatableResponse = questionnaireResponseStore.getState().updatableResponse;
+  //
+  //   // Create updated response item map for current iteration
+  //   const currentResponseItemMap = createQuestionnaireResponseItemMap(
+  //     sourceQuestionnaire,
+  //     updatableResponse
+  //   );
+  //
+  //   const terminologyServerUrl = terminologyServerStore.getState().url;
+  //
+  //   // Create updated FHIRPath context for current iteration
+  //   const fhirPathEvalResult = await createFhirPathContext(
+  //     updatableResponse,
+  //     currentResponseItemMap,
+  //     get().variables,
+  //     { ...get().fhirPathContext, ...syncedQueries },
+  //     get().fhirPathTerminologyCache,
+  //     terminologyServerUrl
+  //   );
+  //   const updatedFhirPathContext = fhirPathEvalResult.fhirPathContext;
+  //
+  //   // Filter out the synced queries from initial
+  //
+  //   // Evaluate calculated expressions with current context
+  //   const { calculatedExpsIsUpdated, updatedCalculatedExpressions } =
+  //     await evaluateCalculatedExpressionsFhirPath(
+  //       updatedFhirPathContext,
+  //       fhirPathTerminologyCache,
+  //       calculatedExpressions,
+  //       terminologyServerUrl
+  //     );
+  //   currentCalculatedExpressions = updatedCalculatedExpressions;
+  //
+  //   if (calculatedExpsIsUpdated) {
+  //     hasChanges = true;
+  //
+  //     console.log(structuredClone(updatedCalculatedExpressions));
+  //     // Apply calculated expression values directly to the response
+  //     currentResponse = applyCalculatedExpressionValuesToResponse(
+  //       questionnaire,
+  //       currentResponse,
+  //       updatedCalculatedExpressions
+  //     );
+  //   }
+  //
+  //   // Update the store with the new fhirPathContext
+  //   set(() => ({
+  //     fhirPathContext: fhirPathContext
+  //   }));
+  //
+  //   return updatedResponse;
+  // },
   onFocusLinkId: (linkId: string) =>
     set(() => ({
       focusedLinkId: linkId

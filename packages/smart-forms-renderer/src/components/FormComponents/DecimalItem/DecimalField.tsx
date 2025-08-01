@@ -22,8 +22,11 @@ import { useRendererStylingStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
+import TempCalculatedExpressionSyncButton from '../ItemParts/TempCalculatedExpressionSyncButton';
+import type { QuestionnaireItem } from 'fhir/r4';
 
 interface DecimalFieldProps extends PropsWithIsTabledRequiredAttribute {
+  qItem: QuestionnaireItem;
   linkId: string;
   itemType: string;
   input: string;
@@ -39,6 +42,8 @@ interface DecimalFieldProps extends PropsWithIsTabledRequiredAttribute {
 
 function DecimalField(props: DecimalFieldProps) {
   const {
+    // FIXME instead of passing qItem, do it in renderingExtensions
+    qItem,
     linkId,
     itemType,
     input,
@@ -95,6 +100,7 @@ function DecimalField(props: DecimalFieldProps) {
                   onInputChange('');
                 }}
               />
+              <TempCalculatedExpressionSyncButton qItem={qItem} disabled={readOnly} />
               <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>
           )

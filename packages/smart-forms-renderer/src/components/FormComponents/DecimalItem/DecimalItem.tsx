@@ -149,6 +149,7 @@ function DecimalItem(props: BaseItemProps) {
   if (isRepeated) {
     return (
       <DecimalField
+        qItem={qItem}
         linkId={qItem.linkId}
         itemType={qItem.type}
         input={input}
@@ -176,6 +177,7 @@ function DecimalItem(props: BaseItemProps) {
         labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
         fieldChildren={
           <DecimalField
+            qItem={qItem}
             linkId={qItem.linkId}
             itemType={qItem.type}
             input={input}

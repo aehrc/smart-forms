@@ -19,7 +19,9 @@
  * InitialExpression interface
  *
  * @property expression - InitialExpression FHIRPath expression
+ * @property syncedValue - Evaluated value of the expression via FHIRPath via a "sync" - https://smartforms.csiro.au/ig/StructureDefinition/GranularRepopulateSync
  */
 export interface InitialExpression {
   expression: string;
+  syncedValue: number | string | boolean | object | null;
 }
