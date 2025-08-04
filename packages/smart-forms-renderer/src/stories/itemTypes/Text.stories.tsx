@@ -39,8 +39,10 @@ export const TextBasic: Story = {
   args: {
     questionnaire: qTextBasic
   },
-  play: async ({ canvasElement }) => {
-    await inputText(canvasElement, 'details', 'mytext')
+  play: async ({ canvasElement, step }) => {
+    await step('TextBasicTest', async () => {
+      await inputText(canvasElement, 'details', 'mytext')
+    })
   }
 };
 
