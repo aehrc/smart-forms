@@ -7,7 +7,7 @@
     "compile": "tsc",
     "watch": "tsc -w",
     "build": "npm run compile",
-    "test": "jest",
+    "test": "TZ=Australia/Sydney jest --config ./jest.config.ts --coverage",
     "test:watch": "jest --watch",
     "storybook": "storybook dev -p 6006",
     "storybook-watch": "concurrently -n \"STORYBOOK,TSC\" -c \"cyan.bold,green.bold\" \"storybook dev -p 6006\" \"tsc -w\"",

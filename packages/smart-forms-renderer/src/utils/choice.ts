@@ -24,8 +24,22 @@ import type {
 } from 'fhir/r4';
 import { ChoiceItemControl, ChoiceItemOrientation } from '../interfaces/choice.enum';
 import { isSpecificItemControl } from './extensions';
-import { getRelevantCodingProperties } from './valueSet';
 import { generateCodingKey, generateOptionKey } from '../hooks/useAnswerOptionsToggleExpressions';
+
+/**
+ * Retrieves only the relevant properties of a Coding object.
+ * Reason: https://tx.ontoserver.csiro.au/fhir returns a Coding with designation element, which is not in the FHIR spec, causing QRs with it to fail validation.
+ *
+ * @author Sean Fong
+ */
+export function getRelevantCodingProperties(coding: Coding): Coding {
+  return {
+    system: coding.system,
+    code: coding.code,
+    display: coding.display,
+    ...(coding.extension && { extension: coding.extension })
+  };
+}
 
 /**
  * Convert codings to Questionnaire answer options
@@ -241,12 +255,13 @@ export function isOptionDisabled(
   option: QuestionnaireItemAnswerOption,
   answerOptionsToggleExpressionsMap: Map<string, boolean>
 ): boolean {
-  // all options are enabled by default if answerOptionsToggleExpressions are present
+  // all options are enabled by default if answerOptionsToggleExpressions are not present
   if (answerOptionsToggleExpressionsMap.size === 0) {
     return false;
   }
 
   const optionKey = generateOptionKey(option);
+
   return (
     answerOptionsToggleExpressionsMap.has(optionKey) &&
     !answerOptionsToggleExpressionsMap.get(optionKey)
@@ -259,14 +274,15 @@ export function isCodingDisabled(
   coding: Coding,
   answerOptionsToggleExpressionsMap: Map<string, boolean>
 ): boolean {
-  // all options are enabled by default if answerOptionsToggleExpressions are present
+  // all options are enabled by default if answerOptionsToggleExpressions are not present
   if (answerOptionsToggleExpressionsMap.size === 0) {
     return false;
   }
 
-  const optionKey = generateCodingKey(coding);
+  const codingKey = generateCodingKey(coding);
+
   return (
-    answerOptionsToggleExpressionsMap.has(optionKey) &&
-    !answerOptionsToggleExpressionsMap.get(optionKey)
+    answerOptionsToggleExpressionsMap.has(codingKey) &&
+    !answerOptionsToggleExpressionsMap.get(codingKey)
   );
 }

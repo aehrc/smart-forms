@@ -16,13 +16,10 @@
  */
 
 // @ts-ignore
-import enableWhenItemsSample from './test-data/enable-when-items-sample.json';
-// @ts-ignore
-import linkedQuestionsMapSample from './test-data/linked-questions-map.json';
-// @ts-ignore
-import questionnaireResponseSample from './test-data/questionnaire-response-sample.json';
-// @ts-ignore
-import initialAnswersSample from './test-data/initial-answers-sample.json';
+import enableWhenItemsSample from './data/enable-when-items-sample.json'; // @ts-ignore
+import linkedQuestionsMapSample from './data/linked-questions-map.json'; // @ts-ignore
+import questionnaireResponseSample from './data/questionnaire-response-sample.json'; // @ts-ignore
+import initialAnswersSample from './data/initial-answers-sample.json';
 import type { QuestionnaireResponse, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import { describe, expect, test } from '@jest/globals';
 import type { EnableWhenItems } from '../interfaces/enableWhen.interface';
