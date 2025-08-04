@@ -23,8 +23,7 @@ export async function chooseSelectOption(
 
   fireEvent.focus(input);
   fireEvent.keyDown(input, { key: 'ArrowDown', code: 40 });
-  console.log(screen);
-  console.log(canvasElement);
+
   const option = await screen.findByText(optionLabel);
   fireEvent.click(option);
 
