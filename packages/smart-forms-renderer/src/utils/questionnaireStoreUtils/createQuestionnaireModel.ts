@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { Questionnaire } from 'fhir/r4';
+import type { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import type { Tabs } from '../../interfaces/tab.interface';
 import type { Pages } from '../../interfaces/page.interface';
 import type { LaunchContext } from '../../interfaces/populate.interface';
@@ -28,7 +28,7 @@ import { extractContainedValueSets } from './extractContainedValueSets';
 import { extractOtherExtensions } from './extractOtherExtensions';
 import type { Variables } from '../../interfaces/variables.interface';
 import { resolveValueSets } from './resolveValueSets';
-import { getLinkIdPreferredTerminologyServerTuples, getLinkIdTypeTuples } from '../qItem';
+import { getLinkIdPartialItemMap, getLinkIdPreferredTerminologyServerTuples } from '../qItem';
 import { addDisplayToAnswerOptions, addDisplayToCacheCodings } from './addDisplayToCodings';
 import type { TargetConstraint } from '../../interfaces/targetConstraint.interface';
 import { extractTargetConstraints } from './extractTargetConstraint';
@@ -41,7 +41,9 @@ export async function createQuestionnaireModel(
     return createEmptyModel();
   }
 
-  const itemTypes: Record<string, string> = Object.fromEntries(getLinkIdTypeTuples(questionnaire));
+  const itemMap: Record<string, Omit<QuestionnaireItem, 'item'>> = getLinkIdPartialItemMap(
+    questionnaire
+  );
   const itemPreferredTerminologyServers: Record<string, string> = Object.fromEntries(
     getLinkIdPreferredTerminologyServerTuples(questionnaire)
   );
@@ -115,7 +117,7 @@ export async function createQuestionnaireModel(
   );
 
   return {
-    itemTypes,
+    itemMap,
     itemPreferredTerminologyServers,
     tabs,
     pages,
@@ -138,7 +140,7 @@ export async function createQuestionnaireModel(
 
 function createEmptyModel(): QuestionnaireModel {
   return {
-    itemTypes: {},
+    itemMap: {},
     itemPreferredTerminologyServers: {},
     tabs: {},
     pages: {},

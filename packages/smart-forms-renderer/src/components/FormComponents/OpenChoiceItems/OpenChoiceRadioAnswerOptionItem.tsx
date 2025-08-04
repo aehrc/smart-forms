@@ -25,8 +25,8 @@ import { findInAnswerOptions, getQrChoiceValue } from '../../../utils/choice';
 import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
-  PropsWithItemPathAttribute,
   PropsWithIsTabledAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithRenderingExtensionsAttribute
@@ -65,7 +65,7 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
+  const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
   const openLabelText = getOpenLabelText(qItem);
 

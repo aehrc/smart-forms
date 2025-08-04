@@ -18,9 +18,8 @@
 import { useState } from 'react';
 
 /**
- * A custom hook that manages whether validation feedback should be shown based on user interaction with a form field (e.g., input or blur events).
- * Once the field has been blurred before, always show feedback.
- *
+ * Custom React hook to manage validation feedback visibility based on user interaction with a form field (e.g., input or blur events).
+ * Shows feedback after the field has been blurred at least once.
  */
 function useShowFeedback() {
   const [showFeedback, setShowFeedback] = useState(true);

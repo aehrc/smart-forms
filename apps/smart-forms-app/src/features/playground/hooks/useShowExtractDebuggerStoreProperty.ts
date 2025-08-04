@@ -23,14 +23,14 @@ function useShowExtractDebuggerStoreProperty(selectedProperty: string) {
   const templateExtractDebugInfo = useExtractDebuggerStore.use.templateExtractDebugInfo();
   const templateExtractIssues = useExtractDebuggerStore.use.templateExtractIssues();
 
-  return (
-    {
-      observationExtractResult,
-      templateExtractResult,
-      templateExtractDebugInfo,
-      templateExtractIssues
-    }[selectedProperty] || null
-  );
+  const valueMap = {
+    observationExtractResult,
+    templateExtractResult,
+    templateExtractDebugInfo,
+    templateExtractIssues
+  };
+
+  return selectedProperty in valueMap ? valueMap[selectedProperty as keyof typeof valueMap] : null;
 }
 
 export default useShowExtractDebuggerStoreProperty;

@@ -67,7 +67,7 @@ function CustomDateItem(props: BaseItemProps) {
   const [focused, setFocused] = useState(false);
 
   // Perform validation checks
-  const errorFeedback = useDateValidation(input, dateParseFail);
+  const feedback = useDateValidation(input, dateParseFail);
 
   // Provides a way to hide the feedback when the user is typing
   const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
@@ -132,7 +132,7 @@ function CustomDateItem(props: BaseItemProps) {
         itemText={qItem.text}
         valueDate={displayDate}
         input={input}
-        feedback={showFeedback ? (errorFeedback ?? '') : ''}
+        feedback={showFeedback ? feedback : ''}
         isFocused={focused}
         displayPrompt={displayPrompt}
         entryFormat={entryFormat}
@@ -164,7 +164,7 @@ function CustomDateItem(props: BaseItemProps) {
             itemText={qItem.text}
             valueDate={displayDate}
             input={input}
-            feedback={showFeedback ? (errorFeedback ?? '') : ''}
+            feedback={showFeedback ? feedback : ''}
             isFocused={focused}
             displayPrompt={displayPrompt}
             entryFormat={entryFormat}
@@ -178,7 +178,7 @@ function CustomDateItem(props: BaseItemProps) {
             onSelectDate={handleSelectDate}
           />
         }
-        feedback={errorFeedback ?? undefined}
+        feedback={showFeedback ? feedback : undefined}
       />
     </FullWidthFormComponentBox>
   );

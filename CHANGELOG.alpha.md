@@ -8,6 +8,37 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+
+## [1.0.0-alpha.88] - 2025-08-01
+#### Fixed
+- Resolves an issue where the `useValidationFeedback` hook was incorrectly falling back to a generic error message in a required item and when `requiredItemsIsHighlighted` is false.
+
+## [1.0.0-alpha.87] - 2025-07-31
+#### Fixed
+- Fixed number of columns shown and widths when a grid group has a hidden item.
+
+## [1.0.0-alpha.86] - 2025-07-30
+#### Fixed
+- Standardise generic `StandardTextField` to accommodate multiline inputs - so that all fields have the same height. This fixes an issue where adding multiline support (in alpha.82) in text-based fields increases their height.
+- Added multiline support to dropdown fields too.
+
+## [1.0.0-alpha.85] - 2025-07-30
+#### Changed
+- Reverted visual expression update animations to the previous behaviour (Last change was in 1.0.0-alpha.81).
+
+#### Fixed
+- Add check for falsy input values in calculatedExpression hook updates to prevent unintended visual calculatedExpression updates when nothing has actually changed.
+
+## [1.0.0-alpha.84] - 2025-07-30
+_(WARNING: Possible breaking changes with QuestionnaireStore.itemTypes)_
+#### Changed
+- Refactor QuestionnaireStore itemTypes to itemMap. Changed from <linkId, qItem.type> to <linkId, Omit<QuestionnaireItem, 'item'>.
+
+#### Fixed
+- Refactor `useValidationFeedback` to rely entirely on the QR store’s invalidItems, resolving timing mismatches between inline feedback and global validation state.
+- For DateTimeItem and QuantityItem, fix an issue where feedback was always shown — now only shows feedback when `showFeedback=true` (triggered by unfocusing the field).
+- When processing target constraints, add a step to filter out invalidItems whose qItem is hidden via questionnaire-hidden or enableWhen.
+
 ## [1.0.0-alpha.83] - 2025-07-24
 #### Added
 - Updated sdc-populate to v4.6.0. Changes as follows:
@@ -17,7 +48,7 @@ WARNING: Alpha releases are not stable and may contain breaking changes. Changes
 
 ## [1.0.0-alpha.82] - 2025-07-23
 #### Added
-- Add multiline support to non-numeric text field-based components.
+- Add multiline support to non-numeric text field-based components. This allows text to auto-wrap when it exceeds the width of the text field.
 
 ## [1.0.0-alpha.81] - 2025-07-17
 #### Added
