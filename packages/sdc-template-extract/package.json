@@ -6,7 +6,7 @@
     "compile": "tsup src/index.ts --format cjs,esm --dts --clean --sourcemap",
     "watch": "tsup src/index.ts --format cjs,esm --dts --clean --sourcemap --watch",
     "build": "npm run compile",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "repository": {
     "type": "git",
