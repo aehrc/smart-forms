@@ -57,13 +57,12 @@ export async function generateExpressionValues(
 
         initialExpression.value = await handleFhirPathResult(fhirPathResult);
       } catch (e) {
-        if (e instanceof Error) {
-          console.warn(
-            'SDC-Populate Error: fhirpath evaluation for InitialExpression failed. Details below:' +
-              e
-          );
-          issues.push(createInvalidWarningIssue(e.message));
-        }
+        // e is not thrown as an Error type in fhirpath.js, so we can't use `if (e instanceof Error)` here
+        console.warn(
+          `SDC-Populate Error: fhirpath evaluation for InitialExpression ${expression} failed. Details below:` +
+            e
+        );
+        issues.push(createInvalidWarningIssue(String(e)));
         continue;
       }
 
@@ -83,13 +82,12 @@ export async function generateExpressionValues(
         });
         itemPopulationContext.value = await handleFhirPathResult(fhirPathResult);
       } catch (e) {
-        if (e instanceof Error) {
-          console.warn(
-            'SDC-Populate Error: fhirpath evaluation for ItemPopulationContext failed. Details below:' +
-              e
-          );
-          issues.push(createInvalidWarningIssue(e.message));
-        }
+        // e is not thrown as an Error type in fhirpath.js, so we can't use `if (e instanceof Error)` here
+        console.warn(
+          `SDC-Populate Error: fhirpath evaluation for ItemPopulationContext ${expression} failed. Details below:` +
+            e
+        );
+        issues.push(createInvalidWarningIssue(String(e)));
         continue;
       }
 
@@ -132,13 +130,13 @@ export async function evaluateItemPopulationContexts(
         });
         evaluatedResult = await handleFhirPathResult(fhirPathResult);
       } catch (e) {
-        if (e instanceof Error) {
-          console.warn(
-            'SDC-Populate Error: fhirpath evaluation for ItemPopulationContext failed. Details below:' +
-              e
-          );
-          issues.push(createInvalidWarningIssue(e.message));
-        }
+        // e is not thrown as an Error type in fhirpath.js, so we can't use `if (e instanceof Error)` here
+        console.warn(
+          `SDC-Populate Error: fhirpath evaluation for ItemPopulationContext ${expression} failed. Details below:` +
+            e
+        );
+        issues.push(createInvalidWarningIssue(String(e)));
+
         continue;
       }
 

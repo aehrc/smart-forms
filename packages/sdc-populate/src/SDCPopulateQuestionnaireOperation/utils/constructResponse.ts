@@ -653,12 +653,11 @@ async function constructRepeatGroupInstances(
             });
           }
         } catch (e) {
-          if (e instanceof Error) {
-            console.warn(
-              'SDC-Populate Error: fhirpath evaluation for ItemPopulationContext child failed. Details below:' +
-                e
-            );
-          }
+          // e is not thrown as an Error type in fhirpath.js, so we can't use `if (e instanceof Error)` here
+          console.warn(
+            `SDC-Populate Error: fhirpath evaluation for ItemPopulationContext child for expression ${initialExpression.expression} failed. Details below:` +
+              e
+          );
         }
       }
 

@@ -212,13 +212,12 @@ async function evaluateFhirPathVariables(
 
         fhirPathContext[`${variable.name}`] = await handleFhirPathResult(fhirPathResult);
       } catch (e) {
-        if (e instanceof Error) {
-          console.warn(
-            'SDC-Populate Error: fhirpath evaluation for Questionnaire-level FHIRPath variable failed. Details below:' +
-              e
-          );
-          issues.push(createInvalidWarningIssue(e.message));
-        }
+        // e is not thrown as an Error type in fhirpath.js, so we can't use `if (e instanceof Error)` here
+        console.warn(
+          `SDC-Populate Error: fhirpath evaluation for Questionnaire-level FHIRPath variable ${variable.expression} failed. Details below:` +
+            e
+        );
+        issues.push(createInvalidWarningIssue(String(e)));
       }
     }
   }
