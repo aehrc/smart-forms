@@ -63,62 +63,6 @@ function getQuestionnaireItemRecursive(
 }
 
 /**
- * Returns the QuestionnaireResponse.item matching the given linkId, searched recursively.
- *
- * @param questionnaireResponse - The QuestionnaireResponse to search.
- * @param targetLinkId - The linkId of the item to find.
- * @returns The matching QuestionnaireResponseItem, or null if not found.
- */
-export function getQuestionnaireResponseItem(
-  questionnaireResponse: QuestionnaireResponse,
-  targetLinkId: string
-): QuestionnaireResponseItem | null {
-  // Search through the top level items recursively
-  const topLevelQRItems = questionnaireResponse.item;
-  if (topLevelQRItems) {
-    for (const topLevelQRItem of topLevelQRItems) {
-      const foundQRItem = getQuestionnaireResponseItemRecursive(topLevelQRItem, targetLinkId);
-      if (foundQRItem) {
-        return foundQRItem;
-      }
-    }
-  }
-
-  // No matching item found in the questionnaire, return null
-  return null;
-}
-
-/**
- * Recursively searches a QuestionnaireResponseItem and its children for the given linkId.
- *
- * @param qrItem - The current QuestionnaireResponseItem to search.
- * @param targetLinkId - The linkId to find.
- * @returns The matching QuestionnaireResponseItem, or null if not found.
- */
-function getQuestionnaireResponseItemRecursive(
-  qrItem: QuestionnaireResponseItem,
-  targetLinkId: string
-): QuestionnaireResponseItem | null {
-  // Target linkId found in current item
-  if (qrItem.linkId === targetLinkId) {
-    return qrItem;
-  }
-
-  // Search through its child items recursively
-  const childQRItems = qrItem.item;
-  if (childQRItems) {
-    for (const childQRItem of childQRItems) {
-      const foundQRItem = getQuestionnaireResponseItemRecursive(childQRItem, targetLinkId);
-      if (foundQRItem) {
-        return foundQRItem;
-      }
-    }
-  }
-
-  // No matching item found in the current item or its child items, return null
-  return null;
-}
-/**
  * Returns the FHIRPath to a QuestionnaireResponse.item that matches the given linkId.
  *
  * @param questionnaireResponse - The QuestionnaireResponse to search through.
