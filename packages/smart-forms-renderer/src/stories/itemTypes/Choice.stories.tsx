@@ -57,7 +57,7 @@ export const ChoiceAnswerOptionBasic: Story = {
 
     expectContainsValueCoding(linkId, {
       code: "266919005",
-      display: "Never smoked",
+      display: targetText,
       system: "http://snomed.info/sct",
     });
   }
