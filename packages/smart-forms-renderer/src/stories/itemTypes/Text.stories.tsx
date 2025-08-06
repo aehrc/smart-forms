@@ -19,8 +19,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import { qrTextBasicResponse, qTextBasic, qTextCalculation } from '../assets/questionnaires';
 import { inputText } from '@aehrc/testing-toolkit'
-
-
+import { expect } from "storybook/test"
+import { getAnswers } from '../testUtils';
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 
 const meta = {
@@ -39,10 +39,15 @@ export const TextBasic: Story = {
   args: {
     questionnaire: qTextBasic
   },
-  play: async ({ canvasElement, step }) => {
-    await step('TextBasicTest', async () => {
-      await inputText(canvasElement, 'details', 'mytext')
-    })
+  play: async ({ canvasElement }) => {
+    const targetText = 'mytext'
+    const linkId = 'details'
+    await inputText(canvasElement, linkId, targetText)
+
+    const res = await getAnswers(linkId)
+
+    await expect(res).toEqual(expect.arrayContaining([expect.objectContaining({ valueString: targetText })]));
+
   }
 };
 

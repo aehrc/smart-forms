@@ -1,7 +1,7 @@
 import { fireEvent, screen } from '@testing-library/react';
 
 export async function inputText(canvasElement: HTMLElement, linkId: string, mytext: string) {
-  const questionElement = await canvasElement.querySelector(`[data-linkid=${linkId}]`);
+  const questionElement = canvasElement.querySelector(`[data-linkid=${linkId}]`);
   const input =
     questionElement?.querySelector('input') ?? questionElement?.querySelector('textarea');
 
@@ -9,6 +9,8 @@ export async function inputText(canvasElement: HTMLElement, linkId: string, myte
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
 
   fireEvent.change(input, { target: { value: mytext } });
+  // Here we await for debounced store update
+  await new Promise((resolve) => setTimeout(resolve, 500));
 }
 
 export async function chooseSelectOption(
@@ -16,8 +18,9 @@ export async function chooseSelectOption(
   linkId: string,
   optionLabel: string
 ) {
-  const questionElement = await canvasElement.querySelector(`[data-linkid=${linkId}]`);
-  const input = questionElement?.querySelector('input');
+  const questionElement = canvasElement.querySelector(`[data-linkid=${linkId}]`);
+  const input =
+    questionElement?.querySelector('input') ?? questionElement?.querySelector('textarea');
 
   if (!input) throw new Error(`There is no input inside [data-linkid=${linkId}] block`);
 
@@ -25,9 +28,6 @@ export async function chooseSelectOption(
   fireEvent.keyDown(input, { key: 'ArrowDown', code: 40 });
 
   const option = await screen.findByText(optionLabel);
+
   fireEvent.click(option);
-
-  if ((input.value = optionLabel)) return;
-
-  throw new Error(`Option ${optionLabel} was not set into input value`);
 }

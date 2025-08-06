@@ -30,6 +30,7 @@ import {
 
 
 import { chooseSelectOption } from '@aehrc/testing-toolkit';
+import { expectContainsValueCoding } from '../testUtils';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -48,12 +49,17 @@ export const ChoiceAnswerOptionBasic: Story = {
   args: {
     questionnaire: qChoiceAnswerOptionBasic
   },
-  play: async ({ canvasElement, step }) => {
-    await step('ChooseSelectOption', async () => {
-      await chooseSelectOption(canvasElement, 'smoking-status', 'Never smoked')
-    })
+  play: async ({ canvasElement }) => {
+    const targetText = 'Never smoked'
+    const linkId = 'smoking-status'
 
+    await chooseSelectOption(canvasElement, linkId, targetText)
 
+    expectContainsValueCoding(linkId, {
+      code: "266919005",
+      display: "Never smoked",
+      system: "http://snomed.info/sct",
+    });
   }
 };
 

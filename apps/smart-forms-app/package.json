@@ -26,6 +26,7 @@
   "dependencies": {
     "@aehrc/sdc-assemble": "^2.0.1",
     "@aehrc/sdc-populate": "^4.5.0",
+    "@aehrc/testing-toolkit": "^1.0.0",
     "@aehrc/sdc-template-extract": "^1.0.6",
     "@aehrc/smart-forms-renderer": "^1.0.0-alpha.83",
     "@dnd-kit/core": "^6.3.1",
