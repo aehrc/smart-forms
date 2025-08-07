@@ -87,7 +87,18 @@ function getQueryString(
 
   // Fallback to canonical url
   if (canonical) {
-    canonical = canonical.replace('|', '&version=');
+    canonical = safeReplaceCanonicalVersion(canonical);
   }
   return `Questionnaire?url=${canonical}`;
+}
+
+export function safeReplaceCanonicalVersion(canonical: string): string {
+  const [base, version] = canonical.split('|');
+
+  if (version) {
+    // Append version as a URL param safely
+    return `${base}&version=${encodeURIComponent(version)}`;
+  }
+
+  return canonical;
 }

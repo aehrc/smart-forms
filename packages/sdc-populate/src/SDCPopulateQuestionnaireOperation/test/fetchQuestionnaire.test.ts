@@ -16,7 +16,7 @@
  */
 
 import type { Bundle, OperationOutcome, Questionnaire } from 'fhir/r4';
-import { fetchQuestionnaire } from '../api/fetchQuestionnaire';
+import { fetchQuestionnaire, safeReplaceCanonicalVersion } from '../api/fetchQuestionnaire';
 import type { InputParameters } from '../interfaces'; // Adjust FHIR version if needed
 
 // Mock the fetchQuestionnaire callback function
@@ -173,5 +173,30 @@ describe('fetchQuestionnaire', () => {
       mockFetchQuestionnaireConfig
     );
     expect(result).toEqual(outcome);
+  });
+});
+
+describe('safeReplaceCanonicalVersion', () => {
+  test('replaces pipe with &version= and encodes version', () => {
+    const input = 'http://example.org/Questionnaire/ABC|1.0';
+    const expected = 'http://example.org/Questionnaire/ABC&version=1.0';
+    expect(safeReplaceCanonicalVersion(input)).toBe(expected);
+  });
+
+  test('encodes special characters in version', () => {
+    const input = 'http://example.org/Questionnaire/ABC|1.0-beta/rc';
+    const expected = 'http://example.org/Questionnaire/ABC&version=1.0-beta%2Frc';
+    expect(safeReplaceCanonicalVersion(input)).toBe(expected);
+  });
+
+  test('returns original string if no pipe present', () => {
+    const input = 'http://example.org/Questionnaire/ABC';
+    expect(safeReplaceCanonicalVersion(input)).toBe(input);
+  });
+
+  test('returns original string if empty version after pipe', () => {
+    const input = 'http://example.org/Questionnaire/ABC|';
+    const expected = 'http://example.org/Questionnaire/ABC|';
+    expect(safeReplaceCanonicalVersion(input)).toBe(expected);
   });
 });
