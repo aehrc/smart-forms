@@ -570,3 +570,18 @@ export function isItemTextHidden(qItem: QuestionnaireItem): boolean {
 
   return !!extension?.valueBoolean;
 }
+
+/**
+ * Check if the QuestionnaireItem has a 'GroupHideAddItemButton' extension to hide the Add Item button for group tables.
+ *
+ * @param {QuestionnaireItem} qItem - The QuestionnaireItem to check.
+ * @returns {boolean} True if the Add Item button should be hidden, otherwise false.
+ */
+export function isGroupAddItemButtonHidden(qItem: QuestionnaireItem): boolean {
+  const extension = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url === 'https://smartforms.csiro.au/ig/StructureDefinition/GroupHideAddItemButton'
+  );
+
+  return !!extension?.valueBoolean;
+}

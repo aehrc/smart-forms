@@ -8,6 +8,10 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.89] - 2025-08-04
+#### Added
+- Add support for custom `https://smartforms.csiro.au/ig/StructureDefinition/GroupHideAddItemButton` extension to hide the "Add Item" button in a repeating group or group table item.
+  This extension is used when you want to prevent users from adding items to a group, but still want to allow them to edit existing items.
 
 ## [1.0.0-alpha.88] - 2025-08-01
 #### Fixed
