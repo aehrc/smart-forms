@@ -17,16 +17,9 @@
 
 import type { Questionnaire } from 'fhir/r4';
 
-export const quesBMICalculation: Questionnaire = {
+export const QCalculatedExpressionBMICalculatorPrepop: Questionnaire = {
   resourceType: 'Questionnaire',
   id: 'CalculatedExpressionBMICalculatorPrepop',
-  name: 'CalculatedExpressionBMICalculatorPrepop',
-  title: 'CalculatedExpression BMI Calculator - Pre-population',
-  version: '0.1.0',
-  status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-15',
-  url: 'https://smartforms.csiro.au/docs/sdc/population/calculated-expression-1',
   extension: [
     {
       url: 'http://hl7.org/fhir/StructureDefinition/variable',
@@ -63,14 +56,21 @@ export const quesBMICalculation: Questionnaire = {
           valueString: 'The patient that is to be used to pre-populate the form'
         }
       ]
+    },
+    {
+      url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-targetStructureMap',
+      valueCanonical: 'https://smartforms.csiro.au/docs/StructureMap/extract-bmi'
     }
   ],
+  url: 'https://smartforms.csiro.au/docs/sdc/population/calculated-expression-1',
+  version: '0.1.0',
+  name: 'CalculatedExpressionBMICalculatorPrepop',
+  title: 'CalculatedExpression BMI Calculator - Pre-population',
+  status: 'draft',
+  date: '2024-05-15',
+  publisher: 'AEHRC CSIRO',
   item: [
     {
-      linkId: 'bmi-calculation',
-      text: 'BMI Calculation',
-      type: 'group',
-      repeats: false,
       extension: [
         {
           url: 'http://hl7.org/fhir/StructureDefinition/variable',
@@ -89,6 +89,10 @@ export const quesBMICalculation: Questionnaire = {
           }
         }
       ],
+      linkId: 'bmi-calculation',
+      text: 'BMI Calculation',
+      type: 'group',
+      repeats: false,
       item: [
         {
           extension: [
@@ -155,11 +159,22 @@ export const quesBMICalculation: Questionnaire = {
                 code: 'kg/m2',
                 display: 'kg/m2'
               }
+            },
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationExtract',
+              valueBoolean: true
             }
           ],
           linkId: 'bmi-result',
+          code: [
+            {
+              system: 'http://snomed.info/sct',
+              code: '60621009',
+              display: 'Body mass index'
+            }
+          ],
           text: 'Value',
-          type: 'decimal',
+          type: 'quantity',
           repeats: false,
           readOnly: true
         }

@@ -274,6 +274,10 @@ async function performInAppPopulation(
   }
 }
 
+/**
+ * Adds a timeout to a promise, rejecting if the promise does not resolve within the specified time.
+ * Useful for enforcing time limits on async operations such as $populate.
+ */
 export async function addTimeoutToPromise(promise: Promise<any>, timeoutMs: number) {
   const timeoutPromise = new Promise((_, reject) => {
     setTimeout(() => {

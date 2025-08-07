@@ -25,7 +25,6 @@ import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import type {
   Bundle,
-  BundleEntry,
   Expression,
   Extension,
   FhirResource,
@@ -41,7 +40,14 @@ import type {
 import { createInvalidWarningIssue, createNotFoundWarningIssue } from './operationOutcome';
 import { TERMINOLOGY_SERVER_URL } from '../../globals';
 import { emptyResponse } from './emptyResource';
+import { createReferenceContextTuple, createResourceContextTuple } from './createContextTuples';
 
+/**
+ * Creates a comprehensive FHIRPath evaluation context for questionnaire population operations.
+ * This context includes launch contexts, resolved FHIR resources, and evaluated variables that can be referenced
+ * in FHIRPath expressions throughout the questionnaire. It handles both direct resource contexts and reference-based
+ * contexts that need to be fetched from external FHIR servers during the population process.
+ */
 export async function createFhirPathContext(
   parameters: InputParameters,
   questionnaire: Questionnaire,
@@ -97,7 +103,13 @@ export async function createFhirPathContext(
   return fhirPathContext;
 }
 
-async function extractAndEvaluateFhirPathVariables(
+/**
+ * Extracts and evaluates all FHIRPath variables defined in a questionnaire at both questionnaire and item levels.
+ * FHIRPath variables allow questionnaires to define reusable expressions that can be referenced throughout
+ * the form using %variableName syntax. This function processes variable extensions and makes their evaluated
+ * results available in the FHIRPath context for use in other expressions like initialExpression or calculatedExpression.
+ */
+export async function extractAndEvaluateFhirPathVariables(
   questionnaire: Questionnaire,
   fhirPathContext: Record<string, any>,
   issues: OperationOutcomeIssue[],
@@ -131,7 +143,13 @@ async function extractAndEvaluateFhirPathVariables(
   }
 }
 
-function extractItemLevelFhirPathVariables(
+/**
+ * Recursively extracts FHIRPath variable definitions from questionnaire items at all nesting levels.
+ * This function traverses the questionnaire's hierarchical structure to find variable extensions defined
+ * on individual items, which allows for item-specific variables that can be used in expressions within
+ * that item's scope or by other items that reference them.
+ */
+export function extractItemLevelFhirPathVariables(
   questionnaire: Questionnaire,
   variables: Record<string, Expression[]>
 ): Record<string, Expression[]> {
@@ -157,7 +175,13 @@ interface ExtractItemLevelFhirPathVariablesRecursiveParams {
   parentRepeatGroupLinkId?: string;
 }
 
-function extractItemLevelFhirPathVariablesRecursive(
+/**
+ * Recursively processes a single questionnaire item and its children to extract FHIRPath variable definitions.
+ * This helper function handles the recursive traversal logic for extractItemLevelFhirPathVariables,
+ * properly tracking parent repeat group context and ensuring variables are extracted from all
+ * nested items regardless of the questionnaire's structural complexity.
+ */
+export function extractItemLevelFhirPathVariablesRecursive(
   params: ExtractItemLevelFhirPathVariablesRecursiveParams
 ) {
   const { item, variables, parentRepeatGroupLinkId } = params;
@@ -184,7 +208,13 @@ function extractItemLevelFhirPathVariablesRecursive(
   };
 }
 
-async function evaluateFhirPathVariables(
+/**
+ * Evaluates an array of FHIRPath variable expressions and adds their results to the FHIRPath context.
+ * Each variable's expression is evaluated against the current context and the result is stored
+ * using the variable's name, making it available for reference in other FHIRPath expressions
+ * throughout the questionnaire using %variableName syntax.
+ */
+export async function evaluateFhirPathVariables(
   variables: Expression[],
   fhirPathContext: Record<string, any>,
   issues: OperationOutcomeIssue[],
@@ -212,13 +242,12 @@ async function evaluateFhirPathVariables(
 
         fhirPathContext[`${variable.name}`] = await handleFhirPathResult(fhirPathResult);
       } catch (e) {
-        if (e instanceof Error) {
-          console.warn(
-            'SDC-Populate Error: fhirpath evaluation for Questionnaire-level FHIRPath variable failed. Details below:' +
-              e
-          );
-          issues.push(createInvalidWarningIssue(e.message));
-        }
+        // e is not thrown as an Error type in fhirpath.js, so we can't use `if (e instanceof Error)` here
+        console.warn(
+          `SDC-Populate Error: fhirpath evaluation for Questionnaire-level FHIRPath variable ${variable.expression} failed. Details below:` +
+            e
+        );
+        issues.push(createInvalidWarningIssue(String(e)));
       }
     }
   }
@@ -226,10 +255,8 @@ async function evaluateFhirPathVariables(
 
 /**
  * Get fhirpath variables from an array of extensions
- *
- * @author Sean Fong
  */
-function getFhirPathVariables(extensions: Extension[]): Expression[] {
+export function getFhirPathVariables(extensions: Extension[]): Expression[] {
   return (
     extensions
       .filter(
@@ -242,7 +269,13 @@ function getFhirPathVariables(extensions: Extension[]): Expression[] {
   );
 }
 
-async function populateReferenceContextsIntoContextMap(
+/**
+ * Resolves reference-based context parameters by fetching the actual FHIR resources they point to.
+ * Reference contexts contain URLs or references to FHIR resources that need to be retrieved from
+ * external servers before they can be used in FHIRPath expressions. This function handles the
+ * asynchronous fetching process and populates the context map with the resolved resources.
+ */
+export async function populateReferenceContextsIntoContextMap(
   referenceContexts: ReferenceContext[],
   contextMap: Record<string, any>,
   fetchResourceCallback: FetchResourceCallback,
@@ -324,7 +357,13 @@ async function populateReferenceContextsIntoContextMap(
   }
 }
 
-async function populateBatchContextsIntoContextMap(
+/**
+ * Processes batch context bundles by fetching the individual resources referenced in batch entries.
+ * Batch contexts contain FHIR Bundle resources with batch-type entries that specify multiple resources
+ * to be fetched. This function executes the batch requests and populates each bundle entry with
+ * the corresponding fetched resource data for use in FHIRPath expressions.
+ */
+export async function populateBatchContextsIntoContextMap(
   batchContexts: ResourceContext[],
   contextMap: Record<string, any>,
   fetchResourceCallback: FetchResourceCallback,
@@ -420,61 +459,27 @@ async function populateBatchContextsIntoContextMap(
   }
 }
 
-function responseDataIsFhirResource(responseData: any): responseData is FhirResource {
-  return responseData && responseData.resourceType && typeof responseData.resourceType === 'string';
+/**
+ * Type guard function to determine if response data represents a valid FHIR resource.
+ * This function checks for the presence and type of the resourceType property which is
+ * required for all FHIR resources. It's used to validate responses from FHIR servers
+ * before attempting to process them as FHIR resources in the population context.
+ */
+export function responseDataIsFhirResource(responseData: any): responseData is FhirResource {
+  return !!(
+    responseData &&
+    responseData.resourceType &&
+    typeof responseData.resourceType === 'string'
+  );
 }
 
-function createReferenceContextTuple(
-  referenceContext: ReferenceContext,
-  fetchResourceCallback: FetchResourceCallback,
-  fetchResourceRequestConfig: FetchResourceRequestConfig
-): [ReferenceContext, Promise<any>, FhirResource | null] {
-  const query = referenceContext.part[1]?.valueReference?.reference;
-
-  if (!query) {
-    return [
-      referenceContext,
-      Promise.resolve(
-        createInvalidWarningIssue(
-          `Reference Context ${
-            referenceContext.part[0]?.valueString ?? ''
-          } does not contain a reference`
-        )
-      ),
-      null
-    ];
-  }
-
-  return [referenceContext, fetchResourceCallback(query, fetchResourceRequestConfig), null];
-}
-
-function createResourceContextTuple(
-  resourceContext: ResourceContext,
-  bundleEntry: BundleEntry,
-  fetchResourceCallback: FetchResourceCallback,
-  fetchResourceRequestConfig: FetchResourceRequestConfig
-): [ResourceContext, Promise<any>, FhirResource | null] {
-  const query = bundleEntry.request?.url;
-
-  if (!query) {
-    const resourceContextName = resourceContext.part[0]?.valueString;
-    return [
-      resourceContext,
-      Promise.resolve(
-        createInvalidWarningIssue(
-          `${resourceContextName} bundle entry ${
-            bundleEntry.fullUrl ?? ''
-          } does not contain a request`
-        )
-      ),
-      null
-    ];
-  }
-
-  return [resourceContext, fetchResourceCallback(query, fetchResourceRequestConfig), null];
-}
-
-async function replaceFhirPathEmbeddings(
+/**
+ * Processes and evaluates FHIRPath embeddings found in context references and batch contexts.
+ * FHIRPath embeddings use {{%expression}} syntax within URLs and references to create dynamic
+ * values based on launch context data. This function identifies these embeddings, evaluates them
+ * against available launch contexts, and replaces them with their computed values.
+ */
+export async function replaceFhirPathEmbeddings(
   parameters: InputParameters,
   questionnaire: Questionnaire,
   fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
@@ -484,7 +489,11 @@ async function replaceFhirPathEmbeddings(
   updatedContainedBatchContexts: ResourceContext[];
 }> {
   const launchContexts = parameters.parameter.filter(
-    (param) => isContextParameter(param) && param.part && !!param.part[1].resource
+    (param) =>
+      isContextParameter(param) &&
+      param.part &&
+      !!param.part[1].resource &&
+      param.part[1].resource?.resourceType !== 'Bundle'
   ) as ResourceContext[];
 
   const referenceContexts = parameters.parameter.filter(
@@ -526,7 +535,13 @@ async function replaceFhirPathEmbeddings(
   }
 }
 
-function getContainedBatchContexts(
+/**
+ * Extracts contained batch Bundle resources from reference contexts that point to questionnaire.contained resources.
+ * When reference contexts use '#' prefixed references, they point to resources contained within the questionnaire
+ * itself rather than external resources. This function identifies these contained batch bundles and converts
+ * them into resource contexts for processing during population.
+ */
+export function getContainedBatchContexts(
   referenceContexts: ReferenceContext[],
   questionnaire: Questionnaire
 ): ResourceContext[] {
@@ -566,7 +581,13 @@ function getContainedBatchContexts(
   return containedBatchContexts;
 }
 
-function getFhirPathEmbeddings(
+/**
+ * Scans reference contexts and batch contexts to identify all FHIRPath embeddings that need evaluation.
+ * FHIRPath embeddings use {{%expression}} syntax and are commonly found in URLs and references
+ * where dynamic values from launch contexts need to be substituted. This function creates a map
+ * of all unique embeddings found across all contexts for subsequent evaluation.
+ */
+export function getFhirPathEmbeddings(
   referenceContexts: ReferenceContext[],
   containedBatchContexts: ResourceContext[]
 ): Record<string, string> {
@@ -604,7 +625,13 @@ function getFhirPathEmbeddings(
   return fhirPathEmbeddingsMap;
 }
 
-async function evaluateFhirPathEmbeddings(
+/**
+ * Evaluates FHIRPath embeddings against launch context data to produce concrete values for substitution.
+ * Each embedding expression is evaluated using the appropriate launch context resource as the root,
+ * allowing dynamic references like {{%patient.id}} to be resolved to actual patient IDs from
+ * the launch context for use in URLs and resource references.
+ */
+export async function evaluateFhirPathEmbeddings(
   fhirPathEmbeddingsMap: Record<string, string>,
   launchContexts: ResourceContext[],
   fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
@@ -638,7 +665,13 @@ async function evaluateFhirPathEmbeddings(
   return fhirPathEmbeddingsMap;
 }
 
-function replaceEvaluatedFhirPathEmbeddingsInContexts(
+/**
+ * Replaces FHIRPath embeddings with their evaluated values throughout reference and batch contexts.
+ * After embeddings have been evaluated, this function performs string replacement to substitute
+ * all {{%expression}} patterns with their computed values in URLs, references, and other string
+ * fields where dynamic content was specified using FHIRPath embedding syntax.
+ */
+export function replaceEvaluatedFhirPathEmbeddingsInContexts(
   evaluatedFhirPathEmbeddingsMap: Record<string, string>,
   referenceContexts: ReferenceContext[],
   containedBatchContexts: ResourceContext[]
@@ -693,10 +726,22 @@ function replaceEvaluatedFhirPathEmbeddingsInContexts(
 
 const FHIRPATH_EMBEDDING_REGEX = /{{%(.*?)}}/g;
 
-function readFhirPathEmbeddingsFromStr(expression: string): string[] {
+/**
+ * Extracts FHIRPath embedding expressions from strings using regex pattern matching.
+ * FHIRPath embeddings are enclosed in {{%...}} syntax within strings and this function
+ * uses a regex pattern to find all such expressions and extract just the FHIRPath expression
+ * part for evaluation, enabling dynamic content substitution in URLs and references.
+ */
+export function readFhirPathEmbeddingsFromStr(expression: string): string[] {
   return [...expression.matchAll(FHIRPATH_EMBEDDING_REGEX)].map((match) => match[1] ?? '');
 }
 
+/**
+ * Handles both synchronous and asynchronous FHIRPath evaluation results uniformly.
+ * FHIRPath evaluation can return either direct results or promises depending on whether
+ * async operations like terminology lookups are involved. This function provides a consistent
+ * interface for handling both cases and ensuring all results are properly awaited when needed.
+ */
 export async function handleFhirPathResult(result: any[] | Promise<any[]>) {
   if (result instanceof Promise) {
     return await result;
