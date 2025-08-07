@@ -18,7 +18,7 @@
 import type { ValueSetPromise } from '../interfaces/expressions.interface';
 import type { QuestionnaireItem } from 'fhir/r4';
 import type { FetchTerminologyCallback, FetchTerminologyRequestConfig } from '../interfaces';
-import { TERMINOLOGY_SERVER_URL } from '../../globals';
+import { defaultTerminologyRequest } from './defaultTerminologyRequest';
 
 export function getValueSetPromise(
   qItem: QuestionnaireItem,
@@ -46,20 +46,4 @@ export function getValueSetPromise(
   valueSetPromiseMap[qItem.linkId] = {
     promise: valueSetPromise
   };
-}
-
-const headers = {
-  'Content-Type': 'application/fhir+json;charset=utf-8',
-  Accept: 'application/json;charset=utf-8'
-};
-
-export async function defaultTerminologyRequest(query: string) {
-  const requestUrl = TERMINOLOGY_SERVER_URL + '/' + query;
-  const response = await fetch(requestUrl, { headers });
-
-  if (!response.ok) {
-    throw `HTTP error when performing ${requestUrl}. Status: ${response.status}`;
-  }
-
-  return response.json();
 }

@@ -40,7 +40,7 @@ import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import { getItemPopulationContextName } from './readPopulationExpressions';
 import { createQuestionnaireReference } from './createQuestionnaireReference';
 import { parseItemInitialToAnswer, parseValueToAnswer } from './parse';
-import { getValueSetPromise } from '../api/expandValueset';
+import { getValueSetPromise } from '../api/expandValueSet';
 import type { FetchTerminologyCallback, FetchTerminologyRequestConfig } from '../interfaces';
 import { handleFhirPathResult } from './createFhirPathContext';
 import { TERMINOLOGY_SERVER_URL } from '../../globals';

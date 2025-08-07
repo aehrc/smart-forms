@@ -34,6 +34,13 @@ export function findInAnswerOptions(
           valueCoding: getRelevantCodingProperties(option.valueCoding)
         };
       }
+
+      // handle case where valueCoding.code is not present
+      if (str === option.valueCoding.display) {
+        return {
+          valueCoding: getRelevantCodingProperties(option.valueCoding)
+        };
+      }
     }
 
     if (option.valueString) {

@@ -25,7 +25,6 @@ import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import type {
   Bundle,
-  BundleEntry,
   Expression,
   Extension,
   FhirResource,
@@ -41,6 +40,7 @@ import type {
 import { createInvalidWarningIssue, createNotFoundWarningIssue } from './operationOutcome';
 import { TERMINOLOGY_SERVER_URL } from '../../globals';
 import { emptyResponse } from './emptyResource';
+import { createReferenceContextTuple, createResourceContextTuple } from './createContextTuples';
 
 export async function createFhirPathContext(
   parameters: InputParameters,
@@ -97,7 +97,7 @@ export async function createFhirPathContext(
   return fhirPathContext;
 }
 
-async function extractAndEvaluateFhirPathVariables(
+export async function extractAndEvaluateFhirPathVariables(
   questionnaire: Questionnaire,
   fhirPathContext: Record<string, any>,
   issues: OperationOutcomeIssue[],
@@ -131,7 +131,7 @@ async function extractAndEvaluateFhirPathVariables(
   }
 }
 
-function extractItemLevelFhirPathVariables(
+export function extractItemLevelFhirPathVariables(
   questionnaire: Questionnaire,
   variables: Record<string, Expression[]>
 ): Record<string, Expression[]> {
@@ -157,7 +157,7 @@ interface ExtractItemLevelFhirPathVariablesRecursiveParams {
   parentRepeatGroupLinkId?: string;
 }
 
-function extractItemLevelFhirPathVariablesRecursive(
+export function extractItemLevelFhirPathVariablesRecursive(
   params: ExtractItemLevelFhirPathVariablesRecursiveParams
 ) {
   const { item, variables, parentRepeatGroupLinkId } = params;
@@ -184,7 +184,7 @@ function extractItemLevelFhirPathVariablesRecursive(
   };
 }
 
-async function evaluateFhirPathVariables(
+export async function evaluateFhirPathVariables(
   variables: Expression[],
   fhirPathContext: Record<string, any>,
   issues: OperationOutcomeIssue[],
@@ -228,7 +228,7 @@ async function evaluateFhirPathVariables(
  *
  * @author Sean Fong
  */
-function getFhirPathVariables(extensions: Extension[]): Expression[] {
+export function getFhirPathVariables(extensions: Extension[]): Expression[] {
   return (
     extensions
       .filter(
@@ -241,7 +241,7 @@ function getFhirPathVariables(extensions: Extension[]): Expression[] {
   );
 }
 
-async function populateReferenceContextsIntoContextMap(
+export async function populateReferenceContextsIntoContextMap(
   referenceContexts: ReferenceContext[],
   contextMap: Record<string, any>,
   fetchResourceCallback: FetchResourceCallback,
@@ -323,7 +323,7 @@ async function populateReferenceContextsIntoContextMap(
   }
 }
 
-async function populateBatchContextsIntoContextMap(
+export async function populateBatchContextsIntoContextMap(
   batchContexts: ResourceContext[],
   contextMap: Record<string, any>,
   fetchResourceCallback: FetchResourceCallback,
@@ -419,61 +419,15 @@ async function populateBatchContextsIntoContextMap(
   }
 }
 
-function responseDataIsFhirResource(responseData: any): responseData is FhirResource {
-  return responseData && responseData.resourceType && typeof responseData.resourceType === 'string';
+export function responseDataIsFhirResource(responseData: any): responseData is FhirResource {
+  return !!(
+    responseData &&
+    responseData.resourceType &&
+    typeof responseData.resourceType === 'string'
+  );
 }
 
-function createReferenceContextTuple(
-  referenceContext: ReferenceContext,
-  fetchResourceCallback: FetchResourceCallback,
-  fetchResourceRequestConfig: FetchResourceRequestConfig
-): [ReferenceContext, Promise<any>, FhirResource | null] {
-  const query = referenceContext.part[1]?.valueReference?.reference;
-
-  if (!query) {
-    return [
-      referenceContext,
-      Promise.resolve(
-        createInvalidWarningIssue(
-          `Reference Context ${
-            referenceContext.part[0]?.valueString ?? ''
-          } does not contain a reference`
-        )
-      ),
-      null
-    ];
-  }
-
-  return [referenceContext, fetchResourceCallback(query, fetchResourceRequestConfig), null];
-}
-
-function createResourceContextTuple(
-  resourceContext: ResourceContext,
-  bundleEntry: BundleEntry,
-  fetchResourceCallback: FetchResourceCallback,
-  fetchResourceRequestConfig: FetchResourceRequestConfig
-): [ResourceContext, Promise<any>, FhirResource | null] {
-  const query = bundleEntry.request?.url;
-
-  if (!query) {
-    const resourceContextName = resourceContext.part[0]?.valueString;
-    return [
-      resourceContext,
-      Promise.resolve(
-        createInvalidWarningIssue(
-          `${resourceContextName} bundle entry ${
-            bundleEntry.fullUrl ?? ''
-          } does not contain a request`
-        )
-      ),
-      null
-    ];
-  }
-
-  return [resourceContext, fetchResourceCallback(query, fetchResourceRequestConfig), null];
-}
-
-async function replaceFhirPathEmbeddings(
+export async function replaceFhirPathEmbeddings(
   parameters: InputParameters,
   questionnaire: Questionnaire,
   fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
@@ -483,7 +437,11 @@ async function replaceFhirPathEmbeddings(
   updatedContainedBatchContexts: ResourceContext[];
 }> {
   const launchContexts = parameters.parameter.filter(
-    (param) => isContextParameter(param) && param.part && !!param.part[1].resource
+    (param) =>
+      isContextParameter(param) &&
+      param.part &&
+      !!param.part[1].resource &&
+      param.part[1].resource?.resourceType !== 'Bundle'
   ) as ResourceContext[];
 
   const referenceContexts = parameters.parameter.filter(
@@ -525,7 +483,7 @@ async function replaceFhirPathEmbeddings(
   }
 }
 
-function getContainedBatchContexts(
+export function getContainedBatchContexts(
   referenceContexts: ReferenceContext[],
   questionnaire: Questionnaire
 ): ResourceContext[] {
@@ -565,7 +523,7 @@ function getContainedBatchContexts(
   return containedBatchContexts;
 }
 
-function getFhirPathEmbeddings(
+export function getFhirPathEmbeddings(
   referenceContexts: ReferenceContext[],
   containedBatchContexts: ResourceContext[]
 ): Record<string, string> {
@@ -603,7 +561,7 @@ function getFhirPathEmbeddings(
   return fhirPathEmbeddingsMap;
 }
 
-async function evaluateFhirPathEmbeddings(
+export async function evaluateFhirPathEmbeddings(
   fhirPathEmbeddingsMap: Record<string, string>,
   launchContexts: ResourceContext[],
   fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
@@ -637,7 +595,7 @@ async function evaluateFhirPathEmbeddings(
   return fhirPathEmbeddingsMap;
 }
 
-function replaceEvaluatedFhirPathEmbeddingsInContexts(
+export function replaceEvaluatedFhirPathEmbeddingsInContexts(
   evaluatedFhirPathEmbeddingsMap: Record<string, string>,
   referenceContexts: ReferenceContext[],
   containedBatchContexts: ResourceContext[]
@@ -692,7 +650,7 @@ function replaceEvaluatedFhirPathEmbeddingsInContexts(
 
 const FHIRPATH_EMBEDDING_REGEX = /{{%(.*?)}}/g;
 
-function readFhirPathEmbeddingsFromStr(expression: string): string[] {
+export function readFhirPathEmbeddingsFromStr(expression: string): string[] {
   return [...expression.matchAll(FHIRPATH_EMBEDDING_REGEX)].map((match) => match[1] ?? '');
 }
 

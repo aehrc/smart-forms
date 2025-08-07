@@ -20,9 +20,9 @@ import type {
   InitialExpression
 } from '../interfaces/expressions.interface';
 import type { Coding } from 'fhir/r4';
-import type { LookupResponse } from '../api/lookupCodeSystem';
-import { getCodeSystemLookupPromise, lookupResponseIsValid } from '../api/lookupCodeSystem';
+import { getCodeSystemLookupPromise } from '../api/lookupCodeSystem';
 import type { FetchTerminologyCallback, FetchTerminologyRequestConfig } from '../interfaces';
+import { resolveLookupPromises } from './resolveLookupPromises';
 
 export async function addDisplayToInitialExpressionsCodings(
   initialExpressions: Record<string, InitialExpression>,
@@ -74,58 +74,8 @@ export async function addDisplayToInitialExpressionsCodings(
   return initialExpressions;
 }
 
-export async function resolveLookupPromises(
-  codeSystemLookupPromises: Record<string, CodeSystemLookupPromise>
-): Promise<Record<string, CodeSystemLookupPromise>> {
-  const newCodeSystemLookupPromises: Record<string, CodeSystemLookupPromise> = {};
-
-  const lookupPromiseKeys = Object.keys(codeSystemLookupPromises);
-  const lookupPromiseValues = Object.values(codeSystemLookupPromises);
-
-  const promises = lookupPromiseValues.map((lookupPromise) => lookupPromise.promise);
-  const settledPromises = await Promise.allSettled(promises);
-
-  for (const [i, settledPromise] of settledPromises.entries()) {
-    if (settledPromise.status === 'rejected') {
-      continue;
-    }
-
-    let lookupResult: LookupResponse | null = null;
-
-    // Get lookupResult from response (fhirClient and fetch scenario)
-    if (lookupResponseIsValid(settledPromise.value)) {
-      lookupResult = settledPromise.value;
-    }
-    // Fallback to get valueSet from response.data (axios scenario)
-    if (
-      !lookupResult &&
-      settledPromise.value.data &&
-      lookupResponseIsValid(settledPromise.value.data)
-    ) {
-      lookupResult = settledPromise.value.data;
-    }
-
-    if (!lookupResult) {
-      continue;
-    }
-
-    const key = lookupPromiseKeys[i];
-    const lookupPromise = lookupPromiseValues[i];
-
-    if (key && lookupPromise) {
-      lookupPromise.newCoding = {
-        ...lookupPromise.oldCoding,
-        display: lookupResult.parameter.find((p) => p.name === 'display')?.valueString ?? undefined
-      };
-      newCodeSystemLookupPromises[key] = lookupPromise;
-    }
-  }
-
-  return newCodeSystemLookupPromises;
-}
-
 function valueIsCoding(initialExpressionValue: any): initialExpressionValue is Coding {
-  return (
+  return !!(
     initialExpressionValue &&
     initialExpressionValue.system &&
     initialExpressionValue.code &&

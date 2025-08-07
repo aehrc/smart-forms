@@ -38,7 +38,7 @@ export function isInputParameters(parameters: Parameters): parameters is InputPa
   return questionnairePresent && subjectPresent;
 }
 
-function isQuestionnaireDataParameter(
+export function isQuestionnaireDataParameter(
   parameter: ParametersParameter
 ): parameter is QuestionnaireDataParameter {
   return (

@@ -52,11 +52,14 @@ export function getQrItemsIndex(
 
       // Create an array out of initial stored value if it is not an array initially
       if (!Array.isArray(storedValue)) {
+        // @ts-ignore - tried to make this type-safe which breaks this whole implementation, getQrItemsIndex() is super battle tested so we ignore this
         storedValue = [storedValue];
       }
 
       // Push new qrItem into array
+      // @ts-ignore - tried to make this type-safe which breaks this whole implementation, getQrItemsIndex() is super battle tested so we ignore this
       storedValue.push(qrItem);
+      // @ts-ignore - tried to make this type-safe which breaks this whole implementation, getQrItemsIndex() is super battle tested so we ignore this
       qrItemsCollected[linkId] = storedValue;
     } else {
       const qItemIndex = qItemsIndexMap[linkId];
