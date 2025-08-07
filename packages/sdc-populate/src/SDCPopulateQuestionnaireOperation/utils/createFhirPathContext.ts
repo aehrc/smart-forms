@@ -581,7 +581,6 @@ export function getContainedBatchContexts(
   return containedBatchContexts;
 }
 
-
 /**
  * Scans reference contexts and batch contexts to identify all FHIRPath embeddings that need evaluation.
  * FHIRPath embeddings use {{%expression}} syntax and are commonly found in URLs and references

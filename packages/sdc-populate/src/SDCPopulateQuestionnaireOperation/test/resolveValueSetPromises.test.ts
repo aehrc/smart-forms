@@ -1,7 +1,7 @@
 import { describe } from '@jest/globals';
 import { filterValueSetAnswersRecursive, resolveValueSetPromises } from '../utils/processValueSets';
 import type { ValueSet } from 'fhir/r4';
-import { ValueSetPromise } from '../interfaces/expressions.interface';
+import type { ValueSetPromise } from '../interfaces/expressions.interface';
 
 describe('resolveValueSetPromises', () => {
   it('resolves all promises and filters rejected ones', async () => {
