@@ -19,6 +19,10 @@ import type { BundleEntry, FhirResource } from 'fhir/r4';
 import type { FetchResourceCallback, FetchResourceRequestConfig } from '../interfaces';
 import { createInvalidWarningIssue } from './operationOutcome';
 
+/**
+ * Creates a tuple for a reference context, including a promise to fetch the referenced resource.
+ * Returns a warning issue if the reference is missing, helping to validate input parameters.
+ */
 export function createReferenceContextTuple(
   referenceContext: ReferenceContext,
   fetchResourceCallback: FetchResourceCallback,
@@ -43,6 +47,10 @@ export function createReferenceContextTuple(
   return [referenceContext, fetchResourceCallback(query, fetchResourceRequestConfig), null];
 }
 
+/**
+ * Creates a tuple for a resource context using a bundle entry and a fetch callback.
+ * Returns a warning issue if the bundle entry does not contain a request, ensuring proper validation.
+ */
 export function createResourceContextTuple(
   resourceContext: ResourceContext,
   bundleEntry: BundleEntry,

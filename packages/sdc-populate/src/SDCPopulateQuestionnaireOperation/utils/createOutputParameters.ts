@@ -25,8 +25,7 @@ import { Base64 } from 'js-base64';
 
 /**
  * Create output parameters as a response to be returned to the renderer. If they are issues, return with an issues parameter.
- *
- * @author Sean Fong
+ * Encodes context results as a base64 JSON attachment for downstream use.
  */
 export function createOutputParameters(
   questionnaireResponse: QuestionnaireResponse,

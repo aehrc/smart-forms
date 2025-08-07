@@ -27,6 +27,7 @@ import type { OutputParameters, ResponseParameter } from '../interfaces';
 
 /**
  * Checks if the parameters passed satisfies the conditions of populateInputParameters.
+ * Returns true if both questionnaire and subject are present.
  *
  * @author Sean Fong
  */
@@ -38,6 +39,9 @@ export function isInputParameters(parameters: Parameters): parameters is InputPa
   return questionnairePresent && subjectPresent;
 }
 
+/**
+ * Checks if a parameter is a QuestionnaireDataParameter (identifier, questionnaire, or questionnaireRef).
+ */
 export function isQuestionnaireDataParameter(
   parameter: ParametersParameter
 ): parameter is QuestionnaireDataParameter {
@@ -48,12 +52,18 @@ export function isQuestionnaireDataParameter(
   );
 }
 
+/**
+ * Checks if a parameter is a CanonicalParameter (has canonical value).
+ */
 export function isCanonicalParameter(
   parameter: ParametersParameter
 ): parameter is CanonicalParameter {
   return parameter.name === 'canonical' && !!parameter.valueCanonical;
 }
 
+/**
+ * Checks if a parameter is a SubjectParameter (has subject reference).
+ */
 export function isSubjectParameter(parameter: ParametersParameter): parameter is SubjectParameter {
   return parameter.name === 'subject' && !!parameter.valueReference;
 }

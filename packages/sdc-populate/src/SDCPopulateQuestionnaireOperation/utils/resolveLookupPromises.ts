@@ -19,6 +19,10 @@ import type { CodeSystemLookupPromise } from '../interfaces/expressions.interfac
 import type { LookupResponse } from '../api/lookupCodeSystem';
 import { lookupResponseIsValid } from '../api/lookupCodeSystem';
 
+/**
+ * Resolves all CodeSystem $lookup promises and updates codings with display values.
+ * Returns a map of updated CodeSystemLookupPromise objects keyed by system/code.
+ */
 export async function resolveLookupPromises(
   codeSystemLookupPromises: Record<string, CodeSystemLookupPromise>
 ): Promise<Record<string, CodeSystemLookupPromise>> {

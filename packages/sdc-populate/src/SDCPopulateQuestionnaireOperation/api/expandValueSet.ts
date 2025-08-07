@@ -20,6 +20,10 @@ import type { QuestionnaireItem } from 'fhir/r4';
 import type { FetchTerminologyCallback, FetchTerminologyRequestConfig } from '../interfaces';
 import { defaultTerminologyRequest } from './defaultTerminologyRequest';
 
+/**
+ * Adds a promise for ValueSet $expand to the promise map for the given questionnaire item.
+ * Uses either a custom callback or the default request. This enables async expansion for value sets.
+ */
 export function getValueSetPromise(
   qItem: QuestionnaireItem,
   fullUrl: string,

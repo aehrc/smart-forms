@@ -47,7 +47,8 @@ import { TERMINOLOGY_SERVER_URL } from '../../globals';
 import { getDisplayName } from './humanName';
 
 /**
- * Constructs a questionnaireResponse recursively from a specified questionnaire, its subject and its initialExpressions
+ * Constructs a questionnaireResponse recursively from a specified questionnaire, its subject and its initialExpressions.
+ * Handles population, context, and author/encounter metadata for the response.
  *
  * @param questionnaire - The questionnaire resource to construct a response from
  * @param subject - A subject reference to form the subject within the response

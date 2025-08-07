@@ -29,7 +29,7 @@ import { TERMINOLOGY_SERVER_URL } from '../../globals';
 
 /**
  * Use FHIRPath.js to evaluate initialExpressions and generate its values to be populated into the questionnaireResponse.
- * There are some functions that are yet to be implemented in FHIRPath.js - these functions would be removed from the expressions to avoid errors.
+ * Removes unsupported functions from expressions to avoid errors. Populates values for each linkId.
  *
  * @author Sean Fong
  */

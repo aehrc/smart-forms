@@ -26,6 +26,10 @@ import { isCanonicalParameter } from '../utils';
 import type { Bundle, OperationOutcome, Questionnaire } from 'fhir/r4';
 import { createErrorOutcome } from '../utils/operationOutcome';
 
+/**
+ * Fetches a Questionnaire resource using input parameters and a callback.
+ * Handles canonical, direct, and bundle-based questionnaire retrieval.
+ */
 export async function fetchQuestionnaire(
   parameters: InputParameters,
   fetchQuestionnaireCallback: FetchResourceCallback,

@@ -24,6 +24,10 @@ import { getCodeSystemLookupPromise } from '../api/lookupCodeSystem';
 import type { FetchTerminologyCallback, FetchTerminologyRequestConfig } from '../interfaces';
 import { resolveLookupPromises } from './resolveLookupPromises';
 
+/**
+ * Adds display values to Coding objects in initialExpressions by performing CodeSystem $lookup if needed.
+ * Ensures all codings have a display for proper rendering and validation.
+ */
 export async function addDisplayToInitialExpressionsCodings(
   initialExpressions: Record<string, InitialExpression>,
   fetchTerminologyCallback?: FetchTerminologyCallback,
@@ -74,6 +78,10 @@ export async function addDisplayToInitialExpressionsCodings(
   return initialExpressions;
 }
 
+/**
+ * Type guard to check if a value is a FHIR Coding object.
+ * Used to filter and process codings in initialExpressions.
+ */
 function valueIsCoding(initialExpressionValue: any): initialExpressionValue is Coding {
   return !!(
     initialExpressionValue &&

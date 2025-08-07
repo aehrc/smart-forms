@@ -19,7 +19,8 @@ import type { QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer } f
 import { getRelevantCodingProperties } from './codingProperties';
 
 /**
- * Find and return corresponding answerOption based on selected answer in form
+ * Find and return corresponding answerOption based on selected answer in form.
+ * Matches by code, display, string, or integer value.
  *
  * @author Sean Fong
  */
