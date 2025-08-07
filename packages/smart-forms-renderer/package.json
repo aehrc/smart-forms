@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/aehrc/smart-forms#readme",
   "dependencies": {
-    "@aehrc/sdc-populate": "^4.6.1",
+    "@aehrc/sdc-populate": "^4.6.2",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@fontsource/inter": "^5.2.6",

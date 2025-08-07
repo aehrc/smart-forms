@@ -10,9 +10,10 @@ WARNING: Alpha releases are not stable and may contain breaking changes. Changes
 
 ## [1.0.0-alpha.90] - 2025-08-07
 #### Added
-- Updated sdc-populate to v4.6.1. Changes as follows:
+- Updated sdc-populate to v4.6.2. Changes as follows:
 - Make error handling in fhirpath evaluations more lenient (remove e instanceof Error check), due to fhirpath.js async evaluation returning a string error message instead of an Error object which results in the error being muted on development builds (surprising it works on production).
 - Remove unnecessary (or even wrong) client-side sorting based on effectiveDates and recordedDate in Observation and Conditions respectively.
+- Reduce bundle size by removing tests and tets data from published package.
 
 ## [1.0.0-alpha.89] - 2025-08-04
 #### Added
