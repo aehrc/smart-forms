@@ -40,14 +40,15 @@ export const TextBasic: Story = {
     questionnaire: qTextBasic
   },
   play: async ({ canvasElement }) => {
-    const targetText = 'mytext'
-    const linkId = 'details'
-    await inputText(canvasElement, linkId, targetText)
+    const targetText = 'mytext';
+    const linkId = 'details';
 
-    const res = await getAnswers(linkId)
+    await inputText(canvasElement, linkId, targetText);
 
-    await expect(res).toEqual(expect.arrayContaining([expect.objectContaining({ valueString: targetText })]));
+    const res = await getAnswers(linkId);
 
+    expect(res).toHaveLength(1);
+    expect(res[0]).toEqual(expect.objectContaining({ valueString: targetText }));
   }
 };
 
