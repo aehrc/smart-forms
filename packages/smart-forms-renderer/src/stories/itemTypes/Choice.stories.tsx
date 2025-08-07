@@ -30,7 +30,8 @@ import {
 
 
 import { chooseSelectOption } from '@aehrc/testing-toolkit';
-import { expectContainsValueCoding } from '../testUtils';
+import { getAnswers } from '../testUtils';
+import { expect } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -50,16 +51,19 @@ export const ChoiceAnswerOptionBasic: Story = {
     questionnaire: qChoiceAnswerOptionBasic
   },
   play: async ({ canvasElement }) => {
-    const targetText = 'Never smoked'
-    const linkId = 'smoking-status'
+    const targetText = 'Never smoked';
+    const linkId = 'smoking-status';
 
-    await chooseSelectOption(canvasElement, linkId, targetText)
+    await chooseSelectOption(canvasElement, linkId, targetText);
 
-    expectContainsValueCoding(linkId, {
+    const result = await getAnswers(linkId);
+
+    expect(result).toHaveLength(1);
+    expect(result[0].valueCoding).toEqual(expect.objectContaining({
       code: "266919005",
       display: targetText,
       system: "http://snomed.info/sct",
-    });
+    }));
   }
 };
 
