@@ -24,6 +24,10 @@ import {
   generateOptionKey,
   hasMapChanged
 } from '../hooks/useAnswerOptionsToggleExpressions';
+import {
+  evaluateInitialAnswerOptionsToggleExpressions,
+  evaluateAnswerOptionsToggleExpressions
+} from '../utils/answerOptionsToggleExpressions';
 
 describe('hasMapChanged', () => {
   it('returns false when maps are equal', () => {
