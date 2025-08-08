@@ -25,6 +25,10 @@ import type {
 import { updateQuestionnaireResponse } from './genericRecursive';
 import { getQrItemsIndex, mapQItemsIndex } from './misc';
 
+/**
+ * Removes empty answers from a QuestionnaireResponse by recursively cleaning items.
+ * Ensures the response only contains items with valid answers or child items.
+ */
 export function removeEmptyAnswersFromResponse(
   questionnaire: Questionnaire,
   questionnaireResponse: QuestionnaireResponse
@@ -38,7 +42,8 @@ export function removeEmptyAnswersFromResponse(
 }
 
 /**
- * Recursively go through the questionnaireResponse and remove qrItems whose qItems are empty in the form
+ * Recursively go through the questionnaireResponse and remove qrItems whose qItems are empty in the form.
+ * Cleans up nested and repeating groups for a valid response structure.
  *
  * @author Sean Fong
  */
@@ -144,6 +149,7 @@ function isEmptyAnswer(answer: QuestionnaireResponseItemAnswer): boolean {
 
 /**
  * Check if a QuestionnaireResponseItem has either an item or an answer property.
+ * Used to determine if an item should be kept in the cleaned response.
  *
  * @author Sean Fong
  */

@@ -30,7 +30,7 @@ import {
   QRBMICalculation
 } from './data/fhirpath-bmi-calculation-data';
 import type { Expression, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
-import { Variables } from '../interfaces';
+import type { Variables } from '../interfaces';
 
 describe('createFhirPathContext', () => {
   const questionnaireResponse: QuestionnaireResponse = QRBMICalculation;

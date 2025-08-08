@@ -24,6 +24,10 @@ import { findInAnswerOptions } from './answerOption';
 import { checkIsDateTime, checkIsTime, convertDateTimeToDate } from './constructResponse';
 import { getRelevantCodingProperties } from './codingProperties';
 
+/**
+ * Parses a QuestionnaireItemInitial into a QuestionnaireResponseItemAnswer.
+ * Handles all FHIR primitive and complex types for initial values.
+ */
 export function parseItemInitialToAnswer(
   initial: QuestionnaireItemInitial
 ): QuestionnaireResponseItemAnswer | null {
@@ -80,6 +84,10 @@ export function parseItemInitialToAnswer(
   return null;
 }
 
+/**
+ * Parses a value and QuestionnaireItem into a QuestionnaireResponseItemAnswer.
+ * Handles answerOption matching, type conversion, and FHIR-specific logic.
+ */
 export function parseValueToAnswer(
   qItem: QuestionnaireItem,
   value: any
