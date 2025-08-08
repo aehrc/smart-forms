@@ -13,6 +13,16 @@ export async function inputText(canvasElement: HTMLElement, linkId: string, myte
   await new Promise((resolve) => setTimeout(resolve, 500));
 }
 
+export async function getInputText(canvasElement: HTMLElement, linkId: string) {
+  const questionElement = canvasElement.querySelector(`[data-linkid=${linkId}]`);
+  const input =
+    questionElement?.querySelector('input') ?? questionElement?.querySelector('textarea');
+
+  if (!input)
+    throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
+  return input.value;
+}
+
 export async function chooseSelectOption(
   canvasElement: HTMLElement,
   linkId: string,

@@ -17,10 +17,11 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { qrTextBasicResponse, qTextBasic, qTextCalculation } from '../assets/questionnaires';
-import { inputText } from '@aehrc/testing-toolkit'
+import { qTextCalculation } from '../assets/questionnaires';
+import { inputText, getInputText } from '@aehrc/testing-toolkit'
 import { expect } from "storybook/test"
-import { getAnswers } from '../testUtils';
+import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
+
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 
 const meta = {
@@ -34,31 +35,39 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+const targetText = 'mytext';
+const targetlinkId = 'details';
+
+const basicQuestionnare = questionnaireFactory([{ linkId: targetlinkId, type: 'string', text: targetText }])
+const basicQr = qrFactory([{ linkId: targetlinkId, answer: [{ valueString: targetText }] }])
 
 export const TextBasic: Story = {
+
   args: {
-    questionnaire: qTextBasic
+    questionnaire: basicQuestionnare
   },
   play: async ({ canvasElement }) => {
-    const targetText = 'mytext';
-    const linkId = 'details';
+    await inputText(canvasElement, targetlinkId, targetText);
+    const result = await getAnswers(targetlinkId);
 
-    await inputText(canvasElement, linkId, targetText);
-
-    const res = await getAnswers(linkId);
-
-    expect(res).toHaveLength(1);
-    expect(res[0]).toEqual(expect.objectContaining({ valueString: targetText }));
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual(expect.objectContaining({ valueString: targetText }));
   }
 };
 
 export const TextBasicResponse: Story = {
   args: {
-    questionnaire: qTextBasic,
-    questionnaireResponse: qrTextBasicResponse
+    questionnaire: basicQuestionnare,
+    questionnaireResponse: basicQr
+  }, play: async ({ canvasElement }) => {
+    const qrValue = basicQr.item?.[0].answer?.[0].valueString
+    const inputText = await getInputText(canvasElement, targetlinkId);
+
+    expect(qrValue).toBe(inputText)
   }
 };
 
+// TODO: Move to separate storybook
 export const TextCalculation: Story = {
   args: {
     questionnaire: qTextCalculation

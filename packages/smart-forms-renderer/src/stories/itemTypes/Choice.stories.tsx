@@ -18,20 +18,15 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
-  qChoiceAnswerInitialSelected,
-  qChoiceAnswerOptionBasic,
   qChoiceAnswerOptionCalculation,
-  qChoiceAnswerValueSetBasic,
-  qChoiceAnswerValueSetCalculation,
-  qrChoiceAnswerOptionBasicResponse,
-  qrChoiceAnswerValueSetBasicResponse
+  qChoiceAnswerValueSetCalculation
 } from '../assets/questionnaires';
 
 
 
-import { chooseSelectOption } from '@aehrc/testing-toolkit';
-import { getAnswers } from '../testUtils';
-import { expect } from 'storybook/test';
+import { chooseSelectOption, getInputText } from '@aehrc/testing-toolkit';
+import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
+import { expect, userEvent, waitFor, within, screen } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -45,18 +40,44 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+const targetText = 'Never smoked';
+const targetlinkId = 'smoking-status';
+const qChoiceAnswerOptionBasic = questionnaireFactory([
+  {
+    linkId: targetlinkId,
+    type: 'choice',
+    text: 'Smoking status',
+    answerOption: [
+      {
+        valueCoding: {
+          system: 'http://snomed.info/sct',
+          code: '266919005',
+          display: 'Never smoked'
+        }
+      },
+    ]
+  }
+])
+const qrChoiceAnswerOptionBasicResponse = qrFactory([{
+  linkId: targetlinkId, answer: [
+    {
+      valueCoding: {
+        system: 'http://snomed.info/sct',
+        code: '266919005',
+        display: 'Never smoked'
+      }
+    },
+  ]
+}])
 
 export const ChoiceAnswerOptionBasic: Story = {
   args: {
     questionnaire: qChoiceAnswerOptionBasic
   },
   play: async ({ canvasElement }) => {
-    const targetText = 'Never smoked';
-    const linkId = 'smoking-status';
+    await chooseSelectOption(canvasElement, targetlinkId, targetText);
 
-    await chooseSelectOption(canvasElement, linkId, targetText);
-
-    const result = await getAnswers(linkId);
+    const result = await getAnswers(targetlinkId);
 
     expect(result).toHaveLength(1);
     expect(result[0].valueCoding).toEqual(expect.objectContaining({
@@ -71,37 +92,117 @@ export const ChoiceAnswerOptionBasicResponse: Story = {
   args: {
     questionnaire: qChoiceAnswerOptionBasic,
     questionnaireResponse: qrChoiceAnswerOptionBasicResponse
+  }, play: async ({ canvasElement }) => {
+    const qrText = qrChoiceAnswerOptionBasicResponse.item?.[0].answer?.[0].valueCoding?.display
+    const inputText = await getInputText(canvasElement, targetlinkId);
+
+    expect(qrText).toBe(inputText)
   }
 };
 
+const qValueSetBasic = questionnaireFactory([
+  {
+    linkId: 'gender',
+    text: 'Gender',
+    type: 'choice',
+    repeats: false,
+    answerValueSet: 'http://hl7.org/fhir/ValueSet/administrative-gender'
+  }
+])
+
 export const ChoiceAnswerValueSetBasic: Story = {
   args: {
-    questionnaire: qChoiceAnswerValueSetBasic
+    questionnaire: qValueSetBasic
+  }, play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = await canvas.findByLabelText(/gender/i);
+
+    await userEvent.click(input);
+
+    const option = await screen.findByText('Male');
+
+    await userEvent.click(option);
+
+    await waitFor(() => {
+      expect(input).toHaveValue('Male');
+    });
   }
 };
 
 export const ChoiceAnswerValueSetBasicResponse: Story = {
   args: {
-    questionnaire: qChoiceAnswerValueSetBasic,
-    questionnaireResponse: qrChoiceAnswerValueSetBasicResponse
+    questionnaire: qValueSetBasic,
+    questionnaireResponse: qrFactory([{
+      linkId: 'gender',
+      text: 'Gender',
+      answer: [
+        {
+          valueCoding: {
+            system: 'http://hl7.org/fhir/administrative-gender',
+            code: 'female',
+            display: 'Female'
+          }
+        }
+      ]
+    }])
+  }, play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = await canvas.findByLabelText(/gender/i);
+
+    expect(input).toHaveValue('Female');
   }
 };
 
+// Story for ChoiceSelectAnswerOptions Using InitialSelected field set
+export const ChoiceAnswerOptionsUsingInitialSelected: Story = {
+  args: {
+    questionnaire: questionnaireFactory([
+      {
+        text: 'Type',
+        type: 'choice',
+        linkId: 'awsHallucinationType',
+        repeats: false,
+        answerOption: [
+          {
+            valueCoding: {
+              code: 'N',
+              system: 'http://fhir.medirecords.com/CodeSystem/awsHallucinationType',
+              display: 'None'
+            }
+          },
+
+          {
+            valueCoding: {
+              code: 'T',
+              system: 'http://fhir.medirecords.com/CodeSystem/awsHallucinationType',
+              display: 'Test-Selected'
+            },
+            initialSelected: true
+          }
+        ]
+      }
+    ]),
+  }, play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = await canvas.findByLabelText(/type/i);
+
+    expect(input).toHaveValue('Test-Selected');
+  }
+};
+
+
+// TODO: Move to separate storybook
 export const ChoiceAnswerOptionCalculation: Story = {
   args: {
     questionnaire: qChoiceAnswerOptionCalculation
   }
 };
 
+// TODO: Move to separate storybook
 export const ChoiceAnswerValueSetCalculation: Story = {
   args: {
     questionnaire: qChoiceAnswerValueSetCalculation
   }
 };
-// Story for ChoiceSelectAnswerOptions Using InitialSelected field set
-export const ChoiceAnswerOptionsUsingInitialSelected: Story = {
-  args: {
-    questionnaire: qChoiceAnswerInitialSelected
-  }
-};
+
 
