@@ -1,3 +1,6 @@
+/// <reference types="jest" />
+/// <reference types="@testing-library/jest-dom" />
+
 /*
  * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
@@ -621,5 +624,44 @@ describe('isCodingDisabled', () => {
   it('returns false if the key does not exist in the map', () => {
     const map = new Map([['some-other-key', false]]);
     expect(isCodingDisabled(sampleCoding, map)).toBe(false);
+  });
+});
+
+describe('Edge cases for 100% coverage', () => {
+  test('should find option by valueCoding.code when code matches exactly (line 69)', () => {
+    const options = [
+      {
+        valueCoding: {
+          system: 'http://test.com',
+          code: 'test-code',
+          display: 'Test Display'
+        }
+      }
+    ];
+
+    const result = findInAnswerOptions(options, 'test-code');
+    expect(result).toEqual({
+      valueCoding: {
+        system: 'http://test.com',
+        code: 'test-code',
+        display: 'Test Display'
+      }
+    });
+  });
+
+  test('should handle compareAnswerOptionValue with null/undefined value (line 112)', () => {
+    const option = { valueString: 'test' };
+    
+    // Test line 112: when value is null/undefined
+    expect(compareAnswerOptionValue(option, null as any)).toBe(false);
+    expect(compareAnswerOptionValue(option, undefined as any)).toBe(false);
+  });
+
+  test('should handle compareAnswerOptionValue fallback case (line 132)', () => {
+    const option = { valueString: 'test' };
+    const value = { valueQuantity: { value: 10 } } as any; // Unsupported type
+    
+    // Test line 132: when no matching type is found, should return false
+    expect(compareAnswerOptionValue(option, value)).toBe(false);
   });
 });

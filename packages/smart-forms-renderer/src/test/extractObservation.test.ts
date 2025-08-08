@@ -1,3 +1,6 @@
+/// <reference types="jest" />
+/// <reference types="@testing-library/jest-dom" />
+
 /*
  * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
@@ -15,10 +18,17 @@
  * limitations under the License.
  */
 
-import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import type { Questionnaire, QuestionnaireResponse, QuestionnaireItem, QuestionnaireResponseItemAnswer, CodeableConcept, Observation } from 'fhir/r4';
 
 import type { Extractable } from '../utils/extractObservation';
-import { extractObservationBased, mapQItemsExtractable } from '../utils/extractObservation';
+import { 
+  extractObservationBased, 
+  mapQItemsExtractable, 
+  createObservation,
+  generateUniqueId,
+  canBeObservationExtracted,
+  buildBundleFromObservationArray
+} from '../utils/extractObservation';
 import {
   observationResults,
   qExtractSample,
@@ -145,5 +155,442 @@ describe('mapQItemsExtractable', () => {
       'phq2-7': { extractable: true, extractCategories: [] },
       'phq2-8': { extractable: true, extractCategories: [] }
     } satisfies Record<string, Extractable>);
+  });
+});
+
+describe('createObservation', () => {
+  const basicQuestionnaireItem: QuestionnaireItem = {
+    linkId: 'height',
+    type: 'decimal',
+    text: 'Height',
+    code: [
+      {
+        system: 'http://loinc.org',
+        code: '8302-2',
+        display: 'Body height'
+      }
+    ]
+  };
+
+  const basicAnswer: QuestionnaireResponseItemAnswer = {
+    valueDecimal: 180
+  };
+
+  const basicCategories: CodeableConcept[] = [
+    {
+      coding: [
+        {
+          system: 'http://terminology.hl7.org/CodeSystem/observation-category',
+          code: 'vital-signs',
+          display: 'Vital Signs'
+        }
+      ]
+    }
+  ];
+
+  test('should create basic observation with minimal response', () => {
+    const questionnaireResponse: QuestionnaireResponse = {
+      resourceType: 'QuestionnaireResponse',
+      status: 'completed',
+      id: 'qr-123'
+    };
+
+    const observation = createObservation(
+      basicQuestionnaireItem,
+      questionnaireResponse,
+      basicAnswer,
+      basicCategories
+    );
+
+    expect(observation.resourceType).toBe('Observation');
+    expect(observation.status).toBe('final');
+    expect(observation.id).toBe('obs-height');
+    expect(observation.code.coding).toHaveLength(1);
+    expect(observation.code.coding?.[0].system).toBe('http://loinc.org');
+    expect(observation.derivedFrom).toEqual([{ reference: 'QuestionnaireResponse/qr-123' }]);
+  });
+
+  test('should include basedOn when present in QuestionnaireResponse', () => {
+    const questionnaireResponse: QuestionnaireResponse = {
+      resourceType: 'QuestionnaireResponse',
+      status: 'completed',
+      id: 'qr-123',
+      basedOn: [{ reference: 'ServiceRequest/sr-123' }]
+    };
+
+    const observation = createObservation(
+      basicQuestionnaireItem,
+      questionnaireResponse,
+      basicAnswer,
+      basicCategories
+    );
+
+    expect(observation.basedOn).toEqual([{ reference: 'ServiceRequest/sr-123' }]);
+  });
+
+  test('should include partOf when present in QuestionnaireResponse', () => {
+    const questionnaireResponse: QuestionnaireResponse = {
+      resourceType: 'QuestionnaireResponse',
+      status: 'completed',
+      id: 'qr-123',
+      partOf: [{ reference: 'Procedure/proc-123' }]
+    };
+
+    const observation = createObservation(
+      basicQuestionnaireItem,
+      questionnaireResponse,
+      basicAnswer,
+      basicCategories
+    );
+
+    expect(observation.partOf).toEqual([{ reference: 'Procedure/proc-123' }]);
+  });
+
+  test('should include subject when present in QuestionnaireResponse', () => {
+    const questionnaireResponse: QuestionnaireResponse = {
+      resourceType: 'QuestionnaireResponse',
+      status: 'completed',
+      id: 'qr-123',
+      subject: { reference: 'Patient/patient-123' }
+    };
+
+    const observation = createObservation(
+      basicQuestionnaireItem,
+      questionnaireResponse,
+      basicAnswer,
+      basicCategories
+    );
+
+    expect(observation.subject).toEqual({ reference: 'Patient/patient-123' });
+  });
+
+  test('should include encounter when present in QuestionnaireResponse', () => {
+    const questionnaireResponse: QuestionnaireResponse = {
+      resourceType: 'QuestionnaireResponse',
+      status: 'completed',
+      id: 'qr-123',
+      encounter: { reference: 'Encounter/enc-123' }
+    };
+
+    const observation = createObservation(
+      basicQuestionnaireItem,
+      questionnaireResponse,
+      basicAnswer,
+      basicCategories
+    );
+
+    expect(observation.encounter).toEqual({ reference: 'Encounter/enc-123' });
+  });
+
+  test('should handle QuestionnaireItem without code', () => {
+    const itemWithoutCode: QuestionnaireItem = {
+      linkId: 'no-code',
+      type: 'string',
+      text: 'Item without code'
+    };
+
+    const questionnaireResponse: QuestionnaireResponse = {
+      resourceType: 'QuestionnaireResponse',
+      status: 'completed',
+      id: 'qr-123'
+    };
+
+    const observation = createObservation(
+      itemWithoutCode,
+      questionnaireResponse,
+      basicAnswer,
+      basicCategories
+    );
+
+    expect(observation.code.coding).toEqual([]);
+  });
+
+  test('should handle partial code information', () => {
+    const itemWithPartialCode: QuestionnaireItem = {
+      linkId: 'partial-code',
+      type: 'string',
+      text: 'Item with partial code',
+      code: [
+        {
+          system: 'http://example.com',
+          code: 'test-code'
+          // display is missing
+        }
+      ]
+    };
+
+    const questionnaireResponse: QuestionnaireResponse = {
+      resourceType: 'QuestionnaireResponse',
+      status: 'completed',
+      id: 'qr-123'
+    };
+
+    const observation = createObservation(
+      itemWithPartialCode,
+      questionnaireResponse,
+      basicAnswer,
+      basicCategories
+    );
+
+    expect(observation.code.coding).toHaveLength(1);
+    expect(observation.code.coding?.[0]).toEqual({
+      system: 'http://example.com',
+      code: 'test-code'
+    });
+  });
+});
+
+describe('generateUniqueId', () => {
+  test('should generate unique ID with prefix', () => {
+    const id1 = generateUniqueId('test');
+    const id2 = generateUniqueId('test');
+
+    expect(id1).toMatch(/^test-\d+-\d+-[a-f0-9]+$/);
+    expect(id2).toMatch(/^test-\d+-\d+-[a-f0-9]+$/);
+    expect(id1).not.toBe(id2);
+  });
+
+  test('should handle different prefixes', () => {
+    const id1 = generateUniqueId('obs');
+    const id2 = generateUniqueId('qr');
+
+    expect(id1).toMatch(/^obs-\d+-\d+-[a-f0-9]+$/);
+    expect(id2).toMatch(/^qr-\d+-\d+-[a-f0-9]+$/);
+  });
+
+  test('should handle empty prefix', () => {
+    const id = generateUniqueId('');
+
+    expect(id).toMatch(/^-\d+-\d+-[a-f0-9]+$/);
+  });
+});
+
+describe('canBeObservationExtracted', () => {
+  test('should return true when questionnaire has observation extract extension', () => {
+    const questionnaire: Questionnaire = {
+      resourceType: 'Questionnaire',
+      status: 'active',
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationExtract',
+          valueBoolean: true
+        }
+      ]
+    };
+
+    const result = canBeObservationExtracted(questionnaire);
+
+    expect(result).toBe(true);
+  });
+
+  test('should return true when item has observation extract extension and code', () => {
+    const questionnaire: Questionnaire = {
+      resourceType: 'Questionnaire',
+      status: 'active',
+      item: [
+        {
+          linkId: 'height',
+          type: 'decimal',
+          text: 'Height',
+          code: [
+            {
+              system: 'http://loinc.org',
+              code: '8302-2'
+            }
+          ],
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationExtract',
+              valueBoolean: true
+            }
+          ]
+        }
+      ]
+    };
+
+    const result = canBeObservationExtracted(questionnaire);
+
+    expect(result).toBe(true);
+  });
+
+  test('should return false when item has observation extract extension but no code', () => {
+    const questionnaire: Questionnaire = {
+      resourceType: 'Questionnaire',
+      status: 'active',
+      item: [
+        {
+          linkId: 'height',
+          type: 'decimal',
+          text: 'Height',
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationExtract',
+              valueBoolean: true
+            }
+          ]
+        }
+      ]
+    };
+
+    const result = canBeObservationExtracted(questionnaire);
+
+    expect(result).toBe(false);
+  });
+
+  test('should return false when questionnaire has no observation extract extensions', () => {
+    const questionnaire: Questionnaire = {
+      resourceType: 'Questionnaire',
+      status: 'active',
+      item: [
+        {
+          linkId: 'name',
+          type: 'string',
+          text: 'Name'
+        }
+      ]
+    };
+
+    const result = canBeObservationExtracted(questionnaire);
+
+    expect(result).toBe(false);
+  });
+
+  test('should return false when questionnaire has no items', () => {
+    const questionnaire: Questionnaire = {
+      resourceType: 'Questionnaire',
+      status: 'active'
+    };
+
+    const result = canBeObservationExtracted(questionnaire);
+
+    expect(result).toBe(false);
+  });
+
+  test('should return true when nested item has valid observation extract extension', () => {
+    const questionnaire: Questionnaire = {
+      resourceType: 'Questionnaire',
+      status: 'active',
+      item: [
+        {
+          linkId: 'section',
+          type: 'group',
+          text: 'Section',
+          item: [
+            {
+              linkId: 'height',
+              type: 'decimal',
+              text: 'Height',
+              code: [
+                {
+                  system: 'http://loinc.org',
+                  code: '8302-2'
+                }
+              ],
+              extension: [
+                {
+                  url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-observationExtract',
+                  valueBoolean: true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+
+    const result = canBeObservationExtracted(questionnaire);
+
+    expect(result).toBe(true);
+  });
+});
+
+describe('buildBundleFromObservationArray', () => {
+  test('should create bundle with observations', () => {
+    const observations: Observation[] = [
+      {
+        resourceType: 'Observation',
+        status: 'final',
+        id: 'obs-1',
+        code: {
+          coding: [
+            {
+              system: 'http://loinc.org',
+              code: '8302-2',
+              display: 'Body height'
+            }
+          ]
+        },
+        valueQuantity: {
+          value: 180,
+          unit: 'cm'
+        }
+      },
+      {
+        resourceType: 'Observation',
+        status: 'final',
+        id: 'obs-2',
+        code: {
+          coding: [
+            {
+              system: 'http://loinc.org',
+              code: '29463-7',
+              display: 'Body weight'
+            }
+          ]
+        },
+        valueQuantity: {
+          value: 70,
+          unit: 'kg'
+        }
+      }
+    ];
+
+    const bundle = buildBundleFromObservationArray(observations);
+
+    expect(bundle.resourceType).toBe('Bundle');
+    expect(bundle.type).toBe('transaction');
+    expect(bundle.id).toMatch(/^sdc-observation-extract-/);
+    expect(bundle.meta?.tag).toEqual([
+      {
+        code: '@aehrc/smart-forms-renderer:generated'
+      }
+    ]);
+    expect(bundle.timestamp).toBeDefined();
+    expect(bundle.entry).toHaveLength(2);
+    expect(bundle.entry?.[0].fullUrl).toBe('Observation/obs-1');
+    expect(bundle.entry?.[0].resource).toEqual(observations[0]);
+    expect(bundle.entry?.[0].request?.method).toBe('POST');
+    expect(bundle.entry?.[1].fullUrl).toBe('Observation/obs-2');
+  });
+
+  test('should handle empty observations array', () => {
+    const bundle = buildBundleFromObservationArray([]);
+
+    expect(bundle.resourceType).toBe('Bundle');
+    expect(bundle.type).toBe('transaction');
+    expect(bundle.entry).toEqual([]);
+  });
+
+  test('should generate fullUrl for observations without id', () => {
+    const observations: Observation[] = [
+      {
+        resourceType: 'Observation',
+        status: 'final',
+        code: {
+          coding: [
+            {
+              system: 'http://loinc.org',
+              code: '8302-2'
+            }
+          ]
+        }
+        // No id property
+      }
+    ];
+
+    const bundle = buildBundleFromObservationArray(observations);
+
+    expect(bundle.entry).toHaveLength(1);
+    expect(bundle.entry?.[0].fullUrl).toMatch(/^Observation\/obs-/);
   });
 });
