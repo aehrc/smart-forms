@@ -60,10 +60,10 @@ export const TextBasicResponse: Story = {
     questionnaire: basicQuestionnare,
     questionnaireResponse: basicQr
   }, play: async ({ canvasElement }) => {
-    const qrValue = basicQr.item?.[0].answer?.[0].valueString
-    const inputText = await getInputText(canvasElement, targetlinkId);
 
-    expect(qrValue).toBe(inputText)
+    const inputText = await getInputText(canvasElement, `[data-linkid=${targetlinkId}]`);
+
+    expect(inputText).toBe(targetText)
   }
 };
 

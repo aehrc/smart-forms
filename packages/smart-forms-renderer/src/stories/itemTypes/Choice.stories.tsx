@@ -26,7 +26,7 @@ import {
 
 import { chooseSelectOption, getInputText } from '@aehrc/testing-toolkit';
 import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
-import { expect, userEvent, waitFor, within, screen } from 'storybook/test';
+import { expect, within } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -64,7 +64,7 @@ const qrChoiceAnswerOptionBasicResponse = qrFactory([{
       valueCoding: {
         system: 'http://snomed.info/sct',
         code: '266919005',
-        display: 'Never smoked'
+        display: targetText
       }
     },
   ]
@@ -75,7 +75,7 @@ export const ChoiceAnswerOptionBasic: Story = {
     questionnaire: qChoiceAnswerOptionBasic
   },
   play: async ({ canvasElement }) => {
-    await chooseSelectOption(canvasElement, targetlinkId, targetText);
+    await chooseSelectOption(canvasElement, `[data-linkid=${targetlinkId}]`, targetText);
 
     const result = await getAnswers(targetlinkId);
 
@@ -93,16 +93,20 @@ export const ChoiceAnswerOptionBasicResponse: Story = {
     questionnaire: qChoiceAnswerOptionBasic,
     questionnaireResponse: qrChoiceAnswerOptionBasicResponse
   }, play: async ({ canvasElement }) => {
-    const qrText = qrChoiceAnswerOptionBasicResponse.item?.[0].answer?.[0].valueCoding?.display
-    const inputText = await getInputText(canvasElement, targetlinkId);
 
-    expect(qrText).toBe(inputText)
+    const inputText = await getInputText(canvasElement, `[data-linkid=${targetlinkId}]`);
+
+    expect(inputText).toBe(targetText)
   }
 };
 
+const valueSetTargetId = 'gender'
+const valueSetTargetText = 'Female'
+const valueSetTargetLinkId = 'q-item-choice-select-answer-value-set-field'
+
 const qValueSetBasic = questionnaireFactory([
   {
-    linkId: 'gender',
+    linkId: valueSetTargetId,
     text: 'Gender',
     type: 'choice',
     repeats: false,
@@ -116,16 +120,18 @@ export const ChoiceAnswerValueSetBasic: Story = {
   }, play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const input = await canvas.findByLabelText(/gender/i);
+    //ToDO: we need to wait selector ro work with it lower, now useless input do it 
 
-    await userEvent.click(input);
+    await chooseSelectOption(canvasElement, `[data-test=${valueSetTargetLinkId}]`, valueSetTargetText)
 
-    const option = await screen.findByText('Male');
+    const result = await getAnswers(valueSetTargetId);
+    expect(result).toHaveLength(1);
+    expect(result[0].valueCoding).toEqual(expect.objectContaining({
+      code: "female",
+      display: valueSetTargetText,
+      system: "http://hl7.org/fhir/administrative-gender",
+    }));
 
-    await userEvent.click(option);
-
-    await waitFor(() => {
-      expect(input).toHaveValue('Male');
-    });
   }
 };
 
@@ -148,8 +154,9 @@ export const ChoiceAnswerValueSetBasicResponse: Story = {
   }, play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const input = await canvas.findByLabelText(/gender/i);
-
-    expect(input).toHaveValue('Female');
+    //ToDO: we need to wait selector ro work with it lower, now useless input do it 
+    const inputText = await getInputText(canvasElement, `[data-test=${valueSetTargetLinkId}]`);
+    expect(inputText).toBe(valueSetTargetText)
   }
 };
 
@@ -185,8 +192,9 @@ export const ChoiceAnswerOptionsUsingInitialSelected: Story = {
   }, play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const input = await canvas.findByLabelText(/type/i);
-
-    expect(input).toHaveValue('Test-Selected');
+    //ToDO: we need to wait selector ro work with it lower, now useless input do it 
+    const inputText = await getInputText(canvasElement, `[data-linkid="awsHallucinationType"]`);
+    expect(inputText).toBe("Test-Selected")
   }
 };
 

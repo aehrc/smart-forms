@@ -1,4 +1,4 @@
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 
 export async function inputText(canvasElement: HTMLElement, linkId: string, mytext: string) {
   const questionElement = canvasElement.querySelector(`[data-linkid=${linkId}]`);
@@ -14,7 +14,7 @@ export async function inputText(canvasElement: HTMLElement, linkId: string, myte
 }
 
 export async function getInputText(canvasElement: HTMLElement, linkId: string) {
-  const questionElement = canvasElement.querySelector(`[data-linkid=${linkId}]`);
+  const questionElement = canvasElement.querySelector(linkId);
   const input =
     questionElement?.querySelector('input') ?? questionElement?.querySelector('textarea');
 
@@ -28,11 +28,13 @@ export async function chooseSelectOption(
   linkId: string,
   optionLabel: string
 ) {
-  const questionElement = canvasElement.querySelector(`[data-linkid=${linkId}]`);
+  const questionElement = await waitFor(() => canvasElement.querySelector(linkId));
+
+  console.log(questionElement, 8787);
   const input =
     questionElement?.querySelector('input') ?? questionElement?.querySelector('textarea');
 
-  if (!input) throw new Error(`There is no input inside [data-linkid=${linkId}] block`);
+  if (!input) throw new Error(`There is no input inside [${linkId} block`);
 
   fireEvent.focus(input);
   fireEvent.keyDown(input, { key: 'ArrowDown', code: 40 });
