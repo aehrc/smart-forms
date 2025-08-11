@@ -14,7 +14,14 @@ export async function inputText(canvasElement: HTMLElement, linkId: string, myte
 }
 
 export async function getInputText(canvasElement: HTMLElement, linkId: string) {
-  const questionElement = canvasElement.querySelector(linkId);
+  const selector = `[data-linkid="${linkId}"]`;
+
+  const questionElement = await waitFor(() => {
+    const el = canvasElement.querySelector(selector);
+    if (!el) throw new Error(`Element ${selector} not found  `);
+    return el;
+  });
+
   const input =
     questionElement?.querySelector('input') ?? questionElement?.querySelector('textarea');
 
@@ -23,23 +30,47 @@ export async function getInputText(canvasElement: HTMLElement, linkId: string) {
   return input.value;
 }
 
+// export async function chooseSelectOption(
+//   canvasElement: HTMLElement,
+//   linkId: string,
+//   optionLabel: string
+// ) {
+//   const questionElement = await waitFor(() =>
+//     canvasElement.querySelector(`[data-linkid=${linkId}]`)
+//   );
+
+//   console.log(questionElement, 8787);
+//   const input =
+//     questionElement?.querySelector('input') ?? questionElement?.querySelector('textarea');
+
+//   if (!input) throw new Error(`There is no input inside [data-linkid=${linkId}] block`);
+
+//   fireEvent.focus(input);
+//   fireEvent.keyDown(input, { key: 'ArrowDown', code: 40 });
+
+//   const option = await screen.findByText(optionLabel);
+
+//   fireEvent.click(option);
+// }
 export async function chooseSelectOption(
   canvasElement: HTMLElement,
   linkId: string,
   optionLabel: string
 ) {
-  const questionElement = await waitFor(() => canvasElement.querySelector(linkId));
+  const selector = `[data-linkid="${linkId}"]`;
 
-  console.log(questionElement, 8787);
-  const input =
-    questionElement?.querySelector('input') ?? questionElement?.querySelector('textarea');
+  const questionElement = await waitFor(() => {
+    const el = canvasElement.querySelector(selector);
+    if (!el) throw new Error(`Element ${selector} not found  `);
+    return el;
+  });
 
-  if (!input) throw new Error(`There is no input inside [${linkId} block`);
+  const input = questionElement.querySelector('input, textarea');
+  if (!input) throw new Error(`There is no input inside ${selector}`);
 
   fireEvent.focus(input);
-  fireEvent.keyDown(input, { key: 'ArrowDown', code: 40 });
+  fireEvent.keyDown(input, { key: 'ArrowDown', code: 'ArrowDown' });
 
   const option = await screen.findByText(optionLabel);
-
   fireEvent.click(option);
 }

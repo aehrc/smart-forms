@@ -34,7 +34,7 @@ import { expressionUpdateFadingGlow } from '../../ExpressionUpdateFadingGlow.sty
 
 interface ChoiceSelectAnswerValueSetFieldsProps
   extends PropsWithIsTabledRequiredAttribute,
-    PropsWithRenderingExtensionsAttribute {
+  PropsWithRenderingExtensionsAttribute {
   qItem: QuestionnaireItem;
   codings: Coding[];
   valueCoding: Coding | null;
@@ -110,6 +110,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
                 }
               }}
               data-test="q-item-choice-select-answer-value-set-field"
+              data-linkid={qItem.linkId}
             />
           )}
         />
