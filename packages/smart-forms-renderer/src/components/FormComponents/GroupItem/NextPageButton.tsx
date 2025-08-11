@@ -33,7 +33,7 @@ function NextPageButton(props: NextPageButtonProps) {
       aria-label="Next page"
       disabled={isDisabled}
       onClick={onNextPageClick}>
-      <ArrowForwardIcon fontSize="small" />
+      <ChevronRightIcon fontSize="small" />
     </SecondaryFab>
   );
 }
