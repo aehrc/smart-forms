@@ -5,8 +5,11 @@ This log documents significant changes for [@aehrc/smart-forms-renderer's alpha 
 
 This changelog only includes changes from version 1.0.0-alpha.1 onwards. For stable releases, refer to the main [CHANGELOG.md](CHANGELOG.md).
 
-
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
+
+## sdc-template-extract [1.0.7] - 2025-08-05
+#### Added
+- Allow handling of non-Error exceptions when evaluating FHIRPath expressions. Reason: fhirpath.js might not type exceptions as Error objects correctly.
 
 ## [1.0.0-alpha.89] - 2025-08-04
 #### Added
