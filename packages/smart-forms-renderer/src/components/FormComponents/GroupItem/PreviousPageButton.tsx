@@ -33,7 +33,7 @@ function PreviousPageButton(props: PreviousPageButtonProps) {
       aria-label="Previous page"
       disabled={isDisabled}
       onClick={onPreviousPageClick}>
-      <ArrowBackIcon fontSize="small" />
+      <ChevronLeftIcon fontSize="small" />
     </SecondaryFab>
   );
 }
