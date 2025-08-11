@@ -93,22 +93,22 @@ export function filterValueSetAnswersRecursive(
 
   const valueSetOptionCodings = valueSetPromises[linkId]?.valueSet?.expansion?.contains;
   if (qrItem.answer && valueSetOptionCodings) {
-    return { ...qrItem, answer: cleanAnswers(qrItem.answer, valueSetOptionCodings) };
+    return { ...qrItem, answer: filterAndNormaliseAnswers(qrItem.answer, valueSetOptionCodings) };
   }
 
   const answerOptionCodings = answerOptions[linkId]?.map((option) => option.valueCoding);
   if (qrItem.answer && answerOptionCodings) {
-    return { ...qrItem, answer: cleanAnswers(qrItem.answer, answerOptionCodings) };
+    return { ...qrItem, answer: filterAndNormaliseAnswers(qrItem.answer, answerOptionCodings) };
   }
 
   const containedValueSetOptionCodings = containedResources[linkId]?.expansion?.contains;
   if (qrItem.answer && containedValueSetOptionCodings) {
-    const cleanedAnswers = cleanAnswers(qrItem.answer, containedValueSetOptionCodings);
+    const cleanedAnswers = filterAndNormaliseAnswers(qrItem.answer, containedValueSetOptionCodings);
 
     return cleanedAnswers.length > 0
       ? {
           ...qrItem,
-          answer: cleanAnswers(qrItem.answer, containedValueSetOptionCodings)
+          answer: filterAndNormaliseAnswers(qrItem.answer, containedValueSetOptionCodings)
         }
       : null;
   }
@@ -117,32 +117,44 @@ export function filterValueSetAnswersRecursive(
   return qrItem;
 }
 
-function cleanAnswers(answers: QuestionnaireResponseItemAnswer[], options: (Coding | undefined)[]) {
+/**
+ * Normalises a list of QuestionnaireResponse answers by:
+ * - Filtering out valueCoding answers that are not present in the provided options
+ * - Converting valueString answers to valueCoding when matching codes are found in options
+ * - Preserving all other answers, including valueString answers that do not match any coding,
+ *   to support open-choice questions where arbitrary strings are allowed
+ */
+function filterAndNormaliseAnswers(
+  answers: QuestionnaireResponseItemAnswer[],
+  options: (Coding | undefined)[]
+) {
   const newAnswers: QuestionnaireResponseItemAnswer[] = [];
 
-  for (let answer of answers) {
-    if (answer.valueString) {
-      // attempt to obtain valueCodings in valueSet from valueString
-      answer = parseStringToCoding(answer.valueString, options);
-
-      // return as valueString if no valueCoding found
-      if (answer.valueString) {
-        newAnswers.push(answer);
-        continue;
+  for (const answer of answers) {
+    // answer is valueCoding, check if it is in options
+    if (answer.valueCoding) {
+      const valueCoding = codingIsInOptions(answer.valueCoding, options);
+      if (valueCoding) {
+        const newAnswer: QuestionnaireResponseItemAnswer = {
+          valueCoding: valueCoding
+        };
+        newAnswers.push(newAnswer);
       }
-    }
 
-    // add answer to newAnswers if not valueCoding
-    if (!answer.valueCoding) {
-      newAnswers.push(answer);
+      // Add continue here to skip to the next iteration if answer coding is not in options
       continue;
     }
 
-    // answer is valueCoding at this point, filter out codings that are not in valueSet
-    const valueCoding = codingIsInOptions(answer.valueCoding, options);
-    if (valueCoding) {
-      newAnswers.push(answer);
+    // answer is valueString, attempt to parse it to valueCoding
+    if (answer.valueString) {
+      // attempt to obtain valueCodings in valueSet from valueString
+      const newAnswer = parseStringToCoding(answer.valueString, options);
+      newAnswers.push(newAnswer);
+      continue;
     }
+
+    // fallback to adding the answer as is
+    newAnswers.push(answer);
   }
 
   return newAnswers;
@@ -157,11 +169,16 @@ function parseStringToCoding(
   }
 
   const coding = options.find((coding) => coding?.code === value);
-  return coding
-    ? {
-        valueCoding: getRelevantCodingProperties(coding)
-      }
-    : { valueString: value };
+
+  // code is found in options, return as valueCoding
+  if (coding) {
+    return {
+      valueCoding: getRelevantCodingProperties(coding)
+    };
+  }
+
+  // fallback to returning as valueString if no coding found
+  return { valueString: value };
 }
 
 function codingIsInOptions(answerCoding: Coding, options: (Coding | undefined)[]): Coding | null {

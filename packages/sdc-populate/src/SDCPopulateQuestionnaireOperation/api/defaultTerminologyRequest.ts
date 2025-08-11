@@ -14,39 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import type { ValueSetPromise } from '../interfaces/expressions.interface';
-import type { QuestionnaireItem } from 'fhir/r4';
-import type { FetchTerminologyCallback, FetchTerminologyRequestConfig } from '../interfaces';
 import { TERMINOLOGY_SERVER_URL } from '../../globals';
-
-export function getValueSetPromise(
-  qItem: QuestionnaireItem,
-  fullUrl: string,
-  valueSetPromiseMap: Record<string, ValueSetPromise>,
-  fetchTerminologyCallback?: FetchTerminologyCallback,
-  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
-) {
-  let valueSetUrl = fullUrl;
-  if (fullUrl.includes('ValueSet/$expand?url=')) {
-    const splitUrl = fullUrl.split('ValueSet/$expand?url=');
-    if (splitUrl[1]) {
-      valueSetUrl = splitUrl[1];
-    }
-  }
-
-  valueSetUrl = valueSetUrl.replace('|', '&version=');
-  const query = `ValueSet/$expand?url=${valueSetUrl}`;
-
-  const valueSetPromise =
-    fetchTerminologyCallback && fetchTerminologyRequestConfig
-      ? fetchTerminologyCallback(query, fetchTerminologyRequestConfig)
-      : defaultTerminologyRequest(query);
-
-  valueSetPromiseMap[qItem.linkId] = {
-    promise: valueSetPromise
-  };
-}
 
 const headers = {
   'Content-Type': 'application/fhir+json;charset=utf-8',

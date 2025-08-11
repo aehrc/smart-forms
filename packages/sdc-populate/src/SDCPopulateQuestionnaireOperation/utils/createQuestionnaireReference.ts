@@ -17,6 +17,10 @@
 
 import type { Questionnaire } from 'fhir/r4';
 
+/**
+ * Creates a canonical reference string for a Questionnaire resource.
+ * Uses url|version if available, otherwise falls back to Questionnaire/{id}.
+ */
 export function createQuestionnaireReference(questionnaire: Questionnaire) {
   // Use {url}|{version}
   if (questionnaire.url) {

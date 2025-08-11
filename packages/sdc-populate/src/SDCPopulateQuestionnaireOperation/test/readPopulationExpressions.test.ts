@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Commonwealth Scientific and Industrial Research
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,21 +15,15 @@
  * limitations under the License.
  */
 
-import { readPopulationExpressions } from '../SDCPopulateQuestionnaireOperation/utils/readPopulationExpressions';
 import type { Questionnaire } from 'fhir/r4';
-// @ts-ignore
-import Q715XFhirQuery from './resources/715-v.json';
+import { readPopulationExpressions } from '../utils/readPopulationExpressions';
+import { QTestFhirContext } from './resources/QTestFhirContext';
 
-describe('read initial expressions', () => {
-  const questionnaire = Q715XFhirQuery as Questionnaire;
+describe('readPopulationExpressions', () => {
+  const questionnaire = QTestFhirContext as Questionnaire;
   const { initialExpressions } = readPopulationExpressions(questionnaire);
 
-  test('getting an initial expression with a linkId key should return an object containing its expression', () => {
-    const prePopQuery0 = {
-      expression:
-        "%PrePopQuery0.entry.resource.select(relationship.coding.display + ' - ' + condition.code.coding.display).join(' ')"
-    };
-
-    expect(initialExpressions['cfdc0b14-7271-4145-b57a-9c1faffd6516']).toEqual(prePopQuery0);
+  it('should extract x-fhir-query variables ObsBodyHeight and ObsBodyWeight', () => {
+    expect(initialExpressions.q1.expression).toEqual('%ObsBodyHeight.toString()');
   });
 });

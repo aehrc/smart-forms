@@ -7,9 +7,16 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
-## sdc-template-extract [1.0.7] - 2025-08-05
+## sdc-template-extract [1.0.7] - 2025-08-11
 #### Added
 - Allow handling of non-Error exceptions when evaluating FHIRPath expressions. Reason: fhirpath.js might not type exceptions as Error objects correctly.
+
+## [1.0.0-alpha.90] - 2025-08-07
+#### Added
+- Updated sdc-populate to v4.6.2. Changes as follows:
+- Make error handling in fhirpath evaluations more lenient (remove e instanceof Error check), due to fhirpath.js async evaluation returning a string error message instead of an Error object which results in the error being muted on development builds (surprising it works on production).
+- Remove unnecessary (or even wrong) client-side sorting based on effectiveDates and recordedDate in Observation and Conditions respectively.
+- Reduce bundle size by removing tests and tets data from published package.
 
 ## [1.0.0-alpha.89] - 2025-08-04
 #### Added
