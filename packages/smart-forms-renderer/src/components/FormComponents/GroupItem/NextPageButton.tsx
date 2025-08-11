@@ -17,7 +17,7 @@
 
 import React from 'react';
 import { SecondaryFab } from '../Button.styles';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 interface NextPageButtonProps {
   isDisabled: boolean;
