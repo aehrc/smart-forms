@@ -12,5 +12,5 @@ doctor-storybook.log
 build-storybook.log
 
 # Ignore tests and test data
-src/tests
-src/test
+**/tests/**
+**/test/**
