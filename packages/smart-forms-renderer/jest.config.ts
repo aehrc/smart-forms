@@ -14,9 +14,25 @@ const config: JestConfigWithTsJest = {
   },
   testMatch: ['**/*.test.(ts|tsx)'],
   verbose: true,
-  globals: {
-    'ts-jest': {
-      tsconfig: './tsconfig.test.json'
+  coverageDirectory: 'coverage',
+  collectCoverageFrom: [
+    '**/*.{ts,tsx}',                 // all TypeScript files
+    '!**/*.config.{ts,tsx,js,jsx}',  // exclude config files
+    '!**/*.d.ts',                    // exclude declaration files
+    '!**/index.{ts,tsx}',            // exclude barrel files (e.g., index.ts)
+    '!**/tests/**',                  // exclude tests folder
+    '!**/test/**',                   // exclude test folder
+    '!**/stories/**',                // exclude test folder
+    '!**/theme/**',                  // exclude theme folder
+    '!**/components/**',             // exclude components folder (for now)
+    '!**/interfaces/**',             // exclude interfaces folder
+  ],
+  coverageThreshold: {
+    "global": {
+      "statements": 80,
+      "branches": 75,
+      "functions": 80,
+      "lines": 80
     }
   }
 };
