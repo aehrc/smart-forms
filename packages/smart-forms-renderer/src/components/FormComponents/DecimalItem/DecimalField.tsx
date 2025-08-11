@@ -21,7 +21,7 @@ import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/ren
 import { useRendererStylingStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
-import { expressionUpdateFadingGlow } from '../../ExpressionUpdateFadingGlow.styles';
+import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 
 interface DecimalFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -79,7 +79,6 @@ function DecimalField(props: DecimalFieldProps) {
       textFieldWidth={textFieldWidth}
       isTabled={isTabled}
       size="small"
-      sx={[expressionUpdateFadingGlow(calcExpUpdated)]}
       slotProps={{
         htmlInput: {
           inputMode: 'numeric',
@@ -89,6 +88,7 @@ function DecimalField(props: DecimalFieldProps) {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
             <InputAdornment position="end">
+              <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
               <ClearButtonAdornment
                 readOnly={readOnly}
                 onClear={() => {

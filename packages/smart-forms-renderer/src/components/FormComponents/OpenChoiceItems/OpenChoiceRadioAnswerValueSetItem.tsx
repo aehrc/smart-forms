@@ -29,8 +29,8 @@ import {
 import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
-  PropsWithItemPathAttribute,
   PropsWithIsTabledAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithRenderingExtensionsAttribute
@@ -70,7 +70,7 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
+  const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
   const openLabelText = getOpenLabelText(qItem);
 

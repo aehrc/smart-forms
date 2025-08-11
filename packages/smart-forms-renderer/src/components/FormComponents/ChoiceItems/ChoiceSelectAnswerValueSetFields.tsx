@@ -30,7 +30,7 @@ import { useRendererStylingStore } from '../../../stores';
 import { StyledRequiredTypography } from '../Item.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { isCodingDisabled } from '../../../utils/choice';
-import { expressionUpdateFadingGlow } from '../../ExpressionUpdateFadingGlow.styles';
+import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 
 interface ChoiceSelectAnswerValueSetFieldsProps
   extends PropsWithIsTabledRequiredAttribute,
@@ -80,15 +80,13 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
           onChange={(_, newValue) => onSelectChange(newValue)}
           openOnFocus
           autoHighlight
-          sx={[
-            expressionUpdateFadingGlow(expressionUpdated),
-            { maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }
-          ]}
+          sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }}
           size="small"
           disabled={readOnly && readOnlyVisualStyle === 'disabled'}
           readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
           renderInput={(params) => (
             <StandardTextField
+              multiline
               textFieldWidth={textFieldWidth}
               isTabled={isTabled}
               placeholder={entryFormat || displayPrompt}
@@ -100,6 +98,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
                   endAdornment: (
                     <>
                       {params.InputProps.endAdornment}
+                      <ExpressionUpdateFadingIcon fadeIn={expressionUpdated} disabled={readOnly} />
                       <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
                     </>
                   ),

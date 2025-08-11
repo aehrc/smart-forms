@@ -59,16 +59,3 @@ export function createInvalidWarningIssue(warningMessage: string): OperationOutc
     details: { text: warningMessage }
   };
 }
-
-/**
- * Create an OperationOutcome issue of severity "warning" and code "not-found" with a supplied warning message
- *
- * @author Sean Fong
- */
-export function createNotFoundWarningIssue(warningMessage: string): OperationOutcomeIssue {
-  return {
-    severity: 'warning',
-    code: 'not-found',
-    details: { text: warningMessage }
-  };
-}

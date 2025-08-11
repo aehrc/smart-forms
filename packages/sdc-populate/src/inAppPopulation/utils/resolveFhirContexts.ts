@@ -23,6 +23,10 @@ import type {
 } from '../../SDCPopulateQuestionnaireOperation';
 import { addTimeoutToPromise } from './populateQuestionnaire';
 
+/**
+ * Resolves FHIR context references by fetching each referenced resource asynchronously.
+ * Returns a map of context type to fetched FHIR resource, enabling context-aware population.
+ */
 export async function resolveFhirContextReferences(
   fhirContext: FhirContext[] | null,
   fetchResourceCallback: FetchResourceCallback,

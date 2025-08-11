@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import { getInputInvalidType, ValidationResult } from '../utils/validate';
 import type { QuestionnaireItem } from 'fhir/r4';
 import {
   getMaxQuantityValue,
@@ -29,13 +28,12 @@ import {
   getRegexValidation,
   getRequiredFeedback
 } from '../utils/extensions';
-import { structuredDataCapture } from 'fhir-sdc-helpers';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '../stores';
+import { structuredDataCapture } from 'fhir-sdc-helpers';
 
 function useValidationFeedback(
   qItem: QuestionnaireItem,
-  feedbackFromParent: string | undefined,
-  input: string
+  feedbackFromParent: string | undefined
 ): string {
   const invalidItems = useQuestionnaireResponseStore.use.invalidItems();
   const requiredItemsIsHighlighted = useQuestionnaireResponseStore.use.requiredItemsIsHighlighted();
@@ -61,104 +59,143 @@ function useValidationFeedback(
     return feedbackFromParent;
   }
 
+  // Feedback from current item from QR invalidItems
+  const invalidOperationOutcome = invalidItems[qItem.linkId];
+
+  // Invalid items are not present, so no feedback returned
+  if (!invalidOperationOutcome) {
+    return '';
+  }
+
+  // There is an invalidOperationOutcome but no issues, something is wrong with the validation - should never happen
+  if (!invalidOperationOutcome.issue || invalidOperationOutcome.issue.length === 0) {
+    return 'Input is invalid but no specific issues are found. Please report this at https://github.com/aehrc/smart-forms/issues.';
+  }
+
   // Required-based validation
   // User needs to manually invoke required items to be highlighted
   if (requiredItemsIsHighlighted) {
-    const invalidOperationOutcome = invalidItems[qItem.linkId];
-    if (invalidOperationOutcome) {
-      const requiredIssue = invalidOperationOutcome.issue.find(
-        (issue) => issue.code === 'required'
-      );
-      if (requiredIssue) {
-        const requiredFeedback = getRequiredFeedback(qItem);
-        return requiredFeedback ?? 'This field is required.';
-      }
+    const requiredIssue = invalidOperationOutcome.issue.find((issue) => issue.code === 'required');
+    if (requiredIssue) {
+      const requiredFeedback = getRequiredFeedback(qItem);
+      return requiredFeedback ?? 'This field is required.';
     }
   }
 
-  // Extension-based validation
-  const regexValidation = getRegexValidation(qItem);
-  const minLength = structuredDataCapture.getMinLength(qItem);
-  const maxLength = qItem.maxLength;
-  const maxDecimalPlaces = structuredDataCapture.getMaxDecimalPlaces(qItem);
-  const minValue = getMinValue(qItem);
-  const maxValue = getMaxValue(qItem);
-  const minQuantityValue = getMinQuantityValue(qItem); // gets the minQuantity value from the questionnaire item
-  const maxQuantityValue = getMaxQuantityValue(qItem); // gets the maxQuantity value from the questionnaire item
+  // Iterate through the issues but we only return the first validation feedback we find.
+  // Once that's resolved, the subsequent feedbacks will be returned.
+  for (const issue of invalidOperationOutcome.issue) {
+    const validationCode = issue?.details?.coding?.[0].code;
 
-  const invalidType = getInputInvalidType({
-    qItem,
-    input,
-    regexValidation,
-    minLength,
-    maxLength,
-    maxDecimalPlaces,
-    minValue,
-    maxValue,
-    minQuantityValue, // Min Quantity validation type
-    maxQuantityValue // Max Quantity validation type
-  });
+    // If no validation code is provided, something is wrong with the validation - should never happen
+    if (!validationCode) {
+      return 'Input is invalid but no specific issues are found. Please report this at https://github.com/aehrc/smart-forms/issues.';
+    }
 
-  if (!invalidType) {
-    return '';
-  } else {
-    //invalid type exists, so we proceed
+    // http://hl7.org/fhir/StructureDefinition/regex
+    if (validationCode === 'regex') {
+      const regexValidation = getRegexValidation(qItem);
+      if (regexValidation) {
+        return `Input should match the specified regex: ${regexValidation.expression}`;
+      }
+
+      return 'Input should match the specified regex.';
+    }
+
+    // http://hl7.org/fhir/StructureDefinition/minLength
+    if (validationCode === 'minLength') {
+      const minLength = structuredDataCapture.getMinLength(qItem);
+      if (typeof minLength === 'number') {
+        return `Enter at least ${minLength} characters.`;
+      }
+
+      return 'Input is below the minimum character limit.';
+    }
+
+    // Questionnaire.item.maxLength
+    if (validationCode === 'maxLength') {
+      const maxLength = qItem.maxLength;
+      if (typeof maxLength === 'number') {
+        return `Enter no more than ${maxLength} characters.`;
+      }
+
+      return 'Input is above the maximum character limit.';
+    }
+
+    // http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces
+    if (validationCode === 'maxDecimalPlaces') {
+      const maxDecimalPlaces = structuredDataCapture.getMaxDecimalPlaces(qItem);
+      if (typeof maxDecimalPlaces === 'number') {
+        return `Enter a number with no more than ${maxDecimalPlaces} decimal places.`;
+      }
+
+      return 'Input has too many decimal places.';
+    }
+
+    // http://hl7.org/fhir/StructureDefinition/minValue
+    if (validationCode === 'minValue') {
+      const minValueFeedback = getMinValueFeedback(qItem);
+      if (minValueFeedback) {
+        return minValueFeedback;
+      }
+
+      const minValue = getMinValue(qItem);
+      if (typeof minValue === 'string' || typeof minValue === 'number') {
+        return `Enter a value greater than or equal to ${minValue}.`;
+      }
+
+      return 'Input is less than the minimum value allowed.';
+    }
+
+    // http://hl7.org/fhir/StructureDefinition/maxValue
+    if (validationCode === 'maxValue') {
+      const maxValueFeedback = getMaxValueFeedback(qItem);
+      if (maxValueFeedback) {
+        return maxValueFeedback;
+      }
+
+      const maxValue = getMaxValue(qItem);
+      if (typeof maxValue === 'string' || typeof maxValue === 'number') {
+        return `Enter a value less than or equal to ${maxValue}.`;
+      }
+
+      return 'Input exceeds the maximum value allowed.';
+    }
+
+    // http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-minQuantity
+    if (validationCode === 'minQuantityValue') {
+      const minQuantityFeedback = getMinQuantityValueFeedback(qItem);
+      if (minQuantityFeedback) {
+        return minQuantityFeedback;
+      }
+
+      const minQuantityValue = getMinQuantityValue(qItem);
+      if (typeof minQuantityValue === 'number') {
+        return `Enter a quantity greater than or equal to ${minQuantityValue}.`;
+      }
+
+      return 'Input is less than the minimum quantity allowed.';
+    }
+
+    // http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-maxQuantity
+    if (validationCode === 'maxQuantityValue') {
+      const maxQuantityFeedback = getMaxQuantityValueFeedback(qItem);
+      if (maxQuantityFeedback) {
+        return maxQuantityFeedback;
+      }
+
+      const maxQuantityValue = getMaxQuantityValue(qItem);
+      if (typeof maxQuantityValue === 'number') {
+        return `Enter a quantity less than or equal to ${maxQuantityValue}.`;
+      }
+
+      return 'Input exceeds the maximum quantity allowed.';
+    }
+
+    // No specific issue code, continue to the next issue
   }
 
-  if (invalidType === ValidationResult.regex && regexValidation) {
-    return `Input should match the specified regex ${regexValidation.expression}`;
-  }
-
-  // Test min character limit
-  if (invalidType === ValidationResult.minLength && typeof minLength === 'number') {
-    return `Enter at least ${minLength} characters.`;
-  }
-
-  // Test max character limit
-  if (invalidType === ValidationResult.maxLength && typeof maxLength === 'number') {
-    return `Input exceeds maximum character limit of ${maxLength}.`;
-  }
-
-  // Test max decimal places limit
-  if (invalidType === ValidationResult.maxDecimalPlaces && typeof maxDecimalPlaces === 'number') {
-    return `Input exceeds maximum decimal places limit of ${maxDecimalPlaces}.`;
-  }
-
-  // Test min value
-  if (
-    invalidType === ValidationResult.minValue &&
-    (typeof minValue === 'string' || typeof minValue === 'number')
-  ) {
-    const minValueFeedback = getMinValueFeedback(qItem);
-    return minValueFeedback ?? `Input is lower than the expected minimum value of ${minValue}.`;
-  }
-
-  // Test max value
-  if (
-    invalidType === ValidationResult.maxValue &&
-    (typeof maxValue === 'string' || typeof maxValue === 'number')
-  ) {
-    const maxValueFeedback = getMaxValueFeedback(qItem);
-    return maxValueFeedback ?? `Input exceeds permitted maximum value of ${maxValue}.`;
-  }
-
-  // Test min quantity
-  if (invalidType === ValidationResult.minQuantityValue && typeof minQuantityValue === 'number') {
-    const minQuantityFeedback = getMinQuantityValueFeedback(qItem); // get the feedback for minQuantity if it exists
-    return (
-      minQuantityFeedback ??
-      `Input is lower than the expected minimum quantity value of ${minQuantityValue}.`
-    );
-  }
-
-  // Test max quantity
-  if (invalidType === ValidationResult.maxQuantityValue && typeof maxQuantityValue === 'number') {
-    const maxQuantityFeedback = getMaxQuantityValueFeedback(qItem); // get the feedback for maxQuantity if it exists
-    return (
-      maxQuantityFeedback ??
-      `Input exceeds permitted maximum quantity value of ${maxQuantityValue}.`
-    );
-  }
+  // No specific issue code from all issues, fallback to empty string
   return '';
 }
 

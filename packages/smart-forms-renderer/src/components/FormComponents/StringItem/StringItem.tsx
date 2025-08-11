@@ -82,7 +82,7 @@ function StringItem(props: StringItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, feedbackFromParent, input);
+  const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
   // Provides a way to hide the feedback when the user is typing
   const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
@@ -180,7 +180,7 @@ function StringItem(props: StringItemProps) {
             isTabled={isTabled}
           />
         }
-        feedback={feedback}
+        feedback={showFeedback ? feedback : undefined}
       />
     </FullWidthFormComponentBox>
   );

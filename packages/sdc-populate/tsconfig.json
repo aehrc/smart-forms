@@ -23,5 +23,5 @@
     "noUnusedParameters": true
   },
   "include": ["src"],
-  "exclude": ["src/test", "src/**/*.test.ts", "lib", "dist"]
+  "exclude": ["src/test-data-shared", "src/**/*.test.ts", "lib", "dist"]
 }

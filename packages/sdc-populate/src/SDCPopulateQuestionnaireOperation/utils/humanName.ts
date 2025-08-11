@@ -1,5 +1,9 @@
 import type { HumanName } from 'fhir/r4';
 
+/**
+ * Returns a display name string from a FHIR HumanName array.
+ * Uses the text field if available, otherwise constructs from prefix, given, and family.
+ */
 export function getDisplayName(name: HumanName[] | undefined): string {
   if (name?.[0]?.text) {
     return `${name?.[0].text ?? null}`;

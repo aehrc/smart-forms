@@ -22,14 +22,14 @@ import type { LaunchContext } from './populate.interface';
 import type { EnableWhenExpressions, EnableWhenItems } from './enableWhen.interface';
 import type { CalculatedExpression } from './calculatedExpression.interface';
 import type { AnswerExpression } from './answerExpression.interface';
-import type { Coding, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import type { Coding, QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type { InitialExpression } from './initialExpression.interface';
 import type { TargetConstraint } from './targetConstraint.interface';
 import type { ProcessedValueSet } from './valueSet.interface';
 import type { AnswerOptionsToggleExpression } from './answerOptionsToggleExpression.interface';
 
 export interface QuestionnaireModel {
-  itemTypes: Record<string, string>;
+  itemMap: Record<string, Omit<QuestionnaireItem, 'item'>>;
   itemPreferredTerminologyServers: Record<string, string>;
   tabs: Tabs;
   pages: Pages;
