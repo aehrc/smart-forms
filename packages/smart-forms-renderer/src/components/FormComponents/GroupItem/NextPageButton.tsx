@@ -16,8 +16,8 @@
  */
 
 import React from 'react';
-import Iconify from '../../Iconify/Iconify';
 import { SecondaryFab } from '../Button.styles';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 interface NextPageButtonProps {
   isDisabled: boolean;
@@ -33,7 +33,7 @@ function NextPageButton(props: NextPageButtonProps) {
       aria-label="Next page"
       disabled={isDisabled}
       onClick={onNextPageClick}>
-      <Iconify icon="material-symbols:chevron-right-rounded" />
+      <ArrowForwardIcon fontSize="small" />
     </SecondaryFab>
   );
 }

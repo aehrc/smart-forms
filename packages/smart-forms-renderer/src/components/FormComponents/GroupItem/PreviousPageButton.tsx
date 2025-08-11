@@ -16,8 +16,8 @@
  */
 
 import React from 'react';
-import Iconify from '../../Iconify/Iconify';
 import { SecondaryFab } from '../Button.styles';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 interface PreviousPageButtonProps {
   isDisabled: boolean;
@@ -33,7 +33,7 @@ function PreviousPageButton(props: PreviousPageButtonProps) {
       aria-label="Previous page"
       disabled={isDisabled}
       onClick={onPreviousPageClick}>
-      <Iconify icon="material-symbols:chevron-left-rounded" />
+      <ArrowBackIcon fontSize="small" />
     </SecondaryFab>
   );
 }
