@@ -18,8 +18,8 @@
 import { memo, useEffect } from 'react';
 import { Box, Button, Container, Fade, Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import Iconify from '../../../../components/Iconify/Iconify.tsx';
 import type { Questionnaire } from 'fhir/r4';
+import MenuIcon from '@mui/icons-material/Menu';
 
 interface FormInvalidProps {
   questionnaire?: Questionnaire;
@@ -57,7 +57,7 @@ const FormInvalid = memo(function FormInvalid(props: FormInvalidProps) {
           {pathName !== '/playground' ? (
             <Button
               variant="contained"
-              startIcon={<Iconify icon="material-symbols:arrow-back" />}
+              startIcon={<MenuIcon />}
               onClick={() => {
                 navigate('/dashboard/questionnaires');
               }}>
