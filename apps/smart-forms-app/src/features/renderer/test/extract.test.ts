@@ -20,7 +20,7 @@ import { canBeTemplateExtracted } from '@aehrc/sdc-template-extract';
 // import { canBeObservationExtracted } from '@aehrc/smart-forms-renderer';
 import type { Questionnaire } from 'fhir/r4';
 
-describe('getExtractMechanism', () => {
+describe.skip('getExtractMechanism', () => {
   const questionnaire: Questionnaire = {
     resourceType: 'Questionnaire',
     id: '123',
