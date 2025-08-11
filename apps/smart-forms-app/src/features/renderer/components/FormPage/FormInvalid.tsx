@@ -19,7 +19,7 @@ import { memo, useEffect } from 'react';
 import { Box, Button, Container, Fade, Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import type { Questionnaire } from 'fhir/r4';
-import MenuIcon from '@mui/icons-material/Menu';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 interface FormInvalidProps {
   questionnaire?: Questionnaire;
@@ -57,7 +57,7 @@ const FormInvalid = memo(function FormInvalid(props: FormInvalidProps) {
           {pathName !== '/playground' ? (
             <Button
               variant="contained"
-              startIcon={<MenuIcon />}
+              startIcon={<ArrowBackIcon />}
               onClick={() => {
                 navigate('/dashboard/questionnaires');
               }}>
