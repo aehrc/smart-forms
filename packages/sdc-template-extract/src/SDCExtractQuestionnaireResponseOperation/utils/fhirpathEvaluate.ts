@@ -36,13 +36,11 @@ export function fhirPathEvaluate(params: FhirPathEvaluateParams): FhirPathEvalRe
       }
     );
   } catch (e) {
-    if (e instanceof Error) {
-      console.warn(
-        `SDC-template-extract error:\nFHIRPath evaluation failed for ${path}.\n\nDetails below: ` +
-          e
-      );
-      warnings.push(createInvalidWarningIssue(e.message));
-    }
+    // e is not thrown as an Error type in fhirpath.js, so we can't use `if (e instanceof Error)` here
+    console.warn(
+      `SDC-template-extract error:\nFHIRPath evaluation failed for ${path}.\n\nDetails below: ` + e
+    );
+    warnings.push(createInvalidWarningIssue(String(e)));
   }
 
   // Return an empty array if evaluation fails
