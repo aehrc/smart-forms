@@ -37,8 +37,17 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-const targetText = 'Never smoked';
 const targetlinkId = 'smoking-status';
+const targetCoding = {
+  system: 'http://snomed.info/sct',
+  code: '266919005',
+  display: 'Never smoked'
+}
+const notTargetCoding = {
+  system: 'http://snomed.info/sct',
+  code: '77176002',
+  display: 'Smoker'
+}
 const qChoiceAnswerOptionBasic = questionnaireFactory([
   {
     linkId: targetlinkId,
@@ -46,11 +55,10 @@ const qChoiceAnswerOptionBasic = questionnaireFactory([
     text: 'Smoking status',
     answerOption: [
       {
-        valueCoding: {
-          system: 'http://snomed.info/sct',
-          code: '266919005',
-          display: 'Never smoked'
-        }
+        valueCoding: targetCoding
+      },
+      {
+        valueCoding: notTargetCoding
       },
     ]
   }
@@ -58,11 +66,10 @@ const qChoiceAnswerOptionBasic = questionnaireFactory([
 const qrChoiceAnswerOptionBasicResponse = qrFactory([{
   linkId: targetlinkId, answer: [
     {
-      valueCoding: {
-        system: 'http://snomed.info/sct',
-        code: '266919005',
-        display: targetText
-      }
+      valueCoding: targetCoding
+    },
+    {
+      valueCoding: notTargetCoding
     },
   ]
 }])
@@ -72,16 +79,12 @@ export const ChoiceAnswerOptionBasic: Story = {
     questionnaire: qChoiceAnswerOptionBasic
   },
   play: async ({ canvasElement }) => {
-    await chooseSelectOption(canvasElement, targetlinkId, targetText);
+    await chooseSelectOption(canvasElement, targetlinkId, targetCoding.display);
 
     const result = await getAnswers(targetlinkId);
 
     expect(result).toHaveLength(1);
-    expect(result[0].valueCoding).toEqual(expect.objectContaining({
-      code: "266919005",
-      display: targetText,
-      system: "http://snomed.info/sct",
-    }));
+    expect(result[0].valueCoding).toEqual(expect.objectContaining(targetCoding));
   }
 };
 
@@ -92,12 +95,17 @@ export const ChoiceAnswerOptionBasicResponse: Story = {
   }, play: async ({ canvasElement }) => {
     const inputText = await getInputText(canvasElement, targetlinkId);
 
-    expect(inputText).toBe(targetText)
+    expect(inputText).toBe(targetCoding.display)
   }
 };
 
 const valueSetTargetId = 'gender'
-const valueSetTargetText = 'Female'
+
+const valueSetTargetCoding = {
+  code: "female",
+  display: "Female",
+  system: "http://hl7.org/fhir/administrative-gender",
+}
 
 const qValueSetBasic = questionnaireFactory([
   {
@@ -112,39 +120,36 @@ const qValueSetBasic = questionnaireFactory([
 export const ChoiceAnswerValueSetBasic: Story = {
   args: {
     questionnaire: qValueSetBasic
-  }, play: async ({ canvasElement }) => {
-    await chooseSelectOption(canvasElement, valueSetTargetId, valueSetTargetText)
-
+  },
+  play: async ({ canvasElement }) => {
+    await chooseSelectOption(
+      canvasElement,
+      valueSetTargetId,
+      valueSetTargetCoding.display
+    );
     const result = await getAnswers(valueSetTargetId);
     expect(result).toHaveLength(1);
-    expect(result[0].valueCoding).toEqual(expect.objectContaining({
-      code: "female",
-      display: valueSetTargetText,
-      system: "http://hl7.org/fhir/administrative-gender",
-    }));
-
+    expect(result[0].valueCoding).toEqual(
+      expect.objectContaining(valueSetTargetCoding)
+    );
   }
 };
+
 
 export const ChoiceAnswerValueSetBasicResponse: Story = {
   args: {
     questionnaire: qValueSetBasic,
-    questionnaireResponse: qrFactory([{
-      linkId: 'gender',
-      text: 'Gender',
-      answer: [
-        {
-          valueCoding: {
-            system: 'http://hl7.org/fhir/administrative-gender',
-            code: 'female',
-            display: 'Female'
-          }
-        }
-      ]
-    }])
-  }, play: async ({ canvasElement }) => {
+    questionnaireResponse: qrFactory([
+      {
+        linkId: 'gender',
+        text: 'Gender',
+        answer: [{ valueCoding: valueSetTargetCoding }]
+      }
+    ])
+  },
+  play: async ({ canvasElement }) => {
     const inputText = await getInputText(canvasElement, valueSetTargetId);
-    expect(inputText).toBe(valueSetTargetText)
+    expect(inputText).toBe(valueSetTargetCoding.display);
   }
 };
 
@@ -165,7 +170,6 @@ export const ChoiceAnswerOptionsUsingInitialSelected: Story = {
               display: 'None'
             }
           },
-
           {
             valueCoding: {
               code: 'T',
