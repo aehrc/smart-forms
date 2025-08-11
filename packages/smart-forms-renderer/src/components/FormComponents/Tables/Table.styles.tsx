@@ -29,9 +29,9 @@ export const HeaderTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 export const StandardTableCell = styled(TableCell, {
-  shouldForwardProp: (prop) => prop !== 'numOfColumns'
-})<{ numOfColumns: number }>(({ numOfColumns }) => ({
-  width: `${100 / numOfColumns}%`,
+  shouldForwardProp: (prop) => prop !== 'numOfColumns' && prop !== 'customWidthValue'
+})<{ numOfColumns: number; customWidthValue?: string }>(({ numOfColumns, customWidthValue }) => ({
+  width: customWidthValue ?? `${100 / numOfColumns}%`,
   paddingLeft: 4,
   paddingRight: 4
 }));
@@ -49,9 +49,12 @@ export const GridTextTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 export const GridAnswerTableCell = styled(TableCell, {
-  shouldForwardProp: (prop) => prop !== 'numOfColumns'
-})<{ numOfColumns: number }>(({ numOfColumns }) => ({
-  width: `${80 / numOfColumns}%`,
+  shouldForwardProp: (prop) => prop !== 'numOfColumns' && prop !== 'customWidthValue'
+})<{
+  numOfColumns: number;
+  customWidthValue?: string;
+}>(({ numOfColumns, customWidthValue }) => ({
+  width: customWidthValue ?? `${80 / numOfColumns}%`,
   paddingLeft: 5,
   paddingRight: 5
 }));

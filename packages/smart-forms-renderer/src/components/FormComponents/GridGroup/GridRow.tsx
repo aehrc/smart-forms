@@ -33,6 +33,7 @@ import useHidden from '../../../hooks/useHidden';
 import { extendItemPath } from '../../../utils/itemPath';
 import type { ItemPath } from '../../../interfaces/itemPath.interface';
 import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
+import { getColumnWidth } from '../../../utils/extensions';
 
 interface GridRowProps
   extends PropsWithQrItemChangeHandler,
@@ -112,8 +113,13 @@ function GridRow(props: GridRowProps) {
           return null;
         }
 
+        const customWidthValue = getColumnWidth(cellQItem);
+
         return (
-          <GridAnswerTableCell key={colIndex} numOfColumns={numOfColumns}>
+          <GridAnswerTableCell
+            key={colIndex}
+            numOfColumns={numOfColumns}
+            customWidthValue={customWidthValue}>
             <Box display="flex" alignItems="center" justifyContent="center">
               <SingleItem
                 qItem={cellQItem}

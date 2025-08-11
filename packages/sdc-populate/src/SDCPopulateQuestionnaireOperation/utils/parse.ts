@@ -40,10 +40,22 @@ export function parseItemInitialToAnswer(
   }
 
   if (typeof initial.valueDate === 'string') {
+
     return { valueDate: initial.valueDate };
   }
-
   if (typeof initial.valueDateTime === 'string') {
+    console.log('In the Date time');
+
+    const dateTime = initial.valueDateTime;
+    const [datePart, timePart] = dateTime.split('T');
+    if (!datePart || datePart.trim() === '') {
+      // If date is empty, set both date and time to empty
+      return { valueDateTime: '' };
+    }
+    return { valueDateTime: dateTime };
+  }
+  if (typeof initial.valueDateTime === 'string') {
+    console.log(`Displaying date time ${initial.valueDateTime}`);
     return { valueDateTime: initial.valueDateTime };
   }
 
@@ -117,10 +129,14 @@ export function parseValueToAnswer(
 
   // Value is string at this point
   if (qItem.type === 'date' && checkIsDateTime(value)) {
+    console.log('In the Date time');
+
     return { valueDate: convertDateTimeToDate(value) };
   }
 
   if (qItem.type === 'dateTime' && checkIsDateTime(value)) {
+    console.log('In the Date time2');
+
     return { valueDateTime: value };
   }
 

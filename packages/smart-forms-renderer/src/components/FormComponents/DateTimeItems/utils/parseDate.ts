@@ -99,9 +99,12 @@ export function getNumOfSeparators(valueDate: string, seperator: string) {
  * @author Sean Fong
  */
 export function parseFhirDateToDisplayDate(fhirDate: string): {
+
   displayDate: string;
   dateParseFail?: boolean;
 } {
+
+  console.log(`About to parse FHIR Date of ${fhirDate}`);
   if (fhirDate.length === 0) {
     return { displayDate: '' };
   }
