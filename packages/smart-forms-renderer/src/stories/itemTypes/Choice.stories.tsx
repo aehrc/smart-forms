@@ -68,9 +68,6 @@ const qrChoiceAnswerOptionBasicResponse = qrFactory([{
     {
       valueCoding: targetCoding
     },
-    {
-      valueCoding: notTargetCoding
-    },
   ]
 }])
 
