@@ -150,6 +150,17 @@ export const ChoiceAnswerValueSetBasicResponse: Story = {
   }
 };
 
+const initialTargetCoding = {
+  code: 'T',
+  system: 'http://fhir.medirecords.com/CodeSystem/awsHallucinationType',
+  display: 'Test-Selected'
+}
+const initialNotTargetCoding = {
+  code: 'N',
+  system: 'http://fhir.medirecords.com/CodeSystem/awsHallucinationType',
+  display: 'None'
+}
+
 // Story for ChoiceSelectAnswerOptions Using InitialSelected field set
 export const ChoiceAnswerOptionsUsingInitialSelected: Story = {
   args: {
@@ -161,18 +172,10 @@ export const ChoiceAnswerOptionsUsingInitialSelected: Story = {
         repeats: false,
         answerOption: [
           {
-            valueCoding: {
-              code: 'N',
-              system: 'http://fhir.medirecords.com/CodeSystem/awsHallucinationType',
-              display: 'None'
-            }
+            valueCoding: initialNotTargetCoding,
           },
           {
-            valueCoding: {
-              code: 'T',
-              system: 'http://fhir.medirecords.com/CodeSystem/awsHallucinationType',
-              display: 'Test-Selected'
-            },
+            valueCoding: initialTargetCoding,
             initialSelected: true
           }
         ]
@@ -180,7 +183,7 @@ export const ChoiceAnswerOptionsUsingInitialSelected: Story = {
     ]),
   }, play: async ({ canvasElement }) => {
     const inputText = await getInputText(canvasElement, "awsHallucinationType");
-    expect(inputText).toBe("Test-Selected")
+    expect(inputText).toBe(initialTargetCoding.display)
   }
 };
 
