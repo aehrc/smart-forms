@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     # Run this regardless of "if: github.actor != 'dependabot[bot]'" condition on other jobs to see if dependabot PRs breaks the build
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
@@ -33,7 +33,7 @@ jobs:
     # Conditional logic to skip if workflow is triggered by Dependabot
     if: github.actor != 'dependabot[bot]'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
@@ -50,7 +50,7 @@ jobs:
     # Conditional logic to skip if workflow is triggered by Dependabot
     if: github.actor != 'dependabot[bot]'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
@@ -72,7 +72,7 @@ jobs:
     # Conditional logic to skip if workflow is triggered by Dependabot
     if: github.actor != 'dependabot[bot]'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
@@ -90,7 +90,7 @@ jobs:
     # Conditional logic to skip if workflow is triggered by Dependabot
     if: github.actor != 'dependabot[bot]'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Use Node.js 20.x
         uses: actions/setup-node@v4
@@ -119,7 +119,7 @@ jobs:
     # Conditional logic to skip if workflow is triggered by Dependabot
     if: github.actor != 'dependabot[bot]'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Use Node.js 20.x
         uses: actions/setup-node@v4
@@ -149,7 +149,7 @@ jobs:
     # Conditional logic to skip if workflow is triggered by Dependabot
     if: github.actor != 'dependabot[bot]'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
@@ -185,7 +185,7 @@ jobs:
     # Conditional logic to skip if workflow is triggered by Dependabot
     if: github.actor != 'dependabot[bot]'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
