@@ -38,11 +38,11 @@ import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import type { TargetConstraint } from '../interfaces/targetConstraint.interface';
 import { evaluateInitialTargetConstraints } from './targetConstraint';
 import type { Variables } from '../interfaces';
-import { getRelevantCodingProperties } from './valueSet';
 import type { ProcessedValueSet } from '../interfaces/valueSet.interface';
 import { evaluateInitialDynamicValueSets } from './parameterisedValueSets';
 import type { AnswerOptionsToggleExpression } from '../interfaces/answerOptionsToggleExpression.interface';
 import { evaluateInitialAnswerOptionsToggleExpressions } from './answerOptionsToggleExpressions';
+import { getRelevantCodingProperties } from './choice';
 
 /**
  * Initialise a questionnaireResponse from a given questionnaire

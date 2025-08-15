@@ -84,6 +84,64 @@ jobs:
         run: npm run test -w packages/smart-forms-renderer
       - uses: codecov/codecov-action@v4
 
+  jest-populate-tests:
+    name: Jest Tests - Populate
+    runs-on: ubuntu-latest
+    # Conditional logic to skip if workflow is triggered by Dependabot
+    if: github.actor != 'dependabot[bot]'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run jest tests
+        run: npm run test -w packages/sdc-populate
+      - uses: codecov/codecov-action@v4
+
+      - name: Upload sdc-populate coverage report to GitHub
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: sdc-populate-coverage-report
+          path: packages/sdc-populate/coverage
+          retention-days: 30
+
+  jest-assemble-tests:
+    name: Jest Tests - Assemble
+    runs-on: ubuntu-latest
+    # Conditional logic to skip if workflow is triggered by Dependabot
+    if: github.actor != 'dependabot[bot]'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run jest tests
+        run: npm run test -w packages/sdc-assemble
+      - uses: codecov/codecov-action@v4
+
+      - name: Upload sdc-assemble coverage report to GitHub
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: sdc-assemble-coverage-report
+          path: packages/sdc-assemble/coverage
+          retention-days: 30
+
   jest-extract-tests:
     name: Jest Tests - Template-Based Extract
     runs-on: ubuntu-latest
@@ -91,16 +149,27 @@ jobs:
     if: github.actor != 'dependabot[bot]'
     steps:
       - uses: actions/checkout@v4
+
       - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
+
       - name: Install dependencies
         run: npm ci
+
       - name: Run jest tests
         run: npm run test -w packages/sdc-template-extract
       - uses: codecov/codecov-action@v4
+
+      - name: Upload sdc-template-extract coverage report to GitHub
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: sdc-template-extract-coverage-report
+          path: packages/sdc-template-extract/coverage
+          retention-days: 30
 
   playwright-test:
     name: Playwright Tests

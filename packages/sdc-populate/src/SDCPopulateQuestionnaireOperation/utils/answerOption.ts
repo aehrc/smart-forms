@@ -19,7 +19,8 @@ import type { QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer } f
 import { getRelevantCodingProperties } from './codingProperties';
 
 /**
- * Find and return corresponding answerOption based on selected answer in form
+ * Find and return corresponding answerOption based on selected answer in form.
+ * Matches by code, display, string, or integer value.
  *
  * @author Sean Fong
  */
@@ -30,6 +31,13 @@ export function findInAnswerOptions(
   for (const option of options) {
     if (option.valueCoding) {
       if (str === option.valueCoding.code) {
+        return {
+          valueCoding: getRelevantCodingProperties(option.valueCoding)
+        };
+      }
+
+      // handle case where valueCoding.code is not present
+      if (str === option.valueCoding.display) {
         return {
           valueCoding: getRelevantCodingProperties(option.valueCoding)
         };

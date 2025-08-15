@@ -23,9 +23,9 @@ function useTimeValidation(
   timeInput: string,
   periodInput: string,
   parseFail: boolean = false
-): { timeFeedback: string | null; is24HourNotation: boolean } {
+): { timeFeedback: string; is24HourNotation: boolean } {
   if (timeInput === '') {
-    return { timeFeedback: null, is24HourNotation: false };
+    return { timeFeedback: '', is24HourNotation: false };
   }
 
   if (timeInput.includes('.')) {
@@ -57,7 +57,7 @@ function useTimeValidation(
       return { timeFeedback: 'Input is an invalid time.', is24HourNotation: false };
     }
 
-    return { timeFeedback: null, is24HourNotation };
+    return { timeFeedback: '', is24HourNotation };
   }
 
   if (parseFail) {

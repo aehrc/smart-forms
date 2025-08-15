@@ -18,8 +18,12 @@
 import type { Coding } from 'fhir/r4';
 import type { CodeSystemLookupPromise } from '../interfaces/expressions.interface';
 import type { FetchTerminologyCallback, FetchTerminologyRequestConfig } from '../interfaces';
-import { defaultTerminologyRequest } from './expandValueset';
+import { defaultTerminologyRequest } from './defaultTerminologyRequest';
 
+/**
+ * Adds a promise for CodeSystem $lookup to the lookup map for the given coding.
+ * Uses either a custom callback or the default request. This enables async display resolution for codes.
+ */
 export function getCodeSystemLookupPromise(
   coding: Coding,
   codeSystemLookupPromiseMap: Record<string, CodeSystemLookupPromise>,
@@ -49,12 +53,15 @@ export interface DisplayParameter {
   valueString: string;
 }
 
+/**
+ * Checks if the response is a valid CodeSystem $lookup Parameters result.
+ * Ensures the response contains a display parameter for code display resolution.
+ */
 export function lookupResponseIsValid(response: any): response is LookupResponse {
-  return (
+  return !!(
     response &&
     response.resourceType === 'Parameters' &&
-    response.parameter &&
-    response.parameter.find((p: any) => p.name === 'display') &&
-    response.parameter.find((p: any) => p.name === 'display').valueString
+    Array.isArray(response.parameter) &&
+    response.parameter.find((p: any) => p.name === 'display' && p.valueString)
   );
 }

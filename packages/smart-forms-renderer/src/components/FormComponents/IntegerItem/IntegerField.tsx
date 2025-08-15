@@ -21,7 +21,7 @@ import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/ren
 import { useRendererStylingStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
-import { expressionUpdateFadingGlow } from '../../ExpressionUpdateFadingGlow.styles';
+import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 
 interface IntegerFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -80,7 +80,6 @@ function IntegerField(props: IntegerFieldProps) {
       textFieldWidth={textFieldWidth}
       isTabled={isTabled}
       size="small"
-      sx={[expressionUpdateFadingGlow(calcExpUpdated)]}
       slotProps={{
         htmlInput: {
           inputMode: 'numeric',
@@ -90,6 +89,7 @@ function IntegerField(props: IntegerFieldProps) {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
             <InputAdornment position={'end'}>
+              <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
               <ClearButtonAdornment
                 readOnly={readOnly}
                 onClear={() => {

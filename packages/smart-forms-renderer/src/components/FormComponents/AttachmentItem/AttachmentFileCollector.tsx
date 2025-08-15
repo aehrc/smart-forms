@@ -19,7 +19,8 @@ import type { ChangeEvent } from 'react';
 import React, { memo, useCallback } from 'react';
 import { Box, IconButton, Stack, Tooltip } from '@mui/material';
 import AttachmentFileDropBox from './AttachmentFileDropBox';
-import Iconify from '../../Iconify/Iconify';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 
 interface AttachmentFileCollectorProps extends PropsWithIsTabledRequiredAttribute {
@@ -73,7 +74,7 @@ const AttachmentFileCollector = memo(function AttachmentFileCollector(
         <Box>
           <Tooltip title="Attach file">
             <IconButton component="label" size="small" disabled={readOnly}>
-              <Iconify icon="fluent:attach-24-regular" />
+              <AttachFileIcon fontSize="small" />
               <input type="file" hidden onChange={handleAttachFile} />
             </IconButton>
           </Tooltip>
@@ -84,7 +85,7 @@ const AttachmentFileCollector = memo(function AttachmentFileCollector(
                 color="error"
                 size="small"
                 onClick={() => onUploadFile(null)}>
-                <Iconify icon="ant-design:delete" />
+                <DeleteOutlineIcon fontSize="small" />
               </IconButton>
             </span>
           </Tooltip>

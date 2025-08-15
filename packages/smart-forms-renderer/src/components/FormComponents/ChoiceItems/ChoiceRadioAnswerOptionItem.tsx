@@ -77,7 +77,7 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks - there's no string-based input here
-  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
+  const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
   const options = qItem.answerOption ?? [];
 
