@@ -64,6 +64,7 @@ export async function assemble(
     rootQuestionnaire,
     totalCanonicals,
     issues,
+    true, 
     fetchQuestionnaireCallback,
     fetchQuestionnaireRequestConfig
   );
@@ -97,6 +98,7 @@ export async function assemble(
  * @param rootQuestionnaire - The root Questionnaire resource
  * @param totalCanonicals - An array of all the recorded canonical urls within the root Questionnaire recursively
  * @param issues - A list of OperationOutcome warnings
+ * @param isRoot - A boolean indicating if the current Questionnaire is the root Questionnaire
  * @param fetchQuestionnaireCallback - A callback function defined by the implementer to fetch Questionnaire resources by canonical url
  * @param fetchQuestionnaireRequestConfig - A request configuration object to be passed to the callback function
  * @returns An assembled Questionnaire resource or an OperationOutcome error
@@ -107,6 +109,7 @@ async function assembleQuestionnaire(
   rootQuestionnaire: Questionnaire,
   totalCanonicals: string[],
   issues: OperationOutcomeIssue[],
+  isRoot: boolean,
   fetchQuestionnaireCallback: FetchQuestionnaireCallback,
   fetchQuestionnaireRequestConfig: any
 ): Promise<Questionnaire | OperationOutcome> {
@@ -115,7 +118,8 @@ async function assembleQuestionnaire(
   // Get subquestionnaire canonical urls from parent questionnaire items
   const canonicals: string[] | OperationOutcome = getCanonicalUrls(
     parentQuestionnaire,
-    totalCanonicals
+    totalCanonicals,
+    isRoot
   );
   if (!Array.isArray(canonicals)) {
     return canonicals;
@@ -146,6 +150,7 @@ async function assembleQuestionnaire(
       subquestionnaire,
       totalCanonicals,
       issues,
+      false, // false indicates that this is not the root questionnaire
       fetchQuestionnaireCallback,
       fetchQuestionnaireRequestConfig
     );

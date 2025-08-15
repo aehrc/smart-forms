@@ -30,15 +30,20 @@ import { createErrorOutcome } from './operationOutcome';
  */
 export function getCanonicalUrls(
   parentQuestionnaire: Questionnaire,
-  totalCanonicals: string[]
+  totalCanonicals: string[],
+  isRoot: boolean
 ): string[] | OperationOutcome {
   if (
     !parentQuestionnaire.item ||
     !parentQuestionnaire.item[0] ||
     !parentQuestionnaire.item[0].item
   ) {
-    return createErrorOutcome('Root questionnaire does not have a valid item.');
-  }
+    const questionnaireUrlOrId = parentQuestionnaire.url || parentQuestionnaire.id;
+
+    // If isRoot is true, return an error for the root questionnaire
+    // Otherwise, return an empty array to indicate no canonicals found in the subquestionnaire
+    return isRoot ? createErrorOutcome(`Root questionnaire ${questionnaireUrlOrId} does not have a valid item.`) : [];
+}
 
   const qForm = parentQuestionnaire.item[0].item;
   const canonicals = [];
