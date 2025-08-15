@@ -1899,7 +1899,7 @@ describe('isItemTextHidden', () => {
       _text: {
         extension: [
           {
-            url: 'https://smartforms.csiro.au/docs/custom-extension/questionnaire-item-text-hidden',
+            url: 'https://smartforms.csiro.au/ig/StructureDefinition/QuestionnaireItemTextHidden',
             valueBoolean: true
           }
         ]
@@ -1916,7 +1916,7 @@ describe('isItemTextHidden', () => {
       _text: {
         extension: [
           {
-            url: 'https://smartforms.csiro.au/docs/custom-extension/questionnaire-item-text-hidden',
+            url: 'https://smartforms.csiro.au/ig/StructureDefinition/QuestionnaireItemTextHidden',
             valueBoolean: false
           }
         ]
