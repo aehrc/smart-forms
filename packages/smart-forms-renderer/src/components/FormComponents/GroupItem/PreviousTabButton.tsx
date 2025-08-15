@@ -17,7 +17,7 @@
 
 import React from 'react';
 import Button from '@mui/material/Button';
-import Iconify from '../../Iconify/Iconify';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 interface PreviousTabButtonProps {
   isDisabled: boolean;
@@ -31,7 +31,7 @@ function PreviousTabButton(props: PreviousTabButtonProps) {
     <Button
       variant="contained"
       size="small"
-      endIcon={<Iconify icon="material-symbols:arrow-back" />}
+      endIcon={<ArrowBackIcon fontSize="small" />}
       disabled={isDisabled}
       color="secondary"
       onClick={onPreviousTabClick}>

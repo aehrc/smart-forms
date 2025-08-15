@@ -5,6 +5,6 @@
 lib/
 
 # Ignore tests
-tests/
-test/
+**/tests/**
+**/test/**
 src/test-data-shared

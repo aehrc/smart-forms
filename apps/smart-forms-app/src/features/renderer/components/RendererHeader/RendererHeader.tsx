@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import Iconify from '../../../../components/Iconify/Iconify.tsx';
 import { useTheme } from '@mui/material/styles';
 import Logo from '../../../../components/Logos/Logo.tsx';
 import { Box, IconButton, Typography } from '@mui/material';
@@ -26,6 +25,7 @@ import { memo } from 'react';
 import HeaderIcons from '../../../../components/Header/HeaderIcons.tsx';
 import { useQuestionnaireStore, useResponsive } from '@aehrc/smart-forms-renderer';
 import TokenTimer from '../../../tokenTimer/components/TokenTimer.tsx';
+import MenuIcon from '@mui/icons-material/Menu';
 
 interface RendererHeaderProps {
   desktopNavCollapsed: boolean;
@@ -54,7 +54,7 @@ const RendererHeader = memo(function RendererHeader(props: RendererHeaderProps) 
               ...(navIsExpanded && { display: { lg: 'none' } })
             }}
             data-test="button-expand-nav">
-            <Iconify icon="eva:menu-2-fill" />
+            <MenuIcon />
           </IconButton>
         ) : null}
 

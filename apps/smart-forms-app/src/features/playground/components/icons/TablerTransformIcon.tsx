@@ -15,23 +15,27 @@
  * limitations under the License.
  */
 
-import { forwardRef, memo } from 'react';
-import { Icon } from '@iconify/react';
-import type { SxProps, Theme } from '@mui/material';
-import { Box } from '@mui/material';
-
-interface IconifyProps {
-  icon: string;
+interface TablerTransformIconProps {
   width?: number;
   height?: number;
-  sx?: SxProps<Theme>;
 }
 
-const Iconify = memo(
-  forwardRef(function Iconify(props: IconifyProps, ref) {
-    const { icon, width = 20, height = 20, sx } = props;
-    return <Box ref={ref} component={Icon} icon={icon} sx={{ width, height, ...sx }} />;
-  })
-);
+// Lifted from Iconify tabler:transform
+function TablerTransformIcon(props: TablerTransformIconProps) {
+  const { width = 20, height = 20 } = props;
 
-export default Iconify;
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 24 24">
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M3 6a3 3 0 1 0 6 0a3 3 0 0 0-6 0m18 5V8a2 2 0 0 0-2-2h-6l3 3m0-6l-3 3M3 13v3a2 2 0 0 0 2 2h6l-3-3m0 6l3-3m4 0a3 3 0 1 0 6 0a3 3 0 0 0-6 0"
+      />
+    </svg>
+  );
+}
+
+export default TablerTransformIcon;
