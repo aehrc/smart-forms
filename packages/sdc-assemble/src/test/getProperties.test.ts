@@ -813,12 +813,12 @@ describe('getItems', () => {
     ];
 
     const result = getItems(subquestionnaires);
-    
+
     // First questionnaire returns original root item
     expect(result[0]).toHaveLength(1);
     expect(result[0]?.[0]?.linkId).toBe('root');
     expect(result[0]?.[0]?.item).toEqual([item1]);
-    
+
     // Second questionnaire has root item with prefixed linkId due to duplication
     expect(result[1]).toHaveLength(1);
     expect(result[1]?.[0]?.linkId).toBe('linkIdPrefix-root');

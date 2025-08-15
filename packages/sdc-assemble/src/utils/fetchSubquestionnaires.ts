@@ -59,13 +59,13 @@ export async function fetchSubquestionnaires(
         resources.push(settledPromise.value);
         continue;
       }
-      
+
       // Handle OperationOutcome responses
       if (settledPromise.value && settledPromise.value.resourceType === 'OperationOutcome') {
         resources.push(settledPromise.value);
         continue;
       }
-      
+
       // Fallback to get Bundle from response.data (axios scenario)
       if (
         settledPromise.value &&
@@ -76,7 +76,7 @@ export async function fetchSubquestionnaires(
         resources.push(settledPromise.value.data);
         continue;
       }
-      
+
       // Handle OperationOutcome in response.data (axios scenario)
       if (
         settledPromise.value &&

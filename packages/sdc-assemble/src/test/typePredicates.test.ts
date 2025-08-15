@@ -23,7 +23,7 @@ import type { InputParameters } from '../interfaces';
 describe('isInputParameters', () => {
   it('should return true for valid InputParameters', () => {
     const questionnaire: Questionnaire = {
-      resourceType: 'Questionnaire', 
+      resourceType: 'Questionnaire',
       id: 'test-questionnaire',
       status: 'draft'
     };
