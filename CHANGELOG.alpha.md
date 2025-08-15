@@ -7,6 +7,12 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## sdc-assemble [2.0.2] - 2025-08-15
+#### Fixed
+- Handle axios-based FetchResourceCallback calls correctly, for both happy and sad paths (res.data).
+- Fix TypeScript issues in type predicates.
+- When resolving subquestionnaire canonical URLs, enforce in the root questionnaire (returns OperationOutcome if not present), otherwise if it's a recursive resolution within subquestionnaires (for sub-subquestionnaires), be more lenient by returning an empty array.
+
 ## [1.0.0-alpha.91] - 2025-08-11
 #### Changed
 - Remove Iconify dependency and replaced them with MUI icons. This affects the next/previous tab and page buttons.
