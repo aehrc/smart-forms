@@ -42,8 +42,12 @@ export function getCanonicalUrls(
 
     // If isRoot is true, return an error for the root questionnaire
     // Otherwise, return an empty array to indicate no canonicals found in the subquestionnaire
-    return isRoot ? createErrorOutcome(`Root questionnaire ${questionnaireUrlOrId} does not have a valid item.`) : [];
-}
+    return isRoot
+      ? createErrorOutcome(
+          `Root questionnaire ${questionnaireUrlOrId} does not have a valid nested item (parentQuestionnaire.item[x].item) for assembly.`
+        )
+      : [];
+  }
 
   const qForm = parentQuestionnaire.item[0].item;
   const canonicals = [];

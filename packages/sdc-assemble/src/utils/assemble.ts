@@ -64,7 +64,7 @@ export async function assemble(
     rootQuestionnaire,
     totalCanonicals,
     issues,
-    true, 
+    true,
     fetchQuestionnaireCallback,
     fetchQuestionnaireRequestConfig
   );
