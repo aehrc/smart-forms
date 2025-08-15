@@ -20,7 +20,7 @@
   "homepage": "https://github.com/aehrc/smart-forms#readme",
   "dependencies": {
     "clean-deep": "^3.4.0",
-    "js-base64": "^3.7.7",
+    "js-base64": "^3.7.8",
     "uuid": "^11.1.0",
     "fhirpath": "^4.3.0"
   },
