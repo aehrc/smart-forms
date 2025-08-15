@@ -59,9 +59,35 @@ export async function fetchSubquestionnaires(
         resources.push(settledPromise.value);
         continue;
       }
-      // Fallback to get valueSet from response.data (axios scenario)
-      if (settledPromise.value.data && responseIsBundle(settledPromise.value.data)) {
+      
+      // Handle OperationOutcome responses
+      if (settledPromise.value && settledPromise.value.resourceType === 'OperationOutcome') {
         resources.push(settledPromise.value);
+        continue;
+      }
+      
+      // Fallback to get Bundle from response.data (axios scenario)
+      if (
+        settledPromise.value &&
+        typeof settledPromise.value === 'object' &&
+        'data' in settledPromise.value &&
+        responseIsBundle(settledPromise.value.data)
+      ) {
+        resources.push(settledPromise.value.data);
+        continue;
+      }
+      
+      // Handle OperationOutcome in response.data (axios scenario)
+      if (
+        settledPromise.value &&
+        typeof settledPromise.value === 'object' &&
+        'data' in settledPromise.value &&
+        settledPromise.value.data &&
+        typeof settledPromise.value.data === 'object' &&
+        'resourceType' in settledPromise.value.data &&
+        (settledPromise.value.data as OperationOutcome).resourceType === 'OperationOutcome'
+      ) {
+        resources.push(settledPromise.value.data as OperationOutcome);
       }
     }
   } catch (e) {
@@ -97,6 +123,12 @@ export async function fetchSubquestionnaires(
   return subquestionnaires;
 }
 
-export function responseIsBundle(response: any): response is Bundle {
-  return response && response.resourceType === 'Bundle';
+export function responseIsBundle(response: unknown): response is Bundle {
+  return !!(
+    response &&
+    typeof response === 'object' &&
+    response !== null &&
+    'resourceType' in response &&
+    (response as Bundle).resourceType === 'Bundle'
+  );
 }
