@@ -35,7 +35,6 @@
     "@fontsource/material-icons": "^5.2.5",
     "@fontsource/roboto": "^5.2.6",
     "@testing-library/react": "^16.3.0",
-    "@iconify/react": "^5.2.1",
     "@mui/icons-material": "^7.1.1",
     "@mui/lab": "^7.0.0-beta.13",
     "@mui/material": "^7.1.1",
