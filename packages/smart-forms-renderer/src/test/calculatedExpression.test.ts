@@ -1016,7 +1016,7 @@ describe('calculatedExpression utils', () => {
       mockHandleFhirPathResult.mockResolvedValue(['http://new-valueset.com']);
 
       const result = await evaluateCalculatedExpressions(
-        {},
+        {},         
         {},
         calculatedExpressions,
         'http://test.com'
