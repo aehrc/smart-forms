@@ -20,4 +20,5 @@ import type { QuestionnaireResponseItem } from 'fhir/r4';
 export interface GroupTableRowModel {
   id: string;
   qrItem: QuestionnaireResponseItem | null;
+  isSelected: boolean;
 }
