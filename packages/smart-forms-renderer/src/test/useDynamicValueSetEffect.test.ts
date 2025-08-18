@@ -19,7 +19,7 @@
  */
 
 import React from 'react';
-import { renderHook, act } from '@testing-library/react';
+import { renderHook, act, waitFor } from '@testing-library/react';
 import type { QuestionnaireItem, Coding, ValueSet } from 'fhir/r4';
 import type { CalculatedExpression } from '../interfaces';
 import type { ProcessedValueSet } from '../interfaces/valueSet.interface';
@@ -367,9 +367,9 @@ describe('useDynamicValueSetEffect hook', () => {
         'http://terminology.server.com'
       );
 
-      // Wait for promises to resolve
-      await act(async () => {
-        await new Promise(resolve => setTimeout(resolve, 0));
+      // Wait for async operations to complete
+      await waitFor(() => {
+        expect(mockOnSetCodings).toHaveBeenCalled();
       });
 
       expect(mockGetValueSetCodings).toHaveBeenCalledWith(mockValueSet);
@@ -408,11 +408,9 @@ describe('useDynamicValueSetEffect hook', () => {
         )
       );
 
-      await act(async () => {
-        await new Promise(resolve => setTimeout(resolve, 0));
+      await waitFor(() => {
+        expect(mockOnSetCodings).toHaveBeenCalledWith([]);
       });
-
-      expect(mockOnSetCodings).toHaveBeenCalledWith([]);
       expect(mockOnSetDynamicCodingsUpdated).toHaveBeenCalledWith(true);
     });
 
@@ -445,11 +443,9 @@ describe('useDynamicValueSetEffect hook', () => {
         )
       );
 
-      await act(async () => {
-        await new Promise(resolve => setTimeout(resolve, 0));
+      await waitFor(() => {
+        expect(mockOnSetServerError).toHaveBeenCalledWith(addDisplayError);
       });
-
-      expect(mockOnSetServerError).toHaveBeenCalledWith(addDisplayError);
     });
 
     it('should handle ValueSet promise rejection', async () => {
@@ -469,11 +465,9 @@ describe('useDynamicValueSetEffect hook', () => {
         )
       );
 
-      await act(async () => {
-        await new Promise(resolve => setTimeout(resolve, 0));
+      await waitFor(() => {
+        expect(mockOnSetServerError).toHaveBeenCalledWith(promiseError);
       });
-
-      expect(mockOnSetServerError).toHaveBeenCalledWith(promiseError);
     });
 
     it('should not fetch when getValueSetPromise returns null', () => {
@@ -625,7 +619,12 @@ describe('useDynamicValueSetEffect hook', () => {
       // Resolve promise after unmount
       await act(async () => {
         resolvePromise!(mockValueSet);
-        await new Promise(resolve => setTimeout(resolve, 0));
+      });
+
+      // Wait for any async operations to complete
+      await waitFor(() => {
+        // Ensure async operations have settled
+        expect(mockOnSetCodings).not.toHaveBeenCalled();
       });
 
       // Should not call callbacks after unmount

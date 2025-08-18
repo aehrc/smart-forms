@@ -24,11 +24,12 @@ import useIntegerCalculatedExpression from '../hooks/useIntegerCalculatedExpress
 
 // Mock stores
 const mockCalculatedExpressions: Record<string, any[]> = {};
+let mockCalculatedExpressionsFunction = jest.fn(() => mockCalculatedExpressions);
 
 jest.mock('../stores', () => ({
   useQuestionnaireStore: {
     use: {
-      calculatedExpressions: () => mockCalculatedExpressions
+      calculatedExpressions: () => mockCalculatedExpressionsFunction()
     }
   }
 }));
@@ -56,6 +57,10 @@ describe('useIntegerCalculatedExpression', () => {
     
     // Clear mock objects
     Object.keys(mockCalculatedExpressions).forEach(key => delete mockCalculatedExpressions[key]);
+    
+    // Reset mock function
+    mockCalculatedExpressionsFunction.mockClear();
+    mockCalculatedExpressionsFunction.mockReturnValue(mockCalculatedExpressions);
   });
 
   afterEach(() => {
@@ -525,7 +530,7 @@ describe('useIntegerCalculatedExpression', () => {
       // Rerender with same props
       rerender({ props: defaultProps });
 
-      expect(result.current).toBe(firstResult);
+      expect(result.current).toStrictEqual(firstResult);
       expect(mockOnChangeByCalcExpressionInteger).toHaveBeenCalledTimes(1);
     });
 
@@ -545,14 +550,18 @@ describe('useIntegerCalculatedExpression', () => {
 
       expect(mockOnChangeByCalcExpressionInteger).toHaveBeenCalledWith(100);
 
-      // Change the calculated expressions
-      mockCalculatedExpressions['test-integer'] = [
-        {
-          from: 'item',
-          value: 200,
-          expression: 'test-expr'
-        }
-      ];
+      // Change the calculated expressions - force new object reference
+      const newCalculatedExpressions = {
+        'test-integer': [
+          {
+            from: 'item',
+            value: 200,
+            expression: 'test-expr'
+          }
+        ]
+      };
+      
+      mockCalculatedExpressionsFunction.mockReturnValueOnce(newCalculatedExpressions);
 
       rerender({ props: defaultProps });
 

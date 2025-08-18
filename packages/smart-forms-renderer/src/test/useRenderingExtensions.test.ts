@@ -50,12 +50,14 @@ describe('useRenderingExtensions', () => {
   // Test data
   const basicQItem: QuestionnaireItem = {
     linkId: 'basic-item',
-    text: 'Basic Item'
+    text: 'Basic Item',
+    type: 'string'
   };
 
   const fullQItem: QuestionnaireItem = {
     linkId: 'full-item',
     text: 'Full Item',
+    type: 'string',
     readOnly: true,
     required: true
   };
@@ -111,7 +113,8 @@ describe('useRenderingExtensions', () => {
     it('should handle readOnly as false when not set', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'no-readonly',
-        text: 'Not ReadOnly'
+        text: 'Not ReadOnly',
+        type: 'string'
       };
 
       const { result } = renderHook(() => useRenderingExtensions(qItem));
@@ -123,6 +126,7 @@ describe('useRenderingExtensions', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'explicitly-false',
         text: 'Explicitly False',
+        type: 'string',
         readOnly: false
       };
 
@@ -134,7 +138,8 @@ describe('useRenderingExtensions', () => {
     it('should handle required as false when not set', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'not-required',
-        text: 'Not Required'
+        text: 'Not Required',
+        type: 'string'
       };
 
       const { result } = renderHook(() => useRenderingExtensions(qItem));
@@ -146,6 +151,7 @@ describe('useRenderingExtensions', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'explicitly-not-required',
         text: 'Explicitly Not Required',
+        type: 'string',
         required: false
       };
 
@@ -275,6 +281,7 @@ describe('useRenderingExtensions', () => {
       const qItemWithExtensions: QuestionnaireItem = {
         linkId: 'with-extensions',
         text: 'Item with Extensions',
+        type: 'string',
         extension: [
           {
             url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory',
@@ -312,8 +319,8 @@ describe('useRenderingExtensions', () => {
         text: 'Nested Item',
         type: 'group',
         item: [
-          { linkId: 'child1', text: 'Child 1' },
-          { linkId: 'child2', text: 'Child 2' }
+          { linkId: 'child1', text: 'Child 1', type: 'string' },
+          { linkId: 'child2', text: 'Child 2', type: 'string' }
         ]
       };
 
@@ -452,7 +459,8 @@ describe('useRenderingExtensions', () => {
   describe('edge cases', () => {
     it('should handle qItem with minimal properties', () => {
       const minimalItem: QuestionnaireItem = {
-        linkId: 'minimal'
+        linkId: 'minimal',
+        type: 'string'
       };
 
       const { result } = renderHook(() => useRenderingExtensions(minimalItem));
@@ -465,7 +473,8 @@ describe('useRenderingExtensions', () => {
     it('should handle qItem with null text', () => {
       const nullTextItem: QuestionnaireItem = {
         linkId: 'null-text',
-        text: undefined
+        text: undefined,
+        type: 'string'
       };
 
       const { result } = renderHook(() => useRenderingExtensions(nullTextItem));
@@ -477,7 +486,8 @@ describe('useRenderingExtensions', () => {
     it('should handle qItem with special characters in linkId', () => {
       const specialItem: QuestionnaireItem = {
         linkId: 'item-with@special#chars!',
-        text: 'Special Item'
+        text: 'Special Item',
+        type: 'string'
       };
 
       const { result } = renderHook(() => useRenderingExtensions(specialItem));

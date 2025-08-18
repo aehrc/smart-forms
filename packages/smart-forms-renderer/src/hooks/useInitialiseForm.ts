@@ -16,7 +16,7 @@
  */
 
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-import { useLayoutEffect, useState } from 'react';
+import { useLayoutEffect, useState, useMemo } from 'react';
 import { buildForm } from '../utils';
 import type Client from 'fhirclient/lib/Client';
 import { useSmartConfigStore } from '../stores';
@@ -47,12 +47,20 @@ function useInitialiseForm(
   fhirClient?: Client
 ): boolean {
   const [isFhirClientReady, setIsFhirClientReady] = useState(true);
-  const [isBuilding, setIsBuilding] = useState(true);
+  const [isBuilding, setIsBuilding] = useState(false);
 
   const setSmartClient = useSmartConfigStore.use.setClient();
   const setPatient = useSmartConfigStore.use.setPatient();
   const setUser = useSmartConfigStore.use.setUser();
   const setEncounter = useSmartConfigStore.use.setEncounter();
+
+  // Memoize store setters to prevent infinite loops
+  const storeSetters = useMemo(() => ({
+    setSmartClient,
+    setPatient,
+    setUser,
+    setEncounter
+  }), [setSmartClient, setPatient, setUser, setEncounter]);
 
   useLayoutEffect(() => {
     setIsBuilding(true);
@@ -81,10 +89,7 @@ function useInitialiseForm(
     terminologyServerUrl,
     fhirClient,
     readOnly,
-    setSmartClient,
-    setPatient,
-    setUser,
-    setEncounter
+    storeSetters
   ]);
 
   return isFhirClientReady && isBuilding;

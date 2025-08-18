@@ -23,19 +23,25 @@ function useOpenLabel(
   options: QuestionnaireItemAnswerOption[],
   answers: QuestionnaireResponseItemAnswer[]
 ) {
-  let initialOpenLabelValue = '';
-  let initialOpenLabelChecked = false;
-
-  if (options.length > 0) {
-    const oldLabelAnswer = getOldOpenLabelAnswer(answers, options);
-    if (oldLabelAnswer && oldLabelAnswer.valueString) {
-      initialOpenLabelValue = oldLabelAnswer.valueString;
-      initialOpenLabelChecked = true;
+  // Calculate initial values once
+  const initialValues = useState(() => {
+    if (options && options.length > 0) {
+      const oldLabelAnswer = getOldOpenLabelAnswer(answers, options);
+      if (oldLabelAnswer && oldLabelAnswer.valueString) {
+        return {
+          value: oldLabelAnswer.valueString,
+          checked: true
+        };
+      }
     }
-  }
+    return {
+      value: '',
+      checked: false
+    };
+  })[0];
 
-  const [openLabelValue, setOpenLabelValue] = useState(initialOpenLabelValue);
-  const [openLabelChecked, setOpenLabelChecked] = useState(initialOpenLabelChecked);
+  const [openLabelValue, setOpenLabelValue] = useState(initialValues.value);
+  const [openLabelChecked, setOpenLabelChecked] = useState(initialValues.checked);
 
   return { openLabelValue, setOpenLabelValue, openLabelChecked, setOpenLabelChecked };
 }

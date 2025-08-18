@@ -465,6 +465,18 @@ describe('useTimeValidation', () => {
         is24HourNotation: true
       });
     });
+
+    it('should return parseFail error message when parseFail is true and separators != 1', () => {
+      // Valid format length but different separator count, triggering parseFail path
+      mockGetNumOfSeparators.mockReturnValue(2); // Multiple separators
+
+      const { result } = renderHook(() => useTimeValidation('12:30', '', true));
+
+      expect(result.current).toEqual({
+        timeFeedback: 'Input is an invalid time.',
+        is24HourNotation: false
+      });
+    });
   });
 
   describe('mock interaction validation', () => {

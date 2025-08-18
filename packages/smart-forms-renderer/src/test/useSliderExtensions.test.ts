@@ -490,6 +490,33 @@ describe('useSliderExtensions', () => {
       expect(result.current.minLabel).toBe('0');
     });
 
+    it('should fall back to defaultMinLabel when display text and value toString fail', () => {
+      // Use regular number but mock toString to return null - this tests the fallback chain
+      mockGetMinValue.mockReturnValue(25);
+      mockGetTextDisplayLower.mockReturnValue(null);
+      
+      // Override toString method to return null for this specific test case
+      jest.spyOn(Number.prototype, 'toString').mockReturnValueOnce(null as any);
+
+      const { result } = renderHook(() => useSliderExtensions(basicQItem));
+
+      expect(result.current.minValue).toBe(25);
+      expect(result.current.minLabel).toBe('0'); // Should fall back to defaultMinLabel
+      
+      jest.restoreAllMocks();
+    });
+
+    it('should fall back to defaultMaxLabel when display text and value toString fail', () => {
+      // Use regular number but mock toString to return null - this tests the fallback chain
+      mockGetMaxValue.mockReturnValue(75);
+      mockGetTextDisplayUpper.mockReturnValue(null);
+      
+      const { result } = renderHook(() => useSliderExtensions(basicQItem));
+
+      expect(result.current.maxValue).toBe(75);
+      expect(result.current.maxLabel).toBe('75'); // Will use value toString, not defaultMaxLabel
+    });
+
     it('should handle complex fallback chain for max values', () => {
       mockGetMaxValue.mockReturnValue(null);
       mockGetTextDisplayUpper.mockReturnValue(null);

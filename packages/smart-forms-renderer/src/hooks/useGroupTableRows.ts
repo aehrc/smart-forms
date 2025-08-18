@@ -19,7 +19,7 @@ import { useState } from 'react';
 import type { GroupTableRowModel } from '../interfaces/groupTable.interface';
 
 function useGroupTableRows(valueFromProps: GroupTableRowModel[]) {
-  const [tableRows, setTableRows] = useState(valueFromProps);
+  const [tableRows, setTableRows] = useState([...valueFromProps]);
   const [selectedIds, setSelectedIds] = useState<string[]>(valueFromProps.map((row) => row.id));
 
   return { tableRows, selectedIds, setTableRows, setSelectedIds };

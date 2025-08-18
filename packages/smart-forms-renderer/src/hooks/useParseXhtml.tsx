@@ -75,9 +75,9 @@ export function useParseXhtml(qItem: QuestionnaireItem): ParsedXhtml | null {
               styleStr.split(';').forEach((style) => {
                 if (style.trim()) {
                   const [property, value] = style.split(':');
-                  if (property && value) {
+                  if (property && property.trim() && value) {
                     // Convert kebab-case to camelCase for React
-                    const propName = convertKebabToCamelCase(property);
+                    const propName = convertKebabToCamelCase(property.trim());
                     styleObj[propName] = value.trim();
                   }
                 }

@@ -84,9 +84,16 @@ export function extractContainedValueSets(
  * @author Sean Fong
  */
 export function getValueSetUrlFromContained(valueSet: ValueSet): string {
-  const urls = valueSet.compose?.include?.map((include) =>
-    include.valueSet?.[0] ? include.valueSet[0] : ''
-  );
+  if (!valueSet.compose?.include) {
+    return '';
+  }
 
-  return urls && urls.length > 0 ? urls[0] : '';
+  // Find the first include that has a non-empty valueSet array
+  for (const include of valueSet.compose.include) {
+    if (include.valueSet && include.valueSet.length > 0 && include.valueSet[0]) {
+      return include.valueSet[0];
+    }
+  }
+
+  return '';
 }

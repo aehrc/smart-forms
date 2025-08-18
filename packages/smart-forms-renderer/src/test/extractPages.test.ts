@@ -102,8 +102,9 @@ describe('extractPages - Phase 5', () => {
 
       // Each item is checked once in the .every() call
       expect(mockIsPage).toHaveBeenCalledTimes(2);
-      expect(mockIsHeader).toHaveBeenCalledTimes(2);
-      expect(mockIsFooter).toHaveBeenCalledTimes(2);
+      // isHeader and isFooter are NOT called due to short-circuit evaluation (isPage returns true)
+      expect(mockIsHeader).toHaveBeenCalledTimes(0);
+      expect(mockIsFooter).toHaveBeenCalledTimes(0);
       expect(mockConstructPagesWithProperties).toHaveBeenCalledWith(questionnaire.item, false);
       expect(result).toEqual({
         'page1': { pageIndex: 0, isComplete: false, isHidden: false },
@@ -197,18 +198,21 @@ describe('extractPages - Phase 5', () => {
         ]
       };
 
-      mockIsPage
-        .mockReturnValueOnce(false)  // header1
-        .mockReturnValueOnce(true)   // page1
-        .mockReturnValueOnce(false); // footer1
-      mockIsHeader
-        .mockReturnValueOnce(true)   // header1
-        .mockReturnValueOnce(false)  // page1
-        .mockReturnValueOnce(false); // footer1
-      mockIsFooter
-        .mockReturnValueOnce(false)  // header1
-        .mockReturnValueOnce(false)  // page1
-        .mockReturnValueOnce(true);  // footer1
+      // Create a more reliable mock setup
+      mockIsPage.mockImplementation((item) => {
+        if (item.linkId === 'header1') return false;
+        if (item.linkId === 'page1') return true;
+        if (item.linkId === 'footer1') return false;
+        return false;
+      });
+      mockIsHeader.mockImplementation((item) => {
+        if (item.linkId === 'header1') return true;
+        return false;
+      });
+      mockIsFooter.mockImplementation((item) => {
+        if (item.linkId === 'footer1') return true;
+        return false;
+      });
 
       mockConstructPagesWithProperties.mockReturnValue({
         'header1': { pageIndex: 0, isComplete: false, isHidden: false },

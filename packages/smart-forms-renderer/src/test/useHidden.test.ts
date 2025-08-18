@@ -23,17 +23,12 @@ import type { QuestionnaireItem } from 'fhir/r4';
 import useHidden from '../hooks/useHidden';
 
 // Mock the store functions
-const mockEnableWhenIsActivated = jest.fn();
-const mockEnableWhenItems = jest.fn();
-const mockEnableWhenExpressions = jest.fn();
-const mockEnableWhenAsReadOnly = jest.fn();
-
 jest.mock('../stores', () => ({
   useQuestionnaireStore: {
     use: {
-      enableWhenIsActivated: () => mockEnableWhenIsActivated,
-      enableWhenItems: () => mockEnableWhenItems,
-      enableWhenExpressions: () => mockEnableWhenExpressions
+      enableWhenIsActivated: jest.fn(),
+      enableWhenItems: jest.fn(),
+      enableWhenExpressions: jest.fn()
     }
   }
 }));
@@ -41,7 +36,7 @@ jest.mock('../stores', () => ({
 jest.mock('../stores/rendererStylingStore', () => ({
   useRendererStylingStore: {
     use: {
-      enableWhenAsReadOnly: () => mockEnableWhenAsReadOnly
+      enableWhenAsReadOnly: jest.fn()
     }
   }
 }));
@@ -74,14 +69,28 @@ describe('useHidden', () => {
     type: 'group'
   };
 
+  // Helper function to get mock references
+  const getMocks = () => {
+    const { useQuestionnaireStore } = require('../stores');
+    const { useRendererStylingStore } = require('../stores/rendererStylingStore');
+    
+    return {
+      enableWhenIsActivated: useQuestionnaireStore.use.enableWhenIsActivated,
+      enableWhenItems: useQuestionnaireStore.use.enableWhenItems,
+      enableWhenExpressions: useQuestionnaireStore.use.enableWhenExpressions,
+      enableWhenAsReadOnly: useRendererStylingStore.use.enableWhenAsReadOnly
+    };
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
     
     // Set default mock returns
-    mockEnableWhenIsActivated.mockReturnValue({});
-    mockEnableWhenItems.mockReturnValue({});
-    mockEnableWhenExpressions.mockReturnValue({});
-    mockEnableWhenAsReadOnly.mockReturnValue(false);
+    const mocks = getMocks();
+    mocks.enableWhenIsActivated.mockReturnValue({});
+    mocks.enableWhenItems.mockReturnValue({});
+    mocks.enableWhenExpressions.mockReturnValue({});
+    mocks.enableWhenAsReadOnly.mockReturnValue(false);
     mockGetHidden.mockReturnValue(false);
     mockIsHiddenByEnableWhen.mockReturnValue(false);
   });
@@ -108,12 +117,14 @@ describe('useHidden', () => {
     });
 
     it('should access store functions correctly', () => {
+      const mocks = getMocks();
+      
       renderHook(() => useHidden(basicQItem));
 
-      expect(mockEnableWhenIsActivated).toHaveBeenCalled();
-      expect(mockEnableWhenItems).toHaveBeenCalled();
-      expect(mockEnableWhenExpressions).toHaveBeenCalled();
-      expect(mockEnableWhenAsReadOnly).toHaveBeenCalled();
+      expect(mocks.enableWhenIsActivated).toHaveBeenCalled();
+      expect(mocks.enableWhenItems).toHaveBeenCalled();
+      expect(mocks.enableWhenExpressions).toHaveBeenCalled();
+      expect(mocks.enableWhenAsReadOnly).toHaveBeenCalled();
     });
   });
 
@@ -123,9 +134,10 @@ describe('useHidden', () => {
       const mockItems = { 'item1': [] };
       const mockExpressions = { 'item1': [] };
       
-      mockEnableWhenIsActivated.mockReturnValue(mockActivated);
-      mockEnableWhenItems.mockReturnValue(mockItems);
-      mockEnableWhenExpressions.mockReturnValue(mockExpressions);
+      const mocks = getMocks();
+      mocks.enableWhenIsActivated.mockReturnValue(mockActivated);
+      mocks.enableWhenItems.mockReturnValue(mockItems);
+      mocks.enableWhenExpressions.mockReturnValue(mockExpressions);
 
       renderHook(() => useHidden(basicQItem));
 
@@ -162,7 +174,7 @@ describe('useHidden', () => {
 
   describe('enableWhenAsReadOnly behavior', () => {
     it('should return false when enableWhenAsReadOnly is true', () => {
-      mockEnableWhenAsReadOnly.mockReturnValue(true);
+      getMocks().enableWhenAsReadOnly.mockReturnValue(true);
       mockIsHiddenByEnableWhen.mockReturnValue(true); // Would normally be hidden
 
       const { result } = renderHook(() => useHidden(basicQItem));
@@ -172,7 +184,7 @@ describe('useHidden', () => {
 
     it('should return false when enableWhenAsReadOnly is Set containing item type', () => {
       const typeSet = new Set(['string', 'group']);
-      mockEnableWhenAsReadOnly.mockReturnValue(typeSet);
+      getMocks().enableWhenAsReadOnly.mockReturnValue(typeSet);
       mockIsHiddenByEnableWhen.mockReturnValue(true);
 
       const { result } = renderHook(() => useHidden(basicQItem));
@@ -182,7 +194,7 @@ describe('useHidden', () => {
 
     it('should return hidden result when enableWhenAsReadOnly is Set not containing item type', () => {
       const typeSet = new Set(['group', 'choice']);
-      mockEnableWhenAsReadOnly.mockReturnValue(typeSet);
+      getMocks().enableWhenAsReadOnly.mockReturnValue(typeSet);
       mockIsHiddenByEnableWhen.mockReturnValue(true);
 
       const { result } = renderHook(() => useHidden(basicQItem));
@@ -191,7 +203,7 @@ describe('useHidden', () => {
     });
 
     it('should return hidden result when enableWhenAsReadOnly is false', () => {
-      mockEnableWhenAsReadOnly.mockReturnValue(false);
+      getMocks().enableWhenAsReadOnly.mockReturnValue(false);
       mockIsHiddenByEnableWhen.mockReturnValue(true);
 
       const { result } = renderHook(() => useHidden(basicQItem));
@@ -212,7 +224,7 @@ describe('useHidden', () => {
 
     it('should return true for SDC hidden regardless of enableWhenAsReadOnly', () => {
       mockGetHidden.mockReturnValue(true);
-      mockEnableWhenAsReadOnly.mockReturnValue(true);
+      getMocks().enableWhenAsReadOnly.mockReturnValue(true);
       mockIsHiddenByEnableWhen.mockReturnValue(false);
 
       const { result } = renderHook(() => useHidden(basicQItem));
@@ -247,7 +259,7 @@ describe('useHidden', () => {
       };
 
       const typeSet = new Set(['string']);
-      mockEnableWhenAsReadOnly.mockReturnValue(typeSet);
+      getMocks().enableWhenAsReadOnly.mockReturnValue(typeSet);
       mockIsHiddenByEnableWhen.mockReturnValue(true);
 
       const { result } = renderHook(() => useHidden(stringItem));
@@ -257,7 +269,7 @@ describe('useHidden', () => {
 
     it('should handle group type items', () => {
       const typeSet = new Set(['group']);
-      mockEnableWhenAsReadOnly.mockReturnValue(typeSet);
+      getMocks().enableWhenAsReadOnly.mockReturnValue(typeSet);
       mockIsHiddenByEnableWhen.mockReturnValue(true);
 
       const { result } = renderHook(() => useHidden(groupQItem));
@@ -273,7 +285,7 @@ describe('useHidden', () => {
       };
 
       const typeSet = new Set(['choice']);
-      mockEnableWhenAsReadOnly.mockReturnValue(typeSet);
+      getMocks().enableWhenAsReadOnly.mockReturnValue(typeSet);
       mockIsHiddenByEnableWhen.mockReturnValue(true);
 
       const { result } = renderHook(() => useHidden(choiceItem));
@@ -289,7 +301,7 @@ describe('useHidden', () => {
       };
 
       const typeSet = new Set(['string']); // Does not include integer
-      mockEnableWhenAsReadOnly.mockReturnValue(typeSet);
+      getMocks().enableWhenAsReadOnly.mockReturnValue(typeSet);
       mockIsHiddenByEnableWhen.mockReturnValue(true);
 
       const { result } = renderHook(() => useHidden(integerItem));
@@ -313,9 +325,9 @@ describe('useHidden', () => {
         'item1': [{ language: 'text/fhirpath', expression: '%age > 18' }]
       };
 
-      mockEnableWhenIsActivated.mockReturnValue(complexActivated);
-      mockEnableWhenItems.mockReturnValue(complexItems);
-      mockEnableWhenExpressions.mockReturnValue(complexExpressions);
+      getMocks().enableWhenIsActivated.mockReturnValue(complexActivated);
+      getMocks().enableWhenItems.mockReturnValue(complexItems);
+      getMocks().enableWhenExpressions.mockReturnValue(complexExpressions);
 
       renderHook(() => useHidden(basicQItem));
 
@@ -330,7 +342,7 @@ describe('useHidden', () => {
 
     it('should handle enableWhenAsReadOnly with multiple types', () => {
       const multiTypeSet = new Set(['string', 'integer', 'decimal', 'boolean']);
-      mockEnableWhenAsReadOnly.mockReturnValue(multiTypeSet);
+      getMocks().enableWhenAsReadOnly.mockReturnValue(multiTypeSet);
       mockIsHiddenByEnableWhen.mockReturnValue(true);
 
       const { result } = renderHook(() => useHidden(basicQItem));
@@ -366,7 +378,7 @@ describe('useHidden', () => {
       } as QuestionnaireItem;
 
       const typeSet = new Set(['string']);
-      mockEnableWhenAsReadOnly.mockReturnValue(typeSet);
+      getMocks().enableWhenAsReadOnly.mockReturnValue(typeSet);
 
       const { result } = renderHook(() => useHidden(noTypeItem));
 
@@ -376,7 +388,7 @@ describe('useHidden', () => {
 
     it('should handle empty enableWhenAsReadOnly Set', () => {
       const emptySet = new Set<string>();
-      mockEnableWhenAsReadOnly.mockReturnValue(emptySet);
+      getMocks().enableWhenAsReadOnly.mockReturnValue(emptySet);
       mockIsHiddenByEnableWhen.mockReturnValue(true);
 
       const { result } = renderHook(() => useHidden(basicQItem));
@@ -385,9 +397,9 @@ describe('useHidden', () => {
     });
 
     it('should handle null/undefined store returns', () => {
-      mockEnableWhenIsActivated.mockReturnValue(null);
-      mockEnableWhenItems.mockReturnValue(null);
-      mockEnableWhenExpressions.mockReturnValue(null);
+      getMocks().enableWhenIsActivated.mockReturnValue(null);
+      getMocks().enableWhenItems.mockReturnValue(null);
+      getMocks().enableWhenExpressions.mockReturnValue(null);
 
       renderHook(() => useHidden(basicQItem));
 
@@ -444,7 +456,7 @@ describe('useHidden', () => {
     });
 
     it('should handle readonly display mode', () => {
-      mockEnableWhenAsReadOnly.mockReturnValue(true);
+      getMocks().enableWhenAsReadOnly.mockReturnValue(true);
       mockIsHiddenByEnableWhen.mockReturnValue(true); // Would be hidden normally
 
       const { result } = renderHook(() => useHidden(basicQItem));
@@ -500,8 +512,8 @@ describe('useHidden', () => {
         rerender({ qItem: basicQItem, parentIndex: 0 });
       }
 
-      // Store functions should be called for each render
-      expect(mockEnableWhenIsActivated).toHaveBeenCalledTimes(10);
+      // Store functions should be called for each render (initial + 10 re-renders)
+      expect(getMocks().enableWhenIsActivated).toHaveBeenCalledTimes(11);
     });
 
     it('should handle different qItems efficiently', () => {

@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-import { renderHook, act } from '@testing-library/react';
+import { renderHook, act, waitFor } from '@testing-library/react';
 import type { QuestionnaireItem } from 'fhir/r4';
 import useQuantityCalculatedExpression from '../hooks/useQuantityCalculatedExpression';
 
@@ -417,8 +417,8 @@ describe('useQuantityCalculatedExpression', () => {
       );
 
       // Wait for async validation to complete
-      await act(async () => {
-        await new Promise(resolve => setTimeout(resolve, 100));
+      await waitFor(() => {
+        expect(mockOnChangeByCalcExpressionQuantity).toHaveBeenCalled();
       });
 
       expect(mockOnChangeByCalcExpressionQuantity).toHaveBeenCalledWith(

@@ -108,6 +108,7 @@ describe('resolveValueSets - Phase 5', () => {
       mockGetValueSetPromise.mockReturnValue(mockPromise);
       mockResolveValueSetPromises.mockResolvedValue({
         'http://hl7.org/fhir/ValueSet/allergyintolerance-code': {
+          promise: mockPromise,
           valueSet: {
             resourceType: 'ValueSet',
             status: 'active',
@@ -166,6 +167,7 @@ describe('resolveValueSets - Phase 5', () => {
       const mockCodings = [
         { system: 'http://snomed.info/sct', code: '123456', display: 'Test Allergy' }
       ];
+      const mockPromise = Promise.resolve(resolvedValueSet);
 
       mockCreateValueSetToXFhirQueryVariableNameMap.mockReturnValue(valueSetMapping);
       mockGetValueSetPromise.mockReturnValue(Promise.resolve(resolvedValueSet));
@@ -292,7 +294,7 @@ describe('resolveValueSets - Phase 5', () => {
       mockResolveValueSetPromises.mockResolvedValue({
         'http://hl7.org/fhir/ValueSet/allergyintolerance-code': {
           promise: Promise.resolve(null as any),
-          valueSet: null
+          valueSet: undefined
         }
       });
 
@@ -339,6 +341,7 @@ describe('resolveValueSets - Phase 5', () => {
         status: 'active',
         url: 'http://hl7.org/fhir/ValueSet/allergyintolerance-code'
       };
+      const mockPromise = Promise.resolve(resolvedValueSet);
 
       mockCreateValueSetToXFhirQueryVariableNameMap.mockReturnValue(valueSetMapping);
       mockGetValueSetPromise.mockReturnValue(Promise.resolve(resolvedValueSet));
@@ -389,6 +392,7 @@ describe('resolveValueSets - Phase 5', () => {
         status: 'active',
         url: 'http://hl7.org/fhir/ValueSet/allergyintolerance-code'
       };
+      const mockPromise = Promise.resolve(resolvedValueSet);
 
       mockCreateValueSetToXFhirQueryVariableNameMap.mockReturnValue(valueSetMapping);
       mockGetValueSetPromise.mockReturnValue(Promise.resolve(resolvedValueSet));
