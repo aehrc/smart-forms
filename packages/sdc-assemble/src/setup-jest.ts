@@ -15,23 +15,7 @@
  * limitations under the License.
  */
 
-import React, { forwardRef, memo } from 'react';
-import { Icon } from '@iconify/react';
-import type { SxProps, Theme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
+import '@testing-library/jest-dom';
 
-interface IconifyProps {
-  icon: string;
-  width?: number;
-  height?: number;
-  sx?: SxProps<Theme>;
-}
-
-const Iconify = memo(
-  forwardRef(function Iconify(props: IconifyProps, ref) {
-    const { icon, width = 20, height = 20, sx } = props;
-    return <Box ref={ref} component={Icon} icon={icon} sx={{ width, height, ...sx }} />;
-  })
-);
-
-export default Iconify;
+// Mock the global fetch function
+global.fetch = jest.fn();

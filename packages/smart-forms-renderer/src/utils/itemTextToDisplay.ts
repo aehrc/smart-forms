@@ -7,7 +7,7 @@ export function getItemTextToDisplay(qItem: QuestionnaireItem): string | null {
     return null;
   }
 
-  // Return null if qItem.text exists but https://smartforms.csiro.au/docs/custom-extension/questionnaire-item-text-hidden extension is present
+  // Return null if qItem.text exists but https://smartforms.csiro.au/ig/StructureDefinition/QuestionnaireItemTextHidden extension is present
   if (isItemTextHidden(qItem)) {
     return null;
   }

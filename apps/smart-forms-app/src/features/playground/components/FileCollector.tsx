@@ -19,10 +19,11 @@ import type { ChangeEvent } from 'react';
 import { memo, useCallback, useState } from 'react';
 import DropBox from './DropBox.tsx';
 import { Box, IconButton, Stack, Tooltip } from '@mui/material';
-import Iconify from '../../../components/Iconify/Iconify.tsx';
 import { useSnackbar } from 'notistack';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 interface FileCollectorProps {
   onBuild: (file: File) => unknown;
@@ -76,14 +77,14 @@ const FileCollector = memo(function FileCollector(props: FileCollectorProps) {
         <Box>
           <Tooltip title="Attach file">
             <IconButton component="label">
-              <Iconify icon="fluent:attach-24-regular" />
+              <AttachFileIcon fontSize="small" />
               <input type="file" hidden onChange={handleAttachFile} />
             </IconButton>
           </Tooltip>
           <Tooltip title="Remove file">
             <span>
               <IconButton disabled={!uploadedFile} color="error" onClick={handleRemoveFile}>
-                <Iconify icon="ant-design:delete" />
+                <DeleteOutlineIcon fontSize="small" />
               </IconButton>
             </span>
           </Tooltip>

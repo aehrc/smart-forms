@@ -4,5 +4,6 @@
 # Ignore lib folder if mistakenly ran tsc
 lib/
 
-# Ignore tests
-tests/
+# Ignore tests and test data
+**/tests/**
+**/test/**

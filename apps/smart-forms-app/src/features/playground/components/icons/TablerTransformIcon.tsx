@@ -15,27 +15,27 @@
  * limitations under the License.
  */
 
-import React from 'react';
-import { SecondaryFab } from '../Button.styles';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-
-interface NextPageButtonProps {
-  isDisabled: boolean;
-  onNextPageClick: () => void;
+interface TablerTransformIconProps {
+  width?: number;
+  height?: number;
 }
 
-function NextPageButton(props: NextPageButtonProps) {
-  const { isDisabled, onNextPageClick } = props;
+// Lifted from Iconify tabler:transform
+function TablerTransformIcon(props: TablerTransformIconProps) {
+  const { width = 20, height = 20 } = props;
 
   return (
-    <SecondaryFab
-      size="small"
-      aria-label="Next page"
-      disabled={isDisabled}
-      onClick={onNextPageClick}>
-      <ChevronRightIcon fontSize="small" />
-    </SecondaryFab>
+    <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 24 24">
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M3 6a3 3 0 1 0 6 0a3 3 0 0 0-6 0m18 5V8a2 2 0 0 0-2-2h-6l3 3m0-6l-3 3M3 13v3a2 2 0 0 0 2 2h6l-3-3m0 6l3-3m4 0a3 3 0 1 0 6 0a3 3 0 0 0-6 0"
+      />
+    </svg>
   );
 }
 
-export default NextPageButton;
+export default TablerTransformIcon;
