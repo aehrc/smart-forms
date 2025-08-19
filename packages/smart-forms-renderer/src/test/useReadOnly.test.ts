@@ -28,18 +28,13 @@ jest.mock('../hooks/useRenderingExtensions', () => {
   return (...args: any[]) => mockUseRenderingExtensions(...args);
 });
 
-// Mock the store functions
-const mockEnableWhenIsActivated = jest.fn();
-const mockEnableWhenItems = jest.fn();
-const mockEnableWhenExpressions = jest.fn();
-const mockEnableWhenAsReadOnly = jest.fn();
-
+// Mock the stores
 jest.mock('../stores', () => ({
   useQuestionnaireStore: {
     use: {
-      enableWhenIsActivated: () => mockEnableWhenIsActivated,
-      enableWhenItems: () => mockEnableWhenItems,
-      enableWhenExpressions: () => mockEnableWhenExpressions
+      enableWhenIsActivated: jest.fn(),
+      enableWhenItems: jest.fn(),
+      enableWhenExpressions: jest.fn()
     }
   }
 }));
@@ -47,7 +42,7 @@ jest.mock('../stores', () => ({
 jest.mock('../stores/rendererStylingStore', () => ({
   useRendererStylingStore: {
     use: {
-      enableWhenAsReadOnly: () => mockEnableWhenAsReadOnly
+      enableWhenAsReadOnly: jest.fn()
     }
   }
 }));
@@ -73,15 +68,29 @@ describe('useReadOnly', () => {
     readOnly: true
   };
 
+  // Helper function to get mock references  
+  const getMocks = () => {
+    const { useQuestionnaireStore } = require('../stores');
+    const { useRendererStylingStore } = require('../stores/rendererStylingStore');
+
+    return {
+      enableWhenIsActivated: useQuestionnaireStore.use.enableWhenIsActivated,
+      enableWhenItems: useQuestionnaireStore.use.enableWhenItems,
+      enableWhenExpressions: useQuestionnaireStore.use.enableWhenExpressions,
+      enableWhenAsReadOnly: useRendererStylingStore.use.enableWhenAsReadOnly
+    };
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
 
     // Set default mock returns
+    const mocks = getMocks();
     mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
-    mockEnableWhenIsActivated.mockReturnValue({});
-    mockEnableWhenItems.mockReturnValue({});
-    mockEnableWhenExpressions.mockReturnValue({});
-    mockEnableWhenAsReadOnly.mockReturnValue(false);
+    mocks.enableWhenIsActivated.mockReturnValue({});
+    mocks.enableWhenItems.mockReturnValue({});
+    mocks.enableWhenExpressions.mockReturnValue({});
+    mocks.enableWhenAsReadOnly.mockReturnValue(false);
     mockIsHiddenByEnableWhen.mockReturnValue(false);
   });
 
