@@ -47,7 +47,7 @@ describe('UseFileDrop', () => {
 
     // Default mock implementation for useDrop
     mockUseDrop.mockImplementation((callback) => {
-      const config = callback();
+      callback(); // Execute callback but don't store config
       return [
         {
           canDrop: mockMonitor.canDrop(),
@@ -442,10 +442,14 @@ describe('UseFileDrop', () => {
         initialProps: { onDrop: mockOnDrop }
       });
 
+      // Store initial dropTarget reference to compare later
       const initialDropTarget = result.current.dropTarget;
 
       // Re-render with same onDrop
       rerender({ onDrop: mockOnDrop });
+
+      // Verify dropTarget reference is maintained
+      expect(result.current.dropTarget).toBe(initialDropTarget);
 
       // useDrop should manage reference stability based on dependencies
       expect(result.current.dropTarget).toBe(mockDrop);

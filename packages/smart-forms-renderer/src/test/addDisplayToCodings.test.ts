@@ -15,15 +15,14 @@
  * limitations under the License.
  */
 
-import type { Coding, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import type { Coding } from 'fhir/r4';
 import {
   addDisplayToCacheCodings,
   addDisplayToAnswerOptions,
   addDisplayToCodingArray,
   getCodeSystemLookupPromise,
   resolveLookupPromises,
-  lookupResponseIsValid,
-  type LookupResponse
+  lookupResponseIsValid
 } from '../utils/questionnaireStoreUtils/addDisplayToCodings';
 
 // Mock fhirclient
