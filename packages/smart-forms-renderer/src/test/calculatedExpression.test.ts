@@ -25,11 +25,8 @@ import {
 } from '../utils/calculatedExpression';
 import type {
   Questionnaire,
-  QuestionnaireItem,
-  QuestionnaireResponse,
-  QuestionnaireResponseItem
+  QuestionnaireResponse
 } from 'fhir/r4';
-import type { CalculatedExpression } from '../interfaces/calculatedExpression.interface';
 
 // Mock dependencies
 jest.mock('fhirpath', () => ({

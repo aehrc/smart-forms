@@ -19,7 +19,7 @@ import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { useLayoutEffect, useState } from 'react';
 import { buildForm } from '../utils';
 import type Client from 'fhirclient/lib/Client';
-import { useSmartConfigStore } from '../stores';
+// import { useSmartConfigStore } from '../stores'; // Currently unused
 import { initialiseFhirClient } from '../utils/manageForm';
 
 /**
