@@ -54,7 +54,7 @@ describe('smartConfigStore', () => {
       } as unknown as Client;
 
       smartConfigStore.getState().setClient(mockClient);
-      
+
       const state = smartConfigStore.getState();
       expect(state.client).toBe(mockClient);
     });
@@ -62,10 +62,10 @@ describe('smartConfigStore', () => {
     it('should replace existing client', () => {
       const firstClient = { id: 'client1' } as unknown as Client;
       const secondClient = { id: 'client2' } as unknown as Client;
-      
+
       smartConfigStore.getState().setClient(firstClient);
       expect(smartConfigStore.getState().client).toBe(firstClient);
-      
+
       smartConfigStore.getState().setClient(secondClient);
       expect(smartConfigStore.getState().client).toBe(secondClient);
     });
@@ -80,7 +80,7 @@ describe('smartConfigStore', () => {
       };
 
       smartConfigStore.getState().setPatient(mockPatient);
-      
+
       const state = smartConfigStore.getState();
       expect(state.patient).toBe(mockPatient);
       expect(state.patient?.id).toBe('patient-123');
@@ -92,16 +92,16 @@ describe('smartConfigStore', () => {
         id: 'patient-1',
         name: [{ given: ['John'], family: 'Doe' }]
       };
-      
+
       const secondPatient: Patient = {
         resourceType: 'Patient',
         id: 'patient-2',
         name: [{ given: ['Jane'], family: 'Smith' }]
       };
-      
+
       smartConfigStore.getState().setPatient(firstPatient);
       expect(smartConfigStore.getState().patient?.id).toBe('patient-1');
-      
+
       smartConfigStore.getState().setPatient(secondPatient);
       expect(smartConfigStore.getState().patient?.id).toBe('patient-2');
     });
@@ -116,7 +116,7 @@ describe('smartConfigStore', () => {
       };
 
       smartConfigStore.getState().setUser(mockUser);
-      
+
       const state = smartConfigStore.getState();
       expect(state.user).toBe(mockUser);
       expect(state.user?.id).toBe('practitioner-123');
@@ -128,16 +128,16 @@ describe('smartConfigStore', () => {
         id: 'practitioner-1',
         name: [{ given: ['Dr. John'], family: 'Smith' }]
       };
-      
+
       const secondUser: Practitioner = {
         resourceType: 'Practitioner',
         id: 'practitioner-2',
         name: [{ given: ['Dr. Jane'], family: 'Doe' }]
       };
-      
+
       smartConfigStore.getState().setUser(firstUser);
       expect(smartConfigStore.getState().user?.id).toBe('practitioner-1');
-      
+
       smartConfigStore.getState().setUser(secondUser);
       expect(smartConfigStore.getState().user?.id).toBe('practitioner-2');
     });
@@ -153,7 +153,7 @@ describe('smartConfigStore', () => {
       };
 
       smartConfigStore.getState().setEncounter(mockEncounter);
-      
+
       const state = smartConfigStore.getState();
       expect(state.encounter).toBe(mockEncounter);
       expect(state.encounter?.id).toBe('encounter-123');
@@ -166,17 +166,17 @@ describe('smartConfigStore', () => {
         status: 'planned',
         class: { code: 'AMB' }
       };
-      
+
       const secondEncounter: Encounter = {
         resourceType: 'Encounter',
         id: 'encounter-2',
         status: 'in-progress',
         class: { code: 'IMP' }
       };
-      
+
       smartConfigStore.getState().setEncounter(firstEncounter);
       expect(smartConfigStore.getState().encounter?.id).toBe('encounter-1');
-      
+
       smartConfigStore.getState().setEncounter(secondEncounter);
       expect(smartConfigStore.getState().encounter?.id).toBe('encounter-2');
     });
@@ -186,10 +186,10 @@ describe('smartConfigStore', () => {
     it('should notify subscribers when client changes', () => {
       const mockSubscriber = jest.fn();
       const unsubscribe = smartConfigStore.subscribe(mockSubscriber);
-      
+
       const mockClient = { id: 'test-client' } as unknown as Client;
       smartConfigStore.getState().setClient(mockClient);
-      
+
       expect(mockSubscriber).toHaveBeenCalled();
       unsubscribe();
     });
@@ -197,13 +197,13 @@ describe('smartConfigStore', () => {
     it('should notify subscribers when patient changes', () => {
       const mockSubscriber = jest.fn();
       const unsubscribe = smartConfigStore.subscribe(mockSubscriber);
-      
+
       const mockPatient: Patient = {
         resourceType: 'Patient',
         id: 'test-patient'
       };
       smartConfigStore.getState().setPatient(mockPatient);
-      
+
       expect(mockSubscriber).toHaveBeenCalled();
       unsubscribe();
     });
@@ -211,13 +211,13 @@ describe('smartConfigStore', () => {
     it('should notify subscribers when user changes', () => {
       const mockSubscriber = jest.fn();
       const unsubscribe = smartConfigStore.subscribe(mockSubscriber);
-      
+
       const mockUser: Practitioner = {
         resourceType: 'Practitioner',
         id: 'test-practitioner'
       };
       smartConfigStore.getState().setUser(mockUser);
-      
+
       expect(mockSubscriber).toHaveBeenCalled();
       unsubscribe();
     });
@@ -225,7 +225,7 @@ describe('smartConfigStore', () => {
     it('should notify subscribers when encounter changes', () => {
       const mockSubscriber = jest.fn();
       const unsubscribe = smartConfigStore.subscribe(mockSubscriber);
-      
+
       const mockEncounter: Encounter = {
         resourceType: 'Encounter',
         id: 'test-encounter',
@@ -233,7 +233,7 @@ describe('smartConfigStore', () => {
         class: { code: 'AMB' }
       };
       smartConfigStore.getState().setEncounter(mockEncounter);
-      
+
       expect(mockSubscriber).toHaveBeenCalled();
       unsubscribe();
     });
@@ -244,8 +244,8 @@ describe('smartConfigStore', () => {
       const mockClient = { id: 'client' } as unknown as Client;
       const mockPatient: Patient = { resourceType: 'Patient', id: 'patient' };
       const mockUser: Practitioner = { resourceType: 'Practitioner', id: 'practitioner' };
-      const mockEncounter: Encounter = { 
-        resourceType: 'Encounter', 
+      const mockEncounter: Encounter = {
+        resourceType: 'Encounter',
         id: 'encounter',
         status: 'in-progress',
         class: { code: 'AMB' }
@@ -255,7 +255,7 @@ describe('smartConfigStore', () => {
       smartConfigStore.getState().setPatient(mockPatient);
       smartConfigStore.getState().setUser(mockUser);
       smartConfigStore.getState().setEncounter(mockEncounter);
-      
+
       const state = smartConfigStore.getState();
       expect(state.client).toBe(mockClient);
       expect(state.patient).toBe(mockPatient);
@@ -264,4 +264,3 @@ describe('smartConfigStore', () => {
     });
   });
 });
-

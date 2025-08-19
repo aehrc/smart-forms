@@ -35,32 +35,35 @@ import type { QuestionnaireItem } from 'fhir/r4';
 jest.mock('../utils/extensions', () => ({
   isSpecificItemControl: jest.fn((item: QuestionnaireItem, controlType: string) => {
     const extensions = item.extension || [];
-    return extensions.some(ext => 
-      ext.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl' &&
-      ext.valueCodeableConcept?.coding?.[0]?.code === controlType
+    return extensions.some(
+      (ext) =>
+        ext.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl' &&
+        ext.valueCodeableConcept?.coding?.[0]?.code === controlType
     );
   })
 }));
 
 jest.mock('../utils/qItem', () => ({
-  isHiddenByEnableWhen: jest.fn(({ linkId, enableWhenIsActivated, enableWhenItems, enableWhenExpressions }) => {
-    if (!enableWhenIsActivated) return false;
-    
-    const singleItem = enableWhenItems.singleItems[linkId];
-    if (singleItem) return !singleItem.isEnabled;
-    
-    const singleExpression = enableWhenExpressions.singleExpressions[linkId];
-    if (singleExpression) return !singleExpression.isEnabled;
-    
-    return false;
-  })
+  isHiddenByEnableWhen: jest.fn(
+    ({ linkId, enableWhenIsActivated, enableWhenItems, enableWhenExpressions }) => {
+      if (!enableWhenIsActivated) return false;
+
+      const singleItem = enableWhenItems.singleItems[linkId];
+      if (singleItem) return !singleItem.isEnabled;
+
+      const singleExpression = enableWhenExpressions.singleExpressions[linkId];
+      if (singleExpression) return !singleExpression.isEnabled;
+
+      return false;
+    }
+  )
 }));
 
 jest.mock('fhir-sdc-helpers', () => ({
   structuredDataCapture: {
     getHidden: jest.fn((item: QuestionnaireItem) => {
-      return item.extension?.find(ext => 
-        ext.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-hidden'
+      return item.extension?.find(
+        (ext) => ext.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-hidden'
       )?.valueBoolean;
     })
   }
@@ -71,7 +74,11 @@ describe('page utils', () => {
     jest.clearAllMocks();
   });
 
-  const createMockQuestionnaireItem = (linkId: string, controlType?: string, hidden?: boolean): QuestionnaireItem => ({
+  const createMockQuestionnaireItem = (
+    linkId: string,
+    controlType?: string,
+    hidden?: boolean
+  ): QuestionnaireItem => ({
     linkId,
     type: 'group' as const,
     text: `${linkId} text`,
@@ -83,10 +90,14 @@ describe('page utils', () => {
             coding: [{ code: controlType }]
           }
         },
-        ...(hidden ? [{
-          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-hidden',
-          valueBoolean: true
-        }] : [])
+        ...(hidden
+          ? [
+              {
+                url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-hidden',
+                valueBoolean: true
+              }
+            ]
+          : [])
       ]
     })
   });
@@ -138,7 +149,10 @@ describe('page utils', () => {
         'page-2': { pageIndex: 1, isComplete: false, isHidden: false }
       };
       const enableWhenItems: EnableWhenItems = { singleItems: {}, repeatItems: {} };
-      const enableWhenExpressions: EnableWhenExpressions = { singleExpressions: {}, repeatExpressions: {} };
+      const enableWhenExpressions: EnableWhenExpressions = {
+        singleExpressions: {},
+        repeatExpressions: {}
+      };
 
       const result = getFirstVisiblePage(pages, enableWhenItems, enableWhenExpressions);
 
@@ -156,7 +170,10 @@ describe('page utils', () => {
         },
         repeatItems: {}
       };
-      const enableWhenExpressions: EnableWhenExpressions = { singleExpressions: {}, repeatExpressions: {} };
+      const enableWhenExpressions: EnableWhenExpressions = {
+        singleExpressions: {},
+        repeatExpressions: {}
+      };
 
       const result = getFirstVisiblePage(pages, enableWhenItems, enableWhenExpressions);
 
@@ -188,7 +205,10 @@ describe('page utils', () => {
         'page-b': { pageIndex: 1, isComplete: false, isHidden: false }
       };
       const enableWhenItems: EnableWhenItems = { singleItems: {}, repeatItems: {} };
-      const enableWhenExpressions: EnableWhenExpressions = { singleExpressions: {}, repeatExpressions: {} };
+      const enableWhenExpressions: EnableWhenExpressions = {
+        singleExpressions: {},
+        repeatExpressions: {}
+      };
 
       const result = getFirstVisiblePage(pages, enableWhenItems, enableWhenExpressions);
 
@@ -201,7 +221,10 @@ describe('page utils', () => {
         'page-2': { pageIndex: 1, isComplete: false, isHidden: true }
       };
       const enableWhenItems: EnableWhenItems = { singleItems: {}, repeatItems: {} };
-      const enableWhenExpressions: EnableWhenExpressions = { singleExpressions: {}, repeatExpressions: {} };
+      const enableWhenExpressions: EnableWhenExpressions = {
+        singleExpressions: {},
+        repeatExpressions: {}
+      };
 
       const result = getFirstVisiblePage(pages, enableWhenItems, enableWhenExpressions);
 
@@ -211,7 +234,10 @@ describe('page utils', () => {
     test('should handle empty pages object', () => {
       const pages: Pages = {};
       const enableWhenItems: EnableWhenItems = { singleItems: {}, repeatItems: {} };
-      const enableWhenExpressions: EnableWhenExpressions = { singleExpressions: {}, repeatExpressions: {} };
+      const enableWhenExpressions: EnableWhenExpressions = {
+        singleExpressions: {},
+        repeatExpressions: {}
+      };
 
       const result = getFirstVisiblePage(pages, enableWhenItems, enableWhenExpressions);
 
@@ -323,9 +349,7 @@ describe('page utils', () => {
     });
 
     test('should return false when no page items exist', () => {
-      const items = [
-        createMockQuestionnaireItem('group-1')
-      ];
+      const items = [createMockQuestionnaireItem('group-1')];
 
       const result = isPageContainer(items);
 
@@ -339,9 +363,7 @@ describe('page utils', () => {
     });
 
     test('should return false when page item has no children', () => {
-      const items = [
-        createMockQuestionnaireItem('page-1', 'page')
-      ];
+      const items = [createMockQuestionnaireItem('page-1', 'page')];
 
       const result = isPageContainer(items);
 
@@ -382,10 +404,7 @@ describe('page utils', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'container',
         type: 'group',
-        item: [
-          createMockQuestionnaireItem('group-1'),
-          createMockQuestionnaireItem('string-1')
-        ]
+        item: [createMockQuestionnaireItem('group-1'), createMockQuestionnaireItem('string-1')]
       };
 
       const result = containsPages(qItem);
@@ -512,10 +531,7 @@ describe('page utils', () => {
     });
 
     test('should create pages for all items when allChildItemsArePages is true', () => {
-      const items = [
-        createMockQuestionnaireItem('item-1'),
-        createMockQuestionnaireItem('item-2')
-      ];
+      const items = [createMockQuestionnaireItem('item-1'), createMockQuestionnaireItem('item-2')];
 
       const result = constructPagesWithProperties(items, true);
 
@@ -552,9 +568,7 @@ describe('page utils', () => {
     });
 
     test('should handle items without extensions', () => {
-      const items = [
-        { linkId: 'item-1', type: 'group' as const, text: 'Item 1' }
-      ];
+      const items = [{ linkId: 'item-1', type: 'group' as const, text: 'Item 1' }];
 
       const result = constructPagesWithProperties(items, true);
 

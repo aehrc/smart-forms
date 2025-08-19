@@ -35,7 +35,7 @@ describe('terminologyServerStore', () => {
     it('should set a new URL', () => {
       const newUrl = 'https://test.terminology.server/fhir';
       terminologyServerStore.getState().setUrl(newUrl);
-      
+
       const state = terminologyServerStore.getState();
       expect(state.url).toBe(newUrl);
     });
@@ -43,10 +43,10 @@ describe('terminologyServerStore', () => {
     it('should update URL when called multiple times', () => {
       const firstUrl = 'https://first.server/fhir';
       const secondUrl = 'https://second.server/fhir';
-      
+
       terminologyServerStore.getState().setUrl(firstUrl);
       expect(terminologyServerStore.getState().url).toBe(firstUrl);
-      
+
       terminologyServerStore.getState().setUrl(secondUrl);
       expect(terminologyServerStore.getState().url).toBe(secondUrl);
     });
@@ -62,14 +62,14 @@ describe('terminologyServerStore', () => {
       const customUrl = 'https://custom.server/fhir';
       terminologyServerStore.getState().setUrl(customUrl);
       expect(terminologyServerStore.getState().url).toBe(customUrl);
-      
+
       terminologyServerStore.getState().resetUrl();
       expect(terminologyServerStore.getState().url).toBe(TERMINOLOGY_SERVER_URL);
     });
 
     it('should not change URL if already at default', () => {
       expect(terminologyServerStore.getState().url).toBe(TERMINOLOGY_SERVER_URL);
-      
+
       terminologyServerStore.getState().resetUrl();
       expect(terminologyServerStore.getState().url).toBe(TERMINOLOGY_SERVER_URL);
     });
@@ -79,26 +79,25 @@ describe('terminologyServerStore', () => {
     it('should notify subscribers when URL changes', () => {
       const mockSubscriber = jest.fn();
       const unsubscribe = terminologyServerStore.subscribe(mockSubscriber);
-      
+
       terminologyServerStore.getState().setUrl('https://new.server/fhir');
-      
+
       expect(mockSubscriber).toHaveBeenCalled();
       unsubscribe();
     });
 
     it('should notify subscribers when URL is reset', () => {
       const mockSubscriber = jest.fn();
-      
+
       // Change URL first
       terminologyServerStore.getState().setUrl('https://custom.server/fhir');
-      
+
       // Subscribe and reset
       const unsubscribe = terminologyServerStore.subscribe(mockSubscriber);
       terminologyServerStore.getState().resetUrl();
-      
+
       expect(mockSubscriber).toHaveBeenCalled();
       unsubscribe();
     });
   });
 });
-

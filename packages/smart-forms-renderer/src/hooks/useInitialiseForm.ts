@@ -55,12 +55,16 @@ function useInitialiseForm(
   const setEncounter = useSmartConfigStore.use.setEncounter();
 
   // Memoize store setters to prevent infinite loops
-  const storeSetters = useMemo(() => ({
-    setSmartClient,
-    setPatient,
-    setUser,
-    setEncounter
-  }), [setSmartClient, setPatient, setUser, setEncounter]);
+  // Note: Currently unused but kept for potential future use
+  // const storeSetters = useMemo(
+  //   () => ({
+  //     setSmartClient,
+  //     setPatient,
+  //     setUser,
+  //     setEncounter
+  //   }),
+  //   [setSmartClient, setPatient, setUser, setEncounter]
+  // );
 
   useLayoutEffect(() => {
     setIsBuilding(true);

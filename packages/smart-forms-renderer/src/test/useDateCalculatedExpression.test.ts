@@ -57,9 +57,9 @@ describe('useDateCalculatedExpression', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.clearAllTimers();
-    
+
     // Clear mock expressions
-    Object.keys(mockCalculatedExpressions).forEach(key => delete mockCalculatedExpressions[key]);
+    Object.keys(mockCalculatedExpressions).forEach((key) => delete mockCalculatedExpressions[key]);
   });
 
   afterEach(() => {
@@ -122,10 +122,12 @@ describe('useDateCalculatedExpression', () => {
         }
       ];
 
-      const { result } = renderHook(() => useDateCalculatedExpression({
-        ...defaultProps,
-        valueDateFhir: '2024-01-01' // Current value exists
-      }));
+      const { result } = renderHook(() =>
+        useDateCalculatedExpression({
+          ...defaultProps,
+          valueDateFhir: '2024-01-01' // Current value exists
+        })
+      );
 
       expect(mockOnChangeByCalcExpressionNull).toHaveBeenCalled();
       expect(result.current.calcExpUpdated).toBe(true);
@@ -141,10 +143,12 @@ describe('useDateCalculatedExpression', () => {
         }
       ];
 
-      const { result } = renderHook(() => useDateCalculatedExpression({
-        ...defaultProps,
-        valueDateFhir: currentValue
-      }));
+      const { result } = renderHook(() =>
+        useDateCalculatedExpression({
+          ...defaultProps,
+          valueDateFhir: currentValue
+        })
+      );
 
       expect(mockOnChangeByCalcExpressionString).not.toHaveBeenCalled();
       expect(result.current.calcExpUpdated).toBe(false);
@@ -159,10 +163,12 @@ describe('useDateCalculatedExpression', () => {
         }
       ];
 
-      const { result } = renderHook(() => useDateCalculatedExpression({
-        ...defaultProps,
-        valueDateFhir: '' // Empty string
-      }));
+      const { result } = renderHook(() =>
+        useDateCalculatedExpression({
+          ...defaultProps,
+          valueDateFhir: '' // Empty string
+        })
+      );
 
       expect(mockOnChangeByCalcExpressionString).not.toHaveBeenCalled();
       expect(mockOnChangeByCalcExpressionNull).not.toHaveBeenCalled();
@@ -228,10 +234,12 @@ describe('useDateCalculatedExpression', () => {
         }
       ];
 
-      const { result } = renderHook(() => useDateCalculatedExpression({
-        ...defaultProps,
-        valueDateFhir: '2024-01-01'
-      }));
+      const { result } = renderHook(() =>
+        useDateCalculatedExpression({
+          ...defaultProps,
+          valueDateFhir: '2024-01-01'
+        })
+      );
 
       expect(mockOnChangeByCalcExpressionString).toHaveBeenCalledWith('');
       expect(result.current.calcExpUpdated).toBe(true);
@@ -242,7 +250,7 @@ describe('useDateCalculatedExpression', () => {
     it('should use the first item-level calculated expression', () => {
       const firstValue = '2024-01-01';
       const secondValue = '2024-12-31';
-      
+
       mockCalculatedExpressions['test-date'] = [
         {
           from: 'item',
@@ -265,7 +273,7 @@ describe('useDateCalculatedExpression', () => {
     it('should prioritize item-level expressions over other types', () => {
       const itemValue = '2024-01-01';
       const populationValue = '2024-12-31';
-      
+
       mockCalculatedExpressions['test-date'] = [
         {
           from: 'population',
@@ -319,10 +327,12 @@ describe('useDateCalculatedExpression', () => {
         }
       ];
 
-      const { result } = renderHook(() => useDateCalculatedExpression({
-        ...defaultProps,
-        valueDateFhir: '2024-01-01'
-      }));
+      const { result } = renderHook(() =>
+        useDateCalculatedExpression({
+          ...defaultProps,
+          valueDateFhir: '2024-01-01'
+        })
+      );
 
       expect(result.current.calcExpUpdated).toBe(true);
 
@@ -343,10 +353,12 @@ describe('useDateCalculatedExpression', () => {
         }
       ];
 
-      const { result } = renderHook(() => useDateCalculatedExpression({
-        ...defaultProps,
-        valueDateFhir: currentValue
-      }));
+      const { result } = renderHook(() =>
+        useDateCalculatedExpression({
+          ...defaultProps,
+          valueDateFhir: currentValue
+        })
+      );
 
       expect(result.current.calcExpUpdated).toBe(false);
 
@@ -370,10 +382,9 @@ describe('useDateCalculatedExpression', () => {
         }
       ];
 
-      const { rerender } = renderHook(
-        ({ props }) => useDateCalculatedExpression(props),
-        { initialProps: { props: defaultProps } }
-      );
+      const { rerender } = renderHook(({ props }) => useDateCalculatedExpression(props), {
+        initialProps: { props: defaultProps }
+      });
 
       expect(mockOnChangeByCalcExpressionString).toHaveBeenCalledTimes(1);
 
@@ -392,12 +403,7 @@ describe('useDateCalculatedExpression', () => {
 
   describe('date format validation', () => {
     it('should handle various valid FHIR date formats', () => {
-      const validFormats = [
-        '2024',
-        '2024-01',
-        '2024-01-01',
-        '2024-12-31'
-      ];
+      const validFormats = ['2024', '2024-01', '2024-01-01', '2024-12-31'];
 
       validFormats.forEach((format, index) => {
         mockCalculatedExpressions['test-date'] = [
@@ -411,7 +417,7 @@ describe('useDateCalculatedExpression', () => {
         renderHook(() => useDateCalculatedExpression(defaultProps));
 
         expect(mockOnChangeByCalcExpressionString).toHaveBeenCalledWith(format);
-        
+
         jest.clearAllMocks();
       });
     });
@@ -439,7 +445,7 @@ describe('useDateCalculatedExpression', () => {
 
         // Should still call callback even for malformed dates
         expect(mockOnChangeByCalcExpressionString).toHaveBeenCalledWith(format);
-        
+
         jest.clearAllMocks();
       });
     });
@@ -448,7 +454,9 @@ describe('useDateCalculatedExpression', () => {
   describe('edge cases and error scenarios', () => {
     it('should handle undefined calculated expressions object', () => {
       // Clear all expressions
-      Object.keys(mockCalculatedExpressions).forEach(key => delete mockCalculatedExpressions[key]);
+      Object.keys(mockCalculatedExpressions).forEach(
+        (key) => delete mockCalculatedExpressions[key]
+      );
 
       const { result } = renderHook(() => useDateCalculatedExpression(defaultProps));
 
@@ -566,7 +574,7 @@ describe('useDateCalculatedExpression', () => {
       const transitions = [
         { from: '2023-12-31', to: '2024-01-01' }, // Year transition
         { from: '2024-01-31', to: '2024-02-01' }, // Month transition
-        { from: '2024-02-28', to: '2024-02-29' }  // Leap year transition
+        { from: '2024-02-28', to: '2024-02-29' } // Leap year transition
       ];
 
       transitions.forEach(({ from, to }, index) => {
@@ -578,14 +586,16 @@ describe('useDateCalculatedExpression', () => {
           }
         ];
 
-        const { result } = renderHook(() => useDateCalculatedExpression({
-          ...defaultProps,
-          valueDateFhir: from
-        }));
+        const { result } = renderHook(() =>
+          useDateCalculatedExpression({
+            ...defaultProps,
+            valueDateFhir: from
+          })
+        );
 
         expect(mockOnChangeByCalcExpressionString).toHaveBeenCalledWith(to);
         expect(result.current.calcExpUpdated).toBe(true);
-        
+
         jest.clearAllMocks();
       });
     });
@@ -594,12 +604,12 @@ describe('useDateCalculatedExpression', () => {
   describe('performance and optimization', () => {
     it('should only trigger effect once on mount when no expressions exist', () => {
       const effectSpy = jest.spyOn(require('react'), 'useEffect');
-      
+
       renderHook(() => useDateCalculatedExpression(defaultProps));
 
       // useEffect should be called for our hook
       expect(effectSpy).toHaveBeenCalled();
-      
+
       effectSpy.mockRestore();
     });
 
@@ -634,10 +644,9 @@ describe('useDateCalculatedExpression', () => {
         }
       ];
 
-      const { rerender } = renderHook(
-        ({ props }) => useDateCalculatedExpression(props),
-        { initialProps: { props: defaultProps } }
-      );
+      const { rerender } = renderHook(({ props }) => useDateCalculatedExpression(props), {
+        initialProps: { props: defaultProps }
+      });
 
       expect(mockOnChangeByCalcExpressionString).toHaveBeenCalledTimes(1);
 

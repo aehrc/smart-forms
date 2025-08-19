@@ -16,7 +16,7 @@
  */
 
 import type { Extension, Questionnaire } from 'fhir/r4';
-import { 
+import {
   extractQuestionnaireLevelVariables,
   getFhirPathVariables,
   getXFhirQueryVariables
@@ -34,7 +34,7 @@ describe('extractVariables - Phase 5', () => {
 
       expect(result).toEqual({
         fhirPathVariables: {
-          'QuestionnaireLevel': []
+          QuestionnaireLevel: []
         },
         xFhirQueryVariables: {}
       });
@@ -51,7 +51,7 @@ describe('extractVariables - Phase 5', () => {
 
       expect(result).toEqual({
         fhirPathVariables: {
-          'QuestionnaireLevel': []
+          QuestionnaireLevel: []
         },
         xFhirQueryVariables: {}
       });
@@ -125,14 +125,14 @@ describe('extractVariables - Phase 5', () => {
       const result = extractQuestionnaireLevelVariables(questionnaire);
 
       expect(result.xFhirQueryVariables).toEqual({
-        'observations': {
+        observations: {
           valueExpression: {
             name: 'observations',
             language: 'application/x-fhir-query',
             expression: 'Observation?patient={{%patient.id}}&category=vital-signs'
           }
         },
-        'medications': {
+        medications: {
           valueExpression: {
             name: 'medications',
             language: 'application/x-fhir-query',
@@ -537,4 +537,3 @@ describe('extractVariables - Phase 5', () => {
     });
   });
 });
-

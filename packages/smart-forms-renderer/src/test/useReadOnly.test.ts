@@ -75,7 +75,7 @@ describe('useReadOnly', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Set default mock returns
     mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
     mockEnableWhenIsActivated.mockReturnValue({});
@@ -217,11 +217,11 @@ describe('useReadOnly', () => {
     it('should call isHiddenByEnableWhen with correct parameters', () => {
       mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
       mockEnableWhenAsReadOnly.mockReturnValue(true);
-      
-      const mockActivated = { 'item1': true };
-      const mockItems = { 'item1': [] };
-      const mockExpressions = { 'item1': [] };
-      
+
+      const mockActivated = { item1: true };
+      const mockItems = { item1: [] };
+      const mockExpressions = { item1: [] };
+
       mockEnableWhenIsActivated.mockReturnValue(mockActivated);
       mockEnableWhenItems.mockReturnValue(mockItems);
       mockEnableWhenExpressions.mockReturnValue(mockExpressions);
@@ -383,16 +383,16 @@ describe('useReadOnly', () => {
 
     it('should handle complex enableWhen data structures', () => {
       const complexActivated = {
-        'item1': true,
-        'item2': false,
+        item1: true,
+        item2: false,
         'nested.item': true
       };
       const complexItems = {
-        'item1': [{ answer: { valueString: 'yes' } }],
-        'item2': []
+        item1: [{ answer: { valueString: 'yes' } }],
+        item2: []
       };
       const complexExpressions = {
-        'item1': [{ language: 'text/fhirpath', expression: '%age > 18' }]
+        item1: [{ language: 'text/fhirpath', expression: '%age > 18' }]
       };
 
       mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
@@ -477,7 +477,7 @@ describe('useReadOnly', () => {
     });
 
     it('should handle rendering extensions with additional properties', () => {
-      mockUseRenderingExtensions.mockReturnValue({ 
+      mockUseRenderingExtensions.mockReturnValue({
         readOnly: true,
         displayUnit: 'kg',
         displayPrompt: 'Enter value',
@@ -577,10 +577,9 @@ describe('useReadOnly', () => {
     });
 
     it('should handle different qItems efficiently', () => {
-      const { rerender } = renderHook(
-        ({ qItem }) => useReadOnly(qItem, false),
-        { initialProps: { qItem: basicQItem } }
-      );
+      const { rerender } = renderHook(({ qItem }) => useReadOnly(qItem, false), {
+        initialProps: { qItem: basicQItem }
+      });
 
       // Switch between different qItems
       rerender({ qItem: readOnlyQItem });

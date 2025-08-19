@@ -65,11 +65,7 @@ describe('groupTable utilities', () => {
     });
 
     it('should handle moving to the same position', () => {
-      const rows = [
-        createMockRow('row1'),
-        createMockRow('row2'),
-        createMockRow('row3')
-      ];
+      const rows = [createMockRow('row1'), createMockRow('row2'), createMockRow('row3')];
 
       const result = reorderRows(rows, 1, 1); // Move row2 to position 1 (same)
 
@@ -80,11 +76,7 @@ describe('groupTable utilities', () => {
     });
 
     it('should handle moving first element to last', () => {
-      const rows = [
-        createMockRow('first'),
-        createMockRow('middle'),
-        createMockRow('last')
-      ];
+      const rows = [createMockRow('first'), createMockRow('middle'), createMockRow('last')];
 
       const result = reorderRows(rows, 0, 2); // Move first to last position
 
@@ -95,11 +87,7 @@ describe('groupTable utilities', () => {
     });
 
     it('should handle moving last element to first', () => {
-      const rows = [
-        createMockRow('first'),
-        createMockRow('middle'),
-        createMockRow('last')
-      ];
+      const rows = [createMockRow('first'), createMockRow('middle'), createMockRow('last')];
 
       const result = reorderRows(rows, 2, 0); // Move last to first position
 
@@ -128,11 +116,7 @@ describe('groupTable utilities', () => {
     });
 
     it('should not mutate original array', () => {
-      const rows = [
-        createMockRow('row1'),
-        createMockRow('row2'),
-        createMockRow('row3')
-      ];
+      const rows = [createMockRow('row1'), createMockRow('row2'), createMockRow('row3')];
       const originalRows = [...rows];
 
       reorderRows(rows, 0, 2);
@@ -141,11 +125,7 @@ describe('groupTable utilities', () => {
     });
 
     it('should create a new array with same objects', () => {
-      const rows = [
-        createMockRow('row1'),
-        createMockRow('row2'),
-        createMockRow('row3')
-      ];
+      const rows = [createMockRow('row1'), createMockRow('row2'), createMockRow('row3')];
 
       const result = reorderRows(rows, 1, 2);
 
@@ -156,7 +136,10 @@ describe('groupTable utilities', () => {
   });
 
   describe('getGroupTableItemsToUpdate', () => {
-    const createRowWithQrItem = (id: string, qrItem?: QuestionnaireResponseItem): GroupTableRowModel => ({
+    const createRowWithQrItem = (
+      id: string,
+      qrItem?: QuestionnaireResponseItem
+    ): GroupTableRowModel => ({
       id,
       qrItem: qrItem || {
         linkId: id,
@@ -174,7 +157,7 @@ describe('groupTable utilities', () => {
     it('should return qrItems for selected rows', () => {
       const qrItem1 = { linkId: 'item1', item: [] } as QuestionnaireResponseItem;
       const qrItem2 = { linkId: 'item2', item: [] } as QuestionnaireResponseItem;
-      
+
       const tableRows = [
         createRowWithQrItem('row1', qrItem1),
         createRowWithQrItem('row2', qrItem2),
@@ -191,7 +174,7 @@ describe('groupTable utilities', () => {
 
     it('should filter out rows without qrItem', () => {
       const qrItem1 = { linkId: 'item1', item: [] } as QuestionnaireResponseItem;
-      
+
       const tableRows = [
         createRowWithQrItem('row1', qrItem1),
         createRowWithoutQrItem('row2'),
@@ -207,10 +190,7 @@ describe('groupTable utilities', () => {
     });
 
     it('should return empty array when no rows are selected', () => {
-      const tableRows = [
-        createRowWithQrItem('row1'),
-        createRowWithQrItem('row2')
-      ];
+      const tableRows = [createRowWithQrItem('row1'), createRowWithQrItem('row2')];
       const selectedIds: string[] = [];
 
       const result = getGroupTableItemsToUpdate(tableRows, selectedIds);
@@ -219,10 +199,7 @@ describe('groupTable utilities', () => {
     });
 
     it('should return empty array when no selected rows exist in table', () => {
-      const tableRows = [
-        createRowWithQrItem('row1'),
-        createRowWithQrItem('row2')
-      ];
+      const tableRows = [createRowWithQrItem('row1'), createRowWithQrItem('row2')];
       const selectedIds = ['row3', 'row4']; // Non-existent rows
 
       const result = getGroupTableItemsToUpdate(tableRows, selectedIds);
@@ -244,7 +221,7 @@ describe('groupTable utilities', () => {
         linkId: 'item1',
         item: [{ linkId: 'nested', item: [] }]
       } as QuestionnaireResponseItem;
-      
+
       const tableRows = [createRowWithQrItem('row1', originalQrItem)];
       const selectedIds = ['row1'];
 
@@ -259,7 +236,7 @@ describe('groupTable utilities', () => {
     it('should handle mixed scenarios with some rows having qrItems and some not', () => {
       const qrItem1 = { linkId: 'item1', item: [] } as QuestionnaireResponseItem;
       const qrItem3 = { linkId: 'item3', item: [] } as QuestionnaireResponseItem;
-      
+
       const tableRows = [
         createRowWithQrItem('row1', qrItem1),
         createRowWithoutQrItem('row2'),
@@ -294,9 +271,7 @@ describe('groupTable utilities', () => {
 
     describe('edge cases', () => {
       it('should handle null qrItem explicitly', () => {
-        const tableRows = [
-          { id: 'row1', qrItem: null, isSelected: false }
-        ];
+        const tableRows = [{ id: 'row1', qrItem: null, isSelected: false }];
         const selectedIds = ['row1'];
 
         const result = getGroupTableItemsToUpdate(tableRows, selectedIds);

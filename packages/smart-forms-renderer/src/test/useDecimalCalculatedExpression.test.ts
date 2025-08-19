@@ -54,9 +54,9 @@ describe('useDecimalCalculatedExpression', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
-    
+
     // Clear mock objects
-    Object.keys(mockCalculatedExpressions).forEach(key => delete mockCalculatedExpressions[key]);
+    Object.keys(mockCalculatedExpressions).forEach((key) => delete mockCalculatedExpressions[key]);
   });
 
   afterEach(() => {

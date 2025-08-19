@@ -31,10 +31,12 @@ import type { Variables } from '../interfaces';
 
 // Mock dependencies
 jest.mock('../utils/fhirpath', () => ({
-  createFhirPathContext: jest.fn(() => Promise.resolve({
-    fhirPathContext: { mockContext: true },
-    fhirPathTerminologyCache: {}
-  })),
+  createFhirPathContext: jest.fn(() =>
+    Promise.resolve({
+      fhirPathContext: { mockContext: true },
+      fhirPathTerminologyCache: {}
+    })
+  ),
   handleFhirPathResult: jest.fn((result: any) => Promise.resolve(result))
 }));
 
@@ -240,7 +242,8 @@ describe('enableWhenExpression utils', () => {
           singleExpressions: {},
           repeatExpressions: {
             'repeat-item': {
-              expression: '%resource.item.where(linkId="repeat-group").item.where(linkId="condition").answer.value = "yes"',
+              expression:
+                '%resource.item.where(linkId="repeat-group").item.where(linkId="condition").answer.value = "yes"',
               parentLinkId: 'repeat-group',
               enabledIndexes: [false, false]
             }
@@ -250,7 +253,9 @@ describe('enableWhenExpression utils', () => {
 
       const result = await evaluateInitialEnableWhenExpressions(params);
 
-      expect(result.initialEnableWhenExpressions.repeatExpressions['repeat-item'].enabledIndexes).toEqual([true, false]);
+      expect(
+        result.initialEnableWhenExpressions.repeatExpressions['repeat-item'].enabledIndexes
+      ).toEqual([true, false]);
     });
 
     test('should handle repeat expressions with no instances', async () => {
@@ -262,7 +267,8 @@ describe('enableWhenExpression utils', () => {
           singleExpressions: {},
           repeatExpressions: {
             'repeat-item': {
-              expression: '%resource.item.where(linkId="missing-group").item.where(linkId="condition").answer.value = "yes"',
+              expression:
+                '%resource.item.where(linkId="missing-group").item.where(linkId="condition").answer.value = "yes"',
               parentLinkId: 'missing-group',
               enabledIndexes: []
             }
@@ -272,7 +278,9 @@ describe('enableWhenExpression utils', () => {
 
       const result = await evaluateInitialEnableWhenExpressions(params);
 
-      expect(result.initialEnableWhenExpressions.repeatExpressions['repeat-item'].enabledIndexes).toEqual([]);
+      expect(
+        result.initialEnableWhenExpressions.repeatExpressions['repeat-item'].enabledIndexes
+      ).toEqual([]);
     });
 
     test('should handle repeat expressions with invalid expression structure', async () => {
@@ -295,7 +303,9 @@ describe('enableWhenExpression utils', () => {
       const result = await evaluateInitialEnableWhenExpressions(params);
 
       // Should not modify enabledIndexes when expression structure is invalid
-      expect(result.initialEnableWhenExpressions.repeatExpressions['repeat-item'].enabledIndexes).toEqual([false, false]);
+      expect(
+        result.initialEnableWhenExpressions.repeatExpressions['repeat-item'].enabledIndexes
+      ).toEqual([false, false]);
     });
 
     test('should handle mixed single and repeat expressions', async () => {
@@ -315,7 +325,8 @@ describe('enableWhenExpression utils', () => {
           },
           repeatExpressions: {
             'repeat-item': {
-              expression: '%resource.item.where(linkId="repeat-group").item.where(linkId="condition").answer.value = "yes"',
+              expression:
+                '%resource.item.where(linkId="repeat-group").item.where(linkId="condition").answer.value = "yes"',
               parentLinkId: 'repeat-group',
               enabledIndexes: [false]
             }
@@ -325,8 +336,12 @@ describe('enableWhenExpression utils', () => {
 
       const result = await evaluateInitialEnableWhenExpressions(params);
 
-      expect(result.initialEnableWhenExpressions.singleExpressions['single-item'].isEnabled).toBe(false);
-      expect(result.initialEnableWhenExpressions.repeatExpressions['repeat-item'].enabledIndexes).toEqual([true]);
+      expect(result.initialEnableWhenExpressions.singleExpressions['single-item'].isEnabled).toBe(
+        false
+      );
+      expect(
+        result.initialEnableWhenExpressions.repeatExpressions['repeat-item'].enabledIndexes
+      ).toEqual([true]);
     });
   });
 
@@ -336,7 +351,8 @@ describe('enableWhenExpression utils', () => {
       mockFhirpath.evaluate.mockReturnValue([true]);
 
       const enableWhenRepeatExpression: EnableWhenRepeatExpression = {
-        expression: '%resource.item.where(linkId="repeat-group").item.where(linkId="condition").answer.value = "yes"',
+        expression:
+          '%resource.item.where(linkId="repeat-group").item.where(linkId="condition").answer.value = "yes"',
         parentLinkId: 'repeat-group',
         enabledIndexes: [false]
       };
@@ -359,7 +375,8 @@ describe('enableWhenExpression utils', () => {
       mockFhirpath.evaluate.mockReturnValue([]);
 
       const enableWhenRepeatExpression: EnableWhenRepeatExpression = {
-        expression: '%resource.item.where(linkId="repeat-group").item.where(linkId="missing").answer.value = "yes"',
+        expression:
+          '%resource.item.where(linkId="repeat-group").item.where(linkId="missing").answer.value = "yes"',
         parentLinkId: 'repeat-group',
         enabledIndexes: [true]
       };
@@ -382,7 +399,8 @@ describe('enableWhenExpression utils', () => {
       mockFhirpath.evaluate.mockReturnValue([]);
 
       const enableWhenRepeatExpression: EnableWhenRepeatExpression = {
-        expression: '%resource.item.where(linkId="repeat-group").item.answer.value intersect ("yes")',
+        expression:
+          '%resource.item.where(linkId="repeat-group").item.answer.value intersect ("yes")',
         parentLinkId: 'repeat-group',
         enabledIndexes: [true]
       };
@@ -405,7 +423,8 @@ describe('enableWhenExpression utils', () => {
       mockFhirpath.evaluate.mockReturnValue([true]);
 
       const enableWhenRepeatExpression: EnableWhenRepeatExpression = {
-        expression: '%resource.item.where(linkId="repeat-group").item.where(linkId="condition").answer.value = "yes"',
+        expression:
+          '%resource.item.where(linkId="repeat-group").item.where(linkId="condition").answer.value = "yes"',
         parentLinkId: 'repeat-group',
         enabledIndexes: [true] // Same as result
       };
@@ -461,7 +480,8 @@ describe('enableWhenExpression utils', () => {
       mockFhirpath.evaluate.mockReturnValue(['string-result']);
 
       const enableWhenRepeatExpression: EnableWhenRepeatExpression = {
-        expression: '%resource.item.where(linkId="repeat-group").item.where(linkId="condition").answer.value',
+        expression:
+          '%resource.item.where(linkId="repeat-group").item.where(linkId="condition").answer.value',
         parentLinkId: 'repeat-group',
         enabledIndexes: [false]
       };
@@ -484,7 +504,8 @@ describe('enableWhenExpression utils', () => {
       const evaluateSpy = jest.spyOn(mockFhirpath, 'evaluate').mockReturnValue([true]);
 
       const enableWhenRepeatExpression: EnableWhenRepeatExpression = {
-        expression: '%resource.item.where(linkId="repeat-group").item.where(linkId="condition").answer.value = "yes"',
+        expression:
+          '%resource.item.where(linkId="repeat-group").item.where(linkId="condition").answer.value = "yes"',
         parentLinkId: 'repeat-group',
         enabledIndexes: [false, false, false]
       };
@@ -501,7 +522,7 @@ describe('enableWhenExpression utils', () => {
       // Verify the expression was modified to target the correct instance
       expect(evaluateSpy).toHaveBeenCalledWith(
         {},
-        expect.stringContaining("item[2]"),
+        expect.stringContaining('item[2]'),
         { mockContext: true },
         expect.anything(),
         expect.anything()
@@ -526,7 +547,8 @@ describe('enableWhenExpression utils', () => {
         },
         repeatExpressions: {
           'repeat-item': {
-            expression: '%resource.item.where(linkId="repeat-group").item.where(linkId="condition").answer.value = "yes"',
+            expression:
+              '%resource.item.where(linkId="repeat-group").item.where(linkId="condition").answer.value = "yes"',
             parentLinkId: 'repeat-group',
             enabledIndexes: [false]
           }
@@ -541,8 +563,12 @@ describe('enableWhenExpression utils', () => {
       );
 
       expect(result.enableWhenExpsIsUpdated).toBe(true);
-      expect(result.updatedEnableWhenExpressions.singleExpressions['single-item'].isEnabled).toBe(false);
-      expect(result.updatedEnableWhenExpressions.repeatExpressions['repeat-item'].enabledIndexes).toEqual([true]);
+      expect(result.updatedEnableWhenExpressions.singleExpressions['single-item'].isEnabled).toBe(
+        false
+      );
+      expect(
+        result.updatedEnableWhenExpressions.repeatExpressions['repeat-item'].enabledIndexes
+      ).toEqual([true]);
     });
 
     test('should return not updated when no changes occur', async () => {
@@ -561,7 +587,8 @@ describe('enableWhenExpression utils', () => {
         },
         repeatExpressions: {
           'repeat-item': {
-            expression: '%resource.item.where(linkId="repeat-group").item.where(linkId="condition").answer.value = "yes"',
+            expression:
+              '%resource.item.where(linkId="repeat-group").item.where(linkId="condition").answer.value = "yes"',
             parentLinkId: 'repeat-group',
             enabledIndexes: [false]
           }
@@ -675,12 +702,14 @@ describe('enableWhenExpression utils', () => {
         singleExpressions: {},
         repeatExpressions: {
           'repeat-item-1': {
-            expression: '%resource.item.where(linkId="group-1").item.where(linkId="condition").answer.value = "yes"',
+            expression:
+              '%resource.item.where(linkId="group-1").item.where(linkId="condition").answer.value = "yes"',
             parentLinkId: 'group-1',
             enabledIndexes: [false, true]
           },
           'repeat-item-2': {
-            expression: '%resource.item.where(linkId="group-2").item.where(linkId="condition").answer.value = "yes"',
+            expression:
+              '%resource.item.where(linkId="group-2").item.where(linkId="condition").answer.value = "yes"',
             parentLinkId: 'group-2',
             enabledIndexes: [false]
           }
@@ -695,8 +724,12 @@ describe('enableWhenExpression utils', () => {
       );
 
       expect(result.enableWhenExpsIsUpdated).toBe(true);
-      expect(result.updatedEnableWhenExpressions.repeatExpressions['repeat-item-1'].enabledIndexes).toEqual([true, false]);
-      expect(result.updatedEnableWhenExpressions.repeatExpressions['repeat-item-2'].enabledIndexes).toEqual([true]);
+      expect(
+        result.updatedEnableWhenExpressions.repeatExpressions['repeat-item-1'].enabledIndexes
+      ).toEqual([true, false]);
+      expect(
+        result.updatedEnableWhenExpressions.repeatExpressions['repeat-item-2'].enabledIndexes
+      ).toEqual([true]);
     });
   });
 });

@@ -36,79 +36,104 @@ describe('useAttachmentUrlValidation', () => {
     });
 
     it('should validate URLs with paths', () => {
-      const { result } = renderHook(() => useAttachmentUrlValidation('https://example.com/path/to/file.pdf'));
+      const { result } = renderHook(() =>
+        useAttachmentUrlValidation('https://example.com/path/to/file.pdf')
+      );
 
       expect(result.current).toBe(true);
     });
 
     it('should validate URLs with query parameters', () => {
-      const { result } = renderHook(() => useAttachmentUrlValidation('https://example.com/search?q=test&sort=date'));
+      const { result } = renderHook(() =>
+        useAttachmentUrlValidation('https://example.com/search?q=test&sort=date')
+      );
 
       expect(result.current).toBe(true);
     });
 
     it('should validate URLs with fragments', () => {
-      const { result } = renderHook(() => useAttachmentUrlValidation('https://example.com/page#section1'));
+      const { result } = renderHook(() =>
+        useAttachmentUrlValidation('https://example.com/page#section1')
+      );
 
       expect(result.current).toBe(true);
     });
 
     it('should validate URLs with ports', () => {
-      const { result } = renderHook(() => useAttachmentUrlValidation('https://example.com:8080/api'));
+      const { result } = renderHook(() =>
+        useAttachmentUrlValidation('https://example.com:8080/api')
+      );
 
       expect(result.current).toBe(true);
     });
 
     it('should validate FTP URLs', () => {
-      const { result } = renderHook(() => useAttachmentUrlValidation('ftp://files.example.com/file.zip'));
+      const { result } = renderHook(() =>
+        useAttachmentUrlValidation('ftp://files.example.com/file.zip')
+      );
 
       expect(result.current).toBe(true);
     });
 
     it('should validate file URLs', () => {
-      const { result } = renderHook(() => useAttachmentUrlValidation('file:///path/to/local/file.txt'));
+      const { result } = renderHook(() =>
+        useAttachmentUrlValidation('file:///path/to/local/file.txt')
+      );
 
       expect(result.current).toBe(true);
     });
 
     it('should validate localhost URLs', () => {
-      const { result } = renderHook(() => useAttachmentUrlValidation('http://localhost:3000/api/data'));
+      const { result } = renderHook(() =>
+        useAttachmentUrlValidation('http://localhost:3000/api/data')
+      );
 
       expect(result.current).toBe(true);
     });
 
     it('should validate IP address URLs', () => {
-      const { result } = renderHook(() => useAttachmentUrlValidation('http://192.168.1.1:8080/status'));
+      const { result } = renderHook(() =>
+        useAttachmentUrlValidation('http://192.168.1.1:8080/status')
+      );
 
       expect(result.current).toBe(true);
     });
 
     it('should validate URLs with subdomains', () => {
-      const { result } = renderHook(() => useAttachmentUrlValidation('https://api.example.com/v1/data'));
+      const { result } = renderHook(() =>
+        useAttachmentUrlValidation('https://api.example.com/v1/data')
+      );
 
       expect(result.current).toBe(true);
     });
 
     it('should validate URLs with authentication', () => {
-      const { result } = renderHook(() => useAttachmentUrlValidation('https://user:pass@example.com/secure'));
+      const { result } = renderHook(() =>
+        useAttachmentUrlValidation('https://user:pass@example.com/secure')
+      );
 
       expect(result.current).toBe(true);
     });
 
     it('should validate data URLs', () => {
-      const { result } = renderHook(() => useAttachmentUrlValidation('data:text/plain;base64,SGVsbG8gV29ybGQ='));
+      const { result } = renderHook(() =>
+        useAttachmentUrlValidation('data:text/plain;base64,SGVsbG8gV29ybGQ=')
+      );
 
       expect(result.current).toBe(true);
     });
 
     it('should validate blob URLs', () => {
-      const { result } = renderHook(() => useAttachmentUrlValidation('blob:https://example.com/550e8400-e29b-41d4-a716-446655440000'));
+      const { result } = renderHook(() =>
+        useAttachmentUrlValidation('blob:https://example.com/550e8400-e29b-41d4-a716-446655440000')
+      );
 
       expect(result.current).toBe(true);
     });
 
     it('should validate complex URLs with multiple components', () => {
-      const complexUrl = 'https://user:password@api.example.com:8080/v2/files/download?id=123&format=pdf&token=abc#page=1';
+      const complexUrl =
+        'https://user:password@api.example.com:8080/v2/files/download?id=123&format=pdf&token=abc#page=1';
       const { result } = renderHook(() => useAttachmentUrlValidation(complexUrl));
 
       expect(result.current).toBe(true);
@@ -135,7 +160,9 @@ describe('useAttachmentUrlValidation', () => {
     });
 
     it('should accept URLs with angle brackets (URL constructor encodes them)', () => {
-      const { result } = renderHook(() => useAttachmentUrlValidation('https://example.com/<invalid>'));
+      const { result } = renderHook(() =>
+        useAttachmentUrlValidation('https://example.com/<invalid>')
+      );
 
       expect(result.current).toBe(true); // URL constructor automatically encodes angle brackets
     });
@@ -171,7 +198,9 @@ describe('useAttachmentUrlValidation', () => {
     });
 
     it('should accept query parameters with spaces (URL constructor encodes them)', () => {
-      const { result } = renderHook(() => useAttachmentUrlValidation('https://example.com?query with spaces'));
+      const { result } = renderHook(() =>
+        useAttachmentUrlValidation('https://example.com?query with spaces')
+      );
 
       expect(result.current).toBe(true); // URL constructor automatically encodes spaces in query
     });
@@ -205,7 +234,9 @@ describe('useAttachmentUrlValidation', () => {
     });
 
     it('should handle URLs with encoded characters', () => {
-      const { result } = renderHook(() => useAttachmentUrlValidation('https://example.com/path%20with%20spaces'));
+      const { result } = renderHook(() =>
+        useAttachmentUrlValidation('https://example.com/path%20with%20spaces')
+      );
 
       expect(result.current).toBe(true);
     });
@@ -235,7 +266,9 @@ describe('useAttachmentUrlValidation', () => {
     });
 
     it('should handle newline characters', () => {
-      const { result } = renderHook(() => useAttachmentUrlValidation('https://example.com\nmalicious.com'));
+      const { result } = renderHook(() =>
+        useAttachmentUrlValidation('https://example.com\nmalicious.com')
+      );
 
       expect(result.current).toBe(true); // URL constructor accepts and handles newlines
     });
@@ -249,7 +282,9 @@ describe('useAttachmentUrlValidation', () => {
 
   describe('protocol-specific validations', () => {
     it('should validate custom protocols', () => {
-      const { result } = renderHook(() => useAttachmentUrlValidation('myapp://open/document?id=123'));
+      const { result } = renderHook(() =>
+        useAttachmentUrlValidation('myapp://open/document?id=123')
+      );
 
       expect(result.current).toBe(true);
     });
@@ -267,13 +302,17 @@ describe('useAttachmentUrlValidation', () => {
     });
 
     it('should validate websocket URLs', () => {
-      const { result } = renderHook(() => useAttachmentUrlValidation('ws://example.com:8080/socket'));
+      const { result } = renderHook(() =>
+        useAttachmentUrlValidation('ws://example.com:8080/socket')
+      );
 
       expect(result.current).toBe(true);
     });
 
     it('should validate secure websocket URLs', () => {
-      const { result } = renderHook(() => useAttachmentUrlValidation('wss://example.com/secure-socket'));
+      const { result } = renderHook(() =>
+        useAttachmentUrlValidation('wss://example.com/secure-socket')
+      );
 
       expect(result.current).toBe(true);
     });
@@ -281,37 +320,50 @@ describe('useAttachmentUrlValidation', () => {
 
   describe('attachment-specific scenarios', () => {
     it('should validate PDF attachment URLs', () => {
-      const { result } = renderHook(() => useAttachmentUrlValidation('https://docs.example.com/files/document.pdf'));
+      const { result } = renderHook(() =>
+        useAttachmentUrlValidation('https://docs.example.com/files/document.pdf')
+      );
 
       expect(result.current).toBe(true);
     });
 
     it('should validate image attachment URLs', () => {
-      const { result } = renderHook(() => useAttachmentUrlValidation('https://images.example.com/photo.jpg'));
+      const { result } = renderHook(() =>
+        useAttachmentUrlValidation('https://images.example.com/photo.jpg')
+      );
 
       expect(result.current).toBe(true);
     });
 
     it('should validate document attachment URLs', () => {
-      const { result } = renderHook(() => useAttachmentUrlValidation('https://storage.example.com/docs/report.docx'));
+      const { result } = renderHook(() =>
+        useAttachmentUrlValidation('https://storage.example.com/docs/report.docx')
+      );
 
       expect(result.current).toBe(true);
     });
 
     it('should validate cloud storage URLs', () => {
-      const { result } = renderHook(() => useAttachmentUrlValidation('https://drive.google.com/file/d/1234567890/view'));
+      const { result } = renderHook(() =>
+        useAttachmentUrlValidation('https://drive.google.com/file/d/1234567890/view')
+      );
 
       expect(result.current).toBe(true);
     });
 
     it('should validate direct download URLs', () => {
-      const { result } = renderHook(() => useAttachmentUrlValidation('https://downloads.example.com/files/attachment.zip?download=true'));
+      const { result } = renderHook(() =>
+        useAttachmentUrlValidation(
+          'https://downloads.example.com/files/attachment.zip?download=true'
+        )
+      );
 
       expect(result.current).toBe(true);
     });
 
     it('should validate signed URLs', () => {
-      const signedUrl = 'https://s3.amazonaws.com/bucket/file.pdf?AWSAccessKeyId=AKIAI&Expires=1234567890&Signature=abc123';
+      const signedUrl =
+        'https://s3.amazonaws.com/bucket/file.pdf?AWSAccessKeyId=AKIAI&Expires=1234567890&Signature=abc123';
       const { result } = renderHook(() => useAttachmentUrlValidation(signedUrl));
 
       expect(result.current).toBe(true);
@@ -336,7 +388,7 @@ describe('useAttachmentUrlValidation', () => {
         'not-a-url-at-all'
       ];
 
-      const results = urls.map(url => {
+      const results = urls.map((url) => {
         const { result } = renderHook(() => useAttachmentUrlValidation(url));
         return result.current;
       });
@@ -345,9 +397,13 @@ describe('useAttachmentUrlValidation', () => {
     });
 
     it('should not have side effects between calls', () => {
-      const { result: result1 } = renderHook(() => useAttachmentUrlValidation('https://example.com'));
+      const { result: result1 } = renderHook(() =>
+        useAttachmentUrlValidation('https://example.com')
+      );
       const { result: result2 } = renderHook(() => useAttachmentUrlValidation('invalid'));
-      const { result: result3 } = renderHook(() => useAttachmentUrlValidation('https://example.com'));
+      const { result: result3 } = renderHook(() =>
+        useAttachmentUrlValidation('https://example.com')
+      );
 
       expect(result1.current).toBe(true);
       expect(result2.current).toBe(false);
@@ -363,7 +419,7 @@ describe('useAttachmentUrlValidation', () => {
         results.push(result.current);
       }
 
-      expect(results.every(result => result === true)).toBe(true);
+      expect(results.every((result) => result === true)).toBe(true);
       expect(results).toHaveLength(100);
     });
   });
@@ -371,26 +427,21 @@ describe('useAttachmentUrlValidation', () => {
   describe('URL constructor error handling', () => {
     it('should gracefully handle URL constructor errors', () => {
       // Test various inputs that would cause URL constructor to throw
-      const problematicInputs = [
-        '',
-        ' ',
-        '\\invalid',
-        'http:// invalid'
-      ];
+      const problematicInputs = ['', ' ', '\\invalid', 'http:// invalid'];
 
-      problematicInputs.forEach(input => {
+      problematicInputs.forEach((input) => {
         const { result } = renderHook(() => useAttachmentUrlValidation(input));
         expect(result.current).toBe(false);
       });
 
       // Test some inputs that are actually valid
       const validInputs = [
-        'https://[::1]:8080/',  // IPv6 is valid when properly formatted
+        'https://[::1]:8080/', // IPv6 is valid when properly formatted
         'ftp://user@host', // This format is valid
         'javascript:alert("xss")' // URL constructor accepts javascript: protocol
       ];
 
-      validInputs.forEach(input => {
+      validInputs.forEach((input) => {
         const { result } = renderHook(() => useAttachmentUrlValidation(input));
         expect(result.current).toBe(true);
       });
@@ -405,7 +456,7 @@ describe('useAttachmentUrlValidation', () => {
         'data:text/plain,hello'
       ];
 
-      validInputs.forEach(input => {
+      validInputs.forEach((input) => {
         const { result } = renderHook(() => useAttachmentUrlValidation(input));
         expect(result.current).toBe(true);
       });

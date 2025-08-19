@@ -36,23 +36,51 @@ import { createQuestionnaireModel } from '../../utils/questionnaireStoreUtils/cr
 import { initialiseFormFromResponse } from '../../utils/initialise';
 import { insertCompleteAnswerOptionsIntoQuestionnaire } from '../../utils/questionnaireStoreUtils/insertAnswerOptions';
 import { readTargetConstraintLocationLinkIds } from '../../utils/targetConstraint';
-import { updateEnableWhenItemAnswer, mutateRepeatEnableWhenItemInstances } from '../../utils/enableWhen';
+import {
+  updateEnableWhenItemAnswer,
+  mutateRepeatEnableWhenItemInstances
+} from '../../utils/enableWhen';
 import { mutateRepeatEnableWhenExpressionInstances } from '../../utils/enableWhenExpression';
 import { evaluateUpdatedExpressions } from '../../utils/fhirpath';
 import { createQuestionnaireResponseItemMap } from '../../utils/questionnaireResponseStoreUtils/updatableResponseItems';
 import { applyComputedUpdates } from '../../utils/computedUpdates';
 
 // Mock the functions
-const mockCreateQuestionnaireModel = createQuestionnaireModel as jest.MockedFunction<typeof createQuestionnaireModel>;
-const mockInitialiseFormFromResponse = initialiseFormFromResponse as jest.MockedFunction<typeof initialiseFormFromResponse>;
-const mockInsertCompleteAnswerOptionsIntoQuestionnaire = insertCompleteAnswerOptionsIntoQuestionnaire as jest.MockedFunction<typeof insertCompleteAnswerOptionsIntoQuestionnaire>;
-const mockReadTargetConstraintLocationLinkIds = readTargetConstraintLocationLinkIds as jest.MockedFunction<typeof readTargetConstraintLocationLinkIds>;
-const mockUpdateEnableWhenItemAnswer = updateEnableWhenItemAnswer as jest.MockedFunction<typeof updateEnableWhenItemAnswer>;
-const mockMutateRepeatEnableWhenItemInstances = mutateRepeatEnableWhenItemInstances as jest.MockedFunction<typeof mutateRepeatEnableWhenItemInstances>;
-const mockMutateRepeatEnableWhenExpressionInstances = mutateRepeatEnableWhenExpressionInstances as jest.MockedFunction<typeof mutateRepeatEnableWhenExpressionInstances>;
-const mockEvaluateUpdatedExpressions = evaluateUpdatedExpressions as jest.MockedFunction<typeof evaluateUpdatedExpressions>;
-const mockCreateQuestionnaireResponseItemMap = createQuestionnaireResponseItemMap as jest.MockedFunction<typeof createQuestionnaireResponseItemMap>;
-const mockApplyComputedUpdates = applyComputedUpdates as jest.MockedFunction<typeof applyComputedUpdates>;
+const mockCreateQuestionnaireModel = createQuestionnaireModel as jest.MockedFunction<
+  typeof createQuestionnaireModel
+>;
+const mockInitialiseFormFromResponse = initialiseFormFromResponse as jest.MockedFunction<
+  typeof initialiseFormFromResponse
+>;
+const mockInsertCompleteAnswerOptionsIntoQuestionnaire =
+  insertCompleteAnswerOptionsIntoQuestionnaire as jest.MockedFunction<
+    typeof insertCompleteAnswerOptionsIntoQuestionnaire
+  >;
+const mockReadTargetConstraintLocationLinkIds =
+  readTargetConstraintLocationLinkIds as jest.MockedFunction<
+    typeof readTargetConstraintLocationLinkIds
+  >;
+const mockUpdateEnableWhenItemAnswer = updateEnableWhenItemAnswer as jest.MockedFunction<
+  typeof updateEnableWhenItemAnswer
+>;
+const mockMutateRepeatEnableWhenItemInstances =
+  mutateRepeatEnableWhenItemInstances as jest.MockedFunction<
+    typeof mutateRepeatEnableWhenItemInstances
+  >;
+const mockMutateRepeatEnableWhenExpressionInstances =
+  mutateRepeatEnableWhenExpressionInstances as jest.MockedFunction<
+    typeof mutateRepeatEnableWhenExpressionInstances
+  >;
+const mockEvaluateUpdatedExpressions = evaluateUpdatedExpressions as jest.MockedFunction<
+  typeof evaluateUpdatedExpressions
+>;
+const mockCreateQuestionnaireResponseItemMap =
+  createQuestionnaireResponseItemMap as jest.MockedFunction<
+    typeof createQuestionnaireResponseItemMap
+  >;
+const mockApplyComputedUpdates = applyComputedUpdates as jest.MockedFunction<
+  typeof applyComputedUpdates
+>;
 
 describe('questionnaireStore', () => {
   const mockQuestionnaire: Questionnaire = {
@@ -77,7 +105,9 @@ describe('questionnaireStore', () => {
   };
 
   const mockQuestionnaireModel = {
-    itemMap: { 'test-item': { linkId: 'test-item', type: 'string' as const, text: 'Test Question' } },
+    itemMap: {
+      'test-item': { linkId: 'test-item', type: 'string' as const, text: 'Test Question' }
+    },
     itemPreferredTerminologyServers: {},
     tabs: {},
     pages: {},
@@ -114,7 +144,7 @@ describe('questionnaireStore', () => {
   beforeEach(() => {
     // Reset all mocks
     jest.clearAllMocks();
-    
+
     // Setup default mock implementations
     mockCreateQuestionnaireModel.mockResolvedValue(mockQuestionnaireModel);
     mockInsertCompleteAnswerOptionsIntoQuestionnaire.mockReturnValue(mockQuestionnaire);
@@ -187,7 +217,7 @@ describe('questionnaireStore', () => {
   describe('initial state', () => {
     it('should have correct initial state', () => {
       const state = questionnaireStore.getState();
-      
+
       expect(state.sourceQuestionnaire).toEqual(emptyQuestionnaire);
       expect(state.itemMap).toEqual({});
       expect(state.currentTabIndex).toBe(0);
@@ -225,15 +255,17 @@ describe('questionnaireStore', () => {
       const qItemOverrideComponents = { 'test-item': jest.fn() };
       const sdcUiOverrideComponents = { 'test-control': jest.fn() };
 
-      await questionnaireStore.getState().buildSourceQuestionnaire(
-        mockQuestionnaire,
-        mockQuestionnaireResponse,
-        additionalVariables,
-        terminologyServerUrl,
-        readOnly,
-        qItemOverrideComponents,
-        sdcUiOverrideComponents
-      );
+      await questionnaireStore
+        .getState()
+        .buildSourceQuestionnaire(
+          mockQuestionnaire,
+          mockQuestionnaireResponse,
+          additionalVariables,
+          terminologyServerUrl,
+          readOnly,
+          qItemOverrideComponents,
+          sdcUiOverrideComponents
+        );
 
       expect(mockCreateQuestionnaireModel).toHaveBeenCalledWith(
         mockQuestionnaire,
@@ -249,19 +281,17 @@ describe('questionnaireStore', () => {
     it('should merge additional variables into fhirPathContext', async () => {
       const additionalVariables = { customVar: 'customValue' };
       const existingContext = { existingVar: 'existingValue' };
-      
+
       questionnaireStore.setState({ fhirPathContext: existingContext });
-      
+
       mockCreateQuestionnaireModel.mockResolvedValue({
         ...mockQuestionnaireModel,
         fhirPathContext: { modelVar: 'modelValue' }
       } as any);
 
-      await questionnaireStore.getState().buildSourceQuestionnaire(
-        mockQuestionnaire,
-        undefined,
-        additionalVariables
-      );
+      await questionnaireStore
+        .getState()
+        .buildSourceQuestionnaire(mockQuestionnaire, undefined, additionalVariables);
 
       expect(mockInitialiseFormFromResponse).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -279,7 +309,7 @@ describe('questionnaireStore', () => {
       // Set some state to destroy
       questionnaireStore.setState({
         sourceQuestionnaire: mockQuestionnaire,
-        itemMap: { 'test': { linkId: 'test', type: 'string' } },
+        itemMap: { test: { linkId: 'test', type: 'string' } },
         currentTabIndex: 5,
         currentPageIndex: 3,
         focusedLinkId: 'test-item',
@@ -310,10 +340,10 @@ describe('questionnaireStore', () => {
     describe('markTabAsComplete', () => {
       it('should toggle tab completion status', () => {
         const tabs = {
-          'tab1': { linkId: 'tab1', label: 'Tab 1', isComplete: false, tabIndex: 0, isHidden: false },
-          'tab2': { linkId: 'tab2', label: 'Tab 2', isComplete: true, tabIndex: 1, isHidden: false }
+          tab1: { linkId: 'tab1', label: 'Tab 1', isComplete: false, tabIndex: 0, isHidden: false },
+          tab2: { linkId: 'tab2', label: 'Tab 2', isComplete: true, tabIndex: 1, isHidden: false }
         };
-        
+
         questionnaireStore.setState({ tabs });
 
         questionnaireStore.getState().markTabAsComplete('tab1');
@@ -336,10 +366,22 @@ describe('questionnaireStore', () => {
     describe('markPageAsComplete', () => {
       it('should toggle page completion status', () => {
         const pages = {
-          'page1': { linkId: 'page1', label: 'Page 1', isComplete: false, pageIndex: 0, isHidden: false },
-          'page2': { linkId: 'page2', label: 'Page 2', isComplete: true, pageIndex: 1, isHidden: false }
+          page1: {
+            linkId: 'page1',
+            label: 'Page 1',
+            isComplete: false,
+            pageIndex: 0,
+            isHidden: false
+          },
+          page2: {
+            linkId: 'page2',
+            label: 'Page 2',
+            isComplete: true,
+            pageIndex: 1,
+            isHidden: false
+          }
         };
-        
+
         questionnaireStore.setState({ pages });
 
         questionnaireStore.getState().markPageAsComplete('page1');
@@ -357,21 +399,21 @@ describe('questionnaireStore', () => {
         const enableWhenLinkedQuestions = { 'source-item': ['target-item'] };
         const enableWhenItems = { singleItems: {}, repeatItems: {} };
         const newAnswer = [{ valueString: 'test' }];
-        
-        questionnaireStore.setState({ 
+
+        questionnaireStore.setState({
           enableWhenLinkedQuestions,
           enableWhenItems
         });
 
-        const updatedItems = { 
-          singleItems: { 
-            'target-item': { 
-              isEnabled: true, 
-              enableWhenStates: {}, 
-              linked: [] 
-            } 
-          }, 
-          repeatItems: {} 
+        const updatedItems = {
+          singleItems: {
+            'target-item': {
+              isEnabled: true,
+              enableWhenStates: {},
+              linked: []
+            }
+          },
+          repeatItems: {}
         };
         mockUpdateEnableWhenItemAnswer.mockReturnValue(updatedItems);
 
@@ -388,7 +430,7 @@ describe('questionnaireStore', () => {
       });
 
       it('should not update when no linked questions exist', () => {
-        questionnaireStore.setState({ 
+        questionnaireStore.setState({
           enableWhenLinkedQuestions: {},
           enableWhenItems: { singleItems: {}, repeatItems: {} }
         });
@@ -403,8 +445,8 @@ describe('questionnaireStore', () => {
       it('should mutate repeat enableWhen items and expressions', async () => {
         const enableWhenItems = { singleItems: {}, repeatItems: {} };
         const enableWhenExpressions = { singleExpressions: {}, repeatExpressions: {} };
-        
-        questionnaireStore.setState({ 
+
+        questionnaireStore.setState({
           enableWhenItems,
           enableWhenExpressions,
           variables: { fhirPathVariables: {}, xFhirQueryVariables: {} },
@@ -412,27 +454,27 @@ describe('questionnaireStore', () => {
           fhirPathTerminologyCache: {}
         });
 
-        const updatedItems = { 
-          singleItems: {}, 
-          repeatItems: { 
-            'repeat-group': { 
-              linked: [], 
-              parentLinkId: 'repeat-group', 
-              enabledIndexes: [true] 
-            } 
-          } 
+        const updatedItems = {
+          singleItems: {},
+          repeatItems: {
+            'repeat-group': {
+              linked: [],
+              parentLinkId: 'repeat-group',
+              enabledIndexes: [true]
+            }
+          }
         };
-        const updatedExpressions = { 
-          singleExpressions: {}, 
-          repeatExpressions: { 
-            'repeat-group': { 
-              expression: 'true', 
-              parentLinkId: 'repeat-group', 
-              enabledIndexes: [true] 
-            } 
-          } 
+        const updatedExpressions = {
+          singleExpressions: {},
+          repeatExpressions: {
+            'repeat-group': {
+              expression: 'true',
+              parentLinkId: 'repeat-group',
+              enabledIndexes: [true]
+            }
+          }
         };
-        
+
         mockMutateRepeatEnableWhenItemInstances.mockReturnValue(updatedItems);
         mockMutateRepeatEnableWhenExpressionInstances.mockResolvedValue({
           updatedEnableWhenExpressions: updatedExpressions,
@@ -448,7 +490,7 @@ describe('questionnaireStore', () => {
           'add'
         );
         expect(mockMutateRepeatEnableWhenExpressionInstances).toHaveBeenCalled();
-        
+
         const state = questionnaireStore.getState();
         expect(state.enableWhenItems).toBe(updatedItems);
         expect(state.enableWhenExpressions).toBe(updatedExpressions);
@@ -457,8 +499,8 @@ describe('questionnaireStore', () => {
       it('should not update state when expressions are not updated', async () => {
         const originalItems = { singleItems: {}, repeatItems: {} };
         const originalExpressions = { singleExpressions: {}, repeatExpressions: {} };
-        
-        questionnaireStore.setState({ 
+
+        questionnaireStore.setState({
           enableWhenItems: originalItems,
           enableWhenExpressions: originalExpressions
         });
@@ -468,7 +510,9 @@ describe('questionnaireStore', () => {
           isUpdated: false
         });
 
-        await questionnaireStore.getState().mutateRepeatEnableWhenItems('repeat-group', 0, 'remove');
+        await questionnaireStore
+          .getState()
+          .mutateRepeatEnableWhenItems('repeat-group', 0, 'remove');
 
         const state = questionnaireStore.getState();
         expect(state.enableWhenItems).toBe(originalItems);
@@ -479,10 +523,10 @@ describe('questionnaireStore', () => {
     describe('toggleEnableWhenActivation', () => {
       it('should toggle enableWhen activation', () => {
         expect(questionnaireStore.getState().enableWhenIsActivated).toBe(true);
-        
+
         questionnaireStore.getState().toggleEnableWhenActivation(false);
         expect(questionnaireStore.getState().enableWhenIsActivated).toBe(false);
-        
+
         questionnaireStore.getState().toggleEnableWhenActivation(true);
         expect(questionnaireStore.getState().enableWhenIsActivated).toBe(true);
       });
@@ -513,28 +557,28 @@ describe('questionnaireStore', () => {
       const updatedResponse = structuredClone(mockQuestionnaireResponse);
       const mockEvaluationResult = {
         isUpdated: true,
-        updatedTargetConstraints: { 
-          'constraint1': { 
-            key: 'constraint1', 
-            severityCode: 'error' as const, 
-            valueExpression: { expression: 'true', language: 'text/fhirpath' }, 
-            human: 'Test constraint' 
-          } 
+        updatedTargetConstraints: {
+          constraint1: {
+            key: 'constraint1',
+            severityCode: 'error' as const,
+            valueExpression: { expression: 'true', language: 'text/fhirpath' },
+            human: 'Test constraint'
+          }
         },
-        updatedAnswerOptionsToggleExpressions: { 'item1': [] },
-        updatedEnableWhenExpressions: { 
-          singleExpressions: { 
-            'item1': { 
-              expression: 'true', 
-              isEnabled: true 
-            } 
-          }, 
-          repeatExpressions: {} 
+        updatedAnswerOptionsToggleExpressions: { item1: [] },
+        updatedEnableWhenExpressions: {
+          singleExpressions: {
+            item1: {
+              expression: 'true',
+              isEnabled: true
+            }
+          },
+          repeatExpressions: {}
         },
-        updatedCalculatedExpressions: { 'item1': [] },
-        updatedProcessedValueSets: { 'valueset1': { codings: [] } },
-        updatedFhirPathContext: { 'var1': 'value1' },
-        fhirPathTerminologyCache: { 'cache1': 'cached' },
+        updatedCalculatedExpressions: { item1: [] },
+        updatedProcessedValueSets: { valueset1: { codings: [] } },
+        updatedFhirPathContext: { var1: 'value1' },
+        fhirPathTerminologyCache: { cache1: 'cached' },
         computedQRItemUpdates: {}
       };
 
@@ -556,8 +600,11 @@ describe('questionnaireStore', () => {
 
     it('should apply computed updates when they exist', async () => {
       const updatedResponse = structuredClone(mockQuestionnaireResponse);
-      const computedUpdates = { 'item1': { linkId: 'item1', answer: [{ valueString: 'computed' }] } };
-      const appliedResponse = { ...updatedResponse, item: [{ linkId: 'item1', answer: [{ valueString: 'computed' }] }] };
+      const computedUpdates = { item1: { linkId: 'item1', answer: [{ valueString: 'computed' }] } };
+      const appliedResponse = {
+        ...updatedResponse,
+        item: [{ linkId: 'item1', answer: [{ valueString: 'computed' }] }]
+      };
 
       mockEvaluateUpdatedExpressions.mockResolvedValue({
         isUpdated: true,
@@ -595,8 +642,8 @@ describe('questionnaireStore', () => {
         updatedEnableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} },
         updatedCalculatedExpressions: {},
         updatedProcessedValueSets: {},
-        updatedFhirPathContext: { 'var1': 'value1' },
-        fhirPathTerminologyCache: { 'cache1': 'cached' },
+        updatedFhirPathContext: { var1: 'value1' },
+        fhirPathTerminologyCache: { cache1: 'cached' },
         computedQRItemUpdates: {}
       };
 
@@ -605,7 +652,7 @@ describe('questionnaireStore', () => {
       await questionnaireStore.getState().updateExpressions(updatedResponse);
 
       expect(questionnaireResponseStore.getState().validateResponse).not.toHaveBeenCalled();
-      
+
       const state = questionnaireStore.getState();
       expect(state.fhirPathContext).toBe(mockEvaluationResult.updatedFhirPathContext);
       expect(state.fhirPathTerminologyCache).toBe(mockEvaluationResult.fhirPathTerminologyCache);
@@ -615,9 +662,7 @@ describe('questionnaireStore', () => {
   describe('addCodingToCache', () => {
     it('should add codings to the cache', () => {
       const valueSetUrl = 'http://example.com/valueset';
-      const codings: Coding[] = [
-        { system: 'http://example.com', code: 'test', display: 'Test' }
-      ];
+      const codings: Coding[] = [{ system: 'http://example.com', code: 'test', display: 'Test' }];
 
       questionnaireStore.getState().addCodingToCache(valueSetUrl, codings);
 
@@ -652,7 +697,7 @@ describe('questionnaireStore', () => {
   describe('setPopulatedContext', () => {
     it('should set populated context without adding to fhirPathContext', () => {
       const newContext = { testVar: 'testValue' };
-      
+
       questionnaireStore.getState().setPopulatedContext(newContext);
 
       const state = questionnaireStore.getState();
@@ -663,7 +708,7 @@ describe('questionnaireStore', () => {
     it('should set populated context and add to fhirPathContext', () => {
       const existingFhirPathContext = { existingVar: 'existingValue' };
       const newContext = { testVar: 'testValue' };
-      
+
       questionnaireStore.setState({ fhirPathContext: existingFhirPathContext });
       questionnaireStore.getState().setPopulatedContext(newContext, true);
 
@@ -679,10 +724,10 @@ describe('questionnaireStore', () => {
   describe('setFormAsReadOnly', () => {
     it('should set readOnly flag', () => {
       expect(questionnaireStore.getState().readOnly).toBe(false);
-      
+
       questionnaireStore.getState().setFormAsReadOnly(true);
       expect(questionnaireStore.getState().readOnly).toBe(true);
-      
+
       questionnaireStore.getState().setFormAsReadOnly(false);
       expect(questionnaireStore.getState().readOnly).toBe(false);
     });
@@ -692,9 +737,9 @@ describe('questionnaireStore', () => {
     it('should notify subscribers when state changes', () => {
       const mockSubscriber = jest.fn();
       const unsubscribe = questionnaireStore.subscribe(mockSubscriber);
-      
+
       questionnaireStore.getState().switchTab(1);
-      
+
       expect(mockSubscriber).toHaveBeenCalled();
       unsubscribe();
     });

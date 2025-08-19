@@ -50,7 +50,7 @@ describe('useSliderExtensions', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Set default mock returns to null (no extensions)
     mockGetTextDisplayLower.mockReturnValue(null);
     mockGetTextDisplayUpper.mockReturnValue(null);
@@ -411,10 +411,9 @@ describe('useSliderExtensions', () => {
 
   describe('memoization and re-rendering', () => {
     it('should return consistent results for same qItem', () => {
-      const { result, rerender } = renderHook(
-        ({ qItem }) => useSliderExtensions(qItem),
-        { initialProps: { qItem: basicQItem } }
-      );
+      const { result, rerender } = renderHook(({ qItem }) => useSliderExtensions(qItem), {
+        initialProps: { qItem: basicQItem }
+      });
 
       const firstResult = result.current;
 
@@ -425,10 +424,9 @@ describe('useSliderExtensions', () => {
     });
 
     it('should recompute when qItem changes', () => {
-      const { result, rerender } = renderHook(
-        ({ qItem }) => useSliderExtensions(qItem),
-        { initialProps: { qItem: basicQItem } }
-      );
+      const { result, rerender } = renderHook(({ qItem }) => useSliderExtensions(qItem), {
+        initialProps: { qItem: basicQItem }
+      });
 
       const firstResult = result.current;
 
@@ -447,10 +445,9 @@ describe('useSliderExtensions', () => {
     });
 
     it('should call utility functions for each render', () => {
-      const { rerender } = renderHook(
-        ({ qItem }) => useSliderExtensions(qItem),
-        { initialProps: { qItem: basicQItem } }
-      );
+      const { rerender } = renderHook(({ qItem }) => useSliderExtensions(qItem), {
+        initialProps: { qItem: basicQItem }
+      });
 
       expect(mockGetMinValue).toHaveBeenCalledTimes(1);
 
@@ -494,7 +491,7 @@ describe('useSliderExtensions', () => {
       // Use regular number but mock toString to return null - this tests the fallback chain
       mockGetMinValue.mockReturnValue(25);
       mockGetTextDisplayLower.mockReturnValue(null);
-      
+
       // Override toString method to return null for this specific test case
       jest.spyOn(Number.prototype, 'toString').mockReturnValueOnce(null as any);
 
@@ -502,7 +499,7 @@ describe('useSliderExtensions', () => {
 
       expect(result.current.minValue).toBe(25);
       expect(result.current.minLabel).toBe('0'); // Should fall back to defaultMinLabel
-      
+
       jest.restoreAllMocks();
     });
 
@@ -510,7 +507,7 @@ describe('useSliderExtensions', () => {
       // Use regular number but mock toString to return null - this tests the fallback chain
       mockGetMaxValue.mockReturnValue(75);
       mockGetTextDisplayUpper.mockReturnValue(null);
-      
+
       const { result } = renderHook(() => useSliderExtensions(basicQItem));
 
       expect(result.current.maxValue).toBe(75);

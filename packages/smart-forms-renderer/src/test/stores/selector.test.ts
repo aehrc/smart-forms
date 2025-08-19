@@ -29,18 +29,21 @@ interface TestStoreType {
   toggle: () => void;
 }
 
-const createTestStore = () => createStore<TestStoreType>()((set) => ({
-  count: 0,
-  name: 'test',
-  isActive: false,
-  increment: () => set((state) => ({ count: state.count + 1 })),
-  setName: (name: string) => set(() => ({ name })),
-  toggle: () => set((state) => ({ isActive: !state.isActive }))
-}));
+const createTestStore = () =>
+  createStore<TestStoreType>()((set) => ({
+    count: 0,
+    name: 'test',
+    isActive: false,
+    increment: () => set((state) => ({ count: state.count + 1 })),
+    setName: (name: string) => set(() => ({ name })),
+    toggle: () => set((state) => ({ isActive: !state.isActive }))
+  }));
 
 describe('createSelectors', () => {
   let testStore: ReturnType<typeof createTestStore>;
-  let testStoreWithSelectors: ReturnType<typeof createSelectors<ReturnType<typeof createTestStore>>>;
+  let testStoreWithSelectors: ReturnType<
+    typeof createSelectors<ReturnType<typeof createTestStore>>
+  >;
 
   beforeEach(() => {
     testStore = createTestStore();
@@ -62,10 +65,14 @@ describe('createSelectors', () => {
     it('should create selectors for all state properties', () => {
       const state = testStore.getState();
       const stateKeys = Object.keys(state);
-      
-      stateKeys.forEach(key => {
-        expect(testStoreWithSelectors.use[key as keyof typeof testStoreWithSelectors.use]).toBeDefined();
-        expect(typeof testStoreWithSelectors.use[key as keyof typeof testStoreWithSelectors.use]).toBe('function');
+
+      stateKeys.forEach((key) => {
+        expect(
+          testStoreWithSelectors.use[key as keyof typeof testStoreWithSelectors.use]
+        ).toBeDefined();
+        expect(
+          typeof testStoreWithSelectors.use[key as keyof typeof testStoreWithSelectors.use]
+        ).toBe('function');
       });
     });
   });
@@ -92,23 +99,31 @@ describe('createSelectors', () => {
     });
 
     it('should react to state changes', () => {
-      const { result: countResult, rerender } = renderHook(() => testStoreWithSelectors.use.count());
-      
+      const { result: countResult, rerender } = renderHook(() =>
+        testStoreWithSelectors.use.count()
+      );
+
       expect(countResult.current).toBe(0);
-      
+
       // Change the state
       act(() => {
         testStore.getState().increment();
       });
       rerender();
-      
+
       expect(countResult.current).toBe(1);
     });
 
     it('should handle multiple state changes correctly', () => {
-      const { result: countResult, rerender: rerenderCount } = renderHook(() => testStoreWithSelectors.use.count());
-      const { result: nameResult, rerender: rerenderName } = renderHook(() => testStoreWithSelectors.use.name());
-      const { result: isActiveResult, rerender: rerenderIsActive } = renderHook(() => testStoreWithSelectors.use.isActive());
+      const { result: countResult, rerender: rerenderCount } = renderHook(() =>
+        testStoreWithSelectors.use.count()
+      );
+      const { result: nameResult, rerender: rerenderName } = renderHook(() =>
+        testStoreWithSelectors.use.name()
+      );
+      const { result: isActiveResult, rerender: rerenderIsActive } = renderHook(() =>
+        testStoreWithSelectors.use.isActive()
+      );
 
       // Initial values
       expect(countResult.current).toBe(0);
@@ -165,7 +180,7 @@ describe('createSelectors', () => {
     it('should handle empty store', () => {
       const emptyStore = createStore(() => ({}));
       const emptyStoreWithSelectors = createSelectors(emptyStore);
-      
+
       expect(emptyStoreWithSelectors.use).toBeDefined();
       expect(Object.keys(emptyStoreWithSelectors.use)).toHaveLength(0);
     });
@@ -175,13 +190,15 @@ describe('createSelectors', () => {
         doSomething: () => 'done',
         doSomethingElse: () => 'also done'
       }));
-      
+
       const functionsOnlyStoreWithSelectors = createSelectors(functionsOnlyStore);
-      
+
       expect(functionsOnlyStoreWithSelectors.use.doSomething).toBeDefined();
       expect(functionsOnlyStoreWithSelectors.use.doSomethingElse).toBeDefined();
-      
-      const { result: doSomethingResult } = renderHook(() => functionsOnlyStoreWithSelectors.use.doSomething());
+
+      const { result: doSomethingResult } = renderHook(() =>
+        functionsOnlyStoreWithSelectors.use.doSomething()
+      );
       expect(typeof doSomethingResult.current).toBe('function');
     });
   });

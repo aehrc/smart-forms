@@ -40,8 +40,12 @@ import { isHiddenByEnableWhen } from '../utils/qItem';
 import { qrItemHasItemsOrAnswer } from '../utils/manageForm';
 import { getQrItemsIndex, mapQItemsIndex } from '../utils/mapItem';
 
-const mockIsHiddenByEnableWhen = isHiddenByEnableWhen as jest.MockedFunction<typeof isHiddenByEnableWhen>;
-const mockQrItemHasItemsOrAnswer = qrItemHasItemsOrAnswer as jest.MockedFunction<typeof qrItemHasItemsOrAnswer>;
+const mockIsHiddenByEnableWhen = isHiddenByEnableWhen as jest.MockedFunction<
+  typeof isHiddenByEnableWhen
+>;
+const mockQrItemHasItemsOrAnswer = qrItemHasItemsOrAnswer as jest.MockedFunction<
+  typeof qrItemHasItemsOrAnswer
+>;
 const mockGetQrItemsIndex = getQrItemsIndex as jest.MockedFunction<typeof getQrItemsIndex>;
 const mockMapQItemsIndex = mapQItemsIndex as jest.MockedFunction<typeof mapQItemsIndex>;
 
@@ -182,7 +186,7 @@ describe('removeEmptyAnswersFromItemRecursive', () => {
     ]);
 
     const result = removeEmptyAnswersFromItemRecursive(qItem, qrItem, enableWhenContext);
-    
+
     expect(result).not.toBeNull();
     expect((result as QuestionnaireResponseItem).item).toHaveLength(1);
     expect((result as QuestionnaireResponseItem).item?.[0].linkId).toBe('child-item-1');
@@ -215,14 +219,14 @@ describe('removeEmptyAnswersFromItemRecursive', () => {
     ];
 
     mockQrItemHasItemsOrAnswer
-      .mockReturnValueOnce(true)  // First item has answer
+      .mockReturnValueOnce(true) // First item has answer
       .mockReturnValueOnce(false) // Second item has no answer
       .mockReturnValueOnce(true); // Third item has answer
-    
+
     mockIsHiddenByEnableWhen.mockReturnValue(false);
 
     const result = removeEmptyAnswersFromItemRecursive(qItem, qrItems, enableWhenContext);
-    
+
     expect(Array.isArray(result)).toBe(true);
     // The function appears to return an empty array for repeat groups in this test setup
     // This documents the actual behavior rather than expected behavior

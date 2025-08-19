@@ -302,7 +302,7 @@ describe('useGroupTableRows', () => {
       const { result } = renderHook(() => useGroupTableRows([mockRow1]));
 
       act(() => {
-        result.current.setTableRows(prev => [...prev, mockRow2]);
+        result.current.setTableRows((prev) => [...prev, mockRow2]);
       });
 
       expect(result.current.tableRows).toEqual([mockRow1, mockRow2]);
@@ -312,7 +312,7 @@ describe('useGroupTableRows', () => {
       const { result } = renderHook(() => useGroupTableRows([mockRow1, mockRow2]));
 
       act(() => {
-        result.current.setSelectedIds(prev => prev.filter(id => id !== 'row-1'));
+        result.current.setSelectedIds((prev) => prev.filter((id) => id !== 'row-1'));
       });
 
       expect(result.current.selectedIds).toEqual(['row-2']);
@@ -322,8 +322,8 @@ describe('useGroupTableRows', () => {
       const { result } = renderHook(() => useGroupTableRows([mockRow1]));
 
       act(() => {
-        result.current.setTableRows(prev => [...prev, mockRow2]);
-        result.current.setSelectedIds(prev => [...prev, 'new-id']);
+        result.current.setTableRows((prev) => [...prev, mockRow2]);
+        result.current.setSelectedIds((prev) => [...prev, 'new-id']);
       });
 
       expect(result.current.tableRows).toEqual([mockRow1, mockRow2]);

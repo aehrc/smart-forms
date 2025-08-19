@@ -29,7 +29,10 @@ describe('extractTargetConstraint - Phase 5', () => {
         extension: [
           { url: 'key', valueId: 'constraint-1' },
           { url: 'severity', valueCode: 'error' },
-          { url: 'expression', valueExpression: { expression: 'age > 0', language: 'text/fhirpath' } },
+          {
+            url: 'expression',
+            valueExpression: { expression: 'age > 0', language: 'text/fhirpath' }
+          },
           { url: 'human', valueString: 'Age must be greater than 0' }
         ]
       };
@@ -51,7 +54,10 @@ describe('extractTargetConstraint - Phase 5', () => {
         extension: [
           { url: 'key', valueId: 'constraint-2' },
           { url: 'severity', valueCode: 'warning' },
-          { url: 'expression', valueExpression: { expression: 'name.length > 0', language: 'text/fhirpath' } },
+          {
+            url: 'expression',
+            valueExpression: { expression: 'name.length > 0', language: 'text/fhirpath' }
+          },
           { url: 'human', valueString: 'Name is required' },
           { url: 'location', valueString: 'Patient.name' }
         ]
@@ -74,7 +80,10 @@ describe('extractTargetConstraint - Phase 5', () => {
         extension: [
           { url: 'key', valueId: 'constraint-1' },
           { url: 'severity', valueCode: 'error' },
-          { url: 'expression', valueExpression: { expression: 'age > 0', language: 'text/fhirpath' } },
+          {
+            url: 'expression',
+            valueExpression: { expression: 'age > 0', language: 'text/fhirpath' }
+          },
           { url: 'human', valueString: 'Age must be greater than 0' }
         ]
       };
@@ -89,7 +98,10 @@ describe('extractTargetConstraint - Phase 5', () => {
         url: 'http://hl7.org/fhir/StructureDefinition/targetConstraint',
         extension: [
           { url: 'severity', valueCode: 'error' },
-          { url: 'expression', valueExpression: { expression: 'age > 0', language: 'text/fhirpath' } },
+          {
+            url: 'expression',
+            valueExpression: { expression: 'age > 0', language: 'text/fhirpath' }
+          },
           { url: 'human', valueString: 'Age must be greater than 0' }
         ]
       };
@@ -105,7 +117,10 @@ describe('extractTargetConstraint - Phase 5', () => {
         extension: [
           { url: 'key', valueInteger: 123 }, // invalid type
           { url: 'severity', valueCode: 'error' },
-          { url: 'expression', valueExpression: { expression: 'age > 0', language: 'text/fhirpath' } },
+          {
+            url: 'expression',
+            valueExpression: { expression: 'age > 0', language: 'text/fhirpath' }
+          },
           { url: 'human', valueString: 'Age must be greater than 0' }
         ]
       };
@@ -120,7 +135,10 @@ describe('extractTargetConstraint - Phase 5', () => {
         url: 'http://hl7.org/fhir/StructureDefinition/targetConstraint',
         extension: [
           { url: 'key', valueId: 'constraint-1' },
-          { url: 'expression', valueExpression: { expression: 'age > 0', language: 'text/fhirpath' } },
+          {
+            url: 'expression',
+            valueExpression: { expression: 'age > 0', language: 'text/fhirpath' }
+          },
           { url: 'human', valueString: 'Age must be greater than 0' }
         ]
       };
@@ -136,7 +154,10 @@ describe('extractTargetConstraint - Phase 5', () => {
         extension: [
           { url: 'key', valueId: 'constraint-1' },
           { url: 'severity', valueCode: 'info' }, // invalid severity
-          { url: 'expression', valueExpression: { expression: 'age > 0', language: 'text/fhirpath' } },
+          {
+            url: 'expression',
+            valueExpression: { expression: 'age > 0', language: 'text/fhirpath' }
+          },
           { url: 'human', valueString: 'Age must be greater than 0' }
         ]
       };
@@ -183,7 +204,10 @@ describe('extractTargetConstraint - Phase 5', () => {
         extension: [
           { url: 'key', valueId: 'constraint-1' },
           { url: 'severity', valueCode: 'error' },
-          { url: 'expression', valueExpression: { expression: 'age > 0', language: 'text/fhirpath' } }
+          {
+            url: 'expression',
+            valueExpression: { expression: 'age > 0', language: 'text/fhirpath' }
+          }
         ]
       };
 
@@ -198,7 +222,10 @@ describe('extractTargetConstraint - Phase 5', () => {
         extension: [
           { url: 'key', valueId: 'constraint-1' },
           { url: 'severity', valueCode: 'error' },
-          { url: 'expression', valueExpression: { expression: 'age > 0', language: 'text/fhirpath' } },
+          {
+            url: 'expression',
+            valueExpression: { expression: 'age > 0', language: 'text/fhirpath' }
+          },
           { url: 'human' } // missing valueString
         ]
       };
@@ -225,7 +252,10 @@ describe('extractTargetConstraint - Phase 5', () => {
         extension: [
           { url: 'key', valueId: 'error-constraint' },
           { url: 'severity', valueCode: 'error' },
-          { url: 'expression', valueExpression: { expression: 'age > 0', language: 'text/fhirpath' } },
+          {
+            url: 'expression',
+            valueExpression: { expression: 'age > 0', language: 'text/fhirpath' }
+          },
           { url: 'human', valueString: 'Age must be greater than 0' }
         ]
       };
@@ -235,7 +265,10 @@ describe('extractTargetConstraint - Phase 5', () => {
         extension: [
           { url: 'key', valueId: 'warning-constraint' },
           { url: 'severity', valueCode: 'warning' },
-          { url: 'expression', valueExpression: { expression: 'name.exists()', language: 'text/fhirpath' } },
+          {
+            url: 'expression',
+            valueExpression: { expression: 'name.exists()', language: 'text/fhirpath' }
+          },
           { url: 'human', valueString: 'Name should be provided' }
         ]
       };
@@ -283,7 +316,10 @@ describe('extractTargetConstraint - Phase 5', () => {
             extension: [
               { url: 'key', valueId: 'age-constraint' },
               { url: 'severity', valueCode: 'error' },
-              { url: 'expression', valueExpression: { expression: 'age >= 18', language: 'text/fhirpath' } },
+              {
+                url: 'expression',
+                valueExpression: { expression: 'age >= 18', language: 'text/fhirpath' }
+              },
               { url: 'human', valueString: 'Age must be 18 or older' }
             ]
           }
@@ -313,7 +349,10 @@ describe('extractTargetConstraint - Phase 5', () => {
             extension: [
               { url: 'key', valueId: 'age-constraint' },
               { url: 'severity', valueCode: 'error' },
-              { url: 'expression', valueExpression: { expression: 'age >= 18', language: 'text/fhirpath' } },
+              {
+                url: 'expression',
+                valueExpression: { expression: 'age >= 18', language: 'text/fhirpath' }
+              },
               { url: 'human', valueString: 'Age must be 18 or older' }
             ]
           },
@@ -322,7 +361,10 @@ describe('extractTargetConstraint - Phase 5', () => {
             extension: [
               { url: 'key', valueId: 'name-constraint' },
               { url: 'severity', valueCode: 'warning' },
-              { url: 'expression', valueExpression: { expression: 'name.length > 2', language: 'text/fhirpath' } },
+              {
+                url: 'expression',
+                valueExpression: { expression: 'name.length > 2', language: 'text/fhirpath' }
+              },
               { url: 'human', valueString: 'Name should be more than 2 characters' },
               { url: 'location', valueString: 'Patient.name' }
             ]
@@ -360,7 +402,10 @@ describe('extractTargetConstraint - Phase 5', () => {
             extension: [
               { url: 'key', valueId: 'invalid-constraint' },
               { url: 'severity', valueCode: 'error' },
-              { url: 'expression', valueExpression: { expression: 'true', language: 'text/fhirpath' } },
+              {
+                url: 'expression',
+                valueExpression: { expression: 'true', language: 'text/fhirpath' }
+              },
               { url: 'human', valueString: 'Invalid constraint' }
             ]
           },
@@ -369,7 +414,10 @@ describe('extractTargetConstraint - Phase 5', () => {
             extension: [
               { url: 'key', valueId: 'valid-constraint' },
               { url: 'severity', valueCode: 'error' },
-              { url: 'expression', valueExpression: { expression: 'age > 0', language: 'text/fhirpath' } },
+              {
+                url: 'expression',
+                valueExpression: { expression: 'age > 0', language: 'text/fhirpath' }
+              },
               { url: 'human', valueString: 'Valid constraint' }
             ]
           },
@@ -411,9 +459,7 @@ describe('extractTargetConstraint - Phase 5', () => {
           },
           {
             url: 'http://hl7.org/fhir/StructureDefinition/other-extension',
-            extension: [
-              { url: 'someField', valueString: 'someValue' }
-            ]
+            extension: [{ url: 'someField', valueString: 'someValue' }]
           }
         ]
       };
@@ -432,7 +478,10 @@ describe('extractTargetConstraint - Phase 5', () => {
             url: 'http://hl7.org/fhir/StructureDefinition/targetConstraint',
             extension: [
               { url: 'severity', valueCode: 'error' },
-              { url: 'expression', valueExpression: { expression: 'true', language: 'text/fhirpath' } },
+              {
+                url: 'expression',
+                valueExpression: { expression: 'true', language: 'text/fhirpath' }
+              },
               { url: 'human', valueString: 'Some constraint' }
               // missing key
             ]

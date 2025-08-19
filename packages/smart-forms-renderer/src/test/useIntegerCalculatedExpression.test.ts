@@ -24,7 +24,7 @@ import useIntegerCalculatedExpression from '../hooks/useIntegerCalculatedExpress
 
 // Mock stores
 const mockCalculatedExpressions: Record<string, any[]> = {};
-let mockCalculatedExpressionsFunction = jest.fn(() => mockCalculatedExpressions);
+const mockCalculatedExpressionsFunction = jest.fn(() => mockCalculatedExpressions);
 
 jest.mock('../stores', () => ({
   useQuestionnaireStore: {
@@ -54,10 +54,10 @@ describe('useIntegerCalculatedExpression', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
-    
+
     // Clear mock objects
-    Object.keys(mockCalculatedExpressions).forEach(key => delete mockCalculatedExpressions[key]);
-    
+    Object.keys(mockCalculatedExpressions).forEach((key) => delete mockCalculatedExpressions[key]);
+
     // Reset mock function
     mockCalculatedExpressionsFunction.mockClear();
     mockCalculatedExpressionsFunction.mockReturnValue(mockCalculatedExpressions);
@@ -560,7 +560,7 @@ describe('useIntegerCalculatedExpression', () => {
           }
         ]
       };
-      
+
       mockCalculatedExpressionsFunction.mockReturnValueOnce(newCalculatedExpressions);
 
       rerender({ props: defaultProps });

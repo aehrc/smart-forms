@@ -188,11 +188,11 @@ describe('parseDecimalStringToFloat', () => {
   test('should parse valid decimal strings with precision', () => {
     expect(parseDecimalStringToFloat('123.456', 2)).toBe(123.46);
     expect(parseDecimalStringToFloat('789.123', 1)).toBe(789.1);
-    expect(parseDecimalStringToFloat('0.999', 2)).toBe(1.00);
+    expect(parseDecimalStringToFloat('0.999', 2)).toBe(1.0);
   });
 
   test('should handle integers', () => {
-    expect(parseDecimalStringToFloat('123', 2)).toBe(123.00);
+    expect(parseDecimalStringToFloat('123', 2)).toBe(123.0);
     expect(parseDecimalStringToFloat('456', 0)).toBe(456);
   });
 
@@ -209,7 +209,7 @@ describe('parseDecimalStringToFloat', () => {
 
   test('should handle very small numbers', () => {
     expect(parseDecimalStringToFloat('0.001', 3)).toBe(0.001);
-    expect(parseDecimalStringToFloat('0.0001', 2)).toBe(0.00);
+    expect(parseDecimalStringToFloat('0.0001', 2)).toBe(0.0);
     expect(parseDecimalStringToFloat('0.0056', 3)).toBe(0.006);
   });
 
@@ -219,7 +219,7 @@ describe('parseDecimalStringToFloat', () => {
   });
 
   test('should handle edge cases', () => {
-    expect(parseDecimalStringToFloat('0', 2)).toBe(0.00);
+    expect(parseDecimalStringToFloat('0', 2)).toBe(0.0);
     expect(parseDecimalStringToFloat('0.0', 1)).toBe(0.0);
     expect(parseDecimalStringToFloat('1000000.123456', 2)).toBe(1000000.12);
   });

@@ -33,7 +33,9 @@ jest.mock('../utils/manageForm', () => ({
 }));
 
 import { qrItemHasItemsOrAnswer } from '../utils/manageForm';
-const mockQrItemHasItemsOrAnswer = qrItemHasItemsOrAnswer as jest.MockedFunction<typeof qrItemHasItemsOrAnswer>;
+const mockQrItemHasItemsOrAnswer = qrItemHasItemsOrAnswer as jest.MockedFunction<
+  typeof qrItemHasItemsOrAnswer
+>;
 
 describe('removeNoAnswerQrItem', () => {
   beforeEach(() => {
@@ -107,7 +109,7 @@ describe('removeNoAnswerQrItem', () => {
       .mockReturnValueOnce(true); // item-3 has answer
 
     const result = removeNoAnswerQrItem(qrItem);
-    
+
     expect(result?.item).toHaveLength(2);
     expect(result?.item?.[0].linkId).toBe('item-1');
     expect(result?.item?.[1].linkId).toBe('item-3');
@@ -172,7 +174,7 @@ describe('createEmptyQrGroup', () => {
     };
 
     const result = createEmptyQrGroup(qItem);
-    
+
     expect(result).toEqual({
       linkId: 'group-1',
       text: 'Test Group',
@@ -187,7 +189,7 @@ describe('createEmptyQrGroup', () => {
     };
 
     const result = createEmptyQrGroup(qItem);
-    
+
     expect(result).toEqual({
       linkId: 'group-1',
       item: []
@@ -204,7 +206,7 @@ describe('createEmptyQrItem', () => {
     };
 
     const result = createEmptyQrItem(qItem, undefined);
-    
+
     expect(result).toEqual({
       linkId: 'item-1',
       text: 'Test Item'
@@ -218,7 +220,7 @@ describe('createEmptyQrItem', () => {
     };
 
     const result = createEmptyQrItem(qItem, undefined);
-    
+
     expect(result).toEqual({
       linkId: 'item-1'
     });
@@ -233,7 +235,7 @@ describe('createEmptyQrItem', () => {
     };
 
     const result = createEmptyQrItem(qItem, 'repeat-key-2');
-    
+
     expect(result).toEqual({
       linkId: 'group-1',
       text: 'Repeat Group',
@@ -263,7 +265,7 @@ describe('updateQrItemsInGroup', () => {
 
     // Function modifies the input in place
     updateQrItemsInGroup(newQrItem, null, questionnaireResponseOrQrItem, qItemsIndexMap);
-    
+
     expect(questionnaireResponseOrQrItem.item).toBeDefined();
     expect(questionnaireResponseOrQrItem.item).toHaveLength(1);
     expect(questionnaireResponseOrQrItem.item?.[0].linkId).toBe('item-1');
@@ -300,7 +302,7 @@ describe('updateQrItemsInGroup', () => {
     const qItemsIndexMap = { 'item-1': 0 }; // Does not contain 'unknown-item'
 
     updateQrItemsInGroup(newQrItem, null, questionnaireResponseOrQrItem, qItemsIndexMap);
-    
+
     // Should not add item since it's not in the index map
     expect(questionnaireResponseOrQrItem.item).toHaveLength(0);
   });
@@ -324,7 +326,7 @@ describe('updateQrItemsInGroup', () => {
     expect(() => {
       updateQrItemsInGroup(newQrItem, null, questionnaireResponseOrQrItem, qItemsIndexMap);
     }).not.toThrow();
-    
+
     // The function has a limitation - it doesn't update the original object when item is undefined
     // This test documents the current behavior rather than the ideal behavior
     expect(questionnaireResponseOrQrItem.item).toBeUndefined();
@@ -352,7 +354,7 @@ describe('updateQrItemsInGroup', () => {
     const qItemsIndexMap = { 'item-1': 0 };
 
     updateQrItemsInGroup(newQrItem, null, questionnaireResponseOrQrItem, qItemsIndexMap);
-    
+
     expect(questionnaireResponseOrQrItem.item).toHaveLength(1);
     expect(questionnaireResponseOrQrItem.item?.[0].answer?.[0].valueString).toBe('new value');
   });
@@ -379,7 +381,7 @@ describe('updateQrItemsInGroup', () => {
     const qItemsIndexMap = { 'item-1': 0 };
 
     updateQrItemsInGroup(newQrItem, null, questionnaireResponseOrQrItem, qItemsIndexMap);
-    
+
     // Item should be removed since it has no answer
     expect(questionnaireResponseOrQrItem.item).toHaveLength(0);
   });
@@ -415,7 +417,7 @@ describe('updateQrItemsInGroup', () => {
     mockQrItemHasItemsOrAnswer.mockReturnValue(true);
 
     updateQrItemsInGroup(newItem2, null, questionnaireResponseOrQrItem, qItemsIndexMap);
-    
+
     expect(questionnaireResponseOrQrItem.item).toHaveLength(3);
     expect(questionnaireResponseOrQrItem.item?.[1].linkId).toBe('item-2');
   });
@@ -445,7 +447,7 @@ describe('updateQrItemsInGroup', () => {
     mockQrItemHasItemsOrAnswer.mockReturnValue(true);
 
     updateQrItemsInGroup(newItem3, null, questionnaireResponseOrQrItem, qItemsIndexMap);
-    
+
     expect(questionnaireResponseOrQrItem.item).toHaveLength(2);
     expect(questionnaireResponseOrQrItem.item?.[1].linkId).toBe('item-3');
   });
@@ -475,7 +477,7 @@ describe('updateQrItemsInGroup', () => {
     mockQrItemHasItemsOrAnswer.mockReturnValue(false);
 
     updateQrItemsInGroup(newItem, null, questionnaireResponseOrQrItem, qItemsIndexMap);
-    
+
     // Should not add the item since qrItemHasItemsOrAnswer returned false
     expect(questionnaireResponseOrQrItem.item).toHaveLength(1);
     expect(questionnaireResponseOrQrItem.item?.[0].linkId).toBe('item-1');
@@ -502,7 +504,7 @@ describe('updateQrItemsInGroup', () => {
     const qItemsIndexMap = { 'repeat-group': 0 };
 
     updateQrItemsInGroup(null, qrRepeatGroup, questionnaireResponseOrQrItem, qItemsIndexMap);
-    
+
     // Should add the repeat group items
     expect(questionnaireResponseOrQrItem.item).toHaveLength(1);
     expect(questionnaireResponseOrQrItem.item?.[0].linkId).toBe('repeat-item-1');

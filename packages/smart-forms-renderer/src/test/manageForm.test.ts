@@ -21,11 +21,11 @@
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import type { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 // Import only the functions we can test easily
-import { 
-  destroyForm, 
-  removeEmptyAnswersFromResponse, 
-  removeInternalIdsFromResponse, 
-  qrItemHasItemsOrAnswer 
+import {
+  destroyForm,
+  removeEmptyAnswersFromResponse,
+  removeInternalIdsFromResponse,
+  qrItemHasItemsOrAnswer
 } from '../utils/manageForm';
 
 // Mock the store dependencies
@@ -84,10 +84,18 @@ import { removeInternalRepeatIdsRecursive } from '../utils/removeRepeatId';
 import { updateQuestionnaireResponse } from '../utils/genericRecursive';
 
 const mockQuestionnaireStore = questionnaireStore as jest.Mocked<typeof questionnaireStore>;
-const mockQuestionnaireResponseStore = questionnaireResponseStore as jest.Mocked<typeof questionnaireResponseStore>;
-const mockRemoveEmptyAnswersFromItemRecursive = removeEmptyAnswersFromItemRecursive as jest.MockedFunction<typeof removeEmptyAnswersFromItemRecursive>;
-const mockRemoveInternalRepeatIdsRecursive = removeInternalRepeatIdsRecursive as jest.MockedFunction<typeof removeInternalRepeatIdsRecursive>;
-const mockUpdateQuestionnaireResponse = updateQuestionnaireResponse as jest.MockedFunction<typeof updateQuestionnaireResponse>;
+const mockQuestionnaireResponseStore = questionnaireResponseStore as jest.Mocked<
+  typeof questionnaireResponseStore
+>;
+const mockRemoveEmptyAnswersFromItemRecursive =
+  removeEmptyAnswersFromItemRecursive as jest.MockedFunction<
+    typeof removeEmptyAnswersFromItemRecursive
+  >;
+const mockRemoveInternalRepeatIdsRecursive =
+  removeInternalRepeatIdsRecursive as jest.MockedFunction<typeof removeInternalRepeatIdsRecursive>;
+const mockUpdateQuestionnaireResponse = updateQuestionnaireResponse as jest.MockedFunction<
+  typeof updateQuestionnaireResponse
+>;
 
 describe('manageForm utils', () => {
   beforeEach(() => {

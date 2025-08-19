@@ -26,7 +26,9 @@ jest.mock('../utils/tabs', () => ({
 
 import { constructTabsWithProperties, isTabContainer } from '../utils/tabs';
 
-const mockConstructTabsWithProperties = constructTabsWithProperties as jest.MockedFunction<typeof constructTabsWithProperties>;
+const mockConstructTabsWithProperties = constructTabsWithProperties as jest.MockedFunction<
+  typeof constructTabsWithProperties
+>;
 const mockIsTabContainer = isTabContainer as jest.MockedFunction<typeof isTabContainer>;
 
 describe('extractTabs - Phase 5', () => {
@@ -84,7 +86,7 @@ describe('extractTabs - Phase 5', () => {
 
       mockIsTabContainer.mockReturnValue(false);
       mockConstructTabsWithProperties.mockReturnValue({
-        'tab1': { tabIndex: 0, isComplete: false, isHidden: false }
+        tab1: { tabIndex: 0, isComplete: false, isHidden: false }
       });
 
       const result = extractTabs(questionnaire);
@@ -95,7 +97,7 @@ describe('extractTabs - Phase 5', () => {
         false
       );
       expect(result).toEqual({
-        'tab1': { tabIndex: 0, isComplete: false, isHidden: false }
+        tab1: { tabIndex: 0, isComplete: false, isHidden: false }
       });
     });
 
@@ -134,7 +136,7 @@ describe('extractTabs - Phase 5', () => {
 
       mockIsTabContainer.mockReturnValue(true);
       mockConstructTabsWithProperties.mockReturnValue({
-        'tab1': { tabIndex: 0, isComplete: false, isHidden: false }
+        tab1: { tabIndex: 0, isComplete: false, isHidden: false }
       });
 
       const result = extractTabs(questionnaire);
@@ -145,7 +147,7 @@ describe('extractTabs - Phase 5', () => {
         true
       );
       expect(result).toEqual({
-        'tab1': { tabIndex: 0, isComplete: false, isHidden: false }
+        tab1: { tabIndex: 0, isComplete: false, isHidden: false }
       });
     });
 
@@ -182,15 +184,15 @@ describe('extractTabs - Phase 5', () => {
       };
 
       mockIsTabContainer
-        .mockReturnValueOnce(false)  // for group1
-        .mockReturnValueOnce(true);  // for group2
+        .mockReturnValueOnce(false) // for group1
+        .mockReturnValueOnce(true); // for group2
 
       mockConstructTabsWithProperties
         .mockReturnValueOnce({
-          'tab1': { tabIndex: 0, isComplete: false, isHidden: false }
+          tab1: { tabIndex: 0, isComplete: false, isHidden: false }
         })
         .mockReturnValueOnce({
-          'tab2': { tabIndex: 1, isComplete: false, isHidden: false }
+          tab2: { tabIndex: 1, isComplete: false, isHidden: false }
         });
 
       const result = extractTabs(questionnaire);
@@ -198,8 +200,8 @@ describe('extractTabs - Phase 5', () => {
       expect(mockIsTabContainer).toHaveBeenCalledTimes(2);
       expect(mockConstructTabsWithProperties).toHaveBeenCalledTimes(2);
       expect(result).toEqual({
-        'tab1': { tabIndex: 0, isComplete: false, isHidden: false },
-        'tab2': { tabIndex: 1, isComplete: false, isHidden: false }
+        tab1: { tabIndex: 0, isComplete: false, isHidden: false },
+        tab2: { tabIndex: 1, isComplete: false, isHidden: false }
       });
     });
 
@@ -224,7 +226,7 @@ describe('extractTabs - Phase 5', () => {
 
       expect(mockIsTabContainer).toHaveBeenCalledWith(questionnaire.item![0]);
       expect(mockConstructTabsWithProperties).toHaveBeenCalledWith(
-        undefined,  // no items property
+        undefined, // no items property
         false
       );
       expect(result).toEqual({});
@@ -277,7 +279,7 @@ describe('extractTabs - Phase 5', () => {
             text: 'Group 2',
             item: [
               {
-                linkId: 'tab1',  // same linkId as in group1
+                linkId: 'tab1', // same linkId as in group1
                 type: 'group',
                 text: 'Tab 1 from Group 2'
               }
@@ -289,16 +291,16 @@ describe('extractTabs - Phase 5', () => {
       mockIsTabContainer.mockReturnValue(false);
       mockConstructTabsWithProperties
         .mockReturnValueOnce({
-          'tab1': { tabIndex: 0, isComplete: false, isHidden: false }
+          tab1: { tabIndex: 0, isComplete: false, isHidden: false }
         })
         .mockReturnValueOnce({
-          'tab1': { tabIndex: 0, isComplete: false, isHidden: false }
+          tab1: { tabIndex: 0, isComplete: false, isHidden: false }
         });
 
       const result = extractTabs(questionnaire);
 
       expect(result).toEqual({
-        'tab1': { tabIndex: 0, isComplete: false, isHidden: false }
+        tab1: { tabIndex: 0, isComplete: false, isHidden: false }
       });
     });
 
@@ -340,21 +342,21 @@ describe('extractTabs - Phase 5', () => {
       };
 
       mockIsTabContainer
-        .mockReturnValueOnce(false)  // regular group
-        .mockReturnValueOnce(true);  // tab container
+        .mockReturnValueOnce(false) // regular group
+        .mockReturnValueOnce(true); // tab container
 
       mockConstructTabsWithProperties
-        .mockReturnValueOnce({})  // regular group produces no tabs
+        .mockReturnValueOnce({}) // regular group produces no tabs
         .mockReturnValueOnce({
-          'tab1': { tabIndex: 0, isComplete: false, isHidden: false },
-          'tab2': { tabIndex: 1, isComplete: false, isHidden: false }
+          tab1: { tabIndex: 0, isComplete: false, isHidden: false },
+          tab2: { tabIndex: 1, isComplete: false, isHidden: false }
         });
 
       const result = extractTabs(questionnaire);
 
       expect(result).toEqual({
-        'tab1': { tabIndex: 0, isComplete: false, isHidden: false },
-        'tab2': { tabIndex: 1, isComplete: false, isHidden: false }
+        tab1: { tabIndex: 0, isComplete: false, isHidden: false },
+        tab2: { tabIndex: 1, isComplete: false, isHidden: false }
       });
     });
 

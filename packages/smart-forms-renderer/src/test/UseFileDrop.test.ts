@@ -44,7 +44,7 @@ describe('UseFileDrop', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Default mock implementation for useDrop
     mockUseDrop.mockImplementation((callback) => {
       const config = callback();
@@ -74,10 +74,7 @@ describe('UseFileDrop', () => {
     it('should call useDrop with correct configuration', () => {
       renderHook(() => UseFileDrop(mockOnDrop));
 
-      expect(mockUseDrop).toHaveBeenCalledWith(
-        expect.any(Function),
-        [mockOnDrop]
-      );
+      expect(mockUseDrop).toHaveBeenCalledWith(expect.any(Function), [mockOnDrop]);
     });
 
     it('should configure useDrop to accept FILE type', () => {
@@ -159,7 +156,7 @@ describe('UseFileDrop', () => {
       const config = configCallback();
 
       const mockItem = { files: [{ name: 'test.txt' }] };
-      
+
       // Should not throw when onDrop is null
       expect(() => config.drop(mockItem)).not.toThrow();
     });
@@ -171,7 +168,7 @@ describe('UseFileDrop', () => {
       const config = configCallback();
 
       const mockItem = { files: [{ name: 'test.txt' }] };
-      
+
       // Should not throw when onDrop is undefined
       expect(() => config.drop(mockItem)).not.toThrow();
     });
@@ -242,27 +239,20 @@ describe('UseFileDrop', () => {
     it('should pass onDrop in dependency array to useDrop', () => {
       renderHook(() => UseFileDrop(mockOnDrop));
 
-      expect(mockUseDrop).toHaveBeenCalledWith(
-        expect.any(Function),
-        [mockOnDrop]
-      );
+      expect(mockUseDrop).toHaveBeenCalledWith(expect.any(Function), [mockOnDrop]);
     });
 
     it('should update dependencies when onDrop changes', () => {
-      const { rerender } = renderHook(
-        ({ onDrop }) => UseFileDrop(onDrop),
-        { initialProps: { onDrop: mockOnDrop } }
-      );
+      const { rerender } = renderHook(({ onDrop }) => UseFileDrop(onDrop), {
+        initialProps: { onDrop: mockOnDrop }
+      });
 
       const newOnDrop = jest.fn();
       rerender({ onDrop: newOnDrop });
 
       // Should have been called twice - initial and after rerender
       expect(mockUseDrop).toHaveBeenCalledTimes(2);
-      expect(mockUseDrop).toHaveBeenLastCalledWith(
-        expect.any(Function),
-        [newOnDrop]
-      );
+      expect(mockUseDrop).toHaveBeenLastCalledWith(expect.any(Function), [newOnDrop]);
     });
   });
 
@@ -274,12 +264,14 @@ describe('UseFileDrop', () => {
       const config = configCallback();
 
       const singleFile = {
-        files: [{
-          name: 'document.pdf',
-          size: 1024,
-          type: 'application/pdf',
-          lastModified: Date.now()
-        }]
+        files: [
+          {
+            name: 'document.pdf',
+            size: 1024,
+            type: 'application/pdf',
+            lastModified: Date.now()
+          }
+        ]
       };
 
       config.drop(singleFile);
@@ -294,11 +286,13 @@ describe('UseFileDrop', () => {
       const config = configCallback();
 
       const imageFile = {
-        files: [{
-          name: 'photo.jpg',
-          size: 2048,
-          type: 'image/jpeg'
-        }]
+        files: [
+          {
+            name: 'photo.jpg',
+            size: 2048,
+            type: 'image/jpeg'
+          }
+        ]
       };
 
       config.drop(imageFile);
@@ -313,11 +307,13 @@ describe('UseFileDrop', () => {
       const config = configCallback();
 
       const largeFile = {
-        files: [{
-          name: 'large-video.mp4',
-          size: 1024 * 1024 * 100, // 100MB
-          type: 'video/mp4'
-        }]
+        files: [
+          {
+            name: 'large-video.mp4',
+            size: 1024 * 1024 * 100, // 100MB
+            type: 'video/mp4'
+          }
+        ]
       };
 
       config.drop(largeFile);
@@ -332,10 +328,12 @@ describe('UseFileDrop', () => {
       const config = configCallback();
 
       const specialFile = {
-        files: [{
-          name: 'file with spaces & special chars (1).txt',
-          size: 512
-        }]
+        files: [
+          {
+            name: 'file with spaces & special chars (1).txt',
+            size: 512
+          }
+        ]
       };
 
       config.drop(specialFile);
@@ -440,10 +438,9 @@ describe('UseFileDrop', () => {
 
   describe('performance considerations', () => {
     it('should maintain dropTarget reference across re-renders with same onDrop', () => {
-      const { result, rerender } = renderHook(
-        ({ onDrop }) => UseFileDrop(onDrop),
-        { initialProps: { onDrop: mockOnDrop } }
-      );
+      const { result, rerender } = renderHook(({ onDrop }) => UseFileDrop(onDrop), {
+        initialProps: { onDrop: mockOnDrop }
+      });
 
       const initialDropTarget = result.current.dropTarget;
 
@@ -499,7 +496,7 @@ describe('UseFileDrop', () => {
 
     it('should support async drop handling', () => {
       const asyncOnDrop = jest.fn(async (item) => {
-        await new Promise(resolve => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 0));
         return item;
       });
 

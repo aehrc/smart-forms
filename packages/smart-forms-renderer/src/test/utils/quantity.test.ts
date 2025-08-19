@@ -16,10 +16,10 @@
  */
 
 import type { Quantity, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import { 
-  quantityComparators, 
-  stringIsComparator, 
-  createQuantityItemAnswer 
+import {
+  quantityComparators,
+  stringIsComparator,
+  createQuantityItemAnswer
 } from '../../utils/quantity';
 
 // Mock the parseInputs module
@@ -81,7 +81,11 @@ describe('quantity utilities', () => {
   });
 
   describe('createQuantityItemAnswer', () => {
-    const createMockUnit = (display?: string, system?: string, code?: string): QuestionnaireItemAnswerOption => ({
+    const createMockUnit = (
+      display?: string,
+      system?: string,
+      code?: string
+    ): QuestionnaireItemAnswerOption => ({
       valueCoding: {
         display,
         system,
@@ -268,36 +272,28 @@ describe('quantity utilities', () => {
 
     describe('complex scenarios', () => {
       it('should create complete quantity answer with all parameters', () => {
-        const unit = createMockUnit(
-          'milliliters per hour',
-          'http://unitsofmeasure.org',
-          'mL/h'
-        );
-        
-        const result = createQuantityItemAnswer(
-          3,
-          '125.6789',
-          '<=',
-          unit,
-          'infusion-rate'
-        );
+        const unit = createMockUnit('milliliters per hour', 'http://unitsofmeasure.org', 'mL/h');
 
-        expect(result).toEqual([{
-          id: 'infusion-rate',
-          valueQuantity: {
-            value: 125.679, // 3 decimal places
-            comparator: '<=',
-            unit: 'milliliters per hour',
-            system: 'http://unitsofmeasure.org',
-            code: 'mL/h'
+        const result = createQuantityItemAnswer(3, '125.6789', '<=', unit, 'infusion-rate');
+
+        expect(result).toEqual([
+          {
+            id: 'infusion-rate',
+            valueQuantity: {
+              value: 125.679, // 3 decimal places
+              comparator: '<=',
+              unit: 'milliliters per hour',
+              system: 'http://unitsofmeasure.org',
+              code: 'mL/h'
+            }
           }
-        }]);
+        ]);
       });
 
       it('should always return an array with one element', () => {
         const result1 = createQuantityItemAnswer(null, '10', null, null, undefined);
         const result2 = createQuantityItemAnswer(2, '20.5', '>', null, 'test');
-        
+
         expect(result1).toHaveLength(1);
         expect(result2).toHaveLength(1);
         expect(Array.isArray(result1)).toBe(true);
@@ -306,9 +302,15 @@ describe('quantity utilities', () => {
 
       it('should handle all comparator types correctly', () => {
         const comparators: Quantity['comparator'][] = ['<', '<=', '>=', '>'];
-        
+
         comparators.forEach((comparator, index) => {
-          const result = createQuantityItemAnswer(null, `${index}`, comparator, null, `test-${index}`);
+          const result = createQuantityItemAnswer(
+            null,
+            `${index}`,
+            comparator,
+            null,
+            `test-${index}`
+          );
           expect(result[0].valueQuantity?.comparator).toBe(comparator);
         });
       });

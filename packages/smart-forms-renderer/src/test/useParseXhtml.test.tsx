@@ -41,7 +41,7 @@ delete (global as any).location;
 global.CSSStyleRule = class MockCSSStyleRule {
   selectorText: string;
   style: any;
-  
+
   constructor(selectorText: string, style: any) {
     this.selectorText = selectorText;
     this.style = style;
@@ -64,7 +64,7 @@ describe('useParseXhtml', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (document.styleSheets as any).length = 0;
-    
+
     // Reset console methods
     jest.spyOn(console, 'warn').mockImplementation();
     jest.spyOn(console, 'error').mockImplementation();
@@ -136,7 +136,9 @@ describe('useParseXhtml', () => {
 
   describe('style extraction', () => {
     it('should extract styles from div with style attribute', () => {
-      mockGetXHtmlString.mockReturnValue('<div style="color: red; background-color: blue;">Content</div>');
+      mockGetXHtmlString.mockReturnValue(
+        '<div style="color: red; background-color: blue;">Content</div>'
+      );
 
       const { result } = renderHook(() => useParseXhtml(mockQItem));
 
@@ -159,7 +161,9 @@ describe('useParseXhtml', () => {
     });
 
     it('should not extract styles from div with class attribute', () => {
-      mockGetXHtmlString.mockReturnValue('<div class="test-class" style="color: red;">Content</div>');
+      mockGetXHtmlString.mockReturnValue(
+        '<div class="test-class" style="color: red;">Content</div>'
+      );
 
       const { result } = renderHook(() => useParseXhtml(mockQItem));
 
@@ -181,9 +185,12 @@ describe('useParseXhtml', () => {
             1: 'font-size',
             getPropertyValue: (prop: string) => {
               switch (prop) {
-                case 'color': return 'red';
-                case 'font-size': return '14px';
-                default: return '';
+                case 'color':
+                  return 'red';
+                case 'font-size':
+                  return '14px';
+                default:
+                  return '';
               }
             }
           })
@@ -218,7 +225,9 @@ describe('useParseXhtml', () => {
 
   describe('button click handler processing', () => {
     it('should process valid document.getElementById onclick handlers', () => {
-      mockGetXHtmlString.mockReturnValue('<button onclick="document.getElementById(\'test\').value = \'clicked\'">Click me</button>');
+      mockGetXHtmlString.mockReturnValue(
+        "<button onclick=\"document.getElementById('test').value = 'clicked'\">Click me</button>"
+      );
 
       const { result } = renderHook(() => useParseXhtml(mockQItem));
 
@@ -237,7 +246,9 @@ describe('useParseXhtml', () => {
     });
 
     it('should handle onclick execution errors gracefully', () => {
-      mockGetXHtmlString.mockReturnValue('<button onclick="document.getElementById()">Click me</button>');
+      mockGetXHtmlString.mockReturnValue(
+        '<button onclick="document.getElementById()">Click me</button>'
+      );
 
       const { result } = renderHook(() => useParseXhtml(mockQItem));
 
@@ -296,7 +307,7 @@ describe('useParseXhtml', () => {
 
     it('should handle general stylesheet access errors', () => {
       const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
-      
+
       const mockStyleSheet = {
         href: 'http://localhost/styles.css',
         get cssRules() {
@@ -322,7 +333,9 @@ describe('useParseXhtml', () => {
 
   describe('utility functions', () => {
     it('should convert kebab-case to camelCase correctly', () => {
-      mockGetXHtmlString.mockReturnValue('<div style="background-color: red; font-size: 14px; margin-top: 10px;">Content</div>');
+      mockGetXHtmlString.mockReturnValue(
+        '<div style="background-color: red; font-size: 14px; margin-top: 10px;">Content</div>'
+      );
 
       const { result } = renderHook(() => useParseXhtml(mockQItem));
 
@@ -335,7 +348,9 @@ describe('useParseXhtml', () => {
     });
 
     it('should handle empty and whitespace in style parsing', () => {
-      mockGetXHtmlString.mockReturnValue('<div style="  color: red ; ; font-size: 14px  ;">Content</div>');
+      mockGetXHtmlString.mockReturnValue(
+        '<div style="  color: red ; ; font-size: 14px  ;">Content</div>'
+      );
 
       const { result } = renderHook(() => useParseXhtml(mockQItem));
 
@@ -378,10 +393,9 @@ describe('useParseXhtml', () => {
     it('should memoize results correctly', () => {
       mockGetXHtmlString.mockReturnValue('<div>Test content</div>');
 
-      const { result, rerender } = renderHook(
-        ({ qItem }) => useParseXhtml(qItem),
-        { initialProps: { qItem: mockQItem } }
-      );
+      const { result, rerender } = renderHook(({ qItem }) => useParseXhtml(qItem), {
+        initialProps: { qItem: mockQItem }
+      });
 
       const firstResult = result.current;
 
@@ -395,10 +409,9 @@ describe('useParseXhtml', () => {
     it('should recompute when qItem changes', () => {
       mockGetXHtmlString.mockReturnValue('<div>Test content</div>');
 
-      const { result, rerender } = renderHook(
-        ({ qItem }) => useParseXhtml(qItem),
-        { initialProps: { qItem: mockQItem } }
-      );
+      const { result, rerender } = renderHook(({ qItem }) => useParseXhtml(qItem), {
+        initialProps: { qItem: mockQItem }
+      });
 
       const firstResult = result.current;
 
@@ -453,7 +466,9 @@ describe('useParseXhtml', () => {
     });
 
     it('should handle style parsing with malformed property-value pairs', () => {
-      mockGetXHtmlString.mockReturnValue('<div style="color; background-color: blue; :invalid;">Content</div>');
+      mockGetXHtmlString.mockReturnValue(
+        '<div style="color; background-color: blue; :invalid;">Content</div>'
+      );
 
       const { result } = renderHook(() => useParseXhtml(mockQItem));
 

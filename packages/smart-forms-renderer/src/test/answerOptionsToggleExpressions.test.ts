@@ -24,10 +24,12 @@ import type { AnswerOptionsToggleExpression } from '../interfaces/answerOptionsT
 
 // Mock dependencies
 jest.mock('../utils/fhirpath', () => ({
-  createFhirPathContext: jest.fn(() => Promise.resolve({
-    fhirPathContext: { mockContext: true },
-    fhirPathTerminologyCache: {}
-  })),
+  createFhirPathContext: jest.fn(() =>
+    Promise.resolve({
+      fhirPathContext: { mockContext: true },
+      fhirPathTerminologyCache: {}
+    })
+  ),
   handleFhirPathResult: jest.fn((result) => Promise.resolve(result))
 }));
 

@@ -15,13 +15,8 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireItem, Extension } from 'fhir/r4';
-import {
-  getSliderStepValue,
-  getMinValue,
-  getMaxValue,
-  getSliderMarks
-} from '../../utils/slider';
+import type { QuestionnaireItem } from 'fhir/r4';
+import { getSliderStepValue, getMinValue, getMaxValue, getSliderMarks } from '../../utils/slider';
 
 describe('slider utilities', () => {
   describe('getSliderStepValue', () => {
@@ -324,7 +319,7 @@ describe('slider utilities', () => {
   describe('getSliderMarks', () => {
     it('should return only min and max marks when number of steps exceeds 20', () => {
       const result = getSliderMarks(0, 100, 'min', 'max', 1);
-      
+
       expect(result).toHaveLength(2);
       expect(result).toEqual([
         { value: 0, label: 'min' },
@@ -334,7 +329,7 @@ describe('slider utilities', () => {
 
     it('should use value.toString() as label when label is empty string', () => {
       const result = getSliderMarks(0, 100, '', '', 1);
-      
+
       expect(result).toHaveLength(2);
       expect(result).toEqual([
         { value: 0, label: '0' },
@@ -344,7 +339,7 @@ describe('slider utilities', () => {
 
     it('should return all step marks when number of steps is 20 or fewer', () => {
       const result = getSliderMarks(0, 10, 'start', 'end', 1);
-      
+
       expect(result).toHaveLength(11); // 0,1,2,3,4,5,6,7,8,9,10
       expect(result[0]).toEqual({ value: 0, label: 0 });
       expect(result[5]).toEqual({ value: 5, label: 5 });
@@ -353,7 +348,7 @@ describe('slider utilities', () => {
 
     it('should handle decimal step values correctly', () => {
       const result = getSliderMarks(0, 5, 'min', 'max', 0.5);
-      
+
       expect(result).toHaveLength(11); // 0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5
       expect(result[0]).toEqual({ value: 0, label: 0 });
       expect(result[1]).toEqual({ value: 0.5, label: 0.5 });
@@ -362,7 +357,7 @@ describe('slider utilities', () => {
 
     it('should handle negative ranges', () => {
       const result = getSliderMarks(-5, 5, 'negative', 'positive', 2);
-      
+
       expect(result).toHaveLength(6); // -5, -3, -1, 1, 3, 5
       expect(result[0]).toEqual({ value: -5, label: -5 });
       expect(result[5]).toEqual({ value: 5, label: 5 });
@@ -370,14 +365,14 @@ describe('slider utilities', () => {
 
     it('should handle single step (min equals max)', () => {
       const result = getSliderMarks(10, 10, 'same', 'same', 1);
-      
+
       expect(result).toHaveLength(1);
       expect(result[0]).toEqual({ value: 10, label: 10 });
     });
 
     it('should handle large step values', () => {
       const result = getSliderMarks(0, 100, 'start', 'end', 50);
-      
+
       expect(result).toHaveLength(3); // 0, 50, 100
       expect(result).toEqual([
         { value: 0, label: 0 },
@@ -389,7 +384,7 @@ describe('slider utilities', () => {
     it('should use Math.ceil for step calculation', () => {
       // Range of 21 with step 1 = 21 steps, which is > 20, so should return only min/max
       const result = getSliderMarks(0, 21, 'min', 'max', 1);
-      
+
       expect(result).toHaveLength(2);
       expect(result).toEqual([
         { value: 0, label: 'min' },
@@ -399,7 +394,7 @@ describe('slider utilities', () => {
 
     it('should handle edge case where steps exactly equal 20', () => {
       const result = getSliderMarks(0, 20, 'start', 'end', 1);
-      
+
       expect(result).toHaveLength(21); // 20 steps = 21 marks (0 to 20)
       expect(result[0]).toEqual({ value: 0, label: 0 });
       expect(result[20]).toEqual({ value: 20, label: 20 });
@@ -407,7 +402,7 @@ describe('slider utilities', () => {
 
     it('should handle fractional results from step division', () => {
       const result = getSliderMarks(0, 7, 'min', 'max', 2);
-      
+
       // 7 / 2 = 3.5, Math.ceil(3.5) = 4 steps, which is <= 20
       expect(result).toHaveLength(5); // 0, 2, 4, 6, 8 (but 8 > 7, so actual: 0, 2, 4, 6)
     });
@@ -415,7 +410,7 @@ describe('slider utilities', () => {
     describe('complex scenarios', () => {
       it('should handle very small step values', () => {
         const result = getSliderMarks(0, 2, 'min', 'max', 0.1);
-        
+
         // 2 / 0.1 = 20 steps exactly, so should return all marks
         expect(result).toHaveLength(21);
         expect(result[0]).toEqual({ value: 0, label: 0 });
@@ -425,7 +420,7 @@ describe('slider utilities', () => {
 
       it('should handle very large ranges with appropriate steps', () => {
         const result = getSliderMarks(0, 1000, 'minimum', 'maximum', 100);
-        
+
         expect(result).toHaveLength(11); // 0, 100, 200, ..., 1000
         expect(result[0]).toEqual({ value: 0, label: 0 });
         expect(result[10]).toEqual({ value: 1000, label: 1000 });
@@ -433,10 +428,10 @@ describe('slider utilities', () => {
 
       it('should handle mixed label scenarios', () => {
         const result = getSliderMarks(-10, 10, '', 'Maximum', 5);
-        
+
         expect(result).toHaveLength(5); // -10, -5, 0, 5, 10
         // When > 20 steps logic applies, it should use toString for empty labels
-        
+
         // Actually, this should be <= 20 steps: (10 - (-10)) / 5 = 4 steps
         expect(result[0]).toEqual({ value: -10, label: -10 });
         expect(result[4]).toEqual({ value: 10, label: 10 });
@@ -447,7 +442,7 @@ describe('slider utilities', () => {
       it('should handle zero step value gracefully', () => {
         // This would cause division by zero, but Math.ceil(Infinity) handling
         const result = getSliderMarks(0, 10, 'min', 'max', 0);
-        
+
         // Should fallback to min/max only due to infinite steps
         expect(result).toHaveLength(2);
         expect(result).toEqual([
@@ -458,14 +453,14 @@ describe('slider utilities', () => {
 
       it('should handle negative step values', () => {
         const result = getSliderMarks(0, 10, 'min', 'max', -1);
-        
+
         // Negative step creates Math.ceil(-10) = -10, so empty array from Array.from
         expect(result).toHaveLength(0);
       });
 
       it('should handle very precise decimal calculations', () => {
         const result = getSliderMarks(0, 1, 'zero', 'one', 0.1);
-        
+
         expect(result).toHaveLength(11); // 0, 0.1, 0.2, ..., 1.0
         expect(result[0]).toEqual({ value: 0, label: 0 });
         expect(result[10]).toEqual({ value: 1, label: 1 });

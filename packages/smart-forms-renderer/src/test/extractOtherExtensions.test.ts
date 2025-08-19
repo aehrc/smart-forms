@@ -71,7 +71,10 @@ jest.mock('../utils/preferredTerminologyServer', () => ({
 }));
 
 import { getValueSetPromise } from '../utils/valueSet';
-import { getFhirPathVariables, getXFhirQueryVariables } from '../utils/questionnaireStoreUtils/extractVariables';
+import {
+  getFhirPathVariables,
+  getXFhirQueryVariables
+} from '../utils/questionnaireStoreUtils/extractVariables';
 import { getRepeatGroupParentItem } from '../utils/misc';
 import { checkItemIsEnabledRepeat } from '../utils/enableWhen';
 import { evaluateEnableWhenRepeatExpressionInstance } from '../utils/enableWhenExpression';
@@ -82,23 +85,55 @@ import {
   getEnableWhenExpression,
   getInitialExpression
 } from '../utils/getExpressionsFromItem';
-import { addBindingParametersToValueSetUrl, getBindingParameters } from '../utils/parameterisedValueSets';
+import {
+  addBindingParametersToValueSetUrl,
+  getBindingParameters
+} from '../utils/parameterisedValueSets';
 import { getItemTerminologyServerToUse } from '../utils/preferredTerminologyServer';
 
 const mockGetValueSetPromise = getValueSetPromise as jest.MockedFunction<typeof getValueSetPromise>;
-const mockGetFhirPathVariables = getFhirPathVariables as jest.MockedFunction<typeof getFhirPathVariables>;
-const mockGetXFhirQueryVariables = getXFhirQueryVariables as jest.MockedFunction<typeof getXFhirQueryVariables>;
-const mockGetRepeatGroupParentItem = getRepeatGroupParentItem as jest.MockedFunction<typeof getRepeatGroupParentItem>;
-const mockCheckItemIsEnabledRepeat = checkItemIsEnabledRepeat as jest.MockedFunction<typeof checkItemIsEnabledRepeat>;
-const mockEvaluateEnableWhenRepeatExpressionInstance = evaluateEnableWhenRepeatExpressionInstance as jest.MockedFunction<typeof evaluateEnableWhenRepeatExpressionInstance>;
-const mockGetAnswerExpression = getAnswerExpression as jest.MockedFunction<typeof getAnswerExpression>;
-const mockGetAnswerOptionsToggleExpressions = getAnswerOptionsToggleExpressions as jest.MockedFunction<typeof getAnswerOptionsToggleExpressions>;
-const mockGetCalculatedExpressions = getCalculatedExpressions as jest.MockedFunction<typeof getCalculatedExpressions>;
-const mockGetEnableWhenExpression = getEnableWhenExpression as jest.MockedFunction<typeof getEnableWhenExpression>;
-const mockGetInitialExpression = getInitialExpression as jest.MockedFunction<typeof getInitialExpression>;
-const mockAddBindingParametersToValueSetUrl = addBindingParametersToValueSetUrl as jest.MockedFunction<typeof addBindingParametersToValueSetUrl>;
-const mockGetBindingParameters = getBindingParameters as jest.MockedFunction<typeof getBindingParameters>;
-const mockGetItemTerminologyServerToUse = getItemTerminologyServerToUse as jest.MockedFunction<typeof getItemTerminologyServerToUse>;
+const mockGetFhirPathVariables = getFhirPathVariables as jest.MockedFunction<
+  typeof getFhirPathVariables
+>;
+const mockGetXFhirQueryVariables = getXFhirQueryVariables as jest.MockedFunction<
+  typeof getXFhirQueryVariables
+>;
+const mockGetRepeatGroupParentItem = getRepeatGroupParentItem as jest.MockedFunction<
+  typeof getRepeatGroupParentItem
+>;
+const mockCheckItemIsEnabledRepeat = checkItemIsEnabledRepeat as jest.MockedFunction<
+  typeof checkItemIsEnabledRepeat
+>;
+const mockEvaluateEnableWhenRepeatExpressionInstance =
+  evaluateEnableWhenRepeatExpressionInstance as jest.MockedFunction<
+    typeof evaluateEnableWhenRepeatExpressionInstance
+  >;
+const mockGetAnswerExpression = getAnswerExpression as jest.MockedFunction<
+  typeof getAnswerExpression
+>;
+const mockGetAnswerOptionsToggleExpressions =
+  getAnswerOptionsToggleExpressions as jest.MockedFunction<
+    typeof getAnswerOptionsToggleExpressions
+  >;
+const mockGetCalculatedExpressions = getCalculatedExpressions as jest.MockedFunction<
+  typeof getCalculatedExpressions
+>;
+const mockGetEnableWhenExpression = getEnableWhenExpression as jest.MockedFunction<
+  typeof getEnableWhenExpression
+>;
+const mockGetInitialExpression = getInitialExpression as jest.MockedFunction<
+  typeof getInitialExpression
+>;
+const mockAddBindingParametersToValueSetUrl =
+  addBindingParametersToValueSetUrl as jest.MockedFunction<
+    typeof addBindingParametersToValueSetUrl
+  >;
+const mockGetBindingParameters = getBindingParameters as jest.MockedFunction<
+  typeof getBindingParameters
+>;
+const mockGetItemTerminologyServerToUse = getItemTerminologyServerToUse as jest.MockedFunction<
+  typeof getItemTerminologyServerToUse
+>;
 
 describe('extractOtherExtensions - Phase 5', () => {
   beforeEach(() => {
@@ -113,7 +148,7 @@ describe('extractOtherExtensions - Phase 5', () => {
         // no item property
       };
 
-      const variables = { fhirPathVariables: { 'QuestionnaireLevel': [] }, xFhirQueryVariables: {} };
+      const variables = { fhirPathVariables: { QuestionnaireLevel: [] }, xFhirQueryVariables: {} };
       const valueSetPromises = {};
       const processedValueSets = {};
       const cachedValueSetCodings = {};
@@ -152,7 +187,7 @@ describe('extractOtherExtensions - Phase 5', () => {
         item: []
       };
 
-      const variables = { fhirPathVariables: { 'QuestionnaireLevel': [] }, xFhirQueryVariables: {} };
+      const variables = { fhirPathVariables: { QuestionnaireLevel: [] }, xFhirQueryVariables: {} };
       const valueSetPromises = {};
       const processedValueSets = {};
       const cachedValueSetCodings = {};
@@ -197,7 +232,7 @@ describe('extractOtherExtensions - Phase 5', () => {
         ]
       };
 
-      const variables = { fhirPathVariables: { 'QuestionnaireLevel': [] }, xFhirQueryVariables: {} };
+      const variables = { fhirPathVariables: { QuestionnaireLevel: [] }, xFhirQueryVariables: {} };
       const valueSetPromises = {};
       const processedValueSets = {};
       const cachedValueSetCodings = {};
@@ -226,7 +261,10 @@ describe('extractOtherExtensions - Phase 5', () => {
 
       expect(result.variables).toEqual(variables);
       expect(result.enableWhenItems).toEqual({ singleItems: {}, repeatItems: {} });
-      expect(result.enableWhenExpressions).toEqual({ singleExpressions: {}, repeatExpressions: {} });
+      expect(result.enableWhenExpressions).toEqual({
+        singleExpressions: {},
+        repeatExpressions: {}
+      });
       expect(result.calculatedExpressions).toEqual({});
       expect(result.initialExpressions).toEqual({});
       expect(result.answerExpressions).toEqual({});
@@ -253,7 +291,7 @@ describe('extractOtherExtensions - Phase 5', () => {
         ]
       };
 
-      const variables = { fhirPathVariables: { 'QuestionnaireLevel': [] }, xFhirQueryVariables: {} };
+      const variables = { fhirPathVariables: { QuestionnaireLevel: [] }, xFhirQueryVariables: {} };
       const valueSetPromises = {};
       const processedValueSets = {};
       const cachedValueSetCodings = {};
@@ -305,7 +343,7 @@ describe('extractOtherExtensions - Phase 5', () => {
         ]
       };
 
-      const variables = { fhirPathVariables: { 'QuestionnaireLevel': [] }, xFhirQueryVariables: {} };
+      const variables = { fhirPathVariables: { QuestionnaireLevel: [] }, xFhirQueryVariables: {} };
       const valueSetPromises = {};
       const processedValueSets = {};
       const cachedValueSetCodings = {};
@@ -354,7 +392,7 @@ describe('extractOtherExtensions - Phase 5', () => {
         ]
       };
 
-      const variables = { fhirPathVariables: { 'QuestionnaireLevel': [] }, xFhirQueryVariables: {} };
+      const variables = { fhirPathVariables: { QuestionnaireLevel: [] }, xFhirQueryVariables: {} };
       const valueSetPromises = {};
       const processedValueSets = {};
       const cachedValueSetCodings = {};
@@ -404,7 +442,7 @@ describe('extractOtherExtensions - Phase 5', () => {
         ]
       };
 
-      const variables = { fhirPathVariables: { 'QuestionnaireLevel': [] }, xFhirQueryVariables: {} };
+      const variables = { fhirPathVariables: { QuestionnaireLevel: [] }, xFhirQueryVariables: {} };
       const valueSetPromises = {};
       const processedValueSets = {};
       const cachedValueSetCodings = {};
@@ -485,7 +523,7 @@ describe('extractOtherExtensions - Phase 5', () => {
         ]
       };
 
-      const variables = { fhirPathVariables: { 'QuestionnaireLevel': [] }, xFhirQueryVariables: {} };
+      const variables = { fhirPathVariables: { QuestionnaireLevel: [] }, xFhirQueryVariables: {} };
       const valueSetPromises = {};
       const processedValueSets = {};
       const cachedValueSetCodings = {};
@@ -551,7 +589,7 @@ describe('extractOtherExtensions - Phase 5', () => {
         ]
       };
 
-      const variables = { fhirPathVariables: { 'QuestionnaireLevel': [] }, xFhirQueryVariables: {} };
+      const variables = { fhirPathVariables: { QuestionnaireLevel: [] }, xFhirQueryVariables: {} };
       const valueSetPromises = {};
       const processedValueSets = {};
       const cachedValueSetCodings = {};
@@ -853,7 +891,7 @@ describe('extractOtherExtensions - Phase 5', () => {
       };
 
       mockGetRepeatGroupParentItem
-        .mockReturnValueOnce(mockParentItem)  // For item1
+        .mockReturnValueOnce(mockParentItem) // For item1
         .mockReturnValueOnce(mockParentItem); // For item2
 
       mockCheckItemIsEnabledRepeat.mockReturnValue(false);

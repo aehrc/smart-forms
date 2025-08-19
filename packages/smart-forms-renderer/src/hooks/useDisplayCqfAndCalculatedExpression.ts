@@ -27,7 +27,7 @@ function useDisplayCqfAndCalculatedExpression(qItem: QuestionnaireItem): string 
   }
 
   const cqfOrCalcExpression = calculatedExpressions[qItem.linkId]?.find(
-    (exp) => exp && exp.from === 'item._text'  // Add null check for exp
+    (exp) => exp && exp.from === 'item._text' // Add null check for exp
   );
 
   if (!cqfOrCalcExpression) {

@@ -55,9 +55,7 @@ describe('useNextAndPreviousVisibleTabs', () => {
         'tab-2': { tabIndex: 1, isComplete: false, isHidden: false }
       };
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisibleTabs(undefined, tabs)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisibleTabs(undefined, tabs));
 
       expect(result.current).toEqual({
         previousTabIndex: null,
@@ -68,9 +66,7 @@ describe('useNextAndPreviousVisibleTabs', () => {
     });
 
     it('should return default values when tabs is undefined', () => {
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisibleTabs(0, undefined)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisibleTabs(0, undefined));
 
       expect(result.current).toEqual({
         previousTabIndex: null,
@@ -81,9 +77,7 @@ describe('useNextAndPreviousVisibleTabs', () => {
     });
 
     it('should return default values when both currentTabIndex and tabs are undefined', () => {
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisibleTabs(undefined, undefined)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisibleTabs(undefined, undefined));
 
       expect(result.current).toEqual({
         previousTabIndex: null,
@@ -111,9 +105,7 @@ describe('useNextAndPreviousVisibleTabs', () => {
       ];
       mockConstructTabsWithVisibility.mockReturnValue(mockTabsWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisibleTabs(1, mockTabs)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisibleTabs(1, mockTabs));
 
       expect(result.current).toEqual({
         previousTabIndex: 0,
@@ -137,9 +129,7 @@ describe('useNextAndPreviousVisibleTabs', () => {
       ];
       mockConstructTabsWithVisibility.mockReturnValue(mockTabsWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisibleTabs(0, mockTabs)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisibleTabs(0, mockTabs));
 
       expect(result.current).toEqual({
         previousTabIndex: null,
@@ -156,9 +146,7 @@ describe('useNextAndPreviousVisibleTabs', () => {
       ];
       mockConstructTabsWithVisibility.mockReturnValue(mockTabsWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisibleTabs(2, mockTabs)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisibleTabs(2, mockTabs));
 
       expect(result.current).toEqual({
         previousTabIndex: 1,
@@ -171,14 +159,10 @@ describe('useNextAndPreviousVisibleTabs', () => {
       const singleTab: Tabs = {
         'tab-1': { tabIndex: 0, isComplete: false, isHidden: false }
       };
-      const mockTabsWithVisibility = [
-        { linkId: 'tab-1', isVisible: true }
-      ];
+      const mockTabsWithVisibility = [{ linkId: 'tab-1', isVisible: true }];
       mockConstructTabsWithVisibility.mockReturnValue(mockTabsWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisibleTabs(0, singleTab)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisibleTabs(0, singleTab));
 
       expect(result.current).toEqual({
         previousTabIndex: null,
@@ -199,17 +183,15 @@ describe('useNextAndPreviousVisibleTabs', () => {
 
     it('should skip invisible tabs when finding previous tab', () => {
       const mockTabsWithVisibility = [
-        { linkId: 'tab-1', isVisible: true },   // index 0
-        { linkId: 'tab-2', isVisible: false },  // index 1 - hidden
-        { linkId: 'tab-3', isVisible: false },  // index 2 - hidden
-        { linkId: 'tab-4', isVisible: true },   // index 3 - current
-        { linkId: 'tab-5', isVisible: true }    // index 4
+        { linkId: 'tab-1', isVisible: true }, // index 0
+        { linkId: 'tab-2', isVisible: false }, // index 1 - hidden
+        { linkId: 'tab-3', isVisible: false }, // index 2 - hidden
+        { linkId: 'tab-4', isVisible: true }, // index 3 - current
+        { linkId: 'tab-5', isVisible: true } // index 4
       ];
       mockConstructTabsWithVisibility.mockReturnValue(mockTabsWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisibleTabs(3, mockTabs)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisibleTabs(3, mockTabs));
 
       expect(result.current).toEqual({
         previousTabIndex: 0, // Should skip hidden tabs 1 and 2
@@ -220,17 +202,15 @@ describe('useNextAndPreviousVisibleTabs', () => {
 
     it('should skip invisible tabs when finding next tab', () => {
       const mockTabsWithVisibility = [
-        { linkId: 'tab-1', isVisible: true },   // index 0
-        { linkId: 'tab-2', isVisible: true },   // index 1 - current
-        { linkId: 'tab-3', isVisible: false },  // index 2 - hidden
-        { linkId: 'tab-4', isVisible: false },  // index 3 - hidden
-        { linkId: 'tab-5', isVisible: true }    // index 4
+        { linkId: 'tab-1', isVisible: true }, // index 0
+        { linkId: 'tab-2', isVisible: true }, // index 1 - current
+        { linkId: 'tab-3', isVisible: false }, // index 2 - hidden
+        { linkId: 'tab-4', isVisible: false }, // index 3 - hidden
+        { linkId: 'tab-5', isVisible: true } // index 4
       ];
       mockConstructTabsWithVisibility.mockReturnValue(mockTabsWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisibleTabs(1, mockTabs)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisibleTabs(1, mockTabs));
 
       expect(result.current).toEqual({
         previousTabIndex: 0,
@@ -241,16 +221,14 @@ describe('useNextAndPreviousVisibleTabs', () => {
 
     it('should handle all tabs hidden except current', () => {
       const mockTabsWithVisibility = [
-        { linkId: 'tab-1', isVisible: false },  // index 0 - hidden
-        { linkId: 'tab-2', isVisible: true },   // index 1 - current (only visible)
-        { linkId: 'tab-3', isVisible: false },  // index 2 - hidden
-        { linkId: 'tab-4', isVisible: false }   // index 3 - hidden
+        { linkId: 'tab-1', isVisible: false }, // index 0 - hidden
+        { linkId: 'tab-2', isVisible: true }, // index 1 - current (only visible)
+        { linkId: 'tab-3', isVisible: false }, // index 2 - hidden
+        { linkId: 'tab-4', isVisible: false } // index 3 - hidden
       ];
       mockConstructTabsWithVisibility.mockReturnValue(mockTabsWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisibleTabs(1, mockTabs)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisibleTabs(1, mockTabs));
 
       expect(result.current).toEqual({
         previousTabIndex: null,
@@ -267,9 +245,7 @@ describe('useNextAndPreviousVisibleTabs', () => {
       ];
       mockConstructTabsWithVisibility.mockReturnValue(mockTabsWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisibleTabs(1, mockTabs)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisibleTabs(1, mockTabs));
 
       expect(result.current).toEqual({
         previousTabIndex: null,
@@ -292,19 +268,17 @@ describe('useNextAndPreviousVisibleTabs', () => {
 
     it('should handle alternating visibility pattern', () => {
       const mockTabsWithVisibility = [
-        { linkId: 'tab-1', isVisible: true },   // index 0
-        { linkId: 'tab-2', isVisible: false },  // index 1 - hidden
-        { linkId: 'tab-3', isVisible: true },   // index 2
-        { linkId: 'tab-4', isVisible: false },  // index 3 - hidden
-        { linkId: 'tab-5', isVisible: true },   // index 4 - current
-        { linkId: 'tab-6', isVisible: false },  // index 5 - hidden
-        { linkId: 'tab-7', isVisible: true }    // index 6
+        { linkId: 'tab-1', isVisible: true }, // index 0
+        { linkId: 'tab-2', isVisible: false }, // index 1 - hidden
+        { linkId: 'tab-3', isVisible: true }, // index 2
+        { linkId: 'tab-4', isVisible: false }, // index 3 - hidden
+        { linkId: 'tab-5', isVisible: true }, // index 4 - current
+        { linkId: 'tab-6', isVisible: false }, // index 5 - hidden
+        { linkId: 'tab-7', isVisible: true } // index 6
       ];
       mockConstructTabsWithVisibility.mockReturnValue(mockTabsWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisibleTabs(4, mockTabs)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisibleTabs(4, mockTabs));
 
       expect(result.current).toEqual({
         previousTabIndex: 2,
@@ -315,18 +289,16 @@ describe('useNextAndPreviousVisibleTabs', () => {
 
     it('should handle gaps at beginning and end', () => {
       const mockTabsWithVisibility = [
-        { linkId: 'tab-1', isVisible: false },  // index 0 - hidden
-        { linkId: 'tab-2', isVisible: false },  // index 1 - hidden
-        { linkId: 'tab-3', isVisible: true },   // index 2 - current
-        { linkId: 'tab-4', isVisible: true },   // index 3
-        { linkId: 'tab-5', isVisible: false },  // index 4 - hidden
-        { linkId: 'tab-6', isVisible: false }   // index 5 - hidden
+        { linkId: 'tab-1', isVisible: false }, // index 0 - hidden
+        { linkId: 'tab-2', isVisible: false }, // index 1 - hidden
+        { linkId: 'tab-3', isVisible: true }, // index 2 - current
+        { linkId: 'tab-4', isVisible: true }, // index 3
+        { linkId: 'tab-5', isVisible: false }, // index 4 - hidden
+        { linkId: 'tab-6', isVisible: false } // index 5 - hidden
       ];
       mockConstructTabsWithVisibility.mockReturnValue(mockTabsWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisibleTabs(2, mockTabs)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisibleTabs(2, mockTabs));
 
       expect(result.current).toEqual({
         previousTabIndex: null, // No visible tabs before index 2
@@ -337,18 +309,16 @@ describe('useNextAndPreviousVisibleTabs', () => {
 
     it('should handle consecutive hidden tabs before current', () => {
       const mockTabsWithVisibility = [
-        { linkId: 'tab-1', isVisible: true },   // index 0
-        { linkId: 'tab-2', isVisible: false },  // index 1 - hidden
-        { linkId: 'tab-3', isVisible: false },  // index 2 - hidden
-        { linkId: 'tab-4', isVisible: false },  // index 3 - hidden
-        { linkId: 'tab-5', isVisible: true },   // index 4 - current
-        { linkId: 'tab-6', isVisible: true }    // index 5
+        { linkId: 'tab-1', isVisible: true }, // index 0
+        { linkId: 'tab-2', isVisible: false }, // index 1 - hidden
+        { linkId: 'tab-3', isVisible: false }, // index 2 - hidden
+        { linkId: 'tab-4', isVisible: false }, // index 3 - hidden
+        { linkId: 'tab-5', isVisible: true }, // index 4 - current
+        { linkId: 'tab-6', isVisible: true } // index 5
       ];
       mockConstructTabsWithVisibility.mockReturnValue(mockTabsWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisibleTabs(4, mockTabs)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisibleTabs(4, mockTabs));
 
       expect(result.current).toEqual({
         previousTabIndex: 0,
@@ -359,18 +329,16 @@ describe('useNextAndPreviousVisibleTabs', () => {
 
     it('should handle consecutive hidden tabs after current', () => {
       const mockTabsWithVisibility = [
-        { linkId: 'tab-1', isVisible: true },   // index 0
-        { linkId: 'tab-2', isVisible: true },   // index 1 - current
-        { linkId: 'tab-3', isVisible: false },  // index 2 - hidden
-        { linkId: 'tab-4', isVisible: false },  // index 3 - hidden
-        { linkId: 'tab-5', isVisible: false },  // index 4 - hidden
-        { linkId: 'tab-6', isVisible: true }    // index 5
+        { linkId: 'tab-1', isVisible: true }, // index 0
+        { linkId: 'tab-2', isVisible: true }, // index 1 - current
+        { linkId: 'tab-3', isVisible: false }, // index 2 - hidden
+        { linkId: 'tab-4', isVisible: false }, // index 3 - hidden
+        { linkId: 'tab-5', isVisible: false }, // index 4 - hidden
+        { linkId: 'tab-6', isVisible: true } // index 5
       ];
       mockConstructTabsWithVisibility.mockReturnValue(mockTabsWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisibleTabs(1, mockTabs)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisibleTabs(1, mockTabs));
 
       expect(result.current).toEqual({
         previousTabIndex: 0,
@@ -392,13 +360,13 @@ describe('useNextAndPreviousVisibleTabs', () => {
       ];
       mockConstructTabsWithVisibility.mockReturnValue(mockTabsWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisibleTabs(5, mockTabs) // Index beyond array
+      const { result } = renderHook(
+        () => useNextAndPreviousVisibleTabs(5, mockTabs) // Index beyond array
       );
 
       expect(result.current).toEqual({
-        previousTabIndex: 4, // Reverse search from index 5: (5 - 0 - 1) = 4 
-        nextTabIndex: null,  // No tabs after index 5
+        previousTabIndex: 4, // Reverse search from index 5: (5 - 0 - 1) = 4
+        nextTabIndex: null, // No tabs after index 5
         numOfVisibleTabs: 2
       });
     });
@@ -414,13 +382,11 @@ describe('useNextAndPreviousVisibleTabs', () => {
       ];
       mockConstructTabsWithVisibility.mockReturnValue(mockTabsWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisibleTabs(-1, mockTabs)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisibleTabs(-1, mockTabs));
 
       expect(result.current).toEqual({
         previousTabIndex: null, // No tabs before negative index
-        nextTabIndex: 0,        // First visible tab
+        nextTabIndex: 0, // First visible tab
         numOfVisibleTabs: 2
       });
     });
@@ -433,14 +399,12 @@ describe('useNextAndPreviousVisibleTabs', () => {
       };
       const mockTabsWithVisibility = [
         { linkId: 'tab-1', isVisible: false }, // index 0 - hidden but current
-        { linkId: 'tab-2', isVisible: true },  // index 1
-        { linkId: 'tab-3', isVisible: true }   // index 2
+        { linkId: 'tab-2', isVisible: true }, // index 1
+        { linkId: 'tab-3', isVisible: true } // index 2
       ];
       mockConstructTabsWithVisibility.mockReturnValue(mockTabsWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisibleTabs(0, mockTabs)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisibleTabs(0, mockTabs));
 
       expect(result.current).toEqual({
         previousTabIndex: null,
@@ -465,9 +429,7 @@ describe('useNextAndPreviousVisibleTabs', () => {
       ];
       mockConstructTabsWithVisibility.mockReturnValue(mockTabsWithVisibility);
 
-      renderHook(() => 
-        useNextAndPreviousVisibleTabs(1, mockTabs)
-      );
+      renderHook(() => useNextAndPreviousVisibleTabs(1, mockTabs));
 
       expect(mockConstructTabsWithVisibility).toHaveBeenCalledWith({
         tabs: mockTabs,
@@ -504,9 +466,9 @@ describe('useNextAndPreviousVisibleTabs', () => {
   describe('tab completion and hidden states', () => {
     it('should handle tabs with different completion states', () => {
       const mockTabs: Tabs = {
-        'tab-1': { tabIndex: 0, isComplete: true, isHidden: false },   // Completed
-        'tab-2': { tabIndex: 1, isComplete: false, isHidden: false },  // Current, not completed
-        'tab-3': { tabIndex: 2, isComplete: false, isHidden: false }   // Not completed
+        'tab-1': { tabIndex: 0, isComplete: true, isHidden: false }, // Completed
+        'tab-2': { tabIndex: 1, isComplete: false, isHidden: false }, // Current, not completed
+        'tab-3': { tabIndex: 2, isComplete: false, isHidden: false } // Not completed
       };
       const mockTabsWithVisibility = [
         { linkId: 'tab-1', isVisible: true },
@@ -515,9 +477,7 @@ describe('useNextAndPreviousVisibleTabs', () => {
       ];
       mockConstructTabsWithVisibility.mockReturnValue(mockTabsWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisibleTabs(1, mockTabs)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisibleTabs(1, mockTabs));
 
       expect(result.current).toEqual({
         previousTabIndex: 0,
@@ -528,9 +488,9 @@ describe('useNextAndPreviousVisibleTabs', () => {
 
     it('should handle tabs with different hidden states in input', () => {
       const mockTabs: Tabs = {
-        'tab-1': { tabIndex: 0, isComplete: false, isHidden: true },   // Hidden in input
-        'tab-2': { tabIndex: 1, isComplete: false, isHidden: false },  // Current
-        'tab-3': { tabIndex: 2, isComplete: false, isHidden: false }   // Not hidden
+        'tab-1': { tabIndex: 0, isComplete: false, isHidden: true }, // Hidden in input
+        'tab-2': { tabIndex: 1, isComplete: false, isHidden: false }, // Current
+        'tab-3': { tabIndex: 2, isComplete: false, isHidden: false } // Not hidden
       };
       // Note: actual visibility determined by constructTabsWithVisibility, not input isHidden
       const mockTabsWithVisibility = [
@@ -540,9 +500,7 @@ describe('useNextAndPreviousVisibleTabs', () => {
       ];
       mockConstructTabsWithVisibility.mockReturnValue(mockTabsWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisibleTabs(1, mockTabs)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisibleTabs(1, mockTabs));
 
       expect(result.current).toEqual({
         previousTabIndex: null, // tab-1 is not visible
@@ -558,9 +516,7 @@ describe('useNextAndPreviousVisibleTabs', () => {
       const mockTabsWithVisibility: { linkId: string; isVisible: boolean }[] = [];
       mockConstructTabsWithVisibility.mockReturnValue(mockTabsWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisibleTabs(0, emptyTabs)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisibleTabs(0, emptyTabs));
 
       expect(result.current).toEqual({
         previousTabIndex: null,
@@ -576,19 +532,19 @@ describe('useNextAndPreviousVisibleTabs', () => {
         'tab-c': { tabIndex: 5, isComplete: false, isHidden: false }
       };
       const mockTabsWithVisibility = [
-        { linkId: 'tab-a', isVisible: true },  // position 0
-        { linkId: 'tab-b', isVisible: true },  // position 1 - current
-        { linkId: 'tab-c', isVisible: true }   // position 2
+        { linkId: 'tab-a', isVisible: true }, // position 0
+        { linkId: 'tab-b', isVisible: true }, // position 1 - current
+        { linkId: 'tab-c', isVisible: true } // position 2
       ];
       mockConstructTabsWithVisibility.mockReturnValue(mockTabsWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisibleTabs(1, mockTabs) // Position 1 in the array
+      const { result } = renderHook(
+        () => useNextAndPreviousVisibleTabs(1, mockTabs) // Position 1 in the array
       );
 
       expect(result.current).toEqual({
         previousTabIndex: 0, // Position 0 in the array
-        nextTabIndex: 2,     // Position 2 in the array
+        nextTabIndex: 2, // Position 2 in the array
         numOfVisibleTabs: 3
       });
     });
@@ -598,23 +554,23 @@ describe('useNextAndPreviousVisibleTabs', () => {
     it('should handle large number of tabs efficiently', () => {
       const largeTabs: Tabs = {};
       const mockTabsWithVisibility: { linkId: string; isVisible: boolean }[] = [];
-      
+
       // Create 1000 tabs
       for (let i = 0; i < 1000; i++) {
         largeTabs[`tab-${i}`] = { tabIndex: i, isComplete: false, isHidden: false };
         mockTabsWithVisibility.push({ linkId: `tab-${i}`, isVisible: i % 2 === 0 }); // Every other tab visible
       }
-      
+
       mockConstructTabsWithVisibility.mockReturnValue(mockTabsWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisibleTabs(500, largeTabs) // Middle tab
+      const { result } = renderHook(
+        () => useNextAndPreviousVisibleTabs(500, largeTabs) // Middle tab
       );
 
       expect(result.current).toEqual({
         previousTabIndex: 498, // Previous even number
-        nextTabIndex: 502,     // Next even number  
-        numOfVisibleTabs: 500  // Half of 1000 tabs
+        nextTabIndex: 502, // Next even number
+        numOfVisibleTabs: 500 // Half of 1000 tabs
       });
     });
 
@@ -631,12 +587,8 @@ describe('useNextAndPreviousVisibleTabs', () => {
       ];
       mockConstructTabsWithVisibility.mockReturnValue(mockTabsWithVisibility);
 
-      const { result: result1 } = renderHook(() => 
-        useNextAndPreviousVisibleTabs(2, mockTabs)
-      );
-      const { result: result2 } = renderHook(() => 
-        useNextAndPreviousVisibleTabs(2, mockTabs)
-      );
+      const { result: result1 } = renderHook(() => useNextAndPreviousVisibleTabs(2, mockTabs));
+      const { result: result2 } = renderHook(() => useNextAndPreviousVisibleTabs(2, mockTabs));
 
       expect(result1.current).toEqual(result2.current);
       expect(result1.current).toEqual({

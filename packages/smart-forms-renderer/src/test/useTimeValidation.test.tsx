@@ -336,13 +336,13 @@ describe('useTimeValidation', () => {
       mockValidateTimeInput.mockReturnValue({ timeIsValid: true, is24HourNotation: false });
 
       const periods = ['AM', 'PM', 'am', 'pm', 'A.M.', 'P.M.'];
-      
-      periods.forEach(period => {
+
+      periods.forEach((period) => {
         jest.clearAllMocks();
         mockValidateTimeInput.mockReturnValue({ timeIsValid: true, is24HourNotation: false });
-        
+
         const { result } = renderHook(() => useTimeValidation('10:30', period));
-        
+
         expect(mockValidateTimeInput).toHaveBeenCalledWith('10:30', period);
         expect(result.current.timeFeedback).toBe('');
       });
@@ -575,7 +575,7 @@ describe('useTimeValidation', () => {
       mockValidateTimeInput.mockReturnValue({ timeIsValid: false, is24HourNotation: false });
 
       const { result: result1 } = renderHook(() => useTimeValidation('12:30', 'AM'));
-      
+
       mockValidateTimeInput.mockReturnValue({ timeIsValid: true, is24HourNotation: false });
       const { result: result2 } = renderHook(() => useTimeValidation('12:30', 'AM'));
 

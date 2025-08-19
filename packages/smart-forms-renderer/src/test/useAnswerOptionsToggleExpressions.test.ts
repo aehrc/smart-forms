@@ -192,7 +192,9 @@ describe('useAnswerOptionsToggleExpressions hook', () => {
       const { result } = renderHook(() => useAnswerOptionsToggleExpressions('test-item'));
 
       expect(result.current.answerOptionsToggleExpressionsMap.size).toBe(2);
-      expect(result.current.answerOptionsToggleExpressionsMap.get('coding:http://test.com-A-Option A')).toBe(true);
+      expect(
+        result.current.answerOptionsToggleExpressionsMap.get('coding:http://test.com-A-Option A')
+      ).toBe(true);
       expect(result.current.answerOptionsToggleExpressionsMap.get('string:Option B')).toBe(true);
     });
 
@@ -215,13 +217,13 @@ describe('useAnswerOptionsToggleExpressions hook', () => {
       const { result } = renderHook(() => useAnswerOptionsToggleExpressions('test-item'));
 
       expect(result.current.answerOptionsToggleExpressionsMap.size).toBe(1);
-      expect(result.current.answerOptionsToggleExpressionsMap.get('coding:http://test.com-A-Option A')).toBe(false);
+      expect(
+        result.current.answerOptionsToggleExpressionsMap.get('coding:http://test.com-A-Option A')
+      ).toBe(false);
     });
 
     it('should process toggle expression with undefined isEnabled (default to disabled)', () => {
-      const mockOptions: QuestionnaireItemAnswerOption[] = [
-        { valueString: 'Option A' }
-      ];
+      const mockOptions: QuestionnaireItemAnswerOption[] = [{ valueString: 'Option A' }];
 
       mockAnswerOptionsToggleExpressions = {
         'test-item': [
@@ -240,12 +242,8 @@ describe('useAnswerOptionsToggleExpressions hook', () => {
     });
 
     it('should process multiple toggle expressions', () => {
-      const mockOptions1: QuestionnaireItemAnswerOption[] = [
-        { valueString: 'Option A' }
-      ];
-      const mockOptions2: QuestionnaireItemAnswerOption[] = [
-        { valueInteger: 1 }
-      ];
+      const mockOptions1: QuestionnaireItemAnswerOption[] = [{ valueString: 'Option A' }];
+      const mockOptions2: QuestionnaireItemAnswerOption[] = [{ valueInteger: 1 }];
 
       mockAnswerOptionsToggleExpressions = {
         'test-item': [
@@ -308,9 +306,7 @@ describe('useAnswerOptionsToggleExpressions hook', () => {
     });
 
     it('should set updated status to true and then false after timeout when map has content', () => {
-      const mockOptions: QuestionnaireItemAnswerOption[] = [
-        { valueString: 'Option A' }
-      ];
+      const mockOptions: QuestionnaireItemAnswerOption[] = [{ valueString: 'Option A' }];
 
       mockAnswerOptionsToggleExpressions = {
         'test-item': [
@@ -335,9 +331,7 @@ describe('useAnswerOptionsToggleExpressions hook', () => {
     });
 
     it('should trigger useEffect when map changes', () => {
-      const mockOptions: QuestionnaireItemAnswerOption[] = [
-        { valueString: 'Option A' }
-      ];
+      const mockOptions: QuestionnaireItemAnswerOption[] = [{ valueString: 'Option A' }];
 
       // Start with no expressions
       const { result, rerender } = renderHook(() => useAnswerOptionsToggleExpressions('test-item'));
@@ -368,9 +362,7 @@ describe('useAnswerOptionsToggleExpressions hook', () => {
     });
 
     it('should clean up timeout on unmount', () => {
-      const mockOptions: QuestionnaireItemAnswerOption[] = [
-        { valueString: 'Option A' }
-      ];
+      const mockOptions: QuestionnaireItemAnswerOption[] = [{ valueString: 'Option A' }];
 
       mockAnswerOptionsToggleExpressions = {
         'test-item': [
@@ -400,9 +392,7 @@ describe('useAnswerOptionsToggleExpressions hook', () => {
 
   describe('map change detection', () => {
     it('should detect when options change from enabled to disabled', () => {
-      const mockOptions: QuestionnaireItemAnswerOption[] = [
-        { valueString: 'Option A' }
-      ];
+      const mockOptions: QuestionnaireItemAnswerOption[] = [{ valueString: 'Option A' }];
 
       // Start with enabled
       mockAnswerOptionsToggleExpressions = {
@@ -439,9 +429,7 @@ describe('useAnswerOptionsToggleExpressions hook', () => {
     });
 
     it('should detect when new options are added', () => {
-      const initialOptions: QuestionnaireItemAnswerOption[] = [
-        { valueString: 'Option A' }
-      ];
+      const initialOptions: QuestionnaireItemAnswerOption[] = [{ valueString: 'Option A' }];
 
       // Start with one option
       mockAnswerOptionsToggleExpressions = {

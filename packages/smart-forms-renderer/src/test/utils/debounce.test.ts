@@ -54,7 +54,7 @@ describe('debounce', () => {
     it('should be suitable for UI debouncing (200-500ms range)', () => {
       expect(DEBOUNCE_DURATION).toBeGreaterThanOrEqual(200);
       expect(DEBOUNCE_DURATION).toBeLessThanOrEqual(500);
-      
+
       expect(AUTOCOMPLETE_DEBOUNCE_DURATION).toBeGreaterThanOrEqual(200);
       expect(AUTOCOMPLETE_DEBOUNCE_DURATION).toBeLessThanOrEqual(500);
     });

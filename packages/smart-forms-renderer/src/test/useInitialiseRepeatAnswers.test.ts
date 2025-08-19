@@ -34,7 +34,7 @@ jest.mock('../utils/repeatId', () => ({
 describe('useInitialiseRepeatAnswers', () => {
   // Test data
   const mockLinkId = 'repeat-answer-link';
-  
+
   const mockAnswer1: QuestionnaireResponseItemAnswer = {
     valueString: 'Answer 1'
   };
@@ -54,8 +54,8 @@ describe('useInitialiseRepeatAnswers', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGenerateNewRepeatId.mockReturnValue('repeat-answer-link-repeat-newXYZ');
-    mockGenerateExistingRepeatId.mockImplementation((linkId: string, index: number) => 
-      `${linkId}-repeat-${index.toString().padStart(6, '0')}`
+    mockGenerateExistingRepeatId.mockImplementation(
+      (linkId: string, index: number) => `${linkId}-repeat-${index.toString().padStart(6, '0')}`
     );
   });
 
@@ -87,7 +87,9 @@ describe('useInitialiseRepeatAnswers', () => {
         text: 'Test Item'
       };
 
-      const { result } = renderHook(() => useInitialiseRepeatAnswers(mockLinkId, qrItemWithoutAnswers));
+      const { result } = renderHook(() =>
+        useInitialiseRepeatAnswers(mockLinkId, qrItemWithoutAnswers)
+      );
 
       expect(result.current).toHaveLength(1);
       expect(result.current[0]).toEqual({
@@ -105,7 +107,9 @@ describe('useInitialiseRepeatAnswers', () => {
         answer: []
       };
 
-      const { result } = renderHook(() => useInitialiseRepeatAnswers(mockLinkId, qrItemWithEmptyAnswers));
+      const { result } = renderHook(() =>
+        useInitialiseRepeatAnswers(mockLinkId, qrItemWithEmptyAnswers)
+      );
 
       expect(result.current).toHaveLength(0);
 
@@ -120,7 +124,9 @@ describe('useInitialiseRepeatAnswers', () => {
         answer: undefined
       };
 
-      const { result } = renderHook(() => useInitialiseRepeatAnswers(mockLinkId, qrItemWithUndefinedAnswers));
+      const { result } = renderHook(() =>
+        useInitialiseRepeatAnswers(mockLinkId, qrItemWithUndefinedAnswers)
+      );
 
       expect(result.current).toHaveLength(1);
       expect(result.current[0]).toEqual({
@@ -208,7 +214,7 @@ describe('useInitialiseRepeatAnswers', () => {
       const { result } = renderHook(() => useInitialiseRepeatAnswers(mockLinkId, qrItem));
 
       expect(result.current).toHaveLength(3);
-      
+
       expect(result.current[0]).toEqual({
         ...mockAnswer1,
         id: 'repeat-answer-link-repeat-000000'
@@ -253,7 +259,7 @@ describe('useInitialiseRepeatAnswers', () => {
       const { result } = renderHook(() => useInitialiseRepeatAnswers(mockLinkId, qrItem));
 
       expect(result.current).toHaveLength(3);
-      
+
       expect(result.current[0]).toEqual({
         valueString: 'Answer with ID',
         id: 'existing-id-1'
@@ -287,12 +293,12 @@ describe('useInitialiseRepeatAnswers', () => {
       const { result } = renderHook(() => useInitialiseRepeatAnswers(mockLinkId, qrItem));
 
       expect(result.current).toHaveLength(20);
-      
+
       // Check first, middle, and last items
       expect(result.current[0]?.id).toBe('repeat-answer-link-repeat-000000');
       expect(result.current[10]?.id).toBe('repeat-answer-link-repeat-000010');
       expect(result.current[19]?.id).toBe('repeat-answer-link-repeat-000019');
-      
+
       // Verify all items have correct content
       result.current.forEach((answer, index) => {
         expect(answer?.valueString).toBe(`Answer ${index}`);
@@ -375,7 +381,8 @@ describe('useInitialiseRepeatAnswers', () => {
 
     it('should recompute when switching from null to qrItem with answers', () => {
       const { result, rerender } = renderHook(
-        ({ linkId, item }: { linkId: string; item: QuestionnaireResponseItem | null }) => useInitialiseRepeatAnswers(linkId, item),
+        ({ linkId, item }: { linkId: string; item: QuestionnaireResponseItem | null }) =>
+          useInitialiseRepeatAnswers(linkId, item),
         { initialProps: { linkId: mockLinkId, item: null as QuestionnaireResponseItem | null } }
       );
 
@@ -472,13 +479,15 @@ describe('useInitialiseRepeatAnswers', () => {
     it('should handle coding values', () => {
       const qrItem: QuestionnaireResponseItem = {
         linkId: 'test-item',
-        answer: [{
-          valueCoding: {
-            system: 'http://snomed.info/sct',
-            code: '12345',
-            display: 'Test Condition'
+        answer: [
+          {
+            valueCoding: {
+              system: 'http://snomed.info/sct',
+              code: '12345',
+              display: 'Test Condition'
+            }
           }
-        }]
+        ]
       };
 
       const { result } = renderHook(() => useInitialiseRepeatAnswers(mockLinkId, qrItem));
@@ -496,14 +505,16 @@ describe('useInitialiseRepeatAnswers', () => {
     it('should handle quantity values', () => {
       const qrItem: QuestionnaireResponseItem = {
         linkId: 'test-item',
-        answer: [{
-          valueQuantity: {
-            value: 70,
-            unit: 'kg',
-            system: 'http://unitsofmeasure.org',
-            code: 'kg'
+        answer: [
+          {
+            valueQuantity: {
+              value: 70,
+              unit: 'kg',
+              system: 'http://unitsofmeasure.org',
+              code: 'kg'
+            }
           }
-        }]
+        ]
       };
 
       const { result } = renderHook(() => useInitialiseRepeatAnswers(mockLinkId, qrItem));

@@ -23,11 +23,11 @@ import {
   evaluateInitialCalculatedExpressions,
   evaluateCalculatedExpressions
 } from '../utils/calculatedExpression';
-import type { 
-  Questionnaire, 
-  QuestionnaireItem, 
-  QuestionnaireResponse, 
-  QuestionnaireResponseItem 
+import type {
+  Questionnaire,
+  QuestionnaireItem,
+  QuestionnaireResponse,
+  QuestionnaireResponseItem
 } from 'fhir/r4';
 import type { CalculatedExpression } from '../interfaces/calculatedExpression.interface';
 
@@ -49,19 +49,23 @@ import fhirpath from 'fhirpath';
 import { createFhirPathContext, handleFhirPathResult } from '../utils/fhirpath';
 
 const mockFhirPath = fhirpath.evaluate as jest.MockedFunction<typeof fhirpath.evaluate>;
-const mockCreateFhirPathContext = createFhirPathContext as jest.MockedFunction<typeof createFhirPathContext>;
-const mockHandleFhirPathResult = handleFhirPathResult as jest.MockedFunction<typeof handleFhirPathResult>;
+const mockCreateFhirPathContext = createFhirPathContext as jest.MockedFunction<
+  typeof createFhirPathContext
+>;
+const mockHandleFhirPathResult = handleFhirPathResult as jest.MockedFunction<
+  typeof handleFhirPathResult
+>;
 
 describe('calculatedExpression utils', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Default mock implementations
     mockCreateFhirPathContext.mockResolvedValue({
       fhirPathContext: { questionnaire: {}, questionnaireResponse: {} },
       fhirPathTerminologyCache: {}
     });
-    
+
     mockHandleFhirPathResult.mockResolvedValue([]);
   });
 
@@ -100,7 +104,7 @@ describe('calculatedExpression utils', () => {
 
     test('should handle edge cases', () => {
       expect(checkIsDateTime('2023-02-29')).toBe(true); // dayjs accepts and converts
-      expect(checkIsDateTime('2024-02-29')).toBe(true);  // Leap year
+      expect(checkIsDateTime('2024-02-29')).toBe(true); // Leap year
     });
   });
 
@@ -721,9 +725,9 @@ describe('calculatedExpression utils', () => {
         },
         calculatedExpressions,
         variables: {
-                  fhirPathVariables: {
-          'var.test': [{ expression: 'existing-value', language: 'text/fhirpath' }]
-        },
+          fhirPathVariables: {
+            'var.test': [{ expression: 'existing-value', language: 'text/fhirpath' }]
+          },
           xFhirQueryVariables: {}
         },
         existingFhirPathContext: {
@@ -809,7 +813,7 @@ describe('calculatedExpression utils', () => {
       const calculatedExpressions = {
         'item-1': [
           {
-            expression: '%context.repeat(item).where(linkId=\'age\').answer.valueInteger',
+            expression: "%context.repeat(item).where(linkId='age').answer.valueInteger",
             from: 'item' as const,
             value: null
           }
@@ -847,7 +851,7 @@ describe('calculatedExpression utils', () => {
       const calculatedExpressions = {
         'item-1': [
           {
-            expression: '%context.repeat(item).where(linkId=\'age\').answer.valueInteger',
+            expression: "%context.repeat(item).where(linkId='age').answer.valueInteger",
             from: 'item' as const,
             value: 25
           }
@@ -872,7 +876,7 @@ describe('calculatedExpression utils', () => {
       const calculatedExpressions = {
         'item-1': [
           {
-            expression: '%context.repeat(item).where(linkId=\'age\').answer.valueInteger',
+            expression: "%context.repeat(item).where(linkId='age').answer.valueInteger",
             from: 'item' as const,
             value: null
           }
@@ -919,8 +923,13 @@ describe('calculatedExpression utils', () => {
       );
 
       expect(result.calculatedExpsIsUpdated).toBe(true);
-      expect(result.updatedCalculatedExpressions['item-1'][0].value).toEqual({ code: 'test', display: 'Test' });
-      expect((fhirPathTerminologyCache as any)['"%context.terminology.expand()"']).toEqual([{ code: 'test', display: 'Test' }]);
+      expect(result.updatedCalculatedExpressions['item-1'][0].value).toEqual({
+        code: 'test',
+        display: 'Test'
+      });
+      expect((fhirPathTerminologyCache as any)['"%context.terminology.expand()"']).toEqual([
+        { code: 'test', display: 'Test' }
+      ]);
     });
 
     test('should handle evaluation errors gracefully', async () => {
@@ -1016,14 +1025,16 @@ describe('calculatedExpression utils', () => {
       mockHandleFhirPathResult.mockResolvedValue(['http://new-valueset.com']);
 
       const result = await evaluateCalculatedExpressions(
-        {},         
+        {},
         {},
         calculatedExpressions,
         'http://test.com'
       );
 
       expect(result.calculatedExpsIsUpdated).toBe(true);
-      expect(result.updatedCalculatedExpressions['item-1'][0].value).toBe('http://new-valueset.com');
+      expect(result.updatedCalculatedExpressions['item-1'][0].value).toBe(
+        'http://new-valueset.com'
+      );
       expect(result.computedNewAnswers['item-1']).toBe(null);
     });
 
@@ -1068,9 +1079,7 @@ describe('calculatedExpression utils', () => {
         ]
       };
 
-      mockFhirPath
-        .mockReturnValueOnce(['first-result'])
-        .mockReturnValueOnce(['second-result']);
+      mockFhirPath.mockReturnValueOnce(['first-result']).mockReturnValueOnce(['second-result']);
       mockHandleFhirPathResult
         .mockResolvedValueOnce(['first-result'])
         .mockResolvedValueOnce(['second-result']);
@@ -1102,16 +1111,11 @@ describe('calculatedExpression utils', () => {
       mockFhirPath.mockReturnValue(['Blood tests result']);
       mockHandleFhirPathResult.mockResolvedValue(['Blood tests result']);
 
-      await evaluateCalculatedExpressions(
-        {},
-        {},
-        calculatedExpressions,
-        'http://test.com'
-      );
+      await evaluateCalculatedExpressions({}, {}, calculatedExpressions, 'http://test.com');
 
       expect(consoleSpy).toHaveBeenCalledWith(
-        'Blood tests initial', 
-        ['Blood tests result'], 
+        'Blood tests initial',
+        ['Blood tests result'],
         '%context.blood.tests'
       );
     });

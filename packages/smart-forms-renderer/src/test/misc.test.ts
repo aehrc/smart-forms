@@ -19,7 +19,12 @@
  */
 
 import { describe, expect, test } from '@jest/globals';
-import type { Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
+import type {
+  Questionnaire,
+  QuestionnaireItem,
+  QuestionnaireResponse,
+  QuestionnaireResponseItem
+} from 'fhir/r4';
 import {
   getQuestionnaireItem,
   getQuestionnaireResponseItem,
@@ -230,7 +235,7 @@ describe('replaceQuestionnaireResponseItem', () => {
     };
 
     const result = replaceQuestionnaireResponseItem(mockQuestionnaireResponse, 'item-1', newItem);
-    
+
     expect(result.item![0]).toEqual(newItem);
     expect(result.item![1]).toEqual(mockQuestionnaireResponse.item![1]); // Other items unchanged
   });
@@ -242,14 +247,18 @@ describe('replaceQuestionnaireResponseItem', () => {
       answer: [{ valueString: 'updated nested' }]
     };
 
-    const result = replaceQuestionnaireResponseItem(mockQuestionnaireResponse, 'nested-item', newItem);
-    
+    const result = replaceQuestionnaireResponseItem(
+      mockQuestionnaireResponse,
+      'nested-item',
+      newItem
+    );
+
     expect(result.item![1].item![0]).toEqual(newItem);
   });
 
   test('should remove item when newQRItem is null', () => {
     const result = replaceQuestionnaireResponseItem(mockQuestionnaireResponse, 'item-1', null);
-    
+
     expect(result.item).toHaveLength(1);
     expect(result.item![0].linkId).toBe('group-1');
   });
@@ -395,8 +404,8 @@ describe('getSectionHeading', () => {
   };
 
   const mockTabs = {
-    'section-1': { 
-      linkId: 'section-1', 
+    'section-1': {
+      linkId: 'section-1',
       title: 'Section 1',
       tabIndex: 0,
       isComplete: false,
@@ -547,7 +556,7 @@ describe('getQuestionnaireResponseItemViaFhirPath', () => {
     expect(() => {
       getQuestionnaireResponseItemViaFhirPath(
         mockQuestionnaireResponse,
-        "invalid.fhirpath.expression"
+        'invalid.fhirpath.expression'
       );
     }).not.toThrow();
   });

@@ -71,8 +71,8 @@ describe('useBuildForm', () => {
   };
 
   const mockAdditionalVariables = {
-    'ObsBodyHeight': { resourceType: 'Bundle' },
-    'PatientData': { name: 'John Doe' }
+    ObsBodyHeight: { resourceType: 'Bundle' },
+    PatientData: { name: 'John Doe' }
   };
 
   const mockQItemOverrideComponents: Record<string, ComponentType<QItemOverrideComponentProps>> = {
@@ -85,7 +85,7 @@ describe('useBuildForm', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Mock buildForm to return a resolved promise by default
     mockBuildForm.mockResolvedValue(undefined);
   });
@@ -107,7 +107,7 @@ describe('useBuildForm', () => {
         undefined, // terminologyServerUrl
         undefined, // additionalVariables
         undefined, // qItemOverrideComponents
-        undefined  // sdcUiOverrideComponents
+        undefined // sdcUiOverrideComponents
       );
     });
 
@@ -118,7 +118,7 @@ describe('useBuildForm', () => {
 
       // Wait for buildForm to complete
       await act(async () => {
-        await new Promise(resolve => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 0));
       });
 
       expect(result.current).toBe(false);
@@ -204,13 +204,8 @@ describe('useBuildForm', () => {
 
     it('should handle terminologyServerUrl only', () => {
       const terminologyUrl = 'http://custom.terminology.server/fhir';
-      
-      renderHook(() => useBuildForm(
-        mockQuestionnaire,
-        undefined,
-        undefined,
-        terminologyUrl
-      ));
+
+      renderHook(() => useBuildForm(mockQuestionnaire, undefined, undefined, terminologyUrl));
 
       expect(mockBuildForm).toHaveBeenCalledWith(
         mockQuestionnaire,
@@ -224,13 +219,9 @@ describe('useBuildForm', () => {
     });
 
     it('should handle additionalVariables only', () => {
-      renderHook(() => useBuildForm(
-        mockQuestionnaire,
-        undefined,
-        undefined,
-        undefined,
-        mockAdditionalVariables
-      ));
+      renderHook(() =>
+        useBuildForm(mockQuestionnaire, undefined, undefined, undefined, mockAdditionalVariables)
+      );
 
       expect(mockBuildForm).toHaveBeenCalledWith(
         mockQuestionnaire,
@@ -244,16 +235,18 @@ describe('useBuildForm', () => {
     });
 
     it('should handle override components only', () => {
-      renderHook(() => useBuildForm(
-        mockQuestionnaire,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        mockQItemOverrideComponents,
-        mockSdcUiOverrideComponents
-      ));
+      renderHook(() =>
+        useBuildForm(
+          mockQuestionnaire,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          mockQItemOverrideComponents,
+          mockSdcUiOverrideComponents
+        )
+      );
 
       expect(mockBuildForm).toHaveBeenCalledWith(
         mockQuestionnaire,
@@ -278,7 +271,7 @@ describe('useBuildForm', () => {
 
       // The hook doesn't handle errors explicitly, so state should remain true
       await act(async () => {
-        await new Promise(resolve => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 0));
       });
 
       // State should remain true since promise was rejected
@@ -290,7 +283,7 @@ describe('useBuildForm', () => {
       const slowPromise = new Promise<void>((resolve) => {
         resolvePromise = resolve;
       });
-      
+
       mockBuildForm.mockReturnValue(slowPromise);
 
       const { result } = renderHook(() => useBuildForm(mockQuestionnaire));
@@ -299,7 +292,7 @@ describe('useBuildForm', () => {
 
       // Promise not resolved yet, should still be building
       await act(async () => {
-        await new Promise(resolve => setTimeout(resolve, 10));
+        await new Promise((resolve) => setTimeout(resolve, 10));
       });
       expect(result.current).toBe(true);
 
@@ -334,10 +327,9 @@ describe('useBuildForm', () => {
         id: 'new-questionnaire'
       };
 
-      const { rerender } = renderHook(
-        ({ questionnaire }) => useBuildForm(questionnaire),
-        { initialProps: { questionnaire: mockQuestionnaire } }
-      );
+      const { rerender } = renderHook(({ questionnaire }) => useBuildForm(questionnaire), {
+        initialProps: { questionnaire: mockQuestionnaire }
+      });
 
       expect(mockBuildForm).toHaveBeenCalledTimes(1);
 
@@ -361,10 +353,9 @@ describe('useBuildForm', () => {
         id: 'new-response'
       };
 
-      const { rerender } = renderHook(
-        ({ response }) => useBuildForm(mockQuestionnaire, response),
-        { initialProps: { response: mockQuestionnaireResponse } }
-      );
+      const { rerender } = renderHook(({ response }) => useBuildForm(mockQuestionnaire, response), {
+        initialProps: { response: mockQuestionnaireResponse }
+      });
 
       expect(mockBuildForm).toHaveBeenCalledTimes(1);
 
@@ -418,13 +409,9 @@ describe('useBuildForm', () => {
     });
 
     it('should rebuild when additionalVariables are provided', () => {
-      renderHook(() => useBuildForm(
-        mockQuestionnaire,
-        undefined,
-        undefined,
-        undefined,
-        mockAdditionalVariables
-      ));
+      renderHook(() =>
+        useBuildForm(mockQuestionnaire, undefined, undefined, undefined, mockAdditionalVariables)
+      );
 
       expect(mockBuildForm).toHaveBeenCalledWith(
         mockQuestionnaire,
@@ -441,7 +428,8 @@ describe('useBuildForm', () => {
       const newStyling: RendererStyling = { readOnlyVisualStyle: 'readonly' };
 
       const { rerender } = renderHook(
-        ({ styling }) => useBuildForm(mockQuestionnaire, undefined, undefined, undefined, undefined, styling),
+        ({ styling }) =>
+          useBuildForm(mockQuestionnaire, undefined, undefined, undefined, undefined, styling),
         { initialProps: { styling: mockRendererStyling } }
       );
 
@@ -460,7 +448,16 @@ describe('useBuildForm', () => {
       };
 
       const { rerender } = renderHook(
-        ({ overrides }) => useBuildForm(mockQuestionnaire, undefined, undefined, undefined, undefined, undefined, overrides),
+        ({ overrides }) =>
+          useBuildForm(
+            mockQuestionnaire,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            overrides
+          ),
         { initialProps: { overrides: mockQItemOverrideComponents } }
       );
 
@@ -496,18 +493,14 @@ describe('useBuildForm', () => {
 
     it('should handle null/undefined values in additionalVariables', () => {
       const variablesWithNull = {
-        'ValidVar': 'value',
-        'NullVar': null,
-        'UndefinedVar': undefined
+        ValidVar: 'value',
+        NullVar: null,
+        UndefinedVar: undefined
       };
 
-      renderHook(() => useBuildForm(
-        mockQuestionnaire,
-        undefined,
-        undefined,
-        undefined,
-        variablesWithNull
-      ));
+      renderHook(() =>
+        useBuildForm(mockQuestionnaire, undefined, undefined, undefined, variablesWithNull)
+      );
 
       expect(mockBuildForm).toHaveBeenCalledWith(
         mockQuestionnaire,
@@ -521,16 +514,18 @@ describe('useBuildForm', () => {
     });
 
     it('should handle empty override components objects', () => {
-      renderHook(() => useBuildForm(
-        mockQuestionnaire,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        {}, // empty qItemOverrideComponents
-        {}  // empty sdcUiOverrideComponents
-      ));
+      renderHook(() =>
+        useBuildForm(
+          mockQuestionnaire,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          undefined,
+          {}, // empty qItemOverrideComponents
+          {} // empty sdcUiOverrideComponents
+        )
+      );
 
       expect(mockBuildForm).toHaveBeenCalledWith(
         mockQuestionnaire,
@@ -546,14 +541,9 @@ describe('useBuildForm', () => {
     it('should handle empty rendererStyling object', () => {
       const emptyStyling: RendererStyling = {};
 
-      renderHook(() => useBuildForm(
-        mockQuestionnaire,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        emptyStyling
-      ));
+      renderHook(() =>
+        useBuildForm(mockQuestionnaire, undefined, undefined, undefined, undefined, emptyStyling)
+      );
 
       expect(mockSetRendererStyling).toHaveBeenCalledWith(emptyStyling);
     });

@@ -23,7 +23,9 @@ import { renderHook, act, waitFor } from '@testing-library/react';
 import type { QuestionnaireItem, Coding, ValueSet } from 'fhir/r4';
 import type { CalculatedExpression } from '../interfaces';
 import type { ProcessedValueSet } from '../interfaces/valueSet.interface';
-import useDynamicValueSetEffect, { getUpdatableValueSetUrl } from '../hooks/useDynamicValueSetEffect';
+import useDynamicValueSetEffect, {
+  getUpdatableValueSetUrl
+} from '../hooks/useDynamicValueSetEffect';
 
 // Mock external dependencies
 jest.mock('../utils/valueSet', () => ({
@@ -49,7 +51,9 @@ import { addDisplayToCodingArray } from '../utils/questionnaireStoreUtils/addDis
 
 const mockGetValueSetCodings = getValueSetCodings as jest.MockedFunction<typeof getValueSetCodings>;
 const mockGetValueSetPromise = getValueSetPromise as jest.MockedFunction<typeof getValueSetPromise>;
-const mockAddDisplayToCodingArray = addDisplayToCodingArray as jest.MockedFunction<typeof addDisplayToCodingArray>;
+const mockAddDisplayToCodingArray = addDisplayToCodingArray as jest.MockedFunction<
+  typeof addDisplayToCodingArray
+>;
 const mockAddCodingToCache = jest.fn();
 
 let mockCalculatedExpressions: Record<string, CalculatedExpression[]> = {};
@@ -129,12 +133,12 @@ describe('useDynamicValueSetEffect hook', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
-    
+
     mockCalculatedExpressions = {};
     mockOnSetCodings = jest.fn();
     mockOnSetDynamicCodingsUpdated = jest.fn();
     mockOnSetServerError = jest.fn();
-    
+
     mockQItem = {
       linkId: 'test-item',
       type: 'choice',
@@ -241,11 +245,13 @@ describe('useDynamicValueSetEffect hook', () => {
       );
 
       // Mock promise for first render
-      mockGetValueSetPromise.mockReturnValue(Promise.resolve({
-        resourceType: 'ValueSet',
-        id: 'test-valueset',
-        status: 'active'
-      } as ValueSet));
+      mockGetValueSetPromise.mockReturnValue(
+        Promise.resolve({
+          resourceType: 'ValueSet',
+          id: 'test-valueset',
+          status: 'active'
+        } as ValueSet)
+      );
 
       expect(mockGetValueSetPromise).toHaveBeenCalledTimes(1);
 
@@ -421,9 +427,7 @@ describe('useDynamicValueSetEffect hook', () => {
         status: 'active'
       };
 
-      const initialCodings: Coding[] = [
-        { system: 'http://test.com', code: 'A' }
-      ];
+      const initialCodings: Coding[] = [{ system: 'http://test.com', code: 'A' }];
 
       const addDisplayError = new Error('Failed to add display');
 

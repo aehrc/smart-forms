@@ -27,35 +27,35 @@ describe('repeatId', () => {
     it('should generate a new repeat ID with linkId and nanoid', () => {
       const linkId = 'test-question';
       const result = generateNewRepeatId(linkId);
-      
+
       expect(result).toBe('test-question-repeat-mock-nanoid-123');
     });
 
     it('should include the provided linkId in the result', () => {
       const linkId = 'patient-info';
       const result = generateNewRepeatId(linkId);
-      
+
       expect(result).toContain(linkId);
       expect(result).toMatch(/^patient-info-repeat-/);
     });
 
     it('should handle empty linkId', () => {
       const result = generateNewRepeatId('');
-      
+
       expect(result).toBe('-repeat-mock-nanoid-123');
     });
 
     it('should handle linkId with special characters', () => {
       const linkId = 'section.1_item-2';
       const result = generateNewRepeatId(linkId);
-      
+
       expect(result).toBe('section.1_item-2-repeat-mock-nanoid-123');
     });
 
     it('should generate unique IDs for different linkIds', () => {
       const id1 = generateNewRepeatId('linkId1');
       const id2 = generateNewRepeatId('linkId2');
-      
+
       expect(id1).not.toBe(id2);
       expect(id1).toContain('linkId1');
       expect(id2).toContain('linkId2');
@@ -67,13 +67,13 @@ describe('repeatId', () => {
       const linkId = 'test-question';
       const index = 5;
       const result = generateExistingRepeatId(linkId, index);
-      
+
       expect(result).toBe('test-question-repeat-000005');
     });
 
     it('should pad index to 6 digits', () => {
       const linkId = 'question';
-      
+
       expect(generateExistingRepeatId(linkId, 0)).toBe('question-repeat-000000');
       expect(generateExistingRepeatId(linkId, 1)).toBe('question-repeat-000001');
       expect(generateExistingRepeatId(linkId, 42)).toBe('question-repeat-000042');
@@ -85,7 +85,7 @@ describe('repeatId', () => {
       const linkId = 'question';
       const largeIndex = 9999999;
       const result = generateExistingRepeatId(linkId, largeIndex);
-      
+
       expect(result).toBe('question-repeat-9999999');
       expect(result).toContain(largeIndex.toString());
     });
@@ -93,30 +93,30 @@ describe('repeatId', () => {
     it('should handle index 0', () => {
       const linkId = 'first-question';
       const result = generateExistingRepeatId(linkId, 0);
-      
+
       expect(result).toBe('first-question-repeat-000000');
     });
 
     it('should handle empty linkId', () => {
       const result = generateExistingRepeatId('', 123);
-      
+
       expect(result).toBe('-repeat-000123');
     });
 
     it('should handle linkId with special characters', () => {
       const linkId = 'section.1_item-2';
       const result = generateExistingRepeatId(linkId, 42);
-      
+
       expect(result).toBe('section.1_item-2-repeat-000042');
     });
 
     it('should generate consistent IDs for same inputs', () => {
       const linkId = 'test';
       const index = 100;
-      
+
       const id1 = generateExistingRepeatId(linkId, index);
       const id2 = generateExistingRepeatId(linkId, index);
-      
+
       expect(id1).toBe(id2);
       expect(id1).toBe('test-repeat-000100');
     });
@@ -125,10 +125,10 @@ describe('repeatId', () => {
   describe('function differences', () => {
     it('should generate different formats for new vs existing IDs', () => {
       const linkId = 'test-question';
-      
+
       const newId = generateNewRepeatId(linkId);
       const existingId = generateExistingRepeatId(linkId, 1);
-      
+
       expect(newId).not.toBe(existingId);
       expect(newId).toMatch(/test-question-repeat-[a-zA-Z0-9_-]+/);
       expect(existingId).toMatch(/test-question-repeat-\d{6}/);
@@ -136,10 +136,10 @@ describe('repeatId', () => {
 
     it('should both include the linkId and repeat prefix', () => {
       const linkId = 'common-question';
-      
+
       const newId = generateNewRepeatId(linkId);
       const existingId = generateExistingRepeatId(linkId, 1);
-      
+
       expect(newId).toContain(`${linkId}-repeat-`);
       expect(existingId).toContain(`${linkId}-repeat-`);
     });

@@ -17,25 +17,32 @@
 
 import { describe, expect, test, jest } from '@jest/globals';
 import { applyComputedUpdates } from '../utils/computedUpdates';
-import type { Questionnaire, QuestionnaireResponse, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type {
+  Questionnaire,
+  QuestionnaireResponse,
+  QuestionnaireItem,
+  QuestionnaireResponseItem
+} from 'fhir/r4';
 import type { ComputedQRItemUpdates } from '../interfaces/computedUpdates.interface';
 
 // Mock dependencies
 jest.mock('../utils/genericRecursive', () => ({
-  updateQuestionnaireResponse: jest.fn((questionnaire: any, response: any, updateFn: any, computedUpdates: any) => {
-    // Simple mock that calls the update function for each item
-    const result = { ...response };
-    if (questionnaire.item && response.item) {
-      result.item = response.item.map((qrItem: any) => {
-        const qItem = questionnaire.item?.find((qi: any) => qi.linkId === qrItem.linkId);
-        if (qItem) {
-          return updateFn(qItem, qrItem, computedUpdates) || qrItem;
-        }
-        return qrItem;
-      });
+  updateQuestionnaireResponse: jest.fn(
+    (questionnaire: any, response: any, updateFn: any, computedUpdates: any) => {
+      // Simple mock that calls the update function for each item
+      const result = { ...response };
+      if (questionnaire.item && response.item) {
+        result.item = response.item.map((qrItem: any) => {
+          const qItem = questionnaire.item?.find((qi: any) => qi.linkId === qrItem.linkId);
+          if (qItem) {
+            return updateFn(qItem, qrItem, computedUpdates) || qrItem;
+          }
+          return qrItem;
+        });
+      }
+      return result;
     }
-    return result;
-  })
+  )
 }));
 
 jest.mock('../utils/mapItem', () => ({

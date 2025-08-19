@@ -54,8 +54,12 @@ jest.mock('../stores', () => ({
 import { validateCodePromise } from '../utils/valueSet';
 import { getItemTerminologyServerToUse } from '../utils/preferredTerminologyServer';
 
-const mockValidateCodePromise = validateCodePromise as jest.MockedFunction<typeof validateCodePromise>;
-const mockGetItemTerminologyServerToUse = getItemTerminologyServerToUse as jest.MockedFunction<typeof getItemTerminologyServerToUse>;
+const mockValidateCodePromise = validateCodePromise as jest.MockedFunction<
+  typeof validateCodePromise
+>;
+const mockGetItemTerminologyServerToUse = getItemTerminologyServerToUse as jest.MockedFunction<
+  typeof getItemTerminologyServerToUse
+>;
 
 describe('useQuantityCalculatedExpression', () => {
   // Mock props
@@ -80,11 +84,13 @@ describe('useQuantityCalculatedExpression', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
-    
+
     // Clear mock objects
-    Object.keys(mockCalculatedExpressions).forEach(key => delete mockCalculatedExpressions[key]);
-    Object.keys(mockItemPreferredTerminologyServers).forEach(key => delete mockItemPreferredTerminologyServers[key]);
-    
+    Object.keys(mockCalculatedExpressions).forEach((key) => delete mockCalculatedExpressions[key]);
+    Object.keys(mockItemPreferredTerminologyServers).forEach(
+      (key) => delete mockItemPreferredTerminologyServers[key]
+    );
+
     // Default mock implementations
     mockGetItemTerminologyServerToUse.mockReturnValue('http://terminology.hl7.org/fhir');
     mockValidateCodePromise.mockResolvedValue(null);
@@ -230,7 +236,7 @@ describe('useQuantityCalculatedExpression', () => {
       mockCalculatedExpressions['test-quantity'] = [
         {
           from: 'item',
-          value: "invalid-quantity-string",
+          value: 'invalid-quantity-string',
           expression: 'test-expr'
         }
       ];
@@ -240,7 +246,7 @@ describe('useQuantityCalculatedExpression', () => {
 
       expect(consoleSpy).toHaveBeenCalled();
       expect(mockOnChangeByCalcExpressionNull).toHaveBeenCalled();
-      
+
       consoleSpy.mockRestore();
     });
   });
@@ -313,7 +319,8 @@ describe('useQuantityCalculatedExpression', () => {
     });
 
     it('should use custom terminology server when specified', () => {
-      mockItemPreferredTerminologyServers['test-quantity'] = 'http://custom.terminology.server/fhir';
+      mockItemPreferredTerminologyServers['test-quantity'] =
+        'http://custom.terminology.server/fhir';
       mockGetItemTerminologyServerToUse.mockReturnValue('http://custom.terminology.server/fhir');
 
       mockCalculatedExpressions['test-quantity'] = [
@@ -385,7 +392,7 @@ describe('useQuantityCalculatedExpression', () => {
             valueUri: 'http://unitsofmeasure.org'
           },
           {
-            name: 'code', 
+            name: 'code',
             valueCode: 'mg'
           },
           {
@@ -435,7 +442,7 @@ describe('useQuantityCalculatedExpression', () => {
       mockCalculatedExpressions['test-quantity'] = [
         {
           from: 'item',
-          value: "",
+          value: '',
           expression: 'test-expr'
         }
       ];

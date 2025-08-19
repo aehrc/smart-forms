@@ -80,7 +80,8 @@ describe('fileUtils', () => {
     // Mock FileReader
     const mockFileReader = {
       readAsDataURL: jest.fn(),
-      result: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==',
+      result:
+        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==',
       onload: null as any,
       onerror: null as any
     };
@@ -113,10 +114,10 @@ describe('fileUtils', () => {
 
     it('should create attachment with all properties when successful', async () => {
       const file = createMockFile('test.png', 1024, 'image/png');
-      
+
       // Mock successful FileReader
       const promise = createAttachmentAnswer(file, 'http://example.com/upload', 'custom-name.png');
-      
+
       // Simulate FileReader success
       setTimeout(() => {
         if (mockFileReader.onload) {
@@ -137,9 +138,9 @@ describe('fileUtils', () => {
 
     it('should create attachment without url when url is provided but empty', async () => {
       const file = createMockFile('test.txt', 512, 'text/plain');
-      
+
       const promise = createAttachmentAnswer(file, '', 'test.txt');
-      
+
       setTimeout(() => {
         if (mockFileReader.onload) {
           mockFileReader.onload();
@@ -147,15 +148,15 @@ describe('fileUtils', () => {
       }, 0);
 
       const result = await promise;
-      
+
       expect(result).toBeNull(); // Should return null due to empty URL check
     });
 
     it('should create attachment without title when fileName is empty', async () => {
       const file = createMockFile('test.pdf', 2048, 'application/pdf');
-      
+
       const promise = createAttachmentAnswer(file, 'http://example.com/upload', '');
-      
+
       setTimeout(() => {
         if (mockFileReader.onload) {
           mockFileReader.onload();
@@ -174,10 +175,18 @@ describe('fileUtils', () => {
     });
 
     it('should include url when provided', async () => {
-      const file = createMockFile('document.docx', 4096, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-      
-      const promise = createAttachmentAnswer(file, 'https://secure.example.com/files/upload', 'important-doc.docx');
-      
+      const file = createMockFile(
+        'document.docx',
+        4096,
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      );
+
+      const promise = createAttachmentAnswer(
+        file,
+        'https://secure.example.com/files/upload',
+        'important-doc.docx'
+      );
+
       setTimeout(() => {
         if (mockFileReader.onload) {
           mockFileReader.onload();
@@ -191,9 +200,9 @@ describe('fileUtils', () => {
 
     it('should handle FileReader error gracefully', async () => {
       const file = createMockFile('test.jpg', 1024, 'image/jpeg');
-      
+
       const promise = createAttachmentAnswer(file, 'http://example.com', 'test.jpg');
-      
+
       // Simulate FileReader error - but onload fires first in our mock
       setTimeout(() => {
         if (mockFileReader.onload) {
@@ -209,9 +218,9 @@ describe('fileUtils', () => {
 
     it('should handle different file types correctly', async () => {
       const file = createMockFile('image.png', 1024, 'image/png');
-      
+
       const promise = createAttachmentAnswer(file, 'http://example.com', 'image.png');
-      
+
       setTimeout(() => {
         if (mockFileReader.onload) {
           mockFileReader.onload();
@@ -227,9 +236,9 @@ describe('fileUtils', () => {
 
     it('should handle very large files', async () => {
       const file = createMockFile('large-file.zip', 104857600, 'application/zip'); // 100MB
-      
+
       const promise = createAttachmentAnswer(file, 'http://example.com/large', 'huge.zip');
-      
+
       setTimeout(() => {
         if (mockFileReader.onload) {
           mockFileReader.onload();
@@ -243,9 +252,9 @@ describe('fileUtils', () => {
 
     it('should handle files with special characters in names', async () => {
       const file = createMockFile('файл-тест.txt', 1024, 'text/plain');
-      
+
       const promise = createAttachmentAnswer(file, 'http://example.com', 'файл-тест-renamed.txt');
-      
+
       setTimeout(() => {
         if (mockFileReader.onload) {
           mockFileReader.onload();
@@ -260,9 +269,9 @@ describe('fileUtils', () => {
     describe('edge cases', () => {
       it('should handle zero-size files', async () => {
         const file = createMockFile('empty.txt', 0, 'text/plain', '');
-        
+
         const promise = createAttachmentAnswer(file, 'http://example.com', 'empty.txt');
-        
+
         setTimeout(() => {
           if (mockFileReader.onload) {
             mockFileReader.onload();
@@ -276,9 +285,9 @@ describe('fileUtils', () => {
 
       it('should handle missing content type', async () => {
         const file = createMockFile('unknown', 1024, '');
-        
+
         const promise = createAttachmentAnswer(file, 'http://example.com', 'unknown-file');
-        
+
         setTimeout(() => {
           if (mockFileReader.onload) {
             mockFileReader.onload();
@@ -292,12 +301,12 @@ describe('fileUtils', () => {
 
       it('should handle whitespace-only URLs and filenames', async () => {
         const file = createMockFile('test.txt', 1024, 'text/plain');
-        
+
         const result1 = await createAttachmentAnswer(file, '   ', 'test.txt');
         expect(result1).not.toBeNull(); // Whitespace URL is truthy
-        
+
         const promise = createAttachmentAnswer(file, 'http://example.com', '   ');
-        
+
         setTimeout(() => {
           if (mockFileReader.onload) {
             mockFileReader.onload();
@@ -312,7 +321,7 @@ describe('fileUtils', () => {
     describe('async error handling', () => {
       it('should catch and handle promise rejections', async () => {
         const file = createMockFile('test.txt', 1024, 'text/plain');
-        
+
         // Mock FileReader to throw synchronous error
         global.FileReader = jest.fn(() => {
           throw new Error('FileReader constructor error');
@@ -326,12 +335,12 @@ describe('fileUtils', () => {
 
       it('should handle FileReader onload not being called', async () => {
         const file = createMockFile('test.txt', 1024, 'text/plain');
-        
+
         const promise = createAttachmentAnswer(file, 'http://example.com', 'test.txt');
-        
+
         // Don't call onload - let it timeout/hang
         // This tests that we don't have infinite hanging promises
-        
+
         // We can't easily test timeout without actually waiting,
         // but we can verify the FileReader was set up correctly
         expect(mockFileReader.readAsDataURL).toHaveBeenCalledWith(file);

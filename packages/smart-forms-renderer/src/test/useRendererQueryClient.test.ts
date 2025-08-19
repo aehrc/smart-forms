@@ -33,14 +33,17 @@ const MockedQueryClient = QueryClient as jest.MockedClass<typeof QueryClient>;
 describe('useRendererQueryClient', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Mock QueryClient constructor to return a mock instance
-    MockedQueryClient.mockImplementation(() => ({
-      getQueryData: jest.fn(),
-      setQueryData: jest.fn(),
-      invalidateQueries: jest.fn(),
-      clear: jest.fn()
-    } as any));
+    MockedQueryClient.mockImplementation(
+      () =>
+        ({
+          getQueryData: jest.fn(),
+          setQueryData: jest.fn(),
+          invalidateQueries: jest.fn(),
+          clear: jest.fn()
+        }) as any
+    );
   });
 
   describe('basic functionality', () => {
@@ -68,9 +71,9 @@ describe('useRendererQueryClient', () => {
       const { result, rerender } = renderHook(() => useRendererQueryClient());
 
       const firstClient = result.current;
-      
+
       rerender();
-      
+
       const secondClient = result.current;
 
       expect(MockedQueryClient).toHaveBeenCalledTimes(2);
@@ -212,10 +215,10 @@ describe('useRendererQueryClient', () => {
 
       // The configuration should support renderer patterns
       const config = MockedQueryClient.mock.calls[0][0];
-      
+
       // No window focus refetching for form renderers
       expect(config?.defaultOptions?.queries?.refetchOnWindowFocus).toBe(false);
-      
+
       // Preserve previous data for better UX
       expect(config?.defaultOptions?.queries?.placeholderData).toBe('keepPreviousData');
     });
@@ -224,7 +227,7 @@ describe('useRendererQueryClient', () => {
       renderHook(() => useRendererQueryClient());
 
       const config = MockedQueryClient.mock.calls[0][0];
-      
+
       // Configuration should be suitable for terminology lookups
       expect(config?.defaultOptions?.queries?.refetchOnWindowFocus).toBe(false);
       expect(config?.defaultOptions?.queries?.placeholderData).toBe('keepPreviousData');
@@ -249,10 +252,10 @@ describe('useRendererQueryClient', () => {
       renderHook(() => useRendererQueryClient());
 
       const config = MockedQueryClient.mock.calls[0][0];
-      
+
       // Should not have mutations config by default
       expect(config?.defaultOptions?.mutations).toBeUndefined();
-      
+
       // Should only configure queries
       expect(Object.keys(config?.defaultOptions || {})).toEqual(['queries']);
     });
@@ -281,10 +284,10 @@ describe('useRendererQueryClient', () => {
 
     it('should allow garbage collection of unused instances', () => {
       const { result } = renderHook(() => useRendererQueryClient());
-      
+
       const instance = result.current;
       expect(instance).toBeDefined();
-      
+
       // Instance should be available for garbage collection when hook unmounts
       // This is more of a design verification than a test
     });
@@ -295,11 +298,11 @@ describe('useRendererQueryClient', () => {
       renderHook(() => useRendererQueryClient());
 
       const config = MockedQueryClient.mock.calls[0][0];
-      
+
       // Verify structure allows for extension
       expect(config?.defaultOptions).toBeDefined();
       expect(config?.defaultOptions?.queries).toBeDefined();
-      
+
       // These are the minimal required options for renderer
       expect(Object.keys(config?.defaultOptions?.queries || {})).toContain('refetchOnWindowFocus');
       expect(Object.keys(config?.defaultOptions?.queries || {})).toContain('placeholderData');
@@ -309,7 +312,7 @@ describe('useRendererQueryClient', () => {
       renderHook(() => useRendererQueryClient());
 
       const config = MockedQueryClient.mock.calls[0][0];
-      
+
       // Verify v5 compatible option names and values
       expect(config?.defaultOptions?.queries?.refetchOnWindowFocus).toBe(false);
       expect(config?.defaultOptions?.queries?.placeholderData).toBe('keepPreviousData');

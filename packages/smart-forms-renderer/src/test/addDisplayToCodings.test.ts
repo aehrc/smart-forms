@@ -42,16 +42,17 @@ describe('addDisplayToCodings - Phase 5', () => {
   describe('addDisplayToCacheCodings', () => {
     it('should return unchanged codings when all codings have displays', async () => {
       const cachedValueSetCodings = {
-        'valueSet1': [
+        valueSet1: [
           { system: 'http://example.com', code: 'A', display: 'Alpha' },
           { system: 'http://example.com', code: 'B', display: 'Beta' }
         ],
-        'valueSet2': [
-          { system: 'http://example.com', code: 'C', display: 'Gamma' }
-        ]
+        valueSet2: [{ system: 'http://example.com', code: 'C', display: 'Gamma' }]
       };
 
-      const result = await addDisplayToCacheCodings(cachedValueSetCodings, 'http://terminology.hl7.org/fhir');
+      const result = await addDisplayToCacheCodings(
+        cachedValueSetCodings,
+        'http://terminology.hl7.org/fhir'
+      );
 
       expect(result).toEqual(cachedValueSetCodings);
       expect(mockClient).not.toHaveBeenCalled();
@@ -60,7 +61,10 @@ describe('addDisplayToCodings - Phase 5', () => {
     it('should return unchanged codings when empty object provided', async () => {
       const cachedValueSetCodings = {};
 
-      const result = await addDisplayToCacheCodings(cachedValueSetCodings, 'http://terminology.hl7.org/fhir');
+      const result = await addDisplayToCacheCodings(
+        cachedValueSetCodings,
+        'http://terminology.hl7.org/fhir'
+      );
 
       expect(result).toEqual({});
       expect(mockClient).not.toHaveBeenCalled();
@@ -68,7 +72,7 @@ describe('addDisplayToCodings - Phase 5', () => {
 
     it('should fetch displays for codings without displays', async () => {
       const cachedValueSetCodings = {
-        'valueSet1': [
+        valueSet1: [
           { system: 'http://snomed.info/sct', code: '386661006' }, // no display
           { system: 'http://snomed.info/sct', code: '386662004', display: 'Existing Display' }
         ]
@@ -76,15 +80,16 @@ describe('addDisplayToCodings - Phase 5', () => {
 
       const mockLookupResponse = {
         resourceType: 'Parameters',
-        parameter: [
-          { name: 'display', valueString: 'Fever' }
-        ]
+        parameter: [{ name: 'display', valueString: 'Fever' }]
       };
 
       const mockRequest = jest.fn().mockResolvedValue(mockLookupResponse);
       mockClient.mockReturnValue({ request: mockRequest } as any);
 
-      const result = await addDisplayToCacheCodings(cachedValueSetCodings, 'http://terminology.hl7.org/fhir');
+      const result = await addDisplayToCacheCodings(
+        cachedValueSetCodings,
+        'http://terminology.hl7.org/fhir'
+      );
 
       expect(mockClient).toHaveBeenCalledWith({ serverUrl: 'http://terminology.hl7.org/fhir' });
       expect(mockRequest).toHaveBeenCalledWith({
@@ -97,13 +102,11 @@ describe('addDisplayToCodings - Phase 5', () => {
 
     it('should handle multiple codings without displays', async () => {
       const cachedValueSetCodings = {
-        'valueSet1': [
+        valueSet1: [
           { system: 'http://snomed.info/sct', code: '386661006' },
           { system: 'http://snomed.info/sct', code: '386662004' }
         ],
-        'valueSet2': [
-          { system: 'http://loinc.org', code: '8310-5' }
-        ]
+        valueSet2: [{ system: 'http://loinc.org', code: '8310-5' }]
       };
 
       const mockLookupResponses = [
@@ -112,7 +115,7 @@ describe('addDisplayToCodings - Phase 5', () => {
           parameter: [{ name: 'display', valueString: 'Fever' }]
         },
         {
-          resourceType: 'Parameters', 
+          resourceType: 'Parameters',
           parameter: [{ name: 'display', valueString: 'Mild fever' }]
         },
         {
@@ -121,13 +124,17 @@ describe('addDisplayToCodings - Phase 5', () => {
         }
       ];
 
-      const mockRequest = jest.fn()
+      const mockRequest = jest
+        .fn()
         .mockResolvedValueOnce(mockLookupResponses[0])
         .mockResolvedValueOnce(mockLookupResponses[1])
         .mockResolvedValueOnce(mockLookupResponses[2]);
       mockClient.mockReturnValue({ request: mockRequest } as any);
 
-      const result = await addDisplayToCacheCodings(cachedValueSetCodings, 'http://terminology.hl7.org/fhir');
+      const result = await addDisplayToCacheCodings(
+        cachedValueSetCodings,
+        'http://terminology.hl7.org/fhir'
+      );
 
       expect(mockRequest).toHaveBeenCalledTimes(3);
       expect(result.valueSet1[0].display).toBe('Fever');
@@ -137,13 +144,14 @@ describe('addDisplayToCodings - Phase 5', () => {
 
     it('should handle failed lookup requests gracefully', async () => {
       const cachedValueSetCodings = {
-        'valueSet1': [
+        valueSet1: [
           { system: 'http://snomed.info/sct', code: '386661006' },
           { system: 'http://snomed.info/sct', code: 'invalid-code' }
         ]
       };
 
-      const mockRequest = jest.fn()
+      const mockRequest = jest
+        .fn()
         .mockResolvedValueOnce({
           resourceType: 'Parameters',
           parameter: [{ name: 'display', valueString: 'Fever' }]
@@ -151,7 +159,10 @@ describe('addDisplayToCodings - Phase 5', () => {
         .mockRejectedValueOnce(new Error('Lookup failed'));
       mockClient.mockReturnValue({ request: mockRequest } as any);
 
-      const result = await addDisplayToCacheCodings(cachedValueSetCodings, 'http://terminology.hl7.org/fhir');
+      const result = await addDisplayToCacheCodings(
+        cachedValueSetCodings,
+        'http://terminology.hl7.org/fhir'
+      );
 
       expect(result.valueSet1[0].display).toBe('Fever');
       expect(result.valueSet1[1].display).toBeUndefined();
@@ -161,16 +172,19 @@ describe('addDisplayToCodings - Phase 5', () => {
   describe('addDisplayToAnswerOptions', () => {
     it('should return unchanged answer options when all have displays', async () => {
       const answerOptions = {
-        'item1': [
+        item1: [
           { valueCoding: { system: 'http://example.com', code: 'A', display: 'Alpha' } },
           { valueCoding: { system: 'http://example.com', code: 'B', display: 'Beta' } }
         ],
-        'item2': [
+        item2: [
           { valueString: 'text option' } // no valueCoding
         ]
       };
 
-      const result = await addDisplayToAnswerOptions(answerOptions, 'http://terminology.hl7.org/fhir');
+      const result = await addDisplayToAnswerOptions(
+        answerOptions,
+        'http://terminology.hl7.org/fhir'
+      );
 
       expect(result).toEqual(answerOptions);
       expect(mockClient).not.toHaveBeenCalled();
@@ -178,9 +192,15 @@ describe('addDisplayToCodings - Phase 5', () => {
 
     it('should fetch displays for valueCoding without displays', async () => {
       const answerOptions = {
-        'item1': [
+        item1: [
           { valueCoding: { system: 'http://snomed.info/sct', code: '386661006' } },
-          { valueCoding: { system: 'http://snomed.info/sct', code: '386662004', display: 'Existing' } },
+          {
+            valueCoding: {
+              system: 'http://snomed.info/sct',
+              code: '386662004',
+              display: 'Existing'
+            }
+          },
           { valueString: 'text option' }
         ]
       };
@@ -193,7 +213,10 @@ describe('addDisplayToCodings - Phase 5', () => {
       const mockRequest = jest.fn().mockResolvedValue(mockLookupResponse);
       mockClient.mockReturnValue({ request: mockRequest } as any);
 
-      const result = await addDisplayToAnswerOptions(answerOptions, 'http://terminology.hl7.org/fhir');
+      const result = await addDisplayToAnswerOptions(
+        answerOptions,
+        'http://terminology.hl7.org/fhir'
+      );
 
       expect(mockRequest).toHaveBeenCalledWith({
         url: 'CodeSystem/$lookup?system=http://snomed.info/sct&code=386661006'
@@ -207,7 +230,10 @@ describe('addDisplayToCodings - Phase 5', () => {
     it('should handle empty answer options', async () => {
       const answerOptions = {};
 
-      const result = await addDisplayToAnswerOptions(answerOptions, 'http://terminology.hl7.org/fhir');
+      const result = await addDisplayToAnswerOptions(
+        answerOptions,
+        'http://terminology.hl7.org/fhir'
+      );
 
       expect(result).toEqual({});
       expect(mockClient).not.toHaveBeenCalled();
@@ -215,10 +241,13 @@ describe('addDisplayToCodings - Phase 5', () => {
 
     it('should handle items with no answer options', async () => {
       const answerOptions = {
-        'item1': []
+        item1: []
       };
 
-      const result = await addDisplayToAnswerOptions(answerOptions, 'http://terminology.hl7.org/fhir');
+      const result = await addDisplayToAnswerOptions(
+        answerOptions,
+        'http://terminology.hl7.org/fhir'
+      );
 
       expect(result).toEqual(answerOptions);
       expect(mockClient).not.toHaveBeenCalled();
@@ -288,14 +317,14 @@ describe('addDisplayToCodings - Phase 5', () => {
   describe('resolveLookupPromises', () => {
     it('should resolve lookup promises and extract displays', async () => {
       const codeSystemLookupPromises = {
-        'query1': {
+        query1: {
           promise: Promise.resolve({
             resourceType: 'Parameters',
             parameter: [{ name: 'display', valueString: 'Fever' }]
           } as any),
           oldCoding: { system: 'http://snomed.info/sct', code: '386661006' }
         },
-        'query2': {
+        query2: {
           promise: Promise.resolve({
             resourceType: 'Parameters',
             parameter: [{ name: 'display', valueString: 'Temperature' }]
@@ -320,14 +349,14 @@ describe('addDisplayToCodings - Phase 5', () => {
 
     it('should handle rejected promises gracefully', async () => {
       const codeSystemLookupPromises = {
-        'query1': {
+        query1: {
           promise: Promise.resolve({
             resourceType: 'Parameters',
             parameter: [{ name: 'display', valueString: 'Fever' }]
           } as any),
           oldCoding: { system: 'http://snomed.info/sct', code: '386661006' }
         },
-        'query2': {
+        query2: {
           promise: Promise.reject(new Error('Lookup failed')),
           oldCoding: { system: 'http://loinc.org', code: 'invalid' }
         }
@@ -341,14 +370,14 @@ describe('addDisplayToCodings - Phase 5', () => {
 
     it('should handle invalid lookup responses', async () => {
       const codeSystemLookupPromises = {
-        'query1': {
+        query1: {
           promise: Promise.resolve({
             resourceType: 'Parameters',
             parameter: [{ name: 'display', valueString: 'Fever' }]
           } as any),
           oldCoding: { system: 'http://snomed.info/sct', code: '386661006' }
         },
-        'query2': {
+        query2: {
           promise: Promise.resolve({
             resourceType: 'OperationOutcome' // invalid response
           } as any),
@@ -410,9 +439,7 @@ describe('addDisplayToCodings - Phase 5', () => {
     it('should return falsy for response without display parameter', () => {
       const invalidResponse = {
         resourceType: 'Parameters',
-        parameter: [
-          { name: 'version', valueString: '1.0' }
-        ]
+        parameter: [{ name: 'version', valueString: '1.0' }]
       };
 
       expect(lookupResponseIsValid(invalidResponse)).toBeFalsy();

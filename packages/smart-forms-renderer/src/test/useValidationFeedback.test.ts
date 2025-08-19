@@ -80,28 +80,44 @@ import {
 } from '../utils/extensions';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 
-const mockGetMaxQuantityValue = getMaxQuantityValue as jest.MockedFunction<typeof getMaxQuantityValue>;
-const mockGetMaxQuantityValueFeedback = getMaxQuantityValueFeedback as jest.MockedFunction<typeof getMaxQuantityValueFeedback>;
+const mockGetMaxQuantityValue = getMaxQuantityValue as jest.MockedFunction<
+  typeof getMaxQuantityValue
+>;
+const mockGetMaxQuantityValueFeedback = getMaxQuantityValueFeedback as jest.MockedFunction<
+  typeof getMaxQuantityValueFeedback
+>;
 const mockGetMaxValue = getMaxValue as jest.MockedFunction<typeof getMaxValue>;
-const mockGetMaxValueFeedback = getMaxValueFeedback as jest.MockedFunction<typeof getMaxValueFeedback>;
-const mockGetMinQuantityValue = getMinQuantityValue as jest.MockedFunction<typeof getMinQuantityValue>;
-const mockGetMinQuantityValueFeedback = getMinQuantityValueFeedback as jest.MockedFunction<typeof getMinQuantityValueFeedback>;
+const mockGetMaxValueFeedback = getMaxValueFeedback as jest.MockedFunction<
+  typeof getMaxValueFeedback
+>;
+const mockGetMinQuantityValue = getMinQuantityValue as jest.MockedFunction<
+  typeof getMinQuantityValue
+>;
+const mockGetMinQuantityValueFeedback = getMinQuantityValueFeedback as jest.MockedFunction<
+  typeof getMinQuantityValueFeedback
+>;
 const mockGetMinValue = getMinValue as jest.MockedFunction<typeof getMinValue>;
-const mockGetMinValueFeedback = getMinValueFeedback as jest.MockedFunction<typeof getMinValueFeedback>;
+const mockGetMinValueFeedback = getMinValueFeedback as jest.MockedFunction<
+  typeof getMinValueFeedback
+>;
 const mockGetRegexValidation = getRegexValidation as jest.MockedFunction<typeof getRegexValidation>;
-const mockGetRequiredFeedback = getRequiredFeedback as jest.MockedFunction<typeof getRequiredFeedback>;
-const mockStructuredDataCapture = structuredDataCapture as jest.Mocked<typeof structuredDataCapture>;
+const mockGetRequiredFeedback = getRequiredFeedback as jest.MockedFunction<
+  typeof getRequiredFeedback
+>;
+const mockStructuredDataCapture = structuredDataCapture as jest.Mocked<
+  typeof structuredDataCapture
+>;
 
 describe('useValidationFeedback', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Reset mock state
     mockInvalidItems = {};
     mockRequiredItemsIsHighlighted = false;
     mockTargetConstraints = {};
     mockTargetConstraintLinkIds = {};
-    
+
     // Reset mock implementations
     mockGetMaxQuantityValue.mockReturnValue(undefined);
     mockGetMaxQuantityValueFeedback.mockReturnValue(null);
@@ -129,7 +145,7 @@ describe('useValidationFeedback', () => {
       };
 
       mockTargetConstraints = {
-        'constraint1': {
+        constraint1: {
           isInvalid: true,
           human: 'Target constraint violated'
         } as TargetConstraint
@@ -151,7 +167,7 @@ describe('useValidationFeedback', () => {
       };
 
       mockTargetConstraints = {
-        'constraint1': {
+        constraint1: {
           isInvalid: false,
           human: 'Should not be returned'
         } as TargetConstraint
@@ -173,11 +189,11 @@ describe('useValidationFeedback', () => {
       };
 
       mockTargetConstraints = {
-        'constraint1': {
+        constraint1: {
           isInvalid: true,
           human: 'First constraint error'
         } as TargetConstraint,
-        'constraint2': {
+        constraint2: {
           isInvalid: true,
           human: 'Second constraint error'
         } as TargetConstraint
@@ -229,7 +245,7 @@ describe('useValidationFeedback', () => {
       };
 
       mockTargetConstraints = {
-        'constraint1': {
+        constraint1: {
           isInvalid: true,
           human: 'Target constraint error'
         } as TargetConstraint
@@ -268,7 +284,9 @@ describe('useValidationFeedback', () => {
 
       const { result } = renderHook(() => useValidationFeedback(qItem, undefined));
 
-      expect(result.current).toBe('Input is invalid but no specific issues are found. Please report this at https://github.com/aehrc/smart-forms/issues.');
+      expect(result.current).toBe(
+        'Input is invalid but no specific issues are found. Please report this at https://github.com/aehrc/smart-forms/issues.'
+      );
     });
 
     it('should return error message when operation outcome has no issues property', () => {
@@ -286,7 +304,9 @@ describe('useValidationFeedback', () => {
 
       const { result } = renderHook(() => useValidationFeedback(qItem, undefined));
 
-      expect(result.current).toBe('Input is invalid but no specific issues are found. Please report this at https://github.com/aehrc/smart-forms/issues.');
+      expect(result.current).toBe(
+        'Input is invalid but no specific issues are found. Please report this at https://github.com/aehrc/smart-forms/issues.'
+      );
     });
   });
 
@@ -997,7 +1017,9 @@ describe('useValidationFeedback', () => {
 
       const { result } = renderHook(() => useValidationFeedback(qItem, undefined));
 
-      expect(result.current).toBe('Input is invalid but no specific issues are found. Please report this at https://github.com/aehrc/smart-forms/issues.');
+      expect(result.current).toBe(
+        'Input is invalid but no specific issues are found. Please report this at https://github.com/aehrc/smart-forms/issues.'
+      );
     });
 
     it('should return error message when issue has no details', () => {
@@ -1020,7 +1042,9 @@ describe('useValidationFeedback', () => {
 
       const { result } = renderHook(() => useValidationFeedback(qItem, undefined));
 
-      expect(result.current).toBe('Input is invalid but no specific issues are found. Please report this at https://github.com/aehrc/smart-forms/issues.');
+      expect(result.current).toBe(
+        'Input is invalid but no specific issues are found. Please report this at https://github.com/aehrc/smart-forms/issues.'
+      );
     });
 
     it('should return error message when issue has no coding', () => {
@@ -1044,7 +1068,9 @@ describe('useValidationFeedback', () => {
 
       const { result } = renderHook(() => useValidationFeedback(qItem, undefined));
 
-      expect(result.current).toBe('Input is invalid but no specific issues are found. Please report this at https://github.com/aehrc/smart-forms/issues.');
+      expect(result.current).toBe(
+        'Input is invalid but no specific issues are found. Please report this at https://github.com/aehrc/smart-forms/issues.'
+      );
     });
 
     it('should return empty string when unknown validation code is encountered', () => {

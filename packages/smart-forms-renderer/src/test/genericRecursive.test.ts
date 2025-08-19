@@ -26,7 +26,12 @@ import {
   type RecursiveReadArrayFunction,
   type RecursiveTraverseFunction
 } from '../utils/genericRecursive';
-import type { Questionnaire, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
+import type {
+  Questionnaire,
+  QuestionnaireItem,
+  QuestionnaireResponse,
+  QuestionnaireResponseItem
+} from 'fhir/r4';
 
 // Mock the dependencies
 jest.mock('../utils/manageForm', () => ({
@@ -34,7 +39,9 @@ jest.mock('../utils/manageForm', () => ({
 }));
 
 import { qrItemHasItemsOrAnswer } from '../utils/manageForm';
-const mockQrItemHasItemsOrAnswer = qrItemHasItemsOrAnswer as jest.MockedFunction<typeof qrItemHasItemsOrAnswer>;
+const mockQrItemHasItemsOrAnswer = qrItemHasItemsOrAnswer as jest.MockedFunction<
+  typeof qrItemHasItemsOrAnswer
+>;
 
 describe('genericRecursive', () => {
   beforeEach(() => {
@@ -54,9 +61,7 @@ describe('genericRecursive', () => {
     const questionnaireResponse: QuestionnaireResponse = {
       resourceType: 'QuestionnaireResponse',
       status: 'in-progress',
-      item: [
-        { linkId: 'item1', answer: [{ valueString: 'test answer' }] }
-      ]
+      item: [{ linkId: 'item1', answer: [{ valueString: 'test answer' }] }]
     };
 
     it('should return original response when questionnaire has no items', () => {
@@ -67,7 +72,7 @@ describe('genericRecursive', () => {
       };
 
       const updateFunction: RecursiveUpdateFunction<string> = jest.fn();
-      
+
       const result = updateQuestionnaireResponse(
         emptyQuestionnaire,
         questionnaireResponse,
@@ -87,7 +92,7 @@ describe('genericRecursive', () => {
       };
 
       const updateFunction: RecursiveUpdateFunction<string> = jest.fn();
-      
+
       const result = updateQuestionnaireResponse(
         emptyQuestionnaire,
         questionnaireResponse,
@@ -107,7 +112,7 @@ describe('genericRecursive', () => {
       };
 
       const updateFunction: RecursiveUpdateFunction<string> = jest.fn();
-      
+
       const result = updateQuestionnaireResponse(
         questionnaire,
         emptyResponse,
@@ -127,7 +132,7 @@ describe('genericRecursive', () => {
       };
 
       const updateFunction: RecursiveUpdateFunction<string> = jest.fn();
-      
+
       const result = updateQuestionnaireResponse(
         questionnaire,
         emptyResponse,
@@ -170,7 +175,8 @@ describe('genericRecursive', () => {
         answer: [{ valueString: 'updated answer' }]
       };
 
-      const updateFunction: RecursiveUpdateFunction<string> = jest.fn()
+      const updateFunction: RecursiveUpdateFunction<string> = jest
+        .fn()
         .mockReturnValueOnce(updatedItem)
         .mockReturnValueOnce(null);
 
@@ -193,7 +199,8 @@ describe('genericRecursive', () => {
         { linkId: 'item1', answer: [{ valueString: 'second' }] }
       ];
 
-      const updateFunction: RecursiveUpdateFunction<string> = jest.fn()
+      const updateFunction: RecursiveUpdateFunction<string> = jest
+        .fn()
         .mockReturnValueOnce(updatedItems)
         .mockReturnValueOnce(null);
 
@@ -209,7 +216,8 @@ describe('genericRecursive', () => {
     });
 
     it('should skip empty arrays from update function', () => {
-      const updateFunction: RecursiveUpdateFunction<string> = jest.fn()
+      const updateFunction: RecursiveUpdateFunction<string> = jest
+        .fn()
         .mockReturnValueOnce([]) // empty array should be skipped
         .mockReturnValueOnce(null);
 
@@ -229,7 +237,8 @@ describe('genericRecursive', () => {
         // no answer or item - should fail qrItemHasItemsOrAnswer
       };
 
-      const updateFunction: RecursiveUpdateFunction<string> = jest.fn()
+      const updateFunction: RecursiveUpdateFunction<string> = jest
+        .fn()
         .mockReturnValueOnce(updatedItem)
         .mockReturnValueOnce(null);
 
@@ -260,9 +269,7 @@ describe('genericRecursive', () => {
     const questionnaireResponse: QuestionnaireResponse = {
       resourceType: 'QuestionnaireResponse',
       status: 'in-progress',
-      item: [
-        { linkId: 'item1', answer: [{ valueString: 'test' }] }
-      ]
+      item: [{ linkId: 'item1', answer: [{ valueString: 'test' }] }]
     };
 
     it('should return empty array when questionnaire has no items', () => {
@@ -310,16 +317,12 @@ describe('genericRecursive', () => {
         // no item property
       };
 
-      const readFunction: RecursiveReadArrayFunction<string, number> = jest.fn()
+      const readFunction: RecursiveReadArrayFunction<string, number> = jest
+        .fn()
         .mockReturnValueOnce(['value1'])
         .mockReturnValueOnce(['value2']);
 
-      const result = readQuestionnaireResponse(
-        questionnaire,
-        emptyResponse,
-        readFunction,
-        42
-      );
+      const result = readQuestionnaireResponse(questionnaire, emptyResponse, readFunction, 42);
 
       expect(readFunction).toHaveBeenCalledTimes(2);
       expect(readFunction).toHaveBeenCalledWith(
@@ -335,7 +338,8 @@ describe('genericRecursive', () => {
     });
 
     it('should call read function for each questionnaire item and collect results', () => {
-      const readFunction: RecursiveReadArrayFunction<string, number> = jest.fn()
+      const readFunction: RecursiveReadArrayFunction<string, number> = jest
+        .fn()
         .mockReturnValueOnce(['value1', 'value2'])
         .mockReturnValueOnce(['value3']);
 
@@ -367,35 +371,25 @@ describe('genericRecursive', () => {
     });
 
     it('should handle null returns from read function', () => {
-      const readFunction: RecursiveReadArrayFunction<string, number> = jest.fn()
+      const readFunction: RecursiveReadArrayFunction<string, number> = jest
+        .fn()
         .mockReturnValueOnce(['value1'])
         .mockReturnValueOnce(null); // null should be ignored
 
-      const result = readQuestionnaireResponse(
-        questionnaire,
-        questionnaireResponse,
-        readFunction
-      );
+      const result = readQuestionnaireResponse(questionnaire, questionnaireResponse, readFunction);
 
       expect(result).toEqual(['value1']);
     });
 
     it('should work without extraData parameter', () => {
-      const readFunction: RecursiveReadArrayFunction<string, undefined> = jest.fn()
+      const readFunction: RecursiveReadArrayFunction<string, undefined> = jest
+        .fn()
         .mockReturnValueOnce(['value1'])
         .mockReturnValueOnce(null);
 
-      const result = readQuestionnaireResponse(
-        questionnaire,
-        questionnaireResponse,
-        readFunction
-      );
+      const result = readQuestionnaireResponse(questionnaire, questionnaireResponse, readFunction);
 
-      expect(readFunction).toHaveBeenCalledWith(
-        expect.any(Object),
-        expect.any(Object),
-        undefined
-      );
+      expect(readFunction).toHaveBeenCalledWith(expect.any(Object), expect.any(Object), undefined);
       expect(result).toEqual(['value1']);
     });
   });
@@ -472,9 +466,7 @@ describe('genericRecursive', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
-        item: [
-          { linkId: 'item1', type: 'string', text: 'First item' }
-        ]
+        item: [{ linkId: 'item1', type: 'string', text: 'First item' }]
       };
 
       const traverseFunction: RecursiveTraverseFunction<undefined> = jest.fn();

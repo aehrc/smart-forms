@@ -49,7 +49,7 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Default empty calculated expressions
     mockCalculatedExpressions.mockReturnValue({});
   });
@@ -65,9 +65,7 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
 
     it('should return null when calculated expressions exist but not for the given item', () => {
       mockCalculatedExpressions.mockReturnValue({
-        'other-item': [
-          { from: 'item._text', value: 'Other text' }
-        ]
+        'other-item': [{ from: 'item._text', value: 'Other text' }]
       });
 
       const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
@@ -128,9 +126,7 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
   describe('string value handling', () => {
     it('should return string value as-is', () => {
       mockCalculatedExpressions.mockReturnValue({
-        'basic-item': [
-          { from: 'item._text', value: 'Simple string value' }
-        ]
+        'basic-item': [{ from: 'item._text', value: 'Simple string value' }]
       });
 
       const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
@@ -140,9 +136,7 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
 
     it('should handle empty string value', () => {
       mockCalculatedExpressions.mockReturnValue({
-        'basic-item': [
-          { from: 'item._text', value: '' }
-        ]
+        'basic-item': [{ from: 'item._text', value: '' }]
       });
 
       const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
@@ -152,9 +146,7 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
 
     it('should handle string with special characters', () => {
       mockCalculatedExpressions.mockReturnValue({
-        'basic-item': [
-          { from: 'item._text', value: 'Text with special chars: @#$%^&*()' }
-        ]
+        'basic-item': [{ from: 'item._text', value: 'Text with special chars: @#$%^&*()' }]
       });
 
       const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
@@ -165,9 +157,7 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
     it('should handle multi-line string', () => {
       const multiLineText = 'Line 1\nLine 2\nLine 3';
       mockCalculatedExpressions.mockReturnValue({
-        'basic-item': [
-          { from: 'item._text', value: multiLineText }
-        ]
+        'basic-item': [{ from: 'item._text', value: multiLineText }]
       });
 
       const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
@@ -179,9 +169,7 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
   describe('number value handling', () => {
     it('should convert integer to string', () => {
       mockCalculatedExpressions.mockReturnValue({
-        'basic-item': [
-          { from: 'item._text', value: 42 }
-        ]
+        'basic-item': [{ from: 'item._text', value: 42 }]
       });
 
       const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
@@ -191,9 +179,7 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
 
     it('should convert decimal to string', () => {
       mockCalculatedExpressions.mockReturnValue({
-        'basic-item': [
-          { from: 'item._text', value: 3.14159 }
-        ]
+        'basic-item': [{ from: 'item._text', value: 3.14159 }]
       });
 
       const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
@@ -203,9 +189,7 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
 
     it('should convert zero to string', () => {
       mockCalculatedExpressions.mockReturnValue({
-        'basic-item': [
-          { from: 'item._text', value: 0 }
-        ]
+        'basic-item': [{ from: 'item._text', value: 0 }]
       });
 
       const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
@@ -215,9 +199,7 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
 
     it('should convert negative number to string', () => {
       mockCalculatedExpressions.mockReturnValue({
-        'basic-item': [
-          { from: 'item._text', value: -123 }
-        ]
+        'basic-item': [{ from: 'item._text', value: -123 }]
       });
 
       const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
@@ -227,9 +209,7 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
 
     it('should handle very large numbers', () => {
       mockCalculatedExpressions.mockReturnValue({
-        'basic-item': [
-          { from: 'item._text', value: 999999999999999 }
-        ]
+        'basic-item': [{ from: 'item._text', value: 999999999999999 }]
       });
 
       const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
@@ -241,9 +221,7 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
   describe('null value handling', () => {
     it('should return empty string for null value', () => {
       mockCalculatedExpressions.mockReturnValue({
-        'basic-item': [
-          { from: 'item._text', value: null }
-        ]
+        'basic-item': [{ from: 'item._text', value: null }]
       });
 
       const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
@@ -255,9 +233,7 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
   describe('non-primitive value handling', () => {
     it('should return null for object value', () => {
       mockCalculatedExpressions.mockReturnValue({
-        'basic-item': [
-          { from: 'item._text', value: { complex: 'object' } }
-        ]
+        'basic-item': [{ from: 'item._text', value: { complex: 'object' } }]
       });
 
       const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
@@ -267,9 +243,7 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
 
     it('should return null for array value', () => {
       mockCalculatedExpressions.mockReturnValue({
-        'basic-item': [
-          { from: 'item._text', value: ['array', 'value'] }
-        ]
+        'basic-item': [{ from: 'item._text', value: ['array', 'value'] }]
       });
 
       const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
@@ -279,9 +253,7 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
 
     it('should return null for boolean value', () => {
       mockCalculatedExpressions.mockReturnValue({
-        'basic-item': [
-          { from: 'item._text', value: true }
-        ]
+        'basic-item': [{ from: 'item._text', value: true }]
       });
 
       const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
@@ -291,9 +263,7 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
 
     it('should return null for undefined value', () => {
       mockCalculatedExpressions.mockReturnValue({
-        'basic-item': [
-          { from: 'item._text', value: undefined }
-        ]
+        'basic-item': [{ from: 'item._text', value: undefined }]
       });
 
       const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
@@ -325,9 +295,7 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
 
     it('should handle expression without from field', () => {
       mockCalculatedExpressions.mockReturnValue({
-        'basic-item': [
-          { value: 'Missing from field' }
-        ]
+        'basic-item': [{ value: 'Missing from field' }]
       });
 
       const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
@@ -337,9 +305,7 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
 
     it('should handle expression without value field', () => {
       mockCalculatedExpressions.mockReturnValue({
-        'basic-item': [
-          { from: 'item._text' }
-        ]
+        'basic-item': [{ from: 'item._text' }]
       });
 
       const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
@@ -349,10 +315,7 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
 
     it('should handle malformed expression object', () => {
       mockCalculatedExpressions.mockReturnValue({
-        'basic-item': [
-          null,
-          { from: 'item._text', value: 'Valid expression' }
-        ]
+        'basic-item': [null, { from: 'item._text', value: 'Valid expression' }]
       });
 
       const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
@@ -370,9 +333,7 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
       };
 
       mockCalculatedExpressions.mockReturnValue({
-        'complex.nested.linkId': [
-          { from: 'item._text', value: 'Complex linkId value' }
-        ]
+        'complex.nested.linkId': [{ from: 'item._text', value: 'Complex linkId value' }]
       });
 
       const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(complexLinkIdItem));
@@ -388,9 +349,7 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
       };
 
       mockCalculatedExpressions.mockReturnValue({
-        'item-with@special#chars': [
-          { from: 'item._text', value: 'Special chars work' }
-        ]
+        'item-with@special#chars': [{ from: 'item._text', value: 'Special chars work' }]
       });
 
       const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(specialLinkIdItem));
@@ -406,9 +365,7 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
       };
 
       mockCalculatedExpressions.mockReturnValue({
-        '12345': [
-          { from: 'item._text', value: 'Numeric linkId value' }
-        ]
+        '12345': [{ from: 'item._text', value: 'Numeric linkId value' }]
       });
 
       const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(numericLinkIdItem));
@@ -421,20 +378,18 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
     it('should react to store changes', () => {
       // Initial store state
       mockCalculatedExpressions.mockReturnValue({
-        'basic-item': [
-          { from: 'item._text', value: 'Initial value' }
-        ]
+        'basic-item': [{ from: 'item._text', value: 'Initial value' }]
       });
 
-      const { result, rerender } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      const { result, rerender } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem)
+      );
 
       expect(result.current).toBe('Initial value');
 
       // Update store state
       mockCalculatedExpressions.mockReturnValue({
-        'basic-item': [
-          { from: 'item._text', value: 'Updated value' }
-        ]
+        'basic-item': [{ from: 'item._text', value: 'Updated value' }]
       });
 
       rerender();
@@ -519,9 +474,7 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
 
     it('should handle score display with numeric value', () => {
       mockCalculatedExpressions.mockReturnValue({
-        'total-score': [
-          { from: 'item._text', value: 85 }
-        ]
+        'total-score': [{ from: 'item._text', value: 85 }]
       });
 
       const scoreItem: QuestionnaireItem = {
@@ -551,9 +504,7 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
 
       testCases.forEach(({ value, expected }) => {
         mockCalculatedExpressions.mockReturnValue({
-          'basic-item': [
-            { from: 'item._text', value }
-          ]
+          'basic-item': [{ from: 'item._text', value }]
         });
 
         const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
@@ -566,12 +517,10 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
   describe('performance considerations', () => {
     it('should handle large calculated expressions object', () => {
       const largeExpressionsObject: Record<string, any[]> = {};
-      
+
       // Create 1000 items
       for (let i = 0; i < 1000; i++) {
-        largeExpressionsObject[`item-${i}`] = [
-          { from: 'item._text', value: `Value ${i}` }
-        ];
+        largeExpressionsObject[`item-${i}`] = [{ from: 'item._text', value: `Value ${i}` }];
       }
 
       mockCalculatedExpressions.mockReturnValue(largeExpressionsObject);

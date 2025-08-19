@@ -73,7 +73,9 @@ jest.mock('../utils/choice', () => ({
 }));
 
 import { readQuestionnaireResponse } from '../utils/genericRecursive';
-const mockReadQuestionnaireResponse = readQuestionnaireResponse as jest.MockedFunction<typeof readQuestionnaireResponse>;
+const mockReadQuestionnaireResponse = readQuestionnaireResponse as jest.MockedFunction<
+  typeof readQuestionnaireResponse
+>;
 
 describe('initialiseQuestionnaireResponse', () => {
   beforeEach(() => {

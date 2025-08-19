@@ -651,7 +651,7 @@ describe('Edge cases for 100% coverage', () => {
 
   test('should handle compareAnswerOptionValue with null/undefined value (line 112)', () => {
     const option = { valueString: 'test' };
-    
+
     // Test line 112: when value is null/undefined
     expect(compareAnswerOptionValue(option, null as any)).toBe(false);
     expect(compareAnswerOptionValue(option, undefined as any)).toBe(false);
@@ -660,7 +660,7 @@ describe('Edge cases for 100% coverage', () => {
   test('should handle compareAnswerOptionValue fallback case (line 132)', () => {
     const option = { valueString: 'test' };
     const value = { valueQuantity: { value: 10 } } as any; // Unsupported type
-    
+
     // Test line 132: when no matching type is found, should return false
     expect(compareAnswerOptionValue(option, value)).toBe(false);
   });

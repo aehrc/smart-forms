@@ -6,10 +6,6 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": [
-    "src/**/*.test.ts",
-    "src/**/*.test.tsx",
-    "src/setup-jest.ts"
-  ],
+  "include": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/setup-jest.ts"],
   "exclude": []
 }

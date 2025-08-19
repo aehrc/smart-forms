@@ -18,18 +18,18 @@
  * limitations under the License.
  */
 
-import type { 
+import type {
   QuestionnaireItemEnableWhen,
   QuestionnaireResponse,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
-import type { 
+import type {
   EnableWhenItems,
   EnableWhenSingleItemProperties,
   EnableWhenRepeatItemProperties
 } from '../interfaces/enableWhen.interface';
-import { 
+import {
   createEnableWhenLinkedQuestions,
   isEnabledAnswerTypeSwitcher,
   mutateRepeatEnableWhenItemInstances,
@@ -543,22 +543,14 @@ describe('enableWhen utils - Phase 1', () => {
               {
                 enableWhen: mockEnableWhen,
                 parentLinkId: 'parent-group',
-                answers: [
-                  { valueString: 'test' },
-                  { valueString: 'other' }
-                ]
+                answers: [{ valueString: 'test' }, { valueString: 'other' }]
               }
             ]
           } as EnableWhenRepeatItemProperties
         }
       };
 
-      const result = mutateRepeatEnableWhenItemInstances(
-        items,
-        'parent-group',
-        1,
-        'add'
-      );
+      const result = mutateRepeatEnableWhenItemInstances(items, 'parent-group', 1, 'add');
 
       expect(result.repeatItems['repeat-item'].enabledIndexes).toHaveLength(2);
       expect(result.repeatItems['repeat-item'].linked[0].answers).toHaveLength(2);
@@ -592,12 +584,7 @@ describe('enableWhen utils - Phase 1', () => {
         }
       };
 
-      const result = mutateRepeatEnableWhenItemInstances(
-        items,
-        'parent-group',
-        1,
-        'remove'
-      );
+      const result = mutateRepeatEnableWhenItemInstances(items, 'parent-group', 1, 'remove');
 
       expect(result.repeatItems['repeat-item'].enabledIndexes).toHaveLength(2);
       expect(result.repeatItems['repeat-item'].linked[0].answers).toHaveLength(2);
@@ -629,12 +616,7 @@ describe('enableWhen utils - Phase 1', () => {
 
       const originalLength = items.repeatItems['repeat-item'].enabledIndexes.length;
 
-      const result = mutateRepeatEnableWhenItemInstances(
-        items,
-        'target-parent',
-        0,
-        'add'
-      );
+      const result = mutateRepeatEnableWhenItemInstances(items, 'target-parent', 0, 'add');
 
       expect(result.repeatItems['repeat-item'].enabledIndexes).toHaveLength(originalLength);
     });
@@ -663,15 +645,11 @@ describe('enableWhen utils - Phase 1', () => {
         item: [
           {
             linkId: 'question-1',
-            answer: [
-              { valueString: 'initial-value' }
-            ]
+            answer: [{ valueString: 'initial-value' }]
           },
           {
             linkId: 'question-2',
-            answer: [
-              { valueBoolean: true }
-            ]
+            answer: [{ valueBoolean: true }]
           }
         ]
       };
@@ -699,18 +677,14 @@ describe('enableWhen utils - Phase 1', () => {
             item: [
               {
                 linkId: 'question-1',
-                answer: [
-                  { valueString: 'nested-value' }
-                ]
+                answer: [{ valueString: 'nested-value' }]
               },
               {
                 linkId: 'sub-group',
                 item: [
                   {
                     linkId: 'question-2',
-                    answer: [
-                      { valueInteger: 42 }
-                    ]
+                    answer: [{ valueInteger: 42 }]
                   }
                 ]
               }
@@ -847,11 +821,7 @@ describe('enableWhen utils - Phase 1', () => {
               operator: '=',
               answerString: 'target'
             },
-            answer: [
-              { valueString: 'no' },
-              { valueString: 'target' },
-              { valueString: 'other' }
-            ]
+            answer: [{ valueString: 'no' }, { valueString: 'target' }, { valueString: 'other' }]
           }
         ]
       };
@@ -1135,7 +1105,9 @@ describe('enableWhen utils - Phase 1', () => {
         1
       );
 
-      expect(result.repeatItems['repeat-item'].linked[0].answers[1]).toEqual({ valueString: 'yes' });
+      expect(result.repeatItems['repeat-item'].linked[0].answers[1]).toEqual({
+        valueString: 'yes'
+      });
       expect(result.repeatItems['repeat-item'].enabledIndexes[1]).toBe(true);
     });
 
@@ -1161,13 +1133,7 @@ describe('enableWhen utils - Phase 1', () => {
         }
       };
 
-      const result = updateEnableWhenItemAnswer(
-        items,
-        ['repeat-item'],
-        'q1',
-        undefined,
-        0
-      );
+      const result = updateEnableWhenItemAnswer(items, ['repeat-item'], 'q1', undefined, 0);
 
       expect(result.repeatItems['repeat-item'].linked[0].answers[0]).toBeUndefined();
       expect(result.repeatItems['repeat-item'].enabledIndexes[0]).toBe(false);
@@ -1211,8 +1177,8 @@ describe('enableWhen utils - Phase 1', () => {
   describe('setInitialAnswers', () => {
     test('should set initial answers and update enabled status', () => {
       const initialAnswers = {
-        'q1': [{ valueString: 'yes' }],
-        'q2': [{ valueBoolean: true }]
+        q1: [{ valueString: 'yes' }],
+        q2: [{ valueBoolean: true }]
       };
 
       const items: EnableWhenItems = {
@@ -1234,8 +1200,8 @@ describe('enableWhen utils - Phase 1', () => {
       };
 
       const linkedQuestionsMap = {
-        'q1': ['item-1'],
-        'q2': ['item-2']
+        q1: ['item-1'],
+        q2: ['item-2']
       };
 
       const result = setInitialAnswers(initialAnswers, items, linkedQuestionsMap);
@@ -1293,7 +1259,7 @@ describe('enableWhen utils - Phase 1', () => {
 
       const result = assignPopulatedAnswersToEnableWhen(items, questionnaireResponse);
 
-      expect(result.linkedQuestions).toEqual({ 'q1': ['item-1'] });
+      expect(result.linkedQuestions).toEqual({ q1: ['item-1'] });
       expect(result.initialisedItems.singleItems['item-1'].isEnabled).toBe(true);
     });
 
@@ -1323,7 +1289,7 @@ describe('enableWhen utils - Phase 1', () => {
 
       const result = assignPopulatedAnswersToEnableWhen(items, questionnaireResponse);
 
-      expect(result.linkedQuestions).toEqual({ 'q1': ['item-1'] });
+      expect(result.linkedQuestions).toEqual({ q1: ['item-1'] });
       expect(result.initialisedItems.singleItems['item-1'].isEnabled).toBe(true);
     });
 
@@ -1356,8 +1322,11 @@ describe('enableWhen utils - Phase 1', () => {
 
       const result = assignPopulatedAnswersToEnableWhen(items, questionnaireResponse);
 
-      expect(result.linkedQuestions).toEqual({ 'q1': ['repeat-item'] });
-      expect(result.initialisedItems.repeatItems['repeat-item'].enabledIndexes).toEqual([true, true]);
+      expect(result.linkedQuestions).toEqual({ q1: ['repeat-item'] });
+      expect(result.initialisedItems.repeatItems['repeat-item'].enabledIndexes).toEqual([
+        true,
+        true
+      ]);
     });
   });
 

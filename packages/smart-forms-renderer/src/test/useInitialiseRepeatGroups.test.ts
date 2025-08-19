@@ -37,23 +37,19 @@ describe('useInitialiseRepeatGroups', () => {
   const mockQrItem1: QuestionnaireResponseItem = {
     linkId: 'group1',
     text: 'Repeat Group 1',
-    item: [
-      { linkId: 'field1', text: 'Field 1' }
-    ]
+    item: [{ linkId: 'field1', text: 'Field 1' }]
   };
   const mockQrItem2: QuestionnaireResponseItem = {
     linkId: 'group2',
     text: 'Repeat Group 2',
-    item: [
-      { linkId: 'field2', text: 'Field 2' }
-    ]
+    item: [{ linkId: 'field2', text: 'Field 2' }]
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockGenerateNewRepeatId.mockReturnValue('repeat-group-link-repeat-newABC');
-    mockGenerateExistingRepeatId.mockImplementation((linkId: string, index: number) => 
-      `${linkId}-repeat-${index.toString().padStart(6, '0')}`
+    mockGenerateExistingRepeatId.mockImplementation(
+      (linkId: string, index: number) => `${linkId}-repeat-${index.toString().padStart(6, '0')}`
     );
   });
 
@@ -100,8 +96,8 @@ describe('useInitialiseRepeatGroups', () => {
         text: 'Complex Repeat Group',
         answer: [{ valueString: 'group answer' }],
         item: [
-          { 
-            linkId: 'nested-field', 
+          {
+            linkId: 'nested-field',
             text: 'Nested Field',
             answer: [{ valueInteger: 42 }]
           }
@@ -121,7 +117,7 @@ describe('useInitialiseRepeatGroups', () => {
       const { result } = renderHook(() => useInitialiseRepeatGroups(mockLinkId, qrItems));
 
       expect(result.current).toHaveLength(2);
-      
+
       expect(result.current[0]).toEqual({
         id: 'repeat-group-link-repeat-000000',
         qrItem: mockQrItem1
@@ -147,12 +143,12 @@ describe('useInitialiseRepeatGroups', () => {
       const { result } = renderHook(() => useInitialiseRepeatGroups(mockLinkId, qrItems));
 
       expect(result.current).toHaveLength(15);
-      
+
       // Check first, middle, and last items
       expect(result.current[0].id).toBe('repeat-group-link-repeat-000000');
       expect(result.current[7].id).toBe('repeat-group-link-repeat-000007');
       expect(result.current[14].id).toBe('repeat-group-link-repeat-000014');
-      
+
       // Verify all items have correct qrItem reference
       result.current.forEach((group, index) => {
         expect(group.qrItem).toBe(qrItems[index]);
@@ -309,14 +305,12 @@ describe('useInitialiseRepeatGroups', () => {
     it('should handle qrItem with multiple answers', () => {
       const multiAnswerQrItem: QuestionnaireResponseItem = {
         linkId: 'multi-answer-group',
-        answer: [
-          { valueString: 'answer 1' },
-          { valueString: 'answer 2' },
-          { valueInteger: 123 }
-        ]
+        answer: [{ valueString: 'answer 1' }, { valueString: 'answer 2' }, { valueInteger: 123 }]
       };
 
-      const { result } = renderHook(() => useInitialiseRepeatGroups(mockLinkId, [multiAnswerQrItem]));
+      const { result } = renderHook(() =>
+        useInitialiseRepeatGroups(mockLinkId, [multiAnswerQrItem])
+      );
 
       expect(result.current[0].qrItem).toEqual(multiAnswerQrItem);
     });
@@ -344,7 +338,9 @@ describe('useInitialiseRepeatGroups', () => {
       mockGenerateExistingRepeatId.mockReturnValue('custom-existing-group-id');
 
       const { result: result1 } = renderHook(() => useInitialiseRepeatGroups(mockLinkId, []));
-      const { result: result2 } = renderHook(() => useInitialiseRepeatGroups(mockLinkId, [mockQrItem1]));
+      const { result: result2 } = renderHook(() =>
+        useInitialiseRepeatGroups(mockLinkId, [mockQrItem1])
+      );
 
       expect(result1.current[0].id).toBe('custom-new-group-id');
       expect(result2.current[0].id).toBe('custom-existing-group-id');
@@ -389,7 +385,7 @@ describe('useInitialiseRepeatGroups', () => {
       expect(group).toHaveProperty('id');
       expect(group).toHaveProperty('qrItem');
       expect(group).not.toHaveProperty('isSelected');
-      
+
       expect(typeof group.id).toBe('string');
       expect(group.qrItem).toBe(mockQrItem1);
     });

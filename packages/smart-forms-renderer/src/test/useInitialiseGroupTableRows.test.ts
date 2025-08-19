@@ -46,8 +46,8 @@ describe('useInitialiseGroupTableRows', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGenerateNewRepeatId.mockReturnValue('test-link-id-repeat-new123');
-    mockGenerateExistingRepeatId.mockImplementation((linkId: string, index: number) => 
-      `${linkId}-repeat-${index.toString().padStart(6, '0')}`
+    mockGenerateExistingRepeatId.mockImplementation(
+      (linkId: string, index: number) => `${linkId}-repeat-${index.toString().padStart(6, '0')}`
     );
   });
 
@@ -111,7 +111,7 @@ describe('useInitialiseGroupTableRows', () => {
       const { result } = renderHook(() => useInitialiseGroupTableRows(mockLinkId, qrItems));
 
       expect(result.current).toHaveLength(2);
-      
+
       expect(result.current[0]).toEqual({
         id: 'test-link-id-repeat-000000',
         qrItem: mockQrItem1,
@@ -138,13 +138,13 @@ describe('useInitialiseGroupTableRows', () => {
       const { result } = renderHook(() => useInitialiseGroupTableRows(mockLinkId, qrItems));
 
       expect(result.current).toHaveLength(10);
-      
+
       // Check first and last items
       expect(result.current[0].id).toBe('test-link-id-repeat-000000');
       expect(result.current[9].id).toBe('test-link-id-repeat-000009');
-      
+
       // Verify all items have isSelected: true
-      result.current.forEach(row => {
+      result.current.forEach((row) => {
         expect(row.isSelected).toBe(true);
       });
 
@@ -256,7 +256,9 @@ describe('useInitialiseGroupTableRows', () => {
         item: undefined
       };
 
-      const { result } = renderHook(() => useInitialiseGroupTableRows(mockLinkId, [qrItemWithNulls]));
+      const { result } = renderHook(() =>
+        useInitialiseGroupTableRows(mockLinkId, [qrItemWithNulls])
+      );
 
       expect(result.current[0].qrItem).toEqual(qrItemWithNulls);
     });
@@ -315,7 +317,9 @@ describe('useInitialiseGroupTableRows', () => {
       mockGenerateExistingRepeatId.mockReturnValue('custom-existing-id-format');
 
       const { result: result1 } = renderHook(() => useInitialiseGroupTableRows(mockLinkId, []));
-      const { result: result2 } = renderHook(() => useInitialiseGroupTableRows(mockLinkId, [mockQrItem1]));
+      const { result: result2 } = renderHook(() =>
+        useInitialiseGroupTableRows(mockLinkId, [mockQrItem1])
+      );
 
       expect(result1.current[0].id).toBe('custom-new-id-format');
       expect(result2.current[0].id).toBe('custom-existing-id-format');
@@ -353,7 +357,7 @@ describe('useInitialiseGroupTableRows', () => {
       const qrItems = [mockQrItem1, mockQrItem2];
       const { result } = renderHook(() => useInitialiseGroupTableRows(mockLinkId, qrItems));
 
-      result.current.forEach(row => {
+      result.current.forEach((row) => {
         expect(row.isSelected).toBe(true);
       });
     });

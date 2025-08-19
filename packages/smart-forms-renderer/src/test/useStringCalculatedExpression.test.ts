@@ -24,7 +24,7 @@ import useStringCalculatedExpression from '../hooks/useStringCalculatedExpressio
 
 // Mock stores
 const mockCalculatedExpressions: Record<string, any[]> = {};
-let mockCalculatedExpressionsFunction = jest.fn(() => mockCalculatedExpressions);
+const mockCalculatedExpressionsFunction = jest.fn(() => mockCalculatedExpressions);
 
 jest.mock('../stores', () => ({
   useQuestionnaireStore: {
@@ -54,10 +54,10 @@ describe('useStringCalculatedExpression', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
-    
+
     // Clear mock objects
-    Object.keys(mockCalculatedExpressions).forEach(key => delete mockCalculatedExpressions[key]);
-    
+    Object.keys(mockCalculatedExpressions).forEach((key) => delete mockCalculatedExpressions[key]);
+
     // Reset mock function
     mockCalculatedExpressionsFunction.mockClear();
     mockCalculatedExpressionsFunction.mockReturnValue(mockCalculatedExpressions);
@@ -460,7 +460,9 @@ describe('useStringCalculatedExpression', () => {
       const props = { ...defaultProps, inputValue: 'old-value' };
       renderHook(() => useStringCalculatedExpression(props));
 
-      expect(mockOnChangeByCalcExpressionString).toHaveBeenCalledWith('Special chars: !@#$%^&*()[]{}|;:,.<>?');
+      expect(mockOnChangeByCalcExpressionString).toHaveBeenCalledWith(
+        'Special chars: !@#$%^&*()[]{}|;:,.<>?'
+      );
     });
 
     it('should handle unicode strings correctly', () => {
@@ -475,7 +477,9 @@ describe('useStringCalculatedExpression', () => {
       const props = { ...defaultProps, inputValue: 'old-value' };
       renderHook(() => useStringCalculatedExpression(props));
 
-      expect(mockOnChangeByCalcExpressionString).toHaveBeenCalledWith('🚀 Unicode test 日本語 emoji! 🎉');
+      expect(mockOnChangeByCalcExpressionString).toHaveBeenCalledWith(
+        '🚀 Unicode test 日本語 emoji! 🎉'
+      );
     });
   });
 
@@ -489,10 +493,9 @@ describe('useStringCalculatedExpression', () => {
         }
       ];
 
-      const { result, rerender } = renderHook(
-        ({ props }) => useStringCalculatedExpression(props),
-        { initialProps: { props: defaultProps } }
-      );
+      const { result, rerender } = renderHook(({ props }) => useStringCalculatedExpression(props), {
+        initialProps: { props: defaultProps }
+      });
 
       const firstResult = result.current;
 
@@ -512,14 +515,13 @@ describe('useStringCalculatedExpression', () => {
         }
       ];
 
-      const { result, rerender } = renderHook(
-        ({ props }) => useStringCalculatedExpression(props),
-        { initialProps: { props: defaultProps } }
-      );
+      const { result, rerender } = renderHook(({ props }) => useStringCalculatedExpression(props), {
+        initialProps: { props: defaultProps }
+      });
 
       expect(mockOnChangeByCalcExpressionString).toHaveBeenCalledWith('first-value');
 
-      // Change the calculated expressions - force new object reference 
+      // Change the calculated expressions - force new object reference
       const newCalculatedExpressions = {
         'test-string': [
           {
@@ -529,7 +531,7 @@ describe('useStringCalculatedExpression', () => {
           }
         ]
       };
-      
+
       mockCalculatedExpressionsFunction.mockReturnValueOnce(newCalculatedExpressions);
 
       rerender({ props: defaultProps });

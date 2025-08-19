@@ -185,10 +185,7 @@ describe('getItemTextToDisplay', () => {
         linkId: 'choice-item',
         type: 'choice',
         text: 'Select an option',
-        answerOption: [
-          { valueString: 'Option 1' },
-          { valueString: 'Option 2' }
-        ]
+        answerOption: [{ valueString: 'Option 1' }, { valueString: 'Option 2' }]
       };
 
       const result = getItemTextToDisplay(qItem);

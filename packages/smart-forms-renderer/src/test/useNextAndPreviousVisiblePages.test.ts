@@ -55,9 +55,7 @@ describe('useNextAndPreviousVisiblePages', () => {
         'page-2': { pageIndex: 1, isComplete: false, isHidden: false }
       };
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisiblePages(undefined, pages)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisiblePages(undefined, pages));
 
       expect(result.current).toEqual({
         previousPageIndex: null,
@@ -68,9 +66,7 @@ describe('useNextAndPreviousVisiblePages', () => {
     });
 
     it('should return default values when pages is undefined', () => {
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisiblePages(0, undefined)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisiblePages(0, undefined));
 
       expect(result.current).toEqual({
         previousPageIndex: null,
@@ -81,9 +77,7 @@ describe('useNextAndPreviousVisiblePages', () => {
     });
 
     it('should return default values when both currentPageIndex and pages are undefined', () => {
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisiblePages(undefined, undefined)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisiblePages(undefined, undefined));
 
       expect(result.current).toEqual({
         previousPageIndex: null,
@@ -111,9 +105,7 @@ describe('useNextAndPreviousVisiblePages', () => {
       ];
       mockConstructPagesWithVisibility.mockReturnValue(mockPagesWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisiblePages(1, mockPages)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisiblePages(1, mockPages));
 
       expect(result.current).toEqual({
         previousPageIndex: 0,
@@ -137,9 +129,7 @@ describe('useNextAndPreviousVisiblePages', () => {
       ];
       mockConstructPagesWithVisibility.mockReturnValue(mockPagesWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisiblePages(0, mockPages)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisiblePages(0, mockPages));
 
       expect(result.current).toEqual({
         previousPageIndex: null,
@@ -156,9 +146,7 @@ describe('useNextAndPreviousVisiblePages', () => {
       ];
       mockConstructPagesWithVisibility.mockReturnValue(mockPagesWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisiblePages(2, mockPages)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisiblePages(2, mockPages));
 
       expect(result.current).toEqual({
         previousPageIndex: 1,
@@ -171,14 +159,10 @@ describe('useNextAndPreviousVisiblePages', () => {
       const singlePage: Pages = {
         'page-1': { pageIndex: 0, isComplete: false, isHidden: false }
       };
-      const mockPagesWithVisibility = [
-        { linkId: 'page-1', isVisible: true }
-      ];
+      const mockPagesWithVisibility = [{ linkId: 'page-1', isVisible: true }];
       mockConstructPagesWithVisibility.mockReturnValue(mockPagesWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisiblePages(0, singlePage)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisiblePages(0, singlePage));
 
       expect(result.current).toEqual({
         previousPageIndex: null,
@@ -199,17 +183,15 @@ describe('useNextAndPreviousVisiblePages', () => {
 
     it('should skip invisible pages when finding previous page', () => {
       const mockPagesWithVisibility = [
-        { linkId: 'page-1', isVisible: true },   // index 0
-        { linkId: 'page-2', isVisible: false },  // index 1 - hidden
-        { linkId: 'page-3', isVisible: false },  // index 2 - hidden
-        { linkId: 'page-4', isVisible: true },   // index 3 - current
-        { linkId: 'page-5', isVisible: true }    // index 4
+        { linkId: 'page-1', isVisible: true }, // index 0
+        { linkId: 'page-2', isVisible: false }, // index 1 - hidden
+        { linkId: 'page-3', isVisible: false }, // index 2 - hidden
+        { linkId: 'page-4', isVisible: true }, // index 3 - current
+        { linkId: 'page-5', isVisible: true } // index 4
       ];
       mockConstructPagesWithVisibility.mockReturnValue(mockPagesWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisiblePages(3, mockPages)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisiblePages(3, mockPages));
 
       expect(result.current).toEqual({
         previousPageIndex: 0, // Should skip hidden pages 1 and 2
@@ -220,17 +202,15 @@ describe('useNextAndPreviousVisiblePages', () => {
 
     it('should skip invisible pages when finding next page', () => {
       const mockPagesWithVisibility = [
-        { linkId: 'page-1', isVisible: true },   // index 0
-        { linkId: 'page-2', isVisible: true },   // index 1 - current
-        { linkId: 'page-3', isVisible: false },  // index 2 - hidden
-        { linkId: 'page-4', isVisible: false },  // index 3 - hidden
-        { linkId: 'page-5', isVisible: true }    // index 4
+        { linkId: 'page-1', isVisible: true }, // index 0
+        { linkId: 'page-2', isVisible: true }, // index 1 - current
+        { linkId: 'page-3', isVisible: false }, // index 2 - hidden
+        { linkId: 'page-4', isVisible: false }, // index 3 - hidden
+        { linkId: 'page-5', isVisible: true } // index 4
       ];
       mockConstructPagesWithVisibility.mockReturnValue(mockPagesWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisiblePages(1, mockPages)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisiblePages(1, mockPages));
 
       expect(result.current).toEqual({
         previousPageIndex: 0,
@@ -241,16 +221,14 @@ describe('useNextAndPreviousVisiblePages', () => {
 
     it('should handle all pages hidden except current', () => {
       const mockPagesWithVisibility = [
-        { linkId: 'page-1', isVisible: false },  // index 0 - hidden
-        { linkId: 'page-2', isVisible: true },   // index 1 - current (only visible)
-        { linkId: 'page-3', isVisible: false },  // index 2 - hidden
-        { linkId: 'page-4', isVisible: false }   // index 3 - hidden
+        { linkId: 'page-1', isVisible: false }, // index 0 - hidden
+        { linkId: 'page-2', isVisible: true }, // index 1 - current (only visible)
+        { linkId: 'page-3', isVisible: false }, // index 2 - hidden
+        { linkId: 'page-4', isVisible: false } // index 3 - hidden
       ];
       mockConstructPagesWithVisibility.mockReturnValue(mockPagesWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisiblePages(1, mockPages)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisiblePages(1, mockPages));
 
       expect(result.current).toEqual({
         previousPageIndex: null,
@@ -267,9 +245,7 @@ describe('useNextAndPreviousVisiblePages', () => {
       ];
       mockConstructPagesWithVisibility.mockReturnValue(mockPagesWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisiblePages(1, mockPages)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisiblePages(1, mockPages));
 
       expect(result.current).toEqual({
         previousPageIndex: null,
@@ -292,19 +268,17 @@ describe('useNextAndPreviousVisiblePages', () => {
 
     it('should handle alternating visibility pattern', () => {
       const mockPagesWithVisibility = [
-        { linkId: 'page-1', isVisible: true },   // index 0
-        { linkId: 'page-2', isVisible: false },  // index 1 - hidden
-        { linkId: 'page-3', isVisible: true },   // index 2
-        { linkId: 'page-4', isVisible: false },  // index 3 - hidden
-        { linkId: 'page-5', isVisible: true },   // index 4 - current
-        { linkId: 'page-6', isVisible: false },  // index 5 - hidden
-        { linkId: 'page-7', isVisible: true }    // index 6
+        { linkId: 'page-1', isVisible: true }, // index 0
+        { linkId: 'page-2', isVisible: false }, // index 1 - hidden
+        { linkId: 'page-3', isVisible: true }, // index 2
+        { linkId: 'page-4', isVisible: false }, // index 3 - hidden
+        { linkId: 'page-5', isVisible: true }, // index 4 - current
+        { linkId: 'page-6', isVisible: false }, // index 5 - hidden
+        { linkId: 'page-7', isVisible: true } // index 6
       ];
       mockConstructPagesWithVisibility.mockReturnValue(mockPagesWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisiblePages(4, mockPages)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisiblePages(4, mockPages));
 
       expect(result.current).toEqual({
         previousPageIndex: 2,
@@ -315,18 +289,16 @@ describe('useNextAndPreviousVisiblePages', () => {
 
     it('should handle gaps at beginning and end', () => {
       const mockPagesWithVisibility = [
-        { linkId: 'page-1', isVisible: false },  // index 0 - hidden
-        { linkId: 'page-2', isVisible: false },  // index 1 - hidden
-        { linkId: 'page-3', isVisible: true },   // index 2 - current
-        { linkId: 'page-4', isVisible: true },   // index 3
-        { linkId: 'page-5', isVisible: false },  // index 4 - hidden
-        { linkId: 'page-6', isVisible: false }   // index 5 - hidden
+        { linkId: 'page-1', isVisible: false }, // index 0 - hidden
+        { linkId: 'page-2', isVisible: false }, // index 1 - hidden
+        { linkId: 'page-3', isVisible: true }, // index 2 - current
+        { linkId: 'page-4', isVisible: true }, // index 3
+        { linkId: 'page-5', isVisible: false }, // index 4 - hidden
+        { linkId: 'page-6', isVisible: false } // index 5 - hidden
       ];
       mockConstructPagesWithVisibility.mockReturnValue(mockPagesWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisiblePages(2, mockPages)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisiblePages(2, mockPages));
 
       expect(result.current).toEqual({
         previousPageIndex: null, // No visible pages before index 2
@@ -337,18 +309,16 @@ describe('useNextAndPreviousVisiblePages', () => {
 
     it('should handle consecutive hidden pages before current', () => {
       const mockPagesWithVisibility = [
-        { linkId: 'page-1', isVisible: true },   // index 0
-        { linkId: 'page-2', isVisible: false },  // index 1 - hidden
-        { linkId: 'page-3', isVisible: false },  // index 2 - hidden
-        { linkId: 'page-4', isVisible: false },  // index 3 - hidden
-        { linkId: 'page-5', isVisible: true },   // index 4 - current
-        { linkId: 'page-6', isVisible: true }    // index 5
+        { linkId: 'page-1', isVisible: true }, // index 0
+        { linkId: 'page-2', isVisible: false }, // index 1 - hidden
+        { linkId: 'page-3', isVisible: false }, // index 2 - hidden
+        { linkId: 'page-4', isVisible: false }, // index 3 - hidden
+        { linkId: 'page-5', isVisible: true }, // index 4 - current
+        { linkId: 'page-6', isVisible: true } // index 5
       ];
       mockConstructPagesWithVisibility.mockReturnValue(mockPagesWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisiblePages(4, mockPages)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisiblePages(4, mockPages));
 
       expect(result.current).toEqual({
         previousPageIndex: 0,
@@ -359,18 +329,16 @@ describe('useNextAndPreviousVisiblePages', () => {
 
     it('should handle consecutive hidden pages after current', () => {
       const mockPagesWithVisibility = [
-        { linkId: 'page-1', isVisible: true },   // index 0
-        { linkId: 'page-2', isVisible: true },   // index 1 - current
-        { linkId: 'page-3', isVisible: false },  // index 2 - hidden
-        { linkId: 'page-4', isVisible: false },  // index 3 - hidden
-        { linkId: 'page-5', isVisible: false },  // index 4 - hidden
-        { linkId: 'page-6', isVisible: true }    // index 5
+        { linkId: 'page-1', isVisible: true }, // index 0
+        { linkId: 'page-2', isVisible: true }, // index 1 - current
+        { linkId: 'page-3', isVisible: false }, // index 2 - hidden
+        { linkId: 'page-4', isVisible: false }, // index 3 - hidden
+        { linkId: 'page-5', isVisible: false }, // index 4 - hidden
+        { linkId: 'page-6', isVisible: true } // index 5
       ];
       mockConstructPagesWithVisibility.mockReturnValue(mockPagesWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisiblePages(1, mockPages)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisiblePages(1, mockPages));
 
       expect(result.current).toEqual({
         previousPageIndex: 0,
@@ -392,13 +360,13 @@ describe('useNextAndPreviousVisiblePages', () => {
       ];
       mockConstructPagesWithVisibility.mockReturnValue(mockPagesWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisiblePages(5, mockPages) // Index beyond array
+      const { result } = renderHook(
+        () => useNextAndPreviousVisiblePages(5, mockPages) // Index beyond array
       );
 
       expect(result.current).toEqual({
-        previousPageIndex: 4, // Reverse search from index 5: (5 - 0 - 1) = 4 
-        nextPageIndex: null,  // No pages after index 5
+        previousPageIndex: 4, // Reverse search from index 5: (5 - 0 - 1) = 4
+        nextPageIndex: null, // No pages after index 5
         numOfVisiblePages: 2
       });
     });
@@ -414,13 +382,11 @@ describe('useNextAndPreviousVisiblePages', () => {
       ];
       mockConstructPagesWithVisibility.mockReturnValue(mockPagesWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisiblePages(-1, mockPages)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisiblePages(-1, mockPages));
 
       expect(result.current).toEqual({
         previousPageIndex: null, // No pages before negative index
-        nextPageIndex: 0,        // First visible page
+        nextPageIndex: 0, // First visible page
         numOfVisiblePages: 2
       });
     });
@@ -433,14 +399,12 @@ describe('useNextAndPreviousVisiblePages', () => {
       };
       const mockPagesWithVisibility = [
         { linkId: 'page-1', isVisible: false }, // index 0 - hidden but current
-        { linkId: 'page-2', isVisible: true },  // index 1
-        { linkId: 'page-3', isVisible: true }   // index 2
+        { linkId: 'page-2', isVisible: true }, // index 1
+        { linkId: 'page-3', isVisible: true } // index 2
       ];
       mockConstructPagesWithVisibility.mockReturnValue(mockPagesWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisiblePages(0, mockPages)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisiblePages(0, mockPages));
 
       expect(result.current).toEqual({
         previousPageIndex: null,
@@ -465,9 +429,7 @@ describe('useNextAndPreviousVisiblePages', () => {
       ];
       mockConstructPagesWithVisibility.mockReturnValue(mockPagesWithVisibility);
 
-      renderHook(() => 
-        useNextAndPreviousVisiblePages(1, mockPages)
-      );
+      renderHook(() => useNextAndPreviousVisiblePages(1, mockPages));
 
       expect(mockConstructPagesWithVisibility).toHaveBeenCalledWith({
         pages: mockPages,
@@ -504,9 +466,9 @@ describe('useNextAndPreviousVisiblePages', () => {
   describe('page completion and hidden states', () => {
     it('should handle pages with different completion states', () => {
       const mockPages: Pages = {
-        'page-1': { pageIndex: 0, isComplete: true, isHidden: false },   // Completed
-        'page-2': { pageIndex: 1, isComplete: false, isHidden: false },  // Current, not completed
-        'page-3': { pageIndex: 2, isComplete: false, isHidden: false }   // Not completed
+        'page-1': { pageIndex: 0, isComplete: true, isHidden: false }, // Completed
+        'page-2': { pageIndex: 1, isComplete: false, isHidden: false }, // Current, not completed
+        'page-3': { pageIndex: 2, isComplete: false, isHidden: false } // Not completed
       };
       const mockPagesWithVisibility = [
         { linkId: 'page-1', isVisible: true },
@@ -515,9 +477,7 @@ describe('useNextAndPreviousVisiblePages', () => {
       ];
       mockConstructPagesWithVisibility.mockReturnValue(mockPagesWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisiblePages(1, mockPages)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisiblePages(1, mockPages));
 
       expect(result.current).toEqual({
         previousPageIndex: 0,
@@ -528,9 +488,9 @@ describe('useNextAndPreviousVisiblePages', () => {
 
     it('should handle pages with different hidden states in input', () => {
       const mockPages: Pages = {
-        'page-1': { pageIndex: 0, isComplete: false, isHidden: true },   // Hidden in input
-        'page-2': { pageIndex: 1, isComplete: false, isHidden: false },  // Current
-        'page-3': { pageIndex: 2, isComplete: false, isHidden: false }   // Not hidden
+        'page-1': { pageIndex: 0, isComplete: false, isHidden: true }, // Hidden in input
+        'page-2': { pageIndex: 1, isComplete: false, isHidden: false }, // Current
+        'page-3': { pageIndex: 2, isComplete: false, isHidden: false } // Not hidden
       };
       // Note: actual visibility determined by constructPagesWithVisibility, not input isHidden
       const mockPagesWithVisibility = [
@@ -540,9 +500,7 @@ describe('useNextAndPreviousVisiblePages', () => {
       ];
       mockConstructPagesWithVisibility.mockReturnValue(mockPagesWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisiblePages(1, mockPages)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisiblePages(1, mockPages));
 
       expect(result.current).toEqual({
         previousPageIndex: null, // page-1 is not visible
@@ -558,9 +516,7 @@ describe('useNextAndPreviousVisiblePages', () => {
       const mockPagesWithVisibility: { linkId: string; isVisible: boolean }[] = [];
       mockConstructPagesWithVisibility.mockReturnValue(mockPagesWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisiblePages(0, emptyPages)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisiblePages(0, emptyPages));
 
       expect(result.current).toEqual({
         previousPageIndex: null,
@@ -576,19 +532,19 @@ describe('useNextAndPreviousVisiblePages', () => {
         'page-c': { pageIndex: 5, isComplete: false, isHidden: false }
       };
       const mockPagesWithVisibility = [
-        { linkId: 'page-a', isVisible: true },  // position 0
-        { linkId: 'page-b', isVisible: true },  // position 1 - current
-        { linkId: 'page-c', isVisible: true }   // position 2
+        { linkId: 'page-a', isVisible: true }, // position 0
+        { linkId: 'page-b', isVisible: true }, // position 1 - current
+        { linkId: 'page-c', isVisible: true } // position 2
       ];
       mockConstructPagesWithVisibility.mockReturnValue(mockPagesWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisiblePages(1, mockPages) // Position 1 in the array
+      const { result } = renderHook(
+        () => useNextAndPreviousVisiblePages(1, mockPages) // Position 1 in the array
       );
 
       expect(result.current).toEqual({
         previousPageIndex: 0, // Position 0 in the array
-        nextPageIndex: 2,     // Position 2 in the array
+        nextPageIndex: 2, // Position 2 in the array
         numOfVisiblePages: 3
       });
     });
@@ -598,23 +554,23 @@ describe('useNextAndPreviousVisiblePages', () => {
     it('should handle large number of pages efficiently', () => {
       const largePages: Pages = {};
       const mockPagesWithVisibility: { linkId: string; isVisible: boolean }[] = [];
-      
+
       // Create 1000 pages
       for (let i = 0; i < 1000; i++) {
         largePages[`page-${i}`] = { pageIndex: i, isComplete: false, isHidden: false };
         mockPagesWithVisibility.push({ linkId: `page-${i}`, isVisible: i % 2 === 0 }); // Every other page visible
       }
-      
+
       mockConstructPagesWithVisibility.mockReturnValue(mockPagesWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisiblePages(500, largePages) // Middle page
+      const { result } = renderHook(
+        () => useNextAndPreviousVisiblePages(500, largePages) // Middle page
       );
 
       expect(result.current).toEqual({
         previousPageIndex: 498, // Previous even number
-        nextPageIndex: 502,     // Next even number  
-        numOfVisiblePages: 500  // Half of 1000 pages
+        nextPageIndex: 502, // Next even number
+        numOfVisiblePages: 500 // Half of 1000 pages
       });
     });
 
@@ -631,12 +587,8 @@ describe('useNextAndPreviousVisiblePages', () => {
       ];
       mockConstructPagesWithVisibility.mockReturnValue(mockPagesWithVisibility);
 
-      const { result: result1 } = renderHook(() => 
-        useNextAndPreviousVisiblePages(2, mockPages)
-      );
-      const { result: result2 } = renderHook(() => 
-        useNextAndPreviousVisiblePages(2, mockPages)
-      );
+      const { result: result1 } = renderHook(() => useNextAndPreviousVisiblePages(2, mockPages));
+      const { result: result2 } = renderHook(() => useNextAndPreviousVisiblePages(2, mockPages));
 
       expect(result1.current).toEqual(result2.current);
       expect(result1.current).toEqual({
@@ -650,9 +602,9 @@ describe('useNextAndPreviousVisiblePages', () => {
   describe('navigation workflow scenarios', () => {
     it('should handle sequential page navigation', () => {
       const mockPages: Pages = {
-        'page-1': { pageIndex: 0, isComplete: true, isHidden: false },   
-        'page-2': { pageIndex: 1, isComplete: true, isHidden: false },   
-        'page-3': { pageIndex: 2, isComplete: false, isHidden: false },  // Current
+        'page-1': { pageIndex: 0, isComplete: true, isHidden: false },
+        'page-2': { pageIndex: 1, isComplete: true, isHidden: false },
+        'page-3': { pageIndex: 2, isComplete: false, isHidden: false }, // Current
         'page-4': { pageIndex: 3, isComplete: false, isHidden: false },
         'page-5': { pageIndex: 4, isComplete: false, isHidden: false }
       };
@@ -665,9 +617,7 @@ describe('useNextAndPreviousVisiblePages', () => {
       ];
       mockConstructPagesWithVisibility.mockReturnValue(mockPagesWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisiblePages(2, mockPages)
-      );
+      const { result } = renderHook(() => useNextAndPreviousVisiblePages(2, mockPages));
 
       expect(result.current).toEqual({
         previousPageIndex: 1,
@@ -678,10 +628,10 @@ describe('useNextAndPreviousVisiblePages', () => {
 
     it('should handle page navigation with conditional visibility', () => {
       const mockPages: Pages = {
-        'intro': { pageIndex: 0, isComplete: true, isHidden: false },
-        'personal': { pageIndex: 1, isComplete: true, isHidden: false },
-        'conditional': { pageIndex: 2, isComplete: false, isHidden: false }, // May be hidden by enableWhen
-        'summary': { pageIndex: 3, isComplete: false, isHidden: false }
+        intro: { pageIndex: 0, isComplete: true, isHidden: false },
+        personal: { pageIndex: 1, isComplete: true, isHidden: false },
+        conditional: { pageIndex: 2, isComplete: false, isHidden: false }, // May be hidden by enableWhen
+        summary: { pageIndex: 3, isComplete: false, isHidden: false }
       };
       const mockPagesWithVisibility = [
         { linkId: 'intro', isVisible: true },
@@ -691,25 +641,25 @@ describe('useNextAndPreviousVisiblePages', () => {
       ];
       mockConstructPagesWithVisibility.mockReturnValue(mockPagesWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisiblePages(1, mockPages) // On personal page
+      const { result } = renderHook(
+        () => useNextAndPreviousVisiblePages(1, mockPages) // On personal page
       );
 
       expect(result.current).toEqual({
-        previousPageIndex: 0,    // intro page
-        nextPageIndex: 3,        // summary page (skipping conditional)
+        previousPageIndex: 0, // intro page
+        nextPageIndex: 3, // summary page (skipping conditional)
         numOfVisiblePages: 3
       });
     });
 
     it('should handle multi-step form completion tracking', () => {
       const mockPages: Pages = {
-        'step1': { pageIndex: 0, isComplete: true, isHidden: false },
-        'step2': { pageIndex: 1, isComplete: true, isHidden: false },
-        'step3': { pageIndex: 2, isComplete: true, isHidden: false },
-        'step4': { pageIndex: 3, isComplete: false, isHidden: false }, // Current incomplete
-        'step5': { pageIndex: 4, isComplete: false, isHidden: false },
-        'review': { pageIndex: 5, isComplete: false, isHidden: false }
+        step1: { pageIndex: 0, isComplete: true, isHidden: false },
+        step2: { pageIndex: 1, isComplete: true, isHidden: false },
+        step3: { pageIndex: 2, isComplete: true, isHidden: false },
+        step4: { pageIndex: 3, isComplete: false, isHidden: false }, // Current incomplete
+        step5: { pageIndex: 4, isComplete: false, isHidden: false },
+        review: { pageIndex: 5, isComplete: false, isHidden: false }
       };
       const mockPagesWithVisibility = [
         { linkId: 'step1', isVisible: true },
@@ -721,13 +671,13 @@ describe('useNextAndPreviousVisiblePages', () => {
       ];
       mockConstructPagesWithVisibility.mockReturnValue(mockPagesWithVisibility);
 
-      const { result } = renderHook(() => 
-        useNextAndPreviousVisiblePages(3, mockPages) // On step4
+      const { result } = renderHook(
+        () => useNextAndPreviousVisiblePages(3, mockPages) // On step4
       );
 
       expect(result.current).toEqual({
-        previousPageIndex: 2,   // step3
-        nextPageIndex: 4,       // step5
+        previousPageIndex: 2, // step3
+        nextPageIndex: 4, // step5
         numOfVisiblePages: 6
       });
     });

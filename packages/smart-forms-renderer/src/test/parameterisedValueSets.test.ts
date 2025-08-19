@@ -23,16 +23,23 @@ import {
   evaluateInitialDynamicValueSets,
   evaluateDynamicValueSets
 } from '../utils/parameterisedValueSets';
-import type { Extension, QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
+import type {
+  Extension,
+  QuestionnaireItem,
+  QuestionnaireResponse,
+  QuestionnaireResponseItem
+} from 'fhir/r4';
 import type { BindingParameter, ProcessedValueSet } from '../interfaces/valueSet.interface';
 import type { Variables } from '../interfaces';
 
 // Mock dependencies
 jest.mock('../utils/fhirpath', () => ({
-  createFhirPathContext: jest.fn(() => Promise.resolve({
-    fhirPathContext: { mockContext: true },
-    fhirPathTerminologyCache: {}
-  })),
+  createFhirPathContext: jest.fn(() =>
+    Promise.resolve({
+      fhirPathContext: { mockContext: true },
+      fhirPathTerminologyCache: {}
+    })
+  ),
   handleFhirPathResult: jest.fn((result: any) => Promise.resolve(result))
 }));
 
@@ -445,9 +452,7 @@ describe('parameterisedValueSets utils', () => {
 
     test('should handle URL that already has query parameters', () => {
       const valueSetUrl = 'http://example.com/valueset?existing=param';
-      const bindingParameters: BindingParameter[] = [
-        { name: 'new-param', value: 'value' }
-      ];
+      const bindingParameters: BindingParameter[] = [{ name: 'new-param', value: 'value' }];
 
       const result = addBindingParametersToValueSetUrl(valueSetUrl, bindingParameters);
 
@@ -527,7 +532,9 @@ describe('parameterisedValueSets utils', () => {
 
       const result = await evaluateInitialDynamicValueSets(params);
 
-      expect(result.initialProcessedValueSets['dynamic-vs'].bindingParameters[0].value).toBe('patient-123');
+      expect(result.initialProcessedValueSets['dynamic-vs'].bindingParameters[0].value).toBe(
+        'patient-123'
+      );
       expect(result.initialProcessedValueSets['dynamic-vs'].updatableValueSetUrl).toBe(
         'http://example.com/valueset&patient-id=patient-123'
       );
@@ -559,7 +566,9 @@ describe('parameterisedValueSets utils', () => {
 
       // Function should complete successfully with pre-existing cache
       expect(result).toBeDefined();
-      expect(result.initialProcessedValueSets['dynamic-vs'].bindingParameters[0].value).toBe('patient-123');
+      expect(result.initialProcessedValueSets['dynamic-vs'].bindingParameters[0].value).toBe(
+        'patient-123'
+      );
     });
 
     test('should handle FHIRPath evaluation errors', async () => {
@@ -656,9 +665,7 @@ describe('parameterisedValueSets utils', () => {
 
     test('should handle multiple dynamic value sets', async () => {
       const mockFhirpath = require('fhirpath');
-      mockFhirpath.evaluate
-        .mockReturnValueOnce(['result-1'])
-        .mockReturnValueOnce(['result-2']);
+      mockFhirpath.evaluate.mockReturnValueOnce(['result-1']).mockReturnValueOnce(['result-2']);
 
       const params = createMockParams({
         processedValueSets: {
@@ -691,8 +698,12 @@ describe('parameterisedValueSets utils', () => {
 
       const result = await evaluateInitialDynamicValueSets(params);
 
-      expect(result.initialProcessedValueSets['dynamic-vs-1'].bindingParameters[0].value).toBe('result-1');
-      expect(result.initialProcessedValueSets['dynamic-vs-2'].bindingParameters[0].value).toBe('result-2');
+      expect(result.initialProcessedValueSets['dynamic-vs-1'].bindingParameters[0].value).toBe(
+        'result-1'
+      );
+      expect(result.initialProcessedValueSets['dynamic-vs-2'].bindingParameters[0].value).toBe(
+        'result-2'
+      );
     });
 
     test('should skip non-dynamic value sets', async () => {
@@ -734,7 +745,9 @@ describe('parameterisedValueSets utils', () => {
       const result = await evaluateInitialDynamicValueSets(params);
 
       // Should not modify static parameters
-      expect(result.initialProcessedValueSets['dynamic-vs'].bindingParameters[0].value).toBe('static-value');
+      expect(result.initialProcessedValueSets['dynamic-vs'].bindingParameters[0].value).toBe(
+        'static-value'
+      );
     });
   });
 
@@ -789,7 +802,9 @@ describe('parameterisedValueSets utils', () => {
       );
 
       expect(result.processedValueSetsIsUpdated).toBe(true);
-      expect(result.updatedProcessedValueSets['dynamic-vs'].bindingParameters[0].value).toBe('new-value');
+      expect(result.updatedProcessedValueSets['dynamic-vs'].bindingParameters[0].value).toBe(
+        'new-value'
+      );
       expect(result.computedNewAnswers).toEqual({
         'item-1': null,
         'item-2': null

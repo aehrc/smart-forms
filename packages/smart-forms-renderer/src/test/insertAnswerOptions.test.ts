@@ -26,13 +26,13 @@ describe('insertAnswerOptions - Phase 5', () => {
         status: 'active'
       };
       const completeAnswerOptions: Record<string, QuestionnaireItemAnswerOption[]> = {
-        'item1': [
-          { valueString: 'Option 1' },
-          { valueString: 'Option 2' }
-        ]
+        item1: [{ valueString: 'Option 1' }, { valueString: 'Option 2' }]
       };
 
-      const result = insertCompleteAnswerOptionsIntoQuestionnaire(questionnaire, completeAnswerOptions);
+      const result = insertCompleteAnswerOptionsIntoQuestionnaire(
+        questionnaire,
+        completeAnswerOptions
+      );
 
       expect(result).toBe(questionnaire); // same reference
       expect(result).toEqual({
@@ -48,12 +48,13 @@ describe('insertAnswerOptions - Phase 5', () => {
         item: []
       };
       const completeAnswerOptions: Record<string, QuestionnaireItemAnswerOption[]> = {
-        'item1': [
-          { valueString: 'Option 1' }
-        ]
+        item1: [{ valueString: 'Option 1' }]
       };
 
-      const result = insertCompleteAnswerOptionsIntoQuestionnaire(questionnaire, completeAnswerOptions);
+      const result = insertCompleteAnswerOptionsIntoQuestionnaire(
+        questionnaire,
+        completeAnswerOptions
+      );
 
       expect(result).toBe(questionnaire);
       expect(result.item).toEqual([]);
@@ -68,34 +69,30 @@ describe('insertAnswerOptions - Phase 5', () => {
             linkId: 'item1',
             type: 'choice',
             text: 'Question 1',
-            answerOption: [
-              { valueString: 'Original Option 1' }
-            ]
+            answerOption: [{ valueString: 'Original Option 1' }]
           },
           {
             linkId: 'item2',
             type: 'choice',
             text: 'Question 2',
-            answerOption: [
-              { valueString: 'Original Option 2' }
-            ]
+            answerOption: [{ valueString: 'Original Option 2' }]
           }
         ]
       };
 
       const completeAnswerOptions: Record<string, QuestionnaireItemAnswerOption[]> = {
-        'item1': [
-          { valueString: 'New Option 1' },
-          { valueString: 'New Option 2' }
-        ],
-        'item2': [
+        item1: [{ valueString: 'New Option 1' }, { valueString: 'New Option 2' }],
+        item2: [
           { valueString: 'New Option A' },
           { valueString: 'New Option B' },
           { valueString: 'New Option C' }
         ]
       };
 
-      const result = insertCompleteAnswerOptionsIntoQuestionnaire(questionnaire, completeAnswerOptions);
+      const result = insertCompleteAnswerOptionsIntoQuestionnaire(
+        questionnaire,
+        completeAnswerOptions
+      );
 
       expect(result).toBe(questionnaire);
       expect(result.item![0].answerOption).toEqual([
@@ -118,36 +115,29 @@ describe('insertAnswerOptions - Phase 5', () => {
             linkId: 'item1',
             type: 'choice',
             text: 'Question 1',
-            answerOption: [
-              { valueString: 'Original Option 1' }
-            ]
+            answerOption: [{ valueString: 'Original Option 1' }]
           },
           {
             linkId: 'item2',
             type: 'choice',
             text: 'Question 2',
-            answerOption: [
-              { valueString: 'Original Option 2' }
-            ]
+            answerOption: [{ valueString: 'Original Option 2' }]
           }
         ]
       };
 
       const completeAnswerOptions: Record<string, QuestionnaireItemAnswerOption[]> = {
-        'item3': [
-          { valueString: 'New Option 1' }
-        ]
+        item3: [{ valueString: 'New Option 1' }]
       };
 
-      const result = insertCompleteAnswerOptionsIntoQuestionnaire(questionnaire, completeAnswerOptions);
+      const result = insertCompleteAnswerOptionsIntoQuestionnaire(
+        questionnaire,
+        completeAnswerOptions
+      );
 
       expect(result).toBe(questionnaire);
-      expect(result.item![0].answerOption).toEqual([
-        { valueString: 'Original Option 1' }
-      ]);
-      expect(result.item![1].answerOption).toEqual([
-        { valueString: 'Original Option 2' }
-      ]);
+      expect(result.item![0].answerOption).toEqual([{ valueString: 'Original Option 1' }]);
+      expect(result.item![1].answerOption).toEqual([{ valueString: 'Original Option 2' }]);
     });
 
     it('should skip items that do not have answerOption property', () => {
@@ -164,29 +154,24 @@ describe('insertAnswerOptions - Phase 5', () => {
             linkId: 'item2',
             type: 'choice',
             text: 'Question 2',
-            answerOption: [
-              { valueString: 'Original Option 2' }
-            ]
+            answerOption: [{ valueString: 'Original Option 2' }]
           }
         ]
       };
 
       const completeAnswerOptions: Record<string, QuestionnaireItemAnswerOption[]> = {
-        'item1': [
-          { valueString: 'New Option 1' }
-        ],
-        'item2': [
-          { valueString: 'New Option 2' }
-        ]
+        item1: [{ valueString: 'New Option 1' }],
+        item2: [{ valueString: 'New Option 2' }]
       };
 
-      const result = insertCompleteAnswerOptionsIntoQuestionnaire(questionnaire, completeAnswerOptions);
+      const result = insertCompleteAnswerOptionsIntoQuestionnaire(
+        questionnaire,
+        completeAnswerOptions
+      );
 
       expect(result).toBe(questionnaire);
       expect(result.item![0]).not.toHaveProperty('answerOption');
-      expect(result.item![1].answerOption).toEqual([
-        { valueString: 'New Option 2' }
-      ]);
+      expect(result.item![1].answerOption).toEqual([{ valueString: 'New Option 2' }]);
     });
 
     it('should handle nested items recursively', () => {
@@ -203,9 +188,7 @@ describe('insertAnswerOptions - Phase 5', () => {
                 linkId: 'nested1',
                 type: 'choice',
                 text: 'Nested Question 1',
-                answerOption: [
-                  { valueString: 'Original Nested Option 1' }
-                ]
+                answerOption: [{ valueString: 'Original Nested Option 1' }]
               },
               {
                 linkId: 'nested-group',
@@ -216,9 +199,7 @@ describe('insertAnswerOptions - Phase 5', () => {
                     linkId: 'deeply-nested',
                     type: 'choice',
                     text: 'Deeply Nested Question',
-                    answerOption: [
-                      { valueString: 'Original Deep Option' }
-                    ]
+                    answerOption: [{ valueString: 'Original Deep Option' }]
                   }
                 ]
               }
@@ -228,28 +209,24 @@ describe('insertAnswerOptions - Phase 5', () => {
             linkId: 'top-level',
             type: 'choice',
             text: 'Top Level Question',
-            answerOption: [
-              { valueString: 'Original Top Option' }
-            ]
+            answerOption: [{ valueString: 'Original Top Option' }]
           }
         ]
       };
 
       const completeAnswerOptions: Record<string, QuestionnaireItemAnswerOption[]> = {
-        'nested1': [
-          { valueString: 'New Nested Option 1' },
-          { valueString: 'New Nested Option 2' }
-        ],
+        nested1: [{ valueString: 'New Nested Option 1' }, { valueString: 'New Nested Option 2' }],
         'deeply-nested': [
           { valueString: 'New Deep Option A' },
           { valueString: 'New Deep Option B' }
         ],
-        'top-level': [
-          { valueString: 'New Top Option' }
-        ]
+        'top-level': [{ valueString: 'New Top Option' }]
       };
 
-      const result = insertCompleteAnswerOptionsIntoQuestionnaire(questionnaire, completeAnswerOptions);
+      const result = insertCompleteAnswerOptionsIntoQuestionnaire(
+        questionnaire,
+        completeAnswerOptions
+      );
 
       expect(result).toBe(questionnaire);
       expect(result.item![0].item![0].answerOption).toEqual([
@@ -260,9 +237,7 @@ describe('insertAnswerOptions - Phase 5', () => {
         { valueString: 'New Deep Option A' },
         { valueString: 'New Deep Option B' }
       ]);
-      expect(result.item![1].answerOption).toEqual([
-        { valueString: 'New Top Option' }
-      ]);
+      expect(result.item![1].answerOption).toEqual([{ valueString: 'New Top Option' }]);
     });
 
     it('should handle items with complex answer options', () => {
@@ -312,7 +287,10 @@ describe('insertAnswerOptions - Phase 5', () => {
         ]
       };
 
-      const result = insertCompleteAnswerOptionsIntoQuestionnaire(questionnaire, completeAnswerOptions);
+      const result = insertCompleteAnswerOptionsIntoQuestionnaire(
+        questionnaire,
+        completeAnswerOptions
+      );
 
       expect(result).toBe(questionnaire);
       expect(result.item![0].answerOption).toEqual([
@@ -348,21 +326,20 @@ describe('insertAnswerOptions - Phase 5', () => {
             linkId: 'item1',
             type: 'choice',
             text: 'Question 1',
-            answerOption: [
-              { valueString: 'Original Option' }
-            ]
+            answerOption: [{ valueString: 'Original Option' }]
           }
         ]
       };
 
       const completeAnswerOptions: Record<string, QuestionnaireItemAnswerOption[]> = {};
 
-      const result = insertCompleteAnswerOptionsIntoQuestionnaire(questionnaire, completeAnswerOptions);
+      const result = insertCompleteAnswerOptionsIntoQuestionnaire(
+        questionnaire,
+        completeAnswerOptions
+      );
 
       expect(result).toBe(questionnaire);
-      expect(result.item![0].answerOption).toEqual([
-        { valueString: 'Original Option' }
-      ]);
+      expect(result.item![0].answerOption).toEqual([{ valueString: 'Original Option' }]);
     });
 
     it('should handle items where complete answer options exist but are empty arrays', () => {
@@ -374,18 +351,19 @@ describe('insertAnswerOptions - Phase 5', () => {
             linkId: 'item1',
             type: 'choice',
             text: 'Question 1',
-            answerOption: [
-              { valueString: 'Original Option' }
-            ]
+            answerOption: [{ valueString: 'Original Option' }]
           }
         ]
       };
 
       const completeAnswerOptions: Record<string, QuestionnaireItemAnswerOption[]> = {
-        'item1': []
+        item1: []
       };
 
-      const result = insertCompleteAnswerOptionsIntoQuestionnaire(questionnaire, completeAnswerOptions);
+      const result = insertCompleteAnswerOptionsIntoQuestionnaire(
+        questionnaire,
+        completeAnswerOptions
+      );
 
       expect(result).toBe(questionnaire);
       expect(result.item![0].answerOption).toEqual([]);
@@ -400,9 +378,7 @@ describe('insertAnswerOptions - Phase 5', () => {
             linkId: 'item1',
             type: 'choice',
             text: 'Question 1',
-            answerOption: [
-              { valueString: 'Original 1' }
-            ]
+            answerOption: [{ valueString: 'Original 1' }]
           },
           {
             linkId: 'item2',
@@ -413,45 +389,33 @@ describe('insertAnswerOptions - Phase 5', () => {
             linkId: 'item3',
             type: 'choice',
             text: 'Question 3',
-            answerOption: [
-              { valueString: 'Original 3' }
-            ]
+            answerOption: [{ valueString: 'Original 3' }]
           },
           {
             linkId: 'item4',
             type: 'choice',
             text: 'Question 4',
-            answerOption: [
-              { valueString: 'Original 4' }
-            ]
+            answerOption: [{ valueString: 'Original 4' }]
           }
         ]
       };
 
       const completeAnswerOptions: Record<string, QuestionnaireItemAnswerOption[]> = {
-        'item1': [
-          { valueString: 'New Option 1' }
-        ],
-        'item2': [
-          { valueString: 'Ignored Option' }
-        ],
-        'item4': [
-          { valueString: 'New Option 4A' },
-          { valueString: 'New Option 4B' }
-        ]
+        item1: [{ valueString: 'New Option 1' }],
+        item2: [{ valueString: 'Ignored Option' }],
+        item4: [{ valueString: 'New Option 4A' }, { valueString: 'New Option 4B' }]
         // item3 not included, should remain unchanged
       };
 
-      const result = insertCompleteAnswerOptionsIntoQuestionnaire(questionnaire, completeAnswerOptions);
+      const result = insertCompleteAnswerOptionsIntoQuestionnaire(
+        questionnaire,
+        completeAnswerOptions
+      );
 
       expect(result).toBe(questionnaire);
-      expect(result.item![0].answerOption).toEqual([
-        { valueString: 'New Option 1' }
-      ]);
+      expect(result.item![0].answerOption).toEqual([{ valueString: 'New Option 1' }]);
       expect(result.item![1]).not.toHaveProperty('answerOption');
-      expect(result.item![2].answerOption).toEqual([
-        { valueString: 'Original 3' }
-      ]);
+      expect(result.item![2].answerOption).toEqual([{ valueString: 'Original 3' }]);
       expect(result.item![3].answerOption).toEqual([
         { valueString: 'New Option 4A' },
         { valueString: 'New Option 4B' }
@@ -459,4 +423,3 @@ describe('insertAnswerOptions - Phase 5', () => {
     });
   });
 });
-

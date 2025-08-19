@@ -30,7 +30,9 @@ jest.mock('../../globals', () => ({
 import { getTerminologyServerUrl } from '../../utils/valueSet';
 import { TERMINOLOGY_SERVER_URL } from '../../globals';
 
-const mockGetTerminologyServerUrl = getTerminologyServerUrl as jest.MockedFunction<typeof getTerminologyServerUrl>;
+const mockGetTerminologyServerUrl = getTerminologyServerUrl as jest.MockedFunction<
+  typeof getTerminologyServerUrl
+>;
 
 describe('getItemTerminologyServerToUse', () => {
   const createMockQItem = (linkId: string): QuestionnaireItem => ({
@@ -162,8 +164,16 @@ describe('getItemTerminologyServerToUse', () => {
 
       mockGetTerminologyServerUrl.mockReturnValue('');
 
-      const result1 = getItemTerminologyServerToUse(qItem, itemPreferredServers, 'https://server1.com/fhir/');
-      const result2 = getItemTerminologyServerToUse(qItem, itemPreferredServers, 'https://server2.com/fhir/');
+      const result1 = getItemTerminologyServerToUse(
+        qItem,
+        itemPreferredServers,
+        'https://server1.com/fhir/'
+      );
+      const result2 = getItemTerminologyServerToUse(
+        qItem,
+        itemPreferredServers,
+        'https://server2.com/fhir/'
+      );
 
       expect(result1).toBe('https://server1.com/fhir/');
       expect(result2).toBe('https://server2.com/fhir/');
@@ -277,15 +287,31 @@ describe('getItemTerminologyServerToUse', () => {
     });
 
     it('should handle different qItem types correctly', () => {
-      const choiceItem: QuestionnaireItem = { linkId: 'choice-item', type: 'choice', text: 'Choice' };
-      const stringItem: QuestionnaireItem = { linkId: 'string-item', type: 'string', text: 'String' };
+      const choiceItem: QuestionnaireItem = {
+        linkId: 'choice-item',
+        type: 'choice',
+        text: 'Choice'
+      };
+      const stringItem: QuestionnaireItem = {
+        linkId: 'string-item',
+        type: 'string',
+        text: 'String'
+      };
       const itemPreferredServers = {};
       const rendererDefault = 'https://renderer.default.com/fhir/';
 
       mockGetTerminologyServerUrl.mockReturnValue(undefined);
 
-      const result1 = getItemTerminologyServerToUse(choiceItem, itemPreferredServers, rendererDefault);
-      const result2 = getItemTerminologyServerToUse(stringItem, itemPreferredServers, rendererDefault);
+      const result1 = getItemTerminologyServerToUse(
+        choiceItem,
+        itemPreferredServers,
+        rendererDefault
+      );
+      const result2 = getItemTerminologyServerToUse(
+        stringItem,
+        itemPreferredServers,
+        rendererDefault
+      );
 
       expect(result1).toBe('https://renderer.default.com/fhir/');
       expect(result2).toBe('https://renderer.default.com/fhir/');
@@ -295,7 +321,8 @@ describe('getItemTerminologyServerToUse', () => {
 
     it('should handle very long URLs correctly', () => {
       const qItem = createMockQItem('test-item');
-      const veryLongUrl = 'https://very.long.terminology.server.url.with.many.subdomains.and.paths.com/fhir/ValueSet/$expand?url=http://very.long.code.system.url.com&version=1.0.0&displayLanguage=en&includeDesignations=true';
+      const veryLongUrl =
+        'https://very.long.terminology.server.url.with.many.subdomains.and.paths.com/fhir/ValueSet/$expand?url=http://very.long.code.system.url.com&version=1.0.0&displayLanguage=en&includeDesignations=true';
       const itemPreferredServers = { 'test-item': veryLongUrl };
       const rendererDefault = 'https://renderer.default.com/fhir/';
 
@@ -317,7 +344,7 @@ describe('getItemTerminologyServerToUse', () => {
     it('should maintain performance with large itemPreferredTerminologyServers', () => {
       const qItem = createMockQItem('target-item');
       const largePreferredServers: Record<string, string> = {};
-      
+
       // Create 1000 entries
       for (let i = 0; i < 1000; i++) {
         largePreferredServers[`item-${i}`] = `https://server-${i}.com/fhir/`;
@@ -359,7 +386,7 @@ describe('getItemTerminologyServerToUse', () => {
         createMockQItem('item-with-backwards-compatible'),
         createMockQItem('item-with-default-only')
       ];
-      
+
       const itemPreferredServers = {
         'item-with-preferred': 'https://preferred.server.com/fhir/'
       };
@@ -370,7 +397,7 @@ describe('getItemTerminologyServerToUse', () => {
         .mockReturnValueOnce('https://backwards.compatible.com/fhir/') // Second call for item-with-backwards-compatible
         .mockReturnValueOnce(undefined); // Third call for item-with-default-only
 
-      const results = items.map(item => 
+      const results = items.map((item) =>
         getItemTerminologyServerToUse(item, itemPreferredServers, rendererDefault)
       );
 

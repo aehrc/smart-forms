@@ -42,20 +42,27 @@ jest.mock('@mui/material/styles', () => ({
   useTheme: () => mockUseTheme()
 }));
 
-jest.mock('@mui/material/useMediaQuery', () => (...args: any[]) => mockUseMediaQuery(...args));
+jest.mock(
+  '@mui/material/useMediaQuery',
+  () =>
+    (...args: any[]) =>
+      mockUseMediaQuery(...args)
+);
 
 describe('useResponsive', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Default mock implementations
     mockUseTheme.mockReturnValue(mockTheme);
     mockUseMediaQuery.mockReturnValue(false);
-    
+
     // Mock breakpoint methods to return query strings
     mockBreakpoints.up.mockImplementation((bp: Breakpoint) => `(min-width: ${bp})`);
     mockBreakpoints.down.mockImplementation((bp: Breakpoint) => `(max-width: ${bp})`);
-    mockBreakpoints.between.mockImplementation((start: Breakpoint, end: Breakpoint) => `(min-width: ${start}) and (max-width: ${end})`);
+    mockBreakpoints.between.mockImplementation(
+      (start: Breakpoint, end: Breakpoint) => `(min-width: ${start}) and (max-width: ${end})`
+    );
     mockBreakpoints.only.mockImplementation((bp: Breakpoint) => `(breakpoint: ${bp})`);
   });
 
@@ -95,10 +102,10 @@ describe('useResponsive', () => {
 
     it('should work with all breakpoint sizes for "up" query', () => {
       const breakpoints: Breakpoint[] = ['xs', 'sm', 'md', 'lg', 'xl'];
-      
+
       breakpoints.forEach((breakpoint) => {
-        mockUseMediaQuery.mockImplementation((query: string) => 
-          query === `(min-width: ${breakpoint})`
+        mockUseMediaQuery.mockImplementation(
+          (query: string) => query === `(min-width: ${breakpoint})`
         );
 
         const props: UseResponsiveProps = {
@@ -149,10 +156,10 @@ describe('useResponsive', () => {
 
     it('should work with all breakpoint sizes for "down" query', () => {
       const breakpoints: Breakpoint[] = ['xs', 'sm', 'md', 'lg', 'xl'];
-      
+
       breakpoints.forEach((breakpoint) => {
-        mockUseMediaQuery.mockImplementation((query: string) => 
-          query === `(max-width: ${breakpoint})`
+        mockUseMediaQuery.mockImplementation(
+          (query: string) => query === `(max-width: ${breakpoint})`
         );
 
         const props: UseResponsiveProps = {
@@ -231,8 +238,8 @@ describe('useResponsive', () => {
       ];
 
       combinations.forEach(({ start, end }) => {
-        mockUseMediaQuery.mockImplementation((query: string) => 
-          query === `(min-width: ${start}) and (max-width: ${end})`
+        mockUseMediaQuery.mockImplementation(
+          (query: string) => query === `(min-width: ${start}) and (max-width: ${end})`
         );
 
         const props: UseResponsiveProps = {
@@ -284,10 +291,10 @@ describe('useResponsive', () => {
 
     it('should work with all breakpoint sizes for "only" query', () => {
       const breakpoints: Breakpoint[] = ['xs', 'sm', 'md', 'lg', 'xl'];
-      
+
       breakpoints.forEach((breakpoint) => {
-        mockUseMediaQuery.mockImplementation((query: string) => 
-          query === `(breakpoint: ${breakpoint})`
+        mockUseMediaQuery.mockImplementation(
+          (query: string) => query === `(breakpoint: ${breakpoint})`
         );
 
         const props: UseResponsiveProps = {
@@ -394,7 +401,7 @@ describe('useResponsive', () => {
       );
 
       mockUseMediaQuery.mockReturnValue(true);
-      
+
       // Change to down query
       rerender({
         props: { query: 'down', start: 'sm' } as UseResponsiveProps
@@ -407,7 +414,7 @@ describe('useResponsive', () => {
     it('should handle custom breakpoints (if supported by theme)', () => {
       // Mock custom breakpoint
       const customBreakpoint = 'tablet' as Breakpoint;
-      
+
       const props: UseResponsiveProps = {
         query: 'up',
         start: customBreakpoint

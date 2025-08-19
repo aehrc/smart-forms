@@ -38,9 +38,7 @@ describe('useOpenLabel', () => {
 
   const emptyOptions: QuestionnaireItemAnswerOption[] = [];
 
-  const basicAnswers: QuestionnaireResponseItemAnswer[] = [
-    { valueCoding: { code: 'option1' } }
-  ];
+  const basicAnswers: QuestionnaireResponseItemAnswer[] = [{ valueCoding: { code: 'option1' } }];
 
   const emptyAnswers: QuestionnaireResponseItemAnswer[] = [];
 
@@ -191,7 +189,7 @@ describe('useOpenLabel', () => {
       });
 
       act(() => {
-        result.current.setOpenLabelValue(prev => prev + ' Updated');
+        result.current.setOpenLabelValue((prev) => prev + ' Updated');
       });
 
       expect(result.current.openLabelValue).toBe('Initial Updated');
@@ -234,12 +232,12 @@ describe('useOpenLabel', () => {
       const { result } = renderHook(() => useOpenLabel(basicOptions, basicAnswers));
 
       act(() => {
-        result.current.setOpenLabelChecked(prev => !prev);
+        result.current.setOpenLabelChecked((prev) => !prev);
       });
       expect(result.current.openLabelChecked).toBe(true);
 
       act(() => {
-        result.current.setOpenLabelChecked(prev => !prev);
+        result.current.setOpenLabelChecked((prev) => !prev);
       });
       expect(result.current.openLabelChecked).toBe(false);
     });
@@ -488,10 +486,9 @@ describe('useOpenLabel', () => {
 
   describe('performance considerations', () => {
     it('should call getOldOpenLabelAnswer only once during initialization', () => {
-      const { rerender } = renderHook(
-        ({ options, answers }) => useOpenLabel(options, answers),
-        { initialProps: { options: basicOptions, answers: basicAnswers } }
-      );
+      const { rerender } = renderHook(({ options, answers }) => useOpenLabel(options, answers), {
+        initialProps: { options: basicOptions, answers: basicAnswers }
+      });
 
       expect(mockGetOldOpenLabelAnswer).toHaveBeenCalledTimes(1);
 

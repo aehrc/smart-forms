@@ -28,7 +28,9 @@ jest.mock('../utils/page', () => ({
 
 import { constructPagesWithProperties, isFooter, isHeader, isPage } from '../utils/page';
 
-const mockConstructPagesWithProperties = constructPagesWithProperties as jest.MockedFunction<typeof constructPagesWithProperties>;
+const mockConstructPagesWithProperties = constructPagesWithProperties as jest.MockedFunction<
+  typeof constructPagesWithProperties
+>;
 const mockIsFooter = isFooter as jest.MockedFunction<typeof isFooter>;
 const mockIsHeader = isHeader as jest.MockedFunction<typeof isHeader>;
 const mockIsPage = isPage as jest.MockedFunction<typeof isPage>;
@@ -92,10 +94,10 @@ describe('extractPages - Phase 5', () => {
       mockIsPage.mockReturnValue(true);
       mockIsHeader.mockReturnValue(false);
       mockIsFooter.mockReturnValue(false);
-      
+
       mockConstructPagesWithProperties.mockReturnValue({
-        'page1': { pageIndex: 0, isComplete: false, isHidden: false },
-        'page2': { pageIndex: 1, isComplete: false, isHidden: false }
+        page1: { pageIndex: 0, isComplete: false, isHidden: false },
+        page2: { pageIndex: 1, isComplete: false, isHidden: false }
       });
 
       const result = extractPages(questionnaire);
@@ -107,8 +109,8 @@ describe('extractPages - Phase 5', () => {
       expect(mockIsFooter).toHaveBeenCalledTimes(0);
       expect(mockConstructPagesWithProperties).toHaveBeenCalledWith(questionnaire.item, false);
       expect(result).toEqual({
-        'page1': { pageIndex: 0, isComplete: false, isHidden: false },
-        'page2': { pageIndex: 1, isComplete: false, isHidden: false }
+        page1: { pageIndex: 0, isComplete: false, isHidden: false },
+        page2: { pageIndex: 1, isComplete: false, isHidden: false }
       });
     });
 
@@ -134,16 +136,16 @@ describe('extractPages - Phase 5', () => {
       mockIsHeader.mockReturnValue(true);
       mockIsFooter.mockReturnValue(false);
       mockConstructPagesWithProperties.mockReturnValue({
-        'header1': { pageIndex: 0, isComplete: false, isHidden: false },
-        'header2': { pageIndex: 1, isComplete: false, isHidden: false }
+        header1: { pageIndex: 0, isComplete: false, isHidden: false },
+        header2: { pageIndex: 1, isComplete: false, isHidden: false }
       });
 
       const result = extractPages(questionnaire);
 
       expect(mockConstructPagesWithProperties).toHaveBeenCalledWith(questionnaire.item, false);
       expect(result).toEqual({
-        'header1': { pageIndex: 0, isComplete: false, isHidden: false },
-        'header2': { pageIndex: 1, isComplete: false, isHidden: false }
+        header1: { pageIndex: 0, isComplete: false, isHidden: false },
+        header2: { pageIndex: 1, isComplete: false, isHidden: false }
       });
     });
 
@@ -164,14 +166,14 @@ describe('extractPages - Phase 5', () => {
       mockIsHeader.mockReturnValue(false);
       mockIsFooter.mockReturnValue(true);
       mockConstructPagesWithProperties.mockReturnValue({
-        'footer1': { pageIndex: 0, isComplete: false, isHidden: false }
+        footer1: { pageIndex: 0, isComplete: false, isHidden: false }
       });
 
       const result = extractPages(questionnaire);
 
       expect(mockConstructPagesWithProperties).toHaveBeenCalledWith(questionnaire.item, false);
       expect(result).toEqual({
-        'footer1': { pageIndex: 0, isComplete: false, isHidden: false }
+        footer1: { pageIndex: 0, isComplete: false, isHidden: false }
       });
     });
 
@@ -215,18 +217,18 @@ describe('extractPages - Phase 5', () => {
       });
 
       mockConstructPagesWithProperties.mockReturnValue({
-        'header1': { pageIndex: 0, isComplete: false, isHidden: false },
-        'page1': { pageIndex: 1, isComplete: false, isHidden: false },
-        'footer1': { pageIndex: 2, isComplete: false, isHidden: false }
+        header1: { pageIndex: 0, isComplete: false, isHidden: false },
+        page1: { pageIndex: 1, isComplete: false, isHidden: false },
+        footer1: { pageIndex: 2, isComplete: false, isHidden: false }
       });
 
       const result = extractPages(questionnaire);
 
       expect(mockConstructPagesWithProperties).toHaveBeenCalledWith(questionnaire.item, false);
       expect(result).toEqual({
-        'header1': { pageIndex: 0, isComplete: false, isHidden: false },
-        'page1': { pageIndex: 1, isComplete: false, isHidden: false },
-        'footer1': { pageIndex: 2, isComplete: false, isHidden: false }
+        header1: { pageIndex: 0, isComplete: false, isHidden: false },
+        page1: { pageIndex: 1, isComplete: false, isHidden: false },
+        footer1: { pageIndex: 2, isComplete: false, isHidden: false }
       });
     });
 
@@ -262,9 +264,9 @@ describe('extractPages - Phase 5', () => {
 
       // First .every() check will fail because regular-item is not a page/header/footer
       mockIsPage
-        .mockReturnValueOnce(false)  // regular-item: not a page (fails .every())
-        .mockReturnValueOnce(false)  // regular-item in .find()
-        .mockReturnValueOnce(true);  // page-container in .find()
+        .mockReturnValueOnce(false) // regular-item: not a page (fails .every())
+        .mockReturnValueOnce(false) // regular-item in .find()
+        .mockReturnValueOnce(true); // page-container in .find()
       mockIsHeader.mockReturnValue(false);
       mockIsFooter.mockReturnValue(false);
 
@@ -330,8 +332,8 @@ describe('extractPages - Phase 5', () => {
 
       // Fails .every() check, then finds page container in .find()
       mockIsPage
-        .mockReturnValueOnce(false)  // .every() fails immediately
-        .mockReturnValueOnce(true);  // .find() succeeds
+        .mockReturnValueOnce(false) // .every() fails immediately
+        .mockReturnValueOnce(true); // .find() succeeds
       mockIsHeader.mockReturnValue(false);
       mockIsFooter.mockReturnValue(false);
 
@@ -362,8 +364,8 @@ describe('extractPages - Phase 5', () => {
 
       // Fails .every() check, then finds page container in .find()
       mockIsPage
-        .mockReturnValueOnce(false)  // .every() fails immediately
-        .mockReturnValueOnce(true);  // .find() succeeds
+        .mockReturnValueOnce(false) // .every() fails immediately
+        .mockReturnValueOnce(true); // .find() succeeds
       mockIsHeader.mockReturnValue(false);
       mockIsFooter.mockReturnValue(false);
 
@@ -414,14 +416,14 @@ describe('extractPages - Phase 5', () => {
 
       // Fails .every() check, then finds first page container in .find()
       mockIsPage
-        .mockReturnValueOnce(false)  // .every() fails on first item
-        .mockReturnValueOnce(false)  // regular-item in .find()
-        .mockReturnValueOnce(true);  // first-page-container found in .find()
+        .mockReturnValueOnce(false) // .every() fails on first item
+        .mockReturnValueOnce(false) // regular-item in .find()
+        .mockReturnValueOnce(true); // first-page-container found in .find()
       mockIsHeader.mockReturnValue(false);
       mockIsFooter.mockReturnValue(false);
 
       mockConstructPagesWithProperties.mockReturnValue({
-        'page1': { pageIndex: 0, isComplete: false, isHidden: false }
+        page1: { pageIndex: 0, isComplete: false, isHidden: false }
       });
 
       const result = extractPages(questionnaire);
@@ -431,7 +433,7 @@ describe('extractPages - Phase 5', () => {
         true
       );
       expect(result).toEqual({
-        'page1': { pageIndex: 0, isComplete: false, isHidden: false }
+        page1: { pageIndex: 0, isComplete: false, isHidden: false }
       });
     });
 

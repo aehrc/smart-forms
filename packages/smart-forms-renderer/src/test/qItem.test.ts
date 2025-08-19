@@ -28,10 +28,7 @@ import {
   isItemHidden,
   type CollapsibleType
 } from '../utils/qItem';
-import type { 
-  Questionnaire, 
-  QuestionnaireItem 
-} from 'fhir/r4';
+import type { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enableWhen.interface';
 
 // Mock dependencies
@@ -55,12 +52,21 @@ import { getOpenChoiceControlType } from '../utils/openChoice';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 import { ChoiceItemControl, OpenChoiceItemControl } from '../interfaces/choice.enum';
 
-const mockGetChoiceControlType = getChoiceControlType as jest.MockedFunction<typeof getChoiceControlType>;
-const mockGetOpenChoiceControlType = getOpenChoiceControlType as jest.MockedFunction<typeof getOpenChoiceControlType>;
-const mockGetHidden = structuredDataCapture.getHidden as jest.MockedFunction<typeof structuredDataCapture.getHidden>;
+const mockGetChoiceControlType = getChoiceControlType as jest.MockedFunction<
+  typeof getChoiceControlType
+>;
+const mockGetOpenChoiceControlType = getOpenChoiceControlType as jest.MockedFunction<
+  typeof getOpenChoiceControlType
+>;
+const mockGetHidden = structuredDataCapture.getHidden as jest.MockedFunction<
+  typeof structuredDataCapture.getHidden
+>;
 
 // Helper function to create a basic QuestionnaireItem
-function createMockQuestionnaireItem(linkId: string, type: QuestionnaireItem['type'] = 'string'): QuestionnaireItem {
+function createMockQuestionnaireItem(
+  linkId: string,
+  type: QuestionnaireItem['type'] = 'string'
+): QuestionnaireItem {
   return {
     linkId,
     text: `${linkId} item`,
@@ -76,17 +82,17 @@ describe('qItem utils', () => {
   describe('isHiddenByEnableWhen', () => {
     const mockEnableWhenItems: EnableWhenItems = {
       singleItems: {
-        'enabled-item': { 
+        'enabled-item': {
           isEnabled: true,
           linked: []
         },
-        'disabled-item': { 
+        'disabled-item': {
           isEnabled: false,
           linked: []
         }
       },
       repeatItems: {
-        'repeat-item': { 
+        'repeat-item': {
           enabledIndexes: [true, false, true],
           linked: [],
           parentLinkId: 'parent'
@@ -96,20 +102,20 @@ describe('qItem utils', () => {
 
     const mockEnableWhenExpressions: EnableWhenExpressions = {
       singleExpressions: {
-        'expr-enabled': { 
+        'expr-enabled': {
           expression: '%context.test = true',
-          isEnabled: true 
+          isEnabled: true
         },
-        'expr-disabled': { 
+        'expr-disabled': {
           expression: '%context.test = false',
-          isEnabled: false 
+          isEnabled: false
         }
       },
       repeatExpressions: {
-        'repeat-expr': { 
+        'repeat-expr': {
           expression: '%context.repeat = true',
           parentLinkId: 'parent',
-          enabledIndexes: [false, true, false] 
+          enabledIndexes: [false, true, false]
         }
       }
     };
@@ -449,7 +455,7 @@ describe('qItem utils', () => {
       const result = getLinkIdPartialItemMap(questionnaire);
 
       expect(result).toEqual({
-        'item1': {
+        item1: {
           linkId: 'item1',
           text: 'Item 1',
           type: 'string'
@@ -485,17 +491,17 @@ describe('qItem utils', () => {
       const result = getLinkIdPartialItemMap(questionnaire);
 
       expect(result).toEqual({
-        'group1': {
+        group1: {
           linkId: 'group1',
           text: 'Group 1',
           type: 'group'
         },
-        'item1': {
+        item1: {
           linkId: 'item1',
           text: 'Item 1',
           type: 'string'
         },
-        'item2': {
+        item2: {
           linkId: 'item2',
           text: 'Item 2',
           type: 'integer'
@@ -533,17 +539,17 @@ describe('qItem utils', () => {
       const result = getLinkIdPartialItemMap(questionnaire);
 
       expect(result).toEqual({
-        'group1': {
+        group1: {
           linkId: 'group1',
           text: 'Group 1',
           type: 'group'
         },
-        'group2': {
+        group2: {
           linkId: 'group2',
           text: 'Group 2',
           type: 'group'
         },
-        'item1': {
+        item1: {
           linkId: 'item1',
           text: 'Item 1',
           type: 'string'
@@ -562,9 +568,7 @@ describe('qItem utils', () => {
 
       const result = getLinkIdPartialTuplesFromItemRecursive(qItem);
 
-      expect(result).toEqual([
-        ['item1', { linkId: 'item1', text: 'Item 1', type: 'string' }]
-      ]);
+      expect(result).toEqual([['item1', { linkId: 'item1', text: 'Item 1', type: 'string' }]]);
     });
 
     test('should return tuples for item with children', () => {
@@ -687,9 +691,7 @@ describe('qItem utils', () => {
 
       const result = getLinkIdPreferredTerminologyServerTuples(questionnaire);
 
-      expect(result).toEqual([
-        ['item1', 'https://terminology.server.com']
-      ]);
+      expect(result).toEqual([['item1', 'https://terminology.server.com']]);
     });
 
     test('should inherit terminology server from questionnaire level', () => {
@@ -713,9 +715,7 @@ describe('qItem utils', () => {
 
       const result = getLinkIdPreferredTerminologyServerTuples(questionnaire);
 
-      expect(result).toEqual([
-        ['item1', 'https://global.terminology.com']
-      ]);
+      expect(result).toEqual([['item1', 'https://global.terminology.com']]);
     });
 
     test('should override parent terminology server with item-specific one', () => {
@@ -745,9 +745,7 @@ describe('qItem utils', () => {
 
       const result = getLinkIdPreferredTerminologyServerTuples(questionnaire);
 
-      expect(result).toEqual([
-        ['item1', 'https://specific.terminology.com']
-      ]);
+      expect(result).toEqual([['item1', 'https://specific.terminology.com']]);
     });
 
     test('should handle valueUri and valueString alternatives', () => {
@@ -946,7 +944,7 @@ describe('qItem utils', () => {
   describe('isItemHidden', () => {
     const mockEnableWhenItems: EnableWhenItems = {
       singleItems: {
-        'disabled-item': { 
+        'disabled-item': {
           isEnabled: false,
           linked: []
         }
@@ -961,7 +959,7 @@ describe('qItem utils', () => {
 
     test('should return true when item has hidden property set to true', () => {
       const qItem = createMockQuestionnaireItem('test', 'string');
-      
+
       mockGetHidden.mockReturnValue(true);
 
       const result = isItemHidden(
@@ -978,7 +976,7 @@ describe('qItem utils', () => {
 
     test('should return false when item is not hidden and enableWhenAsReadOnly is true', () => {
       const qItem = createMockQuestionnaireItem('disabled-item', 'string');
-      
+
       mockGetHidden.mockReturnValue(false);
 
       const result = isItemHidden(
@@ -994,7 +992,7 @@ describe('qItem utils', () => {
 
     test('should return false when item type is in enableWhenAsReadOnly Set', () => {
       const qItem = createMockQuestionnaireItem('disabled-item', 'string');
-      
+
       mockGetHidden.mockReturnValue(false);
 
       const enableWhenAsReadOnlySet = new Set<QuestionnaireItem['type']>(['string', 'integer']);
@@ -1012,7 +1010,7 @@ describe('qItem utils', () => {
 
     test('should check enableWhen when enableWhenAsReadOnly is false', () => {
       const qItem = createMockQuestionnaireItem('disabled-item', 'string');
-      
+
       mockGetHidden.mockReturnValue(false);
 
       const result = isItemHidden(
@@ -1028,7 +1026,7 @@ describe('qItem utils', () => {
 
     test('should return false when enableWhen is not activated', () => {
       const qItem = createMockQuestionnaireItem('disabled-item', 'string');
-      
+
       mockGetHidden.mockReturnValue(false);
 
       const result = isItemHidden(
@@ -1044,7 +1042,7 @@ describe('qItem utils', () => {
 
     test('should handle parentRepeatGroupIndex parameter', () => {
       const qItem = createMockQuestionnaireItem('test', 'string');
-      
+
       mockGetHidden.mockReturnValue(false);
 
       const result = isItemHidden(
@@ -1061,7 +1059,7 @@ describe('qItem utils', () => {
 
     test('should return false when item type is not in enableWhenAsReadOnly Set', () => {
       const qItem = createMockQuestionnaireItem('disabled-item', 'boolean');
-      
+
       mockGetHidden.mockReturnValue(false);
 
       const enableWhenAsReadOnlySet = new Set<QuestionnaireItem['type']>(['string', 'integer']);
@@ -1127,7 +1125,7 @@ describe('qItem utils', () => {
       const mockIncompleteEnableWhenItems: EnableWhenItems = {
         singleItems: {},
         repeatItems: {
-          'incomplete-repeat': { 
+          'incomplete-repeat': {
             enabledIndexes: [],
             linked: [],
             parentLinkId: 'parent'

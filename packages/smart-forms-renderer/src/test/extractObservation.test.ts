@@ -18,12 +18,19 @@
  * limitations under the License.
  */
 
-import type { Questionnaire, QuestionnaireResponse, QuestionnaireItem, QuestionnaireResponseItemAnswer, CodeableConcept, Observation } from 'fhir/r4';
+import type {
+  Questionnaire,
+  QuestionnaireResponse,
+  QuestionnaireItem,
+  QuestionnaireResponseItemAnswer,
+  CodeableConcept,
+  Observation
+} from 'fhir/r4';
 
 import type { Extractable } from '../utils/extractObservation';
-import { 
-  extractObservationBased, 
-  mapQItemsExtractable, 
+import {
+  extractObservationBased,
+  mapQItemsExtractable,
   createObservation,
   generateUniqueId,
   canBeObservationExtracted,

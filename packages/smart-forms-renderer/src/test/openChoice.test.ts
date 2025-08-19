@@ -35,9 +35,10 @@ jest.mock('../utils/extensions', () => ({
   isSpecificItemControl: jest.fn((qItem: any, control: string) => {
     // Mock implementation based on test scenarios
     if (qItem.extension) {
-      return qItem.extension.some((ext: any) => 
-        ext.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl' &&
-        ext.valueCoding?.code === control
+      return qItem.extension.some(
+        (ext: any) =>
+          ext.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl' &&
+          ext.valueCoding?.code === control
       );
     }
     return false;
@@ -49,9 +50,7 @@ describe('openChoice utils', () => {
     const mockOldQrItem: QuestionnaireResponseItem = {
       linkId: 'test-item',
       text: 'Test Item',
-      answer: [
-        { valueString: 'existing answer' }
-      ]
+      answer: [{ valueString: 'existing answer' }]
     };
 
     const mockOptions: QuestionnaireItemAnswerOption[] = [
@@ -126,8 +125,8 @@ describe('openChoice utils', () => {
         );
 
         expect(result.answer).toHaveLength(2);
-        expect(result.answer?.find(a => a.valueString === 'open value')).toBeUndefined();
-        expect(result.answer?.every(a => a.id === 'answer-key')).toBe(true);
+        expect(result.answer?.find((a) => a.valueString === 'open value')).toBeUndefined();
+        expect(result.answer?.every((a) => a.id === 'answer-key')).toBe(true);
       });
 
       test('should remove last matching answer when multiple matches exist', () => {
@@ -184,7 +183,7 @@ describe('openChoice utils', () => {
         expect(result.answer).toHaveLength(2);
         expect(result.answer?.[0].valueString).toBe('option1');
         expect(result.answer?.[1].valueString).toBe('new open value');
-        expect(result.answer?.every(a => a.id === 'answer-key')).toBe(true);
+        expect(result.answer?.every((a) => a.id === 'answer-key')).toBe(true);
       });
 
       test('should return unchanged when old and new open answers are equal', () => {
@@ -278,10 +277,7 @@ describe('openChoice utils', () => {
         { valueString: 'option2' }
       ];
 
-      const options = [
-        { valueString: 'option1' },
-        { valueString: 'option2' }
-      ];
+      const options = [{ valueString: 'option1' }, { valueString: 'option2' }];
 
       const result = getOldOpenLabelAnswer(answers, options);
 
@@ -289,15 +285,9 @@ describe('openChoice utils', () => {
     });
 
     test('should return null when all answers are in options', () => {
-      const answers = [
-        { valueString: 'option1' },
-        { valueString: 'option2' }
-      ];
+      const answers = [{ valueString: 'option1' }, { valueString: 'option2' }];
 
-      const options = [
-        { valueString: 'option1' },
-        { valueString: 'option2' }
-      ];
+      const options = [{ valueString: 'option1' }, { valueString: 'option2' }];
 
       const result = getOldOpenLabelAnswer(answers, options);
 
@@ -311,9 +301,7 @@ describe('openChoice utils', () => {
         { valueString: 'open2' }
       ];
 
-      const options = [
-        { valueString: 'option1' }
-      ];
+      const options = [{ valueString: 'option1' }];
 
       const result = getOldOpenLabelAnswer(answers, options);
 
@@ -326,9 +314,7 @@ describe('openChoice utils', () => {
         { valueString: 'open answer', id: 'id2' }
       ];
 
-      const options = [
-        { valueString: 'option1' }
-      ];
+      const options = [{ valueString: 'option1' }];
 
       const result = getOldOpenLabelAnswer(answers, options);
 

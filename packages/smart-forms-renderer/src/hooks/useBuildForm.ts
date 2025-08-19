@@ -67,11 +67,13 @@ function useBuildForm(
       additionalVariables,
       qItemOverrideComponents,
       sdcUiOverrideComponents
-    ).then(() => {
-      setIsBuilding(false);
-    }).catch(() => {
-      // Do nothing - leave isBuilding as true to indicate the operation failed
-    });
+    )
+      .then(() => {
+        setIsBuilding(false);
+      })
+      .catch(() => {
+        // Do nothing - leave isBuilding as true to indicate the operation failed
+      });
   }, [
     questionnaire,
     questionnaireResponse,

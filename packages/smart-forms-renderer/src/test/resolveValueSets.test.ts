@@ -35,10 +35,15 @@ import {
   resolveValueSetPromises
 } from '../utils/valueSet';
 
-const mockCreateValueSetToXFhirQueryVariableNameMap = createValueSetToXFhirQueryVariableNameMap as jest.MockedFunction<typeof createValueSetToXFhirQueryVariableNameMap>;
+const mockCreateValueSetToXFhirQueryVariableNameMap =
+  createValueSetToXFhirQueryVariableNameMap as jest.MockedFunction<
+    typeof createValueSetToXFhirQueryVariableNameMap
+  >;
 const mockGetValueSetCodings = getValueSetCodings as jest.MockedFunction<typeof getValueSetCodings>;
 const mockGetValueSetPromise = getValueSetPromise as jest.MockedFunction<typeof getValueSetPromise>;
-const mockResolveValueSetPromises = resolveValueSetPromises as jest.MockedFunction<typeof resolveValueSetPromises>;
+const mockResolveValueSetPromises = resolveValueSetPromises as jest.MockedFunction<
+  typeof resolveValueSetPromises
+>;
 
 describe('resolveValueSets - Phase 5', () => {
   beforeEach(() => {
@@ -49,7 +54,7 @@ describe('resolveValueSets - Phase 5', () => {
     it('should return unchanged variables when no value set mapping exists', async () => {
       const variables: Variables = {
         fhirPathVariables: {
-          'QuestionnaireLevel': [
+          QuestionnaireLevel: [
             {
               name: 'patient',
               language: 'text/fhirpath',
@@ -80,10 +85,10 @@ describe('resolveValueSets - Phase 5', () => {
     it('should create value set promises for mapped variables', async () => {
       const variables: Variables = {
         fhirPathVariables: {
-          'QuestionnaireLevel': []
+          QuestionnaireLevel: []
         },
         xFhirQueryVariables: {
-          'allergies': {
+          allergies: {
             valueExpression: {
               name: 'allergies',
               language: 'application/x-fhir-query',
@@ -141,10 +146,10 @@ describe('resolveValueSets - Phase 5', () => {
     it('should update variables with resolved value sets', async () => {
       const variables: Variables = {
         fhirPathVariables: {
-          'QuestionnaireLevel': []
+          QuestionnaireLevel: []
         },
         xFhirQueryVariables: {
-          'allergies': {
+          allergies: {
             valueExpression: {
               name: 'allergies',
               language: 'application/x-fhir-query',
@@ -202,17 +207,17 @@ describe('resolveValueSets - Phase 5', () => {
     it('should handle multiple value sets', async () => {
       const variables: Variables = {
         fhirPathVariables: {
-          'QuestionnaireLevel': []
+          QuestionnaireLevel: []
         },
         xFhirQueryVariables: {
-          'allergies': {
+          allergies: {
             valueExpression: {
               name: 'allergies',
               language: 'application/x-fhir-query',
               expression: 'AllergyIntolerance?patient={{%patient.id}}'
             }
           },
-          'medications': {
+          medications: {
             valueExpression: {
               name: 'medications',
               language: 'application/x-fhir-query',
@@ -240,7 +245,9 @@ describe('resolveValueSets - Phase 5', () => {
       };
 
       mockCreateValueSetToXFhirQueryVariableNameMap.mockReturnValue(valueSetMapping);
-      mockGetValueSetPromise.mockReturnValue(Promise.resolve({ resourceType: 'ValueSet', status: 'active' } as ValueSet));
+      mockGetValueSetPromise.mockReturnValue(
+        Promise.resolve({ resourceType: 'ValueSet', status: 'active' } as ValueSet)
+      );
       mockResolveValueSetPromises.mockResolvedValue({
         'http://hl7.org/fhir/ValueSet/allergyintolerance-code': {
           promise: Promise.resolve(allergyValueSet),
@@ -252,8 +259,12 @@ describe('resolveValueSets - Phase 5', () => {
         }
       });
       mockGetValueSetCodings
-        .mockReturnValueOnce([{ system: 'http://snomed.info/sct', code: '123456', display: 'Test Allergy' }])
-        .mockReturnValueOnce([{ system: 'http://snomed.info/sct', code: '789012', display: 'Test Medication' }]);
+        .mockReturnValueOnce([
+          { system: 'http://snomed.info/sct', code: '123456', display: 'Test Allergy' }
+        ])
+        .mockReturnValueOnce([
+          { system: 'http://snomed.info/sct', code: '789012', display: 'Test Medication' }
+        ]);
 
       const result = await resolveValueSets(
         variables,
@@ -263,17 +274,19 @@ describe('resolveValueSets - Phase 5', () => {
       );
 
       expect(result.variables.xFhirQueryVariables['allergies'].result).toEqual(allergyValueSet);
-      expect(result.variables.xFhirQueryVariables['medications'].result).toEqual(medicationValueSet);
+      expect(result.variables.xFhirQueryVariables['medications'].result).toEqual(
+        medicationValueSet
+      );
       expect(Object.keys(result.cachedValueSetCodings)).toHaveLength(2);
     });
 
     it('should skip value sets that failed to resolve', async () => {
       const variables: Variables = {
         fhirPathVariables: {
-          'QuestionnaireLevel': []
+          QuestionnaireLevel: []
         },
         xFhirQueryVariables: {
-          'allergies': {
+          allergies: {
             valueExpression: {
               name: 'allergies',
               language: 'application/x-fhir-query',
@@ -318,10 +331,10 @@ describe('resolveValueSets - Phase 5', () => {
     it('should handle missing variable name in mapping', async () => {
       const variables: Variables = {
         fhirPathVariables: {
-          'QuestionnaireLevel': []
+          QuestionnaireLevel: []
         },
         xFhirQueryVariables: {
-          'allergies': {
+          allergies: {
             valueExpression: {
               name: 'allergies',
               language: 'application/x-fhir-query',
@@ -377,7 +390,7 @@ describe('resolveValueSets - Phase 5', () => {
     it('should handle missing variable in xFhirQueryVariables', async () => {
       const variables: Variables = {
         fhirPathVariables: {
-          'QuestionnaireLevel': []
+          QuestionnaireLevel: []
         },
         xFhirQueryVariables: {}
       };
@@ -420,15 +433,13 @@ describe('resolveValueSets - Phase 5', () => {
     it('should preserve existing cached codings', async () => {
       const variables: Variables = {
         fhirPathVariables: {
-          'QuestionnaireLevel': []
+          QuestionnaireLevel: []
         },
         xFhirQueryVariables: {}
       };
       const valueSetPromises: Record<string, ValueSetPromise> = {};
       const cachedValueSetCodings: Record<string, Coding[]> = {
-        'existing-vs': [
-          { system: 'http://example.com', code: 'existing', display: 'Existing' }
-        ]
+        'existing-vs': [{ system: 'http://example.com', code: 'existing', display: 'Existing' }]
       };
 
       mockCreateValueSetToXFhirQueryVariableNameMap.mockReturnValue({});
@@ -442,19 +453,17 @@ describe('resolveValueSets - Phase 5', () => {
       );
 
       expect(result.cachedValueSetCodings).toEqual({
-        'existing-vs': [
-          { system: 'http://example.com', code: 'existing', display: 'Existing' }
-        ]
+        'existing-vs': [{ system: 'http://example.com', code: 'existing', display: 'Existing' }]
       });
     });
 
     it('should handle resolved promises with undefined valueSet', async () => {
       const variables: Variables = {
         fhirPathVariables: {
-          'QuestionnaireLevel': []
+          QuestionnaireLevel: []
         },
         xFhirQueryVariables: {
-          'allergies': {
+          allergies: {
             valueExpression: {
               name: 'allergies',
               language: 'application/x-fhir-query',

@@ -20,21 +20,25 @@ import { isLaunchContext } from '../utils/populateContexts';
 import type { Extension } from 'fhir/r4';
 
 describe('populateContexts utils', () => {
-  const LAUNCH_CONTEXT_URL = 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext';
+  const LAUNCH_CONTEXT_URL =
+    'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext';
 
-  const createValidLaunchContextExtension = (nameType: 'valueId' | 'valueCoding', nameValue: string, typeValue: string): Extension => ({
+  const createValidLaunchContextExtension = (
+    nameType: 'valueId' | 'valueCoding',
+    nameValue: string,
+    typeValue: string
+  ): Extension => ({
     url: LAUNCH_CONTEXT_URL,
     extension: [
       {
         url: 'name',
-        ...(nameType === 'valueId' 
+        ...(nameType === 'valueId'
           ? { valueId: nameValue }
-          : { 
+          : {
               valueCoding: {
                 code: nameValue
               }
-            }
-        )
+            })
       },
       {
         url: 'type',
@@ -46,7 +50,11 @@ describe('populateContexts utils', () => {
   describe('isLaunchContext', () => {
     describe('valid launch contexts', () => {
       test('should return true for valid launch context with valueId name and Patient type', () => {
-        const extension = createValidLaunchContextExtension('valueId', 'patient-context', 'Patient');
+        const extension = createValidLaunchContextExtension(
+          'valueId',
+          'patient-context',
+          'Patient'
+        );
 
         const result = isLaunchContext(extension);
 
@@ -62,7 +70,11 @@ describe('populateContexts utils', () => {
       });
 
       test('should return true for valueCoding encounter name', () => {
-        const extension = createValidLaunchContextExtension('valueCoding', 'encounter', 'Encounter');
+        const extension = createValidLaunchContextExtension(
+          'valueCoding',
+          'encounter',
+          'Encounter'
+        );
 
         const result = isLaunchContext(extension);
 
@@ -94,7 +106,11 @@ describe('populateContexts utils', () => {
       });
 
       test('should return true for valueCoding sourceQueries name', () => {
-        const extension = createValidLaunchContextExtension('valueCoding', 'sourceQueries', 'Patient');
+        const extension = createValidLaunchContextExtension(
+          'valueCoding',
+          'sourceQueries',
+          'Patient'
+        );
 
         const result = isLaunchContext(extension);
 
@@ -110,7 +126,11 @@ describe('populateContexts utils', () => {
       });
 
       test('should return true for Encounter type', () => {
-        const extension = createValidLaunchContextExtension('valueCoding', 'encounter', 'Encounter');
+        const extension = createValidLaunchContextExtension(
+          'valueCoding',
+          'encounter',
+          'Encounter'
+        );
 
         const result = isLaunchContext(extension);
 
@@ -538,4 +558,3 @@ describe('populateContexts utils', () => {
     });
   });
 });
-

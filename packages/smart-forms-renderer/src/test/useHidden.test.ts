@@ -73,7 +73,7 @@ describe('useHidden', () => {
   const getMocks = () => {
     const { useQuestionnaireStore } = require('../stores');
     const { useRendererStylingStore } = require('../stores/rendererStylingStore');
-    
+
     return {
       enableWhenIsActivated: useQuestionnaireStore.use.enableWhenIsActivated,
       enableWhenItems: useQuestionnaireStore.use.enableWhenItems,
@@ -84,7 +84,7 @@ describe('useHidden', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Set default mock returns
     const mocks = getMocks();
     mocks.enableWhenIsActivated.mockReturnValue({});
@@ -118,7 +118,7 @@ describe('useHidden', () => {
 
     it('should access store functions correctly', () => {
       const mocks = getMocks();
-      
+
       renderHook(() => useHidden(basicQItem));
 
       expect(mocks.enableWhenIsActivated).toHaveBeenCalled();
@@ -130,10 +130,10 @@ describe('useHidden', () => {
 
   describe('enableWhen hidden detection', () => {
     it('should call isHiddenByEnableWhen with correct parameters', () => {
-      const mockActivated = { 'item1': true };
-      const mockItems = { 'item1': [] };
-      const mockExpressions = { 'item1': [] };
-      
+      const mockActivated = { item1: true };
+      const mockItems = { item1: [] };
+      const mockExpressions = { item1: [] };
+
       const mocks = getMocks();
       mocks.enableWhenIsActivated.mockReturnValue(mockActivated);
       mocks.enableWhenItems.mockReturnValue(mockItems);
@@ -313,16 +313,16 @@ describe('useHidden', () => {
   describe('complex scenarios', () => {
     it('should handle complex enableWhen data structures', () => {
       const complexActivated = {
-        'item1': true,
-        'item2': false,
+        item1: true,
+        item2: false,
         'nested.item': true
       };
       const complexItems = {
-        'item1': [{ answer: { valueString: 'yes' } }],
-        'item2': []
+        item1: [{ answer: { valueString: 'yes' } }],
+        item2: []
       };
       const complexExpressions = {
-        'item1': [{ language: 'text/fhirpath', expression: '%age > 18' }]
+        item1: [{ language: 'text/fhirpath', expression: '%age > 18' }]
       };
 
       getMocks().enableWhenIsActivated.mockReturnValue(complexActivated);
@@ -502,10 +502,9 @@ describe('useHidden', () => {
 
   describe('performance considerations', () => {
     it('should handle frequent re-renders efficiently', () => {
-      const { rerender } = renderHook(
-        ({ qItem, parentIndex }) => useHidden(qItem, parentIndex),
-        { initialProps: { qItem: basicQItem, parentIndex: 0 } }
-      );
+      const { rerender } = renderHook(({ qItem, parentIndex }) => useHidden(qItem, parentIndex), {
+        initialProps: { qItem: basicQItem, parentIndex: 0 }
+      });
 
       // Multiple re-renders with same props
       for (let i = 0; i < 10; i++) {
@@ -517,10 +516,9 @@ describe('useHidden', () => {
     });
 
     it('should handle different qItems efficiently', () => {
-      const { rerender } = renderHook(
-        ({ qItem }) => useHidden(qItem),
-        { initialProps: { qItem: basicQItem } }
-      );
+      const { rerender } = renderHook(({ qItem }) => useHidden(qItem), {
+        initialProps: { qItem: basicQItem }
+      });
 
       // Switch between different qItems
       rerender({ qItem: groupQItem });

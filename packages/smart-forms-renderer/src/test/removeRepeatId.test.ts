@@ -189,15 +189,18 @@ describe('removeRepeatId', () => {
         }
       ];
 
-      const result = removeInternalRepeatIdsRecursive(qItem, qrItems) as QuestionnaireResponseItem[];
+      const result = removeInternalRepeatIdsRecursive(
+        qItem,
+        qrItems
+      ) as QuestionnaireResponseItem[];
 
       expect(Array.isArray(result)).toBe(true);
       expect(result).toHaveLength(2);
-      
+
       expect(result[0].linkId).toBe('repeat-group');
       expect(result[0].item![0].answer![0]).not.toHaveProperty('id');
       expect(result[0].item![0].answer![0].valueString).toBe('first instance');
-      
+
       expect(result[1].linkId).toBe('repeat-group');
       expect(result[1].item![0].answer![0]).not.toHaveProperty('id');
       expect(result[1].item![0].answer![0].valueString).toBe('second instance');
@@ -249,7 +252,10 @@ describe('removeRepeatId', () => {
         }
       ];
 
-      const result = removeInternalRepeatIdsRecursive(qItem, qrItems) as QuestionnaireResponseItem[];
+      const result = removeInternalRepeatIdsRecursive(
+        qItem,
+        qrItems
+      ) as QuestionnaireResponseItem[];
 
       expect(Array.isArray(result)).toBe(true);
       expect(result).toHaveLength(1);

@@ -20,11 +20,13 @@
 
 import { renderHook, act } from '@testing-library/react';
 import type { QuestionnaireItem, Coding } from 'fhir/r4';
-import useCodingCalculatedExpression, { objectIsCoding } from '../hooks/useCodingCalculatedExpression';
+import useCodingCalculatedExpression, {
+  objectIsCoding
+} from '../hooks/useCodingCalculatedExpression';
 
 // Mock stores
 const mockCalculatedExpressions: Record<string, any[]> = {};
-let mockCalculatedExpressionsFunction = jest.fn(() => mockCalculatedExpressions);
+const mockCalculatedExpressionsFunction = jest.fn(() => mockCalculatedExpressions);
 
 jest.mock('../stores', () => ({
   useQuestionnaireStore: {
@@ -54,10 +56,10 @@ describe('useCodingCalculatedExpression', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
-    
+
     // Clear mock objects
-    Object.keys(mockCalculatedExpressions).forEach(key => delete mockCalculatedExpressions[key]);
-    
+    Object.keys(mockCalculatedExpressions).forEach((key) => delete mockCalculatedExpressions[key]);
+
     // Reset mock function
     mockCalculatedExpressionsFunction.mockClear();
     mockCalculatedExpressionsFunction.mockReturnValue(mockCalculatedExpressions);
@@ -446,10 +448,9 @@ describe('useCodingCalculatedExpression', () => {
         }
       ];
 
-      const { result, rerender } = renderHook(
-        ({ props }) => useCodingCalculatedExpression(props),
-        { initialProps: { props: defaultProps } }
-      );
+      const { result, rerender } = renderHook(({ props }) => useCodingCalculatedExpression(props), {
+        initialProps: { props: defaultProps }
+      });
 
       const firstResult = result.current;
 
@@ -469,10 +470,9 @@ describe('useCodingCalculatedExpression', () => {
         }
       ];
 
-      const { result, rerender } = renderHook(
-        ({ props }) => useCodingCalculatedExpression(props),
-        { initialProps: { props: defaultProps } }
-      );
+      const { result, rerender } = renderHook(({ props }) => useCodingCalculatedExpression(props), {
+        initialProps: { props: defaultProps }
+      });
 
       expect(mockOnChangeByCalcExpressionString).toHaveBeenCalledWith('first-value');
 
@@ -486,7 +486,7 @@ describe('useCodingCalculatedExpression', () => {
           }
         ]
       };
-      
+
       mockCalculatedExpressionsFunction.mockReturnValueOnce(newCalculatedExpressions);
 
       rerender({ props: defaultProps });

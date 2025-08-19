@@ -132,8 +132,14 @@ describe('mapItem', () => {
 
     it('should handle repeat groups correctly', () => {
       const qrItems: QuestionnaireResponseItem[] = [
-        { linkId: 'item2', item: [{ linkId: 'child1', answer: [{ valueString: 'first instance' }] }] },
-        { linkId: 'item2', item: [{ linkId: 'child1', answer: [{ valueString: 'second instance' }] }] }
+        {
+          linkId: 'item2',
+          item: [{ linkId: 'child1', answer: [{ valueString: 'first instance' }] }]
+        },
+        {
+          linkId: 'item2',
+          item: [{ linkId: 'child1', answer: [{ valueString: 'second instance' }] }]
+        }
       ];
 
       mockIsRepeatItemAndNotCheckbox.mockImplementation((qItem) => {
@@ -151,7 +157,10 @@ describe('mapItem', () => {
 
     it('should convert single qrItem to array when it becomes a repeat group', () => {
       const qrItems: QuestionnaireResponseItem[] = [
-        { linkId: 'item2', item: [{ linkId: 'child1', answer: [{ valueString: 'first instance' }] }] }
+        {
+          linkId: 'item2',
+          item: [{ linkId: 'child1', answer: [{ valueString: 'first instance' }] }]
+        }
       ];
 
       // Mock to return true for item2 (indicating it's a repeat group)

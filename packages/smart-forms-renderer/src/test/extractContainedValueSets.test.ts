@@ -16,7 +16,10 @@
  */
 
 import type { Questionnaire, ValueSet } from 'fhir/r4';
-import { extractContainedValueSets, getValueSetUrlFromContained } from '../utils/questionnaireStoreUtils/extractContainedValueSets';
+import {
+  extractContainedValueSets,
+  getValueSetUrlFromContained
+} from '../utils/questionnaireStoreUtils/extractContainedValueSets';
 
 // Mock the valueSet utility functions
 jest.mock('../utils/valueSet', () => ({
@@ -154,7 +157,7 @@ describe('extractContainedValueSets - Phase 5', () => {
       const result = extractContainedValueSets(questionnaire, 'http://terminology.hl7.org/fhir');
 
       expect(result.processedValueSets).toEqual({
-        'vs1': {
+        vs1: {
           initialValueSetUrl: 'http://example.com/ValueSet/colors',
           updatableValueSetUrl: 'http://example.com/ValueSet/colors',
           bindingParameters: [],
@@ -163,7 +166,7 @@ describe('extractContainedValueSets - Phase 5', () => {
         }
       });
       expect(result.cachedValueSetCodings).toEqual({
-        'vs1': mockCodings
+        vs1: mockCodings
       });
       expect(result.valueSetPromises).toEqual({});
       expect(mockGetValueSetCodings).toHaveBeenCalledWith(questionnaire.contained![0]);
@@ -191,9 +194,7 @@ describe('extractContainedValueSets - Phase 5', () => {
         ]
       };
 
-      const mockCodings = [
-        { system: 'http://example.com/codes', code: 'test', display: 'Test' }
-      ];
+      const mockCodings = [{ system: 'http://example.com/codes', code: 'test', display: 'Test' }];
       mockGetValueSetCodings.mockReturnValue(mockCodings);
 
       const result = extractContainedValueSets(questionnaire, 'http://terminology.hl7.org/fhir');
@@ -294,9 +295,7 @@ describe('extractContainedValueSets - Phase 5', () => {
             url: 'http://example.com/ValueSet/expanded',
             status: 'active',
             expansion: {
-              contains: [
-                { system: 'http://example.com', code: 'test1', display: 'Test 1' }
-              ]
+              contains: [{ system: 'http://example.com', code: 'test1', display: 'Test 1' }]
             }
           } as ValueSet,
           {
@@ -305,9 +304,7 @@ describe('extractContainedValueSets - Phase 5', () => {
             url: 'http://example.com/ValueSet/unexpanded',
             status: 'active',
             compose: {
-              include: [
-                { valueSet: ['http://terminology.hl7.org/ValueSet/test'] }
-              ]
+              include: [{ valueSet: ['http://terminology.hl7.org/ValueSet/test'] }]
             }
           } as ValueSet,
           {
@@ -319,9 +316,7 @@ describe('extractContainedValueSets - Phase 5', () => {
         ]
       };
 
-      const mockCodings = [
-        { system: 'http://example.com', code: 'test1', display: 'Test 1' }
-      ];
+      const mockCodings = [{ system: 'http://example.com', code: 'test1', display: 'Test 1' }];
       const mockPromise = Promise.resolve({
         resourceType: 'ValueSet',
         status: 'active'
@@ -373,7 +368,10 @@ describe('extractContainedValueSets - Phase 5', () => {
                   system: 'http://example.com/system1'
                 },
                 {
-                  valueSet: ['http://terminology.hl7.org/ValueSet/test1', 'http://terminology.hl7.org/ValueSet/test2']
+                  valueSet: [
+                    'http://terminology.hl7.org/ValueSet/test1',
+                    'http://terminology.hl7.org/ValueSet/test2'
+                  ]
                 }
               ]
             }
@@ -409,7 +407,10 @@ describe('extractContainedValueSets - Phase 5', () => {
         compose: {
           include: [
             {
-              valueSet: ['http://terminology.hl7.org/ValueSet/first', 'http://terminology.hl7.org/ValueSet/second']
+              valueSet: [
+                'http://terminology.hl7.org/ValueSet/first',
+                'http://terminology.hl7.org/ValueSet/second'
+              ]
             }
           ]
         }

@@ -67,7 +67,7 @@ describe('extractLaunchContext - Phase 5', () => {
       const result = extractLaunchContexts(questionnaire);
 
       expect(result).toEqual({
-        'patient': {
+        patient: {
           url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext',
           extension: [
             {
@@ -110,7 +110,7 @@ describe('extractLaunchContext - Phase 5', () => {
       const result = extractLaunchContexts(questionnaire);
 
       expect(result).toEqual({
-        'encounter': {
+        encounter: {
           url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext',
           extension: [
             {
@@ -203,7 +203,7 @@ describe('extractLaunchContext - Phase 5', () => {
       const result = extractLaunchContexts(questionnaire);
 
       expect(result).toEqual({
-        'patient': expect.objectContaining({
+        patient: expect.objectContaining({
           url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext'
         })
       });

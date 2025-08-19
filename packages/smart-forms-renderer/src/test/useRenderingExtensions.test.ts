@@ -64,7 +64,7 @@ describe('useRenderingExtensions', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Set default mock returns
     mockGetTextDisplayUnit.mockReturnValue('kg');
     mockGetTextDisplayPrompt.mockReturnValue('Enter value');
@@ -215,10 +215,9 @@ describe('useRenderingExtensions', () => {
 
   describe('memoization behavior', () => {
     it('should return same result object when qItem does not change', () => {
-      const { result, rerender } = renderHook(
-        ({ qItem }) => useRenderingExtensions(qItem),
-        { initialProps: { qItem: basicQItem } }
-      );
+      const { result, rerender } = renderHook(({ qItem }) => useRenderingExtensions(qItem), {
+        initialProps: { qItem: basicQItem }
+      });
 
       const firstResult = result.current;
 
@@ -229,10 +228,9 @@ describe('useRenderingExtensions', () => {
     });
 
     it('should recompute when qItem changes', () => {
-      const { result, rerender } = renderHook(
-        ({ qItem }) => useRenderingExtensions(qItem),
-        { initialProps: { qItem: basicQItem } }
-      );
+      const { result, rerender } = renderHook(({ qItem }) => useRenderingExtensions(qItem), {
+        initialProps: { qItem: basicQItem }
+      });
 
       const firstResult = result.current;
 
@@ -245,10 +243,9 @@ describe('useRenderingExtensions', () => {
     });
 
     it('should call extension functions only once for same qItem', () => {
-      const { rerender } = renderHook(
-        ({ qItem }) => useRenderingExtensions(qItem),
-        { initialProps: { qItem: basicQItem } }
-      );
+      const { rerender } = renderHook(({ qItem }) => useRenderingExtensions(qItem), {
+        initialProps: { qItem: basicQItem }
+      });
 
       expect(mockGetTextDisplayUnit).toHaveBeenCalledTimes(1);
 
@@ -260,10 +257,9 @@ describe('useRenderingExtensions', () => {
     });
 
     it('should call extension functions again when qItem changes', () => {
-      const { rerender } = renderHook(
-        ({ qItem }) => useRenderingExtensions(qItem),
-        { initialProps: { qItem: basicQItem } }
-      );
+      const { rerender } = renderHook(({ qItem }) => useRenderingExtensions(qItem), {
+        initialProps: { qItem: basicQItem }
+      });
 
       expect(mockGetTextDisplayUnit).toHaveBeenCalledTimes(1);
 

@@ -29,10 +29,10 @@ import {
   getInputInvalidType,
   createValidationOperationOutcome
 } from '../utils/validate';
-import type { 
-  Questionnaire, 
-  QuestionnaireItem, 
-  QuestionnaireResponse, 
+import type {
+  Questionnaire,
+  QuestionnaireItem,
+  QuestionnaireResponse,
   QuestionnaireResponseItem,
   OperationOutcome
 } from 'fhir/r4';
@@ -70,12 +70,12 @@ jest.mock('../utils/extensions', () => ({
 
 import { isItemHidden } from '../utils/qItem';
 import { questionnaireStore, rendererStylingStore } from '../stores';
-import { 
-  getShortText, 
-  getDecimalPrecision, 
-  getMinValue, 
-  getMaxValue, 
-  getMinQuantityValue, 
+import {
+  getShortText,
+  getDecimalPrecision,
+  getMinValue,
+  getMaxValue,
+  getMinQuantityValue,
   getMaxQuantityValue,
   getRegexString,
   getRegexValidation
@@ -86,11 +86,17 @@ const mockIsItemHidden = isItemHidden as jest.MockedFunction<typeof isItemHidden
 const mockQuestionnaireStore = questionnaireStore as jest.Mocked<typeof questionnaireStore>;
 const mockRendererStylingStore = rendererStylingStore as jest.Mocked<typeof rendererStylingStore>;
 const mockGetShortText = getShortText as jest.MockedFunction<typeof getShortText>;
-const mockGetDecimalPrecision = getDecimalPrecision as jest.MockedFunction<typeof getDecimalPrecision>;
+const mockGetDecimalPrecision = getDecimalPrecision as jest.MockedFunction<
+  typeof getDecimalPrecision
+>;
 const mockGetMinValue = getMinValue as jest.MockedFunction<typeof getMinValue>;
 const mockGetMaxValue = getMaxValue as jest.MockedFunction<typeof getMaxValue>;
-const mockGetMinQuantityValue = getMinQuantityValue as jest.MockedFunction<typeof getMinQuantityValue>;
-const mockGetMaxQuantityValue = getMaxQuantityValue as jest.MockedFunction<typeof getMaxQuantityValue>;
+const mockGetMinQuantityValue = getMinQuantityValue as jest.MockedFunction<
+  typeof getMinQuantityValue
+>;
+const mockGetMaxQuantityValue = getMaxQuantityValue as jest.MockedFunction<
+  typeof getMaxQuantityValue
+>;
 const mockGetRegexString = getRegexString as jest.MockedFunction<typeof getRegexString>;
 const mockGetRegexValidation = getRegexValidation as jest.MockedFunction<typeof getRegexValidation>;
 const mockGetQrItemsIndex = getQrItemsIndex as jest.MockedFunction<typeof getQrItemsIndex>;
@@ -99,7 +105,7 @@ const mockMapQItemsIndex = mapQItemsIndex as jest.MockedFunction<typeof mapQItem
 describe('validate', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Default mock implementations
     mockIsItemHidden.mockReturnValue(false);
     mockQuestionnaireStore.getState.mockReturnValue({
@@ -124,7 +130,10 @@ describe('validate', () => {
         columnGapPixels: 32,
         rowGapPixels: 4
       },
-      tabListWidthOrResponsive: { tabListBreakpoints: { xs: 12 }, tabContentBreakpoints: { xs: 12 } },
+      tabListWidthOrResponsive: {
+        tabListBreakpoints: { xs: 12 },
+        tabContentBreakpoints: { xs: 12 }
+      },
       showTabbedFormAt: { xs: true },
       textFieldWidth: 300,
       inputsFlexGrow: false,
@@ -365,13 +374,13 @@ describe('validate', () => {
       const validResult = getInputInvalidType({
         qItem: decimalQItem,
         input: '10.5',
-        minValue: 5.5  // Use number type
+        minValue: 5.5 // Use number type
       });
 
       const invalidResult = getInputInvalidType({
         qItem: decimalQItem,
         input: '3.2',
-        minValue: 5.5  // Use number type
+        minValue: 5.5 // Use number type
       });
 
       expect(validResult).toBeNull();
@@ -388,13 +397,13 @@ describe('validate', () => {
       const validResult = getInputInvalidType({
         qItem: decimalQItem,
         input: '5.5',
-        maxValue: 10.5  // Use number type
+        maxValue: 10.5 // Use number type
       });
 
       const invalidResult = getInputInvalidType({
         qItem: decimalQItem,
         input: '15.7',
-        maxValue: 10.5  // Use number type
+        maxValue: 10.5 // Use number type
       });
 
       expect(validResult).toBeNull();
@@ -699,7 +708,9 @@ describe('validate', () => {
 
       expect(result).toHaveProperty('test-item');
       expect(result['test-item'].resourceType).toBe('OperationOutcome');
-      expect(result['test-item'].issue[0].details?.coding?.[0]?.code).toBe(ValidationResult.invariant);
+      expect(result['test-item'].issue[0].details?.coding?.[0]?.code).toBe(
+        ValidationResult.invariant
+      );
     });
 
     it('should filter out hidden items from validation results', () => {
@@ -924,7 +935,9 @@ describe('validate', () => {
       });
 
       expect(result).toHaveProperty('required-item');
-      expect(result['required-item'].issue[0].details?.coding?.[0]?.code).toBe(ValidationResult.required);
+      expect(result['required-item'].issue[0].details?.coding?.[0]?.code).toBe(
+        ValidationResult.required
+      );
     });
 
     it('should validate complex questionnaire with group items', () => {
@@ -1051,12 +1064,14 @@ describe('validate', () => {
 
       // Mock the helper functions for repeat group processing
       mockGetQrItemsIndex.mockReturnValue([
-        { // First repeat instance
-          linkId: 'repeat-item', 
+        {
+          // First repeat instance
+          linkId: 'repeat-item',
           text: 'Repeat Item',
           answer: [{ valueString: 'Valid answer' }]
         },
-        { // Second repeat instance
+        {
+          // Second repeat instance
           linkId: 'repeat-item',
           text: 'Repeat Item'
         }

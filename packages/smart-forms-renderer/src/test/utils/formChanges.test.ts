@@ -70,13 +70,14 @@ describe('formChanges', () => {
     it('should process single item change', () => {
       const formChanges = {
         item: [
-          ['+', {
-            linkId: 'question-1',
-            item: undefined,
-            answer: [
-              ['+', createMockAnswer('test value')]
-            ]
-          }]
+          [
+            '+',
+            {
+              linkId: 'question-1',
+              item: undefined,
+              answer: [['+', createMockAnswer('test value')]]
+            }
+          ]
         ]
       };
       const itemMap = createMockItemMap();
@@ -96,20 +97,22 @@ describe('formChanges', () => {
     it('should process multiple item changes', () => {
       const formChanges = {
         item: [
-          ['+', {
-            linkId: 'question-1',
-            item: undefined,
-            answer: [
-              ['+', createMockAnswer('new value')]
-            ]
-          }],
-          ['-', {
-            linkId: 'question-2',
-            item: undefined,
-            answer: [
-              ['-', createMockAnswer(42)]
-            ]
-          }]
+          [
+            '+',
+            {
+              linkId: 'question-1',
+              item: undefined,
+              answer: [['+', createMockAnswer('new value')]]
+            }
+          ],
+          [
+            '-',
+            {
+              linkId: 'question-2',
+              item: undefined,
+              answer: [['-', createMockAnswer(42)]]
+            }
+          ]
         ]
       };
       const itemMap = createMockItemMap();
@@ -135,19 +138,23 @@ describe('formChanges', () => {
     it('should handle nested item changes', () => {
       const formChanges = {
         item: [
-          [' ', {
-            linkId: 'group-1',
-            item: [
-              ['~', {
-                linkId: 'question-1',
-                item: undefined,
-                answer: [
-                  ['~', createMockAnswer('updated value')]
+          [
+            ' ',
+            {
+              linkId: 'group-1',
+              item: [
+                [
+                  '~',
+                  {
+                    linkId: 'question-1',
+                    item: undefined,
+                    answer: [['~', createMockAnswer('updated value')]]
+                  }
                 ]
-              }]
-            ],
-            answer: undefined
-          }]
+              ],
+              answer: undefined
+            }
+          ]
         ]
       };
       const itemMap = createMockItemMap();
@@ -168,27 +175,32 @@ describe('formChanges', () => {
     it('should handle complex nested structure', () => {
       const formChanges = {
         item: [
-          ['+', {
-            linkId: 'group-1',
-            item: [
-              ['+', {
-                linkId: 'question-1',
-                item: [
-                  ['+', {
-                    linkId: 'question-2',
-                    item: undefined,
-                    answer: [
-                      ['+', createMockAnswer(123)]
-                    ]
-                  }]
-                ],
-                answer: [
-                  ['+', createMockAnswer('parent value')]
+          [
+            '+',
+            {
+              linkId: 'group-1',
+              item: [
+                [
+                  '+',
+                  {
+                    linkId: 'question-1',
+                    item: [
+                      [
+                        '+',
+                        {
+                          linkId: 'question-2',
+                          item: undefined,
+                          answer: [['+', createMockAnswer(123)]]
+                        }
+                      ]
+                    ],
+                    answer: [['+', createMockAnswer('parent value')]]
+                  }
                 ]
-              }]
-            ],
-            answer: undefined
-          }]
+              ],
+              answer: undefined
+            }
+          ]
         ]
       };
       const itemMap = createMockItemMap();
@@ -237,11 +249,14 @@ describe('formChanges', () => {
     });
 
     it('should add linkId to changedItems even without answers', () => {
-      const diffArray: any = [' ', { 
-        linkId: 'question-1', 
-        item: undefined, 
-        answer: undefined 
-      }];
+      const diffArray: any = [
+        ' ',
+        {
+          linkId: 'question-1',
+          item: undefined,
+          answer: undefined
+        }
+      ];
       const itemMap = createMockItemMap();
       const changedItems = {};
 
@@ -253,22 +268,31 @@ describe('formChanges', () => {
     });
 
     it('should process child items recursively', () => {
-      const diffArray: any = [' ', {
-        linkId: 'group-1',
-        item: [
-          ['+', {
-            linkId: 'question-1',
-            item: undefined,
-            answer: undefined
-          }],
-          ['-', {
-            linkId: 'question-2',
-            item: undefined,
-            answer: undefined
-          }]
-        ],
-        answer: undefined
-      }];
+      const diffArray: any = [
+        ' ',
+        {
+          linkId: 'group-1',
+          item: [
+            [
+              '+',
+              {
+                linkId: 'question-1',
+                item: undefined,
+                answer: undefined
+              }
+            ],
+            [
+              '-',
+              {
+                linkId: 'question-2',
+                item: undefined,
+                answer: undefined
+              }
+            ]
+          ],
+          answer: undefined
+        }
+      ];
       const itemMap = createMockItemMap();
       const changedItems = {};
 
@@ -282,11 +306,14 @@ describe('formChanges', () => {
     });
 
     it('should handle empty child items array', () => {
-      const diffArray: any = [' ', {
-        linkId: 'group-1',
-        item: [],
-        answer: undefined
-      }];
+      const diffArray: any = [
+        ' ',
+        {
+          linkId: 'group-1',
+          item: [],
+          answer: undefined
+        }
+      ];
       const itemMap = createMockItemMap();
       const changedItems = {};
 
@@ -298,14 +325,17 @@ describe('formChanges', () => {
     });
 
     it('should process answer diff arrays', () => {
-      const diffArray: any = ['+', {
-        linkId: 'question-1',
-        item: undefined,
-        answer: [
-          ['+', createMockAnswer('test')],
-          ['-', createMockAnswer('old value')]
-        ]
-      }];
+      const diffArray: any = [
+        '+',
+        {
+          linkId: 'question-1',
+          item: undefined,
+          answer: [
+            ['+', createMockAnswer('test')],
+            ['-', createMockAnswer('old value')]
+          ]
+        }
+      ];
       const itemMap = createMockItemMap();
       const changedItems = {};
 
@@ -322,14 +352,14 @@ describe('formChanges', () => {
     });
 
     it('should handle regular answer arrays (not diff arrays)', () => {
-      const diffArray: any = ['+', {
-        linkId: 'question-1',
-        item: undefined,
-        answer: [
-          createMockAnswer('regular answer 1'),
-          createMockAnswer('regular answer 2')
-        ]
-      }];
+      const diffArray: any = [
+        '+',
+        {
+          linkId: 'question-1',
+          item: undefined,
+          answer: [createMockAnswer('regular answer 1'), createMockAnswer('regular answer 2')]
+        }
+      ];
       const itemMap = createMockItemMap();
       const changedItems = {};
 
@@ -342,14 +372,17 @@ describe('formChanges', () => {
     });
 
     it('should skip space operator answers', () => {
-      const diffArray: any = ['+', {
-        linkId: 'question-1',
-        item: undefined,
-        answer: [
-          [' ', createMockAnswer('unchanged')],
-          ['+', createMockAnswer('added')]
-        ]
-      }];
+      const diffArray: any = [
+        '+',
+        {
+          linkId: 'question-1',
+          item: undefined,
+          answer: [
+            [' ', createMockAnswer('unchanged')],
+            ['+', createMockAnswer('added')]
+          ]
+        }
+      ];
       const itemMap = createMockItemMap();
       const changedItems = {};
 
@@ -366,13 +399,14 @@ describe('formChanges', () => {
     });
 
     it('should handle missing qItem in itemMap', () => {
-      const diffArray: any = ['+', {
-        linkId: 'unknown-question',
-        item: undefined,
-        answer: [
-          ['+', createMockAnswer('test')]
-        ]
-      }];
+      const diffArray: any = [
+        '+',
+        {
+          linkId: 'unknown-question',
+          item: undefined,
+          answer: [['+', createMockAnswer('test')]]
+        }
+      ];
       const itemMap = createMockItemMap();
       const changedItems = {};
 
@@ -384,13 +418,16 @@ describe('formChanges', () => {
     });
 
     it('should handle invalid diff operators', () => {
-      const diffArray: any = ['+', {
-        linkId: 'question-1',
-        item: undefined,
-        answer: [
-          ['?', createMockAnswer('invalid operator')] // Invalid operator
-        ]
-      }];
+      const diffArray: any = [
+        '+',
+        {
+          linkId: 'question-1',
+          item: undefined,
+          answer: [
+            ['?', createMockAnswer('invalid operator')] // Invalid operator
+          ]
+        }
+      ];
       const itemMap = createMockItemMap();
       const changedItems = {};
 
@@ -402,15 +439,18 @@ describe('formChanges', () => {
     });
 
     it('should test all diff operators', () => {
-      const diffArray: any = ['+', {
-        linkId: 'question-1',
-        item: undefined,
-        answer: [
-          ['+', createMockAnswer('add')],
-          ['-', createMockAnswer('remove')],
-          ['~', createMockAnswer('update')]
-        ]
-      }];
+      const diffArray: any = [
+        '+',
+        {
+          linkId: 'question-1',
+          item: undefined,
+          answer: [
+            ['+', createMockAnswer('add')],
+            ['-', createMockAnswer('remove')],
+            ['~', createMockAnswer('update')]
+          ]
+        }
+      ];
       const itemMap = createMockItemMap();
       const changedItems = {};
 
@@ -429,11 +469,14 @@ describe('formChanges', () => {
 
     describe('edge cases', () => {
       it('should handle null/undefined answer arrays', () => {
-        const diffArray: any = ['+', {
-          linkId: 'question-1',
-          item: undefined,
-          answer: null
-        }];
+        const diffArray: any = [
+          '+',
+          {
+            linkId: 'question-1',
+            item: undefined,
+            answer: null
+          }
+        ];
         const itemMap = createMockItemMap();
         const changedItems = {};
 
@@ -445,15 +488,18 @@ describe('formChanges', () => {
       });
 
       it('should handle mixed valid and invalid answer diff items', () => {
-        const diffArray: any = ['+', {
-          linkId: 'question-1',
-          item: undefined,
-          answer: [
-            ['+', createMockAnswer('valid')],
-            'invalid-item', // Not an array
-            ['-', createMockAnswer('also valid')]
-          ]
-        }];
+        const diffArray: any = [
+          '+',
+          {
+            linkId: 'question-1',
+            item: undefined,
+            answer: [
+              ['+', createMockAnswer('valid')],
+              'invalid-item', // Not an array
+              ['-', createMockAnswer('also valid')]
+            ]
+          }
+        ];
         const itemMap = createMockItemMap();
         const changedItems = {};
 
@@ -466,14 +512,17 @@ describe('formChanges', () => {
       });
 
       it('should handle answer diff arrays with non-string operators', () => {
-        const diffArray: any = ['+', {
-          linkId: 'question-1',
-          item: undefined,
-          answer: [
-            [123, createMockAnswer('numeric operator')], // Invalid operator type
-            ['+', createMockAnswer('valid')]
-          ]
-        }];
+        const diffArray: any = [
+          '+',
+          {
+            linkId: 'question-1',
+            item: undefined,
+            answer: [
+              [123, createMockAnswer('numeric operator')], // Invalid operator type
+              ['+', createMockAnswer('valid')]
+            ]
+          }
+        ];
         const itemMap = createMockItemMap();
         const changedItems = {};
 
@@ -486,14 +535,17 @@ describe('formChanges', () => {
       });
 
       it('should handle answer diff arrays with non-object values', () => {
-        const diffArray: any = ['+', {
-          linkId: 'question-1',
-          item: undefined,
-          answer: [
-            ['+', 'not an object'], // Invalid value type
-            ['-', createMockAnswer('valid')]
-          ]
-        }];
+        const diffArray: any = [
+          '+',
+          {
+            linkId: 'question-1',
+            item: undefined,
+            answer: [
+              ['+', 'not an object'], // Invalid value type
+              ['-', createMockAnswer('valid')]
+            ]
+          }
+        ];
         const itemMap = createMockItemMap();
         const changedItems = {};
 
@@ -506,31 +558,41 @@ describe('formChanges', () => {
       });
 
       it('should handle deeply nested items with multiple levels', () => {
-        const diffArray: any = ['+', {
-          linkId: 'level-1',
-          item: [
-            ['+', {
-              linkId: 'level-2',
-              item: [
-                ['+', {
-                  linkId: 'level-3',
+        const diffArray: any = [
+          '+',
+          {
+            linkId: 'level-1',
+            item: [
+              [
+                '+',
+                {
+                  linkId: 'level-2',
                   item: [
-                    ['+', {
-                      linkId: 'question-1',
-                      item: undefined,
-                      answer: [
-                        ['+', createMockAnswer('deep value')]
-                      ]
-                    }]
+                    [
+                      '+',
+                      {
+                        linkId: 'level-3',
+                        item: [
+                          [
+                            '+',
+                            {
+                              linkId: 'question-1',
+                              item: undefined,
+                              answer: [['+', createMockAnswer('deep value')]]
+                            }
+                          ]
+                        ],
+                        answer: undefined
+                      }
+                    ]
                   ],
                   answer: undefined
-                }]
-              ],
-              answer: undefined
-            }]
-          ],
-          answer: undefined
-        }];
+                }
+              ]
+            ],
+            answer: undefined
+          }
+        ];
         const itemMap = {
           ...createMockItemMap(),
           'level-1': { linkId: 'level-1', type: 'group' as const, text: 'Level 1' },
@@ -563,11 +625,8 @@ describe('formChanges', () => {
         ['+', createMockAnswer('test')],
         ['-', createMockAnswer('test2')]
       ];
-      
-      const invalidDiffArray1 = [
-        'not an array',
-        ['+', createMockAnswer('test')]
-      ];
+
+      const invalidDiffArray1 = ['not an array', ['+', createMockAnswer('test')]];
 
       const invalidDiffArray2 = [
         [123, createMockAnswer('test')], // Non-string operator
@@ -582,41 +641,53 @@ describe('formChanges', () => {
       // Test through the main function to ensure coverage
       const validFormChanges = {
         item: [
-          ['+', {
-            linkId: 'question-1',
-            item: undefined,
-            answer: validDiffArray
-          }]
+          [
+            '+',
+            {
+              linkId: 'question-1',
+              item: undefined,
+              answer: validDiffArray
+            }
+          ]
         ]
       };
 
       const invalidFormChanges1 = {
         item: [
-          ['+', {
-            linkId: 'question-1',
-            item: undefined,
-            answer: invalidDiffArray1
-          }]
+          [
+            '+',
+            {
+              linkId: 'question-1',
+              item: undefined,
+              answer: invalidDiffArray1
+            }
+          ]
         ]
       };
 
       const invalidFormChanges2 = {
         item: [
-          ['+', {
-            linkId: 'question-1',
-            item: undefined,
-            answer: invalidDiffArray2
-          }]
+          [
+            '+',
+            {
+              linkId: 'question-1',
+              item: undefined,
+              answer: invalidDiffArray2
+            }
+          ]
         ]
       };
 
       const invalidFormChanges3 = {
         item: [
-          ['+', {
-            linkId: 'question-1',
-            item: undefined,
-            answer: invalidDiffArray3
-          }]
+          [
+            '+',
+            {
+              linkId: 'question-1',
+              item: undefined,
+              answer: invalidDiffArray3
+            }
+          ]
         ]
       };
 
@@ -640,27 +711,32 @@ describe('formChanges', () => {
     it('should test answerDiffOperationSwitcher coverage', () => {
       // This covers all operator cases in the switch statement
       const operators = ['+', '-', '~', ' ', 'invalid'] as any[];
-      
-      operators.forEach(operator => {
-        const diffArray: any = ['+', {
-          linkId: 'question-1',
-          item: undefined,
-          answer: [
-            [operator, createMockAnswer('test')]
-          ]
-        }];
+
+      operators.forEach((operator) => {
+        const diffArray: any = [
+          '+',
+          {
+            linkId: 'question-1',
+            item: undefined,
+            answer: [[operator, createMockAnswer('test')]]
+          }
+        ];
         const itemMap = createMockItemMap();
         const changedItems: Record<string, any> = {};
 
         readItemChangesRecursive(diffArray, itemMap, changedItems);
-        
+
         // Verify the result based on operator
         if (operator === '+') {
           expect(changedItems['question-1']).toEqual(expect.objectContaining({ operation: 'add' }));
         } else if (operator === '-') {
-          expect(changedItems['question-1']).toEqual(expect.objectContaining({ operation: 'remove' }));
+          expect(changedItems['question-1']).toEqual(
+            expect.objectContaining({ operation: 'remove' })
+          );
         } else if (operator === '~') {
-          expect(changedItems['question-1']).toEqual(expect.objectContaining({ operation: 'update' }));
+          expect(changedItems['question-1']).toEqual(
+            expect.objectContaining({ operation: 'update' })
+          );
         } else {
           // ' ' and 'invalid' should result in null
           expect(changedItems['question-1']).toBeNull();

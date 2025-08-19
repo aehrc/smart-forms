@@ -24,7 +24,7 @@ describe('checkbox', () => {
       const trueValue: AriaCheckedAttributes = 'true';
       const falseValue: AriaCheckedAttributes = 'false';
       const mixedValue: AriaCheckedAttributes = 'mixed';
-      
+
       expect(trueValue).toBe('true');
       expect(falseValue).toBe('false');
       expect(mixedValue).toBe('mixed');

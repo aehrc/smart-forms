@@ -108,7 +108,7 @@ describe('getHeadingTag', () => {
 
     it('should consistently clamp values above 6', () => {
       const largeValues = [7, 8, 9, 10, 50, 100];
-      largeValues.forEach(value => {
+      largeValues.forEach((value) => {
         expect(getHeadingTag(value)).toBe('h6');
       });
     });
@@ -117,7 +117,7 @@ describe('getHeadingTag', () => {
   describe('type safety and return values', () => {
     it('should return valid HTML heading tag strings', () => {
       const validHeadingTags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
-      
+
       // Test a range of inputs
       for (let i = 0; i <= 10; i++) {
         const result = getHeadingTag(i);
@@ -132,7 +132,14 @@ describe('getHeadingTag', () => {
     it('should have correct TypeScript return type', () => {
       const result = getHeadingTag(3);
       // This is more of a compile-time check, but we can verify the value
-      const validTypes: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6')[] = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+      const validTypes: ('h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6')[] = [
+        'h1',
+        'h2',
+        'h3',
+        'h4',
+        'h5',
+        'h6'
+      ];
       expect(validTypes).toContain(result);
     });
   });

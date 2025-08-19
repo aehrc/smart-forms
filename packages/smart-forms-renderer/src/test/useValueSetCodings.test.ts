@@ -19,7 +19,14 @@
  */
 
 import { renderHook, act } from '@testing-library/react';
-import type { Coding, QuestionnaireItem, ValueSet, Patient, Practitioner, Encounter } from 'fhir/r4';
+import type {
+  Coding,
+  QuestionnaireItem,
+  ValueSet,
+  Patient,
+  Practitioner,
+  Encounter
+} from 'fhir/r4';
 import useValueSetCodings from '../hooks/useValueSetCodings';
 import type { LaunchContext } from '../interfaces/populate.interface';
 import type { ProcessedValueSet } from '../interfaces/valueSet.interface';
@@ -61,7 +68,7 @@ let mockLaunchContexts: Record<string, LaunchContext> = {};
 let mockProcessedValueSets: Record<string, ProcessedValueSet> = {};
 let mockCachedValueSetCodings: Record<string, Coding[]> = {};
 let mockCalculatedExpressions: Record<string, any> = {};
-let mockAddCodingToCache = jest.fn();
+const mockAddCodingToCache = jest.fn();
 let mockXFhirQueryVariables: Record<string, any> = {};
 let mockItemPreferredTerminologyServers: Record<string, string> = {};
 let mockDefaultTerminologyServerUrl = 'http://terminology.hl7.org/fhir';
@@ -93,27 +100,45 @@ jest.mock('../stores', () => ({
 }));
 
 // Import mocked functions
-import { getResourceFromLaunchContext, getValueSetCodings, getValueSetPromise } from '../utils/valueSet';
+import {
+  getResourceFromLaunchContext,
+  getValueSetCodings,
+  getValueSetPromise
+} from '../utils/valueSet';
 import { getAnswerExpression } from '../utils/getExpressionsFromItem';
 import fhirpath from 'fhirpath';
 import { addDisplayToCodingArray } from '../utils/questionnaireStoreUtils/addDisplayToCodings';
-import useDynamicValueSetEffect, { getUpdatableValueSetUrl } from '../hooks/useDynamicValueSetEffect';
+import useDynamicValueSetEffect, {
+  getUpdatableValueSetUrl
+} from '../hooks/useDynamicValueSetEffect';
 import { getItemTerminologyServerToUse } from '../utils/preferredTerminologyServer';
 
-const mockGetResourceFromLaunchContext = getResourceFromLaunchContext as jest.MockedFunction<typeof getResourceFromLaunchContext>;
+const mockGetResourceFromLaunchContext = getResourceFromLaunchContext as jest.MockedFunction<
+  typeof getResourceFromLaunchContext
+>;
 const mockGetValueSetCodings = getValueSetCodings as jest.MockedFunction<typeof getValueSetCodings>;
 const mockGetValueSetPromise = getValueSetPromise as jest.MockedFunction<typeof getValueSetPromise>;
-const mockGetAnswerExpression = getAnswerExpression as jest.MockedFunction<typeof getAnswerExpression>;
+const mockGetAnswerExpression = getAnswerExpression as jest.MockedFunction<
+  typeof getAnswerExpression
+>;
 const mockFhirpath = fhirpath as jest.Mocked<typeof fhirpath>;
-const mockAddDisplayToCodingArray = addDisplayToCodingArray as jest.MockedFunction<typeof addDisplayToCodingArray>;
-const mockUseDynamicValueSetEffect = useDynamicValueSetEffect as jest.MockedFunction<typeof useDynamicValueSetEffect>;
-const mockGetUpdatableValueSetUrl = getUpdatableValueSetUrl as jest.MockedFunction<typeof getUpdatableValueSetUrl>;
-const mockGetItemTerminologyServerToUse = getItemTerminologyServerToUse as jest.MockedFunction<typeof getItemTerminologyServerToUse>;
+const mockAddDisplayToCodingArray = addDisplayToCodingArray as jest.MockedFunction<
+  typeof addDisplayToCodingArray
+>;
+const mockUseDynamicValueSetEffect = useDynamicValueSetEffect as jest.MockedFunction<
+  typeof useDynamicValueSetEffect
+>;
+const mockGetUpdatableValueSetUrl = getUpdatableValueSetUrl as jest.MockedFunction<
+  typeof getUpdatableValueSetUrl
+>;
+const mockGetItemTerminologyServerToUse = getItemTerminologyServerToUse as jest.MockedFunction<
+  typeof getItemTerminologyServerToUse
+>;
 
 describe('useValueSetCodings', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Reset mock state
     mockPatient = null;
     mockUser = null;
@@ -125,7 +150,7 @@ describe('useValueSetCodings', () => {
     mockXFhirQueryVariables = {};
     mockItemPreferredTerminologyServers = {};
     mockDefaultTerminologyServerUrl = 'http://terminology.hl7.org/fhir';
-    
+
     // Default mock implementations
     mockGetItemTerminologyServerToUse.mockReturnValue('http://terminology.hl7.org/fhir');
     mockUseDynamicValueSetEffect.mockImplementation(() => {});
@@ -138,7 +163,7 @@ describe('useValueSetCodings', () => {
       const mockCodings: Coding[] = [
         { system: 'http://snomed.info/sct', code: '123', display: 'Test Code' }
       ];
-      
+
       mockCachedValueSetCodings = {
         'contained-vs': mockCodings
       };
@@ -175,13 +200,13 @@ describe('useValueSetCodings', () => {
       const mockCodings: Coding[] = [
         { system: 'http://snomed.info/sct', code: '456', display: 'Updated Code' }
       ];
-      
+
       mockProcessedValueSets = {
         'http://hl7.org/fhir/ValueSet/original': {
           updatableValueSetUrl: 'http://hl7.org/fhir/ValueSet/updated'
         } as ProcessedValueSet
       };
-      
+
       mockCachedValueSetCodings = {
         'http://hl7.org/fhir/ValueSet/updated': mockCodings
       };
@@ -203,7 +228,7 @@ describe('useValueSetCodings', () => {
       const mockCodings: Coding[] = [
         { system: 'http://snomed.info/sct', code: '789', display: 'Cached Code' }
       ];
-      
+
       mockCachedValueSetCodings = {
         'http://hl7.org/fhir/ValueSet/cached': mockCodings
       };
@@ -227,9 +252,9 @@ describe('useValueSetCodings', () => {
       ];
 
       mockPatient = { resourceType: 'Patient', id: 'patient-1' } as Patient;
-      
+
       mockLaunchContexts = {
-        'patient': {
+        patient: {
           url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext',
           extension: [
             { url: 'test', valueString: 'test' },
@@ -254,7 +279,12 @@ describe('useValueSetCodings', () => {
       const { result } = renderHook(() => useValueSetCodings(qItem));
 
       expect(mockGetAnswerExpression).toHaveBeenCalledWith(qItem);
-      expect(mockGetResourceFromLaunchContext).toHaveBeenCalledWith('Patient', mockPatient, null, null);
+      expect(mockGetResourceFromLaunchContext).toHaveBeenCalledWith(
+        'Patient',
+        mockPatient,
+        null,
+        null
+      );
       expect(mockFhirpath.evaluate).toHaveBeenCalledWith(
         {},
         '%patient.code',
@@ -272,7 +302,7 @@ describe('useValueSetCodings', () => {
       ];
 
       mockXFhirQueryVariables = {
-        'observation': {
+        observation: {
           result: mockResource
         }
       };
@@ -307,9 +337,9 @@ describe('useValueSetCodings', () => {
       ];
 
       mockPatient = { resourceType: 'Patient', id: 'patient-1' } as Patient;
-      
+
       mockLaunchContexts = {
-        'patient': {
+        patient: {
           url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext',
           extension: [
             { url: 'test', valueString: 'test' },
@@ -339,9 +369,9 @@ describe('useValueSetCodings', () => {
 
     it('should handle FHIRPath evaluation errors gracefully', () => {
       mockPatient = { resourceType: 'Patient', id: 'patient-1' } as Patient;
-      
+
       mockLaunchContexts = {
-        'patient': {
+        patient: {
           url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext',
           extension: [
             { url: 'test', valueString: 'test' },
@@ -371,7 +401,7 @@ describe('useValueSetCodings', () => {
 
       expect(consoleSpy).toHaveBeenCalledWith('Invalid FHIRPath expression');
       expect(result.current.codings).toEqual([]);
-      
+
       consoleSpy.mockRestore();
     });
   });
@@ -393,7 +423,7 @@ describe('useValueSetCodings', () => {
         mockCachedValueSetCodings,
         expect.any(Function), // setCodings
         expect.any(Function), // setDynamicCodingsUpdated
-        expect.any(Function)  // setServerError
+        expect.any(Function) // setServerError
       );
     });
   });
@@ -411,7 +441,11 @@ describe('useValueSetCodings', () => {
       ];
 
       const mockCodingsWithDisplay: Coding[] = [
-        { system: 'http://snomed.info/sct', code: 'fallback-code', display: 'Fallback Code with Display' }
+        {
+          system: 'http://snomed.info/sct',
+          code: 'fallback-code',
+          display: 'Fallback Code with Display'
+        }
       ];
 
       mockGetValueSetPromise.mockResolvedValue(mockValueSet);
@@ -428,7 +462,7 @@ describe('useValueSetCodings', () => {
 
       // Wait for async effects
       await act(async () => {
-        await new Promise(resolve => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 0));
       });
 
       expect(mockGetValueSetPromise).toHaveBeenCalledWith(
@@ -460,7 +494,7 @@ describe('useValueSetCodings', () => {
 
       // Wait for async effects
       await act(async () => {
-        await new Promise(resolve => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 0));
       });
 
       expect(result.current.terminologyError.error).toEqual(promiseError);
@@ -493,7 +527,7 @@ describe('useValueSetCodings', () => {
 
       // Wait for async effects
       await act(async () => {
-        await new Promise(resolve => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 0));
       });
 
       expect(result.current.terminologyError.error).toEqual(displayError);
@@ -503,7 +537,7 @@ describe('useValueSetCodings', () => {
       const mockCodings: Coding[] = [
         { system: 'http://snomed.info/sct', code: 'existing-code', display: 'Existing Code' }
       ];
-      
+
       mockCachedValueSetCodings = {
         'http://hl7.org/fhir/ValueSet/test': mockCodings
       };

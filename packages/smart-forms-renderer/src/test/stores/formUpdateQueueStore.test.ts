@@ -67,10 +67,10 @@ describe('formUpdateQueueStore', () => {
       queue: [],
       isProcessing: false
     });
-    
+
     // Reset mocks
     jest.clearAllMocks();
-    
+
     // Setup default mock implementations
     mockUpdateExpressions.mockResolvedValue(undefined);
     mockUpdateResponse.mockImplementation(() => {});
@@ -79,7 +79,7 @@ describe('formUpdateQueueStore', () => {
   describe('initial state', () => {
     it('should have empty queue and not be processing', () => {
       const state = formUpdateQueueStore.getState();
-      
+
       expect(state.queue).toEqual([]);
       expect(state.isProcessing).toBe(false);
     });
@@ -88,9 +88,9 @@ describe('formUpdateQueueStore', () => {
   describe('enqueueFormUpdate', () => {
     it('should add task to queue', () => {
       const task = createMockTask('1');
-      
+
       formUpdateQueueStore.getState().enqueueFormUpdate(task);
-      
+
       const state = formUpdateQueueStore.getState();
       expect(state.queue).toHaveLength(1);
       expect(state.queue[0]).toBe(task);
@@ -99,10 +99,10 @@ describe('formUpdateQueueStore', () => {
     it('should add multiple tasks to queue in order', () => {
       const task1 = createMockTask('1');
       const task2 = createMockTask('2');
-      
+
       formUpdateQueueStore.getState().enqueueFormUpdate(task1);
       formUpdateQueueStore.getState().enqueueFormUpdate(task2);
-      
+
       const state = formUpdateQueueStore.getState();
       expect(state.queue).toHaveLength(2);
       expect(state.queue[0]).toBe(task1);
@@ -111,9 +111,9 @@ describe('formUpdateQueueStore', () => {
 
     it('should trigger processing when adding task', async () => {
       const task = createMockTask('1');
-      
+
       formUpdateQueueStore.getState().enqueueFormUpdate(task);
-      
+
       await waitFor(() => {
         expect(mockUpdateResponse).toHaveBeenCalledWith(task.questionnaireResponse, 'initial');
         expect(mockUpdateExpressions).toHaveBeenCalledWith(task.questionnaireResponse);
@@ -126,13 +126,13 @@ describe('formUpdateQueueStore', () => {
       const task1 = createMockTask('1');
       const task2 = createMockTask('2');
       const task3 = createMockTask('3');
-      
+
       // Add multiple tasks
       formUpdateQueueStore.setState({ queue: [task1, task2] });
-      
+
       // Replace with latest
       formUpdateQueueStore.getState().replaceLatestFormUpdate(task3);
-      
+
       const state = formUpdateQueueStore.getState();
       expect(state.queue).toHaveLength(1);
       expect(state.queue[0]).toBe(task3);
@@ -143,15 +143,15 @@ describe('formUpdateQueueStore', () => {
       const pendingTask1 = createMockTask('pending1');
       const pendingTask2 = createMockTask('pending2');
       const newTask = createMockTask('new');
-      
+
       // Set up processing state with current and pending tasks
-      formUpdateQueueStore.setState({ 
+      formUpdateQueueStore.setState({
         queue: [currentTask, pendingTask1, pendingTask2],
-        isProcessing: true 
+        isProcessing: true
       });
-      
+
       formUpdateQueueStore.getState().replaceLatestFormUpdate(newTask);
-      
+
       const state = formUpdateQueueStore.getState();
       expect(state.queue).toHaveLength(2);
       expect(state.queue[0]).toBe(currentTask); // Current task preserved
@@ -162,25 +162,25 @@ describe('formUpdateQueueStore', () => {
   describe('_startProcessing', () => {
     it('should not process when already processing', async () => {
       const task = createMockTask('1');
-      formUpdateQueueStore.setState({ 
+      formUpdateQueueStore.setState({
         queue: [task],
-        isProcessing: true 
+        isProcessing: true
       });
-      
+
       await formUpdateQueueStore.getState()._startProcessing();
-      
+
       expect(mockUpdateResponse).not.toHaveBeenCalled();
       expect(mockUpdateExpressions).not.toHaveBeenCalled();
     });
 
     it('should not process when queue is empty', async () => {
-      formUpdateQueueStore.setState({ 
+      formUpdateQueueStore.setState({
         queue: [],
-        isProcessing: false 
+        isProcessing: false
       });
-      
+
       await formUpdateQueueStore.getState()._startProcessing();
-      
+
       expect(mockUpdateResponse).not.toHaveBeenCalled();
       expect(mockUpdateExpressions).not.toHaveBeenCalled();
     });
@@ -188,13 +188,13 @@ describe('formUpdateQueueStore', () => {
     it('should process single task successfully', async () => {
       const task = createMockTask('1');
       formUpdateQueueStore.setState({ queue: [task] });
-      
+
       await formUpdateQueueStore.getState()._startProcessing();
-      
+
       // Should call update functions
       expect(mockUpdateResponse).toHaveBeenCalledWith(task.questionnaireResponse, 'initial');
       expect(mockUpdateExpressions).toHaveBeenCalledWith(task.questionnaireResponse);
-      
+
       // Should remove processed task and stop processing
       const state = formUpdateQueueStore.getState();
       expect(state.queue).toHaveLength(0);
@@ -205,17 +205,17 @@ describe('formUpdateQueueStore', () => {
       const task1 = createMockTask('1');
       const task2 = createMockTask('2');
       formUpdateQueueStore.setState({ queue: [task1, task2] });
-      
+
       await formUpdateQueueStore.getState()._startProcessing();
-      
+
       // Should process both tasks
       expect(mockUpdateResponse).toHaveBeenCalledTimes(2);
       expect(mockUpdateExpressions).toHaveBeenCalledTimes(2);
-      
+
       // Should process in order
       expect(mockUpdateResponse).toHaveBeenNthCalledWith(1, task1.questionnaireResponse, 'initial');
       expect(mockUpdateResponse).toHaveBeenNthCalledWith(2, task2.questionnaireResponse, 'initial');
-      
+
       // Should clear queue and stop processing
       const state = formUpdateQueueStore.getState();
       expect(state.queue).toHaveLength(0);
@@ -225,12 +225,12 @@ describe('formUpdateQueueStore', () => {
     it('should handle async errors gracefully', async () => {
       const task = createMockTask('1');
       formUpdateQueueStore.setState({ queue: [task] });
-      
+
       // Mock updateExpressions to throw error
       mockUpdateExpressions.mockRejectedValue(new Error('Test error'));
-      
+
       await formUpdateQueueStore.getState()._startProcessing();
-      
+
       // Should still remove task and stop processing despite error
       const state = formUpdateQueueStore.getState();
       expect(state.queue).toHaveLength(0);
@@ -241,11 +241,11 @@ describe('formUpdateQueueStore', () => {
   describe('useFormUpdateQueueStore selectors', () => {
     it('should provide access to store state', () => {
       const task = createMockTask('1');
-      formUpdateQueueStore.setState({ 
+      formUpdateQueueStore.setState({
         queue: [task],
-        isProcessing: true 
+        isProcessing: true
       });
-      
+
       expect(useFormUpdateQueueStore.use.queue()).toEqual([task]);
       expect(useFormUpdateQueueStore.use.isProcessing()).toBe(true);
     });
@@ -262,19 +262,19 @@ describe('formUpdateQueueStore', () => {
       const task1 = createMockTask('1');
       const task2 = createMockTask('2');
       const task3 = createMockTask('3');
-      
+
       // Enqueue rapidly
       formUpdateQueueStore.getState().enqueueFormUpdate(task1);
       formUpdateQueueStore.getState().enqueueFormUpdate(task2);
       formUpdateQueueStore.getState().enqueueFormUpdate(task3);
-      
+
       // Wait for processing to complete
       await waitFor(() => {
         const state = formUpdateQueueStore.getState();
         expect(state.queue).toHaveLength(0);
         expect(state.isProcessing).toBe(false);
       });
-      
+
       // All tasks should have been processed
       expect(mockUpdateResponse).toHaveBeenCalledTimes(3);
       expect(mockUpdateExpressions).toHaveBeenCalledTimes(3);
@@ -284,42 +284,45 @@ describe('formUpdateQueueStore', () => {
       const task1 = createMockTask('1');
       const task2 = createMockTask('2');
       const task3 = createMockTask('3');
-      
+
       // Make updateExpressions slow to simulate processing time
       let resolveUpdateExpressions: (value?: any) => void;
-      mockUpdateExpressions.mockImplementation(() => 
-        new Promise(resolve => { resolveUpdateExpressions = resolve; })
+      mockUpdateExpressions.mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolveUpdateExpressions = resolve;
+          })
       );
-      
+
       // Start processing first task
       formUpdateQueueStore.setState({ queue: [task1, task2] });
       const processingPromise = formUpdateQueueStore.getState()._startProcessing();
-      
+
       // Wait for processing to start
       await waitFor(() => {
         expect(formUpdateQueueStore.getState().isProcessing).toBe(true);
       });
-      
+
       // Replace while processing
       formUpdateQueueStore.getState().replaceLatestFormUpdate(task3);
-      
+
       // Should preserve current task and replace pending
       const state = formUpdateQueueStore.getState();
       expect(state.queue).toHaveLength(2);
       expect(state.queue[0]).toBe(task1); // Current task
       expect(state.queue[1]).toBe(task3); // Replacement task
-      
+
       // Complete processing
       resolveUpdateExpressions!();
       await processingPromise;
-      
+
       // Should process replacement task
       await waitFor(() => {
         const finalState = formUpdateQueueStore.getState();
         expect(finalState.queue).toHaveLength(0);
         expect(finalState.isProcessing).toBe(false);
       });
-      
+
       expect(mockUpdateExpressions).toHaveBeenCalledTimes(2); // task1 and task3, not task2
     });
   });
@@ -330,9 +333,9 @@ describe('formUpdateQueueStore', () => {
         questionnaireResponse: mockQuestionnaireResponse
         // No targetItemPath
       };
-      
+
       formUpdateQueueStore.getState().enqueueFormUpdate(task);
-      
+
       await waitFor(() => {
         expect(mockUpdateResponse).toHaveBeenCalledWith(task.questionnaireResponse, 'initial');
       });
@@ -346,9 +349,9 @@ describe('formUpdateQueueStore', () => {
           // No items
         }
       };
-      
+
       formUpdateQueueStore.getState().enqueueFormUpdate(task);
-      
+
       await waitFor(() => {
         expect(mockUpdateResponse).toHaveBeenCalledWith(task.questionnaireResponse, 'initial');
       });

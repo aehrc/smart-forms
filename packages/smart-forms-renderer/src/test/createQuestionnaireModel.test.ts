@@ -69,21 +69,44 @@ import { extractPages } from '../utils/questionnaireStoreUtils/extractPages';
 import { extractContainedValueSets } from '../utils/questionnaireStoreUtils/extractContainedValueSets';
 import { extractOtherExtensions } from '../utils/questionnaireStoreUtils/extractOtherExtensions';
 import { resolveValueSets } from '../utils/questionnaireStoreUtils/resolveValueSets';
-import { addDisplayToCacheCodings, addDisplayToAnswerOptions } from '../utils/questionnaireStoreUtils/addDisplayToCodings';
+import {
+  addDisplayToCacheCodings,
+  addDisplayToAnswerOptions
+} from '../utils/questionnaireStoreUtils/addDisplayToCodings';
 import { extractTargetConstraints } from '../utils/questionnaireStoreUtils/extractTargetConstraint';
 
-const mockGetLinkIdPartialItemMap = getLinkIdPartialItemMap as jest.MockedFunction<typeof getLinkIdPartialItemMap>;
-const mockGetLinkIdPreferredTerminologyServerTuples = getLinkIdPreferredTerminologyServerTuples as jest.MockedFunction<typeof getLinkIdPreferredTerminologyServerTuples>;
-const mockExtractLaunchContexts = extractLaunchContexts as jest.MockedFunction<typeof extractLaunchContexts>;
-const mockExtractQuestionnaireLevelVariables = extractQuestionnaireLevelVariables as jest.MockedFunction<typeof extractQuestionnaireLevelVariables>;
+const mockGetLinkIdPartialItemMap = getLinkIdPartialItemMap as jest.MockedFunction<
+  typeof getLinkIdPartialItemMap
+>;
+const mockGetLinkIdPreferredTerminologyServerTuples =
+  getLinkIdPreferredTerminologyServerTuples as jest.MockedFunction<
+    typeof getLinkIdPreferredTerminologyServerTuples
+  >;
+const mockExtractLaunchContexts = extractLaunchContexts as jest.MockedFunction<
+  typeof extractLaunchContexts
+>;
+const mockExtractQuestionnaireLevelVariables =
+  extractQuestionnaireLevelVariables as jest.MockedFunction<
+    typeof extractQuestionnaireLevelVariables
+  >;
 const mockExtractTabs = extractTabs as jest.MockedFunction<typeof extractTabs>;
 const mockExtractPages = extractPages as jest.MockedFunction<typeof extractPages>;
-const mockExtractContainedValueSets = extractContainedValueSets as jest.MockedFunction<typeof extractContainedValueSets>;
-const mockExtractOtherExtensions = extractOtherExtensions as jest.MockedFunction<typeof extractOtherExtensions>;
+const mockExtractContainedValueSets = extractContainedValueSets as jest.MockedFunction<
+  typeof extractContainedValueSets
+>;
+const mockExtractOtherExtensions = extractOtherExtensions as jest.MockedFunction<
+  typeof extractOtherExtensions
+>;
 const mockResolveValueSets = resolveValueSets as jest.MockedFunction<typeof resolveValueSets>;
-const mockAddDisplayToCacheCodings = addDisplayToCacheCodings as jest.MockedFunction<typeof addDisplayToCacheCodings>;
-const mockAddDisplayToAnswerOptions = addDisplayToAnswerOptions as jest.MockedFunction<typeof addDisplayToAnswerOptions>;
-const mockExtractTargetConstraints = extractTargetConstraints as jest.MockedFunction<typeof extractTargetConstraints>;
+const mockAddDisplayToCacheCodings = addDisplayToCacheCodings as jest.MockedFunction<
+  typeof addDisplayToCacheCodings
+>;
+const mockAddDisplayToAnswerOptions = addDisplayToAnswerOptions as jest.MockedFunction<
+  typeof addDisplayToAnswerOptions
+>;
+const mockExtractTargetConstraints = extractTargetConstraints as jest.MockedFunction<
+  typeof extractTargetConstraints
+>;
 
 describe('createQuestionnaireModel - Phase 5', () => {
   beforeEach(() => {
@@ -98,7 +121,10 @@ describe('createQuestionnaireModel - Phase 5', () => {
         // no item property
       };
 
-      const result = await createQuestionnaireModel(questionnaire, 'http://terminology.hl7.org/fhir');
+      const result = await createQuestionnaireModel(
+        questionnaire,
+        'http://terminology.hl7.org/fhir'
+      );
 
       expect(result).toEqual({
         itemMap: {},
@@ -141,10 +167,17 @@ describe('createQuestionnaireModel - Phase 5', () => {
       mockExtractPages.mockReturnValue({});
       mockExtractLaunchContexts.mockReturnValue({});
       mockExtractTargetConstraints.mockReturnValue({});
-      mockExtractQuestionnaireLevelVariables.mockReturnValue({ fhirPathVariables: { 'QuestionnaireLevel': [] }, xFhirQueryVariables: {} });
-      mockExtractContainedValueSets.mockReturnValue({ processedValueSets: {}, valueSetPromises: {}, cachedValueSetCodings: {} });
+      mockExtractQuestionnaireLevelVariables.mockReturnValue({
+        fhirPathVariables: { QuestionnaireLevel: [] },
+        xFhirQueryVariables: {}
+      });
+      mockExtractContainedValueSets.mockReturnValue({
+        processedValueSets: {},
+        valueSetPromises: {},
+        cachedValueSetCodings: {}
+      });
       mockExtractOtherExtensions.mockResolvedValue({
-        variables: { fhirPathVariables: { 'QuestionnaireLevel': [] }, xFhirQueryVariables: {} },
+        variables: { fhirPathVariables: { QuestionnaireLevel: [] }, xFhirQueryVariables: {} },
         enableWhenItems: { singleItems: {}, repeatItems: {} },
         enableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} },
         calculatedExpressions: {},
@@ -156,18 +189,24 @@ describe('createQuestionnaireModel - Phase 5', () => {
         processedValueSets: {},
         cachedValueSetCodings: {}
       });
-      mockResolveValueSets.mockResolvedValue({ variables: { fhirPathVariables: { 'QuestionnaireLevel': [] }, xFhirQueryVariables: {} }, cachedValueSetCodings: {} });
+      mockResolveValueSets.mockResolvedValue({
+        variables: { fhirPathVariables: { QuestionnaireLevel: [] }, xFhirQueryVariables: {} },
+        cachedValueSetCodings: {}
+      });
       mockAddDisplayToCacheCodings.mockResolvedValue({});
       mockAddDisplayToAnswerOptions.mockResolvedValue({});
 
-      const result = await createQuestionnaireModel(questionnaire, 'http://terminology.hl7.org/fhir');
+      const result = await createQuestionnaireModel(
+        questionnaire,
+        'http://terminology.hl7.org/fhir'
+      );
 
       expect(result).toEqual({
         itemMap: {},
         itemPreferredTerminologyServers: {},
         tabs: {},
         pages: {},
-        variables: { fhirPathVariables: { "QuestionnaireLevel": [] }, xFhirQueryVariables: {} },
+        variables: { fhirPathVariables: { QuestionnaireLevel: [] }, xFhirQueryVariables: {} },
         launchContexts: {},
         targetConstraints: {},
         calculatedExpressions: {},
@@ -198,38 +237,62 @@ describe('createQuestionnaireModel - Phase 5', () => {
             linkId: 'item2',
             type: 'choice',
             text: 'Question 2',
-            answerOption: [
-              { valueString: 'Option 1' },
-              { valueString: 'Option 2' }
-            ]
+            answerOption: [{ valueString: 'Option 1' }, { valueString: 'Option 2' }]
           }
         ]
       };
 
       // Setup all the mock returns
-      const mockItemMap = { 'item1': { linkId: 'item1', type: 'string' as const, text: 'Question 1' } };
-      const mockItemPreferredTerminologyServers = { 'item1': 'http://custom.terminology.server' };
-      const mockTabs = { 'tab1': { tabIndex: 0, isComplete: false, isHidden: false } };
-      const mockPages = { 'page1': { pageIndex: 0, isComplete: false, isHidden: false } };
+      const mockItemMap = {
+        item1: { linkId: 'item1', type: 'string' as const, text: 'Question 1' }
+      };
+      const mockItemPreferredTerminologyServers = { item1: 'http://custom.terminology.server' };
+      const mockTabs = { tab1: { tabIndex: 0, isComplete: false, isHidden: false } };
+      const mockPages = { page1: { pageIndex: 0, isComplete: false, isHidden: false } };
       const mockLaunchContexts = {} as any;
-      const mockTargetConstraints = { 'constraint1': { key: 'constraint1', target: 'target1', severityCode: 'error' as const, valueExpression: { expression: 'test', language: 'text/fhirpath' }, human: 'Test constraint', constraints: [] } };
-      const mockVariables = { 
-        fhirPathVariables: { 'QuestionnaireLevel': [] }, 
-        xFhirQueryVariables: {} 
+      const mockTargetConstraints = {
+        constraint1: {
+          key: 'constraint1',
+          target: 'target1',
+          severityCode: 'error' as const,
+          valueExpression: { expression: 'test', language: 'text/fhirpath' },
+          human: 'Test constraint',
+          constraints: []
+        }
+      };
+      const mockVariables = {
+        fhirPathVariables: { QuestionnaireLevel: [] },
+        xFhirQueryVariables: {}
       };
       const mockContainedValueSetsResult = {
-        processedValueSets: { 'vs1': { initialValueSetUrl: 'http://vs1', updatableValueSetUrl: 'http://vs1', bindingParameters: [], isDynamic: false, linkIds: [] } },
+        processedValueSets: {
+          vs1: {
+            initialValueSetUrl: 'http://vs1',
+            updatableValueSetUrl: 'http://vs1',
+            bindingParameters: [],
+            isDynamic: false,
+            linkIds: []
+          }
+        },
         valueSetPromises: {},
-        cachedValueSetCodings: { 'vs1': [{ system: 'http://test', code: 'test1', display: 'Test 1' }] }
+        cachedValueSetCodings: {
+          vs1: [{ system: 'http://test', code: 'test1', display: 'Test 1' }]
+        }
       };
       const mockOtherExtensionsResult = {
         variables: mockVariables,
-        enableWhenItems: { singleItems: { 'item1': { linked: [], isEnabled: false } }, repeatItems: {} },
-        enableWhenExpressions: { singleExpressions: { 'item1': { expression: 'test' } }, repeatExpressions: {} },
-        calculatedExpressions: { 'item1': [{ expression: 'calc1', from: 'item' as const }] },
-        initialExpressions: { 'item1': { expression: 'initial1' } },
-        answerExpressions: { 'item1': { expression: 'answer1' } },
-        answerOptions: { 'item2': [{ valueString: 'Option 1' }, { valueString: 'Option 2' }] },
+        enableWhenItems: {
+          singleItems: { item1: { linked: [], isEnabled: false } },
+          repeatItems: {}
+        },
+        enableWhenExpressions: {
+          singleExpressions: { item1: { expression: 'test' } },
+          repeatExpressions: {}
+        },
+        calculatedExpressions: { item1: [{ expression: 'calc1', from: 'item' as const }] },
+        initialExpressions: { item1: { expression: 'initial1' } },
+        answerExpressions: { item1: { expression: 'answer1' } },
+        answerOptions: { item2: [{ valueString: 'Option 1' }, { valueString: 'Option 2' }] },
         answerOptionsToggleExpressions: {} as any,
         valueSetPromises: {},
         processedValueSets: mockContainedValueSetsResult.processedValueSets,
@@ -237,13 +300,21 @@ describe('createQuestionnaireModel - Phase 5', () => {
       };
       const mockResolveValueSetsResult = {
         variables: mockVariables,
-        cachedValueSetCodings: { 'vs1': [{ system: 'http://test', code: 'test1', display: 'Test 1 Updated' }] }
+        cachedValueSetCodings: {
+          vs1: [{ system: 'http://test', code: 'test1', display: 'Test 1 Updated' }]
+        }
       };
-      const mockCachedCodingsWithDisplay = { 'vs1': [{ system: 'http://test', code: 'test1', display: 'Test 1 Final' }] };
-      const mockCompleteAnswerOptions = { 'item2': [{ valueString: 'Option 1' }, { valueString: 'Option 2' }] };
+      const mockCachedCodingsWithDisplay = {
+        vs1: [{ system: 'http://test', code: 'test1', display: 'Test 1 Final' }]
+      };
+      const mockCompleteAnswerOptions = {
+        item2: [{ valueString: 'Option 1' }, { valueString: 'Option 2' }]
+      };
 
       mockGetLinkIdPartialItemMap.mockReturnValue(mockItemMap);
-      mockGetLinkIdPreferredTerminologyServerTuples.mockReturnValue([['item1', 'http://custom.terminology.server']]);
+      mockGetLinkIdPreferredTerminologyServerTuples.mockReturnValue([
+        ['item1', 'http://custom.terminology.server']
+      ]);
       mockExtractTabs.mockReturnValue(mockTabs);
       mockExtractPages.mockReturnValue(mockPages);
       mockExtractLaunchContexts.mockReturnValue(mockLaunchContexts);
@@ -255,7 +326,10 @@ describe('createQuestionnaireModel - Phase 5', () => {
       mockAddDisplayToCacheCodings.mockResolvedValue(mockCachedCodingsWithDisplay);
       mockAddDisplayToAnswerOptions.mockResolvedValue(mockCompleteAnswerOptions);
 
-      const result = await createQuestionnaireModel(questionnaire, 'http://terminology.hl7.org/fhir');
+      const result = await createQuestionnaireModel(
+        questionnaire,
+        'http://terminology.hl7.org/fhir'
+      );
 
       // Verify all extraction functions were called with correct parameters
       expect(mockGetLinkIdPartialItemMap).toHaveBeenCalledWith(questionnaire);
@@ -265,14 +339,17 @@ describe('createQuestionnaireModel - Phase 5', () => {
       expect(mockExtractLaunchContexts).toHaveBeenCalledWith(questionnaire);
       expect(mockExtractTargetConstraints).toHaveBeenCalledWith(questionnaire);
       expect(mockExtractQuestionnaireLevelVariables).toHaveBeenCalledWith(questionnaire);
-      expect(mockExtractContainedValueSets).toHaveBeenCalledWith(questionnaire, 'http://terminology.hl7.org/fhir');
+      expect(mockExtractContainedValueSets).toHaveBeenCalledWith(
+        questionnaire,
+        'http://terminology.hl7.org/fhir'
+      );
       expect(mockExtractOtherExtensions).toHaveBeenCalledWith(
         questionnaire,
         mockVariables,
         {},
         mockContainedValueSetsResult.processedValueSets,
         mockContainedValueSetsResult.cachedValueSetCodings,
-        { 'item1': 'http://custom.terminology.server' },
+        { item1: 'http://custom.terminology.server' },
         'http://terminology.hl7.org/fhir'
       );
       expect(mockResolveValueSets).toHaveBeenCalledWith(
@@ -293,7 +370,7 @@ describe('createQuestionnaireModel - Phase 5', () => {
       // Verify the final result structure
       expect(result).toEqual({
         itemMap: mockItemMap,
-        itemPreferredTerminologyServers: { 'item1': 'http://custom.terminology.server' },
+        itemPreferredTerminologyServers: { item1: 'http://custom.terminology.server' },
         tabs: mockTabs,
         pages: mockPages,
         variables: mockVariables,
@@ -373,46 +450,55 @@ describe('createQuestionnaireModel - Phase 5', () => {
 
       // Setup comprehensive mock returns
       const mockItemMap = {
-        'group1': { linkId: 'group1', type: 'group' as const, text: 'Personal Information' },
-        'name': { linkId: 'name', type: 'string' as const, text: 'Full Name', required: true },
-        'gender': { linkId: 'gender', type: 'choice' as const, text: 'Gender', answerValueSet: '#colors' }
+        group1: { linkId: 'group1', type: 'group' as const, text: 'Personal Information' },
+        name: { linkId: 'name', type: 'string' as const, text: 'Full Name', required: true },
+        gender: {
+          linkId: 'gender',
+          type: 'choice' as const,
+          text: 'Gender',
+          answerValueSet: '#colors'
+        }
       };
-      const mockTabs = { 'tab1': { tabIndex: 0, isComplete: false, isHidden: false } };
-      const mockPages = { 'page1': { pageIndex: 0, isComplete: false, isHidden: false } };
+      const mockTabs = { tab1: { tabIndex: 0, isComplete: false, isHidden: false } };
+      const mockPages = { page1: { pageIndex: 0, isComplete: false, isHidden: false } };
       const mockLaunchContexts = {} as any;
       const mockTargetConstraints = {};
-      const mockVariables = { 
-        fhirPathVariables: { 'QuestionnaireLevel': [] }, 
-        xFhirQueryVariables: {} 
+      const mockVariables = {
+        fhirPathVariables: { QuestionnaireLevel: [] },
+        xFhirQueryVariables: {}
       };
       const mockContainedValueSetsResult = {
-        processedValueSets: { 
-          'colors': { 
-            initialValueSetUrl: 'http://example.com/ValueSet/colors', 
-            updatableValueSetUrl: 'http://example.com/ValueSet/colors', 
-            bindingParameters: [], 
-            isDynamic: false, 
-            linkIds: ['gender'] 
-          } 
+        processedValueSets: {
+          colors: {
+            initialValueSetUrl: 'http://example.com/ValueSet/colors',
+            updatableValueSetUrl: 'http://example.com/ValueSet/colors',
+            bindingParameters: [],
+            isDynamic: false,
+            linkIds: ['gender']
+          }
         },
         valueSetPromises: {},
-        cachedValueSetCodings: { 
-          'colors': [
+        cachedValueSetCodings: {
+          colors: [
             { system: 'http://example.com/colors', code: 'red', display: 'Red' },
             { system: 'http://example.com/colors', code: 'blue', display: 'Blue' }
-          ] 
+          ]
         }
       };
       const mockOtherExtensionsResult = {
         variables: mockVariables,
-        enableWhenItems: { 
-          singleItems: { 
-            'gender': { 
-              linked: [{ enableWhen: { question: 'name', operator: 'exists' as const, answerBoolean: true } }], 
-              isEnabled: false 
-            } 
-          }, 
-          repeatItems: {} 
+        enableWhenItems: {
+          singleItems: {
+            gender: {
+              linked: [
+                {
+                  enableWhen: { question: 'name', operator: 'exists' as const, answerBoolean: true }
+                }
+              ],
+              isEnabled: false
+            }
+          },
+          repeatItems: {}
         },
         enableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} },
         calculatedExpressions: {},
@@ -438,10 +524,15 @@ describe('createQuestionnaireModel - Phase 5', () => {
         variables: mockVariables,
         cachedValueSetCodings: mockContainedValueSetsResult.cachedValueSetCodings
       });
-      mockAddDisplayToCacheCodings.mockResolvedValue(mockContainedValueSetsResult.cachedValueSetCodings);
+      mockAddDisplayToCacheCodings.mockResolvedValue(
+        mockContainedValueSetsResult.cachedValueSetCodings
+      );
       mockAddDisplayToAnswerOptions.mockResolvedValue({});
 
-      const result = await createQuestionnaireModel(questionnaire, 'http://terminology.hl7.org/fhir');
+      const result = await createQuestionnaireModel(
+        questionnaire,
+        'http://terminology.hl7.org/fhir'
+      );
 
       expect(result.itemMap).toEqual(mockItemMap);
       expect(result.launchContexts).toEqual({});
@@ -464,20 +555,25 @@ describe('createQuestionnaireModel - Phase 5', () => {
       };
 
       // Setup minimal mock returns
-      mockGetLinkIdPartialItemMap.mockReturnValue({ 'simple': { linkId: 'simple', type: 'string' as const, text: 'Simple Question' } });
+      mockGetLinkIdPartialItemMap.mockReturnValue({
+        simple: { linkId: 'simple', type: 'string' as const, text: 'Simple Question' }
+      });
       mockGetLinkIdPreferredTerminologyServerTuples.mockReturnValue([]);
       mockExtractTabs.mockReturnValue({});
       mockExtractPages.mockReturnValue({});
       mockExtractLaunchContexts.mockReturnValue({});
       mockExtractTargetConstraints.mockReturnValue({});
-      mockExtractQuestionnaireLevelVariables.mockReturnValue({ fhirPathVariables: { 'QuestionnaireLevel': [] }, xFhirQueryVariables: {} });
+      mockExtractQuestionnaireLevelVariables.mockReturnValue({
+        fhirPathVariables: { QuestionnaireLevel: [] },
+        xFhirQueryVariables: {}
+      });
       mockExtractContainedValueSets.mockReturnValue({
         processedValueSets: {},
         valueSetPromises: {},
         cachedValueSetCodings: {}
       });
       mockExtractOtherExtensions.mockResolvedValue({
-        variables: { fhirPathVariables: { 'QuestionnaireLevel': [] }, xFhirQueryVariables: {} },
+        variables: { fhirPathVariables: { QuestionnaireLevel: [] }, xFhirQueryVariables: {} },
         enableWhenItems: { singleItems: {}, repeatItems: {} },
         enableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} },
         calculatedExpressions: {},
@@ -490,15 +586,20 @@ describe('createQuestionnaireModel - Phase 5', () => {
         cachedValueSetCodings: {}
       });
       mockResolveValueSets.mockResolvedValue({
-        variables: { fhirPathVariables: { 'QuestionnaireLevel': [] }, xFhirQueryVariables: {} },
+        variables: { fhirPathVariables: { QuestionnaireLevel: [] }, xFhirQueryVariables: {} },
         cachedValueSetCodings: {}
       });
       mockAddDisplayToCacheCodings.mockResolvedValue({});
       mockAddDisplayToAnswerOptions.mockResolvedValue({});
 
-      const result = await createQuestionnaireModel(questionnaire, 'http://terminology.hl7.org/fhir');
+      const result = await createQuestionnaireModel(
+        questionnaire,
+        'http://terminology.hl7.org/fhir'
+      );
 
-      expect(result.itemMap).toEqual({ 'simple': { linkId: 'simple', type: 'string', text: 'Simple Question' } });
+      expect(result.itemMap).toEqual({
+        simple: { linkId: 'simple', type: 'string', text: 'Simple Question' }
+      });
       expect(Object.keys(result.tabs)).toHaveLength(0);
       expect(Object.keys(result.pages)).toHaveLength(0);
       expect(Object.keys(result.launchContexts)).toHaveLength(0);
@@ -528,8 +629,15 @@ describe('createQuestionnaireModel - Phase 5', () => {
       mockExtractPages.mockReturnValue({});
       mockExtractLaunchContexts.mockReturnValue({});
       mockExtractTargetConstraints.mockReturnValue({});
-      mockExtractQuestionnaireLevelVariables.mockReturnValue({ fhirPathVariables: {}, xFhirQueryVariables: {} });
-      mockExtractContainedValueSets.mockReturnValue({ processedValueSets: {}, valueSetPromises: {}, cachedValueSetCodings: {} });
+      mockExtractQuestionnaireLevelVariables.mockReturnValue({
+        fhirPathVariables: {},
+        xFhirQueryVariables: {}
+      });
+      mockExtractContainedValueSets.mockReturnValue({
+        processedValueSets: {},
+        valueSetPromises: {},
+        cachedValueSetCodings: {}
+      });
       mockExtractOtherExtensions.mockResolvedValue({
         variables: { fhirPathVariables: {}, xFhirQueryVariables: {} },
         enableWhenItems: { singleItems: {}, repeatItems: {} },
@@ -543,14 +651,20 @@ describe('createQuestionnaireModel - Phase 5', () => {
         processedValueSets: {},
         cachedValueSetCodings: {}
       });
-      mockResolveValueSets.mockResolvedValue({ variables: { fhirPathVariables: {}, xFhirQueryVariables: {} }, cachedValueSetCodings: {} });
+      mockResolveValueSets.mockResolvedValue({
+        variables: { fhirPathVariables: {}, xFhirQueryVariables: {} },
+        cachedValueSetCodings: {}
+      });
       mockAddDisplayToCacheCodings.mockResolvedValue({});
       mockAddDisplayToAnswerOptions.mockResolvedValue({});
 
       await createQuestionnaireModel(questionnaire, customTerminologyServerUrl);
 
       // Verify the custom terminology server URL was passed to all relevant functions
-      expect(mockExtractContainedValueSets).toHaveBeenCalledWith(questionnaire, customTerminologyServerUrl);
+      expect(mockExtractContainedValueSets).toHaveBeenCalledWith(
+        questionnaire,
+        customTerminologyServerUrl
+      );
       expect(mockExtractOtherExtensions).toHaveBeenCalledWith(
         questionnaire,
         expect.any(Object),

@@ -76,8 +76,8 @@ describe('updatableResponseItems - Phase 5', () => {
       const result = createQuestionnaireResponseItemMap(questionnaire, questionnaireResponse);
 
       expect(result).toEqual({
-        'item1': [],
-        'item2': []
+        item1: [],
+        item2: []
       });
     });
 
@@ -118,10 +118,10 @@ describe('updatableResponseItems - Phase 5', () => {
       const result = createQuestionnaireResponseItemMap(questionnaire, questionnaireResponse);
 
       expect(result).toEqual({
-        'group1': [],
-        'nested1': [],
-        'nested2': [],
-        'item2': []
+        group1: [],
+        nested1: [],
+        nested2: [],
+        item2: []
       });
     });
 
@@ -157,8 +157,8 @@ describe('updatableResponseItems - Phase 5', () => {
       const result = createQuestionnaireResponseItemMap(questionnaire, questionnaireResponse);
 
       expect(result).toEqual({
-        'item1': [{ linkId: 'item1', answer: [{ valueString: 'Answer 1' }] }],
-        'item2': []
+        item1: [{ linkId: 'item1', answer: [{ valueString: 'Answer 1' }] }],
+        item2: []
       });
     });
 
@@ -276,10 +276,14 @@ describe('updatableResponseItems - Phase 5', () => {
       const result = createQuestionnaireResponseItemMap(questionnaire, questionnaireResponse);
 
       expect(result).toEqual({
-        'group1': [expect.objectContaining({ linkId: 'group1' })],
-        'nested1': [expect.objectContaining({ linkId: 'nested1', answer: [{ valueString: 'Nested answer' }] })],
-        'subgroup': [expect.objectContaining({ linkId: 'subgroup' })],
-        'deeply-nested': [expect.objectContaining({ linkId: 'deeply-nested', answer: [{ valueBoolean: true }] })]
+        group1: [expect.objectContaining({ linkId: 'group1' })],
+        nested1: [
+          expect.objectContaining({ linkId: 'nested1', answer: [{ valueString: 'Nested answer' }] })
+        ],
+        subgroup: [expect.objectContaining({ linkId: 'subgroup' })],
+        'deeply-nested': [
+          expect.objectContaining({ linkId: 'deeply-nested', answer: [{ valueBoolean: true }] })
+        ]
       });
     });
 
@@ -348,7 +352,7 @@ describe('updatableResponseItems - Phase 5', () => {
       expect(result['repeat-item']).toHaveLength(2);
       expect(result['group']).toHaveLength(1);
       expect(result['group-child']).toHaveLength(1);
-      
+
       expect(result['single-item'][0].answer?.[0].valueString).toBe('Single answer');
       expect(result['repeat-item'][0].answer?.[0].valueString).toBe('First repeat');
       expect(result['repeat-item'][1].answer?.[0].valueString).toBe('Second repeat');
@@ -414,7 +418,7 @@ describe('updatableResponseItems - Phase 5', () => {
       const result = createQuestionnaireResponseItemMap(questionnaire, questionnaireResponse);
 
       expect(result).toEqual({
-        'item1': []
+        item1: []
       });
     });
 
@@ -445,7 +449,7 @@ describe('updatableResponseItems - Phase 5', () => {
       const result = createQuestionnaireResponseItemMap(questionnaire, questionnaireResponse);
 
       expect(result).toEqual({
-        'item1': [{ linkId: 'item1' }]
+        item1: [{ linkId: 'item1' }]
       });
     });
 
@@ -512,10 +516,12 @@ describe('updatableResponseItems - Phase 5', () => {
       const result = createQuestionnaireResponseItemMap(questionnaire, questionnaireResponse);
 
       expect(result).toEqual({
-        'level1': [expect.objectContaining({ linkId: 'level1' })],
-        'level2': [expect.objectContaining({ linkId: 'level2' })],
-        'level3': [expect.objectContaining({ linkId: 'level3' })],
-        'level4': [expect.objectContaining({ linkId: 'level4', answer: [{ valueString: 'Deep answer' }] })]
+        level1: [expect.objectContaining({ linkId: 'level1' })],
+        level2: [expect.objectContaining({ linkId: 'level2' })],
+        level3: [expect.objectContaining({ linkId: 'level3' })],
+        level4: [
+          expect.objectContaining({ linkId: 'level4', answer: [{ valueString: 'Deep answer' }] })
+        ]
       });
     });
 
@@ -593,4 +599,3 @@ describe('updatableResponseItems - Phase 5', () => {
     });
   });
 });
-

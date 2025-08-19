@@ -29,18 +29,18 @@ describe('useFocusTabHeading', () => {
   beforeEach(() => {
     // Clear the DOM
     document.body.innerHTML = '';
-    
+
     // Create mock elements
     mockTabPanel = document.createElement('div');
     mockTabPanel.id = 'test-tab-panel';
-    
+
     mockHeading = document.createElement('h2');
     mockHeading.textContent = 'Test Heading';
     mockHeading.focus = jest.fn();
-    
+
     // Mock querySelector to return our mock heading
     mockTabPanel.querySelector = jest.fn().mockReturnValue(mockHeading);
-    
+
     // Mock getElementById to return our mock tab panel
     jest.spyOn(document, 'getElementById').mockReturnValue(mockTabPanel);
   });
@@ -269,13 +269,13 @@ describe('useFocusTabHeading', () => {
       // Simulate a form with tabs
       const formTabPanel = document.createElement('div');
       formTabPanel.id = 'form-tab-personal-info';
-      
+
       const formHeading = document.createElement('h2');
       formHeading.textContent = 'Personal Information';
       formHeading.focus = jest.fn();
       formHeading.hasAttribute = jest.fn().mockReturnValue(false);
       formHeading.setAttribute = jest.fn();
-      
+
       formTabPanel.querySelector = jest.fn().mockReturnValue(formHeading);
       jest.spyOn(document, 'getElementById').mockReturnValue(formTabPanel);
 
@@ -291,17 +291,17 @@ describe('useFocusTabHeading', () => {
       // Simulate complex nested structure
       const complexTabPanel = document.createElement('div');
       complexTabPanel.id = 'complex-tab';
-      
+
       const nestedContainer = document.createElement('div');
       const targetHeading = document.createElement('h3');
       targetHeading.textContent = 'Section Title';
       targetHeading.focus = jest.fn();
       targetHeading.hasAttribute = jest.fn().mockReturnValue(false);
       targetHeading.setAttribute = jest.fn();
-      
+
       nestedContainer.appendChild(targetHeading);
       complexTabPanel.appendChild(nestedContainer);
-      
+
       // Mock querySelector to find the nested heading
       complexTabPanel.querySelector = jest.fn().mockReturnValue(targetHeading);
       jest.spyOn(document, 'getElementById').mockReturnValue(complexTabPanel);
@@ -316,13 +316,13 @@ describe('useFocusTabHeading', () => {
     it('should handle multiple heading levels and focus the first one', () => {
       const multiHeadingPanel = document.createElement('div');
       multiHeadingPanel.id = 'multi-heading-tab';
-      
+
       const firstHeading = document.createElement('h2');
       firstHeading.textContent = 'First Heading';
       firstHeading.focus = jest.fn();
       firstHeading.hasAttribute = jest.fn().mockReturnValue(false);
       firstHeading.setAttribute = jest.fn();
-      
+
       // Mock querySelector to return the first heading
       multiHeadingPanel.querySelector = jest.fn().mockReturnValue(firstHeading);
       jest.spyOn(document, 'getElementById').mockReturnValue(multiHeadingPanel);
@@ -341,7 +341,7 @@ describe('useFocusTabHeading', () => {
       accessibleHeading.focus = jest.fn();
       accessibleHeading.hasAttribute = jest.fn().mockReturnValue(false);
       accessibleHeading.setAttribute = jest.fn();
-      
+
       mockTabPanel.querySelector = jest.fn().mockReturnValue(accessibleHeading);
 
       const { result } = renderHook(() => useFocusTabHeading());
@@ -358,7 +358,7 @@ describe('useFocusTabHeading', () => {
       accessibleHeading.setAttribute('role', 'heading');
       accessibleHeading.focus = jest.fn();
       accessibleHeading.hasAttribute = jest.fn().mockReturnValue(true);
-      
+
       mockTabPanel.querySelector = jest.fn().mockReturnValue(accessibleHeading);
 
       const { result } = renderHook(() => useFocusTabHeading());

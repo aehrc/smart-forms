@@ -45,7 +45,7 @@ describe('useContextDisplayItems', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Default mock return
     mockGetContextDisplays.mockReturnValue([]);
   });
@@ -61,7 +61,7 @@ describe('useContextDisplayItems', () => {
 
     it('should call getContextDisplays for each top level item', () => {
       const topLevelItems = [basicTopLevelItem, anotherTopLevelItem];
-      
+
       renderHook(() => useContextDisplayItems(topLevelItems));
 
       expect(mockGetContextDisplays).toHaveBeenCalledTimes(2);
@@ -70,19 +70,16 @@ describe('useContextDisplayItems', () => {
     });
 
     it('should return all context display items from utility function', () => {
-      const mockContextDisplays1 = [
-        { text: 'Display 1' },
-        { text: 'Display 2' }
-      ];
-      const mockContextDisplays2 = [
-        { text: 'Display 3' }
-      ];
+      const mockContextDisplays1 = [{ text: 'Display 1' }, { text: 'Display 2' }];
+      const mockContextDisplays2 = [{ text: 'Display 3' }];
 
       mockGetContextDisplays
         .mockReturnValueOnce(mockContextDisplays1)
         .mockReturnValueOnce(mockContextDisplays2);
 
-      const { result } = renderHook(() => useContextDisplayItems([basicTopLevelItem, anotherTopLevelItem]));
+      const { result } = renderHook(() =>
+        useContextDisplayItems([basicTopLevelItem, anotherTopLevelItem])
+      );
 
       expect(result.current.allContextDisplayItems).toEqual([
         mockContextDisplays1,
@@ -107,11 +104,7 @@ describe('useContextDisplayItems', () => {
     });
 
     it('should detect when Complete item exists', () => {
-      const mockContextDisplays = [
-        { text: 'Progress' },
-        { text: 'Complete' },
-        { text: 'Started' }
-      ];
+      const mockContextDisplays = [{ text: 'Progress' }, { text: 'Complete' }, { text: 'Started' }];
 
       mockGetContextDisplays.mockReturnValue(mockContextDisplays);
 
@@ -121,19 +114,16 @@ describe('useContextDisplayItems', () => {
     });
 
     it('should detect Complete item across multiple top level items', () => {
-      const mockContextDisplays1 = [
-        { text: 'Progress' },
-        { text: 'Started' }
-      ];
-      const mockContextDisplays2 = [
-        { text: 'Complete' }
-      ];
+      const mockContextDisplays1 = [{ text: 'Progress' }, { text: 'Started' }];
+      const mockContextDisplays2 = [{ text: 'Complete' }];
 
       mockGetContextDisplays
         .mockReturnValueOnce(mockContextDisplays1)
         .mockReturnValueOnce(mockContextDisplays2);
 
-      const { result } = renderHook(() => useContextDisplayItems([basicTopLevelItem, anotherTopLevelItem]));
+      const { result } = renderHook(() =>
+        useContextDisplayItems([basicTopLevelItem, anotherTopLevelItem])
+      );
 
       expect(result.current.completedDisplayItemExists).toBe(true);
     });
@@ -142,7 +132,7 @@ describe('useContextDisplayItems', () => {
       const mockContextDisplays = [
         { text: 'complete' }, // lowercase
         { text: 'COMPLETE' }, // uppercase
-        { text: 'Complete' }  // exact match
+        { text: 'Complete' } // exact match
       ];
 
       mockGetContextDisplays.mockReturnValue(mockContextDisplays);
@@ -195,12 +185,7 @@ describe('useContextDisplayItems', () => {
     });
 
     it('should handle null/undefined items in context displays', () => {
-      const mockContextDisplays = [
-        null,
-        { text: 'Valid Item' },
-        undefined,
-        { text: 'Complete' }
-      ];
+      const mockContextDisplays = [null, { text: 'Valid Item' }, undefined, { text: 'Complete' }];
 
       mockGetContextDisplays.mockReturnValue(mockContextDisplays);
 
@@ -222,7 +207,7 @@ describe('useContextDisplayItems', () => {
 
     it('should handle null top level items', () => {
       const topLevelItems = [basicTopLevelItem, null as any, anotherTopLevelItem];
-      
+
       mockGetContextDisplays.mockReturnValue([]);
 
       const { result } = renderHook(() => useContextDisplayItems(topLevelItems));
@@ -237,10 +222,9 @@ describe('useContextDisplayItems', () => {
       const topLevelItems = [basicTopLevelItem];
       mockGetContextDisplays.mockReturnValue([{ text: 'Display Item' }]);
 
-      const { result, rerender } = renderHook(
-        ({ items }) => useContextDisplayItems(items),
-        { initialProps: { items: topLevelItems } }
-      );
+      const { result, rerender } = renderHook(({ items }) => useContextDisplayItems(items), {
+        initialProps: { items: topLevelItems }
+      });
 
       const firstResult = result.current;
 
@@ -254,13 +238,12 @@ describe('useContextDisplayItems', () => {
     it('should recompute when top level items change', () => {
       const initialItems = [basicTopLevelItem];
       const newItems = [anotherTopLevelItem];
-      
+
       mockGetContextDisplays.mockReturnValue([{ text: 'Display Item' }]);
 
-      const { result, rerender } = renderHook(
-        ({ items }) => useContextDisplayItems(items),
-        { initialProps: { items: initialItems } }
-      );
+      const { result, rerender } = renderHook(({ items }) => useContextDisplayItems(items), {
+        initialProps: { items: initialItems }
+      });
 
       const firstResult = result.current;
 
@@ -275,13 +258,12 @@ describe('useContextDisplayItems', () => {
     it('should recompute when array reference changes but content is same', () => {
       const item1 = { ...basicTopLevelItem };
       const item2 = { ...basicTopLevelItem }; // Same content, different reference
-      
+
       mockGetContextDisplays.mockReturnValue([]);
 
-      const { result, rerender } = renderHook(
-        ({ items }) => useContextDisplayItems(items),
-        { initialProps: { items: [item1] } }
-      );
+      const { result, rerender } = renderHook(({ items }) => useContextDisplayItems(items), {
+        initialProps: { items: [item1] }
+      });
 
       const firstResult = result.current;
 
@@ -295,13 +277,12 @@ describe('useContextDisplayItems', () => {
     it('should handle deep array changes', () => {
       const initialItems = [basicTopLevelItem, anotherTopLevelItem];
       const newItems = [basicTopLevelItem]; // Removed one item
-      
+
       mockGetContextDisplays.mockReturnValue([]);
 
-      const { result, rerender } = renderHook(
-        ({ items }) => useContextDisplayItems(items),
-        { initialProps: { items: initialItems } }
-      );
+      const { result, rerender } = renderHook(({ items }) => useContextDisplayItems(items), {
+        initialProps: { items: initialItems }
+      });
 
       expect(mockGetContextDisplays).toHaveBeenCalledTimes(2);
 
@@ -313,20 +294,16 @@ describe('useContextDisplayItems', () => {
 
   describe('complex scenarios', () => {
     it('should handle mixed context displays with multiple Complete items', () => {
-      const mockContextDisplays1 = [
-        { text: 'Progress' },
-        { text: 'Complete' }
-      ];
-      const mockContextDisplays2 = [
-        { text: 'Complete' },
-        { text: 'In Progress' }
-      ];
+      const mockContextDisplays1 = [{ text: 'Progress' }, { text: 'Complete' }];
+      const mockContextDisplays2 = [{ text: 'Complete' }, { text: 'In Progress' }];
 
       mockGetContextDisplays
         .mockReturnValueOnce(mockContextDisplays1)
         .mockReturnValueOnce(mockContextDisplays2);
 
-      const { result } = renderHook(() => useContextDisplayItems([basicTopLevelItem, anotherTopLevelItem]));
+      const { result } = renderHook(() =>
+        useContextDisplayItems([basicTopLevelItem, anotherTopLevelItem])
+      );
 
       expect(result.current.allContextDisplayItems).toEqual([
         mockContextDisplays1,
@@ -361,10 +338,7 @@ describe('useContextDisplayItems', () => {
       const complexContextDisplays = [
         {
           text: 'Section 1',
-          children: [
-            { text: 'Subsection A' },
-            { text: 'Complete' }
-          ]
+          children: [{ text: 'Subsection A' }, { text: 'Complete' }]
         },
         {
           text: 'Section 2',
@@ -393,9 +367,9 @@ describe('useContextDisplayItems', () => {
       ];
 
       mockGetContextDisplays
-        .mockReturnValueOnce([{ text: 'Complete' }])      // Personal info complete
-        .mockReturnValueOnce([{ text: 'In Progress' }])   // Medical history in progress
-        .mockReturnValueOnce([{ text: 'Not Started' }]);  // Preferences not started
+        .mockReturnValueOnce([{ text: 'Complete' }]) // Personal info complete
+        .mockReturnValueOnce([{ text: 'In Progress' }]) // Medical history in progress
+        .mockReturnValueOnce([{ text: 'Not Started' }]); // Preferences not started
 
       const { result } = renderHook(() => useContextDisplayItems(formSections));
 
@@ -410,14 +384,8 @@ describe('useContextDisplayItems', () => {
       ];
 
       mockGetContextDisplays
-        .mockReturnValueOnce([
-          { text: 'Step 1 of 3' },
-          { text: 'Complete' }
-        ])
-        .mockReturnValueOnce([
-          { text: 'Step 2 of 3' },
-          { text: 'Current' }
-        ]);
+        .mockReturnValueOnce([{ text: 'Step 1 of 3' }, { text: 'Complete' }])
+        .mockReturnValueOnce([{ text: 'Step 2 of 3' }, { text: 'Current' }]);
 
       const { result } = renderHook(() => useContextDisplayItems(wizardSteps));
 
@@ -431,16 +399,11 @@ describe('useContextDisplayItems', () => {
       ];
 
       // Conditional section might not have context displays
-      mockGetContextDisplays
-        .mockReturnValueOnce([{ text: 'In Progress' }])
-        .mockReturnValueOnce([]); // Empty for conditional section
+      mockGetContextDisplays.mockReturnValueOnce([{ text: 'In Progress' }]).mockReturnValueOnce([]); // Empty for conditional section
 
       const { result } = renderHook(() => useContextDisplayItems(conditionalSections));
 
-      expect(result.current.allContextDisplayItems).toEqual([
-        [{ text: 'In Progress' }],
-        []
-      ]);
+      expect(result.current.allContextDisplayItems).toEqual([[{ text: 'In Progress' }], []]);
       expect(result.current.completedDisplayItemExists).toBe(false);
     });
   });
@@ -450,10 +413,9 @@ describe('useContextDisplayItems', () => {
       const items = [basicTopLevelItem];
       mockGetContextDisplays.mockReturnValue([{ text: 'Test' }]);
 
-      const { rerender } = renderHook(
-        ({ items }) => useContextDisplayItems(items),
-        { initialProps: { items } }
-      );
+      const { rerender } = renderHook(({ items }) => useContextDisplayItems(items), {
+        initialProps: { items }
+      });
 
       expect(mockGetContextDisplays).toHaveBeenCalledTimes(1);
 
@@ -470,18 +432,20 @@ describe('useContextDisplayItems', () => {
       const baseItems = [basicTopLevelItem];
       mockGetContextDisplays.mockReturnValue([]);
 
-      const { rerender } = renderHook(
-        ({ items }) => useContextDisplayItems(items),
-        { initialProps: { items: baseItems } }
-      );
+      const { rerender } = renderHook(({ items }) => useContextDisplayItems(items), {
+        initialProps: { items: baseItems }
+      });
 
       // Simulate frequent updates
       for (let i = 0; i < 5; i++) {
-        const newItems = [...baseItems, { 
-          linkId: `dynamic-${i}`, 
-          text: `Dynamic ${i}`, 
-          type: 'group' as const 
-        }];
+        const newItems = [
+          ...baseItems,
+          {
+            linkId: `dynamic-${i}`,
+            text: `Dynamic ${i}`,
+            type: 'group' as const
+          }
+        ];
         rerender({ items: newItems });
       }
 

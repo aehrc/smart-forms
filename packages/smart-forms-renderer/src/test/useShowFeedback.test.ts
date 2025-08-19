@@ -85,13 +85,13 @@ describe('useShowFeedback', () => {
       const { result } = renderHook(() => useShowFeedback());
 
       act(() => {
-        result.current.setShowFeedback(prev => !prev);
+        result.current.setShowFeedback((prev) => !prev);
       });
 
       expect(result.current.showFeedback).toBe(false);
 
       act(() => {
-        result.current.setShowFeedback(prev => !prev);
+        result.current.setShowFeedback((prev) => !prev);
       });
 
       expect(result.current.showFeedback).toBe(true);
@@ -140,13 +140,13 @@ describe('useShowFeedback', () => {
       const { result } = renderHook(() => useShowFeedback());
 
       act(() => {
-        result.current.setHasBlurred(prev => !prev);
+        result.current.setHasBlurred((prev) => !prev);
       });
 
       expect(result.current.hasBlurred).toBe(true);
 
       act(() => {
-        result.current.setHasBlurred(prev => !prev);
+        result.current.setHasBlurred((prev) => !prev);
       });
 
       expect(result.current.hasBlurred).toBe(false);
@@ -335,17 +335,17 @@ describe('useShowFeedback', () => {
       const { result } = renderHook(() => useShowFeedback());
 
       act(() => {
-        result.current.setShowFeedback(prev => prev && false); // true && false = false
+        result.current.setShowFeedback((prev) => prev && false); // true && false = false
       });
       expect(result.current.showFeedback).toBe(false);
 
       act(() => {
-        result.current.setHasBlurred(prev => prev || true); // false || true = true
+        result.current.setHasBlurred((prev) => prev || true); // false || true = true
       });
       expect(result.current.hasBlurred).toBe(true);
 
       act(() => {
-        result.current.setShowFeedback(prev => !prev || false); // !false || false = true
+        result.current.setShowFeedback((prev) => !prev || false); // !false || false = true
       });
       expect(result.current.showFeedback).toBe(true);
     });
@@ -421,8 +421,9 @@ describe('useShowFeedback', () => {
 
       // Force immediate feedback regardless of blur state
       const immediateMode = true;
-      const shouldShowFeedback = immediateMode || (result.current.showFeedback && result.current.hasBlurred);
-      
+      const shouldShowFeedback =
+        immediateMode || (result.current.showFeedback && result.current.hasBlurred);
+
       expect(shouldShowFeedback).toBe(true);
     });
   });

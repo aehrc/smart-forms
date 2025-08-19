@@ -24,7 +24,7 @@ import useBooleanCalculatedExpression from '../hooks/useBooleanCalculatedExpress
 
 // Mock stores
 const mockCalculatedExpressions: Record<string, any[]> = {};
-let mockCalculatedExpressionsFunction = jest.fn(() => mockCalculatedExpressions);
+const mockCalculatedExpressionsFunction = jest.fn(() => mockCalculatedExpressions);
 
 jest.mock('../stores', () => ({
   useQuestionnaireStore: {
@@ -54,10 +54,10 @@ describe('useBooleanCalculatedExpression', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
-    
+
     // Clear mock objects
-    Object.keys(mockCalculatedExpressions).forEach(key => delete mockCalculatedExpressions[key]);
-    
+    Object.keys(mockCalculatedExpressions).forEach((key) => delete mockCalculatedExpressions[key]);
+
     // Reset mock function
     mockCalculatedExpressionsFunction.mockClear();
     mockCalculatedExpressionsFunction.mockReturnValue(mockCalculatedExpressions);
@@ -562,7 +562,7 @@ describe('useBooleanCalculatedExpression', () => {
           }
         ]
       };
-      
+
       mockCalculatedExpressionsFunction.mockReturnValueOnce(newCalculatedExpressions);
 
       rerender({ props: defaultProps });
@@ -580,10 +580,9 @@ describe('useBooleanCalculatedExpression', () => {
         }
       ];
 
-      const { rerender } = renderHook(
-        ({ props }) => useBooleanCalculatedExpression(props),
-        { initialProps: { props: { ...defaultProps, booleanValue: false } } }
-      );
+      const { rerender } = renderHook(({ props }) => useBooleanCalculatedExpression(props), {
+        initialProps: { props: { ...defaultProps, booleanValue: false } }
+      });
 
       expect(mockOnChangeByCalcExpressionBoolean).toHaveBeenCalledWith(true);
 

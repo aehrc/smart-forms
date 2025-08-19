@@ -91,9 +91,9 @@ describe('addAdditionalVariables', () => {
       const existingVariables = createMockVariables();
       const fhirPathVar = createFhirPathVariable('age', '%age > 18');
       const xFhirVar = createXFhirQueryVariable('patient', 'Patient?_id={{%patient.id}}');
-      const additionalVars = { 
-        fhirPath: fhirPathVar, 
-        xFhir: xFhirVar 
+      const additionalVars = {
+        fhirPath: fhirPathVar,
+        xFhir: xFhirVar
       };
 
       const result = addAdditionalVariables(existingVariables, additionalVars);
@@ -227,7 +227,7 @@ describe('addAdditionalVariables', () => {
   describe('edge cases', () => {
     it('should handle null/undefined variables', () => {
       const existingVariables = createMockVariables();
-      const additionalVars: Record<string, any> = { 
+      const additionalVars: Record<string, any> = {
         nullVar: null,
         undefinedVar: undefined,
         validVar: createFhirPathVariable('age', '%age')
@@ -353,14 +353,18 @@ describe('addAdditionalVariables', () => {
 
       const result = addAdditionalVariables(existingVariables, additionalVars);
 
-      expect(result.fhirPathVariables.QuestionnaireLevel[0].expression).toContain('birthDate.toDate()');
-      expect(result.xFhirQueryVariables.complexPatient.valueExpression.expression).toContain('birthdate=le');
+      expect(result.fhirPathVariables.QuestionnaireLevel[0].expression).toContain(
+        'birthDate.toDate()'
+      );
+      expect(result.xFhirQueryVariables.complexPatient.valueExpression.expression).toContain(
+        'birthdate=le'
+      );
     });
 
     it('should maintain immutability of input objects', () => {
       const existingVariables = createMockVariables();
       const originalVars = JSON.parse(JSON.stringify(existingVariables));
-      
+
       const newVar = createFhirPathVariable('test', '%test');
       const additionalVars = { test: newVar };
 
@@ -390,17 +394,19 @@ describe('addAdditionalVariables', () => {
 
       expect(result.fhirPathVariables.QuestionnaireLevel).toHaveLength(2);
       expect(Object.keys(result.xFhirQueryVariables)).toHaveLength(1);
-      
-      const ageExpression = result.fhirPathVariables.QuestionnaireLevel.find(v => v.name === 'age');
+
+      const ageExpression = result.fhirPathVariables.QuestionnaireLevel.find(
+        (v) => v.name === 'age'
+      );
       expect(ageExpression?.expression).toContain('birthDate.toDate().age()');
     });
 
     it('should handle variables from different FHIR extensions', () => {
       const existingVariables = createMockVariables();
-      
+
       // Variable with standard FHIR variable extension
       const standardVar = createFhirPathVariable('standardVar', '%standard');
-      
+
       // Variable without the standard extension but with correct language
       const nonStandardVar = {
         url: 'http://custom.extension.url',

@@ -77,20 +77,26 @@ describe('useDateValidation', () => {
     it('should reject input with dash separator', () => {
       const { result } = renderHook(() => useDateValidation('01-01-2024'));
 
-      expect(result.current).toBe('Input does not match the required format with "/" as the separator.');
+      expect(result.current).toBe(
+        'Input does not match the required format with "/" as the separator.'
+      );
       expect(mockGetNumOfSeparators).not.toHaveBeenCalled();
     });
 
     it('should reject input with mixed separators', () => {
       const { result } = renderHook(() => useDateValidation('01/01-2024'));
 
-      expect(result.current).toBe('Input does not match the required format with "/" as the separator.');
+      expect(result.current).toBe(
+        'Input does not match the required format with "/" as the separator.'
+      );
     });
 
     it('should reject input with only dash', () => {
       const { result } = renderHook(() => useDateValidation('2024-01'));
 
-      expect(result.current).toBe('Input does not match the required format with "/" as the separator.');
+      expect(result.current).toBe(
+        'Input does not match the required format with "/" as the separator.'
+      );
     });
 
     it('should accept input with only forward slashes', () => {
@@ -322,7 +328,9 @@ describe('useDateValidation', () => {
     it('should handle input with multiple dashes', () => {
       const { result } = renderHook(() => useDateValidation('01-01-2024-extra'));
 
-      expect(result.current).toBe('Input does not match the required format with "/" as the separator.');
+      expect(result.current).toBe(
+        'Input does not match the required format with "/" as the separator.'
+      );
     });
 
     it('should handle input with spaces', () => {
@@ -362,7 +370,9 @@ describe('useDateValidation', () => {
     it('should handle input with mixed content', () => {
       const { result } = renderHook(() => useDateValidation('abc-123/456'));
 
-      expect(result.current).toBe('Input does not match the required format with "/" as the separator.');
+      expect(result.current).toBe(
+        'Input does not match the required format with "/" as the separator.'
+      );
     });
   });
 
@@ -461,7 +471,7 @@ describe('useDateValidation', () => {
       mockValidateThreeMatches.mockReturnValue(true);
       mockValidateTwoMatches.mockReturnValue(true);
 
-      const results = inputs.map(input => {
+      const results = inputs.map((input) => {
         const { result } = renderHook(() => useDateValidation(input));
         return result.current;
       });
@@ -476,7 +486,7 @@ describe('useDateValidation', () => {
       mockValidateThreeMatches.mockReturnValue(false);
 
       const { result: result1 } = renderHook(() => useDateValidation('01/01/2024'));
-      
+
       mockValidateThreeMatches.mockReturnValue(true);
       const { result: result2 } = renderHook(() => useDateValidation('01/01/2024'));
 

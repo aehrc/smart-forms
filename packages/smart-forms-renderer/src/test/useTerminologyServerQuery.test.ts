@@ -87,7 +87,7 @@ describe('useTerminologyServerQuery', () => {
           display: 'Fever'
         },
         {
-          system: 'http://snomed.info/sct', 
+          system: 'http://snomed.info/sct',
           code: '36971009',
           display: 'Sinusitis'
         }
@@ -103,14 +103,14 @@ describe('useTerminologyServerQuery', () => {
     },
     {
       system: 'http://snomed.info/sct',
-      code: '36971009', 
+      code: '36971009',
       display: 'Sinusitis'
     }
   ];
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Default mock implementations
     mockGetItemTerminologyServerToUse.mockReturnValue('http://terminology.hl7.org/fhir');
     mockGetValueSetCodings.mockReturnValue(mockCodings);
@@ -121,7 +121,7 @@ describe('useTerminologyServerQuery', () => {
     });
 
     // Clear mock objects
-    Object.keys(mockProcessedValueSets).forEach(key => delete mockProcessedValueSets[key]);
+    Object.keys(mockProcessedValueSets).forEach((key) => delete mockProcessedValueSets[key]);
     mockItemPreferredTerminologyServers.length = 0;
   });
 
@@ -131,9 +131,7 @@ describe('useTerminologyServerQuery', () => {
 
   describe('initialization and basic behavior', () => {
     it('should return initial state with empty options and no feedback', () => {
-      const { result } = renderHook(() => 
-        useTerminologyServerQuery(mockQItem, 10, '', '')
-      );
+      const { result } = renderHook(() => useTerminologyServerQuery(mockQItem, 10, '', ''));
 
       expect(result.current.options).toEqual([]);
       expect(result.current.loading).toBe(false);
@@ -141,21 +139,20 @@ describe('useTerminologyServerQuery', () => {
     });
 
     it('should not perform query when searchTerm is less than 2 characters', () => {
-      renderHook(() => 
-        useTerminologyServerQuery(mockQItem, 10, 'f', 'f')
-      );
+      renderHook(() => useTerminologyServerQuery(mockQItem, 10, 'f', 'f'));
 
       expect(mockUseQuery).toHaveBeenCalledWith({
-        queryKey: ['expandValueSet', 'http://hl7.org/fhir/ValueSet/condition-code&filter=f&count=10'],
+        queryKey: [
+          'expandValueSet',
+          'http://hl7.org/fhir/ValueSet/condition-code&filter=f&count=10'
+        ],
         queryFn: expect.any(Function),
         enabled: false // Should be disabled for < 2 characters
       });
     });
 
     it('should show feedback for 1 character (encouraging user to enter 2+ chars)', () => {
-      const { result } = renderHook(() => 
-        useTerminologyServerQuery(mockQItem, 10, 'f', 'f')
-      );
+      const { result } = renderHook(() => useTerminologyServerQuery(mockQItem, 10, 'f', 'f'));
 
       // Fixed: Now correctly shows feedback for 1 character input
       expect(result.current.feedback).toEqual({
@@ -167,12 +164,13 @@ describe('useTerminologyServerQuery', () => {
 
   describe('URL construction', () => {
     it('should construct URL with filter and count parameters', () => {
-      renderHook(() => 
-        useTerminologyServerQuery(mockQItem, 10, 'fever', 'fever')
-      );
+      renderHook(() => useTerminologyServerQuery(mockQItem, 10, 'fever', 'fever'));
 
       expect(mockUseQuery).toHaveBeenCalledWith({
-        queryKey: ['expandValueSet', 'http://hl7.org/fhir/ValueSet/condition-code&filter=fever&count=10'],
+        queryKey: [
+          'expandValueSet',
+          'http://hl7.org/fhir/ValueSet/condition-code&filter=fever&count=10'
+        ],
         queryFn: expect.any(Function),
         enabled: true
       });
@@ -184,12 +182,13 @@ describe('useTerminologyServerQuery', () => {
         answerValueSet: 'http://hl7.org/fhir/ValueSet/condition-code&'
       };
 
-      renderHook(() => 
-        useTerminologyServerQuery(qItemWithAmpersand, 10, 'fever', 'fever')
-      );
+      renderHook(() => useTerminologyServerQuery(qItemWithAmpersand, 10, 'fever', 'fever'));
 
       expect(mockUseQuery).toHaveBeenCalledWith({
-        queryKey: ['expandValueSet', 'http://hl7.org/fhir/ValueSet/condition-code&filter=fever&count=10'],
+        queryKey: [
+          'expandValueSet',
+          'http://hl7.org/fhir/ValueSet/condition-code&filter=fever&count=10'
+        ],
         queryFn: expect.any(Function),
         enabled: true
       });
@@ -201,9 +200,7 @@ describe('useTerminologyServerQuery', () => {
         answerValueSet: '#contained-valueset'
       };
 
-      renderHook(() => 
-        useTerminologyServerQuery(qItemContained, 10, 'fever', 'fever')
-      );
+      renderHook(() => useTerminologyServerQuery(qItemContained, 10, 'fever', 'fever'));
 
       expect(mockUseQuery).toHaveBeenCalledWith({
         queryKey: ['expandValueSet', 'contained-valueset&filter=fever&count=10'],
@@ -222,12 +219,13 @@ describe('useTerminologyServerQuery', () => {
         answerValueSet: '#contained-valueset'
       };
 
-      renderHook(() => 
-        useTerminologyServerQuery(qItemContained, 10, 'fever', 'fever')
-      );
+      renderHook(() => useTerminologyServerQuery(qItemContained, 10, 'fever', 'fever'));
 
       expect(mockUseQuery).toHaveBeenCalledWith({
-        queryKey: ['expandValueSet', 'http://updated.example.com/ValueSet/conditions&filter=fever&count=10'],
+        queryKey: [
+          'expandValueSet',
+          'http://updated.example.com/ValueSet/conditions&filter=fever&count=10'
+        ],
         queryFn: expect.any(Function),
         enabled: true
       });
@@ -240,9 +238,7 @@ describe('useTerminologyServerQuery', () => {
         // No answerValueSet
       };
 
-      renderHook(() => 
-        useTerminologyServerQuery(qItemNoValueSet, 10, 'fever', 'fever')
-      );
+      renderHook(() => useTerminologyServerQuery(qItemNoValueSet, 10, 'fever', 'fever'));
 
       expect(mockUseQuery).toHaveBeenCalledWith({
         queryKey: ['expandValueSet', ''],
@@ -254,9 +250,7 @@ describe('useTerminologyServerQuery', () => {
 
   describe('terminology server selection', () => {
     it('should call getItemTerminologyServerToUse with correct parameters', () => {
-      renderHook(() => 
-        useTerminologyServerQuery(mockQItem, 10, 'fever', 'fever')
-      );
+      renderHook(() => useTerminologyServerQuery(mockQItem, 10, 'fever', 'fever'));
 
       expect(mockGetItemTerminologyServerToUse).toHaveBeenCalledWith(
         mockQItem,
@@ -269,9 +263,7 @@ describe('useTerminologyServerQuery', () => {
       const customTerminologyServer = 'http://custom.terminology.server/fhir';
       mockGetItemTerminologyServerToUse.mockReturnValue(customTerminologyServer);
 
-      renderHook(() => 
-        useTerminologyServerQuery(mockQItem, 10, 'fever', 'fever')
-      );
+      renderHook(() => useTerminologyServerQuery(mockQItem, 10, 'fever', 'fever'));
 
       const queryFn = mockUseQuery.mock.calls[0][0].queryFn;
       queryFn();
@@ -291,7 +283,7 @@ describe('useTerminologyServerQuery', () => {
         data: null
       });
 
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useTerminologyServerQuery(mockQItem, 10, 'fever', 'fever')
       );
 
@@ -307,7 +299,7 @@ describe('useTerminologyServerQuery', () => {
         data: mockValueSet
       });
 
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useTerminologyServerQuery(mockQItem, 10, 'fever', 'fever')
       );
 
@@ -333,7 +325,7 @@ describe('useTerminologyServerQuery', () => {
         data: emptyValueSet
       });
 
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useTerminologyServerQuery(mockQItem, 10, 'fever', 'fever')
       );
 
@@ -358,7 +350,7 @@ describe('useTerminologyServerQuery', () => {
         data: noExpansionValueSet
       });
 
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useTerminologyServerQuery(mockQItem, 10, 'fever', 'fever')
       );
 
@@ -379,7 +371,7 @@ describe('useTerminologyServerQuery', () => {
         data: null
       });
 
-      const { result } = renderHook(() => 
+      const { result } = renderHook(() =>
         useTerminologyServerQuery(mockQItem, 10, 'fever', 'fever')
       );
 
@@ -389,7 +381,9 @@ describe('useTerminologyServerQuery', () => {
         message: 'An error occurred. Try again later or try searching for a different term.',
         color: 'error'
       });
-      expect(consoleSpy).toHaveBeenCalledWith('Ontoserver query failed. Details below: \nError: Network error');
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Ontoserver query failed. Details below: \nError: Network error'
+      );
     });
 
     it('should handle timeout errors', () => {
@@ -400,30 +394,29 @@ describe('useTerminologyServerQuery', () => {
         data: null
       });
 
-      renderHook(() => 
-        useTerminologyServerQuery(mockQItem, 10, 'fever', 'fever')
-      );
+      renderHook(() => useTerminologyServerQuery(mockQItem, 10, 'fever', 'fever'));
 
-      expect(consoleSpy).toHaveBeenCalledWith('Ontoserver query failed. Details below: \nError: Request timeout');
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Ontoserver query failed. Details below: \nError: Request timeout'
+      );
     });
   });
 
   describe('edge cases and complex scenarios', () => {
     it('should handle empty input clearing feedback', () => {
-      const { result } = renderHook(() => 
-        useTerminologyServerQuery(mockQItem, 10, '', '')
-      );
+      const { result } = renderHook(() => useTerminologyServerQuery(mockQItem, 10, '', ''));
 
       expect(result.current.feedback).toBeUndefined();
     });
 
     it('should handle very large maxList values', () => {
-      renderHook(() => 
-        useTerminologyServerQuery(mockQItem, 9999, 'fever', 'fever')
-      );
+      renderHook(() => useTerminologyServerQuery(mockQItem, 9999, 'fever', 'fever'));
 
       expect(mockUseQuery).toHaveBeenCalledWith({
-        queryKey: ['expandValueSet', 'http://hl7.org/fhir/ValueSet/condition-code&filter=fever&count=9999'],
+        queryKey: [
+          'expandValueSet',
+          'http://hl7.org/fhir/ValueSet/condition-code&filter=fever&count=9999'
+        ],
         queryFn: expect.any(Function),
         enabled: true
       });
@@ -431,13 +424,16 @@ describe('useTerminologyServerQuery', () => {
 
     it('should handle special characters in search term', () => {
       const specialSearchTerm = 'fever & cold';
-      
-      renderHook(() => 
+
+      renderHook(() =>
         useTerminologyServerQuery(mockQItem, 10, specialSearchTerm, specialSearchTerm)
       );
 
       expect(mockUseQuery).toHaveBeenCalledWith({
-        queryKey: ['expandValueSet', 'http://hl7.org/fhir/ValueSet/condition-code&filter=fever & cold&count=10'],
+        queryKey: [
+          'expandValueSet',
+          'http://hl7.org/fhir/ValueSet/condition-code&filter=fever & cold&count=10'
+        ],
         queryFn: expect.any(Function),
         enabled: true
       });
@@ -449,9 +445,7 @@ describe('useTerminologyServerQuery', () => {
         answerValueSet: '#non-existent-valueset'
       };
 
-      renderHook(() => 
-        useTerminologyServerQuery(qItemContained, 10, 'fever', 'fever')
-      );
+      renderHook(() => useTerminologyServerQuery(qItemContained, 10, 'fever', 'fever'));
 
       expect(mockUseQuery).toHaveBeenCalledWith({
         queryKey: ['expandValueSet', 'non-existent-valueset&filter=fever&count=10'],
@@ -471,9 +465,7 @@ describe('useTerminologyServerQuery', () => {
         answerValueSet: '#contained-valueset'
       };
 
-      renderHook(() => 
-        useTerminologyServerQuery(qItemContained, 10, 'fever', 'fever')
-      );
+      renderHook(() => useTerminologyServerQuery(qItemContained, 10, 'fever', 'fever'));
 
       expect(mockUseQuery).toHaveBeenCalledWith({
         queryKey: ['expandValueSet', 'contained-valueset&filter=fever&count=10'],
@@ -491,7 +483,10 @@ describe('useTerminologyServerQuery', () => {
       );
 
       expect(mockUseQuery).toHaveBeenCalledWith({
-        queryKey: ['expandValueSet', 'http://hl7.org/fhir/ValueSet/condition-code&filter=fever&count=10'],
+        queryKey: [
+          'expandValueSet',
+          'http://hl7.org/fhir/ValueSet/condition-code&filter=fever&count=10'
+        ],
         queryFn: expect.any(Function),
         enabled: true
       });
@@ -500,16 +495,17 @@ describe('useTerminologyServerQuery', () => {
       rerender({ searchTerm: 'cold' });
 
       expect(mockUseQuery).toHaveBeenCalledWith({
-        queryKey: ['expandValueSet', 'http://hl7.org/fhir/ValueSet/condition-code&filter=cold&count=10'],
+        queryKey: [
+          'expandValueSet',
+          'http://hl7.org/fhir/ValueSet/condition-code&filter=cold&count=10'
+        ],
         queryFn: expect.any(Function),
         enabled: true
       });
     });
 
     it('should use query function correctly', () => {
-      renderHook(() => 
-        useTerminologyServerQuery(mockQItem, 10, 'fever', 'fever')
-      );
+      renderHook(() => useTerminologyServerQuery(mockQItem, 10, 'fever', 'fever'));
 
       const queryFn = mockUseQuery.mock.calls[0][0].queryFn;
       queryFn();
@@ -523,24 +519,26 @@ describe('useTerminologyServerQuery', () => {
 
   describe('enabled condition logic', () => {
     it('should be enabled when searchTerm >= 2 chars and answerValueSet exists', () => {
-      renderHook(() => 
-        useTerminologyServerQuery(mockQItem, 10, 'fe', 'fe')
-      );
+      renderHook(() => useTerminologyServerQuery(mockQItem, 10, 'fe', 'fe'));
 
       expect(mockUseQuery).toHaveBeenCalledWith({
-        queryKey: ['expandValueSet', 'http://hl7.org/fhir/ValueSet/condition-code&filter=fe&count=10'],
+        queryKey: [
+          'expandValueSet',
+          'http://hl7.org/fhir/ValueSet/condition-code&filter=fe&count=10'
+        ],
         queryFn: expect.any(Function),
         enabled: true
       });
     });
 
     it('should be disabled when searchTerm < 2 chars', () => {
-      renderHook(() => 
-        useTerminologyServerQuery(mockQItem, 10, 'f', 'f')
-      );
+      renderHook(() => useTerminologyServerQuery(mockQItem, 10, 'f', 'f'));
 
       expect(mockUseQuery).toHaveBeenCalledWith({
-        queryKey: ['expandValueSet', 'http://hl7.org/fhir/ValueSet/condition-code&filter=f&count=10'],
+        queryKey: [
+          'expandValueSet',
+          'http://hl7.org/fhir/ValueSet/condition-code&filter=f&count=10'
+        ],
         queryFn: expect.any(Function),
         enabled: false
       });
@@ -552,9 +550,7 @@ describe('useTerminologyServerQuery', () => {
         type: 'choice'
       };
 
-      renderHook(() => 
-        useTerminologyServerQuery(qItemNoValueSet, 10, 'fever', 'fever')
-      );
+      renderHook(() => useTerminologyServerQuery(qItemNoValueSet, 10, 'fever', 'fever'));
 
       expect(mockUseQuery).toHaveBeenCalledWith({
         queryKey: ['expandValueSet', ''],

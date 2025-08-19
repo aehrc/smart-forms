@@ -418,7 +418,9 @@ describe('getExpressionsFromItem utils', () => {
       const result = findCalculatedExpressionsInExtensions(extensions);
 
       expect(result).toHaveLength(1);
-      expect(result[0].url).toBe('http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression');
+      expect(result[0].url).toBe(
+        'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression'
+      );
     });
 
     test('should filter out extensions with wrong URL', () => {
@@ -757,4 +759,3 @@ describe('getExpressionsFromItem utils', () => {
     });
   });
 });
-
