@@ -88,8 +88,7 @@ function useInitialiseForm(
     additionalVariables,
     terminologyServerUrl,
     fhirClient,
-    readOnly,
-    storeSetters
+    readOnly
   ]);
 
   return isFhirClientReady && isBuilding;

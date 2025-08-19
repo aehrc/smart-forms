@@ -152,14 +152,16 @@ describe('useTerminologyServerQuery', () => {
       });
     });
 
-    it('should not show feedback for 1 character (due to impossible condition in source)', () => {
+    it('should show feedback for 1 character (encouraging user to enter 2+ chars)', () => {
       const { result } = renderHook(() => 
         useTerminologyServerQuery(mockQItem, 10, 'f', 'f')
       );
 
-      // Note: The source code has a logical bug at line 45:
-      // if (searchTerm.length < 1 && searchTerm.length > 0) - this is never true
-      expect(result.current.feedback).toBeUndefined();
+      // Fixed: Now correctly shows feedback for 1 character input
+      expect(result.current.feedback).toEqual({
+        message: 'Enter at least 2 characters to search for results.',
+        color: 'info'
+      });
     });
   });
 

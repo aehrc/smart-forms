@@ -537,3 +537,4 @@ describe('extractVariables - Phase 5', () => {
     });
   });
 });
+
