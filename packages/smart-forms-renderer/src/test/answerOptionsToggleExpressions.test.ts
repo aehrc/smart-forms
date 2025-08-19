@@ -101,7 +101,7 @@ describe('answerOptionsToggleExpressions utils', () => {
     });
 
     test('should update isEnabled when result differs from initial value', async () => {
-      const fhirpath = require('fhirpath');
+      const fhirpath = jest.requireMock('fhirpath') as any;
       fhirpath.evaluate.mockReturnValue([true]);
 
       const mockAnswerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]> = {
@@ -140,7 +140,7 @@ describe('answerOptionsToggleExpressions utils', () => {
     });
 
     test('should set isEnabled to false when no result is returned', async () => {
-      const fhirpath = require('fhirpath');
+      const fhirpath = jest.requireMock('fhirpath') as any;
       fhirpath.evaluate.mockReturnValue([]);
 
       const mockAnswerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]> = {
@@ -179,7 +179,7 @@ describe('answerOptionsToggleExpressions utils', () => {
     });
 
     test('should handle intersect edge case', async () => {
-      const fhirpath = require('fhirpath');
+      const fhirpath = jest.requireMock('fhirpath') as any;
       fhirpath.evaluate.mockReturnValue([]);
 
       const mockAnswerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]> = {
@@ -218,7 +218,7 @@ describe('answerOptionsToggleExpressions utils', () => {
     });
 
     test('should cache Promise-based fhirPathResult', async () => {
-      const fhirpath = require('fhirpath');
+      const fhirpath = jest.requireMock('fhirpath') as any;
       const mockPromise = Promise.resolve([true]);
       fhirpath.evaluate.mockReturnValue(mockPromise);
 
@@ -258,7 +258,7 @@ describe('answerOptionsToggleExpressions utils', () => {
     });
 
     test('should handle evaluation errors gracefully', async () => {
-      const fhirpath = require('fhirpath');
+      const fhirpath = jest.requireMock('fhirpath') as any;
       fhirpath.evaluate.mockImplementation(() => {
         throw new Error('FHIRPath evaluation error');
       });
@@ -306,7 +306,7 @@ describe('answerOptionsToggleExpressions utils', () => {
 
   describe('evaluateAnswerOptionsToggleExpressions', () => {
     test('should evaluate expressions and return updated state', async () => {
-      const fhirpath = require('fhirpath');
+      const fhirpath = jest.requireMock('fhirpath') as any;
       fhirpath.evaluate.mockReturnValue([true]);
 
       const mockAnswerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]> = {
@@ -361,7 +361,7 @@ describe('answerOptionsToggleExpressions utils', () => {
     });
 
     test('should handle evaluation errors gracefully', async () => {
-      const fhirpath = require('fhirpath');
+      const fhirpath = jest.requireMock('fhirpath') as any;
       fhirpath.evaluate.mockImplementation(() => {
         throw new Error('FHIRPath evaluation error');
       });

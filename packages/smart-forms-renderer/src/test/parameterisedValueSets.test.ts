@@ -510,7 +510,7 @@ describe('parameterisedValueSets utils', () => {
     });
 
     test('should process dynamic value sets with FHIRPath expressions', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue(['patient-123']);
 
       const processedValueSets = {
@@ -572,7 +572,7 @@ describe('parameterisedValueSets utils', () => {
     });
 
     test('should handle FHIRPath evaluation errors', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockImplementation(() => {
         throw new Error('FHIRPath evaluation failed');
       });
@@ -609,7 +609,7 @@ describe('parameterisedValueSets utils', () => {
     });
 
     test('should handle Promise-based FHIRPath results', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue(Promise.resolve(['async-result']));
 
       const params = createMockParams({
@@ -635,7 +635,7 @@ describe('parameterisedValueSets utils', () => {
     });
 
     test('should handle empty FHIRPath results (remove parameter)', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue([]);
 
       const params = createMockParams({
@@ -664,7 +664,7 @@ describe('parameterisedValueSets utils', () => {
     });
 
     test('should handle multiple dynamic value sets', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValueOnce(['result-1']).mockReturnValueOnce(['result-2']);
 
       const params = createMockParams({
@@ -775,7 +775,7 @@ describe('parameterisedValueSets utils', () => {
     });
 
     test('should evaluate dynamic value sets and detect updates', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue(['new-value']);
 
       const processedValueSets = {
@@ -812,7 +812,7 @@ describe('parameterisedValueSets utils', () => {
     });
 
     test('should not update when parameter value is the same', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue(['same-value']);
 
       const processedValueSets = {
@@ -874,7 +874,7 @@ describe('parameterisedValueSets utils', () => {
     });
 
     test('should handle FHIRPath evaluation errors', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockImplementation(() => {
         throw new Error('FHIRPath evaluation failed');
       });

@@ -19,9 +19,9 @@ import { describe, expect, test, jest } from '@jest/globals';
 import { applyComputedUpdates } from '../utils/computedUpdates';
 import type {
   Questionnaire,
-  QuestionnaireResponse,
-  QuestionnaireItem,
-  QuestionnaireResponseItem
+  QuestionnaireResponse
+  // QuestionnaireItem,
+  // QuestionnaireResponseItem
 } from 'fhir/r4';
 import type { ComputedQRItemUpdates } from '../interfaces/computedUpdates.interface';
 

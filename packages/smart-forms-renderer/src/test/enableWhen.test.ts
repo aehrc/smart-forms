@@ -21,7 +21,7 @@
 import type {
   QuestionnaireItemEnableWhen,
   QuestionnaireResponse,
-  QuestionnaireResponseItem,
+  // QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
 import type {

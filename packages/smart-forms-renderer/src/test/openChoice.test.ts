@@ -25,8 +25,8 @@ import {
 import type {
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
-  QuestionnaireResponseItem,
-  QuestionnaireResponseItemAnswer
+  QuestionnaireResponseItem
+  // QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
 import { OpenChoiceItemControl } from '../interfaces/choice.enum';
 

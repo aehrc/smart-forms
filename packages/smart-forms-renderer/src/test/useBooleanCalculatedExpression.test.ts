@@ -56,7 +56,9 @@ describe('useBooleanCalculatedExpression', () => {
     jest.useFakeTimers();
 
     // Clear mock objects
-    Object.keys(mockCalculatedExpressions).forEach((key) => delete mockCalculatedExpressions[key]);
+    Object.keys(mockCalculatedExpressions).forEach((key) => {
+      (mockCalculatedExpressions as any)[key] = undefined;
+    });
 
     // Reset mock function
     mockCalculatedExpressionsFunction.mockClear();

@@ -21,13 +21,13 @@ import {
   evaluateEnableWhenRepeatExpressionInstance,
   evaluateEnableWhenExpressions
 } from '../utils/enableWhenExpression';
-import type { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
+// import type { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
   EnableWhenExpressions,
-  EnableWhenSingleExpression,
+  // EnableWhenSingleExpression,
   EnableWhenRepeatExpression
 } from '../interfaces/enableWhen.interface';
-import type { Variables } from '../interfaces';
+// import type { Variables } from '../interfaces';
 
 // Mock dependencies
 jest.mock('../utils/fhirpath', () => ({
@@ -90,7 +90,7 @@ describe('enableWhenExpression utils', () => {
     });
 
     test('should evaluate single enableWhen expressions', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue([true]);
 
       const params = createMockParams({
@@ -111,7 +111,7 @@ describe('enableWhenExpression utils', () => {
     });
 
     test('should handle single expression evaluation with no result', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue([]);
 
       const params = createMockParams({
@@ -132,7 +132,7 @@ describe('enableWhenExpression utils', () => {
     });
 
     test('should handle intersect edge case for single expressions', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue([]);
 
       const params = createMockParams({
@@ -153,7 +153,7 @@ describe('enableWhenExpression utils', () => {
     });
 
     test('should handle Promise-based FHIRPath results and caching', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue(Promise.resolve([true]));
 
       const params = createMockParams({
@@ -175,7 +175,7 @@ describe('enableWhenExpression utils', () => {
     });
 
     test('should handle cached expressions properly', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue([false]);
 
       const params = createMockParams({
@@ -200,7 +200,7 @@ describe('enableWhenExpression utils', () => {
     });
 
     test('should handle FHIRPath evaluation errors', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockImplementation(() => {
         throw new Error('FHIRPath syntax error');
       });
@@ -231,7 +231,7 @@ describe('enableWhenExpression utils', () => {
     });
 
     test('should evaluate repeat enableWhen expressions', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate
         .mockReturnValueOnce([2]) // For getNumOfEnableWhenExpressionItemInstances
         .mockReturnValueOnce([true]) // For first instance
@@ -259,7 +259,7 @@ describe('enableWhenExpression utils', () => {
     });
 
     test('should handle repeat expressions with no instances', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue([0]);
 
       const params = createMockParams({
@@ -284,7 +284,7 @@ describe('enableWhenExpression utils', () => {
     });
 
     test('should handle repeat expressions with invalid expression structure', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue([2]);
 
       const params = createMockParams({
@@ -309,7 +309,7 @@ describe('enableWhenExpression utils', () => {
     });
 
     test('should handle mixed single and repeat expressions', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate
         .mockReturnValueOnce([false]) // Single expression
         .mockReturnValueOnce([1]) // Repeat expression count
@@ -347,7 +347,7 @@ describe('enableWhenExpression utils', () => {
 
   describe('evaluateEnableWhenRepeatExpressionInstance', () => {
     test('should evaluate repeat expression instance successfully', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue([true]);
 
       const enableWhenRepeatExpression: EnableWhenRepeatExpression = {
@@ -371,7 +371,7 @@ describe('enableWhenExpression utils', () => {
     });
 
     test('should handle expression with no result', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue([]);
 
       const enableWhenRepeatExpression: EnableWhenRepeatExpression = {
@@ -395,7 +395,7 @@ describe('enableWhenExpression utils', () => {
     });
 
     test('should handle intersect edge case', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue([]);
 
       const enableWhenRepeatExpression: EnableWhenRepeatExpression = {
@@ -419,7 +419,7 @@ describe('enableWhenExpression utils', () => {
     });
 
     test('should not update when result matches initial value', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue([true]);
 
       const enableWhenRepeatExpression: EnableWhenRepeatExpression = {
@@ -443,7 +443,7 @@ describe('enableWhenExpression utils', () => {
     });
 
     test('should handle FHIRPath evaluation errors', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockImplementation(() => {
         throw new Error('Invalid FHIRPath expression');
       });
@@ -476,7 +476,7 @@ describe('enableWhenExpression utils', () => {
     });
 
     test('should handle non-boolean FHIRPath results', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue(['string-result']);
 
       const enableWhenRepeatExpression: EnableWhenRepeatExpression = {
@@ -500,7 +500,7 @@ describe('enableWhenExpression utils', () => {
     });
 
     test('should correctly modify expression for specific instance index', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       const evaluateSpy = jest.spyOn(mockFhirpath, 'evaluate').mockReturnValue([true]);
 
       const enableWhenRepeatExpression: EnableWhenRepeatExpression = {
@@ -532,7 +532,7 @@ describe('enableWhenExpression utils', () => {
 
   describe('evaluateEnableWhenExpressions', () => {
     test('should evaluate enableWhen expressions during runtime', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate
         .mockReturnValueOnce([false]) // Single expression
         .mockReturnValueOnce([1]) // Repeat expression count
@@ -572,7 +572,7 @@ describe('enableWhenExpression utils', () => {
     });
 
     test('should return not updated when no changes occur', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate
         .mockReturnValueOnce([true]) // Single expression - same as initial
         .mockReturnValueOnce([1]) // Repeat expression count
@@ -623,7 +623,7 @@ describe('enableWhenExpression utils', () => {
     });
 
     test('should use cached results for single expressions', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       const evaluateSpy = jest.spyOn(mockFhirpath, 'evaluate');
 
       const enableWhenExpressions: EnableWhenExpressions = {
@@ -652,7 +652,7 @@ describe('enableWhenExpression utils', () => {
     });
 
     test('should handle multiple single expressions', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate
         .mockReturnValueOnce([false]) // First expression
         .mockReturnValueOnce([true]) // Second expression
@@ -690,7 +690,7 @@ describe('enableWhenExpression utils', () => {
     });
 
     test('should handle multiple repeat expressions', async () => {
-      const mockFhirpath = require('fhirpath');
+      const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate
         .mockReturnValueOnce([2]) // First repeat count
         .mockReturnValueOnce([true]) // First repeat instance 0

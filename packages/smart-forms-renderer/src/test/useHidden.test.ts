@@ -71,8 +71,8 @@ describe('useHidden', () => {
 
   // Helper function to get mock references
   const getMocks = () => {
-    const { useQuestionnaireStore } = require('../stores');
-    const { useRendererStylingStore } = require('../stores/rendererStylingStore');
+    const { useQuestionnaireStore } = jest.requireMock('../stores');
+    const { useRendererStylingStore } = jest.requireMock('../stores/rendererStylingStore');
 
     return {
       enableWhenIsActivated: useQuestionnaireStore.use.enableWhenIsActivated,

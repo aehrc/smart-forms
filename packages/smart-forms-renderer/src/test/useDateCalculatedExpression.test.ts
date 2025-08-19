@@ -603,7 +603,7 @@ describe('useDateCalculatedExpression', () => {
 
   describe('performance and optimization', () => {
     it('should only trigger effect once on mount when no expressions exist', () => {
-      const effectSpy = jest.spyOn(require('react'), 'useEffect');
+      const effectSpy = jest.spyOn(jest.requireMock('react'), 'useEffect');
 
       renderHook(() => useDateCalculatedExpression(defaultProps));
 
