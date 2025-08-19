@@ -7,6 +7,11 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+
+## [1.0.0-alpha.93] - 2025-08-19
+#### Changed
+- Remove MUI GlobalStyles (which overrides the parent app) with ScopedCssBaseline in RendererThemeProvider. This sets a baseline for the renderer's MUI styles without affecting the parent app's styles.
+
 ## [1.0.0-alpha.92] - 2025-08-15
 #### Changed
 - Changed "questionnaire-item-text-hidden" custom extension to use the "https://smartforms.csiro.au/ig/StructureDefinition/<extension_name>" convention. Affected extensions:
