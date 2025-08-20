@@ -19,16 +19,16 @@
  */
 
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
-import type { 
-  QuestionnaireItem, 
-  ValueSet, 
-  Coding, 
+import type {
+  QuestionnaireItem,
+  ValueSet,
+  Coding,
   Expression,
   Patient,
   Practitioner,
   Encounter
 } from 'fhir/r4';
-import { 
+import {
   getTerminologyServerUrl,
   getValueSetPromise,
   validateCodePromise,
@@ -55,12 +55,14 @@ import { client } from 'fhirclient';
 import { getRelevantCodingProperties } from '../../utils/choice';
 
 const mockClient = client as jest.MockedFunction<typeof client>;
-const mockGetRelevantCodingProperties = getRelevantCodingProperties as jest.MockedFunction<typeof getRelevantCodingProperties>;
+const mockGetRelevantCodingProperties = getRelevantCodingProperties as jest.MockedFunction<
+  typeof getRelevantCodingProperties
+>;
 
 describe('valueSet', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Default mock for getRelevantCodingProperties
     mockGetRelevantCodingProperties.mockImplementation((coding) => coding as Coding);
   });
@@ -146,7 +148,8 @@ describe('valueSet', () => {
       mockRequest.mockResolvedValue({ mockValueSet: true });
       mockClient.mockReturnValue({ request: mockRequest } as any);
 
-      const url = 'https://tx.fhir.org/r4/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/example';
+      const url =
+        'https://tx.fhir.org/r4/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/example';
       const terminologyServerUrl = 'https://original-server.com/r4';
 
       await getValueSetPromise(url, terminologyServerUrl);
@@ -184,7 +187,7 @@ describe('valueSet', () => {
 
       expect(mockClient).toHaveBeenCalledWith({ serverUrl: terminologyServerUrl });
       expect(mockRequest).toHaveBeenCalledWith({
-        url: 'ValueSet/$expand?url=ValueSet/$expand?url='  // The function processes the URL and appends it
+        url: 'ValueSet/$expand?url=ValueSet/$expand?url=' // The function processes the URL and appends it
       });
     });
   });
@@ -292,10 +295,10 @@ describe('valueSet', () => {
       };
 
       const valueSetPromises: Record<string, ValueSetPromise> = {
-        'vs1': {
+        vs1: {
           promise: Promise.resolve(mockValueSet1)
         },
-        'vs2': {
+        vs2: {
           promise: Promise.resolve(mockValueSet2)
         }
       };
@@ -315,10 +318,10 @@ describe('valueSet', () => {
       };
 
       const valueSetPromises: Record<string, ValueSetPromise> = {
-        'vs1': {
+        vs1: {
           promise: Promise.resolve(mockValueSet)
         },
-        'vs2': {
+        vs2: {
           promise: Promise.reject(new Error('Network error'))
         }
       };
@@ -336,7 +339,7 @@ describe('valueSet', () => {
       });
 
       const valueSetPromises: Record<string, ValueSetPromise> = {
-        'slow': {
+        slow: {
           promise: slowPromise
         }
       };
@@ -359,7 +362,7 @@ describe('valueSet', () => {
       };
 
       const valueSetPromises: Record<string, ValueSetPromise> = {
-        'vs1': {
+        vs1: {
           promise: Promise.resolve(mockValueSet)
         }
       };
@@ -591,19 +594,19 @@ describe('valueSet', () => {
   describe('createValueSetToXFhirQueryVariableNameMap', () => {
     test('should create mapping from ValueSet URLs to variable names', () => {
       const variables: Record<string, VariableXFhirQuery> = {
-        'vs1': {
+        vs1: {
           valueExpression: {
             language: 'text/fhirpath',
             expression: 'http://hl7.org/fhir/ValueSet/example1'
           }
         },
-        'vs2': {
+        vs2: {
           valueExpression: {
             language: 'text/fhirpath',
             expression: 'http://hl7.org/fhir/ValueSet/example2'
           }
         },
-        'nonValueSet': {
+        nonValueSet: {
           valueExpression: {
             language: 'text/fhirpath',
             expression: 'Patient.identifier'
@@ -621,7 +624,7 @@ describe('valueSet', () => {
 
     test('should handle variables with no expression', () => {
       const variables: Record<string, VariableXFhirQuery> = {
-        'vs1': {
+        vs1: {
           valueExpression: {
             language: 'text/fhirpath'
             // No expression property
@@ -640,13 +643,13 @@ describe('valueSet', () => {
 
     test('should handle variables with invalid ValueSet URLs', () => {
       const variables: Record<string, VariableXFhirQuery> = {
-        'invalid1': {
+        invalid1: {
           valueExpression: {
             language: 'text/fhirpath',
             expression: 'not-a-valueset-url'
           }
         },
-        'invalid2': {
+        invalid2: {
           valueExpression: {
             language: 'text/fhirpath',
             expression: 'http://example.com/not-valueset'
@@ -680,22 +683,42 @@ describe('valueSet', () => {
     };
 
     test('should return Patient resource when resourceType is Patient', () => {
-      const result = getResourceFromLaunchContext('Patient', mockPatient, mockPractitioner, mockEncounter);
+      const result = getResourceFromLaunchContext(
+        'Patient',
+        mockPatient,
+        mockPractitioner,
+        mockEncounter
+      );
       expect(result).toEqual(mockPatient);
     });
 
     test('should return Practitioner resource when resourceType is Practitioner', () => {
-      const result = getResourceFromLaunchContext('Practitioner', mockPatient, mockPractitioner, mockEncounter);
+      const result = getResourceFromLaunchContext(
+        'Practitioner',
+        mockPatient,
+        mockPractitioner,
+        mockEncounter
+      );
       expect(result).toEqual(mockPractitioner);
     });
 
     test('should return Encounter resource when resourceType is Encounter', () => {
-      const result = getResourceFromLaunchContext('Encounter', mockPatient, mockPractitioner, mockEncounter);
+      const result = getResourceFromLaunchContext(
+        'Encounter',
+        mockPatient,
+        mockPractitioner,
+        mockEncounter
+      );
       expect(result).toEqual(mockEncounter);
     });
 
     test('should return null when resourceType is not Patient, Practitioner, or Encounter', () => {
-      const result = getResourceFromLaunchContext('Observation' as any, mockPatient, mockPractitioner, mockEncounter);
+      const result = getResourceFromLaunchContext(
+        'Observation' as any,
+        mockPatient,
+        mockPractitioner,
+        mockEncounter
+      );
       expect(result).toBeNull();
     });
 

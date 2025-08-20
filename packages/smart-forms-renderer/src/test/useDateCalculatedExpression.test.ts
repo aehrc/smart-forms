@@ -609,7 +609,7 @@ describe('useDateCalculatedExpression', () => {
 
       // Verify initial state is correct
       expect(result.current.calcExpUpdated).toBe(false);
-      
+
       // Verify no callbacks were called since there are no calculated expressions
       expect(mockOnChangeByCalcExpressionString).not.toHaveBeenCalled();
       expect(mockOnChangeByCalcExpressionNull).not.toHaveBeenCalled();

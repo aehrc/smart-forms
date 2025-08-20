@@ -243,7 +243,7 @@ describe('formUpdateQueueStore', () => {
       // Test that the store exports the expected interface
       expect(useFormUpdateQueueStore).toBeDefined();
       expect(useFormUpdateQueueStore.use).toBeDefined();
-      
+
       // Verify store state can be accessed directly (without React context)
       const state = formUpdateQueueStore.getState();
       expect(state.queue).toBeDefined();

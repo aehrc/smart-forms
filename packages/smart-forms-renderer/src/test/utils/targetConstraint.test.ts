@@ -19,12 +19,8 @@
  */
 
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
-import type { 
-  Questionnaire, 
-  QuestionnaireResponse, 
-  QuestionnaireResponseItem 
-} from 'fhir/r4';
-import { 
+import type { Questionnaire, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
+import {
   evaluateInitialTargetConstraints,
   evaluateTargetConstraints,
   readTargetConstraintLocationLinkIds
@@ -47,8 +43,12 @@ jest.mock('fhirpath/fhir-context/r4', () => ({}));
 import { createFhirPathContext, handleFhirPathResult } from '../../utils/fhirpath';
 import fhirpath from 'fhirpath';
 
-const mockCreateFhirPathContext = createFhirPathContext as jest.MockedFunction<typeof createFhirPathContext>;
-const mockHandleFhirPathResult = handleFhirPathResult as jest.MockedFunction<typeof handleFhirPathResult>;
+const mockCreateFhirPathContext = createFhirPathContext as jest.MockedFunction<
+  typeof createFhirPathContext
+>;
+const mockHandleFhirPathResult = handleFhirPathResult as jest.MockedFunction<
+  typeof handleFhirPathResult
+>;
 const mockFhirpathEvaluate = fhirpath.evaluate as jest.MockedFunction<typeof fhirpath.evaluate>;
 
 // Helper function to create valid TargetConstraint objects
@@ -74,7 +74,7 @@ function createMockTargetConstraint(
 describe('targetConstraint', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Reset console.warn mock
     jest.spyOn(console, 'warn').mockImplementation(() => {});
   });
@@ -95,7 +95,11 @@ describe('targetConstraint', () => {
 
       const mockTargetConstraints: Record<string, TargetConstraint> = {
         'constraint-1': createMockTargetConstraint('constraint-1', 'true', false),
-        'constraint-2': createMockTargetConstraint('constraint-2', '%context.item.where(linkId="test").answer.value', true)
+        'constraint-2': createMockTargetConstraint(
+          'constraint-2',
+          '%context.item.where(linkId="test").answer.value',
+          true
+        )
       };
 
       const mockVariables: Variables = {
@@ -129,9 +133,7 @@ describe('targetConstraint', () => {
         .mockReturnValueOnce([false]); // Second constraint returns false (sync)
 
       // Mock handleFhirPathResult
-      mockHandleFhirPathResult
-        .mockResolvedValueOnce([true])
-        .mockResolvedValueOnce([false]);
+      mockHandleFhirPathResult.mockResolvedValueOnce([true]).mockResolvedValueOnce([false]);
 
       const result = await evaluateInitialTargetConstraints(params);
 
@@ -250,7 +252,11 @@ describe('targetConstraint', () => {
 
     test('should handle intersect expressions with empty results', async () => {
       const mockTargetConstraints: Record<string, TargetConstraint> = {
-        'constraint-intersect': createMockTargetConstraint('constraint-intersect', 'item.intersect(empty)', true)
+        'constraint-intersect': createMockTargetConstraint(
+          'constraint-intersect',
+          'item.intersect(empty)',
+          true
+        )
       };
 
       const params = {
@@ -278,7 +284,11 @@ describe('targetConstraint', () => {
 
     test('should cache async terminology results', async () => {
       const mockTargetConstraints: Record<string, TargetConstraint> = {
-        'constraint-async': createMockTargetConstraint('constraint-async', 'terminology.lookup()', false)
+        'constraint-async': createMockTargetConstraint(
+          'constraint-async',
+          'terminology.lookup()',
+          false
+        )
       };
 
       const params = {
@@ -307,7 +317,11 @@ describe('targetConstraint', () => {
 
     test('should handle fhirpath evaluation errors gracefully', async () => {
       const mockTargetConstraints: Record<string, TargetConstraint> = {
-        'constraint-error': createMockTargetConstraint('constraint-error', 'invalid.expression.syntax', false)
+        'constraint-error': createMockTargetConstraint(
+          'constraint-error',
+          'invalid.expression.syntax',
+          false
+        )
       };
 
       const params = {
@@ -369,7 +383,11 @@ describe('targetConstraint', () => {
 
     test('should handle non-boolean results', async () => {
       const mockTargetConstraints: Record<string, TargetConstraint> = {
-        'constraint-non-boolean': createMockTargetConstraint('constraint-non-boolean', 'item.count()', false)
+        'constraint-non-boolean': createMockTargetConstraint(
+          'constraint-non-boolean',
+          'item.count()',
+          false
+        )
       };
 
       const params = {
@@ -494,7 +512,11 @@ describe('targetConstraint', () => {
     test('should handle empty results and intersect edge cases', async () => {
       const mockTargetConstraints: Record<string, TargetConstraint> = {
         'constraint-empty': createMockTargetConstraint('constraint-empty', 'empty.result', true),
-        'constraint-intersect': createMockTargetConstraint('constraint-intersect', 'item.intersect(empty)', true)
+        'constraint-intersect': createMockTargetConstraint(
+          'constraint-intersect',
+          'item.intersect(empty)',
+          true
+        )
       };
 
       const fhirPathContext = { test: 'context' };
@@ -537,8 +559,18 @@ describe('targetConstraint', () => {
       };
 
       const mockTargetConstraints: Record<string, TargetConstraint> = {
-        'constraint-1': createMockTargetConstraint('constraint-1', 'true', undefined, 'item.where(linkId="item-1")'),
-        'constraint-2': createMockTargetConstraint('constraint-2', 'false', undefined, 'item.where(linkId="item-2")'),
+        'constraint-1': createMockTargetConstraint(
+          'constraint-1',
+          'true',
+          undefined,
+          'item.where(linkId="item-1")'
+        ),
+        'constraint-2': createMockTargetConstraint(
+          'constraint-2',
+          'false',
+          undefined,
+          'item.where(linkId="item-2")'
+        ),
         'constraint-no-location': createMockTargetConstraint('constraint-no-location', 'true')
       };
 
@@ -574,8 +606,18 @@ describe('targetConstraint', () => {
       };
 
       const mockTargetConstraints: Record<string, TargetConstraint> = {
-        'constraint-1': createMockTargetConstraint('constraint-1', 'constraint1', undefined, 'item.where(linkId="shared-item")'),
-        'constraint-2': createMockTargetConstraint('constraint-2', 'constraint2', undefined, 'item.where(linkId="shared-item")')
+        'constraint-1': createMockTargetConstraint(
+          'constraint-1',
+          'constraint1',
+          undefined,
+          'item.where(linkId="shared-item")'
+        ),
+        'constraint-2': createMockTargetConstraint(
+          'constraint-2',
+          'constraint2',
+          undefined,
+          'item.where(linkId="shared-item")'
+        )
       };
 
       mockFhirpathEvaluate
@@ -597,7 +639,12 @@ describe('targetConstraint', () => {
       };
 
       const mockTargetConstraints: Record<string, TargetConstraint> = {
-        'constraint-empty': createMockTargetConstraint('constraint-empty', 'true', undefined, 'item.where(linkId="non-existent")')
+        'constraint-empty': createMockTargetConstraint(
+          'constraint-empty',
+          'true',
+          undefined,
+          'item.where(linkId="non-existent")'
+        )
       };
 
       mockFhirpathEvaluate.mockReturnValue([]); // Empty result
@@ -616,7 +663,12 @@ describe('targetConstraint', () => {
       };
 
       const mockTargetConstraints: Record<string, TargetConstraint> = {
-        'constraint-invalid': createMockTargetConstraint('constraint-invalid', 'true', undefined, 'invalid.path')
+        'constraint-invalid': createMockTargetConstraint(
+          'constraint-invalid',
+          'true',
+          undefined,
+          'invalid.path'
+        )
       };
 
       mockFhirpathEvaluate.mockReturnValue([{ text: 'No linkId property' }]);
@@ -635,7 +687,12 @@ describe('targetConstraint', () => {
       };
 
       const mockTargetConstraints: Record<string, TargetConstraint> = {
-        'constraint-error': createMockTargetConstraint('constraint-error', 'true', undefined, 'invalid.syntax.error')
+        'constraint-error': createMockTargetConstraint(
+          'constraint-error',
+          'true',
+          undefined,
+          'invalid.syntax.error'
+        )
       };
 
       const error = new Error('FHIRPath syntax error');
@@ -660,7 +717,12 @@ describe('targetConstraint', () => {
       };
 
       const mockTargetConstraints: Record<string, TargetConstraint> = {
-        'constraint-primitive': createMockTargetConstraint('constraint-primitive', 'true', undefined, 'item.count()')
+        'constraint-primitive': createMockTargetConstraint(
+          'constraint-primitive',
+          'true',
+          undefined,
+          'item.count()'
+        )
       };
 
       mockFhirpathEvaluate.mockReturnValue([5]); // Primitive result
@@ -679,7 +741,12 @@ describe('targetConstraint', () => {
       };
 
       const mockTargetConstraints: Record<string, TargetConstraint> = {
-        'constraint-non-string': createMockTargetConstraint('constraint-non-string', 'true', undefined, 'item.first()')
+        'constraint-non-string': createMockTargetConstraint(
+          'constraint-non-string',
+          'true',
+          undefined,
+          'item.first()'
+        )
       };
 
       mockFhirpathEvaluate.mockReturnValue([{ linkId: 123 }]); // Non-string linkId

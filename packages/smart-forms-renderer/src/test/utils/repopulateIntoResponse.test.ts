@@ -19,7 +19,12 @@
  */
 
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
-import type { QuestionnaireItem, QuestionnaireResponseItem, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import type {
+  QuestionnaireItem,
+  QuestionnaireResponseItem,
+  Questionnaire,
+  QuestionnaireResponse
+} from 'fhir/r4';
 import { repopulateResponse } from '../../utils/repopulateIntoResponse';
 import type { ItemToRepopulate } from '../../utils/repopulateItems';
 
@@ -61,10 +66,14 @@ import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';
 import { updateQuestionnaireResponse } from '../../utils/genericRecursive';
 
 const mockQuestionnaireStore = questionnaireStore as jest.Mocked<typeof questionnaireStore>;
-const mockQuestionnaireResponseStore = questionnaireResponseStore as jest.Mocked<typeof questionnaireResponseStore>;
+const mockQuestionnaireResponseStore = questionnaireResponseStore as jest.Mocked<
+  typeof questionnaireResponseStore
+>;
 const mockGetQrItemsIndex = getQrItemsIndex as jest.MockedFunction<typeof getQrItemsIndex>;
 const mockMapQItemsIndex = mapQItemsIndex as jest.MockedFunction<typeof mapQItemsIndex>;
-const mockUpdateQuestionnaireResponse = updateQuestionnaireResponse as jest.MockedFunction<typeof updateQuestionnaireResponse>;
+const mockUpdateQuestionnaireResponse = updateQuestionnaireResponse as jest.MockedFunction<
+  typeof updateQuestionnaireResponse
+>;
 
 describe('repopulateIntoResponse', () => {
   beforeEach(() => {
@@ -218,7 +227,7 @@ describe('repopulateIntoResponse', () => {
           });
           return {
             ...qr,
-            item: updatedItems.filter(item => item !== null)
+            item: updatedItems.filter((item) => item !== null)
           } as any;
         }
         return qr;
@@ -323,7 +332,7 @@ describe('repopulateIntoResponse', () => {
           });
           return {
             ...qr,
-            item: updatedItems.filter(item => item !== null)
+            item: updatedItems.filter((item) => item !== null)
           } as any;
         }
         return qr;
@@ -422,7 +431,7 @@ describe('repopulateIntoResponse', () => {
           const result = recursiveFn(qItem, qrItems, data);
           return {
             ...qr,
-            item: Array.isArray(result) ? result : [result].filter(item => item !== null)
+            item: Array.isArray(result) ? result : [result].filter((item) => item !== null)
           } as any;
         }
         return qr;
@@ -477,7 +486,7 @@ describe('repopulateIntoResponse', () => {
           });
           return {
             ...qr,
-            item: updatedItems.filter(item => item !== null)
+            item: updatedItems.filter((item) => item !== null)
           } as any;
         }
         return qr;
@@ -545,7 +554,7 @@ describe('repopulateIntoResponse', () => {
           });
           return {
             ...qr,
-            item: updatedItems.filter(item => item !== null)
+            item: updatedItems.filter((item) => item !== null)
           } as any;
         }
         return qr;
@@ -608,7 +617,7 @@ describe('repopulateIntoResponse', () => {
           });
           return {
             ...qr,
-            item: updatedItems.filter(item => item !== null)
+            item: updatedItems.filter((item) => item !== null)
           } as any;
         }
         return qr;

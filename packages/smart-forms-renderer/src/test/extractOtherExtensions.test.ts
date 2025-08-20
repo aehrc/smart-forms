@@ -774,7 +774,11 @@ describe('extractOtherExtensions - Phase 5', () => {
         { name: 'myVariable', language: 'text/fhirpath', expression: 'Patient.name' }
       ];
       const mockXFhirQueryVariables = [
-        { name: 'xFhirVar', language: 'application/x-fhir-query', expression: 'Patient?active=true' }
+        {
+          name: 'xFhirVar',
+          language: 'application/x-fhir-query',
+          expression: 'Patient?active=true'
+        }
       ];
 
       mockGetItemTerminologyServerToUse.mockReturnValue(terminologyServerUrl);
@@ -827,7 +831,8 @@ describe('extractOtherExtensions - Phase 5', () => {
 
       const mockEnableWhenExpression = {
         language: 'text/fhirpath',
-        expression: '%resource.repeat(QuestionnaireResponse.item).where(linkId=\'other-item\').answer.value'
+        expression:
+          "%resource.repeat(QuestionnaireResponse.item).where(linkId='other-item').answer.value"
       };
 
       mockGetItemTerminologyServerToUse.mockReturnValue(terminologyServerUrl);
@@ -851,7 +856,8 @@ describe('extractOtherExtensions - Phase 5', () => {
 
       expect(result.enableWhenExpressions.singleExpressions).toEqual({
         'enable-when-item': {
-          expression: '%resource.repeat(QuestionnaireResponse.item).where(linkId=\'other-item\').answer.value'
+          expression:
+            "%resource.repeat(QuestionnaireResponse.item).where(linkId='other-item').answer.value"
         }
       });
 
@@ -888,7 +894,8 @@ describe('extractOtherExtensions - Phase 5', () => {
 
       const mockEnableWhenExpression = {
         language: 'text/fhirpath',
-        expression: '%resource.repeat(QuestionnaireResponse.item).where(linkId=\'repeat-target\').answer.value'
+        expression:
+          "%resource.repeat(QuestionnaireResponse.item).where(linkId='repeat-target').answer.value"
       };
 
       // Mock the parent item for the repeat-target to match the repeat-group
@@ -906,7 +913,10 @@ describe('extractOtherExtensions - Phase 5', () => {
       mockGetEnableWhenExpression.mockReturnValue(mockEnableWhenExpression);
       mockGetFhirPathVariables.mockReturnValue([]);
       mockGetXFhirQueryVariables.mockReturnValue([]);
-      mockEvaluateEnableWhenRepeatExpressionInstance.mockResolvedValue({ isEnabled: true, isUpdated: false });
+      mockEvaluateEnableWhenRepeatExpressionInstance.mockResolvedValue({
+        isEnabled: true,
+        isUpdated: false
+      });
 
       const result = await extractOtherExtensions(
         questionnaire,
@@ -920,12 +930,14 @@ describe('extractOtherExtensions - Phase 5', () => {
 
       expect(result.enableWhenExpressions.repeatExpressions).toEqual({
         'repeat-enable-item': {
-          expression: '%resource.repeat(QuestionnaireResponse.item).where(linkId=\'repeat-target\').answer.value',
+          expression:
+            "%resource.repeat(QuestionnaireResponse.item).where(linkId='repeat-target').answer.value",
           parentLinkId: 'repeat-group',
           enabledIndexes: [true]
         },
         'repeat-group': {
-          expression: '%resource.repeat(QuestionnaireResponse.item).where(linkId=\'repeat-target\').answer.value',
+          expression:
+            "%resource.repeat(QuestionnaireResponse.item).where(linkId='repeat-target').answer.value",
           parentLinkId: 'repeat-group',
           enabledIndexes: [true]
         }

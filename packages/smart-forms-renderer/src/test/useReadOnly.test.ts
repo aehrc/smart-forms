@@ -57,10 +57,14 @@ import { useRendererStylingStore } from '../stores/rendererStylingStore';
 import { isHiddenByEnableWhen } from '../utils/qItem';
 
 // Now safely assign the mocks after imports
-const mockedUseRenderingExtensions = useRenderingExtensions as jest.MockedFunction<typeof useRenderingExtensions>;
+const mockedUseRenderingExtensions = useRenderingExtensions as jest.MockedFunction<
+  typeof useRenderingExtensions
+>;
 const mockedUseQuestionnaireStore = useQuestionnaireStore as any;
 const mockedUseRendererStylingStore = useRendererStylingStore as any;
-const mockedIsHiddenByEnableWhen = isHiddenByEnableWhen as jest.MockedFunction<typeof isHiddenByEnableWhen>;
+const mockedIsHiddenByEnableWhen = isHiddenByEnableWhen as jest.MockedFunction<
+  typeof isHiddenByEnableWhen
+>;
 
 describe('useReadOnly', () => {
   // Test data

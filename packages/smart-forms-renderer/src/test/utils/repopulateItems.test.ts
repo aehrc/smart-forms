@@ -19,16 +19,16 @@
  */
 
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
-import type { 
-  QuestionnaireItem, 
-  QuestionnaireResponseItem, 
-  Questionnaire, 
-  QuestionnaireResponse 
+import type {
+  QuestionnaireItem,
+  QuestionnaireResponseItem,
+  Questionnaire,
+  QuestionnaireResponse
 } from 'fhir/r4';
-import { 
-  generateItemsToRepopulate, 
+import {
+  generateItemsToRepopulate,
   getItemsToRepopulate,
-  type ItemToRepopulate 
+  type ItemToRepopulate
 } from '../../utils/repopulateItems';
 
 // Mock the store dependencies
@@ -100,23 +100,39 @@ import { getShortText, isSpecificItemControl } from '../../utils/extensions';
 import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';
 import { isHiddenByEnableWhen } from '../../utils/qItem';
 import { createQuestionnaireResponseItemMap } from '../../utils/questionnaireResponseStoreUtils/updatableResponseItems';
-import { getParentItem, getQuestionnaireItem, getSectionHeading, isItemInGrid } from '../../utils/misc';
+import {
+  getParentItem,
+  getQuestionnaireItem,
+  getSectionHeading,
+  isItemInGrid
+} from '../../utils/misc';
 import difference from 'lodash.difference';
 import intersection from 'lodash.intersection';
 import { deepEqual } from 'fast-equals';
 
 const mockQuestionnaireStore = questionnaireStore as jest.Mocked<typeof questionnaireStore>;
-const mockQuestionnaireResponseStore = questionnaireResponseStore as jest.Mocked<typeof questionnaireResponseStore>;
+const mockQuestionnaireResponseStore = questionnaireResponseStore as jest.Mocked<
+  typeof questionnaireResponseStore
+>;
 const mockContainsTabs = containsTabs as jest.MockedFunction<typeof containsTabs>;
 const mockIsTabContainer = isTabContainer as jest.MockedFunction<typeof isTabContainer>;
 const mockGetShortText = getShortText as jest.MockedFunction<typeof getShortText>;
-const mockIsSpecificItemControl = isSpecificItemControl as jest.MockedFunction<typeof isSpecificItemControl>;
+const mockIsSpecificItemControl = isSpecificItemControl as jest.MockedFunction<
+  typeof isSpecificItemControl
+>;
 const mockGetQrItemsIndex = getQrItemsIndex as jest.MockedFunction<typeof getQrItemsIndex>;
 const mockMapQItemsIndex = mapQItemsIndex as jest.MockedFunction<typeof mapQItemsIndex>;
-const mockIsHiddenByEnableWhen = isHiddenByEnableWhen as jest.MockedFunction<typeof isHiddenByEnableWhen>;
-const mockCreateQuestionnaireResponseItemMap = createQuestionnaireResponseItemMap as jest.MockedFunction<typeof createQuestionnaireResponseItemMap>;
+const mockIsHiddenByEnableWhen = isHiddenByEnableWhen as jest.MockedFunction<
+  typeof isHiddenByEnableWhen
+>;
+const mockCreateQuestionnaireResponseItemMap =
+  createQuestionnaireResponseItemMap as jest.MockedFunction<
+    typeof createQuestionnaireResponseItemMap
+  >;
 const mockGetParentItem = getParentItem as jest.MockedFunction<typeof getParentItem>;
-const mockGetQuestionnaireItem = getQuestionnaireItem as jest.MockedFunction<typeof getQuestionnaireItem>;
+const mockGetQuestionnaireItem = getQuestionnaireItem as jest.MockedFunction<
+  typeof getQuestionnaireItem
+>;
 const mockGetSectionHeading = getSectionHeading as jest.MockedFunction<typeof getSectionHeading>;
 const mockIsItemInGrid = isItemInGrid as jest.MockedFunction<typeof isItemInGrid>;
 const mockDifference = difference as jest.MockedFunction<typeof difference>;
@@ -205,13 +221,21 @@ describe('repopulateItems', () => {
       } as any);
 
       mockQuestionnaireResponseStore.getState.mockReturnValue({
-        updatableResponse: { resourceType: 'QuestionnaireResponse', status: 'in-progress', item: [] },
+        updatableResponse: {
+          resourceType: 'QuestionnaireResponse',
+          status: 'in-progress',
+          item: []
+        },
         updatableResponseItems: { 'item-1': [{ linkId: 'item-1', text: 'Item 1' }] }
       } as any);
 
       mockDifference.mockReturnValue(['item-1']);
       mockIntersection.mockReturnValue(['item-1']);
-      mockGetQuestionnaireItem.mockReturnValue({ linkId: 'item-1', type: 'string', text: 'Item 1' });
+      mockGetQuestionnaireItem.mockReturnValue({
+        linkId: 'item-1',
+        type: 'string',
+        text: 'Item 1'
+      });
       mockGetSectionHeading.mockReturnValue('Section 1');
       mockIsItemInGrid.mockReturnValue(false);
 
@@ -752,13 +776,13 @@ describe('repopulateItems', () => {
         .mockReturnValueOnce({ 'group-1': 0 }) // Top level mapping
         .mockReturnValueOnce({ 'child-item-1': 0 }) // Group children mapping
         .mockReturnValueOnce({ 'child-item-1': 0 }); // For second call with current items
-      
+
       mockGetQrItemsIndex
         .mockReturnValueOnce([mockPopulatedResponse.item![0]]) // Top level populated items
         .mockReturnValueOnce([mockPopulatedResponse.item![0].item![0]]) // Child populated items
         .mockReturnValueOnce([mockUpdatableResponse.item![0]]) // Top level updatable items
         .mockReturnValueOnce([mockUpdatableResponse.item![0].item![0]]); // Child updatable items
-      
+
       mockIsTabContainer.mockReturnValue(false);
       mockContainsTabs.mockReturnValue(false);
       mockIsSpecificItemControl.mockReturnValue(false);
@@ -840,13 +864,13 @@ describe('repopulateItems', () => {
         .mockReturnValueOnce({ 'tab-item': 0 })
         .mockReturnValueOnce({ 'child-item': 0 })
         .mockReturnValueOnce({ 'child-item': 0 });
-      
+
       mockGetQrItemsIndex
         .mockReturnValueOnce([mockPopulatedResponse.item![0]])
         .mockReturnValueOnce([mockPopulatedResponse.item![0].item![0]])
         .mockReturnValueOnce([mockUpdatableResponse.item![0]])
         .mockReturnValueOnce([mockUpdatableResponse.item![0].item![0]]);
-      
+
       mockIsTabContainer.mockReturnValue(false);
       mockContainsTabs.mockReturnValue(false);
       mockIsSpecificItemControl.mockReturnValue(false);
@@ -989,13 +1013,13 @@ describe('repopulateItems', () => {
         .mockReturnValueOnce({ 'group-with-answer': 0 })
         .mockReturnValueOnce({ 'child-item': 0 })
         .mockReturnValueOnce({ 'child-item': 0 });
-      
+
       mockGetQrItemsIndex
         .mockReturnValueOnce([mockPopulatedResponse.item![0]])
         .mockReturnValueOnce([mockPopulatedResponse.item![0].item![0]])
         .mockReturnValueOnce([mockUpdatableResponse.item![0]])
         .mockReturnValueOnce([mockUpdatableResponse.item![0].item![0]]);
-      
+
       mockIsTabContainer.mockReturnValue(false);
       mockContainsTabs.mockReturnValue(false);
       mockIsSpecificItemControl.mockReturnValue(false);
@@ -1052,7 +1076,7 @@ describe('repopulateItems', () => {
       mockGetQrItemsIndex
         .mockReturnValueOnce([undefined]) // No populated item
         .mockReturnValueOnce([mockUpdatableResponse.item![0]]); // Has updatable item
-      
+
       const result = getItemsToRepopulate(params);
 
       expect(result).toEqual({});
@@ -1103,7 +1127,7 @@ describe('repopulateItems', () => {
       mockGetQrItemsIndex
         .mockReturnValueOnce([mockPopulatedResponse.item]) // Array for repeat groups
         .mockReturnValueOnce([undefined]); // No current items
-      
+
       mockIsTabContainer.mockReturnValue(false);
       mockContainsTabs.mockReturnValue(false);
       mockIsSpecificItemControl.mockReturnValue(false);
@@ -1159,7 +1183,7 @@ describe('repopulateItems', () => {
       mockGetQrItemsIndex
         .mockReturnValueOnce([undefined]) // No populated items
         .mockReturnValueOnce([mockUpdatableResponse.item]); // Has current items
-      
+
       const result = getItemsToRepopulate(params);
 
       expect(result).toEqual({});
@@ -1210,7 +1234,7 @@ describe('repopulateItems', () => {
       mockGetQrItemsIndex
         .mockReturnValueOnce([mockPopulatedResponse.item]) // Populated items as array
         .mockReturnValueOnce([undefined]); // No current items - this triggers missing conditions check
-      
+
       mockIsTabContainer.mockReturnValue(false);
       mockContainsTabs.mockReturnValue(false);
       mockIsSpecificItemControl.mockReturnValue(false);

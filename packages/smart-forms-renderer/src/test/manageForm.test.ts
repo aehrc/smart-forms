@@ -114,7 +114,12 @@ jest.mock('../api/smartClient', () => ({
   readUser: jest.fn()
 }));
 
-import { questionnaireStore, questionnaireResponseStore, smartConfigStore, terminologyServerStore } from '../stores';
+import {
+  questionnaireStore,
+  questionnaireResponseStore,
+  smartConfigStore,
+  terminologyServerStore
+} from '../stores';
 import { removeEmptyAnswersFromItemRecursive } from '../utils/removeEmptyAnswers';
 import { removeInternalRepeatIdsRecursive } from '../utils/removeRepeatId';
 import { updateQuestionnaireResponse } from '../utils/genericRecursive';
@@ -126,7 +131,9 @@ const mockQuestionnaireResponseStore = questionnaireResponseStore as jest.Mocked
   typeof questionnaireResponseStore
 >;
 const mockSmartConfigStore = smartConfigStore as jest.Mocked<typeof smartConfigStore>;
-const mockTerminologyServerStore = terminologyServerStore as jest.Mocked<typeof terminologyServerStore>;
+const mockTerminologyServerStore = terminologyServerStore as jest.Mocked<
+  typeof terminologyServerStore
+>;
 const mockRemoveEmptyAnswersFromItemRecursive =
   removeEmptyAnswersFromItemRecursive as jest.MockedFunction<
     typeof removeEmptyAnswersFromItemRecursive
@@ -220,9 +227,9 @@ describe('manageForm utils', () => {
       const mockSetUrl = jest.fn();
 
       const terminologyServerUrl = 'https://terminology.server.com/fhir';
-      const additionalVariables = { 'testVar': 'testValue' };
+      const additionalVariables = { testVar: 'testValue' };
       const qItemOverrideComponents = { 'test-item': jest.fn() };
-      const sdcUiOverrideComponents = { 'text': jest.fn() };
+      const sdcUiOverrideComponents = { text: jest.fn() };
 
       mockQuestionnaireStore.getState.mockReturnValue({
         buildSourceQuestionnaire: mockBuildSourceQuestionnaire,
