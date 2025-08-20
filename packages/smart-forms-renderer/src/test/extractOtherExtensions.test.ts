@@ -627,6 +627,449 @@ describe('extractOtherExtensions - Phase 5', () => {
       );
       expect(mockGetValueSetPromise).not.toHaveBeenCalled();
     });
+
+    it('should process questionnaire item with answer options', async () => {
+      const questionnaire: Questionnaire = {
+        resourceType: 'Questionnaire',
+        status: 'active',
+        item: [
+          {
+            linkId: 'options-item',
+            type: 'choice',
+            text: 'Multiple Choice Question',
+            answerOption: [
+              { valueString: 'Option 1' },
+              { valueString: 'Option 2' },
+              { valueString: 'Option 3' }
+            ]
+          }
+        ]
+      };
+
+      const variables = { fhirPathVariables: { QuestionnaireLevel: [] }, xFhirQueryVariables: {} };
+      const valueSetPromises = {};
+      const processedValueSets = {};
+      const cachedValueSetCodings = {};
+      const itemPreferredTerminologyServers = {};
+      const terminologyServerUrl = 'http://terminology.hl7.org/fhir';
+
+      mockGetItemTerminologyServerToUse.mockReturnValue(terminologyServerUrl);
+      mockGetCalculatedExpressions.mockReturnValue([]);
+      mockGetInitialExpression.mockReturnValue(null);
+      mockGetAnswerExpression.mockReturnValue(null);
+      mockGetAnswerOptionsToggleExpressions.mockReturnValue(null);
+      mockGetEnableWhenExpression.mockReturnValue(null);
+      mockGetFhirPathVariables.mockReturnValue([]);
+      mockGetXFhirQueryVariables.mockReturnValue([]);
+
+      const result = await extractOtherExtensions(
+        questionnaire,
+        variables,
+        valueSetPromises,
+        processedValueSets,
+        cachedValueSetCodings,
+        itemPreferredTerminologyServers,
+        terminologyServerUrl
+      );
+
+      expect(result.answerOptions).toEqual({
+        'options-item': [
+          { valueString: 'Option 1' },
+          { valueString: 'Option 2' },
+          { valueString: 'Option 3' }
+        ]
+      });
+    });
+
+    it('should process questionnaire item with answer options toggle expressions', async () => {
+      const questionnaire: Questionnaire = {
+        resourceType: 'Questionnaire',
+        status: 'active',
+        item: [
+          {
+            linkId: 'toggle-item',
+            type: 'choice',
+            text: 'Toggle Options Question'
+          }
+        ]
+      };
+
+      const variables = { fhirPathVariables: { QuestionnaireLevel: [] }, xFhirQueryVariables: {} };
+      const valueSetPromises = {};
+      const processedValueSets = {};
+      const cachedValueSetCodings = {};
+      const itemPreferredTerminologyServers = {};
+      const terminologyServerUrl = 'http://terminology.hl7.org/fhir';
+
+      const mockToggleExpressions = [
+        {
+          linkId: 'toggle-item',
+          options: [{ valueString: 'option1' }],
+          valueExpression: { expression: 'toggle-expression-1', language: 'text/fhirpath' }
+        },
+        {
+          linkId: 'toggle-item',
+          options: [{ valueString: 'option2' }],
+          valueExpression: { expression: 'toggle-expression-2', language: 'text/fhirpath' }
+        }
+      ];
+
+      mockGetItemTerminologyServerToUse.mockReturnValue(terminologyServerUrl);
+      mockGetCalculatedExpressions.mockReturnValue([]);
+      mockGetInitialExpression.mockReturnValue(null);
+      mockGetAnswerExpression.mockReturnValue(null);
+      mockGetAnswerOptionsToggleExpressions.mockReturnValue(mockToggleExpressions);
+      mockGetEnableWhenExpression.mockReturnValue(null);
+      mockGetFhirPathVariables.mockReturnValue([]);
+      mockGetXFhirQueryVariables.mockReturnValue([]);
+
+      const result = await extractOtherExtensions(
+        questionnaire,
+        variables,
+        valueSetPromises,
+        processedValueSets,
+        cachedValueSetCodings,
+        itemPreferredTerminologyServers,
+        terminologyServerUrl
+      );
+
+      expect(result.answerOptionsToggleExpressions).toEqual({
+        'toggle-item': mockToggleExpressions
+      });
+
+      expect(mockGetAnswerOptionsToggleExpressions).toHaveBeenCalledWith(questionnaire.item![0]);
+    });
+
+    it('should process questionnaire item with item-level variables', async () => {
+      const questionnaire: Questionnaire = {
+        resourceType: 'Questionnaire',
+        status: 'active',
+        item: [
+          {
+            linkId: 'variable-item',
+            type: 'string',
+            text: 'Item with Variables',
+            extension: [
+              {
+                url: 'http://hl7.org/fhir/StructureDefinition/variable',
+                valueExpression: {
+                  name: 'myVariable',
+                  language: 'text/fhirpath',
+                  expression: 'Patient.name'
+                }
+              }
+            ]
+          }
+        ]
+      };
+
+      const variables = { fhirPathVariables: { QuestionnaireLevel: [] }, xFhirQueryVariables: {} };
+      const valueSetPromises = {};
+      const processedValueSets = {};
+      const cachedValueSetCodings = {};
+      const itemPreferredTerminologyServers = {};
+      const terminologyServerUrl = 'http://terminology.hl7.org/fhir';
+
+      const mockFhirPathVariables = [
+        { name: 'myVariable', language: 'text/fhirpath', expression: 'Patient.name' }
+      ];
+      const mockXFhirQueryVariables = [
+        { name: 'xFhirVar', language: 'application/x-fhir-query', expression: 'Patient?active=true' }
+      ];
+
+      mockGetItemTerminologyServerToUse.mockReturnValue(terminologyServerUrl);
+      mockGetCalculatedExpressions.mockReturnValue([]);
+      mockGetInitialExpression.mockReturnValue(null);
+      mockGetAnswerExpression.mockReturnValue(null);
+      mockGetAnswerOptionsToggleExpressions.mockReturnValue(null);
+      mockGetEnableWhenExpression.mockReturnValue(null);
+      mockGetFhirPathVariables.mockReturnValue(mockFhirPathVariables);
+      mockGetXFhirQueryVariables.mockReturnValue(mockXFhirQueryVariables);
+
+      const result = await extractOtherExtensions(
+        questionnaire,
+        variables,
+        valueSetPromises,
+        processedValueSets,
+        cachedValueSetCodings,
+        itemPreferredTerminologyServers,
+        terminologyServerUrl
+      );
+
+      expect(result.variables.fhirPathVariables['variable-item']).toEqual(mockFhirPathVariables);
+      expect(result.variables.xFhirQueryVariables['xFhirVar']).toEqual({
+        valueExpression: mockXFhirQueryVariables[0]
+      });
+
+      expect(mockGetFhirPathVariables).toHaveBeenCalledWith(questionnaire.item![0].extension);
+      expect(mockGetXFhirQueryVariables).toHaveBeenCalledWith(questionnaire.item![0].extension);
+    });
+
+    it('should process questionnaire item with single enableWhen expression', async () => {
+      const questionnaire: Questionnaire = {
+        resourceType: 'Questionnaire',
+        status: 'active',
+        item: [
+          {
+            linkId: 'enable-when-item',
+            type: 'string',
+            text: 'Conditionally Enabled Item'
+          }
+        ]
+      };
+
+      const variables = { fhirPathVariables: { QuestionnaireLevel: [] }, xFhirQueryVariables: {} };
+      const valueSetPromises = {};
+      const processedValueSets = {};
+      const cachedValueSetCodings = {};
+      const itemPreferredTerminologyServers = {};
+      const terminologyServerUrl = 'http://terminology.hl7.org/fhir';
+
+      const mockEnableWhenExpression = {
+        language: 'text/fhirpath',
+        expression: '%resource.repeat(QuestionnaireResponse.item).where(linkId=\'other-item\').answer.value'
+      };
+
+      mockGetItemTerminologyServerToUse.mockReturnValue(terminologyServerUrl);
+      mockGetCalculatedExpressions.mockReturnValue([]);
+      mockGetInitialExpression.mockReturnValue(null);
+      mockGetAnswerExpression.mockReturnValue(null);
+      mockGetAnswerOptionsToggleExpressions.mockReturnValue(null);
+      mockGetEnableWhenExpression.mockReturnValue(mockEnableWhenExpression);
+      mockGetFhirPathVariables.mockReturnValue([]);
+      mockGetXFhirQueryVariables.mockReturnValue([]);
+
+      const result = await extractOtherExtensions(
+        questionnaire,
+        variables,
+        valueSetPromises,
+        processedValueSets,
+        cachedValueSetCodings,
+        itemPreferredTerminologyServers,
+        terminologyServerUrl
+      );
+
+      expect(result.enableWhenExpressions.singleExpressions).toEqual({
+        'enable-when-item': {
+          expression: '%resource.repeat(QuestionnaireResponse.item).where(linkId=\'other-item\').answer.value'
+        }
+      });
+
+      expect(mockGetEnableWhenExpression).toHaveBeenCalledWith(questionnaire.item![0]);
+    });
+
+    it('should process questionnaire item with repeat enableWhen expression', async () => {
+      const questionnaire: Questionnaire = {
+        resourceType: 'Questionnaire',
+        status: 'active',
+        item: [
+          {
+            linkId: 'repeat-group',
+            type: 'group',
+            text: 'Repeat Group',
+            repeats: true,
+            item: [
+              {
+                linkId: 'repeat-enable-item',
+                type: 'string',
+                text: 'Repeat Enabled Item'
+              }
+            ]
+          }
+        ]
+      };
+
+      const variables = { fhirPathVariables: { QuestionnaireLevel: [] }, xFhirQueryVariables: {} };
+      const valueSetPromises = {};
+      const processedValueSets = {};
+      const cachedValueSetCodings = {};
+      const itemPreferredTerminologyServers = {};
+      const terminologyServerUrl = 'http://terminology.hl7.org/fhir';
+
+      const mockEnableWhenExpression = {
+        language: 'text/fhirpath',
+        expression: '%resource.repeat(QuestionnaireResponse.item).where(linkId=\'repeat-target\').answer.value'
+      };
+
+      // Mock the parent item for the repeat-target to match the repeat-group
+      mockGetRepeatGroupParentItem.mockReturnValue({
+        linkId: 'repeat-group',
+        type: 'group',
+        text: 'Repeat Group'
+      });
+
+      mockGetItemTerminologyServerToUse.mockReturnValue(terminologyServerUrl);
+      mockGetCalculatedExpressions.mockReturnValue([]);
+      mockGetInitialExpression.mockReturnValue(null);
+      mockGetAnswerExpression.mockReturnValue(null);
+      mockGetAnswerOptionsToggleExpressions.mockReturnValue(null);
+      mockGetEnableWhenExpression.mockReturnValue(mockEnableWhenExpression);
+      mockGetFhirPathVariables.mockReturnValue([]);
+      mockGetXFhirQueryVariables.mockReturnValue([]);
+      mockEvaluateEnableWhenRepeatExpressionInstance.mockResolvedValue({ isEnabled: true, isUpdated: false });
+
+      const result = await extractOtherExtensions(
+        questionnaire,
+        variables,
+        valueSetPromises,
+        processedValueSets,
+        cachedValueSetCodings,
+        itemPreferredTerminologyServers,
+        terminologyServerUrl
+      );
+
+      expect(result.enableWhenExpressions.repeatExpressions).toEqual({
+        'repeat-enable-item': {
+          expression: '%resource.repeat(QuestionnaireResponse.item).where(linkId=\'repeat-target\').answer.value',
+          parentLinkId: 'repeat-group',
+          enabledIndexes: [true]
+        },
+        'repeat-group': {
+          expression: '%resource.repeat(QuestionnaireResponse.item).where(linkId=\'repeat-target\').answer.value',
+          parentLinkId: 'repeat-group',
+          enabledIndexes: [true]
+        }
+      });
+
+      expect(mockEvaluateEnableWhenRepeatExpressionInstance).toHaveBeenCalled();
+    });
+
+    it('should add linkIds to existing processedValueSets', async () => {
+      const questionnaire: Questionnaire = {
+        resourceType: 'Questionnaire',
+        status: 'active',
+        item: [
+          {
+            linkId: 'valueset-item-1',
+            type: 'choice',
+            text: 'First ValueSet Item',
+            answerValueSet: 'http://example.com/ValueSet/shared'
+          },
+          {
+            linkId: 'valueset-item-2',
+            type: 'choice',
+            text: 'Second ValueSet Item',
+            answerValueSet: 'http://example.com/ValueSet/shared'
+          }
+        ]
+      };
+
+      const variables = { fhirPathVariables: { QuestionnaireLevel: [] }, xFhirQueryVariables: {} };
+      const valueSetPromises = {};
+      const processedValueSets = {};
+      const cachedValueSetCodings = {};
+      const itemPreferredTerminologyServers = {};
+      const terminologyServerUrl = 'http://terminology.hl7.org/fhir';
+
+      const mockBindingParameters = [{ name: 'param1', value: 'value1' }];
+      const mockValueSetUrl = 'http://example.com/ValueSet/shared?param1=value1';
+      const mockValueSetPromise = Promise.resolve({
+        resourceType: 'ValueSet' as const,
+        status: 'active' as const
+      });
+
+      mockGetItemTerminologyServerToUse.mockReturnValue(terminologyServerUrl);
+      mockGetCalculatedExpressions.mockReturnValue([]);
+      mockGetInitialExpression.mockReturnValue(null);
+      mockGetAnswerExpression.mockReturnValue(null);
+      mockGetAnswerOptionsToggleExpressions.mockReturnValue(null);
+      mockGetEnableWhenExpression.mockReturnValue(null);
+      mockGetFhirPathVariables.mockReturnValue([]);
+      mockGetXFhirQueryVariables.mockReturnValue([]);
+      mockGetBindingParameters.mockReturnValue(mockBindingParameters);
+      mockAddBindingParametersToValueSetUrl.mockReturnValue(mockValueSetUrl);
+      mockGetValueSetPromise.mockReturnValue(mockValueSetPromise);
+
+      const result = await extractOtherExtensions(
+        questionnaire,
+        variables,
+        valueSetPromises,
+        processedValueSets,
+        cachedValueSetCodings,
+        itemPreferredTerminologyServers,
+        terminologyServerUrl
+      );
+
+      // Should have one entry for the shared ValueSet with both linkIds
+      expect(result.processedValueSets).toEqual({
+        'http://example.com/ValueSet/shared': {
+          initialValueSetUrl: 'http://example.com/ValueSet/shared',
+          updatableValueSetUrl: mockValueSetUrl,
+          bindingParameters: mockBindingParameters,
+          isDynamic: false,
+          linkIds: ['valueset-item-1', 'valueset-item-2']
+        }
+      });
+    });
+
+    it('should process nested questionnaire items recursively', async () => {
+      const questionnaire: Questionnaire = {
+        resourceType: 'Questionnaire',
+        status: 'active',
+        item: [
+          {
+            linkId: 'parent-group',
+            type: 'group',
+            text: 'Parent Group',
+            item: [
+              {
+                linkId: 'child-item-1',
+                type: 'string',
+                text: 'First Child Item'
+              },
+              {
+                linkId: 'nested-group',
+                type: 'group',
+                text: 'Nested Group',
+                item: [
+                  {
+                    linkId: 'grandchild-item',
+                    type: 'string',
+                    text: 'Grandchild Item'
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      };
+
+      const variables = { fhirPathVariables: { QuestionnaireLevel: [] }, xFhirQueryVariables: {} };
+      const valueSetPromises = {};
+      const processedValueSets = {};
+      const cachedValueSetCodings = {};
+      const itemPreferredTerminologyServers = {};
+      const terminologyServerUrl = 'http://terminology.hl7.org/fhir';
+
+      mockGetItemTerminologyServerToUse.mockReturnValue(terminologyServerUrl);
+      mockGetCalculatedExpressions.mockReturnValue([]);
+      mockGetInitialExpression.mockReturnValue(null);
+      mockGetAnswerExpression.mockReturnValue(null);
+      mockGetAnswerOptionsToggleExpressions.mockReturnValue(null);
+      mockGetEnableWhenExpression.mockReturnValue(null);
+      mockGetFhirPathVariables.mockReturnValue([]);
+      mockGetXFhirQueryVariables.mockReturnValue([]);
+
+      const result = await extractOtherExtensions(
+        questionnaire,
+        variables,
+        valueSetPromises,
+        processedValueSets,
+        cachedValueSetCodings,
+        itemPreferredTerminologyServers,
+        terminologyServerUrl
+      );
+
+      // Should call mocks for all items including nested ones
+      expect(mockGetItemTerminologyServerToUse).toHaveBeenCalledTimes(4); // parent-group, child-item-1, nested-group, grandchild-item
+      expect(mockGetCalculatedExpressions).toHaveBeenCalledTimes(4);
+      expect(mockGetInitialExpression).toHaveBeenCalledTimes(4);
+      expect(mockGetAnswerExpression).toHaveBeenCalledTimes(4);
+      expect(mockGetAnswerOptionsToggleExpressions).toHaveBeenCalledTimes(4);
+      expect(mockGetEnableWhenExpression).toHaveBeenCalledTimes(4);
+
+      expect(result).toBeDefined();
+    });
   });
 
   describe('initialiseEnableWhenSingleItemProperties', () => {
@@ -930,6 +1373,174 @@ describe('extractOtherExtensions - Phase 5', () => {
       });
 
       expect(mockGetRepeatGroupParentItem).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('initialiseEnableWhenItemProperties', () => {
+    beforeEach(() => {
+      mockGetRepeatGroupParentItem.mockClear();
+      mockCheckItemIsEnabledRepeat.mockClear();
+    });
+
+    it('should return null when item has no enableWhen', () => {
+      const qItem: QuestionnaireItem = {
+        linkId: 'test-item',
+        type: 'string',
+        text: 'Test Question'
+        // No enableWhen property
+      };
+
+      const questionnaire: Questionnaire = {
+        resourceType: 'Questionnaire',
+        status: 'active',
+        item: []
+      };
+
+      const result = initialiseEnableWhenItemProperties(qItem, questionnaire);
+      expect(result).toBeNull();
+    });
+
+    it('should return single enableWhen properties when no parent linkId', () => {
+      const qItem: QuestionnaireItem = {
+        linkId: 'test-item',
+        type: 'string',
+        text: 'Test Question',
+        enableWhen: [
+          {
+            question: 'other-item',
+            operator: 'exists',
+            answerBoolean: true
+          }
+        ]
+      };
+
+      const questionnaire: Questionnaire = {
+        resourceType: 'Questionnaire',
+        status: 'active',
+        item: []
+      };
+
+      const result = initialiseEnableWhenItemProperties(qItem, questionnaire);
+
+      expect(result).toEqual({
+        enableWhenItemType: 'single',
+        enableWhenItemProperties: {
+          linked: [
+            {
+              enableWhen: {
+                question: 'other-item',
+                operator: 'exists',
+                answerBoolean: true
+              }
+            }
+          ],
+          isEnabled: false,
+          enableBehavior: undefined
+        }
+      });
+    });
+
+    it('should return single enableWhen properties when parent linkId provided but repeat item cannot be classified', () => {
+      const qItem: QuestionnaireItem = {
+        linkId: 'test-item',
+        type: 'string',
+        text: 'Test Question',
+        enableWhen: [
+          {
+            question: 'other-item',
+            operator: 'exists',
+            answerBoolean: true
+          }
+        ]
+      };
+
+      const questionnaire: Questionnaire = {
+        resourceType: 'Questionnaire',
+        status: 'active',
+        item: []
+      };
+
+      const parentLinkId = 'parent-group';
+
+      // Mock that parent item cannot be found or doesn't match
+      mockGetRepeatGroupParentItem.mockReturnValue(null);
+
+      const result = initialiseEnableWhenItemProperties(qItem, questionnaire, parentLinkId);
+
+      expect(result).toEqual({
+        enableWhenItemType: 'single',
+        enableWhenItemProperties: {
+          linked: [
+            {
+              enableWhen: {
+                question: 'other-item',
+                operator: 'exists',
+                answerBoolean: true
+              }
+            }
+          ],
+          isEnabled: false,
+          enableBehavior: undefined
+        }
+      });
+    });
+
+    it('should return repeat enableWhen properties when parent linkId matches', () => {
+      const qItem: QuestionnaireItem = {
+        linkId: 'test-item',
+        type: 'string',
+        text: 'Test Question',
+        enableBehavior: 'any',
+        enableWhen: [
+          {
+            question: 'other-item',
+            operator: '=',
+            answerString: 'yes'
+          }
+        ]
+      };
+
+      const questionnaire: Questionnaire = {
+        resourceType: 'Questionnaire',
+        status: 'active',
+        item: []
+      };
+
+      const parentLinkId = 'parent-group';
+
+      // Mock matching parent item
+      mockGetRepeatGroupParentItem.mockReturnValue({
+        linkId: 'parent-group',
+        type: 'group',
+        text: 'Parent Group'
+      });
+
+      mockCheckItemIsEnabledRepeat.mockReturnValue(true);
+
+      const result = initialiseEnableWhenItemProperties(qItem, questionnaire, parentLinkId);
+
+      expect(result).toEqual({
+        enableWhenItemType: 'repeat',
+        enableWhenItemProperties: {
+          linked: [
+            {
+              enableWhen: {
+                question: 'other-item',
+                operator: '=',
+                answerString: 'yes'
+              },
+              parentLinkId: 'parent-group',
+              answers: []
+            }
+          ],
+          parentLinkId: 'parent-group',
+          enabledIndexes: [true],
+          enableBehavior: 'any'
+        }
+      });
+
+      expect(mockGetRepeatGroupParentItem).toHaveBeenCalledWith(questionnaire, 'other-item');
+      expect(mockCheckItemIsEnabledRepeat).toHaveBeenCalled();
     });
   });
 });

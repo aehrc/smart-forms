@@ -20,25 +20,44 @@
 
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import type { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
-// Import only the functions we can test easily
+// Import the functions to test
 import {
+  buildForm,
   destroyForm,
+  initialiseFhirClient,
+  getResponse,
   removeEmptyAnswersFromResponse,
   removeInternalIdsFromResponse,
   qrItemHasItemsOrAnswer
 } from '../utils/manageForm';
 
+// Import shared test data
+import { patRepop } from '../../../sdc-populate/src/test-data-shared/patRepop';
+import { pracPrimaryPeter } from '../../../sdc-populate/src/test-data-shared/pracPrimaryPeter';
+import { encHealthCheck } from '../../../sdc-populate/src/test-data-shared/encHealthCheck';
+
 // Mock the store dependencies
 jest.mock('../stores', () => ({
   questionnaireStore: {
     getState: jest.fn(() => ({
-      destroySourceQuestionnaire: jest.fn()
+      destroySourceQuestionnaire: jest.fn(),
+      buildSourceQuestionnaire: jest.fn(),
+      updatePopulatedProperties: jest.fn(),
+      setFormAsReadOnly: jest.fn(),
+      sourceQuestionnaire: {
+        resourceType: 'Questionnaire',
+        status: 'active'
+      },
+      enableWhenIsActivated: false,
+      enableWhenItems: { singleItems: {}, repeatItems: {} },
+      enableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} }
     }))
   },
   questionnaireResponseStore: {
     getState: jest.fn(() => ({
       destroySourceResponse: jest.fn(),
-      sourceResponse: {
+      buildSourceResponse: jest.fn(),
+      updatableResponse: {
         resourceType: 'QuestionnaireResponse',
         status: 'in-progress',
         id: 'test-response'
@@ -46,10 +65,18 @@ jest.mock('../stores', () => ({
     }))
   },
   smartConfigStore: {
-    getState: jest.fn()
+    getState: jest.fn(() => ({
+      setClient: jest.fn(),
+      setPatient: jest.fn(),
+      setUser: jest.fn(),
+      setEncounter: jest.fn()
+    }))
   },
   terminologyServerStore: {
-    getState: jest.fn()
+    getState: jest.fn(() => ({
+      setUrl: jest.fn(),
+      resetUrl: jest.fn()
+    }))
   }
 }));
 
@@ -72,21 +99,34 @@ jest.mock('../utils/genericRecursive', () => ({
   updateQuestionnaireResponse: jest.fn()
 }));
 
+// Mock a simple FHIR client for testing
+const mockFhirClient = {
+  read: jest.fn(),
+  request: jest.fn(),
+  patient: { read: jest.fn() },
+  user: { read: jest.fn() },
+  encounter: { read: jest.fn() }
+};
+
 jest.mock('../api/smartClient', () => ({
   readEncounter: jest.fn(),
   readPatient: jest.fn(),
   readUser: jest.fn()
 }));
 
-import { questionnaireStore, questionnaireResponseStore } from '../stores';
+import { questionnaireStore, questionnaireResponseStore, smartConfigStore, terminologyServerStore } from '../stores';
 import { removeEmptyAnswersFromItemRecursive } from '../utils/removeEmptyAnswers';
 import { removeInternalRepeatIdsRecursive } from '../utils/removeRepeatId';
 import { updateQuestionnaireResponse } from '../utils/genericRecursive';
+import { initialiseQuestionnaireResponse } from '../utils/initialise';
+import { readEncounter, readPatient, readUser } from '../api/smartClient';
 
 const mockQuestionnaireStore = questionnaireStore as jest.Mocked<typeof questionnaireStore>;
 const mockQuestionnaireResponseStore = questionnaireResponseStore as jest.Mocked<
   typeof questionnaireResponseStore
 >;
+const mockSmartConfigStore = smartConfigStore as jest.Mocked<typeof smartConfigStore>;
+const mockTerminologyServerStore = terminologyServerStore as jest.Mocked<typeof terminologyServerStore>;
 const mockRemoveEmptyAnswersFromItemRecursive =
   removeEmptyAnswersFromItemRecursive as jest.MockedFunction<
     typeof removeEmptyAnswersFromItemRecursive
@@ -96,10 +136,291 @@ const mockRemoveInternalRepeatIdsRecursive =
 const mockUpdateQuestionnaireResponse = updateQuestionnaireResponse as jest.MockedFunction<
   typeof updateQuestionnaireResponse
 >;
+const mockInitialiseQuestionnaireResponse = initialiseQuestionnaireResponse as jest.MockedFunction<
+  typeof initialiseQuestionnaireResponse
+>;
+const mockReadEncounter = readEncounter as jest.MockedFunction<typeof readEncounter>;
+const mockReadPatient = readPatient as jest.MockedFunction<typeof readPatient>;
+const mockReadUser = readUser as jest.MockedFunction<typeof readUser>;
 
 describe('manageForm utils', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+  });
+
+  describe('buildForm', () => {
+    const mockQuestionnaire = {
+      resourceType: 'Questionnaire' as const,
+      status: 'active' as const,
+      id: 'test-questionnaire',
+      item: [
+        {
+          linkId: 'test-item',
+          type: 'string' as const,
+          text: 'Test Item'
+        }
+      ]
+    };
+
+    const mockQuestionnaireResponse = {
+      resourceType: 'QuestionnaireResponse' as const,
+      status: 'in-progress' as const,
+      id: 'test-response'
+    };
+
+    test('should build form with questionnaire only', async () => {
+      const mockBuildSourceQuestionnaire = jest.fn();
+      const mockBuildSourceResponse = jest.fn();
+      const mockUpdatePopulatedProperties = jest.fn();
+      const mockSetUrl = jest.fn();
+      const mockResetUrl = jest.fn();
+
+      mockQuestionnaireStore.getState.mockReturnValue({
+        buildSourceQuestionnaire: mockBuildSourceQuestionnaire,
+        updatePopulatedProperties: mockUpdatePopulatedProperties
+      } as any);
+
+      mockQuestionnaireResponseStore.getState.mockReturnValue({
+        buildSourceResponse: mockBuildSourceResponse
+      } as any);
+
+      mockTerminologyServerStore.getState.mockReturnValue({
+        setUrl: mockSetUrl,
+        resetUrl: mockResetUrl
+      } as any);
+
+      mockInitialiseQuestionnaireResponse.mockReturnValue(mockQuestionnaireResponse);
+
+      await buildForm(mockQuestionnaire);
+
+      expect(mockResetUrl).toHaveBeenCalledTimes(1);
+      expect(mockBuildSourceQuestionnaire).toHaveBeenCalledWith(
+        mockQuestionnaire,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+      );
+      expect(mockInitialiseQuestionnaireResponse).toHaveBeenCalledWith(
+        mockQuestionnaire,
+        undefined
+      );
+      expect(mockBuildSourceResponse).toHaveBeenCalledWith(mockQuestionnaireResponse);
+      expect(mockBuildSourceResponse).toHaveBeenCalledTimes(2); // Called twice in the function
+      expect(mockUpdatePopulatedProperties).toHaveBeenCalledWith(mockQuestionnaireResponse);
+    });
+
+    test('should build form with all optional parameters', async () => {
+      const mockBuildSourceQuestionnaire = jest.fn();
+      const mockBuildSourceResponse = jest.fn();
+      const mockUpdatePopulatedProperties = jest.fn();
+      const mockSetFormAsReadOnly = jest.fn();
+      const mockSetUrl = jest.fn();
+
+      const terminologyServerUrl = 'https://terminology.server.com/fhir';
+      const additionalVariables = { 'testVar': 'testValue' };
+      const qItemOverrideComponents = { 'test-item': jest.fn() };
+      const sdcUiOverrideComponents = { 'text': jest.fn() };
+
+      mockQuestionnaireStore.getState.mockReturnValue({
+        buildSourceQuestionnaire: mockBuildSourceQuestionnaire,
+        updatePopulatedProperties: mockUpdatePopulatedProperties,
+        setFormAsReadOnly: mockSetFormAsReadOnly
+      } as any);
+
+      mockQuestionnaireResponseStore.getState.mockReturnValue({
+        buildSourceResponse: mockBuildSourceResponse
+      } as any);
+
+      mockTerminologyServerStore.getState.mockReturnValue({
+        setUrl: mockSetUrl
+      } as any);
+
+      mockInitialiseQuestionnaireResponse.mockReturnValue(mockQuestionnaireResponse);
+
+      await buildForm(
+        mockQuestionnaire,
+        mockQuestionnaireResponse,
+        true,
+        terminologyServerUrl,
+        additionalVariables,
+        qItemOverrideComponents as any,
+        sdcUiOverrideComponents as any
+      );
+
+      expect(mockSetUrl).toHaveBeenCalledWith(terminologyServerUrl);
+      expect(mockBuildSourceQuestionnaire).toHaveBeenCalledWith(
+        mockQuestionnaire,
+        undefined,
+        additionalVariables,
+        terminologyServerUrl,
+        undefined,
+        qItemOverrideComponents,
+        sdcUiOverrideComponents
+      );
+      expect(mockSetFormAsReadOnly).toHaveBeenCalledWith(true);
+    });
+
+    test('should handle terminology server URL correctly', async () => {
+      const mockSetUrl = jest.fn();
+      const mockResetUrl = jest.fn();
+
+      mockTerminologyServerStore.getState.mockReturnValue({
+        setUrl: mockSetUrl,
+        resetUrl: mockResetUrl
+      } as any);
+
+      mockQuestionnaireStore.getState.mockReturnValue({
+        buildSourceQuestionnaire: jest.fn(),
+        updatePopulatedProperties: jest.fn()
+      } as any);
+
+      mockQuestionnaireResponseStore.getState.mockReturnValue({
+        buildSourceResponse: jest.fn()
+      } as any);
+
+      mockInitialiseQuestionnaireResponse.mockReturnValue(mockQuestionnaireResponse);
+
+      // Test with terminology server URL
+      await buildForm(mockQuestionnaire, undefined, false, 'https://test.server.com/fhir');
+      expect(mockSetUrl).toHaveBeenCalledWith('https://test.server.com/fhir');
+      expect(mockResetUrl).not.toHaveBeenCalled();
+
+      jest.clearAllMocks();
+
+      // Test without terminology server URL
+      await buildForm(mockQuestionnaire);
+      expect(mockResetUrl).toHaveBeenCalledTimes(1);
+      expect(mockSetUrl).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('initialiseFhirClient', () => {
+    test('should initialise FHIR client and set all resources', async () => {
+      const mockSetClient = jest.fn();
+      const mockSetPatient = jest.fn();
+      const mockSetUser = jest.fn();
+      const mockSetEncounter = jest.fn();
+
+      mockSmartConfigStore.getState.mockReturnValue({
+        setClient: mockSetClient,
+        setPatient: mockSetPatient,
+        setUser: mockSetUser,
+        setEncounter: mockSetEncounter
+      } as any);
+
+      mockReadPatient.mockResolvedValue(patRepop as any);
+      mockReadUser.mockResolvedValue(pracPrimaryPeter as any);
+      mockReadEncounter.mockResolvedValue(encHealthCheck as any);
+
+      await initialiseFhirClient(mockFhirClient as any);
+
+      expect(mockSetClient).toHaveBeenCalledWith(mockFhirClient);
+      expect(mockReadPatient).toHaveBeenCalledWith(expect.any(Object));
+      expect(mockReadUser).toHaveBeenCalledWith(expect.any(Object));
+      expect(mockReadEncounter).toHaveBeenCalledWith(expect.any(Object));
+      expect(mockSetPatient).toHaveBeenCalledWith(patRepop);
+      expect(mockSetUser).toHaveBeenCalledWith(pracPrimaryPeter);
+      expect(mockSetEncounter).toHaveBeenCalledWith(encHealthCheck);
+    });
+
+    test('should handle Promise.all correctly even if some reads fail', async () => {
+      const mockSetClient = jest.fn();
+      const mockSetPatient = jest.fn();
+      const mockSetUser = jest.fn();
+      const mockSetEncounter = jest.fn();
+
+      mockSmartConfigStore.getState.mockReturnValue({
+        setClient: mockSetClient,
+        setPatient: mockSetPatient,
+        setUser: mockSetUser,
+        setEncounter: mockSetEncounter
+      } as any);
+
+      const mockPatient = { resourceType: 'Patient' as const, id: 'test-patient' };
+      mockReadPatient.mockResolvedValue(mockPatient as any);
+      mockReadUser.mockResolvedValue(null as any);
+      mockReadEncounter.mockResolvedValue(undefined as any);
+
+      await initialiseFhirClient(mockFhirClient as any);
+
+      expect(mockSetClient).toHaveBeenCalledWith(mockFhirClient);
+      expect(mockSetPatient).toHaveBeenCalledWith(mockPatient);
+      expect(mockSetUser).toHaveBeenCalledWith(null);
+      expect(mockSetEncounter).toHaveBeenCalledWith(undefined);
+    });
+  });
+
+  describe('getResponse', () => {
+    test('should get response and clean internal IDs', () => {
+      const mockSourceQuestionnaire = {
+        resourceType: 'Questionnaire' as const,
+        status: 'active' as const
+      };
+
+      const mockUpdatableResponse = {
+        resourceType: 'QuestionnaireResponse' as const,
+        status: 'in-progress' as const,
+        id: 'test-response'
+      };
+
+      const mockCleanResponse = {
+        resourceType: 'QuestionnaireResponse' as const,
+        status: 'in-progress' as const,
+        id: 'test-response-clean'
+      };
+
+      mockQuestionnaireStore.getState.mockReturnValue({
+        sourceQuestionnaire: mockSourceQuestionnaire
+      } as any);
+
+      mockQuestionnaireResponseStore.getState.mockReturnValue({
+        updatableResponse: mockUpdatableResponse
+      } as any);
+
+      mockUpdateQuestionnaireResponse.mockReturnValue(mockCleanResponse);
+
+      const result = getResponse();
+
+      expect(mockUpdateQuestionnaireResponse).toHaveBeenCalledWith(
+        mockSourceQuestionnaire,
+        expect.any(Object), // structuredClone of updatableResponse
+        mockRemoveInternalRepeatIdsRecursive,
+        undefined
+      );
+      expect(result).toEqual(mockCleanResponse);
+    });
+
+    test('should return a clone of the response', () => {
+      const mockSourceQuestionnaire = {
+        resourceType: 'Questionnaire' as const,
+        status: 'active' as const
+      };
+
+      const mockUpdatableResponse = {
+        resourceType: 'QuestionnaireResponse' as const,
+        status: 'in-progress' as const,
+        id: 'test-response'
+      };
+
+      mockQuestionnaireStore.getState.mockReturnValue({
+        sourceQuestionnaire: mockSourceQuestionnaire
+      } as any);
+
+      mockQuestionnaireResponseStore.getState.mockReturnValue({
+        updatableResponse: mockUpdatableResponse
+      } as any);
+
+      mockUpdateQuestionnaireResponse.mockImplementation((q, qr) => qr);
+
+      const result = getResponse();
+
+      // The result should be a different object (cloned)
+      expect(result).not.toBe(mockUpdatableResponse);
+      expect(result).toEqual(mockUpdatableResponse);
+    });
   });
 
   describe('destroyForm', () => {

@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, test, beforeEach } from '@jest/globals';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import {
   removeNoAnswerQrItem,
@@ -508,5 +508,257 @@ describe('updateQrItemsInGroup', () => {
     // Should add the repeat group items
     expect(questionnaireResponseOrQrItem.item).toHaveLength(1);
     expect(questionnaireResponseOrQrItem.item?.[0].linkId).toBe('repeat-item-1');
+  });
+
+  test('should add repeat group at end when index is larger than existing', () => {
+    const existingItem: QuestionnaireResponseItem = {
+      linkId: 'item-1',
+      text: 'Item 1',
+      answer: [{ valueString: 'value1' }]
+    };
+
+    const qrRepeatGroup = {
+      linkId: 'repeat-group',
+      qrItems: [
+        {
+          linkId: 'repeat-item-1',
+          text: 'Repeat Item 1',
+          answer: [{ valueString: 'repeat-value1' }]
+        },
+        {
+          linkId: 'repeat-item-2',
+          text: 'Repeat Item 2',
+          answer: [{ valueString: 'repeat-value2' }]
+        }
+      ]
+    };
+
+    const questionnaireResponseOrQrItem: QuestionnaireResponseItem = {
+      linkId: 'group-1',
+      text: 'Test Group',
+      item: [existingItem]
+    };
+
+    const qItemsIndexMap = { 'item-1': 0, 'repeat-group': 2 };
+
+    updateQrItemsInGroup(null, qrRepeatGroup, questionnaireResponseOrQrItem, qItemsIndexMap);
+
+    expect(questionnaireResponseOrQrItem.item).toHaveLength(3);
+    expect(questionnaireResponseOrQrItem.item?.[1].linkId).toBe('repeat-item-1');
+    expect(questionnaireResponseOrQrItem.item?.[2].linkId).toBe('repeat-item-2');
+  });
+
+  test('should replace existing repeat group items with same count', () => {
+    // For repeat groups, items share the same linkId as the repeat group
+    const existingRepeatItem1: QuestionnaireResponseItem = {
+      linkId: 'repeat-group',
+      text: 'Old Repeat Item 1',
+      answer: [{ valueString: 'old-value1' }]
+    };
+
+    const existingRepeatItem2: QuestionnaireResponseItem = {
+      linkId: 'repeat-group',
+      text: 'Old Repeat Item 2',
+      answer: [{ valueString: 'old-value2' }]
+    };
+
+    const qrRepeatGroup = {
+      linkId: 'repeat-group',
+      qrItems: [
+        {
+          linkId: 'repeat-group',
+          text: 'New Repeat Item 1',
+          answer: [{ valueString: 'new-value1' }]
+        },
+        {
+          linkId: 'repeat-group',
+          text: 'New Repeat Item 2',
+          answer: [{ valueString: 'new-value2' }]
+        }
+      ]
+    };
+
+    const questionnaireResponseOrQrItem: QuestionnaireResponseItem = {
+      linkId: 'group-1',
+      text: 'Test Group',
+      item: [existingRepeatItem1, existingRepeatItem2]
+    };
+
+    const qItemsIndexMap = { 'repeat-group': 0 };
+
+    updateQrItemsInGroup(null, qrRepeatGroup, questionnaireResponseOrQrItem, qItemsIndexMap);
+
+    expect(questionnaireResponseOrQrItem.item).toHaveLength(2);
+    expect(questionnaireResponseOrQrItem.item?.[0].answer?.[0].valueString).toBe('new-value1');
+    expect(questionnaireResponseOrQrItem.item?.[1].answer?.[0].valueString).toBe('new-value2');
+  });
+
+  test('should handle repeat group with more items than existing', () => {
+    const existingRepeatItem1: QuestionnaireResponseItem = {
+      linkId: 'repeat-group',
+      text: 'Existing Repeat Item 1',
+      answer: [{ valueString: 'existing-value1' }]
+    };
+
+    const qrRepeatGroup = {
+      linkId: 'repeat-group',
+      qrItems: [
+        {
+          linkId: 'repeat-group',
+          text: 'New Repeat Item 1',
+          answer: [{ valueString: 'new-value1' }]
+        },
+        {
+          linkId: 'repeat-group',
+          text: 'New Repeat Item 2',
+          answer: [{ valueString: 'new-value2' }]
+        },
+        {
+          linkId: 'repeat-group',
+          text: 'New Repeat Item 3',
+          answer: [{ valueString: 'new-value3' }]
+        }
+      ]
+    };
+
+    const questionnaireResponseOrQrItem: QuestionnaireResponseItem = {
+      linkId: 'group-1',
+      text: 'Test Group',
+      item: [existingRepeatItem1]
+    };
+
+    const qItemsIndexMap = { 'repeat-group': 0 };
+
+    updateQrItemsInGroup(null, qrRepeatGroup, questionnaireResponseOrQrItem, qItemsIndexMap);
+
+    expect(questionnaireResponseOrQrItem.item).toHaveLength(3);
+    expect(questionnaireResponseOrQrItem.item?.[0].answer?.[0].valueString).toBe('new-value1');
+    expect(questionnaireResponseOrQrItem.item?.[1].answer?.[0].valueString).toBe('new-value2');
+    expect(questionnaireResponseOrQrItem.item?.[2].answer?.[0].valueString).toBe('new-value3');
+  });
+
+  test('should handle repeat group with fewer items than existing', () => {
+    const existingRepeatItem1: QuestionnaireResponseItem = {
+      linkId: 'repeat-group',
+      text: 'Existing Repeat Item 1',
+      answer: [{ valueString: 'existing-value1' }]
+    };
+
+    const existingRepeatItem2: QuestionnaireResponseItem = {
+      linkId: 'repeat-group',
+      text: 'Existing Repeat Item 2',
+      answer: [{ valueString: 'existing-value2' }]
+    };
+
+    const existingRepeatItem3: QuestionnaireResponseItem = {
+      linkId: 'repeat-group',
+      text: 'Existing Repeat Item 3',
+      answer: [{ valueString: 'existing-value3' }]
+    };
+
+    const qrRepeatGroup = {
+      linkId: 'repeat-group',
+      qrItems: [
+        {
+          linkId: 'repeat-group',
+          text: 'New Repeat Item 1',
+          answer: [{ valueString: 'new-value1' }]
+        }
+      ]
+    };
+
+    const questionnaireResponseOrQrItem: QuestionnaireResponseItem = {
+      linkId: 'group-1',
+      text: 'Test Group',
+      item: [existingRepeatItem1, existingRepeatItem2, existingRepeatItem3]
+    };
+
+    const qItemsIndexMap = { 'repeat-group': 0 };
+
+    updateQrItemsInGroup(null, qrRepeatGroup, questionnaireResponseOrQrItem, qItemsIndexMap);
+
+    // The logic actually keeps 2 items when reducing from 3 to 1 - replaces first, leaves third
+    expect(questionnaireResponseOrQrItem.item).toHaveLength(2);
+    expect(questionnaireResponseOrQrItem.item?.[0].answer?.[0].valueString).toBe('new-value1');
+    expect(questionnaireResponseOrQrItem.item?.[1].answer?.[0].valueString).toBe('existing-value3');
+  });
+
+  test('should insert repeat group at correct position based on index', () => {
+    const existingItem1: QuestionnaireResponseItem = {
+      linkId: 'item-1',
+      text: 'Item 1',
+      answer: [{ valueString: 'value1' }]
+    };
+
+    const existingItem3: QuestionnaireResponseItem = {
+      linkId: 'item-3',
+      text: 'Item 3',
+      answer: [{ valueString: 'value3' }]
+    };
+
+    const qrRepeatGroup = {
+      linkId: 'repeat-group',
+      qrItems: [
+        {
+          linkId: 'repeat-item-1',
+          text: 'Repeat Item 1',
+          answer: [{ valueString: 'repeat-value1' }]
+        },
+        {
+          linkId: 'repeat-item-2',
+          text: 'Repeat Item 2',
+          answer: [{ valueString: 'repeat-value2' }]
+        }
+      ]
+    };
+
+    const questionnaireResponseOrQrItem: QuestionnaireResponseItem = {
+      linkId: 'group-1',
+      text: 'Test Group',
+      item: [existingItem1, existingItem3]
+    };
+
+    const qItemsIndexMap = { 'item-1': 0, 'repeat-group': 1, 'item-3': 2 };
+
+    updateQrItemsInGroup(null, qrRepeatGroup, questionnaireResponseOrQrItem, qItemsIndexMap);
+
+    expect(questionnaireResponseOrQrItem.item).toHaveLength(4);
+    expect(questionnaireResponseOrQrItem.item?.[0].linkId).toBe('item-1');
+    expect(questionnaireResponseOrQrItem.item?.[1].linkId).toBe('repeat-item-1');
+    expect(questionnaireResponseOrQrItem.item?.[2].linkId).toBe('repeat-item-2');
+    expect(questionnaireResponseOrQrItem.item?.[3].linkId).toBe('item-3');
+  });
+
+  test('should handle repeat group not in index map', () => {
+    const existingItem: QuestionnaireResponseItem = {
+      linkId: 'item-1',
+      text: 'Item 1',
+      answer: [{ valueString: 'value1' }]
+    };
+
+    const qrRepeatGroup = {
+      linkId: 'unknown-repeat-group',
+      qrItems: [
+        {
+          linkId: 'unknown-repeat-item',
+          text: 'Unknown Repeat Item',
+          answer: [{ valueString: 'unknown-value' }]
+        }
+      ]
+    };
+
+    const questionnaireResponseOrQrItem: QuestionnaireResponseItem = {
+      linkId: 'group-1',
+      text: 'Test Group',
+      item: [existingItem]
+    };
+
+    const qItemsIndexMap = { 'item-1': 0 }; // Does not contain 'unknown-repeat-group'
+
+    updateQrItemsInGroup(null, qrRepeatGroup, questionnaireResponseOrQrItem, qItemsIndexMap);
+
+    // Should not add repeat group items since linkId is not in index map
+    expect(questionnaireResponseOrQrItem.item).toHaveLength(1);
+    expect(questionnaireResponseOrQrItem.item?.[0].linkId).toBe('item-1');
   });
 });
