@@ -516,14 +516,16 @@ describe('useDateTimeCalculatedExpression', () => {
 
   describe('performance and optimization', () => {
     it('should only trigger effect once on mount when no expressions exist', () => {
-      const effectSpy = jest.spyOn(jest.requireMock('react'), 'useEffect');
+      // This test verifies that the hook initializes correctly without calculated expressions
+      // The hook should still mount and initialize state properly
+      const { result } = renderHook(() => useDateTimeCalculatedExpression(defaultProps));
 
-      renderHook(() => useDateTimeCalculatedExpression(defaultProps));
-
-      // useEffect should be called for our hook
-      expect(effectSpy).toHaveBeenCalled();
-
-      effectSpy.mockRestore();
+      // Verify initial state is correct
+      expect(result.current.calcExpUpdated).toBe(false);
+      
+      // Verify no callbacks were called since there are no calculated expressions
+      expect(mockOnChangeByCalcExpressionString).not.toHaveBeenCalled();
+      expect(mockOnChangeByCalcExpressionNull).not.toHaveBeenCalled();
     });
 
     it('should cleanup timeouts properly on unmount', () => {

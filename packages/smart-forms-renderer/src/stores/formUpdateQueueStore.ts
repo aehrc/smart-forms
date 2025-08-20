@@ -116,7 +116,12 @@ export const formUpdateQueueStore = createStore<FormUpdateQueueStoreType>()((set
 
     updateResponse(questionnaireResponse, 'initial'); // Immediate update (pre-computed)
 
-    await updateExpressions(questionnaireResponse);
+    try {
+      await updateExpressions(questionnaireResponse);
+    } catch (error) {
+      // Log error but continue processing to maintain queue stability
+      console.error('Error updating expressions:', error);
+    }
 
     set((state) => ({
       queue: state.queue.slice(1),

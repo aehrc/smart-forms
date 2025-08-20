@@ -20,26 +20,20 @@
 
 import { renderHook } from '@testing-library/react';
 import type { QuestionnaireItem } from 'fhir/r4';
-import useReadOnly from '../hooks/useReadOnly';
 
-// Create mock functions first (before jest.mock calls due to hoisting)
-const mockUseRenderingExtensions = jest.fn();
-const mockEnableWhenIsActivated = jest.fn();
-const mockEnableWhenItems = jest.fn();
-const mockEnableWhenExpressions = jest.fn();
-const mockEnableWhenAsReadOnly = jest.fn();
+// Mock setup with proper hoisting support
 
 // Mock the dependent hook
 jest.mock('../hooks/useRenderingExtensions', () => {
-  return (...args: any[]) => mockUseRenderingExtensions(...args);
+  return jest.fn();
 });
 
 jest.mock('../stores', () => ({
   useQuestionnaireStore: {
     use: {
-      enableWhenIsActivated: mockEnableWhenIsActivated,
-      enableWhenItems: mockEnableWhenItems,
-      enableWhenExpressions: mockEnableWhenExpressions
+      enableWhenIsActivated: jest.fn(),
+      enableWhenItems: jest.fn(),
+      enableWhenExpressions: jest.fn()
     }
   }
 }));
@@ -47,16 +41,26 @@ jest.mock('../stores', () => ({
 jest.mock('../stores/rendererStylingStore', () => ({
   useRendererStylingStore: {
     use: {
-      enableWhenAsReadOnly: mockEnableWhenAsReadOnly
+      enableWhenAsReadOnly: jest.fn()
     }
   }
 }));
 
-// Mock utility functions
-const mockIsHiddenByEnableWhen = jest.fn();
 jest.mock('../utils/qItem', () => ({
-  isHiddenByEnableWhen: (...args: any[]) => mockIsHiddenByEnableWhen(...args)
+  isHiddenByEnableWhen: jest.fn()
 }));
+
+import useReadOnly from '../hooks/useReadOnly';
+import useRenderingExtensions from '../hooks/useRenderingExtensions';
+import { useQuestionnaireStore } from '../stores';
+import { useRendererStylingStore } from '../stores/rendererStylingStore';
+import { isHiddenByEnableWhen } from '../utils/qItem';
+
+// Now safely assign the mocks after imports
+const mockedUseRenderingExtensions = useRenderingExtensions as jest.MockedFunction<typeof useRenderingExtensions>;
+const mockedUseQuestionnaireStore = useQuestionnaireStore as any;
+const mockedUseRendererStylingStore = useRendererStylingStore as any;
+const mockedIsHiddenByEnableWhen = isHiddenByEnableWhen as jest.MockedFunction<typeof isHiddenByEnableWhen>;
 
 describe('useReadOnly', () => {
   // Test data
@@ -77,12 +81,12 @@ describe('useReadOnly', () => {
     jest.clearAllMocks();
 
     // Set default mock returns
-    mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
-    mockEnableWhenIsActivated.mockReturnValue({});
-    mockEnableWhenItems.mockReturnValue({});
-    mockEnableWhenExpressions.mockReturnValue({});
-    mockEnableWhenAsReadOnly.mockReturnValue(false);
-    mockIsHiddenByEnableWhen.mockReturnValue(false);
+    mockedUseRenderingExtensions.mockReturnValue({ readOnly: false } as any);
+    mockedUseQuestionnaireStore.use.enableWhenIsActivated.mockReturnValue({});
+    mockedUseQuestionnaireStore.use.enableWhenItems.mockReturnValue({});
+    mockedUseQuestionnaireStore.use.enableWhenExpressions.mockReturnValue({});
+    mockedUseRendererStylingStore.use.enableWhenAsReadOnly.mockReturnValue(false);
+    mockedIsHiddenByEnableWhen.mockReturnValue(false);
   });
 
   describe('basic readOnly logic', () => {
@@ -93,7 +97,7 @@ describe('useReadOnly', () => {
     });
 
     it('should return true when item has readOnly from rendering extensions', () => {
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: true });
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: true } as any);
 
       const { result } = renderHook(() => useReadOnly(basicQItem, false));
 
@@ -103,22 +107,22 @@ describe('useReadOnly', () => {
     it('should call useRenderingExtensions with correct qItem', () => {
       renderHook(() => useReadOnly(basicQItem, false));
 
-      expect(mockUseRenderingExtensions).toHaveBeenCalledWith(basicQItem);
+      expect(mockedUseRenderingExtensions).toHaveBeenCalledWith(basicQItem);
     });
 
     it('should access store functions correctly', () => {
       renderHook(() => useReadOnly(basicQItem, false));
 
-      expect(mockEnableWhenIsActivated).toHaveBeenCalled();
-      expect(mockEnableWhenItems).toHaveBeenCalled();
-      expect(mockEnableWhenExpressions).toHaveBeenCalled();
-      expect(mockEnableWhenAsReadOnly).toHaveBeenCalled();
+      expect(mockedUseQuestionnaireStore.use.enableWhenIsActivated).toHaveBeenCalled();
+      expect(mockedUseQuestionnaireStore.use.enableWhenItems).toHaveBeenCalled();
+      expect(mockedUseQuestionnaireStore.use.enableWhenExpressions).toHaveBeenCalled();
+      expect(mockedUseRendererStylingStore.use.enableWhenAsReadOnly).toHaveBeenCalled();
     });
   });
 
   describe('parent readOnly override', () => {
     it('should return true when parent is readOnly regardless of item settings', () => {
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: false } as any);
 
       const { result } = renderHook(() => useReadOnly(basicQItem, true));
 
@@ -126,7 +130,7 @@ describe('useReadOnly', () => {
     });
 
     it('should return true when both parent and item are readOnly', () => {
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: true });
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: true } as any);
 
       const { result } = renderHook(() => useReadOnly(basicQItem, true));
 
@@ -134,7 +138,7 @@ describe('useReadOnly', () => {
     });
 
     it('should handle undefined parentIsReadOnly', () => {
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: false } as any);
 
       const { result } = renderHook(() => useReadOnly(basicQItem, undefined));
 
@@ -142,7 +146,7 @@ describe('useReadOnly', () => {
     });
 
     it('should handle false parentIsReadOnly explicitly', () => {
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: false } as any);
 
       const { result } = renderHook(() => useReadOnly(basicQItem, false));
 
@@ -152,9 +156,9 @@ describe('useReadOnly', () => {
 
   describe('enableWhenAsReadOnly logic', () => {
     it('should set readOnly when enableWhenAsReadOnly is true and item is hidden', () => {
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
-      mockEnableWhenAsReadOnly.mockReturnValue(true);
-      mockIsHiddenByEnableWhen.mockReturnValue(true);
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: false } as any);
+      mockedUseRendererStylingStore.use.enableWhenAsReadOnly.mockReturnValue(true);
+      mockedIsHiddenByEnableWhen.mockReturnValue(true);
 
       const { result } = renderHook(() => useReadOnly(basicQItem, false));
 
@@ -162,9 +166,9 @@ describe('useReadOnly', () => {
     });
 
     it('should not set readOnly when enableWhenAsReadOnly is true but item is not hidden', () => {
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
-      mockEnableWhenAsReadOnly.mockReturnValue(true);
-      mockIsHiddenByEnableWhen.mockReturnValue(false);
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: false } as any);
+      mockedUseRendererStylingStore.use.enableWhenAsReadOnly.mockReturnValue(true);
+      mockedIsHiddenByEnableWhen.mockReturnValue(false);
 
       const { result } = renderHook(() => useReadOnly(basicQItem, false));
 
@@ -172,10 +176,10 @@ describe('useReadOnly', () => {
     });
 
     it('should set readOnly when enableWhenAsReadOnly Set contains item type and item is hidden', () => {
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: false } as any);
       const typeSet = new Set(['string', 'group']);
-      mockEnableWhenAsReadOnly.mockReturnValue(typeSet);
-      mockIsHiddenByEnableWhen.mockReturnValue(true);
+      mockedUseRendererStylingStore.use.enableWhenAsReadOnly.mockReturnValue(typeSet);
+      mockedIsHiddenByEnableWhen.mockReturnValue(true);
 
       const { result } = renderHook(() => useReadOnly(basicQItem, false));
 
@@ -183,10 +187,10 @@ describe('useReadOnly', () => {
     });
 
     it('should not set readOnly when enableWhenAsReadOnly Set does not contain item type', () => {
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: false } as any);
       const typeSet = new Set(['group', 'choice']);
-      mockEnableWhenAsReadOnly.mockReturnValue(typeSet);
-      mockIsHiddenByEnableWhen.mockReturnValue(true);
+      mockedUseRendererStylingStore.use.enableWhenAsReadOnly.mockReturnValue(typeSet);
+      mockedIsHiddenByEnableWhen.mockReturnValue(true);
 
       const { result } = renderHook(() => useReadOnly(basicQItem, false));
 
@@ -194,18 +198,18 @@ describe('useReadOnly', () => {
     });
 
     it('should not check isHiddenByEnableWhen when enableWhenAsReadOnly is false', () => {
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
-      mockEnableWhenAsReadOnly.mockReturnValue(false);
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: false } as any);
+      mockedUseRendererStylingStore.use.enableWhenAsReadOnly.mockReturnValue(false);
 
       renderHook(() => useReadOnly(basicQItem, false));
 
-      expect(mockIsHiddenByEnableWhen).not.toHaveBeenCalled();
+      expect(mockedIsHiddenByEnableWhen).not.toHaveBeenCalled();
     });
 
     it('should not override existing readOnly from rendering extensions', () => {
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: true });
-      mockEnableWhenAsReadOnly.mockReturnValue(true);
-      mockIsHiddenByEnableWhen.mockReturnValue(false);
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: true } as any);
+      mockedUseRendererStylingStore.use.enableWhenAsReadOnly.mockReturnValue(true);
+      mockedIsHiddenByEnableWhen.mockReturnValue(false);
 
       const { result } = renderHook(() => useReadOnly(basicQItem, false));
 
@@ -215,20 +219,20 @@ describe('useReadOnly', () => {
 
   describe('isHiddenByEnableWhen integration', () => {
     it('should call isHiddenByEnableWhen with correct parameters', () => {
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
-      mockEnableWhenAsReadOnly.mockReturnValue(true);
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: false } as any);
+      mockedUseRendererStylingStore.use.enableWhenAsReadOnly.mockReturnValue(true);
 
       const mockActivated = { item1: true };
       const mockItems = { item1: [] };
       const mockExpressions = { item1: [] };
 
-      mockEnableWhenIsActivated.mockReturnValue(mockActivated);
-      mockEnableWhenItems.mockReturnValue(mockItems);
-      mockEnableWhenExpressions.mockReturnValue(mockExpressions);
+      mockedUseQuestionnaireStore.use.enableWhenIsActivated.mockReturnValue(mockActivated);
+      mockedUseQuestionnaireStore.use.enableWhenItems.mockReturnValue(mockItems);
+      mockedUseQuestionnaireStore.use.enableWhenExpressions.mockReturnValue(mockExpressions);
 
       renderHook(() => useReadOnly(basicQItem, false));
 
-      expect(mockIsHiddenByEnableWhen).toHaveBeenCalledWith({
+      expect(mockedIsHiddenByEnableWhen).toHaveBeenCalledWith({
         linkId: basicQItem.linkId,
         enableWhenIsActivated: mockActivated,
         enableWhenItems: mockItems,
@@ -238,13 +242,13 @@ describe('useReadOnly', () => {
     });
 
     it('should pass parentRepeatGroupIndex when provided', () => {
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
-      mockEnableWhenAsReadOnly.mockReturnValue(true);
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: false } as any);
+      mockedUseRendererStylingStore.use.enableWhenAsReadOnly.mockReturnValue(true);
 
       const parentIndex = 2;
       renderHook(() => useReadOnly(basicQItem, false, parentIndex));
 
-      expect(mockIsHiddenByEnableWhen).toHaveBeenCalledWith({
+      expect(mockedIsHiddenByEnableWhen).toHaveBeenCalledWith({
         linkId: basicQItem.linkId,
         enableWhenIsActivated: {},
         enableWhenItems: {},
@@ -262,10 +266,10 @@ describe('useReadOnly', () => {
         type: 'string'
       };
 
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: false } as any);
       const typeSet = new Set(['string']);
-      mockEnableWhenAsReadOnly.mockReturnValue(typeSet);
-      mockIsHiddenByEnableWhen.mockReturnValue(true);
+      mockedUseRendererStylingStore.use.enableWhenAsReadOnly.mockReturnValue(typeSet);
+      mockedIsHiddenByEnableWhen.mockReturnValue(true);
 
       const { result } = renderHook(() => useReadOnly(stringItem, false));
 
@@ -279,10 +283,10 @@ describe('useReadOnly', () => {
         type: 'group'
       };
 
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: false } as any);
       const typeSet = new Set(['group']);
-      mockEnableWhenAsReadOnly.mockReturnValue(typeSet);
-      mockIsHiddenByEnableWhen.mockReturnValue(true);
+      mockedUseRendererStylingStore.use.enableWhenAsReadOnly.mockReturnValue(typeSet);
+      mockedIsHiddenByEnableWhen.mockReturnValue(true);
 
       const { result } = renderHook(() => useReadOnly(groupItem, false));
 
@@ -296,10 +300,10 @@ describe('useReadOnly', () => {
         type: 'choice'
       };
 
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: false } as any);
       const typeSet = new Set(['string']); // Does not include choice
-      mockEnableWhenAsReadOnly.mockReturnValue(typeSet);
-      mockIsHiddenByEnableWhen.mockReturnValue(true);
+      mockedUseRendererStylingStore.use.enableWhenAsReadOnly.mockReturnValue(typeSet);
+      mockedIsHiddenByEnableWhen.mockReturnValue(true);
 
       const { result } = renderHook(() => useReadOnly(choiceItem, false));
 
@@ -309,9 +313,9 @@ describe('useReadOnly', () => {
 
   describe('priority and override logic', () => {
     it('should prioritize parent readOnly over all other settings', () => {
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
-      mockEnableWhenAsReadOnly.mockReturnValue(true);
-      mockIsHiddenByEnableWhen.mockReturnValue(true);
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: false } as any);
+      mockedUseRendererStylingStore.use.enableWhenAsReadOnly.mockReturnValue(true);
+      mockedIsHiddenByEnableWhen.mockReturnValue(true);
 
       const { result } = renderHook(() => useReadOnly(basicQItem, true));
 
@@ -319,8 +323,8 @@ describe('useReadOnly', () => {
     });
 
     it('should use rendering extensions readOnly when parent is not readOnly', () => {
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: true });
-      mockEnableWhenAsReadOnly.mockReturnValue(false);
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: true } as any);
+      mockedUseRendererStylingStore.use.enableWhenAsReadOnly.mockReturnValue(false);
 
       const { result } = renderHook(() => useReadOnly(basicQItem, false));
 
@@ -328,9 +332,9 @@ describe('useReadOnly', () => {
     });
 
     it('should use enableWhenAsReadOnly when rendering extensions is false and parent is false', () => {
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
-      mockEnableWhenAsReadOnly.mockReturnValue(true);
-      mockIsHiddenByEnableWhen.mockReturnValue(true);
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: false } as any);
+      mockedUseRendererStylingStore.use.enableWhenAsReadOnly.mockReturnValue(true);
+      mockedIsHiddenByEnableWhen.mockReturnValue(true);
 
       const { result } = renderHook(() => useReadOnly(basicQItem, false));
 
@@ -338,8 +342,8 @@ describe('useReadOnly', () => {
     });
 
     it('should return false when all conditions are false', () => {
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
-      mockEnableWhenAsReadOnly.mockReturnValue(false);
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: false } as any);
+      mockedUseRendererStylingStore.use.enableWhenAsReadOnly.mockReturnValue(false);
 
       const { result } = renderHook(() => useReadOnly(basicQItem, false));
 
@@ -355,13 +359,13 @@ describe('useReadOnly', () => {
         type: 'group'
       };
 
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
-      mockEnableWhenAsReadOnly.mockReturnValue(true);
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: false } as any);
+      mockedUseRendererStylingStore.use.enableWhenAsReadOnly.mockReturnValue(true);
 
       const parentIndex = 3;
       renderHook(() => useReadOnly(nestedItem, false, parentIndex));
 
-      expect(mockIsHiddenByEnableWhen).toHaveBeenCalledWith({
+      expect(mockedIsHiddenByEnableWhen).toHaveBeenCalledWith({
         linkId: nestedItem.linkId,
         enableWhenIsActivated: {},
         enableWhenItems: {},
@@ -372,9 +376,9 @@ describe('useReadOnly', () => {
 
     it('should handle multiple type Set with various types', () => {
       const multiTypeSet = new Set(['string', 'integer', 'decimal', 'boolean', 'choice']);
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
-      mockEnableWhenAsReadOnly.mockReturnValue(multiTypeSet);
-      mockIsHiddenByEnableWhen.mockReturnValue(true);
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: false } as any);
+      mockedUseRendererStylingStore.use.enableWhenAsReadOnly.mockReturnValue(multiTypeSet);
+      mockedIsHiddenByEnableWhen.mockReturnValue(true);
 
       const { result } = renderHook(() => useReadOnly(basicQItem, false));
 
@@ -395,15 +399,15 @@ describe('useReadOnly', () => {
         item1: [{ language: 'text/fhirpath', expression: '%age > 18' }]
       };
 
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
-      mockEnableWhenAsReadOnly.mockReturnValue(true);
-      mockEnableWhenIsActivated.mockReturnValue(complexActivated);
-      mockEnableWhenItems.mockReturnValue(complexItems);
-      mockEnableWhenExpressions.mockReturnValue(complexExpressions);
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: false } as any);
+      mockedUseRendererStylingStore.use.enableWhenAsReadOnly.mockReturnValue(true);
+      mockedUseQuestionnaireStore.use.enableWhenIsActivated.mockReturnValue(complexActivated);
+      mockedUseQuestionnaireStore.use.enableWhenItems.mockReturnValue(complexItems);
+      mockedUseQuestionnaireStore.use.enableWhenExpressions.mockReturnValue(complexExpressions);
 
       renderHook(() => useReadOnly(basicQItem, false));
 
-      expect(mockIsHiddenByEnableWhen).toHaveBeenCalledWith({
+      expect(mockedIsHiddenByEnableWhen).toHaveBeenCalledWith({
         linkId: basicQItem.linkId,
         enableWhenIsActivated: complexActivated,
         enableWhenItems: complexItems,
@@ -420,10 +424,10 @@ describe('useReadOnly', () => {
         text: 'No Type Item'
       } as QuestionnaireItem;
 
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: false } as any);
       const typeSet = new Set(['string']);
-      mockEnableWhenAsReadOnly.mockReturnValue(typeSet);
-      mockIsHiddenByEnableWhen.mockReturnValue(true);
+      mockedUseRendererStylingStore.use.enableWhenAsReadOnly.mockReturnValue(typeSet);
+      mockedIsHiddenByEnableWhen.mockReturnValue(true);
 
       const { result } = renderHook(() => useReadOnly(noTypeItem, false));
 
@@ -433,9 +437,9 @@ describe('useReadOnly', () => {
 
     it('should handle empty enableWhenAsReadOnly Set', () => {
       const emptySet = new Set<string>();
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
-      mockEnableWhenAsReadOnly.mockReturnValue(emptySet);
-      mockIsHiddenByEnableWhen.mockReturnValue(true);
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: false } as any);
+      mockedUseRendererStylingStore.use.enableWhenAsReadOnly.mockReturnValue(emptySet);
+      mockedIsHiddenByEnableWhen.mockReturnValue(true);
 
       const { result } = renderHook(() => useReadOnly(basicQItem, false));
 
@@ -443,15 +447,15 @@ describe('useReadOnly', () => {
     });
 
     it('should handle null/undefined store returns', () => {
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
-      mockEnableWhenAsReadOnly.mockReturnValue(true);
-      mockEnableWhenIsActivated.mockReturnValue(null);
-      mockEnableWhenItems.mockReturnValue(null);
-      mockEnableWhenExpressions.mockReturnValue(null);
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: false } as any);
+      mockedUseRendererStylingStore.use.enableWhenAsReadOnly.mockReturnValue(true);
+      mockedUseQuestionnaireStore.use.enableWhenIsActivated.mockReturnValue(null);
+      mockedUseQuestionnaireStore.use.enableWhenItems.mockReturnValue(null);
+      mockedUseQuestionnaireStore.use.enableWhenExpressions.mockReturnValue(null);
 
       renderHook(() => useReadOnly(basicQItem, false));
 
-      expect(mockIsHiddenByEnableWhen).toHaveBeenCalledWith({
+      expect(mockedIsHiddenByEnableWhen).toHaveBeenCalledWith({
         linkId: basicQItem.linkId,
         enableWhenIsActivated: null,
         enableWhenItems: null,
@@ -461,13 +465,13 @@ describe('useReadOnly', () => {
     });
 
     it('should handle very large parentRepeatGroupIndex', () => {
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
-      mockEnableWhenAsReadOnly.mockReturnValue(true);
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: false } as any);
+      mockedUseRendererStylingStore.use.enableWhenAsReadOnly.mockReturnValue(true);
 
       const largeIndex = 999999;
       renderHook(() => useReadOnly(basicQItem, false, largeIndex));
 
-      expect(mockIsHiddenByEnableWhen).toHaveBeenCalledWith({
+      expect(mockedIsHiddenByEnableWhen).toHaveBeenCalledWith({
         linkId: basicQItem.linkId,
         enableWhenIsActivated: {},
         enableWhenItems: {},
@@ -477,12 +481,12 @@ describe('useReadOnly', () => {
     });
 
     it('should handle rendering extensions with additional properties', () => {
-      mockUseRenderingExtensions.mockReturnValue({
+      mockedUseRenderingExtensions.mockReturnValue({
         readOnly: true,
         displayUnit: 'kg',
         displayPrompt: 'Enter value',
         required: false
-      });
+      } as any);
 
       const { result } = renderHook(() => useReadOnly(basicQItem, false));
 
@@ -498,7 +502,7 @@ describe('useReadOnly', () => {
         type: 'decimal'
       };
 
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: true });
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: true } as any);
 
       const { result } = renderHook(() => useReadOnly(calculatedItem, false));
 
@@ -506,7 +510,7 @@ describe('useReadOnly', () => {
     });
 
     it('should handle form in review mode where all fields are readonly', () => {
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: false } as any);
 
       const { result } = renderHook(() => useReadOnly(basicQItem, true)); // Parent readonly
 
@@ -514,9 +518,9 @@ describe('useReadOnly', () => {
     });
 
     it('should handle conditional fields shown as readonly instead of hidden', () => {
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
-      mockEnableWhenAsReadOnly.mockReturnValue(true);
-      mockIsHiddenByEnableWhen.mockReturnValue(true); // Would be hidden normally
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: false } as any);
+      mockedUseRendererStylingStore.use.enableWhenAsReadOnly.mockReturnValue(true);
+      mockedIsHiddenByEnableWhen.mockReturnValue(true); // Would be hidden normally
 
       const { result } = renderHook(() => useReadOnly(basicQItem, false));
 
@@ -531,13 +535,13 @@ describe('useReadOnly', () => {
         type: 'decimal'
       };
 
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: false });
-      mockEnableWhenAsReadOnly.mockReturnValue(true);
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: false } as any);
+      mockedUseRendererStylingStore.use.enableWhenAsReadOnly.mockReturnValue(true);
 
       const groupIndex = 1; // Second medication
       renderHook(() => useReadOnly(repeatedItem, false, groupIndex));
 
-      expect(mockIsHiddenByEnableWhen).toHaveBeenCalledWith({
+      expect(mockedIsHiddenByEnableWhen).toHaveBeenCalledWith({
         linkId: repeatedItem.linkId,
         enableWhenIsActivated: {},
         enableWhenItems: {},
@@ -553,7 +557,7 @@ describe('useReadOnly', () => {
         type: 'text'
       };
 
-      mockUseRenderingExtensions.mockReturnValue({ readOnly: true });
+      mockedUseRenderingExtensions.mockReturnValue({ readOnly: true } as any);
 
       const { result } = renderHook(() => useReadOnly(adminField, false));
 
@@ -573,7 +577,7 @@ describe('useReadOnly', () => {
         rerender({ qItem: basicQItem, parentReadOnly: false, parentIndex: 0 });
       }
 
-      expect(mockUseRenderingExtensions).toHaveBeenCalledTimes(5);
+      expect(mockedUseRenderingExtensions).toHaveBeenCalledTimes(6);
     });
 
     it('should handle different qItems efficiently', () => {
@@ -585,8 +589,8 @@ describe('useReadOnly', () => {
       rerender({ qItem: readOnlyQItem });
       rerender({ qItem: basicQItem });
 
-      expect(mockUseRenderingExtensions).toHaveBeenCalledWith(basicQItem);
-      expect(mockUseRenderingExtensions).toHaveBeenCalledWith(readOnlyQItem);
+      expect(mockedUseRenderingExtensions).toHaveBeenCalledWith(basicQItem);
+      expect(mockedUseRenderingExtensions).toHaveBeenCalledWith(readOnlyQItem);
     });
   });
 });

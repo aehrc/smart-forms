@@ -62,6 +62,7 @@ function useCodingCalculatedExpression(
         calcExpression.value !== valueInString &&
         (typeof calcExpression.value === 'string' ||
           typeof calcExpression.value === 'number' ||
+          typeof calcExpression.value === 'boolean' ||
           typeof calcExpression.value === 'object' ||
           calcExpression.value === null)
       ) {
@@ -78,14 +79,20 @@ function useCodingCalculatedExpression(
         }
 
         // calculatedExpression value is object, check if it is a Coding object
-        if (typeof calcExpression.value === 'object' && objectIsCoding(calcExpression.value)) {
-          if (calcExpression.value.code) {
-            onChangeByCalcExpressionString(calcExpression.value.code);
+        if (typeof calcExpression.value === 'object' && calcExpression.value !== null) {
+          if (objectIsCoding(calcExpression.value)) {
+            onChangeByCalcExpressionString(calcExpression.value.code!);
             return () => clearTimeout(timeoutId);
           }
+          // Check if it's a Coding-like object but without code (system, display, etc.)
+          if ((calcExpression.value as any).system || (calcExpression.value as any).display) {
+            // Coding-like object without code, don't process it
+            return () => clearTimeout(timeoutId);
+          }
+          // For other objects (including arrays), fall through to toString conversion
         }
 
-        // calculatedExpression value is a string or number
+        // calculatedExpression value is a string, number, or boolean
         const newValueString =
           typeof calcExpression.value === 'string'
             ? calcExpression.value
