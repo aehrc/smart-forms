@@ -60,7 +60,10 @@ jobs:
         run: npm ci
 
       - name: Build workspace packages
-        run: npm run build -w packages/sdc-template-extract
+        run: |
+          npm run build -w packages/sdc-assemble
+          npm run build -w packages/sdc-populate
+          npm run build -w packages/sdc-template-extract
 
       - name: Run jest tests
         run: npm run test -w apps/smart-forms-app
