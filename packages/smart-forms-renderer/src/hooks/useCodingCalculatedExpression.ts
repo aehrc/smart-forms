@@ -81,11 +81,14 @@ function useCodingCalculatedExpression(
         // calculatedExpression value is object, check if it is a Coding object
         if (typeof calcExpression.value === 'object' && calcExpression.value !== null) {
           if (objectIsCoding(calcExpression.value)) {
-            onChangeByCalcExpressionString(calcExpression.value.code!);
+            onChangeByCalcExpressionString(calcExpression.value.code || '');
             return () => clearTimeout(timeoutId);
           }
           // Check if it's a Coding-like object but without code (system, display, etc.)
-          if ((calcExpression.value as any).system || (calcExpression.value as any).display) {
+          if (
+            (calcExpression.value as Record<string, unknown>).system ||
+            (calcExpression.value as Record<string, unknown>).display
+          ) {
             // Coding-like object without code, don't process it
             return () => clearTimeout(timeoutId);
           }
@@ -110,8 +113,14 @@ function useCodingCalculatedExpression(
   return { calcExpUpdated: calcExpUpdated };
 }
 
-export function objectIsCoding(obj: any): obj is Coding {
-  return Boolean(obj && obj.code && typeof obj.code === 'string');
+export function objectIsCoding(obj: unknown): obj is Coding {
+  return Boolean(
+    obj &&
+      typeof obj === 'object' &&
+      obj !== null &&
+      'code' in obj &&
+      typeof (obj as Coding).code === 'string'
+  );
 }
 
 export default useCodingCalculatedExpression;

@@ -65,7 +65,7 @@ function useDynamicValueSetEffect(
     promise
       .then(async (valueSet: ValueSet) => {
         if (!isMounted) return;
-        
+
         const newCodings = getValueSetCodings(valueSet);
         try {
           const newCodingsWithDisplay = await addDisplayToCodingArray(
@@ -80,7 +80,7 @@ function useDynamicValueSetEffect(
 
           // Update UI to show calculated value changes
           onSetDynamicCodingsUpdated(true);
-          const timeoutId = setTimeout(() => {
+          setTimeout(() => {
             if (isMounted) {
               onSetDynamicCodingsUpdated(false);
             }
