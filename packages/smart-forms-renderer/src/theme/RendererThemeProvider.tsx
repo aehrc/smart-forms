@@ -39,7 +39,7 @@ export function RendererThemeProvider({ children }: { children: ReactNode }) {
   return (
     <StyledEngineProvider injectFirst>
       <MUIThemeProvider theme={theme}>
-        <ScopedCssBaseline>{children}</ScopedCssBaseline>
+        <ScopedCssBaseline enableColorScheme>{children}</ScopedCssBaseline>
       </MUIThemeProvider>
     </StyledEngineProvider>
   );
