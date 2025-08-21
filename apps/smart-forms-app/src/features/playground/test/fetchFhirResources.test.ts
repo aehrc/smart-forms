@@ -16,7 +16,12 @@
  */
 
 import * as FHIR from 'fhirclient';
-import { fetchFhirResources } from '../api/fetchFhirResources.ts'; // or wherever FHIR is imported from
+import { fetchFhirResources } from '../api/fetchFhirResources.ts';
+
+// Mock the entire fhirclient module
+jest.mock('fhirclient', () => ({
+  client: jest.fn()
+}));
 
 describe('fetchFhirResources', () => {
   const mockRequest = jest.fn();
@@ -25,7 +30,7 @@ describe('fetchFhirResources', () => {
     jest.clearAllMocks();
 
     // Mock FHIR.client to return an object with request function
-    (FHIR.client as jest.Mock) = jest.fn().mockReturnValue({
+    (FHIR.client as jest.Mock).mockReturnValue({
       request: mockRequest
     });
   });
@@ -34,7 +39,7 @@ describe('fetchFhirResources', () => {
     const endpointUrl = 'https://example.fhir.org';
     const queryUrl = '/Patient?name=Smith|_count=10';
 
-    const expectedUrl = '/Patient?name=Smith&_count=10&version='; // "|" replaced by "&version="
+    const expectedUrl = '/Patient?name=Smith&version=_count=10'; // "|" replaced by "&version="
 
     const mockBundle = { resourceType: 'Bundle', entry: [] };
     mockRequest.mockResolvedValueOnce(mockBundle);

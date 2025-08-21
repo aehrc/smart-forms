@@ -60,9 +60,9 @@ describe('getCanonicalUrls', () => {
     ]
   };
 
-  it('should extract canonical URLs from subquestionnaire extensions (root questionnaire)', () => {
+  it('should extract canonical URLs from subquestionnaire extensions', () => {
     const totalCanonicals: string[] = [];
-    const result = getCanonicalUrls(mockParentQuestionnaire, totalCanonicals, true);
+    const result = getCanonicalUrls(mockParentQuestionnaire, totalCanonicals);
 
     expect(Array.isArray(result)).toBe(true);
     expect(result).toEqual([
@@ -79,7 +79,7 @@ describe('getCanonicalUrls', () => {
     };
 
     const totalCanonicals: string[] = [];
-    const result = getCanonicalUrls(invalidQuestionnaire, totalCanonicals, true);
+    const result = getCanonicalUrls(invalidQuestionnaire, totalCanonicals);
 
     expect(result).toEqual({
       resourceType: 'OperationOutcome',
@@ -87,9 +87,7 @@ describe('getCanonicalUrls', () => {
         {
           severity: 'error',
           code: 'invalid',
-          details: {
-            text: 'Root questionnaire invalid does not have a valid nested item (parentQuestionnaire.item[x].item) for assembly.'
-          }
+          details: { text: 'Questionnaire invalid does not have a valid item.' }
         }
       ]
     });
@@ -110,7 +108,7 @@ describe('getCanonicalUrls', () => {
     };
 
     const totalCanonicals: string[] = [];
-    const result = getCanonicalUrls(emptyItemQuestionnaire, totalCanonicals, true);
+    const result = getCanonicalUrls(emptyItemQuestionnaire, totalCanonicals);
 
     expect(result).toEqual({
       resourceType: 'OperationOutcome',
@@ -118,9 +116,7 @@ describe('getCanonicalUrls', () => {
         {
           severity: 'error',
           code: 'invalid',
-          details: {
-            text: 'Root questionnaire empty-items does not have a valid nested item (parentQuestionnaire.item[x].item) for assembly.'
-          }
+          details: { text: 'Questionnaire empty-items does not have a valid item.' }
         }
       ]
     });
@@ -131,7 +127,7 @@ describe('getCanonicalUrls', () => {
       'http://example.com/sub-questionnaire-1|1.0.0',
       'http://example.com/other-questionnaire|1.0.0'
     ];
-    const result = getCanonicalUrls(mockParentQuestionnaire, totalCanonicals, true);
+    const result = getCanonicalUrls(mockParentQuestionnaire, totalCanonicals);
 
     expect(result).toEqual({
       resourceType: 'OperationOutcome',
@@ -188,7 +184,7 @@ describe('getCanonicalUrls', () => {
     };
 
     const totalCanonicals: string[] = [];
-    const result = getCanonicalUrls(mixedQuestionnaire, totalCanonicals, true);
+    const result = getCanonicalUrls(mixedQuestionnaire, totalCanonicals);
 
     expect(Array.isArray(result)).toBe(true);
     expect(result).toEqual(['http://example.com/sub-questionnaire-1|1.0.0']);
@@ -218,109 +214,9 @@ describe('getCanonicalUrls', () => {
     };
 
     const totalCanonicals: string[] = [];
-    const result = getCanonicalUrls(noSubquestionnairesQuestionnaire, totalCanonicals, true);
+    const result = getCanonicalUrls(noSubquestionnairesQuestionnaire, totalCanonicals);
 
     expect(Array.isArray(result)).toBe(true);
     expect(result).toEqual([]);
-  });
-
-  // Tests for isRoot: false scenarios
-  describe('when isRoot is false (subquestionnaire)', () => {
-    it('should extract canonical URLs from subquestionnaire extensions', () => {
-      const totalCanonicals: string[] = [];
-      const result = getCanonicalUrls(mockParentQuestionnaire, totalCanonicals, false);
-
-      expect(Array.isArray(result)).toBe(true);
-      expect(result).toEqual([
-        'http://example.com/sub-questionnaire-1|1.0.0',
-        'http://example.com/sub-questionnaire-2|2.0.0'
-      ]);
-    });
-
-    it('should return empty array if subquestionnaire does not have valid item structure', () => {
-      const invalidQuestionnaire: Questionnaire = {
-        resourceType: 'Questionnaire',
-        id: 'invalid-sub',
-        status: 'draft'
-      };
-
-      const totalCanonicals: string[] = [];
-      const result = getCanonicalUrls(invalidQuestionnaire, totalCanonicals, false);
-
-      expect(Array.isArray(result)).toBe(true);
-      expect(result).toEqual([]);
-    });
-
-    it('should return empty array if subquestionnaire item has no child items', () => {
-      const emptyItemQuestionnaire: Questionnaire = {
-        resourceType: 'Questionnaire',
-        id: 'empty-items-sub',
-        status: 'draft',
-        item: [
-          {
-            linkId: 'root',
-            type: 'group'
-            // No item array
-          }
-        ]
-      };
-
-      const totalCanonicals: string[] = [];
-      const result = getCanonicalUrls(emptyItemQuestionnaire, totalCanonicals, false);
-
-      expect(Array.isArray(result)).toBe(true);
-      expect(result).toEqual([]);
-    });
-
-    it('should still detect circular dependency and return error for subquestionnaire', () => {
-      const totalCanonicals: string[] = [
-        'http://example.com/sub-questionnaire-1|1.0.0',
-        'http://example.com/other-questionnaire|1.0.0'
-      ];
-      const result = getCanonicalUrls(mockParentQuestionnaire, totalCanonicals, false);
-
-      expect(result).toEqual({
-        resourceType: 'OperationOutcome',
-        issue: [
-          {
-            severity: 'error',
-            code: 'invalid',
-            details: {
-              text: 'parent-questionnaire contains a circular dependency on the questionnaire http://example.com/sub-questionnaire-1|1.0.0'
-            }
-          }
-        ]
-      });
-    });
-
-    it('should return empty array when no subquestionnaire extensions are found in subquestionnaire', () => {
-      const noSubquestionnairesQuestionnaire: Questionnaire = {
-        resourceType: 'Questionnaire',
-        id: 'no-subquestionnaires',
-        status: 'draft',
-        item: [
-          {
-            linkId: 'root',
-            type: 'group',
-            item: [
-              {
-                linkId: 'item1',
-                type: 'string'
-              },
-              {
-                linkId: 'item2',
-                type: 'display'
-              }
-            ]
-          }
-        ]
-      };
-
-      const totalCanonicals: string[] = [];
-      const result = getCanonicalUrls(noSubquestionnairesQuestionnaire, totalCanonicals, false);
-
-      expect(Array.isArray(result)).toBe(true);
-      expect(result).toEqual([]);
-    });
   });
 });

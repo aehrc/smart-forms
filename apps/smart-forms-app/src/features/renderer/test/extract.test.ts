@@ -16,8 +16,8 @@
  */
 
 import { canBeTemplateExtracted } from '@aehrc/sdc-template-extract';
-// import { getExtractMechanism } from '../utils/extract';
-// import { canBeObservationExtracted } from '@aehrc/smart-forms-renderer';
+import { getExtractMechanism } from '../utils/extract';
+import { canBeObservationExtracted } from '@aehrc/smart-forms-renderer';
 import type { Questionnaire } from 'fhir/r4';
 
 describe('getExtractMechanism', () => {
@@ -33,30 +33,30 @@ describe('getExtractMechanism', () => {
 
   it("returns 'template-based' if canBeTemplateExtracted is true", () => {
     (canBeTemplateExtracted as jest.Mock).mockReturnValue(true);
-    // (canBeObservationExtracted as jest.Mock).mockReturnValue(false);
+    (canBeObservationExtracted as jest.Mock).mockReturnValue(false);
 
-    // expect(getExtractMechanism(questionnaire)).toBe('template-based');
+    expect(getExtractMechanism(questionnaire)).toBe('template-based');
     expect(canBeTemplateExtracted).toHaveBeenCalledWith(questionnaire);
 
     // Should not call the observation check if template true
-    // expect(canBeObservationExtracted).not.toHaveBeenCalled();
+    expect(canBeObservationExtracted).not.toHaveBeenCalled();
   });
 
-  // it("returns 'observation-based' if canBeTemplateExtracted is false and canBeObservationExtracted is true", () => {
-  //   (canBeTemplateExtracted as jest.Mock).mockReturnValue(false);
-  //   // (canBeObservationExtracted as jest.Mock).mockReturnValue(true);
-  //
-  //   // expect(getExtractMechanism(questionnaire)).toBe('observation-based');
-  //   expect(canBeTemplateExtracted).toHaveBeenCalledWith(questionnaire);
-  //   // expect(canBeObservationExtracted).toHaveBeenCalledWith(questionnaire);
-  // });
-  //
-  // it('returns null if neither extraction method is supported', () => {
-  //   (canBeTemplateExtracted as jest.Mock).mockReturnValue(false);
-  //   // (canBeObservationExtracted as jest.Mock).mockReturnValue(false);
-  //
-  //   // expect(getExtractMechanism(questionnaire)).toBeNull();
-  //   expect(canBeTemplateExtracted).toHaveBeenCalledWith(questionnaire);
-  //   // expect(canBeObservationExtracted).toHaveBeenCalledWith(questionnaire);
-  // });
+  it("returns 'observation-based' if canBeTemplateExtracted is false and canBeObservationExtracted is true", () => {
+    (canBeTemplateExtracted as jest.Mock).mockReturnValue(false);
+    (canBeObservationExtracted as jest.Mock).mockReturnValue(true);
+
+    expect(getExtractMechanism(questionnaire)).toBe('observation-based');
+    expect(canBeTemplateExtracted).toHaveBeenCalledWith(questionnaire);
+    expect(canBeObservationExtracted).toHaveBeenCalledWith(questionnaire);
+  });
+
+  it('returns null if both canBeTemplateExtracted and canBeObservationExtracted are false', () => {
+    (canBeTemplateExtracted as jest.Mock).mockReturnValue(false);
+    (canBeObservationExtracted as jest.Mock).mockReturnValue(false);
+
+    expect(getExtractMechanism(questionnaire)).toBe(null);
+    expect(canBeTemplateExtracted).toHaveBeenCalledWith(questionnaire);
+    expect(canBeObservationExtracted).toHaveBeenCalledWith(questionnaire);
+  });
 });
