@@ -71,8 +71,9 @@ function useBuildForm(
       .then(() => {
         setIsBuilding(false);
       })
-      .catch(() => {
-        // Do nothing - leave isBuilding as true to indicate the operation failed
+      .catch((e) => {
+        setIsBuilding(false);
+        console.error('buildForm(): Failed to build form', e);
       });
   }, [
     questionnaire,

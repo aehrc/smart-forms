@@ -42,7 +42,7 @@ function useTerminologyServerQuery(
     feedback = undefined;
   }
 
-  if (searchTerm.length === 1) {
+  if (searchTerm.length < 1 && searchTerm.length > 0) {
     feedback = { message: 'Enter at least 2 characters to search for results.', color: 'info' };
   }
 

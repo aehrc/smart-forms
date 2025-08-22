@@ -21,12 +21,7 @@ import type { QuestionnaireItem } from 'fhir/r4';
 function useDisplayCqfAndCalculatedExpression(qItem: QuestionnaireItem): string | null {
   const calculatedExpressions = useQuestionnaireStore.use.calculatedExpressions();
 
-  // Handle null/undefined calculatedExpressions
-  if (!calculatedExpressions) {
-    return null;
-  }
-
-  const cqfOrCalcExpression = calculatedExpressions[qItem.linkId]?.find(
+  const cqfOrCalcExpression = calculatedExpressions?.[qItem.linkId]?.find(
     (exp) => exp && exp.from === 'item._text' // Add null check for exp
   );
 

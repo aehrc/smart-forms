@@ -155,8 +155,7 @@ function GroupTable(props: GroupTableProps) {
       ...tableRows,
       {
         id: newRowId,
-        qrItem: null,
-        isSelected: false
+        qrItem: null
       }
     ]);
     setSelectedIds([...selectedIds, newRowId]);

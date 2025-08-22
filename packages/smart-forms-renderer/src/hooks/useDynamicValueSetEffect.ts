@@ -37,35 +37,22 @@ function useDynamicValueSetEffect(
     }
     lastUpdatableValueSetUrlRef.current = updatableValueSetUrl;
 
-    let isMounted = true;
-
     // Check cached codings first
     const cached = cachedValueSetCodings[updatableValueSetUrl];
     if (cached) {
       onSetCodings(cached);
       onSetDynamicCodingsUpdated(true);
-      const timeoutId = setTimeout(() => {
-        if (isMounted) {
-          onSetDynamicCodingsUpdated(false);
-        }
-      }, 500);
-      return () => {
-        isMounted = false;
-        clearTimeout(timeoutId);
-      };
+      const timeoutId = setTimeout(() => onSetDynamicCodingsUpdated(false), 500);
+      return () => clearTimeout(timeoutId);
     }
 
     const promise = getValueSetPromise(updatableValueSetUrl, terminologyServerUrl);
     if (!promise) {
-      return () => {
-        isMounted = false;
-      };
+      return;
     }
 
     promise
       .then(async (valueSet: ValueSet) => {
-        if (!isMounted) return;
-
         const newCodings = getValueSetCodings(valueSet);
         try {
           const newCodingsWithDisplay = await addDisplayToCodingArray(
@@ -73,33 +60,21 @@ function useDynamicValueSetEffect(
             terminologyServerUrl
           );
 
-          if (!isMounted) return;
-
           addCodingToCache(updatableValueSetUrl, newCodingsWithDisplay);
           onSetCodings(newCodingsWithDisplay.length > 0 ? newCodingsWithDisplay : []);
 
           // Update UI to show calculated value changes
           onSetDynamicCodingsUpdated(true);
-          setTimeout(() => {
-            if (isMounted) {
-              onSetDynamicCodingsUpdated(false);
-            }
-          }, 500);
+          const timeoutId = setTimeout(() => onSetDynamicCodingsUpdated(false), 500);
+
+          return () => clearTimeout(timeoutId);
         } catch (error) {
-          if (isMounted) {
-            onSetServerError(error as Error);
-          }
+          onSetServerError(error as Error);
         }
       })
       .catch((error: Error) => {
-        if (isMounted) {
-          onSetServerError(error);
-        }
+        onSetServerError(error);
       });
-
-    return () => {
-      isMounted = false;
-    };
   }, [
     addCodingToCache,
     cachedValueSetCodings,

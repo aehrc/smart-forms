@@ -62,7 +62,6 @@ function useCodingCalculatedExpression(
         calcExpression.value !== valueInString &&
         (typeof calcExpression.value === 'string' ||
           typeof calcExpression.value === 'number' ||
-          typeof calcExpression.value === 'boolean' ||
           typeof calcExpression.value === 'object' ||
           calcExpression.value === null)
       ) {
@@ -79,23 +78,14 @@ function useCodingCalculatedExpression(
         }
 
         // calculatedExpression value is object, check if it is a Coding object
-        if (typeof calcExpression.value === 'object' && calcExpression.value !== null) {
-          if (objectIsCoding(calcExpression.value)) {
-            onChangeByCalcExpressionString(calcExpression.value.code || '');
+        if (typeof calcExpression.value === 'object' && objectIsCoding(calcExpression.value)) {
+          if (calcExpression.value.code) {
+            onChangeByCalcExpressionString(calcExpression.value.code);
             return () => clearTimeout(timeoutId);
           }
-          // Check if it's a Coding-like object but without code (system, display, etc.)
-          if (
-            (calcExpression.value as Record<string, unknown>).system ||
-            (calcExpression.value as Record<string, unknown>).display
-          ) {
-            // Coding-like object without code, don't process it
-            return () => clearTimeout(timeoutId);
-          }
-          // For other objects (including arrays), fall through to toString conversion
         }
 
-        // calculatedExpression value is a string, number, or boolean
+        // calculatedExpression value is a string or number
         const newValueString =
           typeof calcExpression.value === 'string'
             ? calcExpression.value
@@ -113,14 +103,8 @@ function useCodingCalculatedExpression(
   return { calcExpUpdated: calcExpUpdated };
 }
 
-export function objectIsCoding(obj: unknown): obj is Coding {
-  return Boolean(
-    obj &&
-      typeof obj === 'object' &&
-      obj !== null &&
-      'code' in obj &&
-      typeof (obj as Coding).code === 'string'
-  );
+export function objectIsCoding(obj: any): obj is Coding {
+  return !!(obj && obj.code && typeof obj.code === 'string');
 }
 
 export default useCodingCalculatedExpression;
