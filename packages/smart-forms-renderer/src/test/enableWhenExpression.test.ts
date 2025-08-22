@@ -76,7 +76,7 @@ describe('enableWhenExpression utils', () => {
       ...overrides
     });
 
-    test('should evaluate initial enableWhen expressions with empty expressions', async () => {
+    it('should evaluate initial enableWhen expressions with empty expressions', async () => {
       const params = createMockParams();
 
       const result = await evaluateInitialEnableWhenExpressions(params);
@@ -89,7 +89,7 @@ describe('enableWhenExpression utils', () => {
       expect(result.fhirPathTerminologyCache).toEqual({});
     });
 
-    test('should evaluate single enableWhen expressions', async () => {
+    it('should evaluate single enableWhen expressions', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue([true]);
 
@@ -110,7 +110,7 @@ describe('enableWhenExpression utils', () => {
       expect(result.initialEnableWhenExpressions.singleExpressions['item-1'].isEnabled).toBe(true);
     });
 
-    test('should handle single expression evaluation with no result', async () => {
+    it('should handle single expression evaluation with no result', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue([]);
 
@@ -131,7 +131,7 @@ describe('enableWhenExpression utils', () => {
       expect(result.initialEnableWhenExpressions.singleExpressions['item-1'].isEnabled).toBe(false);
     });
 
-    test('should handle intersect edge case for single expressions', async () => {
+    it('should handle intersect edge case for single expressions', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue([]);
 
@@ -152,7 +152,7 @@ describe('enableWhenExpression utils', () => {
       expect(result.initialEnableWhenExpressions.singleExpressions['item-1'].isEnabled).toBe(false);
     });
 
-    test('should handle Promise-based FHIRPath results and caching', async () => {
+    it('should handle Promise-based FHIRPath results and caching', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue(Promise.resolve([true]));
 
@@ -174,7 +174,7 @@ describe('enableWhenExpression utils', () => {
       expect(result.fhirPathTerminologyCache['"terminology-based-expression"']).toEqual([true]);
     });
 
-    test('should handle cached expressions properly', async () => {
+    it('should handle cached expressions properly', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue([false]);
 
@@ -199,7 +199,7 @@ describe('enableWhenExpression utils', () => {
       expect(result.initialEnableWhenExpressions.singleExpressions['item-1'].isEnabled).toBe(false);
     });
 
-    test('should handle FHIRPath evaluation errors', async () => {
+    it('should handle FHIRPath evaluation errors', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockImplementation(() => {
         throw new Error('FHIRPath syntax error');
@@ -230,7 +230,7 @@ describe('enableWhenExpression utils', () => {
       consoleSpy.mockRestore();
     });
 
-    test('should evaluate repeat enableWhen expressions', async () => {
+    it('should evaluate repeat enableWhen expressions', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate
         .mockReturnValueOnce([2]) // For getNumOfEnableWhenExpressionItemInstances
@@ -258,7 +258,7 @@ describe('enableWhenExpression utils', () => {
       ).toEqual([true, false]);
     });
 
-    test('should handle repeat expressions with no instances', async () => {
+    it('should handle repeat expressions with no instances', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue([0]);
 
@@ -283,7 +283,7 @@ describe('enableWhenExpression utils', () => {
       ).toEqual([]);
     });
 
-    test('should handle repeat expressions with invalid expression structure', async () => {
+    it('should handle repeat expressions with invalid expression structure', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue([2]);
 
@@ -308,7 +308,7 @@ describe('enableWhenExpression utils', () => {
       ).toEqual([false, false]);
     });
 
-    test('should handle mixed single and repeat expressions', async () => {
+    it('should handle mixed single and repeat expressions', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate
         .mockReturnValueOnce([false]) // Single expression
@@ -346,7 +346,7 @@ describe('enableWhenExpression utils', () => {
   });
 
   describe('evaluateEnableWhenRepeatExpressionInstance', () => {
-    test('should evaluate repeat expression instance successfully', async () => {
+    it('should evaluate repeat expression instance successfully', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue([true]);
 
@@ -370,7 +370,7 @@ describe('enableWhenExpression utils', () => {
       expect(result.isUpdated).toBe(true);
     });
 
-    test('should handle expression with no result', async () => {
+    it('should handle expression with no result', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue([]);
 
@@ -394,7 +394,7 @@ describe('enableWhenExpression utils', () => {
       expect(result.isUpdated).toBe(true);
     });
 
-    test('should handle intersect edge case', async () => {
+    it('should handle intersect edge case', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue([]);
 
@@ -418,7 +418,7 @@ describe('enableWhenExpression utils', () => {
       expect(result.isUpdated).toBe(true);
     });
 
-    test('should not update when result matches initial value', async () => {
+    it('should not update when result matches initial value', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue([true]);
 
@@ -442,7 +442,7 @@ describe('enableWhenExpression utils', () => {
       expect(result.isUpdated).toBe(false);
     });
 
-    test('should handle FHIRPath evaluation errors', async () => {
+    it('should handle FHIRPath evaluation errors', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockImplementation(() => {
         throw new Error('Invalid FHIRPath expression');
@@ -475,7 +475,7 @@ describe('enableWhenExpression utils', () => {
       consoleSpy.mockRestore();
     });
 
-    test('should handle non-boolean FHIRPath results', async () => {
+    it('should handle non-boolean FHIRPath results', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue(['string-result']);
 
@@ -499,7 +499,7 @@ describe('enableWhenExpression utils', () => {
       expect(result.isUpdated).toBe(false);
     });
 
-    test('should correctly modify expression for specific instance index', async () => {
+    it('should correctly modify expression for specific instance index', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       const evaluateSpy = jest.spyOn(mockFhirpath, 'evaluate').mockReturnValue([true]);
 
@@ -531,7 +531,7 @@ describe('enableWhenExpression utils', () => {
   });
 
   describe('evaluateEnableWhenExpressions', () => {
-    test('should evaluate enableWhen expressions during runtime', async () => {
+    it('should evaluate enableWhen expressions during runtime', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate
         .mockReturnValueOnce([false]) // Single expression
@@ -571,7 +571,7 @@ describe('enableWhenExpression utils', () => {
       ).toEqual([true]);
     });
 
-    test('should return not updated when no changes occur', async () => {
+    it('should return not updated when no changes occur', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate
         .mockReturnValueOnce([true]) // Single expression - same as initial
@@ -605,7 +605,7 @@ describe('enableWhenExpression utils', () => {
       expect(result.enableWhenExpsIsUpdated).toBe(false);
     });
 
-    test('should handle empty enableWhen expressions', async () => {
+    it('should handle empty enableWhen expressions', async () => {
       const enableWhenExpressions: EnableWhenExpressions = {
         singleExpressions: {},
         repeatExpressions: {}
@@ -622,7 +622,7 @@ describe('enableWhenExpression utils', () => {
       expect(result.updatedEnableWhenExpressions).toEqual(enableWhenExpressions);
     });
 
-    test('should use cached results for single expressions', async () => {
+    it('should use cached results for single expressions', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       const evaluateSpy = jest.spyOn(mockFhirpath, 'evaluate');
 
@@ -651,7 +651,7 @@ describe('enableWhenExpression utils', () => {
       expect(result.enableWhenExpsIsUpdated).toBe(false);
     });
 
-    test('should handle multiple single expressions', async () => {
+    it('should handle multiple single expressions', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate
         .mockReturnValueOnce([false]) // First expression
@@ -689,7 +689,7 @@ describe('enableWhenExpression utils', () => {
       expect(result.updatedEnableWhenExpressions.singleExpressions['item-3'].isEnabled).toBe(false);
     });
 
-    test('should handle multiple repeat expressions', async () => {
+    it('should handle multiple repeat expressions', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate
         .mockReturnValueOnce([2]) // First repeat count

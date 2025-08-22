@@ -195,7 +195,7 @@ describe('createObservation', () => {
     }
   ];
 
-  test('should create basic observation with minimal response', () => {
+  it('should create basic observation with minimal response', () => {
     const questionnaireResponse: QuestionnaireResponse = {
       resourceType: 'QuestionnaireResponse',
       status: 'completed',
@@ -217,7 +217,7 @@ describe('createObservation', () => {
     expect(observation.derivedFrom).toEqual([{ reference: 'QuestionnaireResponse/qr-123' }]);
   });
 
-  test('should include basedOn when present in QuestionnaireResponse', () => {
+  it('should include basedOn when present in QuestionnaireResponse', () => {
     const questionnaireResponse: QuestionnaireResponse = {
       resourceType: 'QuestionnaireResponse',
       status: 'completed',
@@ -235,7 +235,7 @@ describe('createObservation', () => {
     expect(observation.basedOn).toEqual([{ reference: 'ServiceRequest/sr-123' }]);
   });
 
-  test('should include partOf when present in QuestionnaireResponse', () => {
+  it('should include partOf when present in QuestionnaireResponse', () => {
     const questionnaireResponse: QuestionnaireResponse = {
       resourceType: 'QuestionnaireResponse',
       status: 'completed',
@@ -253,7 +253,7 @@ describe('createObservation', () => {
     expect(observation.partOf).toEqual([{ reference: 'Procedure/proc-123' }]);
   });
 
-  test('should include subject when present in QuestionnaireResponse', () => {
+  it('should include subject when present in QuestionnaireResponse', () => {
     const questionnaireResponse: QuestionnaireResponse = {
       resourceType: 'QuestionnaireResponse',
       status: 'completed',
@@ -271,7 +271,7 @@ describe('createObservation', () => {
     expect(observation.subject).toEqual({ reference: 'Patient/patient-123' });
   });
 
-  test('should include encounter when present in QuestionnaireResponse', () => {
+  it('should include encounter when present in QuestionnaireResponse', () => {
     const questionnaireResponse: QuestionnaireResponse = {
       resourceType: 'QuestionnaireResponse',
       status: 'completed',
@@ -289,7 +289,7 @@ describe('createObservation', () => {
     expect(observation.encounter).toEqual({ reference: 'Encounter/enc-123' });
   });
 
-  test('should handle QuestionnaireItem without code', () => {
+  it('should handle QuestionnaireItem without code', () => {
     const itemWithoutCode: QuestionnaireItem = {
       linkId: 'no-code',
       type: 'string',
@@ -312,7 +312,7 @@ describe('createObservation', () => {
     expect(observation.code.coding).toEqual([]);
   });
 
-  test('should handle partial code information', () => {
+  it('should handle partial code information', () => {
     const itemWithPartialCode: QuestionnaireItem = {
       linkId: 'partial-code',
       type: 'string',
@@ -348,7 +348,7 @@ describe('createObservation', () => {
 });
 
 describe('generateUniqueId', () => {
-  test('should generate unique ID with prefix', () => {
+  it('should generate unique ID with prefix', () => {
     const id1 = generateUniqueId('test');
     const id2 = generateUniqueId('test');
 
@@ -357,7 +357,7 @@ describe('generateUniqueId', () => {
     expect(id1).not.toBe(id2);
   });
 
-  test('should handle different prefixes', () => {
+  it('should handle different prefixes', () => {
     const id1 = generateUniqueId('obs');
     const id2 = generateUniqueId('qr');
 
@@ -365,7 +365,7 @@ describe('generateUniqueId', () => {
     expect(id2).toMatch(/^qr-\d+-\d+-[a-f0-9]+$/);
   });
 
-  test('should handle empty prefix', () => {
+  it('should handle empty prefix', () => {
     const id = generateUniqueId('');
 
     expect(id).toMatch(/^-\d+-\d+-[a-f0-9]+$/);
@@ -373,7 +373,7 @@ describe('generateUniqueId', () => {
 });
 
 describe('canBeObservationExtracted', () => {
-  test('should return true when questionnaire has observation extract extension', () => {
+  it('should return true when questionnaire has observation extract extension', () => {
     const questionnaire: Questionnaire = {
       resourceType: 'Questionnaire',
       status: 'active',
@@ -390,7 +390,7 @@ describe('canBeObservationExtracted', () => {
     expect(result).toBe(true);
   });
 
-  test('should return true when item has observation extract extension and code', () => {
+  it('should return true when item has observation extract extension and code', () => {
     const questionnaire: Questionnaire = {
       resourceType: 'Questionnaire',
       status: 'active',
@@ -420,7 +420,7 @@ describe('canBeObservationExtracted', () => {
     expect(result).toBe(true);
   });
 
-  test('should return false when item has observation extract extension but no code', () => {
+  it('should return false when item has observation extract extension but no code', () => {
     const questionnaire: Questionnaire = {
       resourceType: 'Questionnaire',
       status: 'active',
@@ -444,7 +444,7 @@ describe('canBeObservationExtracted', () => {
     expect(result).toBe(false);
   });
 
-  test('should return false when questionnaire has no observation extract extensions', () => {
+  it('should return false when questionnaire has no observation extract extensions', () => {
     const questionnaire: Questionnaire = {
       resourceType: 'Questionnaire',
       status: 'active',
@@ -462,7 +462,7 @@ describe('canBeObservationExtracted', () => {
     expect(result).toBe(false);
   });
 
-  test('should return false when questionnaire has no items', () => {
+  it('should return false when questionnaire has no items', () => {
     const questionnaire: Questionnaire = {
       resourceType: 'Questionnaire',
       status: 'active'
@@ -473,7 +473,7 @@ describe('canBeObservationExtracted', () => {
     expect(result).toBe(false);
   });
 
-  test('should return true when nested item has valid observation extract extension', () => {
+  it('should return true when nested item has valid observation extract extension', () => {
     const questionnaire: Questionnaire = {
       resourceType: 'Questionnaire',
       status: 'active',
@@ -512,7 +512,7 @@ describe('canBeObservationExtracted', () => {
 });
 
 describe('buildBundleFromObservationArray', () => {
-  test('should create bundle with observations', () => {
+  it('should create bundle with observations', () => {
     const observations: Observation[] = [
       {
         resourceType: 'Observation',
@@ -570,7 +570,7 @@ describe('buildBundleFromObservationArray', () => {
     expect(bundle.entry?.[1].fullUrl).toBe('Observation/obs-2');
   });
 
-  test('should handle empty observations array', () => {
+  it('should handle empty observations array', () => {
     const bundle = buildBundleFromObservationArray([]);
 
     expect(bundle.resourceType).toBe('Bundle');
@@ -578,7 +578,7 @@ describe('buildBundleFromObservationArray', () => {
     expect(bundle.entry).toEqual([]);
   });
 
-  test('should generate fullUrl for observations without id', () => {
+  it('should generate fullUrl for observations without id', () => {
     const observations: Observation[] = [
       {
         resourceType: 'Observation',

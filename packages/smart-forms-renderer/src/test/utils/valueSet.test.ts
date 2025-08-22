@@ -68,7 +68,7 @@ describe('valueSet', () => {
   });
 
   describe('getTerminologyServerUrl', () => {
-    test('should return terminology server URL from extension', () => {
+    it('should return terminology server URL from extension', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'choice',
@@ -85,7 +85,7 @@ describe('valueSet', () => {
       expect(result).toBe('https://tx.fhir.org/r4');
     });
 
-    test('should return undefined when no terminology server extension exists', () => {
+    it('should return undefined when no terminology server extension exists', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'choice',
@@ -102,7 +102,7 @@ describe('valueSet', () => {
       expect(result).toBeUndefined();
     });
 
-    test('should return undefined when no extensions exist', () => {
+    it('should return undefined when no extensions exist', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'choice',
@@ -113,7 +113,7 @@ describe('valueSet', () => {
       expect(result).toBeUndefined();
     });
 
-    test('should return undefined when extensions array is empty', () => {
+    it('should return undefined when extensions array is empty', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'choice',
@@ -127,7 +127,7 @@ describe('valueSet', () => {
   });
 
   describe('getValueSetPromise', () => {
-    test('should make request to terminology server with standard URL', async () => {
+    it('should make request to terminology server with standard URL', async () => {
       const mockRequest = jest.fn() as jest.MockedFunction<any>;
       mockRequest.mockResolvedValue({ mockValueSet: true });
       mockClient.mockReturnValue({ request: mockRequest } as any);
@@ -143,7 +143,7 @@ describe('valueSet', () => {
       });
     });
 
-    test('should handle URL with $expand format correctly', async () => {
+    it('should handle URL with $expand format correctly', async () => {
       const mockRequest = jest.fn() as jest.MockedFunction<any>;
       mockRequest.mockResolvedValue({ mockValueSet: true });
       mockClient.mockReturnValue({ request: mockRequest } as any);
@@ -160,7 +160,7 @@ describe('valueSet', () => {
       });
     });
 
-    test('should handle URL with version parameter (pipe separator)', async () => {
+    it('should handle URL with version parameter (pipe separator)', async () => {
       const mockRequest = jest.fn() as jest.MockedFunction<any>;
       mockRequest.mockResolvedValue({ mockValueSet: true });
       mockClient.mockReturnValue({ request: mockRequest } as any);
@@ -175,7 +175,7 @@ describe('valueSet', () => {
       });
     });
 
-    test('should handle incomplete $expand URL format gracefully', async () => {
+    it('should handle incomplete $expand URL format gracefully', async () => {
       const mockRequest = jest.fn() as jest.MockedFunction<any>;
       mockRequest.mockResolvedValue({ mockValueSet: true });
       mockClient.mockReturnValue({ request: mockRequest } as any);
@@ -193,7 +193,7 @@ describe('valueSet', () => {
   });
 
   describe('validateCodePromise', () => {
-    test('should validate code and return ValidateCodeResponse', async () => {
+    it('should validate code and return ValidateCodeResponse', async () => {
       const mockValidateCodeResponse = {
         resourceType: 'Parameters',
         parameter: [
@@ -221,7 +221,7 @@ describe('valueSet', () => {
       expect(result).toEqual(mockValidateCodeResponse);
     });
 
-    test('should return null for invalid response structure', async () => {
+    it('should return null for invalid response structure', async () => {
       const mockInvalidResponse = {
         resourceType: 'OperationOutcome',
         issue: [{ severity: 'error', code: 'invalid' }]
@@ -241,7 +241,7 @@ describe('valueSet', () => {
       expect(result).toBeNull();
     });
 
-    test('should return null for response missing required parameters', async () => {
+    it('should return null for response missing required parameters', async () => {
       const mockIncompleteResponse = {
         resourceType: 'Parameters',
         parameter: [
@@ -264,7 +264,7 @@ describe('valueSet', () => {
       expect(result).toBeNull();
     });
 
-    test('should return null when response is null', async () => {
+    it('should return null when response is null', async () => {
       const mockRequest = jest.fn() as jest.MockedFunction<any>;
       mockRequest.mockResolvedValue(null);
       mockClient.mockReturnValue({ request: mockRequest } as any);
@@ -281,7 +281,7 @@ describe('valueSet', () => {
   });
 
   describe('resolveValueSetPromises', () => {
-    test('should resolve fulfilled promises and return ValueSetPromises', async () => {
+    it('should resolve fulfilled promises and return ValueSetPromises', async () => {
       const mockValueSet1: ValueSet = {
         resourceType: 'ValueSet',
         status: 'active',
@@ -310,7 +310,7 @@ describe('valueSet', () => {
       expect(result['vs2'].valueSet).toEqual(mockValueSet2);
     });
 
-    test('should handle rejected promises gracefully', async () => {
+    it('should handle rejected promises gracefully', async () => {
       const mockValueSet: ValueSet = {
         resourceType: 'ValueSet',
         status: 'active',
@@ -333,7 +333,7 @@ describe('valueSet', () => {
       expect(result['vs2']).toBeUndefined(); // Rejected promise should not be included
     });
 
-    test('should handle timeout promises', async () => {
+    it('should handle timeout promises', async () => {
       const slowPromise = new Promise<ValueSet>((resolve) => {
         setTimeout(() => resolve({ resourceType: 'ValueSet', status: 'active' } as ValueSet), 6000); // 6 seconds (longer than 5s timeout)
       });
@@ -349,12 +349,12 @@ describe('valueSet', () => {
       expect(Object.keys(result)).toHaveLength(0); // Should timeout and not be included
     }, 10000); // Set test timeout to 10 seconds
 
-    test('should handle empty valueSetPromises object', async () => {
+    it('should handle empty valueSetPromises object', async () => {
       const result = await resolveValueSetPromises({});
       expect(result).toEqual({});
     });
 
-    test('should handle promise resolution with proper keys and values', async () => {
+    it('should handle promise resolution with proper keys and values', async () => {
       const mockValueSet: ValueSet = {
         resourceType: 'ValueSet',
         status: 'active',
@@ -375,7 +375,7 @@ describe('valueSet', () => {
   });
 
   describe('getValueSetCodings', () => {
-    test('should extract codings from valueSet expansion', () => {
+    it('should extract codings from valueSet expansion', () => {
       const mockCoding1: Coding = {
         system: 'http://test.system',
         code: 'code1',
@@ -409,7 +409,7 @@ describe('valueSet', () => {
       expect(mockGetRelevantCodingProperties).toHaveBeenCalledWith(mockCoding2);
     });
 
-    test('should return empty array when expansion is undefined', () => {
+    it('should return empty array when expansion is undefined', () => {
       const valueSet: ValueSet = {
         resourceType: 'ValueSet',
         status: 'active'
@@ -419,7 +419,7 @@ describe('valueSet', () => {
       expect(result).toEqual([]);
     });
 
-    test('should return empty array when expansion.contains is undefined', () => {
+    it('should return empty array when expansion.contains is undefined', () => {
       const valueSet: ValueSet = {
         resourceType: 'ValueSet',
         status: 'active',
@@ -432,7 +432,7 @@ describe('valueSet', () => {
       expect(result).toEqual([]);
     });
 
-    test('should return empty array when expansion.contains is empty', () => {
+    it('should return empty array when expansion.contains is empty', () => {
       const valueSet: ValueSet = {
         resourceType: 'ValueSet',
         status: 'active',
@@ -448,7 +448,7 @@ describe('valueSet', () => {
   });
 
   describe('evaluateAnswerExpressionValueSet', () => {
-    test('should return codings for valid variable and value set expression', () => {
+    it('should return codings for valid variable and value set expression', () => {
       const answerExpression: Expression = {
         language: 'text/fhirpath',
         expression: '%vs.select(code)'
@@ -480,7 +480,7 @@ describe('valueSet', () => {
       expect(result).toEqual(mockCodings);
     });
 
-    test('should return empty array when expression is undefined', () => {
+    it('should return empty array when expression is undefined', () => {
       const answerExpression: Expression = {
         language: 'text/fhirpath'
         // No expression property
@@ -490,7 +490,7 @@ describe('valueSet', () => {
       expect(result).toEqual([]);
     });
 
-    test('should return empty array when variable name cannot be extracted', () => {
+    it('should return empty array when variable name cannot be extracted', () => {
       const answerExpression: Expression = {
         language: 'text/fhirpath',
         expression: 'invalid.expression'
@@ -500,7 +500,7 @@ describe('valueSet', () => {
       expect(result).toEqual([]);
     });
 
-    test('should return empty array when variable is not found', () => {
+    it('should return empty array when variable is not found', () => {
       const answerExpression: Expression = {
         language: 'text/fhirpath',
         expression: '%nonexistent.select(code)'
@@ -518,7 +518,7 @@ describe('valueSet', () => {
       expect(result).toEqual([]);
     });
 
-    test('should return empty array when matched variable has no expression', () => {
+    it('should return empty array when matched variable has no expression', () => {
       const answerExpression: Expression = {
         language: 'text/fhirpath',
         expression: '%vs.select(code)'
@@ -536,7 +536,7 @@ describe('valueSet', () => {
       expect(result).toEqual([]);
     });
 
-    test('should return empty array when variable expression is not a valid ValueSet URL', () => {
+    it('should return empty array when variable expression is not a valid ValueSet URL', () => {
       const answerExpression: Expression = {
         language: 'text/fhirpath',
         expression: '%vs.select(code)'
@@ -554,7 +554,7 @@ describe('valueSet', () => {
       expect(result).toEqual([]);
     });
 
-    test('should return empty array when ValueSet URL is not in preprocessed codings', () => {
+    it('should return empty array when ValueSet URL is not in preprocessed codings', () => {
       const answerExpression: Expression = {
         language: 'text/fhirpath',
         expression: '%vs.select(code)'
@@ -580,7 +580,7 @@ describe('valueSet', () => {
       expect(result).toEqual([]);
     });
 
-    test('should handle itemLevelVariables being undefined', () => {
+    it('should handle itemLevelVariables being undefined', () => {
       const answerExpression: Expression = {
         language: 'text/fhirpath',
         expression: '%vs.select(code)'
@@ -592,7 +592,7 @@ describe('valueSet', () => {
   });
 
   describe('createValueSetToXFhirQueryVariableNameMap', () => {
-    test('should create mapping from ValueSet URLs to variable names', () => {
+    it('should create mapping from ValueSet URLs to variable names', () => {
       const variables: Record<string, VariableXFhirQuery> = {
         vs1: {
           valueExpression: {
@@ -622,7 +622,7 @@ describe('valueSet', () => {
       });
     });
 
-    test('should handle variables with no expression', () => {
+    it('should handle variables with no expression', () => {
       const variables: Record<string, VariableXFhirQuery> = {
         vs1: {
           valueExpression: {
@@ -636,12 +636,12 @@ describe('valueSet', () => {
       expect(result).toEqual({});
     });
 
-    test('should handle empty variables object', () => {
+    it('should handle empty variables object', () => {
       const result = createValueSetToXFhirQueryVariableNameMap({});
       expect(result).toEqual({});
     });
 
-    test('should handle variables with invalid ValueSet URLs', () => {
+    it('should handle variables with invalid ValueSet URLs', () => {
       const variables: Record<string, VariableXFhirQuery> = {
         invalid1: {
           valueExpression: {
@@ -682,7 +682,7 @@ describe('valueSet', () => {
       class: { system: 'http://terminology.hl7.org/CodeSystem/v3-ActCode', code: 'AMB' }
     };
 
-    test('should return Patient resource when resourceType is Patient', () => {
+    it('should return Patient resource when resourceType is Patient', () => {
       const result = getResourceFromLaunchContext(
         'Patient',
         mockPatient,
@@ -692,7 +692,7 @@ describe('valueSet', () => {
       expect(result).toEqual(mockPatient);
     });
 
-    test('should return Practitioner resource when resourceType is Practitioner', () => {
+    it('should return Practitioner resource when resourceType is Practitioner', () => {
       const result = getResourceFromLaunchContext(
         'Practitioner',
         mockPatient,
@@ -702,7 +702,7 @@ describe('valueSet', () => {
       expect(result).toEqual(mockPractitioner);
     });
 
-    test('should return Encounter resource when resourceType is Encounter', () => {
+    it('should return Encounter resource when resourceType is Encounter', () => {
       const result = getResourceFromLaunchContext(
         'Encounter',
         mockPatient,
@@ -712,7 +712,7 @@ describe('valueSet', () => {
       expect(result).toEqual(mockEncounter);
     });
 
-    test('should return null when resourceType is not Patient, Practitioner, or Encounter', () => {
+    it('should return null when resourceType is not Patient, Practitioner, or Encounter', () => {
       const result = getResourceFromLaunchContext(
         'Observation' as any,
         mockPatient,
@@ -722,12 +722,12 @@ describe('valueSet', () => {
       expect(result).toBeNull();
     });
 
-    test('should return null when requested resource is null', () => {
+    it('should return null when requested resource is null', () => {
       const result = getResourceFromLaunchContext('Patient', null, mockPractitioner, mockEncounter);
       expect(result).toBeNull();
     });
 
-    test('should handle null parameters gracefully', () => {
+    it('should handle null parameters gracefully', () => {
       const result = getResourceFromLaunchContext('Patient', null, null, null);
       expect(result).toBeNull();
     });

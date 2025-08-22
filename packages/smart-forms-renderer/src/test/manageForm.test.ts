@@ -175,7 +175,7 @@ describe('manageForm utils', () => {
       id: 'test-response'
     };
 
-    test('should build form with questionnaire only', async () => {
+    it('should build form with questionnaire only', async () => {
       const mockBuildSourceQuestionnaire = jest.fn();
       const mockBuildSourceResponse = jest.fn();
       const mockUpdatePopulatedProperties = jest.fn();
@@ -219,7 +219,7 @@ describe('manageForm utils', () => {
       expect(mockUpdatePopulatedProperties).toHaveBeenCalledWith(mockQuestionnaireResponse);
     });
 
-    test('should build form with all optional parameters', async () => {
+    it('should build form with all optional parameters', async () => {
       const mockBuildSourceQuestionnaire = jest.fn();
       const mockBuildSourceResponse = jest.fn();
       const mockUpdatePopulatedProperties = jest.fn();
@@ -270,7 +270,7 @@ describe('manageForm utils', () => {
       expect(mockSetFormAsReadOnly).toHaveBeenCalledWith(true);
     });
 
-    test('should handle terminology server URL correctly', async () => {
+    it('should handle terminology server URL correctly', async () => {
       const mockSetUrl = jest.fn();
       const mockResetUrl = jest.fn();
 
@@ -305,7 +305,7 @@ describe('manageForm utils', () => {
   });
 
   describe('initialiseFhirClient', () => {
-    test('should initialise FHIR client and set all resources', async () => {
+    it('should initialise FHIR client and set all resources', async () => {
       const mockSetClient = jest.fn();
       const mockSetPatient = jest.fn();
       const mockSetUser = jest.fn();
@@ -333,7 +333,7 @@ describe('manageForm utils', () => {
       expect(mockSetEncounter).toHaveBeenCalledWith(encHealthCheck);
     });
 
-    test('should handle Promise.all correctly even if some reads fail', async () => {
+    it('should handle Promise.all correctly even if some reads fail', async () => {
       const mockSetClient = jest.fn();
       const mockSetPatient = jest.fn();
       const mockSetUser = jest.fn();
@@ -361,7 +361,7 @@ describe('manageForm utils', () => {
   });
 
   describe('getResponse', () => {
-    test('should get response and clean internal IDs', () => {
+    it('should get response and clean internal IDs', () => {
       const mockSourceQuestionnaire = {
         resourceType: 'Questionnaire' as const,
         status: 'active' as const
@@ -400,7 +400,7 @@ describe('manageForm utils', () => {
       expect(result).toEqual(mockCleanResponse);
     });
 
-    test('should return a clone of the response', () => {
+    it('should return a clone of the response', () => {
       const mockSourceQuestionnaire = {
         resourceType: 'Questionnaire' as const,
         status: 'active' as const
@@ -431,7 +431,7 @@ describe('manageForm utils', () => {
   });
 
   describe('destroyForm', () => {
-    test('should call destroy methods on both stores', () => {
+    it('should call destroy methods on both stores', () => {
       const mockDestroyQuestionnaire = jest.fn();
       const mockDestroyResponse = jest.fn();
 
@@ -454,7 +454,7 @@ describe('manageForm utils', () => {
   // TODO: Add test for getResponse when store mocking is improved
 
   describe('qrItemHasItemsOrAnswer', () => {
-    test('should return true when qrItem has answer array with content', () => {
+    it('should return true when qrItem has answer array with content', () => {
       const qrItem: QuestionnaireResponseItem = {
         linkId: 'test-item',
         text: 'Test Item',
@@ -466,7 +466,7 @@ describe('manageForm utils', () => {
       expect(result).toBe(true);
     });
 
-    test('should return true when qrItem has item array with content', () => {
+    it('should return true when qrItem has item array with content', () => {
       const qrItem: QuestionnaireResponseItem = {
         linkId: 'test-group',
         text: 'Test Group',
@@ -483,7 +483,7 @@ describe('manageForm utils', () => {
       expect(result).toBe(true);
     });
 
-    test('should return false when qrItem has empty answer array', () => {
+    it('should return false when qrItem has empty answer array', () => {
       const qrItem: QuestionnaireResponseItem = {
         linkId: 'test-item',
         text: 'Test Item',
@@ -495,7 +495,7 @@ describe('manageForm utils', () => {
       expect(result).toBe(false);
     });
 
-    test('should return false when qrItem has empty item array', () => {
+    it('should return false when qrItem has empty item array', () => {
       const qrItem: QuestionnaireResponseItem = {
         linkId: 'test-group',
         text: 'Test Group',
@@ -507,7 +507,7 @@ describe('manageForm utils', () => {
       expect(result).toBe(false);
     });
 
-    test('should return false when qrItem has no answer or item properties', () => {
+    it('should return false when qrItem has no answer or item properties', () => {
       const qrItem: QuestionnaireResponseItem = {
         linkId: 'test-item',
         text: 'Test Item'
@@ -518,7 +518,7 @@ describe('manageForm utils', () => {
       expect(result).toBe(false);
     });
 
-    test('should return false when qrItem has undefined answer and item', () => {
+    it('should return false when qrItem has undefined answer and item', () => {
       const qrItem: QuestionnaireResponseItem = {
         linkId: 'test-item',
         text: 'Test Item',
@@ -533,7 +533,7 @@ describe('manageForm utils', () => {
   });
 
   describe('removeEmptyAnswersFromResponse', () => {
-    test('should process response through updateQuestionnaireResponse', () => {
+    it('should process response through updateQuestionnaireResponse', () => {
       const questionnaire = {
         resourceType: 'Questionnaire' as const,
         status: 'active' as const
@@ -568,7 +568,7 @@ describe('manageForm utils', () => {
       expect(result).toEqual(response);
     });
 
-    test('should process response through updateQuestionnaireResponse when questionnaire has items', () => {
+    it('should process response through updateQuestionnaireResponse when questionnaire has items', () => {
       const questionnaire = {
         resourceType: 'Questionnaire' as const,
         status: 'active' as const,
@@ -619,7 +619,7 @@ describe('manageForm utils', () => {
   });
 
   describe('removeInternalIdsFromResponse', () => {
-    test('should process response and return structuredClone', () => {
+    it('should process response and return structuredClone', () => {
       const questionnaire = {
         resourceType: 'Questionnaire' as const,
         status: 'active' as const
@@ -643,7 +643,7 @@ describe('manageForm utils', () => {
       expect(result).toEqual(response);
     });
 
-    test('should process response through updateQuestionnaireResponse when questionnaire has items', () => {
+    it('should process response through updateQuestionnaireResponse when questionnaire has items', () => {
       const questionnaire = {
         resourceType: 'Questionnaire' as const,
         status: 'active' as const,

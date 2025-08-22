@@ -22,7 +22,7 @@ import { expect, test } from '@jest/globals';
 import { initialiseQuestionnaireResponse } from '../utils';
 import { qInitialValueSample } from './data/initialValueSample';
 
-test('item.initial is properly pre-filled into QuestionnaireResponse', () => {
+it('item.initial is properly pre-filled into QuestionnaireResponse', () => {
   const outputResponse = initialiseQuestionnaireResponse(qInitialValueSample);
 
   expect(outputResponse?.item?.[0]).toBeTruthy();

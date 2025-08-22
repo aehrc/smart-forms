@@ -66,7 +66,7 @@ jest.mock('../utils/qrItem', () => ({
 
 describe('computedUpdates utils', () => {
   describe('applyComputedUpdates', () => {
-    test('should return original response when no computed updates', () => {
+    it('should return original response when no computed updates', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -98,7 +98,7 @@ describe('computedUpdates utils', () => {
       expect(result).toBe(response); // Should return the exact same object
     });
 
-    test('should apply computed updates when they exist', () => {
+    it('should apply computed updates when they exist', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -135,7 +135,7 @@ describe('computedUpdates utils', () => {
       expect(result.item).toBeDefined();
     });
 
-    test('should handle computed updates with null values', () => {
+    it('should handle computed updates with null values', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -169,7 +169,7 @@ describe('computedUpdates utils', () => {
       expect(result).toBeDefined();
     });
 
-    test('should handle questionnaire with group items', () => {
+    it('should handle questionnaire with group items', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -218,7 +218,7 @@ describe('computedUpdates utils', () => {
       expect(result).toBeDefined();
     });
 
-    test('should handle repeat groups', () => {
+    it('should handle repeat groups', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -280,7 +280,7 @@ describe('computedUpdates utils', () => {
       expect(result).toBeDefined();
     });
 
-    test('should handle empty questionnaire', () => {
+    it('should handle empty questionnaire', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active'
@@ -298,7 +298,7 @@ describe('computedUpdates utils', () => {
       expect(result).toBe(response);
     });
 
-    test('should handle empty response', () => {
+    it('should handle empty response', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -328,7 +328,7 @@ describe('computedUpdates utils', () => {
       expect(result).toBeDefined();
     });
 
-    test('should preserve existing answers when no computed update exists', () => {
+    it('should preserve existing answers when no computed update exists', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -366,7 +366,7 @@ describe('computedUpdates utils', () => {
       expect(result.item?.[0].answer?.[0].valueString).toBe('original value');
     });
 
-    test('should handle nested group structures', () => {
+    it('should handle nested group structures', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -428,7 +428,7 @@ describe('computedUpdates utils', () => {
       expect(result).toBeDefined();
     });
 
-    test('should handle multiple computed updates', () => {
+    it('should handle multiple computed updates', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -491,7 +491,7 @@ describe('computedUpdates utils', () => {
       expect(result.item).toHaveLength(3);
     });
 
-    test('should handle mixed updates and removals', () => {
+    it('should handle mixed updates and removals', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',

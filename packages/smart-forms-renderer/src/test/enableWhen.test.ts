@@ -43,7 +43,7 @@ import {
 
 describe('enableWhen utils - Phase 1', () => {
   describe('createEnableWhenLinkedQuestions', () => {
-    test('should create empty map when no enableWhen items exist', () => {
+    it('should create empty map when no enableWhen items exist', () => {
       const enableWhenItems: EnableWhenItems = {
         singleItems: {},
         repeatItems: {}
@@ -54,7 +54,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toEqual({});
     });
 
-    test('should map linked questions from single items', () => {
+    it('should map linked questions from single items', () => {
       const mockEnableWhen: QuestionnaireItemEnableWhen = {
         question: 'linked-question-1',
         operator: 'exists',
@@ -82,7 +82,7 @@ describe('enableWhen utils - Phase 1', () => {
       });
     });
 
-    test('should map linked questions from repeat items', () => {
+    it('should map linked questions from repeat items', () => {
       const mockEnableWhen: QuestionnaireItemEnableWhen = {
         question: 'repeat-linked-question',
         operator: '=',
@@ -114,7 +114,7 @@ describe('enableWhen utils - Phase 1', () => {
       });
     });
 
-    test('should handle multiple linked questions for same item', () => {
+    it('should handle multiple linked questions for same item', () => {
       const mockEnableWhen1: QuestionnaireItemEnableWhen = {
         question: 'question-1',
         operator: 'exists',
@@ -152,7 +152,7 @@ describe('enableWhen utils - Phase 1', () => {
       });
     });
 
-    test('should handle multiple items linked to same question', () => {
+    it('should handle multiple items linked to same question', () => {
       const mockEnableWhen: QuestionnaireItemEnableWhen = {
         question: 'shared-question',
         operator: 'exists',
@@ -188,7 +188,7 @@ describe('enableWhen utils - Phase 1', () => {
       });
     });
 
-    test('should not duplicate linkIds for same question', () => {
+    it('should not duplicate linkIds for same question', () => {
       const mockEnableWhen: QuestionnaireItemEnableWhen = {
         question: 'duplicate-question',
         operator: 'exists',
@@ -221,7 +221,7 @@ describe('enableWhen utils - Phase 1', () => {
   });
 
   describe('isEnabledAnswerTypeSwitcher', () => {
-    test('should return true for exists operator with boolean answer', () => {
+    it('should return true for exists operator with boolean answer', () => {
       const enableWhen: QuestionnaireItemEnableWhen = {
         question: 'test-question',
         operator: 'exists',
@@ -237,7 +237,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(true);
     });
 
-    test('should return false for exists operator with no answer', () => {
+    it('should return false for exists operator with no answer', () => {
       const enableWhen: QuestionnaireItemEnableWhen = {
         question: 'test-question',
         operator: 'exists',
@@ -251,7 +251,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(false);
     });
 
-    test('should handle answerString type switcher', () => {
+    it('should handle answerString type switcher', () => {
       const enableWhen: QuestionnaireItemEnableWhen = {
         question: 'test-question',
         operator: '=',
@@ -267,7 +267,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(true);
     });
 
-    test('should return false for non-matching answerString', () => {
+    it('should return false for non-matching answerString', () => {
       const enableWhen: QuestionnaireItemEnableWhen = {
         question: 'test-question',
         operator: '=',
@@ -283,7 +283,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(false);
     });
 
-    test('should handle answerInteger type switcher', () => {
+    it('should handle answerInteger type switcher', () => {
       const enableWhen: QuestionnaireItemEnableWhen = {
         question: 'test-question',
         operator: '=',
@@ -299,7 +299,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(true);
     });
 
-    test('should handle answerDecimal type switcher', () => {
+    it('should handle answerDecimal type switcher', () => {
       const enableWhen: QuestionnaireItemEnableWhen = {
         question: 'test-question',
         operator: '=',
@@ -315,7 +315,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(true);
     });
 
-    test('should handle answerCoding type switcher', () => {
+    it('should handle answerCoding type switcher', () => {
       const enableWhen: QuestionnaireItemEnableWhen = {
         question: 'test-question',
         operator: '=',
@@ -337,7 +337,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(true);
     });
 
-    test('should return correct result for matching string values', () => {
+    it('should return correct result for matching string values', () => {
       const enableWhen: QuestionnaireItemEnableWhen = {
         question: 'test-question',
         operator: '=',
@@ -353,7 +353,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(true); // Function correctly matches answerString with valueString
     });
 
-    test('should handle boolean comparison with answerBoolean', () => {
+    it('should handle boolean comparison with answerBoolean', () => {
       const enableWhen: QuestionnaireItemEnableWhen = {
         question: 'test-question',
         operator: '=',
@@ -369,7 +369,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(true);
     });
 
-    test('should handle date comparison with answerDate', () => {
+    it('should handle date comparison with answerDate', () => {
       const enableWhen: QuestionnaireItemEnableWhen = {
         question: 'test-question',
         operator: '=',
@@ -385,7 +385,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(true);
     });
 
-    test('should handle dateTime comparison with answerDateTime', () => {
+    it('should handle dateTime comparison with answerDateTime', () => {
       const enableWhen: QuestionnaireItemEnableWhen = {
         question: 'test-question',
         operator: '=',
@@ -401,7 +401,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(true);
     });
 
-    test('should handle time comparison with answerTime', () => {
+    it('should handle time comparison with answerTime', () => {
       const enableWhen: QuestionnaireItemEnableWhen = {
         question: 'test-question',
         operator: '=',
@@ -417,7 +417,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(true);
     });
 
-    test('should handle coding display comparison when code is not present', () => {
+    it('should handle coding display comparison when code is not present', () => {
       const enableWhen: QuestionnaireItemEnableWhen = {
         question: 'test-question',
         operator: '=',
@@ -439,7 +439,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(true);
     });
 
-    test('should handle quantity comparison with answerQuantity', () => {
+    it('should handle quantity comparison with answerQuantity', () => {
       const quantityObject = {
         value: 10,
         unit: 'kg'
@@ -460,7 +460,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(true);
     });
 
-    test('should return false for mismatched types', () => {
+    it('should return false for mismatched types', () => {
       const enableWhen: QuestionnaireItemEnableWhen = {
         question: 'test-question',
         operator: '=',
@@ -476,7 +476,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(false);
     });
 
-    test('should handle numerical comparisons (greater than)', () => {
+    it('should handle numerical comparisons (greater than)', () => {
       const enableWhen: QuestionnaireItemEnableWhen = {
         question: 'test-question',
         operator: '>',
@@ -492,7 +492,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(true);
     });
 
-    test('should handle numerical comparisons (less than)', () => {
+    it('should handle numerical comparisons (less than)', () => {
       const enableWhen: QuestionnaireItemEnableWhen = {
         question: 'test-question',
         operator: '<',
@@ -508,7 +508,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(true);
     });
 
-    test('should handle not equals comparison', () => {
+    it('should handle not equals comparison', () => {
       const enableWhen: QuestionnaireItemEnableWhen = {
         question: 'test-question',
         operator: '!=',
@@ -526,7 +526,7 @@ describe('enableWhen utils - Phase 1', () => {
   });
 
   describe('mutateRepeatEnableWhenItemInstances', () => {
-    test('should add new instance to repeat items', () => {
+    it('should add new instance to repeat items', () => {
       const mockEnableWhen: QuestionnaireItemEnableWhen = {
         question: 'linked-question',
         operator: '=',
@@ -556,7 +556,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result.repeatItems['repeat-item'].linked[0].answers).toHaveLength(2);
     });
 
-    test('should remove instance from repeat items', () => {
+    it('should remove instance from repeat items', () => {
       const mockEnableWhen: QuestionnaireItemEnableWhen = {
         question: 'linked-question',
         operator: '=',
@@ -590,7 +590,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result.repeatItems['repeat-item'].linked[0].answers).toHaveLength(2);
     });
 
-    test('should skip items with different parent linkId', () => {
+    it('should skip items with different parent linkId', () => {
       const mockEnableWhen: QuestionnaireItemEnableWhen = {
         question: 'linked-question',
         operator: '=',
@@ -623,7 +623,7 @@ describe('enableWhen utils - Phase 1', () => {
   });
 
   describe('readInitialAnswers', () => {
-    test('should return empty object when questionnaireResponse has no items', () => {
+    it('should return empty object when questionnaireResponse has no items', () => {
       const questionnaireResponse: QuestionnaireResponse = {
         resourceType: 'QuestionnaireResponse',
         status: 'in-progress'
@@ -638,7 +638,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toEqual({});
     });
 
-    test('should extract initial answers from questionnaireResponse', () => {
+    it('should extract initial answers from questionnaireResponse', () => {
       const questionnaireResponse: QuestionnaireResponse = {
         resourceType: 'QuestionnaireResponse',
         status: 'in-progress',
@@ -667,7 +667,7 @@ describe('enableWhen utils - Phase 1', () => {
       });
     });
 
-    test('should extract answers from nested items recursively', () => {
+    it('should extract answers from nested items recursively', () => {
       const questionnaireResponse: QuestionnaireResponse = {
         resourceType: 'QuestionnaireResponse',
         status: 'in-progress',
@@ -706,7 +706,7 @@ describe('enableWhen utils - Phase 1', () => {
       });
     });
 
-    test('should only include items that are in linkedQuestionsMap', () => {
+    it('should only include items that are in linkedQuestionsMap', () => {
       const questionnaireResponse: QuestionnaireResponse = {
         resourceType: 'QuestionnaireResponse',
         status: 'in-progress',
@@ -740,7 +740,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result['question-2']).toBeUndefined();
     });
 
-    test('should ignore items without answers', () => {
+    it('should ignore items without answers', () => {
       const questionnaireResponse: QuestionnaireResponse = {
         resourceType: 'QuestionnaireResponse',
         status: 'in-progress',
@@ -771,7 +771,7 @@ describe('enableWhen utils - Phase 1', () => {
   });
 
   describe('checkItemIsEnabledSingle', () => {
-    test('should return true when all linked items satisfy conditions', () => {
+    it('should return true when all linked items satisfy conditions', () => {
       const enableWhenItem: EnableWhenSingleItemProperties = {
         isEnabled: false,
         linked: [
@@ -791,7 +791,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(true);
     });
 
-    test('should return false when no linked items satisfy conditions', () => {
+    it('should return false when no linked items satisfy conditions', () => {
       const enableWhenItem: EnableWhenSingleItemProperties = {
         isEnabled: false,
         linked: [
@@ -811,7 +811,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(false);
     });
 
-    test('should handle multiple answers and return true if any satisfies condition', () => {
+    it('should handle multiple answers and return true if any satisfies condition', () => {
       const enableWhenItem: EnableWhenSingleItemProperties = {
         isEnabled: false,
         linked: [
@@ -831,7 +831,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(true);
     });
 
-    test('should handle enableBehavior "any" - return true if any linked item is satisfied', () => {
+    it('should handle enableBehavior "any" - return true if any linked item is satisfied', () => {
       const enableWhenItem: EnableWhenSingleItemProperties = {
         isEnabled: false,
         enableBehavior: 'any',
@@ -860,7 +860,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(true);
     });
 
-    test('should handle enableBehavior "all" - return true only if all linked items are satisfied', () => {
+    it('should handle enableBehavior "all" - return true only if all linked items are satisfied', () => {
       const enableWhenItem: EnableWhenSingleItemProperties = {
         isEnabled: false,
         enableBehavior: 'all',
@@ -889,7 +889,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(false);
     });
 
-    test('should handle linked items without answers but check for unanswered booleans', () => {
+    it('should handle linked items without answers but check for unanswered booleans', () => {
       const enableWhenItem: EnableWhenSingleItemProperties = {
         isEnabled: false,
         linked: [
@@ -909,7 +909,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(true);
     });
 
-    test('should return false when there are no linked items', () => {
+    it('should return false when there are no linked items', () => {
       const enableWhenItem: EnableWhenSingleItemProperties = {
         isEnabled: false,
         linked: []
@@ -922,7 +922,7 @@ describe('enableWhen utils - Phase 1', () => {
   });
 
   describe('checkItemIsEnabledRepeat', () => {
-    test('should return true when linked answer satisfies condition', () => {
+    it('should return true when linked answer satisfies condition', () => {
       const enableWhenItem: EnableWhenRepeatItemProperties = {
         parentLinkId: 'parent',
         enabledIndexes: [false],
@@ -944,7 +944,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(true);
     });
 
-    test('should return false when linked answer does not satisfy condition', () => {
+    it('should return false when linked answer does not satisfy condition', () => {
       const enableWhenItem: EnableWhenRepeatItemProperties = {
         parentLinkId: 'parent',
         enabledIndexes: [true],
@@ -966,7 +966,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(false);
     });
 
-    test('should handle missing answer at specified index', () => {
+    it('should handle missing answer at specified index', () => {
       const enableWhenItem: EnableWhenRepeatItemProperties = {
         parentLinkId: 'parent',
         enabledIndexes: [false],
@@ -988,7 +988,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(true);
     });
 
-    test('should handle enableBehavior "any" for repeat items', () => {
+    it('should handle enableBehavior "any" for repeat items', () => {
       const enableWhenItem: EnableWhenRepeatItemProperties = {
         parentLinkId: 'parent',
         enabledIndexes: [false],
@@ -1020,7 +1020,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(true);
     });
 
-    test('should return false when no linked items have valid conditions', () => {
+    it('should return false when no linked items have valid conditions', () => {
       const enableWhenItem: EnableWhenRepeatItemProperties = {
         parentLinkId: 'parent',
         enabledIndexes: [true],
@@ -1044,7 +1044,7 @@ describe('enableWhen utils - Phase 1', () => {
   });
 
   describe('updateEnableWhenItemAnswer', () => {
-    test('should update single item answers and enabled status', () => {
+    it('should update single item answers and enabled status', () => {
       const items: EnableWhenItems = {
         singleItems: {
           'item-1': {
@@ -1075,7 +1075,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result.singleItems['item-1'].isEnabled).toBe(true);
     });
 
-    test('should update repeat item answers and enabled status', () => {
+    it('should update repeat item answers and enabled status', () => {
       const items: EnableWhenItems = {
         singleItems: {},
         repeatItems: {
@@ -1111,7 +1111,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result.repeatItems['repeat-item'].enabledIndexes[1]).toBe(true);
     });
 
-    test('should handle clearing answers for repeat items', () => {
+    it('should handle clearing answers for repeat items', () => {
       const items: EnableWhenItems = {
         singleItems: {},
         repeatItems: {
@@ -1139,7 +1139,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result.repeatItems['repeat-item'].enabledIndexes[0]).toBe(false);
     });
 
-    test('should skip repeat items when parentRepeatGroupIndex is null', () => {
+    it('should skip repeat items when parentRepeatGroupIndex is null', () => {
       const items: EnableWhenItems = {
         singleItems: {},
         repeatItems: {
@@ -1175,7 +1175,7 @@ describe('enableWhen utils - Phase 1', () => {
   });
 
   describe('setInitialAnswers', () => {
-    test('should set initial answers and update enabled status', () => {
+    it('should set initial answers and update enabled status', () => {
       const initialAnswers = {
         q1: [{ valueString: 'yes' }],
         q2: [{ valueBoolean: true }]
@@ -1209,7 +1209,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result.singleItems['item-1'].isEnabled).toBe(true);
     });
 
-    test('should handle empty initial answers', () => {
+    it('should handle empty initial answers', () => {
       const items: EnableWhenItems = {
         singleItems: {
           'item-1': {
@@ -1227,7 +1227,7 @@ describe('enableWhen utils - Phase 1', () => {
   });
 
   describe('assignPopulatedAnswersToEnableWhen', () => {
-    test('should return initialized items and linked questions', () => {
+    it('should return initialized items and linked questions', () => {
       const items: EnableWhenItems = {
         singleItems: {
           'item-1': {
@@ -1263,7 +1263,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result.initialisedItems.singleItems['item-1'].isEnabled).toBe(true);
     });
 
-    test('should handle empty initial answers', () => {
+    it('should handle empty initial answers', () => {
       const items: EnableWhenItems = {
         singleItems: {
           'item-1': {
@@ -1293,7 +1293,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result.initialisedItems.singleItems['item-1'].isEnabled).toBe(true);
     });
 
-    test('should handle repeat items in initialization', () => {
+    it('should handle repeat items in initialization', () => {
       const items: EnableWhenItems = {
         singleItems: {},
         repeatItems: {
@@ -1331,7 +1331,7 @@ describe('enableWhen utils - Phase 1', () => {
   });
 
   describe('Additional edge cases for better coverage', () => {
-    test('should handle exists operator with false expectation for non-existent answers', () => {
+    it('should handle exists operator with false expectation for non-existent answers', () => {
       const enableWhen: QuestionnaireItemEnableWhen = {
         question: 'test-question',
         operator: 'exists',
@@ -1345,7 +1345,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(true);
     });
 
-    test('should handle ">=" operator correctly', () => {
+    it('should handle ">=" operator correctly', () => {
       const enableWhen: QuestionnaireItemEnableWhen = {
         question: 'test-question',
         operator: '>=',
@@ -1361,7 +1361,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(true);
     });
 
-    test('should handle "<=" operator correctly', () => {
+    it('should handle "<=" operator correctly', () => {
       const enableWhen: QuestionnaireItemEnableWhen = {
         question: 'test-question',
         operator: '<=',
@@ -1377,7 +1377,7 @@ describe('enableWhen utils - Phase 1', () => {
       expect(result).toBe(true);
     });
 
-    test('should handle unsupported operators in answerOperatorSwitcher', () => {
+    it('should handle unsupported operators in answerOperatorSwitcher', () => {
       const enableWhen: QuestionnaireItemEnableWhen = {
         question: 'test-question',
         operator: 'unsupported' as any,

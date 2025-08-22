@@ -23,7 +23,7 @@ import { removeInternalIdsFromResponse } from '../utils';
 import { qrRemoveIdResult, qrRemoveIdSample } from './data/removeIdSample';
 import { qMyPatient } from '../stories/assets/questionnaires/QIdRemoverDebugger';
 
-test('item.initial is properly pre-filled into QuestionnaireResponse', () => {
+it('item.initial is properly pre-filled into QuestionnaireResponse', () => {
   const outputResponse = removeInternalIdsFromResponse(qMyPatient, qrRemoveIdSample);
 
   expect(outputResponse).toStrictEqual(qrRemoveIdResult);

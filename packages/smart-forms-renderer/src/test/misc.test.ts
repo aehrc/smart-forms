@@ -74,7 +74,7 @@ describe('getQuestionnaireItem', () => {
     ]
   };
 
-  test('should find top-level item by linkId', () => {
+  it('should find top-level item by linkId', () => {
     const result = getQuestionnaireItem(mockQuestionnaire, 'top-level-1');
     expect(result).toEqual({
       linkId: 'top-level-1',
@@ -83,7 +83,7 @@ describe('getQuestionnaireItem', () => {
     });
   });
 
-  test('should find nested item by linkId', () => {
+  it('should find nested item by linkId', () => {
     const result = getQuestionnaireItem(mockQuestionnaire, 'nested-1');
     expect(result).toEqual({
       linkId: 'nested-1',
@@ -92,7 +92,7 @@ describe('getQuestionnaireItem', () => {
     });
   });
 
-  test('should find deeply nested item by linkId', () => {
+  it('should find deeply nested item by linkId', () => {
     const result = getQuestionnaireItem(mockQuestionnaire, 'deeply-nested');
     expect(result).toEqual({
       linkId: 'deeply-nested',
@@ -101,12 +101,12 @@ describe('getQuestionnaireItem', () => {
     });
   });
 
-  test('should return null when item not found', () => {
+  it('should return null when item not found', () => {
     const result = getQuestionnaireItem(mockQuestionnaire, 'non-existent');
     expect(result).toBeNull();
   });
 
-  test('should handle questionnaire with no items', () => {
+  it('should handle questionnaire with no items', () => {
     const emptyQuestionnaire: Questionnaire = {
       resourceType: 'Questionnaire',
       status: 'active'
@@ -115,7 +115,7 @@ describe('getQuestionnaireItem', () => {
     expect(result).toBeNull();
   });
 
-  test('should handle questionnaire with empty items array', () => {
+  it('should handle questionnaire with empty items array', () => {
     const emptyQuestionnaire: Questionnaire = {
       resourceType: 'Questionnaire',
       status: 'active',
@@ -161,7 +161,7 @@ describe('getQuestionnaireResponseItem', () => {
     ]
   };
 
-  test('should find top-level response item by linkId', () => {
+  it('should find top-level response item by linkId', () => {
     const result = getQuestionnaireResponseItem(mockQuestionnaireResponse, 'top-level-1');
     expect(result).toEqual({
       linkId: 'top-level-1',
@@ -170,7 +170,7 @@ describe('getQuestionnaireResponseItem', () => {
     });
   });
 
-  test('should find nested response item by linkId', () => {
+  it('should find nested response item by linkId', () => {
     const result = getQuestionnaireResponseItem(mockQuestionnaireResponse, 'nested-1');
     expect(result).toEqual({
       linkId: 'nested-1',
@@ -179,7 +179,7 @@ describe('getQuestionnaireResponseItem', () => {
     });
   });
 
-  test('should find deeply nested response item by linkId', () => {
+  it('should find deeply nested response item by linkId', () => {
     const result = getQuestionnaireResponseItem(mockQuestionnaireResponse, 'deeply-nested');
     expect(result).toEqual({
       linkId: 'deeply-nested',
@@ -188,12 +188,12 @@ describe('getQuestionnaireResponseItem', () => {
     });
   });
 
-  test('should return null when response item not found', () => {
+  it('should return null when response item not found', () => {
     const result = getQuestionnaireResponseItem(mockQuestionnaireResponse, 'non-existent');
     expect(result).toBeNull();
   });
 
-  test('should handle response with no items', () => {
+  it('should handle response with no items', () => {
     const emptyResponse: QuestionnaireResponse = {
       resourceType: 'QuestionnaireResponse',
       status: 'in-progress'
@@ -227,7 +227,7 @@ describe('replaceQuestionnaireResponseItem', () => {
     ]
   };
 
-  test('should replace top-level item', () => {
+  it('should replace top-level item', () => {
     const newItem: QuestionnaireResponseItem = {
       linkId: 'item-1',
       text: 'Updated Item 1',
@@ -240,7 +240,7 @@ describe('replaceQuestionnaireResponseItem', () => {
     expect(result.item![1]).toEqual(mockQuestionnaireResponse.item![1]); // Other items unchanged
   });
 
-  test('should replace nested item', () => {
+  it('should replace nested item', () => {
     const newItem: QuestionnaireResponseItem = {
       linkId: 'nested-item',
       text: 'Updated Nested Item',
@@ -256,14 +256,14 @@ describe('replaceQuestionnaireResponseItem', () => {
     expect(result.item![1].item![0]).toEqual(newItem);
   });
 
-  test('should remove item when newQRItem is null', () => {
+  it('should remove item when newQRItem is null', () => {
     const result = replaceQuestionnaireResponseItem(mockQuestionnaireResponse, 'item-1', null);
 
     expect(result.item).toHaveLength(1);
     expect(result.item![0].linkId).toBe('group-1');
   });
 
-  test('should handle empty response gracefully', () => {
+  it('should handle empty response gracefully', () => {
     const emptyResponse: QuestionnaireResponse = {
       resourceType: 'QuestionnaireResponse',
       status: 'in-progress'
@@ -273,7 +273,7 @@ describe('replaceQuestionnaireResponseItem', () => {
     expect(result).toEqual(emptyResponse);
   });
 
-  test('should remove item array if it becomes empty', () => {
+  it('should remove item array if it becomes empty', () => {
     const singleItemResponse: QuestionnaireResponse = {
       resourceType: 'QuestionnaireResponse',
       status: 'in-progress',
@@ -322,22 +322,22 @@ describe('getParentItem', () => {
     ]
   };
 
-  test('should find parent item of child', () => {
+  it('should find parent item of child', () => {
     const result = getParentItem(mockQuestionnaire, 'child-item');
     expect(result?.linkId).toBe('parent-group');
   });
 
-  test('should find parent item of grandchild', () => {
+  it('should find parent item of grandchild', () => {
     const result = getParentItem(mockQuestionnaire, 'grandchild-item');
     expect(result?.linkId).toBe('nested-group');
   });
 
-  test('should return null for top-level item', () => {
+  it('should return null for top-level item', () => {
     const result = getParentItem(mockQuestionnaire, 'parent-group');
     expect(result).toBeNull();
   });
 
-  test('should return null for non-existent item', () => {
+  it('should return null for non-existent item', () => {
     const result = getParentItem(mockQuestionnaire, 'non-existent');
     expect(result).toBeNull();
   });
@@ -371,13 +371,13 @@ describe('getRepeatGroupParentItem', () => {
     ]
   };
 
-  test('should find repeat group parent', () => {
+  it('should find repeat group parent', () => {
     const result = getRepeatGroupParentItem(mockQuestionnaire, 'repeat-child');
     expect(result?.linkId).toBe('repeat-group');
     expect(result?.repeats).toBe(true);
   });
 
-  test('should return null if no repeat group parent exists', () => {
+  it('should return null if no repeat group parent exists', () => {
     const result = getRepeatGroupParentItem(mockQuestionnaire, 'repeat-group');
     expect(result).toBeNull();
   });
@@ -413,17 +413,17 @@ describe('getSectionHeading', () => {
     }
   };
 
-  test('should find section heading for item', () => {
+  it('should find section heading for item', () => {
     const result = getSectionHeading(mockQuestionnaire, 'item-1', mockTabs);
     expect(result).toBe('Section 1 Heading');
   });
 
-  test('should return null for item not found', () => {
+  it('should return null for item not found', () => {
     const result = getSectionHeading(mockQuestionnaire, 'non-existent', mockTabs);
     expect(result).toBeNull();
   });
 
-  test('should handle questionnaire with no items', () => {
+  it('should handle questionnaire with no items', () => {
     const emptyQuestionnaire: Questionnaire = {
       resourceType: 'Questionnaire',
       status: 'active'
@@ -447,17 +447,17 @@ describe('getSectionHeadingRecursive', () => {
     ]
   };
 
-  test('should find item and return heading', () => {
+  it('should find item and return heading', () => {
     const result = getSectionHeadingRecursive(mockQItem, 'target-item', 'Test Heading', {});
     expect(result).toBe('Test Heading');
   });
 
-  test('should return null for non-existent item', () => {
+  it('should return null for non-existent item', () => {
     const result = getSectionHeadingRecursive(mockQItem, 'non-existent', 'Test Heading', {});
     expect(result).toBeNull();
   });
 
-  test('should handle item with no children', () => {
+  it('should handle item with no children', () => {
     const leafItem: QuestionnaireItem = {
       linkId: 'leaf',
       type: 'string',
@@ -506,17 +506,17 @@ describe('isItemInGrid', () => {
     ]
   };
 
-  test('should return true for item in grid', () => {
+  it('should return true for item in grid', () => {
     const result = isItemInGrid(mockQuestionnaire, 'grid-child');
     expect(result).toBe(true);
   });
 
-  test('should return false for item not in grid', () => {
+  it('should return false for item not in grid', () => {
     const result = isItemInGrid(mockQuestionnaire, 'regular-item');
     expect(result).toBe(false);
   });
 
-  test('should return false for non-existent item', () => {
+  it('should return false for non-existent item', () => {
     const result = isItemInGrid(mockQuestionnaire, 'non-existent');
     expect(result).toBe(false);
   });
@@ -535,7 +535,7 @@ describe('getQuestionnaireResponseItemViaFhirPath', () => {
     ]
   };
 
-  test('should find item using FHIRPath expression', () => {
+  it('should find item using FHIRPath expression', () => {
     const result = getQuestionnaireResponseItemViaFhirPath(
       mockQuestionnaireResponse,
       "item.where(linkId='item-1')"
@@ -544,7 +544,7 @@ describe('getQuestionnaireResponseItemViaFhirPath', () => {
     expect(result?.linkId).toBe('item-1');
   });
 
-  test('should return null for non-matching FHIRPath', () => {
+  it('should return null for non-matching FHIRPath', () => {
     const result = getQuestionnaireResponseItemViaFhirPath(
       mockQuestionnaireResponse,
       "item.where(linkId='non-existent')"
@@ -552,7 +552,7 @@ describe('getQuestionnaireResponseItemViaFhirPath', () => {
     expect(result).toBeNull();
   });
 
-  test('should handle invalid FHIRPath expression gracefully', () => {
+  it('should handle invalid FHIRPath expression gracefully', () => {
     expect(() => {
       getQuestionnaireResponseItemViaFhirPath(
         mockQuestionnaireResponse,

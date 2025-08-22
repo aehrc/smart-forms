@@ -60,7 +60,7 @@ describe('openChoice utils', () => {
     ];
 
     describe('single selection mode', () => {
-      test('should return empty answer when open label is unchecked', () => {
+      it('should return empty answer when open label is unchecked', () => {
         const result = updateOpenLabelAnswer(
           false, // openLabelChecked
           'test value',
@@ -74,7 +74,7 @@ describe('openChoice utils', () => {
         expect(result.answer).toEqual([]);
       });
 
-      test('should return new open label answer when checked', () => {
+      it('should return new open label answer when checked', () => {
         const result = updateOpenLabelAnswer(
           true, // openLabelChecked
           'new open value',
@@ -90,7 +90,7 @@ describe('openChoice utils', () => {
         expect(result.answer?.[0].id).toBe('answer-key-1');
       });
 
-      test('should replace existing answer in single selection', () => {
+      it('should replace existing answer in single selection', () => {
         const result = updateOpenLabelAnswer(
           true, // openLabelChecked
           'replacement value',
@@ -107,7 +107,7 @@ describe('openChoice utils', () => {
     });
 
     describe('multi selection mode', () => {
-      test('should remove matching open label answer when unchecked', () => {
+      it('should remove matching open label answer when unchecked', () => {
         const answers = [
           { valueString: 'option1' },
           { valueString: 'open value' },
@@ -129,7 +129,7 @@ describe('openChoice utils', () => {
         expect(result.answer?.every((a) => a.id === 'answer-key')).toBe(true);
       });
 
-      test('should remove last matching answer when multiple matches exist', () => {
+      it('should remove last matching answer when multiple matches exist', () => {
         const answers = [
           { valueString: 'duplicate' },
           { valueString: 'other' },
@@ -151,7 +151,7 @@ describe('openChoice utils', () => {
         expect(result.answer?.[1].valueString).toBe('other');
       });
 
-      test('should return unchanged item when no matches found for removal', () => {
+      it('should return unchanged item when no matches found for removal', () => {
         const answers = [{ valueString: 'existing' }];
 
         const result = updateOpenLabelAnswer(
@@ -167,7 +167,7 @@ describe('openChoice utils', () => {
         expect(result).toBe(mockOldQrItem);
       });
 
-      test('should add new open label answer when no existing open answer', () => {
+      it('should add new open label answer when no existing open answer', () => {
         const answers = [{ valueString: 'option1' }];
 
         const result = updateOpenLabelAnswer(
@@ -186,7 +186,7 @@ describe('openChoice utils', () => {
         expect(result.answer?.every((a) => a.id === 'answer-key')).toBe(true);
       });
 
-      test('should return unchanged when old and new open answers are equal', () => {
+      it('should return unchanged when old and new open answers are equal', () => {
         // Mock getOldOpenLabelAnswer to return existing open answer
         const answers = [
           { valueString: 'option1' },
@@ -206,7 +206,7 @@ describe('openChoice utils', () => {
         expect(result).toBe(mockOldQrItem);
       });
 
-      test('should update existing open answer when different from new', () => {
+      it('should update existing open answer when different from new', () => {
         // Create answers with an open label answer (not in options)
         const answers = [
           { valueString: 'option1' },
@@ -232,7 +232,7 @@ describe('openChoice utils', () => {
         expect(result).not.toBe(mockOldQrItem);
       });
 
-      test('should handle empty answers array', () => {
+      it('should handle empty answers array', () => {
         const result = updateOpenLabelAnswer(
           true, // openLabelChecked
           'new value',
@@ -248,7 +248,7 @@ describe('openChoice utils', () => {
         expect(result.answer?.[0].id).toBe('key');
       });
 
-      test('should handle empty options array', () => {
+      it('should handle empty options array', () => {
         const answers = [{ valueString: 'some value' }];
 
         const result = updateOpenLabelAnswer(
@@ -270,7 +270,7 @@ describe('openChoice utils', () => {
   });
 
   describe('getOldOpenLabelAnswer', () => {
-    test('should return answer that is not in options (outlier)', () => {
+    it('should return answer that is not in options (outlier)', () => {
       const answers = [
         { valueString: 'option1' },
         { valueString: 'open answer' },
@@ -284,7 +284,7 @@ describe('openChoice utils', () => {
       expect(result).toEqual({ valueString: 'open answer' });
     });
 
-    test('should return null when all answers are in options', () => {
+    it('should return null when all answers are in options', () => {
       const answers = [{ valueString: 'option1' }, { valueString: 'option2' }];
 
       const options = [{ valueString: 'option1' }, { valueString: 'option2' }];
@@ -294,7 +294,7 @@ describe('openChoice utils', () => {
       expect(result).toBeNull();
     });
 
-    test('should return first outlier when multiple exist', () => {
+    it('should return first outlier when multiple exist', () => {
       const answers = [
         { valueString: 'option1' },
         { valueString: 'open1' },
@@ -308,7 +308,7 @@ describe('openChoice utils', () => {
       expect(result).toEqual({ valueString: 'open1' });
     });
 
-    test('should handle answers with id property', () => {
+    it('should handle answers with id property', () => {
       const answers = [
         { valueString: 'option1', id: 'id1' },
         { valueString: 'open answer', id: 'id2' }
@@ -322,20 +322,20 @@ describe('openChoice utils', () => {
       expect(result).not.toHaveProperty('id');
     });
 
-    test('should handle empty answers array', () => {
+    it('should handle empty answers array', () => {
       const result = getOldOpenLabelAnswer([], [{ valueString: 'option1' }]);
 
       expect(result).toBeNull();
     });
 
-    test('should handle empty options array', () => {
+    it('should handle empty options array', () => {
       const answers = [{ valueString: 'some value' }];
       const result = getOldOpenLabelAnswer(answers, []);
 
       expect(result).toEqual({ valueString: 'some value' });
     });
 
-    test('should handle complex answer and option types', () => {
+    it('should handle complex answer and option types', () => {
       const answers = [
         { valueCoding: { code: 'code1', display: 'Display 1' } },
         { valueString: 'open text' },
@@ -354,7 +354,7 @@ describe('openChoice utils', () => {
   });
 
   describe('getOpenChoiceControlType', () => {
-    test('should return Autocomplete when itemControl is autocomplete', () => {
+    it('should return Autocomplete when itemControl is autocomplete', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test',
         type: 'open-choice',
@@ -371,7 +371,7 @@ describe('openChoice utils', () => {
       expect(result).toBe(OpenChoiceItemControl.Autocomplete);
     });
 
-    test('should return Checkbox when itemControl is check-box', () => {
+    it('should return Checkbox when itemControl is check-box', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test',
         type: 'open-choice',
@@ -388,7 +388,7 @@ describe('openChoice utils', () => {
       expect(result).toBe(OpenChoiceItemControl.Checkbox);
     });
 
-    test('should return Radio when itemControl is radio-button', () => {
+    it('should return Radio when itemControl is radio-button', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test',
         type: 'open-choice',
@@ -405,7 +405,7 @@ describe('openChoice utils', () => {
       expect(result).toBe(OpenChoiceItemControl.Radio);
     });
 
-    test('should return Select as default when no specific control', () => {
+    it('should return Select as default when no specific control', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test',
         type: 'open-choice'
@@ -416,7 +416,7 @@ describe('openChoice utils', () => {
       expect(result).toBe(OpenChoiceItemControl.Select);
     });
 
-    test('should return Select when itemControl is unrecognized', () => {
+    it('should return Select when itemControl is unrecognized', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test',
         type: 'open-choice',
@@ -433,7 +433,7 @@ describe('openChoice utils', () => {
       expect(result).toBe(OpenChoiceItemControl.Select);
     });
 
-    test('should handle item with other extensions', () => {
+    it('should handle item with other extensions', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test',
         type: 'open-choice',
@@ -456,13 +456,13 @@ describe('openChoice utils', () => {
   });
 
   describe('getAnswerOptionLabel', () => {
-    test('should return string option as-is', () => {
+    it('should return string option as-is', () => {
       const result = getAnswerOptionLabel('simple string');
 
       expect(result).toBe('simple string');
     });
 
-    test('should return valueCoding display when available', () => {
+    it('should return valueCoding display when available', () => {
       const option: QuestionnaireItemAnswerOption = {
         valueCoding: {
           code: 'test-code',
@@ -475,7 +475,7 @@ describe('openChoice utils', () => {
       expect(result).toBe('Test Display');
     });
 
-    test('should return valueCoding code when display is missing', () => {
+    it('should return valueCoding code when display is missing', () => {
       const option: QuestionnaireItemAnswerOption = {
         valueCoding: {
           code: 'test-code'
@@ -487,7 +487,7 @@ describe('openChoice utils', () => {
       expect(result).toBe('test-code');
     });
 
-    test('should return valueString when present', () => {
+    it('should return valueString when present', () => {
       const option: QuestionnaireItemAnswerOption = {
         valueString: 'string value'
       };
@@ -497,7 +497,7 @@ describe('openChoice utils', () => {
       expect(result).toBe('string value');
     });
 
-    test('should return valueInteger as string when present', () => {
+    it('should return valueInteger as string when present', () => {
       const option: QuestionnaireItemAnswerOption = {
         valueInteger: 42
       };
@@ -507,7 +507,7 @@ describe('openChoice utils', () => {
       expect(result).toBe('42');
     });
 
-    test('should return empty string for unrecognized option type', () => {
+    it('should return empty string for unrecognized option type', () => {
       const option: QuestionnaireItemAnswerOption = {
         valueBoolean: true
       } as any;
@@ -517,7 +517,7 @@ describe('openChoice utils', () => {
       expect(result).toBe('');
     });
 
-    test('should prioritize valueCoding over other properties', () => {
+    it('should prioritize valueCoding over other properties', () => {
       const option: QuestionnaireItemAnswerOption = {
         valueCoding: {
           code: 'code',
@@ -532,7 +532,7 @@ describe('openChoice utils', () => {
       expect(result).toBe('Display');
     });
 
-    test('should use valueString when valueCoding is absent', () => {
+    it('should use valueString when valueCoding is absent', () => {
       const option: QuestionnaireItemAnswerOption = {
         valueString: 'string value',
         valueInteger: 123
@@ -543,7 +543,7 @@ describe('openChoice utils', () => {
       expect(result).toBe('string value');
     });
 
-    test('should handle empty or undefined option properties', () => {
+    it('should handle empty or undefined option properties', () => {
       const option: QuestionnaireItemAnswerOption = {};
 
       const result = getAnswerOptionLabel(option);
@@ -551,7 +551,7 @@ describe('openChoice utils', () => {
       expect(result).toBe('');
     });
 
-    test('should handle valueCoding with empty code and display', () => {
+    it('should handle valueCoding with empty code and display', () => {
       const option: QuestionnaireItemAnswerOption = {
         valueCoding: {}
       };

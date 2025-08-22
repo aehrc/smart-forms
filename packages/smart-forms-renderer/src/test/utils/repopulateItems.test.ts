@@ -145,7 +145,7 @@ describe('repopulateItems', () => {
   });
 
   describe('generateItemsToRepopulate', () => {
-    test('should return items to repopulate with proper store integration', () => {
+    it('should return items to repopulate with proper store integration', () => {
       const mockPopulatedResponse: QuestionnaireResponse = {
         resourceType: 'QuestionnaireResponse',
         status: 'completed',
@@ -204,7 +204,7 @@ describe('repopulateItems', () => {
       expect(result).toBeDefined();
     });
 
-    test('should handle initial expressions in diff linkIds', () => {
+    it('should handle initial expressions in diff linkIds', () => {
       const mockPopulatedResponse: QuestionnaireResponse = {
         resourceType: 'QuestionnaireResponse',
         status: 'completed',
@@ -248,7 +248,7 @@ describe('repopulateItems', () => {
   });
 
   describe('getItemsToRepopulate', () => {
-    test('should return empty object when source questionnaire has no items', () => {
+    it('should return empty object when source questionnaire has no items', () => {
       const params = {
         sourceQuestionnaire: {
           resourceType: 'Questionnaire' as const,
@@ -275,7 +275,7 @@ describe('repopulateItems', () => {
       expect(result).toEqual({});
     });
 
-    test('should return empty object when populated response has no items', () => {
+    it('should return empty object when populated response has no items', () => {
       const params = {
         sourceQuestionnaire: {
           resourceType: 'Questionnaire' as const,
@@ -302,7 +302,7 @@ describe('repopulateItems', () => {
       expect(result).toEqual({});
     });
 
-    test('should return empty object when updatable response has no items', () => {
+    it('should return empty object when updatable response has no items', () => {
       const params = {
         sourceQuestionnaire: {
           resourceType: 'Questionnaire' as const,
@@ -329,7 +329,7 @@ describe('repopulateItems', () => {
       expect(result).toEqual({});
     });
 
-    test('should process items to repopulate with basic questionnaire structure', () => {
+    it('should process items to repopulate with basic questionnaire structure', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -392,7 +392,7 @@ describe('repopulateItems', () => {
       expect(result).toBeDefined();
     });
 
-    test('should handle tab containers and tabs correctly', () => {
+    it('should handle tab containers and tabs correctly', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -450,7 +450,7 @@ describe('repopulateItems', () => {
       expect(result).toBeDefined();
     });
 
-    test('should handle grid item controls', () => {
+    it('should handle grid item controls', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -509,7 +509,7 @@ describe('repopulateItems', () => {
       expect(result).toBeDefined();
     });
 
-    test('should skip items that are not present in populated response', () => {
+    it('should skip items that are not present in populated response', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -575,7 +575,7 @@ describe('repopulateItems', () => {
       // Should not process item-2 since it's not in populated response
     });
 
-    test('should handle repeat groups (array of QR items)', () => {
+    it('should handle repeat groups (array of QR items)', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -639,7 +639,7 @@ describe('repopulateItems', () => {
       expect(result).toBeDefined();
     });
 
-    test('should handle items hidden by enableWhen', () => {
+    it('should handle items hidden by enableWhen', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -706,7 +706,7 @@ describe('repopulateItems', () => {
       expect(result).toBeDefined();
     });
 
-    test('should handle nested group items with children', () => {
+    it('should handle nested group items with children', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -794,7 +794,7 @@ describe('repopulateItems', () => {
       expect(result).toBeDefined();
     });
 
-    test('should handle items with tabs and short text', () => {
+    it('should handle items with tabs and short text', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -884,7 +884,7 @@ describe('repopulateItems', () => {
       expect(result).toBeDefined();
     });
 
-    test('should remove items from result when current and server items are equal', () => {
+    it('should remove items from result when current and server items are equal', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -941,7 +941,7 @@ describe('repopulateItems', () => {
       expect(result).toBeDefined();
     });
 
-    test('should handle group items with both children and answers', () => {
+    it('should handle group items with both children and answers', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -1031,7 +1031,7 @@ describe('repopulateItems', () => {
       expect(result).toBeDefined();
     });
 
-    test('should handle retrieving current QR items when no server item exists', () => {
+    it('should handle retrieving current QR items when no server item exists', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -1082,7 +1082,7 @@ describe('repopulateItems', () => {
       expect(result).toEqual({});
     });
 
-    test('should handle repeat groups with no current QR items', () => {
+    it('should handle repeat groups with no current QR items', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -1138,7 +1138,7 @@ describe('repopulateItems', () => {
       expect(result).toBeDefined();
     });
 
-    test('should handle repeat groups with no server QR items in retrieval', () => {
+    it('should handle repeat groups with no server QR items in retrieval', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -1189,7 +1189,7 @@ describe('repopulateItems', () => {
       expect(result).toEqual({});
     });
 
-    test('should handle checking repeat groups with missing conditions', () => {
+    it('should handle checking repeat groups with missing conditions', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',

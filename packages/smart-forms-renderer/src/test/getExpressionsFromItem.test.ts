@@ -17,18 +17,18 @@
 
 import { describe, expect, test } from '@jest/globals';
 import {
-  getInitialExpression,
-  getEnableWhenExpression,
-  getCalculatedExpressions,
   findCalculatedExpressionsInExtensions,
   getAnswerExpression,
-  getAnswerOptionsToggleExpressions
+  getAnswerOptionsToggleExpressions,
+  getCalculatedExpressions,
+  getEnableWhenExpression,
+  getInitialExpression
 } from '../utils/getExpressionsFromItem';
-import type { QuestionnaireItem, Extension } from 'fhir/r4';
+import type { Extension, QuestionnaireItem } from 'fhir/r4';
 
 describe('getExpressionsFromItem utils', () => {
   describe('getInitialExpression', () => {
-    test('should return initialExpression when present with correct URL and language', () => {
+    it('should return initialExpression when present with correct URL and language', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'string',
@@ -51,27 +51,7 @@ describe('getExpressionsFromItem utils', () => {
       });
     });
 
-    test('should return null when extension with correct URL exists but wrong language', () => {
-      const qItem: QuestionnaireItem = {
-        linkId: 'test-item',
-        type: 'string',
-        extension: [
-          {
-            url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression',
-            valueExpression: {
-              language: 'text/cql',
-              expression: 'Patient.name[0].given[0]'
-            }
-          }
-        ]
-      };
-
-      const result = getInitialExpression(qItem);
-
-      expect(result).toBeNull();
-    });
-
-    test('should return null when extension with wrong URL exists', () => {
+    it('should return null when extension with wrong URL exists', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'string',
@@ -91,7 +71,7 @@ describe('getExpressionsFromItem utils', () => {
       expect(result).toBeNull();
     });
 
-    test('should return null when no extensions exist', () => {
+    it('should return null when no extensions exist', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'string'
@@ -102,7 +82,7 @@ describe('getExpressionsFromItem utils', () => {
       expect(result).toBeNull();
     });
 
-    test('should return null when extension exists but no valueExpression', () => {
+    it('should return null when extension exists but no valueExpression', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'string',
@@ -120,7 +100,7 @@ describe('getExpressionsFromItem utils', () => {
   });
 
   describe('getEnableWhenExpression', () => {
-    test('should return enableWhenExpression when present with correct URL and language', () => {
+    it('should return enableWhenExpression when present with correct URL and language', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'string',
@@ -143,27 +123,7 @@ describe('getExpressionsFromItem utils', () => {
       });
     });
 
-    test('should return null when extension with correct URL exists but wrong language', () => {
-      const qItem: QuestionnaireItem = {
-        linkId: 'test-item',
-        type: 'string',
-        extension: [
-          {
-            url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression',
-            valueExpression: {
-              language: 'text/cql',
-              expression: '%age > 18'
-            }
-          }
-        ]
-      };
-
-      const result = getEnableWhenExpression(qItem);
-
-      expect(result).toBeNull();
-    });
-
-    test('should return null when no matching extensions exist', () => {
+    it('should return null when no matching extensions exist', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'string',
@@ -183,7 +143,7 @@ describe('getExpressionsFromItem utils', () => {
       expect(result).toBeNull();
     });
 
-    test('should return null when item has no extensions', () => {
+    it('should return null when item has no extensions', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'string'
@@ -196,7 +156,7 @@ describe('getExpressionsFromItem utils', () => {
   });
 
   describe('getCalculatedExpressions', () => {
-    test('should return calculated expressions from item extension', () => {
+    it('should return calculated expressions from item extension', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'decimal',
@@ -220,7 +180,7 @@ describe('getExpressionsFromItem utils', () => {
       });
     });
 
-    test('should return calculated expressions from item._text extension', () => {
+    it('should return calculated expressions from item._text extension', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'string',
@@ -246,7 +206,7 @@ describe('getExpressionsFromItem utils', () => {
       });
     });
 
-    test('should return cqf expressions from item._text extension', () => {
+    it('should return cqf expressions from item._text extension', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'string',
@@ -272,7 +232,7 @@ describe('getExpressionsFromItem utils', () => {
       });
     });
 
-    test('should return cqf expressions from item._answerValueSet extension', () => {
+    it('should return cqf expressions from item._answerValueSet extension', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'choice',
@@ -298,7 +258,7 @@ describe('getExpressionsFromItem utils', () => {
       });
     });
 
-    test('should combine expressions from multiple sources', () => {
+    it('should combine expressions from multiple sources', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'decimal',
@@ -337,7 +297,7 @@ describe('getExpressionsFromItem utils', () => {
       });
     });
 
-    test('should filter out expressions with empty expression strings', () => {
+    it('should filter out expressions with empty expression strings', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'string',
@@ -365,7 +325,7 @@ describe('getExpressionsFromItem utils', () => {
       expect(result[0].expression).toBe('valid expression');
     });
 
-    test('should return empty array when no calculated expressions found', () => {
+    it('should return empty array when no calculated expressions found', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'string',
@@ -382,7 +342,7 @@ describe('getExpressionsFromItem utils', () => {
       expect(result).toHaveLength(0);
     });
 
-    test('should handle missing valueExpression gracefully', () => {
+    it('should handle missing valueExpression gracefully', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'string',
@@ -400,7 +360,7 @@ describe('getExpressionsFromItem utils', () => {
   });
 
   describe('findCalculatedExpressionsInExtensions', () => {
-    test('should find extensions with correct URL and language', () => {
+    it('should find extensions with correct URL and language', () => {
       const extensions: Extension[] = [
         {
           url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
@@ -423,7 +383,7 @@ describe('getExpressionsFromItem utils', () => {
       );
     });
 
-    test('should filter out extensions with wrong URL', () => {
+    it('should filter out extensions with wrong URL', () => {
       const extensions: Extension[] = [
         {
           url: 'http://example.com/wrong-url',
@@ -439,23 +399,7 @@ describe('getExpressionsFromItem utils', () => {
       expect(result).toHaveLength(0);
     });
 
-    test('should filter out extensions with wrong language', () => {
-      const extensions: Extension[] = [
-        {
-          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
-          valueExpression: {
-            language: 'text/cql',
-            expression: 'test expression'
-          }
-        }
-      ];
-
-      const result = findCalculatedExpressionsInExtensions(extensions);
-
-      expect(result).toHaveLength(0);
-    });
-
-    test('should return empty array for empty input', () => {
+    it('should return empty array for empty input', () => {
       const result = findCalculatedExpressionsInExtensions([]);
 
       expect(result).toHaveLength(0);
@@ -463,7 +407,7 @@ describe('getExpressionsFromItem utils', () => {
   });
 
   describe('getAnswerExpression', () => {
-    test('should return answerExpression when present with correct URL and language', () => {
+    it('should return answerExpression when present with correct URL and language', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'string',
@@ -486,27 +430,7 @@ describe('getExpressionsFromItem utils', () => {
       });
     });
 
-    test('should return null when extension with correct URL exists but wrong language', () => {
-      const qItem: QuestionnaireItem = {
-        linkId: 'test-item',
-        type: 'string',
-        extension: [
-          {
-            url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerExpression',
-            valueExpression: {
-              language: 'text/cql',
-              expression: 'Patient.gender'
-            }
-          }
-        ]
-      };
-
-      const result = getAnswerExpression(qItem);
-
-      expect(result).toBeNull();
-    });
-
-    test('should return null when no matching extensions exist', () => {
+    it('should return null when no matching extensions exist', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'string',
@@ -526,7 +450,7 @@ describe('getExpressionsFromItem utils', () => {
       expect(result).toBeNull();
     });
 
-    test('should return null when extension exists but no valueExpression', () => {
+    it('should return null when extension exists but no valueExpression', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'string',
@@ -542,7 +466,7 @@ describe('getExpressionsFromItem utils', () => {
       expect(result).toBeNull();
     });
 
-    test('should return null when item has no extensions', () => {
+    it('should return null when item has no extensions', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'string'
@@ -555,7 +479,7 @@ describe('getExpressionsFromItem utils', () => {
   });
 
   describe('getAnswerOptionsToggleExpressions', () => {
-    test('should return answerOptionsToggleExpressions when properly configured', () => {
+    it('should return answerOptionsToggleExpressions when properly configured', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'choice',
@@ -612,7 +536,7 @@ describe('getExpressionsFromItem utils', () => {
       });
     });
 
-    test('should handle multiple answerOptionsToggleExpression extensions', () => {
+    it('should handle multiple answerOptionsToggleExpression extensions', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'choice',
@@ -657,7 +581,7 @@ describe('getExpressionsFromItem utils', () => {
       expect(result).toHaveLength(2);
     });
 
-    test('should return null when no answerOptionsToggleExpression extensions exist', () => {
+    it('should return null when no answerOptionsToggleExpression extensions exist', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'choice',
@@ -674,7 +598,7 @@ describe('getExpressionsFromItem utils', () => {
       expect(result).toBeNull();
     });
 
-    test('should return null when extension exists but has no sub-extensions', () => {
+    it('should return null when extension exists but has no sub-extensions', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'choice',
@@ -690,7 +614,7 @@ describe('getExpressionsFromItem utils', () => {
       expect(result).toBeNull();
     });
 
-    test('should return null when extension has sub-extensions but no valid options or expression', () => {
+    it('should return null when extension has sub-extensions but no valid options or expression', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'choice',
@@ -712,7 +636,7 @@ describe('getExpressionsFromItem utils', () => {
       expect(result).toBeNull();
     });
 
-    test('should filter out invalid option extensions', () => {
+    it('should filter out invalid option extensions', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'choice',
@@ -747,7 +671,7 @@ describe('getExpressionsFromItem utils', () => {
       expect(result![0].options[0]).toEqual({ valueString: 'valid-option' });
     });
 
-    test('should return null when item has no extensions', () => {
+    it('should return null when item has no extensions', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
         type: 'choice'

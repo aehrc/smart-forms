@@ -49,7 +49,7 @@ describe('populateContexts utils', () => {
 
   describe('isLaunchContext', () => {
     describe('valid launch contexts', () => {
-      test('should return true for valid launch context with valueId name and Patient type', () => {
+      it('should return true for valid launch context with valueId name and Patient type', () => {
         const extension = createValidLaunchContextExtension(
           'valueId',
           'patient-context',
@@ -61,7 +61,7 @@ describe('populateContexts utils', () => {
         expect(result).toBe(true);
       });
 
-      test('should return true for valid launch context with valueCoding patient name', () => {
+      it('should return true for valid launch context with valueCoding patient name', () => {
         const extension = createValidLaunchContextExtension('valueCoding', 'patient', 'Patient');
 
         const result = isLaunchContext(extension);
@@ -69,7 +69,7 @@ describe('populateContexts utils', () => {
         expect(result).toBe(true);
       });
 
-      test('should return true for valueCoding encounter name', () => {
+      it('should return true for valueCoding encounter name', () => {
         const extension = createValidLaunchContextExtension(
           'valueCoding',
           'encounter',
@@ -81,7 +81,7 @@ describe('populateContexts utils', () => {
         expect(result).toBe(true);
       });
 
-      test('should return true for valueCoding location name', () => {
+      it('should return true for valueCoding location name', () => {
         const extension = createValidLaunchContextExtension('valueCoding', 'location', 'Patient');
 
         const result = isLaunchContext(extension);
@@ -89,7 +89,7 @@ describe('populateContexts utils', () => {
         expect(result).toBe(true);
       });
 
-      test('should return true for valueCoding user name', () => {
+      it('should return true for valueCoding user name', () => {
         const extension = createValidLaunchContextExtension('valueCoding', 'user', 'Practitioner');
 
         const result = isLaunchContext(extension);
@@ -97,7 +97,7 @@ describe('populateContexts utils', () => {
         expect(result).toBe(true);
       });
 
-      test('should return true for valueCoding study name', () => {
+      it('should return true for valueCoding study name', () => {
         const extension = createValidLaunchContextExtension('valueCoding', 'study', 'Patient');
 
         const result = isLaunchContext(extension);
@@ -105,7 +105,7 @@ describe('populateContexts utils', () => {
         expect(result).toBe(true);
       });
 
-      test('should return true for valueCoding sourceQueries name', () => {
+      it('should return true for valueCoding sourceQueries name', () => {
         const extension = createValidLaunchContextExtension(
           'valueCoding',
           'sourceQueries',
@@ -117,7 +117,7 @@ describe('populateContexts utils', () => {
         expect(result).toBe(true);
       });
 
-      test('should return true for Practitioner type', () => {
+      it('should return true for Practitioner type', () => {
         const extension = createValidLaunchContextExtension('valueCoding', 'user', 'Practitioner');
 
         const result = isLaunchContext(extension);
@@ -125,7 +125,7 @@ describe('populateContexts utils', () => {
         expect(result).toBe(true);
       });
 
-      test('should return true for Encounter type', () => {
+      it('should return true for Encounter type', () => {
         const extension = createValidLaunchContextExtension(
           'valueCoding',
           'encounter',
@@ -139,7 +139,7 @@ describe('populateContexts utils', () => {
     });
 
     describe('invalid launch contexts - wrong URL', () => {
-      test('should return false for extension with wrong URL', () => {
+      it('should return false for extension with wrong URL', () => {
         const extension: Extension = {
           url: 'http://example.com/wrong-url',
           extension: [
@@ -161,7 +161,7 @@ describe('populateContexts utils', () => {
     });
 
     describe('invalid launch contexts - missing or invalid name extension', () => {
-      test('should return false when name extension is missing', () => {
+      it('should return false when name extension is missing', () => {
         const extension: Extension = {
           url: LAUNCH_CONTEXT_URL,
           extension: [
@@ -177,7 +177,7 @@ describe('populateContexts utils', () => {
         expect(result).toBe(false);
       });
 
-      test('should return false when name extension has wrong URL', () => {
+      it('should return false when name extension has wrong URL', () => {
         const extension: Extension = {
           url: LAUNCH_CONTEXT_URL,
           extension: [
@@ -197,7 +197,7 @@ describe('populateContexts utils', () => {
         expect(result).toBe(false);
       });
 
-      test('should return false when name extension has no valueId or valueCoding', () => {
+      it('should return false when name extension has no valueId or valueCoding', () => {
         const extension: Extension = {
           url: LAUNCH_CONTEXT_URL,
           extension: [
@@ -217,7 +217,7 @@ describe('populateContexts utils', () => {
         expect(result).toBe(false);
       });
 
-      test('should return false when valueCoding has invalid code', () => {
+      it('should return false when valueCoding has invalid code', () => {
         const extension: Extension = {
           url: LAUNCH_CONTEXT_URL,
           extension: [
@@ -239,7 +239,7 @@ describe('populateContexts utils', () => {
         expect(result).toBe(false);
       });
 
-      test('should return false when valueCoding is present but has no code', () => {
+      it('should return false when valueCoding is present but has no code', () => {
         const extension: Extension = {
           url: LAUNCH_CONTEXT_URL,
           extension: [
@@ -262,7 +262,7 @@ describe('populateContexts utils', () => {
         expect(result).toBe(false);
       });
 
-      test('should return false when valueCoding is missing entirely', () => {
+      it('should return false when valueCoding is missing entirely', () => {
         const extension: Extension = {
           url: LAUNCH_CONTEXT_URL,
           extension: [
@@ -284,7 +284,7 @@ describe('populateContexts utils', () => {
     });
 
     describe('invalid launch contexts - missing or invalid type extension', () => {
-      test('should return false when type extension is missing', () => {
+      it('should return false when type extension is missing', () => {
         const extension: Extension = {
           url: LAUNCH_CONTEXT_URL,
           extension: [
@@ -300,7 +300,7 @@ describe('populateContexts utils', () => {
         expect(result).toBe(false);
       });
 
-      test('should return false when type extension has wrong URL', () => {
+      it('should return false when type extension has wrong URL', () => {
         const extension: Extension = {
           url: LAUNCH_CONTEXT_URL,
           extension: [
@@ -320,7 +320,7 @@ describe('populateContexts utils', () => {
         expect(result).toBe(false);
       });
 
-      test('should return false when type extension has no valueCode', () => {
+      it('should return false when type extension has no valueCode', () => {
         const extension: Extension = {
           url: LAUNCH_CONTEXT_URL,
           extension: [
@@ -340,7 +340,7 @@ describe('populateContexts utils', () => {
         expect(result).toBe(false);
       });
 
-      test('should return false when valueCode has invalid value', () => {
+      it('should return false when valueCode has invalid value', () => {
         const extension: Extension = {
           url: LAUNCH_CONTEXT_URL,
           extension: [
@@ -362,7 +362,7 @@ describe('populateContexts utils', () => {
     });
 
     describe('edge cases', () => {
-      test('should return false when extension has no sub-extensions', () => {
+      it('should return false when extension has no sub-extensions', () => {
         const extension: Extension = {
           url: LAUNCH_CONTEXT_URL
           // No extension array
@@ -373,7 +373,7 @@ describe('populateContexts utils', () => {
         expect(result).toBe(false);
       });
 
-      test('should return false when extension array is empty', () => {
+      it('should return false when extension array is empty', () => {
         const extension: Extension = {
           url: LAUNCH_CONTEXT_URL,
           extension: []
@@ -384,7 +384,7 @@ describe('populateContexts utils', () => {
         expect(result).toBe(false);
       });
 
-      test('should return false when extension array is undefined', () => {
+      it('should return false when extension array is undefined', () => {
         const extension: Extension = {
           url: LAUNCH_CONTEXT_URL,
           extension: undefined
@@ -395,7 +395,7 @@ describe('populateContexts utils', () => {
         expect(result).toBe(false);
       });
 
-      test('should handle extensions with additional sub-extensions', () => {
+      it('should handle extensions with additional sub-extensions', () => {
         const extension: Extension = {
           url: LAUNCH_CONTEXT_URL,
           extension: [
@@ -419,7 +419,7 @@ describe('populateContexts utils', () => {
         expect(result).toBe(true);
       });
 
-      test('should return false when both valueId and valueCoding are present but valueCoding has invalid code', () => {
+      it('should return false when both valueId and valueCoding are present but valueCoding has invalid code', () => {
         const extension: Extension = {
           url: LAUNCH_CONTEXT_URL,
           extension: [
@@ -442,7 +442,7 @@ describe('populateContexts utils', () => {
         expect(result).toBe(true); // Should pass because valueId is present
       });
 
-      test('should return true when valueId is empty string but valueCoding is valid', () => {
+      it('should return true when valueId is empty string but valueCoding is valid', () => {
         const extension: Extension = {
           url: LAUNCH_CONTEXT_URL,
           extension: [
@@ -465,7 +465,7 @@ describe('populateContexts utils', () => {
         expect(result).toBe(true); // Should pass because either valueId OR valid valueCoding passes
       });
 
-      test('should return false when only one condition is met (valid name, invalid type)', () => {
+      it('should return false when only one condition is met (valid name, invalid type)', () => {
         const extension: Extension = {
           url: LAUNCH_CONTEXT_URL,
           extension: [
@@ -485,7 +485,7 @@ describe('populateContexts utils', () => {
         expect(result).toBe(false);
       });
 
-      test('should handle case sensitivity in codes correctly', () => {
+      it('should handle case sensitivity in codes correctly', () => {
         const extension: Extension = {
           url: LAUNCH_CONTEXT_URL,
           extension: [
@@ -507,7 +507,7 @@ describe('populateContexts utils', () => {
         expect(result).toBe(false);
       });
 
-      test('should handle null values gracefully', () => {
+      it('should handle null values gracefully', () => {
         const extension: Extension = {
           url: LAUNCH_CONTEXT_URL,
           extension: [
@@ -529,7 +529,7 @@ describe('populateContexts utils', () => {
     });
 
     describe('complex scenarios', () => {
-      test('should validate complex extension with all valid launch context codes', () => {
+      it('should validate complex extension with all valid launch context codes', () => {
         const validCodes = ['patient', 'encounter', 'location', 'user', 'study', 'sourceQueries'];
         const validTypes = ['Patient', 'Practitioner', 'Encounter'];
 
@@ -541,7 +541,7 @@ describe('populateContexts utils', () => {
         }
       });
 
-      test('should reject all invalid combinations', () => {
+      it('should reject all invalid combinations', () => {
         const invalidCodes = ['invalid', 'wrong', 'test'];
         const invalidTypes = ['Invalid', 'Wrong', 'Test'];
 

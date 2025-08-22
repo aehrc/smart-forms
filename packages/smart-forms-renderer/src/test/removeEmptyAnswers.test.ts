@@ -66,7 +66,7 @@ describe('removeEmptyAnswersFromItemRecursive', () => {
     jest.clearAllMocks();
   });
 
-  test('should return null for null input', () => {
+  it('should return null for null input', () => {
     const qItem: QuestionnaireItem = {
       linkId: 'test-item',
       type: 'string',
@@ -77,7 +77,7 @@ describe('removeEmptyAnswersFromItemRecursive', () => {
     expect(result).toBeNull();
   });
 
-  test('should handle single qrItem with no items or answers', () => {
+  it('should handle single qrItem with no items or answers', () => {
     const qItem: QuestionnaireItem = {
       linkId: 'test-item',
       type: 'string',
@@ -97,7 +97,7 @@ describe('removeEmptyAnswersFromItemRecursive', () => {
     expect(result).toBeNull();
   });
 
-  test('should return qrItem when it has answers', () => {
+  it('should return qrItem when it has answers', () => {
     const qItem: QuestionnaireItem = {
       linkId: 'test-item',
       type: 'string',
@@ -117,7 +117,7 @@ describe('removeEmptyAnswersFromItemRecursive', () => {
     expect(result).toEqual(qrItem);
   });
 
-  test('should return null when item is hidden by enableWhen', () => {
+  it('should return null when item is hidden by enableWhen', () => {
     const qItem: QuestionnaireItem = {
       linkId: 'test-item',
       type: 'string',
@@ -137,7 +137,7 @@ describe('removeEmptyAnswersFromItemRecursive', () => {
     expect(result).toBeNull();
   });
 
-  test('should handle group items with child items', () => {
+  it('should handle group items with child items', () => {
     const qItem: QuestionnaireItem = {
       linkId: 'group-item',
       type: 'group',
@@ -192,7 +192,7 @@ describe('removeEmptyAnswersFromItemRecursive', () => {
     expect((result as QuestionnaireResponseItem).item?.[0].linkId).toBe('child-item-1');
   });
 
-  test('should handle array of qrItems (repeat group)', () => {
+  it('should handle array of qrItems (repeat group)', () => {
     const qItem: QuestionnaireItem = {
       linkId: 'repeat-item',
       type: 'string',
@@ -233,7 +233,7 @@ describe('removeEmptyAnswersFromItemRecursive', () => {
     expect((result as QuestionnaireResponseItem[]).length).toBe(0);
   });
 
-  test('should return empty array when repeat group has no valid items', () => {
+  it('should return empty array when repeat group has no valid items', () => {
     const qItem: QuestionnaireItem = {
       linkId: 'repeat-item',
       type: 'string',
@@ -262,7 +262,7 @@ describe('removeEmptyAnswersFromItemRecursive', () => {
     expect((result as QuestionnaireResponseItem[]).length).toBe(0);
   });
 
-  test('should handle empty repeat group array', () => {
+  it('should handle empty repeat group array', () => {
     const qItem: QuestionnaireItem = {
       linkId: 'repeat-item',
       type: 'string',
@@ -277,7 +277,7 @@ describe('removeEmptyAnswersFromItemRecursive', () => {
     expect((result as QuestionnaireResponseItem[]).length).toBe(0);
   });
 
-  test('should handle nested group with empty child groups', () => {
+  it('should handle nested group with empty child groups', () => {
     const qItem: QuestionnaireItem = {
       linkId: 'parent-group',
       type: 'group',

@@ -84,7 +84,7 @@ describe('targetConstraint', () => {
   });
 
   describe('evaluateInitialTargetConstraints', () => {
-    test('should evaluate initial target constraints with valid expressions', async () => {
+    it('should evaluate initial target constraints with valid expressions', async () => {
       const mockInitialResponse: QuestionnaireResponse = {
         resourceType: 'QuestionnaireResponse',
         status: 'in-progress',
@@ -154,7 +154,7 @@ describe('targetConstraint', () => {
       expect(result.updatedFhirPathContext).toEqual({ updated: 'context' });
     });
 
-    test('should skip constraints without expressions', async () => {
+    it('should skip constraints without expressions', async () => {
       const mockTargetConstraints: Record<string, TargetConstraint> = {
         'constraint-no-expression': {
           key: 'constraint-no-expression',
@@ -196,7 +196,7 @@ describe('targetConstraint', () => {
       expect(result.initialTargetConstraints).toEqual(mockTargetConstraints);
     });
 
-    test('should use cached results for repeated expressions', async () => {
+    it('should use cached results for repeated expressions', async () => {
       const mockTargetConstraints: Record<string, TargetConstraint> = {
         'constraint-1': createMockTargetConstraint('constraint-1', 'true', false)
       };
@@ -222,7 +222,7 @@ describe('targetConstraint', () => {
       expect(result.initialTargetConstraints).toEqual(mockTargetConstraints);
     });
 
-    test('should handle empty results by setting isInvalid to false', async () => {
+    it('should handle empty results by setting isInvalid to false', async () => {
       const mockTargetConstraints: Record<string, TargetConstraint> = {
         'constraint-empty': createMockTargetConstraint('constraint-empty', 'empty.result', true)
       };
@@ -250,7 +250,7 @@ describe('targetConstraint', () => {
       expect(result.initialTargetConstraints['constraint-empty'].isInvalid).toBe(false);
     });
 
-    test('should handle intersect expressions with empty results', async () => {
+    it('should handle intersect expressions with empty results', async () => {
       const mockTargetConstraints: Record<string, TargetConstraint> = {
         'constraint-intersect': createMockTargetConstraint(
           'constraint-intersect',
@@ -282,7 +282,7 @@ describe('targetConstraint', () => {
       expect(result.initialTargetConstraints['constraint-intersect'].isInvalid).toBe(false);
     });
 
-    test('should cache async terminology results', async () => {
+    it('should cache async terminology results', async () => {
       const mockTargetConstraints: Record<string, TargetConstraint> = {
         'constraint-async': createMockTargetConstraint(
           'constraint-async',
@@ -315,7 +315,7 @@ describe('targetConstraint', () => {
       expect(result.fhirPathTerminologyCache['"terminology.lookup()"']).toEqual([true]);
     });
 
-    test('should handle fhirpath evaluation errors gracefully', async () => {
+    it('should handle fhirpath evaluation errors gracefully', async () => {
       const mockTargetConstraints: Record<string, TargetConstraint> = {
         'constraint-error': createMockTargetConstraint(
           'constraint-error',
@@ -353,7 +353,7 @@ describe('targetConstraint', () => {
       expect(result.initialTargetConstraints['constraint-error'].isInvalid).toBe(false); // Should remain unchanged
     });
 
-    test('should not update isInvalid when value is the same to prevent infinite loops', async () => {
+    it('should not update isInvalid when value is the same to prevent infinite loops', async () => {
       const mockTargetConstraints: Record<string, TargetConstraint> = {
         'constraint-same': createMockTargetConstraint('constraint-same', 'true', true)
       };
@@ -381,7 +381,7 @@ describe('targetConstraint', () => {
       expect(result.initialTargetConstraints['constraint-same'].isInvalid).toBe(true); // Unchanged
     });
 
-    test('should handle non-boolean results', async () => {
+    it('should handle non-boolean results', async () => {
       const mockTargetConstraints: Record<string, TargetConstraint> = {
         'constraint-non-boolean': createMockTargetConstraint(
           'constraint-non-boolean',
@@ -415,7 +415,7 @@ describe('targetConstraint', () => {
   });
 
   describe('evaluateTargetConstraints', () => {
-    test('should evaluate target constraints and return update status', async () => {
+    it('should evaluate target constraints and return update status', async () => {
       const mockTargetConstraints: Record<string, TargetConstraint> = {
         'constraint-1': createMockTargetConstraint('constraint-1', 'true', false)
       };
@@ -438,7 +438,7 @@ describe('targetConstraint', () => {
       expect(result.updatedTargetConstraints['constraint-1'].isInvalid).toBe(true);
     });
 
-    test('should return false for isUpdated when no constraints change', async () => {
+    it('should return false for isUpdated when no constraints change', async () => {
       const mockTargetConstraints: Record<string, TargetConstraint> = {
         'constraint-1': createMockTargetConstraint('constraint-1', 'true', true)
       };
@@ -461,7 +461,7 @@ describe('targetConstraint', () => {
       expect(result.updatedTargetConstraints['constraint-1'].isInvalid).toBe(true);
     });
 
-    test('should use cached results for repeated expressions', async () => {
+    it('should use cached results for repeated expressions', async () => {
       const mockTargetConstraints: Record<string, TargetConstraint> = {
         'constraint-1': createMockTargetConstraint('constraint-1', 'true', false)
       };
@@ -481,7 +481,7 @@ describe('targetConstraint', () => {
       expect(result.targetConstraintsIsUpdated).toBe(false);
     });
 
-    test('should handle evaluation errors gracefully', async () => {
+    it('should handle evaluation errors gracefully', async () => {
       const mockTargetConstraints: Record<string, TargetConstraint> = {
         'constraint-error': createMockTargetConstraint('constraint-error', 'invalid.syntax', false)
       };
@@ -509,7 +509,7 @@ describe('targetConstraint', () => {
       expect(result.targetConstraintsIsUpdated).toBe(false);
     });
 
-    test('should handle empty results and intersect edge cases', async () => {
+    it('should handle empty results and intersect edge cases', async () => {
       const mockTargetConstraints: Record<string, TargetConstraint> = {
         'constraint-empty': createMockTargetConstraint('constraint-empty', 'empty.result', true),
         'constraint-intersect': createMockTargetConstraint(
@@ -540,7 +540,7 @@ describe('targetConstraint', () => {
   });
 
   describe('readTargetConstraintLocationLinkIds', () => {
-    test('should extract linkIds from target constraint locations', () => {
+    it('should extract linkIds from target constraint locations', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -592,7 +592,7 @@ describe('targetConstraint', () => {
       expect(mockTargetConstraints['constraint-no-location'].linkId).toBeUndefined();
     });
 
-    test('should handle multiple constraints pointing to the same linkId', () => {
+    it('should handle multiple constraints pointing to the same linkId', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -631,7 +631,7 @@ describe('targetConstraint', () => {
       });
     });
 
-    test('should handle empty fhirpath results', () => {
+    it('should handle empty fhirpath results', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -655,7 +655,7 @@ describe('targetConstraint', () => {
       expect(mockTargetConstraints['constraint-empty'].linkId).toBeUndefined();
     });
 
-    test('should handle invalid fhirpath results (no linkId)', () => {
+    it('should handle invalid fhirpath results (no linkId)', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -679,7 +679,7 @@ describe('targetConstraint', () => {
       expect(mockTargetConstraints['constraint-invalid'].linkId).toBeUndefined();
     });
 
-    test('should handle fhirpath evaluation errors', () => {
+    it('should handle fhirpath evaluation errors', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -709,7 +709,7 @@ describe('targetConstraint', () => {
       expect(result).toEqual({});
     });
 
-    test('should handle non-object fhirpath results', () => {
+    it('should handle non-object fhirpath results', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -733,7 +733,7 @@ describe('targetConstraint', () => {
       expect(mockTargetConstraints['constraint-primitive'].linkId).toBeUndefined();
     });
 
-    test('should handle non-string linkId values', () => {
+    it('should handle non-string linkId values', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',

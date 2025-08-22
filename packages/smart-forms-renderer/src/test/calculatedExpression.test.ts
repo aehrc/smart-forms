@@ -64,89 +64,89 @@ describe('calculatedExpression utils', () => {
   });
 
   describe('checkIsDateTime', () => {
-    test('should return true for valid ISO datetime strings', () => {
+    it('should return true for valid ISO datetime strings', () => {
       expect(checkIsDateTime('2023-01-01T10:00:00Z')).toBe(true);
       expect(checkIsDateTime('2023-12-31T23:59:59+10:00')).toBe(true);
       expect(checkIsDateTime('2023-06-15T14:30:45.123Z')).toBe(true);
     });
 
-    test('should return true for datetime strings without timezone', () => {
+    it('should return true for datetime strings without timezone', () => {
       expect(checkIsDateTime('2023-01-01T10:00:00')).toBe(true);
     });
 
-    test('should return true for date-only strings (dayjs accepts them)', () => {
+    it('should return true for date-only strings (dayjs accepts them)', () => {
       expect(checkIsDateTime('2023-01-01')).toBe(true);
       expect(checkIsDateTime('2023-12')).toBe(true);
       expect(checkIsDateTime('2023')).toBe(true);
     });
 
-    test('should return false for time-only strings', () => {
+    it('should return false for time-only strings', () => {
       expect(checkIsDateTime('10:00:00')).toBe(false);
       expect(checkIsDateTime('14:30:45')).toBe(false);
     });
 
-    test('should return false for clearly invalid datetime strings', () => {
+    it('should return false for clearly invalid datetime strings', () => {
       expect(checkIsDateTime('not-a-date')).toBe(false);
       expect(checkIsDateTime('2023-13-01')).toBe(true); // dayjs converts invalid dates
       expect(checkIsDateTime('2023-01-32')).toBe(true); // dayjs converts invalid dates
     });
 
-    test('should return false for empty or null strings', () => {
+    it('should return false for empty or null strings', () => {
       expect(checkIsDateTime('')).toBe(false);
       expect(checkIsDateTime(' ')).toBe(false);
     });
 
-    test('should handle edge cases', () => {
+    it('should handle edge cases', () => {
       expect(checkIsDateTime('2023-02-29')).toBe(true); // dayjs accepts and converts
       expect(checkIsDateTime('2024-02-29')).toBe(true); // Leap year
     });
   });
 
   describe('checkIsTime', () => {
-    test('should return true for valid time strings', () => {
+    it('should return true for valid time strings', () => {
       expect(checkIsTime('10:30:45')).toBe(true);
       expect(checkIsTime('00:00:00')).toBe(true);
       expect(checkIsTime('23:59:59')).toBe(true);
     });
 
-    test('should return true for time strings with milliseconds', () => {
+    it('should return true for time strings with milliseconds', () => {
       expect(checkIsTime('10:30:45.123')).toBe(true);
       expect(checkIsTime('14:25:30.999')).toBe(true);
     });
 
-    test('should return false for time strings with hours >= 24', () => {
+    it('should return false for time strings with hours >= 24', () => {
       expect(checkIsTime('24:00:00')).toBe(false);
       expect(checkIsTime('25:30:45')).toBe(false);
     });
 
-    test('should return false for time strings with minutes >= 60', () => {
+    it('should return false for time strings with minutes >= 60', () => {
       expect(checkIsTime('10:60:00')).toBe(false);
       expect(checkIsTime('10:75:30')).toBe(false);
     });
 
-    test('should return true for time with seconds = 60 (regex allows it)', () => {
+    it('should return true for time with seconds = 60 (regex allows it)', () => {
       expect(checkIsTime('10:30:60')).toBe(true);
     });
 
-    test('should return false for invalid time formats', () => {
+    it('should return false for invalid time formats', () => {
       expect(checkIsTime('10:30')).toBe(false);
       expect(checkIsTime('10')).toBe(false);
       expect(checkIsTime('not-a-time')).toBe(false);
     });
 
-    test('should return false for empty or null strings', () => {
+    it('should return false for empty or null strings', () => {
       expect(checkIsTime('')).toBe(false);
       expect(checkIsTime(' ')).toBe(false);
     });
 
-    test('should handle edge case times', () => {
+    it('should handle edge case times', () => {
       expect(checkIsTime('00:00:60')).toBe(true);
       expect(checkIsTime('12:59:60')).toBe(true);
     });
   });
 
   describe('initialiseCalculatedExpressionValues', () => {
-    test('should initialize with empty questionnaire', () => {
+    it('should initialize with empty questionnaire', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -170,7 +170,7 @@ describe('calculatedExpression utils', () => {
       expect(result).toBeDefined();
     });
 
-    test('should handle questionnaire with no calculatedExpression extensions', () => {
+    it('should handle questionnaire with no calculatedExpression extensions', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -200,7 +200,7 @@ describe('calculatedExpression utils', () => {
       expect(result).toBeDefined();
     });
 
-    test('should process questionnaire with calculatedExpression extensions', () => {
+    it('should process questionnaire with calculatedExpression extensions', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -238,7 +238,7 @@ describe('calculatedExpression utils', () => {
       expect(result).toBeDefined();
     });
 
-    test('should handle nested questionnaire items', () => {
+    it('should handle nested questionnaire items', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -283,7 +283,7 @@ describe('calculatedExpression utils', () => {
       expect(result).toBeDefined();
     });
 
-    test('should handle multiple calculated expressions for the same item', () => {
+    it('should handle multiple calculated expressions for the same item', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -326,7 +326,7 @@ describe('calculatedExpression utils', () => {
       expect(result).toBeDefined();
     });
 
-    test('should handle empty calculated expressions', () => {
+    it('should handle empty calculated expressions', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -358,7 +358,7 @@ describe('calculatedExpression utils', () => {
       expect(result).toBeDefined();
     });
 
-    test('should handle questionnaire response with existing items', () => {
+    it('should handle questionnaire response with existing items', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -404,7 +404,7 @@ describe('calculatedExpression utils', () => {
   });
 
   describe('evaluateInitialCalculatedExpressions', () => {
-    test('should return early when initialResponse is empty', async () => {
+    it('should return early when initialResponse is empty', async () => {
       const params = {
         initialResponse: {
           resourceType: 'QuestionnaireResponse' as const,
@@ -427,7 +427,7 @@ describe('calculatedExpression utils', () => {
       expect(result.updatedFhirPathContext).toEqual({});
     });
 
-    test('should return early when no calculated expressions exist', async () => {
+    it('should return early when no calculated expressions exist', async () => {
       const params = {
         initialResponse: {
           resourceType: 'QuestionnaireResponse' as const,
@@ -465,7 +465,7 @@ describe('calculatedExpression utils', () => {
       expect(result.updatedFhirPathContext).toEqual({});
     });
 
-    test('should process calculated expressions with valid context', async () => {
+    it('should process calculated expressions with valid context', async () => {
       const calculatedExpressions = {
         'test-item': [
           {
@@ -515,7 +515,7 @@ describe('calculatedExpression utils', () => {
       expect(result.initialCalculatedExpressions['test-item']).toBeDefined();
     });
 
-    test('should handle expressions with cached results', async () => {
+    it('should handle expressions with cached results', async () => {
       const calculatedExpressions = {
         'test-item': [
           {
@@ -564,7 +564,7 @@ describe('calculatedExpression utils', () => {
       expect(result.initialCalculatedExpressions).toBeDefined();
     });
 
-    test('should handle expressions that throw errors', async () => {
+    it('should handle expressions that throw errors', async () => {
       const calculatedExpressions = {
         'test-item': [
           {
@@ -618,7 +618,7 @@ describe('calculatedExpression utils', () => {
       expect(consoleSpy).toHaveBeenCalled();
     });
 
-    test('should handle multiple expressions for same item', async () => {
+    it('should handle multiple expressions for same item', async () => {
       const calculatedExpressions = {
         'test-item': [
           {
@@ -673,7 +673,7 @@ describe('calculatedExpression utils', () => {
       expect(result.initialCalculatedExpressions['test-item']).toBeDefined();
     });
 
-    test('should handle existing variables in context', async () => {
+    it('should handle existing variables in context', async () => {
       const calculatedExpressions = {
         'test-item': [
           {
@@ -736,7 +736,7 @@ describe('calculatedExpression utils', () => {
       expect(result.updatedFhirPathContext).toBeDefined();
     });
 
-    test('should handle deeply structured response items', async () => {
+    it('should handle deeply structured response items', async () => {
       const calculatedExpressions = {
         'nested-item': [
           {
@@ -803,7 +803,7 @@ describe('calculatedExpression utils', () => {
       jest.restoreAllMocks();
     });
 
-    test('should evaluate calculated expressions and return updated state', async () => {
+    it('should evaluate calculated expressions and return updated state', async () => {
       const calculatedExpressions = {
         'item-1': [
           {
@@ -841,7 +841,7 @@ describe('calculatedExpression utils', () => {
       expect(result.computedNewAnswers).toEqual({});
     });
 
-    test('should not update when value is the same', async () => {
+    it('should not update when value is the same', async () => {
       const calculatedExpressions = {
         'item-1': [
           {
@@ -866,7 +866,7 @@ describe('calculatedExpression utils', () => {
       expect(result.updatedCalculatedExpressions['item-1'][0].value).toBe(25);
     });
 
-    test('should handle cached expressions', async () => {
+    it('should handle cached expressions', async () => {
       const calculatedExpressions = {
         'item-1': [
           {
@@ -892,7 +892,7 @@ describe('calculatedExpression utils', () => {
       expect(result.calculatedExpsIsUpdated).toBe(false);
     });
 
-    test('should handle Promise-based FHIRPath results and caching', async () => {
+    it('should handle Promise-based FHIRPath results and caching', async () => {
       const calculatedExpressions = {
         'item-1': [
           {
@@ -926,7 +926,7 @@ describe('calculatedExpression utils', () => {
       ]);
     });
 
-    test('should handle evaluation errors gracefully', async () => {
+    it('should handle evaluation errors gracefully', async () => {
       const calculatedExpressions = {
         'item-1': [
           {
@@ -957,7 +957,7 @@ describe('calculatedExpression utils', () => {
       );
     });
 
-    test('should set value to null when no result is returned', async () => {
+    it('should set value to null when no result is returned', async () => {
       const calculatedExpressions = {
         'item-1': [
           {
@@ -981,7 +981,7 @@ describe('calculatedExpression utils', () => {
       expect(result.updatedCalculatedExpressions['item-1'][0].value).toBe(null);
     });
 
-    test('should not update when value is already null and no result', async () => {
+    it('should not update when value is already null and no result', async () => {
       const calculatedExpressions = {
         'item-1': [
           {
@@ -1004,7 +1004,7 @@ describe('calculatedExpression utils', () => {
       expect(result.calculatedExpsIsUpdated).toBe(false);
     });
 
-    test('should clear answers for answerValueSet expressions when value changes', async () => {
+    it('should clear answers for answerValueSet expressions when value changes', async () => {
       const calculatedExpressions = {
         'item-1': [
           {
@@ -1032,7 +1032,7 @@ describe('calculatedExpression utils', () => {
       expect(result.computedNewAnswers['item-1']).toBe(null);
     });
 
-    test('should clear answers for answerValueSet expressions when value becomes null', async () => {
+    it('should clear answers for answerValueSet expressions when value becomes null', async () => {
       const calculatedExpressions = {
         'item-1': [
           {
@@ -1057,7 +1057,7 @@ describe('calculatedExpression utils', () => {
       expect(result.computedNewAnswers['item-1']).toBe(null);
     });
 
-    test('should handle multiple expressions for same item', async () => {
+    it('should handle multiple expressions for same item', async () => {
       const calculatedExpressions = {
         'item-1': [
           {
@@ -1090,7 +1090,7 @@ describe('calculatedExpression utils', () => {
       expect(result.updatedCalculatedExpressions['item-1'][1].value).toBe('second-result');
     });
 
-    test('should handle special debug logging for Blood tests values', async () => {
+    it('should handle special debug logging for Blood tests values', async () => {
       const calculatedExpressions = {
         'item-1': [
           {
@@ -1116,7 +1116,7 @@ describe('calculatedExpression utils', () => {
   });
 
   describe('initialiseCalculatedExpressionValues integration tests', () => {
-    test('should filter expressions with values and initialize response', () => {
+    it('should filter expressions with values and initialize response', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -1166,7 +1166,7 @@ describe('calculatedExpression utils', () => {
       expect(result).toBeDefined();
     });
 
-    test('should handle boolean values', () => {
+    it('should handle boolean values', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -1204,7 +1204,7 @@ describe('calculatedExpression utils', () => {
       expect(result).toBeDefined();
     });
 
-    test('should handle numeric values', () => {
+    it('should handle numeric values', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -1254,7 +1254,7 @@ describe('calculatedExpression utils', () => {
       expect(result).toBeDefined();
     });
 
-    test('should handle date and time values', () => {
+    it('should handle date and time values', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -1316,7 +1316,7 @@ describe('calculatedExpression utils', () => {
       expect(result).toBeDefined();
     });
 
-    test('should handle complex object values', () => {
+    it('should handle complex object values', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -1366,7 +1366,7 @@ describe('calculatedExpression utils', () => {
       expect(result).toBeDefined();
     });
 
-    test('should handle answerOptions with matching values', () => {
+    it('should handle answerOptions with matching values', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',

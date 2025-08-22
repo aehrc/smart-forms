@@ -81,7 +81,7 @@ describe('repopulateIntoResponse', () => {
   });
 
   describe('repopulateResponse', () => {
-    test('should call updateQuestionnaireResponse with correct parameters', () => {
+    it('should call updateQuestionnaireResponse with correct parameters', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -133,7 +133,7 @@ describe('repopulateIntoResponse', () => {
       expect(result).toEqual(mockQuestionnaireResponse);
     });
 
-    test('should handle empty filteredItemsToRepopulate', () => {
+    it('should handle empty filteredItemsToRepopulate', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active'
@@ -167,7 +167,7 @@ describe('repopulateIntoResponse', () => {
   });
 
   describe('repopulateItemRecursive (via integration tests)', () => {
-    test('should handle single item with repopulation data', () => {
+    it('should handle single item with repopulation data', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -243,7 +243,7 @@ describe('repopulateIntoResponse', () => {
       });
     });
 
-    test('should handle group item with children', () => {
+    it('should handle group item with children', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -345,7 +345,7 @@ describe('repopulateIntoResponse', () => {
       expect(result.item![0].item).toBeDefined();
     });
 
-    test('should handle repeat groups', () => {
+    it('should handle repeat groups', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -443,7 +443,7 @@ describe('repopulateIntoResponse', () => {
       expect(Array.isArray(result.item)).toBe(true);
     });
 
-    test('should handle items without repopulation data', () => {
+    it('should handle items without repopulation data', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -502,7 +502,7 @@ describe('repopulateIntoResponse', () => {
       });
     });
 
-    test('should handle null qrItem with repopulation data', () => {
+    it('should handle null qrItem with repopulation data', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -570,7 +570,7 @@ describe('repopulateIntoResponse', () => {
       });
     });
 
-    test('should handle empty group with no children', () => {
+    it('should handle empty group with no children', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',

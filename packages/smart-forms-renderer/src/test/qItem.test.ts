@@ -120,7 +120,7 @@ describe('qItem utils', () => {
       }
     };
 
-    test('should return false when enableWhen is not activated', () => {
+    it('should return false when enableWhen is not activated', () => {
       const result = isHiddenByEnableWhen({
         linkId: 'disabled-item',
         enableWhenIsActivated: false,
@@ -131,7 +131,7 @@ describe('qItem utils', () => {
       expect(result).toBe(false);
     });
 
-    test('should return true for disabled single items', () => {
+    it('should return true for disabled single items', () => {
       const result = isHiddenByEnableWhen({
         linkId: 'disabled-item',
         enableWhenIsActivated: true,
@@ -142,7 +142,7 @@ describe('qItem utils', () => {
       expect(result).toBe(true);
     });
 
-    test('should return false for enabled single items', () => {
+    it('should return false for enabled single items', () => {
       const result = isHiddenByEnableWhen({
         linkId: 'enabled-item',
         enableWhenIsActivated: true,
@@ -153,7 +153,7 @@ describe('qItem utils', () => {
       expect(result).toBe(false);
     });
 
-    test('should return true for disabled repeat items at specific index', () => {
+    it('should return true for disabled repeat items at specific index', () => {
       const result = isHiddenByEnableWhen({
         linkId: 'repeat-item',
         enableWhenIsActivated: true,
@@ -165,7 +165,7 @@ describe('qItem utils', () => {
       expect(result).toBe(true);
     });
 
-    test('should return false for enabled repeat items at specific index', () => {
+    it('should return false for enabled repeat items at specific index', () => {
       const result = isHiddenByEnableWhen({
         linkId: 'repeat-item',
         enableWhenIsActivated: true,
@@ -177,7 +177,7 @@ describe('qItem utils', () => {
       expect(result).toBe(false);
     });
 
-    test('should check enableWhen expressions for single items', () => {
+    it('should check enableWhen expressions for single items', () => {
       const result = isHiddenByEnableWhen({
         linkId: 'expr-disabled',
         enableWhenIsActivated: true,
@@ -188,7 +188,7 @@ describe('qItem utils', () => {
       expect(result).toBe(true);
     });
 
-    test('should check enableWhen expressions for repeat items', () => {
+    it('should check enableWhen expressions for repeat items', () => {
       const result = isHiddenByEnableWhen({
         linkId: 'repeat-expr',
         enableWhenIsActivated: true,
@@ -200,7 +200,7 @@ describe('qItem utils', () => {
       expect(result).toBe(true);
     });
 
-    test('should return false for unknown linkId', () => {
+    it('should return false for unknown linkId', () => {
       const result = isHiddenByEnableWhen({
         linkId: 'unknown-item',
         enableWhenIsActivated: true,
@@ -211,7 +211,7 @@ describe('qItem utils', () => {
       expect(result).toBe(false);
     });
 
-    test('should ignore repeat items when parentRepeatGroupIndex is undefined', () => {
+    it('should ignore repeat items when parentRepeatGroupIndex is undefined', () => {
       const result = isHiddenByEnableWhen({
         linkId: 'repeat-item',
         enableWhenIsActivated: true,
@@ -225,12 +225,12 @@ describe('qItem utils', () => {
   });
 
   describe('isRepeatItemAndNotCheckbox', () => {
-    test('should return false for null/undefined qItem', () => {
+    it('should return false for null/undefined qItem', () => {
       expect(isRepeatItemAndNotCheckbox(null as any)).toBe(false);
       expect(isRepeatItemAndNotCheckbox(undefined as any)).toBe(false);
     });
 
-    test('should return false for non-repeating items', () => {
+    it('should return false for non-repeating items', () => {
       const qItem = createMockQuestionnaireItem('test', 'string');
       qItem.repeats = false;
 
@@ -242,7 +242,7 @@ describe('qItem utils', () => {
       expect(result).toBe(false);
     });
 
-    test('should return true for repeating non-checkbox items', () => {
+    it('should return true for repeating non-checkbox items', () => {
       const qItem = createMockQuestionnaireItem('test', 'string');
       qItem.repeats = true;
 
@@ -254,7 +254,7 @@ describe('qItem utils', () => {
       expect(result).toBe(true);
     });
 
-    test('should return false for repeating checkbox items (choice)', () => {
+    it('should return false for repeating checkbox items (choice)', () => {
       const qItem = createMockQuestionnaireItem('test', 'choice');
       qItem.repeats = true;
 
@@ -266,7 +266,7 @@ describe('qItem utils', () => {
       expect(result).toBe(false);
     });
 
-    test('should return false for repeating checkbox items (open-choice)', () => {
+    it('should return false for repeating checkbox items (open-choice)', () => {
       const qItem = createMockQuestionnaireItem('test', 'open-choice');
       qItem.repeats = true;
 
@@ -278,7 +278,7 @@ describe('qItem utils', () => {
       expect(result).toBe(false);
     });
 
-    test('should handle missing repeats property', () => {
+    it('should handle missing repeats property', () => {
       const qItem = createMockQuestionnaireItem('test', 'string');
       // repeats property not set
 
@@ -292,12 +292,12 @@ describe('qItem utils', () => {
   });
 
   describe('isCheckbox', () => {
-    test('should return false for null/undefined qItem', () => {
+    it('should return false for null/undefined qItem', () => {
       expect(isCheckbox(null as any)).toBe(false);
       expect(isCheckbox(undefined as any)).toBe(false);
     });
 
-    test('should return true for checkbox choice items', () => {
+    it('should return true for checkbox choice items', () => {
       const qItem = createMockQuestionnaireItem('test', 'choice');
 
       mockGetChoiceControlType.mockReturnValue(ChoiceItemControl.Checkbox);
@@ -307,7 +307,7 @@ describe('qItem utils', () => {
       expect(result).toBe(true);
     });
 
-    test('should return false for non-checkbox choice items', () => {
+    it('should return false for non-checkbox choice items', () => {
       const qItem = createMockQuestionnaireItem('test', 'choice');
 
       mockGetChoiceControlType.mockReturnValue(ChoiceItemControl.Select);
@@ -317,7 +317,7 @@ describe('qItem utils', () => {
       expect(result).toBe(false);
     });
 
-    test('should return false for string items', () => {
+    it('should return false for string items', () => {
       const qItem = createMockQuestionnaireItem('test', 'string');
 
       mockGetChoiceControlType.mockReturnValue(ChoiceItemControl.Select);
@@ -329,7 +329,7 @@ describe('qItem utils', () => {
   });
 
   describe('getXHtmlStringFromQuestionnaire', () => {
-    test('should return XHTML string when extension is present', () => {
+    it('should return XHTML string when extension is present', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -349,7 +349,7 @@ describe('qItem utils', () => {
       expect(result).toBe('<div><b>Rich Text Title</b></div>');
     });
 
-    test('should return null when extension has no valueString', () => {
+    it('should return null when extension has no valueString', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -369,7 +369,7 @@ describe('qItem utils', () => {
       expect(result).toBe(null);
     });
 
-    test('should return null when no XHTML extension is present', () => {
+    it('should return null when no XHTML extension is present', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -389,7 +389,7 @@ describe('qItem utils', () => {
       expect(result).toBe(null);
     });
 
-    test('should return null when _title is missing', () => {
+    it('should return null when _title is missing', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -401,7 +401,7 @@ describe('qItem utils', () => {
       expect(result).toBe(null);
     });
 
-    test('should return null when _title.extension is missing', () => {
+    it('should return null when _title.extension is missing', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -416,7 +416,7 @@ describe('qItem utils', () => {
   });
 
   describe('getLinkIdPartialItemMap', () => {
-    test('should return empty object for questionnaire with no items', () => {
+    it('should return empty object for questionnaire with no items', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active'
@@ -427,7 +427,7 @@ describe('qItem utils', () => {
       expect(result).toEqual({});
     });
 
-    test('should return empty object for questionnaire with empty items array', () => {
+    it('should return empty object for questionnaire with empty items array', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -439,7 +439,7 @@ describe('qItem utils', () => {
       expect(result).toEqual({});
     });
 
-    test('should create map for single item', () => {
+    it('should create map for single item', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -463,7 +463,7 @@ describe('qItem utils', () => {
       });
     });
 
-    test('should create map for nested items', () => {
+    it('should create map for nested items', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -509,7 +509,7 @@ describe('qItem utils', () => {
       });
     });
 
-    test('should handle deeply nested items', () => {
+    it('should handle deeply nested items', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -559,7 +559,7 @@ describe('qItem utils', () => {
   });
 
   describe('getLinkIdPartialTuplesFromItemRecursive', () => {
-    test('should return single tuple for item without children', () => {
+    it('should return single tuple for item without children', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'item1',
         text: 'Item 1',
@@ -571,7 +571,7 @@ describe('qItem utils', () => {
       expect(result).toEqual([['item1', { linkId: 'item1', text: 'Item 1', type: 'string' }]]);
     });
 
-    test('should return tuples for item with children', () => {
+    it('should return tuples for item with children', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'group1',
         text: 'Group 1',
@@ -599,7 +599,7 @@ describe('qItem utils', () => {
       ]);
     });
 
-    test('should handle item without linkId', () => {
+    it('should handle item without linkId', () => {
       const qItem: QuestionnaireItem = {
         text: 'Item without linkId',
         type: 'string'
@@ -610,7 +610,7 @@ describe('qItem utils', () => {
       expect(result).toEqual([]);
     });
 
-    test('should exclude item property from partial objects', () => {
+    it('should exclude item property from partial objects', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'group1',
         text: 'Group 1',
@@ -641,7 +641,7 @@ describe('qItem utils', () => {
   });
 
   describe('getLinkIdPreferredTerminologyServerTuples', () => {
-    test('should return empty array for questionnaire with no items', () => {
+    it('should return empty array for questionnaire with no items', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active'
@@ -652,7 +652,7 @@ describe('qItem utils', () => {
       expect(result).toEqual([]);
     });
 
-    test('should return empty array for items without terminology server extensions', () => {
+    it('should return empty array for items without terminology server extensions', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -670,7 +670,7 @@ describe('qItem utils', () => {
       expect(result).toEqual([]);
     });
 
-    test('should return tuples for items with terminology server extension', () => {
+    it('should return tuples for items with terminology server extension', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -694,7 +694,7 @@ describe('qItem utils', () => {
       expect(result).toEqual([['item1', 'https://terminology.server.com']]);
     });
 
-    test('should inherit terminology server from questionnaire level', () => {
+    it('should inherit terminology server from questionnaire level', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -718,7 +718,7 @@ describe('qItem utils', () => {
       expect(result).toEqual([['item1', 'https://global.terminology.com']]);
     });
 
-    test('should override parent terminology server with item-specific one', () => {
+    it('should override parent terminology server with item-specific one', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -748,7 +748,7 @@ describe('qItem utils', () => {
       expect(result).toEqual([['item1', 'https://specific.terminology.com']]);
     });
 
-    test('should handle valueUri and valueString alternatives', () => {
+    it('should handle valueUri and valueString alternatives', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -786,7 +786,7 @@ describe('qItem utils', () => {
       ]);
     });
 
-    test('should handle nested items with inherited terminology servers', () => {
+    it('should handle nested items with inherited terminology servers', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -840,7 +840,7 @@ describe('qItem utils', () => {
   });
 
   describe('getGroupCollapsible', () => {
-    test('should return null when no extensions are present', () => {
+    it('should return null when no extensions are present', () => {
       const qItem = createMockQuestionnaireItem('group1', 'group');
 
       const result = getGroupCollapsible(qItem);
@@ -848,7 +848,7 @@ describe('qItem utils', () => {
       expect(result).toBe(null);
     });
 
-    test('should return null when collapsible extension is not present', () => {
+    it('should return null when collapsible extension is not present', () => {
       const qItem = createMockQuestionnaireItem('group1', 'group');
       qItem.extension = [
         {
@@ -862,7 +862,7 @@ describe('qItem utils', () => {
       expect(result).toBe(null);
     });
 
-    test('should return default-open when extension has valid valueCode', () => {
+    it('should return default-open when extension has valid valueCode', () => {
       const qItem = createMockQuestionnaireItem('group1', 'group');
       qItem.extension = [
         {
@@ -876,7 +876,7 @@ describe('qItem utils', () => {
       expect(result).toBe('default-open');
     });
 
-    test('should return default-closed when extension has valid valueCode', () => {
+    it('should return default-closed when extension has valid valueCode', () => {
       const qItem = createMockQuestionnaireItem('group1', 'group');
       qItem.extension = [
         {
@@ -890,7 +890,7 @@ describe('qItem utils', () => {
       expect(result).toBe('default-closed');
     });
 
-    test('should return null when extension has invalid valueCode', () => {
+    it('should return null when extension has invalid valueCode', () => {
       const qItem = createMockQuestionnaireItem('group1', 'group');
       qItem.extension = [
         {
@@ -904,7 +904,7 @@ describe('qItem utils', () => {
       expect(result).toBe(null);
     });
 
-    test('should return null when extension has no valueCode', () => {
+    it('should return null when extension has no valueCode', () => {
       const qItem = createMockQuestionnaireItem('group1', 'group');
       qItem.extension = [
         {
@@ -918,7 +918,7 @@ describe('qItem utils', () => {
       expect(result).toBe(null);
     });
 
-    test('should return first valid collapsible extension when multiple exist', () => {
+    it('should return first valid collapsible extension when multiple exist', () => {
       const qItem = createMockQuestionnaireItem('group1', 'group');
       qItem.extension = [
         {
@@ -957,7 +957,7 @@ describe('qItem utils', () => {
       repeatExpressions: {}
     };
 
-    test('should return true when item has hidden property set to true', () => {
+    it('should return true when item has hidden property set to true', () => {
       const qItem = createMockQuestionnaireItem('test', 'string');
 
       mockGetHidden.mockReturnValue(true);
@@ -974,7 +974,7 @@ describe('qItem utils', () => {
       expect(mockGetHidden).toHaveBeenCalledWith(qItem);
     });
 
-    test('should return false when item is not hidden and enableWhenAsReadOnly is true', () => {
+    it('should return false when item is not hidden and enableWhenAsReadOnly is true', () => {
       const qItem = createMockQuestionnaireItem('disabled-item', 'string');
 
       mockGetHidden.mockReturnValue(false);
@@ -990,7 +990,7 @@ describe('qItem utils', () => {
       expect(result).toBe(false);
     });
 
-    test('should return false when item type is in enableWhenAsReadOnly Set', () => {
+    it('should return false when item type is in enableWhenAsReadOnly Set', () => {
       const qItem = createMockQuestionnaireItem('disabled-item', 'string');
 
       mockGetHidden.mockReturnValue(false);
@@ -1008,7 +1008,7 @@ describe('qItem utils', () => {
       expect(result).toBe(false);
     });
 
-    test('should check enableWhen when enableWhenAsReadOnly is false', () => {
+    it('should check enableWhen when enableWhenAsReadOnly is false', () => {
       const qItem = createMockQuestionnaireItem('disabled-item', 'string');
 
       mockGetHidden.mockReturnValue(false);
@@ -1024,7 +1024,7 @@ describe('qItem utils', () => {
       expect(result).toBe(true);
     });
 
-    test('should return false when enableWhen is not activated', () => {
+    it('should return false when enableWhen is not activated', () => {
       const qItem = createMockQuestionnaireItem('disabled-item', 'string');
 
       mockGetHidden.mockReturnValue(false);
@@ -1040,7 +1040,7 @@ describe('qItem utils', () => {
       expect(result).toBe(false);
     });
 
-    test('should handle parentRepeatGroupIndex parameter', () => {
+    it('should handle parentRepeatGroupIndex parameter', () => {
       const qItem = createMockQuestionnaireItem('test', 'string');
 
       mockGetHidden.mockReturnValue(false);
@@ -1057,7 +1057,7 @@ describe('qItem utils', () => {
       expect(result).toBe(false);
     });
 
-    test('should return false when item type is not in enableWhenAsReadOnly Set', () => {
+    it('should return false when item type is not in enableWhenAsReadOnly Set', () => {
       const qItem = createMockQuestionnaireItem('disabled-item', 'boolean');
 
       mockGetHidden.mockReturnValue(false);
@@ -1077,14 +1077,14 @@ describe('qItem utils', () => {
   });
 
   describe('Edge cases and error handling', () => {
-    test('should handle empty extension arrays gracefully', () => {
+    it('should handle empty extension arrays gracefully', () => {
       const qItem = createMockQuestionnaireItem('test', 'group');
       qItem.extension = [];
 
       expect(getGroupCollapsible(qItem)).toBe(null);
     });
 
-    test('should handle questionnaire with empty extension array', () => {
+    it('should handle questionnaire with empty extension array', () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -1103,7 +1103,7 @@ describe('qItem utils', () => {
       expect(result).toEqual([]);
     });
 
-    test('should handle items with complex extension structures', () => {
+    it('should handle items with complex extension structures', () => {
       const qItem = createMockQuestionnaireItem('test', 'group');
       qItem.extension = [
         {
@@ -1121,7 +1121,7 @@ describe('qItem utils', () => {
       expect(getGroupCollapsible(qItem)).toBe(null);
     });
 
-    test('should handle enableWhen items with missing properties', () => {
+    it('should handle enableWhen items with missing properties', () => {
       const mockIncompleteEnableWhenItems: EnableWhenItems = {
         singleItems: {},
         repeatItems: {

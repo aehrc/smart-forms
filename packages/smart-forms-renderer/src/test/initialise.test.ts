@@ -83,7 +83,7 @@ describe('initialiseQuestionnaireResponse', () => {
     mockReadQuestionnaireResponse.mockReturnValue([]);
   });
 
-  test('should create new QuestionnaireResponse when none provided', () => {
+  it('should create new QuestionnaireResponse when none provided', () => {
     const questionnaire: Questionnaire = {
       resourceType: 'Questionnaire',
       status: 'active'
@@ -95,7 +95,7 @@ describe('initialiseQuestionnaireResponse', () => {
     expect(result.status).toBe('in-progress');
   });
 
-  test('should use provided QuestionnaireResponse', () => {
+  it('should use provided QuestionnaireResponse', () => {
     const questionnaire: Questionnaire = {
       resourceType: 'Questionnaire',
       status: 'active'
@@ -113,7 +113,7 @@ describe('initialiseQuestionnaireResponse', () => {
     expect(result.status).toBe('completed');
   });
 
-  test('should set status to in-progress when missing', () => {
+  it('should set status to in-progress when missing', () => {
     const questionnaire: Questionnaire = {
       resourceType: 'Questionnaire',
       status: 'active'
@@ -128,7 +128,7 @@ describe('initialiseQuestionnaireResponse', () => {
     expect(result.status).toBe('in-progress');
   });
 
-  test('should initialize items when questionnaire has items and response has none', () => {
+  it('should initialize items when questionnaire has items and response has none', () => {
     const questionnaire: Questionnaire = {
       resourceType: 'Questionnaire',
       status: 'active',
@@ -157,7 +157,7 @@ describe('initialiseQuestionnaireResponse', () => {
     expect(result.item).toEqual(mockInitialItems);
   });
 
-  test('should not overwrite existing items in response', () => {
+  it('should not overwrite existing items in response', () => {
     const questionnaire: Questionnaire = {
       resourceType: 'Questionnaire',
       status: 'active',
@@ -187,7 +187,7 @@ describe('initialiseQuestionnaireResponse', () => {
     expect(result.item?.[0].text).toBe('Existing Item');
   });
 
-  test('should create questionnaire reference when missing', () => {
+  it('should create questionnaire reference when missing', () => {
     const questionnaire: Questionnaire = {
       resourceType: 'Questionnaire',
       status: 'active',
@@ -200,7 +200,7 @@ describe('initialiseQuestionnaireResponse', () => {
     expect(result.questionnaire).toBe('http://example.com/questionnaire|1.0');
   });
 
-  test('should handle questionnaire with url but no version', () => {
+  it('should handle questionnaire with url but no version', () => {
     const questionnaire: Questionnaire = {
       resourceType: 'Questionnaire',
       status: 'active',
@@ -212,7 +212,7 @@ describe('initialiseQuestionnaireResponse', () => {
     expect(result.questionnaire).toBe('http://example.com/questionnaire');
   });
 
-  test('should handle questionnaire with id but no url', () => {
+  it('should handle questionnaire with id but no url', () => {
     const questionnaire: Questionnaire = {
       resourceType: 'Questionnaire',
       status: 'active',
@@ -224,7 +224,7 @@ describe('initialiseQuestionnaireResponse', () => {
     expect(result.questionnaire).toBe('Questionnaire/questionnaire-id');
   });
 
-  test('should handle questionnaire without url, version, or id', () => {
+  it('should handle questionnaire without url, version, or id', () => {
     const questionnaire: Questionnaire = {
       resourceType: 'Questionnaire',
       status: 'active'
@@ -235,7 +235,7 @@ describe('initialiseQuestionnaireResponse', () => {
     expect(result.questionnaire).toBe('');
   });
 
-  test('should not overwrite existing questionnaire reference', () => {
+  it('should not overwrite existing questionnaire reference', () => {
     const questionnaire: Questionnaire = {
       resourceType: 'Questionnaire',
       status: 'active',
@@ -255,7 +255,7 @@ describe('initialiseQuestionnaireResponse', () => {
 });
 
 describe('parseItemInitialToAnswer', () => {
-  test('should parse valueString initial value', () => {
+  it('should parse valueString initial value', () => {
     const initial: QuestionnaireItemInitial = {
       valueString: 'test string'
     };
@@ -265,7 +265,7 @@ describe('parseItemInitialToAnswer', () => {
     expect(result).toEqual({ valueString: 'test string' });
   });
 
-  test('should parse valueBoolean initial value', () => {
+  it('should parse valueBoolean initial value', () => {
     const initial: QuestionnaireItemInitial = {
       valueBoolean: true
     };
@@ -275,7 +275,7 @@ describe('parseItemInitialToAnswer', () => {
     expect(result).toEqual({ valueBoolean: true });
   });
 
-  test('should parse valueDecimal initial value', () => {
+  it('should parse valueDecimal initial value', () => {
     const initial: QuestionnaireItemInitial = {
       valueDecimal: 3.14
     };
@@ -285,7 +285,7 @@ describe('parseItemInitialToAnswer', () => {
     expect(result).toEqual({ valueDecimal: 3.14 });
   });
 
-  test('should parse valueInteger initial value', () => {
+  it('should parse valueInteger initial value', () => {
     const initial: QuestionnaireItemInitial = {
       valueInteger: 42
     };
@@ -295,7 +295,7 @@ describe('parseItemInitialToAnswer', () => {
     expect(result).toEqual({ valueInteger: 42 });
   });
 
-  test('should parse valueDate initial value', () => {
+  it('should parse valueDate initial value', () => {
     const initial: QuestionnaireItemInitial = {
       valueDate: '2025-01-01'
     };
@@ -305,7 +305,7 @@ describe('parseItemInitialToAnswer', () => {
     expect(result).toEqual({ valueDate: '2025-01-01' });
   });
 
-  test('should parse valueDateTime initial value', () => {
+  it('should parse valueDateTime initial value', () => {
     const initial: QuestionnaireItemInitial = {
       valueDateTime: '2025-01-01T12:00:00Z'
     };
@@ -315,7 +315,7 @@ describe('parseItemInitialToAnswer', () => {
     expect(result).toEqual({ valueDateTime: '2025-01-01T12:00:00Z' });
   });
 
-  test('should parse valueTime initial value', () => {
+  it('should parse valueTime initial value', () => {
     const initial: QuestionnaireItemInitial = {
       valueTime: '12:00:00'
     };
@@ -325,7 +325,7 @@ describe('parseItemInitialToAnswer', () => {
     expect(result).toEqual({ valueTime: '12:00:00' });
   });
 
-  test('should parse valueUri initial value', () => {
+  it('should parse valueUri initial value', () => {
     const initial: QuestionnaireItemInitial = {
       valueUri: 'http://example.com'
     };
@@ -335,7 +335,7 @@ describe('parseItemInitialToAnswer', () => {
     expect(result).toEqual({ valueUri: 'http://example.com' });
   });
 
-  test('should parse valueAttachment initial value', () => {
+  it('should parse valueAttachment initial value', () => {
     const attachment = {
       contentType: 'text/plain',
       data: 'SGVsbG8gV29ybGQ='
@@ -350,7 +350,7 @@ describe('parseItemInitialToAnswer', () => {
     expect(result).toEqual({ valueAttachment: attachment });
   });
 
-  test('should parse valueCoding initial value', () => {
+  it('should parse valueCoding initial value', () => {
     const coding = {
       system: 'http://snomed.info/sct',
       code: '12345',
@@ -366,7 +366,7 @@ describe('parseItemInitialToAnswer', () => {
     expect(result).toEqual({ valueCoding: coding });
   });
 
-  test('should parse valueQuantity initial value', () => {
+  it('should parse valueQuantity initial value', () => {
     const quantity = {
       value: 100,
       unit: 'kg',
@@ -383,7 +383,7 @@ describe('parseItemInitialToAnswer', () => {
     expect(result).toEqual({ valueQuantity: quantity });
   });
 
-  test('should parse valueReference initial value', () => {
+  it('should parse valueReference initial value', () => {
     const reference = {
       reference: 'Patient/123',
       display: 'John Doe'
@@ -398,7 +398,7 @@ describe('parseItemInitialToAnswer', () => {
     expect(result).toEqual({ valueReference: reference });
   });
 
-  test('should return null for initial value with no recognized properties', () => {
+  it('should return null for initial value with no recognized properties', () => {
     const initial: QuestionnaireItemInitial = {} as QuestionnaireItemInitial;
 
     const result = parseItemInitialToAnswer(initial);

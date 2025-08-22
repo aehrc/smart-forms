@@ -49,7 +49,7 @@ jest.mock('fhirpath', () => ({
 
 describe('parameterisedValueSets utils', () => {
   describe('getBindingParameter', () => {
-    test('should extract binding parameter with valueExpression', () => {
+    it('should extract binding parameter with valueExpression', () => {
       const extension: Extension = {
         url: 'http://test.com/binding-parameter',
         extension: [
@@ -76,7 +76,7 @@ describe('parameterisedValueSets utils', () => {
       });
     });
 
-    test('should extract binding parameter with valueString', () => {
+    it('should extract binding parameter with valueString', () => {
       const extension: Extension = {
         url: 'http://test.com/binding-parameter',
         extension: [
@@ -99,7 +99,7 @@ describe('parameterisedValueSets utils', () => {
       });
     });
 
-    test('should return null when paramName is missing', () => {
+    it('should return null when paramName is missing', () => {
       const extension: Extension = {
         url: 'http://test.com/binding-parameter',
         extension: [
@@ -115,7 +115,7 @@ describe('parameterisedValueSets utils', () => {
       expect(result).toBeNull();
     });
 
-    test('should return null when paramExpression is missing', () => {
+    it('should return null when paramExpression is missing', () => {
       const extension: Extension = {
         url: 'http://test.com/binding-parameter',
         extension: [
@@ -131,7 +131,7 @@ describe('parameterisedValueSets utils', () => {
       expect(result).toBeNull();
     });
 
-    test('should return null when valueExpression has wrong language', () => {
+    it('should return null when valueExpression has wrong language', () => {
       const extension: Extension = {
         url: 'http://test.com/binding-parameter',
         extension: [
@@ -154,7 +154,7 @@ describe('parameterisedValueSets utils', () => {
       expect(result).toBeNull();
     });
 
-    test('should return null when valueExpression is missing expression', () => {
+    it('should return null when valueExpression is missing expression', () => {
       const extension: Extension = {
         url: 'http://test.com/binding-parameter',
         extension: [
@@ -176,7 +176,7 @@ describe('parameterisedValueSets utils', () => {
       expect(result).toBeNull();
     });
 
-    test('should return null when expression extension has no value', () => {
+    it('should return null when expression extension has no value', () => {
       const extension: Extension = {
         url: 'http://test.com/binding-parameter',
         extension: [
@@ -195,7 +195,7 @@ describe('parameterisedValueSets utils', () => {
       expect(result).toBeNull();
     });
 
-    test('should handle extension with no sub-extensions', () => {
+    it('should handle extension with no sub-extensions', () => {
       const extension: Extension = {
         url: 'http://test.com/binding-parameter'
       };
@@ -205,7 +205,7 @@ describe('parameterisedValueSets utils', () => {
       expect(result).toBeNull();
     });
 
-    test('should handle empty extension array', () => {
+    it('should handle empty extension array', () => {
       const extension: Extension = {
         url: 'http://test.com/binding-parameter',
         extension: []
@@ -218,7 +218,7 @@ describe('parameterisedValueSets utils', () => {
   });
 
   describe('getBindingParameters', () => {
-    test('should return empty array when qItem has no _answerValueSet', () => {
+    it('should return empty array when qItem has no _answerValueSet', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test',
         type: 'choice'
@@ -229,7 +229,7 @@ describe('parameterisedValueSets utils', () => {
       expect(result).toEqual([]);
     });
 
-    test('should return empty array for contained value sets', () => {
+    it('should return empty array for contained value sets', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test',
         type: 'choice',
@@ -253,7 +253,7 @@ describe('parameterisedValueSets utils', () => {
       expect(result).toEqual([]);
     });
 
-    test('should extract binding parameters from extensions', () => {
+    it('should extract binding parameters from extensions', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test',
         type: 'choice',
@@ -306,7 +306,7 @@ describe('parameterisedValueSets utils', () => {
       });
     });
 
-    test('should filter out invalid binding parameters', () => {
+    it('should filter out invalid binding parameters', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test',
         type: 'choice',
@@ -357,7 +357,7 @@ describe('parameterisedValueSets utils', () => {
       });
     });
 
-    test('should handle _answerValueSet without extension', () => {
+    it('should handle _answerValueSet without extension', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test',
         type: 'choice',
@@ -369,7 +369,7 @@ describe('parameterisedValueSets utils', () => {
       expect(result).toEqual([]);
     });
 
-    test('should handle binding parameter extension without sub-extensions', () => {
+    it('should handle binding parameter extension without sub-extensions', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test',
         type: 'choice',
@@ -388,7 +388,7 @@ describe('parameterisedValueSets utils', () => {
       expect(result).toEqual([]);
     });
 
-    test('should handle empty extension array', () => {
+    it('should handle empty extension array', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test',
         type: 'choice',
@@ -404,7 +404,7 @@ describe('parameterisedValueSets utils', () => {
   });
 
   describe('addBindingParametersToValueSetUrl', () => {
-    test('should add parameters with values to URL', () => {
+    it('should add parameters with values to URL', () => {
       const valueSetUrl = 'http://example.com/valueset';
       const bindingParameters: BindingParameter[] = [
         { name: 'patient-id', value: '123' },
@@ -416,7 +416,7 @@ describe('parameterisedValueSets utils', () => {
       expect(result).toBe('http://example.com/valueset&patient-id=123&context=active');
     });
 
-    test('should skip parameters with empty values', () => {
+    it('should skip parameters with empty values', () => {
       const valueSetUrl = 'http://example.com/valueset';
       const bindingParameters: BindingParameter[] = [
         { name: 'patient-id', value: '123' },
@@ -429,7 +429,7 @@ describe('parameterisedValueSets utils', () => {
       expect(result).toBe('http://example.com/valueset&patient-id=123&context=active');
     });
 
-    test('should handle empty parameters array', () => {
+    it('should handle empty parameters array', () => {
       const valueSetUrl = 'http://example.com/valueset';
       const bindingParameters: BindingParameter[] = [];
 
@@ -438,7 +438,7 @@ describe('parameterisedValueSets utils', () => {
       expect(result).toBe('http://example.com/valueset');
     });
 
-    test('should handle all parameters with empty values', () => {
+    it('should handle all parameters with empty values', () => {
       const valueSetUrl = 'http://example.com/valueset';
       const bindingParameters: BindingParameter[] = [
         { name: 'param1', value: '' },
@@ -450,7 +450,7 @@ describe('parameterisedValueSets utils', () => {
       expect(result).toBe('http://example.com/valueset');
     });
 
-    test('should handle URL that already has query parameters', () => {
+    it('should handle URL that already has query parameters', () => {
       const valueSetUrl = 'http://example.com/valueset?existing=param';
       const bindingParameters: BindingParameter[] = [{ name: 'new-param', value: 'value' }];
 
@@ -459,7 +459,7 @@ describe('parameterisedValueSets utils', () => {
       expect(result).toBe('http://example.com/valueset?existing=param&new-param=value');
     });
 
-    test('should handle special characters in parameter values', () => {
+    it('should handle special characters in parameter values', () => {
       const valueSetUrl = 'http://example.com/valueset';
       const bindingParameters: BindingParameter[] = [
         { name: 'special', value: 'value with spaces & symbols' }
@@ -489,7 +489,7 @@ describe('parameterisedValueSets utils', () => {
       ...overrides
     });
 
-    test('should return early when no dynamic value sets exist', async () => {
+    it('should return early when no dynamic value sets exist', async () => {
       const params = createMockParams({
         processedValueSets: {
           'static-vs': {
@@ -509,7 +509,7 @@ describe('parameterisedValueSets utils', () => {
       expect(result.fhirPathTerminologyCache).toBe(params.fhirPathTerminologyCache);
     });
 
-    test('should process dynamic value sets with FHIRPath expressions', async () => {
+    it('should process dynamic value sets with FHIRPath expressions', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue(['patient-123']);
 
@@ -540,7 +540,7 @@ describe('parameterisedValueSets utils', () => {
       );
     });
 
-    test('should handle pre-existing cache', async () => {
+    it('should handle pre-existing cache', async () => {
       const params = createMockParams({
         processedValueSets: {
           'dynamic-vs': {
@@ -571,7 +571,7 @@ describe('parameterisedValueSets utils', () => {
       );
     });
 
-    test('should handle FHIRPath evaluation errors', async () => {
+    it('should handle FHIRPath evaluation errors', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockImplementation(() => {
         throw new Error('FHIRPath evaluation failed');
@@ -608,7 +608,7 @@ describe('parameterisedValueSets utils', () => {
       consoleSpy.mockRestore();
     });
 
-    test('should handle Promise-based FHIRPath results', async () => {
+    it('should handle Promise-based FHIRPath results', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue(Promise.resolve(['async-result']));
 
@@ -634,7 +634,7 @@ describe('parameterisedValueSets utils', () => {
       expect(result.fhirPathTerminologyCache['"%patient.id"']).toEqual(['async-result']);
     });
 
-    test('should handle empty FHIRPath results (remove parameter)', async () => {
+    it('should handle empty FHIRPath results (remove parameter)', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue([]);
 
@@ -663,7 +663,7 @@ describe('parameterisedValueSets utils', () => {
       );
     });
 
-    test('should handle multiple dynamic value sets', async () => {
+    it('should handle multiple dynamic value sets', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValueOnce(['result-1']).mockReturnValueOnce(['result-2']);
 
@@ -706,7 +706,7 @@ describe('parameterisedValueSets utils', () => {
       );
     });
 
-    test('should skip non-dynamic value sets', async () => {
+    it('should skip non-dynamic value sets', async () => {
       const params = createMockParams({
         processedValueSets: {
           'static-vs': {
@@ -726,7 +726,7 @@ describe('parameterisedValueSets utils', () => {
       expect(result.initialProcessedValueSets).toBeDefined();
     });
 
-    test('should handle binding parameters without FHIRPath expressions', async () => {
+    it('should handle binding parameters without FHIRPath expressions', async () => {
       const params = createMockParams({
         processedValueSets: {
           'dynamic-vs': {
@@ -752,7 +752,7 @@ describe('parameterisedValueSets utils', () => {
   });
 
   describe('evaluateDynamicValueSets', () => {
-    test('should return not updated when no dynamic value sets exist', async () => {
+    it('should return not updated when no dynamic value sets exist', async () => {
       const processedValueSets = {
         'static-vs': {
           initialValueSetUrl: 'http://example.com/static',
@@ -774,7 +774,7 @@ describe('parameterisedValueSets utils', () => {
       expect(result.computedNewAnswers).toEqual({});
     });
 
-    test('should evaluate dynamic value sets and detect updates', async () => {
+    it('should evaluate dynamic value sets and detect updates', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue(['new-value']);
 
@@ -811,7 +811,7 @@ describe('parameterisedValueSets utils', () => {
       });
     });
 
-    test('should not update when parameter value is the same', async () => {
+    it('should not update when parameter value is the same', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue(['same-value']);
 
@@ -841,7 +841,7 @@ describe('parameterisedValueSets utils', () => {
       expect(result.processedValueSetsIsUpdated).toBe(false);
     });
 
-    test('should handle cached results', async () => {
+    it('should handle cached results', async () => {
       const processedValueSets = {
         'dynamic-vs': {
           initialValueSetUrl: 'http://example.com/dynamic',
@@ -873,7 +873,7 @@ describe('parameterisedValueSets utils', () => {
       expect(result.processedValueSetsIsUpdated).toBe(false);
     });
 
-    test('should handle FHIRPath evaluation errors', async () => {
+    it('should handle FHIRPath evaluation errors', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockImplementation(() => {
         throw new Error('FHIRPath evaluation failed');

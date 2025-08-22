@@ -42,7 +42,7 @@ describe('removeNoAnswerQrItem', () => {
     jest.clearAllMocks();
   });
 
-  test('should remove item with no answers', () => {
+  it('should remove item with no answers', () => {
     const qrItem: QuestionnaireResponseItem = {
       linkId: 'item-1',
       text: 'Item 1'
@@ -55,7 +55,7 @@ describe('removeNoAnswerQrItem', () => {
     expect(result).toBeUndefined();
   });
 
-  test('should keep item with answers', () => {
+  it('should keep item with answers', () => {
     const qrItem: QuestionnaireResponseItem = {
       linkId: 'item-1',
       text: 'Item 1',
@@ -68,7 +68,7 @@ describe('removeNoAnswerQrItem', () => {
     expect(result).toEqual(qrItem);
   });
 
-  test('should trim whitespace from valueString answers', () => {
+  it('should trim whitespace from valueString answers', () => {
     const qrItem: QuestionnaireResponseItem = {
       linkId: 'item-1',
       text: 'Item 1',
@@ -79,7 +79,7 @@ describe('removeNoAnswerQrItem', () => {
     expect(result?.answer?.[0].valueString).toBe('test answer');
   });
 
-  test('should recursively clean nested items', () => {
+  it('should recursively clean nested items', () => {
     const qrItem: QuestionnaireResponseItem = {
       linkId: 'group-1',
       text: 'Group 1',
@@ -116,7 +116,7 @@ describe('removeNoAnswerQrItem', () => {
     expect(result?.item?.[1].answer?.[0].valueString).toBe('trim this');
   });
 
-  test('should return undefined if group has no items with answers', () => {
+  it('should return undefined if group has no items with answers', () => {
     const qrItem: QuestionnaireResponseItem = {
       linkId: 'group-1',
       text: 'Group 1',
@@ -140,7 +140,7 @@ describe('removeNoAnswerQrItem', () => {
     expect(result).toBeUndefined();
   });
 
-  test('should handle item with answer but no valueString', () => {
+  it('should handle item with answer but no valueString', () => {
     const qrItem: QuestionnaireResponseItem = {
       linkId: 'item-1',
       text: 'Item 1',
@@ -153,7 +153,7 @@ describe('removeNoAnswerQrItem', () => {
     expect(result).toEqual(qrItem);
   });
 
-  test('should handle empty items array', () => {
+  it('should handle empty items array', () => {
     const qrItem: QuestionnaireResponseItem = {
       linkId: 'group-1',
       text: 'Group 1',
@@ -166,7 +166,7 @@ describe('removeNoAnswerQrItem', () => {
 });
 
 describe('createEmptyQrGroup', () => {
-  test('should create empty group with basic properties', () => {
+  it('should create empty group with basic properties', () => {
     const qItem: QuestionnaireItem = {
       linkId: 'group-1',
       type: 'group',
@@ -182,7 +182,7 @@ describe('createEmptyQrGroup', () => {
     });
   });
 
-  test('should create empty group without text if not provided', () => {
+  it('should create empty group without text if not provided', () => {
     const qItem: QuestionnaireItem = {
       linkId: 'group-1',
       type: 'group'
@@ -198,7 +198,7 @@ describe('createEmptyQrGroup', () => {
 });
 
 describe('createEmptyQrItem', () => {
-  test('should create empty item for string type', () => {
+  it('should create empty item for string type', () => {
     const qItem: QuestionnaireItem = {
       linkId: 'item-1',
       type: 'string',
@@ -213,7 +213,7 @@ describe('createEmptyQrItem', () => {
     });
   });
 
-  test('should create empty item without text if not provided', () => {
+  it('should create empty item without text if not provided', () => {
     const qItem: QuestionnaireItem = {
       linkId: 'item-1',
       type: 'integer'
@@ -226,7 +226,7 @@ describe('createEmptyQrItem', () => {
     });
   });
 
-  test('should handle repeat group items', () => {
+  it('should handle repeat group items', () => {
     const qItem: QuestionnaireItem = {
       linkId: 'group-1',
       type: 'group',
@@ -245,7 +245,7 @@ describe('createEmptyQrItem', () => {
 });
 
 describe('updateQrItemsInGroup', () => {
-  test('should add new item when group is empty', () => {
+  it('should add new item when group is empty', () => {
     const newQrItem: QuestionnaireResponseItem = {
       linkId: 'item-1',
       text: 'Item 1',
@@ -271,7 +271,7 @@ describe('updateQrItemsInGroup', () => {
     expect(questionnaireResponseOrQrItem.item?.[0].linkId).toBe('item-1');
   });
 
-  test('should handle null newQrItem', () => {
+  it('should handle null newQrItem', () => {
     const questionnaireResponseOrQrItem: QuestionnaireResponseItem = {
       linkId: 'group-1',
       text: 'Test Group',
@@ -286,7 +286,7 @@ describe('updateQrItemsInGroup', () => {
     }).not.toThrow();
   });
 
-  test('should handle item not in index map', () => {
+  it('should handle item not in index map', () => {
     const newQrItem: QuestionnaireResponseItem = {
       linkId: 'unknown-item',
       text: 'Unknown Item',
@@ -307,7 +307,7 @@ describe('updateQrItemsInGroup', () => {
     expect(questionnaireResponseOrQrItem.item).toHaveLength(0);
   });
 
-  test('should handle object with undefined items array gracefully', () => {
+  it('should handle object with undefined items array gracefully', () => {
     const newQrItem: QuestionnaireResponseItem = {
       linkId: 'item-1',
       text: 'Item 1',
@@ -332,7 +332,7 @@ describe('updateQrItemsInGroup', () => {
     expect(questionnaireResponseOrQrItem.item).toBeUndefined();
   });
 
-  test('should replace existing item with same linkId', () => {
+  it('should replace existing item with same linkId', () => {
     const existingItem: QuestionnaireResponseItem = {
       linkId: 'item-1',
       text: 'Original Item',
@@ -359,7 +359,7 @@ describe('updateQrItemsInGroup', () => {
     expect(questionnaireResponseOrQrItem.item?.[0].answer?.[0].valueString).toBe('new value');
   });
 
-  test('should remove item with no answer when replacing', () => {
+  it('should remove item with no answer when replacing', () => {
     const existingItem: QuestionnaireResponseItem = {
       linkId: 'item-1',
       text: 'Existing Item',
@@ -386,7 +386,7 @@ describe('updateQrItemsInGroup', () => {
     expect(questionnaireResponseOrQrItem.item).toHaveLength(0);
   });
 
-  test('should insert item at correct position based on index', () => {
+  it('should insert item at correct position based on index', () => {
     const existingItem1: QuestionnaireResponseItem = {
       linkId: 'item-1',
       text: 'Item 1',
@@ -422,7 +422,7 @@ describe('updateQrItemsInGroup', () => {
     expect(questionnaireResponseOrQrItem.item?.[1].linkId).toBe('item-2');
   });
 
-  test('should add item at end when index is larger than existing', () => {
+  it('should add item at end when index is larger than existing', () => {
     const existingItem1: QuestionnaireResponseItem = {
       linkId: 'item-1',
       text: 'Item 1',
@@ -452,7 +452,7 @@ describe('updateQrItemsInGroup', () => {
     expect(questionnaireResponseOrQrItem.item?.[1].linkId).toBe('item-3');
   });
 
-  test('should not add item at end if qrItemHasItemsOrAnswer returns false', () => {
+  it('should not add item at end if qrItemHasItemsOrAnswer returns false', () => {
     const existingItem: QuestionnaireResponseItem = {
       linkId: 'item-1',
       text: 'Item 1',
@@ -483,7 +483,7 @@ describe('updateQrItemsInGroup', () => {
     expect(questionnaireResponseOrQrItem.item?.[0].linkId).toBe('item-1');
   });
 
-  test('should handle repeat group updates', () => {
+  it('should handle repeat group updates', () => {
     const qrRepeatGroup = {
       linkId: 'repeat-group',
       qrItems: [
@@ -510,7 +510,7 @@ describe('updateQrItemsInGroup', () => {
     expect(questionnaireResponseOrQrItem.item?.[0].linkId).toBe('repeat-item-1');
   });
 
-  test('should add repeat group at end when index is larger than existing', () => {
+  it('should add repeat group at end when index is larger than existing', () => {
     const existingItem: QuestionnaireResponseItem = {
       linkId: 'item-1',
       text: 'Item 1',
@@ -548,7 +548,7 @@ describe('updateQrItemsInGroup', () => {
     expect(questionnaireResponseOrQrItem.item?.[2].linkId).toBe('repeat-item-2');
   });
 
-  test('should replace existing repeat group items with same count', () => {
+  it('should replace existing repeat group items with same count', () => {
     // For repeat groups, items share the same linkId as the repeat group
     const existingRepeatItem1: QuestionnaireResponseItem = {
       linkId: 'repeat-group',
@@ -593,7 +593,7 @@ describe('updateQrItemsInGroup', () => {
     expect(questionnaireResponseOrQrItem.item?.[1].answer?.[0].valueString).toBe('new-value2');
   });
 
-  test('should handle repeat group with more items than existing', () => {
+  it('should handle repeat group with more items than existing', () => {
     const existingRepeatItem1: QuestionnaireResponseItem = {
       linkId: 'repeat-group',
       text: 'Existing Repeat Item 1',
@@ -637,7 +637,7 @@ describe('updateQrItemsInGroup', () => {
     expect(questionnaireResponseOrQrItem.item?.[2].answer?.[0].valueString).toBe('new-value3');
   });
 
-  test('should handle repeat group with fewer items than existing', () => {
+  it('should handle repeat group with fewer items than existing', () => {
     const existingRepeatItem1: QuestionnaireResponseItem = {
       linkId: 'repeat-group',
       text: 'Existing Repeat Item 1',
@@ -683,7 +683,7 @@ describe('updateQrItemsInGroup', () => {
     expect(questionnaireResponseOrQrItem.item?.[1].answer?.[0].valueString).toBe('existing-value3');
   });
 
-  test('should insert repeat group at correct position based on index', () => {
+  it('should insert repeat group at correct position based on index', () => {
     const existingItem1: QuestionnaireResponseItem = {
       linkId: 'item-1',
       text: 'Item 1',
@@ -729,7 +729,7 @@ describe('updateQrItemsInGroup', () => {
     expect(questionnaireResponseOrQrItem.item?.[3].linkId).toBe('item-3');
   });
 
-  test('should handle repeat group not in index map', () => {
+  it('should handle repeat group not in index map', () => {
     const existingItem: QuestionnaireResponseItem = {
       linkId: 'item-1',
       text: 'Item 1',

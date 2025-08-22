@@ -628,7 +628,7 @@ describe('isCodingDisabled', () => {
 });
 
 describe('Edge cases for 100% coverage', () => {
-  test('should find option by valueCoding.code when code matches exactly (line 69)', () => {
+  it('should find option by valueCoding.code when code matches exactly (line 69)', () => {
     const options = [
       {
         valueCoding: {
@@ -649,7 +649,7 @@ describe('Edge cases for 100% coverage', () => {
     });
   });
 
-  test('should handle compareAnswerOptionValue with null/undefined value (line 112)', () => {
+  it('should handle compareAnswerOptionValue with null/undefined value (line 112)', () => {
     const option = { valueString: 'test' };
 
     // Test line 112: when value is null/undefined
@@ -657,7 +657,7 @@ describe('Edge cases for 100% coverage', () => {
     expect(compareAnswerOptionValue(option, undefined as any)).toBe(false);
   });
 
-  test('should handle compareAnswerOptionValue fallback case (line 132)', () => {
+  it('should handle compareAnswerOptionValue fallback case (line 132)', () => {
     const option = { valueString: 'test' };
     const value = { valueQuantity: { value: 10 } } as any; // Unsupported type
 
