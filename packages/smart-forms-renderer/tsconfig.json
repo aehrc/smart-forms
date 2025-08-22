@@ -15,9 +15,8 @@
     "outDir": "lib",
     "declaration": true,
     "checkJs": true,
-    "resolveJsonModule": true,
-    "types": ["jest", "@testing-library/jest-dom", "node"]
+    "resolveJsonModule": true
   },
   "include": ["src"],
-  "exclude": ["src/stories/**/*", "lib", "dist"]
+  "exclude": ["src/**/*.test.ts", "src/stories/**/*", "src/setup-jest.*", "lib", "dist"]
 }

@@ -29,7 +29,6 @@ const config: Config = {
       isolatedModules: true,
     }]
   },
-  // transformIgnorePatterns: ['/node_modules/'],
   // Exclude "spec" folder
   testRegex: '(/__tests__/.*|(\\.|/)(test))\\.ts?$',
   moduleFileExtensions: ['ts', 'js', 'json', 'node'],
@@ -47,7 +46,6 @@ const config: Config = {
     '!src/stores/selector.ts',       // explicitly exclude src/stores/selector.ts
     '!src/features/standalone/standaloneList.ts',       // explicitly exclude src/features/standalone/standaloneList.ts
   ],
-
   clearMocks: true,
   coverageDirectory: 'coverage'
 };
