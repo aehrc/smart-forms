@@ -1,3 +1,6 @@
+/// <reference types="jest" />
+/// <reference types="@testing-library/jest-dom" />
+
 /*
  * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
@@ -15,10 +18,43 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireItem } from 'fhir/r4';
+import { act, renderHook, waitFor } from '@testing-library/react';
+import type { Coding, QuestionnaireItem, ValueSet } from 'fhir/r4';
 import type { CalculatedExpression } from '../interfaces';
 import type { ProcessedValueSet } from '../interfaces/valueSet.interface';
-import { getUpdatableValueSetUrl } from '../hooks/useDynamicValueSetEffect';
+import useDynamicValueSetEffect, {
+  getUpdatableValueSetUrl
+} from '../hooks/useDynamicValueSetEffect';
+import { getValueSetCodings, getValueSetPromise } from '../utils/valueSet';
+import { addDisplayToCodingArray } from '../utils/questionnaireStoreUtils/addDisplayToCodings';
+
+// Mock external dependencies
+jest.mock('../utils/valueSet', () => ({
+  getValueSetCodings: jest.fn(),
+  getValueSetPromise: jest.fn()
+}));
+
+jest.mock('../utils/questionnaireStoreUtils/addDisplayToCodings', () => ({
+  addDisplayToCodingArray: jest.fn()
+}));
+
+jest.mock('../stores', () => ({
+  useQuestionnaireStore: {
+    use: {
+      calculatedExpressions: () => mockCalculatedExpressions,
+      addCodingToCache: () => mockAddCodingToCache
+    }
+  }
+}));
+
+const mockGetValueSetCodings = getValueSetCodings as jest.MockedFunction<typeof getValueSetCodings>;
+const mockGetValueSetPromise = getValueSetPromise as jest.MockedFunction<typeof getValueSetPromise>;
+const mockAddDisplayToCodingArray = addDisplayToCodingArray as jest.MockedFunction<
+  typeof addDisplayToCodingArray
+>;
+const mockAddCodingToCache = jest.fn();
+
+let mockCalculatedExpressions: Record<string, CalculatedExpression[]> = {};
 
 const processedValueSets: Record<string, ProcessedValueSet> = {
   'http://hl7.org/fhir/ValueSet/address-use': {
@@ -81,5 +117,552 @@ describe('getUpdatableValueSetUrl (real data)', () => {
 
     const result = getUpdatableValueSetUrl(qItem, calculatedExpressions, processedValueSets);
     expect(result).toBe('');
+  });
+});
+
+describe('useDynamicValueSetEffect hook', () => {
+  let mockOnSetCodings: jest.Mock;
+  let mockOnSetDynamicCodingsUpdated: jest.Mock;
+  let mockOnSetServerError: jest.Mock;
+  let mockQItem: QuestionnaireItem;
+  let mockProcessedValueSets: Record<string, ProcessedValueSet>;
+  let mockCachedValueSetCodings: Record<string, Coding[]>;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.useFakeTimers();
+
+    mockCalculatedExpressions = {};
+    mockOnSetCodings = jest.fn();
+    mockOnSetDynamicCodingsUpdated = jest.fn();
+    mockOnSetServerError = jest.fn();
+
+    mockQItem = {
+      linkId: 'test-item',
+      type: 'choice',
+      answerValueSet: 'http://test.com/ValueSet/test',
+      _answerValueSet: {
+        extension: []
+      }
+    };
+
+    mockProcessedValueSets = {
+      'http://test.com/ValueSet/test': {
+        initialValueSetUrl: 'http://test.com/ValueSet/test',
+        updatableValueSetUrl: 'http://test.com/ValueSet/test-updated',
+        bindingParameters: [],
+        isDynamic: true,
+        linkIds: ['test-item']
+      }
+    };
+
+    mockCachedValueSetCodings = {};
+  });
+
+  afterEach(() => {
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
+  });
+
+  describe('when conditions are not met', () => {
+    it('should not run effect when answerValueSet is missing', () => {
+      const qItemWithoutValueSet = { ...mockQItem, answerValueSet: undefined };
+
+      renderHook(() =>
+        useDynamicValueSetEffect(
+          qItemWithoutValueSet,
+          'http://terminology.server.com',
+          mockProcessedValueSets,
+          mockCachedValueSetCodings,
+          mockOnSetCodings,
+          mockOnSetDynamicCodingsUpdated,
+          mockOnSetServerError
+        )
+      );
+
+      expect(mockGetValueSetPromise).not.toHaveBeenCalled();
+      expect(mockOnSetCodings).not.toHaveBeenCalled();
+    });
+
+    it('should not run effect when _answerValueSet is missing', () => {
+      const qItemWithout_AnswerValueSet = { ...mockQItem, _answerValueSet: undefined };
+
+      renderHook(() =>
+        useDynamicValueSetEffect(
+          qItemWithout_AnswerValueSet,
+          'http://terminology.server.com',
+          mockProcessedValueSets,
+          mockCachedValueSetCodings,
+          mockOnSetCodings,
+          mockOnSetDynamicCodingsUpdated,
+          mockOnSetServerError
+        )
+      );
+
+      expect(mockGetValueSetPromise).not.toHaveBeenCalled();
+      expect(mockOnSetCodings).not.toHaveBeenCalled();
+    });
+
+    it('should not run effect when updatableValueSetUrl is empty', () => {
+      const emptyProcessedValueSets = {
+        'http://test.com/ValueSet/test': {
+          ...mockProcessedValueSets['http://test.com/ValueSet/test'],
+          updatableValueSetUrl: ''
+        }
+      };
+
+      renderHook(() =>
+        useDynamicValueSetEffect(
+          mockQItem,
+          'http://terminology.server.com',
+          emptyProcessedValueSets,
+          mockCachedValueSetCodings,
+          mockOnSetCodings,
+          mockOnSetDynamicCodingsUpdated,
+          mockOnSetServerError
+        )
+      );
+
+      expect(mockGetValueSetPromise).not.toHaveBeenCalled();
+      expect(mockOnSetCodings).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when updatableValueSetUrl is the same as previous', () => {
+    it('should skip execution on re-render with same URL', () => {
+      const { rerender } = renderHook(() =>
+        useDynamicValueSetEffect(
+          mockQItem,
+          'http://terminology.server.com',
+          mockProcessedValueSets,
+          mockCachedValueSetCodings,
+          mockOnSetCodings,
+          mockOnSetDynamicCodingsUpdated,
+          mockOnSetServerError
+        )
+      );
+
+      // Mock promise for first render
+      mockGetValueSetPromise.mockReturnValue(
+        Promise.resolve({
+          resourceType: 'ValueSet',
+          id: 'test-valueset',
+          status: 'active'
+        } as ValueSet)
+      );
+
+      expect(mockGetValueSetPromise).toHaveBeenCalledTimes(1);
+
+      // Clear mock and rerender with same data
+      mockGetValueSetPromise.mockClear();
+      rerender();
+
+      // Should not call again
+      expect(mockGetValueSetPromise).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when cached codings exist', () => {
+    it('should use cached codings and trigger UI update', () => {
+      const cachedCodings: Coding[] = [
+        { system: 'http://test.com', code: 'TEST1', display: 'Test 1' },
+        { system: 'http://test.com', code: 'TEST2', display: 'Test 2' }
+      ];
+
+      const cachedValueSetCodings = {
+        'http://test.com/ValueSet/test-updated': cachedCodings
+      };
+
+      renderHook(() =>
+        useDynamicValueSetEffect(
+          mockQItem,
+          'http://terminology.server.com',
+          mockProcessedValueSets,
+          cachedValueSetCodings,
+          mockOnSetCodings,
+          mockOnSetDynamicCodingsUpdated,
+          mockOnSetServerError
+        )
+      );
+
+      expect(mockOnSetCodings).toHaveBeenCalledWith(cachedCodings);
+      expect(mockOnSetDynamicCodingsUpdated).toHaveBeenCalledWith(true);
+
+      // Advance time to trigger timeout
+      act(() => {
+        jest.advanceTimersByTime(500);
+      });
+
+      expect(mockOnSetDynamicCodingsUpdated).toHaveBeenCalledWith(false);
+    });
+
+    it('should not fetch from server when cached codings exist', () => {
+      const cachedCodings: Coding[] = [
+        { system: 'http://test.com', code: 'TEST1', display: 'Test 1' }
+      ];
+
+      const cachedValueSetCodings = {
+        'http://test.com/ValueSet/test-updated': cachedCodings
+      };
+
+      renderHook(() =>
+        useDynamicValueSetEffect(
+          mockQItem,
+          'http://terminology.server.com',
+          mockProcessedValueSets,
+          cachedValueSetCodings,
+          mockOnSetCodings,
+          mockOnSetDynamicCodingsUpdated,
+          mockOnSetServerError
+        )
+      );
+
+      expect(mockGetValueSetPromise).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when fetching from server', () => {
+    it('should handle successful fetch and processing', async () => {
+      const mockValueSet: ValueSet = {
+        resourceType: 'ValueSet',
+        id: 'test-valueset',
+        status: 'active',
+        compose: {
+          include: [
+            {
+              system: 'http://test.com',
+              concept: [
+                { code: 'A', display: 'Option A' },
+                { code: 'B', display: 'Option B' }
+              ]
+            }
+          ]
+        }
+      };
+
+      const initialCodings: Coding[] = [
+        { system: 'http://test.com', code: 'A' },
+        { system: 'http://test.com', code: 'B' }
+      ];
+
+      const codingsWithDisplay: Coding[] = [
+        { system: 'http://test.com', code: 'A', display: 'Option A' },
+        { system: 'http://test.com', code: 'B', display: 'Option B' }
+      ];
+
+      mockGetValueSetPromise.mockResolvedValue(mockValueSet);
+      mockGetValueSetCodings.mockReturnValue(initialCodings);
+      mockAddDisplayToCodingArray.mockResolvedValue(codingsWithDisplay);
+
+      renderHook(() =>
+        useDynamicValueSetEffect(
+          mockQItem,
+          'http://terminology.server.com',
+          mockProcessedValueSets,
+          mockCachedValueSetCodings,
+          mockOnSetCodings,
+          mockOnSetDynamicCodingsUpdated,
+          mockOnSetServerError
+        )
+      );
+
+      expect(mockGetValueSetPromise).toHaveBeenCalledWith(
+        'http://test.com/ValueSet/test-updated',
+        'http://terminology.server.com'
+      );
+
+      // Wait for async operations to complete
+      await waitFor(() => {
+        expect(mockOnSetCodings).toHaveBeenCalled();
+      });
+
+      expect(mockGetValueSetCodings).toHaveBeenCalledWith(mockValueSet);
+      expect(mockAddDisplayToCodingArray).toHaveBeenCalledWith(
+        initialCodings,
+        'http://terminology.server.com'
+      );
+      expect(mockAddCodingToCache).toHaveBeenCalledWith(
+        'http://test.com/ValueSet/test-updated',
+        codingsWithDisplay
+      );
+      expect(mockOnSetCodings).toHaveBeenCalledWith(codingsWithDisplay);
+      expect(mockOnSetDynamicCodingsUpdated).toHaveBeenCalledWith(true);
+    });
+
+    it('should handle empty codings result', async () => {
+      const mockValueSet: ValueSet = {
+        resourceType: 'ValueSet',
+        id: 'test-valueset',
+        status: 'active'
+      };
+
+      mockGetValueSetPromise.mockResolvedValue(mockValueSet);
+      mockGetValueSetCodings.mockReturnValue([]);
+      mockAddDisplayToCodingArray.mockResolvedValue([]);
+
+      renderHook(() =>
+        useDynamicValueSetEffect(
+          mockQItem,
+          'http://terminology.server.com',
+          mockProcessedValueSets,
+          mockCachedValueSetCodings,
+          mockOnSetCodings,
+          mockOnSetDynamicCodingsUpdated,
+          mockOnSetServerError
+        )
+      );
+
+      await waitFor(() => {
+        expect(mockOnSetCodings).toHaveBeenCalledWith([]);
+      });
+      expect(mockOnSetDynamicCodingsUpdated).toHaveBeenCalledWith(true);
+    });
+
+    it('should handle addDisplayToCodingArray error', async () => {
+      const mockValueSet: ValueSet = {
+        resourceType: 'ValueSet',
+        id: 'test-valueset',
+        status: 'active'
+      };
+
+      const initialCodings: Coding[] = [{ system: 'http://test.com', code: 'A' }];
+
+      const addDisplayError = new Error('Failed to add display');
+
+      mockGetValueSetPromise.mockResolvedValue(mockValueSet);
+      mockGetValueSetCodings.mockReturnValue(initialCodings);
+      mockAddDisplayToCodingArray.mockRejectedValue(addDisplayError);
+
+      renderHook(() =>
+        useDynamicValueSetEffect(
+          mockQItem,
+          'http://terminology.server.com',
+          mockProcessedValueSets,
+          mockCachedValueSetCodings,
+          mockOnSetCodings,
+          mockOnSetDynamicCodingsUpdated,
+          mockOnSetServerError
+        )
+      );
+
+      await waitFor(() => {
+        expect(mockOnSetServerError).toHaveBeenCalledWith(addDisplayError);
+      });
+    });
+
+    it('should handle ValueSet promise rejection', async () => {
+      const promiseError = new Error('Failed to fetch ValueSet');
+
+      mockGetValueSetPromise.mockRejectedValue(promiseError);
+
+      renderHook(() =>
+        useDynamicValueSetEffect(
+          mockQItem,
+          'http://terminology.server.com',
+          mockProcessedValueSets,
+          mockCachedValueSetCodings,
+          mockOnSetCodings,
+          mockOnSetDynamicCodingsUpdated,
+          mockOnSetServerError
+        )
+      );
+
+      await waitFor(() => {
+        expect(mockOnSetServerError).toHaveBeenCalledWith(promiseError);
+      });
+    });
+
+    it('should not fetch when getValueSetPromise returns null', () => {
+      mockGetValueSetPromise.mockReturnValue(null as any);
+
+      renderHook(() =>
+        useDynamicValueSetEffect(
+          mockQItem,
+          'http://terminology.server.com',
+          mockProcessedValueSets,
+          mockCachedValueSetCodings,
+          mockOnSetCodings,
+          mockOnSetDynamicCodingsUpdated,
+          mockOnSetServerError
+        )
+      );
+
+      expect(mockGetValueSetPromise).toHaveBeenCalledWith(
+        'http://test.com/ValueSet/test-updated',
+        'http://terminology.server.com'
+      );
+      expect(mockOnSetCodings).not.toHaveBeenCalled();
+      expect(mockOnSetServerError).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('with calculated expressions', () => {
+    it('should use calculated expression value as updatableValueSetUrl', async () => {
+      mockCalculatedExpressions = {
+        'test-item': [
+          {
+            expression: 'some-expression',
+            from: 'item._answerValueSet',
+            value: 'http://calculated.com/ValueSet/dynamic'
+          }
+        ]
+      };
+
+      const mockValueSet: ValueSet = {
+        resourceType: 'ValueSet',
+        id: 'calculated-valueset',
+        status: 'active'
+      };
+
+      mockGetValueSetPromise.mockResolvedValue(mockValueSet);
+      mockGetValueSetCodings.mockReturnValue([]);
+      mockAddDisplayToCodingArray.mockResolvedValue([]);
+
+      renderHook(() =>
+        useDynamicValueSetEffect(
+          mockQItem,
+          'http://terminology.server.com',
+          mockProcessedValueSets,
+          mockCachedValueSetCodings,
+          mockOnSetCodings,
+          mockOnSetDynamicCodingsUpdated,
+          mockOnSetServerError
+        )
+      );
+
+      expect(mockGetValueSetPromise).toHaveBeenCalledWith(
+        'http://calculated.com/ValueSet/dynamic',
+        'http://terminology.server.com'
+      );
+    });
+
+    it('should handle changes in calculated expression value', () => {
+      // Start with one calculated expression
+      mockCalculatedExpressions = {
+        'test-item': [
+          {
+            expression: 'some-expression',
+            from: 'item._answerValueSet',
+            value: 'http://calculated.com/ValueSet/v1'
+          }
+        ]
+      };
+
+      const { rerender } = renderHook(() =>
+        useDynamicValueSetEffect(
+          mockQItem,
+          'http://terminology.server.com',
+          mockProcessedValueSets,
+          mockCachedValueSetCodings,
+          mockOnSetCodings,
+          mockOnSetDynamicCodingsUpdated,
+          mockOnSetServerError
+        )
+      );
+
+      expect(mockGetValueSetPromise).toHaveBeenCalledWith(
+        'http://calculated.com/ValueSet/v1',
+        'http://terminology.server.com'
+      );
+
+      // Change the calculated expression
+      mockCalculatedExpressions = {
+        'test-item': [
+          {
+            expression: 'some-expression',
+            from: 'item._answerValueSet',
+            value: 'http://calculated.com/ValueSet/v2'
+          }
+        ]
+      };
+
+      mockGetValueSetPromise.mockClear();
+      rerender();
+
+      expect(mockGetValueSetPromise).toHaveBeenCalledWith(
+        'http://calculated.com/ValueSet/v2',
+        'http://terminology.server.com'
+      );
+    });
+  });
+
+  describe('edge cases', () => {
+    it('should handle missing answerValueSet in qItem', () => {
+      const qItemNoAnswerValueSet = { ...mockQItem, answerValueSet: undefined };
+
+      renderHook(() =>
+        useDynamicValueSetEffect(
+          qItemNoAnswerValueSet,
+          'http://terminology.server.com',
+          mockProcessedValueSets,
+          mockCachedValueSetCodings,
+          mockOnSetCodings,
+          mockOnSetDynamicCodingsUpdated,
+          mockOnSetServerError
+        )
+      );
+
+      expect(mockGetValueSetPromise).not.toHaveBeenCalled();
+    });
+
+    it('should handle calculated expression with empty string value', () => {
+      mockCalculatedExpressions = {
+        'test-item': [
+          {
+            expression: 'some-expression',
+            from: 'item._answerValueSet',
+            value: ''
+          }
+        ]
+      };
+
+      renderHook(() =>
+        useDynamicValueSetEffect(
+          mockQItem,
+          'http://terminology.server.com',
+          mockProcessedValueSets,
+          mockCachedValueSetCodings,
+          mockOnSetCodings,
+          mockOnSetDynamicCodingsUpdated,
+          mockOnSetServerError
+        )
+      );
+
+      // Should fallback to processedValueSets when calculated expression value is empty
+      expect(mockGetValueSetPromise).toHaveBeenCalledWith(
+        'http://test.com/ValueSet/test-updated',
+        'http://terminology.server.com'
+      );
+    });
+
+    it('should handle calculated expression with non-string value', () => {
+      mockCalculatedExpressions = {
+        'test-item': [
+          {
+            expression: 'some-expression',
+            from: 'item._answerValueSet',
+            value: 123 // non-string value
+          }
+        ]
+      };
+
+      renderHook(() =>
+        useDynamicValueSetEffect(
+          mockQItem,
+          'http://terminology.server.com',
+          mockProcessedValueSets,
+          mockCachedValueSetCodings,
+          mockOnSetCodings,
+          mockOnSetDynamicCodingsUpdated,
+          mockOnSetServerError
+        )
+      );
+
+      // Should fallback to processedValueSets
+      expect(mockGetValueSetPromise).toHaveBeenCalledWith(
+        'http://test.com/ValueSet/test-updated',
+        'http://terminology.server.com'
+      );
+    });
   });
 });

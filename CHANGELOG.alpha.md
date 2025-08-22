@@ -7,6 +7,11 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.95] - 2025-08-20
+#### Fixed
+- Various TypeScript-related bug fixes.
+- In the autocomplete component, when the input is less than 2 characters, an info icon will be displayed at the right end.
+
 ## [1.0.0-alpha.94] - 2025-08-20
 #### Fixed
 - Add enableColorScheme at ScopedCssBaseline for native light/dark alignment with parent app i.e. native scrollbars, native focus rings, etc.

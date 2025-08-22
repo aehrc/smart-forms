@@ -1,3 +1,6 @@
+/// <reference types="jest" />
+/// <reference types="@testing-library/jest-dom" />
+
 /*
  * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
@@ -20,7 +23,7 @@ import { removeInternalIdsFromResponse } from '../utils';
 import { qrRemoveIdResult, qrRemoveIdSample } from './data/removeIdSample';
 import { qMyPatient } from '../stories/assets/questionnaires/QIdRemoverDebugger';
 
-test('item.initial is properly pre-filled into QuestionnaireResponse', () => {
+it('item.initial is properly pre-filled into QuestionnaireResponse', () => {
   const outputResponse = removeInternalIdsFromResponse(qMyPatient, qrRemoveIdSample);
 
   expect(outputResponse).toStrictEqual(qrRemoveIdResult);

@@ -33,7 +33,6 @@ describe('getExtractMechanism', () => {
 
   it("returns 'template-based' if canBeTemplateExtracted is true", () => {
     (canBeTemplateExtracted as jest.Mock).mockReturnValue(true);
-    (canBeObservationExtracted as jest.Mock).mockReturnValue(false);
 
     expect(getExtractMechanism(questionnaire)).toBe('template-based');
     expect(canBeTemplateExtracted).toHaveBeenCalledWith(questionnaire);
