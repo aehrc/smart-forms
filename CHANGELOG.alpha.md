@@ -7,6 +7,15 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.94] - 2025-08-20
+#### Fixed
+- Add enableColorScheme at ScopedCssBaseline for native light/dark alignment with parent app i.e. native scrollbars, native focus rings, etc.
+  Note that this doesn't provide you with dark mode. for that, you need to wrap `<BaseRenderer>` with your own light/dark-mode enabled `<ThemeProvider>`. See https://mui.com/material-ui/customization/theming/ for more details.
+
+## [1.0.0-alpha.93] - 2025-08-19
+#### Changed
+- Remove MUI GlobalStyles (which overrides the parent app) with ScopedCssBaseline in RendererThemeProvider. This sets a baseline for the renderer's MUI styles without affecting the parent app's styles.
+
 ## [1.0.0-alpha.92] - 2025-08-15
 #### Changed
 - Changed "questionnaire-item-text-hidden" custom extension to use the "https://smartforms.csiro.au/ig/StructureDefinition/<extension_name>" convention. Affected extensions:
