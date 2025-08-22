@@ -25,7 +25,7 @@ import {
 import { saveQuestionnaireResponse } from '../../../api/saveQr.ts';
 import { useSnackbar } from 'notistack';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
-import { saveErrorMessage, saveSuccessMessage } from '../../../utils/snackbar.ts';
+import { saveErrorMessage, saveSuccessMessage } from '../../../interfaces/snackbar.interface.ts';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 
 interface AutoSaveDialogProps {

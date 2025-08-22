@@ -73,13 +73,18 @@ export function useParseXhtml(qItem: QuestionnaireItem): ParsedXhtml | null {
               const styleObj: Record<string, string> = {};
               const styleStr = domNode.attribs.style;
               styleStr.split(';').forEach((style) => {
-                if (style.trim()) {
-                  const [property, value] = style.split(':');
-                  if (property && value) {
-                    // Convert kebab-case to camelCase for React
-                    const propName = convertKebabToCamelCase(property);
-                    styleObj[propName] = value.trim();
-                  }
+                // Skip empty styles
+                if (!style.trim()) {
+                  return;
+                }
+
+                // Split property and value
+                const [property, value] = style.split(':').map((s) => s.trim());
+
+                // Only keep if both property and value exist
+                if (property && value) {
+                  const propName = convertKebabToCamelCase(property);
+                  styleObj[propName] = value;
                 }
               });
 

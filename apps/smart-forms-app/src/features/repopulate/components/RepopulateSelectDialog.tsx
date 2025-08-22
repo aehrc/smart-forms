@@ -55,12 +55,17 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
     [itemsToRepopulate]
   );
 
+  console.log(itemsToRepopulate);
+  console.log(itemsToRepopulateTuplesByHeadingsMap);
+  console.log(Object.fromEntries(itemsToRepopulateTuplesByHeadingsMap));
+
   // Exclude items with this criterion:
   // 1. A child item's current and server values are the same
   const allValidKeys: Set<string> = useMemo(
     () => getItemsToRepopulateValidKeys(itemsToRepopulateTuplesByHeadingsMap),
     [itemsToRepopulateTuplesByHeadingsMap]
   );
+  console.log(allValidKeys);
 
   const [selectedKeys, setSelectedKeys] = useState<Set<string>>(allValidKeys);
 

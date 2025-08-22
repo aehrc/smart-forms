@@ -60,7 +60,11 @@ jobs:
         run: npm ci
 
       - name: Build workspace packages
-        run: npm run build -w packages/sdc-template-extract
+        run: |
+          npm run build -w packages/sdc-assemble
+          npm run build -w packages/sdc-populate
+          npm run build -w packages/sdc-template-extract
+          npm run build -w packages/smart-forms-renderer
 
       - name: Run jest tests
         run: npm run test -w apps/smart-forms-app
@@ -73,16 +77,27 @@ jobs:
     if: github.actor != 'dependabot[bot]'
     steps:
       - uses: actions/checkout@v4
+
       - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
+
       - name: Install dependencies
         run: npm ci
+
       - name: Run jest tests
         run: npm run test -w packages/smart-forms-renderer
       - uses: codecov/codecov-action@v4
+
+      - name: Upload smart-forms-renderer coverage report to GitHub
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: smart-forms-renderer-coverage-report
+          path: packages/smart-forms-renderer/coverage
+          retention-days: 30
 
   jest-populate-tests:
     name: Jest Tests - Populate

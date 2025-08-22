@@ -79,7 +79,7 @@ export function extractContainedValueSets(
 }
 
 /**
- * Sets an array of codings with the values from a valueSet
+ * Gets the first unexpanded contained ValueSet url
  *
  * @author Sean Fong
  */

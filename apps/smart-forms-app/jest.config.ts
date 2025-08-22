@@ -19,14 +19,33 @@ import type { Config } from 'jest';
 
 const config: Config = {
   verbose: true,
-  roots: ['<rootDir>'],
+  roots: ['src'],
+  preset: 'ts-jest',
+  testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['./src/setup-jest.ts'],
   transform: {
-    '^.+\\.ts?$': 'ts-jest'
+    '^.+\\.(ts)$': ['ts-jest', {
+      useESM: true,
+      isolatedModules: true,
+    }]
   },
   // Exclude "spec" folder
   testRegex: '(/__tests__/.*|(\\.|/)(test))\\.ts?$',
   moduleFileExtensions: ['ts', 'js', 'json', 'node'],
   collectCoverage: true,
+  collectCoverageFrom: [
+    '**/*.{ts,tsx}',                 // all TypeScript files
+    '!**/*.config.{ts,tsx,js,jsx}',  // exclude config files
+    '!**/*.test.{ts,tsx}',           // exclude test files
+    '!**/*.spec.{ts,tsx}',           // exclude test files
+    '!**/*.d.ts',                    // exclude declaration files
+    '!**/e2e/**',                    // exclude e2e
+    '!src/theme/**',                 // explicitly exclude src/theme
+    '!src/globals.ts',               // explicitly exclude src/globals.ts
+    '!src/utils/dayjsExtend.ts',     // explicitly exclude src/utils/dayjsExtend.ts
+    '!src/stores/selector.ts',       // explicitly exclude src/stores/selector.ts
+    '!src/features/standalone/standaloneList.ts',       // explicitly exclude src/features/standalone/standaloneList.ts
+  ],
   clearMocks: true,
   coverageDirectory: 'coverage'
 };

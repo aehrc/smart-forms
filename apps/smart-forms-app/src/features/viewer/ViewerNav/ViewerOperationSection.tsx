@@ -30,7 +30,7 @@ import {
   NavSectionWrapper
 } from '../../../components/Nav/Nav.styles.ts';
 import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
-import { getQuestionnaireNameFromResponse } from '../../renderer/utils/itemControl.ts';
+import { getQuestionnaireNameFromResponse } from '../../../utils/questionnaireName.ts';
 
 /*
   Prevent content from breaking inside these section containers.

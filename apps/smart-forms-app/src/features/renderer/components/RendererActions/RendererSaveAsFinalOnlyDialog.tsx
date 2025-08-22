@@ -22,7 +22,10 @@ import { saveProgress } from '../../../../api/saveQr.ts';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText } from '@mui/material';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
-import { saveAsFinalSuccessMessage, saveErrorMessage } from '../../../../utils/snackbar.ts';
+import {
+  saveAsFinalSuccessMessage,
+  saveErrorMessage
+} from '../../../../interfaces/snackbar.interface.ts';
 import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
 import StandardDialogTitle from '../../../../components/Dialog/StandardDialogTitle.tsx';
 

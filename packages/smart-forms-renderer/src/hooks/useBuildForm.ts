@@ -67,9 +67,14 @@ function useBuildForm(
       additionalVariables,
       qItemOverrideComponents,
       sdcUiOverrideComponents
-    ).then(() => {
-      setIsBuilding(false);
-    });
+    )
+      .then(() => {
+        setIsBuilding(false);
+      })
+      .catch((e) => {
+        setIsBuilding(false);
+        console.error('buildForm(): Failed to build form', e);
+      });
   }, [
     questionnaire,
     questionnaireResponse,

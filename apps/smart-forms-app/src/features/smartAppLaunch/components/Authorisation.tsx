@@ -29,7 +29,7 @@ import GoToTestLauncher from '../../../components/Snackbar/GoToTestLauncher.tsx'
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
 import { StyledRoot } from './Authorisation.styles.tsx';
-import type { AuthActions, AuthState } from '../types/authorisation.interface.ts';
+import type { AuthActions, AuthState } from '../interfaces/authorisation.interface.ts';
 import RenderAuthStatus from './RenderAuthStatus.tsx';
 import { assembleIfRequired } from '../../../utils/assemble.ts';
 import useAuthRedirectHook from '../hooks/useAuthRedirectHook.ts';
