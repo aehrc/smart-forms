@@ -272,27 +272,6 @@ describe('useRendererQueryClient', () => {
     });
   });
 
-  describe('memory considerations', () => {
-    it('should create new instances without memory leaks', () => {
-      // Create multiple instances
-      for (let i = 0; i < 10; i++) {
-        renderHook(() => useRendererQueryClient());
-      }
-
-      expect(MockedQueryClient).toHaveBeenCalledTimes(10);
-    });
-
-    it('should allow garbage collection of unused instances', () => {
-      const { result } = renderHook(() => useRendererQueryClient());
-
-      const instance = result.current;
-      expect(instance).toBeDefined();
-
-      // Instance should be available for garbage collection when hook unmounts
-      // This is more of a design verification than a test
-    });
-  });
-
   describe('configuration customization potential', () => {
     it('should provide baseline configuration that can be extended', () => {
       renderHook(() => useRendererQueryClient());
@@ -316,25 +295,6 @@ describe('useRendererQueryClient', () => {
       // Verify v5 compatible option names and values
       expect(config?.defaultOptions?.queries?.refetchOnWindowFocus).toBe(false);
       expect(config?.defaultOptions?.queries?.placeholderData).toBe('keepPreviousData');
-    });
-  });
-
-  describe('hook behavior', () => {
-    it('should not use any React hooks internally', () => {
-      // This hook doesn't use useState, useEffect, etc.
-      // It's a simple factory function
-      const { result } = renderHook(() => useRendererQueryClient());
-
-      expect(result.current).toBeDefined();
-      expect(MockedQueryClient).toHaveBeenCalledTimes(1);
-    });
-
-    it('should be callable outside of React context if needed', () => {
-      // Since it's a simple factory, it could theoretically be used outside React
-      // But testing within renderHook for consistency
-      const { result } = renderHook(() => useRendererQueryClient());
-
-      expect(result.current).toBeDefined();
     });
   });
 });

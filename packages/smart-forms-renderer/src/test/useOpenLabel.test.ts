@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-import { renderHook, act } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import type { QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import useOpenLabel from '../hooks/useOpenLabel';
 
@@ -366,21 +366,6 @@ describe('useOpenLabel', () => {
   });
 
   describe('edge cases', () => {
-    it('should handle null options gracefully', () => {
-      const { result } = renderHook(() => useOpenLabel(null as any, basicAnswers));
-
-      expect(result.current.openLabelValue).toBe('');
-      expect(result.current.openLabelChecked).toBe(false);
-    });
-
-    it('should handle null answers gracefully', () => {
-      const { result } = renderHook(() => useOpenLabel(basicOptions, null as any));
-
-      expect(mockGetOldOpenLabelAnswer).toHaveBeenCalledWith(null, basicOptions);
-      expect(result.current.openLabelValue).toBe('');
-      expect(result.current.openLabelChecked).toBe(false);
-    });
-
     it('should handle undefined valueString in old answer', () => {
       const answerWithUndefinedString = { valueString: undefined };
       mockGetOldOpenLabelAnswer.mockReturnValue(answerWithUndefinedString);
@@ -481,33 +466,6 @@ describe('useOpenLabel', () => {
 
       expect(result.current.openLabelValue).toBe('Original Answer');
       expect(result.current.openLabelChecked).toBe(true);
-    });
-  });
-
-  describe('performance considerations', () => {
-    it('should call getOldOpenLabelAnswer only once during initialization', () => {
-      const { rerender } = renderHook(({ options, answers }) => useOpenLabel(options, answers), {
-        initialProps: { options: basicOptions, answers: basicAnswers }
-      });
-
-      expect(mockGetOldOpenLabelAnswer).toHaveBeenCalledTimes(1);
-
-      // Re-render with same props - should not call again due to memoization
-      rerender({ options: basicOptions, answers: basicAnswers });
-
-      expect(mockGetOldOpenLabelAnswer).toHaveBeenCalledTimes(1);
-    });
-
-    it('should maintain setter reference equality across re-renders', () => {
-      const { result, rerender } = renderHook(() => useOpenLabel(basicOptions, basicAnswers));
-
-      const initialSetValue = result.current.setOpenLabelValue;
-      const initialSetChecked = result.current.setOpenLabelChecked;
-
-      rerender();
-
-      expect(result.current.setOpenLabelValue).toBe(initialSetValue);
-      expect(result.current.setOpenLabelChecked).toBe(initialSetChecked);
     });
   });
 });

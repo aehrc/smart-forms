@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-import { renderHook, act } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import type { GroupTableRowModel } from '../interfaces/groupTable.interface';
 import useGroupTableRows from '../hooks/useGroupTableRows';
 
@@ -26,20 +26,17 @@ describe('useGroupTableRows', () => {
   // Test data
   const mockRow1: GroupTableRowModel = {
     id: 'row-1',
-    qrItem: { linkId: 'item-1', text: 'Item 1' },
-    isSelected: true
+    qrItem: { linkId: 'item-1', text: 'Item 1' }
   };
 
   const mockRow2: GroupTableRowModel = {
     id: 'row-2',
-    qrItem: { linkId: 'item-2', text: 'Item 2' },
-    isSelected: false
+    qrItem: { linkId: 'item-2', text: 'Item 2' }
   };
 
   const mockRow3: GroupTableRowModel = {
     id: 'row-3',
-    qrItem: null,
-    isSelected: true
+    qrItem: null
   };
 
   describe('initialization', () => {
@@ -202,8 +199,7 @@ describe('useGroupTableRows', () => {
             { linkId: 'nested-1', text: 'Nested 1' },
             { linkId: 'nested-2', text: 'Nested 2' }
           ]
-        },
-        isSelected: true
+        }
       };
 
       const { result } = renderHook(() => useGroupTableRows([complexRow]));
@@ -215,8 +211,7 @@ describe('useGroupTableRows', () => {
     it('should handle rows with null qrItem', () => {
       const rowWithNullItem: GroupTableRowModel = {
         id: 'null-item-row',
-        qrItem: null,
-        isSelected: false
+        qrItem: null
       };
 
       const { result } = renderHook(() => useGroupTableRows([rowWithNullItem]));
@@ -241,8 +236,7 @@ describe('useGroupTableRows', () => {
     it('should handle special characters in IDs', () => {
       const specialIdRow: GroupTableRowModel = {
         id: 'row-with-special@chars#123!',
-        qrItem: { linkId: 'special-item' },
-        isSelected: true
+        qrItem: { linkId: 'special-item' }
       };
 
       const { result } = renderHook(() => useGroupTableRows([specialIdRow]));
@@ -253,8 +247,7 @@ describe('useGroupTableRows', () => {
     it('should handle empty string IDs', () => {
       const emptyIdRow: GroupTableRowModel = {
         id: '',
-        qrItem: { linkId: 'empty-id-item' },
-        isSelected: true
+        qrItem: { linkId: 'empty-id-item' }
       };
 
       const { result } = renderHook(() => useGroupTableRows([emptyIdRow]));
@@ -267,8 +260,7 @@ describe('useGroupTableRows', () => {
     it('should handle many rows efficiently', () => {
       const manyRows: GroupTableRowModel[] = Array.from({ length: 1000 }, (_, i) => ({
         id: `row-${i}`,
-        qrItem: { linkId: `item-${i}`, text: `Item ${i}` },
-        isSelected: i % 2 === 0
+        qrItem: { linkId: `item-${i}`, text: `Item ${i}` }
       }));
 
       const { result } = renderHook(() => useGroupTableRows(manyRows));
@@ -282,8 +274,7 @@ describe('useGroupTableRows', () => {
     it('should handle updates to large datasets', () => {
       const initialRows: GroupTableRowModel[] = Array.from({ length: 100 }, (_, i) => ({
         id: `row-${i}`,
-        qrItem: { linkId: `item-${i}` },
-        isSelected: true
+        qrItem: { linkId: `item-${i}` }
       }));
 
       const { result } = renderHook(() => useGroupTableRows(initialRows));

@@ -16,7 +16,7 @@
  */
 
 import type { QuestionnaireResponseItem } from 'fhir/r4';
-import { reorderRows, getGroupTableItemsToUpdate } from '../../utils/groupTable';
+import { getGroupTableItemsToUpdate, reorderRows } from '../../utils/groupTable';
 import type { GroupTableRowModel } from '../../interfaces/groupTable.interface';
 
 describe('groupTable utilities', () => {
@@ -26,8 +26,7 @@ describe('groupTable utilities', () => {
       qrItem: {
         linkId: id,
         item: []
-      } as QuestionnaireResponseItem,
-      isSelected: false
+      } as QuestionnaireResponseItem
     });
 
     it('should reorder rows from lower to higher index', () => {
@@ -144,14 +143,12 @@ describe('groupTable utilities', () => {
       qrItem: qrItem || {
         linkId: id,
         item: []
-      },
-      isSelected: false
+      }
     });
 
     const createRowWithoutQrItem = (id: string): GroupTableRowModel => ({
       id,
-      qrItem: null,
-      isSelected: false
+      qrItem: null
     });
 
     it('should return qrItems for selected rows', () => {
@@ -271,7 +268,7 @@ describe('groupTable utilities', () => {
 
     describe('edge cases', () => {
       it('should handle null qrItem explicitly', () => {
-        const tableRows = [{ id: 'row1', qrItem: null, isSelected: false }];
+        const tableRows = [{ id: 'row1', qrItem: null }];
         const selectedIds = ['row1'];
 
         const result = getGroupTableItemsToUpdate(tableRows, selectedIds);

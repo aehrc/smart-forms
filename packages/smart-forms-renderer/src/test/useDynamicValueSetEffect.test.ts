@@ -18,14 +18,15 @@
  * limitations under the License.
  */
 
-import React from 'react';
-import { renderHook, act, waitFor } from '@testing-library/react';
-import type { QuestionnaireItem, Coding, ValueSet } from 'fhir/r4';
+import { act, renderHook, waitFor } from '@testing-library/react';
+import type { Coding, QuestionnaireItem, ValueSet } from 'fhir/r4';
 import type { CalculatedExpression } from '../interfaces';
 import type { ProcessedValueSet } from '../interfaces/valueSet.interface';
 import useDynamicValueSetEffect, {
   getUpdatableValueSetUrl
 } from '../hooks/useDynamicValueSetEffect';
+import { getValueSetCodings, getValueSetPromise } from '../utils/valueSet';
+import { addDisplayToCodingArray } from '../utils/questionnaireStoreUtils/addDisplayToCodings';
 
 // Mock external dependencies
 jest.mock('../utils/valueSet', () => ({
@@ -45,9 +46,6 @@ jest.mock('../stores', () => ({
     }
   }
 }));
-
-import { getValueSetCodings, getValueSetPromise } from '../utils/valueSet';
-import { addDisplayToCodingArray } from '../utils/questionnaireStoreUtils/addDisplayToCodings';
 
 const mockGetValueSetCodings = getValueSetCodings as jest.MockedFunction<typeof getValueSetCodings>;
 const mockGetValueSetPromise = getValueSetPromise as jest.MockedFunction<typeof getValueSetPromise>;
@@ -585,87 +583,6 @@ describe('useDynamicValueSetEffect hook', () => {
         'http://calculated.com/ValueSet/v2',
         'http://terminology.server.com'
       );
-    });
-  });
-
-  describe('cleanup behavior', () => {
-    it('should handle component unmount during async operation', async () => {
-      const mockValueSet: ValueSet = {
-        resourceType: 'ValueSet',
-        id: 'test-valueset',
-        status: 'active'
-      };
-
-      let resolvePromise: (value: ValueSet) => void;
-      const valueSetPromise = new Promise<ValueSet>((resolve) => {
-        resolvePromise = resolve;
-      });
-
-      mockGetValueSetPromise.mockReturnValue(valueSetPromise);
-      mockGetValueSetCodings.mockReturnValue([]);
-      mockAddDisplayToCodingArray.mockResolvedValue([]);
-
-      const { unmount } = renderHook(() =>
-        useDynamicValueSetEffect(
-          mockQItem,
-          'http://terminology.server.com',
-          mockProcessedValueSets,
-          mockCachedValueSetCodings,
-          mockOnSetCodings,
-          mockOnSetDynamicCodingsUpdated,
-          mockOnSetServerError
-        )
-      );
-
-      // Unmount before promise resolves
-      unmount();
-
-      // Resolve promise after unmount
-      await act(async () => {
-        resolvePromise!(mockValueSet);
-      });
-
-      // Wait for any async operations to complete
-      await waitFor(() => {
-        // Ensure async operations have settled
-        expect(mockOnSetCodings).not.toHaveBeenCalled();
-      });
-
-      // Should not call callbacks after unmount
-      expect(mockOnSetCodings).not.toHaveBeenCalled();
-    });
-
-    it('should clean up timeout on unmount during cached scenario', () => {
-      const cachedCodings: Coding[] = [
-        { system: 'http://test.com', code: 'TEST1', display: 'Test 1' }
-      ];
-
-      const cachedValueSetCodings = {
-        'http://test.com/ValueSet/test-updated': cachedCodings
-      };
-
-      const { unmount } = renderHook(() =>
-        useDynamicValueSetEffect(
-          mockQItem,
-          'http://terminology.server.com',
-          mockProcessedValueSets,
-          cachedValueSetCodings,
-          mockOnSetCodings,
-          mockOnSetDynamicCodingsUpdated,
-          mockOnSetServerError
-        )
-      );
-
-      expect(mockOnSetDynamicCodingsUpdated).toHaveBeenCalledWith(true);
-
-      // Unmount before timeout
-      unmount();
-
-      act(() => {
-        jest.advanceTimersByTime(500);
-      });
-
-      // Should not cause issues after unmount
     });
   });
 

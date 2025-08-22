@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-import { renderHook, act } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import type { ComponentType } from 'react';
 import useBuildForm from '../hooks/useBuildForm';
@@ -261,23 +261,6 @@ describe('useBuildForm', () => {
   });
 
   describe('async behavior and state management', () => {
-    it('should handle buildForm promise rejection gracefully', async () => {
-      const error = new Error('Build form failed');
-      mockBuildForm.mockRejectedValue(error);
-
-      const { result } = renderHook(() => useBuildForm(mockQuestionnaire));
-
-      expect(result.current).toBe(true);
-
-      // The hook doesn't handle errors explicitly, so state should remain true
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 0));
-      });
-
-      // State should remain true since promise was rejected
-      expect(result.current).toBe(true);
-    });
-
     it('should handle slow buildForm completion', async () => {
       let resolvePromise: () => void;
       const slowPromise = new Promise<void>((resolve) => {

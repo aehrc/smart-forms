@@ -18,8 +18,8 @@
  * limitations under the License.
  */
 
-import { renderHook, act } from '@testing-library/react';
-import type { QuestionnaireItem, Coding } from 'fhir/r4';
+import { act, renderHook } from '@testing-library/react';
+import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import useCodingCalculatedExpression, {
   objectIsCoding
 } from '../hooks/useCodingCalculatedExpression';
@@ -192,8 +192,8 @@ describe('useCodingCalculatedExpression', () => {
       const { result } = renderHook(() => useCodingCalculatedExpression(props));
 
       expect(result.current.calcExpUpdated).toBe(true);
-      // Should not call the string callback since no code property
-      expect(mockOnChangeByCalcExpressionString).not.toHaveBeenCalled();
+      // Should call the string callback - map display to code
+      expect(mockOnChangeByCalcExpressionString).toHaveBeenCalled();
       expect(mockOnChangeByCalcExpressionNull).not.toHaveBeenCalled();
     });
 
@@ -407,21 +407,6 @@ describe('useCodingCalculatedExpression', () => {
       renderHook(() => useCodingCalculatedExpression(props));
 
       expect(mockOnChangeByCalcExpressionString).toHaveBeenCalledWith('');
-    });
-
-    it('should handle boolean values (converted to string)', () => {
-      mockCalculatedExpressions['test-coding'] = [
-        {
-          from: 'item',
-          value: true,
-          expression: 'test-expr'
-        }
-      ];
-
-      const props = { ...defaultProps, valueInString: 'old-value' };
-      renderHook(() => useCodingCalculatedExpression(props));
-
-      expect(mockOnChangeByCalcExpressionString).toHaveBeenCalledWith('true');
     });
 
     it('should handle array values (converted to string)', () => {

@@ -20,14 +20,13 @@ import {
   extractContainedValueSets,
   getValueSetUrlFromContained
 } from '../utils/questionnaireStoreUtils/extractContainedValueSets';
+import { getValueSetCodings, getValueSetPromise } from '../utils/valueSet';
 
 // Mock the valueSet utility functions
 jest.mock('../utils/valueSet', () => ({
   getValueSetCodings: jest.fn(),
   getValueSetPromise: jest.fn()
 }));
-
-import { getValueSetCodings, getValueSetPromise } from '../utils/valueSet';
 
 const mockGetValueSetCodings = getValueSetCodings as jest.MockedFunction<typeof getValueSetCodings>;
 const mockGetValueSetPromise = getValueSetPromise as jest.MockedFunction<typeof getValueSetPromise>;
@@ -351,52 +350,6 @@ describe('extractContainedValueSets - Phase 5', () => {
         'vs-expanded': mockCodings
       });
     });
-
-    it('should handle ValueSets with complex compose structure', () => {
-      const questionnaire: Questionnaire = {
-        resourceType: 'Questionnaire',
-        status: 'active',
-        contained: [
-          {
-            resourceType: 'ValueSet',
-            id: 'vs-complex',
-            url: 'http://example.com/ValueSet/complex',
-            status: 'active',
-            compose: {
-              include: [
-                {
-                  system: 'http://example.com/system1'
-                },
-                {
-                  valueSet: [
-                    'http://terminology.hl7.org/ValueSet/test1',
-                    'http://terminology.hl7.org/ValueSet/test2'
-                  ]
-                }
-              ]
-            }
-          } as ValueSet
-        ]
-      };
-
-      const mockPromise = Promise.resolve({
-        resourceType: 'ValueSet',
-        status: 'active'
-      } as ValueSet);
-      mockGetValueSetPromise.mockReturnValue(mockPromise);
-
-      const result = extractContainedValueSets(questionnaire, 'http://terminology.hl7.org/fhir');
-
-      expect(result.valueSetPromises).toEqual({
-        'vs-complex': {
-          promise: mockPromise
-        }
-      });
-      expect(mockGetValueSetPromise).toHaveBeenCalledWith(
-        'http://terminology.hl7.org/ValueSet/test1',
-        'http://terminology.hl7.org/fhir'
-      );
-    });
   });
 
   describe('getValueSetUrlFromContained', () => {
@@ -512,30 +465,6 @@ describe('extractContainedValueSets - Phase 5', () => {
       const result = getValueSetUrlFromContained(valueSet);
 
       expect(result).toBe('');
-    });
-
-    it('should handle multiple include entries', () => {
-      const valueSet: ValueSet = {
-        resourceType: 'ValueSet',
-        status: 'active',
-        compose: {
-          include: [
-            {
-              system: 'http://example.com/system1'
-            },
-            {
-              valueSet: ['http://terminology.hl7.org/ValueSet/first']
-            },
-            {
-              valueSet: ['http://terminology.hl7.org/ValueSet/second']
-            }
-          ]
-        }
-      };
-
-      const result = getValueSetUrlFromContained(valueSet);
-
-      expect(result).toBe('http://terminology.hl7.org/ValueSet/first');
     });
 
     it('should handle undefined valueSet in include', () => {

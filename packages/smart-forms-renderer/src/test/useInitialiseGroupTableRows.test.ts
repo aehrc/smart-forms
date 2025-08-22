@@ -58,8 +58,7 @@ describe('useInitialiseGroupTableRows', () => {
       expect(result.current).toHaveLength(1);
       expect(result.current[0]).toEqual({
         id: 'test-link-id-repeat-new123',
-        qrItem: null,
-        isSelected: true
+        qrItem: null
       });
 
       expect(mockGenerateNewRepeatId).toHaveBeenCalledWith(mockLinkId);
@@ -82,8 +81,7 @@ describe('useInitialiseGroupTableRows', () => {
       expect(result.current).toHaveLength(1);
       expect(result.current[0]).toEqual({
         id: 'test-link-id-repeat-000000',
-        qrItem: mockQrItem1,
-        isSelected: true
+        qrItem: mockQrItem1
       });
 
       expect(mockGenerateExistingRepeatId).toHaveBeenCalledWith(mockLinkId, 0);
@@ -114,14 +112,12 @@ describe('useInitialiseGroupTableRows', () => {
 
       expect(result.current[0]).toEqual({
         id: 'test-link-id-repeat-000000',
-        qrItem: mockQrItem1,
-        isSelected: true
+        qrItem: mockQrItem1
       });
 
       expect(result.current[1]).toEqual({
         id: 'test-link-id-repeat-000001',
-        qrItem: mockQrItem2,
-        isSelected: true
+        qrItem: mockQrItem2
       });
 
       expect(mockGenerateExistingRepeatId).toHaveBeenCalledWith(mockLinkId, 0);
@@ -142,11 +138,6 @@ describe('useInitialiseGroupTableRows', () => {
       // Check first and last items
       expect(result.current[0].id).toBe('test-link-id-repeat-000000');
       expect(result.current[9].id).toBe('test-link-id-repeat-000009');
-
-      // Verify all items have isSelected: true
-      result.current.forEach((row) => {
-        expect(row.isSelected).toBe(true);
-      });
 
       // Verify all generateExistingRepeatId calls
       for (let i = 0; i < 10; i++) {
@@ -333,11 +324,9 @@ describe('useInitialiseGroupTableRows', () => {
       expect(Array.isArray(result.current)).toBe(true);
       expect(result.current[0]).toHaveProperty('id');
       expect(result.current[0]).toHaveProperty('qrItem');
-      expect(result.current[0]).toHaveProperty('isSelected');
 
       expect(typeof result.current[0].id).toBe('string');
       expect(result.current[0].qrItem).toBeNull();
-      expect(result.current[0].isSelected).toBe(true);
     });
 
     it('should return array of objects with correct properties for non-empty input', () => {
@@ -346,20 +335,9 @@ describe('useInitialiseGroupTableRows', () => {
       expect(Array.isArray(result.current)).toBe(true);
       expect(result.current[0]).toHaveProperty('id');
       expect(result.current[0]).toHaveProperty('qrItem');
-      expect(result.current[0]).toHaveProperty('isSelected');
 
       expect(typeof result.current[0].id).toBe('string');
       expect(result.current[0].qrItem).toBe(mockQrItem1);
-      expect(result.current[0].isSelected).toBe(true);
-    });
-
-    it('should always set isSelected to true for all rows', () => {
-      const qrItems = [mockQrItem1, mockQrItem2];
-      const { result } = renderHook(() => useInitialiseGroupTableRows(mockLinkId, qrItems));
-
-      result.current.forEach((row) => {
-        expect(row.isSelected).toBe(true);
-      });
     });
   });
 });

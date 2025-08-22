@@ -369,25 +369,5 @@ describe('useInitialiseRepeatGroups', () => {
       expect(typeof result.current[0].id).toBe('string');
       expect(result.current[0].qrItem).toBe(mockQrItem1);
     });
-
-    it('should not have isSelected property (unlike GroupTableRowModel)', () => {
-      const { result } = renderHook(() => useInitialiseRepeatGroups(mockLinkId, []));
-
-      expect(result.current[0]).not.toHaveProperty('isSelected');
-    });
-  });
-
-  describe('comparison with useInitialiseGroupTableRows', () => {
-    it('should return similar structure but without isSelected property', () => {
-      const { result } = renderHook(() => useInitialiseRepeatGroups(mockLinkId, [mockQrItem1]));
-
-      const group = result.current[0];
-      expect(group).toHaveProperty('id');
-      expect(group).toHaveProperty('qrItem');
-      expect(group).not.toHaveProperty('isSelected');
-
-      expect(typeof group.id).toBe('string');
-      expect(group.qrItem).toBe(mockQrItem1);
-    });
   });
 });

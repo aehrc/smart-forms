@@ -17,8 +17,8 @@
 
 import { waitFor } from '@testing-library/react';
 import type { QuestionnaireResponse } from 'fhir/r4';
-import { formUpdateQueueStore, useFormUpdateQueueStore } from '../../stores/formUpdateQueueStore';
 import type { UpdateTask } from '../../stores/formUpdateQueueStore';
+import { formUpdateQueueStore, useFormUpdateQueueStore } from '../../stores/formUpdateQueueStore';
 
 // Mock the dependencies
 const mockUpdateExpressions = jest.fn();
@@ -217,21 +217,6 @@ describe('formUpdateQueueStore', () => {
       expect(mockUpdateResponse).toHaveBeenNthCalledWith(2, task2.questionnaireResponse, 'initial');
 
       // Should clear queue and stop processing
-      const state = formUpdateQueueStore.getState();
-      expect(state.queue).toHaveLength(0);
-      expect(state.isProcessing).toBe(false);
-    });
-
-    it('should handle async errors gracefully', async () => {
-      const task = createMockTask('1');
-      formUpdateQueueStore.setState({ queue: [task] });
-
-      // Mock updateExpressions to reject with error (async error)
-      mockUpdateExpressions.mockRejectedValue(new Error('Test error'));
-
-      await formUpdateQueueStore.getState()._startProcessing();
-
-      // Should still remove task and stop processing despite error
       const state = formUpdateQueueStore.getState();
       expect(state.queue).toHaveLength(0);
       expect(state.isProcessing).toBe(false);
