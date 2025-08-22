@@ -13,7 +13,7 @@ export type FhirPatchOperationType = 'add' | 'insert' | 'delete' | 'replace' | '
 export type FhirPatchPart =
   | { name: 'type'; valueCode: FhirPatchOperationType }
   | { name: 'path'; valueString: string }
-  | { name: 'name'; valueString: string }
+  | { name: 'name'; valueString: string } // (add operation only)
   | { name: 'value'; [key: string]: unknown } // value[x], e.g., valueString, valueInteger, etc.
   | { name: 'index'; valueInteger: number }
   | { name: 'source'; valueInteger: number }
