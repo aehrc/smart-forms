@@ -1,5 +1,9 @@
 node_modules
 coverage
 changelog_guide.md
+
 #Mac OS .DS_STORE
 .DS_STORE
+
+# GitHub copilot instructions
+.github/copilot-instructions.md
