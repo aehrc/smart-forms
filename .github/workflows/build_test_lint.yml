@@ -64,6 +64,7 @@ jobs:
           npm run build -w packages/sdc-assemble
           npm run build -w packages/sdc-populate
           npm run build -w packages/sdc-template-extract
+          npm run build -w packages/smart-forms-renderer
 
       - name: Run jest tests
         run: npm run test -w apps/smart-forms-app
