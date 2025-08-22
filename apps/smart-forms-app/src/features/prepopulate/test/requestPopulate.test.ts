@@ -162,12 +162,6 @@ describe('requestPopulate', () => {
     consoleSpy.mockRestore();
   });
 
-  it.skip('uses external populate service when IN_APP_POPULATE is false', async () => {
-    // Skip this test as it requires complex environment variable mocking
-    // This test would verify that when IN_APP_POPULATE is false,
-    // the function uses fhirClient.request instead of the internal populate function
-  });
-
   it('handles missing token response', async () => {
     // Create client without token response
     const clientWithoutToken = {

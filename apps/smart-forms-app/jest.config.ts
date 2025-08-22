@@ -40,10 +40,10 @@ const config: Config = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'json', 'node'],
   collectCoverage: true,
   collectCoverageFrom: [
-    '**/api/*.{ts,tsx}',                 // all TypeScript files
-    '**/hooks/*.{ts,tsx}',                 // all TypeScript files
-    '**/utils/*.{ts,tsx}',                 // all TypeScript files
-    '**/contexts/*.{ts,tsx}',                 // all TypeScript files
+    '**/api/*.{ts,tsx}',
+    '**/hooks/*.{ts,tsx}',
+    '**/utils/*.{ts,tsx}',
+    '**/contexts/*.{ts,tsx}',
     '!**/*.config.{ts,tsx,js,jsx}',  // exclude config files
     '!**/*.test.{ts,tsx}',           // exclude test files
     '!**/*.spec.{ts,tsx}',           // exclude spec files
