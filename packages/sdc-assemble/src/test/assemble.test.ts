@@ -362,22 +362,20 @@ describe('assemble', () => {
         {
           url: 'http://hl7.org/fhir/StructureDefinition/cqf-library',
           valueCanonical: 'http://example.com/Library/PatientDetailsLib'
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/variable',
+          valueExpression: {
+            name: 'patientName',
+            language: 'text/fhirpath',
+            expression: '%patient.name'
+          }
         }
       ],
       item: [
         {
           linkId: 'root-item',
           type: 'group',
-          extension: [
-            {
-              url: 'http://hl7.org/fhir/StructureDefinition/variable',
-              valueExpression: {
-                name: 'patientName',
-                language: 'text/fhirpath',
-                expression: '%patient.name'
-              }
-            }
-          ],
           item: [
             {
               linkId: 'patient-question',
