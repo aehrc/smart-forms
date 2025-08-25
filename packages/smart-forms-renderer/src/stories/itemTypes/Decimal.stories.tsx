@@ -19,9 +19,11 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
   qCalculatedExpressionBMICalculator,
-  qDecimalBasic,
-  qrDecimalBasicResponse
+
 } from '../assets/questionnaires';
+import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
+import { getInputText, inputDecimal } from '@aehrc/testing-toolkit';
+import { expect } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -36,9 +38,36 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
+const targetlinkId = 'weight'
+const targetText = 'Weight in kg'
+const targetWeight = 80.3
+
+const qDecimalBasic = questionnaireFactory([{
+  linkId: targetlinkId,
+  type: 'decimal',
+  repeats: false,
+  text: targetText
+}])
+const qrDecimalBasicResponse = qrFactory([{
+  linkId: targetlinkId,
+  text: targetText,
+  answer: [
+    {
+      valueDecimal: targetWeight
+    }
+  ]
+}])
+
 export const DecimalBasic: Story = {
   args: {
     questionnaire: qDecimalBasic
+  },
+  play: async ({ canvasElement }) => {
+    await inputDecimal(canvasElement, targetlinkId, targetWeight);
+    const result = await getAnswers(targetlinkId);
+
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual(expect.objectContaining({ valueDecimal: targetWeight }));
   }
 };
 
@@ -46,6 +75,10 @@ export const DecimalBasicResponse: Story = {
   args: {
     questionnaire: qDecimalBasic,
     questionnaireResponse: qrDecimalBasicResponse
+  }, play: async ({ canvasElement }) => {
+    const input = await getInputText(canvasElement, targetlinkId);
+
+    expect(input).toBe(targetWeight.toString())
   }
 };
 

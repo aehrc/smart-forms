@@ -17,7 +17,11 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { qAttachmentBasic } from '../assets/questionnaires';
+
+import { questionnaireFactory } from '../testUtils';
+import { inputFile } from '@aehrc/testing-toolkit';
+import { expect, fireEvent, within, screen } from 'storybook/test';
+import { waitFor } from 'storybook/internal/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -31,9 +35,43 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+const targetlinkId = 'file-attachment'
+const targetText = 'File Attachment'
+
+const qAttachmentBasic = questionnaireFactory([{
+  linkId: targetlinkId,
+  type: 'attachment',
+  repeats: false,
+  text: targetText
+}])
+
+const url = 'hhtp://world_of_warcraft.com'
+const name = 'Vladimir'
+const fileName = 'foo.png'
+
 
 export const AttachmentBasic: Story = {
   args: {
     questionnaire: qAttachmentBasic
+  },
+  play: async ({ canvasElement }) => {
+    await inputFile(
+      canvasElement,
+      targetlinkId,
+      [new File(['foo'], fileName, { type: "image/png" })],
+      [url, name]
+    );
+
+    const canvas = within(canvasElement);
+    expect(canvas.getByText(fileName)).toBeDefined();
+    expect(canvas.getByText(url)).toBeDefined();
+    expect(canvas.getByText(name)).toBeDefined();
+
+    const button = canvasElement.querySelector('button');
+    fireEvent.click(button as HTMLElement);
+
+    await waitFor(() =>
+      expect(screen.queryByText(fileName)).not.toBeInTheDocument()
+    );
   }
 };

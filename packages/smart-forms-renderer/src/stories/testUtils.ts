@@ -7,10 +7,15 @@ import type {
   QuestionnaireResponseItem
 } from 'fhir/r4';
 
-export async function getAnswers(linkId: string) {
+export async function getAnswers(linkId: string, parentLinkId?: string) {
   const qr = questionnaireResponseStore.getState().updatableResponse;
-  const result = await evaluate(qr, `QuestionnaireResponse.item.where(linkId='${linkId}').answer`);
 
+  const result = await evaluate(
+    qr,
+    parentLinkId
+      ? `QuestionnaireResponse.item.where(linkId='${parentLinkId}').item.where(linkId='${linkId}').answer`
+      : `QuestionnaireResponse.item.where(linkId='${linkId}').answer`
+  );
   return result;
 }
 

@@ -17,7 +17,10 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { qGroupBasic } from '../assets/questionnaires/QGroup';
+import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
+import { getInputText, inputText } from '@aehrc/testing-toolkit';
+import { expect } from 'storybook/test';
+
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -31,9 +34,81 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+const targetlinkId = 'patient-details-group'
+
+const nameLinkid = 'name'
+const ageLinkid = 'age'
+const targetName = 'Vladimir'
+const targetAge = 25
+
+const qGroupBasic = questionnaireFactory([{
+  linkId: targetlinkId,
+  type: 'group',
+  repeats: false,
+  text: 'Patient Details',
+  item: [
+    {
+      linkId: nameLinkid,
+      type: 'string',
+      repeats: false,
+      text: 'Name'
+    },
+    {
+      linkId: ageLinkid,
+      type: 'integer',
+      repeats: false,
+      text: 'Age'
+    }
+  ]
+}])
+const qrGroupBasic = qrFactory([{
+  linkId: 'patient-details-group',
+  text: 'Patient Details',
+  item: [
+    {
+      linkId: nameLinkid,
+
+      answer: [{
+        valueString: targetName
+      }]
+    }, {
+      linkId: ageLinkid,
+
+      answer: [{
+        valueDecimal: targetAge
+      }]
+    }
+
+  ]
+}])
 
 export const GroupBasic: Story = {
   args: {
     questionnaire: qGroupBasic
+  },
+  play: async ({ canvasElement }) => {
+    await inputText(canvasElement, nameLinkid, targetName);
+    await inputText(canvasElement, ageLinkid, targetAge);
+
+    const nameResult = await getAnswers(nameLinkid, targetlinkId);
+    const ageResult = await getAnswers(ageLinkid, targetlinkId);
+
+    expect(nameResult).toHaveLength(1);
+    expect(ageResult).toHaveLength(1);
+
+    expect(nameResult[0]).toEqual(expect.objectContaining({ valueString: targetName }));
+    expect(ageResult[0]).toEqual(expect.objectContaining({ valueDecimal: targetAge }));
+  }
+};
+export const GroupBasicResponse: Story = {
+  args: {
+    questionnaire: qGroupBasic,
+    questionnaireResponse: qrGroupBasic
+  }, play: async ({ canvasElement }) => {
+    const inputName = await getInputText(canvasElement, nameLinkid);
+    const inputAge = await getInputText(canvasElement, ageLinkid);
+    expect(inputName).toBe(targetName)
+    expect(inputAge).toBe(targetAge.toString())
+
   }
 };

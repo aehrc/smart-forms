@@ -17,7 +17,10 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { qrStringBasicResponse, qStringBasic, qStringCalculation } from '../assets/questionnaires';
+import { qStringCalculation } from '../assets/questionnaires';
+import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
+import { getInputText, inputText } from '@aehrc/testing-toolkit';
+import { expect, fireEvent, waitFor, screen } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -31,16 +34,51 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+const targetlinkId = 'name'
+const targetText = 'Vladimir'
+
+const qStringBasic = questionnaireFactory([{
+  linkId: targetlinkId,
+  type: 'string',
+  repeats: false,
+  text: "Name"
+}])
+const qrStringBasicResponse = qrFactory([{
+  linkId: targetlinkId,
+  text: targetText,
+  answer: [
+    {
+      valueString: 'Vladimir'
+    }
+  ]
+}])
 
 export const StringBasic: Story = {
   args: {
     questionnaire: qStringBasic
+  },
+  play: async ({ canvasElement }) => {
+    await inputText(canvasElement, targetlinkId, targetText);
+    const result = await getAnswers(targetlinkId);
+
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual(expect.objectContaining({ valueString: targetText }));
   }
 };
 export const StringBasicResponse: Story = {
   args: {
     questionnaire: qStringBasic,
     questionnaireResponse: qrStringBasicResponse
+  }, play: async ({ canvasElement }) => {
+    const inputText = await getInputText(canvasElement, targetlinkId);
+
+    expect(inputText).toBe(targetText)
+
+    const button = canvasElement.querySelector('button');
+    fireEvent.click(button as HTMLElement);
+    await waitFor(() =>
+      expect(screen.queryByText(targetText)).not.toBeInTheDocument()
+    );
   }
 };
 

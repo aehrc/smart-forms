@@ -18,10 +18,12 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
-  qIntegerBasic,
+
   qIntegerCalculation,
-  qrIntegerBasicResponse
 } from '../assets/questionnaires';
+import { getInputText, inputInteger } from '@aehrc/testing-toolkit';
+import { expect } from 'storybook/test';
+import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -35,16 +37,44 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+const targetlinkId = 'age'
+const targetAge = 40
+
+const qIntegerBasic = questionnaireFactory([{
+  linkId: targetlinkId,
+  type: 'integer',
+  repeats: false,
+  text: 'Age'
+}])
+const qrIntegerBasicResponse = qrFactory([{
+  linkId: targetlinkId,
+  text: 'Age',
+  answer: [
+    {
+      valueInteger: targetAge
+    }
+  ]
+}])
 
 export const IntegerBasic: Story = {
   args: {
     questionnaire: qIntegerBasic
+  }, play: async ({ canvasElement }) => {
+    await inputInteger(canvasElement, targetlinkId, 25);
+    const result = await getAnswers(targetlinkId);
+
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual(expect.objectContaining({ valueInteger: 25 }));
   }
 };
 export const IntegerBasicResponse: Story = {
   args: {
     questionnaire: qIntegerBasic,
     questionnaireResponse: qrIntegerBasicResponse
+  }, play: async ({ canvasElement }) => {
+    const input = await getInputText(canvasElement, targetlinkId);
+
+    expect(input).toBe(targetAge.toString())
   }
 };
 

@@ -17,7 +17,10 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { qTimeBasic } from '../assets/questionnaires';
+
+import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
+import { getInputText, inputTime } from '@aehrc/testing-toolkit';
+import { expect } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -31,9 +34,47 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+const targetlinkId = 'last-meal'
+const targetText = 'Time of last meal'
+const targetDate = "2025-08-25T11:00:00+03:00"
+const targetDateString = "11:00 am"
+
+const qTimeBasic = questionnaireFactory([{
+  linkId: targetlinkId,
+  type: 'time',
+  repeats: false,
+  text: targetText
+}])
+const qrTimeBasic = qrFactory([{
+  linkId: targetlinkId,
+
+  answer: [
+    { valueTime: targetDate }
+  ],
+
+}])
 
 export const TimeBasic: Story = {
   args: {
     questionnaire: qTimeBasic
+  },
+  play: async ({ canvasElement }) => {
+    await inputTime(canvasElement, targetlinkId, targetDateString);
+    const result = await getAnswers(targetlinkId);
+
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual(expect.objectContaining({ valueTime: targetDate }));
   }
+  //Добавить респонс
 };
+export const TextBasicResponse: Story = {
+  args: {
+    questionnaire: qTimeBasic,
+    questionnaireResponse: qrTimeBasic
+  }, play: async ({ canvasElement }) => {
+
+    const inputText = await getInputText(canvasElement, targetlinkId);
+
+    expect(inputText).toBe(targetDateString)
+  }
+}; 

@@ -17,7 +17,10 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { qReferenceBasic } from '../assets/questionnaires';
+
+import { getAnswers, questionnaireFactory } from '../testUtils';
+import { inputReference } from '@aehrc/testing-toolkit';
+import { expect } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -31,9 +34,25 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+const targetlinkId = 'patient-reference'
+const targetText = 'Patient Reference'
+
+const qReferenceBasic = questionnaireFactory([{
+  linkId: targetlinkId,
+  type: 'reference',
+  repeats: false,
+  text: targetText
+}])
 
 export const ReferenceBasic: Story = {
   args: {
     questionnaire: qReferenceBasic
+  },
+  play: async ({ canvasElement }) => {
+    await inputReference(canvasElement, targetlinkId, targetText);
+    const result = await getAnswers(targetlinkId);
+
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual(expect.objectContaining({ valueString: targetText }));
   }
 };
