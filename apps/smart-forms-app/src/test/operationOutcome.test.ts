@@ -15,27 +15,157 @@
  * limitations under the License.
  */
 
-import { describe, expect, it } from '@jest/globals';
-import { responseIsOperationOutcome } from '../utils/operationOutcome.ts';
+import { responseIsOperationOutcome } from '../utils/operationOutcome';
+import type { OperationOutcome } from 'fhir/r4';
 
-describe('responseIsOperationOutcome', () => {
-  it('returns true if response.resourceType is OperationOutcome', () => {
-    const response = { resourceType: 'OperationOutcome' };
-    expect(responseIsOperationOutcome(response)).toBe(true);
-  });
+describe('operationOutcome utility', () => {
+  describe('responseIsOperationOutcome', () => {
+    it('should return true for valid OperationOutcome resource', () => {
+      const operationOutcome: OperationOutcome = {
+        resourceType: 'OperationOutcome',
+        issue: [
+          {
+            severity: 'error',
+            code: 'processing',
+            details: {
+              text: 'Test error message'
+            }
+          }
+        ]
+      };
 
-  it('returns false if response.resourceType is not OperationOutcome', () => {
-    const response = { resourceType: 'Questionnaire' };
-    expect(responseIsOperationOutcome(response)).toBe(false);
-  });
+      expect(responseIsOperationOutcome(operationOutcome)).toBe(true);
+    });
 
-  it('returns false if resourceType is missing', () => {
-    const response = {};
-    expect(responseIsOperationOutcome(response)).toBe(false);
-  });
+    it('should return true for minimal OperationOutcome with only resourceType', () => {
+      const minimalOperationOutcome = {
+        resourceType: 'OperationOutcome'
+      };
 
-  it('returns false if response is null or undefined', () => {
-    expect(responseIsOperationOutcome(null)).toBe(false);
-    expect(responseIsOperationOutcome(undefined)).toBe(false);
+      expect(responseIsOperationOutcome(minimalOperationOutcome)).toBe(true);
+    });
+
+    it('should return false for different FHIR resource types', () => {
+      const patient = {
+        resourceType: 'Patient',
+        id: 'example-patient'
+      };
+
+      expect(responseIsOperationOutcome(patient)).toBe(false);
+    });
+
+    it('should return false for questionnaire resource', () => {
+      const questionnaire = {
+        resourceType: 'Questionnaire',
+        id: 'example-questionnaire',
+        status: 'active'
+      };
+
+      expect(responseIsOperationOutcome(questionnaire)).toBe(false);
+    });
+
+    it('should return false for null input', () => {
+      expect(responseIsOperationOutcome(null)).toBe(false);
+    });
+
+    it('should return false for undefined input', () => {
+      expect(responseIsOperationOutcome(undefined)).toBe(false);
+    });
+
+    it('should return false for empty object', () => {
+      expect(responseIsOperationOutcome({})).toBe(false);
+    });
+
+    it('should return false for object without resourceType', () => {
+      const objectWithoutResourceType = {
+        id: 'some-id',
+        status: 'active'
+      };
+
+      expect(responseIsOperationOutcome(objectWithoutResourceType)).toBe(false);
+    });
+
+    it('should return false for primitive values', () => {
+      expect(responseIsOperationOutcome('string')).toBe(false);
+      expect(responseIsOperationOutcome(123)).toBe(false);
+      expect(responseIsOperationOutcome(true)).toBe(false);
+      expect(responseIsOperationOutcome(false)).toBe(false);
+    });
+
+    it('should return false for arrays', () => {
+      expect(responseIsOperationOutcome([])).toBe(false);
+      expect(responseIsOperationOutcome([{ resourceType: 'OperationOutcome' }])).toBe(false);
+    });
+
+    it('should handle complex OperationOutcome with multiple issues', () => {
+      const complexOperationOutcome: OperationOutcome = {
+        resourceType: 'OperationOutcome',
+        id: 'complex-outcome',
+        meta: {
+          versionId: '1',
+          lastUpdated: '2024-01-01T00:00:00Z'
+        },
+        issue: [
+          {
+            severity: 'error',
+            code: 'processing',
+            details: {
+              text: 'First error'
+            },
+            location: ['field1']
+          },
+          {
+            severity: 'warning',
+            code: 'informational',
+            details: {
+              text: 'Warning message'
+            },
+            location: ['field2']
+          }
+        ]
+      };
+
+      expect(responseIsOperationOutcome(complexOperationOutcome)).toBe(true);
+    });
+
+    it('should return false for object with incorrect resourceType case', () => {
+      const incorrectCase = {
+        resourceType: 'operationoutcome' // lowercase
+      };
+
+      expect(responseIsOperationOutcome(incorrectCase)).toBe(false);
+    });
+
+    it('should return false for object with resourceType as non-string', () => {
+      const nonStringResourceType = {
+        resourceType: 123
+      };
+
+      expect(responseIsOperationOutcome(nonStringResourceType)).toBe(false);
+    });
+
+    it('should handle objects with additional properties', () => {
+      const operationOutcomeWithExtra = {
+        resourceType: 'OperationOutcome',
+        extraProperty: 'should not matter',
+        anotherExtra: { nested: 'object' },
+        issue: []
+      };
+
+      expect(responseIsOperationOutcome(operationOutcomeWithExtra)).toBe(true);
+    });
+
+    it('should use type guard correctly in TypeScript', () => {
+      const response: unknown = {
+        resourceType: 'OperationOutcome',
+        issue: []
+      };
+
+      if (responseIsOperationOutcome(response)) {
+        // TypeScript should narrow the type to OperationOutcome here
+        expect(response.resourceType).toBe('OperationOutcome');
+        expect(response.issue).toBeDefined();
+      }
+    });
   });
 });
