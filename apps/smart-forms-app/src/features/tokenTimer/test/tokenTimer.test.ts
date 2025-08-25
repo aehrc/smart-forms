@@ -15,52 +15,173 @@
  * limitations under the License.
  */
 
-import { describe, expect, it } from '@jest/globals';
-import { calculateRemainingTime, getTokenExpirationTime } from '../utils/tokenTimer';
+import type Client from 'fhirclient/lib/Client';
+import { getTokenExpirationTime, calculateRemainingTime } from '../utils/tokenTimer';
 
-describe('getTokenExpirationTime', () => {
-  it('returns null when client is null', () => {
-    expect(getTokenExpirationTime(null)).toBeNull();
-  });
-
-  it('returns null when tokenResponse or expires_in is missing', () => {
-    const client = { state: {} } as any;
-    expect(getTokenExpirationTime(client)).toBeNull();
-
-    const clientMissingExpiresIn = { state: { tokenResponse: {} } } as any;
-    expect(getTokenExpirationTime(clientMissingExpiresIn)).toBeNull();
-  });
-
-  it('returns expires_in when present', () => {
-    const client = {
-      state: {
-        tokenResponse: {
-          expires_in: 3600
+describe('tokenTimer', () => {
+  describe('getTokenExpirationTime', () => {
+    it('should return expires_in from token response', () => {
+      const mockClient = {
+        state: {
+          tokenResponse: {
+            expires_in: 3600
+          }
         }
-      }
-    } as any;
-    expect(getTokenExpirationTime(client)).toBe(3600);
-  });
-});
+      } as Client;
 
-describe('calculateRemainingTime', () => {
-  it('returns null if either argument is null', () => {
-    expect(calculateRemainingTime(null, 3600)).toBeNull();
-    expect(calculateRemainingTime(Date.now(), null)).toBeNull();
+      const result = getTokenExpirationTime(mockClient);
+      expect(result).toBe(3600);
+    });
+
+    it('should return null when client is null', () => {
+      const result = getTokenExpirationTime(null);
+      expect(result).toBeNull();
+    });
+
+    it('should return null when tokenResponse is undefined', () => {
+      const mockClient = {
+        state: {}
+      } as Client;
+
+      const result = getTokenExpirationTime(mockClient);
+      expect(result).toBeNull();
+    });
+
+    it('should return null when expires_in is undefined', () => {
+      const mockClient = {
+        state: {
+          tokenResponse: {}
+        }
+      } as Client;
+
+      const result = getTokenExpirationTime(mockClient);
+      expect(result).toBeNull();
+    });
+
+    it('should handle zero expires_in', () => {
+      const mockClient = {
+        state: {
+          tokenResponse: {
+            expires_in: 0
+          }
+        }
+      } as Client;
+
+      const result = getTokenExpirationTime(mockClient);
+      expect(result).toBe(0);
+    });
+
+    it('should handle negative expires_in', () => {
+      const mockClient = {
+        state: {
+          tokenResponse: {
+            expires_in: -100
+          }
+        }
+      } as Client;
+
+      const result = getTokenExpirationTime(mockClient);
+      expect(result).toBe(-100);
+    });
   });
 
-  it('calculates remaining time correctly', () => {
-    const now = Date.now();
-    const received = now - 10_000; // 10 seconds ago
-    const expiresIn = 60; // 60 seconds
-    expect(calculateRemainingTime(received, expiresIn)).toBeGreaterThanOrEqual(50);
-    expect(calculateRemainingTime(received, expiresIn)).toBeLessThanOrEqual(60);
-  });
+  describe('calculateRemainingTime', () => {
+    beforeEach(() => {
+      // Mock Date.now() to return consistent timestamp
+      jest.spyOn(Date, 'now').mockReturnValue(1000000); // 1000 seconds since epoch
+    });
 
-  it('returns 0 or negative if token has expired', () => {
-    const now = Date.now();
-    const received = now - 70_000; // 70 seconds ago
-    const expiresIn = 60;
-    expect(calculateRemainingTime(received, expiresIn)).toBeLessThanOrEqual(0);
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('should calculate remaining time correctly', () => {
+      const tokenReceivedTimestamp = 950000; // 50 seconds ago
+      const tokenExpirationTimeInSeconds = 3600; // 1 hour
+
+      const result = calculateRemainingTime(tokenReceivedTimestamp, tokenExpirationTimeInSeconds);
+      expect(result).toBe(3550); // 3600 - 50 = 3550 seconds remaining
+    });
+
+    it('should return null when tokenReceivedTimestamp is null', () => {
+      const result = calculateRemainingTime(null, 3600);
+      expect(result).toBeNull();
+    });
+
+    it('should return null when tokenExpirationTimeInSeconds is null', () => {
+      const result = calculateRemainingTime(950000, null);
+      expect(result).toBeNull();
+    });
+
+    it('should return null when both parameters are null', () => {
+      const result = calculateRemainingTime(null, null);
+      expect(result).toBeNull();
+    });
+
+    it('should handle zero expiration time', () => {
+      const tokenReceivedTimestamp = 999000; // 1 second ago
+      const tokenExpirationTimeInSeconds = 0;
+
+      const result = calculateRemainingTime(tokenReceivedTimestamp, tokenExpirationTimeInSeconds);
+      expect(result).toBeNull(); // Returns null because expiration time is falsy
+    });
+
+    it('should handle negative remaining time (expired token)', () => {
+      const tokenReceivedTimestamp = 500000; // 500 seconds ago
+      const tokenExpirationTimeInSeconds = 300; // 5 minutes
+
+      const result = calculateRemainingTime(tokenReceivedTimestamp, tokenExpirationTimeInSeconds);
+      expect(result).toBe(-200); // Token expired 200 seconds ago
+    });
+
+    it('should handle exact expiration time', () => {
+      const tokenReceivedTimestamp = 997000; // 3 seconds ago
+      const tokenExpirationTimeInSeconds = 3;
+
+      const result = calculateRemainingTime(tokenReceivedTimestamp, tokenExpirationTimeInSeconds);
+      expect(result).toBe(0); // Exactly expired
+    });
+
+    it('should floor elapsed time calculation', () => {
+      // Test that elapsed time is floored, not rounded
+      const tokenReceivedTimestamp = 999100; // 0.9 seconds ago
+      const tokenExpirationTimeInSeconds = 10;
+
+      const result = calculateRemainingTime(tokenReceivedTimestamp, tokenExpirationTimeInSeconds);
+      expect(result).toBe(10); // 10 - 0 = 10 (elapsed time floored to 0)
+    });
+
+    it('should handle large time differences', () => {
+      const tokenReceivedTimestamp = 1; // Very long ago but not 0 (which is falsy)
+      const tokenExpirationTimeInSeconds = 2; // 2 seconds expiration
+
+      const result = calculateRemainingTime(tokenReceivedTimestamp, tokenExpirationTimeInSeconds);
+      expect(result).toBe(-997); // 2 - 999 = -997 (expired 997 seconds ago)
+    });
+
+    it('should handle recent token (just received)', () => {
+      const tokenReceivedTimestamp = 1000000; // Just now
+      const tokenExpirationTimeInSeconds = 3600;
+
+      const result = calculateRemainingTime(tokenReceivedTimestamp, tokenExpirationTimeInSeconds);
+      expect(result).toBe(3600); // Full expiration time remaining
+    });
+
+    it('should handle future timestamp (clock skew)', () => {
+      const tokenReceivedTimestamp = 1100000; // 100 seconds in the future
+      const tokenExpirationTimeInSeconds = 3600;
+
+      const result = calculateRemainingTime(tokenReceivedTimestamp, tokenExpirationTimeInSeconds);
+      expect(result).toBe(3700); // 3600 - (-100) = 3700
+    });
+
+    it('should return integer values only', () => {
+      const tokenReceivedTimestamp = 999500; // 0.5 seconds ago
+      const tokenExpirationTimeInSeconds = 1000;
+
+      const result = calculateRemainingTime(tokenReceivedTimestamp, tokenExpirationTimeInSeconds);
+      expect(Number.isInteger(result)).toBe(true);
+      expect(result).toBe(1000); // Elapsed time is floored to 0
+    });
   });
 });

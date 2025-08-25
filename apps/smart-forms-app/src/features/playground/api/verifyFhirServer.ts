@@ -43,5 +43,5 @@ export async function verifyFhirServer(
 }
 
 export function metadataResponseIsValid(response: any): response is CapabilityStatement {
-  return response && response.resourceType === 'CapabilityStatement';
+  return !!(response && response.resourceType === 'CapabilityStatement');
 }

@@ -17,13 +17,13 @@
 
 import { Box, IconButton, Stack, Typography } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
+import { constructName } from '../../../../../../utils/humanName.ts';
 import OpenResponseButton from '../Buttons/OpenResponseButton.tsx';
 import type { QuestionnaireResponse } from 'fhir/r4';
 import useSmartClient from '../../../../../../hooks/useSmartClient.ts';
 import useSelectedQuestionnaire from '../../../../hooks/useSelectedQuestionnaire.ts';
 import { useResponsive } from '@aehrc/smart-forms-renderer';
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
-import { constructName } from '../../../../../../utils/humanName.ts';
 
 interface ResponseListToolbarButtonsProps {
   selectedResponse: QuestionnaireResponse | null;
