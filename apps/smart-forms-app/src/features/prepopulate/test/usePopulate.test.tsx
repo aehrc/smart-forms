@@ -17,11 +17,6 @@
 
 import { renderHook } from '@testing-library/react';
 import { useSnackbar } from 'notistack';
-import {
-  useQuestionnaireResponseStore,
-  useQuestionnaireStore,
-  useTerminologyServerStore
-} from '@aehrc/smart-forms-renderer';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import type Client from 'fhirclient/lib/Client';
 import useSmartClient from '../../../hooks/useSmartClient';
