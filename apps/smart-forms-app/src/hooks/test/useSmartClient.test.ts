@@ -3,22 +3,7 @@
  * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this f                const mockEncounter: Encounter = {
-        resourceType: 'Encounter',
-        id: 'encounter-456',
-        status: 'finished',
-        class: { system: 'http://terminology.hl7.org/CodeSystem/v3-ActCode', code: 'AMB' }
-      };t mockEncounter: Encounter = {
-        resourceType: 'Encounter',
-        id: 'encounter-456',
-        status: 'finished',
-        class: { system: 'http://terminology.hl7.org/CodeSystem/v3-ActCode', code: 'AMB' }
-      };t mockEncounter: Encounter = {
-        resourceType: 'Encounter',
-        id: 'encounter-123',
-        status: 'finished',
-        class: { system: 'http://terminology.hl7.org/CodeSystem/v3-ActCode', code: 'AMB' }
-      };xcept in compliance with the License.
+ * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
