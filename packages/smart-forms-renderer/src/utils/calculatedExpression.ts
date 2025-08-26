@@ -39,7 +39,7 @@ import type { ComputedNewAnswers } from '../interfaces/computedUpdates.interface
 import { createQuestionnaireResponseItemMap } from './questionnaireResponseStoreUtils/updatableResponseItems';
 import { nanoid } from 'nanoid';
 import { getDecimalPrecision } from './extensions';
-import { getRelevantCodingProperties } from './valueSet';
+import { getRelevantCodingProperties } from './choice';
 
 interface EvaluateInitialCalculatedExpressionsParams {
   initialResponse: QuestionnaireResponse;
