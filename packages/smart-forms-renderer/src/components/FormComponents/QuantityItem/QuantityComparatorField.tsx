@@ -1,10 +1,26 @@
+/*
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
+ * Organisation (CSIRO) ABN 41 687 119 230.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import Autocomplete from '@mui/material/Autocomplete';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import type { Quantity } from 'fhir/r4';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import { useRendererStylingStore } from '../../../stores';
-import { expressionUpdateFadingGlow } from '../../ExpressionUpdateFadingGlow.styles';
 import MuiTextField from '../TextItem/MuiTextField';
 
 interface QuantityComparatorFieldProps extends PropsWithIsTabledRequiredAttribute {
@@ -18,7 +34,8 @@ interface QuantityComparatorFieldProps extends PropsWithIsTabledRequiredAttribut
 }
 
 function QuantityComparatorField(props: QuantityComparatorFieldProps) {
-  const { linkId, itemType, options, valueSelect, readOnly, calcExprAnimating, onChange } = props;
+  const { linkId, itemType, options, valueSelect, readOnly, onChange } = props;
+  // TODO this component doesn't have a calcExpUpdated update animation
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const hideQuantityComparatorField = useRendererStylingStore.use.hideQuantityComparatorField();
@@ -34,7 +51,7 @@ function QuantityComparatorField(props: QuantityComparatorFieldProps) {
         options={options}
         onChange={(_, newValue) => onChange(newValue as Quantity['comparator'])}
         autoHighlight
-        sx={[expressionUpdateFadingGlow(calcExprAnimating), { width: 88 }]}
+        sx={{ width: 88 }}
         disabled={readOnly && readOnlyVisualStyle === 'disabled'}
         readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
         size="small"

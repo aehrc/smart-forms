@@ -18,6 +18,7 @@
 import type {
   Coding,
   Questionnaire,
+  QuestionnaireItem,
   QuestionnaireResponse,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
@@ -46,6 +47,16 @@ import {
   mutateRepeatEnableWhenItemInstances,
   updateEnableWhenItemAnswer
 } from '../utils/enableWhen';
+import { evaluateUpdatedExpressions } from '../utils/fhirpath';
+import {
+  evaluateInitialCalculatedExpressions,
+  initialiseCalculatedExpressionValues
+} from '../utils/calculatedExpression';
+import { createQuestionnaireModel } from '../utils/questionnaireStoreUtils/createQuestionnaireModel';
+import { initialiseFormFromResponse } from '../utils/initialise';
+import { emptyQuestionnaire, emptyResponse } from '../utils/emptyResource';
+import { terminologyServerStore } from './terminologyServerStore';
+import { createSelectors } from './selector';
 import { mutateRepeatEnableWhenExpressionInstances } from '../utils/enableWhenExpression';
 import { evaluateOtherExpressions } from '../utils/fhirpath';
 import { initialiseFormFromResponse } from '../utils/initialise';
@@ -63,7 +74,7 @@ import { terminologyServerStore } from './terminologyServerStore';
  * Methods are usually used internally, using them from an external source is not recommended.
  *
  * @property sourceQuestionnaire - FHIR R4 Questionnaire to render
- * @property itemTypes - Key-value pair of item types `Record<linkId, item.type>`
+ * @property itemMap - Key-value pair of item types `Record<linkId, { linkId, QuestionnaireItem (without qItem.item) }>`
  * @property itemPreferredTerminologyServers - Key-value pair of item types `Record<linkId, preferred terminology servers>`
  * @property tabs - Key-value pair of tabs `Record<linkId, Tab>`
  * @property currentTabIndex - Index of the current tab
@@ -110,7 +121,7 @@ import { terminologyServerStore } from './terminologyServerStore';
  */
 export interface QuestionnaireStoreType {
   sourceQuestionnaire: Questionnaire;
-  itemTypes: Record<string, string>;
+  itemMap: Record<string, Omit<QuestionnaireItem, 'item'>>;
   itemPreferredTerminologyServers: Record<string, string>;
   tabs: Tabs;
   currentTabIndex: number;
@@ -187,7 +198,7 @@ export interface QuestionnaireStoreType {
  */
 export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, get) => ({
   sourceQuestionnaire: structuredClone(emptyQuestionnaire),
-  itemTypes: {},
+  itemMap: {},
   itemPreferredTerminologyServers: {},
   tabs: {},
   currentTabIndex: 0,
@@ -283,7 +294,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
 
     set({
       sourceQuestionnaire: questionnaire,
-      itemTypes: questionnaireModel.itemTypes,
+      itemMap: questionnaireModel.itemMap,
       itemPreferredTerminologyServers: questionnaireModel.itemPreferredTerminologyServers,
       tabs: questionnaireModel.tabs,
       currentTabIndex: firstVisibleTab,
@@ -312,7 +323,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   destroySourceQuestionnaire: () =>
     set({
       sourceQuestionnaire: structuredClone(emptyQuestionnaire),
-      itemTypes: {},
+      itemMap: {},
       itemPreferredTerminologyServers: {},
       tabs: {},
       currentTabIndex: 0,

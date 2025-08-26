@@ -25,7 +25,7 @@ import { createResponseSearchOption } from '../../../../utils/dashboard.ts';
 import { useDebounceValue } from 'usehooks-ts';
 import { useTheme } from '@mui/material/styles';
 import { getResponseSearchStyles } from '../../QuestionnairePage/TableComponents/QuestionnaireListToolbar.styles.ts';
-import Iconify from '../../../../../../components/Iconify/Iconify.tsx';
+import SearchIcon from '@mui/icons-material/Search';
 
 interface ResponseListToolbarSearchProps {
   searchedQuestionnaire: Questionnaire | null;
@@ -78,10 +78,7 @@ function ResponseListToolbarSearch(props: ResponseListToolbarSearchProps) {
             ...params.InputProps,
             startAdornment: (
               <InputAdornment position="start">
-                <Iconify
-                  icon="eva:search-fill"
-                  sx={{ color: 'text.disabled', width: 20, height: 20 }}
-                />
+                <SearchIcon fontSize="small" />
               </InputAdornment>
             )
           }}

@@ -15,15 +15,15 @@
  * limitations under the License.
  */
 
+import type { ChangeEvent, Dispatch, SetStateAction } from 'react';
 import { useRef } from 'react';
 import type { Dayjs } from 'dayjs';
 import InputAdornment from '@mui/material/InputAdornment';
-import type { ChangeEvent, Dispatch, SetStateAction } from 'react';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../../interfaces/renderProps.interface';
 import { StandardTextField } from '../../Textfield.styles';
 import DatePicker from './DatePicker';
 import { useRendererStylingStore } from '../../../../stores';
-import { expressionUpdateFadingGlow } from '../../../ExpressionUpdateFadingGlow.styles';
+import ExpressionUpdateFadingIcon from '../../ItemParts/ExpressionUpdateFadingIcon';
 
 interface CustomDateFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -101,12 +101,12 @@ function CustomDateField(props: CustomDateFieldProps) {
         onDateBlur();
         setFocused(false);
       }}
-      sx={[expressionUpdateFadingGlow(calcExprAnimating)]}
       slotProps={{
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
             <InputAdornment position="end">
+              <ExpressionUpdateFadingIcon fadeIn={calcExprAnimating} disabled={readOnly} />
               <DatePicker
                 valueString={valueDate}
                 readOnly={readOnly}

@@ -58,7 +58,7 @@ function ChoiceSelectAnswerValueSetItem(props: BaseItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
+  const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
   // Get codings/options from valueSet
   const { codings, terminologyError, dynamicCodingsUpdated } = useValueSetCodings(qItem);

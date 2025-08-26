@@ -15,5 +15,5 @@
  * limitations under the License.
  */
 
-export { inAppExtract } from './extract';
+export { inAppExtract } from './inAppExtract';
 export { extractResultIsOperationOutcome, objIsTemplateExtractDebugInfo } from './typePredicates';

@@ -1,3 +1,20 @@
+/*
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
+ * Organisation (CSIRO) ABN 41 687 119 230.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import type {
   Questionnaire,
   QuestionnaireItem,
@@ -10,8 +27,8 @@ import {
   getQrItemsIndex,
   isSpecificItemControl,
   mapQItemsIndex,
-  parseFhirDateToDisplayDate,
-  parseFhirDateTimeToDisplayDateTime
+  parseFhirDateTimeToDisplayDateTime,
+  parseFhirDateToDisplayDate
 } from '@aehrc/smart-forms-renderer';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 
@@ -42,7 +59,7 @@ export function qrToHTML(
 
   // Title as h1
   html += `<h1 style="margin-top: 0; margin-bottom: .67em; font-weight: 600; padding-bottom: .3em; font-size: 2em; border-bottom: 1px solid #d1d9e0b3;">
-  ${he.encode(questionnaire.title ?? 'Questionnaire Response')}
+  ${he.encode(questionnaire.title ?? 'Questionnaire Response')} 
   </h1>`;
 
   // Add Patient/Author/Authored block
@@ -56,6 +73,7 @@ export function qrToHTML(
   );
 
   // Render all top-level items
+  const openSections: number[] = [];
   for (const [index, topLevelQItem] of questionnaire.item.entries()) {
     const topLevelQRItemOrItems = topLevelQRItemsByIndex[index] ?? {
       linkId: topLevelQItem.linkId,
@@ -67,13 +85,73 @@ export function qrToHTML(
       ? isSpecificItemControl(topLevelQItem, 'tab-container')
       : false;
     const groupNestLevel = isTabContainer ? 0 : 1;
-    html = renderItemHtmlRecursive(topLevelQItem, topLevelQRItemOrItems, groupNestLevel, html);
+    html = renderItemHtmlRecursive(
+      topLevelQItem,
+      topLevelQRItemOrItems,
+      groupNestLevel,
+      openSections,
+      html
+    );
+  }
+
+  // Close any remaining open sections
+  while (openSections.length > 0) {
+    html += `</section>`;
+    openSections.pop();
   }
 
   html += `</article>`;
 
   // Wrap in a div with XHTML namespace
   return `<div xmlns="http://www.w3.org/1999/xhtml">${html}</div>`;
+}
+
+/**
+ * Handles opening and closing section elements based on heading level transitions.
+ * Closes sections that are deeper than the current level and opens a new section if needed.
+ *
+ * Example:
+ *   let html = '';
+ *   let openSections = [];
+ *
+ *   // Encounter a Level 2 heading (<h2>)
+ *   html = handleSectionTransition(2, openSections, html);
+ *   html += "{h2 content}";
+ *   // html: "<section>{h2 content}"
+ *
+ *   // Next, encounter a Level 3 heading (<h3>)
+ *   html = handleSectionTransition(3, openSections, html);
+ *   html += "{h3 content}";
+ *   // html: "<section>{h2 content}<section>{h3 content}"
+ *
+ *   // Next, another Level 2 heading (<h2> again => must close h3 and h2 sections first)
+ *   html = handleSectionTransition(2, openSections, html);
+ *   html += "{next h2 content}";
+ *   // html: "<section>{h2 content}<section>{h3 content}</section></section><section>{next h2 content}"
+ *
+ * Moving down a heading level closes the deeper (nested) sections before opening a new one.
+ */
+function handleSectionTransition(
+  groupNestLevel: number,
+  openSections: number[],
+  html: string
+): string {
+  // Skip section handling for level 0 (tab containers)
+  if (groupNestLevel === 0) {
+    return html;
+  }
+
+  // Close sections that are deeper than or equal to the current level
+  while (openSections.length > 0 && openSections[openSections.length - 1] >= groupNestLevel) {
+    html += `</section>`;
+    openSections.pop();
+  }
+
+  // Open new section for the current level
+  html += `<section>`;
+  openSections.push(groupNestLevel);
+
+  return html;
 }
 
 /**
@@ -127,6 +205,7 @@ export function renderMetadataHtml(questionnaireResponse: QuestionnaireResponse)
  * @param {QuestionnaireItem} qItem - The Questionnaire item structure.
  * @param {QuestionnaireResponseItem | QuestionnaireResponseItem[] | null} qrItemOrItems - The matching response item(s).
  * @param {number} groupNestLevel - Nesting depth to determine heading levels.
+ * @param {number[]} openSections - Array tracking currently open sections by their nesting level.
  * @param {string} html - Current accumulated HTML output to append to.
  * @returns {string} Updated HTML string including the rendered item.
  */
@@ -134,6 +213,7 @@ function renderItemHtmlRecursive(
   qItem: QuestionnaireItem,
   qrItemOrItems: QuestionnaireResponseItem | QuestionnaireResponseItem[] | null,
   groupNestLevel: number,
+  openSections: number[],
   html: string
 ): string {
   // Skip hidden items (and their children)
@@ -145,6 +225,9 @@ function renderItemHtmlRecursive(
   const qrItemOrItemsIsSingleItem = !Array.isArray(qrItemOrItems) && qrItemOrItems !== null;
   const qrItemOrItemsIsNonEmptyArray = Array.isArray(qrItemOrItems) && qrItemOrItems.length > 0;
   if (qItem.type === 'group' && (qrItemOrItemsIsSingleItem || qrItemOrItemsIsNonEmptyArray)) {
+    // Handle section opening/closing before adding the heading
+    html = handleSectionTransition(groupNestLevel, openSections, html);
+
     const groupHeading = getGroupHeading(qItem, groupNestLevel);
     html += groupHeading;
   }
@@ -162,7 +245,6 @@ function renderItemHtmlRecursive(
       }
     }
 
-    // Process repeating group items separately - TODO
     if (qItem.type === 'group' && qItem.repeats && childQRItems.length > 0) {
       html += renderRepeatGroupHtml(qItem, childQRItems);
       return html;
@@ -178,6 +260,7 @@ function renderItemHtmlRecursive(
         childQItem,
         childQRItemOrItems ?? null,
         groupNestLevel + 1,
+        openSections,
         html
       );
     }
@@ -194,9 +277,8 @@ function renderItemHtmlRecursive(
     const label = he.encode(qrItem.text ?? '');
 
     if (qItem.repeats && qItem.type !== 'group') {
-      // TODO Add margin below (later) when changing styles to inline
       html += `<div style="margin-bottom: 0.5em;"><strong style="font-weight: 600;">${label}</strong></div>`;
-      html += `<ul style="margin-top:0;margin-bottom:1rem;font-weight:400;padding-left:2em;">`;
+      html += `<ul style="margin-top: 0; margin-bottom: 1rem; font-weight: 400; padding-left: 2em;">`;
       for (const a of qrItem.answer) {
         html += `<li>${he.encode(answerToString(a))}</li>`;
       }
@@ -240,19 +322,19 @@ function getGroupHeading(qItem: QuestionnaireItem, nestedLevel: number): string 
     case 1:
       headingTag = 'h2';
       inlineStyle =
-        'margin-top:1.5rem;margin-bottom:1rem;font-weight:600;line-height:1.25;padding-bottom:.3em;font-size:1.5em;border-bottom:1px solid #d1d9e0b3;';
+        'margin-top: 1.5rem; margin-bottom: 1rem; font-weight: 600; line-height: 1.25; padding-bottom: 0.3em; font-size: 1.5em; border-bottom: 1px solid #d1d9e0b3;';
       break;
     case 2:
       headingTag = 'h3';
       inlineStyle =
-        'margin-top:1.5rem;margin-bottom:1rem;font-weight:600;line-height:1.25;font-size:1.25em;';
+        'margin-top: 1.5rem; margin-bottom: 1rem; font-weight: 600; line-height: 1.25; font-size: 1.25em;';
       break;
     case 3:
     case 4:
     default:
       headingTag = 'h4';
       inlineStyle =
-        'margin-top:1.5rem;margin-bottom:1rem;font-weight:600;line-height:1.25;font-size:1em;';
+        'margin-top: 1.5rem; margin-bottom: 1rem; font-weight: 600; line-height: 1.25; font-size: 1em;';
       break;
   }
 
@@ -266,7 +348,7 @@ function getGroupHeading(qItem: QuestionnaireItem, nestedLevel: number): string 
  * @param {QuestionnaireResponseItem[]} qrItems - Array of repeated response items for the group.
  * @returns {string} HTML string of the rendered table.
  */
-function renderRepeatGroupHtml(
+export function renderRepeatGroupHtml(
   qItem: QuestionnaireItem,
   qrItems: QuestionnaireResponseItem[]
 ): string {
@@ -281,11 +363,11 @@ function renderRepeatGroupHtml(
       .map((child) => he.encode(child.text ?? '')) ?? [];
 
   // Render headers
-  let html = `<table style="margin-top:0;margin-bottom:1rem;font-weight:400;border-spacing:0;border-collapse:collapse;display:block;width:max-content;max-width:100%;overflow:auto;font-variant:tabular-nums;">`;
-  html += `<thead><tr style="background-color:#f6f8fa;border-top:1px solid #d1d9e0b3;">`;
+  let html = `<table style="margin-top: 0; margin-bottom: 1rem; font-weight: 400; border-spacing: 0; border-collapse: collapse; display: block; width: max-content; max-width: 100%; overflow: auto; font-variant: tabular-nums;">`;
+  html += `<thead><tr style="background-color: #f6f8fa; border-top: 1px solid #d1d9e0b3;">`;
 
   for (const header of headers) {
-    html += `<th style="padding:6px 13px;border:1px solid #d1d9e0;font-weight:600;">${header}</th>`;
+    html += `<th style="padding: 6px 13px; border: 1px solid #d1d9e0; font-weight: 600;">${header}</th>`;
   }
   html += `</tr></thead>`;
 
@@ -298,7 +380,7 @@ function renderRepeatGroupHtml(
     const indexMap = mapQItemsIndex(qItem);
     const qrItemsByIndex = getQrItemsIndex(childQItems, childQRItems, indexMap);
 
-    html += `<tr style="background-color:#fff;border-top:1px solid #d1d9e0b3;">`;
+    html += `<tr style="background-color: #fff; border-top: 1px solid #d1d9e0b3;">`;
     for (const [index, childQItem] of childQItems.entries()) {
       if (structuredDataCapture.getHidden(childQItem)) {
         continue;
@@ -308,13 +390,13 @@ function renderRepeatGroupHtml(
 
       // Do not support repeat group nesting for now
       if (Array.isArray(childQRItem)) {
-        html += `<td style="padding:6px 13px;border:1px solid #d1d9e0;" colspan="${childQRItem.length}">Nested repeat groups not supported in narrative</td>`;
+        html += `<td style="padding: 6px 13px; border: 1px solid #d1d9e0;" colspan="${childQRItem.length}">Nested repeat groups not supported in narrative</td>`;
         continue;
       }
 
       const answer = childQRItem?.answer?.[0];
       const value = answer ? answerToString(answer) : '';
-      html += `<td style="padding:6px 13px;border:1px solid #d1d9e0;">${he.encode(value)}</td>`;
+      html += `<td style="padding: 6px 13px; border: 1px solid #d1d9e0;">${he.encode(value)}</td>`;
     }
     html += `</tr>`;
   }
@@ -330,7 +412,7 @@ function renderRepeatGroupHtml(
  * @param {QuestionnaireResponseItemAnswer} answer - The answer object to convert.
  * @returns {string} A string representation of the answer value.
  */
-function answerToString(answer: QuestionnaireResponseItemAnswer): string {
+export function answerToString(answer: QuestionnaireResponseItemAnswer): string {
   if (answer.valueBoolean !== undefined) {
     return answer.valueBoolean ? 'Yes' : 'No';
   }

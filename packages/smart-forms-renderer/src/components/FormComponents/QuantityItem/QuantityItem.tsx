@@ -1,7 +1,23 @@
-import Box from '@mui/material/Box';
+/*
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
+ * Organisation (CSIRO) ABN 41 687 119 230.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { useCallback, useMemo, useState } from 'react';
 import type { Quantity, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import debounce from 'lodash.debounce';
-import { useCallback, useMemo, useState } from 'react';
 import useReadOnly from '../../../hooks/useReadOnly';
 import useShowFeedback from '../../../hooks/useShowFeedback';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
@@ -11,6 +27,7 @@ import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import { getDecimalPrecision } from '../../../utils/extensions';
 import { parseDecimalStringWithPrecision } from '../../../utils/parseInputs';
 import { createEmptyQrItem } from '../../../utils/qrItem';
+import Box from '@mui/material/Box';
 import {
   createQuantityItemAnswer,
   quantityComparators,
@@ -97,7 +114,7 @@ function QuantityItem(props: BaseItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, feedbackFromParent, valueInput);
+  const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
   // Provides a way to hide the feedback when the user is typing
   const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
@@ -285,7 +302,7 @@ function QuantityItem(props: BaseItemProps) {
             ) : null}
           </Box>
         }
-        feedback={feedback}
+        feedback={showFeedback ? feedback : undefined}
       />
     </FullWidthFormComponentBox>
   );

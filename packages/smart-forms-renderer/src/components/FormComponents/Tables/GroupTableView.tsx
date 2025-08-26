@@ -46,6 +46,7 @@ import { StandardCheckbox } from '../../Checkbox.styles';
 import type { ItemPath } from '../../../interfaces/itemPath.interface';
 import { Box } from '@mui/material';
 import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
+import { isGroupAddItemButtonHidden } from '../../../utils/extensions';
 
 interface GroupTableViewProps
   extends PropsWithIsRepeatedAttribute,
@@ -130,7 +131,7 @@ function GroupTableView(props: GroupTableViewProps) {
           {itemTextToDisplay ? <Divider sx={{ mb: 1.5, opacity: 0.6 }} /> : null}
           <TableContainer component={Paper} elevation={groupCardElevation}>
             <Table>
-              {showExtraGTableInteractions ? (
+              {showExtraGTableInteractions && !isGroupAddItemButtonHidden(qItem) ? (
                 <caption>
                   <AddRowButton repeatGroups={tableRows} readOnly={readOnly} onAddItem={onAddRow} />
                 </caption>
@@ -209,7 +210,7 @@ function GroupTableView(props: GroupTableViewProps) {
       ) : null}
       <TableContainer component={Paper} elevation={groupCardElevation}>
         <Table>
-          {showExtraGTableInteractions ? (
+          {showExtraGTableInteractions && !isGroupAddItemButtonHidden(qItem) ? (
             <caption>
               <AddRowButton repeatGroups={tableRows} readOnly={readOnly} onAddItem={onAddRow} />
             </caption>

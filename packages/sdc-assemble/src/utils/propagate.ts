@@ -73,9 +73,9 @@ export function propagateProperties(
 
   // Propagate item-level extensions into top-level item
   // Also check for duplicate variables
-  const flattenedItemLevelExtensions = itemLevelExtensions.flatMap(
-    (extensions) => extensions
-  ) as Extension[];
+  const flattenedItemLevelExtensions = itemLevelExtensions
+    .filter((extensions): extensions is Extension[] => extensions !== null)
+    .flatMap((extensions) => extensions);
 
   const combinedTopLevelItemExtensions = [
     ...(parentQuestionnaireForm.extension ?? []),
@@ -234,6 +234,10 @@ function checkDuplicatesInTopLevelItemVariables(topLevelItemExtensions: Extensio
   const extensionNames = new Set();
 
   for (const extension of topLevelItemExtensions) {
+    if (!extension || !extension.url) {
+      continue; // Skip null or invalid extensions
+    }
+
     const isVariable = extension.url === 'http://hl7.org/fhir/StructureDefinition/variable';
     const variableName = extension.valueExpression?.name;
     if (isVariable && variableName) {

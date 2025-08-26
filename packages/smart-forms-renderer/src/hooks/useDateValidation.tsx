@@ -22,9 +22,9 @@ import {
 } from '../components/FormComponents/DateTimeItems/utils/parseDate';
 import dayjs from 'dayjs';
 
-function useDateValidation(input: string, parseFail: boolean = false): string | null {
+function useDateValidation(input: string, parseFail: boolean = false): string {
   if (input === '') {
-    return null;
+    return '';
   }
 
   if (input.includes('-')) {
@@ -44,7 +44,7 @@ function useDateValidation(input: string, parseFail: boolean = false): string | 
       return 'Input is an invalid date.';
     }
 
-    return null;
+    return '';
   }
 
   if (numOfSeparators === 1) {
@@ -59,13 +59,13 @@ function useDateValidation(input: string, parseFail: boolean = false): string | 
       return 'Input is an invalid date.';
     }
 
-    return null;
+    return '';
   }
 
   if (input.length === 4) {
     const oneMatchDate = dayjs(input, 'YYYY');
     if (oneMatchDate.isValid()) {
-      return null;
+      return '';
     }
   }
 

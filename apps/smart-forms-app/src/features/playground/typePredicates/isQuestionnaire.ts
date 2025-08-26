@@ -18,5 +18,5 @@
 import type { Questionnaire } from 'fhir/r4';
 
 export function isQuestionnaire(jsonObject: any): jsonObject is Questionnaire {
-  return jsonObject.resourceType === 'Questionnaire';
+  return jsonObject?.resourceType === 'Questionnaire';
 }

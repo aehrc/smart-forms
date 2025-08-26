@@ -27,7 +27,22 @@ const config: Config = {
   moduleFileExtensions: ['ts', 'js', 'json', 'node'],
   collectCoverage: true,
   clearMocks: true,
-  coverageDirectory: 'coverage'
+  coverageDirectory: 'coverage',
+  collectCoverageFrom: [
+    '**/*.{ts,tsx}',                 // all TypeScript files
+    '!**/*.config.{ts,tsx,js,jsx}',  // exclude config files
+    '!**/*.d.ts',                    // exclude declaration files
+    '!**/index.{ts,tsx}',            // exclude barrel files (e.g., index.ts)
+    '!**/tests/**',                  // exclude test folder
+  ],
+  coverageThreshold: {
+    "global": {
+      "statements": 80,
+      "branches": 75,
+      "functions": 80,
+      "lines": 80
+    }
+  }
 };
 
 export default config;

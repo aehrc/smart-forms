@@ -69,7 +69,7 @@ function IntegerItem(props: BaseItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, feedbackFromParent, input);
+  const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
   // Provides a way to hide the feedback when the user is typing
   const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
@@ -152,7 +152,7 @@ function IntegerItem(props: BaseItemProps) {
             onBlur={handleBlur}
           />
         }
-        feedback={feedback}
+        feedback={showFeedback ? feedback : undefined}
       />
     </FullWidthFormComponentBox>
   );

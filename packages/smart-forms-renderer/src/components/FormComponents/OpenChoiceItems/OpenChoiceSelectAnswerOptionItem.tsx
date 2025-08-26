@@ -45,7 +45,7 @@ function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
+  const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
   // Init input value
   const answerKey = qrItem?.answer?.[0]?.id;

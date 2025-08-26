@@ -18,9 +18,9 @@
 import InputAdornment from '@mui/material/InputAdornment';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import { useRendererStylingStore } from '../../../stores';
-import { expressionUpdateFadingGlow } from '../../ExpressionUpdateFadingGlow.styles';
-import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
+import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
+import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import { StandardTextField } from '../Textfield.styles';
 
 interface IntegerFieldProps extends PropsWithIsTabledRequiredAttribute {
@@ -80,7 +80,6 @@ function IntegerField(props: IntegerFieldProps) {
       textFieldWidth={textFieldWidth}
       isTabled={isTabled}
       size="small"
-      sx={[expressionUpdateFadingGlow(calcExprAnimating)]}
       slotProps={{
         htmlInput: {
           inputMode: 'numeric',
@@ -90,6 +89,7 @@ function IntegerField(props: IntegerFieldProps) {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
             <InputAdornment position={'end'}>
+              <ExpressionUpdateFadingIcon fadeIn={calcExprAnimating} disabled={readOnly} />
               <ClearButtonAdornment
                 readOnly={readOnly}
                 onClear={() => {

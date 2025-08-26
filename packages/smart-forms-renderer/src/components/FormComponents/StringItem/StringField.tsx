@@ -18,9 +18,9 @@
 import InputAdornment from '@mui/material/InputAdornment';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import { useRendererStylingStore } from '../../../stores';
-import { expressionUpdateFadingGlow } from '../../ExpressionUpdateFadingGlow.styles';
-import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
+import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
+import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import { StandardTextField } from '../Textfield.styles';
 
 interface StringFieldProps extends PropsWithIsTabledRequiredAttribute {
@@ -59,6 +59,7 @@ function StringField(props: StringFieldProps) {
   return (
     <StandardTextField
       id={itemType + '-' + linkId}
+      multiline
       fullWidth
       textFieldWidth={textFieldWidth}
       isTabled={isTabled}
@@ -69,12 +70,12 @@ function StringField(props: StringFieldProps) {
       placeholder={entryFormat || displayPrompt}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       size="small"
-      sx={[expressionUpdateFadingGlow(calcExprAnimating)]}
       slotProps={{
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
             <InputAdornment position="end">
+              <ExpressionUpdateFadingIcon fadeIn={calcExprAnimating} disabled={readOnly} />
               <ClearButtonAdornment
                 readOnly={readOnly}
                 onClear={() => {

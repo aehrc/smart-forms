@@ -1,8 +1,0 @@
-{
-  "age": {
-    "expression": "today().toString().substring(0,4).toInteger() - %patient.birthDate.toString().substring(0,4).toInteger()"
-  },
-  "29644716-433e-45ec-a805-8043f35a85e1": {
-    "expression": "%PrePopQuery2.entry.resource.value.value"
-  }
-}

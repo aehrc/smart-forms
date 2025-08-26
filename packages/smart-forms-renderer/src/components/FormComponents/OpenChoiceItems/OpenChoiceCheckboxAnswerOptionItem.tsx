@@ -57,7 +57,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: BaseItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
+  const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
   const { displayInstructions } = renderingExtensions;
   const openLabelText = getOpenLabelText(qItem);

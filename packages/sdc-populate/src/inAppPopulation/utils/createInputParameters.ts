@@ -32,17 +32,31 @@ import type {
   SourceQuery
 } from '../interfaces/inAppPopulation.interface';
 import { getDisplayName } from '../../SDCPopulateQuestionnaireOperation/utils/humanName';
+import type { FhirContext } from '../interfaces/fhirContext.interface';
+import { resolveFhirContextReferences } from './resolveFhirContexts';
+import type {
+  FetchResourceCallback,
+  FetchResourceRequestConfig
+} from '../../SDCPopulateQuestionnaireOperation';
 
-export function createPopulateInputParameters(
+/**
+ * Creates the input Parameters resource for the $populate operation.
+ * Gathers all context, patient, and questionnaire data into a FHIR Parameters object for population.
+ */
+export async function createPopulateInputParameters(
   questionnaire: Questionnaire,
   patient: Patient,
   user: Practitioner | null,
   encounter: Encounter | null,
+  fhirContext: FhirContext[] | null,
   launchContexts: LaunchContext[],
   sourceQueries: SourceQuery[],
   questionnaireLevelVariables: QuestionnaireLevelXFhirQueryVariable[],
-  context: Record<string, any>
-): Parameters | null {
+  fhirPathContext: Record<string, any>,
+  fetchResourceCallback: FetchResourceCallback,
+  fetchResourceRequestConfig: FetchResourceRequestConfig,
+  timeoutMs: number
+): Promise<Parameters | null> {
   const patientSubject = createPatientSubject(questionnaire, patient);
   if (!patientSubject) {
     return null;
@@ -69,6 +83,15 @@ export function createPopulateInputParameters(
 
   // contexts
   const contexts: ParametersParameter[] = [];
+
+  // resolve fhirContexts references if provided
+  const resolvedFhirContextReferences = await resolveFhirContextReferences(
+    fhirContext,
+    fetchResourceCallback,
+    fetchResourceRequestConfig,
+    timeoutMs
+  );
+
   // add launch contexts
   if (launchContexts.length > 0) {
     for (const launchContext of launchContexts) {
@@ -77,7 +100,8 @@ export function createPopulateInputParameters(
         patient,
         user,
         encounter,
-        context
+        resolvedFhirContextReferences,
+        fhirPathContext
       );
       if (launchContextParam) {
         contexts.push(launchContextParam);
@@ -113,6 +137,10 @@ export function createPopulateInputParameters(
   return inputParameters;
 }
 
+/**
+ * Creates a Reference object for the patient subject if the Questionnaire allows Patient as subject.
+ * Returns null if Patient is not a valid subject type for the Questionnaire.
+ */
 function createPatientSubject(questionnaire: Questionnaire, patient: Patient): Reference | null {
   const subjectTypes = questionnaire.subjectType;
 
@@ -131,6 +159,10 @@ function createPatientSubject(questionnaire: Questionnaire, patient: Patient): R
   };
 }
 
+/**
+ * Creates a ParametersParameter for the canonical URL of the Questionnaire.
+ * Used to identify the Questionnaire resource in $populate input.
+ */
 function createCanonicalParam(canonicalUrl: string): ParametersParameter {
   return {
     name: 'canonical',
@@ -138,8 +170,11 @@ function createCanonicalParam(canonicalUrl: string): ParametersParameter {
   };
 }
 
-// setting local parameter as false as we are calling $populate with an NPM package, not a server
-// package doesn't contain any fhir resources to "know" the context from
+/**
+ * Creates a ParametersParameter for the local context, always set to false for in-app population.
+// Setting local parameter as false as we are calling $populate with an NPM package, not a server
+// Package doesn't contain any fhir resources to "know" the context from
+ */
 function createLocalParam(): ParametersParameter {
   return {
     name: 'local',
@@ -147,11 +182,16 @@ function createLocalParam(): ParametersParameter {
   };
 }
 
+/**
+ * Creates a ParametersParameter for a launch context resource (patient, user, encounter, etc).
+ * Adds the resource to the FHIRPath context for use in population expressions.
+ */
 function createLaunchContextParam(
   launchContext: LaunchContext,
   patient: Patient,
   user: Practitioner | null,
   encounter: Encounter | null,
+  resolvedFhirContextReferences: Record<string, FhirResource>,
   fhirPathContext: Record<string, any>
 ): ParametersParameter | null {
   const name = launchContext.extension[0].valueId ?? launchContext.extension[0].valueCoding?.code;
@@ -160,7 +200,8 @@ function createLaunchContextParam(
   }
 
   const resourceType = launchContext.extension[1].valueCode;
-  let resource: FhirResource | null;
+  let resource: FhirResource | null = null;
+
   if (name === 'patient' && resourceType === 'Patient') {
     resource = patient;
   } else if (name === 'user' && resourceType === 'Practitioner' && user) {
@@ -168,7 +209,12 @@ function createLaunchContextParam(
   } else if (name === 'encounter' && resourceType === 'Encounter' && encounter) {
     resource = encounter;
   } else {
-    return null;
+    // Check resolved resources from FHIR context references
+    // This assumes that there is one resource per resourceType in fhirContext
+    const resolvedResource = resolvedFhirContextReferences[resourceType];
+    if (resolvedResource) {
+      resource = resolvedResource;
+    }
   }
 
   if (!resource) {
@@ -193,6 +239,10 @@ function createLaunchContextParam(
   };
 }
 
+/**
+ * Creates a ParametersParameter for a source query, referencing a contained resource or itself.
+ * Used to provide additional context for population from source queries.
+ */
 function createSourceQueryParams(sourceQuery: SourceQuery, index: number): ParametersParameter {
   const reference = sourceQuery.valueReference.reference;
   if (reference && reference.startsWith('#')) {
@@ -229,6 +279,10 @@ function createSourceQueryParams(sourceQuery: SourceQuery, index: number): Param
   };
 }
 
+/**
+ * Creates a ParametersParameter for a questionnaire-level variable, referencing its FHIR query.
+ * Used to provide context for population from variables defined in the Questionnaire.
+ */
 function createVariableParam(variable: QuestionnaireLevelXFhirQueryVariable): ParametersParameter {
   const query = variable.valueExpression.expression;
   const resourceType = query.split('?')[0];

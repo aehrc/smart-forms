@@ -132,7 +132,7 @@ export function hasTemplateExtractRefExtension(item: QuestionnaireItem | Questio
     return {
       templateExtractRef: null,
       warning: createInvalidWarningIssue(
-        `sdc-questionnaire-templateExtract found in ${itemId}, but missing required "template" slice.`
+        `sdc-questionnaire-templateExtract found in ${itemId}, but missing required "template" slice or it may be invalid.`
       )
     };
   }

@@ -24,8 +24,7 @@ import Typography from '@mui/material/Typography';
 import type { ChangeEvent } from 'react';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../../interfaces/renderProps.interface';
 import { useRendererStylingStore } from '../../../../stores';
-import { expressionUpdateFadingGlow } from '../../../ExpressionUpdateFadingGlow.styles';
-import MuiTextField from '../../TextItem/MuiTextField';
+import FormControl from '@mui/material/FormControl';
 
 interface CustomTimeFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -53,13 +52,13 @@ function CustomTimeField(props: CustomTimeFieldProps) {
     feedback,
     displayPrompt,
     readOnly,
-    calcExprAnimating,
     isPartOfDateTime,
     isTabled,
     onTimeInputChange,
     onPeriodChange,
     onTimeBlur
   } = props;
+  // TODO this component doesn't have a calcExpUpdated update animation
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
@@ -84,7 +83,7 @@ function CustomTimeField(props: CustomTimeFieldProps) {
           value={timeInput}
           error={!!feedback}
           fullWidth
-          sx={[expressionUpdateFadingGlow(calcExprAnimating), { flex: 1 }]}
+          sx={{ flex: 1 }}
           onChange={(e: ChangeEvent<HTMLInputElement>) => onTimeInputChange(e.target.value)}
           onBlur={onTimeBlur}
           label={displayPrompt}
@@ -97,7 +96,7 @@ function CustomTimeField(props: CustomTimeFieldProps) {
             }
           }}
         />
-        <FormControl sx={[expressionUpdateFadingGlow(calcExprAnimating), { flex: 1 }]}>
+        <FormControl sx={{ flex: 1 }}>
           <Select
             id={periodId}
             value={is24HourNotation ? '' : periodInput}

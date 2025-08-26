@@ -27,6 +27,7 @@ import { getAnswerOptionLabel } from '../../../utils/openChoice';
 import { expressionUpdateFadingGlow } from '../../ExpressionUpdateFadingGlow.styles';
 import { StyledRequiredTypography } from '../Item.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
+import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import { StandardTextField } from '../Textfield.styles';
 
 interface ChoiceSelectAnswerOptionFieldsProps
@@ -73,15 +74,13 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
         onChange={(_, newValue) => onSelectChange(newValue)}
         openOnFocus
         autoHighlight
-        sx={[
-          expressionUpdateFadingGlow(exprAnimating),
-          { maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }
-        ]}
+        sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }}
         size="small"
         disabled={readOnly && readOnlyVisualStyle === 'disabled'}
         readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
         renderInput={(params) => (
           <StandardTextField
+            multiline
             textFieldWidth={textFieldWidth}
             isTabled={isTabled}
             placeholder={entryFormat || displayPrompt}
@@ -93,6 +92,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
                 endAdornment: (
                   <>
                     {params.InputProps.endAdornment}
+                    <ExpressionUpdateFadingIcon fadeIn={exprAnimating} disabled={readOnly} />
                     <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
                   </>
                 )

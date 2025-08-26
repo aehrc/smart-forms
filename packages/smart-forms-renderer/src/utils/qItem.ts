@@ -113,33 +113,45 @@ export function getXHtmlStringFromQuestionnaire(questionnaire: Questionnaire): s
   return null;
 }
 
-export function getLinkIdTypeTuples(questionnaire: Questionnaire): [string, string][] {
+/**
+ * Recursively traverses all QuestionnaireItems in a questionnaire and produces a map of <linkId, QItem> (with `item` omitted).
+ */
+export function getLinkIdPartialItemMap(
+  questionnaire: Questionnaire
+): Record<string, Omit<QuestionnaireItem, 'item'>> {
   if (!questionnaire.item || questionnaire.item.length === 0) {
-    return [];
+    return {};
   }
 
-  const linkIds: [string, string][] = [];
-  for (const topLevelItem of questionnaire.item) {
-    linkIds.push(...getLinkIdTypeTuplesFromItemRecursive(topLevelItem));
+  const tuples: [string, Omit<QuestionnaireItem, 'item'>][] = [];
+  for (const qItem of questionnaire.item) {
+    tuples.push(...getLinkIdPartialTuplesFromItemRecursive(qItem));
   }
 
-  return linkIds;
+  return Object.fromEntries(tuples);
 }
 
-export function getLinkIdTypeTuplesFromItemRecursive(qItem: QuestionnaireItem): [string, string][] {
-  const linkIds: [string, string][] = [];
+/**
+ * Recursively traverse a QuestionnaireItem and all its children, collecting a tuple [linkId, QItem] (with `item` omitted).
+ * The resulting array can be used to construct a flat map of linkId to node metadata (excluding their child items, for memory efficiency).
+ */
+export function getLinkIdPartialTuplesFromItemRecursive(
+  qItem: QuestionnaireItem
+): [string, Omit<QuestionnaireItem, 'item'>][] {
+  const tuples: [string, Omit<QuestionnaireItem, 'item'>][] = [];
+  const { item, ...partial } = qItem;
 
   if (qItem.linkId) {
-    linkIds.push([qItem.linkId, qItem.type]);
+    tuples.push([qItem.linkId, partial]);
   }
 
-  if (qItem.item) {
-    for (const childItem of qItem.item) {
-      linkIds.push(...getLinkIdTypeTuplesFromItemRecursive(childItem));
+  if (item) {
+    for (const child of item) {
+      tuples.push(...getLinkIdPartialTuplesFromItemRecursive(child));
     }
   }
 
-  return linkIds;
+  return tuples;
 }
 
 function getPreferredTerminologyServer(element: BackboneElement): string | null {

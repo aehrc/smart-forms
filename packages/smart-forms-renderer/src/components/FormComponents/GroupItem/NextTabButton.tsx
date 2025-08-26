@@ -17,7 +17,7 @@
 
 import React from 'react';
 import Button from '@mui/material/Button';
-import Iconify from '../../Iconify/Iconify';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 interface NextTabButtonProps {
   isDisabled: boolean;
@@ -31,7 +31,7 @@ function NextTabButton(props: NextTabButtonProps) {
     <Button
       variant="contained"
       size="small"
-      endIcon={<Iconify icon="material-symbols:arrow-forward" />}
+      endIcon={<ArrowForwardIcon fontSize="small" />}
       disabled={isDisabled}
       color="secondary"
       onClick={onNextTabClick}>

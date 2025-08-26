@@ -62,6 +62,7 @@ function useFetchResponses(
     refetch
   } = useQuery<Bundle>({
     queryKey: ['response', queryUrl],
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     queryFn: () => getClientBundlePromise(smartClient!, queryUrl),
     enabled: !!smartClient
   });

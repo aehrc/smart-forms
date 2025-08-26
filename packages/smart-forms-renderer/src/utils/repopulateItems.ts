@@ -441,6 +441,7 @@ function retrieveSingleCurrentQRItem(
   }
 
   if (deepEqual(currentQRItem, serverQRItem)) {
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete itemsToRepopulate[qItem.linkId];
     return;
   }
@@ -463,6 +464,7 @@ function retrieveRepeatGroupCurrentQRItems(
   }
 
   if (deepEqual(currentQRItems, serverQRItems)) {
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete itemsToRepopulate[qItem.linkId];
     return;
   }

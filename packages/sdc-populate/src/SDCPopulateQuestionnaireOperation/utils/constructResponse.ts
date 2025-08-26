@@ -40,14 +40,15 @@ import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import { getItemPopulationContextName } from './readPopulationExpressions';
 import { createQuestionnaireReference } from './createQuestionnaireReference';
 import { parseItemInitialToAnswer, parseValueToAnswer } from './parse';
-import { getValueSetPromise } from '../api/expandValueset';
+import { getValueSetPromise } from '../api/expandValueSet';
 import type { FetchTerminologyCallback, FetchTerminologyRequestConfig } from '../interfaces';
 import { handleFhirPathResult } from './createFhirPathContext';
 import { TERMINOLOGY_SERVER_URL } from '../../globals';
 import { getDisplayName } from './humanName';
 
 /**
- * Constructs a questionnaireResponse recursively from a specified questionnaire, its subject and its initialExpressions
+ * Constructs a questionnaireResponse recursively from a specified questionnaire, its subject and its initialExpressions.
+ * Handles population, context, and author/encounter metadata for the response.
  *
  * @param questionnaire - The questionnaire resource to construct a response from
  * @param subject - A subject reference to form the subject within the response
@@ -653,12 +654,11 @@ async function constructRepeatGroupInstances(
             });
           }
         } catch (e) {
-          if (e instanceof Error) {
-            console.warn(
-              'SDC-Populate Error: fhirpath evaluation for ItemPopulationContext child failed. Details below:' +
-                e
-            );
-          }
+          // e is not thrown as an Error type in fhirpath.js, so we can't use `if (e instanceof Error)` here
+          console.warn(
+            `SDC-Populate Error: fhirpath evaluation for ItemPopulationContext child for expression ${initialExpression.expression} failed. Details below:` +
+              e
+          );
         }
       }
 

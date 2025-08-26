@@ -19,7 +19,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import MuiTextField from './MuiTextField';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { useRendererStylingStore } from '../../../stores';
-import { expressionUpdateFadingGlow } from '../../ExpressionUpdateFadingGlow.styles';
+import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 
 interface TextFieldProps {
   linkId: string;
@@ -65,12 +65,12 @@ function TextField(props: TextFieldProps) {
       multiline
       size="small"
       minRows={3}
-      sx={[expressionUpdateFadingGlow(calcExprAnimating)]}
       slotProps={{
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
             <InputAdornment position="end">
+              <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
               <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>
           )

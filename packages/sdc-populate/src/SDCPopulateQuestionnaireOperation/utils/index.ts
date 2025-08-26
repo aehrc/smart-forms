@@ -15,6 +15,10 @@
  * limitations under the License.
  */
 
+/**
+ * Re-exports type predicate and population functions for SDC operations.
+ * Use these exports to access type guards and population logic from a single entry point.
+ */
 export {
   isInputParameters,
   isCanonicalParameter,

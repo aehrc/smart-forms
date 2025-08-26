@@ -15,4 +15,5 @@
  * limitations under the License.
  */
 
+export * from './interfaces';
 export * from './utils';
