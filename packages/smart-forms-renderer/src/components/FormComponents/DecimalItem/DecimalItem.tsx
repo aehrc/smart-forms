@@ -38,7 +38,6 @@ function DecimalItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
-    itemPath,
     isRepeated,
     isTabled,
     renderingExtensions,

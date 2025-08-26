@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import debounce from 'lodash.debounce';
@@ -33,7 +33,6 @@ function TextItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
-    itemPath,
     isRepeated,
     renderingExtensions,
     parentIsReadOnly,

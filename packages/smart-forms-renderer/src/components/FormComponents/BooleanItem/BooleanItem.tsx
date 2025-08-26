@@ -30,7 +30,6 @@ function BooleanItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
-    itemPath,
     isRepeated,
     isTabled,
     parentIsReadOnly,

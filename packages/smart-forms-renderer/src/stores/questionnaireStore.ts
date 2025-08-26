@@ -47,11 +47,7 @@ import {
   mutateRepeatEnableWhenItemInstances,
   updateEnableWhenItemAnswer
 } from '../utils/enableWhen';
-import { evaluateUpdatedExpressions } from '../utils/fhirpath';
-import {
-  evaluateInitialCalculatedExpressions,
-  initialiseCalculatedExpressionValues
-} from '../utils/calculatedExpression';
+import { evaluateInitialCalculatedExpressions } from '../utils/calculatedExpression';
 import { createQuestionnaireModel } from '../utils/questionnaireStoreUtils/createQuestionnaireModel';
 import { initialiseFormFromResponse } from '../utils/initialise';
 import { emptyQuestionnaire, emptyResponse } from '../utils/emptyResource';

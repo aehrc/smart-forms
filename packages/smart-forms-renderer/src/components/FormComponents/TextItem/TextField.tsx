@@ -70,7 +70,7 @@ function TextField(props: TextFieldProps) {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
             <InputAdornment position="end">
-              <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+              <ExpressionUpdateFadingIcon fadeIn={calcExprAnimating} disabled={readOnly} />
               <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>
           )

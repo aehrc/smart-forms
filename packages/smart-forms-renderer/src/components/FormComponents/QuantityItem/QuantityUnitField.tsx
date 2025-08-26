@@ -22,7 +22,6 @@ import type { QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import { useRendererStylingStore } from '../../../stores';
 
-
 interface QuantityUnitFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
   itemType: string;

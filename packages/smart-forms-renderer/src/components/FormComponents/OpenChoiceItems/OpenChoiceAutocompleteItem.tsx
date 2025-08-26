@@ -43,9 +43,9 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
     renderingExtensions,
     feedbackFromParent,
     parentIsReadOnly,
-    calcExprAnimating,
     onQrItemChange
   } = props;
+  // TODO no calcExprAnimating
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 

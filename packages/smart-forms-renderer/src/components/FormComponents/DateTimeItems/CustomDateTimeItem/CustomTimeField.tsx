@@ -25,6 +25,7 @@ import type { ChangeEvent } from 'react';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../../interfaces/renderProps.interface';
 import { useRendererStylingStore } from '../../../../stores';
 import FormControl from '@mui/material/FormControl';
+import MuiTextField from '../../TextItem/MuiTextField';
 
 interface CustomTimeFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;

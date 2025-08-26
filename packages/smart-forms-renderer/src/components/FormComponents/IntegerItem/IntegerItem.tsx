@@ -34,7 +34,6 @@ function IntegerItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
-    itemPath,
     isRepeated,
     isTabled,
     renderingExtensions,

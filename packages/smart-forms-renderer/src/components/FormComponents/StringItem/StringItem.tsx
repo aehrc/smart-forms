@@ -58,7 +58,6 @@ function StringItem(props: StringItemProps) {
   const {
     qItem,
     qrItem,
-    itemPath,
     isRepeated,
     isTabled,
     renderingExtensions,
