@@ -50,9 +50,9 @@ export const UrlBasic: Story = {
   },
   play: async ({ canvasElement }) => {
     await inputUrl(canvasElement, targetlinkId, targetText);
-    const result = await getAnswers(targetlinkId);
 
+    const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueUri: targetText }));
   }
-}; 
+};  

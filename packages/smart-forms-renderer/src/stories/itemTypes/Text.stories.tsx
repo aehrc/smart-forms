@@ -19,7 +19,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import { qTextCalculation } from '../assets/questionnaires';
 import { inputText, getInputText } from '@aehrc/testing-toolkit'
-import { expect } from "storybook/test"
+import { expect, fireEvent } from "storybook/test"
 import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -48,10 +48,17 @@ export const TextBasic: Story = {
   },
   play: async ({ canvasElement }) => {
     await inputText(canvasElement, targetlinkId, targetText);
-    const result = await getAnswers(targetlinkId);
 
+    const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueString: targetText }));
+
+    // Clear value 
+    const clear = canvasElement.querySelector('button#Clear');
+    fireEvent.click(clear as HTMLElement);
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    const resultAfterDelete = await getAnswers(targetlinkId);
+    expect(resultAfterDelete).toHaveLength(0);
   }
 };
 
@@ -60,7 +67,6 @@ export const TextBasicResponse: Story = {
     questionnaire: basicQuestionnare,
     questionnaireResponse: basicQr
   }, play: async ({ canvasElement }) => {
-
     const inputText = await getInputText(canvasElement, targetlinkId);
 
     expect(inputText).toBe(targetText)

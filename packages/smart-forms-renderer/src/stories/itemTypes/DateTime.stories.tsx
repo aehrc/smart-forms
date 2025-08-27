@@ -17,7 +17,10 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { qDateTimeBasic, qrDateTimeBasicResponse } from '../assets/questionnaires';
+
+import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
+import { getInputText, inputDateTime } from '@aehrc/testing-toolkit';
+import { expect } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -31,15 +34,46 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+const targetlinkId = 'dob'
+const targetText = 'Datetime of birth'
+const targetDateText = "1990-01-01T13:15:00+03:00"
+const targetDate = '1990-01-01'
+
+const qDateTimeBasic = questionnaireFactory([{
+  linkId: targetlinkId,
+  type: 'dateTime',
+  repeats: false,
+  text: targetText
+}])
+const qrDateTimeBasicResponse = qrFactory([{
+  linkId: targetlinkId,
+  answer: [
+    {
+      valueDateTime: targetDate
+    }
+  ]
+}])
+
 
 export const DateTimeBasic: Story = {
   args: {
     questionnaire: qDateTimeBasic
+  }, play: async ({ canvasElement }) => {
+    await inputDateTime(canvasElement, targetlinkId, targetDate, '01:15', 'PM');
+
+    const result = await getAnswers(targetlinkId);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual(expect.objectContaining({ valueDateTime: targetDateText }));
   }
 };
 export const DateTimeBasicResponse: Story = {
   args: {
     questionnaire: qDateTimeBasic,
     questionnaireResponse: qrDateTimeBasicResponse
+  }, play: async ({ canvasElement }) => {
+    const input = await getInputText(canvasElement, targetlinkId);
+
+    expect(input).toBe("01/01/1990")
+
   }
 };

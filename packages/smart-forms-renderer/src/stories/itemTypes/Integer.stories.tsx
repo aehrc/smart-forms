@@ -22,7 +22,7 @@ import {
   qIntegerCalculation,
 } from '../assets/questionnaires';
 import { getInputText, inputInteger } from '@aehrc/testing-toolkit';
-import { expect } from 'storybook/test';
+import { expect, fireEvent } from 'storybook/test';
 import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -61,10 +61,19 @@ export const IntegerBasic: Story = {
     questionnaire: qIntegerBasic
   }, play: async ({ canvasElement }) => {
     await inputInteger(canvasElement, targetlinkId, 25);
-    const result = await getAnswers(targetlinkId);
 
+    const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueInteger: 25 }));
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    // Clear value
+    const clear = canvasElement.querySelector('button#Clear');
+    fireEvent.click(clear as HTMLElement);
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const resultAfterDelete = await getAnswers(targetlinkId);
+    expect(resultAfterDelete).toHaveLength(0);
+
   }
 };
 export const IntegerBasicResponse: Story = {

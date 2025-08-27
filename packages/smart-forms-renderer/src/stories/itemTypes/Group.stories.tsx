@@ -17,7 +17,7 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
+import { getGroupAnswers, qrFactory, questionnaireFactory } from '../testUtils';
 import { getInputText, inputText } from '@aehrc/testing-toolkit';
 import { expect } from 'storybook/test';
 
@@ -34,7 +34,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-const targetlinkId = 'patient-details-group'
+const targetGroupLinkId = 'patient-details-group'
 
 const nameLinkid = 'name'
 const ageLinkid = 'age'
@@ -42,7 +42,7 @@ const targetName = 'Vladimir'
 const targetAge = 25
 
 const qGroupBasic = questionnaireFactory([{
-  linkId: targetlinkId,
+  linkId: targetGroupLinkId,
   type: 'group',
   repeats: false,
   text: 'Patient Details',
@@ -90,14 +90,14 @@ export const GroupBasic: Story = {
     await inputText(canvasElement, nameLinkid, targetName);
     await inputText(canvasElement, ageLinkid, targetAge);
 
-    const nameResult = await getAnswers(nameLinkid, targetlinkId);
-    const ageResult = await getAnswers(ageLinkid, targetlinkId);
+    const nameResult = await getGroupAnswers(targetGroupLinkId, nameLinkid);
+    const ageResult = await getGroupAnswers(targetGroupLinkId, ageLinkid);
 
     expect(nameResult).toHaveLength(1);
     expect(ageResult).toHaveLength(1);
 
     expect(nameResult[0]).toEqual(expect.objectContaining({ valueString: targetName }));
-    expect(ageResult[0]).toEqual(expect.objectContaining({ valueDecimal: targetAge }));
+    expect(ageResult[0]).toEqual(expect.objectContaining({ valueInteger: targetAge }));
   }
 };
 export const GroupBasicResponse: Story = {
@@ -107,6 +107,7 @@ export const GroupBasicResponse: Story = {
   }, play: async ({ canvasElement }) => {
     const inputName = await getInputText(canvasElement, nameLinkid);
     const inputAge = await getInputText(canvasElement, ageLinkid);
+
     expect(inputName).toBe(targetName)
     expect(inputAge).toBe(targetAge.toString())
 

@@ -20,7 +20,7 @@ import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperF
 
 import { getAnswers, questionnaireFactory } from '../testUtils';
 import { inputReference } from '@aehrc/testing-toolkit';
-import { expect } from 'storybook/test';
+import { expect, fireEvent } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -50,9 +50,16 @@ export const ReferenceBasic: Story = {
   },
   play: async ({ canvasElement }) => {
     await inputReference(canvasElement, targetlinkId, targetText);
-    const result = await getAnswers(targetlinkId);
 
+    const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueString: targetText }));
+
+    // Clear value  
+    const clear = canvasElement.querySelector('button#Clear');
+    fireEvent.click(clear as HTMLElement);
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const resultAfterDelete = await getAnswers(targetlinkId);
+    expect(resultAfterDelete).toHaveLength(0);
   }
 };

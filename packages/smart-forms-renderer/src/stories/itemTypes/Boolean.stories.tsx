@@ -21,7 +21,7 @@ import {
 } from '../assets/questionnaires';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook'; // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
-import { chooseRadioOption, getInput, getInputText } from '@aehrc/testing-toolkit';
+import { chooseCheckBox, chooseRadioOption, getInput, getInputText } from '@aehrc/testing-toolkit';
 import { expect, fireEvent } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -61,18 +61,19 @@ export const BooleanBasic: Story = {
     questionnaire: basicQuestionnare
   }, play: async ({ canvasElement }) => {
     await chooseRadioOption(canvasElement, targetlinkId);
-    const result = await getAnswers(targetlinkId);
 
+    const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueBoolean: true }));
 
-    const button = canvasElement.querySelector('button');
-    fireEvent.click(button as HTMLElement);
+    // Clear value
+    const clear = canvasElement.querySelector('button#clear');
+    fireEvent.click(clear as HTMLElement);
+
     const resultAfterDelete = await getAnswers(targetlinkId);
     expect(resultAfterDelete).toHaveLength(0);
   }
 }
-
 
 export const BooleanBasicResponse: Story = {
   args: {
@@ -84,6 +85,7 @@ export const BooleanBasicResponse: Story = {
     expect(inputText).toBe("true")
   }
 };
+
 const qBooleanCheckbox = questionnaireFactory([{
   extension: [
     {
@@ -113,6 +115,25 @@ const qrBooleanCheckboxResponse = qrFactory([{
   ]
 }])
 
+export const BooleanCheckboxBasic: Story = {
+  args: {
+    questionnaire: qBooleanCheckbox,
+  }, play: async ({ canvasElement }) => {
+    await chooseCheckBox(canvasElement, targetlinkId, true)
+
+    const result = await getAnswers(targetlinkId);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual(expect.objectContaining({ valueBoolean: true }));
+
+    // Clear value
+    const clear = canvasElement.querySelector('button#clear');
+    fireEvent.click(clear as HTMLElement);
+
+    const resultAfterDelete = await getAnswers(targetlinkId);
+    expect(resultAfterDelete).toHaveLength(0);
+  }
+};
+
 export const BooleanCheckboxResponse: Story = {
   args: {
     questionnaire: qBooleanCheckbox,
@@ -120,7 +141,7 @@ export const BooleanCheckboxResponse: Story = {
   }, play: async ({ canvasElement }) => {
     const input = await getInput(canvasElement, targetlinkId);
 
-    expect(input).toBeChecked()
+    expect(input[0]).toBeChecked()
   }
 };
 

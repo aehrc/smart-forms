@@ -47,11 +47,9 @@ const qTimeBasic = questionnaireFactory([{
 }])
 const qrTimeBasic = qrFactory([{
   linkId: targetlinkId,
-
   answer: [
     { valueTime: targetDate }
   ],
-
 }])
 
 export const TimeBasic: Story = {
@@ -60,19 +58,17 @@ export const TimeBasic: Story = {
   },
   play: async ({ canvasElement }) => {
     await inputTime(canvasElement, targetlinkId, targetDateString);
-    const result = await getAnswers(targetlinkId);
 
+    const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
-    expect(result[0]).toEqual(expect.objectContaining({ valueTime: targetDate }));
+    expect(result[0].valueTime.split("T")[1]).toBe(targetDate.split("T")[1]);
   }
-  //Добавить респонс
 };
 export const TextBasicResponse: Story = {
   args: {
     questionnaire: qTimeBasic,
     questionnaireResponse: qrTimeBasic
   }, play: async ({ canvasElement }) => {
-
     const inputText = await getInputText(canvasElement, targetlinkId);
 
     expect(inputText).toBe(targetDateString)

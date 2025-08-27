@@ -21,9 +21,9 @@ import {
   qChoiceAnswerOptionCalculation,
   qChoiceAnswerValueSetCalculation
 } from '../assets/questionnaires';
-import { chooseSelectOption, getInputText } from '@aehrc/testing-toolkit';
+import { chooseSelectOption, getInput, getInputText } from '@aehrc/testing-toolkit';
 import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
-import { expect } from 'storybook/test';
+import { expect, fireEvent } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -79,9 +79,14 @@ export const ChoiceAnswerOptionBasic: Story = {
     await chooseSelectOption(canvasElement, targetlinkId, targetCoding.display);
 
     const result = await getAnswers(targetlinkId);
-
     expect(result).toHaveLength(1);
     expect(result[0].valueCoding).toEqual(expect.objectContaining(targetCoding));
+
+    const button = canvasElement.querySelector('button[aria-label="Clear"]');
+    fireEvent.click(button as HTMLElement);
+    const inputAfterClear = await getInput(canvasElement, targetlinkId);
+    expect(inputAfterClear).toHaveLength(0);
+
   }
 };
 
@@ -124,6 +129,7 @@ export const ChoiceAnswerValueSetBasic: Story = {
       valueSetTargetId,
       valueSetTargetCoding.display
     );
+
     const result = await getAnswers(valueSetTargetId);
     expect(result).toHaveLength(1);
     expect(result[0].valueCoding).toEqual(
@@ -146,6 +152,7 @@ export const ChoiceAnswerValueSetBasicResponse: Story = {
   },
   play: async ({ canvasElement }) => {
     const inputText = await getInputText(canvasElement, valueSetTargetId);
+
     expect(inputText).toBe(valueSetTargetCoding.display);
   }
 };
@@ -183,6 +190,7 @@ export const ChoiceAnswerOptionsUsingInitialSelected: Story = {
     ]),
   }, play: async ({ canvasElement }) => {
     const inputText = await getInputText(canvasElement, "awsHallucinationType");
+
     expect(inputText).toBe(initialTargetCoding.display)
   }
 };

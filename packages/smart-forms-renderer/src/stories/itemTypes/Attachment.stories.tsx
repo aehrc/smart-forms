@@ -18,10 +18,11 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 
-import { questionnaireFactory } from '../testUtils';
+import { getAnswers, questionnaireFactory } from '../testUtils';
 import { inputFile } from '@aehrc/testing-toolkit';
 import { expect, fireEvent, within, screen } from 'storybook/test';
-import { waitFor } from 'storybook/internal/test';
+import { questionnaireResponseStore } from '../../stores';
+
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -45,7 +46,7 @@ const qAttachmentBasic = questionnaireFactory([{
   text: targetText
 }])
 
-const url = 'hhtp://world_of_warcraft.com'
+const url = 'http://world_of_warcraft.com'
 const name = 'Vladimir'
 const fileName = 'foo.png'
 
@@ -59,19 +60,23 @@ export const AttachmentBasic: Story = {
       canvasElement,
       targetlinkId,
       [new File(['foo'], fileName, { type: "image/png" })],
-      [url, name]
+      url, name
     );
+    const qr = questionnaireResponseStore.getState().updatableResponse;
 
+    const result = await getAnswers(targetlinkId);
+    expect(result).toHaveLength(1);
+    expect(result).toEqual(expect.objectContaining({ valueBoolean: true }));
     const canvas = within(canvasElement);
     expect(canvas.getByText(fileName)).toBeDefined();
     expect(canvas.getByText(url)).toBeDefined();
     expect(canvas.getByText(name)).toBeDefined();
 
-    const button = canvasElement.querySelector('button');
-    fireEvent.click(button as HTMLElement);
-
-    await waitFor(() =>
-      expect(screen.queryByText(fileName)).not.toBeInTheDocument()
-    );
+    // Clear value
+    const clear = canvasElement.querySelector('span[aria-label="Remove file"] button');
+    fireEvent.click(clear as HTMLElement);
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const resultAfterDelete = await getAnswers(targetlinkId);
+    expect(resultAfterDelete).toHaveLength(0);
   }
 };

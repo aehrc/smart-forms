@@ -23,7 +23,7 @@ import {
 } from '../assets/questionnaires';
 import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
 import { getInputText, inputDecimal } from '@aehrc/testing-toolkit';
-import { expect } from 'storybook/test';
+import { expect, fireEvent } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -39,18 +39,17 @@ type Story = StoryObj<typeof meta>;
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
 const targetlinkId = 'weight'
-const targetText = 'Weight in kg'
 const targetWeight = 80.3
 
 const qDecimalBasic = questionnaireFactory([{
   linkId: targetlinkId,
   type: 'decimal',
   repeats: false,
-  text: targetText
+  text: 'Weight in kg'
 }])
 const qrDecimalBasicResponse = qrFactory([{
   linkId: targetlinkId,
-  text: targetText,
+  text: 'Weight in kg',
   answer: [
     {
       valueDecimal: targetWeight
@@ -64,10 +63,19 @@ export const DecimalBasic: Story = {
   },
   play: async ({ canvasElement }) => {
     await inputDecimal(canvasElement, targetlinkId, targetWeight);
-    const result = await getAnswers(targetlinkId);
 
+    const result = await getAnswers(targetlinkId)
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueDecimal: targetWeight }));
+
+    // Clear value
+    const clear = canvasElement.querySelector('button#Clear');
+    fireEvent.click(clear as HTMLElement);
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const resultAfterDelete = await getAnswers(targetlinkId);
+    expect(resultAfterDelete).toHaveLength(0);
+
+
   }
 };
 

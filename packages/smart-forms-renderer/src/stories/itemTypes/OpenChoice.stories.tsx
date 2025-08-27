@@ -19,11 +19,13 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
   qOpenChoiceAnswerAutoCompleteFromValueSet,
-  qOpenChoiceAnswerOptionBasic,
+
   qOpenChoiceAnswerValueSetBasic,
-  qrOpenChoiceAnswerOptionBasicResponse,
   qrOpenChoiceAnswerValueSetBasicResponse
 } from '../assets/questionnaires';
+import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
+import { chooseRadioOption, getInput } from '@aehrc/testing-toolkit';
+import { expect, fireEvent, waitFor, screen } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -37,10 +39,68 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+const clinicCoding = {
+  system: 'http://snomed.info/sct',
+  code: '257585005',
+  display: 'Clinic'
+}
+const targetText = 'Pharmacy'
+const qOpenChoiceAnswerOptionBasic = questionnaireFactory([{
+  linkId: 'health-check-location',
+  text: 'Location of health check',
+  type: 'open-choice',
+  extension: [
+    {
+      url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+      valueCodeableConcept: {
+        coding: [
+          {
+            system: 'http://hl7.org/fhir/questionnaire-item-control',
+            code: 'radio-button'
+          }
+        ]
+      }
+    },
+    {
+      url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-openLabel',
+      valueString: 'Other, please specify'
+    }
+  ],
+  answerOption: [
+    {
+      valueCoding: clinicCoding
+    }
+  ]
+}])
+const qrOpenChoiceAnswerOptionBasicResponse = qrFactory([{
+  linkId: 'health-check-location',
+  text: 'Location of health check',
+  answer: [
+    {
+      valueString: targetText
+    }
+  ]
+}])
+const targetlinkId = 'health-check-location'
 
 export const OpenChoiceAnswerOptionBasic: Story = {
   args: {
     questionnaire: qOpenChoiceAnswerOptionBasic
+  },
+  play: async ({ canvasElement }) => {
+    await chooseRadioOption(canvasElement, targetlinkId)
+
+    const result = await getAnswers(targetlinkId);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual(expect.objectContaining({ valueCoding: clinicCoding }));
+
+    // Clear
+    const button = canvasElement.querySelector('button#clear');
+    fireEvent.click(button as HTMLElement);
+    const input = await getInput(canvasElement, targetlinkId);
+    await waitFor(() =>
+      expect(input[0]).not.toBeChecked()
+    );
   }
 };
 
@@ -48,6 +108,9 @@ export const OpenChoiceAnswerOptionBasicResponse: Story = {
   args: {
     questionnaire: qOpenChoiceAnswerOptionBasic,
     questionnaireResponse: qrOpenChoiceAnswerOptionBasicResponse
+  },
+  play: async () => {
+    expect(screen.getByText(targetText)).toBeDefined()
   }
 };
 

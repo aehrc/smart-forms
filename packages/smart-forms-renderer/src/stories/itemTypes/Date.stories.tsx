@@ -60,8 +60,8 @@ export const DateBasic: Story = {
     questionnaire: qDateBasic
   }, play: async ({ canvasElement }) => {
     await inputDate(canvasElement, targetlinkId, targetDate);
-    const result = await getAnswers(targetlinkId);
 
+    const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueDate: targetDateText }));
   }
