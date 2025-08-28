@@ -19,12 +19,10 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
   qOpenChoiceAnswerAutoCompleteFromValueSet,
-
-  qOpenChoiceAnswerValueSetBasic,
   qrOpenChoiceAnswerValueSetBasicResponse
 } from '../assets/questionnaires';
 import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
-import { chooseRadioOption, getInput } from '@aehrc/testing-toolkit';
+import { chooseRadioOption, chooseSelectOption, getInput } from '@aehrc/testing-toolkit';
 import { expect, fireEvent, waitFor, screen } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -81,6 +79,7 @@ const qrOpenChoiceAnswerOptionBasicResponse = qrFactory([{
     }
   ]
 }])
+
 const targetlinkId = 'health-check-location'
 
 export const OpenChoiceAnswerOptionBasic: Story = {
@@ -113,10 +112,52 @@ export const OpenChoiceAnswerOptionBasicResponse: Story = {
     expect(screen.getByText(targetText)).toBeDefined()
   }
 };
-
+const qOpenChoiceAnswerValueSetBasic = questionnaireFactory([{
+  extension: [
+    {
+      url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+      valueCodeableConcept: {
+        coding: [
+          {
+            system: 'http://hl7.org/fhir/questionnaire-item-control',
+            code: 'radio-button'
+          }
+        ]
+      }
+    },
+    {
+      url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-openLabel',
+      valueString: 'Overseas state, please specify'
+    }
+  ],
+  linkId: 'state',
+  text: 'State',
+  type: 'open-choice',
+  repeats: false,
+  answerValueSet:
+    'http://hl7.org/fhir/ValueSet/administrative-gender'
+}])
+const valueSetTargetCoding = {
+  code: "female",
+  display: "Female",
+  system: "http://hl7.org/fhir/administrative-gender",
+}
 export const OpenChoiceAnswerValueSetBasic: Story = {
   args: {
     questionnaire: qOpenChoiceAnswerValueSetBasic
+  },
+  play: async ({ canvasElement }) => {
+    await chooseSelectOption(
+      canvasElement,
+      'state',
+      valueSetTargetCoding.display
+    );
+
+    const result = await getAnswers('state');
+    expect(result).toHaveLength(1);
+    expect(result[0].valueCoding).toEqual(
+      expect.objectContaining(valueSetTargetCoding)
+    );
   }
 };
 
@@ -124,6 +165,11 @@ export const OpenChoiceAnswerValueSetBasicResponse: Story = {
   args: {
     questionnaire: qOpenChoiceAnswerValueSetBasic,
     questionnaireResponse: qrOpenChoiceAnswerValueSetBasicResponse
+  },
+  play: async ({ canvasElement }) => {
+    const inputText = await getInput(canvasElement, 'state');
+
+    expect(inputText[2].defaultValue).toBe("Branbendurg");
   }
 };
 

@@ -20,8 +20,7 @@ import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperF
 
 import { getAnswers, questionnaireFactory } from '../testUtils';
 import { inputFile } from '@aehrc/testing-toolkit';
-import { expect, fireEvent, within, screen } from 'storybook/test';
-import { questionnaireResponseStore } from '../../stores';
+import { expect, fireEvent, within } from 'storybook/test';
 
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -62,7 +61,6 @@ export const AttachmentBasic: Story = {
       [new File(['foo'], fileName, { type: "image/png" })],
       url, name
     );
-    const qr = questionnaireResponseStore.getState().updatableResponse;
 
     const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);

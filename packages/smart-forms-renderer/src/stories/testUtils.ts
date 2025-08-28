@@ -9,10 +9,10 @@ import type {
 
 export async function getAnswers(linkId: string) {
   const qr = questionnaireResponseStore.getState().updatableResponse;
-  const result = await evaluate( qr, `QuestionnaireResponse.item.where(linkId='${linkId}').answer`);
+  const result = await evaluate(qr, `QuestionnaireResponse.item.where(linkId='${linkId}').answer`);
   return result;
 }
-export async function getGroupAnswers(groupLinkid: string, answerLinkid: string ) {
+export async function getGroupAnswers(groupLinkid: string, answerLinkid: string) {
   const qr = questionnaireResponseStore.getState().updatableResponse;
 
   const result = await evaluate(
@@ -21,7 +21,7 @@ export async function getGroupAnswers(groupLinkid: string, answerLinkid: string 
       ? `QuestionnaireResponse.item.where(linkId='${groupLinkid}').item.where(linkId='${answerLinkid}').answer`
       : `QuestionnaireResponse.item.where(linkId='${answerLinkid}').answer`
   );
-  
+
   return result;
 }
 

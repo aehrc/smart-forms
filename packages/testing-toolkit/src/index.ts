@@ -19,11 +19,7 @@ export async function inputText(
   // Here we await for debounced store update
   await new Promise((resolve) => setTimeout(resolve, 500));
 }
-export async function chooseCheckBox(
-  canvasElement: HTMLElement,
-  linkId: string,
-  text: string | boolean | number
-) {
+export async function chooseCheckBox(canvasElement: HTMLElement, linkId: string) {
   const questionElement = await findByLinkId(canvasElement, linkId);
   const input =
     questionElement?.querySelector('input') ?? questionElement?.querySelector('textarea');
@@ -42,21 +38,21 @@ export async function inputFile(
   canvasElement: HTMLElement,
   linkId: string,
   files: File | File[],
-  url:string,
-  filename:string
+  url: string,
+  filename: string
 ) {
   const questionElement = await findByLinkId(canvasElement, linkId);
   const input = questionElement?.querySelector<HTMLInputElement>('input');
   const textarea = questionElement?.querySelectorAll<HTMLInputElement>('textarea');
-  fireEvent.change(textarea[0], { target: { value: url } });
-  fireEvent.change(textarea[2], { target: { value: filename } });
 
   if (!input) {
     throw new Error(`File input was not found inside [data-linkid=${linkId}] block`);
   }
   const fileList = Array.isArray(files) ? files : [files];
-  await userEvent.upload(input, fileList); 
-  
+  await userEvent.upload(input, fileList);
+
+  fireEvent.change(textarea[0], { target: { value: url } });
+  fireEvent.change(textarea[2], { target: { value: filename } });
 
   await new Promise((resolve) => setTimeout(resolve, 500));
 }
@@ -97,7 +93,13 @@ export async function inputInteger(canvasElement: HTMLElement, linkId: string, t
   return await inputText(canvasElement, linkId, text);
 }
 
-export async function inputDateTime(canvasElement: HTMLElement, linkId: string,date:string,time:string,amPm:string) {
+export async function inputDateTime(
+  canvasElement: HTMLElement,
+  linkId: string,
+  date: string,
+  time: string,
+  amPm: string
+) {
   const questionElement = await findByLinkId(canvasElement, linkId);
   const inputs =
     questionElement?.querySelectorAll('input') ?? questionElement?.querySelectorAll('textarea');
@@ -109,7 +111,7 @@ export async function inputDateTime(canvasElement: HTMLElement, linkId: string,d
   fireEvent.change(inputs[0], { target: { value: date } });
   fireEvent.change(inputs[1], { target: { value: time } });
   fireEvent.change(inputs[2], { target: { value: amPm } });
- 
+
   // Here we await for debounced store update
   await new Promise((resolve) => setTimeout(resolve, 500));
 }
@@ -168,6 +170,31 @@ export async function chooseSelectOption(
 
   const option = await screen.findByText(optionLabel);
   fireEvent.click(option);
+}
+export async function chooseQuantityOption(
+  canvasElement: HTMLElement,
+  linkId: string,
+  weight: number | string,
+  weightComparator?: string
+) {
+  const questionElement = await findByLinkId(canvasElement, linkId);
+
+  const input = questionElement.querySelectorAll('input, textarea');
+
+  if (!input) {
+    throw new Error(`There is no input inside ${linkId}`);
+  }
+
+  fireEvent.focus(input[0]);
+  fireEvent.keyDown(input[0], { key: 'ArrowDown', code: 'ArrowDown' });
+
+  if (weightComparator) {
+    const option = await screen.findByText(weightComparator);
+    fireEvent.click(option);
+    fireEvent.change(input[0], { target: { value: weightComparator } });
+  }
+
+  fireEvent.change(input[1], { target: { value: weight } });
 }
 
 async function findByLinkId(canvasElement: HTMLElement, linkId: string) {
