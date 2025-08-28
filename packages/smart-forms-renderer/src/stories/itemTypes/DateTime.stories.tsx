@@ -37,7 +37,7 @@ type Story = StoryObj<typeof meta>;
 const targetlinkId = 'dob'
 const targetText = 'Datetime of birth'
 const targetDateText = "1990-01-01T13:15:00+03:00"
-const targetDate = '1990-01-01'
+const targetDate = '01/01/1990'
 
 const qDateTimeBasic = questionnaireFactory([{
   linkId: targetlinkId,
@@ -62,6 +62,7 @@ export const DateTimeBasic: Story = {
     await inputDateTime(canvasElement, targetlinkId, targetDate, '01:15', 'PM');
 
     const result = await getAnswers(targetlinkId);
+
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueDateTime: targetDateText }));
   }
@@ -73,7 +74,7 @@ export const DateTimeBasicResponse: Story = {
   }, play: async ({ canvasElement }) => {
     const input = await getInputText(canvasElement, targetlinkId);
 
-    expect(input).toBe("01/01/1990")
+    expect(input).toBe('1990/01/01')
 
   }
 };

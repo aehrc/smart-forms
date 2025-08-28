@@ -48,6 +48,7 @@ const qAttachmentBasic = questionnaireFactory([{
 const url = 'http://world_of_warcraft.com'
 const name = 'Vladimir'
 const fileName = 'foo.png'
+const type = "image/png"
 
 
 export const AttachmentBasic: Story = {
@@ -58,13 +59,13 @@ export const AttachmentBasic: Story = {
     await inputFile(
       canvasElement,
       targetlinkId,
-      [new File(['foo'], fileName, { type: "image/png" })],
+      [new File(['foo'], fileName, { type: type })],
       url, name
     );
 
     const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
-    expect(result).toEqual(expect.objectContaining({ valueBoolean: true }));
+    expect(result[0].valueAttachment).toEqual(expect.objectContaining({ "contentType": type }));
     const canvas = within(canvasElement);
     expect(canvas.getByText(fileName)).toBeDefined();
     expect(canvas.getByText(url)).toBeDefined();

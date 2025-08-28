@@ -119,7 +119,7 @@ export const BooleanCheckboxBasic: Story = {
   args: {
     questionnaire: qBooleanCheckbox,
   }, play: async ({ canvasElement }) => {
-    await chooseCheckBox(canvasElement, targetlinkId, true)
+    await chooseCheckBox(canvasElement, targetlinkId)
 
     const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
