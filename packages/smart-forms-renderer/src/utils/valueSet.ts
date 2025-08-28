@@ -29,7 +29,11 @@ import type {
 import { client } from 'fhirclient';
 import type { FhirResourceString } from '../interfaces/populate.interface';
 import type { VariableXFhirQuery } from '../interfaces/variables.interface';
-import type { ValidateCodeResponse, ValueSetPromise } from '../interfaces/valueSet.interface';
+import type {
+  ProcessedValueSet,
+  ValidateCodeResponse,
+  ValueSetPromise
+} from '../interfaces/valueSet.interface';
 import { getRelevantCodingProperties } from './choice';
 
 const VALID_VALUE_SET_URL_REGEX =
@@ -205,4 +209,43 @@ export function getResourceFromLaunchContext(
       return encounter;
   }
   return null;
+}
+
+/**
+ * Retrieves the codings for a given answer value set URL.
+ *
+ * This function attempts to resolve codings in the following order:
+ * 1. If the URL is a contained reference (starts with `#`), return the cached contained codings.
+ * 2. If a processed value set has an `updatableValueSetUrl`, use that URL.
+ * 3. Attempt to retrieve codings from the cached queried value sets.
+ */
+export function getCodingsForAnswerValueSet(
+  answerValueSetUrl: string | undefined,
+  cachedValueSetCodings: Record<string, Coding[]>,
+  processedValueSets: Record<string, ProcessedValueSet>
+): Coding[] {
+  if (!answerValueSetUrl) {
+    return [];
+  }
+
+  // Handle contained value set references (e.g., "#my-valueset")
+  if (answerValueSetUrl.startsWith('#')) {
+    const valueSetReference = answerValueSetUrl.slice(1);
+    if (cachedValueSetCodings[valueSetReference]) {
+      return cachedValueSetCodings[valueSetReference];
+    }
+  }
+
+  // If processed value sets have an updated URL, use it
+  if (processedValueSets[answerValueSetUrl]?.updatableValueSetUrl) {
+    answerValueSetUrl = processedValueSets[answerValueSetUrl].updatableValueSetUrl;
+  }
+
+  // Attempt to get codings from cached queried value sets
+  if (cachedValueSetCodings[answerValueSetUrl]) {
+    return cachedValueSetCodings[answerValueSetUrl];
+  }
+
+  // Otherwise return empty array
+  return [];
 }

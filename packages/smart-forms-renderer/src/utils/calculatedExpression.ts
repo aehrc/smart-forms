@@ -39,7 +39,9 @@ import type { ComputedNewAnswers } from '../interfaces/computedUpdates.interface
 import { createQuestionnaireResponseItemMap } from './questionnaireResponseStoreUtils/updatableResponseItems';
 import { nanoid } from 'nanoid';
 import { getDecimalPrecision } from './extensions';
-import { getRelevantCodingProperties } from './choice';
+import { convertCodingsToAnswerOptions, getRelevantCodingProperties } from './choice';
+import { getCodingsForAnswerValueSet } from './valueSet';
+import { questionnaireStore } from '../stores';
 
 interface EvaluateInitialCalculatedExpressionsParams {
   initialResponse: QuestionnaireResponse;
@@ -583,12 +585,16 @@ function getMatchingAnswerFromAnswerOptions(
     if ('valueCoding' in option) {
       if (
         option.valueCoding &&
-        // Handle case where value matches valueCoding.code
-        (option.valueCoding?.code === value?.code ||
-          // Handle case where value matches the whole valueCoding object
-          objMatchesCoding(option.valueCoding, value) ||
-          // Handle case where value matches valueCoding.code.display
-          option.valueCoding?.display === value?.display)
+        // Handle case where value matches the whole valueCoding object
+        (objMatchesCoding(option.valueCoding, value) ||
+          // Handle case where value.code matches valueCoding.code
+          option.valueCoding?.code === value.code ||
+          // Handle case where value matches valueCoding.code
+          option.valueCoding?.code === value ||
+          // Handle case where value.display matches valueCoding.display
+          option.valueCoding?.display === value.display ||
+          // Handle case where value matches valueCoding.display
+          option.valueCoding?.display === value)
       ) {
         return { valueCoding: getRelevantCodingProperties(option.valueCoding) };
       }
@@ -657,27 +663,26 @@ function parseValueToAnswer(
     if (qItem.answerOption) {
       const matchingAnswer = getMatchingAnswerFromAnswerOptions(qItem.answerOption, value);
       if (matchingAnswer) {
-        console.log(qItem.linkId, matchingAnswer);
-      }
-
-      if (matchingAnswer) {
         return matchingAnswer;
       }
     }
 
-    // If it hasn't matched answerOption, it's values is coming from an answerValueSet. In this case, it will always take the form of a Coding
-    // Handle valueCoding
-    // TODO in this case we will need to know the codings beforehand...
-    if (typeof value === 'object') {
-      return { valueCoding: value };
-    }
+    // Handle answerValueSet matching
+    if (qItem.answerValueSet) {
+      const { cachedValueSetCodings, processedValueSets } = questionnaireStore.getState();
 
-    // Handle valueString
-    if (typeof value === 'string') {
-      // if (option.valueCoding?.code === value || option.valueCoding?.display === value) {
-      //
-      // }
-      return { valueString: value };
+      const codings = getCodingsForAnswerValueSet(
+        qItem.answerValueSet,
+        cachedValueSetCodings,
+        processedValueSets
+      );
+      const matchingAnswer = getMatchingAnswerFromAnswerOptions(
+        convertCodingsToAnswerOptions(codings),
+        value
+      );
+      if (matchingAnswer) {
+        return matchingAnswer;
+      }
     }
   }
 
