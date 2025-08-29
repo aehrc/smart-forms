@@ -1,6 +1,6 @@
 import type { FhirResource } from 'fhir/r4';
 import { isFhirPatchPathPart, isFhirPatchTypePart, parametersIsFhirPatch } from './typePredicates';
-import {
+import type {
   FhirPatchParameterEntry,
   FhirPatchPart,
   FhirPatchPathPart,
