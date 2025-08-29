@@ -166,6 +166,23 @@ export function buildTransactionBundle(
         requestMethod
       );
 
+      console.log({
+        fullUrl: fullUrl,
+        resource: resourceToAdd,
+        request: {
+          method: requestMethod,
+          url: hasResourceId ? `${resourceType}/${resourceId}` : resourceType,
+
+          // ifNoneMatch, ifModifiedSince, ifMatch, ifNoneExist optional properties
+          ...(ifNoneMatch && { ifNoneMatch: ifNoneMatch }),
+          ...(ifModifiedSince && {
+            ifModifiedSince: ifModifiedSince
+          }),
+          ...(ifMatch && { ifMatch: ifMatch }),
+          ...(ifNoneExist && { ifNoneExist: ifNoneExist })
+        }
+      });
+
       // Add entry to the bundle
       bundle.entry.push({
         fullUrl: fullUrl,

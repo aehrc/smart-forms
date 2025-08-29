@@ -32,7 +32,12 @@ import type {
   TemplateExtensionSlice,
   TypeExtensionSlice
 } from '../interfaces/templateExtractReference.interface';
-import type { FhirPatchParameters } from '../interfaces/fhirpatch.interface';
+import type {
+  FhirPatchParameters,
+  FhirPatchPart,
+  FhirPatchPathPart,
+  FhirPatchTypePart
+} from '../interfaces/fhirpatch.interface';
 
 export function isQuestionnaireResponseParameter(
   parameter: ParametersParameter
@@ -141,4 +146,12 @@ export function parametersIsFhirPatch(parameters: Parameters): parameters is Fhi
 
     return validFhirPatchTypes.has(typePart.valueCode);
   });
+}
+
+export function isFhirPatchTypePart(part: FhirPatchPart): part is FhirPatchTypePart {
+  return part.name === 'type' && 'valueCode' in part;
+}
+
+export function isFhirPatchPathPart(part: FhirPatchPart): part is FhirPatchPathPart {
+  return part.name === 'path' && 'valueString' in part;
 }
