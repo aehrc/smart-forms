@@ -1,13 +1,19 @@
 # Dockerfile
 
 # Step 1: Use a Node.js image to build the app
-FROM node:18 AS builder
+FROM --platform=$BUILDPLATFORM node:18 AS builder
 
 # Set working directory inside the container
 WORKDIR /app
 
 # Copy package.json and package-lock.json
 COPY package*.json ./
+
+# Install build tools for native dependencies
+RUN apt-get update && apt-get install -y python3 build-essential && rm -rf /var/lib/apt/lists/*
+
+# Set npm config for python and permissions
+RUN npm config set python python3 && npm config set unsafe-perm true
 
 # Install dependencies
 RUN npm install
