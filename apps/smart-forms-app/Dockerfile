@@ -27,7 +27,7 @@ RUN npm run build
 
 
 # Step 2: Use an Nginx image to serve the static files
-FROM nginx:alpine
+FROM --platform=$BUILDPLATFORM nginx:alpine
 
 # Copy the build files from the builder stage to the Nginx web directory
 COPY --from=builder /app/dist /usr/share/nginx/html
