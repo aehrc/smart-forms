@@ -26,6 +26,11 @@ export const LAUNCH_SCOPE =
 export const LAUNCH_CLIENT_ID = import.meta.env.VITE_LAUNCH_CLIENT_ID ?? 'smart-forms-client-id';
 export const IN_APP_POPULATE = import.meta.env.VITE_IN_APP_POPULATE ?? true;
 
+// Dynamic Client Registration Configuration
+export const ENABLE_DYNAMIC_CLIENT_REGISTRATION = import.meta.env.VITE_ENABLE_DYNAMIC_CLIENT_REGISTRATION ?? 'true';
+export const DYNAMIC_REGISTRATION_FALLBACK_ENABLED = import.meta.env.VITE_DYNAMIC_REGISTRATION_FALLBACK_ENABLED ?? 'true';
+export const ADDITIONAL_REDIRECT_URIS = import.meta.env.VITE_ADDITIONAL_REDIRECT_URIS ?? '';
+
 // Non-environment variables, but still global constants
 export const NUM_OF_QUESTIONNAIRES_TO_FETCH = 500;
 export const NUM_OF_EXISTING_RESPONSES_TO_FETCH = 200;
