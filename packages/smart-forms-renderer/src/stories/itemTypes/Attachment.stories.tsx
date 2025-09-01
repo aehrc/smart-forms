@@ -60,22 +60,25 @@ export const AttachmentBasic: Story = {
       canvasElement,
       targetlinkId,
       [new File(['foo'], fileName, { type: type })],
-      url, name
+      url, name, 'URL', 'File name (optional)'
     );
 
     const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
-    expect(result[0].valueAttachment).toEqual(expect.objectContaining({ "contentType": type }));
+    console.log(result, 55)
+    expect(result[0].valueAttachment).toEqual(expect.objectContaining({ "contentType": type, 'url': url, 'title': name }));
     const canvas = within(canvasElement);
     expect(canvas.getByText(fileName)).toBeDefined();
     expect(canvas.getByText(url)).toBeDefined();
     expect(canvas.getByText(name)).toBeDefined();
 
     // Clear value
-    const clear = canvasElement.querySelector('span[aria-label="Remove file"] button');
-    fireEvent.click(clear as HTMLElement);
+    const clearButton = canvasElement.querySelector('span[aria-label="Remove file"] button');
+    fireEvent.click(clearButton as HTMLElement);
+
+    // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
-    const resultAfterDelete = await getAnswers(targetlinkId);
-    expect(resultAfterDelete).toHaveLength(0);
+    const resultAfterClear = await getAnswers(targetlinkId);
+    expect(resultAfterClear).toHaveLength(0);
   }
 };

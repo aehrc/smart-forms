@@ -19,7 +19,7 @@ export async function inputText(
   // Here we await for debounced store update
   await new Promise((resolve) => setTimeout(resolve, 500));
 }
-export async function chooseCheckBox(canvasElement: HTMLElement, linkId: string) {
+export async function checkCheckBox(canvasElement: HTMLElement, linkId: string) {
   const questionElement = await findByLinkId(canvasElement, linkId);
   const input =
     questionElement?.querySelector('input') ?? questionElement?.querySelector('textarea');
@@ -39,21 +39,34 @@ export async function inputFile(
   linkId: string,
   files: File | File[],
   url: string,
-  filename: string
+  filename: string,
+  data_test_url: string,
+  data_test_name: string
 ) {
   const questionElement = await findByLinkId(canvasElement, linkId);
-  const input = questionElement?.querySelector<HTMLInputElement>('input');
-  const textarea = questionElement?.querySelectorAll<HTMLInputElement>('textarea');
+  const input = questionElement?.querySelector('input');
+
+  const textareaUrl = questionElement?.querySelector(`textarea[aria-label=${data_test_url}]`);
+  const textareaName = questionElement?.querySelector(
+    `textarea[aria-label="File name (optional)"]`
+  );
 
   if (!input) {
     throw new Error(`File input was not found inside [data-linkid=${linkId}] block`);
   }
+  if (!textareaUrl) {
+    throw new Error(`File input was not found inside [data-linkid=${data_test_url}] block`);
+  }
+  if (!textareaName) {
+    throw new Error(`File input was not found inside [data-linkid=${data_test_name}] block`);
+  }
+
   const fileList = Array.isArray(files) ? files : [files];
   await userEvent.upload(input, fileList);
 
-  fireEvent.change(textarea[0], { target: { value: url } });
-  fireEvent.change(textarea[2], { target: { value: filename } });
-
+  fireEvent.change(textareaUrl, { target: { value: url } });
+  fireEvent.change(textareaName, { target: { value: filename } });
+  // Here we await for debounced store update
   await new Promise((resolve) => setTimeout(resolve, 500));
 }
 
@@ -101,22 +114,29 @@ export async function inputDateTime(
   amPm: string
 ) {
   const questionElement = await findByLinkId(canvasElement, linkId);
-  const inputs =
-    questionElement?.querySelectorAll('input') ?? questionElement?.querySelectorAll('textarea');
+  const inputDate = questionElement?.querySelector('div[data-test="data-date"] input');
+  const inputTime = questionElement?.querySelector('div[data-test="data-time"] input');
+  const inputAmPm = questionElement?.querySelector('div[data-test="data-ampm"] input');
 
-  if (inputs.length === 0) {
+  if (!inputTime) {
+    throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
+  }
+  if (!inputDate) {
+    throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
+  }
+  if (!inputAmPm) {
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
   }
 
-  fireEvent.change(inputs[0], { target: { value: date } });
-  fireEvent.change(inputs[1], { target: { value: time } });
-  fireEvent.change(inputs[2], { target: { value: amPm } });
+  fireEvent.change(inputDate, { target: { value: date } });
+  fireEvent.change(inputTime, { target: { value: time } });
+  fireEvent.change(inputAmPm, { target: { value: amPm } });
 
   // Here we await for debounced store update
   await new Promise((resolve) => setTimeout(resolve, 500));
 }
 
-export async function chooseRadioOption(canvasElement: HTMLElement, linkId: string) {
+export async function checkRadioOption(canvasElement: HTMLElement, linkId: string) {
   const questionElement = await findByLinkId(canvasElement, linkId);
   const radio =
     questionElement?.querySelector('input') ?? questionElement?.querySelector('textarea');
@@ -143,14 +163,12 @@ export async function getInputText(canvasElement: HTMLElement, linkId: string) {
 }
 export async function getInput(canvasElement: HTMLElement, linkId: string) {
   const questionElement = await findByLinkId(canvasElement, linkId);
-  const input =
-    questionElement?.querySelectorAll('input') ?? questionElement?.querySelector('textarea');
 
-  if (!input) {
+  if (!questionElement) {
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
   }
 
-  return input;
+  return questionElement;
 }
 
 export async function chooseSelectOption(
@@ -179,22 +197,26 @@ export async function chooseQuantityOption(
 ) {
   const questionElement = await findByLinkId(canvasElement, linkId);
 
-  const input = questionElement.querySelectorAll('input, textarea');
+  const inputComaparator = questionElement.querySelector('div[data-test="data-comparator"] input');
+  const inputWeight = questionElement.querySelector('div[data-test="q-item-quantity-field"] input');
 
-  if (!input) {
+  if (!inputComaparator) {
+    throw new Error(`There is no input inside ${linkId}`);
+  }
+  if (!inputWeight) {
     throw new Error(`There is no input inside ${linkId}`);
   }
 
-  fireEvent.focus(input[0]);
-  fireEvent.keyDown(input[0], { key: 'ArrowDown', code: 'ArrowDown' });
+  fireEvent.focus(inputComaparator);
+  fireEvent.keyDown(inputComaparator, { key: 'ArrowDown', code: 'ArrowDown' });
 
   if (weightComparator) {
     const option = await screen.findByText(weightComparator);
     fireEvent.click(option);
-    fireEvent.change(input[0], { target: { value: weightComparator } });
+    fireEvent.change(inputComaparator, { target: { value: weightComparator } });
   }
 
-  fireEvent.change(input[1], { target: { value: weight } });
+  fireEvent.change(inputWeight, { target: { value: weight } });
 }
 
 async function findByLinkId(canvasElement: HTMLElement, linkId: string) {

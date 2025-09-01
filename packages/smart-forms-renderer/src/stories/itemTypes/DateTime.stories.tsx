@@ -49,7 +49,7 @@ const qrDateTimeBasicResponse = qrFactory([{
   linkId: targetlinkId,
   answer: [
     {
-      valueDateTime: targetDate
+      valueDateTime: "1990-01-01"
     }
   ]
 }])
@@ -74,7 +74,7 @@ export const DateTimeBasicResponse: Story = {
   }, play: async ({ canvasElement }) => {
     const input = await getInputText(canvasElement, targetlinkId);
 
-    expect(input).toBe('1990/01/01')
+    expect(input).toBe('01/01/1990')
 
   }
 };

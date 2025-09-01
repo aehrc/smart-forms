@@ -21,8 +21,8 @@ import {
   qOpenChoiceAnswerAutoCompleteFromValueSet,
   qrOpenChoiceAnswerValueSetBasicResponse
 } from '../assets/questionnaires';
-import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
-import { chooseRadioOption, chooseSelectOption, getInput } from '@aehrc/testing-toolkit';
+import { getAnswers, itemControlExtFactory, qrFactory, questionnaireFactory } from '../testUtils';
+import { checkRadioOption, chooseSelectOption, getInput } from '@aehrc/testing-toolkit';
 import { expect, fireEvent, waitFor, screen } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -48,17 +48,7 @@ const qOpenChoiceAnswerOptionBasic = questionnaireFactory([{
   text: 'Location of health check',
   type: 'open-choice',
   extension: [
-    {
-      url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
-      valueCodeableConcept: {
-        coding: [
-          {
-            system: 'http://hl7.org/fhir/questionnaire-item-control',
-            code: 'radio-button'
-          }
-        ]
-      }
-    },
+    itemControlExtFactory('radio-button'),
     {
       url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-openLabel',
       valueString: 'Other, please specify'
@@ -70,8 +60,9 @@ const qOpenChoiceAnswerOptionBasic = questionnaireFactory([{
     }
   ]
 }])
+const targetlinkId = 'health-check-location'
 const qrOpenChoiceAnswerOptionBasicResponse = qrFactory([{
-  linkId: 'health-check-location',
+  linkId: targetlinkId,
   text: 'Location of health check',
   answer: [
     {
@@ -80,25 +71,26 @@ const qrOpenChoiceAnswerOptionBasicResponse = qrFactory([{
   ]
 }])
 
-const targetlinkId = 'health-check-location'
+
 
 export const OpenChoiceAnswerOptionBasic: Story = {
   args: {
     questionnaire: qOpenChoiceAnswerOptionBasic
   },
   play: async ({ canvasElement }) => {
-    await chooseRadioOption(canvasElement, targetlinkId)
+    await checkRadioOption(canvasElement, targetlinkId)
 
     const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueCoding: clinicCoding }));
 
     // Clear
-    const button = canvasElement.querySelector('button#clear');
+    const button = canvasElement.querySelector('button[aria-label="Clear"]');
     fireEvent.click(button as HTMLElement);
-    const input = await getInput(canvasElement, targetlinkId);
+    const element = await getInput(canvasElement, targetlinkId);
+    const input = element.querySelector('input')
     await waitFor(() =>
-      expect(input[0]).not.toBeChecked()
+      expect(input).not.toBeChecked()
     );
   }
 };
@@ -114,17 +106,7 @@ export const OpenChoiceAnswerOptionBasicResponse: Story = {
 };
 const qOpenChoiceAnswerValueSetBasic = questionnaireFactory([{
   extension: [
-    {
-      url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
-      valueCodeableConcept: {
-        coding: [
-          {
-            system: 'http://hl7.org/fhir/questionnaire-item-control',
-            code: 'radio-button'
-          }
-        ]
-      }
-    },
+    itemControlExtFactory('radio-button'),
     {
       url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-openLabel',
       valueString: 'Overseas state, please specify'
@@ -137,6 +119,7 @@ const qOpenChoiceAnswerValueSetBasic = questionnaireFactory([{
   answerValueSet:
     'http://hl7.org/fhir/ValueSet/administrative-gender'
 }])
+
 const valueSetTargetCoding = {
   code: "female",
   display: "Female",
@@ -167,9 +150,10 @@ export const OpenChoiceAnswerValueSetBasicResponse: Story = {
     questionnaireResponse: qrOpenChoiceAnswerValueSetBasicResponse
   },
   play: async ({ canvasElement }) => {
-    const inputText = await getInput(canvasElement, 'state');
+    const element = await getInput(canvasElement, 'state');
+    const input = element.querySelector('div[data-test="q-item-radio-open-label-box"] textarea') as HTMLTextAreaElement
 
-    expect(inputText[2].defaultValue).toBe("Branbendurg");
+    expect(input?.value).toBe("Branbendurg");
   }
 };
 

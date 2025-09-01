@@ -1,6 +1,7 @@
 import { evaluate } from 'fhirpath';
 import { questionnaireResponseStore } from '../stores';
 import type {
+  Extension,
   Questionnaire,
   QuestionnaireItem,
   QuestionnaireResponse,
@@ -38,5 +39,18 @@ export function qrFactory(items: QuestionnaireResponseItem[]): QuestionnaireResp
     resourceType: 'QuestionnaireResponse',
     status: 'completed',
     item: items
+  };
+}
+export function itemControlExtFactory(code: string): Extension {
+  return {
+    url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+    valueCodeableConcept: {
+      coding: [
+        {
+          system: 'http://hl7.org/fhir/questionnaire-item-control',
+          code: code
+        }
+      ]
+    }
   };
 }

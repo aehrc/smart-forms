@@ -74,6 +74,7 @@ export const QuantityBasic: Story = {
   play: async ({ canvasElement }) => {
 
     await chooseQuantityOption(canvasElement, targetlinkId, 89, '<')
+    // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     const weight = await getAnswers(targetlinkId);
@@ -83,15 +84,16 @@ export const QuantityBasic: Story = {
     expect(weight[0].valueQuantity).toEqual(expect.objectContaining({ value: 89, comparator: '<' }));
 
     // Clear value  
-    const clear = canvasElement.querySelector('button#Clear');
+    const clearButton = canvasElement.querySelectorAll('button[aria-label="Clear"]');
 
-    fireEvent.click(clear as HTMLElement);
-    await new Promise((resolve) => setTimeout(resolve, 600));
-    const resultAfterDelete = await getAnswers(targetlinkId);
+    fireEvent.click(clearButton[0] as HTMLElement);
+    fireEvent.click(clearButton[1] as HTMLElement);
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const resultAfterClear = await getAnswers(targetlinkId);
 
-    expect(resultAfterDelete).toHaveLength(0);
+    expect(resultAfterClear).toHaveLength(0);
     await chooseQuantityOption(canvasElement, targetComparatorlinkId, 91, '>')
-    await new Promise((resolve) => setTimeout(resolve, 600));
+    await new Promise((resolve) => setTimeout(resolve, 500));
     const weightComparator = await getAnswers(targetComparatorlinkId);
 
     expect(weightComparator).toHaveLength(1);
@@ -104,13 +106,18 @@ export const QuantityBasicResponse: Story = {
     questionnaire: qQuantityBasic,
     questionnaireResponse: qrQuantityBasicResponse
   }, play: async ({ canvasElement }) => {
-    const inputName = await getInput(canvasElement, targetlinkId);
-    const inputAge = await getInput(canvasElement, targetComparatorlinkId);
+    const element = await getInput(canvasElement, targetlinkId);
+    const comparator = element.querySelector('div[data-test="data-comparator"] input')
+    const weight = element.querySelector('div[data-test="q-item-quantity-field"] input')
 
-    expect(inputName[0].value).toBe("")
-    expect(inputName[1].value).toBe("80")
-    expect(inputAge[0].value).toBe('<')
-    expect(inputAge[1].value).toBe('90')
+    const elementComp = await getInput(canvasElement, targetComparatorlinkId);
+    const comparatorComp = elementComp.querySelector('div[data-test="data-comparator"] input')
+    const weightComp = elementComp.querySelector('div[data-test="q-item-quantity-field"] input')
+
+    expect(comparator?.getAttribute('value')).toBe("")
+    expect(weight?.getAttribute('value')).toBe("80")
+    expect(comparatorComp?.getAttribute('value')).toBe('<')
+    expect(weightComp?.getAttribute('value')).toBe('90')
   }
 };
 
@@ -140,7 +147,6 @@ export const QuantityUnitOption: Story = {
 
 
     await chooseQuantityOption(canvasElement, 'duration-multi-unit-comparator', 2, '>');
-
     await new Promise((resolve) => setTimeout(resolve, 300));
 
     const multiUnitComparatorAnswer = await getAnswers('duration-multi-unit-comparator');
@@ -159,20 +165,32 @@ export const QuantityUnitOptionResponse: Story = {
   play: async ({ canvasElement }) => {
 
     const singleUnitInput = await getInput(canvasElement, 'duration-single-unit');
-    expect(singleUnitInput[0].value).toBe('');
-    expect(singleUnitInput[1].value).toBe('2');
+
+    const comparator = singleUnitInput.querySelector('div[data-test="data-comparator"] input')
+    const days = singleUnitInput.querySelector('div[data-test="q-item-quantity-field"] input')
+
+    expect(comparator?.getAttribute('value')).toBe('');
+    expect(days?.getAttribute('value')).toBe('2');
 
 
 
     const multiUnitInput = await getInput(canvasElement, 'duration-multi-unit');
-    expect(multiUnitInput[0].value).toBe('');
-    expect(multiUnitInput[1].value).toBe('48');
-    expect(multiUnitInput[2].value).toBe('Hour(s)');
+    const multiComparator = multiUnitInput.querySelector('div[data-test="data-comparator"] input')
+    const multiValue = multiUnitInput.querySelector('div[data-test="q-item-quantity-field"] input')
+    const multiTime = multiUnitInput.querySelector('input#quantity-duration-multi-unit-unit')
+
+    expect(multiComparator?.getAttribute('value')).toBe('');
+    expect(multiValue?.getAttribute('value')).toBe('48');
+    expect(multiTime?.getAttribute('value')).toBe('Hour(s)');
 
     const multiUnitComparatorInput = await getInput(canvasElement, 'duration-multi-unit-comparator');
-    expect(multiUnitComparatorInput[0].value).toBe('>=');
-    expect(multiUnitComparatorInput[1].value).toBe('48');
-    expect(multiUnitComparatorInput[2].value).toBe('Hour(s)');
+    const multiUnitComparator = multiUnitComparatorInput.querySelector('div[data-test="data-comparator"] input')
+    const multiUnitValue = multiUnitComparatorInput.querySelector('div[data-test="q-item-quantity-field"] input')
+    const multiUnitTime = multiUnitComparatorInput.querySelector('input#quantity-duration-multi-unit-comparator-unit')
+
+    expect(multiUnitComparator?.getAttribute('value')).toBe('>=');
+    expect(multiUnitValue?.getAttribute('value')).toBe('48');
+    expect(multiUnitTime?.getAttribute('value')).toBe('Hour(s)');
   }
 };
 

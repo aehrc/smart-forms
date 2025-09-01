@@ -65,11 +65,12 @@ export const StringBasic: Story = {
     expect(result[0]).toEqual(expect.objectContaining({ valueString: targetText }));
 
     // Clear value 
-    const clear = canvasElement.querySelector('button#Clear');
-    fireEvent.click(clear as HTMLElement);
+    const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
+    fireEvent.click(clearButton as HTMLElement);
+    // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
-    const resultAfterDelete = await getAnswers(targetlinkId);
-    expect(resultAfterDelete).toHaveLength(0);
+    const resultAfterClear = await getAnswers(targetlinkId);
+    expect(resultAfterClear).toHaveLength(0);
   }
 };
 export const StringBasicResponse: Story = {

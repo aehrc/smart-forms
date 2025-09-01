@@ -84,8 +84,9 @@ export const ChoiceAnswerOptionBasic: Story = {
 
     const button = canvasElement.querySelector('button[aria-label="Clear"]');
     fireEvent.click(button as HTMLElement);
-    const inputAfterClear = await getInput(canvasElement, targetlinkId);
-    expect(inputAfterClear).toHaveLength(0);
+    const elementAfterClear = await getInput(canvasElement, targetlinkId);
+    const input = elementAfterClear.querySelector('input')
+    expect(input).toBe(null);
 
   }
 };

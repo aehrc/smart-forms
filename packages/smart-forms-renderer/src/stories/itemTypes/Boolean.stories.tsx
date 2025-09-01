@@ -20,8 +20,8 @@ import {
   qBooleanCalculation,
 } from '../assets/questionnaires';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook'; // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
-import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
-import { chooseCheckBox, chooseRadioOption, getInput, getInputText } from '@aehrc/testing-toolkit';
+import { getAnswers, itemControlExtFactory, qrFactory, questionnaireFactory } from '../testUtils';
+import { getInput, getInputText, checkCheckBox, checkRadioOption } from '@aehrc/testing-toolkit';
 import { expect, fireEvent } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -60,18 +60,18 @@ export const BooleanBasic: Story = {
   args: {
     questionnaire: basicQuestionnare
   }, play: async ({ canvasElement }) => {
-    await chooseRadioOption(canvasElement, targetlinkId);
+    await checkRadioOption(canvasElement, targetlinkId);
 
     const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueBoolean: true }));
 
     // Clear value
-    const clear = canvasElement.querySelector('button#clear');
-    fireEvent.click(clear as HTMLElement);
+    const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
+    fireEvent.click(clearButton as HTMLElement);
 
-    const resultAfterDelete = await getAnswers(targetlinkId);
-    expect(resultAfterDelete).toHaveLength(0);
+    const resultAfterClear = await getAnswers(targetlinkId);
+    expect(resultAfterClear).toHaveLength(0);
   }
 }
 
@@ -88,17 +88,7 @@ export const BooleanBasicResponse: Story = {
 
 const qBooleanCheckbox = questionnaireFactory([{
   extension: [
-    {
-      url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
-      valueCodeableConcept: {
-        coding: [
-          {
-            system: 'http://hl7.org/fhir/questionnaire-item-control',
-            code: 'check-box'
-          }
-        ]
-      }
-    }
+    itemControlExtFactory('check-box')
   ],
   linkId: 'eaten',
   type: 'boolean',
@@ -119,18 +109,18 @@ export const BooleanCheckboxBasic: Story = {
   args: {
     questionnaire: qBooleanCheckbox,
   }, play: async ({ canvasElement }) => {
-    await chooseCheckBox(canvasElement, targetlinkId)
+    await checkCheckBox(canvasElement, targetlinkId)
 
     const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueBoolean: true }));
 
     // Clear value
-    const clear = canvasElement.querySelector('button#clear');
-    fireEvent.click(clear as HTMLElement);
+    const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
+    fireEvent.click(clearButton as HTMLElement);
 
-    const resultAfterDelete = await getAnswers(targetlinkId);
-    expect(resultAfterDelete).toHaveLength(0);
+    const resultAfterClear = await getAnswers(targetlinkId);
+    expect(resultAfterClear).toHaveLength(0);
   }
 };
 
@@ -139,9 +129,10 @@ export const BooleanCheckboxResponse: Story = {
     questionnaire: qBooleanCheckbox,
     questionnaireResponse: qrBooleanCheckboxResponse
   }, play: async ({ canvasElement }) => {
-    const input = await getInput(canvasElement, targetlinkId);
+    const element = await getInput(canvasElement, targetlinkId);
+    const input = element.querySelector('input')
 
-    expect(input[0]).toBeChecked()
+    expect(input).toBeChecked()
   }
 };
 

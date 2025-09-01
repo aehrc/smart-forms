@@ -20,7 +20,7 @@ import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperF
 
 import { getAnswers, questionnaireFactory } from '../testUtils';
 import { inputUrl } from '@aehrc/testing-toolkit';
-import { expect } from 'storybook/test';
+import { expect, fireEvent } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -54,5 +54,13 @@ export const UrlBasic: Story = {
     const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueUri: targetText }));
+
+    // Clear value  
+    const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
+    fireEvent.click(clearButton as HTMLElement);
+    // Here we await for debounced store update
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const resultAfterClear = await getAnswers(targetlinkId);
+    expect(resultAfterClear).toHaveLength(0);
   }
 };  

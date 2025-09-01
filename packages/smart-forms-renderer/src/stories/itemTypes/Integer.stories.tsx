@@ -65,14 +65,16 @@ export const IntegerBasic: Story = {
     const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueInteger: 25 }));
+    // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     // Clear value
-    const clear = canvasElement.querySelector('button#Clear');
-    fireEvent.click(clear as HTMLElement);
+    const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
+    fireEvent.click(clearButton as HTMLElement);
+    // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
-    const resultAfterDelete = await getAnswers(targetlinkId);
-    expect(resultAfterDelete).toHaveLength(0);
+    const resultAfterClear = await getAnswers(targetlinkId);
+    expect(resultAfterClear).toHaveLength(0);
 
   }
 };
