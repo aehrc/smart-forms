@@ -84,8 +84,8 @@ export const ChoiceAnswerOptionBasic: Story = {
 
     const button = canvasElement.querySelector('button[aria-label="Clear"]');
     fireEvent.click(button as HTMLElement);
-    const elementAfterClear = await findByLinkId(canvasElement, targetlinkId);
-    const input = elementAfterClear.querySelector('input')
+    const resultAfterClear = await findByLinkId(canvasElement, targetlinkId);
+    const input = resultAfterClear.querySelector('input')
     expect(input).toBe(null);
 
   }

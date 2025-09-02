@@ -39,6 +39,7 @@ type Story = StoryObj<typeof meta>;
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 const targetlinkId = 'age'
 const targetAge = 40
+const basicAge = 25
 
 const qIntegerBasic = questionnaireFactory([{
   linkId: targetlinkId,
@@ -60,13 +61,11 @@ export const IntegerBasic: Story = {
   args: {
     questionnaire: qIntegerBasic
   }, play: async ({ canvasElement }) => {
-    await inputInteger(canvasElement, targetlinkId, 25);
+    await inputInteger(canvasElement, targetlinkId, basicAge);
 
     const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
-    expect(result[0]).toEqual(expect.objectContaining({ valueInteger: 25 }));
-    // Here we await for debounced store update
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    expect(result[0]).toEqual(expect.objectContaining({ valueInteger: basicAge }));
 
     // Clear value
     const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');

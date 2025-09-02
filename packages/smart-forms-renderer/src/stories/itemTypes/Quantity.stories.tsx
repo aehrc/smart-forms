@@ -21,9 +21,8 @@ import {
   qQuantityCalculation,
   qQuantityUnitOption,
   qrQuantityBasicResponse,
-  qrQuantityUnitOptionResponse
 } from '../assets/questionnaires';
-import { getAnswers, questionnaireFactory } from '../testUtils';
+import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
 import { chooseQuantityOption, findByLinkId } from '@aehrc/testing-toolkit';
 import { expect, fireEvent } from 'storybook/test';
 
@@ -38,7 +37,7 @@ type Story = StoryObj<typeof meta>;
 
 const targetlinkId = 'body-weight';
 const targetComparatorlinkId = 'body-weight-comparator';
-
+const responseWeight = 80
 const qQuantityBasic = questionnaireFactory([
   {
     extension: [
@@ -54,6 +53,23 @@ const qQuantityBasic = questionnaireFactory([
   },
 
 ]);
+const qrQuantityUnitOptionResponse = qrFactory([{
+  linkId: 'body-weight',
+  answer: [
+    {
+      valueQuantity: {
+        value: responseWeight,
+        unit: 'kg',
+        system: 'http://unitsofmeasure.org',
+        code: 'kg'
+      }
+    }
+  ],
+  text: 'Body Weight'
+}])
+
+const basicQuantity = 89
+const comparatorQuantity = 91
 const qQuantityBasicComparator = questionnaireFactory([
   {
     extension: [
@@ -73,11 +89,11 @@ const qQuantityBasicComparator = questionnaireFactory([
 export const QuantityBasicInput: Story = {
   args: { questionnaire: qQuantityBasic },
   play: async ({ canvasElement }) => {
-    await chooseQuantityOption(canvasElement, targetlinkId, 89, '<');
+    await chooseQuantityOption(canvasElement, targetlinkId, basicQuantity, '<');
 
     const weight = await getAnswers(targetlinkId);
     expect(weight).toHaveLength(1);
-    expect(weight[0].valueQuantity).toEqual(expect.objectContaining({ value: 89, comparator: '<' }));
+    expect(weight[0].valueQuantity).toEqual(expect.objectContaining({ value: basicQuantity, comparator: '<' }));
 
 
     const clearButton = canvasElement.querySelectorAll('button[aria-label="Clear"]');
@@ -93,12 +109,12 @@ export const QuantityBasicInput: Story = {
 export const QuantityBasicComparator: Story = {
   args: { questionnaire: qQuantityBasicComparator },
   play: async ({ canvasElement }) => {
-    await chooseQuantityOption(canvasElement, targetComparatorlinkId, 91, '>');
+    await chooseQuantityOption(canvasElement, targetComparatorlinkId, comparatorQuantity, '>');
 
     const weightComparator = await getAnswers(targetComparatorlinkId);
     expect(weightComparator).toHaveLength(1);
     expect(weightComparator[0].valueQuantity).toEqual(
-      expect.objectContaining({ value: 91, comparator: '>' })
+      expect.objectContaining({ value: comparatorQuantity, comparator: '>' })
     );
   }
 };
@@ -111,7 +127,7 @@ export const QuantityBasicResponseWeight: Story = {
     const weight = element.querySelector('div[data-test="q-item-quantity-field"] input');
 
     expect(comparator?.getAttribute('value')).toBe('');
-    expect(weight?.getAttribute('value')).toBe('80');
+    expect(weight?.getAttribute('value')).toBe(responseWeight.toString());
   }
 };
 

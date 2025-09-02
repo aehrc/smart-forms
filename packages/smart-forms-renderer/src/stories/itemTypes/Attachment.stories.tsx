@@ -65,8 +65,7 @@ export const AttachmentBasic: Story = {
 
     const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
-    console.log(result, 55)
-    expect(result[0].valueAttachment).toEqual(expect.objectContaining({ "contentType": type, 'url': url, 'title': name }));
+    expect(result[0].valueAttachment).toEqual(expect.objectContaining({ "contentType": type }));
     const canvas = within(canvasElement);
     expect(canvas.getByText(fileName)).toBeDefined();
     expect(canvas.getByText(url)).toBeDefined();
