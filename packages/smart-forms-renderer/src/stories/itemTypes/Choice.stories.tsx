@@ -21,7 +21,7 @@ import {
   qChoiceAnswerOptionCalculation,
   qChoiceAnswerValueSetCalculation
 } from '../assets/questionnaires';
-import { chooseSelectOption, getInput, getInputText } from '@aehrc/testing-toolkit';
+import { chooseSelectOption, findByLinkId, getInputText } from '@aehrc/testing-toolkit';
 import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
 import { expect, fireEvent } from 'storybook/test';
 
@@ -84,7 +84,7 @@ export const ChoiceAnswerOptionBasic: Story = {
 
     const button = canvasElement.querySelector('button[aria-label="Clear"]');
     fireEvent.click(button as HTMLElement);
-    const elementAfterClear = await getInput(canvasElement, targetlinkId);
+    const elementAfterClear = await findByLinkId(canvasElement, targetlinkId);
     const input = elementAfterClear.querySelector('input')
     expect(input).toBe(null);
 

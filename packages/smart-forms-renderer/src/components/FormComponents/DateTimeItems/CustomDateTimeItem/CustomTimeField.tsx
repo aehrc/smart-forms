@@ -79,7 +79,7 @@ function CustomTimeField(props: CustomTimeFieldProps) {
         columnGap={1}
         sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160 }}>
         <MuiTextField
-          data-test={'data-time'}
+          data-test={'time'}
           id={timeId}
           value={timeInput}
           error={!!feedback}
@@ -99,7 +99,7 @@ function CustomTimeField(props: CustomTimeFieldProps) {
         />
         <FormControl sx={{ flex: 1 }}>
           <Select
-            data-test={'data-ampm'}
+            data-test={'ampm'}
             id={periodId}
             value={is24HourNotation ? '' : periodInput}
             error={!!feedback}

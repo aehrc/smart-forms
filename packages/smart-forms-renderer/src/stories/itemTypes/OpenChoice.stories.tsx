@@ -19,10 +19,9 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
   qOpenChoiceAnswerAutoCompleteFromValueSet,
-  qrOpenChoiceAnswerValueSetBasicResponse
 } from '../assets/questionnaires';
 import { getAnswers, itemControlExtFactory, qrFactory, questionnaireFactory } from '../testUtils';
-import { checkRadioOption, chooseSelectOption, getInput } from '@aehrc/testing-toolkit';
+import { checkRadioOption, chooseSelectOption, findByLinkId } from '@aehrc/testing-toolkit';
 import { expect, fireEvent, waitFor, screen } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -87,7 +86,7 @@ export const OpenChoiceAnswerOptionBasic: Story = {
     // Clear
     const button = canvasElement.querySelector('button[aria-label="Clear"]');
     fireEvent.click(button as HTMLElement);
-    const element = await getInput(canvasElement, targetlinkId);
+    const element = await findByLinkId(canvasElement, targetlinkId);
     const input = element.querySelector('input')
     await waitFor(() =>
       expect(input).not.toBeChecked()
@@ -118,6 +117,15 @@ const qOpenChoiceAnswerValueSetBasic = questionnaireFactory([{
   repeats: false,
   answerValueSet:
     'http://hl7.org/fhir/ValueSet/administrative-gender'
+}])
+const qrOpenChoiceAnswerValueSetBasicResponse = qrFactory([{
+  linkId: 'state',
+  text: 'State',
+  answer: [
+    {
+      valueString: 'Branbendurg'
+    }
+  ]
 }])
 
 const valueSetTargetCoding = {
@@ -150,7 +158,7 @@ export const OpenChoiceAnswerValueSetBasicResponse: Story = {
     questionnaireResponse: qrOpenChoiceAnswerValueSetBasicResponse
   },
   play: async ({ canvasElement }) => {
-    const element = await getInput(canvasElement, 'state');
+    const element = await findByLinkId(canvasElement, 'state');
     const input = element.querySelector('div[data-test="q-item-radio-open-label-box"] textarea') as HTMLTextAreaElement
 
     expect(input?.value).toBe("Branbendurg");

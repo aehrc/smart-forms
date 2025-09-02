@@ -21,7 +21,7 @@ import {
 } from '../assets/questionnaires';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook'; // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 import { getAnswers, itemControlExtFactory, qrFactory, questionnaireFactory } from '../testUtils';
-import { getInput, getInputText, checkCheckBox, checkRadioOption } from '@aehrc/testing-toolkit';
+import { getInputText, checkCheckBox, checkRadioOption, findByLinkId } from '@aehrc/testing-toolkit';
 import { expect, fireEvent } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -129,7 +129,7 @@ export const BooleanCheckboxResponse: Story = {
     questionnaire: qBooleanCheckbox,
     questionnaireResponse: qrBooleanCheckboxResponse
   }, play: async ({ canvasElement }) => {
-    const element = await getInput(canvasElement, targetlinkId);
+    const element = await findByLinkId(canvasElement, targetlinkId);
     const input = element.querySelector('input')
 
     expect(input).toBeChecked()

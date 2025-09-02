@@ -114,9 +114,9 @@ export async function inputDateTime(
   amPm: string
 ) {
   const questionElement = await findByLinkId(canvasElement, linkId);
-  const inputDate = questionElement?.querySelector('div[data-test="data-date"] input');
-  const inputTime = questionElement?.querySelector('div[data-test="data-time"] input');
-  const inputAmPm = questionElement?.querySelector('div[data-test="data-ampm"] input');
+  const inputDate = questionElement?.querySelector('div[data-test="date"] input');
+  const inputTime = questionElement?.querySelector('div[data-test="time"] input');
+  const inputAmPm = questionElement?.querySelector('div[data-test="ampm"] input');
 
   if (!inputTime) {
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
@@ -161,15 +161,6 @@ export async function getInputText(canvasElement: HTMLElement, linkId: string) {
 
   return input.value;
 }
-export async function getInput(canvasElement: HTMLElement, linkId: string) {
-  const questionElement = await findByLinkId(canvasElement, linkId);
-
-  if (!questionElement) {
-    throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
-  }
-
-  return questionElement;
-}
 
 export async function chooseSelectOption(
   canvasElement: HTMLElement,
@@ -197,7 +188,7 @@ export async function chooseQuantityOption(
 ) {
   const questionElement = await findByLinkId(canvasElement, linkId);
 
-  const inputComaparator = questionElement.querySelector('div[data-test="data-comparator"] input');
+  const inputComaparator = questionElement.querySelector('div[data-test="comparator"] input');
   const inputWeight = questionElement.querySelector('div[data-test="q-item-quantity-field"] input');
 
   if (!inputComaparator) {
@@ -217,9 +208,11 @@ export async function chooseQuantityOption(
   }
 
   fireEvent.change(inputWeight, { target: { value: weight } });
+  // Here we await for debounced store update
+  await new Promise((resolve) => setTimeout(resolve, 500));
 }
 
-async function findByLinkId(canvasElement: HTMLElement, linkId: string) {
+export async function findByLinkId(canvasElement: HTMLElement, linkId: string) {
   const selector = `[data-linkid="${linkId}"]`;
   return await waitFor(() => {
     const el = canvasElement.querySelector(selector);
