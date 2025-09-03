@@ -42,12 +42,12 @@ const targetCoding = {
   system: 'http://snomed.info/sct',
   code: '266919005',
   display: 'Never smoked'
-}
+};
 const notTargetCoding = {
   system: 'http://snomed.info/sct',
   code: '77176002',
   display: 'Smoker'
-}
+};
 const qChoiceAnswerOptionBasic = questionnaireFactory([
   {
     linkId: targetlinkId,
@@ -59,17 +59,20 @@ const qChoiceAnswerOptionBasic = questionnaireFactory([
       },
       {
         valueCoding: notTargetCoding
-      },
+      }
     ]
   }
-])
-const qrChoiceAnswerOptionBasicResponse = qrFactory([{
-  linkId: targetlinkId, answer: [
-    {
-      valueCoding: targetCoding
-    },
-  ]
-}])
+]);
+const qrChoiceAnswerOptionBasicResponse = qrFactory([
+  {
+    linkId: targetlinkId,
+    answer: [
+      {
+        valueCoding: targetCoding
+      }
+    ]
+  }
+]);
 
 export const ChoiceAnswerOptionBasic: Story = {
   args: {
@@ -82,7 +85,7 @@ export const ChoiceAnswerOptionBasic: Story = {
     expect(result).toHaveLength(1);
     expect(result[0].valueCoding).toEqual(expect.objectContaining(targetCoding));
 
-    // Clear 
+    // Clear
     const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
     fireEvent.click(clearButton as HTMLElement);
 
@@ -92,9 +95,8 @@ export const ChoiceAnswerOptionBasic: Story = {
     expect(resultAfterClear).toHaveLength(0);
 
     const elementAfterClear = await findByLinkId(canvasElement, targetlinkId);
-    const input = elementAfterClear.querySelector('textarea')
-    expect(input?.value).toBe("");
-
+    const input = elementAfterClear.querySelector('textarea');
+    expect(input?.value).toBe('');
   }
 };
 
@@ -102,20 +104,21 @@ export const ChoiceAnswerOptionBasicResponse: Story = {
   args: {
     questionnaire: qChoiceAnswerOptionBasic,
     questionnaireResponse: qrChoiceAnswerOptionBasicResponse
-  }, play: async ({ canvasElement }) => {
+  },
+  play: async ({ canvasElement }) => {
     const inputText = await getInputText(canvasElement, targetlinkId);
 
-    expect(inputText).toBe(targetCoding.display)
+    expect(inputText).toBe(targetCoding.display);
   }
 };
 
-const valueSetTargetId = 'gender'
+const valueSetTargetId = 'gender';
 
 const valueSetTargetCoding = {
-  code: "female",
-  display: "Female",
-  system: "http://hl7.org/fhir/administrative-gender",
-}
+  code: 'female',
+  display: 'Female',
+  system: 'http://hl7.org/fhir/administrative-gender'
+};
 
 const qValueSetBasic = questionnaireFactory([
   {
@@ -125,27 +128,20 @@ const qValueSetBasic = questionnaireFactory([
     repeats: false,
     answerValueSet: 'http://hl7.org/fhir/ValueSet/administrative-gender'
   }
-])
+]);
 
 export const ChoiceAnswerValueSetBasic: Story = {
   args: {
     questionnaire: qValueSetBasic
   },
   play: async ({ canvasElement }) => {
-    await chooseSelectOption(
-      canvasElement,
-      valueSetTargetId,
-      valueSetTargetCoding.display
-    );
+    await chooseSelectOption(canvasElement, valueSetTargetId, valueSetTargetCoding.display);
 
     const result = await getAnswers(valueSetTargetId);
     expect(result).toHaveLength(1);
-    expect(result[0].valueCoding).toEqual(
-      expect.objectContaining(valueSetTargetCoding)
-    );
+    expect(result[0].valueCoding).toEqual(expect.objectContaining(valueSetTargetCoding));
   }
 };
-
 
 export const ChoiceAnswerValueSetBasicResponse: Story = {
   args: {
@@ -169,12 +165,12 @@ const initialTargetCoding = {
   code: 'T',
   system: 'http://fhir.medirecords.com/CodeSystem/awsHallucinationType',
   display: 'Test-Selected'
-}
+};
 const initialNotTargetCoding = {
   code: 'N',
   system: 'http://fhir.medirecords.com/CodeSystem/awsHallucinationType',
   display: 'None'
-}
+};
 
 // Story for ChoiceSelectAnswerOptions Using InitialSelected field set
 export const ChoiceAnswerOptionsUsingInitialSelected: Story = {
@@ -187,7 +183,7 @@ export const ChoiceAnswerOptionsUsingInitialSelected: Story = {
         repeats: false,
         answerOption: [
           {
-            valueCoding: initialNotTargetCoding,
+            valueCoding: initialNotTargetCoding
           },
           {
             valueCoding: initialTargetCoding,
@@ -195,14 +191,14 @@ export const ChoiceAnswerOptionsUsingInitialSelected: Story = {
           }
         ]
       }
-    ]),
-  }, play: async ({ canvasElement }) => {
-    const inputText = await getInputText(canvasElement, "awsHallucinationType");
+    ])
+  },
+  play: async ({ canvasElement }) => {
+    const inputText = await getInputText(canvasElement, 'awsHallucinationType');
 
-    expect(inputText).toBe(initialTargetCoding.display)
+    expect(inputText).toBe(initialTargetCoding.display);
   }
 };
-
 
 // TODO: Move to separate storybook
 export const ChoiceAnswerOptionCalculation: Story = {
@@ -217,5 +213,3 @@ export const ChoiceAnswerValueSetCalculation: Story = {
     questionnaire: qChoiceAnswerValueSetCalculation
   }
 };
-
-

@@ -34,23 +34,25 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-const targetlinkId = 'last-meal'
-const targetText = 'Time of last meal'
-const targetTime = "11:00:00"
-const targetTimeString = "11:00 am"
+const targetlinkId = 'last-meal';
+const targetText = 'Time of last meal';
+const targetTime = '11:00:00';
+const targetTimeString = '11:00 am';
 
-const qTimeBasic = questionnaireFactory([{
-  linkId: targetlinkId,
-  type: 'time',
-  repeats: false,
-  text: targetText
-}])
-const qrTimeBasic = qrFactory([{
-  linkId: targetlinkId,
-  answer: [
-    { valueTime: targetTime }
-  ],
-}])
+const qTimeBasic = questionnaireFactory([
+  {
+    linkId: targetlinkId,
+    type: 'time',
+    repeats: false,
+    text: targetText
+  }
+]);
+const qrTimeBasic = qrFactory([
+  {
+    linkId: targetlinkId,
+    answer: [{ valueTime: targetTime }]
+  }
+]);
 
 export const TimeBasic: Story = {
   args: {
@@ -68,9 +70,10 @@ export const TextBasicResponse: Story = {
   args: {
     questionnaire: qTimeBasic,
     questionnaireResponse: qrTimeBasic
-  }, play: async ({ canvasElement }) => {
+  },
+  play: async ({ canvasElement }) => {
     const inputText = await getInputText(canvasElement, targetlinkId);
 
-    expect(inputText).toBe(targetTimeString)
+    expect(inputText).toBe(targetTimeString);
   }
-}; 
+};

@@ -16,12 +16,15 @@
  */
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import {
-  qBooleanCalculation,
-} from '../assets/questionnaires';
+import { qBooleanCalculation } from '../assets/questionnaires';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook'; // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 import { getAnswers, itemControlExtFactory, qrFactory, questionnaireFactory } from '../testUtils';
-import { getInputText, checkCheckBox, checkRadioOption, findByLinkId } from '@aehrc/testing-toolkit';
+import {
+  getInputText,
+  checkCheckBox,
+  checkRadioOption,
+  findByLinkId
+} from '@aehrc/testing-toolkit';
 import { expect, fireEvent } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -39,28 +42,33 @@ type Story = StoryObj<typeof meta>;
 const targetText = 'Have you eaten yet?';
 const targetlinkId = 'eaten';
 
-const basicQuestionnare = questionnaireFactory([{
-  linkId: targetlinkId,
-  type: 'boolean',
-  repeats: false,
-  text: targetText
-}])
+const basicQuestionnare = questionnaireFactory([
+  {
+    linkId: targetlinkId,
+    type: 'boolean',
+    repeats: false,
+    text: targetText
+  }
+]);
 
-const basicQr = qrFactory([{
-  linkId: targetlinkId,
-  text: targetText,
-  answer: [
-    {
-      valueBoolean: true
-    }
-  ]
-}])
+const basicQr = qrFactory([
+  {
+    linkId: targetlinkId,
+    text: targetText,
+    answer: [
+      {
+        valueBoolean: true
+      }
+    ]
+  }
+]);
 
 export const BooleanBasic: Story = {
   args: {
     questionnaire: basicQuestionnare
-  }, play: async ({ canvasElement }) => {
-    await checkRadioOption(canvasElement, targetlinkId, "label-Yes");
+  },
+  play: async ({ canvasElement }) => {
+    await checkRadioOption(canvasElement, targetlinkId, 'label-Yes');
 
     const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
@@ -76,46 +84,50 @@ export const BooleanBasic: Story = {
     expect(resultAfterClear).toHaveLength(0);
 
     const elementAfterClear = await findByLinkId(canvasElement, targetlinkId);
-    const input = elementAfterClear.querySelector('input')
-    expect(input).not.toBeChecked()
+    const input = elementAfterClear.querySelector('input');
+    expect(input).not.toBeChecked();
   }
-}
+};
 
 export const BooleanBasicResponse: Story = {
   args: {
     questionnaire: basicQuestionnare,
     questionnaireResponse: basicQr
-  }, play: async ({ canvasElement }) => {
+  },
+  play: async ({ canvasElement }) => {
     const inputText = await getInputText(canvasElement, targetlinkId);
 
-    expect(inputText).toBe("true")
+    expect(inputText).toBe('true');
   }
 };
 
-const qBooleanCheckbox = questionnaireFactory([{
-  extension: [
-    itemControlExtFactory('check-box')
-  ],
-  linkId: 'eaten',
-  type: 'boolean',
-  repeats: false,
-  text: 'Have you eaten yet?'
-}])
-const qrBooleanCheckboxResponse = qrFactory([{
-  linkId: 'eaten',
-  text: 'Have you eaten yet?',
-  answer: [
-    {
-      valueBoolean: true
-    }
-  ]
-}])
+const qBooleanCheckbox = questionnaireFactory([
+  {
+    extension: [itemControlExtFactory('check-box')],
+    linkId: 'eaten',
+    type: 'boolean',
+    repeats: false,
+    text: 'Have you eaten yet?'
+  }
+]);
+const qrBooleanCheckboxResponse = qrFactory([
+  {
+    linkId: 'eaten',
+    text: 'Have you eaten yet?',
+    answer: [
+      {
+        valueBoolean: true
+      }
+    ]
+  }
+]);
 
 export const BooleanCheckboxBasic: Story = {
   args: {
-    questionnaire: qBooleanCheckbox,
-  }, play: async ({ canvasElement }) => {
-    await checkCheckBox(canvasElement, targetlinkId)
+    questionnaire: qBooleanCheckbox
+  },
+  play: async ({ canvasElement }) => {
+    await checkCheckBox(canvasElement, targetlinkId);
 
     const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
@@ -131,8 +143,8 @@ export const BooleanCheckboxBasic: Story = {
     expect(resultAfterClear).toHaveLength(0);
 
     const elementAfterClear = await findByLinkId(canvasElement, targetlinkId);
-    const input = elementAfterClear.querySelector('input')
-    expect(input).not.toBeChecked()
+    const input = elementAfterClear.querySelector('input');
+    expect(input).not.toBeChecked();
   }
 };
 
@@ -140,11 +152,12 @@ export const BooleanCheckboxResponse: Story = {
   args: {
     questionnaire: qBooleanCheckbox,
     questionnaireResponse: qrBooleanCheckboxResponse
-  }, play: async ({ canvasElement }) => {
+  },
+  play: async ({ canvasElement }) => {
     const element = await findByLinkId(canvasElement, targetlinkId);
-    const input = element.querySelector('input')
+    const input = element.querySelector('input');
 
-    expect(input).toBeChecked()
+    expect(input).toBeChecked();
   }
 };
 

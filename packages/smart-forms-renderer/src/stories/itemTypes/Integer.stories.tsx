@@ -17,9 +17,7 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import {
-  qIntegerCalculation,
-} from '../assets/questionnaires';
+import { qIntegerCalculation } from '../assets/questionnaires';
 import { findByLinkId, getInputText, inputInteger } from '@aehrc/testing-toolkit';
 import { expect, fireEvent } from 'storybook/test';
 import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
@@ -36,30 +34,35 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-const targetlinkId = 'age'
-const targetAge = 40
-const basicAge = 25
+const targetlinkId = 'age';
+const targetAge = 40;
+const basicAge = 25;
 
-const qIntegerBasic = questionnaireFactory([{
-  linkId: targetlinkId,
-  type: 'integer',
-  repeats: false,
-  text: 'Age'
-}])
-const qrIntegerBasicResponse = qrFactory([{
-  linkId: targetlinkId,
-  text: 'Age',
-  answer: [
-    {
-      valueInteger: targetAge
-    }
-  ]
-}])
+const qIntegerBasic = questionnaireFactory([
+  {
+    linkId: targetlinkId,
+    type: 'integer',
+    repeats: false,
+    text: 'Age'
+  }
+]);
+const qrIntegerBasicResponse = qrFactory([
+  {
+    linkId: targetlinkId,
+    text: 'Age',
+    answer: [
+      {
+        valueInteger: targetAge
+      }
+    ]
+  }
+]);
 
 export const IntegerBasic: Story = {
   args: {
     questionnaire: qIntegerBasic
-  }, play: async ({ canvasElement }) => {
+  },
+  play: async ({ canvasElement }) => {
     await inputInteger(canvasElement, targetlinkId, basicAge);
 
     const result = await getAnswers(targetlinkId);
@@ -75,19 +78,19 @@ export const IntegerBasic: Story = {
     const resultAfterClear = await getAnswers(targetlinkId);
     expect(resultAfterClear).toHaveLength(0);
     const elementAfterClear = await findByLinkId(canvasElement, targetlinkId);
-    const input = elementAfterClear.querySelector('input')
-    expect(input?.getAttribute('value')).toBe("");
-
+    const input = elementAfterClear.querySelector('input');
+    expect(input?.getAttribute('value')).toBe('');
   }
 };
 export const IntegerBasicResponse: Story = {
   args: {
     questionnaire: qIntegerBasic,
     questionnaireResponse: qrIntegerBasicResponse
-  }, play: async ({ canvasElement }) => {
+  },
+  play: async ({ canvasElement }) => {
     const input = await getInputText(canvasElement, targetlinkId);
 
-    expect(input).toBe(targetAge.toString())
+    expect(input).toBe(targetAge.toString());
   }
 };
 

@@ -21,7 +21,6 @@ import { getGroupAnswers, qrFactory, questionnaireFactory } from '../testUtils';
 import { getInputText, inputText } from '@aehrc/testing-toolkit';
 import { expect, fireEvent } from 'storybook/test';
 
-
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
   title: 'ItemType/Group',
@@ -34,53 +33,61 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-const targetGroupLinkId = 'patient-details-group'
+const targetGroupLinkId = 'patient-details-group';
 
-const nameLinkid = 'name'
-const ageLinkid = 'age'
-const targetName = 'Vladimir'
-const targetAge = 25
+const nameLinkid = 'name';
+const ageLinkid = 'age';
+const targetName = 'Vladimir';
+const targetAge = 25;
 
-const qGroupBasic = questionnaireFactory([{
-  linkId: targetGroupLinkId,
-  type: 'group',
-  repeats: false,
-  text: 'Patient Details',
-  item: [
-    {
-      linkId: nameLinkid,
-      type: 'string',
-      repeats: false,
-      text: 'Name'
-    },
-    {
-      linkId: ageLinkid,
-      type: 'integer',
-      repeats: false,
-      text: 'Age'
-    }
-  ]
-}])
-const qrGroupBasic = qrFactory([{
-  linkId: 'patient-details-group',
-  text: 'Patient Details',
-  item: [
-    {
-      linkId: nameLinkid,
+const qGroupBasic = questionnaireFactory([
+  {
+    linkId: targetGroupLinkId,
+    type: 'group',
+    repeats: false,
+    text: 'Patient Details',
+    item: [
+      {
+        linkId: nameLinkid,
+        type: 'string',
+        repeats: false,
+        text: 'Name'
+      },
+      {
+        linkId: ageLinkid,
+        type: 'integer',
+        repeats: false,
+        text: 'Age'
+      }
+    ]
+  }
+]);
+const qrGroupBasic = qrFactory([
+  {
+    linkId: 'patient-details-group',
+    text: 'Patient Details',
+    item: [
+      {
+        linkId: nameLinkid,
 
-      answer: [{
-        valueString: targetName
-      }]
-    }, {
-      linkId: ageLinkid,
+        answer: [
+          {
+            valueString: targetName
+          }
+        ]
+      },
+      {
+        linkId: ageLinkid,
 
-      answer: [{
-        valueDecimal: targetAge
-      }]
-    }
-
-  ]
-}])
+        answer: [
+          {
+            valueDecimal: targetAge
+          }
+        ]
+      }
+    ]
+  }
+]);
 
 export const GroupBasic: Story = {
   args: {
@@ -99,14 +106,18 @@ export const GroupBasic: Story = {
     expect(nameResult[0]).toEqual(expect.objectContaining({ valueString: targetName }));
     expect(ageResult[0]).toEqual(expect.objectContaining({ valueInteger: targetAge }));
 
-    // Clear 
-    const nameClearButton = canvasElement.querySelector('div[data-test="q-item-string-field"] button[aria-label="Clear"]');
-    const ageClearButton = canvasElement.querySelector('div[data-test="q-item-integer-field"] button[aria-label="Clear"]');
+    // Clear
+    const nameClearButton = canvasElement.querySelector(
+      'div[data-test="q-item-string-field"] button[aria-label="Clear"]'
+    );
+    const ageClearButton = canvasElement.querySelector(
+      'div[data-test="q-item-integer-field"] button[aria-label="Clear"]'
+    );
 
     fireEvent.click(nameClearButton as HTMLElement);
     fireEvent.click(ageClearButton as HTMLElement);
 
-    // Here we await for debounced store update 
+    // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     const resultNameAfterClear = await getGroupAnswers(targetGroupLinkId, nameLinkid);
@@ -116,20 +127,20 @@ export const GroupBasic: Story = {
 
     const elementNameAfterClear = await getInputText(canvasElement, nameLinkid);
     const elementAgeAfterClear = await getInputText(canvasElement, ageLinkid);
-    expect(elementNameAfterClear).toBe("");
-    expect(elementAgeAfterClear).toBe("");
+    expect(elementNameAfterClear).toBe('');
+    expect(elementAgeAfterClear).toBe('');
   }
 };
 export const GroupBasicResponse: Story = {
   args: {
     questionnaire: qGroupBasic,
     questionnaireResponse: qrGroupBasic
-  }, play: async ({ canvasElement }) => {
+  },
+  play: async ({ canvasElement }) => {
     const inputName = await getInputText(canvasElement, nameLinkid);
     const inputAge = await getInputText(canvasElement, ageLinkid);
 
-    expect(inputName).toBe(targetName)
-    expect(inputAge).toBe(targetAge.toString())
-
+    expect(inputName).toBe(targetName);
+    expect(inputAge).toBe(targetAge.toString());
   }
 };

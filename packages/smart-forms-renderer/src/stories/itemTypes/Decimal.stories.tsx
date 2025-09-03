@@ -17,9 +17,7 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import {
-  qCalculatedExpressionBMICalculator,
-} from '../assets/questionnaires';
+import { qCalculatedExpressionBMICalculator } from '../assets/questionnaires';
 import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
 import { findByLinkId, getInputText, inputDecimal } from '@aehrc/testing-toolkit';
 import { expect, fireEvent } from 'storybook/test';
@@ -37,24 +35,28 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-const targetlinkId = 'weight'
-const targetWeight = 80.3
+const targetlinkId = 'weight';
+const targetWeight = 80.3;
 
-const qDecimalBasic = questionnaireFactory([{
-  linkId: targetlinkId,
-  type: 'decimal',
-  repeats: false,
-  text: 'Weight in kg'
-}])
-const qrDecimalBasicResponse = qrFactory([{
-  linkId: targetlinkId,
-  text: 'Weight in kg',
-  answer: [
-    {
-      valueDecimal: targetWeight
-    }
-  ]
-}])
+const qDecimalBasic = questionnaireFactory([
+  {
+    linkId: targetlinkId,
+    type: 'decimal',
+    repeats: false,
+    text: 'Weight in kg'
+  }
+]);
+const qrDecimalBasicResponse = qrFactory([
+  {
+    linkId: targetlinkId,
+    text: 'Weight in kg',
+    answer: [
+      {
+        valueDecimal: targetWeight
+      }
+    ]
+  }
+]);
 
 export const DecimalBasic: Story = {
   args: {
@@ -63,7 +65,7 @@ export const DecimalBasic: Story = {
   play: async ({ canvasElement }) => {
     await inputDecimal(canvasElement, targetlinkId, targetWeight);
 
-    const result = await getAnswers(targetlinkId)
+    const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueDecimal: targetWeight }));
 
@@ -77,11 +79,8 @@ export const DecimalBasic: Story = {
     expect(resultAfterClear).toHaveLength(0);
 
     const elementAfterClear = await findByLinkId(canvasElement, targetlinkId);
-    const input = elementAfterClear.querySelector('input')
-    expect(input?.getAttribute('value')).toBe("");
-
-
-
+    const input = elementAfterClear.querySelector('input');
+    expect(input?.getAttribute('value')).toBe('');
   }
 };
 
@@ -89,10 +88,11 @@ export const DecimalBasicResponse: Story = {
   args: {
     questionnaire: qDecimalBasic,
     questionnaireResponse: qrDecimalBasicResponse
-  }, play: async ({ canvasElement }) => {
+  },
+  play: async ({ canvasElement }) => {
     const input = await getInputText(canvasElement, targetlinkId);
 
-    expect(input).toBe(targetWeight.toString())
+    expect(input).toBe(targetWeight.toString());
   }
 };
 

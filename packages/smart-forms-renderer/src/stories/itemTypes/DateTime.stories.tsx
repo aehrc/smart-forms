@@ -34,31 +34,35 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-const targetlinkId = 'dob'
-const targetText = 'Datetime of birth'
-const targetDateText = "1990-01-01T13:15:00+03:00"
-const targetDate = '01/01/1990'
+const targetlinkId = 'dob';
+const targetText = 'Datetime of birth';
+const targetDateText = '1990-01-01T13:15:00+03:00';
+const targetDate = '01/01/1990';
 
-const qDateTimeBasic = questionnaireFactory([{
-  linkId: targetlinkId,
-  type: 'dateTime',
-  repeats: false,
-  text: targetText
-}])
-const qrDateTimeBasicResponse = qrFactory([{
-  linkId: targetlinkId,
-  answer: [
-    {
-      valueDateTime: '1990-01-01T00:53:00Z'
-    }
-  ]
-}])
-
+const qDateTimeBasic = questionnaireFactory([
+  {
+    linkId: targetlinkId,
+    type: 'dateTime',
+    repeats: false,
+    text: targetText
+  }
+]);
+const qrDateTimeBasicResponse = qrFactory([
+  {
+    linkId: targetlinkId,
+    answer: [
+      {
+        valueDateTime: '1990-01-01T00:53:00Z'
+      }
+    ]
+  }
+]);
 
 export const DateTimeBasic: Story = {
   args: {
     questionnaire: qDateTimeBasic
-  }, play: async ({ canvasElement }) => {
+  },
+  play: async ({ canvasElement }) => {
     await inputDateTime(canvasElement, targetlinkId, targetDate, '01:15', 'PM');
 
     const result = await getAnswers(targetlinkId);
@@ -72,12 +76,12 @@ export const DateTimeBasicResponse: Story = {
   args: {
     questionnaire: qDateTimeBasic,
     questionnaireResponse: qrDateTimeBasicResponse
-  }, play: async ({ canvasElement }) => {
+  },
+  play: async ({ canvasElement }) => {
     const input = await getInputText(canvasElement, targetlinkId);
 
-    expect(input).toBe('01/01/1990')
+    expect(input).toBe('01/01/1990');
 
     // TODO: We have bug with it.Time and ampm doesnt work correctly.
-
   }
 };

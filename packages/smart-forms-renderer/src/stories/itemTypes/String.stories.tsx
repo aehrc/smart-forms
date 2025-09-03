@@ -34,24 +34,28 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-const targetlinkId = 'name'
-const targetText = 'Vladimir'
+const targetlinkId = 'name';
+const targetText = 'Vladimir';
 
-const qStringBasic = questionnaireFactory([{
-  linkId: targetlinkId,
-  type: 'string',
-  repeats: false,
-  text: "Name"
-}])
-const qrStringBasicResponse = qrFactory([{
-  linkId: targetlinkId,
-  text: targetText,
-  answer: [
-    {
-      valueString: 'Vladimir'
-    }
-  ]
-}])
+const qStringBasic = questionnaireFactory([
+  {
+    linkId: targetlinkId,
+    type: 'string',
+    repeats: false,
+    text: 'Name'
+  }
+]);
+const qrStringBasicResponse = qrFactory([
+  {
+    linkId: targetlinkId,
+    text: targetText,
+    answer: [
+      {
+        valueString: 'Vladimir'
+      }
+    ]
+  }
+]);
 
 export const StringBasic: Story = {
   args: {
@@ -73,18 +77,19 @@ export const StringBasic: Story = {
     const resultAfterClear = await getAnswers(targetlinkId);
     expect(resultAfterClear).toHaveLength(0);
     const elementAfterClear = await findByLinkId(canvasElement, targetlinkId);
-    const input = elementAfterClear.querySelector('textarea')
-    expect(input?.value).toBe("");
+    const input = elementAfterClear.querySelector('textarea');
+    expect(input?.value).toBe('');
   }
 };
 export const StringBasicResponse: Story = {
   args: {
     questionnaire: qStringBasic,
     questionnaireResponse: qrStringBasicResponse
-  }, play: async ({ canvasElement }) => {
+  },
+  play: async ({ canvasElement }) => {
     const inputText = await getInputText(canvasElement, targetlinkId);
 
-    expect(inputText).toBe(targetText)
+    expect(inputText).toBe(targetText);
   }
 };
 

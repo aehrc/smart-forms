@@ -34,31 +34,36 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-const targetlinkId = 'dob'
-const targetText = 'Date of birth'
-const targetDateText = '1990-01-01'
-const targetDate = '01/01/1990'
+const targetlinkId = 'dob';
+const targetText = 'Date of birth';
+const targetDateText = '1990-01-01';
+const targetDate = '01/01/1990';
 
-const qDateBasic = questionnaireFactory([{
-  linkId: targetlinkId,
-  type: 'date',
-  repeats: false,
-  text: targetText
-}])
-const qrDateBasicResponse = qrFactory([{
-  linkId: targetlinkId,
-  text: targetText,
-  answer: [
-    {
-      valueDate: targetDateText
-    }
-  ]
-}])
+const qDateBasic = questionnaireFactory([
+  {
+    linkId: targetlinkId,
+    type: 'date',
+    repeats: false,
+    text: targetText
+  }
+]);
+const qrDateBasicResponse = qrFactory([
+  {
+    linkId: targetlinkId,
+    text: targetText,
+    answer: [
+      {
+        valueDate: targetDateText
+      }
+    ]
+  }
+]);
 
 export const DateBasic: Story = {
   args: {
     questionnaire: qDateBasic
-  }, play: async ({ canvasElement }) => {
+  },
+  play: async ({ canvasElement }) => {
     await inputDate(canvasElement, targetlinkId, targetDate);
 
     const result = await getAnswers(targetlinkId);
@@ -72,9 +77,10 @@ export const DateBasicResponse: Story = {
   args: {
     questionnaire: qDateBasic,
     questionnaireResponse: qrDateBasicResponse
-  }, play: async ({ canvasElement }) => {
+  },
+  play: async ({ canvasElement }) => {
     const input = await getInputText(canvasElement, targetlinkId);
 
-    expect(input).toBe(targetDate)
+    expect(input).toBe(targetDate);
   }
 };

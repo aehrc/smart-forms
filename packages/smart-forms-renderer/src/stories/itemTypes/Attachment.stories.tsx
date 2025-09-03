@@ -22,7 +22,6 @@ import { getAnswers, questionnaireFactory } from '../testUtils';
 import { inputFile } from '@aehrc/testing-toolkit';
 import { expect, fireEvent, screen } from 'storybook/test';
 
-
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
   title: 'ItemType/Attachment',
@@ -35,21 +34,22 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-const targetlinkId = 'file-attachment'
-const targetText = 'File Attachment'
+const targetlinkId = 'file-attachment';
+const targetText = 'File Attachment';
 
-const qAttachmentBasic = questionnaireFactory([{
-  linkId: targetlinkId,
-  type: 'attachment',
-  repeats: false,
-  text: targetText
-}])
+const qAttachmentBasic = questionnaireFactory([
+  {
+    linkId: targetlinkId,
+    type: 'attachment',
+    repeats: false,
+    text: targetText
+  }
+]);
 
-const url = 'http://world_of_warcraft.com'
-const name = 'Vladimir'
-const fileName = 'foo.png'
-const type = "image/png"
-
+const url = 'http://world_of_warcraft.com';
+const name = 'Vladimir';
+const fileName = 'foo.png';
+const type = 'image/png';
 
 export const AttachmentBasic: Story = {
   args: {
@@ -60,12 +60,17 @@ export const AttachmentBasic: Story = {
       canvasElement,
       targetlinkId,
       [new File(['foo'], fileName, { type: type })],
-      url, name, 'URL', 'File name (optional)'
+      url,
+      name,
+      'URL',
+      'File name (optional)'
     );
 
     const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
-    expect(result[0].valueAttachment).toEqual(expect.objectContaining({ "contentType": type, title: name, url: url }));
+    expect(result[0].valueAttachment).toEqual(
+      expect.objectContaining({ contentType: type, title: name, url: url })
+    );
 
     // Clear value
     const clearButton = canvasElement.querySelector('span[aria-label="Remove file"] button');
@@ -77,6 +82,6 @@ export const AttachmentBasic: Story = {
     expect(resultAfterClear).toHaveLength(0);
 
     const elementAfterClear = await screen.findByText('No file selected');
-    expect(elementAfterClear).toBeDefined()
+    expect(elementAfterClear).toBeDefined();
   }
 };

@@ -18,8 +18,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import { qTextCalculation } from '../assets/questionnaires';
-import { inputText, getInputText, findByLinkId } from '@aehrc/testing-toolkit'
-import { expect, fireEvent } from "storybook/test"
+import { inputText, getInputText, findByLinkId } from '@aehrc/testing-toolkit';
+import { expect, fireEvent } from 'storybook/test';
 import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -38,11 +38,12 @@ type Story = StoryObj<typeof meta>;
 const targetText = 'mytext';
 const targetlinkId = 'details';
 
-const basicQuestionnare = questionnaireFactory([{ linkId: targetlinkId, type: 'string', text: targetText }])
-const basicQr = qrFactory([{ linkId: targetlinkId, answer: [{ valueString: targetText }] }])
+const basicQuestionnare = questionnaireFactory([
+  { linkId: targetlinkId, type: 'string', text: targetText }
+]);
+const basicQr = qrFactory([{ linkId: targetlinkId, answer: [{ valueString: targetText }] }]);
 
 export const TextBasic: Story = {
-
   args: {
     questionnaire: basicQuestionnare
   },
@@ -62,8 +63,8 @@ export const TextBasic: Story = {
     const resultAfterClear = await getAnswers(targetlinkId);
     expect(resultAfterClear).toHaveLength(0);
     const elementAfterClear = await findByLinkId(canvasElement, targetlinkId);
-    const input = elementAfterClear.querySelector('textarea')
-    expect(input?.value).toBe("");
+    const input = elementAfterClear.querySelector('textarea');
+    expect(input?.value).toBe('');
   }
 };
 
@@ -71,10 +72,11 @@ export const TextBasicResponse: Story = {
   args: {
     questionnaire: basicQuestionnare,
     questionnaireResponse: basicQr
-  }, play: async ({ canvasElement }) => {
+  },
+  play: async ({ canvasElement }) => {
     const inputText = await getInputText(canvasElement, targetlinkId);
 
-    expect(inputText).toBe(targetText)
+    expect(inputText).toBe(targetText);
   }
 };
 

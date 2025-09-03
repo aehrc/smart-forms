@@ -34,15 +34,17 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-const targetlinkId = 'website-url'
-const targetText = 'Website URL'
+const targetlinkId = 'website-url';
+const targetText = 'Website URL';
 
-const qUrlBasic = questionnaireFactory([{
-  linkId: targetlinkId,
-  type: 'url',
-  repeats: false,
-  text: targetText
-}])
+const qUrlBasic = questionnaireFactory([
+  {
+    linkId: targetlinkId,
+    type: 'url',
+    repeats: false,
+    text: targetText
+  }
+]);
 
 export const UrlBasic: Story = {
   args: {
@@ -64,7 +66,7 @@ export const UrlBasic: Story = {
     const resultAfterClear = await getAnswers(targetlinkId);
     expect(resultAfterClear).toHaveLength(0);
     const elementAfterClear = await findByLinkId(canvasElement, targetlinkId);
-    const input = elementAfterClear.querySelector('textarea')
-    expect(input?.value).toBe("");;
+    const input = elementAfterClear.querySelector('textarea');
+    expect(input?.value).toBe('');
   }
-};  
+};
