@@ -73,10 +73,10 @@ export const AttachmentBasic: Story = {
 
     // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
-    const qrAfterClear = await getAnswers(targetlinkId);
-    expect(qrAfterClear).toHaveLength(0);
+    const resultAfterClear = await getAnswers(targetlinkId);
+    expect(resultAfterClear).toHaveLength(0);
 
-    const resultAfterClear = await screen.findByText('No file selected');
-    expect(resultAfterClear).toBeDefined()
+    const elementAfterClear = await screen.findByText('No file selected');
+    expect(elementAfterClear).toBeDefined()
   }
 };

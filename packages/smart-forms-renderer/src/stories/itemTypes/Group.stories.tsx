@@ -107,15 +107,15 @@ export const GroupBasic: Story = {
     // Here we await for debounced store update 
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    const qrNameAfterClear = await getGroupAnswers(targetGroupLinkId, nameLinkid);
-    const qrAgeAfterClear = await getGroupAnswers(targetGroupLinkId, ageLinkid);
-    expect(qrNameAfterClear).toHaveLength(0);
-    expect(qrAgeAfterClear).toHaveLength(0);
+    const resultNameAfterClear = await getGroupAnswers(targetGroupLinkId, nameLinkid);
+    const resultAgeAfterClear = await getGroupAnswers(targetGroupLinkId, ageLinkid);
+    expect(resultNameAfterClear).toHaveLength(0);
+    expect(resultAgeAfterClear).toHaveLength(0);
 
-    const resultNameAfterClear = await getInputText(canvasElement, nameLinkid);
-    const resultAgeAfterClear = await getInputText(canvasElement, ageLinkid);
-    expect(resultNameAfterClear).toBe("");
-    expect(resultAgeAfterClear).toBe("");
+    const elementNameAfterClear = await getInputText(canvasElement, nameLinkid);
+    const elementAgeAfterClear = await getInputText(canvasElement, ageLinkid);
+    expect(elementNameAfterClear).toBe("");
+    expect(elementAgeAfterClear).toBe("");
   }
 };
 export const GroupBasicResponse: Story = {

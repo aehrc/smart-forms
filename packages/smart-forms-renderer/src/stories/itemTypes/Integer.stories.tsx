@@ -20,7 +20,7 @@ import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperF
 import {
   qIntegerCalculation,
 } from '../assets/questionnaires';
-import { getInputText, inputInteger } from '@aehrc/testing-toolkit';
+import { findByLinkId, getInputText, inputInteger } from '@aehrc/testing-toolkit';
 import { expect, fireEvent } from 'storybook/test';
 import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
 
@@ -73,6 +73,9 @@ export const IntegerBasic: Story = {
     await new Promise((resolve) => setTimeout(resolve, 500));
     const resultAfterClear = await getAnswers(targetlinkId);
     expect(resultAfterClear).toHaveLength(0);
+    const elementAfterClear = await findByLinkId(canvasElement, targetlinkId);
+    const input = elementAfterClear.querySelector('input')
+    expect(input?.getAttribute('value')).toBe("");
 
   }
 };

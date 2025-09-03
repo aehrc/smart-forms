@@ -55,16 +55,15 @@ export const UrlBasic: Story = {
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueUri: targetText }));
 
-    //Clear 
+    // Clear value
     const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
     fireEvent.click(clearButton as HTMLElement);
     // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
-    const qrAfterClear = await getAnswers(targetlinkId);
-    expect(qrAfterClear).toHaveLength(0);
-
-    const resultAfterClear = await findByLinkId(canvasElement, targetlinkId);
-    const input = resultAfterClear.querySelector('input')
-    expect(input).toBe(null);
+    const resultAfterClear = await getAnswers(targetlinkId);
+    expect(resultAfterClear).toHaveLength(0);
+    const elementAfterClear = await findByLinkId(canvasElement, targetlinkId);
+    const input = elementAfterClear.querySelector('textarea')
+    expect(input?.value).toBe("");;
   }
 };  

@@ -82,13 +82,15 @@ export const OpenChoiceAnswerOptionBasic: Story = {
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueCoding: clinicCoding }));
 
-    // Clear
-    const button = canvasElement.querySelector('button[aria-label="Clear"]');
-    fireEvent.click(button as HTMLElement);
+    // Clear value
+    const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
+    fireEvent.click(clearButton as HTMLElement);
     // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
-    const element = await findByLinkId(canvasElement, targetlinkId);
-    const input = element.querySelector('input')
+    const resultAfterClear = await getAnswers(targetlinkId);
+    expect(resultAfterClear).toHaveLength(0);
+    const elementAfterClear = await findByLinkId(canvasElement, targetlinkId);
+    const input = elementAfterClear.querySelector('input')
 
     expect(input).not.toBeChecked()
 
