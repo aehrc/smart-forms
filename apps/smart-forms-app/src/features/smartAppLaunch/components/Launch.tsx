@@ -20,72 +20,47 @@ import { oauth2 } from 'fhirclient';
 import { useState, useEffect } from 'react';
 import LaunchView from './LaunchView.tsx';
 import { LAUNCH_CLIENT_ID, LAUNCH_SCOPE } from '../../../globals.ts';
-import { useDynamicClientRegistration } from '../hooks/useDynamicClientRegistration';
 
-export type LaunchState = 'loading' | 'error' | 'success' | 'registering';
+export type LaunchState = 'loading' | 'error' | 'success';
 
 function Launch() {
   const [launchState, setLaunchState] = useState<LaunchState>('loading');
-  const [clientId, setClientId] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [clientId, setClientId] = useState<string>(LAUNCH_CLIENT_ID);
 
   const [searchParams] = useSearchParams();
   const iss = searchParams.get('iss');
   const launch = searchParams.get('launch');
-
   const scope = LAUNCH_SCOPE;
 
-  const {
-    isSupported,
-    isRegistering,
-    dynamicClientId,
-    error: registrationError,
-    useFixedClientId,
-    fixedClientId,
-    getClientId,
-    reset
-  } = useDynamicClientRegistration();
-
-  // Reset registration state when component mounts or issuer changes
+  // Fetch client ID from config.json based on issuer
   useEffect(() => {
-    reset();
-  }, [iss, reset]);
+    const fetchClientId = async () => {
+      if (!iss) {
+        setClientId(LAUNCH_CLIENT_ID);
+        return;
+      }
 
-  // Handle client ID resolution
-  useEffect(() => {
-    if (!iss) return;
-
-    const resolveClientId = async () => {
       try {
-        setLaunchState('loading');
-        setError(null);
-
-        // Get the appropriate client ID for this issuer
-        const resolvedClientId = await getClientId(iss);
+        const response = await fetch('/config.json');
+        const config = await response.json();
         
-        if (resolvedClientId) {
-          setClientId(resolvedClientId);
-          setLaunchState('success');
+        if (config[iss]) {
+          setClientId(config[iss]);
         } else {
-          // Fallback to default client ID if dynamic registration fails
-          console.warn(`Dynamic client registration failed for issuer: ${iss}, using fallback client ID`);
           setClientId(LAUNCH_CLIENT_ID);
-          setLaunchState('success');
         }
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
-        console.error('Error resolving client ID:', err);
-        setError(errorMessage);
-        setLaunchState('error');
+      } catch (error) {
+        console.error('Error fetching config.json:', error);
+        setClientId(LAUNCH_CLIENT_ID);
       }
     };
 
-    resolveClientId();
-  }, [iss, getClientId]);
+    fetchClientId();
+  }, [iss]);
 
-  // Handle OAuth2 authorization when client ID is resolved
+  // Handle OAuth2 authorization when we have all required parameters
   useEffect(() => {
-    if (launchState === 'success' && clientId && iss && launch) {
+    if (iss && launch && clientId) {
       // oauth2.authorize triggers a redirect to EHR
       oauth2
         .authorize({
@@ -95,26 +70,10 @@ function Launch() {
         })
         .catch((err) => {
           console.error('OAuth2 authorization failed:', err);
-          setError(err instanceof Error ? err.message : 'OAuth2 authorization failed');
           setLaunchState('error');
         });
     }
-  }, [launchState, clientId, iss, launch, scope]);
-
-  // Update launch state based on registration status
-  useEffect(() => {
-    if (isRegistering) {
-      setLaunchState('registering');
-    }
-  }, [isRegistering]);
-
-  // Handle registration errors
-  useEffect(() => {
-    if (registrationError) {
-      setError(registrationError);
-      setLaunchState('error');
-    }
-  }, [registrationError]);
+  }, [iss, launch, clientId, scope]);
 
   const launchParamsNotExist = !iss || !launch;
 
@@ -122,26 +81,7 @@ function Launch() {
     setLaunchState('error');
   }
 
-  // Determine what to display based on current state
-  let displayState: LaunchState = launchState;
-  let displayError = error;
-
-  if (launchState === 'registering') {
-    displayState = 'registering';
-  } else if (launchState === 'success' && !clientId) {
-    displayState = 'loading';
-  }
-
-  return (
-    <LaunchView 
-      launchState={displayState} 
-      error={displayError}
-      isRegistering={isRegistering}
-      useFixedClientId={useFixedClientId}
-      dynamicClientId={dynamicClientId}
-      fixedClientId={fixedClientId}
-    />
-  );
+  return <LaunchView launchState={launchState} />;
 }
 
 export default Launch;

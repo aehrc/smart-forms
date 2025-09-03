@@ -78,6 +78,21 @@ function Authorisation() {
 
   useEffect(
     () => {
+      // Only attempt oauth2.ready() if we're not in a launch state
+      // Check if we have launch parameters in the URL or if we're on the launch path
+      const urlParams = new URLSearchParams(window.location.search);
+      const hasLaunchParams = urlParams.has('iss') || urlParams.has('launch');
+      const isLaunchPath = window.location.pathname === '/launch' || window.location.pathname === '/launch.html';
+      const hasOAuthError = urlParams.has('error');
+      
+      if (hasLaunchParams || isLaunchPath) {
+        return;
+      }
+      
+      if (hasOAuthError) {
+        return;
+      }
+      
       oauth2
         .ready()
         .then((client) => {
