@@ -26,7 +26,7 @@ function OpenLabelField(props: OpenLabelFieldProps) {
 
   return (
     <StandardTextField
-      data-linkid={label}
+      data-test={`label-${label}`}
       multiline
       disabled={fieldReadOnly && readOnlyVisualStyle === 'disabled'}
       value={value}

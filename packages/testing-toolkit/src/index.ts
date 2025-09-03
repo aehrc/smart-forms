@@ -7,10 +7,10 @@ export async function inputText(
   text: string | boolean | number
 ) {
   const questionElement = await findByLinkId(canvasElement, linkId);
-  console.log(questionElement, 11);
+
   const input =
     questionElement?.querySelector('input') ?? questionElement?.querySelector('textarea');
-  console.log(input, 222);
+
   if (!input) {
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
   }
@@ -221,4 +221,24 @@ export async function findByLinkId(canvasElement: HTMLElement, linkId: string) {
     }
     return el;
   });
+}
+export async function choiceOpenChoiceOther(
+  canvasElement: HTMLElement,
+  linkId: string,
+  text: string
+) {
+  const questionElement = await findByLinkId(canvasElement, linkId);
+
+  const textarea = questionElement?.querySelector(
+    'div[data-test="q-item-radio-open-label-box"] textarea'
+  );
+
+  if (!textarea) {
+    throw new Error(`Input or textarea was not found inside ${`[data-test=${linkId}] block`}`);
+  }
+
+  fireEvent.change(textarea, { target: { value: text } });
+
+  // Here we await for debounced store update
+  await new Promise((resolve) => setTimeout(resolve, 500));
 }

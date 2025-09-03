@@ -52,7 +52,9 @@ function ChoiceRadioSingle(props: ChoiceRadioSingleProps) {
       }}
       disabled={isHtmlDisabled}
       value={value}
-      control={<StandardRadio data-test={label} size="small" readOnly={isHtmlReadOnly} />}
+      control={
+        <StandardRadio data-test={`label-${label}`} size="small" readOnly={isHtmlReadOnly} />
+      }
       label={label}
     />
   );

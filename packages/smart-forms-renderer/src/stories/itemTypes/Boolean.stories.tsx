@@ -60,7 +60,7 @@ export const BooleanBasic: Story = {
   args: {
     questionnaire: basicQuestionnare
   }, play: async ({ canvasElement }) => {
-    await checkRadioOption(canvasElement, targetlinkId, "Yes");
+    await checkRadioOption(canvasElement, targetlinkId, "label-Yes");
 
     const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);

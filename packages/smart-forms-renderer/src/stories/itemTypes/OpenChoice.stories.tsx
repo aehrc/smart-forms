@@ -20,9 +20,9 @@ import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperF
 import {
   qOpenChoiceAnswerAutoCompleteFromValueSet,
 } from '../assets/questionnaires';
-import { getAnswers, itemControlExtFactory, qrFactory, questionnaireFactory } from '../testUtils';
-import { checkRadioOption, chooseSelectOption, findByLinkId, inputText } from '@aehrc/testing-toolkit';
-import { expect, fireEvent, waitFor, screen } from 'storybook/test';
+import { getAnswers, itemControlExtFactory, qrFactory, questionnaireFactory, sdcQuestionnareExtFactory } from '../testUtils';
+import { checkRadioOption, choiceOpenChoiceOther, chooseSelectOption, findByLinkId } from '@aehrc/testing-toolkit';
+import { expect, fireEvent, screen } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -49,10 +49,7 @@ const qOpenChoiceAnswerOptionBasic = questionnaireFactory([{
   type: 'open-choice',
   extension: [
     itemControlExtFactory('radio-button'),
-    {
-      url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-openLabel',
-      valueString: 'Other, please specify'
-    }
+    sdcQuestionnareExtFactory('Other, please specify')
   ],
   answerOption: [
     {
@@ -79,7 +76,7 @@ export const OpenChoiceAnswerOptionBasic: Story = {
     questionnaire: qOpenChoiceAnswerOptionBasic
   },
   play: async ({ canvasElement }) => {
-    await checkRadioOption(canvasElement, targetlinkId, clinicCoding.display)
+    await checkRadioOption(canvasElement, targetlinkId, `label-${clinicCoding.display}`)
 
     const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
@@ -92,9 +89,9 @@ export const OpenChoiceAnswerOptionBasic: Story = {
     await new Promise((resolve) => setTimeout(resolve, 500));
     const element = await findByLinkId(canvasElement, targetlinkId);
     const input = element.querySelector('input')
-    await waitFor(() =>
-      expect(input).not.toBeChecked()
-    );
+
+    expect(input).not.toBeChecked()
+
   }
 };
 const targetOtherLinkid = "q-item-radio-open-label-box"
@@ -106,8 +103,8 @@ export const OpenChoiceAnswerOptionBasicOther: Story = {
     questionnaire: qOpenChoiceAnswerOptionBasic
   },
   play: async ({ canvasElement }) => {
-    await checkRadioOption(canvasElement, targetlinkId, otherVariantLinkid + ":")
-    await inputText(canvasElement, otherVariantLinkid, otherTargetText)
+    await checkRadioOption(canvasElement, targetlinkId, `label-${otherVariantLinkid}` + ":")
+    await choiceOpenChoiceOther(canvasElement, targetlinkId, otherTargetText)
     const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueString: otherTargetText }));
@@ -120,13 +117,13 @@ export const OpenChoiceAnswerOptionBasicOther: Story = {
     const qrAfterClear = await getAnswers(targetOtherLinkid);
     expect(qrAfterClear).toHaveLength(0);
 
-    const resultAfterClear = await findByLinkId(canvasElement, targetOtherLinkid);
-    const input = resultAfterClear.querySelector('input')
-    expect(input?.getAttribute('value')).toBe("");
+    const resultAfterClear = await findByLinkId(canvasElement, targetlinkId);
+    const input = resultAfterClear.querySelector('textarea')
+    expect(input?.value).toBe("");
 
   }
 };
-
+const targetOperResId = 'state'
 export const OpenChoiceAnswerOptionBasicResponse: Story = {
   args: {
     questionnaire: qOpenChoiceAnswerOptionBasic,
@@ -144,7 +141,7 @@ const qOpenChoiceAnswerValueSetBasic = questionnaireFactory([{
       valueString: 'Overseas state, please specify'
     }
   ],
-  linkId: 'state',
+  linkId: targetOperResId,
   text: 'State',
   type: 'open-choice',
   repeats: false,
@@ -166,11 +163,11 @@ export const OpenChoiceAnswerValueSetBasic: Story = {
   play: async ({ canvasElement }) => {
     await chooseSelectOption(
       canvasElement,
-      'state',
+      targetOperResId,
       valueSetTargetCoding.display
     );
 
-    const result = await getAnswers('state');
+    const result = await getAnswers(targetOperResId);
     expect(result).toHaveLength(1);
     expect(result[0].valueCoding).toEqual(
       expect.objectContaining(valueSetTargetCoding)
@@ -184,14 +181,14 @@ export const OpenChoiceAnswerValueSetBasic: Story = {
     const qrAfterClear = await getAnswers('state');
     expect(qrAfterClear).toHaveLength(0);
 
-    const resultAfterClear = await findByLinkId(canvasElement, 'state');
+    const resultAfterClear = await findByLinkId(canvasElement, targetOperResId);
     const input = resultAfterClear.querySelector('input')
     expect(input).not.toBeChecked()
   }
 };
 const valueSetText = 'Branbendurg'
 const qrOpenChoiceAnswerValueSetBasicResponse = qrFactory([{
-  linkId: 'state',
+  linkId: targetOperResId,
   text: 'State',
   answer: [
     {
@@ -205,7 +202,7 @@ export const OpenChoiceAnswerValueSetBasicResponse: Story = {
     questionnaireResponse: qrOpenChoiceAnswerValueSetBasicResponse
   },
   play: async ({ canvasElement }) => {
-    const element = await findByLinkId(canvasElement, 'state');
+    const element = await findByLinkId(canvasElement, targetOperResId);
     const input = element.querySelector('div[data-test="q-item-radio-open-label-box"] textarea') as HTMLTextAreaElement
 
     expect(input?.value).toBe(valueSetText);

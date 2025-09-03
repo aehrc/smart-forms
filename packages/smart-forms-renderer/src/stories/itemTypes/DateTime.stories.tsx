@@ -77,5 +77,7 @@ export const DateTimeBasicResponse: Story = {
 
     expect(input).toBe('01/01/1990')
 
+    // TODO: We have bug with it.Time and ampm doesnt work correctly.
+
   }
 };
