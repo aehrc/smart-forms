@@ -38,7 +38,7 @@
     "@mui/material": "^7.1.1",
     "@mui/x-date-pickers": "^7.28.3",
     "@tanstack/react-query": "^5.83.0",
-    "dayjs": "^1.11.13",
+    "dayjs": "^1.11.18",
     "deep-diff": "^1.0.2",
     "fast-equals": "^5.2.2",
     "fhir-sdc-helpers": "^0.1.0",
