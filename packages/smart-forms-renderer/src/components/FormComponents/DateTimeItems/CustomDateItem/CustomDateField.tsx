@@ -85,7 +85,7 @@ function CustomDateField(props: CustomDateFieldProps) {
   return (
     <StandardTextField
       {...(!isTabled && { id: id })}
-      data-test={'other-choise'}
+      data-test={'other-choice'}
       ref={anchorRef}
       fullWidth
       textFieldWidth={textFieldWidth}

@@ -70,6 +70,7 @@ export const DecimalBasic: Story = {
     // Clear value
     const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
     fireEvent.click(clearButton as HTMLElement);
+
     // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
     const resultAfterClear = await getAnswers(targetlinkId);

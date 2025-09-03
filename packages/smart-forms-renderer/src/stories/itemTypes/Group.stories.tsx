@@ -104,6 +104,7 @@ export const GroupBasic: Story = {
 
     fireEvent.click(nameClearButton as HTMLElement);
     fireEvent.click(ageClearButton as HTMLElement);
+
     // Here we await for debounced store update 
     await new Promise((resolve) => setTimeout(resolve, 500));
 

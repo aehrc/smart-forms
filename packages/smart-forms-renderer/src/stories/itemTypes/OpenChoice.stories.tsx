@@ -97,7 +97,7 @@ export const OpenChoiceAnswerOptionBasic: Story = {
   }
 };
 const targetOtherLinkid = "q-item-radio-open-label-box"
-const otherVariantLinkid = "Other, please specify"
+const otherVariantLinkid = "Other, please specify:"
 const otherTargetText = "Other variant text"
 
 export const OpenChoiceAnswerOptionBasicOther: Story = {
@@ -105,7 +105,7 @@ export const OpenChoiceAnswerOptionBasicOther: Story = {
     questionnaire: qOpenChoiceAnswerOptionBasic
   },
   play: async ({ canvasElement }) => {
-    await checkRadioOption(canvasElement, targetlinkId, `label-${otherVariantLinkid}` + ":")
+    await checkRadioOption(canvasElement, targetlinkId, `label-${otherVariantLinkid}`)
     await choiceOpenChoiceOther(canvasElement, targetlinkId, otherTargetText)
     const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
@@ -114,6 +114,7 @@ export const OpenChoiceAnswerOptionBasicOther: Story = {
     // Clear
     const button = canvasElement.querySelector('button[aria-label="Clear"]');
     fireEvent.click(button as HTMLElement);
+
     // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
     const qrAfterClear = await getAnswers(targetOtherLinkid);
