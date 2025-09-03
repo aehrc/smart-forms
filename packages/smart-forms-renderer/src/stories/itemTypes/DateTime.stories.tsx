@@ -49,7 +49,7 @@ const qrDateTimeBasicResponse = qrFactory([{
   linkId: targetlinkId,
   answer: [
     {
-      valueDateTime: "1990-01-01"
+      valueDateTime: '1990-01-01T00:53:00Z'
     }
   ]
 }])
@@ -65,6 +65,7 @@ export const DateTimeBasic: Story = {
 
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueDateTime: targetDateText }));
+    // TODO : ADD CLEAR BUTTON
   }
 };
 export const DateTimeBasicResponse: Story = {

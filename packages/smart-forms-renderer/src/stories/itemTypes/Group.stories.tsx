@@ -19,7 +19,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import { getGroupAnswers, qrFactory, questionnaireFactory } from '../testUtils';
 import { getInputText, inputText } from '@aehrc/testing-toolkit';
-import { expect } from 'storybook/test';
+import { expect, fireEvent } from 'storybook/test';
 
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -98,6 +98,24 @@ export const GroupBasic: Story = {
 
     expect(nameResult[0]).toEqual(expect.objectContaining({ valueString: targetName }));
     expect(ageResult[0]).toEqual(expect.objectContaining({ valueInteger: targetAge }));
+    //Clear 
+    const nameClearButton = canvasElement.querySelector('div[data-test="q-item-string-field"] button[aria-label="Clear"]');
+    const ageClearButton = canvasElement.querySelector('div[data-test="q-item-integer-field"] button[aria-label="Clear"]');
+
+    fireEvent.click(nameClearButton as HTMLElement);
+    fireEvent.click(ageClearButton as HTMLElement);
+    // Here we await for debounced store update 
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    const qrNameAfterClear = await getGroupAnswers(targetGroupLinkId, nameLinkid);
+    const qrAgeAfterClear = await getGroupAnswers(targetGroupLinkId, ageLinkid);
+    expect(qrNameAfterClear).toHaveLength(0);
+    expect(qrAgeAfterClear).toHaveLength(0);
+
+    const resultNameAfterClear = await getInputText(canvasElement, nameLinkid);
+    const resultAgeAfterClear = await getInputText(canvasElement, ageLinkid);
+    expect(resultNameAfterClear).toBe("");
+    expect(resultAgeAfterClear).toBe("");
   }
 };
 export const GroupBasicResponse: Story = {

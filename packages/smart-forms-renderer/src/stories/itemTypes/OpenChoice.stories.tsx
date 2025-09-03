@@ -21,7 +21,7 @@ import {
   qOpenChoiceAnswerAutoCompleteFromValueSet,
 } from '../assets/questionnaires';
 import { getAnswers, itemControlExtFactory, qrFactory, questionnaireFactory } from '../testUtils';
-import { checkRadioOption, chooseSelectOption, findByLinkId } from '@aehrc/testing-toolkit';
+import { checkRadioOption, chooseSelectOption, findByLinkId, inputText } from '@aehrc/testing-toolkit';
 import { expect, fireEvent, waitFor, screen } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -42,6 +42,7 @@ const clinicCoding = {
   display: 'Clinic'
 }
 const targetText = 'Pharmacy'
+
 const qOpenChoiceAnswerOptionBasic = questionnaireFactory([{
   linkId: 'health-check-location',
   text: 'Location of health check',
@@ -72,12 +73,13 @@ const qrOpenChoiceAnswerOptionBasicResponse = qrFactory([{
 
 
 
+
 export const OpenChoiceAnswerOptionBasic: Story = {
   args: {
     questionnaire: qOpenChoiceAnswerOptionBasic
   },
   play: async ({ canvasElement }) => {
-    await checkRadioOption(canvasElement, targetlinkId)
+    await checkRadioOption(canvasElement, targetlinkId, clinicCoding.display)
 
     const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
@@ -86,11 +88,42 @@ export const OpenChoiceAnswerOptionBasic: Story = {
     // Clear
     const button = canvasElement.querySelector('button[aria-label="Clear"]');
     fireEvent.click(button as HTMLElement);
+    // Here we await for debounced store update
+    await new Promise((resolve) => setTimeout(resolve, 500));
     const element = await findByLinkId(canvasElement, targetlinkId);
     const input = element.querySelector('input')
     await waitFor(() =>
       expect(input).not.toBeChecked()
     );
+  }
+};
+const targetOtherLinkid = "q-item-radio-open-label-box"
+const otherVariantLinkid = "Other, please specify"
+const otherTargetText = "Other variant text"
+
+export const OpenChoiceAnswerOptionBasicOther: Story = {
+  args: {
+    questionnaire: qOpenChoiceAnswerOptionBasic
+  },
+  play: async ({ canvasElement }) => {
+    await checkRadioOption(canvasElement, targetlinkId, otherVariantLinkid + ":")
+    await inputText(canvasElement, otherVariantLinkid, otherTargetText)
+    const result = await getAnswers(targetlinkId);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual(expect.objectContaining({ valueString: otherTargetText }));
+
+    // Clear
+    const button = canvasElement.querySelector('button[aria-label="Clear"]');
+    fireEvent.click(button as HTMLElement);
+    // Here we await for debounced store update
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const qrAfterClear = await getAnswers(targetOtherLinkid);
+    expect(qrAfterClear).toHaveLength(0);
+
+    const resultAfterClear = await findByLinkId(canvasElement, targetOtherLinkid);
+    const input = resultAfterClear.querySelector('input')
+    expect(input?.getAttribute('value')).toBe("");
+
   }
 };
 
@@ -118,15 +151,8 @@ const qOpenChoiceAnswerValueSetBasic = questionnaireFactory([{
   answerValueSet:
     'http://hl7.org/fhir/ValueSet/administrative-gender'
 }])
-const qrOpenChoiceAnswerValueSetBasicResponse = qrFactory([{
-  linkId: 'state',
-  text: 'State',
-  answer: [
-    {
-      valueString: 'Branbendurg'
-    }
-  ]
-}])
+
+
 
 const valueSetTargetCoding = {
   code: "female",
@@ -149,9 +175,30 @@ export const OpenChoiceAnswerValueSetBasic: Story = {
     expect(result[0].valueCoding).toEqual(
       expect.objectContaining(valueSetTargetCoding)
     );
+
+    // Clear
+    const button = canvasElement.querySelector('button[aria-label="Clear"]');
+    fireEvent.click(button as HTMLElement);
+    // Here we await for debounced store update
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const qrAfterClear = await getAnswers('state');
+    expect(qrAfterClear).toHaveLength(0);
+
+    const resultAfterClear = await findByLinkId(canvasElement, 'state');
+    const input = resultAfterClear.querySelector('input')
+    expect(input).not.toBeChecked()
   }
 };
-
+const valueSetText = 'Branbendurg'
+const qrOpenChoiceAnswerValueSetBasicResponse = qrFactory([{
+  linkId: 'state',
+  text: 'State',
+  answer: [
+    {
+      valueString: valueSetText
+    }
+  ]
+}])
 export const OpenChoiceAnswerValueSetBasicResponse: Story = {
   args: {
     questionnaire: qOpenChoiceAnswerValueSetBasic,
@@ -161,7 +208,7 @@ export const OpenChoiceAnswerValueSetBasicResponse: Story = {
     const element = await findByLinkId(canvasElement, 'state');
     const input = element.querySelector('div[data-test="q-item-radio-open-label-box"] textarea') as HTMLTextAreaElement
 
-    expect(input?.value).toBe("Branbendurg");
+    expect(input?.value).toBe(valueSetText);
   }
 };
 

@@ -19,10 +19,9 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
   qCalculatedExpressionBMICalculator,
-
 } from '../assets/questionnaires';
 import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
-import { getInputText, inputDecimal } from '@aehrc/testing-toolkit';
+import { findByLinkId, getInputText, inputDecimal } from '@aehrc/testing-toolkit';
 import { expect, fireEvent } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -73,8 +72,13 @@ export const DecimalBasic: Story = {
     fireEvent.click(clearButton as HTMLElement);
     // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
-    const resultAfterClear = await getAnswers(targetlinkId);
-    expect(resultAfterClear).toHaveLength(0);
+    const qrAfterClear = await getAnswers(targetlinkId);
+    expect(qrAfterClear).toHaveLength(0);
+
+    const resultAfterClear = await findByLinkId(canvasElement, targetlinkId);
+    const input = resultAfterClear.querySelector('input')
+    expect(input?.getAttribute('value')).toBe("");
+
 
 
   }

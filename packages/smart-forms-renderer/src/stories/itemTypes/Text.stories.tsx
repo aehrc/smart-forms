@@ -18,7 +18,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import { qTextCalculation } from '../assets/questionnaires';
-import { inputText, getInputText } from '@aehrc/testing-toolkit'
+import { inputText, getInputText, findByLinkId } from '@aehrc/testing-toolkit'
 import { expect, fireEvent } from "storybook/test"
 import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
 
@@ -53,13 +53,17 @@ export const TextBasic: Story = {
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueString: targetText }));
 
-    // Clear value  
+    //Clear 
     const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
     fireEvent.click(clearButton as HTMLElement);
     // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
-    const resultAfterClear = await getAnswers(targetlinkId);
-    expect(resultAfterClear).toHaveLength(0);
+    const qrAfterClear = await getAnswers(targetlinkId);
+    expect(qrAfterClear).toHaveLength(0);
+
+    const resultAfterClear = await findByLinkId(canvasElement, targetlinkId);
+    const input = resultAfterClear.querySelector('input')
+    expect(input).toBe(null);
   }
 };
 

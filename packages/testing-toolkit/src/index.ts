@@ -7,9 +7,10 @@ export async function inputText(
   text: string | boolean | number
 ) {
   const questionElement = await findByLinkId(canvasElement, linkId);
+  console.log(questionElement, 11);
   const input =
     questionElement?.querySelector('input') ?? questionElement?.querySelector('textarea');
-
+  console.log(input, 222);
   if (!input) {
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
   }
@@ -136,10 +137,9 @@ export async function inputDateTime(
   await new Promise((resolve) => setTimeout(resolve, 500));
 }
 
-export async function checkRadioOption(canvasElement: HTMLElement, linkId: string) {
+export async function checkRadioOption(canvasElement: HTMLElement, linkId: string, text: string) {
   const questionElement = await findByLinkId(canvasElement, linkId);
-  const radio =
-    questionElement?.querySelector('input') ?? questionElement?.querySelector('textarea');
+  const radio = questionElement?.querySelector(`span[data-test="${text}"] input`);
 
   if (!radio) {
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);

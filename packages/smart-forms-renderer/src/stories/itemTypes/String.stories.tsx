@@ -19,7 +19,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import { qStringCalculation } from '../assets/questionnaires';
 import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
-import { getInputText, inputText } from '@aehrc/testing-toolkit';
+import { findByLinkId, getInputText, inputText } from '@aehrc/testing-toolkit';
 import { expect, fireEvent } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -64,13 +64,17 @@ export const StringBasic: Story = {
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueString: targetText }));
 
-    // Clear value 
+    //Clear 
     const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
     fireEvent.click(clearButton as HTMLElement);
     // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
-    const resultAfterClear = await getAnswers(targetlinkId);
-    expect(resultAfterClear).toHaveLength(0);
+    const qrAfterClear = await getAnswers(targetlinkId);
+    expect(qrAfterClear).toHaveLength(0);
+
+    const resultAfterClear = await findByLinkId(canvasElement, targetlinkId);
+    const input = resultAfterClear.querySelector('input')
+    expect(input).toBe(null);
   }
 };
 export const StringBasicResponse: Story = {

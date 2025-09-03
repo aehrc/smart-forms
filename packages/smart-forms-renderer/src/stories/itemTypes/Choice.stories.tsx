@@ -81,9 +81,14 @@ export const ChoiceAnswerOptionBasic: Story = {
     const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
     expect(result[0].valueCoding).toEqual(expect.objectContaining(targetCoding));
+    //Clear 
+    const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
+    fireEvent.click(clearButton as HTMLElement);
+    // Here we await for debounced store update
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const qrAfterClear = await getAnswers(targetlinkId);
+    expect(qrAfterClear).toHaveLength(0);
 
-    const button = canvasElement.querySelector('button[aria-label="Clear"]');
-    fireEvent.click(button as HTMLElement);
     const resultAfterClear = await findByLinkId(canvasElement, targetlinkId);
     const input = resultAfterClear.querySelector('input')
     expect(input).toBe(null);

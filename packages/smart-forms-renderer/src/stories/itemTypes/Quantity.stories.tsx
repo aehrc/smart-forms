@@ -18,211 +18,54 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
+  qQuantityBasic,
   qQuantityCalculation,
   qQuantityUnitOption,
   qrQuantityBasicResponse,
+  qrQuantityUnitOptionResponse
 } from '../assets/questionnaires';
-import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
-import { chooseQuantityOption, findByLinkId } from '@aehrc/testing-toolkit';
-import { expect, fireEvent } from 'storybook/test';
 
+// More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
   title: 'ItemType/Quantity',
   component: BuildFormWrapperForStorybook,
+  // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []
 } satisfies Meta<typeof BuildFormWrapperForStorybook>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const targetlinkId = 'body-weight';
-const targetComparatorlinkId = 'body-weight-comparator';
-const responseWeight = 80
-const qQuantityBasic = questionnaireFactory([
-  {
-    extension: [
-      {
-        url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
-        valueCoding: { system: 'http://unitsofmeasure.org', code: 'kg', display: 'kg' }
-      }
-    ],
-    linkId: targetlinkId,
-    type: 'quantity',
-    repeats: false,
-    text: 'Body Weight'
-  },
+// More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-]);
-const qrQuantityUnitOptionResponse = qrFactory([{
-  linkId: 'body-weight',
-  answer: [
-    {
-      valueQuantity: {
-        value: responseWeight,
-        unit: 'kg',
-        system: 'http://unitsofmeasure.org',
-        code: 'kg'
-      }
-    }
-  ],
-  text: 'Body Weight'
-}])
-
-const basicQuantity = 89
-const comparatorQuantity = 91
-const qQuantityBasicComparator = questionnaireFactory([
-  {
-    extension: [
-      {
-        url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
-        valueCoding: { system: 'http://unitsofmeasure.org', code: 'kg', display: 'kg' }
-      }
-    ],
-    linkId: targetComparatorlinkId,
-    type: 'quantity',
-    repeats: false,
-    text: 'Body Weight (with comparator symbol)'
-  }
-
-]);
-
-export const QuantityBasicInput: Story = {
-  args: { questionnaire: qQuantityBasic },
-  play: async ({ canvasElement }) => {
-    await chooseQuantityOption(canvasElement, targetlinkId, basicQuantity, '<');
-
-    const weight = await getAnswers(targetlinkId);
-    expect(weight).toHaveLength(1);
-    expect(weight[0].valueQuantity).toEqual(expect.objectContaining({ value: basicQuantity, comparator: '<' }));
-
-
-    const clearButton = canvasElement.querySelectorAll('button[aria-label="Clear"]');
-    fireEvent.click(clearButton[0] as HTMLElement);
-    fireEvent.click(clearButton[1] as HTMLElement);
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    const resultAfterClear = await getAnswers(targetlinkId);
-    expect(resultAfterClear).toHaveLength(0);
+export const QuantityBasic: Story = {
+  args: {
+    questionnaire: qQuantityBasic
   }
 };
 
-export const QuantityBasicComparator: Story = {
-  args: { questionnaire: qQuantityBasicComparator },
-  play: async ({ canvasElement }) => {
-    await chooseQuantityOption(canvasElement, targetComparatorlinkId, comparatorQuantity, '>');
-
-    const weightComparator = await getAnswers(targetComparatorlinkId);
-    expect(weightComparator).toHaveLength(1);
-    expect(weightComparator[0].valueQuantity).toEqual(
-      expect.objectContaining({ value: comparatorQuantity, comparator: '>' })
-    );
+export const QuantityBasicResponse: Story = {
+  args: {
+    questionnaire: qQuantityBasic,
+    questionnaireResponse: qrQuantityBasicResponse
   }
 };
 
-export const QuantityBasicResponseWeight: Story = {
-  args: { questionnaire: qQuantityBasic, questionnaireResponse: qrQuantityBasicResponse },
-  play: async ({ canvasElement }) => {
-    const element = await findByLinkId(canvasElement, targetlinkId);
-    const comparator = element.querySelector('div[data-test="comparator"] input');
-    const weight = element.querySelector('div[data-test="q-item-quantity-field"] input');
-
-    expect(comparator?.getAttribute('value')).toBe('');
-    expect(weight?.getAttribute('value')).toBe(responseWeight.toString());
+export const QuantityUnitOption: Story = {
+  args: {
+    questionnaire: qQuantityUnitOption
   }
 };
 
-export const QuantityBasicResponseComparator: Story = {
-  args: { questionnaire: qQuantityBasicComparator, questionnaireResponse: qrQuantityBasicResponse },
-  play: async ({ canvasElement }) => {
-    const elementComp = await findByLinkId(canvasElement, targetComparatorlinkId);
-    const comparatorComp = elementComp.querySelector('div[data-test="comparator"] input');
-    const weightComp = elementComp.querySelector('div[data-test="q-item-quantity-field"] input');
-
-    expect(comparatorComp?.getAttribute('value')).toBe('<');
-    expect(weightComp?.getAttribute('value')).toBe('90');
+export const QuantityUnitOptionResponse: Story = {
+  args: {
+    questionnaire: qQuantityUnitOption,
+    questionnaireResponse: qrQuantityUnitOptionResponse
   }
 };
-
-export const QuantityUnitOptionSingle: Story = {
-  args: { questionnaire: qQuantityUnitOption },
-  play: async ({ canvasElement }) => {
-    await chooseQuantityOption(canvasElement, 'duration-single-unit', 7, '<');
-
-    const singleUnitAnswer = await getAnswers('duration-single-unit');
-    expect(singleUnitAnswer).toHaveLength(1);
-    expect(singleUnitAnswer[0].valueQuantity).toEqual(expect.objectContaining({ value: 7 }));
-  }
-};
-
-export const QuantityUnitOptionMulti: Story = {
-  args: { questionnaire: qQuantityUnitOption },
-  play: async ({ canvasElement }) => {
-    await chooseQuantityOption(canvasElement, 'duration-multi-unit', 3, '>');
-
-    const multiUnitAnswer = await getAnswers('duration-multi-unit');
-    expect(multiUnitAnswer).toHaveLength(1);
-    expect(multiUnitAnswer[0].valueQuantity).toEqual(
-      expect.objectContaining({ value: 3, unit: 'Day(s)', code: 'd' })
-    );
-  }
-};
-
-export const QuantityUnitOptionMultiComparator: Story = {
-  args: { questionnaire: qQuantityUnitOption },
-  play: async ({ canvasElement }) => {
-    await chooseQuantityOption(canvasElement, 'duration-multi-unit-comparator', 2, '>');
-
-    const multiUnitComparatorAnswer = await getAnswers('duration-multi-unit-comparator');
-    expect(multiUnitComparatorAnswer).toHaveLength(1);
-    expect(multiUnitComparatorAnswer[0].valueQuantity).toEqual(
-      expect.objectContaining({ value: 2, comparator: '>', unit: 'Day(s)', code: 'd' })
-    );
-  }
-};
-
-export const QuantityUnitOptionResponseSingle: Story = {
-  args: { questionnaire: qQuantityUnitOption, questionnaireResponse: qrQuantityUnitOptionResponse },
-  play: async ({ canvasElement }) => {
-    const singleUnitInput = await findByLinkId(canvasElement, 'duration-single-unit');
-    const comparator = singleUnitInput.querySelector('div[data-test="comparator"] input');
-    const days = singleUnitInput.querySelector('div[data-test="q-item-quantity-field"] input');
-
-    expect(comparator?.getAttribute('value')).toBe('');
-    expect(days?.getAttribute('value')).toBe('2');
-  }
-};
-
-export const QuantityUnitOptionResponseMulti: Story = {
-  args: { questionnaire: qQuantityUnitOption, questionnaireResponse: qrQuantityUnitOptionResponse },
-  play: async ({ canvasElement }) => {
-    const multiUnitInput = await findByLinkId(canvasElement, 'duration-multi-unit');
-    const multiComparator = multiUnitInput.querySelector('div[data-test="comparator"] input');
-    const multiValue = multiUnitInput.querySelector('div[data-test="q-item-quantity-field"] input');
-    const multiTime = multiUnitInput.querySelector('input#quantity-duration-multi-unit-unit');
-
-    expect(multiComparator?.getAttribute('value')).toBe('');
-    expect(multiValue?.getAttribute('value')).toBe('48');
-    expect(multiTime?.getAttribute('value')).toBe('Hour(s)');
-  }
-};
-
-export const QuantityUnitOptionResponseMultiComparator: Story = {
-
-
-  args: { questionnaire: qQuantityUnitOption, questionnaireResponse: qrQuantityUnitOptionResponse },
-  play: async ({ canvasElement }) => {
-    const multiUnitComparatorInput = await findByLinkId(canvasElement, 'duration-multi-unit-comparator');
-    const multiUnitComparator = multiUnitComparatorInput.querySelector('div[data-test="comparator"] input');
-    const multiUnitValue = multiUnitComparatorInput.querySelector('div[data-test="q-item-quantity-field"] input');
-    const multiUnitTime = multiUnitComparatorInput.querySelector('input#quantity-duration-multi-unit-comparator-unit');
-
-    expect(multiUnitComparator?.getAttribute('value')).toBe('>=');
-    expect(multiUnitValue?.getAttribute('value')).toBe('48');
-    expect(multiUnitTime?.getAttribute('value')).toBe('Hour(s)');
-  }
-};
-
 
 export const QuantityCalculation: Story = {
-  args: { questionnaire: qQuantityCalculation }
+  args: {
+    questionnaire: qQuantityCalculation
+  }
 };

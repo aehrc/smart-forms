@@ -32,7 +32,7 @@ function RadioButtonWithOpenLabel(props: RadioButtonWithOpenLabelProps) {
   const { value, label, readOnly, isSelected, onInputChange } = props;
 
   return (
-    <Box data-test="q-item-radio-open-label-box">
+    <Box data-test="q-item-radio-open-label-box" data-linkid="q-item-radio-open-label-box">
       <ChoiceRadioSingle
         value={value ?? ''}
         label={label + ':'}

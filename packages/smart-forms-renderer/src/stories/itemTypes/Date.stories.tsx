@@ -64,6 +64,7 @@ export const DateBasic: Story = {
     const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueDate: targetDateText }));
+    // TODO : ADD CLEAR BUTTON
   }
 };
 

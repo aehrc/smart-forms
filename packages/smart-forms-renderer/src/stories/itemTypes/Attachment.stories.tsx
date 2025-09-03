@@ -20,7 +20,7 @@ import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperF
 
 import { getAnswers, questionnaireFactory } from '../testUtils';
 import { inputFile } from '@aehrc/testing-toolkit';
-import { expect, fireEvent, within } from 'storybook/test';
+import { expect, fireEvent, screen } from 'storybook/test';
 
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -65,11 +65,7 @@ export const AttachmentBasic: Story = {
 
     const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
-    expect(result[0].valueAttachment).toEqual(expect.objectContaining({ "contentType": type }));
-    const canvas = within(canvasElement);
-    expect(canvas.getByText(fileName)).toBeDefined();
-    expect(canvas.getByText(url)).toBeDefined();
-    expect(canvas.getByText(name)).toBeDefined();
+    expect(result[0].valueAttachment).toEqual(expect.objectContaining({ "contentType": type, title: name, url: url }));
 
     // Clear value
     const clearButton = canvasElement.querySelector('span[aria-label="Remove file"] button');
@@ -77,7 +73,10 @@ export const AttachmentBasic: Story = {
 
     // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
-    const resultAfterClear = await getAnswers(targetlinkId);
-    expect(resultAfterClear).toHaveLength(0);
+    const qrAfterClear = await getAnswers(targetlinkId);
+    expect(qrAfterClear).toHaveLength(0);
+
+    const resultAfterClear = await screen.findByText('No file selected');
+    expect(resultAfterClear).toBeDefined()
   }
 };
