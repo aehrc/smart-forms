@@ -103,7 +103,7 @@ function GridRow(props: GridRowProps) {
 
         // Render empty cell for sparsity
         if (matchingCellQItemIndex === -1) {
-          return <GridAnswerTableCell key={colIndex} numOfColumns={numOfColumns} />;
+          return <GridAnswerTableCell key={colIndex} numOfColumnsWithNoWidthExtension={numOfColumns} />;
         }
 
         const cellQItem = rowQItems[matchingCellQItemIndex];
@@ -118,7 +118,7 @@ function GridRow(props: GridRowProps) {
         return (
           <GridAnswerTableCell
             key={colIndex}
-            numOfColumns={numOfColumns}
+            numOfColumnsWithNoWidthExtension={numOfColumns}
             customWidthValue={customWidthValue}>
             <Box display="flex" alignItems="center" justifyContent="center">
               <SingleItem

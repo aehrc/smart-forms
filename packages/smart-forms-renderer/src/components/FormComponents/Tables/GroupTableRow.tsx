@@ -50,6 +50,8 @@ interface GroupTableRowProps
   selectedIds: string[];
   qItemsIndexMap: Record<string, number>;
   visibleItemLabels: string[];
+  visibleItemLabelsWithNoWidthExtension: string[];
+  remainingWidthPercentage:number;
   showExtraGTableInteractions: boolean;
   onRowChange: (
     newQrRow: QuestionnaireResponseItem,
@@ -73,12 +75,16 @@ function GroupTableRow(props: GroupTableRowProps) {
     itemIsSelected,
     qItemsIndexMap,
     visibleItemLabels,
+    visibleItemLabelsWithNoWidthExtension,
+    remainingWidthPercentage,
     showExtraGTableInteractions,
     itemPath,
     onRowChange,
     onRemoveRow,
     onSelectRow
   } = props;
+
+
 
   if (showExtraGTableInteractions) {
     return (
@@ -117,6 +123,8 @@ function GroupTableRow(props: GroupTableRowProps) {
               qrItem={answeredQrItem}
               qItemsIndexMap={qItemsIndexMap}
               visibleItemLabels={visibleItemLabels}
+              visibleItemLabelsWithNoWidthExtension = {visibleItemLabelsWithNoWidthExtension}
+              remainingWidthPercentage={remainingWidthPercentage}
               itemPath={itemPath}
               parentIsReadOnly={readOnly}
               onQrItemChange={(newQrGroup) => onRowChange(newQrGroup, index)}
@@ -141,6 +149,8 @@ function GroupTableRow(props: GroupTableRowProps) {
         qrItem={answeredQrItem}
         qItemsIndexMap={qItemsIndexMap}
         visibleItemLabels={visibleItemLabels}
+        visibleItemLabelsWithNoWidthExtension = {visibleItemLabelsWithNoWidthExtension}
+        remainingWidthPercentage = {remainingWidthPercentage}
         itemPath={itemPath}
         parentIsReadOnly={readOnly}
         onQrItemChange={(newQrGroup) => onRowChange(newQrGroup, index)}

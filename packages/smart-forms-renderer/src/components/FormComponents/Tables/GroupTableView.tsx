@@ -59,6 +59,8 @@ interface GroupTableViewProps
   tableRows: GroupTableRowModel[];
   selectedIds: string[];
   visibleItemLabels: string[];
+  visibleItemLabelsWithNoWidthExtension: string[];
+  remainingWidthPercentage: number;
   onAddRow: () => void;
   onRowChange: (
     newQrRow: QuestionnaireResponseItem,
@@ -81,6 +83,8 @@ function GroupTableView(props: GroupTableViewProps) {
     tableRows,
     selectedIds,
     visibleItemLabels,
+    visibleItemLabelsWithNoWidthExtension,
+    remainingWidthPercentage,
     itemPath,
     parentIsReadOnly,
     parentStyles,
@@ -177,6 +181,8 @@ function GroupTableView(props: GroupTableViewProps) {
                 selectedIds={selectedIds}
                 qItemsIndexMap={qItemsIndexMap}
                 visibleItemLabels={visibleItemLabels}
+                visibleItemLabelsWithNoWidthExtension={visibleItemLabelsWithNoWidthExtension}
+                remainingWidthPercentage = {remainingWidthPercentage}
                 showExtraGTableInteractions={showExtraGTableInteractions}
                 itemPath={itemPath}
                 parentIsReadOnly={parentIsReadOnly}
@@ -256,6 +262,8 @@ function GroupTableView(props: GroupTableViewProps) {
             selectedIds={selectedIds}
             qItemsIndexMap={qItemsIndexMap}
             visibleItemLabels={visibleItemLabels}
+            visibleItemLabelsWithNoWidthExtension={visibleItemLabelsWithNoWidthExtension}
+            remainingWidthPercentage = {remainingWidthPercentage}
             showExtraGTableInteractions={showExtraGTableInteractions}
             itemPath={itemPath}
             parentIsReadOnly={parentIsReadOnly}

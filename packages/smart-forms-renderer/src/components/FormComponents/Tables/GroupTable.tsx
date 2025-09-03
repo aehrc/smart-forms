@@ -36,6 +36,7 @@ import useInitialiseGroupTableRows from '../../../hooks/useInitialiseGroupTableR
 import type { ItemPath } from '../../../interfaces/itemPath.interface';
 import { isItemHidden } from '../../../utils/qItem';
 import { useQuestionnaireStore, useRendererStylingStore } from '../../../stores';
+import { getColumnWidth } from '../../../utils/extensions';
 
 interface GroupTableProps
   extends PropsWithQrRepeatGroupChangeHandler,
@@ -96,6 +97,53 @@ function GroupTable(props: GroupTableProps) {
     [enableWhenAsReadOnly, enableWhenExpressions, enableWhenIsActivated, enableWhenItems, qItems]
   );
 
+  const visibleItemLabelsWithNoWidthExtension: string[] = useMemo(
+() => 
+    qItems?.filter(
+          (item) =>
+            //perform check if item has width 
+          !isItemHidden(
+              item,
+              enableWhenIsActivated,
+              enableWhenItems,
+              enableWhenExpressions,
+              enableWhenAsReadOnly
+            ) && !getColumnWidth(item)
+
+
+        )
+        .map((item) => item.text ?? '') ?? [],
+    [enableWhenAsReadOnly, enableWhenExpressions, enableWhenIsActivated, enableWhenItems, qItems]
+
+  );
+// First get the visible label items
+const visibleLabelItems = useMemo(
+() => 
+  qItems?.filter(
+          (item) =>
+            //perform check if item has width 
+          !isItemHidden(
+              item,
+              enableWhenIsActivated,
+              enableWhenItems,
+              enableWhenExpressions,
+              enableWhenAsReadOnly
+            )),
+    [enableWhenAsReadOnly, enableWhenExpressions, enableWhenIsActivated, enableWhenItems, qItems]
+
+  );
+
+// Calculate the percentage 
+
+  const usedPercent: number = visibleLabelItems?.reduce((acc, item) => {
+    const s = getColumnWidth(item);
+    return acc + (s ? parseInt(s.replace("%", "").replace("px", "")) : 0);
+  }, 0) ?? 0;
+
+
+  //Get remainingWidthPercentage from the items which are not hidden
+    const remainingWidthPercentage = 100 - usedPercent;
+    
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
 
   // Check if there are columns within the group table
@@ -217,6 +265,8 @@ function GroupTable(props: GroupTableProps) {
       tableRows={tableRows}
       selectedIds={selectedIds}
       visibleItemLabels={visibleItemLabels}
+      visibleItemLabelsWithNoWidthExtension={visibleItemLabelsWithNoWidthExtension}
+      remainingWidthPercentage = {remainingWidthPercentage}
       parentIsReadOnly={parentIsReadOnly}
       parentStyles={parentStyles}
       onAddRow={handleAddRow}

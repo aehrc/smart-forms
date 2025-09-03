@@ -39,6 +39,9 @@ interface GroupTableRowCellsProps
   qrItem: QuestionnaireResponseItem | null;
   qItemsIndexMap: Record<string, number>;
   visibleItemLabels: string[];
+  visibleItemLabelsWithNoWidthExtension: string[];
+  remainingWidthPercentage: number;
+  
 }
 
 function GroupTableRowCells(props: GroupTableRowCellsProps) {
@@ -47,6 +50,8 @@ function GroupTableRowCells(props: GroupTableRowCellsProps) {
     qrItem,
     qItemsIndexMap,
     visibleItemLabels,
+    visibleItemLabelsWithNoWidthExtension,
+    remainingWidthPercentage,
     itemPath,
     parentIsReadOnly,
     onQrItemChange
@@ -91,8 +96,10 @@ function GroupTableRowCells(props: GroupTableRowCellsProps) {
         return (
           <StandardTableCell
             key={index}
-            numOfColumns={visibleItemLabels.length}
-            customWidthValue={customWidthValue}>
+            customWidthValue={customWidthValue}
+            numOfColumnsWithNoWidthExtension= {visibleItemLabelsWithNoWidthExtension.length}
+            remainingWidthPercentage={remainingWidthPercentage}
+            >
             <Box display="flex" alignItems="center" justifyContent="center">
               <SingleItem
                 key={rowItem.linkId}
