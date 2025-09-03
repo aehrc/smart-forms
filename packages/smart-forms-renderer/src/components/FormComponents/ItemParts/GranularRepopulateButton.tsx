@@ -26,12 +26,11 @@ import {
   useSmartConfigStore,
   useTerminologyServerStore
 } from '../../../stores';
-import { fetchResourceCallback } from '../../../stories/storybookWrappers/populateCallbackForStorybook';
-import { fetchTerminologyCallback } from '@aehrc/smart-forms-app/src/features/prepopulate/utils/callback';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { getQuestionnaireResponseItem } from '../../../utils/misc';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import WarningIcon from '@mui/icons-material/Warning';
+import { fetchResourceCallback, fetchTerminologyCallback } from '../../../api/callback';
 
 type RepopulationState = 'success' | 'idle' | 'loading' | 'error';
 
@@ -71,7 +70,10 @@ function GranularRepopulateButton(props: GranularRepopulateButtonProps) {
 
   async function handleClick() {
     if (!client || !patient || !user) {
-      console.warn('GranularRepopulateButton: Client or patient is not available');
+      setRepopulationState('error');
+      console.warn(
+        'GranularRepopulateButton: fhirClient, patient or user is not available. Load it via useSmartConfigStore first.'
+      );
       return;
     }
 
@@ -137,7 +139,7 @@ function GranularRepopulateButton(props: GranularRepopulateButtonProps) {
   if (repopulationState === 'error') {
     return (
       <Box
-        title={`Unable to sync item "${qItem.text ?? qItem.linkId}". Please try again later.`}
+        title={`Unable to sync item "${qItem.text ?? qItem.linkId}".`}
         sx={{
           width: 30,
           height: 30,

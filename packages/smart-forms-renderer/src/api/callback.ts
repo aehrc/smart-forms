@@ -15,13 +15,19 @@
  * limitations under the License.
  */
 
-import type { FetchResourceCallback, FetchResourceRequestConfig } from '@aehrc/sdc-populate';
+import type {
+  FetchResourceCallback,
+  FetchResourceRequestConfig,
+  FetchTerminologyCallback,
+  FetchTerminologyRequestConfig
+} from '@aehrc/sdc-populate';
 
 const ABSOLUTE_URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
 
 /**
- * Sample callback function to fetch resources from your source server when using populate() or populateQuestionnaire() from @aehrc/sdc-populate.
- * See https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/storybookWrappers/PrePopWrapperForStorybook.tsx for usage.
+ * Pre-populate callback function that works with '@aehrc/sdc-populate' `populateQuestionnaire()`. Used in GranularRepopulateButton.tsx.
+ * See GranularRepopulateButton.tsx for usage.
+ * Also used in https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/storybookWrappers/PrePopWrapperForStorybook.tsx.
  *
  * @author Sean Fong
  */
@@ -45,6 +51,37 @@ export const fetchResourceCallback: FetchResourceCallback = async (
   }
 
   const requestUrl = ABSOLUTE_URL_REGEX.test(query) ? query : `${sourceServerUrl}${query}`;
+  const response = await fetch(requestUrl, { headers });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error when performing ${requestUrl}. Status: ${response.status}`);
+  }
+
+  return response.json();
+};
+
+/**
+ * Terminology callback function that works with '@aehrc/sdc-populate' `populateQuestionnaire()`.
+ * See GranularRepopulateButton.tsx for usage.
+ *
+ * @author Sean Fong
+ */
+export const fetchTerminologyCallback: FetchTerminologyCallback = async (
+  query: string,
+  terminologyRequestConfig: FetchTerminologyRequestConfig
+) => {
+  let { terminologyServerUrl } = terminologyRequestConfig;
+
+  const headers = {
+    Accept: 'application/fhir+json;charset=utf-8'
+  };
+
+  if (!terminologyServerUrl.endsWith('/')) {
+    terminologyServerUrl += '/';
+  }
+
+  const requestUrl = ABSOLUTE_URL_REGEX.test(query) ? query : terminologyServerUrl + query;
+
   const response = await fetch(requestUrl, { headers });
 
   if (!response.ok) {
