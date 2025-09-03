@@ -20,6 +20,7 @@ import type { RegexValidation } from '../interfaces/regex.interface';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 import { default as htmlParse } from 'html-react-parser';
 import type { JSX } from 'react';
+import { getInitialExpression } from './getExpressionsFromItem';
 
 export function hasDisplayCategory(qItem: QuestionnaireItem): boolean {
   return !!qItem.extension?.some(
@@ -595,4 +596,24 @@ export function isGroupAddItemButtonHidden(qItem: QuestionnaireItem): boolean {
   );
 
   return !!extension?.valueBoolean;
+}
+
+/**
+ * Check if the QuestionnaireItem has a 'showRepopulateButton' extension to show a sync button for granular repopulation.
+ */
+export function isItemRepopulatable(qItem: QuestionnaireItem): boolean {
+  // Get questionnaire-initialExpression-showRepopulateButton button extension
+  const showRepopulateButtonExtension = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url ===
+      'https://smartforms.csiro.au/ig/StructureDefinition/questionnaire-initialExpression-showRepopulateButton'
+  );
+
+  // Also need to check if the item has an initialExpression, because this button depends on it
+  const initialExpression = getInitialExpression(qItem);
+  if (!initialExpression) {
+    return false;
+  }
+
+  return !!showRepopulateButtonExtension?.valueBoolean;
 }

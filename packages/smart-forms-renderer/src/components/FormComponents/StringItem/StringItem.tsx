@@ -68,8 +68,6 @@ function StringItem(props: StringItemProps) {
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
-  const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
-
   // Init input value
   const answerKey = qrItem?.answer?.[0]?.id;
   let valueString = '';
@@ -124,6 +122,26 @@ function StringItem(props: StringItemProps) {
     setHasBlurred(true); // From now on, feedback should stay visible
   }
 
+  function handleRepopulateSync(newQrItem: QuestionnaireResponseItem | null) {
+    if (newQrItem) {
+      if (newQrItem?.answer && newQrItem?.answer[0].valueString) {
+        const newValueString = newQrItem.answer[0].valueString;
+        setInput(newValueString);
+      }
+
+      onQrItemChange(
+        {
+          ...newQrItem
+        },
+        itemPath
+      );
+      return;
+    }
+
+    // At this point newQrItem is null, so create an qr item to replace it
+    onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
+  }
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateQrItemWithDebounce = useCallback(
     debounce((input: string) => {
@@ -140,16 +158,14 @@ function StringItem(props: StringItemProps) {
   if (isRepeated) {
     return (
       <StringField
-        linkId={qItem.linkId}
-        itemType={qItem.type}
+        qItem={qItem}
         input={input}
         feedback={showFeedback ? feedback : ''}
-        displayPrompt={displayPrompt}
-        displayUnit={displayUnit}
-        entryFormat={entryFormat}
+        renderingExtensions={renderingExtensions}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         onInputChange={handleChange}
+        onRepopulateSync={handleRepopulateSync}
         onBlur={handleBlur}
         isTabled={isTabled}
       />
@@ -166,16 +182,14 @@ function StringItem(props: StringItemProps) {
         labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} parentStyles={parentStyles} />}
         fieldChildren={
           <StringField
-            linkId={qItem.linkId}
-            itemType={qItem.type}
+            qItem={qItem}
             input={input}
             feedback={showFeedback ? feedback : ''}
-            displayPrompt={displayPrompt}
-            displayUnit={displayUnit}
-            entryFormat={entryFormat}
+            renderingExtensions={renderingExtensions}
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}
             onInputChange={handleChange}
+            onRepopulateSync={handleRepopulateSync}
             onBlur={handleBlur}
             isTabled={isTabled}
           />
