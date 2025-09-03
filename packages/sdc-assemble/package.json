@@ -1,12 +1,12 @@
 {
   "name": "@aehrc/sdc-assemble",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Performs the $assemble operation for modular forms from the HL7 FHIR SDC (Structured Data Capture) specification: http://hl7.org/fhir/uv/sdc/modular.html",
   "scripts": {
     "compile": "tsup src/index.ts --format cjs,esm --dts --clean --sourcemap",
     "watch": "tsup src/index.ts --format cjs,esm --dts --clean --sourcemap --watch",
     "build": "npm run compile",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "TZ=Australia/Sydney jest --config ./jest.config.ts --coverage"
   },
   "repository": {
     "type": "git",

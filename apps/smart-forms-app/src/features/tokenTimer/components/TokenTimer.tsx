@@ -21,7 +21,7 @@ import { calculateRemainingTime, getTokenExpirationTime } from '../utils/tokenTi
 import TokenTimerDialog from './TokenTimerDialog.tsx';
 import TokenTimerIndicator from './TokenTimerIndicator.tsx';
 import AutoSaveDialog from './AutoSaveDialog.tsx';
-import type { AutoSaveStatus } from '../types/autosave.ts';
+import type { AutoSaveStatus } from '../interfaces/autosave.interface.ts';
 
 const TokenTimer = memo(function TokenTimer() {
   const { tokenReceivedTimestamp, smartClient } = useSmartClient();

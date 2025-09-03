@@ -26,14 +26,13 @@ function useInitialiseGroupTableRows(
 ): GroupTableRowModel[] {
   return useMemo(() => {
     if (qrItems.length === 0) {
-      return [{ id: generateNewRepeatId(linkId), qrItem: null, isSelected: true }];
+      return [{ id: generateNewRepeatId(linkId), qrItem: null }];
     }
 
     return qrItems.map((qrItem, index) => {
       return {
         id: generateExistingRepeatId(linkId, index),
-        qrItem: qrItem,
-        isSelected: true
+        qrItem: qrItem
       };
     });
   }, [linkId, qrItems]);

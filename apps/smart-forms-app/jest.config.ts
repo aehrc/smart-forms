@@ -19,14 +19,53 @@ import type { Config } from 'jest';
 
 const config: Config = {
   verbose: true,
-  roots: ['<rootDir>'],
+  roots: ['src'],
+  preset: 'ts-jest',
+  testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['./src/setup-jest.ts'],
   transform: {
-    '^.+\\.ts?$': 'ts-jest'
+    '^.+\\.(ts|tsx)$': ['ts-jest', {
+      useESM: true,
+      isolatedModules: true,
+    }]
+  },
+  transformIgnorePatterns: [
+    '/node_modules/(?!(@aehrc|@fontsource)/)'
+  ],
+  moduleNameMapper: {
+    '^@fontsource/(.*)$': '<rootDir>/__mocks__/emptyModule.js'
   },
   // Exclude "spec" folder
-  testRegex: '(/__tests__/.*|(\\.|/)(test))\\.ts?$',
-  moduleFileExtensions: ['ts', 'js', 'json', 'node'],
+  testRegex: '(/__tests__/.*|(\\.|/)(test))\\.(ts|tsx)?$',
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'json', 'node'],
   collectCoverage: true,
+  collectCoverageFrom: [
+    '**/api/*.{ts,tsx}',
+    '**/hooks/*.{ts,tsx}',
+    '**/utils/*.{ts,tsx}',
+    '**/contexts/*.{ts,tsx}',
+    '!**/*.config.{ts,tsx,js,jsx}',  // exclude config files
+    '!**/*.test.{ts,tsx}',           // exclude test files
+    '!**/*.spec.{ts,tsx}',           // exclude spec files
+    '!**/*.styles.{ts,tsx}',         // exclude style files
+    '!**/*.interface.{ts,tsx}',      // exclude interface files
+    '!**/*.d.ts',                    // exclude declaration files
+    '!**/e2e/**',                    // exclude e2e files
+    '!src/test/data-shared/**',      // explicitly exclude src/test/data-shared
+    '!src/features/standalone/**',    // explicitly exclude src/features/standalone
+    '!src/theme/**',                 // explicitly exclude src/theme
+    '!src/globals.ts',               // explicitly exclude src/globals.ts
+    '!src/utils/dayjsExtend.ts',     // explicitly exclude src/utils/dayjsExtend.ts
+    '!src/stores/selector.ts',       // explicitly exclude src/stores/selector.ts
+  ],
+  coverageThreshold: {
+    "global": {
+      "statements": 80,
+      "branches": 75,
+      "functions": 80,
+      "lines": 80
+    }
+  },
   clearMocks: true,
   coverageDirectory: 'coverage'
 };

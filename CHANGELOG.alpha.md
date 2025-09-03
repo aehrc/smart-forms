@@ -5,9 +5,72 @@ This log documents significant changes for [@aehrc/smart-forms-renderer's alpha 
 
 This changelog only includes changes from version 1.0.0-alpha.1 onwards. For stable releases, refer to the main [CHANGELOG.md](CHANGELOG.md).
 
-
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## sdc-template-extract [1.0.8] - 2025-08-29
+#### Added
+- Fix $extract filtering logic when comparing extracted resource with comparison resource (for modified-only usage). Fixed https://github.com/aehrc/smart-forms/issues/1507.
+
+## [1.0.0-alpha.95] - 2025-08-20
+#### Fixed
+- Various TypeScript-related bug fixes.
+- In the autocomplete component, when the input is less than 2 characters, an info icon will be displayed at the right end.
+
+## [1.0.0-alpha.94] - 2025-08-20
+#### Fixed
+- Add enableColorScheme at ScopedCssBaseline for native light/dark alignment with parent app i.e. native scrollbars, native focus rings, etc.
+  Note that this doesn't provide you with dark mode. for that, you need to wrap `<BaseRenderer>` with your own light/dark-mode enabled `<ThemeProvider>`. See https://mui.com/material-ui/customization/theming/ for more details.
+
+## [1.0.0-alpha.93] - 2025-08-19
+#### Changed
+- Remove MUI GlobalStyles (which overrides the parent app) with ScopedCssBaseline in RendererThemeProvider. This sets a baseline for the renderer's MUI styles without affecting the parent app's styles.
+
+## [1.0.0-alpha.92] - 2025-08-15
+#### Changed
+- Changed "questionnaire-item-text-hidden" custom extension to use the "https://smartforms.csiro.au/ig/StructureDefinition/<extension_name>" convention. Affected extensions:
+
+| Old Extension URL                                                                 | New Extension URL                                                                                                                                                 |
+|-----------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| https://smartforms.csiro.au/docs/custom-extension/questionnaire-item-text-hidden             | https://smartforms.csiro.au/ig/StructureDefinition/QuestionnaireItemTextHidden (or https://smartforms.csiro.au/docs/custom-extension/QuestionnaireItemTextHidden) |
+
+- Added backwards compatibility for custom extensions defined in Smart Forms.
+  Both URLs "https://smartforms.csiro.au/ig/StructureDefinition/<extension_name>" and "https://smartforms.csiro.au/docs/custom-extension/<extension_name>" will work for the custom extensions listed below.
+
+| Extension URLs                                                              |
+|-----------------------------------------------------------------------------|
+| https://smartforms.csiro.au/docs/custom-extension/minValue-feedback         |
+| https://smartforms.csiro.au/docs/custom-extension/maxValue-feedback         |
+| https://smartforms.csiro.au/docs/custom-extension/required-feedback         |
+| https://smartforms.csiro.au/docs/custom-extension/minQuantityValue-feedback |
+| https://smartforms.csiro.au/docs/custom-extension/maxQuantityValue-feedback |
+| https://smartforms.csiro.au/docs/custom-extension/QuestionnaireItemTextHidden |
+| https://smartforms.csiro.au/docs/custom-extension/GroupHideAddItemButton |
+
+## sdc-assemble [2.0.2] - 2025-08-15
+#### Fixed
+- Handle axios-based FetchResourceCallback calls correctly, for both happy and sad paths (res.data).
+- Fix TypeScript issues in type predicates.
+- When resolving subquestionnaire canonical URLs, enforce in the root questionnaire (returns OperationOutcome if not present), otherwise if it's a recursive resolution within subquestionnaires (for sub-subquestionnaires), be more lenient by returning an empty array.
+
+## [1.0.0-alpha.91] - 2025-08-11
+#### Changed
+- Remove Iconify dependency and replaced them with MUI icons. This affects the next/previous tab and page buttons.
+
+## sdc-template-extract [1.0.7] - 2025-08-11
+#### Added
+- Allow handling of non-Error exceptions when evaluating FHIRPath expressions. Reason: fhirpath.js might not type exceptions as Error objects correctly.
+
+## [1.0.0-alpha.90] - 2025-08-07
+#### Added
+- Updated sdc-populate to v4.6.2. Changes as follows:
+- Make error handling in fhirpath evaluations more lenient (remove e instanceof Error check), due to fhirpath.js async evaluation returning a string error message instead of an Error object which results in the error being muted on development builds (surprising it works on production).
+- Remove unnecessary (or even wrong) client-side sorting based on effectiveDates and recordedDate in Observation and Conditions respectively.
+- Reduce bundle size by removing tests and tets data from published package.
+
+## [1.0.0-alpha.89] - 2025-08-04
+#### Added
+- Add support for custom `https://smartforms.csiro.au/ig/StructureDefinition/GroupHideAddItemButton` extension to hide the "Add Item" button in a repeating group or group table item.
+  This extension is used when you want to prevent users from adding items to a group, but still want to allow them to edit existing items.
 
 ## [1.0.0-alpha.88] - 2025-08-01
 #### Fixed
@@ -61,7 +124,7 @@ _(WARNING: Possible breaking changes with QuestionnaireStore.itemTypes)_
 - Due to space constraints for textfield-based items in gtables/grids, expression update animations for textfield-based items are now changed to a faint green glow. Animations are unchanged for radio and checkbox items.
 
 ## [1.0.0-alpha.80] - 2025-07-15
-_(WARNING: Possible breaking changes with Questionnaires definitions)_
+_(WARNING: Possible breaking changes with Questionnaire definitions)_
 #### Changed
 - Changed all instances of custom extensions to use the "https://smartforms.csiro.au/docs/custom-extension/*" convention. Affected extensions:
 

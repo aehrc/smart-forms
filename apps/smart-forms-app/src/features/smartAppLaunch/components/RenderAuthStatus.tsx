@@ -17,7 +17,7 @@
 
 import { Stack, Typography } from '@mui/material';
 import ProgressSpinner from '../../../components/Spinners/ProgressSpinner.tsx';
-import type { AuthState } from '../types/authorisation.interface.ts';
+import type { AuthState } from '../interfaces/authorisation.interface.ts';
 import CenteredWrapper from '../../../components/Wrapper/CenteredWrapper.tsx';
 import UnlaunchedButton from '../../../components/Button/UnlaunchedButton.tsx';
 import useSmartClient from '../../../hooks/useSmartClient.ts';

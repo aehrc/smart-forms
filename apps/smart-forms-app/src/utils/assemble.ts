@@ -59,6 +59,7 @@ export async function assembleQuestionnaire(
       console.warn('Assemble fail');
       console.warn(outputAssembleParams.parameter[0].resource);
     }
+
     return outputAssembleParams.parameter[0].resource;
   }
 

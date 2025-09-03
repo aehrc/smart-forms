@@ -50,7 +50,7 @@ However, it has its own set of complexities to watch out for, such as dependenci
 
 2. Duplicate .env and rename it to .env.local. This file will be used to store your local environment variables.
 
-3. Change VITE_PRESERVE_SYM_LINKS=true to VITE_PRESERVE_SYM_LINKS=false in .env.local. This will allow `tsc -w` to watch for changes properly in the smart-forms-renderer component.
+3. Change VITE_PRESERVE_SYM_LINKS=true to VITE_PRESERVE_SYM_LINKS=false in .env.local or add it if it does not exist. This will allow `tsc -w` to watch for changes properly in the smart-forms-renderer component.
 
 
 ## Running the Smart Forms and Storybook Locally on Docker with Live Code Reload
@@ -66,11 +66,9 @@ docker-compose --env-file ./apps/smart-forms-app/.env.local build
 ```sh
 docker-compose --env-file ./apps/smart-forms-app/.env.local up  
 ```
-4. Press CTRL+C to stop the container. 
+4. Go to [http://localhost:5173/](http://localhost:5173/) for Smart Forms App 
 
-5. Go to [http://localhost:5173/](http://localhost:5173/) for Smart Forms App 
-
-6. Go to [http://localhost:6006/](http://localhost:6006/) for Story Book App
+5. Go to [http://localhost:6006/](http://localhost:6006/) for Story Book App
 
 NOTE: In the Docker setup, the current source code folder is shared as a volume to the Docker container. This allows the live code reload to work.
 
@@ -80,9 +78,18 @@ TODO: We have experienced some issues with "Type Error: styled_default is not de
 
 
 ## Running the Smart Forms app locally
-1. Ensure you are in the directory containing the Smart Forms app.
+1. In order to prepare all packages for use, you need to run the build script in each package located in the /packages directory.
 
-2. Start the app on localhost. It defaults to port 5173.
+  cd packages/<package-name>
+  npm run build
+
+Repeat this for each package in /packages 
+
+2. Ensure you are in the directory containing the Smart Forms app.
+
+  cd apps/smart-forms-app
+
+3. Start the app on localhost. It defaults to port 5173.
     ```sh
     npm start
     ```

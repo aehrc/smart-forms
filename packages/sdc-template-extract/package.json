@@ -1,12 +1,12 @@
 {
   "name": "@aehrc/sdc-template-extract",
-  "version": "1.0.6",
+  "version": "1.0.8",
   "description": "Performs template-based extraction from the HL7 FHIR SDC (Structured Data Capture) specification: https://build.fhir.org/ig/HL7/sdc/extraction.html#template-based-extraction",
   "scripts": {
     "compile": "tsup src/index.ts --format cjs,esm --dts --clean --sourcemap",
     "watch": "tsup src/index.ts --format cjs,esm --dts --clean --sourcemap --watch",
     "build": "npm run compile",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "repository": {
     "type": "git",
@@ -20,7 +20,7 @@
   "homepage": "https://github.com/aehrc/smart-forms#readme",
   "dependencies": {
     "clean-deep": "^3.4.0",
-    "js-base64": "^3.7.7",
+    "js-base64": "^3.7.8",
     "uuid": "^11.1.0",
     "fhirpath": "^4.3.0"
   },
