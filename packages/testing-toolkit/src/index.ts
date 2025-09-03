@@ -183,8 +183,8 @@ export async function chooseSelectOption(
 export async function chooseQuantityOption(
   canvasElement: HTMLElement,
   linkId: string,
-  weight: number | string,
-  weightComparator?: string
+  quantity: number | string,
+  quantityComparator?: string
 ) {
   const questionElement = await findByLinkId(canvasElement, linkId);
 
@@ -201,13 +201,13 @@ export async function chooseQuantityOption(
   fireEvent.focus(inputComaparator);
   fireEvent.keyDown(inputComaparator, { key: 'ArrowDown', code: 'ArrowDown' });
 
-  if (weightComparator) {
-    const option = await screen.findByText(weightComparator);
+  if (quantityComparator) {
+    const option = await screen.findByText(quantityComparator);
     fireEvent.click(option);
-    fireEvent.change(inputComaparator, { target: { value: weightComparator } });
+    fireEvent.change(inputComaparator, { target: { value: quantityComparator } });
   }
 
-  fireEvent.change(inputWeight, { target: { value: weight } });
+  fireEvent.change(inputWeight, { target: { value: quantity } });
   // Here we await for debounced store update
   await new Promise((resolve) => setTimeout(resolve, 500));
 }
