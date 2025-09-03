@@ -81,7 +81,8 @@ export const ChoiceAnswerOptionBasic: Story = {
     const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
     expect(result[0].valueCoding).toEqual(expect.objectContaining(targetCoding));
-    //Clear 
+
+    // Clear 
     const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
     fireEvent.click(clearButton as HTMLElement);
 

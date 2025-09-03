@@ -98,7 +98,8 @@ export const GroupBasic: Story = {
 
     expect(nameResult[0]).toEqual(expect.objectContaining({ valueString: targetName }));
     expect(ageResult[0]).toEqual(expect.objectContaining({ valueInteger: targetAge }));
-    //Clear 
+
+    // Clear 
     const nameClearButton = canvasElement.querySelector('div[data-test="q-item-string-field"] button[aria-label="Clear"]');
     const ageClearButton = canvasElement.querySelector('div[data-test="q-item-integer-field"] button[aria-label="Clear"]');
 

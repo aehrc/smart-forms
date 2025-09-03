@@ -11,19 +11,19 @@ import '../src/stories/storybookWrappers/iframeResizerChild.js';
 
 const mockLibrary: Record<string, unknown> = {
   'https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/administrative-gender':
-  {
-    resourceType: 'ValueSet',
-    expansion: {
-      contains: [
-        {
-          code: 'female',
-          display: 'Female',
-          system: 'http://hl7.org/fhir/administrative-gender'
-        },
-        { code: 'male', display: 'Male', system: 'http://hl7.org/fhir/administrative-gender' }
-      ]
+    {
+      resourceType: 'ValueSet',
+      expansion: {
+        contains: [
+          {
+            code: 'female',
+            display: 'Female',
+            system: 'http://hl7.org/fhir/administrative-gender'
+          },
+          { code: 'male', display: 'Male', system: 'http://hl7.org/fhir/administrative-gender' }
+        ]
+      }
     }
-  }
 };
 
 global.fetch = (async (input: RequestInfo | URL) => {
