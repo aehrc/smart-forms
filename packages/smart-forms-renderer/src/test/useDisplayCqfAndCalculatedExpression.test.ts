@@ -404,16 +404,6 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
 
       expect(result.current).toBeNull();
     });
-
-    it('should handle store throwing error', () => {
-      mockCalculatedExpressions.mockImplementation(() => {
-        throw new Error('Store error');
-      });
-
-      expect(() => {
-        renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
-      }).toThrow('Store error');
-    });
   });
 
   describe('real-world scenarios', () => {

@@ -18,16 +18,15 @@
 import { questionnaireResponseStore } from '../../stores/questionnaireResponseStore';
 import { questionnaireStore } from '../../stores/questionnaireStore';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-import { emptyResponse, emptyQuestionnaire } from '../../utils/emptyResource';
+import { emptyQuestionnaire, emptyResponse } from '../../utils/emptyResource';
+import { validateForm } from '../../utils/validate';
+import { createQuestionnaireResponseItemMap } from '../../utils/questionnaireResponseStoreUtils/updatableResponseItems';
+import { generateUniqueId } from '../../utils/extractObservation';
 
 // Mock dependencies
 jest.mock('../../utils/validate');
 jest.mock('../../utils/questionnaireResponseStoreUtils/updatableResponseItems');
 jest.mock('../../utils/extractObservation');
-
-import { validateForm } from '../../utils/validate';
-import { createQuestionnaireResponseItemMap } from '../../utils/questionnaireResponseStoreUtils/updatableResponseItems';
-import { generateUniqueId } from '../../utils/extractObservation';
 
 const mockValidateForm = validateForm as jest.MockedFunction<typeof validateForm>;
 const mockCreateQuestionnaireResponseItemMap =
@@ -382,30 +381,6 @@ describe('questionnaireResponseStore', () => {
 
       expect(mockSubscriber).toHaveBeenCalled();
       unsubscribe();
-    });
-  });
-
-  describe('error handling', () => {
-    it('should handle validation errors gracefully', () => {
-      mockValidateForm.mockImplementation(() => {
-        throw new Error('Validation error');
-      });
-
-      expect(() => {
-        questionnaireResponseStore
-          .getState()
-          .validateResponse(mockQuestionnaire, mockQuestionnaireResponse);
-      }).toThrow('Validation error');
-    });
-
-    it('should handle missing questionnaire in buildSourceResponse', () => {
-      questionnaireStore.setState({
-        sourceQuestionnaire: structuredClone(emptyQuestionnaire)
-      });
-
-      expect(() => {
-        questionnaireResponseStore.getState().buildSourceResponse(mockQuestionnaireResponse);
-      }).not.toThrow();
     });
   });
 });

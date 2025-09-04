@@ -140,7 +140,7 @@ export function useParseXhtml(qItem: QuestionnaireItem): ParsedXhtml | null {
   }, [qItem]);
 }
 
-function getStylesFromClass(className: string): Record<string, string> | null {
+export function getStylesFromClass(className: string): Record<string, string> | null {
   if (!className) {
     return null;
   }
@@ -192,6 +192,6 @@ function getStylesFromClass(className: string): Record<string, string> | null {
 }
 
 // Convert kebab-case to camelCase for React
-function convertKebabToCamelCase(property: string): string {
+export function convertKebabToCamelCase(property: string): string {
   return property.trim().replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
 }
