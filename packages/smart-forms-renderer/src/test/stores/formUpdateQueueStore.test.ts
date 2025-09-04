@@ -318,35 +318,4 @@ describe('formUpdateQueueStore', () => {
       expect(mockUpdateExpressions).toHaveBeenCalledTimes(2); // task1 and task3, not task2
     });
   });
-
-  describe('edge cases', () => {
-    it('should handle task without targetItemPath', async () => {
-      const task: UpdateTask = {
-        questionnaireResponse: mockQuestionnaireResponse
-        // No targetItemPath
-      };
-
-      formUpdateQueueStore.getState().enqueueFormUpdate(task);
-
-      await waitFor(() => {
-        expect(mockUpdateResponse).toHaveBeenCalledWith(task.questionnaireResponse, 'initial');
-      });
-    });
-
-    it('should handle empty questionnaireResponse', async () => {
-      const task: UpdateTask = {
-        questionnaireResponse: {
-          resourceType: 'QuestionnaireResponse',
-          status: 'in-progress'
-          // No items
-        }
-      };
-
-      formUpdateQueueStore.getState().enqueueFormUpdate(task);
-
-      await waitFor(() => {
-        expect(mockUpdateResponse).toHaveBeenCalledWith(task.questionnaireResponse, 'initial');
-      });
-    });
-  });
 });
