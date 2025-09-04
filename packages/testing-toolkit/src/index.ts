@@ -40,26 +40,22 @@ export async function inputFile(
   linkId: string,
   files: File | File[],
   url: string,
-  filename: string,
-  data_test_url: string,
-  data_test_name: string
+  filename: string
 ) {
   const questionElement = await findByLinkId(canvasElement, linkId);
   const input = questionElement?.querySelector('input');
 
-  const textareaUrl = questionElement?.querySelector(`textarea[aria-label=${data_test_url}]`);
-  const textareaName = questionElement?.querySelector(
-    `textarea[aria-label="File name (optional)"]`
-  );
+  const textareaUrl = questionElement?.querySelector(`textarea[data-test="URL"]`);
+  const textareaName = questionElement?.querySelector(`textarea[data-test="File name (optional)"]`);
 
   if (!input) {
     throw new Error(`File input was not found inside [data-linkid=${linkId}] block`);
   }
   if (!textareaUrl) {
-    throw new Error(`File input was not found inside [data-linkid=${data_test_url}] block`);
+    throw new Error(`File input was not found inside [data-linkid="URL"] block`);
   }
   if (!textareaName) {
-    throw new Error(`File input was not found inside [data-linkid=${data_test_name}] block`);
+    throw new Error(`File input was not found inside [data-linkid="File name (optional)"] block`);
   }
 
   const fileList = Array.isArray(files) ? files : [files];
@@ -139,7 +135,7 @@ export async function inputDateTime(
 
 export async function checkRadioOption(canvasElement: HTMLElement, linkId: string, text: string) {
   const questionElement = await findByLinkId(canvasElement, linkId);
-  const radio = questionElement?.querySelector(`span[data-test="${text}"] input`);
+  const radio = questionElement?.querySelector(`span[data-test="label-${text}"] input`);
 
   if (!radio) {
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
@@ -222,7 +218,7 @@ export async function findByLinkId(canvasElement: HTMLElement, linkId: string) {
     return el;
   });
 }
-export async function choiceOpenChoiceOther(
+export async function inputOpenChoiceOtherText(
   canvasElement: HTMLElement,
   linkId: string,
   text: string

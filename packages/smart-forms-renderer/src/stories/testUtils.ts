@@ -54,7 +54,7 @@ export function itemControlExtFactory(code: string): Extension {
     }
   };
 }
-export function sdcQuestionnareExtFactory(text: string): Extension {
+export function openLabelExtFactory(text: string): Extension {
   return {
     url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-openLabel',
     valueString: text

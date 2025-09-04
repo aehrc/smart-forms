@@ -21,13 +21,13 @@ import { qOpenChoiceAnswerAutoCompleteFromValueSet } from '../assets/questionnai
 import {
   getAnswers,
   itemControlExtFactory,
+  openLabelExtFactory,
   qrFactory,
-  questionnaireFactory,
-  sdcQuestionnareExtFactory
+  questionnaireFactory
 } from '../testUtils';
 import {
   checkRadioOption,
-  choiceOpenChoiceOther,
+  inputOpenChoiceOtherText,
   chooseSelectOption,
   findByLinkId
 } from '@aehrc/testing-toolkit';
@@ -59,7 +59,7 @@ const qOpenChoiceAnswerOptionBasic = questionnaireFactory([
     type: 'open-choice',
     extension: [
       itemControlExtFactory('radio-button'),
-      sdcQuestionnareExtFactory('Other, please specify')
+      openLabelExtFactory('Other, please specify')
     ],
     answerOption: [
       {
@@ -86,7 +86,7 @@ export const OpenChoiceAnswerOptionBasic: Story = {
     questionnaire: qOpenChoiceAnswerOptionBasic
   },
   play: async ({ canvasElement }) => {
-    await checkRadioOption(canvasElement, targetlinkId, `label-${clinicCoding.display}`);
+    await checkRadioOption(canvasElement, targetlinkId, clinicCoding.display);
 
     const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
@@ -114,8 +114,8 @@ export const OpenChoiceAnswerOptionBasicOther: Story = {
     questionnaire: qOpenChoiceAnswerOptionBasic
   },
   play: async ({ canvasElement }) => {
-    await checkRadioOption(canvasElement, targetlinkId, `label-${otherVariantLinkid}`);
-    await choiceOpenChoiceOther(canvasElement, targetlinkId, otherTargetText);
+    await checkRadioOption(canvasElement, targetlinkId, otherVariantLinkid);
+    await inputOpenChoiceOtherText(canvasElement, targetlinkId, otherTargetText);
     const result = await getAnswers(targetlinkId);
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueString: otherTargetText }));

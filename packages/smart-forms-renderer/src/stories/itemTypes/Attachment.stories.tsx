@@ -61,9 +61,7 @@ export const AttachmentBasic: Story = {
       targetlinkId,
       [new File(['foo'], fileName, { type: type })],
       url,
-      name,
-      'URL',
-      'File name (optional)'
+      name
     );
 
     const result = await getAnswers(targetlinkId);
