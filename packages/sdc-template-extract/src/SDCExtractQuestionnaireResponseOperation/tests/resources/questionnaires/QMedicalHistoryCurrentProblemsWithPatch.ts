@@ -195,7 +195,6 @@ export const QMedicalHistoryCurrentProblemsWithPatch: Questionnaire = {
           part: [
             { name: 'type', valueCode: 'replace' },
             { name: 'path', valueString: 'Condition.clinicalStatus' },
-            { name: 'name', valueString: 'clinicalStatus' },
             {
               name: 'value',
               valueCodeableConcept: {

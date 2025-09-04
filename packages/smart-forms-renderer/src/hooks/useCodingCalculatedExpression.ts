@@ -104,7 +104,7 @@ function useCodingCalculatedExpression(
 }
 
 export function objectIsCoding(obj: any): obj is Coding {
-  return obj && obj.code && typeof obj.code === 'string';
+  return !!(obj && obj.code && typeof obj.code === 'string');
 }
 
 export default useCodingCalculatedExpression;

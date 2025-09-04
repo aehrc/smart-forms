@@ -22,6 +22,11 @@ export function reorderRows(
   sourceIndex: number,
   destinationIndex: number
 ) {
+  // Handle empty array case
+  if (rows.length === 0) {
+    return [];
+  }
+
   const result = Array.from(rows);
   const [removed] = result.splice(sourceIndex, 1);
   result.splice(destinationIndex, 0, removed);

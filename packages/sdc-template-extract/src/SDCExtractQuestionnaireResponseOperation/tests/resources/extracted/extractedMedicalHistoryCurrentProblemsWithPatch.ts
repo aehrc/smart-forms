@@ -30,10 +30,6 @@ export const extractedMedicalHistoryCurrentProblemsWithPatch: Bundle = {
                 valueString: 'Condition.clinicalStatus'
               },
               {
-                name: 'name',
-                valueString: 'clinicalStatus'
-              },
-              {
                 name: 'value',
                 valueCodeableConcept: {
                   coding: [
@@ -70,10 +66,6 @@ export const extractedMedicalHistoryCurrentProblemsWithPatch: Bundle = {
               {
                 name: 'path',
                 valueString: 'Condition.clinicalStatus'
-              },
-              {
-                name: 'name',
-                valueString: 'clinicalStatus'
               },
               {
                 name: 'value',
@@ -114,10 +106,6 @@ export const extractedMedicalHistoryCurrentProblemsWithPatch: Bundle = {
                 valueString: 'Condition.clinicalStatus'
               },
               {
-                name: 'name',
-                valueString: 'clinicalStatus'
-              },
-              {
                 name: 'value',
                 valueCodeableConcept: {
                   coding: [
@@ -154,10 +142,6 @@ export const extractedMedicalHistoryCurrentProblemsWithPatch: Bundle = {
               {
                 name: 'path',
                 valueString: 'Condition.clinicalStatus'
-              },
-              {
-                name: 'name',
-                valueString: 'clinicalStatus'
               },
               {
                 name: 'value',

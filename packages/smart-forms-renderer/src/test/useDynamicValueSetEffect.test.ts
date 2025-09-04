@@ -1,3 +1,6 @@
+/// <reference types="jest" />
+/// <reference types="@testing-library/jest-dom" />
+
 /*
  * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
@@ -19,6 +22,36 @@ import type { QuestionnaireItem } from 'fhir/r4';
 import type { CalculatedExpression } from '../interfaces';
 import type { ProcessedValueSet } from '../interfaces/valueSet.interface';
 import { getUpdatableValueSetUrl } from '../hooks/useDynamicValueSetEffect';
+import { getValueSetCodings, getValueSetPromise } from '../utils/valueSet';
+import { addDisplayToCodingArray } from '../utils/questionnaireStoreUtils/addDisplayToCodings';
+
+// Mock external dependencies
+jest.mock('../utils/valueSet', () => ({
+  getValueSetCodings: jest.fn(),
+  getValueSetPromise: jest.fn()
+}));
+
+jest.mock('../utils/questionnaireStoreUtils/addDisplayToCodings', () => ({
+  addDisplayToCodingArray: jest.fn()
+}));
+
+jest.mock('../stores', () => ({
+  useQuestionnaireStore: {
+    use: {
+      calculatedExpressions: () => mockCalculatedExpressions,
+      addCodingToCache: () => mockAddCodingToCache
+    }
+  }
+}));
+
+const mockGetValueSetCodings = getValueSetCodings as jest.MockedFunction<typeof getValueSetCodings>;
+const mockGetValueSetPromise = getValueSetPromise as jest.MockedFunction<typeof getValueSetPromise>;
+const mockAddDisplayToCodingArray = addDisplayToCodingArray as jest.MockedFunction<
+  typeof addDisplayToCodingArray
+>;
+const mockAddCodingToCache = jest.fn();
+
+let mockCalculatedExpressions: Record<string, CalculatedExpression[]> = {};
 
 const processedValueSets: Record<string, ProcessedValueSet> = {
   'http://hl7.org/fhir/ValueSet/address-use': {

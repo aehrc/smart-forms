@@ -1,3 +1,6 @@
+/// <reference types="jest" />
+/// <reference types="@testing-library/jest-dom" />
+
 /*
  * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
@@ -21,6 +24,18 @@ import {
   generateOptionKey,
   hasMapChanged
 } from '../hooks/useAnswerOptionsToggleExpressions';
+import type { AnswerOptionsToggleExpression } from '../interfaces/answerOptionsToggleExpression.interface';
+
+// Mock the store
+jest.mock('../stores', () => ({
+  useQuestionnaireStore: {
+    use: {
+      answerOptionsToggleExpressions: () => mockAnswerOptionsToggleExpressions
+    }
+  }
+}));
+
+let mockAnswerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]> = {};
 
 describe('hasMapChanged', () => {
   it('returns false when maps are equal', () => {

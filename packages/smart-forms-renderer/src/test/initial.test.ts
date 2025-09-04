@@ -1,3 +1,6 @@
+/// <reference types="jest" />
+/// <reference types="@testing-library/jest-dom" />
+
 /*
  * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
@@ -19,7 +22,7 @@ import { expect, test } from '@jest/globals';
 import { initialiseQuestionnaireResponse } from '../utils';
 import { qInitialValueSample } from './data/initialValueSample';
 
-test('item.initial is properly pre-filled into QuestionnaireResponse', () => {
+it('item.initial is properly pre-filled into QuestionnaireResponse', () => {
   const outputResponse = initialiseQuestionnaireResponse(qInitialValueSample);
 
   expect(outputResponse?.item?.[0]).toBeTruthy();

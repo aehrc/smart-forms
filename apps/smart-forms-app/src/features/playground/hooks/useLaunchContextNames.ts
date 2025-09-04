@@ -16,7 +16,7 @@
  */
 
 import { useMemo } from 'react';
-import { constructName } from '../../smartAppLaunch/utils/launchContext.ts';
+import { constructName } from '../../../utils/humanName.ts';
 import type { Patient, Practitioner } from 'fhir/r4';
 
 function useLaunchContextNames(patient: Patient | null, user: Practitioner | null) {
