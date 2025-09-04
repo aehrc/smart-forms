@@ -46,7 +46,7 @@ export async function inputFile(
   const input = questionElement?.querySelector('input');
 
   const textareaUrl = questionElement?.querySelector(`textarea[data-test="URL"]`);
-  const textareaName = questionElement?.querySelector(`textarea[data-test="File name (optional)"]`);
+  const textareaName = questionElement?.querySelector(`textarea[data-test="file-name"]`);
 
   if (!input) {
     throw new Error(`File input was not found inside [data-linkid=${linkId}] block`);
