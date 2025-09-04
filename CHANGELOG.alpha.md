@@ -7,6 +7,10 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.96] - 2025-09-04
+#### Added
+- Added support for an item-level repopulate button via a custom extension 'https://smartforms.csiro.au/ig/StructureDefinition/questionnaire-initialExpression-showRepopulateButton'. This button can only be used on string, text, integer and decimal fields, and cannot be used in repeating items or groups.
+
 ## sdc-template-extract [1.0.8] - 2025-08-29
 #### Added
 - Fix $extract filtering logic when comparing extracted resource with comparison resource (for modified-only usage). Fixed https://github.com/aehrc/smart-forms/issues/1507.
