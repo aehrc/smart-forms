@@ -29,6 +29,8 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
 import useShowFeedback from '../../../hooks/useShowFeedback';
+import { readStringValue } from '../../../utils/readValues';
+import type { QuestionnaireResponseItem } from 'fhir/r4';
 
 function TextItem(props: BaseItemProps) {
   const {
@@ -44,16 +46,11 @@ function TextItem(props: BaseItemProps) {
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
-  const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
-
   // Init input value
   const answerKey = qrItem?.answer?.[0]?.id;
-  let valueText = '';
-  if (qrItem?.answer && qrItem?.answer[0].valueString) {
-    valueText = qrItem.answer[0].valueString;
-  }
+  const { initialInput } = readStringValue(qrItem);
 
-  const [input, setInput] = useState(valueText);
+  const [input, setInput] = useState(initialInput);
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
@@ -100,6 +97,26 @@ function TextItem(props: BaseItemProps) {
     setHasBlurred(true); // From now on, feedback should stay visible
   }
 
+  function handleRepopulateSync(newQrItem: QuestionnaireResponseItem | null) {
+    if (newQrItem && newQrItem?.answer) {
+      const { valueString: newValueString, initialInput: newInput } = readStringValue(newQrItem);
+
+      setInput(newInput);
+      onQrItemChange(
+        {
+          ...createEmptyQrItem(qItem, answerKey),
+          answer: [{ id: answerKey, valueString: newValueString }]
+        },
+        itemPath
+      );
+      return;
+    }
+
+    // At this point newQrItem is null, so create an QRItem to replace it
+    setInput('');
+    onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
+  }
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateQrItemWithDebounce = useCallback(
     debounce((input: string) => {
@@ -116,16 +133,14 @@ function TextItem(props: BaseItemProps) {
   if (isRepeated) {
     return (
       <TextField
-        linkId={qItem.linkId}
-        itemType={qItem.type}
+        qItem={qItem}
         input={input}
         feedback={showFeedback ? feedback : ''}
-        displayPrompt={displayPrompt}
-        displayUnit={displayUnit}
-        entryFormat={entryFormat}
+        renderingExtensions={renderingExtensions}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         onInputChange={handleInputChange}
+        onRepopulateSync={handleRepopulateSync}
         onBlur={handleBlur}
       />
     );
@@ -142,16 +157,14 @@ function TextItem(props: BaseItemProps) {
         labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
         fieldChildren={
           <TextField
-            linkId={qItem.linkId}
-            itemType={qItem.type}
+            qItem={qItem}
             input={input}
             feedback={showFeedback ? feedback : ''}
-            displayPrompt={displayPrompt}
-            displayUnit={displayUnit}
-            entryFormat={entryFormat}
+            renderingExtensions={renderingExtensions}
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}
             onInputChange={handleInputChange}
+            onRepopulateSync={handleRepopulateSync}
             onBlur={handleBlur}
           />
         }

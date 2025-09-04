@@ -39,6 +39,7 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
 import useShowFeedback from '../../../hooks/useShowFeedback';
+import { readStringValue } from '../../../utils/readValues';
 
 interface StringItemProps
   extends PropsWithQrItemChangeHandler,
@@ -70,12 +71,9 @@ function StringItem(props: StringItemProps) {
 
   // Init input value
   const answerKey = qrItem?.answer?.[0]?.id;
-  let valueString = '';
-  if (qrItem?.answer && qrItem?.answer[0].valueString) {
-    valueString = qrItem.answer[0].valueString;
-  }
+  const { initialInput } = readStringValue(qrItem);
 
-  const [input, setInput] = useState(valueString);
+  const [input, setInput] = useState(initialInput);
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
@@ -123,22 +121,22 @@ function StringItem(props: StringItemProps) {
   }
 
   function handleRepopulateSync(newQrItem: QuestionnaireResponseItem | null) {
-    if (newQrItem) {
-      if (newQrItem?.answer && newQrItem?.answer[0].valueString) {
-        const newValueString = newQrItem.answer[0].valueString;
-        setInput(newValueString);
-      }
+    if (newQrItem && newQrItem?.answer) {
+      const { valueString: newValueString, initialInput: newInput } = readStringValue(newQrItem);
 
+      setInput(newInput);
       onQrItemChange(
         {
-          ...newQrItem
+          ...createEmptyQrItem(qItem, answerKey),
+          answer: [{ id: answerKey, valueString: newValueString }]
         },
         itemPath
       );
       return;
     }
 
-    // At this point newQrItem is null, so create an qr item to replace it
+    // At this point newQrItem is null, so create an QRItem to replace it
+    setInput('');
     onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
   }
 
