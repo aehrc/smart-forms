@@ -17,4 +17,3 @@
 
 export type { PopulateResult, PopulateQuestionnaireParams } from './populateQuestionnaire';
 export { populateQuestionnaire } from './populateQuestionnaire';
-export { syncXFhirQueries } from './syncXFhirQueries';

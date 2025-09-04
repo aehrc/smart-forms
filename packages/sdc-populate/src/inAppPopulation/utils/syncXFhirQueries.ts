@@ -32,6 +32,8 @@ interface SyncXFhirQueriesParams extends PopulateQuestionnaireParams {
  * Internally, it constructs input parameters and uses the same evaluation logic as full population, but returns only the selected evaluated results.
  * If you need full population, use `populateQuestionnaire` instead.
  *
+ * NOTE 04/09/2025: it is unused now, but might come in handy in the future - so not deleting it.
+ *
  * @param params - Refer to SyncXFhirQueriesParams interface. Extends PopulateQuestionnaireParams with a list of x-fhir-query variable names to evaluate.
  * @returns A record mapping each successfully evaluated x-fhir-query name to its resolved value, or `null` if input parameters could not be constructed.
  *
