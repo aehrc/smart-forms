@@ -32,41 +32,55 @@ function Launch() {
   const launch = searchParams.get('launch');
   const scope = LAUNCH_SCOPE;
 
-  // Fetch client ID from config.json based on issuer
+  // Client ID resolution: local config.json -> fixed client ID
   useEffect(() => {
     const fetchClientId = async () => {
       if (!iss) {
+        // No iss parameter, use fixed client ID
+        console.log('No iss parameter, using fixed client ID:', LAUNCH_CLIENT_ID);
         setClientId(LAUNCH_CLIENT_ID);
         return;
       }
 
       try {
+        // Try to fetch client ID from local config.json
+        console.log('Fetching client ID from local config for issuer:', iss);
         const response = await fetch('/config.json');
-        const config = await response.json();
         
-        if (config[iss]) {
-          setClientId(config[iss]);
-        } else {
-          setClientId(LAUNCH_CLIENT_ID);
+        if (response.ok) {
+          const config = await response.json();
+          if (config[iss]) {
+            console.log(`✅ Using client ID from config for issuer ${iss}: ${config[iss]}`);
+            setClientId(config[iss]);
+            return;
+          }
         }
+        
+        console.log('No client ID found in config for issuer, using fixed client ID');
       } catch (error) {
-        console.error('Error fetching config.json:', error);
-        setClientId(LAUNCH_CLIENT_ID);
+        console.log('Failed to fetch config, using fixed client ID:', error);
       }
+
+      // Fallback to fixed client ID
+      console.log(`Using fixed client ID: ${LAUNCH_CLIENT_ID}`);
+      setClientId(LAUNCH_CLIENT_ID);
     };
 
     fetchClientId();
   }, [iss]);
 
-  // Handle OAuth2 authorization when we have all required parameters
+  // Handle OAuth2 authorization when we have the required parameters
   useEffect(() => {
-    if (iss && launch && clientId) {
+    if (iss && clientId) {
+      console.log('Starting OAuth2 authorization with:', { iss, clientId, scope, launch });
+      
       // oauth2.authorize triggers a redirect to EHR
       oauth2
         .authorize({
           iss: iss,
           clientId: clientId,
-          scope: scope
+          scope: scope,
+          ...(launch && { launch }) // Only include launch if it exists
         })
         .catch((err) => {
           console.error('OAuth2 authorization failed:', err);
@@ -75,9 +89,10 @@ function Launch() {
     }
   }, [iss, launch, clientId, scope]);
 
-  const launchParamsNotExist = !iss || !launch;
+  // Only require iss parameter, launch is optional
+  const issMissing = !iss;
 
-  if (launchParamsNotExist && launchState !== 'error') {
+  if (issMissing && launchState !== 'error') {
     setLaunchState('error');
   }
 
