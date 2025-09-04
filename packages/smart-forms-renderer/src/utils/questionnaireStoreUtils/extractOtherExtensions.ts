@@ -251,8 +251,7 @@ async function extractExtensionsFromItemRecursive(
   const initialExpression = getInitialExpression(item);
   if (initialExpression) {
     initialExpressions[item.linkId] = {
-      expression: `${initialExpression.expression}`,
-      syncedValue: null
+      expression: `${initialExpression.expression}`
     };
   }
 
