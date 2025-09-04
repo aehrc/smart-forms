@@ -556,3 +556,34 @@ export function isItemTextHidden(qItem: QuestionnaireItem): boolean {
 
   return !!extension?.valueBoolean;
 }
+
+/**
+ * Check if the item has a sdc-questionnaire-width extension
+ *
+ * @param {QuestionnaireItem} qItem - The QuestionnaireItem to check.
+ * @returns {number | undefined} The numeric value of the columnWidth extension, if present.
+ *
+ * @author Janardhan Vignarajan
+ */
+export function getColumnWidth(qItem: QuestionnaireItem): string | undefined {
+  console.log('In the custom width item');
+  const extension = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url === 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-width'
+  );
+  console.log(`Extension Object ${JSON.stringify(extension)}`);
+
+  // Check if valueQuantity exists and if value is a "number" type
+  if (extension?.valueQuantity) {
+    if (typeof extension.valueQuantity.value === 'number') {
+      // if the extension.valueQuantity.code exists then return value + code, else return value + 'px'
+      if (extension.valueQuantity.code) {
+        return `${extension.valueQuantity.value}${extension.valueQuantity.code}`;
+      } else {
+        return `${extension.valueQuantity.value}px`;
+      }
+    }
+  }
+
+  return undefined;
+}

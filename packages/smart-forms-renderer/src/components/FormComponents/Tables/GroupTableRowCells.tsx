@@ -29,6 +29,7 @@ import type { ItemPath } from '../../../interfaces/itemPath.interface';
 import { SingleItem } from '../SingleItem';
 import { StandardTableCell } from './Table.styles';
 import Box from '@mui/material/Box';
+import { getColumnWidth } from '../../../utils/extensions';
 
 interface GroupTableRowCellsProps
   extends PropsWithQrItemChangeHandler,
@@ -38,6 +39,9 @@ interface GroupTableRowCellsProps
   qrItem: QuestionnaireResponseItem | null;
   qItemsIndexMap: Record<string, number>;
   visibleItemLabels: string[];
+  visibleItemLabelsWithNoWidthExtension: string[];
+  remainingWidthPercentage: number;
+  
 }
 
 function GroupTableRowCells(props: GroupTableRowCellsProps) {
@@ -46,6 +50,8 @@ function GroupTableRowCells(props: GroupTableRowCellsProps) {
     qrItem,
     qItemsIndexMap,
     visibleItemLabels,
+    visibleItemLabelsWithNoWidthExtension,
+    remainingWidthPercentage,
     itemPath,
     parentIsReadOnly,
     onQrItemChange
@@ -85,8 +91,15 @@ function GroupTableRowCells(props: GroupTableRowCellsProps) {
           return null;
         }
 
+        const customWidthValue = getColumnWidth(rowItem);
+
         return (
-          <StandardTableCell key={index} numOfColumns={visibleItemLabels.length}>
+          <StandardTableCell
+            key={index}
+            customWidthValue={customWidthValue}
+            numOfColumnsWithNoWidthExtension= {visibleItemLabelsWithNoWidthExtension.length}
+            remainingWidthPercentage={remainingWidthPercentage}
+            >
             <Box display="flex" alignItems="center" justifyContent="center">
               <SingleItem
                 key={rowItem.linkId}

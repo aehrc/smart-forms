@@ -40,6 +40,8 @@ interface GroupTableBodyProps
   selectedIds: string[];
   qItemsIndexMap: Record<string, number>;
   visibleItemLabels: string[];
+  visibleItemLabelsWithNoWidthExtension: string[];
+  remainingWidthPercentage: number;
   showExtraGTableInteractions: boolean;
   onRowChange: (
     newQrRow: QuestionnaireResponseItem,
@@ -59,6 +61,8 @@ function GroupTableBody(props: GroupTableBodyProps) {
     selectedIds,
     qItemsIndexMap,
     visibleItemLabels,
+    visibleItemLabelsWithNoWidthExtension,
+    remainingWidthPercentage,
     showExtraGTableInteractions,
     itemPath,
     parentIsReadOnly,
@@ -109,6 +113,8 @@ function GroupTableBody(props: GroupTableBodyProps) {
                   selectedIds={selectedIds}
                   qItemsIndexMap={qItemsIndexMap}
                   visibleItemLabels={visibleItemLabels}
+                  visibleItemLabelsWithNoWidthExtension = {visibleItemLabelsWithNoWidthExtension}
+                  remainingWidthPercentage = {remainingWidthPercentage}
                   showExtraGTableInteractions={showExtraGTableInteractions}
                   itemPath={appendRepeatIndexToLastSegment(itemPath, index)}
                   parentIsReadOnly={parentIsReadOnly}
