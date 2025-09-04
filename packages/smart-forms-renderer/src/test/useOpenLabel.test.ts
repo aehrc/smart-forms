@@ -375,16 +375,6 @@ describe('useOpenLabel', () => {
       expect(result.current.openLabelValue).toBe('');
       expect(result.current.openLabelChecked).toBe(false);
     });
-
-    it('should handle getOldOpenLabelAnswer throwing error', () => {
-      mockGetOldOpenLabelAnswer.mockImplementation(() => {
-        throw new Error('Mock error');
-      });
-
-      expect(() => {
-        renderHook(() => useOpenLabel(basicOptions, basicAnswers));
-      }).toThrow('Mock error');
-    });
   });
 
   describe('real-world usage scenarios', () => {

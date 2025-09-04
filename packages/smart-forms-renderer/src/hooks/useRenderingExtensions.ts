@@ -20,7 +20,8 @@ import {
   getTextDisplayFlyover,
   getTextDisplayInstructions,
   getTextDisplayPrompt,
-  getTextDisplayUnit
+  getTextDisplayUnit,
+  isItemRepopulatable
 } from '../utils/extensions';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
@@ -36,6 +37,7 @@ export interface RenderingExtensions {
   entryFormat: string;
   required: boolean;
   quantityUnit: QuestionnaireItemAnswerOption | null;
+  isRepopulatable: boolean;
 }
 
 function useRenderingExtensions(qItem: QuestionnaireItem): RenderingExtensions {
@@ -48,7 +50,8 @@ function useRenderingExtensions(qItem: QuestionnaireItem): RenderingExtensions {
       readOnly: !!qItem.readOnly,
       entryFormat: structuredDataCapture.getEntryFormat(qItem) ?? '',
       required: qItem.required ?? false,
-      quantityUnit: getQuantityUnit(qItem)
+      quantityUnit: getQuantityUnit(qItem),
+      isRepopulatable: isItemRepopulatable(qItem)
     }),
     [qItem]
   );

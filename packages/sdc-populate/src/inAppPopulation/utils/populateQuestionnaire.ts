@@ -17,12 +17,10 @@
 
 import type {
   Encounter,
-  Extension,
   OperationOutcome,
   Patient,
   Practitioner,
   Questionnaire,
-  QuestionnaireItem,
   QuestionnaireResponse
 } from 'fhir/r4';
 import type {
@@ -41,14 +39,10 @@ import {
   isOutputParameters,
   populate
 } from '../../SDCPopulateQuestionnaireOperation';
-import { createPopulateInputParameters } from './createInputParameters';
-import type {
-  LaunchContext,
-  QuestionnaireLevelXFhirQueryVariable,
-  SourceQuery
-} from '../interfaces/inAppPopulation.interface';
 import { Base64 } from 'js-base64';
 import type { FhirContext } from '../interfaces/fhirContext.interface';
+import { isRecord } from './isRecord';
+import { initialiseInputParameters } from './inputParameters';
 
 export interface PopulateResult {
   populatedResponse: QuestionnaireResponse;
@@ -112,49 +106,18 @@ export async function populateQuestionnaire(params: PopulateQuestionnaireParams)
     timeoutMs = 10000
   } = params;
 
-  // FHIRPath Context map that will be used to evaluate FHIRPath expressions, this is different from the fhirContext in the params.
-  const fhirPathContext: Record<string, any> = {};
-
-  // Get launch contexts, source queries and questionnaire-level variables
-  const launchContexts = getLaunchContexts(questionnaire);
-  const sourceQueries = getSourceQueries(questionnaire);
-  const questionnaireLevelVariables = getXFhirQueryVariables(questionnaire);
-
-  if (
-    launchContexts.length === 0 &&
-    sourceQueries.length === 0 &&
-    questionnaireLevelVariables.length === 0
-  ) {
-    return {
-      populateSuccess: false,
-      populateResult: null
-    };
-  }
-
-  // Define population input parameters from launch contexts, source queries and questionnaire-level variables
-  const inputParameters = await createPopulateInputParameters(
+  const { inputParameters } = await initialiseInputParameters(
     questionnaire,
     patient,
     user ?? null,
     encounter ?? null,
     fhirContext ?? null,
-    launchContexts,
-    sourceQueries,
-    questionnaireLevelVariables,
-    fhirPathContext,
     fetchResourceCallback,
     fetchResourceRequestConfig,
     timeoutMs
   );
 
-  if (!inputParameters) {
-    return {
-      populateSuccess: false,
-      populateResult: null
-    };
-  }
-
-  if (!isInputParameters(inputParameters)) {
+  if (!inputParameters || !isInputParameters(inputParameters)) {
     return {
       populateSuccess: false,
       populateResult: null
@@ -287,110 +250,4 @@ export async function addTimeoutToPromise(promise: Promise<any>, timeoutMs: numb
 
   // Use Promise.race to wait for either the original promise or the timeout promise
   return Promise.race([promise, timeoutPromise]);
-}
-
-function isLaunchContext(extension: Extension): extension is LaunchContext {
-  const hasLaunchContextName =
-    extension.url ===
-      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext' &&
-    !!extension.extension?.find(
-      (ext) => ext.url === 'name' && (ext.valueId || (ext.valueCoding && ext.valueCoding.code))
-    );
-
-  const hasLaunchContextType = !!extension.extension?.find(
-    (ext) => ext.url === 'type' && ext.valueCode
-  );
-
-  return (
-    extension.url ===
-      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext' &&
-    hasLaunchContextName &&
-    hasLaunchContextType
-  );
-}
-
-function getLaunchContexts(questionnaire: Questionnaire): LaunchContext[] {
-  if (questionnaire.extension && questionnaire.extension.length > 0) {
-    return questionnaire.extension.filter((extension) =>
-      isLaunchContext(extension)
-    ) as LaunchContext[];
-  }
-
-  return [];
-}
-
-function isSourceQuery(extension: Extension): extension is SourceQuery {
-  return (
-    extension.url ===
-      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-sourceQueries' &&
-    !!extension.valueReference
-  );
-}
-
-function getSourceQueries(questionnaire: Questionnaire): SourceQuery[] {
-  if (questionnaire.extension && questionnaire.extension.length > 0) {
-    return questionnaire.extension.filter((extension) => isSourceQuery(extension)) as SourceQuery[];
-  }
-
-  return [];
-}
-
-function isXFhirQueryVariable(
-  extension: Extension
-): extension is QuestionnaireLevelXFhirQueryVariable {
-  return (
-    extension.url === 'http://hl7.org/fhir/StructureDefinition/variable' &&
-    !!extension.valueExpression?.name &&
-    extension.valueExpression?.language === 'application/x-fhir-query' &&
-    !!extension.valueExpression?.expression
-  );
-}
-
-function getXFhirQueryVariables(
-  questionnaire: Questionnaire
-): QuestionnaireLevelXFhirQueryVariable[] {
-  const xFhirQueryVariables: QuestionnaireLevelXFhirQueryVariable[] = [];
-  if (questionnaire.extension && questionnaire.extension.length > 0) {
-    xFhirQueryVariables.push(
-      ...(questionnaire.extension.filter((extension) =>
-        isXFhirQueryVariable(extension)
-      ) as QuestionnaireLevelXFhirQueryVariable[])
-    );
-  }
-
-  if (questionnaire.item && questionnaire.item.length > 0) {
-    for (const qItem of questionnaire.item) {
-      xFhirQueryVariables.push(
-        ...(getXFhirQueryVariablesRecursive(qItem) as QuestionnaireLevelXFhirQueryVariable[])
-      );
-    }
-  }
-
-  return xFhirQueryVariables;
-}
-
-function getXFhirQueryVariablesRecursive(qItem: QuestionnaireItem) {
-  let xFhirQueryVariables: Extension[] = [];
-
-  if (qItem.item) {
-    for (const childItem of qItem.item) {
-      xFhirQueryVariables = xFhirQueryVariables.concat(getXFhirQueryVariablesRecursive(childItem));
-    }
-  }
-
-  if (qItem.extension) {
-    xFhirQueryVariables.push(
-      ...qItem.extension.filter((extension) => isXFhirQueryVariable(extension))
-    );
-  }
-
-  return xFhirQueryVariables;
-}
-
-function isRecord(obj: any): obj is Record<string, any> {
-  if (!obj) {
-    return false;
-  }
-
-  return Object.keys(obj).every((key) => typeof key === 'string');
 }
