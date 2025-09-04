@@ -22,7 +22,7 @@ import { useRendererStylingStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
-import GranularRepopulateButton from '../ItemParts/GranularRepopulateButton';
+import ItemRepopulateButton from '../ItemParts/ItemRepopulateButton';
 import type { RenderingExtensions } from '../../../hooks/useRenderingExtensions';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
@@ -83,7 +83,7 @@ function StringField(props: StringFieldProps) {
                   onInputChange('');
                 }}
               />
-              <GranularRepopulateButton
+              <ItemRepopulateButton
                 qItem={qItem}
                 repopulatable={isRepopulatable}
                 onRepopulate={onRepopulateSync}

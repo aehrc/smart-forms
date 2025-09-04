@@ -27,7 +27,7 @@ interface SyncXFhirQueriesParams extends PopulateQuestionnaireParams {
  * Evaluates and updates the values of specific x-fhir-query variables within a questionnaire.
  *
  * Unlike full questionnaire population (e.g. via `populateQuestionnaire`), this function focuses solely on resolving a subset of x-fhir-query variables using a provided resource-fetching callback.
- * This is useful for cases where only certain variables need to be updated, when using the custom extension - https://smartforms.csiro.au/ig/StructureDefinition/GranularRepopulateSync
+ * This is useful for cases where only certain variables need to be updated, when using the custom extension - 'https://smartforms.csiro.au/ig/StructureDefinition/questionnaire-initialExpression-showRepopulateButton'
  *
  * Internally, it constructs input parameters and uses the same evaluation logic as full population, but returns only the selected evaluated results.
  * If you need full population, use `populateQuestionnaire` instead.

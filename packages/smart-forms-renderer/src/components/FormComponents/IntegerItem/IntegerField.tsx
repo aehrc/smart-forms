@@ -23,7 +23,7 @@ import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import GranularRepopulateButton from '../ItemParts/GranularRepopulateButton';
+import ItemRepopulateButton from '../ItemParts/ItemRepopulateButton';
 import type { RenderingExtensions } from '../../../hooks/useRenderingExtensions';
 
 interface IntegerFieldProps extends PropsWithIsTabledRequiredAttribute {
@@ -97,7 +97,7 @@ function IntegerField(props: IntegerFieldProps) {
                   onInputChange('');
                 }}
               />
-              <GranularRepopulateButton
+              <ItemRepopulateButton
                 qItem={qItem}
                 repopulatable={isRepopulatable}
                 onRepopulate={onRepopulateSync}

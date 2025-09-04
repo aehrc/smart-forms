@@ -22,7 +22,7 @@ import { useRendererStylingStore } from '../../../stores';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type { RenderingExtensions } from '../../../hooks/useRenderingExtensions';
-import GranularRepopulateButton from '../ItemParts/GranularRepopulateButton';
+import ItemRepopulateButton from '../ItemParts/ItemRepopulateButton';
 
 interface TextFieldProps {
   qItem: QuestionnaireItem;
@@ -72,7 +72,7 @@ function TextField(props: TextFieldProps) {
           endAdornment: (
             <InputAdornment position="end">
               <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-              <GranularRepopulateButton
+              <ItemRepopulateButton
                 qItem={qItem}
                 repopulatable={isRepopulatable}
                 onRepopulate={onRepopulateSync}

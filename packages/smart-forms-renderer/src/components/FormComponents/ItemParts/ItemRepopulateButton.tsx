@@ -34,13 +34,13 @@ import { fetchResourceCallback, fetchTerminologyCallback } from '../../../api/ca
 
 type RepopulationState = 'success' | 'idle' | 'loading' | 'error';
 
-interface GranularRepopulateButtonProps {
+interface ItemRepopulateButtonProps {
   qItem: QuestionnaireItem;
   repopulatable: boolean;
   onRepopulate: (newQrItem: QuestionnaireResponseItem | null) => unknown;
 }
 
-function GranularRepopulateButton(props: GranularRepopulateButtonProps) {
+function ItemRepopulateButton(props: ItemRepopulateButtonProps) {
   const { qItem, repopulatable, onRepopulate } = props;
 
   const client = useSmartConfigStore.use.client();
@@ -72,7 +72,7 @@ function GranularRepopulateButton(props: GranularRepopulateButtonProps) {
     if (!client || !patient || !user) {
       setRepopulationState('error');
       console.warn(
-        'GranularRepopulateButton: fhirClient, patient or user is not available. Load it via useSmartConfigStore first.'
+        'ItemRepopulateButton: fhirClient, patient or user is not available. Load it via useSmartConfigStore first.'
       );
       return;
     }
@@ -183,4 +183,4 @@ function GranularRepopulateButton(props: GranularRepopulateButtonProps) {
   );
 }
 
-export default GranularRepopulateButton;
+export default ItemRepopulateButton;

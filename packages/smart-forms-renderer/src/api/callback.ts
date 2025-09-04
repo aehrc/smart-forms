@@ -25,8 +25,8 @@ import type {
 const ABSOLUTE_URL_REGEX = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
 
 /**
- * Pre-populate callback function that works with '@aehrc/sdc-populate' `populateQuestionnaire()`. Used in GranularRepopulateButton.tsx.
- * See GranularRepopulateButton.tsx for usage.
+ * Pre-populate callback function that works with '@aehrc/sdc-populate' `populateQuestionnaire()`.
+ * See ItemRepopulateButton.tsx for usage.
  * Also used in https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/storybookWrappers/PrePopWrapperForStorybook.tsx.
  *
  * @author Sean Fong
@@ -62,7 +62,7 @@ export const fetchResourceCallback: FetchResourceCallback = async (
 
 /**
  * Terminology callback function that works with '@aehrc/sdc-populate' `populateQuestionnaire()`.
- * See GranularRepopulateButton.tsx for usage.
+ * See ItemRepopulateButton.tsx for usage.
  *
  * @author Sean Fong
  */
