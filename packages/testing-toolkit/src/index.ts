@@ -111,6 +111,7 @@ export async function inputDateTime(
   amPm: string
 ) {
   const questionElement = await findByLinkId(canvasElement, linkId);
+  console.log(questionElement, 777);
   const inputDate = questionElement?.querySelector('div[data-test="date"] input');
   const inputTime = questionElement?.querySelector('div[data-test="time"] input');
   const inputAmPm = questionElement?.querySelector('div[data-test="ampm"] input');
