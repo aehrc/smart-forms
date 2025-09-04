@@ -602,11 +602,14 @@ export function isGroupAddItemButtonHidden(qItem: QuestionnaireItem): boolean {
  * Check if the QuestionnaireItem has a 'showRepopulateButton' extension to show a sync button for granular repopulation.
  */
 export function isItemRepopulatable(qItem: QuestionnaireItem): boolean {
-  // Get questionnaire-initialExpression-showRepopulateButton button extension
-  const showRepopulateButtonExtension = qItem.extension?.find(
+  // Get questionnaire-initialExpression-repopulatable button extension
+  // Currently fixed to 'manual' repopulation only.
+  // See https://chat.fhir.org/#narrow/channel/179255-questionnaire/topic/Granular.20Repopulate.20button/with/533937578 for more details.
+  const isRepopulatableExtension = qItem.extension?.find(
     (extension: Extension) =>
       extension.url ===
-      'https://smartforms.csiro.au/ig/StructureDefinition/questionnaire-initialExpression-showRepopulateButton'
+        'https://smartforms.csiro.au/ig/StructureDefinition/questionnaire-initialExpression-repopulatable' &&
+      extension.valueCode === 'manual'
   );
 
   // Also need to check if the item has an initialExpression, because this button depends on it
@@ -615,5 +618,5 @@ export function isItemRepopulatable(qItem: QuestionnaireItem): boolean {
     return false;
   }
 
-  return !!showRepopulateButtonExtension?.valueBoolean;
+  return !!isRepopulatableExtension;
 }
