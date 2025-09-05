@@ -1,3 +1,17 @@
 {
-  "https://smartonfhir.aidbox.beda.software": "6cc9bccb-3ae2-40d7-9660-22c99534520b"
+  "clientIds": {
+    "https://smartonfhir.aidbox.beda.software": "6cc9bccb-3ae2-40d7-9660-22c99534520b"
+  },
+  "appConfig": {
+    "terminologyServerUrl": "https://tx.ontoserver.csiro.au/fhir",
+    "formsServerUrl": "https://smartforms.csiro.au/api/fhir",
+    "launchScope": "fhirUser online_access openid profile patient/Condition.rs patient/Observation.rs launch patient/Encounter.rs patient/QuestionnaireResponse.cruds patient/Patient.rs",
+    "launchClientId": "smart-forms-client-id",
+    "inAppPopulate": true,
+    "enableDynamicClientRegistration": true,
+    "dynamicRegistrationFallbackEnabled": true,
+    "additionalRedirectUris": "",
+    "appTitle": "Smart Forms",
+    "showDebugMode": false
+  }
 }

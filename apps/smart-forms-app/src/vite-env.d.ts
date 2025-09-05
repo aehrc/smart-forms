@@ -27,13 +27,8 @@ declare const POPULATE_VERSION: string;
 declare const TEMPLATE_EXTRACT_VERSION: string;
 
 interface ImportMetaEnv {
-  readonly VITE_APP_TITLE: string;
-  readonly VITE_ONTOSERVER_URL: string;
-  readonly VITE_FORMS_SERVER_URL: string;
-  readonly VITE_LAUNCH_SCOPE: string;
-  readonly VITE_LAUNCH_CLIENT_ID: string;
-  readonly VITE_IN_APP_POPULATE: boolean;
-  readonly VITE_SHOW_DEBUG_MODE: string;
+  // Environment variables are now handled via config.json
+  // See LOCAL_DEVELOPMENT.md for configuration details
 }
 
 interface ImportMeta {

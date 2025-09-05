@@ -19,55 +19,52 @@ import { useSearchParams } from 'react-router-dom';
 import { oauth2 } from 'fhirclient';
 import { useState, useEffect } from 'react';
 import LaunchView from './LaunchView.tsx';
-import { LAUNCH_CLIENT_ID, LAUNCH_SCOPE } from '../../../globals.ts';
+import { DEFAULT_LAUNCH_CLIENT_ID, DEFAULT_LAUNCH_SCOPE } from '../../../globals.ts';
+import { useConfig } from '../../../contexts/ConfigContext';
 
 export type LaunchState = 'loading' | 'error' | 'success';
 
 function Launch() {
   const [launchState, setLaunchState] = useState<LaunchState>('loading');
-  const [clientId, setClientId] = useState<string>(LAUNCH_CLIENT_ID);
+  const [clientId, setClientId] = useState<string>(DEFAULT_LAUNCH_CLIENT_ID);
+  const [scope, setScope] = useState<string>(DEFAULT_LAUNCH_SCOPE);
 
+  const { getClientId, getAppConfig, loading: configLoading } = useConfig();
   const [searchParams] = useSearchParams();
   const iss = searchParams.get('iss');
   const launch = searchParams.get('launch');
-  const scope = LAUNCH_SCOPE;
 
-  // Client ID resolution: local config.json -> fixed client ID
+  // Load configuration and resolve client ID
   useEffect(() => {
-    const fetchClientId = async () => {
-      if (!iss) {
-        // No iss parameter, use fixed client ID
-        console.log('No iss parameter, using fixed client ID:', LAUNCH_CLIENT_ID);
-        setClientId(LAUNCH_CLIENT_ID);
-        return;
-      }
+    if (configLoading) return; // Wait for config to load
 
-      try {
-        // Try to fetch client ID from local config.json
-        console.log('Fetching client ID from local config for issuer:', iss);
-        const response = await fetch('/config.json');
-        
-        if (response.ok) {
-          const config = await response.json();
-          if (config[iss]) {
-            console.log(`✅ Using client ID from config for issuer ${iss}: ${config[iss]}`);
-            setClientId(config[iss]);
-            return;
-          }
-        }
-        
-        console.log('No client ID found in config for issuer, using fixed client ID');
-      } catch (error) {
-        console.log('Failed to fetch config, using fixed client ID:', error);
-      }
+    const appConfig = getAppConfig();
+    if (!appConfig) {
+      console.log('No app config available, using defaults');
+      setClientId(DEFAULT_LAUNCH_CLIENT_ID);
+      setScope(DEFAULT_LAUNCH_SCOPE);
+      return;
+    }
 
-      // Fallback to fixed client ID
-      console.log(`Using fixed client ID: ${LAUNCH_CLIENT_ID}`);
-      setClientId(LAUNCH_CLIENT_ID);
-    };
+    setScope(appConfig.launchScope);
+    
+    if (!iss) {
+      // No iss parameter, use default client ID from config
+      console.log('No iss parameter, using default client ID from config:', appConfig.launchClientId);
+      setClientId(appConfig.launchClientId);
+      return;
+    }
 
-    fetchClientId();
-  }, [iss]);
+    // Try to get client ID for specific issuer
+    const issuerClientId = getClientId(iss);
+    if (issuerClientId) {
+      console.log(`✅ Using client ID from config for issuer ${iss}: ${issuerClientId}`);
+      setClientId(issuerClientId);
+    } else {
+      console.log('No client ID found in config for issuer, using default client ID');
+      setClientId(appConfig.launchClientId);
+    }
+  }, [iss, configLoading, getClientId, getAppConfig]);
 
   // Handle OAuth2 authorization when we have the required parameters
   useEffect(() => {

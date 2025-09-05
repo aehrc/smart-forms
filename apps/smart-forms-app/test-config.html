@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Config.json Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .warning { background-color: #fff3cd; border-color: #ffeaa7; }
+        pre { background-color: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+        button { padding: 10px 15px; margin: 5px; background-color: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>Smart Forms Configuration Test</h1>
+    
+    <div class="test-section">
+        <h2>1. Test Config.json Loading</h2>
+        <button onclick="testConfigLoading()">Load Configuration</button>
+        <div id="config-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Test Configuration Validation</h2>
+        <button onclick="testConfigValidation()">Validate Configuration</button>
+        <div id="validation-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Test Missing Config (Error Handling)</h2>
+        <button onclick="testMissingConfig()">Test Missing Config</button>
+        <div id="missing-config-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Test Invalid Config (Error Handling)</h2>
+        <button onclick="testInvalidConfig()">Test Invalid Config</button>
+        <div id="invalid-config-result"></div>
+    </div>
+
+    <script>
+        async function testConfigLoading() {
+            const resultDiv = document.getElementById('config-result');
+            resultDiv.innerHTML = '<p>Loading configuration...</p>';
+            
+            try {
+                const response = await fetch('/config.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const config = await response.json();
+                resultDiv.innerHTML = `
+                    <div class="test-section success">
+                        <h3>✅ Configuration Loaded Successfully</h3>
+                        <pre>${JSON.stringify(config, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="test-section error">
+                        <h3>❌ Configuration Loading Failed</h3>
+                        <p>Error: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function testConfigValidation() {
+            const resultDiv = document.getElementById('validation-result');
+            resultDiv.innerHTML = '<p>Validating configuration...</p>';
+            
+            try {
+                const response = await fetch('/config.json');
+                const config = await response.json();
+                
+                const errors = [];
+                const warnings = [];
+                
+                // Validate structure
+                if (!config.clientIds || typeof config.clientIds !== 'object') {
+                    errors.push('Missing or invalid clientIds configuration');
+                }
+                
+                if (!config.appConfig || typeof config.appConfig !== 'object') {
+                    errors.push('Missing or invalid appConfig configuration');
+                } else {
+                    const { appConfig } = config;
+                    
+                    // Required string fields
+                    const requiredStringFields = [
+                        'terminologyServerUrl',
+                        'formsServerUrl', 
+                        'launchScope',
+                        'launchClientId',
+                        'appTitle'
+                    ];
+                    
+                    requiredStringFields.forEach(field => {
+                        if (!appConfig[field] || typeof appConfig[field] !== 'string') {
+                            errors.push(`Missing or invalid ${field} in appConfig`);
+                        }
+                    });
+                    
+                    // Required boolean fields
+                    const requiredBooleanFields = [
+                        'inAppPopulate',
+                        'enableDynamicClientRegistration',
+                        'dynamicRegistrationFallbackEnabled',
+                        'showDebugMode'
+                    ];
+                    
+                    requiredBooleanFields.forEach(field => {
+                        if (typeof appConfig[field] !== 'boolean') {
+                            errors.push(`Missing or invalid ${field} in appConfig (must be boolean)`);
+                        }
+                    });
+                    
+                    // URL validation
+                    try {
+                        new URL(appConfig.terminologyServerUrl);
+                    } catch {
+                        errors.push('terminologyServerUrl is not a valid URL');
+                    }
+                    
+                    try {
+                        new URL(appConfig.formsServerUrl);
+                    } catch {
+                        errors.push('formsServerUrl is not a valid URL');
+                    }
+                }
+                
+                // Check if there are any client IDs configured
+                if (config.clientIds && Object.keys(config.clientIds).length === 0) {
+                    warnings.push('No client IDs configured - app will use default client ID only');
+                }
+                
+                if (errors.length === 0) {
+                    resultDiv.innerHTML = `
+                        <div class="test-section success">
+                            <h3>✅ Configuration is Valid</h3>
+                            <p>All required fields are present and valid.</p>
+                            ${warnings.length > 0 ? `
+                                <div class="warning">
+                                    <h4>Warnings:</h4>
+                                    <ul>${warnings.map(w => `<li>${w}</li>`).join('')}</ul>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="test-section error">
+                            <h3>❌ Configuration Validation Failed</h3>
+                            <h4>Errors:</h4>
+                            <ul>${errors.map(e => `<li>${e}</li>`).join('')}</ul>
+                            ${warnings.length > 0 ? `
+                                <h4>Warnings:</h4>
+                                <ul>${warnings.map(w => `<li>${w}</li>`).join('')}</ul>
+                            ` : ''}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="test-section error">
+                        <h3>❌ Validation Failed</h3>
+                        <p>Error: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function testMissingConfig() {
+            const resultDiv = document.getElementById('missing-config-result');
+            resultDiv.innerHTML = '<p>Testing missing config handling...</p>';
+            
+            try {
+                // Try to fetch a non-existent config file
+                const response = await fetch('/config-missing.json');
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="test-section warning">
+                            <h3>⚠️ Config file exists (unexpected)</h3>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="test-section success">
+                            <h3>✅ Missing Config Handled Correctly</h3>
+                            <p>HTTP ${response.status}: ${response.statusText}</p>
+                            <p>The app should fall back to default configuration values.</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="test-section success">
+                        <h3>✅ Missing Config Handled Correctly</h3>
+                        <p>Error: ${error.message}</p>
+                        <p>The app should fall back to default configuration values.</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function testInvalidConfig() {
+            const resultDiv = document.getElementById('invalid-config-result');
+            resultDiv.innerHTML = '<p>Testing invalid config handling...</p>';
+            
+            // Create a temporary invalid config for testing
+            const invalidConfig = {
+                // Missing required fields
+                clientIds: {},
+                appConfig: {
+                    // Missing required string fields
+                    terminologyServerUrl: "", // Empty string
+                    formsServerUrl: "invalid-url", // Invalid URL
+                    launchScope: "invalid scope", // Valid string
+                    launchClientId: "test-client-id", // Valid string
+                    appTitle: "Test App", // Valid string
+                    // Missing required boolean fields
+                    inAppPopulate: "true", // String instead of boolean
+                    enableDynamicClientRegistration: true, // Valid boolean
+                    dynamicRegistrationFallbackEnabled: true, // Valid boolean
+                    showDebugMode: false, // Valid boolean
+                    additionalRedirectUris: "" // Valid string
+                }
+            };
+            
+            const errors = [];
+            const warnings = [];
+            
+            // Validate the invalid config
+            if (!invalidConfig.clientIds || typeof invalidConfig.clientIds !== 'object') {
+                errors.push('Missing or invalid clientIds configuration');
+            }
+            
+            if (!invalidConfig.appConfig || typeof invalidConfig.appConfig !== 'object') {
+                errors.push('Missing or invalid appConfig configuration');
+            } else {
+                const { appConfig } = invalidConfig;
+                
+                // Check required string fields
+                const requiredStringFields = [
+                    'terminologyServerUrl',
+                    'formsServerUrl', 
+                    'launchScope',
+                    'launchClientId',
+                    'appTitle'
+                ];
+                
+                requiredStringFields.forEach(field => {
+                    if (!appConfig[field] || typeof appConfig[field] !== 'string') {
+                        errors.push(`Missing or invalid ${field} in appConfig`);
+                    }
+                });
+                
+                // Check required boolean fields
+                const requiredBooleanFields = [
+                    'inAppPopulate',
+                    'enableDynamicClientRegistration',
+                    'dynamicRegistrationFallbackEnabled',
+                    'showDebugMode'
+                ];
+                
+                requiredBooleanFields.forEach(field => {
+                    if (typeof appConfig[field] !== 'boolean') {
+                        errors.push(`Missing or invalid ${field} in appConfig (must be boolean)`);
+                    }
+                });
+                
+                // URL validation
+                try {
+                    new URL(appConfig.terminologyServerUrl);
+                } catch {
+                    errors.push('terminologyServerUrl is not a valid URL');
+                }
+                
+                try {
+                    new URL(appConfig.formsServerUrl);
+                } catch {
+                    errors.push('formsServerUrl is not a valid URL');
+                }
+            }
+            
+            resultDiv.innerHTML = `
+                <div class="test-section ${errors.length > 0 ? 'error' : 'success'}">
+                    <h3>${errors.length > 0 ? '❌' : '✅'} Invalid Config Test</h3>
+                    <p>Testing with invalid configuration data:</p>
+                    <pre>${JSON.stringify(invalidConfig, null, 2)}</pre>
+                    ${errors.length > 0 ? `
+                        <h4>Expected Errors (should be caught by validation):</h4>
+                        <ul>${errors.map(e => `<li>${e}</li>`).join('')}</ul>
+                    ` : ''}
+                    <p><strong>Note:</strong> The app should redirect to /config-check when invalid config is detected.</p>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

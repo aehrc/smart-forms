@@ -21,17 +21,20 @@ import Router from './router/Router.tsx';
 import { SnackbarProvider } from 'notistack';
 import SmartClientContextProvider from './contexts/SmartClientContext.tsx';
 import DebugModeContextProvider from './contexts/DebugModeContext.tsx';
+import { ConfigProvider } from './contexts/ConfigContext';
 
 function App() {
   return (
     <ThemeProvider>
       <SnackbarProvider maxSnack={1}>
-        <SmartClientContextProvider>
-          <DebugModeContextProvider>
-            <CssBaseline />
-            <Router />
-          </DebugModeContextProvider>
-        </SmartClientContextProvider>
+        <ConfigProvider>
+          <SmartClientContextProvider>
+            <DebugModeContextProvider>
+              <CssBaseline />
+              <Router />
+            </DebugModeContextProvider>
+          </SmartClientContextProvider>
+        </ConfigProvider>
       </SnackbarProvider>
     </ThemeProvider>
   );
