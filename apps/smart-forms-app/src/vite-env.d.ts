@@ -29,6 +29,7 @@ declare const TEMPLATE_EXTRACT_VERSION: string;
 interface ImportMetaEnv {
   // Environment variables are now handled via config.json
   // See LOCAL_DEVELOPMENT.md for configuration details
+  readonly [key: string]: string | undefined;
 }
 
 interface ImportMeta {

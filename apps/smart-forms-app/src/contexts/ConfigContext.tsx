@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 interface AppConfig {
   terminologyServerUrl: string;
@@ -55,7 +56,8 @@ const defaultConfig: Config = {
   appConfig: {
     terminologyServerUrl: 'https://tx.ontoserver.csiro.au/fhir',
     formsServerUrl: 'https://smartforms.csiro.au/api/fhir',
-    launchScope: 'fhirUser online_access openid profile patient/Condition.rs patient/Observation.rs launch patient/Encounter.rs patient/QuestionnaireResponse.cruds patient/Patient.rs',
+    launchScope:
+      'fhirUser online_access openid profile patient/Condition.rs patient/Observation.rs launch patient/Encounter.rs patient/QuestionnaireResponse.cruds patient/Patient.rs',
     launchClientId: 'smart-forms-client-id',
     inAppPopulate: true,
     enableDynamicClientRegistration: true,
@@ -80,13 +82,13 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
       try {
         console.log('Loading configuration from config.json');
         const response = await fetch('/config.json');
-        
+
         if (!response.ok) {
           throw new Error(`Failed to load config: ${response.status} ${response.statusText}`);
         }
 
         const loadedConfig: Config = await response.json();
-        
+
         // Validate configuration
         const validationResult = validateConfig(loadedConfig);
         if (!validationResult.isValid) {
@@ -98,7 +100,7 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
             return;
           }
         }
-        
+
         setConfig(loadedConfig);
         console.log('Configuration loaded successfully:', loadedConfig);
       } catch (err) {
@@ -136,8 +138,11 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
         'appTitle'
       ];
 
-      requiredStringFields.forEach(field => {
-        if (!appConfig[field as keyof AppConfig] || typeof appConfig[field as keyof AppConfig] !== 'string') {
+      requiredStringFields.forEach((field) => {
+        if (
+          !appConfig[field as keyof AppConfig] ||
+          typeof appConfig[field as keyof AppConfig] !== 'string'
+        ) {
           errors.push(`Missing or invalid ${field} in appConfig`);
         }
       });
@@ -150,7 +155,7 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
         'showDebugMode'
       ];
 
-      requiredBooleanFields.forEach(field => {
+      requiredBooleanFields.forEach((field) => {
         if (typeof appConfig[field as keyof AppConfig] !== 'boolean') {
           errors.push(`Missing or invalid ${field} in appConfig (must be boolean)`);
         }
@@ -194,11 +199,7 @@ export function ConfigProvider({ children }: ConfigProviderProps) {
     getAppConfig
   };
 
-  return (
-    <ConfigContext.Provider value={value}>
-      {children}
-    </ConfigContext.Provider>
-  );
+  return <ConfigContext.Provider value={value}>{children}</ConfigContext.Provider>;
 }
 
 export function useConfig(): ConfigContextType {

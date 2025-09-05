@@ -47,10 +47,13 @@ function Launch() {
     }
 
     setScope(appConfig.launchScope);
-    
+
     if (!iss) {
       // No iss parameter, use default client ID from config
-      console.log('No iss parameter, using default client ID from config:', appConfig.launchClientId);
+      console.log(
+        'No iss parameter, using default client ID from config:',
+        appConfig.launchClientId
+      );
       setClientId(appConfig.launchClientId);
       return;
     }
@@ -70,7 +73,7 @@ function Launch() {
   useEffect(() => {
     if (iss && clientId) {
       console.log('Starting OAuth2 authorization with:', { iss, clientId, scope, launch });
-      
+
       // oauth2.authorize triggers a redirect to EHR
       oauth2
         .authorize({

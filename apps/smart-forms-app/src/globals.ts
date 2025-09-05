@@ -19,7 +19,8 @@
 // These are fallback values that will be used if config.json is not available
 export const DEFAULT_TERMINOLOGY_SERVER_URL = 'https://tx.ontoserver.csiro.au/fhir';
 export const DEFAULT_FORMS_SERVER_URL = 'https://smartforms.csiro.au/api/fhir';
-export const DEFAULT_LAUNCH_SCOPE = 'fhirUser online_access openid profile patient/Condition.rs patient/Observation.rs launch patient/Encounter.rs patient/QuestionnaireResponse.cruds patient/Patient.rs';
+export const DEFAULT_LAUNCH_SCOPE =
+  'fhirUser online_access openid profile patient/Condition.rs patient/Observation.rs launch patient/Encounter.rs patient/QuestionnaireResponse.cruds patient/Patient.rs';
 export const DEFAULT_LAUNCH_CLIENT_ID = 'smart-forms-client-id';
 export const DEFAULT_IN_APP_POPULATE = true;
 export const DEFAULT_ENABLE_DYNAMIC_CLIENT_REGISTRATION = true;

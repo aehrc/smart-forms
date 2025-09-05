@@ -30,10 +30,7 @@ import {
   ListItemIcon,
   ListItemText
 } from '@mui/material';
-import {
-  ErrorOutline,
-  Warning
-} from '@mui/icons-material';
+import { ErrorOutline, Warning } from '@mui/icons-material';
 import { useConfig } from '../contexts/ConfigContext';
 
 interface ConfigValidationResult {
@@ -75,7 +72,7 @@ const ConfigChecker: React.FC = () => {
         'appTitle'
       ];
 
-      requiredStringFields.forEach(field => {
+      requiredStringFields.forEach((field) => {
         if (!appConfig[field] || typeof appConfig[field] !== 'string') {
           errors.push(`Missing or invalid ${field} in appConfig`);
         }
@@ -89,14 +86,17 @@ const ConfigChecker: React.FC = () => {
         'showDebugMode'
       ];
 
-      requiredBooleanFields.forEach(field => {
+      requiredBooleanFields.forEach((field) => {
         if (typeof appConfig[field] !== 'boolean') {
           errors.push(`Missing or invalid ${field} in appConfig (must be boolean)`);
         }
       });
 
       // Optional fields validation
-      if (appConfig.additionalRedirectUris && typeof appConfig.additionalRedirectUris !== 'string') {
+      if (
+        appConfig.additionalRedirectUris &&
+        typeof appConfig.additionalRedirectUris !== 'string'
+      ) {
         warnings.push('additionalRedirectUris should be a string');
       }
 
@@ -225,7 +225,7 @@ const ConfigChecker: React.FC = () => {
 
           {validationResult.isValid && (
             <Box sx={{ mt: 2, textAlign: 'center' }}>
-              <Button variant="contained" onClick={() => window.location.href = '/'}>
+              <Button variant="contained" onClick={() => (window.location.href = '/')}>
                 Continue to Application
               </Button>
             </Box>

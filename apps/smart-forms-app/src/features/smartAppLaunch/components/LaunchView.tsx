@@ -32,28 +32,24 @@ interface LaunchViewProps {
 }
 
 function LaunchView(props: LaunchViewProps) {
-  const { 
-    launchState, 
-    error, 
-    isRegistering, 
-    useFixedClientId, 
-    dynamicClientId, 
-    fixedClientId 
-  } = props;
+  const { launchState, error, isRegistering, useFixedClientId, dynamicClientId, fixedClientId } =
+    props;
 
   if (launchState === 'error') {
     return (
       <CenteredWrapper>
         <Stack rowGap={2}>
           <Typography variant="h3">An error occurred while launching the app.</Typography>
-          
+
           {error && (
             <Alert severity="error" sx={{ maxWidth: '600px' }}>
-              <Typography variant="body2" fontWeight="bold">Error Details:</Typography>
+              <Typography variant="body2" fontWeight="bold">
+                Error Details:
+              </Typography>
               <Typography variant="body2">{error}</Typography>
             </Alert>
           )}
-          
+
           <Typography fontSize={13}>
             {"You might have incorrect launch parameters in the URL or the server doesn't exist. "}
             <br />
@@ -84,9 +80,17 @@ function LaunchView(props: LaunchViewProps) {
       <CenteredWrapper>
         <Stack rowGap={2} alignItems="center">
           <ProgressSpinner message="Launching Smart Forms" />
-          
+
           {/* Display client ID information for debugging */}
-          <Box sx={{ mt: 2, p: 2, bgcolor: 'background.paper', borderRadius: 1, border: 1, borderColor: 'divider' }}>
+          <Box
+            sx={{
+              mt: 2,
+              p: 2,
+              bgcolor: 'background.paper',
+              borderRadius: 1,
+              border: 1,
+              borderColor: 'divider'
+            }}>
             <Typography variant="body2" color="text.secondary" gutterBottom>
               Client Registration Status:
             </Typography>
