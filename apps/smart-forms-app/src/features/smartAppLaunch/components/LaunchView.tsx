@@ -66,7 +66,7 @@ function LaunchView(props: LaunchViewProps) {
     );
   }
 
-  if (launchState === 'registering' || isRegistering) {
+  if (isRegistering) {
     return (
       <CenteredWrapper>
         <Stack rowGap={2} alignItems="center">
