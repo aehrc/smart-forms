@@ -44,7 +44,7 @@
     "@tanstack/react-table": "^8.21.3",
     "allotment": "^1.20.4",
     "date-fns": "^4.1.0",
-    "dayjs": "^1.11.13",
+    "dayjs": "^1.11.18",
     "fhir-sdc-helpers": "^0.1.0",
     "fhirclient": "^2.6.0",
     "he": "^1.2.0",
