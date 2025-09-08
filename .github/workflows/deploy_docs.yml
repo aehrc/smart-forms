@@ -26,7 +26,7 @@ jobs:
           cache: npm
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: arn:aws:iam::209248795938:role/SmartFormsReactAppDeployment
           aws-region: ap-southeast-2
@@ -59,7 +59,7 @@ jobs:
           cache: npm
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: arn:aws:iam::209248795938:role/SmartFormsReactAppDeployment
           aws-region: ap-southeast-2
