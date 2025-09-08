@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/aehrc/smart-forms#readme",
   "dependencies": {
-    "dayjs": "^1.11.10",
+    "dayjs": "^1.11.18",
     "fhir-sdc-helpers": "^0.1.0",
     "fhirclient": "^2.6.0",
     "fhirpath": "3.15.2",
