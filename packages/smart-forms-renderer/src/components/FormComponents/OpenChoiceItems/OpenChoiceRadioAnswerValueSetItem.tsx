@@ -148,6 +148,7 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
       // If open label is unchecked, remove it from answers
       if (changedOpenLabelValue === '') {
         onQrItemChange(createEmptyQrItem(qItem, answerKey));
+        setOpenLabelSelected(false);
         return;
       }
 
@@ -163,6 +164,7 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
   function handleClear() {
     onQrItemChange(createEmptyQrItem(qItem, answerKey));
     setOpenLabelSelected(false);
+    setOpenLabelValue('');
   }
 
   return (
