@@ -66,7 +66,7 @@ export const TimeBasic: Story = {
     expect(result[0].valueTime).toBe(targetTime);
   }
 };
-export const TextBasicResponse: Story = {
+export const TimeBasicResponse: Story = {
   args: {
     questionnaire: qTimeBasic,
     questionnaireResponse: qrTimeBasic
