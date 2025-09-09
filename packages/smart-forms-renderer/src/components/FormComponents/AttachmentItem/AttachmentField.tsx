@@ -118,7 +118,7 @@ function AttachmentField(props: AttachmentFieldProps) {
                 )
               },
               htmlInput: {
-                'data-test': 'file-name',
+                'data-test': 'q-item-attachment-file-name',
                 'aria-label': 'File name (optional)'
               }
             }}

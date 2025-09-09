@@ -55,7 +55,7 @@ function OpenChoiceRadioAnswerOptionFields(props: OpenChoiceRadioAnswerOptionFie
 
   return (
     <RadioFormGroup
-      data-test={`label-${openLabelValue}`}
+      data-test={`radio-group-${openLabelValue}`}
       qItem={qItem}
       options={options}
       valueRadio={valueRadio}

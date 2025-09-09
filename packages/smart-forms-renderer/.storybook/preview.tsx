@@ -26,6 +26,9 @@ const mockLibrary: Record<string, unknown> = {
     }
 };
 
+// Override the global fetch function to return mock responses for specific URLs.
+// This allows Storybook stories to work with predictable test data without relying on real network requests.
+
 global.fetch = (async (input: RequestInfo | URL) => {
   const url =
     typeof input === 'string' ? input.trim() : input instanceof URL ? input.href : input.url;

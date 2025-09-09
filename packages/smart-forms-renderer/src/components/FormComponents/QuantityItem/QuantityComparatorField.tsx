@@ -46,7 +46,7 @@ function QuantityComparatorField(props: QuantityComparatorFieldProps) {
   return (
     <Box>
       <Autocomplete
-        data-test={'comparator'}
+        data-test={'q-item-quantity-comparator'}
         id={itemType + '-' + linkId + '-comparator'}
         value={valueSelect ?? null}
         options={options}
