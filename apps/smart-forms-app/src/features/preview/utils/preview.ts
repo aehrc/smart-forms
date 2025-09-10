@@ -348,7 +348,7 @@ function getGroupHeading(qItem: QuestionnaireItem, nestedLevel: number): string 
  * @param {QuestionnaireResponseItem[]} qrItems - Array of repeated response items for the group.
  * @returns {string} HTML string of the rendered table.
  */
-function renderRepeatGroupHtml(
+export function renderRepeatGroupHtml(
   qItem: QuestionnaireItem,
   qrItems: QuestionnaireResponseItem[]
 ): string {
@@ -412,7 +412,7 @@ function renderRepeatGroupHtml(
  * @param {QuestionnaireResponseItemAnswer} answer - The answer object to convert.
  * @returns {string} A string representation of the answer value.
  */
-function answerToString(answer: QuestionnaireResponseItemAnswer): string {
+export function answerToString(answer: QuestionnaireResponseItemAnswer): string {
   if (answer.valueBoolean !== undefined) {
     return answer.valueBoolean ? 'Yes' : 'No';
   }

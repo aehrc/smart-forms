@@ -17,7 +17,7 @@
 
 import { Box, Typography } from '@mui/material';
 import FaceIcon from '@mui/icons-material/Face';
-import { constructName } from '../../features/smartAppLaunch/utils/launchContext.ts';
+import { constructName } from '../../utils/humanName.ts';
 import dayjs from 'dayjs';
 import { AccountDetailsTypography, AccountNameTypography } from '../Typography/Typography.tsx';
 import { useTheme } from '@mui/material/styles';

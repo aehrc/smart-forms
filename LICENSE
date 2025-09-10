@@ -1489,18 +1489,6 @@ separate files distributed with the Software.
 │  ├─ publisher: Nicholas C. Zakas
 │  ├─ path: node_modules/@humanwhocodes/object-schema
 │  └─ licenseFile: node_modules/@humanwhocodes/object-schema/LICENSE
-├─ @iconify/react@4.1.0
-│  ├─ licenses: MIT
-│  ├─ repository: https://github.com/iconify/iconify
-│  ├─ publisher: Vjacheslav Trushkin
-│  ├─ path: node_modules/@iconify/react
-│  └─ licenseFile: node_modules/@iconify/react/license.txt
-├─ @iconify/types@2.0.0
-│  ├─ licenses: MIT
-│  ├─ repository: https://github.com/iconify/iconify
-│  ├─ publisher: Vjacheslav Trushkin
-│  ├─ path: node_modules/@iconify/types
-│  └─ licenseFile: node_modules/@iconify/types/license.txt
 ├─ @istanbuljs/load-nyc-config@1.1.0
 │  ├─ licenses: ISC
 │  ├─ repository: https://github.com/istanbuljs/load-nyc-config

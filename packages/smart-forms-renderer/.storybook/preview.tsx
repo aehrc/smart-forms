@@ -9,11 +9,46 @@ import { createTheme } from '@mui/material/styles';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import '../src/stories/storybookWrappers/iframeResizerChild.js';
 
+const mockLibrary: Record<string, unknown> = {
+  'https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/administrative-gender':
+    {
+      resourceType: 'ValueSet',
+      expansion: {
+        contains: [
+          {
+            code: 'female',
+            display: 'Female',
+            system: 'http://hl7.org/fhir/administrative-gender'
+          },
+          { code: 'male', display: 'Male', system: 'http://hl7.org/fhir/administrative-gender' }
+        ]
+      }
+    }
+};
+
+// Override the global fetch function to return mock responses for specific URLs.
+// This allows Storybook stories to work with predictable test data without relying on real network requests.
+
+global.fetch = (async (input: RequestInfo | URL) => {
+  const url =
+    typeof input === 'string' ? input.trim() : input instanceof URL ? input.href : input.url;
+
+  if (mockLibrary[url]) {
+    return new Response(JSON.stringify(mockLibrary[url]), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  return new Response(JSON.stringify({ error: 'Mock not found for ' + url }), {
+    status: 404,
+    headers: { 'Content-Type': 'application/json' }
+  });
+}) as typeof fetch;
+
 export const decorators = [
   withThemeFromJSXProvider({
-    themes: {
-      light: createTheme()
-    },
+    themes: { light: createTheme() },
     defaultTheme: 'light',
     Provider: ThemeProvider,
     GlobalStyles: CssBaseline

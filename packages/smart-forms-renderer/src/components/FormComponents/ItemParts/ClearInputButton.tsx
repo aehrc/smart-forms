@@ -42,6 +42,7 @@ function ClearInputButton(props: ClearInputButtonProps) {
     <Fade in={buttonShown} timeout={100}>
       <Tooltip role="button" title="Clear">
         <Button
+          aria-label="Clear"
           sx={{
             color: grey['500'],
             '&:hover': { backgroundColor: grey['200'] }

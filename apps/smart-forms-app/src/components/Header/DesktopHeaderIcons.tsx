@@ -17,7 +17,7 @@
 
 import { Avatar, Box, Typography, useTheme } from '@mui/material';
 import { AccountDetailsTypography, AccountNameTypography } from '../Typography/Typography.tsx';
-import { constructName } from '../../features/smartAppLaunch/utils/launchContext.ts';
+import { constructName } from '../../utils/humanName.ts';
 import MedicalServicesIcon from '@mui/icons-material/MedicalServices';
 import useSmartClient from '../../hooks/useSmartClient.ts';
 

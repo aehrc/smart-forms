@@ -17,13 +17,13 @@
 
 import { Box, IconButton, Stack, Typography } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
-import Iconify from '../../../../../../components/Iconify/Iconify.tsx';
-import { constructName } from '../../../../../smartAppLaunch/utils/launchContext.ts';
+import { constructName } from '../../../../../../utils/humanName.ts';
 import OpenResponseButton from '../Buttons/OpenResponseButton.tsx';
 import type { QuestionnaireResponse } from 'fhir/r4';
 import useSmartClient from '../../../../../../hooks/useSmartClient.ts';
 import useSelectedQuestionnaire from '../../../../hooks/useSelectedQuestionnaire.ts';
 import { useResponsive } from '@aehrc/smart-forms-renderer';
+import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
 
 interface ResponseListToolbarButtonsProps {
   selectedResponse: QuestionnaireResponse | null;
@@ -66,7 +66,7 @@ function ResponseListToolbarButtons(props: ResponseListToolbarButtonsProps) {
         <IconButton
           onClick={() => clearSelectedQuestionnaire()}
           data-test="button-remove-questionnaire-filter">
-          <Iconify icon="material-symbols:filter-alt-off-outline" />
+          <FilterAltOffIcon />
         </IconButton>
         <Typography
           fontSize={9}

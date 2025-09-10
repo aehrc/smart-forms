@@ -203,7 +203,7 @@ describe('extract MedicalHistoryCurrentProblemsWithPatch', () => {
     // Extracted should only produce one entry - FHIRPatch with method PATCH, resourceId must be "uti-pat-sf"
     expect(extracted.entry?.[0]?.resource?.resourceType).toEqual('Parameters');
     expect(
-      (extracted.entry?.[0]?.resource as Parameters)?.parameter?.[0]?.part?.[3]
+      (extracted.entry?.[0]?.resource as Parameters)?.parameter?.[0]?.part?.[2]
         ?.valueCodeableConcept
     ).toEqual({
       coding: [
@@ -289,7 +289,7 @@ describe('extract MedicalHistoryCurrentProblemsWithPatch2', () => {
     // 1st resource must be "uti-pat-sf" with two operations - change clinical status and add abatement date
     expect(extracted.entry?.[0]?.resource?.resourceType).toEqual('Parameters');
     expect(
-      (extracted.entry?.[0]?.resource as Parameters)?.parameter?.[0]?.part?.[3]
+      (extracted.entry?.[0]?.resource as Parameters)?.parameter?.[0]?.part?.[2]
         ?.valueCodeableConcept
     ).toEqual({
       coding: [
@@ -302,7 +302,7 @@ describe('extract MedicalHistoryCurrentProblemsWithPatch2', () => {
     });
 
     expect(
-      (extracted.entry?.[0]?.resource as Parameters)?.parameter?.[1]?.part?.[3]?.valueDateTime
+      (extracted.entry?.[0]?.resource as Parameters)?.parameter?.[1]?.part?.[2]?.valueDateTime
     ).toEqual('2025-06-04');
     expect(extracted.entry?.[0]?.request?.method).toEqual('PATCH');
     expect(extracted.entry?.[0]?.request?.url).toEqual('Condition/uti-pat-sf');
@@ -310,7 +310,7 @@ describe('extract MedicalHistoryCurrentProblemsWithPatch2', () => {
     // 2nd resource must be "diabetes-pat-sf" with one operation - add abatement date
     expect(extracted.entry?.[1]?.resource?.resourceType).toEqual('Parameters');
     expect(
-      (extracted.entry?.[1]?.resource as Parameters)?.parameter?.[0]?.part?.[3]?.valueDateTime
+      (extracted.entry?.[1]?.resource as Parameters)?.parameter?.[0]?.part?.[2]?.valueDateTime
     ).toEqual('2025-06-04');
     expect(extracted.entry?.[1]?.request?.method).toEqual('PATCH');
     expect(extracted.entry?.[1]?.request?.url).toEqual('Condition/diabetes-pat-sf');

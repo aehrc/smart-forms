@@ -27,6 +27,8 @@ export default defineConfig([globalIgnores([
     "**/dist/**/*",
     "**/lib",
     "**/demo-renderer-app/src/components/ui/*.tsx",
+    "**/*.test.tsx",
+    "**/*.test.ts",
     "!**/.storybook",
 ]), {
     extends: fixupConfigRules(compat.extends(

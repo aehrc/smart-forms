@@ -17,6 +17,13 @@
 
 import '@testing-library/jest-dom';
 
+// Polyfill for structuredClone (Node.js 17+ feature)
+if (!global.structuredClone) {
+  global.structuredClone = (obj: any) => {
+    return JSON.parse(JSON.stringify(obj));
+  };
+}
+
 // Need to mock as nanoid is an ESM module
 jest.mock('nanoid', () => ({
   nanoid: () => 'mocked-id-123'

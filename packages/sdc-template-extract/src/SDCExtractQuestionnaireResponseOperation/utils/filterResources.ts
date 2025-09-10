@@ -1,6 +1,11 @@
 import type { FhirResource } from 'fhir/r4';
-import { parametersIsFhirPatch } from './typePredicates';
-import type { FhirPatchParameterEntry, FhirPatchPart } from '../interfaces/fhirpatch.interface';
+import { isFhirPatchPathPart, isFhirPatchTypePart, parametersIsFhirPatch } from './typePredicates';
+import type {
+  FhirPatchParameterEntry,
+  FhirPatchPart,
+  FhirPatchPathPart,
+  FhirPatchTypePart
+} from '../interfaces/fhirpatch.interface';
 
 /**
  * Determines whether a single extracted FHIR resource should be included in the bundle.
@@ -97,14 +102,47 @@ function filterFhirPatchChangedOperations(
   extractedEntries: FhirPatchParameterEntry[],
   comparisonEntries: FhirPatchParameterEntry[]
 ): FhirPatchParameterEntry[] {
-  const operationsToRetain: FhirPatchParameterEntry[] = [];
-  for (let i = 0; i < extractedEntries.length; i++) {
-    const extractedOperation = extractedEntries[i];
-    const comparisonOperation = comparisonEntries[i];
+  // Build a map of comparison operations keyed by {type}-{path}
+  // Use a map instead of using indexes because some empty operations might be filtered out in filterFhirPatchEmptyValues previously, resulting in un-aligned indexes
+  const comparisonMap = new Map<string, FhirPatchParameterEntry>(
+    comparisonEntries
+      .map((entry) => {
+        const typePart = entry.part.find((p) => isFhirPatchTypePart(p)) as
+          | FhirPatchTypePart
+          | undefined;
+        const pathPart = entry.part.find((p) => isFhirPatchPathPart(p)) as
+          | FhirPatchPathPart
+          | undefined;
+        if (!typePart || !pathPart) {
+          return null;
+        }
 
+        const key = `${typePart.valueCode}-${pathPart.valueString}`;
+        return [key, entry] as const;
+      })
+      .filter((x): x is [string, FhirPatchParameterEntry] => x !== null)
+  );
+
+  const operationsToRetain: FhirPatchParameterEntry[] = [];
+  for (const extractedOperation of extractedEntries) {
     if (!extractedOperation) {
       continue; // Skip if extractedOperation is missing
     }
+
+    const typePart = extractedOperation.part.find((p) => isFhirPatchTypePart(p)) as
+      | FhirPatchTypePart
+      | undefined;
+    const pathPart = extractedOperation.part.find((p) => isFhirPatchPathPart(p)) as
+      | FhirPatchPathPart
+      | undefined;
+    if (!typePart || !pathPart) {
+      // If we can't build the key, just keep it - as a conservative decision
+      operationsToRetain.push(extractedOperation);
+      continue;
+    }
+
+    const key = `${typePart.valueCode}-${pathPart.valueString}`;
+    const comparisonOperation = comparisonMap.get(key);
 
     const operationsAreEqual =
       JSON.stringify(extractedOperation) === JSON.stringify(comparisonOperation);

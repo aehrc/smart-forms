@@ -694,10 +694,6 @@ export const QMedicalHistoryCurrentProblemsWithPatch2: Questionnaire = {
               valueString: 'Condition.clinicalStatus'
             },
             {
-              name: 'name',
-              valueString: 'clinicalStatus'
-            },
-            {
               name: 'value',
               valueCodeableConcept: {
                 coding: [
@@ -725,10 +721,6 @@ export const QMedicalHistoryCurrentProblemsWithPatch2: Questionnaire = {
             {
               name: 'path',
               valueString: 'Condition.abatement'
-            },
-            {
-              name: 'name',
-              valueString: 'abatement'
             },
             {
               name: 'value',

@@ -20,6 +20,7 @@ import type { RegexValidation } from '../interfaces/regex.interface';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 import { default as htmlParse } from 'html-react-parser';
 import type { JSX } from 'react';
+import { getInitialExpression } from './getExpressionsFromItem';
 
 export function hasDisplayCategory(qItem: QuestionnaireItem): boolean {
   return !!qItem.extension?.some(
@@ -418,7 +419,8 @@ export function getMinValue(qItem: QuestionnaireItem): string | number | undefin
 export function getMinValueFeedback(qItem: QuestionnaireItem): string | null {
   const extension = qItem.extension?.find(
     (extension: Extension) =>
-      extension.url === 'https://smartforms.csiro.au/docs/custom-extension/minValue-feedback'
+      extension.url === 'https://smartforms.csiro.au/docs/custom-extension/minValue-feedback' ||
+      extension.url === 'https://smartforms.csiro.au/ig/StructureDefinition/minValue-feedback'
   );
 
   return extension?.valueString ?? null;
@@ -451,7 +453,8 @@ export function getMaxValue(qItem: QuestionnaireItem): string | number | undefin
 export function getMaxValueFeedback(qItem: QuestionnaireItem): string | null {
   const extension = qItem.extension?.find(
     (extension: Extension) =>
-      extension.url === 'https://smartforms.csiro.au/docs/custom-extension/maxValue-feedback'
+      extension.url === 'https://smartforms.csiro.au/docs/custom-extension/maxValue-feedback' ||
+      extension.url === 'https://smartforms.csiro.au/ig/StructureDefinition/maxValue-feedback'
   );
 
   return extension?.valueString ?? null;
@@ -461,7 +464,8 @@ export function getMaxValueFeedback(qItem: QuestionnaireItem): string | null {
 export function getRequiredFeedback(qItem: QuestionnaireItem): string | null {
   const extension = qItem.extension?.find(
     (extension: Extension) =>
-      extension.url === 'https://smartforms.csiro.au/docs/custom-extension/required-feedback'
+      extension.url === 'https://smartforms.csiro.au/docs/custom-extension/required-feedback' ||
+      extension.url === 'https://smartforms.csiro.au/ig/StructureDefinition/required-feedback'
   );
 
   return extension?.valueString ?? null;
@@ -505,7 +509,9 @@ export function getMinQuantityValueFeedback(qItem: QuestionnaireItem): string | 
   const extension = qItem.extension?.find(
     (extension: Extension) =>
       extension.url ===
-      'https://smartforms.csiro.au/docs/custom-extension/minQuantityValue-feedback'
+        'https://smartforms.csiro.au/docs/custom-extension/minQuantityValue-feedback' ||
+      extension.url ===
+        'https://smartforms.csiro.au/ig/StructureDefinition/minQuantityValue-feedback'
   );
 
   return extension?.valueString ?? null;
@@ -549,7 +555,9 @@ export function getMaxQuantityValueFeedback(qItem: QuestionnaireItem): string | 
   const extension = qItem.extension?.find(
     (extension: Extension) =>
       extension.url ===
-      'https://smartforms.csiro.au/docs/custom-extension/maxQuantityValue-feedback'
+        'https://smartforms.csiro.au/docs/custom-extension/maxQuantityValue-feedback' ||
+      extension.url ===
+        'https://smartforms.csiro.au/ig/StructureDefinition/maxQuantityValue-feedback'
   );
 
   return extension?.valueString ?? null;
@@ -565,7 +573,9 @@ export function isItemTextHidden(qItem: QuestionnaireItem): boolean {
   const extension = qItem._text?.extension?.find(
     (extension: Extension) =>
       extension.url ===
-      'https://smartforms.csiro.au/docs/custom-extension/questionnaire-item-text-hidden'
+        'https://smartforms.csiro.au/docs/custom-extension/QuestionnaireItemTextHidden' ||
+      extension.url ===
+        'https://smartforms.csiro.au/ig/StructureDefinition/QuestionnaireItemTextHidden'
   );
 
   return !!extension?.valueBoolean;
@@ -580,8 +590,33 @@ export function isItemTextHidden(qItem: QuestionnaireItem): boolean {
 export function isGroupAddItemButtonHidden(qItem: QuestionnaireItem): boolean {
   const extension = qItem.extension?.find(
     (extension: Extension) =>
+      extension.url ===
+        'https://smartforms.csiro.au/docs/custom-extension/GroupHideAddItemButton' ||
       extension.url === 'https://smartforms.csiro.au/ig/StructureDefinition/GroupHideAddItemButton'
   );
 
   return !!extension?.valueBoolean;
+}
+
+/**
+ * Check if the QuestionnaireItem has a 'showRepopulateButton' extension to show a sync button for granular repopulation.
+ */
+export function isItemRepopulatable(qItem: QuestionnaireItem): boolean {
+  // Get questionnaire-initialExpression-repopulatable button extension
+  // Currently fixed to 'manual' repopulation only.
+  // See https://chat.fhir.org/#narrow/channel/179255-questionnaire/topic/Granular.20Repopulate.20button/with/533937578 for more details.
+  const isRepopulatableExtension = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url ===
+        'https://smartforms.csiro.au/ig/StructureDefinition/questionnaire-initialExpression-repopulatable' &&
+      extension.valueCode === 'manual'
+  );
+
+  // Also need to check if the item has an initialExpression, because this button depends on it
+  const initialExpression = getInitialExpression(qItem);
+  if (!initialExpression) {
+    return false;
+  }
+
+  return !!isRepopulatableExtension;
 }

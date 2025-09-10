@@ -1,0 +1,58 @@
+/// <reference types="jest" />
+/// <reference types="@testing-library/jest-dom" />
+
+/*
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
+ * Organisation (CSIRO) ABN 41 687 119 230.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import { convertKebabToCamelCase, getStylesFromClass } from '../hooks/useParseXhtml';
+
+describe('convertKebabToCamelCase', () => {
+  it('should convert kebab-case to camelCase', () => {
+    expect(convertKebabToCamelCase('background-color')).toBe('backgroundColor');
+    expect(convertKebabToCamelCase(' font-size ')).toBe('fontSize');
+    expect(convertKebabToCamelCase('margin-top')).toBe('marginTop');
+  });
+});
+describe('getStylesFromClass', () => {
+  beforeEach(() => {
+    // Remove any previously injected styles
+    document.head.innerHTML = '';
+
+    // Inject a real <style> element into the document
+    const styleEl = document.createElement('style');
+    styleEl.textContent = `
+      .test-class { color: red; font-size: 14px; }
+      .other-class { margin: 10px; }
+    `;
+    document.head.appendChild(styleEl);
+  });
+
+  it('returns null for empty or null class name', () => {
+    expect(getStylesFromClass('')).toBeNull();
+    expect(getStylesFromClass(null as any)).toBeNull();
+  });
+
+  it('extracts styles from the injected stylesheet', () => {
+    const styles = getStylesFromClass('test-class');
+    expect(styles).toEqual({ color: 'red', fontSize: '14px' });
+  });
+
+  it('returns null if class not found', () => {
+    const styles = getStylesFromClass('non-existent-class');
+    expect(styles).toBeNull();
+  });
+});

@@ -19,7 +19,7 @@ import {
   AccountDetailsTypography,
   AccountNameTypographyNoWrap
 } from '../../Typography/Typography.tsx';
-import { constructName } from '../../../features/smartAppLaunch/utils/launchContext.ts';
+import { constructName } from '../../../utils/humanName.ts';
 import { PopoverMenuWrapper } from './Popover.styles.ts';
 import { Typography } from '@mui/material';
 import useSmartClient from '../../../hooks/useSmartClient.ts';

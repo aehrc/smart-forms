@@ -25,10 +25,10 @@ import { useBuildForm, useRendererQueryClient } from '../../hooks';
 import type Client from 'fhirclient/lib/Client';
 import PrePopButtonForStorybook from './PrePopButtonForStorybook';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
-import { fetchResourceCallback } from './populateCallbackForStorybook';
 import { buildForm } from '../../utils';
 import { STORYBOOK_TERMINOLOGY_SERVER_URL } from './globals';
 import { useQuestionnaireStore } from '../../stores';
+import { fetchResourceCallback } from '../../api/callback';
 
 interface PrePopWrapperForStorybookProps {
   questionnaire: Questionnaire;
