@@ -17,7 +17,7 @@
 
 import { renderHook } from '@testing-library/react';
 import { useDrop } from 'react-dnd';
-import UseFileDrop from '../hooks/useFileDrop';
+import useFileDrop from '../hooks/useFileDrop';
 
 // Mock react-dnd
 jest.mock('react-dnd', () => ({
@@ -49,19 +49,19 @@ describe('UseFileDrop', () => {
   });
 
   it('returns canDrop as true', () => {
-    const { result } = renderHook(() => UseFileDrop(mockOnDrop));
+    const { result } = renderHook(() => useFileDrop(mockOnDrop));
 
     expect(result.current.canDrop).toBe(true);
   });
 
   it('returns isOver as false initially', () => {
-    const { result } = renderHook(() => UseFileDrop(mockOnDrop));
+    const { result } = renderHook(() => useFileDrop(mockOnDrop));
 
     expect(result.current.isOver).toBe(false);
   });
 
   it('returns dropTarget function', () => {
-    const { result } = renderHook(() => UseFileDrop(mockOnDrop));
+    const { result } = renderHook(() => useFileDrop(mockOnDrop));
 
     expect(result.current.dropTarget).toBe(mockDropTarget);
   });
@@ -75,13 +75,13 @@ describe('UseFileDrop', () => {
       mockDropTarget
     ]);
 
-    const { result } = renderHook(() => UseFileDrop(mockOnDrop));
+    const { result } = renderHook(() => useFileDrop(mockOnDrop));
 
     expect(result.current.isOver).toBe(true);
   });
 
   it('calls useDrop with configuration function and dependencies', () => {
-    renderHook(() => UseFileDrop(mockOnDrop));
+    renderHook(() => useFileDrop(mockOnDrop));
 
     expect(mockUseDrop).toHaveBeenCalledWith(expect.any(Function), [mockOnDrop]);
   });
@@ -95,7 +95,7 @@ describe('UseFileDrop', () => {
       mockDropTarget
     ]);
 
-    const { result } = renderHook(() => UseFileDrop(mockOnDrop));
+    const { result } = renderHook(() => useFileDrop(mockOnDrop));
 
     expect(result.current.canDrop).toBe(false);
   });

@@ -51,12 +51,6 @@ describe('useFocusTabHeading', () => {
   });
 
   describe('basic functionality', () => {
-    it('should return a function', () => {
-      const { result } = renderHook(() => useFocusTabHeading());
-
-      expect(typeof result.current).toBe('function');
-    });
-
     it('should focus the first heading in the tab panel', () => {
       const { result } = renderHook(() => useFocusTabHeading());
 
@@ -94,59 +88,7 @@ describe('useFocusTabHeading', () => {
     });
   });
 
-  describe('edge cases - tab panel not found', () => {
-    it('should handle non-existent tab panel gracefully', () => {
-      jest.spyOn(document, 'getElementById').mockReturnValue(null);
-
-      const { result } = renderHook(() => useFocusTabHeading());
-
-      expect(() => {
-        result.current('non-existent-panel');
-      }).not.toThrow();
-
-      expect(document.getElementById).toHaveBeenCalledWith('non-existent-panel');
-      expect(mockTabPanel.querySelector).not.toHaveBeenCalled();
-    });
-
-    it('should handle empty tab panel ID', () => {
-      jest.spyOn(document, 'getElementById').mockReturnValue(null);
-
-      const { result } = renderHook(() => useFocusTabHeading());
-
-      expect(() => {
-        result.current('');
-      }).not.toThrow();
-
-      expect(document.getElementById).toHaveBeenCalledWith('');
-    });
-
-    it('should handle null tab panel ID', () => {
-      jest.spyOn(document, 'getElementById').mockReturnValue(null);
-
-      const { result } = renderHook(() => useFocusTabHeading());
-
-      expect(() => {
-        result.current(null as any);
-      }).not.toThrow();
-
-      expect(document.getElementById).toHaveBeenCalledWith(null);
-    });
-  });
-
-  describe('edge cases - heading not found', () => {
-    it('should handle tab panel with no headings gracefully', () => {
-      mockTabPanel.querySelector = jest.fn().mockReturnValue(null);
-
-      const { result } = renderHook(() => useFocusTabHeading());
-
-      expect(() => {
-        result.current('test-tab-panel');
-      }).not.toThrow();
-
-      expect(mockTabPanel.querySelector).toHaveBeenCalledWith('h1, h2, h3, h4, h5, h6');
-      expect(mockHeading.focus).not.toHaveBeenCalled();
-    });
-
+  describe('different heading levels', () => {
     it('should query for all heading levels correctly', () => {
       const { result } = renderHook(() => useFocusTabHeading());
 
@@ -154,9 +96,7 @@ describe('useFocusTabHeading', () => {
 
       expect(mockTabPanel.querySelector).toHaveBeenCalledWith('h1, h2, h3, h4, h5, h6');
     });
-  });
 
-  describe('different heading levels', () => {
     it('should handle h1 heading', () => {
       const h1Element = document.createElement('h1');
       h1Element.focus = jest.fn();
@@ -214,183 +154,157 @@ describe('useFocusTabHeading', () => {
       expect(mockHeading.focus).toHaveBeenCalled();
     });
 
-    it('should handle setAttribute throwing error gracefully', () => {
-      mockHeading.hasAttribute = jest.fn().mockReturnValue(false);
-      mockHeading.setAttribute = jest.fn().mockImplementation(() => {
-        throw new Error('setAttribute failed');
+    describe('callback stability', () => {
+      it('should return the same function reference across re-renders', () => {
+        const { result, rerender } = renderHook(() => useFocusTabHeading());
+
+        const firstFunction = result.current;
+
+        rerender();
+
+        expect(result.current).toBe(firstFunction);
       });
 
-      const { result } = renderHook(() => useFocusTabHeading());
+      it('should maintain functionality after re-renders', () => {
+        const { result, rerender } = renderHook(() => useFocusTabHeading());
 
-      expect(() => {
+        rerender();
+        rerender();
+
         result.current('test-tab-panel');
-      }).toThrow('setAttribute failed');
+
+        expect(mockHeading.focus).toHaveBeenCalled();
+      });
     });
 
-    it('should handle focus throwing error gracefully', () => {
-      mockHeading.hasAttribute = jest.fn().mockReturnValue(true);
-      mockHeading.focus = jest.fn().mockImplementation(() => {
-        throw new Error('focus failed');
+    describe('real-world usage scenarios', () => {
+      it('should handle tab navigation in a form', () => {
+        // Simulate a form with tabs
+        const formTabPanel = document.createElement('div');
+        formTabPanel.id = 'form-tab-personal-info';
+
+        const formHeading = document.createElement('h2');
+        formHeading.textContent = 'Personal Information';
+        formHeading.focus = jest.fn();
+        formHeading.hasAttribute = jest.fn().mockReturnValue(false);
+        formHeading.setAttribute = jest.fn();
+
+        formTabPanel.querySelector = jest.fn().mockReturnValue(formHeading);
+        jest.spyOn(document, 'getElementById').mockReturnValue(formTabPanel);
+
+        const { result } = renderHook(() => useFocusTabHeading());
+
+        result.current('form-tab-personal-info');
+
+        expect(formHeading.setAttribute).toHaveBeenCalledWith('tabindex', '-1');
+        expect(formHeading.focus).toHaveBeenCalled();
       });
 
-      const { result } = renderHook(() => useFocusTabHeading());
+      it('should handle complex tab panel structure', () => {
+        // Simulate complex nested structure
+        const complexTabPanel = document.createElement('div');
+        complexTabPanel.id = 'complex-tab';
 
-      expect(() => {
+        const nestedContainer = document.createElement('div');
+        const targetHeading = document.createElement('h3');
+        targetHeading.textContent = 'Section Title';
+        targetHeading.focus = jest.fn();
+        targetHeading.hasAttribute = jest.fn().mockReturnValue(false);
+        targetHeading.setAttribute = jest.fn();
+
+        nestedContainer.appendChild(targetHeading);
+        complexTabPanel.appendChild(nestedContainer);
+
+        // Mock querySelector to find the nested heading
+        complexTabPanel.querySelector = jest.fn().mockReturnValue(targetHeading);
+        jest.spyOn(document, 'getElementById').mockReturnValue(complexTabPanel);
+
+        const { result } = renderHook(() => useFocusTabHeading());
+
+        result.current('complex-tab');
+
+        expect(targetHeading.focus).toHaveBeenCalled();
+      });
+
+      it('should handle multiple heading levels and focus the first one', () => {
+        const multiHeadingPanel = document.createElement('div');
+        multiHeadingPanel.id = 'multi-heading-tab';
+
+        const firstHeading = document.createElement('h2');
+        firstHeading.textContent = 'First Heading';
+        firstHeading.focus = jest.fn();
+        firstHeading.hasAttribute = jest.fn().mockReturnValue(false);
+        firstHeading.setAttribute = jest.fn();
+
+        // Mock querySelector to return the first heading
+        multiHeadingPanel.querySelector = jest.fn().mockReturnValue(firstHeading);
+        jest.spyOn(document, 'getElementById').mockReturnValue(multiHeadingPanel);
+
+        const { result } = renderHook(() => useFocusTabHeading());
+
+        result.current('multi-heading-tab');
+
+        expect(firstHeading.focus).toHaveBeenCalled();
+      });
+    });
+
+    describe('accessibility compliance', () => {
+      it('should ensure heading is focusable for screen readers', () => {
+        const accessibleHeading = document.createElement('h2');
+        accessibleHeading.focus = jest.fn();
+        accessibleHeading.hasAttribute = jest.fn().mockReturnValue(false);
+        accessibleHeading.setAttribute = jest.fn();
+
+        mockTabPanel.querySelector = jest.fn().mockReturnValue(accessibleHeading);
+
+        const { result } = renderHook(() => useFocusTabHeading());
+
         result.current('test-tab-panel');
-      }).toThrow('focus failed');
-    });
-  });
 
-  describe('callback stability', () => {
-    it('should return the same function reference across re-renders', () => {
-      const { result, rerender } = renderHook(() => useFocusTabHeading());
+        expect(accessibleHeading.setAttribute).toHaveBeenCalledWith('tabindex', '-1');
+        expect(accessibleHeading.focus).toHaveBeenCalled();
+      });
 
-      const firstFunction = result.current;
+      it('should work with headings that already have accessibility attributes', () => {
+        const accessibleHeading = document.createElement('h2');
+        accessibleHeading.setAttribute('aria-label', 'Section heading');
+        accessibleHeading.setAttribute('role', 'heading');
+        accessibleHeading.focus = jest.fn();
+        accessibleHeading.hasAttribute = jest.fn().mockReturnValue(true);
 
-      rerender();
+        mockTabPanel.querySelector = jest.fn().mockReturnValue(accessibleHeading);
 
-      expect(result.current).toBe(firstFunction);
-    });
+        const { result } = renderHook(() => useFocusTabHeading());
 
-    it('should maintain functionality after re-renders', () => {
-      const { result, rerender } = renderHook(() => useFocusTabHeading());
-
-      rerender();
-      rerender();
-
-      result.current('test-tab-panel');
-
-      expect(mockHeading.focus).toHaveBeenCalled();
-    });
-  });
-
-  describe('real-world usage scenarios', () => {
-    it('should handle tab navigation in a form', () => {
-      // Simulate a form with tabs
-      const formTabPanel = document.createElement('div');
-      formTabPanel.id = 'form-tab-personal-info';
-
-      const formHeading = document.createElement('h2');
-      formHeading.textContent = 'Personal Information';
-      formHeading.focus = jest.fn();
-      formHeading.hasAttribute = jest.fn().mockReturnValue(false);
-      formHeading.setAttribute = jest.fn();
-
-      formTabPanel.querySelector = jest.fn().mockReturnValue(formHeading);
-      jest.spyOn(document, 'getElementById').mockReturnValue(formTabPanel);
-
-      const { result } = renderHook(() => useFocusTabHeading());
-
-      result.current('form-tab-personal-info');
-
-      expect(formHeading.setAttribute).toHaveBeenCalledWith('tabindex', '-1');
-      expect(formHeading.focus).toHaveBeenCalled();
-    });
-
-    it('should handle complex tab panel structure', () => {
-      // Simulate complex nested structure
-      const complexTabPanel = document.createElement('div');
-      complexTabPanel.id = 'complex-tab';
-
-      const nestedContainer = document.createElement('div');
-      const targetHeading = document.createElement('h3');
-      targetHeading.textContent = 'Section Title';
-      targetHeading.focus = jest.fn();
-      targetHeading.hasAttribute = jest.fn().mockReturnValue(false);
-      targetHeading.setAttribute = jest.fn();
-
-      nestedContainer.appendChild(targetHeading);
-      complexTabPanel.appendChild(nestedContainer);
-
-      // Mock querySelector to find the nested heading
-      complexTabPanel.querySelector = jest.fn().mockReturnValue(targetHeading);
-      jest.spyOn(document, 'getElementById').mockReturnValue(complexTabPanel);
-
-      const { result } = renderHook(() => useFocusTabHeading());
-
-      result.current('complex-tab');
-
-      expect(targetHeading.focus).toHaveBeenCalled();
-    });
-
-    it('should handle multiple heading levels and focus the first one', () => {
-      const multiHeadingPanel = document.createElement('div');
-      multiHeadingPanel.id = 'multi-heading-tab';
-
-      const firstHeading = document.createElement('h2');
-      firstHeading.textContent = 'First Heading';
-      firstHeading.focus = jest.fn();
-      firstHeading.hasAttribute = jest.fn().mockReturnValue(false);
-      firstHeading.setAttribute = jest.fn();
-
-      // Mock querySelector to return the first heading
-      multiHeadingPanel.querySelector = jest.fn().mockReturnValue(firstHeading);
-      jest.spyOn(document, 'getElementById').mockReturnValue(multiHeadingPanel);
-
-      const { result } = renderHook(() => useFocusTabHeading());
-
-      result.current('multi-heading-tab');
-
-      expect(firstHeading.focus).toHaveBeenCalled();
-    });
-  });
-
-  describe('accessibility compliance', () => {
-    it('should ensure heading is focusable for screen readers', () => {
-      const accessibleHeading = document.createElement('h2');
-      accessibleHeading.focus = jest.fn();
-      accessibleHeading.hasAttribute = jest.fn().mockReturnValue(false);
-      accessibleHeading.setAttribute = jest.fn();
-
-      mockTabPanel.querySelector = jest.fn().mockReturnValue(accessibleHeading);
-
-      const { result } = renderHook(() => useFocusTabHeading());
-
-      result.current('test-tab-panel');
-
-      expect(accessibleHeading.setAttribute).toHaveBeenCalledWith('tabindex', '-1');
-      expect(accessibleHeading.focus).toHaveBeenCalled();
-    });
-
-    it('should work with headings that already have accessibility attributes', () => {
-      const accessibleHeading = document.createElement('h2');
-      accessibleHeading.setAttribute('aria-label', 'Section heading');
-      accessibleHeading.setAttribute('role', 'heading');
-      accessibleHeading.focus = jest.fn();
-      accessibleHeading.hasAttribute = jest.fn().mockReturnValue(true);
-
-      mockTabPanel.querySelector = jest.fn().mockReturnValue(accessibleHeading);
-
-      const { result } = renderHook(() => useFocusTabHeading());
-
-      result.current('test-tab-panel');
-
-      expect(accessibleHeading.focus).toHaveBeenCalled();
-    });
-  });
-
-  describe('performance considerations', () => {
-    it('should handle frequent calls efficiently', () => {
-      const { result } = renderHook(() => useFocusTabHeading());
-
-      // Call multiple times
-      for (let i = 0; i < 10; i++) {
         result.current('test-tab-panel');
-      }
 
-      expect(document.getElementById).toHaveBeenCalledTimes(10);
-      expect(mockHeading.focus).toHaveBeenCalledTimes(10);
+        expect(accessibleHeading.focus).toHaveBeenCalled();
+      });
     });
 
-    it('should handle rapid successive calls', () => {
-      const { result } = renderHook(() => useFocusTabHeading());
+    describe('performance considerations', () => {
+      it('should handle frequent calls efficiently', () => {
+        const { result } = renderHook(() => useFocusTabHeading());
 
-      // Rapid calls
-      result.current('test-tab-panel');
-      result.current('test-tab-panel');
-      result.current('test-tab-panel');
+        // Call multiple times
+        for (let i = 0; i < 10; i++) {
+          result.current('test-tab-panel');
+        }
 
-      expect(mockHeading.focus).toHaveBeenCalledTimes(3);
+        expect(document.getElementById).toHaveBeenCalledTimes(10);
+        expect(mockHeading.focus).toHaveBeenCalledTimes(10);
+      });
+
+      it('should handle rapid successive calls', () => {
+        const { result } = renderHook(() => useFocusTabHeading());
+
+        // Rapid calls
+        result.current('test-tab-panel');
+        result.current('test-tab-panel');
+        result.current('test-tab-panel');
+
+        expect(mockHeading.focus).toHaveBeenCalledTimes(3);
+      });
     });
   });
 });

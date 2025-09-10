@@ -29,6 +29,7 @@ function useSmartClient() {
   const setPatient = useSmartConfigStore.use.setPatient();
   const setUser = useSmartConfigStore.use.setUser();
   const setEncounter = useSmartConfigStore.use.setEncounter();
+  const setFhirContext = useSmartConfigStore.use.setFhirContext();
 
   function setSmartClient(client: Client) {
     dispatch({
@@ -72,11 +73,13 @@ function useSmartClient() {
     });
   }
 
-  function setFhirContext(fhirContext: FhirContext[]) {
+  function setFhirContextArray(fhirContext: FhirContext[]) {
     dispatch({
       type: 'SET_FHIR_CONTEXT',
       payload: fhirContext
     });
+
+    setFhirContext(fhirContext);
   }
 
   const smartClient = state.smartClient;
@@ -98,7 +101,7 @@ function useSmartClient() {
     setSmartClient,
     setCommonLaunchContexts,
     setQuestionnaireLaunchContext,
-    setFhirContext
+    setFhirContext: setFhirContextArray
   };
 }
 

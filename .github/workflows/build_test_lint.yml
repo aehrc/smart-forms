@@ -87,6 +87,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      #  sdc-populate is a dependency of the renderer so we need to build it
+      - name: Build workspace packages
+        run: |
+          npm run build -w packages/sdc-populate
+
       - name: Run jest tests
         run: npm run test -w packages/smart-forms-renderer
       - uses: codecov/codecov-action@v4

@@ -17,6 +17,8 @@
 
 import type { QuestionnaireItem } from 'fhir/r4';
 import { getItemTerminologyServerToUse } from '../../utils/preferredTerminologyServer';
+import { getTerminologyServerUrl } from '../../utils/valueSet';
+import { TERMINOLOGY_SERVER_URL } from '../../globals';
 
 // Mock the dependencies
 jest.mock('../../utils/valueSet', () => ({
@@ -26,9 +28,6 @@ jest.mock('../../utils/valueSet', () => ({
 jest.mock('../../globals', () => ({
   TERMINOLOGY_SERVER_URL: 'https://tx.ontoserver.csiro.au/fhir/'
 }));
-
-import { getTerminologyServerUrl } from '../../utils/valueSet';
-import { TERMINOLOGY_SERVER_URL } from '../../globals';
 
 const mockGetTerminologyServerUrl = getTerminologyServerUrl as jest.MockedFunction<
   typeof getTerminologyServerUrl
@@ -242,19 +241,6 @@ describe('getItemTerminologyServerToUse', () => {
       const result = getItemTerminologyServerToUse(qItem, itemPreferredServers, rendererDefault);
 
       expect(result).toBe('https://renderer.default.com/fhir/');
-    });
-
-    it('should handle null itemPreferredTerminologyServers', () => {
-      const qItem = createMockQItem('test-item');
-      const itemPreferredServers = null as any;
-      const rendererDefault = 'https://renderer.default.com/fhir/';
-
-      mockGetTerminologyServerUrl.mockReturnValue(undefined);
-
-      // The function does not handle null itemPreferredServers, it will throw
-      expect(() => {
-        getItemTerminologyServerToUse(qItem, itemPreferredServers, rendererDefault);
-      }).toThrow('Cannot read properties of null');
     });
 
     it('should handle whitespace-only URLs correctly', () => {

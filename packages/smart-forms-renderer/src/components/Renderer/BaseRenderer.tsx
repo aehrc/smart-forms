@@ -32,10 +32,18 @@ import { createSingleItemPath } from '../../utils/itemPath';
 import dayjs from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import {
+  silenceAutocompleteTextareaWarning,
+  silenceReactBeautifulDndError
+} from '../../utils/silenceWarnings';
 
 // Setup DayJs extensions when BaseRenderer.tsx is called
 dayjs.extend(localizedFormat);
 dayjs.extend(customParseFormat);
+
+// Silence warnings for MUI Autocomplete with Textarea and react-beautiful-dnd Droppable error
+silenceAutocompleteTextareaWarning();
+silenceReactBeautifulDndError();
 
 /**
  * Main component of the form-rendering engine.
