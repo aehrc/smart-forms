@@ -124,15 +124,15 @@ function handler(event) {
     }
   }
 
-  // Handle EHR Launcher routes
-  if (uri.includes('/ehr')) {
-    // Remove the /ehr prefix
-    if (uri.startsWith('/ehr/')) {
-      request.uri = uri.replace('/ehr', '');
+  // Handle Smart Forms SMART registration config map routes
+  if (uri.includes('/smart-config')) {
+    // Remove the /smart-config prefix
+    if (uri.startsWith('/smart-config/')) {
+      request.uri = uri.replace('/smart-config', '');
       return request;
     }
 
-    if (uri === '/ehr') {
+    if (uri === '/smart-config') {
       request.uri = '/';
       return request;
     }
