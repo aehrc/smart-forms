@@ -12,6 +12,31 @@ function handler(event) {
     return request;
   }
 
+  // Handle Health Checks Pilot routes
+  if(uri.includes('/healthchecks')) {
+    if (uri.startsWith('/healthchecks/fhir/Questionnaire')) {
+      // Rewrite the URI to the specific S3 object path
+      request.uri = '/healthchecks/fhir/Questionnaire.json';
+    }
+
+    return request;
+  }
+
+  // Handle E Request Demo routes
+  if(uri.includes('/erequestdemo')) {
+    if (uri.startsWith('/erequestdemo/fhir/Questionnaire')) {
+      // Rewrite the URI to the specific S3 object path
+      request.uri = '/erequestdemo/fhir/Questionnaire.json';
+    }
+
+    return request;
+  }
+
+  // Handle Smart Forms SMART registration config map routes
+  if (uri.includes('/smart-config')) {
+    return request;
+  }
+
   // Handle IG routes
   if (uri.includes('/ig')) {
     // Reroute to smartforms.csiro.au/ig/index.html
@@ -119,20 +144,6 @@ function handler(event) {
     }
 
     if (uri === '/api') {
-      request.uri = '/';
-      return request;
-    }
-  }
-
-  // Handle Smart Forms SMART registration config map routes
-  if (uri.includes('/smart-config')) {
-    // Remove the /smart-config prefix
-    if (uri.startsWith('/smart-config/')) {
-      request.uri = uri.replace('/smart-config', '');
-      return request;
-    }
-
-    if (uri === '/smart-config') {
       request.uri = '/';
       return request;
     }
