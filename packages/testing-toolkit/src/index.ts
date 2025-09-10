@@ -209,6 +209,7 @@ export async function chooseQuantityOption(
   }
 
   fireEvent.change(inputWeight, { target: { value: quantity } });
+
   // Here we await for debounced store update
   await new Promise((resolve) => setTimeout(resolve, 500));
 }

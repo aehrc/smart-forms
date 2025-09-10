@@ -26,11 +26,15 @@ export async function getGroupAnswers(groupLinkid: string, answerLinkid: string)
   return result;
 }
 
-export function questionnaireFactory(items: QuestionnaireItem[]): Questionnaire {
+export function questionnaireFactory(
+  items: QuestionnaireItem[],
+  extra?: Omit<Questionnaire, 'resourceType' | 'status' | 'item'>
+): Questionnaire {
   return {
     resourceType: 'Questionnaire',
     status: 'active',
-    item: items
+    item: items,
+    ...extra
   };
 }
 
@@ -58,5 +62,26 @@ export function openLabelExtFactory(text: string): Extension {
   return {
     url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-openLabel',
     valueString: text
+  };
+}
+
+export function calculatedExpressionExtFactory(text: string): Extension {
+  return {
+    url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
+    valueExpression: {
+      language: 'text/fhirpath',
+      expression: text
+    }
+  };
+}
+
+export function variableExtFactory(name: string, text: string): Extension {
+  return {
+    url: 'http://hl7.org/fhir/StructureDefinition/variable',
+    valueExpression: {
+      name: name,
+      language: 'text/fhirpath',
+      expression: text
+    }
   };
 }

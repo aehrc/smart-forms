@@ -16,7 +16,6 @@
  */
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { qBooleanCalculation } from '../assets/questionnaires';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook'; // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 import { getAnswers, itemControlExtFactory, qrFactory, questionnaireFactory } from '../testUtils';
 import {
@@ -158,11 +157,5 @@ export const BooleanCheckboxResponse: Story = {
     const input = element.querySelector('input');
 
     expect(input).toBeChecked();
-  }
-};
-
-export const BooleanCalculation: Story = {
-  args: {
-    questionnaire: qBooleanCalculation
   }
 };
