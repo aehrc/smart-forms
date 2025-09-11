@@ -15,28 +15,47 @@
  * limitations under the License.
  */
 
-import { CssBaseline } from '@mui/material';
-import ThemeProvider from './theme/Theme';
 import Router from './router/Router.tsx';
 import { SnackbarProvider } from 'notistack';
 import SmartClientContextProvider from './contexts/SmartClientContext.tsx';
 import DebugModeContextProvider from './contexts/DebugModeContext.tsx';
-import { ConfigProvider } from './contexts/ConfigContext';
+import { ConfigContext } from './features/configChecker/contexts/ConfigContext.tsx';
+import { useContext } from 'react';
+import type { ConfigFile } from './features/configChecker/utils/config.ts';
+import ConfigChecker from './features/configChecker/components/ConfigChecker.tsx';
+import ConfigContextProvider from './features/configChecker/contexts/ConfigContextProvider.tsx';
+import ProgressSpinner from './components/Spinners/ProgressSpinner.tsx';
+import ConfigError from './features/configChecker/components/ConfigError.tsx';
 
 function App() {
+  const { config, configLoading, configValid, configError, configErrorType } =
+    useContext(ConfigContext);
+
+  // config.json still loading
+  if (configLoading) {
+    return <ProgressSpinner message="Loading configuration" />;
+  }
+
+  // Error loading config.json
+  if (configError) {
+    return <ConfigError configErrorType={configErrorType} />;
+  }
+
+  // config.json loaded but did not pass type validation
+  if (!configValid) {
+    return <ConfigChecker config={config as Partial<ConfigFile>} />;
+  }
+
   return (
-    <ThemeProvider>
-      <SnackbarProvider maxSnack={1}>
-        <ConfigProvider>
-          <SmartClientContextProvider>
-            <DebugModeContextProvider>
-              <CssBaseline />
-              <Router />
-            </DebugModeContextProvider>
-          </SmartClientContextProvider>
-        </ConfigProvider>
-      </SnackbarProvider>
-    </ThemeProvider>
+    <SnackbarProvider maxSnack={1}>
+      <ConfigContextProvider>
+        <SmartClientContextProvider>
+          <DebugModeContextProvider>
+            <Router />
+          </DebugModeContextProvider>
+        </SmartClientContextProvider>
+      </ConfigContextProvider>
+    </SnackbarProvider>
   );
 }
 

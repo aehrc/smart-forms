@@ -30,14 +30,9 @@ import NotFound from '../features/notfound/NotFound.tsx';
 import ExistingResponsesPage from '../features/renderer/components/ExistingResponses/ExistingResponsesPage.tsx';
 import Standalone from '../features/standalone/components/Standalone.tsx';
 import GenericFormResponsePreview from '../features/viewer/GenericFormResponsePreview.tsx';
-import ConfigChecker from '../components/ConfigChecker.tsx';
 
 export default function Router() {
   const router = createBrowserRouter([
-    {
-      path: '/config-check',
-      element: <ConfigChecker />
-    },
     {
       path: '/',
       element: <Authorisation />

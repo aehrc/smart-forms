@@ -1,17 +1,8 @@
 {
-  "clientIds": {
-    "https://smartonfhir.aidbox.beda.software": "6cc9bccb-3ae2-40d7-9660-22c99534520b"
-  },
-  "appConfig": {
-    "terminologyServerUrl": "https://tx.ontoserver.csiro.au/fhir",
-    "formsServerUrl": "https://smartforms.csiro.au/api/fhir",
-    "launchScope": "fhirUser online_access openid profile patient/Condition.rs patient/Observation.rs launch patient/Encounter.rs patient/QuestionnaireResponse.cruds patient/Patient.rs",
-    "launchClientId": "smart-forms-client-id",
-    "inAppPopulate": true,
-    "enableDynamicClientRegistration": true,
-    "dynamicRegistrationFallbackEnabled": true,
-    "additionalRedirectUris": "",
-    "appTitle": "Smart Forms",
-    "showDebugMode": false
-  }
+  "terminologyServerUrl": "https://r4.ontoserver.csiro.au/fhir",
+  "formsServerUrl": "https://smartforms.csiro.au/api/fhir",
+  "defaultClientId": "a57d90e3-5f69-4b92-aa2e-2992180863c1",
+  "defaultLaunchScope": "launch openid fhirUser online_access patient/AllergyIntolerance.cs patient/Condition.cs patient/Encounter.r patient/Immunization.cs patient/Medication.r patient/MedicationStatement.cs patient/Observation.cs patient/Patient.r patient/QuestionnaireResponse.crus user/Practitioner.r launch/questionnaire?role=http://ns.electronichealth.net.au/smart/role/new",
+  "inAppPopulate": true,
+  "registeredClientIdsUrl": "https://smartforms.csiro.au/smart-config/config.json"
 }
