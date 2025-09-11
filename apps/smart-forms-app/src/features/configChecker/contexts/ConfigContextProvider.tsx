@@ -15,14 +15,34 @@
  * limitations under the License.
  */
 
-import { type ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import { useState } from 'react';
 import { ConfigContext } from './ConfigContext.tsx';
 import { useLoadConfig } from '../hooks/useLoadConfig.tsx';
+
+const CLIENT_ID_KEY = 'currentClientId';
 
 function ConfigContextProvider(props: { children: ReactNode }) {
   const { children } = props;
 
   const { config, configLoading, configValid, configError, configErrorType } = useLoadConfig();
+
+  // The resolved client ID actually used for launch. This will be taken from `registeredClientIds` if available for the issuer, otherwise falls back to `defaultClientId`.
+
+  const [currentClientId, setCurrentClientId] = useState<string>(() => {
+    return sessionStorage.getItem(CLIENT_ID_KEY) ?? '';
+  });
+
+  // Also persist in sessionStorage so it survives page reloads
+  function onSetCurrentClientId(id: string) {
+    setCurrentClientId(id);
+
+    if (id) {
+      sessionStorage.setItem(CLIENT_ID_KEY, id);
+    } else {
+      sessionStorage.removeItem(CLIENT_ID_KEY);
+    }
+  }
 
   return (
     <ConfigContext.Provider
@@ -31,7 +51,9 @@ function ConfigContextProvider(props: { children: ReactNode }) {
         configLoading,
         configValid,
         configError,
-        configErrorType
+        configErrorType,
+        currentClientId,
+        onSetCurrentClientId
       }}>
       {children}
     </ConfigContext.Provider>

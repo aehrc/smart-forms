@@ -16,7 +16,8 @@
  */
 
 import { Box, Paper, Typography } from '@mui/material';
-import { AppConfig, isValidRegisteredClientIds, isValidUrl } from '../utils/config.ts';
+import type { AppConfig } from '../utils/config.ts';
+import { isValidRegisteredClientIds, isValidUrl } from '../utils/config.ts';
 import ConfigCheckerProgress from './ConfigCheckerProgress.tsx';
 import ConfigCheckerListItem from './ConfigCheckerListItem.tsx';
 import { useMemo } from 'react';
@@ -56,18 +57,9 @@ function ConfigCheckerList(props: ConfigCheckerListProps) {
     },
     {
       label: 'Default Launch Scope',
-      isValid: typeof config.defaultLaunchScope === 'string' && config.defaultLaunchScope !== '',
+      isValid: typeof config.launchScopes === 'string' && config.launchScopes !== '',
       type: 'string',
-      description: config.defaultLaunchScope || 'Default SMART App Launch scopes  not configured'
-    },
-    {
-      label: 'InAppPopulate',
-      isValid: typeof config.inAppPopulate === 'boolean',
-      type: 'boolean',
-      description:
-        typeof config.inAppPopulate === 'boolean'
-          ? config.inAppPopulate.toString()
-          : 'Authorization setting not configured'
+      description: config.launchScopes || 'Default SMART App Launch scopes  not configured'
     }
   ];
 

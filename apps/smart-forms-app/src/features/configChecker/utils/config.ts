@@ -22,13 +22,12 @@ export interface ConfigFile {
   // Questionnaire-hosting FHIR server
   formsServerUrl: string;
 
-  // Default/fallback SMART App Launch scopes and launch contexts, preferably client IDs should be assigned by the server and stored in
-  // It will be necessary to tweak these variables if you are connecting the app to your own SMART on FHIR enabled CMS/EHR
-  defaultLaunchScope: string;
+  /* It will be necessary to tweak these variables if you are connecting the app to your own SMART on FHIR enabled CMS/EHR */
+  // Default/fallback SMART App Launch client ID, preferably client IDs should be assigned by the server and stored in a separate JSON file to be fetched at runtime (because there is no persistence on this app)
   defaultClientId: string;
 
-  // Whether in-app data prepopulation (without external context launch) is enabled, default is true unless you are using your own $populate service
-  inAppPopulate: boolean;
+  // SMART App Launch scopes, space-separated
+  launchScopes: string;
 
   // URL link to a JS object of a key-value map of issuers to registered client IDs <issuer, client_id>. See https://hl7.org/fhir/smart-app-launch/app-launch.html#step-1-register on SMART registration recommended practices.
   // If this URL doesn't exist, the app will fallback to using `defaultClientId`.
@@ -47,12 +46,12 @@ export interface AppConfig extends ConfigFile {
 }
 
 export const FALLBACK_CONFIG: AppConfig = {
+  // From ConfigFile
   terminologyServerUrl: 'https://r4.ontoserver.csiro.au/fhir',
   formsServerUrl: 'https://smartforms.csiro.au/api/fhir',
-  defaultLaunchScope:
-    'launch openid fhirUser online_access patient/AllergyIntolerance.cs patient/Condition.cs patient/Encounter.r patient/Immunization.cs patient/Medication.r patient/MedicationStatement.cs patient/Observation.cs patient/Patient.r patient/QuestionnaireResponse.crus user/Practitioner.r launch/questionnaire?role=http://ns.electronichealth.net.au/smart/role/new',
   defaultClientId: 'a57d90e3-5f69-4b92-aa2e-2992180863c1',
-  inAppPopulate: true,
+  launchScopes:
+    'launch openid fhirUser online_access patient/AllergyIntolerance.cs patient/Condition.cs patient/Encounter.r patient/Immunization.cs patient/Medication.r patient/MedicationStatement.cs patient/Observation.cs patient/Patient.r patient/QuestionnaireResponse.crus user/Practitioner.r launch/questionnaire?role=http://ns.electronichealth.net.au/smart/role/new',
   registeredClientIdsUrl: null,
   registeredClientIds: null
 };
@@ -66,9 +65,8 @@ export function responseIsAppConfig(response: any): response is AppConfig {
     isValidUrl(response.formsServerUrl) &&
     typeof response.defaultClientId === 'string' &&
     response.defaultClientId !== '' &&
-    typeof response.defaultLaunchScope === 'string' &&
-    response.defaultLaunchScope !== '' &&
-    typeof response.inAppPopulate === 'boolean' &&
+    typeof response.launchScopes === 'string' &&
+    response.launchScopes !== '' &&
     // Check nullable properties
     (response.registeredClientIdsUrl === null || isValidUrl(response.registeredClientIdsUrl)) &&
     (response.registeredClientIds === null ||

@@ -19,8 +19,9 @@ import type { UseQueryResult } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
 import type { Bundle, Questionnaire } from 'fhir/r4';
 import { filterQuestionnaires, getFormsServerBundlePromise } from '../utils/dashboard.ts';
-import { useMemo } from 'react';
+import { useContext, useMemo } from 'react';
 import { NUM_OF_QUESTIONNAIRES_TO_FETCH } from '../../../globals.ts';
+import { ConfigContext } from '../../configChecker/contexts/ConfigContext.tsx';
 
 interface useFetchQuestionnairesReturnParams {
   questionnaires: Questionnaire[];
@@ -39,6 +40,8 @@ function useFetchQuestionnaires(
 ): useFetchQuestionnairesReturnParams {
   const numOfSearchEntries = NUM_OF_QUESTIONNAIRES_TO_FETCH;
 
+  const { config } = useContext(ConfigContext);
+
   let queryUrl = `/Questionnaire?_count=${numOfSearchEntries}&_sort=-date&`;
   if (debouncedInput) {
     queryUrl += 'title:contains=' + debouncedInput;
@@ -55,7 +58,7 @@ function useFetchQuestionnaires(
     refetch
   } = useQuery<Bundle>({
     queryKey: ['questionnaires' + numOfSearchEntries.toString(), queryUrl],
-    queryFn: () => getFormsServerBundlePromise(queryUrl),
+    queryFn: () => getFormsServerBundlePromise(queryUrl, config.formsServerUrl),
     enabled: queryIsLongEnough && debouncedInput === searchInput
   });
 

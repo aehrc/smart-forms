@@ -23,10 +23,16 @@ import {
   loadRegisteredClientIds,
   responseIsAppConfig
 } from '../utils/config.ts';
-import type { ConfigContextType, ConfigErrorType } from '../contexts/ConfigContext.tsx';
+import type { ConfigErrorType } from '../contexts/ConfigContext.tsx';
 import { useState } from 'react';
 
-export function useLoadConfig(): ConfigContextType {
+export function useLoadConfig(): {
+  config: AppConfig;
+  configLoading: boolean;
+  configValid: boolean;
+  configError: Error | null;
+  configErrorType: ConfigErrorType | null;
+} {
   const [configErrorType, setConfigErrorType] = useState<ConfigErrorType>(null);
 
   const {

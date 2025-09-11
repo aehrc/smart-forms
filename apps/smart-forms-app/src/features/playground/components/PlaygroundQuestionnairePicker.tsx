@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
 import {
   Box,
@@ -33,7 +33,7 @@ import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import type { Questionnaire } from 'fhir/r4';
 import useFetchQuestionnaires from '../../dashboard/hooks/useFetchQuestionnaires';
 import { StyledAlert } from '../../../components/Nav/Nav.styles.ts';
-import { FORMS_SERVER_URL } from '../../../globals.ts';
+import { ConfigContext } from '../../configChecker/contexts/ConfigContext.tsx';
 
 interface PlaygroundQuestionnairePickerProps {
   onBuild: (questionnaire: Questionnaire) => void;
@@ -41,6 +41,8 @@ interface PlaygroundQuestionnairePickerProps {
 
 function PlaygroundQuestionnairePicker(props: PlaygroundQuestionnairePickerProps) {
   const { onBuild } = props;
+
+  const { config } = useContext(ConfigContext);
 
   const [selectedQuestionnaireId, setSelectedQuestionnaireId] = useState('');
 
@@ -83,7 +85,7 @@ function PlaygroundQuestionnairePicker(props: PlaygroundQuestionnairePickerProps
     );
   }
 
-  const resolvableUrl = `${FORMS_SERVER_URL}/Questionnaire/${selectedQuestionnaireId}`;
+  const resolvableUrl = `${config.formsServerUrl}/Questionnaire/${selectedQuestionnaireId}`;
 
   return (
     <>

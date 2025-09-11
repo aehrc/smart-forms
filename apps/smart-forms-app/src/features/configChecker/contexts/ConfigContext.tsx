@@ -27,6 +27,8 @@ export interface ConfigContextType {
   configValid: boolean;
   configError: Error | null;
   configErrorType: ConfigErrorType | null;
+  currentClientId: string;
+  onSetCurrentClientId: (clientId: string) => void;
 }
 
 export const ConfigContext = createContext<ConfigContextType>({
@@ -34,5 +36,7 @@ export const ConfigContext = createContext<ConfigContextType>({
   configLoading: true,
   configValid: false,
   configError: null,
-  configErrorType: null
+  configErrorType: null,
+  currentClientId: '',
+  onSetCurrentClientId: () => void 0
 });

@@ -18,7 +18,7 @@
 
 import ProgressSpinner from '../../../components/Spinners/ProgressSpinner.tsx';
 import type { LaunchState } from './Launch.tsx';
-import { Stack, Typography, Alert, Box } from '@mui/material';
+import { Alert, Box, Stack, Typography } from '@mui/material';
 import CenteredWrapper from '../../../components/Wrapper/CenteredWrapper.tsx';
 import UnlaunchedButton from '../../../components/Button/UnlaunchedButton.tsx';
 
@@ -51,7 +51,9 @@ function LaunchView(props: LaunchViewProps) {
           )}
 
           <Typography fontSize={13}>
-            {"You might have incorrect launch parameters in the URL or the server doesn't exist. "}
+            {
+              "You might have incorrect launch parameters (iss and launch) in the URL or the issuer server doesn't exist. "
+            }
             <br />
             {'Please contact your administrator for assistance.'}
           </Typography>

@@ -15,84 +15,52 @@
  * limitations under the License.
  */
 
-import { useSearchParams } from 'react-router-dom';
-import { oauth2 } from 'fhirclient';
-import { useState, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import LaunchView from './LaunchView.tsx';
-import { DEFAULT_LAUNCH_CLIENT_ID, DEFAULT_LAUNCH_SCOPE } from '../../../globals.ts';
-import { useConfig } from '../../../contexts/ConfigContext';
+import { ConfigContext } from '../../configChecker/contexts/ConfigContext.tsx';
+import { useSearchParams } from 'react-router-dom';
+import { getClientId } from '../utils/launch.ts';
+import { oauth2 } from 'fhirclient';
 
 export type LaunchState = 'loading' | 'error' | 'success';
 
 function Launch() {
   const [launchState, setLaunchState] = useState<LaunchState>('loading');
-  const [clientId, setClientId] = useState<string>(DEFAULT_LAUNCH_CLIENT_ID);
-  const [scope, setScope] = useState<string>(DEFAULT_LAUNCH_SCOPE);
 
-  const { getClientId, getAppConfig, loading: configLoading } = useConfig();
+  const { config, currentClientId, onSetCurrentClientId } = useContext(ConfigContext);
+
+  const { registeredClientIds, defaultClientId, launchScopes } = config;
+
+  // Get issuer and launch from URL parameters
   const [searchParams] = useSearchParams();
   const iss = searchParams.get('iss');
   const launch = searchParams.get('launch');
 
-  // Load configuration and resolve client ID
   useEffect(() => {
-    if (configLoading) return; // Wait for config to load
-
-    const appConfig = getAppConfig();
-    if (!appConfig) {
-      console.log('No app config available, using defaults');
-      setClientId(DEFAULT_LAUNCH_CLIENT_ID);
-      setScope(DEFAULT_LAUNCH_SCOPE);
-      return;
+    if (iss) {
+      const clientId = getClientId(iss, registeredClientIds, defaultClientId);
+      onSetCurrentClientId(clientId);
     }
+  }, [iss, launch, registeredClientIds, defaultClientId, launchScopes, onSetCurrentClientId]);
 
-    setScope(appConfig.launchScope);
+  // authorize() is only called if iss and launch query params are present, AND we have a non-empty client ID
+  if (iss && launch && currentClientId !== '') {
+    // Trigger OAuth redirect
+    oauth2
+      .authorize({
+        iss,
+        clientId: currentClientId,
+        scope: launchScopes
+      })
+      .catch((err) => {
+        console.error(err);
+        setLaunchState('error');
+      });
+  }
 
-    if (!iss) {
-      // No iss parameter, use default client ID from config
-      console.log(
-        'No iss parameter, using default client ID from config:',
-        appConfig.launchClientId
-      );
-      setClientId(appConfig.launchClientId);
-      return;
-    }
+  const launchParamsNotExist = !iss || !launch;
 
-    // Try to get client ID for specific issuer
-    const issuerClientId = getClientId(iss);
-    if (issuerClientId) {
-      console.log(`✅ Using client ID from config for issuer ${iss}: ${issuerClientId}`);
-      setClientId(issuerClientId);
-    } else {
-      console.log('No client ID found in config for issuer, using default client ID');
-      setClientId(appConfig.launchClientId);
-    }
-  }, [iss, configLoading, getClientId, getAppConfig]);
-
-  // Handle OAuth2 authorization when we have the required parameters
-  useEffect(() => {
-    if (iss && clientId) {
-      console.log('Starting OAuth2 authorization with:', { iss, clientId, scope, launch });
-
-      // oauth2.authorize triggers a redirect to EHR
-      oauth2
-        .authorize({
-          iss: iss,
-          clientId: clientId,
-          scope: scope,
-          ...(launch && { launch }) // Only include launch if it exists
-        })
-        .catch((err) => {
-          console.error('OAuth2 authorization failed:', err);
-          setLaunchState('error');
-        });
-    }
-  }, [iss, launch, clientId, scope]);
-
-  // Only require iss parameter, launch is optional
-  const issMissing = !iss;
-
-  if (issMissing && launchState !== 'error') {
+  if (launchParamsNotExist && launchState !== 'error') {
     setLaunchState('error');
   }
 
