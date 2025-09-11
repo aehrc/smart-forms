@@ -18,7 +18,7 @@
 import { useContext, useEffect, useState } from 'react';
 import LaunchView from './LaunchView.tsx';
 import { ConfigContext } from '../../configChecker/contexts/ConfigContext.tsx';
-import { useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { getClientId } from '../utils/launch.ts';
 import { oauth2 } from 'fhirclient';
 
@@ -36,12 +36,22 @@ function Launch() {
   const iss = searchParams.get('iss');
   const launch = searchParams.get('launch');
 
+  // Get clientId from path params (if exists)
+  const { clientId: clientIdFromPath } = useParams();
+
   useEffect(() => {
+    // If launch url includes client ID (e.g. https://smartforms.csiro.au/<client_id>/launch?iss=...), use that client ID
+    if (clientIdFromPath) {
+      onSetCurrentClientId(clientIdFromPath);
+      return;
+    }
+
+    // If launch url does not include client ID,  get client ID from registeredClientIds map
     if (iss) {
       const clientId = getClientId(iss, registeredClientIds, defaultClientId);
       onSetCurrentClientId(clientId);
     }
-  }, [iss, launch, registeredClientIds, defaultClientId, launchScopes, onSetCurrentClientId]);
+  }, [iss, registeredClientIds, defaultClientId, onSetCurrentClientId, clientIdFromPath]);
 
   // authorize() is only called if iss and launch query params are present, AND we have a non-empty client ID
   if (iss && launch && currentClientId !== '') {
@@ -50,7 +60,8 @@ function Launch() {
       .authorize({
         iss,
         clientId: currentClientId,
-        scope: launchScopes
+        scope: launchScopes,
+        redirectUri: window.location.origin
       })
       .catch((err) => {
         console.error(err);
