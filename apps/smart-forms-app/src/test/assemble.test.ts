@@ -16,11 +16,11 @@
  */
 
 import {
+  assembleIfRequired,
   assembleQuestionnaire,
-  updateAssembledQuestionnaire,
-  assembleIfRequired
+  updateAssembledQuestionnaire
 } from '../utils/assemble';
-import type { Questionnaire, OperationOutcome, Bundle, Parameters } from 'fhir/r4';
+import type { Bundle, OperationOutcome, Parameters, Questionnaire } from 'fhir/r4';
 import * as FHIR from 'fhirclient';
 import { isInputParameters } from '@aehrc/sdc-assemble';
 import { getFormsServerAssembledBundlePromise } from '../features/dashboard/utils/dashboard';
@@ -31,9 +31,6 @@ jest.mock('@aehrc/sdc-assemble', () => ({
   isInputParameters: jest.fn()
 }));
 jest.mock('../features/dashboard/utils/dashboard');
-jest.mock('../globals.ts', () => ({
-  FORMS_SERVER_URL: 'http://test-forms-server.example.com/fhir'
-}));
 
 const mockFHIRClient = {
   request: jest.fn()
@@ -73,7 +70,10 @@ describe('assemble comprehensive', () => {
       mockIsInputParameters.mockReturnValue(true);
       mockFHIRClient.request.mockResolvedValue(mockResponse);
 
-      const result = await assembleQuestionnaire(mockQuestionnaire);
+      const result = await assembleQuestionnaire(
+        mockQuestionnaire,
+        'https://example.com/forms/fhir'
+      );
 
       expect(mockIsInputParameters).toHaveBeenCalledWith({
         resourceType: 'Parameters',
@@ -133,7 +133,10 @@ describe('assemble comprehensive', () => {
       // Mock console.warn to verify it's called
       const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
 
-      const result = await assembleQuestionnaire(mockQuestionnaire);
+      const result = await assembleQuestionnaire(
+        mockQuestionnaire,
+        'https://example.com/forms/fhir'
+      );
 
       expect(consoleSpy).toHaveBeenCalledWith('Assemble fail');
       expect(consoleSpy).toHaveBeenCalledWith(mockOperationOutcome);
@@ -145,7 +148,10 @@ describe('assemble comprehensive', () => {
     it('should return original questionnaire when parameters are invalid', async () => {
       mockIsInputParameters.mockReturnValue(false);
 
-      const result = await assembleQuestionnaire(mockQuestionnaire);
+      const result = await assembleQuestionnaire(
+        mockQuestionnaire,
+        'https://example.com/forms/fhir'
+      );
 
       expect(mockFHIRClient.request).not.toHaveBeenCalled();
       expect(result).toEqual(mockQuestionnaire);
@@ -155,7 +161,9 @@ describe('assemble comprehensive', () => {
       mockIsInputParameters.mockReturnValue(true);
       mockFHIRClient.request.mockRejectedValue(new Error('Network error'));
 
-      await expect(assembleQuestionnaire(mockQuestionnaire)).rejects.toThrow('Network error');
+      await expect(
+        assembleQuestionnaire(mockQuestionnaire, 'https://example.com/forms/fhir')
+      ).rejects.toThrow('Network error');
     });
 
     it('should use correct parameters structure for assemble operation', async () => {
@@ -173,7 +181,7 @@ describe('assemble comprehensive', () => {
         parameter: [{ resource: questionnaire }]
       });
 
-      await assembleQuestionnaire(questionnaire);
+      await assembleQuestionnaire(questionnaire, 'https://example.com/forms/fhir');
 
       const expectedParameters: Parameters = {
         resourceType: 'Parameters',
@@ -200,7 +208,10 @@ describe('assemble comprehensive', () => {
       const mockResponse = { resourceType: 'Questionnaire', id: 'updated' };
       mockFHIRClient.request.mockResolvedValue(mockResponse);
 
-      const result = await updateAssembledQuestionnaire(mockQuestionnaire);
+      const result = await updateAssembledQuestionnaire(
+        mockQuestionnaire,
+        'https://example.com/forms/fhir'
+      );
 
       expect(mockFHIRClient.request).toHaveBeenCalledWith({
         url: `Questionnaire/${mockQuestionnaire.id}`,
@@ -219,9 +230,9 @@ describe('assemble comprehensive', () => {
     it('should handle update failure', async () => {
       mockFHIRClient.request.mockRejectedValue(new Error('Update failed'));
 
-      await expect(updateAssembledQuestionnaire(mockQuestionnaire)).rejects.toThrow(
-        'Update failed'
-      );
+      await expect(
+        updateAssembledQuestionnaire(mockQuestionnaire, 'https://example.com/forms/fhir')
+      ).rejects.toThrow('Update failed');
     });
 
     it('should use questionnaire ID in URL correctly', async () => {
@@ -233,7 +244,10 @@ describe('assemble comprehensive', () => {
 
       mockFHIRClient.request.mockResolvedValue({});
 
-      await updateAssembledQuestionnaire(questionnaireWithSpecialId);
+      await updateAssembledQuestionnaire(
+        questionnaireWithSpecialId,
+        'https://example.com/forms/fhir'
+      );
 
       expect(mockFHIRClient.request).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -264,7 +278,7 @@ describe('assemble comprehensive', () => {
     };
 
     it('should return original questionnaire when assembly is not required', async () => {
-      const result = await assembleIfRequired(mockQuestionnaire);
+      const result = await assembleIfRequired(mockQuestionnaire, 'https://example.com/forms/fhir');
 
       expect(result).toEqual(mockQuestionnaire);
       expect(mockGetFormsServerAssembledBundlePromise).not.toHaveBeenCalled();
@@ -289,10 +303,14 @@ describe('assemble comprehensive', () => {
 
       mockGetFormsServerAssembledBundlePromise.mockResolvedValue(mockBundle);
 
-      const result = await assembleIfRequired(mockQuestionnaireWithAssembleExtension);
+      const result = await assembleIfRequired(
+        mockQuestionnaireWithAssembleExtension,
+        'https://example.com/forms/fhir'
+      );
 
       expect(mockGetFormsServerAssembledBundlePromise).toHaveBeenCalledWith(
-        '/Questionnaire?_sort=-date&url=http://example.com/Questionnaire/test&version=1.0.0-assembled'
+        '/Questionnaire?_sort=-date&url=http://example.com/Questionnaire/test&version=1.0.0-assembled',
+        'https://example.com/forms/fhir'
       );
       expect(result).toEqual(existingAssembledQuestionnaire);
     });
@@ -317,7 +335,10 @@ describe('assemble comprehensive', () => {
         })
         .mockResolvedValueOnce({}); // for update operation
 
-      const result = await assembleIfRequired(mockQuestionnaireWithAssembleExtension);
+      const result = await assembleIfRequired(
+        mockQuestionnaireWithAssembleExtension,
+        'https://example.com/forms/fhir'
+      );
 
       expect(result).toEqual(assembledQuestionnaire);
       expect(mockFHIRClient.request).toHaveBeenCalledTimes(2); // assemble + update
@@ -346,7 +367,10 @@ describe('assemble comprehensive', () => {
         parameter: [{ resource: operationOutcome }]
       });
 
-      const result = await assembleIfRequired(mockQuestionnaireWithAssembleExtension);
+      const result = await assembleIfRequired(
+        mockQuestionnaireWithAssembleExtension,
+        'https://example.com/forms/fhir'
+      );
 
       expect(result).toBeNull();
     });
@@ -365,7 +389,10 @@ describe('assemble comprehensive', () => {
         })
         .mockResolvedValueOnce({});
 
-      const result = await assembleIfRequired(mockQuestionnaireWithAssembleExtension);
+      const result = await assembleIfRequired(
+        mockQuestionnaireWithAssembleExtension,
+        'https://example.com/forms/fhir'
+      );
 
       expect(result).toEqual(mockQuestionnaire);
     });
@@ -387,7 +414,10 @@ describe('assemble comprehensive', () => {
         })
         .mockResolvedValueOnce({});
 
-      const result = await assembleIfRequired(mockQuestionnaireWithAssembleExtension);
+      const result = await assembleIfRequired(
+        mockQuestionnaireWithAssembleExtension,
+        'https://example.com/forms/fhir'
+      );
 
       expect(result).toEqual(mockQuestionnaire);
     });
@@ -395,9 +425,9 @@ describe('assemble comprehensive', () => {
     it('should handle getFormsServerAssembledBundlePromise rejection', async () => {
       mockGetFormsServerAssembledBundlePromise.mockRejectedValue(new Error('Bundle fetch failed'));
 
-      await expect(assembleIfRequired(mockQuestionnaireWithAssembleExtension)).rejects.toThrow(
-        'Bundle fetch failed'
-      );
+      await expect(
+        assembleIfRequired(mockQuestionnaireWithAssembleExtension, 'https://example.com/forms/fhir')
+      ).rejects.toThrow('Bundle fetch failed');
     });
 
     it('should use correct query URL format for assembled questionnaire lookup', async () => {
@@ -419,10 +449,11 @@ describe('assemble comprehensive', () => {
         })
         .mockResolvedValueOnce({});
 
-      await assembleIfRequired(questionnaireWithSpecialUrl);
+      await assembleIfRequired(questionnaireWithSpecialUrl, 'https://example.com/forms/fhir');
 
       expect(mockGetFormsServerAssembledBundlePromise).toHaveBeenCalledWith(
-        '/Questionnaire?_sort=-date&url=http://example.com/fhir/Questionnaire/special-test&version=2.1.0-assembled'
+        '/Questionnaire?_sort=-date&url=http://example.com/fhir/Questionnaire/special-test&version=2.1.0-assembled',
+        'https://example.com/forms/fhir'
       );
     });
   });
