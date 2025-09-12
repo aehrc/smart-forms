@@ -56,10 +56,10 @@ function ConfigCheckerList(props: ConfigCheckerListProps) {
       description: config.defaultClientId || 'Default SMART App Launch client ID not configured'
     },
     {
-      label: 'Default Launch Scope',
+      label: 'Default Launch Scopes',
       isValid: typeof config.launchScopes === 'string' && config.launchScopes !== '',
       type: 'string',
-      description: config.launchScopes || 'Default SMART App Launch scopes  not configured'
+      description: config.launchScopes || 'Default SMART App Launch scopes not configured'
     }
   ];
 
