@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-// Non-configurable to fetch global numOfResources constants
+// Global constants controlling the maximum number of resources fetched per request.
 export const NUM_OF_QUESTIONNAIRES_TO_FETCH = 500;
 export const NUM_OF_EXISTING_RESPONSES_TO_FETCH = 200;
 

@@ -142,7 +142,13 @@ export function responseToQuestionnaireResource(
     console.error(response);
   }
 }
-
+/**
+ * Resolves a SMART App Launch client ID for the given FHIR server issuer (`iss`).
+ *
+ * The client ID is determined in the following order:
+ * 1. If a `registeredClientIds` map is provided and contains a client ID for the given `iss`, that client ID will be used.
+ * 2. Otherwise, the function falls back to the `defaultClientId`.
+ */
 export function getClientId(
   iss: string,
   registeredClientIds: Record<string, string> | null,

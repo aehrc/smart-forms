@@ -27,8 +27,7 @@ declare const POPULATE_VERSION: string;
 declare const TEMPLATE_EXTRACT_VERSION: string;
 
 interface ImportMetaEnv {
-  // Environment variables are now handled via config.json
-  // See LOCAL_DEVELOPMENT.md for configuration details
+  // Configuration are now handled via config.json, not Vite env variables
   readonly [key: string]: string | undefined;
 }
 
