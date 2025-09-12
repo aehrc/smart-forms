@@ -39,7 +39,7 @@
     "@mui/icons-material": "^7.1.1",
     "@mui/lab": "^7.0.0-beta.13",
     "@mui/material": "^7.1.1",
-    "@sentry/react": "^10.8.0",
+    "@sentry/react": "^10.11.0",
     "@sentry/tracing": "^7.120.3",
     "@tanstack/react-query": "^5.83.0",
     "@tanstack/react-table": "^8.21.3",
