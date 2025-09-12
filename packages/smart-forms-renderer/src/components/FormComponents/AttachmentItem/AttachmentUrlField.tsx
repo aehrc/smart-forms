@@ -53,6 +53,7 @@ function AttachmentUrlField(props: AttachmentUrlFieldProps) {
       </Typography>
       <Stack direction="row" alignItems="center">
         <StandardTextField
+          multiline
           fullWidth
           textFieldWidth={textFieldWidth}
           isTabled={isTabled}
@@ -86,6 +87,7 @@ function AttachmentUrlField(props: AttachmentUrlFieldProps) {
               )
             },
             htmlInput: {
+              'data-test': 'q-item-attachment-url',
               'aria-label': 'URL'
             }
           }}

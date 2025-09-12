@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import DashboardLayout from '../features/dashboard/layout/DashboardLayout.tsx';
 import Launch from '../features/smartAppLaunch/components/Launch.tsx';
 import QuestionnairesPage from '../features/dashboard/components/DashboardPages/QuestionnairePage/QuestionnairesPage.tsx';
@@ -30,6 +30,7 @@ import NotFound from '../features/notfound/NotFound.tsx';
 import ExistingResponsesPage from '../features/renderer/components/ExistingResponses/ExistingResponsesPage.tsx';
 import Standalone from '../features/standalone/components/Standalone.tsx';
 import GenericFormResponsePreview from '../features/viewer/GenericFormResponsePreview.tsx';
+
 export default function Router() {
   const router = createBrowserRouter([
     {
@@ -49,29 +50,20 @@ export default function Router() {
       path: '/renderer',
       element: <RendererLayout />,
       children: [
-        { path: '', element: <FormWrapper /> }
-        // { path: 'preview', element: <GenericFormResponsePreview /> }
+        { path: '', element: <FormWrapper /> },
+        { path: 'preview', element: <GenericFormResponsePreview /> }
       ]
-    },
-    {
-      path: '/renderer/preview',
-      element: <Navigate to="/viewer/viaRendererPreview" replace />
     },
     {
       path: '/viewer',
       element: <ViewerLayout />,
       children: [
         {
-          path: 'viaRendererPreview',
-          element: <GenericFormResponsePreview />
-        },
-        {
           path: '',
           element: <GenericFormResponsePreview />
         }
       ]
     },
-
     {
       path: '/playground',
       element: <PlaygroundLayout />,
@@ -82,11 +74,12 @@ export default function Router() {
       element: <Standalone />
     },
     {
-      path: '/launch',
+      // Dynamic prefix with optional clientId at /launch route
+      path: '/:clientId?/launch',
       element: <Launch />
     },
     {
-      path: '/launch.html',
+      path: '/:clientId?/launch.html',
       element: <Launch />
     },
     {

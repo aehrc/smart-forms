@@ -30,6 +30,8 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
 import useShowFeedback from '../../../hooks/useShowFeedback';
+import { readIntegerValue } from '../../../utils/readValues';
+import type { QuestionnaireResponseItem } from 'fhir/r4';
 
 function IntegerItem(props: BaseItemProps) {
   const {
@@ -46,30 +48,16 @@ function IntegerItem(props: BaseItemProps) {
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
-  const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
-
   // Init input value
   const answerKey = qrItem?.answer?.[0]?.id;
-  let valueInteger = 0;
-  let initialInput = '';
-  if (qrItem?.answer) {
-    if (qrItem?.answer[0].valueInteger) {
-      valueInteger = qrItem.answer[0].valueInteger;
-    }
-
-    if (qrItem?.answer[0].valueDecimal) {
-      valueInteger = Math.round(qrItem.answer[0].valueDecimal);
-    }
-
-    initialInput = valueInteger.toString();
-  }
+  const { initialInput } = readIntegerValue(qrItem);
 
   const [input, setInput] = useState(initialInput);
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, feedbackFromParent, input);
+  const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
   // Provides a way to hide the feedback when the user is typing
   const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
@@ -113,6 +101,26 @@ function IntegerItem(props: BaseItemProps) {
     setHasBlurred(true); // From now on, feedback should stay visible
   }
 
+  function handleRepopulateSync(newQrItem: QuestionnaireResponseItem | null) {
+    if (newQrItem && newQrItem?.answer) {
+      const { valueInteger: newValueInteger, initialInput: newInput } = readIntegerValue(newQrItem);
+
+      setInput(newInput);
+      onQrItemChange(
+        {
+          ...createEmptyQrItem(qItem, answerKey),
+          answer: [{ id: answerKey, valueInteger: newValueInteger }]
+        },
+        itemPath
+      );
+      return;
+    }
+
+    // At this point newQrItem is null, so create a QRItem to replace it
+    setInput('');
+    onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
+  }
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateQrItemWithDebounce = useCallback(
     debounce((parsedNewInput: string) => {
@@ -125,23 +133,21 @@ function IntegerItem(props: BaseItemProps) {
         });
       }
     }, DEBOUNCE_DURATION),
-    [onQrItemChange, qItem, displayUnit]
+    [onQrItemChange, qItem]
   ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
 
   if (isRepeated) {
     return (
       <IntegerField
-        linkId={qItem.linkId}
-        itemType={qItem.type}
+        qItem={qItem}
         input={input}
         feedback={showFeedback ? feedback : ''}
-        displayPrompt={displayPrompt}
-        displayUnit={displayUnit}
-        entryFormat={entryFormat}
+        renderingExtensions={renderingExtensions}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         isTabled={isTabled}
         onInputChange={handleInputChange}
+        onRepopulateSync={handleRepopulateSync}
         onBlur={handleBlur}
       />
     );
@@ -158,21 +164,19 @@ function IntegerItem(props: BaseItemProps) {
         labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
         fieldChildren={
           <IntegerField
-            linkId={qItem.linkId}
-            itemType={qItem.type}
+            qItem={qItem}
             input={input}
             feedback={showFeedback ? feedback : ''}
-            displayPrompt={displayPrompt}
-            displayUnit={displayUnit}
-            entryFormat={entryFormat}
+            renderingExtensions={renderingExtensions}
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}
             onInputChange={handleInputChange}
+            onRepopulateSync={handleRepopulateSync}
             onBlur={handleBlur}
           />
         }
-        feedback={feedback}
+        feedback={showFeedback ? feedback : undefined}
       />
     </FullWidthFormComponentBox>
   );

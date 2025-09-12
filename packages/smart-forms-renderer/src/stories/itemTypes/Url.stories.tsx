@@ -17,7 +17,10 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { qUrlBasic } from '../assets/questionnaires';
+
+import { getAnswers, questionnaireFactory } from '../testUtils';
+import { findByLinkId, inputUrl } from '@aehrc/testing-toolkit';
+import { expect, fireEvent } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -31,9 +34,39 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+const targetlinkId = 'website-url';
+const targetText = 'Website URL';
+
+const qUrlBasic = questionnaireFactory([
+  {
+    linkId: targetlinkId,
+    type: 'url',
+    repeats: false,
+    text: targetText
+  }
+]);
 
 export const UrlBasic: Story = {
   args: {
     questionnaire: qUrlBasic
+  },
+  play: async ({ canvasElement }) => {
+    await inputUrl(canvasElement, targetlinkId, targetText);
+
+    const result = await getAnswers(targetlinkId);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual(expect.objectContaining({ valueUri: targetText }));
+
+    // Clear value
+    const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
+    fireEvent.click(clearButton as HTMLElement);
+
+    // Here we await for debounced store update
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const resultAfterClear = await getAnswers(targetlinkId);
+    expect(resultAfterClear).toHaveLength(0);
+    const elementAfterClear = await findByLinkId(canvasElement, targetlinkId);
+    const input = elementAfterClear.querySelector('textarea');
+    expect(input?.value).toBe('');
   }
 };

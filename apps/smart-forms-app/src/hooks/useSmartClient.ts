@@ -20,6 +20,7 @@ import { SmartClientContext } from '../contexts/SmartClientContext.tsx';
 import type { Encounter, Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import { useSmartConfigStore } from '@aehrc/smart-forms-renderer';
 import type Client from 'fhirclient/lib/Client';
+import type { FhirContext } from '../features/smartAppLaunch/utils/launch.ts';
 
 function useSmartClient() {
   const { state, dispatch } = useContext(SmartClientContext);
@@ -28,6 +29,7 @@ function useSmartClient() {
   const setPatient = useSmartConfigStore.use.setPatient();
   const setUser = useSmartConfigStore.use.setUser();
   const setEncounter = useSmartConfigStore.use.setEncounter();
+  const setFhirContext = useSmartConfigStore.use.setFhirContext();
 
   function setSmartClient(client: Client) {
     dispatch({
@@ -71,11 +73,21 @@ function useSmartClient() {
     });
   }
 
+  function setFhirContextArray(fhirContext: FhirContext[]) {
+    dispatch({
+      type: 'SET_FHIR_CONTEXT',
+      payload: fhirContext
+    });
+
+    setFhirContext(fhirContext);
+  }
+
   const smartClient = state.smartClient;
   const patient = state.patient;
   const user = state.user;
   const encounter = state.encounter;
   const launchQuestionnaire = state.launchQuestionnaire;
+  const fhirContext = state.fhirContext;
   const tokenReceivedTimestamp = state.tokenReceivedTimestamp;
 
   return {
@@ -84,10 +96,12 @@ function useSmartClient() {
     user,
     encounter,
     launchQuestionnaire,
+    fhirContext,
     tokenReceivedTimestamp,
     setSmartClient,
     setCommonLaunchContexts,
-    setQuestionnaireLaunchContext
+    setQuestionnaireLaunchContext,
+    setFhirContext: setFhirContextArray
   };
 }
 

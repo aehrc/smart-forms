@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
-import { useEffect, useReducer } from 'react';
+import { useContext, useEffect, useReducer } from 'react';
 import { oauth2 } from 'fhirclient';
+import type { tokenResponseCustomised } from '../utils/launch.ts';
 import {
   getQuestionnaireReferences,
   readCommonLaunchContexts,
@@ -28,12 +29,13 @@ import GoToTestLauncher from '../../../components/Snackbar/GoToTestLauncher.tsx'
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
 import { StyledRoot } from './Authorisation.styles.tsx';
-import type { AuthActions, AuthState } from '../types/authorisation.interface.ts';
+import type { AuthActions, AuthState } from '../interfaces/authorisation.interface.ts';
 import RenderAuthStatus from './RenderAuthStatus.tsx';
 import { assembleIfRequired } from '../../../utils/assemble.ts';
 import useAuthRedirectHook from '../hooks/useAuthRedirectHook.ts';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
+import { ConfigContext } from '../../configChecker/contexts/ConfigContext.tsx';
 
 function authReducer(state: AuthState, action: AuthActions): AuthState {
   switch (action.type) {
@@ -69,7 +71,9 @@ const initialAuthState: AuthState = {
 function Authorisation() {
   const [authState, dispatch] = useReducer(authReducer, initialAuthState);
 
-  const { setSmartClient, setCommonLaunchContexts, setQuestionnaireLaunchContext } =
+  const { config } = useContext(ConfigContext);
+
+  const { setSmartClient, setCommonLaunchContexts, setQuestionnaireLaunchContext, setFhirContext } =
     useSmartClient();
 
   const { enqueueSnackbar } = useSnackbar();
@@ -85,6 +89,8 @@ function Authorisation() {
           sessionStorage.setItem('authorised', 'true');
           dispatch({ type: 'UPDATE_HAS_CLIENT', payload: true });
 
+          // Read common launch contexts e.g. patient, user, encounter
+          // via built-in FHIR client methods e.g. client.patient.read()
           readCommonLaunchContexts(client).then(({ patient, user, encounter }) => {
             dispatch({ type: 'UPDATE_HAS_PATIENT', payload: !!patient });
             dispatch({ type: 'UPDATE_HAS_USER', payload: !!user });
@@ -102,10 +108,18 @@ function Authorisation() {
             }
           });
 
-          // Set questionnaire launch context if available
-          const questionnaireReferences = getQuestionnaireReferences(client);
+          // Read FhirContext from the token response
+          const fhirContext =
+            (client.state.tokenResponse as tokenResponseCustomised)?.fhirContext ?? null;
+          if (fhirContext) {
+            setFhirContext(fhirContext);
+          }
+
+          // Get Questionnaire context from fhirContext array
+          // the set questionnaire launch context if available
+          const questionnaireReferences = getQuestionnaireReferences(fhirContext ?? []);
           if (questionnaireReferences.length > 0) {
-            readQuestionnaireContext(client, questionnaireReferences)
+            readQuestionnaireContext(client, questionnaireReferences, config.formsServerUrl)
               .then((response) => {
                 const questionnaire = responseToQuestionnaireResource(response);
 
@@ -117,26 +131,30 @@ function Authorisation() {
 
                 // set questionnaire in provider context
                 // perform assembly if required
-                assembleIfRequired(questionnaire).then(async (questionnaire) => {
-                  if (questionnaire) {
-                    // Post questionnaire to client if it is SMART Health IT
-                    if (
-                      client.state.serverUrl.includes('https://launch.smarthealthit.org/v/r4/fhir')
-                    ) {
-                      questionnaire.id = questionnaire.id + '-SMARTcopy';
-                      postQuestionnaireToSMARTHealthIT(client, questionnaire);
-                    }
+                assembleIfRequired(questionnaire, config.formsServerUrl).then(
+                  async (questionnaire) => {
+                    if (questionnaire) {
+                      // Post questionnaire to client if it is SMART Health IT
+                      if (
+                        client.state.serverUrl.includes(
+                          'https://launch.smarthealthit.org/v/r4/fhir'
+                        )
+                      ) {
+                        questionnaire.id = questionnaire.id + '-SMARTcopy';
+                        postQuestionnaireToSMARTHealthIT(client, questionnaire);
+                      }
 
-                    setQuestionnaireLaunchContext(questionnaire);
-                    dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: true });
-                  } else {
-                    enqueueSnackbar(
-                      'An error occurred while fetching initially specified questionnaire',
-                      { variant: 'error', action: <CloseSnackbar variant="error" /> }
-                    );
-                    dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: false });
+                      setQuestionnaireLaunchContext(questionnaire);
+                      dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: true });
+                    } else {
+                      enqueueSnackbar(
+                        'An error occurred while fetching initially specified questionnaire',
+                        { variant: 'error', action: <CloseSnackbar variant="error" /> }
+                      );
+                      dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: false });
+                    }
                   }
-                });
+                );
               })
               .catch(() => {
                 enqueueSnackbar('An error occurred while fetching Questionnaire launch context', {

@@ -33,8 +33,3 @@ export enum ChoiceItemOrientation {
   Horizontal = 'horizontal',
   Vertical = 'vertical'
 }
-
-export enum CheckBoxOption {
-  AnswerOption = 'answerOption',
-  AnswerValueSet = 'answerValueSet'
-}

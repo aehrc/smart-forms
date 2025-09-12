@@ -21,12 +21,12 @@ import { Outlet } from 'react-router-dom';
 import BackToTopButton from '../backToTop/components/BackToTopButton.tsx';
 import ViewerNav from './ViewerNav/ViewerNav.tsx';
 
-import type { PrintComponentRefContextType } from '../../types/printComponentRefContext.type.ts';
+import type { PrintComponentRefContextInterface } from '../../interfaces/printComponentRefContext.interface.ts';
 import GenericHeader from '../../components/Header/GenericHeader.tsx';
 import RendererDebugFooter from '../renderer/components/RendererDebugFooter/RendererDebugFooter.tsx';
 import useDebugMode from '../../hooks/useDebugMode.ts';
 
-export const PrintComponentRefContext = createContext<PrintComponentRefContextType>({
+export const PrintComponentRefContext = createContext<PrintComponentRefContextInterface>({
   componentRef: null
 });
 

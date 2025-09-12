@@ -19,15 +19,17 @@ import type { Coding, Extension, QuestionnaireItem, QuestionnaireItemAnswerOptio
 import type { RegexValidation } from '../interfaces/regex.interface';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 import { default as htmlParse } from 'html-react-parser';
+import type { JSX } from 'react';
+import { getInitialExpression } from './getExpressionsFromItem';
 
-function hasDisplayCategory(qItem: QuestionnaireItem): boolean {
+export function hasDisplayCategory(qItem: QuestionnaireItem): boolean {
   return !!qItem.extension?.some(
     (extension: Extension) =>
       extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory'
   );
 }
 
-function hasItemControl(qItem: QuestionnaireItem): boolean {
+export function hasItemControl(qItem: QuestionnaireItem): boolean {
   return !!qItem.extension?.some(
     (extension: Extension) =>
       extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl'
@@ -92,20 +94,6 @@ export function getShortText(qItem: QuestionnaireItem): string | null {
 }
 
 /**
- * Check if the extension has url for hidden questions
- *
- * @author Sean Fong
- */
-export function hasHiddenExtension(qItem: QuestionnaireItem): boolean {
-  const extension = qItem.extension?.find(
-    (extension: Extension) =>
-      extension.url === 'http://hl7.org/fhir/StructureDefinition/questionnaire-hidden'
-  );
-
-  return !!extension?.valueBoolean;
-}
-
-/**
  * Check if the extension has url for items that use open label
  * Default open label text to "Other"
  *
@@ -134,6 +122,15 @@ export function getDecimalPrecision(qItem: QuestionnaireItem): number | null {
   return extension?.valueInteger ?? null;
 }
 
+export function getXHtmlStringFromExtension(extensions: Extension[]): string | null {
+  const extension = extensions?.find(
+    (extension: Extension) =>
+      extension.url === 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml'
+  );
+
+  return extension?.valueString ?? null;
+}
+
 /**
  * Check if the extension has a url for xhtml rendering
  *
@@ -156,15 +153,6 @@ export function getXHtmlString(qItem: QuestionnaireItem): string | null {
   }
 
   return null;
-}
-
-export function getXHtmlStringFromExtension(extensions: Extension[]): string | null {
-  const extension = extensions?.find(
-    (extension: Extension) =>
-      extension.url === 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml'
-  );
-
-  return extension?.valueString ?? null;
 }
 
 /**
@@ -246,8 +234,12 @@ export function getTextDisplayUnit(qItem: QuestionnaireItem): string {
   // Check if the item has a display unit childItem
   if (qItem.item) {
     for (const childItem of qItem.item) {
-      if (childItem.type === 'display' && isSpecificItemControl(childItem, 'unit')) {
-        return `${childItem.text}`;
+      if (
+        childItem.type === 'display' &&
+        isSpecificItemControl(childItem, 'unit') &&
+        typeof childItem.text === 'string'
+      ) {
+        return childItem.text;
       }
     }
   }
@@ -259,7 +251,7 @@ export function getTextDisplayUnit(qItem: QuestionnaireItem): string {
   );
 
   if (extension?.valueCoding) {
-    return extension.valueCoding.display ?? '';
+    return extension.valueCoding.display ?? extension.valueCoding.code ?? '';
   }
 
   return '';
@@ -273,8 +265,12 @@ export function getTextDisplayUnit(qItem: QuestionnaireItem): string {
 export function getTextDisplayLower(qItem: QuestionnaireItem): string {
   if (qItem.item) {
     for (const childItem of qItem.item) {
-      if (childItem.type === 'display' && isSpecificItemControl(childItem, 'lower')) {
-        return `${childItem.text}`;
+      if (
+        childItem.type === 'display' &&
+        isSpecificItemControl(childItem, 'lower') &&
+        typeof childItem.text === 'string'
+      ) {
+        return childItem.text;
       }
     }
   }
@@ -290,8 +286,12 @@ export function getTextDisplayLower(qItem: QuestionnaireItem): string {
 export function getTextDisplayUpper(qItem: QuestionnaireItem): string {
   if (qItem.item) {
     for (const childItem of qItem.item) {
-      if (childItem.type === 'display' && isSpecificItemControl(childItem, 'upper')) {
-        return `${childItem.text}`;
+      if (
+        childItem.type === 'display' &&
+        isSpecificItemControl(childItem, 'upper') &&
+        typeof childItem.text === 'string'
+      ) {
+        return childItem.text;
       }
     }
   }
@@ -307,8 +307,12 @@ export function getTextDisplayUpper(qItem: QuestionnaireItem): string {
 export function getTextDisplayInstructions(qItem: QuestionnaireItem): string {
   if (qItem.item) {
     for (const childItem of qItem.item) {
-      if (childItem.type === 'display' && isSpecificDisplayCategory(childItem, 'instructions')) {
-        return `${childItem.text}`;
+      if (
+        childItem.type === 'display' &&
+        isSpecificDisplayCategory(childItem, 'instructions') &&
+        typeof childItem.text === 'string'
+      ) {
+        return childItem.text;
       }
     }
   }
@@ -318,10 +322,13 @@ export function getTextDisplayInstructions(qItem: QuestionnaireItem): string {
 
 /**
  * Get text display flyover for items with itemControlCode flyover and has an flyover childItem
+ * Also works for XHTML rendering as a bonus
  *
  * @author Sean Fong
  */
-export function getTextDisplayFlyover(qItem: QuestionnaireItem) {
+export function getTextDisplayFlyover(
+  qItem: QuestionnaireItem
+): string | JSX.Element | JSX.Element[] {
   if (qItem.item) {
     for (const childItem of qItem.item) {
       if (childItem.type === 'display' && isSpecificItemControl(childItem, 'flyover')) {
@@ -330,7 +337,9 @@ export function getTextDisplayFlyover(qItem: QuestionnaireItem) {
           return htmlParse(xHtmlString);
         }
 
-        return `${childItem.text}`;
+        if (typeof childItem.text === 'string') {
+          return childItem.text;
+        }
       }
     }
   }
@@ -406,10 +415,12 @@ export function getMinValue(qItem: QuestionnaireItem): string | number | undefin
   }
 }
 
+// Probably should use targetConstraint instead of this, but we can't deprecate it yet
 export function getMinValueFeedback(qItem: QuestionnaireItem): string | null {
   const extension = qItem.extension?.find(
     (extension: Extension) =>
-      extension.url === 'https://smartforms.csiro.au/docs/custom-extension/minValue-feedback'
+      extension.url === 'https://smartforms.csiro.au/docs/custom-extension/minValue-feedback' ||
+      extension.url === 'https://smartforms.csiro.au/ig/StructureDefinition/minValue-feedback'
   );
 
   return extension?.valueString ?? null;
@@ -438,23 +449,28 @@ export function getMaxValue(qItem: QuestionnaireItem): string | number | undefin
   }
 }
 
+// Probably should use targetConstraint instead of this, but we can't deprecate it yet
 export function getMaxValueFeedback(qItem: QuestionnaireItem): string | null {
   const extension = qItem.extension?.find(
     (extension: Extension) =>
-      extension.url === 'https://smartforms.csiro.au/docs/custom-extension/maxValue-feedback'
+      extension.url === 'https://smartforms.csiro.au/docs/custom-extension/maxValue-feedback' ||
+      extension.url === 'https://smartforms.csiro.au/ig/StructureDefinition/maxValue-feedback'
   );
 
   return extension?.valueString ?? null;
 }
 
+// Probably should use targetConstraint instead of this, but we can't deprecate it yet
 export function getRequiredFeedback(qItem: QuestionnaireItem): string | null {
   const extension = qItem.extension?.find(
     (extension: Extension) =>
-      extension.url === 'https://smartforms.csiro.au/docs/custom-extension/required-feedback'
+      extension.url === 'https://smartforms.csiro.au/docs/custom-extension/required-feedback' ||
+      extension.url === 'https://smartforms.csiro.au/ig/StructureDefinition/required-feedback'
   );
 
   return extension?.valueString ?? null;
 }
+
 /**
  * Check if the item has a sdc-questionnaire-minQuantity and minQuantity extension
  *
@@ -482,6 +498,7 @@ export function getMinQuantityValue(qItem: QuestionnaireItem): number | undefine
 
 /**
  * Check if the item has a sdc-questionnaire-minQuantity feedback extension
+ * Probably should use targetConstraint instead of this, but we can't deprecate it yet
  *
  * @param {QuestionnaireItem} qItem - The QuestionnaireItem to check.
  * @returns {string | null} The value of the extension if found, otherwise null.
@@ -492,7 +509,9 @@ export function getMinQuantityValueFeedback(qItem: QuestionnaireItem): string | 
   const extension = qItem.extension?.find(
     (extension: Extension) =>
       extension.url ===
-      'https://smartforms.csiro.au/docs/custom-extension/minQuantityValue-feedback'
+        'https://smartforms.csiro.au/docs/custom-extension/minQuantityValue-feedback' ||
+      extension.url ===
+        'https://smartforms.csiro.au/ig/StructureDefinition/minQuantityValue-feedback'
   );
 
   return extension?.valueString ?? null;
@@ -525,6 +544,7 @@ export function getMaxQuantityValue(qItem: QuestionnaireItem): number | undefine
 
 /**
  * Check if the item has a sdc-questionnaire-maxQuantity feedback extension
+ * Probably should use targetConstraint instead of this, but we can't deprecate it yet
  *
  * @param {QuestionnaireItem} qItem - The QuestionnaireItem to check.
  * @returns {string | null} The value of the extension if found, otherwise null.
@@ -535,7 +555,9 @@ export function getMaxQuantityValueFeedback(qItem: QuestionnaireItem): string | 
   const extension = qItem.extension?.find(
     (extension: Extension) =>
       extension.url ===
-      'https://smartforms.csiro.au/docs/custom-extension/maxQuantityValue-feedback'
+        'https://smartforms.csiro.au/docs/custom-extension/maxQuantityValue-feedback' ||
+      extension.url ===
+        'https://smartforms.csiro.au/ig/StructureDefinition/maxQuantityValue-feedback'
   );
 
   return extension?.valueString ?? null;
@@ -551,11 +573,31 @@ export function isItemTextHidden(qItem: QuestionnaireItem): boolean {
   const extension = qItem._text?.extension?.find(
     (extension: Extension) =>
       extension.url ===
-      'https://smartforms.csiro.au/docs/custom-extension/questionnaire-item-text-hidden'
+        'https://smartforms.csiro.au/docs/custom-extension/QuestionnaireItemTextHidden' ||
+      extension.url ===
+        'https://smartforms.csiro.au/ig/StructureDefinition/QuestionnaireItemTextHidden'
   );
 
   return !!extension?.valueBoolean;
 }
+
+/**
+ * Check if the QuestionnaireItem has a 'GroupHideAddItemButton' extension to hide the Add Item button for group tables.
+ *
+ * @param {QuestionnaireItem} qItem - The QuestionnaireItem to check.
+ * @returns {boolean} True if the Add Item button should be hidden, otherwise false.
+ */
+export function isGroupAddItemButtonHidden(qItem: QuestionnaireItem): boolean {
+  const extension = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url ===
+        'https://smartforms.csiro.au/docs/custom-extension/GroupHideAddItemButton' ||
+      extension.url === 'https://smartforms.csiro.au/ig/StructureDefinition/GroupHideAddItemButton'
+  );
+
+  return !!extension?.valueBoolean;
+}
+
 
 /**
  * Check if the item has a sdc-questionnaire-width extension
@@ -586,4 +628,27 @@ export function getColumnWidth(qItem: QuestionnaireItem): string | undefined {
   }
 
   return undefined;
+}
+
+/**
+ * Check if the QuestionnaireItem has a 'showRepopulateButton' extension to show a sync button for granular repopulation.
+ */
+export function isItemRepopulatable(qItem: QuestionnaireItem): boolean {
+  // Get questionnaire-initialExpression-repopulatable button extension
+  // Currently fixed to 'manual' repopulation only.
+  // See https://chat.fhir.org/#narrow/channel/179255-questionnaire/topic/Granular.20Repopulate.20button/with/533937578 for more details.
+  const isRepopulatableExtension = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url ===
+        'https://smartforms.csiro.au/ig/StructureDefinition/questionnaire-initialExpression-repopulatable' &&
+      extension.valueCode === 'manual'
+  );
+
+  // Also need to check if the item has an initialExpression, because this button depends on it
+  const initialExpression = getInitialExpression(qItem);
+  if (!initialExpression) {
+    return false;
+  }
+
+  return !!isRepopulatableExtension;
 }

@@ -18,9 +18,9 @@
 function useDateNonEmptyValidation(
   dateInput: string,
   timeInput: string,
-  dateFeedback: string | null,
-  timeFeedback: string | null
-): string | null {
+  dateFeedback: string,
+  timeFeedback: string
+): string {
   if (!dateFeedback && !timeFeedback && timeInput && dateInput === '') {
     return 'Date is required';
   }

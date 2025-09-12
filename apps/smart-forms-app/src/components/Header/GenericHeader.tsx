@@ -16,13 +16,13 @@
  */
 
 import { Box } from '@mui/material';
-import Iconify from '../Iconify/Iconify.tsx';
 import Logo from '../Logos/Logo.tsx';
 import { LogoWrapper } from '../Logos/Logo.styles.ts';
 import { MenuIconButton, StyledRoot, StyledToolbar } from './Header.styles.ts';
 import { memo } from 'react';
 import HeaderIcons from './HeaderIcons.tsx';
 import { useResponsive } from '@aehrc/smart-forms-renderer';
+import MenuIcon from '@mui/icons-material/Menu';
 
 interface DashboardHeaderProps {
   onOpenNav: () => void;
@@ -37,7 +37,7 @@ const GenericHeader = memo(function GenericHeader(props: DashboardHeaderProps) {
     <StyledRoot>
       <StyledToolbar>
         <MenuIconButton onClick={onOpenNav}>
-          <Iconify icon="eva:menu-2-fill" />
+          <MenuIcon />
         </MenuIconButton>
 
         {!isLgUp ? (

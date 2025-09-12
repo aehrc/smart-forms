@@ -21,44 +21,46 @@ import { StandardTextField } from '../Textfield.styles';
 import { useRendererStylingStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
-import { expressionUpdateFadingGlow } from '../../ExpressionUpdateFadingGlow.styles';
+import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
+import ItemRepopulateButton from '../ItemParts/ItemRepopulateButton';
+import type { RenderingExtensions } from '../../../hooks/useRenderingExtensions';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
 interface StringFieldProps extends PropsWithIsTabledRequiredAttribute {
-  linkId: string;
-  itemType: string;
+  qItem: QuestionnaireItem;
   input: string;
   feedback: string;
-  displayPrompt: string;
-  displayUnit: string;
-  entryFormat: string;
+  renderingExtensions: RenderingExtensions;
   readOnly: boolean;
   calcExpUpdated: boolean;
   onInputChange: (value: string) => void;
+  onRepopulateSync: (newQrItem: QuestionnaireResponseItem | null) => unknown;
   onBlur: () => void;
 }
 
 function StringField(props: StringFieldProps) {
   const {
-    linkId,
-    itemType,
+    qItem,
     input,
     feedback,
-    displayPrompt,
-    displayUnit,
-    entryFormat,
+    renderingExtensions,
     readOnly,
     isTabled,
     calcExpUpdated,
     onInputChange,
+    onRepopulateSync,
     onBlur
   } = props;
+
+  const { displayPrompt, displayUnit, entryFormat, isRepopulatable } = renderingExtensions;
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
 
   return (
     <StandardTextField
-      id={itemType + '-' + linkId}
+      id={qItem.type + '-' + qItem.linkId}
+      multiline
       fullWidth
       textFieldWidth={textFieldWidth}
       isTabled={isTabled}
@@ -69,17 +71,22 @@ function StringField(props: StringFieldProps) {
       placeholder={entryFormat || displayPrompt}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       size="small"
-      sx={[expressionUpdateFadingGlow(calcExpUpdated)]}
       slotProps={{
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
             <InputAdornment position="end">
+              <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
               <ClearButtonAdornment
                 readOnly={readOnly}
                 onClear={() => {
                   onInputChange('');
                 }}
+              />
+              <ItemRepopulateButton
+                qItem={qItem}
+                repopulatable={isRepopulatable}
+                onRepopulate={onRepopulateSync}
               />
               <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>

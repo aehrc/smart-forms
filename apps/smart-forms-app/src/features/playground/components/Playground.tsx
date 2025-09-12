@@ -21,35 +21,37 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 // @ts-ignore
 import { Allotment } from 'allotment';
 import 'allotment/dist/style.css';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import type { VariantType } from 'notistack';
 import { useSnackbar } from 'notistack';
 import PlaygroundRenderer from './PlaygroundRenderer.tsx';
 import { Box } from '@mui/material';
 import PopulationProgressSpinner from '../../../components/Spinners/PopulationProgressSpinner.tsx';
 import { isQuestionnaire } from '../typePredicates/isQuestionnaire.ts';
-import type { BuildState } from '../types/buildState.interface.ts';
+import type { BuildState } from '../interfaces/buildState.interface.ts';
 import { useLocalStorage } from 'usehooks-ts';
 import {
   extractObservationBased,
   removeEmptyAnswersFromResponse,
   useQuestionnaireResponseStore,
-  useQuestionnaireStore
+  useQuestionnaireStore,
+  useSmartConfigStore
 } from '@aehrc/smart-forms-renderer';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
-import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
 import PlaygroundPicker from './PlaygroundPicker.tsx';
 import type { OperationOutcomeIssue, Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import PlaygroundHeader from './PlaygroundHeader.tsx';
 import { useExtractDebuggerStore } from '../stores/extractDebuggerStore.ts';
 import { buildFormWrapper, destroyFormWrapper } from '../../../utils/manageForm.ts';
 import { extractResultIsOperationOutcome, inAppExtract } from '@aehrc/sdc-template-extract';
+import type Client from 'fhirclient/lib/Client';
+import { ConfigContext } from '../../configChecker/contexts/ConfigContext.tsx';
 
 const defaultFhirServerUrl = 'https://hapi.fhir.org/baseR4';
 
-const defaultTerminologyServerUrl = TERMINOLOGY_SERVER_URL;
-
 function Playground() {
+  const { config } = useContext(ConfigContext);
+
   // Source FHIR Server to do pre-pop and write back
   const [sourceFhirServerUrl, setSourceFhirServerUrl] = useLocalStorage<string>(
     'playgroundSourceFhirServerUrl',
@@ -61,7 +63,7 @@ function Playground() {
   // Terminology Server to do terminology queries
   const [terminologyServerUrl, setTerminologyServerUrl] = useLocalStorage<string>(
     'playgroundTerminologyServerUrl',
-    defaultTerminologyServerUrl
+    config.terminologyServerUrl
   );
 
   const [jsonString, setJsonString] = useLocalStorage('playgroundJsonString', '');
@@ -82,6 +84,11 @@ function Playground() {
   const setTemplateExtractDebugInfo = useExtractDebuggerStore.use.setTemplateExtractDebugInfo();
   const setTemplateExtractIssues = useExtractDebuggerStore.use.setTemplateExtractIssues();
 
+  // SMART Config
+  const setSmartConfigStoreClient = useSmartConfigStore.use.setClient();
+  const setSmartConfigStorePatient = useSmartConfigStore.use.setPatient();
+  const setSmartConfigStoreUser = useSmartConfigStore.use.setUser();
+
   const { enqueueSnackbar } = useSnackbar();
 
   function handleDestroyForm() {
@@ -97,7 +104,23 @@ function Playground() {
     try {
       const parsedQuestionnaire = JSON.parse(jsonString);
       if (isQuestionnaire(parsedQuestionnaire)) {
+        // Set (artificial) SMART configs
+        setSmartConfigStoreClient({
+          state: {
+            serverUrl: sourceFhirServerUrl
+          }
+        } as Client);
+
+        if (patient) {
+          setSmartConfigStorePatient(patient);
+        }
+
+        if (user) {
+          setSmartConfigStoreUser(user);
+        }
+
         await buildFormWrapper(parsedQuestionnaire, undefined, undefined, terminologyServerUrl);
+
         setBuildingState('built');
       } else {
         enqueueSnackbar('JSON string does not represent a questionnaire', {
@@ -160,7 +183,7 @@ function Playground() {
             );
           }
 
-          await buildFormWrapper(questionnaire, undefined, undefined, terminologyServerUrl);
+          await buildFormWrapper(questionnaire, undefined, undefined, config.terminologyServerUrl);
           setBuildingState('built');
         } else {
           enqueueSnackbar('There was an issue reading the file content.', {

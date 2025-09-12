@@ -35,7 +35,8 @@ export class EhrProxyAppStack extends cdk.Stack {
     });
 
     const certificate = new Certificate(this, 'EhrProxyCertificate', {
-      // This must match the fhirServerBaseUrl in services/ehr-proxy/smart-proxy/lib/index.ts - 'proxy.smartforms.io' + '/fhir'
+      // This must match `fhirServerBaseUrl` in: ../smart-proxy/lib/index.ts - 'https://proxy.smartforms.io/fhir'
+      // This must match `fhirServerBaseUrl` in: ../hapi-endpoint/lib/index.ts - 'https://proxy.smartforms.io/fhir'
       domainName: 'proxy.smartforms.io',
       validation: CertificateValidation.fromDns(hostedZone)
     });
@@ -54,52 +55,6 @@ export class EhrProxyAppStack extends cdk.Stack {
 
     const hapi = new HapiEndpoint(this, 'EhrProxyHapi', { cluster });
     const smartProxy = new SmartProxy(this, 'EhrProxySmartProxy', { cluster });
-
-    // === DECOMMISSIONED as of 1 July 2025 ===
-    // See: https://github.com/aehrc/smart-forms/issues/1337
-    // This block was previously used to configure $extract and $transform routes.
-    // It is now left here for reference only and should be removed in future cleanup.
-
-    /*
-    const extractTarget = extract.service.loadBalancerTarget({
-      containerName: extract.containerName,
-      containerPort: extract.containerPort
-    });
-    const extractTargetGroup = new ApplicationTargetGroup(this, 'EhrProxyExtractTargetGroup', {
-      vpc,
-      port: extract.containerPort,
-      protocol: ApplicationProtocol.HTTP,
-      targets: [extractTarget],
-      healthCheck: { path: '/fhir/QuestionnaireResponse/$extract' }
-    });
-    listener.addAction('EhrProxyExtractAction', {
-      action: ListenerAction.forward([extractTargetGroup]),
-      priority: 1,
-      conditions: [
-        ListenerCondition.pathPatterns([
-          '/fhir/QuestionnaireResponse/$extract',
-          '/fhir/StructureMap/$convert'
-        ])
-      ]
-    });
-
-    const transformTarget = transform.service.loadBalancerTarget({
-      containerName: transform.containerName,
-      containerPort: transform.containerPort
-    });
-    const transformTargetGroup = new ApplicationTargetGroup(this, 'EhrProxyTransformTargetGroup', {
-      vpc,
-      port: transform.containerPort,
-      protocol: ApplicationProtocol.HTTP,
-      targets: [transformTarget],
-      healthCheck: { path: '/StructureMap' }
-    });
-    listener.addAction('EhrProxyTransformAction', {
-      action: ListenerAction.forward([transformTargetGroup]),
-      priority: 2,
-      conditions: [ListenerCondition.pathPatterns(['/fhir/StructureMap/$transform'])]
-    });
-    */
 
     // Create a target for the HAPI FHIR API service
     const hapiTarget = hapi.service.loadBalancerTarget({

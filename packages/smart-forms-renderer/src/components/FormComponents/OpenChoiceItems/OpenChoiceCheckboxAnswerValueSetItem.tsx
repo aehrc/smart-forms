@@ -25,8 +25,8 @@ import debounce from 'lodash.debounce';
 import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
-  PropsWithItemPathAttribute,
   PropsWithIsTabledAttribute,
+  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithRenderingExtensionsAttribute
@@ -78,7 +78,7 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: OpenChoiceCheckboxAnswerVal
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
+  const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
   const { displayInstructions } = renderingExtensions;
   const openLabelText = getOpenLabelText(qItem);

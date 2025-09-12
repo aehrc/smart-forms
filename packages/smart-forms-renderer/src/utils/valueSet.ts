@@ -30,6 +30,7 @@ import { client } from 'fhirclient';
 import type { FhirResourceString } from '../interfaces/populate.interface';
 import type { VariableXFhirQuery } from '../interfaces/variables.interface';
 import type { ValidateCodeResponse, ValueSetPromise } from '../interfaces/valueSet.interface';
+import { getRelevantCodingProperties } from './choice';
 
 const VALID_VALUE_SET_URL_REGEX =
   /https?:\/\/(www\.)?[-\w@:%.+~#=]{2,256}\.[a-z]{2,4}\b([-@\w:%+.~#?&/=]*ValueSet[-@\w:%+.~#?&/=]*)/;
@@ -146,21 +147,6 @@ export async function resolveValueSetPromises(
  */
 export function getValueSetCodings(valueSet: ValueSet): Coding[] {
   return valueSet.expansion?.contains?.map((coding) => getRelevantCodingProperties(coding)) ?? [];
-}
-
-/**
- * Retrieves only the relevant properties of a Coding object.
- * Reason: https://tx.ontoserver.csiro.au/fhir returns a Coding with designation element, which is not in the FHIR spec, causing QRs with it to fail validation.
- *
- * @author Sean Fong
- */
-export function getRelevantCodingProperties(coding: Coding): Coding {
-  return {
-    system: coding.system,
-    code: coding.code,
-    display: coding.display,
-    ...(coding.extension && { extension: coding.extension })
-  };
 }
 
 /**

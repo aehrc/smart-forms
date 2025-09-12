@@ -23,7 +23,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
-import { saveErrorMessage, saveSuccessMessage } from '../../../../utils/snackbar.ts';
+import { saveErrorMessage, saveSuccessMessage } from '../../../../interfaces/snackbar.interface.ts';
 import RendererOperationItem from '../RendererNav/RendererOperationItem.tsx';
 import { saveProgress } from '../../../../api/saveQr.ts';
 import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';

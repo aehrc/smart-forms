@@ -93,6 +93,7 @@ function AttachmentField(props: AttachmentFieldProps) {
             File name (optional)
           </Typography>
           <StandardTextField
+            multiline
             fullWidth
             textFieldWidth={textFieldWidth}
             isTabled={isTabled}
@@ -117,6 +118,7 @@ function AttachmentField(props: AttachmentFieldProps) {
                 )
               },
               htmlInput: {
+                'data-test': 'q-item-attachment-file-name',
                 'aria-label': 'File name (optional)'
               }
             }}

@@ -39,6 +39,7 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
 import useShowFeedback from '../../../hooks/useShowFeedback';
+import { readStringValue } from '../../../utils/readValues';
 
 interface StringItemProps
   extends PropsWithQrItemChangeHandler,
@@ -68,21 +69,16 @@ function StringItem(props: StringItemProps) {
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
-  const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
-
   // Init input value
   const answerKey = qrItem?.answer?.[0]?.id;
-  let valueString = '';
-  if (qrItem?.answer && qrItem?.answer[0].valueString) {
-    valueString = qrItem.answer[0].valueString;
-  }
+  const { initialInput } = readStringValue(qrItem);
 
-  const [input, setInput] = useState(valueString);
+  const [input, setInput] = useState(initialInput);
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, feedbackFromParent, input);
+  const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
   // Provides a way to hide the feedback when the user is typing
   const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
@@ -124,6 +120,26 @@ function StringItem(props: StringItemProps) {
     setHasBlurred(true); // From now on, feedback should stay visible
   }
 
+  function handleRepopulateSync(newQrItem: QuestionnaireResponseItem | null) {
+    if (newQrItem && newQrItem?.answer) {
+      const { valueString: newValueString, initialInput: newInput } = readStringValue(newQrItem);
+
+      setInput(newInput);
+      onQrItemChange(
+        {
+          ...createEmptyQrItem(qItem, answerKey),
+          answer: [{ id: answerKey, valueString: newValueString }]
+        },
+        itemPath
+      );
+      return;
+    }
+
+    // At this point newQrItem is null, so create an QRItem to replace it
+    setInput('');
+    onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
+  }
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateQrItemWithDebounce = useCallback(
     debounce((input: string) => {
@@ -140,16 +156,14 @@ function StringItem(props: StringItemProps) {
   if (isRepeated) {
     return (
       <StringField
-        linkId={qItem.linkId}
-        itemType={qItem.type}
+        qItem={qItem}
         input={input}
         feedback={showFeedback ? feedback : ''}
-        displayPrompt={displayPrompt}
-        displayUnit={displayUnit}
-        entryFormat={entryFormat}
+        renderingExtensions={renderingExtensions}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         onInputChange={handleChange}
+        onRepopulateSync={handleRepopulateSync}
         onBlur={handleBlur}
         isTabled={isTabled}
       />
@@ -166,21 +180,19 @@ function StringItem(props: StringItemProps) {
         labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} parentStyles={parentStyles} />}
         fieldChildren={
           <StringField
-            linkId={qItem.linkId}
-            itemType={qItem.type}
+            qItem={qItem}
             input={input}
             feedback={showFeedback ? feedback : ''}
-            displayPrompt={displayPrompt}
-            displayUnit={displayUnit}
-            entryFormat={entryFormat}
+            renderingExtensions={renderingExtensions}
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}
             onInputChange={handleChange}
+            onRepopulateSync={handleRepopulateSync}
             onBlur={handleBlur}
             isTabled={isTabled}
           />
         }
-        feedback={feedback}
+        feedback={showFeedback ? feedback : undefined}
       />
     </FullWidthFormComponentBox>
   );

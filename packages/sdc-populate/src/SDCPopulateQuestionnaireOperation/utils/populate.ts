@@ -35,7 +35,6 @@ import { isSubjectParameter } from './index';
 import { createFhirPathContext } from './createFhirPathContext';
 import { readPopulationExpressions } from './readPopulationExpressions';
 import { evaluateItemPopulationContexts, generateExpressionValues } from './evaluateExpressions';
-import { sortResourceArrays } from './sortResourceArrays';
 import { constructResponse } from './constructResponse';
 import { createOutputParameters } from './createOutputParameters';
 import { removeEmptyAnswersFromResponse } from './removeEmptyAnswers';
@@ -99,7 +98,6 @@ export async function populate(
     issues,
     fetchTerminologyRequestConfig
   );
-  fhirPathContext = sortResourceArrays(fhirPathContext);
 
   // Get values for expressions
   const { evaluatedInitialExpressions, evaluatedItemPopulationContexts } =

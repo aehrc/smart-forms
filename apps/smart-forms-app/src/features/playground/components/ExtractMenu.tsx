@@ -22,9 +22,13 @@ import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 import { useMemo, useState } from 'react';
 import { CircularProgress, Fade, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
 import Typography from '@mui/material/Typography';
-import Iconify from '../../../components/Iconify/Iconify.tsx';
 import { canBeTemplateExtracted } from '@aehrc/sdc-template-extract';
 import { canBeObservationExtracted, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import IonDocumentTextOutlineIcon from './icons/IonDocumentTextOutlineIcon.tsx';
+import MdiFileDocumentIcon from './icons/MdiFileDocumentIcon.tsx';
+import MdiFileDocumentEditIcon from './icons/MdiFileDocumentEditIcon.tsx';
+import TablerTransformIcon from './icons/TablerTransformIcon.tsx';
+import IonBinocularsIcon from './icons/IonBinocularsIcon.tsx';
 
 interface ExtractMenuProps {
   isExtracting: boolean;
@@ -106,7 +110,7 @@ function ExtractMenu(props: ExtractMenuProps) {
                 handleClose();
               }}>
               <ListItemIcon>
-                <Iconify icon="ion:binoculars" />
+                <IonBinocularsIcon />
               </ListItemIcon>
               <ListItemText>Observation-based $extract</ListItemText>
             </MenuItem>
@@ -117,7 +121,7 @@ function ExtractMenu(props: ExtractMenuProps) {
           <span>
             <MenuItem disabled={true}>
               <ListItemIcon>
-                <Iconify icon="ion:document-text-outline" />
+                <IonDocumentTextOutlineIcon />
               </ListItemIcon>
               <ListItemText>Definition-based $extract</ListItemText>
             </MenuItem>
@@ -133,7 +137,7 @@ function ExtractMenu(props: ExtractMenuProps) {
                 handleClose();
               }}>
               <ListItemIcon>
-                <Iconify icon="mdi:file-document" />
+                <MdiFileDocumentIcon />
               </ListItemIcon>
               <ListItemText>Template-based $extract [{TEMPLATE_EXTRACT_VERSION}]</ListItemText>
             </MenuItem>
@@ -148,7 +152,7 @@ function ExtractMenu(props: ExtractMenuProps) {
                 handleClose();
               }}>
               <ListItemIcon>
-                <Iconify icon="mdi:file-document-edit" />
+                <MdiFileDocumentEditIcon />
               </ListItemIcon>
               <ListItemText>
                 Template-based $extract (modified only) [{TEMPLATE_EXTRACT_VERSION}]
@@ -163,7 +167,7 @@ function ExtractMenu(props: ExtractMenuProps) {
           <span>
             <MenuItem disabled={true}>
               <ListItemIcon>
-                <Iconify icon="tabler:transform" />
+                <TablerTransformIcon />
               </ListItemIcon>
               <ListItemText>
                 <span style={{ textDecoration: 'line-through' }}>StructureMap-based $extract</span>

@@ -40,7 +40,6 @@ import ChoiceSelectAnswerOptionView from './ChoiceSelectAnswerOptionView';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 
-// TODO eventually merge this item with ChoiceRadioAnswerOptionItem
 interface ChoiceSelectAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithItemPathAttribute,
@@ -53,6 +52,7 @@ interface ChoiceSelectAnswerOptionItemProps
   qrItem: QuestionnaireResponseItem | null;
 }
 
+// TODO eventually merge this item with ChoiceRadioAnswerOptionItem
 function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) {
   const {
     qItem,
@@ -71,7 +71,7 @@ function ChoiceSelectAnswerOptionItem(props: ChoiceSelectAnswerOptionItemProps) 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks - there's no string-based input here
-  const feedback = useValidationFeedback(qItem, feedbackFromParent, '');
+  const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
   // Init input value
   const answerKey = qrItem?.answer?.[0]?.id;

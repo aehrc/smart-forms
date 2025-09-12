@@ -17,6 +17,10 @@
 
 import type { QuestionnaireResponse } from 'fhir/r4';
 
+/**
+ * An empty QuestionnaireResponse resource with status 'in-progress'.
+ * Used as a default or placeholder response object.
+ */
 export const emptyResponse: QuestionnaireResponse = {
   resourceType: 'QuestionnaireResponse',
   status: 'in-progress'

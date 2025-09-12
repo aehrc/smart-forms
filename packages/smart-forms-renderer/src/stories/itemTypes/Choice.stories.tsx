@@ -18,14 +18,12 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
-  qChoiceAnswerInitialSelected,
-  qChoiceAnswerOptionBasic,
   qChoiceAnswerOptionCalculation,
-  qChoiceAnswerValueSetBasic,
-  qChoiceAnswerValueSetCalculation,
-  qrChoiceAnswerOptionBasicResponse,
-  qrChoiceAnswerValueSetBasicResponse
+  qChoiceAnswerValueSetCalculation
 } from '../assets/questionnaires';
+import { chooseSelectOption, findByLinkId, getInputText } from '@aehrc/testing-toolkit';
+import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
+import { expect, fireEvent } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -39,10 +37,66 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+const targetlinkId = 'smoking-status';
+const targetCoding = {
+  system: 'http://snomed.info/sct',
+  code: '266919005',
+  display: 'Never smoked'
+};
+const notTargetCoding = {
+  system: 'http://snomed.info/sct',
+  code: '77176002',
+  display: 'Smoker'
+};
+const qChoiceAnswerOptionBasic = questionnaireFactory([
+  {
+    linkId: targetlinkId,
+    type: 'choice',
+    text: 'Smoking status',
+    answerOption: [
+      {
+        valueCoding: targetCoding
+      },
+      {
+        valueCoding: notTargetCoding
+      }
+    ]
+  }
+]);
+const qrChoiceAnswerOptionBasicResponse = qrFactory([
+  {
+    linkId: targetlinkId,
+    answer: [
+      {
+        valueCoding: targetCoding
+      }
+    ]
+  }
+]);
 
 export const ChoiceAnswerOptionBasic: Story = {
   args: {
     questionnaire: qChoiceAnswerOptionBasic
+  },
+  play: async ({ canvasElement }) => {
+    await chooseSelectOption(canvasElement, targetlinkId, targetCoding.display);
+
+    const result = await getAnswers(targetlinkId);
+    expect(result).toHaveLength(1);
+    expect(result[0].valueCoding).toEqual(expect.objectContaining(targetCoding));
+
+    // Clear
+    const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
+    fireEvent.click(clearButton as HTMLElement);
+
+    // Here we await for debounced store update
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const resultAfterClear = await getAnswers(targetlinkId);
+    expect(resultAfterClear).toHaveLength(0);
+
+    const elementAfterClear = await findByLinkId(canvasElement, targetlinkId);
+    const input = elementAfterClear.querySelector('textarea');
+    expect(input?.value).toBe('');
   }
 };
 
@@ -50,37 +104,112 @@ export const ChoiceAnswerOptionBasicResponse: Story = {
   args: {
     questionnaire: qChoiceAnswerOptionBasic,
     questionnaireResponse: qrChoiceAnswerOptionBasicResponse
+  },
+  play: async ({ canvasElement }) => {
+    const inputText = await getInputText(canvasElement, targetlinkId);
+
+    expect(inputText).toBe(targetCoding.display);
   }
 };
 
+const valueSetTargetId = 'gender';
+
+const valueSetTargetCoding = {
+  code: 'female',
+  display: 'Female',
+  system: 'http://hl7.org/fhir/administrative-gender'
+};
+
+const qValueSetBasic = questionnaireFactory([
+  {
+    linkId: valueSetTargetId,
+    text: 'Gender',
+    type: 'choice',
+    repeats: false,
+    answerValueSet: 'http://hl7.org/fhir/ValueSet/administrative-gender'
+  }
+]);
+
 export const ChoiceAnswerValueSetBasic: Story = {
   args: {
-    questionnaire: qChoiceAnswerValueSetBasic
+    questionnaire: qValueSetBasic
+  },
+  play: async ({ canvasElement }) => {
+    await chooseSelectOption(canvasElement, valueSetTargetId, valueSetTargetCoding.display);
+
+    const result = await getAnswers(valueSetTargetId);
+    expect(result).toHaveLength(1);
+    expect(result[0].valueCoding).toEqual(expect.objectContaining(valueSetTargetCoding));
   }
 };
 
 export const ChoiceAnswerValueSetBasicResponse: Story = {
   args: {
-    questionnaire: qChoiceAnswerValueSetBasic,
-    questionnaireResponse: qrChoiceAnswerValueSetBasicResponse
+    questionnaire: qValueSetBasic,
+    questionnaireResponse: qrFactory([
+      {
+        linkId: 'gender',
+        text: 'Gender',
+        answer: [{ valueCoding: valueSetTargetCoding }]
+      }
+    ])
+  },
+  play: async ({ canvasElement }) => {
+    const inputText = await getInputText(canvasElement, valueSetTargetId);
+
+    expect(inputText).toBe(valueSetTargetCoding.display);
   }
 };
 
+const initialTargetCoding = {
+  code: 'T',
+  system: 'http://fhir.medirecords.com/CodeSystem/awsHallucinationType',
+  display: 'Test-Selected'
+};
+const initialNotTargetCoding = {
+  code: 'N',
+  system: 'http://fhir.medirecords.com/CodeSystem/awsHallucinationType',
+  display: 'None'
+};
+
+// Story for ChoiceSelectAnswerOptions Using InitialSelected field set
+export const ChoiceAnswerOptionsUsingInitialSelected: Story = {
+  args: {
+    questionnaire: questionnaireFactory([
+      {
+        text: 'Type',
+        type: 'choice',
+        linkId: 'awsHallucinationType',
+        repeats: false,
+        answerOption: [
+          {
+            valueCoding: initialNotTargetCoding
+          },
+          {
+            valueCoding: initialTargetCoding,
+            initialSelected: true
+          }
+        ]
+      }
+    ])
+  },
+  play: async ({ canvasElement }) => {
+    const inputText = await getInputText(canvasElement, 'awsHallucinationType');
+
+    expect(inputText).toBe(initialTargetCoding.display);
+  }
+};
+
+// TODO: Move to separate storybook
 export const ChoiceAnswerOptionCalculation: Story = {
   args: {
     questionnaire: qChoiceAnswerOptionCalculation
   }
 };
 
+// TODO: Move to separate storybook
 export const ChoiceAnswerValueSetCalculation: Story = {
   args: {
     questionnaire: qChoiceAnswerValueSetCalculation
   }
 };
-// Story for ChoiceSelectAnswerOptions Using InitialSelected field set
-export const ChoiceAnswerOptionsUsingInitialSelected: Story = {
-  args: {
-    questionnaire: qChoiceAnswerInitialSelected
-  }
-};
-

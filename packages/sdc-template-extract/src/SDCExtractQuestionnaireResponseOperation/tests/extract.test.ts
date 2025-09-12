@@ -10,12 +10,6 @@ import type {
   RelatedPerson
 } from 'fhir/r4';
 
-// Callbacks
-import {
-  fetchResourceCallbackTest,
-  requestConfigTest
-} from './callbacks/fetchResourceCallbackTest';
-
 // Extracted resources
 import { extractedAllergiesAdverseReactions } from './resources/extracted/extractedAllergiesAdverseReactions';
 import { extractedImmunisation } from './resources/extracted/extractedImmunisation';
@@ -46,13 +40,20 @@ import { QRegularMedicationsModified } from './resources/questionnaires/QRegular
 import { QComplexTemplateExtract } from './resources/questionnaires/QComplexTemplateExtract';
 import { parametersIsFhirPatch } from '../utils/typePredicates';
 
+// Mock the fetchQuestionnaire callback function
+const mockFetchQuestionnaire = jest.fn();
+const mockFetchQuestionnaireConfig = {
+  sourceServerUrl: 'https://example.com/fhir',
+  headers: { Authorization: 'Bearer token' }
+};
+
 // Test against 715 templates
 describe('extract AllergiesAdverseReactions', () => {
   it('extracted result should match extractedAllergiesAdverseReactions.ts expected resources', async () => {
     const result = await extract(
       createInputParameters(QRAllergiesAdverseReactions, QAllergiesAdverseReactions, undefined),
-      fetchResourceCallbackTest,
-      requestConfigTest
+      mockFetchQuestionnaire,
+      mockFetchQuestionnaireConfig
     );
 
     const returnParam = (result as OutputParameters).parameter.find(
@@ -72,8 +73,8 @@ describe('extract Immunisation', () => {
   it('extracted result should match extractedImmunisation.ts expected resources', async () => {
     const result = await extract(
       createInputParameters(QRImmunisation, QImmunisation, undefined),
-      fetchResourceCallbackTest,
-      requestConfigTest
+      mockFetchQuestionnaire,
+      mockFetchQuestionnaireConfig
     );
 
     const returnParam = (result as OutputParameters).parameter.find(
@@ -97,8 +98,8 @@ describe('extract MedicalHistoryCurrentProblems', () => {
         QMedicalHistoryCurrentProblems,
         undefined
       ),
-      fetchResourceCallbackTest,
-      requestConfigTest
+      mockFetchQuestionnaire,
+      mockFetchQuestionnaireConfig
     );
 
     const returnParam = (result as OutputParameters).parameter.find(
@@ -127,8 +128,8 @@ describe('extract MedicalHistoryCurrentProblemsWithPatch', () => {
         QMedicalHistoryCurrentProblemsWithPatch,
         undefined
       ),
-      fetchResourceCallbackTest,
-      requestConfigTest
+      mockFetchQuestionnaire,
+      mockFetchQuestionnaireConfig
     );
 
     const returnParam = (result as OutputParameters).parameter.find(
@@ -188,8 +189,8 @@ describe('extract MedicalHistoryCurrentProblemsWithPatch', () => {
         QMedicalHistoryCurrentProblemsWithPatch,
         comparisonSourceResponse
       ),
-      fetchResourceCallbackTest,
-      requestConfigTest
+      mockFetchQuestionnaire,
+      mockFetchQuestionnaireConfig
     );
 
     const returnParam = (result as OutputParameters).parameter.find(
@@ -202,7 +203,7 @@ describe('extract MedicalHistoryCurrentProblemsWithPatch', () => {
     // Extracted should only produce one entry - FHIRPatch with method PATCH, resourceId must be "uti-pat-sf"
     expect(extracted.entry?.[0]?.resource?.resourceType).toEqual('Parameters');
     expect(
-      (extracted.entry?.[0]?.resource as Parameters)?.parameter?.[0]?.part?.[3]
+      (extracted.entry?.[0]?.resource as Parameters)?.parameter?.[0]?.part?.[2]
         ?.valueCodeableConcept
     ).toEqual({
       coding: [
@@ -273,8 +274,8 @@ describe('extract MedicalHistoryCurrentProblemsWithPatch2', () => {
         QMedicalHistoryCurrentProblemsWithPatch2,
         comparisonSourceResponse
       ),
-      fetchResourceCallbackTest,
-      requestConfigTest
+      mockFetchQuestionnaire,
+      mockFetchQuestionnaireConfig
     );
 
     const returnParam = (result as OutputParameters).parameter.find(
@@ -288,7 +289,7 @@ describe('extract MedicalHistoryCurrentProblemsWithPatch2', () => {
     // 1st resource must be "uti-pat-sf" with two operations - change clinical status and add abatement date
     expect(extracted.entry?.[0]?.resource?.resourceType).toEqual('Parameters');
     expect(
-      (extracted.entry?.[0]?.resource as Parameters)?.parameter?.[0]?.part?.[3]
+      (extracted.entry?.[0]?.resource as Parameters)?.parameter?.[0]?.part?.[2]
         ?.valueCodeableConcept
     ).toEqual({
       coding: [
@@ -301,7 +302,7 @@ describe('extract MedicalHistoryCurrentProblemsWithPatch2', () => {
     });
 
     expect(
-      (extracted.entry?.[0]?.resource as Parameters)?.parameter?.[1]?.part?.[3]?.valueDateTime
+      (extracted.entry?.[0]?.resource as Parameters)?.parameter?.[1]?.part?.[2]?.valueDateTime
     ).toEqual('2025-06-04');
     expect(extracted.entry?.[0]?.request?.method).toEqual('PATCH');
     expect(extracted.entry?.[0]?.request?.url).toEqual('Condition/uti-pat-sf');
@@ -309,7 +310,7 @@ describe('extract MedicalHistoryCurrentProblemsWithPatch2', () => {
     // 2nd resource must be "diabetes-pat-sf" with one operation - add abatement date
     expect(extracted.entry?.[1]?.resource?.resourceType).toEqual('Parameters');
     expect(
-      (extracted.entry?.[1]?.resource as Parameters)?.parameter?.[0]?.part?.[3]?.valueDateTime
+      (extracted.entry?.[1]?.resource as Parameters)?.parameter?.[0]?.part?.[2]?.valueDateTime
     ).toEqual('2025-06-04');
     expect(extracted.entry?.[1]?.request?.method).toEqual('PATCH');
     expect(extracted.entry?.[1]?.request?.url).toEqual('Condition/diabetes-pat-sf');
@@ -330,8 +331,8 @@ describe('extract RegularMedications', () => {
   it('extracted result should match extractedRegularMedications.ts expected resources', async () => {
     const result = await extract(
       createInputParameters(QRRegularMedications, QRegularMedications, undefined),
-      fetchResourceCallbackTest,
-      requestConfigTest
+      mockFetchQuestionnaire,
+      mockFetchQuestionnaireConfig
     );
 
     const returnParam = (result as OutputParameters).parameter.find(
@@ -361,8 +362,8 @@ describe('extract RegularMedicationsModified', () => {
   it('extracted result should match extractedRegularMedicationsModified.ts expected resources', async () => {
     const result = await extract(
       createInputParameters(QRRegularMedicationsModified, QRegularMedicationsModified, undefined),
-      fetchResourceCallbackTest,
-      requestConfigTest
+      mockFetchQuestionnaire,
+      mockFetchQuestionnaireConfig
     );
 
     const returnParam = (result as OutputParameters).parameter.find(
@@ -389,8 +390,8 @@ describe('extract ComplexTemplateExtract', () => {
   beforeAll(async () => {
     const result = await extract(
       createInputParameters(QRComplexTemplateExtract, QComplexTemplateExtract, undefined),
-      fetchResourceCallbackTest,
-      requestConfigTest
+      mockFetchQuestionnaire,
+      mockFetchQuestionnaireConfig
     );
 
     const returnParam = (result as OutputParameters).parameter.find(

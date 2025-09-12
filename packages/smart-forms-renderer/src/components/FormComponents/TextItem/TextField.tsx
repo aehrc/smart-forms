@@ -19,42 +19,43 @@ import InputAdornment from '@mui/material/InputAdornment';
 import MuiTextField from './MuiTextField';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { useRendererStylingStore } from '../../../stores';
-import { expressionUpdateFadingGlow } from '../../ExpressionUpdateFadingGlow.styles';
+import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { RenderingExtensions } from '../../../hooks/useRenderingExtensions';
+import ItemRepopulateButton from '../ItemParts/ItemRepopulateButton';
 
 interface TextFieldProps {
-  linkId: string;
-  itemType: string;
+  qItem: QuestionnaireItem;
   input: string;
   feedback: string;
-  displayPrompt: string;
-  displayUnit: string;
-  entryFormat: string;
+  renderingExtensions: RenderingExtensions;
   readOnly: boolean;
   calcExpUpdated: boolean;
   onInputChange: (value: string) => void;
+  onRepopulateSync: (newQrItem: QuestionnaireResponseItem | null) => unknown;
   onBlur: () => void;
 }
 
 function TextField(props: TextFieldProps) {
   const {
-    linkId,
-    itemType,
+    qItem,
     input,
     feedback,
-    displayPrompt,
-    displayUnit,
-    entryFormat,
+    renderingExtensions,
     readOnly,
     calcExpUpdated,
     onInputChange,
+    onRepopulateSync,
     onBlur
   } = props;
+
+  const { displayPrompt, displayUnit, entryFormat, isRepopulatable } = renderingExtensions;
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
 
   return (
     <MuiTextField
-      id={itemType + '-' + linkId}
+      id={qItem.type + '-' + qItem.linkId}
       value={input}
       error={!!feedback}
       onChange={(event) => onInputChange(event.target.value)}
@@ -65,12 +66,17 @@ function TextField(props: TextFieldProps) {
       multiline
       size="small"
       minRows={3}
-      sx={[expressionUpdateFadingGlow(calcExpUpdated)]}
       slotProps={{
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
             <InputAdornment position="end">
+              <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+              <ItemRepopulateButton
+                qItem={qItem}
+                repopulatable={isRepopulatable}
+                onRepopulate={onRepopulateSync}
+              />
               <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>
           )

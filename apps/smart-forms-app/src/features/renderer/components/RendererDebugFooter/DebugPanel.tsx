@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import type { Questionnaire, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -25,7 +25,7 @@ import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import NotesIcon from '@mui/icons-material/Notes';
 import DebugResponseView from './DebugResponseView.tsx';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import { FORMS_SERVER_URL } from '../../../../globals.ts';
+import { ConfigContext } from '../../../configChecker/contexts/ConfigContext.tsx';
 
 interface Props {
   questionnaire: Questionnaire;
@@ -45,6 +45,8 @@ function DebugPanel(props: Props) {
     populatedContext,
     clearQResponse
   } = props;
+
+  const { config } = useContext(ConfigContext);
 
   const [displayName, setDisplayName] = useState('Questionnaire Response');
   const [showJsonTree, setShowJsonTree] = useState(false);
@@ -95,7 +97,7 @@ function DebugPanel(props: Props) {
           {questionnaireSelected ? (
             <Tooltip title="Open Questionnaire in new tab">
               <a
-                href={FORMS_SERVER_URL + '/Questionnaire/' + questionnaire.id}
+                href={config.formsServerUrl + '/Questionnaire/' + questionnaire.id}
                 target="_blank"
                 rel="noreferrer">
                 <IconButton>

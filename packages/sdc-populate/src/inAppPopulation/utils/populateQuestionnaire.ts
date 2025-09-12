@@ -17,12 +17,10 @@
 
 import type {
   Encounter,
-  Extension,
   OperationOutcome,
   Patient,
   Practitioner,
   Questionnaire,
-  QuestionnaireItem,
   QuestionnaireResponse
 } from 'fhir/r4';
 import type {
@@ -41,13 +39,10 @@ import {
   isOutputParameters,
   populate
 } from '../../SDCPopulateQuestionnaireOperation';
-import { createPopulateInputParameters } from './createInputParameters';
-import type {
-  LaunchContext,
-  QuestionnaireLevelXFhirQueryVariable,
-  SourceQuery
-} from '../interfaces/inAppPopulation.interface';
 import { Base64 } from 'js-base64';
+import type { FhirContext } from '../interfaces/fhirContext.interface';
+import { isRecord } from './isRecord';
+import { initialiseInputParameters } from './inputParameters';
 
 export interface PopulateResult {
   populatedResponse: QuestionnaireResponse;
@@ -62,8 +57,10 @@ export interface PopulateResult {
  * @property patient - Patient resource as patient in context
  * @property user - Practitioner resource as user in context, optional
  * @property encounter - Encounter resource as encounter in context, optional
+ * @property fhirContext - An array of contextual resources within a launch. See https://build.fhir.org/ig/HL7/smart-app-launch/scopes-and-launch-context.html#fhircontext-exp
  * @property fetchTerminologyCallback - A callback function to fetch terminology resources, optional
  * @property fetchTerminologyRequestConfig - Any request configuration to be passed to the fetchTerminologyCallback i.e. headers, auth etc., optional
+ * @property timeoutMs - Timeout in milliseconds for the $populate operation, default is 10000ms (10 seconds)
  *
  * @author Sean Fong
  */
@@ -74,8 +71,10 @@ export interface PopulateQuestionnaireParams {
   patient: Patient;
   user?: Practitioner;
   encounter?: Encounter;
+  fhirContext?: FhirContext[];
   fetchTerminologyCallback?: FetchTerminologyCallback;
   fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig;
+  timeoutMs?: number;
 }
 
 /**
@@ -101,48 +100,24 @@ export async function populateQuestionnaire(params: PopulateQuestionnaireParams)
     patient,
     user,
     encounter,
+    fhirContext,
     fetchTerminologyCallback,
-    fetchTerminologyRequestConfig
+    fetchTerminologyRequestConfig,
+    timeoutMs = 10000
   } = params;
 
-  const fhirPathContext: Record<string, any> = {};
-
-  // Get launch contexts, source queries and questionnaire-level variables
-  const launchContexts = getLaunchContexts(questionnaire);
-  const sourceQueries = getSourceQueries(questionnaire);
-  const questionnaireLevelVariables = getXFhirQueryVariables(questionnaire);
-
-  if (
-    launchContexts.length === 0 &&
-    sourceQueries.length === 0 &&
-    questionnaireLevelVariables.length === 0
-  ) {
-    return {
-      populateSuccess: false,
-      populateResult: null
-    };
-  }
-
-  // Define population input parameters from launch contexts, source queries and questionnaire-level variables
-  const inputParameters = createPopulateInputParameters(
+  const { inputParameters } = await initialiseInputParameters(
     questionnaire,
     patient,
     user ?? null,
     encounter ?? null,
-    launchContexts,
-    sourceQueries,
-    questionnaireLevelVariables,
-    fhirPathContext
+    fhirContext ?? null,
+    fetchResourceCallback,
+    fetchResourceRequestConfig,
+    timeoutMs
   );
 
-  if (!inputParameters) {
-    return {
-      populateSuccess: false,
-      populateResult: null
-    };
-  }
-
-  if (!isInputParameters(inputParameters)) {
+  if (!inputParameters || !isInputParameters(inputParameters)) {
     return {
       populateSuccess: false,
       populateResult: null
@@ -154,6 +129,7 @@ export async function populateQuestionnaire(params: PopulateQuestionnaireParams)
     inputParameters,
     fetchResourceCallback,
     fetchResourceRequestConfig,
+    timeoutMs,
     fetchTerminologyCallback,
     fetchTerminologyRequestConfig
   );
@@ -202,6 +178,7 @@ async function performInAppPopulation(
   inputParameters: InputParameters,
   fetchResourceCallback: FetchResourceCallback,
   fetchResourceRequestConfig: FetchResourceRequestConfig,
+  timeoutMs: number,
   fetchTerminologyCallback?: FetchTerminologyCallback,
   fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
 ): Promise<OutputParameters | OperationOutcome> {
@@ -214,7 +191,7 @@ async function performInAppPopulation(
   );
 
   try {
-    const promiseResult = await addTimeoutToPromise(populatePromise, 10000);
+    const promiseResult = await addTimeoutToPromise(populatePromise, timeoutMs);
 
     if (promiseResult.timeout) {
       return {
@@ -260,7 +237,11 @@ async function performInAppPopulation(
   }
 }
 
-async function addTimeoutToPromise(promise: Promise<any>, timeoutMs: number) {
+/**
+ * Adds a timeout to a promise, rejecting if the promise does not resolve within the specified time.
+ * Useful for enforcing time limits on async operations such as $populate.
+ */
+export async function addTimeoutToPromise(promise: Promise<any>, timeoutMs: number) {
   const timeoutPromise = new Promise((_, reject) => {
     setTimeout(() => {
       reject(new Error(`Promise timed out after ${timeoutMs} milliseconds`));
@@ -269,124 +250,4 @@ async function addTimeoutToPromise(promise: Promise<any>, timeoutMs: number) {
 
   // Use Promise.race to wait for either the original promise or the timeout promise
   return Promise.race([promise, timeoutPromise]);
-}
-
-function isLaunchContext(extension: Extension): extension is LaunchContext {
-  const hasLaunchContextName =
-    extension.url ===
-      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext' &&
-    !!extension.extension?.find(
-      (ext) =>
-        ext.url === 'name' &&
-        (ext.valueId ||
-          (ext.valueCoding &&
-            (ext.valueCoding.code === 'patient' ||
-              ext.valueCoding.code === 'encounter' ||
-              ext.valueCoding.code === 'location' ||
-              ext.valueCoding.code === 'user' ||
-              ext.valueCoding.code === 'study' ||
-              ext.valueCoding.code === 'sourceQueries')))
-    );
-
-  const hasLaunchContextType = !!extension.extension?.find(
-    (ext) =>
-      ext.url === 'type' &&
-      ext.valueCode &&
-      (ext.valueCode === 'Patient' ||
-        ext.valueCode === 'Practitioner' ||
-        ext.valueCode === 'Encounter')
-  );
-
-  return (
-    extension.url ===
-      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext' &&
-    hasLaunchContextName &&
-    hasLaunchContextType
-  );
-}
-
-function getLaunchContexts(questionnaire: Questionnaire): LaunchContext[] {
-  if (questionnaire.extension && questionnaire.extension.length > 0) {
-    return questionnaire.extension.filter((extension) =>
-      isLaunchContext(extension)
-    ) as LaunchContext[];
-  }
-
-  return [];
-}
-
-function isSourceQuery(extension: Extension): extension is SourceQuery {
-  return (
-    extension.url ===
-      'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-sourceQueries' &&
-    !!extension.valueReference
-  );
-}
-
-function getSourceQueries(questionnaire: Questionnaire): SourceQuery[] {
-  if (questionnaire.extension && questionnaire.extension.length > 0) {
-    return questionnaire.extension.filter((extension) => isSourceQuery(extension)) as SourceQuery[];
-  }
-
-  return [];
-}
-
-function isXFhirQueryVariable(
-  extension: Extension
-): extension is QuestionnaireLevelXFhirQueryVariable {
-  return (
-    extension.url === 'http://hl7.org/fhir/StructureDefinition/variable' &&
-    !!extension.valueExpression?.name &&
-    extension.valueExpression?.language === 'application/x-fhir-query' &&
-    !!extension.valueExpression?.expression
-  );
-}
-
-function getXFhirQueryVariables(
-  questionnaire: Questionnaire
-): QuestionnaireLevelXFhirQueryVariable[] {
-  const xFhirQueryVariables: QuestionnaireLevelXFhirQueryVariable[] = [];
-  if (questionnaire.extension && questionnaire.extension.length > 0) {
-    xFhirQueryVariables.push(
-      ...(questionnaire.extension.filter((extension) =>
-        isXFhirQueryVariable(extension)
-      ) as QuestionnaireLevelXFhirQueryVariable[])
-    );
-  }
-
-  if (questionnaire.item && questionnaire.item.length > 0) {
-    for (const qItem of questionnaire.item) {
-      xFhirQueryVariables.push(
-        ...(getXFhirQueryVariablesRecursive(qItem) as QuestionnaireLevelXFhirQueryVariable[])
-      );
-    }
-  }
-
-  return xFhirQueryVariables;
-}
-
-function getXFhirQueryVariablesRecursive(qItem: QuestionnaireItem) {
-  let xFhirQueryVariables: Extension[] = [];
-
-  if (qItem.item) {
-    for (const childItem of qItem.item) {
-      xFhirQueryVariables = xFhirQueryVariables.concat(getXFhirQueryVariablesRecursive(childItem));
-    }
-  }
-
-  if (qItem.extension) {
-    xFhirQueryVariables.push(
-      ...qItem.extension.filter((extension) => isXFhirQueryVariable(extension))
-    );
-  }
-
-  return xFhirQueryVariables;
-}
-
-function isRecord(obj: any): obj is Record<string, any> {
-  if (!obj) {
-    return false;
-  }
-
-  return Object.keys(obj).every((key) => typeof key === 'string');
 }

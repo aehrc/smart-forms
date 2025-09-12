@@ -62,7 +62,7 @@ export function createResponseTableColumns(): ColumnDef<QuestionnaireResponse>[]
   ];
 }
 
-function sortDate(dateStringA: string | undefined, dateStringB: string | undefined): number {
+export function sortDate(dateStringA: string | undefined, dateStringB: string | undefined): number {
   if (dateStringA === undefined && dateStringB === undefined) {
     return 0;
   }

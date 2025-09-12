@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Commonwealth Scientific and Industrial Research
- * Organisation (CSIRO) ABN 41 687 10.59 230.
+ * Organisation (CSIRO) ABN 41 687 119 230.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import { StyledAlert } from '../../../components/Nav/Nav.styles.ts';
 import MenuItem from '@mui/material/MenuItem';
 import { useMemo } from 'react';
 import Select from '@mui/material/Select';
-import { constructName } from '../../smartAppLaunch/utils/launchContext.ts';
+import { constructName } from '../../../utils/humanName.ts';
 import useFetchPractitioners from '../hooks/useFetchPractitioners.ts';
 import Button from '@mui/material/Button';
 

@@ -25,26 +25,31 @@ import type {
 } from 'fhir/r4';
 import randomColor from 'randomcolor';
 import dayjs from 'dayjs';
-import { getQuestionnaireNameFromResponse } from '../../renderer/utils/itemControl.ts';
+import { getQuestionnaireNameFromResponse } from '../../../utils/questionnaireName.ts';
 import type Client from 'fhirclient/lib/Client';
 import type { QuestionnaireListItem, ResponseListItem } from '../types/list.interface.ts';
 import { HEADERS } from '../../../api/headers.ts';
 import { nanoid } from 'nanoid';
-import { FORMS_SERVER_URL } from '../../../globals.ts';
 
-export function getFormsServerBundlePromise(queryUrl: string): Promise<Bundle> {
+export function getFormsServerBundlePromise(
+  queryUrl: string,
+  formsServerUrl: string
+): Promise<Bundle> {
   queryUrl = queryUrl.replace('|', '&version=');
 
-  return FHIR.client(FORMS_SERVER_URL).request({
+  return FHIR.client(formsServerUrl).request({
     url: queryUrl,
     headers: HEADERS
   });
 }
 
-export function getFormsServerAssembledBundlePromise(queryUrl: string): Promise<Bundle> {
+export function getFormsServerAssembledBundlePromise(
+  queryUrl: string,
+  formsServerUrl: string
+): Promise<Bundle> {
   queryUrl = queryUrl.replace('|', '&version=');
 
-  return FHIR.client(FORMS_SERVER_URL).request({
+  return FHIR.client(formsServerUrl).request({
     url: queryUrl,
     headers: HEADERS
   });
@@ -58,7 +63,8 @@ export function getClientBundlePromise(client: Client, queryUrl: string): Promis
 }
 
 export function getFormsServerBundleOrQuestionnairePromise(
-  queryUrl: string
+  queryUrl: string,
+  formsServerUrl: string
 ): Promise<Bundle | Questionnaire> {
   queryUrl = queryUrl.replace('|', '&version=');
 
@@ -67,7 +73,7 @@ export function getFormsServerBundleOrQuestionnairePromise(
     queryUrl = queryUrl.substring(0, queryUrl.lastIndexOf('-SMARTcopy')) + '';
   }
 
-  return FHIR.client(FORMS_SERVER_URL).request({
+  return FHIR.client(formsServerUrl).request({
     url: queryUrl,
     headers: HEADERS
   });
@@ -95,6 +101,7 @@ export function createQuestionnaireListItem(
   };
 }
 
+///
 export function createQuestionnaireTitle(questionnaire: Questionnaire): string {
   return questionnaire.title
     ? questionnaire.title.charAt(0).toUpperCase() + questionnaire.title.slice(1)

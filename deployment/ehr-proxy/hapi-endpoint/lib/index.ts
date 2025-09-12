@@ -33,6 +33,10 @@ export class HapiEndpoint extends Construct {
       memoryMiB: '2048'
     });
 
+    // This must match `Certificate.domainName` in ../ehr-proxy-app/lib/ehr-proxy-app-stack.ts - 'proxy.smartforms.io'
+    // This must match `fhirServerBaseUrl` in: ../smart-proxy/lib/index.ts - 'https://proxy.smartforms.io/fhir'
+    const fhirServerBaseUrl = 'https://proxy.smartforms.io/fhir';
+
     // Create the cache container.
     taskDefinition.addContainer('EhrProxyHapiContainer', {
       containerName: this.containerName,
@@ -44,7 +48,8 @@ export class HapiEndpoint extends Construct {
       }),
       environment: {
         use_apache_address_strategy: 'true',
-        'hapi.fhir.openapi_enabled': 'false'
+        'hapi.fhir.openapi_enabled': 'false',
+        'hapi.fhir.server_address': fhirServerBaseUrl,
       }
     });
 

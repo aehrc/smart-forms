@@ -19,7 +19,6 @@ import { Box, InputAdornment, Typography } from '@mui/material';
 
 import type { ChangeEvent } from 'react';
 import { useState } from 'react';
-import Iconify from '../../../../../../components/Iconify/Iconify.tsx';
 import {
   getQuestionnaireToolBarColors,
   StyledRoot,
@@ -28,6 +27,7 @@ import {
 import { StyledAlert } from '../../../../../../components/Nav/Nav.styles.ts';
 import QuestionnaireListToolbarButtons from './QuestionnaireListToolbarButtons.tsx';
 import type { Questionnaire } from 'fhir/r4';
+import SearchIcon from '@mui/icons-material/Search';
 
 interface QuestionnaireListToolbarProps {
   selected: Questionnaire | null;
@@ -55,10 +55,7 @@ function QuestionnaireListToolbar(props: QuestionnaireListToolbarProps) {
           placeholder="Search questionnaires..."
           startAdornment={
             <InputAdornment position="start">
-              <Iconify
-                icon="eva:search-fill"
-                sx={{ color: 'text.disabled', width: 20, height: 20 }}
-              />
+              <SearchIcon fontSize="small" />
             </InputAdornment>
           }
           data-test="search-field-questionnaires"

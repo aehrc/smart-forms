@@ -1,12 +1,12 @@
 {
   "name": "@aehrc/sdc-populate",
-  "version": "4.5.0",
+  "version": "4.6.2",
   "description": "Performs the $populate operation from the HL7 FHIR SDC (Structured Data Capture) specification: http://hl7.org/fhir/uv/sdc",
   "scripts": {
     "compile": "tsup src/index.ts --format cjs,esm --dts --clean --sourcemap",
     "watch": "tsup src/index.ts --format cjs,esm --dts --clean --sourcemap --watch",
     "build": "npm run compile",
-    "test": "jest --config ./jest.config.ts"
+    "test": "TZ=Australia/Sydney jest --config ./jest.config.ts --coverage"
   },
   "repository": {
     "type": "git",
@@ -18,11 +18,11 @@
   },
   "homepage": "https://github.com/aehrc/smart-forms#readme",
   "dependencies": {
-    "dayjs": "^1.11.10",
+    "dayjs": "^1.11.18",
     "fhir-sdc-helpers": "^0.1.0",
     "fhirclient": "^2.6.0",
     "fhirpath": "3.15.2",
-    "js-base64": "^3.7.7",
+    "js-base64": "^3.7.8",
     "moment": "^2.30.1"
   },
   "devDependencies": {
