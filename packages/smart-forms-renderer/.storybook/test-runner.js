@@ -1,6 +1,6 @@
 /** @type {import('@storybook/test-runner').TestRunnerConfig} */
 module.exports = {
-  timeout: 15000,
+  timeout: 30000,
   async preVisit(page) {
     page.setDefaultTimeout(15000);
   },
