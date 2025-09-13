@@ -4,11 +4,12 @@ import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperF
 import {
   calculatedExpressionExtFactory,
   getAnswers,
+  getGroupAnswers,
   itemControlExtFactory,
   questionnaireFactory,
   variableExtFactory
 } from '../testUtils';
-import { chooseSelectOption, inputText } from '@aehrc/testing-toolkit';
+import { chooseSelectOption, inputDecimal, inputText } from '@aehrc/testing-toolkit';
 import { expect, waitFor } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -186,6 +187,61 @@ export const ChoiceAnswerValueSetCalculation: Story = {
       const result = await getAnswers(choiceValueSetTargetLinkIdCalc);
       expect(result).toHaveLength(1);
       expect(result[0].valueCoding).toEqual(expect.objectContaining(choiceValueSetTargetCoding));
+    });
+  }
+};
+const heightLinkId = 'patient-height';
+const weightLinkId = 'patient-weight';
+const bmiLinkIdCalc = 'bmi-result';
+const bmiGroupLinkId = 'bmi-calculation';
+
+const qCalculatedExpressionBMICalculator = questionnaireFactory([
+  {
+    linkId: bmiGroupLinkId,
+    type: 'group',
+    extension: [
+      variableExtFactory('height', `item.where(linkId='${heightLinkId}').answer.value`),
+      variableExtFactory('weight', `item.where(linkId='${weightLinkId}').answer.value`)
+    ],
+    item: [
+      {
+        linkId: heightLinkId,
+        text: 'Height',
+        type: 'decimal',
+        readOnly: false
+      },
+      {
+        linkId: weightLinkId,
+        text: 'Weight',
+        type: 'decimal',
+        readOnly: false
+      },
+      {
+        extension: [calculatedExpressionExtFactory('(%weight/((%height/100).power(2))).round(1)')],
+        linkId: bmiLinkIdCalc,
+        text: 'Value',
+        type: 'decimal',
+        readOnly: true
+      }
+    ]
+  }
+]);
+const heightTarget = 100;
+const weightTarget = 10;
+const bmiResultCalc = 10;
+
+export const DecimalCalculation: Story = {
+  args: {
+    questionnaire: qCalculatedExpressionBMICalculator
+  },
+  play: async ({ canvasElement }) => {
+    await inputDecimal(canvasElement, heightLinkId, heightTarget);
+    await inputDecimal(canvasElement, weightLinkId, weightTarget);
+
+    await waitFor(async () => {
+      const result = await getGroupAnswers(bmiGroupLinkId, bmiLinkIdCalc);
+      expect(result).toHaveLength(1);
+      expect(result[0].valueDecimal).toBe(bmiResultCalc);
     });
   }
 };

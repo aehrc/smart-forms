@@ -17,7 +17,7 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { qCalculatedExpressionBMICalculator } from '../assets/questionnaires';
+
 import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
 import { findByLinkId, getInputText, inputDecimal } from '@aehrc/testing-toolkit';
 import { expect, fireEvent } from 'storybook/test';
@@ -93,11 +93,5 @@ export const DecimalBasicResponse: Story = {
     const input = await getInputText(canvasElement, targetlinkId);
 
     expect(input).toBe(targetWeight.toString());
-  }
-};
-
-export const DecimalCalculation: Story = {
-  args: {
-    questionnaire: qCalculatedExpressionBMICalculator
   }
 };

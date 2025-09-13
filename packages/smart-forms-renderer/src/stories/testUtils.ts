@@ -85,3 +85,13 @@ export function variableExtFactory(name: string, text: string): Extension {
     }
   };
 }
+
+export function сqfExpressionFactory(text: string) {
+  return {
+    url: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
+    valueExpression: {
+      language: 'text/fhirpath',
+      expression: text
+    }
+  };
+}
