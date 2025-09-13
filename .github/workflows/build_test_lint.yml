@@ -132,6 +132,7 @@ jobs:
           name: sdc-populate-coverage-report
           path: packages/sdc-populate/coverage
           retention-days: 30
+
   storybook-renderer-tests:
     name: Storybook Tests - Renderer
     runs-on: ubuntu-latest
@@ -148,6 +149,11 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Build workspace packages
+        run: |
+          npm run build -w packages/sdc-populate
+          npm run build -w packages/testing-toolkit
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
