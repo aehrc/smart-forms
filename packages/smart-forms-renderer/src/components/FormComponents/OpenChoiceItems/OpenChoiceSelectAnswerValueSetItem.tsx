@@ -36,6 +36,7 @@ import { useQuestionnaireStore } from '../../../stores';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import ItemLabel from '../ItemParts/ItemLabel';
 import type { AutocompleteChangeReason } from '@mui/material';
+import { sanitizeInput } from '../../../utils/inputSanitization';
 
 interface OpenChoiceSelectAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
@@ -106,7 +107,7 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
 
     if (newValue) {
       if (typeof newValue === 'string') {
-        // Check if the newValue in in the options, first check options.display, then check options.code
+        // Check if the newValue in the options, first check options.display, then check options.code
         const foundOption = codings.find((option) => {
           if (option.display) {
             return option.display === newValue;
@@ -126,7 +127,7 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
         else {
           onQrItemChange({
             ...qrOpenChoice,
-            answer: [{ id: answerKey, valueString: newValue }]
+            answer: [{ id: answerKey, valueString: sanitizeInput(newValue) }]
           });
         }
       } //if the newValue is not a string, then it is coding

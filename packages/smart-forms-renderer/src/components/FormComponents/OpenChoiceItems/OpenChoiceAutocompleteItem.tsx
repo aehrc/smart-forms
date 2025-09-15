@@ -41,6 +41,7 @@ import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import type { AlertColor } from '@mui/material/Alert';
 import ItemLabel from '../ItemParts/ItemLabel';
 import type { AutocompleteChangeReason } from '@mui/material';
+import { sanitizeInput } from '../../../utils/inputSanitization';
 
 interface OpenChoiceAutocompleteItemProps
   extends PropsWithQrItemChangeHandler,
@@ -149,11 +150,12 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
             ...qrOpenChoice,
             answer: [{ id: answerKey, valueCoding: newValue }]
           });
-        } //if newValue is not in the options list, treat it as a string
+        }
+        //if newValue is not in the options list, treat it as a string
         else {
           onQrItemChange({
             ...createEmptyQrItem(qItem, answerKey),
-            answer: [{ id: answerKey, valueString: newValue }]
+            answer: [{ id: answerKey, valueString: sanitizeInput(newValue) }]
           });
         }
       } else {
