@@ -36,7 +36,7 @@ type Story = StoryObj<typeof meta>;
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 const targetlinkId = 'dob';
 const targetText = 'Datetime of birth';
-const targetDateText = '1990-01-01T13:15:00+03:00';
+const targetDateTextWithoutTZ = '1990-01-01T13:15:00';
 const targetDate = '01/01/1990';
 
 const qDateTimeBasic = questionnaireFactory([
@@ -68,7 +68,14 @@ export const DateTimeBasic: Story = {
     const result = await getAnswers(targetlinkId);
 
     expect(result).toHaveLength(1);
-    expect(result[0]).toEqual(expect.objectContaining({ valueDateTime: targetDateText }));
+
+    // Taking into account timezone
+    expect(result[0]).toEqual(
+      expect.objectContaining({
+        valueDateTime: expect.stringContaining(targetDateTextWithoutTZ)
+      })
+    );
+
     // TODO : ADD CLEAR BUTTON
   }
 };
