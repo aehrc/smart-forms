@@ -7,6 +7,10 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.99] - 2025-09-15
+#### Fixed
+- Fixed an issue where the date input in DateTime items are failing pre-population.
+
 ## [1.0.0-alpha.98] - 2025-09-15
 #### Added
 - Added input sanitisation in renderer input fields. See https://github.com/aehrc/smart-forms/issues/1533 for more details.
