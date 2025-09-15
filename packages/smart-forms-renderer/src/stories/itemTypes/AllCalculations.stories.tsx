@@ -245,3 +245,103 @@ export const DecimalCalculation: Story = {
     });
   }
 };
+
+const stringCalculationLinkId = 'gender-controller';
+const stringCalcCalculationLinkId = 'gender-string';
+const stringTargetCoding = {
+  system: 'http://hl7.org/fhir/administrative-gender',
+  code: 'Male',
+  display: 'Male'
+};
+const qStringCalculation = questionnaireFactory(
+  [
+    {
+      linkId: stringCalculationLinkId,
+      type: 'choice',
+      answerOption: [
+        {
+          valueCoding: {
+            system: 'http://hl7.org/fhir/administrative-gender',
+            code: 'Female',
+            display: 'Female'
+          }
+        },
+        {
+          valueCoding: stringTargetCoding
+        }
+      ]
+    },
+    {
+      extension: [calculatedExpressionExtFactory('%gender')],
+      linkId: stringCalcCalculationLinkId,
+      type: 'string',
+      readOnly: true
+    }
+  ],
+  {
+    extension: [
+      variableExtFactory(
+        'gender',
+        `item.where(linkId = '${stringCalculationLinkId}').answer.valueCoding.code`
+      )
+    ]
+  }
+);
+
+export const StringCalculation: Story = {
+  args: {
+    questionnaire: qStringCalculation
+  },
+  play: async ({ canvasElement }) => {
+    await chooseSelectOption(canvasElement, stringCalculationLinkId, stringTargetCoding.display);
+
+    await waitFor(async () => {
+      const result = await getAnswers(stringCalcCalculationLinkId);
+      expect(result).toHaveLength(1);
+      expect(result[0].valueString).toBe(stringTargetCoding.display);
+    });
+  }
+};
+
+const detailsLinkId = 'medications-details';
+const detailsCalcLinkId = 'medication-summary';
+const textTargetText = 'Hello world';
+
+const qTextCalculation = questionnaireFactory(
+  [
+    {
+      linkId: detailsLinkId,
+      type: 'text',
+      readOnly: false
+    },
+    {
+      extension: [calculatedExpressionExtFactory('%medicationDetails')],
+      linkId: detailsCalcLinkId,
+      type: 'text',
+      readOnly: true
+    }
+  ],
+  {
+    extension: [
+      variableExtFactory(
+        'medicationDetails',
+        `item.where((linkId = '${detailsLinkId}')).answer.value`
+      )
+    ]
+  }
+);
+
+export const TextCalculation: Story = {
+  args: {
+    questionnaire: qTextCalculation
+  },
+  play: async ({ canvasElement }) => {
+    await inputText(canvasElement, detailsLinkId, textTargetText);
+
+    await waitFor(async () => {
+      const result = await getAnswers(detailsCalcLinkId);
+      expect(result).toHaveLength(1);
+      expect(result[0].valueString).toBe(textTargetText);
+    });
+  }
+};

@@ -17,7 +17,6 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { qStringCalculation } from '../assets/questionnaires';
 import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
 import { findByLinkId, getInputText, inputText } from '@aehrc/testing-toolkit';
 import { expect, fireEvent } from 'storybook/test';
@@ -90,11 +89,5 @@ export const StringBasicResponse: Story = {
     const inputText = await getInputText(canvasElement, targetlinkId);
 
     expect(inputText).toBe(targetText);
-  }
-};
-
-export const StringCalculation: Story = {
-  args: {
-    questionnaire: qStringCalculation
   }
 };
