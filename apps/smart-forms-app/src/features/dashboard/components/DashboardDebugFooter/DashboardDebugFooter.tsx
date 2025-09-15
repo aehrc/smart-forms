@@ -18,10 +18,15 @@
 import { StyledRoot } from '../../../../components/DebugFooter/DebugFooter.styles.ts';
 import { Box, Typography } from '@mui/material';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
-import { FORMS_SERVER_URL, LAUNCH_CLIENT_ID } from '../../../../globals.ts';
+import { ConfigContext } from '../../../configChecker/contexts/ConfigContext.tsx';
+import { useContext } from 'react';
 
 function DashboardDebugFooter() {
   const { smartClient } = useSmartClient();
+
+  const { config, currentClientId } = useContext(ConfigContext);
+
+  const currentClientIdEmpty = currentClientId === '';
 
   return (
     <>
@@ -32,10 +37,15 @@ function DashboardDebugFooter() {
           </Typography>
           <Typography variant="overline">
             {`Forms server: ${
-              FORMS_SERVER_URL ?? 'Undefined. Defaulting to https://smartforms.csiro.au/api/fhir'
+              config.formsServerUrl ??
+              'Undefined. Defaulting to https://smartforms.csiro.au/api/fhir'
             }`}
           </Typography>
-          <Typography variant="overline">{`Client ID: ${LAUNCH_CLIENT_ID}`}</Typography>
+          <Typography variant="overline">
+            {!currentClientIdEmpty
+              ? `Client ID: ${currentClientId}`
+              : `Default Client ID: ${config.defaultClientId} (App not launched via SMART)`}
+          </Typography>
         </Box>
       </StyledRoot>
     </>

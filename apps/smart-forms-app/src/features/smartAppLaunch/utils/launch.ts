@@ -28,7 +28,6 @@ import type {
 import type { fhirclient } from 'fhirclient/lib/types';
 import * as FHIR from 'fhirclient';
 import { HEADERS } from '../../../api/headers.ts';
-import { FORMS_SERVER_URL } from '../../../globals.ts';
 
 export async function readCommonLaunchContexts(
   client: Client
@@ -96,7 +95,8 @@ export function getQuestionnaireReferences(fhirContext: FhirContext[]): FhirCont
 
 export function readQuestionnaireContext(
   client: Client,
-  questionnaireReferences: FhirContext[]
+  questionnaireReferences: FhirContext[],
+  formsServerUrl: string
 ): Promise<Questionnaire | Bundle | OperationOutcome> {
   if (questionnaireReferences.length === 0) {
     return Promise.reject(new Error('No Questionnaire references found'));
@@ -116,7 +116,7 @@ export function readQuestionnaireContext(
 
     canonical = canonical.replace('|', '&version=');
 
-    return FHIR.client(FORMS_SERVER_URL).request({
+    return FHIR.client(formsServerUrl).request({
       url: 'Questionnaire?url=' + canonical + '&_sort=_lastUpdated',
       method: 'GET',
       headers: HEADERS
@@ -141,4 +141,27 @@ export function responseToQuestionnaireResource(
   if (response.resourceType === 'OperationOutcome') {
     console.error(response);
   }
+}
+/**
+ * Resolves a SMART App Launch client ID for the given FHIR server issuer (`iss`).
+ *
+ * The client ID is determined in the following order:
+ * 1. If a `registeredClientIds` map is provided and contains a client ID for the given `iss`, that client ID will be used.
+ * 2. Otherwise, the function falls back to the `defaultClientId`.
+ */
+export function getClientId(
+  iss: string,
+  registeredClientIds: Record<string, string> | null,
+  defaultClientId: string
+): string {
+  // registeredClientIds not provided, fallback to default client ID
+  if (!registeredClientIds) {
+    return defaultClientId;
+  }
+
+  // Get client ID for specific issuer
+  const registeredClientId = registeredClientIds[iss];
+
+  // If registeredClientId is invalid, fallback to default client ID
+  return registeredClientId ?? defaultClientId;
 }

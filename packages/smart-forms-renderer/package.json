@@ -1,6 +1,6 @@
 {
   "name": "@aehrc/smart-forms-renderer",
-  "version": "1.0.0-alpha.97",
+  "version": "1.0.0-alpha.99",
   "description": "FHIR Structured Data Captured (SDC) rendering engine for Smart Forms",
   "main": "lib/index.js",
   "scripts": {
@@ -9,6 +9,7 @@
     "build": "npm run compile",
     "test": "TZ=Australia/Sydney jest --config ./jest.config.ts --coverage",
     "test:watch": "jest --watch",
+    "test-storybook-ci": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"storybook dev --quiet -p 6006\" \"npx wait-on tcp:127.0.0.1:6006 && test-storybook \"",
     "storybook": "storybook dev -p 6006",
     "storybook-watch": "concurrently -n \"STORYBOOK,TSC\" -c \"cyan.bold,green.bold\" \"storybook dev -p 6006\" \"tsc -w\"",
     "build-storybook": "storybook build",
@@ -28,6 +29,7 @@
   "homepage": "https://github.com/aehrc/smart-forms#readme",
   "dependencies": {
     "@aehrc/sdc-populate": "^4.6.2",
+    "@aehrc/testing-toolkit": "^1.0.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@fontsource/inter": "^5.2.6",
@@ -38,6 +40,7 @@
     "@mui/material": "^7.1.1",
     "@mui/x-date-pickers": "^7.28.3",
     "@tanstack/react-query": "^5.83.0",
+    "@testing-library/react": "^16.3.0",
     "dayjs": "^1.11.18",
     "deep-diff": "^1.0.2",
     "fast-equals": "^5.2.2",
@@ -71,8 +74,8 @@
     "@storybook/addon-onboarding": "^9.1.0",
     "@storybook/addon-themes": "^9.0.17",
     "@storybook/react-vite": "^9.0.16",
+    "@storybook/test-runner": "^0.23.0",
     "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.3.0",
     "@types/deep-diff": "^1.0.5",
     "@types/fhir": "^0.0.41",
     "@types/jest": "^29.5.14",

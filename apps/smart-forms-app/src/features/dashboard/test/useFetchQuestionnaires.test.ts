@@ -16,8 +16,8 @@
  */
 
 import { renderHook, waitFor } from '@testing-library/react';
-import { describe, expect, it, jest, beforeEach, afterEach } from '@jest/globals';
-import useFetchQuestionnaires from '../hooks/useFetchQuestionnaires.ts';
+import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
+import useFetchQuestionnaires from '../hooks/useFetchQuestionnaires';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { Bundle, Questionnaire } from 'fhir/r4';
 import React from 'react';
@@ -34,7 +34,9 @@ jest.mock('../../../globals.ts', () => ({
 }));
 
 const mockDashboardUtils = jest.requireMock('../utils/dashboard.ts') as {
-  getFormsServerBundlePromise: jest.MockedFunction<(url: string) => Promise<Bundle>>;
+  getFormsServerBundlePromise: jest.MockedFunction<
+    (queryUrl: string, formsServerUrl: string) => Promise<Bundle>
+  >;
   filterQuestionnaires: jest.MockedFunction<
     (bundle: Bundle | undefined, includeSubquestionnaires: boolean) => Questionnaire[]
   >;
@@ -123,7 +125,8 @@ describe('useFetchQuestionnaires', () => {
     });
 
     expect(getFormsServerBundlePromise).toHaveBeenCalledWith(
-      '/Questionnaire?_count=10&_sort=-date&title:contains=test'
+      '/Questionnaire?_count=10&_sort=-date&title:contains=test',
+      'https://smartforms.csiro.au/api/fhir' // From FALLBACK_CONFIG in config.ts
     );
     expect(filterQuestionnaires).toHaveBeenCalledWith(mockBundle, false);
     expect(result.current.questionnaires).toEqual([mockQuestionnaire1, mockQuestionnaire2]);
@@ -142,7 +145,8 @@ describe('useFetchQuestionnaires', () => {
     });
 
     expect(getFormsServerBundlePromise).toHaveBeenCalledWith(
-      '/Questionnaire?_count=10&_sort=-date&'
+      '/Questionnaire?_count=10&_sort=-date&',
+      'https://smartforms.csiro.au/api/fhir' // From FALLBACK_CONFIG in config.ts
     );
   });
 

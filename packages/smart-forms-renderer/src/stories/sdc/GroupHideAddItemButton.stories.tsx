@@ -60,4 +60,4 @@ export const GroupHideAddItemButtonDemo: Story = {
   args: {
     questionnaire: qGroupHideAddItemButton
   }
-}; 
+};
