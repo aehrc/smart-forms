@@ -151,7 +151,7 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
             answer: [{ id: answerKey, valueCoding: newValue }]
           });
         }
-        //if newValue is not in the options list, treat it as a string
+        // if newValue is not in the options list, treat it as a string
         else {
           onQrItemChange({
             ...createEmptyQrItem(qItem, answerKey),
