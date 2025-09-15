@@ -149,7 +149,6 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
       // If open label is unchecked, remove it from answers
       if (changedOpenLabelValue === '') {
         onQrItemChange(createEmptyQrItem(qItem, answerKey));
-        setOpenLabelSelected(false);
         return;
       }
 
