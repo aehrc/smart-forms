@@ -73,7 +73,7 @@ const DANGEROUS_PATTERNS = [
   /&GT/i, // >
   /\\x3E/i, // >
 
-  /\\u003./i, // blocks \u003c or \u003e, but not literal "<" or ">"
+  /\\u003[ce]/i, // blocks \u003c or \u003e, but not literal "<" or ">"
   /&#/i // all HTML entities e.g. &#x3C; for < (This might result in false positives, make it less strict if needed)
 ] as const;
 
