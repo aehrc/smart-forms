@@ -43,6 +43,7 @@ import useValueSetCodings from '../../../hooks/useValueSetCodings';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import ItemLabel from '../ItemParts/ItemLabel';
 import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
+import { sanitizeInput } from '../../../utils/inputSanitization';
 
 interface OpenChoiceRadioAnswerValueSetItemProps
   extends PropsWithQrItemChangeHandler,
@@ -135,7 +136,7 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
       // Otherwise, it is an open-label selection
       onQrItemChange({
         ...createEmptyQrItem(qItem, answerKey),
-        answer: [{ id: answerKey, valueString: changedOptionValue }]
+        answer: [{ id: answerKey, valueString: sanitizeInput(changedOptionValue) }]
       });
       setOpenLabelValue(changedOptionValue);
       setOpenLabelSelected(true);
@@ -155,7 +156,7 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
       setOpenLabelValue(changedOpenLabelValue);
       onQrItemChange({
         ...createEmptyQrItem(qItem, answerKey),
-        answer: [{ id: answerKey, valueString: changedOpenLabelValue }]
+        answer: [{ id: answerKey, valueString: sanitizeInput(changedOpenLabelValue) }]
       });
     }
   }

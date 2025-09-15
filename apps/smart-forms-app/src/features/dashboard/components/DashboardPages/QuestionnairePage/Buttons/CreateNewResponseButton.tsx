@@ -15,18 +15,19 @@
  * limitations under the License.
  */
 
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { postQuestionnaireToSMARTHealthIT } from '../../../../../../api/saveQr.ts';
 import { CircularProgress, IconButton, Stack, Typography } from '@mui/material';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import useSmartClient from '../../../../../../hooks/useSmartClient.ts';
 import useSelectedQuestionnaire from '../../../../hooks/useSelectedQuestionnaire.ts';
-import { TERMINOLOGY_SERVER_URL } from '../../../../../../globals.ts';
 import { buildFormWrapper } from '../../../../../../utils/manageForm.ts';
+import { ConfigContext } from '../../../../../configChecker/contexts/ConfigContext.tsx';
 
 function CreateNewResponseButton() {
   const { smartClient, launchQuestionnaire } = useSmartClient();
+  const { config } = useContext(ConfigContext);
 
   const { selectedQuestionnaire } = useSelectedQuestionnaire();
   const questionnaire = selectedQuestionnaire ?? launchQuestionnaire;
@@ -46,7 +47,7 @@ function CreateNewResponseButton() {
       postQuestionnaireToSMARTHealthIT(smartClient, questionnaire);
     }
 
-    await buildFormWrapper(questionnaire, undefined, undefined, TERMINOLOGY_SERVER_URL);
+    await buildFormWrapper(questionnaire, undefined, undefined, config.formsServerUrl);
 
     navigate('/renderer');
     setIsLoading(false);

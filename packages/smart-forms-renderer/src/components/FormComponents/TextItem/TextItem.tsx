@@ -31,6 +31,7 @@ import ItemLabel from '../ItemParts/ItemLabel';
 import useShowFeedback from '../../../hooks/useShowFeedback';
 import { readStringValue } from '../../../utils/readValues';
 import type { QuestionnaireResponseItem } from 'fhir/r4';
+import { sanitizeInput } from '../../../utils/inputSanitization';
 
 function TextItem(props: BaseItemProps) {
   const {
@@ -69,7 +70,7 @@ function TextItem(props: BaseItemProps) {
       onQrItemChange(
         {
           ...createEmptyQrItem(qItem, answerKey),
-          answer: [{ id: answerKey, valueString: newValueString }]
+          answer: [{ id: answerKey, valueString: sanitizeInput(newValueString) }]
         },
         itemPath
       );
@@ -105,7 +106,7 @@ function TextItem(props: BaseItemProps) {
       onQrItemChange(
         {
           ...createEmptyQrItem(qItem, answerKey),
-          answer: [{ id: answerKey, valueString: newValueString }]
+          answer: [{ id: answerKey, valueString: sanitizeInput(newValueString) }]
         },
         itemPath
       );
@@ -122,7 +123,10 @@ function TextItem(props: BaseItemProps) {
     debounce((input: string) => {
       const emptyQrItem = createEmptyQrItem(qItem, answerKey);
       if (input !== '') {
-        onQrItemChange({ ...emptyQrItem, answer: [{ id: answerKey, valueString: input }] });
+        onQrItemChange({
+          ...emptyQrItem,
+          answer: [{ id: answerKey, valueString: sanitizeInput(input) }]
+        });
       } else {
         onQrItemChange(emptyQrItem);
       }
