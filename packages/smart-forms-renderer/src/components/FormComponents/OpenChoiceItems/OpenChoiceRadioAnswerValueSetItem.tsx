@@ -164,6 +164,7 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
   function handleClear() {
     onQrItemChange(createEmptyQrItem(qItem, answerKey));
     setOpenLabelSelected(false);
+    setOpenLabelValue('');
   }
 
   return (
