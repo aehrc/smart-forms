@@ -49,8 +49,8 @@ describe('sanitizeInput', () => {
       '\\x3E', // hex escape for ">"
       '\\u003c', // unicode escape for "<"
       '\\u003C', // unicode escape for "<"
-      '\\u003e', // unicode escape for "<"
-      '\\u003E' // unicode escape for "<"
+      '\\u003e', // unicode escape for ">"
+      '\\u003E' // unicode escape for ">"
     ];
 
     dangerousInputs.forEach((input) => {
