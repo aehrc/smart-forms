@@ -39,6 +39,7 @@ import { useQuestionnaireStore } from '../../../stores';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import ItemLabel from '../ItemParts/ItemLabel';
 import type { AutocompleteChangeReason } from '@mui/material';
+import { sanitizeInput } from '../../../utils/inputSanitization';
 
 interface OpenChoiceSelectAnswerOptionItemProps
   extends PropsWithQrItemChangeHandler,
@@ -102,10 +103,11 @@ function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionIte
       if (typeof newValue === 'string') {
         onQrItemChange({
           ...qrOpenChoice,
-          answer: [{ id: answerKey, valueString: newValue }]
+          answer: [{ id: answerKey, valueString: sanitizeInput(newValue) }]
         });
         return;
       }
+
       //If the value is not a string, then it is a coding.
       const option = newValue;
       if (option['valueCoding']) {
@@ -116,7 +118,7 @@ function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionIte
       } else if (option['valueString']) {
         onQrItemChange({
           ...qrOpenChoice,
-          answer: [{ id: answerKey, valueString: option.valueString }]
+          answer: [{ id: answerKey, valueString: sanitizeInput(option.valueString) }]
         });
       } else if (option['valueInteger']) {
         onQrItemChange({
