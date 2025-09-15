@@ -107,7 +107,7 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
 
     if (newValue) {
       if (typeof newValue === 'string') {
-        // Check if the newValue in the options, first check options.display, then check options.code
+        // Check if the newValue is in the options, first check options.display, then check options.code
         const foundOption = codings.find((option) => {
           if (option.display) {
             return option.display === newValue;
