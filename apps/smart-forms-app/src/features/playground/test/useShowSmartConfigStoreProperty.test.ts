@@ -41,38 +41,38 @@ describe('useShowSmartConfigStoreProperty', () => {
   beforeEach(() => {
     jest.clearAllMocks();
 
-    (useSmartConfigStore.use.client as jest.Mock).mockReturnValue(mockClient);
-    (useSmartConfigStore.use.patient as jest.Mock).mockReturnValue(mockPatient);
-    (useSmartConfigStore.use.user as jest.Mock).mockReturnValue(mockUser);
-    (useSmartConfigStore.use.encounter as jest.Mock).mockReturnValue(mockEncounter);
+    (useSmartConfigStore.client as jest.Mock).mockReturnValue(mockClient);
+    (useSmartConfigStore.patient as jest.Mock).mockReturnValue(mockPatient);
+    (useSmartConfigStore.user as jest.Mock).mockReturnValue(mockUser);
+    (useSmartConfigStore.encounter as jest.Mock).mockReturnValue(mockEncounter);
   });
 
   it('returns client when selectedProperty is "client"', () => {
     const { result } = renderHook(() => useShowSmartConfigStoreProperty('client'));
 
     expect(result.current).toEqual(mockClient);
-    expect(useSmartConfigStore.use.client).toHaveBeenCalled();
+    expect(useSmartConfigStore.client).toHaveBeenCalled();
   });
 
   it('returns patient when selectedProperty is "patient"', () => {
     const { result } = renderHook(() => useShowSmartConfigStoreProperty('patient'));
 
     expect(result.current).toEqual(mockPatient);
-    expect(useSmartConfigStore.use.patient).toHaveBeenCalled();
+    expect(useSmartConfigStore.patient).toHaveBeenCalled();
   });
 
   it('returns user when selectedProperty is "user"', () => {
     const { result } = renderHook(() => useShowSmartConfigStoreProperty('user'));
 
     expect(result.current).toEqual(mockUser);
-    expect(useSmartConfigStore.use.user).toHaveBeenCalled();
+    expect(useSmartConfigStore.user).toHaveBeenCalled();
   });
 
   it('returns encounter when selectedProperty is "encounter"', () => {
     const { result } = renderHook(() => useShowSmartConfigStoreProperty('encounter'));
 
     expect(result.current).toEqual(mockEncounter);
-    expect(useSmartConfigStore.use.encounter).toHaveBeenCalled();
+    expect(useSmartConfigStore.encounter).toHaveBeenCalled();
   });
 
   it('returns null when selectedProperty is not valid', () => {
@@ -90,9 +90,9 @@ describe('useShowSmartConfigStoreProperty', () => {
   it('calls all store methods regardless of selected property', () => {
     renderHook(() => useShowSmartConfigStoreProperty('client'));
 
-    expect(useSmartConfigStore.use.client).toHaveBeenCalled();
-    expect(useSmartConfigStore.use.patient).toHaveBeenCalled();
-    expect(useSmartConfigStore.use.user).toHaveBeenCalled();
-    expect(useSmartConfigStore.use.encounter).toHaveBeenCalled();
+    expect(useSmartConfigStore.client).toHaveBeenCalled();
+    expect(useSmartConfigStore.patient).toHaveBeenCalled();
+    expect(useSmartConfigStore.user).toHaveBeenCalled();
+    expect(useSmartConfigStore.encounter).toHaveBeenCalled();
   });
 });

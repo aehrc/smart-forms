@@ -24,3 +24,6 @@ RUN ls /app
 WORKDIR /app
 RUN npm install
 WORKDIR /app/apps/smart-forms-app
+
+# Create config directory for mounted configuration files
+RUN mkdir -p /app/config

@@ -1,0 +1,9 @@
+{
+  "client_id": "smart-forms-client-id",
+  "forms_server_url": "https://smartforms.csiro.au/api/fhir",
+  "terminology_server_url": "https://tx.ontoserver.csiro.au/fhir",
+  "launch_scope": "fhirUser online_access openid profile patient/Condition.rs patient/Observation.rs launch patient/Encounter.rs patient/QuestionnaireResponse.cruds patient/Patient.rs",
+  "in_app_populate": true,
+  "show_debug_mode": false
+}
+

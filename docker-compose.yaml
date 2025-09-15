@@ -36,6 +36,8 @@ services:
       - /app/packages/sdc-assemble/lib
       - /app/packages/sdc-populate/node_modules
       - /app/packages/sdc-populate/lib
+      # Mount configuration file for default values
+      - ./config:/app/config:ro
 
     command: >
       sh -c "

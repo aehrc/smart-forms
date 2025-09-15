@@ -85,9 +85,9 @@ function Playground() {
   const setTemplateExtractIssues = useExtractDebuggerStore.use.setTemplateExtractIssues();
 
   // SMART Config
-  const setSmartConfigStoreClient = useSmartConfigStore.use.setClient();
-  const setSmartConfigStorePatient = useSmartConfigStore.use.setPatient();
-  const setSmartConfigStoreUser = useSmartConfigStore.use.setUser();
+  const setSmartConfigStoreClient = useSmartConfigStore.setClient;
+  const setSmartConfigStorePatient = useSmartConfigStore.setPatient;
+  const setSmartConfigStoreUser = useSmartConfigStore.setUser;
 
   const { enqueueSnackbar } = useSnackbar();
 

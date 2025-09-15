@@ -18,10 +18,10 @@
 import { useSmartConfigStore } from '@aehrc/smart-forms-renderer';
 
 function useShowSmartConfigStoreProperty(selectedProperty: string) {
-  const client = useSmartConfigStore.use.client();
-  const patient = useSmartConfigStore.use.patient();
-  const user = useSmartConfigStore.use.user();
-  const encounter = useSmartConfigStore.use.encounter();
+  const client = useSmartConfigStore.client;
+  const patient = useSmartConfigStore.patient;
+  const user = useSmartConfigStore.user;
+  const encounter = useSmartConfigStore.encounter;
 
   const valueMap = { client, patient, user, encounter };
 

@@ -25,11 +25,11 @@ import type { FhirContext } from '../features/smartAppLaunch/utils/launch.ts';
 function useSmartClient() {
   const { state, dispatch } = useContext(SmartClientContext);
 
-  const setClient = useSmartConfigStore.use.setClient();
-  const setPatient = useSmartConfigStore.use.setPatient();
-  const setUser = useSmartConfigStore.use.setUser();
-  const setEncounter = useSmartConfigStore.use.setEncounter();
-  const setFhirContext = useSmartConfigStore.use.setFhirContext();
+  const setClient = useSmartConfigStore.setClient;
+  const setPatient = useSmartConfigStore.setPatient;
+  const setUser = useSmartConfigStore.setUser;
+  const setEncounter = useSmartConfigStore.setEncounter;
+  const setFhirContext = useSmartConfigStore.setFhirContext;
 
   function setSmartClient(client: Client) {
     dispatch({

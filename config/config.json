@@ -1,0 +1,9 @@
+{
+  "client_id": "test-mounted-client-id",
+  "forms_server_url": "https://test-mounted-server.com/api/fhir",
+  "terminology_server_url": "https://test-mounted-terminology.com/fhir",
+  "launch_scope": "test mounted scope",
+  "in_app_populate": false,
+  "show_debug_mode": true
+}
+
