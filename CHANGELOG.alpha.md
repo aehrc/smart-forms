@@ -7,6 +7,10 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.101] - 2025-09-16
+#### Added
+- Added support for SDC extension http://hl7.org/fhir/uv/sdc/StructureDefinition-sdc-questionnaire-width.html (both % and px) in gtable and grid groups itemControls.
+
 ## [1.0.0-alpha.100] - 2025-09-15
 #### Fixed
 - Fixed an issue where "Clear" buttons in open-choice components do not clear openLevel input fields.
