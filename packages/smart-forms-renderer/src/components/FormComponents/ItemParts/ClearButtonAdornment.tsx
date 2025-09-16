@@ -16,6 +16,7 @@ export function ClearButtonAdornment(props: ClearButtonAdornmentProps) {
   return (
     <span title="Clear">
       <IconButton
+        aria-label="Clear"
         size="small"
         tabIndex={-1}
         onClick={(e) => {

@@ -23,7 +23,7 @@ import UserPopoverMenu from './Popovers/UserPopoverMenu.tsx';
 import { useTheme } from '@mui/material/styles';
 import { Box } from '@mui/material';
 import NotLaunchedPopover from './Popovers/NotLaunchedPopover.tsx';
-import { constructShortName } from '../../features/smartAppLaunch/utils/launchContext.ts';
+import { constructShortName } from '../../utils/humanName.ts';
 import useSmartClient from '../../hooks/useSmartClient.ts';
 
 function MobileHeaderIcons() {

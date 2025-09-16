@@ -4,7 +4,6 @@ coverage
 build
 storybook-static
 *.md
-*.stories.*
 *.cjs
 *.js
 *.config.*

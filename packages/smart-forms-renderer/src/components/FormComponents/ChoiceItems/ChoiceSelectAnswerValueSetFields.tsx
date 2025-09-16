@@ -34,7 +34,7 @@ import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon'
 
 interface ChoiceSelectAnswerValueSetFieldsProps
   extends PropsWithIsTabledRequiredAttribute,
-  PropsWithRenderingExtensionsAttribute {
+    PropsWithRenderingExtensionsAttribute {
   qItem: QuestionnaireItem;
   codings: Coding[];
   valueCoding: Coding | null;

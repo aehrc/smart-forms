@@ -18,7 +18,7 @@
 import type Client from 'fhirclient/lib/Client';
 
 export function getTokenExpirationTime(smartClient: Client | null): number | null {
-  return smartClient?.state.tokenResponse?.expires_in ?? null;
+  return smartClient?.state?.tokenResponse?.expires_in ?? null;
 }
 
 export function calculateRemainingTime(

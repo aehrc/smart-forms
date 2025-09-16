@@ -22,9 +22,9 @@ import {
   StyledEngineProvider,
   ThemeProvider as MUIThemeProvider
 } from '@mui/material/styles';
-import CustomGlobalStyles from './customGlobalStyles';
 import { rendererThemeComponentOverrides } from './overrides/rendererThemeComponentOverrides';
 import { rendererThemeOptions } from './rendererThemeOptions';
+import { ScopedCssBaseline } from '@mui/material';
 
 /**
  * Default theme used by the renderer using Material UI. You can customise your own theme by defining a new ThemeProvider.
@@ -39,8 +39,7 @@ export function RendererThemeProvider({ children }: { children: ReactNode }) {
   return (
     <StyledEngineProvider injectFirst>
       <MUIThemeProvider theme={theme}>
-        <CustomGlobalStyles />
-        <>{children}</>
+        <ScopedCssBaseline enableColorScheme>{children}</ScopedCssBaseline>
       </MUIThemeProvider>
     </StyledEngineProvider>
   );

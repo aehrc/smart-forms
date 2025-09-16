@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { createPopulateInputParameters } from '../utils/createInputParameters';
+import { constructPopulateInputParameters } from '../utils/inputParameters';
 import { resolveFhirContextReferences } from '../utils/resolveFhirContexts';
 import type { Encounter, Endpoint, Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import type {
@@ -32,7 +32,7 @@ const mockFetchResourceCallbackConfig = {
   sourceServerUrl: 'https://example.com/fhir'
 };
 
-describe('createPopulateInputParameters', () => {
+describe('constructPopulateInputParameters', () => {
   const mockQuestionnaire: Questionnaire = {
     resourceType: 'Questionnaire',
     id: 'q1',
@@ -221,7 +221,7 @@ describe('createPopulateInputParameters', () => {
       Endpoint: endpoint
     });
 
-    const result = await createPopulateInputParameters(
+    const result = await constructPopulateInputParameters(
       mockQuestionnaire,
       mockPatient,
       mockUser,
@@ -282,7 +282,7 @@ describe('createPopulateInputParameters', () => {
       subjectType: ['Group'] // No 'Patient'
     };
 
-    const result = await createPopulateInputParameters(
+    const result = await constructPopulateInputParameters(
       questionnaireWithoutPatient,
       mockPatient,
       mockUser,
@@ -305,7 +305,7 @@ describe('createPopulateInputParameters', () => {
 
     const fhirPathContext: Record<string, any> = {};
 
-    const result = await createPopulateInputParameters(
+    const result = await constructPopulateInputParameters(
       mockQuestionnaire,
       mockPatient,
       null,

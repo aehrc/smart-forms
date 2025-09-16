@@ -28,13 +28,14 @@ import PlaygroundRenderer from './PlaygroundRenderer.tsx';
 import { Box } from '@mui/material';
 import PopulationProgressSpinner from '../../../components/Spinners/PopulationProgressSpinner.tsx';
 import { isQuestionnaire } from '../typePredicates/isQuestionnaire.ts';
-import type { BuildState } from '../types/buildState.interface.ts';
+import type { BuildState } from '../interfaces/buildState.interface.ts';
 import { useLocalStorage } from 'usehooks-ts';
 import {
   extractObservationBased,
   removeEmptyAnswersFromResponse,
   useQuestionnaireResponseStore,
-  useQuestionnaireStore
+  useQuestionnaireStore,
+  useSmartConfigStore
 } from '@aehrc/smart-forms-renderer';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
@@ -44,6 +45,7 @@ import PlaygroundHeader from './PlaygroundHeader.tsx';
 import { useExtractDebuggerStore } from '../stores/extractDebuggerStore.ts';
 import { buildFormWrapper, destroyFormWrapper } from '../../../utils/manageForm.ts';
 import { extractResultIsOperationOutcome, inAppExtract } from '@aehrc/sdc-template-extract';
+import type Client from 'fhirclient/lib/Client';
 
 const defaultFhirServerUrl = 'https://hapi.fhir.org/baseR4';
 
@@ -82,6 +84,11 @@ function Playground() {
   const setTemplateExtractDebugInfo = useExtractDebuggerStore.use.setTemplateExtractDebugInfo();
   const setTemplateExtractIssues = useExtractDebuggerStore.use.setTemplateExtractIssues();
 
+  // SMART Config
+  const setSmartConfigStoreClient = useSmartConfigStore.use.setClient();
+  const setSmartConfigStorePatient = useSmartConfigStore.use.setPatient();
+  const setSmartConfigStoreUser = useSmartConfigStore.use.setUser();
+
   const { enqueueSnackbar } = useSnackbar();
 
   function handleDestroyForm() {
@@ -97,7 +104,23 @@ function Playground() {
     try {
       const parsedQuestionnaire = JSON.parse(jsonString);
       if (isQuestionnaire(parsedQuestionnaire)) {
+        // Set (artificial) SMART configs
+        setSmartConfigStoreClient({
+          state: {
+            serverUrl: sourceFhirServerUrl
+          }
+        } as Client);
+
+        if (patient) {
+          setSmartConfigStorePatient(patient);
+        }
+
+        if (user) {
+          setSmartConfigStoreUser(user);
+        }
+
         await buildFormWrapper(parsedQuestionnaire, undefined, undefined, terminologyServerUrl);
+
         setBuildingState('built');
       } else {
         enqueueSnackbar('JSON string does not represent a questionnaire', {

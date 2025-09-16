@@ -27,5 +27,6 @@
     "sourceMap": true
   },
   "include": ["src", "cypress"],
+  "exclude": ["src/**/*.test.ts", "lib", "dist"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

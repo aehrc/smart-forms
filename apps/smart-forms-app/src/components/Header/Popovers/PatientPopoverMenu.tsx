@@ -20,7 +20,7 @@ import {
   AccountDetailsTypographyNoCaps,
   AccountNameTypographyNoWrap
 } from '../../Typography/Typography.tsx';
-import { constructName } from '../../../features/smartAppLaunch/utils/launchContext.ts';
+import { constructName } from '../../../utils/humanName.ts';
 import dayjs from 'dayjs';
 import { PopoverMenuWrapper } from './Popover.styles.ts';
 import { Typography } from '@mui/material';

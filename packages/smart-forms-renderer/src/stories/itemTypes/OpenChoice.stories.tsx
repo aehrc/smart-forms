@@ -17,13 +17,21 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
+import { qOpenChoiceAnswerAutoCompleteFromValueSet } from '../assets/questionnaires';
 import {
-  qOpenChoiceAnswerAutoCompleteFromValueSet,
-  qOpenChoiceAnswerOptionBasic,
-  qOpenChoiceAnswerValueSetBasic,
-  qrOpenChoiceAnswerOptionBasicResponse,
-  qrOpenChoiceAnswerValueSetBasicResponse
-} from '../assets/questionnaires';
+  getAnswers,
+  itemControlExtFactory,
+  openLabelExtFactory,
+  qrFactory,
+  questionnaireFactory
+} from '../testUtils';
+import {
+  checkRadioOption,
+  inputOpenChoiceOtherText,
+  chooseSelectOption,
+  findByLinkId
+} from '@aehrc/testing-toolkit';
+import { expect, fireEvent, screen } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -37,37 +45,182 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+const clinicCoding = {
+  system: 'http://snomed.info/sct',
+  code: '257585005',
+  display: 'Clinic'
+};
+const targetText = 'Pharmacy';
+
+const qOpenChoiceAnswerOptionBasic = questionnaireFactory([
+  {
+    linkId: 'health-check-location',
+    text: 'Location of health check',
+    type: 'open-choice',
+    extension: [
+      itemControlExtFactory('radio-button'),
+      openLabelExtFactory('Other, please specify')
+    ],
+    answerOption: [
+      {
+        valueCoding: clinicCoding
+      }
+    ]
+  }
+]);
+const targetlinkId = 'health-check-location';
+const qrOpenChoiceAnswerOptionBasicResponse = qrFactory([
+  {
+    linkId: targetlinkId,
+    text: 'Location of health check',
+    answer: [
+      {
+        valueString: targetText
+      }
+    ]
+  }
+]);
 
 export const OpenChoiceAnswerOptionBasic: Story = {
   args: {
     questionnaire: qOpenChoiceAnswerOptionBasic
+  },
+  play: async ({ canvasElement }) => {
+    await checkRadioOption(canvasElement, targetlinkId, clinicCoding.display);
+
+    const result = await getAnswers(targetlinkId);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual(expect.objectContaining({ valueCoding: clinicCoding }));
+
+    // Clear value
+    const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
+    fireEvent.click(clearButton as HTMLElement);
+    // Here we await for debounced store update
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const resultAfterClear = await getAnswers(targetlinkId);
+    expect(resultAfterClear).toHaveLength(0);
+    const elementAfterClear = await findByLinkId(canvasElement, targetlinkId);
+    const input = elementAfterClear.querySelector('input');
+
+    expect(input).not.toBeChecked();
   }
 };
+const targetOtherLinkid = 'q-item-radio-open-label-box';
+const otherVariantLinkid = 'Other, please specify:';
+const otherTargetText = 'Other variant text';
 
+export const OpenChoiceAnswerOptionBasicOther: Story = {
+  args: {
+    questionnaire: qOpenChoiceAnswerOptionBasic
+  },
+  play: async ({ canvasElement }) => {
+    await checkRadioOption(canvasElement, targetlinkId, otherVariantLinkid);
+    await inputOpenChoiceOtherText(canvasElement, targetlinkId, otherTargetText);
+    const result = await getAnswers(targetlinkId);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual(expect.objectContaining({ valueString: otherTargetText }));
+
+    // Clear
+    const button = canvasElement.querySelector('button[aria-label="Clear"]');
+    fireEvent.click(button as HTMLElement);
+
+    // Here we await for debounced store update
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const qrAfterClear = await getAnswers(targetOtherLinkid);
+    expect(qrAfterClear).toHaveLength(0);
+
+    const resultAfterClear = await findByLinkId(canvasElement, targetlinkId);
+    const input = resultAfterClear.querySelector('textarea');
+    expect(input?.value).toBe('');
+  }
+};
+const targetOperResId = 'state';
 export const OpenChoiceAnswerOptionBasicResponse: Story = {
   args: {
     questionnaire: qOpenChoiceAnswerOptionBasic,
     questionnaireResponse: qrOpenChoiceAnswerOptionBasicResponse
+  },
+  play: async () => {
+    expect(screen.getByText(targetText)).toBeDefined();
   }
 };
+const qOpenChoiceAnswerValueSetBasic = questionnaireFactory([
+  {
+    extension: [
+      itemControlExtFactory('radio-button'),
+      {
+        url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-openLabel',
+        valueString: 'Overseas state, please specify'
+      }
+    ],
+    linkId: targetOperResId,
+    text: 'State',
+    type: 'open-choice',
+    repeats: false,
+    answerValueSet: 'http://hl7.org/fhir/ValueSet/administrative-gender'
+  }
+]);
 
+const valueSetTargetCoding = {
+  code: 'female',
+  display: 'Female',
+  system: 'http://hl7.org/fhir/administrative-gender'
+};
 export const OpenChoiceAnswerValueSetBasic: Story = {
   args: {
     questionnaire: qOpenChoiceAnswerValueSetBasic
+  },
+  play: async ({ canvasElement }) => {
+    await chooseSelectOption(canvasElement, targetOperResId, valueSetTargetCoding.display);
+
+    const result = await getAnswers(targetOperResId);
+    expect(result).toHaveLength(1);
+    expect(result[0].valueCoding).toEqual(expect.objectContaining(valueSetTargetCoding));
+
+    // Clear
+    const button = canvasElement.querySelector('button[aria-label="Clear"]');
+    fireEvent.click(button as HTMLElement);
+    // Here we await for debounced store update
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const qrAfterClear = await getAnswers('state');
+    expect(qrAfterClear).toHaveLength(0);
+
+    const resultAfterClear = await findByLinkId(canvasElement, targetOperResId);
+    const input = resultAfterClear.querySelector('input');
+    expect(input).not.toBeChecked();
   }
 };
-
+const valueSetText = 'Branbendurg';
+const qrOpenChoiceAnswerValueSetBasicResponse = qrFactory([
+  {
+    linkId: targetOperResId,
+    text: 'State',
+    answer: [
+      {
+        valueString: valueSetText
+      }
+    ]
+  }
+]);
 export const OpenChoiceAnswerValueSetBasicResponse: Story = {
   args: {
     questionnaire: qOpenChoiceAnswerValueSetBasic,
     questionnaireResponse: qrOpenChoiceAnswerValueSetBasicResponse
+  },
+  play: async ({ canvasElement }) => {
+    const element = await findByLinkId(canvasElement, targetOperResId);
+    const input = element.querySelector(
+      'div[data-test="q-item-radio-open-label-box"] textarea'
+    ) as HTMLTextAreaElement;
+
+    expect(input?.value).toBe(valueSetText);
   }
 };
 
 //Story for OpenChoiceAutoCompleteItem in Tabbed environment
 export const OpenChoiceAutoCompleteFromValueSetsWithTabs: Story = {
   args: {
-    questionnaire: qOpenChoiceAnswerAutoCompleteFromValueSet,
+    questionnaire: qOpenChoiceAnswerAutoCompleteFromValueSet
     // questionnaireResponse: qrOpenChoiceAnswerValueSetBasicResponse
   }
 };
