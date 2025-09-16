@@ -33,7 +33,6 @@ import useHidden from '../../../hooks/useHidden';
 import { extendItemPath } from '../../../utils/itemPath';
 import type { ItemPath } from '../../../interfaces/itemPath.interface';
 import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
-import { getColumnWidth } from '../../../utils/extensions';
 
 interface GridRowProps
   extends PropsWithQrItemChangeHandler,
@@ -43,6 +42,7 @@ interface GridRowProps
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
   columnHeaderLabels: string[];
+  calculatedColumnWidths: { width: string; isFixed: boolean }[];
 }
 
 function GridRow(props: GridRowProps) {
@@ -51,6 +51,7 @@ function GridRow(props: GridRowProps) {
     qrItem,
     itemPath,
     columnHeaderLabels,
+    calculatedColumnWidths,
     parentIsReadOnly,
     parentStyles,
     onQrItemChange
@@ -85,8 +86,6 @@ function GridRow(props: GridRowProps) {
 
   const qrItemsByIndex = getQrItemsIndex(rowQItems, rowQrItems, qItemsIndexMap);
 
-  const numOfColumns = columnHeaderLabels.length;
-
   // Get item.text as display label
   const itemTextToDisplay = getItemTextToDisplay(qItem);
 
@@ -103,7 +102,12 @@ function GridRow(props: GridRowProps) {
 
         // Render empty cell for sparsity
         if (matchingCellQItemIndex === -1) {
-          return <GridAnswerTableCell key={colIndex} numOfColumnsWithNoWidthExtension={numOfColumns} />;
+          return (
+            <GridAnswerTableCell
+              key={colIndex}
+              calculatedWidth={calculatedColumnWidths[colIndex]?.width}
+            />
+          );
         }
 
         const cellQItem = rowQItems[matchingCellQItemIndex];
@@ -113,13 +117,10 @@ function GridRow(props: GridRowProps) {
           return null;
         }
 
-        const customWidthValue = getColumnWidth(cellQItem);
-
         return (
           <GridAnswerTableCell
             key={colIndex}
-            numOfColumnsWithNoWidthExtension={numOfColumns}
-            customWidthValue={customWidthValue}>
+            calculatedWidth={calculatedColumnWidths[colIndex]?.width}>
             <Box display="flex" alignItems="center" justifyContent="center">
               <SingleItem
                 qItem={cellQItem}

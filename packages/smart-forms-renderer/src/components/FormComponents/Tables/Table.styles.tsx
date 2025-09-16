@@ -57,8 +57,8 @@ export const GridAnswerTableCell = styled(TableCell, {
   calculatedWidth?: string;
 }>(({ calculatedWidth }) => ({
   width: calculatedWidth,
-  paddingLeft: 5,
-  paddingRight: 5
+  paddingLeft: 4,
+  paddingRight: 4
 }));
 
 export const StyledGroupTableRow = styled(TableRow, {

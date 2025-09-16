@@ -78,7 +78,7 @@ function GroupTable(props: GroupTableProps) {
   const { tableRows, selectedIds, setTableRows, setSelectedIds } =
     useGroupTableRows(initialGroupTableRows);
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
 
   // Generate item labels as table headers
   const qItems = qItem.item;
@@ -99,13 +99,7 @@ function GroupTable(props: GroupTableProps) {
     [enableWhenAsReadOnly, enableWhenExpressions, enableWhenIsActivated, enableWhenItems, qItems]
   );
 
-  // Table width ref and state
-  const tableContainerRef = useRef<HTMLDivElement>(null);
-  const [tableWidth, setTableWidth] = useState(0);
-
-  useResizeColumns(tableContainerRef, setTableWidth);
-
-  // Get visible label items (not just labels)
+  // Get visible label items
   const visibleLabelItems = useMemo(
     () =>
       qItems?.filter(
@@ -121,19 +115,25 @@ function GroupTable(props: GroupTableProps) {
     [enableWhenAsReadOnly, enableWhenExpressions, enableWhenIsActivated, enableWhenItems, qItems]
   );
 
-  // Build columnWidths array
+  // Table width ref and state
+  const tableContainerRef = useRef<HTMLDivElement>(null);
+  const [tableWidth, setTableWidth] = useState(0);
+
+  useResizeColumns(tableContainerRef, setTableWidth);
+
+  // Build and calculate column widths
   const columnWidths = useMemo(
     () => visibleLabelItems.map((item) => getColumnWidth(item)),
     [visibleLabelItems]
   );
 
-  // Calculate column widths
   const calculatedColumnWidths = useMemo(
     () => calculateColumnWidths(columnWidths, tableWidth),
     [columnWidths, tableWidth]
   );
 
-  const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
+  // Determine if the group table is readOnly
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Check if there are columns within the group table
   if (!qItems || qItems.length === 0) {
@@ -255,9 +255,9 @@ function GroupTable(props: GroupTableProps) {
         tableRows={tableRows}
         selectedIds={selectedIds}
         visibleItemLabels={visibleItemLabels}
+        calculatedColumnWidths={calculatedColumnWidths}
         parentIsReadOnly={parentIsReadOnly}
         parentStyles={parentStyles}
-        calculatedColumnWidths={calculatedColumnWidths}
         onAddRow={handleAddRow}
         onRowChange={handleRowChange}
         onRemoveRow={handleRemoveRow}
