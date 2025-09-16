@@ -60,8 +60,7 @@ interface GroupTableViewProps
   tableRows: GroupTableRowModel[];
   selectedIds: string[];
   visibleItemLabels: string[];
-  visibleItemLabelsWithNoWidthExtension: string[];
-  remainingWidthPercentage: number;
+  calculatedColumnWidths: { width: string; isFixed: boolean }[];
   onAddRow: () => void;
   onRowChange: (
     newQrRow: QuestionnaireResponseItem,
@@ -84,8 +83,7 @@ function GroupTableView(props: GroupTableViewProps) {
     tableRows,
     selectedIds,
     visibleItemLabels,
-    visibleItemLabelsWithNoWidthExtension,
-    remainingWidthPercentage,
+    calculatedColumnWidths,
     itemPath,
     parentIsReadOnly,
     parentStyles,
@@ -182,8 +180,7 @@ function GroupTableView(props: GroupTableViewProps) {
                 selectedIds={selectedIds}
                 qItemsIndexMap={qItemsIndexMap}
                 visibleItemLabels={visibleItemLabels}
-                visibleItemLabelsWithNoWidthExtension={visibleItemLabelsWithNoWidthExtension}
-                remainingWidthPercentage = {remainingWidthPercentage}
+                calculatedColumnWidths={calculatedColumnWidths}
                 showExtraGTableInteractions={showExtraGTableInteractions}
                 itemPath={itemPath}
                 parentIsReadOnly={parentIsReadOnly}
@@ -263,8 +260,7 @@ function GroupTableView(props: GroupTableViewProps) {
             selectedIds={selectedIds}
             qItemsIndexMap={qItemsIndexMap}
             visibleItemLabels={visibleItemLabels}
-            visibleItemLabelsWithNoWidthExtension={visibleItemLabelsWithNoWidthExtension}
-            remainingWidthPercentage = {remainingWidthPercentage}
+            calculatedColumnWidths={calculatedColumnWidths}
             showExtraGTableInteractions={showExtraGTableInteractions}
             itemPath={itemPath}
             parentIsReadOnly={parentIsReadOnly}

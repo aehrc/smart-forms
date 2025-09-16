@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { mapQItemsIndex } from '../../../utils/mapItem';
@@ -37,6 +37,8 @@ import type { ItemPath } from '../../../interfaces/itemPath.interface';
 import { isItemHidden } from '../../../utils/qItem';
 import { useQuestionnaireStore, useRendererStylingStore } from '../../../stores';
 import { getColumnWidth } from '../../../utils/extensions';
+import { calculateColumnWidths } from '../../../utils/columnWidth';
+import { useResizeColumns } from '../../../hooks/useResizeColumns';
 
 interface GroupTableProps
   extends PropsWithQrRepeatGroupChangeHandler,
@@ -97,53 +99,40 @@ function GroupTable(props: GroupTableProps) {
     [enableWhenAsReadOnly, enableWhenExpressions, enableWhenIsActivated, enableWhenItems, qItems]
   );
 
-  const visibleItemLabelsWithNoWidthExtension: string[] = useMemo(
-() => 
-    qItems?.filter(
-          (item) =>
-            //perform check if item has width 
+  // Table width ref and state
+  const tableContainerRef = useRef<HTMLDivElement>(null);
+  const [tableWidth, setTableWidth] = useState(0);
+
+  useResizeColumns(tableContainerRef, setTableWidth);
+
+  // Get visible label items (not just labels)
+  const visibleLabelItems = useMemo(
+    () =>
+      qItems?.filter(
+        (item) =>
           !isItemHidden(
-              item,
-              enableWhenIsActivated,
-              enableWhenItems,
-              enableWhenExpressions,
-              enableWhenAsReadOnly
-            ) && !getColumnWidth(item)
-
-
-        )
-        .map((item) => item.text ?? '') ?? [],
+            item,
+            enableWhenIsActivated,
+            enableWhenItems,
+            enableWhenExpressions,
+            enableWhenAsReadOnly
+          )
+      ) ?? [],
     [enableWhenAsReadOnly, enableWhenExpressions, enableWhenIsActivated, enableWhenItems, qItems]
-
-  );
-// First get the visible label items
-const visibleLabelItems = useMemo(
-() => 
-  qItems?.filter(
-          (item) =>
-            //perform check if item has width 
-          !isItemHidden(
-              item,
-              enableWhenIsActivated,
-              enableWhenItems,
-              enableWhenExpressions,
-              enableWhenAsReadOnly
-            )),
-    [enableWhenAsReadOnly, enableWhenExpressions, enableWhenIsActivated, enableWhenItems, qItems]
-
   );
 
-// Calculate the percentage 
+  // Build columnWidths array
+  const columnWidths = useMemo(
+    () => visibleLabelItems.map((item) => getColumnWidth(item)),
+    [visibleLabelItems]
+  );
 
-  const usedPercent: number = visibleLabelItems?.reduce((acc, item) => {
-    const s = getColumnWidth(item);
-    return acc + (s ? parseInt(s.replace("%", "").replace("px", "")) : 0);
-  }, 0) ?? 0;
+  // Calculate column widths
+  const calculatedColumnWidths = useMemo(
+    () => calculateColumnWidths(columnWidths, tableWidth),
+    [columnWidths, tableWidth]
+  );
 
-
-  //Get remainingWidthPercentage from the items which are not hidden
-    const remainingWidthPercentage = 100 - usedPercent;
-    
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
 
   // Check if there are columns within the group table
@@ -255,27 +244,28 @@ const visibleLabelItems = useMemo(
   }
 
   return (
-    <GroupTableView
-      qItem={qItem}
-      qItemsIndexMap={qItemsIndexMap}
-      itemPath={itemPath}
-      groupCardElevation={groupCardElevation}
-      isRepeated={isRepeated}
-      readOnly={readOnly}
-      tableRows={tableRows}
-      selectedIds={selectedIds}
-      visibleItemLabels={visibleItemLabels}
-      visibleItemLabelsWithNoWidthExtension={visibleItemLabelsWithNoWidthExtension}
-      remainingWidthPercentage = {remainingWidthPercentage}
-      parentIsReadOnly={parentIsReadOnly}
-      parentStyles={parentStyles}
-      onAddRow={handleAddRow}
-      onRowChange={handleRowChange}
-      onRemoveRow={handleRemoveRow}
-      onSelectRow={handleSelectRow}
-      onSelectAll={handleSelectAll}
-      onReorderRows={handleReorderRows}
-    />
+    <div ref={tableContainerRef} style={{ width: '100%' }}>
+      <GroupTableView
+        qItem={qItem}
+        qItemsIndexMap={qItemsIndexMap}
+        itemPath={itemPath}
+        groupCardElevation={groupCardElevation}
+        isRepeated={isRepeated}
+        readOnly={readOnly}
+        tableRows={tableRows}
+        selectedIds={selectedIds}
+        visibleItemLabels={visibleItemLabels}
+        parentIsReadOnly={parentIsReadOnly}
+        parentStyles={parentStyles}
+        calculatedColumnWidths={calculatedColumnWidths}
+        onAddRow={handleAddRow}
+        onRowChange={handleRowChange}
+        onRemoveRow={handleRemoveRow}
+        onSelectRow={handleSelectRow}
+        onSelectAll={handleSelectAll}
+        onReorderRows={handleReorderRows}
+      />
+    </div>
   );
 }
 

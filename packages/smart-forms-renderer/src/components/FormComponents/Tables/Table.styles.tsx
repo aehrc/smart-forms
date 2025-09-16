@@ -19,8 +19,8 @@ import { styled } from '@mui/material/styles';
 import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import { grey } from '@mui/material/colors';
-import { CSSProperties } from 'react';
 
+// No need to pass calculatedWidth to HeaderCells, it auto adjusts to content
 export const HeaderTableCell = styled(TableCell)(({ theme }) => ({
   fontSize: 13,
   color: theme.palette.text.primary,
@@ -30,34 +30,14 @@ export const HeaderTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 export const StandardTableCell = styled(TableCell, {
-  shouldForwardProp: (prop) => prop !== 'customWidthValue' && prop !== 'numOfColumnsWithNoWidthExtension' && prop != 'remainingWidthPercentage'
-})<{  customWidthValue?: string, numOfColumnsWithNoWidthExtension?: number, remainingWidthPercentage?:number }>(
-  ({  customWidthValue, numOfColumnsWithNoWidthExtension, remainingWidthPercentage }) => 
-  {
-    let widthStyle: CSSProperties = {};
-    if (customWidthValue){
-      widthStyle.width = customWidthValue;
-    }
-    else
-    {
-      if (numOfColumnsWithNoWidthExtension && numOfColumnsWithNoWidthExtension >0 && remainingWidthPercentage ) {
-        widthStyle.width = `${remainingWidthPercentage / numOfColumnsWithNoWidthExtension}%`;
-      }
-      else
-      {
-        //Don't assign width value if numOfColumnsWithNoWidthExtension is zero or is not provided
-      }
-    }
-    return {
-      ...widthStyle,
-      paddingLeft: 4,
-      paddingRight: 4
-  };
-
-}
-
-
-);
+  shouldForwardProp: (prop) => prop !== 'calculatedWidth'
+})<{
+  calculatedWidth?: string;
+}>(({ calculatedWidth }) => ({
+  width: calculatedWidth,
+  paddingLeft: 4,
+  paddingRight: 4
+}));
 
 export const RemoveButtonTableCell = styled(TableCell)(() => ({
   paddingLeft: 0,
@@ -72,12 +52,11 @@ export const GridTextTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 export const GridAnswerTableCell = styled(TableCell, {
-  shouldForwardProp: (prop) => prop !== 'numOfColumns' && prop !== 'customWidthValue'
+  shouldForwardProp: (prop) => prop !== 'calculatedWidth'
 })<{
-  numOfColumnsWithNoWidthExtension: number;
-  customWidthValue?: string;
-}>(({ numOfColumnsWithNoWidthExtension, customWidthValue }) => ({
-  width: customWidthValue ?? `${80 / numOfColumnsWithNoWidthExtension}%`,
+  calculatedWidth?: string;
+}>(({ calculatedWidth }) => ({
+  width: calculatedWidth,
   paddingLeft: 5,
   paddingRight: 5
 }));

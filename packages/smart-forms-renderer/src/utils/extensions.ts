@@ -598,7 +598,6 @@ export function isGroupAddItemButtonHidden(qItem: QuestionnaireItem): boolean {
   return !!extension?.valueBoolean;
 }
 
-
 /**
  * Check if the item has a sdc-questionnaire-width extension
  *
@@ -608,17 +607,16 @@ export function isGroupAddItemButtonHidden(qItem: QuestionnaireItem): boolean {
  * @author Janardhan Vignarajan
  */
 export function getColumnWidth(qItem: QuestionnaireItem): string | undefined {
-  console.log('In the custom width item');
   const extension = qItem.extension?.find(
     (extension: Extension) =>
       extension.url === 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-width'
   );
-  console.log(`Extension Object ${JSON.stringify(extension)}`);
 
   // Check if valueQuantity exists and if value is a "number" type
   if (extension?.valueQuantity) {
     if (typeof extension.valueQuantity.value === 'number') {
       // if the extension.valueQuantity.code exists then return value + code, else return value + 'px'
+      // See http://hl7.org/fhir/uv/sdc/rendering.html#width.
       if (extension.valueQuantity.code) {
         return `${extension.valueQuantity.value}${extension.valueQuantity.code}`;
       } else {
