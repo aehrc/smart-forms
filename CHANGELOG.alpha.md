@@ -7,6 +7,18 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.100] - 2025-09-15
+#### Fixed
+- Fixed an issue where "Clear" buttons in open-choice components do not clear openLevel input fields.
+
+## [1.0.0-alpha.99] - 2025-09-15
+#### Fixed
+- Fixed an issue where the date input in DateTime items are failing pre-population.
+
+## [1.0.0-alpha.98] - 2025-09-15
+#### Added
+- Added input sanitisation in renderer input fields. See https://github.com/aehrc/smart-forms/issues/1533 for more details.
+
 ## [1.0.0-alpha.97] - 2025-09-04
 #### Changed
 - Changed item-level repopulate button custom extension to the below. See https://chat.fhir.org/#narrow/channel/179255-questionnaire/topic/Granular.20Repopulate.20button/with/533937578 for more details.

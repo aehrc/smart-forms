@@ -70,6 +70,7 @@ function CustomDateTimeItem(props: BaseItemProps) {
   // Extract valueDateTimeFhir, dateTimeDayJs and valueDateFhir from qrDateTime
   if (qrDateTime.answer) {
     if (qrDateTime.answer[0].valueDate) {
+      // NOTE: valueDate will not contain time, but we should handle it just in case
       valueDateTimeFhir = qrDateTime.answer[0].valueDate;
     } else if (qrDateTime.answer[0].valueDateTime) {
       valueDateTimeFhir = qrDateTime.answer[0].valueDateTime;
@@ -77,8 +78,7 @@ function CustomDateTimeItem(props: BaseItemProps) {
 
     // Split date and time at "T", 2015-02-07T13:28:17-05:00
     if (valueDateTimeFhir.includes('T')) {
-      valueDateTimeFhir = valueDateTimeFhir.split('T')[0];
-      valueDateFhir = valueDateTimeFhir;//set the date so that it is used in parseFHIRDateToDisplayDate below
+      valueDateFhir = valueDateTimeFhir.split('T')[0];
       dateTimeDayJs = dayjs(valueDateTimeFhir);
     }
     // valueDateTimeFhir does not contain "T", that means it's a date only
