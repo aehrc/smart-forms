@@ -62,7 +62,7 @@ function SaveAsFinalActionButton(props: SaveAsFinalActionButtonProps) {
     <RendererOperationItem
       title={actionTitle}
       icon={isExtracting ? <CircularProgress size={18} color="inherit" /> : <TaskAltIcon />}
-      disabled={isDisabled}
+      disabled={isDisabled || isExtracting}
       onClick={onSaveAsFinalActionClick}
     />
   );
