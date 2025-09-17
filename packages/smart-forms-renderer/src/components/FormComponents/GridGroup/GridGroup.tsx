@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
   PropsWithItemPathAttribute,
@@ -38,6 +38,9 @@ import type { ItemPath } from '../../../interfaces/itemPath.interface';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
 import { isItemHidden } from '../../../utils/qItem';
+import { useResizeColumns } from '../../../hooks/useResizeColumns';
+import { getColumnWidth } from '../../../utils/extensions';
+import { calculateColumnWidths } from '../../../utils/columnWidth';
 
 interface GridGroupProps
   extends PropsWithQrItemChangeHandler,
@@ -117,6 +120,26 @@ function GridGroup(props: GridGroupProps) {
     [visibleColumnItems]
   );
 
+  // Table width ref and state
+  const tableContainerRef = useRef<HTMLDivElement>(null);
+  const [tableWidth, setTableWidth] = useState(0);
+
+  useResizeColumns(tableContainerRef, setTableWidth);
+
+  // Build and calculate column widths
+  // Add an initial 20% width for the row header column temporarily, will be removed after calculation
+  const columnWidths = useMemo(
+    () => ['20%', ...visibleColumnItems.map((item) => getColumnWidth(item))],
+    [visibleColumnItems]
+  );
+
+  const calculatedColumnWidths = useMemo(() => {
+    const calculatedColumnWidthsInclLabel = calculateColumnWidths(columnWidths, tableWidth);
+
+    // Remove the first column width of 20% as it is for the row header
+    return calculatedColumnWidthsInclLabel.slice(1);
+  }, [columnWidths, tableWidth]);
+
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const itemIsHidden = useHidden(qItem);
   if (itemIsHidden) {
@@ -157,18 +180,21 @@ function GridGroup(props: GridGroupProps) {
         </>
       ) : null}
 
-      <TableContainer component={Paper} elevation={groupCardElevation}>
-        <GridTable
-          qItems={qRowItems}
-          qrItems={qrRowItems}
-          qItemsIndexMap={qItemsIndexMap}
-          columnHeaders={columnHeaders}
-          itemPath={itemPath}
-          parentIsReadOnly={readOnly}
-          parentStyles={parentStyles}
-          onQrItemChange={handleRowChange}
-        />
-      </TableContainer>
+      <div ref={tableContainerRef} style={{ width: '100%' }}>
+        <TableContainer component={Paper} elevation={groupCardElevation}>
+          <GridTable
+            qItems={qRowItems}
+            qrItems={qrRowItems}
+            qItemsIndexMap={qItemsIndexMap}
+            columnHeaders={columnHeaders}
+            calculatedColumnWidths={calculatedColumnWidths}
+            itemPath={itemPath}
+            parentIsReadOnly={readOnly}
+            parentStyles={parentStyles}
+            onQrItemChange={handleRowChange}
+          />
+        </TableContainer>
+      </div>
     </QGroupContainerBox>
   );
 }

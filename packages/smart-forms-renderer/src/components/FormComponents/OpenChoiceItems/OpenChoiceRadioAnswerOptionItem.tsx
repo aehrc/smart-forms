@@ -28,7 +28,8 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
-import OpenChoiceRadioAnswerOptionFields from './OpenChoiceRadioAnswerOptionFields';
+import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
+import { sanitizeInput } from '../../../utils/inputSanitization';
 
 function OpenChoiceRadioAnswerOptionItem(props: BaseItemProps) {
   const {
@@ -118,7 +119,7 @@ function OpenChoiceRadioAnswerOptionItem(props: BaseItemProps) {
       // Otherwise, it is an open-label selection
       onQrItemChange({
         ...createEmptyQrItem(qItem, answerKey),
-        answer: [{ id: answerKey, valueString: changedOptionValue }]
+        answer: [{ id: answerKey, valueString: sanitizeInput(changedOptionValue) }]
       });
       setOpenLabelValue(changedOptionValue);
       setOpenLabelSelected(true);
@@ -138,7 +139,7 @@ function OpenChoiceRadioAnswerOptionItem(props: BaseItemProps) {
       setOpenLabelValue(changedOpenLabelValue);
       onQrItemChange({
         ...createEmptyQrItem(qItem, answerKey),
-        answer: [{ id: answerKey, valueString: changedOpenLabelValue }]
+        answer: [{ id: answerKey, valueString: sanitizeInput(changedOpenLabelValue) }]
       });
     }
   }
@@ -146,6 +147,7 @@ function OpenChoiceRadioAnswerOptionItem(props: BaseItemProps) {
   function handleClear() {
     onQrItemChange(createEmptyQrItem(qItem, answerKey));
     setOpenLabelSelected(false);
+    setOpenLabelValue('');
   }
 
   return (

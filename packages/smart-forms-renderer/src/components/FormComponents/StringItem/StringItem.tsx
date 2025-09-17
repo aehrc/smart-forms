@@ -38,7 +38,9 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
-import StringField from './StringField';
+import useShowFeedback from '../../../hooks/useShowFeedback';
+import { readStringValue } from '../../../utils/readValues';
+import { sanitizeInput } from '../../../utils/inputSanitization';
 
 interface StringItemProps
   extends PropsWithQrItemChangeHandler,
@@ -70,16 +72,11 @@ function StringItem(props: StringItemProps) {
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
-  const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
-
   // Init input value
   const answerKey = qrItem?.answer?.[0]?.id;
-  let valueString = '';
-  if (qrItem?.answer && qrItem?.answer[0].valueString) {
-    valueString = qrItem.answer[0].valueString;
-  }
+  const { initialInput } = readStringValue(qrItem);
 
-  const [input, setInput] = useState(valueString);
+  const [input, setInput] = useState(initialInput);
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
@@ -106,12 +103,35 @@ function StringItem(props: StringItemProps) {
     setHasBlurred(true); // From now on, feedback should stay visible
   }
 
+  function handleRepopulateSync(newQrItem: QuestionnaireResponseItem | null) {
+    if (newQrItem && newQrItem?.answer) {
+      const { valueString: newValueString, initialInput: newInput } = readStringValue(newQrItem);
+
+      setInput(newInput);
+      onQrItemChange(
+        {
+          ...createEmptyQrItem(qItem, answerKey),
+          answer: [{ id: answerKey, valueString: sanitizeInput(newValueString) }]
+        },
+        itemPath
+      );
+      return;
+    }
+
+    // At this point newQrItem is null, so create an QRItem to replace it
+    setInput('');
+    onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
+  }
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateQrItemWithDebounce = useCallback(
     debounce((input: string) => {
       const emptyQrItem = createEmptyQrItem(qItem, answerKey);
       if (input !== '') {
-        onQrItemChange({ ...emptyQrItem, answer: [{ id: answerKey, valueString: input }] });
+        onQrItemChange({
+          ...emptyQrItem,
+          answer: [{ id: answerKey, valueString: sanitizeInput(input) }]
+        });
       } else {
         onQrItemChange(emptyQrItem);
       }
@@ -122,16 +142,14 @@ function StringItem(props: StringItemProps) {
   if (isRepeated) {
     return (
       <StringField
-        linkId={qItem.linkId}
-        itemType={qItem.type}
+        qItem={qItem}
         input={input}
         feedback={showFeedback ? feedback : ''}
-        displayPrompt={displayPrompt}
-        displayUnit={displayUnit}
-        entryFormat={entryFormat}
+        renderingExtensions={renderingExtensions}
         readOnly={readOnly}
         calcExprAnimating={calcExprAnimating}
         onInputChange={handleChange}
+        onRepopulateSync={handleRepopulateSync}
         onBlur={handleBlur}
         isTabled={isTabled}
       />
@@ -148,16 +166,14 @@ function StringItem(props: StringItemProps) {
         labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} parentStyles={parentStyles} />}
         fieldChildren={
           <StringField
-            linkId={qItem.linkId}
-            itemType={qItem.type}
+            qItem={qItem}
             input={input}
             feedback={showFeedback ? feedback : ''}
-            displayPrompt={displayPrompt}
-            displayUnit={displayUnit}
-            entryFormat={entryFormat}
+            renderingExtensions={renderingExtensions}
             readOnly={readOnly}
             calcExprAnimating={calcExprAnimating}
             onInputChange={handleChange}
+            onRepopulateSync={handleRepopulateSync}
             onBlur={handleBlur}
             isTabled={isTabled}
           />

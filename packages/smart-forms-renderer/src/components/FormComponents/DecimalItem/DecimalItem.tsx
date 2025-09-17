@@ -32,7 +32,9 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
-import DecimalField from './DecimalField';
+import useShowFeedback from '../../../hooks/useShowFeedback';
+import type { QuestionnaireResponseItem } from 'fhir/r4';
+import { readDecimalValue } from '../../../utils/readValues';
 
 function DecimalItem(props: BaseItemProps) {
   const {
@@ -50,23 +52,10 @@ function DecimalItem(props: BaseItemProps) {
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const precision = getDecimalPrecision(qItem);
-  const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
   // Init input value
   const answerKey = qrItem?.answer?.[0]?.id;
-  let valueDecimal = 0.0;
-  let initialInput = '';
-  if (qrItem?.answer) {
-    if (qrItem?.answer[0].valueDecimal) {
-      valueDecimal = qrItem.answer[0].valueDecimal;
-    }
-
-    if (qrItem?.answer[0].valueInteger) {
-      valueDecimal = qrItem.answer[0].valueInteger;
-    }
-
-    initialInput = precision ? valueDecimal.toFixed(precision) : valueDecimal.toString();
-  }
+  const { initialInput } = readDecimalValue(qrItem, precision);
 
   const [input, setInput] = useState(initialInput);
 
@@ -97,6 +86,29 @@ function DecimalItem(props: BaseItemProps) {
     setHasBlurred(true); // From now on, feedback should stay visible
   }
 
+  function handleRepopulateSync(newQrItem: QuestionnaireResponseItem | null) {
+    if (newQrItem && newQrItem?.answer) {
+      const { valueDecimal: newValueDecimal, initialInput: newInput } = readDecimalValue(
+        newQrItem,
+        precision
+      );
+
+      setInput(newInput);
+      onQrItemChange(
+        {
+          ...createEmptyQrItem(qItem, answerKey),
+          answer: [{ id: answerKey, valueDecimal: newValueDecimal }]
+        },
+        itemPath
+      );
+      return;
+    }
+
+    // At this point newQrItem is null, so create an QRItem to replace it
+    setInput('');
+    onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
+  }
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const updateQrItemWithDebounce = useCallback(
     debounce((parsedNewInput: string) => {
@@ -117,23 +129,21 @@ function DecimalItem(props: BaseItemProps) {
         });
       }
     }, DEBOUNCE_DURATION),
-    [onQrItemChange, qItem, displayUnit, precision]
+    [onQrItemChange, qItem, precision]
   ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
 
   if (isRepeated) {
     return (
       <DecimalField
-        linkId={qItem.linkId}
-        itemType={qItem.type}
+        qItem={qItem}
         input={input}
         feedback={showFeedback ? feedback : ''}
-        displayPrompt={displayPrompt}
-        displayUnit={displayUnit}
-        entryFormat={entryFormat}
+        renderingExtensions={renderingExtensions}
         readOnly={readOnly}
         calcExprAnimating={calcExprAnimating}
         isTabled={isTabled}
         onInputChange={handleInputChange}
+        onRepopulateSync={handleRepopulateSync}
         onBlur={handleBlur}
       />
     );
@@ -150,17 +160,15 @@ function DecimalItem(props: BaseItemProps) {
         labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
         fieldChildren={
           <DecimalField
-            linkId={qItem.linkId}
-            itemType={qItem.type}
+            qItem={qItem}
             input={input}
             feedback={showFeedback ? feedback : ''}
-            displayPrompt={displayPrompt}
-            displayUnit={displayUnit}
-            entryFormat={entryFormat}
+            renderingExtensions={renderingExtensions}
             readOnly={readOnly}
             calcExprAnimating={calcExprAnimating}
             isTabled={isTabled}
             onInputChange={handleInputChange}
+            onRepopulateSync={handleRepopulateSync}
             onBlur={handleBlur}
           />
         }

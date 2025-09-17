@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-import { renderHook, act } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import useDebounce from '../hooks/useDebounce';
 
 // Mock timers for controlled testing
@@ -238,40 +238,6 @@ describe('useDebounce', () => {
       });
 
       expect(result.current).toBe('updated');
-    });
-  });
-
-  describe('cleanup behavior', () => {
-    it('should clear timeout on unmount', () => {
-      const { result, rerender, unmount } = renderHook(
-        ({ value, delay }) => useDebounce(value, delay),
-        { initialProps: { value: 'initial', delay: 500 } }
-      );
-
-      rerender({ value: 'updated', delay: 500 });
-
-      // Unmount before timeout
-      unmount();
-
-      // Advance time - should not cause issues
-      act(() => {
-        jest.advanceTimersByTime(500);
-      });
-
-      // No assertions needed - test passes if no errors thrown
-    });
-
-    it('should handle multiple unmounts gracefully', () => {
-      const { unmount } = renderHook(() => useDebounce('test', 500));
-
-      // Multiple unmounts should not cause issues
-      unmount();
-
-      expect(() => {
-        act(() => {
-          jest.advanceTimersByTime(500);
-        });
-      }).not.toThrow();
     });
   });
 

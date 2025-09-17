@@ -51,6 +51,7 @@ NOTE: The patients featured in the screenshots are synthetic and do not represen
 2. Implemented operations from the [Structured Data Capture (SDC)](http://hl7.org/fhir/uv/sdc/) specification:
  - [$populate](https://hl7.org/fhir/uv/sdc/OperationDefinition/Questionnaire-populate)
  - [$assemble](https://hl7.org/fhir/uv/sdc/OperationDefinition/Questionnaire-assemble)
+ - [$extract](http://hl7.org/fhir/uv/sdc/OperationDefinition/QuestionnaireResponse-extract)
 3. A standalone component of the questionnaire renderer published on NPM as [@aehrc/smart-forms-renderer](https://www.npmjs.com/package/@aehrc/smart-forms-renderer).
 
 ## Conformance
@@ -100,7 +101,7 @@ Any questionnnaire/SDC-related discussion can be raised in the questionnaire str
 
 ## Licensing and attribution
 
-Smart Forms is copyright © 2022-2024, Commonwealth Scientific and Industrial
+Smart Forms is copyright © 2022-2025, Commonwealth Scientific and Industrial
 Research Organisation
 (CSIRO) ABN 41 687 119 230. Licensed under
 the [Apache License, version 2.0](https://www.apache.org/licenses/LICENSE-2.0).

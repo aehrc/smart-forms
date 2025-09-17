@@ -20,6 +20,7 @@ import type { RegexValidation } from '../interfaces/regex.interface';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 import { default as htmlParse } from 'html-react-parser';
 import type { JSX } from 'react';
+import { getInitialExpression } from './getExpressionsFromItem';
 
 export function hasDisplayCategory(qItem: QuestionnaireItem): boolean {
   return !!qItem.extension?.some(
@@ -595,4 +596,57 @@ export function isGroupAddItemButtonHidden(qItem: QuestionnaireItem): boolean {
   );
 
   return !!extension?.valueBoolean;
+}
+
+/**
+ * Check if the item has a sdc-questionnaire-width extension
+ *
+ * @param {QuestionnaireItem} qItem - The QuestionnaireItem to check.
+ * @returns {number | undefined} The numeric value of the columnWidth extension, if present.
+ *
+ * @author Janardhan Vignarajan
+ */
+export function getColumnWidth(qItem: QuestionnaireItem): string | undefined {
+  const extension = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url === 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-width'
+  );
+
+  // Check if valueQuantity exists and if value is a "number" type
+  if (extension?.valueQuantity) {
+    if (typeof extension.valueQuantity.value === 'number') {
+      // if the extension.valueQuantity.code exists then return value + code, else return value + 'px'
+      // See http://hl7.org/fhir/uv/sdc/rendering.html#width.
+      if (extension.valueQuantity.code) {
+        return `${extension.valueQuantity.value}${extension.valueQuantity.code}`;
+      } else {
+        return `${extension.valueQuantity.value}px`;
+      }
+    }
+  }
+
+  return undefined;
+}
+
+/**
+ * Check if the QuestionnaireItem has a 'showRepopulateButton' extension to show a sync button for granular repopulation.
+ */
+export function isItemRepopulatable(qItem: QuestionnaireItem): boolean {
+  // Get questionnaire-initialExpression-repopulatable button extension
+  // Currently fixed to 'manual' repopulation only.
+  // See https://chat.fhir.org/#narrow/channel/179255-questionnaire/topic/Granular.20Repopulate.20button/with/533937578 for more details.
+  const isRepopulatableExtension = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url ===
+        'https://smartforms.csiro.au/ig/StructureDefinition/questionnaire-initialExpression-repopulatable' &&
+      extension.valueCode === 'manual'
+  );
+
+  // Also need to check if the item has an initialExpression, because this button depends on it
+  const initialExpression = getInitialExpression(qItem);
+  if (!initialExpression) {
+    return false;
+  }
+
+  return !!isRepopulatableExtension;
 }

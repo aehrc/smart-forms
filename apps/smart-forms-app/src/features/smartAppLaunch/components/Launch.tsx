@@ -15,31 +15,53 @@
  * limitations under the License.
  */
 
-import { useSearchParams } from 'react-router-dom';
-import { oauth2 } from 'fhirclient';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import LaunchView from './LaunchView.tsx';
-import { LAUNCH_CLIENT_ID, LAUNCH_SCOPE } from '../../../globals.ts';
+import { ConfigContext } from '../../configChecker/contexts/ConfigContext.tsx';
+import { useParams, useSearchParams } from 'react-router-dom';
+import { getClientId } from '../utils/launch.ts';
+import { oauth2 } from 'fhirclient';
 
 export type LaunchState = 'loading' | 'error' | 'success';
 
 function Launch() {
   const [launchState, setLaunchState] = useState<LaunchState>('loading');
 
+  const { config, currentClientId, onSetCurrentClientId } = useContext(ConfigContext);
+
+  const { registeredClientIds, defaultClientId, launchScopes } = config;
+
+  // Get issuer and launch from URL parameters
   const [searchParams] = useSearchParams();
   const iss = searchParams.get('iss');
   const launch = searchParams.get('launch');
 
-  const clientId = LAUNCH_CLIENT_ID;
-  const scope = LAUNCH_SCOPE;
+  // Get clientId from path params (if exists)
+  const { clientId: clientIdFromPath } = useParams();
 
-  if (iss && launch) {
-    // oauth2.authorize triggers a redirect to EHR
+  useEffect(() => {
+    // If launch url includes client ID (e.g. https://smartforms.csiro.au/<client_id>/launch?iss=...), use that client ID
+    if (clientIdFromPath) {
+      onSetCurrentClientId(clientIdFromPath);
+      return;
+    }
+
+    // If launch url does not include client ID,  get client ID from registeredClientIds map
+    if (iss) {
+      const clientId = getClientId(iss, registeredClientIds, defaultClientId);
+      onSetCurrentClientId(clientId);
+    }
+  }, [iss, registeredClientIds, defaultClientId, onSetCurrentClientId, clientIdFromPath]);
+
+  // authorize() is only called if iss and launch query params are present, AND we have a non-empty client ID
+  if (iss && launch && currentClientId !== '') {
+    // Trigger OAuth redirect
     oauth2
       .authorize({
-        iss: iss,
-        clientId: clientId,
-        scope: scope
+        iss,
+        clientId: currentClientId,
+        scope: launchScopes,
+        redirectUri: window.location.origin
       })
       .catch((err) => {
         console.error(err);

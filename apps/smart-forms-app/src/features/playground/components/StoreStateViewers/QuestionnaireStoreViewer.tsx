@@ -38,6 +38,7 @@ const questionnaireStoreStatePropertyNames: string[] = [
   'enableWhenIsActivated',
   'enableWhenExpressions',
   'calculatedExpressions',
+  'initialExpressions',
   'answerExpressions',
   'processedValueSets',
   'cachedValueSetCodings',

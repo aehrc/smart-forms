@@ -25,7 +25,8 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
-import OpenChoiceSelectAnswerOptionField from './OpenChoiceSelectAnswerOptionField';
+import type { AutocompleteChangeReason } from '@mui/material';
+import { sanitizeInput } from '../../../utils/inputSanitization';
 
 function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
   const {
@@ -78,10 +79,11 @@ function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
       if (typeof newValue === 'string') {
         onQrItemChange({
           ...qrOpenChoice,
-          answer: [{ id: answerKey, valueString: newValue }]
+          answer: [{ id: answerKey, valueString: sanitizeInput(newValue) }]
         });
         return;
       }
+
       //If the value is not a string, then it is a coding.
       const option = newValue;
       if (option['valueCoding']) {
@@ -92,7 +94,7 @@ function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
       } else if (option['valueString']) {
         onQrItemChange({
           ...qrOpenChoice,
-          answer: [{ id: answerKey, valueString: option.valueString }]
+          answer: [{ id: answerKey, valueString: sanitizeInput(option.valueString) }]
         });
       } else if (option['valueInteger']) {
         onQrItemChange({

@@ -21,6 +21,9 @@ import type { DefaultOptions } from '@tanstack/react-query';
 import { keepPreviousData, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as Sentry from '@sentry/react';
 import { browserTracingIntegration } from '@sentry/browser';
+import ConfigContextProvider from './features/configChecker/contexts/ConfigContextProvider';
+import { CssBaseline } from '@mui/material';
+import ThemeProvider from './theme/Theme';
 
 const integration = browserTracingIntegration();
 
@@ -47,6 +50,11 @@ const queryClient = new QueryClient({
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <QueryClientProvider client={queryClient}>
-    <App />
+    <ConfigContextProvider>
+      <ThemeProvider>
+        <CssBaseline />
+        <App />
+      </ThemeProvider>
+    </ConfigContextProvider>
   </QueryClientProvider>
 );

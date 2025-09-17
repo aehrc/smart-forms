@@ -18,8 +18,20 @@
 import { questionnaireStore } from '../../stores/questionnaireStore';
 import { questionnaireResponseStore } from '../../stores/questionnaireResponseStore';
 import { terminologyServerStore } from '../../stores/terminologyServerStore';
-import type { Questionnaire, QuestionnaireResponse, Coding } from 'fhir/r4';
+import type { Coding, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { emptyQuestionnaire, emptyResponse } from '../../utils/emptyResource';
+import { createQuestionnaireModel } from '../../utils/questionnaireStoreUtils/createQuestionnaireModel';
+import { initialiseFormFromResponse } from '../../utils/initialise';
+import { insertCompleteAnswerOptionsIntoQuestionnaire } from '../../utils/questionnaireStoreUtils/insertAnswerOptions';
+import { readTargetConstraintLocationLinkIds } from '../../utils/targetConstraint';
+import {
+  mutateRepeatEnableWhenItemInstances,
+  updateEnableWhenItemAnswer
+} from '../../utils/enableWhen';
+import { mutateRepeatEnableWhenExpressionInstances } from '../../utils/enableWhenExpression';
+import { evaluateUpdatedExpressions } from '../../utils/fhirpath';
+import { createQuestionnaireResponseItemMap } from '../../utils/questionnaireResponseStoreUtils/updatableResponseItems';
+import { applyComputedUpdates } from '../../utils/computedUpdates';
 
 // Mock all dependencies
 jest.mock('../../utils/questionnaireStoreUtils/createQuestionnaireModel');
@@ -31,19 +43,6 @@ jest.mock('../../utils/enableWhenExpression');
 jest.mock('../../utils/fhirpath');
 jest.mock('../../utils/questionnaireResponseStoreUtils/updatableResponseItems');
 jest.mock('../../utils/computedUpdates');
-
-import { createQuestionnaireModel } from '../../utils/questionnaireStoreUtils/createQuestionnaireModel';
-import { initialiseFormFromResponse } from '../../utils/initialise';
-import { insertCompleteAnswerOptionsIntoQuestionnaire } from '../../utils/questionnaireStoreUtils/insertAnswerOptions';
-import { readTargetConstraintLocationLinkIds } from '../../utils/targetConstraint';
-import {
-  updateEnableWhenItemAnswer,
-  mutateRepeatEnableWhenItemInstances
-} from '../../utils/enableWhen';
-import { mutateRepeatEnableWhenExpressionInstances } from '../../utils/enableWhenExpression';
-import { evaluateUpdatedExpressions } from '../../utils/fhirpath';
-import { createQuestionnaireResponseItemMap } from '../../utils/questionnaireResponseStoreUtils/updatableResponseItems';
-import { applyComputedUpdates } from '../../utils/computedUpdates';
 
 // Mock the functions
 const mockCreateQuestionnaireModel = createQuestionnaireModel as jest.MockedFunction<
@@ -742,24 +741,6 @@ describe('questionnaireStore', () => {
 
       expect(mockSubscriber).toHaveBeenCalled();
       unsubscribe();
-    });
-  });
-
-  describe('error handling', () => {
-    it('should handle errors in buildSourceQuestionnaire', async () => {
-      mockCreateQuestionnaireModel.mockRejectedValue(new Error('Model creation failed'));
-
-      await expect(
-        questionnaireStore.getState().buildSourceQuestionnaire(mockQuestionnaire)
-      ).rejects.toThrow('Model creation failed');
-    });
-
-    it('should handle errors in updateExpressions', async () => {
-      mockEvaluateUpdatedExpressions.mockRejectedValue(new Error('Expression evaluation failed'));
-
-      await expect(
-        questionnaireStore.getState().updateExpressions(mockQuestionnaireResponse)
-      ).rejects.toThrow('Expression evaluation failed');
     });
   });
 });

@@ -50,6 +50,7 @@ interface GroupTableRowProps
   selectedIds: string[];
   qItemsIndexMap: Record<string, number>;
   visibleItemLabels: string[];
+  calculatedColumnWidths: { width: string; isFixed: boolean }[];
   showExtraGTableInteractions: boolean;
   onRowChange: (
     newQrRow: QuestionnaireResponseItem,
@@ -73,6 +74,7 @@ function GroupTableRow(props: GroupTableRowProps) {
     itemIsSelected,
     qItemsIndexMap,
     visibleItemLabels,
+    calculatedColumnWidths,
     showExtraGTableInteractions,
     itemPath,
     onRowChange,
@@ -117,6 +119,7 @@ function GroupTableRow(props: GroupTableRowProps) {
               qrItem={answeredQrItem}
               qItemsIndexMap={qItemsIndexMap}
               visibleItemLabels={visibleItemLabels}
+              calculatedColumnWidths={calculatedColumnWidths}
               itemPath={itemPath}
               parentIsReadOnly={readOnly}
               onQrItemChange={(newQrGroup) => onRowChange(newQrGroup, index)}
@@ -141,6 +144,7 @@ function GroupTableRow(props: GroupTableRowProps) {
         qrItem={answeredQrItem}
         qItemsIndexMap={qItemsIndexMap}
         visibleItemLabels={visibleItemLabels}
+        calculatedColumnWidths={calculatedColumnWidths}
         itemPath={itemPath}
         parentIsReadOnly={readOnly}
         onQrItemChange={(newQrGroup) => onRowChange(newQrGroup, index)}

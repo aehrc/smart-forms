@@ -154,6 +154,7 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: BaseItemProps) {
   function handleClear() {
     onQrItemChange(createEmptyQrItem(qItem, answerKey));
     setOpenLabelChecked(false);
+    setOpenLabelValue('');
   }
 
   if (isTabled) {

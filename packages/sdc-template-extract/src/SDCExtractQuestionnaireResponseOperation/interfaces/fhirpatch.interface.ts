@@ -10,9 +10,12 @@ export interface FhirPatchParameters extends Parameters {
 
 export type FhirPatchOperationType = 'add' | 'insert' | 'delete' | 'replace' | 'move';
 
+export type FhirPatchTypePart = { name: 'type'; valueCode: FhirPatchOperationType };
+export type FhirPatchPathPart = { name: 'path'; valueString: string };
+
 export type FhirPatchPart =
-  | { name: 'type'; valueCode: FhirPatchOperationType }
-  | { name: 'path'; valueString: string }
+  | FhirPatchTypePart
+  | FhirPatchPathPart
   | { name: 'name'; valueString: string } // (add operation only)
   | { name: 'value'; [key: string]: unknown } // value[x], e.g., valueString, valueInteger, etc.
   | { name: 'index'; valueInteger: number }

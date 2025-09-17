@@ -74,11 +74,12 @@ export default function Router() {
       element: <Standalone />
     },
     {
-      path: '/launch',
+      // Dynamic prefix with optional clientId at /launch route
+      path: '/:clientId?/launch',
       element: <Launch />
     },
     {
-      path: '/launch.html',
+      path: '/:clientId?/launch.html',
       element: <Launch />
     },
     {

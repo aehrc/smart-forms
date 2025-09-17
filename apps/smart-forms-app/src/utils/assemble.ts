@@ -20,7 +20,6 @@ import { isInputParameters } from '@aehrc/sdc-assemble';
 import * as FHIR from 'fhirclient';
 import { HEADERS } from '../api/headers.ts';
 import { getFormsServerAssembledBundlePromise } from '../features/dashboard/utils/dashboard.ts';
-import { FORMS_SERVER_URL } from '../globals.ts';
 
 export function assemblyIsRequired(questionnaire: Questionnaire): boolean {
   return !!questionnaire.extension?.find(
@@ -44,11 +43,12 @@ function defineAssembleParameters(questionnaire: Questionnaire): Parameters {
 }
 
 export async function assembleQuestionnaire(
-  questionnaire: Questionnaire
+  questionnaire: Questionnaire,
+  formsServerUrl: string
 ): Promise<Questionnaire | OperationOutcome> {
   const parameters = defineAssembleParameters(questionnaire);
   if (isInputParameters(parameters)) {
-    const outputAssembleParams = await FHIR.client(FORMS_SERVER_URL).request({
+    const outputAssembleParams = await FHIR.client(formsServerUrl).request({
       url: 'Questionnaire/$assemble',
       method: 'POST',
       body: JSON.stringify(parameters),
@@ -66,8 +66,11 @@ export async function assembleQuestionnaire(
   return questionnaire;
 }
 
-export function updateAssembledQuestionnaire(questionnaire: Questionnaire) {
-  return FHIR.client(FORMS_SERVER_URL).request({
+export function updateAssembledQuestionnaire(
+  questionnaire: Questionnaire,
+  formsServerUrl: string
+): Promise<Questionnaire> {
+  return FHIR.client(formsServerUrl).request({
     url: `Questionnaire/${questionnaire.id}`,
     method: 'PUT',
     body: JSON.stringify(questionnaire),
@@ -76,14 +79,15 @@ export function updateAssembledQuestionnaire(questionnaire: Questionnaire) {
 }
 
 export async function assembleIfRequired(
-  questionnaire: Questionnaire
+  questionnaire: Questionnaire,
+  formsServerUrl: string
 ): Promise<Questionnaire | null> {
   // get assembled version of questionnaire if assembled-expectation extension exists
   const assembleRequired = assemblyIsRequired(questionnaire);
   if (assembleRequired) {
     // check for existing assembled questionnaires
     const queryUrl = `/Questionnaire?_sort=-date&url=${questionnaire.url}&version=${questionnaire.version}-assembled`;
-    const bundle = await getFormsServerAssembledBundlePromise(queryUrl);
+    const bundle = await getFormsServerAssembledBundlePromise(queryUrl, formsServerUrl);
 
     // if there is an assembled questionnaire, return it
     if (bundle.entry && bundle.entry.length > 0) {
@@ -94,12 +98,12 @@ export async function assembleIfRequired(
     }
 
     // If not, perform assemble on-the-fly and save it to forms server
-    const resource = await assembleQuestionnaire(questionnaire);
+    const resource = await assembleQuestionnaire(questionnaire, formsServerUrl);
     if (resource.resourceType === 'OperationOutcome') return null;
 
     // at this point, assembly is successful
     // save assembled questionnaire to forms server and return it
-    await updateAssembledQuestionnaire(questionnaire);
+    await updateAssembledQuestionnaire(questionnaire, formsServerUrl);
     return resource;
   }
 

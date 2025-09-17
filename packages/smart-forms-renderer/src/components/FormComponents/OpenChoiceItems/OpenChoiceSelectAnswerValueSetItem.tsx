@@ -26,7 +26,8 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
-import OpenChoiceSelectAnswerValueSetField from './OpenChoiceSelectAnswerValueSetField';
+import type { AutocompleteChangeReason } from '@mui/material';
+import { sanitizeInput } from '../../../utils/inputSanitization';
 
 function OpenChoiceSelectAnswerValueSetItem(props: BaseItemProps) {
   const {
@@ -86,7 +87,7 @@ function OpenChoiceSelectAnswerValueSetItem(props: BaseItemProps) {
 
     if (newValue) {
       if (typeof newValue === 'string') {
-        // Check if the newValue in in the options, first check options.display, then check options.code
+        // Check if the newValue is in the options, first check options.display, then check options.code
         const foundOption = codings.find((option) => {
           if (option.display) {
             return option.display === newValue;
@@ -106,7 +107,7 @@ function OpenChoiceSelectAnswerValueSetItem(props: BaseItemProps) {
         else {
           onQrItemChange({
             ...qrOpenChoice,
-            answer: [{ id: answerKey, valueString: newValue }]
+            answer: [{ id: answerKey, valueString: sanitizeInput(newValue) }]
           });
         }
       } //if the newValue is not a string, then it is coding

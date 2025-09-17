@@ -109,6 +109,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
                 }
               }}
               data-test="q-item-choice-select-answer-value-set-field"
+              data-linkid={qItem.linkId}
             />
           )}
         />

@@ -33,6 +33,8 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
+import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
+import { sanitizeInput } from '../../../utils/inputSanitization';
 import OpenChoiceRadioAnswerValueSetFields from './OpenChoiceRadioAnswerValueSetFields';
 
 function OpenChoiceRadioAnswerValueSetItem(props: BaseItemProps) {
@@ -122,7 +124,7 @@ function OpenChoiceRadioAnswerValueSetItem(props: BaseItemProps) {
       // Otherwise, it is an open-label selection
       onQrItemChange({
         ...createEmptyQrItem(qItem, answerKey),
-        answer: [{ id: answerKey, valueString: changedOptionValue }]
+        answer: [{ id: answerKey, valueString: sanitizeInput(changedOptionValue) }]
       });
       setOpenLabelValue(changedOptionValue);
       setOpenLabelSelected(true);
@@ -142,7 +144,7 @@ function OpenChoiceRadioAnswerValueSetItem(props: BaseItemProps) {
       setOpenLabelValue(changedOpenLabelValue);
       onQrItemChange({
         ...createEmptyQrItem(qItem, answerKey),
-        answer: [{ id: answerKey, valueString: changedOpenLabelValue }]
+        answer: [{ id: answerKey, valueString: sanitizeInput(changedOpenLabelValue) }]
       });
     }
   }
@@ -150,6 +152,7 @@ function OpenChoiceRadioAnswerValueSetItem(props: BaseItemProps) {
   function handleClear() {
     onQrItemChange(createEmptyQrItem(qItem, answerKey));
     setOpenLabelSelected(false);
+    setOpenLabelValue('');
   }
 
   return (

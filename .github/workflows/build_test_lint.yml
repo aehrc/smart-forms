@@ -87,6 +87,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      #  sdc-populate is a dependency of the renderer so we need to build it
+      - name: Build workspace packages
+        run: |
+          npm run build -w packages/sdc-populate
+
       - name: Run jest tests
         run: npm run test -w packages/smart-forms-renderer
       - uses: codecov/codecov-action@v4
@@ -127,6 +132,34 @@ jobs:
           name: sdc-populate-coverage-report
           path: packages/sdc-populate/coverage
           retention-days: 30
+
+  storybook-renderer-tests:
+    name: Storybook Tests - Renderer
+    runs-on: ubuntu-latest
+    # Conditional logic to skip if workflow is triggered by Dependabot
+    if: github.actor != 'dependabot[bot]'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build workspace packages
+        run: |
+          npm run build -w packages/sdc-populate
+          npm run build -w packages/testing-toolkit
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Serve Storybook Dev and run tests
+        run: npm run test-storybook-ci -w packages/smart-forms-renderer
 
   jest-assemble-tests:
     name: Jest Tests - Assemble

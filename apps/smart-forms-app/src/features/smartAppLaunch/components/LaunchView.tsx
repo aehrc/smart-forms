@@ -34,7 +34,9 @@ function LaunchView(props: LaunchViewProps) {
         <Stack rowGap={2}>
           <Typography variant="h3">An error occurred while launching the app.</Typography>
           <Typography fontSize={13}>
-            {"You might have incorrect launch parameters in the URL or the server doesn't exist. "}
+            {
+              "You might have incorrect launch parameters (iss and launch) in the URL or the issuer server doesn't exist."
+            }
             <br />
             {'Please contact your administrator for assistance.'}
           </Typography>

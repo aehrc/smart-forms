@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { mapQItemsIndex } from '../../../utils/mapItem';
@@ -36,6 +36,9 @@ import useInitialiseGroupTableRows from '../../../hooks/useInitialiseGroupTableR
 import type { ItemPath } from '../../../interfaces/itemPath.interface';
 import { isItemHidden } from '../../../utils/qItem';
 import { useQuestionnaireStore, useRendererStylingStore } from '../../../stores';
+import { getColumnWidth } from '../../../utils/extensions';
+import { calculateColumnWidths } from '../../../utils/columnWidth';
+import { useResizeColumns } from '../../../hooks/useResizeColumns';
 
 interface GroupTableProps
   extends PropsWithQrRepeatGroupChangeHandler,
@@ -75,7 +78,7 @@ function GroupTable(props: GroupTableProps) {
   const { tableRows, selectedIds, setTableRows, setSelectedIds } =
     useGroupTableRows(initialGroupTableRows);
 
-  const readOnly = useReadOnly(qItem, parentIsReadOnly);
+  const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
 
   // Generate item labels as table headers
   const qItems = qItem.item;
@@ -96,7 +99,41 @@ function GroupTable(props: GroupTableProps) {
     [enableWhenAsReadOnly, enableWhenExpressions, enableWhenIsActivated, enableWhenItems, qItems]
   );
 
-  const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
+  // Get visible label items
+  const visibleLabelItems = useMemo(
+    () =>
+      qItems?.filter(
+        (item) =>
+          !isItemHidden(
+            item,
+            enableWhenIsActivated,
+            enableWhenItems,
+            enableWhenExpressions,
+            enableWhenAsReadOnly
+          )
+      ) ?? [],
+    [enableWhenAsReadOnly, enableWhenExpressions, enableWhenIsActivated, enableWhenItems, qItems]
+  );
+
+  // Table width ref and state
+  const tableContainerRef = useRef<HTMLDivElement>(null);
+  const [tableWidth, setTableWidth] = useState(0);
+
+  useResizeColumns(tableContainerRef, setTableWidth);
+
+  // Build and calculate column widths
+  const columnWidths = useMemo(
+    () => visibleLabelItems.map((item) => getColumnWidth(item)),
+    [visibleLabelItems]
+  );
+
+  const calculatedColumnWidths = useMemo(
+    () => calculateColumnWidths(columnWidths, tableWidth),
+    [columnWidths, tableWidth]
+  );
+
+  // Determine if the group table is readOnly
+  const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Check if there are columns within the group table
   if (!qItems || qItems.length === 0) {
@@ -207,25 +244,28 @@ function GroupTable(props: GroupTableProps) {
   }
 
   return (
-    <GroupTableView
-      qItem={qItem}
-      qItemsIndexMap={qItemsIndexMap}
-      itemPath={itemPath}
-      groupCardElevation={groupCardElevation}
-      isRepeated={isRepeated}
-      readOnly={readOnly}
-      tableRows={tableRows}
-      selectedIds={selectedIds}
-      visibleItemLabels={visibleItemLabels}
-      parentIsReadOnly={parentIsReadOnly}
-      parentStyles={parentStyles}
-      onAddRow={handleAddRow}
-      onRowChange={handleRowChange}
-      onRemoveRow={handleRemoveRow}
-      onSelectRow={handleSelectRow}
-      onSelectAll={handleSelectAll}
-      onReorderRows={handleReorderRows}
-    />
+    <div ref={tableContainerRef} style={{ width: '100%' }}>
+      <GroupTableView
+        qItem={qItem}
+        qItemsIndexMap={qItemsIndexMap}
+        itemPath={itemPath}
+        groupCardElevation={groupCardElevation}
+        isRepeated={isRepeated}
+        readOnly={readOnly}
+        tableRows={tableRows}
+        selectedIds={selectedIds}
+        visibleItemLabels={visibleItemLabels}
+        calculatedColumnWidths={calculatedColumnWidths}
+        parentIsReadOnly={parentIsReadOnly}
+        parentStyles={parentStyles}
+        onAddRow={handleAddRow}
+        onRowChange={handleRowChange}
+        onRemoveRow={handleRemoveRow}
+        onSelectRow={handleSelectRow}
+        onSelectAll={handleSelectAll}
+        onReorderRows={handleReorderRows}
+      />
+    </div>
   );
 }
 

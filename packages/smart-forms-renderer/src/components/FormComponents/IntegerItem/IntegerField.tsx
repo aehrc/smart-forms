@@ -21,37 +21,37 @@ import { useRendererStylingStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
-import { StandardTextField } from '../Textfield.styles';
+import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import ItemRepopulateButton from '../ItemParts/ItemRepopulateButton';
+import type { RenderingExtensions } from '../../../hooks/useRenderingExtensions';
 
 interface IntegerFieldProps extends PropsWithIsTabledRequiredAttribute {
-  linkId: string;
-  itemType: string;
+  qItem: QuestionnaireItem;
   input: string;
   feedback: string;
-  displayPrompt: string;
-  displayUnit: string;
-  entryFormat: string;
+  renderingExtensions: RenderingExtensions;
   readOnly: boolean;
   calcExprAnimating: boolean;
   onInputChange: (value: string) => void;
+  onRepopulateSync: (newQrItem: QuestionnaireResponseItem | null) => unknown;
   onBlur: () => void;
 }
 
 function IntegerField(props: IntegerFieldProps) {
   const {
-    linkId,
-    itemType,
+    qItem,
     input,
     feedback,
-    displayPrompt,
-    displayUnit,
-    entryFormat,
+    renderingExtensions,
     readOnly,
     calcExprAnimating,
     isTabled,
     onInputChange,
+    onRepopulateSync,
     onBlur
   } = props;
+
+  const { displayPrompt, displayUnit, entryFormat, isRepopulatable } = renderingExtensions;
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
@@ -67,7 +67,7 @@ function IntegerField(props: IntegerFieldProps) {
 
   return (
     <StandardTextField
-      id={itemType + '-' + linkId}
+      id={qItem.type + '-' + qItem.linkId}
       value={input}
       error={!!feedback}
       helperText={feedback}
@@ -95,6 +95,11 @@ function IntegerField(props: IntegerFieldProps) {
                 onClear={() => {
                   onInputChange('');
                 }}
+              />
+              <ItemRepopulateButton
+                qItem={qItem}
+                repopulatable={isRepopulatable}
+                onRepopulate={onRepopulateSync}
               />
               <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>

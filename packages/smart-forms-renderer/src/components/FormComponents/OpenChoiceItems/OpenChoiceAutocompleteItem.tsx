@@ -32,7 +32,8 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
-import OpenChoiceAutocompleteField from './OpenChoiceAutocompleteField';
+import type { AutocompleteChangeReason } from '@mui/material';
+import { sanitizeInput } from '../../../utils/inputSanitization';
 
 function OpenChoiceAutocompleteItem(props: BaseItemProps) {
   const {
@@ -130,11 +131,12 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
             ...qrOpenChoice,
             answer: [{ id: answerKey, valueCoding: newValue }]
           });
-        } //if newValue is not in the options list, treat it as a string
+        }
+        // if newValue is not in the options list, treat it as a string
         else {
           onQrItemChange({
             ...createEmptyQrItem(qItem, answerKey),
-            answer: [{ id: answerKey, valueString: newValue }]
+            answer: [{ id: answerKey, valueString: sanitizeInput(newValue) }]
           });
         }
       } else {

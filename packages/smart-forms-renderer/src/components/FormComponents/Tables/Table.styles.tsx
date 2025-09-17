@@ -20,6 +20,7 @@ import TableCell from '@mui/material/TableCell';
 import TableRow from '@mui/material/TableRow';
 import { grey } from '@mui/material/colors';
 
+// No need to pass calculatedWidth to HeaderCells, it auto adjusts to content
 export const HeaderTableCell = styled(TableCell)(({ theme }) => ({
   fontSize: 13,
   color: theme.palette.text.primary,
@@ -29,9 +30,11 @@ export const HeaderTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 export const StandardTableCell = styled(TableCell, {
-  shouldForwardProp: (prop) => prop !== 'numOfColumns'
-})<{ numOfColumns: number }>(({ numOfColumns }) => ({
-  width: `${100 / numOfColumns}%`,
+  shouldForwardProp: (prop) => prop !== 'calculatedWidth'
+})<{
+  calculatedWidth?: string;
+}>(({ calculatedWidth }) => ({
+  width: calculatedWidth,
   paddingLeft: 4,
   paddingRight: 4
 }));
@@ -49,11 +52,13 @@ export const GridTextTableCell = styled(TableCell)(({ theme }) => ({
 }));
 
 export const GridAnswerTableCell = styled(TableCell, {
-  shouldForwardProp: (prop) => prop !== 'numOfColumns'
-})<{ numOfColumns: number }>(({ numOfColumns }) => ({
-  width: `${80 / numOfColumns}%`,
-  paddingLeft: 5,
-  paddingRight: 5
+  shouldForwardProp: (prop) => prop !== 'calculatedWidth'
+})<{
+  calculatedWidth?: string;
+}>(({ calculatedWidth }) => ({
+  width: calculatedWidth,
+  paddingLeft: 4,
+  paddingRight: 4
 }));
 
 export const StyledGroupTableRow = styled(TableRow, {

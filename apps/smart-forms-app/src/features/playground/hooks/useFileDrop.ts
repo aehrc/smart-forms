@@ -25,7 +25,7 @@ interface UseFileDrop {
   dropTarget: ConnectDropTarget;
 }
 
-function UseFileDrop(onDrop: (item: { files: any[] }) => void): UseFileDrop {
+function useFileDrop(onDrop: (item: { files: any[] }) => void): UseFileDrop {
   const [{ canDrop, isOver }, drop] = useDrop(
     () => ({
       accept: [NativeTypes.FILE],
@@ -50,4 +50,4 @@ function UseFileDrop(onDrop: (item: { files: any[] }) => void): UseFileDrop {
   return { canDrop, isOver, dropTarget: drop };
 }
 
-export default UseFileDrop;
+export default useFileDrop;
