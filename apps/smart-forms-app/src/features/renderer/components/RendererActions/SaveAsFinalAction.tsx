@@ -27,9 +27,11 @@ import { getExtractMechanism } from '../../utils/extract.ts';
 import SaveAsFinalActionButton from './SaveAsFinalActionButton.tsx';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import { extractResultIsOperationOutcome, inAppExtract } from '@aehrc/sdc-template-extract';
-import type { Bundle } from 'fhir/r4';
+import type { Bundle, QuestionnaireResponse } from 'fhir/r4';
 import RendererSaveAsFinalOnlyDialog from './RendererSaveAsFinalOnlyDialog.tsx';
 import RendererSaveAsFinalWriteBackDialog from './RendererSaveAsFinalWriteBackDialog.tsx';
+import { populateQuestionnaire } from '@aehrc/sdc-populate';
+import { fetchResourceCallback } from '../../../prepopulate/utils/callback.ts';
 
 interface SaveAsFinalActionProps extends SpeedDialActionProps {
   isSpeedDial?: boolean;
@@ -39,14 +41,13 @@ interface SaveAsFinalActionProps extends SpeedDialActionProps {
 function SaveAsFinalAction(props: SaveAsFinalActionProps) {
   const { isSpeedDial, onCloseSpeedDial, ...speedDialActionProps } = props;
 
-  const { smartClient } = useSmartClient();
+  const { smartClient, patient, user, encounter } = useSmartClient();
 
   const [saveAsFinalDialogOpen, setSaveAsFinalDialogOpen] = useState(false);
   const [isExtracting, setExtracting] = useState(false);
   const [extractedBundle, setExtractedBundle] = useState<Bundle | null>(null);
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
-  const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
   const formChangesHistory = useQuestionnaireResponseStore.use.formChangesHistory();
 
@@ -58,17 +59,35 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
     setExtracting(true);
 
     // FhirClient not available, skip whole save process
-    if (!smartClient) {
+    if (!smartClient || !patient || !user) {
       setExtracting(false);
       return;
     }
 
-    // Perform template-based extracted to get a transaction bundle
+    // If modifiedOnly is true, populate a fresh copy of the questionnaire to compare against
+    let responseToCompare: QuestionnaireResponse | null = null;
+    if (modifiedOnly) {
+      const populateRes = await populateQuestionnaire({
+        questionnaire: sourceQuestionnaire,
+        fetchResourceCallback: fetchResourceCallback,
+        fetchResourceRequestConfig: {
+          sourceServerUrl: smartClient.state.serverUrl,
+          authToken: smartClient.state.tokenResponse?.access_token
+        },
+        patient: patient,
+        user: user,
+        encounter: encounter ?? undefined
+      });
+
+      responseToCompare = populateRes.populateResult?.populatedResponse ?? null;
+    }
+
+    // Perform template-based extraction to get a transaction bundle
     const responseToExtract = structuredClone(updatableResponse);
     const inAppExtractOutput = await inAppExtract(
       responseToExtract,
       sourceQuestionnaire,
-      modifiedOnly ? sourceResponse : null
+      modifiedOnly ? responseToCompare : null
     );
 
     const { extractResult } = inAppExtractOutput;
