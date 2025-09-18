@@ -27,7 +27,7 @@ import PrePopButtonForStorybook from './PrePopButtonForStorybook';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { buildForm } from '../../utils';
 import { STORYBOOK_TERMINOLOGY_SERVER_URL } from './globals';
-import { useQuestionnaireStore } from '../../stores';
+import { useQuestionnaireStore, useSmartConfigStore } from '../../stores';
 import { fetchResourceCallback } from '../../api/callback';
 
 interface PrePopWrapperForStorybookProps {
@@ -52,12 +52,28 @@ function PrePopWrapperForStorybook(props: PrePopWrapperForStorybookProps) {
 
   const [isPopulating, setIsPopulating] = useState(false);
   const setPopulatedContext = useQuestionnaireStore.use.setPopulatedContext();
+  
+  // Initialize Smart Config Store for repopulate functionality
+  const setClient = useSmartConfigStore.use.setClient();
+  const setPatient = useSmartConfigStore.use.setPatient();
+  const setUser = useSmartConfigStore.use.setUser();
+  
+  // Set the client, patient, and user in the store
+  React.useEffect(() => {
+    setClient(fhirClient);
+    setPatient(patient);
+    setUser(user);
+  }, [fhirClient, patient, user, setClient, setPatient, setUser]);
 
   const isBuilding = useBuildForm(
     questionnaire,
     undefined,
     undefined,
-    STORYBOOK_TERMINOLOGY_SERVER_URL
+    STORYBOOK_TERMINOLOGY_SERVER_URL,
+    {
+      patient: patient,
+      user: user
+    }
   );
 
   const queryClient = useRendererQueryClient();
@@ -87,9 +103,13 @@ function PrePopWrapperForStorybook(props: PrePopWrapperForStorybookProps) {
         questionnaire,
         populatedResponse,
         undefined,
-        STORYBOOK_TERMINOLOGY_SERVER_URL
+        STORYBOOK_TERMINOLOGY_SERVER_URL,
+        {
+          patient: patient,
+          user: user
+        }
       );
-      setPopulatedContext(populatedContext, true);
+      setPopulatedContext(populatedContext ?? {}, true);
 
       setIsPopulating(false);
     });
