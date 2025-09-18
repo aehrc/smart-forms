@@ -29,6 +29,7 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
 import { sanitizeInput } from '../../../utils/inputSanitization';
+import OpenChoiceRadioAnswerOptionFields from './OpenChoiceRadioAnswerOptionFields';
 
 function OpenChoiceRadioAnswerOptionItem(props: BaseItemProps) {
   const {

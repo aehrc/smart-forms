@@ -34,6 +34,7 @@ import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
 import type { QuestionnaireResponseItem } from 'fhir/r4';
 import { readDecimalValue } from '../../../utils/readValues';
+import DecimalField from './DecimalField';
 
 function DecimalItem(props: BaseItemProps) {
   const {
@@ -93,19 +94,16 @@ function DecimalItem(props: BaseItemProps) {
       );
 
       setInput(newInput);
-      onQrItemChange(
-        {
-          ...createEmptyQrItem(qItem, answerKey),
-          answer: [{ id: answerKey, valueDecimal: newValueDecimal }]
-        },
-        itemPath
-      );
+      onQrItemChange({
+        ...createEmptyQrItem(qItem, answerKey),
+        answer: [{ id: answerKey, valueDecimal: newValueDecimal }]
+      });
       return;
     }
 
     // At this point newQrItem is null, so create an QRItem to replace it
     setInput('');
-    onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
+    onQrItemChange(createEmptyQrItem(qItem, answerKey));
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -30,6 +30,7 @@ import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
 import { readIntegerValue } from '../../../utils/readValues';
 import type { QuestionnaireResponseItem } from 'fhir/r4';
+import IntegerField from './IntegerField';
 
 function IntegerItem(props: BaseItemProps) {
   const {
@@ -84,19 +85,16 @@ function IntegerItem(props: BaseItemProps) {
       const { valueInteger: newValueInteger, initialInput: newInput } = readIntegerValue(newQrItem);
 
       setInput(newInput);
-      onQrItemChange(
-        {
-          ...createEmptyQrItem(qItem, answerKey),
-          answer: [{ id: answerKey, valueInteger: newValueInteger }]
-        },
-        itemPath
-      );
+      onQrItemChange({
+        ...createEmptyQrItem(qItem, answerKey),
+        answer: [{ id: answerKey, valueInteger: newValueInteger }]
+      });
       return;
     }
 
     // At this point newQrItem is null, so create a QRItem to replace it
     setInput('');
-    onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
+    onQrItemChange(createEmptyQrItem(qItem, answerKey));
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

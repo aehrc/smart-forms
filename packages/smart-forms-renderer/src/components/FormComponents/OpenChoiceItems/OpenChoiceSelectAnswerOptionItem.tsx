@@ -26,6 +26,7 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
 import { sanitizeInput } from '../../../utils/inputSanitization';
+import OpenChoiceSelectAnswerOptionField from './OpenChoiceSelectAnswerOptionField';
 
 function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
   const {

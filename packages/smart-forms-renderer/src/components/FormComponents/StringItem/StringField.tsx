@@ -24,6 +24,7 @@ import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon'
 import ItemRepopulateButton from '../ItemParts/ItemRepopulateButton';
 import type { RenderingExtensions } from '../../../hooks/useRenderingExtensions';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import { StandardTextField } from '../Textfield.styles';
 
 interface StringFieldProps extends PropsWithIsTabledRequiredAttribute {
   qItem: QuestionnaireItem;

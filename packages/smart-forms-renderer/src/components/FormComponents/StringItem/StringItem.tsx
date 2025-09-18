@@ -40,6 +40,7 @@ import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
 import { readStringValue } from '../../../utils/readValues';
 import { sanitizeInput } from '../../../utils/inputSanitization';
+import StringField from './StringField';
 
 interface StringItemProps
   extends PropsWithQrItemChangeHandler,
@@ -107,19 +108,16 @@ function StringItem(props: StringItemProps) {
       const { valueString: newValueString, initialInput: newInput } = readStringValue(newQrItem);
 
       setInput(newInput);
-      onQrItemChange(
-        {
-          ...createEmptyQrItem(qItem, answerKey),
-          answer: [{ id: answerKey, valueString: sanitizeInput(newValueString) }]
-        },
-        itemPath
-      );
+      onQrItemChange({
+        ...createEmptyQrItem(qItem, answerKey),
+        answer: [{ id: answerKey, valueString: sanitizeInput(newValueString) }]
+      });
       return;
     }
 
     // At this point newQrItem is null, so create an QRItem to replace it
     setInput('');
-    onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
+    onQrItemChange(createEmptyQrItem(qItem, answerKey));
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

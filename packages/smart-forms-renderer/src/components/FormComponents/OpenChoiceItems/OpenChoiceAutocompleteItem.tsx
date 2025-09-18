@@ -33,6 +33,7 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
 import { sanitizeInput } from '../../../utils/inputSanitization';
+import OpenChoiceAutocompleteField from './OpenChoiceAutocompleteField';
 
 function OpenChoiceAutocompleteItem(props: BaseItemProps) {
   const {

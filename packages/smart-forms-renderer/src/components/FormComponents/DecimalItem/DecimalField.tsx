@@ -24,6 +24,7 @@ import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon'
 import ItemRepopulateButton from '../ItemParts/ItemRepopulateButton';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type { RenderingExtensions } from '../../../hooks/useRenderingExtensions';
+import { StandardTextField } from '../Textfield.styles';
 
 interface DecimalFieldProps extends PropsWithIsTabledRequiredAttribute {
   qItem: QuestionnaireItem;
