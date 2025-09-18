@@ -208,3 +208,22 @@ The implementation is based on http://hl7.org/fhir/uv/sdc/modular.html#modular-q
 View the page here: http://hl7.org/fhir/uv/sdc/adaptive.html
 
 This is not something on our radar at the moment :(
+
+## Custom Extensions
+
+Smart Forms includes several custom extensions that provide additional functionality beyond the standard SDC extensions.
+
+### Questionnaire Item Text Hidden
+- [x] [QuestionnaireItemTextHidden](https://smartforms.csiro.au/ig/StructureDefinition/QuestionnaireItemTextHidden)
+
+Allows hiding the text label of questionnaire items from the UI. Useful for internal fields that don't need user-facing labels.
+
+### Group Hide Add Item Button
+- [x] [GroupHideAddItemButton](https://smartforms.csiro.au/ig/StructureDefinition/GroupHideAddItemButton)
+
+Allows hiding the "Add Item" button for repeating groups and group tables. Useful for static tables where users shouldn't be allowed to add new rows.
+
+### Questionnaire Initial Expression Repopulatable
+- [x] [questionnaire-initialExpression-repopulatable](https://smartforms.csiro.au/ig/StructureDefinition/questionnaire-initialExpression-repopulatable)
+
+Allows individual fields to be manually repopulated with fresh data from the FHIR server. Provides granular control over data synchronization without affecting the entire form.
