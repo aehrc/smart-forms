@@ -32,7 +32,7 @@
     "@aehrc/testing-toolkit": "^1.0.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@fontsource/inter": "^5.2.6",
+    "@fontsource/inter": "^5.2.8",
     "@fontsource/material-icons": "^5.2.5",
     "@fontsource/roboto": "^5.2.6",
     "@mui/icons-material": "^7.1.1",
