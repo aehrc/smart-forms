@@ -36,7 +36,7 @@ function OpenChoiceItemSwitcher(props: BaseItemProps) {
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
-    calcExprAnimating,
+    calcExpUpdated,
     onQrItemChange
   } = props;
 
@@ -53,7 +53,7 @@ function OpenChoiceItemSwitcher(props: BaseItemProps) {
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
-            calcExprAnimating={calcExprAnimating}
+            calcExpUpdated={calcExpUpdated}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -68,7 +68,7 @@ function OpenChoiceItemSwitcher(props: BaseItemProps) {
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
-            calcExprAnimating={calcExprAnimating}
+            calcExpUpdated={calcExpUpdated}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -85,7 +85,7 @@ function OpenChoiceItemSwitcher(props: BaseItemProps) {
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
-            calcExprAnimating={calcExprAnimating}
+            calcExpUpdated={calcExpUpdated}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -100,7 +100,7 @@ function OpenChoiceItemSwitcher(props: BaseItemProps) {
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
-            calcExprAnimating={calcExprAnimating}
+            calcExpUpdated={calcExpUpdated}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -116,7 +116,7 @@ function OpenChoiceItemSwitcher(props: BaseItemProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
-          calcExprAnimating={calcExprAnimating}
+          calcExpUpdated={calcExpUpdated}
           onQrItemChange={onQrItemChange}
         />
       );
@@ -132,7 +132,7 @@ function OpenChoiceItemSwitcher(props: BaseItemProps) {
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
-            calcExprAnimating={calcExprAnimating}
+            calcExpUpdated={calcExpUpdated}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -147,7 +147,7 @@ function OpenChoiceItemSwitcher(props: BaseItemProps) {
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
-            calcExprAnimating={calcExprAnimating}
+            calcExpUpdated={calcExpUpdated}
             onQrItemChange={onQrItemChange}
           />
         );

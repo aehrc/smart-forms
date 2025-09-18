@@ -28,7 +28,6 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
-import useShowFeedback from '../../../hooks/useShowFeedback';
 import { readIntegerValue } from '../../../utils/readValues';
 import type { QuestionnaireResponseItem } from 'fhir/r4';
 
@@ -41,7 +40,7 @@ function IntegerItem(props: BaseItemProps) {
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
-    calcExprAnimating,
+    calcExpUpdated,
     onQrItemChange
   } = props;
 
@@ -123,7 +122,7 @@ function IntegerItem(props: BaseItemProps) {
         feedback={showFeedback ? feedback : ''}
         renderingExtensions={renderingExtensions}
         readOnly={readOnly}
-        calcExprAnimating={calcExprAnimating}
+        calcExpUpdated={calcExpUpdated}
         isTabled={isTabled}
         onInputChange={handleInputChange}
         onRepopulateSync={handleRepopulateSync}
@@ -148,7 +147,7 @@ function IntegerItem(props: BaseItemProps) {
             feedback={showFeedback ? feedback : ''}
             renderingExtensions={renderingExtensions}
             readOnly={readOnly}
-            calcExprAnimating={calcExprAnimating}
+            calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}
             onInputChange={handleInputChange}
             onRepopulateSync={handleRepopulateSync}

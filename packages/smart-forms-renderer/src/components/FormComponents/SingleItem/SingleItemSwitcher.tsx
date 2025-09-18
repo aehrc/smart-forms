@@ -77,7 +77,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
   // This is used to force re-rendering of the component when the answer changes via an external event i.e. calculatedExpression
   const answerKey = qrItem?.answer?.[0]?.id;
 
-  const calcExprAnimating = useCalculatedExpressionAnimating(answerKey);
+  const calcExpUpdated = useCalculatedExpressionAnimating(answerKey);
 
   const qItemOverrideComponents = useQuestionnaireStore.use.qItemOverrideComponents();
   const QItemOverrideComponent = qItemOverrideComponents[qItem.linkId];
@@ -96,7 +96,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         renderingExtensions={renderingExtensions}
         parentIsReadOnly={parentIsReadOnly}
         feedbackFromParent={feedbackFromParent}
-        // FIXME add calcExprAnimating here
+        // FIXME add calcExpUpdated here
         onQrItemChange={onQrItemChange}
         onQrRepeatGroupChange={() => {}} // Not needed for single items, use empty function
       />
@@ -127,7 +127,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
-          calcExprAnimating={calcExprAnimating}
+          calcExpUpdated={calcExpUpdated}
           onQrItemChange={onQrItemChange}
           parentStyles={parentStyles}
         />
@@ -144,7 +144,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
-          calcExprAnimating={calcExprAnimating}
+          calcExpUpdated={calcExpUpdated}
           onQrItemChange={onQrItemChange}
           parentStyles={parentStyles}
         />
@@ -162,7 +162,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
-            calcExprAnimating={calcExprAnimating}
+            calcExpUpdated={calcExpUpdated}
             onQrItemChange={onQrItemChange}
             parentStyles={parentStyles}
           />
@@ -180,7 +180,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
-          calcExprAnimating={calcExprAnimating}
+          calcExpUpdated={calcExpUpdated}
           onQrItemChange={onQrItemChange}
           parentStyles={parentStyles}
         />
@@ -197,7 +197,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
-          calcExprAnimating={calcExprAnimating}
+          calcExpUpdated={calcExpUpdated}
           onQrItemChange={onQrItemChange}
           parentStyles={parentStyles}
         />
@@ -214,7 +214,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
-          calcExprAnimating={calcExprAnimating}
+          calcExpUpdated={calcExpUpdated}
           onQrItemChange={onQrItemChange}
           parentStyles={parentStyles}
         />
@@ -231,7 +231,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
-          calcExprAnimating={calcExprAnimating}
+          calcExpUpdated={calcExpUpdated}
           onQrItemChange={onQrItemChange}
           parentStyles={parentStyles}
         />
@@ -248,7 +248,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
-          calcExprAnimating={calcExprAnimating}
+          calcExpUpdated={calcExpUpdated}
           onQrItemChange={onQrItemChange}
           parentStyles={parentStyles}
         />
@@ -265,7 +265,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
-          calcExprAnimating={calcExprAnimating}
+          calcExpUpdated={calcExpUpdated}
           onQrItemChange={onQrItemChange}
           parentStyles={parentStyles}
         />
@@ -282,7 +282,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
-          calcExprAnimating={calcExprAnimating}
+          calcExpUpdated={calcExpUpdated}
           onQrItemChange={onQrItemChange}
           parentStyles={parentStyles}
         />
@@ -299,7 +299,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
-          calcExprAnimating={calcExprAnimating}
+          calcExpUpdated={calcExpUpdated}
           onQrItemChange={onQrItemChange}
           parentStyles={parentStyles}
         />
@@ -316,7 +316,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
-          calcExprAnimating={calcExprAnimating}
+          calcExpUpdated={calcExpUpdated}
           onQrItemChange={onQrItemChange}
           parentStyles={parentStyles}
         />
@@ -333,7 +333,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
-          calcExprAnimating={calcExprAnimating}
+          calcExpUpdated={calcExpUpdated}
           onQrItemChange={onQrItemChange}
           parentStyles={parentStyles}
         />
@@ -351,7 +351,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
-          calcExprAnimating={calcExprAnimating}
+          calcExpUpdated={calcExpUpdated}
           onQrItemChange={onQrItemChange}
           parentStyles={parentStyles}
         />
@@ -368,7 +368,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
-          calcExprAnimating={calcExprAnimating}
+          calcExpUpdated={calcExpUpdated}
           onQrItemChange={onQrItemChange}
           parentStyles={parentStyles}
         />

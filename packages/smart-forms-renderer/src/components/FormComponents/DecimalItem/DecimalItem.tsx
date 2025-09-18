@@ -32,7 +32,6 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
-import useShowFeedback from '../../../hooks/useShowFeedback';
 import type { QuestionnaireResponseItem } from 'fhir/r4';
 import { readDecimalValue } from '../../../utils/readValues';
 
@@ -45,7 +44,7 @@ function DecimalItem(props: BaseItemProps) {
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
-    calcExprAnimating,
+    calcExpUpdated,
     onQrItemChange
   } = props;
 
@@ -140,7 +139,7 @@ function DecimalItem(props: BaseItemProps) {
         feedback={showFeedback ? feedback : ''}
         renderingExtensions={renderingExtensions}
         readOnly={readOnly}
-        calcExprAnimating={calcExprAnimating}
+        calcExpUpdated={calcExpUpdated}
         isTabled={isTabled}
         onInputChange={handleInputChange}
         onRepopulateSync={handleRepopulateSync}
@@ -165,7 +164,7 @@ function DecimalItem(props: BaseItemProps) {
             feedback={showFeedback ? feedback : ''}
             renderingExtensions={renderingExtensions}
             readOnly={readOnly}
-            calcExprAnimating={calcExprAnimating}
+            calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}
             onInputChange={handleInputChange}
             onRepopulateSync={handleRepopulateSync}

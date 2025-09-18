@@ -40,7 +40,7 @@ function TextItem(props: BaseItemProps) {
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
-    calcExprAnimating,
+    calcExpUpdated,
     onQrItemChange
   } = props;
 
@@ -82,19 +82,16 @@ function TextItem(props: BaseItemProps) {
       const { valueString: newValueString, initialInput: newInput } = readStringValue(newQrItem);
 
       setInput(newInput);
-      onQrItemChange(
-        {
-          ...createEmptyQrItem(qItem, answerKey),
-          answer: [{ id: answerKey, valueString: sanitizeInput(newValueString) }]
-        },
-        itemPath
-      );
+      onQrItemChange({
+        ...createEmptyQrItem(qItem, answerKey),
+        answer: [{ id: answerKey, valueString: sanitizeInput(newValueString) }]
+      });
       return;
     }
 
     // At this point newQrItem is null, so create an QRItem to replace it
     setInput('');
-    onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
+    onQrItemChange(createEmptyQrItem(qItem, answerKey));
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -121,7 +118,7 @@ function TextItem(props: BaseItemProps) {
         feedback={showFeedback ? feedback : ''}
         renderingExtensions={renderingExtensions}
         readOnly={readOnly}
-        calcExprAnimating={calcExprAnimating}
+        calcExpUpdated={calcExpUpdated}
         onInputChange={handleInputChange}
         onRepopulateSync={handleRepopulateSync}
         onBlur={handleBlur}
@@ -145,7 +142,7 @@ function TextItem(props: BaseItemProps) {
             feedback={showFeedback ? feedback : ''}
             renderingExtensions={renderingExtensions}
             readOnly={readOnly}
-            calcExprAnimating={calcExprAnimating}
+            calcExpUpdated={calcExpUpdated}
             onInputChange={handleInputChange}
             onRepopulateSync={handleRepopulateSync}
             onBlur={handleBlur}

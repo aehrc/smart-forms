@@ -28,7 +28,7 @@ interface OpenChoiceRadioAnswerOptionFieldsProps {
   openLabelSelected: boolean;
   feedback: string;
   readOnly: boolean;
-  exprAnimating: boolean;
+  expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   isTabled: boolean;
   onValueChange: (changedOptionValue: string | null, changedOpenLabelValue: string | null) => void;
@@ -45,7 +45,7 @@ function OpenChoiceRadioAnswerOptionFields(props: OpenChoiceRadioAnswerOptionFie
     openLabelSelected,
     feedback,
     readOnly,
-    exprAnimating,
+    expressionUpdated,
     answerOptionsToggleExpressionsMap,
     isTabled,
     onValueChange,
@@ -60,7 +60,7 @@ function OpenChoiceRadioAnswerOptionFields(props: OpenChoiceRadioAnswerOptionFie
       valueRadio={valueRadio}
       feedback={feedback}
       readOnly={readOnly}
-      exprAnimating={exprAnimating}
+      expressionUpdated={expressionUpdated}
       answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
       isTabled={isTabled}
       onCheckedChange={(newValue) => onValueChange(newValue, null)}

@@ -28,7 +28,7 @@ interface ChoiceRadioAnswerValueSetFieldsProps {
   valueRadio: string | null;
   feedback: string;
   readOnly: boolean;
-  exprAnimating: boolean;
+  expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   terminologyError: TerminologyError;
   isTabled: boolean;
@@ -43,7 +43,7 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
     valueRadio,
     feedback,
     readOnly,
-    exprAnimating,
+    expressionUpdated,
     answerOptionsToggleExpressionsMap,
     terminologyError,
     isTabled,
@@ -59,7 +59,7 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
         valueRadio={valueRadio}
         feedback={feedback}
         readOnly={readOnly}
-        exprAnimating={exprAnimating}
+        expressionUpdated={expressionUpdated}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
         isTabled={isTabled}
         onCheckedChange={onCheckedChange}

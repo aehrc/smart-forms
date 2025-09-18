@@ -95,7 +95,7 @@ export interface PropsWithParentIsRepeatGroupAttribute {
 }
 
 export interface PropsWithCalculatedExpressionAnimatingAttribute {
-  calcExprAnimating: boolean;
+  calcExpUpdated: boolean;
 }
 
 export interface PropsWithParentStylesAttribute {

@@ -25,7 +25,6 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
-import type { AutocompleteChangeReason } from '@mui/material';
 import { sanitizeInput } from '../../../utils/inputSanitization';
 
 function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
@@ -39,7 +38,7 @@ function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
     feedbackFromParent,
     onQrItemChange
   } = props;
-  // TODO no calcExprAnimating
+  // TODO no calcExpUpdated
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 

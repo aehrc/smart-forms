@@ -32,7 +32,7 @@ interface OpenChoiceCheckboxAnswerOptionFieldsProps {
   openLabelChecked: boolean;
   feedback: string;
   readOnly: boolean;
-  exprAnimating: boolean;
+  expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   isTabled: boolean;
   onOptionChange: (changedOptionValue: string) => void;
@@ -51,7 +51,7 @@ function OpenChoiceCheckboxAnswerOptionFields(props: OpenChoiceCheckboxAnswerOpt
     openLabelChecked,
     feedback,
     readOnly,
-    exprAnimating,
+    expressionUpdated,
     answerOptionsToggleExpressionsMap,
     isTabled,
     onOptionChange,
@@ -67,7 +67,7 @@ function OpenChoiceCheckboxAnswerOptionFields(props: OpenChoiceCheckboxAnswerOpt
       answers={answers}
       feedback={feedback}
       readOnly={readOnly}
-      exprAnimating={exprAnimating}
+      expressionUpdated={expressionUpdated}
       answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
       isTabled={isTabled}
       onCheckedChange={onOptionChange}

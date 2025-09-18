@@ -33,7 +33,6 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
-import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 import { sanitizeInput } from '../../../utils/inputSanitization';
 import OpenChoiceRadioAnswerValueSetFields from './OpenChoiceRadioAnswerValueSetFields';
 
@@ -44,7 +43,7 @@ function OpenChoiceRadioAnswerValueSetItem(props: BaseItemProps) {
     parentIsReadOnly,
     feedbackFromParent,
     isTabled,
-    calcExprAnimating,
+    calcExpUpdated,
     onQrItemChange
   } = props;
 
@@ -174,8 +173,8 @@ function OpenChoiceRadioAnswerValueSetItem(props: BaseItemProps) {
             openLabelSelected={openLabelSelected}
             feedback={feedback}
             readOnly={readOnly}
-            exprAnimating={
-              calcExprAnimating || dynamicCodingsUpdated || answerOptionsToggleExpUpdated
+            expressionUpdated={
+              calcExpUpdated || dynamicCodingsUpdated || answerOptionsToggleExpUpdated
             }
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             terminologyError={terminologyError}

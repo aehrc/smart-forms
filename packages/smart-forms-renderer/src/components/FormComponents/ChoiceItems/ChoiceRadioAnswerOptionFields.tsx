@@ -24,7 +24,7 @@ interface ChoiceRadioAnswerOptionFieldsProps {
   valueRadio: string | null;
   feedback: string;
   readOnly: boolean;
-  exprAnimating: boolean;
+  expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   isTabled: boolean;
   onCheckedChange: (newValue: string) => void;
@@ -38,7 +38,7 @@ function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps
     valueRadio,
     feedback,
     readOnly,
-    exprAnimating,
+    expressionUpdated,
     answerOptionsToggleExpressionsMap,
     isTabled,
     onCheckedChange,
@@ -52,7 +52,7 @@ function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps
       valueRadio={valueRadio}
       feedback={feedback}
       readOnly={readOnly}
-      exprAnimating={exprAnimating}
+      expressionUpdated={expressionUpdated}
       answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
       isTabled={isTabled}
       onCheckedChange={onCheckedChange}

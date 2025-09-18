@@ -31,7 +31,7 @@ interface StringFieldProps extends PropsWithIsTabledRequiredAttribute {
   feedback: string;
   renderingExtensions: RenderingExtensions;
   readOnly: boolean;
-  calcExprAnimating: boolean;
+  calcExpUpdated: boolean;
   onInputChange: (value: string) => void;
   onRepopulateSync: (newQrItem: QuestionnaireResponseItem | null) => unknown;
   onBlur: () => void;
@@ -45,7 +45,7 @@ function StringField(props: StringFieldProps) {
     renderingExtensions,
     readOnly,
     isTabled,
-    calcExprAnimating,
+    calcExpUpdated,
     onInputChange,
     onRepopulateSync,
     onBlur
@@ -75,7 +75,7 @@ function StringField(props: StringFieldProps) {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
             <InputAdornment position="end">
-              <ExpressionUpdateFadingIcon fadeIn={calcExprAnimating} disabled={readOnly} />
+              <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
               <ClearButtonAdornment
                 readOnly={readOnly}
                 onClear={() => {

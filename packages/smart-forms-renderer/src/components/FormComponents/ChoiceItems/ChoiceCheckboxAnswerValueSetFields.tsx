@@ -32,7 +32,7 @@ interface ChoiceCheckboxAnswerValueSetFieldsProps {
   answers: QuestionnaireResponseItemAnswer[];
   feedback: string;
   readOnly: boolean;
-  exprAnimating: boolean;
+  expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   terminologyError: TerminologyError;
   isTabled: boolean;
@@ -47,7 +47,7 @@ function ChoiceCheckboxAnswerValueSetFields(props: ChoiceCheckboxAnswerValueSetF
     answers,
     feedback,
     readOnly,
-    exprAnimating,
+    expressionUpdated,
     answerOptionsToggleExpressionsMap,
     terminologyError,
     isTabled,
@@ -63,7 +63,7 @@ function ChoiceCheckboxAnswerValueSetFields(props: ChoiceCheckboxAnswerValueSetF
         answers={answers}
         feedback={feedback}
         readOnly={readOnly}
-        exprAnimating={exprAnimating}
+        expressionUpdated={expressionUpdated}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
         isTabled={isTabled}
         onCheckedChange={onCheckedChange}

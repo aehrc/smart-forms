@@ -36,7 +36,7 @@ interface CustomDateFieldProps extends PropsWithIsTabledRequiredAttribute {
   displayPrompt: string;
   entryFormat: string;
   readOnly: boolean;
-  calcExprAnimating: boolean;
+  calcExpUpdated: boolean;
   isPartOfDateTime: boolean;
   setFocused: Dispatch<SetStateAction<boolean>>;
   onInputChange: (newInput: string) => void;
@@ -56,7 +56,7 @@ function CustomDateField(props: CustomDateFieldProps) {
     displayPrompt,
     entryFormat,
     readOnly,
-    calcExprAnimating,
+    calcExpUpdated,
     isPartOfDateTime,
     isTabled,
     setFocused,
@@ -107,7 +107,7 @@ function CustomDateField(props: CustomDateFieldProps) {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
             <InputAdornment position="end">
-              <ExpressionUpdateFadingIcon fadeIn={calcExprAnimating} disabled={readOnly} />
+              <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
               <DatePicker
                 valueString={valueDate}
                 readOnly={readOnly}

@@ -43,7 +43,7 @@ function ChoiceAutocompleteItem(props: BaseItemProps) {
     feedbackFromParent,
     onQrItemChange
   } = props;
-  // TODO no calcExprAnimating
+  // TODO no calcExpUpdated
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 

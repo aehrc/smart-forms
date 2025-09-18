@@ -37,7 +37,7 @@ function ChoiceItemSwitcher(props: BaseItemProps) {
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
-    calcExprAnimating,
+    calcExpUpdated,
     onQrItemChange
   } = props;
 
@@ -56,7 +56,7 @@ function ChoiceItemSwitcher(props: BaseItemProps) {
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
-            calcExprAnimating={calcExprAnimating}
+            calcExpUpdated={calcExpUpdated}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -71,7 +71,7 @@ function ChoiceItemSwitcher(props: BaseItemProps) {
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
-            calcExprAnimating={calcExprAnimating}
+            calcExpUpdated={calcExpUpdated}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -88,7 +88,7 @@ function ChoiceItemSwitcher(props: BaseItemProps) {
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
-            calcExprAnimating={calcExprAnimating}
+            calcExpUpdated={calcExpUpdated}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -103,7 +103,7 @@ function ChoiceItemSwitcher(props: BaseItemProps) {
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
-            calcExprAnimating={calcExprAnimating}
+            calcExpUpdated={calcExpUpdated}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -119,7 +119,7 @@ function ChoiceItemSwitcher(props: BaseItemProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
-          calcExprAnimating={calcExprAnimating}
+          calcExpUpdated={calcExpUpdated}
           onQrItemChange={onQrItemChange}
         />
       );
@@ -135,7 +135,7 @@ function ChoiceItemSwitcher(props: BaseItemProps) {
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
-            calcExprAnimating={calcExprAnimating}
+            calcExpUpdated={calcExpUpdated}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -150,7 +150,7 @@ function ChoiceItemSwitcher(props: BaseItemProps) {
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
-            calcExprAnimating={calcExprAnimating}
+            calcExpUpdated={calcExpUpdated}
             onQrItemChange={onQrItemChange}
           />
         );

@@ -38,7 +38,7 @@ function ChoiceRadioAnswerOptionItem(props: BaseItemProps) {
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
-    calcExprAnimating,
+    calcExpUpdated,
     onQrItemChange
   } = props;
 
@@ -112,7 +112,7 @@ function ChoiceRadioAnswerOptionItem(props: BaseItemProps) {
           feedback={feedback}
           isRepeated={isRepeated}
           readOnly={readOnly}
-          exprAnimating={calcExprAnimating || answerOptionsToggleExpUpdated}
+          expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
           answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
           isTabled={isTabled}
           onFocusLinkId={() => onFocusLinkId(qItem.linkId)}
@@ -132,7 +132,7 @@ function ChoiceRadioAnswerOptionItem(props: BaseItemProps) {
           isRepeated={isRepeated}
           isTabled={isTabled}
           readOnly={readOnly}
-          exprAnimating={calcExprAnimating || answerOptionsToggleExpUpdated}
+          expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
           renderingExtensions={renderingExtensions}
           answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
           onFocusLinkId={() => onFocusLinkId(qItem.linkId)}

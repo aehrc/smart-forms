@@ -44,7 +44,7 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: BaseItemProps) {
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
-    calcExprAnimating,
+    calcExpUpdated,
     onQrItemChange
   } = props;
 
@@ -169,8 +169,8 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: BaseItemProps) {
           openLabelChecked={openLabelChecked}
           feedback={feedback}
           readOnly={readOnly}
-          exprAnimating={
-            calcExprAnimating || dynamicCodingsUpdated || answerOptionsToggleExpUpdated
+          expressionUpdated={
+            calcExpUpdated || dynamicCodingsUpdated || answerOptionsToggleExpUpdated
           }
           answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
           terminologyError={terminologyError}
@@ -204,8 +204,8 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: BaseItemProps) {
             openLabelChecked={openLabelChecked}
             feedback={feedback}
             readOnly={readOnly}
-            exprAnimating={
-              calcExprAnimating || dynamicCodingsUpdated || answerOptionsToggleExpUpdated
+            expressionUpdated={
+              calcExpUpdated || dynamicCodingsUpdated || answerOptionsToggleExpUpdated
             }
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             terminologyError={terminologyError}

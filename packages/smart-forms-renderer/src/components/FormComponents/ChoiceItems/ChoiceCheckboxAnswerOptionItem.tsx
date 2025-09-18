@@ -37,7 +37,7 @@ function ChoiceCheckboxAnswerOptionItem(props: BaseItemProps) {
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
-    calcExprAnimating,
+    calcExpUpdated,
     onQrItemChange
   } = props;
 
@@ -99,7 +99,7 @@ function ChoiceCheckboxAnswerOptionItem(props: BaseItemProps) {
           answers={answers}
           feedback={feedback}
           readOnly={readOnly}
-          exprAnimating={calcExprAnimating || answerOptionsToggleExpUpdated}
+          expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
           answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
           isTabled={isTabled}
           onCheckedChange={handleCheckedChange}
@@ -126,7 +126,7 @@ function ChoiceCheckboxAnswerOptionItem(props: BaseItemProps) {
             answers={answers}
             feedback={feedback}
             readOnly={readOnly}
-            exprAnimating={calcExprAnimating || answerOptionsToggleExpUpdated}
+            expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             isTabled={isTabled}
             onCheckedChange={handleCheckedChange}

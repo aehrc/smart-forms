@@ -41,7 +41,7 @@ interface ChoiceSelectAnswerValueSetFieldsProps
   terminologyError: TerminologyError;
   feedback: string;
   readOnly: boolean;
-  exprAnimating: boolean;
+  expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   onSelectChange: (newValue: Coding | null) => void;
 }
@@ -54,7 +54,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
     terminologyError,
     feedback,
     readOnly,
-    exprAnimating,
+    expressionUpdated,
     isTabled,
     renderingExtensions,
     answerOptionsToggleExpressionsMap,
@@ -98,7 +98,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
                   endAdornment: (
                     <>
                       {params.InputProps.endAdornment}
-                      <ExpressionUpdateFadingIcon fadeIn={exprAnimating} disabled={readOnly} />
+                      <ExpressionUpdateFadingIcon fadeIn={expressionUpdated} disabled={readOnly} />
                       <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
                     </>
                   ),

@@ -28,7 +28,7 @@ interface QuantityUnitFieldProps extends PropsWithIsTabledRequiredAttribute {
   options: QuestionnaireItemAnswerOption[];
   valueSelect: QuestionnaireItemAnswerOption | null;
   readOnly: boolean;
-  calcExprAnimating: boolean;
+  calcExpUpdated: boolean;
   onChange: (newValue: QuestionnaireItemAnswerOption | null) => void;
 }
 

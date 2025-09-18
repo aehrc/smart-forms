@@ -30,7 +30,7 @@ interface TextFieldProps {
   feedback: string;
   renderingExtensions: RenderingExtensions;
   readOnly: boolean;
-  calcExprAnimating: boolean;
+  calcExpUpdated: boolean;
   onInputChange: (value: string) => void;
   onRepopulateSync: (newQrItem: QuestionnaireResponseItem | null) => unknown;
   onBlur: () => void;
@@ -43,7 +43,7 @@ function TextField(props: TextFieldProps) {
     feedback,
     renderingExtensions,
     readOnly,
-    calcExprAnimating,
+    calcExpUpdated,
     onInputChange,
     onRepopulateSync,
     onBlur
@@ -71,7 +71,7 @@ function TextField(props: TextFieldProps) {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
             <InputAdornment position="end">
-              <ExpressionUpdateFadingIcon fadeIn={calcExprAnimating} disabled={readOnly} />
+              <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
               <ItemRepopulateButton
                 qItem={qItem}
                 repopulatable={isRepopulatable}

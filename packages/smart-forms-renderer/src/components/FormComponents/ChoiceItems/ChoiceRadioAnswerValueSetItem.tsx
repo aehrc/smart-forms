@@ -38,7 +38,7 @@ function ChoiceRadioAnswerValueSetItem(props: BaseItemProps) {
     isTabled,
     parentIsReadOnly,
     feedbackFromParent,
-    calcExprAnimating,
+    calcExpUpdated,
     onQrItemChange
   } = props;
 
@@ -98,7 +98,7 @@ function ChoiceRadioAnswerValueSetItem(props: BaseItemProps) {
         valueRadio={valueRadio}
         feedback={feedback}
         readOnly={readOnly}
-        exprAnimating={calcExprAnimating || dynamicCodingsUpdated || answerOptionsToggleExpUpdated}
+        expressionUpdated={calcExpUpdated || dynamicCodingsUpdated || answerOptionsToggleExpUpdated}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
         terminologyError={terminologyError}
         isTabled={isTabled}
@@ -124,8 +124,8 @@ function ChoiceRadioAnswerValueSetItem(props: BaseItemProps) {
             valueRadio={valueRadio}
             feedback={feedback}
             readOnly={readOnly}
-            exprAnimating={
-              calcExprAnimating || dynamicCodingsUpdated || answerOptionsToggleExpUpdated
+            expressionUpdated={
+              calcExpUpdated || dynamicCodingsUpdated || answerOptionsToggleExpUpdated
             }
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             terminologyError={terminologyError}

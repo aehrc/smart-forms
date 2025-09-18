@@ -43,7 +43,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: BaseItemProps) {
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
-    calcExprAnimating,
+    calcExpUpdated,
     onQrItemChange
   } = props;
 
@@ -165,7 +165,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: BaseItemProps) {
           openLabelChecked={openLabelChecked}
           feedback={feedback}
           readOnly={readOnly}
-          exprAnimating={calcExprAnimating || answerOptionsToggleExpUpdated}
+          expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
           answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
           isTabled={isTabled}
           onOptionChange={handleOptionChange}
@@ -197,7 +197,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: BaseItemProps) {
             openLabelChecked={openLabelChecked}
             feedback={feedback}
             readOnly={readOnly}
-            exprAnimating={calcExprAnimating || answerOptionsToggleExpUpdated}
+            expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             isTabled={isTabled}
             onOptionChange={handleOptionChange}

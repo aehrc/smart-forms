@@ -34,7 +34,7 @@ function BooleanItem(props: BaseItemProps) {
     isTabled,
     parentIsReadOnly,
     feedbackFromParent,
-    calcExprAnimating,
+    calcExpUpdated,
     onQrItemChange
   } = props;
 
@@ -85,7 +85,7 @@ function BooleanItem(props: BaseItemProps) {
           readOnly={readOnly}
           valueBoolean={valueBoolean}
           feedback={feedback}
-          calcExprAnimating={calcExprAnimating}
+          calcExpUpdated={calcExpUpdated}
           onCheckedChange={handleValueChange}
           onClear={handleClear}
         />
@@ -100,7 +100,7 @@ function BooleanItem(props: BaseItemProps) {
         readOnly={readOnly}
         valueBoolean={valueBoolean}
         feedback={feedback}
-        calcExprAnimating={calcExprAnimating}
+        calcExpUpdated={calcExpUpdated}
         onCheckedChange={handleValueChange}
         onClear={handleClear}
       />
@@ -122,7 +122,7 @@ function BooleanItem(props: BaseItemProps) {
             readOnly={readOnly}
             valueBoolean={valueBoolean}
             feedback={feedback}
-            calcExprAnimating={calcExprAnimating}
+            calcExpUpdated={calcExpUpdated}
             onCheckedChange={handleValueChange}
             onClear={handleClear}
           />

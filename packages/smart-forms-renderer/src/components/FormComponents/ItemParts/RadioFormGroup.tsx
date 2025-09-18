@@ -16,7 +16,7 @@ interface ChoiceRadioGroupProps {
   valueRadio: string | null;
   feedback: string;
   readOnly: boolean;
-  exprAnimating: boolean;
+  expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   isTabled: boolean;
   onCheckedChange: (newValue: string) => void;
@@ -31,7 +31,7 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
     valueRadio,
     feedback,
     readOnly,
-    exprAnimating,
+    expressionUpdated,
     answerOptionsToggleExpressionsMap,
     isTabled,
     onCheckedChange,
@@ -87,7 +87,7 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
 
           <Box flexGrow={1} />
 
-          <ExpressionUpdateFadingIcon fadeIn={exprAnimating} disabled={readOnly} />
+          <ExpressionUpdateFadingIcon fadeIn={expressionUpdated} disabled={readOnly} />
         </Box>
 
         <ClearInputButton buttonShown={!!valueRadio} readOnly={readOnly} onClear={onClear} />

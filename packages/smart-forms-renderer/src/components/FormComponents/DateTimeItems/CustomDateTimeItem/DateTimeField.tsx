@@ -36,7 +36,7 @@ interface DateTimeFieldProps extends PropsWithIsTabledRequiredAttribute {
   displayPrompt: string;
   entryFormat: string;
   readOnly: boolean;
-  calcExprAnimating: boolean;
+  calcExpUpdated: boolean;
   onDateInputChange: (newDateInput: string) => void;
   onDateBlur: () => void;
   onSelectDate: (selectedDate: string) => void;
@@ -62,7 +62,7 @@ function DateTimeField(props: DateTimeFieldProps) {
     displayPrompt,
     entryFormat,
     readOnly,
-    calcExprAnimating,
+    calcExpUpdated,
     isTabled,
     onDateInputChange,
     onDateBlur,
@@ -86,7 +86,7 @@ function DateTimeField(props: DateTimeFieldProps) {
         displayPrompt={displayPrompt}
         entryFormat={entryFormat}
         readOnly={readOnly}
-        calcExprAnimating={calcExprAnimating}
+        calcExpUpdated={calcExpUpdated}
         isPartOfDateTime={true}
         isTabled={isTabled}
         setFocused={setDateFocused}
@@ -103,7 +103,7 @@ function DateTimeField(props: DateTimeFieldProps) {
         feedback={showFeedback ? (timeFeedback ?? '') : ''}
         displayPrompt={displayPrompt}
         readOnly={readOnly}
-        calcExprAnimating={calcExprAnimating}
+        calcExpUpdated={calcExpUpdated}
         isPartOfDateTime={true}
         isTabled={isTabled}
         onTimeInputChange={(newTimeInput) => onTimeInputChange(newTimeInput, periodInput)}

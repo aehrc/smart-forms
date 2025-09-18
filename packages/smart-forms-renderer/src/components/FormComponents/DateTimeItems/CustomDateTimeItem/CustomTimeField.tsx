@@ -35,7 +35,7 @@ interface CustomTimeFieldProps extends PropsWithIsTabledRequiredAttribute {
   feedback: string;
   displayPrompt: string;
   readOnly: boolean;
-  calcExprAnimating: boolean;
+  calcExpUpdated: boolean;
   isPartOfDateTime: boolean;
   onTimeInputChange: (newInput: string) => void;
   onPeriodChange: (newPeriod: string) => void;

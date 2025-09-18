@@ -31,7 +31,7 @@ interface IntegerFieldProps extends PropsWithIsTabledRequiredAttribute {
   feedback: string;
   renderingExtensions: RenderingExtensions;
   readOnly: boolean;
-  calcExprAnimating: boolean;
+  calcExpUpdated: boolean;
   onInputChange: (value: string) => void;
   onRepopulateSync: (newQrItem: QuestionnaireResponseItem | null) => unknown;
   onBlur: () => void;
@@ -44,7 +44,7 @@ function IntegerField(props: IntegerFieldProps) {
     feedback,
     renderingExtensions,
     readOnly,
-    calcExprAnimating,
+    calcExpUpdated,
     isTabled,
     onInputChange,
     onRepopulateSync,
@@ -89,7 +89,7 @@ function IntegerField(props: IntegerFieldProps) {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
             <InputAdornment position={'end'}>
-              <ExpressionUpdateFadingIcon fadeIn={calcExprAnimating} disabled={readOnly} />
+              <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
               <ClearButtonAdornment
                 readOnly={readOnly}
                 onClear={() => {

@@ -38,7 +38,6 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
-import useShowFeedback from '../../../hooks/useShowFeedback';
 import { readStringValue } from '../../../utils/readValues';
 import { sanitizeInput } from '../../../utils/inputSanitization';
 
@@ -65,7 +64,7 @@ function StringItem(props: StringItemProps) {
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
-    calcExprAnimating,
+    calcExpUpdated,
     parentStyles,
     onQrItemChange
   } = props;
@@ -147,7 +146,7 @@ function StringItem(props: StringItemProps) {
         feedback={showFeedback ? feedback : ''}
         renderingExtensions={renderingExtensions}
         readOnly={readOnly}
-        calcExprAnimating={calcExprAnimating}
+        calcExpUpdated={calcExpUpdated}
         onInputChange={handleChange}
         onRepopulateSync={handleRepopulateSync}
         onBlur={handleBlur}
@@ -171,7 +170,7 @@ function StringItem(props: StringItemProps) {
             feedback={showFeedback ? feedback : ''}
             renderingExtensions={renderingExtensions}
             readOnly={readOnly}
-            calcExprAnimating={calcExprAnimating}
+            calcExpUpdated={calcExpUpdated}
             onInputChange={handleChange}
             onRepopulateSync={handleRepopulateSync}
             onBlur={handleBlur}

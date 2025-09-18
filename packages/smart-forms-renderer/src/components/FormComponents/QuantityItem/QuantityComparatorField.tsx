@@ -29,7 +29,7 @@ interface QuantityComparatorFieldProps extends PropsWithIsTabledRequiredAttribut
   options: Quantity['comparator'][];
   valueSelect: Quantity['comparator'] | null;
   readOnly: boolean;
-  calcExprAnimating: boolean;
+  calcExpUpdated: boolean;
   onChange: (newValue: Quantity['comparator'] | null) => void;
 }
 

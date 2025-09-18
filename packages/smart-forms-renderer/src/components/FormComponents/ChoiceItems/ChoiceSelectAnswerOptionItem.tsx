@@ -35,7 +35,7 @@ function ChoiceSelectAnswerOptionItem(props: BaseItemProps) {
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
-    calcExprAnimating,
+    calcExpUpdated,
     onQrItemChange
   } = props;
 
@@ -97,7 +97,7 @@ function ChoiceSelectAnswerOptionItem(props: BaseItemProps) {
       valueChoice={valueChoice}
       feedback={feedback}
       readOnly={readOnly}
-      exprAnimating={calcExprAnimating || answerOptionsToggleExpUpdated}
+      expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
       isRepeated={isRepeated}
       isTabled={isTabled}
       renderingExtensions={renderingExtensions}

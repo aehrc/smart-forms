@@ -49,7 +49,7 @@ function QuantityItem(props: BaseItemProps) {
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
-    calcExprAnimating,
+    calcExpUpdated,
     onQrItemChange
   } = props;
 
@@ -218,7 +218,7 @@ function QuantityItem(props: BaseItemProps) {
           options={quantityComparators}
           valueSelect={comparatorInput}
           readOnly={readOnly}
-          calcExprAnimating={calcExprAnimating}
+          calcExpUpdated={calcExpUpdated}
           isTabled={isTabled}
           onChange={handleComparatorInputChange}
         />
@@ -231,7 +231,7 @@ function QuantityItem(props: BaseItemProps) {
           displayUnit={displayUnit}
           entryFormat={entryFormat}
           readOnly={readOnly}
-          calcExprAnimating={calcExprAnimating}
+          calcExpUpdated={calcExpUpdated}
           isTabled={isTabled}
           onInputChange={handleValueInputChange}
           onBlur={handleBlur}
@@ -243,7 +243,7 @@ function QuantityItem(props: BaseItemProps) {
             options={unitOptions}
             valueSelect={unitInput}
             readOnly={readOnly}
-            calcExprAnimating={calcExprAnimating}
+            calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}
             onChange={handleUnitInputChange}
           />
@@ -269,7 +269,7 @@ function QuantityItem(props: BaseItemProps) {
               options={quantityComparators}
               valueSelect={comparatorInput}
               readOnly={readOnly}
-              calcExprAnimating={calcExprAnimating}
+              calcExpUpdated={calcExpUpdated}
               isTabled={isTabled}
               onChange={handleComparatorInputChange}
             />
@@ -282,7 +282,7 @@ function QuantityItem(props: BaseItemProps) {
               displayUnit={displayUnit}
               entryFormat={entryFormat}
               readOnly={readOnly}
-              calcExprAnimating={calcExprAnimating}
+              calcExpUpdated={calcExpUpdated}
               isTabled={isTabled}
               onInputChange={handleValueInputChange}
               onBlur={handleBlur}
@@ -294,7 +294,7 @@ function QuantityItem(props: BaseItemProps) {
                 options={unitOptions}
                 valueSelect={unitInput}
                 readOnly={readOnly}
-                calcExprAnimating={calcExprAnimating}
+                calcExpUpdated={calcExpUpdated}
                 isTabled={isTabled}
                 onChange={handleUnitInputChange}
               />

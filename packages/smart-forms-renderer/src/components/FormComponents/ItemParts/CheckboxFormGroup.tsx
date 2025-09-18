@@ -20,7 +20,7 @@ interface ChoiceCheckboxFormGroupProps {
   answers: QuestionnaireResponseItemAnswer[];
   feedback: string;
   readOnly: boolean;
-  exprAnimating: boolean;
+  expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   isTabled: boolean;
   onCheckedChange: (newValue: string) => void;
@@ -35,7 +35,7 @@ function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
     answers,
     feedback,
     readOnly,
-    exprAnimating,
+    expressionUpdated,
     answerOptionsToggleExpressionsMap,
     isTabled,
     onCheckedChange,
@@ -85,7 +85,7 @@ function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
 
           <Box flexGrow={1} />
 
-          <ExpressionUpdateFadingIcon fadeIn={exprAnimating} disabled={readOnly} />
+          <ExpressionUpdateFadingIcon fadeIn={expressionUpdated} disabled={readOnly} />
         </Box>
 
         <ClearInputButton buttonShown={!answersEmpty} readOnly={readOnly} onClear={onClear} />

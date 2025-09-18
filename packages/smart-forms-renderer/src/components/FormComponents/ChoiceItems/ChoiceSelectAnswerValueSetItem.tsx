@@ -39,7 +39,7 @@ function ChoiceSelectAnswerValueSetItem(props: BaseItemProps) {
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
-    calcExprAnimating,
+    calcExpUpdated,
     onQrItemChange
   } = props;
 
@@ -108,7 +108,7 @@ function ChoiceSelectAnswerValueSetItem(props: BaseItemProps) {
         terminologyError={terminologyError}
         feedback={feedback}
         readOnly={readOnly}
-        exprAnimating={calcExprAnimating || dynamicCodingsUpdated || answerOptionsToggleExpUpdated}
+        expressionUpdated={calcExpUpdated || dynamicCodingsUpdated || answerOptionsToggleExpUpdated}
         isTabled={isTabled}
         renderingExtensions={renderingExtensions}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
@@ -133,7 +133,7 @@ function ChoiceSelectAnswerValueSetItem(props: BaseItemProps) {
             terminologyError={terminologyError}
             feedback={feedback}
             readOnly={readOnly}
-            exprAnimating={calcExprAnimating || dynamicCodingsUpdated}
+            expressionUpdated={calcExpUpdated || dynamicCodingsUpdated}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}

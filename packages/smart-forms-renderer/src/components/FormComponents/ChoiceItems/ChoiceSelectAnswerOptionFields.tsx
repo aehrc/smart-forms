@@ -37,7 +37,7 @@ interface ChoiceSelectAnswerOptionFieldsProps
   valueSelect: QuestionnaireItemAnswerOption | null;
   feedback: string;
   readOnly: boolean;
-  exprAnimating: boolean;
+  expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   onSelectChange: (newValue: QuestionnaireItemAnswerOption | null) => void;
 }
@@ -49,7 +49,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
     valueSelect,
     feedback,
     readOnly,
-    exprAnimating,
+    expressionUpdated,
     isTabled,
     renderingExtensions,
     answerOptionsToggleExpressionsMap,
@@ -91,7 +91,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
                 endAdornment: (
                   <>
                     {params.InputProps.endAdornment}
-                    <ExpressionUpdateFadingIcon fadeIn={exprAnimating} disabled={readOnly} />
+                    <ExpressionUpdateFadingIcon fadeIn={expressionUpdated} disabled={readOnly} />
                     <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
                   </>
                 )

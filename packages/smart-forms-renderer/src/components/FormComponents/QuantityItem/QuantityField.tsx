@@ -32,7 +32,7 @@ interface QuantityFieldProps extends PropsWithIsTabledRequiredAttribute {
   displayUnit: string;
   entryFormat: string;
   readOnly: boolean;
-  calcExprAnimating: boolean;
+  calcExpUpdated: boolean;
   onInputChange: (value: string) => void;
   onBlur: () => void;
 }
@@ -47,7 +47,7 @@ function QuantityField(props: QuantityFieldProps) {
     displayUnit,
     entryFormat,
     readOnly,
-    calcExprAnimating,
+    calcExpUpdated,
     isTabled,
     onInputChange,
     onBlur
@@ -84,7 +84,7 @@ function QuantityField(props: QuantityFieldProps) {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
             <InputAdornment position={'end'}>
-              <ExpressionUpdateFadingIcon fadeIn={calcExprAnimating} disabled={readOnly} />
+              <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
               <ClearButtonAdornment
                 readOnly={readOnly}
                 onClear={() => {

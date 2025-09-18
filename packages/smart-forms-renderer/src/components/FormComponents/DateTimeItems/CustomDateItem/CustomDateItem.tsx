@@ -40,7 +40,7 @@ function CustomDateItem(props: BaseItemProps) {
     isTabled,
     renderingExtensions,
     parentIsReadOnly,
-    calcExprAnimating,
+    calcExpUpdated,
     onQrItemChange
   } = props;
 
@@ -119,7 +119,7 @@ function CustomDateItem(props: BaseItemProps) {
         displayPrompt={displayPrompt}
         entryFormat={entryFormat}
         readOnly={readOnly}
-        calcExprAnimating={calcExprAnimating}
+        calcExpUpdated={calcExpUpdated}
         isPartOfDateTime={false}
         isTabled={isTabled}
         setFocused={setFocused}
@@ -151,7 +151,7 @@ function CustomDateItem(props: BaseItemProps) {
             displayPrompt={displayPrompt}
             entryFormat={entryFormat}
             readOnly={readOnly}
-            calcExprAnimating={calcExprAnimating}
+            calcExpUpdated={calcExpUpdated}
             isPartOfDateTime={false}
             isTabled={isTabled}
             setFocused={setFocused}
