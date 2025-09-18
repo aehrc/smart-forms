@@ -58,7 +58,7 @@ function BaseRenderer() {
 
   const responseKey = useQuestionnaireResponseStore.use.key();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
-  const replaceLatestFormUpdate = useFormUpdateQueueStore.use.replaceLatestFormUpdate();
+  const enqueueFormUpdate = useFormUpdateQueueStore.use.enqueueFormUpdate();
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(sourceQuestionnaire), [sourceQuestionnaire]);
 
@@ -70,7 +70,7 @@ function BaseRenderer() {
 
     updateQrItemsInGroup(newTopLevelQRItem, null, updatedResponse, qItemsIndexMap);
 
-    replaceLatestFormUpdate({
+    enqueueFormUpdate({
       questionnaireResponse: updatedResponse,
       targetItemPath: targetItemPath
     });
@@ -84,7 +84,7 @@ function BaseRenderer() {
 
     updateQrItemsInGroup(null, newTopLevelQRItems, updatedResponse, qItemsIndexMap);
 
-    replaceLatestFormUpdate({
+    enqueueFormUpdate({
       questionnaireResponse: updatedResponse,
       targetItemPath: targetItemPath
     });

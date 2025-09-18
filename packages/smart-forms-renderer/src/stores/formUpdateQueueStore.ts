@@ -52,15 +52,6 @@ export interface FormUpdateQueueStoreType {
   enqueueFormUpdate: (task: UpdateTask) => void;
 
   /**
-   * Replaces all pending tasks with the latest task.
-   * If a task is being processed, it is preserved at the head of the queue.
-   * Useful for calculated fields where only the latest state matters.
-   *
-   * @param task - The most recent form update task to keep
-   */
-  replaceLatestFormUpdate: (task: UpdateTask) => void;
-
-  /**
    * Internal processor that handles one task at a time, in order.
    *
    * - Applies the `updateExpressions` function to the `questionnaireResponse`.
@@ -78,7 +69,6 @@ export interface FormUpdateQueueStoreType {
  * to avoid race conditions and inconsistent state during expression evaluation.
  *
  * - `enqueueFormUpdate` adds a new task to the end of the queue.
- * - `replaceLatestFormUpdate` drops all pending tasks in favor of the latest one.
  * - `_startProcessing` handles processing each task and re-triggers itself as needed.
  */
 export const formUpdateQueueStore = createStore<FormUpdateQueueStoreType>()((set, get) => ({
@@ -87,17 +77,6 @@ export const formUpdateQueueStore = createStore<FormUpdateQueueStoreType>()((set
 
   enqueueFormUpdate: (task: UpdateTask) => {
     set((state) => ({ queue: [...state.queue, task] }));
-    get()._startProcessing();
-  },
-
-  replaceLatestFormUpdate: (task: UpdateTask) => {
-    const { isProcessing } = get();
-
-    // If already processing, keep current task and replace pending ones for performance
-    set(() => ({
-      // FIXME Instead of taking the latest one and throwing away the rest, do we want to have a set limit on the queue i.e. 5?
-      queue: isProcessing ? [get().queue[0], task] : [task]
-    }));
     get()._startProcessing();
   },
 
