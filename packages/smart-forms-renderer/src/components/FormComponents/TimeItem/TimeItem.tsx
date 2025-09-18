@@ -49,7 +49,7 @@ function TimeItem(props: BaseItemProps) {
   if (qrItem?.answer && qrItem?.answer[0].valueTime) {
     timeString = qrItem.answer[0].valueTime;
   }
-  const timeDayJs = timeString ? dayjs(timeString) : null;
+  const timeDayJs = timeString ? dayjs(timeString, 'HH:mm:ss') : null;
 
   // Event handlers
   function handleTimeChange(newValue: Dayjs | null) {
