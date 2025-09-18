@@ -421,10 +421,6 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   toggleEnableWhenActivation: (isActivated: boolean) =>
     set(() => ({ enableWhenIsActivated: isActivated })),
   updateExpressions: async (updatedResponse: QuestionnaireResponse) => {
-    const sourceQuestionnaire = get().sourceQuestionnaire;
-    const updateResponse = questionnaireResponseStore.getState().updateResponse;
-    const validateResponse = questionnaireResponseStore.getState().validateResponse;
-
     /* Expression evaluation and application workflow
     1. Evaluate calculatedExpressions to update answers in the QuestionnaireResponse.
        - This must happen first, as these answers may affect subsequent expressions.
@@ -439,11 +435,47 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     3. Apply computed updates from answerOptionsToggleExpressions and updated Dynamic ValueSets into the QuestionnaireResponse.
 
     4. Re-run calculatedExpressions as a final step to ensure all calculations are up-to-date, incorporating any toggled options or dynamic value set changes.
+    5. Update store state based on the expressions that changed
     */
 
-    // Step 1: Evaluate calculatedExpressions to update answers in the QuestionnaireResponse
-    console.log(structuredClone(get().calculatedExpressions));
-    const processCalculatedExpressionsResult = await processCalculatedExpressions(
+    const sourceQuestionnaire = get().sourceQuestionnaire;
+    const { updateResponse, validateResponse } = questionnaireResponseStore.getState();
+
+    // Helper function to extract common state update logic
+    function updateStoreState(
+      updatedResponse: QuestionnaireResponse,
+      calculatedExpressions: Record<string, CalculatedExpression[]>,
+      fhirPathContext: Record<string, unknown>,
+      fhirPathTerminologyCache: Record<string, unknown>,
+      otherExpressions?: {
+        targetConstraints?: Record<string, TargetConstraint>;
+        enableWhenExpressions?: EnableWhenExpressions;
+        answerOptionsToggleExpressions?: Record<string, AnswerOptionsToggleExpression[]>;
+        processedValueSets?: Record<string, ProcessedValueSet>;
+      }
+    ) {
+      // Update QuestionnaireStore state
+      set(() => ({
+        calculatedExpressions,
+        fhirPathContext,
+        fhirPathTerminologyCache,
+        ...(otherExpressions && {
+          targetConstraints: otherExpressions.targetConstraints,
+          enableWhenExpressions: otherExpressions.enableWhenExpressions,
+          answerOptionsToggleExpressions: otherExpressions.answerOptionsToggleExpressions,
+          processedValueSets: otherExpressions.processedValueSets
+        })
+      }));
+
+      // Final validation
+      validateResponse(sourceQuestionnaire, updatedResponse);
+    }
+
+    // Step 1: Process calculated expressions first
+    let {
+      updatedResponse: lastUpdatedResponse,
+      updatedCalculatedExpressions: updatedCalculatedExpressions
+    } = await processCalculatedExpressions(
       sourceQuestionnaire,
       updatedResponse,
       get().calculatedExpressions,
@@ -452,26 +484,21 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       get().fhirPathTerminologyCache,
       terminologyServerStore.getState().url
     );
-    let lastUpdatedResponse = processCalculatedExpressionsResult.updatedResponse;
-    const updatedCalculatedExpressions =
-      processCalculatedExpressionsResult.updatedCalculatedExpressions;
 
-    // Update the response with all calculated expression results applied
     updateResponse(lastUpdatedResponse);
 
-    // Step 2: Evaluate other expressions using the QR with updated calculated answers
+    // Step 2: Evaluate other expressions
     const updatedResponseItemMap = createQuestionnaireResponseItemMap(
       sourceQuestionnaire,
       lastUpdatedResponse
     );
     const {
-      otherExpressionsUpdated,
       updatedFhirPathContext,
       updatedFhirPathTerminologyCache,
-      updatedTargetConstraints,
-      updatedAnswerOptionsToggleExpressions,
-      updatedEnableWhenExpressions,
-      updatedProcessedValueSets,
+      targetConstraintsUpdate,
+      enableWhenExpressionsUpdate,
+      answerOptionsToggleExpressionsUpdate,
+      processedValueSetsUpdate,
       computedQRItemUpdates
     } = await evaluateOtherExpressions(
       lastUpdatedResponse,
@@ -486,42 +513,58 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       terminologyServerStore.getState().url
     );
 
-    // Step 3: Apply computed updates from answerOptionsToggleExpressions and updated Dynamic ValueSets into the QuestionnaireResponse
+    /* Step 3 & 4: Handle computed updates and re-run calculations if needed */
     if (Object.keys(computedQRItemUpdates).length > 0) {
       lastUpdatedResponse = applyComputedUpdates(
-        get().sourceQuestionnaire,
+        sourceQuestionnaire,
         lastUpdatedResponse,
         computedQRItemUpdates
       );
+
+      // Re-run calculated expressions with the updated response
+      const finalCalculatedResult = await processCalculatedExpressions(
+        sourceQuestionnaire,
+        lastUpdatedResponse,
+        updatedCalculatedExpressions,
+        get().variables,
+        updatedFhirPathContext,
+        updatedFhirPathTerminologyCache,
+        terminologyServerStore.getState().url
+      );
+
+      lastUpdatedResponse = finalCalculatedResult.updatedResponse;
+      updatedCalculatedExpressions = finalCalculatedResult.updatedCalculatedExpressions;
       updateResponse(lastUpdatedResponse);
     }
 
-    // TODO Step 4: Re-run calculatedExpressions as a final step to ensure all calculations are up-to-date, incorporating any toggled options or dynamic value set changes
-    // ...
-
-    if (otherExpressionsUpdated) {
-      set(() => ({
-        targetConstraints: updatedTargetConstraints,
-        enableWhenExpressions: updatedEnableWhenExpressions,
-        answerOptionsToggleExpressions: updatedAnswerOptionsToggleExpressions,
-        processedValueSets: updatedProcessedValueSets,
-        calculatedExpressions: updatedCalculatedExpressions,
-        fhirPathContext: updatedFhirPathContext,
-        fhirPathTerminologyCache: updatedFhirPathTerminologyCache
-      }));
-
-      // Besides setting QuestionnaireStore state, we also need to update `invalidItems` and `responseIsValid` in QuestionnaireResponseStore
-      validateResponse(sourceQuestionnaire, lastUpdatedResponse); // Validate the updated response asynchronously
-      return;
+    /* Step 5: Update store state based on the expressions that changed */
+    const otherExpressionsToUpdate: Partial<{
+      targetConstraints: Record<string, TargetConstraint>;
+      enableWhenExpressions: EnableWhenExpressions;
+      answerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
+      processedValueSets: Record<string, ProcessedValueSet>;
+    }> = {};
+    if (targetConstraintsUpdate.isUpdated) {
+      otherExpressionsToUpdate.targetConstraints = targetConstraintsUpdate.value;
+    }
+    if (enableWhenExpressionsUpdate.isUpdated) {
+      otherExpressionsToUpdate.enableWhenExpressions = enableWhenExpressionsUpdate.value;
+    }
+    if (answerOptionsToggleExpressionsUpdate.isUpdated) {
+      otherExpressionsToUpdate.answerOptionsToggleExpressions =
+        answerOptionsToggleExpressionsUpdate.value;
+    }
+    if (processedValueSetsUpdate.isUpdated) {
+      otherExpressionsToUpdate.processedValueSets = processedValueSetsUpdate.value;
     }
 
-    // Always update fhirPathContext, fhirPathTerminologyCache
-    // Also always update calculatedExpressions
-    set(() => ({
-      calculatedExpressions: updatedCalculatedExpressions,
-      fhirPathContext: updatedFhirPathContext,
-      fhirPathTerminologyCache: updatedFhirPathTerminologyCache
-    }));
+    updateStoreState(
+      lastUpdatedResponse,
+      updatedCalculatedExpressions,
+      updatedFhirPathContext,
+      updatedFhirPathTerminologyCache,
+      Object.keys(otherExpressionsToUpdate).length > 0 ? otherExpressionsToUpdate : undefined
+    );
   },
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) =>
     set(() => ({

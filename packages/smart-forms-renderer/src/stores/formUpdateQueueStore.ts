@@ -92,19 +92,19 @@ export const formUpdateQueueStore = createStore<FormUpdateQueueStoreType>()((set
 
     set({ isProcessing: true });
 
+    /* Process first task in the queue */
     const { questionnaireResponse } = queue[0];
 
-    // Perform an immediate update first before processing expressions
+    // Perform an immediate QR update first, then process expressions asynchronously
     updateResponse(questionnaireResponse);
-
     await updateExpressions(questionnaireResponse);
 
+    /* Dequeue first task in and process next task in the queue */
     set((state) => ({
       queue: state.queue.slice(1),
       isProcessing: false
     }));
-
-    get()._startProcessing(); // Process next task in the queue
+    get()._startProcessing();
   }
 }));
 

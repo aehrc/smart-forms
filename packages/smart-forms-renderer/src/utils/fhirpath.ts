@@ -28,6 +28,11 @@ import type { ComputedQRItemUpdates } from '../interfaces/computedUpdates.interf
 import type { AnswerOptionsToggleExpression } from '../interfaces/answerOptionsToggleExpression.interface';
 import { evaluateAnswerOptionsToggleExpressions } from './answerOptionsToggleExpressions';
 
+interface ExpressionUpdate<T> {
+  isUpdated: boolean;
+  value: T;
+}
+
 export async function evaluateOtherExpressions(
   updatedResponse: QuestionnaireResponse,
   updatedResponseItemMap: Record<string, QuestionnaireResponseItem[]>,
@@ -40,13 +45,14 @@ export async function evaluateOtherExpressions(
   processedValueSets: Record<string, any>,
   terminologyServerUrl: string
 ): Promise<{
-  otherExpressionsUpdated: boolean;
   updatedFhirPathContext: Record<string, any>;
   updatedFhirPathTerminologyCache: Record<string, any>;
-  updatedTargetConstraints: Record<string, TargetConstraint>;
-  updatedEnableWhenExpressions: EnableWhenExpressions;
-  updatedAnswerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
-  updatedProcessedValueSets: Record<string, any>;
+  targetConstraintsUpdate: ExpressionUpdate<Record<string, TargetConstraint>>;
+  enableWhenExpressionsUpdate: ExpressionUpdate<EnableWhenExpressions>;
+  answerOptionsToggleExpressionsUpdate: ExpressionUpdate<
+    Record<string, AnswerOptionsToggleExpression[]>
+  >;
+  processedValueSetsUpdate: ExpressionUpdate<Record<string, any>>;
   computedQRItemUpdates: ComputedQRItemUpdates;
 }> {
   // Performance check: Check if there are any expressions to be updated before proceeding with eval logic
@@ -58,13 +64,24 @@ export async function evaluateOtherExpressions(
 
   if (noExpressionsToBeUpdated) {
     return {
-      otherExpressionsUpdated: false,
       updatedFhirPathContext: existingFhirPathContext,
       updatedFhirPathTerminologyCache: existingFhirPathTerminologyCache,
-      updatedTargetConstraints: targetConstraints,
-      updatedEnableWhenExpressions: enableWhenExpressions,
-      updatedAnswerOptionsToggleExpressions: answerOptionsToggleExpressions,
-      updatedProcessedValueSets: processedValueSets,
+      targetConstraintsUpdate: {
+        isUpdated: false,
+        value: targetConstraints
+      },
+      enableWhenExpressionsUpdate: {
+        isUpdated: false,
+        value: enableWhenExpressions
+      },
+      answerOptionsToggleExpressionsUpdate: {
+        isUpdated: false,
+        value: answerOptionsToggleExpressions
+      },
+      processedValueSetsUpdate: {
+        isUpdated: false,
+        value: processedValueSets
+      },
       computedQRItemUpdates: {}
     };
   }
@@ -102,7 +119,7 @@ export async function evaluateOtherExpressions(
     );
 
   // Update answerOptionsToggleExpressions
-  // Add generated computed answers to computedQRItemUpdates
+  // Add generated computed answers to computedQRItemUpdates - clear the item because the previous answers may no longer be valid
   const {
     isUpdated: answerOptionsToggleExpressionsUpdated,
     updatedAnswerOptionsToggleExpressions,
@@ -119,7 +136,7 @@ export async function evaluateOtherExpressions(
   }
 
   // Update dynamic value sets
-  // Add generated computed answers to computedQRItemUpdates
+  // Add generated computed answers to computedQRItemUpdates - clear the item because the previous answers may no longer be valid
   const {
     isUpdated: processedValueSetsUpdated,
     updatedProcessedValueSets,
@@ -135,20 +152,25 @@ export async function evaluateOtherExpressions(
     computedQRItemUpdates[linkId] = null;
   }
 
-  const otherExpressionsUpdated =
-    targetConstraintsUpdated ||
-    enableWhenExpressionsUpdated ||
-    answerOptionsToggleExpressionsUpdated ||
-    processedValueSetsUpdated;
-
   return {
-    otherExpressionsUpdated,
     updatedFhirPathContext,
     updatedFhirPathTerminologyCache,
-    updatedTargetConstraints,
-    updatedAnswerOptionsToggleExpressions,
-    updatedEnableWhenExpressions,
-    updatedProcessedValueSets,
+    targetConstraintsUpdate: {
+      isUpdated: targetConstraintsUpdated,
+      value: updatedTargetConstraints
+    },
+    enableWhenExpressionsUpdate: {
+      isUpdated: enableWhenExpressionsUpdated,
+      value: updatedEnableWhenExpressions
+    },
+    answerOptionsToggleExpressionsUpdate: {
+      isUpdated: answerOptionsToggleExpressionsUpdated,
+      value: updatedAnswerOptionsToggleExpressions
+    },
+    processedValueSetsUpdate: {
+      isUpdated: processedValueSetsUpdated,
+      value: updatedProcessedValueSets
+    },
     computedQRItemUpdates
   };
 }
