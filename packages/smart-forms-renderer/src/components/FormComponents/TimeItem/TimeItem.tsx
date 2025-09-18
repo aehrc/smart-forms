@@ -49,13 +49,13 @@ function TimeItem(props: BaseItemProps) {
   if (qrItem?.answer && qrItem?.answer[0].valueTime) {
     timeString = qrItem.answer[0].valueTime;
   }
-  const timeDayJs = timeString ? dayjs(timeString) : null;
+  const timeDayJs = timeString ? dayjs(timeString, 'HH:mm:ss') : null;
 
   // Event handlers
   function handleTimeChange(newValue: Dayjs | null) {
     const emptyQrItem = createEmptyQrItem(qItem, answerKey);
     if (newValue) {
-      onQrItemChange({ ...emptyQrItem, answer: [{ id: answerKey, valueTime: newValue.format() }] });
+      onQrItemChange({ ...emptyQrItem, answer: [{ id: answerKey, valueTime: newValue.format('HH:mm:ss') }] });
     } else {
       onQrItemChange(emptyQrItem);
     }
