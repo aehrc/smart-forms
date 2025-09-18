@@ -77,7 +77,7 @@ test('Add age into age field', async () => {
   expect(result[0]).toEqual(expect.objectContaining({ valueInteger: ageText }));
 });
 
-test('Registered for NDIS openning NDIS number field', async () => {
+test('Registered for NDIS opening NDIS number field', async () => {
   const form = aboriginalForm as Questionnaire;
   const { container } = render(<BuildFormWrapperForStorybook questionnaire={form} />);
   const answerCoding = {
