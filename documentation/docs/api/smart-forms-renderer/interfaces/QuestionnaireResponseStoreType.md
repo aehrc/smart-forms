@@ -2,7 +2,7 @@
 
 QuestionnaireResponseStore properties and methods
 Properties can be accessed for fine-grain details.
-Methods are usually used internally, using them from an external source is not recommended.
+Methods are usually used internally, but it is possible to use them externally to hook into the renderer for more fine-grain control.
 
 ## Properties
 
@@ -44,6 +44,18 @@ Array of form changes history in the form of deep-diff objects
 
 ***
 
+### highlightRequiredItems()
+
+> **highlightRequiredItems**: () => `void`
+
+Used to highlight invalid items and show error feedback in the UI
+
+#### Returns
+
+`void`
+
+***
+
 ### invalidItems
 
 > **invalidItems**: `Record`\<`string`, `OperationOutcome`\>
@@ -57,6 +69,14 @@ Key-value pair of invalid items based on defined value constraints in the questi
 > **key**: `string`
 
 The React key of the questionnaireResponse, used internally for refreshing the BaseRenderer
+
+***
+
+### requiredItemsIsHighlighted
+
+> **requiredItemsIsHighlighted**: `boolean`
+
+Required items are not highlighted by default (to provide a less-jarring UX), but can be manually toggled to be highlighted
 
 ***
 
@@ -148,7 +168,7 @@ Key-value pair of updatableResponse items `Record<linkId, QR.item(s)>`
 
 ### updateResponse()
 
-> **updateResponse**: (`updatedResponse`) => `void`
+> **updateResponse**: (`updatedResponse`, `debugType`) => `void`
 
 Used to update the current response
 
@@ -157,6 +177,7 @@ Used to update the current response
 | Parameter | Type |
 | ------ | ------ |
 | `updatedResponse` | `QuestionnaireResponse` |
+| `debugType` | `"initial"` \| `"async"` |
 
 #### Returns
 
@@ -164,11 +185,9 @@ Used to update the current response
 
 ***
 
-### validateQuestionnaire()
+### validateResponse()
 
-> **validateQuestionnaire**: (`questionnaire`, `updatedResponse`) => `void`
-
-Used to validate the questionnaire response based on the questionnaire
+> **validateResponse**: (`questionnaire`, `updatedResponse`) => `void`
 
 #### Parameters
 

@@ -1,46 +1,44 @@
 # Interface: ItemToRepopulate
 
-ItemToRepopulate interface
+Represents an item within a questionnaire that can be re-populated with updated data from the patient record.
 
 ## Properties
 
-### heading
+### currentQRItem?
 
-> **heading**: `null` \| `string`
+> `optional` **currentQRItem**: `QuestionnaireResponseItem`
 
-The heading of the group to repopulate
+Current QuestionnaireResponseItem in form (optional)
 
-***
-
-### newQRItem?
-
-> `optional` **newQRItem**: `QuestionnaireResponseItem`
-
-The new QuestionnaireResponseItem to replace the old one
+// For repeating groups:
 
 ***
 
-### newQRItems?
+### currentQRItems?
 
-> `optional` **newQRItems**: `QuestionnaireResponseItem`[]
+> `optional` **currentQRItems**: `QuestionnaireResponseItem`[]
 
-The new QuestionnaireResponseItems to replace the old ones
+Array of current QuestionnaireResponseItems in form (optional)
 
-***
-
-### oldQRItem?
-
-> `optional` **oldQRItem**: `QuestionnaireResponseItem`
-
-The old QuestionnaireResponseItem to be replaced
+Use serverQRItem/currentQRItem for single items, and serverQRItems/currentQRItems for repeat groups.
 
 ***
 
-### oldQRItems?
+### isInGrid
 
-> `optional` **oldQRItems**: `QuestionnaireResponseItem`[]
+> **isInGrid**: `boolean`
 
-The old QuestionnaireResponseItems to be replaced
+Whether this item is part of a grid
+
+// For non-repeating items:
+
+***
+
+### parentItemText
+
+> **parentItemText**: `null` \| `string`
+
+Immediate parent item.text
 
 ***
 
@@ -48,4 +46,28 @@ The old QuestionnaireResponseItems to be replaced
 
 > **qItem**: `null` \| `QuestionnaireItem`
 
-The QuestionnaireItem to repopulate
+QuestionnaireItem definition for this item
+
+***
+
+### sectionItemText
+
+> **sectionItemText**: `null` \| `string`
+
+Top-level group item.text this item belongs to
+
+***
+
+### serverQRItem?
+
+> `optional` **serverQRItem**: `QuestionnaireResponseItem`
+
+QuestionnaireResponseItem from server (optional)
+
+***
+
+### serverQRItems?
+
+> `optional` **serverQRItems**: `QuestionnaireResponseItem`[]
+
+Array of QuestionnaireResponseItems from server (optional)

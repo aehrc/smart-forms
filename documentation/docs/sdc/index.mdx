@@ -221,3 +221,67 @@ The implementation is based on http://hl7.org/fhir/uv/sdc/modular.html#modular-q
 View the page here: http://hl7.org/fhir/uv/sdc/adaptive.html
 
 This is not something on our radar at the moment :(
+
+## Custom Extensions
+
+Smart Forms includes several custom extensions that provide additional functionality beyond the standard SDC extensions.
+
+### Questionnaire Item Text Hidden
+
+- [x] QuestionnaireItemTextHidden
+
+Allows hiding the text label of questionnaire items from the UI. Useful for internal fields that don't need user-facing labels.
+
+**Usage:**
+
+- When `valueBoolean: true`, the item text is hidden from the UI
+- When `valueBoolean: false` or extension is not present, the text is visible
+- The extension must be placed in the `_text.extension` property of the questionnaire item
+
+**Benefits:**
+
+- Hide internal fields that shouldn't be visible to users
+- Create cleaner UI by hiding unnecessary labels
+- Support use cases where field labels are not needed
+
+### Group Hide Add Item Button
+
+- [x] GroupHideAddItemButton
+
+Allows hiding the "Add Item" button for repeating groups and group tables. Useful for static tables where users shouldn't be allowed to add new rows.
+
+**Usage:**
+
+- When `valueBoolean: true`, the "Add Item" button is hidden
+- When `valueBoolean: false` or extension is not present, the button is visible
+- The extension must be placed in the `extension` property of the questionnaire item
+
+**Benefits:**
+
+- Create static tables that users cannot modify
+- Prevent accidental addition of rows to structured data
+- Provide better control over form behavior
+
+### Questionnaire Initial Expression Repopulatable
+
+- [x] questionnaire-initialExpression-repopulatable
+
+Allows individual fields to be manually repopulated with fresh data from the FHIR server. Provides granular control over data synchronization without affecting the entire form.
+
+**Usage:**
+
+- When `valueCode: 'manual'`, a sync button appears next to the field
+- The field must also have an `initialExpression` extension to be repopulatable
+- Clicking the sync button will re-evaluate the initial expression and update the field value
+
+**Requirements:**
+
+- The field must have both `initialExpression` and `questionnaire-initialExpression-repopulatable` extensions
+- The `questionnaire-initialExpression-repopulatable` extension must have `valueCode: 'manual'`
+- The form must be pre-populated to see the repopulate buttons
+
+**Benefits:**
+
+- Granular repopulation of individual fields without affecting the entire form
+- Allows users to refresh specific data points when needed
+- Provides fine-grained control over data synchronization

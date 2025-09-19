@@ -1,6 +1,6 @@
 # Function: initialiseQuestionnaireResponse()
 
-> **initialiseQuestionnaireResponse**(`questionnaire`, `questionnaireResponse`?): `QuestionnaireResponse`
+> **initialiseQuestionnaireResponse**(`questionnaire`, `questionnaireResponse?`): `QuestionnaireResponse`
 
 Initialise a questionnaireResponse from a given questionnaire
 optionally takes in an existing questionnaireResponse to be initialised
@@ -10,7 +10,7 @@ optionally takes in an existing questionnaireResponse to be initialised
 | Parameter | Type |
 | ------ | ------ |
 | `questionnaire` | `Questionnaire` |
-| `questionnaireResponse`? | `QuestionnaireResponse` |
+| `questionnaireResponse?` | `QuestionnaireResponse` |
 
 ## Returns
 

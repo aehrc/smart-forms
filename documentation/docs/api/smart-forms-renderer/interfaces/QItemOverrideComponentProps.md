@@ -2,6 +2,12 @@
 
 ## Properties
 
+### feedbackFromParent?
+
+> `optional` **feedbackFromParent**: `string`
+
+***
+
 ### groupCardElevation?
 
 > `optional` **groupCardElevation**: `number`
@@ -20,15 +26,22 @@
 
 ***
 
+### itemPath
+
+> **itemPath**: `ItemPath`
+
+***
+
 ### onQrItemChange()
 
-> **onQrItemChange**: (`qrItem`) => `unknown`
+> **onQrItemChange**: (`qrItem`, `targetItemPath?`) => `unknown`
 
 #### Parameters
 
 | Parameter | Type |
 | ------ | ------ |
 | `qrItem` | `QuestionnaireResponseItem` |
+| `targetItemPath?` | `ItemPath` |
 
 #### Returns
 
@@ -38,13 +51,14 @@
 
 ### onQrRepeatGroupChange()
 
-> **onQrRepeatGroupChange**: (`qrRepeatGroup`) => `unknown`
+> **onQrRepeatGroupChange**: (`qrRepeatGroup`, `targetItemPath?`) => `unknown`
 
 #### Parameters
 
 | Parameter | Type |
 | ------ | ------ |
 | `qrRepeatGroup` | `QrRepeatGroup` |
+| `targetItemPath?` | `ItemPath` |
 
 #### Returns
 
@@ -67,6 +81,12 @@
 ### parentRepeatGroupIndex?
 
 > `optional` **parentRepeatGroupIndex**: `number`
+
+***
+
+### parentStyles?
+
+> `optional` **parentStyles**: `Record`\<`string`, `string`\>
 
 ***
 

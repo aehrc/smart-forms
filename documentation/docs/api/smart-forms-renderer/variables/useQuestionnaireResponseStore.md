@@ -17,7 +17,7 @@ This is the React version of the store which can be used as React hooks in React
 
 ##### Returns
 
-`Function`
+> (`response`): `void`
 
 ###### Parameters
 
@@ -35,7 +35,7 @@ This is the React version of the store which can be used as React hooks in React
 
 ##### Returns
 
-`Function`
+> (): `void`
 
 ###### Returns
 
@@ -48,6 +48,18 @@ This is the React version of the store which can be used as React hooks in React
 ##### Returns
 
 (`null` \| `Diff`\<`QuestionnaireResponse`, `QuestionnaireResponse`\>[])[]
+
+#### use.highlightRequiredItems()
+
+> **highlightRequiredItems**: () => () => `void`
+
+##### Returns
+
+> (): `void`
+
+###### Returns
+
+`void`
 
 #### use.invalidItems()
 
@@ -65,6 +77,14 @@ This is the React version of the store which can be used as React hooks in React
 
 `string`
 
+#### use.requiredItemsIsHighlighted()
+
+> **requiredItemsIsHighlighted**: () => `boolean`
+
+##### Returns
+
+`boolean`
+
 #### use.responseIsValid()
 
 > **responseIsValid**: () => `boolean`
@@ -79,7 +99,7 @@ This is the React version of the store which can be used as React hooks in React
 
 ##### Returns
 
-`Function`
+> (`clearedResponse`): `void`
 
 ###### Parameters
 
@@ -97,7 +117,7 @@ This is the React version of the store which can be used as React hooks in React
 
 ##### Returns
 
-`Function`
+> (`populatedResponse`): `void`
 
 ###### Parameters
 
@@ -115,7 +135,7 @@ This is the React version of the store which can be used as React hooks in React
 
 ##### Returns
 
-`Function`
+> (`savedResponse`): `void`
 
 ###### Parameters
 
@@ -153,29 +173,30 @@ This is the React version of the store which can be used as React hooks in React
 
 #### use.updateResponse()
 
-> **updateResponse**: () => (`updatedResponse`) => `void`
+> **updateResponse**: () => (`updatedResponse`, `debugType`) => `void`
 
 ##### Returns
 
-`Function`
+> (`updatedResponse`, `debugType`): `void`
 
 ###### Parameters
 
 | Parameter | Type |
 | ------ | ------ |
 | `updatedResponse` | `QuestionnaireResponse` |
+| `debugType` | `"initial"` \| `"async"` |
 
 ###### Returns
 
 `void`
 
-#### use.validateQuestionnaire()
+#### use.validateResponse()
 
-> **validateQuestionnaire**: () => (`questionnaire`, `updatedResponse`) => `void`
+> **validateResponse**: () => (`questionnaire`, `updatedResponse`) => `void`
 
 ##### Returns
 
-`Function`
+> (`questionnaire`, `updatedResponse`): `void`
 
 ###### Parameters
 

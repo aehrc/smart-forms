@@ -33,9 +33,17 @@ Key-value pair of answer expressions `Record<linkId, answer expression propertie
 
 ***
 
+### answerOptionsToggleExpressions
+
+> **answerOptionsToggleExpressions**: `Record`\<`string`, `AnswerOptionsToggleExpression`[]\>
+
+Key-value pair of answer options toggle expressions `Record<linkId, array of answer options toggle expressions>`
+
+***
+
 ### buildSourceQuestionnaire()
 
-> **buildSourceQuestionnaire**: (`questionnaire`, `questionnaireResponse`?, `additionalVariables`?, `terminologyServerUrl`?, `readOnly`?, `qItemOverrideComponents`?, `sdcUiOverrideComponents`?) => `Promise`\<`void`\>
+> **buildSourceQuestionnaire**: (`questionnaire`, `questionnaireResponse?`, `additionalVariables?`, `terminologyServerUrl?`, `readOnly?`, `qItemOverrideComponents?`, `sdcUiOverrideComponents?`) => `Promise`\<`void`\>
 
 Used to build the source questionnaire with the provided questionnaire and optionally questionnaire response, additional variables, terminology server url and readyOnly flag
 
@@ -44,12 +52,12 @@ Used to build the source questionnaire with the provided questionnaire and optio
 | Parameter | Type |
 | ------ | ------ |
 | `questionnaire` | `Questionnaire` |
-| `questionnaireResponse`? | `QuestionnaireResponse` |
-| `additionalVariables`? | `Record`\<`string`, `object`\> |
-| `terminologyServerUrl`? | `string` |
-| `readOnly`? | `boolean` |
-| `qItemOverrideComponents`? | `Record`\<`string`, `ComponentType`\<[`QItemOverrideComponentProps`](QItemOverrideComponentProps.md)\>\> |
-| `sdcUiOverrideComponents`? | `Record`\<`string`, `ComponentType`\<[`SdcUiOverrideComponentProps`](SdcUiOverrideComponentProps.md)\>\> |
+| `questionnaireResponse?` | `QuestionnaireResponse` |
+| `additionalVariables?` | `Record`\<`string`, `any`\> |
+| `terminologyServerUrl?` | `string` |
+| `readOnly?` | `boolean` |
+| `qItemOverrideComponents?` | `Record`\<`string`, `ComponentType`\<[`QItemOverrideComponentProps`](QItemOverrideComponentProps.md)\>\> |
+| `sdcUiOverrideComponents?` | `Record`\<`string`, `ComponentType`\<[`SdcUiOverrideComponentProps`](SdcUiOverrideComponentProps.md)\>\> |
 
 #### Returns
 
@@ -141,6 +149,14 @@ Key-value pair of evaluated FHIRPath values `Record<variable name, evaluated val
 
 ***
 
+### fhirPathTerminologyCache
+
+> **fhirPathTerminologyCache**: `Record`\<`string`, `any`\>
+
+Key-value pair of cached FHIRPath Terminology results `Record<cacheKey, cached terminology result>`
+
+***
+
 ### focusedLinkId
 
 > **focusedLinkId**: `string`
@@ -155,19 +171,19 @@ LinkId of the currently focused item
 
 ***
 
+### itemMap
+
+> **itemMap**: `Record`\<`string`, `Omit`\<`QuestionnaireItem`, `"item"`\>\>
+
+Key-value pair of item types `Record<linkId, { linkId, QuestionnaireItem (without qItem.item) }>`
+
+***
+
 ### itemPreferredTerminologyServers
 
 > **itemPreferredTerminologyServers**: `Record`\<`string`, `string`\>
 
 Key-value pair of item types `Record<linkId, preferred terminology servers>`
-
-***
-
-### itemTypes
-
-> **itemTypes**: `Record`\<`string`, `string`\>
-
-Key-value pair of item types `Record<linkId, item.type>`
 
 ***
 
@@ -269,19 +285,11 @@ Key-value pair of one-off pre-populated FHIRPath values `Record<variable/launchC
 
 ***
 
-### processedValueSetCodings
+### processedValueSets
 
-> **processedValueSetCodings**: `Record`\<`string`, `Coding`[]\>
+> **processedValueSets**: `Record`\<`string`, `ProcessedValueSet`\>
 
-Key-value pair of processed value set codings `Record<valueSetUrl, codings>`
-
-***
-
-### processedValueSetUrls
-
-> **processedValueSetUrls**: `Record`\<`string`, `string`\>
-
-Key-value pair of contained value set urls `Record<valueSetName, valueSetUrl>`
+Key-value pair of (pre-)processed value set codings `Record<valueSetUrl, ProcessedValueSet>`
 
 ***
 
@@ -329,7 +337,7 @@ Used to set the form as read-only
 
 ### setPopulatedContext()
 
-> **setPopulatedContext**: (`newPopulatedContext`, `addToFhirPathContext`?) => `void`
+> **setPopulatedContext**: (`newPopulatedContext`, `addToFhirPathContext?`) => `void`
 
 Used to set the populated contexts (launchContext, sourceQueries, x-fhir-query vars) for debugging purposes, and optionally add to the FHIRPath context
 
@@ -338,7 +346,7 @@ Used to set the populated contexts (launchContext, sourceQueries, x-fhir-query v
 | Parameter | Type |
 | ------ | ------ |
 | `newPopulatedContext` | `Record`\<`string`, `any`\> |
-| `addToFhirPathContext`? | `boolean` |
+| `addToFhirPathContext?` | `boolean` |
 
 #### Returns
 
@@ -395,6 +403,22 @@ Used to switch the current tab index
 > **tabs**: [`Tabs`](../type-aliases/Tabs.md)
 
 Key-value pair of tabs `Record<linkId, Tab>`
+
+***
+
+### targetConstraintLinkIds
+
+> **targetConstraintLinkIds**: `Record`\<`string`, `string`[]\>
+
+Key-value pair of linkIds against target constraint key(s) `Record<linkId, target constraint keys>`
+
+***
+
+### targetConstraints
+
+> **targetConstraints**: `Record`\<`string`, `TargetConstraint`\>
+
+Key-value pair of target constraints `Record<target constraint key, target constraint properties>`
 
 ***
 
@@ -456,7 +480,7 @@ Used to update all SDC expressions based on the updated questionnaire response
 
 ### updatePopulatedProperties()
 
-> **updatePopulatedProperties**: (`populatedResponse`, `populatedContext`?, `persistTabIndex`?) => `Promise`\<`QuestionnaireResponse`\>
+> **updatePopulatedProperties**: (`populatedResponse`, `populatedContext?`, `persistTabIndex?`) => `Promise`\<`QuestionnaireResponse`\>
 
 Used to update all SDC expressions based on a pre-populated questionnaire response
 
@@ -465,8 +489,8 @@ Used to update all SDC expressions based on a pre-populated questionnaire respon
 | Parameter | Type |
 | ------ | ------ |
 | `populatedResponse` | `QuestionnaireResponse` |
-| `populatedContext`? | `Record`\<`string`, `any`\> |
-| `persistTabIndex`? | `boolean` |
+| `populatedContext?` | `Record`\<`string`, `any`\> |
+| `persistTabIndex?` | `boolean` |
 
 #### Returns
 

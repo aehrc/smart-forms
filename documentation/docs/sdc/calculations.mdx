@@ -66,10 +66,41 @@ Basic usage examples are covered in the respective components:
 
 ### Cqf-expression
 
+- [x] cqf-expression
+
 While calculated expressions are used to update the value of a question dynamically, cqf-expression is used to update the elements/controls within the Questionnaire resource itself during render runtime.
 
+**Key Features:**
+
+- **Patient Data Access**: Use `%patient` to access patient information
+- **Form Data Access**: Use `%resource` to access current form responses
+- **System Variables**: Use `now()` for current timestamp, etc.
+- **Conditional Logic**: Use `iif()` for conditional expressions
+- **String Operations**: Concatenation, substring, and other string functions
+
+**Usage:**
+
+- Place the extension in the `_text.extension` property of questionnaire items
+- Use FHIRPath expressions to access patient data, form responses, and system variables
+- Supports conditional logic, calculations, and dynamic content generation
+
+**Supported Elements:**
 At the moment, the only supported element/control is **text**.
 
-#### Text usage
+#### Basic CQF Expression
 
-<IframeContainer storyId="itemtype-display--display-calculation" initialHeight={280} />
+<IframeContainer
+  storyId="sdc-cqf-expression-extension--simple-cqf-expression"
+  initialHeight={400}
+/>
+
+#### Advanced CQF Expression
+
+<IframeContainer storyId="sdc-cqf-expression-extension--basic-cqf-expression" initialHeight={500} />
+
+#### Complex CQF Expression
+
+<IframeContainer
+  storyId="sdc-cqf-expression-extension--advanced-cqf-expression"
+  initialHeight={600}
+/>

@@ -16,6 +16,10 @@
 
 > **codings**: `Coding`[]
 
+### dynamicCodingsUpdated
+
+> **dynamicCodingsUpdated**: `boolean`
+
 ### terminologyError
 
 > **terminologyError**: `TerminologyError`
