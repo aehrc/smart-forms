@@ -1,6 +1,3 @@
-/// <reference types="jest" />
-/// <reference types="@testing-library/jest-dom" />
-
 /*
  * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
@@ -18,28 +15,31 @@
  * limitations under the License.
  */
 
-import { describe, expect, test, beforeEach, jest } from '@jest/globals';
+import { beforeEach, describe, expect, jest } from '@jest/globals';
 import type {
-  QuestionnaireItem,
-  ValueSet,
   Coding,
+  Encounter,
   Expression,
   Patient,
   Practitioner,
-  Encounter
+  QuestionnaireItem,
+  ValueSet
 } from 'fhir/r4';
 import {
-  getTerminologyServerUrl,
-  getValueSetPromise,
-  validateCodePromise,
-  resolveValueSetPromises,
-  getValueSetCodings,
-  evaluateAnswerExpressionValueSet,
   createValueSetToXFhirQueryVariableNameMap,
-  getResourceFromLaunchContext
-} from '../../utils/valueSet';
-import type { VariableXFhirQuery } from '../../interfaces/variables.interface';
-import type { ValueSetPromise } from '../../interfaces/valueSet.interface';
+  evaluateAnswerExpressionValueSet,
+  getCodingsForAnswerValueSet,
+  getResourceFromLaunchContext,
+  getTerminologyServerUrl,
+  getValueSetCodings,
+  getValueSetPromise,
+  resolveValueSetPromises,
+  validateCodePromise
+} from '../utils/valueSet';
+import type { VariableXFhirQuery } from '../interfaces/variables.interface';
+import type { ValueSetPromise } from '../interfaces/valueSet.interface';
+import { client } from 'fhirclient';
+import { getRelevantCodingProperties } from '../utils/choice';
 
 // Mock the fhirclient
 jest.mock('fhirclient', () => ({
@@ -47,12 +47,9 @@ jest.mock('fhirclient', () => ({
 }));
 
 // Mock the choice utility
-jest.mock('../../utils/choice', () => ({
+jest.mock('../utils/choice', () => ({
   getRelevantCodingProperties: jest.fn()
 }));
-
-import { client } from 'fhirclient';
-import { getRelevantCodingProperties } from '../../utils/choice';
 
 const mockClient = client as jest.MockedFunction<typeof client>;
 const mockGetRelevantCodingProperties = getRelevantCodingProperties as jest.MockedFunction<
@@ -731,5 +728,56 @@ describe('valueSet', () => {
       const result = getResourceFromLaunchContext('Patient', null, null, null);
       expect(result).toBeNull();
     });
+  });
+});
+
+describe('getCodingsForAnswerValueSet', () => {
+  const codingA: Coding = { system: 'http://loinc.org', code: '1234-5', display: 'Test A' };
+  const codingB: Coding = { system: 'http://snomed.info/sct', code: '67890', display: 'Test B' };
+
+  it('returns [] when answerValueSetUrl is undefined', () => {
+    const result = getCodingsForAnswerValueSet(undefined, { myVS: [codingA] }, {});
+    expect(result).toEqual([]);
+  });
+
+  it('returns codings for contained reference (#)', () => {
+    const result = getCodingsForAnswerValueSet('#myVS', { myVS: [codingA] }, {});
+    expect(result).toEqual([codingA]);
+  });
+
+  it('returns [] when contained reference does not exist in cache', () => {
+    const result = getCodingsForAnswerValueSet('#missingVS', {}, {});
+    expect(result).toEqual([]);
+  });
+
+  it('uses updatableValueSetUrl if provided', () => {
+    const result = getCodingsForAnswerValueSet(
+      'http://example.org/vs',
+      { 'http://updated.org/vs': [codingB] },
+      {
+        'http://example.org/vs': {
+          initialValueSetUrl: 'http://example.org/vs',
+          updatableValueSetUrl: 'http://updated.org/vs',
+          bindingParameters: [],
+          isDynamic: true,
+          linkIds: []
+        }
+      }
+    );
+    expect(result).toEqual([codingB]);
+  });
+
+  it('returns codings directly from cachedValueSetCodings if found', () => {
+    const result = getCodingsForAnswerValueSet(
+      'http://direct.org/vs',
+      { 'http://direct.org/vs': [codingA, codingB] },
+      {}
+    );
+    expect(result).toEqual([codingA, codingB]);
+  });
+
+  it('returns [] if nothing is found in any cache', () => {
+    const result = getCodingsForAnswerValueSet('http://unknown.org/vs', {}, {});
+    expect(result).toEqual([]);
   });
 });

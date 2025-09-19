@@ -1,6 +1,3 @@
-/// <reference types="jest" />
-/// <reference types="@testing-library/jest-dom" />
-
 /*
  * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
@@ -18,21 +15,35 @@
  * limitations under the License.
  */
 
-import { renderHook, act } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import type {
   Coding,
-  QuestionnaireItem,
-  ValueSet,
+  Encounter,
   Patient,
   Practitioner,
-  Encounter
+  QuestionnaireItem,
+  ValueSet
 } from 'fhir/r4';
 import useValueSetCodings from '../hooks/useValueSetCodings';
 import type { LaunchContext } from '../interfaces/populate.interface';
 import type { ProcessedValueSet } from '../interfaces/valueSet.interface';
+// Import mocked functions
+import {
+  getResourceFromLaunchContext,
+  getValueSetCodings,
+  getValueSetPromise
+} from '../utils/valueSet';
+import { getAnswerExpression } from '../utils/getExpressionsFromItem';
+import fhirpath from 'fhirpath';
+import { addDisplayToCodingArray } from '../utils/questionnaireStoreUtils/addDisplayToCodings';
+import useDynamicValueSetEffect, {
+  getUpdatableValueSetUrl
+} from '../hooks/useDynamicValueSetEffect';
+import { getItemTerminologyServerToUse } from '../utils/preferredTerminologyServer';
 
 // Mock dependencies
 jest.mock('../utils/valueSet', () => ({
+  ...jest.requireActual('../utils/valueSet'),
   getResourceFromLaunchContext: jest.fn(),
   getValueSetCodings: jest.fn(),
   getValueSetPromise: jest.fn()
@@ -98,20 +109,6 @@ jest.mock('../stores', () => ({
     }
   }
 }));
-
-// Import mocked functions
-import {
-  getResourceFromLaunchContext,
-  getValueSetCodings,
-  getValueSetPromise
-} from '../utils/valueSet';
-import { getAnswerExpression } from '../utils/getExpressionsFromItem';
-import fhirpath from 'fhirpath';
-import { addDisplayToCodingArray } from '../utils/questionnaireStoreUtils/addDisplayToCodings';
-import useDynamicValueSetEffect, {
-  getUpdatableValueSetUrl
-} from '../hooks/useDynamicValueSetEffect';
-import { getItemTerminologyServerToUse } from '../utils/preferredTerminologyServer';
 
 const mockGetResourceFromLaunchContext = getResourceFromLaunchContext as jest.MockedFunction<
   typeof getResourceFromLaunchContext

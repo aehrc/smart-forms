@@ -227,7 +227,7 @@ describe('questionnaireResponseStore', () => {
       const mockResponseItemMap = { 'test-item': [] };
       mockCreateQuestionnaireResponseItemMap.mockReturnValue(mockResponseItemMap);
 
-      questionnaireResponseStore.getState().updateResponse(mockQuestionnaireResponse, 'initial');
+      questionnaireResponseStore.getState().updateResponse(mockQuestionnaireResponse);
 
       expect(mockCreateQuestionnaireResponseItemMap).toHaveBeenCalledWith(
         mockQuestionnaire,
@@ -246,7 +246,7 @@ describe('questionnaireResponseStore', () => {
       };
       mockValidateForm.mockReturnValue(mockInvalidItems);
 
-      questionnaireResponseStore.getState().updateResponse(mockQuestionnaireResponse, 'async');
+      questionnaireResponseStore.getState().updateResponse(mockQuestionnaireResponse);
 
       expect(mockValidateForm).toHaveBeenCalledWith(mockQuestionnaire, mockQuestionnaireResponse);
 

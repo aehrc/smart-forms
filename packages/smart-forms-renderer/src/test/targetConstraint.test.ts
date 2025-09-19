@@ -1,6 +1,3 @@
-/// <reference types="jest" />
-/// <reference types="@testing-library/jest-dom" />
-
 /*
  * Copyright 2025 Commonwealth Scientific and Industrial Research
  * Organisation (CSIRO) ABN 41 687 119 230.
@@ -18,18 +15,20 @@
  * limitations under the License.
  */
 
-import { describe, expect, test, beforeEach, jest } from '@jest/globals';
+import { beforeEach, describe, expect, jest } from '@jest/globals';
 import type { Questionnaire, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import {
   evaluateInitialTargetConstraints,
   evaluateTargetConstraints,
   readTargetConstraintLocationLinkIds
-} from '../../utils/targetConstraint';
-import type { TargetConstraint } from '../../interfaces/targetConstraint.interface';
-import type { Variables } from '../../interfaces';
+} from '../utils/targetConstraint';
+import type { TargetConstraint } from '../interfaces/targetConstraint.interface';
+import type { Variables } from '../interfaces';
+import { createFhirPathContext, handleFhirPathResult } from '../utils/fhirpath';
+import fhirpath from 'fhirpath';
 
 // Mock the fhirpath dependencies
-jest.mock('../../utils/fhirpath', () => ({
+jest.mock('../utils/fhirpath', () => ({
   createFhirPathContext: jest.fn(),
   handleFhirPathResult: jest.fn()
 }));
@@ -39,9 +38,6 @@ jest.mock('fhirpath', () => ({
 }));
 
 jest.mock('fhirpath/fhir-context/r4', () => ({}));
-
-import { createFhirPathContext, handleFhirPathResult } from '../../utils/fhirpath';
-import fhirpath from 'fhirpath';
 
 const mockCreateFhirPathContext = createFhirPathContext as jest.MockedFunction<
   typeof createFhirPathContext
@@ -434,7 +430,7 @@ describe('targetConstraint', () => {
         terminologyServerUrl
       );
 
-      expect(result.targetConstraintsIsUpdated).toBe(true);
+      expect(result.isUpdated).toBe(true);
       expect(result.updatedTargetConstraints['constraint-1'].isInvalid).toBe(true);
     });
 
@@ -457,7 +453,7 @@ describe('targetConstraint', () => {
         terminologyServerUrl
       );
 
-      expect(result.targetConstraintsIsUpdated).toBe(false);
+      expect(result.isUpdated).toBe(false);
       expect(result.updatedTargetConstraints['constraint-1'].isInvalid).toBe(true);
     });
 
@@ -478,7 +474,7 @@ describe('targetConstraint', () => {
       );
 
       expect(mockFhirpathEvaluate).not.toHaveBeenCalled();
-      expect(result.targetConstraintsIsUpdated).toBe(false);
+      expect(result.isUpdated).toBe(false);
     });
 
     it('should handle evaluation errors gracefully', async () => {
@@ -506,7 +502,7 @@ describe('targetConstraint', () => {
         error.message,
         'Target Constraint Key: constraint-error\nExpression: invalid.syntax'
       );
-      expect(result.targetConstraintsIsUpdated).toBe(false);
+      expect(result.isUpdated).toBe(false);
     });
 
     it('should handle empty results and intersect edge cases', async () => {
@@ -533,7 +529,7 @@ describe('targetConstraint', () => {
         terminologyServerUrl
       );
 
-      expect(result.targetConstraintsIsUpdated).toBe(true);
+      expect(result.isUpdated).toBe(true);
       expect(result.updatedTargetConstraints['constraint-empty'].isInvalid).toBe(false);
       expect(result.updatedTargetConstraints['constraint-intersect'].isInvalid).toBe(false);
     });
