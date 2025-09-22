@@ -55,7 +55,10 @@ function TimeItem(props: BaseItemProps) {
   function handleTimeChange(newValue: Dayjs | null) {
     const emptyQrItem = createEmptyQrItem(qItem, answerKey);
     if (newValue) {
-      onQrItemChange({ ...emptyQrItem, answer: [{ id: answerKey, valueTime: newValue.format('HH:mm:ss') }] });
+      onQrItemChange({
+        ...emptyQrItem,
+        answer: [{ id: answerKey, valueTime: newValue.format('HH:mm:ss') }]
+      });
     } else {
       onQrItemChange(emptyQrItem);
     }
