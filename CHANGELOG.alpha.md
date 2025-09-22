@@ -7,6 +7,10 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.102] - 2025-09-22
+#### Fixed
+- Resolved an dependency import issue with @aehrc/testing-toolkit where it was not published on NPM. It it used for Storybook-based testing, and now it is now included in the renderer package instead of a separate package.
+
 ## [1.0.0-alpha.101] - 2025-09-16
 #### Added
 - Added support for SDC extension http://hl7.org/fhir/uv/sdc/StructureDefinition-sdc-questionnaire-width.html (both % and px) in gtable and grid groups itemControls.
