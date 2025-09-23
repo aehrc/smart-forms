@@ -6,7 +6,7 @@ export async function inputText(
   linkId: string,
   text: string | boolean | number
 ) {
-  const questionElement = await findByLinkId(canvasElement, linkId);
+  const questionElement = await findByLinkIdAndLabel(canvasElement, linkId);
 
   const input =
     questionElement?.querySelector('input') ?? questionElement?.querySelector('textarea');
@@ -21,7 +21,7 @@ export async function inputText(
   await new Promise((resolve) => setTimeout(resolve, 500));
 }
 export async function checkCheckBox(canvasElement: HTMLElement, linkId: string) {
-  const questionElement = await findByLinkId(canvasElement, linkId);
+  const questionElement = await findByLinkIdAndLabel(canvasElement, linkId);
   const input =
     questionElement?.querySelector('input') ?? questionElement?.querySelector('textarea');
 
@@ -42,7 +42,7 @@ export async function inputFile(
   url: string,
   filename: string
 ) {
-  const questionElement = await findByLinkId(canvasElement, linkId);
+  const questionElement = await findByLinkIdAndLabel(canvasElement, linkId);
   const input = questionElement?.querySelector('input');
 
   const textareaUrl = questionElement?.querySelector(`textarea[data-test="q-item-attachment-url"]`);
@@ -112,7 +112,7 @@ export async function inputDateTime(
   time: string,
   amPm: string
 ) {
-  const questionElement = await findByLinkId(canvasElement, linkId);
+  const questionElement = await findByLinkIdAndLabel(canvasElement, linkId);
   console.log(questionElement, 777);
   const inputDate = questionElement?.querySelector('div[data-test="date"] input');
   const inputTime = questionElement?.querySelector('div[data-test="time"] input');
@@ -137,7 +137,7 @@ export async function inputDateTime(
 }
 
 export async function checkRadioOption(canvasElement: HTMLElement, linkId: string, text: string) {
-  const questionElement = await findByLinkId(canvasElement, linkId);
+  const questionElement = await findByLinkIdAndLabel(canvasElement, linkId);
   const radio = questionElement?.querySelector(`span[data-test="radio-single-${text}"] input`);
 
   if (!radio) {
@@ -150,7 +150,7 @@ export async function checkRadioOption(canvasElement: HTMLElement, linkId: strin
 }
 
 export async function getInputText(canvasElement: HTMLElement, linkId: string) {
-  const questionElement = await findByLinkId(canvasElement, linkId);
+  const questionElement = await findByLinkIdAndLabel(canvasElement, linkId);
   const input =
     questionElement?.querySelector('input') ?? questionElement?.querySelector('textarea');
 
@@ -166,7 +166,7 @@ export async function chooseSelectOption(
   linkId: string,
   optionLabel: string
 ) {
-  const questionElement = await findByLinkId(canvasElement, linkId);
+  const questionElement = await findByLinkIdAndLabel(canvasElement, linkId);
 
   const input = questionElement.querySelector('input, textarea');
   if (!input) {
@@ -185,7 +185,7 @@ export async function chooseQuantityOption(
   quantity: number | string,
   quantityComparator?: string
 ) {
-  const questionElement = await findByLinkId(canvasElement, linkId);
+  const questionElement = await findByLinkIdAndLabel(canvasElement, linkId);
 
   const inputComaparator = questionElement.querySelector(
     'div[data-test=""q-item-quantity-comparator""] input'
@@ -213,7 +213,7 @@ export async function chooseQuantityOption(
   await new Promise((resolve) => setTimeout(resolve, 500));
 }
 
-export async function findByLinkId(
+export async function findByLinkIdAndLabel(
   canvasElement: HTMLElement,
   linkId: string
 ): Promise<HTMLElement> {
@@ -240,7 +240,7 @@ export async function inputOpenChoiceOtherText(
   linkId: string,
   text: string
 ) {
-  const questionElement = await findByLinkId(canvasElement, linkId);
+  const questionElement = await findByLinkIdAndLabel(canvasElement, linkId);
 
   const textarea = questionElement?.querySelector(
     'div[data-test="q-item-radio-open-label-box"] textarea'

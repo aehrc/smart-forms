@@ -19,7 +19,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 
 import { getAnswers, questionnaireFactory } from '../testUtils';
-import { findByLinkId, inputUrl } from '@aehrc/testing-toolkit';
+import { findByLinkIdAndLabel, inputUrl } from '@aehrc/testing-toolkit';
 import { expect, fireEvent } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -65,7 +65,7 @@ export const UrlBasic: Story = {
     await new Promise((resolve) => setTimeout(resolve, 500));
     const resultAfterClear = await getAnswers(targetlinkId);
     expect(resultAfterClear).toHaveLength(0);
-    const elementAfterClear = await findByLinkId(canvasElement, targetlinkId);
+    const elementAfterClear = await findByLinkIdAndLabel(canvasElement, targetlinkId);
     const input = elementAfterClear.querySelector('textarea');
     expect(input?.value).toBe('');
   }

@@ -23,7 +23,7 @@ import {
   getInputText,
   checkCheckBox,
   checkRadioOption,
-  findByLinkId
+  findByLinkIdAndLabel
 } from '@aehrc/testing-toolkit';
 import { expect, fireEvent } from 'storybook/test';
 
@@ -83,7 +83,7 @@ export const BooleanBasic: Story = {
     const resultAfterClear = await getAnswers(targetlinkId);
     expect(resultAfterClear).toHaveLength(0);
 
-    const elementAfterClear = await findByLinkId(canvasElement, targetlinkId);
+    const elementAfterClear = await findByLinkIdAndLabel(canvasElement, targetlinkId);
     const input = elementAfterClear.querySelector('input');
     expect(input).not.toBeChecked();
   }
@@ -142,7 +142,7 @@ export const BooleanCheckboxBasic: Story = {
     const resultAfterClear = await getAnswers(targetlinkId);
     expect(resultAfterClear).toHaveLength(0);
 
-    const elementAfterClear = await findByLinkId(canvasElement, targetlinkId);
+    const elementAfterClear = await findByLinkIdAndLabel(canvasElement, targetlinkId);
     const input = elementAfterClear.querySelector('input');
     expect(input).not.toBeChecked();
   }
@@ -154,7 +154,7 @@ export const BooleanCheckboxResponse: Story = {
     questionnaireResponse: qrBooleanCheckboxResponse
   },
   play: async ({ canvasElement }) => {
-    const element = await findByLinkId(canvasElement, targetlinkId);
+    const element = await findByLinkIdAndLabel(canvasElement, targetlinkId);
     const input = element.querySelector('input');
 
     expect(input).toBeChecked();

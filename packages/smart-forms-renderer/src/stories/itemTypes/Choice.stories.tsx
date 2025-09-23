@@ -21,7 +21,7 @@ import {
   qChoiceAnswerOptionCalculation,
   qChoiceAnswerValueSetCalculation
 } from '../assets/questionnaires';
-import { chooseSelectOption, findByLinkId, getInputText } from '@aehrc/testing-toolkit';
+import { chooseSelectOption, findByLinkIdAndLabel, getInputText } from '@aehrc/testing-toolkit';
 import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
 import { expect, fireEvent } from 'storybook/test';
 
@@ -94,7 +94,7 @@ export const ChoiceAnswerOptionBasic: Story = {
     const resultAfterClear = await getAnswers(targetlinkId);
     expect(resultAfterClear).toHaveLength(0);
 
-    const elementAfterClear = await findByLinkId(canvasElement, targetlinkId);
+    const elementAfterClear = await findByLinkIdAndLabel(canvasElement, targetlinkId);
     const input = elementAfterClear.querySelector('textarea');
     expect(input?.value).toBe('');
   }
