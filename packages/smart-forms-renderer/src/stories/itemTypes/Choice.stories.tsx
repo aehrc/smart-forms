@@ -18,10 +18,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
-  qChoiceAnswerOptionCalculation,
-  qChoiceAnswerValueSetCalculation
-} from '../assets/questionnaires';
-import {
   chooseSelectOption,
   findByLinkId,
   getAnswers,

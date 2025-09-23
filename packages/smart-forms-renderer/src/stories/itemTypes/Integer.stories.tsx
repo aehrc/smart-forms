@@ -17,7 +17,7 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { qIntegerCalculation } from '../assets/questionnaires';
+
 import {
   findByLinkId,
   getAnswers,
