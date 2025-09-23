@@ -401,19 +401,8 @@ describe('extract RegularMedicationsWithPatchAdd', () => {
     const comparisonSourceResponse = structuredClone(QRRegularMedicationsWithPatchAdd);
 
     // Change first Medication's comment from "Comment2" to "Comment2 - modified"
-    console.log(
-      JSON.stringify(
-        structuredClone(
-          QRRegularMedicationsWithPatchAdd.item?.[0]?.item?.[0]?.item?.[0]?.item?.[6]?.answer
-        )
-      )
-    );
     if (QRRegularMedicationsWithPatchAdd.item?.[0]?.item?.[0]?.item?.[0]?.item?.[6]?.answer) {
-      console.log('done?');
       QRRegularMedicationsWithPatchAdd.item[0].item[0].item[0].item[6].answer = [newCommentAnswer];
-      console.log(
-        JSON.stringify(QRRegularMedicationsWithPatchAdd.item[0].item[0].item[0].item[6].answer)
-      );
     }
 
     const result = await extract(
@@ -432,7 +421,6 @@ describe('extract RegularMedicationsWithPatchAdd', () => {
 
     // Deep comparison of the extracted resources vs expected resources in extractedRegularMedications
     const extracted = returnParam?.resource as Bundle;
-    console.log(extracted);
     const expected = extractedRegularMedicationsWithPatchAdd;
     expect(stripDateAsserted(extracted.entry?.[0]?.resource)).toEqual(
       stripDateAsserted(expected?.entry?.[0]?.resource)
