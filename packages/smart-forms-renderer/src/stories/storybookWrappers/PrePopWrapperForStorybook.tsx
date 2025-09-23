@@ -53,27 +53,12 @@ function PrePopWrapperForStorybook(props: PrePopWrapperForStorybookProps) {
   const [isPopulating, setIsPopulating] = useState(false);
   const setPopulatedContext = useQuestionnaireStore.use.setPopulatedContext();
   
-  // Initialize Smart Config Store for repopulate functionality
-  const setClient = useSmartConfigStore.use.setClient();
-  const setPatient = useSmartConfigStore.use.setPatient();
-  const setUser = useSmartConfigStore.use.setUser();
-  
-  // Set the client, patient, and user in the store
-  React.useEffect(() => {
-    setClient(fhirClient);
-    setPatient(patient);
-    setUser(user);
-  }, [fhirClient, patient, user, setClient, setPatient, setUser]);
 
   const isBuilding = useBuildForm(
     questionnaire,
     undefined,
     undefined,
-    STORYBOOK_TERMINOLOGY_SERVER_URL,
-    {
-      patient: patient,
-      user: user
-    }
+    STORYBOOK_TERMINOLOGY_SERVER_URL
   );
 
   const queryClient = useRendererQueryClient();
