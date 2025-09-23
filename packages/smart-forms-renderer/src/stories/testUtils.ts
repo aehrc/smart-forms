@@ -86,6 +86,27 @@ export function variableExtFactory(name: string, text: string): Extension {
   };
 }
 
+export function unitOptionExtFactory(code: string, display: string): Extension {
+  return {
+    url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption',
+    valueCoding: {
+      system: 'http://unitsofmeasure.org',
+      code: code,
+      display: display
+    }
+  };
+}
+export function unitExtFactory(code: string, display: string): Extension {
+  return {
+    url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+    valueCoding: {
+      system: 'http://unitsofmeasure.org',
+      code: code,
+      display: display
+    }
+  };
+}
+
 export function сqfExpressionFactory(text: string) {
   return {
     url: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
@@ -95,3 +116,5 @@ export function сqfExpressionFactory(text: string) {
     }
   };
 }
+
+export const ucumSystem = 'http://unitsofmeasure.org';

@@ -9,7 +9,13 @@ import {
   questionnaireFactory,
   variableExtFactory
 } from '../testUtils';
-import { chooseSelectOption, inputDecimal, inputText } from '@aehrc/testing-toolkit';
+import {
+  chooseSelectOption,
+  inputInteger,
+  inputQuantity,
+  inputDecimal,
+  inputText
+} from '@aehrc/testing-toolkit';
 import { expect, waitFor } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -187,6 +193,92 @@ export const ChoiceAnswerValueSetCalculation: Story = {
       const result = await getAnswers(choiceValueSetTargetLinkIdCalc);
       expect(result).toHaveLength(1);
       expect(result[0].valueCoding).toEqual(expect.objectContaining(choiceValueSetTargetCoding));
+    });
+  }
+};
+
+const integerLinkId = 'length-controller';
+const integerLinkIdCalc = 'length-squared';
+const qIntegerCalculation = questionnaireFactory(
+  [
+    {
+      linkId: integerLinkId,
+      type: 'integer'
+    },
+    {
+      extension: [calculatedExpressionExtFactory('%length.power(2)')],
+      linkId: integerLinkIdCalc,
+      type: 'integer',
+      readOnly: true
+    }
+  ],
+  {
+    extension: [
+      variableExtFactory('length', `item.where(linkId = '${integerLinkId}').answer.value`)
+    ]
+  }
+);
+const integerTargetNumber = 2;
+const integerTargetNumberCalc = 4;
+
+export const IntegerCalculation: Story = {
+  args: {
+    questionnaire: qIntegerCalculation
+  },
+  play: async ({ canvasElement }) => {
+    await inputInteger(canvasElement, integerLinkId, integerTargetNumber);
+
+    await waitFor(async () => {
+      const result = await getAnswers(integerLinkIdCalc);
+      expect(result).toHaveLength(1);
+      expect(result[0].valueInteger).toBe(integerTargetNumberCalc);
+    });
+  }
+};
+
+const quantityDaysLinkId = 'duration-in-days';
+const quantityHoursLinkId = 'duration-in-hours';
+const quantityTargetDays = 1;
+const quantityTargetHours = 24;
+const qQuantityCalculation = questionnaireFactory(
+  [
+    {
+      linkId: quantityDaysLinkId,
+      type: 'quantity'
+    },
+    {
+      extension: [calculatedExpressionExtFactory('%durationInDays.value * 24')],
+      linkId: quantityHoursLinkId,
+      type: 'quantity'
+    }
+  ],
+  {
+    extension: [
+      variableExtFactory(
+        'durationInDays',
+        `item.where(linkId='${quantityDaysLinkId}').answer.value`
+      )
+    ]
+  }
+);
+const quantityTarget = {
+  unit: undefined,
+  value: quantityTargetHours,
+  code: undefined,
+  system: undefined
+};
+
+export const QuantityCalculation: Story = {
+  args: {
+    questionnaire: qQuantityCalculation
+  },
+  play: async ({ canvasElement }) => {
+    await inputQuantity(canvasElement, quantityDaysLinkId, quantityTargetDays);
+
+    await waitFor(async () => {
+      const result = await getAnswers(quantityHoursLinkId);
+      expect(result).toHaveLength(1);
+      expect(result[0].valueQuantity).toEqual(expect.objectContaining(quantityTarget));
     });
   }
 };

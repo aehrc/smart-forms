@@ -55,7 +55,12 @@ function QuantityUnitField(props: QuantityUnitFieldProps) {
       readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
       size="small"
       renderInput={(params) => (
-        <StandardTextField textFieldWidth={textFieldWidth} isTabled={isTabled} {...params} />
+        <StandardTextField
+          data-test="q-item-unit-field"
+          textFieldWidth={textFieldWidth}
+          isTabled={isTabled}
+          {...params}
+        />
       )}
     />
   );

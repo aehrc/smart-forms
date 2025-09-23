@@ -11,6 +11,7 @@ export async function inputText(
   const input =
     questionElement?.querySelector('input') ?? questionElement?.querySelector('textarea');
 
+  // Error section
   if (!input) {
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
   }
@@ -20,11 +21,13 @@ export async function inputText(
   // Here we await for debounced store update
   await new Promise((resolve) => setTimeout(resolve, 500));
 }
+
 export async function checkCheckBox(canvasElement: HTMLElement, linkId: string) {
   const questionElement = await findByLinkId(canvasElement, linkId);
   const input =
     questionElement?.querySelector('input') ?? questionElement?.querySelector('textarea');
 
+  // Error section
   if (!input) {
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
   }
@@ -50,6 +53,7 @@ export async function inputFile(
     `textarea[data-test="q-item-attachment-file-name"]`
   );
 
+  // Error section
   if (!input) {
     throw new Error(`File input was not found inside [data-linkid=${linkId}] block`);
   }
@@ -65,6 +69,84 @@ export async function inputFile(
 
   fireEvent.change(textareaUrl, { target: { value: url } });
   fireEvent.change(textareaName, { target: { value: filename } });
+  // Here we await for debounced store update
+  await new Promise((resolve) => setTimeout(resolve, 500));
+}
+
+export async function getQuantityTextValues(
+  canvasElement: HTMLElement,
+  linkId: string,
+  unit: boolean
+) {
+  const element = await findByLinkId(canvasElement, linkId);
+  const quantityComparator = element.querySelector(
+    'div[data-test="q-item-quantity-comparator"] input'
+  );
+  const quantityInput = element.querySelector('div[data-test="q-item-quantity-field"] input');
+  const quantityUnit = element.querySelector('div[data-test="q-item-unit-field"] input');
+
+  // Error section
+  if (!quantityComparator) {
+    throw new Error(
+      `File input was not found inside [data-test="q-item-quantity-comparator"] block`
+    );
+  }
+  if (!quantityInput) {
+    throw new Error(`File input was not found inside [data-test="q-item-quantity-field"] block`);
+  }
+  if (!quantityUnit && unit) {
+    throw new Error(`File input was not found inside [data-test="q-item-unit-field"] block`);
+  }
+
+  return {
+    comparator: quantityComparator?.getAttribute('value'),
+    value: quantityInput?.getAttribute('value'),
+    unit: quantityUnit?.getAttribute('value')
+  };
+}
+
+export async function inputQuantity(
+  canvasElement: HTMLElement,
+  linkId: string,
+  quantity: number,
+  unit?: string,
+  comparator?: string
+) {
+  const questionElement = await findByLinkId(canvasElement, linkId);
+
+  const comparatorInput = questionElement?.querySelector(
+    `div[data-test="q-item-quantity-comparator"] input`
+  );
+  const quantityInput = questionElement?.querySelector(
+    `div[data-test="q-item-quantity-field"] input`
+  );
+  const unitInput = questionElement?.querySelector(`div[data-test="q-item-unit-field"] input`);
+
+  // Error section
+  if (comparator && !comparatorInput) {
+    throw new Error(`Input was not found inside [data-test="q-item-quantity-comparator"] block`);
+  }
+  if (!quantityInput) {
+    throw new Error(`Input was not found inside [data-test="q-item-quantity-field"] block`);
+  }
+  if (!unitInput && unit) {
+    throw new Error(`Input was not found inside [data-test="q-item-unit-field"] block`);
+  }
+
+  if (comparator && comparatorInput) {
+    fireEvent.focus(comparatorInput);
+    fireEvent.keyDown(comparatorInput, { key: 'ArrowDown', code: 'ArrowDown' });
+    const option = await screen.findByText(comparator);
+    fireEvent.click(option);
+  }
+  if (unit && unitInput) {
+    fireEvent.focus(unitInput);
+    fireEvent.keyDown(unitInput, { key: 'ArrowDown', code: 'ArrowDown' });
+    const option = await screen.findByText(unit);
+    fireEvent.click(option);
+  }
+  fireEvent.change(quantityInput, { target: { value: quantity } });
+
   // Here we await for debounced store update
   await new Promise((resolve) => setTimeout(resolve, 500));
 }
@@ -118,14 +200,15 @@ export async function inputDateTime(
   const inputTime = questionElement?.querySelector('div[data-test="time"] input');
   const inputAmPm = questionElement?.querySelector('div[data-test="ampm"] input');
 
+  // Error section
   if (!inputTime) {
-    throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
+    throw new Error(`Input or textarea was not found inside ${`[data-test="time"] block`}`);
   }
   if (!inputDate) {
-    throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
+    throw new Error(`Input or textarea was not found inside ${`[data-test="date"] block`}`);
   }
   if (!inputAmPm) {
-    throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
+    throw new Error(`Input or textarea was not found inside ${`[data-test="ampm"] block`}`);
   }
 
   fireEvent.change(inputDate, { target: { value: date } });
@@ -140,8 +223,11 @@ export async function checkRadioOption(canvasElement: HTMLElement, linkId: strin
   const questionElement = await findByLinkId(canvasElement, linkId);
   const radio = questionElement?.querySelector(`span[data-test="radio-single-${text}"] input`);
 
+  // Error section
   if (!radio) {
-    throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
+    throw new Error(
+      `Input or textarea was not found inside ${`[data-test="radio-single-${text}"] block`}`
+    );
   }
 
   fireEvent.click(radio);
@@ -154,6 +240,7 @@ export async function getInputText(canvasElement: HTMLElement, linkId: string) {
   const input =
     questionElement?.querySelector('input') ?? questionElement?.querySelector('textarea');
 
+  // Error section
   if (!input) {
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
   }
@@ -169,6 +256,8 @@ export async function chooseSelectOption(
   const questionElement = await findByLinkId(canvasElement, linkId);
 
   const input = questionElement.querySelector('input, textarea');
+
+  // Error section
   if (!input) {
     throw new Error(`There is no input inside ${linkId}`);
   }
@@ -187,28 +276,31 @@ export async function chooseQuantityOption(
 ) {
   const questionElement = await findByLinkId(canvasElement, linkId);
 
-  const inputComaparator = questionElement.querySelector(
-    'div[data-test=""q-item-quantity-comparator""] input'
+  const inputComparator = questionElement.querySelector(
+    'div[data-test="q-item-quantity-comparator"] input'
   );
-  const inputWeight = questionElement.querySelector('div[data-test="q-item-quantity-field"] input');
+  const inputQuantity = questionElement.querySelector(
+    'div[data-test="q-item-quantity-field"] input'
+  );
 
-  if (!inputComaparator) {
-    throw new Error(`There is no input inside ${linkId}`);
+  // Error section
+  if (!inputComparator) {
+    throw new Error(`There is no input inside [data-test="q-item-quantity-comparator"]`);
   }
-  if (!inputWeight) {
-    throw new Error(`There is no input inside ${linkId}`);
+  if (!inputQuantity) {
+    throw new Error(`There is no input inside [data-test="q-item-quantity-field"]`);
   }
 
-  fireEvent.focus(inputComaparator);
-  fireEvent.keyDown(inputComaparator, { key: 'ArrowDown', code: 'ArrowDown' });
+  fireEvent.focus(inputComparator);
+  fireEvent.keyDown(inputComparator, { key: 'ArrowDown', code: 'ArrowDown' });
 
   if (quantityComparator) {
     const option = await screen.findByText(quantityComparator);
     fireEvent.click(option);
-    fireEvent.change(inputComaparator, { target: { value: quantityComparator } });
+    fireEvent.change(inputComparator, { target: { value: quantityComparator } });
   }
 
-  fireEvent.change(inputWeight, { target: { value: quantity } });
+  fireEvent.change(inputQuantity, { target: { value: quantity } });
 
   // Here we await for debounced store update
   await new Promise((resolve) => setTimeout(resolve, 500));
@@ -235,8 +327,11 @@ export async function inputOpenChoiceOtherText(
     'div[data-test="q-item-radio-open-label-box"] textarea'
   );
 
+  // Error section
   if (!textarea) {
-    throw new Error(`Input or textarea was not found inside ${`[data-test=${linkId}] block`}`);
+    throw new Error(
+      'Input or textarea was not found inside [data-test="q-item-radio-open-label-box"] block'
+    );
   }
 
   fireEvent.change(textarea, { target: { value: text } });

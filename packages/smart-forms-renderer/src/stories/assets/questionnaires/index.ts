@@ -17,18 +17,15 @@
 
 export * from './QBoolean';
 export * from './QDecimal';
-export * from './QInteger';
 export * from './QDate';
 export * from './QDateTime';
 export * from './QTime';
-export * from './QString';
-export * from './QText';
+
 export * from './QUrl';
 export * from './QChoice';
 export * from './QOpenChoice';
 export * from './QAttachment';
 export * from './QReference';
-export * from './QQuantity';
 export * from './QAdvancedAdditionalDisplayContent';
 export * from './QAdvancedControlAppearance';
 export * from './QAdvancedOther';
