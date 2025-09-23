@@ -7,6 +7,36 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## sdc-template-extract [1.0.9] - 2025-09-23
+#### Fixed
+- Fixed an issue where unmodified items appearing in extract when "add" operation is used.
+- Fixed an issue where extracted bundle has additional erroneous value.
+- Both issues are from https://github.com/aehrc/smart-forms/issues/1594.
+
+## [1.0.0-alpha.103] - 2025-09-22
+#### Fixed
+- Fixed an issue where the Time item is failing pre-population.
+
+## [1.0.0-alpha.102] - 2025-09-22
+#### Fixed
+- Resolved an dependency import issue with @aehrc/testing-toolkit where it was not published on NPM. It it used for Storybook-based testing, and now it is now included in the renderer package instead of a separate package.
+
+## [1.0.0-alpha.101] - 2025-09-16
+#### Added
+- Added support for SDC extension http://hl7.org/fhir/uv/sdc/StructureDefinition-sdc-questionnaire-width.html (both % and px) in gtable and grid groups itemControls.
+
+## [1.0.0-alpha.100] - 2025-09-15
+#### Fixed
+- Fixed an issue where "Clear" buttons in open-choice components do not clear openLevel input fields.
+
+## [1.0.0-alpha.99] - 2025-09-15
+#### Fixed
+- Fixed an issue where the date input in DateTime items are failing pre-population.
+
+## [1.0.0-alpha.98] - 2025-09-15
+#### Added
+- Added input sanitisation in renderer input fields. See https://github.com/aehrc/smart-forms/issues/1533 for more details.
+
 ## [1.0.0-alpha.97] - 2025-09-04
 #### Changed
 - Changed item-level repopulate button custom extension to the below. See https://chat.fhir.org/#narrow/channel/179255-questionnaire/topic/Granular.20Repopulate.20button/with/533937578 for more details.

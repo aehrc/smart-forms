@@ -17,13 +17,16 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook'; // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
-import { getAnswers, itemControlExtFactory, qrFactory, questionnaireFactory } from '../testUtils';
 import {
-  getInputText,
   checkCheckBox,
   checkRadioOption,
-  findByLinkId
-} from '@aehrc/testing-toolkit';
+  findByLinkId,
+  getAnswers,
+  getInputText,
+  itemControlExtFactory,
+  qrFactory,
+  questionnaireFactory
+} from '../testUtils';
 import { expect, fireEvent } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -39,11 +42,11 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 const targetText = 'Have you eaten yet?';
-const targetlinkId = 'eaten';
+const targetLinkId = 'eaten';
 
-const basicQuestionnare = questionnaireFactory([
+const basicQuestionnaire = questionnaireFactory([
   {
-    linkId: targetlinkId,
+    linkId: targetLinkId,
     type: 'boolean',
     repeats: false,
     text: targetText
@@ -52,7 +55,7 @@ const basicQuestionnare = questionnaireFactory([
 
 const basicQr = qrFactory([
   {
-    linkId: targetlinkId,
+    linkId: targetLinkId,
     text: targetText,
     answer: [
       {
@@ -64,12 +67,12 @@ const basicQr = qrFactory([
 
 export const BooleanBasic: Story = {
   args: {
-    questionnaire: basicQuestionnare
+    questionnaire: basicQuestionnaire
   },
   play: async ({ canvasElement }) => {
-    await checkRadioOption(canvasElement, targetlinkId, 'Yes');
+    await checkRadioOption(canvasElement, targetLinkId, 'Yes');
 
-    const result = await getAnswers(targetlinkId);
+    const result = await getAnswers(targetLinkId);
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueBoolean: true }));
 
@@ -79,10 +82,10 @@ export const BooleanBasic: Story = {
 
     // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
-    const resultAfterClear = await getAnswers(targetlinkId);
+    const resultAfterClear = await getAnswers(targetLinkId);
     expect(resultAfterClear).toHaveLength(0);
 
-    const elementAfterClear = await findByLinkId(canvasElement, targetlinkId);
+    const elementAfterClear = await findByLinkId(canvasElement, targetLinkId);
     const input = elementAfterClear.querySelector('input');
     expect(input).not.toBeChecked();
   }
@@ -90,11 +93,11 @@ export const BooleanBasic: Story = {
 
 export const BooleanBasicResponse: Story = {
   args: {
-    questionnaire: basicQuestionnare,
+    questionnaire: basicQuestionnaire,
     questionnaireResponse: basicQr
   },
   play: async ({ canvasElement }) => {
-    const inputText = await getInputText(canvasElement, targetlinkId);
+    const inputText = await getInputText(canvasElement, targetLinkId);
 
     expect(inputText).toBe('true');
   }
@@ -126,9 +129,9 @@ export const BooleanCheckboxBasic: Story = {
     questionnaire: qBooleanCheckbox
   },
   play: async ({ canvasElement }) => {
-    await checkCheckBox(canvasElement, targetlinkId);
+    await checkCheckBox(canvasElement, targetLinkId);
 
-    const result = await getAnswers(targetlinkId);
+    const result = await getAnswers(targetLinkId);
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueBoolean: true }));
 
@@ -138,10 +141,10 @@ export const BooleanCheckboxBasic: Story = {
 
     // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
-    const resultAfterClear = await getAnswers(targetlinkId);
+    const resultAfterClear = await getAnswers(targetLinkId);
     expect(resultAfterClear).toHaveLength(0);
 
-    const elementAfterClear = await findByLinkId(canvasElement, targetlinkId);
+    const elementAfterClear = await findByLinkId(canvasElement, targetLinkId);
     const input = elementAfterClear.querySelector('input');
     expect(input).not.toBeChecked();
   }
@@ -153,7 +156,7 @@ export const BooleanCheckboxResponse: Story = {
     questionnaireResponse: qrBooleanCheckboxResponse
   },
   play: async ({ canvasElement }) => {
-    const element = await findByLinkId(canvasElement, targetlinkId);
+    const element = await findByLinkId(canvasElement, targetLinkId);
     const input = element.querySelector('input');
 
     expect(input).toBeChecked();

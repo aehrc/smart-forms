@@ -15,27 +15,27 @@
  * limitations under the License.
  */
 
-import type { Bundle, Questionnaire, QuestionnaireResponse, FhirResource } from 'fhir/r4';
+import type { Bundle, FhirResource, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import type Client from 'fhirclient/lib/Client';
 import * as FHIR from 'fhirclient';
 import randomColor from 'randomcolor';
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
-import { getQuestionnaireNameFromResponse } from '../../../utils/questionnaireName.ts';
+import { getQuestionnaireNameFromResponse } from '../../../utils/questionnaireName';
 import {
-  getFormsServerBundlePromise,
-  getFormsServerAssembledBundlePromise,
-  getClientBundlePromise,
-  getFormsServerBundleOrQuestionnairePromise,
+  constructBundle,
   createQuestionnaireListItem,
   createQuestionnaireTitle,
+  createResponseListItem,
+  createResponseSearchOption,
   filterQuestionnaires,
   filterResponses,
-  createResponseListItem,
-  getResponsesFromBundle,
+  getClientBundlePromise,
+  getFormsServerAssembledBundlePromise,
+  getFormsServerBundleOrQuestionnairePromise,
+  getFormsServerBundlePromise,
   getReferencedQuestionnaire,
-  constructBundle,
-  createResponseSearchOption
+  getResponsesFromBundle
 } from '../utils/dashboard';
 
 // Mock external dependencies
@@ -48,9 +48,6 @@ jest.mock('../../../utils/questionnaireName.ts', () => ({
 }));
 jest.mock('../../../api/headers.ts', () => ({
   HEADERS: undefined
-}));
-jest.mock('../../../globals.ts', () => ({
-  FORMS_SERVER_URL: undefined
 }));
 
 const mockFHIR = FHIR as jest.Mocked<typeof FHIR>;
@@ -150,9 +147,9 @@ describe('Dashboard Utils', () => {
       const mockRequest = jest.fn().mockResolvedValue(mockBundle);
       mockFHIR.client.mockReturnValue({ request: mockRequest } as any);
 
-      await getFormsServerBundlePromise(queryUrl);
+      await getFormsServerBundlePromise(queryUrl, 'https://example.com/forms/fhir');
 
-      expect(mockFHIR.client).toHaveBeenCalledWith(undefined); // FORMS_SERVER_URL is mocked
+      expect(mockFHIR.client).toHaveBeenCalledWith('https://example.com/forms/fhir');
       expect(mockRequest).toHaveBeenCalledWith({
         url: 'Questionnaire?status=active&version=1.0.0',
         headers: undefined // HEADERS is mocked
@@ -164,7 +161,7 @@ describe('Dashboard Utils', () => {
       const mockRequest = jest.fn().mockResolvedValue(mockBundle);
       mockFHIR.client.mockReturnValue({ request: mockRequest } as any);
 
-      await getFormsServerBundlePromise(queryUrl);
+      await getFormsServerBundlePromise(queryUrl, 'https://example.com/forms/fhir');
 
       expect(mockRequest).toHaveBeenCalledWith({
         url: 'Questionnaire?_id=test&version=2.0.0',
@@ -177,7 +174,7 @@ describe('Dashboard Utils', () => {
       const mockRequest = jest.fn().mockResolvedValue(mockBundle);
       mockFHIR.client.mockReturnValue({ request: mockRequest } as any);
 
-      await getFormsServerBundlePromise(queryUrl);
+      await getFormsServerBundlePromise(queryUrl, 'https://example.com/forms/fhir');
 
       expect(mockRequest).toHaveBeenCalledWith({
         url: 'Questionnaire?status=active',
@@ -192,7 +189,7 @@ describe('Dashboard Utils', () => {
       const mockRequest = jest.fn().mockResolvedValue(mockBundle);
       mockFHIR.client.mockReturnValue({ request: mockRequest } as any);
 
-      await getFormsServerAssembledBundlePromise(queryUrl);
+      await getFormsServerAssembledBundlePromise(queryUrl, 'https://example.com/forms/fhir');
 
       expect(mockRequest).toHaveBeenCalledWith({
         url: 'Questionnaire?_id=assembled&version=3.0.0',
@@ -222,7 +219,7 @@ describe('Dashboard Utils', () => {
       const mockRequest = jest.fn().mockResolvedValue(mockBundle);
       mockFHIR.client.mockReturnValue({ request: mockRequest } as any);
 
-      await getFormsServerBundleOrQuestionnairePromise(queryUrl);
+      await getFormsServerBundleOrQuestionnairePromise(queryUrl, 'https://example.com/forms/fhir');
 
       expect(mockRequest).toHaveBeenCalledWith({
         url: 'Questionnaire?_id=test&version=1.0.0',
@@ -235,7 +232,7 @@ describe('Dashboard Utils', () => {
       const mockRequest = jest.fn().mockResolvedValue(mockBundle);
       mockFHIR.client.mockReturnValue({ request: mockRequest } as any);
 
-      await getFormsServerBundleOrQuestionnairePromise(queryUrl);
+      await getFormsServerBundleOrQuestionnairePromise(queryUrl, 'https://example.com/forms/fhir');
 
       expect(mockRequest).toHaveBeenCalledWith({
         url: 'Questionnaire?_id=test',
@@ -248,7 +245,7 @@ describe('Dashboard Utils', () => {
       const mockRequest = jest.fn().mockResolvedValue(mockBundle);
       mockFHIR.client.mockReturnValue({ request: mockRequest } as any);
 
-      await getFormsServerBundleOrQuestionnairePromise(queryUrl);
+      await getFormsServerBundleOrQuestionnairePromise(queryUrl, 'https://example.com/forms/fhir');
 
       expect(mockRequest).toHaveBeenCalledWith({
         url: 'Questionnaire?_id=test',
