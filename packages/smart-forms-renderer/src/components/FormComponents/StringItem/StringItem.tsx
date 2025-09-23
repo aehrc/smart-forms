@@ -173,6 +173,7 @@ function StringItem(props: StringItemProps) {
     <FullWidthFormComponentBox
       data-test="q-item-string-box"
       data-linkid={qItem.linkId}
+      data-label={qItem.text}
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid
         qItem={qItem}

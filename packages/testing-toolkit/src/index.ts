@@ -213,16 +213,28 @@ export async function chooseQuantityOption(
   await new Promise((resolve) => setTimeout(resolve, 500));
 }
 
-export async function findByLinkId(canvasElement: HTMLElement, linkId: string) {
-  const selector = `[data-linkid="${linkId}"]`;
+export async function findByLinkId(
+  canvasElement: HTMLElement,
+  linkId: string
+): Promise<HTMLElement> {
+  const selectorByLinkId = `[data-linkid="${linkId}"]`;
+  const selectorByLabel = `[data-label="${linkId}"]`;
+
   return await waitFor(() => {
-    const el = canvasElement.querySelector(selector);
+    const el =
+      canvasElement.querySelector<HTMLElement>(selectorByLinkId) ??
+      canvasElement.querySelector<HTMLElement>(selectorByLabel);
+
     if (!el) {
-      throw new Error(`Element ${selector} not found`);
+      throw new Error(
+        `Element with selectors "${selectorByLinkId}" or "${selectorByLabel}" not found`
+      );
     }
+
     return el;
   });
 }
+
 export async function inputOpenChoiceOtherText(
   canvasElement: HTMLElement,
   linkId: string,

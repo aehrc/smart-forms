@@ -162,6 +162,7 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
     <FullWidthFormComponentBox
       data-test="q-item-open-choice-select-answer-value-set-box"
       data-linkid={qItem.linkId}
+      data-label={qItem.text}
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid
         qItem={qItem}

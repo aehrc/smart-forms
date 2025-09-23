@@ -105,6 +105,7 @@ function RepeatItem(props: RepeatItemProps) {
     <FullWidthFormComponentBox
       data-test="q-item-repeat-box"
       data-linkid={qItem.linkId}
+      data-label={qItem.text}
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid
         qItem={qItem}

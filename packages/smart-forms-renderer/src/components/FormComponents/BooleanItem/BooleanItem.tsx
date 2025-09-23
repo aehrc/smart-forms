@@ -131,6 +131,7 @@ function BooleanItem(props: BaseItemProps) {
     <FullWidthFormComponentBox
       data-test="q-item-boolean-box"
       data-linkid={qItem.linkId}
+      data-label={qItem.text}
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid
         qItem={qItem}

@@ -63,6 +63,7 @@ const DisplayItem = memo(function DisplayItem(props: DisplayItemProps) {
     <FullWidthFormComponentBox
       data-test="q-item-display-box"
       data-linkid={qItem.linkId}
+      data-label={qItem.text}
       width="100%"
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemLabel

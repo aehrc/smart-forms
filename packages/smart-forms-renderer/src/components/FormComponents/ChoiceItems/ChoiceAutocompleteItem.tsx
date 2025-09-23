@@ -141,6 +141,7 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
     <FullWidthFormComponentBox
       data-test="q-item-choice-autocomplete-box"
       data-linkid={qItem.linkId}
+      data-label={qItem.text}
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid
         qItem={qItem}

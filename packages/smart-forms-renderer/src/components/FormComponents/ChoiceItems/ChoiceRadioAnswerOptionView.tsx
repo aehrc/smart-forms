@@ -74,6 +74,7 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
     <FullWidthFormComponentBox
       data-test="q-item-choice-radio-answer-option-box"
       data-linkid={qItem.linkId}
+      data-label={qItem.text}
       onClick={onFocusLinkId}>
       <ItemFieldGrid
         qItem={qItem}
