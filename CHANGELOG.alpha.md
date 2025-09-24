@@ -7,6 +7,10 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.107] - 2025-09-24
+#### Fixed
+- Bumped version because previous version 1.0.0-alpha.106 wasn't published with the fix.
+
 ## [1.0.0-alpha.106] - 2025-09-24
 #### Fixed
 - Fixed an issue where the asterisk colour is hardcoded as "red" instead of referencing the main error colour of the theme palette.
