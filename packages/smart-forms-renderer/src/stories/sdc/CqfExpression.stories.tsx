@@ -17,7 +17,11 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import PrePopWrapperForStorybook from '../storybookWrappers/PrePopWrapperForStorybook';
-import { qCqfExpressionBasic, qCqfExpressionAdvanced, qCqfExpressionSimple } from '../assets/questionnaires';
+import {
+  qCqfExpressionBasic,
+  qCqfExpressionAdvanced,
+  qCqfExpressionSimple
+} from '../assets/questionnaires';
 import { mockFhirClient } from '../assets/fhirClient/mockFhirClient';
 import { patSmartForm } from '../assets/patients/PatSmartForm';
 import { pracPrimaryPeter } from '../assets/practitioners/PracPrimaryPeter';
@@ -37,7 +41,7 @@ export const SimpleCqfExpression: Story = {
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
-  },
+  }
 };
 
 export const BasicCqfExpression: Story = {
@@ -46,7 +50,7 @@ export const BasicCqfExpression: Story = {
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
-  },
+  }
 };
 
 export const AdvancedCqfExpression: Story = {
@@ -55,5 +59,5 @@ export const AdvancedCqfExpression: Story = {
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
-  },
+  }
 };

@@ -104,5 +104,3 @@ export const qQuestionnaireItemTextHidden: Questionnaire = {
     }
   ]
 };
-
-

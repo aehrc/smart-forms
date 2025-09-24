@@ -37,5 +37,5 @@ export const RepopulatableExtensionDemo: Story = {
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
-  },
+  }
 };

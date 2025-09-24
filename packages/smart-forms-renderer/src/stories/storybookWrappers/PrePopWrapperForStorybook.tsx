@@ -27,7 +27,7 @@ import PrePopButtonForStorybook from './PrePopButtonForStorybook';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { buildForm } from '../../utils';
 import { STORYBOOK_TERMINOLOGY_SERVER_URL } from './globals';
-import { useQuestionnaireStore, useSmartConfigStore } from '../../stores';
+import { useQuestionnaireStore } from '../../stores';
 import { fetchResourceCallback } from '../../api/callback';
 
 interface PrePopWrapperForStorybookProps {
@@ -52,7 +52,6 @@ function PrePopWrapperForStorybook(props: PrePopWrapperForStorybookProps) {
 
   const [isPopulating, setIsPopulating] = useState(false);
   const setPopulatedContext = useQuestionnaireStore.use.setPopulatedContext();
-  
 
   const isBuilding = useBuildForm(
     questionnaire,

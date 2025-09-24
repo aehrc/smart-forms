@@ -31,5 +31,5 @@ type Story = StoryObj<typeof meta>;
 export const QuestionnaireItemTextHiddenDemo: Story = {
   args: {
     questionnaire: qQuestionnaireItemTextHidden
-  },
+  }
 };

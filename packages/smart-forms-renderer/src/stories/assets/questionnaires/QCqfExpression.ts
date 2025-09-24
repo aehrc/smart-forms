@@ -37,7 +37,8 @@ export const qCqfExpressionBasic: Questionnaire = {
             url: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
             valueExpression: {
               language: 'text/fhirpath',
-              expression: "'Hello, ' + %patient.name.first().given.first() + '! Welcome to your health assessment.'"
+              expression:
+                "'Hello, ' + %patient.name.first().given.first() + '! Welcome to your health assessment.'"
             }
           }
         ]
@@ -53,7 +54,8 @@ export const qCqfExpressionBasic: Questionnaire = {
             url: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
             valueExpression: {
               language: 'text/fhirpath',
-              expression: "'Your age: ' + (2025 - %patient.birthDate.toString().substring(0,4).toInteger()).toString() + ' years old'"
+              expression:
+                "'Your age: ' + (2025 - %patient.birthDate.toString().substring(0,4).toInteger()).toString() + ' years old'"
             }
           }
         ]
@@ -74,7 +76,8 @@ export const qCqfExpressionBasic: Questionnaire = {
             url: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
             valueExpression: {
               language: 'text/fhirpath',
-              expression: "iif(%resource.item.where(linkId='bmi-input').answer.exists(), iif(%resource.item.where(linkId='bmi-input').answer.first().valueDecimal < 18.5, 'Underweight - BMI: ' + %resource.item.where(linkId='bmi-input').answer.first().valueDecimal.toString(), iif(%resource.item.where(linkId='bmi-input').answer.first().valueDecimal < 25, 'Normal weight - BMI: ' + %resource.item.where(linkId='bmi-input').answer.first().valueDecimal.toString(), iif(%resource.item.where(linkId='bmi-input').answer.first().valueDecimal < 30, 'Overweight - BMI: ' + %resource.item.where(linkId='bmi-input').answer.first().valueDecimal.toString(), 'Obese - BMI: ' + %resource.item.where(linkId='bmi-input').answer.first().valueDecimal.toString()))), 'Please enter a BMI value above')"
+              expression:
+                "iif(%resource.item.where(linkId='bmi-input').answer.exists(), iif(%resource.item.where(linkId='bmi-input').answer.first().valueDecimal < 18.5, 'Underweight - BMI: ' + %resource.item.where(linkId='bmi-input').answer.first().valueDecimal.toString(), iif(%resource.item.where(linkId='bmi-input').answer.first().valueDecimal < 25, 'Normal weight - BMI: ' + %resource.item.where(linkId='bmi-input').answer.first().valueDecimal.toString(), iif(%resource.item.where(linkId='bmi-input').answer.first().valueDecimal < 30, 'Overweight - BMI: ' + %resource.item.where(linkId='bmi-input').answer.first().valueDecimal.toString(), 'Obese - BMI: ' + %resource.item.where(linkId='bmi-input').answer.first().valueDecimal.toString()))), 'Please enter a BMI value above')"
             }
           }
         ]
@@ -90,7 +93,8 @@ export const qCqfExpressionBasic: Questionnaire = {
             url: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
             valueExpression: {
               language: 'text/fhirpath',
-              expression: "iif(%patient.gender = 'female', 'Please consider mammography screening.', iif(%patient.gender = 'male', 'Please consider prostate screening.', 'Please consult with your healthcare provider about appropriate screenings.'))"
+              expression:
+                "iif(%patient.gender = 'female', 'Please consider mammography screening.', iif(%patient.gender = 'male', 'Please consider prostate screening.', 'Please consult with your healthcare provider about appropriate screenings.'))"
             }
           }
         ]
@@ -157,7 +161,8 @@ export const qCqfExpressionAdvanced: Questionnaire = {
             url: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
             valueExpression: {
               language: 'text/fhirpath',
-              expression: "'Patient Summary: ' + %patient.name.first().given.first() + ' ' + %patient.name.first().family + ', Age: ' + (2025 - %patient.birthDate.toString().substring(0,4).toInteger()).toString() + ', Gender: ' + %patient.gender"
+              expression:
+                "'Patient Summary: ' + %patient.name.first().given.first() + ' ' + %patient.name.first().family + ', Age: ' + (2025 - %patient.birthDate.toString().substring(0,4).toInteger()).toString() + ', Gender: ' + %patient.gender"
             }
           }
         ]
@@ -173,7 +178,8 @@ export const qCqfExpressionAdvanced: Questionnaire = {
             url: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
             valueExpression: {
               language: 'text/fhirpath',
-              expression: "iif(%resource.item.where(linkId='patient-info').item.where(linkId='patient-name').answer.exists() and %resource.item.where(linkId='patient-info').item.where(linkId='patient-age').answer.exists() and %resource.item.where(linkId='patient-info').item.where(linkId='patient-gender').answer.exists(), 'Form Data: Name: ' + %resource.item.where(linkId='patient-info').item.where(linkId='patient-name').answer.first().valueString + ', Age: ' + %resource.item.where(linkId='patient-info').item.where(linkId='patient-age').answer.first().valueInteger.toString() + ', Gender: ' + %resource.item.where(linkId='patient-info').item.where(linkId='patient-gender').answer.first().valueCoding.display, 'Please complete the form fields above to see the summary')"
+              expression:
+                "iif(%resource.item.where(linkId='patient-info').item.where(linkId='patient-name').answer.exists() and %resource.item.where(linkId='patient-info').item.where(linkId='patient-age').answer.exists() and %resource.item.where(linkId='patient-info').item.where(linkId='patient-gender').answer.exists(), 'Form Data: Name: ' + %resource.item.where(linkId='patient-info').item.where(linkId='patient-name').answer.first().valueString + ', Age: ' + %resource.item.where(linkId='patient-info').item.where(linkId='patient-age').answer.first().valueInteger.toString() + ', Gender: ' + %resource.item.where(linkId='patient-info').item.where(linkId='patient-gender').answer.first().valueCoding.display, 'Please complete the form fields above to see the summary')"
             }
           }
         ]

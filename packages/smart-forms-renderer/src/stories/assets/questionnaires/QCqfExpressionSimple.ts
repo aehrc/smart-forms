@@ -74,7 +74,8 @@ export const qCqfExpressionSimple: Questionnaire = {
             url: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
             valueExpression: {
               language: 'text/fhirpath',
-              expression: "'Patient: ' + %patient.name.first().given.first() + ' ' + %patient.name.first().family"
+              expression:
+                "'Patient: ' + %patient.name.first().given.first() + ' ' + %patient.name.first().family"
             }
           }
         ]
@@ -95,7 +96,8 @@ export const qCqfExpressionSimple: Questionnaire = {
             url: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
             valueExpression: {
               language: 'text/fhirpath',
-              expression: "iif(%resource.item.where(linkId='input-test').answer.exists(), 'You entered: ' + %resource.item.where(linkId='input-test').answer.first().valueString, 'Please enter some text above')"
+              expression:
+                "iif(%resource.item.where(linkId='input-test').answer.exists(), 'You entered: ' + %resource.item.where(linkId='input-test').answer.first().valueString, 'Please enter some text above')"
             }
           }
         ]
@@ -103,5 +105,3 @@ export const qCqfExpressionSimple: Questionnaire = {
     }
   ]
 };
-
-
