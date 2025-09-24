@@ -232,7 +232,7 @@ Smart Forms includes several custom extensions that provide additional functiona
 
 Hides the text label of questionnaire items from the UI when `valueBoolean: true` is set in the `_text.extension` property. This is useful for internal fields that don't need user-facing labels, creating a cleaner interface.
 
-See the [FHIR specification](https://build.fhir.org/ig/aehrc/smart-forms-ig/branches/master/profiles-and-extensions.html#extensions) for more details.
+See the [FHIR specification](https://build.fhir.org/ig/aehrc/smart-forms-ig/branches/master/StructureDefinition-QuestionnaireItemTextHidden.html) for more details.
 
 ### Group Hide Add Item Button
 
@@ -240,7 +240,7 @@ See the [FHIR specification](https://build.fhir.org/ig/aehrc/smart-forms-ig/bran
 
 Hides the "Add Item" button for repeating groups and group tables when `valueBoolean: true` is set in the `extension` property. This creates static tables that users cannot modify, preventing accidental addition of rows to structured data.
 
-See the [FHIR specification](https://build.fhir.org/ig/aehrc/smart-forms-ig/branches/master/profiles-and-extensions.html#extensions) for more details.
+See the [FHIR specification](https://build.fhir.org/ig/aehrc/smart-forms-ig/branches/master/StructureDefinition-GroupHideAddItemButton.html) for more details.
 
 ### Questionnaire Initial Expression Repopulatable
 
@@ -248,4 +248,4 @@ See the [FHIR specification](https://build.fhir.org/ig/aehrc/smart-forms-ig/bran
 
 Allows individual fields to be manually repopulated with fresh data from the FHIR server when `valueCode: 'manual'` is set. The field must also have an `initialExpression` extension, and clicking the sync button will re-evaluate the expression and update the field value. This provides granular control over data synchronization without affecting the entire form.
 
-See the [FHIR specification](https://build.fhir.org/ig/aehrc/smart-forms-ig/branches/master/profiles-and-extensions.html#extensions) for more details.
+See the [FHIR specification](https://build.fhir.org/ig/aehrc/smart-forms-ig/branches/master/StructureDefinition-questionnaire-initialExpression-repopulatable.html) for more details.
