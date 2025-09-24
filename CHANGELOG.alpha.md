@@ -7,6 +7,10 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.105] - 2025-09-24
+#### Fixed
+- Reduce false positives for "alert(" and similar variants when sanitising input fields (from 1.0.0-alpha.98).
+
 ## [1.0.0-alpha.104] - 2025-09-24
 #### Added
 - Added support for injecting `aria-label` at item labels, display items, and tab buttons via a custom extension 'https://smartforms.csiro.au/ig/StructureDefinition/QuestionnaireItemTextAriaLabelExpression'. See https://github.com/aehrc/smart-forms/issues/1578 for more details.
