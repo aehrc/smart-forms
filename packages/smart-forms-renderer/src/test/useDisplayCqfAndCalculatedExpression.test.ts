@@ -41,12 +41,6 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
     type: 'string'
   };
 
-  const anotherQItem: QuestionnaireItem = {
-    linkId: 'another-item',
-    text: 'Another Item',
-    type: 'string'
-  };
-
   beforeEach(() => {
     jest.clearAllMocks();
 
@@ -54,11 +48,13 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
     mockCalculatedExpressions.mockReturnValue({});
   });
 
-  describe('basic functionality', () => {
+  describe('basic functionality (item._text)', () => {
     it('should return null when no calculated expressions exist', () => {
       mockCalculatedExpressions.mockReturnValue({});
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
+      );
 
       expect(result.current).toBeNull();
     });
@@ -68,13 +64,45 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         'other-item': [{ from: 'item._text', value: 'Other text' }]
       });
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
+      );
 
       expect(result.current).toBeNull();
     });
 
     it('should access calculated expressions from store', () => {
-      renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text'));
+
+      expect(mockCalculatedExpressions).toHaveBeenCalled();
+    });
+  });
+
+  describe('basic functionality (item._text.aria-label)', () => {
+    it('should return null when no calculated expressions exist', () => {
+      mockCalculatedExpressions.mockReturnValue({});
+
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text.aria-label')
+      );
+
+      expect(result.current).toBeNull();
+    });
+
+    it('should return null when calculated expressions exist but not for the given item', () => {
+      mockCalculatedExpressions.mockReturnValue({
+        'other-item': [{ from: 'item._text.aria-label', value: 'Other label' }]
+      });
+
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text.aria-label')
+      );
+
+      expect(result.current).toBeNull();
+    });
+
+    it('should access calculated expressions from store', () => {
+      renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text.aria-label'));
 
       expect(mockCalculatedExpressions).toHaveBeenCalled();
     });
@@ -90,7 +118,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         ]
       });
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
+      );
 
       expect(result.current).toBe('Correct expression');
     });
@@ -103,7 +133,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         ]
       });
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
+      );
 
       expect(result.current).toBeNull();
     });
@@ -117,7 +149,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         ]
       });
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
+      );
 
       expect(result.current).toBe('First matching');
     });
@@ -129,7 +163,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         'basic-item': [{ from: 'item._text', value: 'Simple string value' }]
       });
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
+      );
 
       expect(result.current).toBe('Simple string value');
     });
@@ -139,7 +175,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         'basic-item': [{ from: 'item._text', value: '' }]
       });
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
+      );
 
       expect(result.current).toBe('');
     });
@@ -149,7 +187,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         'basic-item': [{ from: 'item._text', value: 'Text with special chars: @#$%^&*()' }]
       });
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
+      );
 
       expect(result.current).toBe('Text with special chars: @#$%^&*()');
     });
@@ -160,7 +200,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         'basic-item': [{ from: 'item._text', value: multiLineText }]
       });
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
+      );
 
       expect(result.current).toBe(multiLineText);
     });
@@ -172,7 +214,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         'basic-item': [{ from: 'item._text', value: 42 }]
       });
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
+      );
 
       expect(result.current).toBe('42');
     });
@@ -182,7 +226,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         'basic-item': [{ from: 'item._text', value: 3.14159 }]
       });
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
+      );
 
       expect(result.current).toBe('3.14159');
     });
@@ -192,7 +238,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         'basic-item': [{ from: 'item._text', value: 0 }]
       });
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
+      );
 
       expect(result.current).toBe('0');
     });
@@ -202,7 +250,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         'basic-item': [{ from: 'item._text', value: -123 }]
       });
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
+      );
 
       expect(result.current).toBe('-123');
     });
@@ -212,7 +262,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         'basic-item': [{ from: 'item._text', value: 999999999999999 }]
       });
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
+      );
 
       expect(result.current).toBe('999999999999999');
     });
@@ -224,7 +276,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         'basic-item': [{ from: 'item._text', value: null }]
       });
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
+      );
 
       expect(result.current).toBe('');
     });
@@ -236,7 +290,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         'basic-item': [{ from: 'item._text', value: { complex: 'object' } }]
       });
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
+      );
 
       expect(result.current).toBeNull();
     });
@@ -246,7 +302,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         'basic-item': [{ from: 'item._text', value: ['array', 'value'] }]
       });
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
+      );
 
       expect(result.current).toBeNull();
     });
@@ -256,7 +314,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         'basic-item': [{ from: 'item._text', value: true }]
       });
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
+      );
 
       expect(result.current).toBeNull();
     });
@@ -266,7 +326,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         'basic-item': [{ from: 'item._text', value: undefined }]
       });
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
+      );
 
       expect(result.current).toBeNull();
     });
@@ -278,7 +340,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         'basic-item': null
       });
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
+      );
 
       expect(result.current).toBeNull();
     });
@@ -288,7 +352,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         'basic-item': []
       });
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
+      );
 
       expect(result.current).toBeNull();
     });
@@ -298,7 +364,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         'basic-item': [{ value: 'Missing from field' }]
       });
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
+      );
 
       expect(result.current).toBeNull();
     });
@@ -308,7 +376,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         'basic-item': [{ from: 'item._text' }]
       });
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
+      );
 
       expect(result.current).toBeNull();
     });
@@ -318,7 +388,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         'basic-item': [null, { from: 'item._text', value: 'Valid expression' }]
       });
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
+      );
 
       expect(result.current).toBe('Valid expression');
     });
@@ -336,7 +408,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         'complex.nested.linkId': [{ from: 'item._text', value: 'Complex linkId value' }]
       });
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(complexLinkIdItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(complexLinkIdItem, 'item._text')
+      );
 
       expect(result.current).toBe('Complex linkId value');
     });
@@ -352,7 +426,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         'item-with@special#chars': [{ from: 'item._text', value: 'Special chars work' }]
       });
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(specialLinkIdItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(specialLinkIdItem, 'item._text')
+      );
 
       expect(result.current).toBe('Special chars work');
     });
@@ -368,7 +444,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         '12345': [{ from: 'item._text', value: 'Numeric linkId value' }]
       });
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(numericLinkIdItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(numericLinkIdItem, 'item._text')
+      );
 
       expect(result.current).toBe('Numeric linkId value');
     });
@@ -382,7 +460,7 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
       });
 
       const { result, rerender } = renderHook(() =>
-        useDisplayCqfAndCalculatedExpression(basicQItem)
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
       );
 
       expect(result.current).toBe('Initial value');
@@ -400,7 +478,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
     it('should handle store returning null/undefined', () => {
       mockCalculatedExpressions.mockReturnValue(null);
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
+      );
 
       expect(result.current).toBeNull();
     });
@@ -421,7 +501,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         type: 'decimal'
       };
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(bmiItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(bmiItem, 'item._text')
+      );
 
       expect(result.current).toBe('Your BMI is calculated as: 24.5');
     });
@@ -439,7 +521,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         type: 'string'
       };
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(riskItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(riskItem, 'item._text')
+      );
 
       expect(result.current).toBe('Based on your responses, your risk level is: HIGH');
     });
@@ -457,7 +541,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         type: 'string'
       };
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(conditionalItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(conditionalItem, 'item._text')
+      );
 
       expect(result.current).toBe(''); // null becomes empty string
     });
@@ -473,7 +559,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         type: 'integer'
       };
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(scoreItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(scoreItem, 'item._text')
+      );
 
       expect(result.current).toBe('85');
     });
@@ -497,7 +585,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
           'basic-item': [{ from: 'item._text', value }]
         });
 
-        const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+        const { result } = renderHook(() =>
+          useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
+        );
 
         expect(result.current).toBe(expected);
       });
@@ -515,7 +605,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
 
       mockCalculatedExpressions.mockReturnValue(largeExpressionsObject);
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
+      );
 
       expect(result.current).toBeNull(); // basic-item not in large object
     });
@@ -530,7 +622,9 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
         'basic-item': manyExpressions
       });
 
-      const { result } = renderHook(() => useDisplayCqfAndCalculatedExpression(basicQItem));
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._text')
+      );
 
       expect(result.current).toBe('Expression 50'); // First matching expression
     });
