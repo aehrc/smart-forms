@@ -1,5 +1,10 @@
 import type { FhirResource } from 'fhir/r4';
-import { isFhirPatchPathPart, isFhirPatchTypePart, parametersIsFhirPatch } from './typePredicates';
+import {
+  isFhirPatchNamePart,
+  isFhirPatchPathPart,
+  isFhirPatchTypePart,
+  parametersIsFhirPatch
+} from './typePredicates';
 import type {
   FhirPatchParameterEntry,
   FhirPatchPart,
@@ -98,6 +103,34 @@ function fhirPatchValueIsEmpty(
   return Object.keys(patchValueParam).length === 1;
 }
 
+/**
+ * Extracts the type, path, and optional name parts from a FHIRPatch parameter entry.
+ */
+function extractFhirPatchParameterEntryParts(entry: FhirPatchParameterEntry) {
+  const typePart = entry.part.find((p) => isFhirPatchTypePart(p)) as FhirPatchTypePart | undefined;
+  const pathPart = entry.part.find((p) => isFhirPatchPathPart(p)) as FhirPatchPathPart | undefined;
+  const namePart = entry.part.find((p) => isFhirPatchNamePart(p)) as FhirPatchPathPart | undefined;
+
+  return { typePart, pathPart, namePart };
+}
+
+/**
+ * Builds a unique key for a FHIR Patch operation using its type, path,
+ * and optional name parts.
+ */
+function createFhirPatchKey(
+  typePart: FhirPatchTypePart,
+  pathPart: FhirPatchPathPart,
+  namePart?: FhirPatchPathPart
+): string {
+  let key = `${typePart.valueCode}-${pathPart.valueString}`;
+  if (namePart) {
+    key += `-${namePart.valueString}`;
+  }
+
+  return key;
+}
+
 function filterFhirPatchChangedOperations(
   extractedEntries: FhirPatchParameterEntry[],
   comparisonEntries: FhirPatchParameterEntry[]
@@ -107,17 +140,12 @@ function filterFhirPatchChangedOperations(
   const comparisonMap = new Map<string, FhirPatchParameterEntry>(
     comparisonEntries
       .map((entry) => {
-        const typePart = entry.part.find((p) => isFhirPatchTypePart(p)) as
-          | FhirPatchTypePart
-          | undefined;
-        const pathPart = entry.part.find((p) => isFhirPatchPathPart(p)) as
-          | FhirPatchPathPart
-          | undefined;
+        const { typePart, pathPart, namePart } = extractFhirPatchParameterEntryParts(entry);
         if (!typePart || !pathPart) {
           return null;
         }
 
-        const key = `${typePart.valueCode}-${pathPart.valueString}`;
+        const key = createFhirPatchKey(typePart, pathPart, namePart);
         return [key, entry] as const;
       })
       .filter((x): x is [string, FhirPatchParameterEntry] => x !== null)
@@ -129,19 +157,15 @@ function filterFhirPatchChangedOperations(
       continue; // Skip if extractedOperation is missing
     }
 
-    const typePart = extractedOperation.part.find((p) => isFhirPatchTypePart(p)) as
-      | FhirPatchTypePart
-      | undefined;
-    const pathPart = extractedOperation.part.find((p) => isFhirPatchPathPart(p)) as
-      | FhirPatchPathPart
-      | undefined;
+    const { typePart, pathPart, namePart } =
+      extractFhirPatchParameterEntryParts(extractedOperation);
     if (!typePart || !pathPart) {
       // If we can't build the key, just keep it - as a conservative decision
       operationsToRetain.push(extractedOperation);
       continue;
     }
 
-    const key = `${typePart.valueCode}-${pathPart.valueString}`;
+    const key = createFhirPatchKey(typePart, pathPart, namePart);
     const comparisonOperation = comparisonMap.get(key);
 
     const operationsAreEqual =

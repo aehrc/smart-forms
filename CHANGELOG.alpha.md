@@ -7,6 +7,28 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.105] - 2025-09-24
+#### Fixed
+- Reduce false positives for "alert(" and similar variants when sanitising input fields (from 1.0.0-alpha.98).
+
+## [1.0.0-alpha.104] - 2025-09-24
+#### Added
+- Added support for injecting `aria-label` at item labels, display items, and tab buttons via a custom extension 'https://smartforms.csiro.au/ig/StructureDefinition/QuestionnaireItemTextAriaLabelExpression'. See https://github.com/aehrc/smart-forms/issues/1578 for more details.
+
+## sdc-template-extract [1.0.9] - 2025-09-23
+#### Fixed
+- Fixed an issue where unmodified items appearing in extract when "add" operation is used.
+- Fixed an issue where extracted bundle has additional erroneous value.
+- Both issues are from https://github.com/aehrc/smart-forms/issues/1594.
+
+## [1.0.0-alpha.103] - 2025-09-22
+#### Fixed
+- Fixed an issue where the Time item is failing pre-population.
+
+## [1.0.0-alpha.102] - 2025-09-22
+#### Fixed
+- Resolved an dependency import issue with @aehrc/testing-toolkit where it was not published on NPM. It it used for Storybook-based testing, and now it is now included in the renderer package instead of a separate package.
+
 ## [1.0.0-alpha.101] - 2025-09-16
 #### Added
 - Added support for SDC extension http://hl7.org/fhir/uv/sdc/StructureDefinition-sdc-questionnaire-width.html (both % and px) in gtable and grid groups itemControls.

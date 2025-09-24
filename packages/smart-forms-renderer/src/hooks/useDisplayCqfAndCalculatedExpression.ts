@@ -17,14 +17,30 @@
 
 import { useQuestionnaireStore } from '../stores';
 import type { QuestionnaireItem } from 'fhir/r4';
+import type { CalculatedExpression } from '../interfaces';
 
-function useDisplayCqfAndCalculatedExpression(qItem: QuestionnaireItem): string | null {
+/**
+ * Returns the value of a cqf-expression, calculatedExpression or ItemTextAriaLabelExpression.
+ *
+ * - If no expression is found → returns null.
+ * - If the value is null → returns an empty string.
+ * - If the value is a string or number → returns it as a string.
+ *
+ * @param {QuestionnaireItem} qItem - The questionnaire item.
+ * @param {CalculatedExpression['from']} from - The expression source. Should be a one of 'item._text' or 'item._text.aria-label'
+ * @returns {string | null} The display value as a string, empty string, or null.
+ */
+function useDisplayCqfAndCalculatedExpression(
+  qItem: QuestionnaireItem,
+  from: CalculatedExpression['from']
+): string | null {
   const calculatedExpressions = useQuestionnaireStore.use.calculatedExpressions();
 
   const cqfOrCalcExpression = calculatedExpressions?.[qItem.linkId]?.find(
-    (exp) => exp && exp.from === 'item._text' // Add null check for exp
+    (exp) => exp && exp.from === from
   );
 
+  // Add null check for exp
   if (!cqfOrCalcExpression) {
     return null;
   }

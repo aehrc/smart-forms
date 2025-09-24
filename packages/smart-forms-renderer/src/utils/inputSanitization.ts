@@ -55,12 +55,12 @@ const DANGEROUS_PATTERNS = [
   /onmousemove/i,
 
   // Alert and other dangerous functions
-  /alert\s*\(/i,
-  /confirm\s*\(/i,
-  /prompt\s*\(/i,
-  /eval\s*\(/i,
-  /setTimeout\s*\(/i,
-  /setInterval\s*\(/i,
+  /alert\(/i,
+  /confirm\(/i,
+  /prompt\(/i,
+  /eval\(/i,
+  /setTimeout\(/i,
+  /setInterval\(/i,
 
   // HTML encoded characters that could be used for bypassing
   /%3C/i, // <
