@@ -7,6 +7,16 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.104] - 2025-09-24
+#### Added
+- Added support for injecting `aria-label` at item labels, display items, and tab buttons via a custom extension 'https://smartforms.csiro.au/ig/StructureDefinition/QuestionnaireItemTextAriaLabelExpression'. See https://github.com/aehrc/smart-forms/issues/1578 for more details.
+
+## sdc-template-extract [1.0.9] - 2025-09-23
+#### Fixed
+- Fixed an issue where unmodified items appearing in extract when "add" operation is used.
+- Fixed an issue where extracted bundle has additional erroneous value.
+- Both issues are from https://github.com/aehrc/smart-forms/issues/1594.
+
 ## [1.0.0-alpha.103] - 2025-09-22
 #### Fixed
 - Fixed an issue where the Time item is failing pre-population.
