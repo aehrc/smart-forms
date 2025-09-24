@@ -4,7 +4,8 @@ Smart Forms is based on FHIR R4. The checklist below is a summary of the Questio
 
 For specific details of each item types/extensions, refer to the [docs](https://smartforms.csiro.au/docs).
 
-## Supported item types 
+## Supported item types
+
 The list can be found here: http://hl7.org/fhir/R4/valueset-item-type.html
 
 - [x] group
@@ -20,14 +21,16 @@ The list can be found here: http://hl7.org/fhir/R4/valueset-item-type.html
 - [ ] url (partial implementation - using string UI component currently)
 - [x] choice
 - [x] open-choice
-- [x] attachment 
+- [x] attachment
 - [ ] reference (partial implementation - using string UI component currently)
 - [ ] quantity (partial implementation - using decimal UI component currently)
 
 ### Using Expressions
+
 View the source here: http://hl7.org/fhir/uv/sdc/expressions.html
 
 #### [Expression Extensions](http://hl7.org/fhir/uv/sdc/expressions.html#expression-extensions)
+
 - [x] variable
 - [x] answerExpression
 - [x] initialExpression
@@ -41,25 +44,30 @@ View the source here: http://hl7.org/fhir/uv/sdc/expressions.html
 - [ ] constraint
 
 #### [Other extensions](http://hl7.org/fhir/uv/sdc/expressions.html#other-extensions)
+
 - [ ] library
 - [x] launchContext
 
 #### [x-fhir-query enhancements](http://hl7.org/fhir/uv/sdc/expressions.html#x-fhir-query-enhancements)
+
 - [x] x-fhir-query
 
 ### Advanced Form Rendering
+
 View the source here: http://hl7.org/fhir/uv/sdc/rendering.html
 
 #### [Text Appearance](http://hl7.org/fhir/uv/sdc/rendering.html#extension-overview)
+
 - [x] rendering-style
 - [x] rendering-xhtml
 - [x] displayCategory
 - [x] openLabel
-- [x] hidden  
+- [x] hidden
 - [ ] itemMedia
 - [ ] itemAnswerMedia
 
 #### [Control Appearance](http://hl7.org/fhir/uv/sdc/rendering.html#control-appearance)
+
 - [x] itemControl
 - [x] choiceOrientation
 - [x] sliderStepValue
@@ -69,6 +77,7 @@ View the source here: http://hl7.org/fhir/uv/sdc/rendering.html
 **Questionnaire `itemControl` Checklist**
 
 View the source here: https://hl7.org/fhir/extensions/CodeSystem-questionnaire-item-control.html
+
 - [ ] group
   - [ ] list
   - [ ] table
@@ -99,6 +108,7 @@ View the source here: https://hl7.org/fhir/extensions/CodeSystem-questionnaire-i
   - [ ] text-box
 
 #### [Additional Display Content](http://hl7.org/fhir/uv/sdc/rendering.html#additional-display-content)
+
 - [ ] supportLink
 - [ ] choiceColumn
 - [ ] optionPrefix
@@ -107,6 +117,7 @@ View the source here: https://hl7.org/fhir/extensions/CodeSystem-questionnaire-i
 - [x] shortText
 
 #### [Other](http://hl7.org/fhir/uv/sdc/rendering.html#other)
+
 - [x] required
 - [x] repeats
 - [x] readOnly
@@ -118,6 +129,7 @@ View the source here: https://hl7.org/fhir/extensions/CodeSystem-questionnaire-i
 View the source here: http://hl7.org/fhir/uv/sdc/behavior.html
 
 #### [Value Constraints](http://hl7.org/fhir/uv/sdc/behavior.html#value-constraints)
+
 - [x] maxLength
 - [x] minLength
 - [x] regex
@@ -176,9 +188,11 @@ View the source here: http://hl7.org/fhir/uv/sdc/behavior.html
 - [x] text
 
 ## Form Population
+
 View the page here: http://hl7.org/fhir/uv/sdc/populate.html
 
 **Population operations**
+
 - [x] $populate
 - [ ] $populate-html
 - [ ] $populate-link
@@ -186,6 +200,7 @@ View the page here: http://hl7.org/fhir/uv/sdc/populate.html
 Smart Forms only supports **full population** at the moment, and SMART App Launch is a requirement. Only patient, practitioner and encounter launch contexts are supported.
 
 **Population mechanisms**
+
 - [ ] Observation-based
 - [x] Expression-based
 - [ ] StructureMap-based
@@ -193,11 +208,13 @@ Smart Forms only supports **full population** at the moment, and SMART App Launc
 While StructuredMap-based population mechanism is not supported, [sdc-questionnaire-sourceQueries](http://hl7.org/fhir/uv/sdc/StructureDefinition-sdc-questionnaire-sourceQueries.html) is supported, using an expression-based approach.
 
 ## Form Data Extraction
+
 View the page here: http://hl7.org/fhir/uv/sdc/extraction.html
 
 This is something we are super interested in, but haven't quite got to it yet.
 
 ## Modular Forms
+
 View the page here: http://hl7.org/fhir/uv/sdc/modular.html#modular-questionnaires
 
 Our Forms Server https://smartforms.csiro.au/api/fhir supports the [$assemble](http://hl7.org/fhir/uv/sdc/OperationDefinition-Questionnaire-assemble.html) operation.
@@ -208,3 +225,25 @@ The implementation is based on http://hl7.org/fhir/uv/sdc/modular.html#modular-q
 View the page here: http://hl7.org/fhir/uv/sdc/adaptive.html
 
 This is not something on our radar at the moment :(
+
+## Custom Extensions
+
+Smart Forms includes several custom extensions that provide additional functionality beyond the standard SDC extensions.
+
+### Questionnaire Item Text Hidden
+
+- [x] [QuestionnaireItemTextHidden](https://smartforms.csiro.au/ig/StructureDefinition/QuestionnaireItemTextHidden)
+
+Allows hiding the text label of questionnaire items from the UI. Useful for internal fields that don't need user-facing labels.
+
+### Group Hide Add Item Button
+
+- [x] [GroupHideAddItemButton](https://smartforms.csiro.au/ig/StructureDefinition/GroupHideAddItemButton)
+
+Allows hiding the "Add Item" button for repeating groups and group tables. Useful for static tables where users shouldn't be allowed to add new rows.
+
+### Questionnaire Initial Expression Repopulatable
+
+- [x] [questionnaire-initialExpression-repopulatable](https://smartforms.csiro.au/ig/StructureDefinition/questionnaire-initialExpression-repopulatable)
+
+Allows individual fields to be manually repopulated with fresh data from the FHIR server. Provides granular control over data synchronization without affecting the entire form.

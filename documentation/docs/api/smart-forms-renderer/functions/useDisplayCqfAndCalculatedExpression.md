@@ -1,6 +1,6 @@
 # Function: useDisplayCqfAndCalculatedExpression()
 
-> **useDisplayCqfAndCalculatedExpression**(`qItem`): `string` \| `null`
+> **useDisplayCqfAndCalculatedExpression**(`qItem`): `null` \| `string`
 
 ## Parameters
 
@@ -10,4 +10,4 @@
 
 ## Returns
 
-`string` \| `null`
+`null` \| `string`

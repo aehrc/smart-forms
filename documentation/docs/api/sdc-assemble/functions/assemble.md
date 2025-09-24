@@ -1,6 +1,6 @@
 # Function: assemble()
 
-> **assemble**(`parameters`, `fetchQuestionnaireCallback`, `fetchQuestionnaireRequestConfig`): `Promise`\<`Questionnaire` \| `OperationOutcome` \| [`OutputParameters`](../interfaces/OutputParameters.md)\>
+> **assemble**(`parameters`, `fetchQuestionnaireCallback`, `fetchQuestionnaireRequestConfig`): `Promise`\<`OperationOutcome` \| `Questionnaire` \| [`OutputParameters`](../interfaces/OutputParameters.md)\>
 
 The $assemble operation - https://build.fhir.org/ig/HL7/sdc/OperationDefinition-Questionnaire-assemble.html
 
@@ -14,6 +14,6 @@ The $assemble operation - https://build.fhir.org/ig/HL7/sdc/OperationDefinition-
 
 ## Returns
 
-`Promise`\<`Questionnaire` \| `OperationOutcome` \| [`OutputParameters`](../interfaces/OutputParameters.md)\>
+`Promise`\<`OperationOutcome` \| `Questionnaire` \| [`OutputParameters`](../interfaces/OutputParameters.md)\>
 
 A fully assembled questionnaire, an operationOutcome error(if present) or both (if there are warnings)

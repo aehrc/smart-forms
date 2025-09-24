@@ -2,7 +2,7 @@
 
 > **parseFhirDateToDisplayDate**(`fhirDate`): `object`
 
-Parse a FHIR date string to a date to be consumed and displayed by the DateItem component.
+Parse a FHIR date string to a human-readable display format.
 
 ## Parameters
 
