@@ -19,7 +19,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import { qTextCalculation } from '../assets/questionnaires';
 import {
-  findByLinkId,
+  findByLinkIdOrLabel,
   getAnswers,
   getInputText,
   inputText,
@@ -68,7 +68,7 @@ export const TextBasic: Story = {
     await new Promise((resolve) => setTimeout(resolve, 500));
     const resultAfterClear = await getAnswers(targetLinkId);
     expect(resultAfterClear).toHaveLength(0);
-    const elementAfterClear = await findByLinkId(canvasElement, targetLinkId);
+    const elementAfterClear = await findByLinkIdOrLabel(canvasElement, targetLinkId);
     const input = elementAfterClear.querySelector('textarea');
     expect(input?.value).toBe('');
   }

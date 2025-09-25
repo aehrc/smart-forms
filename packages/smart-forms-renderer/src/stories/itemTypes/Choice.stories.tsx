@@ -23,7 +23,7 @@ import {
 } from '../assets/questionnaires';
 import {
   chooseSelectOption,
-  findByLinkId,
+  findByLinkIdOrLabel,
   getAnswers,
   getInputText,
   qrFactory,
@@ -100,7 +100,7 @@ export const ChoiceAnswerOptionBasic: Story = {
     const resultAfterClear = await getAnswers(targetLinkId);
     expect(resultAfterClear).toHaveLength(0);
 
-    const elementAfterClear = await findByLinkId(canvasElement, targetLinkId);
+    const elementAfterClear = await findByLinkIdOrLabel(canvasElement, targetLinkId);
     const input = elementAfterClear.querySelector('textarea');
     expect(input?.value).toBe('');
   }
