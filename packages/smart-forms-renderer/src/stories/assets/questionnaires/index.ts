@@ -46,3 +46,4 @@ export * from './QQuestionnaireItemTextHidden';
 export * from './QRepopulatableExtension';
 export * from './QCqfExpression';
 export * from './QCqfExpressionSimple';
+export * from './QAnswerOptionToggleExpressions';
