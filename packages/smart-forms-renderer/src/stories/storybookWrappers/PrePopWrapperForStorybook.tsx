@@ -87,9 +87,13 @@ function PrePopWrapperForStorybook(props: PrePopWrapperForStorybookProps) {
         questionnaire,
         populatedResponse,
         undefined,
-        STORYBOOK_TERMINOLOGY_SERVER_URL
+        STORYBOOK_TERMINOLOGY_SERVER_URL,
+        {
+          patient: patient,
+          user: user
+        }
       );
-      setPopulatedContext(populatedContext, true);
+      setPopulatedContext(populatedContext ?? {}, true);
 
       setIsPopulating(false);
     });

@@ -22,6 +22,14 @@ The encounter resource in context
 
 ***
 
+### fhirContext
+
+> **fhirContext**: `null` \| `FhirContext`[]
+
+fhirContext array from SMART App Launch
+
+***
+
 ### patient
 
 > **patient**: `null` \| `Patient`
@@ -59,6 +67,24 @@ Set the encounter resource in context
 | Parameter | Type |
 | ------ | ------ |
 | `encounter` | `Encounter` |
+
+#### Returns
+
+`void`
+
+***
+
+### setFhirContext()
+
+> **setFhirContext**: (`fhirContext`) => `void`
+
+Set the fhirContext array from SMART App Launch
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `fhirContext` | `FhirContext`[] |
 
 #### Returns
 

@@ -1,6 +1,6 @@
 # Function: useReadOnly()
 
-> **useReadOnly**(`qItem`, `parentIsReadOnly`, `parentRepeatGroupIndex`?): `boolean`
+> **useReadOnly**(`qItem`, `parentIsReadOnly`, `parentRepeatGroupIndex?`): `boolean`
 
 ## Parameters
 
@@ -8,7 +8,7 @@
 | ------ | ------ |
 | `qItem` | `QuestionnaireItem` |
 | `parentIsReadOnly` | `undefined` \| `boolean` |
-| `parentRepeatGroupIndex`? | `number` |
+| `parentRepeatGroupIndex?` | `number` |
 
 ## Returns
 

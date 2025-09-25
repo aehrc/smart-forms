@@ -1,6 +1,6 @@
 # Function: getQrItemsIndex()
 
-> **getQrItemsIndex**(`qItems`, `qrItems`, `qItemsIndexMap`): (`QuestionnaireResponseItem` \| `QuestionnaireResponseItem`[] \| `undefined`)[]
+> **getQrItemsIndex**(`qItems`, `qrItems`, `qItemsIndexMap`): (`undefined` \| `QuestionnaireResponseItem` \| `QuestionnaireResponseItem`[])[]
 
 Generate an array of QuestionnaireResponseItems corresponding to its QuestionnaireItem indexes an array.
 QuestionnaireItems without a corresponding QuestionnaireResponseItem is set as undefined.
@@ -19,4 +19,4 @@ Note: There's a bug where if the qItems are child items from a repeat group, the
 
 ## Returns
 
-(`QuestionnaireResponseItem` \| `QuestionnaireResponseItem`[] \| `undefined`)[]
+(`undefined` \| `QuestionnaireResponseItem` \| `QuestionnaireResponseItem`[])[]

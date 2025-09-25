@@ -77,9 +77,6 @@ const ItemLabel = memo(function ItemLabel(props: ItemLabelProps) {
           id={'label-' + qItem.linkId}
           component={component}
           variant={variant}
-          // TODO: Delete this section later after testing.
-          // based on the qItem type if it is choice, or open-choice, boolean  then don't display the htmlFor
-          // htmlFor={qItem.type === 'choice' || qItem.type === 'open-choice' || qItem.type === 'boolean' ? undefined : qItem.type + '-' + qItem.linkId}
           htmlFor={qItem.type + '-' + qItem.linkId}
           color={textColor}
           sx={{

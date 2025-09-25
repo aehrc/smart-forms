@@ -17,7 +17,7 @@ This is the React version of the store which can be used as React hooks in React
 
 ##### Returns
 
-`Function`
+> (`valueSetUrl`, `codings`): `void`
 
 ###### Parameters
 
@@ -38,25 +38,33 @@ This is the React version of the store which can be used as React hooks in React
 
 `Record`\<`string`, `AnswerExpression`\>
 
-#### use.buildSourceQuestionnaire()
+#### use.answerOptionsToggleExpressions()
 
-> **buildSourceQuestionnaire**: () => (`questionnaire`, `questionnaireResponse`?, `additionalVariables`?, `terminologyServerUrl`?, `readOnly`?, `qItemOverrideComponents`?, `sdcUiOverrideComponents`?) => `Promise`\<`void`\>
+> **answerOptionsToggleExpressions**: () => `Record`\<`string`, `AnswerOptionsToggleExpression`[]\>
 
 ##### Returns
 
-`Function`
+`Record`\<`string`, `AnswerOptionsToggleExpression`[]\>
+
+#### use.buildSourceQuestionnaire()
+
+> **buildSourceQuestionnaire**: () => (`questionnaire`, `questionnaireResponse?`, `additionalVariables?`, `terminologyServerUrl?`, `readOnly?`, `qItemOverrideComponents?`, `sdcUiOverrideComponents?`) => `Promise`\<`void`\>
+
+##### Returns
+
+> (`questionnaire`, `questionnaireResponse?`, `additionalVariables?`, `terminologyServerUrl?`, `readOnly?`, `qItemOverrideComponents?`, `sdcUiOverrideComponents?`): `Promise`\<`void`\>
 
 ###### Parameters
 
 | Parameter | Type |
 | ------ | ------ |
 | `questionnaire` | `Questionnaire` |
-| `questionnaireResponse`? | `QuestionnaireResponse` |
-| `additionalVariables`? | `Record`\<`string`, `object`\> |
-| `terminologyServerUrl`? | `string` |
-| `readOnly`? | `boolean` |
-| `qItemOverrideComponents`? | `Record`\<`string`, `ComponentType`\<[`QItemOverrideComponentProps`](../interfaces/QItemOverrideComponentProps.md)\>\> |
-| `sdcUiOverrideComponents`? | `Record`\<`string`, `ComponentType`\<[`SdcUiOverrideComponentProps`](../interfaces/SdcUiOverrideComponentProps.md)\>\> |
+| `questionnaireResponse?` | `QuestionnaireResponse` |
+| `additionalVariables?` | `Record`\<`string`, `any`\> |
+| `terminologyServerUrl?` | `string` |
+| `readOnly?` | `boolean` |
+| `qItemOverrideComponents?` | `Record`\<`string`, `ComponentType`\<[`QItemOverrideComponentProps`](../interfaces/QItemOverrideComponentProps.md)\>\> |
+| `sdcUiOverrideComponents?` | `Record`\<`string`, `ComponentType`\<[`SdcUiOverrideComponentProps`](../interfaces/SdcUiOverrideComponentProps.md)\>\> |
 
 ###### Returns
 
@@ -100,7 +108,7 @@ This is the React version of the store which can be used as React hooks in React
 
 ##### Returns
 
-`Function`
+> (): `void`
 
 ###### Returns
 
@@ -146,6 +154,14 @@ This is the React version of the store which can be used as React hooks in React
 
 `Record`\<`string`, `any`\>
 
+#### use.fhirPathTerminologyCache()
+
+> **fhirPathTerminologyCache**: () => `Record`\<`string`, `any`\>
+
+##### Returns
+
+`Record`\<`string`, `any`\>
+
 #### use.focusedLinkId()
 
 > **focusedLinkId**: () => `string`
@@ -162,17 +178,17 @@ This is the React version of the store which can be used as React hooks in React
 
 `Record`\<`string`, `InitialExpression`\>
 
-#### use.itemPreferredTerminologyServers()
+#### use.itemMap()
 
-> **itemPreferredTerminologyServers**: () => `Record`\<`string`, `string`\>
+> **itemMap**: () => `Record`\<`string`, `Omit`\<`QuestionnaireItem`, `"item"`\>\>
 
 ##### Returns
 
-`Record`\<`string`, `string`\>
+`Record`\<`string`, `Omit`\<`QuestionnaireItem`, `"item"`\>\>
 
-#### use.itemTypes()
+#### use.itemPreferredTerminologyServers()
 
-> **itemTypes**: () => `Record`\<`string`, `string`\>
+> **itemPreferredTerminologyServers**: () => `Record`\<`string`, `string`\>
 
 ##### Returns
 
@@ -192,7 +208,7 @@ This is the React version of the store which can be used as React hooks in React
 
 ##### Returns
 
-`Function`
+> (`pageLinkId`): `void`
 
 ###### Parameters
 
@@ -210,7 +226,7 @@ This is the React version of the store which can be used as React hooks in React
 
 ##### Returns
 
-`Function`
+> (`tabLinkId`): `void`
 
 ###### Parameters
 
@@ -228,7 +244,7 @@ This is the React version of the store which can be used as React hooks in React
 
 ##### Returns
 
-`Function`
+> (`parentRepeatGroupLinkId`, `parentRepeatGroupIndex`, `actionType`): `void`
 
 ###### Parameters
 
@@ -248,7 +264,7 @@ This is the React version of the store which can be used as React hooks in React
 
 ##### Returns
 
-`Function`
+> (`linkId`): `void`
 
 ###### Parameters
 
@@ -276,21 +292,13 @@ This is the React version of the store which can be used as React hooks in React
 
 `Record`\<`string`, `any`\>
 
-#### use.processedValueSetCodings()
+#### use.processedValueSets()
 
-> **processedValueSetCodings**: () => `Record`\<`string`, `Coding`[]\>
-
-##### Returns
-
-`Record`\<`string`, `Coding`[]\>
-
-#### use.processedValueSetUrls()
-
-> **processedValueSetUrls**: () => `Record`\<`string`, `string`\>
+> **processedValueSets**: () => `Record`\<`string`, `ProcessedValueSet`\>
 
 ##### Returns
 
-`Record`\<`string`, `string`\>
+`Record`\<`string`, `ProcessedValueSet`\>
 
 #### use.qItemOverrideComponents()
 
@@ -322,7 +330,7 @@ This is the React version of the store which can be used as React hooks in React
 
 ##### Returns
 
-`Function`
+> (`readOnly`): `void`
 
 ###### Parameters
 
@@ -336,18 +344,18 @@ This is the React version of the store which can be used as React hooks in React
 
 #### use.setPopulatedContext()
 
-> **setPopulatedContext**: () => (`newPopulatedContext`, `addToFhirPathContext`?) => `void`
+> **setPopulatedContext**: () => (`newPopulatedContext`, `addToFhirPathContext?`) => `void`
 
 ##### Returns
 
-`Function`
+> (`newPopulatedContext`, `addToFhirPathContext?`): `void`
 
 ###### Parameters
 
 | Parameter | Type |
 | ------ | ------ |
 | `newPopulatedContext` | `Record`\<`string`, `any`\> |
-| `addToFhirPathContext`? | `boolean` |
+| `addToFhirPathContext?` | `boolean` |
 
 ###### Returns
 
@@ -367,7 +375,7 @@ This is the React version of the store which can be used as React hooks in React
 
 ##### Returns
 
-`Function`
+> (`newPageIndex`): `void`
 
 ###### Parameters
 
@@ -385,7 +393,7 @@ This is the React version of the store which can be used as React hooks in React
 
 ##### Returns
 
-`Function`
+> (`newTabIndex`): `void`
 
 ###### Parameters
 
@@ -405,13 +413,29 @@ This is the React version of the store which can be used as React hooks in React
 
 [`Tabs`](../type-aliases/Tabs.md)
 
+#### use.targetConstraintLinkIds()
+
+> **targetConstraintLinkIds**: () => `Record`\<`string`, `string`[]\>
+
+##### Returns
+
+`Record`\<`string`, `string`[]\>
+
+#### use.targetConstraints()
+
+> **targetConstraints**: () => `Record`\<`string`, `TargetConstraint`\>
+
+##### Returns
+
+`Record`\<`string`, `TargetConstraint`\>
+
 #### use.toggleEnableWhenActivation()
 
 > **toggleEnableWhenActivation**: () => (`isActivated`) => `void`
 
 ##### Returns
 
-`Function`
+> (`isActivated`): `void`
 
 ###### Parameters
 
@@ -429,7 +453,7 @@ This is the React version of the store which can be used as React hooks in React
 
 ##### Returns
 
-`Function`
+> (`linkId`, `newAnswer`, `parentRepeatGroupIndex`): `void`
 
 ###### Parameters
 
@@ -449,7 +473,7 @@ This is the React version of the store which can be used as React hooks in React
 
 ##### Returns
 
-`Function`
+> (`updatedResponse`): `Promise`\<`void`\>
 
 ###### Parameters
 
@@ -463,19 +487,19 @@ This is the React version of the store which can be used as React hooks in React
 
 #### use.updatePopulatedProperties()
 
-> **updatePopulatedProperties**: () => (`populatedResponse`, `populatedContext`?, `persistTabIndex`?) => `Promise`\<`QuestionnaireResponse`\>
+> **updatePopulatedProperties**: () => (`populatedResponse`, `populatedContext?`, `persistTabIndex?`) => `Promise`\<`QuestionnaireResponse`\>
 
 ##### Returns
 
-`Function`
+> (`populatedResponse`, `populatedContext?`, `persistTabIndex?`): `Promise`\<`QuestionnaireResponse`\>
 
 ###### Parameters
 
 | Parameter | Type |
 | ------ | ------ |
 | `populatedResponse` | `QuestionnaireResponse` |
-| `populatedContext`? | `Record`\<`string`, `any`\> |
-| `persistTabIndex`? | `boolean` |
+| `populatedContext?` | `Record`\<`string`, `any`\> |
+| `persistTabIndex?` | `boolean` |
 
 ###### Returns
 
