@@ -47,3 +47,5 @@ export * from './QRepopulatableExtension';
 export * from './QCqfExpression';
 export * from './QCqfExpressionSimple';
 export * from './QAnswerOptionToggleExpressions';
+export * from './QTargetConstraint';
+export * from './QQuantityExtensions';

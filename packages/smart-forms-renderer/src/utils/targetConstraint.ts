@@ -63,6 +63,7 @@ export async function evaluateInitialTargetConstraints(
   for (const key in targetConstraints) {
     const initialValue = targetConstraints[key].isInvalid;
     const expression = targetConstraints[key].valueExpression?.expression;
+    
     if (!expression) {
       continue;
     }
@@ -87,8 +88,12 @@ export async function evaluateInitialTargetConstraints(
 
       // Update targetConstraints if length of result array > 0
       // Only update when current isInvalid value is different from the result, otherwise it will result in am infinite loop as per #733
-      if (result.length > 0 && initialValue !== result[0] && typeof result[0] === 'boolean') {
-        targetConstraints[key].isInvalid = result[0];
+      if (result.length > 0 && typeof result[0] === 'boolean') {
+        // Invert the logic: if the constraint expression returns false, the constraint is invalid (violated)
+        const isInvalid = !result[0];
+        if (initialValue !== isInvalid) {
+          targetConstraints[key].isInvalid = isInvalid;
+        }
       }
 
       // Update isInvalid value to false if no result is returned
@@ -106,7 +111,7 @@ export async function evaluateInitialTargetConstraints(
         fhirPathTerminologyCache[cacheKey] = result;
       }
     } catch (e) {
-      console.warn(e.message, `Target Constraint Key: ${key}\nExpression: ${expression}`);
+      console.warn(`[TARGET_CONSTRAINT_DEBUG] Error evaluating ${key}:`, e.message, `Target Constraint Key: ${key}\nExpression: ${expression}`);
     }
   }
 
@@ -127,9 +132,11 @@ export async function evaluateTargetConstraints(
   updatedTargetConstraints: Record<string, TargetConstraint>;
 }> {
   let isUpdated = false;
+  
   for (const key in targetConstraints) {
     const initialValue = targetConstraints[key].isInvalid;
     const expression = targetConstraints[key].valueExpression?.expression;
+    
     if (!expression) {
       continue;
     }
@@ -148,9 +155,13 @@ export async function evaluateTargetConstraints(
 
       // Update targetConstraints if length of result array > 0
       // Only update when current isInvalid value is different from the result, otherwise it will result in am infinite loop as per #733
-      if (result.length > 0 && initialValue !== result[0] && typeof result[0] === 'boolean') {
-        targetConstraints[key].isInvalid = result[0];
-        isUpdated = true;
+      if (result.length > 0 && typeof result[0] === 'boolean') {
+        // Invert the logic: if the constraint expression returns false, the constraint is invalid (violated)
+        const isInvalid = !result[0];
+        if (initialValue !== isInvalid) {
+          targetConstraints[key].isInvalid = isInvalid;
+          isUpdated = true;
+        }
       }
 
       // Update isInvalid value to false if no result is returned
@@ -170,7 +181,7 @@ export async function evaluateTargetConstraints(
         fhirPathTerminologyCache[cacheKey] = result;
       }
     } catch (e) {
-      console.warn(e.message, `Target Constraint Key: ${key}\nExpression: ${expression}`);
+      console.warn(`[TARGET_CONSTRAINT_DEBUG] Error evaluating updated ${key}:`, e.message, `Target Constraint Key: ${key}\nExpression: ${expression}`);
     }
   }
 
@@ -236,7 +247,7 @@ function getTargetConstraintLocationLinkId(
       }
     }
   } catch (e) {
-    console.warn(e.message, `Target Constraint Location: ${location}}`);
+    console.warn(e.message, `Target Constraint Location: ${location}`);
   }
 
   return null;
