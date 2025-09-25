@@ -69,7 +69,8 @@ export const qRepopulatableExtension: Questionnaire = {
               url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression',
               valueExpression: {
                 language: 'text/fhirpath',
-                expression: '%patient.name.first().given.first() + " " + %patient.name.first().family'
+                expression:
+                  '%patient.name.first().given.first() + " " + %patient.name.first().family'
               }
             },
             {
@@ -87,7 +88,8 @@ export const qRepopulatableExtension: Questionnaire = {
               url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression',
               valueExpression: {
                 language: 'text/fhirpath',
-                expression: '(2025 - %patient.birthDate.toString().substring(0,4).toInteger()).toString()'
+                expression:
+                  '(2025 - %patient.birthDate.toString().substring(0,4).toInteger()).toString()'
               }
             },
             {

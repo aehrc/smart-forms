@@ -19,11 +19,10 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import { qQuestionnaireItemTextHidden } from '../assets/questionnaires';
 
-// More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
-const meta = {
+const meta: Meta<typeof BuildFormWrapperForStorybook> = {
   title: 'SDC/Questionnaire Item Text Hidden Extension',
   component: BuildFormWrapperForStorybook
-} satisfies Meta<typeof BuildFormWrapperForStorybook>;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -31,5 +30,5 @@ type Story = StoryObj<typeof meta>;
 export const QuestionnaireItemTextHiddenDemo: Story = {
   args: {
     questionnaire: qQuestionnaireItemTextHidden
-  },
+  }
 };

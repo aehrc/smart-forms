@@ -63,7 +63,7 @@ export const qTargetConstraintBasic: Questionnaire = {
       text: 'What is your age?',
       type: 'integer',
       required: true
-    },
+    }
   ]
 };
 
@@ -266,7 +266,8 @@ export const qTargetConstraintComplex: Questionnaire = {
         },
         {
           url: 'human',
-          valueString: 'Blood pressure readings suggest elevated levels. Please consult with a healthcare provider.'
+          valueString:
+            'Blood pressure readings suggest elevated levels. Please consult with a healthcare provider.'
         },
         {
           url: 'location',
@@ -289,7 +290,8 @@ export const qTargetConstraintComplex: Questionnaire = {
           url: 'expression',
           valueExpression: {
             language: 'text/fhirpath',
-            expression: "%resource.item.where(linkId = 'phone').answer.valueString.matches('^\\\\+[0-9]+$')"
+            expression:
+              "%resource.item.where(linkId = 'phone').answer.valueString.matches('^\\\\+[0-9]+$')"
           }
         },
         {
@@ -369,7 +371,8 @@ export const qTargetConstraintConditional: Questionnaire = {
           url: 'expression',
           valueExpression: {
             language: 'text/fhirpath',
-            expression: "%resource.item.where(linkId = 'pregnant').answer.valueCoding.code = 'yes' implies %resource.item.where(linkId = 'weight').answer.valueDecimal >= 45"
+            expression:
+              "%resource.item.where(linkId = 'pregnant').answer.valueCoding.code = 'yes' implies %resource.item.where(linkId = 'weight').answer.valueDecimal >= 45"
           }
         },
         {
@@ -397,7 +400,8 @@ export const qTargetConstraintConditional: Questionnaire = {
           url: 'expression',
           valueExpression: {
             language: 'text/fhirpath',
-            expression: "%resource.item.where(linkId = 'diabetes').answer.valueCoding.code = 'yes' implies %resource.item.where(linkId = 'hba1c').exists() and %resource.item.where(linkId = 'hba1c').answer.valueString.length() > 0 and %resource.item.where(linkId = 'hba1c').answer.valueString != '0'"
+            expression:
+              "%resource.item.where(linkId = 'diabetes').answer.valueCoding.code = 'yes' implies %resource.item.where(linkId = 'hba1c').exists() and %resource.item.where(linkId = 'hba1c').answer.valueString.length() > 0 and %resource.item.where(linkId = 'hba1c').answer.valueString != '0'"
           }
         },
         {
