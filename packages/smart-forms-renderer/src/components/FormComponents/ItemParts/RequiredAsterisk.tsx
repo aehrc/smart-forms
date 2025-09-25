@@ -32,7 +32,7 @@ function RequiredAsterisk(props: RequiredAsteriskProps) {
   const readOnlyTextColor = readOnlyVisualStyle === 'disabled' ? 'text.disabled' : 'text.secondary';
 
   return (
-    <Typography component="span" color={readOnly ? readOnlyTextColor : 'red'} {...rest}>
+    <Typography component="span" color={readOnly ? readOnlyTextColor : 'error'} {...rest}>
       {children}
     </Typography>
   );

@@ -16,6 +16,12 @@ RendererStylingStore properties and methods
 
 ***
 
+### disableTabButtons
+
+> **disableTabButtons**: `boolean`
+
+***
+
 ### enableWhenAsReadOnly
 
 > **enableWhenAsReadOnly**: `boolean` \| `Set`\<`"string"` \| `"boolean"` \| `"group"` \| `"display"` \| `"question"` \| `"decimal"` \| `"integer"` \| `"date"` \| `"dateTime"` \| `"time"` \| `"text"` \| `"url"` \| `"choice"` \| `"open-choice"` \| `"attachment"` \| `"reference"` \| `"quantity"`\>
@@ -40,21 +46,31 @@ RendererStylingStore properties and methods
 
 ***
 
-### itemFieldGridBreakpoints
+### itemResponsive
 
-> **itemFieldGridBreakpoints**: `ItemGridBreakpoints`
+> **itemResponsive**: `object`
+
+#### columnGapPixels
+
+> **columnGapPixels**: `number`
+
+#### fieldBreakpoints
+
+> **fieldBreakpoints**: `Partial`\<`Breakpoints`\[`"values"`\]\>
+
+#### labelBreakpoints
+
+> **labelBreakpoints**: `Partial`\<`Breakpoints`\[`"values"`\]\>
+
+#### rowGapPixels
+
+> **rowGapPixels**: `number`
 
 ***
 
-### itemLabelFontWeight
+### readOnlyVisualStyle
 
-> **itemLabelFontWeight**: `"500"` \| `"800"` \| `"600"` \| `"default"` \| `"100"` \| `"200"` \| `"300"` \| `"400"` \| `"700"` \| `"900"`
-
-***
-
-### itemLabelGridBreakpoints
-
-> **itemLabelGridBreakpoints**: `ItemGridBreakpoints`
+> **readOnlyVisualStyle**: `"disabled"` \| `"readonly"`
 
 ***
 
@@ -83,6 +99,18 @@ RendererStylingStore properties and methods
 #### Returns
 
 `void`
+
+***
+
+### showTabbedFormAt
+
+> **showTabbedFormAt**: [`UseResponsiveProps`](UseResponsiveProps.md)
+
+***
+
+### tabListWidthOrResponsive
+
+> **tabListWidthOrResponsive**: `number` \| \{ `tabContentBreakpoints`: `Partial`\<`Breakpoints`\[`"values"`\]\>; `tabListBreakpoints`: `Partial`\<`Breakpoints`\[`"values"`\]\>; \}
 
 ***
 

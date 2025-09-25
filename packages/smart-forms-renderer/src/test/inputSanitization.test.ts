@@ -112,6 +112,11 @@ describe('sanitizeInput', () => {
     const falsePositiveInputs = [
       'I love javascript and typescript', // contains "javascript" safely
       'alert me when ready', // contains "alert" safely
+      'Patient is alert (responds to stimuli)', // contains "alert" with brackets safely
+      'The system will prompt you for details', // contains "prompt" safely
+      'Prompt (the user) to enter their name', // contains "prompt" with brackets safely
+      'Evaluate the results carefully', // contains "eval" safely
+      'Eval (the data) before submission', // contains "eval" with brackets safely
       'This is a css file reference in text', // literal "css"
       'Medical script', // contains "script" safely
       'His body temperature is critically high', // contains "body" safely

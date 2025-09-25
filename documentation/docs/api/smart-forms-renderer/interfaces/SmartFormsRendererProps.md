@@ -6,7 +6,7 @@ SmartFormsRenderer properties
 
 ### additionalVariables?
 
-> `optional` **additionalVariables**: `Record`\<`string`, `object`\>
+> `optional` **additionalVariables**: `Record`\<`string`, `any`\>
 
 Additional key-value pair of SDC variables `Record<name, variable extension>` for testing (optional)
 

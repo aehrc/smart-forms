@@ -39,3 +39,7 @@ export * from './QItemControlGroup';
 export * from './QItemControlQuestion';
 export * from './QTerminologyControl';
 export * from './QGroupHideAddItemButton';
+export * from './QQuestionnaireItemTextHidden';
+export * from './QRepopulatableExtension';
+export * from './QCqfExpression';
+export * from './QCqfExpressionSimple';
