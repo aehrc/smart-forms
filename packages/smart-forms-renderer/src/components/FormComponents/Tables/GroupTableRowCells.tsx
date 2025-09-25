@@ -38,6 +38,7 @@ interface GroupTableRowCellsProps
   qrItem: QuestionnaireResponseItem | null;
   qItemsIndexMap: Record<string, number>;
   visibleItemLabels: string[];
+  calculatedColumnWidths: { width: string; isFixed: boolean }[];
 }
 
 function GroupTableRowCells(props: GroupTableRowCellsProps) {
@@ -46,6 +47,7 @@ function GroupTableRowCells(props: GroupTableRowCellsProps) {
     qrItem,
     qItemsIndexMap,
     visibleItemLabels,
+    calculatedColumnWidths,
     itemPath,
     parentIsReadOnly,
     onQrItemChange
@@ -86,7 +88,7 @@ function GroupTableRowCells(props: GroupTableRowCellsProps) {
         }
 
         return (
-          <StandardTableCell key={index} numOfColumns={visibleItemLabels.length}>
+          <StandardTableCell key={index} calculatedWidth={calculatedColumnWidths[index]?.width}>
             <Box display="flex" alignItems="center" justifyContent="center">
               <SingleItem
                 key={rowItem.linkId}

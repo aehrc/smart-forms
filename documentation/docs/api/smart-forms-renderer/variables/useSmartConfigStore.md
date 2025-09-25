@@ -30,6 +30,14 @@ This is the React version of the store which can be used as React hooks in React
 
 `null` \| `Encounter`
 
+#### use.fhirContext()
+
+> **fhirContext**: () => `null` \| `FhirContext`[]
+
+##### Returns
+
+`null` \| `FhirContext`[]
+
 #### use.patient()
 
 > **patient**: () => `null` \| `Patient`
@@ -44,7 +52,7 @@ This is the React version of the store which can be used as React hooks in React
 
 ##### Returns
 
-`Function`
+> (`client`): `void`
 
 ###### Parameters
 
@@ -62,7 +70,7 @@ This is the React version of the store which can be used as React hooks in React
 
 ##### Returns
 
-`Function`
+> (`encounter`): `void`
 
 ###### Parameters
 
@@ -74,13 +82,31 @@ This is the React version of the store which can be used as React hooks in React
 
 `void`
 
+#### use.setFhirContext()
+
+> **setFhirContext**: () => (`fhirContext`) => `void`
+
+##### Returns
+
+> (`fhirContext`): `void`
+
+###### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `fhirContext` | `FhirContext`[] |
+
+###### Returns
+
+`void`
+
 #### use.setPatient()
 
 > **setPatient**: () => (`patient`) => `void`
 
 ##### Returns
 
-`Function`
+> (`patient`): `void`
 
 ###### Parameters
 
@@ -98,7 +124,7 @@ This is the React version of the store which can be used as React hooks in React
 
 ##### Returns
 
-`Function`
+> (`user`): `void`
 
 ###### Parameters
 

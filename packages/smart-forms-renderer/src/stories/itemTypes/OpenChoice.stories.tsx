@@ -19,18 +19,16 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import { qOpenChoiceAnswerAutoCompleteFromValueSet } from '../assets/questionnaires';
 import {
+  checkRadioOption,
+  chooseSelectOption,
+  findByLinkId,
   getAnswers,
+  inputOpenChoiceOtherText,
   itemControlExtFactory,
   openLabelExtFactory,
   qrFactory,
   questionnaireFactory
 } from '../testUtils';
-import {
-  checkRadioOption,
-  inputOpenChoiceOtherText,
-  chooseSelectOption,
-  findByLinkIdAndLabel
-} from '@aehrc/testing-toolkit';
 import { expect, fireEvent, screen } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -68,10 +66,10 @@ const qOpenChoiceAnswerOptionBasic = questionnaireFactory([
     ]
   }
 ]);
-const targetlinkId = 'health-check-location';
+const targetLinkId = 'health-check-location';
 const qrOpenChoiceAnswerOptionBasicResponse = qrFactory([
   {
-    linkId: targetlinkId,
+    linkId: targetLinkId,
     text: 'Location of health check',
     answer: [
       {
@@ -86,9 +84,9 @@ export const OpenChoiceAnswerOptionBasic: Story = {
     questionnaire: qOpenChoiceAnswerOptionBasic
   },
   play: async ({ canvasElement }) => {
-    await checkRadioOption(canvasElement, targetlinkId, clinicCoding.display);
+    await checkRadioOption(canvasElement, targetLinkId, clinicCoding.display);
 
-    const result = await getAnswers(targetlinkId);
+    const result = await getAnswers(targetLinkId);
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueCoding: clinicCoding }));
 
@@ -97,9 +95,9 @@ export const OpenChoiceAnswerOptionBasic: Story = {
     fireEvent.click(clearButton as HTMLElement);
     // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
-    const resultAfterClear = await getAnswers(targetlinkId);
+    const resultAfterClear = await getAnswers(targetLinkId);
     expect(resultAfterClear).toHaveLength(0);
-    const elementAfterClear = await findByLinkIdAndLabel(canvasElement, targetlinkId);
+    const elementAfterClear = await findByLinkId(canvasElement, targetLinkId);
     const input = elementAfterClear.querySelector('input');
 
     expect(input).not.toBeChecked();
@@ -114,9 +112,9 @@ export const OpenChoiceAnswerOptionBasicOther: Story = {
     questionnaire: qOpenChoiceAnswerOptionBasic
   },
   play: async ({ canvasElement }) => {
-    await checkRadioOption(canvasElement, targetlinkId, otherVariantLinkid);
-    await inputOpenChoiceOtherText(canvasElement, targetlinkId, otherTargetText);
-    const result = await getAnswers(targetlinkId);
+    await checkRadioOption(canvasElement, targetLinkId, otherVariantLinkid);
+    await inputOpenChoiceOtherText(canvasElement, targetLinkId, otherTargetText);
+    const result = await getAnswers(targetLinkId);
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueString: otherTargetText }));
 
@@ -129,7 +127,7 @@ export const OpenChoiceAnswerOptionBasicOther: Story = {
     const qrAfterClear = await getAnswers(targetOtherLinkid);
     expect(qrAfterClear).toHaveLength(0);
 
-    const resultAfterClear = await findByLinkIdAndLabel(canvasElement, targetlinkId);
+    const resultAfterClear = await findByLinkId(canvasElement, targetLinkId);
     const input = resultAfterClear.querySelector('textarea');
     expect(input?.value).toBe('');
   }

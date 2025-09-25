@@ -28,6 +28,7 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
 import useShowFeedback from '../../../hooks/useShowFeedback';
+import { sanitizeInput } from '../../../utils/inputSanitization';
 
 function UrlItem(props: BaseItemProps) {
   const {
@@ -84,7 +85,10 @@ function UrlItem(props: BaseItemProps) {
     debounce((input: string) => {
       const emptyQrItem = createEmptyQrItem(qItem, answerKey);
       if (input !== '') {
-        onQrItemChange({ ...emptyQrItem, answer: [{ id: answerKey, valueUri: input }] });
+        onQrItemChange({
+          ...emptyQrItem,
+          answer: [{ id: answerKey, valueUri: sanitizeInput(input) }]
+        });
       } else {
         onQrItemChange(emptyQrItem);
       }

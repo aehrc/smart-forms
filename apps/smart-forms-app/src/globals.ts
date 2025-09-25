@@ -15,18 +15,7 @@
  * limitations under the License.
  */
 
-// Environment variables
-export const TERMINOLOGY_SERVER_URL =
-  import.meta.env.VITE_ONTOSERVER_URL ?? 'https://tx.ontoserver.csiro.au/fhir';
-export const FORMS_SERVER_URL =
-  import.meta.env.VITE_FORMS_SERVER_URL ?? 'https://smartforms.csiro.au/api/fhir';
-export const LAUNCH_SCOPE =
-  import.meta.env.VITE_LAUNCH_SCOPE ??
-  'fhirUser online_access openid profile patient/Condition.rs patient/Observation.rs launch patient/Encounter.rs patient/QuestionnaireResponse.cruds patient/Patient.rs';
-export const LAUNCH_CLIENT_ID = import.meta.env.VITE_LAUNCH_CLIENT_ID ?? 'smart-forms-client-id';
-export const IN_APP_POPULATE = import.meta.env.VITE_IN_APP_POPULATE ?? true;
-
-// Non-environment variables, but still global constants
+// Global constants controlling the maximum number of resources fetched per request.
 export const NUM_OF_QUESTIONNAIRES_TO_FETCH = 500;
 export const NUM_OF_EXISTING_RESPONSES_TO_FETCH = 200;
 

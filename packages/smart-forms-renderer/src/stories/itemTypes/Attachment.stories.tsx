@@ -18,8 +18,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 
-import { getAnswers, questionnaireFactory } from '../testUtils';
-import { inputFile } from '@aehrc/testing-toolkit';
+import { getAnswers, inputFile, questionnaireFactory } from '../testUtils';
 import { expect, fireEvent, screen } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -34,19 +33,19 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-const targetlinkId = 'file-attachment';
+const targetLinkId = 'file-attachment';
 const targetText = 'File Attachment';
 
 const qAttachmentBasic = questionnaireFactory([
   {
-    linkId: targetlinkId,
+    linkId: targetLinkId,
     type: 'attachment',
     repeats: false,
     text: targetText
   }
 ]);
 
-const url = 'http://world_of_warcraft.com';
+const url = 'http://example.com';
 const name = 'Vladimir';
 const fileName = 'foo.png';
 const type = 'image/png';
@@ -58,13 +57,13 @@ export const AttachmentBasic: Story = {
   play: async ({ canvasElement }) => {
     await inputFile(
       canvasElement,
-      targetlinkId,
+      targetLinkId,
       [new File(['foo'], fileName, { type: type })],
       url,
       name
     );
 
-    const result = await getAnswers(targetlinkId);
+    const result = await getAnswers(targetLinkId);
     expect(result).toHaveLength(1);
     expect(result[0].valueAttachment).toEqual(
       expect.objectContaining({ contentType: type, title: name, url: url })
@@ -76,7 +75,7 @@ export const AttachmentBasic: Story = {
 
     // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
-    const resultAfterClear = await getAnswers(targetlinkId);
+    const resultAfterClear = await getAnswers(targetLinkId);
     expect(resultAfterClear).toHaveLength(0);
 
     const elementAfterClear = await screen.findByText('No file selected');

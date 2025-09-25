@@ -8,13 +8,13 @@ Method should be able to handle both absolute urls and query strings
 ```ts
 const ABSOLUTE_URL_REGEX = /^(https?|ftp)://[^\s/$.?#].[^\s]*$/;
 
-const fetchTerminologyCallback: FetchTerminologyCallback = (
+export const fetchTerminologyCallback: FetchTerminologyCallback = async (
   query: string,
-  terminologyRequestConfig: TerminologyRequestConfig
+  requestConfig: FetchTerminologyRequestConfig
 ) => {
-  let { terminologyServerUrl } = terminologyRequestConfig;
+  let { terminologyServerUrl } = requestConfig;
 
-  const headers = {
+  const headers: Record<string, string> = {
     Accept: 'application/json;charset=utf-8'
   };
 
@@ -22,55 +22,28 @@ const fetchTerminologyCallback: FetchTerminologyCallback = (
     terminologyServerUrl += '/';
   }
 
-  const queryUrl = ABSOLUTE_URL_REGEX.test(query) ? query : terminologyServerUrl + query;
+  const requestUrl = ABSOLUTE_URL_REGEX.test(query) ? query : `${terminologyServerUrl}${query}`;
+  const response = await fetch(requestUrl, { headers });
 
-  return axios.get(queryUrl, {
-    headers: headers
-  });
+  if (!response.ok) {
+    throw new Error(`HTTP error when performing ${requestUrl}. Status: ${response.status}`);
+  }
+
+  return response.json();
 };
 ```
 
 > **FetchTerminologyCallback**(`query`, `requestConfig`): `Promise`\<`any`\>
-
-To define a method to fetch resources from the FHIR server with a given query string
-Method should be able to handle both absolute urls and query strings
 
 ## Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `query` | `string` | The query URL of the FHIR resource |
-| `requestConfig` | [`TerminologyRequestConfig`](TerminologyRequestConfig.md) | Terminology request configs - must have terminologyServerUrl + any key value pair - can be headers, auth tokens or endpoints |
+| `requestConfig` | [`FetchTerminologyRequestConfig`](FetchTerminologyRequestConfig.md) | Terminology request configs - must have terminologyServerUrl + any key value pair - can be headers, auth tokens or endpoints |
 
 ## Returns
 
 `Promise`\<`any`\>
 
 A promise of the FHIR resource (or an error)!
-
-## Example
-
-```ts
-const ABSOLUTE_URL_REGEX = /^(https?|ftp)://[^\s/$.?#].[^\s]*$/;
-
-const fetchTerminologyCallback: FetchTerminologyCallback = (
-  query: string,
-  terminologyRequestConfig: TerminologyRequestConfig
-) => {
-  let { terminologyServerUrl } = terminologyRequestConfig;
-
-  const headers = {
-    Accept: 'application/json;charset=utf-8'
-  };
-
-  if (!terminologyServerUrl.endsWith('/')) {
-    terminologyServerUrl += '/';
-  }
-
-  const queryUrl = ABSOLUTE_URL_REGEX.test(query) ? query : terminologyServerUrl + query;
-
-  return axios.get(queryUrl, {
-    headers: headers
-  });
-};
-```

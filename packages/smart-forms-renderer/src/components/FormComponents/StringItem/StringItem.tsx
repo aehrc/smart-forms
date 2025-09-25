@@ -40,6 +40,7 @@ import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
 import useShowFeedback from '../../../hooks/useShowFeedback';
 import { readStringValue } from '../../../utils/readValues';
+import { sanitizeInput } from '../../../utils/inputSanitization';
 
 interface StringItemProps
   extends PropsWithQrItemChangeHandler,
@@ -92,7 +93,7 @@ function StringItem(props: StringItemProps) {
       onQrItemChange(
         {
           ...createEmptyQrItem(qItem, answerKey),
-          answer: [{ id: answerKey, valueString: newValueString }]
+          answer: [{ id: answerKey, valueString: sanitizeInput(newValueString) }]
         },
         itemPath
       );
@@ -128,7 +129,7 @@ function StringItem(props: StringItemProps) {
       onQrItemChange(
         {
           ...createEmptyQrItem(qItem, answerKey),
-          answer: [{ id: answerKey, valueString: newValueString }]
+          answer: [{ id: answerKey, valueString: sanitizeInput(newValueString) }]
         },
         itemPath
       );
@@ -145,7 +146,10 @@ function StringItem(props: StringItemProps) {
     debounce((input: string) => {
       const emptyQrItem = createEmptyQrItem(qItem, answerKey);
       if (input !== '') {
-        onQrItemChange({ ...emptyQrItem, answer: [{ id: answerKey, valueString: input }] });
+        onQrItemChange({
+          ...emptyQrItem,
+          answer: [{ id: answerKey, valueString: sanitizeInput(input) }]
+        });
       } else {
         onQrItemChange(emptyQrItem);
       }

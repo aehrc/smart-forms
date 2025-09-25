@@ -92,7 +92,7 @@ The metadata about the resource. This is content that is maintained by the infra
 
 ### parameter
 
-> **parameter**: [`object`]
+> **parameter**: \[\{ `name`: `"questionnaire"`; `resource`: `Questionnaire`; \}\]
 
 A parameter passed to or received from the operation.
 

@@ -599,6 +599,36 @@ export function isGroupAddItemButtonHidden(qItem: QuestionnaireItem): boolean {
 }
 
 /**
+ * Check if the item has a sdc-questionnaire-width extension
+ *
+ * @param {QuestionnaireItem} qItem - The QuestionnaireItem to check.
+ * @returns {number | undefined} The numeric value of the columnWidth extension, if present.
+ *
+ * @author Janardhan Vignarajan
+ */
+export function getColumnWidth(qItem: QuestionnaireItem): string | undefined {
+  const extension = qItem.extension?.find(
+    (extension: Extension) =>
+      extension.url === 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-width'
+  );
+
+  // Check if valueQuantity exists and if value is a "number" type
+  if (extension?.valueQuantity) {
+    if (typeof extension.valueQuantity.value === 'number') {
+      // if the extension.valueQuantity.code exists then return value + code, else return value + 'px'
+      // See http://hl7.org/fhir/uv/sdc/rendering.html#width.
+      if (extension.valueQuantity.code) {
+        return `${extension.valueQuantity.value}${extension.valueQuantity.code}`;
+      } else {
+        return `${extension.valueQuantity.value}px`;
+      }
+    }
+  }
+
+  return undefined;
+}
+
+/**
  * Check if the QuestionnaireItem has a 'showRepopulateButton' extension to show a sync button for granular repopulation.
  */
 export function isItemRepopulatable(qItem: QuestionnaireItem): boolean {

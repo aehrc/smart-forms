@@ -1,13 +1,13 @@
 # Function: useValidationFeedback()
 
-> **useValidationFeedback**(`qItem`, `input`): `string`
+> **useValidationFeedback**(`qItem`, `feedbackFromParent`): `string`
 
 ## Parameters
 
 | Parameter | Type |
 | ------ | ------ |
 | `qItem` | `QuestionnaireItem` |
-| `input` | `string` |
+| `feedbackFromParent` | `undefined` \| `string` |
 
 ## Returns
 

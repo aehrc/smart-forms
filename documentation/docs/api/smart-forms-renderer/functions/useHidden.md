@@ -1,6 +1,6 @@
 # Function: useHidden()
 
-> **useHidden**(`qItem`, `parentRepeatGroupIndex`?): `boolean`
+> **useHidden**(`qItem`, `parentRepeatGroupIndex?`): `boolean`
 
 React hook to determine if a QuestionnaireItem is hidden via item.hidden, enableWhens, enableWhenExpressions.
 When checking for repeating group enableWhen items, the parentRepeatGroupIndex should be provided.
@@ -10,7 +10,7 @@ When checking for repeating group enableWhen items, the parentRepeatGroupIndex s
 | Parameter | Type |
 | ------ | ------ |
 | `qItem` | `QuestionnaireItem` |
-| `parentRepeatGroupIndex`? | `number` |
+| `parentRepeatGroupIndex?` | `number` |
 
 ## Returns
 
