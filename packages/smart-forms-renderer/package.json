@@ -41,7 +41,7 @@
     "@tanstack/react-query": "^5.90.2",
     "dayjs": "^1.11.18",
     "deep-diff": "^1.0.2",
-    "fast-equals": "^5.2.2",
+    "fast-equals": "^5.3.2",
     "fhir-sdc-helpers": "^0.1.0",
     "fhirclient": "^2.6.0",
     "fhirpath": "3.18.0",
