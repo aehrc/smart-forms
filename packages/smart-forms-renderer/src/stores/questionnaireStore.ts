@@ -37,7 +37,6 @@ import type { TargetConstraint } from '../interfaces/targetConstraint.interface'
 import type { ProcessedValueSet } from '../interfaces/valueSet.interface';
 import type { Variables } from '../interfaces/variables.interface';
 import {
-  applyCalculatedExpressionValuesToResponse,
   evaluateInitialCalculatedExpressions,
   processCalculatedExpressions
 } from '../utils/calculatedExpression';
@@ -438,8 +437,21 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     5. Update store state based on the expressions that changed
     */
 
-    const sourceQuestionnaire = get().sourceQuestionnaire;
+    const {
+      sourceQuestionnaire,
+      itemMap,
+      itemPreferredTerminologyServers,
+      variables,
+      targetConstraints,
+      answerOptionsToggleExpressions,
+      enableWhenExpressions,
+      processedValueSets,
+      calculatedExpressions,
+      fhirPathContext,
+      fhirPathTerminologyCache
+    } = get();
     const { updateResponse, validateResponse } = questionnaireResponseStore.getState();
+    const defaultTerminologyServerUrl = terminologyServerStore.getState().url;
 
     // Helper function to extract common state update logic
     function updateStoreState(
@@ -478,11 +490,13 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     } = await processCalculatedExpressions(
       sourceQuestionnaire,
       updatedResponse,
-      get().calculatedExpressions,
-      get().variables,
-      get().fhirPathContext,
-      get().fhirPathTerminologyCache,
-      terminologyServerStore.getState().url
+      itemMap,
+      calculatedExpressions,
+      variables,
+      fhirPathContext,
+      fhirPathTerminologyCache,
+      itemPreferredTerminologyServers,
+      defaultTerminologyServerUrl
     );
 
     updateResponse(lastUpdatedResponse);
@@ -503,14 +517,14 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     } = await evaluateOtherExpressions(
       lastUpdatedResponse,
       updatedResponseItemMap,
-      get().variables,
-      get().targetConstraints,
-      get().fhirPathContext,
-      get().fhirPathTerminologyCache,
-      get().enableWhenExpressions,
-      get().answerOptionsToggleExpressions,
-      get().processedValueSets,
-      terminologyServerStore.getState().url
+      variables,
+      targetConstraints,
+      fhirPathContext,
+      fhirPathTerminologyCache,
+      enableWhenExpressions,
+      answerOptionsToggleExpressions,
+      processedValueSets,
+      defaultTerminologyServerUrl
     );
 
     /* Step 3 & 4: Handle computed updates and re-run calculations if needed */
@@ -525,11 +539,13 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       const finalCalculatedResult = await processCalculatedExpressions(
         sourceQuestionnaire,
         lastUpdatedResponse,
+        itemMap,
         updatedCalculatedExpressions,
-        get().variables,
+        variables,
         updatedFhirPathContext,
         updatedFhirPathTerminologyCache,
-        terminologyServerStore.getState().url
+        itemPreferredTerminologyServers,
+        defaultTerminologyServerUrl
       );
 
       lastUpdatedResponse = finalCalculatedResult.updatedResponse;
@@ -600,13 +616,6 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     let fhirPathTerminologyCache =
       evaluateInitialCalculatedExpressionsResult.fhirPathTerminologyCache;
 
-    const updatedResponse = applyCalculatedExpressionValuesToResponse(
-      sourceQuestionnaire,
-      populatedResponse,
-      {},
-      initialCalculatedExpressions
-    );
-
     const {
       initialTargetConstraints,
       initialEnableWhenItems,
@@ -617,7 +626,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       firstVisiblePage
     } = await initialiseFormFromResponse({
       sourceQuestionnaire,
-      questionnaireResponse: updatedResponse,
+      questionnaireResponse: populatedResponse,
       targetConstraints: get().targetConstraints,
       enableWhenItems: get().enableWhenItems,
       enableWhenExpressions: get().enableWhenExpressions,
@@ -648,7 +657,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       populatedContext: populatedContext ?? get().populatedContext
     }));
 
-    return updatedResponse;
+    return populatedResponse;
   },
   onFocusLinkId: (linkId: string) =>
     set(() => ({

@@ -34,7 +34,7 @@ export const rendererThemeOptions: ThemeOptions = {
     },
     background: {
       paper: '#fff',
-      default: '#fafafa'
+      default: '#fff'
     },
     action: {
       active: grey['600'],

@@ -20,6 +20,7 @@ import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperF
 
 import { getAnswers, getInputText, inputTime, qrFactory, questionnaireFactory } from '../testUtils';
 import { expect } from 'storybook/test';
+import { qTimeCalculation } from '../assets/questionnaires';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -65,6 +66,7 @@ export const TimeBasic: Story = {
     expect(result[0].valueTime).toBe(targetTime);
   }
 };
+
 export const TimeBasicResponse: Story = {
   args: {
     questionnaire: qTimeBasic,
@@ -74,5 +76,11 @@ export const TimeBasicResponse: Story = {
     const inputText = await getInputText(canvasElement, targetLinkId);
 
     expect(inputText).toBe(targetTimeString);
+  }
+};
+
+export const TimeCalculation: Story = {
+  args: {
+    questionnaire: qTimeCalculation
   }
 };

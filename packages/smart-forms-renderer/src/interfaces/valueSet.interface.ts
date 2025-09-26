@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { ValueSet } from 'fhir/r4';
+import type { Parameters, ValueSet } from 'fhir/r4';
 
 export interface ProcessedValueSet {
   initialValueSetUrl: string;
@@ -30,7 +30,7 @@ export interface ValueSetPromise {
   valueSet?: ValueSet;
 }
 
-export interface ValidateCodeResponse extends Parameters<any> {
+export interface ValidateCodeResponse extends Parameters {
   parameter: [SystemParameter, CodeParameter, DisplayParameter];
 }
 

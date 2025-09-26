@@ -53,6 +53,7 @@ function TimeField(props: TimeFieldProps) {
           textField: {
             fullWidth: true
           }
+          // EndAdornment not available here
         }}
         onChange={onTimeChange}
       />

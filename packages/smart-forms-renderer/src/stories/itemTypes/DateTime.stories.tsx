@@ -26,6 +26,7 @@ import {
   questionnaireFactory
 } from '../testUtils';
 import { expect } from 'storybook/test';
+import { qDateTimeCalculation } from '../assets/questionnaires';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -95,5 +96,11 @@ export const DateTimeBasicResponse: Story = {
     expect(input).toBe('01/01/1990');
 
     // TODO: We have bug with it.Time and ampm doesnt work correctly.
+  }
+};
+
+export const DateTimeCalculation: Story = {
+  args: {
+    questionnaire: qDateTimeCalculation
   }
 };

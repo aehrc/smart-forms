@@ -20,6 +20,7 @@ import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import type {
   Coding,
+  Quantity,
   Questionnaire,
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
@@ -42,6 +43,7 @@ import { getDecimalPrecision } from './extensions';
 import { convertCodingsToAnswerOptions, getRelevantCodingProperties } from './choice';
 import { getCodingsForAnswerValueSet } from './valueSet';
 import { questionnaireStore } from '../stores';
+import { parseAndConvertUcumQuantities } from './ucumQuantityConversion';
 
 interface EvaluateInitialCalculatedExpressionsParams {
   initialResponse: QuestionnaireResponse;
@@ -255,16 +257,22 @@ export async function evaluateCalculatedExpressionsFhirPath(
  *
  * @param questionnaire - The Questionnaire definition object.
  * @param initialResponse - The target QuestionnaireResponse to be updated.
+ * @param questionnaireItemMap - A mapping from linkId to QuestionnaireItem (without 'item' children) for easy lookup.
  * @param previousCalculatedExpressions - A mapping from linkId to array of CalculatedExpression objects that were previously applied.
  * @param updatedCalculatedExpressions - A mapping from linkId to array of CalculatedExpression objects to be applied.
+ * @param itemPreferredTerminologyServers - A mapping of `linkId` to preferred terminology server URLs for that item.
+ * @param defaultTerminologyServerUrl - The fallback terminology server URL to use if none is specified for an item.
  * @returns The updated QuestionnaireResponse with calculated expression values applied.
  */
-export function applyCalculatedExpressionValuesToResponse(
+export async function applyCalculatedExpressionValuesToResponse(
   questionnaire: Questionnaire,
   initialResponse: QuestionnaireResponse,
+  questionnaireItemMap: Record<string, Omit<QuestionnaireItem, 'item'>>,
   previousCalculatedExpressions: Record<string, CalculatedExpression[]>,
-  updatedCalculatedExpressions: Record<string, CalculatedExpression[]>
-): QuestionnaireResponse {
+  updatedCalculatedExpressions: Record<string, CalculatedExpression[]>,
+  itemPreferredTerminologyServers: Record<string, string>,
+  defaultTerminologyServerUrl: string
+): Promise<QuestionnaireResponse> {
   // Filter calculated expressions, only preserve key-value pairs with values
   const calculatedExpressionsWithValues: Record<string, CalculatedExpression[]> = {};
   for (const linkId in updatedCalculatedExpressions) {
@@ -278,7 +286,7 @@ export function applyCalculatedExpressionValuesToResponse(
   }
 
   // Get the difference between previous and updated calculated expressions
-  const diffCalculatedExpressions: Record<string, CalculatedExpression[]> = {};
+  let diffCalculatedExpressions: Record<string, CalculatedExpression[]> = {};
   for (const [linkId, calculatedExpressionWithValue] of Object.entries(
     calculatedExpressionsWithValues
   )) {
@@ -305,6 +313,14 @@ export function applyCalculatedExpressionValuesToResponse(
       diffCalculatedExpressions[linkId] = calculatedExpressionWithValue;
     }
   }
+
+  // Convert UCUM quantity strings in diffCalculatedExpressions to Quantity objects
+  diffCalculatedExpressions = await parseAndConvertUcumQuantities(
+    diffCalculatedExpressions,
+    questionnaireItemMap,
+    itemPreferredTerminologyServers,
+    defaultTerminologyServerUrl
+  );
 
   return updateQuestionnaireResponse(
     questionnaire,
@@ -477,12 +493,15 @@ function constructItemFromCalculatedExpression(
   if (!calcExpressionFromItem || calcExpressionFromItem.value === undefined) {
     return;
   }
-
   const generatedAnswerKey = generateCalculatedExpressionsAnswerKey(qItem.linkId);
 
   // calcExpressionFromItem.value is null, return empty item
   if (calcExpressionFromItem.value === null) {
     return createEmptyQrItem(qItem, generatedAnswerKey);
+  }
+
+  if (qItem.linkId === 'quantity-field-ucum') {
+    console.log(calculatedExpressions, generatedAnswerKey);
   }
 
   // At this point calcExpressionFromItem.value should have an evaluated value
@@ -700,11 +719,12 @@ function parseValueToAnswer(
       return { valueQuantity: { value: value } };
     }
 
-    // TODO implement string for Quantity calcExpressions here
-    // if (typeof value === 'string') {
-    //
-    //   return { valueQuantity: value };
-    // }
+    // In this case value is expected to be a Quantity object
+    if (typeof value === 'object') {
+      if (checkIsQuantity(value)) {
+        return { valueQuantity: value };
+      }
+    }
   }
 
   return null;
@@ -732,18 +752,54 @@ export function checkIsTime(value: string): boolean {
 }
 
 /**
+ * Check if an object is a FHIR Quantity. For our use case, `value` must be present (number). `unit`, `system`, and `code` are optional.
+ * If a code for the unit is present, the system SHALL also be present. See https://www.hl7.org/fhir/R4/datatypes.html#Quantity constraints.
+ *
+ * @author Sean Fong
+ */
+export function checkIsQuantity(obj: unknown): obj is Quantity {
+  if (typeof obj !== 'object' || obj === null) {
+    return false;
+  }
+
+  const quantity = obj as Partial<Quantity>;
+
+  // value must exist and be a number
+  if (typeof quantity.value !== 'number') {
+    return false;
+  }
+
+  // unit/system/code are optional, but if present must be strings
+  if (
+    (quantity.unit !== undefined && typeof quantity.unit !== 'string') ||
+    (quantity.system !== undefined && typeof quantity.system !== 'string') ||
+    (quantity.code !== undefined && typeof quantity.code !== 'string')
+  ) {
+    return false;
+  }
+
+  // if code is present, system must also be present
+  if (quantity.code !== undefined && quantity.system === undefined) {
+    return false;
+  }
+
+  return true;
+}
+
+/**
  * Evaluate calculated expressions with chaining support.
- * Iteratively evaluates calculated expressions until no more changes occur,
- * ensuring that chained expressions are properly resolved.
+ * Iteratively evaluates calculated expressions until no more changes occur, ensuring that chained expressions are properly resolved.
  */
 export async function processCalculatedExpressions(
   questionnaire: Questionnaire,
   questionnaireResponse: QuestionnaireResponse,
+  questionnaireItemMap: Record<string, Omit<QuestionnaireItem, 'item'>>,
   calculatedExpressions: Record<string, CalculatedExpression[]>,
   variables: Variables,
   existingFhirPathContext: Record<string, any>,
   existingFhirPathTerminologyCache: Record<string, any>,
-  terminologyServerUrl: string
+  itemPreferredTerminologyServers: Record<string, string>,
+  defaultTerminologyServerUrl: string
 ): Promise<{
   updatedResponse: QuestionnaireResponse;
   updatedCalculatedExpressions: Record<string, CalculatedExpression[]>;
@@ -774,7 +830,7 @@ export async function processCalculatedExpressions(
       variables,
       existingFhirPathContext,
       existingFhirPathTerminologyCache,
-      terminologyServerUrl
+      defaultTerminologyServerUrl
     );
     const { fhirPathContext: updatedFhirPathContext } = fhirPathEvalResult;
 
@@ -784,7 +840,7 @@ export async function processCalculatedExpressions(
         updatedFhirPathContext,
         existingFhirPathTerminologyCache,
         currentCalculatedExpressions,
-        terminologyServerUrl
+        defaultTerminologyServerUrl
       );
     currentCalculatedExpressions = updatedCalculatedExpressions;
 
@@ -792,11 +848,14 @@ export async function processCalculatedExpressions(
       hasChanges = true;
 
       // Apply calculated expression values directly to the response
-      currentResponse = applyCalculatedExpressionValuesToResponse(
+      currentResponse = await applyCalculatedExpressionValuesToResponse(
         questionnaire,
         currentResponse,
+        questionnaireItemMap,
         previousCalculatedExpressions,
-        currentCalculatedExpressions
+        currentCalculatedExpressions,
+        itemPreferredTerminologyServers,
+        defaultTerminologyServerUrl
       );
 
       // Update previousCalculatedExpressions for the next iteration
