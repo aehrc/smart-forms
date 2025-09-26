@@ -94,7 +94,7 @@ export interface PropsWithParentIsRepeatGroupAttribute {
   parentRepeatGroupIndex?: number;
 }
 
-export interface PropsWithCalculatedExpressionAnimatingAttribute {
+export interface PropsWithCalculatedExpressionUpdatedAttribute {
   calcExpUpdated: boolean;
 }
 
@@ -110,7 +110,7 @@ export interface BaseItemProps
     PropsWithRenderingExtensionsAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithFeedbackFromParentAttribute,
-    PropsWithCalculatedExpressionAnimatingAttribute,
+    PropsWithCalculatedExpressionUpdatedAttribute,
     PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;

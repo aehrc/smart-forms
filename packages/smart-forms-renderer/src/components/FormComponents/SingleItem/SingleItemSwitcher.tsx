@@ -17,7 +17,7 @@
 
 import Typography from '@mui/material/Typography';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { useCalculatedExpressionAnimating } from '../../../hooks/useCalculatedExpressionAnimating';
+import { useCalculatedExpressionUpdated } from '../../../hooks/useCalculatedExpressionUpdated';
 import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
@@ -77,7 +77,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
   // This is used to force re-rendering of the component when the answer changes via an external event i.e. calculatedExpression
   const answerKey = qrItem?.answer?.[0]?.id;
 
-  const calcExpUpdated = useCalculatedExpressionAnimating(answerKey);
+  const calcExpUpdated = useCalculatedExpressionUpdated(answerKey);
 
   const qItemOverrideComponents = useQuestionnaireStore.use.qItemOverrideComponents();
   const QItemOverrideComponent = qItemOverrideComponents[qItem.linkId];
