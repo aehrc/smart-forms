@@ -33,7 +33,7 @@ interface useFetchPatientsReturnParams {
 function useFetchPatients(endpointUrl: string): useFetchPatientsReturnParams {
   const numOfSearchEntries = NUM_OF_PATIENTS_TO_FETCH_PLAYGROUND;
 
-  const queryUrl = `/Patient?_count=${numOfSearchEntries}`;
+  const queryUrl = `/Patient?_sort:asc=family&_count=${numOfSearchEntries}`;
 
   const {
     data: bundle,
