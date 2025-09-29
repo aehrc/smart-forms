@@ -24,9 +24,11 @@ import {
   questionnaireFactory,
   ucumSystem,
   unitExtFactory,
-  unitOptionExtFactory
+  unitOptionExtFactory,
+  inputQuantity,
+  getQuantityTextValues
 } from '../testUtils';
-import { getQuantityTextValues, inputQuantity } from '@aehrc/testing-toolkit';
+
 import type { Quantity } from 'fhir/r4';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export

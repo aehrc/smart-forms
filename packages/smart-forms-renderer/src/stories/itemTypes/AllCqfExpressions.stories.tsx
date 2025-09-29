@@ -18,8 +18,13 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, within } from 'storybook/test';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { chooseSelectOption } from '@aehrc/testing-toolkit';
-import { questionnaireFactory, variableExtFactory, сqfExpressionFactory } from '../testUtils';
+
+import {
+  chooseSelectOption,
+  questionnaireFactory,
+  variableExtFactory,
+  сqfExpressionFactory
+} from '../testUtils';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {

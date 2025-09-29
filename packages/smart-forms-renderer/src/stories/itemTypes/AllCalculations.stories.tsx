@@ -7,15 +7,14 @@ import {
   getGroupAnswers,
   itemControlExtFactory,
   questionnaireFactory,
-  variableExtFactory
-} from '../testUtils';
-import {
+  variableExtFactory,
   chooseSelectOption,
   inputInteger,
   inputQuantity,
   inputDecimal,
   inputText
-} from '@aehrc/testing-toolkit';
+} from '../testUtils';
+
 import { expect, waitFor } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export

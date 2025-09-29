@@ -7,8 +7,85 @@ import type {
   QuestionnaireResponse,
   QuestionnaireResponseItem
 } from 'fhir/r4';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
+import { fireEvent, screen, userEvent, waitFor } from 'storybook/internal/test';
+
+export async function getQuantityTextValues(
+  canvasElement: HTMLElement,
+  linkId: string,
+  unit: boolean
+) {
+  const element = await findByLinkId(canvasElement, linkId);
+  const quantityComparator = element.querySelector(
+    'div[data-test="q-item-quantity-comparator"] input'
+  );
+  const quantityInput = element.querySelector('div[data-test="q-item-quantity-field"] input');
+  const quantityUnit = element.querySelector('div[data-test="q-item-unit-field"] input');
+
+  // Error section
+  if (!quantityComparator) {
+    throw new Error(
+      `File input was not found inside [data-test="q-item-quantity-comparator"] block`
+    );
+  }
+  if (!quantityInput) {
+    throw new Error(`File input was not found inside [data-test="q-item-quantity-field"] block`);
+  }
+  if (!quantityUnit && unit) {
+    throw new Error(`File input was not found inside [data-test="q-item-unit-field"] block`);
+  }
+
+  return {
+    comparator: quantityComparator?.getAttribute('value'),
+    value: quantityInput?.getAttribute('value'),
+    unit: quantityUnit?.getAttribute('value')
+  };
+}
+
+export async function inputQuantity(
+  canvasElement: HTMLElement,
+  linkId: string,
+  quantity: number,
+  unit?: string,
+  comparator?: string
+) {
+  const questionElement = await findByLinkId(canvasElement, linkId);
+
+  const comparatorInput = questionElement?.querySelector(
+    `div[data-test="q-item-quantity-comparator"] input`
+  );
+  const quantityInput = questionElement?.querySelector(
+    `div[data-test="q-item-quantity-field"] input`
+  );
+  const unitInput = questionElement?.querySelector(`div[data-test="q-item-unit-field"] input`);
+
+  // Error section
+  if (comparator && !comparatorInput) {
+    throw new Error(`Input was not found inside [data-test="q-item-quantity-comparator"] block`);
+  }
+  if (!quantityInput) {
+    throw new Error(`Input was not found inside [data-test="q-item-quantity-field"] block`);
+  }
+  if (!unitInput && unit) {
+    throw new Error(`Input was not found inside [data-test="q-item-unit-field"] block`);
+  }
+
+  if (comparator && comparatorInput) {
+    fireEvent.focus(comparatorInput);
+    fireEvent.keyDown(comparatorInput, { key: 'ArrowDown', code: 'ArrowDown' });
+    const option = await screen.findByText(comparator);
+    fireEvent.click(option);
+  }
+  if (unit && unitInput) {
+    fireEvent.focus(unitInput);
+    fireEvent.keyDown(unitInput, { key: 'ArrowDown', code: 'ArrowDown' });
+    const option = await screen.findByText(unit);
+    fireEvent.click(option);
+  }
+  fireEvent.change(quantityInput, { target: { value: quantity } });
+
+  // Here we await for debounced store update
+  await new Promise((resolve) => setTimeout(resolve, 500));
+}
 
 export async function getAnswers(linkId: string) {
   const qr = questionnaireResponseStore.getState().updatableResponse;
