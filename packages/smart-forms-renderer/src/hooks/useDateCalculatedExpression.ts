@@ -63,19 +63,16 @@ function useDateCalculatedExpression(
       ) {
         // update ui to show calculated value changes
         setCalcExpUpdated(true);
-        const timeoutId = setTimeout(() => {
-          setCalcExpUpdated(false);
-        }, 500);
 
         // calculatedExpression value is null
         if (calcExpression.value === null) {
           onChangeByCalcExpressionNull();
-          return () => clearTimeout(timeoutId);
+          return;
         }
 
         // calculatedExpression value is string
         onChangeByCalcExpressionString(calcExpression.value as string);
-        return () => clearTimeout(timeoutId);
+        return;
       }
       return undefined;
     },
@@ -83,6 +80,19 @@ function useDateCalculatedExpression(
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [calculatedExpressions]
   );
+
+  // Handle reset separately so it’s not lost if effect re-runs
+  useEffect(() => {
+    if (!calcExpUpdated) {
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
+      setCalcExpUpdated(false);
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [calcExpUpdated]);
 
   return { calcExpUpdated };
 }

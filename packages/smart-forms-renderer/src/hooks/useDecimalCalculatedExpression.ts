@@ -76,19 +76,16 @@ function useDecimalCalculatedExpression(
         if (calcExpressionValue !== parseFloat(inputValue)) {
           // update ui to show calculated value changes
           setCalcExpUpdated(true);
-          const timeoutId = setTimeout(() => {
-            setCalcExpUpdated(false);
-          }, 500);
 
           // calculatedExpression value is null
           if (calcExpressionValue === null) {
             onChangeByCalcExpressionNull();
-            return () => clearTimeout(timeoutId);
+            return;
           }
 
           // calculatedExpression value is a number
           onChangeByCalcExpressionDecimal(calcExpressionValue);
-          return () => clearTimeout(timeoutId);
+          return;
         }
       }
     },
@@ -96,6 +93,19 @@ function useDecimalCalculatedExpression(
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [calculatedExpressions]
   );
+
+  // Handle reset separately so it’s not lost if effect re-runs
+  useEffect(() => {
+    if (!calcExpUpdated) {
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
+      setCalcExpUpdated(false);
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [calcExpUpdated]);
 
   return { calcExpUpdated: calcExpUpdated };
 }

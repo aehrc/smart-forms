@@ -64,14 +64,11 @@ function useStringCalculatedExpression(
       ) {
         // update ui to show calculated value changes
         setCalcExpUpdated(true);
-        const timeoutId = setTimeout(() => {
-          setCalcExpUpdated(false);
-        }, 500);
 
         // calculatedExpression value is null
         if (calcExpression.value === null) {
           onChangeByCalcExpressionNull();
-          return () => clearTimeout(timeoutId);
+          return;
         }
 
         // calculatedExpression value is a string or number
@@ -81,13 +78,26 @@ function useStringCalculatedExpression(
             : calcExpression.value.toString();
 
         onChangeByCalcExpressionString(newInputValue);
-        return () => clearTimeout(timeoutId);
+        return;
       }
     },
     // Only trigger this effect if calculatedExpression of item changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [calculatedExpressions]
   );
+
+  // Handle reset separately so it’s not lost if effect re-runs
+  useEffect(() => {
+    if (!calcExpUpdated) {
+      return;
+    }
+
+    const timeoutId = setTimeout(() => {
+      setCalcExpUpdated(false);
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [calcExpUpdated]);
 
   return { calcExpUpdated: calcExpUpdated };
 }
