@@ -8,65 +8,47 @@ Method should be able to handle both absolute urls and query strings
 ```ts
 const ABSOLUTE_URL_REGEX = /^(https?|ftp)://[^\s/$.?#].[^\s]*$/;
 
-const fetchResourceCallback: FetchResourceCallback = (canonicalUrl: string, requestConfig: any) => {
-const { clientEndpoint, authToken } = requestConfig
-const headers = {
-    'Cache-Control': 'no-cache',
-    Accept: 'application/json;charset=utf-8',
-    Authorization: `Bearer ${authToken}`
+export const fetchResourceCallback: FetchResourceCallback = async (
+  query: string,
+  requestConfig: FetchResourceRequestConfig
+) => {
+  let { sourceServerUrl } = requestConfig;
+  const { authToken } = requestConfig;
+
+  const headers: Record<string, string> = {
+    Accept: 'application/json;charset=utf-8'
   };
 
-  if (ABSOLUTE_URL_REGEX.test(query)) {
-    return axios.get(query, {
-      headers: headers
-    });
-  } else {
-    return axios.get(clientEndpoint + query, {
-      headers: headers
-    });
+  if (authToken) {
+    headers['Authorization'] = `Bearer ${authToken}`;
   }
+
+  if (!sourceServerUrl.endsWith('/')) {
+    sourceServerUrl += '/';
+  }
+
+  const requestUrl = ABSOLUTE_URL_REGEX.test(query) ? query : `${sourceServerUrl}${query}`;
+  const response = await fetch(requestUrl, { headers });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error when performing ${requestUrl}. Status: ${response.status}`);
+  }
+
+  return response.json();
 };
 ```
 
-> **FetchResourceCallback**(`query`, `requestConfig`?): `Promise`\<`any`\>
-
-To define a method to fetch resources from the FHIR server with a given query string
-Method should be able to handle both absolute urls and query strings
+> **FetchResourceCallback**(`query`, `requestConfig`): `Promise`\<`any`\>
 
 ## Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `query` | `string` | The query URL of the FHIR resource |
-| `requestConfig`? | `any` | Any request configs - can be headers, auth tokens or endpoints |
+| `requestConfig` | [`FetchResourceRequestConfig`](FetchResourceRequestConfig.md) | Terminology request configs - must have sourceServerUrl + any key value pair - can be headers, auth tokens or endpoints |
 
 ## Returns
 
 `Promise`\<`any`\>
 
 A promise of the FHIR resource (or an error)!
-
-## Example
-
-```ts
-const ABSOLUTE_URL_REGEX = /^(https?|ftp)://[^\s/$.?#].[^\s]*$/;
-
-const fetchResourceCallback: FetchResourceCallback = (canonicalUrl: string, requestConfig: any) => {
-const { clientEndpoint, authToken } = requestConfig
-const headers = {
-    'Cache-Control': 'no-cache',
-    Accept: 'application/json;charset=utf-8',
-    Authorization: `Bearer ${authToken}`
-  };
-
-  if (ABSOLUTE_URL_REGEX.test(query)) {
-    return axios.get(query, {
-      headers: headers
-    });
-  } else {
-    return axios.get(clientEndpoint + query, {
-      headers: headers
-    });
-  }
-};
-```

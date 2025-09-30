@@ -6,7 +6,12 @@
     "lint-fix-errors": "eslint -c eslint.config.mjs --fix --quiet .",
     "prettier": "prettier --check .",
     "prettier-fix": "prettier --write .",
-    "clean-folders": "find . -type d \\( -name \"node_modules\" -o -name \"dist\" -o -name \"lib\" \\) -exec rm -rf {} +"
+    "clean-folders": "find . -type d \\( -name \"node_modules\" -o -name \"dist\" -o -name \"lib\" \\) -exec rm -rf {} +",
+    "build-all-deps-first-run": "npm run build:sdc-assemble && npm run build:sdc-populate && npm run build:sdc-template-extract && npm run  build:smart-forms-renderer",
+    "build:sdc-assemble": "cd packages/sdc-assemble && npm run build",
+    "build:sdc-populate": "cd packages/sdc-populate && npm run build",
+    "build:sdc-template-extract": "cd packages/sdc-template-extract && npm run build",
+    "build:smart-forms-renderer": "cd packages/smart-forms-renderer && npm run build"
   },
   "workspaces": [
     "apps/smart-forms-app",
@@ -17,11 +22,11 @@
     "documentation"
   ],
   "devDependencies": {
-    "@eslint/compat": "^1.3.1",
+    "@eslint/compat": "^1.3.2",
     "@eslint/eslintrc": "^3.3.1",
-    "@eslint/js": "^9.33.0",
+    "@eslint/js": "^9.36.0",
     "@typescript-eslint/eslint-plugin": "^8.38.0",
-    "@typescript-eslint/parser": "^8.42.0",
+    "@typescript-eslint/parser": "^8.44.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-react-refresh": "^0.4.20",

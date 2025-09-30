@@ -28,8 +28,8 @@ import { getQrItemsIndex } from '../../../utils/mapItem';
 import type {
   PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithParentStylesAttribute
+  PropsWithParentStylesAttribute,
+  PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import { extendItemPath } from '../../../utils/itemPath';
 import { default as parseStyleToJs } from 'style-to-js';
@@ -46,6 +46,7 @@ interface GridTableProps
     label: string;
     styleString: string | null;
   }[];
+  calculatedColumnWidths: { width: string; isFixed: boolean }[];
 }
 
 function GridTable(props: GridTableProps) {
@@ -54,6 +55,7 @@ function GridTable(props: GridTableProps) {
     qrItems,
     qItemsIndexMap,
     columnHeaders,
+    calculatedColumnWidths,
     itemPath,
     parentIsReadOnly,
     parentStyles,
@@ -109,6 +111,7 @@ function GridTable(props: GridTableProps) {
                 qItem={qItem}
                 qrItem={qrItem ?? null}
                 columnHeaderLabels={columnHeaderLabels}
+                calculatedColumnWidths={calculatedColumnWidths}
                 itemPath={extendItemPath(itemPath, qItem.linkId)}
                 parentIsReadOnly={parentIsReadOnly}
                 parentStyles={parentStyles}

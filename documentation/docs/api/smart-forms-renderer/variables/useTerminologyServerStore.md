@@ -18,7 +18,7 @@ This is the React version of the store which can be used as React hooks in React
 
 ##### Returns
 
-`Function`
+> (): `void`
 
 ###### Returns
 
@@ -30,7 +30,7 @@ This is the React version of the store which can be used as React hooks in React
 
 ##### Returns
 
-`Function`
+> (`newUrl`): `void`
 
 ###### Parameters
 

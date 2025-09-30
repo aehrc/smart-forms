@@ -21,7 +21,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 // @ts-ignore
 import { Allotment } from 'allotment';
 import 'allotment/dist/style.css';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import type { VariantType } from 'notistack';
 import { useSnackbar } from 'notistack';
 import PlaygroundRenderer from './PlaygroundRenderer.tsx';
@@ -38,20 +38,28 @@ import {
   useSmartConfigStore
 } from '@aehrc/smart-forms-renderer';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
-import { TERMINOLOGY_SERVER_URL } from '../../../globals.ts';
 import PlaygroundPicker from './PlaygroundPicker.tsx';
-import type { OperationOutcomeIssue, Patient, Practitioner, Questionnaire } from 'fhir/r4';
+import type {
+  OperationOutcomeIssue,
+  Patient,
+  Practitioner,
+  Questionnaire,
+  QuestionnaireResponse
+} from 'fhir/r4';
 import PlaygroundHeader from './PlaygroundHeader.tsx';
 import { useExtractDebuggerStore } from '../stores/extractDebuggerStore.ts';
 import { buildFormWrapper, destroyFormWrapper } from '../../../utils/manageForm.ts';
 import { extractResultIsOperationOutcome, inAppExtract } from '@aehrc/sdc-template-extract';
 import type Client from 'fhirclient/lib/Client';
+import { ConfigContext } from '../../configChecker/contexts/ConfigContext.tsx';
+import { populateQuestionnaire } from '@aehrc/sdc-populate';
+import { fetchResourceCallback } from '../../prepopulate/utils/callback.ts';
 
 const defaultFhirServerUrl = 'https://hapi.fhir.org/baseR4';
 
-const defaultTerminologyServerUrl = TERMINOLOGY_SERVER_URL;
-
 function Playground() {
+  const { config } = useContext(ConfigContext);
+
   // Source FHIR Server to do pre-pop and write back
   const [sourceFhirServerUrl, setSourceFhirServerUrl] = useLocalStorage<string>(
     'playgroundSourceFhirServerUrl',
@@ -63,14 +71,13 @@ function Playground() {
   // Terminology Server to do terminology queries
   const [terminologyServerUrl, setTerminologyServerUrl] = useLocalStorage<string>(
     'playgroundTerminologyServerUrl',
-    defaultTerminologyServerUrl
+    config.terminologyServerUrl
   );
 
   const [jsonString, setJsonString] = useLocalStorage('playgroundJsonString', '');
   const [buildingState, setBuildingState] = useState<BuildState>('idle');
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
-  const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
 
   // $extract-related states
@@ -183,7 +190,7 @@ function Playground() {
             );
           }
 
-          await buildFormWrapper(questionnaire, undefined, undefined, terminologyServerUrl);
+          await buildFormWrapper(questionnaire, undefined, undefined, config.terminologyServerUrl);
           setBuildingState('built');
         } else {
           enqueueSnackbar('There was an issue reading the file content.', {
@@ -239,7 +246,7 @@ function Playground() {
 
   // Template-based $extract
   async function handleTemplateExtract(modifiedOnly: boolean) {
-    if (!sourceFhirServerUrl) {
+    if (!sourceFhirServerUrl || !patient) {
       enqueueSnackbar('Failed to run template-based extraction. No source server provided', {
         variant: 'error',
         preventDuplicate: true,
@@ -249,6 +256,26 @@ function Playground() {
     }
 
     setExtracting(true);
+
+    // If modifiedOnly is true, populate a fresh copy of the questionnaire to compare against
+    let responseToCompare: QuestionnaireResponse | null = null;
+    if (modifiedOnly) {
+      const populateRes = await populateQuestionnaire({
+        questionnaire: sourceQuestionnaire,
+        fetchResourceCallback: fetchResourceCallback,
+        fetchResourceRequestConfig: {
+          sourceServerUrl: sourceFhirServerUrl,
+          authToken: null
+        },
+        patient: patient,
+        user: user ?? undefined,
+        encounter: undefined
+      });
+
+      responseToCompare = populateRes.populateResult?.populatedResponse ?? null;
+    }
+
+    // Perform template-based extraction to get a transaction bundle
     const responseToExtract = removeEmptyAnswersFromResponse(
       sourceQuestionnaire,
       structuredClone(updatableResponse)
@@ -256,7 +283,7 @@ function Playground() {
     const inAppExtractOutput = await inAppExtract(
       responseToExtract,
       sourceQuestionnaire,
-      modifiedOnly ? sourceResponse : null
+      modifiedOnly ? responseToCompare : null
     );
     setExtracting(false);
 

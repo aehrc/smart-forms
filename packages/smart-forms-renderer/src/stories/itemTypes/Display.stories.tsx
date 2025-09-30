@@ -33,12 +33,12 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-const targetlinkId = 'information-display';
+const targetLinkId = 'information-display';
 const targetText = 'You can use the display item to show information to the user.';
 
 const qDisplayBasic = questionnaireFactory([
   {
-    linkId: targetlinkId,
+    linkId: targetLinkId,
     type: 'display',
     repeats: false,
     text: targetText

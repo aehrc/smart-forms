@@ -155,3 +155,7 @@ export function isFhirPatchTypePart(part: FhirPatchPart): part is FhirPatchTypeP
 export function isFhirPatchPathPart(part: FhirPatchPart): part is FhirPatchPathPart {
   return part.name === 'path' && 'valueString' in part;
 }
+
+export function isFhirPatchNamePart(part: FhirPatchPart): part is FhirPatchPathPart {
+  return part.name === 'name' && 'valueString' in part;
+}

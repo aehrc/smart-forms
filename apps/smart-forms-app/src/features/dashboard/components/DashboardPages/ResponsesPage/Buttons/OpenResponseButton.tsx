@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import type { Bundle, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import {
@@ -30,10 +30,10 @@ import { CircularProgress, IconButton, Stack, Typography } from '@mui/material';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import useSmartClient from '../../../../../../hooks/useSmartClient.ts';
 import CloseSnackbar from '../../../../../../components/Snackbar/CloseSnackbar.tsx';
-import { TERMINOLOGY_SERVER_URL } from '../../../../../../globals.ts';
 import { buildFormWrapper } from '../../../../../../utils/manageForm.ts';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { fetchResourceCallback } from '../../../../../prepopulate/utils/callback.ts';
+import { ConfigContext } from '../../../../../configChecker/contexts/ConfigContext.tsx';
 
 interface OpenResponseButtonProps {
   selectedResponse: QuestionnaireResponse | null;
@@ -43,6 +43,7 @@ function OpenResponseButton(props: OpenResponseButtonProps) {
   const { selectedResponse } = props;
 
   const { smartClient, patient, user, encounter } = useSmartClient();
+  const { config } = useContext(ConfigContext);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -62,7 +63,7 @@ function OpenResponseButton(props: OpenResponseButtonProps) {
   // search referenced questionnaire
   const { data, error } = useQuery<Bundle | Questionnaire>({
     queryKey: ['referencedQuestionnaire', queryUrl],
-    queryFn: () => getFormsServerBundleOrQuestionnairePromise(queryUrl),
+    queryFn: () => getFormsServerBundleOrQuestionnairePromise(queryUrl, config.formsServerUrl),
     enabled: !!selectedResponse && !!questionnaireRef
   });
 
@@ -107,7 +108,10 @@ function OpenResponseButton(props: OpenResponseButtonProps) {
     setIsLoading(true);
 
     // Assemble questionnaire if selected response is linked to an assemble-root questionnaire
-    referencedQuestionnaire = await assembleIfRequired(referencedQuestionnaire);
+    referencedQuestionnaire = await assembleIfRequired(
+      referencedQuestionnaire,
+      config.formsServerUrl
+    );
 
     // Return early if assembly cannot be performed
     if (!referencedQuestionnaire) {
@@ -144,7 +148,7 @@ function OpenResponseButton(props: OpenResponseButtonProps) {
       referencedQuestionnaire,
       selectedResponse,
       undefined,
-      TERMINOLOGY_SERVER_URL,
+      config.terminologyServerUrl,
       newPopulatedContext
     );
 

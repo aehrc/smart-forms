@@ -1,6 +1,6 @@
 # Function: repopulateResponse()
 
-> **repopulateResponse**(`checkedItemsToRepopulate`): `QuestionnaireResponse`
+> **repopulateResponse**(`filteredItemsToRepopulate`): `QuestionnaireResponse`
 
 Re-populate checked items in the re-population dialog into the current QuestionnaireResponse
 
@@ -8,7 +8,7 @@ Re-populate checked items in the re-population dialog into the current Questionn
 
 | Parameter | Type |
 | ------ | ------ |
-| `checkedItemsToRepopulate` | `Record`\<`string`, [`ItemToRepopulate`](../interfaces/ItemToRepopulate.md)\> |
+| `filteredItemsToRepopulate` | `Record`\<`string`, [`ItemToRepopulate`](../interfaces/ItemToRepopulate.md)\> |
 
 ## Returns
 

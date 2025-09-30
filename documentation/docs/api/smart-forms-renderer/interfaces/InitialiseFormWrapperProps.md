@@ -4,7 +4,7 @@
 
 ### additionalVariables?
 
-> `optional` **additionalVariables**: `Record`\<`string`, `object`\>
+> `optional` **additionalVariables**: `Record`\<`string`, `any`\>
 
 ***
 
