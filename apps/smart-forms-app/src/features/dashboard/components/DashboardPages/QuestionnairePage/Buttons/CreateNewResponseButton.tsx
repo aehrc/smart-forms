@@ -47,7 +47,7 @@ function CreateNewResponseButton() {
       postQuestionnaireToSMARTHealthIT(smartClient, questionnaire);
     }
 
-    await buildFormWrapper(questionnaire, undefined, undefined, config.formsServerUrl);
+    await buildFormWrapper(questionnaire, undefined, undefined, config.terminologyServerUrl);
 
     navigate('/renderer');
     setIsLoading(false);

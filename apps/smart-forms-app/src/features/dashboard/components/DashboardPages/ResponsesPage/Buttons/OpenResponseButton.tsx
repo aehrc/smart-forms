@@ -148,7 +148,7 @@ function OpenResponseButton(props: OpenResponseButtonProps) {
       referencedQuestionnaire,
       selectedResponse,
       undefined,
-      config.formsServerUrl,
+      config.terminologyServerUrl,
       newPopulatedContext
     );
 
