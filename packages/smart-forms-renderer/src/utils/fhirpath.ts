@@ -285,9 +285,9 @@ export async function evaluateLinkIdVariables(
   for (const variable of linkIdVariables) {
     if (variable.expression && variable.name) {
       const cacheKey = JSON.stringify(variable.expression); // Use expression as cache key
-      if (fhirPathTerminologyCache[cacheKey]) {
-        continue;
-      }
+      // if (fhirPathTerminologyCache[cacheKey]) {
+      //   continue;
+      // }
 
       try {
         const fhirPathResult = fhirpath.evaluate(
@@ -336,9 +336,9 @@ export async function evaluateQuestionnaireLevelVariables(
   for (const variable of questionnaireLevelVariables) {
     if (variable.expression) {
       const cacheKey = JSON.stringify(variable.expression); // Use expression as cache key
-      if (fhirPathTerminologyCache[cacheKey]) {
-        continue;
-      }
+      // if (fhirPathTerminologyCache[cacheKey]) {
+      //   continue;
+      // }
 
       try {
         const fhirPathResult = fhirpath.evaluate(
