@@ -646,12 +646,8 @@ export const QMedicalHistoryCurrentProblemsWithPatch: Questionnaire = {
                       }
                     },
                     {
-                      url: 'resourceId',
-                      valueString: "item.where(linkId='conditionId').answer.value"
-                    },
-                    {
-                      url: 'type',
-                      valueCode: 'Condition'
+                      url: 'https://smartforms.csiro.au/ig/StructureDefinition/TemplateExtractExtensionPatchRequestUrl',
+                      valueString: "'Condition/' + item.where(linkId='conditionId').answer.value"
                     }
                   ]
                 }

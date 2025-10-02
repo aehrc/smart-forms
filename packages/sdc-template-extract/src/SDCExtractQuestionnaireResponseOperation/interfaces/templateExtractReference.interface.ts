@@ -14,8 +14,18 @@ export interface FullUrlExtensionSlice extends Extension {
 }
 
 // A fhirpath expression to evaluate to populate the resourceId property (string result)
+// This will populate Bundle.entry.request.url if it's a POST/PUT request
+// There will be an invariant that resourceId and patchRequestUrl cannot both be present at the same time
 export interface ResourceIdExtensionSlice extends Extension {
   name: 'resourceId';
+  valueString: string;
+}
+
+// A fhirpath expression to evaluate to populate the patchRequestUrl property (string result)
+// This will populate Bundle.entry.request.url if it's a PATCH request
+// There will be an invariant that resourceId and patchRequestUrl cannot both be present at the same time
+export interface PatchRequestUrlExtensionSlice extends Extension {
+  name: 'https://smartforms.csiro.au/ig/StructureDefinition/TemplateExtractExtensionPatchRequestUrl';
   valueString: string;
 }
 
@@ -43,13 +53,6 @@ export interface IfNoneExistExtensionSlice extends Extension {
   valueString: string;
 }
 
-// ValueCode indicating the resource type of an extracted resource to populate request.url property in `Bundle.entry`.
-// Must be binded to http://hl7.org/fhir/R4/valueset-resource-types.html.
-export interface TypeExtensionSlice extends Extension {
-  name: 'type';
-  valueCode: string;
-}
-
 /**
  * Represents extracted values from a `templateExtract` extension on a Questionnaire or QuestionnaireItem.
  */
@@ -68,10 +71,17 @@ export interface TemplateExtractReference {
   fullUrl?: string;
 
   /**
-   * FHIRPath expression string used to populate the `resource.id` of a resource.
+   * FHIRPath expression string used to populate `resource.id` of a resource and bundle.entry.request.url for POST/PUT requests.
    * Extracted from the `valueString` of the `resourceId` slice.
    */
   resourceId?: string;
+
+  /**
+   * A custom slice (at the moment - see https://chat.fhir.org/#narrow/channel/179255-questionnaire/topic/.24extract.20using.20templates/with/542442943).
+   * FHIRPath expression string used to populate bundle.entry.request.url for PATCH requests.
+   * Extracted from the `valueString` of the `https://smartforms.csiro.au/ig/StructureDefinition/TemplateExtractExtensionPatchRequestUrl` slice (to be changed to patchRequestUrl in the future).
+   */
+  patchRequestUrl?: string;
 
   /**
    * FHIRPath expression string used to populate the `ifNoneMatch` field in the `request` of a `Bundle.entry`.
@@ -96,12 +106,4 @@ export interface TemplateExtractReference {
    * Extracted from the `valueString` of the `ifNoneExist` slice.
    */
   ifNoneExist?: string;
-
-  /**
-   * A custom slice. ValueCode indicating the resource type of an extracted resource, if the template's resourceType is different e.g. Parameters.
-   * Must be binded to http://hl7.org/fhir/R4/valueset-resource-types.html.
-   * Currently used to populate the `url` field in the `request` of a `Bundle.entry`.
-   * Extracted from the `valueCode` of the custom `type` slice.
-   */
-  type?: string;
 }
