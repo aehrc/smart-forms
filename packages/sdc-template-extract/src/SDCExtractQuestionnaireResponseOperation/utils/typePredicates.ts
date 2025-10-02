@@ -22,15 +22,15 @@ import type {
   QuestionnaireResponseParameter
 } from '../interfaces/inputParameters.interface';
 import type { CanonicalParameter } from '@aehrc/sdc-populate/src/SDCPopulateQuestionnaireOperation/interfaces/inputParameters.interface';
-import type {
+import {
   FullUrlExtensionSlice,
   IfMatchExtensionSlice,
   IfModifiedSinceExtensionSlice,
   IfNoneExistExtensionSlice,
   IfNoneMatchExtensionSlice,
+  PatchRequestUrlExtensionSlice,
   ResourceIdExtensionSlice,
-  TemplateExtensionSlice,
-  TypeExtensionSlice
+  TemplateExtensionSlice
 } from '../interfaces/templateExtractReference.interface';
 import type {
   FhirPatchParameters,
@@ -113,8 +113,14 @@ export function isIfNoneExistExtensionSlice(
   return extension.url === 'ifNoneExist' && !!extension.valueString;
 }
 
-export function isTypeExtensionSlice(extension: Extension): extension is TypeExtensionSlice {
-  return extension.url === 'type' && !!extension.valueCode;
+export function isPatchRequestUrlExtensionSlice(
+  extension: Extension
+): extension is PatchRequestUrlExtensionSlice {
+  return (
+    extension.url ===
+      'https://smartforms.csiro.au/ig/StructureDefinition/TemplateExtractExtensionPatchRequestUrl' &&
+    !!extension.valueString
+  );
 }
 
 export function valueIsCoding(value: any): value is Coding {
