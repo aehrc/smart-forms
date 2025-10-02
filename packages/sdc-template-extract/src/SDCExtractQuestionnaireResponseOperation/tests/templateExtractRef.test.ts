@@ -214,8 +214,7 @@ describe('hasTemplateExtractRefExtension', () => {
     expect(result.templateExtractRef).toEqual({
       templateId: 'x',
       fullUrl: 'url',
-      'https://smartforms.csiro.au/ig/StructureDefinition/TemplateExtractExtensionPatchRequestUrl':
-        'Observation/res',
+      patchRequestUrl: 'Observation/res',
       ifNoneMatch: 'etag',
       ifModifiedSince: 'date',
       ifMatch: 'match',

@@ -22,7 +22,7 @@ import type {
   QuestionnaireResponseParameter
 } from '../interfaces/inputParameters.interface';
 import type { CanonicalParameter } from '@aehrc/sdc-populate/src/SDCPopulateQuestionnaireOperation/interfaces/inputParameters.interface';
-import {
+import type {
   FullUrlExtensionSlice,
   IfMatchExtensionSlice,
   IfModifiedSinceExtensionSlice,

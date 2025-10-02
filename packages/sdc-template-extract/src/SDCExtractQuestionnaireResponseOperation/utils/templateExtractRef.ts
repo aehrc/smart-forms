@@ -104,9 +104,7 @@ export function hasTemplateExtractRefExtension(item: QuestionnaireItem | Questio
     }
 
     if (isPatchRequestUrlExtensionSlice(slice)) {
-      templateExtractRef[
-        'https://smartforms.csiro.au/ig/StructureDefinition/TemplateExtractExtensionPatchRequestUrl'
-      ] = slice.valueString;
+      templateExtractRef.patchRequestUrl = slice.valueString;
 
       // resourceId and patchRequestUrl cannot both be present at the same time
       if (templateExtractRef.resourceId) {

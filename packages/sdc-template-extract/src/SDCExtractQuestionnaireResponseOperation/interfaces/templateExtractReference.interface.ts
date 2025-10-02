@@ -14,7 +14,7 @@ export interface FullUrlExtensionSlice extends Extension {
 }
 
 // A fhirpath expression to evaluate to populate the resourceId property (string result)
-// This will populate Bundle.entry.request.url if its a POST/PUT request
+// This will populate Bundle.entry.request.url if it's a POST/PUT request
 // There will be an invariant that resourceId and patchRequestUrl cannot both be present at the same time
 export interface ResourceIdExtensionSlice extends Extension {
   name: 'resourceId';
@@ -22,7 +22,7 @@ export interface ResourceIdExtensionSlice extends Extension {
 }
 
 // A fhirpath expression to evaluate to populate the patchRequestUrl property (string result)
-// This will populate Bundle.entry.request.url if its a PATCH request
+// This will populate Bundle.entry.request.url if it's a PATCH request
 // There will be an invariant that resourceId and patchRequestUrl cannot both be present at the same time
 export interface PatchRequestUrlExtensionSlice extends Extension {
   name: 'https://smartforms.csiro.au/ig/StructureDefinition/TemplateExtractExtensionPatchRequestUrl';
@@ -81,7 +81,7 @@ export interface TemplateExtractReference {
    * FHIRPath expression string used to populate bundle.entry.request.url for PATCH requests.
    * Extracted from the `valueString` of the `https://smartforms.csiro.au/ig/StructureDefinition/TemplateExtractExtensionPatchRequestUrl` slice (to be changed to patchRequestUrl in the future).
    */
-  'https://smartforms.csiro.au/ig/StructureDefinition/TemplateExtractExtensionPatchRequestUrl'?: string;
+  patchRequestUrl?: string;
 
   /**
    * FHIRPath expression string used to populate the `ifNoneMatch` field in the `request` of a `Bundle.entry`.

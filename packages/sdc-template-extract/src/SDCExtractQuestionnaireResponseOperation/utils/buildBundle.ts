@@ -121,9 +121,7 @@ export function buildTransactionBundle(
         contextScopeResult,
         fhirPathContext,
         buildBundleWarnings,
-        templateExtractReference[
-          'https://smartforms.csiro.au/ig/StructureDefinition/TemplateExtractExtensionPatchRequestUrl'
-        ]
+        templateExtractReference.patchRequestUrl
       );
       const hasPatchRequestUrl = typeof patchRequestUrl === 'string' && patchRequestUrl !== '';
 
@@ -166,7 +164,7 @@ export function buildTransactionBundle(
       const requestMethod = getRequestMethod(cleanedExtractedResource, hasResourceId);
 
       // Request url
-      let requestUrl =
+      const requestUrl =
         requestMethod === 'PATCH' && hasPatchRequestUrl
           ? patchRequestUrl
           : hasResourceId
