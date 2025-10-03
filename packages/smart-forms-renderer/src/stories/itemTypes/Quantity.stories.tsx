@@ -69,3 +69,31 @@ export const QuantityCalculation: Story = {
     questionnaire: qQuantityCalculation
   }
 };
+
+export const QuantityBasicComparator: Story = {
+  name: 'Quantity Basic Comparator',
+  args: {
+    questionnaire: qQuantityBasic
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Test case for quantity with comparator. After filling the input, the comparator should be "<" but store returns undefined.'
+      }
+    }
+  }
+};
+
+export const QuantityMultiUnit: Story = {
+  name: 'Quantity Multi Unit',
+  args: {
+    questionnaire: qQuantityUnitOption
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Test case for quantity with multiple units. After filling the input, the unit should be "Week(s)" but store returns "Day(s)".'
+      }
+    }
+  }
+};

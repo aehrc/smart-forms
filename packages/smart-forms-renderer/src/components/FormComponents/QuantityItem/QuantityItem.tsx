@@ -185,6 +185,13 @@ function QuantityItem(props: BaseItemProps) {
 
   // Event handlers
   function handleComparatorInputChange(newComparatorInput: Quantity['comparator'] | null) {
+    console.log('🔍 Comparator changed:', {
+      newComparatorInput,
+      valueInput,
+      hasValue: !!valueInput,
+      willUpdateQR: true
+    });
+    
     setComparatorInput(newComparatorInput);
 
     // Only suppress feedback once (before first blur)
@@ -192,21 +199,45 @@ function QuantityItem(props: BaseItemProps) {
       setShowFeedback(false);
     }
 
-    if (!valueInput) return;
-
-    onQrItemChange({
-      ...createEmptyQrItem(qItem, answerKey),
-      answer: createQuantityItemAnswer(
-        precision,
-        valueInput,
-        newComparatorInput,
-        unitInput,
-        answerKey
-      )
-    });
+    // Always update QR item, even if valueInput is empty
+    if (valueInput) {
+      const qrUpdate = {
+        ...createEmptyQrItem(qItem, answerKey),
+        answer: createQuantityItemAnswer(
+          precision,
+          valueInput,
+          newComparatorInput,
+          unitInput,
+          answerKey
+        )
+      };
+      console.log('✅ Updating QR with comparator (with value):', qrUpdate);
+      onQrItemChange(qrUpdate);
+    } else {
+      // If no value input, still update with empty quantity to preserve comparator
+      const qrUpdate = {
+        ...createEmptyQrItem(qItem, answerKey),
+        answer: createQuantityItemAnswer(
+          precision,
+          '',
+          newComparatorInput,
+          unitInput,
+          answerKey
+        )
+      };
+      console.log('✅ Updating QR with comparator (no value):', qrUpdate);
+      onQrItemChange(qrUpdate);
+    }
   }
 
   function handleUnitInputChange(newUnitInput: QuestionnaireItemAnswerOption | null) {
+    console.log('🔍 Unit changed:', {
+      newUnitInput: newUnitInput?.valueCoding?.display,
+      valueInput,
+      hasValue: !!valueInput,
+      willUpdateQR: true
+    });
+    
     setUnitInput(newUnitInput);
 
     // Only suppress feedback once (before first blur)
@@ -214,18 +245,35 @@ function QuantityItem(props: BaseItemProps) {
       setShowFeedback(false);
     }
 
-    if (!valueInput) return;
-
-    onQrItemChange({
-      ...createEmptyQrItem(qItem, answerKey),
-      answer: createQuantityItemAnswer(
-        precision,
-        valueInput,
-        comparatorInput,
-        newUnitInput,
-        answerKey
-      )
-    });
+    // Always update QR item, even if valueInput is empty
+    if (valueInput) {
+      const qrUpdate = {
+        ...createEmptyQrItem(qItem, answerKey),
+        answer: createQuantityItemAnswer(
+          precision,
+          valueInput,
+          comparatorInput,
+          newUnitInput,
+          answerKey
+        )
+      };
+      console.log('✅ Updating QR with unit (with value):', qrUpdate);
+      onQrItemChange(qrUpdate);
+    } else {
+      // If no value input, still update with empty quantity to preserve unit
+      const qrUpdate = {
+        ...createEmptyQrItem(qItem, answerKey),
+        answer: createQuantityItemAnswer(
+          precision,
+          '',
+          comparatorInput,
+          newUnitInput,
+          answerKey
+        )
+      };
+      console.log('✅ Updating QR with unit (no value):', qrUpdate);
+      onQrItemChange(qrUpdate);
+    }
   }
 
   function handleValueInputChange(newInput: string) {

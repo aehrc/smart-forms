@@ -35,31 +35,27 @@ export function createQuantityItemAnswer(
   unitInput: QuestionnaireItemAnswerOption | null,
   answerKey: string | undefined
 ): QuestionnaireResponseItemAnswer[] {
-  if (precision) {
-    return [
-      {
-        id: answerKey,
-        valueQuantity: {
-          value: parseDecimalStringToFloat(parsedNewInput, precision),
-          comparator: comparatorInput ?? undefined,
-          unit: unitInput?.valueCoding?.display,
-          system: unitInput?.valueCoding?.system,
-          code: unitInput?.valueCoding?.code
-        }
-      }
-    ];
+  // Handle empty input - only include value if there's actual input
+  const valueQuantity: Quantity = {
+    comparator: comparatorInput ?? undefined,
+    unit: unitInput?.valueCoding?.display,
+    system: unitInput?.valueCoding?.system,
+    code: unitInput?.valueCoding?.code
+  };
+
+  // Only add value if there's actual input
+  if (parsedNewInput && parsedNewInput.trim() !== '') {
+    if (precision) {
+      valueQuantity.value = parseDecimalStringToFloat(parsedNewInput, precision);
+    } else {
+      valueQuantity.value = parseFloat(parsedNewInput);
+    }
   }
 
   return [
     {
       id: answerKey,
-      valueQuantity: {
-        value: parseFloat(parsedNewInput),
-        comparator: comparatorInput ?? undefined,
-        unit: unitInput?.valueCoding?.display,
-        system: unitInput?.valueCoding?.system,
-        code: unitInput?.valueCoding?.code
-      }
+      valueQuantity
     }
   ];
 }
