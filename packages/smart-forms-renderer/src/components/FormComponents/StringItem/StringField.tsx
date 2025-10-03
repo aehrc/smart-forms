@@ -25,6 +25,7 @@ import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon'
 import ItemRepopulateButton from '../ItemParts/ItemRepopulateButton';
 import type { RenderingExtensions } from '../../../hooks/useRenderingExtensions';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import { getColumnWidth } from '../../../utils/extensions';
 
 interface StringFieldProps extends PropsWithIsTabledRequiredAttribute {
   qItem: QuestionnaireItem;
@@ -56,6 +57,9 @@ function StringField(props: StringFieldProps) {
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+  
+  // Get width extension value if present
+  const widthExtension = getColumnWidth(qItem);
 
   return (
     <StandardTextField
@@ -63,6 +67,7 @@ function StringField(props: StringFieldProps) {
       multiline
       fullWidth
       textFieldWidth={textFieldWidth}
+      widthExtension={widthExtension}
       isTabled={isTabled}
       value={input}
       error={!!feedback}

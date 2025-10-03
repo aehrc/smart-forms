@@ -22,11 +22,12 @@ import TextField from '@mui/material/TextField';
  * Always use this with the TextField `fullWidth` prop to ensure proper layout and alignment.
  */
 export const StandardTextField = styled(TextField, {
-  shouldForwardProp: (prop) => prop !== 'isTabled' && prop !== 'textFieldWidth'
-})<{ isTabled: boolean; textFieldWidth: number }>(({ isTabled, textFieldWidth }) => ({
+  shouldForwardProp: (prop) => prop !== 'isTabled' && prop !== 'textFieldWidth' && prop !== 'widthExtension'
+})<{ isTabled: boolean; textFieldWidth: number; widthExtension?: string }>(({ isTabled, textFieldWidth, widthExtension }) => ({
   // Set textFieldWidth (defaults to 320 in rendererStylingStore) as the standard width for a field
   // Set a theoretical infinite maxWidth (3000) if field is within a table to fill the table row
-  maxWidth: !isTabled ? textFieldWidth : 3000,
+  // If widthExtension is present, use it instead of textFieldWidth
+  maxWidth: widthExtension ? widthExtension : (!isTabled ? textFieldWidth : 3000),
   minWidth: 160,
   '& .MuiInputBase-root': {
     padding: 0

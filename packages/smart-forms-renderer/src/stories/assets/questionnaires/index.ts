@@ -44,6 +44,7 @@ export * from './QTerminologyControl';
 export * from './QGroupHideAddItemButton';
 export * from './QQuestionnaireItemTextHidden';
 export * from './QRepopulatableExtension';
+export * from './QWidthExtension';
 export * from './QCqfExpression';
 export * from './QCqfExpressionSimple';
 export * from './QAnswerOptionToggleExpressions';
