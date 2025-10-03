@@ -7,6 +7,10 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## sdc-template-extract [1.0.12] - 2025-10-03
+#### Fixed
+- Added pre-filtering `cleanDeep` cleaning step to ensure empty object values are not included in the extracted bundle. See https://github.com/aehrc/smart-forms/issues/1621#issuecomment-3354866916 for more details.
+
 ## sdc-template-extract [1.0.11] - 2025-10-02
 #### Changed
 - Very minor change where interface are exported as types to align with TypeScript best practices.
