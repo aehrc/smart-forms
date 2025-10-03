@@ -63,7 +63,7 @@ export async function evaluateInitialTargetConstraints(
   for (const key in targetConstraints) {
     const initialValue = targetConstraints[key].isInvalid;
     const expression = targetConstraints[key].valueExpression?.expression;
-
+    
     if (!expression) {
       continue;
     }
@@ -111,11 +111,7 @@ export async function evaluateInitialTargetConstraints(
         fhirPathTerminologyCache[cacheKey] = result;
       }
     } catch (e) {
-      console.warn(
-        `[TARGET_CONSTRAINT_DEBUG] Error evaluating ${key}:`,
-        e.message,
-        `Target Constraint Key: ${key}\nExpression: ${expression}`
-      );
+      console.warn(`[TARGET_CONSTRAINT_DEBUG] Error evaluating ${key}:`, e.message, `Target Constraint Key: ${key}\nExpression: ${expression}`);
     }
   }
 
@@ -136,11 +132,11 @@ export async function evaluateTargetConstraints(
   updatedTargetConstraints: Record<string, TargetConstraint>;
 }> {
   let isUpdated = false;
-
+  
   for (const key in targetConstraints) {
     const initialValue = targetConstraints[key].isInvalid;
     const expression = targetConstraints[key].valueExpression?.expression;
-
+    
     if (!expression) {
       continue;
     }
@@ -185,11 +181,7 @@ export async function evaluateTargetConstraints(
         fhirPathTerminologyCache[cacheKey] = result;
       }
     } catch (e) {
-      console.warn(
-        `[TARGET_CONSTRAINT_DEBUG] Error evaluating updated ${key}:`,
-        e.message,
-        `Target Constraint Key: ${key}\nExpression: ${expression}`
-      );
+      console.warn(`[TARGET_CONSTRAINT_DEBUG] Error evaluating updated ${key}:`, e.message, `Target Constraint Key: ${key}\nExpression: ${expression}`);
     }
   }
 

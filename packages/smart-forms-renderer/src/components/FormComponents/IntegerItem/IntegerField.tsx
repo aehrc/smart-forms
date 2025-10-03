@@ -25,7 +25,6 @@ import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon'
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import ItemRepopulateButton from '../ItemParts/ItemRepopulateButton';
 import type { RenderingExtensions } from '../../../hooks/useRenderingExtensions';
-import { getColumnWidth } from '../../../utils/extensions';
 
 interface IntegerFieldProps extends PropsWithIsTabledRequiredAttribute {
   qItem: QuestionnaireItem;
@@ -57,9 +56,6 @@ function IntegerField(props: IntegerFieldProps) {
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
-  
-  // Get width extension value if present
-  const widthExtension = getColumnWidth(qItem);
 
   let placeholderText = '0';
   if (displayPrompt) {
@@ -83,7 +79,6 @@ function IntegerField(props: IntegerFieldProps) {
       placeholder={placeholderText}
       fullWidth
       textFieldWidth={textFieldWidth}
-      widthExtension={widthExtension}
       isTabled={isTabled}
       size="small"
       slotProps={{
