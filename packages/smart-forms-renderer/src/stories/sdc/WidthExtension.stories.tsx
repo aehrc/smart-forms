@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { qWidthExtensionBasic, qWidthExtensionPercentage, qWidthExtensionGrid } from '../assets/questionnaires';
+import { qWidthExtensionTable, qWidthExtensionGrid } from '../assets/questionnaires';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 
 const meta: Meta<typeof BuildFormWrapperForStorybook> = {
@@ -24,29 +24,15 @@ const meta: Meta<typeof BuildFormWrapperForStorybook> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const BasicExample: Story = {
-  name: 'Basic Width Example',
+export const TableLayoutExample: Story = {
+  name: 'Table Layout Example',
   args: {
-    questionnaire: qWidthExtensionBasic
+    questionnaire: qWidthExtensionTable
   },
   parameters: {
     docs: {
       description: {
-        story: 'Basic example showing different width percentages for form fields. Notice how each field label shows the percentage and how the width extension is applied to control field widths.'
-      }
-    }
-  }
-};
-
-export const PercentageExample: Story = {
-  name: 'Percentage Width Example',
-  args: {
-    questionnaire: qWidthExtensionPercentage
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Table example demonstrating various percentage widths (25%, 50%, 75%, 100%) to show the range of column width control available in table layouts.'
+        story: 'Table layout example showing different width percentages for form fields using gtable layout. Notice how each field label shows the percentage and how the width extension is applied to control field widths in table format.'
       }
     }
   }
