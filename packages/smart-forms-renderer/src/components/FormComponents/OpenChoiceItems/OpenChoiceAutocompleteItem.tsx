@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
@@ -23,6 +23,7 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import useDebounce from '../../../hooks/useDebounce';
 import useTerminologyServerQuery from '../../../hooks/useTerminologyServerQuery';
+import debounce from 'lodash.debounce';
 import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
@@ -32,7 +33,7 @@ import type {
   PropsWithQrItemChangeHandler,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
-import { AUTOCOMPLETE_DEBOUNCE_DURATION } from '../../../utils/debounce';
+import { AUTOCOMPLETE_DEBOUNCE_DURATION, DEBOUNCE_DURATION } from '../../../utils/debounce';
 import OpenChoiceAutocompleteField from './OpenChoiceAutocompleteField';
 import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
@@ -114,6 +115,14 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
     return null;
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const updateQrItemWithDebounce = useCallback(
+    debounce((qrItem: QuestionnaireResponseItem) => {
+      onQrItemChange(qrItem);
+    }, AUTOCOMPLETE_DEBOUNCE_DURATION),
+    [onQrItemChange, qItem]
+  ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
+
   // Event handlers
   // Handler function which handles both input change and selection change
   function handleValueChange(
@@ -146,6 +155,7 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
         });
         if (foundOption) {
           newValue = foundOption;
+          // For option selection, update immediately (no debounce)
           onQrItemChange({
             ...qrOpenChoice,
             answer: [{ id: answerKey, valueCoding: newValue }]
@@ -153,15 +163,18 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
         }
         // if newValue is not in the options list, treat it as a string
         else {
-          onQrItemChange({
+          // For string input, use debounced update
+          updateQrItemWithDebounce({
             ...createEmptyQrItem(qItem, answerKey),
             answer: [{ id: answerKey, valueString: sanitizeInput(newValue) }]
           });
         }
       } else {
+        // For empty string, update immediately
         onQrItemChange(createEmptyQrItem(qItem, answerKey));
       }
     } else {
+      // For coding selection, update immediately (no debounce)
       onQrItemChange({
         ...createEmptyQrItem(qItem, answerKey),
         answer: [{ id: answerKey, valueCoding: newValue }]
