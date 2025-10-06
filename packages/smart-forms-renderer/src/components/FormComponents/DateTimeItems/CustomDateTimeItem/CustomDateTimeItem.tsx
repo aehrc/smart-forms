@@ -172,7 +172,7 @@ function CustomDateTimeItem(props: BaseItemProps) {
     periodInput: string,
     is24HourNotation: boolean
   ) {
-    let fhirDateTime;
+    let fhirDateTime = '';
     if (timeInput) {
       fhirDateTime = parseInputDateTimeToFhirDateTime(
         parseInputDateToFhirDate(dateInput),
