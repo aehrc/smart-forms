@@ -33,7 +33,6 @@ interface TextFieldProps {
   calcExpUpdated: boolean;
   onInputChange: (value: string) => void;
   onRepopulateSync: (newQrItem: QuestionnaireResponseItem | null) => unknown;
-  onBlur: () => void;
 }
 
 function TextField(props: TextFieldProps) {
@@ -45,8 +44,7 @@ function TextField(props: TextFieldProps) {
     readOnly,
     calcExpUpdated,
     onInputChange,
-    onRepopulateSync,
-    onBlur
+    onRepopulateSync
   } = props;
 
   const { displayPrompt, displayUnit, entryFormat, isRepopulatable } = renderingExtensions;
@@ -59,7 +57,6 @@ function TextField(props: TextFieldProps) {
       value={input}
       error={!!feedback}
       onChange={(event) => onInputChange(event.target.value)}
-      onBlur={onBlur}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       placeholder={entryFormat || displayPrompt}
       fullWidth
