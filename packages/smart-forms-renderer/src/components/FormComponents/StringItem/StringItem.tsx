@@ -38,7 +38,6 @@ import useStringCalculatedExpression from '../../../hooks/useStringCalculatedExp
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
-import useShowFeedback from '../../../hooks/useShowFeedback';
 import { readStringValue } from '../../../utils/readValues';
 import { sanitizeInput } from '../../../utils/inputSanitization';
 
@@ -81,9 +80,6 @@ function StringItem(props: StringItemProps) {
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
-  // Provides a way to hide the feedback when the user is typing
-  const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
-
   // Process calculated expressions
   const { calcExpUpdated } = useStringCalculatedExpression({
     qItem: qItem,
@@ -108,17 +104,7 @@ function StringItem(props: StringItemProps) {
   function handleChange(newInput: string) {
     setInput(newInput);
 
-    // Only suppress feedback once (before first blur)
-    if (!hasBlurred) {
-      setShowFeedback(false);
-    }
-
     updateQrItemWithDebounce(newInput);
-  }
-
-  function handleBlur() {
-    setShowFeedback(true);
-    setHasBlurred(true); // From now on, feedback should stay visible
   }
 
   function handleRepopulateSync(newQrItem: QuestionnaireResponseItem | null) {
@@ -162,13 +148,12 @@ function StringItem(props: StringItemProps) {
       <StringField
         qItem={qItem}
         input={input}
-        feedback={showFeedback ? feedback : ''}
+        feedback={feedback ?? ''}
         renderingExtensions={renderingExtensions}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         onInputChange={handleChange}
         onRepopulateSync={handleRepopulateSync}
-        onBlur={handleBlur}
         isTabled={isTabled}
       />
     );
@@ -186,17 +171,16 @@ function StringItem(props: StringItemProps) {
           <StringField
             qItem={qItem}
             input={input}
-            feedback={showFeedback ? feedback : ''}
+            feedback={feedback ?? ''}
             renderingExtensions={renderingExtensions}
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}
             onInputChange={handleChange}
             onRepopulateSync={handleRepopulateSync}
-            onBlur={handleBlur}
             isTabled={isTabled}
           />
         }
-        feedback={showFeedback ? feedback : undefined}
+        feedback={feedback ?? undefined}
       />
     </FullWidthFormComponentBox>
   );

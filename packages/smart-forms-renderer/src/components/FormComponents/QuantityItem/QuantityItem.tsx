@@ -30,7 +30,6 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import Box from '@mui/material/Box';
 import QuantityField from './QuantityField';
-import QuantityUnitField from './QuantityUnitField';
 import {
   createQuantityItemAnswer,
   quantityComparators,
@@ -39,7 +38,7 @@ import {
 import QuantityComparatorField from './QuantityComparatorField';
 import useQuantityCalculatedExpression from '../../../hooks/useQuantityCalculatedExpression';
 import ItemLabel from '../ItemParts/ItemLabel';
-import useShowFeedback from '../../../hooks/useShowFeedback';
+import QuantityUnitField from './QuantityUnitField';
 
 function QuantityItem(props: BaseItemProps) {
   const {
@@ -116,9 +115,6 @@ function QuantityItem(props: BaseItemProps) {
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
-  // Provides a way to hide the feedback when the user is typing
-  const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
-
   // Process calculated expressions
   const { calcExpUpdated } = useQuantityCalculatedExpression({
     qItem: qItem,
@@ -187,11 +183,6 @@ function QuantityItem(props: BaseItemProps) {
   function handleComparatorInputChange(newComparatorInput: Quantity['comparator'] | null) {
     setComparatorInput(newComparatorInput);
 
-    // Only suppress feedback once (before first blur)
-    if (!hasBlurred) {
-      setShowFeedback(false);
-    }
-
     if (!valueInput) return;
 
     onQrItemChange({
@@ -208,11 +199,6 @@ function QuantityItem(props: BaseItemProps) {
 
   function handleUnitInputChange(newUnitInput: QuestionnaireItemAnswerOption | null) {
     setUnitInput(newUnitInput);
-
-    // Only suppress feedback once (before first blur)
-    if (!hasBlurred) {
-      setShowFeedback(false);
-    }
 
     if (!valueInput) return;
 
@@ -233,17 +219,7 @@ function QuantityItem(props: BaseItemProps) {
 
     setValueInput(parsedNewInput);
 
-    // Only suppress feedback once (before first blur)
-    if (!hasBlurred) {
-      setShowFeedback(false);
-    }
-
     updateQrItemWithDebounce(parsedNewInput);
-  }
-
-  function handleBlur() {
-    setShowFeedback(true);
-    setHasBlurred(true); // From now on, feedback should stay visible
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -291,7 +267,7 @@ function QuantityItem(props: BaseItemProps) {
           linkId={qItem.linkId}
           itemType={qItem.type}
           input={valueInput}
-          feedback={showFeedback ? feedback : ''}
+          feedback={feedback ?? ''}
           displayPrompt={displayPrompt}
           displayUnit={displayUnit}
           entryFormat={entryFormat}
@@ -299,7 +275,6 @@ function QuantityItem(props: BaseItemProps) {
           calcExpUpdated={calcExpUpdated}
           isTabled={isTabled}
           onInputChange={handleValueInputChange}
-          onBlur={handleBlur}
         />
         {showUnitOptions ? (
           <QuantityUnitField
@@ -342,7 +317,7 @@ function QuantityItem(props: BaseItemProps) {
               linkId={qItem.linkId}
               itemType={qItem.type}
               input={valueInput}
-              feedback={showFeedback ? feedback : ''}
+              feedback={feedback ?? ''}
               displayPrompt={displayPrompt}
               displayUnit={displayUnit}
               entryFormat={entryFormat}
@@ -350,7 +325,6 @@ function QuantityItem(props: BaseItemProps) {
               calcExpUpdated={calcExpUpdated}
               isTabled={isTabled}
               onInputChange={handleValueInputChange}
-              onBlur={handleBlur}
             />
             {showUnitOptions ? (
               <QuantityUnitField
@@ -366,7 +340,7 @@ function QuantityItem(props: BaseItemProps) {
             ) : null}
           </Box>
         }
-        feedback={showFeedback ? feedback : undefined}
+        feedback={feedback ?? undefined}
       />
     </FullWidthFormComponentBox>
   );

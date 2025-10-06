@@ -33,7 +33,6 @@ import useDecimalCalculatedExpression from '../../../hooks/useDecimalCalculatedE
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
-import useShowFeedback from '../../../hooks/useShowFeedback';
 import type { QuestionnaireResponseItem } from 'fhir/r4';
 import { readDecimalValue } from '../../../utils/readValues';
 
@@ -65,9 +64,6 @@ function DecimalItem(props: BaseItemProps) {
   // Perform validation checks - there's no string-based input here
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
-  // Provides a way to hide the feedback when the user is typing
-  const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
-
   // Process calculated expressions
   const { calcExpUpdated } = useDecimalCalculatedExpression({
     qItem: qItem,
@@ -98,18 +94,7 @@ function DecimalItem(props: BaseItemProps) {
     const parsedNewInput: string = parseDecimalStringWithPrecision(newInput, precision);
 
     setInput(parsedNewInput);
-
-    // Only suppress feedback once (before first blur)
-    if (!hasBlurred) {
-      setShowFeedback(false);
-    }
-
     updateQrItemWithDebounce(parsedNewInput);
-  }
-
-  function handleBlur() {
-    setShowFeedback(true);
-    setHasBlurred(true); // From now on, feedback should stay visible
   }
 
   function handleRepopulateSync(newQrItem: QuestionnaireResponseItem | null) {
@@ -163,14 +148,13 @@ function DecimalItem(props: BaseItemProps) {
       <DecimalField
         qItem={qItem}
         input={input}
-        feedback={showFeedback ? feedback : ''}
+        feedback={feedback ?? ''}
         renderingExtensions={renderingExtensions}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         isTabled={isTabled}
         onInputChange={handleInputChange}
         onRepopulateSync={handleRepopulateSync}
-        onBlur={handleBlur}
       />
     );
   }
@@ -188,17 +172,16 @@ function DecimalItem(props: BaseItemProps) {
           <DecimalField
             qItem={qItem}
             input={input}
-            feedback={showFeedback ? feedback : ''}
+            feedback={feedback ?? ''}
             renderingExtensions={renderingExtensions}
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}
             onInputChange={handleInputChange}
             onRepopulateSync={handleRepopulateSync}
-            onBlur={handleBlur}
           />
         }
-        feedback={showFeedback ? feedback : undefined}
+        feedback={feedback ?? undefined}
       />
     </FullWidthFormComponentBox>
   );

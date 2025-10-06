@@ -30,7 +30,6 @@ import useDateValidation from '../../../../hooks/useDateValidation';
 import CustomDateField from './CustomDateField';
 import { useQuestionnaireStore } from '../../../../stores';
 import ItemLabel from '../../ItemParts/ItemLabel';
-import useShowFeedback from '../../../../hooks/useShowFeedback';
 import useDateCalculatedExpression from '../../../../hooks/useDateCalculatedExpression';
 
 function CustomDateItem(props: BaseItemProps) {
@@ -69,9 +68,6 @@ function CustomDateItem(props: BaseItemProps) {
   // Perform validation checks
   const feedback = useDateValidation(input, dateParseFail);
 
-  // Provides a way to hide the feedback when the user is typing
-  const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
-
   // Process calculated expressions
   const { calcExpUpdated } = useDateCalculatedExpression({
     qItem: qItem,
@@ -101,11 +97,6 @@ function CustomDateItem(props: BaseItemProps) {
   function handleInputChange(newInput: string) {
     setInput(newInput);
 
-    // Only suppress feedback once (before first blur)
-    if (!hasBlurred) {
-      setShowFeedback(false);
-    }
-
     if (newInput === '') {
       onQrItemChange(createEmptyQrItem(qItem, answerKey));
     }
@@ -119,11 +110,6 @@ function CustomDateItem(props: BaseItemProps) {
     });
   }
 
-  function handleDateBlur() {
-    setShowFeedback(true);
-    setHasBlurred(true); // From now on, feedback should stay visible
-  }
-
   if (isRepeated) {
     return (
       <CustomDateField
@@ -132,7 +118,7 @@ function CustomDateItem(props: BaseItemProps) {
         itemText={qItem.text}
         valueDate={displayDate}
         input={input}
-        feedback={showFeedback ? feedback : ''}
+        feedback={feedback ?? ''}
         isFocused={focused}
         displayPrompt={displayPrompt}
         entryFormat={entryFormat}
@@ -142,7 +128,6 @@ function CustomDateItem(props: BaseItemProps) {
         isTabled={isTabled}
         setFocused={setFocused}
         onInputChange={handleInputChange}
-        onDateBlur={handleDateBlur}
         onSelectDate={handleSelectDate}
       />
     );
@@ -164,7 +149,7 @@ function CustomDateItem(props: BaseItemProps) {
             itemText={qItem.text}
             valueDate={displayDate}
             input={input}
-            feedback={showFeedback ? feedback : ''}
+            feedback={feedback ?? ''}
             isFocused={focused}
             displayPrompt={displayPrompt}
             entryFormat={entryFormat}
@@ -174,11 +159,10 @@ function CustomDateItem(props: BaseItemProps) {
             isTabled={isTabled}
             setFocused={setFocused}
             onInputChange={handleInputChange}
-            onDateBlur={handleDateBlur}
             onSelectDate={handleSelectDate}
           />
         }
-        feedback={showFeedback ? feedback : undefined}
+        feedback={feedback ?? undefined}
       />
     </FullWidthFormComponentBox>
   );
