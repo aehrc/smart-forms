@@ -22,10 +22,12 @@ function useSelectedProperty<T extends Record<string, () => any>>(
   selectedPropVal: any;
   allPropKeys: string[];
 } {
-  const allPropKeys = Object.keys(storeHooks);
   const valueMap = Object.fromEntries(
     Object.keys(storeHooks).map((name) => [name, storeHooks[name as keyof T]()])
   );
+
+  // Filter out keys whose values are functions
+  const allPropKeys = Object.keys(valueMap).filter((key) => typeof valueMap[key] !== 'function');
 
   return {
     selectedPropVal:
