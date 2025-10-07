@@ -7,6 +7,10 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.109] - 2025-10-07
+#### Fixed
+- Added debouncing to open-choice autocomplete input fields to reduce the number of QuestionnaireResponse updates.
+
 ## [1.0.0-alpha.108] - 2025-10-07
 #### Changed
 - Reverted changes in 1.0.0-alpha.57 where inline validation messages are shown when the field loses focus.
