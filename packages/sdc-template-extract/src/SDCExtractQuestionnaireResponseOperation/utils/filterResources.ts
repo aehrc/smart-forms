@@ -1,4 +1,4 @@
-import type { FhirResource } from 'fhir/r4';
+import type { FhirResource, Parameters } from 'fhir/r4';
 import {
   isFhirPatchNamePart,
   isFhirPatchPathPart,
@@ -11,6 +11,7 @@ import type {
   FhirPatchPathPart,
   FhirPatchTypePart
 } from '../interfaces/fhirpatch.interface';
+import cleanDeep from 'clean-deep';
 
 /**
  * Determines whether a single extracted FHIR resource should be included in the bundle.
@@ -28,7 +29,28 @@ export function applyFilters(
   comparisonResource: FhirResource | null
 ): FhirResource | null {
   // Resource is a FHIRPatch Parameters resource
-  if (extractedResource.resourceType === 'Parameters' && parametersIsFhirPatch(extractedResource)) {
+  if (extractedResource.resourceType === 'Parameters') {
+    // Pre-filter step: Clean extracted and comparison resource
+    // This ensures that we don't have empty operation entries that would pass the comparison check below and should be filtered out
+    extractedResource = cleanDeep(extractedResource, {
+      emptyObjects: true,
+      emptyArrays: true,
+      nullValues: true,
+      undefinedValues: true
+    }) as Parameters;
+
+    comparisonResource = cleanDeep(comparisonResource, {
+      emptyObjects: true,
+      emptyArrays: true,
+      nullValues: true,
+      undefinedValues: true
+    }) as FhirResource | null;
+
+    if (!parametersIsFhirPatch(extractedResource)) {
+      // If the extracted resource is not a valid FHIRPatch Parameters resource after cleaning, skip it
+      return null;
+    }
+
     // First filter criteria: Filter out operation entries where the value[x] is empty
     extractedResource.parameter = filterFhirPatchEmptyValues(extractedResource.parameter);
 

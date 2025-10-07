@@ -90,7 +90,7 @@ export function buildTransactionBundle(
       }
 
       // Clean extracted resource
-      const cleanedExtractedResource = cleanDeep(extractedResource, {
+      const cleanedRetainedResource = cleanDeep(retainedResource, {
         emptyObjects: true,
         emptyArrays: true,
         nullValues: true,
@@ -113,7 +113,7 @@ export function buildTransactionBundle(
         buildBundleWarnings,
         templateExtractReference.resourceId
       );
-      const resourceType = cleanedExtractedResource.resourceType;
+      const resourceType = cleanedRetainedResource.resourceType;
       const hasResourceId = typeof resourceId === 'string' && resourceId !== '';
 
       // PatchRequestUrl
@@ -161,7 +161,7 @@ export function buildTransactionBundle(
       );
 
       // Request method
-      const requestMethod = getRequestMethod(cleanedExtractedResource, hasResourceId);
+      const requestMethod = getRequestMethod(cleanedRetainedResource, hasResourceId);
 
       // Request url
       const requestUrl =
@@ -173,7 +173,7 @@ export function buildTransactionBundle(
 
       // Add resourceId to resource
       const resourceToAdd = addResourceIdToResource(
-        cleanedExtractedResource,
+        cleanedRetainedResource,
         resourceId,
         requestMethod
       );
