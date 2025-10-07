@@ -43,7 +43,7 @@ function useBuildForm(params: BuildFormParams) {
     questionnaireResponse,
     readOnly,
     terminologyServerUrl,
-    additionalVariables,
+    additionalContext,
     rendererConfigOptions,
     qItemOverrideComponents,
     sdcUiOverrideComponents
@@ -59,7 +59,7 @@ function useBuildForm(params: BuildFormParams) {
       questionnaireResponse,
       readOnly,
       terminologyServerUrl,
-      additionalVariables,
+      additionalContext,
       rendererConfigOptions,
       qItemOverrideComponents,
       sdcUiOverrideComponents
@@ -76,7 +76,7 @@ function useBuildForm(params: BuildFormParams) {
     questionnaireResponse,
     readOnly,
     terminologyServerUrl,
-    additionalVariables,
+    additionalContext,
     rendererConfigOptions,
     qItemOverrideComponents,
     sdcUiOverrideComponents,

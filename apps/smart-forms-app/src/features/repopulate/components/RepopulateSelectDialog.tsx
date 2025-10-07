@@ -166,7 +166,7 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
     // Re-run buildForm with the new populatedResponse and repopulatedContext from the $populate operation
     repopulateForm({
       questionnaireResponse: repopulatedResponse,
-      additionalVariables: repopulatedContext
+      additionalContext: repopulatedContext
     });
 
     onCloseDialog();

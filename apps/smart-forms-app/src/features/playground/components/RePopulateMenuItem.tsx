@@ -65,7 +65,7 @@ function RePopulateMenuItem(props: RePopulateMenuItemProps) {
 
       const { populatedResponse, populatedContext } = populateResult;
 
-      // If populatedContext is provided, save it into repopulatedContext state to add it to additionalVariables later when buildForm is called
+      // If populatedContext is provided, save it into repopulatedContext state to add it to additionalContext later when buildForm is called
       if (populatedContext) {
         onSetRepopulatedContext(populatedContext);
       }

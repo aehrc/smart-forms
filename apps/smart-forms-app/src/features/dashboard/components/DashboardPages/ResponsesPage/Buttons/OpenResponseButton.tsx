@@ -150,7 +150,7 @@ function OpenResponseButton(props: OpenResponseButtonProps) {
       questionnaire: referencedQuestionnaire,
       questionnaireResponse: selectedResponse,
       terminologyServerUrl: config.terminologyServerUrl,
-      additionalVariables: newPopulatedContext
+      additionalContext: newPopulatedContext
     });
 
     navigate('/viewer');

@@ -83,7 +83,7 @@ function PrePopWrapperForStorybook(props: PrePopWrapperForStorybookProps) {
         questionnaire: questionnaire,
         questionnaireResponse: populatedResponse,
         terminologyServerUrl: STORYBOOK_TERMINOLOGY_SERVER_URL,
-        additionalVariables: {
+        additionalContext: {
           patient: patient,
           user: user,
           ...populatedContext

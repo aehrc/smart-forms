@@ -49,7 +49,7 @@ export interface BuildFormParams {
    * Likely used for passing in data from a pre-population module.
    * Example: `{ 'ObsBodyHeight': <Bundle of height observations> }`.
    */
-  additionalVariables?: Record<string, any>;
+  additionalContext?: Record<string, any>;
 
   /**
    * Whether to preserve the current navigation state (e.g. current page in paged forms, current tab in tabbed forms) when rebuilding the form.
@@ -98,7 +98,7 @@ export async function buildForm(params: BuildFormParams): Promise<void> {
     questionnaireResponse,
     readOnly = false,
     terminologyServerUrl,
-    additionalVariables,
+    additionalContext,
     rendererConfigOptions,
     qItemOverrideComponents,
     sdcUiOverrideComponents
@@ -122,7 +122,7 @@ export async function buildForm(params: BuildFormParams): Promise<void> {
     .buildSourceQuestionnaire(
       questionnaire,
       undefined,
-      additionalVariables,
+      additionalContext,
       terminologyServerUrl,
       readOnly,
       qItemOverrideComponents,
@@ -161,7 +161,7 @@ export interface RepopulateFormParams {
    * Useful for pre-population or enriching the context used by calculatedExpressions.
    * Example: `{ 'ObsBloodPressure': <Bundle of BP observations> }`
    */
-  additionalVariables?: Record<string, any>;
+  additionalContext?: Record<string, any>;
 }
 
 /**
@@ -175,11 +175,11 @@ export interface RepopulateFormParams {
  * @author Sean Fong
  */
 export function repopulateForm(params: RepopulateFormParams): void {
-  const { questionnaireResponse, additionalVariables } = params;
+  const { questionnaireResponse, additionalContext } = params;
 
-  // Update additionalVariables if provided
-  if (additionalVariables) {
-    questionnaireStore.getState().setPopulatedContext(additionalVariables, true);
+  // Update additionalContext if provided
+  if (additionalContext) {
+    questionnaireStore.getState().setAdditionalContext(additionalContext);
   }
 
   // Set re-populated QuestionnaireResponse as the source response in the store

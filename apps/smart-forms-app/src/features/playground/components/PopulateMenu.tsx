@@ -123,8 +123,8 @@ function PopulateMenu(props: PopulateMenuProps) {
       </Menu>
 
       <RepopulateDialog
-        repopulateFetchingEnded={repopulateFetchEnded}
         repopulatedContext={repopulatedContext}
+        repopulateFetchingEnded={repopulateFetchEnded}
         onCloseDialog={() => onSpinnerChange({ isSpinning: false, status: null, message: '' })}
         onSpinnerChange={onSpinnerChange}
       />

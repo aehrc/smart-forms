@@ -58,7 +58,7 @@ export interface SmartConfigStoreType {
  * Will be deprecated in version 1.0.0.
  *
  * This is the vanilla version of the store which can be used in non-React environments.
- * @see SmartConfigStoreType for available properties and methods.
+ * @see {@link SmartConfigStoreType} for available properties and methods.
  *
  * @author Sean Fong
  */
@@ -81,8 +81,8 @@ export const smartConfigStore = createStore<SmartConfigStoreType>()((set) => ({
  * Will be deprecated in version 1.0.0.
  *
  * This is the React version of the store which can be used as React hooks in React functional components.
- * @see SmartConfigStoreType for available properties and methods.
- * @see smartConfigStore for the vanilla store.
+ * @see {@link SmartConfigStoreType} for available properties and methods.
+ * @see {@link smartConfigStore} for the vanilla store.
  *
  * @author Sean Fong
  */

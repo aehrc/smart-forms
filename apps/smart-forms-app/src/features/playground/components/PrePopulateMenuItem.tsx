@@ -66,7 +66,7 @@ function PrePopulateMenuItem(props: PrePopulateMenuItemProps) {
         questionnaire: sourceQuestionnaire,
         questionnaireResponse: populatedResponse,
         terminologyServerUrl,
-        additionalVariables: populatedContext
+        additionalContext: populatedContext
       });
 
       onSpinnerChange({

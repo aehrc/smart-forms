@@ -27,14 +27,14 @@ import { initialiseFhirClient } from '../utils/manageForm';
  * - Calling the buildForm() function to build a form from a questionnaire, an optional QuestionnaireResponse and other optional properties.
  * - Setting a FHIRClient object to make further FHIR calls i.e. answerExpressions.
  *
+ * @deprecated Deprecated in favour of directly calling {@link buildForm} or using the {@link useBuildForm} hook in your own code.
+ *
  * @param questionnaire - Questionnaire to be rendered
  * @param questionnaireResponse - Pre-populated/draft/loaded QuestionnaireResponse to be rendered (optional)
  * @param readOnly - Applies read-only mode to all items in the form view
  * @param terminologyServerUrl - Terminology server url to fetch terminology. If not provided, the default terminology server will be used. (optional)
  * @param additionalVariables - Additional key-value pair of SDC variables `Record<name, variable extension>` for testing (optional)
  * @param fhirClient - FHIRClient object to perform further FHIR calls. At the moment it's only used in answerExpressions (optional)
- *
- * @see buildForm() for more information.
  *
  * @author Sean Fong
  */
@@ -70,7 +70,7 @@ function useInitialiseForm(
       questionnaireResponse,
       readOnly,
       terminologyServerUrl,
-      additionalVariables
+      additionalContext: additionalVariables
     }).then(() => {
       setIsBuilding(false);
     });

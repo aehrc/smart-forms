@@ -119,7 +119,7 @@ function RepopulateAction(props: RepopulateActionProps) {
 
       const { populatedResponse, issues, populatedContext } = populateResult;
 
-      // If populatedContext is provided, save it into repopulatedContext state to add it to additionalVariables later when buildForm is called
+      // If populatedContext is provided, save it into repopulatedContext state to add it to additionalContext later when buildForm is called
       if (populatedContext) {
         setRepopulatedContext(populatedContext);
       }

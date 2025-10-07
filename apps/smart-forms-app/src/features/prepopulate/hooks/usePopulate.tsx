@@ -122,7 +122,7 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
         questionnaire: sourceQuestionnaire,
         questionnaireResponse: populatedResponse,
         terminologyServerUrl: defaultTerminologyServerUrl,
-        additionalVariables: populatedContext
+        additionalContext: populatedContext
       });
 
       onStopSpinner();

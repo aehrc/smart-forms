@@ -75,7 +75,7 @@ export interface QuestionnaireResponseStoreType {
 /**
  * QuestionnaireResponse state management store which contains all properties and methods to manage the state of the questionnaireResponse.
  * This is the vanilla version of the store which can be used in non-React environments.
- * @see QuestionnaireResponseStoreType for available properties and methods.
+ * @see {@link QuestionnaireResponseStoreType} for available properties and methods.
  *
  * @author Sean Fong
  */
@@ -201,8 +201,8 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
 /**
  * QuestionnaireResponse state management store which contains all properties and methods to manage the state of the questionnaire.
  * This is the React version of the store which can be used as React hooks in React functional components.
- * @see QuestionnaireResponseStoreType for available properties and methods.
- * @see questionnaireResponseStore for the vanilla store.
+ * @see {@link QuestionnaireResponseStoreType} for available properties and methods.
+ * @see {@link questionnaireResponseStore} for the vanilla store.
  *
  * @author Sean Fong
  */

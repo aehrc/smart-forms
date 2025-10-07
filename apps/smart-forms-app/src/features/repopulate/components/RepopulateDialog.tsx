@@ -21,14 +21,14 @@ import type { RendererSpinner } from '../../renderer/types/rendererSpinner.ts';
 import { useRepopulationStore } from '../stores/RepopulationStore.ts';
 
 interface RepopulateDialogProps {
-  repopulateFetchingEnded: boolean;
   repopulatedContext: Record<string, any>;
+  repopulateFetchingEnded: boolean;
   onCloseDialog: () => void;
   onSpinnerChange: (newSpinner: RendererSpinner) => void;
 }
 
 function RepopulateDialog(props: RepopulateDialogProps) {
-  const { repopulateFetchingEnded, repopulatedContext, onCloseDialog, onSpinnerChange } = props;
+  const { repopulatedContext, repopulateFetchingEnded, onCloseDialog, onSpinnerChange } = props;
 
   const itemsToRepopulate = useRepopulationStore.use.itemsToRepopulate();
 
