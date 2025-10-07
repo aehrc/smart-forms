@@ -22,12 +22,13 @@ import { useRepopulationStore } from '../stores/RepopulationStore.ts';
 
 interface RepopulateDialogProps {
   repopulateFetchingEnded: boolean;
+  repopulatedContext: Record<string, any>;
   onCloseDialog: () => void;
   onSpinnerChange: (newSpinner: RendererSpinner) => void;
 }
 
 function RepopulateDialog(props: RepopulateDialogProps) {
-  const { repopulateFetchingEnded, onCloseDialog, onSpinnerChange } = props;
+  const { repopulateFetchingEnded, repopulatedContext, onCloseDialog, onSpinnerChange } = props;
 
   const itemsToRepopulate = useRepopulationStore.use.itemsToRepopulate();
 
@@ -44,6 +45,7 @@ function RepopulateDialog(props: RepopulateDialogProps) {
   return (
     <RepopulateSelectDialog
       itemsToRepopulate={itemsToRepopulate}
+      repopulatedContext={repopulatedContext}
       onCloseDialog={onCloseDialog}
       onSpinnerChange={onSpinnerChange}
     />

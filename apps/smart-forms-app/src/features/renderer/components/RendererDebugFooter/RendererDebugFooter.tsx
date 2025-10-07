@@ -38,11 +38,11 @@ function RendererDebugFooter() {
     useQuestionnaireResponseStore.use.setUpdatableResponseAsEmpty();
   const updateExpressions = useQuestionnaireStore.use.updateExpressions();
 
-  function handleClearExistingResponse() {
+  async function handleClearExistingResponse() {
     const clearedResponse = initialiseQuestionnaireResponse(sourceQuestionnaire);
 
     setUpdatableResponseAsEmpty(clearedResponse);
-    updateExpressions(clearedResponse);
+    await updateExpressions(clearedResponse, true);
   }
 
   return (

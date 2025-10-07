@@ -149,8 +149,9 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
     setExtractedBundle(null);
   }
 
-  const responseWasSaved = !!updatableResponse.authored && !!updatableResponse.author;
-  const buttonIsDisabled = !responseWasSaved && formChangesHistory.length === 0;
+  // Check if QR has been saved before via versionId
+  const versionId = updatableResponse.meta?.versionId;
+  const buttonIsDisabled = !smartClient || (formChangesHistory.length === 0 && !versionId);
 
   // Check if questionnaire can be template-based extracted
   const extractMechanism = useMemo(

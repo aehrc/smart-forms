@@ -19,6 +19,7 @@ import { useState } from 'react';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import { useSnackbar } from 'notistack';
 import {
+  buildForm,
   useQuestionnaireResponseStore,
   useQuestionnaireStore,
   useTerminologyServerStore
@@ -36,11 +37,6 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
   const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
 
-  const updatePopulatedProperties = useQuestionnaireStore.use.updatePopulatedProperties();
-  const setPopulatedContext = useQuestionnaireStore.use.setPopulatedContext();
-
-  const setUpdatableResponseAsPopulated =
-    useQuestionnaireResponseStore.use.setUpdatableResponseAsPopulated();
   const formChangesHistory = useQuestionnaireResponseStore.use.formChangesHistory();
 
   const defaultTerminologyServerUrl = useTerminologyServerStore.use.url();
@@ -120,13 +116,14 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
       }
 
       const { populatedResponse, issues, populatedContext } = populateResult;
-      const updatedResponse = await updatePopulatedProperties(populatedResponse, populatedContext);
-      setUpdatableResponseAsPopulated(updatedResponse);
 
-      // Add populatedContext to FhirPathContext so that it can be used in FHIRPath variables
-      if (populatedContext) {
-        setPopulatedContext(populatedContext, true);
-      }
+      // Re-run buildForm() with the new populatedResponse
+      await buildForm({
+        questionnaire: sourceQuestionnaire,
+        questionnaireResponse: populatedResponse,
+        terminologyServerUrl: defaultTerminologyServerUrl,
+        additionalVariables: populatedContext
+      });
 
       onStopSpinner();
       if (issues) {

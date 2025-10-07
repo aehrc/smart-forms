@@ -72,9 +72,10 @@ export {
 } from './hooks';
 
 // utils exports
-export type { ItemToRepopulate } from './utils';
+export type { ItemToRepopulate, BuildFormParams, RepopulateFormParams } from './utils';
 export {
   buildForm,
+  repopulateForm,
   destroyForm,
   getResponse,
   removeEmptyAnswersFromResponse,

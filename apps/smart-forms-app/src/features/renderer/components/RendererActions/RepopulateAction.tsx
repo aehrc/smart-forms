@@ -39,6 +39,7 @@ import {
   fetchTerminologyCallback
 } from '../../../prepopulate/utils/callback.ts';
 import type Client from 'fhirclient/lib/Client';
+import { useState } from 'react';
 
 interface RepopulateActionProps extends SpeedDialActionProps {
   spinner: RendererSpinner;
@@ -49,12 +50,13 @@ interface RepopulateActionProps extends SpeedDialActionProps {
 function RepopulateAction(props: RepopulateActionProps) {
   const { spinner, isSpeedDial, onSpinnerChange, ...speedDialActionProps } = props;
 
+  const [repopulatedContext, setRepopulatedContext] = useState<Record<string, any>>({});
+
   const { smartClient, patient, user, fhirContext } = useSmartClient();
 
   const setItemsToRepopulate = useRepopulationStore.use.setItemsToRepopulate();
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
-  const setPopulatedContext = useQuestionnaireStore.use.setPopulatedContext();
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
@@ -117,9 +119,9 @@ function RepopulateAction(props: RepopulateActionProps) {
 
       const { populatedResponse, issues, populatedContext } = populateResult;
 
-      // If populatedContext is provided, update it in QuestionnaireStore and add it to FhirPathContext so it updates cqfExpressions
+      // If populatedContext is provided, save it into repopulatedContext state to add it to additionalVariables later when buildForm is called
       if (populatedContext) {
-        setPopulatedContext(populatedContext, true);
+        setRepopulatedContext(populatedContext);
       }
 
       const itemToRepopulate = generateItemsToRepopulate(populatedResponse);
@@ -200,6 +202,7 @@ function RepopulateAction(props: RepopulateActionProps) {
       )}
 
       <RepopulateDialog
+        repopulatedContext={repopulatedContext}
         repopulateFetchingEnded={repopulateFetchEnded}
         onCloseDialog={() => onSpinnerChange({ isSpinning: false, status: null, message: '' })}
         onSpinnerChange={onSpinnerChange}

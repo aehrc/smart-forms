@@ -32,7 +32,7 @@ function IdRemoverButtonForStorybook(props: IdRemoverButtonProps) {
 
   async function handleRemoveIds() {
     const updatedResponse = removeInternalIdsFromResponse(questionnaire, questionnaireResponse);
-    await buildForm(questionnaire, updatedResponse);
+    await buildForm({ questionnaire, questionnaireResponse: updatedResponse });
   }
 
   return (

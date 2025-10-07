@@ -46,8 +46,7 @@ import { generateUniqueId } from '../utils/extractObservation';
  * @property responseIsValid - Whether there are any invalid items in the response
  * @property validateQuestionnaireResponse - Used to validate the questionnaire response based on the questionnaire
  * @property buildSourceResponse - Used to build the source response when the form is first initialised
- * @property setUpdatableResponseAsPopulated - Used to set a pre-populated response as the current response
- * @property updateResponse - Used to update the current response
+ * @property updateResponse - Used to update the current response, initialUpdate flag is to ensure formChangesHistory is not updated during the first update after form build
  * @property setUpdatableResponseAsSaved - Used to set a saved response as the current response
  * @property setUpdatableResponseAsEmpty - Used to set an empty response as the current response
  * @property destroySourceResponse - Used to destroy the source response  and reset all properties
@@ -66,8 +65,7 @@ export interface QuestionnaireResponseStoreType {
   responseIsValid: boolean;
   validateResponse: (questionnaire: Questionnaire, updatedResponse: QuestionnaireResponse) => void;
   buildSourceResponse: (response: QuestionnaireResponse) => void;
-  setUpdatableResponseAsPopulated: (populatedResponse: QuestionnaireResponse) => void;
-  updateResponse: (updatedResponse: QuestionnaireResponse) => void;
+  updateResponse: (updatedResponse: QuestionnaireResponse, isInitialUpdate: boolean) => void;
   setUpdatableResponseAsSaved: (savedResponse: QuestionnaireResponse) => void;
   setUpdatableResponseAsEmpty: (clearedResponse: QuestionnaireResponse) => void;
   destroySourceResponse: () => void;
@@ -116,40 +114,33 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
         responseIsValid: Object.keys(initialInvalidItems).length === 0
       }));
     },
-    setUpdatableResponseAsPopulated: (populatedResponse: QuestionnaireResponse) => {
+    updateResponse: (updatedResponse: QuestionnaireResponse, isInitialUpdate: boolean) => {
       const sourceQuestionnaire = questionnaireStore.getState().sourceQuestionnaire;
-      const formChanges = diff(get().updatableResponse, populatedResponse) ?? null;
-
-      const updatedInvalidItems = validateForm(sourceQuestionnaire, populatedResponse);
-
-      set(() => ({
-        sourceResponse: populatedResponse,
-        updatableResponse: populatedResponse,
-        updatableResponseItems: createQuestionnaireResponseItemMap(
-          sourceQuestionnaire,
-          populatedResponse
-        ),
-        formChangesHistory: [...get().formChangesHistory, formChanges],
-        invalidItems: updatedInvalidItems,
-        requiredItemsIsHighlighted: false,
-        responseIsValid: Object.keys(updatedInvalidItems).length === 0
-      }));
-    },
-    updateResponse: (updatedResponse: QuestionnaireResponse) => {
-      const sourceQuestionnaire = questionnaireStore.getState().sourceQuestionnaire;
-      const formChanges = diff(get().updatableResponse, updatedResponse) ?? null;
       const updatedInvalidItems = validateForm(sourceQuestionnaire, updatedResponse);
 
-      set(() => ({
-        updatableResponse: updatedResponse,
-        updatableResponseItems: createQuestionnaireResponseItemMap(
-          sourceQuestionnaire,
-          updatedResponse
-        ),
-        formChangesHistory: [...get().formChangesHistory, formChanges],
-        invalidItems: updatedInvalidItems,
-        responseIsValid: Object.keys(updatedInvalidItems).length === 0
-      }));
+      set(() => {
+        const stateUpdate = {
+          updatableResponse: updatedResponse,
+          updatableResponseItems: createQuestionnaireResponseItemMap(
+            sourceQuestionnaire,
+            updatedResponse
+          ),
+          invalidItems: updatedInvalidItems,
+          responseIsValid: Object.keys(updatedInvalidItems).length === 0
+        };
+
+        // If this is the initial update, skip updating the form changes
+        if (isInitialUpdate) {
+          return stateUpdate;
+        }
+
+        // Otherwise update form changes history
+        const formChanges = diff(get().updatableResponse, updatedResponse) ?? null;
+        return {
+          ...stateUpdate,
+          formChangesHistory: [...get().formChangesHistory, formChanges]
+        };
+      });
     },
     setUpdatableResponseAsSaved: (savedResponse: QuestionnaireResponse) => {
       const sourceQuestionnaire = questionnaireStore.getState().sourceQuestionnaire;

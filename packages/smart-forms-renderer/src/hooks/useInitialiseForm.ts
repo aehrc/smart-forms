@@ -65,13 +65,13 @@ function useInitialiseForm(
 
     // Initialise form including Questionnaire and other optionally provided parameters
     // Includes initialisation for enableWhen, enableWhenExpressions, calculatedExpressions, initialExpressions, answerExpressions, cache answerValueSets
-    buildForm(
+    buildForm({
       questionnaire,
       questionnaireResponse,
       readOnly,
       terminologyServerUrl,
       additionalVariables
-    ).then(() => {
+    }).then(() => {
       setIsBuilding(false);
     });
   }, [

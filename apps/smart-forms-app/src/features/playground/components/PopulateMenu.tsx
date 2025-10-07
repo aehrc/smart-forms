@@ -40,6 +40,8 @@ function PopulateMenu(props: PopulateMenuProps) {
     props;
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [repopulatedContext, setRepopulatedContext] = useState<Record<string, any>>({});
+
   const open = Boolean(anchorEl);
 
   const populateEnabled = sourceFhirServerUrl !== null && patient !== null;
@@ -114,11 +116,15 @@ function PopulateMenu(props: PopulateMenuProps) {
           terminologyServerUrl={terminologyServerUrl}
           onSpinnerChange={onSpinnerChange}
           onCloseMenu={handleClose}
+          onSetRepopulatedContext={(newRepopulatedContext) =>
+            setRepopulatedContext(newRepopulatedContext)
+          }
         />
       </Menu>
 
       <RepopulateDialog
         repopulateFetchingEnded={repopulateFetchEnded}
+        repopulatedContext={repopulatedContext}
         onCloseDialog={() => onSpinnerChange({ isSpinning: false, status: null, message: '' })}
         onSpinnerChange={onSpinnerChange}
       />

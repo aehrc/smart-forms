@@ -94,7 +94,11 @@ function BaseRenderer() {
   const topLevelQRItems = structuredClone(updatableResponse.item) ?? [];
 
   if (!topLevelQItems) {
-    return <>Questionnaire does not have any items</>;
+    return (
+      <>
+        Questionnaire does not have any items or something has gone wrong. Try rebuilding the form.
+      </>
+    );
   }
 
   // If an item has multiple answers, it is a repeat group

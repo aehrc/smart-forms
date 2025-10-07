@@ -15,15 +15,22 @@ interface RePopulateMenuItemProps {
   terminologyServerUrl: string;
   onSpinnerChange: (newSpinner: RendererSpinner) => void;
   onCloseMenu: () => void;
+  onSetRepopulatedContext: (context: Record<string, any>) => void;
 }
 
 function RePopulateMenuItem(props: RePopulateMenuItemProps) {
-  const { sourceFhirServerUrl, patient, user, onSpinnerChange, onCloseMenu } = props;
+  const {
+    sourceFhirServerUrl,
+    patient,
+    user,
+    onSpinnerChange,
+    onCloseMenu,
+    onSetRepopulatedContext
+  } = props;
 
   const setItemsToRepopulate = useRepopulationStore.use.setItemsToRepopulate();
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
-  const setPopulatedContext = useQuestionnaireStore.use.setPopulatedContext();
 
   const populateEnabled = sourceFhirServerUrl !== null && patient !== null;
 
@@ -58,9 +65,9 @@ function RePopulateMenuItem(props: RePopulateMenuItemProps) {
 
       const { populatedResponse, populatedContext } = populateResult;
 
-      // TODO eventually we want to deprecate this in 1.0.0, populatedContext is now passed to buildFormWrapper and is automatically added to the FhirPathContext
+      // If populatedContext is provided, save it into repopulatedContext state to add it to additionalVariables later when buildForm is called
       if (populatedContext) {
-        setPopulatedContext(populatedContext, true);
+        onSetRepopulatedContext(populatedContext);
       }
 
       // Determine items to repopulate to let the user select
