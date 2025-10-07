@@ -35,7 +35,6 @@ interface IntegerFieldProps extends PropsWithIsTabledRequiredAttribute {
   calcExpUpdated: boolean;
   onInputChange: (value: string) => void;
   onRepopulateSync: (newQrItem: QuestionnaireResponseItem | null) => unknown;
-  onBlur: () => void;
 }
 
 function IntegerField(props: IntegerFieldProps) {
@@ -48,8 +47,7 @@ function IntegerField(props: IntegerFieldProps) {
     calcExpUpdated,
     isTabled,
     onInputChange,
-    onRepopulateSync,
-    onBlur
+    onRepopulateSync
   } = props;
 
   const { displayPrompt, displayUnit, entryFormat, isRepopulatable } = renderingExtensions;
@@ -73,7 +71,6 @@ function IntegerField(props: IntegerFieldProps) {
       error={!!feedback}
       helperText={feedback}
       onChange={(event) => onInputChange(event.target.value)}
-      onBlur={onBlur}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       label={displayPrompt}
       placeholder={placeholderText}

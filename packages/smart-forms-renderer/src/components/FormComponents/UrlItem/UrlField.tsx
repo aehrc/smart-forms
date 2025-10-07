@@ -33,7 +33,6 @@ interface UrlFieldProps extends PropsWithIsTabledRequiredAttribute {
   entryFormat: string;
   readOnly: boolean;
   onInputChange: (value: string) => void;
-  onBlur: () => void;
 }
 
 function UrlField(props: UrlFieldProps) {
@@ -47,8 +46,7 @@ function UrlField(props: UrlFieldProps) {
     entryFormat,
     readOnly,
     isTabled,
-    onInputChange,
-    onBlur
+    onInputChange
   } = props;
 
   const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
@@ -64,7 +62,6 @@ function UrlField(props: UrlFieldProps) {
       value={input}
       error={!!feedback}
       onChange={(event) => onInputChange(event.target.value)}
-      onBlur={onBlur}
       placeholder={entryFormat || displayPrompt}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       size="small"

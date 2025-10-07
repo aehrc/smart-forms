@@ -35,7 +35,6 @@ interface StringFieldProps extends PropsWithIsTabledRequiredAttribute {
   calcExpUpdated: boolean;
   onInputChange: (value: string) => void;
   onRepopulateSync: (newQrItem: QuestionnaireResponseItem | null) => unknown;
-  onBlur: () => void;
 }
 
 function StringField(props: StringFieldProps) {
@@ -48,8 +47,7 @@ function StringField(props: StringFieldProps) {
     isTabled,
     calcExpUpdated,
     onInputChange,
-    onRepopulateSync,
-    onBlur
+    onRepopulateSync
   } = props;
 
   const { displayPrompt, displayUnit, entryFormat, isRepopulatable } = renderingExtensions;
@@ -66,7 +64,6 @@ function StringField(props: StringFieldProps) {
       isTabled={isTabled}
       value={input}
       error={!!feedback}
-      onBlur={onBlur} // Trigger validation on blur
       onChange={(event) => onInputChange(event.target.value)}
       placeholder={entryFormat || displayPrompt}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}

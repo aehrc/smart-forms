@@ -159,7 +159,7 @@ describe('hasTemplateExtractRefExtension', () => {
     expect(result.warning?.details?.text).toMatch(/must not have nested extensions/);
   });
 
-  it('handles all slice types correctly', () => {
+  it('handles all slice types correctly (with resourceId)', () => {
     const item: QuestionnaireItem = {
       linkId: 'q1',
       type: 'string',
@@ -171,8 +171,7 @@ describe('hasTemplateExtractRefExtension', () => {
           { url: 'ifNoneMatch', valueString: 'etag' },
           { url: 'ifModifiedSince', valueString: 'date' },
           { url: 'ifMatch', valueString: 'match' },
-          { url: 'ifNoneExist', valueString: 'condition' },
-          { url: 'type', valueCode: 'Observation' }
+          { url: 'ifNoneExist', valueString: 'condition' }
         ])
       ]
     };
@@ -186,8 +185,40 @@ describe('hasTemplateExtractRefExtension', () => {
       ifNoneMatch: 'etag',
       ifModifiedSince: 'date',
       ifMatch: 'match',
-      ifNoneExist: 'condition',
-      type: 'Observation'
+      ifNoneExist: 'condition'
+    });
+  });
+
+  it('handles all slice types correctly (with patchRequestUrl)', () => {
+    const item: QuestionnaireItem = {
+      linkId: 'q1',
+      type: 'string',
+      extension: [
+        buildExtension([
+          { url: 'template', valueReference: { reference: '#x' } },
+          { url: 'fullUrl', valueString: 'url' },
+          {
+            url: 'https://smartforms.csiro.au/ig/StructureDefinition/TemplateExtractExtensionPatchRequestUrl',
+            valueString: 'Observation/res'
+          },
+          { url: 'ifNoneMatch', valueString: 'etag' },
+          { url: 'ifModifiedSince', valueString: 'date' },
+          { url: 'ifMatch', valueString: 'match' },
+          { url: 'ifNoneExist', valueString: 'condition' }
+        ])
+      ]
+    };
+
+    const result = hasTemplateExtractRefExtension(item);
+    expect(result.warning).toBeUndefined();
+    expect(result.templateExtractRef).toEqual({
+      templateId: 'x',
+      fullUrl: 'url',
+      patchRequestUrl: 'Observation/res',
+      ifNoneMatch: 'etag',
+      ifModifiedSince: 'date',
+      ifMatch: 'match',
+      ifNoneExist: 'condition'
     });
   });
 });

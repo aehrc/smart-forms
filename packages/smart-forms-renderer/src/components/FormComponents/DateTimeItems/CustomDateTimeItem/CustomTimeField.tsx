@@ -39,7 +39,6 @@ interface CustomTimeFieldProps extends PropsWithIsTabledRequiredAttribute {
   isPartOfDateTime: boolean;
   onTimeInputChange: (newInput: string) => void;
   onPeriodChange: (newPeriod: string) => void;
-  onTimeBlur: () => void;
 }
 
 function CustomTimeField(props: CustomTimeFieldProps) {
@@ -55,8 +54,7 @@ function CustomTimeField(props: CustomTimeFieldProps) {
     isPartOfDateTime,
     isTabled,
     onTimeInputChange,
-    onPeriodChange,
-    onTimeBlur
+    onPeriodChange
   } = props;
   // TODO this component doesn't have a calcExpUpdated update animation
 
@@ -86,7 +84,6 @@ function CustomTimeField(props: CustomTimeFieldProps) {
           fullWidth
           sx={{ flex: 1 }}
           onChange={(e: ChangeEvent<HTMLInputElement>) => onTimeInputChange(e.target.value)}
-          onBlur={onTimeBlur}
           label={displayPrompt}
           placeholder="--:--"
           disabled={readOnly && readOnlyVisualStyle === 'disabled'}
@@ -107,8 +104,7 @@ function CustomTimeField(props: CustomTimeFieldProps) {
             readOnly={(readOnly && readOnlyVisualStyle === 'readonly') || is24HourNotation}
             displayEmpty
             size="small"
-            onChange={(e) => onPeriodChange(e.target.value)}
-            onBlur={onTimeBlur}>
+            onChange={(e) => onPeriodChange(e.target.value)}>
             <MenuItem value="">
               <span style={{ color: grey['500'] }}>{is24HourNotation ? '-' : 'AM/PM'}</span>
             </MenuItem>

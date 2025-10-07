@@ -90,7 +90,7 @@ export function buildTransactionBundle(
       }
 
       // Clean extracted resource
-      const cleanedExtractedResource = cleanDeep(extractedResource, {
+      const cleanedRetainedResource = cleanDeep(retainedResource, {
         emptyObjects: true,
         emptyArrays: true,
         nullValues: true,
@@ -113,13 +113,17 @@ export function buildTransactionBundle(
         buildBundleWarnings,
         templateExtractReference.resourceId
       );
+      const resourceType = cleanedRetainedResource.resourceType;
       const hasResourceId = typeof resourceId === 'string' && resourceId !== '';
 
-      // resourceType (custom)
-      let resourceType = cleanedExtractedResource.resourceType;
-      if (templateExtractReference.type) {
-        resourceType = templateExtractReference.type as FhirResource['resourceType'];
-      }
+      // PatchRequestUrl
+      const patchRequestUrl = getPatchRequestUrl(
+        contextScopeResult,
+        fhirPathContext,
+        buildBundleWarnings,
+        templateExtractReference.patchRequestUrl
+      );
+      const hasPatchRequestUrl = typeof patchRequestUrl === 'string' && patchRequestUrl !== '';
 
       // fullUrl
       // Otherwise, evaluate it as a FHIRPath expression
@@ -157,11 +161,19 @@ export function buildTransactionBundle(
       );
 
       // Request method
-      const requestMethod = getRequestMethod(cleanedExtractedResource, hasResourceId);
+      const requestMethod = getRequestMethod(cleanedRetainedResource, hasResourceId);
+
+      // Request url
+      const requestUrl =
+        requestMethod === 'PATCH' && hasPatchRequestUrl
+          ? patchRequestUrl
+          : hasResourceId
+            ? `${resourceType}/${resourceId}`
+            : resourceType;
 
       // Add resourceId to resource
       const resourceToAdd = addResourceIdToResource(
-        cleanedExtractedResource,
+        cleanedRetainedResource,
         resourceId,
         requestMethod
       );
@@ -172,7 +184,7 @@ export function buildTransactionBundle(
         resource: resourceToAdd,
         request: {
           method: requestMethod,
-          url: hasResourceId ? `${resourceType}/${resourceId}` : resourceType,
+          url: requestUrl,
 
           // ifNoneMatch, ifModifiedSince, ifMatch, ifNoneExist optional properties
           ...(ifNoneMatch && { ifNoneMatch: ifNoneMatch }),
@@ -225,7 +237,7 @@ function getResourceId(
   buildBundleWarnings: OperationOutcomeIssue[],
   resourceIdFromTemplateDetails?: string
 ): string | undefined {
-  // templateExtract extension:fullUrl FHIRPath expressions available
+  // templateExtract extension:resourceId FHIRPath expression available
   if (resourceIdFromTemplateDetails) {
     const result = fhirPathEvaluate({
       fhirData: contextScopeResult,
@@ -239,7 +251,31 @@ function getResourceId(
     }
   }
 
-  // templateExtract extension:fullUrl unavailable or cannot be evaluated
+  // templateExtract extension:resourceId unavailable or cannot be evaluated
+  return undefined;
+}
+
+function getPatchRequestUrl(
+  contextScopeResult: FhirPathEvalResult,
+  fhirPathContext: Record<string, any>,
+  buildBundleWarnings: OperationOutcomeIssue[],
+  patchRequestUrlFromTemplateDetails?: string
+): string | undefined {
+  // templateExtract extension:patchRequestUrl FHIRPath expression available
+  if (patchRequestUrlFromTemplateDetails) {
+    const result = fhirPathEvaluate({
+      fhirData: contextScopeResult,
+      path: patchRequestUrlFromTemplateDetails,
+      envVars: fhirPathContext,
+      warnings: buildBundleWarnings
+    });
+
+    if (result.length > 0 && result[0] && typeof result[0] === 'string' && result[0] !== '') {
+      return result[0];
+    }
+  }
+
+  // templateExtract extension:patchRequestUrl unavailable or cannot be evaluated
   return undefined;
 }
 

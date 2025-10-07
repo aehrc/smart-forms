@@ -64,26 +64,12 @@ function DecimalItem(props: BaseItemProps) {
   // Perform validation checks - there's no string-based input here
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
-  // Provides a way to hide the feedback when the user is typing
-  const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
-
   // Event handlers
   function handleInputChange(newInput: string) {
     const parsedNewInput: string = parseDecimalStringWithPrecision(newInput, precision);
 
     setInput(parsedNewInput);
-
-    // Only suppress feedback once (before first blur)
-    if (!hasBlurred) {
-      setShowFeedback(false);
-    }
-
     updateQrItemWithDebounce(parsedNewInput);
-  }
-
-  function handleBlur() {
-    setShowFeedback(true);
-    setHasBlurred(true); // From now on, feedback should stay visible
   }
 
   function handleRepopulateSync(newQrItem: QuestionnaireResponseItem | null) {
@@ -134,14 +120,13 @@ function DecimalItem(props: BaseItemProps) {
       <DecimalField
         qItem={qItem}
         input={input}
-        feedback={showFeedback ? feedback : ''}
+        feedback={feedback ?? ''}
         renderingExtensions={renderingExtensions}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         isTabled={isTabled}
         onInputChange={handleInputChange}
         onRepopulateSync={handleRepopulateSync}
-        onBlur={handleBlur}
       />
     );
   }
@@ -159,17 +144,16 @@ function DecimalItem(props: BaseItemProps) {
           <DecimalField
             qItem={qItem}
             input={input}
-            feedback={showFeedback ? feedback : ''}
+            feedback={feedback ?? ''}
             renderingExtensions={renderingExtensions}
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}
             onInputChange={handleInputChange}
             onRepopulateSync={handleRepopulateSync}
-            onBlur={handleBlur}
           />
         }
-        feedback={showFeedback ? feedback : undefined}
+        feedback={feedback ?? undefined}
       />
     </FullWidthFormComponentBox>
   );

@@ -109,9 +109,9 @@ export async function evaluateInitialCalculatedExpressions(
 
     for (const calcExpression of itemCalcExpressions) {
       const cacheKey = JSON.stringify(calcExpression.expression); // Use expression as cache key
-      if (fhirPathTerminologyCache[cacheKey]) {
-        continue;
-      }
+      // if (fhirPathTerminologyCache[cacheKey]) {
+      //   continue;
+      // }
 
       try {
         const fhirPathResult = fhirpath.evaluate(

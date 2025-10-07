@@ -59,24 +59,11 @@ function StringItem(props: BaseItemProps) {
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
-  // Provides a way to hide the feedback when the user is typing
-  const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
-
   // Event handlers
   function handleChange(newInput: string) {
     setInput(newInput);
 
-    // Only suppress feedback once (before first blur)
-    if (!hasBlurred) {
-      setShowFeedback(false);
-    }
-
     updateQrItemWithDebounce(newInput);
-  }
-
-  function handleBlur() {
-    setShowFeedback(true);
-    setHasBlurred(true); // From now on, feedback should stay visible
   }
 
   function handleRepopulateSync(newQrItem: QuestionnaireResponseItem | null) {
@@ -117,13 +104,12 @@ function StringItem(props: BaseItemProps) {
       <StringField
         qItem={qItem}
         input={input}
-        feedback={showFeedback ? feedback : ''}
+        feedback={feedback ?? ''}
         renderingExtensions={renderingExtensions}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         onInputChange={handleChange}
         onRepopulateSync={handleRepopulateSync}
-        onBlur={handleBlur}
         isTabled={isTabled}
       />
     );
@@ -141,17 +127,16 @@ function StringItem(props: BaseItemProps) {
           <StringField
             qItem={qItem}
             input={input}
-            feedback={showFeedback ? feedback : ''}
+            feedback={feedback ?? ''}
             renderingExtensions={renderingExtensions}
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}
             onInputChange={handleChange}
             onRepopulateSync={handleRepopulateSync}
-            onBlur={handleBlur}
             isTabled={isTabled}
           />
         }
-        feedback={showFeedback ? feedback : undefined}
+        feedback={feedback ?? undefined}
       />
     </FullWidthFormComponentBox>
   );

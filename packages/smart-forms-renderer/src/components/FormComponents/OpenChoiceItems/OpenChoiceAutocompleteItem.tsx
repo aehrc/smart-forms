@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import type { Coding } from 'fhir/r4';
 
@@ -24,12 +24,19 @@ import type { AlertColor } from '@mui/material/Alert';
 import useDebounce from '../../../hooks/useDebounce';
 import useReadOnly from '../../../hooks/useReadOnly';
 import useTerminologyServerQuery from '../../../hooks/useTerminologyServerQuery';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
-import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
-import { useQuestionnaireStore } from '../../../stores';
-import { AUTOCOMPLETE_DEBOUNCE_DURATION } from '../../../utils/debounce';
-import { createEmptyQrItem } from '../../../utils/qrItem';
-import { FullWidthFormComponentBox } from '../../Box.styles';
+import debounce from 'lodash.debounce';
+import type {
+  PropsWithFeedbackFromParentAttribute,
+  PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledRequiredAttribute,
+  PropsWithItemPathAttribute,
+  PropsWithParentIsReadOnlyAttribute,
+  PropsWithQrItemChangeHandler,
+  PropsWithRenderingExtensionsAttribute
+} from '../../../interfaces/renderProps.interface';
+import { AUTOCOMPLETE_DEBOUNCE_DURATION, DEBOUNCE_DURATION } from '../../../utils/debounce';
+import OpenChoiceAutocompleteField from './OpenChoiceAutocompleteField';
+import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
 import { sanitizeInput } from '../../../utils/inputSanitization';
@@ -91,6 +98,22 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
     feedback = { message: validationFeedback, color: 'error' };
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const updateQrItemWithDebounce = useCallback(
+    debounce((input: string) => {
+      const emptyQrItem = createEmptyQrItem(qItem, answerKey);
+      if (input !== '') {
+        onQrItemChange({
+          ...emptyQrItem,
+          answer: [{ id: answerKey, valueString: sanitizeInput(input) }]
+        });
+      } else {
+        onQrItemChange(emptyQrItem);
+      }
+    }, DEBOUNCE_DURATION),
+    [onQrItemChange, qItem]
+  ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
+
   if (!qItem.answerValueSet) {
     return null;
   }
@@ -101,14 +124,14 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
     newValue: Coding | string | null,
     reason: AutocompleteChangeReason | string
   ) {
-    //if the reason is reset, then we don't change the value, otherwise you will end up with looped setState calls
+    // If the reason is reset, then don't change value. Otherwise you will end up with looped setState calls
     if (reason === 'reset') {
       return;
     }
-    //if the text input is changed, and only if hte input is a string the set the state.
+
+    // Set state if text input is changed and input is string
     if (newValue && typeof newValue === 'string' && reason === 'input') {
       setInput(newValue);
-      // return;
     }
 
     if (newValue === null) {
@@ -118,7 +141,7 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
 
     if (typeof newValue === 'string') {
       if (newValue !== '') {
-        // Check if the newValue in in the options, first check options.display, then check options.code
+        // Check if the newValue is in the options, first check options.display, then check options.code
         const foundOption = options.find((option) => {
           if (option.display) {
             return option.display === newValue;
@@ -127,6 +150,7 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
         });
         if (foundOption) {
           newValue = foundOption;
+          // For option selection, update immediately (no debounce)
           onQrItemChange({
             ...qrOpenChoice,
             answer: [{ id: answerKey, valueCoding: newValue }]
@@ -134,15 +158,15 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
         }
         // if newValue is not in the options list, treat it as a string
         else {
-          onQrItemChange({
-            ...createEmptyQrItem(qItem, answerKey),
-            answer: [{ id: answerKey, valueString: sanitizeInput(newValue) }]
-          });
+          // For string input, use debounced update
+          updateQrItemWithDebounce(newValue);
         }
       } else {
+        // For empty string, update immediately
         onQrItemChange(createEmptyQrItem(qItem, answerKey));
       }
     } else {
+      // For coding selection, update immediately (no debounce)
       onQrItemChange({
         ...createEmptyQrItem(qItem, answerKey),
         answer: [{ id: answerKey, valueCoding: newValue }]

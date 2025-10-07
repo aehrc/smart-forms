@@ -27,7 +27,6 @@ import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
-import useShowFeedback from '../../../hooks/useShowFeedback';
 import { readStringValue } from '../../../utils/readValues';
 import type { QuestionnaireResponseItem } from 'fhir/r4';
 import { sanitizeInput } from '../../../utils/inputSanitization';
@@ -57,24 +56,12 @@ function TextItem(props: BaseItemProps) {
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
-  // Provides a way to hide the feedback when the user is typing
-  const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
 
   // Event handlers
   function handleInputChange(newInput: string) {
     setInput(newInput);
 
-    // Only suppress feedback once (before first blur)
-    if (!hasBlurred) {
-      setShowFeedback(false);
-    }
-
     updateQrItemWithDebounce(newInput);
-  }
-
-  function handleBlur() {
-    setShowFeedback(true);
-    setHasBlurred(true); // From now on, feedback should stay visible
   }
 
   function handleRepopulateSync(newQrItem: QuestionnaireResponseItem | null) {
@@ -82,16 +69,19 @@ function TextItem(props: BaseItemProps) {
       const { valueString: newValueString, initialInput: newInput } = readStringValue(newQrItem);
 
       setInput(newInput);
-      onQrItemChange({
-        ...createEmptyQrItem(qItem, answerKey),
-        answer: [{ id: answerKey, valueString: sanitizeInput(newValueString) }]
-      });
+      onQrItemChange(
+        {
+          ...createEmptyQrItem(qItem, answerKey),
+          answer: [{ id: answerKey, valueString: sanitizeInput(newValueString) }]
+        },
+        itemPath
+      );
       return;
     }
 
     // At this point newQrItem is null, so create an QRItem to replace it
     setInput('');
-    onQrItemChange(createEmptyQrItem(qItem, answerKey));
+    onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -115,13 +105,12 @@ function TextItem(props: BaseItemProps) {
       <TextField
         qItem={qItem}
         input={input}
-        feedback={showFeedback ? feedback : ''}
+        feedback={feedback ?? ''}
         renderingExtensions={renderingExtensions}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         onInputChange={handleInputChange}
         onRepopulateSync={handleRepopulateSync}
-        onBlur={handleBlur}
       />
     );
   }
@@ -139,16 +128,15 @@ function TextItem(props: BaseItemProps) {
           <TextField
             qItem={qItem}
             input={input}
-            feedback={showFeedback ? feedback : ''}
+            feedback={feedback ?? ''}
             renderingExtensions={renderingExtensions}
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}
             onInputChange={handleInputChange}
             onRepopulateSync={handleRepopulateSync}
-            onBlur={handleBlur}
           />
         }
-        feedback={showFeedback ? feedback : undefined}
+        feedback={feedback ?? undefined}
       />
     </FullWidthFormComponentBox>
   );
