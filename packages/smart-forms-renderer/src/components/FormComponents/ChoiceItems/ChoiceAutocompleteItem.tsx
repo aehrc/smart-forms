@@ -110,10 +110,12 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
   function handleValueChange(newValue: Coding | null) {
     if (newValue === null) {
       setInput('');
+      // For clearing selection, update immediately
       onQrItemChange(createEmptyQrItem(qItem, answerKey));
       return;
     }
 
+    // For option selection, update immediately (no debounce)
     onQrItemChange({
       ...createEmptyQrItem(qItem, answerKey),
       answer: [{ id: answerKey, valueCoding: newValue }]
