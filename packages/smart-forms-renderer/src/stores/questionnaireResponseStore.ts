@@ -140,13 +140,6 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
       const formChanges = diff(get().updatableResponse, updatedResponse) ?? null;
       const updatedInvalidItems = validateForm(sourceQuestionnaire, updatedResponse);
 
-      // Performance debugging: Log QR updates to console
-      console.log('🔄 QR Update:', {
-        timestamp: new Date().toISOString(),
-        changes: formChanges ? Object.keys(formChanges).length : 0,
-        hasChanges: !!formChanges
-      });
-
       set(() => ({
         updatableResponse: updatedResponse,
         updatableResponseItems: createQuestionnaireResponseItemMap(

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useState, useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 
@@ -111,17 +111,25 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
     feedback = { message: validationFeedback, color: 'error' };
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const updateQrItemWithDebounce = useCallback(
+    debounce((input: string) => {
+      const emptyQrItem = createEmptyQrItem(qItem, answerKey);
+      if (input !== '') {
+        onQrItemChange({
+          ...emptyQrItem,
+          answer: [{ id: answerKey, valueString: sanitizeInput(input) }]
+        });
+      } else {
+        onQrItemChange(emptyQrItem);
+      }
+    }, DEBOUNCE_DURATION),
+    [onQrItemChange, qItem]
+  ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
+
   if (!qItem.answerValueSet) {
     return null;
   }
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const updateQrItemWithDebounce = useCallback(
-    debounce((qrItem: QuestionnaireResponseItem) => {
-      onQrItemChange(qrItem);
-    }, AUTOCOMPLETE_DEBOUNCE_DURATION),
-    [onQrItemChange, qItem]
-  ); // Dependencies are tested, debounce is causing eslint to not recognise dependencies
 
   // Event handlers
   // Handler function which handles both input change and selection change
@@ -129,14 +137,14 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
     newValue: Coding | string | null,
     reason: AutocompleteChangeReason | string
   ) {
-    //if the reason is reset, then we don't change the value, otherwise you will end up with looped setState calls
+    // If the reason is reset, then don't change value. Otherwise you will end up with looped setState calls
     if (reason === 'reset') {
       return;
     }
-    //if the text input is changed, and only if hte input is a string the set the state.
+
+    // Set state if text input is changed and input is string
     if (newValue && typeof newValue === 'string' && reason === 'input') {
       setInput(newValue);
-      // return;
     }
 
     if (newValue === null) {
@@ -146,7 +154,7 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
 
     if (typeof newValue === 'string') {
       if (newValue !== '') {
-        // Check if the newValue in in the options, first check options.display, then check options.code
+        // Check if the newValue is in the options, first check options.display, then check options.code
         const foundOption = options.find((option) => {
           if (option.display) {
             return option.display === newValue;
@@ -164,10 +172,7 @@ function OpenChoiceAutocompleteItem(props: OpenChoiceAutocompleteItemProps) {
         // if newValue is not in the options list, treat it as a string
         else {
           // For string input, use debounced update
-          updateQrItemWithDebounce({
-            ...createEmptyQrItem(qItem, answerKey),
-            answer: [{ id: answerKey, valueString: sanitizeInput(newValue) }]
-          });
+          updateQrItemWithDebounce(newValue);
         }
       } else {
         // For empty string, update immediately
