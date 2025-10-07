@@ -33,6 +33,10 @@ test.beforeEach(async ({ page }) => {
   console.log('Playwright navigating to: ', launchUrl);
   await page.goto(launchUrl);
 
+  // On /dashboard/questionnaires route, create a new response after SMART redirection
+  await page.getByTestId('button-create-response').click();
+
+  // Expect pre-population
   const populateResponse = await populatePromise;
   expect(populateResponse.status()).toBe(200);
 });
