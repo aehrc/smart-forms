@@ -15,17 +15,23 @@
  * limitations under the License.
  */
 
-import { useSmartConfigStore } from '@aehrc/smart-forms-renderer';
+function useSelectedProperty<T extends Record<string, () => any>>(
+  selectedPropKey: keyof T | string,
+  storeHooks: T
+): {
+  selectedPropVal: any;
+  allPropKeys: string[];
+} {
+  const allPropKeys = Object.keys(storeHooks);
+  const valueMap = Object.fromEntries(
+    Object.keys(storeHooks).map((name) => [name, storeHooks[name as keyof T]()])
+  );
 
-function useShowSmartConfigStoreProperty(selectedProperty: string) {
-  const client = useSmartConfigStore.use.client();
-  const patient = useSmartConfigStore.use.patient();
-  const user = useSmartConfigStore.use.user();
-  const encounter = useSmartConfigStore.use.encounter();
-
-  const valueMap = { client, patient, user, encounter };
-
-  return selectedProperty in valueMap ? valueMap[selectedProperty as keyof typeof valueMap] : null;
+  return {
+    selectedPropVal:
+      selectedPropKey in valueMap ? valueMap[selectedPropKey as keyof typeof valueMap] : null,
+    allPropKeys: allPropKeys
+  };
 }
 
-export default useShowSmartConfigStoreProperty;
+export default useSelectedProperty;
