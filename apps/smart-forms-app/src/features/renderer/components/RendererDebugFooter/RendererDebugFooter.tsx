@@ -19,43 +19,18 @@ import { StyledRoot } from '../../../../components/DebugFooter/DebugFooter.style
 import { useState } from 'react';
 import DebugPanel from './DebugPanel.tsx';
 import RendererDebugBar from './RendererDebugBar.tsx';
-import {
-  initialiseQuestionnaireResponse,
-  useQuestionnaireResponseStore,
-  useQuestionnaireStore
-} from '@aehrc/smart-forms-renderer';
+import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 
 function RendererDebugFooter() {
   const [isHidden, setIsHidden] = useState(true);
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
-  const fhirPathContext = useQuestionnaireStore.use.fhirPathContext();
-  const populatedContext = useQuestionnaireStore.use.populatedContext();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
-  const updatableResponseItems = useQuestionnaireResponseStore.use.updatableResponseItems();
-
-  const setUpdatableResponseAsEmpty =
-    useQuestionnaireResponseStore.use.setUpdatableResponseAsEmpty();
-  const updateExpressions = useQuestionnaireStore.use.updateExpressions();
-
-  async function handleClearExistingResponse() {
-    const clearedResponse = initialiseQuestionnaireResponse(sourceQuestionnaire);
-
-    setUpdatableResponseAsEmpty(clearedResponse);
-    await updateExpressions(clearedResponse, true);
-  }
 
   return (
     <>
       {isHidden ? null : (
-        <DebugPanel
-          questionnaire={sourceQuestionnaire}
-          questionnaireResponse={updatableResponse}
-          questionnaireResponseItems={updatableResponseItems}
-          fhirPathContext={fhirPathContext}
-          populatedContext={populatedContext}
-          clearQResponse={() => handleClearExistingResponse()}
-        />
+        <DebugPanel questionnaire={sourceQuestionnaire} questionnaireResponse={updatableResponse} />
       )}
       <StyledRoot>
         <RendererDebugBar isHidden={isHidden} toggleIsHidden={(checked) => setIsHidden(checked)} />
