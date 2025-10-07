@@ -18,7 +18,6 @@
 import { useState } from 'react';
 import useDateValidation from '../../../../hooks/useDateValidation';
 import useReadOnly from '../../../../hooks/useReadOnly';
-import useShowFeedback from '../../../../hooks/useShowFeedback';
 import type { BaseItemProps } from '../../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../../stores';
 import { createEmptyQrItem } from '../../../../utils/qrItem';

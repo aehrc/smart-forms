@@ -19,7 +19,6 @@ import type { QuestionnaireResponseItem } from 'fhir/r4';
 import debounce from 'lodash.debounce';
 import { useCallback, useState } from 'react';
 import useReadOnly from '../../../hooks/useReadOnly';
-import useShowFeedback from '../../../hooks/useShowFeedback';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';

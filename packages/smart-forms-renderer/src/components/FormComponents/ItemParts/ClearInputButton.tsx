@@ -42,17 +42,17 @@ function ClearInputButton(props: ClearInputButtonProps) {
   }
 
   return (
-      <Tooltip role="button" title="Clear">
-        <Button
-          aria-label="Clear"
-          sx={{
-            color: grey['500'],
-            '&:hover': { backgroundColor: grey['200'] }
-          }}
-          onClick={onClear}>
-          Clear
-        </Button>
-      </Tooltip>
+    <Tooltip role="button" title="Clear">
+      <Button
+        aria-label="Clear"
+        sx={{
+          color: grey['500'],
+          '&:hover': { backgroundColor: grey['200'] }
+        }}
+        onClick={onClear}>
+        Clear
+      </Button>
+    </Tooltip>
   );
 }
 

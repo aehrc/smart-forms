@@ -19,7 +19,6 @@ import { useCallback, useMemo, useState } from 'react';
 import type { Quantity, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import debounce from 'lodash.debounce';
 import useReadOnly from '../../../hooks/useReadOnly';
-import useShowFeedback from '../../../hooks/useShowFeedback';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
@@ -38,6 +37,7 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
 import QuantityUnitField from './QuantityUnitField';
+import QuantityComparatorField from './QuantityComparatorField';
 
 function QuantityItem(props: BaseItemProps) {
   const {
@@ -113,7 +113,6 @@ function QuantityItem(props: BaseItemProps) {
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
-
 
   // Event handlers
   function handleComparatorInputChange(newComparatorInput: Quantity['comparator'] | null) {
