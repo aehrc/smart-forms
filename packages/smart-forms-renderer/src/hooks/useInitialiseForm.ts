@@ -27,7 +27,8 @@ import { initialiseFhirClient } from '../utils/manageForm';
  * - Calling the buildForm() function to build a form from a questionnaire, an optional QuestionnaireResponse and other optional properties.
  * - Setting a FHIRClient object to make further FHIR calls i.e. answerExpressions.
  *
- * @deprecated Deprecated in favour of directly calling {@link buildForm} or using the {@link useBuildForm} hook in your own code.
+ * Deprecated in favour of directly calling {@link buildForm} or using the {@link useBuildForm} hook in your own code.
+ * You can still use it, but it might not be compatible with renderer appearance and behaviour customisation via {@link rendererConfigStore}.
  *
  * @param questionnaire - Questionnaire to be rendered
  * @param questionnaireResponse - Pre-populated/draft/loaded QuestionnaireResponse to be rendered (optional)

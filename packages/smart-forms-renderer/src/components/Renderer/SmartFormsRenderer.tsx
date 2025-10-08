@@ -52,9 +52,10 @@ export interface SmartFormsRendererProps {
 /**
  * A self-initialising wrapper around the BaseRenderer rendering engine.
  *
- * @deprecated For alternative usage, see:
+ * This component is now deprecated. You can still use it, but it might not be compatible with renderer appearance and behaviour customisation via via {@link rendererConfigStore}.
+ * For alternative usage, see:
  * - https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/storybookWrappers/InitialiseFormWrapperForStorybook.tsx#L40-L57
- * // TODO add link to usage documentation
+ *
  * @see {@link SmartFormsRendererProps} for props.
  *
  * @author Sean Fong
