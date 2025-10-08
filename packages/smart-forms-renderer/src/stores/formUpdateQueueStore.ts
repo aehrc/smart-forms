@@ -31,6 +31,13 @@ export interface UpdateTask {
 
   /** Optional path to the item that triggered the update. This can be really useful in the future as it provides the FHIRPath string */
   targetItemPath?: ItemPath;
+
+  /**
+   * Optional flag indicating this update is the first update upon pre-population and form build.
+   * Useful for distinguishing initialization updates from subsequent user-triggered updates.
+   * Defaults to `false`.
+   */
+  isInitialUpdate?: boolean;
 }
 
 /**
@@ -93,11 +100,11 @@ export const formUpdateQueueStore = createStore<FormUpdateQueueStoreType>()((set
     set({ isProcessing: true });
 
     /* Process first task in the queue */
-    const { questionnaireResponse } = queue[0];
+    const { questionnaireResponse, isInitialUpdate = false } = queue[0];
 
     // Perform an immediate QR update first, then process expressions asynchronously
-    updateResponse(questionnaireResponse);
-    await updateExpressions(questionnaireResponse);
+    updateResponse(questionnaireResponse, isInitialUpdate);
+    await updateExpressions(questionnaireResponse, isInitialUpdate);
 
     /* Dequeue first task in and process next task in the queue */
     set((state) => ({
