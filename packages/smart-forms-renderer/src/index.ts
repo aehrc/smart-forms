@@ -41,8 +41,8 @@ export type {
   QuestionnaireResponseStoreType,
   SmartConfigStoreType,
   TerminologyServerStoreType,
-  RendererStyling,
-  RendererStylingStoreType
+  RendererConfig,
+  RendererConfigStoreType
 } from './stores';
 export {
   questionnaireStore,
@@ -53,8 +53,8 @@ export {
   useSmartConfigStore,
   terminologyServerStore,
   useTerminologyServerStore,
-  rendererStylingStore,
-  useRendererStylingStore
+  rendererConfigStore,
+  useRendererConfigStore
 } from './stores';
 
 // hooks exports

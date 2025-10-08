@@ -19,7 +19,7 @@ import React from 'react';
 import Tooltip from '@mui/material/Tooltip';
 import Button from '@mui/material/Button';
 import { grey } from '@mui/material/colors';
-import { useRendererStylingStore } from '../../../stores';
+import { useRendererConfigStore } from '../../../stores';
 
 interface ClearInputButtonProps {
   buttonShown: boolean;
@@ -30,7 +30,7 @@ interface ClearInputButtonProps {
 function ClearInputButton(props: ClearInputButtonProps) {
   const { buttonShown, readOnly, onClear } = props;
 
-  const hideClearButton = useRendererStylingStore.use.hideClearButton();
+  const hideClearButton = useRendererConfigStore.use.hideClearButton();
 
   // If "hideClearButton" config is true OR if item.readOnly is true, do not render button
   if (hideClearButton || readOnly) {

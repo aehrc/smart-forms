@@ -27,7 +27,7 @@ import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon'
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { isSpecificItemControl } from '../../../utils';
 import ClearInputButton from '../ItemParts/ClearInputButton';
-import { useRendererStylingStore } from '../../../stores';
+import { useRendererConfigStore } from '../../../stores';
 import { StandardCheckbox } from '../../Checkbox.styles';
 import { ariaCheckedMap } from '../../../utils/checkbox';
 import { SrOnly } from '../SrOnly.styles';
@@ -46,9 +46,9 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
   const { qItem, readOnly, valueBoolean, feedback, calcExpUpdated, onCheckedChange, onClear } =
     props;
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
-  const inputsFlexGrow = useRendererStylingStore.use.inputsFlexGrow();
-  const reverseBooleanYesNo = useRendererStylingStore.use.reverseBooleanYesNo();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const inputsFlexGrow = useRendererConfigStore.use.inputsFlexGrow();
+  const reverseBooleanYesNo = useRendererConfigStore.use.reverseBooleanYesNo();
 
   const booleanAsCheckbox = isSpecificItemControl(qItem, 'check-box');
 

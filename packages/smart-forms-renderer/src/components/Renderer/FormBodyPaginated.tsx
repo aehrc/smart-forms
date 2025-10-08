@@ -10,7 +10,7 @@ import type {
   PropsWithQrItemChangeHandler
 } from '../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../stores';
-import { useRendererStylingStore } from '../../stores/rendererStylingStore';
+import { useRendererConfigStore } from '../../stores/rendererConfigStore';
 import { SingleItem } from '../FormComponents';
 import PageButtonsWrapper from '../FormComponents/GroupItem/PageButtonWrapper';
 import { QGroupContainerBox } from '../Box.styles';
@@ -34,7 +34,7 @@ function FormBodyPaginated(props: FormBodyPaginatedProps) {
 
   const pages = useQuestionnaireStore.use.pages();
   const currentPage = useQuestionnaireStore.use.currentPageIndex();
-  const disableCardView = useRendererStylingStore.use.disablePageCardView();
+  const disableCardView = useRendererConfigStore.use.disablePageCardView();
 
   const { headerQItems, pageQItems, footerQItems } = useMemo(() => {
     const headerQItems: [QuestionnaireItem, number][] = [];

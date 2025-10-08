@@ -3,7 +3,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type { ReactNode } from 'react';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
-import { useRendererStylingStore } from '../../../stores';
+import { useRendererConfigStore } from '../../../stores';
 import { getChoiceOrientation } from '../../../utils/choice';
 import { StyledRequiredTypography } from '../Item.styles';
 import ClearInputButton from './ClearInputButton';
@@ -39,8 +39,8 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
     children
   } = props;
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
-  const inputsFlexGrow = useRendererStylingStore.use.inputsFlexGrow();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const inputsFlexGrow = useRendererConfigStore.use.inputsFlexGrow();
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 

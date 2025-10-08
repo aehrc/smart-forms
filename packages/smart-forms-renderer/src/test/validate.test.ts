@@ -22,21 +22,33 @@
 /// <reference types="@testing-library/jest-dom" />
 
 import {
-  ValidationResult,
-  validateForm,
-  validateTargetConstraint,
-  validateQuestionnaireResponse,
+  createValidationOperationOutcome,
   getInputInvalidType,
-  createValidationOperationOutcome
+  validateForm,
+  validateQuestionnaireResponse,
+  validateTargetConstraint,
+  ValidationResult
 } from '../utils/validate';
 import type {
   Questionnaire,
   QuestionnaireItem,
   QuestionnaireResponse,
-  QuestionnaireResponseItem,
-  OperationOutcome
+  QuestionnaireResponseItem
 } from 'fhir/r4';
 import type { RegexValidation } from '../interfaces/regex.interface';
+import { isItemHidden } from '../utils/qItem';
+import { questionnaireStore, rendererConfigStore } from '../stores';
+import {
+  getDecimalPrecision,
+  getMaxQuantityValue,
+  getMaxValue,
+  getMinQuantityValue,
+  getMinValue,
+  getRegexString,
+  getRegexValidation,
+  getShortText
+} from '../utils/extensions';
+import { getQrItemsIndex, mapQItemsIndex } from '../utils/mapItem';
 
 // Mock dependencies
 jest.mock('../utils/qItem', () => ({
@@ -52,7 +64,7 @@ jest.mock('../stores', () => ({
   questionnaireStore: {
     getState: jest.fn()
   },
-  rendererStylingStore: {
+  rendererConfigStore: {
     getState: jest.fn()
   }
 }));
@@ -68,23 +80,9 @@ jest.mock('../utils/extensions', () => ({
   getRegexValidation: jest.fn()
 }));
 
-import { isItemHidden } from '../utils/qItem';
-import { questionnaireStore, rendererStylingStore } from '../stores';
-import {
-  getShortText,
-  getDecimalPrecision,
-  getMinValue,
-  getMaxValue,
-  getMinQuantityValue,
-  getMaxQuantityValue,
-  getRegexString,
-  getRegexValidation
-} from '../utils/extensions';
-import { getQrItemsIndex, mapQItemsIndex } from '../utils/mapItem';
-
 const mockIsItemHidden = isItemHidden as jest.MockedFunction<typeof isItemHidden>;
 const mockQuestionnaireStore = questionnaireStore as jest.Mocked<typeof questionnaireStore>;
-const mockRendererStylingStore = rendererStylingStore as jest.Mocked<typeof rendererStylingStore>;
+const mockRendererConfigStore = rendererConfigStore as jest.Mocked<typeof rendererConfigStore>;
 const mockGetShortText = getShortText as jest.MockedFunction<typeof getShortText>;
 const mockGetDecimalPrecision = getDecimalPrecision as jest.MockedFunction<
   typeof getDecimalPrecision
@@ -121,7 +119,7 @@ describe('validate', () => {
         repeatExpressions: {}
       }
     } as any);
-    mockRendererStylingStore.getState.mockReturnValue({
+    mockRendererConfigStore.getState.mockReturnValue({
       readOnlyVisualStyle: 'disabled',
       requiredIndicatorPosition: 'start',
       itemResponsive: {
@@ -144,7 +142,7 @@ describe('validate', () => {
       disablePageCardView: false,
       disablePageButtons: false,
       disableTabButtons: false,
-      setRendererStyling: jest.fn()
+      setRendererConfig: jest.fn()
     } as any);
     mockGetShortText.mockReturnValue(null);
     mockGetDecimalPrecision.mockReturnValue(null);

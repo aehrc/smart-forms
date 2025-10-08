@@ -29,7 +29,7 @@ import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../interfaces/renderProps.interface';
-import { useQuestionnaireStore, useRendererStylingStore } from '../../stores';
+import { useQuestionnaireStore, useRendererConfigStore } from '../../stores';
 import type { GridProps } from '@mui/material/Grid';
 import { extendItemPath } from '../../utils/itemPath';
 import type { ItemPath } from '../../interfaces/itemPath.interface';
@@ -48,7 +48,7 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
   const tabs = useQuestionnaireStore.use.tabs();
   const currentTab = useQuestionnaireStore.use.currentTabIndex();
 
-  const tabListWidthOrResponsive = useRendererStylingStore.use.tabListWidthOrResponsive();
+  const tabListWidthOrResponsive = useRendererConfigStore.use.tabListWidthOrResponsive();
 
   const indexMap: Record<string, number> = useMemo(
     () => mapQItemsIndex(topLevelQItem),

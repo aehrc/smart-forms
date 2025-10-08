@@ -17,7 +17,7 @@
 
 import InputAdornment from '@mui/material/InputAdornment';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
-import { useRendererStylingStore } from '../../../stores';
+import { useRendererConfigStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
@@ -51,8 +51,8 @@ function QuantityField(props: QuantityFieldProps) {
     onInputChange
   } = props;
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
-  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
 
   let placeholderText = '0.0';
   if (displayPrompt) {

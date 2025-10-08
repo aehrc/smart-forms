@@ -17,7 +17,7 @@
 
 import { useLayoutEffect, useState } from 'react';
 import { buildForm } from '../utils';
-import { useRendererStylingStore } from '../stores/rendererStylingStore';
+import { useRendererConfigStore } from '../stores/rendererConfigStore';
 import type { BuildFormParams } from '../utils/manageForm';
 
 /**
@@ -28,7 +28,7 @@ import type { BuildFormParams } from '../utils/manageForm';
  * - Applying readOnly mode to all items in the form view
  * - Providing a default terminology server URL (fallbacks to a public Ontoserver instance if not provided)
  * - Passing additional SDC variables into the FhirPathContext (e.g. for pre-population purposes)
- * - Adjusting renderer styling and behaviour via `rendererStylingStore`
+ * - Adjusting renderer styling and behaviour via `rendererConfigStore`
  * - Overriding QuestionnaireItem rendering via `qItemOverrideComponents`
  * - Overriding SDC UI controls via `sdcUiOverrideComponents`
  *
@@ -51,7 +51,7 @@ function useBuildForm(params: BuildFormParams) {
 
   const [isBuilding, setIsBuilding] = useState(true);
 
-  const setRendererStyling = useRendererStylingStore.use.setRendererStyling();
+  const setRendererConfig = useRendererConfigStore.use.setRendererConfig();
 
   useLayoutEffect(() => {
     buildForm({
@@ -80,7 +80,7 @@ function useBuildForm(params: BuildFormParams) {
     rendererConfigOptions,
     qItemOverrideComponents,
     sdcUiOverrideComponents,
-    setRendererStyling
+    setRendererConfig
   ]);
 
   return isBuilding;

@@ -21,7 +21,7 @@ import type {
   PropsWithIsTabledRequiredAttribute,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
-import { useRendererStylingStore } from '../../../stores';
+import { useRendererConfigStore } from '../../../stores';
 import { compareAnswerOptionValue, isOptionDisabled } from '../../../utils/choice';
 import { getAnswerOptionLabel } from '../../../utils/openChoice';
 import { StyledRequiredTypography } from '../Item.styles';
@@ -56,8 +56,8 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
     onSelectChange
   } = props;
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
-  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 

@@ -20,7 +20,7 @@ import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/ren
 import type { Dayjs } from 'dayjs';
 import { LocalizationProvider, TimePicker as MuiTimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { useRendererStylingStore } from '../../../stores';
+import { useRendererConfigStore } from '../../../stores';
 
 interface TimeFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -36,7 +36,7 @@ function TimeField(props: TimeFieldProps) {
   const { linkId, itemType, value, displayPrompt, entryFormat, readOnly, isTabled, onTimeChange } =
     props;
 
-  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+  const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>

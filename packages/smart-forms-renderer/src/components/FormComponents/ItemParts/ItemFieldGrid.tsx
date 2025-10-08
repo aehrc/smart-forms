@@ -19,7 +19,7 @@ import type { ReactNode } from 'react';
 import React from 'react';
 import type { QuestionnaireItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
-import { useRendererStylingStore } from '../../../stores';
+import { useRendererConfigStore } from '../../../stores';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import Grid from '@mui/material/Grid';
 
@@ -36,7 +36,7 @@ interface ItemFieldGridProps {
 function ItemFieldGrid(props: ItemFieldGridProps) {
   const { qItem, readOnly, labelChildren, fieldChildren } = props;
 
-  const itemResponsive = useRendererStylingStore.use.itemResponsive();
+  const itemResponsive = useRendererConfigStore.use.itemResponsive();
   const { labelBreakpoints, fieldBreakpoints, columnGapPixels, rowGapPixels } = itemResponsive;
 
   const { displayInstructions } = useRenderingExtensions(qItem);

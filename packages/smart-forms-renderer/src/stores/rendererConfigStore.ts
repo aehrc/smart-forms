@@ -22,7 +22,7 @@ import type { UseResponsiveProps } from '../hooks';
 import type { Breakpoints } from '@mui/material';
 
 /**
- * RendererStyling interface
+ * RendererConfig interface
  * Provides fine-grained control over the styling and behaviour of the renderer.
  *
  * @property requiredIndicatorPosition - Defines where the required asterisk (*) is placed relative to the label.
@@ -77,7 +77,7 @@ import type { Breakpoints } from '@mui/material';
  * @property readOnlyVisualStyle - If `true`, item.readOnly will result in form fields having MUI disabled property and styles (recommended from usability perspective). If `false`, item.readOnly will result in form fields having HTML readonly property (less stable, but recommended from accessibility perspective).
  *   - Default: `true`
  */
-export interface RendererStyling {
+export interface RendererConfig {
   readOnlyVisualStyle?: 'disabled' | 'readonly';
   requiredIndicatorPosition?: 'start' | 'end';
   itemResponsive?: {
@@ -105,11 +105,11 @@ export interface RendererStyling {
 }
 
 /**
- * RendererStylingStore properties and methods
+ * RendererConfigStore properties and methods
  *
  * @author Sean Fong
  */
-export interface RendererStylingStoreType {
+export interface RendererConfigStoreType {
   readOnlyVisualStyle: 'disabled' | 'readonly';
   requiredIndicatorPosition: 'start' | 'end';
   itemResponsive: {
@@ -134,13 +134,13 @@ export interface RendererStylingStoreType {
   disablePageCardView: boolean;
   disablePageButtons: boolean;
   disableTabButtons: boolean;
-  setRendererStyling: (params: RendererStyling) => void;
+  setRendererConfig: (params: RendererConfig) => void;
 }
 
 /**
  * @author Sean Fong
  */
-export const rendererStylingStore = createStore<RendererStylingStoreType>()((set) => ({
+export const rendererConfigStore = createStore<RendererConfigStoreType>()((set) => ({
   readOnlyVisualStyle: 'disabled',
   requiredIndicatorPosition: 'start',
   itemResponsive: {
@@ -163,7 +163,7 @@ export const rendererStylingStore = createStore<RendererStylingStoreType>()((set
   disablePageCardView: false,
   disablePageButtons: false,
   disableTabButtons: false,
-  setRendererStyling: (params: RendererStyling) => {
+  setRendererConfig: (params: RendererConfig) => {
     set((state) => ({
       readOnlyVisualStyle: params.readOnlyVisualStyle ?? state.readOnlyVisualStyle,
       requiredIndicatorPosition:
@@ -185,4 +185,4 @@ export const rendererStylingStore = createStore<RendererStylingStoreType>()((set
   }
 }));
 
-export const useRendererStylingStore = createSelectors(rendererStylingStore);
+export const useRendererConfigStore = createSelectors(rendererConfigStore);

@@ -17,7 +17,7 @@
 
 import type { QuestionnaireItem } from 'fhir/r4';
 import useRenderingExtensions from './useRenderingExtensions';
-import { useRendererStylingStore } from '../stores/rendererStylingStore';
+import { useRendererConfigStore } from '../stores/rendererConfigStore';
 import { isHiddenByEnableWhen } from '../utils/qItem';
 import { useQuestionnaireStore } from '../stores';
 
@@ -32,7 +32,7 @@ function useReadOnly(
   const enableWhenItems = useQuestionnaireStore.use.enableWhenItems();
   const enableWhenExpressions = useQuestionnaireStore.use.enableWhenExpressions();
 
-  const enableWhenAsReadOnly = useRendererStylingStore.use.enableWhenAsReadOnly();
+  const enableWhenAsReadOnly = useRendererConfigStore.use.enableWhenAsReadOnly();
 
   // If enableWhenAsReadOnly is true, then items hidden by enableWhen should be displayed, but set as readOnly
   // If enableWhenAsReadOnly is a Set, all item types in the set should be displayed, but set as readOnly

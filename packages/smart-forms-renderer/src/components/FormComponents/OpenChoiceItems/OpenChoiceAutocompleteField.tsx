@@ -35,7 +35,7 @@ import type {
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import type { AlertColor } from '@mui/material/Alert';
-import { useRendererStylingStore } from '../../../stores';
+import { useRendererConfigStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 
 interface OpenChoiceAutocompleteFieldProps
@@ -69,8 +69,8 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
     onValueChange
   } = props;
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
-  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 

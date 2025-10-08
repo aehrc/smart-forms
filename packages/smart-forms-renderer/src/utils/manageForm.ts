@@ -1,9 +1,9 @@
 import type { Questionnaire, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
-import type { RendererStyling } from '../stores';
+import type { RendererConfig } from '../stores';
 import {
   questionnaireResponseStore,
   questionnaireStore,
-  rendererStylingStore,
+  rendererConfigStore,
   smartConfigStore,
   terminologyServerStore
 } from '../stores';
@@ -60,7 +60,7 @@ export interface BuildFormParams {
   /**
    * Optional renderer styling configurations to have fine-grained control over the styling and behaviour of the renderer.
    */
-  rendererConfigOptions?: RendererStyling;
+  rendererConfigOptions?: RendererConfig;
 
   /**
    * Key-value pairs of React component overrides for specific Questionnaire Items via linkId.
@@ -84,7 +84,7 @@ export interface BuildFormParams {
  * - Applying readOnly mode to all items in the form view
  * - Providing a default terminology server URL (fallbacks to a public Ontoserver instance if not provided)
  * - Passing additional SDC variables into the FhirPathContext (e.g. for pre-population purposes)
- * - Adjusting renderer styling and behaviour via `rendererStylingStore`
+ * - Adjusting renderer styling and behaviour via `rendererConfigStore`
  * - Overriding QuestionnaireItem rendering via `qItemOverrideComponents`
  * - Overriding SDC UI controls via `sdcUiOverrideComponents`
  *
@@ -106,7 +106,7 @@ export async function buildForm(params: BuildFormParams): Promise<void> {
 
   // Destroy previous questionnaire and questionnaireResponse state before building a new one
   if (rendererConfigOptions) {
-    rendererStylingStore.getState().setRendererStyling(rendererConfigOptions);
+    rendererConfigStore.getState().setRendererConfig(rendererConfigOptions);
   }
 
   // Reset terminology server

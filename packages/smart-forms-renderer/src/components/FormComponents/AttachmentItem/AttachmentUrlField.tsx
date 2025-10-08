@@ -25,7 +25,7 @@ import useAttachmentUrlValidation from '../../../hooks/useAttachmentUrlValidatio
 import InputAdornment from '@mui/material/InputAdornment';
 import CheckIcon from '@mui/icons-material/Check';
 import DangerousIcon from '@mui/icons-material/Dangerous';
-import { useRendererStylingStore } from '../../../stores';
+import { useRendererConfigStore } from '../../../stores';
 import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 
 interface AttachmentUrlFieldProps extends PropsWithIsTabledRequiredAttribute {
@@ -38,8 +38,8 @@ interface AttachmentUrlFieldProps extends PropsWithIsTabledRequiredAttribute {
 function AttachmentUrlField(props: AttachmentUrlFieldProps) {
   const { linkId, url, readOnly, isTabled, onUrlChange } = props;
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
-  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
 
   const urlIsValid = useAttachmentUrlValidation(url);
 

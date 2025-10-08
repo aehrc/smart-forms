@@ -35,7 +35,7 @@ import { generateNewRepeatId } from '../../../utils/repeatId';
 import useInitialiseGroupTableRows from '../../../hooks/useInitialiseGroupTableRows';
 import type { ItemPath } from '../../../interfaces/itemPath.interface';
 import { isItemHidden } from '../../../utils/qItem';
-import { useQuestionnaireStore, useRendererStylingStore } from '../../../stores';
+import { useQuestionnaireStore, useRendererConfigStore } from '../../../stores';
 import { getColumnWidth } from '../../../utils/extensions';
 import { calculateColumnWidths } from '../../../utils/columnWidth';
 import { useResizeColumns } from '../../../hooks/useResizeColumns';
@@ -72,7 +72,7 @@ function GroupTable(props: GroupTableProps) {
   const enableWhenIsActivated = useQuestionnaireStore.use.enableWhenIsActivated();
   const enableWhenItems = useQuestionnaireStore.use.enableWhenItems();
   const enableWhenExpressions = useQuestionnaireStore.use.enableWhenExpressions();
-  const enableWhenAsReadOnly = useRendererStylingStore.use.enableWhenAsReadOnly();
+  const enableWhenAsReadOnly = useRendererConfigStore.use.enableWhenAsReadOnly();
 
   const initialGroupTableRows = useInitialiseGroupTableRows(qItem.linkId, qrItems);
   const { tableRows, selectedIds, setTableRows, setSelectedIds } =

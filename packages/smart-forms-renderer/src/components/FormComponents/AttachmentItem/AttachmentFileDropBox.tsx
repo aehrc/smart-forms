@@ -21,7 +21,7 @@ import { AttachmentFileDropBoxWrapper } from './AttachmentFileDropBox.styles';
 import React from 'react';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import { getFileSize } from '../../../utils/fileUtils';
-import { useRendererStylingStore } from '../../../stores';
+import { useRendererConfigStore } from '../../../stores';
 
 export interface AttachmentFileDropBoxProps extends PropsWithIsTabledRequiredAttribute {
   file: File | null;
@@ -33,8 +33,8 @@ export interface AttachmentFileDropBoxProps extends PropsWithIsTabledRequiredAtt
 function AttachmentFileDropBox(props: AttachmentFileDropBoxProps) {
   const { file, onDrop, errorMessage, readOnly, isTabled } = props;
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
-  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
 
   const readOnlyTextColor = readOnlyVisualStyle === 'disabled' ? 'text.disabled' : 'text.secondary';
 

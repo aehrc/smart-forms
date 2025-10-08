@@ -35,7 +35,7 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import type { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
 import GroupTableBody from './GroupTableBody';
-import { useQuestionnaireStore, useRendererStylingStore } from '../../../stores';
+import { useQuestionnaireStore, useRendererConfigStore } from '../../../stores';
 import { getGroupCollapsible } from '../../../utils/qItem';
 import { GroupAccordion } from '../GroupItem/GroupAccordion.styles';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -97,7 +97,7 @@ function GroupTableView(props: GroupTableViewProps) {
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
 
   const groupCollapsibleValue = getGroupCollapsible(qItem);
 
