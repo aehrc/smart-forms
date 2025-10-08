@@ -54,6 +54,7 @@ export interface SmartFormsRendererProps {
  *
  * @deprecated For alternative usage, see:
  * - https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/storybookWrappers/InitialiseFormWrapperForStorybook.tsx#L40-L57
+ * // TODO add link to usage documentation
  * @see {@link SmartFormsRendererProps} for props.
  *
  * @author Sean Fong

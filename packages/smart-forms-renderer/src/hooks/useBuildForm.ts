@@ -17,7 +17,6 @@
 
 import { useLayoutEffect, useState } from 'react';
 import { buildForm } from '../utils';
-import { useRendererConfigStore } from '../stores/rendererConfigStore';
 import type { BuildFormParams } from '../utils/manageForm';
 
 /**
@@ -51,8 +50,6 @@ function useBuildForm(params: BuildFormParams) {
 
   const [isBuilding, setIsBuilding] = useState(true);
 
-  const setRendererConfig = useRendererConfigStore.use.setRendererConfig();
-
   useLayoutEffect(() => {
     buildForm({
       questionnaire,
@@ -79,8 +76,7 @@ function useBuildForm(params: BuildFormParams) {
     additionalContext,
     rendererConfigOptions,
     qItemOverrideComponents,
-    sdcUiOverrideComponents,
-    setRendererConfig
+    sdcUiOverrideComponents
   ]);
 
   return isBuilding;
