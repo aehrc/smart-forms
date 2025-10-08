@@ -776,7 +776,11 @@ describe('calculatedExpression utils', () => {
   });
 
   describe('applyCalculatedExpressionValuesToResponse integration tests', () => {
-    it('should filter expressions with values and initialize response', () => {
+    const mockQuestionnaireItemMap = {};
+    const mockPreferredTerminologyServers = {};
+    const defaultTerminologyServerUrl = 'http://example.org/terminology';
+
+    it('should filter expressions with values and initialize response', async () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -817,17 +821,20 @@ describe('calculatedExpression utils', () => {
         ]
       };
 
-      const result = applyCalculatedExpressionValuesToResponse(
+      const result = await applyCalculatedExpressionValuesToResponse(
         questionnaire,
         populatedResponse,
+        mockQuestionnaireItemMap,
         {}, // previousCalculatedExpressions
-        updatedCalculatedExpressions
+        updatedCalculatedExpressions,
+        mockPreferredTerminologyServers,
+        defaultTerminologyServerUrl
       );
 
       expect(result).toBeDefined();
     });
 
-    it('should handle boolean values', () => {
+    it('should handle boolean values', async () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -856,17 +863,20 @@ describe('calculatedExpression utils', () => {
         ]
       };
 
-      const result = applyCalculatedExpressionValuesToResponse(
+      const result = await applyCalculatedExpressionValuesToResponse(
         questionnaire,
         populatedResponse,
+        mockQuestionnaireItemMap,
         {},
-        updatedCalculatedExpressions
+        updatedCalculatedExpressions,
+        mockPreferredTerminologyServers,
+        defaultTerminologyServerUrl
       );
 
       expect(result).toBeDefined();
     });
 
-    it('should handle numeric values', () => {
+    it('should handle numeric values', async () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -907,17 +917,20 @@ describe('calculatedExpression utils', () => {
         ]
       };
 
-      const result = applyCalculatedExpressionValuesToResponse(
+      const result = await applyCalculatedExpressionValuesToResponse(
         questionnaire,
         populatedResponse,
+        mockQuestionnaireItemMap,
         {},
-        updatedCalculatedExpressions
+        updatedCalculatedExpressions,
+        mockPreferredTerminologyServers,
+        defaultTerminologyServerUrl
       );
 
       expect(result).toBeDefined();
     });
 
-    it('should handle date and time values', () => {
+    it('should handle date and time values', async () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -970,17 +983,20 @@ describe('calculatedExpression utils', () => {
         ]
       };
 
-      const result = applyCalculatedExpressionValuesToResponse(
+      const result = await applyCalculatedExpressionValuesToResponse(
         questionnaire,
         populatedResponse,
+        mockQuestionnaireItemMap,
         {},
-        updatedCalculatedExpressions
+        updatedCalculatedExpressions,
+        mockPreferredTerminologyServers,
+        defaultTerminologyServerUrl
       );
 
       expect(result).toBeDefined();
     });
 
-    it('should handle complex object values', () => {
+    it('should handle complex object values', async () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -1021,17 +1037,20 @@ describe('calculatedExpression utils', () => {
         ]
       };
 
-      const result = applyCalculatedExpressionValuesToResponse(
+      const result = await applyCalculatedExpressionValuesToResponse(
         questionnaire,
         populatedResponse,
+        mockQuestionnaireItemMap,
         {},
-        updatedCalculatedExpressions
+        updatedCalculatedExpressions,
+        mockPreferredTerminologyServers,
+        defaultTerminologyServerUrl
       );
 
       expect(result).toBeDefined();
     });
 
-    it('should handle answerOptions with matching values', () => {
+    it('should handle answerOptions with matching values', async () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -1076,11 +1095,14 @@ describe('calculatedExpression utils', () => {
         ]
       };
 
-      const result = applyCalculatedExpressionValuesToResponse(
+      const result = await applyCalculatedExpressionValuesToResponse(
         questionnaire,
         populatedResponse,
+        mockQuestionnaireItemMap,
         {},
-        updatedCalculatedExpressions
+        updatedCalculatedExpressions,
+        mockPreferredTerminologyServers,
+        defaultTerminologyServerUrl
       );
 
       expect(result).toBeDefined();

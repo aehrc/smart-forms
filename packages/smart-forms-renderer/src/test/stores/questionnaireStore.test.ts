@@ -205,7 +205,7 @@ describe('questionnaireStore', () => {
       cachedValueSetCodings: {},
       fhirPathContext: {},
       fhirPathTerminologyCache: {},
-      populatedContext: {},
+      additionalContext: {},
       qItemOverrideComponents: {},
       sdcUiOverrideComponents: {},
       focusedLinkId: '',
@@ -286,31 +286,6 @@ describe('questionnaireStore', () => {
       expect(state.readOnly).toBe(readOnly);
       expect(state.qItemOverrideComponents).toBe(qItemOverrideComponents);
       expect(state.sdcUiOverrideComponents).toBe(sdcUiOverrideComponents);
-    });
-
-    it('should merge additional variables into fhirPathContext', async () => {
-      const additionalVariables = { customVar: 'customValue' };
-      const existingContext = { existingVar: 'existingValue' };
-
-      questionnaireStore.setState({ fhirPathContext: existingContext });
-
-      mockCreateQuestionnaireModel.mockResolvedValue({
-        ...mockQuestionnaireModel,
-        fhirPathContext: { modelVar: 'modelValue' }
-      } as any);
-
-      await questionnaireStore
-        .getState()
-        .buildSourceQuestionnaire(mockQuestionnaire, undefined, additionalVariables);
-
-      expect(mockInitialiseFormFromResponse).toHaveBeenCalledWith(
-        expect.objectContaining({
-          fhirPathContext: {
-            existingVar: 'existingValue',
-            customVar: 'customValue'
-          }
-        })
-      );
     });
   });
 
@@ -579,25 +554,15 @@ describe('questionnaireStore', () => {
   });
 
   describe('setPopulatedContext', () => {
-    it('should set populated context without adding to fhirPathContext', () => {
-      const newContext = { testVar: 'testValue' };
-
-      questionnaireStore.getState().setPopulatedContext(newContext);
-
-      const state = questionnaireStore.getState();
-      expect(state.populatedContext).toBe(newContext);
-      expect(state.fhirPathContext).toEqual({});
-    });
-
     it('should set populated context and add to fhirPathContext', () => {
       const existingFhirPathContext = { existingVar: 'existingValue' };
       const newContext = { testVar: 'testValue' };
 
       questionnaireStore.setState({ fhirPathContext: existingFhirPathContext });
-      questionnaireStore.getState().setPopulatedContext(newContext, true);
+      questionnaireStore.getState().setAdditionalContext(newContext);
 
       const state = questionnaireStore.getState();
-      expect(state.populatedContext).toBe(newContext);
+      expect(state.additionalContext).toBe(newContext);
       expect(state.fhirPathContext).toEqual({
         existingVar: 'existingValue',
         testVar: 'testValue'

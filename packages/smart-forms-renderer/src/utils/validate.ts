@@ -113,6 +113,11 @@ export function validateTargetConstraint(): Record<string, OperationOutcome> {
   const enableWhenExpressions = questionnaireStore.getState().enableWhenExpressions;
   const enableWhenAsReadOnly = rendererConfigStore.getState().enableWhenAsReadOnly;
 
+  // Nothing to validate, return early
+  if (!targetConstraints || Object.keys(targetConstraints).length === 0) {
+    return {};
+  }
+
   // Iterate through the target constraints and check if they are invalid
   const allInvalidItems: Record<string, OperationOutcome> = {};
   for (const [, targetConstraint] of Object.entries(targetConstraints)) {

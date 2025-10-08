@@ -23,11 +23,11 @@ import useSmartClient from '../../../hooks/useSmartClient';
 import usePopulate from '../hooks/usePopulate';
 import type { RendererSpinner } from '../../renderer/types/rendererSpinner';
 import type {
-  Questionnaire,
-  QuestionnaireResponse,
+  Encounter,
   Patient,
   Practitioner,
-  Encounter
+  Questionnaire,
+  QuestionnaireResponse
 } from 'fhir/r4';
 
 // Mock external dependencies
@@ -54,14 +54,12 @@ jest.mock('@aehrc/smart-forms-renderer', () => ({
   useQuestionnaireStore: {
     use: {
       sourceQuestionnaire: () => mockSourceQuestionnaire(),
-      updatePopulatedProperties: () => mockUpdatePopulatedProperties,
-      setPopulatedContext: () => mockSetPopulatedContext
+      setAdditionalContext: () => mockSetAdditionalContext
     }
   },
   useQuestionnaireResponseStore: {
     use: {
       sourceResponse: () => mockSourceResponse(),
-      setUpdatableResponseAsPopulated: () => mockSetUpdatableResponseAsPopulated,
       formChangesHistory: () => mockFormChangesHistory()
     }
   },
@@ -74,9 +72,7 @@ jest.mock('@aehrc/smart-forms-renderer', () => ({
 
 // Create typed mocks
 const mockEnqueueSnackbar = jest.fn();
-const mockUpdatePopulatedProperties = jest.fn();
-const mockSetPopulatedContext = jest.fn();
-const mockSetUpdatableResponseAsPopulated = jest.fn();
+const mockSetAdditionalContext = jest.fn();
 const mockPopulateQuestionnaire = populateQuestionnaire as jest.MockedFunction<
   typeof populateQuestionnaire
 >;
@@ -175,8 +171,6 @@ describe('usePopulate', () => {
     mockSourceResponse.mockReturnValue(mockResponse);
     mockFormChangesHistory.mockReturnValue([]);
     mockTerminologyUrl.mockReturnValue('https://test-terminology-server.com');
-
-    mockUpdatePopulatedProperties.mockResolvedValue(mockResponse);
   });
 
   describe('hook initialization', () => {
@@ -356,7 +350,7 @@ describe('usePopulate', () => {
         populateSuccess: true,
         populateResult: {
           populatedResponse: mockResponse,
-          populatedContext
+          populatedContext: populatedContext
         }
       });
 
@@ -365,9 +359,7 @@ describe('usePopulate', () => {
       // Wait for async operations
       await new Promise((resolve) => setTimeout(resolve, 10));
 
-      expect(mockUpdatePopulatedProperties).toHaveBeenCalledWith(mockResponse, populatedContext);
-      expect(mockSetUpdatableResponseAsPopulated).toHaveBeenCalledWith(mockResponse);
-      expect(mockSetPopulatedContext).toHaveBeenCalledWith(populatedContext, true);
+      expect(mockSetAdditionalContext).toHaveBeenCalledWith(populatedContext);
       expect(mockOnStopSpinner).toHaveBeenCalled();
       expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Form populated', {
         preventDuplicate: true,
@@ -428,7 +420,7 @@ describe('usePopulate', () => {
       // Wait for async operations
       await new Promise((resolve) => setTimeout(resolve, 10));
 
-      expect(mockSetPopulatedContext).not.toHaveBeenCalled();
+      expect(mockSetAdditionalContext).not.toHaveBeenCalled();
       expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Form populated', {
         preventDuplicate: true,
         action: expect.anything()

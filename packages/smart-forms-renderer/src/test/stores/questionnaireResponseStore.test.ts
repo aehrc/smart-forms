@@ -176,41 +176,6 @@ describe('questionnaireResponseStore', () => {
     });
   });
 
-  describe('setUpdatableResponseAsPopulated', () => {
-    beforeEach(() => {
-      questionnaireStore.setState({
-        sourceQuestionnaire: mockQuestionnaire
-      });
-
-      // Set initial response for diff comparison
-      questionnaireResponseStore.setState({
-        updatableResponse: structuredClone(emptyResponse),
-        formChangesHistory: []
-      });
-    });
-
-    it('should set populated response and update history', () => {
-      const mockResponseItemMap = { 'test-item': [] };
-      mockCreateQuestionnaireResponseItemMap.mockReturnValue(mockResponseItemMap);
-
-      questionnaireResponseStore
-        .getState()
-        .setUpdatableResponseAsPopulated(mockQuestionnaireResponse);
-
-      expect(mockCreateQuestionnaireResponseItemMap).toHaveBeenCalledWith(
-        mockQuestionnaire,
-        mockQuestionnaireResponse
-      );
-
-      const state = questionnaireResponseStore.getState();
-      expect(state.sourceResponse).toBe(mockQuestionnaireResponse);
-      expect(state.updatableResponse).toBe(mockQuestionnaireResponse);
-      expect(state.updatableResponseItems).toBe(mockResponseItemMap);
-      expect(state.formChangesHistory.length).toBe(1);
-      expect(state.requiredItemsIsHighlighted).toBe(false);
-    });
-  });
-
   describe('updateResponse', () => {
     beforeEach(() => {
       questionnaireStore.setState({
@@ -227,7 +192,7 @@ describe('questionnaireResponseStore', () => {
       const mockResponseItemMap = { 'test-item': [] };
       mockCreateQuestionnaireResponseItemMap.mockReturnValue(mockResponseItemMap);
 
-      questionnaireResponseStore.getState().updateResponse(mockQuestionnaireResponse);
+      questionnaireResponseStore.getState().updateResponse(mockQuestionnaireResponse, false);
 
       expect(mockCreateQuestionnaireResponseItemMap).toHaveBeenCalledWith(
         mockQuestionnaire,
@@ -246,7 +211,7 @@ describe('questionnaireResponseStore', () => {
       };
       mockValidateForm.mockReturnValue(mockInvalidItems);
 
-      questionnaireResponseStore.getState().updateResponse(mockQuestionnaireResponse);
+      questionnaireResponseStore.getState().updateResponse(mockQuestionnaireResponse, false);
 
       expect(mockValidateForm).toHaveBeenCalledWith(mockQuestionnaire, mockQuestionnaireResponse);
 

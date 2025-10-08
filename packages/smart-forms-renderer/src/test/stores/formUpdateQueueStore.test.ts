@@ -57,7 +57,7 @@ const createMockTask = (id: string): UpdateTask => ({
     ...mockQuestionnaireResponse,
     id
   },
-  targetItemPath: [{ linkId: `test-path-${id}`, repeatIndex: 0 }]
+  isInitialUpdate: false
 });
 
 describe('formUpdateQueueStore', () => {
@@ -115,8 +115,8 @@ describe('formUpdateQueueStore', () => {
       formUpdateQueueStore.getState().enqueueFormUpdate(task);
 
       await waitFor(() => {
-        expect(mockUpdateResponse).toHaveBeenCalledWith(task.questionnaireResponse);
-        expect(mockUpdateExpressions).toHaveBeenCalledWith(task.questionnaireResponse);
+        expect(mockUpdateResponse).toHaveBeenCalledWith(task.questionnaireResponse, false);
+        expect(mockUpdateExpressions).toHaveBeenCalledWith(task.questionnaireResponse, false);
       });
     });
   });
@@ -154,8 +154,8 @@ describe('formUpdateQueueStore', () => {
       await formUpdateQueueStore.getState()._startProcessing();
 
       // Should call update functions
-      expect(mockUpdateResponse).toHaveBeenCalledWith(task.questionnaireResponse);
-      expect(mockUpdateExpressions).toHaveBeenCalledWith(task.questionnaireResponse);
+      expect(mockUpdateResponse).toHaveBeenCalledWith(task.questionnaireResponse, false);
+      expect(mockUpdateExpressions).toHaveBeenCalledWith(task.questionnaireResponse, false);
 
       // Should remove processed task and stop processing
       const state = formUpdateQueueStore.getState();
@@ -175,8 +175,8 @@ describe('formUpdateQueueStore', () => {
       expect(mockUpdateExpressions).toHaveBeenCalledTimes(2);
 
       // Should process in order
-      expect(mockUpdateResponse).toHaveBeenNthCalledWith(1, task1.questionnaireResponse);
-      expect(mockUpdateResponse).toHaveBeenNthCalledWith(2, task2.questionnaireResponse);
+      expect(mockUpdateResponse).toHaveBeenNthCalledWith(1, task1.questionnaireResponse, false);
+      expect(mockUpdateResponse).toHaveBeenNthCalledWith(2, task2.questionnaireResponse, false);
 
       // Should clear queue and stop processing
       const state = formUpdateQueueStore.getState();

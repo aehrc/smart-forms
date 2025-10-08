@@ -18,23 +18,34 @@
  * limitations under the License.
  */
 
-import { describe, expect, test, beforeEach, jest } from '@jest/globals';
+import { beforeEach, describe, expect, jest } from '@jest/globals';
 import type { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 // Import the functions to test
 import {
   buildForm,
   destroyForm,
-  initialiseFhirClient,
   getResponse,
+  initialiseFhirClient,
+  qrItemHasItemsOrAnswer,
   removeEmptyAnswersFromResponse,
-  removeInternalIdsFromResponse,
-  qrItemHasItemsOrAnswer
+  removeInternalIdsFromResponse
 } from '../utils/manageForm';
 
 // Import shared test data
 import { patRepop } from '../../../sdc-populate/src/test-data-shared/patRepop';
 import { pracPrimaryPeter } from '../../../sdc-populate/src/test-data-shared/pracPrimaryPeter';
 import { encHealthCheck } from '../../../sdc-populate/src/test-data-shared/encHealthCheck';
+import {
+  questionnaireResponseStore,
+  questionnaireStore,
+  smartConfigStore,
+  terminologyServerStore
+} from '../stores';
+import { removeEmptyAnswersFromItemRecursive } from '../utils/removeEmptyAnswers';
+import { removeInternalRepeatIdsRecursive } from '../utils/removeRepeatId';
+import { updateQuestionnaireResponse } from '../utils/genericRecursive';
+import { initialiseQuestionnaireResponse } from '../utils/initialise';
+import { readEncounter, readPatient, readUser } from '../api/smartClient';
 
 // Mock the store dependencies
 jest.mock('../stores', () => ({
@@ -42,12 +53,12 @@ jest.mock('../stores', () => ({
     getState: jest.fn(() => ({
       destroySourceQuestionnaire: jest.fn(),
       buildSourceQuestionnaire: jest.fn(),
-      updatePopulatedProperties: jest.fn(),
       setFormAsReadOnly: jest.fn(),
       sourceQuestionnaire: {
         resourceType: 'Questionnaire',
         status: 'active'
       },
+      targetConstraints: {},
       enableWhenIsActivated: false,
       enableWhenItems: { singleItems: {}, repeatItems: {} },
       enableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} }
@@ -70,6 +81,11 @@ jest.mock('../stores', () => ({
       setPatient: jest.fn(),
       setUser: jest.fn(),
       setEncounter: jest.fn()
+    }))
+  },
+  rendererConfigStore: {
+    getState: jest.fn(() => ({
+      enableWhenIsReadOnly: false
     }))
   },
   terminologyServerStore: {
@@ -114,18 +130,6 @@ jest.mock('../api/smartClient', () => ({
   readUser: jest.fn()
 }));
 
-import {
-  questionnaireStore,
-  questionnaireResponseStore,
-  smartConfigStore,
-  terminologyServerStore
-} from '../stores';
-import { removeEmptyAnswersFromItemRecursive } from '../utils/removeEmptyAnswers';
-import { removeInternalRepeatIdsRecursive } from '../utils/removeRepeatId';
-import { updateQuestionnaireResponse } from '../utils/genericRecursive';
-import { initialiseQuestionnaireResponse } from '../utils/initialise';
-import { readEncounter, readPatient, readUser } from '../api/smartClient';
-
 const mockQuestionnaireStore = questionnaireStore as jest.Mocked<typeof questionnaireStore>;
 const mockQuestionnaireResponseStore = questionnaireResponseStore as jest.Mocked<
   typeof questionnaireResponseStore
@@ -134,10 +138,6 @@ const mockSmartConfigStore = smartConfigStore as jest.Mocked<typeof smartConfigS
 const mockTerminologyServerStore = terminologyServerStore as jest.Mocked<
   typeof terminologyServerStore
 >;
-const mockRemoveEmptyAnswersFromItemRecursive =
-  removeEmptyAnswersFromItemRecursive as jest.MockedFunction<
-    typeof removeEmptyAnswersFromItemRecursive
-  >;
 const mockRemoveInternalRepeatIdsRecursive =
   removeInternalRepeatIdsRecursive as jest.MockedFunction<typeof removeInternalRepeatIdsRecursive>;
 const mockUpdateQuestionnaireResponse = updateQuestionnaireResponse as jest.MockedFunction<
@@ -178,13 +178,11 @@ describe('manageForm utils', () => {
     it('should build form with questionnaire only', async () => {
       const mockBuildSourceQuestionnaire = jest.fn();
       const mockBuildSourceResponse = jest.fn();
-      const mockUpdatePopulatedProperties = jest.fn();
       const mockSetUrl = jest.fn();
       const mockResetUrl = jest.fn();
 
       mockQuestionnaireStore.getState.mockReturnValue({
-        buildSourceQuestionnaire: mockBuildSourceQuestionnaire,
-        updatePopulatedProperties: mockUpdatePopulatedProperties
+        buildSourceQuestionnaire: mockBuildSourceQuestionnaire
       } as any);
 
       mockQuestionnaireResponseStore.getState.mockReturnValue({
@@ -198,7 +196,7 @@ describe('manageForm utils', () => {
 
       mockInitialiseQuestionnaireResponse.mockReturnValue(mockQuestionnaireResponse);
 
-      await buildForm(mockQuestionnaire);
+      await buildForm({ questionnaire: mockQuestionnaire });
 
       expect(mockResetUrl).toHaveBeenCalledTimes(1);
       expect(mockBuildSourceQuestionnaire).toHaveBeenCalledWith(
@@ -206,7 +204,7 @@ describe('manageForm utils', () => {
         undefined,
         undefined,
         undefined,
-        undefined,
+        false,
         undefined,
         undefined
       );
@@ -215,26 +213,20 @@ describe('manageForm utils', () => {
         undefined
       );
       expect(mockBuildSourceResponse).toHaveBeenCalledWith(mockQuestionnaireResponse);
-      expect(mockBuildSourceResponse).toHaveBeenCalledTimes(2); // Called twice in the function
-      expect(mockUpdatePopulatedProperties).toHaveBeenCalledWith(mockQuestionnaireResponse);
     });
 
     it('should build form with all optional parameters', async () => {
       const mockBuildSourceQuestionnaire = jest.fn();
       const mockBuildSourceResponse = jest.fn();
-      const mockUpdatePopulatedProperties = jest.fn();
-      const mockSetFormAsReadOnly = jest.fn();
       const mockSetUrl = jest.fn();
 
       const terminologyServerUrl = 'https://terminology.server.com/fhir';
-      const additionalVariables = { testVar: 'testValue' };
+      const additionalContext = { testVar: 'testValue' };
       const qItemOverrideComponents = { 'test-item': jest.fn() };
       const sdcUiOverrideComponents = { text: jest.fn() };
 
       mockQuestionnaireStore.getState.mockReturnValue({
-        buildSourceQuestionnaire: mockBuildSourceQuestionnaire,
-        updatePopulatedProperties: mockUpdatePopulatedProperties,
-        setFormAsReadOnly: mockSetFormAsReadOnly
+        buildSourceQuestionnaire: mockBuildSourceQuestionnaire
       } as any);
 
       mockQuestionnaireResponseStore.getState.mockReturnValue({
@@ -247,27 +239,26 @@ describe('manageForm utils', () => {
 
       mockInitialiseQuestionnaireResponse.mockReturnValue(mockQuestionnaireResponse);
 
-      await buildForm(
-        mockQuestionnaire,
-        mockQuestionnaireResponse,
-        true,
+      await buildForm({
+        questionnaire: mockQuestionnaire,
+        questionnaireResponse: mockQuestionnaireResponse,
+        readOnly: true,
         terminologyServerUrl,
-        additionalVariables,
-        qItemOverrideComponents as any,
-        sdcUiOverrideComponents as any
-      );
+        additionalContext,
+        qItemOverrideComponents: qItemOverrideComponents as any,
+        sdcUiOverrideComponents: sdcUiOverrideComponents as any
+      });
 
       expect(mockSetUrl).toHaveBeenCalledWith(terminologyServerUrl);
       expect(mockBuildSourceQuestionnaire).toHaveBeenCalledWith(
         mockQuestionnaire,
         undefined,
-        additionalVariables,
+        additionalContext,
         terminologyServerUrl,
-        undefined,
+        true,
         qItemOverrideComponents,
         sdcUiOverrideComponents
       );
-      expect(mockSetFormAsReadOnly).toHaveBeenCalledWith(true);
     });
 
     it('should handle terminology server URL correctly', async () => {
@@ -280,8 +271,7 @@ describe('manageForm utils', () => {
       } as any);
 
       mockQuestionnaireStore.getState.mockReturnValue({
-        buildSourceQuestionnaire: jest.fn(),
-        updatePopulatedProperties: jest.fn()
+        buildSourceQuestionnaire: jest.fn()
       } as any);
 
       mockQuestionnaireResponseStore.getState.mockReturnValue({
@@ -291,14 +281,17 @@ describe('manageForm utils', () => {
       mockInitialiseQuestionnaireResponse.mockReturnValue(mockQuestionnaireResponse);
 
       // Test with terminology server URL
-      await buildForm(mockQuestionnaire, undefined, false, 'https://test.server.com/fhir');
+      await buildForm({
+        questionnaire: mockQuestionnaire,
+        terminologyServerUrl: 'https://test.server.com/fhir'
+      });
       expect(mockSetUrl).toHaveBeenCalledWith('https://test.server.com/fhir');
       expect(mockResetUrl).not.toHaveBeenCalled();
 
       jest.clearAllMocks();
 
       // Test without terminology server URL
-      await buildForm(mockQuestionnaire);
+      await buildForm({ questionnaire: mockQuestionnaire });
       expect(mockResetUrl).toHaveBeenCalledTimes(1);
       expect(mockSetUrl).not.toHaveBeenCalled();
     });
@@ -449,9 +442,6 @@ describe('manageForm utils', () => {
       expect(mockDestroyResponse).toHaveBeenCalledTimes(1);
     });
   });
-
-  // Note: getResponse is complex to test due to structuredClone and store dependencies
-  // TODO: Add test for getResponse when store mocking is improved
 
   describe('qrItemHasItemsOrAnswer', () => {
     it('should return true when qrItem has answer array with content', () => {
