@@ -13,6 +13,7 @@ The elements/extensions that fall under this category are:
 - [answerOption](http://hl7.org/fhir/uv/sdc/behavior.html#answerOption)
 - [answerValueSet](http://hl7.org/fhir/uv/sdc/behavior.html#answerValueSet)
 - [answerExpression](http://hl7.org/fhir/uv/sdc/expressions.html#answerExpression)
+- [answerOptionToggleExpression](http://hl7.org/fhir/uv/sdc/expressions.html#answerOptionToggleExpression)
 
 Other related extensions:
 
@@ -155,6 +156,24 @@ Support for this extension is not thoroughly tested yet.
 
 <IframeContainer
   storyId="sdc-9-1-2-form-behavior-choice-restriction--answer-expression"
+  initialHeight={280}
+/>
+
+### AnswerOptionToggleExpression
+
+Allows dynamically enabling or disabling answer options based on FHIRPath expressions. This extension provides conditional visibility of answer options based on the current form state.
+
+#### Basic usage
+
+<IframeContainer
+  storyId="sdc-9-1-2-form-behavior-choice-restriction--answer-option-toggle-expression-answer-option"
+  initialHeight={280}
+/>
+
+#### With contained ValueSet
+
+<IframeContainer
+  storyId="sdc-9-1-2-form-behavior-choice-restriction--answer-option-toggle-expression-answer-value-set-contained"
   initialHeight={280}
 />
 
