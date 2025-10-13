@@ -5,7 +5,7 @@ This log documents significant changes for the [@aehrc/smart-forms-renderer](htt
 
 Changelog only includes changes from version 0.36.0 onwards.
 
-## [1.0.0] - 2025-10-08
+## [1.0.0] - 2025-10-13
 _(WARNING: Major breaking changes with library API)_
 
 For smooth migration, a migration guide is provided at [MIGRATION-v1.0.md](MIGRATION-v1.0.md).

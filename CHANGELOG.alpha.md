@@ -7,7 +7,7 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
-## [1.0.0-alpha.110.dev1] - 2025-10-07 
+## [1.0.0-alpha.110.dev1] - 2025-10-13
 _(WARNING: Major breaking changes with library API)_
 
 This library API change will be reflected in the next stable release (1.0.0).
