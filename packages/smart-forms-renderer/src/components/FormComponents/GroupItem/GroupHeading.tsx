@@ -22,7 +22,7 @@ import type { QuestionnaireItem } from 'fhir/r4';
 import { getContextDisplays } from '../../../utils/tabs';
 import ContextDisplayItem from '../ItemParts/ContextDisplayItem';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
-import { useRendererStylingStore } from '../../../stores';
+import { useRendererConfigStore } from '../../../stores';
 import RequiredAsterisk from '../ItemParts/RequiredAsterisk';
 import ItemTextSwitcher from '../ItemParts/ItemTextSwitcher';
 import FlyoverItem from '../ItemParts/FlyoverItem';
@@ -47,7 +47,7 @@ const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
     parentStyles
   } = props;
 
-  const requiredIndicatorPosition = useRendererStylingStore.use.requiredIndicatorPosition();
+  const requiredIndicatorPosition = useRendererConfigStore.use.requiredIndicatorPosition();
 
   const { required, displayFlyover } = useRenderingExtensions(qItem);
   const contextDisplayItems = getContextDisplays(qItem);

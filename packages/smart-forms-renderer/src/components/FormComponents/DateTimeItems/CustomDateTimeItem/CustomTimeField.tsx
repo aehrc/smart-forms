@@ -15,16 +15,16 @@
  * limitations under the License.
  */
 
+import Box from '@mui/material/Box';
+import { grey } from '@mui/material/colors';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import Typography from '@mui/material/Typography';
 import type { ChangeEvent } from 'react';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../../interfaces/renderProps.interface';
-import Box from '@mui/material/Box';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import MuiTextField from '../../TextItem/MuiTextField';
-import { grey } from '@mui/material/colors';
-import Typography from '@mui/material/Typography';
-import { useRendererStylingStore } from '../../../../stores';
+import { useRendererConfigStore } from '../../../../stores';
 import FormControl from '@mui/material/FormControl';
+import MuiTextField from '../../TextItem/MuiTextField';
 
 interface CustomTimeFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -58,8 +58,8 @@ function CustomTimeField(props: CustomTimeFieldProps) {
   } = props;
   // TODO this component doesn't have a calcExpUpdated update animation
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
-  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
 
   // If this reusable time field is part of a DateTime component, do not assign an id to the wrapping <Box/>
   // If this reusable time field is from a Time component, the wrapping <Box/> should have an id

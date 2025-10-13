@@ -31,6 +31,13 @@ export interface UpdateTask {
 
   /** Optional path to the item that triggered the update. This can be really useful in the future as it provides the FHIRPath string */
   targetItemPath?: ItemPath;
+
+  /**
+   * Optional flag indicating this update is the first update upon pre-population and form build.
+   * Useful for distinguishing initialization updates from subsequent user-triggered updates.
+   * Defaults to `false`.
+   */
+  isInitialUpdate?: boolean;
 }
 
 /**
@@ -52,15 +59,6 @@ export interface FormUpdateQueueStoreType {
   enqueueFormUpdate: (task: UpdateTask) => void;
 
   /**
-   * Replaces all pending tasks with the latest task.
-   * If a task is being processed, it is preserved at the head of the queue.
-   * Useful for calculated fields where only the latest state matters.
-   *
-   * @param task - The most recent form update task to keep
-   */
-  replaceLatestFormUpdate: (task: UpdateTask) => void;
-
-  /**
    * Internal processor that handles one task at a time, in order.
    *
    * - Applies the `updateExpressions` function to the `questionnaireResponse`.
@@ -78,7 +76,6 @@ export interface FormUpdateQueueStoreType {
  * to avoid race conditions and inconsistent state during expression evaluation.
  *
  * - `enqueueFormUpdate` adds a new task to the end of the queue.
- * - `replaceLatestFormUpdate` drops all pending tasks in favor of the latest one.
  * - `_startProcessing` handles processing each task and re-triggers itself as needed.
  */
 export const formUpdateQueueStore = createStore<FormUpdateQueueStoreType>()((set, get) => ({
@@ -87,16 +84,6 @@ export const formUpdateQueueStore = createStore<FormUpdateQueueStoreType>()((set
 
   enqueueFormUpdate: (task: UpdateTask) => {
     set((state) => ({ queue: [...state.queue, task] }));
-    get()._startProcessing();
-  },
-
-  replaceLatestFormUpdate: (task: UpdateTask) => {
-    const { isProcessing } = get();
-
-    // If already processing, keep current task and replace pending ones
-    set(() => ({
-      queue: isProcessing ? [get().queue[0], task] : [task]
-    }));
     get()._startProcessing();
   },
 
@@ -112,18 +99,19 @@ export const formUpdateQueueStore = createStore<FormUpdateQueueStoreType>()((set
 
     set({ isProcessing: true });
 
-    const { questionnaireResponse } = queue[0];
+    /* Process first task in the queue */
+    const { questionnaireResponse, isInitialUpdate = false } = queue[0];
 
-    updateResponse(questionnaireResponse, 'initial'); // Immediate update (pre-computed)
+    // Perform an immediate QR update first, then process expressions asynchronously
+    updateResponse(questionnaireResponse, isInitialUpdate);
+    await updateExpressions(questionnaireResponse, isInitialUpdate);
 
-    await updateExpressions(questionnaireResponse);
-
+    /* Dequeue first task in and process next task in the queue */
     set((state) => ({
       queue: state.queue.slice(1),
       isProcessing: false
     }));
-
-    get()._startProcessing(); // Process next task in the queue
+    get()._startProcessing();
   }
 }));
 

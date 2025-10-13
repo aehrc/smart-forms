@@ -20,7 +20,7 @@ import { StandardTextField } from '../Textfield.styles';
 import Autocomplete from '@mui/material/Autocomplete';
 import type { QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
-import { useRendererStylingStore } from '../../../stores';
+import { useRendererConfigStore } from '../../../stores';
 
 interface QuantityUnitFieldProps extends PropsWithIsTabledRequiredAttribute {
   linkId: string;
@@ -36,8 +36,8 @@ function QuantityUnitField(props: QuantityUnitFieldProps) {
   const { linkId, itemType, options, valueSelect, readOnly, isTabled, onChange } = props;
   // TODO this component doesn't have a calcExpUpdated update animation
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
-  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
 
   return (
     <Autocomplete

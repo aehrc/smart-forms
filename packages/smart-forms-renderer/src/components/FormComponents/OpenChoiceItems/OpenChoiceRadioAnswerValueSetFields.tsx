@@ -15,13 +15,12 @@
  * limitations under the License.
  */
 
-import React from 'react';
-import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import RadioButtonWithOpenLabel from '../ItemParts/RadioButtonWithOpenLabel';
-import type { TerminologyError } from '../../../hooks/useValueSetCodings';
-import { StyledAlert } from '../../Alert.styles';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Typography from '@mui/material/Typography';
+import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import type { TerminologyError } from '../../../hooks/useValueSetCodings';
+import { StyledAlert } from '../../Alert.styles';
+import RadioButtonWithOpenLabel from '../ItemParts/RadioButtonWithOpenLabel';
 import RadioFormGroup from '../ItemParts/RadioFormGroup';
 
 interface OpenChoiceRadioAnswerValueSetFieldsProps {

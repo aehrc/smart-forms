@@ -123,7 +123,7 @@ export async function evaluateTargetConstraints(
   targetConstraints: Record<string, TargetConstraint>,
   terminologyServerUrl: string
 ): Promise<{
-  targetConstraintsIsUpdated: boolean;
+  isUpdated: boolean;
   updatedTargetConstraints: Record<string, TargetConstraint>;
 }> {
   let isUpdated = false;
@@ -175,7 +175,7 @@ export async function evaluateTargetConstraints(
   }
 
   return {
-    targetConstraintsIsUpdated: isUpdated,
+    isUpdated: isUpdated,
     updatedTargetConstraints: targetConstraints
   };
 }

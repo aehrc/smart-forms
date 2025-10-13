@@ -17,7 +17,7 @@
 
 import React from 'react';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { useRendererStylingStore } from '../../../stores';
+import { useRendererConfigStore } from '../../../stores';
 import { StandardRadio } from '../../Radio.styles';
 
 interface ChoiceRadioSingleProps {
@@ -31,7 +31,7 @@ interface ChoiceRadioSingleProps {
 function ChoiceRadioSingle(props: ChoiceRadioSingleProps) {
   const { value, label, readOnly, disabledViaToggleExpression, fullWidth } = props;
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
 
   // When an option is disabled via answerOptionsToggleExpression, it should truly be "disabled", regardless of readOnlyVisualStyle.
   // Both isHtmlDisabled and isHtmlReadOnly are mutually exclusive.

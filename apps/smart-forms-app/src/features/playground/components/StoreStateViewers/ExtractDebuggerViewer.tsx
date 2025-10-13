@@ -1,31 +1,28 @@
 import { useState } from 'react';
-import GenericStatePropertyPicker from './GenericStatePropertyPicker.tsx';
-import GenericViewer from './GenericViewer.tsx';
-import useShowExtractDebuggerStoreProperty from '../../hooks/useShowExtractDebuggerStoreProperty.ts';
+import StorePropertyViewer from './StorePropertyViewer.tsx';
 import TemplateExtractDebugTable from './TemplateExtractDebugTable.tsx';
 import type { TemplateExtractDebugInfo } from '@aehrc/sdc-template-extract';
 import type { FhirResource, Observation } from 'fhir/r4';
 import ExtractDebuggerWriteBackWrapper from './ExtractDebuggerWriteBackWrapper.tsx';
-
-const extractDebuggerPropertyNames: string[] = [
-  'observationExtractResult',
-  'templateExtractResult',
-  'templateExtractDebugInfo',
-  'templateExtractIssues'
-];
+import useSelectedProperty from '../../hooks/useSelectedProperty.ts';
+import { useExtractDebuggerStore } from '../../stores/extractDebuggerStore.ts';
+import StorePropertyPicker from './StorePropertyPicker.tsx';
 
 interface ExtractDebuggerViewerProps {
   sourceFhirServerUrl: string;
-  statePropNameFilter: string;
+  propKeyFilter: string;
 }
 
 function ExtractDebuggerViewer(props: ExtractDebuggerViewerProps) {
-  const { sourceFhirServerUrl, statePropNameFilter } = props;
+  const { sourceFhirServerUrl, propKeyFilter } = props;
 
-  const [selectedProperty, setSelectedProperty] = useState('templateExtractResult');
+  const [selectedPropKey, setSelectedPropKey] = useState('templateExtractResult');
   const [viewMode, setViewMode] = useState<'text' | 'jsonTree' | 'table'>('text');
 
-  const propertyObject = useShowExtractDebuggerStoreProperty(selectedProperty);
+  const { selectedPropVal, allPropKeys } = useSelectedProperty(
+    selectedPropKey,
+    useExtractDebuggerStore.use
+  );
 
   function handleViewModeChange(newViewMethod: 'text' | 'jsonTree' | 'table' | null) {
     if (newViewMethod === null) {
@@ -36,38 +33,38 @@ function ExtractDebuggerViewer(props: ExtractDebuggerViewerProps) {
   }
 
   const writeBackButtonShown =
-    selectedProperty === 'observationExtractResult' || selectedProperty === 'templateExtractResult';
+    selectedPropKey === 'observationExtractResult' || selectedPropKey === 'templateExtractResult';
 
-  const templateExtractPathTableShown = selectedProperty === 'templateExtractDebugInfo';
+  const templateExtractPathTableShown = selectedPropKey === 'templateExtractDebugInfo';
 
   return (
     <>
-      <GenericStatePropertyPicker
-        statePropertyNames={extractDebuggerPropertyNames}
-        statePropNameFilter={statePropNameFilter}
-        selectedProperty={selectedProperty}
-        onSelectProperty={setSelectedProperty}
+      <StorePropertyPicker
+        propKeys={allPropKeys}
+        propKeyFilter={propKeyFilter}
+        selectedProp={selectedPropKey}
+        onSelectProp={setSelectedPropKey}
       />
-      <GenericViewer
-        propertyName={selectedProperty}
-        propertyObject={propertyObject}
+      <StorePropertyViewer
+        selectedPropKey={selectedPropKey}
+        selectedPropVal={selectedPropVal}
         viewMode={viewMode}
-        showTableView={selectedProperty === 'templateExtractDebugInfo'}
+        showTableView={selectedPropKey === 'templateExtractDebugInfo'}
         onViewModeChange={handleViewModeChange}>
         {writeBackButtonShown ? (
           <ExtractDebuggerWriteBackWrapper
             sourceFhirServerUrl={sourceFhirServerUrl}
-            propertyObject={propertyObject}
+            selectedPropVal={selectedPropVal}
           />
         ) : null}
 
         {/* Show TemplateExtractDebugInfo in table view */}
         {templateExtractPathTableShown &&
         viewMode === 'table' &&
-        propertyObjectIsTemplateExtractDebugInfo(propertyObject) ? (
-          <TemplateExtractDebugTable templateExtractDebugInfo={propertyObject} />
+        propertyObjectIsTemplateExtractDebugInfo(selectedPropVal) ? (
+          <TemplateExtractDebugTable templateExtractDebugInfo={selectedPropVal} />
         ) : null}
-      </GenericViewer>
+      </StorePropertyViewer>
     </>
   );
 }

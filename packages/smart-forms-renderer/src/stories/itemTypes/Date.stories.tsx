@@ -20,6 +20,7 @@ import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperF
 
 import { getAnswers, getInputText, inputDate, qrFactory, questionnaireFactory } from '../testUtils';
 import { expect } from 'storybook/test';
+import { qDateCalculation } from '../assets/questionnaires';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -81,5 +82,11 @@ export const DateBasicResponse: Story = {
     const input = await getInputText(canvasElement, targetLinkId);
 
     expect(input).toBe(targetDate);
+  }
+};
+
+export const DateCalculation: Story = {
+  args: {
+    questionnaire: qDateCalculation
   }
 };

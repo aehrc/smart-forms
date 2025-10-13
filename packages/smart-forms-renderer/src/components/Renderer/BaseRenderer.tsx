@@ -58,7 +58,7 @@ function BaseRenderer() {
 
   const responseKey = useQuestionnaireResponseStore.use.key();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
-  const replaceLatestFormUpdate = useFormUpdateQueueStore.use.replaceLatestFormUpdate();
+  const enqueueFormUpdate = useFormUpdateQueueStore.use.enqueueFormUpdate();
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(sourceQuestionnaire), [sourceQuestionnaire]);
 
@@ -70,7 +70,7 @@ function BaseRenderer() {
 
     updateQrItemsInGroup(newTopLevelQRItem, null, updatedResponse, qItemsIndexMap);
 
-    replaceLatestFormUpdate({
+    enqueueFormUpdate({
       questionnaireResponse: updatedResponse,
       targetItemPath: targetItemPath
     });
@@ -84,7 +84,7 @@ function BaseRenderer() {
 
     updateQrItemsInGroup(null, newTopLevelQRItems, updatedResponse, qItemsIndexMap);
 
-    replaceLatestFormUpdate({
+    enqueueFormUpdate({
       questionnaireResponse: updatedResponse,
       targetItemPath: targetItemPath
     });
@@ -94,7 +94,11 @@ function BaseRenderer() {
   const topLevelQRItems = structuredClone(updatableResponse.item) ?? [];
 
   if (!topLevelQItems) {
-    return <>Questionnaire does not have any items</>;
+    return (
+      <>
+        Questionnaire does not have any items or something has gone wrong. Try rebuilding the form.
+      </>
+    );
   }
 
   // If an item has multiple answers, it is a repeat group

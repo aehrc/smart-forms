@@ -7,6 +7,63 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## [1.0.0-alpha.110.dev1] - 2025-10-13
+_(WARNING: Major breaking changes with library API)_
+
+This library API change will be reflected in the next stable release (1.0.0).
+
+A migration guide is provided at [MIGRATION-v1.0.md](MIGRATION-v1.0.md).
+
+### Changed
+
+#### `buildForm`, `QuestionnaireStore` and `QuestionnaireResponseStore` changes:
+- `buildForm()` and `useBuildForm()` now accept a `BuildFormParams` object instead of multiple parameters.
+- The `additionalVariables` parameter is replaced with `additionalContext`. Its usage remains the same - it is used to inject additional fhirPathContext variables.
+- A new library function `repopulateForm()` is added to repopulate the form with a new QuestionnaireResponse and/or additionalContext while preserving the current Questionnaire state. Its parameters are defined in the interface `RepopulateFormParams`.
+
+
+#### `QuestionnaireStore` and `QuestionnaireResponseStore` changes:
+- If you were previously calling `QuestionnaireStore.setPopulatedContext` to inject populatedContext into the renderer, you no longer need to do so. `buildForm()`, `useBuildForm()` and `repopulateForm()` will take care of it for you via the `additionalContext` parameter.
+- For pre-population/re-population, you do not need to call `QuestionnaireStore.updatePopulatedProperties` and `QuestionnaireResponseStore.setUpdatableResponseAsPopulated` anymore.  Both of these functions are now removed. `buildForm()`, `useBuildForm()` and `repopulateForm()` will take care of it for you.
+  ```
+  - // Remove these lines
+  - const updatedResponse = await updatePopulatedProperties(populatedResponse, populatedContext);
+  - setUpdatableResponseAsPopulated(updatedResponse);
+  -
+  - if (populatedContext) {
+  -   setPopulatedContext(populatedContext, true);
+  - }
+  
+  + // Re-run buildForm (or repopulateForm) with the new populatedResponse
+  + await buildForm({
+  +   questionnaire: sourceQuestionnaire,
+  +   questionnaireResponse: populatedResponse,
+  +   terminologyServerUrl: defaultTerminologyServerUrl,
+  +   additionalContext: populatedContext
+  + });
+  ```
+
+- `QuestionnaireStore.populatedContext` and `QuestionnaireStore.setPopulatedContext` are replaced with `QuestionnaireStore.additionalContext` and `QuestionnaireStore.setAdditionalContext` respectively. You most likely won't need to call `setAdditionalContext` manually.
+- It is still recommended to create your own wrapper function that calls `destroyForm()` to clean up states when the form is unmounted before calling `buildForm()` again.
+  ```
+  async function resetAndBuildForm(params: BuildFormParams) {
+    // Destroy previous questionnaire state before building a new one
+    destroyForm();
+  
+    // Build new questionnaire state
+    await buildForm(params);
+  }
+  ```
+
+#### RendererStylingStore changes
+- `RendererStylingStore` and interface `RendererStyling` are replaced with `RendererConfigStore` and `RendererConfig` respectively. This is purely a naming change.
+- `rendererConfigOptions` can now be passed into the renderer via `buildForm()` and `useBuildForm()`. You no longer need to call `setRendererConfigStore` manually.
+
+#### Misc hook/function changes
+- `useStringCalculatedExpression` and `useCodingCalculatedExpression` hooks are removed. CalculatedExpressions are now triggered via an internal task queue. If you are using these hooks in a component override, you can remove the hook safely.
+- `objectIsCoding` library function is removed.
+
+
 ## [1.0.0-alpha.109] - 2025-10-07
 #### Fixed
 - Added debouncing to open-choice autocomplete input fields to reduce the number of QuestionnaireResponse updates.

@@ -15,22 +15,16 @@
  * limitations under the License.
  */
 
-import { describe, expect, test, jest } from '@jest/globals';
+import { describe, expect, jest } from '@jest/globals';
 import {
-  getBindingParameter,
-  getBindingParameters,
   addBindingParametersToValueSetUrl,
+  evaluateDynamicValueSets,
   evaluateInitialDynamicValueSets,
-  evaluateDynamicValueSets
+  getBindingParameter,
+  getBindingParameters
 } from '../utils/parameterisedValueSets';
-import type {
-  Extension,
-  QuestionnaireItem,
-  QuestionnaireResponse,
-  QuestionnaireResponseItem
-} from 'fhir/r4';
-import type { BindingParameter, ProcessedValueSet } from '../interfaces/valueSet.interface';
-import type { Variables } from '../interfaces';
+import type { Extension, QuestionnaireItem } from 'fhir/r4';
+import type { BindingParameter } from '../interfaces/valueSet.interface';
 
 // Mock dependencies
 jest.mock('../utils/fhirpath', () => ({
@@ -770,7 +764,7 @@ describe('parameterisedValueSets utils', () => {
         'http://terminology.example.com'
       );
 
-      expect(result.processedValueSetsIsUpdated).toBe(false);
+      expect(result.isUpdated).toBe(false);
       expect(result.computedNewAnswers).toEqual({});
     });
 
@@ -801,7 +795,7 @@ describe('parameterisedValueSets utils', () => {
         'http://terminology.example.com'
       );
 
-      expect(result.processedValueSetsIsUpdated).toBe(true);
+      expect(result.isUpdated).toBe(true);
       expect(result.updatedProcessedValueSets['dynamic-vs'].bindingParameters[0].value).toBe(
         'new-value'
       );
@@ -838,7 +832,7 @@ describe('parameterisedValueSets utils', () => {
         'http://terminology.example.com'
       );
 
-      expect(result.processedValueSetsIsUpdated).toBe(false);
+      expect(result.isUpdated).toBe(false);
     });
 
     it('should handle cached results', async () => {
@@ -870,7 +864,7 @@ describe('parameterisedValueSets utils', () => {
       );
 
       // Should skip evaluation due to cache
-      expect(result.processedValueSetsIsUpdated).toBe(false);
+      expect(result.isUpdated).toBe(false);
     });
 
     it('should handle FHIRPath evaluation errors', async () => {
@@ -908,7 +902,7 @@ describe('parameterisedValueSets utils', () => {
         'FHIRPath evaluation failed',
         expect.stringContaining('invalid.expression')
       );
-      expect(result.processedValueSetsIsUpdated).toBe(false);
+      expect(result.isUpdated).toBe(false);
 
       consoleSpy.mockRestore();
     });

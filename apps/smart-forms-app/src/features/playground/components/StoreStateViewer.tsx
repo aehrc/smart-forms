@@ -16,7 +16,6 @@
  */
 
 import QuestionnaireStoreViewer from './StoreStateViewers/QuestionnaireStoreViewer.tsx';
-import SmartConfigStoreViewer from './StoreStateViewers/SmartConfigStoreViewer.tsx';
 import QuestionnaireResponseStoreViewer from './StoreStateViewers/QuestionnaireResponseStoreViewer.tsx';
 import TerminologyServerStoreViewer from './StoreStateViewers/TerminologyServerStoreViewer.tsx';
 import ExtractDebuggerViewer from './StoreStateViewers/ExtractDebuggerViewer.tsx';
@@ -25,7 +24,6 @@ import { Typography } from '@mui/material';
 export type StateStore =
   | 'questionnaireStore'
   | 'questionnaireResponseStore'
-  | 'smartConfigStore'
   | 'terminologyServerStore'
   | 'extractDebugger'
   | null;
@@ -33,33 +31,29 @@ export type StateStore =
 interface StoreStateViewerProps {
   selectedStore: StateStore;
   sourceFhirServerUrl: string;
-  statePropNameFilter: string;
+  propKeyFilter: string;
 }
 
 function StoreStateViewer(props: StoreStateViewerProps) {
-  const { selectedStore, sourceFhirServerUrl, statePropNameFilter } = props;
+  const { selectedStore, sourceFhirServerUrl, propKeyFilter } = props;
 
   if (selectedStore === 'questionnaireStore') {
-    return <QuestionnaireStoreViewer statePropNameFilter={statePropNameFilter} />;
+    return <QuestionnaireStoreViewer propKeyFilter={propKeyFilter} />;
   }
 
   if (selectedStore === 'questionnaireResponseStore') {
-    return <QuestionnaireResponseStoreViewer statePropNameFilter={statePropNameFilter} />;
-  }
-
-  if (selectedStore === 'smartConfigStore') {
-    return <SmartConfigStoreViewer statePropNameFilter={statePropNameFilter} />;
+    return <QuestionnaireResponseStoreViewer propKeyFilter={propKeyFilter} />;
   }
 
   if (selectedStore === 'terminologyServerStore') {
-    return <TerminologyServerStoreViewer statePropNameFilter={statePropNameFilter} />;
+    return <TerminologyServerStoreViewer propKeyFilter={propKeyFilter} />;
   }
 
   if (selectedStore === 'extractDebugger') {
     return (
       <ExtractDebuggerViewer
         sourceFhirServerUrl={sourceFhirServerUrl}
-        statePropNameFilter={statePropNameFilter}
+        propKeyFilter={propKeyFilter}
       />
     );
   }

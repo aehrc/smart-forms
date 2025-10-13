@@ -22,7 +22,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import type { PropsWithIsTabledRequiredAttribute } from '../../../../interfaces/renderProps.interface';
 import { StandardTextField } from '../../Textfield.styles';
 import DatePicker from './DatePicker';
-import { useRendererStylingStore } from '../../../../stores';
+import { useRendererConfigStore } from '../../../../stores';
 import ExpressionUpdateFadingIcon from '../../ItemParts/ExpressionUpdateFadingIcon';
 
 interface CustomDateFieldProps extends PropsWithIsTabledRequiredAttribute {
@@ -63,8 +63,8 @@ function CustomDateField(props: CustomDateFieldProps) {
     onSelectDate
   } = props;
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
-  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
 
   const anchorRef = useRef<HTMLDivElement | null>(null);
 

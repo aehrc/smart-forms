@@ -15,37 +15,36 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useState } from 'react';
-import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
-import { FullWidthFormComponentBox } from '../../Box.styles';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import debounce from 'lodash.debounce';
+import { useCallback, useState } from 'react';
+import useReadOnly from '../../../hooks/useReadOnly';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
+import { useQuestionnaireStore } from '../../../stores';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
-import { createEmptyQrItem } from '../../../utils/qrItem';
-import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
-import DecimalField from './DecimalField';
+import { getDecimalPrecision } from '../../../utils/extensions';
 import {
   parseDecimalStringToFloat,
   parseDecimalStringWithPrecision
 } from '../../../utils/parseInputs';
-import { getDecimalPrecision } from '../../../utils/extensions';
-import useDecimalCalculatedExpression from '../../../hooks/useDecimalCalculatedExpression';
-import useReadOnly from '../../../hooks/useReadOnly';
-import { useQuestionnaireStore } from '../../../stores';
+import { createEmptyQrItem } from '../../../utils/qrItem';
+import { FullWidthFormComponentBox } from '../../Box.styles';
+import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
 import type { QuestionnaireResponseItem } from 'fhir/r4';
 import { readDecimalValue } from '../../../utils/readValues';
+import DecimalField from './DecimalField';
 
 function DecimalItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
-    itemPath,
     isRepeated,
     isTabled,
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
+    calcExpUpdated,
     onQrItemChange
   } = props;
 
@@ -64,31 +63,6 @@ function DecimalItem(props: BaseItemProps) {
   // Perform validation checks - there's no string-based input here
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
-  // Process calculated expressions
-  const { calcExpUpdated } = useDecimalCalculatedExpression({
-    qItem: qItem,
-    inputValue: input,
-    precision: precision,
-    onChangeByCalcExpressionDecimal: (newValueDecimal: number) => {
-      setInput(
-        typeof precision === 'number'
-          ? newValueDecimal.toFixed(precision)
-          : newValueDecimal.toString()
-      );
-      onQrItemChange(
-        {
-          ...createEmptyQrItem(qItem, answerKey),
-          answer: [{ id: answerKey, valueDecimal: newValueDecimal }]
-        },
-        itemPath
-      );
-    },
-    onChangeByCalcExpressionNull: () => {
-      setInput('');
-      onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
-    }
-  });
-
   // Event handlers
   function handleInputChange(newInput: string) {
     const parsedNewInput: string = parseDecimalStringWithPrecision(newInput, precision);
@@ -105,19 +79,16 @@ function DecimalItem(props: BaseItemProps) {
       );
 
       setInput(newInput);
-      onQrItemChange(
-        {
-          ...createEmptyQrItem(qItem, answerKey),
-          answer: [{ id: answerKey, valueDecimal: newValueDecimal }]
-        },
-        itemPath
-      );
+      onQrItemChange({
+        ...createEmptyQrItem(qItem, answerKey),
+        answer: [{ id: answerKey, valueDecimal: newValueDecimal }]
+      });
       return;
     }
 
     // At this point newQrItem is null, so create an QRItem to replace it
     setInput('');
-    onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
+    onQrItemChange(createEmptyQrItem(qItem, answerKey));
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -1,12 +1,12 @@
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { fetchResourceCallback } from './PrePopCallbackForPlayground.tsx';
-import { buildFormWrapper } from '../../../utils/manageForm.ts';
-import type { Patient, Practitioner } from 'fhir/r4';
 import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import type { Patient, Practitioner } from 'fhir/r4';
 import { ListItemIcon, ListItemText } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import type { RendererSpinner } from '../../renderer/types/rendererSpinner.ts';
+import { resetAndBuildForm } from '../../../utils/manageForm.ts';
 
 interface PrePopulateMenuItemProps {
   sourceFhirServerUrl: string | null;
@@ -22,7 +22,6 @@ function PrePopulateMenuItem(props: PrePopulateMenuItemProps) {
     props;
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
-  const setPopulatedContext = useQuestionnaireStore.use.setPopulatedContext();
 
   const populateEnabled = sourceFhirServerUrl !== null && patient !== null;
 
@@ -63,18 +62,12 @@ function PrePopulateMenuItem(props: PrePopulateMenuItemProps) {
 
       // Call to buildForm to pre-populate the QR which repaints the entire BaseRenderer view
       // Also passes the populatedContext to the FhirPathContext
-      await buildFormWrapper(
-        sourceQuestionnaire,
-        populatedResponse,
-        undefined,
+      await resetAndBuildForm({
+        questionnaire: sourceQuestionnaire,
+        questionnaireResponse: populatedResponse,
         terminologyServerUrl,
-        populatedContext
-      );
-
-      // TODO eventually we want to deprecate this in 1.0.0, populatedContext is now passed to buildFormWrapper and is automatically added to the FhirPathContext
-      if (populatedContext) {
-        setPopulatedContext(populatedContext, true);
-      }
+        additionalContext: populatedContext
+      });
 
       onSpinnerChange({
         isSpinning: false,

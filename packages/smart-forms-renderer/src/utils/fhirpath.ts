@@ -18,10 +18,8 @@
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import type { Expression, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
-import type { CalculatedExpression } from '../interfaces/calculatedExpression.interface';
 import type { EnableWhenExpressions } from '../interfaces/enableWhen.interface';
 import { evaluateEnableWhenExpressions } from './enableWhenExpression';
-import { evaluateCalculatedExpressions } from './calculatedExpression';
 import { evaluateTargetConstraints } from './targetConstraint';
 import type { TargetConstraint } from '../interfaces/targetConstraint.interface';
 import type { Variables, VariableXFhirQuery } from '../interfaces';
@@ -30,164 +28,149 @@ import type { ComputedQRItemUpdates } from '../interfaces/computedUpdates.interf
 import type { AnswerOptionsToggleExpression } from '../interfaces/answerOptionsToggleExpression.interface';
 import { evaluateAnswerOptionsToggleExpressions } from './answerOptionsToggleExpressions';
 
-interface EvaluateUpdatedExpressionsParams {
-  updatedResponse: QuestionnaireResponse;
-  updatedResponseItemMap: Record<string, QuestionnaireResponseItem[]>;
-  targetConstraints: Record<string, TargetConstraint>;
-  answerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
-  calculatedExpressions: Record<string, CalculatedExpression[]>;
-  enableWhenExpressions: EnableWhenExpressions;
-  variables: Variables;
-  processedValueSets: Record<string, any>;
-  existingFhirPathContext: Record<string, any>;
-  fhirPathTerminologyCache: Record<string, any>;
-  terminologyServerUrl: string;
+interface ExpressionUpdate<T> {
+  isUpdated: boolean;
+  value: T;
 }
 
-export async function evaluateUpdatedExpressions(
-  params: EvaluateUpdatedExpressionsParams
+export async function evaluateOtherExpressions(
+  updatedResponse: QuestionnaireResponse,
+  updatedResponseItemMap: Record<string, QuestionnaireResponseItem[]>,
+  variables: Variables,
+  existingFhirPathContext: Record<string, any>,
+  existingFhirPathTerminologyCache: Record<string, any>,
+  targetConstraints: Record<string, TargetConstraint>,
+  enableWhenExpressions: EnableWhenExpressions,
+  answerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>,
+  processedValueSets: Record<string, any>,
+  terminologyServerUrl: string
 ): Promise<{
-  isUpdated: boolean;
-  updatedTargetConstraints: Record<string, TargetConstraint>;
-  updatedAnswerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
-  updatedEnableWhenExpressions: EnableWhenExpressions;
-  updatedCalculatedExpressions: Record<string, CalculatedExpression[]>;
-  updatedProcessedValueSets: Record<string, any>;
   updatedFhirPathContext: Record<string, any>;
-  fhirPathTerminologyCache: Record<string, any>;
+  updatedFhirPathTerminologyCache: Record<string, any>;
+  targetConstraintsUpdate: ExpressionUpdate<Record<string, TargetConstraint>>;
+  enableWhenExpressionsUpdate: ExpressionUpdate<EnableWhenExpressions>;
+  answerOptionsToggleExpressionsUpdate: ExpressionUpdate<
+    Record<string, AnswerOptionsToggleExpression[]>
+  >;
+  processedValueSetsUpdate: ExpressionUpdate<Record<string, any>>;
   computedQRItemUpdates: ComputedQRItemUpdates;
 }> {
-  const {
-    updatedResponse,
-    updatedResponseItemMap,
-    targetConstraints,
-    answerOptionsToggleExpressions,
-    enableWhenExpressions,
-    calculatedExpressions,
-    processedValueSets,
-    variables,
-    existingFhirPathContext,
-    terminologyServerUrl
-  } = params;
-  let { fhirPathTerminologyCache } = params;
-
+  // Performance check: Check if there are any expressions to be updated before proceeding with eval logic
   const noExpressionsToBeUpdated =
+    Object.keys(targetConstraints).length === 0 &&
     Object.keys(enableWhenExpressions).length === 0 &&
-    Object.keys(calculatedExpressions).length === 0;
+    Object.keys(answerOptionsToggleExpressions).length === 0 &&
+    Object.keys(processedValueSets).length === 0;
+
   if (noExpressionsToBeUpdated) {
     return {
-      isUpdated: false,
-      updatedTargetConstraints: targetConstraints,
-      updatedAnswerOptionsToggleExpressions: answerOptionsToggleExpressions,
-      updatedEnableWhenExpressions: enableWhenExpressions,
-      updatedCalculatedExpressions: calculatedExpressions,
-      updatedProcessedValueSets: processedValueSets,
       updatedFhirPathContext: existingFhirPathContext,
-      fhirPathTerminologyCache,
+      updatedFhirPathTerminologyCache: existingFhirPathTerminologyCache,
+      targetConstraintsUpdate: {
+        isUpdated: false,
+        value: targetConstraints
+      },
+      enableWhenExpressionsUpdate: {
+        isUpdated: false,
+        value: enableWhenExpressions
+      },
+      answerOptionsToggleExpressionsUpdate: {
+        isUpdated: false,
+        value: answerOptionsToggleExpressions
+      },
+      processedValueSetsUpdate: {
+        isUpdated: false,
+        value: processedValueSets
+      },
       computedQRItemUpdates: {}
     };
   }
 
+  // Create a new fhirPathContext based on the updated response and variables
   const computedQRItemUpdates: ComputedQRItemUpdates = {};
-  const fhirPathEvalResult = await createFhirPathContext(
+  const {
+    fhirPathContext: updatedFhirPathContext,
+    fhirPathTerminologyCache: updatedFhirPathTerminologyCache
+  } = await createFhirPathContext(
     updatedResponse,
     updatedResponseItemMap,
     variables,
     existingFhirPathContext,
-    fhirPathTerminologyCache,
+    existingFhirPathTerminologyCache,
     terminologyServerUrl
   );
-
-  const updatedFhirPathContext = fhirPathEvalResult.fhirPathContext;
-  fhirPathTerminologyCache = fhirPathEvalResult.fhirPathTerminologyCache;
 
   // Update targetConstraints
-  const { targetConstraintsIsUpdated, updatedTargetConstraints } = await evaluateTargetConstraints(
-    updatedFhirPathContext,
-    fhirPathTerminologyCache,
-    targetConstraints,
-    terminologyServerUrl
-  );
-
-  // Update answerOptionsToggleExpressions
-  const {
-    answerOptionsToggleExpressionsIsUpdated,
-    updatedAnswerOptionsToggleExpressions,
-    computedNewAnswers: computedNewAnswersAnswerOptionsToggleExpressions
-  } = await evaluateAnswerOptionsToggleExpressions(
-    updatedFhirPathContext,
-    fhirPathTerminologyCache,
-    answerOptionsToggleExpressions,
-    terminologyServerUrl
-  );
+  const { isUpdated: targetConstraintsUpdated, updatedTargetConstraints } =
+    await evaluateTargetConstraints(
+      updatedFhirPathContext,
+      updatedFhirPathTerminologyCache,
+      targetConstraints,
+      terminologyServerUrl
+    );
 
   // Update enableWhenExpressions
-  const { enableWhenExpsIsUpdated, updatedEnableWhenExpressions } =
+  const { isUpdated: enableWhenExpressionsUpdated, updatedEnableWhenExpressions } =
     await evaluateEnableWhenExpressions(
       updatedFhirPathContext,
-      fhirPathTerminologyCache,
+      updatedFhirPathTerminologyCache,
       enableWhenExpressions,
       terminologyServerUrl
     );
 
-  // Update calculatedExpressions
+  // Update answerOptionsToggleExpressions
+  // Add generated computed answers to computedQRItemUpdates - clear the item because the previous answers may no longer be valid
   const {
-    calculatedExpsIsUpdated,
-    updatedCalculatedExpressions,
-    computedNewAnswers: computedNewAnswersCalculatedExpressions
-  } = await evaluateCalculatedExpressions(
+    isUpdated: answerOptionsToggleExpressionsUpdated,
+    updatedAnswerOptionsToggleExpressions,
+    computedNewAnswers: computedNewAnswersAnswerOptionsToggleExpressions
+  } = await evaluateAnswerOptionsToggleExpressions(
     updatedFhirPathContext,
-    fhirPathTerminologyCache,
-    calculatedExpressions,
+    updatedFhirPathTerminologyCache,
+    answerOptionsToggleExpressions,
     terminologyServerUrl
   );
-
-  // Update dynamic value sets
-  const {
-    processedValueSetsIsUpdated,
-    updatedProcessedValueSets,
-    computedNewAnswers: computedNewAnswersDynamicValueSets
-  } = await evaluateDynamicValueSets(
-    updatedFhirPathContext,
-    fhirPathTerminologyCache,
-    processedValueSets,
-    terminologyServerUrl
-  );
-
-  // Have a process here to find their QRItems and assign updates based on the computedNewAnswers
-  // In the case of dynamic value sets, just clear the existing answers
-  // Eventually we want to expand this to calculatedExpressions
-  for (const linkId in computedNewAnswersCalculatedExpressions) {
-    // FIXME - this implementation is designed to only work on null for now, if we want to actually apply new answer updates, need to have Questionnaire input param
-    if (computedNewAnswersCalculatedExpressions[linkId] === null) {
-      computedQRItemUpdates[linkId] = null;
-    }
-  }
-
-  for (const linkId in computedNewAnswersDynamicValueSets) {
-    computedQRItemUpdates[linkId] = null;
-  }
 
   for (const linkId in computedNewAnswersAnswerOptionsToggleExpressions) {
     computedQRItemUpdates[linkId] = null;
   }
 
-  const isUpdated =
-    enableWhenExpsIsUpdated ||
-    calculatedExpsIsUpdated ||
-    targetConstraintsIsUpdated ||
-    answerOptionsToggleExpressionsIsUpdated ||
-    processedValueSetsIsUpdated;
+  // Update dynamic value sets
+  // Add generated computed answers to computedQRItemUpdates - clear the item because the previous answers may no longer be valid
+  const {
+    isUpdated: processedValueSetsUpdated,
+    updatedProcessedValueSets,
+    computedNewAnswers: computedNewAnswersDynamicValueSets
+  } = await evaluateDynamicValueSets(
+    updatedFhirPathContext,
+    updatedFhirPathTerminologyCache,
+    processedValueSets,
+    terminologyServerUrl
+  );
+
+  for (const linkId in computedNewAnswersDynamicValueSets) {
+    computedQRItemUpdates[linkId] = null;
+  }
 
   return {
-    isUpdated,
-    updatedTargetConstraints,
-    updatedAnswerOptionsToggleExpressions,
-    updatedEnableWhenExpressions,
-    updatedCalculatedExpressions,
-    updatedProcessedValueSets,
     updatedFhirPathContext,
-    fhirPathTerminologyCache,
+    updatedFhirPathTerminologyCache,
+    targetConstraintsUpdate: {
+      isUpdated: targetConstraintsUpdated,
+      value: updatedTargetConstraints
+    },
+    enableWhenExpressionsUpdate: {
+      isUpdated: enableWhenExpressionsUpdated,
+      value: updatedEnableWhenExpressions
+    },
+    answerOptionsToggleExpressionsUpdate: {
+      isUpdated: answerOptionsToggleExpressionsUpdated,
+      value: updatedAnswerOptionsToggleExpressions
+    },
+    processedValueSetsUpdate: {
+      isUpdated: processedValueSetsUpdated,
+      value: updatedProcessedValueSets
+    },
     computedQRItemUpdates
   };
 }

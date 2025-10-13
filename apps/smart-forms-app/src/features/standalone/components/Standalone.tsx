@@ -89,7 +89,7 @@ function Standalone() {
                 <InitialiseFormWrapperForStorybook
                   questionnaire={state.questionnaire}
                   questionnaireResponse={state.response ?? undefined}
-                  additionalVariables={state.additionalVars ?? undefined}
+                  additionalContext={state.additionalVars ?? undefined}
                   terminologyServerUrl={state.terminologyServerUrl ?? undefined}
                   readOnly={state.readOnly}
                 />

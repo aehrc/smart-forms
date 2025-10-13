@@ -37,7 +37,7 @@ import { isRepeatItemAndNotCheckbox, isSpecificItemControl } from '../../utils';
 import GroupTable from '../FormComponents/Tables/GroupTable';
 import RepeatItem from '../FormComponents/RepeatItem/RepeatItem';
 import GridGroup from '../FormComponents/GridGroup/GridGroup';
-import { useRendererStylingStore } from '../../stores';
+import { useRendererConfigStore } from '../../stores';
 import { isPage } from '../../utils/page';
 import FormBodyPageContainer from './FormBodyPageContainer';
 
@@ -70,7 +70,7 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
   // Unfortunately, "header" and "footer" itemControl is not supported.
   const itemIsPageContainer = isPage(topLevelQItem);
 
-  const showTabbedFormAt = useRendererStylingStore.use.showTabbedFormAt();
+  const showTabbedFormAt = useRendererConfigStore.use.showTabbedFormAt();
   const isTabbedForm = useResponsive(showTabbedFormAt);
 
   const itemIsGroup = topLevelQItem.type === 'group';

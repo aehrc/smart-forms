@@ -15,29 +15,28 @@
  * limitations under the License.
  */
 
-import React, { useState } from 'react';
-import type { BaseItemProps } from '../../../../interfaces/renderProps.interface';
-import useReadOnly from '../../../../hooks/useReadOnly';
-import { FullWidthFormComponentBox } from '../../../Box.styles';
-import ItemFieldGrid from '../../ItemParts/ItemFieldGrid';
-import { createEmptyQrItem } from '../../../../utils/qrItem';
-import useDateValidation from '../../../../hooks/useDateValidation';
-import { useQuestionnaireStore } from '../../../../stores';
-import { parseFhirDateToDisplayDate } from '../utils';
-import { parseInputDateToFhirDate, validateDateInput } from '../utils/parseDate';
 import Stack from '@mui/material/Stack';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
+import { useState } from 'react';
+import useDateNonEmptyValidation from '../../../../hooks/useDateTimeNonEmpty';
+import useDateValidation from '../../../../hooks/useDateValidation';
+import useReadOnly from '../../../../hooks/useReadOnly';
+import useTimeValidation from '../../../../hooks/useTimeValidation';
+import type { BaseItemProps } from '../../../../interfaces/renderProps.interface';
+import { useQuestionnaireStore } from '../../../../stores';
+import { createEmptyQrItem } from '../../../../utils/qrItem';
+import { FullWidthFormComponentBox } from '../../../Box.styles';
+import ItemFieldGrid from '../../ItemParts/ItemFieldGrid';
+import ItemLabel from '../../ItemParts/ItemLabel';
+import { parseFhirDateToDisplayDate } from '../utils';
+import { parseInputDateToFhirDate, validateDateInput } from '../utils/parseDate';
 import {
   parseDateTimeToDisplayTime,
   parseInputDateTimeToFhirDateTime,
   validateTimeInput
 } from '../utils/parseTime';
-import useTimeValidation from '../../../../hooks/useTimeValidation';
-import useDateNonEmptyValidation from '../../../../hooks/useDateTimeNonEmpty';
 import DateTimeField from './DateTimeField';
-import ItemLabel from '../../ItemParts/ItemLabel';
-import useDateTimeCalculatedExpression from '../../../../hooks/useDateTimeCalculatedExpression';
 
 function CustomDateTimeItem(props: BaseItemProps) {
   const {
@@ -47,6 +46,7 @@ function CustomDateTimeItem(props: BaseItemProps) {
     isTabled,
     renderingExtensions,
     parentIsReadOnly,
+    calcExpUpdated,
     onQrItemChange
   } = props;
 
@@ -103,31 +103,6 @@ function CustomDateTimeItem(props: BaseItemProps) {
   );
 
   dateFeedback = useDateNonEmptyValidation(dateInput, timeInput, dateFeedback, timeFeedback);
-
-  // Process calculated expressions
-  const { calcExpUpdated } = useDateTimeCalculatedExpression({
-    qItem: qItem,
-    valueDateTimeFhir: valueDateTimeFhir,
-    onChangeByCalcExpressionString: (newValueDateTimeFhir: string) => {
-      const { displayDate } = parseFhirDateToDisplayDate(newValueDateTimeFhir);
-      const { displayTime, displayPeriod } = parseDateTimeToDisplayTime(dateTimeDayJs);
-
-      setDateInput(displayDate);
-      setTimeInput(displayTime);
-      setPeriodInput(displayPeriod);
-
-      onQrItemChange({
-        ...createEmptyQrItem(qItem, answerKey),
-        answer: [{ id: answerKey, valueDateTime: newValueDateTimeFhir }]
-      });
-    },
-    onChangeByCalcExpressionNull: () => {
-      setDateInput('');
-      setTimeInput('');
-      setPeriodInput('');
-      onQrItemChange(createEmptyQrItem(qItem, answerKey));
-    }
-  });
 
   function handleSelectDate(selectedDate: string) {
     setDateInput(selectedDate);

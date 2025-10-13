@@ -15,15 +15,18 @@
  * limitations under the License.
  */
 
-import { describe, expect, test, jest } from '@jest/globals';
+import { describe, expect, jest } from '@jest/globals';
 import {
-  initialiseCalculatedExpressionValues,
+  applyCalculatedExpressionValuesToResponse,
   checkIsDateTime,
   checkIsTime,
-  evaluateInitialCalculatedExpressions,
-  evaluateCalculatedExpressions
+  evaluateCalculatedExpressionsFhirPath,
+  evaluateInitialCalculatedExpressions
 } from '../utils/calculatedExpression';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+// Import the mocked functions
+import fhirpath from 'fhirpath';
+import { createFhirPathContext, handleFhirPathResult } from '../utils/fhirpath';
 
 // Mock dependencies
 jest.mock('fhirpath', () => ({
@@ -37,10 +40,6 @@ jest.mock('../utils/fhirpath', () => ({
   createFhirPathContext: jest.fn(),
   handleFhirPathResult: jest.fn()
 }));
-
-// Import the mocked functions
-import fhirpath from 'fhirpath';
-import { createFhirPathContext, handleFhirPathResult } from '../utils/fhirpath';
 
 const mockFhirPath = fhirpath.evaluate as jest.MockedFunction<typeof fhirpath.evaluate>;
 const mockCreateFhirPathContext = createFhirPathContext as jest.MockedFunction<
@@ -142,264 +141,6 @@ describe('calculatedExpression utils', () => {
     it('should handle edge case times', () => {
       expect(checkIsTime('00:00:60')).toBe(true);
       expect(checkIsTime('12:59:60')).toBe(true);
-    });
-  });
-
-  describe('initialiseCalculatedExpressionValues', () => {
-    it('should initialize with empty questionnaire', () => {
-      const questionnaire: Questionnaire = {
-        resourceType: 'Questionnaire',
-        status: 'active',
-        item: []
-      };
-
-      const response: QuestionnaireResponse = {
-        resourceType: 'QuestionnaireResponse',
-        status: 'in-progress',
-        item: []
-      };
-
-      const calculatedExpressions = {};
-
-      const result = initialiseCalculatedExpressionValues(
-        questionnaire,
-        response,
-        calculatedExpressions
-      );
-
-      expect(result).toBeDefined();
-    });
-
-    it('should handle questionnaire with no calculatedExpression extensions', () => {
-      const questionnaire: Questionnaire = {
-        resourceType: 'Questionnaire',
-        status: 'active',
-        item: [
-          {
-            linkId: 'item-1',
-            text: 'Item 1',
-            type: 'string'
-          }
-        ]
-      };
-
-      const response: QuestionnaireResponse = {
-        resourceType: 'QuestionnaireResponse',
-        status: 'in-progress',
-        item: []
-      };
-
-      const calculatedExpressions = {};
-
-      const result = initialiseCalculatedExpressionValues(
-        questionnaire,
-        response,
-        calculatedExpressions
-      );
-
-      expect(result).toBeDefined();
-    });
-
-    it('should process questionnaire with calculatedExpression extensions', () => {
-      const questionnaire: Questionnaire = {
-        resourceType: 'Questionnaire',
-        status: 'active',
-        item: [
-          {
-            linkId: 'calculated-item',
-            text: 'Calculated Item',
-            type: 'string'
-          }
-        ]
-      };
-
-      const response: QuestionnaireResponse = {
-        resourceType: 'QuestionnaireResponse',
-        status: 'in-progress',
-        item: []
-      };
-
-      const calculatedExpressions = {
-        'calculated-item': [
-          {
-            expression: '%context.test',
-            from: 'item' as const,
-            value: 'calculated-value'
-          }
-        ]
-      };
-
-      const result = initialiseCalculatedExpressionValues(
-        questionnaire,
-        response,
-        calculatedExpressions
-      );
-
-      expect(result).toBeDefined();
-    });
-
-    it('should handle nested questionnaire items', () => {
-      const questionnaire: Questionnaire = {
-        resourceType: 'Questionnaire',
-        status: 'active',
-        item: [
-          {
-            linkId: 'group',
-            text: 'Group',
-            type: 'group',
-            item: [
-              {
-                linkId: 'nested-item',
-                text: 'Nested Item',
-                type: 'string'
-              }
-            ]
-          }
-        ]
-      };
-
-      const response: QuestionnaireResponse = {
-        resourceType: 'QuestionnaireResponse',
-        status: 'in-progress',
-        item: []
-      };
-
-      const calculatedExpressions = {
-        'nested-item': [
-          {
-            expression: '%context.nested',
-            from: 'item' as const,
-            value: 'nested-value'
-          }
-        ]
-      };
-
-      const result = initialiseCalculatedExpressionValues(
-        questionnaire,
-        response,
-        calculatedExpressions
-      );
-
-      expect(result).toBeDefined();
-    });
-
-    it('should handle multiple calculated expressions for the same item', () => {
-      const questionnaire: Questionnaire = {
-        resourceType: 'Questionnaire',
-        status: 'active',
-        item: [
-          {
-            linkId: 'multi-expr-item',
-            text: 'Multi Expression Item',
-            type: 'string'
-          }
-        ]
-      };
-
-      const response: QuestionnaireResponse = {
-        resourceType: 'QuestionnaireResponse',
-        status: 'in-progress',
-        item: []
-      };
-
-      const calculatedExpressions = {
-        'multi-expr-item': [
-          {
-            expression: '%context.first',
-            from: 'item' as const,
-            value: 'first-value'
-          },
-          {
-            expression: '%context.second',
-            from: 'item._text' as const,
-            value: 'second-value'
-          }
-        ]
-      };
-
-      const result = initialiseCalculatedExpressionValues(
-        questionnaire,
-        response,
-        calculatedExpressions
-      );
-
-      expect(result).toBeDefined();
-    });
-
-    it('should handle empty calculated expressions', () => {
-      const questionnaire: Questionnaire = {
-        resourceType: 'Questionnaire',
-        status: 'active',
-        item: [
-          {
-            linkId: 'empty-expr-item',
-            text: 'Empty Expression Item',
-            type: 'string'
-          }
-        ]
-      };
-
-      const response: QuestionnaireResponse = {
-        resourceType: 'QuestionnaireResponse',
-        status: 'in-progress',
-        item: []
-      };
-
-      const calculatedExpressions = {
-        'empty-expr-item': []
-      };
-
-      const result = initialiseCalculatedExpressionValues(
-        questionnaire,
-        response,
-        calculatedExpressions
-      );
-
-      expect(result).toBeDefined();
-    });
-
-    it('should handle questionnaire response with existing items', () => {
-      const questionnaire: Questionnaire = {
-        resourceType: 'Questionnaire',
-        status: 'active',
-        item: [
-          {
-            linkId: 'existing-item',
-            text: 'Existing Item',
-            type: 'string'
-          }
-        ]
-      };
-
-      const response: QuestionnaireResponse = {
-        resourceType: 'QuestionnaireResponse',
-        status: 'in-progress',
-        item: [
-          {
-            linkId: 'existing-item',
-            text: 'Existing Item',
-            answer: [{ valueString: 'existing-answer' }]
-          }
-        ]
-      };
-
-      const calculatedExpressions = {
-        'existing-item': [
-          {
-            expression: '%context.test',
-            from: 'item' as const,
-            value: 'calculated-value'
-          }
-        ]
-      };
-
-      const result = initialiseCalculatedExpressionValues(
-        questionnaire,
-        response,
-        calculatedExpressions
-      );
-
-      expect(result).toBeDefined();
     });
   });
 
@@ -793,7 +534,7 @@ describe('calculatedExpression utils', () => {
     });
   });
 
-  describe('evaluateCalculatedExpressions', () => {
+  describe('evaluateCalculatedExpressionsFhirPath', () => {
     beforeEach(() => {
       // Reset console.warn mock before each test
       jest.spyOn(console, 'warn').mockImplementation(() => {});
@@ -829,14 +570,13 @@ describe('calculatedExpression utils', () => {
       mockFhirPath.mockReturnValue([25]);
       mockHandleFhirPathResult.mockResolvedValue([25]);
 
-      const result = await evaluateCalculatedExpressions(
+      const result = await evaluateCalculatedExpressionsFhirPath(
         fhirPathContext,
         {},
         calculatedExpressions,
         'http://test.com'
       );
 
-      expect(result.calculatedExpsIsUpdated).toBe(true);
       expect(result.updatedCalculatedExpressions['item-1'][0].value).toBe(25);
       expect(result.computedNewAnswers).toEqual({});
     });
@@ -855,41 +595,14 @@ describe('calculatedExpression utils', () => {
       mockFhirPath.mockReturnValue([25]);
       mockHandleFhirPathResult.mockResolvedValue([25]);
 
-      const result = await evaluateCalculatedExpressions(
+      const result = await evaluateCalculatedExpressionsFhirPath(
         {},
         {},
         calculatedExpressions,
         'http://test.com'
       );
 
-      expect(result.calculatedExpsIsUpdated).toBe(false);
       expect(result.updatedCalculatedExpressions['item-1'][0].value).toBe(25);
-    });
-
-    it('should handle cached expressions', async () => {
-      const calculatedExpressions = {
-        'item-1': [
-          {
-            expression: "%context.repeat(item).where(linkId='age').answer.valueInteger",
-            from: 'item' as const,
-            value: null
-          }
-        ]
-      };
-
-      const fhirPathTerminologyCache = {
-        '"%context.repeat(item).where(linkId=\'age\').answer.valueInteger"': [30]
-      };
-
-      const result = await evaluateCalculatedExpressions(
-        {},
-        fhirPathTerminologyCache,
-        calculatedExpressions,
-        'http://test.com'
-      );
-
-      expect(mockFhirPath).not.toHaveBeenCalled();
-      expect(result.calculatedExpsIsUpdated).toBe(false);
     });
 
     it('should handle Promise-based FHIRPath results and caching', async () => {
@@ -909,14 +622,13 @@ describe('calculatedExpression utils', () => {
 
       const fhirPathTerminologyCache = {};
 
-      const result = await evaluateCalculatedExpressions(
+      const result = await evaluateCalculatedExpressionsFhirPath(
         {},
         fhirPathTerminologyCache,
         calculatedExpressions,
         'http://test.com'
       );
 
-      expect(result.calculatedExpsIsUpdated).toBe(true);
       expect(result.updatedCalculatedExpressions['item-1'][0].value).toEqual({
         code: 'test',
         display: 'Test'
@@ -943,14 +655,13 @@ describe('calculatedExpression utils', () => {
 
       const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
-      const result = await evaluateCalculatedExpressions(
+      const result = await evaluateCalculatedExpressionsFhirPath(
         {},
         {},
         calculatedExpressions,
         'http://test.com'
       );
 
-      expect(result.calculatedExpsIsUpdated).toBe(false);
       expect(consoleSpy).toHaveBeenCalledWith(
         'FHIRPath evaluation failed',
         'LinkId: item-1\nExpression: invalid.expression.that.throws'
@@ -970,38 +681,14 @@ describe('calculatedExpression utils', () => {
 
       mockFhirPath.mockReturnValue([]);
 
-      const result = await evaluateCalculatedExpressions(
+      const result = await evaluateCalculatedExpressionsFhirPath(
         {},
         {},
         calculatedExpressions,
         'http://test.com'
       );
 
-      expect(result.calculatedExpsIsUpdated).toBe(true);
       expect(result.updatedCalculatedExpressions['item-1'][0].value).toBe(null);
-    });
-
-    it('should not update when value is already null and no result', async () => {
-      const calculatedExpressions = {
-        'item-1': [
-          {
-            expression: '%context.empty.expression',
-            from: 'item' as const,
-            value: null
-          }
-        ]
-      };
-
-      mockFhirPath.mockReturnValue([]);
-
-      const result = await evaluateCalculatedExpressions(
-        {},
-        {},
-        calculatedExpressions,
-        'http://test.com'
-      );
-
-      expect(result.calculatedExpsIsUpdated).toBe(false);
     });
 
     it('should clear answers for answerValueSet expressions when value changes', async () => {
@@ -1018,14 +705,13 @@ describe('calculatedExpression utils', () => {
       mockFhirPath.mockReturnValue(['http://new-valueset.com']);
       mockHandleFhirPathResult.mockResolvedValue(['http://new-valueset.com']);
 
-      const result = await evaluateCalculatedExpressions(
+      const result = await evaluateCalculatedExpressionsFhirPath(
         {},
         {},
         calculatedExpressions,
         'http://test.com'
       );
 
-      expect(result.calculatedExpsIsUpdated).toBe(true);
       expect(result.updatedCalculatedExpressions['item-1'][0].value).toBe(
         'http://new-valueset.com'
       );
@@ -1045,14 +731,13 @@ describe('calculatedExpression utils', () => {
 
       mockFhirPath.mockReturnValue([]);
 
-      const result = await evaluateCalculatedExpressions(
+      const result = await evaluateCalculatedExpressionsFhirPath(
         {},
         {},
         calculatedExpressions,
         'http://test.com'
       );
 
-      expect(result.calculatedExpsIsUpdated).toBe(true);
       expect(result.updatedCalculatedExpressions['item-1'][0].value).toBe(null);
       expect(result.computedNewAnswers['item-1']).toBe(null);
     });
@@ -1078,45 +763,24 @@ describe('calculatedExpression utils', () => {
         .mockResolvedValueOnce(['first-result'])
         .mockResolvedValueOnce(['second-result']);
 
-      const result = await evaluateCalculatedExpressions(
+      const result = await evaluateCalculatedExpressionsFhirPath(
         {},
         {},
         calculatedExpressions,
         'http://test.com'
       );
 
-      expect(result.calculatedExpsIsUpdated).toBe(true);
       expect(result.updatedCalculatedExpressions['item-1'][0].value).toBe('first-result');
       expect(result.updatedCalculatedExpressions['item-1'][1].value).toBe('second-result');
     });
-
-    it('should handle special debug logging for Blood tests values', async () => {
-      const calculatedExpressions = {
-        'item-1': [
-          {
-            expression: '%context.blood.tests',
-            from: 'item' as const,
-            value: 'Blood tests initial'
-          }
-        ]
-      };
-
-      const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-      mockFhirPath.mockReturnValue(['Blood tests result']);
-      mockHandleFhirPathResult.mockResolvedValue(['Blood tests result']);
-
-      await evaluateCalculatedExpressions({}, {}, calculatedExpressions, 'http://test.com');
-
-      expect(consoleSpy).toHaveBeenCalledWith(
-        'Blood tests initial',
-        ['Blood tests result'],
-        '%context.blood.tests'
-      );
-    });
   });
 
-  describe('initialiseCalculatedExpressionValues integration tests', () => {
-    it('should filter expressions with values and initialize response', () => {
+  describe('applyCalculatedExpressionValuesToResponse integration tests', () => {
+    const mockQuestionnaireItemMap = {};
+    const mockPreferredTerminologyServers = {};
+    const defaultTerminologyServerUrl = 'http://example.org/terminology';
+
+    it('should filter expressions with values and initialize response', async () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -1135,7 +799,7 @@ describe('calculatedExpression utils', () => {
         item: []
       };
 
-      const calculatedExpressions = {
+      const updatedCalculatedExpressions = {
         'item-1': [
           {
             expression: '%context.test',
@@ -1157,16 +821,20 @@ describe('calculatedExpression utils', () => {
         ]
       };
 
-      const result = initialiseCalculatedExpressionValues(
+      const result = await applyCalculatedExpressionValuesToResponse(
         questionnaire,
         populatedResponse,
-        calculatedExpressions
+        mockQuestionnaireItemMap,
+        {}, // previousCalculatedExpressions
+        updatedCalculatedExpressions,
+        mockPreferredTerminologyServers,
+        defaultTerminologyServerUrl
       );
 
       expect(result).toBeDefined();
     });
 
-    it('should handle boolean values', () => {
+    it('should handle boolean values', async () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -1185,7 +853,7 @@ describe('calculatedExpression utils', () => {
         item: []
       };
 
-      const calculatedExpressions = {
+      const updatedCalculatedExpressions = {
         'boolean-item': [
           {
             expression: '%context.test',
@@ -1195,16 +863,20 @@ describe('calculatedExpression utils', () => {
         ]
       };
 
-      const result = initialiseCalculatedExpressionValues(
+      const result = await applyCalculatedExpressionValuesToResponse(
         questionnaire,
         populatedResponse,
-        calculatedExpressions
+        mockQuestionnaireItemMap,
+        {},
+        updatedCalculatedExpressions,
+        mockPreferredTerminologyServers,
+        defaultTerminologyServerUrl
       );
 
       expect(result).toBeDefined();
     });
 
-    it('should handle numeric values', () => {
+    it('should handle numeric values', async () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -1228,7 +900,7 @@ describe('calculatedExpression utils', () => {
         item: []
       };
 
-      const calculatedExpressions = {
+      const updatedCalculatedExpressions = {
         'decimal-item': [
           {
             expression: '%context.decimal',
@@ -1245,16 +917,20 @@ describe('calculatedExpression utils', () => {
         ]
       };
 
-      const result = initialiseCalculatedExpressionValues(
+      const result = await applyCalculatedExpressionValuesToResponse(
         questionnaire,
         populatedResponse,
-        calculatedExpressions
+        mockQuestionnaireItemMap,
+        {},
+        updatedCalculatedExpressions,
+        mockPreferredTerminologyServers,
+        defaultTerminologyServerUrl
       );
 
       expect(result).toBeDefined();
     });
 
-    it('should handle date and time values', () => {
+    it('should handle date and time values', async () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -1283,7 +959,7 @@ describe('calculatedExpression utils', () => {
         item: []
       };
 
-      const calculatedExpressions = {
+      const updatedCalculatedExpressions = {
         'date-item': [
           {
             expression: '%context.date',
@@ -1307,16 +983,20 @@ describe('calculatedExpression utils', () => {
         ]
       };
 
-      const result = initialiseCalculatedExpressionValues(
+      const result = await applyCalculatedExpressionValuesToResponse(
         questionnaire,
         populatedResponse,
-        calculatedExpressions
+        mockQuestionnaireItemMap,
+        {},
+        updatedCalculatedExpressions,
+        mockPreferredTerminologyServers,
+        defaultTerminologyServerUrl
       );
 
       expect(result).toBeDefined();
     });
 
-    it('should handle complex object values', () => {
+    it('should handle complex object values', async () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -1340,7 +1020,7 @@ describe('calculatedExpression utils', () => {
         item: []
       };
 
-      const calculatedExpressions = {
+      const updatedCalculatedExpressions = {
         'quantity-item': [
           {
             expression: '%context.quantity',
@@ -1357,16 +1037,20 @@ describe('calculatedExpression utils', () => {
         ]
       };
 
-      const result = initialiseCalculatedExpressionValues(
+      const result = await applyCalculatedExpressionValuesToResponse(
         questionnaire,
         populatedResponse,
-        calculatedExpressions
+        mockQuestionnaireItemMap,
+        {},
+        updatedCalculatedExpressions,
+        mockPreferredTerminologyServers,
+        defaultTerminologyServerUrl
       );
 
       expect(result).toBeDefined();
     });
 
-    it('should handle answerOptions with matching values', () => {
+    it('should handle answerOptions with matching values', async () => {
       const questionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
@@ -1401,7 +1085,7 @@ describe('calculatedExpression utils', () => {
         item: []
       };
 
-      const calculatedExpressions = {
+      const updatedCalculatedExpressions = {
         'choice-item': [
           {
             expression: '%context.choice',
@@ -1411,10 +1095,14 @@ describe('calculatedExpression utils', () => {
         ]
       };
 
-      const result = initialiseCalculatedExpressionValues(
+      const result = await applyCalculatedExpressionValuesToResponse(
         questionnaire,
         populatedResponse,
-        calculatedExpressions
+        mockQuestionnaireItemMap,
+        {},
+        updatedCalculatedExpressions,
+        mockPreferredTerminologyServers,
+        defaultTerminologyServerUrl
       );
 
       expect(result).toBeDefined();

@@ -18,7 +18,7 @@
 import React from 'react';
 import TableCell from '@mui/material/TableCell';
 import { StandardCheckbox } from '../../Checkbox.styles';
-import { useRendererStylingStore } from '../../../stores';
+import { useRendererConfigStore } from '../../../stores';
 import type { QuestionnaireItem } from 'fhir/r4';
 
 interface SelectRowButtonProps {
@@ -31,7 +31,7 @@ interface SelectRowButtonProps {
 function SelectRowButton(props: SelectRowButtonProps) {
   const { qItem, isChecked, readOnly, onSelectItem } = props;
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
 
   return (
     <TableCell padding="none">

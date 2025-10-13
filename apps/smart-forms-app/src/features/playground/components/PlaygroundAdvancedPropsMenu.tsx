@@ -5,20 +5,14 @@ import type { StateStore } from './StoreStateViewer.tsx';
 
 interface PlaygroundAdvancedPropsMenuProps {
   selectedStore: StateStore;
-  statePropNameFilter: string;
+  propKeyFilter: string;
   onSetView: (view: 'editor' | 'storeState') => void;
   onSetSelectedStore: (selectedStore: StateStore) => void;
-  onSetstatePropNameFilter: (filterString: string) => void;
+  onSetPropKeyFilter: (filterString: string) => void;
 }
 
 function PlaygroundAdvancedPropsMenu(props: PlaygroundAdvancedPropsMenuProps) {
-  const {
-    selectedStore,
-    statePropNameFilter,
-    onSetView,
-    onSetSelectedStore,
-    onSetstatePropNameFilter
-  } = props;
+  const { selectedStore, propKeyFilter, onSetView, onSetSelectedStore, onSetPropKeyFilter } = props;
 
   return (
     <Stack direction="row" alignItems="center" gap={0.5}>
@@ -41,7 +35,7 @@ function PlaygroundAdvancedPropsMenu(props: PlaygroundAdvancedPropsMenuProps) {
           }
 
           onSetSelectedStore(newSelectedStore);
-          onSetstatePropNameFilter('');
+          onSetPropKeyFilter('');
         }}>
         <ToggleButton value="questionnaireStore">
           <Typography fontSize={10} fontWeight="bold">
@@ -66,7 +60,7 @@ function PlaygroundAdvancedPropsMenu(props: PlaygroundAdvancedPropsMenuProps) {
       </ToggleButtonGroup>
       <Box width="120px">
         <TextField
-          value={statePropNameFilter}
+          value={propKeyFilter}
           placeholder="Filter properties"
           size="small"
           slotProps={{
@@ -88,7 +82,7 @@ function PlaygroundAdvancedPropsMenu(props: PlaygroundAdvancedPropsMenuProps) {
             }
           }}
           onChange={(e) => {
-            onSetstatePropNameFilter(e.target.value);
+            onSetPropKeyFilter(e.target.value);
           }}
         />
       </Box>

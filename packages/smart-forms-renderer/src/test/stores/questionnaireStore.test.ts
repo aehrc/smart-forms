@@ -29,7 +29,7 @@ import {
   updateEnableWhenItemAnswer
 } from '../../utils/enableWhen';
 import { mutateRepeatEnableWhenExpressionInstances } from '../../utils/enableWhenExpression';
-import { evaluateUpdatedExpressions } from '../../utils/fhirpath';
+import { evaluateOtherExpressions } from '../../utils/fhirpath';
 import { createQuestionnaireResponseItemMap } from '../../utils/questionnaireResponseStoreUtils/updatableResponseItems';
 import { applyComputedUpdates } from '../../utils/computedUpdates';
 
@@ -70,8 +70,8 @@ const mockMutateRepeatEnableWhenExpressionInstances =
   mutateRepeatEnableWhenExpressionInstances as jest.MockedFunction<
     typeof mutateRepeatEnableWhenExpressionInstances
   >;
-const mockEvaluateUpdatedExpressions = evaluateUpdatedExpressions as jest.MockedFunction<
-  typeof evaluateUpdatedExpressions
+const mockEvaluateOtherExpressions = evaluateOtherExpressions as jest.MockedFunction<
+  typeof evaluateOtherExpressions
 >;
 const mockCreateQuestionnaireResponseItemMap =
   createQuestionnaireResponseItemMap as jest.MockedFunction<
@@ -155,17 +155,28 @@ describe('questionnaireStore', () => {
       updatedEnableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} },
       isUpdated: false
     });
-    mockEvaluateUpdatedExpressions.mockResolvedValue({
-      isUpdated: false,
-      updatedTargetConstraints: {},
-      updatedAnswerOptionsToggleExpressions: {},
-      updatedEnableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} },
-      updatedCalculatedExpressions: {},
-      updatedProcessedValueSets: {},
+    mockEvaluateOtherExpressions.mockResolvedValue({
       updatedFhirPathContext: {},
-      fhirPathTerminologyCache: {},
+      updatedFhirPathTerminologyCache: {},
+      targetConstraintsUpdate: {
+        isUpdated: false,
+        value: {}
+      },
+      enableWhenExpressionsUpdate: {
+        isUpdated: false,
+        value: { singleExpressions: {}, repeatExpressions: {} }
+      },
+      answerOptionsToggleExpressionsUpdate: {
+        isUpdated: false,
+        value: {}
+      },
+      processedValueSetsUpdate: {
+        isUpdated: false,
+        value: {}
+      },
       computedQRItemUpdates: {}
     });
+
     mockCreateQuestionnaireResponseItemMap.mockReturnValue({});
     mockApplyComputedUpdates.mockReturnValue(mockQuestionnaireResponse);
 
@@ -194,7 +205,7 @@ describe('questionnaireStore', () => {
       cachedValueSetCodings: {},
       fhirPathContext: {},
       fhirPathTerminologyCache: {},
-      populatedContext: {},
+      additionalContext: {},
       qItemOverrideComponents: {},
       sdcUiOverrideComponents: {},
       focusedLinkId: '',
@@ -275,31 +286,6 @@ describe('questionnaireStore', () => {
       expect(state.readOnly).toBe(readOnly);
       expect(state.qItemOverrideComponents).toBe(qItemOverrideComponents);
       expect(state.sdcUiOverrideComponents).toBe(sdcUiOverrideComponents);
-    });
-
-    it('should merge additional variables into fhirPathContext', async () => {
-      const additionalVariables = { customVar: 'customValue' };
-      const existingContext = { existingVar: 'existingValue' };
-
-      questionnaireStore.setState({ fhirPathContext: existingContext });
-
-      mockCreateQuestionnaireModel.mockResolvedValue({
-        ...mockQuestionnaireModel,
-        fhirPathContext: { modelVar: 'modelValue' }
-      } as any);
-
-      await questionnaireStore
-        .getState()
-        .buildSourceQuestionnaire(mockQuestionnaire, undefined, additionalVariables);
-
-      expect(mockInitialiseFormFromResponse).toHaveBeenCalledWith(
-        expect.objectContaining({
-          fhirPathContext: {
-            existingVar: 'existingValue',
-            customVar: 'customValue'
-          }
-        })
-      );
     });
   });
 
@@ -532,132 +518,6 @@ describe('questionnaireStore', () => {
     });
   });
 
-  describe('updateExpressions', () => {
-    beforeEach(() => {
-      questionnaireStore.setState({
-        sourceQuestionnaire: mockQuestionnaire,
-        targetConstraints: {},
-        answerOptionsToggleExpressions: {},
-        enableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} },
-        calculatedExpressions: {},
-        processedValueSets: {},
-        variables: { fhirPathVariables: {}, xFhirQueryVariables: {} },
-        fhirPathContext: {},
-        fhirPathTerminologyCache: {}
-      });
-
-      questionnaireResponseStore.setState({
-        updateResponse: jest.fn(),
-        validateResponse: jest.fn()
-      });
-    });
-
-    it('should evaluate expressions and update state when updated', async () => {
-      const updatedResponse = structuredClone(mockQuestionnaireResponse);
-      const mockEvaluationResult = {
-        isUpdated: true,
-        updatedTargetConstraints: {
-          constraint1: {
-            key: 'constraint1',
-            severityCode: 'error' as const,
-            valueExpression: { expression: 'true', language: 'text/fhirpath' },
-            human: 'Test constraint'
-          }
-        },
-        updatedAnswerOptionsToggleExpressions: { item1: [] },
-        updatedEnableWhenExpressions: {
-          singleExpressions: {
-            item1: {
-              expression: 'true',
-              isEnabled: true
-            }
-          },
-          repeatExpressions: {}
-        },
-        updatedCalculatedExpressions: { item1: [] },
-        updatedProcessedValueSets: { valueset1: { codings: [] } },
-        updatedFhirPathContext: { var1: 'value1' },
-        fhirPathTerminologyCache: { cache1: 'cached' },
-        computedQRItemUpdates: {}
-      };
-
-      mockEvaluateUpdatedExpressions.mockResolvedValue(mockEvaluationResult);
-
-      await questionnaireStore.getState().updateExpressions(updatedResponse);
-
-      expect(mockEvaluateUpdatedExpressions).toHaveBeenCalled();
-      expect(questionnaireResponseStore.getState().validateResponse).toHaveBeenCalledWith(
-        mockQuestionnaire,
-        updatedResponse
-      );
-
-      const state = questionnaireStore.getState();
-      expect(state.targetConstraints).toBe(mockEvaluationResult.updatedTargetConstraints);
-      expect(state.enableWhenExpressions).toBe(mockEvaluationResult.updatedEnableWhenExpressions);
-      expect(state.fhirPathContext).toBe(mockEvaluationResult.updatedFhirPathContext);
-    });
-
-    it('should apply computed updates when they exist', async () => {
-      const updatedResponse = structuredClone(mockQuestionnaireResponse);
-      const computedUpdates = { item1: { linkId: 'item1', answer: [{ valueString: 'computed' }] } };
-      const appliedResponse = {
-        ...updatedResponse,
-        item: [{ linkId: 'item1', answer: [{ valueString: 'computed' }] }]
-      };
-
-      mockEvaluateUpdatedExpressions.mockResolvedValue({
-        isUpdated: true,
-        updatedTargetConstraints: {},
-        updatedAnswerOptionsToggleExpressions: {},
-        updatedEnableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} },
-        updatedCalculatedExpressions: {},
-        updatedProcessedValueSets: {},
-        updatedFhirPathContext: {},
-        fhirPathTerminologyCache: {},
-        computedQRItemUpdates: computedUpdates
-      });
-
-      mockApplyComputedUpdates.mockReturnValue(appliedResponse);
-
-      await questionnaireStore.getState().updateExpressions(updatedResponse);
-
-      expect(mockApplyComputedUpdates).toHaveBeenCalledWith(
-        mockQuestionnaire,
-        updatedResponse,
-        computedUpdates
-      );
-      expect(questionnaireResponseStore.getState().updateResponse).toHaveBeenCalledWith(
-        appliedResponse,
-        'async'
-      );
-    });
-
-    it('should only update context when expressions are not updated', async () => {
-      const updatedResponse = structuredClone(mockQuestionnaireResponse);
-      const mockEvaluationResult = {
-        isUpdated: false,
-        updatedTargetConstraints: {},
-        updatedAnswerOptionsToggleExpressions: {},
-        updatedEnableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} },
-        updatedCalculatedExpressions: {},
-        updatedProcessedValueSets: {},
-        updatedFhirPathContext: { var1: 'value1' },
-        fhirPathTerminologyCache: { cache1: 'cached' },
-        computedQRItemUpdates: {}
-      };
-
-      mockEvaluateUpdatedExpressions.mockResolvedValue(mockEvaluationResult);
-
-      await questionnaireStore.getState().updateExpressions(updatedResponse);
-
-      expect(questionnaireResponseStore.getState().validateResponse).not.toHaveBeenCalled();
-
-      const state = questionnaireStore.getState();
-      expect(state.fhirPathContext).toBe(mockEvaluationResult.updatedFhirPathContext);
-      expect(state.fhirPathTerminologyCache).toBe(mockEvaluationResult.fhirPathTerminologyCache);
-    });
-  });
-
   describe('addCodingToCache', () => {
     it('should add codings to the cache', () => {
       const valueSetUrl = 'http://example.com/valueset';
@@ -694,25 +554,15 @@ describe('questionnaireStore', () => {
   });
 
   describe('setPopulatedContext', () => {
-    it('should set populated context without adding to fhirPathContext', () => {
-      const newContext = { testVar: 'testValue' };
-
-      questionnaireStore.getState().setPopulatedContext(newContext);
-
-      const state = questionnaireStore.getState();
-      expect(state.populatedContext).toBe(newContext);
-      expect(state.fhirPathContext).toEqual({});
-    });
-
     it('should set populated context and add to fhirPathContext', () => {
       const existingFhirPathContext = { existingVar: 'existingValue' };
       const newContext = { testVar: 'testValue' };
 
       questionnaireStore.setState({ fhirPathContext: existingFhirPathContext });
-      questionnaireStore.getState().setPopulatedContext(newContext, true);
+      questionnaireStore.getState().setAdditionalContext(newContext);
 
       const state = questionnaireStore.getState();
-      expect(state.populatedContext).toBe(newContext);
+      expect(state.additionalContext).toBe(newContext);
       expect(state.fhirPathContext).toEqual({
         existingVar: 'existingValue',
         testVar: 'testValue'

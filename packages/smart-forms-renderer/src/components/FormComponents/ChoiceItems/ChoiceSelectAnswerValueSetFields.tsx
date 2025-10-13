@@ -15,22 +15,22 @@
  * limitations under the License.
  */
 
-import Autocomplete from '@mui/material/Autocomplete';
-import { StandardTextField } from '../Textfield.styles';
-import { StyledAlert } from '../../Alert.styles';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import Autocomplete from '@mui/material/Autocomplete';
 import Typography from '@mui/material/Typography';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
+import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 import type {
   PropsWithIsTabledRequiredAttribute,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
-import type { TerminologyError } from '../../../hooks/useValueSetCodings';
-import { useRendererStylingStore } from '../../../stores';
-import { StyledRequiredTypography } from '../Item.styles';
-import DisplayUnitText from '../ItemParts/DisplayUnitText';
+import { useRendererConfigStore } from '../../../stores';
 import { isCodingDisabled } from '../../../utils/choice';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
+import { StyledAlert } from '../../Alert.styles';
+import { StyledRequiredTypography } from '../Item.styles';
+import DisplayUnitText from '../ItemParts/DisplayUnitText';
+import { StandardTextField } from '../Textfield.styles';
 
 interface ChoiceSelectAnswerValueSetFieldsProps
   extends PropsWithIsTabledRequiredAttribute,
@@ -61,8 +61,8 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
     onSelectChange
   } = props;
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
-  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 

@@ -15,16 +15,16 @@
  * limitations under the License.
  */
 
-import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
 import InputAdornment from '@mui/material/InputAdornment';
-import { StandardTextField } from '../Textfield.styles';
-import { useRendererStylingStore } from '../../../stores';
+import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
+import { useRendererConfigStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import ItemRepopulateButton from '../ItemParts/ItemRepopulateButton';
 import type { RenderingExtensions } from '../../../hooks/useRenderingExtensions';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import { StandardTextField } from '../Textfield.styles';
 
 interface StringFieldProps extends PropsWithIsTabledRequiredAttribute {
   qItem: QuestionnaireItem;
@@ -52,8 +52,8 @@ function StringField(props: StringFieldProps) {
 
   const { displayPrompt, displayUnit, entryFormat, isRepopulatable } = renderingExtensions;
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
-  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
 
   return (
     <StandardTextField

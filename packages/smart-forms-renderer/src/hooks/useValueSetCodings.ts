@@ -18,6 +18,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { Coding, FhirResource, QuestionnaireItem, ValueSet } from 'fhir/r4';
 import {
+  getCodingsForAnswerValueSet,
   getResourceFromLaunchContext,
   getValueSetCodings,
   getValueSetPromise
@@ -56,33 +57,10 @@ function useValueSetCodings(qItem: QuestionnaireItem): {
   const defaultTerminologyServerUrl = useTerminologyServerStore.use.url();
 
   const answerValueSetUrl = qItem.answerValueSet;
-  let initialCodings = useMemo(() => {
-    // set options from cached answer options if present
-    if (answerValueSetUrl) {
-      let valueSetUrl = answerValueSetUrl;
-
-      // answerValueSetUrl is a reference to a contained value set
-      // If found, return early
-      if (valueSetUrl.startsWith('#')) {
-        const valueSetReference = answerValueSetUrl.slice(1);
-        if (cachedValueSetCodings[valueSetReference]) {
-          return cachedValueSetCodings[valueSetReference];
-        }
-      }
-
-      // Get updatableValueSetUrl and use it as the current valueSetUrl
-      if (processedValueSets[valueSetUrl]?.updatableValueSetUrl) {
-        valueSetUrl = processedValueSets[valueSetUrl].updatableValueSetUrl;
-      }
-
-      // attempt to get codings from cached queried value sets
-      if (cachedValueSetCodings[valueSetUrl]) {
-        return cachedValueSetCodings[valueSetUrl];
-      }
-    }
-
-    return [];
-  }, [cachedValueSetCodings, processedValueSets, answerValueSetUrl]);
+  let initialCodings = useMemo(
+    () => getCodingsForAnswerValueSet(answerValueSetUrl, cachedValueSetCodings, processedValueSets),
+    [cachedValueSetCodings, processedValueSets, answerValueSetUrl]
+  );
 
   // Attempt to get codings from answer expression
   const answerExpression = getAnswerExpression(qItem)?.expression;

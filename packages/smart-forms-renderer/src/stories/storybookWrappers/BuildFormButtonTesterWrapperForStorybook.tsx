@@ -47,12 +47,10 @@ function BuildFormButtonTesterWrapperForStorybook(
 
   const queryClient = useRendererQueryClient();
 
-  const isBuilding = useBuildForm(
+  const isBuilding = useBuildForm({
     questionnaire,
-    undefined,
-    undefined,
-    STORYBOOK_TERMINOLOGY_SERVER_URL
-  );
+    terminologyServerUrl: STORYBOOK_TERMINOLOGY_SERVER_URL
+  });
 
   if (isBuilding) {
     return <div>Loading...</div>;

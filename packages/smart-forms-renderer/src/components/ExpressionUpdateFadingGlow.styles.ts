@@ -11,14 +11,14 @@ import { alpha } from '@mui/material/styles';
  *
  * Example usage with a single style object:
  * ```tsx
- * <TextField sx={glowEffect(expressionUpdated)} />
+ * <TextField sx={glowEffect(fadeIn)} />
  * ```
  *
  * Example usage combining with other styles using array syntax:
  * ```tsx
  * <Autocomplete
  *   sx={[
- *     glowEffect(expressionUpdated),
+ *     glowEffect(fadeIn),
  *     {
  *       maxWidth: 300,
  *       minWidth: 160,
@@ -34,7 +34,7 @@ import { alpha } from '@mui/material/styles';
  */
 export const expressionUpdateFadingGlow = (fadeIn: boolean) => (theme: Theme) => ({
   '& .MuiInputBase-root': {
-    transition: 'all .4s',
+    transition: 'all 1s ease',
     ...(fadeIn && {
       boxShadow: `0 0 8px ${alpha(theme.palette.success.main, 0.5)}`,
       backgroundColor: alpha(theme.palette.success.main, 0.05),

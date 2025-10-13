@@ -38,12 +38,11 @@ function BuildFormWrapperForStorybook(props: BuildFormWrapperForStorybookProps) 
   const { questionnaire, questionnaireResponse } = props;
 
   const queryClient = useRendererQueryClient();
-  const isBuilding = useBuildForm(
+  const isBuilding = useBuildForm({
     questionnaire,
     questionnaireResponse,
-    undefined,
-    STORYBOOK_TERMINOLOGY_SERVER_URL
-  );
+    terminologyServerUrl: STORYBOOK_TERMINOLOGY_SERVER_URL
+  });
 
   if (isBuilding) {
     return <div>Loading...</div>;

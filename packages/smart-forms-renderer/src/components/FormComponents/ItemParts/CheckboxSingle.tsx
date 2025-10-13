@@ -18,7 +18,7 @@
 import React from 'react';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { StandardCheckbox } from '../../Checkbox.styles';
-import { useRendererStylingStore } from '../../../stores';
+import { useRendererConfigStore } from '../../../stores';
 
 interface CheckboxSingleProps {
   value: string;
@@ -41,7 +41,7 @@ function CheckboxSingle(props: CheckboxSingleProps) {
     onCheckedChange
   } = props;
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
 
   // When an option is disabled via toggle expression, it should truly be "disabled", regardless of readOnlyVisualStyle.
   // Both isDisabled and isReadOnly are mutually exclusive.

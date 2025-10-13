@@ -15,43 +15,19 @@
  * limitations under the License.
  */
 
-import React from 'react';
-import { ChoiceItemControl } from '../../../interfaces/choice.enum';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import ChoiceRadioAnswerOptionItem from './ChoiceRadioAnswerOptionItem';
-import ChoiceSelectAnswerOptionItem from './ChoiceSelectAnswerOptionItem';
-import ChoiceCheckboxAnswerOptionItem from './ChoiceCheckboxAnswerOptionItem';
-import ChoiceAutocompleteItem from './ChoiceAutocompleteItem';
-import ChoiceSelectAnswerValueSetItem from './ChoiceSelectAnswerValueSetItem';
-import { getChoiceControlType } from '../../../utils/choice';
-import ChoiceRadioAnswerValueSetItem from './ChoiceRadioAnswerValueSetItem';
-import ChoiceCheckboxAnswerValueSetItem from './ChoiceCheckboxAnswerValueSetItem';
-import type {
-  PropsWithFeedbackFromParentAttribute,
-  PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledRequiredAttribute,
-  PropsWithItemPathAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithParentStylesAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithRenderingExtensionsAttribute
-} from '../../../interfaces/renderProps.interface';
 import Typography from '@mui/material/Typography';
+import { ChoiceItemControl } from '../../../interfaces/choice.enum';
+import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
+import { getChoiceControlType } from '../../../utils/choice';
+import ChoiceAutocompleteItem from './ChoiceAutocompleteItem';
+import ChoiceCheckboxAnswerOptionItem from './ChoiceCheckboxAnswerOptionItem';
+import ChoiceCheckboxAnswerValueSetItem from './ChoiceCheckboxAnswerValueSetItem';
+import ChoiceRadioAnswerOptionItem from './ChoiceRadioAnswerOptionItem';
+import ChoiceRadioAnswerValueSetItem from './ChoiceRadioAnswerValueSetItem';
+import ChoiceSelectAnswerOptionItem from './ChoiceSelectAnswerOptionItem';
+import ChoiceSelectAnswerValueSetItem from './ChoiceSelectAnswerValueSetItem';
 
-interface ChoiceItemSwitcherProps
-  extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
-    PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledRequiredAttribute,
-    PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute,
-    PropsWithFeedbackFromParentAttribute,
-    PropsWithParentStylesAttribute {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
-}
-
-function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
+function ChoiceItemSwitcher(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
@@ -61,6 +37,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
+    calcExpUpdated,
     onQrItemChange
   } = props;
 
@@ -79,6 +56,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
+            calcExpUpdated={calcExpUpdated}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -89,10 +67,11 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
             qrItem={qrItem}
             itemPath={itemPath}
             isRepeated={isRepeated}
+            isTabled={isTabled}
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
-            isTabled={isTabled}
+            calcExpUpdated={calcExpUpdated}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -105,10 +84,11 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
             qrItem={qrItem}
             itemPath={itemPath}
             isRepeated={qItem.repeats ?? false}
+            isTabled={isTabled}
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
-            isTabled={isTabled}
+            calcExpUpdated={calcExpUpdated}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -119,10 +99,11 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
             qrItem={qrItem}
             itemPath={itemPath}
             isRepeated={qItem.repeats ?? false}
+            isTabled={isTabled}
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
-            isTabled={isTabled}
+            calcExpUpdated={calcExpUpdated}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -138,6 +119,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
+          calcExpUpdated={calcExpUpdated}
           onQrItemChange={onQrItemChange}
         />
       );
@@ -153,6 +135,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
+            calcExpUpdated={calcExpUpdated}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -167,6 +150,7 @@ function ChoiceItemSwitcher(props: ChoiceItemSwitcherProps) {
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
+            calcExpUpdated={calcExpUpdated}
             onQrItemChange={onQrItemChange}
           />
         );

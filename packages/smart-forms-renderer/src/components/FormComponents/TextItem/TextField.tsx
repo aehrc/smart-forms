@@ -18,7 +18,7 @@
 import InputAdornment from '@mui/material/InputAdornment';
 import MuiTextField from './MuiTextField';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
-import { useRendererStylingStore } from '../../../stores';
+import { useRendererConfigStore } from '../../../stores';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type { RenderingExtensions } from '../../../hooks/useRenderingExtensions';
@@ -49,7 +49,7 @@ function TextField(props: TextFieldProps) {
 
   const { displayPrompt, displayUnit, entryFormat, isRepopulatable } = renderingExtensions;
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
 
   return (
     <MuiTextField

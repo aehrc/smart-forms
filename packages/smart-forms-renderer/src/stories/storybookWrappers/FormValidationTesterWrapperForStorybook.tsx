@@ -36,12 +36,11 @@ function FormValidationTesterWrapperForStorybook(
 ) {
   const { questionnaire, questionnaireResponse } = props;
 
-  const isBuilding = useBuildForm(
+  const isBuilding = useBuildForm({
     questionnaire,
     questionnaireResponse,
-    undefined,
-    STORYBOOK_TERMINOLOGY_SERVER_URL
-  );
+    terminologyServerUrl: STORYBOOK_TERMINOLOGY_SERVER_URL
+  });
 
   const queryClient = useRendererQueryClient();
 

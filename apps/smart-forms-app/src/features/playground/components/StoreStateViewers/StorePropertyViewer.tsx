@@ -8,20 +8,20 @@ import type { ReactNode } from 'react';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 
-interface GenericViewerProps {
-  propertyName: string;
-  propertyObject: any;
+interface StorePropertyViewerProps {
+  selectedPropKey: string;
+  selectedPropVal: any;
   viewMode: 'text' | 'jsonTree' | 'table';
   onViewModeChange: (newViewMode: 'text' | 'jsonTree' | 'table') => void;
   showTableView?: boolean; // Only for ExtractDebuggerViewer "templateExtractDebugInfo" property
   children?: ReactNode;
 }
 
-function GenericViewer(props: GenericViewerProps) {
-  const { propertyName, propertyObject, viewMode, onViewModeChange, showTableView, children } =
+function StorePropertyViewer(props: StorePropertyViewerProps) {
+  const { selectedPropKey, selectedPropVal, viewMode, onViewModeChange, showTableView, children } =
     props;
 
-  if (propertyName === null) {
+  if (selectedPropKey === null) {
     return (
       <Typography variant="h5" px={0.5}>
         No property selected
@@ -44,7 +44,7 @@ function GenericViewer(props: GenericViewerProps) {
           borderColor: 'divider'
         }}>
         <Stack direction="row" alignItems="center">
-          <Typography variant="h5">{propertyName}</Typography>
+          <Typography variant="h5">{selectedPropKey}</Typography>
           <ToggleButtonGroup
             size="small"
             color="primary"
@@ -72,8 +72,8 @@ function GenericViewer(props: GenericViewerProps) {
               size="small"
               onClick={() => {
                 navigator.clipboard
-                  .writeText(JSON.stringify(propertyObject, null, 2))
-                  .then(() => alert(`${propertyName} copied to clipboard`))
+                  .writeText(JSON.stringify(selectedPropVal, null, 2))
+                  .then(() => alert(`${selectedPropKey} copied to clipboard`))
                   .catch(() =>
                     alert(
                       'The copy operation doesnt work within an iframe (CMS-launched app in this case)\n:('
@@ -97,11 +97,11 @@ function GenericViewer(props: GenericViewerProps) {
             ? 'Table view is good for a visual view of contexts and values within a template. Only available for "templateExtractDebugInfo".  '
             : null}
         </Typography>
-        <DebugResponseView displayObject={propertyObject} viewMode={viewMode} />
+        <DebugResponseView displayObject={selectedPropVal} viewMode={viewMode} />
         {children}
       </Box>
     </Stack>
   );
 }
 
-export default GenericViewer;
+export default StorePropertyViewer;

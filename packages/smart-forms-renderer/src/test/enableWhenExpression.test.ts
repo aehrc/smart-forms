@@ -15,16 +15,15 @@
  * limitations under the License.
  */
 
-import { describe, expect, test, jest } from '@jest/globals';
+import { describe, expect, jest } from '@jest/globals';
 import {
-  evaluateInitialEnableWhenExpressions,
+  evaluateEnableWhenExpressions,
   evaluateEnableWhenRepeatExpressionInstance,
-  evaluateEnableWhenExpressions
+  evaluateInitialEnableWhenExpressions
 } from '../utils/enableWhenExpression';
 // import type { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
   EnableWhenExpressions,
-  // EnableWhenSingleExpression,
   EnableWhenRepeatExpression
 } from '../interfaces/enableWhen.interface';
 // import type { Variables } from '../interfaces';
@@ -562,7 +561,7 @@ describe('enableWhenExpression utils', () => {
         'http://terminology.example.com'
       );
 
-      expect(result.enableWhenExpsIsUpdated).toBe(true);
+      expect(result.isUpdated).toBe(true);
       expect(result.updatedEnableWhenExpressions.singleExpressions['single-item'].isEnabled).toBe(
         false
       );
@@ -602,7 +601,7 @@ describe('enableWhenExpression utils', () => {
         'http://terminology.example.com'
       );
 
-      expect(result.enableWhenExpsIsUpdated).toBe(false);
+      expect(result.isUpdated).toBe(false);
     });
 
     it('should handle empty enableWhen expressions', async () => {
@@ -618,7 +617,7 @@ describe('enableWhenExpression utils', () => {
         'http://terminology.example.com'
       );
 
-      expect(result.enableWhenExpsIsUpdated).toBe(false);
+      expect(result.isUpdated).toBe(false);
       expect(result.updatedEnableWhenExpressions).toEqual(enableWhenExpressions);
     });
 
@@ -648,7 +647,7 @@ describe('enableWhenExpression utils', () => {
       );
 
       expect(evaluateSpy).not.toHaveBeenCalled();
-      expect(result.enableWhenExpsIsUpdated).toBe(false);
+      expect(result.isUpdated).toBe(false);
     });
 
     it('should handle multiple single expressions', async () => {
@@ -683,7 +682,7 @@ describe('enableWhenExpression utils', () => {
         'http://terminology.example.com'
       );
 
-      expect(result.enableWhenExpsIsUpdated).toBe(true);
+      expect(result.isUpdated).toBe(true);
       expect(result.updatedEnableWhenExpressions.singleExpressions['item-1'].isEnabled).toBe(false);
       expect(result.updatedEnableWhenExpressions.singleExpressions['item-2'].isEnabled).toBe(true);
       expect(result.updatedEnableWhenExpressions.singleExpressions['item-3'].isEnabled).toBe(false);
@@ -723,7 +722,7 @@ describe('enableWhenExpression utils', () => {
         'http://terminology.example.com'
       );
 
-      expect(result.enableWhenExpsIsUpdated).toBe(true);
+      expect(result.isUpdated).toBe(true);
       expect(
         result.updatedEnableWhenExpressions.repeatExpressions['repeat-item-1'].enabledIndexes
       ).toEqual([true, false]);

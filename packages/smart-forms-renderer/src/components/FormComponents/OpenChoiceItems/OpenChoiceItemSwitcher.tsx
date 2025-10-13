@@ -15,42 +15,18 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import { OpenChoiceItemControl } from '../../../interfaces/choice.enum';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
+import { getOpenChoiceControlType } from '../../../utils/openChoice';
+import OpenChoiceAutocompleteItem from './OpenChoiceAutocompleteItem';
+import OpenChoiceCheckboxAnswerOptionItem from './OpenChoiceCheckboxAnswerOptionItem';
+import OpenChoiceCheckboxAnswerValueSetItem from './OpenChoiceCheckboxAnswerValueSetItem';
+import OpenChoiceRadioAnswerOptionItem from './OpenChoiceRadioAnswerOptionItem';
+import OpenChoiceRadioAnswerValueSetItem from './OpenChoiceRadioAnswerValueSetItem';
 import OpenChoiceSelectAnswerOptionItem from './OpenChoiceSelectAnswerOptionItem';
 import OpenChoiceSelectAnswerValueSetItem from './OpenChoiceSelectAnswerValueSetItem';
-import OpenChoiceAutocompleteItem from './OpenChoiceAutocompleteItem';
-import { getOpenChoiceControlType } from '../../../utils/openChoice';
-import OpenChoiceCheckboxAnswerOptionItem from './OpenChoiceCheckboxAnswerOptionItem';
-import OpenChoiceRadioAnswerOptionItem from './OpenChoiceRadioAnswerOptionItem';
-import type {
-  PropsWithFeedbackFromParentAttribute,
-  PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledRequiredAttribute,
-  PropsWithItemPathAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithParentStylesAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithRenderingExtensionsAttribute
-} from '../../../interfaces/renderProps.interface';
-import OpenChoiceCheckboxAnswerValueSetItem from './OpenChoiceCheckboxAnswerValueSetItem';
-import OpenChoiceRadioAnswerValueSetItem from './OpenChoiceRadioAnswerValueSetItem';
 
-interface OpenChoiceItemSwitcherProps
-  extends PropsWithQrItemChangeHandler,
-    PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledRequiredAttribute,
-    PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute,
-    PropsWithFeedbackFromParentAttribute,
-    PropsWithParentStylesAttribute,
-    PropsWithItemPathAttribute {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
-}
-
-function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
+function OpenChoiceItemSwitcher(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
@@ -60,6 +36,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
+    calcExpUpdated,
     onQrItemChange
   } = props;
 
@@ -71,11 +48,12 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
             qItem={qItem}
             qrItem={qrItem}
             itemPath={itemPath}
-            isRepeated={qItem['repeats'] ?? false}
+            isRepeated={qItem.repeats ?? false}
+            isTabled={isTabled}
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
-            isTabled={isTabled}
+            calcExpUpdated={calcExpUpdated}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -85,11 +63,12 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
             qItem={qItem}
             qrItem={qrItem}
             itemPath={itemPath}
-            isRepeated={qItem['repeats'] ?? false}
+            isRepeated={qItem.repeats ?? false}
+            isTabled={isTabled}
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
-            isTabled={isTabled}
+            calcExpUpdated={calcExpUpdated}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -101,11 +80,12 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
             qItem={qItem}
             qrItem={qrItem}
             itemPath={itemPath}
-            isRepeated={qItem['repeats'] ?? false}
+            isRepeated={qItem.repeats ?? false}
+            isTabled={isTabled}
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
-            isTabled={isTabled}
+            calcExpUpdated={calcExpUpdated}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -115,11 +95,12 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
             qItem={qItem}
             qrItem={qrItem}
             itemPath={itemPath}
-            isRepeated={qItem['repeats'] ?? false}
+            isRepeated={qItem.repeats ?? false}
+            isTabled={isTabled}
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
-            isTabled={isTabled}
+            calcExpUpdated={calcExpUpdated}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -135,6 +116,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
           renderingExtensions={renderingExtensions}
           parentIsReadOnly={parentIsReadOnly}
           feedbackFromParent={feedbackFromParent}
+          calcExpUpdated={calcExpUpdated}
           onQrItemChange={onQrItemChange}
         />
       );
@@ -150,6 +132,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
+            calcExpUpdated={calcExpUpdated}
             onQrItemChange={onQrItemChange}
           />
         );
@@ -164,6 +147,7 @@ function OpenChoiceItemSwitcher(props: OpenChoiceItemSwitcherProps) {
             renderingExtensions={renderingExtensions}
             parentIsReadOnly={parentIsReadOnly}
             feedbackFromParent={feedbackFromParent}
+            calcExpUpdated={calcExpUpdated}
             onQrItemChange={onQrItemChange}
           />
         );

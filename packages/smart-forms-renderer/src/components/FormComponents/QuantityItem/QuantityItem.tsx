@@ -16,18 +16,16 @@
  */
 
 import { useCallback, useMemo, useState } from 'react';
-import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import type { Quantity, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import { FullWidthFormComponentBox } from '../../Box.styles';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import debounce from 'lodash.debounce';
-import { DEBOUNCE_DURATION } from '../../../utils/debounce';
-import { createEmptyQrItem } from '../../../utils/qrItem';
-import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
-import { parseDecimalStringWithPrecision } from '../../../utils/parseInputs';
-import { getDecimalPrecision } from '../../../utils/extensions';
 import useReadOnly from '../../../hooks/useReadOnly';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
+import { DEBOUNCE_DURATION } from '../../../utils/debounce';
+import { getDecimalPrecision } from '../../../utils/extensions';
+import { parseDecimalStringWithPrecision } from '../../../utils/parseInputs';
+import { createEmptyQrItem } from '../../../utils/qrItem';
 import Box from '@mui/material/Box';
 import QuantityField from './QuantityField';
 import {
@@ -35,21 +33,22 @@ import {
   quantityComparators,
   stringIsComparator
 } from '../../../utils/quantity';
-import QuantityComparatorField from './QuantityComparatorField';
-import useQuantityCalculatedExpression from '../../../hooks/useQuantityCalculatedExpression';
+import { FullWidthFormComponentBox } from '../../Box.styles';
+import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
 import QuantityUnitField from './QuantityUnitField';
+import QuantityComparatorField from './QuantityComparatorField';
 
 function QuantityItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
-    itemPath,
     isRepeated,
     isTabled,
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
+    calcExpUpdated,
     onQrItemChange
   } = props;
 
@@ -114,70 +113,6 @@ function QuantityItem(props: BaseItemProps) {
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
-
-  // Process calculated expressions
-  const { calcExpUpdated } = useQuantityCalculatedExpression({
-    qItem: qItem,
-    inputValue: valueInput,
-    precision: precision,
-    onChangeByCalcExpressionDecimal: (newValueDecimal: number) => {
-      setValueInput(
-        typeof precision === 'number'
-          ? newValueDecimal.toFixed(precision)
-          : newValueDecimal.toString()
-      );
-      onQrItemChange(
-        {
-          ...createEmptyQrItem(qItem, answerKey),
-          answer: [
-            {
-              id: answerKey,
-              valueQuantity: {
-                value: newValueDecimal,
-                unit: unitInput?.valueCoding?.display,
-                system: unitInput?.valueCoding?.system,
-                code: unitInput?.valueCoding?.code
-              }
-            }
-          ]
-        },
-        itemPath
-      );
-    },
-    onChangeByCalcExpressionQuantity: (
-      newValueDecimal: number,
-      newUnitSystem,
-      newUnitCode,
-      newUnitDisplay
-    ) => {
-      setValueInput(
-        typeof precision === 'number'
-          ? newValueDecimal.toFixed(precision)
-          : newValueDecimal.toString()
-      );
-      onQrItemChange(
-        {
-          ...createEmptyQrItem(qItem, answerKey),
-          answer: [
-            {
-              id: answerKey,
-              valueQuantity: {
-                value: newValueDecimal,
-                unit: newUnitDisplay,
-                system: newUnitSystem,
-                code: newUnitCode
-              }
-            }
-          ]
-        },
-        itemPath
-      );
-    },
-    onChangeByCalcExpressionNull: () => {
-      setValueInput('');
-      onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
-    }
-  });
 
   // Event handlers
   function handleComparatorInputChange(newComparatorInput: Quantity['comparator'] | null) {

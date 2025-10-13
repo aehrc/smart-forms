@@ -291,7 +291,7 @@ export async function evaluateEnableWhenExpressions(
   enableWhenExpressions: EnableWhenExpressions,
   terminologyServerUrl: string
 ): Promise<{
-  enableWhenExpsIsUpdated: boolean;
+  isUpdated: boolean;
   updatedEnableWhenExpressions: EnableWhenExpressions;
 }> {
   const updatedEnableWhenExpressions: EnableWhenExpressions = {
@@ -315,7 +315,7 @@ export async function evaluateEnableWhenExpressions(
     updatedEnableWhenSingleExpressions.isUpdated || updatedEnableWhenRepeatExpressions.isUpdated;
 
   return {
-    enableWhenExpsIsUpdated: isUpdated,
+    isUpdated: isUpdated,
     updatedEnableWhenExpressions: {
       singleExpressions: updatedEnableWhenSingleExpressions.updatedExpressions,
       repeatExpressions: updatedEnableWhenRepeatExpressions.updatedExpressions

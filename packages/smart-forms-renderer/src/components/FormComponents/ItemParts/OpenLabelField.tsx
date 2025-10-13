@@ -1,6 +1,6 @@
 import React, { type ChangeEvent } from 'react';
 import { StandardTextField } from '../Textfield.styles';
-import { useRendererStylingStore } from '../../../stores';
+import { useRendererConfigStore } from '../../../stores';
 import InputAdornment from '@mui/material/InputAdornment';
 import { ClearButtonAdornment } from './ClearButtonAdornment';
 
@@ -15,8 +15,8 @@ interface OpenLabelFieldProps {
 function OpenLabelField(props: OpenLabelFieldProps) {
   const { value, readOnly, openLabelOptionSelected, label, onInputChange } = props;
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
-  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
 
   const fieldReadOnly = !openLabelOptionSelected || readOnly;
 

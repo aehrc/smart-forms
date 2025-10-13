@@ -22,7 +22,7 @@ import { CircularProgress, IconButton, Stack, Typography } from '@mui/material';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import useSmartClient from '../../../../../../hooks/useSmartClient.ts';
 import useSelectedQuestionnaire from '../../../../hooks/useSelectedQuestionnaire.ts';
-import { buildFormWrapper } from '../../../../../../utils/manageForm.ts';
+import { resetAndBuildForm } from '../../../../../../utils/manageForm.ts';
 import { ConfigContext } from '../../../../../configChecker/contexts/ConfigContext.tsx';
 
 function CreateNewResponseButton() {
@@ -47,7 +47,8 @@ function CreateNewResponseButton() {
       postQuestionnaireToSMARTHealthIT(smartClient, questionnaire);
     }
 
-    await buildFormWrapper(questionnaire, undefined, undefined, config.terminologyServerUrl);
+    // Before building the form, reset any existing form state
+    await resetAndBuildForm({ questionnaire, terminologyServerUrl: config.terminologyServerUrl });
 
     navigate('/renderer');
     setIsLoading(false);

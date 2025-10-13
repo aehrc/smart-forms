@@ -32,7 +32,7 @@ import TableContainer from '@mui/material/TableContainer';
 import { mapQItemsIndex } from '../../../utils/mapItem';
 import GridTable from './GridTable';
 import useReadOnly from '../../../hooks/useReadOnly';
-import { useQuestionnaireStore, useRendererStylingStore } from '../../../stores';
+import { useQuestionnaireStore, useRendererConfigStore } from '../../../stores';
 import GroupHeading from '../GroupItem/GroupHeading';
 import type { ItemPath } from '../../../interfaces/itemPath.interface';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
@@ -72,7 +72,7 @@ function GridGroup(props: GridGroupProps) {
   const enableWhenIsActivated = useQuestionnaireStore.use.enableWhenIsActivated();
   const enableWhenItems = useQuestionnaireStore.use.enableWhenItems();
   const enableWhenExpressions = useQuestionnaireStore.use.enableWhenExpressions();
-  const enableWhenAsReadOnly = useRendererStylingStore.use.enableWhenAsReadOnly();
+  const enableWhenAsReadOnly = useRendererConfigStore.use.enableWhenAsReadOnly();
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 

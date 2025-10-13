@@ -15,33 +15,32 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useState } from 'react';
-import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import debounce from 'lodash.debounce';
-import { createEmptyQrItem } from '../../../utils/qrItem';
-import { DEBOUNCE_DURATION } from '../../../utils/debounce';
-import { FullWidthFormComponentBox } from '../../Box.styles';
-import IntegerField from './IntegerField';
-import useIntegerCalculatedExpression from '../../../hooks/useIntegerCalculatedExpression';
-import { parseIntegerString } from '../../../utils/parseInputs';
-import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import { useCallback, useState } from 'react';
 import useReadOnly from '../../../hooks/useReadOnly';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
+import { DEBOUNCE_DURATION } from '../../../utils/debounce';
+import { parseIntegerString } from '../../../utils/parseInputs';
+import { createEmptyQrItem } from '../../../utils/qrItem';
+import { FullWidthFormComponentBox } from '../../Box.styles';
+import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
 import { readIntegerValue } from '../../../utils/readValues';
 import type { QuestionnaireResponseItem } from 'fhir/r4';
+import IntegerField from './IntegerField';
 
 function IntegerItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
-    itemPath,
     isRepeated,
     isTabled,
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
+    calcExpUpdated,
     onQrItemChange
   } = props;
 
@@ -58,26 +57,6 @@ function IntegerItem(props: BaseItemProps) {
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
-  // Process calculated expressions
-  const { calcExpUpdated } = useIntegerCalculatedExpression({
-    qItem: qItem,
-    inputValue: input,
-    onChangeByCalcExpressionInteger: (newValueInteger: number) => {
-      setInput(newValueInteger.toString());
-      onQrItemChange(
-        {
-          ...createEmptyQrItem(qItem, answerKey),
-          answer: [{ id: answerKey, valueInteger: newValueInteger }]
-        },
-        itemPath
-      );
-    },
-    onChangeByCalcExpressionNull: () => {
-      setInput('');
-      onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
-    }
-  });
-
   // Event handlers
   function handleInputChange(newInput: string) {
     const parsedNewInput = parseIntegerString(newInput);
@@ -92,19 +71,16 @@ function IntegerItem(props: BaseItemProps) {
       const { valueInteger: newValueInteger, initialInput: newInput } = readIntegerValue(newQrItem);
 
       setInput(newInput);
-      onQrItemChange(
-        {
-          ...createEmptyQrItem(qItem, answerKey),
-          answer: [{ id: answerKey, valueInteger: newValueInteger }]
-        },
-        itemPath
-      );
+      onQrItemChange({
+        ...createEmptyQrItem(qItem, answerKey),
+        answer: [{ id: answerKey, valueInteger: newValueInteger }]
+      });
       return;
     }
 
     // At this point newQrItem is null, so create a QRItem to replace it
     setInput('');
-    onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
+    onQrItemChange(createEmptyQrItem(qItem, answerKey));
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
