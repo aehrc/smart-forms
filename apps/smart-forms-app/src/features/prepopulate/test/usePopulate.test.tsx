@@ -29,6 +29,7 @@ import type {
   Questionnaire,
   QuestionnaireResponse
 } from 'fhir/r4';
+import { buildForm } from '@aehrc/smart-forms-renderer';
 
 // Mock external dependencies
 jest.mock('notistack');
@@ -53,8 +54,7 @@ const mockTerminologyUrl = jest.fn();
 jest.mock('@aehrc/smart-forms-renderer', () => ({
   useQuestionnaireStore: {
     use: {
-      sourceQuestionnaire: () => mockSourceQuestionnaire(),
-      setAdditionalContext: () => mockSetAdditionalContext
+      sourceQuestionnaire: () => mockSourceQuestionnaire()
     }
   },
   useQuestionnaireResponseStore: {
@@ -67,16 +67,17 @@ jest.mock('@aehrc/smart-forms-renderer', () => ({
     use: {
       url: () => mockTerminologyUrl()
     }
-  }
+  },
+  buildForm: jest.fn(() => Promise.resolve())
 }));
 
 // Create typed mocks
 const mockEnqueueSnackbar = jest.fn();
-const mockSetAdditionalContext = jest.fn();
 const mockPopulateQuestionnaire = populateQuestionnaire as jest.MockedFunction<
   typeof populateQuestionnaire
 >;
 const mockUseSmartClient = useSmartClient as jest.MockedFunction<typeof useSmartClient>;
+const mockBuildForm = buildForm as jest.MockedFunction<typeof buildForm>;
 
 // Setup mocks
 (useSnackbar as jest.Mock).mockReturnValue({
@@ -359,7 +360,12 @@ describe('usePopulate', () => {
       // Wait for async operations
       await new Promise((resolve) => setTimeout(resolve, 10));
 
-      expect(mockSetAdditionalContext).toHaveBeenCalledWith(populatedContext);
+      expect(mockBuildForm).toHaveBeenCalledWith({
+        questionnaire: mockQuestionnaire,
+        questionnaireResponse: mockResponse,
+        terminologyServerUrl: 'https://test-terminology-server.com',
+        additionalContext: populatedContext
+      });
       expect(mockOnStopSpinner).toHaveBeenCalled();
       expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Form populated', {
         preventDuplicate: true,
@@ -395,6 +401,12 @@ describe('usePopulate', () => {
       // Wait for async operations
       await new Promise((resolve) => setTimeout(resolve, 10));
 
+      expect(mockBuildForm).toHaveBeenCalledWith({
+        questionnaire: mockQuestionnaire,
+        questionnaireResponse: mockResponse,
+        terminologyServerUrl: 'https://test-terminology-server.com',
+        additionalContext: undefined
+      });
       expect(mockOnStopSpinner).toHaveBeenCalled();
       expect(mockEnqueueSnackbar).toHaveBeenCalledWith(
         'Form partially populated, there might be pre-population issues. View console for details.',
@@ -403,28 +415,6 @@ describe('usePopulate', () => {
       expect(consoleSpy).toHaveBeenCalledWith(issues);
 
       consoleSpy.mockRestore();
-    });
-
-    it('should handle successful population without populated context', async () => {
-      const spinner = createSpinner(true, 'prepopulate');
-
-      mockPopulateQuestionnaire.mockResolvedValue({
-        populateSuccess: true,
-        populateResult: {
-          populatedResponse: mockResponse
-        }
-      });
-
-      renderHook(() => usePopulate(spinner, mockOnStopSpinner));
-
-      // Wait for async operations
-      await new Promise((resolve) => setTimeout(resolve, 10));
-
-      expect(mockSetAdditionalContext).not.toHaveBeenCalled();
-      expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Form populated', {
-        preventDuplicate: true,
-        action: expect.anything()
-      });
     });
   });
 
