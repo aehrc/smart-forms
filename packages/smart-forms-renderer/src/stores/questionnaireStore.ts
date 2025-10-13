@@ -53,6 +53,8 @@ import { questionnaireResponseStore } from './questionnaireResponseStore';
 import { createSelectors } from './selector';
 import { terminologyServerStore } from './terminologyServerStore';
 import { createQuestionnaireModel } from '../utils/questionnaireStoreUtils/createQuestionnaireModel';
+import { getFirstVisibleTab } from '../utils/tabs';
+import { getFirstVisiblePage } from '../utils/page';
 
 /**
  * QuestionnaireStore properties and methods
@@ -93,6 +95,8 @@ import { createQuestionnaireModel } from '../utils/questionnaireStoreUtils/creat
  * @property switchPage - Used to switch the current page index
  * @property markTabAsComplete - Used to mark a tab index as complete
  * @property markPageAsComplete - Used to mark a page index as complete
+ * @property resetToFirstVisibleTab - Used to reset the current tab to the first visible tab
+ * @property resetToFirstVisiblePage - Used to reset the current page to the first visible page
  * @property updateEnableWhenItem - Used to update linked enableWhen items by updating a question with a new answer
  * @property mutateRepeatEnableWhenItems - Used to add or remove instances of repeating enableWhen items
  * @property toggleEnableWhenActivation - Used to toggle enableWhen checks on/off
@@ -147,6 +151,8 @@ export interface QuestionnaireStoreType {
   switchPage: (newPageIndex: number) => void;
   markTabAsComplete: (tabLinkId: string) => void;
   markPageAsComplete: (pageLinkId: string) => void;
+  resetToFirstVisibleTab: () => void;
+  resetToFirstVisiblePage: () => void;
   updateEnableWhenItem: (
     linkId: string,
     newAnswer: QuestionnaireResponseItemAnswer[] | undefined,
@@ -340,6 +346,27 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
         [pageLinkId]: { ...pages[pageLinkId], isComplete: !pages[pageLinkId].isComplete }
       }
     }));
+  },
+  resetToFirstVisibleTab: () => {
+    const tabs = get().tabs;
+    const enableWhenItems = get().enableWhenItems;
+    const enableWhenExpressions = get().enableWhenExpressions;
+    const firstVisibleTab =
+      Object.keys(tabs).length > 0
+        ? getFirstVisibleTab(tabs, enableWhenItems, enableWhenExpressions)
+        : 0;
+
+    set(() => ({ currentTabIndex: firstVisibleTab }));
+  },
+  resetToFirstVisiblePage: () => {
+    const pages = get().pages;
+    const enableWhenItems = get().enableWhenItems;
+    const enableWhenExpressions = get().enableWhenExpressions;
+    const firstVisiblePage =
+      Object.keys(pages).length > 0
+        ? getFirstVisiblePage(pages, enableWhenItems, enableWhenExpressions)
+        : 0;
+    set(() => ({ currentPageIndex: firstVisiblePage }));
   },
   updateEnableWhenItem: (
     linkId: string,
