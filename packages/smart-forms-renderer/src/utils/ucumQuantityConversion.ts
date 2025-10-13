@@ -186,8 +186,8 @@ export async function parseAndConvertUcumQuantities(
   } catch (e) {
     // e is not thrown as an Error type in fhirpath.js, so we can't use `if (e instanceof Error)` here
     console.warn(
-      `UCUM Quantity conversion error: fhirpath evaluation for calculatedExpression failed. Details below:` +
-        e
+      'UCUM Quantity conversion error: fhirpath evaluation for calculatedExpression failed. Details below:',
+      e
     );
   }
 
