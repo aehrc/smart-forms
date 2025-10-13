@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@aehrc/smart-forms-renderer": "^1.0.0-alpha.50",
-    "@docusaurus/core": "^3.8.1",
+    "@docusaurus/core": "^3.9.1",
     "@docusaurus/plugin-content-docs": "^3.8.1",
     "@docusaurus/preset-classic": "^3.8.1",
     "@docusaurus/theme-live-codeblock": "^3.8.1",
