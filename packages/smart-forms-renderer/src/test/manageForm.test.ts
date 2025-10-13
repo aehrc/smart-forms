@@ -53,6 +53,9 @@ jest.mock('../stores', () => ({
     getState: jest.fn(() => ({
       destroySourceQuestionnaire: jest.fn(),
       buildSourceQuestionnaire: jest.fn(),
+      updateExpressions: jest.fn(),
+      resetToFirstVisibleTab: jest.fn(),
+      resetToFirstVisiblePage: jest.fn(),
       setFormAsReadOnly: jest.fn(),
       sourceQuestionnaire: {
         resourceType: 'Questionnaire',
@@ -182,7 +185,10 @@ describe('manageForm utils', () => {
       const mockResetUrl = jest.fn();
 
       mockQuestionnaireStore.getState.mockReturnValue({
-        buildSourceQuestionnaire: mockBuildSourceQuestionnaire
+        buildSourceQuestionnaire: mockBuildSourceQuestionnaire,
+        updateExpressions: jest.fn(),
+        resetToFirstVisibleTab: jest.fn(),
+        resetToFirstVisiblePage: jest.fn()
       } as any);
 
       mockQuestionnaireResponseStore.getState.mockReturnValue({
@@ -226,7 +232,10 @@ describe('manageForm utils', () => {
       const sdcUiOverrideComponents = { text: jest.fn() };
 
       mockQuestionnaireStore.getState.mockReturnValue({
-        buildSourceQuestionnaire: mockBuildSourceQuestionnaire
+        buildSourceQuestionnaire: mockBuildSourceQuestionnaire,
+        updateExpressions: jest.fn(),
+        resetToFirstVisibleTab: jest.fn(),
+        resetToFirstVisiblePage: jest.fn()
       } as any);
 
       mockQuestionnaireResponseStore.getState.mockReturnValue({
@@ -271,7 +280,10 @@ describe('manageForm utils', () => {
       } as any);
 
       mockQuestionnaireStore.getState.mockReturnValue({
-        buildSourceQuestionnaire: jest.fn()
+        buildSourceQuestionnaire: jest.fn(),
+        updateExpressions: jest.fn(),
+        resetToFirstVisibleTab: jest.fn(),
+        resetToFirstVisiblePage: jest.fn()
       } as any);
 
       mockQuestionnaireResponseStore.getState.mockReturnValue({
