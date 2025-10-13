@@ -8,7 +8,8 @@
     "dev": "vite",
     "start": "vite",
     "build": "tsc && CI=false vite build",
-    "test": "TZ=Australia/Sydney vitest run",
+    "test": "TZ=Australia/Sydney jest --config ./jest.config.ts --coverage",
+    "test-ques": "TZ=Australia/Sydney vitest run src/test/questionnaireRenderer.test.tsx",
     "preview": "vite preview --port 4173",
     "playwright": "npx playwright test",
     "playwright-ui": "npx playwright test --ui"
