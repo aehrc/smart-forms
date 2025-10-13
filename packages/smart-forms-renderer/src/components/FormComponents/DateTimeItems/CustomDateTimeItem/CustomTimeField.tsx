@@ -21,12 +21,12 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
 import type { ChangeEvent } from 'react';
-import type { PropsWithIsTabledRequiredAttribute } from '../../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledAttribute } from '../../../../interfaces/renderProps.interface';
 import { useRendererConfigStore } from '../../../../stores';
 import FormControl from '@mui/material/FormControl';
 import MuiTextField from '../../TextItem/MuiTextField';
 
-interface CustomTimeFieldProps extends PropsWithIsTabledRequiredAttribute {
+interface CustomTimeFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
   itemType: string;
   timeInput: string;

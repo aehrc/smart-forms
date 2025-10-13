@@ -17,11 +17,11 @@
 
 import Stack from '@mui/material/Stack';
 import type { Dispatch, SetStateAction } from 'react';
-import type { PropsWithIsTabledRequiredAttribute } from '../../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledAttribute } from '../../../../interfaces/renderProps.interface';
 import CustomDateField from '../CustomDateItem/CustomDateField';
 import CustomTimeField from './CustomTimeField';
 
-interface DateTimeFieldProps extends PropsWithIsTabledRequiredAttribute {
+interface DateTimeFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
   itemType: string;
   itemText: string | undefined;

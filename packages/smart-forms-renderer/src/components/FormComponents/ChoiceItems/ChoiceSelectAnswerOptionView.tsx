@@ -19,7 +19,7 @@ import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { useMemo } from 'react';
 import type {
   PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledRequiredAttribute,
+  PropsWithIsTabledAttribute,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import { findInAnswerOptions } from '../../../utils/choice';
@@ -30,7 +30,7 @@ import ChoiceSelectAnswerOptionFields from './ChoiceSelectAnswerOptionFields';
 
 interface ChoiceSelectAnswerOptionViewProps
   extends PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledRequiredAttribute,
+    PropsWithIsTabledAttribute,
     PropsWithRenderingExtensionsAttribute {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];

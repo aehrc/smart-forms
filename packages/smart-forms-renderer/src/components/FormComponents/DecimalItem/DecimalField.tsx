@@ -16,7 +16,7 @@
  */
 
 import InputAdornment from '@mui/material/InputAdornment';
-import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import { useRendererConfigStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
@@ -26,7 +26,7 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type { RenderingExtensions } from '../../../hooks/useRenderingExtensions';
 import { StandardTextField } from '../Textfield.styles';
 
-interface DecimalFieldProps extends PropsWithIsTabledRequiredAttribute {
+interface DecimalFieldProps extends PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   input: string;
   feedback: string;

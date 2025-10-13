@@ -19,13 +19,13 @@ import type { ChangeEvent, Dispatch, SetStateAction } from 'react';
 import { useRef } from 'react';
 import type { Dayjs } from 'dayjs';
 import InputAdornment from '@mui/material/InputAdornment';
-import type { PropsWithIsTabledRequiredAttribute } from '../../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledAttribute } from '../../../../interfaces/renderProps.interface';
 import { StandardTextField } from '../../Textfield.styles';
 import DatePicker from './DatePicker';
 import { useRendererConfigStore } from '../../../../stores';
 import ExpressionUpdateFadingIcon from '../../ItemParts/ExpressionUpdateFadingIcon';
 
-interface CustomDateFieldProps extends PropsWithIsTabledRequiredAttribute {
+interface CustomDateFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
   itemType: string;
   itemText: string | undefined;

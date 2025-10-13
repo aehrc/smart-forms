@@ -19,10 +19,10 @@ import { getAnswerOptionLabel } from '../../../utils/openChoice';
 import { StandardTextField } from '../Textfield.styles';
 import Autocomplete from '@mui/material/Autocomplete';
 import type { QuestionnaireItemAnswerOption } from 'fhir/r4';
-import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import { useRendererConfigStore } from '../../../stores';
 
-interface QuantityUnitFieldProps extends PropsWithIsTabledRequiredAttribute {
+interface QuantityUnitFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
   itemType: string;
   options: QuestionnaireItemAnswerOption[];
