@@ -82,7 +82,7 @@
     "@types/lodash.difference": "^4.5.9",
     "@types/lodash.differencewith": "^4.5.9",
     "@types/lodash.intersection": "^4.4.9",
-    "@types/react": "^19.1.0",
+    "@types/react": "^19.2.2",
     "@types/react-beautiful-dnd": "^13.1.8",
     "@types/react-dom": "^19.1.1",
     "chokidar": "^4.0.3",
