@@ -33,7 +33,7 @@ function ChoiceRadioAnswerValueSetItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
-    itemPath,
+
     isRepeated,
     isTabled,
     parentIsReadOnly,
@@ -70,18 +70,12 @@ function ChoiceRadioAnswerValueSetItem(props: BaseItemProps) {
   const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
     useAnswerOptionsToggleExpressions(qItem.linkId);
 
-  function handleChange(
-    newValue: string,
-    includeItemPath: boolean = false // only include when this is called from useCalculatedExpression hook
-  ) {
-    const targetItemPath = includeItemPath ? itemPath : undefined;
-
+  function handleChange(newValue: string) {
     if (codings.length > 0) {
       const qrAnswer = findInAnswerOptions(options, newValue);
       const emptyQrItem = createEmptyQrItem(qItem, answerKey);
       onQrItemChange(
-        qrAnswer ? { ...emptyQrItem, answer: [{ ...qrAnswer, id: answerKey }] } : emptyQrItem,
-        targetItemPath
+        qrAnswer ? { ...emptyQrItem, answer: [{ ...qrAnswer, id: answerKey }] } : emptyQrItem
       );
     }
   }

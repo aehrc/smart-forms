@@ -29,7 +29,7 @@ function ChoiceSelectAnswerOptionItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
-    itemPath,
+
     isRepeated,
     isTabled,
     renderingExtensions,
@@ -57,15 +57,10 @@ function ChoiceSelectAnswerOptionItem(props: BaseItemProps) {
   const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
     useAnswerOptionsToggleExpressions(qItem.linkId);
 
-  function handleChange(
-    newValue: QuestionnaireItemAnswerOption | string | null,
-    includeItemPath: boolean = false // only include when this is called from useCalculatedExpression hook
-  ) {
-    const targetItemPath = includeItemPath ? itemPath : undefined;
-
+  function handleChange(newValue: QuestionnaireItemAnswerOption | string | null) {
     // No options present or newValue is type null
     if (options.length === 0 || newValue === null) {
-      onQrItemChange(createEmptyQrItem(qItem, answerKey), targetItemPath);
+      onQrItemChange(createEmptyQrItem(qItem, answerKey));
       return;
     }
 
@@ -75,8 +70,7 @@ function ChoiceSelectAnswerOptionItem(props: BaseItemProps) {
       onQrItemChange(
         qrAnswer
           ? { ...createEmptyQrItem(qItem, answerKey), answer: [{ ...qrAnswer, id: answerKey }] }
-          : createEmptyQrItem(qItem, answerKey),
-        targetItemPath
+          : createEmptyQrItem(qItem, answerKey)
       );
       return;
     }
@@ -85,8 +79,7 @@ function ChoiceSelectAnswerOptionItem(props: BaseItemProps) {
     onQrItemChange(
       newValue
         ? { ...createEmptyQrItem(qItem, answerKey), answer: [{ ...newValue, id: answerKey }] }
-        : createEmptyQrItem(qItem, answerKey),
-      targetItemPath
+        : createEmptyQrItem(qItem, answerKey)
     );
   }
 

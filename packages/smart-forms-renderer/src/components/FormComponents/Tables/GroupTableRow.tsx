@@ -17,10 +17,7 @@
 
 import React from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import type {
-  PropsWithItemPathAttribute,
-  PropsWithParentIsReadOnlyAttribute
-} from '../../../interfaces/renderProps.interface';
+import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 import type { TableRowProps } from '@mui/material/TableRow';
 import TableRow from '@mui/material/TableRow';
 import SelectRowButton from './SelectRowButton';
@@ -32,12 +29,8 @@ import TableCell from '@mui/material/TableCell';
 import Box from '@mui/material/Box';
 import { Draggable } from 'react-beautiful-dnd';
 import { StyledGroupTableRow } from './Table.styles';
-import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
-interface GroupTableRowProps
-  extends PropsWithItemPathAttribute,
-    PropsWithParentIsReadOnlyAttribute,
-    TableRowProps {
+interface GroupTableRowProps extends PropsWithParentIsReadOnlyAttribute, TableRowProps {
   rowId: string;
   index: number;
   tableQItem: QuestionnaireItem;
@@ -52,11 +45,7 @@ interface GroupTableRowProps
   visibleItemLabels: string[];
   calculatedColumnWidths: { width: string; isFixed: boolean }[];
   showExtraGTableInteractions: boolean;
-  onRowChange: (
-    newQrRow: QuestionnaireResponseItem,
-    index: number,
-    targetItemPath?: ItemPath
-  ) => void;
+  onRowChange: (newQrRow: QuestionnaireResponseItem, index: number) => void;
   onRemoveRow: (index: number) => void;
   onSelectRow: (nanoId: string) => void;
 }
@@ -76,7 +65,7 @@ function GroupTableRow(props: GroupTableRowProps) {
     visibleItemLabels,
     calculatedColumnWidths,
     showExtraGTableInteractions,
-    itemPath,
+
     onRowChange,
     onRemoveRow,
     onSelectRow
@@ -120,7 +109,6 @@ function GroupTableRow(props: GroupTableRowProps) {
               qItemsIndexMap={qItemsIndexMap}
               visibleItemLabels={visibleItemLabels}
               calculatedColumnWidths={calculatedColumnWidths}
-              itemPath={itemPath}
               parentIsReadOnly={readOnly}
               onQrItemChange={(newQrGroup) => onRowChange(newQrGroup, index)}
             />
@@ -145,7 +133,6 @@ function GroupTableRow(props: GroupTableRowProps) {
         qItemsIndexMap={qItemsIndexMap}
         visibleItemLabels={visibleItemLabels}
         calculatedColumnWidths={calculatedColumnWidths}
-        itemPath={itemPath}
         parentIsReadOnly={readOnly}
         onQrItemChange={(newQrGroup) => onRowChange(newQrGroup, index)}
       />

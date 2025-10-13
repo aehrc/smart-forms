@@ -27,8 +27,6 @@ import type { QrRepeatGroup } from '../../interfaces/repeatGroup.interface';
 import FormBodyPaginated from './FormBodyPaginated';
 import { Container } from '@mui/material';
 import { useFormUpdateQueueStore } from '../../stores/formUpdateQueueStore';
-import type { ItemPath } from '../../interfaces/itemPath.interface';
-import { createSingleItemPath } from '../../utils/itemPath';
 import dayjs from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
@@ -62,31 +60,23 @@ function BaseRenderer() {
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(sourceQuestionnaire), [sourceQuestionnaire]);
 
-  function handleTopLevelQRItemSingleChange(
-    newTopLevelQRItem: QuestionnaireResponseItem,
-    targetItemPath?: ItemPath
-  ) {
+  function handleTopLevelQRItemSingleChange(newTopLevelQRItem: QuestionnaireResponseItem) {
     const updatedResponse: QuestionnaireResponse = structuredClone(updatableResponse);
 
     updateQrItemsInGroup(newTopLevelQRItem, null, updatedResponse, qItemsIndexMap);
 
     enqueueFormUpdate({
-      questionnaireResponse: updatedResponse,
-      targetItemPath: targetItemPath
+      questionnaireResponse: updatedResponse
     });
   }
 
-  function handleTopLevelQRItemMultipleChange(
-    newTopLevelQRItems: QrRepeatGroup,
-    targetItemPath?: ItemPath
-  ) {
+  function handleTopLevelQRItemMultipleChange(newTopLevelQRItems: QrRepeatGroup) {
     const updatedResponse: QuestionnaireResponse = structuredClone(updatableResponse);
 
     updateQrItemsInGroup(null, newTopLevelQRItems, updatedResponse, qItemsIndexMap);
 
     enqueueFormUpdate({
-      questionnaireResponse: updatedResponse,
-      targetItemPath: targetItemPath
+      questionnaireResponse: updatedResponse
     });
   }
 
@@ -112,10 +102,9 @@ function BaseRenderer() {
           <FormBodyPaginated
             topLevelQItems={topLevelQItems}
             topLevelQRItems={topLevelQRItemsByIndex}
-            itemPath={[]}
             parentIsReadOnly={readOnly}
-            onQrItemChange={(newTopLevelQRItem, targetItemPath) =>
-              handleTopLevelQRItemSingleChange(newTopLevelQRItem, targetItemPath)
+            onQrItemChange={(newTopLevelQRItem) =>
+              handleTopLevelQRItemSingleChange(newTopLevelQRItem)
             }
           />
         </Container>
@@ -136,12 +125,11 @@ function BaseRenderer() {
               topLevelQRItemOrItems={qrItemOrItems ?? null}
               parentIsReadOnly={readOnly}
               wholeFormIsPaginated={wholeFormIsPaginated}
-              itemPath={createSingleItemPath(qItem.linkId)}
-              onQrItemChange={(newTopLevelQRItem, targetItemPath) =>
-                handleTopLevelQRItemSingleChange(newTopLevelQRItem, targetItemPath)
+              onQrItemChange={(newTopLevelQRItem) =>
+                handleTopLevelQRItemSingleChange(newTopLevelQRItem)
               }
-              onQrRepeatGroupChange={(newTopLevelQRItems, targetItemPath) =>
-                handleTopLevelQRItemMultipleChange(newTopLevelQRItems, targetItemPath)
+              onQrRepeatGroupChange={(newTopLevelQRItems) =>
+                handleTopLevelQRItemMultipleChange(newTopLevelQRItems)
               }
             />
           );

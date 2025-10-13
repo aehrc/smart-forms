@@ -18,7 +18,6 @@
 import React, { useMemo, useRef, useState } from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
-  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentStylesAttribute,
   PropsWithQrItemChangeHandler
@@ -34,7 +33,6 @@ import GridTable from './GridTable';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore, useRendererConfigStore } from '../../../stores';
 import GroupHeading from '../GroupItem/GroupHeading';
-import type { ItemPath } from '../../../interfaces/itemPath.interface';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
 import { isItemHidden } from '../../../utils/qItem';
@@ -44,7 +42,6 @@ import { calculateColumnWidths } from '../../../utils/columnWidth';
 
 interface GridGroupProps
   extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
@@ -62,7 +59,7 @@ function GridGroup(props: GridGroupProps) {
   const {
     qItem,
     qrItem,
-    itemPath,
+
     groupCardElevation,
     parentIsReadOnly,
     parentStyles,
@@ -156,10 +153,10 @@ function GridGroup(props: GridGroupProps) {
   }
 
   // Event Handlers
-  function handleRowChange(newQrItem: QuestionnaireResponseItem, targetItemPath?: ItemPath) {
+  function handleRowChange(newQrItem: QuestionnaireResponseItem) {
     const updatedQrGroup: QuestionnaireResponseItem = { ...qrGroup };
     updateQrItemsInGroup(newQrItem, null, updatedQrGroup, qItemsIndexMap);
-    onQrItemChange(updatedQrGroup, targetItemPath);
+    onQrItemChange(updatedQrGroup);
   }
 
   // Get item.text as display label
@@ -188,7 +185,6 @@ function GridGroup(props: GridGroupProps) {
             qItemsIndexMap={qItemsIndexMap}
             columnHeaders={columnHeaders}
             calculatedColumnWidths={calculatedColumnWidths}
-            itemPath={itemPath}
             parentIsReadOnly={readOnly}
             parentStyles={parentStyles}
             onQrItemChange={handleRowChange}

@@ -17,7 +17,6 @@
 
 import React from 'react';
 import type {
-  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
@@ -34,13 +33,8 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import { generateExistingRepeatId, generateNewRepeatId } from '../../../utils/repeatId';
 import ItemLabel from '../ItemParts/ItemLabel';
-import { appendRepeatIndexToLastSegment } from '../../../utils/itemPath';
-import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
-interface RepeatItemProps
-  extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+interface RepeatItemProps extends PropsWithQrItemChangeHandler, PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
   groupCardElevation: number;
@@ -52,7 +46,7 @@ interface RepeatItemProps
  * @author Sean Fong
  */
 function RepeatItem(props: RepeatItemProps) {
-  const { qItem, qrItem, itemPath, groupCardElevation, parentIsReadOnly, onQrItemChange } = props;
+  const { qItem, qrItem, groupCardElevation, parentIsReadOnly, onQrItemChange } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
@@ -61,22 +55,14 @@ function RepeatItem(props: RepeatItemProps) {
   const repeatAnswers = useInitialiseRepeatAnswers(qItem.linkId, qrItem);
 
   // Event Handlers
-  function handleAnswerChange(
-    newQrItem: QuestionnaireResponseItem,
-    index: number,
-    targetItemPath?: ItemPath
-  ) {
+  function handleAnswerChange(newQrItem: QuestionnaireResponseItem, index: number) {
     const updatedRepeatAnswers = [...repeatAnswers];
     updatedRepeatAnswers[index] = newQrItem.answer ? newQrItem.answer[0] : null;
 
-    // Include targetItemPath because an answer is changed
-    onQrItemChange(
-      {
-        ...createEmptyQrItem(qItem, undefined),
-        answer: updatedRepeatAnswers.flatMap((repeatAnswer) => (repeatAnswer ? [repeatAnswer] : []))
-      },
-      targetItemPath
-    );
+    onQrItemChange({
+      ...createEmptyQrItem(qItem, undefined),
+      answer: updatedRepeatAnswers.flatMap((repeatAnswer) => (repeatAnswer ? [repeatAnswer] : []))
+    });
   }
 
   function handleRemoveItem(index: number) {
@@ -84,7 +70,6 @@ function RepeatItem(props: RepeatItemProps) {
 
     updatedRepeatAnswers.splice(index, 1);
 
-    // Don't need to include targetItemPath, only include targetItemPath if an answer is changed
     onQrItemChange({
       ...createEmptyQrItem(qItem, undefined),
       answer: updatedRepeatAnswers.flatMap((repeatAnswer) => (repeatAnswer ? [repeatAnswer] : []))
@@ -94,7 +79,6 @@ function RepeatItem(props: RepeatItemProps) {
   function handleAddItem() {
     const updatedRepeatAnswers = [...repeatAnswers, { id: generateNewRepeatId(qItem.linkId) }];
 
-    // Don't need to include targetItemPath, only include targetItemPath if an answer is changed
     onQrItemChange({
       ...createEmptyQrItem(qItem, undefined),
       answer: updatedRepeatAnswers.flatMap((repeatAnswer) => (repeatAnswer ? [repeatAnswer] : []))
@@ -127,13 +111,10 @@ function RepeatItem(props: RepeatItemProps) {
                     qrItem={repeatAnswerQrItem}
                     answer={answer}
                     numOfRepeatAnswers={repeatAnswers.length}
-                    itemPath={appendRepeatIndexToLastSegment(itemPath, index)}
                     groupCardElevation={groupCardElevation}
                     parentIsReadOnly={parentIsReadOnly}
                     onRemoveAnswer={() => handleRemoveItem(index)}
-                    onQrItemChange={(newQrItem, targetItemPath) =>
-                      handleAnswerChange(newQrItem, index, targetItemPath)
-                    }
+                    onQrItemChange={(newQrItem) => handleAnswerChange(newQrItem, index)}
                   />
                 </Collapse>
               );
