@@ -21,7 +21,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { StandardTextField } from '../Textfield.styles';
 import Typography from '@mui/material/Typography';
 import type {
-  PropsWithIsTabledRequiredAttribute,
+  PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
@@ -32,7 +32,7 @@ import { StyledRequiredTypography } from '../Item.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 
 interface OpenChoiceSelectAnswerValueSetFieldProps
-  extends PropsWithIsTabledRequiredAttribute,
+  extends PropsWithIsTabledAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithRenderingExtensionsAttribute {
   qItem: QuestionnaireItem;

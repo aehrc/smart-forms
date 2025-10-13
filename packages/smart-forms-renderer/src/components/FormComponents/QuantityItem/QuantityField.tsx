@@ -16,14 +16,14 @@
  */
 
 import InputAdornment from '@mui/material/InputAdornment';
-import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import { useRendererConfigStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import { StandardTextField } from '../Textfield.styles';
 
-interface QuantityFieldProps extends PropsWithIsTabledRequiredAttribute {
+interface QuantityFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
   itemType: string;
   input: string;

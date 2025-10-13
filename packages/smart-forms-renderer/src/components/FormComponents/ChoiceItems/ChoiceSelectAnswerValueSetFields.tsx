@@ -21,7 +21,7 @@ import Typography from '@mui/material/Typography';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 import type {
-  PropsWithIsTabledRequiredAttribute,
+  PropsWithIsTabledAttribute,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import { useRendererConfigStore } from '../../../stores';
@@ -33,7 +33,7 @@ import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { StandardTextField } from '../Textfield.styles';
 
 interface ChoiceSelectAnswerValueSetFieldsProps
-  extends PropsWithIsTabledRequiredAttribute,
+  extends PropsWithIsTabledAttribute,
     PropsWithRenderingExtensionsAttribute {
   qItem: QuestionnaireItem;
   codings: Coding[];

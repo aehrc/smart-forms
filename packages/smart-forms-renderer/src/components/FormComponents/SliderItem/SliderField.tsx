@@ -16,7 +16,7 @@
  */
 
 import React from 'react';
-import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import { getSliderMarks } from '../../../utils/slider';
 import Stack from '@mui/material/Stack';
 import SliderLabels from './SliderLabels';
@@ -25,7 +25,7 @@ import { useRendererConfigStore } from '../../../stores';
 import { StyledRequiredTypography } from '../Item.styles';
 import { StandardSlider } from './Slider.styles';
 
-interface SliderFieldProps extends PropsWithIsTabledRequiredAttribute {
+interface SliderFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
   itemType: string;
   value: number;

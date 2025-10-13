@@ -16,13 +16,13 @@
  */
 
 import React from 'react';
-import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import type { Dayjs } from 'dayjs';
 import { LocalizationProvider, TimePicker as MuiTimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useRendererConfigStore } from '../../../stores';
 
-interface TimeFieldProps extends PropsWithIsTabledRequiredAttribute {
+interface TimeFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
   itemType: string;
   value: Dayjs | null;

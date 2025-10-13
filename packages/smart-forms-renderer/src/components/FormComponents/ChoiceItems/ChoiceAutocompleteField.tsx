@@ -29,7 +29,7 @@ import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import DoneIcon from '@mui/icons-material/Done';
 import ErrorIcon from '@mui/icons-material/Error';
 import type {
-  PropsWithIsTabledRequiredAttribute,
+  PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
@@ -38,7 +38,7 @@ import { useRendererConfigStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 
 interface ChoiceAutocompleteFieldsProps
-  extends PropsWithIsTabledRequiredAttribute,
+  extends PropsWithIsTabledAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithRenderingExtensionsAttribute {
   qItem: QuestionnaireItem;

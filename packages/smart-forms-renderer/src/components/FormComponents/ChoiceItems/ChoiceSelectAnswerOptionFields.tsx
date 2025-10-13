@@ -18,7 +18,7 @@
 import Autocomplete from '@mui/material/Autocomplete';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type {
-  PropsWithIsTabledRequiredAttribute,
+  PropsWithIsTabledAttribute,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import { useRendererConfigStore } from '../../../stores';
@@ -30,7 +30,7 @@ import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon'
 import { StandardTextField } from '../Textfield.styles';
 
 interface ChoiceSelectAnswerOptionFieldsProps
-  extends PropsWithIsTabledRequiredAttribute,
+  extends PropsWithIsTabledAttribute,
     PropsWithRenderingExtensionsAttribute {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];

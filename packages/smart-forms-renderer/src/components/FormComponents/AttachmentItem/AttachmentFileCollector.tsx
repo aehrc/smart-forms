@@ -21,9 +21,9 @@ import { Box, IconButton, Stack, Tooltip } from '@mui/material';
 import AttachmentFileDropBox from './AttachmentFileDropBox';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 
-interface AttachmentFileCollectorProps extends PropsWithIsTabledRequiredAttribute {
+interface AttachmentFileCollectorProps extends PropsWithIsTabledAttribute {
   uploadedFile: File | null;
   readOnly: boolean;
   onUploadFile: (file: File | null) => void;

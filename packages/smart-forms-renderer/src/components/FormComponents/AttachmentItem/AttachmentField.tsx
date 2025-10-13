@@ -16,7 +16,7 @@
  */
 
 import React from 'react';
-import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import { StandardTextField } from '../Textfield.styles';
 import AttachmentFileCollector from './AttachmentFileCollector';
 import Typography from '@mui/material/Typography';
@@ -29,7 +29,7 @@ import { StyledRequiredTypography } from '../Item.styles';
 import InputAdornment from '@mui/material/InputAdornment';
 import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 
-interface AttachmentFieldProps extends PropsWithIsTabledRequiredAttribute {
+interface AttachmentFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
   itemType: string;
   attachmentValues: AttachmentValues;

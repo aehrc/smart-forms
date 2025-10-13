@@ -47,7 +47,7 @@ export interface PropsWithIsRepeatedAttribute {
   isRepeated: boolean;
 }
 
-export interface PropsWithIsTabledRequiredAttribute {
+export interface PropsWithIsTabledAttribute {
   isTabled: boolean;
 }
 
@@ -75,7 +75,7 @@ export interface PropsWithParentStylesAttribute {
 export interface BaseItemProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledRequiredAttribute,
+    PropsWithIsTabledAttribute,
     PropsWithRenderingExtensionsAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithFeedbackFromParentAttribute,

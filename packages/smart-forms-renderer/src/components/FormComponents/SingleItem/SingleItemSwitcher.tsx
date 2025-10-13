@@ -21,7 +21,7 @@ import { useCalculatedExpressionUpdated } from '../../../hooks/useCalculatedExpr
 import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledRequiredAttribute,
+  PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentStylesAttribute,
   PropsWithQrItemChangeHandler,
@@ -48,7 +48,7 @@ import UrlItem from '../UrlItem/UrlItem';
 interface SingleItemSwitcherProps
   extends PropsWithQrItemChangeHandler,
     PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledRequiredAttribute,
+    PropsWithIsTabledAttribute,
     PropsWithRenderingExtensionsAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithFeedbackFromParentAttribute,
