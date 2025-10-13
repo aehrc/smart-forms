@@ -29,13 +29,12 @@ import AddRowButton from './AddRowButton';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
   PropsWithIsRepeatedAttribute,
-  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentStylesAttribute
 } from '../../../interfaces/renderProps.interface';
 import type { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
 import GroupTableBody from './GroupTableBody';
-import { useQuestionnaireStore, useRendererStylingStore } from '../../../stores';
+import { useQuestionnaireStore, useRendererConfigStore } from '../../../stores';
 import { getGroupCollapsible } from '../../../utils/qItem';
 import { GroupAccordion } from '../GroupItem/GroupAccordion.styles';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -43,14 +42,12 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import GroupHeading from '../GroupItem/GroupHeading';
 import { StandardCheckbox } from '../../Checkbox.styles';
-import type { ItemPath } from '../../../interfaces/itemPath.interface';
 import { Box } from '@mui/material';
 import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
 import { isGroupAddItemButtonHidden } from '../../../utils/extensions';
 
 interface GroupTableViewProps
   extends PropsWithIsRepeatedAttribute,
-    PropsWithItemPathAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
@@ -62,11 +59,7 @@ interface GroupTableViewProps
   visibleItemLabels: string[];
   calculatedColumnWidths: { width: string; isFixed: boolean }[];
   onAddRow: () => void;
-  onRowChange: (
-    newQrRow: QuestionnaireResponseItem,
-    index: number,
-    targetItemPath?: ItemPath
-  ) => void;
+  onRowChange: (newQrRow: QuestionnaireResponseItem, index: number) => void;
   onRemoveRow: (index: number) => void;
   onSelectRow: (rowId: string) => void;
   onSelectAll: () => void;
@@ -84,7 +77,7 @@ function GroupTableView(props: GroupTableViewProps) {
     selectedIds,
     visibleItemLabels,
     calculatedColumnWidths,
-    itemPath,
+
     parentIsReadOnly,
     parentStyles,
     onAddRow,
@@ -97,7 +90,7 @@ function GroupTableView(props: GroupTableViewProps) {
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
 
   const groupCollapsibleValue = getGroupCollapsible(qItem);
 
@@ -182,7 +175,6 @@ function GroupTableView(props: GroupTableViewProps) {
                 visibleItemLabels={visibleItemLabels}
                 calculatedColumnWidths={calculatedColumnWidths}
                 showExtraGTableInteractions={showExtraGTableInteractions}
-                itemPath={itemPath}
                 parentIsReadOnly={parentIsReadOnly}
                 onRowChange={onRowChange}
                 onRemoveRow={onRemoveRow}
@@ -263,7 +255,6 @@ function GroupTableView(props: GroupTableViewProps) {
             visibleItemLabels={visibleItemLabels}
             calculatedColumnWidths={calculatedColumnWidths}
             showExtraGTableInteractions={showExtraGTableInteractions}
-            itemPath={itemPath}
             parentIsReadOnly={parentIsReadOnly}
             onRowChange={onRowChange}
             onRemoveRow={onRemoveRow}

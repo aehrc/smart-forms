@@ -24,6 +24,7 @@ export const PLAYWRIGHT_APP_URL = process.env.CI
 
 /*
  * This is the base64 encoded version of the following array. Refer to https://github.com/aehrc/SMART-EHR-Launcher/blob/main/src/lib/codec.ts
+ * If you find tests constantly failing at the beforeEach step, check if the clientIds, scopes, etc are still valid.
  *
  * [
  *   launchTypeIndex (indexOf ["provider-ehr", "patient-portal", "provider-standalone", "patient-standalone", "backend-service"], use 0 for "provider-ehr"),
@@ -57,7 +58,7 @@ export const LAUNCH_PARAM_WITHOUT_Q = btoa(
     0,
     0,
     0,
-    'fhirUser online_access openid profile patient/Condition.rs patient/Observation.rs launch patient/Encounter.rs patient/QuestionnaireResponse.cruds patient/Patient.rs',
+    'launch openid fhirUser online_access patient/AllergyIntolerance.cs patient/Condition.cs patient/Encounter.r patient/Immunization.cs patient/Medication.r patient/MedicationStatement.cs patient/Observation.cs patient/Patient.r patient/QuestionnaireResponse.crus user/Practitioner.r launch/questionnaire?role=http://ns.electronichealth.net.au/smart/role/new',
     PLAYWRIGHT_APP_URL,
     'a57d90e3-5f69-4b92-aa2e-2992180863c1',
     '',
@@ -81,7 +82,7 @@ export const LAUNCH_PARAM_WITH_Q = btoa(
     0,
     0,
     0,
-    'fhirUser online_access openid profile patient/Condition.rs patient/Observation.rs launch patient/Encounter.rs patient/QuestionnaireResponse.cruds patient/Patient.rs',
+    'launch openid fhirUser online_access patient/AllergyIntolerance.cs patient/Condition.cs patient/Encounter.r patient/Immunization.cs patient/Medication.r patient/MedicationStatement.cs patient/Observation.cs patient/Patient.r patient/QuestionnaireResponse.crus user/Practitioner.r launch/questionnaire?role=http://ns.electronichealth.net.au/smart/role/new',
     PLAYWRIGHT_APP_URL,
     'a57d90e3-5f69-4b92-aa2e-2992180863c1',
     '',
@@ -90,7 +91,7 @@ export const LAUNCH_PARAM_WITH_Q = btoa(
     '',
     0,
     1,
-    '{"role":"questionnaire-render-on-launch","canonical":"http://www.health.gov.au/assessments/mbs/715|0.3.0-assembled","type":"Questionnaire"}',
+    '{"role":"http://ns.electronichealth.net.au/smart/role/new","canonical":"http://www.health.gov.au/assessments/mbs/715|0.3.0-assembled","type":"Questionnaire"}',
     'https://proxy.smartforms.io/v/r4/fhir',
     false
   ])

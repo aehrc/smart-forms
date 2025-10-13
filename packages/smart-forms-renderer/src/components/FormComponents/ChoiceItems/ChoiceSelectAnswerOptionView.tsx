@@ -15,22 +15,22 @@
  * limitations under the License.
  */
 
-import React, { useMemo } from 'react';
-import { FullWidthFormComponentBox } from '../../Box.styles';
-import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import { useMemo } from 'react';
 import type {
   PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledRequiredAttribute,
+  PropsWithIsTabledAttribute,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
-import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { findInAnswerOptions } from '../../../utils/choice';
-import ChoiceSelectAnswerOptionFields from './ChoiceSelectAnswerOptionFields';
+import { FullWidthFormComponentBox } from '../../Box.styles';
+import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
+import ChoiceSelectAnswerOptionFields from './ChoiceSelectAnswerOptionFields';
 
 interface ChoiceSelectAnswerOptionViewProps
   extends PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledRequiredAttribute,
+    PropsWithIsTabledAttribute,
     PropsWithRenderingExtensionsAttribute {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];

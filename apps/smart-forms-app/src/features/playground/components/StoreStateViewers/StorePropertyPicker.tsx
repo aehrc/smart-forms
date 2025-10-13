@@ -20,23 +20,22 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import { useMemo } from 'react';
 
-interface GenericStatePropertyPickerProps {
-  statePropertyNames: string[];
-  statePropNameFilter: string;
-  selectedProperty: string;
-  onSelectProperty: (propertyName: string) => void;
+interface StorePropertyPickerProps {
+  propKeys: string[];
+  propKeyFilter: string;
+  selectedProp: string;
+  onSelectProp: (propertyName: string) => void;
 }
 
-function GenericStatePropertyPicker(props: GenericStatePropertyPickerProps) {
-  const { statePropertyNames, statePropNameFilter, selectedProperty, onSelectProperty } = props;
+function StorePropertyPicker(props: StorePropertyPickerProps) {
+  const { propKeys, propKeyFilter, selectedProp, onSelectProp } = props;
 
-  const filteredPropertyNames = useMemo(() => {
-    return statePropertyNames.filter(
+  const filteredPropKeys = useMemo(() => {
+    return propKeys.filter(
       (property) =>
-        statePropNameFilter === '' ||
-        property.toLowerCase().includes(statePropNameFilter.toLowerCase())
+        propKeyFilter === '' || property.toLowerCase().includes(propKeyFilter.toLowerCase())
     );
-  }, [statePropertyNames, statePropNameFilter]);
+  }, [propKeys, propKeyFilter]);
 
   return (
     <Stack
@@ -48,22 +47,22 @@ function GenericStatePropertyPicker(props: GenericStatePropertyPickerProps) {
         zIndex: 10,
         overflowX: 'auto'
       }}>
-      {filteredPropertyNames.length > 0 ? (
+      {filteredPropKeys.length > 0 ? (
         <ToggleButtonGroup
           size="small"
           color="primary"
-          value={selectedProperty}
+          value={selectedProp}
           sx={{ height: 28 }}
           exclusive
           data-test="specific-state-picker-playground"
-          onChange={(_, newSelectedProperty) => {
-            if (newSelectedProperty === null) {
+          onChange={(_, newSelectedProp) => {
+            if (newSelectedProp === null) {
               return;
             }
 
-            onSelectProperty(newSelectedProperty);
+            onSelectProp(newSelectedProp);
           }}>
-          {filteredPropertyNames.map((property) => (
+          {filteredPropKeys.map((property) => (
             <ToggleButton
               key={property}
               value={property}
@@ -83,4 +82,4 @@ function GenericStatePropertyPicker(props: GenericStatePropertyPickerProps) {
   );
 }
 
-export default GenericStatePropertyPicker;
+export default StorePropertyPicker;

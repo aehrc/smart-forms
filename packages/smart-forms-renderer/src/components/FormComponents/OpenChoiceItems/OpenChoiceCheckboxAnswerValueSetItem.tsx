@@ -15,56 +15,36 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useMemo } from 'react';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { createEmptyQrItem } from '../../../utils/qrItem';
+import debounce from 'lodash.debounce';
+import { useCallback, useMemo } from 'react';
+import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
+import useOpenLabel from '../../../hooks/useOpenLabel';
+import useReadOnly from '../../../hooks/useReadOnly';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useValueSetCodings from '../../../hooks/useValueSetCodings';
+import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
+import { useQuestionnaireStore } from '../../../stores';
+import { convertCodingsToAnswerOptions, updateChoiceCheckboxAnswers } from '../../../utils/choice';
+import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import { getOpenLabelText } from '../../../utils/extensions';
 import { updateOpenLabelAnswer } from '../../../utils/openChoice';
+import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
-import debounce from 'lodash.debounce';
-import type {
-  PropsWithFeedbackFromParentAttribute,
-  PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
-  PropsWithItemPathAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithRenderingExtensionsAttribute
-} from '../../../interfaces/renderProps.interface';
-import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
-import OpenChoiceCheckboxAnswerValueSetFields from './OpenChoiceCheckboxAnswerValueSetFields';
-import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
-import { useQuestionnaireStore } from '../../../stores';
-import useOpenLabel from '../../../hooks/useOpenLabel';
-import { convertCodingsToAnswerOptions, updateChoiceCheckboxAnswers } from '../../../utils/choice';
-import useValueSetCodings from '../../../hooks/useValueSetCodings';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import ItemLabel from '../ItemParts/ItemLabel';
-import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
+import OpenChoiceCheckboxAnswerValueSetFields from './OpenChoiceCheckboxAnswerValueSetFields';
 
-interface OpenChoiceCheckboxAnswerValueSetItemProps
-  extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
-    PropsWithIsRepeatedAttribute,
-    PropsWithParentIsReadOnlyAttribute,
-    PropsWithRenderingExtensionsAttribute,
-    PropsWithFeedbackFromParentAttribute,
-    PropsWithIsTabledAttribute {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
-}
-
-function OpenChoiceCheckboxAnswerValueSetItem(props: OpenChoiceCheckboxAnswerValueSetItemProps) {
+function OpenChoiceCheckboxAnswerValueSetItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
     isRepeated,
+    isTabled,
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
-    isTabled,
+    calcExpUpdated,
     onQrItemChange
   } = props;
 
@@ -189,7 +169,9 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: OpenChoiceCheckboxAnswerVal
           openLabelChecked={openLabelChecked}
           feedback={feedback}
           readOnly={readOnly}
-          expressionUpdated={dynamicCodingsUpdated || answerOptionsToggleExpUpdated}
+          expressionUpdated={
+            calcExpUpdated || dynamicCodingsUpdated || answerOptionsToggleExpUpdated
+          }
           answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
           terminologyError={terminologyError}
           isTabled={isTabled}
@@ -223,7 +205,9 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: OpenChoiceCheckboxAnswerVal
             openLabelChecked={openLabelChecked}
             feedback={feedback}
             readOnly={readOnly}
-            expressionUpdated={dynamicCodingsUpdated || answerOptionsToggleExpUpdated}
+            expressionUpdated={
+              calcExpUpdated || dynamicCodingsUpdated || answerOptionsToggleExpUpdated
+            }
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             terminologyError={terminologyError}
             isTabled={isTabled}

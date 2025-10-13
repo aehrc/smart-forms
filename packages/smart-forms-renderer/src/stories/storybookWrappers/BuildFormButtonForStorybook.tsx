@@ -32,12 +32,11 @@ function BuildFormButtonForStorybook(props: BuildFormButtonProps) {
   const { questionnaire, questionnaireResponse } = props;
 
   async function handleBuildForm() {
-    await buildForm(
+    await buildForm({
       questionnaire,
       questionnaireResponse,
-      undefined,
-      STORYBOOK_TERMINOLOGY_SERVER_URL
-    );
+      terminologyServerUrl: STORYBOOK_TERMINOLOGY_SERVER_URL
+    });
   }
 
   return (

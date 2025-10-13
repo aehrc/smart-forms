@@ -16,14 +16,14 @@
  */
 
 import React from 'react';
-import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import InputAdornment from '@mui/material/InputAdornment';
 import { StandardTextField } from '../Textfield.styles';
-import { useRendererStylingStore } from '../../../stores';
+import { useRendererConfigStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 
-interface UrlFieldProps extends PropsWithIsTabledRequiredAttribute {
+interface UrlFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
   itemType: string;
   input: string;
@@ -33,7 +33,6 @@ interface UrlFieldProps extends PropsWithIsTabledRequiredAttribute {
   entryFormat: string;
   readOnly: boolean;
   onInputChange: (value: string) => void;
-  onBlur: () => void;
 }
 
 function UrlField(props: UrlFieldProps) {
@@ -47,12 +46,11 @@ function UrlField(props: UrlFieldProps) {
     entryFormat,
     readOnly,
     isTabled,
-    onInputChange,
-    onBlur
+    onInputChange
   } = props;
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
-  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
 
   return (
     <StandardTextField
@@ -64,7 +62,6 @@ function UrlField(props: UrlFieldProps) {
       value={input}
       error={!!feedback}
       onChange={(event) => onInputChange(event.target.value)}
-      onBlur={onBlur}
       placeholder={entryFormat || displayPrompt}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       size="small"

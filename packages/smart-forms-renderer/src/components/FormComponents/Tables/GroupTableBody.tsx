@@ -19,21 +19,14 @@ import React from 'react';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
-import type {
-  PropsWithItemPathAttribute,
-  PropsWithParentIsReadOnlyAttribute
-} from '../../../interfaces/renderProps.interface';
+import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 import GroupTableRow from './GroupTableRow';
 import type { DropResult } from 'react-beautiful-dnd';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { reorderRows } from '../../../utils/groupTable';
 import TableBody from '@mui/material/TableBody';
-import { appendRepeatIndexToLastSegment } from '../../../utils/itemPath';
-import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
-interface GroupTableBodyProps
-  extends PropsWithItemPathAttribute,
-    PropsWithParentIsReadOnlyAttribute {
+interface GroupTableBodyProps extends PropsWithParentIsReadOnlyAttribute {
   tableQItem: QuestionnaireItem;
   readOnly: boolean;
   tableRows: GroupTableRowModel[];
@@ -42,11 +35,7 @@ interface GroupTableBodyProps
   visibleItemLabels: string[];
   calculatedColumnWidths: { width: string; isFixed: boolean }[];
   showExtraGTableInteractions: boolean;
-  onRowChange: (
-    newQrRow: QuestionnaireResponseItem,
-    index: number,
-    targetItemPath?: ItemPath
-  ) => void;
+  onRowChange: (newQrRow: QuestionnaireResponseItem, index: number) => void;
   onRemoveRow: (index: number) => void;
   onSelectRow: (rowId: string) => void;
   onReorderRows: (newTableRows: GroupTableRowModel[]) => void;
@@ -62,7 +51,7 @@ function GroupTableBody(props: GroupTableBodyProps) {
     visibleItemLabels,
     calculatedColumnWidths,
     showExtraGTableInteractions,
-    itemPath,
+
     parentIsReadOnly,
     onRowChange,
     onRemoveRow,
@@ -113,7 +102,6 @@ function GroupTableBody(props: GroupTableBodyProps) {
                   visibleItemLabels={visibleItemLabels}
                   calculatedColumnWidths={calculatedColumnWidths}
                   showExtraGTableInteractions={showExtraGTableInteractions}
-                  itemPath={appendRepeatIndexToLastSegment(itemPath, index)}
                   parentIsReadOnly={parentIsReadOnly}
                   onRowChange={onRowChange}
                   onRemoveRow={onRemoveRow}

@@ -31,6 +31,7 @@ import { isQuestionnaire } from '../typePredicates/isQuestionnaire.ts';
 import type { BuildState } from '../interfaces/buildState.interface.ts';
 import { useLocalStorage } from 'usehooks-ts';
 import {
+  destroyForm,
   extractObservationBased,
   removeEmptyAnswersFromResponse,
   useQuestionnaireResponseStore,
@@ -48,7 +49,7 @@ import type {
 } from 'fhir/r4';
 import PlaygroundHeader from './PlaygroundHeader.tsx';
 import { useExtractDebuggerStore } from '../stores/extractDebuggerStore.ts';
-import { buildFormWrapper, destroyFormWrapper } from '../../../utils/manageForm.ts';
+import { resetAndBuildForm } from '../../../utils/manageForm.ts';
 import { extractResultIsOperationOutcome, inAppExtract } from '@aehrc/sdc-template-extract';
 import type Client from 'fhirclient/lib/Client';
 import { ConfigContext } from '../../configChecker/contexts/ConfigContext.tsx';
@@ -90,6 +91,7 @@ function Playground() {
   const setTemplateExtractResult = useExtractDebuggerStore.use.setTemplateExtractResult();
   const setTemplateExtractDebugInfo = useExtractDebuggerStore.use.setTemplateExtractDebugInfo();
   const setTemplateExtractIssues = useExtractDebuggerStore.use.setTemplateExtractIssues();
+  const resetExtractDebuggerStore = useExtractDebuggerStore.use.resetStore();
 
   // SMART Config
   const setSmartConfigStoreClient = useSmartConfigStore.use.setClient();
@@ -100,7 +102,11 @@ function Playground() {
 
   function handleDestroyForm() {
     setBuildingState('idle');
-    destroyFormWrapper();
+
+    // Clean up extract debugger store
+    resetExtractDebuggerStore();
+
+    destroyForm();
   }
 
   async function handleBuildQuestionnaireFromString(jsonString: string) {
@@ -126,7 +132,8 @@ function Playground() {
           setSmartConfigStoreUser(user);
         }
 
-        await buildFormWrapper(parsedQuestionnaire, undefined, undefined, terminologyServerUrl);
+        // Before building the form, reset any existing form state
+        await resetAndBuildForm({ questionnaire: parsedQuestionnaire, terminologyServerUrl });
 
         setBuildingState('built');
       } else {
@@ -153,7 +160,7 @@ function Playground() {
 
     setJsonString(JSON.stringify(questionnaire, null, 2));
 
-    await buildFormWrapper(questionnaire, undefined, undefined, terminologyServerUrl);
+    await resetAndBuildForm({ questionnaire, terminologyServerUrl });
     setBuildingState('built');
   }
 
@@ -190,7 +197,10 @@ function Playground() {
             );
           }
 
-          await buildFormWrapper(questionnaire, undefined, undefined, config.terminologyServerUrl);
+          await resetAndBuildForm({
+            questionnaire,
+            terminologyServerUrl: config.terminologyServerUrl
+          });
           setBuildingState('built');
         } else {
           enqueueSnackbar('There was an issue reading the file content.', {

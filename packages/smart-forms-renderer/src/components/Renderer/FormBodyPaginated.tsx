@@ -5,22 +5,19 @@ import TabContext from '@mui/lab/TabContext';
 import TabPanel from '@mui/lab/TabPanel';
 import GroupItem from '../FormComponents/GroupItem/GroupItem';
 import type {
-  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../stores';
-import { useRendererStylingStore } from '../../stores/rendererStylingStore';
+import { useRendererConfigStore } from '../../stores/rendererConfigStore';
 import { SingleItem } from '../FormComponents';
 import PageButtonsWrapper from '../FormComponents/GroupItem/PageButtonWrapper';
 import { QGroupContainerBox } from '../Box.styles';
 import { GroupCard } from '../FormComponents/GroupItem/GroupItem.styles';
 import { isFooter, isHeader } from '../../utils/page';
-import { extendItemPath } from '../../utils/itemPath';
 
 interface FormBodyPaginatedProps
   extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
     PropsWithParentIsReadOnlyAttribute {
   topLevelQItems: QuestionnaireItem[];
   topLevelQRItems: (QuestionnaireResponseItem | QuestionnaireResponseItem[] | undefined)[];
@@ -30,11 +27,11 @@ interface FormBodyPaginatedProps
 // TODO need to fix this before bringing it into release
 // Every group item in here is rendered as a page
 function FormBodyPaginated(props: FormBodyPaginatedProps) {
-  const { topLevelQItems, topLevelQRItems, itemPath, parentIsReadOnly, onQrItemChange } = props;
+  const { topLevelQItems, topLevelQRItems, parentIsReadOnly, onQrItemChange } = props;
 
   const pages = useQuestionnaireStore.use.pages();
   const currentPage = useQuestionnaireStore.use.currentPageIndex();
-  const disableCardView = useRendererStylingStore.use.disablePageCardView();
+  const disableCardView = useRendererConfigStore.use.disablePageCardView();
 
   const { headerQItems, pageQItems, footerQItems } = useMemo(() => {
     const headerQItems: [QuestionnaireItem, number][] = [];
@@ -73,7 +70,6 @@ function FormBodyPaginated(props: FormBodyPaginatedProps) {
             key={qItem.linkId}
             qItem={qItem}
             qrItem={qrItemOrItems ?? null}
-            itemPath={extendItemPath(itemPath, qItem.linkId)}
             isRepeated={isRepeated}
             groupCardElevation={1}
             disableCardView={disableCardView}
@@ -118,7 +114,6 @@ function FormBodyPaginated(props: FormBodyPaginatedProps) {
                     <GroupItem
                       qItem={qItem}
                       qrItem={qrItem ?? null}
-                      itemPath={extendItemPath(itemPath, qItem.linkId)}
                       isRepeated={isRepeated}
                       groupCardElevation={1}
                       disableCardView={disableCardView}
@@ -151,7 +146,6 @@ function FormBodyPaginated(props: FormBodyPaginatedProps) {
                         <SingleItem
                           qItem={qItem}
                           qrItem={qrItem ?? null}
-                          itemPath={extendItemPath(itemPath, qItem.linkId)}
                           isRepeated={isRepeated}
                           groupCardElevation={1}
                           parentIsReadOnly={parentIsReadOnly}
@@ -165,7 +159,6 @@ function FormBodyPaginated(props: FormBodyPaginatedProps) {
                         <SingleItem
                           qItem={qItem}
                           qrItem={qrItem ?? null}
-                          itemPath={extendItemPath(itemPath, qItem.linkId)}
                           isRepeated={isRepeated}
                           groupCardElevation={1}
                           parentIsReadOnly={parentIsReadOnly}
@@ -200,7 +193,6 @@ function FormBodyPaginated(props: FormBodyPaginatedProps) {
             key={qItem.linkId}
             qItem={qItem}
             qrItem={qrItemOrItems ?? null}
-            itemPath={extendItemPath(itemPath, qItem.linkId)}
             isRepeated={isRepeated}
             groupCardElevation={1}
             disableCardView={disableCardView}

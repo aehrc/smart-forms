@@ -16,17 +16,17 @@
  */
 
 import InputAdornment from '@mui/material/InputAdornment';
-import { StandardTextField } from '../Textfield.styles';
-import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
-import { useRendererStylingStore } from '../../../stores';
+import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import { useRendererConfigStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import ItemRepopulateButton from '../ItemParts/ItemRepopulateButton';
 import type { RenderingExtensions } from '../../../hooks/useRenderingExtensions';
+import { StandardTextField } from '../Textfield.styles';
 
-interface IntegerFieldProps extends PropsWithIsTabledRequiredAttribute {
+interface IntegerFieldProps extends PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   input: string;
   feedback: string;
@@ -35,7 +35,6 @@ interface IntegerFieldProps extends PropsWithIsTabledRequiredAttribute {
   calcExpUpdated: boolean;
   onInputChange: (value: string) => void;
   onRepopulateSync: (newQrItem: QuestionnaireResponseItem | null) => unknown;
-  onBlur: () => void;
 }
 
 function IntegerField(props: IntegerFieldProps) {
@@ -48,14 +47,13 @@ function IntegerField(props: IntegerFieldProps) {
     calcExpUpdated,
     isTabled,
     onInputChange,
-    onRepopulateSync,
-    onBlur
+    onRepopulateSync
   } = props;
 
   const { displayPrompt, displayUnit, entryFormat, isRepopulatable } = renderingExtensions;
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
-  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
 
   let placeholderText = '0';
   if (displayPrompt) {
@@ -73,7 +71,6 @@ function IntegerField(props: IntegerFieldProps) {
       error={!!feedback}
       helperText={feedback}
       onChange={(event) => onInputChange(event.target.value)}
-      onBlur={onBlur}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       label={displayPrompt}
       placeholder={placeholderText}

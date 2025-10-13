@@ -16,14 +16,14 @@
  */
 
 import Autocomplete from '@mui/material/Autocomplete';
-import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
-import MuiTextField from '../TextItem/MuiTextField';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import type { Quantity } from 'fhir/r4';
-import { useRendererStylingStore } from '../../../stores';
+import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import { useRendererConfigStore } from '../../../stores';
+import MuiTextField from '../TextItem/MuiTextField';
 
-interface QuantityComparatorFieldProps extends PropsWithIsTabledRequiredAttribute {
+interface QuantityComparatorFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
   itemType: string;
   options: Quantity['comparator'][];
@@ -37,8 +37,8 @@ function QuantityComparatorField(props: QuantityComparatorFieldProps) {
   const { linkId, itemType, options, valueSelect, readOnly, onChange } = props;
   // TODO this component doesn't have a calcExpUpdated update animation
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
-  const hideQuantityComparatorField = useRendererStylingStore.use.hideQuantityComparatorField();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const hideQuantityComparatorField = useRendererConfigStore.use.hideQuantityComparatorField();
   if (hideQuantityComparatorField) {
     return null;
   }

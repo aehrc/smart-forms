@@ -17,11 +17,7 @@
 
 import { Box, Button, Dialog, DialogActions, DialogContent, Typography } from '@mui/material';
 import type { ItemToRepopulate } from '@aehrc/smart-forms-renderer';
-import {
-  repopulateResponse,
-  useQuestionnaireResponseStore,
-  useQuestionnaireStore
-} from '@aehrc/smart-forms-renderer';
+import { repopulateForm, repopulateResponse } from '@aehrc/smart-forms-renderer';
 import { useMemo, useState } from 'react';
 import type { RendererSpinner } from '../../renderer/types/rendererSpinner.ts';
 import StandardDialogTitle from '../../../components/Dialog/StandardDialogTitle.tsx';
@@ -38,16 +34,13 @@ import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 
 interface RepopulateSelectDialogProps {
   itemsToRepopulate: Record<string, ItemToRepopulate>;
+  repopulatedContext: Record<string, any>;
   onCloseDialog: () => void;
   onSpinnerChange: (newSpinner: RendererSpinner) => void;
 }
 
 function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
-  const { itemsToRepopulate, onCloseDialog, onSpinnerChange } = props;
-
-  const updatePopulatedProperties = useQuestionnaireStore.use.updatePopulatedProperties();
-  const setUpdatableResponseAsPopulated =
-    useQuestionnaireResponseStore.use.setUpdatableResponseAsPopulated();
+  const { itemsToRepopulate, repopulatedContext, onCloseDialog, onSpinnerChange } = props;
 
   // Categorise itemsToRepopulate by headings for visual grouping in the UI
   const itemsToRepopulateTuplesByHeadingsMap = useMemo(
@@ -55,17 +48,12 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
     [itemsToRepopulate]
   );
 
-  console.log(itemsToRepopulate);
-  console.log(itemsToRepopulateTuplesByHeadingsMap);
-  console.log(Object.fromEntries(itemsToRepopulateTuplesByHeadingsMap));
-
   // Exclude items with this criterion:
   // 1. A child item's current and server values are the same
   const allValidKeys: Set<string> = useMemo(
     () => getItemsToRepopulateValidKeys(itemsToRepopulateTuplesByHeadingsMap),
     [itemsToRepopulateTuplesByHeadingsMap]
   );
-  console.log(allValidKeys);
 
   const [selectedKeys, setSelectedKeys] = useState<Set<string>>(allValidKeys);
 
@@ -172,9 +160,14 @@ function RepopulateSelectDialog(props: RepopulateSelectDialogProps) {
       });
     });
 
+    // Re-populate filtered items into the QR
     const repopulatedResponse = repopulateResponse(filteredItemsToRepopulate);
-    const updatedResponse = await updatePopulatedProperties(repopulatedResponse, undefined, true);
-    setUpdatableResponseAsPopulated(updatedResponse);
+
+    // Re-run buildForm with the new populatedResponse and repopulatedContext from the $populate operation
+    repopulateForm({
+      questionnaireResponse: repopulatedResponse,
+      additionalContext: repopulatedContext
+    });
 
     onCloseDialog();
     enqueueSnackbar('Form re-populated', {

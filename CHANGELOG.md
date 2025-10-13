@@ -5,6 +5,82 @@ This log documents significant changes for the [@aehrc/smart-forms-renderer](htt
 
 Changelog only includes changes from version 0.36.0 onwards.
 
+## [1.0.0] - 2025-10-13
+_(WARNING: Major breaking changes with library API)_
+
+For smooth migration, a migration guide is provided at [MIGRATION-v1.0.md](MIGRATION-v1.0.md).
+
+### Changed
+
+#### `buildForm`, `QuestionnaireStore` and `QuestionnaireResponseStore` changes:
+- `buildForm()` and `useBuildForm()` now accept a `BuildFormParams` object instead of multiple parameters.
+- The `additionalVariables` parameter is replaced with `additionalContext`. Its usage remains the same - it is used to inject additional fhirPathContext variables.
+- A new library function `repopulateForm()` is added to repopulate the form with a new QuestionnaireResponse and/or additionalContext while preserving the current Questionnaire state. Its parameters are defined in the interface `RepopulateFormParams`.
+
+
+#### `QuestionnaireStore` and `QuestionnaireResponseStore` changes:
+- If you were previously calling `QuestionnaireStore.setPopulatedContext` to inject populatedContext into the renderer, you no longer need to do so. `buildForm()`, `useBuildForm()` and `repopulateForm()` will take care of it for you via the `additionalContext` parameter.
+- For pre-population/re-population, you do not need to call `QuestionnaireStore.updatePopulatedProperties` and `QuestionnaireResponseStore.setUpdatableResponseAsPopulated` anymore.  Both of these functions are now removed. `buildForm()`, `useBuildForm()` and `repopulateForm()` will take care of it for you.
+  ```
+  - // Remove these lines
+  - const updatedResponse = await updatePopulatedProperties(populatedResponse, populatedContext);
+  - setUpdatableResponseAsPopulated(updatedResponse);
+  -
+  - if (populatedContext) {
+  -   setPopulatedContext(populatedContext, true);
+  - }
+  
+  + // Re-run buildForm (or repopulateForm) with the new populatedResponse
+  + await buildForm({
+  +   questionnaire: sourceQuestionnaire,
+  +   questionnaireResponse: populatedResponse,
+  +   terminologyServerUrl: defaultTerminologyServerUrl,
+  +   additionalContext: populatedContext
+  + });
+  ```
+
+- `QuestionnaireStore.populatedContext` and `QuestionnaireStore.setPopulatedContext` are replaced with `QuestionnaireStore.additionalContext` and `QuestionnaireStore.setAdditionalContext` respectively. You most likely won't need to call `setAdditionalContext` manually.
+- It is still recommended to create your own wrapper function that calls `destroyForm()` to clean up states when the form is unmounted before calling `buildForm()` again.
+  ```
+  async function resetAndBuildForm(params: BuildFormParams) {
+    // Destroy previous questionnaire state before building a new one
+    destroyForm();
+  
+    // Build new questionnaire state
+    await buildForm(params);
+  }
+  ```
+
+#### RendererStylingStore changes
+- `RendererStylingStore` and interface `RendererStyling` are replaced with `RendererConfigStore` and `RendererConfig` respectively. This is purely a naming change.
+- `rendererConfigOptions` can now be passed into the renderer via `buildForm()` and `useBuildForm()`. You no longer need to call `setRendererConfigStore` manually.
+
+#### Misc hook/function changes
+- `useStringCalculatedExpression` and `useCodingCalculatedExpression` hooks are removed. CalculatedExpressions are now triggered via an internal task queue. If you are using these hooks in a component override, you can remove the hook safely.
+- `objectIsCoding` library function is removed.
+
+## [0.45.1] - 2025-02-25
+### Fixed
+- Fixed an issue where radio buttons and checkboxes are unreadable on mobile viewports.
+
+## [0.45.0] - 2025-02-18
+### Added
+- Added preferredTerminologyServer compatibility with valueUri.
+
+### Fixed
+- Increased renderer's tolerance when working with valueCoding without codes.
+
+## [0.44.4] - 2025-02-17
+### Fixed
+- Update dependencies to fix incompatible Node and dependency versions.
+
+## [0.44.3] - 2024-11-07
+### NPM-related
+- Bump version to set NPM tag to latest.
+
+## [0.44.2] - 2024-10-18
+### Fixed
+- Fixed an issue where inputs in checkbox open-choice's open label field does not update the QuestionnaireResponse.
 
 ## [0.44.1] - 2024-10-14
 ### Fixed

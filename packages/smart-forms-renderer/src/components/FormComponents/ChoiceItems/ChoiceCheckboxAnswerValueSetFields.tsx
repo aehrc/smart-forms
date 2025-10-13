@@ -15,16 +15,15 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import Typography from '@mui/material/Typography';
 import type {
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
-import { StyledAlert } from '../../Alert.styles';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import Typography from '@mui/material/Typography';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
+import { StyledAlert } from '../../Alert.styles';
 import CheckboxFormGroup from '../ItemParts/CheckboxFormGroup';
 
 interface ChoiceCheckboxAnswerValueSetFieldsProps {

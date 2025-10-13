@@ -6,13 +6,8 @@ export { default as useRenderingExtensions } from './useRenderingExtensions';
 export { default as useValidationFeedback } from './useValidationFeedback';
 export { default as useValueSetCodings } from './useValueSetCodings';
 
-// CalculatedExpression hooks
-export { default as useStringCalculatedExpression } from './useStringCalculatedExpression';
+// CalculatedExpression and cqf-expression hooks
 export { default as useDisplayCqfAndCalculatedExpression } from './useDisplayCqfAndCalculatedExpression';
-export {
-  default as useCodingCalculatedExpression,
-  objectIsCoding
-} from './useCodingCalculatedExpression';
 
 // Responsiveness-related hooks
 export { default as useResponsive } from './useResponsive';

@@ -208,7 +208,7 @@ export async function evaluateDynamicValueSets(
   processedValueSets: Record<string, ProcessedValueSet>,
   terminologyServerUrl: string
 ): Promise<{
-  processedValueSetsIsUpdated: boolean;
+  isUpdated: boolean;
   updatedProcessedValueSets: Record<string, ProcessedValueSet>;
   computedNewAnswers: ComputedNewAnswers;
 }> {
@@ -281,7 +281,7 @@ export async function evaluateDynamicValueSets(
   }
 
   return {
-    processedValueSetsIsUpdated: isUpdated,
+    isUpdated,
     updatedProcessedValueSets: processedValueSets,
     computedNewAnswers
   };

@@ -18,7 +18,7 @@
 import React, { memo } from 'react';
 import type { QuestionnaireItem } from 'fhir/r4';
 import Box from '@mui/material/Box';
-import { useRendererStylingStore } from '../../../stores/rendererStylingStore';
+import { useRendererConfigStore } from '../../../stores/rendererConfigStore';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import RequiredAsterisk from './RequiredAsterisk';
 import { getContextDisplays } from '../../../utils/tabs';
@@ -39,8 +39,8 @@ interface ItemLabelProps extends PropsWithParentStylesAttribute {
 const ItemLabel = memo(function ItemLabel(props: ItemLabelProps) {
   const { qItem, readOnly, isDisplayItem, parentStyles } = props;
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
-  const requiredIndicatorPosition = useRendererStylingStore.use.requiredIndicatorPosition();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const requiredIndicatorPosition = useRendererConfigStore.use.requiredIndicatorPosition();
 
   const { required, displayFlyover } = useRenderingExtensions(qItem);
   const contextDisplayItems = getContextDisplays(qItem);

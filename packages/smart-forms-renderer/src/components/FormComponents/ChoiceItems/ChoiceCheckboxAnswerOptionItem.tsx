@@ -15,42 +15,20 @@
  * limitations under the License.
  */
 
-import React from 'react';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { createEmptyQrItem } from '../../../utils/qrItem';
-import { updateChoiceCheckboxAnswers } from '../../../utils/choice';
-import { FullWidthFormComponentBox } from '../../Box.styles';
-import type {
-  PropsWithFeedbackFromParentAttribute,
-  PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
-  PropsWithItemPathAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithRenderingExtensionsAttribute
-} from '../../../interfaces/renderProps.interface';
-import DisplayInstructions from '../DisplayItem/DisplayInstructions';
-import useReadOnly from '../../../hooks/useReadOnly';
-import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
-import { useQuestionnaireStore } from '../../../stores';
-import ChoiceCheckboxAnswerOptionFields from './ChoiceCheckboxAnswerOptionFields';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
-import ItemLabel from '../ItemParts/ItemLabel';
 import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
+import useReadOnly from '../../../hooks/useReadOnly';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
+import { useQuestionnaireStore } from '../../../stores';
+import { updateChoiceCheckboxAnswers } from '../../../utils/choice';
+import { createEmptyQrItem } from '../../../utils/qrItem';
+import { FullWidthFormComponentBox } from '../../Box.styles';
+import DisplayInstructions from '../DisplayItem/DisplayInstructions';
+import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import ItemLabel from '../ItemParts/ItemLabel';
+import ChoiceCheckboxAnswerOptionFields from './ChoiceCheckboxAnswerOptionFields';
 
-interface ChoiceCheckboxAnswerOptionItemProps
-  extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
-    PropsWithIsRepeatedAttribute,
-    PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute,
-    PropsWithFeedbackFromParentAttribute,
-    PropsWithIsTabledAttribute {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
-}
-
-function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemProps) {
+function ChoiceCheckboxAnswerOptionItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
@@ -59,6 +37,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
+    calcExpUpdated,
     onQrItemChange
   } = props;
 
@@ -120,7 +99,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
           answers={answers}
           feedback={feedback}
           readOnly={readOnly}
-          expressionUpdated={answerOptionsToggleExpUpdated}
+          expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
           answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
           isTabled={isTabled}
           onCheckedChange={handleCheckedChange}
@@ -148,7 +127,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
             answers={answers}
             feedback={feedback}
             readOnly={readOnly}
-            expressionUpdated={answerOptionsToggleExpUpdated}
+            expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             isTabled={isTabled}
             onCheckedChange={handleCheckedChange}

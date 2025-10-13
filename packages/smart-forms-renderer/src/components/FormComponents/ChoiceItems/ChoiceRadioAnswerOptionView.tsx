@@ -15,13 +15,12 @@
  * limitations under the License.
  */
 
-import React from 'react';
-import ChoiceRadioAnswerOptionFields from './ChoiceRadioAnswerOptionFields';
+import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import type { PropsWithIsRepeatedAttribute } from '../../../interfaces/renderProps.interface';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
-import type { PropsWithIsRepeatedAttribute } from '../../../interfaces/renderProps.interface';
-import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import ItemLabel from '../ItemParts/ItemLabel';
+import ChoiceRadioAnswerOptionFields from './ChoiceRadioAnswerOptionFields';
 
 interface ChoiceRadioAnswerOptionViewProps extends PropsWithIsRepeatedAttribute {
   qItem: QuestionnaireItem;

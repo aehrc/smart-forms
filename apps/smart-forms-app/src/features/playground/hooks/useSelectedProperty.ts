@@ -15,22 +15,25 @@
  * limitations under the License.
  */
 
-import { useState } from 'react';
+function useSelectedProperty<T extends Record<string, () => any>>(
+  selectedPropKey: keyof T | string,
+  storeHooks: T
+): {
+  selectedPropVal: any;
+  allPropKeys: string[];
+} {
+  const valueMap = Object.fromEntries(
+    Object.keys(storeHooks).map((name) => [name, storeHooks[name as keyof T]()])
+  );
 
-/**
- * Custom React hook to manage validation feedback visibility based on user interaction with a form field (e.g., input or blur events).
- * Shows feedback after the field has been blurred at least once.
- */
-function useShowFeedback() {
-  const [showFeedback, setShowFeedback] = useState(true);
-  const [hasBlurred, setHasBlurred] = useState(false);
+  // Filter out keys whose values are functions
+  const allPropKeys = Object.keys(valueMap).filter((key) => typeof valueMap[key] !== 'function');
 
   return {
-    showFeedback,
-    setShowFeedback,
-    hasBlurred,
-    setHasBlurred
+    selectedPropVal:
+      selectedPropKey in valueMap ? valueMap[selectedPropKey as keyof typeof valueMap] : null,
+    allPropKeys: allPropKeys
   };
 }
 
-export default useShowFeedback;
+export default useSelectedProperty;

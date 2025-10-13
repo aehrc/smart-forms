@@ -16,13 +16,13 @@
  */
 
 import React from 'react';
-import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import type { Dayjs } from 'dayjs';
 import { LocalizationProvider, TimePicker as MuiTimePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { useRendererStylingStore } from '../../../stores';
+import { useRendererConfigStore } from '../../../stores';
 
-interface TimeFieldProps extends PropsWithIsTabledRequiredAttribute {
+interface TimeFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
   itemType: string;
   value: Dayjs | null;
@@ -36,7 +36,7 @@ function TimeField(props: TimeFieldProps) {
   const { linkId, itemType, value, displayPrompt, entryFormat, readOnly, isTabled, onTimeChange } =
     props;
 
-  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+  const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -53,6 +53,7 @@ function TimeField(props: TimeFieldProps) {
           textField: {
             fullWidth: true
           }
+          // EndAdornment not available here
         }}
         onChange={onTimeChange}
       />

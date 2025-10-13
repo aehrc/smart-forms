@@ -15,50 +15,37 @@
  * limitations under the License.
  */
 
-import React, { useMemo, useState } from 'react';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { createEmptyQrItem } from '../../../utils/qrItem';
-import { getOpenLabelText } from '../../../utils/extensions';
-import { getOldOpenLabelAnswer } from '../../../utils/openChoice';
-import { FullWidthFormComponentBox } from '../../Box.styles';
+import { useMemo, useState } from 'react';
+import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
+import useReadOnly from '../../../hooks/useReadOnly';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useValueSetCodings from '../../../hooks/useValueSetCodings';
+import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
+import { useQuestionnaireStore } from '../../../stores';
 import {
   convertCodingsToAnswerOptions,
   findInAnswerOptions,
   getQrChoiceValue
 } from '../../../utils/choice';
-import type {
-  PropsWithFeedbackFromParentAttribute,
-  PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
-  PropsWithItemPathAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithRenderingExtensionsAttribute
-} from '../../../interfaces/renderProps.interface';
-import OpenChoiceRadioAnswerValueSetFields from './OpenChoiceRadioAnswerValueSetFields';
-import useReadOnly from '../../../hooks/useReadOnly';
+import { getOpenLabelText } from '../../../utils/extensions';
+import { getOldOpenLabelAnswer } from '../../../utils/openChoice';
+import { createEmptyQrItem } from '../../../utils/qrItem';
+import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
-import { useQuestionnaireStore } from '../../../stores';
-import useValueSetCodings from '../../../hooks/useValueSetCodings';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import ItemLabel from '../ItemParts/ItemLabel';
-import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 import { sanitizeInput } from '../../../utils/inputSanitization';
+import OpenChoiceRadioAnswerValueSetFields from './OpenChoiceRadioAnswerValueSetFields';
 
-interface OpenChoiceRadioAnswerValueSetItemProps
-  extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
-    PropsWithIsRepeatedAttribute,
-    PropsWithParentIsReadOnlyAttribute,
-    PropsWithRenderingExtensionsAttribute,
-    PropsWithFeedbackFromParentAttribute,
-    PropsWithIsTabledAttribute {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
-}
-
-function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetItemProps) {
-  const { qItem, qrItem, parentIsReadOnly, feedbackFromParent, isTabled, onQrItemChange } = props;
+function OpenChoiceRadioAnswerValueSetItem(props: BaseItemProps) {
+  const {
+    qItem,
+    qrItem,
+    parentIsReadOnly,
+    feedbackFromParent,
+    isTabled,
+    calcExpUpdated,
+    onQrItemChange
+  } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
@@ -187,7 +174,9 @@ function OpenChoiceRadioAnswerValueSetItem(props: OpenChoiceRadioAnswerValueSetI
             openLabelSelected={openLabelSelected}
             feedback={feedback}
             readOnly={readOnly}
-            expressionUpdated={dynamicCodingsUpdated || answerOptionsToggleExpUpdated}
+            expressionUpdated={
+              calcExpUpdated || dynamicCodingsUpdated || answerOptionsToggleExpUpdated
+            }
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             terminologyError={terminologyError}
             isTabled={isTabled}

@@ -16,14 +16,14 @@
  */
 
 import InputAdornment from '@mui/material/InputAdornment';
-import { StandardTextField } from '../Textfield.styles';
-import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
-import { useRendererStylingStore } from '../../../stores';
+import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import { useRendererConfigStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
+import { StandardTextField } from '../Textfield.styles';
 
-interface QuantityFieldProps extends PropsWithIsTabledRequiredAttribute {
+interface QuantityFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
   itemType: string;
   input: string;
@@ -34,7 +34,6 @@ interface QuantityFieldProps extends PropsWithIsTabledRequiredAttribute {
   readOnly: boolean;
   calcExpUpdated: boolean;
   onInputChange: (value: string) => void;
-  onBlur: () => void;
 }
 
 function QuantityField(props: QuantityFieldProps) {
@@ -49,12 +48,11 @@ function QuantityField(props: QuantityFieldProps) {
     readOnly,
     calcExpUpdated,
     isTabled,
-    onInputChange,
-    onBlur
+    onInputChange
   } = props;
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
-  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
 
   let placeholderText = '0.0';
   if (displayPrompt) {
@@ -71,7 +69,6 @@ function QuantityField(props: QuantityFieldProps) {
       value={input}
       error={!!feedback}
       onChange={(event) => onInputChange(event.target.value)}
-      onBlur={onBlur}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       placeholder={placeholderText}
       fullWidth

@@ -27,8 +27,6 @@ import type { QrRepeatGroup } from '../../interfaces/repeatGroup.interface';
 import FormBodyPaginated from './FormBodyPaginated';
 import { Container } from '@mui/material';
 import { useFormUpdateQueueStore } from '../../stores/formUpdateQueueStore';
-import type { ItemPath } from '../../interfaces/itemPath.interface';
-import { createSingleItemPath } from '../../utils/itemPath';
 import dayjs from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
@@ -58,35 +56,27 @@ function BaseRenderer() {
 
   const responseKey = useQuestionnaireResponseStore.use.key();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
-  const replaceLatestFormUpdate = useFormUpdateQueueStore.use.replaceLatestFormUpdate();
+  const enqueueFormUpdate = useFormUpdateQueueStore.use.enqueueFormUpdate();
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(sourceQuestionnaire), [sourceQuestionnaire]);
 
-  function handleTopLevelQRItemSingleChange(
-    newTopLevelQRItem: QuestionnaireResponseItem,
-    targetItemPath?: ItemPath
-  ) {
+  function handleTopLevelQRItemSingleChange(newTopLevelQRItem: QuestionnaireResponseItem) {
     const updatedResponse: QuestionnaireResponse = structuredClone(updatableResponse);
 
     updateQrItemsInGroup(newTopLevelQRItem, null, updatedResponse, qItemsIndexMap);
 
-    replaceLatestFormUpdate({
-      questionnaireResponse: updatedResponse,
-      targetItemPath: targetItemPath
+    enqueueFormUpdate({
+      questionnaireResponse: updatedResponse
     });
   }
 
-  function handleTopLevelQRItemMultipleChange(
-    newTopLevelQRItems: QrRepeatGroup,
-    targetItemPath?: ItemPath
-  ) {
+  function handleTopLevelQRItemMultipleChange(newTopLevelQRItems: QrRepeatGroup) {
     const updatedResponse: QuestionnaireResponse = structuredClone(updatableResponse);
 
     updateQrItemsInGroup(null, newTopLevelQRItems, updatedResponse, qItemsIndexMap);
 
-    replaceLatestFormUpdate({
-      questionnaireResponse: updatedResponse,
-      targetItemPath: targetItemPath
+    enqueueFormUpdate({
+      questionnaireResponse: updatedResponse
     });
   }
 
@@ -94,7 +84,11 @@ function BaseRenderer() {
   const topLevelQRItems = structuredClone(updatableResponse.item) ?? [];
 
   if (!topLevelQItems) {
-    return <>Questionnaire does not have any items</>;
+    return (
+      <>
+        Questionnaire does not have any items or something has gone wrong. Try rebuilding the form.
+      </>
+    );
   }
 
   // If an item has multiple answers, it is a repeat group
@@ -108,10 +102,9 @@ function BaseRenderer() {
           <FormBodyPaginated
             topLevelQItems={topLevelQItems}
             topLevelQRItems={topLevelQRItemsByIndex}
-            itemPath={[]}
             parentIsReadOnly={readOnly}
-            onQrItemChange={(newTopLevelQRItem, targetItemPath) =>
-              handleTopLevelQRItemSingleChange(newTopLevelQRItem, targetItemPath)
+            onQrItemChange={(newTopLevelQRItem) =>
+              handleTopLevelQRItemSingleChange(newTopLevelQRItem)
             }
           />
         </Container>
@@ -132,12 +125,11 @@ function BaseRenderer() {
               topLevelQRItemOrItems={qrItemOrItems ?? null}
               parentIsReadOnly={readOnly}
               wholeFormIsPaginated={wholeFormIsPaginated}
-              itemPath={createSingleItemPath(qItem.linkId)}
-              onQrItemChange={(newTopLevelQRItem, targetItemPath) =>
-                handleTopLevelQRItemSingleChange(newTopLevelQRItem, targetItemPath)
+              onQrItemChange={(newTopLevelQRItem) =>
+                handleTopLevelQRItemSingleChange(newTopLevelQRItem)
               }
-              onQrRepeatGroupChange={(newTopLevelQRItems, targetItemPath) =>
-                handleTopLevelQRItemMultipleChange(newTopLevelQRItems, targetItemPath)
+              onQrRepeatGroupChange={(newTopLevelQRItems) =>
+                handleTopLevelQRItemMultipleChange(newTopLevelQRItems)
               }
             />
           );

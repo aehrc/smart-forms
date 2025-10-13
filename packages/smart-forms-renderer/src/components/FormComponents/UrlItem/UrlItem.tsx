@@ -27,7 +27,6 @@ import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
-import useShowFeedback from '../../../hooks/useShowFeedback';
 import { sanitizeInput } from '../../../utils/inputSanitization';
 
 function UrlItem(props: BaseItemProps) {
@@ -60,24 +59,11 @@ function UrlItem(props: BaseItemProps) {
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
-  // Provides a way to hide the feedback when the user is typing
-  const { showFeedback, setShowFeedback, hasBlurred, setHasBlurred } = useShowFeedback();
-
   // Event handlers
   function handleChange(newInput: string) {
     setInput(newInput);
 
-    // Only suppress feedback once (before first blur)
-    if (!hasBlurred) {
-      setShowFeedback(false);
-    }
-
     updateQrItemWithDebounce(newInput);
-  }
-
-  function handleBlur() {
-    setShowFeedback(true);
-    setHasBlurred(true); // From now on, feedback should stay visible
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -102,13 +88,12 @@ function UrlItem(props: BaseItemProps) {
         linkId={qItem.linkId}
         itemType={qItem.type}
         input={input}
-        feedback={showFeedback ? feedback : ''}
+        feedback={feedback ?? ''}
         displayPrompt={displayPrompt}
         displayUnit={displayUnit}
         entryFormat={entryFormat}
         readOnly={readOnly}
         onInputChange={handleChange}
-        onBlur={handleBlur}
         isTabled={isTabled}
       />
     );
@@ -128,17 +113,16 @@ function UrlItem(props: BaseItemProps) {
             linkId={qItem.linkId}
             itemType={qItem.type}
             input={input}
-            feedback={showFeedback ? feedback : ''}
+            feedback={feedback ?? ''}
             displayPrompt={displayPrompt}
             displayUnit={displayUnit}
             entryFormat={entryFormat}
             readOnly={readOnly}
             onInputChange={handleChange}
-            onBlur={handleBlur}
             isTabled={isTabled}
           />
         }
-        feedback={showFeedback ? feedback : undefined}
+        feedback={feedback ?? undefined}
       />
     </FullWidthFormComponentBox>
   );

@@ -25,30 +25,26 @@ import GroupItem from '../FormComponents/GroupItem/GroupItem';
 import { createEmptyQrGroup, updateQrItemsInGroup } from '../../utils/qrItem';
 import FormBodyTabListWrapper from '../Tabs/FormBodyTabListWrapper';
 import type {
-  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../interfaces/renderProps.interface';
-import { useQuestionnaireStore, useRendererStylingStore } from '../../stores';
+import { useQuestionnaireStore, useRendererConfigStore } from '../../stores';
 import type { GridProps } from '@mui/material/Grid';
-import { extendItemPath } from '../../utils/itemPath';
-import type { ItemPath } from '../../interfaces/itemPath.interface';
 
 interface FormBodyTabbedProps
   extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
     PropsWithParentIsReadOnlyAttribute {
   topLevelQItem: QuestionnaireItem;
   topLevelQRItem: QuestionnaireResponseItem | null;
 }
 
 function FormBodyTabbed(props: FormBodyTabbedProps) {
-  const { topLevelQItem, topLevelQRItem, itemPath, parentIsReadOnly, onQrItemChange } = props;
+  const { topLevelQItem, topLevelQRItem, parentIsReadOnly, onQrItemChange } = props;
 
   const tabs = useQuestionnaireStore.use.tabs();
   const currentTab = useQuestionnaireStore.use.currentTabIndex();
 
-  const tabListWidthOrResponsive = useRendererStylingStore.use.tabListWidthOrResponsive();
+  const tabListWidthOrResponsive = useRendererConfigStore.use.tabListWidthOrResponsive();
 
   const indexMap: Record<string, number> = useMemo(
     () => mapQItemsIndex(topLevelQItem),
@@ -60,9 +56,9 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
   const qItems = topLevelQItem.item;
   const qrItems = nonNullTopLevelQRItem.item;
 
-  function handleQrGroupChange(qrItem: QuestionnaireResponseItem, targetItemPath?: ItemPath) {
+  function handleQrGroupChange(qrItem: QuestionnaireResponseItem) {
     updateQrItemsInGroup(qrItem, null, nonNullTopLevelQRItem, indexMap);
-    onQrItemChange(nonNullTopLevelQRItem, targetItemPath);
+    onQrItemChange(nonNullTopLevelQRItem);
   }
 
   if (!qItems || !qrItems) {
@@ -122,7 +118,6 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
                   tabs={tabs}
                   currentTabIndex={currentTab}
                   parentIsReadOnly={parentIsReadOnly}
-                  itemPath={extendItemPath(itemPath, qItem.linkId)}
                   onQrItemChange={handleQrGroupChange}
                 />
               </TabPanel>

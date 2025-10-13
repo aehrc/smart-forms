@@ -22,16 +22,16 @@ import type { AutocompleteChangeReason } from '@mui/material/Autocomplete';
 import Autocomplete from '@mui/material/Autocomplete';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type {
-  PropsWithIsTabledRequiredAttribute,
+  PropsWithIsTabledAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
-import { useRendererStylingStore } from '../../../stores';
+import { useRendererConfigStore } from '../../../stores';
 import { StyledRequiredTypography } from '../Item.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 
 interface OpenChoiceSelectAnswerOptionFieldProps
-  extends PropsWithIsTabledRequiredAttribute,
+  extends PropsWithIsTabledAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithRenderingExtensionsAttribute {
   qItem: QuestionnaireItem;
@@ -57,8 +57,8 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
     onValueChange
   } = props;
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
-  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 

@@ -15,45 +15,20 @@
  * limitations under the License.
  */
 
-import React from 'react';
-import type {
-  QuestionnaireItem,
-  QuestionnaireItemAnswerOption,
-  QuestionnaireResponseItem
-} from 'fhir/r4';
+import type { AutocompleteChangeReason } from '@mui/material';
+import type { QuestionnaireItemAnswerOption } from 'fhir/r4';
+import useReadOnly from '../../../hooks/useReadOnly';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
+import { useQuestionnaireStore } from '../../../stores';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
-import type {
-  PropsWithFeedbackFromParentAttribute,
-  PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledRequiredAttribute,
-  PropsWithItemPathAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithRenderingExtensionsAttribute
-} from '../../../interfaces/renderProps.interface';
-import OpenChoiceSelectAnswerOptionField from './OpenChoiceSelectAnswerOptionField';
-import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
-import { useQuestionnaireStore } from '../../../stores';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import ItemLabel from '../ItemParts/ItemLabel';
-import type { AutocompleteChangeReason } from '@mui/material';
 import { sanitizeInput } from '../../../utils/inputSanitization';
+import OpenChoiceSelectAnswerOptionField from './OpenChoiceSelectAnswerOptionField';
 
-interface OpenChoiceSelectAnswerOptionItemProps
-  extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
-    PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledRequiredAttribute,
-    PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute,
-    PropsWithFeedbackFromParentAttribute {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
-}
-
-function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionItemProps) {
+function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
@@ -64,6 +39,7 @@ function OpenChoiceSelectAnswerOptionItem(props: OpenChoiceSelectAnswerOptionIte
     feedbackFromParent,
     onQrItemChange
   } = props;
+  // TODO no calcExpUpdated
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 

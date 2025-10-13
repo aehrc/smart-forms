@@ -1,14 +1,14 @@
-import type { ReactNode } from 'react';
 import Box from '@mui/material/Box';
 import RadioGroup from '@mui/material/RadioGroup';
-import { StyledRequiredTypography } from '../Item.styles';
-import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
-import RadioOptionList from './RadioOptionList';
-import ExpressionUpdateFadingIcon from './ExpressionUpdateFadingIcon';
-import ClearInputButton from './ClearInputButton';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import { useRendererStylingStore } from '../../../stores';
+import type { ReactNode } from 'react';
+import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
+import { useRendererConfigStore } from '../../../stores';
 import { getChoiceOrientation } from '../../../utils/choice';
+import { StyledRequiredTypography } from '../Item.styles';
+import ClearInputButton from './ClearInputButton';
+import ExpressionUpdateFadingIcon from './ExpressionUpdateFadingIcon';
+import RadioOptionList from './RadioOptionList';
 
 interface ChoiceRadioGroupProps {
   qItem: QuestionnaireItem;
@@ -39,8 +39,8 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
     children
   } = props;
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
-  const inputsFlexGrow = useRendererStylingStore.use.inputsFlexGrow();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const inputsFlexGrow = useRendererConfigStore.use.inputsFlexGrow();
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 

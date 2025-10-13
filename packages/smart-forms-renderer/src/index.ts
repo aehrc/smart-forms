@@ -43,8 +43,8 @@ export type {
   QuestionnaireResponseStoreType,
   SmartConfigStoreType,
   TerminologyServerStoreType,
-  RendererStyling,
-  RendererStylingStoreType
+  RendererConfig,
+  RendererConfigStoreType
 } from './stores';
 export {
   questionnaireStore,
@@ -55,8 +55,8 @@ export {
   useSmartConfigStore,
   terminologyServerStore,
   useTerminologyServerStore,
-  rendererStylingStore,
-  useRendererStylingStore
+  rendererConfigStore,
+  useRendererConfigStore
 } from './stores';
 
 // hooks exports
@@ -69,17 +69,15 @@ export {
   useRenderingExtensions,
   useValidationFeedback,
   useValueSetCodings,
-  useStringCalculatedExpression,
   useDisplayCqfAndCalculatedExpression,
-  useCodingCalculatedExpression,
-  objectIsCoding,
   useResponsive
 } from './hooks';
 
 // utils exports
-export type { ItemToRepopulate } from './utils';
+export type { ItemToRepopulate, BuildFormParams, RepopulateFormParams } from './utils';
 export {
   buildForm,
+  repopulateForm,
   destroyForm,
   getResponse,
   removeEmptyAnswersFromResponse,
@@ -119,7 +117,3 @@ export {
   tableOverride,
   rendererThemeOptions
 } from './theme';
-
-// wrapper exports - only for smartforms.csiro.au/standalone use
-export type { InitialiseFormWrapperProps } from './stories/storybookWrappers';
-export { InitialiseFormWrapperForStorybook } from './stories/storybookWrappers';

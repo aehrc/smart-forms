@@ -18,7 +18,7 @@
 import InputAdornment from '@mui/material/InputAdornment';
 import MuiTextField from './MuiTextField';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
-import { useRendererStylingStore } from '../../../stores';
+import { useRendererConfigStore } from '../../../stores';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type { RenderingExtensions } from '../../../hooks/useRenderingExtensions';
@@ -33,7 +33,6 @@ interface TextFieldProps {
   calcExpUpdated: boolean;
   onInputChange: (value: string) => void;
   onRepopulateSync: (newQrItem: QuestionnaireResponseItem | null) => unknown;
-  onBlur: () => void;
 }
 
 function TextField(props: TextFieldProps) {
@@ -45,13 +44,12 @@ function TextField(props: TextFieldProps) {
     readOnly,
     calcExpUpdated,
     onInputChange,
-    onRepopulateSync,
-    onBlur
+    onRepopulateSync
   } = props;
 
   const { displayPrompt, displayUnit, entryFormat, isRepopulatable } = renderingExtensions;
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
 
   return (
     <MuiTextField
@@ -59,7 +57,6 @@ function TextField(props: TextFieldProps) {
       value={input}
       error={!!feedback}
       onChange={(event) => onInputChange(event.target.value)}
-      onBlur={onBlur}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       placeholder={entryFormat || displayPrompt}
       fullWidth
