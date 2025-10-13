@@ -26,17 +26,14 @@ import GridRow from './GridRow';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { getQrItemsIndex } from '../../../utils/mapItem';
 import type {
-  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentStylesAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import { extendItemPath } from '../../../utils/itemPath';
 import { default as parseStyleToJs } from 'style-to-js';
 
 interface GridTableProps
   extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithParentStylesAttribute {
   qItems: QuestionnaireItem[];
@@ -56,7 +53,7 @@ function GridTable(props: GridTableProps) {
     qItemsIndexMap,
     columnHeaders,
     calculatedColumnWidths,
-    itemPath,
+
     parentIsReadOnly,
     parentStyles,
     onQrItemChange
@@ -112,7 +109,6 @@ function GridTable(props: GridTableProps) {
                 qrItem={qrItem ?? null}
                 columnHeaderLabels={columnHeaderLabels}
                 calculatedColumnWidths={calculatedColumnWidths}
-                itemPath={extendItemPath(itemPath, qItem.linkId)}
                 parentIsReadOnly={parentIsReadOnly}
                 parentStyles={parentStyles}
                 onQrItemChange={onQrItemChange}

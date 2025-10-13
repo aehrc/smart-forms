@@ -21,7 +21,6 @@ import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledRequiredAttribute,
-  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentStylesAttribute,
   PropsWithQrItemChangeHandler
@@ -42,11 +41,9 @@ import {
 import useReadOnly from '../../../hooks/useReadOnly';
 import Box from '@mui/material/Box';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
-import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
 interface SingleItemViewProps
   extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledRequiredAttribute,
     PropsWithParentIsReadOnlyAttribute,
@@ -57,17 +54,14 @@ interface SingleItemViewProps
   itemIsHidden: boolean;
   itemHasNestedItems: boolean;
   groupCardElevation: number;
-  onQrItemChangeWithNestedItems: (
-    qrItem: QuestionnaireResponseItem,
-    targetItemPath?: ItemPath
-  ) => void;
+  onQrItemChangeWithNestedItems: (qrItem: QuestionnaireResponseItem) => void;
 }
 
 function SingleItemView(props: SingleItemViewProps) {
   const {
     qItem,
     qrItem,
-    itemPath,
+
     itemIsHidden,
     itemHasNestedItems,
     isRepeated,
@@ -107,7 +101,6 @@ function SingleItemView(props: SingleItemViewProps) {
                 <SingleItemSwitcher
                   qItem={qItem}
                   qrItem={qrItem}
-                  itemPath={itemPath}
                   isRepeated={isRepeated}
                   isTabled={isTabled}
                   renderingExtensions={renderingExtensions}
@@ -126,7 +119,6 @@ function SingleItemView(props: SingleItemViewProps) {
               <SingleNestedItems
                 qItem={qItem}
                 qrItem={qrItem}
-                itemPath={itemPath}
                 groupCardElevation={groupCardElevation}
                 parentIsReadOnly={readOnly}
                 onQrItemChange={onQrItemChangeWithNestedItems}
@@ -151,7 +143,6 @@ function SingleItemView(props: SingleItemViewProps) {
           <SingleItemSwitcher
             qItem={qItem}
             qrItem={qrItem}
-            itemPath={itemPath}
             isRepeated={isRepeated}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
@@ -163,7 +154,6 @@ function SingleItemView(props: SingleItemViewProps) {
           <SingleNestedItems
             qItem={qItem}
             qrItem={qrItem}
-            itemPath={itemPath}
             groupCardElevation={groupCardElevation}
             parentIsReadOnly={readOnly}
             onQrItemChange={onQrItemChangeWithNestedItems}
@@ -183,7 +173,6 @@ function SingleItemView(props: SingleItemViewProps) {
       parentIsReadOnly={readOnly}
       feedbackFromParent={feedbackFromParent}
       parentStyles={parentStyles}
-      itemPath={itemPath}
       onQrItemChange={onQrItemChange}
     />
   );

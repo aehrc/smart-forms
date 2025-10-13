@@ -30,7 +30,7 @@ function OpenChoiceItemSwitcher(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
-    itemPath,
+
     isRepeated,
     isTabled,
     renderingExtensions,
@@ -47,7 +47,6 @@ function OpenChoiceItemSwitcher(props: BaseItemProps) {
           <OpenChoiceCheckboxAnswerValueSetItem
             qItem={qItem}
             qrItem={qrItem}
-            itemPath={itemPath}
             isRepeated={qItem.repeats ?? false}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
@@ -62,7 +61,6 @@ function OpenChoiceItemSwitcher(props: BaseItemProps) {
           <OpenChoiceCheckboxAnswerOptionItem
             qItem={qItem}
             qrItem={qrItem}
-            itemPath={itemPath}
             isRepeated={qItem.repeats ?? false}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
@@ -79,7 +77,6 @@ function OpenChoiceItemSwitcher(props: BaseItemProps) {
           <OpenChoiceRadioAnswerValueSetItem
             qItem={qItem}
             qrItem={qrItem}
-            itemPath={itemPath}
             isRepeated={qItem.repeats ?? false}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
@@ -94,7 +91,6 @@ function OpenChoiceItemSwitcher(props: BaseItemProps) {
           <OpenChoiceRadioAnswerOptionItem
             qItem={qItem}
             qrItem={qrItem}
-            itemPath={itemPath}
             isRepeated={qItem.repeats ?? false}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
@@ -110,7 +106,6 @@ function OpenChoiceItemSwitcher(props: BaseItemProps) {
         <OpenChoiceAutocompleteItem
           qItem={qItem}
           qrItem={qrItem}
-          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -126,7 +121,6 @@ function OpenChoiceItemSwitcher(props: BaseItemProps) {
           <OpenChoiceSelectAnswerValueSetItem
             qItem={qItem}
             qrItem={qrItem}
-            itemPath={itemPath}
             isRepeated={isRepeated}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
@@ -141,7 +135,6 @@ function OpenChoiceItemSwitcher(props: BaseItemProps) {
           <OpenChoiceSelectAnswerOptionItem
             qItem={qItem}
             qrItem={qrItem}
-            itemPath={itemPath}
             isRepeated={isRepeated}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}

@@ -20,7 +20,6 @@ import type { QuestionnaireResponse } from 'fhir/r4';
 import { questionnaireStore } from './questionnaireStore';
 import { useQuestionnaireResponseStore } from './questionnaireResponseStore';
 import { createSelectors } from './selector';
-import type { ItemPath } from '../interfaces/itemPath.interface';
 
 /**
  * A single form update task, representing a `QuestionnaireResponse` that should be processed.
@@ -28,9 +27,6 @@ import type { ItemPath } from '../interfaces/itemPath.interface';
 export interface UpdateTask {
   /** The `QuestionnaireResponse` snapshot used to evaluate calculated expressions */
   questionnaireResponse: QuestionnaireResponse;
-
-  /** Optional path to the item that triggered the update. This can be really useful in the future as it provides the FHIRPath string */
-  targetItemPath?: ItemPath;
 
   /**
    * Optional flag indicating this update is the first update upon pre-population and form build.

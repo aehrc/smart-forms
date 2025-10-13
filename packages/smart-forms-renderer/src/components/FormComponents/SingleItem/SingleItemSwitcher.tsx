@@ -22,7 +22,6 @@ import type {
   PropsWithFeedbackFromParentAttribute,
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledRequiredAttribute,
-  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentStylesAttribute,
   PropsWithQrItemChangeHandler,
@@ -48,7 +47,6 @@ import UrlItem from '../UrlItem/UrlItem';
 
 interface SingleItemSwitcherProps
   extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
     PropsWithIsTabledRequiredAttribute,
     PropsWithRenderingExtensionsAttribute,
@@ -63,7 +61,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
   const {
     qItem,
     qrItem,
-    itemPath,
+
     isRepeated,
     isTabled,
     renderingExtensions,
@@ -90,7 +88,6 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         key={answerKey}
         qItem={qItem}
         qrItem={qrItem}
-        itemPath={itemPath}
         isRepeated={isRepeated}
         isTabled={isTabled}
         renderingExtensions={renderingExtensions}
@@ -121,7 +118,6 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           key={answerKey}
           qItem={qItem}
           qrItem={qrItem}
-          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -138,7 +134,6 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           key={answerKey}
           qItem={qItem}
           qrItem={qrItem}
-          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -156,7 +151,6 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
             key={answerKey}
             qItem={qItem}
             qrItem={qrItem}
-            itemPath={itemPath}
             isRepeated={isRepeated}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
@@ -174,7 +168,6 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           key={answerKey}
           qItem={qItem}
           qrItem={qrItem}
-          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -191,7 +184,6 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           key={answerKey}
           qItem={qItem}
           qrItem={qrItem}
-          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -208,7 +200,6 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           key={answerKey}
           qItem={qItem}
           qrItem={qrItem}
-          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -225,7 +216,6 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           key={answerKey}
           qItem={qItem}
           qrItem={qrItem}
-          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -242,7 +232,6 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           key={answerKey}
           qItem={qItem}
           qrItem={qrItem}
-          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -259,7 +248,6 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           key={answerKey}
           qItem={qItem}
           qrItem={qrItem}
-          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -276,7 +264,6 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           key={answerKey}
           qItem={qItem}
           qrItem={qrItem}
-          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -293,7 +280,6 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           key={answerKey}
           qItem={qItem}
           qrItem={qrItem}
-          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -310,7 +296,6 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           key={answerKey}
           qItem={qItem}
           qrItem={qrItem}
-          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -327,7 +312,6 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           key={answerKey}
           qItem={qItem}
           qrItem={qrItem}
-          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -345,7 +329,6 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           key={answerKey}
           qItem={qItem}
           qrItem={qrItem}
-          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -362,7 +345,6 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
           key={answerKey}
           qItem={qItem}
           qrItem={qrItem}
-          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}

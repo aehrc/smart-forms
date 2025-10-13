@@ -21,7 +21,6 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { mapQItemsIndex } from '../../../utils/mapItem';
 import type {
   PropsWithIsRepeatedAttribute,
-  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrRepeatGroupChangeHandler
 } from '../../../interfaces/renderProps.interface';
@@ -33,7 +32,6 @@ import useGroupTableRows from '../../../hooks/useGroupTableRows';
 import { flushSync } from 'react-dom';
 import { generateNewRepeatId } from '../../../utils/repeatId';
 import useInitialiseGroupTableRows from '../../../hooks/useInitialiseGroupTableRows';
-import type { ItemPath } from '../../../interfaces/itemPath.interface';
 import { isItemHidden } from '../../../utils/qItem';
 import { useQuestionnaireStore, useRendererConfigStore } from '../../../stores';
 import { getColumnWidth } from '../../../utils/extensions';
@@ -42,7 +40,6 @@ import { useResizeColumns } from '../../../hooks/useResizeColumns';
 
 interface GroupTableProps
   extends PropsWithQrRepeatGroupChangeHandler,
-    PropsWithItemPathAttribute,
     PropsWithIsRepeatedAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
@@ -61,7 +58,7 @@ function GroupTable(props: GroupTableProps) {
   const {
     qItem,
     qrItems,
-    itemPath,
+
     groupCardElevation,
     isRepeated,
     parentIsReadOnly,
@@ -141,11 +138,7 @@ function GroupTable(props: GroupTableProps) {
   }
 
   // Event Handlers
-  function handleRowChange(
-    newQrRow: QuestionnaireResponseItem,
-    index: number,
-    targetItemPath?: ItemPath
-  ) {
+  function handleRowChange(newQrRow: QuestionnaireResponseItem, index: number) {
     const updatedTableRows = [...tableRows];
 
     if (newQrRow.item) {
@@ -158,14 +151,10 @@ function GroupTable(props: GroupTableProps) {
 
     setTableRows(updatedTableRows);
 
-    // Include targetItemPath because an answer is changed
-    onQrRepeatGroupChange(
-      {
-        linkId: qItem.linkId,
-        qrItems: getGroupTableItemsToUpdate(updatedTableRows, selectedIds)
-      },
-      targetItemPath
-    );
+    onQrRepeatGroupChange({
+      linkId: qItem.linkId,
+      qrItems: getGroupTableItemsToUpdate(updatedTableRows, selectedIds)
+    });
   }
 
   function handleRemoveRow(index: number) {
@@ -178,7 +167,6 @@ function GroupTable(props: GroupTableProps) {
 
     setTableRows(updatedTableRows);
 
-    // Don't need to include targetItemPath, only include targetItemPath if an answer is changed
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
       qrItems: getGroupTableItemsToUpdate(updatedTableRows, updatedSelectedIds)
@@ -204,7 +192,6 @@ function GroupTable(props: GroupTableProps) {
       selectedIds.length === tableRows.length ? [] : tableRows.map((tableRow) => tableRow.id);
     setSelectedIds(updatedTableIds);
 
-    // Don't need to include targetItemPath, only include targetItemPath if an answer is changed
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
       qrItems: getGroupTableItemsToUpdate(tableRows, updatedTableIds)
@@ -223,7 +210,6 @@ function GroupTable(props: GroupTableProps) {
 
     setSelectedIds(updatedSelectedIds);
 
-    // Don't need to include targetItemPath, only include targetItemPath if an answer is changed
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
       qrItems: getGroupTableItemsToUpdate(tableRows, updatedSelectedIds)
@@ -236,7 +222,6 @@ function GroupTable(props: GroupTableProps) {
       setTableRows(newTableRows);
     });
 
-    // Don't need to include targetItemPath, only include targetItemPath if an answer is changed
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
       qrItems: getGroupTableItemsToUpdate(newTableRows, selectedIds)
@@ -248,7 +233,6 @@ function GroupTable(props: GroupTableProps) {
       <GroupTableView
         qItem={qItem}
         qItemsIndexMap={qItemsIndexMap}
-        itemPath={itemPath}
         groupCardElevation={groupCardElevation}
         isRepeated={isRepeated}
         readOnly={readOnly}

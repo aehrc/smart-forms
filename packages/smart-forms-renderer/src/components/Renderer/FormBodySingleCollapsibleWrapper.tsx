@@ -20,7 +20,6 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import GroupItem from '../FormComponents/GroupItem/GroupItem';
 import FormBodySingleCollapsible from './FormBodySingleCollapsible';
 import type {
-  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../interfaces/renderProps.interface';
@@ -28,7 +27,6 @@ import useHidden from '../../hooks/useHidden';
 
 interface FormBodySingleCollapsibleProps
   extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
@@ -44,7 +42,7 @@ function FormBodySingleCollapsibleWrapper(props: FormBodySingleCollapsibleProps)
     index,
     selectedIndex,
     parentIsReadOnly,
-    itemPath,
+
     onToggleExpand,
     onQrItemChange
   } = props;
@@ -64,7 +62,6 @@ function FormBodySingleCollapsibleWrapper(props: FormBodySingleCollapsibleProps)
       <GroupItem
         qItem={qItem}
         qrItem={qrItem}
-        itemPath={itemPath}
         isRepeated={true}
         groupCardElevation={1}
         parentIsReadOnly={parentIsReadOnly}

@@ -31,7 +31,7 @@ function ChoiceItemSwitcher(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
-    itemPath,
+
     isRepeated,
     isTabled,
     renderingExtensions,
@@ -50,7 +50,6 @@ function ChoiceItemSwitcher(props: BaseItemProps) {
           <ChoiceRadioAnswerOptionItem
             qItem={qItem}
             qrItem={qrItem}
-            itemPath={itemPath}
             isRepeated={isRepeated}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
@@ -65,7 +64,6 @@ function ChoiceItemSwitcher(props: BaseItemProps) {
           <ChoiceRadioAnswerValueSetItem
             qItem={qItem}
             qrItem={qrItem}
-            itemPath={itemPath}
             isRepeated={isRepeated}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
@@ -82,7 +80,6 @@ function ChoiceItemSwitcher(props: BaseItemProps) {
           <ChoiceCheckboxAnswerOptionItem
             qItem={qItem}
             qrItem={qrItem}
-            itemPath={itemPath}
             isRepeated={qItem.repeats ?? false}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
@@ -97,7 +94,6 @@ function ChoiceItemSwitcher(props: BaseItemProps) {
           <ChoiceCheckboxAnswerValueSetItem
             qItem={qItem}
             qrItem={qrItem}
-            itemPath={itemPath}
             isRepeated={qItem.repeats ?? false}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
@@ -113,7 +109,6 @@ function ChoiceItemSwitcher(props: BaseItemProps) {
         <ChoiceAutocompleteItem
           qItem={qItem}
           qrItem={qrItem}
-          itemPath={itemPath}
           isRepeated={isRepeated}
           isTabled={isTabled}
           renderingExtensions={renderingExtensions}
@@ -129,7 +124,6 @@ function ChoiceItemSwitcher(props: BaseItemProps) {
           <ChoiceSelectAnswerOptionItem
             qItem={qItem}
             qrItem={qrItem}
-            itemPath={itemPath}
             isRepeated={isRepeated}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
@@ -144,7 +138,6 @@ function ChoiceItemSwitcher(props: BaseItemProps) {
           <ChoiceSelectAnswerValueSetItem
             qItem={qItem}
             qrItem={qrItem}
-            itemPath={itemPath}
             isRepeated={isRepeated}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
