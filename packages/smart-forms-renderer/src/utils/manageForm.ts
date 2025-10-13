@@ -139,12 +139,18 @@ export async function buildForm(params: BuildFormParams): Promise<void> {
   // Set initialised QuestionnaireResponse as the source response in the store
   questionnaireResponseStore.getState().buildSourceResponse(initialisedQuestionnaireResponse);
 
-  // Enqueue an initial form update to process expressions
-  // Important: isInitialUpdate must be set to true
-  formUpdateQueueStore.getState().enqueueFormUpdate({
-    questionnaireResponse: initialisedQuestionnaireResponse,
-    isInitialUpdate: true
-  });
+  // Process expressions asynchronously
+  await questionnaireStore.getState().updateExpressions(initialisedQuestionnaireResponse, true);
+
+  // Reset tabs and pages to the first tab/page if needed
+  // If anyone requests for an option to preserve navigation state in the future, we can add a parameter for it
+  const { currentTabIndex, currentPageIndex } = questionnaireStore.getState();
+  if (currentTabIndex !== 0) {
+    questionnaireStore.getState().resetToFirstVisibleTab();
+  }
+  if (currentPageIndex !== 0) {
+    questionnaireStore.getState().resetToFirstVisiblePage();
+  }
 }
 
 /**
