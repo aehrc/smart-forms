@@ -29,7 +29,7 @@
     "@typescript-eslint/parser": "^8.44.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
-    "eslint-plugin-react-refresh": "^0.4.20",
+    "eslint-plugin-react-refresh": "^0.4.23",
     "globals": "^16.4.0"
   }
 }
