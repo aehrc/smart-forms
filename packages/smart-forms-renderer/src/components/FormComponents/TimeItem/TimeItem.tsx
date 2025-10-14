@@ -83,6 +83,7 @@ function TimeItem(props: BaseItemProps) {
     <FullWidthFormComponentBox
       data-test="q-item-time-box"
       data-linkid={qItem.linkId}
+      data-label={qItem.text}
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid
         qItem={qItem}

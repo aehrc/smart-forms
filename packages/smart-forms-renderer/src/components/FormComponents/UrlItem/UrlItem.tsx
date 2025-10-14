@@ -102,6 +102,7 @@ function UrlItem(props: BaseItemProps) {
     <FullWidthFormComponentBox
       data-test="q-item-url-box"
       data-linkid={qItem.linkId}
+      data-label={qItem.text}
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid
         qItem={qItem}

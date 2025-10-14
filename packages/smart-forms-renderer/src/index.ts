@@ -1,6 +1,8 @@
 // Import self-host typography Inter font
 import '@fontsource/inter';
+import * as testUtils from './stories/testUtils';
 
+export { testUtils };
 // interface exports
 export type {
   Tab,

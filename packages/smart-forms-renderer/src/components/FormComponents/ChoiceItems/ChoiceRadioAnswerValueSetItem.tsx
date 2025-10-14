@@ -106,6 +106,7 @@ function ChoiceRadioAnswerValueSetItem(props: BaseItemProps) {
     <FullWidthFormComponentBox
       data-test="q-item-choice-radio-answer-value-set-box"
       data-linkid={qItem.linkId}
+      data-label={qItem.text}
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid
         qItem={qItem}

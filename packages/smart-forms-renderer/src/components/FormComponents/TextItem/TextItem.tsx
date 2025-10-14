@@ -115,6 +115,7 @@ function TextItem(props: BaseItemProps) {
     <FullWidthFormComponentBox
       data-test="q-item-text-box"
       data-linkid={qItem.linkId}
+      data-label={qItem.text}
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid
         qItem={qItem}

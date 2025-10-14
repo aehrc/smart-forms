@@ -195,6 +195,7 @@ function GroupTableView(props: GroupTableViewProps) {
       isRepeated={false}
       py={3}
       data-linkid={qItem.linkId}
+      data-label={qItem.text}
       onClick={() => onFocusLinkId(qItem.linkId)}
       style={parentStyles || undefined}>
       {itemTextToDisplay ? (

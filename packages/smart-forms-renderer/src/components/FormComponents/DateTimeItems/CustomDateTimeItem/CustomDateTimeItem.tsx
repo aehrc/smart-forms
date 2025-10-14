@@ -202,6 +202,7 @@ function CustomDateTimeItem(props: BaseItemProps) {
     <FullWidthFormComponentBox
       data-test="q-item-datetime-box"
       data-linkid={qItem.linkId}
+      data-label={qItem.text}
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid
         qItem={qItem}

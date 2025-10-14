@@ -85,6 +85,7 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
     <FullWidthFormComponentBox
       data-test="q-item-choice-select-answer-option-box"
       data-linkid={qItem.linkId}
+      data-label={qItem.text}
       onClick={onFocusLinkId}>
       <ItemFieldGrid
         qItem={qItem}

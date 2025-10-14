@@ -21,7 +21,7 @@ import { qOpenChoiceAnswerAutoCompleteFromValueSet } from '../assets/questionnai
 import {
   checkRadioOption,
   chooseSelectOption,
-  findByLinkId,
+  findByLinkIdOrLabel,
   getAnswers,
   inputOpenChoiceOtherText,
   itemControlExtFactory,
@@ -97,7 +97,7 @@ export const OpenChoiceAnswerOptionBasic: Story = {
     await new Promise((resolve) => setTimeout(resolve, 500));
     const resultAfterClear = await getAnswers(targetLinkId);
     expect(resultAfterClear).toHaveLength(0);
-    const elementAfterClear = await findByLinkId(canvasElement, targetLinkId);
+    const elementAfterClear = await findByLinkIdOrLabel(canvasElement, targetLinkId);
     const input = elementAfterClear.querySelector('input');
 
     expect(input).not.toBeChecked();
@@ -127,7 +127,7 @@ export const OpenChoiceAnswerOptionBasicOther: Story = {
     const qrAfterClear = await getAnswers(targetOtherLinkid);
     expect(qrAfterClear).toHaveLength(0);
 
-    const resultAfterClear = await findByLinkId(canvasElement, targetLinkId);
+    const resultAfterClear = await findByLinkIdOrLabel(canvasElement, targetLinkId);
     const input = resultAfterClear.querySelector('textarea');
     expect(input?.value).toBe('');
   }
@@ -183,7 +183,7 @@ export const OpenChoiceAnswerValueSetBasic: Story = {
     const qrAfterClear = await getAnswers('state');
     expect(qrAfterClear).toHaveLength(0);
 
-    const resultAfterClear = await findByLinkId(canvasElement, targetOperResId);
+    const resultAfterClear = await findByLinkIdOrLabel(canvasElement, targetOperResId);
     const input = resultAfterClear.querySelector('input');
     expect(input).not.toBeChecked();
   }
@@ -206,7 +206,7 @@ export const OpenChoiceAnswerValueSetBasicResponse: Story = {
     questionnaireResponse: qrOpenChoiceAnswerValueSetBasicResponse
   },
   play: async ({ canvasElement }) => {
-    const element = await findByLinkId(canvasElement, targetOperResId);
+    const element = await findByLinkIdOrLabel(canvasElement, targetOperResId);
     const input = element.querySelector(
       'div[data-test="q-item-radio-open-label-box"] textarea'
     ) as HTMLTextAreaElement;

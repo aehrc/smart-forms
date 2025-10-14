@@ -21,7 +21,7 @@ import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperF
 import {
   checkCheckBox,
   checkRadioOption,
-  findByLinkId,
+  findByLinkIdOrLabel,
   getAnswers,
   getInputText,
   itemControlExtFactory,
@@ -86,7 +86,7 @@ export const BooleanBasic: Story = {
     const resultAfterClear = await getAnswers(targetLinkId);
     expect(resultAfterClear).toHaveLength(0);
 
-    const elementAfterClear = await findByLinkId(canvasElement, targetLinkId);
+    const elementAfterClear = await findByLinkIdOrLabel(canvasElement, targetLinkId);
     const input = elementAfterClear.querySelector('input');
     expect(input).not.toBeChecked();
   }
@@ -145,7 +145,7 @@ export const BooleanCheckboxBasic: Story = {
     const resultAfterClear = await getAnswers(targetLinkId);
     expect(resultAfterClear).toHaveLength(0);
 
-    const elementAfterClear = await findByLinkId(canvasElement, targetLinkId);
+    const elementAfterClear = await findByLinkIdOrLabel(canvasElement, targetLinkId);
     const input = elementAfterClear.querySelector('input');
     expect(input).not.toBeChecked();
   }
@@ -157,7 +157,7 @@ export const BooleanCheckboxResponse: Story = {
     questionnaireResponse: qrBooleanCheckboxResponse
   },
   play: async ({ canvasElement }) => {
-    const element = await findByLinkId(canvasElement, targetLinkId);
+    const element = await findByLinkIdOrLabel(canvasElement, targetLinkId);
     const input = element.querySelector('input');
 
     expect(input).toBeChecked();
