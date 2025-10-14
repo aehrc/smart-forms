@@ -33,7 +33,6 @@ function ChoiceRadioAnswerValueSetItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
-
     isRepeated,
     isTabled,
     parentIsReadOnly,

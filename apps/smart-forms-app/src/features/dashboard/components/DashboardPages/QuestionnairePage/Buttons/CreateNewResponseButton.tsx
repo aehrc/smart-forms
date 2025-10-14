@@ -62,6 +62,10 @@ function CreateNewResponseButton() {
         disabled={buttonIsDisabled}
         color="secondary"
         onClick={handleClick}
+        sx={{
+          minWidth: 40,
+          minHeight: 40
+        }}
         data-test="button-create-response">
         {isLoading ? (
           <CircularProgress size={20} color="inherit" sx={{ mb: 0.5 }} />

@@ -44,7 +44,6 @@ function GroupTableRowCells(props: GroupTableRowCellsProps) {
     qItemsIndexMap,
     visibleItemLabels,
     calculatedColumnWidths,
-
     parentIsReadOnly,
     onQrItemChange
   } = props;

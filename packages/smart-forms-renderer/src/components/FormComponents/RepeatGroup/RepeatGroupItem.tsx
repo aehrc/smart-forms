@@ -46,7 +46,6 @@ function RepeatGroupItem(props: RepeatGroupItemProps) {
     answeredQrItem,
     nullableQrItem,
     numOfRepeatGroups,
-
     groupCardElevation,
     parentIsReadOnly,
     onRemoveItem,
