@@ -23,7 +23,6 @@ vi.mock('fhirclient', () => ({
 
 export async function getAnswerRecursiveByLabel(text: string) {
   const qr = questionnaireResponseStore.getState().updatableResponse;
-  console.log(1);
   const result = await evaluate(
     qr,
     `QuestionnaireResponse.repeat(item).where((text = '${text}')).answer`
