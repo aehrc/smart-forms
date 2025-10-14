@@ -1,6 +1,6 @@
-# Interface: RendererStylingStoreType
+# Interface: RendererConfigStoreType
 
-RendererStylingStore properties and methods
+RendererConfigStore properties and methods
 
 ## Properties
 
@@ -86,15 +86,15 @@ RendererStylingStore properties and methods
 
 ***
 
-### setRendererStyling()
+### setRendererConfig()
 
-> **setRendererStyling**: (`params`) => `void`
+> **setRendererConfig**: (`params`) => `void`
 
 #### Parameters
 
 | Parameter | Type |
 | ------ | ------ |
-| `params` | [`RendererStyling`](RendererStyling.md) |
+| `params` | [`RendererConfig`](RendererConfig.md) |
 
 #### Returns
 

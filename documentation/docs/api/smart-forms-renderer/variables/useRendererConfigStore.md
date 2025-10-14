@@ -1,8 +1,8 @@
-# Variable: useRendererStylingStore
+# Variable: useRendererConfigStore
 
-> `const` **useRendererStylingStore**: `StoreApi`\<[`RendererStylingStoreType`](../interfaces/RendererStylingStoreType.md)\> & `object`
+> `const` **useRendererConfigStore**: `StoreApi`\<[`RendererConfigStoreType`](../interfaces/RendererConfigStoreType.md)\> & `object`
 
-## Type declaration
+## Type Declaration
 
 ### use
 
@@ -112,9 +112,9 @@
 
 `boolean`
 
-#### use.setRendererStyling()
+#### use.setRendererConfig()
 
-> **setRendererStyling**: () => (`params`) => `void`
+> **setRendererConfig**: () => (`params`) => `void`
 
 ##### Returns
 
@@ -124,7 +124,7 @@
 
 | Parameter | Type |
 | ------ | ------ |
-| `params` | [`RendererStyling`](../interfaces/RendererStyling.md) |
+| `params` | [`RendererConfig`](../interfaces/RendererConfig.md) |
 
 ###### Returns
 

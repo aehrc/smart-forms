@@ -20,7 +20,6 @@ const config: Config = {
   projectName: '', // Usually your repo name.\
 
   onBrokenLinks: 'warn',
-  onBrokenMarkdownLinks: 'throw',
 
   trailingSlash: false,
 
@@ -52,6 +51,12 @@ const config: Config = {
     ]
   ],
 
+
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: 'throw',
+    }
+  },
   themeConfig: {
     // Replace with your project's social card
     image: 'img/logo-sf.svg',

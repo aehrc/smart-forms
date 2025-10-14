@@ -26,22 +26,15 @@
 
 ***
 
-### itemPath
-
-> **itemPath**: `ItemPath`
-
-***
-
 ### onQrItemChange()
 
-> **onQrItemChange**: (`qrItem`, `targetItemPath?`) => `unknown`
+> **onQrItemChange**: (`qrItem`) => `unknown`
 
 #### Parameters
 
 | Parameter | Type |
 | ------ | ------ |
 | `qrItem` | `QuestionnaireResponseItem` |
-| `targetItemPath?` | `ItemPath` |
 
 #### Returns
 
@@ -51,14 +44,13 @@
 
 ### onQrRepeatGroupChange()
 
-> **onQrRepeatGroupChange**: (`qrRepeatGroup`, `targetItemPath?`) => `unknown`
+> **onQrRepeatGroupChange**: (`qrRepeatGroup`) => `unknown`
 
 #### Parameters
 
 | Parameter | Type |
 | ------ | ------ |
 | `qrRepeatGroup` | `QrRepeatGroup` |
-| `targetItemPath?` | `ItemPath` |
 
 #### Returns
 
@@ -98,7 +90,7 @@
 
 ### qrItem
 
-> **qrItem**: `null` \| `QuestionnaireResponseItem` \| `QuestionnaireResponseItem`[]
+> **qrItem**: `QuestionnaireResponseItem` \| `QuestionnaireResponseItem`[] \| `null`
 
 ***
 

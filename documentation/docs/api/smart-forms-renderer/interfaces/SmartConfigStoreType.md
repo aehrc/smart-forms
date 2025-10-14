@@ -8,7 +8,7 @@ Methods are usually used internally, using them from an external source is not r
 
 ### client
 
-> **client**: `null` \| `Client`
+> **client**: `Client` \| `null`
 
 The FHIRClient object (https://github.com/smart-on-fhir/client-js)
 
@@ -16,7 +16,7 @@ The FHIRClient object (https://github.com/smart-on-fhir/client-js)
 
 ### encounter
 
-> **encounter**: `null` \| `Encounter`
+> **encounter**: `Encounter` \| `null`
 
 The encounter resource in context
 
@@ -24,7 +24,7 @@ The encounter resource in context
 
 ### fhirContext
 
-> **fhirContext**: `null` \| `FhirContext`[]
+> **fhirContext**: `FhirContext`[] \| `null`
 
 fhirContext array from SMART App Launch
 
@@ -32,7 +32,7 @@ fhirContext array from SMART App Launch
 
 ### patient
 
-> **patient**: `null` \| `Patient`
+> **patient**: `Patient` \| `null`
 
 The patient resource in context
 
@@ -130,6 +130,6 @@ Set the user resource in context
 
 ### user
 
-> **user**: `null` \| `Practitioner`
+> **user**: `Practitioner` \| `null`
 
 The user resource in context

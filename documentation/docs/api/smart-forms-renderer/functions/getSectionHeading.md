@@ -1,6 +1,6 @@
 # Function: getSectionHeading()
 
-> **getSectionHeading**(`questionnaire`, `targetLinkId`, `tabs`): `null` \| `string`
+> **getSectionHeading**(`questionnaire`, `targetLinkId`, `tabs`): `string` \| `null`
 
 Returns the section heading text for a given linkId in a questionnaire, used to label tab sections.
 
@@ -14,6 +14,6 @@ Returns the section heading text for a given linkId in a questionnaire, used to 
 
 ## Returns
 
-`null` \| `string`
+`string` \| `null`
 
 The section heading text if found, otherwise null.

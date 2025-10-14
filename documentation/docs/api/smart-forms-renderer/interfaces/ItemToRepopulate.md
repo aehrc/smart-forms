@@ -36,7 +36,7 @@ Whether this item is part of a grid
 
 ### parentItemText
 
-> **parentItemText**: `null` \| `string`
+> **parentItemText**: `string` \| `null`
 
 Immediate parent item.text
 
@@ -44,7 +44,7 @@ Immediate parent item.text
 
 ### qItem
 
-> **qItem**: `null` \| `QuestionnaireItem`
+> **qItem**: `QuestionnaireItem` \| `null`
 
 QuestionnaireItem definition for this item
 
@@ -52,7 +52,7 @@ QuestionnaireItem definition for this item
 
 ### sectionItemText
 
-> **sectionItemText**: `null` \| `string`
+> **sectionItemText**: `string` \| `null`
 
 Top-level group item.text this item belongs to
 

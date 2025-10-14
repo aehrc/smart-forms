@@ -38,7 +38,7 @@ Used to destroy the source response  and reset all properties
 
 ### formChangesHistory
 
-> **formChangesHistory**: (`null` \| `Diff`\<`QuestionnaireResponse`, `QuestionnaireResponse`\>[])[]
+> **formChangesHistory**: (`Diff`\<`QuestionnaireResponse`, `QuestionnaireResponse`\>[] \| `null`)[]
 
 Array of form changes history in the form of deep-diff objects
 
@@ -106,24 +106,6 @@ Used to set an empty response as the current response
 
 ***
 
-### setUpdatableResponseAsPopulated()
-
-> **setUpdatableResponseAsPopulated**: (`populatedResponse`) => `void`
-
-Used to set a pre-populated response as the current response
-
-#### Parameters
-
-| Parameter | Type |
-| ------ | ------ |
-| `populatedResponse` | `QuestionnaireResponse` |
-
-#### Returns
-
-`void`
-
-***
-
 ### setUpdatableResponseAsSaved()
 
 > **setUpdatableResponseAsSaved**: (`savedResponse`) => `void`
@@ -168,16 +150,16 @@ Key-value pair of updatableResponse items `Record<linkId, QR.item(s)>`
 
 ### updateResponse()
 
-> **updateResponse**: (`updatedResponse`, `debugType`) => `void`
+> **updateResponse**: (`updatedResponse`, `isInitialUpdate`) => `void`
 
-Used to update the current response
+Used to update the current response, initialUpdate flag is to ensure formChangesHistory is not updated during the first update after form build
 
 #### Parameters
 
 | Parameter | Type |
 | ------ | ------ |
 | `updatedResponse` | `QuestionnaireResponse` |
-| `debugType` | `"initial"` \| `"async"` |
+| `isInitialUpdate` | `boolean` |
 
 #### Returns
 

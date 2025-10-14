@@ -1,6 +1,6 @@
 # Function: getDecimalPrecision()
 
-> **getDecimalPrecision**(`qItem`): `null` \| `number`
+> **getDecimalPrecision**(`qItem`): `number` \| `null`
 
 Check if the decimal value has a quantity precision for the decimal value
 
@@ -12,4 +12,4 @@ Check if the decimal value has a quantity precision for the decimal value
 
 ## Returns
 
-`null` \| `number`
+`number` \| `null`

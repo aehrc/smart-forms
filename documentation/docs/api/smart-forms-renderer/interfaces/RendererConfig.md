@@ -1,6 +1,6 @@
-# Interface: RendererStyling
+# Interface: RendererConfig
 
-RendererStyling interface
+RendererConfig interface
 Provides fine-grained control over the styling and behaviour of the renderer.
 
 ## Properties
