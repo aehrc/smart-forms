@@ -17,7 +17,7 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { qDisplayCalculation, qDisplayCalculationStyled } from '../assets/questionnaires/QDisplay';
+import { qDisplayCalculationStyled } from '../assets/questionnaires/QDisplay';
 import { questionnaireFactory } from '../testUtils';
 import { expect, screen } from 'storybook/test';
 
@@ -51,12 +51,6 @@ export const DisplayBasic: Story = {
   },
   play: async () => {
     expect(screen.queryByText(targetText)).toBeDefined();
-  }
-};
-
-export const DisplayCalculation: Story = {
-  args: {
-    questionnaire: qDisplayCalculation
   }
 };
 

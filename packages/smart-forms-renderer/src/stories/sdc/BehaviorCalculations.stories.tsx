@@ -18,12 +18,16 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
-  qCalculatedExpressionBMICalculator,
   qCalculatedExpressionCvdRiskCalculator,
   qInitialExpression,
   qLaunchContext,
   qVariable
 } from '../assets/questionnaires';
+import {
+  calculatedExpressionExtFactory,
+  questionnaireFactory,
+  variableExtFactory
+} from '../testUtils';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -55,6 +59,43 @@ export const InitialExpression: Story = {
     questionnaire: qInitialExpression
   }
 };
+
+const heightLinkId = 'patient-height';
+const weightLinkId = 'patient-weight';
+const bmiLinkIdCalc = 'bmi-result';
+const bmiGroupLinkId = 'bmi-calculation';
+
+const qCalculatedExpressionBMICalculator = questionnaireFactory([
+  {
+    linkId: bmiGroupLinkId,
+    type: 'group',
+    extension: [
+      variableExtFactory('height', `item.where(linkId='${heightLinkId}').answer.value`),
+      variableExtFactory('weight', `item.where(linkId='${weightLinkId}').answer.value`)
+    ],
+    item: [
+      {
+        linkId: heightLinkId,
+        text: 'Height',
+        type: 'decimal',
+        readOnly: false
+      },
+      {
+        linkId: weightLinkId,
+        text: 'Weight',
+        type: 'decimal',
+        readOnly: false
+      },
+      {
+        extension: [calculatedExpressionExtFactory('(%weight/((%height/100).power(2))).round(1)')],
+        linkId: bmiLinkIdCalc,
+        text: 'Value',
+        type: 'decimal',
+        readOnly: true
+      }
+    ]
+  }
+]);
 
 export const CalculatedExpressionBMICalculator: Story = {
   args: {

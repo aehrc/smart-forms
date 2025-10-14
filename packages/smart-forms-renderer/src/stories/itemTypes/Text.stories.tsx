@@ -17,7 +17,6 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { qTextCalculation } from '../assets/questionnaires';
 import {
   findByLinkIdOrLabel,
   getAnswers,
@@ -83,12 +82,5 @@ export const TextBasicResponse: Story = {
     const inputText = await getInputText(canvasElement, targetLinkId);
 
     expect(inputText).toBe(targetText);
-  }
-};
-
-// TODO: Move to separate storybook
-export const TextCalculation: Story = {
-  args: {
-    questionnaire: qTextCalculation
   }
 };

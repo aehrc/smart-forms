@@ -17,7 +17,7 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { qCalculatedExpressionBMICalculator } from '../assets/questionnaires';
+
 import {
   findByLinkIdOrLabel,
   getAnswers,
@@ -99,11 +99,5 @@ export const DecimalBasicResponse: Story = {
     const input = await getInputText(canvasElement, targetLinkId);
 
     expect(input).toBe(targetWeight.toString());
-  }
-};
-
-export const DecimalCalculation: Story = {
-  args: {
-    questionnaire: qCalculatedExpressionBMICalculator
   }
 };

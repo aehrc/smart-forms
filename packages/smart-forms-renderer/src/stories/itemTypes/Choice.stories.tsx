@@ -18,10 +18,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
-  qChoiceAnswerOptionCalculation,
-  qChoiceAnswerValueSetCalculation
-} from '../assets/questionnaires';
-import {
   chooseSelectOption,
   findByLinkIdOrLabel,
   getAnswers,
@@ -203,19 +199,5 @@ export const ChoiceAnswerOptionsUsingInitialSelected: Story = {
     const inputText = await getInputText(canvasElement, 'awsHallucinationType');
 
     expect(inputText).toBe(initialTargetCoding.display);
-  }
-};
-
-// TODO: Move to separate storybook
-export const ChoiceAnswerOptionCalculation: Story = {
-  args: {
-    questionnaire: qChoiceAnswerOptionCalculation
-  }
-};
-
-// TODO: Move to separate storybook
-export const ChoiceAnswerValueSetCalculation: Story = {
-  args: {
-    questionnaire: qChoiceAnswerValueSetCalculation
   }
 };

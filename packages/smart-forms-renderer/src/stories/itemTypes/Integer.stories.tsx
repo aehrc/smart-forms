@@ -17,7 +17,7 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { qIntegerCalculation } from '../assets/questionnaires';
+
 import {
   findByLinkIdOrLabel,
   getAnswers,
@@ -97,11 +97,5 @@ export const IntegerBasicResponse: Story = {
     const input = await getInputText(canvasElement, targetLinkId);
 
     expect(input).toBe(targetAge.toString());
-  }
-};
-
-export const IntegerCalculation: Story = {
-  args: {
-    questionnaire: qIntegerCalculation
   }
 };

@@ -7,8 +7,85 @@ import type {
   QuestionnaireResponse,
   QuestionnaireResponseItem
 } from 'fhir/r4';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
+import { fireEvent, screen, userEvent, waitFor } from 'storybook/internal/test';
+
+export async function getQuantityTextValues(
+  canvasElement: HTMLElement,
+  linkId: string,
+  unit: boolean
+) {
+  const element = await findByLinkId(canvasElement, linkId);
+  const quantityComparator = element.querySelector(
+    'div[data-test="q-item-quantity-comparator"] input'
+  );
+  const quantityInput = element.querySelector('div[data-test="q-item-quantity-field"] input');
+  const quantityUnit = element.querySelector('div[data-test="q-item-unit-field"] input');
+
+  // Error section
+  if (!quantityComparator) {
+    throw new Error(
+      `File input was not found inside [data-test="q-item-quantity-comparator"] block`
+    );
+  }
+  if (!quantityInput) {
+    throw new Error(`File input was not found inside [data-test="q-item-quantity-field"] block`);
+  }
+  if (!quantityUnit && unit) {
+    throw new Error(`File input was not found inside [data-test="q-item-unit-field"] block`);
+  }
+
+  return {
+    comparator: quantityComparator?.getAttribute('value'),
+    value: quantityInput?.getAttribute('value'),
+    unit: quantityUnit?.getAttribute('value')
+  };
+}
+
+export async function inputQuantity(
+  canvasElement: HTMLElement,
+  linkId: string,
+  quantity: number,
+  unit?: string,
+  comparator?: string
+) {
+  const questionElement = await findByLinkId(canvasElement, linkId);
+
+  const comparatorInput = questionElement?.querySelector(
+    `div[data-test="q-item-quantity-comparator"] input`
+  );
+  const quantityInput = questionElement?.querySelector(
+    `div[data-test="q-item-quantity-field"] input`
+  );
+  const unitInput = questionElement?.querySelector(`div[data-test="q-item-unit-field"] input`);
+
+  // Error section
+  if (comparator && !comparatorInput) {
+    throw new Error(`Input was not found inside [data-test="q-item-quantity-comparator"] block`);
+  }
+  if (!quantityInput) {
+    throw new Error(`Input was not found inside [data-test="q-item-quantity-field"] block`);
+  }
+  if (!unitInput && unit) {
+    throw new Error(`Input was not found inside [data-test="q-item-unit-field"] block`);
+  }
+
+  if (comparator && comparatorInput) {
+    fireEvent.focus(comparatorInput);
+    fireEvent.keyDown(comparatorInput, { key: 'ArrowDown', code: 'ArrowDown' });
+    const option = await screen.findByText(comparator);
+    fireEvent.click(option);
+  }
+  if (unit && unitInput) {
+    fireEvent.focus(unitInput);
+    fireEvent.keyDown(unitInput, { key: 'ArrowDown', code: 'ArrowDown' });
+    const option = await screen.findByText(unit);
+    fireEvent.click(option);
+  }
+  fireEvent.change(quantityInput, { target: { value: quantity } });
+
+  // Here we await for debounced store update
+  await new Promise((resolve) => setTimeout(resolve, 500));
+}
 
 export async function getAnswers(linkId: string) {
   const qr = questionnaireResponseStore.getState().updatableResponse;
@@ -28,11 +105,15 @@ export async function getGroupAnswers(groupLinkid: string, answerLinkid: string)
   return result;
 }
 
-export function questionnaireFactory(items: QuestionnaireItem[]): Questionnaire {
+export function questionnaireFactory(
+  items: QuestionnaireItem[],
+  extra?: Omit<Questionnaire, 'resourceType' | 'status' | 'item'>
+): Questionnaire {
   return {
     resourceType: 'Questionnaire',
     status: 'active',
-    item: items
+    item: items,
+    ...extra
   };
 }
 
@@ -62,6 +143,60 @@ export function openLabelExtFactory(text: string): Extension {
     valueString: text
   };
 }
+
+export function calculatedExpressionExtFactory(text: string): Extension {
+  return {
+    url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
+    valueExpression: {
+      language: 'text/fhirpath',
+      expression: text
+    }
+  };
+}
+
+export function variableExtFactory(name: string, text: string): Extension {
+  return {
+    url: 'http://hl7.org/fhir/StructureDefinition/variable',
+    valueExpression: {
+      name: name,
+      language: 'text/fhirpath',
+      expression: text
+    }
+  };
+}
+
+export function unitOptionExtFactory(code: string, display: string): Extension {
+  return {
+    url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption',
+    valueCoding: {
+      system: 'http://unitsofmeasure.org',
+      code: code,
+      display: display
+    }
+  };
+}
+export function unitExtFactory(code: string, display: string): Extension {
+  return {
+    url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+    valueCoding: {
+      system: 'http://unitsofmeasure.org',
+      code: code,
+      display: display
+    }
+  };
+}
+
+export function сqfExpressionFactory(text: string) {
+  return {
+    url: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
+    valueExpression: {
+      language: 'text/fhirpath',
+      expression: text
+    }
+  };
+}
+
+export const ucumSystem = 'http://unitsofmeasure.org';
 
 export async function inputText(
   canvasElement: HTMLElement,

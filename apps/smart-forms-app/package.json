@@ -70,7 +70,6 @@
     "react-syntax-highlighter": "^15.6.6",
     "react-to-print": "^3.1.1",
     "usehooks-ts": "^3.1.1",
-    "vitest": "^3.2.4",
     "zustand": "^5.0.8"
   },
   "devDependencies": {
