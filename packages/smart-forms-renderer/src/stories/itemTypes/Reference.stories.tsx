@@ -18,8 +18,12 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 
-import { getAnswers, questionnaireFactory } from '../testUtils';
-import { findByLinkId, inputReference } from '@aehrc/testing-toolkit';
+import {
+  findByLinkIdOrLabel,
+  getAnswers,
+  inputReference,
+  questionnaireFactory
+} from '../testUtils';
 import { expect, fireEvent } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -34,12 +38,12 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-const targetlinkId = 'patient-reference';
+const targetLinkId = 'patient-reference';
 const targetText = 'Patient Reference';
 
 const qReferenceBasic = questionnaireFactory([
   {
-    linkId: targetlinkId,
+    linkId: targetLinkId,
     type: 'reference',
     repeats: false,
     text: targetText
@@ -51,9 +55,9 @@ export const ReferenceBasic: Story = {
     questionnaire: qReferenceBasic
   },
   play: async ({ canvasElement }) => {
-    await inputReference(canvasElement, targetlinkId, targetText);
+    await inputReference(canvasElement, targetLinkId, targetText);
 
-    const result = await getAnswers(targetlinkId);
+    const result = await getAnswers(targetLinkId);
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueString: targetText }));
 
@@ -63,9 +67,9 @@ export const ReferenceBasic: Story = {
 
     // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
-    const resultAfterClear = await getAnswers(targetlinkId);
+    const resultAfterClear = await getAnswers(targetLinkId);
     expect(resultAfterClear).toHaveLength(0);
-    const elementAfterClear = await findByLinkId(canvasElement, targetlinkId);
+    const elementAfterClear = await findByLinkIdOrLabel(canvasElement, targetLinkId);
     const input = elementAfterClear.querySelector('textarea');
     expect(input?.value).toBe('');
   }

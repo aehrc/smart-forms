@@ -24,6 +24,6 @@
  */
 export interface CalculatedExpression {
   expression: string;
-  from: 'item' | 'item._text' | 'item._answerValueSet';
+  from: 'item' | 'item._text' | 'item._text.aria-label' | 'item._answerValueSet';
   value?: number | string | boolean | object | null;
 }

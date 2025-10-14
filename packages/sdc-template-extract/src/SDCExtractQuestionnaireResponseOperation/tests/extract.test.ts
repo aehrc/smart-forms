@@ -17,6 +17,7 @@ import { extractedMedicalHistoryCurrentProblems } from './resources/extracted/ex
 import { extractedMedicalHistoryCurrentProblemsWithPatch } from './resources/extracted/extractedMedicalHistoryCurrentProblemsWithPatch';
 import { extractedRegularMedications } from './resources/extracted/extractedRegularMedications';
 import { extractedRegularMedicationsModified } from './resources/extracted/extractedRegularMedicationsModified';
+import { extractedRegularMedicationsWithPatchAdd } from './resources/extracted/extractedRegularMedicationsWithPatchAdd';
 import { extractedComplexTemplateExtract } from './resources/extracted/extractedComplexTemplateExtract';
 
 // QuestionnaireResponses
@@ -27,6 +28,7 @@ import { QRMedicalHistoryCurrentProblemsWithPatch } from './resources/questionna
 import { QRMedicalHistoryCurrentProblemsWithPatch2 } from './resources/questionnaireResponses/QRMedicalHistoryCurrentProblemsWithPatch2';
 import { QRRegularMedications } from './resources/questionnaireResponses/QRRegularMedications';
 import { QRRegularMedicationsModified } from './resources/questionnaireResponses/QRRegularMedicationsModified';
+import { QRRegularMedicationsWithPatchAdd } from './resources/questionnaireResponses/QRRegularMedicationsWithPatchAdd';
 import { QRComplexTemplateExtract } from './resources/questionnaireResponses/QRComplexTemplateExtract';
 
 // Questionnaires
@@ -37,6 +39,7 @@ import { QMedicalHistoryCurrentProblemsWithPatch } from './resources/questionnai
 import { QMedicalHistoryCurrentProblemsWithPatch2 } from './resources/questionnaires/QMedicalHistoryCurrentProblemsWithPatch2';
 import { QRegularMedications } from './resources/questionnaires/QRegularMedications';
 import { QRegularMedicationsModified } from './resources/questionnaires/QRegularMedicationsModified';
+import { QRegularMedicationsWithPatchAdd } from './resources/questionnaires/QRegularMedicationsWithPatchAdd';
 import { QComplexTemplateExtract } from './resources/questionnaires/QComplexTemplateExtract';
 import { parametersIsFhirPatch } from '../utils/typePredicates';
 
@@ -378,6 +381,49 @@ describe('extract RegularMedicationsModified', () => {
     );
     expect(stripDateAsserted(extracted.entry?.[1]?.resource)).toEqual(
       stripDateAsserted(expected?.entry?.[1]?.resource)
+    );
+  });
+});
+
+describe('extract RegularMedicationsWithPatchAdd', () => {
+  // _dateAsserted uses FHIRPath expressions of "now()", so dates generated will be different - strip it out for comparison purposes
+  function stripDateAsserted(resource: any): any {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { dateAsserted, ...rest } = resource ?? {};
+    return rest;
+  }
+
+  it('extracted result should match extractedRegularMedicationsWithPatchAdd.ts expected resources  (modified only)', async () => {
+    const newCommentAnswer: QuestionnaireResponseItemAnswer = {
+      valueString: 'Comment2 - modified'
+    };
+
+    const comparisonSourceResponse = structuredClone(QRRegularMedicationsWithPatchAdd);
+
+    // Change first Medication's comment from "Comment2" to "Comment2 - modified"
+    if (QRRegularMedicationsWithPatchAdd.item?.[0]?.item?.[0]?.item?.[0]?.item?.[6]?.answer) {
+      QRRegularMedicationsWithPatchAdd.item[0].item[0].item[0].item[6].answer = [newCommentAnswer];
+    }
+
+    const result = await extract(
+      createInputParameters(
+        QRRegularMedicationsWithPatchAdd,
+        QRegularMedicationsWithPatchAdd,
+        comparisonSourceResponse
+      ),
+      mockFetchQuestionnaire,
+      mockFetchQuestionnaireConfig
+    );
+
+    const returnParam = (result as OutputParameters).parameter.find(
+      (p): p is ReturnParameter => p.name === 'return'
+    );
+
+    // Deep comparison of the extracted resources vs expected resources in extractedRegularMedications
+    const extracted = returnParam?.resource as Bundle;
+    const expected = extractedRegularMedicationsWithPatchAdd;
+    expect(stripDateAsserted(extracted.entry?.[0]?.resource)).toEqual(
+      stripDateAsserted(expected?.entry?.[0]?.resource)
     );
   });
 });

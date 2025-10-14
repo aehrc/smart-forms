@@ -17,8 +17,7 @@
 
 import { useContext, useState } from 'react';
 import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
-import type { Questionnaire, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
-import DeleteIcon from '@mui/icons-material/Delete';
+import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { RoundButton } from '../../../../components/Button/Button.styles.tsx';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
@@ -27,24 +26,13 @@ import DebugResponseView from './DebugResponseView.tsx';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { ConfigContext } from '../../../configChecker/contexts/ConfigContext.tsx';
 
-interface Props {
+interface DebugPanelProps {
   questionnaire: Questionnaire;
   questionnaireResponse: QuestionnaireResponse;
-  questionnaireResponseItems: Record<string, QuestionnaireResponseItem[]>;
-  fhirPathContext: Record<string, any>;
-  populatedContext: Record<string, any>;
-  clearQResponse: () => unknown;
 }
 
-function DebugPanel(props: Props) {
-  const {
-    questionnaire,
-    questionnaireResponse,
-    questionnaireResponseItems,
-    fhirPathContext,
-    populatedContext,
-    clearQResponse
-  } = props;
+function DebugPanel(props: DebugPanelProps) {
+  const { questionnaire, questionnaireResponse } = props;
 
   const { config } = useContext(ConfigContext);
 
@@ -54,17 +42,11 @@ function DebugPanel(props: Props) {
   const displayObject =
     {
       Questionnaire: questionnaire,
-      'Questionnaire Response': questionnaireResponse,
-      'Questionnaire Response items': questionnaireResponseItems,
-      'FHIRPath variables': fhirPathContext,
-      'Populated variables/context': populatedContext
+      'Questionnaire Response': questionnaireResponse
     }[displayName] || null;
 
   const questionnaireSelected = displayName === 'Questionnaire';
   const questionnaireResponseSelected = displayName === 'Questionnaire Response';
-  const questionnaireResponseItemsSelected = displayName === 'Questionnaire Response items';
-  const fhirPathContextSelected = displayName === 'FHIRPath variables';
-  const populatedContextSelected = displayName === 'Populated variables/context';
 
   return (
     <Stack sx={{ pt: 6 }}>
@@ -106,13 +88,6 @@ function DebugPanel(props: Props) {
               </a>
             </Tooltip>
           ) : null}
-          {questionnaireResponseSelected ? (
-            <Tooltip title="Clear response">
-              <IconButton onClick={clearQResponse} color="error">
-                <DeleteIcon />
-              </IconButton>
-            </Tooltip>
-          ) : null}
         </Stack>
       </Stack>
       <Box display="flex" columnGap={1}>
@@ -127,24 +102,6 @@ function DebugPanel(props: Props) {
           disabled={questionnaireResponseSelected}
           onClick={() => setDisplayName('Questionnaire Response')}>
           QuestionnaireResponse
-        </RoundButton>
-        <RoundButton
-          variant="outlined"
-          disabled={questionnaireResponseItemsSelected}
-          onClick={() => setDisplayName('Questionnaire Response items')}>
-          QR Items
-        </RoundButton>
-        <RoundButton
-          variant="outlined"
-          disabled={fhirPathContextSelected}
-          onClick={() => setDisplayName('FHIRPath variables')}>
-          FHIRPath variables
-        </RoundButton>
-        <RoundButton
-          variant="outlined"
-          disabled={populatedContextSelected}
-          onClick={() => setDisplayName('Populated variables/context')}>
-          Populated variables
         </RoundButton>
       </Box>
 

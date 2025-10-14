@@ -24,8 +24,10 @@ import { useQuestionnaireStore } from '../../stores';
 import type { QuestionnaireItem } from 'fhir/r4';
 import ContextDisplayItem from '../FormComponents/ItemParts/ContextDisplayItem';
 import { useFocusTabHeading } from '../../hooks/useFocusTabHeading';
+import useDisplayCqfAndCalculatedExpression from '../../hooks/useDisplayCqfAndCalculatedExpression';
 
 interface FormBodySingleTabProps {
+  qItem: QuestionnaireItem;
   contextDisplayItems: QuestionnaireItem[];
   selected: boolean;
   tabLabel: string;
@@ -33,10 +35,14 @@ interface FormBodySingleTabProps {
 }
 
 const FormBodySingleTab = memo(function FormBodySingleTab(props: FormBodySingleTabProps) {
-  const { contextDisplayItems, selected, tabLabel, listIndex } = props;
+  const { qItem, contextDisplayItems, selected, tabLabel, listIndex } = props;
 
   const switchTab = useQuestionnaireStore.use.switchTab();
   const focusHeading = useFocusTabHeading();
+
+  // Get aria-label text if available
+  const itemTextAriaLabel =
+    useDisplayCqfAndCalculatedExpression(qItem, 'item._text.aria-label') ?? undefined;
 
   function handleTabClick() {
     switchTab(listIndex);
@@ -61,7 +67,8 @@ const FormBodySingleTab = memo(function FormBodySingleTab(props: FormBodySingleT
                 id={`tab-${listIndex}`}
                 component="span"
                 fontWeight={600}
-                fontSize="0.8125rem">
+                fontSize="0.8125rem"
+                aria-label={itemTextAriaLabel}>
                 {tabLabel}
               </Typography>
               <Box display="flex" minHeight={24} minWidth={24} ml={1}>

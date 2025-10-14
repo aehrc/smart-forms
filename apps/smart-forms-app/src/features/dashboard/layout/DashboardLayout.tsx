@@ -24,21 +24,26 @@ import SelectedQuestionnaireContextProvider from '../contexts/SelectedQuestionna
 import DashboardDebugFooter from '../components/DashboardDebugFooter/DashboardDebugFooter.tsx';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
 import useDebugMode from '../../../hooks/useDebugMode.ts';
-import { destroyFormWrapper } from '../../../utils/manageForm.ts';
+import { useExtractDebuggerStore } from '../../playground/stores/extractDebuggerStore.ts';
+import { destroyForm } from '@aehrc/smart-forms-renderer';
 
 function DashboardLayout() {
   const [open, setOpen] = useState(false);
 
   const { smartClient } = useSmartClient();
   const { debugModeEnabled } = useDebugMode();
+  const resetExtractDebuggerStore = useExtractDebuggerStore.use.resetStore();
 
   const navigate = useNavigate();
 
   const isNotLaunched = !smartClient;
 
   useEffect(() => {
-    destroyFormWrapper();
-  }, []);
+    // Cleanup extract debugger store
+    resetExtractDebuggerStore();
+
+    destroyForm();
+  }, [resetExtractDebuggerStore]);
 
   useEffect(() => {
     // check if fhirClient is not present but app was previously authorised - happens when user refreshes the page

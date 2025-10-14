@@ -28,9 +28,9 @@ import type {
   IfModifiedSinceExtensionSlice,
   IfNoneExistExtensionSlice,
   IfNoneMatchExtensionSlice,
+  PatchRequestUrlExtensionSlice,
   ResourceIdExtensionSlice,
-  TemplateExtensionSlice,
-  TypeExtensionSlice
+  TemplateExtensionSlice
 } from '../interfaces/templateExtractReference.interface';
 import type {
   FhirPatchParameters,
@@ -113,8 +113,14 @@ export function isIfNoneExistExtensionSlice(
   return extension.url === 'ifNoneExist' && !!extension.valueString;
 }
 
-export function isTypeExtensionSlice(extension: Extension): extension is TypeExtensionSlice {
-  return extension.url === 'type' && !!extension.valueCode;
+export function isPatchRequestUrlExtensionSlice(
+  extension: Extension
+): extension is PatchRequestUrlExtensionSlice {
+  return (
+    extension.url ===
+      'https://smartforms.csiro.au/ig/StructureDefinition/TemplateExtractExtensionPatchRequestUrl' &&
+    !!extension.valueString
+  );
 }
 
 export function valueIsCoding(value: any): value is Coding {
@@ -154,4 +160,8 @@ export function isFhirPatchTypePart(part: FhirPatchPart): part is FhirPatchTypeP
 
 export function isFhirPatchPathPart(part: FhirPatchPart): part is FhirPatchPathPart {
   return part.name === 'path' && 'valueString' in part;
+}
+
+export function isFhirPatchNamePart(part: FhirPatchPart): part is FhirPatchPathPart {
+  return part.name === 'name' && 'valueString' in part;
 }

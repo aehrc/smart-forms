@@ -16,23 +16,25 @@
  */
 
 import { useState } from 'react';
-import GenericStatePropertyPicker from './GenericStatePropertyPicker.tsx';
-import GenericViewer from './GenericViewer.tsx';
-import useShowTerminologyServerStoreProperty from '../../hooks/useShowTerminologyServerStoreProperty.ts';
-
-const terminologyServerStorePropertyNames: string[] = ['url'];
+import StorePropertyViewer from './StorePropertyViewer.tsx';
+import useSelectedProperty from '../../hooks/useSelectedProperty.ts';
+import { useTerminologyServerStore } from '@aehrc/smart-forms-renderer';
+import StorePropertyPicker from './StorePropertyPicker.tsx';
 
 interface TerminologyServerStoreViewerProps {
-  statePropNameFilter: string;
+  propKeyFilter: string;
 }
 
 function TerminologyServerStoreViewer(props: TerminologyServerStoreViewerProps) {
-  const { statePropNameFilter } = props;
+  const { propKeyFilter } = props;
 
-  const [selectedProperty, setSelectedProperty] = useState('url');
+  const [selectedPropKey, setSelectedPropKey] = useState('url');
   const [viewMode, setViewMode] = useState<'text' | 'jsonTree' | 'table'>('text');
 
-  const propertyObject = useShowTerminologyServerStoreProperty(selectedProperty);
+  const { selectedPropVal, allPropKeys } = useSelectedProperty(
+    selectedPropKey,
+    useTerminologyServerStore.use
+  );
 
   function handleViewModeChange(newViewMethod: 'text' | 'jsonTree' | 'table' | null) {
     if (newViewMethod === null) {
@@ -44,15 +46,15 @@ function TerminologyServerStoreViewer(props: TerminologyServerStoreViewerProps) 
 
   return (
     <>
-      <GenericStatePropertyPicker
-        statePropertyNames={terminologyServerStorePropertyNames}
-        statePropNameFilter={statePropNameFilter}
-        selectedProperty={selectedProperty}
-        onSelectProperty={setSelectedProperty}
+      <StorePropertyPicker
+        propKeys={allPropKeys}
+        propKeyFilter={propKeyFilter}
+        selectedProp={selectedPropKey}
+        onSelectProp={setSelectedPropKey}
       />
-      <GenericViewer
-        propertyName={selectedProperty}
-        propertyObject={propertyObject}
+      <StorePropertyViewer
+        selectedPropKey={selectedPropKey}
+        selectedPropVal={selectedPropVal}
         viewMode={viewMode}
         onViewModeChange={handleViewModeChange}
       />

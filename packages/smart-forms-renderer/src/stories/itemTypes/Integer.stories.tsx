@@ -18,9 +18,15 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import { qIntegerCalculation } from '../assets/questionnaires';
-import { findByLinkId, getInputText, inputInteger } from '@aehrc/testing-toolkit';
+import {
+  findByLinkIdOrLabel,
+  getAnswers,
+  getInputText,
+  inputInteger,
+  qrFactory,
+  questionnaireFactory
+} from '../testUtils';
 import { expect, fireEvent } from 'storybook/test';
-import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -34,13 +40,13 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-const targetlinkId = 'age';
+const targetLinkId = 'age';
 const targetAge = 40;
 const basicAge = 25;
 
 const qIntegerBasic = questionnaireFactory([
   {
-    linkId: targetlinkId,
+    linkId: targetLinkId,
     type: 'integer',
     repeats: false,
     text: 'Age'
@@ -48,7 +54,7 @@ const qIntegerBasic = questionnaireFactory([
 ]);
 const qrIntegerBasicResponse = qrFactory([
   {
-    linkId: targetlinkId,
+    linkId: targetLinkId,
     text: 'Age',
     answer: [
       {
@@ -63,9 +69,9 @@ export const IntegerBasic: Story = {
     questionnaire: qIntegerBasic
   },
   play: async ({ canvasElement }) => {
-    await inputInteger(canvasElement, targetlinkId, basicAge);
+    await inputInteger(canvasElement, targetLinkId, basicAge);
 
-    const result = await getAnswers(targetlinkId);
+    const result = await getAnswers(targetLinkId);
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueInteger: basicAge }));
 
@@ -75,9 +81,9 @@ export const IntegerBasic: Story = {
 
     // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
-    const resultAfterClear = await getAnswers(targetlinkId);
+    const resultAfterClear = await getAnswers(targetLinkId);
     expect(resultAfterClear).toHaveLength(0);
-    const elementAfterClear = await findByLinkId(canvasElement, targetlinkId);
+    const elementAfterClear = await findByLinkIdOrLabel(canvasElement, targetLinkId);
     const input = elementAfterClear.querySelector('input');
     expect(input?.getAttribute('value')).toBe('');
   }
@@ -88,7 +94,7 @@ export const IntegerBasicResponse: Story = {
     questionnaireResponse: qrIntegerBasicResponse
   },
   play: async ({ canvasElement }) => {
-    const input = await getInputText(canvasElement, targetlinkId);
+    const input = await getInputText(canvasElement, targetLinkId);
 
     expect(input).toBe(targetAge.toString());
   }

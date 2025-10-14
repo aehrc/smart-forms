@@ -22,6 +22,9 @@ const config: Config = {
   roots: ['src'],
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
+  testPathIgnorePatterns: [
+    'src/test/questionnaireRenderer.test.tsx' // Exclude this specific test file (it uses Vitest)
+  ],
   setupFilesAfterEnv: ['./src/setup-jest.ts'],
   transform: {
     '^.+\\.(ts|tsx)$': ['ts-jest', {

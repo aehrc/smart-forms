@@ -1,4 +1,4 @@
-import { useQuestionnaireStore, useRendererStylingStore } from '@aehrc/smart-forms-renderer';
+import { useQuestionnaireStore, useRendererConfigStore } from '@aehrc/smart-forms-renderer';
 import ToggleButton from '@mui/material/ToggleButton';
 import DisabledVisibleIcon from '@mui/icons-material/DisabledVisible';
 import SquareFootIcon from '@mui/icons-material/SquareFoot';
@@ -10,9 +10,9 @@ function PlaygroundCustomisationToggles() {
   const enableWhenIsActivated = useQuestionnaireStore.use.enableWhenIsActivated();
   const toggleEnableWhenActivation = useQuestionnaireStore.use.toggleEnableWhenActivation();
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
-  const quantityComparatorFieldHidden = useRendererStylingStore.use.hideQuantityComparatorField();
-  const setRendererStyling = useRendererStylingStore.use.setRendererStyling();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const quantityComparatorFieldHidden = useRendererConfigStore.use.hideQuantityComparatorField();
+  const setRendererConfig = useRendererConfigStore.use.setRendererConfig();
 
   return (
     <ToggleButtonGroup aria-label="Renderer customisation toggles">
@@ -25,7 +25,7 @@ function PlaygroundCustomisationToggles() {
           selected={readOnlyVisualStyle === 'disabled'}
           sx={{ height: 32 }}
           onChange={() =>
-            setRendererStyling({
+            setRendererConfig({
               readOnlyVisualStyle: readOnlyVisualStyle === 'disabled' ? 'readonly' : 'disabled'
             })
           }>
@@ -40,7 +40,7 @@ function PlaygroundCustomisationToggles() {
           selected={!quantityComparatorFieldHidden}
           sx={{ height: 32 }}
           onChange={() =>
-            setRendererStyling({
+            setRendererConfig({
               hideQuantityComparatorField: !quantityComparatorFieldHidden
             })
           }>

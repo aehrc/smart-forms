@@ -6,9 +6,9 @@ import {
   isIfModifiedSinceExtensionSlice,
   isIfNoneExistExtensionSlice,
   isIfNoneMatchExtensionSlice,
+  isPatchRequestUrlExtensionSlice,
   isResourceIdExtensionSlice,
-  isTemplateExtensionSlice,
-  isTypeExtensionSlice
+  isTemplateExtensionSlice
 } from './typePredicates';
 import { createInvalidWarningIssue } from './operationOutcome';
 
@@ -103,6 +103,18 @@ export function hasTemplateExtractRefExtension(item: QuestionnaireItem | Questio
       continue;
     }
 
+    if (isPatchRequestUrlExtensionSlice(slice)) {
+      templateExtractRef.patchRequestUrl = slice.valueString;
+
+      // resourceId and patchRequestUrl cannot both be present at the same time
+      if (templateExtractRef.resourceId) {
+        cardinalityWarningStrings.push(
+          `Extension slices "resourceId" and "patchRequestUrl" cannot both be present at the same time.`
+        );
+      }
+      continue;
+    }
+
     if (isIfNoneMatchExtensionSlice(slice)) {
       templateExtractRef.ifNoneMatch = slice.valueString;
       continue;
@@ -120,10 +132,6 @@ export function hasTemplateExtractRefExtension(item: QuestionnaireItem | Questio
 
     if (isIfNoneExistExtensionSlice(slice)) {
       templateExtractRef.ifNoneExist = slice.valueString;
-    }
-
-    if (isTypeExtensionSlice(slice)) {
-      templateExtractRef.type = slice.valueCode;
     }
   }
 

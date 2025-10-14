@@ -75,8 +75,7 @@ export function getCalculatedExpressions(qItem: QuestionnaireItem): CalculatedEx
     )
     .filter((calculatedExpression) => calculatedExpression.expression !== '');
 
-  // For item._text - calculatedExpressions and cqfExpressions
-  // FIXME this is a band aid addition, eventually we want to fully support cqfExpressions
+  // For item._text - cqfExpressions and calculatedExpressions (for backwards compatibility)
   const calculatedAndCqfExpressionsInText = [
     ...findCqfExpressionsInExtensions(qItem._text?.extension ?? []),
     ...findCalculatedExpressionsInExtensions(qItem._text?.extension ?? [])
@@ -85,6 +84,18 @@ export function getCalculatedExpressions(qItem: QuestionnaireItem): CalculatedEx
       (calculatedExpression): CalculatedExpression => ({
         expression: calculatedExpression.valueExpression?.expression ?? '',
         from: 'item._text'
+      })
+    )
+    .filter((calculatedExpression) => calculatedExpression.expression !== '');
+
+  // For item._text.aria-label - ItemTextAriaLabelExpression
+  const itemTextAriaLabelExpressionInText = findItemTextAriaLabelExpressionInExtensions(
+    qItem._text?.extension ?? []
+  )
+    .map(
+      (calculatedExpression): CalculatedExpression => ({
+        expression: calculatedExpression.valueExpression?.expression ?? '',
+        from: 'item._text.aria-label'
       })
     )
     .filter((calculatedExpression) => calculatedExpression.expression !== '');
@@ -104,6 +115,7 @@ export function getCalculatedExpressions(qItem: QuestionnaireItem): CalculatedEx
   return [
     ...calculatedExpressionsInItem,
     ...calculatedAndCqfExpressionsInText,
+    ...itemTextAriaLabelExpressionInText,
     ...cqfExpressionsInAnswerValueSet
   ];
 }
@@ -121,6 +133,25 @@ function findCqfExpressionsInExtensions(extensions: Extension[]): Extension[] {
   return extensions.filter(
     (extension) =>
       extension.url === 'http://hl7.org/fhir/StructureDefinition/cqf-expression' &&
+      extension.valueExpression?.language === 'text/fhirpath'
+  );
+}
+
+/**
+ * Find all FHIRPath aria-label expression custom extensions within a list of extensions.
+ *
+ * This looks for extensions with the custom
+ * `QuestionnaireItemTextAriaLabelExpression` URL and ensures their
+ * `valueExpression.language` is `text/fhirpath`.
+ *
+ * @param {Extension[]} extensions - The list of extensions to search.
+ * @returns {Extension[]} An array of matching extensions (empty if none found).
+ */
+function findItemTextAriaLabelExpressionInExtensions(extensions: Extension[]): Extension[] {
+  return extensions.filter(
+    (extension) =>
+      extension.url ===
+        'https://smartforms.csiro.au/ig/StructureDefinition/QuestionnaireItemTextAriaLabelExpression' &&
       extension.valueExpression?.language === 'text/fhirpath'
   );
 }

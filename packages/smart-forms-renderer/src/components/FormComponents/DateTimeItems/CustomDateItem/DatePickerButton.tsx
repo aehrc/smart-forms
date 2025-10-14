@@ -24,7 +24,7 @@ import type {
 import type { Dayjs } from 'dayjs';
 import IconButton from '@mui/material/IconButton';
 import EventIcon from '@mui/icons-material/Event';
-import { useRendererStylingStore } from '../../../../stores';
+import { useRendererConfigStore } from '../../../../stores';
 
 interface DatePickerButtonProps
   extends BaseSingleInputFieldProps<Dayjs | null, Dayjs, FieldSection, false, DateValidationError> {
@@ -35,7 +35,7 @@ interface DatePickerButtonProps
 function DatePickerButton(props: DatePickerButtonProps) {
   const { onOpen, readOnly } = props;
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
 
   return (
     <IconButton

@@ -18,9 +18,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 
-import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
-import { getInputText, inputDate } from '@aehrc/testing-toolkit';
+import { getAnswers, getInputText, inputDate, qrFactory, questionnaireFactory } from '../testUtils';
 import { expect } from 'storybook/test';
+import { qDateCalculation } from '../assets/questionnaires';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -34,14 +34,14 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-const targetlinkId = 'dob';
+const targetLinkId = 'dob';
 const targetText = 'Date of birth';
 const targetDateText = '1990-01-01';
 const targetDate = '01/01/1990';
 
 const qDateBasic = questionnaireFactory([
   {
-    linkId: targetlinkId,
+    linkId: targetLinkId,
     type: 'date',
     repeats: false,
     text: targetText
@@ -49,7 +49,7 @@ const qDateBasic = questionnaireFactory([
 ]);
 const qrDateBasicResponse = qrFactory([
   {
-    linkId: targetlinkId,
+    linkId: targetLinkId,
     text: targetText,
     answer: [
       {
@@ -64,9 +64,9 @@ export const DateBasic: Story = {
     questionnaire: qDateBasic
   },
   play: async ({ canvasElement }) => {
-    await inputDate(canvasElement, targetlinkId, targetDate);
+    await inputDate(canvasElement, targetLinkId, targetDate);
 
-    const result = await getAnswers(targetlinkId);
+    const result = await getAnswers(targetLinkId);
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueDate: targetDateText }));
     // TODO : ADD CLEAR BUTTON
@@ -79,8 +79,14 @@ export const DateBasicResponse: Story = {
     questionnaireResponse: qrDateBasicResponse
   },
   play: async ({ canvasElement }) => {
-    const input = await getInputText(canvasElement, targetlinkId);
+    const input = await getInputText(canvasElement, targetLinkId);
 
     expect(input).toBe(targetDate);
+  }
+};
+
+export const DateCalculation: Story = {
+  args: {
+    questionnaire: qDateCalculation
   }
 };

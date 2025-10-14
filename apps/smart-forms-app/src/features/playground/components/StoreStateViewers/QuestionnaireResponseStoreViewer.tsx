@@ -1,29 +1,23 @@
 import { useState } from 'react';
-import GenericStatePropertyPicker from './GenericStatePropertyPicker.tsx';
-import GenericViewer from './GenericViewer.tsx';
-import useShowQuestionnaireResponseStoreProperty from '../../hooks/useShowQuestionnaireResponseStoreProperty.ts';
-
-const questionnaireResponseStoreStatePropertyNames: string[] = [
-  'key',
-  'sourceResponse',
-  'updatableResponse',
-  'updatableResponseItems',
-  'formChangesHistory',
-  'invalidItems',
-  'responseIsValid'
-];
+import StorePropertyViewer from './StorePropertyViewer.tsx';
+import useSelectedProperty from '../../hooks/useSelectedProperty.ts';
+import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
+import StorePropertyPicker from './StorePropertyPicker.tsx';
 
 interface QuestionnaireResponseStoreViewerProps {
-  statePropNameFilter: string;
+  propKeyFilter: string;
 }
 
 function QuestionnaireResponseStoreViewer(props: QuestionnaireResponseStoreViewerProps) {
-  const { statePropNameFilter } = props;
+  const { propKeyFilter } = props;
 
-  const [selectedProperty, setSelectedProperty] = useState('updatableResponse');
+  const [selectedPropKey, setSelectedPropKey] = useState('updatableResponse');
   const [viewMode, setViewMode] = useState<'text' | 'jsonTree' | 'table'>('text');
 
-  const propertyObject = useShowQuestionnaireResponseStoreProperty(selectedProperty);
+  const { selectedPropVal, allPropKeys } = useSelectedProperty(
+    selectedPropKey,
+    useQuestionnaireResponseStore.use
+  );
 
   function handleViewModeChange(newViewMethod: 'text' | 'jsonTree' | 'table' | null) {
     if (newViewMethod === null) {
@@ -35,15 +29,15 @@ function QuestionnaireResponseStoreViewer(props: QuestionnaireResponseStoreViewe
 
   return (
     <>
-      <GenericStatePropertyPicker
-        statePropertyNames={questionnaireResponseStoreStatePropertyNames}
-        statePropNameFilter={statePropNameFilter}
-        selectedProperty={selectedProperty}
-        onSelectProperty={setSelectedProperty}
+      <StorePropertyPicker
+        propKeys={allPropKeys}
+        propKeyFilter={propKeyFilter}
+        selectedProp={selectedPropKey}
+        onSelectProp={setSelectedPropKey}
       />
-      <GenericViewer
-        propertyName={selectedProperty}
-        propertyObject={propertyObject}
+      <StorePropertyViewer
+        selectedPropKey={selectedPropKey}
+        selectedPropVal={selectedPropVal}
         viewMode={viewMode}
         onViewModeChange={handleViewModeChange}
       />

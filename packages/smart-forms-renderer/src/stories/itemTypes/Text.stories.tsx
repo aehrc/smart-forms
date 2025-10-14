@@ -18,9 +18,15 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import { qTextCalculation } from '../assets/questionnaires';
-import { inputText, getInputText, findByLinkId } from '@aehrc/testing-toolkit';
+import {
+  findByLinkIdOrLabel,
+  getAnswers,
+  getInputText,
+  inputText,
+  qrFactory,
+  questionnaireFactory
+} from '../testUtils';
 import { expect, fireEvent } from 'storybook/test';
-import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 
@@ -36,21 +42,21 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 const targetText = 'mytext';
-const targetlinkId = 'details';
+const targetLinkId = 'details';
 
-const basicQuestionnare = questionnaireFactory([
-  { linkId: targetlinkId, type: 'string', text: targetText }
+const basicQuestionnaire = questionnaireFactory([
+  { linkId: targetLinkId, type: 'string', text: targetText }
 ]);
-const basicQr = qrFactory([{ linkId: targetlinkId, answer: [{ valueString: targetText }] }]);
+const basicQr = qrFactory([{ linkId: targetLinkId, answer: [{ valueString: targetText }] }]);
 
 export const TextBasic: Story = {
   args: {
-    questionnaire: basicQuestionnare
+    questionnaire: basicQuestionnaire
   },
   play: async ({ canvasElement }) => {
-    await inputText(canvasElement, targetlinkId, targetText);
+    await inputText(canvasElement, targetLinkId, targetText);
 
-    const result = await getAnswers(targetlinkId);
+    const result = await getAnswers(targetLinkId);
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueString: targetText }));
 
@@ -60,9 +66,9 @@ export const TextBasic: Story = {
 
     // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
-    const resultAfterClear = await getAnswers(targetlinkId);
+    const resultAfterClear = await getAnswers(targetLinkId);
     expect(resultAfterClear).toHaveLength(0);
-    const elementAfterClear = await findByLinkId(canvasElement, targetlinkId);
+    const elementAfterClear = await findByLinkIdOrLabel(canvasElement, targetLinkId);
     const input = elementAfterClear.querySelector('textarea');
     expect(input?.value).toBe('');
   }
@@ -70,11 +76,11 @@ export const TextBasic: Story = {
 
 export const TextBasicResponse: Story = {
   args: {
-    questionnaire: basicQuestionnare,
+    questionnaire: basicQuestionnaire,
     questionnaireResponse: basicQr
   },
   play: async ({ canvasElement }) => {
-    const inputText = await getInputText(canvasElement, targetlinkId);
+    const inputText = await getInputText(canvasElement, targetLinkId);
 
     expect(inputText).toBe(targetText);
   }

@@ -32,7 +32,7 @@ If possible, it is recommended to merge the `main` (or `alpha`) branch into your
 
 You will need the following software to build the solution and run the tests:
 
-* Node.js 18.x or later versions
+* Node.js 20.x or later versions
 
 To build and install locally, run in the root folder:
 ```

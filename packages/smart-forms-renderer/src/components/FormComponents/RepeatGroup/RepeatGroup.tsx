@@ -17,7 +17,6 @@
 
 import React, { useState } from 'react';
 import type {
-  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
   PropsWithParentStylesAttribute,
@@ -28,11 +27,9 @@ import useInitialiseRepeatGroups from '../../../hooks/useInitialiseRepeatGroups'
 import { useQuestionnaireStore } from '../../../stores';
 import RepeatGroupView from './RepeatGroupView';
 import { generateNewRepeatId } from '../../../utils/repeatId';
-import type { ItemPath } from '../../../interfaces/itemPath.interface';
 
 interface RepeatGroupProps
   extends PropsWithQrRepeatGroupChangeHandler,
-    PropsWithItemPathAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithParentIsRepeatGroupAttribute,
     PropsWithParentStylesAttribute {
@@ -51,7 +48,7 @@ function RepeatGroup(props: RepeatGroupProps) {
   const {
     qItem,
     qrItems,
-    itemPath,
+
     groupCardElevation,
     parentIsReadOnly,
     onQrRepeatGroupChange,
@@ -64,11 +61,7 @@ function RepeatGroup(props: RepeatGroupProps) {
 
   const [repeatGroups, setRepeatGroups] = useState(initialRepeatGroups);
 
-  function handleAnswerChange(
-    newQrItem: QuestionnaireResponseItem,
-    index: number,
-    targetItemPath?: ItemPath
-  ) {
+  function handleAnswerChange(newQrItem: QuestionnaireResponseItem, index: number) {
     const updatedRepeatGroups = [...repeatGroups];
 
     if (newQrItem.item) {
@@ -81,16 +74,12 @@ function RepeatGroup(props: RepeatGroupProps) {
 
     setRepeatGroups(updatedRepeatGroups);
 
-    // Include targetItemPath because an answer is changed
-    onQrRepeatGroupChange(
-      {
-        linkId: qItem.linkId,
-        qrItems: updatedRepeatGroups.flatMap((singleGroup) =>
-          singleGroup.qrItem ? [structuredClone(singleGroup.qrItem)] : []
-        )
-      },
-      targetItemPath
-    );
+    onQrRepeatGroupChange({
+      linkId: qItem.linkId,
+      qrItems: updatedRepeatGroups.flatMap((singleGroup) =>
+        singleGroup.qrItem ? [structuredClone(singleGroup.qrItem)] : []
+      )
+    });
   }
 
   function handleRemoveItem(index: number) {
@@ -102,7 +91,6 @@ function RepeatGroup(props: RepeatGroupProps) {
 
     setRepeatGroups(updatedRepeatGroups);
 
-    // Don't need to include targetItemPath because we are deleting the whole QRItem, only include targetItemPath if an answer is changed
     onQrRepeatGroupChange({
       linkId: qItem.linkId,
       qrItems: updatedRepeatGroups.flatMap((singleGroup) =>
@@ -127,7 +115,6 @@ function RepeatGroup(props: RepeatGroupProps) {
     <RepeatGroupView
       qItem={qItem}
       repeatGroups={repeatGroups}
-      itemPath={itemPath}
       groupCardElevation={groupCardElevation}
       parentIsReadOnly={parentIsReadOnly}
       onAnswerChange={handleAnswerChange}

@@ -20,19 +20,15 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { createEmptyQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
 import { getQrItemsIndex } from '../../../utils/mapItem';
 import type {
-  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import { extendItemPath } from '../../../utils/itemPath';
-import type { ItemPath } from '../../../interfaces/itemPath.interface';
 import { SingleItem } from '../SingleItem';
 import { StandardTableCell } from './Table.styles';
 import Box from '@mui/material/Box';
 
 interface GroupTableRowCellsProps
   extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
@@ -48,7 +44,6 @@ function GroupTableRowCells(props: GroupTableRowCellsProps) {
     qItemsIndexMap,
     visibleItemLabels,
     calculatedColumnWidths,
-    itemPath,
     parentIsReadOnly,
     onQrItemChange
   } = props;
@@ -61,13 +56,10 @@ function GroupTableRowCells(props: GroupTableRowCellsProps) {
     return null;
   }
 
-  function handleQrRowItemChange(
-    newQrRowItem: QuestionnaireResponseItem,
-    targetItemPath?: ItemPath
-  ) {
+  function handleQrRowItemChange(newQrRowItem: QuestionnaireResponseItem) {
     const qrRow: QuestionnaireResponseItem = { ...row };
     updateQrItemsInGroup(newQrRowItem, null, qrRow, qItemsIndexMap);
-    onQrItemChange(qrRow, targetItemPath);
+    onQrItemChange(qrRow);
   }
 
   const qrItemsByIndex = getQrItemsIndex(rowItems, rowQrItems, qItemsIndexMap);
@@ -94,7 +86,6 @@ function GroupTableRowCells(props: GroupTableRowCellsProps) {
                 key={rowItem.linkId}
                 qItem={rowItem}
                 qrItem={qrItem ?? null}
-                itemPath={extendItemPath(itemPath, rowItem.linkId)}
                 isRepeated={true}
                 isTabled={true}
                 groupCardElevation={1}

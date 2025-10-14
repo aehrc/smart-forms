@@ -21,8 +21,14 @@ import {
   qChoiceAnswerOptionCalculation,
   qChoiceAnswerValueSetCalculation
 } from '../assets/questionnaires';
-import { chooseSelectOption, findByLinkId, getInputText } from '@aehrc/testing-toolkit';
-import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
+import {
+  chooseSelectOption,
+  findByLinkIdOrLabel,
+  getAnswers,
+  getInputText,
+  qrFactory,
+  questionnaireFactory
+} from '../testUtils';
 import { expect, fireEvent } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -37,7 +43,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-const targetlinkId = 'smoking-status';
+const targetLinkId = 'smoking-status';
 const targetCoding = {
   system: 'http://snomed.info/sct',
   code: '266919005',
@@ -50,7 +56,7 @@ const notTargetCoding = {
 };
 const qChoiceAnswerOptionBasic = questionnaireFactory([
   {
-    linkId: targetlinkId,
+    linkId: targetLinkId,
     type: 'choice',
     text: 'Smoking status',
     answerOption: [
@@ -65,7 +71,7 @@ const qChoiceAnswerOptionBasic = questionnaireFactory([
 ]);
 const qrChoiceAnswerOptionBasicResponse = qrFactory([
   {
-    linkId: targetlinkId,
+    linkId: targetLinkId,
     answer: [
       {
         valueCoding: targetCoding
@@ -79,9 +85,9 @@ export const ChoiceAnswerOptionBasic: Story = {
     questionnaire: qChoiceAnswerOptionBasic
   },
   play: async ({ canvasElement }) => {
-    await chooseSelectOption(canvasElement, targetlinkId, targetCoding.display);
+    await chooseSelectOption(canvasElement, targetLinkId, targetCoding.display);
 
-    const result = await getAnswers(targetlinkId);
+    const result = await getAnswers(targetLinkId);
     expect(result).toHaveLength(1);
     expect(result[0].valueCoding).toEqual(expect.objectContaining(targetCoding));
 
@@ -91,10 +97,10 @@ export const ChoiceAnswerOptionBasic: Story = {
 
     // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
-    const resultAfterClear = await getAnswers(targetlinkId);
+    const resultAfterClear = await getAnswers(targetLinkId);
     expect(resultAfterClear).toHaveLength(0);
 
-    const elementAfterClear = await findByLinkId(canvasElement, targetlinkId);
+    const elementAfterClear = await findByLinkIdOrLabel(canvasElement, targetLinkId);
     const input = elementAfterClear.querySelector('textarea');
     expect(input?.value).toBe('');
   }
@@ -106,7 +112,7 @@ export const ChoiceAnswerOptionBasicResponse: Story = {
     questionnaireResponse: qrChoiceAnswerOptionBasicResponse
   },
   play: async ({ canvasElement }) => {
-    const inputText = await getInputText(canvasElement, targetlinkId);
+    const inputText = await getInputText(canvasElement, targetLinkId);
 
     expect(inputText).toBe(targetCoding.display);
   }

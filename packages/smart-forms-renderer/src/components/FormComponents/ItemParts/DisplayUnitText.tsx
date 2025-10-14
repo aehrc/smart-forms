@@ -1,6 +1,6 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
-import { useRendererStylingStore } from '../../../stores';
+import { useRendererConfigStore } from '../../../stores';
 
 interface DisplayUnitTextProps {
   readOnly: boolean;
@@ -10,7 +10,7 @@ interface DisplayUnitTextProps {
 function DisplayUnitText(props: DisplayUnitTextProps) {
   const { readOnly, children } = props;
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
 
   const readOnlyTextColor = readOnlyVisualStyle === 'disabled' ? 'text.disabled' : 'text.secondary';
 

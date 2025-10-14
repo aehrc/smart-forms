@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-import { describe, expect, test, jest } from '@jest/globals';
+import { describe, expect, jest } from '@jest/globals';
 import {
-  evaluateInitialAnswerOptionsToggleExpressions,
-  evaluateAnswerOptionsToggleExpressions
+  evaluateAnswerOptionsToggleExpressions,
+  evaluateInitialAnswerOptionsToggleExpressions
 } from '../utils/answerOptionsToggleExpressions';
 import type { AnswerOptionsToggleExpression } from '../interfaces/answerOptionsToggleExpression.interface';
 
@@ -330,7 +330,7 @@ describe('answerOptionsToggleExpressions utils', () => {
         'http://test.com'
       );
 
-      expect(result.answerOptionsToggleExpressionsIsUpdated).toBe(true);
+      expect(result.isUpdated).toBe(true);
       expect(result.updatedAnswerOptionsToggleExpressions).toBeDefined();
       expect(result.computedNewAnswers).toBeDefined();
     });
@@ -357,7 +357,7 @@ describe('answerOptionsToggleExpressions utils', () => {
         'http://test.com'
       );
 
-      expect(result.answerOptionsToggleExpressionsIsUpdated).toBe(false);
+      expect(result.isUpdated).toBe(false);
     });
 
     it('should handle evaluation errors gracefully', async () => {

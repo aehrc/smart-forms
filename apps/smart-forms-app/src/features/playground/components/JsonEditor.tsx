@@ -46,7 +46,7 @@ function JsonEditor(props: JsonEditorProps) {
 
   const [view, setView] = useState<'editor' | 'storeState'>('editor');
   const [selectedStore, setSelectedStore] = useState<StateStore>('questionnaireResponseStore');
-  const [statePropNameFilter, setstatePropNameFilter] = useState<string>('');
+  const [propKeyFilter, setPropKeyFilter] = useState<string>('');
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
   function handleEditorChange(value: string | undefined) {
@@ -97,10 +97,10 @@ function JsonEditor(props: JsonEditorProps) {
             ) : (
               <PlaygroundAdvancedPropsMenu
                 selectedStore={selectedStore}
-                statePropNameFilter={statePropNameFilter}
+                propKeyFilter={propKeyFilter}
                 onSetView={setView}
                 onSetSelectedStore={(selectedStore) => setSelectedStore(selectedStore)}
-                onSetstatePropNameFilter={(filterString) => setstatePropNameFilter(filterString)}
+                onSetPropKeyFilter={(filterString) => setPropKeyFilter(filterString)}
               />
             )}
             <Box flexGrow={1} />
@@ -158,7 +158,7 @@ function JsonEditor(props: JsonEditorProps) {
           <StoreStateViewer
             selectedStore={selectedStore}
             sourceFhirServerUrl={sourceFhirServerUrl}
-            statePropNameFilter={statePropNameFilter}
+            propKeyFilter={propKeyFilter}
           />
         </Box>
       </Box>

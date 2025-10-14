@@ -131,7 +131,7 @@ export async function evaluateAnswerOptionsToggleExpressions(
   answerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>,
   terminologyServerUrl: string
 ): Promise<{
-  answerOptionsToggleExpressionsIsUpdated: boolean;
+  isUpdated: boolean;
   updatedAnswerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
   computedNewAnswers: ComputedNewAnswers;
 }> {
@@ -200,7 +200,7 @@ export async function evaluateAnswerOptionsToggleExpressions(
   }
 
   return {
-    answerOptionsToggleExpressionsIsUpdated: isUpdated,
+    isUpdated,
     updatedAnswerOptionsToggleExpressions: answerOptionsToggleExpressions,
     computedNewAnswers
   };

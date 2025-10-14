@@ -15,18 +15,18 @@
  * limitations under the License.
  */
 
-import type { ChangeEvent } from 'react';
-import type { PropsWithIsTabledRequiredAttribute } from '../../../../interfaces/renderProps.interface';
 import Box from '@mui/material/Box';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import MuiTextField from '../../TextItem/MuiTextField';
 import { grey } from '@mui/material/colors';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
-import { useRendererStylingStore } from '../../../../stores';
+import type { ChangeEvent } from 'react';
+import type { PropsWithIsTabledAttribute } from '../../../../interfaces/renderProps.interface';
+import { useRendererConfigStore } from '../../../../stores';
 import FormControl from '@mui/material/FormControl';
+import MuiTextField from '../../TextItem/MuiTextField';
 
-interface CustomTimeFieldProps extends PropsWithIsTabledRequiredAttribute {
+interface CustomTimeFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
   itemType: string;
   timeInput: string;
@@ -39,7 +39,6 @@ interface CustomTimeFieldProps extends PropsWithIsTabledRequiredAttribute {
   isPartOfDateTime: boolean;
   onTimeInputChange: (newInput: string) => void;
   onPeriodChange: (newPeriod: string) => void;
-  onTimeBlur: () => void;
 }
 
 function CustomTimeField(props: CustomTimeFieldProps) {
@@ -55,13 +54,12 @@ function CustomTimeField(props: CustomTimeFieldProps) {
     isPartOfDateTime,
     isTabled,
     onTimeInputChange,
-    onPeriodChange,
-    onTimeBlur
+    onPeriodChange
   } = props;
   // TODO this component doesn't have a calcExpUpdated update animation
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
-  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
 
   // If this reusable time field is part of a DateTime component, do not assign an id to the wrapping <Box/>
   // If this reusable time field is from a Time component, the wrapping <Box/> should have an id
@@ -86,7 +84,6 @@ function CustomTimeField(props: CustomTimeFieldProps) {
           fullWidth
           sx={{ flex: 1 }}
           onChange={(e: ChangeEvent<HTMLInputElement>) => onTimeInputChange(e.target.value)}
-          onBlur={onTimeBlur}
           label={displayPrompt}
           placeholder="--:--"
           disabled={readOnly && readOnlyVisualStyle === 'disabled'}
@@ -107,8 +104,7 @@ function CustomTimeField(props: CustomTimeFieldProps) {
             readOnly={(readOnly && readOnlyVisualStyle === 'readonly') || is24HourNotation}
             displayEmpty
             size="small"
-            onChange={(e) => onPeriodChange(e.target.value)}
-            onBlur={onTimeBlur}>
+            onChange={(e) => onPeriodChange(e.target.value)}>
             <MenuItem value="">
               <span style={{ color: grey['500'] }}>{is24HourNotation ? '-' : 'AM/PM'}</span>
             </MenuItem>

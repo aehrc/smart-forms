@@ -15,12 +15,11 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Typography from '@mui/material/Typography';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import { StyledAlert } from '../../Alert.styles';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
+import { StyledAlert } from '../../Alert.styles';
 import RadioFormGroup from '../ItemParts/RadioFormGroup';
 
 interface ChoiceRadioAnswerValueSetFieldsProps {

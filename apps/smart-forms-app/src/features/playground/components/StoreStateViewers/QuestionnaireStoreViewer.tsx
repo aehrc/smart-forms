@@ -16,52 +16,25 @@
  */
 
 import { useState } from 'react';
-import useShowQuestionnaireStoreProperty from '../../hooks/useShowQuestionnaireStoreProperty.ts';
-import GenericViewer from './GenericViewer.tsx';
-import GenericStatePropertyPicker from './GenericStatePropertyPicker.tsx';
-
-const questionnaireStoreStatePropertyNames: string[] = [
-  'sourceQuestionnaire',
-  'itemMap',
-  'itemPreferredTerminologyServers',
-  'tabs',
-  'currentTabIndex',
-  'pages',
-  'currentPageIndex',
-  'variables',
-  'launchContexts',
-  'targetConstraints',
-  'targetConstraintLinkIds',
-  'answerOptionsToggleExpressions',
-  'enableWhenItems',
-  'enableWhenLinkedQuestions',
-  'enableWhenIsActivated',
-  'enableWhenExpressions',
-  'calculatedExpressions',
-  'initialExpressions',
-  'answerExpressions',
-  'processedValueSets',
-  'cachedValueSetCodings',
-  'fhirPathContext',
-  'fhirPathTerminologyCache',
-  'populatedContext',
-  'qItemOverrideComponents',
-  'sdcUiOverrideComponents',
-  'focusedLinkId',
-  'readOnly'
-];
+import StorePropertyViewer from './StorePropertyViewer.tsx';
+import useSelectedProperty from '../../hooks/useSelectedProperty.ts';
+import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import StorePropertyPicker from './StorePropertyPicker.tsx';
 
 interface QuestionnaireStoreViewerProps {
-  statePropNameFilter: string;
+  propKeyFilter: string;
 }
 
 function QuestionnaireStoreViewer(props: QuestionnaireStoreViewerProps) {
-  const { statePropNameFilter } = props;
+  const { propKeyFilter } = props;
 
-  const [selectedProperty, setSelectedProperty] = useState('sourceQuestionnaire');
+  const [selectedPropKey, setSelectedPropKey] = useState('sourceQuestionnaire');
   const [viewMode, setViewMode] = useState<'text' | 'jsonTree' | 'table'>('text');
 
-  const propertyObject = useShowQuestionnaireStoreProperty(selectedProperty);
+  const { selectedPropVal, allPropKeys } = useSelectedProperty(
+    selectedPropKey,
+    useQuestionnaireStore.use
+  );
 
   function handleViewModeChange(newViewMethod: 'text' | 'jsonTree' | 'table' | null) {
     if (newViewMethod === null) {
@@ -73,15 +46,15 @@ function QuestionnaireStoreViewer(props: QuestionnaireStoreViewerProps) {
 
   return (
     <>
-      <GenericStatePropertyPicker
-        statePropertyNames={questionnaireStoreStatePropertyNames}
-        statePropNameFilter={statePropNameFilter}
-        selectedProperty={selectedProperty}
-        onSelectProperty={setSelectedProperty}
+      <StorePropertyPicker
+        propKeys={allPropKeys}
+        propKeyFilter={propKeyFilter}
+        selectedProp={selectedPropKey}
+        onSelectProp={setSelectedPropKey}
       />
-      <GenericViewer
-        propertyName={selectedProperty}
-        propertyObject={propertyObject}
+      <StorePropertyViewer
+        selectedPropKey={selectedPropKey}
+        selectedPropVal={selectedPropVal}
         viewMode={viewMode}
         onViewModeChange={handleViewModeChange}
       />

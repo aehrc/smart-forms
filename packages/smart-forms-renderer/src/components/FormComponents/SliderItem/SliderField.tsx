@@ -16,16 +16,16 @@
  */
 
 import React from 'react';
-import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import { getSliderMarks } from '../../../utils/slider';
 import Stack from '@mui/material/Stack';
 import SliderLabels from './SliderLabels';
 import SliderDisplayValue from './SliderDisplayValue';
-import { useRendererStylingStore } from '../../../stores';
+import { useRendererConfigStore } from '../../../stores';
 import { StyledRequiredTypography } from '../Item.styles';
 import { StandardSlider } from './Slider.styles';
 
-interface SliderFieldProps extends PropsWithIsTabledRequiredAttribute {
+interface SliderFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
   itemType: string;
   value: number;
@@ -57,8 +57,8 @@ function SliderField(props: SliderFieldProps) {
     onValueChange
   } = props;
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
-  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
 
   const sliderMarks = getSliderMarks(minValue, maxValue, minLabel, maxLabel, stepValue);
 

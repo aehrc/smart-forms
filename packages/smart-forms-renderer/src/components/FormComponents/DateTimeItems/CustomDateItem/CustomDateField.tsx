@@ -19,13 +19,13 @@ import type { ChangeEvent, Dispatch, SetStateAction } from 'react';
 import { useRef } from 'react';
 import type { Dayjs } from 'dayjs';
 import InputAdornment from '@mui/material/InputAdornment';
-import type { PropsWithIsTabledRequiredAttribute } from '../../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledAttribute } from '../../../../interfaces/renderProps.interface';
 import { StandardTextField } from '../../Textfield.styles';
 import DatePicker from './DatePicker';
-import { useRendererStylingStore } from '../../../../stores';
+import { useRendererConfigStore } from '../../../../stores';
 import ExpressionUpdateFadingIcon from '../../ItemParts/ExpressionUpdateFadingIcon';
 
-interface CustomDateFieldProps extends PropsWithIsTabledRequiredAttribute {
+interface CustomDateFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
   itemType: string;
   itemText: string | undefined;
@@ -40,7 +40,6 @@ interface CustomDateFieldProps extends PropsWithIsTabledRequiredAttribute {
   isPartOfDateTime: boolean;
   setFocused: Dispatch<SetStateAction<boolean>>;
   onInputChange: (newInput: string) => void;
-  onDateBlur: () => void;
   onSelectDate: (newDateValue: string) => void;
 }
 
@@ -61,12 +60,11 @@ function CustomDateField(props: CustomDateFieldProps) {
     isTabled,
     setFocused,
     onInputChange,
-    onDateBlur,
     onSelectDate
   } = props;
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
-  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
 
   const anchorRef = useRef<HTMLDivElement | null>(null);
 
@@ -98,10 +96,7 @@ function CustomDateField(props: CustomDateFieldProps) {
       size="small"
       focused={isFocused}
       onFocus={() => setFocused(true)}
-      onBlur={() => {
-        onDateBlur();
-        setFocused(false);
-      }}
+      onBlur={() => setFocused(false)}
       slotProps={{
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',

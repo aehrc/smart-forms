@@ -15,55 +15,35 @@
  * limitations under the License.
  */
 
-import React, { useCallback } from 'react';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { createEmptyQrItem } from '../../../utils/qrItem';
+import debounce from 'lodash.debounce';
+import { useCallback } from 'react';
+import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
+import useOpenLabel from '../../../hooks/useOpenLabel';
+import useReadOnly from '../../../hooks/useReadOnly';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
+import { useQuestionnaireStore } from '../../../stores';
+import { updateChoiceCheckboxAnswers } from '../../../utils/choice';
+import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import { getOpenLabelText } from '../../../utils/extensions';
 import { updateOpenLabelAnswer } from '../../../utils/openChoice';
+import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
-import debounce from 'lodash.debounce';
-import type {
-  PropsWithFeedbackFromParentAttribute,
-  PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
-  PropsWithItemPathAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithRenderingExtensionsAttribute
-} from '../../../interfaces/renderProps.interface';
-import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
-import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
-import { useQuestionnaireStore } from '../../../stores';
-import useOpenLabel from '../../../hooks/useOpenLabel';
-import { updateChoiceCheckboxAnswers } from '../../../utils/choice';
-import OpenChoiceCheckboxAnswerOptionFields from './OpenChoiceCheckboxAnswerOptionFields';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import ItemLabel from '../ItemParts/ItemLabel';
-import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
+import OpenChoiceCheckboxAnswerOptionFields from './OpenChoiceCheckboxAnswerOptionFields';
 
-interface OpenChoiceCheckboxAnswerOptionItemProps
-  extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
-    PropsWithIsRepeatedAttribute,
-    PropsWithParentIsReadOnlyAttribute,
-    PropsWithRenderingExtensionsAttribute,
-    PropsWithFeedbackFromParentAttribute,
-    PropsWithIsTabledAttribute {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
-}
-
-function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptionItemProps) {
+function OpenChoiceCheckboxAnswerOptionItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
     isRepeated,
+    isTabled,
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
-    isTabled,
+    calcExpUpdated,
     onQrItemChange
   } = props;
 
@@ -185,7 +165,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
           openLabelChecked={openLabelChecked}
           feedback={feedback}
           readOnly={readOnly}
-          expressionUpdated={answerOptionsToggleExpUpdated}
+          expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
           answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
           isTabled={isTabled}
           onOptionChange={handleOptionChange}
@@ -202,6 +182,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
     <FullWidthFormComponentBox
       data-test="q-item-open-choice-checkbox-answer-option-box"
       data-linkid={qItem.linkId}
+      data-label={qItem.text}
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid
         qItem={qItem}
@@ -217,7 +198,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: OpenChoiceCheckboxAnswerOptio
             openLabelChecked={openLabelChecked}
             feedback={feedback}
             readOnly={readOnly}
-            expressionUpdated={answerOptionsToggleExpUpdated}
+            expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             isTabled={isTabled}
             onOptionChange={handleOptionChange}

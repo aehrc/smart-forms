@@ -25,7 +25,6 @@ import type {
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
 import type {
-  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
@@ -34,7 +33,6 @@ import useReadOnly from '../../../hooks/useReadOnly';
 
 interface RepeatFieldProps
   extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
@@ -48,7 +46,7 @@ function RepeatField(props: RepeatFieldProps) {
   const {
     qItem,
     qrItem,
-    itemPath,
+
     answer,
     numOfRepeatAnswers,
     groupCardElevation,
@@ -65,7 +63,6 @@ function RepeatField(props: RepeatFieldProps) {
         <SingleItem
           qItem={qItem}
           qrItem={qrItem}
-          itemPath={itemPath}
           isRepeated={qItem.repeats ?? false}
           isTabled={false}
           groupCardElevation={groupCardElevation}

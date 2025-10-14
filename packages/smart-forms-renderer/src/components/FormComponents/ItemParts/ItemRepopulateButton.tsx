@@ -53,8 +53,6 @@ function ItemRepopulateButton(props: ItemRepopulateButtonProps) {
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
 
-  const setPopulatedContext = useQuestionnaireStore.use.setPopulatedContext();
-
   const [repopulationState, setRepopulationState] = useState<RepopulationState>('idle');
 
   // On success, set state to successful and set back to idle after 5 seconds
@@ -102,12 +100,7 @@ function ItemRepopulateButton(props: ItemRepopulateButtonProps) {
     }
 
     setRepopulationState('success');
-    const { populatedResponse, populatedContext } = populateResult;
-
-    // TODO eventually we want to deprecate this in 1.0.0, populatedContext is now passed to buildFormWrapper and is automatically added to the FhirPathContext
-    if (populatedContext) {
-      setPopulatedContext(populatedContext, true);
-    }
+    const { populatedResponse } = populateResult;
 
     const newQuestionnaireResponseItem = getQuestionnaireResponseItem(
       populatedResponse,

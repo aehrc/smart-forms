@@ -18,9 +18,15 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 
-import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
-import { getInputText, inputDateTime } from '@aehrc/testing-toolkit';
+import {
+  getAnswers,
+  getInputText,
+  inputDateTime,
+  qrFactory,
+  questionnaireFactory
+} from '../testUtils';
 import { expect } from 'storybook/test';
+import { qDateTimeCalculation } from '../assets/questionnaires';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -34,14 +40,14 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-const targetlinkId = 'dob';
+const targetLinkId = 'dob';
 const targetText = 'Datetime of birth';
 const targetDateTextWithoutTZ = '1990-01-01T13:15:00';
 const targetDate = '01/01/1990';
 
 const qDateTimeBasic = questionnaireFactory([
   {
-    linkId: targetlinkId,
+    linkId: targetLinkId,
     type: 'dateTime',
     repeats: false,
     text: targetText
@@ -49,7 +55,7 @@ const qDateTimeBasic = questionnaireFactory([
 ]);
 const qrDateTimeBasicResponse = qrFactory([
   {
-    linkId: targetlinkId,
+    linkId: targetLinkId,
     answer: [
       {
         valueDateTime: '1990-01-01T00:53:00Z'
@@ -63,9 +69,9 @@ export const DateTimeBasic: Story = {
     questionnaire: qDateTimeBasic
   },
   play: async ({ canvasElement }) => {
-    await inputDateTime(canvasElement, targetlinkId, targetDate, '01:15', 'PM');
+    await inputDateTime(canvasElement, targetLinkId, targetDate, '01:15', 'PM');
 
-    const result = await getAnswers(targetlinkId);
+    const result = await getAnswers(targetLinkId);
 
     expect(result).toHaveLength(1);
 
@@ -85,10 +91,16 @@ export const DateTimeBasicResponse: Story = {
     questionnaireResponse: qrDateTimeBasicResponse
   },
   play: async ({ canvasElement }) => {
-    const input = await getInputText(canvasElement, targetlinkId);
+    const input = await getInputText(canvasElement, targetLinkId);
 
     expect(input).toBe('01/01/1990');
 
     // TODO: We have bug with it.Time and ampm doesnt work correctly.
+  }
+};
+
+export const DateTimeCalculation: Story = {
+  args: {
+    questionnaire: qDateTimeCalculation
   }
 };

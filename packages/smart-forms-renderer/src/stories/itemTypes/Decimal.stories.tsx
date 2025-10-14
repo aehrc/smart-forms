@@ -18,8 +18,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import { qCalculatedExpressionBMICalculator } from '../assets/questionnaires';
-import { getAnswers, qrFactory, questionnaireFactory } from '../testUtils';
-import { findByLinkId, getInputText, inputDecimal } from '@aehrc/testing-toolkit';
+import {
+  findByLinkIdOrLabel,
+  getAnswers,
+  getInputText,
+  inputDecimal,
+  qrFactory,
+  questionnaireFactory
+} from '../testUtils';
 import { expect, fireEvent } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -35,12 +41,12 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-const targetlinkId = 'weight';
+const targetLinkId = 'weight';
 const targetWeight = 80.3;
 
 const qDecimalBasic = questionnaireFactory([
   {
-    linkId: targetlinkId,
+    linkId: targetLinkId,
     type: 'decimal',
     repeats: false,
     text: 'Weight in kg'
@@ -48,7 +54,7 @@ const qDecimalBasic = questionnaireFactory([
 ]);
 const qrDecimalBasicResponse = qrFactory([
   {
-    linkId: targetlinkId,
+    linkId: targetLinkId,
     text: 'Weight in kg',
     answer: [
       {
@@ -63,9 +69,9 @@ export const DecimalBasic: Story = {
     questionnaire: qDecimalBasic
   },
   play: async ({ canvasElement }) => {
-    await inputDecimal(canvasElement, targetlinkId, targetWeight);
+    await inputDecimal(canvasElement, targetLinkId, targetWeight);
 
-    const result = await getAnswers(targetlinkId);
+    const result = await getAnswers(targetLinkId);
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueDecimal: targetWeight }));
 
@@ -75,10 +81,10 @@ export const DecimalBasic: Story = {
 
     // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
-    const resultAfterClear = await getAnswers(targetlinkId);
+    const resultAfterClear = await getAnswers(targetLinkId);
     expect(resultAfterClear).toHaveLength(0);
 
-    const elementAfterClear = await findByLinkId(canvasElement, targetlinkId);
+    const elementAfterClear = await findByLinkIdOrLabel(canvasElement, targetLinkId);
     const input = elementAfterClear.querySelector('input');
     expect(input?.getAttribute('value')).toBe('');
   }
@@ -90,7 +96,7 @@ export const DecimalBasicResponse: Story = {
     questionnaireResponse: qrDecimalBasicResponse
   },
   play: async ({ canvasElement }) => {
-    const input = await getInputText(canvasElement, targetlinkId);
+    const input = await getInputText(canvasElement, targetLinkId);
 
     expect(input).toBe(targetWeight.toString());
   }
