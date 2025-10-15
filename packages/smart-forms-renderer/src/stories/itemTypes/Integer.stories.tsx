@@ -17,6 +17,7 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
+import { createStory } from '../storybookWrappers/createStory';
 
 import {
   findByLinkIdOrLabel,
@@ -64,7 +65,7 @@ const qrIntegerBasicResponse = qrFactory([
   }
 ]);
 
-export const IntegerBasic: Story = {
+export const IntegerBasic: Story = createStory({
   args: {
     questionnaire: qIntegerBasic
   },
@@ -87,8 +88,8 @@ export const IntegerBasic: Story = {
     const input = elementAfterClear.querySelector('input');
     expect(input?.getAttribute('value')).toBe('');
   }
-};
-export const IntegerBasicResponse: Story = {
+}) as Story;
+export const IntegerBasicResponse: Story = createStory({
   args: {
     questionnaire: qIntegerBasic,
     questionnaireResponse: qrIntegerBasicResponse
@@ -98,4 +99,4 @@ export const IntegerBasicResponse: Story = {
 
     expect(input).toBe(targetAge.toString());
   }
-};
+}) as Story;

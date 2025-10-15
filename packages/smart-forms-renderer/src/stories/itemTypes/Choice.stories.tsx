@@ -26,6 +26,7 @@ import {
   questionnaireFactory
 } from '../testUtils';
 import { expect, fireEvent } from 'storybook/test';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -76,7 +77,7 @@ const qrChoiceAnswerOptionBasicResponse = qrFactory([
   }
 ]);
 
-export const ChoiceAnswerOptionBasic: Story = {
+export const ChoiceAnswerOptionBasic: Story = createStory({
   args: {
     questionnaire: qChoiceAnswerOptionBasic
   },
@@ -100,9 +101,9 @@ export const ChoiceAnswerOptionBasic: Story = {
     const input = elementAfterClear.querySelector('textarea');
     expect(input?.value).toBe('');
   }
-};
+}) as Story;
 
-export const ChoiceAnswerOptionBasicResponse: Story = {
+export const ChoiceAnswerOptionBasicResponse: Story = createStory({
   args: {
     questionnaire: qChoiceAnswerOptionBasic,
     questionnaireResponse: qrChoiceAnswerOptionBasicResponse
@@ -112,7 +113,7 @@ export const ChoiceAnswerOptionBasicResponse: Story = {
 
     expect(inputText).toBe(targetCoding.display);
   }
-};
+}) as Story;
 
 const valueSetTargetId = 'gender';
 
@@ -132,7 +133,7 @@ const qValueSetBasic = questionnaireFactory([
   }
 ]);
 
-export const ChoiceAnswerValueSetBasic: Story = {
+export const ChoiceAnswerValueSetBasic: Story = createStory({
   args: {
     questionnaire: qValueSetBasic
   },
@@ -143,9 +144,9 @@ export const ChoiceAnswerValueSetBasic: Story = {
     expect(result).toHaveLength(1);
     expect(result[0].valueCoding).toEqual(expect.objectContaining(valueSetTargetCoding));
   }
-};
+}) as Story;
 
-export const ChoiceAnswerValueSetBasicResponse: Story = {
+export const ChoiceAnswerValueSetBasicResponse: Story = createStory({
   args: {
     questionnaire: qValueSetBasic,
     questionnaireResponse: qrFactory([
@@ -161,7 +162,7 @@ export const ChoiceAnswerValueSetBasicResponse: Story = {
 
     expect(inputText).toBe(valueSetTargetCoding.display);
   }
-};
+}) as Story;
 
 const initialTargetCoding = {
   code: 'T',
@@ -175,7 +176,7 @@ const initialNotTargetCoding = {
 };
 
 // Story for ChoiceSelectAnswerOptions Using InitialSelected field set
-export const ChoiceAnswerOptionsUsingInitialSelected: Story = {
+export const ChoiceAnswerOptionsUsingInitialSelected: Story = createStory({
   args: {
     questionnaire: questionnaireFactory([
       {
@@ -200,4 +201,4 @@ export const ChoiceAnswerOptionsUsingInitialSelected: Story = {
 
     expect(inputText).toBe(initialTargetCoding.display);
   }
-};
+}) as Story;

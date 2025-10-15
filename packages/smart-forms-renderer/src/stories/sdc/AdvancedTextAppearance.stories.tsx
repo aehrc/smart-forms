@@ -29,6 +29,7 @@ import {
   qRenderingXhtmlGroupPropagationInlineStyles,
   qRenderingXhtmlGroupPropagationNested
 } from '../assets/questionnaires';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -43,62 +44,62 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const RenderingStyleBoolean: Story = {
+export const RenderingStyleBoolean: Story = createStory({
   args: {
     questionnaire: qRenderingStyleBooleanItem
   }
-};
+}) as Story;
 
-export const RenderingXHTMLBoolean: Story = {
+export const RenderingXHTMLBoolean: Story = createStory({
   args: {
     questionnaire: qRenderingXhtmlBooleanItem
   }
-};
+}) as Story;
 
-export const RenderingXHTMLDisplayList: Story = {
+export const RenderingXHTMLDisplayList: Story = createStory({
   args: {
     questionnaire: qRenderingXhtmlDisplayListItem
   }
-};
+}) as Story;
 
-export const RenderingXHTMLDisplayBase64Image: Story = {
+export const RenderingXHTMLDisplayBase64Image: Story = createStory({
   args: {
     questionnaire: qRenderingXhtmlDisplayBase64ImageItem
   }
-};
+}) as Story;
 
-export const RenderingXHTMLGroupPropagationNested: Story = {
+export const RenderingXHTMLGroupPropagationNested: Story = createStory({
   args: {
     questionnaire: qRenderingXhtmlGroupPropagationNested
   }
-};
+}) as Story;
 
-export const RenderingXHTMLGroupPropagationInlineStyles: Story = {
+export const RenderingXHTMLGroupPropagationInlineStyles: Story = createStory({
   args: {
     questionnaire: qRenderingXhtmlGroupPropagationInlineStyles
   }
-};
+}) as Story;
 
-export const RenderingXHTMLGroupPropagationClassStyles: Story = {
+export const RenderingXHTMLGroupPropagationClassStyles: Story = createStory({
   args: {
     questionnaire: qRenderingXhtmlGroupPropagationClassStyles
   }
-};
+}) as Story;
 
-export const DisplayCategoryInstructions: Story = {
+export const DisplayCategoryInstructions: Story = createStory({
   args: {
     questionnaire: qDisplayCategoryInstructions
   }
-};
+}) as Story;
 
-export const OpenLabel: Story = {
+export const OpenLabel: Story = createStory({
   args: {
     questionnaire: qOpenLabel
   }
-};
+}) as Story;
 
-export const Hidden: Story = {
+export const Hidden: Story = createStory({
   args: {
     questionnaire: qHidden
   }
-};
+}) as Story;

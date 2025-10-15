@@ -18,13 +18,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import PrePopWrapperForStorybook from '../storybookWrappers/PrePopWrapperForStorybook';
 import {
-  qCqfExpressionBasic,
   qCqfExpressionAdvanced,
+  qCqfExpressionBasic,
   qCqfExpressionSimple
 } from '../assets/questionnaires';
 import { mockFhirClient } from '../assets/fhirClient/mockFhirClient';
 import { patSmartForm } from '../assets/patients/PatSmartForm';
 import { pracPrimaryPeter } from '../assets/practitioners/PracPrimaryPeter';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -35,29 +36,29 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const SimpleCqfExpression: Story = {
+export const SimpleCqfExpression: Story = createStory({
   args: {
     questionnaire: qCqfExpressionSimple,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
   }
-};
+}) as Story;
 
-export const BasicCqfExpression: Story = {
+export const BasicCqfExpression: Story = createStory({
   args: {
     questionnaire: qCqfExpressionBasic,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
   }
-};
+}) as Story;
 
-export const AdvancedCqfExpression: Story = {
+export const AdvancedCqfExpression: Story = createStory({
   args: {
     questionnaire: qCqfExpressionAdvanced,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
   }
-};
+}) as Story;

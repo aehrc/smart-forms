@@ -18,6 +18,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import { qGroupHideAddItemButton } from '../assets/questionnaires';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -30,8 +31,8 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const GroupHideAddItemButtonDemo: Story = {
+export const GroupHideAddItemButtonDemo: Story = createStory({
   args: {
     questionnaire: qGroupHideAddItemButton
   }
-};
+}) as Story;

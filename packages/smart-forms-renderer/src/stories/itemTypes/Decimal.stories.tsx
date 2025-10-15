@@ -27,6 +27,7 @@ import {
   questionnaireFactory
 } from '../testUtils';
 import { expect, fireEvent } from 'storybook/test';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -64,7 +65,7 @@ const qrDecimalBasicResponse = qrFactory([
   }
 ]);
 
-export const DecimalBasic: Story = {
+export const DecimalBasic: Story = createStory({
   args: {
     questionnaire: qDecimalBasic
   },
@@ -88,9 +89,9 @@ export const DecimalBasic: Story = {
     const input = elementAfterClear.querySelector('input');
     expect(input?.getAttribute('value')).toBe('');
   }
-};
+}) as Story;
 
-export const DecimalBasicResponse: Story = {
+export const DecimalBasicResponse: Story = createStory({
   args: {
     questionnaire: qDecimalBasic,
     questionnaireResponse: qrDecimalBasicResponse
@@ -100,4 +101,4 @@ export const DecimalBasicResponse: Story = {
 
     expect(input).toBe(targetWeight.toString());
   }
-};
+}) as Story;

@@ -28,6 +28,7 @@ import {
   qInitialSingle,
   qText
 } from '../assets/questionnaires'; // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -42,56 +43,56 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const InitialSingle: Story = {
+export const InitialSingle: Story = createStory({
   args: {
     questionnaire: qInitialSingle
   }
-};
+}) as Story;
 
-export const InitialRepeats: Story = {
+export const InitialRepeats: Story = createStory({
   args: {
     questionnaire: qInitialRepeats
   }
-};
+}) as Story;
 
-export const EnableWhen: Story = {
+export const EnableWhen: Story = createStory({
   args: {
     questionnaire: qEnableWhen
   }
-};
+}) as Story;
 
-export const EnableWhenMultiCheckbox: Story = {
+export const EnableWhenMultiCheckbox: Story = createStory({
   args: {
     questionnaire: qEnableWhenMultiCheckbox
   }
-};
+}) as Story;
 
-export const EnableBehaviorAll: Story = {
+export const EnableBehaviorAll: Story = createStory({
   args: {
     questionnaire: qEnableBehaviorAll
   }
-};
+}) as Story;
 
-export const EnableBehaviorAny: Story = {
+export const EnableBehaviorAny: Story = createStory({
   args: {
     questionnaire: qEnableBehaviorAny
   }
-};
+}) as Story;
 
-export const EnableWhenExpressionSimple: Story = {
+export const EnableWhenExpressionSimple: Story = createStory({
   args: {
     questionnaire: qEnableWhenExpressionSimple
   }
-};
+}) as Story;
 
-export const EnableWhenExpressionTabs: Story = {
+export const EnableWhenExpressionTabs: Story = createStory({
   args: {
     questionnaire: qEnableWhenExpressionTabs
   }
-};
+}) as Story;
 
-export const Text: Story = {
+export const Text: Story = createStory({
   args: {
     questionnaire: qText
   }
-};
+}) as Story;

@@ -21,6 +21,7 @@ import { qRepopulatableExtension } from '../assets/questionnaires';
 import { mockFhirClient } from '../assets/fhirClient/mockFhirClient';
 import { patSmartForm } from '../assets/patients/PatSmartForm';
 import { pracPrimaryPeter } from '../assets/practitioners/PracPrimaryPeter';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -31,11 +32,11 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const RepopulatableExtensionDemo: Story = {
+export const RepopulatableExtensionDemo: Story = createStory({
   args: {
     questionnaire: qRepopulatableExtension,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
   }
-};
+}) as Story;

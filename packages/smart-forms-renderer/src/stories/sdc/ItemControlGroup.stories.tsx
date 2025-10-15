@@ -27,6 +27,7 @@ import {
   qItemControlGroupPageContainer,
   qItemControlGroupPageNonTopLevelPageContainer
 } from '../assets/questionnaires';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -41,50 +42,50 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const GTableRepeats: Story = {
+export const GTableRepeats: Story = createStory({
   args: {
     questionnaire: qItemControlGroupGTableRepeats
   }
-};
+}) as Story;
 
-export const GTableSingle: Story = {
+export const GTableSingle: Story = createStory({
   args: {
     questionnaire: qItemControlGroupGTableSingle
   }
-};
+}) as Story;
 
-export const GridSingleRow: Story = {
+export const GridSingleRow: Story = createStory({
   args: {
     questionnaire: qItemControlGroupGridSingleRow
   }
-};
+}) as Story;
 
-export const GridMultiRow: Story = {
+export const GridMultiRow: Story = createStory({
   args: {
     questionnaire: qItemControlGroupGridMultiRow
   }
-};
+}) as Story;
 
-export const TabContainer: Story = {
+export const TabContainer: Story = createStory({
   args: {
     questionnaire: qItemControlDisplayTabContainer
   }
-};
+}) as Story;
 
-export const Page: Story = {
+export const Page: Story = createStory({
   args: {
     questionnaire: qItemControlGroupPage
   }
-};
+}) as Story;
 
-export const PageContainer: Story = {
+export const PageContainer: Story = createStory({
   args: {
     questionnaire: qItemControlGroupPageContainer
   }
-};
+}) as Story;
 
-export const PageContainerNonSingleTopLevel: Story = {
+export const PageContainerNonSingleTopLevel: Story = createStory({
   args: {
     questionnaire: qItemControlGroupPageNonTopLevelPageContainer
   }
-};
+}) as Story;

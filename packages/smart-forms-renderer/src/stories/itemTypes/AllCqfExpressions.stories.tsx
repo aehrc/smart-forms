@@ -18,6 +18,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, within } from 'storybook/test';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
+import { createStory } from '../storybookWrappers/createStory';
 
 import {
   chooseSelectOption,
@@ -80,7 +81,7 @@ const qDisplayCalculation = questionnaireFactory(
 );
 const displayTargetText = 'Gender: ' + genderTargetCoding.display;
 
-export const DisplayCalculation: Story = {
+export const DisplayCalculation: Story = createStory({
   args: {
     questionnaire: qDisplayCalculation
   },
@@ -90,4 +91,4 @@ export const DisplayCalculation: Story = {
     const element = within(canvasElement);
     expect(element.queryAllByText(displayTargetText)).toBeDefined();
   }
-};
+}) as Story;

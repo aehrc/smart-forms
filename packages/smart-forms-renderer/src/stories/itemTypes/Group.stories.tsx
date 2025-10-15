@@ -25,6 +25,7 @@ import {
   questionnaireFactory
 } from '../testUtils';
 import { expect, fireEvent } from 'storybook/test';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -94,7 +95,7 @@ const qrGroupBasic = qrFactory([
   }
 ]);
 
-export const GroupBasic: Story = {
+export const GroupBasic: Story = createStory({
   args: {
     questionnaire: qGroupBasic
   },
@@ -135,8 +136,9 @@ export const GroupBasic: Story = {
     expect(elementNameAfterClear).toBe('');
     expect(elementAgeAfterClear).toBe('');
   }
-};
-export const GroupBasicResponse: Story = {
+}) as Story;
+
+export const GroupBasicResponse: Story = createStory({
   args: {
     questionnaire: qGroupBasic,
     questionnaireResponse: qrGroupBasic
@@ -148,4 +150,4 @@ export const GroupBasicResponse: Story = {
     expect(inputName).toBe(targetName);
     expect(inputAge).toBe(targetAge.toString());
   }
-};
+}) as Story;

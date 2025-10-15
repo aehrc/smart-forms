@@ -25,6 +25,7 @@ import {
   qRepeatsGroupNested,
   qRequired
 } from '../assets/questionnaires';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -39,38 +40,38 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const Required: Story = {
+export const Required: Story = createStory({
   args: {
     questionnaire: qRequired
   }
-};
+}) as Story;
 
-export const RepeatsAutocomplete: Story = {
+export const RepeatsAutocomplete: Story = createStory({
   args: {
     questionnaire: qRepeatsAutocomplete
   }
-};
+}) as Story;
 
-export const RepeatsCheckbox: Story = {
+export const RepeatsCheckbox: Story = createStory({
   args: {
     questionnaire: qRepeatsCheckbox
   }
-};
+}) as Story;
 
-export const RepeatsGroup: Story = {
+export const RepeatsGroup: Story = createStory({
   args: {
     questionnaire: qRepeatsGroup
   }
-};
+}) as Story;
 
-export const RepeatsGroupNested: Story = {
+export const RepeatsGroupNested: Story = createStory({
   args: {
     questionnaire: qRepeatsGroupNested
   }
-};
+}) as Story;
 
-export const ReadOnly: Story = {
+export const ReadOnly: Story = createStory({
   args: {
     questionnaire: qReadOnly
   }
-};
+}) as Story;

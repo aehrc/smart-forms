@@ -24,6 +24,7 @@ import {
   qItemControlDisplayPrompt,
   qItemControlDisplayUnit
 } from '../assets/questionnaires'; // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -38,32 +39,32 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const Prompt: Story = {
+export const Prompt: Story = createStory({
   args: {
     questionnaire: qItemControlDisplayPrompt
   }
-};
+}) as Story;
 
-export const Unit: Story = {
+export const Unit: Story = createStory({
   args: {
     questionnaire: qItemControlDisplayUnit
   }
-};
+}) as Story;
 
-export const LowerAndUpper: Story = {
+export const LowerAndUpper: Story = createStory({
   args: {
     questionnaire: qItemControlDisplayLowerAndUpper
   }
-};
+}) as Story;
 
-export const Flyover: Story = {
+export const Flyover: Story = createStory({
   args: {
     questionnaire: qItemControlDisplayFlyover
   }
-};
+}) as Story;
 
-export const CustomContextDisplay: Story = {
+export const CustomContextDisplay: Story = createStory({
   args: {
     questionnaire: qItemControlDisplayContextDisplay
   }
-};
+}) as Story;

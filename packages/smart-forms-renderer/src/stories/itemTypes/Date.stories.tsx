@@ -21,6 +21,7 @@ import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperF
 import { getAnswers, getInputText, inputDate, qrFactory, questionnaireFactory } from '../testUtils';
 import { expect } from 'storybook/test';
 import { qDateCalculation } from '../assets/questionnaires';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -59,7 +60,7 @@ const qrDateBasicResponse = qrFactory([
   }
 ]);
 
-export const DateBasic: Story = {
+export const DateBasic: Story = createStory({
   args: {
     questionnaire: qDateBasic
   },
@@ -71,9 +72,9 @@ export const DateBasic: Story = {
     expect(result[0]).toEqual(expect.objectContaining({ valueDate: targetDateText }));
     // TODO : ADD CLEAR BUTTON
   }
-};
+}) as Story;
 
-export const DateBasicResponse: Story = {
+export const DateBasicResponse: Story = createStory({
   args: {
     questionnaire: qDateBasic,
     questionnaireResponse: qrDateBasicResponse
@@ -83,10 +84,10 @@ export const DateBasicResponse: Story = {
 
     expect(input).toBe(targetDate);
   }
-};
+}) as Story;
 
-export const DateCalculation: Story = {
+export const DateCalculation: Story = createStory({
   args: {
     questionnaire: qDateCalculation
   }
-};
+}) as Story;

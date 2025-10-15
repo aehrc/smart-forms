@@ -27,6 +27,7 @@ import {
 } from '../testUtils';
 import { expect } from 'storybook/test';
 import { qDateTimeCalculation } from '../assets/questionnaires';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -64,7 +65,7 @@ const qrDateTimeBasicResponse = qrFactory([
   }
 ]);
 
-export const DateTimeBasic: Story = {
+export const DateTimeBasic: Story = createStory({
   args: {
     questionnaire: qDateTimeBasic
   },
@@ -84,8 +85,8 @@ export const DateTimeBasic: Story = {
 
     // TODO : ADD CLEAR BUTTON
   }
-};
-export const DateTimeBasicResponse: Story = {
+}) as Story;
+export const DateTimeBasicResponse: Story = createStory({
   args: {
     questionnaire: qDateTimeBasic,
     questionnaireResponse: qrDateTimeBasicResponse
@@ -97,10 +98,10 @@ export const DateTimeBasicResponse: Story = {
 
     // TODO: We have bug with it.Time and ampm doesnt work correctly.
   }
-};
+}) as Story;
 
-export const DateTimeCalculation: Story = {
+export const DateTimeCalculation: Story = createStory({
   args: {
     questionnaire: qDateTimeCalculation
   }
-};
+}) as Story;

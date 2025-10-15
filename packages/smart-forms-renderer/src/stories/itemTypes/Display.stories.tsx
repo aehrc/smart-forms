@@ -20,6 +20,7 @@ import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperF
 import { qDisplayCalculationStyled } from '../assets/questionnaires/QDisplay';
 import { questionnaireFactory } from '../testUtils';
 import { expect, screen } from 'storybook/test';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -45,17 +46,17 @@ const qDisplayBasic = questionnaireFactory([
   }
 ]);
 
-export const DisplayBasic: Story = {
+export const DisplayBasic: Story = createStory({
   args: {
     questionnaire: qDisplayBasic
   },
   play: async () => {
     expect(screen.queryByText(targetText)).toBeDefined();
   }
-};
+}) as Story;
 
-export const DisplayCalculationStyled: Story = {
+export const DisplayCalculationStyled: Story = createStory({
   args: {
     questionnaire: qDisplayCalculationStyled
   }
-};
+}) as Story;

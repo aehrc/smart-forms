@@ -18,6 +18,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import { qEntryFormat, qQuestionnaireUnit, qShortText } from '../assets/questionnaires';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -32,20 +33,20 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const EntryFormat: Story = {
+export const EntryFormat: Story = createStory({
   args: {
     questionnaire: qEntryFormat
   }
-};
+}) as Story;
 
-export const ShortText: Story = {
+export const ShortText: Story = createStory({
   args: {
     questionnaire: qShortText
   }
-};
+}) as Story;
 
-export const QuestionnaireUnit: Story = {
+export const QuestionnaireUnit: Story = createStory({
   args: {
     questionnaire: qQuestionnaireUnit
   }
-};
+}) as Story;

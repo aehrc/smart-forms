@@ -30,6 +30,7 @@ import {
   questionnaireFactory
 } from '../testUtils';
 import { expect, fireEvent, screen } from 'storybook/test';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -79,7 +80,7 @@ const qrOpenChoiceAnswerOptionBasicResponse = qrFactory([
   }
 ]);
 
-export const OpenChoiceAnswerOptionBasic: Story = {
+export const OpenChoiceAnswerOptionBasic: Story = createStory({
   args: {
     questionnaire: qOpenChoiceAnswerOptionBasic
   },
@@ -102,12 +103,12 @@ export const OpenChoiceAnswerOptionBasic: Story = {
 
     expect(input).not.toBeChecked();
   }
-};
+}) as Story;
 const targetOtherLinkid = 'q-item-radio-open-label-box';
 const otherVariantLinkid = 'Other, please specify:';
 const otherTargetText = 'Other variant text';
 
-export const OpenChoiceAnswerOptionBasicOther: Story = {
+export const OpenChoiceAnswerOptionBasicOther: Story = createStory({
   args: {
     questionnaire: qOpenChoiceAnswerOptionBasic
   },
@@ -131,9 +132,9 @@ export const OpenChoiceAnswerOptionBasicOther: Story = {
     const input = resultAfterClear.querySelector('textarea');
     expect(input?.value).toBe('');
   }
-};
+}) as Story;
 const targetOperResId = 'state';
-export const OpenChoiceAnswerOptionBasicResponse: Story = {
+export const OpenChoiceAnswerOptionBasicResponse: Story = createStory({
   args: {
     questionnaire: qOpenChoiceAnswerOptionBasic,
     questionnaireResponse: qrOpenChoiceAnswerOptionBasicResponse
@@ -141,7 +142,7 @@ export const OpenChoiceAnswerOptionBasicResponse: Story = {
   play: async () => {
     expect(screen.getByText(targetText)).toBeDefined();
   }
-};
+}) as Story;
 const qOpenChoiceAnswerValueSetBasic = questionnaireFactory([
   {
     extension: [
@@ -164,7 +165,7 @@ const valueSetTargetCoding = {
   display: 'Female',
   system: 'http://hl7.org/fhir/administrative-gender'
 };
-export const OpenChoiceAnswerValueSetBasic: Story = {
+export const OpenChoiceAnswerValueSetBasic: Story = createStory({
   args: {
     questionnaire: qOpenChoiceAnswerValueSetBasic
   },
@@ -187,7 +188,7 @@ export const OpenChoiceAnswerValueSetBasic: Story = {
     const input = resultAfterClear.querySelector('input');
     expect(input).not.toBeChecked();
   }
-};
+}) as Story;
 const valueSetText = 'Branbendurg';
 const qrOpenChoiceAnswerValueSetBasicResponse = qrFactory([
   {
@@ -200,7 +201,7 @@ const qrOpenChoiceAnswerValueSetBasicResponse = qrFactory([
     ]
   }
 ]);
-export const OpenChoiceAnswerValueSetBasicResponse: Story = {
+export const OpenChoiceAnswerValueSetBasicResponse: Story = createStory({
   args: {
     questionnaire: qOpenChoiceAnswerValueSetBasic,
     questionnaireResponse: qrOpenChoiceAnswerValueSetBasicResponse
@@ -213,12 +214,12 @@ export const OpenChoiceAnswerValueSetBasicResponse: Story = {
 
     expect(input?.value).toBe(valueSetText);
   }
-};
+}) as Story;
 
 //Story for OpenChoiceAutoCompleteItem in Tabbed environment
-export const OpenChoiceAutoCompleteFromValueSetsWithTabs: Story = {
+export const OpenChoiceAutoCompleteFromValueSetsWithTabs: Story = createStory({
   args: {
     questionnaire: qOpenChoiceAnswerAutoCompleteFromValueSet
     // questionnaireResponse: qrOpenChoiceAnswerValueSetBasicResponse
   }
-};
+}) as Story;

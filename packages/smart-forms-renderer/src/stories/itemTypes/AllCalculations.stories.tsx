@@ -3,19 +3,20 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
   calculatedExpressionExtFactory,
+  chooseSelectOption,
   getAnswers,
   getGroupAnswers,
-  itemControlExtFactory,
-  questionnaireFactory,
-  variableExtFactory,
-  chooseSelectOption,
+  inputDecimal,
   inputInteger,
   inputQuantity,
-  inputDecimal,
-  inputText
+  inputText,
+  itemControlExtFactory,
+  questionnaireFactory,
+  variableExtFactory
 } from '../testUtils';
 
 import { expect, waitFor } from 'storybook/test';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -71,7 +72,7 @@ const qBooleanCalculation = questionnaireFactory(
   }
 );
 
-export const BooleanCalculation: Story = {
+export const BooleanCalculation: Story = createStory({
   args: {
     questionnaire: qBooleanCalculation
   },
@@ -84,7 +85,7 @@ export const BooleanCalculation: Story = {
       expect(result[0].valueBoolean).toBe(true);
     });
   }
-};
+}) as Story;
 
 const choiceTargetLinkId = 'pain-level';
 const targetChoiceCoding = {
@@ -132,7 +133,7 @@ const qChoiceAnswerOptionCalculation = questionnaireFactory(
 );
 const choiceTargetNumber = 3;
 
-export const ChoiceAnswerOptionCalculation: Story = {
+export const ChoiceAnswerOptionCalculation: Story = createStory({
   args: {
     questionnaire: qChoiceAnswerOptionCalculation
   },
@@ -145,7 +146,7 @@ export const ChoiceAnswerOptionCalculation: Story = {
       expect(result[0].valueCoding).toEqual(expect.objectContaining(targetChoiceCoding));
     });
   }
-};
+}) as Story;
 
 const choiceValueSetTargetLinkId = 'gender-string';
 const choiceValueSetTargetLinkIdCalc = 'gender-choice';
@@ -181,7 +182,7 @@ const qChoiceAnswerValueSetCalculation = questionnaireFactory(
   }
 );
 
-export const ChoiceAnswerValueSetCalculation: Story = {
+export const ChoiceAnswerValueSetCalculation: Story = createStory({
   args: {
     questionnaire: qChoiceAnswerValueSetCalculation
   },
@@ -194,7 +195,7 @@ export const ChoiceAnswerValueSetCalculation: Story = {
       expect(result[0].valueCoding).toEqual(expect.objectContaining(choiceValueSetTargetCoding));
     });
   }
-};
+}) as Story;
 
 const integerLinkId = 'length-controller';
 const integerLinkIdCalc = 'length-squared';
@@ -220,7 +221,7 @@ const qIntegerCalculation = questionnaireFactory(
 const integerTargetNumber = 2;
 const integerTargetNumberCalc = 4;
 
-export const IntegerCalculation: Story = {
+export const IntegerCalculation: Story = createStory({
   args: {
     questionnaire: qIntegerCalculation
   },
@@ -233,7 +234,7 @@ export const IntegerCalculation: Story = {
       expect(result[0].valueInteger).toBe(integerTargetNumberCalc);
     });
   }
-};
+}) as Story;
 
 const quantityDaysLinkId = 'duration-in-days';
 const quantityHoursLinkId = 'duration-in-hours';
@@ -267,7 +268,7 @@ const quantityTarget = {
   system: undefined
 };
 
-export const QuantityCalculation: Story = {
+export const QuantityCalculation: Story = createStory({
   args: {
     questionnaire: qQuantityCalculation
   },
@@ -280,7 +281,7 @@ export const QuantityCalculation: Story = {
       expect(result[0].valueQuantity).toEqual(expect.objectContaining(quantityTarget));
     });
   }
-};
+}) as Story;
 const heightLinkId = 'patient-height';
 const weightLinkId = 'patient-weight';
 const bmiLinkIdCalc = 'bmi-result';
@@ -321,7 +322,7 @@ const heightTarget = 100;
 const weightTarget = 10;
 const bmiResultCalc = 10;
 
-export const DecimalCalculation: Story = {
+export const DecimalCalculation: Story = createStory({
   args: {
     questionnaire: qCalculatedExpressionBMICalculator
   },
@@ -335,7 +336,7 @@ export const DecimalCalculation: Story = {
       expect(result[0].valueDecimal).toBe(bmiResultCalc);
     });
   }
-};
+}) as Story;
 
 const stringCalculationLinkId = 'gender-controller';
 const stringCalcCalculationLinkId = 'gender-string';
@@ -379,7 +380,7 @@ const qStringCalculation = questionnaireFactory(
   }
 );
 
-export const StringCalculation: Story = {
+export const StringCalculation: Story = createStory({
   args: {
     questionnaire: qStringCalculation
   },
@@ -392,7 +393,7 @@ export const StringCalculation: Story = {
       expect(result[0].valueString).toBe(stringTargetCoding.display);
     });
   }
-};
+}) as Story;
 
 const detailsLinkId = 'medications-details';
 const detailsCalcLinkId = 'medication-summary';
@@ -422,7 +423,7 @@ const qTextCalculation = questionnaireFactory(
   }
 );
 
-export const TextCalculation: Story = {
+export const TextCalculation: Story = createStory({
   args: {
     questionnaire: qTextCalculation
   },
@@ -435,4 +436,4 @@ export const TextCalculation: Story = {
       expect(result[0].valueString).toBe(textTargetText);
     });
   }
-};
+}) as Story;

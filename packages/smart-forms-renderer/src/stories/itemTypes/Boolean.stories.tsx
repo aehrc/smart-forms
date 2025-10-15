@@ -28,6 +28,7 @@ import {
   questionnaireFactory
 } from '../testUtils';
 import { expect, fireEvent } from 'storybook/test';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -65,7 +66,7 @@ const basicQr = qrFactory([
   }
 ]);
 
-export const BooleanBasic: Story = {
+export const BooleanBasic: Story = createStory({
   args: {
     questionnaire: basicQuestionnaire
   },
@@ -89,9 +90,9 @@ export const BooleanBasic: Story = {
     const input = elementAfterClear.querySelector('input');
     expect(input).not.toBeChecked();
   }
-};
+}) as Story;
 
-export const BooleanBasicResponse: Story = {
+export const BooleanBasicResponse: Story = createStory({
   args: {
     questionnaire: basicQuestionnaire,
     questionnaireResponse: basicQr
@@ -101,7 +102,7 @@ export const BooleanBasicResponse: Story = {
 
     expect(inputText).toBe('true');
   }
-};
+}) as Story;
 
 const qBooleanCheckbox = questionnaireFactory([
   {
@@ -124,7 +125,7 @@ const qrBooleanCheckboxResponse = qrFactory([
   }
 ]);
 
-export const BooleanCheckboxBasic: Story = {
+export const BooleanCheckboxBasic: Story = createStory({
   args: {
     questionnaire: qBooleanCheckbox
   },
@@ -148,9 +149,9 @@ export const BooleanCheckboxBasic: Story = {
     const input = elementAfterClear.querySelector('input');
     expect(input).not.toBeChecked();
   }
-};
+}) as Story;
 
-export const BooleanCheckboxResponse: Story = {
+export const BooleanCheckboxResponse: Story = createStory({
   args: {
     questionnaire: qBooleanCheckbox,
     questionnaireResponse: qrBooleanCheckboxResponse
@@ -161,4 +162,4 @@ export const BooleanCheckboxResponse: Story = {
 
     expect(input).toBeChecked();
   }
-};
+}) as Story;

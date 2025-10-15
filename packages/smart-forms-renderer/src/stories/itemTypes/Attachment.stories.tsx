@@ -20,6 +20,7 @@ import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperF
 
 import { getAnswers, inputFile, questionnaireFactory } from '../testUtils';
 import { expect, fireEvent, screen } from 'storybook/test';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -50,7 +51,7 @@ const name = 'Vladimir';
 const fileName = 'foo.png';
 const type = 'image/png';
 
-export const AttachmentBasic: Story = {
+export const AttachmentBasic: Story = createStory({
   args: {
     questionnaire: qAttachmentBasic
   },
@@ -81,4 +82,4 @@ export const AttachmentBasic: Story = {
     const elementAfterClear = await screen.findByText('No file selected');
     expect(elementAfterClear).toBeDefined();
   }
-};
+}) as Story;

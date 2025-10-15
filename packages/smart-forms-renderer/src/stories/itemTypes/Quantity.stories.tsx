@@ -20,16 +20,17 @@ import { expect, waitFor } from 'storybook/test';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
   getAnswers,
+  getQuantityTextValues,
+  inputQuantity,
   qrFactory,
   questionnaireFactory,
   ucumSystem,
   unitExtFactory,
-  unitOptionExtFactory,
-  inputQuantity,
-  getQuantityTextValues
+  unitOptionExtFactory
 } from '../testUtils';
 
 import type { Quantity } from 'fhir/r4';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -55,7 +56,7 @@ const qQuantityBasic = questionnaireFactory([
 ]);
 const basicTargetNumber = 10;
 
-export const QuantityBasic: Story = {
+export const QuantityBasic: Story = createStory({
   args: {
     questionnaire: qQuantityBasic
   },
@@ -76,7 +77,7 @@ export const QuantityBasic: Story = {
       );
     });
   }
-};
+}) as Story;
 
 const basicComparatorLinkId = 'body-weight-comparator';
 const basicComparatorUnit = 'kg';
@@ -91,7 +92,7 @@ const qQuantityBasicComparator = questionnaireFactory([
 const basicComparatorTargetNumber = 20;
 const basicTargetComparator = '<' as const;
 
-export const QuantityBasicComparator: Story = {
+export const QuantityBasicComparator: Story = createStory({
   args: {
     questionnaire: qQuantityBasicComparator
   },
@@ -118,7 +119,7 @@ export const QuantityBasicComparator: Story = {
       );
     });
   }
-};
+}) as Story;
 
 const basicResTargetLinkId = 'body-weight';
 const basicResTargetWeight = 80;
@@ -137,7 +138,7 @@ const qrQuantityBasicResponse = qrFactory([
   }
 ]);
 
-export const QuantityBasicResponse: Story = {
+export const QuantityBasicResponse: Story = createStory({
   args: {
     questionnaire: qQuantityBasic,
     questionnaireResponse: qrQuantityBasicResponse
@@ -153,7 +154,7 @@ export const QuantityBasicResponse: Story = {
       })
     );
   }
-};
+}) as Story;
 
 const basicResComparatorLinkId = 'body-weight-comparator';
 const basicResComparatorTargetWeight = 100;
@@ -174,7 +175,7 @@ const qrQuantityBasicComparatorResponse = qrFactory([
   }
 ]);
 
-export const QuantityBasicComparatorResponse: Story = {
+export const QuantityBasicComparatorResponse: Story = createStory({
   args: {
     questionnaire: qQuantityBasicComparator,
     questionnaireResponse: qrQuantityBasicComparatorResponse
@@ -194,7 +195,7 @@ export const QuantityBasicComparatorResponse: Story = {
       })
     );
   }
-};
+}) as Story;
 
 const singleUnitLinkId = 'duration-single-unit';
 const singleTargetNumber = 10;
@@ -207,7 +208,7 @@ const qQuantitySingle = questionnaireFactory([
   }
 ]);
 
-export const QuantitySingleUnit: Story = {
+export const QuantitySingleUnit: Story = createStory({
   args: {
     questionnaire: qQuantitySingle
   },
@@ -228,7 +229,7 @@ export const QuantitySingleUnit: Story = {
       );
     });
   }
-};
+}) as Story;
 
 const multiLinkId = 'duration-multi-unit';
 const multiTargetNumber = 20;
@@ -242,7 +243,7 @@ const qQuantityMulti = questionnaireFactory([
   }
 ]);
 
-export const QuantityMultiUnit: Story = {
+export const QuantityMultiUnit: Story = createStory({
   args: {
     questionnaire: qQuantityMulti
   },
@@ -262,7 +263,7 @@ export const QuantityMultiUnit: Story = {
       );
     });
   }
-};
+}) as Story;
 
 const multiComparatorLinkId = 'duration-multi-unit-comparator';
 const multiComparatorTargetNumber = 30;
@@ -280,7 +281,7 @@ const qQuantityMultiComparator = questionnaireFactory([
   }
 ]);
 
-export const QuantityMultiUnitComparator: Story = {
+export const QuantityMultiUnitComparator: Story = createStory({
   args: {
     questionnaire: qQuantityMultiComparator
   },
@@ -306,7 +307,7 @@ export const QuantityMultiUnitComparator: Story = {
       );
     });
   }
-};
+}) as Story;
 const unitsingleResLinkId = 'duration-single-unit';
 const unitsingleQuantity: Quantity = {
   value: 2,
@@ -321,7 +322,7 @@ const qrQuantityUnitOptionSingleResponse = qrFactory([
   }
 ]);
 
-export const QuantitySingleUnitOptionResponse: Story = {
+export const QuantitySingleUnitOptionResponse: Story = createStory({
   args: {
     questionnaire: qQuantitySingle,
     questionnaireResponse: qrQuantityUnitOptionSingleResponse
@@ -337,7 +338,7 @@ export const QuantitySingleUnitOptionResponse: Story = {
       })
     );
   }
-};
+}) as Story;
 
 const unitmultiResLinkId = 'duration-multi-unit';
 const unitmultiResQuantity: Quantity = {
@@ -353,7 +354,7 @@ const qrQuantityUnitOptionMultiResponse = qrFactory([
   }
 ]);
 
-export const QuantityMultiUnitOptionResponse: Story = {
+export const QuantityMultiUnitOptionResponse: Story = createStory({
   args: {
     questionnaire: qQuantityMulti,
     questionnaireResponse: qrQuantityUnitOptionMultiResponse
@@ -368,7 +369,7 @@ export const QuantityMultiUnitOptionResponse: Story = {
       })
     );
   }
-};
+}) as Story;
 
 const unitmultiComparatorResLinkId = 'duration-multi-unit-comparator';
 const unitMultiComparatorQuantity: Quantity = {
@@ -386,7 +387,7 @@ const qrQuantityUnitOptionMultiComparatorResponse = qrFactory([
   }
 ]);
 
-export const QuantityMultiUnitOptionComparatorResponse: Story = {
+export const QuantityMultiUnitOptionComparatorResponse: Story = createStory({
   args: {
     questionnaire: qQuantityMultiComparator,
     questionnaireResponse: qrQuantityUnitOptionMultiComparatorResponse
@@ -405,4 +406,4 @@ export const QuantityMultiUnitOptionComparatorResponse: Story = {
       })
     );
   }
-};
+}) as Story;

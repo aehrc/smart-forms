@@ -20,6 +20,7 @@ import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperF
 
 import { findByLinkIdOrLabel, getAnswers, inputUrl, questionnaireFactory } from '../testUtils';
 import { expect, fireEvent } from 'storybook/test';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -45,7 +46,7 @@ const qUrlBasic = questionnaireFactory([
   }
 ]);
 
-export const UrlBasic: Story = {
+export const UrlBasic: Story = createStory({
   args: {
     questionnaire: qUrlBasic
   },
@@ -68,4 +69,4 @@ export const UrlBasic: Story = {
     const input = elementAfterClear.querySelector('textarea');
     expect(input?.value).toBe('');
   }
-};
+}) as Story;

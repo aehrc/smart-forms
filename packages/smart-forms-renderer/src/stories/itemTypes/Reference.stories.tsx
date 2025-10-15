@@ -25,6 +25,7 @@ import {
   questionnaireFactory
 } from '../testUtils';
 import { expect, fireEvent } from 'storybook/test';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -50,7 +51,7 @@ const qReferenceBasic = questionnaireFactory([
   }
 ]);
 
-export const ReferenceBasic: Story = {
+export const ReferenceBasic: Story = createStory({
   args: {
     questionnaire: qReferenceBasic
   },
@@ -73,4 +74,4 @@ export const ReferenceBasic: Story = {
     const input = elementAfterClear.querySelector('textarea');
     expect(input?.value).toBe('');
   }
-};
+}) as Story;

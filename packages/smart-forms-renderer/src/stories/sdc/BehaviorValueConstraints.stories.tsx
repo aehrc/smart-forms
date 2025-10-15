@@ -31,6 +31,7 @@ import {
   qrMinValue,
   qrRegex
 } from '../assets/questionnaires'; // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -45,44 +46,44 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const MaxLength: Story = {
+export const MaxLength: Story = createStory({
   args: {
     questionnaire: qMaxLength,
     questionnaireResponse: qrMaxLength
   }
-};
+}) as Story;
 
-export const MinLength: Story = {
+export const MinLength: Story = createStory({
   args: {
     questionnaire: qMinLength,
     questionnaireResponse: qrMinLength
   }
-};
+}) as Story;
 
-export const Regex: Story = {
+export const Regex: Story = createStory({
   args: {
     questionnaire: qRegex,
     questionnaireResponse: qrRegex
   }
-};
+}) as Story;
 
-export const MinValue: Story = {
+export const MinValue: Story = createStory({
   args: {
     questionnaire: qMinValue,
     questionnaireResponse: qrMinValue
   }
-};
+}) as Story;
 
-export const MaxValue: Story = {
+export const MaxValue: Story = createStory({
   args: {
     questionnaire: qMaxValue,
     questionnaireResponse: qrMaxValue
   }
-};
+}) as Story;
 
-export const MaxDecimalPlaces: Story = {
+export const MaxDecimalPlaces: Story = createStory({
   args: {
     questionnaire: qMaxDecimalPlaces,
     questionnaireResponse: qrMaxDecimalPlaces
   }
-};
+}) as Story;

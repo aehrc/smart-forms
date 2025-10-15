@@ -28,6 +28,7 @@ import {
   questionnaireFactory,
   variableExtFactory
 } from '../testUtils';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -42,23 +43,23 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const LaunchContext: Story = {
+export const LaunchContext: Story = createStory({
   args: {
     questionnaire: qLaunchContext
   }
-};
+}) as Story;
 
-export const Variable: Story = {
+export const Variable: Story = createStory({
   args: {
     questionnaire: qVariable
   }
-};
+}) as Story;
 
-export const InitialExpression: Story = {
+export const InitialExpression: Story = createStory({
   args: {
     questionnaire: qInitialExpression
   }
-};
+}) as Story;
 
 const heightLinkId = 'patient-height';
 const weightLinkId = 'patient-weight';
@@ -97,14 +98,14 @@ const qCalculatedExpressionBMICalculator = questionnaireFactory([
   }
 ]);
 
-export const CalculatedExpressionBMICalculator: Story = {
+export const CalculatedExpressionBMICalculator: Story = createStory({
   args: {
     questionnaire: qCalculatedExpressionBMICalculator
   }
-};
+}) as Story;
 
-export const CalculatedExpressionCvdRiskCalculator: Story = {
+export const CalculatedExpressionCvdRiskCalculator: Story = createStory({
   args: {
     questionnaire: qCalculatedExpressionCvdRiskCalculator
   }
-};
+}) as Story;

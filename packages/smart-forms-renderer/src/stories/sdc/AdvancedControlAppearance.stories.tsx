@@ -27,6 +27,7 @@ import {
   qItemControl,
   qSliderStepValue
 } from '../assets/questionnaires';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -41,50 +42,50 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const ItemControl: Story = {
+export const ItemControl: Story = createStory({
   args: {
     questionnaire: qItemControl
   }
-};
+}) as Story;
 
-export const ChoiceOrientation: Story = {
+export const ChoiceOrientation: Story = createStory({
   args: {
     questionnaire: qChoiceOrientation
   }
-};
+}) as Story;
 
-export const SliderStepValue: Story = {
+export const SliderStepValue: Story = createStory({
   args: {
     questionnaire: qSliderStepValue
   }
-};
+}) as Story;
 
-export const CollapsibleSingleDefaultOpen: Story = {
+export const CollapsibleSingleDefaultOpen: Story = createStory({
   args: {
     questionnaire: qCollapsibleSingleDefaultOpen
   }
-};
+}) as Story;
 
-export const CollapsibleSingleDefaultClosed: Story = {
+export const CollapsibleSingleDefaultClosed: Story = createStory({
   args: {
     questionnaire: qCollapsibleSingleDefaultClosed
   }
-};
+}) as Story;
 
-export const CollapsibleGroupDefaultOpen: Story = {
+export const CollapsibleGroupDefaultOpen: Story = createStory({
   args: {
     questionnaire: qCollapsibleGroupDefaultOpen
   }
-};
+}) as Story;
 
-export const CollapsibleGroupDefaultClosed: Story = {
+export const CollapsibleGroupDefaultClosed: Story = createStory({
   args: {
     questionnaire: qCollapsibleGroupDefaultClosed
   }
-};
+}) as Story;
 
-export const CollapsibleGroupNested: Story = {
+export const CollapsibleGroupNested: Story = createStory({
   args: {
     questionnaire: qCollapsibleGroupNested
   }
-};
+}) as Story;
