@@ -1,202 +1,28 @@
+/*
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
+ * Organisation (CSIRO) ABN 41 687 119 230.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// This file contains exact function as packages/smart-forms-renderer/src/test/testUtils.ts
+// The reason why we're violating DRY principle here is to:
+// 1. Prevent testUtils from smart-forms-renderer from bloating package size
+// 2. Prevent it from showing up in typedoc in the documentation site, which will affect docs search
+
 import { evaluate } from 'fhirpath';
-import { questionnaireResponseStore } from '../stores';
-import type {
-  Extension,
-  Questionnaire,
-  QuestionnaireItem,
-  QuestionnaireResponse,
-  QuestionnaireResponseItem
-} from 'fhir/r4';
 import { fireEvent, screen, userEvent, waitFor } from 'storybook/internal/test';
-
-export async function getQuantityTextValues(
-  canvasElement: HTMLElement,
-  linkId: string,
-  unit: boolean
-) {
-  const element = await findByLinkIdOrLabel(canvasElement, linkId);
-  const quantityComparator = element.querySelector(
-    'div[data-test="q-item-quantity-comparator"] input'
-  );
-  const quantityInput = element.querySelector('div[data-test="q-item-quantity-field"] input');
-  const quantityUnit = element.querySelector('div[data-test="q-item-unit-field"] input');
-
-  // Error section
-  if (!quantityComparator) {
-    throw new Error(
-      `File input was not found inside [data-test="q-item-quantity-comparator"] block`
-    );
-  }
-  if (!quantityInput) {
-    throw new Error(`File input was not found inside [data-test="q-item-quantity-field"] block`);
-  }
-  if (!quantityUnit && unit) {
-    throw new Error(`File input was not found inside [data-test="q-item-unit-field"] block`);
-  }
-
-  return {
-    comparator: quantityComparator?.getAttribute('value'),
-    value: quantityInput?.getAttribute('value'),
-    unit: quantityUnit?.getAttribute('value')
-  };
-}
-
-export async function inputQuantity(
-  canvasElement: HTMLElement,
-  linkId: string,
-  quantity: number,
-  unit?: string,
-  comparator?: string
-) {
-  const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
-
-  const comparatorInput = questionElement?.querySelector(
-    `div[data-test="q-item-quantity-comparator"] input`
-  );
-  const quantityInput = questionElement?.querySelector(
-    `div[data-test="q-item-quantity-field"] input`
-  );
-  const unitInput = questionElement?.querySelector(`div[data-test="q-item-unit-field"] input`);
-
-  // Error section
-  if (comparator && !comparatorInput) {
-    throw new Error(`Input was not found inside [data-test="q-item-quantity-comparator"] block`);
-  }
-  if (!quantityInput) {
-    throw new Error(`Input was not found inside [data-test="q-item-quantity-field"] block`);
-  }
-  if (!unitInput && unit) {
-    throw new Error(`Input was not found inside [data-test="q-item-unit-field"] block`);
-  }
-
-  if (comparator && comparatorInput) {
-    fireEvent.focus(comparatorInput);
-    fireEvent.keyDown(comparatorInput, { key: 'ArrowDown', code: 'ArrowDown' });
-    const option = await screen.findByText(comparator);
-    fireEvent.click(option);
-  }
-  if (unit && unitInput) {
-    fireEvent.focus(unitInput);
-    fireEvent.keyDown(unitInput, { key: 'ArrowDown', code: 'ArrowDown' });
-    const option = await screen.findByText(unit);
-    fireEvent.click(option);
-  }
-  fireEvent.change(quantityInput, { target: { value: quantity } });
-
-  // Here we await for debounced store update
-  await new Promise((resolve) => setTimeout(resolve, 500));
-}
-
-export async function getAnswers(linkId: string) {
-  const qr = questionnaireResponseStore.getState().updatableResponse;
-  const result = await evaluate(qr, `QuestionnaireResponse.item.where(linkId='${linkId}').answer`);
-  return result;
-}
-export async function getGroupAnswers(groupLinkid: string, answerLinkid: string) {
-  const qr = questionnaireResponseStore.getState().updatableResponse;
-
-  const result = await evaluate(
-    qr,
-    groupLinkid
-      ? `QuestionnaireResponse.item.where(linkId='${groupLinkid}').item.where(linkId='${answerLinkid}').answer`
-      : `QuestionnaireResponse.item.where(linkId='${answerLinkid}').answer`
-  );
-
-  return result;
-}
-
-export function questionnaireFactory(
-  items: QuestionnaireItem[],
-  extra?: Omit<Questionnaire, 'resourceType' | 'status' | 'item'>
-): Questionnaire {
-  return {
-    resourceType: 'Questionnaire',
-    status: 'active',
-    item: items,
-    ...extra
-  };
-}
-
-export function qrFactory(items: QuestionnaireResponseItem[]): QuestionnaireResponse {
-  return {
-    resourceType: 'QuestionnaireResponse',
-    status: 'completed',
-    item: items
-  };
-}
-export function itemControlExtFactory(code: string): Extension {
-  return {
-    url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
-    valueCodeableConcept: {
-      coding: [
-        {
-          system: 'http://hl7.org/fhir/questionnaire-item-control',
-          code: code
-        }
-      ]
-    }
-  };
-}
-export function openLabelExtFactory(text: string): Extension {
-  return {
-    url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-openLabel',
-    valueString: text
-  };
-}
-
-export function calculatedExpressionExtFactory(text: string): Extension {
-  return {
-    url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
-    valueExpression: {
-      language: 'text/fhirpath',
-      expression: text
-    }
-  };
-}
-
-export function variableExtFactory(name: string, text: string): Extension {
-  return {
-    url: 'http://hl7.org/fhir/StructureDefinition/variable',
-    valueExpression: {
-      name: name,
-      language: 'text/fhirpath',
-      expression: text
-    }
-  };
-}
-
-export function unitOptionExtFactory(code: string, display: string): Extension {
-  return {
-    url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption',
-    valueCoding: {
-      system: 'http://unitsofmeasure.org',
-      code: code,
-      display: display
-    }
-  };
-}
-export function unitExtFactory(code: string, display: string): Extension {
-  return {
-    url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
-    valueCoding: {
-      system: 'http://unitsofmeasure.org',
-      code: code,
-      display: display
-    }
-  };
-}
-
-export function сqfExpressionFactory(text: string) {
-  return {
-    url: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
-    valueExpression: {
-      language: 'text/fhirpath',
-      expression: text
-    }
-  };
-}
-
-export const ucumSystem = 'http://unitsofmeasure.org';
+import { questionnaireResponseStore } from '@aehrc/smart-forms-renderer';
 
 export async function inputText(
   canvasElement: HTMLElement,
@@ -450,4 +276,13 @@ export async function inputOpenChoiceOtherText(
 
   // Here we await for debounced store update
   await new Promise((resolve) => setTimeout(resolve, 500));
+}
+
+export async function getAnswerRecursiveByLabel(text: string) {
+  const qr = questionnaireResponseStore.getState().updatableResponse;
+  const result = await evaluate(
+    qr,
+    `QuestionnaireResponse.repeat(item).where((text = '${text}')).answer`
+  );
+  return result;
 }
