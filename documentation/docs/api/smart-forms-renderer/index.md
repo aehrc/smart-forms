@@ -1,11 +1,5 @@
 # @aehrc/smart-forms-renderer
 
-## Namespaces
-
-| Namespace | Description |
-| ------ | ------ |
-| [testUtils](@aehrc/namespaces/testUtils/index.md) | - |
-
 ## Interfaces
 
 | Interface | Description |

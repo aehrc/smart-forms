@@ -190,6 +190,7 @@ const config: Config = {
 
   themes: ['@docusaurus/theme-live-codeblock'],
   plugins: [
+    // Webpack plugin config: resolve react alias
     () => ({
       name: 'resolve-react',
       configureWebpack() {
