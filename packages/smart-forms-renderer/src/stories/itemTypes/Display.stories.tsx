@@ -17,7 +17,6 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { qDisplayCalculationStyled } from '../assets/questionnaires/QDisplay';
 import { questionnaireFactory } from '../testUtils';
 import { expect, screen } from 'storybook/test';
 import { createStory } from '../storybookWrappers/createStory';
@@ -34,6 +33,8 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+
+/* Display Basic story */
 const targetLinkId = 'information-display';
 const targetText = 'You can use the display item to show information to the user.';
 
@@ -52,11 +53,5 @@ export const DisplayBasic: Story = createStory({
   },
   play: async () => {
     expect(screen.queryByText(targetText)).toBeDefined();
-  }
-}) as Story;
-
-export const DisplayCalculationStyled: Story = createStory({
-  args: {
-    questionnaire: qDisplayCalculationStyled
   }
 }) as Story;

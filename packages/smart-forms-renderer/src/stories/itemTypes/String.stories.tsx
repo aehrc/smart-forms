@@ -22,8 +22,8 @@ import {
   getAnswers,
   getInputText,
   inputText,
-  qrFactory,
-  questionnaireFactory
+  questionnaireFactory,
+  questionnaireResponseFactory
 } from '../testUtils';
 import { expect, fireEvent } from 'storybook/test';
 import { createStory } from '../storybookWrappers/createStory';
@@ -40,8 +40,10 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+
+/* String Basic story */
 const targetLinkId = 'name';
-const targetText = 'Vladimir';
+const targetText = 'John Doe';
 
 const qStringBasic = questionnaireFactory([
   {
@@ -51,13 +53,13 @@ const qStringBasic = questionnaireFactory([
     text: 'Name'
   }
 ]);
-const qrStringBasicResponse = qrFactory([
+const qrStringBasicResponse = questionnaireResponseFactory([
   {
     linkId: targetLinkId,
     text: targetText,
     answer: [
       {
-        valueString: 'Vladimir'
+        valueString: 'John Doe'
       }
     ]
   }
@@ -87,6 +89,7 @@ export const StringBasic: Story = createStory({
     expect(input?.value).toBe('');
   }
 }) as Story;
+
 export const StringBasicResponse: Story = createStory({
   args: {
     questionnaire: qStringBasic,

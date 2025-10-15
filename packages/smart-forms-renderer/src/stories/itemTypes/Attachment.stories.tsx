@@ -34,6 +34,8 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+
+/* Attachment Basic story */
 const targetLinkId = 'file-attachment';
 const targetText = 'File Attachment';
 
@@ -47,7 +49,7 @@ const qAttachmentBasic = questionnaireFactory([
 ]);
 
 const url = 'http://example.com';
-const name = 'Vladimir';
+const name = 'John Doe';
 const fileName = 'foo.png';
 const type = 'image/png';
 

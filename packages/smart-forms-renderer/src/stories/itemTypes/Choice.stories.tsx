@@ -22,8 +22,8 @@ import {
   findByLinkIdOrLabel,
   getAnswers,
   getInputText,
-  qrFactory,
-  questionnaireFactory
+  questionnaireFactory,
+  questionnaireResponseFactory
 } from '../testUtils';
 import { expect, fireEvent } from 'storybook/test';
 import { createStory } from '../storybookWrappers/createStory';
@@ -40,17 +40,15 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+
+/* Choice AnswerOption Basic story */
 const targetLinkId = 'smoking-status';
 const targetCoding = {
   system: 'http://snomed.info/sct',
   code: '266919005',
   display: 'Never smoked'
 };
-const notTargetCoding = {
-  system: 'http://snomed.info/sct',
-  code: '77176002',
-  display: 'Smoker'
-};
+
 const qChoiceAnswerOptionBasic = questionnaireFactory([
   {
     linkId: targetLinkId,
@@ -58,15 +56,40 @@ const qChoiceAnswerOptionBasic = questionnaireFactory([
     text: 'Smoking status',
     answerOption: [
       {
-        valueCoding: targetCoding
+        valueCoding: {
+          system: 'http://snomed.info/sct',
+          code: '266919005',
+          display: 'Never smoked'
+        }
       },
       {
-        valueCoding: notTargetCoding
-      }
+        valueCoding: {
+          system: 'http://snomed.info/sct',
+          code: '77176002',
+          display: 'Smoker'
+        }
+      },
+      {
+        valueCoding: {
+          system: 'http://snomed.info/sct',
+          code: '8517006',
+          display: 'Ex-smoker'
+        }
+      },
+      {
+        valueCoding: {
+          system: 'http://snomed.info/sct',
+          code: '16090371000119103',
+          display: 'Exposure to second hand tobacco smoke'
+        }
+      },
+      { valueString: 'Wants to quit' },
+      { valueString: 'Other tobacco use' }
     ]
   }
 ]);
-const qrChoiceAnswerOptionBasicResponse = qrFactory([
+
+const qrChoiceAnswerOptionBasicResponse = questionnaireResponseFactory([
   {
     linkId: targetLinkId,
     answer: [
@@ -115,6 +138,23 @@ export const ChoiceAnswerOptionBasicResponse: Story = createStory({
   }
 }) as Story;
 
+/* Choice AnswerOption InitialSelected story */
+// Mutate basic questionnaire to have initialSelected on the first option
+const qChoiceAnswerOptionInitialSelected = structuredClone(qChoiceAnswerOptionBasic);
+qChoiceAnswerOptionInitialSelected.item[0].answerOption[0].initialSelected = true;
+
+export const ChoiceAnswerOptionInitialSelected: Story = createStory({
+  args: {
+    questionnaire: qChoiceAnswerOptionInitialSelected
+  },
+  play: async ({ canvasElement }) => {
+    const inputText = await getInputText(canvasElement, 'awsHallucinationType');
+
+    expect(inputText).toBe(targetCoding.display);
+  }
+}) as Story;
+
+/* Choice AnswerValueSet Basic story */
 const valueSetTargetId = 'gender';
 
 const valueSetTargetCoding = {
@@ -149,7 +189,7 @@ export const ChoiceAnswerValueSetBasic: Story = createStory({
 export const ChoiceAnswerValueSetBasicResponse: Story = createStory({
   args: {
     questionnaire: qValueSetBasic,
-    questionnaireResponse: qrFactory([
+    questionnaireResponse: questionnaireResponseFactory([
       {
         linkId: 'gender',
         text: 'Gender',
@@ -161,44 +201,5 @@ export const ChoiceAnswerValueSetBasicResponse: Story = createStory({
     const inputText = await getInputText(canvasElement, valueSetTargetId);
 
     expect(inputText).toBe(valueSetTargetCoding.display);
-  }
-}) as Story;
-
-const initialTargetCoding = {
-  code: 'T',
-  system: 'http://fhir.medirecords.com/CodeSystem/awsHallucinationType',
-  display: 'Test-Selected'
-};
-const initialNotTargetCoding = {
-  code: 'N',
-  system: 'http://fhir.medirecords.com/CodeSystem/awsHallucinationType',
-  display: 'None'
-};
-
-// Story for ChoiceSelectAnswerOptions Using InitialSelected field set
-export const ChoiceAnswerOptionsUsingInitialSelected: Story = createStory({
-  args: {
-    questionnaire: questionnaireFactory([
-      {
-        text: 'Type',
-        type: 'choice',
-        linkId: 'awsHallucinationType',
-        repeats: false,
-        answerOption: [
-          {
-            valueCoding: initialNotTargetCoding
-          },
-          {
-            valueCoding: initialTargetCoding,
-            initialSelected: true
-          }
-        ]
-      }
-    ])
-  },
-  play: async ({ canvasElement }) => {
-    const inputText = await getInputText(canvasElement, 'awsHallucinationType');
-
-    expect(inputText).toBe(initialTargetCoding.display);
   }
 }) as Story;

@@ -18,9 +18,14 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 
-import { getAnswers, getInputText, inputDate, qrFactory, questionnaireFactory } from '../testUtils';
+import {
+  getAnswers,
+  getInputText,
+  inputDate,
+  questionnaireFactory,
+  questionnaireResponseFactory
+} from '../testUtils';
 import { expect } from 'storybook/test';
-import { qDateCalculation } from '../assets/questionnaires';
 import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -35,6 +40,8 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+
+/* Date Basic story */
 const targetLinkId = 'dob';
 const targetText = 'Date of birth';
 const targetDateText = '1990-01-01';
@@ -48,7 +55,7 @@ const qDateBasic = questionnaireFactory([
     text: targetText
   }
 ]);
-const qrDateBasicResponse = qrFactory([
+const qrDateBasicResponse = questionnaireResponseFactory([
   {
     linkId: targetLinkId,
     text: targetText,
@@ -83,11 +90,5 @@ export const DateBasicResponse: Story = createStory({
     const input = await getInputText(canvasElement, targetLinkId);
 
     expect(input).toBe(targetDate);
-  }
-}) as Story;
-
-export const DateCalculation: Story = createStory({
-  args: {
-    questionnaire: qDateCalculation
   }
 }) as Story;

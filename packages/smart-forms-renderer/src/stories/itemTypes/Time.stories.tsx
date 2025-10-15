@@ -18,7 +18,13 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 
-import { getAnswers, getInputText, inputTime, qrFactory, questionnaireFactory } from '../testUtils';
+import {
+  getAnswers,
+  getInputText,
+  inputTime,
+  questionnaireFactory,
+  questionnaireResponseFactory
+} from '../testUtils';
 import { expect } from 'storybook/test';
 import { qTimeCalculation } from '../assets/questionnaires';
 import { createStory } from '../storybookWrappers/createStory';
@@ -35,6 +41,8 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+
+/* Time Basic story */
 const targetLinkId = 'last-meal';
 const targetText = 'Time of last meal';
 const targetTime = '11:00:00';
@@ -48,7 +56,8 @@ const qTimeBasic = questionnaireFactory([
     text: targetText
   }
 ]);
-const qrTimeBasic = qrFactory([
+
+const qrTimeBasic = questionnaireResponseFactory([
   {
     linkId: targetLinkId,
     answer: [{ valueTime: targetTime }]

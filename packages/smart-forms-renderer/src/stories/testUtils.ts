@@ -92,14 +92,15 @@ export async function getAnswers(linkId: string) {
   const result = await evaluate(qr, `QuestionnaireResponse.item.where(linkId='${linkId}').answer`);
   return result;
 }
-export async function getGroupAnswers(groupLinkid: string, answerLinkid: string) {
+
+export async function getGroupAnswers(groupLinkId: string, answerLinkId: string) {
   const qr = questionnaireResponseStore.getState().updatableResponse;
 
   const result = await evaluate(
     qr,
-    groupLinkid
-      ? `QuestionnaireResponse.item.where(linkId='${groupLinkid}').item.where(linkId='${answerLinkid}').answer`
-      : `QuestionnaireResponse.item.where(linkId='${answerLinkid}').answer`
+    groupLinkId
+      ? `QuestionnaireResponse.item.where(linkId='${groupLinkId}').item.where(linkId='${answerLinkId}').answer`
+      : `QuestionnaireResponse.item.where(linkId='${answerLinkId}').answer`
   );
 
   return result;
@@ -117,13 +118,16 @@ export function questionnaireFactory(
   };
 }
 
-export function qrFactory(items: QuestionnaireResponseItem[]): QuestionnaireResponse {
+export function questionnaireResponseFactory(
+  items: QuestionnaireResponseItem[]
+): QuestionnaireResponse {
   return {
     resourceType: 'QuestionnaireResponse',
     status: 'completed',
     item: items
   };
 }
+
 export function itemControlExtFactory(code: string): Extension {
   return {
     url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
@@ -217,6 +221,7 @@ export async function inputText(
   // Here we await for debounced store update
   await new Promise((resolve) => setTimeout(resolve, 500));
 }
+
 export async function checkCheckBox(canvasElement: HTMLElement, linkId: string) {
   const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
   const input =

@@ -22,8 +22,8 @@ import {
   getAnswers,
   getInputText,
   inputText,
-  qrFactory,
-  questionnaireFactory
+  questionnaireFactory,
+  questionnaireResponseFactory
 } from '../testUtils';
 import { expect, fireEvent } from 'storybook/test';
 import { createStory } from '../storybookWrappers/createStory';
@@ -41,24 +41,33 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-const targetText = 'mytext';
+
+/* Text Basic story */
+const targetText = 'Details of intermittent fasting';
 const targetLinkId = 'details';
+const targetInput =
+  '- 8 hour eating window\n' +
+  '- Cup of black coffee in the morning\n' +
+  '- Small portions of lunch and dinner';
 
 const basicQuestionnaire = questionnaireFactory([
-  { linkId: targetLinkId, type: 'string', text: targetText }
+  { linkId: targetLinkId, type: 'text', text: targetText }
 ]);
-const basicQr = qrFactory([{ linkId: targetLinkId, answer: [{ valueString: targetText }] }]);
+
+const basicQr = questionnaireResponseFactory([
+  { linkId: targetLinkId, answer: [{ valueString: targetInput }] }
+]);
 
 export const TextBasic: Story = createStory({
   args: {
     questionnaire: basicQuestionnaire
   },
   play: async ({ canvasElement }) => {
-    await inputText(canvasElement, targetLinkId, targetText);
+    await inputText(canvasElement, targetLinkId, targetInput);
 
     const result = await getAnswers(targetLinkId);
     expect(result).toHaveLength(1);
-    expect(result[0]).toEqual(expect.objectContaining({ valueString: targetText }));
+    expect(result[0]).toEqual(expect.objectContaining({ valueString: targetInput }));
 
     // Clear value
     const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');

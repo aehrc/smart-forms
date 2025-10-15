@@ -24,8 +24,8 @@ import {
   getAnswers,
   getInputText,
   itemControlExtFactory,
-  qrFactory,
-  questionnaireFactory
+  questionnaireFactory,
+  questionnaireResponseFactory
 } from '../testUtils';
 import { expect, fireEvent } from 'storybook/test';
 import { createStory } from '../storybookWrappers/createStory';
@@ -42,6 +42,8 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+
+/* Boolean Basic story */
 const targetText = 'Have you eaten yet?';
 const targetLinkId = 'eaten';
 
@@ -54,7 +56,7 @@ const basicQuestionnaire = questionnaireFactory([
   }
 ]);
 
-const basicQr = qrFactory([
+const basicQuestionnaireResponse = questionnaireResponseFactory([
   {
     linkId: targetLinkId,
     text: targetText,
@@ -95,7 +97,7 @@ export const BooleanBasic: Story = createStory({
 export const BooleanBasicResponse: Story = createStory({
   args: {
     questionnaire: basicQuestionnaire,
-    questionnaireResponse: basicQr
+    questionnaireResponse: basicQuestionnaireResponse
   },
   play: async ({ canvasElement }) => {
     const inputText = await getInputText(canvasElement, targetLinkId);
@@ -104,6 +106,7 @@ export const BooleanBasicResponse: Story = createStory({
   }
 }) as Story;
 
+/* Boolean Checkbox story */
 const qBooleanCheckbox = questionnaireFactory([
   {
     extension: [itemControlExtFactory('check-box')],
@@ -113,7 +116,7 @@ const qBooleanCheckbox = questionnaireFactory([
     text: 'Have you eaten yet?'
   }
 ]);
-const qrBooleanCheckboxResponse = qrFactory([
+const qrBooleanCheckboxResponse = questionnaireResponseFactory([
   {
     linkId: 'eaten',
     text: 'Have you eaten yet?',
@@ -125,7 +128,7 @@ const qrBooleanCheckboxResponse = qrFactory([
   }
 ]);
 
-export const BooleanCheckboxBasic: Story = createStory({
+export const BooleanCheckbox: Story = createStory({
   args: {
     questionnaire: qBooleanCheckbox
   },

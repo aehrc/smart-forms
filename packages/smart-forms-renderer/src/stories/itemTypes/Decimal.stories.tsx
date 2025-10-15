@@ -23,8 +23,8 @@ import {
   getAnswers,
   getInputText,
   inputDecimal,
-  qrFactory,
-  questionnaireFactory
+  questionnaireFactory,
+  questionnaireResponseFactory
 } from '../testUtils';
 import { expect, fireEvent } from 'storybook/test';
 import { createStory } from '../storybookWrappers/createStory';
@@ -42,6 +42,7 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
+/* Decimal Basic story */
 const targetLinkId = 'weight';
 const targetWeight = 80.3;
 
@@ -53,7 +54,8 @@ const qDecimalBasic = questionnaireFactory([
     text: 'Weight in kg'
   }
 ]);
-const qrDecimalBasicResponse = qrFactory([
+
+const qrDecimalBasicResponse = questionnaireResponseFactory([
   {
     linkId: targetLinkId,
     text: 'Weight in kg',

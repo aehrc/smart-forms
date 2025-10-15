@@ -110,7 +110,7 @@ export const qDisplayCalculationStyled: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-style',
             valueString:
-              'padding: 0.75rem; margin-bottom: 1rem; font-size: 0.875rem; color: #2E7D32; border-radius: 0.5rem; background-color: #d5e5d6; font-weight: 700;'
+              'padding: 0.75rem; margin-bottom: 1rem; font-size: 0.875rem; color: #2E7D32; border-radius: 0.5rem; font-weight: 700;'
           }
         ]
       },
