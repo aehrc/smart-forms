@@ -66,8 +66,29 @@ const preview: Preview = {
     },
     options: {
       // The `a` and `b` arguments in this function have a type of `import('storybook/internal/types').IndexEntry`. Remember that the function is executed in a JavaScript environment, so use JSDoc for IntelliSense to introspect it.
-      storySort: (a, b) =>
-        a.id === b.id ? 0 : a.id.localeCompare(b.id, undefined, { numeric: true })
+      storySort: (a, b) => {
+        const getFolder = (id) => id.split('-')[0].toLowerCase();
+
+        // Enforce folder sequence: itemtype, SDC, testing
+        const folderOrder = ['itemtype', 'sdc', 'testing'];
+        const aFolderIndex = folderOrder.indexOf(getFolder(a.id));
+        const bFolderIndex = folderOrder.indexOf(getFolder(b.id));
+        if (aFolderIndex !== bFolderIndex) {
+          return aFolderIndex - bFolderIndex;
+        }
+
+        /* Put 'Overview' MDX files at the top e.g. itemtype-overview--docs if Meta title="ItemType/Overview" on an MDX file */
+        if (typeof a.id === 'string' && a.id.includes('overview--docs')) {
+          return -1;
+        }
+
+        if (typeof b.id === 'string' && b.id.includes('overview--docs')) {
+          return 1;
+        }
+
+        /* Default to sorting alphabetically */
+        return a.id === b.id ? 0 : a.id.localeCompare(b.id, undefined, { numeric: true });
+      }
     }
   }
 };
