@@ -20,31 +20,40 @@ const mockLibrary: Record<string, unknown> = {
             display: 'Female',
             system: 'http://hl7.org/fhir/administrative-gender'
           },
-          { code: 'male', display: 'Male', system: 'http://hl7.org/fhir/administrative-gender' }
+          { code: 'male', display: 'Male', system: 'http://hl7.org/fhir/administrative-gender' },
+          { code: 'other', display: 'Other', system: 'http://hl7.org/fhir/administrative-gender' },
+          {
+            code: 'unknown',
+            display: 'Unknown',
+            system: 'http://hl7.org/fhir/administrative-gender'
+          }
         ]
       }
     }
 };
 
-// Override the global fetch function to return mock responses for specific URLs.
+// If running CI tests, override the global fetch function to return mock responses for specific URLs.
 // This allows Storybook stories to work with predictable test data without relying on real network requests.
+// @ts-ignore
+const isCI = import.meta.env.VITE_CI === 'true';
+if (isCI) {
+  global.fetch = (async (input: RequestInfo | URL) => {
+    const url =
+      typeof input === 'string' ? input.trim() : input instanceof URL ? input.href : input.url;
 
-global.fetch = (async (input: RequestInfo | URL) => {
-  const url =
-    typeof input === 'string' ? input.trim() : input instanceof URL ? input.href : input.url;
+    if (mockLibrary[url]) {
+      return new Response(JSON.stringify(mockLibrary[url]), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
 
-  if (mockLibrary[url]) {
-    return new Response(JSON.stringify(mockLibrary[url]), {
-      status: 200,
+    return new Response(JSON.stringify({ error: 'Mock not found for ' + url }), {
+      status: 404,
       headers: { 'Content-Type': 'application/json' }
     });
-  }
-
-  return new Response(JSON.stringify({ error: 'Mock not found for ' + url }), {
-    status: 404,
-    headers: { 'Content-Type': 'application/json' }
-  });
-}) as typeof fetch;
+  }) as typeof fetch;
+}
 
 export const decorators = [
   withThemeFromJSXProvider({
