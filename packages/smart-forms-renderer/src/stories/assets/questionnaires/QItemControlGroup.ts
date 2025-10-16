@@ -943,6 +943,20 @@ export const qItemControlGroupPageContainer: Questionnaire = {
   status: 'draft',
   item: [
     {
+      linkId: 'faux-header',
+      text: 'I am a faux header!',
+      type: 'group',
+      repeats: false,
+      item: [
+        {
+          linkId: 'current-priorities-important-things',
+          text: 'Once you have completed all questions, please mark the health check as completed in the footer below.',
+          type: 'display',
+          repeats: false
+        }
+      ]
+    },
+    {
       extension: [
         {
           url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
@@ -950,86 +964,70 @@ export const qItemControlGroupPageContainer: Questionnaire = {
             coding: [
               {
                 system: 'http://hl7.org/fhir/questionnaire-item-control',
-                version: '1.0.0',
-                code: 'page'
+                code: 'page',
+                display: 'Page'
               }
             ]
           }
         }
       ],
-      linkId: 'page-container',
+      linkId: 'page-about-health-check',
+      text: 'About the health check',
       type: 'group',
       repeats: false,
       item: [
         {
-          linkId: 'page-about-health-check',
-          text: 'About the health check',
+          linkId: 'page1',
+          text: 'Page 1',
           type: 'group',
-          repeats: false,
           item: [
             {
               linkId: 'health-check-eligible',
               text: 'Eligible for health check',
               type: 'boolean',
               repeats: false
-            },
+            }
+          ]
+        },
+        {
+          linkId: 'page2',
+          text: 'Page 2',
+          type: 'group',
+          item: [
             {
               linkId: 'health-check-in-progress',
               text: 'Health check already in progress?',
               type: 'boolean',
               repeats: false
-            },
+            }
+          ]
+        },
+        {
+          linkId: 'page3',
+          text: 'Page 3',
+          type: 'group',
+          item: [
             {
               linkId: 'health-check-last-completed',
               text: 'Date of last completed health check',
               type: 'date',
               repeats: false
-            },
-            {
-              linkId: 'health-check-this-commenced',
-              text: 'Date and time this health check commenced',
-              type: 'dateTime',
-              repeats: false
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      linkId: 'faux-footer',
+      text: 'I am a faux footer!',
+      type: 'group',
+      repeats: false,
+      item: [
         {
-          extension: [
-            {
-              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText',
-              valueString: 'Current priorities'
-            }
-          ],
-          linkId: 'page-current-priorities',
-          text: 'Current health/patient priorities',
-          type: 'group',
-          repeats: false,
-          item: [
-            {
-              extension: [
-                {
-                  url: 'http://hl7.org/fhir/StructureDefinition/entryFormat',
-                  valueString: 'Enter details'
-                }
-              ],
-              linkId: 'current-priorities-important-things',
-              text: 'What are the important things for you in this health check today?',
-              type: 'text',
-              repeats: false
-            },
-            {
-              extension: [
-                {
-                  url: 'http://hl7.org/fhir/StructureDefinition/entryFormat',
-                  valueString: 'Enter details'
-                }
-              ],
-              linkId: 'current-priorities-worried-things',
-              text: 'Is there anything you are worried about?',
-              type: 'text',
-              repeats: false
-            }
-          ]
+          linkId: 'current-priorities-important-things',
+          text: 'Health check completed?',
+          type: 'boolean',
+          repeats: false
         }
       ]
     }
@@ -1041,11 +1039,6 @@ export const qItemControlGroupPageNonTopLevelPageContainer: Questionnaire = {
   status: 'draft',
   subjectType: ['Patient', 'Person', 'Practitioner'],
   item: [
-    {
-      linkId: 'summary',
-      type: 'display',
-      text: 'This questionnaire is a bit of everything. It contains virtually every question type we might need in 80% of most surveys.'
-    },
     {
       extension: [
         {
@@ -1092,49 +1085,6 @@ export const qItemControlGroupPageNonTopLevelPageContainer: Questionnaire = {
                   valueCode: 'vertical'
                 }
               ]
-            },
-            {
-              linkId: 'dropdown-choice1',
-              type: 'choice',
-              text: 'A question with dropdown choices',
-              answerValueSet: 'http://hl7.org/fhir/ValueSet/yesnodontknow',
-              extension: [
-                {
-                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
-                  valueCodeableConcept: {
-                    coding: [
-                      {
-                        system: 'http://hl7.org/fhir/questionnaire-item-control',
-                        code: 'drop-down'
-                      }
-                    ]
-                  }
-                }
-              ]
-            },
-            {
-              linkId: 'checkbox-choice1',
-              type: 'choice',
-              text: 'A question with checkbox choices',
-              answerValueSet: 'http://hl7.org/fhir/ValueSet/yesnodontknow',
-              repeats: true,
-              extension: [
-                {
-                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
-                  valueCodeableConcept: {
-                    coding: [
-                      {
-                        system: 'http://hl7.org/fhir/questionnaire-item-control',
-                        code: 'check-box'
-                      }
-                    ]
-                  }
-                },
-                {
-                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation',
-                  valueCode: 'vertical'
-                }
-              ]
             }
           ]
         },
@@ -1143,29 +1093,6 @@ export const qItemControlGroupPageNonTopLevelPageContainer: Questionnaire = {
           type: 'group',
           text: 'A group of basic questions 2',
           item: [
-            {
-              linkId: 'radio-choice2',
-              type: 'choice',
-              text: 'A question with radio button choices',
-              answerValueSet: 'http://hl7.org/fhir/ValueSet/yesnodontknow',
-              extension: [
-                {
-                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
-                  valueCodeableConcept: {
-                    coding: [
-                      {
-                        system: 'http://hl7.org/fhir/questionnaire-item-control',
-                        code: 'radio-button'
-                      }
-                    ]
-                  }
-                },
-                {
-                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation',
-                  valueCode: 'vertical'
-                }
-              ]
-            },
             {
               linkId: 'dropdown-choice2',
               type: 'choice',
@@ -1290,76 +1217,6 @@ export const qItemControlGroupPageNonTopLevelPageContainer: Questionnaire = {
                   }
                 ]
               }
-            }
-          ]
-        },
-        {
-          linkId: 'medications_table',
-          text: 'Medications',
-          type: 'group',
-          repeats: true,
-          extension: [
-            {
-              url: 'http://hl7.org/fhir/StructureDefinition/terminology-server',
-              valueUrl: 'https://clinicaltables.nlm.nih.gov/fhir/R4'
-            },
-            {
-              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
-              valueCodeableConcept: {
-                coding: [
-                  {
-                    system: 'http://hl7.org/fhir/questionnaire-item-control',
-                    code: 'gtable'
-                  }
-                ]
-              }
-            },
-            {
-              url: 'http://hl7.org/fhir/StructureDefinition/variable',
-              valueExpression: {
-                name: 'strengthFormLookup',
-                language: 'application/x-fhir-query',
-                expression:
-                  "https://clinicaltables.nlm.nih.gov/fhir/R4/CodeSystem/$lookup?system=https://clinicaltables.nlm.nih.gov/fhir/CodeSystem/rxterms&code={{item.where(linkId='medication').answer.valueCoding.code}}&property=STRENGTHS_AND_FORMS"
-              }
-            }
-          ],
-          item: [
-            {
-              linkId: 'medication',
-              text: 'Medication Name',
-              type: 'choice',
-              answerValueSet: 'https://clinicaltables.nlm.nih.gov/fhir/R4/ValueSet/rxterms',
-              extension: [
-                {
-                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
-                  valueCodeableConcept: {
-                    coding: [
-                      {
-                        system: 'http://hl7.org/fhir/questionnaire-item-control',
-                        code: 'autocomplete',
-                        display: 'Auto-complete'
-                      }
-                    ],
-                    text: 'Auto-complete'
-                  }
-                }
-              ]
-            },
-            {
-              linkId: 'strength',
-              text: 'Strength',
-              type: 'open-choice',
-              extension: [
-                {
-                  url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerExpression',
-                  valueExpression: {
-                    language: 'text/fhirpath',
-                    expression:
-                      "%strengthFormLookup.parameter.where(name='property' and part.where(name='code' and value='STRENGTHS_AND_FORMS').exists()).part.where(name='value').value"
-                  }
-                }
-              ]
             }
           ]
         }

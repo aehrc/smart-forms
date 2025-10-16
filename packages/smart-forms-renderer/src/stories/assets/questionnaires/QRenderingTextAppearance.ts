@@ -22,6 +22,49 @@ export const qRenderingStyleBooleanItem: Questionnaire = {
   ]
 };
 
+export const qRenderingMarkdownDisplay: Questionnaire = {
+  resourceType: 'Questionnaire',
+  status: 'draft',
+  item: [
+    {
+      linkId: 'markdown-display-h1',
+      _text: {
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/rendering-markdown',
+            valueMarkdown: '# 1. Patient Details (h1 - #)'
+          }
+        ]
+      },
+      text: '1. Patient Details',
+      type: 'display'
+    },
+    {
+      linkId: 'markdown-display-h2',
+      _text: {
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/rendering-markdown',
+            valueMarkdown: '## Patient Name (h2 - ##)'
+          }
+        ]
+      },
+      text: '1. Patient Name',
+      type: 'display'
+    },
+    {
+      linkId: 'patient-first-name',
+      text: 'First name',
+      type: 'string'
+    },
+    {
+      linkId: 'patient-last-name',
+      text: 'Last name',
+      type: 'string'
+    }
+  ]
+};
+
 export const qRenderingXhtmlBooleanItem: Questionnaire = {
   resourceType: 'Questionnaire',
   status: 'draft',

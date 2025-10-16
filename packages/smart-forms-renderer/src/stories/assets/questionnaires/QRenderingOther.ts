@@ -450,3 +450,37 @@ export const qReadOnly: Questionnaire = {
     }
   ]
 };
+
+export const qPreferredTerminologyServer: Questionnaire = {
+  resourceType: 'Questionnaire',
+  status: 'draft',
+  extension: [
+    {
+      url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-preferredTerminologyServer',
+      valueUrl: 'https://sqlonfhir-r4.azurewebsites.net/fhir'
+    }
+  ],
+  item: [
+    {
+      linkId: 'notes',
+      _text: {
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
+            valueString:
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>PreferredTerminologyServer is set as <strong>https://sqlonfhir-r4.azurewebsites.net/fhir</strong> for the entire questionnaire.</p><p>Developer note: Use <strong>Inspect > Network</strong> to see the request.</p></div>'
+          }
+        ]
+      },
+      text: 'PreferredTerminologyServer is set as https://sqlonfhir-r4.azurewebsites.net/fhir for the entire questionnaire. Use Inspect > Network to see the request.',
+      type: 'display',
+      repeats: false
+    },
+    {
+      linkId: 'languages',
+      text: 'Languages',
+      type: 'choice',
+      answerValueSet: 'http://hl7.org/fhir/ValueSet/languages'
+    }
+  ]
+};

@@ -370,6 +370,254 @@ export const qrMaxValue: QuestionnaireResponse = {
   questionnaire: 'https://smartforms.csiro.au/docs/behavior/value-constraints/max-value|0.1.0'
 };
 
+// MinQuantity
+export const qMinQuantity: Questionnaire = {
+  resourceType: 'Questionnaire',
+  status: 'draft',
+  item: [
+    // Empty
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-minQuantity',
+          valueQuantity: {
+            value: 20,
+            unit: 'kg',
+            system: 'http://unitsofmeasure.org',
+            code: 'kg'
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 'kg',
+            display: 'kg'
+          }
+        }
+      ],
+      linkId: 'weight-empty',
+      text: 'Weight (>=20 kg) (empty)',
+      type: 'quantity',
+      repeats: false
+    },
+    // Filled
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-minQuantity',
+          valueQuantity: {
+            value: 20,
+            unit: 'kg',
+            system: 'http://unitsofmeasure.org',
+            code: 'kg'
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 'kg',
+            display: 'kg'
+          }
+        }
+      ],
+      linkId: 'weight-filled',
+      text: 'Weight (>=20 kg) (filled)',
+      type: 'quantity',
+      repeats: false
+    },
+    // With feedback
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-minQuantity',
+          valueQuantity: {
+            value: 20,
+            unit: 'kg',
+            system: 'http://unitsofmeasure.org',
+            code: 'kg'
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 'kg',
+            display: 'kg'
+          }
+        }
+      ],
+      linkId: 'weight-feedback',
+      text: 'Weight (>=20 kg) (with feedback)',
+      type: 'quantity',
+      repeats: false
+    }
+  ]
+};
+
+export const qrMinQuantity: QuestionnaireResponse = {
+  resourceType: 'QuestionnaireResponse',
+  status: 'in-progress',
+  questionnaire: 'https://smartforms.csiro.au/docs/behavior/value-constraints/min-quantity|0.1.0',
+  item: [
+    // Filled within range
+    {
+      linkId: 'weight-filled',
+      text: 'Weight (>=20 kg) (filled)',
+      answer: [
+        {
+          valueQuantity: {
+            value: 50, // Valid
+            unit: 'kg',
+            system: 'http://unitsofmeasure.org',
+            code: 'kg'
+          }
+        }
+      ]
+    },
+    // With feedback (below min)
+    {
+      linkId: 'weight-feedback',
+      text: 'Weight (>=20 kg) (with feedback)',
+      answer: [
+        {
+          valueQuantity: {
+            value: 15, // Invalid (below min 20)
+            unit: 'kg',
+            system: 'http://unitsofmeasure.org',
+            code: 'kg'
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// MaxQuantity
+export const qMaxQuantity: Questionnaire = {
+  resourceType: 'Questionnaire',
+  status: 'draft',
+  item: [
+    // Empty
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-maxQuantity',
+          valueQuantity: {
+            value: 200,
+            unit: 'kg',
+            system: 'http://unitsofmeasure.org',
+            code: 'kg'
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 'kg',
+            display: 'kg'
+          }
+        }
+      ],
+      linkId: 'weight-empty',
+      text: 'Weight (<=200 kg) (empty)',
+      type: 'quantity',
+      repeats: false
+    },
+    // Filled
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-maxQuantity',
+          valueQuantity: {
+            value: 200,
+            unit: 'kg',
+            system: 'http://unitsofmeasure.org',
+            code: 'kg'
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 'kg',
+            display: 'kg'
+          }
+        }
+      ],
+      linkId: 'weight-filled',
+      text: 'Weight (<=200 kg) (filled)',
+      type: 'quantity',
+      repeats: false
+    },
+    // With feedback
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-maxQuantity',
+          valueQuantity: {
+            value: 200,
+            unit: 'kg',
+            system: 'http://unitsofmeasure.org',
+            code: 'kg'
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 'kg',
+            display: 'kg'
+          }
+        }
+      ],
+      linkId: 'weight-feedback',
+      text: 'Weight (<=200 kg) (with feedback)',
+      type: 'quantity',
+      repeats: false
+    }
+  ]
+};
+
+export const qrMaxQuantity: QuestionnaireResponse = {
+  resourceType: 'QuestionnaireResponse',
+  status: 'in-progress',
+  questionnaire: 'https://smartforms.csiro.au/docs/behavior/value-constraints/max-quantity|0.1.0',
+  item: [
+    // Filled within range
+    {
+      linkId: 'weight-filled',
+      text: 'Weight (<=200 kg) (filled)',
+      answer: [
+        {
+          valueQuantity: {
+            value: 150, // Valid
+            unit: 'kg',
+            system: 'http://unitsofmeasure.org',
+            code: 'kg'
+          }
+        }
+      ]
+    },
+    // With feedback (above max)
+    {
+      linkId: 'weight-feedback',
+      text: 'Weight (<=200 kg) (with feedback)',
+      answer: [
+        {
+          valueQuantity: {
+            value: 250, // Invalid (above max 200)
+            unit: 'kg',
+            system: 'http://unitsofmeasure.org',
+            code: 'kg'
+          }
+        }
+      ]
+    }
+  ]
+};
+
 // MaxDecimalPlaces
 export const qMaxDecimalPlaces: Questionnaire = {
   resourceType: 'Questionnaire',

@@ -18,21 +18,23 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
-  qAnswerExpression,
-  qAnswerOption,
-  qAnswerOptionToggleExpressionAnswerOption,
-  qAnswerOptionToggleExpressionContained,
-  qAnswerValueSet,
-  qReadOnlyDuplicate,
-  qRepeatsDuplicate,
-  qRequiredDuplicate,
-  qUnitOptionDuplicate
+  qDisplayCategoryInstructions,
+  qHidden,
+  qOpenLabel,
+  qRenderingMarkdownDisplay,
+  qRenderingStyleBooleanItem,
+  qRenderingXhtmlBooleanItem,
+  qRenderingXhtmlDisplayBase64ImageItem,
+  qRenderingXhtmlDisplayListItem,
+  qRenderingXhtmlGroupPropagationClassStyles,
+  qRenderingXhtmlGroupPropagationInlineStyles,
+  qRenderingXhtmlGroupPropagationNested
 } from '../assets/questionnaires';
 import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'SDC/10.1.2 Behavior > Choice Restriction',
+  title: 'SDC/9.1.1 Rendering > Text Appearance',
   component: BuildFormWrapperForStorybook,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []
@@ -43,56 +45,68 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const AnswerOption: Story = createStory({
+export const RenderingStyleBoolean: Story = createStory({
   args: {
-    questionnaire: qAnswerOption
+    questionnaire: qRenderingStyleBooleanItem
   }
 }) as Story;
 
-export const AnswerValueSet: Story = createStory({
+export const RenderingMarkdownDisplay: Story = createStory({
   args: {
-    questionnaire: qAnswerValueSet
+    questionnaire: qRenderingMarkdownDisplay
   }
 }) as Story;
 
-export const AnswerExpression: Story = createStory({
+export const RenderingXHTMLBoolean: Story = createStory({
   args: {
-    questionnaire: qAnswerExpression
+    questionnaire: qRenderingXhtmlBooleanItem
   }
 }) as Story;
 
-export const AnswerOptionToggleExpressionAnswerOption: Story = createStory({
+export const RenderingXHTMLDisplayList: Story = createStory({
   args: {
-    questionnaire: qAnswerOptionToggleExpressionAnswerOption
+    questionnaire: qRenderingXhtmlDisplayListItem
   }
 }) as Story;
 
-export const AnswerOptionToggleExpressionAnswerValueSetContained: Story = createStory({
+export const RenderingXHTMLDisplayBase64Image: Story = createStory({
   args: {
-    questionnaire: qAnswerOptionToggleExpressionContained
+    questionnaire: qRenderingXhtmlDisplayBase64ImageItem
   }
 }) as Story;
 
-export const Required: Story = createStory({
+export const RenderingXHTMLGroupPropagationNested: Story = createStory({
   args: {
-    questionnaire: qRequiredDuplicate
+    questionnaire: qRenderingXhtmlGroupPropagationNested
   }
 }) as Story;
 
-export const Repeats: Story = createStory({
+export const RenderingXHTMLGroupPropagationInlineStyles: Story = createStory({
   args: {
-    questionnaire: qRepeatsDuplicate
+    questionnaire: qRenderingXhtmlGroupPropagationInlineStyles
   }
 }) as Story;
 
-export const ReadOnly: Story = createStory({
+export const RenderingXHTMLGroupPropagationClassStyles: Story = createStory({
   args: {
-    questionnaire: qReadOnlyDuplicate
+    questionnaire: qRenderingXhtmlGroupPropagationClassStyles
   }
 }) as Story;
 
-export const UnitOption: Story = createStory({
+export const DisplayCategoryInstructions: Story = createStory({
   args: {
-    questionnaire: qUnitOptionDuplicate
+    questionnaire: qDisplayCategoryInstructions
+  }
+}) as Story;
+
+export const OpenLabel: Story = createStory({
+  args: {
+    questionnaire: qOpenLabel
+  }
+}) as Story;
+
+export const Hidden: Story = createStory({
+  args: {
+    questionnaire: qHidden
   }
 }) as Story;

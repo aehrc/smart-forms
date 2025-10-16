@@ -18,21 +18,22 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
-  qEnableBehaviorAll,
-  qEnableBehaviorAny,
-  qEnableWhen,
-  qEnableWhenExpressionSimple,
-  qEnableWhenExpressionTabs,
-  qEnableWhenMultiCheckbox,
-  qInitialRepeats,
-  qInitialSingle,
-  qText
-} from '../assets/questionnaires'; // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
+  qChoiceOrientation,
+  qCollapsibleGroupDefaultClosed,
+  qCollapsibleGroupDefaultOpen,
+  qCollapsibleGroupNested,
+  qCollapsibleSingleDefaultClosed,
+  qCollapsibleSingleDefaultOpen,
+  qItemControl,
+  qSliderStepValue,
+  qWidthGrid,
+  qWidthGTable
+} from '../assets/questionnaires';
 import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'SDC/9.1.4 Form Behavior Other Control',
+  title: 'SDC/9.1.2 Rendering > Control Appearance',
   component: BuildFormWrapperForStorybook,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []
@@ -43,56 +44,62 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const InitialSingle: Story = createStory({
+export const ItemControl: Story = createStory({
   args: {
-    questionnaire: qInitialSingle
+    questionnaire: qItemControl
   }
 }) as Story;
 
-export const InitialRepeats: Story = createStory({
+export const ChoiceOrientation: Story = createStory({
   args: {
-    questionnaire: qInitialRepeats
+    questionnaire: qChoiceOrientation
   }
 }) as Story;
 
-export const EnableWhen: Story = createStory({
+export const SliderStepValue: Story = createStory({
   args: {
-    questionnaire: qEnableWhen
+    questionnaire: qSliderStepValue
   }
 }) as Story;
 
-export const EnableWhenMultiCheckbox: Story = createStory({
+export const WidthGTable: Story = createStory({
   args: {
-    questionnaire: qEnableWhenMultiCheckbox
+    questionnaire: qWidthGTable
   }
 }) as Story;
 
-export const EnableBehaviorAll: Story = createStory({
+export const WidthGrid: Story = createStory({
   args: {
-    questionnaire: qEnableBehaviorAll
+    questionnaire: qWidthGrid
   }
 }) as Story;
 
-export const EnableBehaviorAny: Story = createStory({
+export const CollapsibleSingleDefaultOpen: Story = createStory({
   args: {
-    questionnaire: qEnableBehaviorAny
+    questionnaire: qCollapsibleSingleDefaultOpen
   }
 }) as Story;
 
-export const EnableWhenExpressionSimple: Story = createStory({
+export const CollapsibleSingleDefaultClosed: Story = createStory({
   args: {
-    questionnaire: qEnableWhenExpressionSimple
+    questionnaire: qCollapsibleSingleDefaultClosed
   }
 }) as Story;
 
-export const EnableWhenExpressionTabs: Story = createStory({
+export const CollapsibleGroupDefaultOpen: Story = createStory({
   args: {
-    questionnaire: qEnableWhenExpressionTabs
+    questionnaire: qCollapsibleGroupDefaultOpen
   }
 }) as Story;
 
-export const Text: Story = createStory({
+export const CollapsibleGroupDefaultClosed: Story = createStory({
   args: {
-    questionnaire: qText
+    questionnaire: qCollapsibleGroupDefaultClosed
+  }
+}) as Story;
+
+export const CollapsibleGroupNested: Story = createStory({
+  args: {
+    questionnaire: qCollapsibleGroupNested
   }
 }) as Story;

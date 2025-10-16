@@ -17,19 +17,12 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import {
-  qReadOnly,
-  qRepeatsAutocomplete,
-  qRepeatsCheckbox,
-  qRepeatsGroup,
-  qRepeatsGroupNested,
-  qRequired
-} from '../assets/questionnaires';
+import { qEntryFormat, qQuestionnaireUnit, qShortText } from '../assets/questionnaires';
 import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'SDC/8.1.4 Advanced Other',
+  title: 'SDC/9.1.3 Rendering > Additional Display Content',
   component: BuildFormWrapperForStorybook,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []
@@ -40,38 +33,20 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const Required: Story = createStory({
+export const EntryFormat: Story = createStory({
   args: {
-    questionnaire: qRequired
+    questionnaire: qEntryFormat
   }
 }) as Story;
 
-export const RepeatsAutocomplete: Story = createStory({
+export const ShortText: Story = createStory({
   args: {
-    questionnaire: qRepeatsAutocomplete
+    questionnaire: qShortText
   }
 }) as Story;
 
-export const RepeatsCheckbox: Story = createStory({
+export const QuestionnaireUnit: Story = createStory({
   args: {
-    questionnaire: qRepeatsCheckbox
-  }
-}) as Story;
-
-export const RepeatsGroup: Story = createStory({
-  args: {
-    questionnaire: qRepeatsGroup
-  }
-}) as Story;
-
-export const RepeatsGroupNested: Story = createStory({
-  args: {
-    questionnaire: qRepeatsGroupNested
-  }
-}) as Story;
-
-export const ReadOnly: Story = createStory({
-  args: {
-    questionnaire: qReadOnly
+    questionnaire: qQuestionnaireUnit
   }
 }) as Story;

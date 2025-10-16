@@ -1150,6 +1150,179 @@ export const qEnableWhenExpressionTabs: Questionnaire = {
   ]
 };
 
+export const qTargetConstraintSimple: Questionnaire = {
+  resourceType: 'Questionnaire',
+  status: 'draft',
+  extension: [
+    {
+      url: 'http://hl7.org/fhir/StructureDefinition/targetConstraint',
+      extension: [
+        {
+          url: 'key',
+          valueId: 'bp-constraint'
+        },
+        {
+          url: 'severity',
+          valueCode: 'warning'
+        },
+        {
+          url: 'expression',
+          valueExpression: {
+            language: 'text/fhirpath',
+            expression:
+              "%resource.item.where(linkId='1.1').answer.value < %resource.item.where(linkId='1.2').answer.value"
+          }
+        },
+        {
+          url: 'human',
+          valueString: 'Systolic blood pressure should not be less than diastolic blood pressure.'
+        },
+        {
+          url: 'location',
+          valueString: "Questionnaire.item.where(linkId='1.1')"
+        }
+      ]
+    }
+  ],
+  item: [
+    {
+      linkId: 'target-constraint-simple-instructions',
+      _text: {
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
+            valueString:
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p><b>Systolic blood pressure should not be less than diastolic blood pressure.</p></b></div>'
+          }
+        ]
+      },
+      text: 'Systolic blood pressure should not be less than diastolic blood pressure.',
+      type: 'display',
+      repeats: false
+    },
+    {
+      linkId: '1.1',
+      text: 'Systolic Blood Pressure',
+      type: 'integer'
+    },
+    {
+      linkId: '1.2',
+      text: 'Diastolic Blood Pressure',
+      type: 'integer'
+    }
+  ]
+};
+
+export const qTargetConstraintMultiple: Questionnaire = {
+  resourceType: 'Questionnaire',
+  status: 'draft',
+  extension: [
+    {
+      url: 'http://hl7.org/fhir/StructureDefinition/targetConstraint',
+      extension: [
+        {
+          url: 'key',
+          valueId: 'ContactNumberValidation1'
+        },
+        {
+          url: 'requirements',
+          valueId: 'This target constraint warns if special characters and or text are used.'
+        },
+        {
+          url: 'severity',
+          valueCode: 'warning'
+        },
+        {
+          url: 'expression',
+          valueExpression: {
+            language: 'text/fhirpath',
+            expression:
+              "%resource.item.where(linkId='aus-contact').answer.valueString.matches('^[0-9 ]+$').not()"
+          }
+        },
+        {
+          url: 'human',
+          valueString: 'Text and special characters, i.e. +, -, () are not allowed'
+        },
+        {
+          url: 'location',
+          valueString: 'Questionnaire.item[0]'
+        }
+      ]
+    },
+    {
+      url: 'http://hl7.org/fhir/StructureDefinition/targetConstraint',
+      extension: [
+        {
+          url: 'key',
+          valueId: 'ContactNumberValidation2'
+        },
+        {
+          url: 'requirements',
+          valueId:
+            'This target constraint warns if non-allowable Australian phone number prefixes are used (discluding +61 which is not allowed)'
+        },
+        {
+          url: 'severity',
+          valueCode: 'warning'
+        },
+        {
+          url: 'expression',
+          valueExpression: {
+            language: 'text/fhirpath',
+            expression:
+              "%resource.item.where(linkId='aus-contact').answer.value.matches('^(?!02|03|07|08|1300|1900|1800|04).+$')"
+          }
+        },
+        {
+          url: 'human',
+          valueString:
+            'The contact number must be a valid Australian contact number (do not include the +61 prefix)'
+        },
+        {
+          url: 'location',
+          valueString: 'Questionnaire.item[0]'
+        }
+      ]
+    }
+  ],
+  item: [
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/entryFormat',
+          valueString: 'E.g. 0412345678'
+        }
+      ],
+      linkId: 'aus-contact',
+      text: 'Australian Contact number',
+      type: 'string',
+      required: false,
+      repeats: false,
+      item: [
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory',
+              valueCodeableConcept: {
+                coding: [
+                  {
+                    system: 'http://hl7.org/fhir/questionnaire-display-category',
+                    code: 'instructions'
+                  }
+                ]
+              }
+            }
+          ],
+          linkId: 'aus-contact-instructions',
+          text: 'Include an area code for landlines',
+          type: 'display'
+        }
+      ]
+    }
+  ]
+};
+
 export const qText: Questionnaire = {
   resourceType: 'Questionnaire',
   status: 'draft',

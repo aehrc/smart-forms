@@ -513,7 +513,7 @@ export const qCalculatedExpressionCvdRiskCalculatorPrepop: Questionnaire = {
               {
                 url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
                 valueString:
-                  '<div xmlns="http://www.w3.org/1999/xhtml">\r\n        <b><p>NOTE: The Australian guideline for assessing and managing cardiovascular disease risk recommends the use of the online <a href="https://www.cvdcheck.org.au/calculator" target="_blank">Australian CVD risk calculator</a>.</p></b>\r\n    The calculator below should only be used for technology demonstration purposes.</p>\r\n</div>'
+                  '<div xmlns="http://www.w3.org/1999/xhtml">\r\n        <b><p>NOTE: The Australian guideline for assessing and managing cardiovascular disease risk recommends the use of the online <a href="https://www.cvdcheck.org.au/calculator" target="_blank">Australian CVD risk calculator</a>.</p></b>\r\n    <span style="color: red">The calculator below should only be used for technology demonstration purposes</span>.</p>\r\n</div>'
               }
             ]
           },
@@ -1032,6 +1032,126 @@ export const qItemPopulationContextMedicalHistory: Questionnaire = {
           }
         ]
       }
+    },
+    {
+      resourceType: 'ValueSet',
+      id: 'condition-clinical',
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/structuredefinition-wg',
+          valueCode: 'pc'
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/structuredefinition-standards-status',
+          valueCode: 'trial-use'
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/structuredefinition-fmm',
+          valueInteger: 3
+        }
+      ],
+      url: 'http://hl7.org/fhir/ValueSet/condition-clinical',
+      identifier: [
+        {
+          system: 'urn:ietf:rfc:3986',
+          value: 'urn:oid:2.16.840.1.113883.4.642.3.164'
+        }
+      ],
+      version: '4.0.1',
+      name: 'ConditionClinicalStatusCodes',
+      title: 'Condition Clinical Status Codes',
+      status: 'draft',
+      experimental: false,
+      date: '2019-11-01T09:29:23+11:00',
+      publisher: 'FHIR Project team',
+      contact: [
+        {
+          telecom: [
+            {
+              system: 'url',
+              value: 'http://hl7.org/fhir'
+            }
+          ]
+        }
+      ],
+      description: 'Preferred value set for Condition Clinical Status.',
+      copyright: 'Copyright © 2011+ HL7. Licensed under Creative Commons "No Rights Reserved".',
+      compose: {
+        include: [
+          {
+            system: 'http://terminology.hl7.org/CodeSystem/condition-clinical'
+          }
+        ]
+      },
+      expansion: {
+        identifier: 'urn:uuid:7b100d21-fde9-4fd8-bded-80f345db777d',
+        timestamp: '2025-05-01T10:00:56+10:00',
+        total: 7,
+        offset: 0,
+        parameter: [
+          {
+            name: 'displayLanguage',
+            valueCode: 'en-US'
+          },
+          {
+            name: 'count',
+            valueInteger: 1000
+          },
+          {
+            name: 'offset',
+            valueInteger: 0
+          },
+          {
+            name: 'excludeNested',
+            valueBoolean: false
+          },
+          {
+            name: 'used-codesystem',
+            valueUri: 'http://terminology.hl7.org/CodeSystem/condition-clinical|3.0.0'
+          }
+        ],
+        contains: [
+          {
+            system: 'http://terminology.hl7.org/CodeSystem/condition-clinical',
+            code: 'active',
+            display: 'Active',
+            contains: [
+              {
+                system: 'http://terminology.hl7.org/CodeSystem/condition-clinical',
+                code: 'recurrence',
+                display: 'Recurrence'
+              },
+              {
+                system: 'http://terminology.hl7.org/CodeSystem/condition-clinical',
+                code: 'relapse',
+                display: 'Relapse'
+              }
+            ]
+          },
+          {
+            system: 'http://terminology.hl7.org/CodeSystem/condition-clinical',
+            code: 'inactive',
+            display: 'Inactive',
+            contains: [
+              {
+                system: 'http://terminology.hl7.org/CodeSystem/condition-clinical',
+                code: 'remission',
+                display: 'Remission'
+              },
+              {
+                system: 'http://terminology.hl7.org/CodeSystem/condition-clinical',
+                code: 'resolved',
+                display: 'Resolved'
+              }
+            ]
+          },
+          {
+            system: 'http://terminology.hl7.org/CodeSystem/condition-clinical',
+            code: 'unknown',
+            display: 'Unknown'
+          }
+        ]
+      }
     }
   ],
   item: [
@@ -1114,7 +1234,7 @@ export const qItemPopulationContextMedicalHistory: Questionnaire = {
           linkId: 'medical-history-clinical-status',
           text: 'Clinical Status',
           type: 'choice',
-          answerValueSet: 'http://hl7.org/fhir/ValueSet/condition-clinical'
+          answerValueSet: '#condition-clinical'
         },
         {
           extension: [

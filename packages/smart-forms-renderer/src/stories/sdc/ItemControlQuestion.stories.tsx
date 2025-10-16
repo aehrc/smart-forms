@@ -35,7 +35,7 @@ import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'SDC/8.1.2 Advanced Control Appearance - Item Control Question',
+  title: 'SDC/9.1.2 Rendering > Control Appearance - itemControl Question',
   component: BuildFormWrapperForStorybook,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []

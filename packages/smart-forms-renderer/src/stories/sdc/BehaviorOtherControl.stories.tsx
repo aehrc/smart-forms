@@ -18,22 +18,23 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
-  qDisplayCategoryInstructions,
-  qHidden,
-  qOpenLabel,
-  qRenderingStyleBooleanItem,
-  qRenderingXhtmlBooleanItem,
-  qRenderingXhtmlDisplayBase64ImageItem,
-  qRenderingXhtmlDisplayListItem,
-  qRenderingXhtmlGroupPropagationClassStyles,
-  qRenderingXhtmlGroupPropagationInlineStyles,
-  qRenderingXhtmlGroupPropagationNested
-} from '../assets/questionnaires';
+  qEnableBehaviorAll,
+  qEnableBehaviorAny,
+  qEnableWhen,
+  qEnableWhenExpressionSimple,
+  qEnableWhenExpressionTabs,
+  qEnableWhenMultiCheckbox,
+  qInitialRepeats,
+  qInitialSingle,
+  qTargetConstraintMultiple,
+  qTargetConstraintSimple,
+  qText
+} from '../assets/questionnaires'; // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'SDC/8.1.1 Advanced Text Appearance',
+  title: 'SDC/10.1.4 Behavior > Other Control',
   component: BuildFormWrapperForStorybook,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []
@@ -44,62 +45,68 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const RenderingStyleBoolean: Story = createStory({
+export const InitialSingle: Story = createStory({
   args: {
-    questionnaire: qRenderingStyleBooleanItem
+    questionnaire: qInitialSingle
   }
 }) as Story;
 
-export const RenderingXHTMLBoolean: Story = createStory({
+export const InitialRepeats: Story = createStory({
   args: {
-    questionnaire: qRenderingXhtmlBooleanItem
+    questionnaire: qInitialRepeats
   }
 }) as Story;
 
-export const RenderingXHTMLDisplayList: Story = createStory({
+export const EnableWhen: Story = createStory({
   args: {
-    questionnaire: qRenderingXhtmlDisplayListItem
+    questionnaire: qEnableWhen
   }
 }) as Story;
 
-export const RenderingXHTMLDisplayBase64Image: Story = createStory({
+export const EnableWhenMultiCheckbox: Story = createStory({
   args: {
-    questionnaire: qRenderingXhtmlDisplayBase64ImageItem
+    questionnaire: qEnableWhenMultiCheckbox
   }
 }) as Story;
 
-export const RenderingXHTMLGroupPropagationNested: Story = createStory({
+export const EnableBehaviorAll: Story = createStory({
   args: {
-    questionnaire: qRenderingXhtmlGroupPropagationNested
+    questionnaire: qEnableBehaviorAll
   }
 }) as Story;
 
-export const RenderingXHTMLGroupPropagationInlineStyles: Story = createStory({
+export const EnableBehaviorAny: Story = createStory({
   args: {
-    questionnaire: qRenderingXhtmlGroupPropagationInlineStyles
+    questionnaire: qEnableBehaviorAny
   }
 }) as Story;
 
-export const RenderingXHTMLGroupPropagationClassStyles: Story = createStory({
+export const EnableWhenExpressionSimple: Story = createStory({
   args: {
-    questionnaire: qRenderingXhtmlGroupPropagationClassStyles
+    questionnaire: qEnableWhenExpressionSimple
   }
 }) as Story;
 
-export const DisplayCategoryInstructions: Story = createStory({
+export const EnableWhenExpressionTabs: Story = createStory({
   args: {
-    questionnaire: qDisplayCategoryInstructions
+    questionnaire: qEnableWhenExpressionTabs
   }
 }) as Story;
 
-export const OpenLabel: Story = createStory({
+export const TargetConstraintSimple: Story = createStory({
   args: {
-    questionnaire: qOpenLabel
+    questionnaire: qTargetConstraintSimple
   }
 }) as Story;
 
-export const Hidden: Story = createStory({
+export const TargetConstraintMulti: Story = createStory({
   args: {
-    questionnaire: qHidden
+    questionnaire: qTargetConstraintMultiple
+  }
+}) as Story;
+
+export const Text: Story = createStory({
+  args: {
+    questionnaire: qText
   }
 }) as Story;

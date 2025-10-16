@@ -20,14 +20,18 @@ import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperF
 import {
   qMaxDecimalPlaces,
   qMaxLength,
+  qMaxQuantity,
   qMaxValue,
   qMinLength,
+  qMinQuantity,
   qMinValue,
   qRegex,
   qrMaxDecimalPlaces,
   qrMaxLength,
+  qrMaxQuantity,
   qrMaxValue,
   qrMinLength,
+  qrMinQuantity,
   qrMinValue,
   qrRegex
 } from '../assets/questionnaires'; // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -35,7 +39,7 @@ import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'SDC/9.1.1 Form Behavior Value Constraints',
+  title: 'SDC/10.1.1 Behavior > Value Constraints',
   component: BuildFormWrapperForStorybook,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []
@@ -78,6 +82,20 @@ export const MaxValue: Story = createStory({
   args: {
     questionnaire: qMaxValue,
     questionnaireResponse: qrMaxValue
+  }
+}) as Story;
+
+export const MinQuantity: Story = createStory({
+  args: {
+    questionnaire: qMinQuantity,
+    questionnaireResponse: qrMinQuantity
+  }
+}) as Story;
+
+export const MaxQuantity: Story = createStory({
+  args: {
+    questionnaire: qMaxQuantity,
+    questionnaireResponse: qrMaxQuantity
   }
 }) as Story;
 

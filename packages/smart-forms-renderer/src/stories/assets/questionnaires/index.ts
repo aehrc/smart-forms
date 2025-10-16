@@ -15,29 +15,21 @@
  * limitations under the License.
  */
 
-export * from './QBoolean';
-export * from './QDecimal';
 export * from './QDate';
 export * from './QDateTime';
 export * from './QTime';
 
-export * from './QUrl';
-export * from './QChoice';
-export * from './QOpenChoice';
-export * from './QAttachment';
-export * from './QReference';
-export * from './QAdvancedAdditionalDisplayContent';
-export * from './QAdvancedControlAppearance';
-export * from './QAdvancedOther';
-export * from './QAdvancedTextApperance';
+export * from './QRenderingAdditionalDisplayContent';
+export * from './QRenderingControlAppearance';
+export * from './QRenderingOther';
+export * from './QRenderingTextAppearance';
 export * from './QBehaviorCalculations';
 export * from './QBehaviorChoiceRestriction';
-export * from './QBehaviorOther';
+export * from './QBehaviorOtherControl';
 export * from './QBehaviorValueConstraints';
 export * from './QItemControlDisplay';
 export * from './QItemControlGroup';
 export * from './QItemControlQuestion';
-export * from './QTerminologyControl';
 export * from './QGroupHideAddItemButton';
 export * from './QQuestionnaireItemTextHidden';
 export * from './QRepopulatableExtension';

@@ -28,11 +28,11 @@ export const qLaunchContext: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to the <strong>Form Population</strong> section for the usage of launch context.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to section <strong>12 Form Population</strong> for usage on launchContext.</p></div>'
           }
         ]
       },
-      text: 'Please refer to the Form Population section for the usage of launch context.',
+      text: 'Please refer to section 12 Form Population for usage on launchContext.',
       type: 'display',
       repeats: false
     }
@@ -50,11 +50,11 @@ export const qVariable: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to the <strong>Calculated Expression</strong> examples above or the <strong>Form Population</strong> section for the usage of variables.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to the <strong>Calculated Expression</strong> examples above or section <strong>12 Form Population</strong> for usage on variables.</p></div>'
           }
         ]
       },
-      text: 'Please refer to the Calculated Expression examples above or the Form Population section for the usage of variables.',
+      text: 'Please refer to the Calculated Expression examples above or section 12 Form Population section for usage on variables.',
       type: 'display',
       repeats: false
     }
@@ -72,11 +72,11 @@ export const qInitialExpression: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to the <strong>Form Population</strong> section for the usage of initial expressions.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to section <strong>12 Form Population</strong> for usage on initialExpressions.</p></div>'
           }
         ]
       },
-      text: 'Please refer to the Form Population section for the usage of initial expressions.',
+      text: 'Please refer to section 12 Form Population for usage on initialExpressions.',
       type: 'display',
       repeats: false
     }
@@ -287,7 +287,7 @@ export const qCalculatedExpressionCvdRiskCalculator: Questionnaire = {
               {
                 url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
                 valueString:
-                  '<div xmlns="http://www.w3.org/1999/xhtml">\r\n        <b><p>NOTE: The Australian guideline for assessing and managing cardiovascular disease risk recommends the use of the online <a href="https://www.cvdcheck.org.au/calculator" target="_blank">Australian CVD risk calculator</a>.</p></b>\r\n    The calculator below should only be used for technology demonstration purposes.</p>\r\n</div>'
+                  '<div xmlns="http://www.w3.org/1999/xhtml">\r\n        <b><p>NOTE: The Australian guideline for assessing and managing cardiovascular disease risk recommends the use of the online <a href="https://www.cvdcheck.org.au/calculator" target="_blank">Australian CVD risk calculator</a>.</p></b>\r\n    <span style="color: red">The calculator below should only be used for technology demonstration purposes.</span></p>\r\n</div>'
               }
             ]
           },

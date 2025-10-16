@@ -30,11 +30,11 @@ export const qAnswerOption: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n Please refer to the <strong>Advanced Control Appearance - Item Control Question</strong> section for the full list of answerOption examples.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n Please refer to section <strong>9.1.2 Rendering > Control Appearance - itemControl Question</strong> for the full list of answerOption examples.</p></div>'
           }
         ]
       },
-      text: 'Please refer to the Advanced Control Appearance - Item Control Question section for the full list of answerOption examples.',
+      text: 'Please refer to section 9.1.2 Rendering > Control Appearance - itemControl Question for the full list of answerOption examples.',
       type: 'display',
       repeats: false
     },
@@ -107,11 +107,11 @@ export const qAnswerValueSet: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to the <strong>Advanced Control Appearance - Item Control Question</strong> section for the full list of answerValueSet examples.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to section <strong>9.1.2 Rendering > Control Appearance - itemControl Question</strong> for the full list of answerValueSet examples.</p></div>'
           }
         ]
       },
-      text: 'Please refer to the Advanced Control Appearance - Item Control Question section for the full list of answerValueSet examples.',
+      text: 'Please refer to section 9.1.2 Rendering > Control Appearance - itemControl Question for the full list of answerValueSet examples.',
       type: 'display',
       repeats: false
     },
@@ -719,11 +719,11 @@ export const qRequiredDuplicate: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to the <strong>Advanced Form Rendering - Other</strong> section for the full list of required examples.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to section <strong>9.1.4 Rendering > Other</strong> for examples on required.</p></div>'
           }
         ]
       },
-      text: 'Please refer to the Advanced Form Rendering - Other section for the full list of required examples.',
+      text: 'Please refer to section 9.1.4 Rendering > Other for examples on required.',
       type: 'display',
       repeats: false
     }
@@ -741,11 +741,11 @@ export const qRepeatsDuplicate: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to the <strong>Advanced Form Rendering - Other</strong> section for the full list of repeats examples.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to section <strong>9.1.4 Rendering > Other</strong> for examples on repeats.</p></div>'
           }
         ]
       },
-      text: 'Please refer to the Advanced Form Rendering - Other section for the full list of repeats examples.',
+      text: 'Please refer to section 9.1.4 Rendering > Other for examples on repeats.',
       type: 'display',
       repeats: false
     }
@@ -763,11 +763,33 @@ export const qReadOnlyDuplicate: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to the <strong>Advanced Form Rendering - Other</strong> section for the full list of readOnly examples.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to section <strong>9.1.4 Rendering > Other</strong> for examples on readOnly.</p></div>'
           }
         ]
       },
-      text: 'Please refer to the Advanced Form Rendering - Other section for the full list of readOnly examples.',
+      text: 'Please refer to section 9.1.4 Rendering > Other for examples on readOnly.',
+      type: 'display',
+      repeats: false
+    }
+  ]
+};
+
+export const qUnitOptionDuplicate: Questionnaire = {
+  resourceType: 'Questionnaire',
+  status: 'draft',
+  item: [
+    {
+      linkId: 'unit-option-instructions',
+      _text: {
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
+            valueString:
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to section <strong>Item Type > Quantity</strong> for examples on unitOption.</p></div>'
+          }
+        ]
+      },
+      text: 'Please refer to section Item Type > Quantity for examples on unitOption.',
       type: 'display',
       repeats: false
     }

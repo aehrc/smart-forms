@@ -18,20 +18,19 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
-  qChoiceOrientation,
-  qCollapsibleGroupDefaultClosed,
-  qCollapsibleGroupDefaultOpen,
-  qCollapsibleGroupNested,
-  qCollapsibleSingleDefaultClosed,
-  qCollapsibleSingleDefaultOpen,
-  qItemControl,
-  qSliderStepValue
+  qPreferredTerminologyServer,
+  qReadOnly,
+  qRepeatsAutocomplete,
+  qRepeatsCheckbox,
+  qRepeatsGroup,
+  qRepeatsGroupNested,
+  qRequired
 } from '../assets/questionnaires';
 import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'SDC/8.1.2 Advanced Control Appearance',
+  title: 'SDC/9.1.4 Rendering > Other',
   component: BuildFormWrapperForStorybook,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []
@@ -42,50 +41,44 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const ItemControl: Story = createStory({
+export const Required: Story = createStory({
   args: {
-    questionnaire: qItemControl
+    questionnaire: qRequired
   }
 }) as Story;
 
-export const ChoiceOrientation: Story = createStory({
+export const RepeatsAutocomplete: Story = createStory({
   args: {
-    questionnaire: qChoiceOrientation
+    questionnaire: qRepeatsAutocomplete
   }
 }) as Story;
 
-export const SliderStepValue: Story = createStory({
+export const RepeatsCheckbox: Story = createStory({
   args: {
-    questionnaire: qSliderStepValue
+    questionnaire: qRepeatsCheckbox
   }
 }) as Story;
 
-export const CollapsibleSingleDefaultOpen: Story = createStory({
+export const RepeatsGroup: Story = createStory({
   args: {
-    questionnaire: qCollapsibleSingleDefaultOpen
+    questionnaire: qRepeatsGroup
   }
 }) as Story;
 
-export const CollapsibleSingleDefaultClosed: Story = createStory({
+export const RepeatsGroupNested: Story = createStory({
   args: {
-    questionnaire: qCollapsibleSingleDefaultClosed
+    questionnaire: qRepeatsGroupNested
   }
 }) as Story;
 
-export const CollapsibleGroupDefaultOpen: Story = createStory({
+export const ReadOnly: Story = createStory({
   args: {
-    questionnaire: qCollapsibleGroupDefaultOpen
+    questionnaire: qReadOnly
   }
 }) as Story;
 
-export const CollapsibleGroupDefaultClosed: Story = createStory({
+export const PreferredTerminologyServer: Story = createStory({
   args: {
-    questionnaire: qCollapsibleGroupDefaultClosed
-  }
-}) as Story;
-
-export const CollapsibleGroupNested: Story = createStory({
-  args: {
-    questionnaire: qCollapsibleGroupNested
+    questionnaire: qPreferredTerminologyServer
   }
 }) as Story;
