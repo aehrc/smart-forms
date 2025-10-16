@@ -14,15 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { qPreferredTerminologyServer } from '../assets/questionnaires';
 import { createStory } from '../storybookWrappers/createStory';
+import {
+  qGroupHideAddItemButton,
+  qInitialExpressionRepopulatable,
+  qItemControlDisplayContextDisplay,
+  qQuestionnaireItemTextHidden,
+  qrGroupHideAddItemButton
+} from '../assets/questionnaires/QCustomExtensions';
+import { mockFhirClient } from '../assets/fhirClient/mockFhirClient';
+import { patSmartForm } from '../assets/patients/PatSmartForm';
+import { pracPrimaryPeter } from '../assets/practitioners/PracPrimaryPeter';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'SDC/Other Extensions',
+  title: 'Custom/CustomExtensions',
   component: BuildFormWrapperForStorybook,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []
@@ -33,8 +41,30 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const PreferredTerminologyServer: Story = createStory({
+export const CustomContextDisplay: Story = createStory({
   args: {
-    questionnaire: qPreferredTerminologyServer
+    questionnaire: qItemControlDisplayContextDisplay
+  }
+}) as Story;
+
+export const QuestionnaireItemTextHidden: Story = createStory({
+  args: {
+    questionnaire: qQuestionnaireItemTextHidden
+  }
+}) as Story;
+
+export const GroupHideAddItemButton: Story = createStory({
+  args: {
+    questionnaire: qGroupHideAddItemButton,
+    questionnaireResponse: qrGroupHideAddItemButton
+  }
+}) as Story;
+
+export const InitialExpressionRepopulatable: Story = createStory({
+  args: {
+    questionnaire: qInitialExpressionRepopulatable,
+    fhirClient: mockFhirClient,
+    patient: patSmartForm,
+    user: pracPrimaryPeter
   }
 }) as Story;

@@ -78,8 +78,8 @@ const preview: Preview = {
       storySort: (a, b) => {
         const getFolder = (id) => id.split('-')[0].toLowerCase();
 
-        // Enforce folder sequence: itemtype, SDC, testing
-        const folderOrder = ['itemtype', 'sdc', 'testing'];
+        // Enforce folder sequence: itemtype, SDC, custom, testing
+        const folderOrder = ['itemtype', 'sdc', 'custom', 'testing'];
         const aFolderIndex = folderOrder.indexOf(getFolder(a.id));
         const bFolderIndex = folderOrder.indexOf(getFolder(b.id));
         if (aFolderIndex !== bFolderIndex) {

@@ -18,7 +18,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
-  qItemControlDisplayContextDisplay,
   qItemControlDisplayFlyover,
   qItemControlDisplayLowerAndUpper,
   qItemControlDisplayPrompt,
@@ -60,11 +59,5 @@ export const LowerAndUpper: Story = createStory({
 export const Flyover: Story = createStory({
   args: {
     questionnaire: qItemControlDisplayFlyover
-  }
-}) as Story;
-
-export const CustomContextDisplay: Story = createStory({
-  args: {
-    questionnaire: qItemControlDisplayContextDisplay
   }
 }) as Story;

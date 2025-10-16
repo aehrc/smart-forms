@@ -246,6 +246,12 @@ This is not something on our radar at the moment :(
 
 Smart Forms includes several custom extensions that provide additional functionality beyond the standard SDC extensions.
 
+[//]: # (Add docs link to custom extensions)
+
+### Context Display itemControl
+
+Should be used with a tab-container. Display item is rendered as a contextual piece of visual information i.e icon/emoji on the tab and the currently displayed tab section's header.
+
 ### Questionnaire Item Text Hidden
 
 - [x] [QuestionnaireItemTextHidden](https://build.fhir.org/ig/aehrc/smart-forms-ig/branches/master/StructureDefinition-QuestionnaireItemTextHidden.html)

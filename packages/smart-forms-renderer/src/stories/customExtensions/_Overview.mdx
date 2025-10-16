@@ -1,0 +1,33 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Custom/Overview" />
+
+# Custom Extensions
+
+Smart Forms includes several custom extensions that provide additional functionality beyond the standard SDC extensions.
+
+### Context Display itemControl
+
+Should be used with a tab-container. Display item is rendered as a contextual piece of visual information i.e icon/emoji on the tab and the currently displayed tab section's header.
+
+### Questionnaire Item Text Hidden
+
+- [QuestionnaireItemTextHidden](https://build.fhir.org/ig/aehrc/smart-forms-ig/branches/master/StructureDefinition-QuestionnaireItemTextHidden.html)
+
+Allows hiding the text label of questionnaire items from the UI. Useful for internal fields that don't need user-facing labels.
+
+### Group Hide Add Item Button
+
+- [GroupHideAddItemButton](https://build.fhir.org/ig/aehrc/smart-forms-ig/branches/master/StructureDefinition-GroupHideAddItemButton.html)
+
+Allows hiding the "Add Item" button for repeating groups and group tables. Useful for static tables where users shouldn't be allowed to add new rows.
+
+### Questionnaire Initial Expression Repopulatable
+
+- [questionnaire-initialExpression-repopulatable](https://build.fhir.org/ig/aehrc/smart-forms-ig/branches/master/StructureDefinition-questionnaire-initialExpression-repopulatable.html)
+
+Adds a field button to allow individual fields to be manually repopulated with fresh data from the FHIR server. Provides granular control over data synchronization without affecting the entire form.
+
+To use this custom extension, you need to explicitly set a fhirClient + patient + user (encounter is optional) in the `SmartConfig` store. This allows you to pass SMART App Launch contexts into the form renderer.
+Example implementation: [BuildFormWrapperForStorybook](https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/storybookWrappers/BuildFormWrapperForStorybook.tsx)
+

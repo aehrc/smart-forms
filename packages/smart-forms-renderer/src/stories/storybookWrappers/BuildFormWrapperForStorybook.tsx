@@ -16,8 +16,8 @@
  */
 
 // @ts-ignore
-import React from 'react';
-import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import React, { useEffect } from 'react';
+import type { Patient, Practitioner, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { BaseRenderer } from '../../components';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { useBuildForm } from '../../hooks';
@@ -30,16 +30,41 @@ import './iframeResizerChild';
 import RendererThemeProvider from '../../theme/RendererThemeProvider';
 import CopyButtonsForStorybook from './CopyButtonsForStorybook';
 import ActionBarForStorybook from './ActionBarForStorybook';
+import { useSmartConfigStore } from '../../stores';
+import type Client from 'fhirclient/lib/Client';
 
 interface BuildFormWrapperForStorybookProps {
   questionnaire: Questionnaire;
   questionnaireResponse?: QuestionnaireResponse;
+  fhirClient?: Client;
+  patient?: Patient;
+  user?: Practitioner;
 }
 
 function BuildFormWrapperForStorybook(props: BuildFormWrapperForStorybookProps) {
-  const { questionnaire, questionnaireResponse } = props;
+  const { questionnaire, questionnaireResponse, fhirClient, patient, user } = props;
+
+  // If a fhirClient is provided, set it in the store so that it can be used by InitialExpressionRepopulatable button
+  const setClient = useSmartConfigStore.use.setClient();
+  const setPatient = useSmartConfigStore.use.setPatient();
+  const setUser = useSmartConfigStore.use.setUser();
+
+  useEffect(() => {
+    if (fhirClient) {
+      setClient(fhirClient);
+    }
+
+    if (patient) {
+      setPatient(patient);
+    }
+
+    if (user) {
+      setUser(user);
+    }
+  }, [fhirClient, patient, setClient, setPatient, setUser, user]);
 
   const queryClient = useRendererQueryClient();
+
   const isBuilding = useBuildForm({
     questionnaire,
     questionnaireResponse,
