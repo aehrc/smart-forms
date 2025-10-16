@@ -37,14 +37,13 @@ type Story = StoryObj<typeof meta>;
 
 /* Attachment Basic story */
 const targetLinkId = 'file-attachment';
-const targetText = 'File Attachment';
 
 const qAttachmentBasic = questionnaireFactory([
   {
     linkId: targetLinkId,
     type: 'attachment',
     repeats: false,
-    text: targetText
+    text: 'File Attachment'
   }
 ]);
 

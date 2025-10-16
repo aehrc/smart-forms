@@ -44,22 +44,21 @@ type Story = StoryObj<typeof meta>;
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
 /* Boolean Basic story */
-const targetText = 'Have you eaten yet?';
 const targetLinkId = 'eaten';
 
-const basicQuestionnaire = questionnaireFactory([
+const qBooleanBasic = questionnaireFactory([
   {
     linkId: targetLinkId,
     type: 'boolean',
     repeats: false,
-    text: targetText
+    text: 'Have you eaten yet?'
   }
 ]);
 
-const basicQuestionnaireResponse = questionnaireResponseFactory([
+const qrBooleanBasicResponse = questionnaireResponseFactory([
   {
     linkId: targetLinkId,
-    text: targetText,
+    text: 'Have you eaten yet?',
     answer: [
       {
         valueBoolean: true
@@ -70,7 +69,7 @@ const basicQuestionnaireResponse = questionnaireResponseFactory([
 
 export const BooleanBasic: Story = createStory({
   args: {
-    questionnaire: basicQuestionnaire
+    questionnaire: qBooleanBasic
   },
   play: async ({ canvasElement }) => {
     await checkRadioOption(canvasElement, targetLinkId, 'Yes');
@@ -96,8 +95,8 @@ export const BooleanBasic: Story = createStory({
 
 export const BooleanBasicResponse: Story = createStory({
   args: {
-    questionnaire: basicQuestionnaire,
-    questionnaireResponse: basicQuestionnaireResponse
+    questionnaire: qBooleanBasic,
+    questionnaireResponse: qrBooleanBasicResponse
   },
   play: async ({ canvasElement }) => {
     const inputText = await getInputText(canvasElement, targetLinkId);

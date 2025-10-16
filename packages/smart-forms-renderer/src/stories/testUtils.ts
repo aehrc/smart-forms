@@ -24,14 +24,16 @@ export async function getQuantityTextValues(
   // Error section
   if (!quantityComparator) {
     throw new Error(
-      `File input was not found inside [data-test="q-item-quantity-comparator"] block`
+      `Comparator input was not found inside [data-test="q-item-quantity-comparator"] block`
     );
   }
   if (!quantityInput) {
-    throw new Error(`File input was not found inside [data-test="q-item-quantity-field"] block`);
+    throw new Error(
+      `Quantity Input was not found inside [data-test="q-item-quantity-field"] block`
+    );
   }
   if (!quantityUnit && unit) {
-    throw new Error(`File input was not found inside [data-test="q-item-unit-field"] block`);
+    throw new Error(`Unit input was not found inside [data-test="q-item-unit-field"] block`);
   }
 
   return {
@@ -70,18 +72,20 @@ export async function inputQuantity(
   }
 
   if (comparator && comparatorInput) {
-    fireEvent.focus(comparatorInput);
-    fireEvent.keyDown(comparatorInput, { key: 'ArrowDown', code: 'ArrowDown' });
+    await fireEvent.focus(comparatorInput);
+    await fireEvent.keyDown(comparatorInput, { key: 'ArrowDown', code: 'ArrowDown' });
     const option = await screen.findByText(comparator);
-    fireEvent.click(option);
+    await fireEvent.click(option);
   }
+
   if (unit && unitInput) {
-    fireEvent.focus(unitInput);
-    fireEvent.keyDown(unitInput, { key: 'ArrowDown', code: 'ArrowDown' });
+    await fireEvent.focus(unitInput);
+    await fireEvent.keyDown(unitInput, { key: 'ArrowDown', code: 'ArrowDown' });
     const option = await screen.findByText(unit);
-    fireEvent.click(option);
+    await fireEvent.click(option);
   }
-  fireEvent.change(quantityInput, { target: { value: quantity } });
+
+  await fireEvent.change(quantityInput, { target: { value: quantity } });
 
   // Here we await for debounced store update
   await new Promise((resolve) => setTimeout(resolve, 500));

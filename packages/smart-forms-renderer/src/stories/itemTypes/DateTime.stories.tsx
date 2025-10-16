@@ -43,16 +43,17 @@ type Story = StoryObj<typeof meta>;
 
 /* DateTime Basic story */
 const targetLinkId = 'dob';
-const targetText = 'Datetime of birth';
-const targetDateTextWithoutTZ = '1990-01-01T13:15:00';
-const targetDate = '01/01/1990';
+const targetValueDateTimeWithoutTZ = '1990-01-01T13:15:00';
+const targetDateInput = '01/01/1990';
+const targetTimeInput = '01:15';
+const targetAMPMInput = 'PM';
 
 const qDateTimeBasic = questionnaireFactory([
   {
     linkId: targetLinkId,
     type: 'dateTime',
     repeats: false,
-    text: targetText
+    text: 'Datetime of birth'
   }
 ]);
 const qrDateTimeBasicResponse = questionnaireResponseFactory([
@@ -71,7 +72,13 @@ export const DateTimeBasic: Story = createStory({
     questionnaire: qDateTimeBasic
   },
   play: async ({ canvasElement }) => {
-    await inputDateTime(canvasElement, targetLinkId, targetDate, '01:15', 'PM');
+    await inputDateTime(
+      canvasElement,
+      targetLinkId,
+      targetDateInput,
+      targetTimeInput,
+      targetAMPMInput
+    );
 
     const result = await getAnswers(targetLinkId);
 
@@ -80,7 +87,7 @@ export const DateTimeBasic: Story = createStory({
     // Taking into account timezone
     expect(result[0]).toEqual(
       expect.objectContaining({
-        valueDateTime: expect.stringContaining(targetDateTextWithoutTZ)
+        valueDateTime: expect.stringContaining(targetValueDateTimeWithoutTZ)
       })
     );
 
@@ -96,6 +103,6 @@ export const DateTimeBasicResponse: Story = createStory({
   play: async ({ canvasElement }) => {
     const input = await getInputText(canvasElement, targetLinkId);
 
-    expect(input).toBe('01/01/1990');
+    expect(input).toBe(targetDateInput);
   }
 }) as Story;

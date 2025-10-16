@@ -44,16 +44,14 @@ type Story = StoryObj<typeof meta>;
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
 /* Open Choice AnswerOption Basic story */
-const clinicCoding = {
+const aoTargetLinkId = 'health-check-location';
+const aoTargetValueCoding = {
   system: 'http://snomed.info/sct',
   code: '257585005',
   display: 'Clinic'
 };
-const targetText = 'Pharmacy';
-
-const targetOtherLinkId = 'q-item-radio-open-label-box';
-const otherVariantLinkId = 'Other, please specify:';
-const otherTargetText = 'Other variant text';
+const aoTargetOpenLabelField = 'q-item-radio-open-label-box';
+const aoTargetOpenLabelInput = 'Pharmacy';
 
 const qOpenChoiceAnswerOptionBasic = questionnaireFactory([
   {
@@ -90,14 +88,13 @@ const qOpenChoiceAnswerOptionBasic = questionnaireFactory([
   }
 ]);
 
-const locationTargetLinkId = 'health-check-location';
 const qrOpenChoiceAnswerOptionBasicResponse = questionnaireResponseFactory([
   {
-    linkId: locationTargetLinkId,
+    linkId: aoTargetLinkId,
     text: 'Location of health check',
     answer: [
       {
-        valueString: targetText
+        valueString: aoTargetOpenLabelInput
       }
     ]
   }
@@ -109,11 +106,11 @@ export const OpenChoiceAnswerOptionBasic: Story = createStory({
   },
   play: async ({ canvasElement }) => {
     /* Test 1: Select the "Clinic" option */
-    await checkRadioOption(canvasElement, locationTargetLinkId, clinicCoding.display);
+    await checkRadioOption(canvasElement, aoTargetLinkId, aoTargetValueCoding.display);
 
-    const result1 = await getAnswers(locationTargetLinkId);
+    const result1 = await getAnswers(aoTargetLinkId);
     expect(result1).toHaveLength(1);
-    expect(result1[0]).toEqual(expect.objectContaining({ valueCoding: clinicCoding }));
+    expect(result1[0]).toEqual(expect.objectContaining({ valueCoding: aoTargetValueCoding }));
 
     // Clear value
     const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
@@ -121,20 +118,20 @@ export const OpenChoiceAnswerOptionBasic: Story = createStory({
 
     // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
-    const resultAfterClear1 = await getAnswers(locationTargetLinkId);
+    const resultAfterClear1 = await getAnswers(aoTargetLinkId);
     expect(resultAfterClear1).toHaveLength(0);
-    const elementAfterClear = await findByLinkIdOrLabel(canvasElement, locationTargetLinkId);
+    const elementAfterClear = await findByLinkIdOrLabel(canvasElement, aoTargetLinkId);
     const input1 = elementAfterClear.querySelector('input');
 
     expect(input1).not.toBeChecked();
 
-    /* Test 2: Select the "Clinic" option */
-    await checkRadioOption(canvasElement, locationTargetLinkId, otherVariantLinkId);
-    await inputOpenChoiceOtherText(canvasElement, locationTargetLinkId, otherTargetText);
+    /* Test 2: Enter "Pharmacy" in open label field */
+    await checkRadioOption(canvasElement, aoTargetLinkId, 'Other, please specify:');
+    await inputOpenChoiceOtherText(canvasElement, aoTargetLinkId, aoTargetOpenLabelInput);
 
-    const result2 = await getAnswers(locationTargetLinkId);
+    const result2 = await getAnswers(aoTargetLinkId);
     expect(result2).toHaveLength(1);
-    expect(result2[0]).toEqual(expect.objectContaining({ valueString: otherTargetText }));
+    expect(result2[0]).toEqual(expect.objectContaining({ valueString: aoTargetOpenLabelInput }));
 
     // Clear
     const button = canvasElement.querySelector('button[aria-label="Clear"]');
@@ -142,10 +139,10 @@ export const OpenChoiceAnswerOptionBasic: Story = createStory({
 
     // Await debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
-    const qrAfterClear = await getAnswers(targetOtherLinkId);
+    const qrAfterClear = await getAnswers(aoTargetOpenLabelField);
     expect(qrAfterClear).toHaveLength(0);
 
-    const resultAfterClear2 = await findByLinkIdOrLabel(canvasElement, locationTargetLinkId);
+    const resultAfterClear2 = await findByLinkIdOrLabel(canvasElement, aoTargetLinkId);
     const input2 = resultAfterClear2.querySelector('textarea');
     expect(input2?.value).toBe('');
   }
@@ -157,12 +154,13 @@ export const OpenChoiceAnswerOptionBasicResponse: Story = createStory({
     questionnaireResponse: qrOpenChoiceAnswerOptionBasicResponse
   },
   play: async () => {
-    expect(screen.getByText(targetText)).toBeDefined();
+    expect(screen.getByText(aoTargetOpenLabelInput)).toBeDefined();
   }
 }) as Story;
 
 /* Open Choice AnswerValueSet Basic story */
-const stateTargetLinkId = 'state';
+const avsTargetLinkId = 'state';
+const avsTargetOpenLabelInput = 'Branbendurg';
 
 const qOpenChoiceAnswerValueSetBasic = questionnaireFactory([
   {
@@ -173,7 +171,7 @@ const qOpenChoiceAnswerValueSetBasic = questionnaireFactory([
         valueString: 'Overseas state, please specify'
       }
     ],
-    linkId: stateTargetLinkId,
+    linkId: avsTargetLinkId,
     text: 'State',
     type: 'open-choice',
     repeats: false,
@@ -188,14 +186,13 @@ export const OpenChoiceAnswerValueSetBasic: Story = createStory({
   }
 }) as Story;
 
-const valueSetText = 'Branbendurg';
 const qrOpenChoiceAnswerValueSetBasicResponse = questionnaireResponseFactory([
   {
-    linkId: stateTargetLinkId,
+    linkId: avsTargetLinkId,
     text: 'State',
     answer: [
       {
-        valueString: valueSetText
+        valueString: avsTargetOpenLabelInput
       }
     ]
   }
@@ -207,11 +204,11 @@ export const OpenChoiceAnswerValueSetBasicResponse: Story = createStory({
     questionnaireResponse: qrOpenChoiceAnswerValueSetBasicResponse
   },
   play: async ({ canvasElement }) => {
-    const element = await findByLinkIdOrLabel(canvasElement, stateTargetLinkId);
+    const element = await findByLinkIdOrLabel(canvasElement, avsTargetLinkId);
     const input = element.querySelector(
       'div[data-test="q-item-radio-open-label-box"] textarea'
     ) as HTMLTextAreaElement;
 
-    expect(input?.value).toBe(valueSetText);
+    expect(input?.value).toBe(avsTargetOpenLabelInput);
   }
 }) as Story;

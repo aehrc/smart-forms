@@ -36,14 +36,13 @@ type Story = StoryObj<typeof meta>;
 
 /* Reference Basic story */
 const targetLinkId = 'patient-reference';
-const targetText = 'Patient Reference';
 
 const qReferenceBasic = questionnaireFactory([
   {
     linkId: targetLinkId,
     type: 'reference',
     repeats: false,
-    text: targetText
+    text: 'Patient Reference'
   }
 ]);
 
