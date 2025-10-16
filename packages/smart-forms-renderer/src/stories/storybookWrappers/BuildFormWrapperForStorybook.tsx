@@ -28,6 +28,8 @@ import './TestCssSheet.css';
 // iframeResizerChild.js needs to be called at least once in the used storybook wrappers to be included in storybook-static
 import './iframeResizerChild';
 import RendererThemeProvider from '../../theme/RendererThemeProvider';
+import CopyButtonsForStorybook from './CopyButtonsForStorybook';
+import ActionBarForStorybook from './ActionBarForStorybook';
 
 interface BuildFormWrapperForStorybookProps {
   questionnaire: Questionnaire;
@@ -51,6 +53,9 @@ function BuildFormWrapperForStorybook(props: BuildFormWrapperForStorybookProps) 
   return (
     <RendererThemeProvider>
       <QueryClientProvider client={queryClient}>
+        <ActionBarForStorybook>
+          <CopyButtonsForStorybook />
+        </ActionBarForStorybook>
         <BaseRenderer />
       </QueryClientProvider>
     </RendererThemeProvider>
