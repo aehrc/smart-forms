@@ -2,14 +2,7 @@ import type { Questionnaire } from 'fhir/r4';
 
 export const qRequired: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'Required',
-  name: 'Required',
-  title: 'Required',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/advanced/other/required',
   item: [
     {
       linkId: 'required-question',
@@ -23,14 +16,7 @@ export const qRequired: Questionnaire = {
 
 export const qRepeatsAutocomplete: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'RepeatsAutocomplete',
-  name: 'RepeatsAutocomplete',
-  title: 'Repeats Autocomplete',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/advanced/other/repeats-autocomplete',
   item: [
     {
       linkId: 'parent-container',
@@ -65,14 +51,7 @@ export const qRepeatsAutocomplete: Questionnaire = {
 
 export const qRepeatsCheckbox: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'RepeatsCheckbox',
-  name: 'RepeatsCheckbox',
-  title: 'Repeats Checkbox',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/advanced/other/repeats-checkbox',
   contained: [
     {
       resourceType: 'ValueSet',
@@ -241,14 +220,7 @@ export const qRepeatsCheckbox: Questionnaire = {
 
 export const qRepeatsGroup: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'RepeatsGroup',
-  name: 'RepeatsGroup',
-  title: 'Repeats Group',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/advanced/other/repeats-group',
   item: [
     {
       linkId: 'home-address-group',
@@ -316,14 +288,7 @@ export const qRepeatsGroup: Questionnaire = {
 
 export const qRepeatsGroupNested: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'RepeatsGroupNested',
-  name: 'RepeatsGroupNested',
-  title: 'Repeats Group with Nested Repeats',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/advanced/other/repeats-group-nested',
   item: [
     {
       linkId: 'restrictive-practice',
@@ -469,14 +434,7 @@ export const qRepeatsGroupNested: Questionnaire = {
 
 export const qReadOnly: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'ReadOnly',
-  name: 'ReadOnly',
-  title: 'Read Only Question',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/advanced/other/read-only',
   item: [
     {
       linkId: 'read-only',

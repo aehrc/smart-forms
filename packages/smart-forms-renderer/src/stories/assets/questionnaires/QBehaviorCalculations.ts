@@ -19,14 +19,7 @@ import type { Questionnaire } from 'fhir/r4';
 
 export const qLaunchContext: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'LaunchContext',
-  name: 'LaunchContext',
-  title: 'Launch Context',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/calculations/launch-context',
   item: [
     {
       linkId: 'launch-context-instructions',
@@ -48,14 +41,7 @@ export const qLaunchContext: Questionnaire = {
 
 export const qVariable: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'Variable',
-  name: 'Variable',
-  title: 'Variable',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/calculations/variable',
   item: [
     {
       linkId: 'variables-instructions',
@@ -77,14 +63,7 @@ export const qVariable: Questionnaire = {
 
 export const qInitialExpression: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'InitialExpression',
-  name: 'InitialExpression',
-  title: 'Initial Expression',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/choice-restrictions/initial-expression',
   item: [
     {
       linkId: 'initial-expression-instructions',
@@ -106,14 +85,7 @@ export const qInitialExpression: Questionnaire = {
 
 export const qCalculatedExpressionCvdRiskCalculator: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'CalculatedExpressionCvdRiskCalculator',
-  name: 'CalculatedExpressionCvdRiskCalculator',
-  title: 'Calculated Expression CVD Risk Calculator',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/choice-restrictions/calculated-expression-2',
   item: [
     {
       extension: [

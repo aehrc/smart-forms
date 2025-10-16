@@ -17,36 +17,9 @@
 
 import type { Questionnaire } from 'fhir/r4';
 
-export const qDisplayBasic: Questionnaire = {
-  resourceType: 'Questionnaire',
-  id: 'DisplayBasic',
-  name: 'DisplayBasic',
-  title: 'Display Basic',
-  version: '0.1.0',
-  status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/components/display/basic',
-  item: [
-    {
-      linkId: 'information-display',
-      type: 'display',
-      repeats: false,
-      text: 'You can use the display item to show information to the user.'
-    }
-  ]
-};
-
 export const qDisplayCalculationStyled: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'DisplayCalculationStyled',
-  name: 'DisplayCalculationStyled',
-  title: 'Display Calculation Styled',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/components/display/calculation-styled',
   extension: [
     {
       url: 'http://hl7.org/fhir/StructureDefinition/variable',

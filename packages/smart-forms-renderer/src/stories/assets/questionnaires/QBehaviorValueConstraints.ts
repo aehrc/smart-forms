@@ -22,14 +22,7 @@ import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 // MaxLength
 export const qMaxLength: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'MaxLength',
-  name: 'MaxLength',
-  title: 'Max Length',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/value-constraints/max-length',
   item: [
     {
       linkId: 'pensioner-card-number-empty',
@@ -84,14 +77,7 @@ export const qrMaxLength: QuestionnaireResponse = {
 // MinLength
 export const qMinLength: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'MinLength',
-  name: 'MinLength',
-  title: 'Min Length',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/value-constraints/min-length',
   item: [
     {
       extension: [
@@ -161,14 +147,7 @@ export const qrMinLength: QuestionnaireResponse = {
 // Regex
 export const qRegex: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'Regex',
-  name: 'Regex',
-  title: 'Regex',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/value-constraints/regex',
   item: [
     {
       extension: [
@@ -254,14 +233,7 @@ export const qrRegex: QuestionnaireResponse = {
 // TODO need to add more examples question (where type='date', 'dateTime', 'time', 'decimal', 'integer')
 export const qMinValue: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'MinValue',
-  name: 'MinValue',
-  title: 'Min Value',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/value-constraints/min-value',
   item: [
     {
       extension: [
@@ -331,14 +303,7 @@ export const qrMinValue: QuestionnaireResponse = {
 // MaxValue
 export const qMaxValue: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'MaxValueValidation',
-  name: 'MaxValueValidation',
-  title: 'Max Value Validation for Integer',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/value-constraints/max-value',
   item: [
     {
       extension: [
@@ -408,14 +373,7 @@ export const qrMaxValue: QuestionnaireResponse = {
 // MaxDecimalPlaces
 export const qMaxDecimalPlaces: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'MaxDecimalPlaces',
-  name: 'MaxDecimalPlaces',
-  title: 'Max Decimal Places',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/value-constraints/max-decimal-places',
   item: [
     {
       extension: [

@@ -19,14 +19,7 @@ import type { Questionnaire } from 'fhir/r4';
 
 export const qInitialExpressionBasic: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'InitialExpressionBasic',
-  name: 'InitialExpressionBasic',
-  title: 'Initial Expression Basic',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-15',
-  url: 'https://smartforms.csiro.au/docs/sdc/population/initial-expression-1',
   extension: [
     {
       url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext',
@@ -72,14 +65,7 @@ export const qInitialExpressionBasic: Questionnaire = {
 
 export const qCalculatedExpressionBMICalculatorPrepop: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'CalculatedExpressionBMICalculatorPrepop',
-  name: 'CalculatedExpressionBMICalculatorPrepop',
-  title: 'CalculatedExpression BMI Calculator - Pre-population',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-15',
-  url: 'https://smartforms.csiro.au/docs/sdc/population/calculated-expression-1',
   extension: [
     {
       url: 'http://hl7.org/fhir/StructureDefinition/variable',
@@ -223,14 +209,7 @@ export const qCalculatedExpressionBMICalculatorPrepop: Questionnaire = {
 
 export const qCalculatedExpressionCvdRiskCalculatorPrepop: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'CalculatedExpressionCvdRiskCalculatorPrepop',
-  name: 'CalculatedExpressionCvdRiskCalculatorPrepop',
-  title: 'Calculated Expression CVD Risk Calculator - Pre-population',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/sdc/population/calculated-expression-2',
   extension: [
     {
       url: 'http://hl7.org/fhir/StructureDefinition/variable',
@@ -820,14 +799,7 @@ export const qCalculatedExpressionCvdRiskCalculatorPrepop: Questionnaire = {
 
 export const qItemPopulationContextHomeAddress: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'ItemPopulationContextHomeAddress',
-  name: 'ItemPopulationContextHomeAddress',
-  title: 'ItemPopulationContext - Home Address',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/sdc/population/item-population-context-1',
   extension: [
     {
       url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext',
@@ -1003,14 +975,7 @@ export const qItemPopulationContextHomeAddress: Questionnaire = {
 
 export const qItemPopulationContextMedicalHistory: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'ItemPopulationContextMedicalHistory',
-  name: 'ItemPopulationContextMedicalHistory',
-  title: 'ItemPopulationContext - Medical History',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/sdc/population/item-population-context-2',
   extension: [
     {
       url: 'http://hl7.org/fhir/StructureDefinition/variable',
@@ -1186,14 +1151,7 @@ export const qItemPopulationContextMedicalHistory: Questionnaire = {
 
 export const qSourceQueriesBMICalculator: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'SourceQueriesBMICalculator',
-  name: 'SourceQueriesBMICalculator',
-  title: 'SourceQueries BMI Calculator',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-15',
-  url: 'https://smartforms.csiro.au/docs/sdc/population/source-queries',
   contained: [
     {
       resourceType: 'Bundle',

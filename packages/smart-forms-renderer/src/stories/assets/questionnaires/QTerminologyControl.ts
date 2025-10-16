@@ -19,14 +19,7 @@ import type { Questionnaire } from 'fhir/r4';
 
 export const qPreferredTerminologyServer: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'PreferredTerminologyServer',
-  name: 'PreferredTerminologyServer',
-  title: 'Preferred Terminology Server',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-10-08',
-  url: 'https://smartforms.csiro.au/docs/terminology/preferred-terminology-server',
   extension: [
     {
       url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-preferredTerminologyServer',

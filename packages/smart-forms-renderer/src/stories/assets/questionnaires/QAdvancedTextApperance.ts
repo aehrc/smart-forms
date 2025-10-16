@@ -2,14 +2,7 @@ import type { Questionnaire } from 'fhir/r4';
 
 export const qRenderingStyleBooleanItem: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'RenderingStyle-1',
-  name: 'RenderingStyle-1',
-  title: 'Rendering Style 1',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/advanced/text/rendering-style-1',
   item: [
     {
       linkId: 'mark-complete',
@@ -31,14 +24,7 @@ export const qRenderingStyleBooleanItem: Questionnaire = {
 
 export const qRenderingXhtmlBooleanItem: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'RenderingXhtml-1',
-  name: 'RenderingXhtml-1',
-  title: 'Rendering XHTML 1',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/advanced/text/rendering-xhtml-1',
   item: [
     {
       linkId: 'mark-complete',
@@ -77,14 +63,7 @@ export const qRenderingXhtmlBooleanItem: Questionnaire = {
 
 export const qRenderingXhtmlDisplayListItem: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'RenderingXhtml-2',
-  name: 'RenderingXhtml-2',
-  title: 'Rendering XHTML 2',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/advanced/text/rendering-xhtml-2',
   item: [
     {
       linkId: 'record-update-med-history',
@@ -105,14 +84,7 @@ export const qRenderingXhtmlDisplayListItem: Questionnaire = {
 
 export const qRenderingXhtmlDisplayBase64ImageItem: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'RenderingXhtml-3',
-  name: 'RenderingXhtml-3',
-  title: 'Rendering XHTML 3',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/advanced/text/rendering-xhtml-3',
   item: [
     {
       linkId: 'CD-in-progress-1',
@@ -133,14 +105,7 @@ export const qRenderingXhtmlDisplayBase64ImageItem: Questionnaire = {
 
 export const qDisplayCategoryInstructions: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'DisplayCategoryInstructions',
-  name: 'DisplayCategoryInstructions',
-  title: 'Display Category Instructions',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/advanced/text/display-category-1',
   item: [
     {
       linkId: 'eligible-health-check',
@@ -173,14 +138,7 @@ export const qDisplayCategoryInstructions: Questionnaire = {
 
 export const qOpenLabel: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'OpenLabel',
-  name: 'OpenLabel',
-  title: 'Open Label',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/advanced/text/open-label',
   item: [
     {
       extension: [
@@ -233,14 +191,7 @@ export const qOpenLabel: Questionnaire = {
 
 export const qHidden: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'Hidden',
-  name: 'Hidden',
-  title: 'Hidden',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/advanced/text/hidden',
   item: [
     {
       linkId: 'display-about',
@@ -263,14 +214,7 @@ export const qHidden: Questionnaire = {
 
 export const qRenderingXhtmlGroupPropagationNested: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'RenderingXhtmlGroupPropagation',
-  name: 'RenderingXhtmlGroupPropagation',
-  title: 'Rendering XHTML Group Propagation',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/advanced/text/rendering-xhtml-3',
   item: [
     {
       linkId: 'styled-group',
@@ -349,14 +293,7 @@ export const qRenderingXhtmlGroupPropagationNested: Questionnaire = {
 
 export const qRenderingXhtmlGroupPropagationInlineStyles: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'RenderingXhtmlGroupPropagationCalcExpression',
-  name: 'RenderingXhtmlGroupPropagationCalcExpression',
-  title: 'RenderingXhtmlGroupPropagationCalcExpression',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/advanced/text/rendering-xhtml-4',
   extension: [
     {
       url: 'http://hl7.org/fhir/StructureDefinition/variable',
@@ -435,14 +372,7 @@ export const qRenderingXhtmlGroupPropagationInlineStyles: Questionnaire = {
 
 export const qRenderingXhtmlGroupPropagationClassStyles: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'RenderingXhtmlGroupPropagationCalcExpression',
-  name: 'RenderingXhtmlGroupPropagationCalcExpression',
-  title: 'RenderingXhtmlGroupPropagationCalcExpression',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/advanced/text/rendering-xhtml-4',
   extension: [
     {
       url: 'http://hl7.org/fhir/StructureDefinition/variable',

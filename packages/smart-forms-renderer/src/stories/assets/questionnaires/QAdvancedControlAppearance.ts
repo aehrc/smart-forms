@@ -19,14 +19,7 @@ import type { Questionnaire } from 'fhir/r4';
 
 export const qItemControl: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'ItemControl',
-  name: 'ItemControl',
-  title: 'Item Control',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/advanced/control/item-control',
   item: [
     {
       linkId: 'item-control-instructions',
@@ -48,14 +41,7 @@ export const qItemControl: Questionnaire = {
 
 export const qChoiceOrientation: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'ChoiceOrientation',
-  name: 'ChoiceOrientation',
-  title: 'Choice Orientation',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-08',
-  url: 'https://smartforms.csiro.au/docs/advanced/control/choice-orientation',
   contained: [
     {
       resourceType: 'ValueSet',
@@ -212,14 +198,7 @@ export const qChoiceOrientation: Questionnaire = {
 
 export const qSliderStepValue: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'SliderStepValue',
-  name: 'SliderStepValue',
-  title: 'Slider Step Value',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-08',
-  url: 'https://smartforms.csiro.au/docs/advanced/control/slider-step-value',
   item: [
     {
       extension: [
@@ -295,14 +274,7 @@ export const qSliderStepValue: Questionnaire = {
 
 export const qCollapsibleSingleDefaultOpen: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'CollapsibleSingleDefaultOpen',
-  name: 'CollapsibleSingleDefaultOpen',
-  title: 'Collapsible Single - Default Open',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-08',
-  url: 'https://smartforms.csiro.au/docs/advanced/control/collapsible-single-1',
   contained: [
     {
       resourceType: 'ValueSet',
@@ -415,14 +387,7 @@ export const qCollapsibleSingleDefaultOpen: Questionnaire = {
 };
 export const qCollapsibleSingleDefaultClosed: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'CollapsibleSingleDefaultClosed',
-  name: 'CollapsibleSingleDefaultClosed',
-  title: 'Collapsible Single - Default Closed',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-08',
-  url: 'https://smartforms.csiro.au/docs/advanced/control/collapsible-single-2',
   contained: [
     {
       resourceType: 'ValueSet',
@@ -536,14 +501,7 @@ export const qCollapsibleSingleDefaultClosed: Questionnaire = {
 
 export const qCollapsibleGroupDefaultOpen: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'CollapsibleGroupDefaultOpen',
-  name: 'CollapsibleGroupDefaultOpen',
-  title: 'Collapsible Group - Default Open',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-08',
-  url: 'https://smartforms.csiro.au/docs/advanced/control/collapsible-group-1',
   item: [
     {
       extension: [
@@ -639,14 +597,7 @@ export const qCollapsibleGroupDefaultOpen: Questionnaire = {
 
 export const qCollapsibleGroupDefaultClosed: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'CollapsibleGroupDefaultClosed',
-  name: 'CollapsibleGroupDefaultClosed',
-  title: 'Collapsible Group - Default Closed',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-08',
-  url: 'https://smartforms.csiro.au/docs/advanced/control/collapsible-group-2',
   item: [
     {
       extension: [
@@ -742,14 +693,7 @@ export const qCollapsibleGroupDefaultClosed: Questionnaire = {
 
 export const qCollapsibleGroupNested: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'CollapsibleGroupNested',
-  name: 'CollapsibleGroupNested',
-  title: 'Collapsible Group - Nested',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-08',
-  url: 'https://smartforms.csiro.au/docs/advanced/control/collapsible-group-3',
   item: [
     {
       extension: [

@@ -19,13 +19,7 @@ import type { Questionnaire } from 'fhir/r4';
 
 export const qCqfExpressionBasic: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'CqfExpressionBasic',
-  name: 'CqfExpressionBasic',
-  title: 'Basic CQF Expression Demo',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  url: 'https://smartforms.csiro.au/docs/extensions/cqf-expression',
   item: [
     {
       linkId: 'patient-greeting',
@@ -105,13 +99,7 @@ export const qCqfExpressionBasic: Questionnaire = {
 
 export const qCqfExpressionAdvanced: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'CqfExpressionAdvanced',
-  name: 'CqfExpressionAdvanced',
-  title: 'Advanced CQF Expression Demo',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  url: 'https://smartforms.csiro.au/docs/extensions/cqf-expression',
   item: [
     {
       linkId: 'patient-info',

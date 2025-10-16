@@ -19,14 +19,7 @@ import type { Questionnaire } from 'fhir/r4';
 
 export const qParameterisedValueSetBasic: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'ParameterisedValueSetBasic',
-  name: 'ParameterisedValueSetBasic',
-  title: 'Parameterised ValueSet Basic - States',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2025-03-01',
-  url: 'https://smartforms.csiro.au/docs/pvs/basic',
   item: [
     {
       type: 'choice',
@@ -153,14 +146,7 @@ export const qParameterisedValueSetBasic: Questionnaire = {
 
 export const qParameterisedValueSetMultiple: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'ParameterisedValueSetMultiple',
-  name: 'ParameterisedValueSetMultiple',
-  title: 'Parameterised ValueSet Multiple Params - States',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2025-03-01',
-  url: 'https://smartforms.csiro.au/docs/pvs/multiple',
   item: [
     {
       type: 'choice',

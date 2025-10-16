@@ -19,13 +19,7 @@ import type { Questionnaire } from 'fhir/r4';
 
 export const qCqfExpressionSimple: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'CqfExpressionSimple',
-  name: 'CqfExpressionSimple',
-  title: 'Simple CQF Expression Test',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  url: 'https://smartforms.csiro.au/docs/extensions/cqf-expression',
   item: [
     {
       linkId: 'static-text',

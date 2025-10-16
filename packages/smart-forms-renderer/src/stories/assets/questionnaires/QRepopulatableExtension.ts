@@ -19,14 +19,7 @@ import type { Questionnaire } from 'fhir/r4';
 
 export const qRepopulatableExtension: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'RepopulatableExtension',
-  name: 'RepopulatableExtension',
-  title: 'Questionnaire Initial Expression Repopulatable Extension Demo',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2025-01-09',
-  url: 'https://smartforms.csiro.au/docs/custom-extension/questionnaire-initial-expression-repopulatable',
   extension: [
     {
       url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext',

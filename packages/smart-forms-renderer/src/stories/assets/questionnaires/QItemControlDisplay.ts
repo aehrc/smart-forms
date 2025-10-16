@@ -19,14 +19,7 @@ import type { Questionnaire } from 'fhir/r4';
 
 export const qItemControlDisplayPrompt: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'ItemControlDisplayPrompt',
-  name: 'ItemControlDisplayPrompt',
-  title: 'Item Control Display Prompt',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-15',
-  url: 'https://smartforms.csiro.au/docs/advanced/control/item-control-display-prompt',
   item: [
     {
       linkId: 'systolic-blood-pressure',
@@ -58,14 +51,7 @@ export const qItemControlDisplayPrompt: Questionnaire = {
 
 export const qItemControlDisplayUnit: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'ItemControlDisplayUnit',
-  name: 'ItemControlDisplayUnit',
-  title: 'Item Control Display Unit',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-15',
-  url: 'https://smartforms.csiro.au/docs/advanced/control/item-control-display-unit',
   item: [
     {
       linkId: 'height',
@@ -98,14 +84,7 @@ export const qItemControlDisplayUnit: Questionnaire = {
 
 export const qItemControlDisplayLowerAndUpper: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'ItemControlDisplayLowerAndUpper',
-  name: 'ItemControlDisplayLowerAndUpper',
-  title: 'Item Control Display Lower & Upper',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/advanced/control/item-control-display-lower-and-upper',
   item: [
     {
       extension: [
@@ -177,14 +156,7 @@ export const qItemControlDisplayLowerAndUpper: Questionnaire = {
 
 export const qItemControlDisplayFlyover: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'ItemControlDisplayFlyover',
-  name: 'ItemControlDisplayFlyover',
-  title: 'Item Control Display Flyover',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-15',
-  url: 'https://smartforms.csiro.au/docs/advanced/control/item-control-display-flyover',
   item: [
     {
       linkId: 'children-details',
@@ -244,14 +216,7 @@ export const qItemControlDisplayFlyover: Questionnaire = {
 
 export const qItemControlDisplayContextDisplay: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'ItemControlDisplayContextDisplay',
-  name: 'ItemControlDisplayContextDisplay',
-  title: 'Item Control Display Context Display',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-15',
-  url: 'https://smartforms.csiro.au/docs/advanced/control/item-control-display-context-display',
   item: [
     {
       extension: [

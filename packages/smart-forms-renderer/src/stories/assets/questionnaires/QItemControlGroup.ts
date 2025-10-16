@@ -2,14 +2,7 @@ import type { Questionnaire } from 'fhir/r4';
 
 export const qItemControlGroupGTableRepeats: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'ItemControlGroupGTableRepeats',
-  name: 'ItemControlGroupGTableRepeats',
-  title: 'Item Control Group GTable - Repeats',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/advanced/control/item-control-group-gtable-repeats',
   contained: [
     {
       resourceType: 'ValueSet',
@@ -226,14 +219,7 @@ export const qItemControlGroupGTableRepeats: Questionnaire = {
 
 export const qItemControlGroupGTableSingle: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'ItemControlGroupGTableSingle',
-  name: 'ItemControlGroupGTableSingle',
-  title: 'Item Control Group GTable - Single',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/advanced/control/item-control-group-gtable-single',
   contained: [
     {
       resourceType: 'ValueSet',
@@ -450,14 +436,7 @@ export const qItemControlGroupGTableSingle: Questionnaire = {
 
 export const qItemControlGroupGridSingleRow: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'ItemControlGroupGridSingleRow',
-  name: 'ItemControlGroupGridSingleRow',
-  title: 'Item Control Group Grid - Single Row',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/advanced/control/item-control-group-grid-1',
   item: [
     {
       linkId: 'parent-container',
@@ -538,14 +517,7 @@ export const qItemControlGroupGridSingleRow: Questionnaire = {
 
 export const qItemControlGroupGridMultiRow: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'ItemControlGroupGridMultiRow',
-  name: 'ItemControlGroupGridMultiRow',
-  title: 'Item Control Group Grid - Multi Row',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/advanced/control/item-control-group-grid-2',
   item: [
     {
       linkId: 'parent-container',
@@ -753,14 +725,7 @@ export const qItemControlGroupGridMultiRow: Questionnaire = {
 
 export const qItemControlDisplayTabContainer: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'ItemControlGroupTabContainer',
-  name: 'ItemControlGroupTabContainer',
-  title: 'Item Control Group Tab Container',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/advanced/control/item-control-group-tab-container',
   item: [
     {
       extension: [
@@ -858,14 +823,7 @@ export const qItemControlDisplayTabContainer: Questionnaire = {
 
 export const qItemControlGroupPage: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'ItemControlGroupPage',
-  name: 'ItemControlGroupPage',
-  title: 'Item Control Group Page',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-07-24',
-  url: 'https://smartforms.csiro.au/docs/advanced/control/item-control-group-page',
   item: [
     {
       linkId: '1',
@@ -982,14 +940,7 @@ export const qItemControlGroupPage: Questionnaire = {
 
 export const qItemControlGroupPageContainer: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'ItemControlGroupPage',
-  name: 'ItemControlGroupPage',
-  title: 'Item Control Group Page',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-07-24',
-  url: 'https://smartforms.csiro.au/docs/advanced/control/item-control-group-page',
   item: [
     {
       extension: [
@@ -1087,9 +1038,7 @@ export const qItemControlGroupPageContainer: Questionnaire = {
 
 export const qItemControlGroupPageNonTopLevelPageContainer: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'bit-of-everything',
   status: 'draft',
-  title: 'A bit of everything',
   subjectType: ['Patient', 'Person', 'Practitioner'],
   item: [
     {

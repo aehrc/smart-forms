@@ -19,14 +19,7 @@ import type { Questionnaire } from 'fhir/r4';
 
 export const qInitialSingle: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'InitialSingle',
-  name: 'InitialSingle',
-  title: 'Initial Single',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/other/initial-1',
   item: [
     {
       linkId: 'patient-age',
@@ -43,14 +36,7 @@ export const qInitialSingle: Questionnaire = {
 
 export const qInitialRepeats: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'InitialRepeats',
-  name: 'InitialRepeats',
-  title: 'Initial Repeats',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/other/initial-2',
   item: [
     {
       linkId: 'container',
@@ -116,14 +102,7 @@ export const qInitialRepeats: Questionnaire = {
 
 export const qEnableWhen: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'EnableWhen',
-  name: 'EnableWhen',
-  title: 'Enable When',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/other/enable-when',
   contained: [
     {
       resourceType: 'ValueSet',
@@ -317,13 +296,7 @@ export const qEnableWhen: Questionnaire = {
 
 export const qEnableWhenMultiCheckbox: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'EnableWhenMultiCheckbox',
-  name: 'EnableWhenMultiCheckbox',
-  title: 'EnableWhen Multi-select Checkbox',
-  version: '0.1.0',
   status: 'draft',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/other/enable-when-multi-checkbox',
   item: [
     {
       extension: [
@@ -409,14 +382,7 @@ export const qEnableWhenMultiCheckbox: Questionnaire = {
 
 export const qEnableBehaviorAll: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'EnableBehaviorAll',
-  name: 'EnableBehaviorAll',
-  title: 'Enable Behavior All',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/other/enable-behavior-all',
   item: [
     {
       linkId: 'has-heart-disease',
@@ -458,14 +424,7 @@ export const qEnableBehaviorAll: Questionnaire = {
 
 export const qEnableBehaviorAny: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'EnableBehaviorAny',
-  name: 'EnableBehaviorAny',
-  title: 'Enable Behavior Any',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/other/enable-behavior-any',
   item: [
     {
       extension: [
@@ -556,14 +515,7 @@ export const qEnableBehaviorAny: Questionnaire = {
 
 export const qEnableWhenExpressionSimple: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'EnableWhenExpressionSimple',
-  name: 'EnableWhenExpressionSimple',
-  title: 'Enable When Expression Simple Example',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/other/enable-when-expression-1',
   item: [
     {
       extension: [
@@ -943,14 +895,7 @@ export const qEnableWhenExpressionSimple: Questionnaire = {
 
 export const qEnableWhenExpressionTabs: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'EnableWhenExpressionTabs',
-  name: 'EnableWhenExpressionTabs',
-  title: 'Enable When Expression Tabs',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/other/enable-when-expression-2',
   item: [
     {
       extension: [
@@ -1207,14 +1152,7 @@ export const qEnableWhenExpressionTabs: Questionnaire = {
 
 export const qText: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'Text',
-  name: 'Text',
-  title: 'Text',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/other/text',
   item: [
     {
       linkId: 'text-normal',

@@ -19,14 +19,7 @@ import type { Questionnaire } from 'fhir/r4';
 
 export const qGroupHideAddItemButton: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'GroupHideAddItemButton',
-  name: 'GroupHideAddItemButton',
-  title: 'Group Hide Add Item Button Extension Demo',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2025-08-01',
-  url: 'https://smartforms.csiro.au/docs/custom-extension/group-hide-add-item-button',
   item: [
     {
       linkId: 'normal-repeat-group',

@@ -19,13 +19,7 @@ import type { Questionnaire } from 'fhir/r4';
 
 export const qQuestionnaireItemTextHidden: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'QuestionnaireItemTextHidden',
-  name: 'QuestionnaireItemTextHidden',
-  title: 'Questionnaire Item Text Hidden Extension Demo',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  url: 'https://smartforms.csiro.au/docs/extensions/questionnaire-item-text-hidden',
   item: [
     {
       linkId: 'patient-details',

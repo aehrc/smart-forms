@@ -21,14 +21,7 @@ import type { Questionnaire } from 'fhir/r4';
 
 export const qAnswerOption: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'AnswerOption',
-  name: 'AnswerOption',
-  title: 'Answer Option',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/choice-restrictions/answer-option',
   item: [
     {
       linkId: 'answer-option-instruction',
@@ -105,14 +98,7 @@ export const qAnswerOption: Questionnaire = {
 
 export const qAnswerValueSet: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'AnswerValueSet',
-  name: 'AnswerValueSet',
-  title: 'Answer Value Set',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/choice-restrictions/answer-value-set',
   item: [
     {
       linkId: 'answer-value-set-instructions',
@@ -154,14 +140,7 @@ export const qAnswerValueSet: Questionnaire = {
 
 export const qAnswerExpression: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'AnswerExpression',
-  name: 'AnswerExpression',
-  title: 'Answer Expression',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/choice-restrictions/answer-expression',
   item: [
     {
       extension: [
@@ -195,14 +174,7 @@ export const qAnswerExpression: Questionnaire = {
 
 export const qAnswerOptionToggleExpressionAnswerOption: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'AnswerOptionToggleExpressionAO',
-  name: 'AnswerOptionToggleExpressionAO',
-  title: 'AnswerOptionToggleExpression Answer Options',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/choice-restrictions/answer-option-toggle-expression-1',
   extension: [
     {
       url: 'http://hl7.org/fhir/StructureDefinition/variable',
@@ -462,14 +434,7 @@ export const qAnswerOptionToggleExpressionAnswerOption: Questionnaire = {
 
 export const qAnswerOptionToggleExpressionContained: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'AnswerOptionToggleExpressionContained',
-  name: 'AnswerOptionToggleExpressionContained',
-  title: 'AnswerOptionToggleExpressionContained',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/choice-restrictions/answer-option-toggle-expression-2',
   contained: [
     {
       resourceType: 'ValueSet',
@@ -745,14 +710,7 @@ export const qAnswerOptionToggleExpressionContained: Questionnaire = {
 
 export const qRequiredDuplicate: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'RequiredDuplicate',
-  name: 'RequiredDuplicate',
-  title: 'Required - Duplicate',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/choice-restrictions/required-duplicate',
   item: [
     {
       linkId: 'required-instructions',
@@ -774,14 +732,7 @@ export const qRequiredDuplicate: Questionnaire = {
 
 export const qRepeatsDuplicate: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'RepeatsDuplicate',
-  name: 'RepeatsDuplicate',
-  title: 'Repeats Duplicate',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/choice-restrictions/repeats-duplicate',
   item: [
     {
       linkId: 'repeats-instructions',
@@ -803,14 +754,7 @@ export const qRepeatsDuplicate: Questionnaire = {
 
 export const qReadOnlyDuplicate: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'ReadOnlyDuplicate',
-  name: 'ReadOnlyDuplicate',
-  title: 'Read-Only Duplicate',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/choice-restrictions/read-only-duplicate',
   item: [
     {
       linkId: 'read-only-instructions',
