@@ -7,11 +7,13 @@
     "prettier": "prettier --check .",
     "prettier-fix": "prettier --write .",
     "clean-folders": "find . -type d \\( -name \"node_modules\" -o -name \"dist\" -o -name \"lib\" \\) -exec rm -rf {} +",
-    "build-all-deps-first-run": "npm run build:sdc-assemble && npm run build:sdc-populate && npm run build:sdc-template-extract && npm run  build:smart-forms-renderer",
+    "build-all-deps-first-run": "npm run build:sdc-assemble && npm run build:sdc-populate && npm run build:sdc-template-extract && npm run  build:smart-forms-renderer && npm run build:testing-toolkit",
     "build:sdc-assemble": "cd packages/sdc-assemble && npm run build",
     "build:sdc-populate": "cd packages/sdc-populate && npm run build",
     "build:sdc-template-extract": "cd packages/sdc-template-extract && npm run build",
-    "build:smart-forms-renderer": "cd packages/smart-forms-renderer && npm run build"
+    "build:smart-forms-renderer": "cd packages/smart-forms-renderer && npm run build",
+    "build:testing-toolkit": "cd packages/testing-toolkit && npm run build"
+
   },
   "workspaces": [
     "apps/smart-forms-app",

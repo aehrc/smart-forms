@@ -45,7 +45,7 @@ const FormBodyTabListWrapper = memo(function FormBodyTabListWrapper(
   return (
     <Card sx={{ p: 0.75, mb: 2 }}>
       <Box sx={{ flexGrow: 1 }}>
-        <aside aria-label="Questionaire tab items">
+        <aside aria-label="Form sections">
           <PrimarySelectableList
             dense
             disablePadding
