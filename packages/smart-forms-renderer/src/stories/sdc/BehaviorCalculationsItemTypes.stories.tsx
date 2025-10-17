@@ -726,7 +726,7 @@ const qQuantityCalculation = questionnaireFactory(
     extension: [
       variableExtFactory(
         'durationInDays',
-        `(item.where(linkId='${quantityDaysTargetLinkId}').answer.value.value.toString() + ' days').toQuantity('h')`
+        `item.where(linkId='${quantityDaysTargetLinkId}').answer.value.value * 24`
       )
     ]
   }
@@ -744,8 +744,10 @@ export const QuantityCalculation: Story = createStory({
       expect(result).toHaveLength(1);
       expect(result[0].valueQuantity).toEqual(
         expect.objectContaining({
-          value: 24
-          // Does not include the unit system/coding
+          value: 24,
+          unit: 'hours',
+          system: 'http://unitsofmeasure.org',
+          code: 'h'
         })
       );
     });
