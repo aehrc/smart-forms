@@ -12,12 +12,6 @@ There is an extension "http://hl7.org/fhir/StructureDefinition/questionnaire-uni
 
 You can use the [UnitOption](/docs/sdc/terminology#unitoption) extension to specify a list of options for the unit of a quantity item.
 
-:::warning
-
-This component is not thoroughly tested yet. Please use it with caution.
-
-:::
-
 ### Basic usage
 
 #### Questionnaire-only
@@ -30,35 +24,58 @@ This component is not thoroughly tested yet. Please use it with caution.
 
 ### Advanced usage
 
-#### With Unit Options
+#### With multiple unitOptions
 
-<IframeContainer storyId="itemtype-quantity--quantity-unit-option-response" initialHeight={280} />
+<IframeContainer storyId="itemtype-quantity--quantity-unit-option-multi" initialHeight={280} />
+
+#### With a single unitOption
+
+:::tip
+
+It is recommended to use the "questionnaire-unit" extension instead when there is only one unit to choose from.
+
+:::
+
+<IframeContainer storyId="itemtype-quantity--quantity-unit-option-single" initialHeight={280} />
 
 #### Calculations
 
-<IframeContainer storyId="itemtype-quantity--quantity-calculation" initialHeight={280} />
+:::note
+
+CalculatedExpression should evaluate to an integer or decimal value, which becomes `valueQuantity.value`.
+Unit, code and system will default to the unit provided via the "questionnaire-unit" extension.
+
+:::
+
+<IframeContainer storyId="sdc-10-1-3-behavior-calculations-item-type-calculations--quantity-calculation" initialHeight={280} />
+
+View more advanced usages in [Storybook's SDC section](https://smartforms.csiro.au/storybook/?path=/docs/sdc-overview--docs).
 
 ### SDC Supported extensions
 
-| Code                 | Usage                                                                                                                                                         |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| variable             | http://hl7.org/fhir/StructureDefinition/variable                                                                                                              |
-| initialExpression    | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression<br/>- InitialExpression should evaluate to a integer or decimal value.     |
-| calculatedExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression<br/>- CalculatedExpression should evaluate to integer or decimal value. |
-| enableWhenExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression                                                                         |
-| hidden               | http://hl7.org/fhir/StructureDefinition/questionnaire-hidden                                                                                                  |
-| entryFormat          | http://hl7.org/fhir/StructureDefinition/entryFormat                                                                                                           |
-| required             | item.required                                                                                                                                                 |
-| repeats              | item.repeats                                                                                                                                                  |
-| readOnly             | item.readOnly                                                                                                                                                 |
-| maxLength            | item.maxLength                                                                                                                                                |
-| minLength            | http://hl7.org/fhir/StructureDefinition/minLength                                                                                                             |
-| regex                | http://hl7.org/fhir/StructureDefinition/regex                                                                                                                 |
-| minValue             | http://hl7.org/fhir/StructureDefinition/minValue                                                                                                              |
-| maxValue             | http://hl7.org/fhir/StructureDefinition/maxValue                                                                                                              |
-| maxDecimalPlaces     | http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces                                                                                                      |
-| initial              | item.initial                                                                                                                                                  |
-| enableWhen           | item.enableWhen                                                                                                                                               |
-| enableBehavior       | item.enableBehavior                                                                                                                                           |
-| text                 | item.text                                                                                                                                                     |
-| unitOption           | http://hl7.org/fhir/R4/extension-questionnaire-unitoption.html                                                                                                |
+| Code                 | Usage                                                                                                                                                                                                                                                                                                                     |
+|----------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| variable             | http://hl7.org/fhir/StructureDefinition/variable                                                                                                                                                                                                                                                                          |
+| initialExpression    | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression<br/>- InitialExpression should evaluate to a Quantity value.                                                                                                                                                                           |
+| calculatedExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression<br/>- CalculatedExpression should evaluate to an integer or decimal value (valueQuantity.value). Unit, code and system will default to the unit provided via extension "http://hl7.org/fhir/StructureDefinition/questionnaire-unit" |
+| enableWhenExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression                                                                                                                                                                                                                                     |
+| rendering-style      | http://hl7.org/fhir/extensions/StructureDefinition-rendering-style.html                                                                                                                                                                                                                                                   |
+| rendering-markdown   | http://hl7.org/fhir/extensions/StructureDefinition-rendering-markdown.html                                                                                                                                                                                                                                                |
+| rendering-xhtml      | http://hl7.org/fhir/StructureDefinition/rendering-xhtml                                                                                                                                                                                                                                                                   |
+| hidden               | http://hl7.org/fhir/StructureDefinition/questionnaire-hidden                                                                                                                                                                                                                                                              |
+| entryFormat          | http://hl7.org/fhir/StructureDefinition/entryFormat                                                                                                                                                                                                                                                                       |
+| required             | item.required                                                                                                                                                                                                                                                                                                             |
+| repeats              | item.repeats                                                                                                                                                                                                                                                                                                              |
+| readOnly             | item.readOnly                                                                                                                                                                                                                                                                                                             |
+| maxLength            | item.maxLength                                                                                                                                                                                                                                                                                                            |
+| minLength            | http://hl7.org/fhir/StructureDefinition/minLength                                                                                                                                                                                                                                                                         |
+| regex                | http://hl7.org/fhir/StructureDefinition/regex                                                                                                                                                                                                                                                                             |
+| minQuantity          | http://hl7.org/fhir/uv/sdc/StructureDefinition-sdc-questionnaire-minQuantity.html                                                                                                                                                                                                                                         |
+| maxQuantity          | http://hl7.org/fhir/uv/sdc/StructureDefinition-sdc-questionnaire-maxQuantity.html                                                                                                                                                                                                                                         |
+| maxDecimalPlaces     | http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces                                                                                                                                                                                                                                                                  |
+| unitOption           | http://hl7.org/fhir/R4/extension-questionnaire-unitoption.html                                                                                                                                                                                                                                                            |
+| initial              | item.initial                                                                                                                                                                                                                                                                                                              |
+| enableWhen           | item.enableWhen                                                                                                                                                                                                                                                                                                           |
+| enableBehavior       | item.enableBehavior                                                                                                                                                                                                                                                                                                       |
+| text                 | item.text                                                                                                                                                                                                                                                                                                                 |
+| unitOption           | http://hl7.org/fhir/R4/extension-questionnaire-unitoption.html                                                                                                                                                                                                                                                            |

@@ -23,11 +23,6 @@ With Response
   initialHeight={280}
 />
 
-:::note
-
-The current answerOption drop-down component doesn't allow the field to be cleared. There are plans to migrate to the same component used for answerValueSet.
-
-:::
 
 #### Answer Value Set
 
@@ -44,20 +39,19 @@ With Response
 
 ### Advanced usage
 
-#### Answer Option - Calculations (Radio button)
+#### Answer Option - Calculations
 
-<IframeContainer storyId="itemtype-choice--choice-answer-option-calculation" initialHeight={220} />
+<IframeContainer storyId="sdc-10-1-3-behavior-calculations-item-type-calculations--choice-answer-option-calculation" initialHeight={220} />
 
 #### Answer Value Set - Calculations
 
 <IframeContainer
-  storyId="itemtype-choice--choice-answer-value-set-calculation"
+  storyId="sdc-10-1-3-behavior-calculations-item-type-calculations--choice-answer-value-set-calculation"
   initialHeight={432}
 />
 
-There are SDC advanced form rendering usages in the SDC [Question Rendering](/docs/sdc/advanced/question) section.
+View more advanced usages in [Storybook's SDC section](https://smartforms.csiro.au/storybook/?path=/docs/sdc-overview--docs).
 
-If there are any advanced usage scenarios you'd like to see, feel free to [let us know](https://github.com/aehrc/smart-forms/issues/new).
 
 :::note
 
@@ -66,25 +60,30 @@ The above calculation examples uses **valueCoding.code**[^1] as the FHIRPath exp
 
 ### SDC Supported extensions
 
-| Code                 | Usage                                                                                                                                                                                                                                                    |
-| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| variable             | http://hl7.org/fhir/StructureDefinition/variable                                                                                                                                                                                                         |
-| answerExpression     | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerExpression<br/>- Only tested with answerValueSet.                                                                                                                                 |
-| initialExpression    | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression<br/>- InitialExpression should evaluate to a coding value.                                                                                                            |
-| calculatedExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression<br/>- CalculatedExpression should evaluate to a coding or valueCoding.code[^1] value.                                                                              |
-| enableWhenExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression                                                                                                                                                                    |
-| hidden               | http://hl7.org/fhir/StructureDefinition/questionnaire-hidden                                                                                                                                                                                             |
-| itemControl          | http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl<br/>Supports:<br/>- autocomplete<br/>- drop-down<br/>- check-box<br/>- radio-button                                                                                                    |
-| choiceOrientation    | http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation<br/>- ChoiceOrientation is only supported on [itemControl](https://hl7.org/fhir/extensions/CodeSystem-questionnaire-item-control.html) "radio-button" and "check-box" extensions |
-| required             | item.required                                                                                                                                                                                                                                            |
-| repeats              | item.repeats                                                                                                                                                                                                                                             |
-| readOnly             | item.readOnly                                                                                                                                                                                                                                            |
-| answerOption         | item.answerOption                                                                                                                                                                                                                                        |
-| answerValueSet       | item.answerValueSet                                                                                                                                                                                                                                      |
-| initial              | item.initial                                                                                                                                                                                                                                             |
-| enableWhen           | item.enableWhen                                                                                                                                                                                                                                          |
-| enableBehavior       | item.enableBehavior                                                                                                                                                                                                                                      |
-| text                 | item.text                                                                                                                                                                                                                                                |
+| Code                         | Usage                                                                                                                                                                                                                                                    |
+|------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| variable                     | http://hl7.org/fhir/StructureDefinition/variable                                                                                                                                                                                                         |
+| answerExpression             | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerExpression<br/>- Only tested with answerValueSet.                                                                                                                                 |
+| initialExpression            | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression<br/>- InitialExpression should evaluate to a coding value.                                                                                                            |
+| calculatedExpression         | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression<br/>- CalculatedExpression should evaluate to a coding or valueCoding.code[^1] value.                                                                              |
+| enableWhenExpression         | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression                                                                                                                                                                    |
+| answerOptionToggleExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerOptionsToggleExpression                                                                                                                                                           |
+| rendering-style              | http://hl7.org/fhir/extensions/StructureDefinition-rendering-style.html                                                                                                                                                                                  |
+| rendering-markdown           | http://hl7.org/fhir/extensions/StructureDefinition-rendering-markdown.html                                                                                                                                                                               |
+| rendering-xhtml              | http://hl7.org/fhir/StructureDefinition/rendering-xhtml                                                                                                                                                                                                  |
+| hidden                       | http://hl7.org/fhir/StructureDefinition/questionnaire-hidden                                                                                                                                                                                             |
+| itemControl                  | http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl<br/>Supports:<br/>- autocomplete<br/>- drop-down<br/>- check-box<br/>- radio-button                                                                                                    |
+| choiceOrientation            | http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation<br/>- ChoiceOrientation is only supported on [itemControl](https://hl7.org/fhir/extensions/CodeSystem-questionnaire-item-control.html) "radio-button" and "check-box" extensions |
+| required                     | item.required                                                                                                                                                                                                                                            |
+| repeats                      | item.repeats                                                                                                                                                                                                                                             |
+| readOnly                     | item.readOnly                                                                                                                                                                                                                                            |
+| preferredTerminologyServer   | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-preferredTerminologyServer                                                                                                                                                              |
+| answerOption                 | item.answerOption                                                                                                                                                                                                                                        |
+| answerValueSet               | item.answerValueSet                                                                                                                                                                                                                                      |
+| initial                      | item.initial                                                                                                                                                                                                                                             |
+| enableWhen                   | item.enableWhen                                                                                                                                                                                                                                          |
+| enableBehavior               | item.enableBehavior                                                                                                                                                                                                                                      |
+| text                         | item.text                                                                                                                                                                                                                                                |
 
 ---
 
