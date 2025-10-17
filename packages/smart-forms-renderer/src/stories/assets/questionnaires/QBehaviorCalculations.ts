@@ -83,7 +83,7 @@ export const qInitialExpression: Questionnaire = {
   ]
 };
 
-export const qCalculatedExpressionCvdRiskCalculator: Questionnaire = {
+export const qOldCvdRiskCalculator: Questionnaire = {
   resourceType: 'Questionnaire',
   status: 'draft',
   item: [
@@ -509,6 +509,48 @@ export const qCalculatedExpressionCvdRiskCalculator: Questionnaire = {
           type: 'integer',
           repeats: false,
           readOnly: true
+        }
+      ]
+    }
+  ]
+};
+
+export const qChainedCalculation: Questionnaire = {
+  resourceType: 'Questionnaire',
+  status: 'draft',
+  item: [
+    {
+      linkId: 'number-input',
+      text: 'Type a number',
+      type: 'integer'
+    },
+    {
+      linkId: 'calc-result',
+      text: 'Input x 2',
+      type: 'decimal',
+      readOnly: true,
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
+          valueExpression: {
+            language: 'text/fhirpath',
+            expression: "%resource.item.where(linkId='my-input').answer.value * 2"
+          }
+        }
+      ]
+    },
+    {
+      linkId: 'result-is-4',
+      text: 'Is result equal to 4?',
+      type: 'boolean',
+      readOnly: true,
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
+          valueExpression: {
+            language: 'text/fhirpath',
+            expression: "%resource.item.where(linkId='calc-result').answer.value = 4"
+          }
         }
       ]
     }
