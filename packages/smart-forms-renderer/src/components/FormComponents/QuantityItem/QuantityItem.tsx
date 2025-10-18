@@ -34,10 +34,11 @@ import {
   stringIsComparator
 } from '../../../utils/quantity';
 import { FullWidthFormComponentBox } from '../../Box.styles';
-import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import ItemFieldGrid, { getInstructionsId } from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
 import QuantityUnitField from './QuantityUnitField';
 import QuantityComparatorField from './QuantityComparatorField';
+import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 
 function QuantityItem(props: BaseItemProps) {
   const {
@@ -113,6 +114,10 @@ function QuantityItem(props: BaseItemProps) {
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
+
+  // Get instructions for accessibility
+  const { displayInstructions } = useRenderingExtensions(qItem);
+  const instructionsId = getInstructionsId(qItem, displayInstructions, !!feedback);
 
   // Event handlers
   function handleComparatorInputChange(newComparatorInput: Quantity['comparator'] | null) {
@@ -209,6 +214,7 @@ function QuantityItem(props: BaseItemProps) {
           readOnly={readOnly}
           calcExpUpdated={calcExpUpdated}
           isTabled={isTabled}
+          instructionsId={instructionsId}
           onInputChange={handleValueInputChange}
         />
         {showUnitOptions ? (
@@ -260,6 +266,7 @@ function QuantityItem(props: BaseItemProps) {
               readOnly={readOnly}
               calcExpUpdated={calcExpUpdated}
               isTabled={isTabled}
+              instructionsId={instructionsId}
               onInputChange={handleValueInputChange}
             />
             {showUnitOptions ? (

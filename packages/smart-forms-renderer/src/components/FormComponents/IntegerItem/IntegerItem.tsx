@@ -25,11 +25,12 @@ import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import { parseIntegerString } from '../../../utils/parseInputs';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
-import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import ItemFieldGrid, { getInstructionsId } from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
 import { readIntegerValue } from '../../../utils/readValues';
 import type { QuestionnaireResponseItem } from 'fhir/r4';
 import IntegerField from './IntegerField';
+import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 
 function IntegerItem(props: BaseItemProps) {
   const {
@@ -56,6 +57,10 @@ function IntegerItem(props: BaseItemProps) {
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
+
+  // Get instructions for accessibility
+  const { displayInstructions } = useRenderingExtensions(qItem);
+  const instructionsId = getInstructionsId(qItem, displayInstructions, !!feedback);
 
   // Event handlers
   function handleInputChange(newInput: string) {
@@ -108,6 +113,7 @@ function IntegerItem(props: BaseItemProps) {
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         isTabled={isTabled}
+        instructionsId={instructionsId}
         onInputChange={handleInputChange}
         onRepopulateSync={handleRepopulateSync}
       />
@@ -133,6 +139,7 @@ function IntegerItem(props: BaseItemProps) {
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}
+            instructionsId={instructionsId}
             onInputChange={handleInputChange}
             onRepopulateSync={handleRepopulateSync}
           />

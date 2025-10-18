@@ -32,6 +32,7 @@ interface UrlFieldProps extends PropsWithIsTabledAttribute {
   displayUnit: string;
   entryFormat: string;
   readOnly: boolean;
+  instructionsId?: string;
   onInputChange: (value: string) => void;
 }
 
@@ -46,6 +47,7 @@ function UrlField(props: UrlFieldProps) {
     entryFormat,
     readOnly,
     isTabled,
+    instructionsId,
     onInputChange
   } = props;
 
@@ -54,6 +56,9 @@ function UrlField(props: UrlFieldProps) {
 
   // Generate ID for unit text to associate with input via aria-describedby
   const unitId = displayUnit ? `unit-${linkId}` : undefined;
+  
+  // Combine unit and instructions IDs for aria-describedby
+  const ariaDescribedBy = [unitId, instructionsId].filter(Boolean).join(' ') || undefined;
 
   return (
     <StandardTextField
@@ -70,7 +75,7 @@ function UrlField(props: UrlFieldProps) {
       size="small"
       slotProps={{
         htmlInput: {
-          'aria-describedby': unitId
+          'aria-describedby': ariaDescribedBy
         },
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',

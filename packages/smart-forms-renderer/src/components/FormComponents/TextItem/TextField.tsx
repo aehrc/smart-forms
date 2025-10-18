@@ -31,6 +31,7 @@ interface TextFieldProps {
   renderingExtensions: RenderingExtensions;
   readOnly: boolean;
   calcExpUpdated: boolean;
+  instructionsId?: string;
   onInputChange: (value: string) => void;
   onRepopulateSync: (newQrItem: QuestionnaireResponseItem | null) => unknown;
 }
@@ -43,6 +44,7 @@ function TextField(props: TextFieldProps) {
     renderingExtensions,
     readOnly,
     calcExpUpdated,
+    instructionsId,
     onInputChange,
     onRepopulateSync
   } = props;
@@ -53,6 +55,9 @@ function TextField(props: TextFieldProps) {
 
   // Generate ID for unit text to associate with input via aria-describedby
   const unitId = displayUnit ? `unit-${qItem.linkId}` : undefined;
+  
+  // Combine unit and instructions IDs for aria-describedby
+  const ariaDescribedBy = [unitId, instructionsId].filter(Boolean).join(' ') || undefined;
 
   return (
     <MuiTextField
@@ -68,7 +73,7 @@ function TextField(props: TextFieldProps) {
       minRows={3}
       slotProps={{
         htmlInput: {
-          'aria-describedby': unitId
+          'aria-describedby': ariaDescribedBy
         },
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',

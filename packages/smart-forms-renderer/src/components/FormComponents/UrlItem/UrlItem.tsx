@@ -23,11 +23,12 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import UrlField from './UrlField';
-import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import ItemFieldGrid, { getInstructionsId } from '../ItemParts/ItemFieldGrid';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
 import { sanitizeInput } from '../../../utils/inputSanitization';
+import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 
 function UrlItem(props: BaseItemProps) {
   const {
@@ -58,6 +59,10 @@ function UrlItem(props: BaseItemProps) {
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
+
+  // Get instructions for accessibility
+  const { displayInstructions } = useRenderingExtensions(qItem);
+  const instructionsId = getInstructionsId(qItem, displayInstructions, !!feedback);
 
   // Event handlers
   function handleChange(newInput: string) {
@@ -93,6 +98,7 @@ function UrlItem(props: BaseItemProps) {
         displayUnit={displayUnit}
         entryFormat={entryFormat}
         readOnly={readOnly}
+        instructionsId={instructionsId}
         onInputChange={handleChange}
         isTabled={isTabled}
       />
@@ -118,6 +124,7 @@ function UrlItem(props: BaseItemProps) {
             displayUnit={displayUnit}
             entryFormat={entryFormat}
             readOnly={readOnly}
+            instructionsId={instructionsId}
             onInputChange={handleChange}
             isTabled={isTabled}
           />

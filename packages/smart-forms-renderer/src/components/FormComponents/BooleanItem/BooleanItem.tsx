@@ -22,9 +22,10 @@ import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
-import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import ItemFieldGrid, { getInstructionsId } from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
 import BooleanField from './BooleanField';
+import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 
 function BooleanItem(props: BaseItemProps) {
   const {
@@ -44,6 +45,10 @@ function BooleanItem(props: BaseItemProps) {
 
   // Perform validation checks - there's no string-based input here
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
+
+  // Get instructions for accessibility
+  const { displayInstructions } = useRenderingExtensions(qItem);
+  const instructionsId = getInstructionsId(qItem, displayInstructions, !!feedback);
 
   // Init input value
   const answerKey = qrItem?.answer?.[0]?.id;
@@ -86,6 +91,7 @@ function BooleanItem(props: BaseItemProps) {
           valueBoolean={valueBoolean}
           feedback={feedback}
           calcExpUpdated={calcExpUpdated}
+          instructionsId={instructionsId}
           onCheckedChange={handleValueChange}
           onClear={handleClear}
         />
@@ -101,6 +107,7 @@ function BooleanItem(props: BaseItemProps) {
         valueBoolean={valueBoolean}
         feedback={feedback}
         calcExpUpdated={calcExpUpdated}
+        instructionsId={instructionsId}
         onCheckedChange={handleValueChange}
         onClear={handleClear}
       />
@@ -124,6 +131,7 @@ function BooleanItem(props: BaseItemProps) {
             valueBoolean={valueBoolean}
             feedback={feedback}
             calcExpUpdated={calcExpUpdated}
+            instructionsId={instructionsId}
             onCheckedChange={handleValueChange}
             onClear={handleClear}
           />

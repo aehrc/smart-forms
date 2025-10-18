@@ -38,12 +38,13 @@ interface BooleanFieldProps {
   valueBoolean: boolean | undefined;
   feedback: string;
   calcExpUpdated: boolean;
+  instructionsId?: string;
   onCheckedChange: (newValue: string) => void;
   onClear: () => void;
 }
 
 const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
-  const { qItem, readOnly, valueBoolean, feedback, calcExpUpdated, onCheckedChange, onClear } =
+  const { qItem, readOnly, valueBoolean, feedback, calcExpUpdated, instructionsId, onCheckedChange, onClear } =
     props;
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
@@ -78,6 +79,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
                 checked={selection === 'true'}
                 readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
                 aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
+                aria-describedby={instructionsId}
                 role="checkbox"
                 aria-checked={ariaCheckedValue}
                 onChange={() => {
@@ -106,6 +108,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
             <RadioGroup
               id={qItem.type + '-' + qItem.linkId}
               aria-labelledby={'label-' + qItem.linkId}
+              aria-describedby={instructionsId}
               row={orientation === ChoiceItemOrientation.Horizontal}
               sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
               aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}

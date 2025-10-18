@@ -33,6 +33,7 @@ interface QuantityFieldProps extends PropsWithIsTabledAttribute {
   entryFormat: string;
   readOnly: boolean;
   calcExpUpdated: boolean;
+  instructionsId?: string;
   onInputChange: (value: string) => void;
 }
 
@@ -48,6 +49,7 @@ function QuantityField(props: QuantityFieldProps) {
     readOnly,
     calcExpUpdated,
     isTabled,
+    instructionsId,
     onInputChange
   } = props;
 
@@ -65,6 +67,9 @@ function QuantityField(props: QuantityFieldProps) {
 
   // Generate ID for unit text to associate with input via aria-describedby
   const unitId = displayUnit ? `unit-${linkId}` : undefined;
+  
+  // Combine unit and instructions IDs for aria-describedby
+  const ariaDescribedBy = [unitId, instructionsId].filter(Boolean).join(' ') || undefined;
 
   return (
     <StandardTextField
@@ -82,7 +87,7 @@ function QuantityField(props: QuantityFieldProps) {
         htmlInput: {
           inputMode: 'numeric',
           pattern: '[0-9]*',
-          'aria-describedby': unitId
+          'aria-describedby': ariaDescribedBy
         },
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',

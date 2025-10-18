@@ -33,6 +33,7 @@ interface DecimalFieldProps extends PropsWithIsTabledAttribute {
   renderingExtensions: RenderingExtensions;
   readOnly: boolean;
   calcExpUpdated: boolean;
+  instructionsId?: string;
   onInputChange: (value: string) => void;
   onRepopulateSync: (newQrItem: QuestionnaireResponseItem | null) => unknown;
 }
@@ -46,6 +47,7 @@ function DecimalField(props: DecimalFieldProps) {
     readOnly,
     calcExpUpdated,
     isTabled,
+    instructionsId,
     onInputChange,
     onRepopulateSync
   } = props;
@@ -66,6 +68,9 @@ function DecimalField(props: DecimalFieldProps) {
 
   // Generate ID for unit text to associate with input via aria-describedby
   const unitId = displayUnit ? `unit-${qItem.linkId}` : undefined;
+  
+  // Combine unit and instructions IDs for aria-describedby
+  const ariaDescribedBy = [unitId, instructionsId].filter(Boolean).join(' ') || undefined;
 
   return (
     <StandardTextField
@@ -84,7 +89,7 @@ function DecimalField(props: DecimalFieldProps) {
         htmlInput: {
           inputMode: 'numeric',
           pattern: '[0-9]*',
-          'aria-describedby': unitId
+          'aria-describedby': ariaDescribedBy
         },
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
