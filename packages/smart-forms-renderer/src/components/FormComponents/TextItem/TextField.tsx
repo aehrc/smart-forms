@@ -51,6 +51,9 @@ function TextField(props: TextFieldProps) {
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
 
+  // Generate ID for unit text to associate with input via aria-describedby
+  const unitId = displayUnit ? `unit-${qItem.linkId}` : undefined;
+
   return (
     <MuiTextField
       id={qItem.type + '-' + qItem.linkId}
@@ -64,6 +67,9 @@ function TextField(props: TextFieldProps) {
       size="small"
       minRows={3}
       slotProps={{
+        htmlInput: {
+          'aria-describedby': unitId
+        },
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
@@ -74,7 +80,9 @@ function TextField(props: TextFieldProps) {
                 repopulatable={isRepopulatable}
                 onRepopulate={onRepopulateSync}
               />
-              <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
+              <DisplayUnitText id={unitId} readOnly={readOnly}>
+                {displayUnit}
+              </DisplayUnitText>
             </InputAdornment>
           )
         }

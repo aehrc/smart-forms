@@ -52,6 +52,9 @@ function UrlField(props: UrlFieldProps) {
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
 
+  // Generate ID for unit text to associate with input via aria-describedby
+  const unitId = displayUnit ? `unit-${linkId}` : undefined;
+
   return (
     <StandardTextField
       id={itemType + '-' + linkId}
@@ -66,6 +69,9 @@ function UrlField(props: UrlFieldProps) {
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       size="small"
       slotProps={{
+        htmlInput: {
+          'aria-describedby': unitId
+        },
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
@@ -76,7 +82,9 @@ function UrlField(props: UrlFieldProps) {
                   onInputChange('');
                 }}
               />
-              <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
+              <DisplayUnitText id={unitId} readOnly={readOnly}>
+                {displayUnit}
+              </DisplayUnitText>
             </InputAdornment>
           )
         }

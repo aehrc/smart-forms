@@ -64,6 +64,9 @@ function IntegerField(props: IntegerFieldProps) {
     placeholderText = entryFormat;
   }
 
+  // Generate ID for unit text to associate with input via aria-describedby
+  const unitId = displayUnit ? `unit-${qItem.linkId}` : undefined;
+
   return (
     <StandardTextField
       id={qItem.type + '-' + qItem.linkId}
@@ -81,7 +84,8 @@ function IntegerField(props: IntegerFieldProps) {
       slotProps={{
         htmlInput: {
           inputMode: 'numeric',
-          pattern: '[0-9]*'
+          pattern: '[0-9]*',
+          'aria-describedby': unitId
         },
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
@@ -99,7 +103,9 @@ function IntegerField(props: IntegerFieldProps) {
                 repopulatable={isRepopulatable}
                 onRepopulate={onRepopulateSync}
               />
-              <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
+              <DisplayUnitText id={unitId} readOnly={readOnly}>
+                {displayUnit}
+              </DisplayUnitText>
             </InputAdornment>
           )
         }

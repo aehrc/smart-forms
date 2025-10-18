@@ -63,6 +63,9 @@ function QuantityField(props: QuantityFieldProps) {
     placeholderText = entryFormat;
   }
 
+  // Generate ID for unit text to associate with input via aria-describedby
+  const unitId = displayUnit ? `unit-${linkId}` : undefined;
+
   return (
     <StandardTextField
       id={itemType + '-' + linkId + '-input'}
@@ -76,7 +79,11 @@ function QuantityField(props: QuantityFieldProps) {
       isTabled={isTabled}
       size="small"
       slotProps={{
-        htmlInput: { inputMode: 'numeric', pattern: '[0-9]*' },
+        htmlInput: {
+          inputMode: 'numeric',
+          pattern: '[0-9]*',
+          'aria-describedby': unitId
+        },
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
@@ -88,7 +95,9 @@ function QuantityField(props: QuantityFieldProps) {
                   onInputChange('');
                 }}
               />
-              <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
+              <DisplayUnitText id={unitId} readOnly={readOnly}>
+                {displayUnit}
+              </DisplayUnitText>
             </InputAdornment>
           )
         }

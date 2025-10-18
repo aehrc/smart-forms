@@ -3,12 +3,13 @@ import Typography from '@mui/material/Typography';
 import { useRendererConfigStore } from '../../../stores';
 
 interface DisplayUnitTextProps {
+  id?: string;
   readOnly: boolean;
   children: string;
 }
 
 function DisplayUnitText(props: DisplayUnitTextProps) {
-  const { readOnly, children } = props;
+  const { id, readOnly, children } = props;
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
 
@@ -16,6 +17,7 @@ function DisplayUnitText(props: DisplayUnitTextProps) {
 
   return (
     <Typography
+      id={id}
       component="span"
       color={readOnly ? readOnlyTextColor : 'text.secondary'}
       sx={{ px: 0.5 }}>
