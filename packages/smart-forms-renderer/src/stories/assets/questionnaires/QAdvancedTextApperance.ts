@@ -171,6 +171,46 @@ export const qDisplayCategoryInstructions: Questionnaire = {
   ]
 };
 
+export const qDisplayCategoryInstructionsString: Questionnaire = {
+  resourceType: 'Questionnaire',
+  id: 'DisplayCategoryInstructionsString',
+  name: 'DisplayCategoryInstructionsString',
+  title: 'Display Category Instructions - String Field',
+  version: '0.1.0',
+  status: 'draft',
+  publisher: 'AEHRC CSIRO',
+  date: '2024-05-01',
+  url: 'https://smartforms.csiro.au/docs/advanced/text/display-category-string',
+  item: [
+    {
+      linkId: 'phone-number',
+      text: 'Phone Number',
+      type: 'string',
+      repeats: false,
+      item: [
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory',
+              valueCodeableConcept: {
+                coding: [
+                  {
+                    system: 'http://hl7.org/fhir/questionnaire-display-category',
+                    code: 'instructions'
+                  }
+                ]
+              }
+            }
+          ],
+          linkId: 'phone-number-instructions',
+          text: 'Please enter a valid Australian phone number (e.g. 0412 345 678)',
+          type: 'display'
+        }
+      ]
+    }
+  ]
+};
+
 export const qOpenLabel: Questionnaire = {
   resourceType: 'Questionnaire',
   id: 'OpenLabel',

@@ -19,6 +19,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
   qDisplayCategoryInstructions,
+  qDisplayCategoryInstructionsString,
   qHidden,
   qOpenLabel,
   qRenderingStyleBooleanItem,
@@ -88,6 +89,12 @@ export const RenderingXHTMLGroupPropagationClassStyles: Story = {
 export const DisplayCategoryInstructions: Story = {
   args: {
     questionnaire: qDisplayCategoryInstructions
+  }
+};
+
+export const DisplayCategoryInstructionsStringField: Story = {
+  args: {
+    questionnaire: qDisplayCategoryInstructionsString
   }
 };
 
