@@ -34,7 +34,7 @@ interface ItemFieldGridProps {
 }
 
 /**
- * Recursively add aria-describedby to input/textarea elements in the React tree
+ * Recursively add aria-describedby to input/textarea elements and radio/checkbox groups in the React tree
  */
 function addAriaDescribedBy(children: ReactNode, instructionsId: string): ReactNode {
   return React.Children.map(children, (child) => {
@@ -50,6 +50,18 @@ function addAriaDescribedBy(children: ReactNode, instructionsId: string): ReactN
       (element.type === 'input' || element.type === 'textarea')
     ) {
       // Clone the element and add/update aria-describedby
+      const existingDescribedBy = element.props['aria-describedby'];
+      const newDescribedBy = existingDescribedBy
+        ? `${existingDescribedBy} ${instructionsId}`
+        : instructionsId;
+
+      return React.cloneElement(element, {
+        'aria-describedby': newDescribedBy
+      });
+    }
+
+    // Check if this element has a role="radiogroup" or role="group" (for boolean/choice items)
+    if (element.props && (element.props.role === 'radiogroup' || element.props.role === 'group')) {
       const existingDescribedBy = element.props['aria-describedby'];
       const newDescribedBy = existingDescribedBy
         ? `${existingDescribedBy} ${instructionsId}`

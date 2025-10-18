@@ -1,0 +1,16 @@
+export declare function inputText(canvasElement: HTMLElement, linkId: string, text: string | boolean | number): Promise<void>;
+export declare function checkCheckBox(canvasElement: HTMLElement, linkId: string): Promise<void>;
+export declare function inputFile(canvasElement: HTMLElement, linkId: string, files: File | File[], url: string, filename: string): Promise<void>;
+export declare function inputDate(canvasElement: HTMLElement, linkId: string, text: string | boolean): Promise<void>;
+export declare function inputTime(canvasElement: HTMLElement, linkId: string, text: string | boolean): Promise<void>;
+export declare function inputReference(canvasElement: HTMLElement, linkId: string, text: string | boolean): Promise<void>;
+export declare function inputDecimal(canvasElement: HTMLElement, linkId: string, text: number): Promise<void>;
+export declare function inputUrl(canvasElement: HTMLElement, linkId: string, text: string): Promise<void>;
+export declare function inputInteger(canvasElement: HTMLElement, linkId: string, text: number): Promise<void>;
+export declare function inputDateTime(canvasElement: HTMLElement, linkId: string, date: string, time: string, amPm: string): Promise<void>;
+export declare function checkRadioOption(canvasElement: HTMLElement, linkId: string, text: string): Promise<void>;
+export declare function getInputText(canvasElement: HTMLElement, linkId: string): Promise<string>;
+export declare function chooseSelectOption(canvasElement: HTMLElement, linkId: string, optionLabel: string): Promise<void>;
+export declare function chooseQuantityOption(canvasElement: HTMLElement, linkId: string, quantity: number | string, quantityComparator?: string): Promise<void>;
+export declare function findByLinkId(canvasElement: HTMLElement, linkId: string): Promise<Element>;
+export declare function inputOpenChoiceOtherText(canvasElement: HTMLElement, linkId: string, text: string): Promise<void>;
