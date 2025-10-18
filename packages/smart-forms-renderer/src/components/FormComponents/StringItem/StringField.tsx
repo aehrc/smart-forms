@@ -33,6 +33,7 @@ interface StringFieldProps extends PropsWithIsTabledAttribute {
   renderingExtensions: RenderingExtensions;
   readOnly: boolean;
   calcExpUpdated: boolean;
+  instructionsId?: string;
   onInputChange: (value: string) => void;
   onRepopulateSync: (newQrItem: QuestionnaireResponseItem | null) => unknown;
 }
@@ -46,6 +47,7 @@ function StringField(props: StringFieldProps) {
     readOnly,
     isTabled,
     calcExpUpdated,
+    instructionsId,
     onInputChange,
     onRepopulateSync
   } = props;
@@ -57,6 +59,9 @@ function StringField(props: StringFieldProps) {
 
   // Generate ID for unit text to associate with input via aria-describedby
   const unitId = displayUnit ? `unit-${qItem.linkId}` : undefined;
+  
+  // Combine unit and instructions IDs for aria-describedby
+  const ariaDescribedBy = [unitId, instructionsId].filter(Boolean).join(' ') || undefined;
 
   return (
     <StandardTextField
@@ -73,7 +78,7 @@ function StringField(props: StringFieldProps) {
       size="small"
       slotProps={{
         htmlInput: {
-          'aria-describedby': unitId
+          'aria-describedby': ariaDescribedBy
         },
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',

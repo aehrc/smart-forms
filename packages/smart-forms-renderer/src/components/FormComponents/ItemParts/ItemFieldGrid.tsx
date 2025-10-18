@@ -34,6 +34,18 @@ interface ItemFieldGridProps {
 }
 
 /**
+ * Generate instructions ID for accessibility
+ * Returns undefined if there are no instructions or if feedback is present
+ */
+export function getInstructionsId(
+  qItem: QuestionnaireItem,
+  displayInstructions: string,
+  hasFeedback: boolean
+): string | undefined {
+  return displayInstructions && !hasFeedback ? `instructions-${qItem.linkId}` : undefined;
+}
+
+/**
  * Recursively add aria-describedby to input/textarea elements and radio/checkbox groups in the React tree
  */
 function addAriaDescribedBy(children: ReactNode, instructionsId: string): ReactNode {
