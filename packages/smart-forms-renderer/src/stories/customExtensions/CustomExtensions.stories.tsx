@@ -21,6 +21,7 @@ import {
   qGroupHideAddItemButton,
   qInitialExpressionRepopulatable,
   qItemControlDisplayContextDisplay,
+  qQuestionnaireItemTextAriaLabelExpression,
   qQuestionnaireItemTextHidden,
   qrGroupHideAddItemButton
 } from '../assets/questionnaires/QCustomExtensions';
@@ -66,5 +67,11 @@ export const InitialExpressionRepopulatable: Story = createStory({
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
+  }
+}) as Story;
+
+export const QuestionnaireItemTextAriaLabelExpression: Story = createStory({
+  args: {
+    questionnaire: qQuestionnaireItemTextAriaLabelExpression
   }
 }) as Story;

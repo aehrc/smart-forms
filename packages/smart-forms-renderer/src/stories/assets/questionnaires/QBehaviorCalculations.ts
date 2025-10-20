@@ -526,7 +526,7 @@ export const qChainedCalculation: Questionnaire = {
     },
     {
       linkId: 'calc-result',
-      text: 'Input x 2',
+      text: 'Input x 2 (Depends on "Type a number")',
       type: 'decimal',
       readOnly: true,
       extension: [
@@ -534,14 +534,14 @@ export const qChainedCalculation: Questionnaire = {
           url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
           valueExpression: {
             language: 'text/fhirpath',
-            expression: "%resource.item.where(linkId='my-input').answer.value * 2"
+            expression: "%resource.item.where(linkId='number-input').answer.value * 2"
           }
         }
       ]
     },
     {
       linkId: 'result-is-4',
-      text: 'Is result equal to 4?',
+      text: 'Is result equal to 4 (Depends on "Input x 2")',
       type: 'boolean',
       readOnly: true,
       extension: [

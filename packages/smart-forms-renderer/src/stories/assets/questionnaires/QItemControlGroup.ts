@@ -439,74 +439,67 @@ export const qItemControlGroupGridSingleRow: Questionnaire = {
   status: 'draft',
   item: [
     {
-      linkId: 'parent-container',
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: 'http://hl7.org/fhir/questionnaire-item-control',
+                version: '1.0.0',
+                code: 'grid'
+              }
+            ]
+          }
+        }
+      ],
+      linkId: 'blood-pressure-grid',
       type: 'group',
       repeats: false,
       item: [
         {
-          extension: [
-            {
-              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
-              valueCodeableConcept: {
-                coding: [
-                  {
-                    system: 'http://hl7.org/fhir/questionnaire-item-control',
-                    version: '1.0.0',
-                    code: 'grid'
-                  }
-                ]
-              }
-            }
-          ],
-          linkId: 'blood-pressure-grid',
+          linkId: 'blood-pressure-group',
+          text: 'Blood pressure',
           type: 'group',
           repeats: false,
           item: [
             {
-              linkId: 'blood-pressure-group',
-              text: 'Blood pressure',
-              type: 'group',
-              repeats: false,
-              item: [
+              extension: [
                 {
-                  extension: [
-                    {
-                      url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
-                      valueCoding: {
-                        system: 'http://unitsofmeasure.org',
-                        code: 'mm[Hg]',
-                        display: 'mm Hg'
-                      }
-                    }
-                  ],
-                  linkId: 'blood-pressure-systolic',
-                  text: 'Systolic',
-                  type: 'integer',
-                  repeats: false
-                },
-                {
-                  extension: [
-                    {
-                      url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
-                      valueCoding: {
-                        system: 'http://unitsofmeasure.org',
-                        code: 'mm[Hg]',
-                        display: 'mm Hg'
-                      }
-                    }
-                  ],
-                  linkId: 'blood-pressure-diastolic',
-                  text: 'Diastolic',
-                  type: 'integer',
-                  repeats: false
-                },
-                {
-                  linkId: 'blood-pressure-date',
-                  text: 'Date performed',
-                  type: 'date',
-                  repeats: false
+                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+                  valueCoding: {
+                    system: 'http://unitsofmeasure.org',
+                    code: 'mm[Hg]',
+                    display: 'mm Hg'
+                  }
                 }
-              ]
+              ],
+              linkId: 'blood-pressure-systolic',
+              text: 'Systolic',
+              type: 'integer',
+              repeats: false
+            },
+            {
+              extension: [
+                {
+                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+                  valueCoding: {
+                    system: 'http://unitsofmeasure.org',
+                    code: 'mm[Hg]',
+                    display: 'mm Hg'
+                  }
+                }
+              ],
+              linkId: 'blood-pressure-diastolic',
+              text: 'Diastolic',
+              type: 'integer',
+              repeats: false
+            },
+            {
+              linkId: 'blood-pressure-date',
+              text: 'Date performed',
+              type: 'date',
+              repeats: false
             }
           ]
         }
@@ -520,201 +513,193 @@ export const qItemControlGroupGridMultiRow: Questionnaire = {
   status: 'draft',
   item: [
     {
-      linkId: 'parent-container',
-      text: '',
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: 'http://hl7.org/fhir/questionnaire-item-control',
+                version: '1.0.0',
+                code: 'grid'
+              }
+            ]
+          }
+        }
+      ],
+      linkId: 'grid-group',
       type: 'group',
       repeats: false,
       item: [
         {
-          extension: [
-            {
-              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
-              valueCodeableConcept: {
-                coding: [
-                  {
-                    system: 'http://hl7.org/fhir/questionnaire-item-control',
-                    version: '1.0.0',
-                    code: 'grid'
-                  }
-                ]
-              }
-            }
-          ],
-          linkId: 'grid-group',
+          linkId: 'height-row',
+          text: 'Height',
           type: 'group',
           repeats: false,
           item: [
             {
-              linkId: 'height-row',
-              text: 'Height',
-              type: 'group',
-              repeats: false,
-              item: [
+              extension: [
                 {
-                  extension: [
-                    {
-                      url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
-                      valueCoding: {
-                        system: 'http://unitsofmeasure.org',
-                        code: 'cm',
-                        display: 'cm'
-                      }
-                    }
-                  ],
-                  linkId: 'height-value',
-                  text: 'Value',
-                  type: 'decimal',
-                  repeats: false
+                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+                  valueCoding: {
+                    system: 'http://unitsofmeasure.org',
+                    code: 'cm',
+                    display: 'cm'
+                  }
+                }
+              ],
+              linkId: 'height-value',
+              text: 'Value',
+              type: 'decimal',
+              repeats: false
+            },
+            {
+              linkId: 'height-date-performed',
+              text: 'Date performed',
+              type: 'date',
+              repeats: false
+            }
+          ]
+        },
+        {
+          linkId: 'weight-row',
+          text: 'Weight',
+          type: 'group',
+          repeats: false,
+          item: [
+            {
+              extension: [
+                {
+                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+                  valueCoding: {
+                    system: 'http://unitsofmeasure.org',
+                    code: 'kg',
+                    display: 'kg'
+                  }
+                }
+              ],
+              linkId: 'weight-value',
+              text: 'Value',
+              type: 'decimal',
+              repeats: false
+            },
+            {
+              linkId: 'weight-date-performed',
+              text: 'Date performed',
+              type: 'date',
+              repeats: false
+            }
+          ]
+        },
+        {
+          linkId: 'bmi-row',
+          text: 'BMI',
+          type: 'group',
+          repeats: false,
+          item: [
+            {
+              extension: [
+                {
+                  url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
+                  valueExpression: {
+                    description: 'BMI calculation',
+                    language: 'text/fhirpath',
+                    expression: '(%weight/((%height/100).power(2))).round(1)'
+                  }
                 },
                 {
-                  linkId: 'height-date-performed',
-                  text: 'Date performed',
-                  type: 'date',
-                  repeats: false
+                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+                  valueCoding: {
+                    system: 'http://unitsofmeasure.org',
+                    code: 'kg/m2',
+                    display: 'kg/m2'
+                  }
+                }
+              ],
+              linkId: 'bmi-value',
+              text: 'Value',
+              type: 'decimal',
+              repeats: false,
+              readOnly: false
+            }
+          ]
+        },
+        {
+          linkId: 'heart-rate-row',
+          text: 'Heart rate',
+          type: 'group',
+          repeats: false,
+          item: [
+            {
+              extension: [
+                {
+                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+                  valueCoding: {
+                    system: 'http://unitsofmeasure.org',
+                    code: '/min',
+                    display: '/min'
+                  }
+                }
+              ],
+              linkId: 'heart-rate-value',
+              text: 'Value',
+              type: 'integer',
+              repeats: false
+            },
+            {
+              linkId: 'heart-rate-date-performed',
+              text: 'Date performed',
+              type: 'date',
+              repeats: false
+            }
+          ]
+        },
+        {
+          linkId: 'heart-rhythm-row',
+          text: 'Heart rhythm',
+          type: 'group',
+          repeats: false,
+          item: [
+            {
+              extension: [
+                {
+                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+                  valueCodeableConcept: {
+                    coding: [
+                      {
+                        system: 'http://hl7.org/fhir/questionnaire-item-control',
+                        code: 'radio-button'
+                      }
+                    ]
+                  }
+                }
+              ],
+              linkId: 'heart-rhythm-value',
+              text: 'Value',
+              type: 'choice',
+              repeats: false,
+              answerOption: [
+                {
+                  valueCoding: {
+                    system: 'http://snomed.info/sct',
+                    code: '271636001',
+                    display: 'Pulse regular'
+                  }
+                },
+                {
+                  valueCoding: {
+                    system: 'http://snomed.info/sct',
+                    code: '61086009',
+                    display: 'Pulse irregular'
+                  }
                 }
               ]
             },
             {
-              linkId: 'weight-row',
-              text: 'Weight',
-              type: 'group',
-              repeats: false,
-              item: [
-                {
-                  extension: [
-                    {
-                      url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
-                      valueCoding: {
-                        system: 'http://unitsofmeasure.org',
-                        code: 'kg',
-                        display: 'kg'
-                      }
-                    }
-                  ],
-                  linkId: 'weight-value',
-                  text: 'Value',
-                  type: 'decimal',
-                  repeats: false
-                },
-                {
-                  linkId: 'weight-date-performed',
-                  text: 'Date performed',
-                  type: 'date',
-                  repeats: false
-                }
-              ]
-            },
-            {
-              linkId: 'bmi-row',
-              text: 'BMI',
-              type: 'group',
-              repeats: false,
-              item: [
-                {
-                  extension: [
-                    {
-                      url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
-                      valueExpression: {
-                        description: 'BMI calculation',
-                        language: 'text/fhirpath',
-                        expression: '(%weight/((%height/100).power(2))).round(1)'
-                      }
-                    },
-                    {
-                      url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
-                      valueCoding: {
-                        system: 'http://unitsofmeasure.org',
-                        code: 'kg/m2',
-                        display: 'kg/m2'
-                      }
-                    }
-                  ],
-                  linkId: 'bmi-value',
-                  text: 'Value',
-                  type: 'decimal',
-                  repeats: false,
-                  readOnly: false
-                }
-              ]
-            },
-            {
-              linkId: 'heart-rate-row',
-              text: 'Heart rate',
-              type: 'group',
-              repeats: false,
-              item: [
-                {
-                  extension: [
-                    {
-                      url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
-                      valueCoding: {
-                        system: 'http://unitsofmeasure.org',
-                        code: '/min',
-                        display: '/min'
-                      }
-                    }
-                  ],
-                  linkId: 'heart-rate-value',
-                  text: 'Value',
-                  type: 'integer',
-                  repeats: false
-                },
-                {
-                  linkId: 'heart-rate-date-performed',
-                  text: 'Date performed',
-                  type: 'date',
-                  repeats: false
-                }
-              ]
-            },
-            {
-              linkId: 'heart-rhythm-row',
-              text: 'Heart rhythm',
-              type: 'group',
-              repeats: false,
-              item: [
-                {
-                  extension: [
-                    {
-                      url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
-                      valueCodeableConcept: {
-                        coding: [
-                          {
-                            system: 'http://hl7.org/fhir/questionnaire-item-control',
-                            code: 'radio-button'
-                          }
-                        ]
-                      }
-                    }
-                  ],
-                  linkId: 'heart-rhythm-value',
-                  text: 'Value',
-                  type: 'choice',
-                  repeats: false,
-                  answerOption: [
-                    {
-                      valueCoding: {
-                        system: 'http://snomed.info/sct',
-                        code: '271636001',
-                        display: 'Pulse regular'
-                      }
-                    },
-                    {
-                      valueCoding: {
-                        system: 'http://snomed.info/sct',
-                        code: '61086009',
-                        display: 'Pulse irregular'
-                      }
-                    }
-                  ]
-                },
-                {
-                  linkId: 'heart-rhythm-date-performed',
-                  text: 'Date performed',
-                  type: 'date',
-                  repeats: false
-                }
-              ]
+              linkId: 'heart-rhythm-date-performed',
+              text: 'Date performed',
+              type: 'date',
+              repeats: false
             }
           ]
         }

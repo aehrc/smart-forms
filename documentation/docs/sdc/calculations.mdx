@@ -27,80 +27,41 @@ For usages, refer to the [CalculatedExpression](#calculatedexpression) section o
 The basis of calculations in SDC. Allows an item value to update continuously as the answers to dependent questions change.
 In Smart Forms, calculated expressions are driven by [FHIRPath](https://hl7.org/fhir/fhirpath.html).
 
-Not all components support calculated expressions. The following components support calculated expressions:
-
-| Components | Limitations                                                                                                                                                |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| boolean    | -                                                                                                                                                          |
-| decimal    | -                                                                                                                                                          |
-| integer    | -                                                                                                                                                          |
-| string     | -                                                                                                                                                          |
-| text       | -                                                                                                                                                          |
-| choice     | Only supports the following [itemControls](https://hl7.org/fhir/extensions/CodeSystem-questionnaire-item-control.html):<br/>- radio-button<br/>- drop-down |
-
-#### Basic usage
-
-Basic usage examples are covered in the respective components:
-
-- [boolean](/docs/components/boolean#advanced-usage)
-- [decimal](/docs/components/decimal#advanced-usage)
-- [integer](/docs/components/integer#advanced-usage)
-- [string](/docs/components/string#advanced-usage)
-- [text](/docs/components/text#advanced-usage)
-- [choice (answerOption)](/docs/components/choice#advanced-usage)
-- [choice (answerValueSet)](/docs/components/choice#advanced-usage)
+View calculatedExpression usages for various item types in [Storybook's Item Type Calculations section](https://smartforms.csiro.au/storybook/?path=/story/sdc-10-1-3-behavior-calculations-item-type-calculations--boolean-calculation).
 
 #### BMI Calculation usage
 
 <IframeContainer
-  storyId="sdc-9-1-3-form-behavior-calculations--calculated-expression-bmi-calculator"
-  initialHeight={352}
+  storyId="sdc-10-1-3-behavior-calculations-item-type-calculations--decimal-calculation"
+  initialHeight={350}
 />
 
-#### Absolute Cardiovascular Risk Calculation usage
+#### Old Absolute Cardiovascular Risk Calculation usage
 
 <IframeContainer
-  storyId="sdc-9-1-3-form-behavior-calculations--calculated-expression-cvd-risk-calculator"
-  initialHeight={1168}
+  storyId="sdc-10-1-3-behavior-calculations--old-cvd-risk-calculator"
+  initialHeight={1100}
+/>
+
+
+#### Chained Calculations usage
+
+<IframeContainer
+  storyId="sdc-10-1-3-behavior-calculations--chained-calculation"
+  initialHeight={250}
 />
 
 ### Cqf-expression
 
-- [x] cqf-expression
-
 While calculated expressions are used to update the value of a question dynamically, cqf-expression is used to update the elements/controls within the Questionnaire resource itself during render runtime.
 
-**Key Features:**
+#### Basic usage
 
-- **Patient Data Access**: Use `%patient` to access patient information
-- **Form Data Access**: Use `%resource` to access current form responses
-- **System Variables**: Use `now()` for current timestamp, etc.
-- **Conditional Logic**: Use `iif()` for conditional expressions
-- **String Operations**: Concatenation, substring, and other string functions
+<IframeContainer storyId="sdc-10-1-3-behavior-calculations-cqfexpression-calculations--display-calculation-basic" initialHeight={360} />
 
-**Usage:**
-
-- Place the extension in the `_text.extension` property of questionnaire items
-- Use FHIRPath expressions to access patient data, form responses, and system variables
-- Supports conditional logic, calculations, and dynamic content generation
-
-**Supported Elements:**
-At the moment, the only supported element/control is **text**.
-
-#### Basic CQF Expression
+#### Styled usage
 
 <IframeContainer
-  storyId="sdc-cqf-expression-extension--simple-cqf-expression"
-  initialHeight={400}
-/>
-
-#### Advanced CQF Expression
-
-<IframeContainer storyId="sdc-cqf-expression-extension--basic-cqf-expression" initialHeight={500} />
-
-#### Complex CQF Expression
-
-<IframeContainer
-  storyId="sdc-cqf-expression-extension--advanced-cqf-expression"
-  initialHeight={600}
+  storyId="sdc-10-1-3-behavior-calculations-cqfexpression-calculations--display-calculation-styled"
+  initialHeight={360}
 />

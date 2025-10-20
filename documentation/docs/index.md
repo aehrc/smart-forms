@@ -23,6 +23,8 @@ Smart Forms is built as a reference implementation for the Structured Data Captu
 
 Structured Data Capture provided a way to define forms in a structured, standard-based format with enhanced capabilities. A few notable capabilities include complex conditional logic, terminology bindings, calculations and more.
 
+Refer to the conformance checklist here: https://github.com/aehrc/smart-forms/blob/main/Conformance.md
+
 #### SMART App Launch
 SMART App Launch is a framework that allows the app to be integrated within a healthcare system in a secure and efficient manner to capture standardised, structured health information for healthcare clients.
 

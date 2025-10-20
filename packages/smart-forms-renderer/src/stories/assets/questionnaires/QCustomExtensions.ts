@@ -1232,3 +1232,138 @@ export const qInitialExpressionRepopulatable: Questionnaire = {
     }
   ]
 };
+
+export const qQuestionnaireItemTextAriaLabelExpression: Questionnaire = {
+  resourceType: 'Questionnaire',
+  status: 'draft',
+  item: [
+    {
+      linkId: 'aria-note',
+      text: 'This extension allows setting of custom ARIA labels for item.text via the usage of custom extension https://smartforms.csiro.au/ig/StructureDefinition/QuestionnaireItemTextAriaLabelExpression. It works on all item labels, display items and tab buttons.',
+      _text: {
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
+            valueString:
+              '<div xmlns="http://www.w3.org/1999/xhtml" style="padding-bottom:\n8px;">\r\n\n <b><div>This extension allows setting of custom ARIA labels for item.text via the usage of custom extension https://smartforms.csiro.au/ig/StructureDefinition/QuestionnaireItemTextAriaLabelExpression.</div><br/><div>It works on all item labels, display items and tab buttons.</div></b>\r\n</div>'
+          }
+        ]
+      },
+      type: 'display',
+      repeats: false
+    },
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: 'http://hl7.org/fhir/questionnaire-item-control',
+                version: '1.0.0',
+                code: 'tab-container'
+              }
+            ]
+          }
+        }
+      ],
+      linkId: 'tab-container',
+      type: 'group',
+      repeats: false,
+      item: [
+        {
+          linkId: 'tab-about-health-check',
+          text: 'About the health check',
+          _text: {
+            extension: [
+              {
+                url: 'https://smartforms.csiro.au/ig/StructureDefinition/QuestionnaireItemTextAriaLabelExpression',
+                valueExpression: {
+                  language: 'text/fhirpath',
+                  expression: "'Section 1: About the health check'"
+                }
+              }
+            ]
+          },
+          type: 'group',
+          repeats: false,
+          item: [
+            {
+              linkId: 'health-check-eligible',
+              text: 'Eligible for health check',
+              type: 'boolean',
+              repeats: false
+            },
+            {
+              linkId: 'health-check-in-progress',
+              text: 'Health check already in progress?',
+              type: 'boolean',
+              repeats: false
+            },
+            {
+              linkId: 'health-check-last-completed',
+              text: 'Date of last completed health check',
+              type: 'date',
+              repeats: false
+            },
+            {
+              linkId: 'health-check-this-commenced',
+              text: 'Date and time this health check commenced',
+              type: 'dateTime',
+              repeats: false
+            }
+          ]
+        },
+        {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText',
+              valueString: 'Current priorities'
+            }
+          ],
+          linkId: 'tab-current-priorities',
+          text: 'Current health/patient priorities',
+          _text: {
+            extension: [
+              {
+                url: 'https://smartforms.csiro.au/ig/StructureDefinition/QuestionnaireItemTextAriaLabelExpression',
+                valueExpression: {
+                  language: 'text/fhirpath',
+                  expression: "'Section 2: Current health and patient priorities'"
+                }
+              }
+            ]
+          },
+          type: 'group',
+          repeats: false,
+          item: [
+            {
+              extension: [
+                {
+                  url: 'http://hl7.org/fhir/StructureDefinition/entryFormat',
+                  valueString: 'Enter details'
+                }
+              ],
+              linkId: 'current-priorities-important-things',
+              text: 'What are the important things for you in this health check today?',
+              type: 'text',
+              repeats: false
+            },
+            {
+              extension: [
+                {
+                  url: 'http://hl7.org/fhir/StructureDefinition/entryFormat',
+                  valueString: 'Enter details'
+                }
+              ],
+              linkId: 'current-priorities-worried-things',
+              text: 'Is there anything you are worried about?',
+              type: 'text',
+              repeats: false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
