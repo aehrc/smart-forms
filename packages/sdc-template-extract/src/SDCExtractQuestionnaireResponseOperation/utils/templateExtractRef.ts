@@ -53,7 +53,7 @@ export function hasTemplateExtractRefExtension(item: QuestionnaireItem | Questio
     .map((ext) => validateAndExtractTemplateExtractReference(ext, itemId))
     .reduce(
       (acc, { templateExtractRef, warning }) => {
-        templateExtractRef && acc.templateExtractRefs.push(templateExtractRef);
+        if (templateExtractRef) acc.templateExtractRefs.push(templateExtractRef);
 
         if (warning) {
           if (!acc.warnings) {
@@ -158,7 +158,7 @@ function collectTemplateExtractRefRecursive(
     templateExtractRefMap.set(qItem.linkId, templateExtractRefs); // Cast is safe because `template` is required
   }
 
-  warnings && templateExtractRefWarnings.push(...warnings);
+  if (warnings) templateExtractRefWarnings.push(...warnings);
 
   if (qItem.item) {
     for (const childQItem of qItem.item) {
