@@ -195,6 +195,35 @@ describe('hasTemplateExtractRefExtension', () => {
     expect(result.warnings?.[0]?.details?.text).toMatch(/must not have nested extensions/);
   });
 
+  it('returns a warning if there are multiple templateExtract extensions with the same templateId', () => {
+    const item: QuestionnaireItem = {
+      linkId: 'q1',
+      type: 'string',
+      extension: [
+        buildExtension([
+          {
+            url: 'template',
+            valueReference: { reference: '#contained-template' }
+          }
+        ]),
+        buildExtension([
+          {
+            url: 'template',
+            valueReference: { reference: '#contained-template' }
+          }
+        ])
+      ]
+    };
+
+    const result = hasTemplateExtractRefExtension(item);
+    expect(result.templateExtractRefs).toContainEqual({
+      templateId: 'contained-template'
+    });
+    expect(result.warnings?.[0]?.details?.text).toMatch(
+      /More than one sdc-questionnaire-templateExtract extension with templateId/
+    );
+  });
+
   it('handles all slice types correctly (with resourceId)', () => {
     const item: QuestionnaireItem = {
       linkId: 'q1',

@@ -53,13 +53,27 @@ export function hasTemplateExtractRefExtension(item: QuestionnaireItem | Questio
     .map((ext) => validateAndExtractTemplateExtractReference(ext, itemId))
     .reduce(
       (acc, { templateExtractRef, warning }) => {
-        if (templateExtractRef) acc.templateExtractRefs.push(templateExtractRef);
+        const warnings = warning ? [warning] : [];
 
-        if (warning) {
+        if (templateExtractRef) {
+          if (
+            acc.templateExtractRefs.some((ref) => ref.templateId === templateExtractRef.templateId)
+          ) {
+            // Repeated templateId, add a warning
+            warnings.push(
+              createInvalidWarningIssue(
+                `More than one sdc-questionnaire-templateExtract extension with templateId "${templateExtractRef.templateId}" found in ${itemId}. Only one occurrence will be used.`
+              )
+            );
+          }
+          acc.templateExtractRefs.push(templateExtractRef);
+        }
+
+        if (warnings.length) {
           if (!acc.warnings) {
             acc.warnings = [];
           }
-          acc.warnings.push(warning);
+          acc.warnings.push(...warnings);
         }
         return acc;
       },
