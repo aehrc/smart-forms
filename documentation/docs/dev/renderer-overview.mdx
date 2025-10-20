@@ -12,9 +12,9 @@ import IframeContainer from '../../src/react/IframeContainer';
 
 Prerequisites:
 
-- Node.js 16 or later
-- React 17 or later
-- Have @tanstack/react-query v4.x.x installed in your React project
+- Node.js 20 or later
+- React 17.x or 18.x
+- Have @tanstack/react-query v5.x.x installed in your React project
 
 To install, run this command:
 
@@ -52,7 +52,7 @@ function YourBaseRendererWrapper(props: YourBaseRendererWrapperProps) {
   const queryClient = useRendererQueryClient();
 
   // This hook builds the form based on the questionnaire
-  const isBuilding = useBuildForm(questionnaire);
+  const isBuilding = useBuildForm({ questionnaire });
 
   if (isBuilding) {
     return <div>Loading...</div>;
@@ -78,20 +78,13 @@ Here's the output of the above code. Click on the "Input Questionnaire" tab to s
     { label: 'Input Questionnaire', value: 'questionnaire' }
   ]}>
   <TabItem value="output">
-    <IframeContainer storyId="itemtype-boolean--boolean-basic" initialHeight={120} />
+    <IframeContainer storyId="itemtype-boolean--boolean-basic" initialHeight={150} />
   </TabItem>
   <TabItem value="questionnaire">
     ```json
     {
       "resourceType": "Questionnaire",
-      "id": "BooleanBasic",
-      "name": "BooleanBasic",
-      "title": "Boolean Basic",
-      "version": "0.1.0",
       "status": "draft",
-      "publisher": "AEHRC CSIRO",
-      "date": "2024-05-01",
-      "url": "https://smartforms.csiro.au/docs/components/boolean/basic",
       "item": [
         {
           "linkId": "eaten",
@@ -131,7 +124,7 @@ function YourBaseRendererWrapper(props: YourBaseRendererWrapperProps) {
   const queryClient = useRendererQueryClient();
 
   // This hook builds the form based on the questionnaire
-  const isBuilding = useBuildForm(questionnaire, questionnaireResponse);
+  const isBuilding = useBuildForm({ questionnaire, questionnaireResponse });
 
   if (isBuilding) {
     return <div>Loading...</div>;
@@ -164,13 +157,7 @@ Here's the output of the above code after adding the QuestionnaireResponse prop.
     ```json
     {
       "resourceType": "Questionnaire",
-      "id": "BooleanBasic",
-      "name": "BooleanBasic",
-      "title": "Boolean Basic",
-      "version": "0.1.0",
       "status": "draft",
-      "publisher": "AEHRC CSIRO",
-      "date": "2024-05-01",
       "url": "https://smartforms.csiro.au/docs/components/boolean/basic",
       "item": [
         {
@@ -198,8 +185,7 @@ Here's the output of the above code after adding the QuestionnaireResponse prop.
             }
           ]
         }
-      ],
-      "questionnaire": "https://smartforms.csiro.au/docs/components/boolean/basic"
+      ]
     }
     ```
   </TabItem>
@@ -238,7 +224,7 @@ function YourBaseRendererWrapperWithButton(props: YourBaseRendererWrapperWithBut
   const queryClient = useRendererQueryClient();
 
   // This time, we are passing only the questionnaire in here to demonstrate the use of the buildForm function
-  const isBuilding = useBuildForm(questionnaire);
+  const isBuilding = useBuildForm({ questionnaire });
 
   if (isBuilding) {
     return <div>Loading...</div>;
@@ -275,7 +261,7 @@ function BuildFormButton(props: BuildFormButtonProps) {
   const { questionnaire, questionnaireResponse } = props;
 
   async function handleBuildForm() {
-    await buildForm(questionnaire, questionnaireResponse);
+    await buildForm({ questionnaire, questionnaireResponse });
   }
 
   return <button onClick={handleBuildForm}>Build Form</button>;
@@ -290,61 +276,18 @@ It exists mainly to demonstrate how you can use the `buildForm()` function. In a
 Below is the output of the above modified code. This time, you need to click on the "Build Form" button to see the questionnaireResponse rendered.
 The button will look different in the output, but it still functions the same way.
 
-<Tabs
-  defaultValue="output"
-  values={[
-    { label: 'Output', value: 'output' },
-    { label: 'Input Questionnaire', value: 'questionnaire' },
-    { label: 'Input QuestionnaireResponse', value: 'questionnaireResponse' }
-  ]}>
+<Tabs defaultValue="output" values={[{ label: 'Output', value: 'output' }]}>
   <TabItem value="output">
-    <IframeContainer storyId="testing-build-form-button-tester--build-form-button-tester" initialHeight={1372}  />
-  </TabItem>
-  <TabItem value="questionnaire">
-    ```json
-    {
-      "resourceType": "Questionnaire",
-      "id": "BooleanBasic",
-      "name": "BooleanBasic",
-      "title": "Boolean Basic",
-      "version": "0.1.0",
-      "status": "draft",
-      "publisher": "AEHRC CSIRO",
-      "date": "2024-05-01",
-      "url": "https://smartforms.csiro.au/docs/components/boolean/basic",
-      "item": [
-        {
-          "linkId": "eaten",
-          "type": "boolean",
-          "repeats": false,
-          "text": "Have you eaten yet?"
-        }
-      ]
-    }
-    ```
-  </TabItem>
-  <TabItem value="questionnaireResponse">
-  ```json
-  {
-    "resourceType": "QuestionnaireResponse",
-    "status": "in-progress",
-    "item": [
-      {
-        "linkId": "eaten",
-        "text": "Have you eaten yet?",
-        "answer": [
-          {
-            "valueBoolean": true
-          }
-        ]
-      }
-    ],
-    "questionnaire": "https://smartforms.csiro.au/docs/components/boolean/basic"
-  }
-  ```
+    <IframeContainer
+      storyId="testing-build-form-button-tester--build-form-button-tester"
+      initialHeight={1400}
+    />
   </TabItem>
 </Tabs>
-_Source code used in Storybook: [BuildFormButtonTesterWrapperForStorybook.tsx](https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/storybookWrappers/BuildFormButtonTesterWrapperForStorybook.tsx) and [BuildFormButtonForStorybook.tsx](https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/storybookWrappers/BuildFormButtonForStorybook.tsx)_
+_Source code used in Storybook:
+[BuildFormButtonTesterWrapperForStorybook.tsx](https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/storybookWrappers/BuildFormButtonTesterWrapperForStorybook.tsx)
+and
+[BuildFormButtonForStorybook.tsx](https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/storybookWrappers/BuildFormButtonForStorybook.tsx)_
 
 ### Pre-Population Usage
 
@@ -379,7 +322,7 @@ function YourBaseRendererWrapperWithPrePop(props: YourBaseRendererWrapperWithPre
 
   const [isPopulating, setIsPopulating] = useState(false);
 
-  const isBuilding = useBuildForm(questionnaire);
+  const isBuilding = useBuildForm({ questionnaire });
 
   const queryClient = useRendererQueryClient();
 
@@ -401,10 +344,17 @@ function YourBaseRendererWrapperWithPrePop(props: YourBaseRendererWrapperWithPre
         return;
       }
 
-      const { populatedResponse } = populateResult;
+      const { populatedResponse, populatedContext } = populateResult;
 
       // Call to buildForm to pre-populate the QR which repaints the entire BaseRenderer view
-      await buildForm(questionnaire, populatedResponse);
+      // Include additionalContext if any expressions use values from x-fhir-query variables
+      await buildForm({
+        questionnaire: questionnaire,
+        questionnaireResponse: populatedResponse,
+        additionalContext: {
+          ...populatedContext
+        }
+      });
 
       setIsPopulating(false);
     });
@@ -449,20 +399,13 @@ Below is the output of the above modified code.
     { label: 'Input Questionnaire', value: 'questionnaire' }
   ]}>
   <TabItem value="output">
-    <IframeContainer storyId="sdc-12-form-population--calculated-expression-bmi-calculator-prepop" initialHeight={392} />
+    <IframeContainer storyId="sdc-14-form-population--calculated-expression-bmi-calculator-prepop" initialHeight={400} />
   </TabItem>
   <TabItem value="questionnaire">
     ```json
     {
       "resourceType": "Questionnaire",
-      "id": "CalculatedExpressionBMICalculatorPrepop",
-      "name": "CalculatedExpressionBMICalculatorPrepop",
-      "title": "CalculatedExpression BMI Calculator - Pre-population",
-      "version": "0.1.0",
       "status": "draft",
-      "publisher": "AEHRC CSIRO",
-      "date": "2024-05-15",
-      "url": "https://smartforms.csiro.au/docs/sdc/population/calculated-expression-1",
       "extension": [
         {
           "url": "http://hl7.org/fhir/StructureDefinition/variable",
@@ -622,7 +565,7 @@ function YourBaseRendererWrapper() {
 
   const queryClient = useRendererQueryClient();
 
-  const isBuilding = useBuildForm(questionnaire);
+  const isBuilding = useBuildForm({ questionnaire });
 
   if (isBuilding) {
     return <div>Loading...</div>;
@@ -666,7 +609,7 @@ function YourBaseRendererWrapper() {
 
   const queryClient = useRendererQueryClient();
 
-  const isBuilding = useBuildForm(questionnaire);
+  const isBuilding = useBuildForm({ questionnaire });
 
   if (isBuilding) {
     return <div>Loading...</div>;
@@ -688,3 +631,161 @@ function YourBaseRendererWrapper() {
   );
 }
 ```
+
+### Data Extraction Usage
+
+You can extract data from the filled QuestionnaireResponse using the `inAppExtract()` library function from `@aehrc/sdc-template-extract`.
+This uses a template-based approach so the source questionnaire should have the necessary extensions and templates defined for extraction.
+
+```tsx title="YourBaseRendererWrapperWithExtract.tsx"
+import React, { useState } from 'react';
+import {
+  BaseRenderer,
+  RendererThemeProvider,
+  useBuildForm,
+  useQuestionnaireResponseStore,
+  useRendererQueryClient
+} from '@aehrc/smart-forms-renderer';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { Encounter, Patient, Practitioner, Questionnaire } from 'fhir/r4';
+import Client from 'fhirclient/lib/Client';
+import { extractResultIsOperationOutcome, inAppExtract } from '@aehrc/sdc-template-extract';
+
+// Pass in your FHIR R4.Questionnaire, FHIRClient, FHIR R4.Patient, optional FHIR R4.Practitioner, and optional FHIR R4.Encounter as props
+interface YourBaseRendererWrapperWithExtractProps {
+  questionnaire: Questionnaire;
+  fhirClient: Client;
+  patient: Patient;
+  user?: Practitioner;
+  encounter?: Encounter;
+}
+
+function YourBaseRendererWrapperWithExtract(props: YourBaseRendererWrapperWithExtractProps) {
+  const { questionnaire, fhirClient, patient, user, encounter } = props;
+
+  const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
+
+  const [extractedResource, setExtractedResource] = useState(null);
+
+  const isBuilding = useBuildForm({ questionnaire });
+
+  const queryClient = useRendererQueryClient();
+
+  // Event handler for extraction
+  async function handleExtract() {
+    const responseToExtract = updatableResponse;
+    inAppExtract(responseToExtract, questionnaire, null).then((inAppExtractOutput) => {
+      const extractResult = inAppExtractOutput.extractResult;
+      if (extractResultIsOperationOutcome(extractResult)) {
+        setExtractedResource(extractResult);
+      } else {
+        setExtractedResource(extractResult.extractedBundle);
+      }
+    });
+  }
+
+  if (isBuilding) {
+    return <div>Building form...</div>;
+  }
+
+  return (
+    <RendererThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <>
+          <ExtractButton onExtract={handleExtract} />
+          <BaseRenderer />
+        </>
+      </QueryClientProvider>
+    </RendererThemeProvider>
+  );
+}
+```
+
+You would need to further define `ExtractButton` but we will skip those for brevity.
+
+- `ExtractButton` is a button component similar to the BuildFormButton above, but it uses a callback to `handleExtract()` defined in the wrapper component.
+
+Again, this example is only for demo purposes. Your wrapper component props might be entirely different from the ones used here, or you might have your own custom extraction logic.
+If you are interested if using the `@aehrc/sdc-extract` library, you can refer to the [API](/docs/api/sdc-template-extract) for more details.
+
+Below is the output of the above modified code.
+
+<Tabs
+  defaultValue="output"
+  values={[
+    { label: 'Output', value: 'output' },
+    { label: 'Template', value: 'template' }
+  ]}>
+  <TabItem value="output">
+    <IframeContainer storyId="sdc-15-form-data-extraction--template-based-extract" initialHeight={400} />
+  </TabItem>
+  <TabItem value="template">
+    ```json
+    {
+      ...
+      "contained": [
+        {
+          "resourceType": "Observation",
+          "id": "bmi-obs",
+          "status": "final",
+          "category": [
+            {
+              "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/observation-category",
+              "code": "vital-signs"
+            }
+              ]
+            }
+          ],
+          "code": {
+            "coding": [
+              {
+                "system": "http://loinc.org",
+                "code": "39156-5",
+                "display": "Body mass index"
+              }
+            ]
+          },
+          "subject": {
+            "_reference": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.subject.reference"
+                }
+              ]
+            }
+          },
+          "effectiveDateTime": "1900-01-01",
+          "_effectiveDateTime": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "now()"
+              }
+            ]
+          },
+          "valueQuantity": {
+            "_value": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "answer.value.value"
+                }
+              ]
+            },
+            "unit": "kg/m2",
+            "system": "http://unitsofmeasure.org",
+            "code": "kg/m2"
+          }
+        }
+      ],
+      ...
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+_Source code used in Storybook:
+[ExtractWrapperForStorybook.tsx](https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/storybookWrappers/ExtractWrapperForStorybook.tsx), [ExtractButtonForStorybook.tsx](https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/storybookWrappers/ExtractButtonForStorybook.tsx)_

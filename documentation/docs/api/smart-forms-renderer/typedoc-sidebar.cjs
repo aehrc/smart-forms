@@ -8,13 +8,13 @@ const typedocSidebar = {
       items: [
         {
           type: "doc",
-          id: "api/smart-forms-renderer/interfaces/CalculatedExpression",
-          label: "CalculatedExpression"
+          id: "api/smart-forms-renderer/interfaces/BuildFormParams",
+          label: "BuildFormParams"
         },
         {
           type: "doc",
-          id: "api/smart-forms-renderer/interfaces/InitialiseFormWrapperProps",
-          label: "InitialiseFormWrapperProps"
+          id: "api/smart-forms-renderer/interfaces/CalculatedExpression",
+          label: "CalculatedExpression"
         },
         {
           type: "doc",
@@ -43,13 +43,18 @@ const typedocSidebar = {
         },
         {
           type: "doc",
-          id: "api/smart-forms-renderer/interfaces/RendererStyling",
-          label: "RendererStyling"
+          id: "api/smart-forms-renderer/interfaces/RendererConfig",
+          label: "RendererConfig"
         },
         {
           type: "doc",
-          id: "api/smart-forms-renderer/interfaces/RendererStylingStoreType",
-          label: "RendererStylingStoreType"
+          id: "api/smart-forms-renderer/interfaces/RendererConfigStoreType",
+          label: "RendererConfigStoreType"
+        },
+        {
+          type: "doc",
+          id: "api/smart-forms-renderer/interfaces/RepopulateFormParams",
+          label: "RepopulateFormParams"
         },
         {
           type: "doc",
@@ -135,8 +140,8 @@ const typedocSidebar = {
         },
         {
           type: "doc",
-          id: "api/smart-forms-renderer/variables/rendererStylingStore",
-          label: "rendererStylingStore"
+          id: "api/smart-forms-renderer/variables/rendererConfigStore",
+          label: "rendererConfigStore"
         },
         {
           type: "doc",
@@ -165,8 +170,8 @@ const typedocSidebar = {
         },
         {
           type: "doc",
-          id: "api/smart-forms-renderer/variables/useRendererStylingStore",
-          label: "useRendererStylingStore"
+          id: "api/smart-forms-renderer/variables/useRendererConfigStore",
+          label: "useRendererConfigStore"
         },
         {
           type: "doc",
@@ -301,11 +306,6 @@ const typedocSidebar = {
         },
         {
           type: "doc",
-          id: "api/smart-forms-renderer/functions/InitialiseFormWrapperForStorybook",
-          label: "InitialiseFormWrapperForStorybook"
-        },
-        {
-          type: "doc",
           id: "api/smart-forms-renderer/functions/initialiseQuestionnaireResponse",
           label: "initialiseQuestionnaireResponse"
         },
@@ -338,11 +338,6 @@ const typedocSidebar = {
           type: "doc",
           id: "api/smart-forms-renderer/functions/mapQItemsIndex",
           label: "mapQItemsIndex"
-        },
-        {
-          type: "doc",
-          id: "api/smart-forms-renderer/functions/objectIsCoding",
-          label: "objectIsCoding"
         },
         {
           type: "doc",
@@ -401,6 +396,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/smart-forms-renderer/functions/repopulateForm",
+          label: "repopulateForm"
+        },
+        {
+          type: "doc",
           id: "api/smart-forms-renderer/functions/repopulateResponse",
           label: "repopulateResponse"
         },
@@ -441,11 +441,6 @@ const typedocSidebar = {
         },
         {
           type: "doc",
-          id: "api/smart-forms-renderer/functions/useCodingCalculatedExpression",
-          label: "useCodingCalculatedExpression"
-        },
-        {
-          type: "doc",
           id: "api/smart-forms-renderer/functions/useDisplayCqfAndCalculatedExpression",
           label: "useDisplayCqfAndCalculatedExpression"
         },
@@ -473,11 +468,6 @@ const typedocSidebar = {
           type: "doc",
           id: "api/smart-forms-renderer/functions/useResponsive",
           label: "useResponsive"
-        },
-        {
-          type: "doc",
-          id: "api/smart-forms-renderer/functions/useStringCalculatedExpression",
-          label: "useStringCalculatedExpression"
         },
         {
           type: "doc",

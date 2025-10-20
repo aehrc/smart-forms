@@ -12,19 +12,22 @@ import IframeContainer from '../../src/react/IframeContainer';
 
 #### Questionnaire-only
 
-<IframeContainer storyId="itemtype-decimal--decimal-basic" initialHeight={120} />
+<IframeContainer storyId="itemtype-decimal--decimal-basic" initialHeight={140} />
 
 #### With Response
 
-<IframeContainer storyId="itemtype-decimal--decimal-basic-response" initialHeight={120} />
+<IframeContainer storyId="itemtype-decimal--decimal-basic-response" initialHeight={140} />
 
 ### Advanced usage
 
 #### Calculations
 
-<IframeContainer storyId="itemtype-decimal--decimal-calculation" initialHeight={352} />
+<IframeContainer
+  storyId="sdc-10-1-3-behavior-calculations-item-type-calculations--decimal-calculation"
+  initialHeight={350}
+/>
 
-If there are any advanced usage scenarios you'd like to see, feel free to [let us know](https://github.com/aehrc/smart-forms/issues/new).
+View more advanced usages in [Storybook's SDC section](https://smartforms.csiro.au/storybook/?path=/docs/sdc-overview--docs).
 
 ### SDC Supported extensions
 
@@ -34,6 +37,9 @@ If there are any advanced usage scenarios you'd like to see, feel free to [let u
 | initialExpression    | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression<br/>- InitialExpression should evaluate to a integer or decimal value.     |
 | calculatedExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression<br/>- CalculatedExpression should evaluate to integer or decimal value. |
 | enableWhenExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression                                                                         |
+| rendering-style      | http://hl7.org/fhir/extensions/StructureDefinition-rendering-style.html                                                                                       |
+| rendering-markdown   | http://hl7.org/fhir/extensions/StructureDefinition-rendering-markdown.html                                                                                    |
+| rendering-xhtml      | http://hl7.org/fhir/StructureDefinition/rendering-xhtml                                                                                                       |
 | hidden               | http://hl7.org/fhir/StructureDefinition/questionnaire-hidden                                                                                                  |
 | entryFormat          | http://hl7.org/fhir/StructureDefinition/entryFormat                                                                                                           |
 | required             | item.required                                                                                                                                                 |

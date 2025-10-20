@@ -31,10 +31,11 @@ import {
   qOpenChoiceRadioAnswerValueSet,
   qSliderStepValue
 } from '../assets/questionnaires';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'SDC/8.1.2 Advanced Control Appearance - Item Control Question',
+  title: 'SDC/9.1.2 Rendering > Control Appearance - itemControl Question',
   component: BuildFormWrapperForStorybook,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []
@@ -45,74 +46,74 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const AutocompleteOpenChoice: Story = {
+export const AutocompleteOpenChoice: Story = createStory({
   args: {
     questionnaire: qOpenChoiceAutocomplete
   }
-};
+}) as Story;
 
-export const DropDownChoiceAnswerOption: Story = {
+export const DropDownChoiceAnswerOption: Story = createStory({
   args: {
     questionnaire: qChoiceDropDownAnswerOption
   }
-};
+}) as Story;
 
-export const DropDownChoiceAnswerValueSet: Story = {
+export const DropDownChoiceAnswerValueSet: Story = createStory({
   args: {
     questionnaire: qChoiceDropDownAnswerValueSet
   }
-};
+}) as Story;
 
-export const CheckboxChoiceAnswerOption: Story = {
+export const CheckboxChoiceAnswerOption: Story = createStory({
   args: {
     questionnaire: qChoiceCheckboxAnswerOption
   }
-};
+}) as Story;
 
-export const CheckboxChoiceAnswerValueSet: Story = {
+export const CheckboxChoiceAnswerValueSet: Story = createStory({
   args: {
     questionnaire: qChoiceCheckboxAnswerValueSet
   }
-};
+}) as Story;
 
-export const CheckboxOpenChoiceAnswerOption: Story = {
+export const CheckboxOpenChoiceAnswerOption: Story = createStory({
   args: {
     questionnaire: qOpenChoiceCheckboxAnswerOption
   }
-};
+}) as Story;
 
-export const CheckboxOpenChoiceAnswerValueSet: Story = {
+export const CheckboxOpenChoiceAnswerValueSet: Story = createStory({
   args: {
     questionnaire: qOpenChoiceCheckboxAnswerValueSet
   }
-};
+}) as Story;
 
-export const RadioChoiceAnswerOption: Story = {
+export const RadioChoiceAnswerOption: Story = createStory({
   args: {
     questionnaire: qChoiceRadioAnswerOption
   }
-};
+}) as Story;
 
-export const RadioChoiceAnswerValueSet: Story = {
+export const RadioChoiceAnswerValueSet: Story = createStory({
   args: {
     questionnaire: qChoiceRadioAnswerValueSet
   }
-};
+}) as Story;
 
-export const RadioOpenChoiceAnswerOption: Story = {
+export const RadioOpenChoiceAnswerOption: Story = createStory({
   args: {
     questionnaire: qOpenChoiceRadioAnswerOption
   }
-};
+}) as Story;
 
-export const RadioOpenChoiceAnswerValueSet: Story = {
+export const RadioOpenChoiceAnswerValueSet: Story = createStory({
   args: {
     questionnaire: qOpenChoiceRadioAnswerValueSet
   }
-};
+}) as Story;
 
-export const SliderInteger: Story = {
+export const SliderInteger: Story = createStory({
   args: {
     questionnaire: qSliderStepValue
   }
-};
+}) as Story;

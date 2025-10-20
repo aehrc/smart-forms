@@ -18,8 +18,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 
-import { findByLinkIdOrLabel, getAnswers, inputUrl, questionnaireFactory } from '../testUtils';
-import { expect, fireEvent } from 'storybook/test';
+import { questionnaireFactory } from '../testUtils';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -34,38 +34,18 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 const targetLinkId = 'website-url';
-const targetText = 'Website URL';
 
 const qUrlBasic = questionnaireFactory([
   {
     linkId: targetLinkId,
     type: 'url',
     repeats: false,
-    text: targetText
+    text: 'Website URL'
   }
 ]);
 
-export const UrlBasic: Story = {
+export const UrlBasic: Story = createStory({
   args: {
     questionnaire: qUrlBasic
-  },
-  play: async ({ canvasElement }) => {
-    await inputUrl(canvasElement, targetLinkId, targetText);
-
-    const result = await getAnswers(targetLinkId);
-    expect(result).toHaveLength(1);
-    expect(result[0]).toEqual(expect.objectContaining({ valueUri: targetText }));
-
-    // Clear value
-    const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
-    fireEvent.click(clearButton as HTMLElement);
-
-    // Here we await for debounced store update
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    const resultAfterClear = await getAnswers(targetLinkId);
-    expect(resultAfterClear).toHaveLength(0);
-    const elementAfterClear = await findByLinkIdOrLabel(canvasElement, targetLinkId);
-    const input = elementAfterClear.querySelector('textarea');
-    expect(input?.value).toBe('');
   }
-};
+}) as Story;

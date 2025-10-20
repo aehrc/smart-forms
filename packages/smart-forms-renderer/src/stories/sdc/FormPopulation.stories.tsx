@@ -28,10 +28,11 @@ import {
 import { mockFhirClient } from '../assets/fhirClient/mockFhirClient';
 import { patSmartForm } from '../assets/patients/PatSmartForm';
 import { pracPrimaryPeter } from '../assets/practitioners/PracPrimaryPeter';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'SDC/12 Form Population',
+  title: 'SDC/14 Form Population',
   component: PrePopWrapperForStorybook,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []
@@ -42,56 +43,56 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const InitialExpression: Story = {
+export const InitialExpression: Story = createStory({
   args: {
     questionnaire: qInitialExpressionBasic,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
   }
-};
+}) as Story;
 
-export const CalculatedExpressionBMICalculatorPrepop: Story = {
+export const CalculatedExpressionBMICalculatorPrepop: Story = createStory({
   args: {
     questionnaire: qCalculatedExpressionBMICalculatorPrepop,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
   }
-};
+}) as Story;
 
-export const CalculatedExpressionCvdRiskCalculatorPrepop: Story = {
+export const CalculatedExpressionCvdRiskCalculatorPrepop: Story = createStory({
   args: {
     questionnaire: qCalculatedExpressionCvdRiskCalculatorPrepop,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
   }
-};
+}) as Story;
 
-export const ItemPopulationContextHomeAddress: Story = {
+export const ItemPopulationContextHomeAddress: Story = createStory({
   args: {
     questionnaire: qItemPopulationContextHomeAddress,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
   }
-};
+}) as Story;
 
-export const ItemPopulationContextMedicalHistory: Story = {
+export const ItemPopulationContextMedicalHistory: Story = createStory({
   args: {
     questionnaire: qItemPopulationContextMedicalHistory,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
   }
-};
+}) as Story;
 
-export const SourceQueriesBMICalculator: Story = {
+export const SourceQueriesBMICalculator: Story = createStory({
   args: {
     questionnaire: qSourceQueriesBMICalculator,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
   }
-};
+}) as Story;

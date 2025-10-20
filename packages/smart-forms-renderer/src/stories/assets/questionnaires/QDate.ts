@@ -15,55 +15,11 @@
  * limitations under the License.
  */
 
-import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-
-export const qDateBasic: Questionnaire = {
-  resourceType: 'Questionnaire',
-  id: 'DateBasic',
-  name: 'DateBasic',
-  title: 'Date Basic',
-  version: '0.1.0',
-  status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/components/date/basic',
-  item: [
-    {
-      linkId: 'dob',
-      type: 'date',
-      repeats: false,
-      text: 'Date of birth'
-    }
-  ]
-};
-
-export const qrDateBasicResponse: QuestionnaireResponse = {
-  resourceType: 'QuestionnaireResponse',
-  status: 'in-progress',
-  item: [
-    {
-      linkId: 'dob',
-      text: 'Date of birth',
-      answer: [
-        {
-          valueDate: '1990-01-01'
-        }
-      ]
-    }
-  ],
-  questionnaire: 'https://smartforms.csiro.au/docs/components/date/basic'
-};
+import type { Questionnaire } from 'fhir/r4';
 
 export const qDateCalculation: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'DateCalculation',
-  name: 'DateCalculation',
-  title: 'Date Calculation',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/components/date/calculation',
   extension: [
     {
       url: 'http://hl7.org/fhir/StructureDefinition/variable',

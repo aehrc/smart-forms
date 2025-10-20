@@ -3,7 +3,9 @@
 > **SmartFormsRenderer**(`props`): `Element`
 
 A self-initialising wrapper around the BaseRenderer rendering engine.
-Will be deprecated in version 1.0.0. For alternative usage, see:
+
+This component is now deprecated. You can still use it, but it might not be compatible with renderer appearance and behaviour customisation via via [rendererConfigStore](../variables/rendererConfigStore.md).
+For alternative usage, see:
 - https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/storybookWrappers/InitialiseFormWrapperForStorybook.tsx#L40-L57
 
 ## Parameters
@@ -18,4 +20,4 @@ Will be deprecated in version 1.0.0. For alternative usage, see:
 
 ## See
 
-SmartFormsRendererProps for props.
+[SmartFormsRendererProps](../interfaces/SmartFormsRendererProps.md) for props.

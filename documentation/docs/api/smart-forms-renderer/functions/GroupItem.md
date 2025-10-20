@@ -1,6 +1,6 @@
 # Function: GroupItem()
 
-> **GroupItem**(`props`): `null` \| `Element`
+> **GroupItem**(`props`): `Element` \| `null`
 
 ## Parameters
 
@@ -10,4 +10,4 @@
 
 ## Returns
 
-`null` \| `Element`
+`Element` \| `null`

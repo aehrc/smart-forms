@@ -39,7 +39,7 @@ import type { Variables } from '../interfaces';
 import type { ComputedNewAnswers } from '../interfaces/computedUpdates.interface';
 import { createQuestionnaireResponseItemMap } from './questionnaireResponseStoreUtils/updatableResponseItems';
 import { nanoid } from 'nanoid';
-import { getDecimalPrecision } from './extensions';
+import { getDecimalPrecision, getQuantityUnit } from './extensions';
 import { convertCodingsToAnswerOptions, getRelevantCodingProperties } from './choice';
 import { getCodingsForAnswerValueSet } from './valueSet';
 import { questionnaireStore } from '../stores';
@@ -716,7 +716,16 @@ function parseValueToAnswer(
         value = parseFloat(value.toFixed(precision));
       }
 
-      return { valueQuantity: { value: value } };
+      const quantityUnit = getQuantityUnit(qItem);
+
+      return {
+        valueQuantity: {
+          value,
+          ...(quantityUnit?.valueCoding?.code && { unit: quantityUnit.valueCoding.display }),
+          ...(quantityUnit?.valueCoding?.system && { system: quantityUnit.valueCoding.system }),
+          ...(quantityUnit?.valueCoding?.code && { code: quantityUnit.valueCoding.code })
+        }
+      };
     }
 
     // In this case value is expected to be a Quantity object

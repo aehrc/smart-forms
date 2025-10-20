@@ -7,7 +7,7 @@
 | Parameter | Type |
 | ------ | ------ |
 | `qItem` | `QuestionnaireItem` |
-| `feedbackFromParent` | `undefined` \| `string` |
+| `feedbackFromParent` | `string` \| `undefined` |
 
 ## Returns
 

@@ -20,7 +20,6 @@ const config: Config = {
   projectName: '', // Usually your repo name.\
 
   onBrokenLinks: 'warn',
-  onBrokenMarkdownLinks: 'throw',
 
   trailingSlash: false,
 
@@ -52,6 +51,12 @@ const config: Config = {
     ]
   ],
 
+
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: 'throw',
+    }
+  },
   themeConfig: {
     // Replace with your project's social card
     image: 'img/logo-sf.svg',
@@ -121,10 +126,6 @@ const config: Config = {
           title: 'Tools',
           items: [
             {
-              label: 'App Dashboard',
-              href: 'https://smartforms.csiro.au/'
-            },
-            {
               label: 'Playground',
               href: 'https://smartforms.csiro.au/playground'
             },
@@ -147,7 +148,7 @@ const config: Config = {
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus'
+              href: 'https://github.com/aehrc/smart-forms'
             }
           ]
         }
@@ -185,6 +186,7 @@ const config: Config = {
 
   themes: ['@docusaurus/theme-live-codeblock'],
   plugins: [
+    // Webpack plugin config: resolve react alias
     () => ({
       name: 'resolve-react',
       configureWebpack() {
@@ -248,6 +250,27 @@ const config: Config = {
         entryPoints: '../packages/sdc-assemble/src/index.ts',
         tsconfig: '../packages/sdc-assemble/tsconfig.json',
         out: 'docs/api/sdc-assemble',
+        excludeTags: ['@author'],
+        sidebar: {
+          autoConfiguration: true,
+          pretty: true
+        },
+        plugin: ['typedoc-plugin-frontmatter'],
+        indexFormat: 'table',
+        disableSources: true,
+        parametersFormat: 'table',
+        enumMembersFormat: 'table',
+        readme: 'none'
+      }
+    ],
+    [
+      'docusaurus-plugin-typedoc',
+      // Options
+      {
+        id: 'sdc-template-extract',
+        entryPoints: '../packages/sdc-template-extract/src/index.ts',
+        tsconfig: '../packages/sdc-template-extract/tsconfig.json',
+        out: 'docs/api/sdc-template-extract',
         excludeTags: ['@author'],
         sidebar: {
           autoConfiguration: true,
