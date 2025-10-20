@@ -1,7 +1,12 @@
 # Change log
 
-This log documents significant changes for the [@aehrc/smart-forms-renderer](https://www.npmjs.com/package/@aehrc/smart-forms-renderer). This project follows
+This log documents changes for the [@aehrc/smart-forms-renderer](https://www.npmjs.com/package/@aehrc/smart-forms-renderer). This project follows
 [Semantic Versioning](http://semver.org/).
+
+For changelogs of other libraries, please refer to their respective repositories under the /packages folder:
+- SDC-Populate: [/packages/sdc-populate/CHANGELOG.md](/packages/sdc-populate/CHANGELOG.md)
+- SDC-Assemble: [/packages/sdc-assemble/CHANGELOG.md](/packages/sdc-assemble/CHANGELOG.md)
+- SDC-Template-Extract: [/packages/sdc-template-extract/CHANGELOG.md](/packages/sdc-template-extract/CHANGELOG.md)
 
 Changelog only includes changes from version 0.36.0 onwards.
 
