@@ -348,16 +348,8 @@ function Playground() {
       }
     );
     setTemplateExtractResult(extractResult.extractedBundle);
-
-    // Handle issuesParameter
-    if (extractResult.issues) {
-      setTemplateExtractIssues(extractResult.issues);
-    }
-
-    // Handle customDebugInfoParameter
-    if (extractResult.debugInfo) {
-      setTemplateExtractDebugInfo(extractResult.debugInfo);
-    }
+    setTemplateExtractIssues(extractResult.issues ?? null);
+    setTemplateExtractDebugInfo(extractResult.debugInfo ?? null);
   }
 
   return (
