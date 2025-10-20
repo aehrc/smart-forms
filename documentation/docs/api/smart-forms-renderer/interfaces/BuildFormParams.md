@@ -61,7 +61,7 @@ Whether to apply read-only mode to all items in the form view.
 
 > `optional` **rendererConfigOptions**: [`RendererConfig`](RendererConfig.md)
 
-Optional renderer styling configurations to have fine-grained control over the styling and behaviour of the renderer.
+Optional renderer styling and behavioural configurations to have fine-grained control over the styling and behaviour of the renderer.
 
 ***
 

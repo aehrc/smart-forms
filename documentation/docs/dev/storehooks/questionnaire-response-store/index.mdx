@@ -4,16 +4,11 @@ sidebar_position: 3
 
 # Questionnaire Response Store
 
-The QuestionnaireResponseStore exposes the following properties:
+The QuestionnaireResponseStore is used to interact with the user response state and input validation.
 
-- **sourceResponse**
-- **updatableResponse**
-- **updatableResponseItems**
-- **formChangesHistory**
-- **invalidItems**
-- **responseIsValid**
+Refer to the [API Reference](/docs/api/smart-forms-renderer/interfaces/QuestionnaireResponseStoreType) to view all properties.
 
-Here's how you use the store hook in your React functional component:
+Here's how you use the store hook in your React functional component.
 
 ```
 import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
@@ -26,10 +21,6 @@ function App() {
   );
 }
 ```
-
-There are some live examples on the following pages that demonstrate how to use the hooks.
-
-Refer to the [API Reference](/docs/api/smart-forms-renderer/interfaces/QuestionnaireResponseStoreType) for more information on each property.
 
 :::note
 

@@ -19,14 +19,7 @@ import type { Questionnaire } from 'fhir/r4';
 
 export const qItemControlDisplayContextDisplay: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'ItemControlDisplayContextDisplay',
-  name: 'ItemControlDisplayContextDisplay',
-  title: 'Item Control Display Context Display',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-15',
-  url: 'https://smartforms.csiro.au/docs/advanced/control/item-control-display-context-display',
   item: [
     {
       extension: [
@@ -334,14 +327,7 @@ export const qItemControlDisplayContextDisplay: Questionnaire = {
 
 export const qCalculatedExpressionBMICalculator: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'CalculatedExpressionBMICalculator',
-  name: 'CalculatedExpressionBMICalculator',
-  title: 'Calculated Expression BMI Calculator',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/choice-restrictions/calculated-expression-1',
   extension: [
     {
       url: 'http://hl7.org/fhir/StructureDefinition/variable',
@@ -435,14 +421,7 @@ export const qCalculatedExpressionBMICalculator: Questionnaire = {
 
 export const qBooleanBasic: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'BooleanBasic',
-  name: 'BooleanBasic',
-  title: 'Boolean Basic',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/components/boolean/basic',
   item: [
     {
       linkId: 'eaten',
@@ -455,14 +434,7 @@ export const qBooleanBasic: Questionnaire = {
 
 export const qChoiceAnswerValueSetBasic: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'ChoiceAnswerValueSetBasic',
-  name: 'ChoiceAnswerValueSetBasic',
-  title: 'Choice AnswerValueSet Basic',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/components/choice/answervalueset-basic',
   item: [
     {
       linkId: 'gender',
