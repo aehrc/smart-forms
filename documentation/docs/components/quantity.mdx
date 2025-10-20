@@ -47,14 +47,17 @@ Unit, code and system will default to the unit provided via the "questionnaire-u
 
 :::
 
-<IframeContainer storyId="sdc-10-1-3-behavior-calculations-item-type-calculations--quantity-calculation" initialHeight={280} />
+<IframeContainer
+  storyId="sdc-10-1-3-behavior-calculations-item-type-calculations--quantity-calculation"
+  initialHeight={280}
+/>
 
 View more advanced usages in [Storybook's SDC section](https://smartforms.csiro.au/storybook/?path=/docs/sdc-overview--docs).
 
 ### SDC Supported extensions
 
 | Code                 | Usage                                                                                                                                                                                                                                                                                                                     |
-|----------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | variable             | http://hl7.org/fhir/StructureDefinition/variable                                                                                                                                                                                                                                                                          |
 | initialExpression    | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression<br/>- InitialExpression should evaluate to a Quantity value.                                                                                                                                                                           |
 | calculatedExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression<br/>- CalculatedExpression should evaluate to an integer or decimal value (valueQuantity.value). Unit, code and system will default to the unit provided via extension "http://hl7.org/fhir/StructureDefinition/questionnaire-unit" |

@@ -2,11 +2,6 @@
 sidebar_position: 2
 ---
 
-
-
-
-
-
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import IframeContainer from '../../src/react/IframeContainer';
@@ -281,16 +276,18 @@ It exists mainly to demonstrate how you can use the `buildForm()` function. In a
 Below is the output of the above modified code. This time, you need to click on the "Build Form" button to see the questionnaireResponse rendered.
 The button will look different in the output, but it still functions the same way.
 
-<Tabs
-  defaultValue="output"
-  values={[
-    { label: 'Output', value: 'output' }
-  ]}>
+<Tabs defaultValue="output" values={[{ label: 'Output', value: 'output' }]}>
   <TabItem value="output">
-    <IframeContainer storyId="testing-build-form-button-tester--build-form-button-tester" initialHeight={1400}  />
+    <IframeContainer
+      storyId="testing-build-form-button-tester--build-form-button-tester"
+      initialHeight={1400}
+    />
   </TabItem>
 </Tabs>
-_Source code used in Storybook: [BuildFormButtonTesterWrapperForStorybook.tsx](https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/storybookWrappers/BuildFormButtonTesterWrapperForStorybook.tsx) and [BuildFormButtonForStorybook.tsx](https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/storybookWrappers/BuildFormButtonForStorybook.tsx)_
+_Source code used in Storybook:
+[BuildFormButtonTesterWrapperForStorybook.tsx](https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/storybookWrappers/BuildFormButtonTesterWrapperForStorybook.tsx)
+and
+[BuildFormButtonForStorybook.tsx](https://github.com/aehrc/smart-forms/blob/main/packages/smart-forms-renderer/src/stories/storybookWrappers/BuildFormButtonForStorybook.tsx)_
 
 ### Pre-Population Usage
 

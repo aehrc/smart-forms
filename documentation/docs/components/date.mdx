@@ -20,12 +20,14 @@ It uses the FHIR [date](https://hl7.org/fhir/r4/datatypes.html#date) data type, 
 
 <IframeContainer storyId="itemtype-date--date-basic-response" initialHeight={140} />
 
-
 ### Advanced usage
 
 #### Calculations
 
-<IframeContainer storyId="sdc-10-1-3-behavior-calculations-item-type-calculations--date-calculation" initialHeight={350} />
+<IframeContainer
+  storyId="sdc-10-1-3-behavior-calculations-item-type-calculations--date-calculation"
+  initialHeight={350}
+/>
 
 :::tip
 
@@ -36,7 +38,7 @@ The **date** and **dateTime** component has built in validation based on the FHI
 ### SDC Supported extensions
 
 | Code                 | Usage                                                                                                                                                                             |
-|----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | variable             | http://hl7.org/fhir/StructureDefinition/variable                                                                                                                                  |
 | initialExpression    | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression<br/>- InitialExpression should evaluate to a date value.                                       |
 | calculatedExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression<br/>- CalculatedExpression should evaluate to a date string of YYYY, YYYY-MM or YYYY-MM-DD. |

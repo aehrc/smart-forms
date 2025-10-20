@@ -23,7 +23,6 @@ With Response
   initialHeight={360}
 />
 
-
 #### Answer Value Set
 
 Questionnaire-only
@@ -41,7 +40,10 @@ With Response
 
 #### Answer Option - Calculations
 
-<IframeContainer storyId="sdc-10-1-3-behavior-calculations-item-type-calculations--choice-answer-option-calculation" initialHeight={230} />
+<IframeContainer
+  storyId="sdc-10-1-3-behavior-calculations-item-type-calculations--choice-answer-option-calculation"
+  initialHeight={230}
+/>
 
 #### Answer Value Set - Calculations
 
@@ -52,7 +54,6 @@ With Response
 
 View more advanced usages in [Storybook's SDC section](https://smartforms.csiro.au/storybook/?path=/docs/sdc-overview--docs).
 
-
 :::note
 
 The above calculation examples uses **valueCoding.code**[^1] as the FHIRPath expression result.
@@ -61,7 +62,7 @@ The above calculation examples uses **valueCoding.code**[^1] as the FHIRPath exp
 ### SDC Supported extensions
 
 | Code                         | Usage                                                                                                                                                                                                                                                    |
-|------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | variable                     | http://hl7.org/fhir/StructureDefinition/variable                                                                                                                                                                                                         |
 | answerExpression             | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-answerExpression<br/>- Only tested with answerValueSet.                                                                                                                                 |
 | initialExpression            | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression<br/>- InitialExpression should evaluate to a coding value.                                                                                                            |
