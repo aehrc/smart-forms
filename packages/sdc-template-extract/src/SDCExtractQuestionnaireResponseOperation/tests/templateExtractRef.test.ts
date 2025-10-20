@@ -37,7 +37,7 @@ describe('hasTemplateExtractRefExtension', () => {
     };
 
     const result = hasTemplateExtractRefExtension(item);
-    expect(result).toEqual({ templateExtractRef: null });
+    expect(result).toEqual({ templateExtractRefs: [] });
   });
 
   it('returns null if extension is present but not the templateExtract one', () => {
@@ -49,7 +49,7 @@ describe('hasTemplateExtractRefExtension', () => {
     };
 
     const result = hasTemplateExtractRefExtension(item);
-    expect(result).toEqual({ templateExtractRef: null });
+    expect(result).toEqual({ templateExtractRefs: [] });
   });
 
   it('returns a valid templateExtractRef when template slice is present with valid reference', () => {
@@ -67,10 +67,46 @@ describe('hasTemplateExtractRefExtension', () => {
     };
 
     const result = hasTemplateExtractRefExtension(item);
-    expect(result.templateExtractRef).toEqual({
-      templateId: 'contained-template'
-    });
-    expect(result.warning).toBeUndefined();
+    expect(result.templateExtractRefs).toEqual([
+      {
+        templateId: 'contained-template'
+      }
+    ]);
+    expect(result.warnings).toBeUndefined();
+  });
+
+  it('returns multiple valid templateExtractRefs when template slice is present with valid references', () => {
+    const item: QuestionnaireItem = {
+      linkId: 'q1',
+      type: 'string',
+      extension: [
+        buildExtension([
+          {
+            url: 'template',
+            valueReference: { reference: '#contained-template-1' }
+          }
+        ]),
+        buildExtension([
+          {
+            url: 'template',
+            valueReference: { reference: '#contained-template-2' }
+          }
+        ])
+      ]
+    };
+
+    const result = hasTemplateExtractRefExtension(item);
+    expect(result.templateExtractRefs).toEqual(
+      expect.arrayContaining([
+        {
+          templateId: 'contained-template-1'
+        },
+        {
+          templateId: 'contained-template-2'
+        }
+      ])
+    );
+    expect(result.warnings).toBeUndefined();
   });
 
   it('returns a warning if template reference does not start with #', () => {
@@ -88,8 +124,8 @@ describe('hasTemplateExtractRefExtension', () => {
     };
 
     const result = hasTemplateExtractRefExtension(item);
-    expect(result.templateExtractRef).toBeNull();
-    expect(result.warning?.details?.text).toMatch(/ missing required "template"/);
+    expect(result.templateExtractRefs).toHaveLength(0);
+    expect(result.warnings?.[0]?.details?.text).toMatch(/ missing required "template"/);
   });
 
   it('returns a warning if template slice is missing', () => {
@@ -100,8 +136,8 @@ describe('hasTemplateExtractRefExtension', () => {
     };
 
     const result = hasTemplateExtractRefExtension(item);
-    expect(result.templateExtractRef).toBeNull();
-    expect(result.warning?.details?.text).toMatch(/missing required "template"/);
+    expect(result.templateExtractRefs).toHaveLength(0);
+    expect(result.warnings?.[0]?.details?.text).toMatch(/missing required "template"/);
   });
 
   it('returns a warning if template slice appears more than once', () => {
@@ -117,8 +153,8 @@ describe('hasTemplateExtractRefExtension', () => {
     };
 
     const result = hasTemplateExtractRefExtension(item);
-    expect(result.templateExtractRef).toEqual({ templateId: 'id1' });
-    expect(result.warning?.details?.text).toMatch(/template" must appear exactly once/);
+    expect(result.templateExtractRefs).toEqual([{ templateId: 'id1' }]);
+    expect(result.warnings?.[0]?.details?.text).toMatch(/template" must appear exactly once/);
   });
 
   it('returns a warning if a slice is duplicated (0..1 cardinality)', () => {
@@ -135,8 +171,8 @@ describe('hasTemplateExtractRefExtension', () => {
     };
 
     const result = hasTemplateExtractRefExtension(item);
-    expect(result.templateExtractRef?.templateId).toBe('valid');
-    expect(result.warning?.details?.text).toMatch(/fullUrl" must not appear more than once/);
+    expect(result.templateExtractRefs?.[0]?.templateId).toBe('valid');
+    expect(result.warnings?.[0]?.details?.text).toMatch(/fullUrl" must not appear more than once/);
   });
 
   it('returns a warning if a slice has nested extensions', () => {
@@ -155,8 +191,8 @@ describe('hasTemplateExtractRefExtension', () => {
     };
 
     const result = hasTemplateExtractRefExtension(item);
-    expect(result.templateExtractRef?.templateId).toBe('valid');
-    expect(result.warning?.details?.text).toMatch(/must not have nested extensions/);
+    expect(result.templateExtractRefs?.[0]?.templateId).toBe('valid');
+    expect(result.warnings?.[0]?.details?.text).toMatch(/must not have nested extensions/);
   });
 
   it('handles all slice types correctly (with resourceId)', () => {
@@ -177,16 +213,18 @@ describe('hasTemplateExtractRefExtension', () => {
     };
 
     const result = hasTemplateExtractRefExtension(item);
-    expect(result.warning).toBeUndefined();
-    expect(result.templateExtractRef).toEqual({
-      templateId: 'x',
-      fullUrl: 'url',
-      resourceId: 'res',
-      ifNoneMatch: 'etag',
-      ifModifiedSince: 'date',
-      ifMatch: 'match',
-      ifNoneExist: 'condition'
-    });
+    expect(result.warnings).toBeUndefined();
+    expect(result.templateExtractRefs).toEqual([
+      {
+        templateId: 'x',
+        fullUrl: 'url',
+        resourceId: 'res',
+        ifNoneMatch: 'etag',
+        ifModifiedSince: 'date',
+        ifMatch: 'match',
+        ifNoneExist: 'condition'
+      }
+    ]);
   });
 
   it('handles all slice types correctly (with patchRequestUrl)', () => {
@@ -210,15 +248,17 @@ describe('hasTemplateExtractRefExtension', () => {
     };
 
     const result = hasTemplateExtractRefExtension(item);
-    expect(result.warning).toBeUndefined();
-    expect(result.templateExtractRef).toEqual({
-      templateId: 'x',
-      fullUrl: 'url',
-      patchRequestUrl: 'Observation/res',
-      ifNoneMatch: 'etag',
-      ifModifiedSince: 'date',
-      ifMatch: 'match',
-      ifNoneExist: 'condition'
-    });
+    expect(result.warnings).toBeUndefined();
+    expect(result.templateExtractRefs).toEqual([
+      {
+        templateId: 'x',
+        fullUrl: 'url',
+        patchRequestUrl: 'Observation/res',
+        ifNoneMatch: 'etag',
+        ifModifiedSince: 'date',
+        ifMatch: 'match',
+        ifNoneExist: 'condition'
+      }
+    ]);
   });
 });
