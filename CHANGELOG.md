@@ -59,6 +59,9 @@ For smooth migration, a migration guide is provided at [MIGRATION-v1.0.md](MIGRA
 - `useStringCalculatedExpression` and `useCodingCalculatedExpression` hooks are removed. CalculatedExpressions are now triggered via an internal task queue. If you are using these hooks in a component override, you can remove the hook safely.
 - `objectIsCoding` library function is removed.
 
+### Fixed
+- Take questionnaire-unit into account when updating QR via Quantity item calculatedExpressions.
+
 ## [0.45.1] - 2025-02-25
 ### Fixed
 - Fixed an issue where radio buttons and checkboxes are unreadable on mobile viewports.
