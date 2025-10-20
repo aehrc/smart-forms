@@ -1,4 +1,4 @@
-import type { OperationOutcomeIssue, Questionnaire, QuestionnaireItem } from 'fhir/r4';
+import type { Extension, OperationOutcomeIssue, Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import type { TemplateExtractReference } from '../interfaces/templateExtractReference.interface';
 import {
   isFullUrlExtensionSlice,
@@ -13,11 +13,11 @@ import {
 import { createInvalidWarningIssue } from './operationOutcome';
 
 /**
- * Parses and validates the `sdc-questionnaire-templateExtract` extension on a Questionnaire or QuestionnaireItem.
+ * Parses and validates `sdc-questionnaire-templateExtract` extensions on a Questionnaire or QuestionnaireItem.
  *
- * This function extracts a structured `TemplateExtractReference` object from the extension if present,
+ * This function extracts a structured `TemplateExtractReference` object from any extensions if present,
  * and verifies cardinality rules and format constraints for each known slice (e.g. `template`, `fullUrl`, etc.).
- * It also collects any violations into a returned `OperationOutcomeIssue` warning.
+ * It also collects any violations into returned `OperationOutcomeIssue` warnings.
  *
  * Known validation rules:
  * - `template` slice must appear exactly once and must reference a contained resource (`#id` format).
@@ -27,33 +27,175 @@ import { createInvalidWarningIssue } from './operationOutcome';
  * @param {QuestionnaireItem | Questionnaire} item - The FHIR item to check for the extension.
  *
  * @returns {{
- *   templateExtractRef: TemplateExtractReference | null,
- *   warning?: OperationOutcomeIssue
+ *   templateExtractRefs: TemplateExtractReference[],
+ *   warnings?: OperationOutcomeIssue[]
  * }}
  */
 export function hasTemplateExtractRefExtension(item: QuestionnaireItem | Questionnaire): {
-  templateExtractRef: TemplateExtractReference | null;
-  warning?: OperationOutcomeIssue;
+  templateExtractRefs: TemplateExtractReference[];
+  warnings?: OperationOutcomeIssue[];
 } {
   if (!item.extension || item.extension.length === 0) {
     return {
-      templateExtractRef: null
+      templateExtractRefs: []
     };
   }
 
-  const templateExtractRefExtension = item.extension.find(
+  const templateExtractRefExtension = item.extension.filter(
     (extension) =>
       extension.url ===
       'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtract'
   );
 
-  if (!templateExtractRefExtension) {
-    return {
-      templateExtractRef: null
-    };
+  const itemId = 'linkId' in item ? item.linkId : 'QuestionnaireLevel';
+
+  return templateExtractRefExtension
+    .map((ext) => validateAndExtractTemplateExtractReference(ext, itemId))
+    .reduce(
+      (acc, { templateExtractRef, warning }) => {
+        templateExtractRef && acc.templateExtractRefs.push(templateExtractRef);
+
+        if (warning) {
+          if (!acc.warnings) {
+            acc.warnings = [];
+          }
+          acc.warnings.push(warning);
+        }
+        return acc;
+      },
+      {
+        templateExtractRefs: []
+      } as {
+        templateExtractRefs: TemplateExtractReference[];
+        warnings?: OperationOutcomeIssue[];
+      }
+    );
+}
+
+/**
+ * Checks whether a Questionnaire or any of its items contains a valid `sdc-questionnaire-templateExtract` extension with a required `template` slice.
+ * Array.prototype.some() is short-circuiting, so it will return true as soon as it finds a valid extension.
+ *
+ * @param questionnaire - The FHIR Questionnaire to check.
+ * @returns `true` if at least one valid template extract reference exists.
+ */
+export function canBeTemplateExtracted(questionnaire: Questionnaire): boolean {
+  // Check Questionnaire-level extension
+  const { templateExtractRefs } = hasTemplateExtractRefExtension(questionnaire);
+  if (templateExtractRefs?.length) {
+    return true;
   }
 
-  const itemId = 'linkId' in item ? item.linkId : 'QuestionnaireLevel';
+  // Check item-level extensions recursively
+  if (questionnaire.item) {
+    return questionnaire.item.some((item) => hasTemplateExtractRefExtensionRecursive(item));
+  }
+
+  return false;
+}
+/**
+ * Recursively checks whether a `QuestionnaireItem` or any of its child items contains a `sdc-questionnaire-templateExtract` extension with a required `template` slice.
+ * Array.prototype.some() is short-circuiting, so it will return true as soon as it finds a valid extension.
+ */
+function hasTemplateExtractRefExtensionRecursive(item: QuestionnaireItem): boolean {
+  const { templateExtractRefs } = hasTemplateExtractRefExtension(item);
+  if (templateExtractRefs?.length) {
+    return true;
+  }
+
+  return item.item?.some((child) => hasTemplateExtractRefExtensionRecursive(child)) ?? false;
+}
+
+/**
+ * Traverses a FHIR Questionnaire and collects all `sdc-questionnaire-templateExtract` extensions
+ * that contain a required `template` slice. Also includes the Questionnaire-level extension if present.
+ *
+ * @param questionnaire - The FHIR Questionnaire resource to process.
+ * @returns A Map where each key is a `QuestionnaireItem.linkId`, or 'QuestionnaireLevel', and the value is the extract template slice set.
+ */
+export function collectTemplateExtractRefs(questionnaire: Questionnaire): {
+  templateExtractRefMap: Map<string, TemplateExtractReference[]>;
+  templateExtractRefWarnings: OperationOutcomeIssue[];
+} {
+  const templateExtractRefMap = new Map<string, TemplateExtractReference[]>();
+  const templateExtractRefWarnings: OperationOutcomeIssue[] = [];
+
+  // Handle Questionnaire-level extension
+  const { templateExtractRefs, warnings } = hasTemplateExtractRefExtension(questionnaire);
+  if (templateExtractRefs?.length) {
+    templateExtractRefMap.set('QuestionnaireLevel', templateExtractRefs);
+  }
+
+  if (warnings) {
+    templateExtractRefWarnings.push(...warnings);
+  }
+
+  // Handle item-level extensions
+  if (questionnaire.item) {
+    for (const item of questionnaire.item) {
+      collectTemplateExtractRefRecursive(item, templateExtractRefMap, templateExtractRefWarnings);
+    }
+  }
+
+  return { templateExtractRefMap, templateExtractRefWarnings };
+}
+
+/**
+ * Recursively walks through a QuestionnaireItem tree, extracting `templateExtract` extensions
+ * and populating a map with entries where the required `template` slice exists.
+ *
+ * @param qItem - The QuestionnaireItem to evaluate.
+ * @param templateExtractRefMap - A Map to populate with extracted template slices, keyed by `linkId`.
+ * @param templateExtractRefWarnings - An array to collect any cardinality-related warnings encountered during collection. Each warning is an OperationOutcomeIssue describing missing or extra extensions within a `templateExtract` slice.
+ */
+function collectTemplateExtractRefRecursive(
+  qItem: QuestionnaireItem,
+  templateExtractRefMap: Map<string, TemplateExtractReference[]>,
+  templateExtractRefWarnings: OperationOutcomeIssue[]
+): void {
+  const { templateExtractRefs, warnings } = hasTemplateExtractRefExtension(qItem);
+  if (templateExtractRefs?.length) {
+    templateExtractRefMap.set(qItem.linkId, templateExtractRefs); // Cast is safe because `template` is required
+  }
+
+  warnings && templateExtractRefWarnings.push(...warnings);
+
+  if (qItem.item) {
+    for (const childQItem of qItem.item) {
+      collectTemplateExtractRefRecursive(
+        childQItem,
+        templateExtractRefMap,
+        templateExtractRefWarnings
+      );
+    }
+  }
+}
+
+/**
+ * Extracts a structured `TemplateExtractReference` object from the given templateExtract extension,
+ * and verifies cardinality rules and format constraints for each known slice (e.g. `template`, `fullUrl`, etc.).
+ * It also collects any violations into a returned `OperationOutcomeIssue` warning.
+ *
+ * Known validation rules:
+ * - `template` slice must appear exactly once and must reference a contained resource (`#id` format).
+ * - All slice URLs (except `template`) must occur at most once (0..1 cardinality).
+ * - No nested extensions are allowed within any slice.
+ *
+ * @param {Extension} templateExtractRefExtension - The templateExtract extension.
+ * @param {string} itemId - The linkId of the QuestionnaireItem or 'QuestionnaireLevel' for Questionnaire-level extensions.
+ *
+ * @returns {{
+ *   templateExtractRef: TemplateExtractReference | null,
+ *   warning?: OperationOutcomeIssue
+ * }}
+ */
+function validateAndExtractTemplateExtractReference(
+  templateExtractRefExtension: Extension,
+  itemId: string
+): {
+  templateExtractRef: TemplateExtractReference | null;
+  warning?: OperationOutcomeIssue;
+} {
   const templateExtractRefSlices = templateExtractRefExtension.extension ?? [];
   const cardinalityWarningStrings: string[] = [];
   let templateCount = 0;
@@ -163,105 +305,4 @@ export function hasTemplateExtractRefExtension(item: QuestionnaireItem | Questio
     templateExtractRef: templateExtractRef as TemplateExtractReference,
     ...(warning && { warning: warning })
   };
-}
-
-/**
- * Checks whether a Questionnaire or any of its items contains a valid `sdc-questionnaire-templateExtract` extension with a required `template` slice.
- * Array.prototype.some() is short-circuiting, so it will return true as soon as it finds a valid extension.
- *
- * @param questionnaire - The FHIR Questionnaire to check.
- * @returns `true` if at least one valid template extract reference exists.
- */
-export function canBeTemplateExtracted(questionnaire: Questionnaire): boolean {
-  // Check Questionnaire-level extension
-  const { templateExtractRef } = hasTemplateExtractRefExtension(questionnaire);
-  if (templateExtractRef) {
-    return true;
-  }
-
-  // Check item-level extensions recursively
-  if (questionnaire.item) {
-    return questionnaire.item.some((item) => hasTemplateExtractRefExtensionRecursive(item));
-  }
-
-  return false;
-}
-/**
- * Recursively checks whether a `QuestionnaireItem` or any of its child items contains a `sdc-questionnaire-templateExtract` extension with a required `template` slice.
- * Array.prototype.some() is short-circuiting, so it will return true as soon as it finds a valid extension.
- */
-function hasTemplateExtractRefExtensionRecursive(item: QuestionnaireItem): boolean {
-  const { templateExtractRef } = hasTemplateExtractRefExtension(item);
-  if (templateExtractRef) {
-    return true;
-  }
-
-  return item.item?.some((child) => hasTemplateExtractRefExtensionRecursive(child)) ?? false;
-}
-
-/**
- * Traverses a FHIR Questionnaire and collects all `sdc-questionnaire-templateExtract` extensions
- * that contain a required `template` slice. Also includes the Questionnaire-level extension if present.
- *
- * @param questionnaire - The FHIR Questionnaire resource to process.
- * @returns A Map where each key is a `QuestionnaireItem.linkId`, or 'QuestionnaireLevel', and the value is the extract template slice set.
- */
-export function collectTemplateExtractRefs(questionnaire: Questionnaire): {
-  templateExtractRefMap: Map<string, TemplateExtractReference>;
-  templateExtractRefWarnings: OperationOutcomeIssue[];
-} {
-  const templateExtractRefMap = new Map<string, TemplateExtractReference>();
-  const templateExtractRefWarnings: OperationOutcomeIssue[] = [];
-
-  // Handle Questionnaire-level extension
-  const { templateExtractRef, warning } = hasTemplateExtractRefExtension(questionnaire);
-  if (templateExtractRef) {
-    templateExtractRefMap.set('QuestionnaireLevel', templateExtractRef);
-  }
-
-  if (warning) {
-    templateExtractRefWarnings.push(warning);
-  }
-
-  // Handle item-level extensions
-  if (questionnaire.item) {
-    for (const item of questionnaire.item) {
-      collectTemplateExtractRefRecursive(item, templateExtractRefMap, templateExtractRefWarnings);
-    }
-  }
-
-  return { templateExtractRefMap, templateExtractRefWarnings };
-}
-
-/**
- * Recursively walks through a QuestionnaireItem tree, extracting `templateExtract` extensions
- * and populating a map with entries where the required `template` slice exists.
- *
- * @param qItem - The QuestionnaireItem to evaluate.
- * @param templateExtractRefMap - A Map to populate with extracted template slices, keyed by `linkId`.
- * @param templateExtractRefWarnings - An array to collect any cardinality-related warnings encountered during collection. Each warning is an OperationOutcomeIssue describing missing or extra extensions within a `templateExtract` slice.
- */
-function collectTemplateExtractRefRecursive(
-  qItem: QuestionnaireItem,
-  templateExtractRefMap: Map<string, TemplateExtractReference>,
-  templateExtractRefWarnings: OperationOutcomeIssue[]
-): void {
-  const { templateExtractRef, warning } = hasTemplateExtractRefExtension(qItem);
-  if (templateExtractRef) {
-    templateExtractRefMap.set(qItem.linkId, templateExtractRef); // Cast is safe because `template` is required
-  }
-
-  if (warning) {
-    templateExtractRefWarnings.push(warning);
-  }
-
-  if (qItem.item) {
-    for (const childQItem of qItem.item) {
-      collectTemplateExtractRefRecursive(
-        childQItem,
-        templateExtractRefMap,
-        templateExtractRefWarnings
-      );
-    }
-  }
 }

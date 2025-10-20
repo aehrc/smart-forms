@@ -43,7 +43,7 @@ import type { TemplateExtractReference } from '../interfaces/templateExtractRefe
 export function createContainedTemplateMap(
   questionnaire: Questionnaire,
   questionnaireResponse: QuestionnaireResponse,
-  linkIdToTemplateExtractRefMap: Map<string, TemplateExtractReference>
+  linkIdToTemplateExtractRefMap: Map<string, TemplateExtractReference[]>
 ): Map<string, TemplateDetails> {
   const templateMap = new Map<string, TemplateDetails>();
   if (questionnaire.contained) {
@@ -62,11 +62,14 @@ export function createContainedTemplateMap(
           targetLinkId
         );
 
-        const templateExtractReference = linkIdToTemplateExtractRefMap.get(targetLinkId);
+        const templateExtractReferences = linkIdToTemplateExtractRefMap.get(targetLinkId);
+        const templateExtractReference = templateExtractReferences?.find(
+          (t) => t.templateId === containedResource.id
+        );
         if (targetQItem && templateExtractReference) {
           templateMap.set(containedResource.id, {
             templateResource: containedResource,
-            templateExtractReference: templateExtractReference,
+            templateExtractReference,
             targetLinkId: targetLinkId,
             targetQItem: targetQItem,
             ...(targetQRItemFhirPath && { targetQRItemFhirPath })
@@ -91,14 +94,16 @@ export function createContainedTemplateMap(
  * @returns {Map<string, string>} A map of `templateId` → `linkId` that references the template.
  */
 function createTemplateIdToLinkIdMap(
-  linkIdToTemplateExtractRefMap: Map<string, TemplateExtractReference>
+  linkIdToTemplateExtractRefMap: Map<string, TemplateExtractReference[]>
 ): Map<string, string> {
   const templateIdToLinkIdMap = new Map<string, string>();
 
-  for (const [linkId, templateExtractRef] of linkIdToTemplateExtractRefMap.entries()) {
-    if (templateExtractRef.templateId) {
-      templateIdToLinkIdMap.set(templateExtractRef.templateId, linkId);
-    }
+  for (const [linkId, templateExtractRefs] of linkIdToTemplateExtractRefMap.entries()) {
+    templateExtractRefs.forEach((templateExtractRef) => {
+      if (templateExtractRef.templateId) {
+        templateIdToLinkIdMap.set(templateExtractRef.templateId, linkId);
+      }
+    });
   }
 
   return templateIdToLinkIdMap;
