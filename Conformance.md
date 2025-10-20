@@ -246,7 +246,7 @@ This is not something on our radar at the moment :(
 
 Smart Forms includes several custom extensions that provide additional functionality beyond the standard SDC extensions.
 
-[//]: # (Add docs link to custom extensions)
+See example usages here: https://smartforms.csiro.au/docs/sdc/customextensions.
 
 ### Context Display itemControl
 
@@ -254,18 +254,22 @@ Should be used with a tab-container. Display item is rendered as a contextual pi
 
 ### Questionnaire Item Text Hidden
 
-- [x] [QuestionnaireItemTextHidden](https://build.fhir.org/ig/aehrc/smart-forms-ig/branches/master/StructureDefinition-QuestionnaireItemTextHidden.html)
+- IG link: https://build.fhir.org/ig/aehrc/smart-forms-ig/branches/master/StructureDefinition-QuestionnaireItemTextHidden.html
 
 Allows hiding the text label of questionnaire items from the UI. Useful for internal fields that don't need user-facing labels.
 
 ### Group Hide Add Item Button
 
-- [x] [GroupHideAddItemButton](https://build.fhir.org/ig/aehrc/smart-forms-ig/branches/master/StructureDefinition-GroupHideAddItemButton.html)
+- IG link: https://build.fhir.org/ig/aehrc/smart-forms-ig/branches/master/StructureDefinition-GroupHideAddItemButton.html
 
 Allows hiding the "Add Item" button for repeating groups and group tables. Useful for static tables where users shouldn't be allowed to add new rows.
 
 ### Questionnaire Initial Expression Repopulatable
 
-- [x] [questionnaire-initialExpression-repopulatable](https://build.fhir.org/ig/aehrc/smart-forms-ig/branches/master/StructureDefinition-questionnaire-initialExpression-repopulatable.html)
+- IG link: https://build.fhir.org/ig/aehrc/smart-forms-ig/branches/master/StructureDefinition-questionnaire-initialExpression-repopulatable.html
 
 Adds a field button to allow individual fields to be manually repopulated with fresh data from the FHIR server. Provides granular control over data synchronization without affecting the entire form.
+
+### Questionnaire Item Text Aria-Label Expression
+
+Allows setting a custom aria-label at `item.text` for questionnaire items using a FHIRPath expression. Improves accessibility by providing screen readers with more context-specific labels.

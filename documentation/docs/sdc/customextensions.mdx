@@ -1,0 +1,99 @@
+---
+sidebar_position: 7
+---
+
+import IframeContainer from '../../src/react/IframeContainer';
+
+# Custom Extensions
+
+Smart Forms includes several custom extensions that provide additional functionality beyond the standard SDC extensions.
+
+### Context Display itemControl
+
+This is a custom Questionnaire Item UI Control extension designed for the purpose of showing contextual information of a tab in a tabbed form i.e. in progress, completed, etc.
+
+| Lvl | Code            | Display         | Definition                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| --- | --------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 2   | context-display | Context Display | Should be used with a tab-container. Display item is rendered as a contextual piece of visual information i.e icon/emoji on the **tab** and the **currently displayed tab section's header**. <br/><br/>Usage rules:<br/>1. Display item should use [rendering-xhtml](http://hl7.org/fhir/StructureDefinition/rendering-xhtml) to display a base64 image.<br/>2. Display item should be placed in a child item of type 'group' within a 'tab-container' group.<br/>3. Display item also has to be placed before any other question items in the group. Multiple 'context-display' items can be placed, and the order of which they are placed matters. |
+
+:::warning
+
+As this a custom (and has fairly complex usage requirements) extension, it might not play well with other SDC form renderers. It will most likely appear as a regular display item displayed before other items in the group.
+
+:::
+
+#### Tabs Usage
+
+<IframeContainer
+  storyId="custom-customextensions--custom-context-display"
+  initialHeight={400}
+/>
+
+:::tip
+
+The presence of context display items in a group enables a "Completed Tabs Shown/Hidden" mechanic in a tabbed form.
+
+This mechanic is useful when multiple people are involved in filling a form and need to know which tabs have been completed or can be skipped.
+
+This mechanic doesn't interact with the "Previous/Next Tab" buttons. You can still navigate to any tab regardless of its visual shown/hidden status.
+
+:::
+
+### Questionnaire Item Text Hidden
+
+- IG Link: https://build.fhir.org/ig/aehrc/smart-forms-ig/branches/master/StructureDefinition-QuestionnaireItemTextHidden.html
+
+Allows hiding the text label of questionnaire items from the UI. Useful for internal or hidden fields that do not require user-facing labels.
+
+#### Basic Usage
+
+<IframeContainer
+  storyId="custom-customextensions--questionnaire-item-text-hidden"
+  initialHeight={640}
+/>
+
+
+### Group Hide Add Item Button
+
+- IG Link: https://build.fhir.org/ig/aehrc/smart-forms-ig/branches/master/StructureDefinition-GroupHideAddItemButton.html
+
+Allows hiding the **Add Item** button for repeating groups and group tables. Useful for static tables or lists where users should not be allowed to add new rows.
+
+#### Basic Usage
+
+<IframeContainer
+  storyId="custom-customextensions--group-hide-add-item-button"
+  initialHeight={570}
+/>
+
+
+### Questionnaire Initial Expression Repopulatable
+
+- IG Link: https://build.fhir.org/ig/aehrc/smart-forms-ig/branches/master/StructureDefinition-questionnaire-initialExpression-repopulatable.html
+
+Adds a field-level button to manually repopulate the field with fresh data from the FHIR server. Provides granular control over data synchronization without repopulating the entire form.
+
+:::warning
+
+Developers: This is a POC implementation. If you want to adopt this extension while using the Smart Forms Renderer library, ensure that you set `fhirContext`, `patient` and `user` in `smartConfigStore`.
+
+:::
+
+#### Basic Usage
+
+<IframeContainer
+  storyId="custom-customextensions--initial-expression-repopulatable"
+  initialHeight={300}
+/>
+
+
+### Questionnaire Item Text Aria-Label Expression
+
+Allows setting a custom **aria-label** for questionnaire items using a FHIRPath expression evaluated at `item.text`. Improves accessibility by giving screen readers more context-specific labels.
+
+#### Basic Usage
+
+<IframeContainer
+  storyId="custom-customextensions--questionnaire-item-text-aria-label-expression"
+  initialHeight={600}
+/>
