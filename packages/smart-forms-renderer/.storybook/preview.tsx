@@ -29,6 +29,68 @@ const mockLibrary: Record<string, unknown> = {
           }
         ]
       }
+    },
+  'https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=https://healthterminologies.gov.au/fhir/ValueSet/australian-states-territories-2':
+    {
+      resourceType: 'ValueSet',
+      expansion: {
+        contains: [
+          {
+            system:
+              'https://healthterminologies.gov.au/fhir/CodeSystem/australian-states-territories-1',
+            code: 'ACT',
+            display: 'Australian Capital Territory'
+          },
+          {
+            system:
+              'https://healthterminologies.gov.au/fhir/CodeSystem/australian-states-territories-1',
+            code: 'NSW',
+            display: 'New South Wales'
+          },
+          {
+            system:
+              'https://healthterminologies.gov.au/fhir/CodeSystem/australian-states-territories-1',
+            code: 'NT',
+            display: 'Northern Territory'
+          },
+          {
+            system:
+              'https://healthterminologies.gov.au/fhir/CodeSystem/australian-states-territories-1',
+            code: 'OTHER',
+            display: 'Other territories'
+          },
+          {
+            system:
+              'https://healthterminologies.gov.au/fhir/CodeSystem/australian-states-territories-1',
+            code: 'QLD',
+            display: 'Queensland'
+          },
+          {
+            system:
+              'https://healthterminologies.gov.au/fhir/CodeSystem/australian-states-territories-1',
+            code: 'SA',
+            display: 'South Australia'
+          },
+          {
+            system:
+              'https://healthterminologies.gov.au/fhir/CodeSystem/australian-states-territories-1',
+            code: 'TAS',
+            display: 'Tasmania'
+          },
+          {
+            system:
+              'https://healthterminologies.gov.au/fhir/CodeSystem/australian-states-territories-1',
+            code: 'VIC',
+            display: 'Victoria'
+          },
+          {
+            system:
+              'https://healthterminologies.gov.au/fhir/CodeSystem/australian-states-territories-1',
+            code: 'WA',
+            display: 'Western Australia'
+          }
+        ]
+      }
     }
 };
 
