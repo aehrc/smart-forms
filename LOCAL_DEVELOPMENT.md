@@ -161,7 +161,7 @@ docker-compose --env-file ./apps/smart-forms-app/.env.local up
 
 4. Go to [http://localhost:5173/](http://localhost:5173/) for Smart Forms App
 
-5. Go to [http://localhost:6006/](http://localhost:6006/) for Story Book App
+5. Go to [http://localhost:6006/](http://localhost:6006/) for Story Book
 
 NOTE: In the Docker setup, the current source code folder is shared as a volume to the Docker container. This allows the live code reload to work.
 
