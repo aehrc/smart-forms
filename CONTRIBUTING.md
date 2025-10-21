@@ -26,40 +26,11 @@ situations where people are working at cross-purposes.
 
 Your branch should be named `issue/[GitHub issue #]`.
 
-If possible, it is recommended to merge the `main` (or `alpha`) branch into your branch first before creating a pull request.
+If possible, it is recommended to merge the `main` (or `dev`) branch into your branch first before creating a pull request.
 
-## Development dependencies
+## Local development Guide
 
-You will need the following software to build the solution and run the tests:
-
-* Node.js 20.x or later versions
-
-To build and install locally, run in the root folder:
-```
-npm i
-```
-
-For streamlining purposes, we encourage contributions to the [@aehrc/smart-forms-renderer](https://www.npmjs.com/package/@aehrc/smart-forms-renderer) package in **packages/smart-forms-renderer**.
-The easiest way to test your changes is to use Storybook, which can be run via:
-```
-npm run storybook
-```
-
-## Vite-specific caveats
-The `vite.config.ts` file in the `@aehrc/smart-forms-renderer` package contains a `resolve: { preserveSymlinks: true }` config, when used alongside `optimizeDeps` and `build.commonjsOptions` allows Vite to use CommonJS modules in the package properly.
-
-This config is essential for the package to properly build in deployments, but it breaks `tsc --watch` by ignoring changes. 
-To work around this, comment out the config during development and uncomment it (or just don't add it to git) before pushing changes.
-```
-...
-// resolve: { preserveSymlinks: true }
-...
-```
-
-### Coding conventions
-
-This repository uses [Prettier](https://prettier.io/), please use it to
-reformat your code before pushing.
+Refer to [LOCAL_DEVELOPMENT.md](LOCAL_DEVELOPMENT.md) for instructions on local development and running.
 
 ## Code of conduct
 
