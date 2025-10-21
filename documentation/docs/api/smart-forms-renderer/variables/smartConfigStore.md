@@ -10,4 +10,4 @@ This is the vanilla version of the store which can be used in non-React environm
 
 ## See
 
-SmartConfigStoreType for available properties and methods.
+[SmartConfigStoreType](../interfaces/SmartConfigStoreType.md) for available properties and methods.

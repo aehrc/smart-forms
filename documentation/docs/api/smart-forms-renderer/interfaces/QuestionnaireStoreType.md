@@ -25,6 +25,14 @@ Used to add a coding to the cached value set codings
 
 ***
 
+### additionalContext
+
+> **additionalContext**: `Record`\<`string`, `any`\>
+
+Key-value pair of additional/pre-populated FHIRPath values `Record<variable/launchContext/sourceQueries batch name, evaluated value(s)>`
+
+***
+
 ### answerExpressions
 
 > **answerExpressions**: `Record`\<`string`, `AnswerExpression`\>
@@ -43,7 +51,7 @@ Key-value pair of answer options toggle expressions `Record<linkId, array of ans
 
 ### buildSourceQuestionnaire()
 
-> **buildSourceQuestionnaire**: (`questionnaire`, `questionnaireResponse?`, `additionalVariables?`, `terminologyServerUrl?`, `readOnly?`, `qItemOverrideComponents?`, `sdcUiOverrideComponents?`) => `Promise`\<`void`\>
+> **buildSourceQuestionnaire**: (`questionnaire`, `questionnaireResponse?`, `additionalContext?`, `terminologyServerUrl?`, `readOnly?`, `qItemOverrideComponents?`, `sdcUiOverrideComponents?`) => `Promise`\<`void`\>
 
 Used to build the source questionnaire with the provided questionnaire and optionally questionnaire response, additional variables, terminology server url and readyOnly flag
 
@@ -53,7 +61,7 @@ Used to build the source questionnaire with the provided questionnaire and optio
 | ------ | ------ |
 | `questionnaire` | `Questionnaire` |
 | `questionnaireResponse?` | `QuestionnaireResponse` |
-| `additionalVariables?` | `Record`\<`string`, `any`\> |
+| `additionalContext?` | `Record`\<`string`, `any`\> |
 | `terminologyServerUrl?` | `string` |
 | `readOnly?` | `boolean` |
 | `qItemOverrideComponents?` | `Record`\<`string`, `ComponentType`\<[`QItemOverrideComponentProps`](QItemOverrideComponentProps.md)\>\> |
@@ -169,6 +177,8 @@ LinkId of the currently focused item
 
 > **initialExpressions**: `Record`\<`string`, `InitialExpression`\>
 
+Key-value pair of initial expressions `Record<linkId, InitialExpression>`
+
 ***
 
 ### itemMap
@@ -277,14 +287,6 @@ Key-value pair of pages `Record<linkId, Page>`
 
 ***
 
-### populatedContext
-
-> **populatedContext**: `Record`\<`string`, `any`\>
-
-Key-value pair of one-off pre-populated FHIRPath values `Record<variable/launchContext/sourceQueries batch name, evaluated value(s)>`
-
-***
-
 ### processedValueSets
 
 > **processedValueSets**: `Record`\<`string`, `ProcessedValueSet`\>
@@ -309,11 +311,53 @@ Flag to set the form to read-only mode
 
 ***
 
+### resetToFirstVisiblePage()
+
+> **resetToFirstVisiblePage**: () => `void`
+
+Used to reset the current page to the first visible page
+
+#### Returns
+
+`void`
+
+***
+
+### resetToFirstVisibleTab()
+
+> **resetToFirstVisibleTab**: () => `void`
+
+Used to reset the current tab to the first visible tab
+
+#### Returns
+
+`void`
+
+***
+
 ### sdcUiOverrideComponents
 
 > **sdcUiOverrideComponents**: `Record`\<`string`, `ComponentType`\<[`SdcUiOverrideComponentProps`](SdcUiOverrideComponentProps.md)\>\>
 
 Key-value pair of React component overrides for SDC UI Controls https://hl7.org/fhir/extensions/ValueSet-questionnaire-item-control.html `Record<SDC UI code, React component>`
+
+***
+
+### setAdditionalContext()
+
+> **setAdditionalContext**: (`additionalContext`) => `void`
+
+Optionally used to set additional context information for FHIRPath eval. Useful to pass pre-populated context into the renderer. If you are rebuilding the form on pre-populate, you don't need to use this. pass `additionalContext` directly into buildForm().
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `additionalContext` | `Record`\<`string`, `any`\> |
+
+#### Returns
+
+`void`
 
 ***
 
@@ -328,25 +372,6 @@ Used to set the form as read-only
 | Parameter | Type |
 | ------ | ------ |
 | `readOnly` | `boolean` |
-
-#### Returns
-
-`void`
-
-***
-
-### setPopulatedContext()
-
-> **setPopulatedContext**: (`newPopulatedContext`, `addToFhirPathContext?`) => `void`
-
-Used to set the populated contexts (launchContext, sourceQueries, x-fhir-query vars) for debugging purposes, and optionally add to the FHIRPath context
-
-#### Parameters
-
-| Parameter | Type |
-| ------ | ------ |
-| `newPopulatedContext` | `Record`\<`string`, `any`\> |
-| `addToFhirPathContext?` | `boolean` |
 
 #### Returns
 
@@ -451,8 +476,8 @@ Used to update linked enableWhen items by updating a question with a new answer
 | Parameter | Type |
 | ------ | ------ |
 | `linkId` | `string` |
-| `newAnswer` | `undefined` \| `QuestionnaireResponseItemAnswer`[] |
-| `parentRepeatGroupIndex` | `null` \| `number` |
+| `newAnswer` | `QuestionnaireResponseItemAnswer`[] \| `undefined` |
+| `parentRepeatGroupIndex` | `number` \| `null` |
 
 #### Returns
 
@@ -462,39 +487,20 @@ Used to update linked enableWhen items by updating a question with a new answer
 
 ### updateExpressions()
 
-> **updateExpressions**: (`updatedResponse`) => `Promise`\<`void`\>
+> **updateExpressions**: (`updatedResponse`, `isInitialUpdate`) => `Promise`\<`void`\>
 
-Used to update all SDC expressions based on the updated questionnaire response
+Used to update all SDC expressions based on the updated questionnaire response, initialUpdate flag is to ensure formChangesHistory is not updated during the first update after form build
 
 #### Parameters
 
 | Parameter | Type |
 | ------ | ------ |
 | `updatedResponse` | `QuestionnaireResponse` |
+| `isInitialUpdate` | `boolean` |
 
 #### Returns
 
 `Promise`\<`void`\>
-
-***
-
-### updatePopulatedProperties()
-
-> **updatePopulatedProperties**: (`populatedResponse`, `populatedContext?`, `persistTabIndex?`) => `Promise`\<`QuestionnaireResponse`\>
-
-Used to update all SDC expressions based on a pre-populated questionnaire response
-
-#### Parameters
-
-| Parameter | Type |
-| ------ | ------ |
-| `populatedResponse` | `QuestionnaireResponse` |
-| `populatedContext?` | `Record`\<`string`, `any`\> |
-| `persistTabIndex?` | `boolean` |
-
-#### Returns
-
-`Promise`\<`QuestionnaireResponse`\>
 
 ***
 

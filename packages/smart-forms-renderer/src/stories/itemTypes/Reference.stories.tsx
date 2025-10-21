@@ -18,13 +18,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 
-import {
-  findByLinkIdOrLabel,
-  getAnswers,
-  inputReference,
-  questionnaireFactory
-} from '../testUtils';
-import { expect, fireEvent } from 'storybook/test';
+import { questionnaireFactory } from '../testUtils';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -38,39 +33,21 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+
+/* Reference Basic story */
 const targetLinkId = 'patient-reference';
-const targetText = 'Patient Reference';
 
 const qReferenceBasic = questionnaireFactory([
   {
     linkId: targetLinkId,
     type: 'reference',
     repeats: false,
-    text: targetText
+    text: 'Patient Reference'
   }
 ]);
 
-export const ReferenceBasic: Story = {
+export const ReferenceBasic: Story = createStory({
   args: {
     questionnaire: qReferenceBasic
-  },
-  play: async ({ canvasElement }) => {
-    await inputReference(canvasElement, targetLinkId, targetText);
-
-    const result = await getAnswers(targetLinkId);
-    expect(result).toHaveLength(1);
-    expect(result[0]).toEqual(expect.objectContaining({ valueString: targetText }));
-
-    // Clear value
-    const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
-    fireEvent.click(clearButton as HTMLElement);
-
-    // Here we await for debounced store update
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    const resultAfterClear = await getAnswers(targetLinkId);
-    expect(resultAfterClear).toHaveLength(0);
-    const elementAfterClear = await findByLinkIdOrLabel(canvasElement, targetLinkId);
-    const input = elementAfterClear.querySelector('textarea');
-    expect(input?.value).toBe('');
   }
-};
+}) as Story;

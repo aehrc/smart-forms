@@ -16,10 +16,11 @@
  */
 
 /// <reference types="vite/client" />
-// Vite is only used for Storybook
+// NOTE: Vite is only used for Storybook!
 
 interface ImportMetaEnv {
   readonly VITE_RENDERER_VERSION: string;
+  readonly VITE_CI: string; // Whether we are running in a CI environment
 }
 
 interface ImportMeta {

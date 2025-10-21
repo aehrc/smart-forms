@@ -17,36 +17,9 @@
 
 import type { Questionnaire } from 'fhir/r4';
 
-export const qTimeBasic: Questionnaire = {
-  resourceType: 'Questionnaire',
-  id: 'TimeBasic',
-  name: 'TimeBasic',
-  title: 'Time Basic',
-  version: '0.1.0',
-  status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/components/time',
-  item: [
-    {
-      linkId: 'last-meal',
-      type: 'time',
-      repeats: false,
-      text: 'Time of last meal'
-    }
-  ]
-};
-
 export const qTimeCalculation: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'TimeCalculation',
-  name: 'TimeCalculation',
-  title: 'Time Calculation',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/components/time/calculation',
   extension: [
     {
       url: 'http://hl7.org/fhir/StructureDefinition/variable',

@@ -9,8 +9,8 @@ Takes either a single newQrItem or an array of newQrItems
 
 | Parameter | Type |
 | ------ | ------ |
-| `newQrItem` | `null` \| `QuestionnaireResponseItem` |
-| `newQrRepeatGroup` | `null` \| `QrRepeatGroup` |
+| `newQrItem` | `QuestionnaireResponseItem` \| `null` |
+| `newQrRepeatGroup` | `QrRepeatGroup` \| `null` |
 | `questionnaireResponseOrQrItem` | `QuestionnaireResponse` \| `QuestionnaireResponseItem` |
 | `qItemsIndexMap` | `Record`\<`string`, `number`\> |
 

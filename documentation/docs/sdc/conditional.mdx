@@ -13,6 +13,7 @@ The extensions that fall under this category are:
 - [enableWhen](http://hl7.org/fhir/uv/sdc/behavior.html#enableWhen)
 - [enableBehavior](http://hl7.org/fhir/uv/sdc/behavior.html#enableBehavior)
 - [enableWhenExpression](http://hl7.org/fhir/uv/sdc/expressions.html#enableWhenExpression)
+- [answerOptionToggleExpression](http://hl7.org/fhir/uv/sdc/expressions.html#answerOptionToggleExpression)
 
 ### EnableWhen
 
@@ -20,7 +21,7 @@ The most basic way to use conditional rendering.
 
 #### Basic usage
 
-<IframeContainer storyId="sdc-9-1-4-form-behavior-other-control--enable-when" initialHeight={216} />
+<IframeContainer storyId="sdc-10-1-4-behavior-other-control--enable-when" initialHeight={250} />
 
 ### EnableBehavior
 
@@ -31,15 +32,15 @@ If set to "all", then the item will only be enabled if all the enableWhen condit
 #### "all" usage
 
 <IframeContainer
-  storyId="sdc-9-1-4-form-behavior-other-control--enable-behavior-all"
-  initialHeight={120}
+  storyId="sdc-10-1-4-behavior-other-control--enable-behavior-all"
+  initialHeight={140}
 />
 
 #### "any" usage
 
 <IframeContainer
-  storyId="sdc-9-1-4-form-behavior-other-control--enable-behavior-any"
-  initialHeight={284}
+  storyId="sdc-10-1-4-behavior-other-control--enable-behavior-any"
+  initialHeight={340}
 />
 
 ### EnableWhenExpression
@@ -51,13 +52,37 @@ EnableWhenExpressions are commonly used with [variables](http://hl7.org/fhir/uv/
 #### Basic usage
 
 <IframeContainer
-  storyId="sdc-9-1-4-form-behavior-other-control--enable-when-expression-simple"
-  initialHeight={396}
+  storyId="sdc-10-1-4-behavior-other-control--enable-when-expression-simple"
+  initialHeight={440}
 />
 
 #### Tabs usage
 
 <IframeContainer
-  storyId="sdc-9-1-4-form-behavior-other-control--enable-when-expression-tabs"
-  initialHeight={412}
+  storyId="sdc-10-1-4-behavior-other-control--enable-when-expression-tabs"
+  initialHeight={450}
+/>
+
+### AnswerOptionToggleExpression
+
+Used to conditionally show or hide answer options in choice-type questions via FHIRPath expressions.
+
+:::note
+
+If a selected option becomes disabled due to the expression evaluating to false, it will be automatically cleared to keep the answer valid.
+
+:::
+
+#### AnswerOption usage
+
+<IframeContainer
+  storyId="sdc-10-1-2-behavior-choice-restriction--answer-option-toggle-expression-answer-option"
+  initialHeight={440}
+/>
+
+#### AnswerValueSet usage
+
+<IframeContainer
+  storyId="sdc-10-1-2-behavior-choice-restriction--answer-option-toggle-expression-answer-value-set-contained"
+  initialHeight={440}
 />

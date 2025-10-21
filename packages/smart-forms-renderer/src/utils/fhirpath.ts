@@ -267,10 +267,9 @@ export async function evaluateLinkIdVariables(
 
   for (const variable of linkIdVariables) {
     if (variable.expression && variable.name) {
-      const cacheKey = JSON.stringify(variable.expression); // Use expression as cache key
-      // if (fhirPathTerminologyCache[cacheKey]) {
-      //   continue;
-      // }
+      if (isExpressionCached(variable.expression, fhirPathTerminologyCache)) {
+        continue;
+      }
 
       try {
         const fhirPathResult = fhirpath.evaluate(
@@ -286,11 +285,12 @@ export async function evaluateLinkIdVariables(
             terminologyUrl: terminologyServerUrl
           }
         );
-        fhirPathContext[`${variable.name}`] = await handleFhirPathResult(fhirPathResult);
+        const result = await handleFhirPathResult(fhirPathResult);
+        fhirPathContext[`${variable.name}`] = result;
 
         // If fhirPathResult is an async terminology call, cache the result
         if (fhirPathResult instanceof Promise) {
-          fhirPathTerminologyCache[cacheKey] = fhirPathContext[`${variable.name}`];
+          cacheTerminologyResult(variable.expression, result, fhirPathTerminologyCache);
         }
       } catch (e) {
         console.warn(e.message, `LinkId: ${linkId}\nExpression: ${variable.expression}`);
@@ -318,10 +318,9 @@ export async function evaluateQuestionnaireLevelVariables(
 
   for (const variable of questionnaireLevelVariables) {
     if (variable.expression) {
-      const cacheKey = JSON.stringify(variable.expression); // Use expression as cache key
-      // if (fhirPathTerminologyCache[cacheKey]) {
-      //   continue;
-      // }
+      if (isExpressionCached(variable.expression, fhirPathTerminologyCache)) {
+        continue;
+      }
 
       try {
         const fhirPathResult = fhirpath.evaluate(
@@ -338,11 +337,12 @@ export async function evaluateQuestionnaireLevelVariables(
           }
         );
 
-        fhirPathContext[`${variable.name}`] = await handleFhirPathResult(fhirPathResult);
+        const result = await handleFhirPathResult(fhirPathResult);
+        fhirPathContext[`${variable.name}`] = result;
 
         // If fhirPathResult is an async terminology call, cache the result
         if (fhirPathResult instanceof Promise) {
-          fhirPathTerminologyCache[cacheKey] = fhirPathContext[`${variable.name}`];
+          cacheTerminologyResult(variable.expression, result, fhirPathTerminologyCache);
         }
       } catch (e) {
         console.warn(e.message, `Questionnaire-level\nExpression: ${variable.expression}`);
@@ -362,4 +362,46 @@ export async function handleFhirPathResult(result: any[] | Promise<any[]>) {
   }
 
   return result;
+}
+
+/**
+ * Determines whether a FHIRPath expression result is cached.
+ *
+ * Expressions containing variables (e.g. `%something`) are never considered cached, because we can never know what a variable resolves to at runtime.
+ *
+ * @param {string} expression - The FHIRPath expression to check.
+ * @param {Record<string, any>} fhirPathTerminologyCache - Object storing cached expression results.
+ * @returns {boolean} `true` if the expression is cached and contains no variables; otherwise `false`.
+ */
+export function isExpressionCached(
+  expression: string,
+  fhirPathTerminologyCache: Record<string, any>
+): boolean {
+  // Expressions with variables are never cached
+  if (expression.includes('%')) {
+    return false;
+  }
+
+  // Check if expression exists in cache
+  return Object.prototype.hasOwnProperty.call(fhirPathTerminologyCache, expression);
+}
+
+/**
+ * Caches the result of a FHIRPath evaluation if it was an asynchronous terminology call and the expression contains no variables (e.g. `%something`).
+ *
+ * @param {string} expression - The FHIRPath expression that was evaluated.
+ * @param {any} result - The evaluated result of the expression with async resolved.
+ * @param {Record<string, any>} fhirPathTerminologyCache - The cache object to store results.
+ */
+export function cacheTerminologyResult(
+  expression: string,
+  result: any,
+  fhirPathTerminologyCache: Record<string, any>
+) {
+  // Skip caching for expressions with variables
+  if (expression.includes('%')) {
+    return;
+  }
+
+  fhirPathTerminologyCache[expression] = result;
 }

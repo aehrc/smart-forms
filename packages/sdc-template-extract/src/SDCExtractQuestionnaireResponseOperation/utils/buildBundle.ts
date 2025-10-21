@@ -46,7 +46,8 @@ export function buildTransactionBundle(
     meta: {
       tag: [
         {
-          code: '@aehrc/sdc-template-extract-v0.1.0:generated'
+          code: '@aehrc/sdc-template-extract:generated',
+          system: 'urn:aehrc:sdc-template-extract'
         }
       ]
     },

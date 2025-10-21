@@ -1,7 +1,12 @@
 # Change log
 
-This log documents significant changes for the [@aehrc/smart-forms-renderer](https://www.npmjs.com/package/@aehrc/smart-forms-renderer). This project follows
+This log documents changes for the [@aehrc/smart-forms-renderer](https://www.npmjs.com/package/@aehrc/smart-forms-renderer). This project follows
 [Semantic Versioning](http://semver.org/).
+
+For changelogs of other libraries, please refer to their respective repositories under the /packages folder:
+- SDC-Populate: [/packages/sdc-populate/CHANGELOG.md](/packages/sdc-populate/CHANGELOG.md)
+- SDC-Assemble: [/packages/sdc-assemble/CHANGELOG.md](/packages/sdc-assemble/CHANGELOG.md)
+- SDC-Template-Extract: [/packages/sdc-template-extract/CHANGELOG.md](/packages/sdc-template-extract/CHANGELOG.md)
 
 Changelog only includes changes from version 0.36.0 onwards.
 
@@ -58,6 +63,9 @@ For smooth migration, a migration guide is provided at [MIGRATION-v1.0.md](MIGRA
 #### Misc hook/function changes
 - `useStringCalculatedExpression` and `useCodingCalculatedExpression` hooks are removed. CalculatedExpressions are now triggered via an internal task queue. If you are using these hooks in a component override, you can remove the hook safely.
 - `objectIsCoding` library function is removed.
+
+### Fixed
+- Take questionnaire-unit into account when updating QR via Quantity item calculatedExpressions.
 
 ## [0.45.1] - 2025-02-25
 ### Fixed

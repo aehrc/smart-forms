@@ -21,6 +21,7 @@ import {
   qParameterisedValueSetBasic,
   qParameterisedValueSetMultiple
 } from '../assets/questionnaires/QParameterisedValueSets';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -35,14 +36,14 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const ParameterisedValueSetBasic: Story = {
+export const ParameterisedValueSetBasic: Story = createStory({
   args: {
     questionnaire: qParameterisedValueSetBasic
   }
-};
+}) as Story;
 
-export const ParameterisedValueSetMultipleParams: Story = {
+export const ParameterisedValueSetMultipleParams: Story = createStory({
   args: {
     questionnaire: qParameterisedValueSetMultiple
   }
-};
+}) as Story;

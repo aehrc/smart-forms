@@ -17,9 +17,9 @@
 
 import type { Questionnaire } from 'fhir/r4';
 
+// TODO update this 715 with latest
 export const qBasicMbs715: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'AboriginalTorresStraitIslanderHealthCheck',
   meta: {
     versionId: '2',
     lastUpdated: '2024-05-22T04:37:21.015+00:00',
@@ -16449,7 +16449,6 @@ export const qBasicMbs715: Questionnaire = {
 
 export const qModifiedMbs715WithCollapsible: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'AboriginalTorresStraitIslanderHealthCheck',
   meta: {
     versionId: '2',
     lastUpdated: '2024-05-22T04:37:21.015+00:00',

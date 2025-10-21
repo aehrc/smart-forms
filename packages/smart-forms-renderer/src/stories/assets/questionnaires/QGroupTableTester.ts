@@ -19,14 +19,7 @@ import type { Questionnaire } from 'fhir/r4';
 
 export const qGTableWithBoolean: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'GTableWithBoolean',
-  name: 'GTableWithBoolean',
-  title: 'GTable with Boolean',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/tester/gtable-1',
   contained: [
     {
       resourceType: 'ValueSet',
@@ -243,14 +236,7 @@ export const qGTableWithBoolean: Questionnaire = {
 
 export const qGTableWithChoice: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'GTableWithChoice',
-  name: 'GTableWithChoice',
-  title: 'GTable with Choice',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/tester/gtable-2',
   contained: [
     {
       resourceType: 'ValueSet',

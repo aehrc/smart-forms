@@ -19,14 +19,7 @@ import type { Questionnaire } from 'fhir/r4';
 
 export const qParameterisedValueSetBasic: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'ParameterisedValueSetBasic',
-  name: 'ParameterisedValueSetBasic',
-  title: 'Parameterised ValueSet Basic - States',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2025-03-01',
-  url: 'https://smartforms.csiro.au/docs/pvs/basic',
   item: [
     {
       type: 'choice',
@@ -59,12 +52,12 @@ export const qParameterisedValueSetBasic: Questionnaire = {
             valueExpression: {
               language: 'text/fhirpath',
               expression:
-                "'State GET request url: https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=https://example.com/limited-states&p-country=' + %resource.item.where(linkId = 'countryCode').answer.value.code"
+                "'State GET request url: https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=http://example.com/limited-states/vs&p-country=' + %resource.item.where(linkId = 'countryCode').answer.value.code"
             }
           }
         ]
       },
-      text: 'State GET request url: https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=https://example.com/limited-states'
+      text: 'State GET request url: https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=http://example.com/limited-states/vs'
     },
     {
       type: 'choice',
@@ -84,7 +77,7 @@ export const qParameterisedValueSetBasic: Questionnaire = {
       ],
       linkId: 'stateCodeDropdown',
       text: 'State (Dropdown)',
-      answerValueSet: 'https://example.com/limited-states',
+      answerValueSet: 'http://example.com/limited-states/vs',
       _answerValueSet: {
         // Mimics GET request of https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=https://example.com/limited-states&p-country={country_value}
         extension: [
@@ -125,7 +118,7 @@ export const qParameterisedValueSetBasic: Questionnaire = {
       ],
       linkId: 'stateCodeRadio',
       text: 'State (Radio)',
-      answerValueSet: 'https://example.com/limited-states',
+      answerValueSet: 'http://example.com/limited-states/vs',
       _answerValueSet: {
         // Mimics GET request of https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=https://example.com/limited-states&p-country={country_value}
         extension: [
@@ -153,14 +146,7 @@ export const qParameterisedValueSetBasic: Questionnaire = {
 
 export const qParameterisedValueSetMultiple: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'ParameterisedValueSetMultiple',
-  name: 'ParameterisedValueSetMultiple',
-  title: 'Parameterised ValueSet Multiple Params - States',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2025-03-01',
-  url: 'https://smartforms.csiro.au/docs/pvs/multiple',
   item: [
     {
       type: 'choice',
@@ -193,12 +179,27 @@ export const qParameterisedValueSetMultiple: Questionnaire = {
             valueExpression: {
               language: 'text/fhirpath',
               expression:
-                "'State GET request url: https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=https://example.com/limited-states&p-country=' + %resource.item.where(linkId = 'countryCode').answer.value.code + '&includeDefinition=true'"
+                "'State GET request url: https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=http://example.com/limited-states/vs&p-country=' + %resource.item.where(linkId = 'countryCode').answer.value.code + '&includeDefinition=true'"
             }
           }
         ]
       },
-      text: 'State GET request url: https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=https://example.com/limited-states&includeDefinition=true'
+      text: 'State GET request url: https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=http://example.com/limited-states/vs&includeDefinition=true'
+    },
+    {
+      linkId: 'note-multiple-params',
+      _text: {
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
+            valueString:
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>This example also includes a second fixed <strong>includeDefinition</strong> parameter set to true.</p></div>'
+          }
+        ]
+      },
+      text: 'This example also includes a second fixed includeDefinition parameter set to true.',
+      type: 'display',
+      repeats: false
     },
     {
       type: 'choice',
@@ -218,7 +219,7 @@ export const qParameterisedValueSetMultiple: Questionnaire = {
       ],
       linkId: 'stateCodeDropdown',
       text: 'State (drop down)',
-      answerValueSet: 'https://example.com/limited-states',
+      answerValueSet: 'http://example.com/limited-states/vs',
       _answerValueSet: {
         // Mimics GET request of https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=https://example.com/limited-states&p-country={country_value}
         extension: [
@@ -272,7 +273,7 @@ export const qParameterisedValueSetMultiple: Questionnaire = {
       ],
       linkId: 'stateCodeRadio',
       text: 'State (Radio)',
-      answerValueSet: 'https://example.com/limited-states',
+      answerValueSet: 'http://example.com/limited-states/vs',
       _answerValueSet: {
         // Mimics GET request of https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=https://example.com/limited-states&p-country={country_value}
         extension: [

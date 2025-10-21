@@ -8,7 +8,7 @@ Will be deprecated in version 1.0.0.
 
 This is the React version of the store which can be used as React hooks in React functional components.
 
-## Type declaration
+## Type Declaration
 
 ### use
 
@@ -16,35 +16,35 @@ This is the React version of the store which can be used as React hooks in React
 
 #### use.client()
 
-> **client**: () => `null` \| `Client`
+> **client**: () => `Client` \| `null`
 
 ##### Returns
 
-`null` \| `Client`
+`Client` \| `null`
 
 #### use.encounter()
 
-> **encounter**: () => `null` \| `Encounter`
+> **encounter**: () => `Encounter` \| `null`
 
 ##### Returns
 
-`null` \| `Encounter`
+`Encounter` \| `null`
 
 #### use.fhirContext()
 
-> **fhirContext**: () => `null` \| `FhirContext`[]
+> **fhirContext**: () => `FhirContext`[] \| `null`
 
 ##### Returns
 
-`null` \| `FhirContext`[]
+`FhirContext`[] \| `null`
 
 #### use.patient()
 
-> **patient**: () => `null` \| `Patient`
+> **patient**: () => `Patient` \| `null`
 
 ##### Returns
 
-`null` \| `Patient`
+`Patient` \| `null`
 
 #### use.setClient()
 
@@ -138,13 +138,13 @@ This is the React version of the store which can be used as React hooks in React
 
 #### use.user()
 
-> **user**: () => `null` \| `Practitioner`
+> **user**: () => `Practitioner` \| `null`
 
 ##### Returns
 
-`null` \| `Practitioner`
+`Practitioner` \| `null`
 
 ## See
 
- - SmartConfigStoreType for available properties and methods.
- - smartConfigStore for the vanilla store.
+ - [SmartConfigStoreType](../interfaces/SmartConfigStoreType.md) for available properties and methods.
+ - [smartConfigStore](smartConfigStore.md) for the vanilla store.

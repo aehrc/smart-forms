@@ -24,8 +24,10 @@ import { RendererThemeProvider } from '../../theme';
 import { useBuildForm, useRendererQueryClient } from '../../hooks';
 import { STORYBOOK_TERMINOLOGY_SERVER_URL } from './globals';
 import IdRemoverButtonForStorybook from './IdRemoverButtonForStorybook';
+import ActionBarForStorybook from './ActionBarForStorybook';
 import { Grid } from '@mui/material';
 import { useQuestionnaireResponseStore, useQuestionnaireStore } from '../../stores';
+import CopyButtonsForStorybook from './CopyButtonsForStorybook';
 
 interface IdRemoverDebuggerWrapperForStorybookProps {
   questionnaire: Questionnaire;
@@ -60,12 +62,15 @@ function IdRemoverDebuggerWrapperForStorybook(props: IdRemoverDebuggerWrapperFor
     <RendererThemeProvider>
       <QueryClientProvider client={queryClient}>
         <div>
-          <Grid container>
+          <Grid container spacing={2}>
             <Grid size={{ xs: 6 }}>
-              <IdRemoverButtonForStorybook
-                questionnaire={questionnaire}
-                questionnaireResponse={updatableResponse}
-              />
+              <ActionBarForStorybook>
+                <IdRemoverButtonForStorybook
+                  questionnaire={questionnaire}
+                  questionnaireResponse={updatableResponse}
+                />
+                <CopyButtonsForStorybook />
+              </ActionBarForStorybook>
               <BaseRenderer />
             </Grid>
             <Grid size={{ xs: 6 }}>

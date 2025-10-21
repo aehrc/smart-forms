@@ -8,4 +8,4 @@ This is the vanilla version of the store which can be used in non-React environm
 
 ## See
 
-TerminologyServerStoreType for available properties and methods.
+[TerminologyServerStoreType](../interfaces/TerminologyServerStoreType.md) for available properties and methods.

@@ -21,7 +21,6 @@ import type { Questionnaire } from 'fhir/r4';
 
 export const QAuCoreAllergyIntolerance: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'AuCoreAllergyIntolerance',
   extension: [
     {
       url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext',
@@ -52,11 +51,7 @@ export const QAuCoreAllergyIntolerance: Questionnaire = {
       }
     }
   ],
-  version: '0.1.0',
-  name: 'AU Core AllergyIntolerance',
-  title: 'AU Core AllergyIntolerance',
   status: 'draft',
-  date: '2024-07-15',
   item: [
     {
       linkId: 'allergy-intolerance',
@@ -235,7 +230,6 @@ export const QAuCoreAllergyIntolerance: Questionnaire = {
 
 export const QAuCoreCondition: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'AuCoreCondition',
   extension: [
     {
       url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext',
@@ -266,11 +260,7 @@ export const QAuCoreCondition: Questionnaire = {
       }
     }
   ],
-  version: '0.1.0',
-  name: 'AU Core Condition',
-  title: 'AU Core Condition',
   status: 'draft',
-  date: '2024-07-15',
   item: [
     {
       linkId: 'condition',
@@ -458,7 +448,6 @@ export const QAuCoreCondition: Questionnaire = {
 
 export const QAuCoreEncounter: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'AuCoreEncounter',
   extension: [
     {
       url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext',
@@ -489,11 +478,7 @@ export const QAuCoreEncounter: Questionnaire = {
       }
     }
   ],
-  version: '0.1.0',
-  name: 'AU Core Encounter',
-  title: 'AU Core Encounter',
   status: 'draft',
-  date: '2024-07-15',
   item: [
     {
       linkId: 'encounter',
@@ -760,7 +745,6 @@ export const QAuCoreEncounter: Questionnaire = {
 
 export const QAuCoreImmunization: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'AuCoreImmunization',
   extension: [
     {
       url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext',
@@ -791,11 +775,7 @@ export const QAuCoreImmunization: Questionnaire = {
       }
     }
   ],
-  version: '0.1.0',
-  name: 'AU Core Immunization',
-  title: 'AU Core Immunization',
   status: 'draft',
-  date: '2024-07-24',
   item: [
     {
       linkId: 'immunization',
@@ -938,7 +918,6 @@ export const QAuCoreImmunization: Questionnaire = {
 
 export const QAuCoreMedicationRequest: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'AuCoreMedicationRequest',
   extension: [
     {
       url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext',
@@ -969,11 +948,7 @@ export const QAuCoreMedicationRequest: Questionnaire = {
       }
     }
   ],
-  version: '0.1.0',
-  name: 'AU Core Medication Request',
-  title: 'AU Core Medication Request',
   status: 'draft',
-  date: '2024-07-24',
   item: [
     {
       linkId: 'medication-request',
@@ -1170,7 +1145,6 @@ export const QAuCoreMedicationRequest: Questionnaire = {
 
 export const QAuCorePatient: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'AuCorePatient',
   extension: [
     {
       url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext',
@@ -1193,11 +1167,7 @@ export const QAuCorePatient: Questionnaire = {
       ]
     }
   ],
-  version: '0.1.0',
-  name: 'AU Core Patient',
-  title: 'AU Core Patient',
   status: 'draft',
-  date: '2024-07-24',
   item: [
     {
       linkId: 'patient',
@@ -1681,7 +1651,6 @@ export const QAuCorePatient: Questionnaire = {
 
 export const QAuCorePractitioner: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'AuCorePractitioner',
   extension: [
     {
       url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext',
@@ -1704,11 +1673,7 @@ export const QAuCorePractitioner: Questionnaire = {
       ]
     }
   ],
-  version: '0.1.0',
-  name: 'AU Core Practitioner',
-  title: 'AU Core Practitioner',
   status: 'draft',
-  date: '2024-07-24',
   item: [
     {
       linkId: 'practitioner',
@@ -1825,7 +1790,6 @@ export const QAuCorePractitioner: Questionnaire = {
 
 export const QAuCorePractitionerRole: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'AuCorePractitionerRole',
   extension: [
     {
       url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext',
@@ -1856,11 +1820,7 @@ export const QAuCorePractitionerRole: Questionnaire = {
       }
     }
   ],
-  version: '0.1.0',
-  name: 'AU Core PractitionerRole',
-  title: 'AU Core PractitionerRole',
   status: 'draft',
-  date: '2024-07-24',
   item: [
     {
       linkId: 'practitionerRole',
@@ -2048,7 +2008,6 @@ export const QAuCorePractitionerRole: Questionnaire = {
 
 export const QAuCoreProcedure: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'AuCoreProcedure',
   extension: [
     {
       url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext',
@@ -2079,11 +2038,7 @@ export const QAuCoreProcedure: Questionnaire = {
       }
     }
   ],
-  version: '0.1.0',
-  name: 'AU Core Procedure',
-  title: 'AU Core Procedure',
   status: 'draft',
-  date: '2024-07-24',
   item: [
     {
       linkId: 'procedure',
@@ -2250,12 +2205,7 @@ export const QAuCoreProcedure: Questionnaire = {
 
 export const QAuCoreObservationBP: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'BloodPressureObservation',
-  version: '0.1.0',
-  name: 'BloodPressureObservation',
-  title: 'Blood Pressure Observation',
   status: 'draft',
-  date: '2024-07-15',
   extension: [
     {
       url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext',
@@ -2618,12 +2568,7 @@ export const QAuCoreObservationBP: Questionnaire = {
 
 export const QAuCoreObservationBodyHeight: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'BodyHeightObservation',
-  version: '0.1.0',
-  name: 'BodyHeightObservation',
-  title: 'Body Height Observation',
   status: 'draft',
-  date: '2024-07-15',
   extension: [
     {
       url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext',
@@ -2818,12 +2763,7 @@ export const QAuCoreObservationBodyHeight: Questionnaire = {
 
 export const QAuCoreObservationBodyWeight: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'BodyWeightObservation',
-  version: '0.1.0',
-  name: 'BodyWeightObservation',
-  title: 'Body Weight Observation',
   status: 'draft',
-  date: '2024-07-15',
   extension: [
     {
       url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext',
@@ -3018,12 +2958,7 @@ export const QAuCoreObservationBodyWeight: Questionnaire = {
 
 export const QAuCoreObservationHeartRate: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'HeartRateObservation',
-  version: '0.1.0',
-  name: 'HeartRateObservation',
-  title: 'Heart Rate Observation',
   status: 'draft',
-  date: '2024-07-15',
   extension: [
     {
       url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext',
@@ -3218,12 +3153,7 @@ export const QAuCoreObservationHeartRate: Questionnaire = {
 
 export const QAuCoreObservationRespirationRate: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'RespirationRateObservation',
-  version: '0.1.0',
-  name: 'RespirationRateObservation',
-  title: 'Respiration Rate Observation',
   status: 'draft',
-  date: '2024-07-15',
   extension: [
     {
       url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext',
@@ -3418,12 +3348,7 @@ export const QAuCoreObservationRespirationRate: Questionnaire = {
 
 export const QAuCoreObservationSmokingStatus: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'SmokingStatusObservation',
-  version: '0.1.0',
-  name: 'SmokingStatusObservation',
-  title: 'Smoking Status Observation',
   status: 'draft',
-  date: '2024-07-15',
   extension: [
     {
       url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext',
@@ -3597,12 +3522,7 @@ export const QAuCoreObservationSmokingStatus: Questionnaire = {
 
 export const QAuCoreObservationWaistCircumference: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'WaistCircumferenceObservation',
-  version: '0.1.0',
-  name: 'WaistCircumferenceObservation',
-  title: 'Waist Circumference Observation',
   status: 'draft',
-  date: '2024-07-15',
   extension: [
     {
       url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext',

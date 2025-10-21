@@ -28,6 +28,8 @@ import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { buildForm } from '../../utils';
 import { STORYBOOK_TERMINOLOGY_SERVER_URL } from './globals';
 import { fetchResourceCallback } from '../../api/callback';
+import ActionBarForStorybook from './ActionBarForStorybook';
+import CopyButtonsForStorybook from './CopyButtonsForStorybook';
 
 interface PrePopWrapperForStorybookProps {
   questionnaire: Questionnaire;
@@ -102,7 +104,10 @@ function PrePopWrapperForStorybook(props: PrePopWrapperForStorybookProps) {
     <RendererThemeProvider>
       <QueryClientProvider client={queryClient}>
         <div>
-          <PrePopButtonForStorybook isPopulating={isPopulating} onPopulate={handlePrepopulate} />
+          <ActionBarForStorybook>
+            <PrePopButtonForStorybook isPopulating={isPopulating} onPopulate={handlePrepopulate} />
+            <CopyButtonsForStorybook />
+          </ActionBarForStorybook>
           {isPopulating ? null : <BaseRenderer />}
         </div>
       </QueryClientProvider>
