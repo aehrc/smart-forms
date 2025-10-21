@@ -83,7 +83,7 @@
     "@types/he": "^1.2.3",
     "@types/jest": "^29.5.14",
     "@types/lodash.clonedeep": "^4.5.9",
-    "@types/node": "^22.15.30",
+    "@types/node": "^24.9.1",
     "@types/randomcolor": "^0.5.9",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
