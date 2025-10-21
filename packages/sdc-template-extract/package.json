@@ -21,7 +21,7 @@
   "dependencies": {
     "clean-deep": "^3.4.0",
     "js-base64": "^3.7.8",
-    "uuid": "^11.1.0",
+    "uuid": "^13.0.0",
     "fhirpath": "^4.3.0"
   },
   "devDependencies": {
