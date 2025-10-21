@@ -29,7 +29,6 @@ function ChoiceSelectAnswerOptionItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
-
     isRepeated,
     isTabled,
     renderingExtensions,

@@ -25,10 +25,10 @@
   },
   "homepage": "https://github.com/aehrc/smart-forms#readme",
   "dependencies": {
-    "@aehrc/sdc-assemble": "^2.0.1",
+    "@aehrc/sdc-assemble": "^2.0.2",
     "@aehrc/sdc-populate": "^4.6.2",
-    "@aehrc/sdc-template-extract": "^1.0.12",
-    "@aehrc/smart-forms-renderer": "^1.0.0-alpha.110.dev1",
+    "@aehrc/sdc-template-extract": "^1.0.13",
+    "@aehrc/smart-forms-renderer": "^1.0.0",
     "@dnd-kit/core": "^6.3.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",

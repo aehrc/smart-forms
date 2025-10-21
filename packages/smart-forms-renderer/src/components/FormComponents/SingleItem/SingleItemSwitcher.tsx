@@ -61,7 +61,6 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
   const {
     qItem,
     qrItem,
-
     isRepeated,
     isTabled,
     renderingExtensions,
