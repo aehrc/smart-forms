@@ -17,7 +17,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build workspace packages
+      - name: Build workspace packages (monorepo dependencies)
         run: |
           npm run build -w packages/sdc-assemble
           npm run build -w packages/sdc-populate
@@ -59,7 +59,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build workspace packages
+      - name: Build workspace packages (monorepo dependencies)
         run: |
           npm run build -w packages/sdc-assemble
           npm run build -w packages/sdc-populate
@@ -93,7 +93,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build workspace packages
+      - name: Build workspace packages (monorepo dependencies)
         run: |
           npm run build -w packages/sdc-assemble
           npm run build -w packages/sdc-populate
@@ -121,9 +121,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      #  sdc-populate and sdc-template-extract is a dependency of the renderer so we need to build it
-      - name: Build workspace packages
+      - name: Build workspace packages (monorepo dependencies)
         run: |
+          npm run build -w packages/sdc-assemble
           npm run build -w packages/sdc-populate
           npm run build -w packages/sdc-template-extract
 
@@ -185,8 +185,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build workspace packages
+      - name: Build workspace packages (monorepo dependencies)
         run: |
+          npm run build -w packages/sdc-assemble
           npm run build -w packages/sdc-populate
           npm run build -w packages/sdc-template-extract
 
@@ -271,7 +272,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build workspace packages
+      - name: Build workspace packages (monorepo dependencies)
         run: |
           npm run build -w packages/sdc-assemble
           npm run build -w packages/sdc-populate
