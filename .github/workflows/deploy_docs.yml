@@ -2,8 +2,8 @@ name: Smart Forms Docs + Storybook Deployment Workflow
 
 on:
   push:
-    # Only run this workflow when changes are pushed to the main branch
-    branches: ['main']
+    # Only run this workflow when changes are pushed to the main and dev branch
+    branches: ['main', 'dev']
 
 permissions:
   contents: read
@@ -84,4 +84,4 @@ jobs:
         run: npm run build-storybook -w packages/smart-forms-renderer
 
       - name: Upload static Storybook site to S3
-        run: aws s3 sync packages/smart-forms-renderer/storybook-static s3://smart-forms-storybook/storybook
+        run: aws s3 sync packages/smart-forms-renderer/storybook-static s3://smart-forms-storybook/storybook --cache-control no-cache
