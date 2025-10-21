@@ -29,7 +29,12 @@ import type {
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
 import { emptyResponse } from './emptyResource';
-import { createFhirPathContext, handleFhirPathResult } from './fhirpath';
+import {
+  cacheTerminologyResult,
+  createFhirPathContext,
+  handleFhirPathResult,
+  isExpressionCached
+} from './fhirpath';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import { createEmptyQrGroup, createEmptyQrItem, updateQrItemsInGroup } from './qrItem';
 import dayjs from 'dayjs';
@@ -108,10 +113,9 @@ export async function evaluateInitialCalculatedExpressions(
     const itemCalcExpressions = calculatedExpressions[linkId];
 
     for (const calcExpression of itemCalcExpressions) {
-      const cacheKey = JSON.stringify(calcExpression.expression); // Use expression as cache key
-      // if (fhirPathTerminologyCache[cacheKey]) {
-      //   continue;
-      // }
+      if (isExpressionCached(calcExpression.expression, fhirPathTerminologyCache)) {
+        continue;
+      }
 
       try {
         const fhirPathResult = fhirpath.evaluate(
@@ -128,7 +132,7 @@ export async function evaluateInitialCalculatedExpressions(
 
         // If fhirPathResult is an async terminology call, cache the result
         if (fhirPathResult instanceof Promise) {
-          fhirPathTerminologyCache[cacheKey] = result;
+          cacheTerminologyResult(calcExpression.expression, result, fhirPathTerminologyCache);
         }
 
         // Only update calculatedExpressions if length of result array > 0
@@ -189,8 +193,7 @@ export async function evaluateCalculatedExpressionsFhirPath(
     const itemCalcExpressions = calculatedExpressions[linkId];
 
     for (const calcExpression of itemCalcExpressions) {
-      const cacheKey = JSON.stringify(calcExpression.expression); // Use expression as cache key
-      if (fhirPathTerminologyCache[cacheKey]) {
+      if (isExpressionCached(calcExpression.expression, fhirPathTerminologyCache)) {
         continue;
       }
 
@@ -209,7 +212,7 @@ export async function evaluateCalculatedExpressionsFhirPath(
 
         // If fhirPathResult is an async terminology call, cache the result
         if (fhirPathResult instanceof Promise) {
-          fhirPathTerminologyCache[cacheKey] = result;
+          cacheTerminologyResult(calcExpression.expression, result, fhirPathTerminologyCache);
         }
 
         // Update calculatedExpressions if length of result array > 0

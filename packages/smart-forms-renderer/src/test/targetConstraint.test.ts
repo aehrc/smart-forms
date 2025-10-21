@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { beforeEach, describe, expect, jest } from '@jest/globals';
+import { beforeEach, describe, expect } from '@jest/globals';
 import type { Questionnaire, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import {
   evaluateInitialTargetConstraints,
@@ -29,6 +29,7 @@ import fhirpath from 'fhirpath';
 
 // Mock the fhirpath dependencies
 jest.mock('../utils/fhirpath', () => ({
+  ...jest.requireActual('../utils/fhirpath'),
   createFhirPathContext: jest.fn(),
   handleFhirPathResult: jest.fn()
 }));
@@ -203,13 +204,13 @@ describe('targetConstraint', () => {
         targetConstraints: mockTargetConstraints,
         variables: { fhirPathVariables: {}, xFhirQueryVariables: {} },
         existingFhirPathContext: {},
-        fhirPathTerminologyCache: { '"true"': [true] }, // Pre-cached result
+        fhirPathTerminologyCache: { true: [true] }, // Pre-cached result
         terminologyServerUrl: 'https://tx.fhir.org/r4'
       };
 
       mockCreateFhirPathContext.mockResolvedValue({
         fhirPathContext: {},
-        fhirPathTerminologyCache: { '"true"': [true] }
+        fhirPathTerminologyCache: { true: [true] }
       });
 
       const result = await evaluateInitialTargetConstraints(params);
@@ -308,7 +309,7 @@ describe('targetConstraint', () => {
 
       const result = await evaluateInitialTargetConstraints(params);
 
-      expect(result.fhirPathTerminologyCache['"terminology.lookup()"']).toEqual([true]);
+      expect(result.fhirPathTerminologyCache['terminology.lookup()']).toEqual([true]);
     });
 
     it('should handle fhirpath evaluation errors gracefully', async () => {
@@ -463,7 +464,7 @@ describe('targetConstraint', () => {
       };
 
       const fhirPathContext = { test: 'context' };
-      const fhirPathTerminologyCache = { '"true"': [true] }; // Pre-cached
+      const fhirPathTerminologyCache = { true: [true] }; // Pre-cached
       const terminologyServerUrl = 'https://tx.fhir.org/r4';
 
       const result = await evaluateTargetConstraints(

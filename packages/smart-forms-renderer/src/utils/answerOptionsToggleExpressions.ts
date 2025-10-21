@@ -16,7 +16,12 @@
  */
 
 import type { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
-import { createFhirPathContext, handleFhirPathResult } from './fhirpath';
+import {
+  cacheTerminologyResult,
+  createFhirPathContext,
+  handleFhirPathResult,
+  isExpressionCached
+} from './fhirpath';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import type { Variables } from '../interfaces';
@@ -71,8 +76,7 @@ export async function evaluateInitialAnswerOptionsToggleExpressions(
         continue;
       }
 
-      const cacheKey = JSON.stringify(expression); // Use expression as cache key
-      if (fhirPathTerminologyCache[cacheKey]) {
+      if (isExpressionCached(expression, fhirPathTerminologyCache)) {
         continue;
       }
 
@@ -107,7 +111,7 @@ export async function evaluateInitialAnswerOptionsToggleExpressions(
 
         // If fhirPathResult is an async terminology call, cache the result
         if (fhirPathResult instanceof Promise) {
-          fhirPathTerminologyCache[cacheKey] = result;
+          cacheTerminologyResult(expression, result, fhirPathTerminologyCache);
         }
       } catch (e) {
         console.warn(
@@ -146,8 +150,7 @@ export async function evaluateAnswerOptionsToggleExpressions(
         continue;
       }
 
-      const cacheKey = JSON.stringify(expression); // Use expression as cache key
-      if (fhirPathTerminologyCache[cacheKey]) {
+      if (isExpressionCached(expression, fhirPathTerminologyCache)) {
         continue;
       }
 
@@ -188,7 +191,7 @@ export async function evaluateAnswerOptionsToggleExpressions(
 
         // If fhirPathResult is an async terminology call, cache the result
         if (fhirPathResult instanceof Promise) {
-          fhirPathTerminologyCache[cacheKey] = result;
+          cacheTerminologyResult(expression, result, fhirPathTerminologyCache);
         }
       } catch (e) {
         console.warn(

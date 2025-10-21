@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { describe, expect, jest } from '@jest/globals';
+import { describe, expect } from '@jest/globals';
 import {
   evaluateEnableWhenExpressions,
   evaluateEnableWhenRepeatExpressionInstance,
@@ -30,6 +30,7 @@ import type {
 
 // Mock dependencies
 jest.mock('../utils/fhirpath', () => ({
+  ...jest.requireActual('../utils/fhirpath'),
   createFhirPathContext: jest.fn(() =>
     Promise.resolve({
       fhirPathContext: { mockContext: true },
@@ -170,7 +171,7 @@ describe('enableWhenExpression utils', () => {
       const result = await evaluateInitialEnableWhenExpressions(params);
 
       expect(result.initialEnableWhenExpressions.singleExpressions['item-1'].isEnabled).toBe(true);
-      expect(result.fhirPathTerminologyCache['"terminology-based-expression"']).toEqual([true]);
+      expect(result.fhirPathTerminologyCache['terminology-based-expression']).toEqual([true]);
     });
 
     it('should handle cached expressions properly', async () => {
@@ -188,7 +189,7 @@ describe('enableWhenExpression utils', () => {
           repeatExpressions: {}
         },
         fhirPathTerminologyCache: {
-          '"cached-expression"': [true]
+          'cached-expression': [true]
         }
       });
 
@@ -636,7 +637,7 @@ describe('enableWhenExpression utils', () => {
       };
 
       const fhirPathTerminologyCache = {
-        '"cached-expression"': [true]
+        'cached-expression': [true]
       };
 
       const result = await evaluateEnableWhenExpressions(
