@@ -32,7 +32,6 @@ function ChoiceRadioAnswerOptionItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
-
     isRepeated,
     isTabled,
     renderingExtensions,

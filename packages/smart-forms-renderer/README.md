@@ -10,4 +10,4 @@ View the changelog [here](https://github.com/aehrc/smart-forms/blob/main/CHANGEL
 
 ---
 
-Copyright © 2024, Commonwealth Scientific and Industrial Research Organisation (CSIRO) ABN 41 687 119 230. All rights reserved.
+Copyright © 2025, Commonwealth Scientific and Industrial Research Organisation (CSIRO) ABN 41 687 119 230. All rights reserved.

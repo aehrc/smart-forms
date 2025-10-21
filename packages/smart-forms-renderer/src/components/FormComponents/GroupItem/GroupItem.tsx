@@ -57,7 +57,6 @@ function GroupItem(props: GroupItemProps) {
   const {
     qItem,
     qrItem,
-
     isRepeated,
     groupCardElevation,
     disableCardView,
