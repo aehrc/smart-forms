@@ -10,6 +10,6 @@ updates:
       interval: 'daily'
     ignore:
       # Upgrading to version 5 breaks QR -> HTML parsing, it should be fixed at v4.2.10
-      - dependency-name: "html-react-parser"
+      - dependency-name: 'html-react-parser'
       # Should always be fixed at v6.11.2, only this version's useBlocker works with the switching between renderer and renderer/preview without triggering the save dialog to appear
-      - dependency-name: "react-router-dom"
+      - dependency-name: 'react-router-dom'
