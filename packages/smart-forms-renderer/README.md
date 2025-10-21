@@ -7,6 +7,8 @@ It acts as a reference implementation for the [SDC Form Filler](https://hl7.org/
 
 View the changelog [here](https://github.com/aehrc/smart-forms/blob/main/CHANGELOG.md).
 
+We recently updated to v1.0.0 which includes some breaking changes. Please refer to the [migration guide](../../MIGRATION-v1.0.md) for more information.
+
 
 ---
 
