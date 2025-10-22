@@ -26,6 +26,7 @@ import { StandardTextField } from '../Textfield.styles';
 interface QuantityFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
   itemType: string;
+  itemText?: string;
   input: string;
   feedback: string;
   displayPrompt: string;
@@ -40,6 +41,7 @@ function QuantityField(props: QuantityFieldProps) {
   const {
     linkId,
     itemType,
+    itemText,
     input,
     feedback,
     displayPrompt,
@@ -63,9 +65,14 @@ function QuantityField(props: QuantityFieldProps) {
     placeholderText = entryFormat;
   }
 
+  const inputId = itemType + '-' + linkId + '-input';
+
+  // Construct aria-label with unit for better accessibility
+  const ariaLabel = displayUnit ? `${itemText || ''} (${displayUnit})`.trim() : undefined;
+
   return (
     <StandardTextField
-      id={itemType + '-' + linkId + '-input'}
+      id={inputId}
       value={input}
       error={!!feedback}
       onChange={(event) => onInputChange(event.target.value)}
@@ -76,7 +83,7 @@ function QuantityField(props: QuantityFieldProps) {
       isTabled={isTabled}
       size="small"
       slotProps={{
-        htmlInput: { inputMode: 'numeric', pattern: '[0-9]*' },
+        htmlInput: { inputMode: 'numeric', pattern: '[0-9]*', 'aria-label': ariaLabel },
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (

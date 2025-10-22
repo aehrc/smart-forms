@@ -64,9 +64,14 @@ function IntegerField(props: IntegerFieldProps) {
     placeholderText = entryFormat;
   }
 
+  const inputId = qItem.type + '-' + qItem.linkId;
+
+  // Construct aria-label with unit for better accessibility
+  const ariaLabel = displayUnit ? `${qItem.text || ''} (${displayUnit})`.trim() : undefined;
+
   return (
     <StandardTextField
-      id={qItem.type + '-' + qItem.linkId}
+      id={inputId}
       value={input}
       error={!!feedback}
       helperText={feedback}
@@ -81,7 +86,8 @@ function IntegerField(props: IntegerFieldProps) {
       slotProps={{
         htmlInput: {
           inputMode: 'numeric',
-          pattern: '[0-9]*'
+          pattern: '[0-9]*',
+          'aria-label': ariaLabel
         },
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',

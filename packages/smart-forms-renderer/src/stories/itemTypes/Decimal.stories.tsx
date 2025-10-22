@@ -24,9 +24,10 @@ import {
   getInputText,
   inputDecimal,
   questionnaireFactory,
-  questionnaireResponseFactory
+  questionnaireResponseFactory,
+  unitExtFactory
 } from '../testUtils';
-import { expect, fireEvent } from 'storybook/test';
+import { expect, fireEvent, within } from 'storybook/test';
 import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -102,5 +103,32 @@ export const DecimalBasicResponse: Story = createStory({
     const input = await getInputText(canvasElement, targetLinkId);
 
     expect(input).toBe(targetWeight.toString());
+  }
+}) as Story;
+
+/* Decimal Unit Accessibility story */
+const accessibilityTargetLinkId = 'height';
+const qDecimalAccessibility = questionnaireFactory([
+  {
+    linkId: accessibilityTargetLinkId,
+    extension: [unitExtFactory('cm', 'cm')],
+    type: 'decimal',
+    text: 'Height'
+  }
+]);
+
+export const DecimalUnitAccessibility: Story = createStory({
+  args: {
+    questionnaire: qDecimalAccessibility
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Find the decimal input field by its data-test attribute
+    const inputField = canvas.getByTestId('q-item-decimal-field');
+    const input = inputField.querySelector('input');
+
+    // Verify the aria-label includes the item text and unit for screen reader accessibility
+    expect(input?.getAttribute('aria-label')).toBe('Height (cm)');
   }
 }) as Story;
