@@ -29,12 +29,11 @@ import {
 } from '../../../utils/parseInputs';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
-import ItemFieldGrid, { getInstructionsId } from '../ItemParts/ItemFieldGrid';
+import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
 import type { QuestionnaireResponseItem } from 'fhir/r4';
 import { readDecimalValue } from '../../../utils/readValues';
 import DecimalField from './DecimalField';
-import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 
 function DecimalItem(props: BaseItemProps) {
   const {
@@ -63,10 +62,6 @@ function DecimalItem(props: BaseItemProps) {
 
   // Perform validation checks - there's no string-based input here
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
-
-  // Get instructions for accessibility
-  const { displayInstructions } = useRenderingExtensions(qItem);
-  const instructionsId = getInstructionsId(qItem, displayInstructions, !!feedback);
 
   // Event handlers
   function handleInputChange(newInput: string) {
@@ -129,7 +124,6 @@ function DecimalItem(props: BaseItemProps) {
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         isTabled={isTabled}
-        instructionsId={instructionsId}
         onInputChange={handleInputChange}
         onRepopulateSync={handleRepopulateSync}
       />
@@ -155,7 +149,6 @@ function DecimalItem(props: BaseItemProps) {
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}
-            instructionsId={instructionsId}
             onInputChange={handleInputChange}
             onRepopulateSync={handleRepopulateSync}
           />
