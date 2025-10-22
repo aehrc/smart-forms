@@ -56,7 +56,7 @@ function UrlField(props: UrlFieldProps) {
 
   // Generate ID for unit text to associate with input via aria-describedby
   const unitId = displayUnit ? `unit-${linkId}` : undefined;
-  
+
   // Combine unit and instructions IDs for aria-describedby
   const ariaDescribedBy = [unitId, instructionsId].filter(Boolean).join(' ') || undefined;
 

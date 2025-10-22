@@ -55,7 +55,7 @@ function TextField(props: TextFieldProps) {
 
   // Generate ID for unit text to associate with input via aria-describedby
   const unitId = displayUnit ? `unit-${qItem.linkId}` : undefined;
-  
+
   // Combine unit and instructions IDs for aria-describedby
   const ariaDescribedBy = [unitId, instructionsId].filter(Boolean).join(' ') || undefined;
 

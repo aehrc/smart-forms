@@ -44,8 +44,16 @@ interface BooleanFieldProps {
 }
 
 const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
-  const { qItem, readOnly, valueBoolean, feedback, calcExpUpdated, instructionsId, onCheckedChange, onClear } =
-    props;
+  const {
+    qItem,
+    readOnly,
+    valueBoolean,
+    feedback,
+    calcExpUpdated,
+    instructionsId,
+    onCheckedChange,
+    onClear
+  } = props;
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const inputsFlexGrow = useRendererConfigStore.use.inputsFlexGrow();
