@@ -24,6 +24,22 @@ import { browserTracingIntegration } from '@sentry/browser';
 import ConfigContextProvider from './features/configChecker/contexts/ConfigContextProvider';
 import { CssBaseline } from '@mui/material';
 import ThemeProvider from './theme/Theme';
+import { loader } from '@monaco-editor/react';
+import * as monaco from 'monaco-editor';
+import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
+import jsonWorker from 'monaco-editor/esm/vs/language/json/json.worker?worker';
+
+// Configure Monaco Editor to use local workers instead of CDN
+self.MonacoEnvironment = {
+  getWorker(_, label) {
+    if (label === 'json') {
+      return new jsonWorker();
+    }
+    return new editorWorker();
+  }
+};
+
+loader.config({ monaco });
 
 const integration = browserTracingIntegration();
 

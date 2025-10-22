@@ -206,6 +206,7 @@ function QuantityItem(props: BaseItemProps) {
         <QuantityField
           linkId={qItem.linkId}
           itemType={qItem.type}
+          itemText={qItem.text}
           input={valueInput}
           feedback={feedback ?? ''}
           displayPrompt={displayPrompt}

@@ -33,7 +33,6 @@ interface IntegerFieldProps extends PropsWithIsTabledAttribute {
   renderingExtensions: RenderingExtensions;
   readOnly: boolean;
   calcExpUpdated: boolean;
-  instructionsId?: string;
   onInputChange: (value: string) => void;
   onRepopulateSync: (newQrItem: QuestionnaireResponseItem | null) => unknown;
 }
@@ -47,7 +46,6 @@ function IntegerField(props: IntegerFieldProps) {
     readOnly,
     calcExpUpdated,
     isTabled,
-    instructionsId,
     onInputChange,
     onRepopulateSync
   } = props;
@@ -66,15 +64,14 @@ function IntegerField(props: IntegerFieldProps) {
     placeholderText = entryFormat;
   }
 
-  // Generate ID for unit text to associate with input via aria-describedby
-  const unitId = displayUnit ? `unit-${qItem.linkId}` : undefined;
-  
-  // Combine unit and instructions IDs for aria-describedby
-  const ariaDescribedBy = [unitId, instructionsId].filter(Boolean).join(' ') || undefined;
+  const inputId = qItem.type + '-' + qItem.linkId;
+
+  // Construct aria-label with unit for better accessibility
+  const ariaLabel = displayUnit ? `${qItem.text || ''} (${displayUnit})`.trim() : undefined;
 
   return (
     <StandardTextField
-      id={qItem.type + '-' + qItem.linkId}
+      id={inputId}
       value={input}
       error={!!feedback}
       helperText={feedback}
@@ -90,7 +87,7 @@ function IntegerField(props: IntegerFieldProps) {
         htmlInput: {
           inputMode: 'numeric',
           pattern: '[0-9]*',
-          'aria-describedby': ariaDescribedBy
+          'aria-label': ariaLabel
         },
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
@@ -99,6 +96,7 @@ function IntegerField(props: IntegerFieldProps) {
               <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
               <ClearButtonAdornment
                 readOnly={readOnly}
+                inputId={inputId}
                 onClear={() => {
                   onInputChange('');
                 }}
@@ -108,9 +106,7 @@ function IntegerField(props: IntegerFieldProps) {
                 repopulatable={isRepopulatable}
                 onRepopulate={onRepopulateSync}
               />
-              <DisplayUnitText id={unitId} readOnly={readOnly}>
-                {displayUnit}
-              </DisplayUnitText>
+              <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>
           )
         }

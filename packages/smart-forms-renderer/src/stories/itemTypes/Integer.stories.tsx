@@ -17,16 +17,18 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { qIntegerCalculation } from '../assets/questionnaires';
+import { createStory } from '../storybookWrappers/createStory';
+
 import {
   findByLinkIdOrLabel,
   getAnswers,
   getInputText,
   inputInteger,
-  qrFactory,
-  questionnaireFactory
+  questionnaireFactory,
+  questionnaireResponseFactory,
+  unitExtFactory
 } from '../testUtils';
-import { expect, fireEvent } from 'storybook/test';
+import { expect, fireEvent, within } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -40,6 +42,8 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+
+/* Integer Basic story */
 const targetLinkId = 'age';
 const targetAge = 40;
 const basicAge = 25;
@@ -52,7 +56,7 @@ const qIntegerBasic = questionnaireFactory([
     text: 'Age'
   }
 ]);
-const qrIntegerBasicResponse = qrFactory([
+const qrIntegerBasicResponse = questionnaireResponseFactory([
   {
     linkId: targetLinkId,
     text: 'Age',
@@ -64,7 +68,7 @@ const qrIntegerBasicResponse = qrFactory([
   }
 ]);
 
-export const IntegerBasic: Story = {
+export const IntegerBasic: Story = createStory({
   args: {
     questionnaire: qIntegerBasic
   },
@@ -87,8 +91,9 @@ export const IntegerBasic: Story = {
     const input = elementAfterClear.querySelector('input');
     expect(input?.getAttribute('value')).toBe('');
   }
-};
-export const IntegerBasicResponse: Story = {
+}) as Story;
+
+export const IntegerBasicResponse: Story = createStory({
   args: {
     questionnaire: qIntegerBasic,
     questionnaireResponse: qrIntegerBasicResponse
@@ -98,10 +103,31 @@ export const IntegerBasicResponse: Story = {
 
     expect(input).toBe(targetAge.toString());
   }
-};
+}) as Story;
 
-export const IntegerCalculation: Story = {
-  args: {
-    questionnaire: qIntegerCalculation
+/* Integer Unit Accessibility story */
+const accessibilityTargetLinkId = 'heart-rate';
+const qIntegerAccessibility = questionnaireFactory([
+  {
+    linkId: accessibilityTargetLinkId,
+    extension: [unitExtFactory('bpm', 'beats per minute')],
+    type: 'integer',
+    text: 'Heart Rate'
   }
-};
+]);
+
+export const IntegerUnitAccessibility: Story = createStory({
+  args: {
+    questionnaire: qIntegerAccessibility
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Find the integer input field by its data-test attribute
+    const inputField = canvas.getByTestId('q-item-integer-field');
+    const input = inputField.querySelector('input');
+
+    // Verify the aria-label includes the item text and unit for screen reader accessibility
+    expect(input?.getAttribute('aria-label')).toBe('Heart Rate (beats per minute)');
+  }
+}) as Story;

@@ -17,16 +17,18 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { qCalculatedExpressionBMICalculator } from '../assets/questionnaires';
+
 import {
   findByLinkIdOrLabel,
   getAnswers,
   getInputText,
   inputDecimal,
-  qrFactory,
-  questionnaireFactory
+  questionnaireFactory,
+  questionnaireResponseFactory,
+  unitExtFactory
 } from '../testUtils';
-import { expect, fireEvent } from 'storybook/test';
+import { expect, fireEvent, within } from 'storybook/test';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -41,6 +43,7 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
+/* Decimal Basic story */
 const targetLinkId = 'weight';
 const targetWeight = 80.3;
 
@@ -52,7 +55,8 @@ const qDecimalBasic = questionnaireFactory([
     text: 'Weight in kg'
   }
 ]);
-const qrDecimalBasicResponse = qrFactory([
+
+const qrDecimalBasicResponse = questionnaireResponseFactory([
   {
     linkId: targetLinkId,
     text: 'Weight in kg',
@@ -64,7 +68,7 @@ const qrDecimalBasicResponse = qrFactory([
   }
 ]);
 
-export const DecimalBasic: Story = {
+export const DecimalBasic: Story = createStory({
   args: {
     questionnaire: qDecimalBasic
   },
@@ -88,9 +92,9 @@ export const DecimalBasic: Story = {
     const input = elementAfterClear.querySelector('input');
     expect(input?.getAttribute('value')).toBe('');
   }
-};
+}) as Story;
 
-export const DecimalBasicResponse: Story = {
+export const DecimalBasicResponse: Story = createStory({
   args: {
     questionnaire: qDecimalBasic,
     questionnaireResponse: qrDecimalBasicResponse
@@ -100,10 +104,31 @@ export const DecimalBasicResponse: Story = {
 
     expect(input).toBe(targetWeight.toString());
   }
-};
+}) as Story;
 
-export const DecimalCalculation: Story = {
-  args: {
-    questionnaire: qCalculatedExpressionBMICalculator
+/* Decimal Unit Accessibility story */
+const accessibilityTargetLinkId = 'height';
+const qDecimalAccessibility = questionnaireFactory([
+  {
+    linkId: accessibilityTargetLinkId,
+    extension: [unitExtFactory('cm', 'cm')],
+    type: 'decimal',
+    text: 'Height'
   }
-};
+]);
+
+export const DecimalUnitAccessibility: Story = createStory({
+  args: {
+    questionnaire: qDecimalAccessibility
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Find the decimal input field by its data-test attribute
+    const inputField = canvas.getByTestId('q-item-decimal-field');
+    const input = inputField.querySelector('input');
+
+    // Verify the aria-label includes the item text and unit for screen reader accessibility
+    expect(input?.getAttribute('aria-label')).toBe('Height (cm)');
+  }
+}) as Story;

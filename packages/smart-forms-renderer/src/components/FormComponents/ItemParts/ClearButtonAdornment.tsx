@@ -3,11 +3,12 @@ import ClearIcon from '@mui/icons-material/Clear';
 
 interface ClearButtonAdornmentProps {
   readOnly: boolean;
+  inputId?: string;
   onClear: () => void;
 }
 
 export function ClearButtonAdornment(props: ClearButtonAdornmentProps) {
-  const { readOnly, onClear } = props;
+  const { readOnly, inputId, onClear } = props;
 
   if (readOnly) {
     return null;
@@ -16,9 +17,9 @@ export function ClearButtonAdornment(props: ClearButtonAdornmentProps) {
   return (
     <span title="Clear">
       <IconButton
-        aria-label="Clear"
+        aria-label="Clear value"
+        aria-controls={inputId}
         size="small"
-        tabIndex={-1}
         onClick={(e) => {
           onClear();
 

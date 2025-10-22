@@ -33,7 +33,6 @@ interface DecimalFieldProps extends PropsWithIsTabledAttribute {
   renderingExtensions: RenderingExtensions;
   readOnly: boolean;
   calcExpUpdated: boolean;
-  instructionsId?: string;
   onInputChange: (value: string) => void;
   onRepopulateSync: (newQrItem: QuestionnaireResponseItem | null) => unknown;
 }
@@ -47,7 +46,6 @@ function DecimalField(props: DecimalFieldProps) {
     readOnly,
     calcExpUpdated,
     isTabled,
-    instructionsId,
     onInputChange,
     onRepopulateSync
   } = props;
@@ -66,15 +64,14 @@ function DecimalField(props: DecimalFieldProps) {
     placeholderText = entryFormat;
   }
 
-  // Generate ID for unit text to associate with input via aria-describedby
-  const unitId = displayUnit ? `unit-${qItem.linkId}` : undefined;
-  
-  // Combine unit and instructions IDs for aria-describedby
-  const ariaDescribedBy = [unitId, instructionsId].filter(Boolean).join(' ') || undefined;
+  const inputId = qItem.type + '-' + qItem.linkId;
+
+  // Construct aria-label with unit for better accessibility
+  const ariaLabel = displayUnit ? `${qItem.text || ''} (${displayUnit})`.trim() : undefined;
 
   return (
     <StandardTextField
-      id={qItem.type + '-' + qItem.linkId}
+      id={inputId}
       value={input}
       error={!!feedback}
       helperText={feedback}
@@ -89,7 +86,7 @@ function DecimalField(props: DecimalFieldProps) {
         htmlInput: {
           inputMode: 'numeric',
           pattern: '[0-9]*',
-          'aria-describedby': ariaDescribedBy
+          'aria-label': ariaLabel
         },
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
@@ -98,6 +95,7 @@ function DecimalField(props: DecimalFieldProps) {
               <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
               <ClearButtonAdornment
                 readOnly={readOnly}
+                inputId={inputId}
                 onClear={() => {
                   onInputChange('');
                 }}
@@ -107,9 +105,7 @@ function DecimalField(props: DecimalFieldProps) {
                 repopulatable={isRepopulatable}
                 onRepopulate={onRepopulateSync}
               />
-              <DisplayUnitText id={unitId} readOnly={readOnly}>
-                {displayUnit}
-              </DisplayUnitText>
+              <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>
           )
         }

@@ -26,6 +26,7 @@ import { StandardTextField } from '../Textfield.styles';
 interface QuantityFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
   itemType: string;
+  itemText?: string;
   input: string;
   feedback: string;
   displayPrompt: string;
@@ -33,7 +34,6 @@ interface QuantityFieldProps extends PropsWithIsTabledAttribute {
   entryFormat: string;
   readOnly: boolean;
   calcExpUpdated: boolean;
-  instructionsId?: string;
   onInputChange: (value: string) => void;
 }
 
@@ -41,6 +41,7 @@ function QuantityField(props: QuantityFieldProps) {
   const {
     linkId,
     itemType,
+    itemText,
     input,
     feedback,
     displayPrompt,
@@ -49,7 +50,6 @@ function QuantityField(props: QuantityFieldProps) {
     readOnly,
     calcExpUpdated,
     isTabled,
-    instructionsId,
     onInputChange
   } = props;
 
@@ -65,15 +65,14 @@ function QuantityField(props: QuantityFieldProps) {
     placeholderText = entryFormat;
   }
 
-  // Generate ID for unit text to associate with input via aria-describedby
-  const unitId = displayUnit ? `unit-${linkId}` : undefined;
-  
-  // Combine unit and instructions IDs for aria-describedby
-  const ariaDescribedBy = [unitId, instructionsId].filter(Boolean).join(' ') || undefined;
+  const inputId = itemType + '-' + linkId + '-input';
+
+  // Construct aria-label with unit for better accessibility
+  const ariaLabel = displayUnit ? `${itemText || ''} (${displayUnit})`.trim() : undefined;
 
   return (
     <StandardTextField
-      id={itemType + '-' + linkId + '-input'}
+      id={inputId}
       value={input}
       error={!!feedback}
       onChange={(event) => onInputChange(event.target.value)}
@@ -84,11 +83,7 @@ function QuantityField(props: QuantityFieldProps) {
       isTabled={isTabled}
       size="small"
       slotProps={{
-        htmlInput: {
-          inputMode: 'numeric',
-          pattern: '[0-9]*',
-          'aria-describedby': ariaDescribedBy
-        },
+        htmlInput: { inputMode: 'numeric', pattern: '[0-9]*', 'aria-label': ariaLabel },
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
@@ -96,13 +91,12 @@ function QuantityField(props: QuantityFieldProps) {
               <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
               <ClearButtonAdornment
                 readOnly={readOnly}
+                inputId={inputId}
                 onClear={() => {
                   onInputChange('');
                 }}
               />
-              <DisplayUnitText id={unitId} readOnly={readOnly}>
-                {displayUnit}
-              </DisplayUnitText>
+              <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>
           )
         }
