@@ -21,15 +21,16 @@ import Typography from '@mui/material/Typography';
 import { DisplayInstructionsWrapper } from './DisplayInstructions.styles';
 
 interface DisplayInstructionsProps {
+  id?: string;
   readOnly: boolean;
   children?: ReactNode;
 }
 
 const DisplayInstructions = memo(function DisplayInstructions(props: DisplayInstructionsProps) {
-  const { readOnly, children } = props;
+  const { id, readOnly, children } = props;
 
   return children ? (
-    <DisplayInstructionsWrapper>
+    <DisplayInstructionsWrapper id={id}>
       <Typography
         component="span"
         variant="caption"
