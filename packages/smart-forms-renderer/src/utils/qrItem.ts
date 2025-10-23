@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 
 import type { QrRepeatGroup } from '../interfaces/repeatGroup.interface';
 import { qrItemHasItemsOrAnswer } from './manageForm';
@@ -262,9 +262,6 @@ export function updateQrNestedItems(
     if (qrAnswerItems.length === 0) {
       // Only add if the item has answers (nested items use answer array, not item array)
       if (newQrItem.answer?.length) {
-        const tempItem = {
-          item: [],
-        };
         qrAnswerItems.push({item: [newQrItem]});
       }
       return;
