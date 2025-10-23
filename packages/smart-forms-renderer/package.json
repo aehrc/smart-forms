@@ -44,7 +44,7 @@
     "deep-diff": "^1.0.2",
     "fast-equals": "^5.2.2",
     "fhir-sdc-helpers": "^0.1.0",
-    "fhirclient": "^2.6.0",
+    "fhirclient": "^2.6.3",
     "fhirpath": "3.18.0",
     "html-react-parser": "4.2.10",
     "js-base64": "^3.7.8",
