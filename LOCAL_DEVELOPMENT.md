@@ -461,29 +461,30 @@ P.S. We had `alpha` as a pre-release branch before the recent v1.0.0 release. Th
 6. If applicable, update documentation. Refer to [Documentation](#documentation).
 7. Create a pull request to merge your branch into `main`.
 8. Ensure that all CI checks pass (build, tests, linting, etc.).
-9. If you are working on a package (i.e. any package in `/packages`), follow the steps below to publish a new version. Otherwise, skip to step 17.
-10. Depending on which package/app you are working on, bump the version number in `package.json` following [semantic versioning](https://semver.org/) principles.
-11. Update dependencies in other packages/apps if necessary.
+9. Merge `main` into your branch to ensure you have the latest changes.
+10. If you are working on a package (i.e. any package in `/packages`), follow the steps below to publish a new version. Otherwise, skip to step 17.
+11. Depending on which package/app you are working on, bump the version number in `package.json` following [semantic versioning](https://semver.org/) principles.
+12. Update dependencies in other packages/apps if necessary.
     - `@aehrc/smart-forms-renderer`'s Storybook depends on `@aehrc/sdc-populate` and `@aehrc/sdc-template-extract`. If you update `@aehrc/sdc-populate` or `@aehrc/sdc-template-extract`, make sure to bump their versions and the `@aehrc/smart-forms-renderer` version.
     - For example, if you are making changes to `@aehrc/sdc-populate`, ensure that:
       - Both the Renderer's and Smart Forms app's dependency on `@aehrc/sdc-populate` is updated to the new version.
       - `@aehrc/smart-forms-renderer`'s version is also bumped to reflect the dependency change.
       - Bump `@aehrc/smart-forms-renderer`'s dependency version in Smart Forms app's `package.json`.
-12. Run `npm install` to update package-lock.json with the new version.
-13. Run `npm run build` in the respective package directory to ensure you get the latest build output.
+13. Run `npm install` to update package-lock.json with the new version.
+14. Run `npm run build` in the respective package directory to ensure you get the latest build output.
     - If updating multiple packages, make sure to run the build command in each of the respective folders.
-14. Run `npm publish` in the respective package directory to publish new versions to NPM.
+15. Run `npm publish` in the respective package directory to publish new versions to NPM.
     - If updating multiple packages, make sure to run the publish command in each of the respective folders.
     - You might need to go through NPM 2FA when publishing new versions. Ensure you are logged into NPM with the correct account that has publishing rights on the aehrc organisation.
-15. Create a new entry in the `CHANGELOG.md` file in the respective package/app directory summarising your changes. 
+16. Create a new entry in the `CHANGELOG.md` file in the respective package/app directory summarising your changes. 
     - @aehrc/smart-forms-renderer - https://github.com/aehrc/smart-forms/blob/main/CHANGELOG.md
     - @aehrc/sdc-populate - https://github.com/aehrc/smart-forms/blob/main/packages/sdc-populate/CHANGELOG.md
     - @aehrc/sdc-assemble - https://github.com/aehrc/smart-forms/blob/main/packages/sdc-assemble/CHANGELOG.md
     - @aehrc/sdc-template-extract - https://github.com/aehrc/smart-forms/blob/main/packages/sdc-template-extract/CHANGELOG.md
-16. Push a new commit with the version bumps and changelog updates.
-17. Ensure that all CI checks pass (build, tests, linting, etc.).
-18. Request for a code review from a team member.
-19. Once approved, merge your branch into `main`.
+17. Push a new commit with the version bumps and changelog updates.
+18. Ensure that all CI checks pass (build, tests, linting, etc.).
+19. Request for a code review from a team member.
+20. Once approved, merge your branch into `main`.
 
 ## Contributing workflow - external contributors
 1. Create a fork of the repository.
@@ -495,24 +496,25 @@ P.S. We had `alpha` as a pre-release branch before the recent v1.0.0 release. Th
 7. If applicable, update documentation. Refer to [Documentation](#documentation).
 8. Create a pull request to merge your branch into `aehrc/main`.
 9. Ensure that all CI checks pass (build, tests, linting, etc.).
-10. If you are working on a package (i.e. any package in `/packages`), follow the steps below to ready a new version for an internal member to publish. Otherwise, skip to step 17.
-11. Depending on which package/app you are working on, bump the version number in `package.json` following [semantic versioning](https://semver.org/) principles.
-12. Update dependencies in other packages/apps if necessary.
+10. Merge `main` into your branch to ensure you have the latest changes.
+11. If you are working on a package (i.e. any package in `/packages`), follow the steps below to ready a new version for an internal member to publish. Otherwise, skip to step 17.
+12. Depending on which package/app you are working on, bump the version number in `package.json` following [semantic versioning](https://semver.org/) principles.
+13. Update dependencies in other packages/apps if necessary.
      - `@aehrc/smart-forms-renderer`'s Storybook depends on `@aehrc/sdc-populate` and `@aehrc/sdc-template-extract`. If you update `@aehrc/sdc-populate` or `@aehrc/sdc-template-extract`, make sure to bump their versions and the `@aehrc/smart-forms-renderer` version. 
      - For example, if you are making changes to `@aehrc/sdc-populate`, ensure that:
        - Both the Renderer's and Smart Forms app's dependency on `@aehrc/sdc-populate` is updated to the new version.
        - `@aehrc/smart-forms-renderer`'s version is also bumped to reflect the dependency change.
        - Bump `@aehrc/smart-forms-renderer`'s dependency version in Smart Forms app's `package.json`.
-13. Run `npm install` to update package-lock.json with the new version.
-14. Create a new entry in the `CHANGELOG.md` file in the respective package/app directory summarising your changes.
+14. Run `npm install` to update package-lock.json with the new version.
+15. Create a new entry in the `CHANGELOG.md` file in the respective package/app directory summarising your changes.
     - @aehrc/smart-forms-renderer - https://github.com/aehrc/smart-forms/blob/main/CHANGELOG.md
     - @aehrc/sdc-populate - https://github.com/aehrc/smart-forms/blob/main/packages/sdc-populate/CHANGELOG.md
     - @aehrc/sdc-assemble - https://github.com/aehrc/smart-forms/blob/main/packages/sdc-assemble/CHANGELOG.md
     - @aehrc/sdc-template-extract - https://github.com/aehrc/smart-forms/blob/main/packages/sdc-template-extract/CHANGELOG.md
-15. Push a new commit with the version bumps and changelog updates.
-16. Ensure that all CI checks pass (build, tests, linting, etc.).
-17. Request for a code review from an internal team member.
-18. For the reviewing internal team member:
+16. Push a new commit with the version bumps and changelog updates.
+17. Ensure that all CI checks pass (build, tests, linting, etc.).
+18. Request for a code review from an internal team member.
+19. For the reviewing internal team member:
     - Review the code changes.
     - If there are package version bumps, follow steps 11-13 in [Contributing workflow - internal contributors](#contributing-workflow---internal-contributors) to publish new package versions.
     - Once approved, merge the pull request into `aehrc/main`.
