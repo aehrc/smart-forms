@@ -446,6 +446,8 @@ We use a simple branching strategy with `main` as the main branch. All feature/b
 
 If the branch is long-lived (i.e. more than a week), it is a good idea to regularly sync with `main` to prevent large merge conflicts.
 
+It is good practice to have small and focused pull requests to make code reviews easier.
+
 ## Contributing workflow - internal contributors
 1. Create a new branch from `main` for your feature or bugfix. A good convention is to use `issue/<issue-number>` if it's tied to an issue.
    - If it's not tied to an issue, create an issue first to track the work.
