@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-// TODO to be imported into sdc-fhir-helpers
-
 import type {
   Questionnaire,
   QuestionnaireItem,
