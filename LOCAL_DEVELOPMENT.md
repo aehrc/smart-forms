@@ -448,6 +448,8 @@ If the branch is long-lived (i.e. more than a week), it is a good idea to regula
 
 It is good practice to have small and focused pull requests to make code reviews easier.
 
+P.S. We had `alpha` as a pre-release branch before the recent v1.0.0 release. This branch is now deprecated and will be removed in the future. On now onwards, all changes should be merged directly into `main`.
+
 ## Contributing workflow - internal contributors
 1. Create a new branch from `main` for your feature or bugfix. A good convention is to use `issue/<issue-number>` if it's tied to an issue.
    - If it's not tied to an issue, create an issue first to track the work.
