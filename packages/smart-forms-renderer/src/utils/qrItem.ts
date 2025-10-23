@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
+import type { QuestionnaireItem, QuestionnaireResponse, QuestionnaireResponseItem, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 
 import type { QrRepeatGroup } from '../interfaces/repeatGroup.interface';
 import { qrItemHasItemsOrAnswer } from './manageForm';
@@ -63,6 +63,20 @@ export function createEmptyQrGroup(qItem: QuestionnaireItem): QuestionnaireRespo
   return {
     linkId: qItem.linkId,
     text: qItem.text,
+    item: []
+  };
+}
+
+/**
+ * Create an empty repeat qrItem from a given repeat qItem
+ *
+ * @author Clinton Gillespie
+ */
+export function createEmptyRepeatNestedItems(qItem: QuestionnaireItem): QuestionnaireResponseItem {
+  return {
+    linkId: qItem.linkId,
+    text: qItem.text,
+    answer: [],
     item: []
   };
 }
@@ -219,5 +233,89 @@ export function updateQrItemsInGroup(
         break;
       }
     }
+  }
+}
+
+/**
+ * Updates the QuestionnaireResponseItem group by adding/removing a new/modified child QuestionnaireResponseItem into/from a qrGroup
+ * Specifically handles nested repeat items where each item has an answer array rather than nested items
+ *
+ * @author Sean Fong
+ */
+export function updateQrNestedItems(
+  newQrItem: QuestionnaireResponseItem | null,
+  questionnaireResponseOrQrItem: QuestionnaireResponseItem,
+  qItemsIndexMap: Record<string, number>
+): void {
+  
+  if(!newQrItem) return;
+  if (!questionnaireResponseOrQrItem.answer) {
+    questionnaireResponseOrQrItem.answer = [];
+  }
+  
+  let qrAnswerItems = questionnaireResponseOrQrItem.answer;
+  if (!qrAnswerItems) {
+    qrAnswerItems = [];
+  }
+
+  if (newQrItem && newQrItem.linkId in qItemsIndexMap) {
+    if (qrAnswerItems.length === 0) {
+      // Only add if the item has answers (nested items use answer array, not item array)
+      if (newQrItem.answer?.length) {
+        const tempItem = {
+          item: [],
+        };
+        qrAnswerItems.push({item: [newQrItem]});
+      }
+      return;
+    }
+  }
+    
+    // Find the index where newQrItem should be inserted based on qItemsIndexMap
+const newItemSequenceIndex = qItemsIndexMap[newQrItem.linkId];
+
+// Find the last answer object (group) that exists
+const lastAnswerGroup = qrAnswerItems[qrAnswerItems.length - 1];
+
+// If no answer group exists yet, create one
+if (!lastAnswerGroup) {
+  const newGroup = {
+    item: [newQrItem]
+  };
+  qrAnswerItems.push(newGroup);
+  return;
+}
+
+// If the last answer group doesn't have an item array, create one
+if (!lastAnswerGroup.item) {
+  lastAnswerGroup.item = [newQrItem];
+  return;
+}
+
+// Check if newQrItem already exists in the last group's item array
+const existingItemIndex = lastAnswerGroup.item.findIndex(
+  (item) => item.linkId === newQrItem.linkId
+);
+
+if (existingItemIndex !== -1) {
+  // Item exists - overwrite it
+  debugger;
+  lastAnswerGroup.item[existingItemIndex] = newQrItem;
+} else {
+  // Item doesn't exist - find correct position to insert based on sequence
+  let insertIndex = lastAnswerGroup.item.length;
+  
+  for (let i = 0; i < lastAnswerGroup.item.length; i++) {
+    const currentItemSequenceIndex = qItemsIndexMap[lastAnswerGroup.item[i].linkId];
+    if (newItemSequenceIndex < currentItemSequenceIndex) {
+      insertIndex = i;
+      break;
+    }
+  }
+  debugger;
+  // Insert at the correct position
+  lastAnswerGroup.item.splice(insertIndex, 0, newQrItem);
+    return;
+    
   }
 }

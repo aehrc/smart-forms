@@ -168,7 +168,15 @@ function readInitialValuesRecursive(
         text: qItem.text
       };
     }
-    qrItem.item = initialValues;
+    
+    if(qItem.repeats){
+      qrItem.answer?.forEach(answer => {
+        answer.item = initialValues;
+      })
+    } else {
+      qrItem.item = initialValues;
+    }
+    
   }
 
   return qrItem ? [qrItem] : null;

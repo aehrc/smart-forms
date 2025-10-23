@@ -19,7 +19,7 @@ import React, { useMemo } from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../utils/mapItem';
 import GroupItemSwitcher from '../GroupItem/GroupItemSwitcher';
-import { createEmptyQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
+import {  createEmptyRepeatNestedItems, updateQrNestedItems } from '../../../utils/qrItem';
 import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
