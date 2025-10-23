@@ -17,7 +17,10 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { qNestedRepeatQuestionnaire, qNestedRepeatQuestionnaireWithInitial } from '../assets/questionnaires/QNestedRepeatTester';
+import {
+  qNestedRepeatQuestionnaire,
+  qNestedRepeatQuestionnaireWithInitial
+} from '../assets/questionnaires/QNestedRepeatTester';
 import { getAnswers, inputText } from '../testUtils';
 import { expect } from 'storybook/test';
 
@@ -44,7 +47,7 @@ function validateNestedItem(
   expectedText: string
 ) {
   const item = getNestedItem(parentAnswer, linkId);
-  
+
   expect(item).toBeDefined();
   expect(item.linkId).toBe(linkId);
   expect(item.text).toBe(expectedText);
@@ -59,7 +62,7 @@ function validateNestedStringItem(
   expectedText: string
 ) {
   const item = getNestedItem(parentAnswer, linkId);
-  
+
   expect(item).toBeDefined();
   expect(item.linkId).toBe(linkId);
   expect(item.text).toBe(expectedText);
@@ -113,7 +116,7 @@ export const NestedRepeatItems: Story = {
     // Alternative: Direct value checks if you don't need full validation
     const childZeroValue = getNestedItemValue(parentAnswer, childZeroLinkId);
     const childOneValue = getNestedItemValue(parentAnswer, childOneLinkId);
-    
+
     expect(childZeroValue?.valueDecimal).toBe(2);
     expect(childOneValue?.valueDecimal).toBe(3);
     debugger;
@@ -125,27 +128,35 @@ export const NestedRepeatItemsWithInitial: Story = {
     questionnaire: qNestedRepeatQuestionnaireWithInitial
   },
   play: async ({}) => {
-    
     // Get the parent answers - should have 2 initial answers
-  const answers = await getAnswers('parent-decimal');
+    const answers = await getAnswers('parent-decimal');
 
-  // Validate we have two parent answers (from initial values)
-  expect(answers).toHaveLength(2);
+    // Validate we have two parent answers (from initial values)
+    expect(answers).toHaveLength(2);
 
-  // Validate first parent answer
-  const firstParentAnswer = answers[0];
-  expect(firstParentAnswer.valueDecimal).toBe(1);
-  expect(firstParentAnswer.item).toBeDefined();
-  expect(firstParentAnswer.item).toHaveLength(1);
+    // Validate first parent answer
+    const firstParentAnswer = answers[0];
+    expect(firstParentAnswer.valueDecimal).toBe(1);
+    expect(firstParentAnswer.item).toBeDefined();
+    expect(firstParentAnswer.item).toHaveLength(1);
 
-  validateNestedStringItem(firstParentAnswer, 'child-string', 'child value', 'Child string with initial');
+    validateNestedStringItem(
+      firstParentAnswer,
+      'child-string',
+      'child value',
+      'Child string with initial'
+    );
 
-  const secondParentAnswer = answers[1];
-  expect(secondParentAnswer.valueDecimal).toBe(2);
-  expect(secondParentAnswer.item).toBeDefined();
-  expect(secondParentAnswer.item).toHaveLength(1);
+    const secondParentAnswer = answers[1];
+    expect(secondParentAnswer.valueDecimal).toBe(2);
+    expect(secondParentAnswer.item).toBeDefined();
+    expect(secondParentAnswer.item).toHaveLength(1);
 
-  validateNestedStringItem(secondParentAnswer, 'child-string', 'child value', 'Child string with initial');
-
+    validateNestedStringItem(
+      secondParentAnswer,
+      'child-string',
+      'child value',
+      'Child string with initial'
+    );
   }
 };

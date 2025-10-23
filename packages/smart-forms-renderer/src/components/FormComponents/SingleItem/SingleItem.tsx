@@ -77,12 +77,10 @@ function SingleItem(props: SingleItemProps) {
         parentIsRepeatGroup ? (parentRepeatGroupIndex ?? null) : null
       );
 
-      if(qItem.repeats && qrItem?.answer && qrItem.answer.length > 0){
+      if (qItem.repeats && qrItem?.answer && qrItem.answer.length > 0) {
         // Find the matching answer in qrItem by id
-        const matchingAnswer = qrItem.answer.find(
-          (ans) => ans.id === newQrItem.answer?.[0]?.id
-        );
-        
+        const matchingAnswer = qrItem.answer.find((ans) => ans.id === newQrItem.answer?.[0]?.id);
+
         // Create updated newQrItem with the nested items from the matching answer
         const updatedQrItem = {
           ...newQrItem,
@@ -91,7 +89,7 @@ function SingleItem(props: SingleItemProps) {
             item: matchingAnswer?.item || []
           }))
         };
-        
+
         onQrItemChange(updatedQrItem);
       } else if (qrItem && qrItem.item && qrItem.item.length > 0) {
         onQrItemChange({ ...newQrItem, item: qrItem.item });

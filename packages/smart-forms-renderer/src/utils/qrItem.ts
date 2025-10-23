@@ -247,12 +247,11 @@ export function updateQrNestedItems(
   questionnaireResponseOrQrItem: QuestionnaireResponseItem,
   qItemsIndexMap: Record<string, number>
 ): void {
-  
-  if(!newQrItem) return;
+  if (!newQrItem) return;
   if (!questionnaireResponseOrQrItem.answer) {
     questionnaireResponseOrQrItem.answer = [];
   }
-  
+
   let qrAnswerItems = questionnaireResponseOrQrItem.answer;
   if (!qrAnswerItems) {
     qrAnswerItems = [];
@@ -262,57 +261,56 @@ export function updateQrNestedItems(
     if (qrAnswerItems.length === 0) {
       // Only add if the item has answers (nested items use answer array, not item array)
       if (newQrItem.answer?.length) {
-        qrAnswerItems.push({item: [newQrItem]});
+        qrAnswerItems.push({ item: [newQrItem] });
       }
       return;
     }
   }
-    
-    // Find the index where newQrItem should be inserted based on qItemsIndexMap
-const newItemSequenceIndex = qItemsIndexMap[newQrItem.linkId];
 
-// Find the last answer object (group) that exists
-const lastAnswerGroup = qrAnswerItems[qrAnswerItems.length - 1];
+  // Find the index where newQrItem should be inserted based on qItemsIndexMap
+  const newItemSequenceIndex = qItemsIndexMap[newQrItem.linkId];
 
-// If no answer group exists yet, create one
-if (!lastAnswerGroup) {
-  const newGroup = {
-    item: [newQrItem]
-  };
-  qrAnswerItems.push(newGroup);
-  return;
-}
+  // Find the last answer object (group) that exists
+  const lastAnswerGroup = qrAnswerItems[qrAnswerItems.length - 1];
 
-// If the last answer group doesn't have an item array, create one
-if (!lastAnswerGroup.item) {
-  lastAnswerGroup.item = [newQrItem];
-  return;
-}
-
-// Check if newQrItem already exists in the last group's item array
-const existingItemIndex = lastAnswerGroup.item.findIndex(
-  (item) => item.linkId === newQrItem.linkId
-);
-
-if (existingItemIndex !== -1) {
-  // Item exists - overwrite it
-  debugger;
-  lastAnswerGroup.item[existingItemIndex] = newQrItem;
-} else {
-  // Item doesn't exist - find correct position to insert based on sequence
-  let insertIndex = lastAnswerGroup.item.length;
-  
-  for (let i = 0; i < lastAnswerGroup.item.length; i++) {
-    const currentItemSequenceIndex = qItemsIndexMap[lastAnswerGroup.item[i].linkId];
-    if (newItemSequenceIndex < currentItemSequenceIndex) {
-      insertIndex = i;
-      break;
-    }
-  }
-  debugger;
-  // Insert at the correct position
-  lastAnswerGroup.item.splice(insertIndex, 0, newQrItem);
+  // If no answer group exists yet, create one
+  if (!lastAnswerGroup) {
+    const newGroup = {
+      item: [newQrItem]
+    };
+    qrAnswerItems.push(newGroup);
     return;
-    
+  }
+
+  // If the last answer group doesn't have an item array, create one
+  if (!lastAnswerGroup.item) {
+    lastAnswerGroup.item = [newQrItem];
+    return;
+  }
+
+  // Check if newQrItem already exists in the last group's item array
+  const existingItemIndex = lastAnswerGroup.item.findIndex(
+    (item) => item.linkId === newQrItem.linkId
+  );
+
+  if (existingItemIndex !== -1) {
+    // Item exists - overwrite it
+    debugger;
+    lastAnswerGroup.item[existingItemIndex] = newQrItem;
+  } else {
+    // Item doesn't exist - find correct position to insert based on sequence
+    let insertIndex = lastAnswerGroup.item.length;
+
+    for (let i = 0; i < lastAnswerGroup.item.length; i++) {
+      const currentItemSequenceIndex = qItemsIndexMap[lastAnswerGroup.item[i].linkId];
+      if (newItemSequenceIndex < currentItemSequenceIndex) {
+        insertIndex = i;
+        break;
+      }
+    }
+    debugger;
+    // Insert at the correct position
+    lastAnswerGroup.item.splice(insertIndex, 0, newQrItem);
+    return;
   }
 }

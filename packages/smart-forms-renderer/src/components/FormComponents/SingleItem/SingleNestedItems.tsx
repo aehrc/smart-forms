@@ -19,7 +19,7 @@ import React, { useMemo } from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../utils/mapItem';
 import GroupItemSwitcher from '../GroupItem/GroupItemSwitcher';
-import {  createEmptyRepeatNestedItems, updateQrNestedItems } from '../../../utils/qrItem';
+import { createEmptyRepeatNestedItems, updateQrNestedItems } from '../../../utils/qrItem';
 import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
@@ -61,7 +61,7 @@ function SingleNestedItems(props: SingleNestedItemsProps) {
     return <>Unable to load group, something has gone terribly wrong.</>;
   }
 
-  const qrItemsByIndex = getQrItemsIndex(qItems, qrAnswers[0].item, qItemsIndexMap);
+  const qrItemsByIndex = getQrItemsIndex(qItems, qrAnswers[0]?.item, qItemsIndexMap);
 
   // TODO - Add support for horizontal "row" layout
   return (

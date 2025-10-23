@@ -36,8 +36,8 @@ export function getQrItemsIndex(
   // Generate a <linkId, QrItem OR QrItems> dictionary
   const qrItemsCollected: Record<string, QuestionnaireResponseItem | QuestionnaireResponseItem[]> =
     {};
-    
-    if(!qrItems) return [];
+
+  if (!qrItems) return [];
   for (const qrItem of qrItems) {
     const linkId = qrItem.linkId;
 

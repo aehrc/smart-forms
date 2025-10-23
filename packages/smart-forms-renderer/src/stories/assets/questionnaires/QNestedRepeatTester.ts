@@ -18,61 +18,61 @@
 import type { Questionnaire } from 'fhir/r4';
 
 export const qNestedRepeatQuestionnaire: Questionnaire = {
-    "resourceType": "Questionnaire",
-    "status": "draft",
-    "item": [
-      {
-        "extension": [
-          {
-            "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-unit",
-            "valueCoding": {
-              "system": "http://unitsofmeasure.org",
-              "code": "cm",
-              "display": "cm"
-            }
+  resourceType: 'Questionnaire',
+  status: 'draft',
+  item: [
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 'cm',
+            display: 'cm'
           }
-        ],
-        "linkId": "parent",
-        "text": "Height",
-        "type": "decimal",
-        "repeats": true,
-        "readOnly": false,
-        "item": [
-          {
-            "linkId": "child-0",
-            "text": "Nested 0",
-            "type": "decimal",
-            "readOnly": false
-          },
-          {
-            "linkId": "child-1",
-            "text": "Nested 1",
-            "type": "decimal",
-            "readOnly": false
-          }
-        ]
-      }
-    ]
-  }
+        }
+      ],
+      linkId: 'parent',
+      text: 'Height',
+      type: 'decimal',
+      repeats: true,
+      readOnly: false,
+      item: [
+        {
+          linkId: 'child-0',
+          text: 'Nested 0',
+          type: 'decimal',
+          readOnly: false
+        },
+        {
+          linkId: 'child-1',
+          text: 'Nested 1',
+          type: 'decimal',
+          readOnly: false
+        }
+      ]
+    }
+  ]
+};
 
-  export const qNestedRepeatQuestionnaireWithInitial: Questionnaire = {
-    "resourceType": "Questionnaire",
-    "status": "draft",
-    "item": [
-              {
-                  "linkId": "parent-decimal",
-                  "type": "decimal",
-                  "text": "Parent decimal with initial",
-                  "repeats": true,
-                  "initial": [{"valueDecimal": 1}, {"valueDecimal": 2}],
-                  "item": [
-                      {
-                          "linkId": "child-string",
-                          "type": "string",
-                          "text": "Child string with initial",
-                          "initial": [{"valueString": "child value"}]
-                      }
-                  ]
-              }
-          ]
-  }
+export const qNestedRepeatQuestionnaireWithInitial: Questionnaire = {
+  resourceType: 'Questionnaire',
+  status: 'draft',
+  item: [
+    {
+      linkId: 'parent-decimal',
+      type: 'decimal',
+      text: 'Parent decimal with initial',
+      repeats: true,
+      initial: [{ valueDecimal: 1 }, { valueDecimal: 2 }],
+      item: [
+        {
+          linkId: 'child-string',
+          type: 'string',
+          text: 'Child string with initial',
+          initial: [{ valueString: 'child value' }]
+        }
+      ]
+    }
+  ]
+};
