@@ -7,7 +7,7 @@
 | Parameter | Type |
 | ------ | ------ |
 | `qItem` | `QuestionnaireItem` |
-| `parentIsReadOnly` | `undefined` \| `boolean` |
+| `parentIsReadOnly` | `boolean` \| `undefined` |
 | `parentRepeatGroupIndex?` | `number` |
 
 ## Returns

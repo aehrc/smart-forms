@@ -27,7 +27,7 @@ function YourBaseRendererWrapper(props: {
 
   const queryClient = useRendererQueryClient();
 
-  const isBuilding = useBuildForm(questionnaire, undefined, undefined, terminologyServerUrl);
+  const isBuilding = useBuildForm({ questionnaire, terminologyServerUrl });
 
   if (isBuilding) {
     return <div>Loading...</div>;

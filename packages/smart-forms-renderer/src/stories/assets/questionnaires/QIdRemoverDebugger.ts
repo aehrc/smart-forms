@@ -19,7 +19,6 @@ import type { Questionnaire } from 'fhir/r4';
 
 export const qMyPatient: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'canshare-myPatient1',
   meta: {
     versionId: '9',
     lastUpdated: '2024-09-18T07:23:35.7317908+00:00'

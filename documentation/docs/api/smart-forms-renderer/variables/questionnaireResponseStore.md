@@ -7,4 +7,4 @@ This is the vanilla version of the store which can be used in non-React environm
 
 ## See
 
-QuestionnaireResponseStoreType for available properties and methods.
+[QuestionnaireResponseStoreType](../interfaces/QuestionnaireResponseStoreType.md) for available properties and methods.

@@ -10,7 +10,10 @@ sidebar_position: 2
 
 FHIR Operation definition: http://hl7.org/fhir/uv/sdc/OperationDefinition/Questionnaire-populate
 
-Github: https://github.com/aehrc/smart-forms/tree/main/services/populate-express
+GitHub:
+
+- TypeScript library: https://github.com/aehrc/smart-forms/tree/main/packages/sdc-populate
+- ExpressJS implementation: https://github.com/aehrc/smart-forms/tree/main/services/populate-express
 
 Dockerhub: https://hub.docker.com/r/aehrc/smart-forms-populate
 
@@ -45,3 +48,11 @@ https://smartforms.csiro.au/api/fhir/Questionnaire/$populate?debug=true
 #### Try it out
 
 [<img src="https://run.pstmn.io/button.svg" alt="Run In Postman"/>](https://elements.getpostman.com/redirect?entityId=22885901-2af2cfbb-3a0a-49c6-8404-105ef0751415&entityType=collection)
+
+## In-app Usage
+
+Use `populateQuestionnaire` from `@aehrc/sdc-populate` to populate a Questionnaire directly in your client app.
+
+Refer to the [API Reference](/docs/api/sdc-populate/functions/populateQuestionnaire) to view function parameters.
+
+For usage examples, refer to [this example BaseRenderer wrapper](/docs/dev/renderer-overview#pre-population-usage).

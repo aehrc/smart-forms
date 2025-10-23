@@ -27,6 +27,8 @@ import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import RendererThemeProvider from '../../theme/RendererThemeProvider';
+import ActionBarForStorybook from './ActionBarForStorybook';
+import CopyButtonsForStorybook from './CopyButtonsForStorybook';
 
 export interface InitialiseFormWrapperProps {
   questionnaire: Questionnaire;
@@ -96,6 +98,9 @@ function InitialiseFormWrapperForStorybook(props: InitialiseFormWrapperProps) {
   return (
     <RendererThemeProvider>
       <QueryClientProvider client={queryClient}>
+        <ActionBarForStorybook>
+          <CopyButtonsForStorybook />
+        </ActionBarForStorybook>
         <BaseRenderer />
       </QueryClientProvider>
     </RendererThemeProvider>

@@ -5,7 +5,7 @@
 QuestionnaireResponse state management store which contains all properties and methods to manage the state of the questionnaire.
 This is the React version of the store which can be used as React hooks in React functional components.
 
-## Type declaration
+## Type Declaration
 
 ### use
 
@@ -43,11 +43,11 @@ This is the React version of the store which can be used as React hooks in React
 
 #### use.formChangesHistory()
 
-> **formChangesHistory**: () => (`null` \| `Diff`\<`QuestionnaireResponse`, `QuestionnaireResponse`\>[])[]
+> **formChangesHistory**: () => (`Diff`\<`QuestionnaireResponse`, `QuestionnaireResponse`\>[] \| `null`)[]
 
 ##### Returns
 
-(`null` \| `Diff`\<`QuestionnaireResponse`, `QuestionnaireResponse`\>[])[]
+(`Diff`\<`QuestionnaireResponse`, `QuestionnaireResponse`\>[] \| `null`)[]
 
 #### use.highlightRequiredItems()
 
@@ -111,24 +111,6 @@ This is the React version of the store which can be used as React hooks in React
 
 `void`
 
-#### use.setUpdatableResponseAsPopulated()
-
-> **setUpdatableResponseAsPopulated**: () => (`populatedResponse`) => `void`
-
-##### Returns
-
-> (`populatedResponse`): `void`
-
-###### Parameters
-
-| Parameter | Type |
-| ------ | ------ |
-| `populatedResponse` | `QuestionnaireResponse` |
-
-###### Returns
-
-`void`
-
 #### use.setUpdatableResponseAsSaved()
 
 > **setUpdatableResponseAsSaved**: () => (`savedResponse`) => `void`
@@ -173,18 +155,18 @@ This is the React version of the store which can be used as React hooks in React
 
 #### use.updateResponse()
 
-> **updateResponse**: () => (`updatedResponse`, `debugType`) => `void`
+> **updateResponse**: () => (`updatedResponse`, `isInitialUpdate`) => `void`
 
 ##### Returns
 
-> (`updatedResponse`, `debugType`): `void`
+> (`updatedResponse`, `isInitialUpdate`): `void`
 
 ###### Parameters
 
 | Parameter | Type |
 | ------ | ------ |
 | `updatedResponse` | `QuestionnaireResponse` |
-| `debugType` | `"initial"` \| `"async"` |
+| `isInitialUpdate` | `boolean` |
 
 ###### Returns
 
@@ -211,5 +193,5 @@ This is the React version of the store which can be used as React hooks in React
 
 ## See
 
- - QuestionnaireResponseStoreType for available properties and methods.
- - questionnaireResponseStore for the vanilla store.
+ - [QuestionnaireResponseStoreType](../interfaces/QuestionnaireResponseStoreType.md) for available properties and methods.
+ - [questionnaireResponseStore](questionnaireResponseStore.md) for the vanilla store.

@@ -90,10 +90,11 @@ repopulateForm({
 
 ### Property and Setter Renames
 
-| Old Name                | New Name                 | Notes                                             |
-| ----------------------- | ------------------------ |---------------------------------------------------|
-| `populatedContext`      | `additionalContext`      | Automatically managed by buildForm/repopulateForm |
-| `setPopulatedContext()` | `setAdditionalContext()` | Should no longer be called manually               |
+| Old Name                | New Name                 | Notes                                                                         |
+|-------------------------|--------------------------|-------------------------------------------------------------------------------|
+| `itemTypes`             | `itemMap`                | Changed from <linkId, item.type> to <linkId, Omit<QuestionnaireItem, 'item'>> |
+| `populatedContext`      | `additionalContext`      | Automatically managed by buildForm/repopulateForm                             |
+| `setPopulatedContext()` | `setAdditionalContext()` | Should no longer be called manually                                           |
 
 ---
 

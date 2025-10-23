@@ -1,6 +1,6 @@
 # Function: GroupTable()
 
-> **GroupTable**(`props`): `null` \| `Element`
+> **GroupTable**(`props`): `Element` \| `null`
 
 Main component to render a Group Table (gtable) Questionnaire item.
 
@@ -12,7 +12,7 @@ Main component to render a Group Table (gtable) Questionnaire item.
 
 ## Returns
 
-`null` \| `Element`
+`Element` \| `null`
 
 ## See
 

@@ -36,7 +36,7 @@ export const mockFhirClient = {
     scope: scope,
     serverUrl: iss,
     tokenResponse: {
-      access_token: 'mock_access_token'
+      access_token: ''
     }
   },
   patient: {

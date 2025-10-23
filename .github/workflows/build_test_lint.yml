@@ -17,7 +17,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build workspace packages
+      - name: Build workspace packages (monorepo dependencies)
         run: |
           npm run build -w packages/sdc-assemble
           npm run build -w packages/sdc-populate
@@ -59,7 +59,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build workspace packages
+      - name: Build workspace packages (monorepo dependencies)
         run: |
           npm run build -w packages/sdc-assemble
           npm run build -w packages/sdc-populate
@@ -93,7 +93,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build workspace packages
+      - name: Build workspace packages (monorepo dependencies)
         run: |
           npm run build -w packages/sdc-assemble
           npm run build -w packages/sdc-populate
@@ -121,10 +121,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      #  sdc-populate is a dependency of the renderer so we need to build it
-      - name: Build workspace packages
+      - name: Build workspace packages (monorepo dependencies)
         run: |
+          npm run build -w packages/sdc-assemble
           npm run build -w packages/sdc-populate
+          npm run build -w packages/sdc-template-extract
 
       - name: Run jest tests
         run: npm run test -w packages/smart-forms-renderer
@@ -184,9 +185,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build workspace packages
+      - name: Build workspace packages (monorepo dependencies)
         run: |
+          npm run build -w packages/sdc-assemble
           npm run build -w packages/sdc-populate
+          npm run build -w packages/sdc-template-extract
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
@@ -269,7 +272,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build workspace packages
+      - name: Build workspace packages (monorepo dependencies)
         run: |
           npm run build -w packages/sdc-assemble
           npm run build -w packages/sdc-populate

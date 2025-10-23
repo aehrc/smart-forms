@@ -33,6 +33,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Build workspace packages (monorepo dependencies)
+        run: |
+          npm run build -w packages/sdc-assemble
+          npm run build -w packages/sdc-populate
+          npm run build -w packages/sdc-template-extract
+          npm run build -w packages/smart-forms-renderer
+
       - name: Build application
         run: npm run build -w apps/smart-forms-app
       #          export REACT_APP_SENTRY_RELEASE=`git rev-parse --short HEAD`
@@ -65,6 +72,12 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Build workspace packages (monorepo dependencies)
+        run: |
+          npm run build -w packages/sdc-assemble
+          npm run build -w packages/sdc-populate
+          npm run build -w packages/sdc-template-extract
 
       - name: Run Chromatic
         uses: chromaui/action@latest

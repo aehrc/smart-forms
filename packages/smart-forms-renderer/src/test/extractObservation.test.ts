@@ -19,22 +19,22 @@
  */
 
 import type {
-  Questionnaire,
-  QuestionnaireResponse,
-  QuestionnaireItem,
-  QuestionnaireResponseItemAnswer,
   CodeableConcept,
-  Observation
+  Observation,
+  Questionnaire,
+  QuestionnaireItem,
+  QuestionnaireResponse,
+  QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
 
 import type { Extractable } from '../utils/extractObservation';
 import {
-  extractObservationBased,
-  mapQItemsExtractable,
-  createObservation,
-  generateUniqueId,
+  buildBundleFromObservationArray,
   canBeObservationExtracted,
-  buildBundleFromObservationArray
+  createObservation,
+  extractObservationBased,
+  generateUniqueId,
+  mapQItemsExtractable
 } from '../utils/extractObservation';
 import {
   observationResults,
@@ -559,7 +559,8 @@ describe('buildBundleFromObservationArray', () => {
     expect(bundle.id).toMatch(/^sdc-observation-extract-/);
     expect(bundle.meta?.tag).toEqual([
       {
-        code: '@aehrc/smart-forms-renderer:generated'
+        code: '@aehrc/smart-forms-renderer:generated',
+        system: 'urn:aehrc:sdc-template-extract'
       }
     ]);
     expect(bundle.timestamp).toBeDefined();

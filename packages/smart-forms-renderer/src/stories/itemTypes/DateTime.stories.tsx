@@ -22,11 +22,11 @@ import {
   getAnswers,
   getInputText,
   inputDateTime,
-  qrFactory,
-  questionnaireFactory
+  questionnaireFactory,
+  questionnaireResponseFactory
 } from '../testUtils';
 import { expect } from 'storybook/test';
-import { qDateTimeCalculation } from '../assets/questionnaires';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -40,20 +40,23 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+
+/* DateTime Basic story */
 const targetLinkId = 'dob';
-const targetText = 'Datetime of birth';
-const targetDateTextWithoutTZ = '1990-01-01T13:15:00';
-const targetDate = '01/01/1990';
+const targetValueDateTimeWithoutTZ = '1990-01-01T13:15:00';
+const targetDateInput = '01/01/1990';
+const targetTimeInput = '01:15';
+const targetAMPMInput = 'PM';
 
 const qDateTimeBasic = questionnaireFactory([
   {
     linkId: targetLinkId,
     type: 'dateTime',
     repeats: false,
-    text: targetText
+    text: 'Datetime of birth'
   }
 ]);
-const qrDateTimeBasicResponse = qrFactory([
+const qrDateTimeBasicResponse = questionnaireResponseFactory([
   {
     linkId: targetLinkId,
     answer: [
@@ -64,12 +67,18 @@ const qrDateTimeBasicResponse = qrFactory([
   }
 ]);
 
-export const DateTimeBasic: Story = {
+export const DateTimeBasic: Story = createStory({
   args: {
     questionnaire: qDateTimeBasic
   },
   play: async ({ canvasElement }) => {
-    await inputDateTime(canvasElement, targetLinkId, targetDate, '01:15', 'PM');
+    await inputDateTime(
+      canvasElement,
+      targetLinkId,
+      targetDateInput,
+      targetTimeInput,
+      targetAMPMInput
+    );
 
     const result = await getAnswers(targetLinkId);
 
@@ -78,14 +87,15 @@ export const DateTimeBasic: Story = {
     // Taking into account timezone
     expect(result[0]).toEqual(
       expect.objectContaining({
-        valueDateTime: expect.stringContaining(targetDateTextWithoutTZ)
+        valueDateTime: expect.stringContaining(targetValueDateTimeWithoutTZ)
       })
     );
 
     // TODO : ADD CLEAR BUTTON
   }
-};
-export const DateTimeBasicResponse: Story = {
+}) as Story;
+
+export const DateTimeBasicResponse: Story = createStory({
   args: {
     questionnaire: qDateTimeBasic,
     questionnaireResponse: qrDateTimeBasicResponse
@@ -93,14 +103,6 @@ export const DateTimeBasicResponse: Story = {
   play: async ({ canvasElement }) => {
     const input = await getInputText(canvasElement, targetLinkId);
 
-    expect(input).toBe('01/01/1990');
-
-    // TODO: We have bug with it.Time and ampm doesnt work correctly.
+    expect(input).toBe(targetDateInput);
   }
-};
-
-export const DateTimeCalculation: Story = {
-  args: {
-    questionnaire: qDateTimeCalculation
-  }
-};
+}) as Story;

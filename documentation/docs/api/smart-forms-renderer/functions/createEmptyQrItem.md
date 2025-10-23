@@ -9,7 +9,7 @@ Create an empty qrItem from a given qItem, optionally with an answer key
 | Parameter | Type |
 | ------ | ------ |
 | `qItem` | `QuestionnaireItem` |
-| `answerKey` | `undefined` \| `string` |
+| `answerKey` | `string` \| `undefined` |
 
 ## Returns
 

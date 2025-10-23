@@ -7,7 +7,7 @@
 | Parameter | Type |
 | ------ | ------ |
 | `input` | `string` |
-| `precision` | `null` \| `number` |
+| `precision` | `number` \| `null` |
 
 ## Returns
 

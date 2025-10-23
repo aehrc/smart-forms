@@ -19,14 +19,7 @@ import type { Questionnaire } from 'fhir/r4';
 
 export const qValidateTester: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'ValidateTester',
-  name: 'ValidateTester',
-  title: 'Validate Tester',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/tester/validate',
   item: [
     {
       linkId: 'required',

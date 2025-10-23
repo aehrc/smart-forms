@@ -18,16 +18,17 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
-  qCalculatedExpressionBMICalculator,
-  qCalculatedExpressionCvdRiskCalculator,
+  qChainedCalculation,
   qInitialExpression,
   qLaunchContext,
+  qOldCvdRiskCalculator,
   qVariable
 } from '../assets/questionnaires';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'SDC/9.1.3 Form Behavior Calculations',
+  title: 'SDC/10.1.3 Behavior > Calculations',
   component: BuildFormWrapperForStorybook,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []
@@ -38,32 +39,32 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const LaunchContext: Story = {
+export const LaunchContext: Story = createStory({
   args: {
     questionnaire: qLaunchContext
   }
-};
+}) as Story;
 
-export const Variable: Story = {
+export const Variable: Story = createStory({
   args: {
     questionnaire: qVariable
   }
-};
+}) as Story;
 
-export const InitialExpression: Story = {
+export const InitialExpression: Story = createStory({
   args: {
     questionnaire: qInitialExpression
   }
-};
+}) as Story;
 
-export const CalculatedExpressionBMICalculator: Story = {
+export const OldCvdRiskCalculator: Story = createStory({
   args: {
-    questionnaire: qCalculatedExpressionBMICalculator
+    questionnaire: qOldCvdRiskCalculator
   }
-};
+}) as Story;
 
-export const CalculatedExpressionCvdRiskCalculator: Story = {
+export const ChainedCalculation: Story = createStory({
   args: {
-    questionnaire: qCalculatedExpressionCvdRiskCalculator
+    questionnaire: qChainedCalculation
   }
-};
+}) as Story;

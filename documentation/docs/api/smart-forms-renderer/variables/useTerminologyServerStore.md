@@ -6,7 +6,7 @@ Terminology server state management store. This is used for resolving valueSets 
 Defaults to use https://tx.ontoserver.csiro.au/fhir.
 This is the React version of the store which can be used as React hooks in React functional components.
 
-## Type declaration
+## Type Declaration
 
 ### use
 
@@ -52,4 +52,4 @@ This is the React version of the store which can be used as React hooks in React
 
 ## See
 
-TerminologyServerStoreType for available properties and methods.
+[TerminologyServerStoreType](../interfaces/TerminologyServerStoreType.md) for available properties and methods.

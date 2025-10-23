@@ -6,7 +6,12 @@ import type {
 } from 'fhir/r4';
 import type { BindingParameter, ProcessedValueSet } from '../interfaces/valueSet.interface';
 import type { Variables } from '../interfaces';
-import { createFhirPathContext, handleFhirPathResult } from './fhirpath';
+import {
+  cacheTerminologyResult,
+  createFhirPathContext,
+  handleFhirPathResult,
+  isExpressionCached
+} from './fhirpath';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import type { ComputedNewAnswers } from '../interfaces/computedUpdates.interface';
@@ -143,8 +148,7 @@ export async function evaluateInitialDynamicValueSets(
 
     for (const bindingParameter of processedValueSet.bindingParameters) {
       if (bindingParameter.fhirPathExpression) {
-        const cacheKey = JSON.stringify(bindingParameter.fhirPathExpression); // Use expression as cache key
-        if (fhirPathTerminologyCache[cacheKey]) {
+        if (isExpressionCached(bindingParameter.fhirPathExpression, fhirPathTerminologyCache)) {
           continue;
         }
 
@@ -163,7 +167,11 @@ export async function evaluateInitialDynamicValueSets(
 
           // If fhirPathResult is an async terminology call, cache the result
           if (fhirPathResult instanceof Promise) {
-            fhirPathTerminologyCache[cacheKey] = result;
+            cacheTerminologyResult(
+              bindingParameter.fhirPathExpression,
+              result,
+              fhirPathTerminologyCache
+            );
           }
 
           /*
@@ -222,8 +230,7 @@ export async function evaluateDynamicValueSets(
 
     for (const bindingParameter of processedValueSet.bindingParameters) {
       if (bindingParameter.fhirPathExpression) {
-        const cacheKey = JSON.stringify(bindingParameter.fhirPathExpression); // Use expression as cache key
-        if (fhirPathTerminologyCache[cacheKey]) {
+        if (isExpressionCached(bindingParameter.fhirPathExpression, fhirPathTerminologyCache)) {
           continue;
         }
 
@@ -242,7 +249,11 @@ export async function evaluateDynamicValueSets(
 
           // If fhirPathResult is an async terminology call, cache the result
           if (fhirPathResult instanceof Promise) {
-            fhirPathTerminologyCache[cacheKey] = result;
+            cacheTerminologyResult(
+              bindingParameter.fhirPathExpression,
+              result,
+              fhirPathTerminologyCache
+            );
           }
 
           /*

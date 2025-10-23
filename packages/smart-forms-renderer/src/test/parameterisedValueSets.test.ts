@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { describe, expect, jest } from '@jest/globals';
+import { describe, expect } from '@jest/globals';
 import {
   addBindingParametersToValueSetUrl,
   evaluateDynamicValueSets,
@@ -28,6 +28,7 @@ import type { BindingParameter } from '../interfaces/valueSet.interface';
 
 // Mock dependencies
 jest.mock('../utils/fhirpath', () => ({
+  ...jest.requireActual('../utils/fhirpath'),
   createFhirPathContext: jest.fn(() =>
     Promise.resolve({
       fhirPathContext: { mockContext: true },
@@ -602,7 +603,7 @@ describe('parameterisedValueSets utils', () => {
       consoleSpy.mockRestore();
     });
 
-    it('should handle Promise-based FHIRPath results', async () => {
+    it('should evaluate Promise-based FHIRPath results but skip caching for %-expressions', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue(Promise.resolve(['async-result']));
 
@@ -625,7 +626,8 @@ describe('parameterisedValueSets utils', () => {
 
       const result = await evaluateInitialDynamicValueSets(params);
 
-      expect(result.fhirPathTerminologyCache['"%patient.id"']).toEqual(['async-result']);
+      // Cache should not store %-expressions
+      expect(result.fhirPathTerminologyCache).toEqual({});
     });
 
     it('should handle empty FHIRPath results (remove parameter)', async () => {
@@ -835,7 +837,7 @@ describe('parameterisedValueSets utils', () => {
       expect(result.isUpdated).toBe(false);
     });
 
-    it('should handle cached results', async () => {
+    it('should always evaluate variable-based expressions (%-expressions) instead of using cache', async () => {
       const processedValueSets = {
         'dynamic-vs': {
           initialValueSetUrl: 'http://example.com/dynamic',
@@ -853,7 +855,7 @@ describe('parameterisedValueSets utils', () => {
       };
 
       const fhirPathTerminologyCache = {
-        '"%patient.id"': ['cached-result']
+        '%patient.id': ['cached-result']
       };
 
       const result = await evaluateDynamicValueSets(
@@ -863,8 +865,8 @@ describe('parameterisedValueSets utils', () => {
         'http://terminology.example.com'
       );
 
-      // Should skip evaluation due to cache
-      expect(result.isUpdated).toBe(false);
+      // Should always evaluate, because expressions with variables (%) cannot be cached
+      expect(result.isUpdated).toBe(true);
     });
 
     it('should handle FHIRPath evaluation errors', async () => {

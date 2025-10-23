@@ -17,7 +17,7 @@
 
 // @ts-ignore
 import React from 'react';
-import { Box, CircularProgress, Fade, IconButton, Tooltip } from '@mui/material';
+import { CircularProgress, Fade, IconButton, Tooltip } from '@mui/material';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import Typography from '@mui/material/Typography';
 
@@ -30,8 +30,8 @@ function PrePopButtonForStorybook(props: PrePopButtonForStorybookProps) {
   const { isPopulating, onPopulate } = props;
 
   return (
-    <Box display="flex" mb={0.5} alignItems="center" columnGap={3}>
-      <Tooltip title="Pre-populate form" placement="right">
+    <>
+      <Tooltip title="Pre-populate form">
         <span>
           <IconButton disabled={isPopulating} onClick={onPopulate} size="small" color="primary">
             {isPopulating ? (
@@ -49,7 +49,7 @@ function PrePopButtonForStorybook(props: PrePopButtonForStorybookProps) {
           </Typography>
         </Fade>
       ) : null}
-    </Box>
+    </>
   );
 }
 

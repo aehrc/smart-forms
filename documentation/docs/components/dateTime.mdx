@@ -20,35 +20,46 @@ It uses the FHIR [dateTime](https://hl7.org/fhir/r4/datatypes.html#dateTime) dat
 
 <IframeContainer storyId="itemtype-datetime--date-time-basic-response" initialHeight={240} />
 
-If there are any advanced usage scenarios you'd like to see, feel free to [let us know](https://github.com/aehrc/smart-forms/issues/new).
-
 :::note
 
 The AM/PM time field automatically adjusts itself if a 24-hour time is entered.
 
 :::
 
+### Advanced usage
+
+#### Calculations
+
+<IframeContainer
+  storyId="sdc-10-1-3-behavior-calculations-item-type-calculations--date-calculation"
+  initialHeight={350}
+/>
+
 :::tip
 
-The **date** and **dateTime** component has built in validation.
+The **date** and **dateTime** component has built in validation based on the FHIR date and dateTime data types respectively https://hl7.org/fhir/R4/datatypes.html#date.
 
 :::
 
 ### SDC Supported extensions
 
-| Code                 | Usage                                                                                                                                                                        |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| variable             | http://hl7.org/fhir/StructureDefinition/variable                                                                                                                             |
-| initialExpression    | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression<br/>- InitialExpression should evaluate to a date or dateTime value.                      |
-| enableWhenExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression                                                                                        |
-| hidden               | http://hl7.org/fhir/StructureDefinition/questionnaire-hidden                                                                                                                 |
-| entryFormat          | http://hl7.org/fhir/StructureDefinition/entryFormat<br/>- At the moment, entryFormat only works on the date part. It is encouraged to avoid using entryFormat at this stage. |
-| required             | item.required                                                                                                                                                                |
-| repeats              | item.repeats                                                                                                                                                                 |
-| readOnly             | item.readOnly                                                                                                                                                                |
-| minValue             | http://hl7.org/fhir/StructureDefinition/minValue                                                                                                                             |
-| maxValue             | http://hl7.org/fhir/StructureDefinition/maxValue                                                                                                                             |
-| initial              | item.initial                                                                                                                                                                 |
-| enableWhen           | item.enableWhen                                                                                                                                                              |
-| enableBehavior       | item.enableBehavior                                                                                                                                                          |
-| text                 | item.text                                                                                                                                                                    |
+| Code                 | Usage                                                                                                                                                                                                   |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| variable             | http://hl7.org/fhir/StructureDefinition/variable                                                                                                                                                        |
+| initialExpression    | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression<br/>- InitialExpression should evaluate to a date or dateTime value.                                                 |
+| calculatedExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression<br/>- CalculatedExpression should evaluate to a date string of YYYY, YYYY-MM, YYYY-MM-DD or YYYY-MM-DDTHH:mm:ssZ. |
+| enableWhenExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression                                                                                                                   |
+| rendering-style      | http://hl7.org/fhir/extensions/StructureDefinition-rendering-style.html                                                                                                                                 |
+| rendering-markdown   | http://hl7.org/fhir/extensions/StructureDefinition-rendering-markdown.html                                                                                                                              |
+| rendering-xhtml      | http://hl7.org/fhir/StructureDefinition/rendering-xhtml                                                                                                                                                 |
+| hidden               | http://hl7.org/fhir/StructureDefinition/questionnaire-hidden                                                                                                                                            |
+| entryFormat          | http://hl7.org/fhir/StructureDefinition/entryFormat<br/>- At the moment, entryFormat only works on the date part. It is discouraged to use entryFormat on a DateTime item currently.                    |
+| required             | item.required                                                                                                                                                                                           |
+| repeats              | item.repeats                                                                                                                                                                                            |
+| readOnly             | item.readOnly                                                                                                                                                                                           |
+| minValue             | http://hl7.org/fhir/StructureDefinition/minValue                                                                                                                                                        |
+| maxValue             | http://hl7.org/fhir/StructureDefinition/maxValue                                                                                                                                                        |
+| initial              | item.initial                                                                                                                                                                                            |
+| enableWhen           | item.enableWhen                                                                                                                                                                                         |
+| enableBehavior       | item.enableBehavior                                                                                                                                                                                     |
+| text                 | item.text                                                                                                                                                                                               |

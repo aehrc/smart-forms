@@ -12,9 +12,9 @@ It uses the FHIR [time](https://hl7.org/fhir/r4/datatypes.html#time) data type.
 
 **There are plans to convert this to be similar to the dateTime component's date field.**
 
-:::warning
+:::note
 
-This component is not thoroughly tested yet. Please use it with caution.
+This component uses the default Material-UI date component, which might result in it looking different compared to other components that use custom styled components.
 
 :::
 
@@ -22,20 +22,37 @@ This component is not thoroughly tested yet. Please use it with caution.
 
 #### Questionnaire-only
 
-<IframeContainer storyId="itemtype-time--time-basic" initialHeight={128} />
+<IframeContainer storyId="itemtype-time--time-basic" initialHeight={160} />
+
+#### With Response
+
+<IframeContainer storyId="itemtype-time--time-basic-response" initialHeight={160} />
+
+### Advanced usage
+
+#### Calculations
+
+<IframeContainer
+  storyId="sdc-10-1-3-behavior-calculations-item-type-calculations--time-calculation"
+  initialHeight={300}
+/>
 
 ### SDC Supported extensions
 
-| Code                 | Usage                                                                                                                                                   |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| variable             | http://hl7.org/fhir/StructureDefinition/variable                                                                                                        |
-| initialExpression    | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression<br/>- InitialExpression should evaluate to a date or dateTime value. |
-| enableWhenExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression                                                                   |
-| hidden               | http://hl7.org/fhir/StructureDefinition/questionnaire-hidden                                                                                            |
-| required             | item.required                                                                                                                                           |
-| repeats              | item.repeats                                                                                                                                            |
-| readOnly             | item.readOnly                                                                                                                                           |
-| initial              | item.initial                                                                                                                                            |
-| enableWhen           | item.enableWhen                                                                                                                                         |
-| enableBehavior       | item.enableBehavior                                                                                                                                     |
-| text                 | item.text                                                                                                                                               |
+| Code                 | Usage                                                                                                                                                          |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| variable             | http://hl7.org/fhir/StructureDefinition/variable                                                                                                               |
+| initialExpression    | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression<br/>- InitialExpression should evaluate to a time value.                    |
+| calculatedExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression<br/>- CalculatedExpression should evaluate to a time string of hh:mm:ss. |
+| enableWhenExpression | http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-enableWhenExpression                                                                          |
+| rendering-style      | http://hl7.org/fhir/extensions/StructureDefinition-rendering-style.html                                                                                        |
+| rendering-markdown   | http://hl7.org/fhir/extensions/StructureDefinition-rendering-markdown.html                                                                                     |
+| rendering-xhtml      | http://hl7.org/fhir/StructureDefinition/rendering-xhtml                                                                                                        |
+| hidden               | http://hl7.org/fhir/StructureDefinition/questionnaire-hidden                                                                                                   |
+| required             | item.required                                                                                                                                                  |
+| repeats              | item.repeats                                                                                                                                                   |
+| readOnly             | item.readOnly                                                                                                                                                  |
+| initial              | item.initial                                                                                                                                                   |
+| enableWhen           | item.enableWhen                                                                                                                                                |
+| enableBehavior       | item.enableBehavior                                                                                                                                            |
+| text                 | item.text                                                                                                                                                      |

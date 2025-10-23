@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { describe, expect, jest } from '@jest/globals';
+import { describe, expect } from '@jest/globals';
 import {
   evaluateAnswerOptionsToggleExpressions,
   evaluateInitialAnswerOptionsToggleExpressions
@@ -24,6 +24,7 @@ import type { AnswerOptionsToggleExpression } from '../interfaces/answerOptionsT
 
 // Mock dependencies
 jest.mock('../utils/fhirpath', () => ({
+  ...jest.requireActual('../utils/fhirpath'),
   createFhirPathContext: jest.fn(() =>
     Promise.resolve({
       fhirPathContext: { mockContext: true },
@@ -254,7 +255,7 @@ describe('answerOptionsToggleExpressions utils', () => {
 
       const result = await evaluateInitialAnswerOptionsToggleExpressions(params);
 
-      expect(result.fhirPathTerminologyCache['"async expression"']).toEqual([true]);
+      expect(result.fhirPathTerminologyCache['async expression']).toEqual([true]);
     });
 
     it('should handle evaluation errors gracefully', async () => {
@@ -352,7 +353,7 @@ describe('answerOptionsToggleExpressions utils', () => {
 
       const result = await evaluateAnswerOptionsToggleExpressions(
         { mockContext: true },
-        { '"cached expression"': [true] },
+        { 'cached expression': [true] },
         mockAnswerOptionsToggleExpressions,
         'http://test.com'
       );
