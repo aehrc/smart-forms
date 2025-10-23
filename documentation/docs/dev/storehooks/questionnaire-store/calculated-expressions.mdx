@@ -6,7 +6,7 @@ sidebar_position: 5
 
 The calculatedExpressions object is a `Record<linkId, CalculatedExpression>`.
 
-It contains the expression string itself, a `from` identifier to determine where the expression is coming from, and the result of the expression.
+It contains the expression string itself, a `from` identifier to determine where the expression is coming from (either `item`, `item._text`, `item._text.aria-label` or `item._answerValueSet`) and the result of the expression.
 
 ```tsx live
 function App() {

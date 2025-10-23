@@ -7,6 +7,10 @@ This changelog only includes changes from version 1.0.0-alpha.1 onwards. For sta
 
 WARNING: Alpha releases are not stable and may contain breaking changes. Changes are also most likely to be undocumented.
 
+## sdc-template-extract [1.0.13] - 2025-10-17
+#### Fixed
+- Added meta.tag.system to extracted bundle.
+
 ## [1.0.0-alpha.110.dev1] - 2025-10-13
 _(WARNING: Major breaking changes with library API)_
 

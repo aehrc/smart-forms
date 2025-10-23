@@ -19,14 +19,7 @@ import type { Questionnaire } from 'fhir/r4';
 
 export const qLaunchContext: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'LaunchContext',
-  name: 'LaunchContext',
-  title: 'Launch Context',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/calculations/launch-context',
   item: [
     {
       linkId: 'launch-context-instructions',
@@ -35,11 +28,11 @@ export const qLaunchContext: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to the <strong>Form Population</strong> section for the usage of launch context.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to section <strong>12 Form Population</strong> for usage on launchContext.</p></div>'
           }
         ]
       },
-      text: 'Please refer to the Form Population section for the usage of launch context.',
+      text: 'Please refer to section 12 Form Population for usage on launchContext.',
       type: 'display',
       repeats: false
     }
@@ -48,14 +41,7 @@ export const qLaunchContext: Questionnaire = {
 
 export const qVariable: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'Variable',
-  name: 'Variable',
-  title: 'Variable',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/calculations/variable',
   item: [
     {
       linkId: 'variables-instructions',
@@ -64,11 +50,11 @@ export const qVariable: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to the <strong>Calculated Expression</strong> examples above or the <strong>Form Population</strong> section for the usage of variables.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to the <strong>Calculated Expression</strong> examples above or section <strong>12 Form Population</strong> for usage on variables.</p></div>'
           }
         ]
       },
-      text: 'Please refer to the Calculated Expression examples above or the Form Population section for the usage of variables.',
+      text: 'Please refer to the Calculated Expression examples above or section 12 Form Population section for usage on variables.',
       type: 'display',
       repeats: false
     }
@@ -77,14 +63,7 @@ export const qVariable: Questionnaire = {
 
 export const qInitialExpression: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'InitialExpression',
-  name: 'InitialExpression',
-  title: 'Initial Expression',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/choice-restrictions/initial-expression',
   item: [
     {
       linkId: 'initial-expression-instructions',
@@ -93,126 +72,20 @@ export const qInitialExpression: Questionnaire = {
           {
             url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
             valueString:
-              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to the <strong>Form Population</strong> section for the usage of initial expressions.</p></div>'
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n <p>Please refer to section <strong>12 Form Population</strong> for usage on initialExpressions.</p></div>'
           }
         ]
       },
-      text: 'Please refer to the Form Population section for the usage of initial expressions.',
+      text: 'Please refer to section 12 Form Population for usage on initialExpressions.',
       type: 'display',
       repeats: false
     }
   ]
 };
 
-export const qCalculatedExpressionBMICalculator: Questionnaire = {
+export const qOldCvdRiskCalculator: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'CalculatedExpressionBMICalculator',
-  name: 'CalculatedExpressionBMICalculator',
-  title: 'Calculated Expression BMI Calculator',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/choice-restrictions/calculated-expression-1',
-  item: [
-    {
-      linkId: 'bmi-calculation',
-      text: 'BMI Calculation',
-      type: 'group',
-      repeats: false,
-      extension: [
-        {
-          url: 'http://hl7.org/fhir/StructureDefinition/variable',
-          valueExpression: {
-            name: 'height',
-            language: 'text/fhirpath',
-            expression: "item.where(linkId='patient-height').answer.value"
-          }
-        },
-        {
-          url: 'http://hl7.org/fhir/StructureDefinition/variable',
-          valueExpression: {
-            name: 'weight',
-            language: 'text/fhirpath',
-            expression: "item.where(linkId='patient-weight').answer.value"
-          }
-        }
-      ],
-      item: [
-        {
-          extension: [
-            {
-              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
-              valueCoding: {
-                system: 'http://unitsofmeasure.org',
-                code: 'cm',
-                display: 'cm'
-              }
-            }
-          ],
-          linkId: 'patient-height',
-          text: 'Height',
-          type: 'decimal',
-          repeats: false,
-          readOnly: false
-        },
-        {
-          extension: [
-            {
-              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
-              valueCoding: {
-                system: 'http://unitsofmeasure.org',
-                code: 'kg',
-                display: 'kg'
-              }
-            }
-          ],
-          linkId: 'patient-weight',
-          text: 'Weight',
-          type: 'decimal',
-          repeats: false,
-          readOnly: false
-        },
-        {
-          extension: [
-            {
-              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
-              valueExpression: {
-                description: 'BMI calculation',
-                language: 'text/fhirpath',
-                expression: '(%weight/((%height/100).power(2))).round(1)'
-              }
-            },
-            {
-              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
-              valueCoding: {
-                system: 'http://unitsofmeasure.org',
-                code: 'kg/m2',
-                display: 'kg/m2'
-              }
-            }
-          ],
-          linkId: 'bmi-result',
-          text: 'Value',
-          type: 'decimal',
-          repeats: false,
-          readOnly: true
-        }
-      ]
-    }
-  ]
-};
-
-export const qCalculatedExpressionCvdRiskCalculator: Questionnaire = {
-  resourceType: 'Questionnaire',
-  id: 'CalculatedExpressionCvdRiskCalculator',
-  name: 'CalculatedExpressionCvdRiskCalculator',
-  title: 'Calculated Expression CVD Risk Calculator',
-  version: '0.1.0',
-  status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/choice-restrictions/calculated-expression-2',
   item: [
     {
       extension: [
@@ -414,7 +287,7 @@ export const qCalculatedExpressionCvdRiskCalculator: Questionnaire = {
               {
                 url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
                 valueString:
-                  '<div xmlns="http://www.w3.org/1999/xhtml">\r\n        <b><p>NOTE: The Australian guideline for assessing and managing cardiovascular disease risk recommends the use of the online <a href="https://www.cvdcheck.org.au/calculator" target="_blank">Australian CVD risk calculator</a>.</p></b>\r\n    The calculator below should only be used for technology demonstration purposes.</p>\r\n</div>'
+                  '<div xmlns="http://www.w3.org/1999/xhtml">\r\n        <b><p>NOTE: The Australian guideline for assessing and managing cardiovascular disease risk recommends the use of the online <a href="https://www.cvdcheck.org.au/calculator" target="_blank">Australian CVD risk calculator</a>.</p></b>\r\n    <span style="color: red">The calculator below should only be used for technology demonstration purposes.</span></p>\r\n</div>'
               }
             ]
           },
@@ -636,6 +509,48 @@ export const qCalculatedExpressionCvdRiskCalculator: Questionnaire = {
           type: 'integer',
           repeats: false,
           readOnly: true
+        }
+      ]
+    }
+  ]
+};
+
+export const qChainedCalculation: Questionnaire = {
+  resourceType: 'Questionnaire',
+  status: 'draft',
+  item: [
+    {
+      linkId: 'number-input',
+      text: 'Type a number',
+      type: 'integer'
+    },
+    {
+      linkId: 'calc-result',
+      text: 'Input x 2 (Depends on "Type a number")',
+      type: 'decimal',
+      readOnly: true,
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
+          valueExpression: {
+            language: 'text/fhirpath',
+            expression: "%resource.item.where(linkId='number-input').answer.value * 2"
+          }
+        }
+      ]
+    },
+    {
+      linkId: 'result-is-4',
+      text: 'Is result equal to 4 (Depends on "Input x 2")',
+      type: 'boolean',
+      readOnly: true,
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
+          valueExpression: {
+            language: 'text/fhirpath',
+            expression: "%resource.item.where(linkId='calc-result').answer.value = 4"
+          }
         }
       ]
     }

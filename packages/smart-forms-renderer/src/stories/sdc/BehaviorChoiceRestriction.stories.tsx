@@ -25,12 +25,14 @@ import {
   qAnswerValueSet,
   qReadOnlyDuplicate,
   qRepeatsDuplicate,
-  qRequiredDuplicate
+  qRequiredDuplicate,
+  qUnitOptionDuplicate
 } from '../assets/questionnaires';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
-  title: 'SDC/9.1.2 Form Behavior Choice Restriction',
+  title: 'SDC/10.1.2 Behavior > Choice Restriction',
   component: BuildFormWrapperForStorybook,
   // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/react/writing-docs/autodocs
   tags: []
@@ -41,50 +43,56 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const AnswerOption: Story = {
+export const AnswerOption: Story = createStory({
   args: {
     questionnaire: qAnswerOption
   }
-};
+}) as Story;
 
-export const AnswerValueSet: Story = {
+export const AnswerValueSet: Story = createStory({
   args: {
     questionnaire: qAnswerValueSet
   }
-};
+}) as Story;
 
-export const AnswerExpression: Story = {
+export const AnswerExpression: Story = createStory({
   args: {
     questionnaire: qAnswerExpression
   }
-};
+}) as Story;
 
-export const AnswerOptionToggleExpressionAnswerOption: Story = {
+export const AnswerOptionToggleExpressionAnswerOption: Story = createStory({
   args: {
     questionnaire: qAnswerOptionToggleExpressionAnswerOption
   }
-};
+}) as Story;
 
-export const AnswerOptionToggleExpressionAnswerValueSetContained: Story = {
+export const AnswerOptionToggleExpressionAnswerValueSetContained: Story = createStory({
   args: {
     questionnaire: qAnswerOptionToggleExpressionContained
   }
-};
+}) as Story;
 
-export const Required: Story = {
+export const Required: Story = createStory({
   args: {
     questionnaire: qRequiredDuplicate
   }
-};
+}) as Story;
 
-export const Repeats: Story = {
+export const Repeats: Story = createStory({
   args: {
     questionnaire: qRepeatsDuplicate
   }
-};
+}) as Story;
 
-export const ReadOnly: Story = {
+export const ReadOnly: Story = createStory({
   args: {
     questionnaire: qReadOnlyDuplicate
   }
-};
+}) as Story;
+
+export const UnitOption: Story = createStory({
+  args: {
+    questionnaire: qUnitOptionDuplicate
+  }
+}) as Story;

@@ -15,55 +15,11 @@
  * limitations under the License.
  */
 
-import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-
-export const qDateTimeBasic: Questionnaire = {
-  resourceType: 'Questionnaire',
-  id: 'DateTimeBasic',
-  name: 'DateTimeBasic',
-  title: 'DateTime Basic',
-  version: '0.1.0',
-  status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/components/datetime/basic',
-  item: [
-    {
-      linkId: 'dob',
-      type: 'dateTime',
-      repeats: false,
-      text: 'Datetime of birth'
-    }
-  ]
-};
-
-export const qrDateTimeBasicResponse: QuestionnaireResponse = {
-  resourceType: 'QuestionnaireResponse',
-  status: 'in-progress',
-  item: [
-    {
-      linkId: 'dob',
-      text: 'Date of birth',
-      answer: [
-        {
-          valueDateTime: '1990-01-01T00:53:00Z'
-        }
-      ]
-    }
-  ],
-  questionnaire: 'https://smartforms.csiro.au/docs/components/datetime/basic'
-};
+import type { Questionnaire } from 'fhir/r4';
 
 export const qDateTimeCalculation: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'DateTimeCalculation',
-  name: 'DateTimeCalculation',
-  title: 'DateTime Calculation',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/components/datetime/calculation',
   extension: [
     {
       url: 'http://hl7.org/fhir/StructureDefinition/variable',

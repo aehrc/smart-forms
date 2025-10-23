@@ -36,7 +36,8 @@ import { filterValueSetAnswersRecursive, resolveValueSetPromises } from './proce
 import moment from 'moment';
 import dayjs from 'dayjs';
 import fhirpath from 'fhirpath';
-import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
+// Need to specifically import from 'index.js' to get it working with ts
+import fhirpath_r4_model from 'fhirpath/fhir-context/r4/index.js';
 import { getItemPopulationContextName } from './readPopulationExpressions';
 import { createQuestionnaireReference } from './createQuestionnaireReference';
 import { parseItemInitialToAnswer, parseValueToAnswer } from './parse';

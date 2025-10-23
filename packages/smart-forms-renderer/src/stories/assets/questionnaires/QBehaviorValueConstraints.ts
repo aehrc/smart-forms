@@ -22,14 +22,7 @@ import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 // MaxLength
 export const qMaxLength: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'MaxLength',
-  name: 'MaxLength',
-  title: 'Max Length',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/value-constraints/max-length',
   item: [
     {
       linkId: 'pensioner-card-number-empty',
@@ -84,14 +77,7 @@ export const qrMaxLength: QuestionnaireResponse = {
 // MinLength
 export const qMinLength: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'MinLength',
-  name: 'MinLength',
-  title: 'Min Length',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/value-constraints/min-length',
   item: [
     {
       extension: [
@@ -161,14 +147,7 @@ export const qrMinLength: QuestionnaireResponse = {
 // Regex
 export const qRegex: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'Regex',
-  name: 'Regex',
-  title: 'Regex',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/value-constraints/regex',
   item: [
     {
       extension: [
@@ -254,14 +233,7 @@ export const qrRegex: QuestionnaireResponse = {
 // TODO need to add more examples question (where type='date', 'dateTime', 'time', 'decimal', 'integer')
 export const qMinValue: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'MinValue',
-  name: 'MinValue',
-  title: 'Min Value',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/value-constraints/min-value',
   item: [
     {
       extension: [
@@ -331,14 +303,7 @@ export const qrMinValue: QuestionnaireResponse = {
 // MaxValue
 export const qMaxValue: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'MaxValueValidation',
-  name: 'MaxValueValidation',
-  title: 'Max Value Validation for Integer',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/value-constraints/max-value',
   item: [
     {
       extension: [
@@ -405,17 +370,258 @@ export const qrMaxValue: QuestionnaireResponse = {
   questionnaire: 'https://smartforms.csiro.au/docs/behavior/value-constraints/max-value|0.1.0'
 };
 
+// MinQuantity
+export const qMinQuantity: Questionnaire = {
+  resourceType: 'Questionnaire',
+  status: 'draft',
+  item: [
+    // Empty
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-minQuantity',
+          valueQuantity: {
+            value: 20,
+            unit: 'kg',
+            system: 'http://unitsofmeasure.org',
+            code: 'kg'
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 'kg',
+            display: 'kg'
+          }
+        }
+      ],
+      linkId: 'weight-empty',
+      text: 'Weight (>=20 kg) (empty)',
+      type: 'quantity',
+      repeats: false
+    },
+    // Filled
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-minQuantity',
+          valueQuantity: {
+            value: 20,
+            unit: 'kg',
+            system: 'http://unitsofmeasure.org',
+            code: 'kg'
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 'kg',
+            display: 'kg'
+          }
+        }
+      ],
+      linkId: 'weight-filled',
+      text: 'Weight (>=20 kg) (filled)',
+      type: 'quantity',
+      repeats: false
+    },
+    // With feedback
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-minQuantity',
+          valueQuantity: {
+            value: 20,
+            unit: 'kg',
+            system: 'http://unitsofmeasure.org',
+            code: 'kg'
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 'kg',
+            display: 'kg'
+          }
+        }
+      ],
+      linkId: 'weight-feedback',
+      text: 'Weight (>=20 kg) (with feedback)',
+      type: 'quantity',
+      repeats: false
+    }
+  ]
+};
+
+export const qrMinQuantity: QuestionnaireResponse = {
+  resourceType: 'QuestionnaireResponse',
+  status: 'in-progress',
+  questionnaire: 'https://smartforms.csiro.au/docs/behavior/value-constraints/min-quantity|0.1.0',
+  item: [
+    // Filled within range
+    {
+      linkId: 'weight-filled',
+      text: 'Weight (>=20 kg) (filled)',
+      answer: [
+        {
+          valueQuantity: {
+            value: 50, // Valid
+            unit: 'kg',
+            system: 'http://unitsofmeasure.org',
+            code: 'kg'
+          }
+        }
+      ]
+    },
+    // With feedback (below min)
+    {
+      linkId: 'weight-feedback',
+      text: 'Weight (>=20 kg) (with feedback)',
+      answer: [
+        {
+          valueQuantity: {
+            value: 15, // Invalid (below min 20)
+            unit: 'kg',
+            system: 'http://unitsofmeasure.org',
+            code: 'kg'
+          }
+        }
+      ]
+    }
+  ]
+};
+
+// MaxQuantity
+export const qMaxQuantity: Questionnaire = {
+  resourceType: 'Questionnaire',
+  status: 'draft',
+  item: [
+    // Empty
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-maxQuantity',
+          valueQuantity: {
+            value: 200,
+            unit: 'kg',
+            system: 'http://unitsofmeasure.org',
+            code: 'kg'
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 'kg',
+            display: 'kg'
+          }
+        }
+      ],
+      linkId: 'weight-empty',
+      text: 'Weight (<=200 kg) (empty)',
+      type: 'quantity',
+      repeats: false
+    },
+    // Filled
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-maxQuantity',
+          valueQuantity: {
+            value: 200,
+            unit: 'kg',
+            system: 'http://unitsofmeasure.org',
+            code: 'kg'
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 'kg',
+            display: 'kg'
+          }
+        }
+      ],
+      linkId: 'weight-filled',
+      text: 'Weight (<=200 kg) (filled)',
+      type: 'quantity',
+      repeats: false
+    },
+    // With feedback
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-maxQuantity',
+          valueQuantity: {
+            value: 200,
+            unit: 'kg',
+            system: 'http://unitsofmeasure.org',
+            code: 'kg'
+          }
+        },
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+          valueCoding: {
+            system: 'http://unitsofmeasure.org',
+            code: 'kg',
+            display: 'kg'
+          }
+        }
+      ],
+      linkId: 'weight-feedback',
+      text: 'Weight (<=200 kg) (with feedback)',
+      type: 'quantity',
+      repeats: false
+    }
+  ]
+};
+
+export const qrMaxQuantity: QuestionnaireResponse = {
+  resourceType: 'QuestionnaireResponse',
+  status: 'in-progress',
+  questionnaire: 'https://smartforms.csiro.au/docs/behavior/value-constraints/max-quantity|0.1.0',
+  item: [
+    // Filled within range
+    {
+      linkId: 'weight-filled',
+      text: 'Weight (<=200 kg) (filled)',
+      answer: [
+        {
+          valueQuantity: {
+            value: 150, // Valid
+            unit: 'kg',
+            system: 'http://unitsofmeasure.org',
+            code: 'kg'
+          }
+        }
+      ]
+    },
+    // With feedback (above max)
+    {
+      linkId: 'weight-feedback',
+      text: 'Weight (<=200 kg) (with feedback)',
+      answer: [
+        {
+          valueQuantity: {
+            value: 250, // Invalid (above max 200)
+            unit: 'kg',
+            system: 'http://unitsofmeasure.org',
+            code: 'kg'
+          }
+        }
+      ]
+    }
+  ]
+};
+
 // MaxDecimalPlaces
 export const qMaxDecimalPlaces: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'MaxDecimalPlaces',
-  name: 'MaxDecimalPlaces',
-  title: 'Max Decimal Places',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/behavior/value-constraints/max-decimal-places',
   item: [
     {
       extension: [

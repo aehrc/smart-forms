@@ -25,6 +25,8 @@ import { useBuildForm, useRendererQueryClient } from '../../hooks';
 import { Grid } from '@mui/material';
 import FormValidationViewerForStorybook from './FormValidationViewerForStorybook';
 import { STORYBOOK_TERMINOLOGY_SERVER_URL } from './globals';
+import ActionBarForStorybook from './ActionBarForStorybook';
+import CopyButtonsForStorybook from './CopyButtonsForStorybook';
 
 interface FormValidationTesterWrapperForStorybookProps {
   questionnaire: Questionnaire;
@@ -52,8 +54,11 @@ function FormValidationTesterWrapperForStorybook(
     <RendererThemeProvider>
       <QueryClientProvider client={queryClient}>
         <div>
-          <Grid container>
+          <Grid container spacing={2}>
             <Grid size={{ xs: 6 }}>
+              <ActionBarForStorybook>
+                <CopyButtonsForStorybook />
+              </ActionBarForStorybook>
               <BaseRenderer />
             </Grid>
             <Grid size={{ xs: 6 }}>

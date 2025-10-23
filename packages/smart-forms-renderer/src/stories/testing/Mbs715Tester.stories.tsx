@@ -24,6 +24,7 @@ import {
 import { mockFhirClient } from '../assets/fhirClient/mockFhirClient';
 import { patSmartForm } from '../assets/patients/PatSmartForm';
 import { pracPrimaryPeter } from '../assets/practitioners/PracPrimaryPeter';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -38,20 +39,20 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const BasicMBS715: Story = {
+export const BasicMBS715: Story = createStory({
   args: {
     questionnaire: qBasicMbs715,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
   }
-};
+}) as Story;
 
-export const ModifiedMBS715WithCollapsible: Story = {
+export const ModifiedMBS715WithCollapsible: Story = createStory({
   args: {
     questionnaire: qModifiedMbs715WithCollapsible,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
   }
-};
+}) as Story;

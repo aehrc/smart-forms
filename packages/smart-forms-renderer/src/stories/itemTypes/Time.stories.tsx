@@ -18,9 +18,15 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 
-import { getAnswers, getInputText, inputTime, qrFactory, questionnaireFactory } from '../testUtils';
+import {
+  getAnswers,
+  getInputText,
+  inputTime,
+  questionnaireFactory,
+  questionnaireResponseFactory
+} from '../testUtils';
 import { expect } from 'storybook/test';
-import { qTimeCalculation } from '../assets/questionnaires';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -34,40 +40,43 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+
+/* Time Basic story */
 const targetLinkId = 'last-meal';
-const targetText = 'Time of last meal';
-const targetTime = '11:00:00';
-const targetTimeString = '11:00 am';
+const targetTimeInput = '11:00:00';
+const targetTimeInputString = '11:00 am';
 
 const qTimeBasic = questionnaireFactory([
   {
     linkId: targetLinkId,
     type: 'time',
     repeats: false,
-    text: targetText
-  }
-]);
-const qrTimeBasic = qrFactory([
-  {
-    linkId: targetLinkId,
-    answer: [{ valueTime: targetTime }]
+    text: 'Time of last meal'
   }
 ]);
 
-export const TimeBasic: Story = {
+const qrTimeBasic = questionnaireResponseFactory([
+  {
+    linkId: targetLinkId,
+    text: 'Time of last meal',
+    answer: [{ valueTime: targetTimeInput }]
+  }
+]);
+
+export const TimeBasic: Story = createStory({
   args: {
     questionnaire: qTimeBasic
   },
   play: async ({ canvasElement }) => {
-    await inputTime(canvasElement, targetLinkId, targetTimeString);
+    await inputTime(canvasElement, targetLinkId, targetTimeInputString);
 
     const result = await getAnswers(targetLinkId);
     expect(result).toHaveLength(1);
-    expect(result[0].valueTime).toBe(targetTime);
+    expect(result[0].valueTime).toBe(targetTimeInput);
   }
-};
+}) as Story;
 
-export const TimeBasicResponse: Story = {
+export const TimeBasicResponse: Story = createStory({
   args: {
     questionnaire: qTimeBasic,
     questionnaireResponse: qrTimeBasic
@@ -75,12 +84,6 @@ export const TimeBasicResponse: Story = {
   play: async ({ canvasElement }) => {
     const inputText = await getInputText(canvasElement, targetLinkId);
 
-    expect(inputText).toBe(targetTimeString);
+    expect(inputText).toBe(targetTimeInputString);
   }
-};
-
-export const TimeCalculation: Story = {
-  args: {
-    questionnaire: qTimeCalculation
-  }
-};
+}) as Story;

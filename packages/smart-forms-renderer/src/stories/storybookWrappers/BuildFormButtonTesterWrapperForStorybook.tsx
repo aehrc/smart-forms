@@ -24,6 +24,8 @@ import { RendererThemeProvider } from '../../theme';
 import { useBuildForm, useRendererQueryClient } from '../../hooks';
 import BuildFormButtonForStorybook from './BuildFormButtonForStorybook';
 import { STORYBOOK_TERMINOLOGY_SERVER_URL } from './globals';
+import ActionBarForStorybook from './ActionBarForStorybook';
+import CopyButtonsForStorybook from './CopyButtonsForStorybook';
 
 interface BuildFormButtonTesterWrapperForStorybookProps {
   questionnaire: Questionnaire;
@@ -60,10 +62,13 @@ function BuildFormButtonTesterWrapperForStorybook(
     <RendererThemeProvider>
       <QueryClientProvider client={queryClient}>
         <div>
-          <BuildFormButtonForStorybook
-            questionnaire={questionnaire}
-            questionnaireResponse={questionnaireResponse}
-          />
+          <ActionBarForStorybook>
+            <BuildFormButtonForStorybook
+              questionnaire={questionnaire}
+              questionnaireResponse={questionnaireResponse}
+            />
+            <CopyButtonsForStorybook />
+          </ActionBarForStorybook>
           <BaseRenderer />
         </div>
       </QueryClientProvider>

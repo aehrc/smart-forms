@@ -1,6 +1,6 @@
 # Function: getQuestionnaireItem()
 
-> **getQuestionnaireItem**(`questionnaire`, `targetLinkId`): `null` \| `QuestionnaireItem`
+> **getQuestionnaireItem**(`questionnaire`, `targetLinkId`): `QuestionnaireItem` \| `null`
 
 ## Parameters
 
@@ -11,4 +11,4 @@
 
 ## Returns
 
-`null` \| `QuestionnaireItem`
+`QuestionnaireItem` \| `null`

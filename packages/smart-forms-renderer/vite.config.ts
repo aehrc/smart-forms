@@ -23,6 +23,10 @@ import { version } from './package.json';
 // https://vitejs.dev/config/
 export default defineConfig({
   define: {
-    'import.meta.env.VITE_RENDERER_VERSION': JSON.stringify(version ?? 'unspecified')
+    'import.meta.env.VITE_RENDERER_VERSION': JSON.stringify(version ?? 'unspecified'),
+    // This triggers adding 'play' functions to stories for testing when running in CI environments, otherwise they are not added.
+    // The reason why we do this is because Storybook forces autoplaying of stories when they have a 'play' function, which disrupts UX when browsing stories.
+    // See https://github.com/storybookjs/storybook/discussions/25011
+    'import.meta.env.VITE_CI': JSON.stringify(process.env.CI ?? 'false'),
   }
 });

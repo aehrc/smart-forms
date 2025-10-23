@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { describe, expect, jest } from '@jest/globals';
+import { describe, expect } from '@jest/globals';
 import {
   applyCalculatedExpressionValuesToResponse,
   checkIsDateTime,
@@ -37,6 +37,7 @@ jest.mock('fhirpath', () => ({
 }));
 
 jest.mock('../utils/fhirpath', () => ({
+  ...jest.requireActual('../utils/fhirpath'),
   createFhirPathContext: jest.fn(),
   handleFhirPathResult: jest.fn()
 }));
@@ -605,7 +606,7 @@ describe('calculatedExpression utils', () => {
       expect(result.updatedCalculatedExpressions['item-1'][0].value).toBe(25);
     });
 
-    it('should handle Promise-based FHIRPath results and caching', async () => {
+    it('should evaluate Promise-based FHIRPath results but skip caching for %-expressions', async () => {
       const calculatedExpressions = {
         'item-1': [
           {
@@ -633,9 +634,9 @@ describe('calculatedExpression utils', () => {
         code: 'test',
         display: 'Test'
       });
-      expect((fhirPathTerminologyCache as any)['"%context.terminology.expand()"']).toEqual([
-        { code: 'test', display: 'Test' }
-      ]);
+
+      // Cache should not store %-expressions
+      expect(fhirPathTerminologyCache).toEqual({});
     });
 
     it('should handle evaluation errors gracefully', async () => {

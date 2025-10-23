@@ -58,7 +58,7 @@ export interface BuildFormParams {
   preserveNavigationState?: boolean;
 
   /**
-   * Optional renderer styling configurations to have fine-grained control over the styling and behaviour of the renderer.
+   * Optional renderer styling and behavioural configurations to have fine-grained control over the styling and behaviour of the renderer.
    */
   rendererConfigOptions?: RendererConfig;
 

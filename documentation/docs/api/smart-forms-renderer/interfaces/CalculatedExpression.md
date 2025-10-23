@@ -14,7 +14,7 @@ CalculatedExpression FHIRPath expression
 
 ### from
 
-> **from**: `"item"` \| `"item._text"` \| `"item._answerValueSet"`
+> **from**: `"item"` \| `"item._text"` \| `"item._text.aria-label"` \| `"item._answerValueSet"`
 
 Whether the expressions is for the item itself, for item._text or item._answerValueSet
 
@@ -22,6 +22,6 @@ Whether the expressions is for the item itself, for item._text or item._answerVa
 
 ### value?
 
-> `optional` **value**: `null` \| `string` \| `number` \| `boolean` \| `object`
+> `optional` **value**: `string` \| `number` \| `boolean` \| `object` \| `null`
 
 Evaluated value of the expression via FHIRPath
