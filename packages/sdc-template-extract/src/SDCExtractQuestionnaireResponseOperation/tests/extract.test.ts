@@ -19,6 +19,7 @@ import { extractedRegularMedications } from './resources/extracted/extractedRegu
 import { extractedRegularMedicationsModified } from './resources/extracted/extractedRegularMedicationsModified';
 import { extractedRegularMedicationsWithPatchAdd } from './resources/extracted/extractedRegularMedicationsWithPatchAdd';
 import { extractedComplexTemplateExtract } from './resources/extracted/extractedComplexTemplateExtract';
+import { extractedSepsisRisk } from './resources/extracted/extractedSepsisRisk';
 
 // QuestionnaireResponses
 import { QRAllergiesAdverseReactions } from './resources/questionnaireResponses/QRAllergiesAdverseReactions';
@@ -30,6 +31,7 @@ import { QRRegularMedications } from './resources/questionnaireResponses/QRRegul
 import { QRRegularMedicationsModified } from './resources/questionnaireResponses/QRRegularMedicationsModified';
 import { QRRegularMedicationsWithPatchAdd } from './resources/questionnaireResponses/QRRegularMedicationsWithPatchAdd';
 import { QRComplexTemplateExtract } from './resources/questionnaireResponses/QRComplexTemplateExtract';
+import { QRSepsisRisk } from './resources/questionnaireResponses/QRSepsisRisk';
 
 // Questionnaires
 import { QAllergiesAdverseReactions } from './resources/questionnaires/QAllergiesAdverseReactions';
@@ -41,6 +43,7 @@ import { QRegularMedications } from './resources/questionnaires/QRegularMedicati
 import { QRegularMedicationsModified } from './resources/questionnaires/QRegularMedicationsModified';
 import { QRegularMedicationsWithPatchAdd } from './resources/questionnaires/QRegularMedicationsWithPatchAdd';
 import { QComplexTemplateExtract } from './resources/questionnaires/QComplexTemplateExtract';
+import { QSepsisRisk } from './resources/questionnaires/QSepsisRisk';
 import { parametersIsFhirPatch } from '../utils/typePredicates';
 
 // Mock the fetchQuestionnaire callback function
@@ -507,6 +510,29 @@ describe('extract ComplexTemplateExtract', () => {
     expect(observationHeight.effectiveDateTime).toMatch(isoDateRegex);
     expect(observationWeight.issued).toMatch(isoDateRegex);
     expect(observationSigmoidoscopy.issued).toMatch(isoDateRegex);
+  });
+});
+
+// Test that all templateExtract extensions on a QItem are evaluated
+
+describe('extract SepsisRisk', () => {
+  it('extracted result should match extractedSepsisRisk.ts expected resources', async () => {
+    const result = await extract(
+      createInputParameters(QRSepsisRisk, QSepsisRisk, undefined),
+      mockFetchQuestionnaire,
+      mockFetchQuestionnaireConfig
+    );
+
+    const returnParam = (result as OutputParameters).parameter.find(
+      (p): p is ReturnParameter => p.name === 'return'
+    );
+
+    // Deep comparison of the extracted resources vs expected resources in extractedImmunisation
+    const extracted = returnParam?.resource as Bundle;
+    const expected = extractedSepsisRisk;
+    expect(extracted.entry?.[0]?.resource).toEqual(expected?.entry?.[0]?.resource);
+    expect(extracted.entry?.[1]?.resource).toEqual(expected?.entry?.[1]?.resource);
+    expect(extracted.entry?.[2]?.resource).toEqual(expected?.entry?.[2]?.resource);
   });
 });
 
