@@ -52,7 +52,12 @@ jobs:
       #          npx sentry-cli releases files $VERSION upload-sourcemaps build
 
       - name: Upload static React site to S3
-        run: aws s3 sync apps/smart-forms-app/dist s3://smart-forms-react-app/ --cache-control no-cache
+        run: |
+          aws s3 sync apps/smart-forms-app/dist s3://smart-forms-react-app/ \
+            --cache-control "no-cache, no-store, must-revalidate" \
+            --expires 0 \
+            --exact-timestamps \
+            --delete
 
   chromatic:
     name: Run Chromatic

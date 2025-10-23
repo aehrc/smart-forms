@@ -82,9 +82,9 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
         parentIsReadOnly={parentIsReadOnly}
         parentIsRepeatGroup={parentIsRepeatGroup}
         parentRepeatGroupIndex={parentRepeatGroupIndex}
+        parentStyles={parentStyles}
         onQrItemChange={onQrItemChange}
         onQrRepeatGroupChange={onQrRepeatGroupChange}
-        parentStyles={parentStyles}
       />
     );
   }

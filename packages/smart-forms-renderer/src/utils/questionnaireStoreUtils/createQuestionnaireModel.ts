@@ -56,12 +56,6 @@ export async function createQuestionnaireModel(
 
   let variables: Variables = extractQuestionnaireLevelVariables(questionnaire);
 
-  // TODO reminder to remove/have documentation when upgrading to 1.0.0 - 05/06/2025
-  // TODO additionalVariables is defined to be <"name", "extension"> previously, which provides no real value.
-  // TODO the definition of additionalVariables is now <"name", "value">, which allows it to be injected into the renderer's fhirPathContext.
-  // TODO as an example, populatedContext from a pre-pop module can now be inserted into the renderer for further use.
-  // variables = addAdditionalVariables(variables, additionalVariables);
-
   const extractContainedValueSetsResult = extractContainedValueSets(
     questionnaire,
     terminologyServerUrl
