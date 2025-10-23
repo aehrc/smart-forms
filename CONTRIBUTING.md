@@ -24,13 +24,13 @@ Please communicate with us (preferably through creation of an issue) before
 embarking on any significant work within a pull request. This will prevent
 situations where people are working at cross-purposes.
 
-Your branch should be named `issue/[GitHub issue #]`.
+A good branching naming convention is `issue/[GitHub issue #]`.
 
-If possible, it is recommended to merge the `main` (or `dev`) branch into your branch first before creating a pull request.
+If possible, it is recommended to merge the `main` branch into your branch first before creating a pull request.
 
 ## Local development Guide
 
-Refer to [LOCAL_DEVELOPMENT.md](LOCAL_DEVELOPMENT.md) for instructions on local development and running.
+Refer to [LOCAL_DEVELOPMENT.md](LOCAL_DEVELOPMENT.md) for instructions on local development and contributing steps.
 
 ## Code of conduct
 
