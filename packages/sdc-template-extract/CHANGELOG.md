@@ -5,6 +5,10 @@ This log documents changes for [@aehrc/sdc-template-extract](https://www.npmjs.c
 
 Changelog only includes changes from version 1.0.6 onwards.
 
+## sdc-template-extract [1.0.14] - 2025-10-23
+#### Fixed
+- All templateExtract extensions on a QuestionnaireItem are now evaluated.
+
 ## sdc-template-extract [1.0.13] - 2025-10-17
 #### Fixed
 - Added meta.tag.system to extracted bundle.
