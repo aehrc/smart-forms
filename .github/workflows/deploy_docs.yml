@@ -45,7 +45,12 @@ jobs:
         run: npm run build -w documentation
 
       - name: Upload static Docusaurus site to S3
-        run: aws s3 sync documentation/build s3://smart-forms-docs/docs --cache-control no-cache
+        run: |
+          aws s3 sync documentation/build s3://smart-forms-docs/docs \
+            --cache-control "no-cache, no-store, must-revalidate" \
+            --expires 0 \
+            --exact-timestamps \
+            --delete
 
   deploy-storybook-s3:
     name: Deploy Storybook to S3
@@ -86,4 +91,9 @@ jobs:
         run: npm run build-storybook -w packages/smart-forms-renderer
 
       - name: Upload static Storybook site to S3
-        run: aws s3 sync packages/smart-forms-renderer/storybook-static s3://smart-forms-storybook/storybook --cache-control no-cache
+        run: |
+          aws s3 sync packages/smart-forms-renderer/storybook-static s3://smart-forms-storybook/storybook \
+            --cache-control "no-cache, no-store, must-revalidate" \
+            --expires 0 \
+            --exact-timestamps \
+            --delete
