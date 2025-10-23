@@ -30,8 +30,7 @@ jobs:
   build-demo-app:
     name: Build Demo App
     runs-on: ubuntu-latest
-    # Conditional logic to skip if workflow is triggered by Dependabot
-    if: github.actor != 'dependabot[bot]'
+    # Run this regardless of "if: github.actor != 'dependabot[bot]'" condition on other jobs to see if dependabot PRs breaks the build
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 20.x
@@ -47,8 +46,7 @@ jobs:
   jest-smart-forms-app-tests:
     name: Jest Tests - Smart Forms App
     runs-on: ubuntu-latest
-    # Conditional logic to skip if workflow is triggered by Dependabot
-    if: github.actor != 'dependabot[bot]'
+    # Run this regardless of "if: github.actor != 'dependabot[bot]'" condition on other jobs to see if dependabot PRs breaks the build
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 20.x
@@ -81,8 +79,7 @@ jobs:
   vitest-smart-forms-app-715-tests:
     name: Vitest Questionnaire Behaviour Tests - Smart Forms App
     runs-on: ubuntu-latest
-    # Conditional logic to skip if workflow is triggered by Dependabot
-    if: github.actor != 'dependabot[bot]'
+    # Run this regardless of "if: github.actor != 'dependabot[bot]'" condition on other jobs to see if dependabot PRs breaks the build
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 20.x
@@ -107,8 +104,7 @@ jobs:
   jest-renderer-tests:
     name: Jest Tests - Renderer
     runs-on: ubuntu-latest
-    # Conditional logic to skip if workflow is triggered by Dependabot
-    if: github.actor != 'dependabot[bot]'
+    # Run this regardless of "if: github.actor != 'dependabot[bot]'" condition on other jobs to see if dependabot PRs breaks the build
     steps:
       - uses: actions/checkout@v4
 
@@ -142,8 +138,7 @@ jobs:
   jest-populate-tests:
     name: Jest Tests - Populate
     runs-on: ubuntu-latest
-    # Conditional logic to skip if workflow is triggered by Dependabot
-    if: github.actor != 'dependabot[bot]'
+    # Run this regardless of "if: github.actor != 'dependabot[bot]'" condition on other jobs to see if dependabot PRs breaks the build
     steps:
       - uses: actions/checkout@v4
 
@@ -171,8 +166,7 @@ jobs:
   storybook-renderer-tests:
     name: Storybook Tests - Renderer
     runs-on: ubuntu-latest
-    # Conditional logic to skip if workflow is triggered by Dependabot
-    if: github.actor != 'dependabot[bot]'
+    # Run this regardless of "if: github.actor != 'dependabot[bot]'" condition on other jobs to see if dependabot PRs breaks the build
     steps:
       - uses: actions/checkout@v4
 
@@ -200,8 +194,7 @@ jobs:
   jest-assemble-tests:
     name: Jest Tests - Assemble
     runs-on: ubuntu-latest
-    # Conditional logic to skip if workflow is triggered by Dependabot
-    if: github.actor != 'dependabot[bot]'
+    # Run this regardless of "if: github.actor != 'dependabot[bot]'" condition on other jobs to see if dependabot PRs breaks the build
     steps:
       - uses: actions/checkout@v4
 
@@ -229,8 +222,7 @@ jobs:
   jest-extract-tests:
     name: Jest Tests - Template-Based Extract
     runs-on: ubuntu-latest
-    # Conditional logic to skip if workflow is triggered by Dependabot
-    if: github.actor != 'dependabot[bot]'
+    # Run this regardless of "if: github.actor != 'dependabot[bot]'" condition on other jobs to see if dependabot PRs breaks the build
     steps:
       - uses: actions/checkout@v4
 
@@ -295,8 +287,7 @@ jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
-    # Conditional logic to skip if workflow is triggered by Dependabot
-    if: github.actor != 'dependabot[bot]'
+    # Run this regardless of "if: github.actor != 'dependabot[bot]'" condition on other jobs to see if dependabot PRs breaks the build
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 20.x

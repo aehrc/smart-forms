@@ -17,8 +17,6 @@
 
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
-// TODO Add docs on validation is exposed as operationOutcomes
-
 // MaxLength
 export const qMaxLength: Questionnaire = {
   resourceType: 'Questionnaire',
@@ -230,7 +228,6 @@ export const qrRegex: QuestionnaireResponse = {
 };
 
 // MinValue
-// TODO need to add more examples question (where type='date', 'dateTime', 'time', 'decimal', 'integer')
 export const qMinValue: Questionnaire = {
   resourceType: 'Questionnaire',
   status: 'draft',

@@ -56,15 +56,8 @@ interface GridGroupProps
  * @author Sean Fong
  */
 function GridGroup(props: GridGroupProps) {
-  const {
-    qItem,
-    qrItem,
-
-    groupCardElevation,
-    parentIsReadOnly,
-    parentStyles,
-    onQrItemChange
-  } = props;
+  const { qItem, qrItem, groupCardElevation, parentIsReadOnly, parentStyles, onQrItemChange } =
+    props;
 
   const enableWhenIsActivated = useQuestionnaireStore.use.enableWhenIsActivated();
   const enableWhenItems = useQuestionnaireStore.use.enableWhenItems();

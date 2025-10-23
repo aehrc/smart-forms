@@ -73,10 +73,6 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: BaseItemProps) {
     answers
   );
 
-  // TODO Process calculated expressions
-  // This requires its own hook, because in the case of multi-select, we need to check if the value is already checked to prevent an infinite loop
-  // This will be done after the choice/open-choice refactoring
-
   // Process answerOptionsToggleExpressions
   const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
     useAnswerOptionsToggleExpressions(qItem.linkId);

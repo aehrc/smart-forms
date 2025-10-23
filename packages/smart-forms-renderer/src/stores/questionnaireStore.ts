@@ -227,13 +227,6 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       questionnaireModel.answerOptions
     );
 
-    // If existing fhirPathContext is empty, use the one from the questionnaire model
-    // Mostly existing fhirPathContext will be empty, but in some cases it may not be e.g. after pre-population
-
-    // TODO reminder to have documentation when upgrading to 1.0.0 - 05/06/2025
-    // TODO This is something new - the definition of additionalVariables is now <"name", "value">, which allows it to be injected into the renderer's fhirPathContext.
-    // TODO as an example, populatedContext from a pre-pop module can now be inserted into the renderer for further use.
-
     // Initialise form with questionnaire response and properties in questionnaire model
     const {
       initialTargetConstraints,

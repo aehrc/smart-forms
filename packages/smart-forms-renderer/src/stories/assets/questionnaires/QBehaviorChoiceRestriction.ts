@@ -17,8 +17,6 @@
 
 import type { Questionnaire } from 'fhir/r4';
 
-// TODO Add docs on validation is exposed as operationOutcomes
-
 export const qAnswerOption: Questionnaire = {
   resourceType: 'Questionnaire',
   status: 'draft',
