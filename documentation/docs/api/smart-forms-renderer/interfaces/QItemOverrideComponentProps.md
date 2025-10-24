@@ -2,6 +2,12 @@
 
 ## Properties
 
+### calcExpUpdated?
+
+> `optional` **calcExpUpdated**: `boolean`
+
+***
+
 ### feedbackFromParent?
 
 > `optional` **feedbackFromParent**: `string`

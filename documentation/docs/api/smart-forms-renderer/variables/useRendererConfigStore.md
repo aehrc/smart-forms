@@ -8,6 +8,14 @@
 
 > **use**: `object`
 
+#### use.disableHeadingFocusOnTabSwitch()
+
+> **disableHeadingFocusOnTabSwitch**: () => `boolean`
+
+##### Returns
+
+`boolean`
+
 #### use.disablePageButtons()
 
 > **disablePageButtons**: () => `boolean`

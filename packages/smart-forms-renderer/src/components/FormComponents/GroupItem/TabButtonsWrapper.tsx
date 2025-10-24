@@ -34,6 +34,8 @@ const TabButtonsWrapper = memo(function TabButtonsWrapper(props: TabButtonsWrapp
 
   const switchTab = useQuestionnaireStore.use.switchTab();
   const disableTabButtons = useRendererConfigStore.use.disableTabButtons();
+  const disableHeadingFocusOnTabSwitch =
+    useRendererConfigStore.use.disableHeadingFocusOnTabSwitch();
 
   const { previousTabIndex, nextTabIndex, numOfVisibleTabs } = useNextAndPreviousVisibleTabs(
     currentTabIndex,
@@ -55,10 +57,12 @@ const TabButtonsWrapper = memo(function TabButtonsWrapper(props: TabButtonsWrapp
     // Scroll to top of page
     window.scrollTo(0, 0);
 
-    // Focus the first heading in the new tab panel
-    setTimeout(() => {
-      focusHeading(`tabpanel-${previousTabIndex}`);
-    }, 100); // Small delay to ensure panel is rendered
+    // Focus the first heading in the new tab panel if not disabled
+    if (!disableHeadingFocusOnTabSwitch) {
+      setTimeout(() => {
+        focusHeading(`tabpanel-${previousTabIndex}`);
+      }, 100); // Small delay to ensure panel is rendered
+    }
   }
 
   function handleNextTabButtonClick() {
