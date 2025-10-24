@@ -30,12 +30,14 @@ import { isRepeatItemAndNotCheckbox } from './qItem';
  */
 export function getQrItemsIndex(
   qItems: QuestionnaireItem[],
-  qrItems: QuestionnaireResponseItem[],
+  qrItems: QuestionnaireResponseItem[] | undefined,
   qItemsIndexMap: Record<string, number>
 ): (QuestionnaireResponseItem | QuestionnaireResponseItem[] | undefined)[] {
   // Generate a <linkId, QrItem OR QrItems> dictionary
   const qrItemsCollected: Record<string, QuestionnaireResponseItem | QuestionnaireResponseItem[]> =
     {};
+
+  if (!qrItems) return [];
   for (const qrItem of qrItems) {
     const linkId = qrItem.linkId;
 

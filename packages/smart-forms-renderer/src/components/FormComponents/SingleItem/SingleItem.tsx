@@ -76,7 +76,21 @@ function SingleItem(props: SingleItemProps) {
         parentIsRepeatGroup ? (parentRepeatGroupIndex ?? null) : null
       );
 
-      if (qrItem && qrItem.item && qrItem.item.length > 0) {
+      if (qItem && qrItem?.answer && qrItem.answer.length > 0) {
+        // Find the matching answer in qrItem by id
+        const matchingAnswer = qrItem.answer.find((ans) => ans.id === newQrItem.answer?.[0]?.id);
+
+        // Create updated newQrItem with the nested items from the matching answer
+        const updatedQrItem = {
+          ...newQrItem,
+          answer: newQrItem.answer?.map((ans) => ({
+            ...ans,
+            ...(matchingAnswer?.item && { item: matchingAnswer.item })
+          }))
+        };
+
+        onQrItemChange(updatedQrItem);
+      } else if (qrItem && qrItem.item && qrItem.item.length > 0) {
         onQrItemChange({ ...newQrItem, item: qrItem.item });
       } else {
         onQrItemChange(newQrItem);
@@ -94,7 +108,7 @@ function SingleItem(props: SingleItemProps) {
 
   const handleQrItemChangeWithNestedItems = useCallback(
     (newQrItem: QuestionnaireResponseItem) => {
-      const updatedQrItem = qrItem ? { ...qrItem, item: newQrItem.item } : newQrItem;
+      const updatedQrItem = qrItem ? { ...qrItem, answer: newQrItem.answer } : newQrItem;
       onQrItemChange(updatedQrItem);
     },
     [qrItem, onQrItemChange]

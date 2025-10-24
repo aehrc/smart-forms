@@ -168,7 +168,14 @@ function readInitialValuesRecursive(
         text: qItem.text
       };
     }
-    qrItem.item = initialValues;
+
+    if (qItem.item && qItem.type !== 'group') {
+      qrItem.answer?.forEach((answer) => {
+        answer.item = initialValues.map((obj) => ({ ...obj }));
+      });
+    } else {
+      qrItem.item = initialValues.map((obj) => ({ ...obj }));
+    }
   }
 
   return qrItem ? [qrItem] : null;

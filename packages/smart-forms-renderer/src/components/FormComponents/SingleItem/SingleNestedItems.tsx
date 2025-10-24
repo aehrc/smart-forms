@@ -19,12 +19,11 @@ import React, { useMemo } from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../utils/mapItem';
 import GroupItemSwitcher from '../GroupItem/GroupItemSwitcher';
-import { createEmptyQrGroup, updateQrItemsInGroup } from '../../../utils/qrItem';
+import { createEmptyRepeatNestedItems, updateQrNestedItems } from '../../../utils/qrItem';
 import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import type { QrRepeatGroup } from '../../../interfaces/repeatGroup.interface';
 import Box from '@mui/material/Box';
 
 interface SingleNestedItemsProps
@@ -41,27 +40,27 @@ function SingleNestedItems(props: SingleNestedItemsProps) {
   const qItemsIndexMap: Record<string, number> = useMemo(() => mapQItemsIndex(qItem), [qItem]);
 
   const qItems = qItem.item;
-  const qrGroup = qrItem && qrItem.item ? qrItem : createEmptyQrGroup(qItem);
-  const qrItems = qrGroup.item;
+  const qrGroup = qrItem && qrItem.answer ? qrItem : createEmptyRepeatNestedItems(qItem);
+  const qrAnswers = qrGroup.answer;
 
   // Event Handlers
   function handleQrItemChange(newQrItem: QuestionnaireResponseItem) {
     const updatedQrGroup: QuestionnaireResponseItem = { ...qrGroup };
-    updateQrItemsInGroup(newQrItem, null, updatedQrGroup, qItemsIndexMap);
+    updateQrNestedItems(newQrItem, updatedQrGroup, qItemsIndexMap);
     onQrItemChange(updatedQrGroup);
   }
 
-  function handleQrRepeatGroupChange(qrRepeatGroup: QrRepeatGroup) {
+  function handleQrRepeatGroupChange() {
     const updatedQrGroup: QuestionnaireResponseItem = { ...qrGroup };
-    updateQrItemsInGroup(null, qrRepeatGroup, updatedQrGroup, qItemsIndexMap);
+    updateQrNestedItems(null, updatedQrGroup, qItemsIndexMap);
     onQrItemChange(updatedQrGroup);
   }
 
-  if (!qItems || !qrItems) {
+  if (!qItems || !qrAnswers) {
     return <>Unable to load group, something has gone terribly wrong.</>;
   }
 
-  const qrItemsByIndex = getQrItemsIndex(qItems, qrItems, qItemsIndexMap);
+  const qrItemsByIndex = getQrItemsIndex(qItems, qrAnswers[0]?.item, qItemsIndexMap);
 
   // TODO - Add support for horizontal "row" layout
   return (
