@@ -169,12 +169,12 @@ function readInitialValuesRecursive(
       };
     }
 
-    if (qItem.repeats) {
+    if (qItem.item && qItem.type !== 'group') {
       qrItem.answer?.forEach((answer) => {
-        answer.item = initialValues;
+        answer.item = initialValues.map((obj) => ({ ...obj }));
       });
     } else {
-      qrItem.item = initialValues;
+      qrItem.item = initialValues.map((obj) => ({ ...obj }));
     }
   }
 

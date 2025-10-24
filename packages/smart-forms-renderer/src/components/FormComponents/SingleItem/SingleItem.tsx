@@ -77,7 +77,7 @@ function SingleItem(props: SingleItemProps) {
         parentIsRepeatGroup ? (parentRepeatGroupIndex ?? null) : null
       );
 
-      if (qItem.repeats && qrItem?.answer && qrItem.answer.length > 0) {
+      if (qItem && qrItem?.answer && qrItem.answer.length > 0) {
         // Find the matching answer in qrItem by id
         const matchingAnswer = qrItem.answer.find((ans) => ans.id === newQrItem.answer?.[0]?.id);
 
@@ -86,7 +86,7 @@ function SingleItem(props: SingleItemProps) {
           ...newQrItem,
           answer: newQrItem.answer?.map((ans) => ({
             ...ans,
-            item: matchingAnswer?.item || []
+            ...(matchingAnswer?.item && { item: matchingAnswer.item })
           }))
         };
 
