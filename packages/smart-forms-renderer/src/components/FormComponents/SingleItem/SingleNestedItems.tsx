@@ -24,7 +24,6 @@ import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import type { QrRepeatGroup } from '../../../interfaces/repeatGroup.interface';
 import Box from '@mui/material/Box';
 
 interface SingleNestedItemsProps
