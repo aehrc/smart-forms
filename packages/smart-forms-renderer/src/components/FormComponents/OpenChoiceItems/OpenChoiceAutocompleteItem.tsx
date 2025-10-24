@@ -114,6 +114,7 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
     newValue: Coding | string | null,
     reason: AutocompleteChangeReason | string
   ) {
+    // When the reason is selectOption this function gets called twice. One for the string value and one for the selected option. So we need to make sure we ignore the string value on selectOption
     // If the reason is reset, then don't change value. Otherwise you will end up with looped setState calls
     if (reason === 'reset') {
       return;
@@ -129,7 +130,7 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
       newValue = '';
     }
 
-    if (typeof newValue === 'string') {
+    if (typeof newValue === 'string' && reason === 'input') {
       if (newValue !== '') {
         // Check if the newValue is in the options, first check options.display, then check options.code
         const foundOption = options.find((option) => {
@@ -155,8 +156,8 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
         // For empty string, update immediately
         onQrItemChange(createEmptyQrItem(qItem, answerKey));
       }
-    } else {
-      // For coding selection, update immediately (no debounce)
+    } else if (typeof newValue === 'object' && reason === 'selectOption') {
+      // For coding selection, update immediately (no debounce) i.e reason should be selectOption
       onQrItemChange({
         ...createEmptyQrItem(qItem, answerKey),
         answer: [{ id: answerKey, valueCoding: newValue }]
