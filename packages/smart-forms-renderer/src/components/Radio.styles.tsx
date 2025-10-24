@@ -3,7 +3,7 @@ import Radio from '@mui/material/Radio';
 
 export const StandardRadio = styled(Radio, {
   shouldForwardProp: (prop) => prop !== 'readOnly'
-})<{ readOnly: boolean }>(({ theme, readOnly }) => ({
+})<{ readOnly: boolean; 'aria-describedby'?: string }>(({ theme, readOnly }) => ({
   ...(readOnly && {
     // Remove 'pointer' cursor when readOnly
     cursor: 'default',
