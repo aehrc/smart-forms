@@ -385,12 +385,15 @@ This file contains examples of a Storybook tests: https://github.com/aehrc/smart
 
 After adding a new Story test case, ensure that it runs correctly by running Storybook CI tests as described in [Run existing Storybook tests](#run-existing-storybook-tests).
 
+> If you are make changes to story names, ensure that they don’t break the docs!
+> 
+> There isn’t a CI process to do this, but you can check if the storyId exists in any documentation, e.g. sdc-9-1-4-rendering-other--read-only
 
 #### Chromatic visual regression testing
 
 We use Chromatic in CI to catch for any UI layout changes on the deployed Storybook instance https://smartforms.csiro.au/storybook/.
 
-If Chromatic detects any layout changes, they have to be approved them in the Chromatic dashboard. Access the dashboard via the "Details" button next to "UI Tests" in GitHub Actions CI.
+If Chromatic detects any layout changes, they have to be approved them in the Chromatic dashboard. Access the dashboard via the "Details" button next to "UI Tests" in GitHub Actions CI. You will need to sign in with your GitHub account.
 
 Our [GitHub CI workflow](https://github.com/aehrc/smart-forms/blob/main/.github/workflows/deploy_app.yml) is set up to run Chromatic visual regression on every push to `main`.
 
@@ -486,6 +489,8 @@ P.S. We had `alpha` as a pre-release branch before the recent v1.0.0 release. Th
 19. Push a new commit with the version bumps and changelog updates.
 20. Ensure that all CI checks pass (build, tests, linting, etc.).
 21. Merge your branch into `main`.
+
+> Remember to merge main into your branch regularly throughout the development process.
 
 ## Contributing workflow - external contributors
 1. Create a fork of the repository.
