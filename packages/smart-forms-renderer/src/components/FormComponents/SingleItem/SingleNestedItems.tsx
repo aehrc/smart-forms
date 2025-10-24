@@ -51,7 +51,7 @@ function SingleNestedItems(props: SingleNestedItemsProps) {
     onQrItemChange(updatedQrGroup);
   }
 
-  function handleQrRepeatGroupChange(qrRepeatGroup: QrRepeatGroup) {
+  function handleQrRepeatGroupChange() {
     const updatedQrGroup: QuestionnaireResponseItem = { ...qrGroup };
     updateQrNestedItems(null, updatedQrGroup, qItemsIndexMap);
     onQrItemChange(updatedQrGroup);

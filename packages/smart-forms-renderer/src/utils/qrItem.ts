@@ -295,7 +295,6 @@ export function updateQrNestedItems(
 
   if (existingItemIndex !== -1) {
     // Item exists - overwrite it
-    debugger;
     lastAnswerGroup.item[existingItemIndex] = newQrItem;
   } else {
     // Item doesn't exist - find correct position to insert based on sequence
@@ -308,7 +307,6 @@ export function updateQrNestedItems(
         break;
       }
     }
-    debugger;
     // Insert at the correct position
     lastAnswerGroup.item.splice(insertIndex, 0, newQrItem);
     return;

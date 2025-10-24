@@ -119,7 +119,6 @@ export const NestedRepeatItems: Story = {
 
     expect(childZeroValue?.valueDecimal).toBe(2);
     expect(childOneValue?.valueDecimal).toBe(3);
-    debugger;
   }
 };
 
@@ -127,7 +126,7 @@ export const NestedRepeatItemsWithInitial: Story = {
   args: {
     questionnaire: qNestedRepeatQuestionnaireWithInitial
   },
-  play: async ({}) => {
+  play: async () => {
     // Get the parent answers - should have 2 initial answers
     const answers = await getAnswers('parent-decimal');
 
