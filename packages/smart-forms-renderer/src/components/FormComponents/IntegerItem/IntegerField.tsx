@@ -87,7 +87,7 @@ function IntegerField(props: IntegerFieldProps) {
         htmlInput: {
           inputMode: 'numeric',
           pattern: '[0-9]*',
-          'aria-label': ariaLabel
+          ...(ariaLabel && { 'aria-label': ariaLabel })
         },
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',

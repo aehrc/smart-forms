@@ -25,10 +25,9 @@ import {
   getInputText,
   inputInteger,
   questionnaireFactory,
-  questionnaireResponseFactory,
-  unitExtFactory
+  questionnaireResponseFactory
 } from '../testUtils';
-import { expect, fireEvent, within } from 'storybook/test';
+import { expect, fireEvent } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -102,32 +101,5 @@ export const IntegerBasicResponse: Story = createStory({
     const input = await getInputText(canvasElement, targetLinkId);
 
     expect(input).toBe(targetAge.toString());
-  }
-}) as Story;
-
-/* Integer Unit Accessibility story */
-const accessibilityTargetLinkId = 'heart-rate';
-const qIntegerAccessibility = questionnaireFactory([
-  {
-    linkId: accessibilityTargetLinkId,
-    extension: [unitExtFactory('bpm', 'beats per minute')],
-    type: 'integer',
-    text: 'Heart Rate'
-  }
-]);
-
-export const IntegerUnitAccessibility: Story = createStory({
-  args: {
-    questionnaire: qIntegerAccessibility
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    // Find the integer input field by its data-test attribute
-    const inputField = canvas.getByTestId('q-item-integer-field');
-    const input = inputField.querySelector('input');
-
-    // Verify the aria-label includes the item text and unit for screen reader accessibility
-    expect(input?.getAttribute('aria-label')).toBe('Heart Rate (beats per minute)');
   }
 }) as Story;

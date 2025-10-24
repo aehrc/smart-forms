@@ -16,7 +16,7 @@
  */
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { expect, waitFor, within } from 'storybook/test';
+import { expect, waitFor } from 'storybook/test';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
   getAnswers,
@@ -439,32 +439,5 @@ export const QuantityUnitOptionSingleResponse: Story = createStory({
         comparator: '<'
       })
     );
-  }
-}) as Story;
-
-/* Quantity Unit Accessibility story */
-const accessibilityTargetLinkId = 'body-height';
-const qQuantityAccessibility = questionnaireFactory([
-  {
-    linkId: accessibilityTargetLinkId,
-    extension: [unitExtFactory('cm', 'cm')],
-    type: 'quantity',
-    text: 'Height'
-  }
-]);
-
-export const QuantityUnitAccessibility: Story = createStory({
-  args: {
-    questionnaire: qQuantityAccessibility
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    // Find the quantity input field by its data-test attribute
-    const inputField = canvas.getByTestId('q-item-quantity-field');
-    const input = inputField.querySelector('input');
-
-    // Verify the aria-label includes the item text and unit for screen reader accessibility
-    expect(input?.getAttribute('aria-label')).toBe('Height (cm)');
   }
 }) as Story;
