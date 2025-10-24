@@ -38,13 +38,22 @@ interface BooleanFieldProps {
   valueBoolean: boolean | undefined;
   feedback: string;
   calcExpUpdated: boolean;
+  instructionsId: string | undefined;
   onCheckedChange: (newValue: string) => void;
   onClear: () => void;
 }
 
 const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
-  const { qItem, readOnly, valueBoolean, feedback, calcExpUpdated, onCheckedChange, onClear } =
-    props;
+  const {
+    qItem,
+    readOnly,
+    valueBoolean,
+    feedback,
+    calcExpUpdated,
+    instructionsId,
+    onCheckedChange,
+    onClear
+  } = props;
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const inputsFlexGrow = useRendererConfigStore.use.inputsFlexGrow();
@@ -80,6 +89,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
                 aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
                 role="checkbox"
                 aria-checked={ariaCheckedValue}
+                {...(instructionsId && { 'aria-describedby': instructionsId })}
                 onChange={() => {
                   // If item.readOnly=true, do not allow any changes
                   if (readOnly) {
@@ -106,6 +116,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
             <RadioGroup
               id={qItem.type + '-' + qItem.linkId}
               aria-labelledby={'label-' + qItem.linkId}
+              {...(instructionsId && { 'aria-describedby': instructionsId })}
               row={orientation === ChoiceItemOrientation.Horizontal}
               sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
               aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
@@ -126,6 +137,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
                     readOnly={readOnly}
                     disabledViaToggleExpression={false}
                     fullWidth={inputsFlexGrow}
+                    ariaDescribedBy={instructionsId}
                   />
                   <ChoiceRadioSingle
                     value="true"
@@ -133,6 +145,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
                     readOnly={readOnly}
                     disabledViaToggleExpression={false}
                     fullWidth={inputsFlexGrow}
+                    ariaDescribedBy={instructionsId}
                   />
                 </>
               ) : (
@@ -143,6 +156,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
                     readOnly={readOnly}
                     disabledViaToggleExpression={false}
                     fullWidth={inputsFlexGrow}
+                    ariaDescribedBy={instructionsId}
                   />
                   <ChoiceRadioSingle
                     value="false"
@@ -150,6 +164,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
                     readOnly={readOnly}
                     disabledViaToggleExpression={false}
                     fullWidth={inputsFlexGrow}
+                    ariaDescribedBy={instructionsId}
                   />
                 </>
               )}

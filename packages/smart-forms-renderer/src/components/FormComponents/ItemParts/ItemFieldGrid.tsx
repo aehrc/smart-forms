@@ -16,7 +16,6 @@
  */
 
 import type { ReactNode } from 'react';
-import React from 'react';
 import type { QuestionnaireItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import { useRendererConfigStore } from '../../../stores';
@@ -44,52 +43,6 @@ export function getInstructionsId(
   return displayInstructions && !hasFeedback ? `instructions-${qItem.linkId}` : undefined;
 }
 
-/**
- * Recursively add aria-describedby to input/textarea elements and radio/checkbox groups in the React tree
- */
-function addAriaDescribedBy(children: ReactNode, instructionsId: string): ReactNode {
-  return React.Children.map(children, (child) => {
-    if (!React.isValidElement(child)) {
-      return child;
-    }
-
-    const element = child as React.ReactElement<any>;
-
-    // Add aria-describedby to input elements
-    if (element.type === 'input' || element.type === 'textarea') {
-      const existingDescribedBy = element.props['aria-describedby'];
-      const newDescribedBy = existingDescribedBy
-        ? `${existingDescribedBy} ${instructionsId}`
-        : instructionsId;
-
-      return React.cloneElement(element, {
-        'aria-describedby': newDescribedBy
-      });
-    }
-
-    // Add aria-describedby to RadioGroup and FormGroup (for radio buttons and checkboxes)
-    if (element.type && typeof element.type === 'object' && 'render' in element.type) {
-      const existingDescribedBy = element.props['aria-describedby'];
-      const newDescribedBy = existingDescribedBy
-        ? `${existingDescribedBy} ${instructionsId}`
-        : instructionsId;
-
-      return React.cloneElement(element, {
-        'aria-describedby': newDescribedBy
-      });
-    }
-
-    // Recursively process children
-    if (element.props && element.props.children) {
-      return React.cloneElement(element, {
-        children: addAriaDescribedBy(element.props.children, instructionsId)
-      });
-    }
-
-    return child;
-  });
-}
-
 function ItemFieldGrid(props: ItemFieldGridProps) {
   const { qItem, readOnly, labelChildren, fieldChildren } = props;
 
@@ -98,17 +51,11 @@ function ItemFieldGrid(props: ItemFieldGridProps) {
 
   const { displayInstructions } = useRenderingExtensions(qItem);
 
-  // Generate instruction ID if instructions exist
+  // Generate instruction ID if instructions exist and there's no feedback
   const instructionsId =
     displayInstructions && !props.feedback && !props.dateFeedback && !props.timeFeedback
       ? `instructions-${qItem.linkId}`
       : undefined;
-
-  // Add aria-describedby to field children if instructions exist
-  const enhancedFieldChildren =
-    instructionsId && fieldChildren
-      ? addAriaDescribedBy(fieldChildren, instructionsId)
-      : fieldChildren;
 
   return (
     <Grid container columnSpacing={columnGapPixels + 'px'} rowGap={rowGapPixels + 'px'}>
@@ -117,7 +64,7 @@ function ItemFieldGrid(props: ItemFieldGridProps) {
         <>{labelChildren}</>
       </Grid>
       <Grid size={{ ...fieldBreakpoints }}>
-        <>{enhancedFieldChildren}</>
+        <>{fieldChildren}</>
         {/* Only show display instructions if there is no feedback of any type */}
         {instructionsId && (
           <DisplayInstructions id={instructionsId} readOnly={readOnly}>

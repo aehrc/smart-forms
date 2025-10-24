@@ -25,11 +25,12 @@ import { useQuestionnaireStore } from '../../../stores';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
-import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import ItemFieldGrid, { getInstructionsId } from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
 import { readStringValue } from '../../../utils/readValues';
 import { sanitizeInput } from '../../../utils/inputSanitization';
 import StringField from './StringField';
+import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 
 function StringItem(props: BaseItemProps) {
   const {
@@ -57,6 +58,10 @@ function StringItem(props: BaseItemProps) {
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
+
+  // Get instructions ID for aria-describedby
+  const { displayInstructions } = useRenderingExtensions(qItem);
+  const instructionsId = getInstructionsId(qItem, displayInstructions, !!feedback);
 
   // Event handlers
   function handleChange(newInput: string) {
@@ -107,6 +112,7 @@ function StringItem(props: BaseItemProps) {
         renderingExtensions={renderingExtensions}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
+        instructionsId={instructionsId}
         onInputChange={handleChange}
         onRepopulateSync={handleRepopulateSync}
         isTabled={isTabled}
@@ -131,6 +137,7 @@ function StringItem(props: BaseItemProps) {
             renderingExtensions={renderingExtensions}
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}
+            instructionsId={instructionsId}
             onInputChange={handleChange}
             onRepopulateSync={handleRepopulateSync}
             isTabled={isTabled}

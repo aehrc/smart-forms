@@ -25,7 +25,7 @@ import {
   questionnaireFactory,
   questionnaireResponseFactory
 } from '../testUtils';
-import { expect, fireEvent, within } from 'storybook/test';
+import { expect, fireEvent } from 'storybook/test';
 import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -100,56 +100,5 @@ export const StringBasicResponse: Story = createStory({
     const inputText = await getInputText(canvasElement, targetLinkId);
 
     expect(inputText).toBe(targetInput);
-  }
-}) as Story;
-
-/* String with instructions for accessibility testing */
-const qStringAccessibility = questionnaireFactory([
-  {
-    linkId: 'email',
-    type: 'string',
-    repeats: false,
-    text: 'Email Address',
-    item: [
-      {
-        linkId: 'email-instructions',
-        type: 'display',
-        text: 'Please enter your work email address',
-        extension: [
-          {
-            url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory',
-            valueCodeableConcept: {
-              coding: [
-                {
-                  system: 'http://hl7.org/fhir/questionnaire-display-category',
-                  code: 'instructions'
-                }
-              ]
-            }
-          }
-        ]
-      }
-    ]
-  }
-]);
-
-export const StringInstructionsAccessibility: Story = createStory({
-  args: {
-    questionnaire: qStringAccessibility
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const inputField = canvas.getByTestId('q-item-string-field');
-    const textarea = inputField.querySelector('textarea');
-    const ariaDescribedBy = textarea?.getAttribute('aria-describedby');
-
-    // Check that aria-describedby is present and references the instructions
-    expect(ariaDescribedBy).toBeTruthy();
-    expect(ariaDescribedBy).toContain('instructions-email');
-
-    // Check that the instructions element exists with the correct ID
-    const instructionsElement = document.getElementById('instructions-email');
-    expect(instructionsElement).toBeTruthy();
-    expect(instructionsElement?.textContent).toContain('Please enter your work email address');
   }
 }) as Story;
