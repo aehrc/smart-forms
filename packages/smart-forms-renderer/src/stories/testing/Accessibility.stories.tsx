@@ -17,8 +17,8 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { questionnaireFactory, unitExtFactory } from '../testUtils';
-import { expect, within } from 'storybook/test';
+import { questionnaireFactory, unitExtFactory, findByLinkIdOrLabel } from '../testUtils';
+import { expect } from 'storybook/test';
 import { createStory } from '../storybookWrappers/createStory';
 
 const meta = {
@@ -46,9 +46,11 @@ export const DecimalUnitAccessibility: Story = createStory({
     questionnaire: qDecimalAccessibility
   },
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const inputField = await canvas.findByTestId('q-item-decimal-field');
-    const input = inputField.querySelector('input');
+    // Use the same pattern as other working tests in the codebase
+    const element = await findByLinkIdOrLabel(canvasElement, 'height-decimal');
+    const input = element.querySelector('input');
+
+    // Verify the aria-label includes the unit for screen reader accessibility
     expect(input?.getAttribute('aria-label')).toBe('Height (cm)');
   }
 }) as Story;
@@ -69,9 +71,11 @@ export const IntegerUnitAccessibility: Story = createStory({
     questionnaire: qIntegerAccessibility
   },
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const inputField = await canvas.findByTestId('q-item-integer-field');
-    const input = inputField.querySelector('input');
+    // Use the same pattern as other working tests in the codebase
+    const element = await findByLinkIdOrLabel(canvasElement, 'heart-rate');
+    const input = element.querySelector('input');
+
+    // Verify the aria-label includes the unit for screen reader accessibility
     expect(input?.getAttribute('aria-label')).toBe('Heart Rate (beats per minute)');
   }
 }) as Story;
@@ -92,9 +96,11 @@ export const QuantityUnitAccessibility: Story = createStory({
     questionnaire: qQuantityAccessibility
   },
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const inputField = await canvas.findByTestId('q-item-quantity-field');
-    const input = inputField.querySelector('input');
+    // Use the same pattern as other working Quantity tests in the codebase
+    const element = await findByLinkIdOrLabel(canvasElement, 'height-quantity');
+    const input = element.querySelector('div[data-test="q-item-quantity-field"] input');
+
+    // Verify the aria-label includes the unit for screen reader accessibility
     expect(input?.getAttribute('aria-label')).toBe('Height (cm)');
   }
 }) as Story;
