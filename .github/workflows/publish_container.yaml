@@ -4,9 +4,6 @@ on:
   workflow_dispatch:
 
   push:
-    #    branches-ignore:
-    #      - main
-    #      - alpha
     paths:
       - 'apps/smart-forms-app/Dockerfile' # Trigger only if Dockerfile is modified
       - 'apps/smart-forms-app/src/**' # Trigger if anything in the src folder is changed.

@@ -65,10 +65,6 @@ function OpenChoiceSelectAnswerValueSetItem(props: BaseItemProps) {
     }
   }
 
-  // TODO Process calculated expressions
-  // This requires its own hook, because in the case of multi-select, we need to check if the value is already checked to prevent an infinite loop
-  // This will be done after the choice/open-choice refactoring
-
   // Get codings/options from valueSet
   // TODO use dynamicCodingsUpdated to trigger a "refresh" icon when codings are dynamically updated
   const { codings, terminologyError } = useValueSetCodings(qItem);

@@ -61,7 +61,6 @@ function SingleItemView(props: SingleItemViewProps) {
   const {
     qItem,
     qrItem,
-
     itemIsHidden,
     itemHasNestedItems,
     isRepeated,

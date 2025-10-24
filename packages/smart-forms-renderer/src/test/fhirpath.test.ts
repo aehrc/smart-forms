@@ -88,8 +88,6 @@ describe('createFhirPathContext', () => {
     expect(result.fhirPathContext.resource).toEqual(questionnaireResponse);
     expect(result.fhirPathTerminologyCache).toBeDefined();
   });
-
-  // TODO add more tests as needed for edge cases
 });
 
 describe('addEmptyXFhirQueryVariablesToFhirPathContext', () => {
