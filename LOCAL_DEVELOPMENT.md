@@ -409,7 +409,7 @@ We use Playwright for end-to-end testing of the Smart Forms app. These tests foc
 
 These tests are located in `apps/smart-forms-app/e2e` and are run as part of the Smart Forms app's e2e test CI workflow.
 
-End-to-end tests are fairly flaky, so we try to keep them to a minimum. Currently, there are no plans to add more tests unless explicitly requested.
+End-to-end tests are fairly flaky, so we try to keep them to a minimum. Currently, there are no plans to add more tests unless explicitly requested. If CI e2e tests are failing, try running them again via the "sync" button on GitHub Actions.
 
 A common failure point for these tests is the SMART App Launch sequence, which relies on actual FHIR servers:
 - SMART App Launch + Patient Data FHIR API: https://proxy.smartforms.io/v/r4/fhir
