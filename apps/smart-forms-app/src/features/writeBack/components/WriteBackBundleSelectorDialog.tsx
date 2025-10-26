@@ -32,12 +32,12 @@ function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
     onDialogExited
   } = props;
 
-  const populatedContext = useQuestionnaireStore.use.populatedContext();
+  const additionalContext = useQuestionnaireStore.use.additionalContext();
 
   // Get a map of populated resources so we can link FHIRPatch Parameters to their actual resource names
   const populatedResourceMap = useMemo(
-    () => getPopulatedResourceMap(populatedContext),
-    [populatedContext]
+    () => getPopulatedResourceMap(additionalContext),
+    [additionalContext]
   );
 
   const allBundleEntries: BundleEntry[] = useMemo(

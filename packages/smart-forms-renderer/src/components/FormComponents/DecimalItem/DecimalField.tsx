@@ -16,17 +16,17 @@
  */
 
 import InputAdornment from '@mui/material/InputAdornment';
-import { StandardTextField } from '../Textfield.styles';
-import type { PropsWithIsTabledRequiredAttribute } from '../../../interfaces/renderProps.interface';
-import { useRendererStylingStore } from '../../../stores';
+import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import { useRendererConfigStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import ItemRepopulateButton from '../ItemParts/ItemRepopulateButton';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type { RenderingExtensions } from '../../../hooks/useRenderingExtensions';
+import { StandardTextField } from '../Textfield.styles';
 
-interface DecimalFieldProps extends PropsWithIsTabledRequiredAttribute {
+interface DecimalFieldProps extends PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   input: string;
   feedback: string;
@@ -35,7 +35,6 @@ interface DecimalFieldProps extends PropsWithIsTabledRequiredAttribute {
   calcExpUpdated: boolean;
   onInputChange: (value: string) => void;
   onRepopulateSync: (newQrItem: QuestionnaireResponseItem | null) => unknown;
-  onBlur: () => void;
 }
 
 function DecimalField(props: DecimalFieldProps) {
@@ -48,14 +47,13 @@ function DecimalField(props: DecimalFieldProps) {
     calcExpUpdated,
     isTabled,
     onInputChange,
-    onRepopulateSync,
-    onBlur
+    onRepopulateSync
   } = props;
 
   const { displayPrompt, displayUnit, entryFormat, isRepopulatable } = renderingExtensions;
 
-  const readOnlyVisualStyle = useRendererStylingStore.use.readOnlyVisualStyle();
-  const textFieldWidth = useRendererStylingStore.use.textFieldWidth();
+  const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
 
   let placeholderText = '0.0';
   if (displayPrompt) {
@@ -73,7 +71,6 @@ function DecimalField(props: DecimalFieldProps) {
       error={!!feedback}
       helperText={feedback}
       onChange={(event) => onInputChange(event.target.value)}
-      onBlur={onBlur}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       placeholder={placeholderText}
       fullWidth

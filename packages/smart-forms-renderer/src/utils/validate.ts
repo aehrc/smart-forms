@@ -41,7 +41,7 @@ import { structuredDataCapture } from 'fhir-sdc-helpers';
 import type { RegexValidation } from '../interfaces/regex.interface';
 import { parseDecimalStringToFloat } from './parseInputs';
 import dayjs from 'dayjs';
-import { questionnaireStore, rendererStylingStore } from '../stores';
+import { questionnaireStore, rendererConfigStore } from '../stores';
 
 export enum ValidationResult {
   unknown = 'unknown', // Unknown validation result
@@ -111,7 +111,12 @@ export function validateTargetConstraint(): Record<string, OperationOutcome> {
   const enableWhenIsActivated = questionnaireStore.getState().enableWhenIsActivated;
   const enableWhenItems = questionnaireStore.getState().enableWhenItems;
   const enableWhenExpressions = questionnaireStore.getState().enableWhenExpressions;
-  const enableWhenAsReadOnly = rendererStylingStore.getState().enableWhenAsReadOnly;
+  const enableWhenAsReadOnly = rendererConfigStore.getState().enableWhenAsReadOnly;
+
+  // Nothing to validate, return early
+  if (!targetConstraints || Object.keys(targetConstraints).length === 0) {
+    return {};
+  }
 
   // Iterate through the target constraints and check if they are invalid
   const allInvalidItems: Record<string, OperationOutcome> = {};
@@ -182,7 +187,7 @@ export function validateQuestionnaireResponse(
   const enableWhenIsActivated = questionnaireStore.getState().enableWhenIsActivated;
   const enableWhenItems = questionnaireStore.getState().enableWhenItems;
   const enableWhenExpressions = questionnaireStore.getState().enableWhenExpressions;
-  const enableWhenAsReadOnly = rendererStylingStore.getState().enableWhenAsReadOnly;
+  const enableWhenAsReadOnly = rendererConfigStore.getState().enableWhenAsReadOnly;
 
   if (!questionnaire.item || questionnaire.item.length === 0) {
     return {};

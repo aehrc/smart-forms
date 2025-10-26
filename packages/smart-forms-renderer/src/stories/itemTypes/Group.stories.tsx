@@ -21,10 +21,11 @@ import {
   getGroupAnswers,
   getInputText,
   inputText,
-  qrFactory,
-  questionnaireFactory
+  questionnaireFactory,
+  questionnaireResponseFactory
 } from '../testUtils';
 import { expect, fireEvent } from 'storybook/test';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -38,11 +39,13 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+
+/* Group Basic story */
 const targetGroupLinkId = 'patient-details-group';
 
-const nameLinkid = 'name';
-const ageLinkid = 'age';
-const targetName = 'Vladimir';
+const nameLinkId = 'name';
+const ageLinkId = 'age';
+const targetName = 'John Doe';
 const targetAge = 25;
 
 const qGroupBasic = questionnaireFactory([
@@ -53,13 +56,13 @@ const qGroupBasic = questionnaireFactory([
     text: 'Patient Details',
     item: [
       {
-        linkId: nameLinkid,
+        linkId: nameLinkId,
         type: 'string',
         repeats: false,
         text: 'Name'
       },
       {
-        linkId: ageLinkid,
+        linkId: ageLinkId,
         type: 'integer',
         repeats: false,
         text: 'Age'
@@ -67,13 +70,14 @@ const qGroupBasic = questionnaireFactory([
     ]
   }
 ]);
-const qrGroupBasic = qrFactory([
+
+const qrGroupBasic = questionnaireResponseFactory([
   {
     linkId: 'patient-details-group',
     text: 'Patient Details',
     item: [
       {
-        linkId: nameLinkid,
+        linkId: nameLinkId,
 
         answer: [
           {
@@ -82,7 +86,7 @@ const qrGroupBasic = qrFactory([
         ]
       },
       {
-        linkId: ageLinkid,
+        linkId: ageLinkId,
 
         answer: [
           {
@@ -94,16 +98,16 @@ const qrGroupBasic = qrFactory([
   }
 ]);
 
-export const GroupBasic: Story = {
+export const GroupBasic: Story = createStory({
   args: {
     questionnaire: qGroupBasic
   },
   play: async ({ canvasElement }) => {
-    await inputText(canvasElement, nameLinkid, targetName);
-    await inputText(canvasElement, ageLinkid, targetAge);
+    await inputText(canvasElement, nameLinkId, targetName);
+    await inputText(canvasElement, ageLinkId, targetAge);
 
-    const nameResult = await getGroupAnswers(targetGroupLinkId, nameLinkid);
-    const ageResult = await getGroupAnswers(targetGroupLinkId, ageLinkid);
+    const nameResult = await getGroupAnswers(targetGroupLinkId, nameLinkId);
+    const ageResult = await getGroupAnswers(targetGroupLinkId, ageLinkId);
 
     expect(nameResult).toHaveLength(1);
     expect(ageResult).toHaveLength(1);
@@ -125,27 +129,28 @@ export const GroupBasic: Story = {
     // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    const resultNameAfterClear = await getGroupAnswers(targetGroupLinkId, nameLinkid);
-    const resultAgeAfterClear = await getGroupAnswers(targetGroupLinkId, ageLinkid);
+    const resultNameAfterClear = await getGroupAnswers(targetGroupLinkId, nameLinkId);
+    const resultAgeAfterClear = await getGroupAnswers(targetGroupLinkId, ageLinkId);
     expect(resultNameAfterClear).toHaveLength(0);
     expect(resultAgeAfterClear).toHaveLength(0);
 
-    const elementNameAfterClear = await getInputText(canvasElement, nameLinkid);
-    const elementAgeAfterClear = await getInputText(canvasElement, ageLinkid);
+    const elementNameAfterClear = await getInputText(canvasElement, nameLinkId);
+    const elementAgeAfterClear = await getInputText(canvasElement, ageLinkId);
     expect(elementNameAfterClear).toBe('');
     expect(elementAgeAfterClear).toBe('');
   }
-};
-export const GroupBasicResponse: Story = {
+}) as Story;
+
+export const GroupBasicResponse: Story = createStory({
   args: {
     questionnaire: qGroupBasic,
     questionnaireResponse: qrGroupBasic
   },
   play: async ({ canvasElement }) => {
-    const inputName = await getInputText(canvasElement, nameLinkid);
-    const inputAge = await getInputText(canvasElement, ageLinkid);
+    const inputName = await getInputText(canvasElement, nameLinkId);
+    const inputAge = await getInputText(canvasElement, ageLinkId);
 
     expect(inputName).toBe(targetName);
     expect(inputAge).toBe(targetAge.toString());
   }
-};
+}) as Story;

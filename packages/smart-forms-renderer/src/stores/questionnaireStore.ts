@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import { createStore } from 'zustand/vanilla';
 import type {
   Coding,
   Questionnaire,
@@ -23,39 +22,39 @@ import type {
   QuestionnaireResponse,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
-import type { Variables } from '../interfaces/variables.interface';
-import type { LaunchContext } from '../interfaces/populate.interface';
+import type { ComponentType } from 'react';
+import { createStore } from 'zustand/vanilla';
+import type { QItemOverrideComponentProps, SdcUiOverrideComponentProps } from '../interfaces';
+import type { AnswerExpression } from '../interfaces/answerExpression.interface';
+import type { AnswerOptionsToggleExpression } from '../interfaces/answerOptionsToggleExpression.interface';
 import type { CalculatedExpression } from '../interfaces/calculatedExpression.interface';
 import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enableWhen.interface';
-import type { AnswerExpression } from '../interfaces/answerExpression.interface';
-import type { Tabs } from '../interfaces/tab.interface';
+import type { InitialExpression } from '../interfaces/initialExpression.interface';
 import type { Pages } from '../interfaces/page.interface';
+import type { LaunchContext } from '../interfaces/populate.interface';
+import type { Tabs } from '../interfaces/tab.interface';
+import type { TargetConstraint } from '../interfaces/targetConstraint.interface';
+import type { ProcessedValueSet } from '../interfaces/valueSet.interface';
+import type { Variables } from '../interfaces/variables.interface';
+import { processCalculatedExpressions } from '../utils/calculatedExpression';
+import { applyComputedUpdates } from '../utils/computedUpdates';
 import {
   mutateRepeatEnableWhenItemInstances,
   updateEnableWhenItemAnswer
 } from '../utils/enableWhen';
-import { evaluateUpdatedExpressions } from '../utils/fhirpath';
-import {
-  evaluateInitialCalculatedExpressions,
-  initialiseCalculatedExpressionValues
-} from '../utils/calculatedExpression';
-import { createQuestionnaireModel } from '../utils/questionnaireStoreUtils/createQuestionnaireModel';
-import { initialiseFormFromResponse } from '../utils/initialise';
 import { emptyQuestionnaire, emptyResponse } from '../utils/emptyResource';
-import { terminologyServerStore } from './terminologyServerStore';
-import { createSelectors } from './selector';
 import { mutateRepeatEnableWhenExpressionInstances } from '../utils/enableWhenExpression';
-import { questionnaireResponseStore } from './questionnaireResponseStore';
+import { evaluateOtherExpressions } from '../utils/fhirpath';
+import { initialiseFormFromResponse } from '../utils/initialise';
 import { createQuestionnaireResponseItemMap } from '../utils/questionnaireResponseStoreUtils/updatableResponseItems';
 import { insertCompleteAnswerOptionsIntoQuestionnaire } from '../utils/questionnaireStoreUtils/insertAnswerOptions';
-import type { InitialExpression } from '../interfaces/initialExpression.interface';
-import type { QItemOverrideComponentProps, SdcUiOverrideComponentProps } from '../interfaces';
-import type { ComponentType } from 'react';
-import type { TargetConstraint } from '../interfaces/targetConstraint.interface';
 import { readTargetConstraintLocationLinkIds } from '../utils/targetConstraint';
-import type { ProcessedValueSet } from '../interfaces/valueSet.interface';
-import type { AnswerOptionsToggleExpression } from '../interfaces/answerOptionsToggleExpression.interface';
-import { applyComputedUpdates } from '../utils/computedUpdates';
+import { questionnaireResponseStore } from './questionnaireResponseStore';
+import { createSelectors } from './selector';
+import { terminologyServerStore } from './terminologyServerStore';
+import { createQuestionnaireModel } from '../utils/questionnaireStoreUtils/createQuestionnaireModel';
+import { getFirstVisibleTab } from '../utils/tabs';
+import { getFirstVisiblePage } from '../utils/page';
 
 /**
  * QuestionnaireStore properties and methods
@@ -71,6 +70,9 @@ import { applyComputedUpdates } from '../utils/computedUpdates';
  * @property currentPageIndex - Index of the current page
  * @property variables - Questionnaire variables object containing FHIRPath and x-fhir-query variables
  * @property launchContexts - Key-value pair of launch contexts `Record<launch context name, launch context properties>`
+ * @property initialExpressions - Key-value pair of initial expressions `Record<linkId, InitialExpression>`
+ * @property answerExpressions - Key-value pair of answer expressions `Record<linkId, answer expression properties>`
+ * @property calculatedExpressions - Key-value pair of calculated expressions `Record<linkId, array of calculated expression properties>`
  * @property targetConstraints - Key-value pair of target constraints `Record<target constraint key, target constraint properties>`
  * @property targetConstraintLinkIds - Key-value pair of linkIds against target constraint key(s) `Record<linkId, target constraint keys>`
  * @property answerOptionsToggleExpressions - Key-value pair of answer options toggle expressions `Record<linkId, array of answer options toggle expressions>`
@@ -78,13 +80,11 @@ import { applyComputedUpdates } from '../utils/computedUpdates';
  * @property enableWhenLinkedQuestions - Key-value pair of linked questions to enableWhen items `Record<linkId, linkIds of linked questions>`
  * @property enableWhenIsActivated - Flag to turn enableWhen checks on/off
  * @property enableWhenExpressions - EnableWhenExpressions object containing enableWhen expressions
- * @property calculatedExpressions - Key-value pair of calculated expressions `Record<linkId, array of calculated expression properties>`
- * @property answerExpressions - Key-value pair of answer expressions `Record<linkId, answer expression properties>`
  * @property processedValueSets - Key-value pair of (pre-)processed value set codings `Record<valueSetUrl, ProcessedValueSet>`
  * @property cachedValueSetCodings - Key-value pair of cached value set codings `Record<valueSetUrl, codings>`
  * @property fhirPathContext - Key-value pair of evaluated FHIRPath values `Record<variable name, evaluated value(s)>`
  * @property fhirPathTerminologyCache - Key-value pair of cached FHIRPath Terminology results `Record<cacheKey, cached terminology result>`
- * @property populatedContext - Key-value pair of one-off pre-populated FHIRPath values `Record<variable/launchContext/sourceQueries batch name, evaluated value(s)>`
+ * @property additionalContext - Key-value pair of additional/pre-populated FHIRPath values `Record<variable/launchContext/sourceQueries batch name, evaluated value(s)>`
  * @property qItemOverrideComponents - Key-value pair of React component overrides for Questionnaire Items via linkId `Record<linkId, React component>`
  * @property sdcUiOverrideComponents - Key-value pair of React component overrides for SDC UI Controls https://hl7.org/fhir/extensions/ValueSet-questionnaire-item-control.html `Record<SDC UI code, React component>`
  * @property focusedLinkId - LinkId of the currently focused item
@@ -95,14 +95,15 @@ import { applyComputedUpdates } from '../utils/computedUpdates';
  * @property switchPage - Used to switch the current page index
  * @property markTabAsComplete - Used to mark a tab index as complete
  * @property markPageAsComplete - Used to mark a page index as complete
+ * @property resetToFirstVisibleTab - Used to reset the current tab to the first visible tab
+ * @property resetToFirstVisiblePage - Used to reset the current page to the first visible page
  * @property updateEnableWhenItem - Used to update linked enableWhen items by updating a question with a new answer
  * @property mutateRepeatEnableWhenItems - Used to add or remove instances of repeating enableWhen items
  * @property toggleEnableWhenActivation - Used to toggle enableWhen checks on/off
- * @property updateExpressions - Used to update all SDC expressions based on the updated questionnaire response
+ * @property updateExpressions - Used to update all SDC expressions based on the updated questionnaire response, initialUpdate flag is to ensure formChangesHistory is not updated during the first update after form build
  * @property addCodingToCache - Used to add a coding to the cached value set codings
- * @property updatePopulatedProperties - Used to update all SDC expressions based on a pre-populated questionnaire response
  * @property onFocusLinkId - Used to set the focused linkId
- * @property setPopulatedContext - Used to set the populated contexts (launchContext, sourceQueries, x-fhir-query vars) for debugging purposes, and optionally add to the FHIRPath context
+ * @property setAdditionalContext - Optionally used to set additional context information for FHIRPath eval. Useful to pass pre-populated context into the renderer. If you are rebuilding the form on pre-populate, you don't need to use this. pass `additionalContext` directly into buildForm().
  * @property setFormAsReadOnly - Used to set the form as read-only
  *
  * @author Sean Fong
@@ -117,21 +118,21 @@ export interface QuestionnaireStoreType {
   currentPageIndex: number;
   variables: Variables;
   launchContexts: Record<string, LaunchContext>;
+  initialExpressions: Record<string, InitialExpression>;
+  answerExpressions: Record<string, AnswerExpression>;
+  calculatedExpressions: Record<string, CalculatedExpression[]>;
   targetConstraints: Record<string, TargetConstraint>;
   targetConstraintLinkIds: Record<string, string[]>;
-  answerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
   enableWhenItems: EnableWhenItems;
   enableWhenLinkedQuestions: Record<string, string[]>;
   enableWhenIsActivated: boolean;
   enableWhenExpressions: EnableWhenExpressions;
-  calculatedExpressions: Record<string, CalculatedExpression[]>;
-  initialExpressions: Record<string, InitialExpression>;
-  answerExpressions: Record<string, AnswerExpression>;
+  answerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
   processedValueSets: Record<string, ProcessedValueSet>;
   cachedValueSetCodings: Record<string, Coding[]>;
   fhirPathContext: Record<string, any>;
   fhirPathTerminologyCache: Record<string, any>;
-  populatedContext: Record<string, any>;
+  additionalContext: Record<string, any>;
   qItemOverrideComponents: Record<string, ComponentType<QItemOverrideComponentProps>>;
   sdcUiOverrideComponents: Record<string, ComponentType<SdcUiOverrideComponentProps>>;
   focusedLinkId: string;
@@ -139,7 +140,7 @@ export interface QuestionnaireStoreType {
   buildSourceQuestionnaire: (
     questionnaire: Questionnaire,
     questionnaireResponse?: QuestionnaireResponse,
-    additionalVariables?: Record<string, any>,
+    additionalContext?: Record<string, any>,
     terminologyServerUrl?: string,
     readOnly?: boolean,
     qItemOverrideComponents?: Record<string, ComponentType<QItemOverrideComponentProps>>,
@@ -150,6 +151,8 @@ export interface QuestionnaireStoreType {
   switchPage: (newPageIndex: number) => void;
   markTabAsComplete: (tabLinkId: string) => void;
   markPageAsComplete: (pageLinkId: string) => void;
+  resetToFirstVisibleTab: () => void;
+  resetToFirstVisiblePage: () => void;
   updateEnableWhenItem: (
     linkId: string,
     newAnswer: QuestionnaireResponseItemAnswer[] | undefined,
@@ -161,26 +164,20 @@ export interface QuestionnaireStoreType {
     actionType: 'add' | 'remove'
   ) => void;
   toggleEnableWhenActivation: (isActivated: boolean) => void;
-  updateExpressions: (updatedResponse: QuestionnaireResponse) => Promise<void>;
+  updateExpressions: (
+    updatedResponse: QuestionnaireResponse,
+    isInitialUpdate: boolean
+  ) => Promise<void>;
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) => void;
-  updatePopulatedProperties: (
-    populatedResponse: QuestionnaireResponse,
-    populatedContext?: Record<string, any>,
-    persistTabIndex?: boolean
-  ) => Promise<QuestionnaireResponse>;
   onFocusLinkId: (linkId: string) => void;
-  // TODO - to be deprecated, use `additionalVariables` in buildSourceQuestionnaire(), also directly set in updatedPopulatedProperties
-  setPopulatedContext: (
-    newPopulatedContext: Record<string, any>,
-    addToFhirPathContext?: boolean
-  ) => void;
+  setAdditionalContext: (additionalContext: Record<string, any>) => void;
   setFormAsReadOnly: (readOnly: boolean) => void;
 }
 
 /**
  * Questionnaire state management store which contains all properties and methods to manage the state of the questionnaire.
  * This is the vanilla version of the store which can be used in non-React environments.
- * @see QuestionnaireStoreType for available properties and methods.
+ * @see {@link QuestionnaireStoreType} for available properties and methods.
  *
  * @author Sean Fong
  */
@@ -208,7 +205,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   cachedValueSetCodings: {},
   fhirPathContext: {},
   fhirPathTerminologyCache: {},
-  populatedContext: {},
+  additionalContext: {},
   qItemOverrideComponents: {},
   sdcUiOverrideComponents: {},
   focusedLinkId: '',
@@ -216,7 +213,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   buildSourceQuestionnaire: async (
     questionnaire,
     questionnaireResponse = structuredClone(emptyResponse),
-    additionalVariables = {},
+    additionalContext = {},
     terminologyServerUrl = terminologyServerStore.getState().url,
     readOnly = false,
     qItemOverrideComponents = {},
@@ -229,20 +226,6 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       questionnaire,
       questionnaireModel.answerOptions
     );
-
-    // If existing fhirPathContext is empty, use the one from the questionnaire model
-    // Mostly existing fhirPathContext will be empty, but in some cases it may not be e.g. after pre-population
-    let fhirPathContext = get().fhirPathContext ?? questionnaireModel.fhirPathContext;
-
-    // TODO reminder to have documentation when upgrading to 1.0.0 - 05/06/2025
-    // TODO This is something new - the definition of additionalVariables is now <"name", "value">, which allows it to be injected into the renderer's fhirPathContext.
-    // TODO as an example, populatedContext from a pre-pop module can now be inserted into the renderer for further use.
-    fhirPathContext = {
-      ...fhirPathContext,
-      ...additionalVariables
-    };
-    const fhirPathTerminologyCache =
-      get().fhirPathTerminologyCache ?? questionnaireModel.fhirPathTerminologyCache;
 
     // Initialise form with questionnaire response and properties in questionnaire model
     const {
@@ -269,8 +252,8 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       processedValueSets: questionnaireModel.processedValueSets,
       tabs: questionnaireModel.tabs,
       pages: questionnaireModel.pages,
-      fhirPathContext: fhirPathContext,
-      fhirPathTerminologyCache: fhirPathTerminologyCache,
+      fhirPathContext: questionnaireModel.fhirPathContext,
+      fhirPathTerminologyCache: questionnaireModel.fhirPathTerminologyCache,
       terminologyServerUrl: terminologyServerUrl
     });
 
@@ -279,6 +262,8 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       questionnaire,
       initialTargetConstraints
     );
+
+    const finalFhirPathContext = { ...updatedFhirPathContext, ...additionalContext };
 
     set({
       sourceQuestionnaire: questionnaire,
@@ -301,8 +286,9 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       answerExpressions: questionnaireModel.answerExpressions,
       processedValueSets: initialProcessedValueSets,
       cachedValueSetCodings: questionnaireModel.cachedValueSetCodings,
-      fhirPathContext: updatedFhirPathContext,
+      fhirPathContext: finalFhirPathContext,
       fhirPathTerminologyCache: updatedFhirPathTerminologyCache,
+      additionalContext: additionalContext,
       qItemOverrideComponents: qItemOverrideComponents,
       sdcUiOverrideComponents: sdcUiOverrideComponents,
       readOnly: readOnly
@@ -353,6 +339,27 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
         [pageLinkId]: { ...pages[pageLinkId], isComplete: !pages[pageLinkId].isComplete }
       }
     }));
+  },
+  resetToFirstVisibleTab: () => {
+    const tabs = get().tabs;
+    const enableWhenItems = get().enableWhenItems;
+    const enableWhenExpressions = get().enableWhenExpressions;
+    const firstVisibleTab =
+      Object.keys(tabs).length > 0
+        ? getFirstVisibleTab(tabs, enableWhenItems, enableWhenExpressions)
+        : 0;
+
+    set(() => ({ currentTabIndex: firstVisibleTab }));
+  },
+  resetToFirstVisiblePage: () => {
+    const pages = get().pages;
+    const enableWhenItems = get().enableWhenItems;
+    const enableWhenExpressions = get().enableWhenExpressions;
+    const firstVisiblePage =
+      Object.keys(pages).length > 0
+        ? getFirstVisiblePage(pages, enableWhenItems, enableWhenExpressions)
+        : 0;
+    set(() => ({ currentPageIndex: firstVisiblePage }));
   },
   updateEnableWhenItem: (
     linkId: string,
@@ -418,73 +425,176 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   },
   toggleEnableWhenActivation: (isActivated: boolean) =>
     set(() => ({ enableWhenIsActivated: isActivated })),
-  updateExpressions: async (updatedResponse: QuestionnaireResponse) => {
-    const sourceQuestionnaire = get().sourceQuestionnaire;
+  updateExpressions: async (updatedResponse: QuestionnaireResponse, isInitialUpdate: boolean) => {
+    /* Expression evaluation and application workflow
+    1. Evaluate calculatedExpressions to update answers in the QuestionnaireResponse.
+       - This must happen first, as these answers may affect subsequent expressions.
+       - Call updateResponse() once before proceeding to the next steps.
+
+    2. Evaluate other expressions using the QR with updated calculated answers.
+       - Target constraints
+       - Enable when expressions
+       - Answer options toggle expressions
+       - Dynamic valueSets (e.g. parameterised valueSets)
+
+    3. Apply computed updates from answerOptionsToggleExpressions and updated Dynamic ValueSets into the QuestionnaireResponse.
+
+    4. Re-run calculatedExpressions as a final step to ensure all calculations are up-to-date, incorporating any toggled options or dynamic value set changes.
+    5. Update store state based on the expressions that changed
+    */
+
+    const {
+      sourceQuestionnaire,
+      itemMap,
+      itemPreferredTerminologyServers,
+      variables,
+      targetConstraints,
+      answerOptionsToggleExpressions,
+      enableWhenExpressions,
+      processedValueSets,
+      calculatedExpressions,
+      fhirPathContext,
+      fhirPathTerminologyCache
+    } = get();
     const updateResponse = questionnaireResponseStore.getState().updateResponse;
     const validateResponse = questionnaireResponseStore.getState().validateResponse;
-    const updatedResponseItemMap = createQuestionnaireResponseItemMap(
-      sourceQuestionnaire,
-      updatedResponse
-    );
-    const {
-      isUpdated,
-      updatedTargetConstraints,
-      updatedAnswerOptionsToggleExpressions,
-      updatedEnableWhenExpressions,
-      updatedCalculatedExpressions,
-      updatedProcessedValueSets,
-      updatedFhirPathContext,
-      fhirPathTerminologyCache,
-      computedQRItemUpdates
-    } = await evaluateUpdatedExpressions({
-      updatedResponse,
-      updatedResponseItemMap,
-      targetConstraints: get().targetConstraints,
-      answerOptionsToggleExpressions: get().answerOptionsToggleExpressions,
-      enableWhenExpressions: get().enableWhenExpressions,
-      calculatedExpressions: get().calculatedExpressions,
-      processedValueSets: get().processedValueSets,
-      variables: get().variables,
-      existingFhirPathContext: get().fhirPathContext,
-      fhirPathTerminologyCache: get().fhirPathTerminologyCache,
-      terminologyServerUrl: terminologyServerStore.getState().url
-    });
+    const defaultTerminologyServerUrl = terminologyServerStore.getState().url;
 
-    /**
-     * Applies computed updates to the QR before updating the store.
-     * Before this, we were updating the store before applying the computed updates. This may cause downstream useEffects to use a stale QR.
-     * By applying the computed updates first, we ensure that the QR is up-to-date when downstream useEffects are fired.
-     */
-
-    let lastUpdatedResponse = structuredClone(updatedResponse);
-    if (Object.keys(computedQRItemUpdates).length > 0) {
-      lastUpdatedResponse = applyComputedUpdates(
-        get().sourceQuestionnaire,
-        updatedResponse,
-        computedQRItemUpdates
-      );
-      updateResponse(lastUpdatedResponse, 'async');
-    }
-
-    if (isUpdated) {
+    // Helper function to extract common state update logic
+    function updateStoreState(
+      updatedResponse: QuestionnaireResponse,
+      calculatedExpressions: Record<string, CalculatedExpression[]>,
+      fhirPathContext: Record<string, unknown>,
+      fhirPathTerminologyCache: Record<string, unknown>,
+      otherExpressions?: {
+        targetConstraints?: Record<string, TargetConstraint>;
+        enableWhenExpressions?: EnableWhenExpressions;
+        answerOptionsToggleExpressions?: Record<string, AnswerOptionsToggleExpression[]>;
+        processedValueSets?: Record<string, ProcessedValueSet>;
+      }
+    ) {
+      // Update QuestionnaireStore state
       set(() => ({
-        targetConstraints: updatedTargetConstraints,
-        answerOptionsToggleExpressions: updatedAnswerOptionsToggleExpressions,
-        enableWhenExpressions: updatedEnableWhenExpressions,
-        calculatedExpressions: updatedCalculatedExpressions,
-        processedValueSets: updatedProcessedValueSets,
-        fhirPathContext: updatedFhirPathContext,
-        fhirPathTerminologyCache: fhirPathTerminologyCache
+        calculatedExpressions,
+        fhirPathContext,
+        fhirPathTerminologyCache,
+        ...(otherExpressions?.targetConstraints && {
+          targetConstraints: otherExpressions.targetConstraints
+        }),
+        ...(otherExpressions?.enableWhenExpressions && {
+          enableWhenExpressions: otherExpressions.enableWhenExpressions
+        }),
+        ...(otherExpressions?.answerOptionsToggleExpressions && {
+          answerOptionsToggleExpressions: otherExpressions.answerOptionsToggleExpressions
+        }),
+        ...(otherExpressions?.processedValueSets && {
+          processedValueSets: otherExpressions.processedValueSets
+        })
       }));
 
-      // Besides setting QuestionnaireStore state, we also need to update `invalidItems` and `responseIsValid` in QuestionnaireResponseStore
-      validateResponse(sourceQuestionnaire, lastUpdatedResponse); // Validate the updated response asynchronously
+      // Final validation
+      validateResponse(sourceQuestionnaire, updatedResponse);
     }
 
-    set(() => ({
-      fhirPathContext: updatedFhirPathContext,
-      fhirPathTerminologyCache: fhirPathTerminologyCache
-    }));
+    // Step 1: Process calculated expressions first
+    let {
+      updatedResponse: lastUpdatedResponse,
+      updatedCalculatedExpressions: updatedCalculatedExpressions
+    } = await processCalculatedExpressions(
+      sourceQuestionnaire,
+      updatedResponse,
+      itemMap,
+      calculatedExpressions,
+      variables,
+      fhirPathContext,
+      fhirPathTerminologyCache,
+      itemPreferredTerminologyServers,
+      defaultTerminologyServerUrl
+    );
+
+    // Perform an immediate QR update first, then process other expressions asynchronously
+    updateResponse(lastUpdatedResponse, isInitialUpdate);
+
+    // Step 2: Evaluate other expressions
+    const updatedResponseItemMap = createQuestionnaireResponseItemMap(
+      sourceQuestionnaire,
+      lastUpdatedResponse
+    );
+    const {
+      updatedFhirPathContext,
+      updatedFhirPathTerminologyCache,
+      targetConstraintsUpdate,
+      enableWhenExpressionsUpdate,
+      answerOptionsToggleExpressionsUpdate,
+      processedValueSetsUpdate,
+      computedQRItemUpdates
+    } = await evaluateOtherExpressions(
+      lastUpdatedResponse,
+      updatedResponseItemMap,
+      variables,
+      fhirPathContext,
+      fhirPathTerminologyCache,
+      targetConstraints,
+      enableWhenExpressions,
+      answerOptionsToggleExpressions,
+      processedValueSets,
+      defaultTerminologyServerUrl
+    );
+
+    /* Step 3 & 4: Handle computed updates and re-run calculations if needed */
+    if (Object.keys(computedQRItemUpdates).length > 0) {
+      lastUpdatedResponse = applyComputedUpdates(
+        sourceQuestionnaire,
+        lastUpdatedResponse,
+        computedQRItemUpdates
+      );
+
+      // Re-run calculated expressions with the updated response
+      const finalCalculatedResult = await processCalculatedExpressions(
+        sourceQuestionnaire,
+        lastUpdatedResponse,
+        itemMap,
+        updatedCalculatedExpressions,
+        variables,
+        updatedFhirPathContext,
+        updatedFhirPathTerminologyCache,
+        itemPreferredTerminologyServers,
+        defaultTerminologyServerUrl
+      );
+
+      lastUpdatedResponse = finalCalculatedResult.updatedResponse;
+      updatedCalculatedExpressions = finalCalculatedResult.updatedCalculatedExpressions;
+      updateResponse(lastUpdatedResponse, isInitialUpdate);
+    }
+
+    /* Step 5: Update store state based on the expressions that changed */
+    const otherExpressionsToUpdate: Partial<{
+      targetConstraints: Record<string, TargetConstraint>;
+      enableWhenExpressions: EnableWhenExpressions;
+      answerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
+      processedValueSets: Record<string, ProcessedValueSet>;
+    }> = {};
+    if (targetConstraintsUpdate.isUpdated) {
+      otherExpressionsToUpdate.targetConstraints = targetConstraintsUpdate.value;
+    }
+    if (enableWhenExpressionsUpdate.isUpdated) {
+      otherExpressionsToUpdate.enableWhenExpressions = enableWhenExpressionsUpdate.value;
+    }
+    if (answerOptionsToggleExpressionsUpdate.isUpdated) {
+      otherExpressionsToUpdate.answerOptionsToggleExpressions =
+        answerOptionsToggleExpressionsUpdate.value;
+    }
+    if (processedValueSetsUpdate.isUpdated) {
+      otherExpressionsToUpdate.processedValueSets = processedValueSetsUpdate.value;
+    }
+
+    updateStoreState(
+      lastUpdatedResponse,
+      updatedCalculatedExpressions,
+      updatedFhirPathContext,
+      updatedFhirPathTerminologyCache,
+      Object.keys(otherExpressionsToUpdate).length > 0 ? otherExpressionsToUpdate : undefined
+    );
   },
   addCodingToCache: (valueSetUrl: string, codings: Coding[]) =>
     set(() => ({
@@ -493,101 +603,15 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
         [valueSetUrl]: codings
       }
     })),
-  updatePopulatedProperties: async (
-    populatedResponse: QuestionnaireResponse,
-    populatedContext?: Record<string, any>,
-    persistTabIndex?: boolean,
-    persistPageIndex?: boolean
-  ) => {
-    const sourceQuestionnaire = get().sourceQuestionnaire;
-    const fhirPathContext = { ...get().fhirPathContext, ...(populatedContext ?? {}) };
-    const initialResponseItemMap = createQuestionnaireResponseItemMap(
-      sourceQuestionnaire,
-      populatedResponse
-    );
-
-    const evaluateInitialCalculatedExpressionsResult = await evaluateInitialCalculatedExpressions({
-      initialResponse: populatedResponse,
-      initialResponseItemMap: initialResponseItemMap,
-      calculatedExpressions: get().calculatedExpressions,
-      variables: get().variables,
-      existingFhirPathContext: fhirPathContext,
-      fhirPathTerminologyCache: get().fhirPathTerminologyCache,
-      terminologyServerUrl: terminologyServerStore.getState().url
-    });
-    const { initialCalculatedExpressions } = evaluateInitialCalculatedExpressionsResult;
-    let updatedFhirPathContext = evaluateInitialCalculatedExpressionsResult.updatedFhirPathContext;
-    let fhirPathTerminologyCache =
-      evaluateInitialCalculatedExpressionsResult.fhirPathTerminologyCache;
-
-    const updatedResponse = initialiseCalculatedExpressionValues(
-      sourceQuestionnaire,
-      populatedResponse,
-      initialCalculatedExpressions
-    );
-
-    const {
-      initialTargetConstraints,
-      initialEnableWhenItems,
-      initialEnableWhenLinkedQuestions,
-      initialEnableWhenExpressions,
-      initialAnswerOptionsToggleExpressions,
-      firstVisibleTab,
-      firstVisiblePage
-    } = await initialiseFormFromResponse({
-      sourceQuestionnaire,
-      questionnaireResponse: updatedResponse,
-      targetConstraints: get().targetConstraints,
-      enableWhenItems: get().enableWhenItems,
-      enableWhenExpressions: get().enableWhenExpressions,
-      calculatedExpressions: initialCalculatedExpressions,
-      answerOptionsToggleExpressions: get().answerOptionsToggleExpressions,
-      variables: get().variables,
-      processedValueSets: get().processedValueSets,
-      tabs: get().tabs,
-      pages: get().pages,
-      fhirPathContext: updatedFhirPathContext,
-      fhirPathTerminologyCache: fhirPathTerminologyCache,
-      terminologyServerUrl: terminologyServerStore.getState().url
-    });
-    updatedFhirPathContext = evaluateInitialCalculatedExpressionsResult.updatedFhirPathContext;
-    fhirPathTerminologyCache = evaluateInitialCalculatedExpressionsResult.fhirPathTerminologyCache;
-
-    set(() => ({
-      targetConstraints: initialTargetConstraints,
-      answerOptionsToggleExpressions: initialAnswerOptionsToggleExpressions,
-      enableWhenItems: initialEnableWhenItems,
-      enableWhenLinkedQuestions: initialEnableWhenLinkedQuestions,
-      enableWhenExpressions: initialEnableWhenExpressions,
-      calculatedExpressions: initialCalculatedExpressions,
-      currentTabIndex: persistTabIndex ? get().currentTabIndex : firstVisibleTab,
-      currentPageIndex: persistPageIndex ? get().currentPageIndex : firstVisiblePage,
-      fhirPathContext: updatedFhirPathContext,
-      fhirPathTerminologyCache: fhirPathTerminologyCache,
-      populatedContext: populatedContext ?? get().populatedContext
-    }));
-
-    return updatedResponse;
-  },
   onFocusLinkId: (linkId: string) =>
     set(() => ({
       focusedLinkId: linkId
     })),
-  setPopulatedContext: (
-    newPopulatedContext: Record<string, any>,
-    addToFhirPathContext?: boolean
-  ) => {
-    if (addToFhirPathContext) {
-      const newFhirPathContext = { ...get().fhirPathContext, ...newPopulatedContext };
-      set(() => ({
-        populatedContext: newPopulatedContext,
-        fhirPathContext: newFhirPathContext
-      }));
-      return;
-    }
-
+  setAdditionalContext: (additionalContext: Record<string, any>) => {
+    const newFhirPathContext = { ...get().fhirPathContext, ...additionalContext };
     set(() => ({
-      populatedContext: newPopulatedContext
+      additionalContext: additionalContext,
+      fhirPathContext: newFhirPathContext
     }));
   },
   setFormAsReadOnly: (readOnly: boolean) =>
@@ -599,8 +623,8 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
 /**
  * Questionnaire state management store which contains all properties and methods to manage the state of the questionnaire.
  * This is the React version of the store which can be used as React hooks in React functional components.
- * @see QuestionnaireStoreType for available properties and methods.
- * @see questionnaireStore for the vanilla store.
+ * @see {@link QuestionnaireStoreType} for available properties and methods.
+ * @see {@link questionnaireStore} for the vanilla store.
  *
  * @author Sean Fong
  */

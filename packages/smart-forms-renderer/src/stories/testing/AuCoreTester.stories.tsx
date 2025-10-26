@@ -38,6 +38,7 @@ import {
   QAuCorePractitionerRole,
   QAuCoreProcedure
 } from '../assets/questionnaires/QAuCoreTesting';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -52,145 +53,145 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
-export const AuCoreAllergyIntolerance: Story = {
+export const AuCoreAllergyIntolerance: Story = createStory({
   args: {
     questionnaire: QAuCoreAllergyIntolerance,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
   }
-};
+}) as Story;
 
-export const AuCoreCondition: Story = {
+export const AuCoreCondition: Story = createStory({
   args: {
     questionnaire: QAuCoreCondition,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
   }
-};
+}) as Story;
 
-export const AuCoreEncounter: Story = {
+export const AuCoreEncounter: Story = createStory({
   args: {
     questionnaire: QAuCoreEncounter,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
   }
-};
+}) as Story;
 
-export const AuCoreImmunization: Story = {
+export const AuCoreImmunization: Story = createStory({
   args: {
     questionnaire: QAuCoreImmunization,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
   }
-};
+}) as Story;
 
-export const AuCoreMedicationRequest: Story = {
+export const AuCoreMedicationRequest: Story = createStory({
   args: {
     questionnaire: QAuCoreMedicationRequest,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
   }
-};
+}) as Story;
 
-export const AuCorePatient: Story = {
+export const AuCorePatient: Story = createStory({
   args: {
     questionnaire: QAuCorePatient,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
   }
-};
+}) as Story;
 
-export const AuCorePractitioner: Story = {
+export const AuCorePractitioner: Story = createStory({
   args: {
     questionnaire: QAuCorePractitioner,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
   }
-};
+}) as Story;
 
-export const AuCorePractitionerRole: Story = {
+export const AuCorePractitionerRole: Story = createStory({
   args: {
     questionnaire: QAuCorePractitionerRole,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
   }
-};
+}) as Story;
 
-export const AuCoreProcedure: Story = {
+export const AuCoreProcedure: Story = createStory({
   args: {
     questionnaire: QAuCoreProcedure,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
   }
-};
+}) as Story;
 
-export const AuCoreObservationBP: Story = {
+export const AuCoreObservationBP: Story = createStory({
   args: {
     questionnaire: QAuCoreObservationBP,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
   }
-};
+}) as Story;
 
-export const AuCoreObservationBodyHeight: Story = {
+export const AuCoreObservationBodyHeight: Story = createStory({
   args: {
     questionnaire: QAuCoreObservationBodyHeight,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
   }
-};
+}) as Story;
 
-export const AuCoreObservationBodyWeight: Story = {
+export const AuCoreObservationBodyWeight: Story = createStory({
   args: {
     questionnaire: QAuCoreObservationBodyWeight,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
   }
-};
+}) as Story;
 
-export const AuCoreObservationHeartRate: Story = {
+export const AuCoreObservationHeartRate: Story = createStory({
   args: {
     questionnaire: QAuCoreObservationHeartRate,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
   }
-};
-export const AuCoreObservationRespirationRate: Story = {
+}) as Story;
+export const AuCoreObservationRespirationRate: Story = createStory({
   args: {
     questionnaire: QAuCoreObservationRespirationRate,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
   }
-};
+}) as Story;
 
-export const AuCoreObservationSmokingStatus: Story = {
+export const AuCoreObservationSmokingStatus: Story = createStory({
   args: {
     questionnaire: QAuCoreObservationSmokingStatus,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
   }
-};
+}) as Story;
 
-export const AuCoreObservationWaistCircumference: Story = {
+export const AuCoreObservationWaistCircumference: Story = createStory({
   args: {
     questionnaire: QAuCoreObservationWaistCircumference,
     fhirClient: mockFhirClient,
     patient: patSmartForm,
     user: pracPrimaryPeter
   }
-};
+}) as Story;

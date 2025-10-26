@@ -18,7 +18,6 @@
 import React, { useMemo } from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
-  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentStylesAttribute,
   PropsWithQrItemChangeHandler
@@ -30,13 +29,10 @@ import { getQrItemsIndex, mapQItemsIndex } from '../../../utils/mapItem';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import useHidden from '../../../hooks/useHidden';
-import { extendItemPath } from '../../../utils/itemPath';
-import type { ItemPath } from '../../../interfaces/itemPath.interface';
 import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
 
 interface GridRowProps
   extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
@@ -49,7 +45,6 @@ function GridRow(props: GridRowProps) {
   const {
     qItem,
     qrItem,
-    itemPath,
     columnHeaderLabels,
     calculatedColumnWidths,
     parentIsReadOnly,
@@ -75,13 +70,10 @@ function GridRow(props: GridRowProps) {
   // Add textAlign center style to all grid cells and pass it as parentStyles to the next item
   const gridCellStyles = { ...parentStyles, textAlign: 'center' };
 
-  function handleQrRowItemChange(
-    newQrRowItem: QuestionnaireResponseItem,
-    targetItemPath?: ItemPath
-  ) {
+  function handleQrRowItemChange(newQrRowItem: QuestionnaireResponseItem) {
     const qrRow: QuestionnaireResponseItem = { ...row };
     updateQrItemsInGroup(newQrRowItem, null, qrRow, qItemsIndexMap);
-    onQrItemChange(qrRow, targetItemPath);
+    onQrItemChange(qrRow);
   }
 
   const qrItemsByIndex = getQrItemsIndex(rowQItems, rowQrItems, qItemsIndexMap);
@@ -125,7 +117,6 @@ function GridRow(props: GridRowProps) {
               <SingleItem
                 qItem={cellQItem}
                 qrItem={cellQrItem ?? null}
-                itemPath={extendItemPath(itemPath, cellQItem.linkId)}
                 isRepeated={true}
                 isTabled={true}
                 groupCardElevation={1}

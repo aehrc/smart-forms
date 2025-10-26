@@ -1,6 +1,6 @@
 # Function: GridGroup()
 
-> **GridGroup**(`props`): `null` \| `Element`
+> **GridGroup**(`props`): `Element` \| `null`
 
 Main component to render a Group Grid (grid) Questionnaire item.
 
@@ -12,7 +12,7 @@ Main component to render a Group Grid (grid) Questionnaire item.
 
 ## Returns
 
-`null` \| `Element`
+`Element` \| `null`
 
 ## See
 

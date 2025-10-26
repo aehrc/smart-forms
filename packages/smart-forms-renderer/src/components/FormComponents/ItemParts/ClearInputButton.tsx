@@ -19,8 +19,7 @@ import React from 'react';
 import Tooltip from '@mui/material/Tooltip';
 import Button from '@mui/material/Button';
 import { grey } from '@mui/material/colors';
-import Fade from '@mui/material/Fade';
-import { useRendererStylingStore } from '../../../stores';
+import { useRendererConfigStore } from '../../../stores';
 
 interface ClearInputButtonProps {
   buttonShown: boolean;
@@ -31,27 +30,29 @@ interface ClearInputButtonProps {
 function ClearInputButton(props: ClearInputButtonProps) {
   const { buttonShown, readOnly, onClear } = props;
 
-  const hideClearButton = useRendererStylingStore.use.hideClearButton();
+  const hideClearButton = useRendererConfigStore.use.hideClearButton();
 
   // If "hideClearButton" config is true OR if item.readOnly is true, do not render button
   if (hideClearButton || readOnly) {
     return null;
   }
 
+  if (!buttonShown) {
+    return;
+  }
+
   return (
-    <Fade in={buttonShown} timeout={100}>
-      <Tooltip role="button" title="Clear">
-        <Button
-          aria-label="Clear"
-          sx={{
-            color: grey['500'],
-            '&:hover': { backgroundColor: grey['200'] }
-          }}
-          onClick={onClear}>
-          Clear
-        </Button>
-      </Tooltip>
-    </Fade>
+    <Tooltip role="button" title="Clear">
+      <Button
+        aria-label="Clear"
+        sx={{
+          color: grey['500'],
+          '&:hover': { backgroundColor: grey['200'] }
+        }}
+        onClick={onClear}>
+        Clear
+      </Button>
+    </Tooltip>
   );
 }
 

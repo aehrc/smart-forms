@@ -15,15 +15,16 @@
  * limitations under the License.
  */
 
-import { describe, expect, test, jest } from '@jest/globals';
+import { describe, expect } from '@jest/globals';
 import {
-  evaluateInitialAnswerOptionsToggleExpressions,
-  evaluateAnswerOptionsToggleExpressions
+  evaluateAnswerOptionsToggleExpressions,
+  evaluateInitialAnswerOptionsToggleExpressions
 } from '../utils/answerOptionsToggleExpressions';
 import type { AnswerOptionsToggleExpression } from '../interfaces/answerOptionsToggleExpression.interface';
 
 // Mock dependencies
 jest.mock('../utils/fhirpath', () => ({
+  ...jest.requireActual('../utils/fhirpath'),
   createFhirPathContext: jest.fn(() =>
     Promise.resolve({
       fhirPathContext: { mockContext: true },
@@ -254,7 +255,7 @@ describe('answerOptionsToggleExpressions utils', () => {
 
       const result = await evaluateInitialAnswerOptionsToggleExpressions(params);
 
-      expect(result.fhirPathTerminologyCache['"async expression"']).toEqual([true]);
+      expect(result.fhirPathTerminologyCache['async expression']).toEqual([true]);
     });
 
     it('should handle evaluation errors gracefully', async () => {
@@ -330,7 +331,7 @@ describe('answerOptionsToggleExpressions utils', () => {
         'http://test.com'
       );
 
-      expect(result.answerOptionsToggleExpressionsIsUpdated).toBe(true);
+      expect(result.isUpdated).toBe(true);
       expect(result.updatedAnswerOptionsToggleExpressions).toBeDefined();
       expect(result.computedNewAnswers).toBeDefined();
     });
@@ -352,12 +353,12 @@ describe('answerOptionsToggleExpressions utils', () => {
 
       const result = await evaluateAnswerOptionsToggleExpressions(
         { mockContext: true },
-        { '"cached expression"': [true] },
+        { 'cached expression': [true] },
         mockAnswerOptionsToggleExpressions,
         'http://test.com'
       );
 
-      expect(result.answerOptionsToggleExpressionsIsUpdated).toBe(false);
+      expect(result.isUpdated).toBe(false);
     });
 
     it('should handle evaluation errors gracefully', async () => {

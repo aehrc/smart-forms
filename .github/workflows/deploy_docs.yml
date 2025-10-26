@@ -2,8 +2,8 @@ name: Smart Forms Docs + Storybook Deployment Workflow
 
 on:
   push:
-    # Only run this workflow when changes are pushed to the main branch
-    branches: ['main']
+    # Only run this workflow when changes are pushed to the main and dev branch
+    branches: ['main', 'dev']
 
 permissions:
   contents: read
@@ -19,10 +19,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Use Node.js 20.x
+      - name: Use Node.js 20.18
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 20.18
           cache: npm
 
       - name: Configure AWS credentials
@@ -34,11 +34,23 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Build workspace packages (monorepo dependencies)
+        run: |
+          npm run build -w packages/sdc-assemble
+          npm run build -w packages/sdc-populate
+          npm run build -w packages/sdc-template-extract
+          npm run build -w packages/smart-forms-renderer
+
       - name: Build documentation website
         run: npm run build -w documentation
 
       - name: Upload static Docusaurus site to S3
-        run: aws s3 sync documentation/build s3://smart-forms-docs/docs --cache-control no-cache
+        run: |
+          aws s3 sync documentation/build s3://smart-forms-docs/docs \
+            --cache-control "no-cache, no-store, must-revalidate" \
+            --expires 0 \
+            --exact-timestamps \
+            --delete
 
   deploy-storybook-s3:
     name: Deploy Storybook to S3
@@ -67,8 +79,21 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Build workspace packages (monorepo dependencies)
+        run: |
+          npm run build -w packages/sdc-assemble
+          npm run build -w packages/sdc-populate
+          npm run build -w packages/sdc-template-extract
+
       - name: Build application
+        env:
+          CI: false # Turn off CI for deploying storybook as this will trigger the "test" version
         run: npm run build-storybook -w packages/smart-forms-renderer
 
       - name: Upload static Storybook site to S3
-        run: aws s3 sync packages/smart-forms-renderer/storybook-static s3://smart-forms-storybook/storybook
+        run: |
+          aws s3 sync packages/smart-forms-renderer/storybook-static s3://smart-forms-storybook/storybook \
+            --cache-control "no-cache, no-store, must-revalidate" \
+            --expires 0 \
+            --exact-timestamps \
+            --delete

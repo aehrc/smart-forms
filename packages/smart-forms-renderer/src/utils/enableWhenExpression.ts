@@ -16,7 +16,12 @@
  */
 
 import type { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
-import { createFhirPathContext, handleFhirPathResult } from './fhirpath';
+import {
+  cacheTerminologyResult,
+  createFhirPathContext,
+  handleFhirPathResult,
+  isExpressionCached
+} from './fhirpath';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import type {
@@ -104,8 +109,7 @@ async function evaluateEnableWhenSingleExpressions(
     const initialValue = enableWhenSingleExpressions[linkId].isEnabled;
     const expression = enableWhenSingleExpressions[linkId].expression;
 
-    const cacheKey = JSON.stringify(expression); // Use expression as cache key
-    if (fhirPathTerminologyCache[cacheKey]) {
+    if (isExpressionCached(expression, fhirPathTerminologyCache)) {
       continue;
     }
 
@@ -124,7 +128,7 @@ async function evaluateEnableWhenSingleExpressions(
 
       // If fhirPathResult is an async terminology call, cache the result
       if (fhirPathResult instanceof Promise) {
-        fhirPathTerminologyCache[cacheKey] = result;
+        cacheTerminologyResult(expression, result, fhirPathTerminologyCache);
       }
 
       // Update enableWhenExpressions if length of result array > 0
@@ -291,7 +295,7 @@ export async function evaluateEnableWhenExpressions(
   enableWhenExpressions: EnableWhenExpressions,
   terminologyServerUrl: string
 ): Promise<{
-  enableWhenExpsIsUpdated: boolean;
+  isUpdated: boolean;
   updatedEnableWhenExpressions: EnableWhenExpressions;
 }> {
   const updatedEnableWhenExpressions: EnableWhenExpressions = {
@@ -315,7 +319,7 @@ export async function evaluateEnableWhenExpressions(
     updatedEnableWhenSingleExpressions.isUpdated || updatedEnableWhenRepeatExpressions.isUpdated;
 
   return {
-    enableWhenExpsIsUpdated: isUpdated,
+    isUpdated: isUpdated,
     updatedEnableWhenExpressions: {
       singleExpressions: updatedEnableWhenSingleExpressions.updatedExpressions,
       repeatExpressions: updatedEnableWhenRepeatExpressions.updatedExpressions

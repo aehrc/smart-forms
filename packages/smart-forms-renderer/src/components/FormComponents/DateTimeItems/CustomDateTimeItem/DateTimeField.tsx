@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
+import Stack from '@mui/material/Stack';
 import type { Dispatch, SetStateAction } from 'react';
-import type { PropsWithIsTabledRequiredAttribute } from '../../../../interfaces/renderProps.interface';
+import type { PropsWithIsTabledAttribute } from '../../../../interfaces/renderProps.interface';
 import CustomDateField from '../CustomDateItem/CustomDateField';
 import CustomTimeField from './CustomTimeField';
-import Stack from '@mui/material/Stack';
 
-interface DateTimeFieldProps extends PropsWithIsTabledRequiredAttribute {
+interface DateTimeFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
   itemType: string;
   itemText: string | undefined;
@@ -38,12 +38,9 @@ interface DateTimeFieldProps extends PropsWithIsTabledRequiredAttribute {
   readOnly: boolean;
   calcExpUpdated: boolean;
   onDateInputChange: (newDateInput: string) => void;
-  onDateBlur: () => void;
   onSelectDate: (selectedDate: string) => void;
   setDateFocused: Dispatch<SetStateAction<boolean>>;
   onTimeInputChange: (newTimeInput: string, newPeriodInput: string) => void;
-  onTimeBlur: () => void;
-  showFeedback: boolean;
 }
 
 function DateTimeField(props: DateTimeFieldProps) {
@@ -65,12 +62,9 @@ function DateTimeField(props: DateTimeFieldProps) {
     calcExpUpdated,
     isTabled,
     onDateInputChange,
-    onDateBlur,
     onSelectDate,
     setDateFocused,
-    onTimeInputChange,
-    onTimeBlur,
-    showFeedback
+    onTimeInputChange
   } = props;
 
   return (
@@ -81,7 +75,7 @@ function DateTimeField(props: DateTimeFieldProps) {
         itemText={itemText}
         valueDate={displayDate}
         input={dateInput}
-        feedback={showFeedback ? (dateFeedback ?? '') : ''}
+        feedback={dateFeedback ?? ''}
         isFocused={dateFocused}
         displayPrompt={displayPrompt}
         entryFormat={entryFormat}
@@ -91,7 +85,6 @@ function DateTimeField(props: DateTimeFieldProps) {
         isTabled={isTabled}
         setFocused={setDateFocused}
         onInputChange={onDateInputChange}
-        onDateBlur={onDateBlur}
         onSelectDate={onSelectDate}
       />
       <CustomTimeField
@@ -100,7 +93,7 @@ function DateTimeField(props: DateTimeFieldProps) {
         timeInput={timeInput}
         periodInput={periodInput}
         is24HourNotation={is24HourNotation}
-        feedback={showFeedback ? (timeFeedback ?? '') : ''}
+        feedback={timeFeedback ?? ''}
         displayPrompt={displayPrompt}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
@@ -108,7 +101,6 @@ function DateTimeField(props: DateTimeFieldProps) {
         isTabled={isTabled}
         onTimeInputChange={(newTimeInput) => onTimeInputChange(newTimeInput, periodInput)}
         onPeriodChange={(newPeriodInput) => onTimeInputChange(timeInput, newPeriodInput)}
-        onTimeBlur={onTimeBlur}
       />
     </Stack>
   );

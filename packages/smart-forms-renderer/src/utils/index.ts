@@ -15,8 +15,10 @@
  * limitations under the License.
  */
 
+export type { BuildFormParams, RepopulateFormParams } from './manageForm';
 export {
   buildForm,
+  repopulateForm,
   destroyForm,
   getResponse,
   removeEmptyAnswersFromResponse,

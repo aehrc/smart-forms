@@ -1,6 +1,6 @@
 {
   "name": "@aehrc/sdc-template-extract",
-  "version": "1.0.9",
+  "version": "1.0.14",
   "description": "Performs template-based extraction from the HL7 FHIR SDC (Structured Data Capture) specification: https://build.fhir.org/ig/HL7/sdc/extraction.html#template-based-extraction",
   "scripts": {
     "compile": "tsup src/index.ts --format cjs,esm --dts --clean --sourcemap",

@@ -5,7 +5,7 @@
 Questionnaire state management store which contains all properties and methods to manage the state of the questionnaire.
 This is the React version of the store which can be used as React hooks in React functional components.
 
-## Type declaration
+## Type Declaration
 
 ### use
 
@@ -30,6 +30,14 @@ This is the React version of the store which can be used as React hooks in React
 
 `void`
 
+#### use.additionalContext()
+
+> **additionalContext**: () => `Record`\<`string`, `any`\>
+
+##### Returns
+
+`Record`\<`string`, `any`\>
+
 #### use.answerExpressions()
 
 > **answerExpressions**: () => `Record`\<`string`, `AnswerExpression`\>
@@ -48,11 +56,11 @@ This is the React version of the store which can be used as React hooks in React
 
 #### use.buildSourceQuestionnaire()
 
-> **buildSourceQuestionnaire**: () => (`questionnaire`, `questionnaireResponse?`, `additionalVariables?`, `terminologyServerUrl?`, `readOnly?`, `qItemOverrideComponents?`, `sdcUiOverrideComponents?`) => `Promise`\<`void`\>
+> **buildSourceQuestionnaire**: () => (`questionnaire`, `questionnaireResponse?`, `additionalContext?`, `terminologyServerUrl?`, `readOnly?`, `qItemOverrideComponents?`, `sdcUiOverrideComponents?`) => `Promise`\<`void`\>
 
 ##### Returns
 
-> (`questionnaire`, `questionnaireResponse?`, `additionalVariables?`, `terminologyServerUrl?`, `readOnly?`, `qItemOverrideComponents?`, `sdcUiOverrideComponents?`): `Promise`\<`void`\>
+> (`questionnaire`, `questionnaireResponse?`, `additionalContext?`, `terminologyServerUrl?`, `readOnly?`, `qItemOverrideComponents?`, `sdcUiOverrideComponents?`): `Promise`\<`void`\>
 
 ###### Parameters
 
@@ -60,7 +68,7 @@ This is the React version of the store which can be used as React hooks in React
 | ------ | ------ |
 | `questionnaire` | `Questionnaire` |
 | `questionnaireResponse?` | `QuestionnaireResponse` |
-| `additionalVariables?` | `Record`\<`string`, `any`\> |
+| `additionalContext?` | `Record`\<`string`, `any`\> |
 | `terminologyServerUrl?` | `string` |
 | `readOnly?` | `boolean` |
 | `qItemOverrideComponents?` | `Record`\<`string`, `ComponentType`\<[`QItemOverrideComponentProps`](../interfaces/QItemOverrideComponentProps.md)\>\> |
@@ -284,14 +292,6 @@ This is the React version of the store which can be used as React hooks in React
 
 `Pages`
 
-#### use.populatedContext()
-
-> **populatedContext**: () => `Record`\<`string`, `any`\>
-
-##### Returns
-
-`Record`\<`string`, `any`\>
-
 #### use.processedValueSets()
 
 > **processedValueSets**: () => `Record`\<`string`, `ProcessedValueSet`\>
@@ -316,6 +316,30 @@ This is the React version of the store which can be used as React hooks in React
 
 `boolean`
 
+#### use.resetToFirstVisiblePage()
+
+> **resetToFirstVisiblePage**: () => () => `void`
+
+##### Returns
+
+> (): `void`
+
+###### Returns
+
+`void`
+
+#### use.resetToFirstVisibleTab()
+
+> **resetToFirstVisibleTab**: () => () => `void`
+
+##### Returns
+
+> (): `void`
+
+###### Returns
+
+`void`
+
 #### use.sdcUiOverrideComponents()
 
 > **sdcUiOverrideComponents**: () => `Record`\<`string`, `ComponentType`\<[`SdcUiOverrideComponentProps`](../interfaces/SdcUiOverrideComponentProps.md)\>\>
@@ -323,6 +347,24 @@ This is the React version of the store which can be used as React hooks in React
 ##### Returns
 
 `Record`\<`string`, `ComponentType`\<[`SdcUiOverrideComponentProps`](../interfaces/SdcUiOverrideComponentProps.md)\>\>
+
+#### use.setAdditionalContext()
+
+> **setAdditionalContext**: () => (`additionalContext`) => `void`
+
+##### Returns
+
+> (`additionalContext`): `void`
+
+###### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `additionalContext` | `Record`\<`string`, `any`\> |
+
+###### Returns
+
+`void`
 
 #### use.setFormAsReadOnly()
 
@@ -337,25 +379,6 @@ This is the React version of the store which can be used as React hooks in React
 | Parameter | Type |
 | ------ | ------ |
 | `readOnly` | `boolean` |
-
-###### Returns
-
-`void`
-
-#### use.setPopulatedContext()
-
-> **setPopulatedContext**: () => (`newPopulatedContext`, `addToFhirPathContext?`) => `void`
-
-##### Returns
-
-> (`newPopulatedContext`, `addToFhirPathContext?`): `void`
-
-###### Parameters
-
-| Parameter | Type |
-| ------ | ------ |
-| `newPopulatedContext` | `Record`\<`string`, `any`\> |
-| `addToFhirPathContext?` | `boolean` |
 
 ###### Returns
 
@@ -460,8 +483,8 @@ This is the React version of the store which can be used as React hooks in React
 | Parameter | Type |
 | ------ | ------ |
 | `linkId` | `string` |
-| `newAnswer` | `undefined` \| `QuestionnaireResponseItemAnswer`[] |
-| `parentRepeatGroupIndex` | `null` \| `number` |
+| `newAnswer` | `QuestionnaireResponseItemAnswer`[] \| `undefined` |
+| `parentRepeatGroupIndex` | `number` \| `null` |
 
 ###### Returns
 
@@ -469,41 +492,22 @@ This is the React version of the store which can be used as React hooks in React
 
 #### use.updateExpressions()
 
-> **updateExpressions**: () => (`updatedResponse`) => `Promise`\<`void`\>
+> **updateExpressions**: () => (`updatedResponse`, `isInitialUpdate`) => `Promise`\<`void`\>
 
 ##### Returns
 
-> (`updatedResponse`): `Promise`\<`void`\>
+> (`updatedResponse`, `isInitialUpdate`): `Promise`\<`void`\>
 
 ###### Parameters
 
 | Parameter | Type |
 | ------ | ------ |
 | `updatedResponse` | `QuestionnaireResponse` |
+| `isInitialUpdate` | `boolean` |
 
 ###### Returns
 
 `Promise`\<`void`\>
-
-#### use.updatePopulatedProperties()
-
-> **updatePopulatedProperties**: () => (`populatedResponse`, `populatedContext?`, `persistTabIndex?`) => `Promise`\<`QuestionnaireResponse`\>
-
-##### Returns
-
-> (`populatedResponse`, `populatedContext?`, `persistTabIndex?`): `Promise`\<`QuestionnaireResponse`\>
-
-###### Parameters
-
-| Parameter | Type |
-| ------ | ------ |
-| `populatedResponse` | `QuestionnaireResponse` |
-| `populatedContext?` | `Record`\<`string`, `any`\> |
-| `persistTabIndex?` | `boolean` |
-
-###### Returns
-
-`Promise`\<`QuestionnaireResponse`\>
 
 #### use.variables()
 
@@ -515,5 +519,5 @@ This is the React version of the store which can be used as React hooks in React
 
 ## See
 
- - QuestionnaireStoreType for available properties and methods.
- - questionnaireStore for the vanilla store.
+ - [QuestionnaireStoreType](../interfaces/QuestionnaireStoreType.md) for available properties and methods.
+ - [questionnaireStore](questionnaireStore.md) for the vanilla store.

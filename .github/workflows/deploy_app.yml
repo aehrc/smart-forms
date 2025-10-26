@@ -33,6 +33,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Build workspace packages (monorepo dependencies)
+        run: |
+          npm run build -w packages/sdc-assemble
+          npm run build -w packages/sdc-populate
+          npm run build -w packages/sdc-template-extract
+          npm run build -w packages/smart-forms-renderer
+
       - name: Build application
         run: npm run build -w apps/smart-forms-app
       #          export REACT_APP_SENTRY_RELEASE=`git rev-parse --short HEAD`
@@ -45,7 +52,12 @@ jobs:
       #          npx sentry-cli releases files $VERSION upload-sourcemaps build
 
       - name: Upload static React site to S3
-        run: aws s3 sync apps/smart-forms-app/dist s3://smart-forms-react-app/
+        run: |
+          aws s3 sync apps/smart-forms-app/dist s3://smart-forms-react-app/ \
+            --cache-control "no-cache, no-store, must-revalidate" \
+            --expires 0 \
+            --exact-timestamps \
+            --delete
 
   chromatic:
     name: Run Chromatic
@@ -65,6 +77,12 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Build workspace packages (monorepo dependencies)
+        run: |
+          npm run build -w packages/sdc-assemble
+          npm run build -w packages/sdc-populate
+          npm run build -w packages/sdc-template-extract
 
       - name: Run Chromatic
         uses: chromaui/action@latest

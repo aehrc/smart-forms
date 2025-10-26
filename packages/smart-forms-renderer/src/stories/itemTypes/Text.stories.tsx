@@ -17,16 +17,16 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { qTextCalculation } from '../assets/questionnaires';
 import {
-  findByLinkId,
+  findByLinkIdOrLabel,
   getAnswers,
   getInputText,
   inputText,
-  qrFactory,
-  questionnaireFactory
+  questionnaireFactory,
+  questionnaireResponseFactory
 } from '../testUtils';
 import { expect, fireEvent } from 'storybook/test';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 
@@ -41,40 +41,55 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-const targetText = 'mytext';
+
+/* Text Basic story */
 const targetLinkId = 'details';
+const targetInput =
+  '- 8 hour eating window\n' +
+  '- Cup of black coffee in the morning\n' +
+  '- Small portions of lunch and dinner';
 
 const basicQuestionnaire = questionnaireFactory([
-  { linkId: targetLinkId, type: 'string', text: targetText }
+  { linkId: targetLinkId, type: 'text', text: 'Details of intermittent fasting' }
 ]);
-const basicQr = qrFactory([{ linkId: targetLinkId, answer: [{ valueString: targetText }] }]);
 
-export const TextBasic: Story = {
+const basicQr = questionnaireResponseFactory([
+  {
+    linkId: targetLinkId,
+    text: 'Details of intermittent fasting',
+    answer: [{ valueString: targetInput }]
+  }
+]);
+
+export const TextBasic: Story = createStory({
   args: {
     questionnaire: basicQuestionnaire
   },
   play: async ({ canvasElement }) => {
-    await inputText(canvasElement, targetLinkId, targetText);
+    await inputText(canvasElement, targetLinkId, targetInput);
 
     const result = await getAnswers(targetLinkId);
     expect(result).toHaveLength(1);
-    expect(result[0]).toEqual(expect.objectContaining({ valueString: targetText }));
+    expect(result[0]).toEqual(expect.objectContaining({ valueString: targetInput }));
+
+    const elementAfterClear = await findByLinkIdOrLabel(canvasElement, targetLinkId);
+    const input = elementAfterClear.querySelector('textarea');
 
     // Clear value
-    const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
-    fireEvent.click(clearButton as HTMLElement);
+    if (input) {
+      await fireEvent.focus(input);
+      await fireEvent.input(input, { target: { value: '' } });
+    }
 
     // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
     const resultAfterClear = await getAnswers(targetLinkId);
     expect(resultAfterClear).toHaveLength(0);
-    const elementAfterClear = await findByLinkId(canvasElement, targetLinkId);
-    const input = elementAfterClear.querySelector('textarea');
     expect(input?.value).toBe('');
   }
-};
+}) as Story;
 
-export const TextBasicResponse: Story = {
+export const TextBasicResponse: Story = createStory({
   args: {
     questionnaire: basicQuestionnaire,
     questionnaireResponse: basicQr
@@ -82,13 +97,6 @@ export const TextBasicResponse: Story = {
   play: async ({ canvasElement }) => {
     const inputText = await getInputText(canvasElement, targetLinkId);
 
-    expect(inputText).toBe(targetText);
+    expect(inputText).toBe(targetInput);
   }
-};
-
-// TODO: Move to separate storybook
-export const TextCalculation: Story = {
-  args: {
-    questionnaire: qTextCalculation
-  }
-};
+}) as Story;

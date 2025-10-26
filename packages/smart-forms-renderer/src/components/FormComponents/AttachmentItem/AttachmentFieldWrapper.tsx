@@ -21,7 +21,7 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import type {
   PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledRequiredAttribute
+  PropsWithIsTabledAttribute
 } from '../../../interfaces/renderProps.interface';
 import type { QuestionnaireItem } from 'fhir/r4';
 import type { AttachmentValues } from './AttachmentItem';
@@ -30,7 +30,7 @@ import ItemLabel from '../ItemParts/ItemLabel';
 
 interface AttachmentFieldWrapperProps
   extends PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledRequiredAttribute {
+    PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   attachmentValues: AttachmentValues;
   feedback: string;
@@ -75,6 +75,7 @@ function AttachmentFieldWrapper(props: AttachmentFieldWrapperProps) {
     <FullWidthFormComponentBox
       data-test="q-item-attachment-box"
       data-linkid={qItem.linkId}
+      data-label={qItem.text}
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid
         qItem={qItem}

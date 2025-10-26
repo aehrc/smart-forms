@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import RadioFormGroup from '../ItemParts/RadioFormGroup';
 

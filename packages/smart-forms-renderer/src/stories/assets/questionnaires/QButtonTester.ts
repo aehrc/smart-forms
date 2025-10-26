@@ -19,14 +19,7 @@ import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 
 export const qButtonTester: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'ButtonTester',
-  name: 'ButtonTester',
-  title: 'Button Tester',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/tester/button',
   extension: [
     {
       url: 'http://hl7.org/fhir/StructureDefinition/variable',

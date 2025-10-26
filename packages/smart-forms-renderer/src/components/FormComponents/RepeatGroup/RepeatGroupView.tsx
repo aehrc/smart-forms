@@ -17,7 +17,6 @@
 
 import React from 'react';
 import type {
-  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
   PropsWithParentStylesAttribute
@@ -39,24 +38,17 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import GroupHeading from '../GroupItem/GroupHeading';
-import { appendRepeatIndexToLastSegment } from '../../../utils/itemPath';
-import type { ItemPath } from '../../../interfaces/itemPath.interface';
 import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
 import { isGroupAddItemButtonHidden } from '../../../utils/extensions';
 
 interface RepeatGroupViewProps
-  extends PropsWithItemPathAttribute,
-    PropsWithParentIsReadOnlyAttribute,
+  extends PropsWithParentIsReadOnlyAttribute,
     PropsWithParentIsRepeatGroupAttribute,
     PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   repeatGroups: RepeatGroupSingleModel[];
   groupCardElevation: number;
-  onAnswerChange: (
-    newQrItem: QuestionnaireResponseItem,
-    index: number,
-    targetItemPath?: ItemPath
-  ) => void;
+  onAnswerChange: (newQrItem: QuestionnaireResponseItem, index: number) => void;
   onAddItem: () => void;
   onRemoveItem: (index: number) => void;
 }
@@ -71,7 +63,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
   const {
     qItem,
     repeatGroups,
-    itemPath,
+
     groupCardElevation,
     parentIsReadOnly,
     parentStyles,
@@ -123,13 +115,10 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
                     answeredQrItem={answeredQrItem}
                     nullableQrItem={nullableQrItem}
                     numOfRepeatGroups={repeatGroups.length}
-                    itemPath={appendRepeatIndexToLastSegment(itemPath, index)}
                     groupCardElevation={groupCardElevation}
                     parentIsReadOnly={parentIsReadOnly}
                     onRemoveItem={() => onRemoveItem(index)}
-                    onQrItemChange={(newQrItem, targetItemPath) =>
-                      onAnswerChange(newQrItem, index, targetItemPath)
-                    }
+                    onQrItemChange={(newQrItem) => onAnswerChange(newQrItem, index)}
                   />
                 </Collapse>
               );
@@ -176,13 +165,10 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
                   answeredQrItem={answeredQrItem}
                   nullableQrItem={nullableQrItem}
                   numOfRepeatGroups={repeatGroups.length}
-                  itemPath={appendRepeatIndexToLastSegment(itemPath, index)}
                   groupCardElevation={groupCardElevation}
                   parentIsReadOnly={parentIsReadOnly}
                   onRemoveItem={() => onRemoveItem(index)}
-                  onQrItemChange={(newQrItem, targetItemPath) =>
-                    onAnswerChange(newQrItem, index, targetItemPath)
-                  }
+                  onQrItemChange={(newQrItem) => onAnswerChange(newQrItem, index)}
                 />
               </Collapse>
             );

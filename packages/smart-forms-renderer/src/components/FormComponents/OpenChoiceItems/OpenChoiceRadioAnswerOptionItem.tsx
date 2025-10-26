@@ -15,45 +15,32 @@
  * limitations under the License.
  */
 
-import React, { useState } from 'react';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { createEmptyQrItem } from '../../../utils/qrItem';
+import { useState } from 'react';
+import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
+import useReadOnly from '../../../hooks/useReadOnly';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
+import { useQuestionnaireStore } from '../../../stores';
+import { findInAnswerOptions, getQrChoiceValue } from '../../../utils/choice';
 import { getOpenLabelText } from '../../../utils/extensions';
 import { getOldOpenLabelAnswer } from '../../../utils/openChoice';
+import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
-import { findInAnswerOptions, getQrChoiceValue } from '../../../utils/choice';
-import type {
-  PropsWithFeedbackFromParentAttribute,
-  PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
-  PropsWithItemPathAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithRenderingExtensionsAttribute
-} from '../../../interfaces/renderProps.interface';
-import OpenChoiceRadioAnswerOptionFields from './OpenChoiceRadioAnswerOptionFields';
-import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
-import { useQuestionnaireStore } from '../../../stores';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import ItemLabel from '../ItemParts/ItemLabel';
-import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 import { sanitizeInput } from '../../../utils/inputSanitization';
+import OpenChoiceRadioAnswerOptionFields from './OpenChoiceRadioAnswerOptionFields';
 
-interface OpenChoiceRadioAnswerOptionItemProps
-  extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
-    PropsWithIsRepeatedAttribute,
-    PropsWithParentIsReadOnlyAttribute,
-    PropsWithRenderingExtensionsAttribute,
-    PropsWithFeedbackFromParentAttribute,
-    PropsWithIsTabledAttribute {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
-}
-
-function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemProps) {
-  const { qItem, qrItem, parentIsReadOnly, feedbackFromParent, isTabled, onQrItemChange } = props;
+function OpenChoiceRadioAnswerOptionItem(props: BaseItemProps) {
+  const {
+    qItem,
+    qrItem,
+    parentIsReadOnly,
+    feedbackFromParent,
+    isTabled,
+    calcExpUpdated,
+    onQrItemChange
+  } = props;
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
@@ -91,10 +78,6 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
   if (openLabelSelected && valueRadio === null) {
     valueRadio = '';
   }
-
-  // TODO Process calculated expressions
-  // This requires its own hook, because in the case of multi-select, we need to check if the value is already checked to prevent an infinite loop
-  // This will be done after the choice/open-choice refactoring
 
   // Process answerOptionsToggleExpressions
   const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
@@ -167,6 +150,7 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
     <FullWidthFormComponentBox
       data-test="q-item-open-choice-radio-answer-option-box"
       data-linkid={qItem.linkId}
+      data-label={qItem.text}
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid
         qItem={qItem}
@@ -182,7 +166,7 @@ function OpenChoiceRadioAnswerOptionItem(props: OpenChoiceRadioAnswerOptionItemP
             openLabelSelected={openLabelSelected}
             feedback={feedback}
             readOnly={readOnly}
-            expressionUpdated={answerOptionsToggleExpUpdated}
+            expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             isTabled={isTabled}
             onValueChange={handleValueChange}

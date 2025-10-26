@@ -15,42 +15,21 @@
  * limitations under the License.
  */
 
-import React from 'react';
-import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { AutocompleteChangeReason } from '@mui/material';
+import type { Coding } from 'fhir/r4';
+import useReadOnly from '../../../hooks/useReadOnly';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useValueSetCodings from '../../../hooks/useValueSetCodings';
+import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
+import { useQuestionnaireStore } from '../../../stores';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
-import useValueSetCodings from '../../../hooks/useValueSetCodings';
-import type {
-  PropsWithFeedbackFromParentAttribute,
-  PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledRequiredAttribute,
-  PropsWithItemPathAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithRenderingExtensionsAttribute
-} from '../../../interfaces/renderProps.interface';
-import OpenChoiceSelectAnswerValueSetField from './OpenChoiceSelectAnswerValueSetField';
-import useReadOnly from '../../../hooks/useReadOnly';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
-import { useQuestionnaireStore } from '../../../stores';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import ItemLabel from '../ItemParts/ItemLabel';
-import type { AutocompleteChangeReason } from '@mui/material';
 import { sanitizeInput } from '../../../utils/inputSanitization';
+import OpenChoiceSelectAnswerValueSetField from './OpenChoiceSelectAnswerValueSetField';
 
-interface OpenChoiceSelectAnswerValueSetItemProps
-  extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
-    PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledRequiredAttribute,
-    PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute,
-    PropsWithFeedbackFromParentAttribute {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
-}
-
-function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSetItemProps) {
+function OpenChoiceSelectAnswerValueSetItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
@@ -61,6 +40,7 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
     feedbackFromParent,
     onQrItemChange
   } = props;
+  // TODO no calcExpUpdated
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
@@ -84,10 +64,6 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
       valueSelect = null;
     }
   }
-
-  // TODO Process calculated expressions
-  // This requires its own hook, because in the case of multi-select, we need to check if the value is already checked to prevent an infinite loop
-  // This will be done after the choice/open-choice refactoring
 
   // Get codings/options from valueSet
   // TODO use dynamicCodingsUpdated to trigger a "refresh" icon when codings are dynamically updated
@@ -163,6 +139,7 @@ function OpenChoiceSelectAnswerValueSetItem(props: OpenChoiceSelectAnswerValueSe
     <FullWidthFormComponentBox
       data-test="q-item-open-choice-select-answer-value-set-box"
       data-linkid={qItem.linkId}
+      data-label={qItem.text}
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid
         qItem={qItem}

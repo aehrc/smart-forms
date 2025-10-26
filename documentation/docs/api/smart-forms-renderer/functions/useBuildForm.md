@@ -1,26 +1,26 @@
 # Function: useBuildForm()
 
-> **useBuildForm**(`questionnaire`, `questionnaireResponse?`, `readOnly?`, `terminologyServerUrl?`, `additionalVariables?`, `rendererStylingOptions?`, `qItemOverrideComponents?`, `sdcUiOverrideComponents?`): `boolean`
+> **useBuildForm**(`params`): `boolean`
 
-React hook wrapping around the buildForm() function to build a form from a questionnaire and an optional QuestionnaireResponse.
+React hook wrapping around [buildForm](buildForm.md) to build a form from a Questionnaire and an optional filled QuestionnaireResponse.
+If a QuestionnaireResponse is not provided, an empty QuestionnaireResponse is set as the initial QuestionnaireResponse.
+
+The build process also supports:
+- Applying readOnly mode to all items in the form view
+- Providing a default terminology server URL (fallbacks to a public Ontoserver instance if not provided)
+- Passing additional SDC variables into the FhirPathContext (e.g. for pre-population purposes)
+- Adjusting renderer styling and behaviour via `rendererConfigStore`
+- Overriding QuestionnaireItem rendering via `qItemOverrideComponents`
+- Overriding SDC UI controls via `sdcUiOverrideComponents`
 
 ## Parameters
 
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
-| `questionnaire` | `Questionnaire` | Questionnaire to be rendered |
-| `questionnaireResponse?` | `QuestionnaireResponse` | Pre-populated/draft/loaded QuestionnaireResponse to be rendered (optional) |
-| `readOnly?` | `boolean` | Applies read-only mode to all items in the form view |
-| `terminologyServerUrl?` | `string` | Terminology server url to fetch terminology. If not provided, the default terminology server will be used. (optional) |
-| `additionalVariables?` | `Record`\<`string`, `any`\> | Additional key-value pair of SDC variables + values to be fed into the renderer's FhirPathContext `Record<name, value>` (likely coming from a pre-population module) e.g. `{ 'ObsBodyHeight': <Bundle of height observations> } }`. |
-| `rendererStylingOptions?` | [`RendererStyling`](../interfaces/RendererStyling.md) | Renderer styling to be applied to the form. See docs for styling options. (optional) |
-| `qItemOverrideComponents?` | `Record`\<`string`, `ComponentType`\<[`QItemOverrideComponentProps`](../interfaces/QItemOverrideComponentProps.md)\>\> | Key-value pair of React component overrides for Questionnaire Items via linkId `Record<linkId, React component>` |
-| `sdcUiOverrideComponents?` | `Record`\<`string`, `ComponentType`\<[`SdcUiOverrideComponentProps`](../interfaces/SdcUiOverrideComponentProps.md)\>\> | Key-value pair of React component overrides for SDC UI Controls https://hl7.org/fhir/extensions/ValueSet-questionnaire-item-control.html `Record<SDC UI code, React component>` |
+| `params` | [`BuildFormParams`](../interfaces/BuildFormParams.md) | [BuildFormParams](../interfaces/BuildFormParams.md) containing the configuration for building the form |
 
 ## Returns
 
 `boolean`
 
-## See
-
-buildForm() for more information.
+Hook result for form building lifecycle

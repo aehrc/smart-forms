@@ -19,12 +19,10 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type { QrRepeatGroup } from './repeatGroup.interface';
 import type { RenderingExtensions } from '../hooks/useRenderingExtensions';
 import type { JSX } from 'react';
-import type { ItemPath } from './itemPath.interface';
 
 export interface QItemOverrideComponentProps {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | QuestionnaireResponseItem[] | null;
-  itemPath: ItemPath;
   isRepeated: boolean;
   isTabled?: boolean;
   renderingExtensions?: RenderingExtensions;
@@ -34,8 +32,9 @@ export interface QItemOverrideComponentProps {
   parentIsRepeatGroup?: boolean;
   parentRepeatGroupIndex?: number;
   parentStyles?: Record<string, string>;
-  onQrItemChange: (qrItem: QuestionnaireResponseItem, targetItemPath?: ItemPath) => unknown;
-  onQrRepeatGroupChange: (qrRepeatGroup: QrRepeatGroup, targetItemPath?: ItemPath) => unknown;
+  calcExpUpdated?: boolean;
+  onQrItemChange: (qrItem: QuestionnaireResponseItem) => unknown;
+  onQrRepeatGroupChange: (qrRepeatGroup: QrRepeatGroup) => unknown;
 }
 
 export interface SdcUiOverrideComponentProps {

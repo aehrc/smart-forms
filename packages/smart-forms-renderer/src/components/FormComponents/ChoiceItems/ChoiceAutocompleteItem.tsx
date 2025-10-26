@@ -15,44 +15,24 @@
  * limitations under the License.
  */
 
-import React, { useState } from 'react';
-import type { Coding, QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type { Coding } from 'fhir/r4';
+import { useState } from 'react';
 
+import type { AlertColor } from '@mui/material/Alert';
+import useDebounce from '../../../hooks/useDebounce';
+import useReadOnly from '../../../hooks/useReadOnly';
+import useTerminologyServerQuery from '../../../hooks/useTerminologyServerQuery';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
+import { useQuestionnaireStore } from '../../../stores';
+import { AUTOCOMPLETE_DEBOUNCE_DURATION } from '../../../utils/debounce';
 import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
-import useDebounce from '../../../hooks/useDebounce';
-import useTerminologyServerQuery from '../../../hooks/useTerminologyServerQuery';
-import type {
-  PropsWithFeedbackFromParentAttribute,
-  PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledRequiredAttribute,
-  PropsWithItemPathAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithRenderingExtensionsAttribute
-} from '../../../interfaces/renderProps.interface';
-import { AUTOCOMPLETE_DEBOUNCE_DURATION } from '../../../utils/debounce';
-import useReadOnly from '../../../hooks/useReadOnly';
-import ChoiceAutocompleteField from './ChoiceAutocompleteField';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
-import { useQuestionnaireStore } from '../../../stores';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
-import type { AlertColor } from '@mui/material/Alert';
 import ItemLabel from '../ItemParts/ItemLabel';
+import ChoiceAutocompleteField from './ChoiceAutocompleteField';
 
-interface ChoiceAutocompleteItemProps
-  extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
-    PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledRequiredAttribute,
-    PropsWithParentIsReadOnlyAttribute,
-    PropsWithRenderingExtensionsAttribute,
-    PropsWithFeedbackFromParentAttribute {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
-}
-
-function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
+function ChoiceAutocompleteItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
@@ -63,6 +43,7 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
     feedbackFromParent,
     onQrItemChange
   } = props;
+  // TODO no calcExpUpdated
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
@@ -81,10 +62,6 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
   const debouncedInput = useDebounce(input, AUTOCOMPLETE_DEBOUNCE_DURATION);
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-
-  // TODO Process calculated expressions
-  // This requires its own hook, because in the case of multi-select, we need to check if the value is already checked to prevent an infinite loop
-  // This will be done after the choice/open-choice refactoring
 
   // Perform validation checks
   const validationFeedback = useValidationFeedback(qItem, feedbackFromParent);
@@ -110,10 +87,12 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
   function handleValueChange(newValue: Coding | null) {
     if (newValue === null) {
       setInput('');
+      // For clearing selection, update immediately
       onQrItemChange(createEmptyQrItem(qItem, answerKey));
       return;
     }
 
+    // For option selection, update immediately (no debounce)
     onQrItemChange({
       ...createEmptyQrItem(qItem, answerKey),
       answer: [{ id: answerKey, valueCoding: newValue }]
@@ -141,6 +120,7 @@ function ChoiceAutocompleteItem(props: ChoiceAutocompleteItemProps) {
     <FullWidthFormComponentBox
       data-test="q-item-choice-autocomplete-box"
       data-linkid={qItem.linkId}
+      data-label={qItem.text}
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid
         qItem={qItem}

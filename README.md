@@ -11,6 +11,8 @@ Powered by SMART on FHIR and Structured Data Capture, Smart Forms allow you to e
 
 <h4><a href="https://smartforms.csiro.au/docs">Check out the documentation 📚</a></h4>
 
+<h4><a href="https://smartforms.csiro.au/docs">Check out Questionnaire examples in Storybook 📚</a></h4>
+
 ---
 Smart Forms is a Typescript-based [React](https://reactjs.org/) forms web application currently ongoing development by [CSIRO's Australian e-Health Research Centre](https://aehrc.csiro.au/) as part of the Primary Care Data Quality project funded by the Australian Government Department of Health.
 
@@ -19,40 +21,7 @@ The web app is intended to demonstrate the use of [HL7 FHIR](https://hl7.org/fhi
 This project was bootstrapped with [Vite](https://vitejs.dev/).
 <br/>
 
-**If you are interested in using the form renderer in your React app, a standalone package is published on NPM as [@aehrc/smart-forms-renderer](https://www.npmjs.com/package/@aehrc/smart-forms-renderer).**
-
-## Functionalities
-
-**Smart Forms app**
-
-| Functionality                    | Description                                                                                                                                                                    | Resources                                                                                                                                                            | Showcase 🖼️ (Right click -> Open link in new tab)                                                                                                        |
-|----------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Form population                  | Populate FHIR clinical data into forms, removing the need to re-enter generic information every time a new form is created, allows reusability of data.                        | [SDC Populate](https://hl7.org/fhir/uv/sdc/populate.html)                                                                                                            | [Population of patient details](assets/population-patient-details.png)<br/>[Population of patient medical history](assets/population-medical-history.png) |
-| Conditional rendering            | Render form items conditionally based on user decisions or pre-determined data.                                                                                                | [Questionnaire EnableWhen](https://hl7.org/fhir/questionnaire-definitions.html#Questionnaire.item.enableWhen)                                                        | [Form tabs and items presented differently for patients of different age groups](assets/enablewhen-age-groups.png)                                        |
-| Built-in calculations            | Perform calculations based on form item answers to produce a calculated result, e.g. BMI, CVD Risk Score.                                                                      | [SDC Calculations](https://hl7.org/fhir/uv/sdc/behavior.html#calculations)                                                                                           | [Calculated BMI based on height and weight values](assets/calculation.png)                                                                                |
-| ValueSet expansion               | Perform expansion of ValueSet resources via the Ontoserver $expand operation API within autocomplete, dropdown, radio button and checkbox fields.                              | [ValueSet expand](https://hl7.org/fhir/OperationDefinition/ValueSet-expand)<br/>[Ontoserver ValueSet API](https://ontoserver.csiro.au/docs/6/api-fhir-valueset.html) | [Ontoserver ValueSet Expansion in an Autocomplete component](assets/ontoserver-expand.png)                                                                |
-| QuestionnaireResponse write-back | A form can either be saved as a draft or as final, which will compile the form answers into a QuestionnaireResponse resource and store it on the CMS's FHIR server via REST API. | [FHIR RESTful API](https://hl7.org/fhir/http.html)                                                                                                                                      | [List of responses in context of a patient](assets/responses.png)                                                                                         |
-| Form preview                     | Generate a human-readable preview of the QuestionnaireResponse which can be viewed while filling in the form or after the form is saved.                                       | <div align="center">-</div>                                                                                                                                          | [Human-readable form preview](assets/preview.png)                                                                                                         |                                                      |
-| Generic form implementation      | The app tries its best to render any Questionnaire as long as it conforms to the FHIR specification!                                                                           | [Questionnaire](https://hl7.org/fhir/questionnaire.html)<br/>[SDC](https://hl7.org/fhir/uv/sdc)                                                                                                                                          | [Rendering of an Australian absolute CVD Risk calculator questionnaire](assets/generic-form.png)                                                          |
-
-NOTE: The patients featured in the screenshots are synthetic and do not represent any real people.
-
-**Forms Server API**
-
-
-| Functionality          | Description                                                                                                                                                                                                                                                                      | Resources                                                                                     |
-|------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
-| Modular questionnaires | Allows a questionnaire to be composed of sub-questionnaires which allows for reusability of questionnaire components i.e. a single tab within a form with multiple tabs. Subquestionnaires can be "assembled" to form a complete questionnaire with the **$assemble** operation. | [SDC Modular questionnaires](https://hl7.org/fhir/uv/sdc/modular.html#modular-questionnaires) |
-
-
-## Contents
-
-1. The Smart Forms web app. Try it out here: smartforms.csiro.au
-2. Implemented operations from the [Structured Data Capture (SDC)](http://hl7.org/fhir/uv/sdc/) specification:
- - [$populate](https://hl7.org/fhir/uv/sdc/OperationDefinition/Questionnaire-populate)
- - [$assemble](https://hl7.org/fhir/uv/sdc/OperationDefinition/Questionnaire-assemble)
- - [$extract](http://hl7.org/fhir/uv/sdc/OperationDefinition/QuestionnaireResponse-extract)
-3. A standalone component of the questionnaire renderer published on NPM as [@aehrc/smart-forms-renderer](https://www.npmjs.com/package/@aehrc/smart-forms-renderer).
+**If you are interested in using the form renderer in your React app, an NPM library is published at [@aehrc/smart-forms-renderer](https://www.npmjs.com/package/@aehrc/smart-forms-renderer).**
 
 ## Conformance
 

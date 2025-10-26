@@ -1,27 +1,10 @@
-import { buildForm, destroyForm, questionnaireStore } from '@aehrc/smart-forms-renderer';
-import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-import { extractDebuggerStore } from '../features/playground/stores/extractDebuggerStore.ts';
+import type { BuildFormParams } from '@aehrc/smart-forms-renderer';
+import { buildForm, destroyForm } from '@aehrc/smart-forms-renderer';
 
-export async function buildFormWrapper(
-  questionnaire: Questionnaire,
-  questionnaireResponse?: QuestionnaireResponse,
-  readOnly?: boolean,
-  terminologyServerUrl?: string,
-  additionalVariables?: Record<string, any>
-) {
+export async function resetAndBuildForm(params: BuildFormParams) {
   // Destroy previous questionnaire state before building a new one
-  questionnaireStore.getState().destroySourceQuestionnaire();
+  destroyForm();
 
-  return buildForm(
-    questionnaire,
-    questionnaireResponse,
-    readOnly,
-    terminologyServerUrl,
-    additionalVariables
-  );
-}
-
-export function destroyFormWrapper() {
-  extractDebuggerStore.getState().resetStore();
-  return destroyForm();
+  // Build new questionnaire state
+  await buildForm(params);
 }

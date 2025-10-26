@@ -15,55 +15,29 @@
  * limitations under the License.
  */
 
-import React from 'react';
-import type {
-  QuestionnaireItem,
-  QuestionnaireItemAnswerOption,
-  QuestionnaireResponseItem
-} from 'fhir/r4';
+import Typography from '@mui/material/Typography';
+import type { QuestionnaireItemAnswerOption } from 'fhir/r4';
+import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
+import useReadOnly from '../../../hooks/useReadOnly';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import { ChoiceItemControl } from '../../../interfaces/choice.enum';
+import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
+import { useQuestionnaireStore } from '../../../stores';
 import { findInAnswerOptions, getChoiceControlType, getQrChoiceValue } from '../../../utils/choice';
 import { createEmptyQrItem } from '../../../utils/qrItem';
-import type {
-  PropsWithFeedbackFromParentAttribute,
-  PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledRequiredAttribute,
-  PropsWithItemPathAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithRenderingExtensionsAttribute
-} from '../../../interfaces/renderProps.interface';
-import useReadOnly from '../../../hooks/useReadOnly';
-import { useQuestionnaireStore } from '../../../stores';
-import { ChoiceItemControl } from '../../../interfaces/choice.enum';
-import Typography from '@mui/material/Typography';
-import useCodingCalculatedExpression from '../../../hooks/useCodingCalculatedExpression';
 import ChoiceRadioAnswerOptionView from './ChoiceRadioAnswerOptionView';
 import ChoiceSelectAnswerOptionView from './ChoiceSelectAnswerOptionView';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
-import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 
-interface ChoiceRadioAnswerOptionItemProps
-  extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
-    PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledRequiredAttribute,
-    PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute,
-    PropsWithFeedbackFromParentAttribute {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
-}
-
-function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
+function ChoiceRadioAnswerOptionItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
-    itemPath,
     isRepeated,
     isTabled,
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
+    calcExpUpdated,
     onQrItemChange
   } = props;
 
@@ -81,32 +55,15 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
 
   const options = qItem.answerOption ?? [];
 
-  // Process calculated expressions
-  const { calcExpUpdated } = useCodingCalculatedExpression({
-    qItem: qItem,
-    valueInString: valueChoice ?? '',
-    onChangeByCalcExpressionString: (newValueString: string) => {
-      handleChange(newValueString, true);
-    },
-    onChangeByCalcExpressionNull: () => {
-      onQrItemChange(createEmptyQrItem(qItem, answerKey), itemPath);
-    }
-  });
-
   // Process answerOptionsToggleExpressions
   const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
     useAnswerOptionsToggleExpressions(qItem.linkId);
 
   // Event handlers
-  function handleChange(
-    newValue: QuestionnaireItemAnswerOption | string | null,
-    includeItemPath: boolean = false // only include when this is called from useCalculatedExpression hook
-  ) {
-    const targetItemPath = includeItemPath ? itemPath : undefined;
-
+  function handleChange(newValue: QuestionnaireItemAnswerOption | string | null) {
     // No options present or newValue is type null
     if (options.length === 0 || newValue === null) {
-      onQrItemChange(createEmptyQrItem(qItem, answerKey), targetItemPath);
+      onQrItemChange(createEmptyQrItem(qItem, answerKey));
       return;
     }
 
@@ -116,8 +73,7 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
       onQrItemChange(
         qrAnswer
           ? { ...createEmptyQrItem(qItem, answerKey), answer: [{ ...qrAnswer, id: answerKey }] }
-          : createEmptyQrItem(qItem, answerKey),
-        targetItemPath
+          : createEmptyQrItem(qItem, answerKey)
       );
       return;
     }
@@ -126,8 +82,7 @@ function ChoiceRadioAnswerOptionItem(props: ChoiceRadioAnswerOptionItemProps) {
     onQrItemChange(
       newValue
         ? { ...createEmptyQrItem(qItem, answerKey), answer: [{ ...newValue, id: answerKey }] }
-        : createEmptyQrItem(qItem, answerKey),
-      targetItemPath
+        : createEmptyQrItem(qItem, answerKey)
     );
   }
 

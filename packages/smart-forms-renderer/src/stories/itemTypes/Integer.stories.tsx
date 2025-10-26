@@ -17,14 +17,15 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { qIntegerCalculation } from '../assets/questionnaires';
+import { createStory } from '../storybookWrappers/createStory';
+
 import {
-  findByLinkId,
+  findByLinkIdOrLabel,
   getAnswers,
   getInputText,
   inputInteger,
-  qrFactory,
-  questionnaireFactory
+  questionnaireFactory,
+  questionnaireResponseFactory
 } from '../testUtils';
 import { expect, fireEvent } from 'storybook/test';
 
@@ -40,6 +41,8 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+
+/* Integer Basic story */
 const targetLinkId = 'age';
 const targetAge = 40;
 const basicAge = 25;
@@ -52,7 +55,7 @@ const qIntegerBasic = questionnaireFactory([
     text: 'Age'
   }
 ]);
-const qrIntegerBasicResponse = qrFactory([
+const qrIntegerBasicResponse = questionnaireResponseFactory([
   {
     linkId: targetLinkId,
     text: 'Age',
@@ -64,7 +67,7 @@ const qrIntegerBasicResponse = qrFactory([
   }
 ]);
 
-export const IntegerBasic: Story = {
+export const IntegerBasic: Story = createStory({
   args: {
     questionnaire: qIntegerBasic
   },
@@ -83,12 +86,13 @@ export const IntegerBasic: Story = {
     await new Promise((resolve) => setTimeout(resolve, 500));
     const resultAfterClear = await getAnswers(targetLinkId);
     expect(resultAfterClear).toHaveLength(0);
-    const elementAfterClear = await findByLinkId(canvasElement, targetLinkId);
+    const elementAfterClear = await findByLinkIdOrLabel(canvasElement, targetLinkId);
     const input = elementAfterClear.querySelector('input');
     expect(input?.getAttribute('value')).toBe('');
   }
-};
-export const IntegerBasicResponse: Story = {
+}) as Story;
+
+export const IntegerBasicResponse: Story = createStory({
   args: {
     questionnaire: qIntegerBasic,
     questionnaireResponse: qrIntegerBasicResponse
@@ -98,10 +102,4 @@ export const IntegerBasicResponse: Story = {
 
     expect(input).toBe(targetAge.toString());
   }
-};
-
-export const IntegerCalculation: Story = {
-  args: {
-    questionnaire: qIntegerCalculation
-  }
-};
+}) as Story;

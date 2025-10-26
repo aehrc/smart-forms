@@ -6,7 +6,7 @@ import { useQuestionnaireStore } from '../../../stores';
 import NextPageButton from './NextPageButton';
 import PreviousPageButton from './PreviousPageButton';
 import useNextAndPreviousVisiblePages from '../../../hooks/useNextAndPreviousVisiblePages';
-import { useRendererStylingStore } from '../../../stores/rendererStylingStore';
+import { useRendererConfigStore } from '../../../stores/rendererConfigStore';
 
 interface PageButtonsWrapperProps {
   currentPageIndex?: number;
@@ -17,7 +17,7 @@ const PageButtonsWrapper = memo(function PageButtonsWrapper(props: PageButtonsWr
   const { currentPageIndex, pages } = props;
 
   const switchPage = useQuestionnaireStore.use.switchPage();
-  const disablePageButtons = useRendererStylingStore.use.disablePageButtons();
+  const disablePageButtons = useRendererConfigStore.use.disablePageButtons();
 
   const { previousPageIndex, nextPageIndex, numOfVisiblePages } = useNextAndPreviousVisiblePages(
     currentPageIndex,

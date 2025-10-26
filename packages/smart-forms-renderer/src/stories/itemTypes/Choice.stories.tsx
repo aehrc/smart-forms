@@ -18,18 +18,15 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
-  qChoiceAnswerOptionCalculation,
-  qChoiceAnswerValueSetCalculation
-} from '../assets/questionnaires';
-import {
   chooseSelectOption,
-  findByLinkId,
+  findByLinkIdOrLabel,
   getAnswers,
   getInputText,
-  qrFactory,
-  questionnaireFactory
+  questionnaireFactory,
+  questionnaireResponseFactory
 } from '../testUtils';
 import { expect, fireEvent } from 'storybook/test';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -43,53 +40,77 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
-const targetLinkId = 'smoking-status';
-const targetCoding = {
+
+/* Choice AnswerOption Basic story */
+const aoTargetLinkId = 'smoking-status';
+const aoTargetValueCoding = {
   system: 'http://snomed.info/sct',
   code: '266919005',
   display: 'Never smoked'
 };
-const notTargetCoding = {
-  system: 'http://snomed.info/sct',
-  code: '77176002',
-  display: 'Smoker'
-};
+
 const qChoiceAnswerOptionBasic = questionnaireFactory([
   {
-    linkId: targetLinkId,
+    linkId: aoTargetLinkId,
     type: 'choice',
     text: 'Smoking status',
     answerOption: [
       {
-        valueCoding: targetCoding
+        valueCoding: {
+          system: 'http://snomed.info/sct',
+          code: '266919005',
+          display: 'Never smoked'
+        }
       },
       {
-        valueCoding: notTargetCoding
-      }
+        valueCoding: {
+          system: 'http://snomed.info/sct',
+          code: '77176002',
+          display: 'Smoker'
+        }
+      },
+      {
+        valueCoding: {
+          system: 'http://snomed.info/sct',
+          code: '8517006',
+          display: 'Ex-smoker'
+        }
+      },
+      {
+        valueCoding: {
+          system: 'http://snomed.info/sct',
+          code: '16090371000119103',
+          display: 'Exposure to second hand tobacco smoke'
+        }
+      },
+      { valueString: 'Wants to quit' },
+      { valueString: 'Other tobacco use' }
     ]
   }
 ]);
-const qrChoiceAnswerOptionBasicResponse = qrFactory([
+
+const qrChoiceAnswerOptionBasicResponse = questionnaireResponseFactory([
   {
-    linkId: targetLinkId,
+    linkId: aoTargetLinkId,
+    text: 'Smoking status',
     answer: [
       {
-        valueCoding: targetCoding
+        valueCoding: aoTargetValueCoding
       }
     ]
   }
 ]);
 
-export const ChoiceAnswerOptionBasic: Story = {
+export const ChoiceAnswerOptionBasic: Story = createStory({
   args: {
     questionnaire: qChoiceAnswerOptionBasic
   },
   play: async ({ canvasElement }) => {
-    await chooseSelectOption(canvasElement, targetLinkId, targetCoding.display);
+    await chooseSelectOption(canvasElement, aoTargetLinkId, aoTargetValueCoding.display);
 
-    const result = await getAnswers(targetLinkId);
+    const result = await getAnswers(aoTargetLinkId);
     expect(result).toHaveLength(1);
-    expect(result[0].valueCoding).toEqual(expect.objectContaining(targetCoding));
+    expect(result[0].valueCoding).toEqual(expect.objectContaining(aoTargetValueCoding));
 
     // Clear
     const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
@@ -97,38 +118,54 @@ export const ChoiceAnswerOptionBasic: Story = {
 
     // Here we await for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
-    const resultAfterClear = await getAnswers(targetLinkId);
+    const resultAfterClear = await getAnswers(aoTargetLinkId);
     expect(resultAfterClear).toHaveLength(0);
 
-    const elementAfterClear = await findByLinkId(canvasElement, targetLinkId);
+    const elementAfterClear = await findByLinkIdOrLabel(canvasElement, aoTargetLinkId);
     const input = elementAfterClear.querySelector('textarea');
     expect(input?.value).toBe('');
   }
-};
+}) as Story;
 
-export const ChoiceAnswerOptionBasicResponse: Story = {
+export const ChoiceAnswerOptionBasicResponse: Story = createStory({
   args: {
     questionnaire: qChoiceAnswerOptionBasic,
     questionnaireResponse: qrChoiceAnswerOptionBasicResponse
   },
   play: async ({ canvasElement }) => {
-    const inputText = await getInputText(canvasElement, targetLinkId);
+    const inputText = await getInputText(canvasElement, aoTargetLinkId);
 
-    expect(inputText).toBe(targetCoding.display);
+    expect(inputText).toBe(aoTargetValueCoding.display);
   }
-};
+}) as Story;
 
-const valueSetTargetId = 'gender';
+/* Choice AnswerOption InitialSelected story */
+// Mutate basic questionnaire to have initialSelected on the first option
+const qChoiceAnswerOptionInitialSelected = structuredClone(qChoiceAnswerOptionBasic);
+qChoiceAnswerOptionInitialSelected.item[0].answerOption[0].initialSelected = true;
 
-const valueSetTargetCoding = {
+export const ChoiceAnswerOptionInitialSelected: Story = createStory({
+  args: {
+    questionnaire: qChoiceAnswerOptionInitialSelected
+  },
+  play: async ({ canvasElement }) => {
+    const inputText = await getInputText(canvasElement, aoTargetLinkId);
+
+    expect(inputText).toBe(aoTargetValueCoding.display);
+  }
+}) as Story;
+
+/* Choice AnswerValueSet Basic story */
+const avsTargetLinkId = 'gender';
+const avsTargetValueCoding = {
   code: 'female',
   display: 'Female',
   system: 'http://hl7.org/fhir/administrative-gender'
 };
 
-const qValueSetBasic = questionnaireFactory([
+const qChoiceAnswerValueSetBasic = questionnaireFactory([
   {
-    linkId: valueSetTargetId,
+    linkId: avsTargetLinkId,
     text: 'Gender',
     type: 'choice',
     repeats: false,
@@ -136,86 +173,35 @@ const qValueSetBasic = questionnaireFactory([
   }
 ]);
 
-export const ChoiceAnswerValueSetBasic: Story = {
+const qrChoiceAnswerValueSetBasic = questionnaireResponseFactory([
+  {
+    linkId: 'gender',
+    text: 'Gender',
+    answer: [{ valueCoding: avsTargetValueCoding }]
+  }
+]);
+
+export const ChoiceAnswerValueSetBasic: Story = createStory({
   args: {
-    questionnaire: qValueSetBasic
+    questionnaire: qChoiceAnswerValueSetBasic
   },
   play: async ({ canvasElement }) => {
-    await chooseSelectOption(canvasElement, valueSetTargetId, valueSetTargetCoding.display);
+    await chooseSelectOption(canvasElement, avsTargetLinkId, avsTargetValueCoding.display);
 
-    const result = await getAnswers(valueSetTargetId);
+    const result = await getAnswers(avsTargetLinkId);
     expect(result).toHaveLength(1);
-    expect(result[0].valueCoding).toEqual(expect.objectContaining(valueSetTargetCoding));
+    expect(result[0].valueCoding).toEqual(expect.objectContaining(avsTargetValueCoding));
   }
-};
+}) as Story;
 
-export const ChoiceAnswerValueSetBasicResponse: Story = {
+export const ChoiceAnswerValueSetBasicResponse: Story = createStory({
   args: {
-    questionnaire: qValueSetBasic,
-    questionnaireResponse: qrFactory([
-      {
-        linkId: 'gender',
-        text: 'Gender',
-        answer: [{ valueCoding: valueSetTargetCoding }]
-      }
-    ])
+    questionnaire: qChoiceAnswerValueSetBasic,
+    questionnaireResponse: qrChoiceAnswerValueSetBasic
   },
   play: async ({ canvasElement }) => {
-    const inputText = await getInputText(canvasElement, valueSetTargetId);
+    const inputText = await getInputText(canvasElement, avsTargetLinkId);
 
-    expect(inputText).toBe(valueSetTargetCoding.display);
+    expect(inputText).toBe(avsTargetValueCoding.display);
   }
-};
-
-const initialTargetCoding = {
-  code: 'T',
-  system: 'http://fhir.medirecords.com/CodeSystem/awsHallucinationType',
-  display: 'Test-Selected'
-};
-const initialNotTargetCoding = {
-  code: 'N',
-  system: 'http://fhir.medirecords.com/CodeSystem/awsHallucinationType',
-  display: 'None'
-};
-
-// Story for ChoiceSelectAnswerOptions Using InitialSelected field set
-export const ChoiceAnswerOptionsUsingInitialSelected: Story = {
-  args: {
-    questionnaire: questionnaireFactory([
-      {
-        text: 'Type',
-        type: 'choice',
-        linkId: 'awsHallucinationType',
-        repeats: false,
-        answerOption: [
-          {
-            valueCoding: initialNotTargetCoding
-          },
-          {
-            valueCoding: initialTargetCoding,
-            initialSelected: true
-          }
-        ]
-      }
-    ])
-  },
-  play: async ({ canvasElement }) => {
-    const inputText = await getInputText(canvasElement, 'awsHallucinationType');
-
-    expect(inputText).toBe(initialTargetCoding.display);
-  }
-};
-
-// TODO: Move to separate storybook
-export const ChoiceAnswerOptionCalculation: Story = {
-  args: {
-    questionnaire: qChoiceAnswerOptionCalculation
-  }
-};
-
-// TODO: Move to separate storybook
-export const ChoiceAnswerValueSetCalculation: Story = {
-  args: {
-    questionnaire: qChoiceAnswerValueSetCalculation
-  }
-};
+}) as Story;

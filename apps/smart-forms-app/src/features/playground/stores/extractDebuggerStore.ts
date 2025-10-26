@@ -30,8 +30,8 @@ export interface ExtractDebuggerStoreType {
   templateExtractDebugInfo: TemplateExtractDebugInfo | null;
   templateExtractIssues: OperationOutcome | null;
   setTemplateExtractResult: (result: FhirResource | null) => void;
-  setTemplateExtractDebugInfo: (templateExtractDebugInfo: TemplateExtractDebugInfo) => void;
-  setTemplateExtractIssues: (templateExtractIssues: OperationOutcome) => void;
+  setTemplateExtractDebugInfo: (templateExtractDebugInfo: TemplateExtractDebugInfo | null) => void;
+  setTemplateExtractIssues: (templateExtractIssues: OperationOutcome | null) => void;
 
   // Reset store
   resetStore: () => void;
@@ -49,9 +49,9 @@ export const extractDebuggerStore = createStore<ExtractDebuggerStoreType>()((set
   templateExtractIssues: null,
   setTemplateExtractResult: (result: FhirResource | null) =>
     set(() => ({ templateExtractResult: result })),
-  setTemplateExtractDebugInfo: (templateExtractDebugInfo: TemplateExtractDebugInfo) =>
+  setTemplateExtractDebugInfo: (templateExtractDebugInfo: TemplateExtractDebugInfo | null) =>
     set(() => ({ templateExtractDebugInfo })),
-  setTemplateExtractIssues: (templateExtractIssues: OperationOutcome) =>
+  setTemplateExtractIssues: (templateExtractIssues: OperationOutcome | null) =>
     set(() => ({ templateExtractIssues })),
 
   // Reset store

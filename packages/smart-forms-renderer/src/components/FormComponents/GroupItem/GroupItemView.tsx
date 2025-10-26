@@ -20,7 +20,6 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { QGroupContainerBox } from '../../Box.styles';
 import type {
   PropsWithIsRepeatedAttribute,
-  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
   PropsWithParentStylesAttribute,
@@ -42,12 +41,10 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import { GroupAccordion } from './GroupAccordion.styles';
 import PageButtonsWrapper from './PageButtonWrapper';
 import { useParseXhtml } from '../../../hooks/useParseXhtml';
-import { extendItemPath } from '../../../utils/itemPath';
 import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
 
 interface GroupItemViewProps
   extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
     PropsWithQrRepeatGroupChangeHandler,
     PropsWithIsRepeatedAttribute,
     PropsWithParentIsReadOnlyAttribute,
@@ -71,7 +68,7 @@ function GroupItemView(props: GroupItemViewProps) {
     qItem,
     childQItems,
     qrItemsByIndex,
-    itemPath,
+
     isRepeated = false,
     groupCardElevation,
     disableCardView,
@@ -145,7 +142,6 @@ function GroupItemView(props: GroupItemViewProps) {
                   key={childQItem.linkId}
                   qItem={childQItem}
                   qrItemOrItems={qrItemOrItems}
-                  itemPath={extendItemPath(itemPath, childQItem.linkId)}
                   groupCardElevation={groupCardElevation + 1}
                   parentIsReadOnly={readOnly}
                   parentIsRepeatGroup={parentIsRepeatGroup}
@@ -198,7 +194,6 @@ function GroupItemView(props: GroupItemViewProps) {
               key={childQItem.linkId}
               qItem={childQItem}
               qrItemOrItems={qrItemOrItems}
-              itemPath={extendItemPath(itemPath, childQItem.linkId)}
               groupCardElevation={groupCardElevation + 1}
               parentIsReadOnly={readOnly}
               parentIsRepeatGroup={parentIsRepeatGroup}
@@ -249,7 +244,6 @@ function GroupItemView(props: GroupItemViewProps) {
               key={childQItem.linkId}
               qItem={childQItem}
               qrItemOrItems={qrItemOrItems}
-              itemPath={extendItemPath(itemPath, childQItem.linkId)}
               groupCardElevation={groupCardElevation + 1}
               parentIsReadOnly={readOnly}
               parentIsRepeatGroup={parentIsRepeatGroup}

@@ -33,8 +33,8 @@ jest.mock('../stores', () => ({
   }
 }));
 
-jest.mock('../stores/rendererStylingStore', () => ({
-  useRendererStylingStore: {
+jest.mock('../stores/rendererConfigStore', () => ({
+  useRendererConfigStore: {
     use: {
       enableWhenAsReadOnly: jest.fn()
     }
@@ -72,13 +72,13 @@ describe('useHidden', () => {
   // Helper function to get mock references
   const getMocks = () => {
     const { useQuestionnaireStore } = jest.requireMock('../stores');
-    const { useRendererStylingStore } = jest.requireMock('../stores/rendererStylingStore');
+    const { useRendererConfigStore } = jest.requireMock('../stores/rendererConfigStore');
 
     return {
       enableWhenIsActivated: useQuestionnaireStore.use.enableWhenIsActivated,
       enableWhenItems: useQuestionnaireStore.use.enableWhenItems,
       enableWhenExpressions: useQuestionnaireStore.use.enableWhenExpressions,
-      enableWhenAsReadOnly: useRendererStylingStore.use.enableWhenAsReadOnly
+      enableWhenAsReadOnly: useRendererConfigStore.use.enableWhenAsReadOnly
     };
   };
 

@@ -17,16 +17,17 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { qCalculatedExpressionBMICalculator } from '../assets/questionnaires';
+
 import {
-  findByLinkId,
+  findByLinkIdOrLabel,
   getAnswers,
   getInputText,
   inputDecimal,
-  qrFactory,
-  questionnaireFactory
+  questionnaireFactory,
+  questionnaireResponseFactory
 } from '../testUtils';
 import { expect, fireEvent } from 'storybook/test';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -41,6 +42,7 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 
+/* Decimal Basic story */
 const targetLinkId = 'weight';
 const targetWeight = 80.3;
 
@@ -52,7 +54,8 @@ const qDecimalBasic = questionnaireFactory([
     text: 'Weight in kg'
   }
 ]);
-const qrDecimalBasicResponse = qrFactory([
+
+const qrDecimalBasicResponse = questionnaireResponseFactory([
   {
     linkId: targetLinkId,
     text: 'Weight in kg',
@@ -64,7 +67,7 @@ const qrDecimalBasicResponse = qrFactory([
   }
 ]);
 
-export const DecimalBasic: Story = {
+export const DecimalBasic: Story = createStory({
   args: {
     questionnaire: qDecimalBasic
   },
@@ -84,13 +87,13 @@ export const DecimalBasic: Story = {
     const resultAfterClear = await getAnswers(targetLinkId);
     expect(resultAfterClear).toHaveLength(0);
 
-    const elementAfterClear = await findByLinkId(canvasElement, targetLinkId);
+    const elementAfterClear = await findByLinkIdOrLabel(canvasElement, targetLinkId);
     const input = elementAfterClear.querySelector('input');
     expect(input?.getAttribute('value')).toBe('');
   }
-};
+}) as Story;
 
-export const DecimalBasicResponse: Story = {
+export const DecimalBasicResponse: Story = createStory({
   args: {
     questionnaire: qDecimalBasic,
     questionnaireResponse: qrDecimalBasicResponse
@@ -100,10 +103,4 @@ export const DecimalBasicResponse: Story = {
 
     expect(input).toBe(targetWeight.toString());
   }
-};
-
-export const DecimalCalculation: Story = {
-  args: {
-    questionnaire: qCalculatedExpressionBMICalculator
-  }
-};
+}) as Story;

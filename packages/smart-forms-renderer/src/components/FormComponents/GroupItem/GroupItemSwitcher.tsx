@@ -17,7 +17,6 @@
 
 import React from 'react';
 import type {
-  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
   PropsWithParentStylesAttribute,
@@ -37,7 +36,6 @@ import { useQuestionnaireStore } from '../../../stores';
 
 interface GroupItemSwitcherProps
   extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
     PropsWithQrRepeatGroupChangeHandler,
     PropsWithParentIsReadOnlyAttribute,
     PropsWithParentIsRepeatGroupAttribute,
@@ -51,7 +49,6 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
   const {
     qItem,
     qrItemOrItems,
-    itemPath,
     groupCardElevation,
     parentIsReadOnly,
     parentIsRepeatGroup,
@@ -80,15 +77,14 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
       <QItemOverrideComponent
         qItem={qItem}
         qrItem={qrItemOrItems ?? null}
-        itemPath={itemPath}
         isRepeated={!!qItem.repeats}
         groupCardElevation={groupCardElevation}
         parentIsReadOnly={parentIsReadOnly}
         parentIsRepeatGroup={parentIsRepeatGroup}
         parentRepeatGroupIndex={parentRepeatGroupIndex}
+        parentStyles={parentStyles}
         onQrItemChange={onQrItemChange}
         onQrRepeatGroupChange={onQrRepeatGroupChange}
-        parentStyles={parentStyles}
       />
     );
   }
@@ -109,7 +105,6 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
         <GroupTable
           qItem={qItem}
           qrItems={qrItems}
-          itemPath={itemPath}
           groupCardElevation={groupCardElevation}
           isRepeated={true}
           parentIsReadOnly={parentIsReadOnly}
@@ -123,7 +118,6 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
       <RepeatGroup
         qItem={qItem}
         qrItems={qrItems}
-        itemPath={itemPath}
         groupCardElevation={groupCardElevation}
         parentIsReadOnly={parentIsReadOnly}
         onQrRepeatGroupChange={onQrRepeatGroupChange}
@@ -140,7 +134,6 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
       <GridGroup
         qItem={qItem}
         qrItem={qrItem ?? null}
-        itemPath={itemPath}
         groupCardElevation={groupCardElevation}
         parentIsReadOnly={parentIsReadOnly}
         onQrItemChange={onQrItemChange}
@@ -159,7 +152,6 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
           <GroupTable
             qItem={qItem}
             qrItems={[]}
-            itemPath={itemPath}
             groupCardElevation={groupCardElevation}
             isRepeated={true}
             parentIsReadOnly={parentIsReadOnly}
@@ -173,7 +165,6 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
         <RepeatGroup
           qItem={qItem}
           qrItems={[]}
-          itemPath={itemPath}
           groupCardElevation={groupCardElevation}
           parentIsReadOnly={parentIsReadOnly}
           onQrRepeatGroupChange={onQrRepeatGroupChange}
@@ -186,7 +177,6 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
       <RepeatItem
         qItem={qItem}
         qrItem={qrItem ?? null}
-        itemPath={itemPath}
         groupCardElevation={groupCardElevation}
         parentIsReadOnly={parentIsReadOnly}
         onQrItemChange={onQrItemChange}
@@ -202,7 +192,6 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
         <GroupTable
           qItem={qItem}
           qrItems={qrItem ? [qrItem] : []}
-          itemPath={itemPath}
           groupCardElevation={groupCardElevation}
           isRepeated={false}
           parentIsReadOnly={parentIsReadOnly}
@@ -216,7 +205,6 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
       <GroupItem
         qItem={qItem}
         qrItem={qrItem ?? null}
-        itemPath={itemPath}
         isRepeated={false}
         groupCardElevation={groupCardElevation}
         parentIsReadOnly={parentIsReadOnly}
@@ -233,7 +221,6 @@ function GroupItemSwitcher(props: GroupItemSwitcherProps) {
     <SingleItem
       qItem={qItem}
       qrItem={qrItem ?? null}
-      itemPath={itemPath}
       isRepeated={false}
       isTabled={false}
       groupCardElevation={groupCardElevation}

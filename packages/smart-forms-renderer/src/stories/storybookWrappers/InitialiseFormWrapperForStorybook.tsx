@@ -27,13 +27,15 @@ import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import RendererThemeProvider from '../../theme/RendererThemeProvider';
+import ActionBarForStorybook from './ActionBarForStorybook';
+import CopyButtonsForStorybook from './CopyButtonsForStorybook';
 
 export interface InitialiseFormWrapperProps {
   questionnaire: Questionnaire;
   questionnaireResponse?: QuestionnaireResponse;
   readOnly?: boolean;
   terminologyServerUrl?: string;
-  additionalVariables?: Record<string, any>;
+  additionalContext?: Record<string, any>;
   fhirClient?: Client;
 }
 
@@ -61,7 +63,7 @@ function InitialiseFormWrapperForStorybook(props: InitialiseFormWrapperProps) {
     questionnaireResponse,
     readOnly,
     terminologyServerUrl,
-    additionalVariables,
+    additionalContext,
     fhirClient
   } = props;
 
@@ -79,7 +81,7 @@ function InitialiseFormWrapperForStorybook(props: InitialiseFormWrapperProps) {
     questionnaireResponse,
     readOnly,
     terminologyServerUrl,
-    additionalVariables,
+    additionalContext,
     fhirClient
   );
 
@@ -96,6 +98,9 @@ function InitialiseFormWrapperForStorybook(props: InitialiseFormWrapperProps) {
   return (
     <RendererThemeProvider>
       <QueryClientProvider client={queryClient}>
+        <ActionBarForStorybook>
+          <CopyButtonsForStorybook />
+        </ActionBarForStorybook>
         <BaseRenderer />
       </QueryClientProvider>
     </RendererThemeProvider>

@@ -7,42 +7,131 @@ import type {
   QuestionnaireResponse,
   QuestionnaireResponseItem
 } from 'fhir/r4';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
+import { fireEvent, screen, userEvent, waitFor } from 'storybook/internal/test';
+
+export async function getQuantityTextValues(
+  canvasElement: HTMLElement,
+  linkId: string,
+  unit: boolean
+) {
+  const element = await findByLinkIdOrLabel(canvasElement, linkId);
+  const quantityComparator = element.querySelector(
+    'div[data-test="q-item-quantity-comparator"] input'
+  );
+  const quantityInput = element.querySelector('div[data-test="q-item-quantity-field"] input');
+  const quantityUnit = element.querySelector('div[data-test="q-item-unit-field"] input');
+
+  // Error section
+  if (!quantityComparator) {
+    throw new Error(
+      `Comparator input was not found inside [data-test="q-item-quantity-comparator"] block`
+    );
+  }
+  if (!quantityInput) {
+    throw new Error(
+      `Quantity Input was not found inside [data-test="q-item-quantity-field"] block`
+    );
+  }
+  if (!quantityUnit && unit) {
+    throw new Error(`Unit input was not found inside [data-test="q-item-unit-field"] block`);
+  }
+
+  return {
+    comparator: quantityComparator?.getAttribute('value'),
+    value: quantityInput?.getAttribute('value'),
+    unit: quantityUnit?.getAttribute('value')
+  };
+}
+
+export async function inputQuantity(
+  canvasElement: HTMLElement,
+  linkId: string,
+  quantity: number,
+  unit?: string,
+  comparator?: string
+) {
+  const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
+
+  const comparatorInput = questionElement?.querySelector(
+    `div[data-test="q-item-quantity-comparator"] input`
+  );
+  const quantityInput = questionElement?.querySelector(
+    `div[data-test="q-item-quantity-field"] input`
+  );
+  const unitInput = questionElement?.querySelector(`div[data-test="q-item-unit-field"] input`);
+
+  // Error section
+  if (comparator && !comparatorInput) {
+    throw new Error(`Input was not found inside [data-test="q-item-quantity-comparator"] block`);
+  }
+  if (!quantityInput) {
+    throw new Error(`Input was not found inside [data-test="q-item-quantity-field"] block`);
+  }
+  if (!unitInput && unit) {
+    throw new Error(`Input was not found inside [data-test="q-item-unit-field"] block`);
+  }
+
+  if (comparator && comparatorInput) {
+    await fireEvent.focus(comparatorInput);
+    await fireEvent.keyDown(comparatorInput, { key: 'ArrowDown', code: 'ArrowDown' });
+    const option = await screen.findByText(comparator);
+    await fireEvent.click(option);
+  }
+
+  if (unit && unitInput) {
+    await fireEvent.focus(unitInput);
+    await fireEvent.keyDown(unitInput, { key: 'ArrowDown', code: 'ArrowDown' });
+    const option = await screen.findByText(unit);
+    await fireEvent.click(option);
+  }
+
+  await fireEvent.change(quantityInput, { target: { value: quantity } });
+
+  // Here we await for debounced store update
+  await new Promise((resolve) => setTimeout(resolve, 500));
+}
 
 export async function getAnswers(linkId: string) {
   const qr = questionnaireResponseStore.getState().updatableResponse;
   const result = await evaluate(qr, `QuestionnaireResponse.item.where(linkId='${linkId}').answer`);
   return result;
 }
-export async function getGroupAnswers(groupLinkid: string, answerLinkid: string) {
+
+export async function getGroupAnswers(groupLinkId: string, answerLinkId: string) {
   const qr = questionnaireResponseStore.getState().updatableResponse;
 
   const result = await evaluate(
     qr,
-    groupLinkid
-      ? `QuestionnaireResponse.item.where(linkId='${groupLinkid}').item.where(linkId='${answerLinkid}').answer`
-      : `QuestionnaireResponse.item.where(linkId='${answerLinkid}').answer`
+    groupLinkId
+      ? `QuestionnaireResponse.item.where(linkId='${groupLinkId}').item.where(linkId='${answerLinkId}').answer`
+      : `QuestionnaireResponse.item.where(linkId='${answerLinkId}').answer`
   );
 
   return result;
 }
 
-export function questionnaireFactory(items: QuestionnaireItem[]): Questionnaire {
+export function questionnaireFactory(
+  items: QuestionnaireItem[],
+  extra?: Omit<Questionnaire, 'resourceType' | 'status' | 'item'>
+): Questionnaire {
   return {
     resourceType: 'Questionnaire',
     status: 'active',
-    item: items
+    item: items,
+    ...extra
   };
 }
 
-export function qrFactory(items: QuestionnaireResponseItem[]): QuestionnaireResponse {
+export function questionnaireResponseFactory(
+  items: QuestionnaireResponseItem[]
+): QuestionnaireResponse {
   return {
     resourceType: 'QuestionnaireResponse',
     status: 'completed',
     item: items
   };
 }
+
 export function itemControlExtFactory(code: string): Extension {
   return {
     url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
@@ -63,12 +152,66 @@ export function openLabelExtFactory(text: string): Extension {
   };
 }
 
+export function calculatedExpressionExtFactory(text: string): Extension {
+  return {
+    url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
+    valueExpression: {
+      language: 'text/fhirpath',
+      expression: text
+    }
+  };
+}
+
+export function variableExtFactory(name: string, text: string): Extension {
+  return {
+    url: 'http://hl7.org/fhir/StructureDefinition/variable',
+    valueExpression: {
+      name: name,
+      language: 'text/fhirpath',
+      expression: text
+    }
+  };
+}
+
+export function unitOptionExtFactory(code: string, display: string): Extension {
+  return {
+    url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unitOption',
+    valueCoding: {
+      system: 'http://unitsofmeasure.org',
+      code: code,
+      display: display
+    }
+  };
+}
+export function unitExtFactory(code: string, display: string): Extension {
+  return {
+    url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+    valueCoding: {
+      system: 'http://unitsofmeasure.org',
+      code: code,
+      display: display
+    }
+  };
+}
+
+export function сqfExpressionFactory(text: string) {
+  return {
+    url: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
+    valueExpression: {
+      language: 'text/fhirpath',
+      expression: text
+    }
+  };
+}
+
+export const ucumSystem = 'http://unitsofmeasure.org';
+
 export async function inputText(
   canvasElement: HTMLElement,
   linkId: string,
   text: string | boolean | number
 ) {
-  const questionElement = await findByLinkId(canvasElement, linkId);
+  const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
 
   const input =
     questionElement?.querySelector('input') ?? questionElement?.querySelector('textarea');
@@ -82,8 +225,9 @@ export async function inputText(
   // Here we await for debounced store update
   await new Promise((resolve) => setTimeout(resolve, 500));
 }
+
 export async function checkCheckBox(canvasElement: HTMLElement, linkId: string) {
-  const questionElement = await findByLinkId(canvasElement, linkId);
+  const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
   const input =
     questionElement?.querySelector('input') ?? questionElement?.querySelector('textarea');
 
@@ -104,7 +248,7 @@ export async function inputFile(
   url: string,
   filename: string
 ) {
-  const questionElement = await findByLinkId(canvasElement, linkId);
+  const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
   const input = questionElement?.querySelector('input');
 
   const textareaUrl = questionElement?.querySelector(`textarea[data-test="q-item-attachment-url"]`);
@@ -174,8 +318,7 @@ export async function inputDateTime(
   time: string,
   amPm: string
 ) {
-  const questionElement = await findByLinkId(canvasElement, linkId);
-  console.log(questionElement, 777);
+  const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
   const inputDate = questionElement?.querySelector('div[data-test="date"] input');
   const inputTime = questionElement?.querySelector('div[data-test="time"] input');
   const inputAmPm = questionElement?.querySelector('div[data-test="ampm"] input');
@@ -199,7 +342,7 @@ export async function inputDateTime(
 }
 
 export async function checkRadioOption(canvasElement: HTMLElement, linkId: string, text: string) {
-  const questionElement = await findByLinkId(canvasElement, linkId);
+  const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
   const radio = questionElement?.querySelector(`span[data-test="radio-single-${text}"] input`);
 
   if (!radio) {
@@ -212,7 +355,7 @@ export async function checkRadioOption(canvasElement: HTMLElement, linkId: strin
 }
 
 export async function getInputText(canvasElement: HTMLElement, linkId: string) {
-  const questionElement = await findByLinkId(canvasElement, linkId);
+  const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
   const input =
     questionElement?.querySelector('input') ?? questionElement?.querySelector('textarea');
 
@@ -228,7 +371,7 @@ export async function chooseSelectOption(
   linkId: string,
   optionLabel: string
 ) {
-  const questionElement = await findByLinkId(canvasElement, linkId);
+  const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
 
   const input = questionElement.querySelector('input, textarea');
   if (!input) {
@@ -247,7 +390,7 @@ export async function chooseQuantityOption(
   quantity: number | string,
   quantityComparator?: string
 ) {
-  const questionElement = await findByLinkId(canvasElement, linkId);
+  const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
 
   const inputComaparator = questionElement.querySelector(
     'div[data-test="q-item-quantity-comparator"] input'
@@ -275,22 +418,34 @@ export async function chooseQuantityOption(
   await new Promise((resolve) => setTimeout(resolve, 500));
 }
 
-export async function findByLinkId(canvasElement: HTMLElement, linkId: string) {
-  const selector = `[data-linkid="${linkId}"]`;
+export async function findByLinkIdOrLabel(
+  canvasElement: HTMLElement,
+  linkId: string
+): Promise<HTMLElement> {
+  const selectorByLinkId = `[data-linkid="${linkId}"]`;
+  const selectorByLabel = `[data-label="${linkId}"]`;
+
   return await waitFor(() => {
-    const el = canvasElement.querySelector(selector);
+    const el =
+      canvasElement.querySelector<HTMLElement>(selectorByLinkId) ??
+      canvasElement.querySelector<HTMLElement>(selectorByLabel);
+
     if (!el) {
-      throw new Error(`Element ${selector} not found`);
+      throw new Error(
+        `Element with selectors "${selectorByLinkId}" or "${selectorByLabel}" not found`
+      );
     }
+
     return el;
   });
 }
+
 export async function inputOpenChoiceOtherText(
   canvasElement: HTMLElement,
   linkId: string,
   text: string
 ) {
-  const questionElement = await findByLinkId(canvasElement, linkId);
+  const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
 
   const textarea = questionElement?.querySelector(
     'div[data-test="q-item-radio-open-label-box"] textarea'

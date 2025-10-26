@@ -14,6 +14,7 @@ The extensions that fall under this subsection are:
 
 - **gtable** - Group Table
 - **grid** - Group Grid
+- **page** - Page
 - **tab-container** - Tab Container
 
 ### Group Table
@@ -31,14 +32,14 @@ A group table provides the following controls:
 #### Basic Usage
 
 <IframeContainer
-  storyId="sdc-8-1-2-advanced-control-appearance-item-control-group--g-table-single"
-  initialHeight={528}
+  storyId="sdc-9-1-2-rendering-control-appearance-itemcontrol-group--g-table-single"
+  initialHeight={520}
 />
 
 #### Repeating Usage
 
 <IframeContainer
-  storyId="sdc-8-1-2-advanced-control-appearance-item-control-group--g-table-repeats"
+  storyId="sdc-9-1-2-rendering-control-appearance-itemcontrol-group--g-table-repeats"
   initialHeight={580}
 />
 
@@ -57,14 +58,14 @@ Refer to the **grid** section in [Questionnaire Item UI Controls](https://hl7.or
 #### Single-row Usage
 
 <IframeContainer
-  storyId="sdc-8-1-2-advanced-control-appearance-item-control-group--grid-single-row"
-  initialHeight={268}
+  storyId="sdc-9-1-2-rendering-control-appearance-itemcontrol-group--grid-single-row"
+  initialHeight={270}
 />
 
 #### Multi-row Usage
 
 <IframeContainer
-  storyId="sdc-8-1-2-advanced-control-appearance-item-control-group--grid-multi-row"
+  storyId="sdc-9-1-2-rendering-control-appearance-itemcontrol-group--grid-multi-row"
   initialHeight={580}
 />
 
@@ -73,6 +74,19 @@ Refer to the **grid** section in [Questionnaire Item UI Controls](https://hl7.or
 Similar to the group table, having too many columns in a group grid can make the form question difficult to read. It is recommended to have a maximum of 4-5 columns in a group table.
 
 :::
+
+### Page
+
+Indicates that the group represents a page in the questionnaire.
+
+This can be used to create a multi-page form, with each page representing a section of the form.
+
+#### Basic Usage
+
+<IframeContainer
+  storyId="sdc-9-1-2-rendering-control-appearance-itemcontrol-group--page"
+  initialHeight={410}
+/>
 
 ### Tab Container
 
@@ -85,13 +99,13 @@ This can be used to create a "tabbed" form, with clickable tabs on the left and 
 #### Basic Usage
 
 <IframeContainer
-  storyId="sdc-8-1-2-advanced-control-appearance-item-control-group--tab-container"
-  initialHeight={564}
+  storyId="sdc-9-1-2-rendering-control-appearance-itemcontrol-group--tab-container"
+  initialHeight={500}
 />
 
 #### Conditional Rendering Usage
 
 <IframeContainer
-  storyId="sdc-9-1-4-form-behavior-other-control--enable-when-expression-tabs"
-  initialHeight={412}
+  storyId="sdc-10-1-4-behavior-other-control--enable-when-expression-tabs"
+  initialHeight={450}
 />

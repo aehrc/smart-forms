@@ -9,7 +9,13 @@ function OpenInStorybook(props: OpenInStorybookProps) {
   const { storyUrl } = props;
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'flex-end',
+        backgroundColor: 'rgba(0, 0, 0, 0.05)',
+        borderRadius: '16px'
+      }}>
       <a href={storyUrl} target="_blank" rel="noreferrer">
         <Tooltip title="Open in Storybook">
           <IconButton size="small">

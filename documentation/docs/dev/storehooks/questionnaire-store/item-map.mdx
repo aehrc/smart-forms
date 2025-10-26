@@ -1,0 +1,22 @@
+---
+sidebar_position: 3
+---
+
+# ItemMap Usage
+
+There are three items in this questionnaire, therefore the itemMap `Record<linkId, Omit<QuestionnaireItem, 'item'>>` will have three items and their properties (excluding item.item).
+
+This hook is useful for quickly accessing QuestionnaireItem properties via linkId without having to traverse the entire Questionnaire structure.
+
+```tsx live
+function App() {
+  const itemMap = useQuestionnaireStore.use.itemMap();
+
+  return (
+    <>
+      <YourBaseRendererWrapper questionnaire={qCalculatedExpressionBMICalculator} />
+      <JsonViewer hookName="itemMap" data={itemMap} />
+    </>
+  );
+}
+```

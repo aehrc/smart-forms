@@ -38,11 +38,11 @@
 
 #### MuiSpeedDialAction.styleOverrides.staticTooltipLabel.fontSize
 
-> **fontSize**: `undefined` \| `FontSize`\<`string` \| `number`\> = `theme.typography.subtitle2.fontSize`
+> **fontSize**: `FontSize`\<`string` \| `number`\> \| `undefined` = `theme.typography.subtitle2.fontSize`
 
 #### MuiSpeedDialAction.styleOverrides.staticTooltipLabel.fontWeight
 
-> **fontWeight**: `undefined` \| `FontWeight` = `theme.typography.subtitle2.fontWeight`
+> **fontWeight**: `FontWeight` \| `undefined` = `theme.typography.subtitle2.fontWeight`
 
 #### MuiSpeedDialAction.styleOverrides.staticTooltipLabel.maxWidth
 

@@ -15,42 +15,20 @@
  * limitations under the License.
  */
 
-import React from 'react';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
-import { createEmptyQrItem } from '../../../utils/qrItem';
-import { updateChoiceCheckboxAnswers } from '../../../utils/choice';
-import { FullWidthFormComponentBox } from '../../Box.styles';
-import type {
-  PropsWithFeedbackFromParentAttribute,
-  PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
-  PropsWithItemPathAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithQrItemChangeHandler,
-  PropsWithRenderingExtensionsAttribute
-} from '../../../interfaces/renderProps.interface';
-import DisplayInstructions from '../DisplayItem/DisplayInstructions';
-import useReadOnly from '../../../hooks/useReadOnly';
-import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
-import { useQuestionnaireStore } from '../../../stores';
-import ChoiceCheckboxAnswerOptionFields from './ChoiceCheckboxAnswerOptionFields';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
-import ItemLabel from '../ItemParts/ItemLabel';
 import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
+import useReadOnly from '../../../hooks/useReadOnly';
+import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
+import { useQuestionnaireStore } from '../../../stores';
+import { updateChoiceCheckboxAnswers } from '../../../utils/choice';
+import { createEmptyQrItem } from '../../../utils/qrItem';
+import { FullWidthFormComponentBox } from '../../Box.styles';
+import DisplayInstructions from '../DisplayItem/DisplayInstructions';
+import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import ItemLabel from '../ItemParts/ItemLabel';
+import ChoiceCheckboxAnswerOptionFields from './ChoiceCheckboxAnswerOptionFields';
 
-interface ChoiceCheckboxAnswerOptionItemProps
-  extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
-    PropsWithIsRepeatedAttribute,
-    PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute,
-    PropsWithFeedbackFromParentAttribute,
-    PropsWithIsTabledAttribute {
-  qItem: QuestionnaireItem;
-  qrItem: QuestionnaireResponseItem | null;
-}
-
-function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemProps) {
+function ChoiceCheckboxAnswerOptionItem(props: BaseItemProps) {
   const {
     qItem,
     qrItem,
@@ -59,6 +37,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
+    calcExpUpdated,
     onQrItemChange
   } = props;
 
@@ -70,10 +49,6 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
   const answers = qrChoiceCheckbox.answer ?? [];
 
   const { displayInstructions } = renderingExtensions;
-
-  // TODO Process calculated expressions
-  // This requires its own hook, because in the case of multi-select, we need to check if the value is already checked to prevent an infinite loop
-  // This will be done after the choice/open-choice refactoring
 
   // Process answerOptionsToggleExpressions
   const { answerOptionsToggleExpressionsMap, answerOptionsToggleExpUpdated } =
@@ -120,7 +95,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
           answers={answers}
           feedback={feedback}
           readOnly={readOnly}
-          expressionUpdated={answerOptionsToggleExpUpdated}
+          expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
           answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
           isTabled={isTabled}
           onCheckedChange={handleCheckedChange}
@@ -135,6 +110,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
     <FullWidthFormComponentBox
       data-test="q-item-choice-checkbox-answer-option-box"
       data-linkid={qItem.linkId}
+      data-label={qItem.text}
       onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid
         qItem={qItem}
@@ -147,7 +123,7 @@ function ChoiceCheckboxAnswerOptionItem(props: ChoiceCheckboxAnswerOptionItemPro
             answers={answers}
             feedback={feedback}
             readOnly={readOnly}
-            expressionUpdated={answerOptionsToggleExpUpdated}
+            expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             isTabled={isTabled}
             onCheckedChange={handleCheckedChange}

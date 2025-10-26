@@ -27,8 +27,9 @@ import PrePopButtonForStorybook from './PrePopButtonForStorybook';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { buildForm } from '../../utils';
 import { STORYBOOK_TERMINOLOGY_SERVER_URL } from './globals';
-import { useQuestionnaireStore } from '../../stores';
 import { fetchResourceCallback } from '../../api/callback';
+import ActionBarForStorybook from './ActionBarForStorybook';
+import CopyButtonsForStorybook from './CopyButtonsForStorybook';
 
 interface PrePopWrapperForStorybookProps {
   questionnaire: Questionnaire;
@@ -51,14 +52,11 @@ function PrePopWrapperForStorybook(props: PrePopWrapperForStorybookProps) {
   const { questionnaire, fhirClient, patient, user } = props;
 
   const [isPopulating, setIsPopulating] = useState(false);
-  const setPopulatedContext = useQuestionnaireStore.use.setPopulatedContext();
 
-  const isBuilding = useBuildForm(
+  const isBuilding = useBuildForm({
     questionnaire,
-    undefined,
-    undefined,
-    STORYBOOK_TERMINOLOGY_SERVER_URL
-  );
+    terminologyServerUrl: STORYBOOK_TERMINOLOGY_SERVER_URL
+  });
 
   const queryClient = useRendererQueryClient();
 
@@ -83,17 +81,16 @@ function PrePopWrapperForStorybook(props: PrePopWrapperForStorybookProps) {
       const { populatedResponse, populatedContext } = populateResult;
 
       // Call to buildForm to pre-populate the QR which repaints the entire BaseRenderer view
-      await buildForm(
-        questionnaire,
-        populatedResponse,
-        undefined,
-        STORYBOOK_TERMINOLOGY_SERVER_URL,
-        {
+      await buildForm({
+        questionnaire: questionnaire,
+        questionnaireResponse: populatedResponse,
+        terminologyServerUrl: STORYBOOK_TERMINOLOGY_SERVER_URL,
+        additionalContext: {
           patient: patient,
-          user: user
+          user: user,
+          ...populatedContext
         }
-      );
-      setPopulatedContext(populatedContext ?? {}, true);
+      });
 
       setIsPopulating(false);
     });
@@ -107,7 +104,10 @@ function PrePopWrapperForStorybook(props: PrePopWrapperForStorybookProps) {
     <RendererThemeProvider>
       <QueryClientProvider client={queryClient}>
         <div>
-          <PrePopButtonForStorybook isPopulating={isPopulating} onPopulate={handlePrepopulate} />
+          <ActionBarForStorybook>
+            <PrePopButtonForStorybook isPopulating={isPopulating} onPopulate={handlePrepopulate} />
+            <CopyButtonsForStorybook />
+          </ActionBarForStorybook>
           {isPopulating ? null : <BaseRenderer />}
         </div>
       </QueryClientProvider>

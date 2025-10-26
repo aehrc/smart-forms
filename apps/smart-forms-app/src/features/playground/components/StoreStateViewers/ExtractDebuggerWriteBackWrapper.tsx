@@ -11,29 +11,29 @@ import { buildBundleFromObservationArray } from '@aehrc/smart-forms-renderer';
 
 interface ExtractDebuggerWriteBackWrapperProps {
   sourceFhirServerUrl: string;
-  propertyObject: any;
+  selectedPropVal: any;
 }
 
 function ExtractDebuggerWriteBackWrapper(props: ExtractDebuggerWriteBackWrapperProps) {
-  const { sourceFhirServerUrl, propertyObject } = props;
+  const { sourceFhirServerUrl, selectedPropVal } = props;
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [writingBack, setWritingBack] = useState(false);
 
   const { bundleToWriteBack, propertyObjIsObservationArray } = useMemo(() => {
     // PropertyObject is a Bundle, return it directly
-    if (extractedResourceIsBatchBundle(propertyObject)) {
-      return { bundleToWriteBack: propertyObject as Bundle, propertyObjIsObservationArray: false };
+    if (extractedResourceIsBatchBundle(selectedPropVal)) {
+      return { bundleToWriteBack: selectedPropVal as Bundle, propertyObjIsObservationArray: false };
     }
 
     // PropertyObject is an Observation array, convert it to a Bundle
     if (
-      Array.isArray(propertyObject) &&
-      propertyObject.length > 0 &&
-      propertyObject.every((item) => item.resourceType === 'Observation')
+      Array.isArray(selectedPropVal) &&
+      selectedPropVal.length > 0 &&
+      selectedPropVal.every((item) => item.resourceType === 'Observation')
     ) {
       return {
-        bundleToWriteBack: buildBundleFromObservationArray(propertyObject as Observation[]),
+        bundleToWriteBack: buildBundleFromObservationArray(selectedPropVal as Observation[]),
         propertyObjIsObservationArray: true
       };
     }
@@ -43,7 +43,7 @@ function ExtractDebuggerWriteBackWrapper(props: ExtractDebuggerWriteBackWrapperP
       bundleToWriteBack: null,
       propertyObjIsObservationArray: false
     };
-  }, [propertyObject]);
+  }, [selectedPropVal]);
 
   const writeBackEnabled = extractedResourceIsBatchBundle(bundleToWriteBack);
 

@@ -394,7 +394,8 @@ export function buildBundleFromObservationArray(observations: Observation[]): Bu
     meta: {
       tag: [
         {
-          code: '@aehrc/smart-forms-renderer:generated'
+          code: '@aehrc/smart-forms-renderer:generated',
+          system: 'urn:aehrc:sdc-template-extract'
         }
       ]
     },

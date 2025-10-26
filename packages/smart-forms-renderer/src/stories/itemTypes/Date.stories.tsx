@@ -18,8 +18,15 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 
-import { getAnswers, getInputText, inputDate, qrFactory, questionnaireFactory } from '../testUtils';
+import {
+  getAnswers,
+  getInputText,
+  inputDate,
+  questionnaireFactory,
+  questionnaireResponseFactory
+} from '../testUtils';
 import { expect } from 'storybook/test';
+import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -33,46 +40,47 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+
+/* Date Basic story */
 const targetLinkId = 'dob';
-const targetText = 'Date of birth';
-const targetDateText = '1990-01-01';
-const targetDate = '01/01/1990';
+const targetDateInput = '01/01/1990';
+const targetValueDate = '1990-01-01';
 
 const qDateBasic = questionnaireFactory([
   {
     linkId: targetLinkId,
     type: 'date',
     repeats: false,
-    text: targetText
+    text: 'Date of birth'
   }
 ]);
-const qrDateBasicResponse = qrFactory([
+const qrDateBasicResponse = questionnaireResponseFactory([
   {
     linkId: targetLinkId,
-    text: targetText,
+    text: 'Date of birth',
     answer: [
       {
-        valueDate: targetDateText
+        valueDate: targetValueDate
       }
     ]
   }
 ]);
 
-export const DateBasic: Story = {
+export const DateBasic: Story = createStory({
   args: {
     questionnaire: qDateBasic
   },
   play: async ({ canvasElement }) => {
-    await inputDate(canvasElement, targetLinkId, targetDate);
+    await inputDate(canvasElement, targetLinkId, targetDateInput);
 
     const result = await getAnswers(targetLinkId);
     expect(result).toHaveLength(1);
-    expect(result[0]).toEqual(expect.objectContaining({ valueDate: targetDateText }));
+    expect(result[0]).toEqual(expect.objectContaining({ valueDate: targetValueDate }));
     // TODO : ADD CLEAR BUTTON
   }
-};
+}) as Story;
 
-export const DateBasicResponse: Story = {
+export const DateBasicResponse: Story = createStory({
   args: {
     questionnaire: qDateBasic,
     questionnaireResponse: qrDateBasicResponse
@@ -80,6 +88,6 @@ export const DateBasicResponse: Story = {
   play: async ({ canvasElement }) => {
     const input = await getInputText(canvasElement, targetLinkId);
 
-    expect(input).toBe(targetDate);
+    expect(input).toBe(targetDateInput);
   }
-};
+}) as Story;

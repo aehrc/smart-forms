@@ -22,7 +22,6 @@ import { containsTabs, isTabContainer } from '../../utils/tabs';
 import GroupItem from '../FormComponents/GroupItem/GroupItem';
 import SingleItem from '../FormComponents/SingleItem/SingleItem';
 import type {
-  PropsWithItemPathAttribute,
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler,
   PropsWithQrRepeatGroupChangeHandler
@@ -37,13 +36,12 @@ import { isRepeatItemAndNotCheckbox, isSpecificItemControl } from '../../utils';
 import GroupTable from '../FormComponents/Tables/GroupTable';
 import RepeatItem from '../FormComponents/RepeatItem/RepeatItem';
 import GridGroup from '../FormComponents/GridGroup/GridGroup';
-import { useRendererStylingStore } from '../../stores';
+import { useRendererConfigStore } from '../../stores';
 import { isPage } from '../../utils/page';
 import FormBodyPageContainer from './FormBodyPageContainer';
 
 interface FormTopLevelItemProps
   extends PropsWithQrItemChangeHandler,
-    PropsWithItemPathAttribute,
     PropsWithQrRepeatGroupChangeHandler,
     PropsWithParentIsReadOnlyAttribute {
   topLevelQItem: QuestionnaireItem;
@@ -55,7 +53,7 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
   const {
     topLevelQItem,
     topLevelQRItemOrItems,
-    itemPath,
+
     parentIsReadOnly,
     wholeFormIsPaginated,
     onQrItemChange,
@@ -70,7 +68,7 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
   // Unfortunately, "header" and "footer" itemControl is not supported.
   const itemIsPageContainer = isPage(topLevelQItem);
 
-  const showTabbedFormAt = useRendererStylingStore.use.showTabbedFormAt();
+  const showTabbedFormAt = useRendererConfigStore.use.showTabbedFormAt();
   const isTabbedForm = useResponsive(showTabbedFormAt);
 
   const itemIsGroup = topLevelQItem.type === 'group';
@@ -88,7 +86,6 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
       <GroupItemSwitcher
         qItem={topLevelQItem}
         qrItemOrItems={topLevelQRItemOrItems}
-        itemPath={itemPath}
         groupCardElevation={1}
         parentIsReadOnly={readOnly}
         onQrItemChange={onQrItemChange}
@@ -108,7 +105,6 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
           key={topLevelQItem.linkId}
           topLevelQItem={topLevelQItem}
           topLevelQRItem={topLevelQRItem}
-          itemPath={itemPath}
           parentIsReadOnly={readOnly}
           onQrItemChange={onQrItemChange}
         />
@@ -120,7 +116,6 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
         key={topLevelQItem.linkId}
         topLevelQItem={topLevelQItem}
         topLevelQRItem={topLevelQRItem}
-        itemPath={itemPath}
         parentIsReadOnly={readOnly}
         onQrItemChange={onQrItemChange}
       />
@@ -140,7 +135,6 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
         key={topLevelQItem.linkId}
         topLevelQItem={topLevelQItem}
         topLevelQRItem={topLevelQRItem}
-        itemPath={itemPath}
         parentIsReadOnly={readOnly}
         onQrItemChange={onQrItemChange}
       />
@@ -156,7 +150,6 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
         <GridGroup
           qItem={topLevelQItem}
           qrItem={topLevelQRItem}
-          itemPath={itemPath}
           groupCardElevation={1}
           parentIsReadOnly={parentIsReadOnly}
           onQrItemChange={onQrItemChange}
@@ -171,7 +164,6 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
           key={topLevelQItem.linkId}
           qItem={topLevelQItem}
           qrItems={topLevelQRItem ? [topLevelQRItem] : []}
-          itemPath={itemPath}
           groupCardElevation={1}
           isRepeated={false}
           parentIsReadOnly={parentIsReadOnly}
@@ -185,7 +177,6 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
         key={topLevelQItem.linkId}
         qItem={topLevelQItem}
         qrItem={topLevelQRItem}
-        itemPath={itemPath}
         groupCardElevation={1}
         isRepeated={false}
         parentIsReadOnly={readOnly}
@@ -203,7 +194,6 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
           key={topLevelQItem.linkId}
           qItem={topLevelQItem}
           qrItem={topLevelQRItem}
-          itemPath={itemPath}
           groupCardElevation={1}
           parentIsReadOnly={readOnly}
           onQrItemChange={onQrItemChange}
@@ -218,7 +208,6 @@ function FormTopLevelItem(props: FormTopLevelItemProps) {
         key={topLevelQItem.linkId}
         qItem={topLevelQItem}
         qrItem={topLevelQRItem}
-        itemPath={itemPath}
         isRepeated={false}
         isTabled={false}
         groupCardElevation={1}

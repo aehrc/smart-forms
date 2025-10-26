@@ -15,25 +15,20 @@
  * limitations under the License.
  */
 
-import { describe, expect, test, jest } from '@jest/globals';
+import { describe, expect } from '@jest/globals';
 import {
-  getBindingParameter,
-  getBindingParameters,
   addBindingParametersToValueSetUrl,
+  evaluateDynamicValueSets,
   evaluateInitialDynamicValueSets,
-  evaluateDynamicValueSets
+  getBindingParameter,
+  getBindingParameters
 } from '../utils/parameterisedValueSets';
-import type {
-  Extension,
-  QuestionnaireItem,
-  QuestionnaireResponse,
-  QuestionnaireResponseItem
-} from 'fhir/r4';
-import type { BindingParameter, ProcessedValueSet } from '../interfaces/valueSet.interface';
-import type { Variables } from '../interfaces';
+import type { Extension, QuestionnaireItem } from 'fhir/r4';
+import type { BindingParameter } from '../interfaces/valueSet.interface';
 
 // Mock dependencies
 jest.mock('../utils/fhirpath', () => ({
+  ...jest.requireActual('../utils/fhirpath'),
   createFhirPathContext: jest.fn(() =>
     Promise.resolve({
       fhirPathContext: { mockContext: true },
@@ -608,7 +603,7 @@ describe('parameterisedValueSets utils', () => {
       consoleSpy.mockRestore();
     });
 
-    it('should handle Promise-based FHIRPath results', async () => {
+    it('should evaluate Promise-based FHIRPath results but skip caching for %-expressions', async () => {
       const mockFhirpath = jest.requireMock('fhirpath') as any;
       mockFhirpath.evaluate.mockReturnValue(Promise.resolve(['async-result']));
 
@@ -631,7 +626,8 @@ describe('parameterisedValueSets utils', () => {
 
       const result = await evaluateInitialDynamicValueSets(params);
 
-      expect(result.fhirPathTerminologyCache['"%patient.id"']).toEqual(['async-result']);
+      // Cache should not store %-expressions
+      expect(result.fhirPathTerminologyCache).toEqual({});
     });
 
     it('should handle empty FHIRPath results (remove parameter)', async () => {
@@ -770,7 +766,7 @@ describe('parameterisedValueSets utils', () => {
         'http://terminology.example.com'
       );
 
-      expect(result.processedValueSetsIsUpdated).toBe(false);
+      expect(result.isUpdated).toBe(false);
       expect(result.computedNewAnswers).toEqual({});
     });
 
@@ -801,7 +797,7 @@ describe('parameterisedValueSets utils', () => {
         'http://terminology.example.com'
       );
 
-      expect(result.processedValueSetsIsUpdated).toBe(true);
+      expect(result.isUpdated).toBe(true);
       expect(result.updatedProcessedValueSets['dynamic-vs'].bindingParameters[0].value).toBe(
         'new-value'
       );
@@ -838,10 +834,10 @@ describe('parameterisedValueSets utils', () => {
         'http://terminology.example.com'
       );
 
-      expect(result.processedValueSetsIsUpdated).toBe(false);
+      expect(result.isUpdated).toBe(false);
     });
 
-    it('should handle cached results', async () => {
+    it('should always evaluate variable-based expressions (%-expressions) instead of using cache', async () => {
       const processedValueSets = {
         'dynamic-vs': {
           initialValueSetUrl: 'http://example.com/dynamic',
@@ -859,7 +855,7 @@ describe('parameterisedValueSets utils', () => {
       };
 
       const fhirPathTerminologyCache = {
-        '"%patient.id"': ['cached-result']
+        '%patient.id': ['cached-result']
       };
 
       const result = await evaluateDynamicValueSets(
@@ -869,8 +865,8 @@ describe('parameterisedValueSets utils', () => {
         'http://terminology.example.com'
       );
 
-      // Should skip evaluation due to cache
-      expect(result.processedValueSetsIsUpdated).toBe(false);
+      // Should always evaluate, because expressions with variables (%) cannot be cached
+      expect(result.isUpdated).toBe(true);
     });
 
     it('should handle FHIRPath evaluation errors', async () => {
@@ -908,7 +904,7 @@ describe('parameterisedValueSets utils', () => {
         'FHIRPath evaluation failed',
         expect.stringContaining('invalid.expression')
       );
-      expect(result.processedValueSetsIsUpdated).toBe(false);
+      expect(result.isUpdated).toBe(false);
 
       consoleSpy.mockRestore();
     });

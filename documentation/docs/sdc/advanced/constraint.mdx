@@ -21,7 +21,10 @@ The elements/extensions that fall under this subsection are:
 - [regex](http://hl7.org/fhir/uv/sdc/behavior.html#regex)
 - [minValue](http://hl7.org/fhir/uv/sdc/behavior.html#minValue)
 - [maxValue](http://hl7.org/fhir/uv/sdc/behavior.html#maxValue)
+- [minQuantity](http://hl7.org/fhir/uv/sdc/behavior.html#minQuantity)
+- [maxQuantity](http://hl7.org/fhir/uv/sdc/behavior.html#maxQuantity)
 - [maxDecimalPlaces](http://hl7.org/fhir/uv/sdc/behavior.html#maxDecimalPlaces)
+- [targetConstraint](http://hl7.org/fhir/extensions/5.3.0-ballot-tc1/StructureDefinition-targetConstraint.html)
 
 :::tip
 Elements/extensions in this subsection invokes form validation in the renderer. OperationOutcome resources are generated when the current state of the form does not meet the constraints defined in the Questionnaire.
@@ -38,7 +41,7 @@ Also appears in the [Fundamental Elements](/docs/sdc/advanced/fundamental) subse
 
 #### Basic Usage
 
-<IframeContainer storyId="sdc-8-1-4-advanced-other--required" initialHeight={120} />
+<IframeContainer storyId="sdc-9-1-4-rendering-other--required" initialHeight={150} />
 
 ### MaxLength
 
@@ -48,10 +51,7 @@ MaxLength is only supported on **decimal**, **integer**, **string** and **text**
 
 #### Basic Usage
 
-<IframeContainer
-  storyId="sdc-9-1-1-form-behavior-value-constraints--max-length"
-  initialHeight={272}
-/>
+<IframeContainer storyId="sdc-10-1-1-behavior-value-constraints--max-length" initialHeight={260} />
 
 ### MinLength
 
@@ -61,10 +61,7 @@ MinLength is only supported on **decimal**, **integer**, **string** and **text**
 
 #### Basic Usage
 
-<IframeContainer
-  storyId="sdc-9-1-1-form-behavior-value-constraints--min-length"
-  initialHeight={272}
-/>
+<IframeContainer storyId="sdc-10-1-1-behavior-value-constraints--min-length" initialHeight={260} />
 
 ### Regex
 
@@ -72,34 +69,60 @@ A [regular expression](https://developer.mozilla.org/en-US/docs/Web/JavaScript/G
 
 Regex is only supported on **decimal**, **integer**, **string** and **text** "text-field"-based items.
 
+:::tip
+
+"regex" extension doesn't allow you to customise error messages. It is recommended to use [targetConstraint](#targetconstraint) instead.
+
+:::
+
 #### Basic Usage
 
-<IframeContainer storyId="sdc-9-1-1-form-behavior-value-constraints--regex" initialHeight={272} />
+<IframeContainer storyId="sdc-10-1-1-behavior-value-constraints--regex" initialHeight={260} />
 
 ### MinValue
 
 The minimum value of the quantifiable answer to this question.
 
-MinValue is only supported on **decimal**, **integer**, **string** and **text** "text-field"-based items.
+MinValue is only supported on **decimal**, **integer**, **date** and **dateTime** items.
 
 #### Basic Usage
 
-<IframeContainer
-  storyId="sdc-9-1-1-form-behavior-value-constraints--min-value"
-  initialHeight={272}
-/>
+<IframeContainer storyId="sdc-10-1-1-behavior-value-constraints--min-value" initialHeight={260} />
 
 ### MaxValue
 
 The maximum value of the quantifiable answer to this question.
 
-MaxValue is only supported on **decimal**, **integer**, **string** and **text** "text-field"-based items.
+MinValue is only supported on **decimal**, **integer**, **date** and **dateTime** items.
+
+#### Basic Usage
+
+<IframeContainer storyId="sdc-10-1-1-behavior-value-constraints--max-value" initialHeight={260} />
+
+### MinQuantity
+
+The minimum value of the quantifiable `valueQuantity.value` to this question.
+
+MinQuantity is only supported on **quantity** items.
 
 #### Basic Usage
 
 <IframeContainer
-  storyId="sdc-9-1-1-form-behavior-value-constraints--max-value"
-  initialHeight={272}
+  storyId="sdc-10-1-1-behavior-value-constraints--min-quantity"
+  initialHeight={300}
+/>
+
+### MaxQuantity
+
+The maximum value of the quantifiable `valueQuantity.value` to this question.
+
+MaxQuantity is only supported on **quantity** items.
+
+#### Basic Usage
+
+<IframeContainer
+  storyId="sdc-10-1-1-behavior-value-constraints--max-quantity"
+  initialHeight={300}
 />
 
 ### MaxDecimalPlaces
@@ -111,6 +134,26 @@ MaxDecimalPlaces is only supported on **decimal** items.
 #### Basic Usage
 
 <IframeContainer
-  storyId="sdc-9-1-1-form-behavior-value-constraints--max-decimal-places"
-  initialHeight={272}
+  storyId="sdc-10-1-1-behavior-value-constraints--max-decimal-places"
+  initialHeight={260}
+/>
+
+### TargetConstraint
+
+Specifies a constraint that the answer to this question must satisfy, expressed as a FHIRPath expression.
+
+This extension allows you to specify human-readable error messages when the constraint is violated.
+
+#### Basic Usage
+
+<IframeContainer
+  storyId="sdc-10-1-4-behavior-other-control--target-constraint-simple"
+  initialHeight={260}
+/>
+
+#### Multiple Constraints Usage
+
+<IframeContainer
+  storyId="sdc-10-1-4-behavior-other-control--target-constraint-multi"
+  initialHeight={170}
 />

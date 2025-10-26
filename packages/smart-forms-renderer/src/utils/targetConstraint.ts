@@ -16,7 +16,12 @@
  */
 
 import type { Questionnaire, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
-import { createFhirPathContext, handleFhirPathResult } from './fhirpath';
+import {
+  cacheTerminologyResult,
+  createFhirPathContext,
+  handleFhirPathResult,
+  isExpressionCached
+} from './fhirpath';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4';
 import type { TargetConstraint } from '../interfaces/targetConstraint.interface';
@@ -67,8 +72,7 @@ export async function evaluateInitialTargetConstraints(
       continue;
     }
 
-    const cacheKey = JSON.stringify(expression); // Use expression as cache key
-    if (fhirPathTerminologyCache[cacheKey]) {
+    if (isExpressionCached(expression, fhirPathTerminologyCache)) {
       continue;
     }
 
@@ -103,7 +107,7 @@ export async function evaluateInitialTargetConstraints(
 
       // If fhirPathResult is an async terminology call, cache the result
       if (fhirPathResult instanceof Promise) {
-        fhirPathTerminologyCache[cacheKey] = result;
+        cacheTerminologyResult(expression, result, fhirPathTerminologyCache);
       }
     } catch (e) {
       console.warn(e.message, `Target Constraint Key: ${key}\nExpression: ${expression}`);
@@ -123,7 +127,7 @@ export async function evaluateTargetConstraints(
   targetConstraints: Record<string, TargetConstraint>,
   terminologyServerUrl: string
 ): Promise<{
-  targetConstraintsIsUpdated: boolean;
+  isUpdated: boolean;
   updatedTargetConstraints: Record<string, TargetConstraint>;
 }> {
   let isUpdated = false;
@@ -134,8 +138,7 @@ export async function evaluateTargetConstraints(
       continue;
     }
 
-    const cacheKey = JSON.stringify(expression); // Use expression as cache key
-    if (fhirPathTerminologyCache[cacheKey]) {
+    if (isExpressionCached(expression, fhirPathTerminologyCache)) {
       continue;
     }
 
@@ -167,7 +170,7 @@ export async function evaluateTargetConstraints(
 
       // If fhirPathResult is an async terminology call, cache the result
       if (fhirPathResult instanceof Promise) {
-        fhirPathTerminologyCache[cacheKey] = result;
+        cacheTerminologyResult(expression, result, fhirPathTerminologyCache);
       }
     } catch (e) {
       console.warn(e.message, `Target Constraint Key: ${key}\nExpression: ${expression}`);
@@ -175,7 +178,7 @@ export async function evaluateTargetConstraints(
   }
 
   return {
-    targetConstraintsIsUpdated: isUpdated,
+    isUpdated: isUpdated,
     updatedTargetConstraints: targetConstraints
   };
 }

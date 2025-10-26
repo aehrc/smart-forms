@@ -18,7 +18,7 @@
 // @ts-ignore
 import React from 'react';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
-import { Box, IconButton, Tooltip } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 import ContentCutIcon from '@mui/icons-material/ContentCut';
 import { buildForm, removeInternalIdsFromResponse } from '../../utils/manageForm';
 
@@ -32,17 +32,17 @@ function IdRemoverButtonForStorybook(props: IdRemoverButtonProps) {
 
   async function handleRemoveIds() {
     const updatedResponse = removeInternalIdsFromResponse(questionnaire, questionnaireResponse);
-    await buildForm(questionnaire, updatedResponse);
+    await buildForm({ questionnaire, questionnaireResponse: updatedResponse });
   }
 
   return (
-    <Box display="flex" mb={0.5} alignItems="center" columnGap={3}>
-      <Tooltip title="Remove IDs from questionnaire response" placement="right">
+    <>
+      <Tooltip title="Remove IDs from questionnaire response">
         <IconButton onClick={handleRemoveIds} size="small" color="primary">
           <ContentCutIcon />
         </IconButton>
       </Tooltip>
-    </Box>
+    </>
   );
 }
 

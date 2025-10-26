@@ -15,22 +15,22 @@
  * limitations under the License.
  */
 
-import { describe, expect, test, jest } from '@jest/globals';
+import { describe, expect } from '@jest/globals';
 import {
-  evaluateInitialEnableWhenExpressions,
+  evaluateEnableWhenExpressions,
   evaluateEnableWhenRepeatExpressionInstance,
-  evaluateEnableWhenExpressions
+  evaluateInitialEnableWhenExpressions
 } from '../utils/enableWhenExpression';
 // import type { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 import type {
   EnableWhenExpressions,
-  // EnableWhenSingleExpression,
   EnableWhenRepeatExpression
 } from '../interfaces/enableWhen.interface';
 // import type { Variables } from '../interfaces';
 
 // Mock dependencies
 jest.mock('../utils/fhirpath', () => ({
+  ...jest.requireActual('../utils/fhirpath'),
   createFhirPathContext: jest.fn(() =>
     Promise.resolve({
       fhirPathContext: { mockContext: true },
@@ -171,7 +171,7 @@ describe('enableWhenExpression utils', () => {
       const result = await evaluateInitialEnableWhenExpressions(params);
 
       expect(result.initialEnableWhenExpressions.singleExpressions['item-1'].isEnabled).toBe(true);
-      expect(result.fhirPathTerminologyCache['"terminology-based-expression"']).toEqual([true]);
+      expect(result.fhirPathTerminologyCache['terminology-based-expression']).toEqual([true]);
     });
 
     it('should handle cached expressions properly', async () => {
@@ -189,7 +189,7 @@ describe('enableWhenExpression utils', () => {
           repeatExpressions: {}
         },
         fhirPathTerminologyCache: {
-          '"cached-expression"': [true]
+          'cached-expression': [true]
         }
       });
 
@@ -562,7 +562,7 @@ describe('enableWhenExpression utils', () => {
         'http://terminology.example.com'
       );
 
-      expect(result.enableWhenExpsIsUpdated).toBe(true);
+      expect(result.isUpdated).toBe(true);
       expect(result.updatedEnableWhenExpressions.singleExpressions['single-item'].isEnabled).toBe(
         false
       );
@@ -602,7 +602,7 @@ describe('enableWhenExpression utils', () => {
         'http://terminology.example.com'
       );
 
-      expect(result.enableWhenExpsIsUpdated).toBe(false);
+      expect(result.isUpdated).toBe(false);
     });
 
     it('should handle empty enableWhen expressions', async () => {
@@ -618,7 +618,7 @@ describe('enableWhenExpression utils', () => {
         'http://terminology.example.com'
       );
 
-      expect(result.enableWhenExpsIsUpdated).toBe(false);
+      expect(result.isUpdated).toBe(false);
       expect(result.updatedEnableWhenExpressions).toEqual(enableWhenExpressions);
     });
 
@@ -637,7 +637,7 @@ describe('enableWhenExpression utils', () => {
       };
 
       const fhirPathTerminologyCache = {
-        '"cached-expression"': [true]
+        'cached-expression': [true]
       };
 
       const result = await evaluateEnableWhenExpressions(
@@ -648,7 +648,7 @@ describe('enableWhenExpression utils', () => {
       );
 
       expect(evaluateSpy).not.toHaveBeenCalled();
-      expect(result.enableWhenExpsIsUpdated).toBe(false);
+      expect(result.isUpdated).toBe(false);
     });
 
     it('should handle multiple single expressions', async () => {
@@ -683,7 +683,7 @@ describe('enableWhenExpression utils', () => {
         'http://terminology.example.com'
       );
 
-      expect(result.enableWhenExpsIsUpdated).toBe(true);
+      expect(result.isUpdated).toBe(true);
       expect(result.updatedEnableWhenExpressions.singleExpressions['item-1'].isEnabled).toBe(false);
       expect(result.updatedEnableWhenExpressions.singleExpressions['item-2'].isEnabled).toBe(true);
       expect(result.updatedEnableWhenExpressions.singleExpressions['item-3'].isEnabled).toBe(false);
@@ -723,7 +723,7 @@ describe('enableWhenExpression utils', () => {
         'http://terminology.example.com'
       );
 
-      expect(result.enableWhenExpsIsUpdated).toBe(true);
+      expect(result.isUpdated).toBe(true);
       expect(
         result.updatedEnableWhenExpressions.repeatExpressions['repeat-item-1'].enabledIndexes
       ).toEqual([true, false]);

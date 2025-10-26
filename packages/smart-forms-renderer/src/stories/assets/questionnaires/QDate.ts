@@ -16,41 +16,54 @@
  */
 
 import type { Questionnaire } from 'fhir/r4';
-import type { QuestionnaireResponse } from 'fhir/r4';
 
-export const qDateBasic: Questionnaire = {
+export const qDateCalculation: Questionnaire = {
   resourceType: 'Questionnaire',
-  id: 'DateBasic',
-  name: 'DateBasic',
-  title: 'Date Basic',
-  version: '0.1.0',
   status: 'draft',
-  publisher: 'AEHRC CSIRO',
-  date: '2024-05-01',
-  url: 'https://smartforms.csiro.au/docs/components/date/basic',
-  item: [
+  extension: [
     {
-      linkId: 'dob',
-      type: 'date',
-      repeats: false,
-      text: 'Date of birth'
-    }
-  ]
-};
-
-export const qrDateBasicResponse: QuestionnaireResponse = {
-  resourceType: 'QuestionnaireResponse',
-  status: 'in-progress',
-  item: [
-    {
-      linkId: 'dob',
-      text: 'Date of birth',
-      answer: [
-        {
-          valueDate: '1990-01-01'
-        }
-      ]
+      url: 'http://hl7.org/fhir/StructureDefinition/variable',
+      valueExpression: {
+        name: 'date',
+        language: 'text/fhirpath',
+        expression: "item.where(linkId = 'date-controller').answer.valueString"
+      }
     }
   ],
-  questionnaire: 'https://smartforms.csiro.au/docs/components/date/basic'
+  item: [
+    {
+      linkId: 'date-instruction',
+      text: 'Enter a date in one of the supported formats:',
+      _text: {
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
+            valueString:
+              '<div xmlns="http://www.w3.org/1999/xhtml">\r\n  <div>\r\n    <table style="border-collapse: collapse; empty-cells: hide;">\r\n      <thead style="background-color: #f3f4f6; font-weight: 600;">\r\n        <tr>\r\n          <th style="padding: 8px; border: 1px solid #e5e7eb;">Supported Date Formats  <a href="https://www.hl7.org/fhir/datatypes.html#date" target="_blank" rel="noreferrer">https://www.hl7.org/fhir/datatypes.html#date</a></th>\r\n          <th style="padding: 8px; border: 1px solid #e5e7eb;">Example</th>\r\n        </tr>\r\n      </thead>\r\n      <tbody>\r\n        <tr><td style="padding: 8px; border: 1px solid #e5e7eb;">YYYY</td><td style="padding: 8px; border: 1px solid #e5e7eb;">2025</td></tr>\r\n        <tr><td style="padding: 8px; border: 1px solid #e5e7eb;">YYYY-MM</td><td style="padding: 8px; border: 1px solid #e5e7eb;">2025-09</td></tr>\r\n        <tr><td style="padding: 8px; border: 1px solid #e5e7eb;">YYYY-MM-DD</td><td style="padding: 8px; border: 1px solid #e5e7eb;">2025-09-19</td></tr>\r\n</tbody>\r\n    </table>\r\n  </div>\r\n</div>'
+          }
+        ]
+      },
+      type: 'display'
+    },
+    {
+      linkId: 'date-controller',
+      text: 'Date (String)',
+      type: 'string'
+    },
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
+          valueExpression: {
+            language: 'text/fhirpath',
+            expression: '%date'
+          }
+        }
+      ],
+      linkId: 'calculated-date',
+      text: 'Calculated Date (Date)',
+      type: 'date',
+      readOnly: true
+    }
+  ]
 };
