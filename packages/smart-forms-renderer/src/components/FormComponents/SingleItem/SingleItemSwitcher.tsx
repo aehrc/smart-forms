@@ -61,7 +61,6 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
   const {
     qItem,
     qrItem,
-
     isRepeated,
     isTabled,
     renderingExtensions,
@@ -93,7 +92,8 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         renderingExtensions={renderingExtensions}
         parentIsReadOnly={parentIsReadOnly}
         feedbackFromParent={feedbackFromParent}
-        // FIXME add calcExpUpdated here
+        parentStyles={parentStyles}
+        calcExpUpdated={calcExpUpdated}
         onQrItemChange={onQrItemChange}
         onQrRepeatGroupChange={() => {}} // Not needed for single items, use empty function
       />

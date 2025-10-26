@@ -65,7 +65,6 @@ function GroupTableRow(props: GroupTableRowProps) {
     visibleItemLabels,
     calculatedColumnWidths,
     showExtraGTableInteractions,
-
     onRowChange,
     onRemoveRow,
     onSelectRow

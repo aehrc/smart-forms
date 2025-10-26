@@ -36,16 +36,8 @@ interface FormBodySingleCollapsibleProps
 }
 
 function FormBodySingleCollapsibleWrapper(props: FormBodySingleCollapsibleProps) {
-  const {
-    qItem,
-    qrItem,
-    index,
-    selectedIndex,
-    parentIsReadOnly,
-
-    onToggleExpand,
-    onQrItemChange
-  } = props;
+  const { qItem, qrItem, index, selectedIndex, parentIsReadOnly, onToggleExpand, onQrItemChange } =
+    props;
 
   const itemIsHidden = useHidden(qItem);
   if (itemIsHidden) {

@@ -46,7 +46,6 @@ function RepeatField(props: RepeatFieldProps) {
   const {
     qItem,
     qrItem,
-
     answer,
     numOfRepeatAnswers,
     groupCardElevation,

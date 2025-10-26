@@ -55,7 +55,6 @@ function SingleItem(props: SingleItemProps) {
   const {
     qItem,
     qrItem,
-
     isRepeated = false,
     isTabled = false,
     groupCardElevation,

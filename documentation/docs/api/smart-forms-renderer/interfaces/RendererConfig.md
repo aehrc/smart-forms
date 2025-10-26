@@ -5,6 +5,15 @@ Provides fine-grained control over the styling and behaviour of the renderer.
 
 ## Properties
 
+### disableHeadingFocusOnTabSwitch?
+
+> `optional` **disableHeadingFocusOnTabSwitch**: `boolean`
+
+If `true`, disables automatic focus on the first heading when switching tabs.
+ - Default: `false`
+
+***
+
 ### disablePageButtons?
 
 > `optional` **disablePageButtons**: `boolean`

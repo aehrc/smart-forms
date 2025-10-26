@@ -705,6 +705,17 @@ function parseValueToAnswer(
       if (matchingAnswer) {
         return matchingAnswer;
       }
+      //If no matching answer is found, then we return the value as it is
+      else {
+        // if it is an object so that Calculated Expressions can retain the selected choice option.
+        if (typeof value === 'object') {
+          return { valueCoding: value };
+        }
+        // if it is a string from the choice field, return as it is
+        else if (typeof value === 'string') {
+          return { valueString: value };
+        }
+      }
     }
   }
 

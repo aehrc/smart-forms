@@ -14,13 +14,13 @@
   "dependencies": {
     "express": "^5.1.0",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.2"
+    "dotenv": "^17.2.3"
   },
   "devDependencies": {
     "@types/express": "^5.0.3",
     "@types/cors": "^2.8.19",
     "@types/fhir": "^0.0.38",
     "@types/node": "^22.15.30",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.3"
   }
 }
