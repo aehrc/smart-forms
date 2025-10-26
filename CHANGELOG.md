@@ -10,6 +10,11 @@ For changelogs of other libraries, please refer to their respective repositories
 
 Changelog only includes changes from version 0.36.0 onwards.
 
+
+## [1.2.2] - 2025-10-27
+### Fixed
+- Fixed bugs with the rendering and updating of nested items, within an item that is a repeat item. The issue is described [here](https://chat.fhir.org/#narrow/channel/179255-questionnaire/topic/Initial.20value.20for.20nested.20questions.20with.20repeating.20parent.2E/with/535935557)
+
 ## [1.2.1] - 2025-10-27
 ### Fixed
 - Fixed valueSet promise resolution in buildForm stage to exclude answerValueSet urls from autocomplete items. This is because these urls are meant to be used alongside a `filter` parameter.
