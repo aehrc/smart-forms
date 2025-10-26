@@ -10,9 +10,14 @@ For changelogs of other libraries, please refer to their respective repositories
 
 Changelog only includes changes from version 0.36.0 onwards.
 
+
+## [1.2.0] - 2025-10-23
+### Added
+- Added support for optional heading focus when switching tabs via `disableHeadingFocusOnTabSwitch` field in `RendererConfigStore`.
+
 ## [1.1.0] - 2025-10-23
 ### Added
-- Add calcExpUpdated prop to overrideComponent interface.
+- Added calcExpUpdated prop to overrideComponent interface.
 
 ### Fixed
 - Fixed accurate option highlighting in `choice` autocomplete items.

@@ -4,6 +4,12 @@ RendererConfigStore properties and methods
 
 ## Properties
 
+### disableHeadingFocusOnTabSwitch
+
+> **disableHeadingFocusOnTabSwitch**: `boolean`
+
+***
+
 ### disablePageButtons
 
 > **disablePageButtons**: `boolean`

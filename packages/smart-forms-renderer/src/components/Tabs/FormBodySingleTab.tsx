@@ -20,7 +20,7 @@ import Box from '@mui/material/Box';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
-import { useQuestionnaireStore } from '../../stores';
+import { useQuestionnaireStore, useRendererConfigStore } from '../../stores';
 import type { QuestionnaireItem } from 'fhir/r4';
 import ContextDisplayItem from '../FormComponents/ItemParts/ContextDisplayItem';
 import { useFocusTabHeading } from '../../hooks/useFocusTabHeading';
@@ -38,6 +38,9 @@ const FormBodySingleTab = memo(function FormBodySingleTab(props: FormBodySingleT
   const { qItem, contextDisplayItems, selected, tabLabel, listIndex } = props;
 
   const switchTab = useQuestionnaireStore.use.switchTab();
+  const disableHeadingFocusOnTabSwitch =
+    useRendererConfigStore.use.disableHeadingFocusOnTabSwitch();
+
   const focusHeading = useFocusTabHeading();
 
   // Get aria-label text if available
@@ -48,10 +51,12 @@ const FormBodySingleTab = memo(function FormBodySingleTab(props: FormBodySingleT
     switchTab(listIndex);
     window.scrollTo(0, 0);
 
-    // Focus the first heading in the new tab panel
-    setTimeout(() => {
-      focusHeading(`tabpanel-${listIndex}`);
-    }, 100); // Small delay to ensure panel is rendered
+    // Focus the first heading in the new tab panel if not disabled
+    if (!disableHeadingFocusOnTabSwitch) {
+      setTimeout(() => {
+        focusHeading(`tabpanel-${listIndex}`);
+      }, 100); // Small delay to ensure panel is rendered
+    }
   }
 
   return (
