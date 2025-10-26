@@ -9,7 +9,7 @@ Provides fine-grained control over the styling and behaviour of the renderer.
 
 > `optional` **disableHeadingFocusOnTabSwitch**: `boolean`
 
-If `true`, the first heading will be focused when switching tabs.
+If `true`, disables automatic focus on the first heading when switching tabs.
  - Default: `false`
 
 ***

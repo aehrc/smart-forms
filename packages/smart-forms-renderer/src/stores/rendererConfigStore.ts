@@ -74,7 +74,7 @@ import type { Breakpoints } from '@mui/material';
  * @property disableTabButtons - If `true`, hides navigation buttons for tabs.
  *   - Default: `false`
  *
- * @property disableHeadingFocusOnTabSwitch - If `true`, the first heading will be focused when switching tabs.
+ * @property disableHeadingFocusOnTabSwitch - If `true`, disables automatic focus on the first heading when switching tabs.
  *  - Default: `false`
  *
  * @property readOnlyVisualStyle - If `true`, item.readOnly will result in form fields having MUI disabled property and styles (recommended from usability perspective). If `false`, item.readOnly will result in form fields having HTML readonly property (less stable, but recommended from accessibility perspective).
