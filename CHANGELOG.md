@@ -10,6 +10,9 @@ For changelogs of other libraries, please refer to their respective repositories
 
 Changelog only includes changes from version 0.36.0 onwards.
 
+## [1.2.1] - 2025-10-27
+### Fixed
+- Fixed valueSet promise resolution in buildForm stage to exclude answerValueSet urls from autocomplete items. This is because these urls are meant to be used alongside a `filter` parameter.
 
 ## [1.2.0] - 2025-10-23
 ### Added
