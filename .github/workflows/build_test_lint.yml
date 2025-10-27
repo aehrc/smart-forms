@@ -69,7 +69,7 @@ jobs:
       - uses: codecov/codecov-action@v4
 
       - name: Upload smart-forms-app coverage report to GitHub
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: ${{ !cancelled() }}
         with:
           name: smart-forms-renderer-coverage-report
@@ -128,7 +128,7 @@ jobs:
       - uses: codecov/codecov-action@v4
 
       - name: Upload smart-forms-renderer coverage report to GitHub
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: ${{ !cancelled() }}
         with:
           name: smart-forms-renderer-coverage-report
@@ -156,7 +156,7 @@ jobs:
       - uses: codecov/codecov-action@v4
 
       - name: Upload sdc-populate coverage report to GitHub
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: ${{ !cancelled() }}
         with:
           name: sdc-populate-coverage-report
@@ -212,7 +212,7 @@ jobs:
       - uses: codecov/codecov-action@v4
 
       - name: Upload sdc-assemble coverage report to GitHub
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: ${{ !cancelled() }}
         with:
           name: sdc-assemble-coverage-report
@@ -240,7 +240,7 @@ jobs:
       - uses: codecov/codecov-action@v4
 
       - name: Upload sdc-template-extract coverage report to GitHub
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: ${{ !cancelled() }}
         with:
           name: sdc-template-extract-coverage-report
@@ -277,7 +277,7 @@ jobs:
       - name: Run Playwright tests
         run: npm run playwright -w apps/smart-forms-app
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: always()
         with:
           name: playwright-report
