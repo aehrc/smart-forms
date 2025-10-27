@@ -19,6 +19,7 @@ import React from 'react';
 import type { QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer } from 'fhir/r4';
 import CheckboxSingle from '../ItemParts/CheckboxSingle';
 import { isOptionDisabled } from '../../../utils/choice';
+import { deepEqual } from 'fast-equals';
 
 interface CheckboxOptionListProps {
   options: QuestionnaireItemAnswerOption[];
@@ -56,8 +57,8 @@ function CheckboxOptionList(props: CheckboxOptionListProps) {
               readOnly={readOnly}
               disabledViaToggleExpression={optionDisabledViaToggleExpression}
               fullWidth={fullWidth}
-              isChecked={answers.some(
-                (answer) => JSON.stringify(answer) === JSON.stringify(option)
+              isChecked={answers.some((answer) =>
+                deepEqual(answer.valueCoding, option.valueCoding)
               )}
               onCheckedChange={onCheckedChange}
             />
