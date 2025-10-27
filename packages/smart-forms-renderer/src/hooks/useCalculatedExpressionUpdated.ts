@@ -9,10 +9,12 @@ import { useEffect, useRef, useState } from 'react';
 export function useCalculatedExpressionUpdated(answerKey: string | undefined): boolean {
   const [animating, setAnimating] = useState(false);
   const previousAnswerKey = useRef<string | null>(null);
+  const mounted = useRef(false);
 
   useEffect(() => {
     // Skip the first render — just store the current key
-    if (previousAnswerKey.current === null) {
+    if (!mounted.current) {
+      mounted.current = true;
       previousAnswerKey.current = answerKey ?? null;
       return;
     }
