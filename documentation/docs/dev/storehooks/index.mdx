@@ -7,12 +7,13 @@ sidebar_position: 4
 The renderer uses [Zustand](https://github.com/pmndrs/zustand) for the state management of the renderer's internals i.e. enableWhen logic, calculatedExpressions, tabs management, terminology server etc.
 Zustand stores exposes React hooks to access the store's state.
 
-The renderer uses four state management stores, each for a different purpose:
+The renderer uses five state management stores, each for a different purpose:
 
 - **QuestionnaireStore**: Manages the state of the questionnaire and SDC-related logic.
 - **QuestionnaireResponseStore**: Manages the state of the current questionnaire response including validation.
 - **SmartConfigStore**: Manages a FHIRClient instance for further FHIR calls if needed i.e. `answerExpression` extensions.
 - **TerminologyServerStore**: Manages the terminology server url to fetch terminology resources.
+- **RendererConfigStore**: Manages the renderer's configuration of styling and behaviour options.
 
 The usage examples provided in this section uses the BMI Calculator as its input questionnaire, with the exception of [TerminologyServerStore](/docs/dev/storehooks/terminology-server-store).
 As the BMI Calculator does not use all of the available properties, only properties relevant to the questionnaire are shown as examples.
