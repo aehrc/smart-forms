@@ -18,7 +18,10 @@ Changelog only includes changes from version 0.36.0 onwards.
 ## [1.2.1] - 2025-10-27
 ### Fixed
 - Fixed valueSet promise resolution in buildForm stage to exclude answerValueSet urls from autocomplete items. This is because these urls are meant to be used alongside a `filter` parameter.
-
+- Fixed renderer calcExp not working on open-choice and choice fields. Issue is described [here](https://github.com/aehrc/smart-forms/issues/1722)
+- Fixed renderer open-choice not retaining the selected option in calcExp. Issue is described [here](https://github.com/aehrc/smart-forms/issues/1721)
+- Changed renderer aria-label as per request described  [here](https://github.com/aehrc/smart-forms/issues/1657)
+  
 ## [1.2.0] - 2025-10-23
 ### Added
 - Added support for optional heading focus when switching tabs via `disableHeadingFocusOnTabSwitch` field in `RendererConfigStore`.
