@@ -1,0 +1,132 @@
+---
+sidebar_position: 6
+---
+
+# Renderer Config Store
+
+The RendererConfigStore exposes the following properties:
+
+The `RendererConfigStore` exposes the following properties:
+
+- **disableHeadingFocusOnTabSwitch**
+
+  If `true`, disables automatic focus on the first heading when switching tabs.
+
+  Default: `false`
+
+- **disablePageButtons**
+
+  If `true`, hides navigation buttons for pages.
+
+  Default: `false`
+
+- **disablePageCardView**
+
+  If `true`, disables the card-style layout for pages.
+
+  Default: `false`
+
+- **disableTabButtons**
+
+  If `true`, hides navigation buttons for tabs.
+
+  Default: `false`
+
+- **enableWhenAsReadOnly**
+
+  Determines whether fields hidden by `enableWhen` logic should still be shown as read-only.
+  Can be:
+  - `true` → All fields affected
+  - `Set<QuestionnaireItem['type']>` → Specify field types
+
+  Default: `false`
+
+- **hideClearButton**
+
+  If `true`, hides the clear button on input fields.
+
+  Default: `false`
+
+- **hideQuantityComparatorField**
+
+  If `true`, hides the quantity comparator field.
+
+  Default: `false`
+
+- **inputsFlexGrow**
+
+  Determines whether input fields should grow to fill available space.
+  - `false` (default): Inputs maintain their default size.
+  - `true`: Inputs expand to fill space.
+
+  Default: `false`
+
+- **itemResponsive**
+
+  Controls responsive layout settings for item labels and fields.
+  - **columnGapPixels**: `number`
+  - **rowGapPixels**: `number`
+  - **labelBreakpoints**: `Partial<Breakpoints['values']>`
+  - **fieldBreakpoints**: `Partial<Breakpoints['values']>`
+
+- **readOnlyVisualStyle**
+
+  Determines how `item.readOnly` fields are displayed.
+  - `"disabled"` → Uses MUI `disabled` property and styles (recommended for usability).
+  - `"readonly"` → Uses HTML `readonly` attribute (recommended for accessibility).
+
+  Default: `"disabled"`
+
+- **requiredIndicatorPosition**
+
+  Defines where the required asterisk (`*`) appears relative to the label.
+  - `"start"` (default): Before the label
+  - `"end"`: After the label
+
+  Default: `"start"`
+
+- **reverseBooleanYesNo**
+
+  If `true`, swaps "Yes" and "No" options for boolean fields.
+
+  Default: `false`
+
+- **showTabbedFormAt**
+
+  Defines when the form should switch to a tabbed layout based on screen size.
+  **Type:** `UseResponsiveProps`
+
+  Default: `{ query: 'up', start: 'md' }`
+
+- **tabListWidthOrResponsive**
+
+  Configures the width of the tab list, either as a fixed number or responsive breakpoints.
+
+  Type:
+  ```
+  number | {
+    tabContentBreakpoints: Partial<Breakpoints['values']>;
+    tabListBreakpoints: Partial<Breakpoints['values']>;
+  }
+  ```
+
+  Default:
+  ```
+  {
+    tabListBreakpoints: { xs: 12, sm: 3, md: 3, lg: 2.75 },
+    tabContentBreakpoints: { xs: 12, sm: 9, md: 9, lg: 9.25 }
+  }
+  ```
+
+- **textFieldWidth**
+
+  Defines the default width for text input fields (in pixels).
+
+  Default: `320`
+
+<br/>
+The recommended way to set these properties is to pass a `RendererConfig` object into `buildForm`.
+You can also use the store hook `setRendererConfig` directly with a `RendererConfig` object.
+
+
+Refer to the [API Reference](/docs/api/smart-forms-renderer/interfaces/RendererConfig) for more information on each property.

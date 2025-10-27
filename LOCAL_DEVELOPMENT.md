@@ -393,9 +393,9 @@ After adding a new Story test case, ensure that it runs correctly by running Sto
 
 We use Chromatic in CI to catch for any UI layout changes on the deployed Storybook instance https://smartforms.csiro.au/storybook/.
 
-If Chromatic detects any layout changes, they have to be approved them in the Chromatic dashboard. Access the dashboard via the "Details" button next to "UI Tests" in GitHub Actions CI. You will need to sign in with your GitHub account.
+If Chromatic detects any layout changes, they have to be approved them in the Chromatic dashboard. Access the dashboard via the "Details" button next to "UI Tests" in GitHub Actions CI or use [this link](https://www.chromatic.com/builds?appId=6642d27eeb21c508b2ab7b9c). You will need to sign in with your GitHub account.
 
-Our [GitHub CI workflow](https://github.com/aehrc/smart-forms/blob/main/.github/workflows/deploy_app.yml) is set up to run Chromatic visual regression on every push to `main`.
+Our [GitHub CI workflow](https://github.com/aehrc/smart-forms/blob/main/.github/workflows/deploy_app.yml) is set up to run Chromatic visual regression on every push to `main`. We are on the free plan, which has a limit of 5000 snapshots per month. When the limit is hit, Chromatic tests will be skipped until the next month.
 
 
 ### Questionnaire-specific tests
@@ -412,7 +412,8 @@ We use Playwright for end-to-end testing of the Smart Forms app. These tests foc
 
 These tests are located in `apps/smart-forms-app/e2e` and are run as part of the Smart Forms app's e2e test CI workflow.
 
-End-to-end tests are fairly flaky, so we try to keep them to a minimum. Currently, there are no plans to add more tests unless explicitly requested. If CI e2e tests are failing, try running them again via the "sync" button on GitHub Actions.
+These end-to-end tests use [MBS715](https://smartforms.csiro.au/api/fhir/Questionnaire/AboriginalTorresStraitIslanderHealthCheck) and [BitOfEverything](https://smartforms.csiro.au/api/fhir/Questionnaire/BitOfEverything) as test data.
+They can be fairly flaky, so we try to keep them to a minimum. Currently, there are no plans to add more tests unless explicitly requested. If CI e2e tests are failing, try running them again via the "sync" button on GitHub Actions.
 
 A common failure point for these tests is the SMART App Launch sequence, which relies on actual FHIR servers:
 - SMART App Launch + Patient Data FHIR API: https://proxy.smartforms.io/v/r4/fhir
@@ -433,6 +434,8 @@ npm start
 ```
 
 It leverages Docusaurus' [MDX](https://docusaurus.io/docs/markdown-features/mdx) feature to embed React components (i.e. Storybook iframe) directly into the documentation pages, and will require Storybook to be running locally on **port 6006** to view the examples.
+
+The search function is powered by Algolia DocSearch. If you are adding new documentation pages, ensure that they are indexed properly by following the steps in https://docsearch.algolia.com/docs/run-your-own/.
 
 While it is optional to contribute to the documentation, it is highly encouraged to add or update relevant documentation pages when making significant changes.
 
@@ -489,6 +492,7 @@ P.S. We had `alpha` as a pre-release branch before the recent v1.0.0 release. Th
 19. Push a new commit with the version bumps and changelog updates.
 20. Ensure that all CI checks pass (build, tests, linting, etc.).
 21. Merge your branch into `main`.
+22. Ensure the CI passes on `main` after the merge. If you added any Storybook stories or if story layout in Chromatic changes, those have to be reviewed and approved in Chromatic.
 
 > Remember to merge main into your branch regularly throughout the development process.
 
@@ -509,6 +513,7 @@ P.S. We had `alpha` as a pre-release branch before the recent v1.0.0 release. Th
     - Review the code changes.
     - If there are package version bumps, follow the steps from step 13 onwards in [Contributing workflow - internal contributors](#contributing-workflow---internal-contributors) to publish new package versions.
     - Once approved, merge the pull request into `aehrc/main`.
+    - Ensure the CI passes on `main` after the merge. If you added any Storybook stories, those have to be reviewed in Chromatic.
 
 ## Dependency notes
 - `date-fns` with version "^4.1.0" in `apps/smart-forms-app/package.json` is not used in the source code. It is used to prevent CommonJS issues when building the Smart Forms app in docker.

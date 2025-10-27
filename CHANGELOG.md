@@ -10,9 +10,13 @@ For changelogs of other libraries, please refer to their respective repositories
 
 Changelog only includes changes from version 0.36.0 onwards.
 
-## [1.2.3] - 2025-10-27
+## [1.2.4] - 2025-10-28
 ### Fixed
 - Measurement units (e.g. cm, kg) are now associated with their input fields, ensuring screen readers correctly announce the unit when the field receives focus. Refer to issue [#1641](https://github.com/aehrc/smart-forms/issues/1641)
+
+## [1.2.3] - 2025-10-27
+### Fixed
+- Fixed bug with the rendering of the calculation animation on the first calculated expression update. Issue described [here](https://github.com/aehrc/smart-forms/issues/1682)
 
 ## [1.2.2] - 2025-10-27
 ### Fixed
