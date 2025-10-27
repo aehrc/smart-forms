@@ -10,6 +10,9 @@ For changelogs of other libraries, please refer to their respective repositories
 
 Changelog only includes changes from version 0.36.0 onwards.
 
+## [1.2.3] - 2025-10-27
+### Fixed
+- Fixed bug with the rendering of the calculation animation on the first calculated expression update. Issue described [here](https://github.com/aehrc/smart-forms/issues/1682)
 
 ## [1.2.2] - 2025-10-27
 ### Fixed
