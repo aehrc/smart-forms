@@ -22,7 +22,7 @@ import {
   qNestedRepeatQuestionnaireWithInitial
 } from '../assets/questionnaires/QNestedRepeatTester';
 import { getAnswers, inputText } from '../testUtils';
-import { expect } from 'storybook/test';
+import { expect, waitFor } from 'storybook/test';
 
 const parentLinkId = 'parent';
 const childZeroLinkId = 'child-0';
@@ -128,34 +128,38 @@ export const NestedRepeatItemsWithInitial: Story = {
   },
   play: async () => {
     // Get the parent answers - should have 2 initial answers
-    const answers = await getAnswers('parent-decimal');
+    // NOTE: Need to wrap waitFor() around the whole test to ensure things progress sequentially, might be a Storybook bug
+    // Otherwise answers will be empty
+    await waitFor(async () => {
+      const answers = await getAnswers('parent-decimal');
 
-    // Validate we have two parent answers (from initial values)
-    expect(answers).toHaveLength(2);
+      // Validate we have two parent answers (from initial values)
+      expect(answers).toHaveLength(2);
 
-    // Validate first parent answer
-    const firstParentAnswer = answers[0];
-    expect(firstParentAnswer.valueDecimal).toBe(1);
-    expect(firstParentAnswer.item).toBeDefined();
-    expect(firstParentAnswer.item).toHaveLength(1);
+      // Validate first parent answer
+      const firstParentAnswer = answers[0];
+      expect(firstParentAnswer.valueDecimal).toBe(1);
+      expect(firstParentAnswer.item).toBeDefined();
+      expect(firstParentAnswer.item).toHaveLength(1);
 
-    validateNestedStringItem(
-      firstParentAnswer,
-      'child-string',
-      'child value',
-      'Child string with initial'
-    );
+      validateNestedStringItem(
+        firstParentAnswer,
+        'child-string',
+        'child value',
+        'Child string with initial'
+      );
 
-    const secondParentAnswer = answers[1];
-    expect(secondParentAnswer.valueDecimal).toBe(2);
-    expect(secondParentAnswer.item).toBeDefined();
-    expect(secondParentAnswer.item).toHaveLength(1);
+      const secondParentAnswer = answers[1];
+      expect(secondParentAnswer.valueDecimal).toBe(2);
+      expect(secondParentAnswer.item).toBeDefined();
+      expect(secondParentAnswer.item).toHaveLength(1);
 
-    validateNestedStringItem(
-      secondParentAnswer,
-      'child-string',
-      'child value',
-      'Child string with initial'
-    );
+      validateNestedStringItem(
+        secondParentAnswer,
+        'child-string',
+        'child value',
+        'Child string with initial'
+      );
+    });
   }
 };
