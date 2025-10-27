@@ -395,7 +395,7 @@ We use Chromatic in CI to catch for any UI layout changes on the deployed Storyb
 
 If Chromatic detects any layout changes, they have to be approved them in the Chromatic dashboard. Access the dashboard via the "Details" button next to "UI Tests" in GitHub Actions CI or use [this link](https://www.chromatic.com/builds?appId=6642d27eeb21c508b2ab7b9c). You will need to sign in with your GitHub account.
 
-Our [GitHub CI workflow](https://github.com/aehrc/smart-forms/blob/main/.github/workflows/deploy_app.yml) is set up to run Chromatic visual regression on every push to `main`.
+Our [GitHub CI workflow](https://github.com/aehrc/smart-forms/blob/main/.github/workflows/deploy_app.yml) is set up to run Chromatic visual regression on every push to `main`. We are on the free plan, which has a limit of 5000 snapshots per month. When the limit is hit, Chromatic tests will be skipped until the next month.
 
 
 ### Questionnaire-specific tests
