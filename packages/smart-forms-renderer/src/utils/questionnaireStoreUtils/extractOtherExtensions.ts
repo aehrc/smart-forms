@@ -54,6 +54,7 @@ import type { InitialExpression } from '../../interfaces/initialExpression.inter
 import { addBindingParametersToValueSetUrl, getBindingParameters } from '../parameterisedValueSets';
 import type { AnswerOptionsToggleExpression } from '../../interfaces/answerOptionsToggleExpression.interface';
 import { getItemTerminologyServerToUse } from '../preferredTerminologyServer';
+import { isSpecificItemControl } from '../extensions';
 
 interface ReturnParamsRecursive {
   variables: Variables;
@@ -282,9 +283,10 @@ async function extractExtensionsFromItemRecursive(
 
     // Only continue to process if answerValueSetUrl is not a reference, because we have already processed it earlier
     if (!initialValueSetUrl.startsWith('#')) {
-      // Get valueSet promise to be resolved
+      // Get valueSet promise to be resolved if it is not an autocomplete item, or it hasn't been added before
+      // We exclude autocomplete items here because they usually contain large valueSets that cannot be expanded fully
       // Note: this entry uses valueSetUrlWithParams as the key
-      if (!valueSetPromises[initialValueSetUrl]) {
+      if (!isSpecificItemControl(item, 'autocomplete') && !valueSetPromises[initialValueSetUrl]) {
         valueSetPromises[valueSetUrlWithParams] = {
           promise: getValueSetPromise(valueSetUrlWithParams, terminologyServerUrl)
         };

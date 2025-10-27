@@ -14,7 +14,7 @@
   "dependencies": {
     "express": "^5.1.0",
     "@aehrc/sdc-assemble": "^2.0.0",
-    "dotenv": "^17.2.2",
+    "dotenv": "^17.2.3",
     "cors": "^2.8.5"
   },
   "devDependencies": {
@@ -22,6 +22,6 @@
     "@types/cors": "^2.8.19",
     "@types/fhir": "^0.0.38",
     "@types/node": "^22.15.30",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.3"
   }
 }

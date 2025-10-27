@@ -24,7 +24,6 @@ interface FormBodyPaginatedProps
 }
 
 // TODO This implementation doesnt take into account repeat items and repeat groups
-// TODO need to fix this before bringing it into release
 // Every group item in here is rendered as a page
 function FormBodyPaginated(props: FormBodyPaginatedProps) {
   const { topLevelQItems, topLevelQRItems, parentIsReadOnly, onQrItemChange } = props;

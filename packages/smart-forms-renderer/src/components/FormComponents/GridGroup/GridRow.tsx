@@ -45,7 +45,6 @@ function GridRow(props: GridRowProps) {
   const {
     qItem,
     qrItem,
-
     columnHeaderLabels,
     calculatedColumnWidths,
     parentIsReadOnly,

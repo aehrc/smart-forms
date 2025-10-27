@@ -10,6 +10,29 @@ For changelogs of other libraries, please refer to their respective repositories
 
 Changelog only includes changes from version 0.36.0 onwards.
 
+
+## [1.2.2] - 2025-10-27
+### Fixed
+- Fixed bugs with the rendering and updating of nested items, within an item that is a repeat item. The issue is described [here](https://chat.fhir.org/#narrow/channel/179255-questionnaire/topic/Initial.20value.20for.20nested.20questions.20with.20repeating.20parent.2E/with/535935557)
+
+## [1.2.1] - 2025-10-27
+### Fixed
+- Fixed valueSet promise resolution in buildForm stage to exclude answerValueSet urls from autocomplete items. This is because these urls are meant to be used alongside a `filter` parameter.
+- Fixed renderer calcExp not working on open-choice and choice fields. Issue is described [here](https://github.com/aehrc/smart-forms/issues/1722)
+- Fixed renderer open-choice not retaining the selected option in calcExp. Issue is described [here](https://github.com/aehrc/smart-forms/issues/1721)
+- Changed renderer aria-label as per request described  [here](https://github.com/aehrc/smart-forms/issues/1657)
+  
+## [1.2.0] - 2025-10-23
+### Added
+- Added support for optional heading focus when switching tabs via `disableHeadingFocusOnTabSwitch` field in `RendererConfigStore`.
+
+## [1.1.0] - 2025-10-23
+### Added
+- Added calcExpUpdated prop to overrideComponent interface.
+
+### Fixed
+- Fixed accurate option highlighting in `choice` autocomplete items.
+
 ## [1.0.0] - 2025-10-13
 _(WARNING: Major breaking changes with library API)_
 

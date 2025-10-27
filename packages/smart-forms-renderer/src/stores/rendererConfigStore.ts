@@ -74,6 +74,9 @@ import type { Breakpoints } from '@mui/material';
  * @property disableTabButtons - If `true`, hides navigation buttons for tabs.
  *   - Default: `false`
  *
+ * @property disableHeadingFocusOnTabSwitch - If `true`, disables automatic focus on the first heading when switching tabs.
+ *  - Default: `false`
+ *
  * @property readOnlyVisualStyle - If `true`, item.readOnly will result in form fields having MUI disabled property and styles (recommended from usability perspective). If `false`, item.readOnly will result in form fields having HTML readonly property (less stable, but recommended from accessibility perspective).
  *   - Default: `true`
  */
@@ -102,6 +105,7 @@ export interface RendererConfig {
   disablePageCardView?: boolean;
   disablePageButtons?: boolean;
   disableTabButtons?: boolean;
+  disableHeadingFocusOnTabSwitch?: boolean;
 }
 
 /**
@@ -134,6 +138,7 @@ export interface RendererConfigStoreType {
   disablePageCardView: boolean;
   disablePageButtons: boolean;
   disableTabButtons: boolean;
+  disableHeadingFocusOnTabSwitch: boolean;
   setRendererConfig: (params: RendererConfig) => void;
 }
 
@@ -163,6 +168,7 @@ export const rendererConfigStore = createStore<RendererConfigStoreType>()((set) 
   disablePageCardView: false,
   disablePageButtons: false,
   disableTabButtons: false,
+  disableHeadingFocusOnTabSwitch: false,
   setRendererConfig: (params: RendererConfig) => {
     set((state) => ({
       readOnlyVisualStyle: params.readOnlyVisualStyle ?? state.readOnlyVisualStyle,
@@ -180,7 +186,9 @@ export const rendererConfigStore = createStore<RendererConfigStoreType>()((set) 
       enableWhenAsReadOnly: params.enableWhenAsReadOnly ?? state.enableWhenAsReadOnly,
       disablePageCardView: params.disablePageCardView ?? state.disablePageCardView,
       disablePageButtons: params.disablePageButtons ?? state.disablePageButtons,
-      disableTabButtons: params.disableTabButtons ?? state.disableTabButtons
+      disableTabButtons: params.disableTabButtons ?? state.disableTabButtons,
+      disableHeadingFocusOnTabSwitch:
+        params.disableHeadingFocusOnTabSwitch ?? state.disableHeadingFocusOnTabSwitch
     }));
   }
 }));
