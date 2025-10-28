@@ -1,14 +1,15 @@
 import Box from '@mui/material/Box';
 import RadioGroup from '@mui/material/RadioGroup';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import type { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import { useRendererConfigStore } from '../../../stores';
 import { getChoiceOrientation } from '../../../utils/choice';
-import { StyledRequiredTypography } from '../Item.styles';
+import { StyledFeedbackTypography } from '../Item.styles';
 import ClearInputButton from './ClearInputButton';
 import ExpressionUpdateFadingIcon from './ExpressionUpdateFadingIcon';
 import RadioOptionList from './RadioOptionList';
+import AccessibleFeedback from './AccessibleFeedback';
 
 interface ChoiceRadioGroupProps {
   qItem: QuestionnaireItem;
@@ -44,6 +45,8 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
+  const feedbackId = qItem.type + '-' + qItem.linkId + '-feedback';
+
   return (
     <>
       <Box
@@ -64,6 +67,7 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
               ? { 'aria-labelledby': 'label-' + qItem.linkId }
               : { 'aria-label': qItem.text ?? 'Unnamed radio group' })}
             aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
+            aria-describedby={feedback ? feedbackId : undefined}
             row={orientation === ChoiceItemOrientation.Horizontal}
             sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
             onChange={(e) => {
@@ -93,7 +97,11 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
         <ClearInputButton buttonShown={!!valueRadio} readOnly={readOnly} onClear={onClear} />
       </Box>
 
-      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
+      {feedback ? (
+        <AccessibleFeedback id={feedbackId}>
+          <StyledFeedbackTypography>{feedback}</StyledFeedbackTypography>
+        </AccessibleFeedback>
+      ) : null}
     </>
   );
 }

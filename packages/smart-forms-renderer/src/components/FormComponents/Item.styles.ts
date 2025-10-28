@@ -18,7 +18,7 @@
 import { styled } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 
-export const StyledRequiredTypography = styled(Typography)(({ theme }) => ({
+export const StyledFeedbackTypography = styled(Typography)(({ theme }) => ({
   color: theme.palette.error.main,
   fontSize: '0.75rem',
   marginTop: 4
