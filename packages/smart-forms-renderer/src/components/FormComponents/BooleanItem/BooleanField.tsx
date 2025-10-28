@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { memo } from 'react';
+import { memo } from 'react';
 import Box from '@mui/material/Box';
 import RadioGroup from '@mui/material/RadioGroup';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
