@@ -12,7 +12,7 @@ Changelog only includes changes from version 0.36.0 onwards.
 
 ## [1.2.5] - 2025-10-28
 ### Fixed
-- Use `deepEqual` for checkbox answer matching instead of JSON.stringify equality to correctly compare valueCoding objects.. Refer to issue [#1738](https://github.com/aehrc/smart-forms/issues/1738)
+- Use `deepEqual` for checkbox answer matching instead of JSON.stringify equality to correctly compare valueCoding objects. Refer to issue [#1738](https://github.com/aehrc/smart-forms/issues/1738)
 
 ## [1.2.4] - 2025-10-28
 ### Fixed
