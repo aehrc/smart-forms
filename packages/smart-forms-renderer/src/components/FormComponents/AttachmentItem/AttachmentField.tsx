@@ -25,9 +25,10 @@ import Stack from '@mui/material/Stack';
 import type { AttachmentValues } from './AttachmentItem';
 import AttachmentUrlField from './AttachmentUrlField';
 import { useRendererConfigStore } from '../../../stores';
-import { StyledRequiredTypography } from '../Item.styles';
+import { StyledFeedbackTypography } from '../Item.styles';
 import InputAdornment from '@mui/material/InputAdornment';
 import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
+import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
 
 interface AttachmentFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
@@ -132,7 +133,11 @@ function AttachmentField(props: AttachmentFieldProps) {
         ) : null}
       </Stack>
 
-      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
+      {feedback ? (
+        <AccessibleFeedback>
+          <StyledFeedbackTypography>{feedback}</StyledFeedbackTypography>
+        </AccessibleFeedback>
+      ) : null}
     </>
   );
 }
