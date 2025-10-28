@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-import { memo } from 'react';
+import React, { memo } from 'react';
 import Box from '@mui/material/Box';
 import RadioGroup from '@mui/material/RadioGroup';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import type { QuestionnaireItem } from 'fhir/r4';
 import ChoiceRadioSingle from '../ChoiceItems/ChoiceRadioSingle';
-import { StyledRequiredTypography } from '../Item.styles';
+import { StyledFeedbackTypography } from '../Item.styles';
 import { getChoiceOrientation } from '../../../utils/choice';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -31,6 +31,7 @@ import { useRendererConfigStore } from '../../../stores';
 import { StandardCheckbox } from '../../Checkbox.styles';
 import { ariaCheckedMap } from '../../../utils/checkbox';
 import { SrOnly } from '../SrOnly.styles';
+import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
 
 interface BooleanFieldProps {
   qItem: QuestionnaireItem;
@@ -59,6 +60,8 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
 
   const ariaCheckedValue = ariaCheckedMap.get(selection ?? 'false');
 
+  const feedbackId = `${qItem.type}-${qItem.linkId}-feedback`;
+
   return (
     <>
       <Box
@@ -78,6 +81,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
                 checked={selection === 'true'}
                 readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
                 aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
+                aria-describedby={feedback ? feedbackId : undefined}
                 role="checkbox"
                 aria-checked={ariaCheckedValue}
                 onChange={() => {
@@ -109,6 +113,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
               row={orientation === ChoiceItemOrientation.Horizontal}
               sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
               aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
+              aria-describedby={feedback ? feedbackId : undefined}
               onChange={(e) => {
                 // If item.readOnly=true, do not allow any changes
                 if (readOnly) {
@@ -168,7 +173,11 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
         />
       </Box>
 
-      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
+      {feedback ? (
+        <AccessibleFeedback id={feedbackId}>
+          <StyledFeedbackTypography>{feedback}</StyledFeedbackTypography>
+        </AccessibleFeedback>
+      ) : null}
     </>
   );
 });

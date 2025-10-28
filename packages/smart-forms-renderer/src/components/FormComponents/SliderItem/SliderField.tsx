@@ -22,8 +22,9 @@ import Stack from '@mui/material/Stack';
 import SliderLabels from './SliderLabels';
 import SliderDisplayValue from './SliderDisplayValue';
 import { useRendererConfigStore } from '../../../stores';
-import { StyledRequiredTypography } from '../Item.styles';
+import { StyledFeedbackTypography } from '../Item.styles';
 import { StandardSlider } from './Slider.styles';
+import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
 
 interface SliderFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
@@ -69,6 +70,8 @@ function SliderField(props: SliderFieldProps) {
 
   const hasLabels = !!(minLabel || maxLabel);
 
+  const feedbackId = itemType + '-' + linkId + '-feedback';
+
   return (
     <>
       <Stack sx={{ ...sliderSx }}>
@@ -95,12 +98,17 @@ function SliderField(props: SliderFieldProps) {
           disabled={readOnly && readOnlyVisualStyle === 'disabled'}
           readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
           aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
+          aria-describedby={feedback ? feedbackId : undefined}
           valueLabelDisplay="auto"
           data-test="q-item-slider-field"
         />
       </Stack>
 
-      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
+      {feedback ? (
+        <AccessibleFeedback id={feedbackId}>
+          <StyledFeedbackTypography>{feedback}</StyledFeedbackTypography>
+        </AccessibleFeedback>
+      ) : null}
     </>
   );
 }
