@@ -66,7 +66,7 @@
     "react-dom": "^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.27.4",
+    "@babel/core": "^7.28.5",
     "@chromatic-com/storybook": "^4.1.1",
     "@storybook/addon-docs": "^9.1.13",
     "@storybook/addon-links": "^9.1.13",
