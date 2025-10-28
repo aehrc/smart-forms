@@ -39,6 +39,25 @@ NPM workspace allows working on multiple packages in a single repository. This b
 
 However, it has its own set of complexities to watch out for, such as dependencies working even when they are located in different directories, which causes confusion and can lead to unexpected behaviour.
 
+## Before you begin
+Install Node v20 via [https://nodejs.org/en/download]
+
+
+
+```bash
+# Install Node.js via nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash\n
+# Install v20 of Node
+nvm install 20
+# Make this as default
+nvm alias default node
+# Verify installation
+node -v
+npm -v
+```
+
+
+
 ## Setting up the repository
 
 1. Clone this Git source repository onto your local machine from https://github.com/aehrc/smart-forms.
@@ -159,6 +178,11 @@ Example: If you are making changes to the sdc-populate package and it is on 4.6.
 1. Ensure you have run `npm install` in the main folder to install all dependencies.
 
 2. Build all packages in the /packages directory.
+   ```sh
+   npm run build-all-deps-first-run
+   ```
+
+   Or individually
 
    ```sh
    npm run build -w packages/sdc-populate
