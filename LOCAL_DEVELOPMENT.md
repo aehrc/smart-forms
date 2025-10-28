@@ -182,7 +182,7 @@ Example: If you are making changes to the sdc-populate package and it is on 4.6.
    npm run build-all-deps-first-run
    ```
 
-   Or individually
+   Or individually:
 
    ```sh
    npm run build -w packages/sdc-populate
@@ -535,9 +535,8 @@ P.S. We had `alpha` as a pre-release branch before the recent v1.0.0 release. Th
 12. Request for a code review from an internal team member.
 13. For the reviewing internal team member:
     - Review the code changes.
-    - If there are package version bumps, follow the steps from step 13 onwards in [Contributing workflow - internal contributors](#contributing-workflow---internal-contributors) to publish new package versions.
     - Once approved, merge the pull request into `aehrc/main`.
-    - Ensure the CI passes on `main` after the merge. If you added any Storybook stories, those have to be reviewed in Chromatic.
+    - If there are package version bumps, create a new PR referencing the issue and follow the steps from step 13 onwards in [Contributing workflow - internal contributors](#contributing-workflow---internal-contributors) to publish new package versions.
 
 ## Dependency notes
 - `date-fns` with version "^4.1.0" in `apps/smart-forms-app/package.json` is not used in the source code. It is used to prevent CommonJS issues when building the Smart Forms app in docker.
