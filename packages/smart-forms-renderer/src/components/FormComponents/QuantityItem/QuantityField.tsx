@@ -22,6 +22,7 @@ import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import { StandardTextField } from '../Textfield.styles';
+import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
 
 interface QuantityFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
@@ -104,7 +105,7 @@ function QuantityField(props: QuantityFieldProps) {
           )
         }
       }}
-      helperText={feedback}
+      helperText={<AccessibleFeedback>{feedback}</AccessibleFeedback>}
       data-test="q-item-quantity-field"
     />
   );
