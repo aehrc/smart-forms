@@ -41,7 +41,7 @@
     "@mui/material": "^7.1.1",
     "@sentry/react": "^10.11.0",
     "@sentry/tracing": "^7.120.4",
-    "@tanstack/react-query": "^5.90.2",
+    "@tanstack/react-query": "^5.90.5",
     "@tanstack/react-table": "^8.21.3",
     "allotment": "^1.20.4",
     "date-fns": "^4.1.0",
