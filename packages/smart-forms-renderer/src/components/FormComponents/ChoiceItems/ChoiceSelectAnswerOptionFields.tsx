@@ -71,7 +71,6 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
         getOptionLabel={(option) => getAnswerOptionLabel(option)}
         isOptionEqualToValue={(option, value) => compareAnswerOptionValue(option, value)}
         onChange={(_, newValue) => onSelectChange(newValue)}
-        openOnFocus
         autoHighlight
         sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }}
         size="small"
