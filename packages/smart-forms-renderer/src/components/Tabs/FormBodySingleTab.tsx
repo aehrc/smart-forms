@@ -25,6 +25,8 @@ import type { QuestionnaireItem } from 'fhir/r4';
 import ContextDisplayItem from '../FormComponents/ItemParts/ContextDisplayItem';
 import { useFocusTabHeading } from '../../hooks/useFocusTabHeading';
 import useDisplayCqfAndCalculatedExpression from '../../hooks/useDisplayCqfAndCalculatedExpression';
+import RequiredAsterisk from '../FormComponents/ItemParts/RequiredAsterisk';
+import useRenderingExtensions from '../../hooks/useRenderingExtensions';
 
 interface FormBodySingleTabProps {
   qItem: QuestionnaireItem;
@@ -40,6 +42,10 @@ const FormBodySingleTab = memo(function FormBodySingleTab(props: FormBodySingleT
   const switchTab = useQuestionnaireStore.use.switchTab();
   const disableHeadingFocusOnTabSwitch =
     useRendererConfigStore.use.disableHeadingFocusOnTabSwitch();
+  const requiredIndicatorPosition = useRendererConfigStore.use.requiredIndicatorPosition();
+
+  const { required } = useRenderingExtensions(qItem);
+  const readOnly = qItem.readOnly ?? false;
 
   const focusHeading = useFocusTabHeading();
 
@@ -68,14 +74,28 @@ const FormBodySingleTab = memo(function FormBodySingleTab(props: FormBodySingleT
         <ListItemText
           primary={
             <Box display="flex" alignItems="center" justifyContent="space-between">
-              <Typography
-                id={`tab-${listIndex}`}
-                component="span"
-                fontWeight={600}
-                fontSize="0.8125rem"
-                aria-label={itemTextAriaLabel}>
-                {tabLabel}
-              </Typography>
+              <Box display="flex" gap={0.25}>
+                {/* Required asterisk position is in front of text */}
+                {required && requiredIndicatorPosition === 'start' ? (
+                  <RequiredAsterisk>*</RequiredAsterisk>
+                ) : null}
+                <Typography
+                  id={`tab-${listIndex}`}
+                  component="span"
+                  fontWeight={600}
+                  fontSize="0.8125rem"
+                  aria-label={itemTextAriaLabel}>
+                  {tabLabel}
+                </Typography>
+
+                {/* Required asterisk position is behind text */}
+                {required && requiredIndicatorPosition === 'end' ? (
+                  <RequiredAsterisk readOnly={readOnly} variant="groupHeading">
+                    *
+                  </RequiredAsterisk>
+                ) : null}
+              </Box>
+
               <Box display="flex" minHeight={24} minWidth={24} ml={1}>
                 {contextDisplayItems.map((item) => {
                   return <ContextDisplayItem key={item.linkId} displayItem={item} />;

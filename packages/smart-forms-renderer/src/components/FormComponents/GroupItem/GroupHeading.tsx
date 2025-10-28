@@ -64,15 +64,6 @@ const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
     <>
       <Box display="flex" alignItems="center" width="100%">
         <Box position="relative" display="flex" flexGrow={1} alignItems="center">
-          {/* Required asterisk position is in front of text */}
-          {required && requiredIndicatorPosition === 'start' ? (
-            <RequiredAsterisk
-              sx={{ position: 'absolute', top: 0, left: -8 }} // Adjust top and left values as needed
-            >
-              *
-            </RequiredAsterisk>
-          ) : null}
-
           {/* Group Heading typography */}
           {/* flexGrow: 1 is important if xhtml and markdown rendering has width: 100% */}
           <Typography
@@ -82,6 +73,14 @@ const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
             display="flex"
             alignItems="center"
             sx={{ flexGrow: 1, ...(parentStyles || {}) }}>
+            {/* Required asterisk position is in front of text */}
+            {required && requiredIndicatorPosition === 'start' ? (
+              <RequiredAsterisk
+                sx={{ position: 'absolute', top: 0, left: -8 }} // Adjust top and left values as needed
+              >
+                *
+              </RequiredAsterisk>
+            ) : null}
             <ItemTextSwitcher qItem={qItem} />
 
             {/* Required asterisk position is behind text */}

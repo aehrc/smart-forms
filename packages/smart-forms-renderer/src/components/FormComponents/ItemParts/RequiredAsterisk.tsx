@@ -19,6 +19,7 @@ import React from 'react';
 import type { TypographyProps } from '@mui/material/Typography';
 import Typography from '@mui/material/Typography';
 import { useRendererConfigStore } from '../../../stores';
+import { SrOnly } from '../SrOnly.styles';
 
 interface RequiredAsteriskProps extends TypographyProps {
   readOnly?: boolean;
@@ -32,9 +33,18 @@ function RequiredAsterisk(props: RequiredAsteriskProps) {
   const readOnlyTextColor = readOnlyVisualStyle === 'disabled' ? 'text.disabled' : 'text.secondary';
 
   return (
-    <Typography component="span" color={readOnly ? readOnlyTextColor : 'error'} {...rest}>
-      {children}
-    </Typography>
+    <>
+      <Typography
+        component="span"
+        color={readOnly ? readOnlyTextColor : 'error'}
+        aria-hidden="true" // Hides visible asterisk from screen readers
+        {...rest}>
+        {children}
+      </Typography>
+
+      {/* Screen-reader-only accessible label */}
+      <SrOnly>Mandatory field</SrOnly>
+    </>
   );
 }
 
