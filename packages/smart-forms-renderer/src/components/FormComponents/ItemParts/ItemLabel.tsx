@@ -60,16 +60,6 @@ const ItemLabel = memo(function ItemLabel(props: ItemLabelProps) {
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between">
       <Box position="relative" display="flex" flexGrow={1} alignItems="center">
-        {/* Required asterisk position is in front of text */}
-        {required && requiredIndicatorPosition === 'start' ? (
-          <RequiredAsterisk
-            readOnly={readOnly}
-            variant={variant}
-            sx={{ position: 'absolute', top: 0, left: -8 }}>
-            *
-          </RequiredAsterisk>
-        ) : null}
-
         {/* Label typography */}
         {/* Added 0.5 marginTop (4px) because item labels doesn't look in line with their fields */}
         {/* flexGrow: 1 is important if xhtml and markdown rendering has width: 100% */}
@@ -85,6 +75,16 @@ const ItemLabel = memo(function ItemLabel(props: ItemLabelProps) {
             ...(parentStyles || {}),
             ...itemStyles
           }}>
+          {/* Required asterisk position is in front of text */}
+          {required && requiredIndicatorPosition === 'start' ? (
+            <RequiredAsterisk
+              readOnly={readOnly}
+              variant={variant}
+              sx={{ position: 'absolute', top: 4, left: -8 }}>
+              *
+            </RequiredAsterisk>
+          ) : null}
+
           <ItemTextSwitcher qItem={qItem} />
 
           {/* Required asterisk position is behind text */}
