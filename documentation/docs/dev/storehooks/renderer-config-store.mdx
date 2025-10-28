@@ -103,6 +103,7 @@ The `RendererConfigStore` exposes the following properties:
   Configures the width of the tab list, either as a fixed number or responsive breakpoints.
 
   Type:
+
   ```
   number | {
     tabContentBreakpoints: Partial<Breakpoints['values']>;
@@ -111,6 +112,7 @@ The `RendererConfigStore` exposes the following properties:
   ```
 
   Default:
+
   ```
   {
     tabListBreakpoints: { xs: 12, sm: 3, md: 3, lg: 2.75 },
@@ -124,9 +126,8 @@ The `RendererConfigStore` exposes the following properties:
 
   Default: `320`
 
-<br/>
+<br />
 The recommended way to set these properties is to pass a `RendererConfig` object into `buildForm`.
 You can also use the store hook `setRendererConfig` directly with a `RendererConfig` object.
-
 
 Refer to the [API Reference](/docs/api/smart-forms-renderer/interfaces/RendererConfig) for more information on each property.
