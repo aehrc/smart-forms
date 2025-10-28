@@ -493,7 +493,7 @@ P.S. We had `alpha` as a pre-release branch before the recent v1.0.0 release. Th
 8. Ensure that all CI checks pass (build, tests, linting, etc.).
 9. Merge `main` into your branch to ensure you have the latest changes.
 10. Update TypeDoc documentation by running `npm run build` in `/documentation`.
-11. Request for a code review from a team member. Once approved, you can proceed to the next steps.
+11. Request for a code review from a team member (or review it yourself). Once approved, you can proceed to the next steps.
 12. If you are working on a package (i.e. any package in `/packages`), follow the steps below to publish a new version. Otherwise, merge your branch into `main`.
 13. Depending on which package/app you are working on, bump the version number in `package.json` following [semantic versioning](https://semver.org/) principles.
 14. Update dependencies in other packages/apps if necessary.
