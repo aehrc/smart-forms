@@ -10,6 +10,10 @@ For changelogs of other libraries, please refer to their respective repositories
 
 Changelog only includes changes from version 0.36.0 onwards.
 
+## [1.2.8] - 2025-10-28
+### Fixed
+- Required field asterisks accessibility enhancements also applies to group headings and tab buttons.
+
 ## [1.2.7] - 2025-10-28
 ### Fixed
 - Required field asterisks are now properly announced as "Mandatory field" by screen readers. Refer to issue [#1741](https://github.com/aehrc/smart-forms/issues/1741)
