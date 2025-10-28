@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import RadioGroup from '@mui/material/RadioGroup';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import { useRendererConfigStore } from '../../../stores';
 import { getChoiceOrientation } from '../../../utils/choice';

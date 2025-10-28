@@ -31,7 +31,6 @@ import { StyledAlert } from '../../Alert.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { StandardTextField } from '../Textfield.styles';
 import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
-import React from 'react';
 
 interface ChoiceSelectAnswerValueSetFieldsProps
   extends PropsWithIsTabledAttribute,
