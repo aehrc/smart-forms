@@ -545,7 +545,7 @@ P.S. We had `alpha` as a pre-release branch before the recent v1.0.0 release. Th
 
 ## Common issues
 
-NPM workspaces can be a bit inconsistent at times, so it is a good idea to run `npm install` in the directory you are working on to ensure dependencies are installed correctly.
+NPM workspaces can be a bit inconsistent at times, so it is a good idea to merge main back to your branch first, then run `npm install` in the directory you are working on to ensure dependencies are installed correctly.
 If `npm install` doesn't resolve the issue, try deleting the `node_modules` directory (or `package-lock.json` at times) and running `npm install` again.
 
 Sometimes packages in the monorepo can have different versions of the same dependency, which may cause issues. Ensure that the package/app you are working on have the same dependency versions as the other packages in the monorepo.
