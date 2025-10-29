@@ -45,9 +45,9 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
     renderingExtensions,
     feedbackFromParent,
     parentIsReadOnly,
-    onQrItemChange
+    onQrItemChange,
+    calcExpUpdated
   } = props;
-  // TODO no calcExpUpdated
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
@@ -175,6 +175,7 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
         loading={loading}
         feedback={feedback}
         readOnly={readOnly}
+        calcExpUpdated={calcExpUpdated}
         isTabled={isTabled}
         renderingExtensions={renderingExtensions}
         onValueChange={handleValueChange}
@@ -201,6 +202,7 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
             loading={loading}
             feedback={feedback}
             readOnly={readOnly}
+            calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
             onValueChange={handleValueChange}

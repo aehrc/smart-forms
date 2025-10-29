@@ -486,7 +486,8 @@ function applyCalculatedExpressionValuesInRepeatGroup(
  */
 function constructItemFromCalculatedExpression(
   qItem: QuestionnaireItem,
-  calculatedExpressions: Record<string, CalculatedExpression[]>
+  calculatedExpressions: Record<string, CalculatedExpression[]>,
+  existingQrItem?: QuestionnaireResponseItem | null
 ): QuestionnaireResponseItem | undefined {
   const calcExpressionFromItem = calculatedExpressions[qItem.linkId]?.find(
     (calcExpression) => calcExpression.from === 'item'
@@ -496,7 +497,13 @@ function constructItemFromCalculatedExpression(
   if (!calcExpressionFromItem || calcExpressionFromItem.value === undefined) {
     return;
   }
-  const generatedAnswerKey = generateCalculatedExpressionsAnswerKey(qItem.linkId);
+
+  // Reuse existing calculatedExpression answer id if present, otherwise generate a new one
+  const existingAnswerId = existingQrItem?.answer?.[0]?.id;
+  const generatedAnswerKey =
+    existingAnswerId && existingAnswerId.includes('calculatedExpression')
+      ? existingAnswerId
+      : generateCalculatedExpressionsAnswerKey(qItem.linkId);
 
   // calcExpressionFromItem.value is null, return empty item
   if (calcExpressionFromItem.value === null) {
@@ -530,7 +537,8 @@ function applyCalculatedExpressionValuesInNonLeafItem(
 ): QuestionnaireResponseItem | null {
   const constructedItemFromCalculatedExpression = constructItemFromCalculatedExpression(
     qItem,
-    calculatedExpressions
+    calculatedExpressions,
+    qrItem
   );
 
   // If no constructed item, return previous item if it exists
@@ -553,7 +561,8 @@ function applyCalculatedExpressionValuesInLeafItem(
 ): QuestionnaireResponseItem | null {
   const constructedItemFromCalculatedExpression = constructItemFromCalculatedExpression(
     qItem,
-    calculatedExpressions
+    calculatedExpressions,
+    qrItem
   );
 
   // If no constructed item, return previous item if it exists

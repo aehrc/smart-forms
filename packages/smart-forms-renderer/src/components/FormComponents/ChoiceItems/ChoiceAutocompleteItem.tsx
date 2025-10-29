@@ -41,9 +41,9 @@ function ChoiceAutocompleteItem(props: BaseItemProps) {
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
-    onQrItemChange
+    onQrItemChange,
+    calcExpUpdated
   } = props;
-  // TODO no calcExpUpdated
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
@@ -108,6 +108,7 @@ function ChoiceAutocompleteItem(props: BaseItemProps) {
         loading={loading}
         feedback={feedback}
         readOnly={readOnly}
+        calcExpUpdated={calcExpUpdated}
         isTabled={isTabled}
         renderingExtensions={renderingExtensions}
         onInputChange={setInput}
@@ -134,6 +135,7 @@ function ChoiceAutocompleteItem(props: BaseItemProps) {
             loading={loading}
             feedback={feedback}
             readOnly={readOnly}
+            calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
             onInputChange={setInput}
