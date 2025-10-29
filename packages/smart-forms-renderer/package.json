@@ -39,7 +39,7 @@
     "@mui/lab": "^7.0.0-beta.13",
     "@mui/material": "^7.1.1",
     "@mui/x-date-pickers": "^7.28.3",
-    "@tanstack/react-query": "^5.90.2",
+    "@tanstack/react-query": "^5.90.5",
     "dayjs": "^1.11.18",
     "deep-diff": "^1.0.2",
     "fast-equals": "^5.2.2",
