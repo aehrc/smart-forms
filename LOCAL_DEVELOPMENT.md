@@ -439,6 +439,10 @@ These tests are located in `apps/smart-forms-app/e2e` and are run as part of the
 These end-to-end tests use [MBS715](https://smartforms.csiro.au/api/fhir/Questionnaire/AboriginalTorresStraitIslanderHealthCheck) and [BitOfEverything](https://smartforms.csiro.au/api/fhir/Questionnaire/BitOfEverything) as test data.
 They can be fairly flaky, so we try to keep them to a minimum. Currently, there are no plans to add more tests unless explicitly requested. If CI e2e tests are failing, try running them again via the "sync" button on GitHub Actions.
 
+> For the MBS715, the version is currently set to `0.4.0` in the tests. When the version inevitably changes, `smart-forms-app/e2e/globals.ts` needs to be updated otherwise the tests will fail to find the Questionnaire.
+> 
+> E.g. `'{"role":"http://ns.electronichealth.net.au/smart/role/new","canonical":"http://www.health.gov.au/assessments/mbs/715|0.4.0-assembled","type":"Questionnaire"}'`
+
 A common failure point for these tests is the SMART App Launch sequence, which relies on actual FHIR servers:
 - SMART App Launch + Patient Data FHIR API: https://proxy.smartforms.io/v/r4/fhir
 - Forms Server: https://smartforms.csiro.au/api/fhir
