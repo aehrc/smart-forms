@@ -92,7 +92,7 @@ export const LAUNCH_PARAM_WITH_Q = btoa(
     0,
     1,
     // Adjust version if the MBS715 questionnaire version changes
-    '{"role":"http://ns.electronichealth.net.au/smart/role/new","canonical":"http://www.health.gov.au/assessments/mbs/715|0.4.0-assembled","type":"Questionnaire"}',
+    '{"role":"http://ns.electronichealth.net.au/smart/role/new","canonical":"http://www.health.gov.au/assessments/mbs/715|0.3.0-assembled","type":"Questionnaire"}',
     'https://proxy.smartforms.io/v/r4/fhir',
     false
   ])
