@@ -127,5 +127,8 @@ app.post('/fhir/Questionnaire/\\$assemble', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Assemble Express app listening on port ${port}`);
+  console.log(
+    `Assemble Express app listening on port ${port}. ` +
+      `If you're running this in Docker, remember to map your host port to ${port}.`
+  );
 });
