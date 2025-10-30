@@ -30,6 +30,7 @@ import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 import { useRendererConfigStore } from '../../../stores';
 import { StyledRequiredTypography } from '../Item.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
+import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 
 interface OpenChoiceSelectAnswerValueSetFieldProps
   extends PropsWithIsTabledAttribute,
@@ -41,6 +42,7 @@ interface OpenChoiceSelectAnswerValueSetFieldProps
   terminologyError: TerminologyError;
   feedback: string;
   readOnly: boolean;
+  calcExpUpdated: boolean;
   onValueChange: (
     newValue: Coding | string | null,
     reason: AutocompleteChangeReason | string
@@ -55,6 +57,7 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
     terminologyError,
     feedback,
     readOnly,
+    calcExpUpdated,
     isTabled,
     renderingExtensions,
     onValueChange
@@ -95,6 +98,7 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
                 readOnly: readOnly && readOnlyVisualStyle === 'readonly',
                 endAdornment: (
                   <>
+                    <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
                     {params.InputProps.endAdornment}
                     <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
                   </>

@@ -38,9 +38,9 @@ function OpenChoiceSelectAnswerValueSetItem(props: BaseItemProps) {
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
-    onQrItemChange
+    onQrItemChange,
+    calcExpUpdated
   } = props;
-  // TODO no calcExpUpdated
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
@@ -131,6 +131,7 @@ function OpenChoiceSelectAnswerValueSetItem(props: BaseItemProps) {
         renderingExtensions={renderingExtensions}
         readOnly={readOnly}
         onValueChange={handleValueChange}
+        calcExpUpdated={calcExpUpdated}
       />
     );
   }
@@ -156,6 +157,7 @@ function OpenChoiceSelectAnswerValueSetItem(props: BaseItemProps) {
             renderingExtensions={renderingExtensions}
             readOnly={readOnly}
             onValueChange={handleValueChange}
+            calcExpUpdated={calcExpUpdated}
           />
         }
       />

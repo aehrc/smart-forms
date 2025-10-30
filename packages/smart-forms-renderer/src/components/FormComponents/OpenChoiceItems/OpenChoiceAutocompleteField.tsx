@@ -41,8 +41,8 @@ import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon'
 
 interface OpenChoiceAutocompleteFieldProps
   extends PropsWithIsTabledAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithRenderingExtensionsAttribute {
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithRenderingExtensionsAttribute {
   qItem: QuestionnaireItem;
   options: Coding[];
   valueAutocomplete: string | Coding;
@@ -51,7 +51,6 @@ interface OpenChoiceAutocompleteFieldProps
   feedback: { message: string; color: AlertColor } | null;
   readOnly: boolean;
   calcExpUpdated: boolean;
-
   onValueChange: (
     newValue: Coding | string | null,
     reason: AutocompleteChangeReason | string

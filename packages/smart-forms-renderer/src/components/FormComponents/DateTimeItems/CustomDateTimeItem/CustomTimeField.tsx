@@ -58,7 +58,6 @@ function CustomTimeField(props: CustomTimeFieldProps) {
     onTimeInputChange,
     onPeriodChange
   } = props;
-  // TODO this component doesn't have a calcExpUpdated update animation
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
@@ -114,9 +113,7 @@ function CustomTimeField(props: CustomTimeFieldProps) {
             <MenuItem value="PM">PM</MenuItem>
           </Select>
         </FormControl>
-                <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-
-
+        <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
       </Box>
       <Typography component="span" variant="caption" color="error" sx={{ ml: 1.75, mt: -0.5 }}>
         {feedback}
