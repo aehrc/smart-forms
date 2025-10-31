@@ -10,6 +10,11 @@ For changelogs of other libraries, please refer to their respective repositories
 
 Changelog only includes changes from version 0.36.0 onwards.
 
+## [1.2.10] - 2025-10-28
+**Use 1.2.10 instead of 1.2.9 due to a publishing issue.**
+### Fixed
+- Add aria-hidden="true" to text-field based questions' clear button (x).
+
 ## [1.2.9] - 2025-10-28
 ### Fixed
 - Add aria-hidden="true" to text-field based questions' clear button (x).
