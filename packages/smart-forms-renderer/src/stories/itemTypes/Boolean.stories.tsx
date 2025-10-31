@@ -79,7 +79,7 @@ export const BooleanBasic: Story = createStory({
     expect(result[0]).toEqual(expect.objectContaining({ valueBoolean: true }));
 
     // Clear value
-    const clearButton = canvasElement.querySelector('button[title="Clear"]');
+    const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
     fireEvent.click(clearButton as HTMLElement);
 
     // Here we await for debounced store update
@@ -139,7 +139,7 @@ export const BooleanCheckbox: Story = createStory({
     expect(result[0]).toEqual(expect.objectContaining({ valueBoolean: true }));
 
     // Clear value
-    const clearButton = canvasElement.querySelector('button[title="Clear"]');
+    const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
     fireEvent.click(clearButton as HTMLElement);
 
     // Here we await for debounced store update

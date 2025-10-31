@@ -117,10 +117,10 @@ export const GroupBasic: Story = createStory({
 
     // Clear
     const nameClearButton = canvasElement.querySelector(
-      'div[data-test="q-item-string-field"] button[aria-label="Clear"]'
+      'div[data-test="q-item-string-field"] button[title="Clear"]'
     );
     const ageClearButton = canvasElement.querySelector(
-      'div[data-test="q-item-integer-field"] button[aria-label="Clear"]'
+      'div[data-test="q-item-integer-field"] button[title="Clear"]'
     );
 
     fireEvent.click(nameClearButton as HTMLElement);
