@@ -151,5 +151,8 @@ app.post('/fhir/Questionnaire/\\$populate', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Populate Express app listening on port ${port}`);
+  console.log(
+    `Populate Express app listening on port ${port}. ` +
+      `If you're running this in Docker, remember to map your host port to ${port}.`
+  );
 });
