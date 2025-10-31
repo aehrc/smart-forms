@@ -113,7 +113,7 @@ export const ChoiceAnswerOptionBasic: Story = createStory({
     expect(result[0].valueCoding).toEqual(expect.objectContaining(aoTargetValueCoding));
 
     // Clear
-    const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
+    const clearButton = canvasElement.querySelector('button[title="Clear"]');
     fireEvent.click(clearButton as HTMLElement);
 
     // Here we await for debounced store update
