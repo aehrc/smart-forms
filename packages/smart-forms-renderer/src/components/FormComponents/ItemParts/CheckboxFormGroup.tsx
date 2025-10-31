@@ -10,9 +10,10 @@ import { ChoiceItemOrientation } from '../../../interfaces/choice.enum';
 import { useRendererConfigStore } from '../../../stores';
 import { getChoiceOrientation } from '../../../utils/choice';
 import CheckboxOptionList from '../ChoiceItems/CheckboxOptionList';
-import { StyledRequiredTypography } from '../Item.styles';
+import { StyledFeedbackTypography } from '../Item.styles';
 import ClearInputButton from './ClearInputButton';
 import ExpressionUpdateFadingIcon from './ExpressionUpdateFadingIcon';
+import AccessibleFeedback from './AccessibleFeedback';
 
 interface ChoiceCheckboxFormGroupProps {
   qItem: QuestionnaireItem;
@@ -50,6 +51,8 @@ function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
 
   const answersEmpty = answers.length === 0;
 
+  const feedbackId = `${qItem.type}-${qItem.linkId}-feedback`;
+
   return (
     <>
       <Box
@@ -68,6 +71,7 @@ function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
             {...(!isTabled
               ? { 'aria-labelledby': 'label-' + qItem.linkId }
               : { 'aria-label': qItem.text ?? 'Unnamed checkbox list' })}
+            aria-describedby={feedback ? feedbackId : undefined}
             role="group"
             row={orientation === ChoiceItemOrientation.Horizontal}
             sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
@@ -91,7 +95,11 @@ function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
         <ClearInputButton buttonShown={!answersEmpty} readOnly={readOnly} onClear={onClear} />
       </Box>
 
-      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
+      {feedback ? (
+        <AccessibleFeedback id={feedbackId}>
+          <StyledFeedbackTypography>{feedback}</StyledFeedbackTypography>
+        </AccessibleFeedback>
+      ) : null}
     </>
   );
 }

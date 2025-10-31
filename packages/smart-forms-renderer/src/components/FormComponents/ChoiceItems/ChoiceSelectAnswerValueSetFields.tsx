@@ -28,9 +28,9 @@ import { useRendererConfigStore } from '../../../stores';
 import { isCodingDisabled } from '../../../utils/choice';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import { StyledAlert } from '../../Alert.styles';
-import { StyledRequiredTypography } from '../Item.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { StandardTextField } from '../Textfield.styles';
+import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
 
 interface ChoiceSelectAnswerValueSetFieldsProps
   extends PropsWithIsTabledAttribute,
@@ -89,6 +89,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
               textFieldWidth={textFieldWidth}
               isTabled={isTabled}
               placeholder={entryFormat || displayPrompt}
+              helperText={<AccessibleFeedback>{feedback}</AccessibleFeedback>}
               {...params}
               slotProps={{
                 input: {
@@ -113,8 +114,6 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
             />
           )}
         />
-
-        {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
       </>
     );
   }

@@ -27,8 +27,8 @@ import type {
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import { useRendererConfigStore } from '../../../stores';
-import { StyledRequiredTypography } from '../Item.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
+import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
 
 interface OpenChoiceSelectAnswerOptionFieldProps
   extends PropsWithIsTabledAttribute,
@@ -83,6 +83,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
             textFieldWidth={textFieldWidth}
             isTabled={isTabled}
             placeholder={entryFormat || displayPrompt}
+            helperText={<AccessibleFeedback>{feedback}</AccessibleFeedback>}
             {...params}
             slotProps={{
               input: {
@@ -99,8 +100,6 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
           />
         )}
       />
-
-      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
     </>
   );
 }
