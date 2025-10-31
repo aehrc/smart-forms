@@ -441,7 +441,7 @@ They can be fairly flaky, so we try to keep them to a minimum. Currently, there 
 
 > For the MBS715, the version is currently set to `0.4.0` in the tests. When the version inevitably changes, `smart-forms-app/e2e/globals.ts` needs to be updated otherwise the tests will fail to find the Questionnaire.
 > 
-> E.g. `'{"role":"http://ns.electronichealth.net.au/smart/role/new","canonical":"http://www.health.gov.au/assessments/mbs/715|0.4.0-assembled","type":"Questionnaire"}'`
+> E.g. `'{"role":"http://ns.electronichealth.net.au/smart/role/new","canonical":"http://www.health.gov.au/assessments/mbs/715|0.3.0-assembled","type":"Questionnaire"}'`
 
 A common failure point for these tests is the SMART App Launch sequence, which relies on actual FHIR servers:
 - SMART App Launch + Patient Data FHIR API: https://proxy.smartforms.io/v/r4/fhir
