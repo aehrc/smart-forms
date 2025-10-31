@@ -78,7 +78,7 @@ export const StringBasic: Story = createStory({
     expect(result[0]).toEqual(expect.objectContaining({ valueString: targetInput }));
 
     // Clear value
-    const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
+    const clearButton = canvasElement.querySelector('button[title="Clear"]');
     fireEvent.click(clearButton as HTMLElement);
 
     // Here we await for debounced store update
