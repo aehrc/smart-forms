@@ -1,6 +1,6 @@
 {
   "name": "@aehrc/smart-forms-renderer",
-  "version": "1.2.10",
+  "version": "1.2.11",
   "description": "FHIR Structured Data Captured (SDC) rendering engine for Smart Forms",
   "main": "lib/index.js",
   "scripts": {
