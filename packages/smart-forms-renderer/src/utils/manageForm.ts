@@ -116,25 +116,25 @@ export async function buildForm(params: BuildFormParams): Promise<void> {
     terminologyServerStore.getState().resetUrl();
   }
 
-  // QR is set to undefined here to prevent it from being initialised twice. This is defined like that for backward compatibility purposes.
-  await questionnaireStore
-    .getState()
-    .buildSourceQuestionnaire(
-      questionnaire,
-      undefined,
-      additionalContext,
-      terminologyServerUrl,
-      readOnly,
-      qItemOverrideComponents,
-      sdcUiOverrideComponents
-    );
-
   // Initialise an empty questionnaireResponse from a given questionnaire
   // Optionally takes in an existing questionnaireResponse to be initialised
   const initialisedQuestionnaireResponse = initialiseQuestionnaireResponse(
     questionnaire,
     questionnaireResponse
   );
+
+  // The buildSourceQuestionnaire function now takes the initialisedQuestionnaireResponse, which includes item.initial values from the Questionnaire.
+  await questionnaireStore
+    .getState()
+    .buildSourceQuestionnaire(
+      questionnaire,
+      initialisedQuestionnaireResponse,
+      additionalContext,
+      terminologyServerUrl,
+      readOnly,
+      qItemOverrideComponents,
+      sdcUiOverrideComponents
+    );
 
   // Set initialised QuestionnaireResponse as the source response in the store
   questionnaireResponseStore.getState().buildSourceResponse(initialisedQuestionnaireResponse);
