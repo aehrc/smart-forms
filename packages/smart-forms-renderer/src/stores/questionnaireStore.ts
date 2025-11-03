@@ -39,6 +39,7 @@ import type { Variables } from '../interfaces/variables.interface';
 import { processCalculatedExpressions } from '../utils/calculatedExpression';
 import { applyComputedUpdates } from '../utils/computedUpdates';
 import {
+  assignPopulatedAnswersToEnableWhen,
   mutateRepeatEnableWhenItemInstances,
   updateEnableWhenItemAnswer
 } from '../utils/enableWhen';
@@ -441,6 +442,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
 
     4. Re-run calculatedExpressions as a final step to ensure all calculations are up-to-date, incorporating any toggled options or dynamic value set changes.
     5. Update store state based on the expressions that changed
+    6. (If initial update) Initialise enableWhen items
     */
 
     const {
@@ -450,6 +452,7 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       variables,
       targetConstraints,
       answerOptionsToggleExpressions,
+      enableWhenItems,
       enableWhenExpressions,
       processedValueSets,
       calculatedExpressions,
@@ -471,6 +474,8 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
         enableWhenExpressions?: EnableWhenExpressions;
         answerOptionsToggleExpressions?: Record<string, AnswerOptionsToggleExpression[]>;
         processedValueSets?: Record<string, ProcessedValueSet>;
+        enableWhenItems?: EnableWhenItems;
+        enableWhenLinkedQuestions?: Record<string, string[]>;
       }
     ) {
       // Update QuestionnaireStore state
@@ -489,6 +494,12 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
         }),
         ...(otherExpressions?.processedValueSets && {
           processedValueSets: otherExpressions.processedValueSets
+        }),
+        ...(otherExpressions?.enableWhenItems && {
+          enableWhenItems: otherExpressions.enableWhenItems
+        }),
+        ...(otherExpressions?.enableWhenLinkedQuestions && {
+          enableWhenLinkedQuestions: otherExpressions.enableWhenLinkedQuestions
         })
       }));
 
@@ -573,6 +584,8 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       enableWhenExpressions: EnableWhenExpressions;
       answerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
       processedValueSets: Record<string, ProcessedValueSet>;
+      enableWhenItems: EnableWhenItems;
+      enableWhenLinkedQuestions: Record<string, string[]>;
     }> = {};
     if (targetConstraintsUpdate.isUpdated) {
       otherExpressionsToUpdate.targetConstraints = targetConstraintsUpdate.value;
@@ -586,6 +599,16 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
     }
     if (processedValueSetsUpdate.isUpdated) {
       otherExpressionsToUpdate.processedValueSets = processedValueSetsUpdate.value;
+    }
+
+    // Step 6: Evaluate enableWhen on the first update
+    if (isInitialUpdate) {
+      const {
+        initialisedItems: initialisedEnableWhenItems,
+        linkedQuestions: initialisedEnableWhenLinkedQuestions
+      } = assignPopulatedAnswersToEnableWhen(enableWhenItems, lastUpdatedResponse);
+      otherExpressionsToUpdate.enableWhenItems = initialisedEnableWhenItems;
+      otherExpressionsToUpdate.enableWhenLinkedQuestions = initialisedEnableWhenLinkedQuestions;
     }
 
     updateStoreState(
