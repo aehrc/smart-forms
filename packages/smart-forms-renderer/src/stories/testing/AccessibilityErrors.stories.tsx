@@ -51,16 +51,16 @@ export const StringRegexErrorAccessibility: Story = createStory({
   },
   play: async ({ canvasElement }) => {
     const element = await findByLinkIdOrLabel(canvasElement, 'email-format');
-    
+
     // Type an invalid email to trigger immediate validation error
     await inputText(canvasElement, 'email-format', 'invalid-email');
-    
+
     // Wait for validation to run (debounced)
     await new Promise((resolve) => setTimeout(resolve, 600));
-    
+
     // Find the error message element (FormHelperText)
     const helperText = element.querySelector('.MuiFormHelperText-root');
-    
+
     if (helperText) {
       // Verify ARIA live region attributes are present
       expect(helperText.getAttribute('role')).toBe('alert');
@@ -92,16 +92,16 @@ export const IntegerMinValueErrorAccessibility: Story = createStory({
   },
   play: async ({ canvasElement }) => {
     const element = await findByLinkIdOrLabel(canvasElement, 'age');
-    
+
     // Type a value below minimum to trigger error
     await inputText(canvasElement, 'age', '10');
-    
+
     // Wait for validation
     await new Promise((resolve) => setTimeout(resolve, 500));
-    
+
     // Find the error message element (FormHelperText)
     const helperText = element.querySelector('.MuiFormHelperText-root');
-    
+
     if (helperText) {
       // Verify ARIA live region attributes are present
       expect(helperText.getAttribute('role')).toBe('alert');
@@ -127,16 +127,20 @@ export const TextMaxLengthErrorAccessibility: Story = createStory({
   },
   play: async ({ canvasElement }) => {
     const element = await findByLinkIdOrLabel(canvasElement, 'comment');
-    
+
     // Type text exceeding max length to trigger immediate validation error
-    await inputText(canvasElement, 'comment', 'This is a very long comment that exceeds twenty characters');
-    
+    await inputText(
+      canvasElement,
+      'comment',
+      'This is a very long comment that exceeds twenty characters'
+    );
+
     // Wait for validation to run (debounced)
     await new Promise((resolve) => setTimeout(resolve, 600));
-    
+
     // Find the error message element (FormHelperText)
     const helperText = element.querySelector('.MuiFormHelperText-root');
-    
+
     if (helperText) {
       // Verify ARIA live region attributes are present
       expect(helperText.getAttribute('role')).toBe('alert');
@@ -146,4 +150,3 @@ export const TextMaxLengthErrorAccessibility: Story = createStory({
     }
   }
 }) as Story;
-
