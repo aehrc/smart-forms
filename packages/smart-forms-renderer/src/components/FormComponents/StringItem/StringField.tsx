@@ -25,7 +25,6 @@ import ItemRepopulateButton from '../ItemParts/ItemRepopulateButton';
 import type { RenderingExtensions } from '../../../hooks/useRenderingExtensions';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { StandardTextField } from '../Textfield.styles';
-import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
 
 interface StringFieldProps extends PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
@@ -89,9 +88,15 @@ function StringField(props: StringFieldProps) {
               <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>
           )
-        }
+        },
+        formHelperText: feedback
+          ? {
+              role: 'alert',
+              'aria-live': 'assertive'
+            }
+          : undefined
       }}
-      helperText={<AccessibleFeedback>{feedback}</AccessibleFeedback>}
+      helperText={feedback}
       data-test="q-item-string-field"
     />
   );
