@@ -25,7 +25,6 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import ItemRepopulateButton from '../ItemParts/ItemRepopulateButton';
 import type { RenderingExtensions } from '../../../hooks/useRenderingExtensions';
 import { StandardTextField } from '../Textfield.styles';
-import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
 
 interface IntegerFieldProps extends PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
@@ -75,7 +74,7 @@ function IntegerField(props: IntegerFieldProps) {
       id={inputId}
       value={input}
       error={!!feedback}
-      helperText={<AccessibleFeedback>{feedback}</AccessibleFeedback>}
+      helperText={feedback}
       onChange={(event) => onInputChange(event.target.value)}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       label={displayPrompt}
@@ -109,7 +108,13 @@ function IntegerField(props: IntegerFieldProps) {
               <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>
           )
-        }
+        },
+        formHelperText: feedback
+          ? {
+              role: 'alert',
+              'aria-live': 'assertive'
+            }
+          : undefined
       }}
       data-test="q-item-integer-field"
     />
