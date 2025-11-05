@@ -37,6 +37,7 @@ import type {
 import type { AlertColor } from '@mui/material/Alert';
 import { useRendererConfigStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
+import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 
 interface OpenChoiceAutocompleteFieldProps
   extends PropsWithIsTabledAttribute,
@@ -49,6 +50,7 @@ interface OpenChoiceAutocompleteFieldProps
   loading: boolean;
   feedback: { message: string; color: AlertColor } | null;
   readOnly: boolean;
+  calcExpUpdated: boolean;
   onValueChange: (
     newValue: Coding | string | null,
     reason: AutocompleteChangeReason | string
@@ -64,6 +66,7 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
     loading,
     feedback,
     readOnly,
+    calcExpUpdated,
     isTabled,
     renderingExtensions,
     onValueChange
@@ -132,6 +135,7 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
                       </Tooltip>
                     </Fade>
                   ) : null}
+                  <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
                   {params.InputProps.endAdornment}
                   <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
                 </>
