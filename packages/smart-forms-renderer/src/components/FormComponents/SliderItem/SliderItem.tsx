@@ -17,7 +17,7 @@
 
 import React from 'react';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
-import { createEmptyQrItem } from '../../../utils/qrItem';
+import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useReadOnly from '../../../hooks/useReadOnly';
@@ -46,7 +46,7 @@ function SliderItem(props: BaseItemProps) {
   const isInteracted = !!qrItem?.answer;
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0]?.id;
+  const answerKey = getQRItemId(qrItem?.answer?.[0]?.id);
   let valueInteger = 0;
   if (qrItem?.answer) {
     if (qrItem?.answer[0].valueInteger) {

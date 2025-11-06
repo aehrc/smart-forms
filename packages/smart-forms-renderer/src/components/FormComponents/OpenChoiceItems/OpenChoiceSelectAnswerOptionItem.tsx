@@ -21,7 +21,7 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
-import { createEmptyQrItem } from '../../../utils/qrItem';
+import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
@@ -37,9 +37,9 @@ function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
     renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
-    onQrItemChange
+    onQrItemChange,
+    calcExpUpdated
   } = props;
-  // TODO no calcExpUpdated
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
@@ -49,7 +49,7 @@ function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0]?.id;
+  const answerKey = getQRItemId(qrItem?.answer?.[0]?.id);
   const answerOptions = qItem.answerOption;
   if (!answerOptions) return null;
 
@@ -111,6 +111,7 @@ function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
         valueSelect={valueSelect}
         feedback={feedback}
         readOnly={readOnly}
+        calcExpUpdated={calcExpUpdated}
         isTabled={isTabled}
         renderingExtensions={renderingExtensions}
         onValueChange={handleValueChange}
@@ -135,6 +136,7 @@ function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
             valueSelect={valueSelect}
             feedback={feedback}
             readOnly={readOnly}
+            calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
             onValueChange={handleValueChange}

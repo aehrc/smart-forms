@@ -27,7 +27,7 @@ import {
   parseDecimalStringToFloat,
   parseDecimalStringWithPrecision
 } from '../../../utils/parseInputs';
-import { createEmptyQrItem } from '../../../utils/qrItem';
+import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
@@ -53,7 +53,7 @@ function DecimalItem(props: BaseItemProps) {
   const precision = getDecimalPrecision(qItem);
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0]?.id;
+  const answerKey = getQRItemId(qrItem?.answer?.[0]?.id);
   const { initialInput } = readDecimalValue(qrItem, precision);
 
   const [input, setInput] = useState(initialInput);

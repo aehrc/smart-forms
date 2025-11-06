@@ -74,7 +74,12 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
   // This is used to force re-rendering of the component when the answer changes via an external event i.e. calculatedExpression
   const answerKey = qrItem?.answer?.[0]?.id;
 
-  const calcExpUpdated = useCalculatedExpressionUpdated(answerKey);
+  // Create a snapshot of the answer object so the hook can detect value changes
+  // even when the answer id stays the same. We stringify the answer to keep the
+  // comparison cheap and deterministic.
+  const answerSnapshot = qrItem?.answer?.[0] ? JSON.stringify(qrItem.answer[0]) : undefined;
+
+  const calcExpUpdated = useCalculatedExpressionUpdated(answerKey, answerSnapshot);
 
   const qItemOverrideComponents = useQuestionnaireStore.use.qItemOverrideComponents();
   const QItemOverrideComponent = qItemOverrideComponents[qItem.linkId];

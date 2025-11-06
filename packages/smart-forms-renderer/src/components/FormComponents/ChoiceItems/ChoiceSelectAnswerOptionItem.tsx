@@ -22,7 +22,7 @@ import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../utils/choice';
-import { createEmptyQrItem } from '../../../utils/qrItem';
+import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import ChoiceSelectAnswerOptionView from './ChoiceSelectAnswerOptionView';
 
 function ChoiceSelectAnswerOptionItem(props: BaseItemProps) {
@@ -46,7 +46,7 @@ function ChoiceSelectAnswerOptionItem(props: BaseItemProps) {
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0]?.id;
+  const answerKey = getQRItemId(qrItem?.answer?.[0]?.id);
   const qrChoice = qrItem ?? createEmptyQrItem(qItem, answerKey);
   const valueChoice = getQrChoiceValue(qrChoice);
 

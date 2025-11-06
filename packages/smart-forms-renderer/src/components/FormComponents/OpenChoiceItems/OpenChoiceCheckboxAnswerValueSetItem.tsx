@@ -28,7 +28,7 @@ import { convertCodingsToAnswerOptions, updateChoiceCheckboxAnswers } from '../.
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import { getOpenLabelText } from '../../../utils/extensions';
 import { updateOpenLabelAnswer } from '../../../utils/openChoice';
-import { createEmptyQrItem } from '../../../utils/qrItem';
+import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
@@ -51,7 +51,7 @@ function OpenChoiceCheckboxAnswerValueSetItem(props: BaseItemProps) {
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0]?.id;
+  const answerKey = getQRItemId(qrItem?.answer?.[0]?.id);
   const qrOpenChoiceCheckbox = qrItem ?? createEmptyQrItem(qItem, answerKey);
   const answers = qrOpenChoiceCheckbox.answer ?? [];
 

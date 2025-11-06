@@ -18,7 +18,7 @@
 import React, { useCallback, useState } from 'react';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import debounce from 'lodash.debounce';
-import { createEmptyQrItem } from '../../../utils/qrItem';
+import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import useReadOnly from '../../../hooks/useReadOnly';
 import AttachmentFieldWrapper from './AttachmentFieldWrapper';
@@ -45,7 +45,7 @@ function AttachmentItem(props: BaseItemProps) {
   } = props;
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0]?.id;
+  const answerKey = getQRItemId(qrItem?.answer?.[0]?.id);
   let valueString = '';
   if (qrItem?.answer && qrItem?.answer[0].valueString) {
     valueString = qrItem.answer[0].valueString;

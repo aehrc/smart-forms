@@ -29,6 +29,7 @@ import type {
 import { useRendererConfigStore } from '../../../stores';
 import { StyledRequiredTypography } from '../Item.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
+import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 
 interface OpenChoiceSelectAnswerOptionFieldProps
   extends PropsWithIsTabledAttribute,
@@ -39,6 +40,7 @@ interface OpenChoiceSelectAnswerOptionFieldProps
   valueSelect: QuestionnaireItemAnswerOption | null;
   feedback: string;
   readOnly: boolean;
+  calcExpUpdated: boolean;
   onValueChange: (
     newValue: QuestionnaireItemAnswerOption | string | null,
     reason: AutocompleteChangeReason | string
@@ -52,6 +54,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
     valueSelect,
     feedback,
     readOnly,
+    calcExpUpdated,
     isTabled,
     renderingExtensions,
     onValueChange
@@ -90,6 +93,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
                 readOnly: readOnly && readOnlyVisualStyle === 'readonly',
                 endAdornment: (
                   <>
+                    <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
                     {params.InputProps.endAdornment}
                     <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
                   </>

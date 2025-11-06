@@ -25,7 +25,7 @@ import useReadOnly from '../../../../hooks/useReadOnly';
 import useTimeValidation from '../../../../hooks/useTimeValidation';
 import type { BaseItemProps } from '../../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../../stores';
-import { createEmptyQrItem } from '../../../../utils/qrItem';
+import { createEmptyQrItem, getQRItemId } from '../../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../../Box.styles';
 import ItemFieldGrid from '../../ItemParts/ItemFieldGrid';
 import ItemLabel from '../../ItemParts/ItemLabel';
@@ -56,7 +56,7 @@ function CustomDateTimeItem(props: BaseItemProps) {
   const { displayPrompt, entryFormat } = renderingExtensions;
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0]?.id;
+  const answerKey = getQRItemId(qrItem?.answer?.[0]?.id);
   const qrDateTime = qrItem ?? createEmptyQrItem(qItem, answerKey);
 
   // Store dateTime in FHIR and DayJs formats for downstream parsing

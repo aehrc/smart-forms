@@ -312,3 +312,15 @@ export function updateQrNestedItems(
     return;
   }
 }
+
+/**
+ * Gets the Id of the QR Item, if it has a Calculated Expression, then it returns a new Id, else it returns the passed Id.
+ *
+ * @author Janardhan Vignarajan
+ */
+export function getQRItemId(answerKey: string | undefined) {
+  // If the answerKey is through CalculatedExpression, then we assign a new random ID so that it does not fire again when user changes the value
+  return answerKey && answerKey.includes('calculatedExpression')
+    ? Math.random().toString(36).slice(2)
+    : answerKey;
+}
