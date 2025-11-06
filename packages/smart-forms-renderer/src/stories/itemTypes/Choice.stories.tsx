@@ -122,7 +122,7 @@ export const ChoiceAnswerOptionBasic: Story = createStory({
     expect(resultAfterClear).toHaveLength(0);
 
     const elementAfterClear = await findByLinkIdOrLabel(canvasElement, aoTargetLinkId);
-    const input = elementAfterClear.querySelector('textarea');
+    const input = elementAfterClear.querySelector('input');
     expect(input?.value).toBe('');
   }
 }) as Story;
