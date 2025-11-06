@@ -207,7 +207,7 @@ describe('manageForm utils', () => {
       expect(mockResetUrl).toHaveBeenCalledTimes(1);
       expect(mockBuildSourceQuestionnaire).toHaveBeenCalledWith(
         mockQuestionnaire,
-        mockQuestionnaireResponse,
+        undefined,
         undefined,
         undefined,
         false,
@@ -261,7 +261,7 @@ describe('manageForm utils', () => {
       expect(mockSetUrl).toHaveBeenCalledWith(terminologyServerUrl);
       expect(mockBuildSourceQuestionnaire).toHaveBeenCalledWith(
         mockQuestionnaire,
-        mockQuestionnaireResponse,
+        undefined,
         additionalContext,
         terminologyServerUrl,
         true,
