@@ -35,6 +35,7 @@ import { createEmptyQrItem } from '../../../utils';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
 import { FullWidthFormComponentBox } from '../../Box.styles';
+import { getQRItemId } from '../../../utils/qrItem';
 
 function OpenChoiceAutocompleteItem(props: BaseItemProps) {
   const {
@@ -51,7 +52,7 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
 
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
-  const answerKey = qrItem?.answer?.[0]?.id;
+  const answerKey = getQRItemId(qrItem?.answer?.[0]?.id);
   const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem, answerKey);
 
   // Init input value

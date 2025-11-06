@@ -20,7 +20,7 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
-import { createEmptyQrItem } from '../../../utils/qrItem';
+import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
@@ -46,7 +46,7 @@ function BooleanItem(props: BaseItemProps) {
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0]?.id;
+  const answerKey = getQRItemId(qrItem?.answer?.[0]?.id);
   let valueBoolean: boolean | undefined = undefined;
   if (qrItem?.answer?.[0]?.valueBoolean !== undefined) {
     valueBoolean = qrItem.answer[0].valueBoolean;

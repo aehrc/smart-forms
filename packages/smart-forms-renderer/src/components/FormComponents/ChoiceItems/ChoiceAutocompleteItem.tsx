@@ -26,7 +26,7 @@ import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
 import { AUTOCOMPLETE_DEBOUNCE_DURATION } from '../../../utils/debounce';
-import { createEmptyQrItem } from '../../../utils/qrItem';
+import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
@@ -48,7 +48,7 @@ function ChoiceAutocompleteItem(props: BaseItemProps) {
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0]?.id;
+  const answerKey = getQRItemId(qrItem?.answer?.[0]?.id);
   const qrChoice = qrItem ?? createEmptyQrItem(qItem, answerKey);
 
   let valueCoding: Coding | undefined;
