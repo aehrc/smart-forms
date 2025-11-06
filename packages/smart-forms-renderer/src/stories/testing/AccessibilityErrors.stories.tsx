@@ -66,7 +66,7 @@ export const StringRegexErrorAccessibility: Story = createStory({
       expect(helperText.getAttribute('role')).toBe('alert');
       expect(helperText.getAttribute('aria-live')).toBe('assertive');
       // Should contain regex error message
-      expect(helperText.textContent).toContain('does not match');
+      expect(helperText.textContent).toContain('should match');
     }
   }
 }) as Story;
