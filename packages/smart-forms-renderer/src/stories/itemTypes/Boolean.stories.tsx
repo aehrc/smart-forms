@@ -27,7 +27,7 @@ import {
   questionnaireFactory,
   questionnaireResponseFactory
 } from '../testUtils';
-import { expect, fireEvent } from 'storybook/test';
+import { expect, fireEvent, within } from 'storybook/test';
 import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -163,5 +163,58 @@ export const BooleanCheckboxResponse: Story = createStory({
     const input = element.querySelector('input');
 
     expect(input).toBeChecked();
+  }
+}) as Story;
+
+/* Boolean with instructions for accessibility testing */
+const qBooleanAccessibility = questionnaireFactory([
+  {
+    linkId: 'consent',
+    type: 'boolean',
+    repeats: false,
+    text: 'I agree to the terms and conditions',
+    item: [
+      {
+        linkId: 'consent-instructions',
+        type: 'display',
+        text: 'Please read the terms carefully before agreeing',
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory',
+            valueCodeableConcept: {
+              coding: [
+                {
+                  system: 'http://hl7.org/fhir/questionnaire-display-category',
+                  code: 'instructions'
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+]);
+
+export const BooleanInstructionsAccessibility: Story = createStory({
+  args: {
+    questionnaire: qBooleanAccessibility
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const inputField = canvas.getByTestId('q-item-boolean-field');
+    const radioGroup = inputField.querySelector('[role="radiogroup"]');
+    const ariaDescribedBy = radioGroup?.getAttribute('aria-describedby');
+
+    // Check that aria-describedby is present and references the instructions
+    expect(ariaDescribedBy).toBeTruthy();
+    expect(ariaDescribedBy).toContain('instructions-consent');
+
+    // Check that the instructions element exists with the correct ID
+    const instructionsElement = document.getElementById('instructions-consent');
+    expect(instructionsElement).toBeTruthy();
+    expect(instructionsElement?.textContent).toContain(
+      'Please read the terms carefully before agreeing'
+    );
   }
 }) as Story;
