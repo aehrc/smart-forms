@@ -79,7 +79,6 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
           value={valueCoding ?? null}
           onChange={(_, newValue) => onSelectChange(newValue)}
           autoHighlight
-          openOnFocus
           sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }}
           size="small"
           disabled={readOnly && readOnlyVisualStyle === 'disabled'}
@@ -105,7 +104,8 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
                     ...params.inputProps,
                     ...(isTabled
                       ? { 'aria-label': qItem.text ?? 'Unnamed choice dropdown' }
-                      : { 'aria-labelledby': `label-${qItem.linkId}` })
+                      : { 'aria-labelledby': `label-${qItem.linkId}` }),
+                    role: 'combobox'
                   }
                 }
               }}
