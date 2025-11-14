@@ -57,17 +57,19 @@ export const StringRegexErrorAccessibility: Story = createStory({
     
     // Wait for validation to run (debounced)
     await new Promise((resolve) => setTimeout(resolve, 600));
-    
-    // Find the error message element (FormHelperText)
+
+    // Find the error message element (AccessibleFeedback span inside FormHelperText)
     const helperText = element.querySelector('.MuiFormHelperText-root');
-    
-    if (helperText) {
-      // Verify ARIA live region attributes are present
-      expect(helperText.getAttribute('role')).toBe('alert');
-      expect(helperText.getAttribute('aria-live')).toBe('assertive');
-      // Should contain regex error message
-      expect(helperText.textContent).toContain('should match');
-    }
+    const alertElement = helperText?.querySelector('[role="alert"]');
+
+    // Assert that the element exists
+    expect(alertElement).not.toBeNull();
+
+    // Verify ARIA live region attributes are present
+    expect(alertElement?.getAttribute('role')).toBe('alert');
+    expect(alertElement?.getAttribute('aria-live')).toBe('assertive');
+    // Should contain regex error message
+    expect(alertElement?.textContent).toContain('should match');
   }
 }) as Story;
 
@@ -98,16 +100,18 @@ export const IntegerMinValueErrorAccessibility: Story = createStory({
     
     // Wait for validation
     await new Promise((resolve) => setTimeout(resolve, 500));
-    
-    // Find the error message element (FormHelperText)
+
+    // Find the error message element (AccessibleFeedback span inside FormHelperText)
     const helperText = element.querySelector('.MuiFormHelperText-root');
-    
-    if (helperText) {
-      // Verify ARIA live region attributes are present
-      expect(helperText.getAttribute('role')).toBe('alert');
-      expect(helperText.getAttribute('aria-live')).toBe('assertive');
-      expect(helperText.textContent).toContain('18'); // Should mention the minimum value
-    }
+    const alertElement = helperText?.querySelector('[role="alert"]');
+
+    // Assert that the element exists
+    expect(alertElement).not.toBeNull();
+
+    // Verify ARIA live region attributes are present
+    expect(alertElement?.getAttribute('role')).toBe('alert');
+    expect(alertElement?.getAttribute('aria-live')).toBe('assertive');
+    expect(alertElement?.textContent).toContain('18'); // Should mention the minimum value
   }
 }) as Story;
 
@@ -133,17 +137,19 @@ export const TextMaxLengthErrorAccessibility: Story = createStory({
     
     // Wait for validation to run (debounced)
     await new Promise((resolve) => setTimeout(resolve, 600));
-    
-    // Find the error message element (FormHelperText)
+
+    // Find the error message element (AccessibleFeedback span inside FormHelperText)
     const helperText = element.querySelector('.MuiFormHelperText-root');
-    
-    if (helperText) {
-      // Verify ARIA live region attributes are present
-      expect(helperText.getAttribute('role')).toBe('alert');
-      expect(helperText.getAttribute('aria-live')).toBe('assertive');
-      // Should contain maxLength error message
-      expect(helperText.textContent).toContain('20');
-    }
+    const alertElement = helperText?.querySelector('[role="alert"]');
+
+    // Assert that the element exists
+    expect(alertElement).not.toBeNull();
+
+    // Verify ARIA live region attributes are present
+    expect(alertElement?.getAttribute('role')).toBe('alert');
+    expect(alertElement?.getAttribute('aria-live')).toBe('assertive');
+    // Should contain maxLength error message
+    expect(alertElement?.textContent).toContain('20');
   }
 }) as Story;
 
