@@ -15,11 +15,21 @@
  * limitations under the License.
  */
 
-import { styled } from '@mui/material/styles';
-import Typography from '@mui/material/Typography';
+import { type ReactNode } from 'react';
 
-export const StyledFeedbackTypography = styled(Typography)(({ theme }) => ({
-  color: theme.palette.error.main,
-  fontSize: '0.75rem',
-  marginTop: 4
-}));
+interface AccessibleFeedbackProps {
+  children: ReactNode;
+  id?: string;
+}
+
+function AccessibleFeedback(props: AccessibleFeedbackProps) {
+  const { children, id } = props;
+
+  return (
+    <span id={id} role="alert" aria-live="assertive">
+      {children}
+    </span>
+  );
+}
+
+export default AccessibleFeedback;

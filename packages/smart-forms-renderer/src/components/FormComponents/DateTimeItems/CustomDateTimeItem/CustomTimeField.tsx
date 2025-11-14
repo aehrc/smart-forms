@@ -25,6 +25,7 @@ import type { PropsWithIsTabledAttribute } from '../../../../interfaces/renderPr
 import { useRendererConfigStore } from '../../../../stores';
 import FormControl from '@mui/material/FormControl';
 import MuiTextField from '../../TextItem/MuiTextField';
+import AccessibleFeedback from '../../ItemParts/AccessibleFeedback';
 
 interface CustomTimeFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
@@ -113,9 +114,11 @@ function CustomTimeField(props: CustomTimeFieldProps) {
           </Select>
         </FormControl>
       </Box>
-      <Typography component="span" variant="caption" color="error" sx={{ ml: 1.75, mt: -0.5 }}>
-        {feedback}
-      </Typography>
+      <AccessibleFeedback>
+        <Typography component="span" variant="caption" color="error" sx={{ ml: 1.75, mt: -0.5 }}>
+          {feedback}
+        </Typography>
+      </AccessibleFeedback>
     </>
   );
 }
