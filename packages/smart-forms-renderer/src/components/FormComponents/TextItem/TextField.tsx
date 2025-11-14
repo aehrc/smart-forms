@@ -23,6 +23,7 @@ import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon'
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type { RenderingExtensions } from '../../../hooks/useRenderingExtensions';
 import ItemRepopulateButton from '../ItemParts/ItemRepopulateButton';
+import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
 
 interface TextFieldProps {
   qItem: QuestionnaireItem;
@@ -77,15 +78,9 @@ function TextField(props: TextFieldProps) {
               <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>
           )
-        },
-        formHelperText: feedback
-          ? {
-              role: 'alert',
-              'aria-live': 'assertive'
-            }
-          : undefined
+        }
       }}
-      helperText={feedback}
+      helperText={<AccessibleFeedback>{feedback}</AccessibleFeedback>}
       data-test="q-item-text-field"
     />
   );
