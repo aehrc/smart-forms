@@ -93,13 +93,13 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
                     <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
                   </>
                 ),
-                  inputProps: {
-                    ...params.inputProps,
-                    ...(isTabled
-                      ? { 'aria-label': qItem.text ?? 'Unnamed choice dropdown' }
-                      : { 'aria-labelledby': `label-${qItem.linkId}` }),
-                    role: 'combobox'
-                  }
+                inputProps: {
+                  ...params.inputProps,
+                  ...(isTabled
+                    ? { 'aria-label': qItem.text ?? 'Unnamed choice dropdown' }
+                    : { 'aria-labelledby': `label-${qItem.linkId}` }),
+                  role: 'combobox'
+                }
               }
             }}
           />
