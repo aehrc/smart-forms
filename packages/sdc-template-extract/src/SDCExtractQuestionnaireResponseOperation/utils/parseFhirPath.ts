@@ -38,6 +38,12 @@ export function parseFhirPathToWritableSegments(fhirPath: string): (string | num
     writableSegments[writableSegments.length - 1] = stripUnderscorePrefix(last); // '_field' → 'field'
   }
 
+  // If the last segment is a number and the second last is a primitive wrapper for an array (e.g. '_given'), strip the underscore
+  const secondLast = writableSegments[writableSegments.length - 2];
+  if (typeof last === 'number' && typeof secondLast === 'string' && secondLast.startsWith('_')) {
+    writableSegments[writableSegments.length - 2] = stripUnderscorePrefix(secondLast); // '_field' → 'field'
+  }
+
   return writableSegments;
 }
 
