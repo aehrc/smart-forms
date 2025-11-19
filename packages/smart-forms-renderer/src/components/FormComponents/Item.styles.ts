@@ -23,3 +23,6 @@ export const StyledFeedbackTypography = styled(Typography)(({ theme }) => ({
   fontSize: '0.75rem',
   marginTop: 4
 }));
+
+// Legacy alias for backwards compatibility
+export const StyledRequiredTypography = StyledFeedbackTypography;

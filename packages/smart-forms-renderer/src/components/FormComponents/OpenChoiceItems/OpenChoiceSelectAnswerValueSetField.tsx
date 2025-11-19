@@ -28,6 +28,7 @@ import type {
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 import { useRendererConfigStore } from '../../../stores';
+import { StyledRequiredTypography } from '../Item.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
@@ -91,7 +92,6 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
             textFieldWidth={textFieldWidth}
             isTabled={isTabled}
             placeholder={entryFormat || displayPrompt}
-            helperText={<AccessibleFeedback>{feedback}</AccessibleFeedback>}
             {...params}
             slotProps={{
               input: {
@@ -115,6 +115,8 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
           {terminologyError.answerValueSet}
         </Typography>
       ) : null}
+
+      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
     </>
   );
 }

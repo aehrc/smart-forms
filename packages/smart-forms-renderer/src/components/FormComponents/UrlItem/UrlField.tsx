@@ -22,7 +22,6 @@ import { StandardTextField } from '../Textfield.styles';
 import { useRendererConfigStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
-import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
 
 interface UrlFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
@@ -82,7 +81,7 @@ function UrlField(props: UrlFieldProps) {
           )
         }
       }}
-      helperText={<AccessibleFeedback>{feedback}</AccessibleFeedback>}
+      helperText={feedback}
       data-test="q-item-url-field"
     />
   );
