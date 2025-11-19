@@ -22,12 +22,11 @@ import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import { StandardTextField } from '../Textfield.styles';
-import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
 
 interface QuantityFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
   itemType: string;
-  itemText: string | undefined;
+  itemText?: string;
   input: string;
   feedback: string;
   displayPrompt: string;
@@ -84,11 +83,7 @@ function QuantityField(props: QuantityFieldProps) {
       isTabled={isTabled}
       size="small"
       slotProps={{
-        htmlInput: {
-          inputMode: 'numeric',
-          pattern: '[0-9]*',
-          ...(ariaLabel && { 'aria-label': ariaLabel })
-        },
+        htmlInput: { inputMode: 'numeric', pattern: '[0-9]*', 'aria-label': ariaLabel },
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (
@@ -105,7 +100,7 @@ function QuantityField(props: QuantityFieldProps) {
           )
         }
       }}
-      helperText={<AccessibleFeedback>{feedback}</AccessibleFeedback>}
+      helperText={feedback}
       data-test="q-item-quantity-field"
     />
   );

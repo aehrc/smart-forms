@@ -25,9 +25,10 @@ import {
   getInputText,
   inputInteger,
   questionnaireFactory,
-  questionnaireResponseFactory
+  questionnaireResponseFactory,
+  unitExtFactory
 } from '../testUtils';
-import { expect, fireEvent } from 'storybook/test';
+import { expect, fireEvent, within } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -79,7 +80,7 @@ export const IntegerBasic: Story = createStory({
     expect(result[0]).toEqual(expect.objectContaining({ valueInteger: basicAge }));
 
     // Clear value
-    const clearButton = canvasElement.querySelector('button[title="Clear"]');
+    const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
     fireEvent.click(clearButton as HTMLElement);
 
     // Here we await for debounced store update
@@ -101,5 +102,31 @@ export const IntegerBasicResponse: Story = createStory({
     const input = await getInputText(canvasElement, targetLinkId);
 
     expect(input).toBe(targetAge.toString());
+  }
+}) as Story;
+/* Integer Unit Accessibility story */
+const accessibilityTargetLinkId = 'heart-rate';
+const qIntegerAccessibility = questionnaireFactory([
+  {
+    linkId: accessibilityTargetLinkId,
+    extension: [unitExtFactory('bpm', 'beats per minute')],
+    type: 'integer',
+    text: 'Heart Rate'
+  }
+]);
+
+export const IntegerUnitAccessibility: Story = createStory({
+  args: {
+    questionnaire: qIntegerAccessibility
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Find the integer input field by its data-test attribute
+    const inputField = canvas.getByTestId('q-item-integer-field');
+    const input = inputField.querySelector('input');
+
+    // Verify the aria-label includes the item text and unit for screen reader accessibility
+    expect(input?.getAttribute('aria-label')).toBe('Heart Rate (beats per minute)');
   }
 }) as Story;

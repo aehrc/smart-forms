@@ -24,7 +24,6 @@ import { StandardTextField } from '../../Textfield.styles';
 import DatePicker from './DatePicker';
 import { useRendererConfigStore } from '../../../../stores';
 import ExpressionUpdateFadingIcon from '../../ItemParts/ExpressionUpdateFadingIcon';
-import AccessibleFeedback from '../../ItemParts/AccessibleFeedback';
 
 interface CustomDateFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
@@ -120,7 +119,7 @@ function CustomDateField(props: CustomDateFieldProps) {
           }
         }
       }}
-      helperText={<AccessibleFeedback>{feedback}</AccessibleFeedback>}
+      helperText={feedback}
     />
   );
 }

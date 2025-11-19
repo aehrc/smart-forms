@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+import { useState } from 'react';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Autocomplete from '@mui/material/Autocomplete';
 import Typography from '@mui/material/Typography';
@@ -28,9 +29,9 @@ import { useRendererConfigStore } from '../../../stores';
 import { isCodingDisabled } from '../../../utils/choice';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import { StyledAlert } from '../../Alert.styles';
+import { StyledRequiredTypography } from '../Item.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { StandardTextField } from '../Textfield.styles';
-import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
 
 interface ChoiceSelectAnswerValueSetFieldsProps
   extends PropsWithIsTabledAttribute,
@@ -66,6 +67,16 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
+  const [open, setOpen] = useState(false);
+
+  // Handle focus with delayed dropdown opening for better screen reader experience
+  function handleFocus() {
+    // Delay opening to allow screen readers to announce the field name first
+    setTimeout(() => {
+      setOpen(true);
+    }, 150); // 150ms delay allows VoiceOver to announce the field
+  }
+
   if (codings.length > 0) {
     return (
       <>
@@ -79,6 +90,9 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
           value={valueCoding ?? null}
           onChange={(_, newValue) => onSelectChange(newValue)}
           autoHighlight
+          open={open}
+          onOpen={() => setOpen(true)}
+          onClose={() => setOpen(false)}
           sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }}
           size="small"
           disabled={readOnly && readOnlyVisualStyle === 'disabled'}
@@ -89,7 +103,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
               textFieldWidth={textFieldWidth}
               isTabled={isTabled}
               placeholder={entryFormat || displayPrompt}
-              helperText={<AccessibleFeedback>{feedback}</AccessibleFeedback>}
+              onFocus={handleFocus}
               {...params}
               slotProps={{
                 input: {
@@ -104,7 +118,9 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
                   ),
                   inputProps: {
                     ...params.inputProps,
-                    'aria-label': qItem.text ?? 'Unnamed choice dropdown'
+                    ...(isTabled
+                      ? { 'aria-label': qItem.text ?? 'Unnamed choice dropdown' }
+                      : { 'aria-labelledby': `label-${qItem.linkId}` })
                   }
                 }
               }}
@@ -114,6 +130,8 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
             />
           )}
         />
+
+        {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
       </>
     );
   }

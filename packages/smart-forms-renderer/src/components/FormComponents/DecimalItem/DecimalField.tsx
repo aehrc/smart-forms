@@ -25,7 +25,6 @@ import ItemRepopulateButton from '../ItemParts/ItemRepopulateButton';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type { RenderingExtensions } from '../../../hooks/useRenderingExtensions';
 import { StandardTextField } from '../Textfield.styles';
-import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
 
 interface DecimalFieldProps extends PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
@@ -75,7 +74,7 @@ function DecimalField(props: DecimalFieldProps) {
       id={inputId}
       value={input}
       error={!!feedback}
-      helperText={<AccessibleFeedback>{feedback}</AccessibleFeedback>}
+      helperText={feedback}
       onChange={(event) => onInputChange(event.target.value)}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       placeholder={placeholderText}
@@ -87,7 +86,7 @@ function DecimalField(props: DecimalFieldProps) {
         htmlInput: {
           inputMode: 'numeric',
           pattern: '[0-9]*',
-          ...(ariaLabel && { 'aria-label': ariaLabel })
+          'aria-label': ariaLabel
         },
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
