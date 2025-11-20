@@ -882,6 +882,7 @@ export async function processCalculatedExpressions(
       );
 
       // Update previousCalculatedExpressions for the next iteration
+      // eslint-disable-next-line
       previousCalculatedExpressions = structuredClone(currentCalculatedExpressions);
     }
   }
