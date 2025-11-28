@@ -21,6 +21,7 @@ import {
   qDisplayCategoryInstructions,
   qHidden,
   qOpenLabel,
+  qRenderingAnswerOptionValueString,
   qRenderingMarkdownDisplay,
   qRenderingStyleBooleanItem,
   qRenderingXhtmlBooleanItem,
@@ -90,6 +91,12 @@ export const RenderingXHTMLGroupPropagationInlineStyles: Story = createStory({
 export const RenderingXHTMLGroupPropagationClassStyles: Story = createStory({
   args: {
     questionnaire: qRenderingXhtmlGroupPropagationClassStyles
+  }
+}) as Story;
+
+export const RenderingAnswerOptionValueString: Story = createStory({
+  args: {
+    questionnaire: qRenderingAnswerOptionValueString
   }
 }) as Story;
 
