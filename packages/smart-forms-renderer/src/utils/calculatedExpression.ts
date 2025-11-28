@@ -875,7 +875,7 @@ export async function processCalculatedExpressions(
         questionnaire,
         currentResponse,
         questionnaireItemMap,
-        {},
+        iterationCount === 1 ? {} : previousCalculatedExpressions,
         currentCalculatedExpressions,
         itemPreferredTerminologyServers,
         defaultTerminologyServerUrl
