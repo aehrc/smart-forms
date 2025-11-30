@@ -217,7 +217,7 @@ function addTemplateExtractContextValues(
       // e.g. Patient.identifier[0].extension[0]
       const valueEvaluation: TemplateExtractValueEvaluation = {
         valueExpression: templateExtractValue.valueString,
-        valueResult: null
+        valueResult: []
       };
       if (templateExtractPathMap.has(templateExtractEntryPath)) {
         const templateExtractPath = templateExtractPathMap.get(templateExtractEntryPath);
@@ -360,7 +360,7 @@ function addTemplateExtractStandaloneValues(
       templateExtractPathMap.set(currentPath, {
         contextPathTuple: null,
         valuePathMap: new Map<string, TemplateExtractValueEvaluation>([
-          [logicalPath, { valueExpression: templateExtractValue.valueString, valueResult: null }]
+          [logicalPath, { valueExpression: templateExtractValue.valueString, valueResult: [] }]
         ])
       });
     } else {

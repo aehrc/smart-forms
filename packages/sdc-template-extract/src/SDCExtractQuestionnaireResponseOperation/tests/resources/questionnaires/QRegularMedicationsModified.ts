@@ -223,6 +223,9 @@ export const QRegularMedicationsModified: Questionnaire = {
       },
       reasonCode: [
         {
+          text: 'I am a dummy CodeableConcept'
+        },
+        {
           extension: [
             {
               url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext',
@@ -244,6 +247,9 @@ export const QRegularMedicationsModified: Questionnaire = {
               ]
             }
           ]
+        },
+        {
+          text: 'I am also a dummy CodeableConcept'
         },
         {
           extension: [

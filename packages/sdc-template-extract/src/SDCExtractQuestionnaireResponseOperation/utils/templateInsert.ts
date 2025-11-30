@@ -1,10 +1,9 @@
 import { getAdjustedDeletePathSegments, parseFhirPath } from './parseFhirPath';
 import type { FhirResource, OperationOutcomeIssue } from 'fhir/r4';
-import { cleanEntryPathSegments, stripTrailingIndexFromPath } from './expressionManipulation';
+import { cleanEntryPathSegments } from './expressionManipulation';
 import { buildValuesToInsert } from './buildValueToInsert';
-import type { EntryPathPosition } from '../interfaces/entryPathPosition.interface';
-import { addCurrentEntryPathPosition, getStartingIndex } from './entryPathPosition';
 import { getStaticTemplateDataAtPath } from './staticTemplateData';
+import deepmerge from 'deepmerge';
 
 export function removeTemplateExtractValueExtension(
   entryPath: string,
@@ -19,7 +18,7 @@ export function removeTemplateExtractValueExtension(
     'value',
     populateIntoTemplateWarnings
   );
-  deleteExtensionAtPath(templateToMutate, entryPath, adjustedDeletePathSegments);
+  deleteObjectAtPath(templateToMutate, entryPath, adjustedDeletePathSegments);
 }
 
 export function removeTemplateExtractContextExtension(
@@ -35,25 +34,27 @@ export function removeTemplateExtractContextExtension(
     'context',
     populateIntoTemplateWarnings
   );
-  deleteExtensionAtPath(templateToMutate, entryPath, adjustedDeletePathSegments);
+  deleteObjectAtPath(templateToMutate, entryPath, adjustedDeletePathSegments);
 }
 
 /**
  * Inserts one or more evaluated values into the template at specified entry path.
  *
  * @param entryPath - Entry path where values should be inserted (e.g., "MedicationStatement.reasonCode[0]").
+ * @param insertIndex - The actual index at which to insert the value - may differ from the index given by entryPath.
+ * @param isNewInsert - Flag indicating if this is a new insert into an array (true) or a merge into an existing object at that path (false).
  * @param valuePath - The original valuePath used to derive the evaluated result.
  * @param valueResult - The evaluated result(s) from the FHIRPath expression.
- * @param entryPathPositionMap - Tracks how many values were inserted at each entry path.
  * @param templateToMutate - The target FHIR resource to be populated with evaluated values.
  * @param cleanTemplate - A clean version of the template with static template data.
  * @param populateIntoTemplateWarnings - Collects warnings or issues encountered during evaluation or insertion.
  */
 export function insertValuesToPath(
   entryPath: string,
+  insertIndex: number,
+  isNewInsert: boolean,
   valuePath: string,
   valueResult: any,
-  entryPathPositionMap: Map<string, EntryPathPosition[]>,
   templateToMutate: FhirResource,
   cleanTemplate: FhirResource,
   populateIntoTemplateWarnings: OperationOutcomeIssue[]
@@ -71,27 +72,18 @@ export function insertValuesToPath(
     valueResult,
     staticTemplateData
   );
-  const baseEntryPath = stripTrailingIndexFromPath(entryPath);
-  const startingIndex = getStartingIndex(baseEntryPath, entryPath, entryPathPositionMap);
-
-  addCurrentEntryPathPosition(
-    baseEntryPath,
-    entryPath,
-    startingIndex,
-    valuesToInsert.length,
-    entryPathPositionMap
-  );
 
   // Insert each valueToInsert instance into template at the correct location, taking into account context index
+  // We can have multiple values to insert eg. given names ['First', 'Middle'] which will result in two objects like [{given: ['First']}, {given: ['Middle']}] which are merged
   for (let i = 0; i < valuesToInsert.length; i++) {
     const valueToInsert = valuesToInsert[i];
-    const insertIndex = startingIndex + i;
     const cleanedEntryPathSegments = cleanEntryPathSegments(entryPathSegments, insertIndex);
 
     walkTemplateAndInsertValue(
       templateToMutate,
       entryPath,
       cleanedEntryPathSegments,
+      isNewInsert,
       valueToInsert
     );
   }
@@ -103,12 +95,14 @@ export function insertValuesToPath(
  * @param {any} obj - The FHIR resource or nested object to walk. Can be an array, object, primitive, or null.
  * @param {string} entryPath - The full FHIRPath-style entryPath for error reporting.
  * @param {(string | number)[]} entryPathSegments - The FHIRPath-style entryPath as segments.
+ * @param {boolean} isNewInsert - Flag indicating if this is a new insert into an array (true) or a merge into an existing object at that path (false).
  * @param {any} valueToInsert - The built value to assign at the last segment of the path.
  */
 export function walkTemplateAndInsertValue(
   obj: any,
   entryPath: string,
   entryPathSegments: (string | number)[],
+  isNewInsert: boolean,
   valueToInsert: any
 ): void {
   // Check if the object is valid
@@ -157,6 +151,12 @@ export function walkTemplateAndInsertValue(
 
   const existingNode = current[finalSegment];
 
+  // New insert into an array, insert at the required index instead of merging with any existing object at that index
+  if (Array.isArray(current) && typeof finalSegment === 'number' && isNewInsert) {
+    current.splice(finalSegment, 0, valueToInsert);
+    return;
+  }
+
   // Existing node is null or undefined, insert the value directly
   if (existingNode === null || existingNode === undefined) {
     current[finalSegment] = valueToInsert;
@@ -177,7 +177,8 @@ export function walkTemplateAndInsertValue(
 
   // Existing node is an object, and we are inserting an object, merge them
   if (typeof existingNode === 'object' && typeof valueToInsert === 'object') {
-    current[finalSegment] = { ...existingNode, ...valueToInsert };
+    // Deep merge required to handle arrays within objects
+    current[finalSegment] = deepmerge(existingNode, valueToInsert);
     return;
   }
 
@@ -187,13 +188,13 @@ export function walkTemplateAndInsertValue(
 
 /**
  * Walks the object along the path and deletes the extension at the final segment.
- * Used to clean up post-insertion template artifacts, but works generically on any extension path.
+ * Used to clean up post-insertion template artifacts, but works generically on any path.
  *
  * @param {any} obj - The FHIR resource or nested object to walk. Can be an array, object, primitive, or null.
  * @param {string} fullPath - The full FHIRPath-style path for error reporting.
  * @param {(string | number)[]} pathSegments - The FHIRPath-style path as segments.
  */
-export function deleteExtensionAtPath(
+export function deleteObjectAtPath(
   obj: any,
   fullPath: string,
   pathSegments: (string | number)[]

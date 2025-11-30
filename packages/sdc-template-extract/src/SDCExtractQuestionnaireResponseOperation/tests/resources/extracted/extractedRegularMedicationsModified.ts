@@ -35,6 +35,9 @@ export const extractedRegularMedicationsModified: Bundle = {
         },
         reasonCode: [
           {
+            text: 'I am a dummy CodeableConcept'
+          },
+          {
             extension: [
               {
                 url: 'dummy-extension-coding',
@@ -63,6 +66,9 @@ export const extractedRegularMedicationsModified: Bundle = {
                 display: 'Glucose in blood specimen above reference range'
               }
             ]
+          },
+          {
+            text: 'I am also a dummy CodeableConcept'
           }
         ],
         note: [
@@ -104,6 +110,9 @@ export const extractedRegularMedicationsModified: Bundle = {
         },
         reasonCode: [
           {
+            text: 'I am a dummy CodeableConcept'
+          },
+          {
             extension: [
               {
                 url: 'dummy-extension-coding',
@@ -132,6 +141,9 @@ export const extractedRegularMedicationsModified: Bundle = {
                 display: 'Fever'
               }
             ]
+          },
+          {
+            text: 'I am also a dummy CodeableConcept'
           },
           {
             extension: [

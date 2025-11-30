@@ -30,7 +30,13 @@ export const extractedComplexTemplateExtract: Bundle = {
         name: [
           {
             text: 'Smart Form',
-            family: 'Form'
+            family: 'Form',
+            given: ['Smart']
+          },
+          {
+            text: 'Smartie Demo Forms',
+            family: 'Forms',
+            given: ['Smartie', 'Demo']
           }
         ],
         telecom: [

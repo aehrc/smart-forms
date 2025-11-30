@@ -60,6 +60,13 @@ describe('parseFhirPathToWritableSegments', () => {
       0,
       'text'
     ]);
+    expect(parseFhirPathToWritableSegments('Patient.name[0]._given[0]')).toEqual([
+      'Patient',
+      'name',
+      0,
+      'given',
+      0
+    ]);
   });
 
   it('returns plain segments when no underscores are used', () => {
