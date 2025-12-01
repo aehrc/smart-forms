@@ -47,12 +47,12 @@ import UrlItem from '../UrlItem/UrlItem';
 
 interface SingleItemSwitcherProps
   extends PropsWithQrItemChangeHandler,
-    PropsWithIsRepeatedAttribute,
-    PropsWithIsTabledAttribute,
-    PropsWithRenderingExtensionsAttribute,
-    PropsWithParentIsReadOnlyAttribute,
-    PropsWithFeedbackFromParentAttribute,
-    PropsWithParentStylesAttribute {
+  PropsWithIsRepeatedAttribute,
+  PropsWithIsTabledAttribute,
+  PropsWithRenderingExtensionsAttribute,
+  PropsWithParentIsReadOnlyAttribute,
+  PropsWithFeedbackFromParentAttribute,
+  PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
@@ -74,12 +74,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
   // This is used to force re-rendering of the component when the answer changes via an external event i.e. calculatedExpression
   const answerKey = qrItem?.answer?.[0]?.id;
 
-  // Create a snapshot of the answer object so the hook can detect value changes
-  // even when the answer id stays the same. We stringify the answer to keep the
-  // comparison cheap and deterministic.
-  const answerSnapshot = qrItem?.answer?.[0] ? JSON.stringify(qrItem.answer[0]) : undefined;
-
-  const calcExpUpdated = useCalculatedExpressionUpdated(answerKey, answerSnapshot);
+  const calcExpUpdated = useCalculatedExpressionUpdated(answerKey);
 
   const qItemOverrideComponents = useQuestionnaireStore.use.qItemOverrideComponents();
   const QItemOverrideComponent = qItemOverrideComponents[qItem.linkId];
@@ -100,7 +95,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         parentStyles={parentStyles}
         calcExpUpdated={calcExpUpdated}
         onQrItemChange={onQrItemChange}
-        onQrRepeatGroupChange={() => {}} // Not needed for single items, use empty function
+        onQrRepeatGroupChange={() => { }} // Not needed for single items, use empty function
       />
     );
   }
