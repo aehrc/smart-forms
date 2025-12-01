@@ -47,12 +47,12 @@ import UrlItem from '../UrlItem/UrlItem';
 
 interface SingleItemSwitcherProps
   extends PropsWithQrItemChangeHandler,
-  PropsWithIsRepeatedAttribute,
-  PropsWithIsTabledAttribute,
-  PropsWithRenderingExtensionsAttribute,
-  PropsWithParentIsReadOnlyAttribute,
-  PropsWithFeedbackFromParentAttribute,
-  PropsWithParentStylesAttribute {
+    PropsWithIsRepeatedAttribute,
+    PropsWithIsTabledAttribute,
+    PropsWithRenderingExtensionsAttribute,
+    PropsWithParentIsReadOnlyAttribute,
+    PropsWithFeedbackFromParentAttribute,
+    PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
   qrItem: QuestionnaireResponseItem | null;
 }
@@ -95,7 +95,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
         parentStyles={parentStyles}
         calcExpUpdated={calcExpUpdated}
         onQrItemChange={onQrItemChange}
-        onQrRepeatGroupChange={() => { }} // Not needed for single items, use empty function
+        onQrRepeatGroupChange={() => {}} // Not needed for single items, use empty function
       />
     );
   }
