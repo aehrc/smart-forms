@@ -24,7 +24,7 @@ import { useQuestionnaireStore } from '../../../stores';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../utils/choice';
 import { getOpenLabelText } from '../../../utils/extensions';
 import { getOldOpenLabelAnswer } from '../../../utils/openChoice';
-import { createEmptyQrItem } from '../../../utils/qrItem';
+import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
@@ -45,7 +45,7 @@ function OpenChoiceRadioAnswerOptionItem(props: BaseItemProps) {
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   // Init answers
-  const answerKey = qrItem?.answer?.[0]?.id;
+  const answerKey = getQRItemId(qrItem?.answer?.[0]?.id);
   const qrOpenChoiceRadio = qrItem ?? createEmptyQrItem(qItem, answerKey);
   let valueRadio: string | null = getQrChoiceValue(qrOpenChoiceRadio, true);
   const answers = qrOpenChoiceRadio.answer ?? [];

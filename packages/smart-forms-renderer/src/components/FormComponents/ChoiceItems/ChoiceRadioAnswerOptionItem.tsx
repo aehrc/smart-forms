@@ -24,7 +24,7 @@ import { ChoiceItemControl } from '../../../interfaces/choice.enum';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
 import { findInAnswerOptions, getChoiceControlType, getQrChoiceValue } from '../../../utils/choice';
-import { createEmptyQrItem } from '../../../utils/qrItem';
+import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import ChoiceRadioAnswerOptionView from './ChoiceRadioAnswerOptionView';
 import ChoiceSelectAnswerOptionView from './ChoiceSelectAnswerOptionView';
 
@@ -44,7 +44,7 @@ function ChoiceRadioAnswerOptionItem(props: BaseItemProps) {
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0]?.id;
+  const answerKey = getQRItemId(qrItem?.answer?.[0]?.id);
   const qrChoice = qrItem ?? createEmptyQrItem(qItem, answerKey);
   const valueChoice = getQrChoiceValue(qrChoice);
 

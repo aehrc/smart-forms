@@ -17,7 +17,7 @@
 
 import React from 'react';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
-import { createEmptyQrItem } from '../../../utils/qrItem';
+import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import TimeField from './TimeField';
 import type { Dayjs } from 'dayjs';
@@ -44,7 +44,7 @@ function TimeItem(props: BaseItemProps) {
   const { displayPrompt, entryFormat } = renderingExtensions;
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0]?.id;
+  const answerKey = getQRItemId(qrItem?.answer?.[0]?.id);
   let timeString: string | null = null;
   if (qrItem?.answer && qrItem?.answer[0].valueTime) {
     timeString = qrItem.answer[0].valueTime;
