@@ -1,10 +1,8 @@
 import React, { memo } from 'react';
-import ReactMarkdown from 'react-markdown';
-import { getMarkdownString } from '../../../utils/extensions';
-import { useParseXhtml } from '../../../hooks/useParseXhtml';
 import useDisplayCqfAndCalculatedExpression from '../../../hooks/useDisplayCqfAndCalculatedExpression';
 import type { QuestionnaireItem } from 'fhir/r4';
 import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
+import StyledText from './StyledText';
 
 interface ItemTextSwitcherProps {
   qItem: QuestionnaireItem;
@@ -24,29 +22,9 @@ const ItemTextSwitcher = memo(function ItemTextSwitcher({ qItem }: ItemTextSwitc
   const itemTextAriaLabel =
     useDisplayCqfAndCalculatedExpression(qItem, 'item._text.aria-label') ?? undefined;
 
-  // parse XHTML if found
-  const parsedXhtml = useParseXhtml(qItem);
-  if (parsedXhtml) {
-    return <span aria-label={itemTextAriaLabel}>{parsedXhtml.content}</span>;
-  }
+  const content = <StyledText textToDisplay={itemTextToDisplay} element={qItem._text} />;
 
-  // parse markdown if found
-  const markdownString = getMarkdownString(qItem);
-  if (markdownString) {
-    return (
-      <span aria-label={itemTextAriaLabel}>
-        <ReactMarkdown>{markdownString}</ReactMarkdown>
-      </span>
-    );
-  }
-
-  // labelText is empty, return null
-  if (!itemTextToDisplay) {
-    return null;
-  }
-
-  // parse regular text
-  return <span aria-label={itemTextAriaLabel}>{itemTextToDisplay}</span>;
+  return content ? <span aria-label={itemTextAriaLabel}>{content}</span> : null;
 });
 
 export default ItemTextSwitcher;

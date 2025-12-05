@@ -10,6 +10,10 @@ For changelogs of other libraries, please refer to their respective repositories
 
 Changelog only includes changes from version 0.36.0 onwards.
 
+## [1.2.12] - xxxx-xx-xx
+### Added
+- Added support for text styling on answerOption.valueString.
+
 ## [1.2.11] - 2025-10-28
 ### Fixed
 - Fixed an issue where enableWhen items are not initialising when a filled form is passed into `buildForm()`.

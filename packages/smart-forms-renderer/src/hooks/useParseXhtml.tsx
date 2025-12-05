@@ -16,8 +16,8 @@
  */
 
 import React, { useMemo } from 'react';
-import { getXHtmlString } from '../utils/extensions';
-import type { QuestionnaireItem } from 'fhir/r4';
+import { getXHtmlStringFromExtension } from '../utils/extensions';
+import type { Element } from 'fhir/r4';
 import type { HTMLReactParserOptions } from 'html-react-parser';
 import { attributesToProps, default as htmlParse, domToReact } from 'html-react-parser';
 import type { Attributes } from 'html-react-parser/lib/attributes-to-props';
@@ -27,9 +27,12 @@ export interface ParsedXhtml {
   styles?: Record<string, string>;
 }
 
-export function useParseXhtml(qItem: QuestionnaireItem): ParsedXhtml | null {
+export function useParseXhtml(
+  element: Element | undefined,
+  text: string | null | undefined
+): ParsedXhtml | null {
   return useMemo(() => {
-    let xHtmlString = getXHtmlString(qItem);
+    let xHtmlString = getXHtmlStringFromExtension(element?.extension || []);
 
     if (xHtmlString === null || xHtmlString === '') {
       return null;
@@ -37,7 +40,7 @@ export function useParseXhtml(qItem: QuestionnaireItem): ParsedXhtml | null {
 
     // Replace <img with alt text - only if there are no alt tags
     if (!xHtmlString.includes('alt=') && !xHtmlString.includes('alt =')) {
-      const altText = `<img alt='${qItem.text}'`;
+      const altText = `<img alt='${text}'`;
       xHtmlString = xHtmlString.replace('<img', altText);
     }
 
@@ -137,7 +140,7 @@ export function useParseXhtml(qItem: QuestionnaireItem): ParsedXhtml | null {
       content: parsedContent,
       styles: extractedStyles
     };
-  }, [qItem]);
+  }, [element, text]);
 }
 
 export function getStylesFromClass(className: string): Record<string, string> | null {

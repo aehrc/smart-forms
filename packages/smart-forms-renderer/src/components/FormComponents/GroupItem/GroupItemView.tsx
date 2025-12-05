@@ -87,7 +87,7 @@ function GroupItemView(props: GroupItemViewProps) {
   } = props;
 
   // If XHTML has styles, pass them to the GroupItemView so it cna be applied down the tree
-  const xhtmlStyles = useParseXhtml(qItem)?.styles;
+  const xhtmlStyles = useParseXhtml(qItem._text, qItem.text)?.styles;
 
   // Combine parent styles with this group's styles
   const combinedStyles = React.useMemo(() => {

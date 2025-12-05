@@ -27,8 +27,6 @@ import ItemTextSwitcher from './ItemTextSwitcher';
 import Typography from '@mui/material/Typography';
 import FlyoverItem from './FlyoverItem';
 import type { PropsWithParentStylesAttribute } from '../../../interfaces/renderProps.interface';
-import { structuredDataCapture } from 'fhir-sdc-helpers';
-import { default as parseStyleToJs } from 'style-to-js';
 
 interface ItemLabelProps extends PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
@@ -53,10 +51,6 @@ const ItemLabel = memo(function ItemLabel(props: ItemLabelProps) {
   const readOnlyTextColor = readOnlyVisualStyle === 'disabled' ? 'text.disabled' : 'text.secondary';
   const textColor = parentStyles?.color || (readOnly ? readOnlyTextColor : 'text.primary');
 
-  // Get styles from qItem._text
-  const stylesString = structuredDataCapture.getStyle(qItem._text);
-  const itemStyles = stylesString ? parseStyleToJs(stylesString) : {};
-
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between">
       <Box position="relative" display="flex" flexGrow={1} alignItems="center">
@@ -72,8 +66,7 @@ const ItemLabel = memo(function ItemLabel(props: ItemLabelProps) {
           sx={{
             mt: 0.5,
             flexGrow: 1,
-            ...(parentStyles || {}),
-            ...itemStyles
+            ...(parentStyles || {})
           }}>
           {/* Required asterisk position is in front of text */}
           {required && requiredIndicatorPosition === 'start' ? (

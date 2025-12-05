@@ -553,7 +553,7 @@ describe('getMarkdownString', () => {
         extension: [{ url: MARKDOWN_URL, valueMarkdown: 'This is **markdown**!' }]
       }
     };
-    expect(getMarkdownString(qItem)).toBe('This is **markdown**!');
+    expect(getMarkdownString(qItem._text)).toBe('This is **markdown**!');
   });
 
   it('returns null if no extensions have the correct url', () => {
@@ -564,7 +564,7 @@ describe('getMarkdownString', () => {
         extension: [{ url: 'http://other-url', valueMarkdown: 'Not markdown' }]
       }
     };
-    expect(getMarkdownString(qItem)).toBeNull();
+    expect(getMarkdownString(qItem._text)).toBeNull();
   });
 
   it('returns null if extension exists but has no valueMarkdown', () => {
@@ -575,23 +575,18 @@ describe('getMarkdownString', () => {
         extension: [{ url: MARKDOWN_URL }]
       }
     };
-    expect(getMarkdownString(qItem)).toBeNull();
+    expect(getMarkdownString(qItem._text)).toBeNull();
   });
 
   it('returns null if _text or _text.extension is missing', () => {
-    expect(
-      getMarkdownString({
-        linkId: 'q1',
-        type: 'display'
-      })
-    ).toBeNull();
-    expect(
-      getMarkdownString({
-        linkId: 'q1',
-        type: 'display',
-        _text: {}
-      })
-    ).toBeNull();
+    const qItem: QuestionnaireItem = {
+      linkId: 'q1',
+      type: 'display'
+    };
+    expect(getMarkdownString(qItem._text)).toBeNull();
+
+    qItem._text = {};
+    expect(getMarkdownString(qItem._text)).toBeNull();
   });
 
   it('returns the first matching markdown if multiple matching extensions exist', () => {
@@ -605,7 +600,7 @@ describe('getMarkdownString', () => {
         ]
       }
     };
-    expect(getMarkdownString(qItem)).toBe('First');
+    expect(getMarkdownString(qItem._text)).toBe('First');
   });
 });
 

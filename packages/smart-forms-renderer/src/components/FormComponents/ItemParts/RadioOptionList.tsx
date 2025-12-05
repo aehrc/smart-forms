@@ -19,6 +19,7 @@ import React from 'react';
 import ChoiceRadioSingle from '../ChoiceItems/ChoiceRadioSingle';
 import type { QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { isOptionDisabled } from '../../../utils/choice';
+import StyledText from './StyledText';
 
 interface RadioOptionListProps {
   options: QuestionnaireItemAnswerOption[];
@@ -56,7 +57,9 @@ function RadioOptionList(props: RadioOptionListProps) {
             <ChoiceRadioSingle
               key={option.valueString}
               value={option.valueString}
-              label={option.valueString}
+              label={
+                <StyledText textToDisplay={option.valueString} element={option._valueString} />
+              }
               readOnly={readOnly}
               disabledViaToggleExpression={optionDisabledViaToggleExpression}
               fullWidth={fullWidth}
