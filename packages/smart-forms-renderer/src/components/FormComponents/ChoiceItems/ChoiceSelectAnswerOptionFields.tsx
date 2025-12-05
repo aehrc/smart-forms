@@ -78,7 +78,6 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
         readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
         renderInput={(params) => (
           <StandardTextField
-            multiline
             textFieldWidth={textFieldWidth}
             isTabled={isTabled}
             placeholder={entryFormat || displayPrompt}
@@ -93,7 +92,14 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
                     <ExpressionUpdateFadingIcon fadeIn={expressionUpdated} disabled={readOnly} />
                     <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
                   </>
-                )
+                ),
+                inputProps: {
+                  ...params.inputProps,
+                  ...(isTabled
+                    ? { 'aria-label': qItem.text ?? 'Unnamed choice dropdown' }
+                    : { 'aria-labelledby': `label-${qItem.linkId}` }),
+                  role: 'combobox'
+                }
               }
             }}
           />
