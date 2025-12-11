@@ -111,6 +111,10 @@ The Smart Forms app uses a `config.json` file for configuration, fetched at runt
      //  "https://example.com/fhir": "6cc9bccb-3ae2-40d7-9660-22c99534520b"
      // }
      registeredClientIdsUrl: string | null;
+     
+     // (Optional) Feature flag to enable/disable in-app population functionality
+     // Defaults to true if not specified
+     inAppPopulate?: boolean;
    }
    ```
 
@@ -122,7 +126,8 @@ The Smart Forms app uses a `config.json` file for configuration, fetched at runt
     "formsServerUrl": "https://smartforms.csiro.au/api/fhir",
     "defaultClientId": "a57d90e3-5f69-4b92-aa2e-2992180863c1",
     "launchScopes": "launch openid fhirUser online_access patient/AllergyIntolerance.cs patient/Condition.cs patient/Encounter.r patient/Immunization.cs patient/Medication.r patient/MedicationStatement.cs patient/Observation.cs patient/Patient.r patient/QuestionnaireResponse.crus user/Practitioner.r launch/questionnaire?role=http://ns.electronichealth.net.au/smart/role/new",
-    "registeredClientIdsUrl": "https://smartforms.csiro.au/smart-config/config.json"
+    "registeredClientIdsUrl": "https://smartforms.csiro.au/smart-config/config.json",
+    "inAppPopulate": true
    }
    ```
 
@@ -265,6 +270,133 @@ The above two methods should be sufficient for local development. However, if yo
 5. Go to [http://localhost:6006/](http://localhost:6006/) for Renderer StoryBook.
 
 NOTE: In the Docker setup, the current source code folder is shared as a volume to the Docker container. This allows live code reload to work.
+
+
+## Docker and Kubernetes Production Deployment
+
+The Smart Forms app supports **runtime configuration**, allowing you to deploy a single Docker image across multiple environments (dev, test, prod) by simply mounting a different `config.json` file.
+
+### Building the Docker Image
+
+Build the production Docker image:
+
+```sh
+docker build -t smart-forms-app:latest .
+```
+
+### Running with Docker
+
+Run the container with a custom configuration:
+
+```sh
+docker run -d -p 80:80 \
+  -v $(pwd)/config.docker.json:/usr/share/nginx/html/config.json:ro \
+  smart-forms-app:latest
+```
+
+Or using Docker Compose:
+
+```sh
+docker-compose up -d
+```
+
+The `docker-compose.yaml` file mounts `config.docker.json` as the runtime configuration. Modify this file to suit your environment.
+
+### Kubernetes Deployment with ConfigMap
+
+For Kubernetes deployments, you can use a ConfigMap to provide runtime configuration:
+
+#### 1. Create a ConfigMap from your config.json
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: smart-forms-config
+  namespace: your-namespace
+data:
+  config.json: |
+    {
+      "terminologyServerUrl": "https://your-ontoserver.example.com/fhir",
+      "formsServerUrl": "https://your-forms-server.example.com/fhir",
+      "defaultClientId": "your-client-id",
+      "launchScopes": "launch openid fhirUser online_access patient/Patient.r patient/QuestionnaireResponse.crus",
+      "registeredClientIdsUrl": null,
+      "inAppPopulate": true
+    }
+```
+
+#### 2. Create the Deployment
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smart-forms-app
+  namespace: your-namespace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: smart-forms-app
+  template:
+    metadata:
+      labels:
+        app: smart-forms-app
+    spec:
+      containers:
+        - name: smart-forms-app
+          image: aehrc/smart-forms-app:latest
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: config-volume
+              mountPath: /usr/share/nginx/html/config.json
+              subPath: config.json
+              readOnly: true
+      volumes:
+        - name: config-volume
+          configMap:
+            name: smart-forms-config
+```
+
+#### 3. Create a Service
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: smart-forms-app
+  namespace: your-namespace
+spec:
+  selector:
+    app: smart-forms-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+```
+
+### Configuration Options
+
+The `config.json` file supports the following options:
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `terminologyServerUrl` | string | Yes | FHIR Terminology Server URL for ValueSet expansion |
+| `formsServerUrl` | string | Yes | FHIR server hosting Questionnaire definitions |
+| `defaultClientId` | string | Yes | Default SMART App Launch client ID |
+| `launchScopes` | string | Yes | SMART App Launch scopes (space-separated) |
+| `registeredClientIdsUrl` | string \| null | No | URL to fetch issuer-to-clientId mappings |
+| `inAppPopulate` | boolean | No | Enable/disable in-app population (default: true) |
+
+### Benefits of Runtime Configuration
+
+- **Single Image, Multiple Environments**: Build once, deploy anywhere
+- **No Rebuilds Required**: Change configuration without rebuilding the app
+- **Kubernetes-Native**: Use ConfigMaps for environment-specific settings
+- **Easy Updates**: Modify configuration by updating the ConfigMap and restarting pods
 
 
 ## Creating Test Cases
