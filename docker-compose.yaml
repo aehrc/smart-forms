@@ -10,7 +10,7 @@ services:
       dockerfile: Dockerfile
     container_name: smart-forms-app
     ports:
-      - "80:80"
+      - '80:80'
     volumes:
       # Mount custom config.json for runtime configuration
       # Uncomment and modify the path to use your own config:
