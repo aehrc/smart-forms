@@ -21,6 +21,7 @@ import {
   chooseSelectOption,
   findByLinkIdOrLabel,
   getAnswers,
+  getAutocompleteTagText,
   getInputText,
   questionnaireFactory,
   questionnaireResponseFactory
@@ -133,7 +134,7 @@ export const ChoiceAnswerOptionBasicResponse: Story = createStory({
     questionnaireResponse: qrChoiceAnswerOptionBasicResponse
   },
   play: async ({ canvasElement }) => {
-    const inputText = await getInputText(canvasElement, aoTargetLinkId);
+    const inputText = await getAutocompleteTagText(canvasElement, aoTargetLinkId);
 
     expect(inputText).toBe(aoTargetValueCoding.display);
   }
@@ -149,7 +150,7 @@ export const ChoiceAnswerOptionInitialSelected: Story = createStory({
     questionnaire: qChoiceAnswerOptionInitialSelected
   },
   play: async ({ canvasElement }) => {
-    const inputText = await getInputText(canvasElement, aoTargetLinkId);
+    const inputText = await getAutocompleteTagText(canvasElement, aoTargetLinkId);
 
     expect(inputText).toBe(aoTargetValueCoding.display);
   }
