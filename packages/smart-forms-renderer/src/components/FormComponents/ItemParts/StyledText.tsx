@@ -21,7 +21,14 @@ function StyledText({ textToDisplay, element }: StyledTextProps) {
   // parse markdown if found
   const markdownString = getMarkdownString(element);
   if (markdownString) {
-    return <ReactMarkdown>{markdownString}</ReactMarkdown>;
+    return (
+      <ReactMarkdown
+        components={{
+          p: (props) => <span {...props} />
+        }}>
+        {markdownString}
+      </ReactMarkdown>
+    );
   }
 
   // labelText is empty, return null

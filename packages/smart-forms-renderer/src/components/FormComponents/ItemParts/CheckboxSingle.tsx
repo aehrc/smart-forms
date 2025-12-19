@@ -22,7 +22,8 @@ import { useRendererConfigStore } from '../../../stores';
 
 interface CheckboxSingleProps {
   value: string;
-  label: string;
+  label: React.ReactNode;
+  labelText?: string;
   readOnly: boolean;
   disabledViaToggleExpression: boolean;
   fullWidth: boolean;
@@ -34,6 +35,7 @@ function CheckboxSingle(props: CheckboxSingleProps) {
   const {
     value,
     label,
+    labelText,
     readOnly,
     disabledViaToggleExpression,
     fullWidth,
@@ -80,7 +82,7 @@ function CheckboxSingle(props: CheckboxSingleProps) {
           }}
           slotProps={{
             input: {
-              'aria-label': label ?? 'Unnamed checkbox'
+              'aria-label': (typeof label === 'string' ? label : labelText) ?? 'Unnamed checkbox'
             }
           }}
         />

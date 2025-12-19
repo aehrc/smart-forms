@@ -30,6 +30,7 @@ import { useRendererConfigStore } from '../../../stores';
 import { StyledRequiredTypography } from '../Item.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
+import StyledText from '../ItemParts/StyledText';
 
 interface OpenChoiceSelectAnswerOptionFieldProps
   extends PropsWithIsTabledAttribute,
@@ -65,6 +66,8 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
+  const [inputValue, setInputValue] = React.useState('');
+
   return (
     <>
       <Autocomplete
@@ -73,10 +76,42 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
         options={options}
         getOptionLabel={(option) => getAnswerOptionLabel(option)}
         onChange={(_, newValue, reason) => onValueChange(newValue, reason)}
-        onInputChange={(_, newValue, reason) => onValueChange(newValue, reason)}
+        inputValue={inputValue}
+        onInputChange={(_, newInputValue, reason) => {
+          if (!inputValue && valueSelect && reason !== 'clear') {
+            // Convert current input value to be the current value plus additional input
+            onValueChange(null, 'clear');
+            setInputValue(getAnswerOptionLabel(valueSelect) + newInputValue);
+          } else {
+            setInputValue(newInputValue);
+          }
+        }}
+        onBlur={() => {
+          // Set value on blur if there is any current input
+          if (inputValue) {
+            onValueChange(inputValue, 'blur');
+            setInputValue(''); // Clear input after blur
+          }
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Backspace') {
+            if (!inputValue && valueSelect) {
+              // Convert current selection to input value on backspace when input is empty
+              onValueChange(null, 'clear');
+              setInputValue(getAnswerOptionLabel(valueSelect));
+            }
+          }
+        }}
         freeSolo
         autoHighlight
-        sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }}
+        sx={{
+          maxWidth: !isTabled ? textFieldWidth : 3000,
+          minWidth: 160,
+          flexGrow: 1,
+          '& .MuiAutocomplete-tag': {
+            mx: 0
+          }
+        }}
         disabled={readOnly && readOnlyVisualStyle === 'disabled'}
         readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
         size="small"
@@ -97,11 +132,55 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
                     {params.InputProps.endAdornment}
                     <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
                   </>
-                )
+                ),
+                sx: {
+                  '&.MuiOutlinedInput-root.MuiInputBase-sizeSmall .MuiAutocomplete-input': {
+                    paddingLeft: '0px'
+                  }
+                }
               }
             }}
           />
         )}
+        renderOption={(optionProps, option) => {
+          const { key, ...rest } = optionProps;
+          return (
+            <li key={key} {...rest}>
+              <span>
+                {option.valueString ? (
+                  <StyledText
+                    textToDisplay={getAnswerOptionLabel(option)}
+                    element={option._valueString}
+                  />
+                ) : (
+                  getAnswerOptionLabel(option)
+                )}
+              </span>
+            </li>
+          );
+        }}
+        renderValue={(value, getItemProps) => {
+          if (typeof value === 'string') return value;
+          const selectedOption =
+            typeof value !== 'string'
+              ? options.find((opt) => opt.valueString === value?.valueString)
+              : null;
+
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { onDelete, ...rest } = getItemProps();
+          return (
+            <span {...rest}>
+              {typeof value !== 'string' && value.valueString && selectedOption ? (
+                <StyledText
+                  textToDisplay={getAnswerOptionLabel(value)}
+                  element={selectedOption._valueString}
+                />
+              ) : (
+                getAnswerOptionLabel(value)
+              )}
+            </span>
+          );
+        }}
       />
 
       {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
