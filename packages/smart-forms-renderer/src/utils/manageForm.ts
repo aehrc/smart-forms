@@ -117,6 +117,7 @@ export async function buildForm(params: BuildFormParams): Promise<void> {
   }
 
   // QR is set to undefined here to prevent it from being initialised twice. This is defined like that for backward compatibility purposes.
+  // Warning: setting the QR here breaks pre-pop. For initialisation logic, do it in questionnaireStore.getState().updateExpressions() with isInitialUpdate=true.
   await questionnaireStore
     .getState()
     .buildSourceQuestionnaire(

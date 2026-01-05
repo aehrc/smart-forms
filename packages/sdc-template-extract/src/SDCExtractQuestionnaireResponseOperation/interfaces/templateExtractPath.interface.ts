@@ -45,7 +45,7 @@ export type FhirPathEvalResult = any[];
  */
 export interface TemplateExtractValueEvaluation {
   valueExpression: string;
-  valueResult: any;
+  valueResult: any[];
 }
 
 /**
@@ -61,7 +61,7 @@ export interface TemplateExtractPath {
 
   /**
    * A map of <valuePath, {valueExpression, valueResult}> pairs from the `templateExtractValue` extension.
-   * e.g. `<"Patient.name[0]._family.extension[0]", {valueExpression: "item.where(linkId = 'family').answer.value.first()", valueResult: ["Doe"]}>`
+   * e.g. `<"Patient.name[0]._family.extension[0]", {valueExpression: "item.where(linkId = 'family').answer.value.first()", valueResult: [["Doe"]]}>`
    */
   valuePathMap: Map<string, TemplateExtractValueEvaluation>;
 }

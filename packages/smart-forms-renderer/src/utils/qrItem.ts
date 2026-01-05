@@ -68,6 +68,20 @@ export function createEmptyQrGroup(qItem: QuestionnaireItem): QuestionnaireRespo
 }
 
 /**
+ * Create an empty repeat qrItem from a given repeat qItem
+ *
+ * @author Clinton Gillespie
+ */
+export function createEmptyRepeatNestedItems(qItem: QuestionnaireItem): QuestionnaireResponseItem {
+  return {
+    linkId: qItem.linkId,
+    text: qItem.text,
+    answer: [],
+    item: []
+  };
+}
+
+/**
  * Create an empty qrItem from a given qItem, optionally with an answer key
  *
  * @author Sean Fong
@@ -220,4 +234,93 @@ export function updateQrItemsInGroup(
       }
     }
   }
+}
+
+/**
+ * Updates the QuestionnaireResponseItem group by adding/removing a new/modified child QuestionnaireResponseItem into/from a qrGroup
+ * Specifically handles nested repeat items where each item has an answer array rather than nested items
+ *
+ * @author Sean Fong
+ */
+export function updateQrNestedItems(
+  newQrItem: QuestionnaireResponseItem | null,
+  questionnaireResponseOrQrItem: QuestionnaireResponseItem,
+  qItemsIndexMap: Record<string, number>
+): void {
+  if (!newQrItem) return;
+  if (!questionnaireResponseOrQrItem.answer) {
+    questionnaireResponseOrQrItem.answer = [];
+  }
+
+  let qrAnswerItems = questionnaireResponseOrQrItem.answer;
+  if (!qrAnswerItems) {
+    qrAnswerItems = [];
+  }
+
+  if (newQrItem && newQrItem.linkId in qItemsIndexMap) {
+    if (qrAnswerItems.length === 0) {
+      // Only add if the item has answers (nested items use answer array, not item array)
+      if (newQrItem.answer?.length) {
+        qrAnswerItems.push({ item: [newQrItem] });
+      }
+      return;
+    }
+  }
+
+  // Find the index where newQrItem should be inserted based on qItemsIndexMap
+  const newItemSequenceIndex = qItemsIndexMap[newQrItem.linkId];
+
+  // Find the last answer object (group) that exists
+  const lastAnswerGroup = qrAnswerItems[qrAnswerItems.length - 1];
+
+  // If no answer group exists yet, create one
+  if (!lastAnswerGroup) {
+    const newGroup = {
+      item: [newQrItem]
+    };
+    qrAnswerItems.push(newGroup);
+    return;
+  }
+
+  // If the last answer group doesn't have an item array, create one
+  if (!lastAnswerGroup.item) {
+    lastAnswerGroup.item = [newQrItem];
+    return;
+  }
+
+  // Check if newQrItem already exists in the last group's item array
+  const existingItemIndex = lastAnswerGroup.item.findIndex(
+    (item) => item.linkId === newQrItem.linkId
+  );
+
+  if (existingItemIndex !== -1) {
+    // Item exists - overwrite it
+    lastAnswerGroup.item[existingItemIndex] = newQrItem;
+  } else {
+    // Item doesn't exist - find correct position to insert based on sequence
+    let insertIndex = lastAnswerGroup.item.length;
+
+    for (let i = 0; i < lastAnswerGroup.item.length; i++) {
+      const currentItemSequenceIndex = qItemsIndexMap[lastAnswerGroup.item[i].linkId];
+      if (newItemSequenceIndex < currentItemSequenceIndex) {
+        insertIndex = i;
+        break;
+      }
+    }
+    // Insert at the correct position
+    lastAnswerGroup.item.splice(insertIndex, 0, newQrItem);
+    return;
+  }
+}
+
+/**
+ * Gets the Id of the QR Item, if it has a Calculated Expression, then it returns a new Id, else it returns the passed Id.
+ *
+ * @author Janardhan Vignarajan
+ */
+export function getQRItemId(answerKey: string | undefined) {
+  // If the answerKey is through CalculatedExpression, then we assign a new random ID so that it does not fire again when user changes the value
+  return answerKey && answerKey.includes('calculatedExpression')
+    ? Math.random().toString(36).slice(2)
+    : answerKey;
 }

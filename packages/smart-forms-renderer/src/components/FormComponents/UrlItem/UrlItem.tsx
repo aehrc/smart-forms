@@ -19,7 +19,7 @@ import React, { useCallback, useState } from 'react';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import debounce from 'lodash.debounce';
-import { createEmptyQrItem } from '../../../utils/qrItem';
+import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import UrlField from './UrlField';
@@ -46,7 +46,7 @@ function UrlItem(props: BaseItemProps) {
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
   // Init input value
-  const answerKey = qrItem?.answer?.[0]?.id;
+  const answerKey = getQRItemId(qrItem?.answer?.[0]?.id);
   let valueUri = '';
   if (qrItem?.answer && qrItem?.answer[0].valueUri) {
     valueUri = qrItem.answer[0].valueUri;

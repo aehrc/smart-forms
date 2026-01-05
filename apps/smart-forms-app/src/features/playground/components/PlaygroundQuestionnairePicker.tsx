@@ -102,7 +102,6 @@ function PlaygroundQuestionnairePicker(props: PlaygroundQuestionnairePickerProps
         getOptionLabel={(option) => `${option}`}
         value={!selectedQuestionnaireId ? null : selectedQuestionnaireId}
         onChange={(_, newValue) => setSelectedQuestionnaireId(newValue ?? '')}
-        openOnFocus
         autoHighlight
         size="small"
         data-test="questionnaire-picker-playground"

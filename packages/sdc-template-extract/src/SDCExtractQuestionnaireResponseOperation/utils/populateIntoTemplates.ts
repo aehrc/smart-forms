@@ -6,10 +6,16 @@ import type { FhirResource, OperationOutcomeIssue, QuestionnaireResponse } from 
 import { createTemplateExtractPathMap } from './templateExtractPath';
 import { evaluateAndInsertIntoPath } from './evaluateTemplateExtractPath';
 import { templateExtractPathMapToRecord } from './mapToRecord';
-import { addIndexToTargetPath, getNumberOfTemplateInstances } from './expressionManipulation';
+import {
+  addIndexToTargetPath,
+  getNumberOfTemplateInstances,
+  stripTrailingIndexFromPath
+} from './expressionManipulation';
 import { removeTemplateArtifacts } from './removeTemplateArtifacts';
 import type { EntryPathPosition } from '../interfaces/entryPathPosition.interface';
 import { createInvalidWarningIssue } from './operationOutcome';
+import { parseFhirPath } from './parseFhirPath';
+import { deleteObjectAtPath } from './templateInsert';
 
 export function populateIntoTemplates(
   questionnaireResponse: QuestionnaireResponse,
@@ -66,6 +72,11 @@ export function populateIntoTemplates(
         string,
         EntryPathPosition[]
       >();
+
+      // Tracks indices of templated elements for each base entry path which is an array
+      // Used to delete these entries to create a clean template
+      const templatedElementsIndicesMap: Map<string, number[]> = new Map<string, number[]>();
+
       for (const [entryPath, templateExtractPath] of templateExtractPathMapInstance.entries()) {
         const { contextPathTuple, valuePathMap } = templateExtractPath;
         const contextPath = contextPathTuple?.[0] ?? null;
@@ -76,10 +87,40 @@ export function populateIntoTemplates(
           templateToMutate,
           populateIntoTemplateWarnings
         );
+
+        const entryPathSegments = parseFhirPath(entryPath);
+        const finalSegment = entryPathSegments[entryPathSegments.length - 1];
+        if (typeof finalSegment === 'number') {
+          // Path belongs to an array, add index to map for deletion to clean template later
+          // (Paths not belonging to an array are already removed from the template in removeTemplateArtifacts)
+          const baseEntryPath = stripTrailingIndexFromPath(entryPath);
+
+          const baseEntryPathPositions = templatedElementsIndicesMap.get(baseEntryPath);
+          if (baseEntryPathPositions) {
+            baseEntryPathPositions.push(finalSegment);
+          } else {
+            templatedElementsIndicesMap.set(baseEntryPath, [finalSegment]);
+          }
+        }
       }
 
       // Step 5: Prepare a clean template for reading static template data
-      const cleanTemplate = structuredClone(templateToMutate);
+      const staticTemplate = structuredClone(templateToMutate);
+
+      // Step 5a: Remove templated elements from arrays in templateToMutate based on entryPathIndexMap
+      // (We keep these entries in staticTemplate to allow the static template to be read later, but delete them from templateToMutate to allow correct insertion of evaluated values)
+      for (const [baseEntryPath, indices] of templatedElementsIndicesMap.entries()) {
+        // Sort indices in descending order to prevent index shifting during deletion
+        indices.sort((a, b) => b - a);
+        for (const index of indices) {
+          const entryPathWithIndex = `${baseEntryPath}[${index}]`;
+          deleteObjectAtPath(
+            templateToMutate,
+            entryPathWithIndex,
+            parseFhirPath(entryPathWithIndex)
+          );
+        }
+      }
 
       // Step 6: Evaluate and populate each templateExtractPath e.g. AllergyIntolerance.code, AllergyIntolerance.note
       for (const [entryPath, templateExtractPath] of templateExtractPathMapInstance.entries()) {
@@ -91,7 +132,7 @@ export function populateIntoTemplates(
           entryPathPositionMap,
           fhirPathContext,
           templateToMutate,
-          cleanTemplate,
+          staticTemplate,
           populateIntoTemplateWarnings
         );
       }

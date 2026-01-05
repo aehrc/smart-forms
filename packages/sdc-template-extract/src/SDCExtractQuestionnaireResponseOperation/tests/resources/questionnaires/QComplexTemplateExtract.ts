@@ -60,7 +60,17 @@ export const QComplexTemplateExtract: Questionnaire = {
                 valueString: "item.where(linkId = 'family').answer.value.first()"
               }
             ]
-          }
+          },
+          _given: [
+            {
+              extension: [
+                {
+                  url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue',
+                  valueString: "item.where(linkId = 'given').answer.value"
+                }
+              ]
+            }
+          ]
         }
       ],
       telecom: [

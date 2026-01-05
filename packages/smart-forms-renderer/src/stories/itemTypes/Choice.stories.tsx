@@ -113,7 +113,7 @@ export const ChoiceAnswerOptionBasic: Story = createStory({
     expect(result[0].valueCoding).toEqual(expect.objectContaining(aoTargetValueCoding));
 
     // Clear
-    const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
+    const clearButton = canvasElement.querySelector('button[title="Clear"]');
     fireEvent.click(clearButton as HTMLElement);
 
     // Here we await for debounced store update
@@ -122,7 +122,7 @@ export const ChoiceAnswerOptionBasic: Story = createStory({
     expect(resultAfterClear).toHaveLength(0);
 
     const elementAfterClear = await findByLinkIdOrLabel(canvasElement, aoTargetLinkId);
-    const input = elementAfterClear.querySelector('textarea');
+    const input = elementAfterClear.querySelector('input');
     expect(input?.value).toBe('');
   }
 }) as Story;

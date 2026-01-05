@@ -35,6 +35,33 @@ export const QRComplexTemplateExtract: QuestionnaireResponse = {
           ]
         },
         {
+          linkId: 'name',
+          text: 'Name',
+          item: [
+            {
+              linkId: 'given',
+              text: 'Given Name(s)',
+              answer: [
+                {
+                  valueString: 'Smartie'
+                },
+                {
+                  valueString: 'Demo'
+                }
+              ]
+            },
+            {
+              linkId: 'family',
+              text: 'Family/Surname',
+              answer: [
+                {
+                  valueString: 'Forms'
+                }
+              ]
+            }
+          ]
+        },
+        {
           linkId: 'gender',
           text: 'Gender',
           answer: [

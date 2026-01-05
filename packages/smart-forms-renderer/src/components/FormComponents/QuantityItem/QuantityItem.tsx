@@ -25,7 +25,7 @@ import { useQuestionnaireStore } from '../../../stores';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import { getDecimalPrecision } from '../../../utils/extensions';
 import { parseDecimalStringWithPrecision } from '../../../utils/parseInputs';
-import { createEmptyQrItem } from '../../../utils/qrItem';
+import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import Box from '@mui/material/Box';
 import QuantityField from './QuantityField';
 import {
@@ -71,7 +71,7 @@ function QuantityItem(props: BaseItemProps) {
   }
 
   // Init inputs
-  const answerKey = qrItem?.answer?.[0]?.id;
+  const answerKey = getQRItemId(qrItem?.answer?.[0]?.id);
   let valueQuantity: Quantity = {};
   let initialValueInput = '';
   let initialComparatorInput: Quantity['comparator'] | null = null;
@@ -201,6 +201,7 @@ function QuantityItem(props: BaseItemProps) {
         <QuantityField
           linkId={qItem.linkId}
           itemType={qItem.type}
+          itemText={qItem.text}
           input={valueInput}
           feedback={feedback ?? ''}
           displayPrompt={displayPrompt}
@@ -252,6 +253,7 @@ function QuantityItem(props: BaseItemProps) {
             <QuantityField
               linkId={qItem.linkId}
               itemType={qItem.type}
+              itemText={qItem.text}
               input={valueInput}
               feedback={feedback ?? ''}
               displayPrompt={displayPrompt}

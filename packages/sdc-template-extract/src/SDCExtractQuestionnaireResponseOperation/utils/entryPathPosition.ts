@@ -1,40 +1,43 @@
 import type { EntryPathPosition } from '../interfaces/entryPathPosition.interface';
+import { parseFhirPath } from './parseFhirPath';
 
 /**
  * Calculates the starting index for a given `entryPath` based on its position within
- * a list of `EntryPathPosition` entries mapped to a `baseEntryPath`.
- *
- * It iterates through the list associated with `baseEntryPath` and either:
- * - Returns the `startIndex` of the exact matching `entryPath`, or
- * - Accumulates counts of preceding entries until the end, returning the cumulative index.
+ * a list of `EntryPathPosition` entries mapped to a `baseEntryPath`, accounting for the
+ * position of the entry path in the templated array and the number of entries already
+ * inserted into the base entry path.
  *
  * @param {string} baseEntryPath - The base key used to look up the list of positions.
  * @param {string} entryPath - The specific path whose starting index is being calculated.
  * @param {Map<string, EntryPathPosition[]>} entryPathPositionMap - A map from base paths to arrays of entry positions.
- * @returns {number} The computed starting index for the `entryPath`. Defaults to 0 if `baseEntryPath` is not found.
+ * @returns {number} The computed starting index for the `entryPath`. Defaults to 0 if `entryPath` is not a path to an array element.
  */
 export function getStartingIndex(
   baseEntryPath: string,
   entryPath: string,
   entryPathPositionMap: Map<string, EntryPathPosition[]>
 ): number {
-  const entryPathPositions = entryPathPositionMap.get(baseEntryPath);
-  if (entryPathPositions) {
-    let startIndex = 0;
-    for (const entryPathPosition of entryPathPositions) {
-      // EntryPath matches the baseEntryPath, return startIndex
-      if (entryPathPosition.entryPath === entryPath) {
-        return entryPathPosition.startIndex;
-      }
+  // Parse entryPath to get the position of the element in the template array
+  const entryPathSegments = parseFhirPath(entryPath);
+  const finalSegment = entryPathSegments[entryPathSegments.length - 1];
 
-      // Increment startIndex by the count of previous entries
-      startIndex += entryPathPosition.count;
+  if (typeof finalSegment === 'number') {
+    // We begin at the index given by the entry path
+    let startIndex = finalSegment;
+
+    const entryPathPositions = entryPathPositionMap.get(baseEntryPath);
+    if (entryPathPositions) {
+      for (const entryPathPosition of entryPathPositions) {
+        // Increment startIndex by the count of previous entries added to the base entry path
+        // We substract 1 to account for the templated object itself which is removed from the template before inserting values
+        startIndex += entryPathPosition.count - 1;
+      }
     }
 
     return startIndex;
   }
 
-  // BaseEntryPath not found in map, return 0 (default starting index)
+  // Final segment is not a number, return 0 (entryPath is not a path to an array element)
   return 0;
 }
 

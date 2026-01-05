@@ -14,7 +14,7 @@ Note: There's a bug where if the qItems are child items from a repeat group, the
 | Parameter | Type |
 | ------ | ------ |
 | `qItems` | `QuestionnaireItem`[] |
-| `qrItems` | `QuestionnaireResponseItem`[] |
+| `qrItems` | `QuestionnaireResponseItem`[] \| `undefined` |
 | `qItemsIndexMap` | `Record`\<`string`, `number`\> |
 
 ## Returns

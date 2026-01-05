@@ -10,10 +10,54 @@ For changelogs of other libraries, please refer to their respective repositories
 
 Changelog only includes changes from version 0.36.0 onwards.
 
+## [1.2.11] - 2025-10-28
+### Fixed
+- Fixed an issue where enableWhen items are not initialising when a filled form is passed into `buildForm()`.
+
+## [1.2.10] - 2025-10-28
+**Use 1.2.10 instead of 1.2.9 due to a publishing issue.**
+### Fixed
+- Add aria-hidden="true" to text-field based questions' clear button (x).
+
+## [1.2.9] - 2025-10-28
+### Fixed
+- Add aria-hidden="true" to text-field based questions' clear button (x).
+
+## [1.2.8] - 2025-10-28
+### Fixed
+- Required field asterisks accessibility enhancements also applies to group headings and tab buttons.
+
+## [1.2.7] - 2025-10-28
+### Fixed
+- Required field asterisks are now properly announced as "Mandatory field" by screen readers. Refer to issue [#1741](https://github.com/aehrc/smart-forms/issues/1741)
+
+## [1.2.6] - 2025-10-28
+### Fixed
+- Remove `openOnFocus` prop from autocomplete fields to allow screen readers to read out label, placeholder text and control's role. Refer to issue [#1733](https://github.com/aehrc/smart-forms/issues/1733)
+
+## [1.2.5] - 2025-10-28
+### Fixed
+- Use `deepEqual` for checkbox answer matching instead of JSON.stringify equality to correctly compare valueCoding objects. Refer to issue [#1738](https://github.com/aehrc/smart-forms/issues/1738)
+
+## [1.2.4] - 2025-10-28
+### Fixed
+- Measurement units (e.g. cm, kg) are now associated with their input fields, ensuring screen readers correctly announce the unit when the field receives focus. Refer to issue [#1641](https://github.com/aehrc/smart-forms/issues/1641)
+
+## [1.2.3] - 2025-10-27
+### Fixed
+- Fixed bug with the rendering of the calculation animation on the first calculated expression update. Issue described [here](https://github.com/aehrc/smart-forms/issues/1682)
+
+## [1.2.2] - 2025-10-27
+### Fixed
+- Fixed bugs with the rendering and updating of nested items, within an item that is a repeat item. The issue is described [here](https://chat.fhir.org/#narrow/channel/179255-questionnaire/topic/Initial.20value.20for.20nested.20questions.20with.20repeating.20parent.2E/with/535935557)
+
 ## [1.2.1] - 2025-10-27
 ### Fixed
 - Fixed valueSet promise resolution in buildForm stage to exclude answerValueSet urls from autocomplete items. This is because these urls are meant to be used alongside a `filter` parameter.
-
+- Fixed renderer calcExp not working on open-choice and choice fields. Issue is described [here](https://github.com/aehrc/smart-forms/issues/1722)
+- Fixed renderer open-choice not retaining the selected option in calcExp. Issue is described [here](https://github.com/aehrc/smart-forms/issues/1721)
+- Changed renderer aria-label as per request described  [here](https://github.com/aehrc/smart-forms/issues/1657)
+  
 ## [1.2.0] - 2025-10-23
 ### Added
 - Added support for optional heading focus when switching tabs via `disableHeadingFocusOnTabSwitch` field in `RendererConfigStore`.
