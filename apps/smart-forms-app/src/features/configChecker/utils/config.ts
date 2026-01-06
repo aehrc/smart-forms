@@ -38,10 +38,6 @@ export interface ConfigFile {
   //  "https://example.com/fhir": "6cc9bccb-3ae2-40d7-9660-22c99534520b"
   // }
   registeredClientIdsUrl: string | null;
-
-  // (Optional) Feature flag to enable/disable in-app population functionality
-  // Defaults to true if not specified
-  inAppPopulate?: boolean;
 }
 
 export interface AppConfig extends ConfigFile {
@@ -57,7 +53,6 @@ export const FALLBACK_CONFIG: AppConfig = {
   launchScopes:
     'launch openid fhirUser online_access patient/AllergyIntolerance.cs patient/Condition.cs patient/Encounter.r patient/Immunization.cs patient/Medication.r patient/MedicationStatement.cs patient/Observation.cs patient/Patient.r patient/QuestionnaireResponse.crus user/Practitioner.r launch/questionnaire?role=http://ns.electronichealth.net.au/smart/role/new',
   registeredClientIdsUrl: null,
-  inAppPopulate: true,
   registeredClientIds: null
 };
 
@@ -75,9 +70,7 @@ export function responseIsAppConfig(response: any): response is AppConfig {
     // Check nullable properties
     (response.registeredClientIdsUrl === null || isValidUrl(response.registeredClientIdsUrl)) &&
     (response.registeredClientIds === null ||
-      isValidRegisteredClientIds(response.registeredClientIds)) &&
-    // Check optional properties
-    (response.inAppPopulate === undefined || typeof response.inAppPopulate === 'boolean')
+      isValidRegisteredClientIds(response.registeredClientIds))
   );
 }
 
