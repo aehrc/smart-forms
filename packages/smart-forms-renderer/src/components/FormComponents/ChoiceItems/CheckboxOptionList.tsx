@@ -20,6 +20,7 @@ import type { QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer } f
 import CheckboxSingle from '../ItemParts/CheckboxSingle';
 import { isOptionDisabled } from '../../../utils/choice';
 import { deepEqual } from 'fast-equals';
+import StyledText from '../ItemParts/StyledText';
 
 interface CheckboxOptionListProps {
   options: QuestionnaireItemAnswerOption[];
@@ -70,7 +71,10 @@ function CheckboxOptionList(props: CheckboxOptionListProps) {
             <CheckboxSingle
               key={option.valueString}
               value={option.valueString}
-              label={option.valueString}
+              label={
+                <StyledText textToDisplay={option.valueString} element={option._valueString} />
+              }
+              labelText={option.valueString}
               readOnly={readOnly}
               disabledViaToggleExpression={optionDisabledViaToggleExpression}
               fullWidth={fullWidth}
