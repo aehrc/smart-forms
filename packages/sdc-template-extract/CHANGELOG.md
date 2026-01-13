@@ -5,7 +5,7 @@ This log documents changes for [@aehrc/sdc-template-extract](https://www.npmjs.c
 
 Changelog only includes changes from version 1.0.6 onwards.
 
-## sdc-template-extract [1.0.15] - xxxx-xx-xx
+## sdc-template-extract [1.0.15] - 2026-01-13
 #### Fixed
 - Fixed issues relating to the extraction of arrays, including issue [#1777](https://github.com/aehrc/smart-forms/issues/1777).
 

@@ -10,9 +10,13 @@ For changelogs of other libraries, please refer to their respective repositories
 
 Changelog only includes changes from version 0.36.0 onwards.
 
-## [1.2.12] - xxxx-xx-xx
+## [1.2.12] - 2026-01-13
 ### Added
 - Added support for text styling on answerOption.valueString.
+- Improved keyboard-only navigation and screen reader accessibility for combobox dropdowns. See issue [#1762](https://github.com/aehrc/smart-forms/issues/1762)
+### Fixed
+- Fixed missing calculatedExpression sync animations on `choice` and `open-choice` items. See issue [#1643](https://github.com/aehrc/smart-forms/issues/1643)
+- Fixed regression in enableWhen initialisation that prevented some items from populating. See issues [#1781](https://github.com/aehrc/smart-forms/issues/1781) and [#1775](https://github.com/aehrc/smart-forms/issues/1775)
 
 ## [1.2.11] - 2025-10-28
 ### Fixed
