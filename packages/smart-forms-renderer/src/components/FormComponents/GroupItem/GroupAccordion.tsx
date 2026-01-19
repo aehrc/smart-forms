@@ -38,12 +38,12 @@ export function GroupAccordion(props: GroupAccordionProps) {
   const handleChange = useCallback(
     (event: React.SyntheticEvent, isExpanded: boolean) => {
       setExpanded(isExpanded);
-      
+
       if (isExpanded) {
         console.log('[GroupAccordion] Expanding...');
         focusHeading(accordionId);
       }
-      
+
       onChange?.(event, isExpanded);
     },
     [onChange, focusHeading, accordionId]
