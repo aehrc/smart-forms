@@ -366,6 +366,17 @@ export async function getInputText(canvasElement: HTMLElement, linkId: string) {
   return input.value;
 }
 
+export async function getAutocompleteTagText(canvasElement: HTMLElement, linkId: string) {
+  const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
+  const tag = questionElement?.querySelector('.MuiAutocomplete-tag');
+
+  if (!tag) {
+    throw new Error(`MUI Autocomplete tag was not found inside ${`[data-linkid=${linkId}] block`}`);
+  }
+
+  return tag.textContent || '';
+}
+
 export async function chooseSelectOption(
   canvasElement: HTMLElement,
   linkId: string,

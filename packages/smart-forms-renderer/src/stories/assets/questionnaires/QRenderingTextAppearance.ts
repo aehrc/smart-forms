@@ -491,3 +491,230 @@ export const qRenderingXhtmlGroupPropagationClassStyles: Questionnaire = {
     }
   ]
 };
+
+export const qRenderingAnswerOptionValueString: Questionnaire = {
+  resourceType: 'Questionnaire',
+  status: 'draft',
+  item: [
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          valueCodeableConcept: {
+            coding: [
+              {
+                code: 'radio-button',
+                system: 'http://hl7.org/fhir/questionnaire-item-control'
+              }
+            ]
+          }
+        }
+      ],
+      answerOption: [
+        {
+          valueString: 'Complete (rendering-style)',
+          _valueString: {
+            extension: [
+              {
+                url: 'http://hl7.org/fhir/StructureDefinition/rendering-style',
+                valueString: 'color: green; font-weight:bold;'
+              }
+            ]
+          }
+        },
+        {
+          valueString: 'In progress',
+          _valueString: {
+            extension: [
+              {
+                url: 'http://hl7.org/fhir/StructureDefinition/rendering-markdown',
+                valueMarkdown: '_**In progress**_ (rendering-markdown)'
+              }
+            ]
+          }
+        },
+        {
+          valueString: 'Requires attention',
+          _valueString: {
+            extension: [
+              {
+                url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
+                valueString:
+                  '<span style="color: red;"> &#x26A0; <!-- warning/exclamation symbol --> Requires attention </span> (rendering-xhtml)'
+              }
+            ]
+          }
+        }
+      ],
+      linkId: 'section-completion-status',
+      text: 'Section completion status (radio-button)',
+      type: 'choice',
+      repeats: false
+    },
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          valueCodeableConcept: {
+            coding: [
+              {
+                code: 'check-box',
+                system: 'http://hl7.org/fhir/questionnaire-item-control'
+              }
+            ]
+          }
+        }
+      ],
+      answerOption: [
+        {
+          valueString: 'Complete (rendering-style)',
+          _valueString: {
+            extension: [
+              {
+                url: 'http://hl7.org/fhir/StructureDefinition/rendering-style',
+                valueString: 'color: green; font-weight:bold;'
+              }
+            ]
+          }
+        },
+        {
+          valueString: 'In progress',
+          _valueString: {
+            extension: [
+              {
+                url: 'http://hl7.org/fhir/StructureDefinition/rendering-markdown',
+                valueMarkdown: '_**In progress**_ (rendering-markdown)'
+              }
+            ]
+          }
+        },
+        {
+          valueString: 'Requires attention',
+          _valueString: {
+            extension: [
+              {
+                url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
+                valueString:
+                  '<span style="color: red;"> &#x26A0; <!-- warning/exclamation symbol --> Requires attention </span> (rendering-xhtml)'
+              }
+            ]
+          }
+        }
+      ],
+      linkId: 'section-completion-status-check-box',
+      text: 'Section completion status (check-box)',
+      type: 'choice',
+      repeats: false
+    },
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          valueCodeableConcept: {
+            coding: [
+              {
+                code: 'select',
+                system: 'http://hl7.org/fhir/questionnaire-item-control'
+              }
+            ]
+          }
+        }
+      ],
+      answerOption: [
+        {
+          valueString: 'Complete (rendering-style)',
+          _valueString: {
+            extension: [
+              {
+                url: 'http://hl7.org/fhir/StructureDefinition/rendering-style',
+                valueString: 'color: green; font-weight:bold;'
+              }
+            ]
+          }
+        },
+        {
+          valueString: 'In progress',
+          _valueString: {
+            extension: [
+              {
+                url: 'http://hl7.org/fhir/StructureDefinition/rendering-markdown',
+                valueMarkdown: '_**In progress**_ (rendering-markdown)'
+              }
+            ]
+          }
+        },
+        {
+          valueString: 'Requires attention',
+          _valueString: {
+            extension: [
+              {
+                url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
+                valueString:
+                  '<span style="color: red;"> &#x26A0; <!-- warning/exclamation symbol --> Requires attention </span> (rendering-xhtml)'
+              }
+            ]
+          }
+        }
+      ],
+      linkId: 'section-completion-status-select',
+      text: 'Section completion status (choice select)',
+      type: 'choice',
+      repeats: false
+    },
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          valueCodeableConcept: {
+            coding: [
+              {
+                code: 'select',
+                system: 'http://hl7.org/fhir/questionnaire-item-control'
+              }
+            ]
+          }
+        }
+      ],
+      answerOption: [
+        {
+          valueString: 'Complete (rendering-style)',
+          _valueString: {
+            extension: [
+              {
+                url: 'http://hl7.org/fhir/StructureDefinition/rendering-style',
+                valueString: 'color: green; font-weight:bold;'
+              }
+            ]
+          }
+        },
+        {
+          valueString: 'In progress',
+          _valueString: {
+            extension: [
+              {
+                url: 'http://hl7.org/fhir/StructureDefinition/rendering-markdown',
+                valueMarkdown: '_**In progress**_ (rendering-markdown)'
+              }
+            ]
+          }
+        },
+        {
+          valueString: 'Requires attention',
+          _valueString: {
+            extension: [
+              {
+                url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
+                valueString:
+                  '<span style="color: red;"> &#x26A0; <!-- warning/exclamation symbol --> Requires attention </span> (rendering-xhtml)'
+              }
+            ]
+          }
+        }
+      ],
+      linkId: 'section-completion-status-select-open',
+      text: 'Section completion status (open-choice select)',
+      type: 'open-choice',
+      repeats: false
+    }
+  ]
+};

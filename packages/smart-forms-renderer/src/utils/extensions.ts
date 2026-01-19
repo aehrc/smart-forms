@@ -15,7 +15,13 @@
  * limitations under the License.
  */
 
-import type { Coding, Extension, QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import type {
+  Coding,
+  Element,
+  Extension,
+  QuestionnaireItem,
+  QuestionnaireItemAnswerOption
+} from 'fhir/r4';
 import type { RegexValidation } from '../interfaces/regex.interface';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 import { default as htmlParse } from 'html-react-parser';
@@ -160,8 +166,8 @@ export function getXHtmlString(qItem: QuestionnaireItem): string | null {
  *
  * @author Sean Fong
  */
-export function getMarkdownString(qItem: QuestionnaireItem): string | null {
-  const extension = qItem._text?.extension?.find(
+export function getMarkdownString(element: Element | undefined): string | null {
+  const extension = element?.extension?.find(
     (extension: Extension) =>
       extension.url === 'http://hl7.org/fhir/StructureDefinition/rendering-markdown'
   );

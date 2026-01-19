@@ -22,7 +22,7 @@ import { StandardRadio } from '../../Radio.styles';
 
 interface ChoiceRadioSingleProps {
   value: string;
-  label: string;
+  label: React.ReactNode;
   readOnly: boolean;
   disabledViaToggleExpression: boolean;
   fullWidth: boolean;
