@@ -1,0 +1,7 @@
+{
+  "terminologyServerUrl": "https://r4.ontoserver.csiro.au/fhir",
+  "formsServerUrl": "https://smartforms.csiro.au/api/fhir",
+  "defaultClientId": "a57d90e3-5f69-4b92-aa2e-2992180863c1",
+  "launchScopes": "launch openid fhirUser online_access patient/AllergyIntolerance.cs patient/Condition.cs patient/Encounter.r patient/Immunization.cs patient/Medication.r patient/MedicationStatement.cs patient/Observation.cs patient/Patient.r patient/QuestionnaireResponse.crus user/Practitioner.r launch/questionnaire?role=http://ns.electronichealth.net.au/smart/role/new",
+  "registeredClientIdsUrl": null
+}
