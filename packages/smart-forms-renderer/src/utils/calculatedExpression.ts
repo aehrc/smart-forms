@@ -875,13 +875,14 @@ export async function processCalculatedExpressions(
         questionnaire,
         currentResponse,
         questionnaireItemMap,
-        previousCalculatedExpressions,
+        iterationCount === 1 ? {} : previousCalculatedExpressions,
         currentCalculatedExpressions,
         itemPreferredTerminologyServers,
         defaultTerminologyServerUrl
       );
 
       // Update previousCalculatedExpressions for the next iteration
+      // eslint-disable-next-line
       previousCalculatedExpressions = structuredClone(currentCalculatedExpressions);
     }
   }
