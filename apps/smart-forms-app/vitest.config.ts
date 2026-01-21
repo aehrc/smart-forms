@@ -12,5 +12,17 @@ export default defineConfig({
       reporter: ['text', 'json', 'html'],
       exclude: ['**/e2e/**', '**/node_modules/**'],
     },
+    browser: {
+      enabled: !!process.env.VITEST_HEADED,
+      provider: 'playwright',
+      headless: !process.env.VITEST_HEADED,
+      ui: false,
+      viewport: { width: 1280, height: 800 }, // Force desktop view
+      instances: [
+        {
+          browser: 'chromium',
+        },
+      ],
+    },
   },
 });
