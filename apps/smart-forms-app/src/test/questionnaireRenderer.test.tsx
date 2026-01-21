@@ -2,7 +2,7 @@ import { act, render, waitFor } from '@testing-library/react';
 import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import aboriginalForm from '../data/resources/Questionnaire/Questionnaire-AboriginalTorresStraitIslanderHealthCheckAssembled-0.4.0.json';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { vi } from 'vitest';
+import { vi, beforeAll } from 'vitest';
 
 import {
   BaseRenderer,
@@ -17,6 +17,21 @@ vi.mock('fhirclient', () => ({
     request: vi.fn(() => Promise.resolve({}))
   })
 }));
+
+
+beforeAll(() => {
+  global.ResizeObserver = class ResizeObserver {
+    observe() {
+      // do nothing
+    }
+    unobserve() {
+      // do nothing
+    }
+    disconnect() {
+      // do nothing
+    }
+  };
+});
 
 test('behaviour-test-example', async () => {
   const form = aboriginalForm as Questionnaire;
