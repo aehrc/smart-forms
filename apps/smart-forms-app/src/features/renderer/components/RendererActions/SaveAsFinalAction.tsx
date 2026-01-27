@@ -48,6 +48,7 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
   const [extractedBundle, setExtractedBundle] = useState<Bundle | null>(null);
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
   const formChangesHistory = useQuestionnaireResponseStore.use.formChangesHistory();
 
@@ -149,9 +150,12 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
     setExtractedBundle(null);
   }
 
-  // Check if QR has been saved before via versionId
+  // Check if an in-progress QR has been saved before via versionId
+  // For completed/amended, disable button only when there are no form changes
   const versionId = updatableResponse.meta?.versionId;
-  const buttonIsDisabled = !smartClient || (formChangesHistory.length === 0 && !versionId);
+  const isAmendment = sourceResponse.status === 'completed' || sourceResponse.status === 'amended';
+  const buttonIsDisabled =
+    !smartClient || (formChangesHistory.length === 0 && !(versionId && !isAmendment));
 
   // Check if questionnaire can be template-based extracted
   const extractMechanism = useMemo(
@@ -169,6 +173,7 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
           isSpeedDial={!!isSpeedDial}
           isExtracting={isExtracting}
           isDisabled={buttonIsDisabled}
+          isAmendment={isAmendment}
           writeBackEnabled={writeBackEnabled}
           onSaveAsFinalActionClick={async () => {
             if (extractMechanism === 'template-based') {
@@ -186,6 +191,7 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
           // An extracted bundle exists and have at least one entry
           <RendererSaveAsFinalWriteBackDialog
             dialogOpen={saveAsFinalDialogOpen}
+            isAmendment={isAmendment}
             extractedBundle={extractedBundle}
             onCloseDialog={handleCloseDialog}
             onDialogExited={handleDialogExited}
@@ -194,9 +200,8 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
           // Extraction failed or no entries in the extracted bundle
           <RendererSaveAsFinalOnlyDialog
             open={saveAsFinalDialogOpen}
-            customContentText={
-              'There are no items to write back to the patient record. Are you sure you want to save this form as final? You will not be able to make further changes.'
-            }
+            isAmendment={isAmendment}
+            additionalContentText={'There are no items to write back to the patient record.'}
             closeDialog={handleCloseDialog}
           />
         )}
@@ -210,11 +215,16 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
         isSpeedDial={!!isSpeedDial}
         isExtracting={false}
         isDisabled={buttonIsDisabled}
+        isAmendment={isAmendment}
         writeBackEnabled={writeBackEnabled}
         onSaveAsFinalActionClick={handleOpenDialog}
         {...speedDialActionProps}
       />
-      <RendererSaveAsFinalOnlyDialog open={saveAsFinalDialogOpen} closeDialog={handleCloseDialog} />
+      <RendererSaveAsFinalOnlyDialog
+        open={saveAsFinalDialogOpen}
+        closeDialog={handleCloseDialog}
+        isAmendment={isAmendment}
+      />
     </>
   );
 }

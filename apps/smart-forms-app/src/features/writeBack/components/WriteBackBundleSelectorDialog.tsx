@@ -16,6 +16,7 @@ interface WriteBackBundleSelectorProps {
   viewMode: 'renderer' | 'playground';
   dialogOpen: boolean;
   isSaving: SavingWriteBackMode;
+  isAmendment: boolean;
   extractedBundle: Bundle;
   onCloseDialog: () => void;
   onWriteBackBundle: (bundleToWriteBack: Bundle, savingWriteBackMode: SavingWriteBackMode) => void;
@@ -26,6 +27,7 @@ function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
   const {
     dialogOpen,
     isSaving,
+    isAmendment,
     extractedBundle,
     onCloseDialog,
     onWriteBackBundle,
@@ -157,7 +159,9 @@ function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
 
   // Button texts based on if view mode is in renderer or playground
   const writeBackButtonText =
-    props.viewMode === 'renderer' ? 'Save as final and write back' : 'Write Back';
+    props.viewMode === 'renderer'
+      ? `Save as ${isAmendment ? 'amendment' : 'final'} and write back`
+      : 'Write Back';
   const showSaveOnlyButton = props.viewMode === 'renderer';
 
   return (
@@ -225,7 +229,7 @@ function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
                   handleWriteBack('saving-only');
                 }}
                 disabled={isSaving === 'saving-write-back'}>
-                Save as final only
+                Save as {isAmendment ? 'amendment' : 'final'} only
               </Button>
             ) : null}
             <Button

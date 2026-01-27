@@ -19,6 +19,7 @@ import { List } from '@mui/material';
 import { useContext } from 'react';
 import ViewerSaveAsFinal from './SaveAsFinal/ViewerSaveAsFinal.tsx';
 import EditIcon from '@mui/icons-material/Edit';
+import EditNoteIcon from '@mui/icons-material/EditNote';
 import { useNavigate } from 'react-router-dom';
 import PrintIcon from '@mui/icons-material/Print';
 import { PrintComponentRefContext } from '../ViewerLayout.tsx';
@@ -73,7 +74,7 @@ function ViewerOperationSection() {
         <NavSectionHeading>Operations</NavSectionHeading>
       </NavSectionHeadingWrapper>
       <List disablePadding sx={{ px: 1 }}>
-        {sourceResponse.status !== 'completed' ? (
+        {sourceResponse.status === 'in-progress' ? (
           <>
             <ViewerOperationItem
               title={'Edit Response'}
@@ -84,6 +85,14 @@ function ViewerOperationSection() {
             />
             <ViewerSaveAsFinal />
           </>
+        ) : sourceResponse.status === 'completed' || sourceResponse.status === 'amended' ? (
+          <ViewerOperationItem
+            title={'Amend Response'}
+            icon={<EditNoteIcon />}
+            onClick={() => {
+              navigate('/renderer');
+            }}
+          />
         ) : null}
         <ViewerOperationItem title={'Print Preview'} icon={<PrintIcon />} onClick={handlePrint} />
       </List>

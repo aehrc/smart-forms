@@ -91,9 +91,7 @@ function ViewerSaveAsFinalDialog(props: ViewerSaveAsFinalDialogProps) {
     <Dialog open={open} onClose={handleClose} data-test="dialog-confirm-save">
       <StandardDialogTitle onCloseDialog={handleClose}>Confirm save</StandardDialogTitle>
       <DialogContent>
-        <DialogContentText>
-          {"Are you sure you want to save this form as final? You won't be able to edit it after."}
-        </DialogContentText>
+        <DialogContentText>{'Are you sure you want to save this form as final?'}</DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
