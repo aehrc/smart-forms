@@ -16,7 +16,7 @@ interface WriteBackBundleSelectorProps {
   viewMode: 'renderer' | 'playground';
   dialogOpen: boolean;
   isSaving: SavingWriteBackMode;
-  isAmendment: boolean;
+  isAmendment?: boolean;
   extractedBundle: Bundle;
   onCloseDialog: () => void;
   onWriteBackBundle: (bundleToWriteBack: Bundle, savingWriteBackMode: SavingWriteBackMode) => void;

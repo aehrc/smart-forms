@@ -1,4 +1,4 @@
-import { QuestionnaireResponse } from 'fhir/r4';
+import type { QuestionnaireResponse } from 'fhir/r4';
 
 type RendererOperation = 'preview' | 'save-progress' | 'save-final' | 'repopulate';
 
