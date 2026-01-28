@@ -24,7 +24,7 @@ import type {
 } from '../interfaces/expressions.interface';
 import type { OperationOutcomeIssue } from 'fhir/r4';
 import { createInvalidWarningIssue } from './operationOutcome';
-import type { FetchTerminologyRequestConfig } from '../interfaces';
+import type { FetchTerminologyRequestConfig, FetchResourceRequestConfig } from '../interfaces';
 import { handleFhirPathResult } from './createFhirPathContext';
 import { TERMINOLOGY_SERVER_URL } from '../../globals';
 
@@ -38,11 +38,13 @@ export async function generateExpressionValues(
   populationExpressions: PopulationExpressions,
   contextMap: Record<string, any>,
   issues: OperationOutcomeIssue[],
-  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
+  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig,
+  fetchResourceRequestConfig?: FetchResourceRequestConfig
 ) {
   const { initialExpressions, itemPopulationContexts } = populationExpressions;
 
   const terminologyServerUrl = fetchTerminologyRequestConfig?.terminologyServerUrl ?? null;
+  const fhirServerUrl = fetchResourceRequestConfig?.sourceServerUrl ?? null;
 
   for (const linkId in initialExpressions) {
     const initialExpression = initialExpressions[linkId];
@@ -53,7 +55,8 @@ export async function generateExpressionValues(
       try {
         const fhirPathResult = fhirpath.evaluate({}, expression, contextMap, fhirpath_r4_model, {
           async: true,
-          terminologyUrl: terminologyServerUrl ?? TERMINOLOGY_SERVER_URL
+          terminologyUrl: terminologyServerUrl ?? TERMINOLOGY_SERVER_URL,
+          ...(fhirServerUrl && { fhirServerUrl })
         });
 
         initialExpression.value = await handleFhirPathResult(fhirPathResult);
@@ -79,7 +82,8 @@ export async function generateExpressionValues(
       try {
         const fhirPathResult = fhirpath.evaluate({}, expression, contextMap, fhirpath_r4_model, {
           async: true,
-          terminologyUrl: terminologyServerUrl ?? TERMINOLOGY_SERVER_URL
+          terminologyUrl: terminologyServerUrl ?? TERMINOLOGY_SERVER_URL,
+          ...(fhirServerUrl && { fhirServerUrl })
         });
         itemPopulationContext.value = await handleFhirPathResult(fhirPathResult);
       } catch (e) {
@@ -113,9 +117,11 @@ export async function evaluateItemPopulationContexts(
   itemPopulationContexts: Record<string, ItemPopulationContext>,
   contextMap: Record<string, any>,
   issues: OperationOutcomeIssue[],
-  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
+  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig,
+  fetchResourceRequestConfig?: FetchResourceRequestConfig
 ): Promise<Record<string, any>> {
   const terminologyServerUrl = fetchTerminologyRequestConfig?.terminologyServerUrl ?? null;
+  const fhirServerUrl = fetchResourceRequestConfig?.sourceServerUrl ?? null;
 
   for (const name in itemPopulationContexts) {
     const itemPopulationContext = itemPopulationContexts[name];
@@ -127,7 +133,8 @@ export async function evaluateItemPopulationContexts(
       try {
         const fhirPathResult = fhirpath.evaluate({}, expression, contextMap, fhirpath_r4_model, {
           async: true,
-          terminologyUrl: terminologyServerUrl ?? TERMINOLOGY_SERVER_URL
+          terminologyUrl: terminologyServerUrl ?? TERMINOLOGY_SERVER_URL,
+          ...(fhirServerUrl && { fhirServerUrl })
         });
         evaluatedResult = await handleFhirPathResult(fhirPathResult);
       } catch (e) {

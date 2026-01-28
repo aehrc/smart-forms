@@ -96,7 +96,8 @@ export async function populate(
     populationExpressions.itemPopulationContexts,
     fhirPathContext,
     issues,
-    fetchTerminologyRequestConfig
+    fetchTerminologyRequestConfig,
+    fetchResourceRequestConfig
   );
 
   // Get values for expressions
@@ -105,7 +106,8 @@ export async function populate(
       populationExpressions,
       fhirPathContext,
       issues,
-      fetchTerminologyRequestConfig
+      fetchTerminologyRequestConfig,
+      fetchResourceRequestConfig
     );
 
   // In evaluatedInitialExpressions, add display values to codings lacking them

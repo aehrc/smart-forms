@@ -58,7 +58,7 @@ export async function createFhirPathContext(
   fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
 ): Promise<Record<string, any>> {
   const { launchContexts, updatedReferenceContexts, updatedContainedBatchContexts } =
-    await replaceFhirPathEmbeddings(parameters, questionnaire, fetchTerminologyRequestConfig);
+    await replaceFhirPathEmbeddings(parameters, questionnaire, fetchTerminologyRequestConfig, fetchResourceRequestConfig);
 
   const fhirPathContext: Record<string, any> = {
     resource: structuredClone(emptyResponse),
@@ -98,7 +98,8 @@ export async function createFhirPathContext(
     questionnaire,
     fhirPathContext,
     issues,
-    fetchTerminologyRequestConfig
+    fetchTerminologyRequestConfig,
+    fetchResourceRequestConfig
   );
 
   return fhirPathContext;
@@ -114,7 +115,8 @@ export async function extractAndEvaluateFhirPathVariables(
   questionnaire: Questionnaire,
   fhirPathContext: Record<string, any>,
   issues: OperationOutcomeIssue[],
-  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
+  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig,
+  fetchResourceRequestConfig?: FetchResourceRequestConfig
 ) {
   if (!questionnaire.extension || questionnaire.extension.length === 0) {
     return;
@@ -126,7 +128,8 @@ export async function extractAndEvaluateFhirPathVariables(
     questionnaireLevelVariables,
     fhirPathContext,
     issues,
-    fetchTerminologyRequestConfig
+    fetchTerminologyRequestConfig,
+    fetchResourceRequestConfig
   );
 
   // Extract and evaluate FHIRPath variables from item-level
@@ -138,7 +141,8 @@ export async function extractAndEvaluateFhirPathVariables(
         variables,
         fhirPathContext,
         issues,
-        fetchTerminologyRequestConfig
+        fetchTerminologyRequestConfig,
+        fetchResourceRequestConfig
       );
     }
   }
@@ -219,13 +223,15 @@ export async function evaluateFhirPathVariables(
   variables: Expression[],
   fhirPathContext: Record<string, any>,
   issues: OperationOutcomeIssue[],
-  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
+  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig,
+  fetchResourceRequestConfig?: FetchResourceRequestConfig
 ) {
   if (variables.length === 0) {
     return;
   }
 
   const terminologyServerUrl = fetchTerminologyRequestConfig?.terminologyServerUrl ?? null;
+  const fhirServerUrl = fetchResourceRequestConfig?.sourceServerUrl ?? null;
 
   for (const variable of variables) {
     if (variable.expression) {
@@ -237,7 +243,8 @@ export async function evaluateFhirPathVariables(
           fhirpath_r4_model,
           {
             async: true,
-            terminologyUrl: terminologyServerUrl ?? TERMINOLOGY_SERVER_URL
+            terminologyUrl: terminologyServerUrl ?? TERMINOLOGY_SERVER_URL,
+            ...(fhirServerUrl && { fhirServerUrl })
           }
         );
 
@@ -483,7 +490,8 @@ export function responseDataIsFhirResource(responseData: any): responseData is F
 export async function replaceFhirPathEmbeddings(
   parameters: InputParameters,
   questionnaire: Questionnaire,
-  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
+  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig,
+  fetchResourceRequestConfig?: FetchResourceRequestConfig
 ): Promise<{
   launchContexts: ResourceContext[];
   updatedReferenceContexts: ReferenceContext[];
@@ -515,7 +523,8 @@ export async function replaceFhirPathEmbeddings(
     const evaluatedFhirPathEmbeddingsMap = await evaluateFhirPathEmbeddings(
       fhirPathEmbeddingsMap,
       launchContexts,
-      fetchTerminologyRequestConfig
+      fetchTerminologyRequestConfig,
+      fetchResourceRequestConfig
     );
 
     // Replace fhirpath embeddings with evaluated values
@@ -635,9 +644,11 @@ export function getFhirPathEmbeddings(
 export async function evaluateFhirPathEmbeddings(
   fhirPathEmbeddingsMap: Record<string, string>,
   launchContexts: ResourceContext[],
-  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
+  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig,
+  fetchResourceRequestConfig?: FetchResourceRequestConfig
 ) {
   const terminologyServerUrl = fetchTerminologyRequestConfig?.terminologyServerUrl ?? null;
+  const fhirServerUrl = fetchResourceRequestConfig?.sourceServerUrl ?? null;
 
   // transform launch contexts to launch context map
   const launchContextMap: Record<string, FhirResource> = {};
@@ -654,7 +665,8 @@ export async function evaluateFhirPathEmbeddings(
       try {
         const fhirPathResult = fhirpath.evaluate(launchContextMap[contextName], fhirPathQuery, {
           async: true,
-          terminologyUrl: terminologyServerUrl ?? TERMINOLOGY_SERVER_URL
+          terminologyUrl: terminologyServerUrl ?? TERMINOLOGY_SERVER_URL,
+          ...(fhirServerUrl && { fhirServerUrl })
         });
         fhirPathEmbeddingsMap[embedding] = (await handleFhirPathResult(fhirPathResult))[0];
       } catch (e) {
