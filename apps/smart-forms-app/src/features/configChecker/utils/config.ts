@@ -38,6 +38,11 @@ export interface ConfigFile {
   //  "https://example.com/fhir": "6cc9bccb-3ae2-40d7-9660-22c99534520b"
   // }
   registeredClientIdsUrl: string | null;
+
+  // Controls whether developer-focused messages are shown.
+  // Set to false for clinical/production deployments to hide technical messages.
+  // Defaults to true if not specified (shows messages for backward compatibility).
+  showDeveloperMessages?: boolean;
 }
 
 export interface AppConfig extends ConfigFile {
@@ -53,6 +58,7 @@ export const FALLBACK_CONFIG: AppConfig = {
   launchScopes:
     'launch openid fhirUser online_access patient/AllergyIntolerance.cs patient/Condition.cs patient/Encounter.r patient/Immunization.cs patient/Medication.r patient/MedicationStatement.cs patient/Observation.cs patient/Patient.r patient/QuestionnaireResponse.crus user/Practitioner.r launch/questionnaire?role=http://ns.electronichealth.net.au/smart/role/new',
   registeredClientIdsUrl: null,
+  showDeveloperMessages: true,
   registeredClientIds: null
 };
 

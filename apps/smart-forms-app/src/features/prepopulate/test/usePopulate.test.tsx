@@ -45,6 +45,24 @@ jest.mock('../../../components/Snackbar/CloseSnackbar', () => {
   };
 });
 
+// Mock ConfigContext
+const mockConfigContext = {
+  config: {
+    showDeveloperMessages: true
+  },
+  configLoading: false,
+  configValid: true,
+  configError: null,
+  configErrorType: null,
+  currentClientId: 'test-client-id',
+  onSetCurrentClientId: jest.fn()
+};
+
+jest.mock('react', () => ({
+  ...jest.requireActual('react'),
+  useContext: jest.fn(() => mockConfigContext)
+}));
+
 // Create mock store functions that will be used in the module mock
 const mockSourceQuestionnaire = jest.fn();
 const mockSourceResponse = jest.fn();
@@ -373,7 +391,7 @@ describe('usePopulate', () => {
       });
     });
 
-    it('should handle successful population with issues', async () => {
+    it('should handle successful population with issues (developer messages enabled)', async () => {
       const issues = {
         resourceType: 'OperationOutcome' as const,
         issue: [
@@ -408,13 +426,67 @@ describe('usePopulate', () => {
         additionalContext: undefined
       });
       expect(mockOnStopSpinner).toHaveBeenCalled();
+      // Snackbar should be shown when developer messages are enabled
       expect(mockEnqueueSnackbar).toHaveBeenCalledWith(
         'Form partially populated, there might be pre-population issues. View console for details.',
         { action: expect.anything() }
       );
+      // Console warning should always be shown
       expect(consoleSpy).toHaveBeenCalledWith(issues);
 
       consoleSpy.mockRestore();
+    });
+
+    it('should handle successful population with issues (developer messages disabled)', async () => {
+      // Temporarily set showDeveloperMessages to false
+      const originalShowDeveloperMessages = mockConfigContext.config.showDeveloperMessages;
+      mockConfigContext.config.showDeveloperMessages = false;
+
+      const issues = {
+        resourceType: 'OperationOutcome' as const,
+        issue: [
+          {
+            severity: 'warning' as const,
+            code: 'incomplete' as const,
+            diagnostics: 'Some fields could not be populated'
+          }
+        ]
+      };
+      const spinner = createSpinner(true, 'prepopulate');
+
+      mockPopulateQuestionnaire.mockResolvedValue({
+        populateSuccess: true,
+        populateResult: {
+          populatedResponse: mockResponse,
+          issues
+        }
+      });
+
+      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
+
+      renderHook(() => usePopulate(spinner, mockOnStopSpinner));
+
+      // Wait for async operations
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
+      expect(mockBuildForm).toHaveBeenCalledWith({
+        questionnaire: mockQuestionnaire,
+        questionnaireResponse: mockResponse,
+        terminologyServerUrl: 'https://test-terminology-server.com',
+        additionalContext: undefined
+      });
+      expect(mockOnStopSpinner).toHaveBeenCalled();
+      // Snackbar should NOT be shown when developer messages are disabled
+      expect(mockEnqueueSnackbar).not.toHaveBeenCalledWith(
+        'Form partially populated, there might be pre-population issues. View console for details.',
+        { action: expect.anything() }
+      );
+      // Console warning should still be shown (developers can still see it)
+      expect(consoleSpy).toHaveBeenCalledWith(issues);
+
+      consoleSpy.mockRestore();
+      // Restore original value
+      mockConfigContext.config.showDeveloperMessages = originalShowDeveloperMessages;
     });
   });
 
