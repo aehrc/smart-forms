@@ -52,6 +52,9 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
   const formChangesHistory = useQuestionnaireResponseStore.use.formChangesHistory();
 
+  // freeze state of response status so dialog content doesn't change during the save process
+  const [responseStatus] = useState(sourceResponse.status);
+
   // Events handlers
   async function handleTemplateExtract() {
     // In the user-facing UI, always perform a modified-only extraction
@@ -153,7 +156,7 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
   // Check if an in-progress QR has been saved before via versionId
   // For completed/amended, disable button only when there are no form changes
   const versionId = updatableResponse.meta?.versionId;
-  const isAmendment = sourceResponse.status === 'completed' || sourceResponse.status === 'amended';
+  const isAmendment = responseStatus === 'completed' || responseStatus === 'amended';
   const buttonIsDisabled =
     !smartClient || (formChangesHistory.length === 0 && !(versionId && !isAmendment));
 
