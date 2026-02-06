@@ -5,7 +5,7 @@ export default defineConfig({
     globals: true,
     testTimeout: 40000,
     environment: 'jsdom',
-    include: ['src/test/questionnaireRenderer.test.tsx'], // Only include this specific test file
+    include: ['src/test/aboriginalForm*.test.tsx'], // Only include this specific test file
     exclude: ['**/e2e/**', '**/node_modules/**'],
     coverage: {
       provider: 'v8',
