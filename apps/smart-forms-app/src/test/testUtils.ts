@@ -205,6 +205,23 @@ export async function checkRadioOption(canvasElement: HTMLElement, linkId: strin
   });
 }
 
+export async function checkCheckboxOption(canvasElement: HTMLElement, linkId: string, text: string) {
+  const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
+  const checkbox = questionElement?.querySelector(`span[data-test="checkbox-single-${text}"] input`);
+
+  if (!checkbox) {
+    throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
+  }
+
+  await act(async () => {
+    fireEvent.click(checkbox);
+  });
+  // Here we await for debounced store update
+  await act(async () => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  });
+}
+
 export async function getInputText(canvasElement: HTMLElement, linkId: string) {
   const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
   const input =

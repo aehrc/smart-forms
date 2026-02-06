@@ -4435,7 +4435,7 @@
               "text": "Health check already in progress?",
               "type": "boolean",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -5155,7 +5155,7 @@
               "text": "Name",
               "type": "string",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -5171,7 +5171,7 @@
               "text": "Preferred name",
               "type": "string",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -5198,7 +5198,7 @@
               "text": "Preferred pronouns",
               "type": "choice",
               "repeats": false,
-              "readOnly": true,
+              "readOnly": false,
               "answerValueSet": "#australian-pronouns-1"
             },
             {
@@ -5226,7 +5226,7 @@
               "text": "Gender identity",
               "type": "choice",
               "repeats": false,
-              "readOnly": true,
+              "readOnly": false,
               "answerValueSet": "#gender-identity-response-1"
             },
             {
@@ -5285,7 +5285,7 @@
               "text": "Sex assigned at birth",
               "type": "choice",
               "repeats": false,
-              "readOnly": true,
+              "readOnly": false,
               "answerValueSet": "#biological-sex-1"
             },
             {
@@ -5302,7 +5302,7 @@
               "text": "Date of birth",
               "type": "date",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -5345,7 +5345,7 @@
               "text": "Aboriginal and/or Torres Strait Islander status",
               "type": "choice",
               "repeats": false,
-              "readOnly": true,
+              "readOnly": false,
               "answerValueSet": "#AboriginalTorresStraitIslander"
             },
             {
@@ -5457,7 +5457,7 @@
               "text": "Home address",
               "type": "group",
               "repeats": false,
-              "readOnly": true,
+              "readOnly": false,
               "item": [
                 {
                   "extension": [
@@ -5617,7 +5617,7 @@
               "text": "Postal address",
               "type": "group",
               "repeats": true,
-              "readOnly": true,
+              "readOnly": false,
               "item": [
                 {
                   "extension": [
@@ -5735,7 +5735,7 @@
               "text": "Home phone",
               "type": "string",
               "repeats": true,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -5751,7 +5751,7 @@
               "text": "Mobile phone",
               "type": "string",
               "repeats": true,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -5768,7 +5768,7 @@
               "text": "Emergency contact",
               "type": "group",
               "repeats": true,
-              "readOnly": true,
+              "readOnly": false,
               "item": [
                 {
                   "extension": [
@@ -5847,7 +5847,7 @@
               "text": "Medicare number",
               "type": "group",
               "repeats": true,
-              "readOnly": true,
+              "readOnly": false,
               "item": [
                 {
                   "extension": [
@@ -5918,7 +5918,7 @@
               "text": "Pensioner Card Number",
               "type": "string",
               "repeats": false,
-              "readOnly": true,
+              "readOnly": false,
               "maxLength": 10
             },
             {
@@ -5935,7 +5935,7 @@
               "text": "Health Care Card Number",
               "type": "string",
               "repeats": false,
-              "readOnly": true,
+              "readOnly": false,
               "maxLength": 10
             },
             {
@@ -5952,7 +5952,7 @@
               "text": "Registered for Closing the Gap PBS Co-payment Measure (CTG)",
               "type": "boolean",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -7129,7 +7129,7 @@
                       "linkId": "59b1900a-4f85-4a8c-b9cd-3fe2fd76f27e",
                       "text": "Condition",
                       "type": "open-choice",
-                      "readOnly": true,
+                      "readOnly": false,
                       "answerValueSet": "#clinical-condition-1"
                     },
                     {
@@ -7189,7 +7189,7 @@
                       "linkId": "6ae641ad-95bb-4cdc-8910-5a52077e492c",
                       "text": "Onset date",
                       "type": "date",
-                      "readOnly": true
+                      "readOnly": false
                     },
                     {
                       "extension": [
@@ -7613,7 +7613,7 @@
                       "text": "Medication",
                       "type": "open-choice",
                       "repeats": false,
-                      "readOnly": true,
+                      "readOnly": false,
                       "answerValueSet": "#smart-health-checks-medicine-products"
                     },
                     {
@@ -7709,7 +7709,7 @@
                       "text": "Clinical indication",
                       "type": "open-choice",
                       "repeats": true,
-                      "readOnly": true,
+                      "readOnly": false,
                       "answerValueSet": "#medication-reason-taken-1"
                     },
                     {
@@ -8223,7 +8223,7 @@
                       "text": "Substance",
                       "type": "open-choice",
                       "repeats": false,
-                      "readOnly": true,
+                      "readOnly": false,
                       "answerValueSet": "https://healthterminologies.gov.au/fhir/ValueSet/adverse-reaction-agent-1"
                     },
                     {
@@ -8297,7 +8297,7 @@
                       "text": "Manifestation",
                       "type": "open-choice",
                       "repeats": true,
-                      "readOnly": true,
+                      "readOnly": false,
                       "answerValueSet": "https://healthterminologies.gov.au/fhir/ValueSet/clinical-finding-1"
                     },
                     {
@@ -17778,7 +17778,7 @@
               "text": "Vaccines previously given",
               "type": "group",
               "repeats": true,
-              "readOnly": true,
+              "readOnly": false,
               "item": [
                 {
                   "extension": [
@@ -18709,7 +18709,7 @@
                       "text": "New result",
                       "type": "decimal",
                       "repeats": false,
-                      "readOnly": true,
+                      "readOnly": false,
                       "item": [
                         {
                           "extension": [
@@ -19781,7 +19781,7 @@
                   "text": "Latest available result",
                   "type": "string",
                   "repeats": false,
-                  "readOnly": true
+                  "readOnly": false
                 },
                 {
                   "extension": [
@@ -19978,7 +19978,7 @@
               "text": "CVD risk calculator variables",
               "type": "group",
               "repeats": false,
-              "readOnly": true,
+              "readOnly": false,
               "item": [
                 {
                   "extension": [
@@ -20738,7 +20738,7 @@
               "text": "Current health/patient priorities",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -20762,7 +20762,7 @@
               "text": "Medical history and current problems",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -20786,7 +20786,7 @@
               "text": "Regular medications",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -20810,7 +20810,7 @@
               "text": "Allergies/adverse reactions",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -20834,7 +20834,7 @@
               "text": "Family history",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -20858,7 +20858,7 @@
               "text": "Social and emotional wellbeing",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -20882,7 +20882,7 @@
               "text": "Social history",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -20906,7 +20906,7 @@
               "text": "Home and family",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -20930,7 +20930,7 @@
               "text": "Learning and development",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -20954,7 +20954,7 @@
               "text": "Learning and work",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -20978,7 +20978,7 @@
               "text": "Work",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -21002,7 +21002,7 @@
               "text": "Mood",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -21026,7 +21026,7 @@
               "text": "Memory and thinking",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -21050,7 +21050,7 @@
               "text": "Chronic disease associated with ageing",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -21074,7 +21074,7 @@
               "text": "Participation in screening programs",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -21098,7 +21098,7 @@
               "text": "Healthy eating",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -21122,7 +21122,7 @@
               "text": "Physical activity and screen time",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -21146,7 +21146,7 @@
               "text": "Physical activity",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -21170,7 +21170,7 @@
               "text": "Substance use, including tobacco",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -21194,7 +21194,7 @@
               "text": "Gambling",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -21218,7 +21218,7 @@
               "text": "Sexual health",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -21242,7 +21242,7 @@
               "text": "Genitourinary and sexual health",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -21266,7 +21266,7 @@
               "text": "Genitourinary and sexual health",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -21290,7 +21290,7 @@
               "text": "Eye health",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -21314,7 +21314,7 @@
               "text": "Ear health and hearing",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -21338,7 +21338,7 @@
               "text": "Oral and dental health",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -21362,7 +21362,7 @@
               "text": "Skin",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -21386,7 +21386,7 @@
               "text": "Immunisation",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -21410,7 +21410,7 @@
               "text": "Examination",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -21434,7 +21434,7 @@
               "text": "Absolute cardiovascular risk calculation",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             },
             {
               "extension": [
@@ -21458,7 +21458,7 @@
               "text": "Investigations",
               "type": "text",
               "repeats": false,
-              "readOnly": true
+              "readOnly": false
             }
           ]
         },
