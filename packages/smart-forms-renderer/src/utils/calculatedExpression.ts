@@ -370,7 +370,7 @@ function applyCalculatedExpressionValuesRecursive(
     );
   }
 
-  let qrItem = qrItemOrItems;
+  const qrItem = qrItemOrItems;
   const childQItems = qItem.item;
   if (childQItems && childQItems.length > 0) {
     const childQrItems = qrItem?.item ?? [];
