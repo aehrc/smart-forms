@@ -52,7 +52,7 @@ export async function saveProgress(
   user: Practitioner,
   questionnaire: Questionnaire,
   questionnaireResponse: QuestionnaireResponse,
-  saveStatus: 'in-progress' | 'completed'
+  saveStatus: 'in-progress' | 'completed' | 'amended'
 ) {
   const responseToSave = removeEmptyAnswersFromResponse(
     questionnaire,

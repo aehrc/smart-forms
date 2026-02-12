@@ -23,8 +23,9 @@ import PreviewAction from '../RendererActions/PreviewAction.tsx';
 import SaveProgressAction from '../RendererActions/SaveProgressAction.tsx';
 import SaveAsFinalAction from '../RendererActions/SaveAsFinalAction.tsx';
 import RepopulateAction from '../RendererActions/RepopulateAction.tsx';
-import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import type { RendererSpinner } from '../../types/rendererSpinner.ts';
+import { getAllowedRendererOperations } from '../../utils/getAllowedRendererOperations.ts';
 
 interface RendererNavStandardActionsProps {
   spinner: RendererSpinner;
@@ -37,6 +38,9 @@ function RendererNavStandardActions(props: RendererNavStandardActionsProps) {
   const { smartClient } = useSmartClient();
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
+
+  const allowedActions = getAllowedRendererOperations(sourceResponse.status);
 
   return (
     <Box>
@@ -54,12 +58,14 @@ function RendererNavStandardActions(props: RendererNavStandardActionsProps) {
           <NavSectionHeading>Operations</NavSectionHeading>
         </Box>
         <List disablePadding sx={{ px: 1 }}>
-          <PreviewAction />
+          {allowedActions.has('preview') && <PreviewAction />}
           {smartClient && sourceQuestionnaire.item ? (
             <>
-              <SaveProgressAction />
-              <SaveAsFinalAction />
-              <RepopulateAction spinner={spinner} onSpinnerChange={onSpinnerChange} />
+              {allowedActions.has('save-progress') && <SaveProgressAction />}
+              {allowedActions.has('save-final') && <SaveAsFinalAction />}
+              {allowedActions.has('repopulate') && (
+                <RepopulateAction spinner={spinner} onSpinnerChange={onSpinnerChange} />
+              )}
             </>
           ) : null}
         </List>

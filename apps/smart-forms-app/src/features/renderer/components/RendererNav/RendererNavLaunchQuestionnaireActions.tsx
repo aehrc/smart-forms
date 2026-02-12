@@ -23,9 +23,10 @@ import PreviewAction from '../RendererActions/PreviewAction.tsx';
 import SaveProgressAction from '../RendererActions/SaveProgressAction.tsx';
 import SaveAsFinalAction from '../RendererActions/SaveAsFinalAction.tsx';
 import RepopulateAction from '../RendererActions/RepopulateAction.tsx';
-import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import type { RendererSpinner } from '../../types/rendererSpinner.ts';
 import useFetchExistingResponses from '../../../dashboard/hooks/useFetchExistingResponses.ts';
+import { getAllowedRendererOperations } from '../../utils/getAllowedRendererOperations.ts';
 
 interface RendererNavLaunchQuestionnaireActionsProps {
   spinner: RendererSpinner;
@@ -38,6 +39,9 @@ function RendererNavLaunchQuestionnaireActions(props: RendererNavLaunchQuestionn
   const { smartClient } = useSmartClient();
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
+
+  const allowedActions = getAllowedRendererOperations(sourceResponse.status);
 
   const { existingResponses, fetchError, refetchResponses } = useFetchExistingResponses();
 
@@ -60,12 +64,16 @@ function RendererNavLaunchQuestionnaireActions(props: RendererNavLaunchQuestionn
           <NavSectionHeading>Operations</NavSectionHeading>
         </Box>
         <List disablePadding sx={{ px: 1 }}>
-          <PreviewAction />
+          {allowedActions.has('preview') && <PreviewAction />}
           {smartClient && sourceQuestionnaire.item ? (
             <>
-              <SaveProgressAction refetchResponses={refetchResponses} />
-              <SaveAsFinalAction />
-              <RepopulateAction spinner={spinner} onSpinnerChange={onSpinnerChange} />
+              {allowedActions.has('save-progress') && (
+                <SaveProgressAction refetchResponses={refetchResponses} />
+              )}
+              {allowedActions.has('save-final') && <SaveAsFinalAction />}
+              {allowedActions.has('repopulate') && (
+                <RepopulateAction spinner={spinner} onSpinnerChange={onSpinnerChange} />
+              )}
             </>
           ) : null}
         </List>

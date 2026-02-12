@@ -22,15 +22,20 @@ import TokenTimerDialog from './TokenTimerDialog.tsx';
 import TokenTimerIndicator from './TokenTimerIndicator.tsx';
 import AutoSaveDialog from './AutoSaveDialog.tsx';
 import type { AutoSaveStatus } from '../interfaces/autosave.interface.ts';
+import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
 
 const TokenTimer = memo(function TokenTimer() {
   const { tokenReceivedTimestamp, smartClient } = useSmartClient();
+  const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
 
   const tokenExpirationTimeInSeconds = getTokenExpirationTime(smartClient); // Expiration time of the token in seconds
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [reminderOpen, setReminderOpen] = useState(false);
   const [hasReminded, setHasReminded] = useState(false);
-  const [autoSaveStatus, setAutoSaveStatus] = useState<AutoSaveStatus>('shouldSave');
+  // Autosave only if the response is in-progress
+  const [autoSaveStatus, setAutoSaveStatus] = useState<AutoSaveStatus>(
+    sourceResponse.status === 'in-progress' ? 'shouldSave' : 'shouldNotSave'
+  );
 
   const reminderTime = 900; // 15 minutes = 900 seconds
   const autoSaveTime = 300; // 5 minutes = 300 seconds
