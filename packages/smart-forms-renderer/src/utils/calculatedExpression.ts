@@ -373,10 +373,6 @@ function applyCalculatedExpressionValuesRecursive(
   let qrItem = qrItemOrItems;
   const childQItems = qItem.item;
   if (childQItems && childQItems.length > 0) {
-    // If item.type is 'group', create empty group qrItem
-    if (qItem.type === 'group') {
-      qrItem = qrItemOrItems ?? structuredClone(createEmptyQrGroup(qItem));
-    }
     const childQrItems = qrItem?.item ?? [];
 
     const indexMap = mapQItemsIndex(qItem);
