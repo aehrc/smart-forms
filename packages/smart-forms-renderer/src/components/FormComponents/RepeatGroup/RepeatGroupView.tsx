@@ -97,7 +97,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
               groupCardElevation={groupCardElevation}
             />
           ) : (
-            'SHOULD NOT DISPLAY ANYTHING'
+            null
           )}
         </AccordionSummary>
         <AccordionDetails sx={{ pt: 0 }}>
