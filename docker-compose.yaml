@@ -1,56 +1,48 @@
 services:
   # Smart-Forms-App
+  # Runtime Configuration: Mount your custom config.json to override defaults.
+  # See config.docker.json for an example configuration file.
 
   smart-forms-app:
-    image: aehrc/smart-forms-app:1.0
-    environment:
-      VITE_ONTOSERVER_URL: ${VITE_ONTOSERVER_URL}
-      VITE_FORMS_SERVER_URL: ${VITE_FORMS_SERVER_URL}
-      VITE_LAUNCH_SCOPE: ${VITE_LAUNCH_SCOPE}
-      VITE_LAUNCH_CLIENT_ID: ${VITE_LAUNCH_CLIENT_ID}
-      VITE_IN_APP_POPULATE: ${VITE_IN_APP_POPULATE}
-      VITE_PRESERVE_SYM_LINKS: ${VITE_PRESERVE_SYM_LINKS}
-      MODE: ${MODE}
+    image: aehrc/smart-forms-app:latest
     build:
       context: ./
-      args:
-        VITE_ONTOSERVER_URL: ${VITE_ONTOSERVER_URL}
-        VITE_FORMS_SERVER_URL: ${VITE_FORMS_SERVER_URL}
-        VITE_LAUNCH_SCOPE: ${VITE_LAUNCH_SCOPE}
-        VITE_LAUNCH_CLIENT_ID: ${VITE_LAUNCH_CLIENT_ID}
-        VITE_IN_APP_POPULATE: ${VITE_IN_APP_POPULATE}
-        VITE_PRESERVE_SYM_LINKS: ${VITE_PRESERVE_SYM_LINKS}
-        MODE: ${MODE}
+      dockerfile: Dockerfile
     container_name: smart-forms-app
     ports:
-      - 5173:5173
-      - 6006:6006
+      - '80:80'
     volumes:
-      - ./:/app
-      - /app/node_modules
-      - /app/apps/smart-forms-app/node_modules
-      - /app/apps/smart-forms-app/dist
-      - /app/packages/smart-forms-renderer/node_modules
-      - /app/packages/smart-forms-renderer/lib
-      - /app/packages/sdc-assemble/node_modules
-      - /app/packages/sdc-assemble/lib
-      - /app/packages/sdc-populate/node_modules
-      - /app/packages/sdc-populate/lib
+      # Mount custom config.json for runtime configuration
+      # Uncomment and modify the path to use your own config:
+      # - ./config.docker.json:/usr/share/nginx/html/config.json:ro
+      - ./config.docker.json:/usr/share/nginx/html/config.json:ro
+    restart: unless-stopped
 
-    command: >
-      sh -c "
-        if [ \"$MODE\" = \"DEV\" ]; then
-          cd /app/packages/smart-forms-renderer && BROWSER=false npm run storybook-watch &
-          P1=$!
-          # echo \"MODE is set to DEV\" &&
-          cd /app/apps/smart-forms-app/ && rm -rf /app/apps/smart-forms-app/node_modules/.vite  && npm start -- --host 0.0.0.0 &
-          P2=$!
-          wait $P1 $P2;
-
-        
-        elif [ \"$MODE\" = \"PROD-DEMO\" ]; then
-          echo \"MODE is set to PROD-DEMO and will be serving through TODO - NGINX static, so run the NGINX Command\" && nginx -g \"daemon off;\";
-        else
-          echo \"Mode is not DEV or PROD (or not set)\";
-        fi
-      "
+  # Development mode service (optional)
+  # Uncomment this section if you need development mode with hot reloading
+  # smart-forms-app-dev:
+  #   image: node:20
+  #   container_name: smart-forms-app-dev
+  #   working_dir: /app
+  #   ports:
+  #     - "5173:5173"
+  #     - "6006:6006"
+  #   volumes:
+  #     - ./:/app
+  #     - /app/node_modules
+  #     - /app/apps/smart-forms-app/node_modules
+  #     - /app/apps/smart-forms-app/dist
+  #     - /app/packages/smart-forms-renderer/node_modules
+  #     - /app/packages/smart-forms-renderer/lib
+  #     - /app/packages/sdc-assemble/node_modules
+  #     - /app/packages/sdc-assemble/lib
+  #     - /app/packages/sdc-populate/node_modules
+  #     - /app/packages/sdc-populate/lib
+  #   command: >
+  #     sh -c "
+  #       cd /app/packages/smart-forms-renderer && npm run storybook-watch &
+  #       P1=$!
+  #       cd /app/apps/smart-forms-app/ && rm -rf node_modules/.vite && npm start -- --host 0.0.0.0 &
+  #       P2=$!
+  #       wait $P1 $P2
+  #     "
