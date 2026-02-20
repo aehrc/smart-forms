@@ -15,10 +15,34 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useState, useId } from 'react';
+import React, { useCallback, useState, useRef } from 'react';
 import type { AccordionProps } from '@mui/material/Accordion';
-import { GroupAccordion as StyledGroupAccordion } from './GroupAccordion.styles';
-import { useFocusHeading } from '../../../hooks/useFocusHeading';
+import { StyledGroupAccordion } from './GroupAccordion.styles';
+
+// Matches the MUI Accordion transition timeout used in GroupItemView/RepeatGroupView
+const TRANSITION_DURATION_MS = 300;
+
+/**
+ * Walk up the DOM to find the nearest element that actually scrolls.
+ * The page may not scroll on window — e.g. the smart-forms-app uses a styled
+ * `Main` div with `overflow: auto` as the scroll container.
+ */
+function findScrollContainer(el: HTMLElement): HTMLElement | null {
+  let node: HTMLElement | null = el.parentElement;
+  while (node) {
+    const { overflow, overflowY } = window.getComputedStyle(node);
+    if (
+      overflow === 'auto' ||
+      overflow === 'scroll' ||
+      overflowY === 'auto' ||
+      overflowY === 'scroll'
+    ) {
+      return node;
+    }
+    node = node.parentElement;
+  }
+  return null;
+}
 
 interface GroupAccordionProps extends Omit<AccordionProps, 'elevation'> {
   elevation: number;
@@ -32,25 +56,35 @@ export function GroupAccordion(props: GroupAccordionProps) {
   const { defaultExpanded = false, onChange, children, ...rest } = props;
 
   const [expanded, setExpanded] = useState(defaultExpanded);
-  const accordionId = useId();
-  const focusHeading = useFocusHeading();
+  const accordionRef = useRef<HTMLDivElement>(null);
 
   const handleChange = useCallback(
     (event: React.SyntheticEvent, isExpanded: boolean) => {
-      setExpanded(isExpanded);
-
-      if (isExpanded) {
-        console.log('[GroupAccordion] Expanding...');
-        focusHeading(accordionId);
+      // When the accordion expands, its content is mounted into the DOM (unmountOnExit).
+      // The browser's CSS scroll anchoring then adjusts the nearest scrollable ancestor's
+      // scrollTop every animation frame to keep anchor elements below the accordion in
+      // place — visually making the accordion header appear to jump upward.
+      //
+      // Fix: temporarily opt the scroll container out of scroll anchoring for the
+      // duration of the transition, then restore it.
+      const scrollContainer = accordionRef.current
+        ? findScrollContainer(accordionRef.current)
+        : null;
+      if (scrollContainer) {
+        scrollContainer.style.overflowAnchor = 'none';
+        setTimeout(() => {
+          scrollContainer.style.overflowAnchor = '';
+        }, TRANSITION_DURATION_MS);
       }
 
+      setExpanded(isExpanded);
       onChange?.(event, isExpanded);
     },
-    [onChange, focusHeading, accordionId]
+    [onChange]
   );
 
   return (
-    <StyledGroupAccordion id={accordionId} expanded={expanded} onChange={handleChange} {...rest}>
+    <StyledGroupAccordion ref={accordionRef} expanded={expanded} onChange={handleChange} {...rest}>
       {children}
     </StyledGroupAccordion>
   );

@@ -14,5 +14,4 @@ export { default as useResponsive } from './useResponsive';
 export type { UseResponsiveProps } from './useResponsive';
 
 // Focus management hooks
-export { useFocusHeading } from './useFocusHeading';
 export { useFocusTabHeading } from './useFocusTabHeading';
