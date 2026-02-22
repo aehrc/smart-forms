@@ -33,7 +33,6 @@ import AddItemButton from './AddItemButton';
 import type { RepeatGroupSingleModel } from '../../../interfaces/repeatGroup.interface';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { getGroupCollapsible } from '../../../utils/qItem';
-import { StyledGroupAccordion } from '../GroupItem/GroupAccordion.styles';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccordionDetails from '@mui/material/AccordionDetails';
