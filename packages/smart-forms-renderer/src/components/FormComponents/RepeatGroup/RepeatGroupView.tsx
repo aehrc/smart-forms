@@ -96,9 +96,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
               readOnly={readOnly}
               groupCardElevation={groupCardElevation}
             />
-          ) : (
-            null
-          )}
+          ) : null}
         </AccordionSummary>
         <AccordionDetails sx={{ pt: 0 }}>
           {itemTextToDisplay ? <Divider sx={{ mb: 1.5, opacity: 0.6 }} /> : null}
