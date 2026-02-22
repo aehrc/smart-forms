@@ -38,10 +38,10 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Divider from '@mui/material/Divider';
 import { getGroupCollapsible } from '../../../utils/qItem';
 import useReadOnly from '../../../hooks/useReadOnly';
-import { GroupAccordion } from './GroupAccordion.styles';
 import PageButtonsWrapper from './PageButtonWrapper';
 import { useParseXhtml } from '../../../hooks/useParseXhtml';
 import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
+import GroupAccordion from './GroupAccordion';
 
 interface GroupItemViewProps
   extends PropsWithQrItemChangeHandler,
