@@ -15,9 +15,10 @@
  * limitations under the License.
  */
 
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import { useSnackbar } from 'notistack';
+import { ConfigContext } from '../../configChecker/contexts/ConfigContext.tsx';
 import {
   buildForm,
   useQuestionnaireResponseStore,
@@ -44,6 +45,7 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
   const [isPopulated, setIsPopulated] = useState(false);
 
   const { enqueueSnackbar } = useSnackbar();
+  const { config } = useContext(ConfigContext);
 
   // Do not run population if spinner purpose is "repopulate"
   if (status !== 'prepopulate') {
@@ -127,10 +129,14 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
 
       onStopSpinner();
       if (issues) {
-        enqueueSnackbar(
-          'Form partially populated, there might be pre-population issues. View console for details.',
-          { action: <CloseSnackbar /> }
-        );
+        // Only show the snackbar message if developer messages are enabled
+        if (config.showDeveloperMessages ?? true) {
+          enqueueSnackbar(
+            'Form partially populated, there might be pre-population issues. View console for details.',
+            { action: <CloseSnackbar /> }
+          );
+        }
+        // Always log to console - clinicians won't see this, but developers need it
         console.warn(issues);
         return;
       }
