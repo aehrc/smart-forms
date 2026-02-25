@@ -113,7 +113,12 @@ function GridRow(props: GridRowProps) {
           <GridAnswerTableCell
             key={colIndex}
             calculatedWidth={calculatedColumnWidths[colIndex]?.width}>
-            <Box display="flex" alignItems="center" justifyContent="center">
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              data-linkid={cellQItem.linkId}
+              data-label={cellQItem.text}>
               <SingleItem
                 qItem={cellQItem}
                 qrItem={cellQrItem ?? null}
