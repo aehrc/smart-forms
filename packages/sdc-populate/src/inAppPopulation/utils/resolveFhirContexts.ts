@@ -37,10 +37,8 @@ export async function resolveFhirContextReferences(
     return {};
   }
 
-  // Filter contexts that have a internal `reference` and a `type`
-  const contextsWithReferences = fhirContext.filter(
-    (ctx) => typeof ctx.reference === 'string' && !!ctx.type
-  );
+  // Filter contexts that have a internal `reference`
+  const contextsWithReferences = fhirContext.filter((ctx) => typeof ctx.reference === 'string');
 
   // Define fhirContext-fetch promises
   const promises = contextsWithReferences.map((ctx) =>
@@ -61,9 +59,12 @@ export async function resolveFhirContextReferences(
       continue;
     }
 
-    if (settledPromise.status === 'fulfilled' && context.type) {
+    // If no type set in context, determine resource type from reference
+    const type = context.type ?? context.reference?.split('/')[0];
+
+    if (settledPromise.status === 'fulfilled' && type) {
       // This assumes that there is one resource per resourceType in fhirContext
-      fhirContextReferenceMap[context.type] = settledPromise.value as FhirResource;
+      fhirContextReferenceMap[type] = settledPromise.value as FhirResource;
     }
 
     if (settledPromise.status === 'rejected') {
