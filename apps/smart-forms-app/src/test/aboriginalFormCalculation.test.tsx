@@ -13,7 +13,7 @@ import {
   checkCheckboxOption,
   getInputText,
   inputDecimal,
-  getVisibleTabPanel,
+  getVisibleTab,
 } from './testUtils.ts';
 import { AboriginalForm } from './aboriginalFormUtils.tsx';
 
@@ -281,8 +281,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Current health/patient priorities');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test priority');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Current health/patient priorities')).toBe('Test priority');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Current health/patient priorities')).toBe('Test priority');
   });
 
   test('Medical history and current problems are displayed on the Health Priorities Summary tab.', async () => {
@@ -293,8 +293,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Medical history and current problems');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test medical history');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Medical history and current problems')).toBe('Test medical history');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Medical history and current problems')).toBe('Test medical history');
   });
 
   test('Regular medications are displayed on the Health Priorities Summary tab.', async () => {
@@ -305,8 +305,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Regular medications');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test regular medications');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Regular medications')).toBe('Test regular medications');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Regular medications')).toBe('Test regular medications');
   });
 
   test.skip('Allergies/adverse reactions is displayed on the Health Priorities Summary tab.', async () => {
@@ -317,8 +317,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Allergies/adverse reactions');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test allergies/adverse reactions');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Allergies/adverse reactions')).toBe('Test allergies/adverse reactions');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Allergies/adverse reactions')).toBe('Test allergies/adverse reactions');
   });
 
   test('Family history is displayed on the Health Priorities Summary tab.', async () => {
@@ -329,8 +329,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Family history');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test family history');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Family history')).toBe('Test family history');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Family history')).toBe('Test family history');
   });
 
   test('Social and emotional wellbeing is displayed on the Health Priorities Summary tab.', async () => {
@@ -341,8 +341,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Social and emotional wellbeing');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test social and emotional wellbeing');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Social and emotional wellbeing')).toBe('Test social and emotional wellbeing');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Social and emotional wellbeing')).toBe('Test social and emotional wellbeing');
   });
 
   test('Social history is displayed on the Health Priorities Summary tab.', async () => {
@@ -353,8 +353,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Social history: Information about family and child\'s living arrangements');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test social history');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Social history')).toBe('Test social history');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Social history')).toBe('Test social history');
   });
 
   test('Home and family is displayed on the Health Priorities Summary tab.', async () => {
@@ -365,8 +365,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Home and family');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test home and family');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Home and family')).toBe('Test home and family');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Home and family')).toBe('Test home and family');
   });
 
   test('Learning and development is displayed on the Health Priorities Summary tab.', async () => {
@@ -377,8 +377,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Learning and development');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test learning and development');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Learning and development')).toBe('Test learning and development');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Learning and development')).toBe('Test learning and development');
   });
 
   test('Learning and work is displayed on the Health Priorities Summary tab.', async () => {
@@ -389,8 +389,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Learning and work');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test learning and work');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Learning and work')).toBe('Test learning and work');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Learning and work')).toBe('Test learning and work');
   });
 
   test('Work is displayed on the Health Priorities Summary tab.', async () => {
@@ -401,8 +401,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Work');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test work');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Work')).toBe('Test work');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Work')).toBe('Test work');
   });
 
   test('Mood is displayed on the Health Priorities Summary tab.', async () => {
@@ -413,8 +413,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Mood');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test mood');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Mood')).toBe('Test mood');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Mood')).toBe('Test mood');
   });
 
   test('Memory and thinking is displayed on the Health Priorities Summary tab.', async () => {
@@ -425,8 +425,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Memory and thinking');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test memory and thinking');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Memory and thinking')).toBe('Test memory and thinking');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Memory and thinking')).toBe('Test memory and thinking');
   });
 
   test('Chronic disease associated with ageing is displayed on the Health Priorities Summary tab.', async () => {
@@ -437,8 +437,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Chronic disease associated with ageing');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test chronic disease associated with ageing');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Chronic disease associated with ageing')).toBe('Test chronic disease associated with ageing');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Chronic disease associated with ageing')).toBe('Test chronic disease associated with ageing');
   });
 
   test('Participation in screening programs is displayed on the Health Priorities Summary tab.', async () => {
@@ -449,8 +449,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Participation in screening programs');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test participation in screening programs');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Participation in screening programs')).toBe('Test participation in screening programs');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Participation in screening programs')).toBe('Test participation in screening programs');
   });
 
   test('Healthy eating is displayed on the Health Priorities Summary tab.', async () => {
@@ -461,8 +461,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Healthy eating');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test healthy eating');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Healthy eating')).toBe('Test healthy eating');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Healthy eating')).toBe('Test healthy eating');
   });
 
   test('Physical activity and screen time is displayed on the Health Priorities Summary tab.', async () => {
@@ -473,8 +473,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Physical activity and screen time');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test physical activity and screen time');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Physical activity and screen time')).toBe('Test physical activity and screen time');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Physical activity and screen time')).toBe('Test physical activity and screen time');
   });
 
   test('Physical activity is displayed on the Health Priorities Summary tab.', async () => {
@@ -485,8 +485,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Physical activity');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test physical activity');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Physical activity')).toBe('Test physical activity');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Physical activity')).toBe('Test physical activity');
   });
 
   test('Substance use, including tobacco is displayed on the Health Priorities Summary tab.', async () => {
@@ -497,8 +497,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Substance use, including tobacco');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test substance use, including tobacco');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Substance use, including tobacco')).toBe('Test substance use, including tobacco');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Substance use, including tobacco')).toBe('Test substance use, including tobacco');
   });
 
   test('Gambling is displayed on the Health Priorities Summary tab.', async () => {
@@ -509,8 +509,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Gambling');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test gambling');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Gambling')).toBe('Test gambling');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Gambling')).toBe('Test gambling');
   });
 
   test('Sexual health is displayed on the Health Priorities Summary tab.', async () => {
@@ -521,8 +521,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Sexual health (sexual activity, contraception, safe sex/protection, sexual orientation, gender identity, pressure to have sex, STIs)');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test Sexual health');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Sexual health')).toBe('Test Sexual health');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Sexual health')).toBe('Test Sexual health');
   });
 
    test('Genitourinary and sexual health (adults) is displayed on the Health Priorities Summary tab.', async () => {
@@ -533,8 +533,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Genitourinary and sexual health');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test Genitourinary and sexual health');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Genitourinary and sexual health')).toBe('Test Genitourinary and sexual health');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Genitourinary and sexual health')).toBe('Test Genitourinary and sexual health');
   });
 
   test('Genitourinary and sexual health(older adults) is displayed on the Health Priorities Summary tab.', async () => {
@@ -545,8 +545,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Genitourinary and sexual health');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test Genitourinary and sexual health');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Genitourinary and sexual health')).toBe('Test Genitourinary and sexual health');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Genitourinary and sexual health')).toBe('Test Genitourinary and sexual health');
   });
 
   test('Eye health is displayed on the Health Priorities Summary tab.', async () => {
@@ -557,8 +557,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Eye health');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test Eye health');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Eye health')).toBe('Test Eye health');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Eye health')).toBe('Test Eye health');
   });
 
   test('Ear health and hearing is displayed on the Health Priorities Summary tab.', async () => {
@@ -569,8 +569,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Ear health and hearing');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test Ear health and hearing');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Ear health and hearing')).toBe('Test Ear health and hearing');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Ear health and hearing')).toBe('Test Ear health and hearing');
   });
 
   test('Oral and dental health is displayed on the Health Priorities Summary tab.', async () => {
@@ -581,8 +581,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Oral and dental health');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test Oral and dental health');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Oral and dental health')).toBe('Test Oral and dental health');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Oral and dental health')).toBe('Test Oral and dental health');
   });
 
   test('Skin is displayed on the Health Priorities Summary tab.', async () => {
@@ -593,8 +593,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Skin');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test Skin');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Skin')).toBe('Test Skin');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Skin')).toBe('Test Skin');
   });
 
   test('Immunisation is displayed on the Health Priorities Summary tab.', async () => {
@@ -605,8 +605,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Immunisation');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test Immunisation');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Immunisation')).toBe('Test Immunisation');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Immunisation')).toBe('Test Immunisation');
   });
 
   test('Examination is displayed on the Health Priorities Summary tab.', async () => {
@@ -617,8 +617,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Examination');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test Examination');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Examination')).toBe('Test Examination');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Examination')).toBe('Test Examination');
   });
 
 
@@ -630,8 +630,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Absolute cardiovascular disease risk calculation');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test Absolute cardiovascular disease risk calculation');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Absolute cardiovascular risk calculation')).toBe('Test Absolute cardiovascular disease risk calculation');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Absolute cardiovascular risk calculation')).toBe('Test Absolute cardiovascular disease risk calculation');
   });
 
   test('Investigations is displayed on the Health Priorities Summary tab.', async () => {
@@ -642,8 +642,8 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     await selectTab(container, 'Investigations');
     await inputText(container, 'Health priorities, actions and follow-up', 'Test Investigations');
     await selectTab(container, 'Health Priorities, Actions And Follow-Up Summary');
-    const tabConteiner = await getVisibleTabPanel(container);
-    expect(await getInputText(tabConteiner, 'Investigations')).toBe('Test Investigations');
+    const tabContainer = await getVisibleTab(container);
+    expect(await getInputText(tabContainer, 'Investigations')).toBe('Test Investigations');
   });
 
   

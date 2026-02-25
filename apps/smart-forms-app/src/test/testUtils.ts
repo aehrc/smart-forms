@@ -144,7 +144,8 @@ export async function inputInteger(canvasElement: HTMLElement, linkId: string, t
 
 export async function selectTab(canvasElement: HTMLElement, linkId: string) {
   const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
-  const button = questionElement?.querySelector('button') ?? questionElement?.querySelector('[role="button"]');
+  const button =
+    questionElement?.querySelector('button') ?? questionElement?.querySelector('[role="button"]');
   if (!button) {
     throw new Error(`Tab was not found inside ${`[data-linkid=${linkId}] block`}`);
   }
@@ -205,9 +206,15 @@ export async function checkRadioOption(canvasElement: HTMLElement, linkId: strin
   });
 }
 
-export async function checkCheckboxOption(canvasElement: HTMLElement, linkId: string, text: string) {
+export async function checkCheckboxOption(
+  canvasElement: HTMLElement,
+  linkId: string,
+  text: string
+) {
   const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
-  const checkbox = questionElement?.querySelector(`span[data-test="checkbox-single-${text}"] input`);
+  const checkbox = questionElement?.querySelector(
+    `span[data-test="checkbox-single-${text}"] input`
+  );
 
   if (!checkbox) {
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
@@ -356,16 +363,20 @@ export async function getAnswerRecursiveByLabel(text: string) {
   return result;
 }
 
-export async function getVisibleTabPanel(canvasElement: HTMLElement): Promise<HTMLElement> {
+export async function getVisibleTab(canvasElement: HTMLElement): Promise<HTMLElement> {
   return await waitFor(() => {
     const tabPanel = canvasElement.querySelector<HTMLElement>(
       '[data-test="renderer-tab-panel"]:not([hidden])'
     );
+    const accordion = canvasElement.querySelector<HTMLElement>(
+      '[data-test="renderer-accordion"]:has(button[aria-expanded="true"])'
+    );
 
-    if (!tabPanel) {
-      throw new Error('Visible tab panel not found');
+    const tabPanelOrAccordion = tabPanel ?? accordion;
+    if (!tabPanelOrAccordion) {
+      throw new Error('Visible tab panel or accordion not found');
     }
 
-    return tabPanel;
+    return tabPanelOrAccordion;
   });
 }
