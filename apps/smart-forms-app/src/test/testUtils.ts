@@ -355,3 +355,17 @@ export async function getAnswerRecursiveByLabel(text: string) {
   );
   return result;
 }
+
+export async function getVisibleTabPanel(canvasElement: HTMLElement): Promise<HTMLElement> {
+  return await waitFor(() => {
+    const tabPanel = canvasElement.querySelector<HTMLElement>(
+      '[data-test="renderer-tab-panel"]:not([hidden])'
+    );
+
+    if (!tabPanel) {
+      throw new Error('Visible tab panel not found');
+    }
+
+    return tabPanel;
+  });
+}
