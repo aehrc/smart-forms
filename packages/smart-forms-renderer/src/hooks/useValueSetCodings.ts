@@ -44,6 +44,7 @@ function useValueSetCodings(qItem: QuestionnaireItem): {
   const patient = useSmartConfigStore.use.patient();
   const user = useSmartConfigStore.use.user();
   const encounter = useSmartConfigStore.use.encounter();
+  const resolvedFhirContextReferences = useSmartConfigStore.use.resolvedFhirContextReferences();
 
   const launchContexts = useQuestionnaireStore.use.launchContexts();
   const processedValueSets = useQuestionnaireStore.use.processedValueSets();
@@ -75,7 +76,13 @@ function useValueSetCodings(qItem: QuestionnaireItem): {
       // get answer expression resource from launch contexts
       if (launchContexts[variable]) {
         const resourceType = launchContexts[variable].extension[1].valueCode;
-        const resource = getResourceFromLaunchContext(resourceType, patient, user, encounter);
+        const resource = getResourceFromLaunchContext(
+          resourceType,
+          patient,
+          user,
+          encounter,
+          resolvedFhirContextReferences
+        );
         if (resource) {
           contextMap[variable] = resource;
         }

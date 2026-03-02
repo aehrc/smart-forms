@@ -16,7 +16,7 @@
  */
 
 import { createStore } from 'zustand/vanilla';
-import type { Encounter, Patient, Practitioner } from 'fhir/r4';
+import type { Encounter, FhirResource, Patient, Practitioner } from 'fhir/r4';
 import type Client from 'fhirclient/lib/Client';
 import { createSelectors } from './selector';
 import type { FhirContext } from '@aehrc/sdc-populate';
@@ -31,11 +31,13 @@ import type { FhirContext } from '@aehrc/sdc-populate';
  * @property user - The user resource in context
  * @property encounter - The encounter resource in context
  * @property fhirContext - fhirContext array from SMART App Launch
+ * @property resolvedFhirContextReferences - resolved references from fhirContext, keyed by resource type e.g. { "Patient": <Patient>, "Encounter": <Encounter> }
  * @property setClient - Set the FHIRClient object when launching via SMART App Launch
  * @property setPatient - Set the patient resource in context
  * @property setUser - Set the user resource in context
  * @property setEncounter - Set the encounter resource in context
  * @property setFhirContext - Set the fhirContext array from SMART App Launch
+ * @property setResolvedFhirContextReferences - Set the resolvedFhirContextReferences object
  *
  * @author Sean Fong
  */
@@ -45,11 +47,15 @@ export interface SmartConfigStoreType {
   user: Practitioner | null;
   encounter: Encounter | null;
   fhirContext: FhirContext[] | null;
+  resolvedFhirContextReferences: Record<string, FhirResource> | null;
   setClient: (client: Client) => void;
   setPatient: (patient: Patient) => void;
   setUser: (user: Practitioner) => void;
   setEncounter: (encounter: Encounter) => void;
   setFhirContext: (fhirContext: FhirContext[]) => void;
+  setResolvedFhirContextReferences: (
+    resolvedFhirContextReferences: Record<string, FhirResource>
+  ) => void;
 }
 
 /**
@@ -68,11 +74,14 @@ export const smartConfigStore = createStore<SmartConfigStoreType>()((set) => ({
   user: null,
   encounter: null,
   fhirContext: null,
+  resolvedFhirContextReferences: null,
   setClient: (client: Client) => set(() => ({ client: client })),
   setPatient: (patient: Patient) => set(() => ({ patient: patient })),
   setUser: (user: Practitioner) => set(() => ({ user: user })),
   setEncounter: (encounter: Encounter) => set(() => ({ encounter: encounter })),
-  setFhirContext: (fhirContext: FhirContext[]) => set(() => ({ fhirContext: fhirContext }))
+  setFhirContext: (fhirContext: FhirContext[]) => set(() => ({ fhirContext: fhirContext })),
+  setResolvedFhirContextReferences: (resolvedFhirContextReferences: Record<string, FhirResource>) =>
+    set(() => ({ resolvedFhirContextReferences }))
 }));
 
 /**
