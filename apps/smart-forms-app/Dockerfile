@@ -17,17 +17,26 @@ ENV npm_config_python=python3 \
 COPY package*.json ./
 
 # Copy only the package manifests first (better layer caching for npm install)
+COPY packages/sdc-assemble/package*.json ./packages/sdc-assemble/
+COPY packages/sdc-populate/package*.json ./packages/sdc-populate/
+COPY packages/sdc-template-extract/package*.json ./packages/sdc-template-extract/
 COPY packages/smart-forms-renderer/package*.json ./packages/smart-forms-renderer/
 COPY apps/smart-forms-app/package*.json ./apps/smart-forms-app/
 
 # Install all workspace dependencies from the root
 RUN npm install
 
-# Copy source files for the renderer and the app
+# Copy source files for all packages and the app
+COPY packages/sdc-assemble/ ./packages/sdc-assemble/
+COPY packages/sdc-populate/ ./packages/sdc-populate/
+COPY packages/sdc-template-extract/ ./packages/sdc-template-extract/
 COPY packages/smart-forms-renderer/ ./packages/smart-forms-renderer/
 COPY apps/smart-forms-app/ ./apps/smart-forms-app/
 
-# Build the renderer package first so its lib/ output is up to date
+# Build packages in dependency order (mirrors deploy_app.yml)
+RUN npm run build --workspace=packages/sdc-assemble
+RUN npm run build --workspace=packages/sdc-populate
+RUN npm run build --workspace=packages/sdc-template-extract
 RUN npm run build --workspace=packages/smart-forms-renderer
 
 # Build the app
