@@ -31,7 +31,7 @@ import type { FhirContext } from '@aehrc/sdc-populate';
  * @property user - The user resource in context
  * @property encounter - The encounter resource in context
  * @property fhirContext - fhirContext array from SMART App Launch
- * @property resolvedFhirContextReferences - resolved references from fhirContext, keyed by resource type e.g. { "Patient": <Patient>, "Encounter": <Encounter> }
+ * @property resolvedFhirContextReferences - resolved references from fhirContext, keyed by resource type e.g. `{ "PractitionerRole": <PractitionerRole> }`
  * @property setClient - Set the FHIRClient object when launching via SMART App Launch
  * @property setPatient - Set the patient resource in context
  * @property setUser - Set the user resource in context
