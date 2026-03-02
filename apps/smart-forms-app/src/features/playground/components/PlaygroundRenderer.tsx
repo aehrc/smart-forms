@@ -49,6 +49,7 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
   const [spinner, setSpinner] = useState<RendererSpinner>(initialSpinner);
 
   const toolbarRef = useRef<HTMLDivElement>(null);
+  
   useLayoutEffect(() => {
     if (toolbarRef.current) {
       rendererConfigStore.getState().setRendererConfig({
