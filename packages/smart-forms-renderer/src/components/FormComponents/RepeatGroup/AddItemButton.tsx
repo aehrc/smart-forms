@@ -33,7 +33,7 @@ function AddItemButton(props: AddItemButtonProps) {
   const isDisabled = repeatGroups[repeatGroups.length - 1]?.qrItem === null || readOnly;
 
   return (
-    <Box display="flex" flexDirection="row-reverse">
+    <Box display="flex" flexDirection="row-reverse" sx={{ mt: 1 }}>
       <Button
         variant="contained"
         size="small"
