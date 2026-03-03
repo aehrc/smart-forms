@@ -53,8 +53,6 @@ function CheckboxSingle(props: CheckboxSingleProps) {
   const isHtmlDisabled = readOnlyWithDisabledStyle || disabledViaToggleExpression;
   const isHtmlReadOnly = readOnlyWithReadOnlyStyle && !disabledViaToggleExpression;
 
-  const textForDataTest = labelText ?? (typeof label === 'string' ? label : value);
-
   return (
     <FormControlLabel
       sx={{
@@ -68,7 +66,6 @@ function CheckboxSingle(props: CheckboxSingleProps) {
       value={value}
       control={
         <StandardCheckbox
-          data-test={`checkbox-single-${textForDataTest}`}
           size="small"
           checked={isChecked}
           readOnly={isHtmlReadOnly}

@@ -54,8 +54,6 @@ const FormBodySingleCollapsible = memo(function FormBodySingleCollapsible(
       slotProps={{
         transition: { unmountOnExit: true, timeout: 250 }
       }}
-      data-linkid={qItem.linkId}
-      data-label={qItem.text}
       onChange={() => onToggleExpand(index)}>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Box display="flex" alignItems="center" justifyContent="space-between" width="100%" mr={3}>

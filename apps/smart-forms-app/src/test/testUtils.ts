@@ -23,7 +23,6 @@
 import { evaluate } from 'fhirpath';
 import { fireEvent, screen, userEvent, waitFor } from 'storybook/internal/test';
 import { questionnaireResponseStore } from '@aehrc/smart-forms-renderer';
-import { act } from 'react';
 
 export async function inputText(
   canvasElement: HTMLElement,
@@ -39,16 +38,11 @@ export async function inputText(
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
   }
 
-  await act(async () => {
-    fireEvent.change(input, { target: { value: text } });
-  });
+  fireEvent.change(input, { target: { value: text } });
 
   // Here we await for debounced store update
-  await act(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-  });
+  await new Promise((resolve) => setTimeout(resolve, 500));
 }
-
 export async function checkCheckBox(canvasElement: HTMLElement, linkId: string) {
   const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
   const input =
@@ -58,14 +52,10 @@ export async function checkCheckBox(canvasElement: HTMLElement, linkId: string) 
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
   }
 
-  await act(async () => {
-    fireEvent.click(input);
-  });
+  fireEvent.click(input);
 
   // Here we await for debounced store update
-  await act(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-  });
+  await new Promise((resolve) => setTimeout(resolve, 500));
 }
 
 export async function inputFile(
@@ -96,14 +86,10 @@ export async function inputFile(
   const fileList = Array.isArray(files) ? files : [files];
   await userEvent.upload(input, fileList);
 
-  await act(async () => {
-    fireEvent.change(textareaUrl, { target: { value: url } });
-    fireEvent.change(textareaName, { target: { value: filename } });
-  });
+  fireEvent.change(textareaUrl, { target: { value: url } });
+  fireEvent.change(textareaName, { target: { value: filename } });
   // Here we await for debounced store update
-  await act(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-  });
+  await new Promise((resolve) => setTimeout(resolve, 500));
 }
 
 export async function inputDate(
@@ -142,18 +128,6 @@ export async function inputInteger(canvasElement: HTMLElement, linkId: string, t
   return await inputText(canvasElement, linkId, text);
 }
 
-export async function selectTab(canvasElement: HTMLElement, linkId: string) {
-  const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
-  const button = questionElement?.querySelector('button') ?? questionElement?.querySelector('[role="button"]');
-  if (!button) {
-    throw new Error(`Tab was not found inside ${`[data-linkid=${linkId}] block`}`);
-  }
-
-  await act(async () => {
-    fireEvent.click(button);
-  });
-}
-
 export async function inputDateTime(
   canvasElement: HTMLElement,
   linkId: string,
@@ -176,16 +150,12 @@ export async function inputDateTime(
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
   }
 
-  await act(async () => {
-    fireEvent.change(inputDate, { target: { value: date } });
-    fireEvent.change(inputTime, { target: { value: time } });
-    fireEvent.change(inputAmPm, { target: { value: amPm } });
-  });
+  fireEvent.change(inputDate, { target: { value: date } });
+  fireEvent.change(inputTime, { target: { value: time } });
+  fireEvent.change(inputAmPm, { target: { value: amPm } });
 
   // Here we await for debounced store update
-  await act(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-  });
+  await new Promise((resolve) => setTimeout(resolve, 500));
 }
 
 export async function checkRadioOption(canvasElement: HTMLElement, linkId: string, text: string) {
@@ -196,30 +166,9 @@ export async function checkRadioOption(canvasElement: HTMLElement, linkId: strin
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
   }
 
-  await act(async () => {
-    fireEvent.click(radio);
-  });
+  fireEvent.click(radio);
   // Here we await for debounced store update
-  await act(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-  });
-}
-
-export async function checkCheckboxOption(canvasElement: HTMLElement, linkId: string, text: string) {
-  const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
-  const checkbox = questionElement?.querySelector(`span[data-test="checkbox-single-${text}"] input`);
-
-  if (!checkbox) {
-    throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
-  }
-
-  await act(async () => {
-    fireEvent.click(checkbox);
-  });
-  // Here we await for debounced store update
-  await act(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-  });
+  await new Promise((resolve) => setTimeout(resolve, 500));
 }
 
 export async function getInputText(canvasElement: HTMLElement, linkId: string) {
@@ -246,18 +195,12 @@ export async function chooseSelectOption(
     throw new Error(`There is no input inside ${linkId}`);
   }
 
-  await act(async () => {
-    fireEvent.focus(input);
-    fireEvent.keyDown(input, { key: 'ArrowDown', code: 'ArrowDown' });
-  });
+  fireEvent.focus(input);
+  fireEvent.keyDown(input, { key: 'ArrowDown', code: 'ArrowDown' });
 
   const option = await screen.findByText(optionLabel);
-
-  await act(async () => {
-    fireEvent.click(option);
-  });
+  fireEvent.click(option);
 }
-
 export async function chooseQuantityOption(
   canvasElement: HTMLElement,
   linkId: string,
@@ -278,26 +221,18 @@ export async function chooseQuantityOption(
     throw new Error(`There is no input inside ${linkId}`);
   }
 
-  await act(async () => {
-    fireEvent.focus(inputComaparator);
-    fireEvent.keyDown(inputComaparator, { key: 'ArrowDown', code: 'ArrowDown' });
-  });
+  fireEvent.focus(inputComaparator);
+  fireEvent.keyDown(inputComaparator, { key: 'ArrowDown', code: 'ArrowDown' });
 
   if (quantityComparator) {
     const option = await screen.findByText(quantityComparator);
-    await act(async () => {
-      fireEvent.click(option);
-      fireEvent.change(inputComaparator, { target: { value: quantityComparator } });
-    });
+    fireEvent.click(option);
+    fireEvent.change(inputComaparator, { target: { value: quantityComparator } });
   }
 
-  await act(async () => {
-    fireEvent.change(inputWeight, { target: { value: quantity } });
-  });
+  fireEvent.change(inputWeight, { target: { value: quantity } });
   // Here we await for debounced store update
-  await act(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-  });
+  await new Promise((resolve) => setTimeout(resolve, 500));
 }
 
 export async function findByLinkIdOrLabel(
@@ -337,14 +272,10 @@ export async function inputOpenChoiceOtherText(
     throw new Error(`Input or textarea was not found inside ${`[data-test=${linkId}] block`}`);
   }
 
-  await act(async () => {
-    fireEvent.change(textarea, { target: { value: text } });
-  });
+  fireEvent.change(textarea, { target: { value: text } });
 
   // Here we await for debounced store update
-  await act(async () => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-  });
+  await new Promise((resolve) => setTimeout(resolve, 500));
 }
 
 export async function getAnswerRecursiveByLabel(text: string) {
