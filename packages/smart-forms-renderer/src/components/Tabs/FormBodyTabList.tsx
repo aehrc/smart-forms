@@ -66,7 +66,11 @@ const FormBodyTabList = memo(function FormBodyTabList(props: FormBodyTabListProp
         const tabLabel = getShortText(qItem) ?? getItemTextToDisplay(qItem) ?? '';
 
         return (
-          <Collapse key={qItem.linkId} timeout={100}>
+          <Collapse
+            key={qItem.linkId}
+            timeout={100}
+            data-linkid={qItem.linkId}
+            data-label={qItem.text}>
             <FormBodySingleTab
               qItem={qItem}
               contextDisplayItems={contextDisplayItems}
