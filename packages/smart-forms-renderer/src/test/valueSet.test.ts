@@ -684,7 +684,8 @@ describe('valueSet', () => {
         'Patient',
         mockPatient,
         mockPractitioner,
-        mockEncounter
+        mockEncounter,
+        null
       );
       expect(result).toEqual(mockPatient);
     });
@@ -694,7 +695,8 @@ describe('valueSet', () => {
         'Practitioner',
         mockPatient,
         mockPractitioner,
-        mockEncounter
+        mockEncounter,
+        null
       );
       expect(result).toEqual(mockPractitioner);
     });
@@ -704,28 +706,42 @@ describe('valueSet', () => {
         'Encounter',
         mockPatient,
         mockPractitioner,
-        mockEncounter
+        mockEncounter,
+        null
       );
       expect(result).toEqual(mockEncounter);
     });
 
-    it('should return null when resourceType is not Patient, Practitioner, or Encounter', () => {
+    it('should return resource from resolvedFhirContextReferences for other resource types', () => {
+      const mockObservation = { resourceType: 'Observation', id: 'obs-1' } as any;
       const result = getResourceFromLaunchContext(
         'Observation' as any,
         mockPatient,
         mockPractitioner,
-        mockEncounter
+        mockEncounter,
+        { Observation: mockObservation }
+      );
+      expect(result).toEqual(mockObservation);
+    });
+
+    it('should return null when resourceType not in resolvedFhirContextReferences', () => {
+      const result = getResourceFromLaunchContext(
+        'Observation' as any,
+        mockPatient,
+        mockPractitioner,
+        mockEncounter,
+        null
       );
       expect(result).toBeNull();
     });
 
     it('should return null when requested resource is null', () => {
-      const result = getResourceFromLaunchContext('Patient', null, mockPractitioner, mockEncounter);
+      const result = getResourceFromLaunchContext('Patient', null, mockPractitioner, mockEncounter, null);
       expect(result).toBeNull();
     });
 
     it('should handle null parameters gracefully', () => {
-      const result = getResourceFromLaunchContext('Patient', null, null, null);
+      const result = getResourceFromLaunchContext('Patient', null, null, null, null);
       expect(result).toBeNull();
     });
   });
