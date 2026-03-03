@@ -736,7 +736,13 @@ describe('valueSet', () => {
     });
 
     it('should return null when requested resource is null', () => {
-      const result = getResourceFromLaunchContext('Patient', null, mockPractitioner, mockEncounter, null);
+      const result = getResourceFromLaunchContext(
+        'Patient',
+        null,
+        mockPractitioner,
+        mockEncounter,
+        null
+      );
       expect(result).toBeNull();
     });
 

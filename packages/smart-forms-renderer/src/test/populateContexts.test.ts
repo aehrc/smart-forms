@@ -107,10 +107,7 @@ describe('populateContexts utils', () => {
       it('should return false when name has neither valueId nor valueCoding', () => {
         const extension: Extension = {
           url: LAUNCH_CONTEXT_URL,
-          extension: [
-            { url: 'name' },
-            { url: 'type', valueCode: 'Patient' }
-          ]
+          extension: [{ url: 'name' }, { url: 'type', valueCode: 'Patient' }]
         };
         expect(isLaunchContext(extension)).toBe(false);
       });
@@ -161,10 +158,7 @@ describe('populateContexts utils', () => {
       it('should return false when type has no valueCode', () => {
         const extension: Extension = {
           url: LAUNCH_CONTEXT_URL,
-          extension: [
-            { url: 'name', valueId: 'patient-context' },
-            { url: 'type' }
-          ]
+          extension: [{ url: 'name', valueId: 'patient-context' }, { url: 'type' }]
         };
         expect(isLaunchContext(extension)).toBe(false);
       });
