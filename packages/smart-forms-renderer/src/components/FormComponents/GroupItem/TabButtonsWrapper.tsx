@@ -97,7 +97,7 @@ const TabButtonsWrapper = memo(function TabButtonsWrapper(props: TabButtonsWrapp
   const tabButtonsDisabled = numOfVisibleTabs <= 1;
 
   return (
-    <Box display="flex" mt={3}>
+    <Box display="flex" mt={3} mb={3}>
       {previousTabButtonHidden ? null : (
         <PreviousTabButton
           isDisabled={tabButtonsDisabled}
