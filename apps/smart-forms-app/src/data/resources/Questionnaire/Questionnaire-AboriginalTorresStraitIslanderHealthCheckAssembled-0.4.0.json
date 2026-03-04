@@ -270,9 +270,7 @@
       "resourceType": "ValueSet",
       "id": "administrative-gender",
       "meta": {
-        "profile": [
-          "http://hl7.org/fhir/StructureDefinition/shareablevalueset"
-        ]
+        "profile": ["http://hl7.org/fhir/StructureDefinition/shareablevalueset"]
       },
       "extension": [
         {
@@ -3489,9 +3487,7 @@
   "title": "NEW!!! Aboriginal and Torres Strait Islander Health Check",
   "status": "draft",
   "experimental": false,
-  "subjectType": [
-    "Patient"
-  ],
+  "subjectType": ["Patient"],
   "date": "2025-03-14",
   "publisher": "AEHRC CSIRO",
   "contact": [
