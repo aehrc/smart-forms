@@ -370,7 +370,7 @@ function applyCalculatedExpressionValuesRecursive(
     );
   }
 
-  const qrItem = qrItemOrItems;
+  let qrItem = qrItemOrItems;
   const childQItems = qItem.item;
   if (childQItems && childQItems.length > 0) {
     const childQrItems = qrItem?.item ?? [];
@@ -391,13 +391,17 @@ function applyCalculatedExpressionValuesRecursive(
       // Update QR items in repeating group
       if (Array.isArray(updatedChildQRItemOrItems)) {
         if (updatedChildQRItemOrItems.length > 0) {
+          // Lazily initialise qrItem so all children are added to the same group object
+          if (!qrItem) {
+            qrItem = structuredClone(createEmptyQrGroup(qItem));
+          }
           updateQrItemsInGroup(
             null,
             {
               linkId: childQItem.linkId,
               qrItems: updatedChildQRItemOrItems
             },
-            qrItem ?? structuredClone(createEmptyQrGroup(qItem)),
+            qrItem,
             indexMap
           );
         }
@@ -407,12 +411,11 @@ function applyCalculatedExpressionValuesRecursive(
       // Update QR items in non-repeating group
       const updatedChildQRItem = updatedChildQRItemOrItems;
       if (updatedChildQRItem) {
-        updateQrItemsInGroup(
-          updatedChildQRItem,
-          null,
-          qrItem ?? structuredClone(createEmptyQrGroup(qItem)),
-          indexMap
-        );
+        // Lazily initialise qrItem so all children are added to the same group object
+        if (!qrItem) {
+          qrItem = structuredClone(createEmptyQrGroup(qItem));
+        }
+        updateQrItemsInGroup(updatedChildQRItem, null, qrItem, indexMap);
       }
     }
 
