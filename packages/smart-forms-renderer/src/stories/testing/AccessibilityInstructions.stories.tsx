@@ -192,4 +192,3 @@ export const BooleanInstructionsAccessibility: Story = createStory({
     );
   }
 }) as Story;
-

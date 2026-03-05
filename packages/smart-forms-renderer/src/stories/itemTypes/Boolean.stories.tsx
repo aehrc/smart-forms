@@ -27,7 +27,7 @@ import {
   questionnaireFactory,
   questionnaireResponseFactory
 } from '../testUtils';
-import { expect, fireEvent, within } from 'storybook/test';
+import { expect, fireEvent } from 'storybook/test';
 import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
