@@ -76,7 +76,6 @@ jobs:
           path: packages/smart-forms-app/coverage
           retention-days: 30
 
-
   jest-renderer-tests:
     name: Jest Tests - Renderer
     runs-on: ubuntu-latest
