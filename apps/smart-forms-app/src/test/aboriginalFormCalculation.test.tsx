@@ -304,7 +304,7 @@ describe('Health Priorities, Actions And Follow-Up Summary', () => {
     );
   });
 
-  test.skip('Allergies/adverse reactions is displayed on the Health Priorities Summary tab.', async () => {
+  test('Allergies/adverse reactions is displayed on the Health Priorities Summary tab.', async () => {
     const { container } = render(<AboriginalForm />);
     await waitFor(() => expect(container.innerHTML).toContain('Patient Details'));
     await inputInteger(container, 'Age', 33);
