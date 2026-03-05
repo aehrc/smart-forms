@@ -21,11 +21,12 @@ import SaveProgressAction from '../RendererActions/SaveProgressAction.tsx';
 import SaveAsFinalAction from '../RendererActions/SaveAsFinalAction.tsx';
 import RepopulateAction from '../RendererActions/RepopulateAction.tsx';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
-import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import type { SpeedDialActionProps } from '@mui/material';
 import type { RendererSpinner } from '../../types/rendererSpinner.ts';
 import ViewExistingResponsesAction from '../RendererActions/ViewExistingResponsesAction.tsx';
 import useFetchExistingResponses from '../../../dashboard/hooks/useFetchExistingResponses.ts';
+import { getAllowedRendererOperations } from '../../utils/getAllowedRendererOperations.ts';
 
 interface RendererEmbeddedLaunchQuestionnaireActionsProps extends SpeedDialActionProps {
   spinner: RendererSpinner;
@@ -41,6 +42,9 @@ function RendererEmbeddedLaunchQuestionnaireActions(
   const { smartClient } = useSmartClient();
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
+
+  const allowedActions = getAllowedRendererOperations(sourceResponse.status);
 
   const { existingResponses, fetchError, refetchResponses } = useFetchExistingResponses();
 
@@ -55,24 +59,32 @@ function RendererEmbeddedLaunchQuestionnaireActions(
           fetchResponsesError={fetchError}
           {...speedDialActionProps}
         />
-        <PreviewAction isSpeedDial={true} {...speedDialActionProps} />
-        <SaveProgressAction
-          isSpeedDial={true}
-          onCloseSpeedDial={onClose}
-          refetchResponses={refetchResponses}
-          {...speedDialActionProps}
-        />
-        <SaveAsFinalAction
-          isSpeedDial={true}
-          onCloseSpeedDial={onClose}
-          {...speedDialActionProps}
-        />
-        <RepopulateAction
-          spinner={spinner}
-          onSpinnerChange={onSpinnerChange}
-          isSpeedDial={true}
-          {...speedDialActionProps}
-        />
+        {allowedActions.has('preview') && (
+          <PreviewAction isSpeedDial={true} {...speedDialActionProps} />
+        )}
+        {allowedActions.has('save-progress') && (
+          <SaveProgressAction
+            isSpeedDial={true}
+            onCloseSpeedDial={onClose}
+            refetchResponses={refetchResponses}
+            {...speedDialActionProps}
+          />
+        )}
+        {allowedActions.has('save-final') && (
+          <SaveAsFinalAction
+            isSpeedDial={true}
+            onCloseSpeedDial={onClose}
+            {...speedDialActionProps}
+          />
+        )}
+        {allowedActions.has('repopulate') && (
+          <RepopulateAction
+            spinner={spinner}
+            onSpinnerChange={onSpinnerChange}
+            isSpeedDial={true}
+            {...speedDialActionProps}
+          />
+        )}
       </>
     );
   }

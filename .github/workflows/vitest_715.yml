@@ -1,0 +1,28 @@
+name: Vitest Questionnaire 715 Behaviour Tests
+
+on: [workflow_dispatch]
+
+jobs:
+  vitest-smart-forms-app-715-tests:
+    name: Vitest Questionnaire Behaviour Tests - Smart Forms App
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build workspace packages (monorepo dependencies)
+        run: |
+          npm run build -w packages/sdc-assemble
+          npm run build -w packages/sdc-populate
+          npm run build -w packages/sdc-template-extract
+          npm run build -w packages/smart-forms-renderer
+
+      - name: Run vitest tests
+        run: npm run test-715 -w apps/smart-forms-app
+      - uses: codecov/codecov-action@v4

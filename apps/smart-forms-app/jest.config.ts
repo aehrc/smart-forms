@@ -23,7 +23,7 @@ const config: Config = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
   testPathIgnorePatterns: [
-    'src/test/aboriginalForm*.test.tsx' // Exclude this specific test file (it uses Vitest)
+    'src/test/aboriginalForm.*\\.test\\.tsx' // Exclude these test files (regex) (it uses Vitest)
   ],
   setupFilesAfterEnv: ['./src/setup-jest.ts'],
   transform: {

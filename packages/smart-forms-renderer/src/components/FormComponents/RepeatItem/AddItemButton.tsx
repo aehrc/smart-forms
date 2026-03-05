@@ -37,7 +37,7 @@ function AddItemButton(props: AddItemButtonProps) {
     lastAnswer === null || Object.keys(lastAnswer ?? {}).join() === 'id' || readOnly;
 
   return (
-    <Box display="flex" flexDirection="row-reverse">
+    <Box display="flex" flexDirection="row-reverse" sx={{ mt: 1 }}>
       <Button
         variant="contained"
         size="small"

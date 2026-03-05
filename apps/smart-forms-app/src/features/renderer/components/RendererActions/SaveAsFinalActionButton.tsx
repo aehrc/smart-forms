@@ -24,6 +24,7 @@ interface SaveAsFinalActionButtonProps extends SpeedDialActionProps {
   isSpeedDial: boolean;
   isExtracting: boolean;
   isDisabled: boolean;
+  isAmendment: boolean;
   writeBackEnabled: boolean;
   onSaveAsFinalActionClick: () => void;
 }
@@ -33,12 +34,13 @@ function SaveAsFinalActionButton(props: SaveAsFinalActionButtonProps) {
     isSpeedDial,
     isExtracting,
     isDisabled,
+    isAmendment,
     writeBackEnabled,
     onSaveAsFinalActionClick,
     ...speedDialActionProps
   } = props;
 
-  const actionTitle = `Save as Final ${writeBackEnabled ? '& Write Back' : ''}`;
+  const actionTitle = `Save as ${isAmendment ? 'Amendment' : 'Final'} ${writeBackEnabled ? '& Write Back' : ''}`;
 
   // SpeedDial
   if (isSpeedDial) {
