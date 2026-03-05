@@ -38,6 +38,14 @@ The patient resource in context
 
 ***
 
+### resolvedFhirContextReferences
+
+> **resolvedFhirContextReferences**: `Record`\<`string`, `FhirResource`\> \| `null`
+
+resolved references from fhirContext, keyed by resource type e.g. `{ "PractitionerRole": <PractitionerRole> }`
+
+***
+
 ### setClient()
 
 > **setClient**: (`client`) => `void`
@@ -103,6 +111,24 @@ Set the patient resource in context
 | Parameter | Type |
 | ------ | ------ |
 | `patient` | `Patient` |
+
+#### Returns
+
+`void`
+
+***
+
+### setResolvedFhirContextReferences()
+
+> **setResolvedFhirContextReferences**: (`resolvedFhirContextReferences`) => `void`
+
+Set the resolvedFhirContextReferences object
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `resolvedFhirContextReferences` | `Record`\<`string`, `FhirResource`\> |
 
 #### Returns
 

@@ -19,6 +19,7 @@ import type Client from 'fhirclient/lib/Client';
 import type {
   Bundle,
   Encounter,
+  FhirResource,
   Identifier,
   OperationOutcome,
   Patient,
@@ -142,6 +143,43 @@ export function responseToQuestionnaireResource(
     console.error(response);
   }
 }
+
+export async function resolveFhirContextReferences(
+  client: Client,
+  fhirContext: FhirContext[]
+): Promise<Record<string, FhirResource>> {
+  const contextMap: Record<string, FhirResource> = {};
+
+  const contextsWithReferences = fhirContext.filter((ctx) => !!ctx.reference);
+
+  const settledPromises = await Promise.allSettled(
+    contextsWithReferences.map((ctx) =>
+      client.request({
+        url: ctx.reference ?? '',
+        method: 'GET',
+        headers: HEADERS
+      })
+    )
+  );
+
+  settledPromises.forEach((settledPromise, index) => {
+    const context = contextsWithReferences[index];
+    if (settledPromise.status === 'fulfilled' && context.reference) {
+      const type = context.type ?? context.reference.split('/')[0];
+      if (type) {
+        contextMap[type] = settledPromise.value as FhirResource;
+      }
+    } else if (settledPromise.status === 'rejected') {
+      console.warn(
+        `Failed to resolve fhirContext reference ${context.reference}:`,
+        settledPromise.reason
+      );
+    }
+  });
+
+  return contextMap;
+}
+
 /**
  * Resolves a SMART App Launch client ID for the given FHIR server issuer (`iss`).
  *
