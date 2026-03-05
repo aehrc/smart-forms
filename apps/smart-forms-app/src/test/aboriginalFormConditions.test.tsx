@@ -10,7 +10,7 @@ import {
   selectTab,
   findByLinkIdOrLabel,
   checkCheckBox,
-  checkCheckboxOption,
+  checkCheckboxOption
 } from './testUtils.ts';
 import { AboriginalForm } from './aboriginalFormUtils.tsx';
 
