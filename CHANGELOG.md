@@ -10,6 +10,13 @@ For changelogs of other libraries, please refer to their respective repositories
 
 Changelog only includes changes from version 0.36.0 onwards.
 
+## [1.2.14] - 2026-03-05
+### Changed
+- Reduced vertical padding and margins to limit excessive whitespace in the renderer.
+- Changed standalone autocomplete fields to be multiline so that value is not truncated.
+### Fixed
+- Fixed regression causing some calculatedExpressions to not be displayed.
+
 ## [1.2.13] - 2026-02-12
 ### Fixed
 - Fixed an issue where existing QuestionnaireResponse repeat group items were being overwritten by blank data when applying calculatedExpression values, causing issue [#1811](https://github.com/aehrc/smart-forms/issues/1811)
