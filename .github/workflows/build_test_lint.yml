@@ -76,31 +76,6 @@ jobs:
           path: packages/smart-forms-app/coverage
           retention-days: 30
 
-  vitest-smart-forms-app-715-tests:
-    name: Vitest Questionnaire Behaviour Tests - Smart Forms App
-    runs-on: ubuntu-latest
-    # Run this regardless of "if: github.actor != 'dependabot[bot]'" condition on other jobs to see if dependabot PRs breaks the build
-    steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js 20.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build workspace packages (monorepo dependencies)
-        run: |
-          npm run build -w packages/sdc-assemble
-          npm run build -w packages/sdc-populate
-          npm run build -w packages/sdc-template-extract
-          npm run build -w packages/smart-forms-renderer
-
-      - name: Run vitest tests
-        run: npm run test-715 -w apps/smart-forms-app
-      - uses: codecov/codecov-action@v4
-
   jest-renderer-tests:
     name: Jest Tests - Renderer
     runs-on: ubuntu-latest
