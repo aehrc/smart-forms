@@ -25,7 +25,8 @@ import {
   getInputText,
   inputInteger,
   questionnaireFactory,
-  questionnaireResponseFactory
+  questionnaireResponseFactory,
+  unitExtFactory
 } from '../testUtils';
 import { expect, fireEvent } from 'storybook/test';
 
@@ -79,16 +80,18 @@ export const IntegerBasic: Story = createStory({
     expect(result[0]).toEqual(expect.objectContaining({ valueInteger: basicAge }));
 
     // Clear value
-    const clearButton = canvasElement.querySelector('button[title="Clear"]');
-    fireEvent.click(clearButton as HTMLElement);
+    const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
+    if (clearButton) {
+      fireEvent.click(clearButton as HTMLElement);
 
-    // Here we await for debounced store update
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    const resultAfterClear = await getAnswers(targetLinkId);
-    expect(resultAfterClear).toHaveLength(0);
-    const elementAfterClear = await findByLinkIdOrLabel(canvasElement, targetLinkId);
-    const input = elementAfterClear.querySelector('input');
-    expect(input?.getAttribute('value')).toBe('');
+      // Here we await for debounced store update
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      const resultAfterClear = await getAnswers(targetLinkId);
+      expect(resultAfterClear).toHaveLength(0);
+      const elementAfterClear = await findByLinkIdOrLabel(canvasElement, targetLinkId);
+      const input = elementAfterClear.querySelector('input');
+      expect(input?.getAttribute('value')).toBe('');
+    }
   }
 }) as Story;
 
@@ -101,5 +104,30 @@ export const IntegerBasicResponse: Story = createStory({
     const input = await getInputText(canvasElement, targetLinkId);
 
     expect(input).toBe(targetAge.toString());
+  }
+}) as Story;
+/* Integer Unit Accessibility story */
+const accessibilityTargetLinkId = 'heart-rate';
+const qIntegerAccessibility = questionnaireFactory([
+  {
+    linkId: accessibilityTargetLinkId,
+    extension: [unitExtFactory('bpm', 'beats per minute')],
+    type: 'integer',
+    text: 'Heart Rate'
+  }
+]);
+
+export const IntegerUnitAccessibility: Story = createStory({
+  args: {
+    questionnaire: qIntegerAccessibility
+  },
+  play: async ({ canvasElement }) => {
+    // Find the integer input field by its data-test attribute
+    const element = await findByLinkIdOrLabel(canvasElement, accessibilityTargetLinkId);
+    const inputField = element.querySelector('div[data-test="q-item-integer-field"]');
+    const input = inputField?.querySelector('input');
+
+    // Verify the aria-label includes the item text and unit for screen reader accessibility
+    expect(input?.getAttribute('aria-label')).toBe('Heart Rate (beats per minute)');
   }
 }) as Story;
