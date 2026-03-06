@@ -84,6 +84,8 @@ function CustomDateField(props: CustomDateFieldProps) {
     <StandardTextField
       {...(!isTabled && { id: id })}
       data-test={'date'}
+      data-linkid={linkId}
+      data-label={itemText}
       ref={anchorRef}
       fullWidth
       textFieldWidth={textFieldWidth}
