@@ -19,6 +19,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, waitFor, within } from 'storybook/test';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
+  findByLinkIdOrLabel,
   getAnswers,
   getQuantityTextValues,
   inputQuantity,
@@ -457,11 +458,10 @@ export const QuantityUnitAccessibility: Story = createStory({
     questionnaire: qQuantityAccessibility
   },
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
     // Find the quantity input field by its data-test attribute
-    const inputField = canvas.getByTestId('q-item-quantity-field');
-    const input = inputField.querySelector('input');
+    const element = await findByLinkIdOrLabel(canvasElement, accessibilityTargetLinkId);
+    const inputField = element.querySelector('div[data-test="q-item-quantity-field"]');
+    const input = inputField?.querySelector('input');
 
     // Verify the aria-label includes the item text and unit for screen reader accessibility
     expect(input?.getAttribute('aria-label')).toBe('Height (cm)');

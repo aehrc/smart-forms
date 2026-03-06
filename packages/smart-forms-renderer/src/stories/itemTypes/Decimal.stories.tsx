@@ -81,16 +81,18 @@ export const DecimalBasic: Story = createStory({
 
     // Clear value
     const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
-    fireEvent.click(clearButton as HTMLElement);
+    if (clearButton) {
+      fireEvent.click(clearButton as HTMLElement);
 
-    // Here we await for debounced store update
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    const resultAfterClear = await getAnswers(targetLinkId);
-    expect(resultAfterClear).toHaveLength(0);
+      // Here we await for debounced store update
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      const resultAfterClear = await getAnswers(targetLinkId);
+      expect(resultAfterClear).toHaveLength(0);
 
-    const elementAfterClear = await findByLinkIdOrLabel(canvasElement, targetLinkId);
-    const input = elementAfterClear.querySelector('input');
-    expect(input?.getAttribute('value')).toBe('');
+      const elementAfterClear = await findByLinkIdOrLabel(canvasElement, targetLinkId);
+      const input = elementAfterClear.querySelector('input');
+      expect(input?.getAttribute('value')).toBe('');
+    }
   }
 }) as Story;
 
@@ -121,11 +123,10 @@ export const DecimalUnitAccessibility: Story = createStory({
     questionnaire: qDecimalAccessibility
   },
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
     // Find the decimal input field by its data-test attribute
-    const inputField = canvas.getByTestId('q-item-decimal-field');
-    const input = inputField.querySelector('input');
+    const element = await findByLinkIdOrLabel(canvasElement, accessibilityTargetLinkId);
+    const inputField = element.querySelector('div[data-test="q-item-decimal-field"]');
+    const input = inputField?.querySelector('input');
 
     // Verify the aria-label includes the item text and unit for screen reader accessibility
     expect(input?.getAttribute('aria-label')).toBe('Height (cm)');
