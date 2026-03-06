@@ -45,6 +45,7 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
   const currentTab = useQuestionnaireStore.use.currentTabIndex();
 
   const tabListWidthOrResponsive = useRendererConfigStore.use.tabListWidthOrResponsive();
+  const tabListStickyTop = useRendererConfigStore.use.tabListStickyTop() ?? 0;
 
   const indexMap: Record<string, number> = useMemo(
     () => mapQItemsIndex(topLevelQItem),
@@ -69,10 +70,30 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
 
   // If tabListWidthOrBreakpoints is a number, it is a fixed width of the tab list - set a fixed width and prevent shrinking
   // If tabListWidthOrBreakpoints is an object, it is a MUI Breakpoints object
+  // position: sticky + alignSelf: flex-start keeps the tab list visible as the user scrolls the form body.
+  // tabListStickyTop should match the height of any sticky header in the consuming app so the tab list
+  // sticks immediately below it rather than sliding behind it.
   const tabListWrapperProps: GridProps =
     typeof tabListWidthOrResponsive === 'number'
-      ? { sx: { width: tabListWidthOrResponsive, flexShrink: 0 } }
-      : { size: { ...tabListWidthOrResponsive.tabListBreakpoints } };
+      ? {
+          sx: {
+            width: tabListWidthOrResponsive,
+            flexShrink: 0,
+            position: 'sticky',
+            top: tabListStickyTop,
+            alignSelf: 'flex-start',
+            maxHeight: `calc(100vh - ${tabListStickyTop}px)`
+          }
+        }
+      : {
+          size: { ...tabListWidthOrResponsive.tabListBreakpoints },
+          sx: {
+            position: 'sticky',
+            top: tabListStickyTop,
+            alignSelf: 'flex-start',
+            maxHeight: `calc(100vh - ${tabListStickyTop}px)`
+          }
+        };
 
   const qItemTabPanelProps: GridProps =
     typeof tabListWidthOrResponsive === 'number'

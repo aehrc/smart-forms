@@ -45,6 +45,10 @@ import type { Breakpoints } from '@mui/material';
  * @property tabListWidthOrResponsive - Configures the width of the tab list, either as a fixed number or responsive breakpoints.
  *   - Default: `{ tabListBreakpoints: { xs: 12, sm: 3, md: 3, lg: 2.75 }, tabContentBreakpoints: { xs: 12, sm: 9, md: 9, lg: 9.25 } }`
  *
+ * @property tabListStickyTop - The pixel offset from the top of the viewport at which the tab list becomes sticky.
+ *   Set this to the height of any sticky header in the consuming app so the tab list sticks immediately below it.
+ *   - Default: `0`
+ *
  * @property textFieldWidth - Defines the default width for text input fields (in pixels).
  *   - Default: `320`
  *
@@ -96,6 +100,7 @@ export interface RendererConfig {
         tabListBreakpoints: Partial<Breakpoints['values']>;
         tabContentBreakpoints: Partial<Breakpoints['values']>;
       };
+  tabListStickyTop?: number;
   textFieldWidth?: number;
   inputsFlexGrow?: boolean;
   reverseBooleanYesNo?: boolean;
@@ -128,6 +133,7 @@ export interface RendererConfigStoreType {
         tabListBreakpoints: Partial<Breakpoints['values']>;
         tabContentBreakpoints: Partial<Breakpoints['values']>;
       };
+  tabListStickyTop: number;
   showTabbedFormAt: UseResponsiveProps;
   textFieldWidth: number;
   inputsFlexGrow: boolean; // radio, checkbox and boolean inputs should have flexGrow: 1
@@ -158,6 +164,7 @@ export const rendererConfigStore = createStore<RendererConfigStoreType>()((set) 
     tabListBreakpoints: { xs: 12, sm: 3, md: 3, lg: 2.75 },
     tabContentBreakpoints: { xs: 12, sm: 9, md: 9, lg: 9.25 }
   },
+  tabListStickyTop: 0,
   showTabbedFormAt: { query: 'up', start: 'md' },
   textFieldWidth: 320,
   inputsFlexGrow: false,
@@ -176,6 +183,7 @@ export const rendererConfigStore = createStore<RendererConfigStoreType>()((set) 
         params.requiredIndicatorPosition ?? state.requiredIndicatorPosition,
       itemResponsive: params.itemResponsive ?? state.itemResponsive,
       tabListWidthOrResponsive: params.tabListWidthOrResponsive ?? state.tabListWidthOrResponsive,
+      tabListStickyTop: params.tabListStickyTop ?? state.tabListStickyTop,
       showTabbedFormAt: params.showTabbedFormAt ?? state.showTabbedFormAt,
       textFieldWidth: params.textFieldWidth ?? state.textFieldWidth,
       inputsFlexGrow: params.inputsFlexGrow ?? state.inputsFlexGrow,
