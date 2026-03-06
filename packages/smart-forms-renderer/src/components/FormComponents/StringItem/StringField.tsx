@@ -33,6 +33,7 @@ interface StringFieldProps extends PropsWithIsTabledAttribute {
   renderingExtensions: RenderingExtensions;
   readOnly: boolean;
   calcExpUpdated: boolean;
+  instructionsId: string | undefined;
   onInputChange: (value: string) => void;
   onRepopulateSync: (newQrItem: QuestionnaireResponseItem | null) => unknown;
 }
@@ -46,6 +47,7 @@ function StringField(props: StringFieldProps) {
     readOnly,
     isTabled,
     calcExpUpdated,
+    instructionsId,
     onInputChange,
     onRepopulateSync
   } = props;
@@ -71,6 +73,7 @@ function StringField(props: StringFieldProps) {
       slotProps={{
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
+          ...(instructionsId && { 'aria-describedby': instructionsId }),
           endAdornment: (
             <InputAdornment position="end">
               <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
