@@ -51,10 +51,10 @@ export const StringRegexErrorAccessibility: Story = createStory({
   },
   play: async ({ canvasElement }) => {
     const element = await findByLinkIdOrLabel(canvasElement, 'email-format');
-    
+
     // Type an invalid email to trigger immediate validation error
     await inputText(canvasElement, 'email-format', 'invalid-email');
-    
+
     // Wait for validation to run (debounced)
     await new Promise((resolve) => setTimeout(resolve, 600));
 
@@ -94,10 +94,10 @@ export const IntegerMinValueErrorAccessibility: Story = createStory({
   },
   play: async ({ canvasElement }) => {
     const element = await findByLinkIdOrLabel(canvasElement, 'age');
-    
+
     // Type a value below minimum to trigger error
     await inputText(canvasElement, 'age', '10');
-    
+
     // Wait for validation
     await new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -131,10 +131,14 @@ export const TextMaxLengthErrorAccessibility: Story = createStory({
   },
   play: async ({ canvasElement }) => {
     const element = await findByLinkIdOrLabel(canvasElement, 'comment');
-    
+
     // Type text exceeding max length to trigger immediate validation error
-    await inputText(canvasElement, 'comment', 'This is a very long comment that exceeds twenty characters');
-    
+    await inputText(
+      canvasElement,
+      'comment',
+      'This is a very long comment that exceeds twenty characters'
+    );
+
     // Wait for validation to run (debounced)
     await new Promise((resolve) => setTimeout(resolve, 600));
 
@@ -152,4 +156,3 @@ export const TextMaxLengthErrorAccessibility: Story = createStory({
     expect(alertElement?.textContent).toContain('20');
   }
 }) as Story;
-

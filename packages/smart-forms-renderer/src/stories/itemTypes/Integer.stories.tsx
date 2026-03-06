@@ -28,7 +28,7 @@ import {
   questionnaireResponseFactory,
   unitExtFactory
 } from '../testUtils';
-import { expect, fireEvent, within } from 'storybook/test';
+import { expect, fireEvent } from 'storybook/test';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {

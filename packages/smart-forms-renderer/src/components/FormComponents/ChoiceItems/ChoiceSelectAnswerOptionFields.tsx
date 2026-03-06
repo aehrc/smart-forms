@@ -30,7 +30,6 @@ import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import { StandardTextField } from '../Textfield.styles';
 import StyledText from '../ItemParts/StyledText';
-import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
 
 interface ChoiceSelectAnswerOptionFieldsProps
   extends PropsWithIsTabledAttribute,
