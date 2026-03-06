@@ -3572,7 +3572,7 @@
           "valueExpression": {
             "name": "HealthPrioritiesSummaryAllergiesAdverseReactions",
             "language": "text/fhirpath",
-            "expression": "item.where(linkId='d4e4db07-a795-4a30-bd0f-9c109f96a22b').item.where(linkId='3e689aeb-69a1-4a9b-93bd-50377511dd9b').answer.value"
+            "expression": "item.where(linkId='allergy').item.where(linkId='3e689aeb-69a1-4a9b-93bd-50377511dd9b').answer.value"
           }
         },
         {
