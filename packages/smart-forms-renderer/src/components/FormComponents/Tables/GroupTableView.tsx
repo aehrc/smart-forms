@@ -36,7 +36,6 @@ import type { GroupTableRowModel } from '../../../interfaces/groupTable.interfac
 import GroupTableBody from './GroupTableBody';
 import { useQuestionnaireStore, useRendererConfigStore } from '../../../stores';
 import { getGroupCollapsible } from '../../../utils/qItem';
-import { GroupAccordion } from '../GroupItem/GroupAccordion.styles';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -45,6 +44,7 @@ import { StandardCheckbox } from '../../Checkbox.styles';
 import { Box } from '@mui/material';
 import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
 import { isGroupAddItemButtonHidden } from '../../../utils/extensions';
+import GroupAccordion from '../GroupItem/GroupAccordion';
 
 interface GroupTableViewProps
   extends PropsWithIsRepeatedAttribute,
