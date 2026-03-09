@@ -18,6 +18,7 @@
 import React, { useCallback, useState } from 'react';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import debounce from 'lodash.debounce';
 import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
@@ -59,6 +60,11 @@ function UrlItem(props: BaseItemProps) {
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
+  const { displayInstructions } = useRenderingExtensions(qItem);
+
+  // Generate instruction ID if instructions exist and there's no feedback
+  const instructionsId = displayInstructions && !feedback ? `instructions-${qItem.linkId}` : undefined;
+
   // Event handlers
   function handleChange(newInput: string) {
     setInput(newInput);
@@ -93,6 +99,7 @@ function UrlItem(props: BaseItemProps) {
         displayUnit={displayUnit}
         entryFormat={entryFormat}
         readOnly={readOnly}
+        instructionsId={instructionsId}
         onInputChange={handleChange}
         isTabled={isTabled}
       />
@@ -118,6 +125,7 @@ function UrlItem(props: BaseItemProps) {
             displayUnit={displayUnit}
             entryFormat={entryFormat}
             readOnly={readOnly}
+            instructionsId={instructionsId}
             onInputChange={handleChange}
             isTabled={isTabled}
           />
