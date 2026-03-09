@@ -380,3 +380,9 @@ export async function getVisibleTab(canvasElement: HTMLElement): Promise<HTMLEle
     return tabPanelOrAccordion;
   });
 }
+
+export function getBirthDateForAge(ageInYears: number): string {
+  const today = new Date();
+  const birthDate = new Date(today.getFullYear() - ageInYears, today.getMonth(), today.getDate());
+  return birthDate.toISOString().slice(0, 10);
+}
