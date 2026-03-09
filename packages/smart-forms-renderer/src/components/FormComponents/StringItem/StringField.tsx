@@ -73,7 +73,6 @@ function StringField(props: StringFieldProps) {
       slotProps={{
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
-          ...(instructionsId && { 'aria-describedby': instructionsId }),
           endAdornment: (
             <InputAdornment position="end">
               <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
@@ -91,6 +90,9 @@ function StringField(props: StringFieldProps) {
               <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>
           )
+        },
+        htmlInput: {
+          ...(instructionsId && { 'aria-describedby': instructionsId })
         }
       }}
       helperText={feedback}

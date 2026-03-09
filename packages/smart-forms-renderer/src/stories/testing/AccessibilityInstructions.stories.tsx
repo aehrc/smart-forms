@@ -68,8 +68,8 @@ export const StringInstructionsAccessibility: Story = createStory({
     // Use findByLinkIdOrLabel to wait for element to be rendered
     const element = await findByLinkIdOrLabel(canvasElement, 'email');
     const inputField = element.querySelector('[data-test="q-item-string-field"]');
-    const textarea = inputField?.querySelector('textarea');
-    const ariaDescribedBy = textarea?.getAttribute('aria-describedby');
+    const input = inputField?.querySelector('input');
+    const ariaDescribedBy = input?.getAttribute('aria-describedby');
 
     // Check that aria-describedby is present and references the instructions
     expect(ariaDescribedBy).toBeTruthy();
@@ -189,6 +189,517 @@ export const BooleanInstructionsAccessibility: Story = createStory({
     expect(instructionsElement).toBeTruthy();
     expect(instructionsElement?.textContent).toContain(
       'Please read the terms carefully before agreeing'
+    );
+  }
+}) as Story;
+
+/* Integer with instructions for accessibility testing */
+const qIntegerAccessibility = questionnaireFactory([
+  {
+    linkId: 'age',
+    type: 'integer',
+    repeats: false,
+    text: 'Age',
+    item: [
+      {
+        linkId: 'age-instructions',
+        type: 'display',
+        text: 'Please enter your age in years',
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory',
+            valueCodeableConcept: {
+              coding: [
+                {
+                  system: 'http://hl7.org/fhir/questionnaire-display-category',
+                  code: 'instructions'
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+]);
+
+export const IntegerInstructionsAccessibility: Story = createStory({
+  args: {
+    questionnaire: qIntegerAccessibility
+  },
+  play: async ({ canvasElement }) => {
+    const element = await findByLinkIdOrLabel(canvasElement, 'age');
+    const inputField = element.querySelector('[data-test="q-item-integer-field"]');
+    const input = inputField?.querySelector('input');
+    const ariaDescribedBy = input?.getAttribute('aria-describedby');
+
+    expect(ariaDescribedBy).toBeTruthy();
+    expect(ariaDescribedBy).toContain('instructions-age');
+
+    const instructionsElement = document.getElementById('instructions-age');
+    expect(instructionsElement).toBeTruthy();
+    expect(instructionsElement?.textContent).toContain('Please enter your age in years');
+  }
+}) as Story;
+
+/* Decimal with instructions for accessibility testing */
+const qDecimalAccessibility = questionnaireFactory([
+  {
+    linkId: 'temperature',
+    type: 'decimal',
+    repeats: false,
+    text: 'Body Temperature',
+    item: [
+      {
+        linkId: 'temperature-instructions',
+        type: 'display',
+        text: 'Enter temperature in degrees Celsius',
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory',
+            valueCodeableConcept: {
+              coding: [
+                {
+                  system: 'http://hl7.org/fhir/questionnaire-display-category',
+                  code: 'instructions'
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+]);
+
+export const DecimalInstructionsAccessibility: Story = createStory({
+  args: {
+    questionnaire: qDecimalAccessibility
+  },
+  play: async ({ canvasElement }) => {
+    const element = await findByLinkIdOrLabel(canvasElement, 'temperature');
+    const inputField = element.querySelector('[data-test="q-item-decimal-field"]');
+    const input = inputField?.querySelector('input');
+    const ariaDescribedBy = input?.getAttribute('aria-describedby');
+
+    expect(ariaDescribedBy).toBeTruthy();
+    expect(ariaDescribedBy).toContain('instructions-temperature');
+
+    const instructionsElement = document.getElementById('instructions-temperature');
+    expect(instructionsElement).toBeTruthy();
+    expect(instructionsElement?.textContent).toContain('Enter temperature in degrees Celsius');
+  }
+}) as Story;
+
+/* Quantity with instructions for accessibility testing */
+const qQuantityAccessibility = questionnaireFactory([
+  {
+    linkId: 'weight',
+    type: 'quantity',
+    repeats: false,
+    text: 'Weight',
+    item: [
+      {
+        linkId: 'weight-instructions',
+        type: 'display',
+        text: 'Enter your weight in kilograms',
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory',
+            valueCodeableConcept: {
+              coding: [
+                {
+                  system: 'http://hl7.org/fhir/questionnaire-display-category',
+                  code: 'instructions'
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+]);
+
+export const QuantityInstructionsAccessibility: Story = createStory({
+  args: {
+    questionnaire: qQuantityAccessibility
+  },
+  play: async ({ canvasElement }) => {
+    const element = await findByLinkIdOrLabel(canvasElement, 'weight');
+    const inputField = element.querySelector('[data-test="q-item-quantity-field"]');
+    const input = inputField?.querySelector('input');
+    const ariaDescribedBy = input?.getAttribute('aria-describedby');
+
+    expect(ariaDescribedBy).toBeTruthy();
+    expect(ariaDescribedBy).toContain('instructions-weight');
+
+    const instructionsElement = document.getElementById('instructions-weight');
+    expect(instructionsElement).toBeTruthy();
+    expect(instructionsElement?.textContent).toContain('Enter your weight in kilograms');
+  }
+}) as Story;
+
+/* URL with instructions for accessibility testing */
+const qUrlAccessibility = questionnaireFactory([
+  {
+    linkId: 'website',
+    type: 'url',
+    repeats: false,
+    text: 'Website URL',
+    item: [
+      {
+        linkId: 'website-instructions',
+        type: 'display',
+        text: 'Enter a valid website URL starting with http:// or https://',
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory',
+            valueCodeableConcept: {
+              coding: [
+                {
+                  system: 'http://hl7.org/fhir/questionnaire-display-category',
+                  code: 'instructions'
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+]);
+
+export const UrlInstructionsAccessibility: Story = createStory({
+  args: {
+    questionnaire: qUrlAccessibility
+  },
+  play: async ({ canvasElement }) => {
+    const element = await findByLinkIdOrLabel(canvasElement, 'website');
+    const inputField = element.querySelector('[data-test="q-item-url-field"]');
+    const input = inputField?.querySelector('input');
+    const ariaDescribedBy = input?.getAttribute('aria-describedby');
+
+    expect(ariaDescribedBy).toBeTruthy();
+    expect(ariaDescribedBy).toContain('instructions-website');
+
+    const instructionsElement = document.getElementById('instructions-website');
+    expect(instructionsElement).toBeTruthy();
+    expect(instructionsElement?.textContent).toContain(
+      'Enter a valid website URL starting with http:// or https://'
+    );
+  }
+}) as Story;
+
+/* Attachment with instructions for accessibility testing */
+const qAttachmentAccessibility = questionnaireFactory([
+  {
+    linkId: 'document',
+    type: 'attachment',
+    repeats: false,
+    text: 'Upload Document',
+    item: [
+      {
+        linkId: 'document-instructions',
+        type: 'display',
+        text: 'Please upload your document in PDF format',
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory',
+            valueCodeableConcept: {
+              coding: [
+                {
+                  system: 'http://hl7.org/fhir/questionnaire-display-category',
+                  code: 'instructions'
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+]);
+
+export const AttachmentInstructionsAccessibility: Story = createStory({
+  args: {
+    questionnaire: qAttachmentAccessibility
+  },
+  play: async ({ canvasElement }) => {
+    const element = await findByLinkIdOrLabel(canvasElement, 'document');
+    const uploadButton = element.querySelector('[data-test="q-item-attachment-field"]');
+    const input = uploadButton?.querySelector('input[type="file"]');
+    const ariaDescribedBy = input?.getAttribute('aria-describedby');
+
+    expect(ariaDescribedBy).toBeTruthy();
+    expect(ariaDescribedBy).toContain('instructions-document');
+
+    const instructionsElement = document.getElementById('instructions-document');
+    expect(instructionsElement).toBeTruthy();
+    expect(instructionsElement?.textContent).toContain('Please upload your document in PDF format');
+  }
+}) as Story;
+
+/* Date with instructions for accessibility testing */
+const qDateAccessibility = questionnaireFactory([
+  {
+    linkId: 'birthdate',
+    type: 'date',
+    repeats: false,
+    text: 'Date of Birth',
+    item: [
+      {
+        linkId: 'birthdate-instructions',
+        type: 'display',
+        text: 'Enter your date of birth in DD/MM/YYYY format',
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory',
+            valueCodeableConcept: {
+              coding: [
+                {
+                  system: 'http://hl7.org/fhir/questionnaire-display-category',
+                  code: 'instructions'
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+]);
+
+export const DateInstructionsAccessibility: Story = createStory({
+  args: {
+    questionnaire: qDateAccessibility
+  },
+  play: async ({ canvasElement }) => {
+    const element = await findByLinkIdOrLabel(canvasElement, 'birthdate');
+    const inputField = element.querySelector('[data-test="q-item-date-field"]');
+    const input = inputField?.querySelector('input');
+    const ariaDescribedBy = input?.getAttribute('aria-describedby');
+
+    expect(ariaDescribedBy).toBeTruthy();
+    expect(ariaDescribedBy).toContain('instructions-birthdate');
+
+    const instructionsElement = document.getElementById('instructions-birthdate');
+    expect(instructionsElement).toBeTruthy();
+    expect(instructionsElement?.textContent).toContain(
+      'Enter your date of birth in DD/MM/YYYY format'
+    );
+  }
+}) as Story;
+
+/* DateTime with instructions for accessibility testing */
+const qDateTimeAccessibility = questionnaireFactory([
+  {
+    linkId: 'appointment',
+    type: 'dateTime',
+    repeats: false,
+    text: 'Appointment Date and Time',
+    item: [
+      {
+        linkId: 'appointment-instructions',
+        type: 'display',
+        text: 'Select the date and time for your appointment',
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory',
+            valueCodeableConcept: {
+              coding: [
+                {
+                  system: 'http://hl7.org/fhir/questionnaire-display-category',
+                  code: 'instructions'
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+]);
+
+export const DateTimeInstructionsAccessibility: Story = createStory({
+  args: {
+    questionnaire: qDateTimeAccessibility
+  },
+  play: async ({ canvasElement }) => {
+    const element = await findByLinkIdOrLabel(canvasElement, 'appointment');
+    const inputField = element.querySelector('[data-test="q-item-date-time-field"]');
+    const input = inputField?.querySelector('input');
+    const ariaDescribedBy = input?.getAttribute('aria-describedby');
+
+    expect(ariaDescribedBy).toBeTruthy();
+    expect(ariaDescribedBy).toContain('instructions-appointment');
+
+    const instructionsElement = document.getElementById('instructions-appointment');
+    expect(instructionsElement).toBeTruthy();
+    expect(instructionsElement?.textContent).toContain(
+      'Select the date and time for your appointment'
+    );
+  }
+}) as Story;
+
+/* Time with instructions for accessibility testing */
+const qTimeAccessibility = questionnaireFactory([
+  {
+    linkId: 'waketime',
+    type: 'time',
+    repeats: false,
+    text: 'Wake Up Time',
+    item: [
+      {
+        linkId: 'waketime-instructions',
+        type: 'display',
+        text: 'Enter the time you typically wake up',
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory',
+            valueCodeableConcept: {
+              coding: [
+                {
+                  system: 'http://hl7.org/fhir/questionnaire-display-category',
+                  code: 'instructions'
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+]);
+
+export const TimeInstructionsAccessibility: Story = createStory({
+  args: {
+    questionnaire: qTimeAccessibility
+  },
+  play: async ({ canvasElement }) => {
+    const element = await findByLinkIdOrLabel(canvasElement, 'waketime');
+    const inputField = element.querySelector('[data-test="q-item-time-field"]');
+    const input = inputField?.querySelector('input');
+    const ariaDescribedBy = input?.getAttribute('aria-describedby');
+
+    expect(ariaDescribedBy).toBeTruthy();
+    expect(ariaDescribedBy).toContain('instructions-waketime');
+
+    const instructionsElement = document.getElementById('instructions-waketime');
+    expect(instructionsElement).toBeTruthy();
+    expect(instructionsElement?.textContent).toContain('Enter the time you typically wake up');
+  }
+}) as Story;
+
+/* Choice (radio buttons) with instructions for accessibility testing */
+const qChoiceAccessibility = questionnaireFactory([
+  {
+    linkId: 'gender',
+    type: 'choice',
+    repeats: false,
+    text: 'Gender',
+    answerOption: [
+      { valueCoding: { code: 'male', display: 'Male' } },
+      { valueCoding: { code: 'female', display: 'Female' } },
+      { valueCoding: { code: 'other', display: 'Other' } }
+    ],
+    item: [
+      {
+        linkId: 'gender-instructions',
+        type: 'display',
+        text: 'Please select your gender identity',
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory',
+            valueCodeableConcept: {
+              coding: [
+                {
+                  system: 'http://hl7.org/fhir/questionnaire-display-category',
+                  code: 'instructions'
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+]);
+
+export const ChoiceInstructionsAccessibility: Story = createStory({
+  args: {
+    questionnaire: qChoiceAccessibility
+  },
+  play: async ({ canvasElement }) => {
+    const element = await findByLinkIdOrLabel(canvasElement, 'gender');
+    const radioGroup = element.querySelector('[role="radiogroup"]');
+    const radioInputs = radioGroup?.querySelectorAll('input[type="radio"]');
+    const firstRadioInput = radioInputs?.[0];
+    const ariaDescribedBy = firstRadioInput?.getAttribute('aria-describedby');
+
+    expect(ariaDescribedBy).toBeTruthy();
+    expect(ariaDescribedBy).toContain('instructions-gender');
+
+    const instructionsElement = document.getElementById('instructions-gender');
+    expect(instructionsElement).toBeTruthy();
+    expect(instructionsElement?.textContent).toContain('Please select your gender identity');
+  }
+}) as Story;
+
+/* Open-Choice with instructions for accessibility testing */
+const qOpenChoiceAccessibility = questionnaireFactory([
+  {
+    linkId: 'occupation',
+    type: 'open-choice',
+    repeats: false,
+    text: 'Occupation',
+    answerOption: [
+      { valueCoding: { code: 'doctor', display: 'Doctor' } },
+      { valueCoding: { code: 'nurse', display: 'Nurse' } },
+      { valueCoding: { code: 'teacher', display: 'Teacher' } }
+    ],
+    item: [
+      {
+        linkId: 'occupation-instructions',
+        type: 'display',
+        text: 'Select your occupation or enter a custom value',
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory',
+            valueCodeableConcept: {
+              coding: [
+                {
+                  system: 'http://hl7.org/fhir/questionnaire-display-category',
+                  code: 'instructions'
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+]);
+
+export const OpenChoiceInstructionsAccessibility: Story = createStory({
+  args: {
+    questionnaire: qOpenChoiceAccessibility
+  },
+  play: async ({ canvasElement }) => {
+    const element = await findByLinkIdOrLabel(canvasElement, 'occupation');
+    const autocomplete = element.querySelector(
+      '[data-test="q-item-open-choice-autocomplete-field"]'
+    );
+    const input = autocomplete?.querySelector('input');
+    const ariaDescribedBy = input?.getAttribute('aria-describedby');
+
+    expect(ariaDescribedBy).toBeTruthy();
+    expect(ariaDescribedBy).toContain('instructions-occupation');
+
+    const instructionsElement = document.getElementById('instructions-occupation');
+    expect(instructionsElement).toBeTruthy();
+    expect(instructionsElement?.textContent).toContain(
+      'Select your occupation or enter a custom value'
     );
   }
 }) as Story;

@@ -68,7 +68,6 @@ function TextField(props: TextFieldProps) {
       slotProps={{
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
-          ...(instructionsId && { 'aria-describedby': instructionsId }),
           endAdornment: (
             <InputAdornment position="end">
               <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
@@ -80,6 +79,9 @@ function TextField(props: TextFieldProps) {
               <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>
           )
+        },
+        htmlInput: {
+          ...(instructionsId && { 'aria-describedby': instructionsId })
         }
       }}
       helperText={feedback}
