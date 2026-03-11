@@ -88,7 +88,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
               multiline
               textFieldWidth={textFieldWidth}
               isTabled={isTabled}
-              placeholder={entryFormat || displayPrompt}
+              placeholder={valueCoding ? undefined : entryFormat || displayPrompt}
               {...params}
               slotProps={{
                 input: {
