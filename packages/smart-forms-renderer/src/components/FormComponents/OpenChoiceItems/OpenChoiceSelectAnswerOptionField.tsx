@@ -120,7 +120,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
             multiline
             textFieldWidth={textFieldWidth}
             isTabled={isTabled}
-            placeholder={entryFormat || displayPrompt}
+            placeholder={valueSelect ? undefined : entryFormat || displayPrompt}
             {...params}
             slotProps={{
               input: {
