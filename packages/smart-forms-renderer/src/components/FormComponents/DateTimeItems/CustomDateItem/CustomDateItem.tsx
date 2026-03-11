@@ -49,10 +49,6 @@ function CustomDateItem(props: BaseItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const { displayPrompt, entryFormat, displayInstructions } = renderingExtensions;
 
-  // Generate instruction ID if instructions exist and there's no feedback
-  const instructionsId =
-    displayInstructions && !feedback ? `instructions-${qItem.linkId}` : undefined;
-
   // Init input value
   const answerKey = getQRItemId(qrItem?.answer?.[0]?.id);
   const qrDate = qrItem ?? createEmptyQrItem(qItem, answerKey);
@@ -72,6 +68,10 @@ function CustomDateItem(props: BaseItemProps) {
 
   // Perform validation checks
   const feedback = useDateValidation(input, dateParseFail);
+
+  // Generate instruction ID if instructions exist and there's no feedback
+  const instructionsId =
+    displayInstructions && !feedback ? `instructions-${qItem.linkId}` : undefined;
 
   function handleSelectDate(selectedDate: string) {
     setInput(selectedDate);
