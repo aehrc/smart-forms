@@ -46,6 +46,14 @@ This is the React version of the store which can be used as React hooks in React
 
 `Patient` \| `null`
 
+#### use.resolvedFhirContextReferences()
+
+> **resolvedFhirContextReferences**: () => `Record`\<`string`, `FhirResource`\> \| `null`
+
+##### Returns
+
+`Record`\<`string`, `FhirResource`\> \| `null`
+
 #### use.setClient()
 
 > **setClient**: () => (`client`) => `void`
@@ -113,6 +121,24 @@ This is the React version of the store which can be used as React hooks in React
 | Parameter | Type |
 | ------ | ------ |
 | `patient` | `Patient` |
+
+###### Returns
+
+`void`
+
+#### use.setResolvedFhirContextReferences()
+
+> **setResolvedFhirContextReferences**: () => (`resolvedFhirContextReferences`) => `void`
+
+##### Returns
+
+> (`resolvedFhirContextReferences`): `void`
+
+###### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `resolvedFhirContextReferences` | `Record`\<`string`, `FhirResource`\> |
 
 ###### Returns
 

@@ -13,4 +13,4 @@ e.g. `"item.where(linkId = 'family').answer.value.first()"` → `"Doe"`
 
 ### valueResult
 
-> **valueResult**: `any`
+> **valueResult**: `any`[]

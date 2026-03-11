@@ -22,6 +22,7 @@ import {
   getQuestionnaireReferences,
   readCommonLaunchContexts,
   readQuestionnaireContext,
+  resolveFhirContextReferences,
   responseToQuestionnaireResource
 } from '../utils/launch.ts';
 import { postQuestionnaireToSMARTHealthIT } from '../../../api/saveQr.ts';
@@ -73,8 +74,13 @@ function Authorisation() {
 
   const { config } = useContext(ConfigContext);
 
-  const { setSmartClient, setCommonLaunchContexts, setQuestionnaireLaunchContext, setFhirContext } =
-    useSmartClient();
+  const {
+    setSmartClient,
+    setCommonLaunchContexts,
+    setQuestionnaireLaunchContext,
+    setFhirContext,
+    setResolvedFhirContextReferences
+  } = useSmartClient();
 
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -166,6 +172,13 @@ function Authorisation() {
           } else {
             dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: false });
           }
+
+          // Resolve other FHIR context references
+          resolveFhirContextReferences(client, fhirContext ?? []).then(
+            (resolvedFhirContextReferences) => {
+              setResolvedFhirContextReferences(resolvedFhirContextReferences);
+            }
+          );
         })
         .catch((error: Error) => {
           // Prompt user to launch app if app is unlaunched
