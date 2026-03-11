@@ -522,28 +522,81 @@ P.S. We had `alpha` as a pre-release branch before the recent v1.0.0 release. Th
     - If there are package version bumps, create a new PR referencing the issue and follow the steps in [Release process](#release-process) to publish new package versions.
 
 ## Release process
-1. Create a release branch from main (e.g. `release/<date>`).
-2. Update the `CHANGELOG.md` file in the respective package/app directory summarising changes since the last release. 
-    - @aehrc/smart-forms-renderer - https://github.com/aehrc/smart-forms/blob/main/CHANGELOG.md
-    - @aehrc/sdc-populate - https://github.com/aehrc/smart-forms/blob/main/packages/sdc-populate/CHANGELOG.md
-    - @aehrc/sdc-assemble - https://github.com/aehrc/smart-forms/blob/main/packages/sdc-assemble/CHANGELOG.md
-    - @aehrc/sdc-template-extract - https://github.com/aehrc/smart-forms/blob/main/packages/sdc-template-extract/CHANGELOG.md
-3. Depending on which package/app you are working on, bump the version number in `package.json` following [semantic versioning](https://semver.org/) principles.
-4. Update dependencies in other packages/apps if necessary.
-    - `@aehrc/smart-forms-renderer`'s Storybook depends on `@aehrc/sdc-populate` and `@aehrc/sdc-template-extract`. If you update `@aehrc/sdc-populate` or `@aehrc/sdc-template-extract`, make sure to bump their versions and the `@aehrc/smart-forms-renderer` version.
-    - For example, if you are making changes to `@aehrc/sdc-populate`, ensure that:
-      - Both the Renderer's and Smart Forms app's dependency on `@aehrc/sdc-populate` is updated to the new version.
-      - `@aehrc/smart-forms-renderer`'s version is also bumped to reflect the dependency change.
-      - Bump `@aehrc/smart-forms-renderer`'s dependency version in Smart Forms app's `package.json`.
-5. Run `npm install` to update package-lock.json with the new version.
-6. Push a new commit with the version bumps and changelog updates.
-7. Open and merge a PR from the release branch into main.
-8. Ensure that all CI checks pass (build, tests, linting, etc.).
-9. Run `npm run build` in the respective package directory to ensure you get the latest build output.
-    - If updating multiple packages, make sure to run the build command in each of the respective folders.
-10. Publish to NPM from main after merge by running `npm publish` in the respective package directory.
-    - If updating multiple packages, make sure to run the publish command in each of the respective folders.
-    - You might need to go through NPM 2FA when publishing new versions. Ensure you are logged into NPM with the correct account that has publishing rights on the aehrc organisation.
+
+Publishing is automated via GitHub Actions. Creating a GitHub release with the
+appropriate tag triggers the build, test, lint, and publish pipeline.
+
+### Prerequisites
+
+Before your first release, set up the `npm` GitHub environment:
+
+1. Go to **Settings > Environments > New environment**, name it `npm`.
+2. Optionally add a **required reviewer** as an approval gate before publish.
+3. Under **Environment secrets**, add `NPM_TOKEN` with an npm automation token
+   that has publish access to the `@aehrc` scope.
+
+### 1. Prepare the release
+
+1. Bump the version in `package.json` for each package being released, following
+   [semantic versioning](https://semver.org/).
+2. If releasing `@aehrc/sdc-populate` or `@aehrc/sdc-template-extract`, also
+   bump `@aehrc/smart-forms-renderer` and update its dependency versions.
+   Update the Smart Forms app's dependency on the renderer as well.
+3. Update the changelog in the respective package directory:
+   - `@aehrc/smart-forms-renderer` — `CHANGELOG.md` (repo root)
+   - `@aehrc/sdc-populate` — `packages/sdc-populate/CHANGELOG.md`
+   - `@aehrc/sdc-assemble` — `packages/sdc-assemble/CHANGELOG.md`
+   - `@aehrc/sdc-template-extract` —
+     `packages/sdc-template-extract/CHANGELOG.md`
+4. Run `npm install` to update `package-lock.json`.
+5. Commit and merge the version bumps and changelog updates into main.
+
+### 2. Create a GitHub release
+
+Create a new release on GitHub with the tag matching the package:
+
+| Package | Tag format | Example |
+|---|---|---|
+| `@aehrc/smart-forms-renderer` | `v<version>` | `v1.3.0` |
+| `@aehrc/sdc-assemble` | `sdc-assemble@<version>` | `sdc-assemble@2.0.2` |
+| `@aehrc/sdc-populate` | `sdc-populate@<version>` | `sdc-populate@4.6.3` |
+| `@aehrc/sdc-template-extract` | `sdc-template-extract@<version>` | `sdc-template-extract@1.0.15` |
+
+The tag version must match the version in the package's `package.json`.
+
+### 3. Verify the publish
+
+1. The publish workflow runs the full build, test, and lint suite first. If any
+   check fails, the package will not be published.
+2. If the `npm` environment has a required reviewer, approve the deployment when
+   prompted.
+3. Once complete, verify the new version on npm (e.g.
+   `npm view @aehrc/sdc-assemble version`).
+
+### Publishing multiple packages
+
+When releasing packages that depend on each other, publish them in dependency
+order:
+
+1. `@aehrc/sdc-assemble` (independent, can be published any time)
+2. `@aehrc/sdc-populate` (independent)
+3. `@aehrc/sdc-template-extract` (independent)
+4. `@aehrc/smart-forms-renderer` (depends on sdc-populate and
+   sdc-template-extract — publish after its dependencies)
+
+Create a separate GitHub release for each package.
+
+### Troubleshooting
+
+- **Workflow did not trigger:** Check that the tag matches the expected pattern
+  exactly.
+- **Build or test failure:** Fix the issue on main, then create a new release
+  with the same tag (delete the failed release and tag first).
+- **npm authentication error:** Verify that the `NPM_TOKEN` secret in the `npm`
+  environment is valid and has publish access to the `@aehrc` scope.
+- **Provenance error:** Ensure the repository's GitHub Actions settings allow
+  `id-token: write` permissions (Settings > Actions > General > Workflow
+  permissions).
 
 ## Dependency notes
 - `date-fns` with version "^4.1.0" in `apps/smart-forms-app/package.json` is not used in the source code. It is used to prevent CommonJS issues when building the Smart Forms app in docker.
