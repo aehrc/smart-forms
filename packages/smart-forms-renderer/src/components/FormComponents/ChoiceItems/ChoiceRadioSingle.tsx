@@ -22,14 +22,15 @@ import { StandardRadio } from '../../Radio.styles';
 
 interface ChoiceRadioSingleProps {
   value: string;
-  label: React.ReactNode;
+  label: string;
+  styledLabel?: React.ReactNode;
   readOnly: boolean;
   disabledViaToggleExpression: boolean;
   fullWidth: boolean;
 }
 
 function ChoiceRadioSingle(props: ChoiceRadioSingleProps) {
-  const { value, label, readOnly, disabledViaToggleExpression, fullWidth } = props;
+  const { value, styledLabel, label, readOnly, disabledViaToggleExpression, fullWidth } = props;
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
 
@@ -55,7 +56,7 @@ function ChoiceRadioSingle(props: ChoiceRadioSingleProps) {
       control={
         <StandardRadio data-test={`radio-single-${label}`} size="small" readOnly={isHtmlReadOnly} />
       }
-      label={label}
+      label={styledLabel ?? label}
     />
   );
 }

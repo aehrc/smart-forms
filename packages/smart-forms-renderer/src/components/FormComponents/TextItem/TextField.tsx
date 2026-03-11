@@ -81,6 +81,8 @@ function TextField(props: TextFieldProps) {
       }}
       helperText={feedback}
       data-test="q-item-text-field"
+      data-linkid={qItem.linkId}
+      data-label={qItem.text}
     />
   );
 }

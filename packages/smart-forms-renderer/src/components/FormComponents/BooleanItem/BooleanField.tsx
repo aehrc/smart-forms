@@ -104,6 +104,8 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
             alignItems="center"
             sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
             <RadioGroup
+              data-linkid={qItem.linkId}
+              data-label={qItem.text}
               id={qItem.type + '-' + qItem.linkId}
               aria-labelledby={'label-' + qItem.linkId}
               row={orientation === ChoiceItemOrientation.Horizontal}
