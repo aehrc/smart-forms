@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import { useState } from 'react';
-import { BaseRenderer } from '@aehrc/smart-forms-renderer';
+import { useLayoutEffect, useRef, useState } from 'react';
+import { BaseRenderer, rendererConfigStore } from '@aehrc/smart-forms-renderer';
 import type { Patient, Practitioner } from 'fhir/r4';
 import { Box, Typography } from '@mui/material';
 import useLaunchContextNames from '../hooks/useLaunchContextNames.ts';
@@ -48,6 +48,15 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
   const initialSpinner: RendererSpinner = { isSpinning: false, status: 'prepopulate', message: '' };
   const [spinner, setSpinner] = useState<RendererSpinner>(initialSpinner);
 
+  const toolbarRef = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    if (toolbarRef.current) {
+      rendererConfigStore.getState().setRendererConfig({
+        tabListStickyTop: toolbarRef.current.getBoundingClientRect().height
+      });
+    }
+  }, []);
+
   const { patientName, userName } = useLaunchContextNames(patient, user);
 
   const isPrePopulating = spinner.isSpinning && spinner.status === 'prepopulate';
@@ -56,6 +65,7 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
   return (
     <>
       <Box
+        ref={toolbarRef}
         display="flex"
         alignItems="center"
         columnGap={1}

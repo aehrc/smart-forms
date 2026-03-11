@@ -8,6 +8,7 @@ on:
       - 'apps/smart-forms-app/Dockerfile' # Trigger only if Dockerfile is modified
       - 'apps/smart-forms-app/src/**' # Trigger if anything in the src folder is changed.
       - 'apps/smart-forms-app/default.conf' # Trigger if the nginx config has changed.
+      - 'packages/smart-forms-renderer/src/**' # Trigger if the renderer package source changes.
 
 jobs:
   build_and_push:
@@ -49,7 +50,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./apps/smart-forms-app
+          context: .
           file: ./apps/smart-forms-app/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
