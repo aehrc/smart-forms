@@ -528,12 +528,33 @@ appropriate tag triggers the build, test, lint, and publish pipeline.
 
 ### Prerequisites
 
-Before your first release, set up the `npm` GitHub environment:
+Publishing uses [npm trusted publishing](https://docs.npmjs.com/trusted-publishers/)
+via OIDC — no long-lived npm tokens are needed. Set up the following once:
+
+**GitHub environment:**
 
 1. Go to **Settings > Environments > New environment**, name it `npm`.
 2. Optionally add a **required reviewer** as an approval gate before publish.
-3. Under **Environment secrets**, add `NPM_TOKEN` with an npm automation token
-   that has publish access to the `@aehrc` scope.
+
+**npm trusted publishers:**
+
+For each package, configure a trusted publisher on npmjs.com. Note that for
+scoped packages under `@aehrc`, you must be a member of a team with write
+access to the package — being an org owner alone is not sufficient to see the
+**Settings** tab.
+
+1. Go to the package page on npmjs.com and click **Settings**.
+2. Under **Trusted Publisher**, click **GitHub Actions**.
+3. Enter the organisation (`aehrc`), repository (`smart-forms`), the workflow
+   filename (see table below), and the environment name (`npm`).
+4. Click **Set up connection**.
+
+| Package | Workflow filename |
+|---|---|
+| `@aehrc/sdc-assemble` | `publish_sdc_assemble.yml` |
+| `@aehrc/sdc-populate` | `publish_sdc_populate.yml` |
+| `@aehrc/sdc-template-extract` | `publish_sdc_template_extract.yml` |
+| `@aehrc/smart-forms-renderer` | `publish_smart_forms_renderer.yml` |
 
 ### 1. Prepare the release
 
@@ -592,8 +613,9 @@ Create a separate GitHub release for each package.
   exactly.
 - **Build or test failure:** Fix the issue on main, then create a new release
   with the same tag (delete the failed release and tag first).
-- **npm authentication error:** Verify that the `NPM_TOKEN` secret in the `npm`
-  environment is valid and has publish access to the `@aehrc` scope.
+- **npm authentication error:** Verify that the trusted publisher is configured
+  correctly on npmjs.com for the package, matching the workflow filename and
+  environment name exactly.
 - **Provenance error:** Ensure the repository's GitHub Actions settings allow
   `id-token: write` permissions (Settings > Actions > General > Workflow
   permissions).
