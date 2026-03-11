@@ -5,6 +5,11 @@ This log documents changes for [@aehrc/sdc-populate](https://www.npmjs.com/packa
 
 Changelog only includes changes from version 4.0.0 onwards.
 
+## [4.6.3] - 2026-03-11
+### Fixed
+- Relaxed restriction on `fhirContext` launch context entries - `type` is no longer required. Resource type is now inferred from the `reference` if `type` is not provided.
+- Resolved `fhirContext` references are now used to prepopulate questionnaire items.
+
 ## [4.6.2] - 2025-08-07
 #### Fixed
 - Make error handling in fhirpath evaluations more lenient (remove e instanceof Error check), due to fhirpath.js async evaluation returning a string error message instead of an Error object which results in the error being muted on development builds (surprising it works on production).

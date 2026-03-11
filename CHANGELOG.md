@@ -10,6 +10,13 @@ For changelogs of other libraries, please refer to their respective repositories
 
 Changelog only includes changes from version 0.36.0 onwards.
 
+## [1.3.0] - 2026-03-11
+### Added
+- Added `tabListStickyTop` option to the renderer store. When supplied, a tabbed form's tab menu will stick to the top of the page offset by this value, keeping it visible during scrolling.
+- `fhirContext` references from SMART App Launch are now resolved and stored in the renderer SMART config, making them available for use in `answerExpressions`.
+### Fixed
+- Conditionally display placeholder in select fields, fixing issue [1834](https://github.com/aehrc/smart-forms/issues/1834)
+
 ## [1.2.14] - 2026-03-05
 ### Changed
 - Reduced vertical padding and margins to limit excessive whitespace in the renderer.
