@@ -26,13 +26,14 @@ import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps
 interface AttachmentFileCollectorProps extends PropsWithIsTabledAttribute {
   uploadedFile: File | null;
   readOnly: boolean;
+  instructionsId: string | undefined;
   onUploadFile: (file: File | null) => void;
 }
 
 const AttachmentFileCollector = memo(function AttachmentFileCollector(
   props: AttachmentFileCollectorProps
 ) {
-  const { uploadedFile, readOnly, isTabled, onUploadFile } = props;
+  const { uploadedFile, readOnly, isTabled, instructionsId, onUploadFile } = props;
 
   const handleFileDrop = useCallback(
     (item: { files: any[] }) => {
@@ -73,7 +74,11 @@ const AttachmentFileCollector = memo(function AttachmentFileCollector(
       <Stack direction="row" justifyContent="space-between" pt={0.5}>
         <Box>
           <Tooltip title="Attach file">
-            <IconButton component="label" size="small" disabled={readOnly}>
+            <IconButton
+              component="label"
+              size="small"
+              disabled={readOnly}
+              {...(instructionsId && { 'aria-describedby': instructionsId })}>
               <AttachFileIcon fontSize="small" />
               <input type="file" hidden onChange={handleAttachFile} />
             </IconButton>

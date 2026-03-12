@@ -32,9 +32,11 @@ import { ClearButtonAdornment } from '../ItemParts/ClearButtonAdornment';
 interface AttachmentFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
   itemType: string;
+  itemText: string | undefined;
   attachmentValues: AttachmentValues;
   feedback: string;
   readOnly: boolean;
+  instructionsId: string | undefined;
   onUploadFile: (file: File | null) => void;
   onUrlChange: (url: string) => void;
   onFileNameChange: (fileName: string) => void;
@@ -44,10 +46,12 @@ function AttachmentField(props: AttachmentFieldProps) {
   const {
     linkId,
     itemType,
+    itemText,
     attachmentValues,
     feedback,
     readOnly,
     isTabled,
+    instructionsId,
     onUploadFile,
     onUrlChange,
     onFileNameChange
@@ -64,73 +68,84 @@ function AttachmentField(props: AttachmentFieldProps) {
 
   return (
     <>
-      <Stack rowGap={1} id={itemType + '-' + linkId}>
-        <Typography component="div" color={readOnly ? readOnlyTextColor : 'text.primary'}>
-          An attachment must either have a file or a URL, or both.
-        </Typography>
-        <Box>
-          <AttachmentFileCollector
-            uploadedFile={uploadedFile}
-            readOnly={readOnly}
-            isTabled={isTabled}
-            onUploadFile={onUploadFile}
-          />
-        </Box>
-
-        <AttachmentUrlField
-          linkId={linkId}
-          url={url}
-          readOnly={readOnly}
-          isTabled={isTabled}
-          onUrlChange={onUrlChange}
-        />
-
-        <Box>
+      <div
+        role="group"
+        {...(!isTabled && { 'aria-labelledby': `label-${linkId}` })}
+        {...(isTabled && { 'aria-label': itemText ?? 'Unnamed attachment field' })}
+        {...(instructionsId && { 'aria-describedby': instructionsId })}>
+        <Stack rowGap={1} id={itemType + '-' + linkId}>
           <Typography
             component="div"
-            variant="body2"
-            color={readOnly ? readOnlyTextColor : 'text.primary'}>
-            File name (optional)
+            variant="caption"
+            color={readOnly ? 'text.disabled' : 'text.secondary'}
+            sx={{ fontStyle: 'italic' }}>
+            An attachment must either have a file or a URL, or both.
           </Typography>
-          <StandardTextField
-            multiline
-            fullWidth
-            textFieldWidth={textFieldWidth}
-            isTabled={isTabled}
-            id={linkId}
-            value={fileName}
-            onChange={(event) => onFileNameChange(event.target.value)}
-            disabled={readOnly && readOnlyVisualStyle === 'disabled'}
-            size="small"
-            data-test="q-item-attachment-field"
-            slotProps={{
-              input: {
-                readOnly: readOnly && readOnlyVisualStyle === 'readonly',
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <ClearButtonAdornment
-                      readOnly={readOnly}
-                      onClear={() => {
-                        onFileNameChange('');
-                      }}
-                    />
-                  </InputAdornment>
-                )
-              },
-              htmlInput: {
-                'data-test': 'q-item-attachment-file-name',
-                'aria-label': 'File name (optional)'
-              }
-            }}
-          />
-        </Box>
+          <Box>
+            <AttachmentFileCollector
+              uploadedFile={uploadedFile}
+              readOnly={readOnly}
+              isTabled={isTabled}
+              instructionsId={instructionsId}
+              onUploadFile={onUploadFile}
+            />
+          </Box>
 
-        {uploadedFile && url ? (
-          <Typography component="div" color={readOnly ? readOnlyTextColor : 'text.primary'}>
-            Ensure that the attached file and URL has the same content.
-          </Typography>
-        ) : null}
-      </Stack>
+          <AttachmentUrlField
+            linkId={linkId}
+            url={url}
+            readOnly={readOnly}
+            isTabled={isTabled}
+            onUrlChange={onUrlChange}
+          />
+
+          <Box>
+            <Typography
+              component="div"
+              variant="body2"
+              color={readOnly ? readOnlyTextColor : 'text.primary'}>
+              File name (optional)
+            </Typography>
+            <StandardTextField
+              multiline
+              fullWidth
+              textFieldWidth={textFieldWidth}
+              isTabled={isTabled}
+              id={linkId}
+              value={fileName}
+              onChange={(event) => onFileNameChange(event.target.value)}
+              disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+              size="small"
+              data-test="q-item-attachment-field"
+              slotProps={{
+                input: {
+                  readOnly: readOnly && readOnlyVisualStyle === 'readonly',
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <ClearButtonAdornment
+                        readOnly={readOnly}
+                        onClear={() => {
+                          onFileNameChange('');
+                        }}
+                      />
+                    </InputAdornment>
+                  )
+                },
+                htmlInput: {
+                  'data-test': 'q-item-attachment-file-name',
+                  'aria-label': 'File name (optional)'
+                }
+              }}
+            />
+          </Box>
+
+          {uploadedFile && url ? (
+            <Typography component="div" color={readOnly ? readOnlyTextColor : 'text.primary'}>
+              Ensure that the attached file and URL has the same content.
+            </Typography>
+          ) : null}
+        </Stack>
+      </div>
 
       {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
     </>
