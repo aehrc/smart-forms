@@ -18,6 +18,7 @@
 import { useState } from 'react';
 import useDateValidation from '../../../../hooks/useDateValidation';
 import useReadOnly from '../../../../hooks/useReadOnly';
+import useRenderingExtensions from '../../../../hooks/useRenderingExtensions';
 import type { BaseItemProps } from '../../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../../stores';
 import { createEmptyQrItem, getQRItemId } from '../../../../utils/qrItem';
@@ -46,7 +47,7 @@ function CustomDateItem(props: BaseItemProps) {
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayPrompt, entryFormat } = renderingExtensions;
+  const { displayPrompt, entryFormat, displayInstructions } = renderingExtensions;
 
   // Init input value
   const answerKey = getQRItemId(qrItem?.answer?.[0]?.id);
@@ -67,6 +68,10 @@ function CustomDateItem(props: BaseItemProps) {
 
   // Perform validation checks
   const feedback = useDateValidation(input, dateParseFail);
+
+  // Generate instruction ID if instructions exist and there's no feedback
+  const instructionsId =
+    displayInstructions && !feedback ? `instructions-${qItem.linkId}` : undefined;
 
   function handleSelectDate(selectedDate: string) {
     setInput(selectedDate);
@@ -108,6 +113,7 @@ function CustomDateItem(props: BaseItemProps) {
         calcExpUpdated={calcExpUpdated}
         isPartOfDateTime={false}
         isTabled={isTabled}
+        instructionsId={instructionsId}
         setFocused={setFocused}
         onInputChange={handleInputChange}
         onSelectDate={handleSelectDate}
@@ -140,6 +146,7 @@ function CustomDateItem(props: BaseItemProps) {
             calcExpUpdated={calcExpUpdated}
             isPartOfDateTime={false}
             isTabled={isTabled}
+            instructionsId={instructionsId}
             setFocused={setFocused}
             onInputChange={handleInputChange}
             onSelectDate={handleSelectDate}

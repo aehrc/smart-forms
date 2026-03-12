@@ -31,6 +31,7 @@ interface TextFieldProps {
   renderingExtensions: RenderingExtensions;
   readOnly: boolean;
   calcExpUpdated: boolean;
+  instructionsId: string | undefined;
   onInputChange: (value: string) => void;
   onRepopulateSync: (newQrItem: QuestionnaireResponseItem | null) => unknown;
 }
@@ -43,6 +44,7 @@ function TextField(props: TextFieldProps) {
     renderingExtensions,
     readOnly,
     calcExpUpdated,
+    instructionsId,
     onInputChange,
     onRepopulateSync
   } = props;
@@ -77,6 +79,9 @@ function TextField(props: TextFieldProps) {
               <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>
           )
+        },
+        htmlInput: {
+          ...(instructionsId && { 'aria-describedby': instructionsId })
         }
       }}
       helperText={feedback}

@@ -23,6 +23,7 @@ import useDateNonEmptyValidation from '../../../../hooks/useDateTimeNonEmpty';
 import useDateValidation from '../../../../hooks/useDateValidation';
 import useReadOnly from '../../../../hooks/useReadOnly';
 import useTimeValidation from '../../../../hooks/useTimeValidation';
+import useRenderingExtensions from '../../../../hooks/useRenderingExtensions';
 import type { BaseItemProps } from '../../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../../stores';
 import { createEmptyQrItem, getQRItemId } from '../../../../utils/qrItem';
@@ -53,7 +54,7 @@ function CustomDateTimeItem(props: BaseItemProps) {
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayPrompt, entryFormat } = renderingExtensions;
+  const { displayPrompt, entryFormat, displayInstructions } = renderingExtensions;
 
   // Init input value
   const answerKey = getQRItemId(qrItem?.answer?.[0]?.id);
@@ -103,6 +104,12 @@ function CustomDateTimeItem(props: BaseItemProps) {
   );
 
   dateFeedback = useDateNonEmptyValidation(dateInput, timeInput, dateFeedback, timeFeedback);
+
+  // Generate instruction ID if instructions exist and there's no feedback
+  const instructionsId =
+    displayInstructions && !dateFeedback && !timeFeedback
+      ? `instructions-${qItem.linkId}`
+      : undefined;
 
   function handleSelectDate(selectedDate: string) {
     setDateInput(selectedDate);
@@ -189,6 +196,7 @@ function CustomDateTimeItem(props: BaseItemProps) {
           readOnly={readOnly}
           calcExpUpdated={calcExpUpdated}
           isTabled={isTabled}
+          instructionsId={instructionsId}
           onDateInputChange={handleDateInputChange}
           onSelectDate={handleSelectDate}
           setDateFocused={setDateFocused}
@@ -226,6 +234,7 @@ function CustomDateTimeItem(props: BaseItemProps) {
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}
+            instructionsId={instructionsId}
             onDateInputChange={handleDateInputChange}
             onSelectDate={handleSelectDate}
             setDateFocused={setDateFocused}
