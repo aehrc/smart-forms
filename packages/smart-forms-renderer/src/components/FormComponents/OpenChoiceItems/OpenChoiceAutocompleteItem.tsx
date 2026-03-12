@@ -23,11 +23,12 @@ import type { AutocompleteChangeReason } from '@mui/material';
 import type { AlertColor } from '@mui/material/Alert';
 import useDebounce from '../../../hooks/useDebounce';
 import useReadOnly from '../../../hooks/useReadOnly';
+import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import useTerminologyServerQuery from '../../../hooks/useTerminologyServerQuery';
 import debounce from 'lodash.debounce';
 import { AUTOCOMPLETE_DEBOUNCE_DURATION, DEBOUNCE_DURATION } from '../../../utils/debounce';
 import OpenChoiceAutocompleteField from './OpenChoiceAutocompleteField';
-import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import ItemFieldGrid, { getInstructionsId } from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
 import { sanitizeInput } from '../../../utils/inputSanitization';
 import { useValidationFeedback } from '../../../hooks';
@@ -75,6 +76,10 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
 
   // Perform validation checks
   const validationFeedback = useValidationFeedback(qItem, feedbackFromParent);
+
+  // Get instructions ID for aria-describedby
+  const { displayInstructions } = useRenderingExtensions(qItem);
+  const instructionsId = getInstructionsId(qItem, displayInstructions, !!validationFeedback);
 
   const {
     options,
@@ -179,6 +184,7 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
         calcExpUpdated={calcExpUpdated}
         isTabled={isTabled}
         renderingExtensions={renderingExtensions}
+        instructionsId={instructionsId}
         onValueChange={handleValueChange}
       />
     );
@@ -206,6 +212,7 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
             calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
+            instructionsId={instructionsId}
             onValueChange={handleValueChange}
           />
         }

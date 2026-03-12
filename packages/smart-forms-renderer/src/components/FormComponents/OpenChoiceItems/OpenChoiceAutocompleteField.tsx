@@ -51,6 +51,7 @@ interface OpenChoiceAutocompleteFieldProps
   feedback: { message: string; color: AlertColor } | null;
   readOnly: boolean;
   calcExpUpdated: boolean;
+  instructionsId: string | undefined;
   onValueChange: (
     newValue: Coding | string | null,
     reason: AutocompleteChangeReason | string
@@ -69,6 +70,7 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
     calcExpUpdated,
     isTabled,
     renderingExtensions,
+    instructionsId,
     onValueChange
   } = props;
 
@@ -95,60 +97,73 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
       onChange={(_, newValue, reason) => onValueChange(newValue, reason)}
       onInputChange={(_, newValue, reason) => onValueChange(newValue, reason)}
       filterOptions={(x) => x}
-      renderInput={(params) => (
-        <StandardTextField
-          {...params}
-          multiline
-          value={input}
-          textFieldWidth={textFieldWidth}
-          isTabled={isTabled}
-          size="small"
-          placeholder={entryFormat || displayPrompt}
-          slotProps={{
-            input: {
-              ...params.InputProps,
-              readOnly: readOnly && readOnlyVisualStyle === 'readonly',
-              startAdornment: (
-                <>
-                  {!valueAutocomplete || valueAutocomplete === '' ? (
-                    <SearchIcon fontSize="small" sx={{ ml: 0.5 }} />
-                  ) : null}
-                  {params.InputProps.startAdornment}
-                </>
-              ),
-              // Warning indicator should not show up in open-choice autocomplete
-              endAdornment: (
-                <>
-                  {loading ? (
-                    <CircularProgress color="inherit" size={16} />
-                  ) : feedback && feedback.color !== 'warning' ? (
-                    <Fade in={!!feedback} timeout={300}>
-                      <Tooltip title={feedback.message} arrow sx={{ ml: 1 }}>
-                        {
+      renderInput={(params) => {
+        // Merge instructionsId with any existing aria-describedby from Autocomplete
+        const existingAriaDescribedBy = params.inputProps?.['aria-describedby'];
+        const mergedAriaDescribedBy = [existingAriaDescribedBy, instructionsId]
+          .filter(Boolean)
+          .join(' ');
+
+        // Modify params.inputProps to include aria attributes
+        const enhancedInputProps = {
+          ...params.inputProps,
+          ...(isTabled
+            ? { 'aria-label': qItem.text ?? `Unnamed ${qItem.type} item` }
+            : { 'aria-labelledby': `label-${qItem.linkId}` }),
+          ...(mergedAriaDescribedBy && { 'aria-describedby': mergedAriaDescribedBy })
+        };
+
+        return (
+          <StandardTextField
+            {...params}
+            multiline
+            value={input}
+            textFieldWidth={textFieldWidth}
+            isTabled={isTabled}
+            size="small"
+            placeholder={entryFormat || displayPrompt}
+            slotProps={{
+              input: {
+                ...params.InputProps,
+                readOnly: readOnly && readOnlyVisualStyle === 'readonly',
+                startAdornment: (
+                  <>
+                    {!valueAutocomplete || valueAutocomplete === '' ? (
+                      <SearchIcon fontSize="small" sx={{ ml: 0.5 }} />
+                    ) : null}
+                    {params.InputProps.startAdornment}
+                  </>
+                ),
+                endAdornment: (
+                  <>
+                    {loading ? (
+                      <CircularProgress color="inherit" size={16} />
+                    ) : feedback && feedback.color !== 'warning' ? (
+                      <Fade in={!!feedback} timeout={300}>
+                        <Tooltip title={feedback.message} arrow sx={{ ml: 1 }}>
                           {
-                            info: <InfoIcon fontSize="small" color="info" />,
-                            warning: <WarningAmberIcon fontSize="small" color="warning" />,
-                            success: <DoneIcon fontSize="small" color="success" />,
-                            error: <ErrorIcon fontSize="small" color="error" />
-                          }[feedback.color]
-                        }
-                      </Tooltip>
-                    </Fade>
-                  ) : null}
-                  <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-                  {params.InputProps.endAdornment}
-                  <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
-                </>
-              ),
-              inputProps: {
-                ...params.inputProps,
-                ...(isTabled ? {} : { 'aria-label': qItem.text ?? `Unnamed ${qItem.type} item` })
+                            {
+                              info: <InfoIcon fontSize="small" color="info" />,
+                              warning: <WarningAmberIcon fontSize="small" color="warning" />,
+                              success: <DoneIcon fontSize="small" color="success" />,
+                              error: <ErrorIcon fontSize="small" color="error" />
+                            }[feedback.color]
+                          }
+                        </Tooltip>
+                      </Fade>
+                    ) : null}
+                    <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+                    {params.InputProps.endAdornment}
+                    <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
+                  </>
+                ),
+                inputProps: enhancedInputProps
               }
-            }
-          }}
-          data-test="q-item-open-choice-autocomplete-field"
-        />
-      )}
+            }}
+            data-test="q-item-open-choice-autocomplete-field"
+          />
+        );
+      }}
     />
   );
 }
