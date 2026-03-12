@@ -26,7 +26,7 @@ import { findInAnswerOptions } from '../../../utils/choice';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
-import ChoiceSelectAnswerOptionFields from './ChoiceSelectAnswerOptionFields';
+import CustomChoiceSelectField from './CustomChoiceSelectField';
 
 interface ChoiceSelectAnswerOptionViewProps
   extends PropsWithIsRepeatedAttribute,
@@ -39,6 +39,7 @@ interface ChoiceSelectAnswerOptionViewProps
   readOnly: boolean;
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
+  instructionsId: string | undefined;
   onSelectChange: (newValue: QuestionnaireItemAnswerOption | null) => void;
   onFocusLinkId: () => void;
 }
@@ -55,6 +56,7 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
     readOnly,
     expressionUpdated,
     answerOptionsToggleExpressionsMap,
+    instructionsId,
     onFocusLinkId,
     onSelectChange
   } = props;
@@ -66,7 +68,7 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
 
   if (isRepeated) {
     return (
-      <ChoiceSelectAnswerOptionFields
+      <CustomChoiceSelectField
         qItem={qItem}
         options={options}
         valueSelect={valueSelect}
@@ -76,6 +78,7 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
         isTabled={isTabled}
         renderingExtensions={renderingExtensions}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+        instructionsId={instructionsId}
         onSelectChange={onSelectChange}
       />
     );
@@ -92,7 +95,7 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
         readOnly={readOnly}
         labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
         fieldChildren={
-          <ChoiceSelectAnswerOptionFields
+          <CustomChoiceSelectField
             qItem={qItem}
             options={options}
             valueSelect={valueSelect}
@@ -102,6 +105,7 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+            instructionsId={instructionsId}
             onSelectChange={onSelectChange}
           />
         }

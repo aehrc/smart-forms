@@ -25,38 +25,63 @@ import { useRendererConfigStore } from '../../../stores';
 interface TimeFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
   itemType: string;
+  itemText: string | undefined;
   value: Dayjs | null;
   displayPrompt: string;
   entryFormat: string;
   readOnly: boolean;
+  instructionsId: string | undefined;
   onTimeChange: (newValue: Dayjs | null) => unknown;
 }
 
 function TimeField(props: TimeFieldProps) {
-  const { linkId, itemType, value, displayPrompt, entryFormat, readOnly, isTabled, onTimeChange } =
-    props;
+  const {
+    linkId,
+    itemType,
+    itemText,
+    value,
+    displayPrompt,
+    entryFormat,
+    readOnly,
+    isTabled,
+    instructionsId,
+    onTimeChange
+  } = props;
 
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <MuiTimePicker
-        // TODO no way to add an id attribute to this time input field
-        // TODO ignore this - we will be creating our own custom time field anyway
-        name={itemType + '-' + linkId}
-        format={entryFormat !== '' ? entryFormat : 'hh:mm a'}
-        value={value}
-        disabled={readOnly}
-        label={displayPrompt}
-        sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160 }}
-        slotProps={{
-          textField: {
-            fullWidth: true
-          }
-          // EndAdornment not available here
-        }}
-        onChange={onTimeChange}
-      />
+      <div
+        role="group"
+        {...(instructionsId && { 'aria-describedby': instructionsId })}
+        {...(!isTabled && { 'aria-labelledby': `label-${linkId}` })}
+        {...(isTabled && { 'aria-label': itemText ?? 'Unnamed time field' })}
+        data-test="q-item-time-field">
+        <MuiTimePicker
+          // TODO no way to add an id attribute to this time input field
+          // TODO ignore this - we will be creating our own custom time field anyway
+          name={itemType + '-' + linkId}
+          format={entryFormat !== '' ? entryFormat : 'hh:mm a'}
+          value={value}
+          disabled={readOnly}
+          label={displayPrompt}
+          sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160 }}
+          slotProps={{
+            textField: {
+              fullWidth: true,
+              slotProps: {
+                htmlInput: {
+                  'aria-hidden': 'true',
+                  tabIndex: -1
+                }
+              }
+            }
+            // EndAdornment not available here
+          }}
+          onChange={onTimeChange}
+        />
+      </div>
     </LocalizationProvider>
   );
 }

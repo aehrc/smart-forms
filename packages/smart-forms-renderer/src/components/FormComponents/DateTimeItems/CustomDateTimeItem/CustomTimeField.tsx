@@ -30,6 +30,7 @@ import ExpressionUpdateFadingIcon from '../../ItemParts/ExpressionUpdateFadingIc
 interface CustomTimeFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
   itemType: string;
+  itemText?: string;
   timeInput: string;
   periodInput: string;
   is24HourNotation: boolean;
@@ -38,6 +39,7 @@ interface CustomTimeFieldProps extends PropsWithIsTabledAttribute {
   readOnly: boolean;
   calcExpUpdated: boolean;
   isPartOfDateTime: boolean;
+  instructionsId?: string;
   onTimeInputChange: (newInput: string) => void;
   onPeriodChange: (newPeriod: string) => void;
 }
@@ -46,6 +48,7 @@ function CustomTimeField(props: CustomTimeFieldProps) {
   const {
     linkId,
     itemType,
+    itemText,
     timeInput,
     periodInput,
     is24HourNotation,
@@ -55,6 +58,7 @@ function CustomTimeField(props: CustomTimeFieldProps) {
     calcExpUpdated,
     isPartOfDateTime,
     isTabled,
+    instructionsId,
     onTimeInputChange,
     onPeriodChange
   } = props;
@@ -92,6 +96,10 @@ function CustomTimeField(props: CustomTimeFieldProps) {
           slotProps={{
             input: {
               readOnly: readOnly && readOnlyVisualStyle === 'readonly'
+            },
+            htmlInput: {
+              ...(isTabled ? {} : { 'aria-label': itemText ?? `Unnamed ${itemType} item` }),
+              ...(instructionsId && { 'aria-describedby': instructionsId })
             }
           }}
         />

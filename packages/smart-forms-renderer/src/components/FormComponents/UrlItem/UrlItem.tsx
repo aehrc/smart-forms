@@ -63,7 +63,8 @@ function UrlItem(props: BaseItemProps) {
   const { displayInstructions } = useRenderingExtensions(qItem);
 
   // Generate instruction ID if instructions exist and there's no feedback
-  const instructionsId = displayInstructions && !feedback ? `instructions-${qItem.linkId}` : undefined;
+  const instructionsId =
+    displayInstructions && !feedback ? `instructions-${qItem.linkId}` : undefined;
 
   // Event handlers
   function handleChange(newInput: string) {

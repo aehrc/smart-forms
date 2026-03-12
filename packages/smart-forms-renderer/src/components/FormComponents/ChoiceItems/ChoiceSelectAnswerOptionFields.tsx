@@ -41,6 +41,7 @@ interface ChoiceSelectAnswerOptionFieldsProps
   readOnly: boolean;
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
+  instructionsId: string | undefined;
   onSelectChange: (newValue: QuestionnaireItemAnswerOption | null) => void;
 }
 
@@ -55,6 +56,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
     isTabled,
     renderingExtensions,
     answerOptionsToggleExpressionsMap,
+    instructionsId,
     onSelectChange
   } = props;
 
@@ -120,39 +122,48 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
         size="small"
         disabled={readOnly && readOnlyVisualStyle === 'disabled'}
         readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
-        renderInput={(params) => (
-          <StandardTextField
-            textFieldWidth={textFieldWidth}
-            isTabled={isTabled}
-            placeholder={entryFormat || displayPrompt}
-            {...params}
-            slotProps={{
-              input: {
-                ...params.InputProps,
-                readOnly: readOnly && readOnlyVisualStyle === 'readonly',
-                endAdornment: (
-                  <>
-                    {params.InputProps.endAdornment}
-                    <ExpressionUpdateFadingIcon fadeIn={expressionUpdated} disabled={readOnly} />
-                    <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
-                  </>
-                ),
-                sx: {
-                  '&.MuiOutlinedInput-root.MuiInputBase-sizeSmall .MuiAutocomplete-input': {
-                    paddingLeft: '0px'
+        renderInput={(params) => {
+          // Merge instructionsId with any existing aria-describedby from Autocomplete
+          const existingAriaDescribedBy = params.inputProps?.['aria-describedby'];
+          const mergedAriaDescribedBy = [existingAriaDescribedBy, instructionsId]
+            .filter(Boolean)
+            .join(' ');
+
+          return (
+            <StandardTextField
+              textFieldWidth={textFieldWidth}
+              isTabled={isTabled}
+              placeholder={entryFormat || displayPrompt}
+              {...params}
+              slotProps={{
+                input: {
+                  ...params.InputProps,
+                  readOnly: readOnly && readOnlyVisualStyle === 'readonly',
+                  endAdornment: (
+                    <>
+                      {params.InputProps.endAdornment}
+                      <ExpressionUpdateFadingIcon fadeIn={expressionUpdated} disabled={readOnly} />
+                      <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
+                    </>
+                  ),
+                  sx: {
+                    '&.MuiOutlinedInput-root.MuiInputBase-sizeSmall .MuiAutocomplete-input': {
+                      paddingLeft: '0px'
+                    }
                   }
                 },
-                inputProps: {
+                htmlInput: {
                   ...params.inputProps,
                   ...(isTabled
                     ? { 'aria-label': qItem.text ?? 'Unnamed choice dropdown' }
                     : { 'aria-labelledby': `label-${qItem.linkId}` }),
+                  ...(mergedAriaDescribedBy && { 'aria-describedby': mergedAriaDescribedBy }),
                   role: 'combobox'
                 }
-              }
-            }}
-          />
-        )}
+              }}
+            />
+          );
+        }}
         renderOption={(optionProps, option) => {
           const { key, ...rest } = optionProps;
           return (

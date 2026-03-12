@@ -93,6 +93,7 @@ function DateTimeField(props: DateTimeFieldProps) {
       <CustomTimeField
         linkId={linkId}
         itemType={itemType}
+        itemText={itemText}
         timeInput={timeInput}
         periodInput={periodInput}
         is24HourNotation={is24HourNotation}
@@ -102,6 +103,7 @@ function DateTimeField(props: DateTimeFieldProps) {
         calcExpUpdated={calcExpUpdated}
         isPartOfDateTime={true}
         isTabled={isTabled}
+        instructionsId={instructionsId}
         onTimeInputChange={(newTimeInput) => onTimeInputChange(newTimeInput, periodInput)}
         onPeriodChange={(newPeriodInput) => onTimeInputChange(timeInput, newPeriodInput)}
       />

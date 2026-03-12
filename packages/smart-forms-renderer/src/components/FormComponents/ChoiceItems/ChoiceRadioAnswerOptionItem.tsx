@@ -20,6 +20,7 @@ import type { QuestionnaireItemAnswerOption } from 'fhir/r4';
 import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 import useReadOnly from '../../../hooks/useReadOnly';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import { ChoiceItemControl } from '../../../interfaces/choice.enum';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
@@ -52,6 +53,12 @@ function ChoiceRadioAnswerOptionItem(props: BaseItemProps) {
 
   // Perform validation checks - there's no string-based input here
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
+
+  const { displayInstructions } = renderingExtensions;
+
+  // Generate instruction ID if instructions exist and there's no feedback
+  const instructionsId =
+    displayInstructions && !feedback ? `instructions-${qItem.linkId}` : undefined;
 
   const options = qItem.answerOption ?? [];
 
@@ -107,6 +114,7 @@ function ChoiceRadioAnswerOptionItem(props: BaseItemProps) {
           expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
           answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
           isTabled={isTabled}
+          instructionsId={instructionsId}
           onFocusLinkId={() => onFocusLinkId(qItem.linkId)}
           onCheckedChange={handleChange}
           onClear={handleClear}
@@ -127,6 +135,7 @@ function ChoiceRadioAnswerOptionItem(props: BaseItemProps) {
           expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
           renderingExtensions={renderingExtensions}
           answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+          instructionsId={instructionsId}
           onFocusLinkId={() => onFocusLinkId(qItem.linkId)}
           onSelectChange={handleChange}
         />

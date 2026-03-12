@@ -19,6 +19,7 @@ interface ChoiceRadioGroupProps {
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   isTabled: boolean;
+  instructionsId?: string | undefined;
   onCheckedChange: (newValue: string) => void;
   onClear: () => void;
   children?: ReactNode; // Mainly used for open-choice openLabel field
@@ -34,6 +35,7 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
     expressionUpdated,
     answerOptionsToggleExpressionsMap,
     isTabled,
+    instructionsId,
     onCheckedChange,
     onClear,
     children
@@ -81,6 +83,7 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
               readOnly={readOnly}
               fullWidth={inputsFlexGrow}
               answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+              instructionsId={instructionsId}
             />
             {children}
           </RadioGroup>

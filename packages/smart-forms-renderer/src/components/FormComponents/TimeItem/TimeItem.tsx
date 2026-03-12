@@ -24,6 +24,7 @@ import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useReadOnly from '../../../hooks/useReadOnly';
+import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
 
@@ -41,7 +42,10 @@ function TimeItem(props: BaseItemProps) {
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayPrompt, entryFormat } = renderingExtensions;
+  const { displayPrompt, entryFormat, displayInstructions } = renderingExtensions;
+
+  // Generate instruction ID if instructions exist
+  const instructionsId = displayInstructions ? `instructions-${qItem.linkId}` : undefined;
 
   // Init input value
   const answerKey = getQRItemId(qrItem?.answer?.[0]?.id);
@@ -69,10 +73,12 @@ function TimeItem(props: BaseItemProps) {
       <TimeField
         linkId={qItem.linkId}
         itemType={qItem.type}
+        itemText={qItem.text}
         value={timeDayJs}
         displayPrompt={displayPrompt}
         entryFormat={entryFormat}
         readOnly={readOnly}
+        instructionsId={instructionsId}
         onTimeChange={handleTimeChange}
         isTabled={isTabled}
       />
@@ -93,10 +99,12 @@ function TimeItem(props: BaseItemProps) {
           <TimeField
             linkId={qItem.linkId}
             itemType={qItem.type}
+            itemText={qItem.text}
             value={timeDayJs}
             displayPrompt={displayPrompt}
             entryFormat={entryFormat}
             readOnly={readOnly}
+            instructionsId={instructionsId}
             onTimeChange={handleTimeChange}
             isTabled={isTabled}
           />
