@@ -16,17 +16,18 @@
  */
 
 import type { AutocompleteChangeReason } from '@mui/material';
-import type { QuestionnaireItemAnswerOption } from 'fhir/r4';
+import type { Coding, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import useReadOnly from '../../../hooks/useReadOnly';
+import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
 import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
-import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import ItemFieldGrid, { getInstructionsId } from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
 import { sanitizeInput } from '../../../utils/inputSanitization';
-import OpenChoiceSelectAnswerOptionField from './OpenChoiceSelectAnswerOptionField';
+import CustomOpenChoiceField from './CustomOpenChoiceField';
 
 function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
   const {
@@ -48,72 +49,74 @@ function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
+  // Get instructions ID for aria-describedby
+  const { displayInstructions } = useRenderingExtensions(qItem);
+  const instructionsId = getInstructionsId(qItem, displayInstructions, !!feedback);
+
   // Init input value
   const answerKey = getQRItemId(qrItem?.answer?.[0]?.id);
   const answerOptions = qItem.answerOption;
   if (!answerOptions) return null;
 
+  // Convert answerOptions to Coding format for CustomOpenChoiceField
+  const codingOptions: Coding[] = answerOptions
+    .filter((opt) => opt.valueCoding)
+    .map((opt) => opt.valueCoding!);
+
   const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem, answerKey);
-  let valueSelect: QuestionnaireItemAnswerOption | string | null = null;
-  if (qrOpenChoice.answer) {
-    valueSelect = qrOpenChoice.answer[0] ?? null;
+  
+  // Get current value as Coding or string
+  let valueAutocomplete: Coding | string = '';
+  if (qrOpenChoice.answer && qrOpenChoice.answer[0]) {
+    const answer = qrOpenChoice.answer[0];
+    if (answer.valueCoding) {
+      valueAutocomplete = answer.valueCoding;
+    } else if (answer.valueString) {
+      valueAutocomplete = answer.valueString;
+    }
   }
 
   // Event handlers
   // Handler function which handles both input change and selection change
-  function handleValueChange(
-    newValue: QuestionnaireItemAnswerOption | string | null,
-    reason: AutocompleteChangeReason | string
-  ) {
-    //if the reason is reset, then we don't change the value, otherwise you will end up with looped setState calls
+  function handleValueChange(newValue: Coding | string | null, reason: string) {
     if (reason === 'reset') {
-      // console.log("Reason: ", reason)
       return;
     }
-    if (newValue) {
-      //If the value is a string (i.e from freeSolo input)
-      if (typeof newValue === 'string') {
-        onQrItemChange({
-          ...qrOpenChoice,
-          answer: [{ id: answerKey, valueString: sanitizeInput(newValue) }]
-        });
-        return;
-      }
 
-      //If the value is not a string, then it is a coding.
-      const option = newValue;
-      if (option['valueCoding']) {
-        onQrItemChange({
-          ...qrOpenChoice,
-          answer: [{ id: answerKey, valueCoding: option.valueCoding }]
-        });
-      } else if (option['valueString']) {
-        onQrItemChange({
-          ...qrOpenChoice,
-          answer: [{ id: answerKey, valueString: sanitizeInput(option.valueString) }]
-        });
-      } else if (option['valueInteger']) {
-        onQrItemChange({
-          ...qrOpenChoice,
-          answer: [{ id: answerKey, valueInteger: option.valueInteger }]
-        });
-      }
+    if (!newValue) {
+      onQrItemChange(createEmptyQrItem(qItem, answerKey));
       return;
     }
-    onQrItemChange(createEmptyQrItem(qItem, answerKey));
+
+    // If the value is a string (custom input)
+    if (typeof newValue === 'string') {
+      onQrItemChange({
+        ...qrOpenChoice,
+        answer: [{ id: answerKey, valueString: sanitizeInput(newValue) }]
+      });
+      return;
+    }
+
+    // If the value is a Coding (selected from dropdown)
+    onQrItemChange({
+      ...qrOpenChoice,
+      answer: [{ id: answerKey, valueCoding: newValue }]
+    });
   }
 
   if (isRepeated) {
     return (
-      <OpenChoiceSelectAnswerOptionField
+      <CustomOpenChoiceField
         qItem={qItem}
-        options={answerOptions}
-        valueSelect={valueSelect}
-        feedback={feedback}
+        options={codingOptions}
+        valueAutocomplete={valueAutocomplete}
+        loading={false}
+        feedback={feedback ? { message: feedback, color: 'error' } : null}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         isTabled={isTabled}
         renderingExtensions={renderingExtensions}
+        instructionsId={instructionsId}
         onValueChange={handleValueChange}
       />
     );
@@ -130,15 +133,17 @@ function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
         readOnly={readOnly}
         labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
         fieldChildren={
-          <OpenChoiceSelectAnswerOptionField
+          <CustomOpenChoiceField
             qItem={qItem}
-            options={answerOptions}
-            valueSelect={valueSelect}
-            feedback={feedback}
+            options={codingOptions}
+            valueAutocomplete={valueAutocomplete}
+            loading={false}
+            feedback={feedback ? { message: feedback, color: 'error' } : null}
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
+            instructionsId={instructionsId}
             onValueChange={handleValueChange}
           />
         }

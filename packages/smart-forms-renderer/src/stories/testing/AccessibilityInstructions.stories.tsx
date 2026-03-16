@@ -687,11 +687,8 @@ export const OpenChoiceInstructionsAccessibility: Story = createStory({
   },
   play: async ({ canvasElement }) => {
     const element = await findByLinkIdOrLabel(canvasElement, 'occupation');
-    const autocomplete = element.querySelector(
-      '[data-test="q-item-open-choice-autocomplete-field"]'
-    );
-    const input = autocomplete?.querySelector('input');
-    const ariaDescribedBy = input?.getAttribute('aria-describedby');
+    const select = element.querySelector('[data-test="q-item-open-choice-select"]');
+    const ariaDescribedBy = select?.getAttribute('aria-describedby');
 
     expect(ariaDescribedBy).toBeTruthy();
     expect(ariaDescribedBy).toContain('instructions-occupation');

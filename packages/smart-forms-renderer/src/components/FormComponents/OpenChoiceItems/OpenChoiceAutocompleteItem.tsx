@@ -27,7 +27,7 @@ import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import useTerminologyServerQuery from '../../../hooks/useTerminologyServerQuery';
 import debounce from 'lodash.debounce';
 import { AUTOCOMPLETE_DEBOUNCE_DURATION, DEBOUNCE_DURATION } from '../../../utils/debounce';
-import OpenChoiceAutocompleteField from './OpenChoiceAutocompleteField';
+import CustomOpenChoiceField from './CustomOpenChoiceField';
 import ItemFieldGrid, { getInstructionsId } from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
 import { sanitizeInput } from '../../../utils/inputSanitization';
@@ -173,11 +173,10 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
 
   if (isRepeated) {
     return (
-      <OpenChoiceAutocompleteField
+      <CustomOpenChoiceField
         qItem={qItem}
         options={options}
         valueAutocomplete={valueAutocomplete}
-        input={input}
         loading={loading}
         feedback={feedback}
         readOnly={readOnly}
@@ -201,11 +200,10 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
         readOnly={readOnly}
         labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
         fieldChildren={
-          <OpenChoiceAutocompleteField
+          <CustomOpenChoiceField
             qItem={qItem}
             options={options}
             valueAutocomplete={valueAutocomplete}
-            input={input}
             loading={loading}
             feedback={feedback}
             readOnly={readOnly}
