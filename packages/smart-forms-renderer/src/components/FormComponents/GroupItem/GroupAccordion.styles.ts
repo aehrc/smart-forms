@@ -1,7 +1,7 @@
 import { styled } from '@mui/material/styles';
 import Accordion from '@mui/material/Accordion';
 
-export const GroupAccordion = styled(Accordion, {
+export const StyledGroupAccordion = styled(Accordion, {
   shouldForwardProp: (prop) => prop !== 'elevation'
 })<{ elevation: number }>(({ elevation }) => ({
   paddingTop: '8px',
