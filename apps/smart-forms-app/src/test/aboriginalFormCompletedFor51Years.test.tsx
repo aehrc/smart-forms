@@ -256,7 +256,7 @@ test('Completed questionnaire for 51 years', async () => {
 
   //Social and emotional wellbeing
   await selectTab(container, 'Social and emotional wellbeing');
-  const stressfulLifeEvents = await findByLinkIdOrLabel(container,'Stressful life events')
+  const stressfulLifeEvents = await findByLinkIdOrLabel(container, 'Stressful life events');
   await checkRadioOption(
     stressfulLifeEvents,
     'Have there been any particular stressful life events that are impacting on you/your health lately?',
@@ -488,7 +488,11 @@ test('Completed questionnaire for 51 years', async () => {
     container,
     'Physical activity concerns'
   );
-  await checkRadioOption(physicalActivityConcernsContainer, 'Do you have any worries about physical activity?', 'Yes');
+  await checkRadioOption(
+    physicalActivityConcernsContainer,
+    'Do you have any worries about physical activity?',
+    'Yes'
+  );
   await inputText(physicalActivityConcernsContainer, 'Details', 'Physical activity concerns');
   await inputText(
     container,
@@ -565,7 +569,7 @@ test('Completed questionnaire for 51 years', async () => {
 
   //Eye health
   await selectTab(container, 'Eye health');
-  const visionConcernsContainer = await findByLinkIdOrLabel(container, 'Vision concerns')
+  const visionConcernsContainer = await findByLinkIdOrLabel(container, 'Vision concerns');
   await checkRadioOption(
     visionConcernsContainer,
     'Is there anything that you are worried about with your vision?',
@@ -575,7 +579,10 @@ test('Completed questionnaire for 51 years', async () => {
   const visualAcuityContainer = await findByLinkIdOrLabel(container, 'Visual acuity');
   await inputText(visualAcuityContainer, 'Left eye', 'Left eye');
   await inputText(visualAcuityContainer, 'Right eye', 'Right eye');
-  const trachomaCheckContainer = await findByLinkIdOrLabel(container, 'Trachoma Check (endemic areas)');
+  const trachomaCheckContainer = await findByLinkIdOrLabel(
+    container,
+    'Trachoma Check (endemic areas)'
+  );
   await checkCheckboxOption(trachomaCheckContainer, 'Left eye', 'Trichiasis');
   await checkCheckboxOption(trachomaCheckContainer, 'Left eye', 'Corneal scar');
   await checkCheckboxOption(trachomaCheckContainer, 'Right eye', 'Trichiasis');
@@ -588,7 +595,7 @@ test('Completed questionnaire for 51 years', async () => {
 
   //Ear health and hearing
   await selectTab(container, 'Ear health and hearing');
-  const hearingConcernsContainer = await findByLinkIdOrLabel(container, 'Hearing concerns')
+  const hearingConcernsContainer = await findByLinkIdOrLabel(container, 'Hearing concerns');
   await checkRadioOption(
     hearingConcernsContainer,
     'Is there anything that you are worried about with your hearing?',
@@ -616,7 +623,7 @@ test('Completed questionnaire for 51 years', async () => {
 
   //Oral and dental health
   await selectTab(container, 'Oral and dental health');
-  const dentalConcernsContainer = await findByLinkIdOrLabel(container, 'Dental concerns')
+  const dentalConcernsContainer = await findByLinkIdOrLabel(container, 'Dental concerns');
   await checkRadioOption(
     dentalConcernsContainer,
     'Is there anything that you are worried about with your teeth?',

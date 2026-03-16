@@ -241,7 +241,7 @@ test('Completed questionnaire for 13 years', async () => {
 
   //Social and emotional wellbeing
   await selectTab(container, 'Social and emotional wellbeing');
-  const stressfulLifeEvents = await findByLinkIdOrLabel(container,'Stressful life events')
+  const stressfulLifeEvents = await findByLinkIdOrLabel(container, 'Stressful life events');
   await checkRadioOption(
     stressfulLifeEvents,
     'Have there been any particular stressful life events that are impacting on you/your health lately?',
@@ -350,7 +350,11 @@ test('Completed questionnaire for 13 years', async () => {
     'Do you have any worries about physical activity or screen time?',
     'Yes'
   );
-  await inputText(physicalActivityConcernsContainer, 'Details', 'Physical activity or screen time concerns');
+  await inputText(
+    physicalActivityConcernsContainer,
+    'Details',
+    'Physical activity or screen time concerns'
+  );
   await inputText(
     container,
     'Document conversation about age-appropriate recommendations re physical activity and screen time',
@@ -404,7 +408,10 @@ test('Completed questionnaire for 13 years', async () => {
     container,
     'Sexual health (sexual activity, contraception, safe sex/protection, sexual orientation, gender identity, pressure to have sex, STIs)'
   );
-  const sexualHealthContainer = await findByLinkIdOrLabel(container, 'Puberty and sexual health concerns');
+  const sexualHealthContainer = await findByLinkIdOrLabel(
+    container,
+    'Puberty and sexual health concerns'
+  );
   await checkRadioOption(
     sexualHealthContainer,
     'Is there anything that you are worried about in relation to puberty/your sexual health?',
@@ -424,14 +431,14 @@ test('Completed questionnaire for 13 years', async () => {
 
   //Eye health
   await selectTab(container, 'Eye health');
-  const visionConcernsContainer = await findByLinkIdOrLabel(container, 'Vision concerns')
+  const visionConcernsContainer = await findByLinkIdOrLabel(container, 'Vision concerns');
   await checkRadioOption(
     visionConcernsContainer,
     'Is there anything that you are worried about with your vision?',
     'Yes'
   );
   await inputText(visionConcernsContainer, 'Details', 'Eye health concerns');
-  const visualAcuityContainer = await findByLinkIdOrLabel(container, 'Visual acuity')
+  const visualAcuityContainer = await findByLinkIdOrLabel(container, 'Visual acuity');
   await inputText(visualAcuityContainer, 'Left eye', 'Left eye');
   await inputText(visualAcuityContainer, 'Right eye', 'Right eye');
   await inputText(
@@ -442,7 +449,7 @@ test('Completed questionnaire for 13 years', async () => {
 
   //Ear health and hearing
   await selectTab(container, 'Ear health and hearing');
-  const hearingConcernsContainer = await findByLinkIdOrLabel(container, 'Hearing concerns')
+  const hearingConcernsContainer = await findByLinkIdOrLabel(container, 'Hearing concerns');
   await checkRadioOption(
     hearingConcernsContainer,
     'Is there anything that you are worried about with your hearing?',
@@ -470,7 +477,7 @@ test('Completed questionnaire for 13 years', async () => {
 
   //Oral and dental health
   await selectTab(container, 'Oral and dental health');
-  const dentalConcernsContainer = await findByLinkIdOrLabel(container, 'Dental concerns')
+  const dentalConcernsContainer = await findByLinkIdOrLabel(container, 'Dental concerns');
   await checkRadioOption(
     dentalConcernsContainer,
     'Is there anything that you are worried about with your teeth?',
@@ -492,7 +499,7 @@ test('Completed questionnaire for 13 years', async () => {
 
   //Skin
   await selectTab(container, 'Skin');
-  const skinProblemsContainer = await findByLinkIdOrLabel(container,'Skin problems')
+  const skinProblemsContainer = await findByLinkIdOrLabel(container, 'Skin problems');
   await checkRadioOption(
     skinProblemsContainer,
     'Is there anything that you are worried about with your skin?',

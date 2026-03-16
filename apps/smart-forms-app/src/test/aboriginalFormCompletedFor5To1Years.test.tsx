@@ -13,7 +13,7 @@ import {
   getInputText,
   inputDecimal,
   getVisibleTab,
-  inputDateTime,
+  inputDateTime
 } from './testUtils.ts';
 import { AboriginalForm } from './aboriginalFormUtils.tsx';
 
@@ -245,7 +245,7 @@ test('Completed questionnaire for 5 years', async () => {
     'Who lives in your household? / Who does the child live with?',
     'Social history'
   );
-  const stressfulLifeEvents = await findByLinkIdOrLabel(container,'Stressful life events')
+  const stressfulLifeEvents = await findByLinkIdOrLabel(container, 'Stressful life events');
   await checkRadioOption(
     stressfulLifeEvents,
     'Have there been any stressful life events that would cause you or your child to be upset?',
@@ -421,7 +421,7 @@ test('Completed questionnaire for 5 years', async () => {
 
   //Eye health
   await selectTab(container, 'Eye health');
-  const visionConcernsContainer = await findByLinkIdOrLabel(container, 'Vision concerns')
+  const visionConcernsContainer = await findByLinkIdOrLabel(container, 'Vision concerns');
   await checkRadioOption(
     visionConcernsContainer,
     "Is there anything that you are worried about with your child's vision?",
@@ -501,7 +501,7 @@ test('Completed questionnaire for 5 years', async () => {
 
   //Oral and dental health
   await selectTab(container, 'Oral and dental health');
-  const dentalConcernsContainer = await findByLinkIdOrLabel(container, 'Dental concerns')
+  const dentalConcernsContainer = await findByLinkIdOrLabel(container, 'Dental concerns');
   await checkRadioOption(
     dentalConcernsContainer,
     "Is there anything that you are worried about with your child's teeth or mouth?",
@@ -523,7 +523,7 @@ test('Completed questionnaire for 5 years', async () => {
 
   //Skin
   await selectTab(container, 'Skin');
-  const skinProblemsContainer = await findByLinkIdOrLabel(container,'Skin problems')
+  const skinProblemsContainer = await findByLinkIdOrLabel(container, 'Skin problems');
   await checkRadioOption(skinProblemsContainer, 'Does your child have any skin problems?', 'Yes');
   await inputText(skinProblemsContainer, 'Details', 'Skin problems');
   await inputText(
