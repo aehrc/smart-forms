@@ -67,7 +67,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.28.5",
-    "@chromatic-com/storybook": "^4.1.1",
+    "@chromatic-com/storybook": "^4.1.2",
     "@storybook/addon-docs": "^9.1.13",
     "@storybook/addon-links": "^9.1.13",
     "@storybook/addon-onboarding": "^9.1.13",
