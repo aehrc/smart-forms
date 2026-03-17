@@ -15,78 +15,79 @@
  * limitations under the License.
  */
 
-import type {
-  CodeSystemLookupPromise,
-  InitialExpression
-} from '../interfaces/expressions.interface';
-import type { Coding } from 'fhir/r4';
+import type { CodeSystemLookupPromise } from '../interfaces/expressions.interface';
+import type { QuestionnaireResponseItem } from 'fhir/r4';
 import { getCodeSystemLookupPromise } from '../api/lookupCodeSystem';
 import type { FetchTerminologyCallback, FetchTerminologyRequestConfig } from '../interfaces';
 import { resolveLookupPromises } from './resolveLookupPromises';
 
 /**
- * Adds display values to Coding objects in initialExpressions by performing CodeSystem $lookup if needed.
- * Ensures all codings have a display for proper rendering and validation.
+ * Adds display values to valueCoding answers in a QuestionnaireResponse by performing CodeSystem $lookup if needed.
  */
-export async function addDisplayToInitialExpressionsCodings(
-  initialExpressions: Record<string, InitialExpression>,
+export async function addDisplayToQuestionnaireResponseCodings(
+  qrItems: QuestionnaireResponseItem[],
   fetchTerminologyCallback?: FetchTerminologyCallback,
   fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
-): Promise<Record<string, InitialExpression>> {
-  // Store code system lookup promises for codings without displays
+): Promise<void> {
   const codeSystemLookupPromises: Record<string, CodeSystemLookupPromise> = {};
-  for (const key in initialExpressions) {
-    const initialExpression = initialExpressions[key];
-    if (!initialExpression?.value) {
-      continue;
-    }
+  collectCodingsForLookup(
+    qrItems,
+    codeSystemLookupPromises,
+    fetchTerminologyCallback,
+    fetchTerminologyRequestConfig
+  );
 
-    for (const value of initialExpression.value) {
-      if (valueIsCoding(value)) {
-        if (!value.display) {
-          getCodeSystemLookupPromise(
-            value,
-            codeSystemLookupPromises,
-            fetchTerminologyCallback,
-            fetchTerminologyRequestConfig
-          );
-        }
-      }
-    }
-  }
-
-  // Resolves lookup promises in one go and assign newCodings to initialExpressions
   const resolvedCodeSystemLookupPromises = await resolveLookupPromises(codeSystemLookupPromises);
-  for (const key in initialExpressions) {
-    const initialExpression = initialExpressions[key];
-    if (!initialExpression?.value) {
-      continue;
-    }
-
-    for (const value of initialExpression.value) {
-      if (valueIsCoding(value)) {
-        const lookUpKey = `system=${value.system}&code=${value.code}`;
-        const resolvedLookup = resolvedCodeSystemLookupPromises[lookUpKey];
-
-        if (resolvedLookup?.newCoding?.display) {
-          value.display = resolvedLookup.newCoding.display;
-        }
-      }
-    }
-  }
-
-  return initialExpressions;
+  applyResolvedDisplays(qrItems, resolvedCodeSystemLookupPromises);
 }
 
-/**
- * Type guard to check if a value is a FHIR Coding object.
- * Used to filter and process codings in initialExpressions.
- */
-function valueIsCoding(initialExpressionValue: any): initialExpressionValue is Coding {
-  return !!(
-    initialExpressionValue &&
-    initialExpressionValue.system &&
-    initialExpressionValue.code &&
-    !initialExpressionValue.unit // To exclude valueQuantity objects
-  );
+function collectCodingsForLookup(
+  qrItems: QuestionnaireResponseItem[],
+  codeSystemLookupPromises: Record<string, CodeSystemLookupPromise>,
+  fetchTerminologyCallback?: FetchTerminologyCallback,
+  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
+): void {
+  for (const item of qrItems) {
+    for (const answer of item.answer ?? []) {
+      if (answer.valueCoding && !answer.valueCoding.display) {
+        getCodeSystemLookupPromise(
+          answer.valueCoding,
+          codeSystemLookupPromises,
+          fetchTerminologyCallback,
+          fetchTerminologyRequestConfig
+        );
+      }
+      collectCodingsForLookup(
+        answer.item ?? [],
+        codeSystemLookupPromises,
+        fetchTerminologyCallback,
+        fetchTerminologyRequestConfig
+      );
+    }
+    collectCodingsForLookup(
+      item.item ?? [],
+      codeSystemLookupPromises,
+      fetchTerminologyCallback,
+      fetchTerminologyRequestConfig
+    );
+  }
+}
+
+function applyResolvedDisplays(
+  qrItems: QuestionnaireResponseItem[],
+  resolved: Record<string, CodeSystemLookupPromise>
+): void {
+  for (const item of qrItems) {
+    for (const answer of item.answer ?? []) {
+      if (answer.valueCoding?.system && answer.valueCoding?.code) {
+        const key = `system=${answer.valueCoding.system}&code=${answer.valueCoding.code}`;
+        const resolvedLookup = resolved[key];
+        if (resolvedLookup?.newCoding?.display) {
+          answer.valueCoding.display = resolvedLookup.newCoding.display;
+        }
+      }
+      applyResolvedDisplays(answer.item ?? [], resolved);
+    }
+    applyResolvedDisplays(item.item ?? [], resolved);
+  }
 }
