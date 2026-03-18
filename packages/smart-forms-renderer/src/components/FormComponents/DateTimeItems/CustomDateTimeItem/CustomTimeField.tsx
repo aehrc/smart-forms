@@ -26,7 +26,6 @@ import { useRendererConfigStore } from '../../../../stores';
 import FormControl from '@mui/material/FormControl';
 import MuiTextField from '../../TextItem/MuiTextField';
 import ExpressionUpdateFadingIcon from '../../ItemParts/ExpressionUpdateFadingIcon';
-import AccessibleFeedback from '../../ItemParts/AccessibleFeedback';
 
 interface CustomTimeFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
@@ -116,11 +115,9 @@ function CustomTimeField(props: CustomTimeFieldProps) {
         </FormControl>
         <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
       </Box>
-      <AccessibleFeedback>
-        <Typography component="span" variant="caption" color="error" sx={{ ml: 1.75, mt: -0.5 }}>
-          {feedback}
-        </Typography>
-      </AccessibleFeedback>
+      <Typography component="span" variant="caption" color="error" sx={{ ml: 1.75, mt: -0.5 }}>
+        {feedback}
+      </Typography>
     </>
   );
 }
