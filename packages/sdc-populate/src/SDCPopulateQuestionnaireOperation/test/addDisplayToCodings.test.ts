@@ -17,8 +17,8 @@
 
 import { getCodeSystemLookupPromise } from '../api/lookupCodeSystem';
 import { resolveLookupPromises } from '../utils/resolveLookupPromises';
-import { addDisplayToInitialExpressionsCodings } from '../utils/addDisplayToCodings';
-import type { InitialExpression } from '../interfaces/expressions.interface';
+import { addDisplayToQuestionnaireResponseCodings } from '../utils/addDisplayToCodings';
+import type { QuestionnaireResponseItem } from 'fhir/r4';
 
 // Mock getCodeSystemLookupPromise function
 jest.mock('../api/lookupCodeSystem');
@@ -26,15 +26,18 @@ jest.mock('../api/lookupCodeSystem');
 // Mock resolveLookupPromises function
 jest.mock('../utils/resolveLookupPromises');
 
-describe('addDisplayToInitialExpressionsCodings', () => {
+beforeEach(() => {
+  jest.clearAllMocks();
+});
+
+describe('addDisplayToQuestionnaireResponseCodings', () => {
   it('should populate display if missing using lookup', async () => {
-    const coding = { system: 'test', code: '123' };
-    const initialExpressions: Record<string, InitialExpression> = {
-      myKey: {
-        value: [coding],
-        expression: 'some expression'
+    const qrItems: QuestionnaireResponseItem[] = [
+      {
+        linkId: 'myItem',
+        answer: [{ valueCoding: { system: 'test', code: '123' } }]
       }
-    };
+    ];
 
     (getCodeSystemLookupPromise as jest.Mock).mockImplementation((coding, map) => {
       map['system=test&code=123'] = {
@@ -45,39 +48,40 @@ describe('addDisplayToInitialExpressionsCodings', () => {
 
     (resolveLookupPromises as jest.Mock).mockResolvedValue({
       'system=test&code=123': {
-        newCoding: { ...coding, display: 'Looked Up Display' }
+        newCoding: { system: 'test', code: '123', display: 'Looked Up Display' }
       }
     });
 
-    const result = await addDisplayToInitialExpressionsCodings(initialExpressions);
+    await addDisplayToQuestionnaireResponseCodings(qrItems);
 
-    expect(result.myKey.value[0].display).toBe('Looked Up Display');
+    expect(qrItems[0].answer?.[0].valueCoding?.display).toBe('Looked Up Display');
   });
 
   it('should skip codings that already have display', async () => {
-    const initialExpressions: Record<string, InitialExpression> = {
-      existing: {
-        value: [{ system: 'x', code: 'y', display: 'Already There' }],
-        expression: 'some expression'
+    const qrItems: QuestionnaireResponseItem[] = [
+      {
+        linkId: 'existingItem',
+        answer: [{ valueCoding: { system: 'x', code: 'y', display: 'Already There' } }]
       }
-    };
+    ];
 
-    const result = await addDisplayToInitialExpressionsCodings(initialExpressions);
+    await addDisplayToQuestionnaireResponseCodings(qrItems);
 
-    expect(result.existing.value[0].display).toBe('Already There');
+    expect(qrItems[0].answer?.[0].valueCoding?.display).toBe('Already There');
     expect(getCodeSystemLookupPromise).not.toHaveBeenCalled();
   });
 
   it('should handle multiple codings and only lookup ones without display', async () => {
-    const initialExpressions = {
-      one: {
-        value: [
-          { system: 'a', code: '1', display: 'Exists' },
-          { system: 'a', code: '2' }
-        ],
-        expression: 'some expression'
+    const qrItems: QuestionnaireResponseItem[] = [
+      {
+        linkId: 'item1',
+        answer: [{ valueCoding: { system: 'a', code: '1', display: 'Exists' } }]
+      },
+      {
+        linkId: 'item2',
+        answer: [{ valueCoding: { system: 'a', code: '2' } }]
       }
-    };
+    ];
 
     (getCodeSystemLookupPromise as jest.Mock).mockImplementation((coding, map) => {
       map['system=a&code=2'] = {
@@ -92,9 +96,40 @@ describe('addDisplayToInitialExpressionsCodings', () => {
       }
     });
 
-    const result = await addDisplayToInitialExpressionsCodings(initialExpressions);
+    await addDisplayToQuestionnaireResponseCodings(qrItems);
 
-    expect(result.one.value[0].display).toBe('Exists');
-    expect(result.one.value[1].display).toBe('Fetched');
+    expect(qrItems[0].answer?.[0].valueCoding?.display).toBe('Exists');
+    expect(qrItems[1].answer?.[0].valueCoding?.display).toBe('Fetched');
+  });
+
+  it('should populate display for codings nested in repeat group items', async () => {
+    const qrItems: QuestionnaireResponseItem[] = [
+      {
+        linkId: 'group',
+        item: [
+          {
+            linkId: 'child',
+            answer: [{ valueCoding: { system: 'test', code: '456' } }]
+          }
+        ]
+      }
+    ];
+
+    (getCodeSystemLookupPromise as jest.Mock).mockImplementation((coding, map) => {
+      map['system=test&code=456'] = {
+        oldCoding: coding,
+        promise: Promise.resolve({})
+      };
+    });
+
+    (resolveLookupPromises as jest.Mock).mockResolvedValue({
+      'system=test&code=456': {
+        newCoding: { system: 'test', code: '456', display: 'Nested Display' }
+      }
+    });
+
+    await addDisplayToQuestionnaireResponseCodings(qrItems);
+
+    expect(qrItems[0].item?.[0].answer?.[0].valueCoding?.display).toBe('Nested Display');
   });
 });

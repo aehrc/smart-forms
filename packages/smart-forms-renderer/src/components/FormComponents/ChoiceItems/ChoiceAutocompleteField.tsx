@@ -98,7 +98,7 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
           textFieldWidth={textFieldWidth}
           isTabled={isTabled}
           size="small"
-          placeholder={entryFormat || displayPrompt}
+          placeholder={valueCoding ? undefined : entryFormat || displayPrompt}
           slotProps={{
             input: {
               ...params.InputProps,
