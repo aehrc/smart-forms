@@ -86,7 +86,7 @@ function DecimalField(props: DecimalFieldProps) {
         htmlInput: {
           inputMode: 'numeric',
           pattern: '[0-9]*',
-          ...(ariaLabel && { 'aria-label': ariaLabel })
+          'aria-label': ariaLabel
         },
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
