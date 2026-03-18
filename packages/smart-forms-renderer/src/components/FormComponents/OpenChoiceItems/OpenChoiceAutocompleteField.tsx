@@ -146,6 +146,8 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
               }
             }
           }}
+          data-linkid={qItem.linkId}
+          data-label={qItem.text}
           data-test="q-item-open-choice-autocomplete-field"
         />
       )}

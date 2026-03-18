@@ -82,6 +82,8 @@ function TextField(props: TextFieldProps) {
       }}
       helperText={<AccessibleFeedback>{feedback}</AccessibleFeedback>}
       data-test="q-item-text-field"
+      data-linkid={qItem.linkId}
+      data-label={qItem.text}
     />
   );
 }
