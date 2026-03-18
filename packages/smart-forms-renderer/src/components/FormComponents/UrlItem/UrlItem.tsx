@@ -24,7 +24,7 @@ import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import UrlField from './UrlField';
-import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import ItemFieldGrid, { getInstructionsId } from '../ItemParts/ItemFieldGrid';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
@@ -62,9 +62,8 @@ function UrlItem(props: BaseItemProps) {
 
   const { displayInstructions } = useRenderingExtensions(qItem);
 
-  // Generate instruction ID if instructions exist and there's no feedback
-  const instructionsId =
-    displayInstructions && !feedback ? `instructions-${qItem.linkId}` : undefined;
+  // Get instructions ID for aria-describedby
+  const instructionsId = getInstructionsId(qItem, displayInstructions, !!feedback);
 
   // Event handlers
   function handleChange(newInput: string) {

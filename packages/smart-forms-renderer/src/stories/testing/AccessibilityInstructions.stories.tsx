@@ -68,7 +68,8 @@ export const StringInstructionsAccessibility: Story = createStory({
     // Use findByLinkIdOrLabel to wait for element to be rendered
     const element = await findByLinkIdOrLabel(canvasElement, 'email');
     const inputField = element.querySelector('[data-test="q-item-string-field"]');
-    const input = inputField?.querySelector('input');
+    // String fields use multiline TextField which renders as textarea
+    const input = inputField?.querySelector('textarea');
     const ariaDescribedBy = input?.getAttribute('aria-describedby');
 
     // Check that aria-describedby is present and references the instructions
@@ -377,7 +378,8 @@ export const UrlInstructionsAccessibility: Story = createStory({
   play: async ({ canvasElement }) => {
     const element = await findByLinkIdOrLabel(canvasElement, 'website');
     const inputField = element.querySelector('[data-test="q-item-url-field"]');
-    const input = inputField?.querySelector('input');
+    // URL fields use multiline TextField which renders as textarea
+    const input = inputField?.querySelector('textarea');
     const ariaDescribedBy = input?.getAttribute('aria-describedby');
 
     expect(ariaDescribedBy).toBeTruthy();
@@ -427,7 +429,7 @@ export const AttachmentInstructionsAccessibility: Story = createStory({
   },
   play: async ({ canvasElement }) => {
     const element = await findByLinkIdOrLabel(canvasElement, 'document');
-    const uploadButton = element.querySelector('[data-test="q-item-attachment-field"]');
+    const uploadButton = element.querySelector('[data-test="q-item-attachment-file-input"]');
     const input = uploadButton?.querySelector('input[type="file"]');
     const ariaDescribedBy = input?.getAttribute('aria-describedby');
 
@@ -476,7 +478,7 @@ export const DateInstructionsAccessibility: Story = createStory({
   },
   play: async ({ canvasElement }) => {
     const element = await findByLinkIdOrLabel(canvasElement, 'birthdate');
-    const inputField = element.querySelector('[data-test="q-item-date-field"]');
+    const inputField = element.querySelector('[data-test="date"]');
     const input = inputField?.querySelector('input');
     const ariaDescribedBy = input?.getAttribute('aria-describedby');
 
@@ -527,7 +529,7 @@ export const DateTimeInstructionsAccessibility: Story = createStory({
   },
   play: async ({ canvasElement }) => {
     const element = await findByLinkIdOrLabel(canvasElement, 'appointment');
-    const inputField = element.querySelector('[data-test="q-item-date-time-field"]');
+    const inputField = element.querySelector('[data-test="date"]');
     const input = inputField?.querySelector('input');
     const ariaDescribedBy = input?.getAttribute('aria-describedby');
 
@@ -578,8 +580,8 @@ export const TimeInstructionsAccessibility: Story = createStory({
   },
   play: async ({ canvasElement }) => {
     const element = await findByLinkIdOrLabel(canvasElement, 'waketime');
-    const inputField = element.querySelector('[data-test="q-item-time-field"]');
-    const input = inputField?.querySelector('input');
+    // CustomTimeField doesn't have a data-test attribute, so we look for the input directly
+    const input = element.querySelector('input');
     const ariaDescribedBy = input?.getAttribute('aria-describedby');
 
     expect(ariaDescribedBy).toBeTruthy();
@@ -632,10 +634,9 @@ export const ChoiceInstructionsAccessibility: Story = createStory({
   },
   play: async ({ canvasElement }) => {
     const element = await findByLinkIdOrLabel(canvasElement, 'gender');
-    const radioGroup = element.querySelector('[role="radiogroup"]');
-    const radioInputs = radioGroup?.querySelectorAll('input[type="radio"]');
-    const firstRadioInput = radioInputs?.[0];
-    const ariaDescribedBy = firstRadioInput?.getAttribute('aria-describedby');
+    // CustomChoiceSelectField uses MUI Select, find the group wrapper with aria-describedby
+    const groupWrapper = element.querySelector('[role="group"]');
+    const ariaDescribedBy = groupWrapper?.getAttribute('aria-describedby');
 
     expect(ariaDescribedBy).toBeTruthy();
     expect(ariaDescribedBy).toContain('instructions-gender');
@@ -688,7 +689,8 @@ export const OpenChoiceInstructionsAccessibility: Story = createStory({
   play: async ({ canvasElement }) => {
     const element = await findByLinkIdOrLabel(canvasElement, 'occupation');
     const select = element.querySelector('[data-test="q-item-open-choice-select"]');
-    const ariaDescribedBy = select?.getAttribute('aria-describedby');
+    const selectButton = select?.querySelector('[role="combobox"]');
+    const ariaDescribedBy = selectButton?.getAttribute('aria-describedby');
 
     expect(ariaDescribedBy).toBeTruthy();
     expect(ariaDescribedBy).toContain('instructions-occupation');

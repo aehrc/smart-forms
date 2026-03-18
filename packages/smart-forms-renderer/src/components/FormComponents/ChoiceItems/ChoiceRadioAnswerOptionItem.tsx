@@ -20,7 +20,6 @@ import type { QuestionnaireItemAnswerOption } from 'fhir/r4';
 import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 import useReadOnly from '../../../hooks/useReadOnly';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
-import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import { ChoiceItemControl } from '../../../interfaces/choice.enum';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';

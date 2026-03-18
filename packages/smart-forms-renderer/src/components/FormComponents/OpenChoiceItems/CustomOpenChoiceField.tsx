@@ -87,7 +87,8 @@ function CustomOpenChoiceField(props: CustomOpenChoiceFieldProps) {
   );
 
   // Convert Coding to a string key for Select value
-  const getCodingKey = (coding: Coding): string => {
+  const getCodingKey = (coding: Coding | null | undefined): string => {
+    if (!coding) return '';
     return `${coding.system || ''}-${coding.code || ''}`;
   };
 
@@ -100,8 +101,14 @@ function CustomOpenChoiceField(props: CustomOpenChoiceFieldProps) {
   // Get current select value
   const getSelectValue = (): string => {
     if (showCustomInput) return CUSTOM_VALUE_KEY;
-    if (typeof valueAutocomplete === 'object' && valueAutocomplete.code) {
-      return getCodingKey(valueAutocomplete);
+    if (typeof valueAutocomplete === 'object' && valueAutocomplete) {
+      if (valueAutocomplete.code) {
+        const key = getCodingKey(valueAutocomplete);
+        // Verify the key exists in options
+        if (findCodingByKey(key)) {
+          return key;
+        }
+      }
     }
     return '';
   };
@@ -212,7 +219,7 @@ function CustomOpenChoiceField(props: CustomOpenChoiceFieldProps) {
             htmlInput: {
               'aria-label': isTabled
                 ? `${qItem.text ?? 'Unnamed open-choice'} custom value`
-                : qItem.text ?? 'Unnamed open-choice custom value',
+                : (qItem.text ?? 'Unnamed open-choice custom value'),
               ...(instructionsId && { 'aria-describedby': instructionsId })
             }
           }}

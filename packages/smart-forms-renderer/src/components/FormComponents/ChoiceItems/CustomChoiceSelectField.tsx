@@ -136,26 +136,26 @@ function CustomChoiceSelectField(props: CustomChoiceSelectFieldProps) {
                 }
                 return getAnswerOptionLabel(option);
               }}>
-            {displayPrompt && (
-              <MenuItem value="" disabled>
-                <span style={{ color: '#999' }}>{displayPrompt}</span>
-              </MenuItem>
-            )}
-            {options.map((option) => {
-              const optionKey = getOptionKey(option);
-              const disabled = isOptionDisabled(option, answerOptionsToggleExpressionsMap);
-              const label = getAnswerOptionLabel(option);
-
-              return (
-                <MenuItem key={optionKey} value={optionKey} disabled={disabled}>
-                  {option.valueString ? (
-                    <StyledText textToDisplay={label} element={option._valueString} />
-                  ) : (
-                    label
-                  )}
+              {displayPrompt && (
+                <MenuItem value="" disabled>
+                  <span style={{ color: '#999' }}>{displayPrompt}</span>
                 </MenuItem>
-              );
-            })}
+              )}
+              {options.map((option) => {
+                const optionKey = getOptionKey(option);
+                const disabled = isOptionDisabled(option, answerOptionsToggleExpressionsMap);
+                const label = getAnswerOptionLabel(option);
+
+                return (
+                  <MenuItem key={optionKey} value={optionKey} disabled={disabled}>
+                    {option.valueString ? (
+                      <StyledText textToDisplay={label} element={option._valueString} />
+                    ) : (
+                      label
+                    )}
+                  </MenuItem>
+                );
+              })}
             </Select>
           </FormControl>
         </div>

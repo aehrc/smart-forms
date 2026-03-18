@@ -23,7 +23,6 @@ import useDateNonEmptyValidation from '../../../../hooks/useDateTimeNonEmpty';
 import useDateValidation from '../../../../hooks/useDateValidation';
 import useReadOnly from '../../../../hooks/useReadOnly';
 import useTimeValidation from '../../../../hooks/useTimeValidation';
-import useRenderingExtensions from '../../../../hooks/useRenderingExtensions';
 import type { BaseItemProps } from '../../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../../stores';
 import { createEmptyQrItem, getQRItemId } from '../../../../utils/qrItem';

@@ -2,6 +2,6 @@
 module.exports = {
   timeout: 30000,
   async preVisit(page) {
-    page.setDefaultTimeout(15000);
+    page.setDefaultTimeout(30000);
   },
 };

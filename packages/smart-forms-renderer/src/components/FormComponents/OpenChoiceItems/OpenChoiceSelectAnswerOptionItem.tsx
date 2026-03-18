@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 
-import type { AutocompleteChangeReason } from '@mui/material';
-import type { Coding, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import type { Coding } from 'fhir/r4';
 import useReadOnly from '../../../hooks/useReadOnly';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
@@ -60,11 +59,11 @@ function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
 
   // Convert answerOptions to Coding format for CustomOpenChoiceField
   const codingOptions: Coding[] = answerOptions
-    .filter((opt) => opt.valueCoding)
-    .map((opt) => opt.valueCoding!);
+    .map((opt) => opt.valueCoding)
+    .filter((coding): coding is Coding => Boolean(coding));
 
   const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem, answerKey);
-  
+
   // Get current value as Coding or string
   let valueAutocomplete: Coding | string = '';
   if (qrOpenChoice.answer && qrOpenChoice.answer[0]) {

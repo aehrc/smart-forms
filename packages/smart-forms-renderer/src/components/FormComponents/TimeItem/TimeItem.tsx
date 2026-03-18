@@ -24,7 +24,6 @@ import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import useReadOnly from '../../../hooks/useReadOnly';
-import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
 

@@ -25,7 +25,7 @@ import {
   questionnaireFactory,
   questionnaireResponseFactory
 } from '../testUtils';
-import { expect, fireEvent } from 'storybook/test';
+import { expect } from 'storybook/test';
 import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -72,17 +72,10 @@ export const TextBasic: Story = createStory({
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual(expect.objectContaining({ valueString: targetInput }));
 
+    await inputText(canvasElement, targetLinkId, '');
+
     const elementAfterClear = await findByLinkIdOrLabel(canvasElement, targetLinkId);
     const input = elementAfterClear.querySelector('textarea');
-
-    // Clear value
-    if (input) {
-      await fireEvent.focus(input);
-      await fireEvent.input(input, { target: { value: '' } });
-    }
-
-    // Here we await for debounced store update
-    await new Promise((resolve) => setTimeout(resolve, 500));
     const resultAfterClear = await getAnswers(targetLinkId);
     expect(resultAfterClear).toHaveLength(0);
     expect(input?.value).toBe('');

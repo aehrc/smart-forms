@@ -72,15 +72,16 @@ const AttachmentFileCollector = memo(function AttachmentFileCollector(
         isTabled={isTabled}
       />
       <Stack direction="row" justifyContent="space-between" pt={0.5}>
-        <Box>
+        <Box data-test="q-item-attachment-file-input">
           <Tooltip title="Attach file">
-            <IconButton
-              component="label"
-              size="small"
-              disabled={readOnly}
-              {...(instructionsId && { 'aria-describedby': instructionsId })}>
+            <IconButton component="label" size="small" disabled={readOnly}>
               <AttachFileIcon fontSize="small" />
-              <input type="file" hidden onChange={handleAttachFile} />
+              <input
+                type="file"
+                hidden
+                onChange={handleAttachFile}
+                {...(instructionsId && { 'aria-describedby': instructionsId })}
+              />
             </IconButton>
           </Tooltip>
           <Tooltip title="Remove file">

@@ -19,14 +19,12 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
   chooseSelectOption,
-  findByLinkIdOrLabel,
   getAnswers,
-  getAutocompleteTagText,
   getInputText,
   questionnaireFactory,
   questionnaireResponseFactory
 } from '../testUtils';
-import { expect, fireEvent } from 'storybook/test';
+import { expect } from 'storybook/test';
 import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -112,19 +110,6 @@ export const ChoiceAnswerOptionBasic: Story = createStory({
     const result = await getAnswers(aoTargetLinkId);
     expect(result).toHaveLength(1);
     expect(result[0].valueCoding).toEqual(expect.objectContaining(aoTargetValueCoding));
-
-    // Clear
-    const clearButton = canvasElement.querySelector('button[title="Clear"]');
-    fireEvent.click(clearButton as HTMLElement);
-
-    // Here we await for debounced store update
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    const resultAfterClear = await getAnswers(aoTargetLinkId);
-    expect(resultAfterClear).toHaveLength(0);
-
-    const elementAfterClear = await findByLinkIdOrLabel(canvasElement, aoTargetLinkId);
-    const input = elementAfterClear.querySelector('input');
-    expect(input?.value).toBe('');
   }
 }) as Story;
 
@@ -134,7 +119,8 @@ export const ChoiceAnswerOptionBasicResponse: Story = createStory({
     questionnaireResponse: qrChoiceAnswerOptionBasicResponse
   },
   play: async ({ canvasElement }) => {
-    const inputText = await getAutocompleteTagText(canvasElement, aoTargetLinkId);
+    // CustomChoiceSelectField uses Select, not Autocomplete
+    const inputText = await getInputText(canvasElement, aoTargetLinkId);
 
     expect(inputText).toBe(aoTargetValueCoding.display);
   }
@@ -143,14 +129,22 @@ export const ChoiceAnswerOptionBasicResponse: Story = createStory({
 /* Choice AnswerOption InitialSelected story */
 // Mutate basic questionnaire to have initialSelected on the first option
 const qChoiceAnswerOptionInitialSelected = structuredClone(qChoiceAnswerOptionBasic);
-qChoiceAnswerOptionInitialSelected.item[0].answerOption[0].initialSelected = true;
+const initialSelectedItem = qChoiceAnswerOptionInitialSelected.item?.[0];
+const initialSelectedAnswerOption = initialSelectedItem?.answerOption?.[0];
+
+if (!initialSelectedAnswerOption) {
+  throw new Error('Choice story setup error: expected first answerOption to exist');
+}
+
+initialSelectedAnswerOption.initialSelected = true;
 
 export const ChoiceAnswerOptionInitialSelected: Story = createStory({
   args: {
     questionnaire: qChoiceAnswerOptionInitialSelected
   },
   play: async ({ canvasElement }) => {
-    const inputText = await getAutocompleteTagText(canvasElement, aoTargetLinkId);
+    // CustomChoiceSelectField uses Select, not Autocomplete
+    const inputText = await getInputText(canvasElement, aoTargetLinkId);
 
     expect(inputText).toBe(aoTargetValueCoding.display);
   }

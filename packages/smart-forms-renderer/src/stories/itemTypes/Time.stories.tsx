@@ -44,7 +44,7 @@ type Story = StoryObj<typeof meta>;
 /* Time Basic story */
 const targetLinkId = 'last-meal';
 const targetTimeInput = '11:00:00';
-const targetTimeInputString = '11:00 am';
+const targetTimeInputString = '11:00';
 
 const qTimeBasic = questionnaireFactory([
   {

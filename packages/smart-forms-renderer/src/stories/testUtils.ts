@@ -213,8 +213,26 @@ export async function inputText(
 ) {
   const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
 
+  // Check if this is a DateTime field (has both date and time) - prefer date
+  const dateInput = questionElement.querySelector('[data-test="date"] input');
+  if (dateInput) {
+    fireEvent.change(dateInput, { target: { value: text } });
+    // Wait for debounced store update
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return;
+  }
+
+  // Check if this is a time-only field (has data-test="time" but no date)
+  const timeInput = questionElement.querySelector('[data-test="time"] input');
+  if (timeInput) {
+    fireEvent.change(timeInput, { target: { value: text } });
+    // Wait for debounced store update
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return;
+  }
+
   const input =
-    questionElement?.querySelector('input') ?? questionElement?.querySelector('textarea');
+    questionElement?.querySelector('textarea') ?? questionElement?.querySelector('input');
 
   if (!input) {
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
@@ -229,7 +247,7 @@ export async function inputText(
 export async function checkCheckBox(canvasElement: HTMLElement, linkId: string) {
   const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
   const input =
-    questionElement?.querySelector('input') ?? questionElement?.querySelector('textarea');
+    questionElement?.querySelector('textarea') ?? questionElement?.querySelector('input');
 
   if (!input) {
     throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
@@ -356,6 +374,32 @@ export async function checkRadioOption(canvasElement: HTMLElement, linkId: strin
 
 export async function getInputText(canvasElement: HTMLElement, linkId: string) {
   const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
+
+  // Check if this is a DateTime field (has both date and time) - prefer date
+  const dateInput = questionElement.querySelector('[data-test="date"] input');
+  if (dateInput) {
+    return (dateInput as HTMLInputElement).value;
+  }
+
+  // Check if this is a time-only field (has data-test="time" but no date)
+  const timeInput = questionElement.querySelector('[data-test="time"] input');
+  if (timeInput) {
+    return (timeInput as HTMLInputElement).value;
+  }
+
+  // Check if this is a MUI Select (role="combobox")
+  // But exclude AM/PM selects by checking if it's within ampm test container
+  const selectButton = questionElement.querySelector('[role="combobox"]');
+  if (selectButton) {
+    // Make sure this is not the AM/PM select within a time field
+    const isAmPmSelect = selectButton.closest('[data-test="ampm"]');
+    if (!isAmPmSelect) {
+      // For MUI Select, get the displayed text content, not the value
+      const displayText = selectButton.textContent?.trim() || '';
+      return displayText;
+    }
+  }
+
   const input =
     questionElement?.querySelector('input') ?? questionElement?.querySelector('textarea');
 
@@ -384,9 +428,59 @@ export async function chooseSelectOption(
 ) {
   const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
 
+  // Check if this is a MUI Select element
+  const selectButton = questionElement.querySelector('[role="combobox"]');
+  if (selectButton) {
+    // For MUI Select, use userEvent to click and open the menu
+    await userEvent.click(selectButton);
+
+    // Wait for the option to appear in the document
+    const option = await waitFor(
+      () => {
+        // Try to find the option by text in the document (MUI renders in portal)
+        const allOptions = document.querySelectorAll('[role="option"]');
+        const foundOption = Array.from(allOptions).find(
+          (opt) => opt.textContent?.trim() === optionLabel
+        );
+        if (!foundOption) {
+          throw new Error(`Option "${optionLabel}" not found`);
+        }
+        return foundOption as HTMLElement;
+      },
+      { timeout: 3000 }
+    );
+
+    // Now click the option with fireEvent (more reliable than userEvent in Storybook)
+    fireEvent.click(option);
+
+    // Wait for selection to process
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return;
+  }
+
+  // Check if this is a native select element
+  const selectElement = questionElement.querySelector('select');
+  if (selectElement) {
+    // For native select, find the option by its text content
+    const options = Array.from(selectElement.querySelectorAll('option'));
+    const option = options.find((opt) => opt.textContent?.trim() === optionLabel);
+
+    if (!option) {
+      throw new Error(`Option with label "${optionLabel}" not found in select for ${linkId}`);
+    }
+
+    // Change the select value to the option's value
+    fireEvent.change(selectElement, { target: { value: option.value } });
+
+    // Wait for debounced store update
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return;
+  }
+
+  // Otherwise, handle as MUI Autocomplete
   const input = questionElement.querySelector('input, textarea');
   if (!input) {
-    throw new Error(`There is no input inside ${linkId}`);
+    throw new Error(`There is no input or select inside ${linkId}`);
   }
 
   fireEvent.focus(input);
