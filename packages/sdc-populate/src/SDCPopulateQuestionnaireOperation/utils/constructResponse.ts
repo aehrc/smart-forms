@@ -42,7 +42,7 @@ import { getItemPopulationContextName } from './readPopulationExpressions';
 import { createQuestionnaireReference } from './createQuestionnaireReference';
 import { parseItemInitialToAnswer, parseValueToAnswer } from './parse';
 import { getValueSetPromise } from '../api/expandValueSet';
-import type { FetchTerminologyCallback, FetchTerminologyRequestConfig } from '../interfaces';
+import type { FetchTerminologyCallback, FetchTerminologyRequestConfig, FetchResourceRequestConfig } from '../interfaces';
 import { handleFhirPathResult } from './createFhirPathContext';
 import { TERMINOLOGY_SERVER_URL } from '../../globals';
 import { getDisplayName } from './humanName';
@@ -71,7 +71,8 @@ export async function constructResponse(
   user?: FhirResource,
   encounter?: Encounter,
   fetchTerminologyCallback?: FetchTerminologyCallback,
-  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
+  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig,
+  fetchResourceRequestConfig?: FetchResourceRequestConfig
 ): Promise<QuestionnaireResponse> {
   const questionnaireResponse: QuestionnaireResponse = {
     resourceType: 'QuestionnaireResponse',
@@ -106,7 +107,8 @@ export async function constructResponse(
       answerOptions,
       containedValueSets,
       fetchTerminologyCallback,
-      fetchTerminologyRequestConfig
+      fetchTerminologyRequestConfig,
+      fetchResourceRequestConfig
     });
 
     if (Array.isArray(newTopLevelQRItem)) {
@@ -184,6 +186,7 @@ interface ConstructResponseItemRecursiveParams {
   containedValueSets: Record<string, ValueSet>;
   fetchTerminologyCallback?: FetchTerminologyCallback;
   fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig;
+  fetchResourceRequestConfig?: FetchResourceRequestConfig;
 }
 
 /**
@@ -204,7 +207,8 @@ async function constructResponseItemRecursive(
     answerOptions,
     containedValueSets,
     fetchTerminologyCallback,
-    fetchTerminologyRequestConfig
+    fetchTerminologyRequestConfig,
+    fetchResourceRequestConfig
   } = params;
 
   const items = qItem.item;
@@ -225,7 +229,8 @@ async function constructResponseItemRecursive(
         answerOptions,
         containedValueSets,
         fetchTerminologyCallback,
-        fetchTerminologyRequestConfig
+        fetchTerminologyRequestConfig,
+        fetchResourceRequestConfig
       );
     }
 
@@ -241,7 +246,8 @@ async function constructResponseItemRecursive(
         answerOptions,
         containedValueSets,
         fetchTerminologyCallback: fetchTerminologyCallback,
-        fetchTerminologyRequestConfig: fetchTerminologyRequestConfig
+        fetchTerminologyRequestConfig: fetchTerminologyRequestConfig,
+        fetchResourceRequestConfig: fetchResourceRequestConfig
       });
 
       if (Array.isArray(newQrItem)) {
@@ -549,7 +555,8 @@ async function constructRepeatGroupInstances(
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>,
   containedValueSets: Record<string, ValueSet>,
   fetchTerminologyCallback?: FetchTerminologyCallback,
-  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
+  fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig,
+  fetchResourceRequestConfig?: FetchResourceRequestConfig
 ): Promise<QuestionnaireResponseItem[]> {
   if (!qRepeatGroupParent.item || !qRepeatGroupParent.item[0]) {
     return [];
@@ -558,6 +565,7 @@ async function constructRepeatGroupInstances(
   const { initialExpressions, itemPopulationContexts } = populationExpressions;
 
   const terminologyServerUrl = fetchTerminologyRequestConfig?.terminologyServerUrl ?? null;
+  const fhirServerUrl = fetchResourceRequestConfig?.sourceServerUrl ?? null;
 
   // Look in initialExpressions of each of the child items to relate back to the itemPopulationContext its using
   let itemPopulationContextExpression: string | undefined;
@@ -628,7 +636,8 @@ async function constructRepeatGroupInstances(
             fhirpath_r4_model,
             {
               async: true,
-              terminologyUrl: terminologyServerUrl ?? TERMINOLOGY_SERVER_URL
+              terminologyUrl: terminologyServerUrl ?? TERMINOLOGY_SERVER_URL,
+              ...(fhirServerUrl && { fhirServerUrl })
             }
           );
           const initialValues = await handleFhirPathResult(fhirPathResult);
@@ -682,7 +691,10 @@ async function constructRepeatGroupInstances(
           fhirPathContext,
           valueSetPromises,
           answerOptions,
-          containedValueSets
+          containedValueSets,
+          fetchTerminologyCallback,
+          fetchTerminologyRequestConfig,
+          fetchResourceRequestConfig
         });
 
         if (Array.isArray(newQrItem)) {

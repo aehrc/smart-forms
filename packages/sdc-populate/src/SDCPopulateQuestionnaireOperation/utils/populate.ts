@@ -122,7 +122,8 @@ export async function populate(
     user,
     encounter,
     fetchTerminologyCallback,
-    fetchTerminologyRequestConfig
+    fetchTerminologyRequestConfig,
+    fetchResourceRequestConfig
   );
 
   // Add display values to any valueCoding answers lacking them via CodeSystem $lookup.
