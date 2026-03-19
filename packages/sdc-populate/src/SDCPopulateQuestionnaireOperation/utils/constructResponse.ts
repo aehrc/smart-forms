@@ -42,7 +42,11 @@ import { getItemPopulationContextName } from './readPopulationExpressions';
 import { createQuestionnaireReference } from './createQuestionnaireReference';
 import { parseItemInitialToAnswer, parseValueToAnswer } from './parse';
 import { getValueSetPromise } from '../api/expandValueSet';
-import type { FetchTerminologyCallback, FetchTerminologyRequestConfig, FetchResourceRequestConfig } from '../interfaces';
+import type {
+  FetchTerminologyCallback,
+  FetchTerminologyRequestConfig,
+  FetchResourceRequestConfig
+} from '../interfaces';
 import { handleFhirPathResult } from './createFhirPathContext';
 import { TERMINOLOGY_SERVER_URL } from '../../globals';
 import { getDisplayName } from './humanName';

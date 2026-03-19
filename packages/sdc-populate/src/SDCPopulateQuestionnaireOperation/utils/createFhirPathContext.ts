@@ -58,7 +58,12 @@ export async function createFhirPathContext(
   fetchTerminologyRequestConfig?: FetchTerminologyRequestConfig
 ): Promise<Record<string, any>> {
   const { launchContexts, updatedReferenceContexts, updatedContainedBatchContexts } =
-    await replaceFhirPathEmbeddings(parameters, questionnaire, fetchTerminologyRequestConfig, fetchResourceRequestConfig);
+    await replaceFhirPathEmbeddings(
+      parameters,
+      questionnaire,
+      fetchTerminologyRequestConfig,
+      fetchResourceRequestConfig
+    );
 
   const fhirPathContext: Record<string, any> = {
     resource: structuredClone(emptyResponse),

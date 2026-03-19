@@ -499,12 +499,9 @@ describe('evaluateFhirPathVariables', () => {
     };
     const issues: OperationOutcomeIssue[] = [];
 
-    await evaluateFhirPathVariables(
-      expressions,
-      fhirPathContext,
-      issues,
-      { terminologyServerUrl: terminologyServerUrl }
-    );
+    await evaluateFhirPathVariables(expressions, fhirPathContext, issues, {
+      terminologyServerUrl: terminologyServerUrl
+    });
 
     expect(fhirPathContext.patientName).toStrictEqual(['John Doe']);
     expect(issues).toHaveLength(0);
