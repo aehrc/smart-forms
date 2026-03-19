@@ -458,6 +458,57 @@ describe('evaluateFhirPathVariables', () => {
     expect(issues).toHaveLength(1);
     expect(issues[0].details.text).toContain('Error:');
   });
+
+  it('accepts fetchResourceRequestConfig and evaluates successfully', async () => {
+    const expressions: Expression[] = [
+      {
+        name: 'patientName',
+        language: 'text/fhirpath',
+        expression: '%patient.name.first().text'
+      }
+    ];
+
+    const fhirPathContext: Record<string, any> = {
+      patient: mockPatient
+    };
+    const issues: OperationOutcomeIssue[] = [];
+
+    await evaluateFhirPathVariables(
+      expressions,
+      fhirPathContext,
+      issues,
+      { terminologyServerUrl: terminologyServerUrl },
+      mockFetchResourceCallbackConfig
+    );
+
+    expect(fhirPathContext.patientName).toStrictEqual(['John Doe']);
+    expect(issues).toHaveLength(0);
+  });
+
+  it('evaluates successfully without fetchResourceRequestConfig', async () => {
+    const expressions: Expression[] = [
+      {
+        name: 'patientName',
+        language: 'text/fhirpath',
+        expression: '%patient.name.first().text'
+      }
+    ];
+
+    const fhirPathContext: Record<string, any> = {
+      patient: mockPatient
+    };
+    const issues: OperationOutcomeIssue[] = [];
+
+    await evaluateFhirPathVariables(
+      expressions,
+      fhirPathContext,
+      issues,
+      { terminologyServerUrl: terminologyServerUrl }
+    );
+
+    expect(fhirPathContext.patientName).toStrictEqual(['John Doe']);
+    expect(issues).toHaveLength(0);
+  });
 });
 
 describe('getFhirPathVariables', () => {
@@ -886,6 +937,33 @@ describe('evaluateFhirPathEmbeddings', () => {
     ];
 
     const result = await evaluateFhirPathEmbeddings(fhirPathEmbeddingsMap, mockLaunchContexts);
+
+    expect(result).toEqual({
+      'patient.id': 'patient-123'
+    });
+  });
+
+  it('accepts fetchResourceRequestConfig and evaluates embeddings correctly', async () => {
+    const fhirPathEmbeddingsMap = {
+      'patient.id': ''
+    };
+
+    const mockLaunchContexts: ResourceContext[] = [
+      {
+        name: 'context',
+        part: [
+          { name: 'name', valueString: 'patient' },
+          { name: 'content', resource: mockPatient }
+        ]
+      }
+    ];
+
+    const result = await evaluateFhirPathEmbeddings(
+      fhirPathEmbeddingsMap,
+      mockLaunchContexts,
+      { terminologyServerUrl: terminologyServerUrl },
+      mockFetchResourceCallbackConfig
+    );
 
     expect(result).toEqual({
       'patient.id': 'patient-123'
