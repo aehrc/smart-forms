@@ -570,19 +570,6 @@ export const QRAboriginalTorresStraitIslanderHealthCheck: QuestionnaireResponse 
                       ]
                     },
                     {
-                      linkId: 'regularmedications-summary-current-medication',
-                      text: 'Medication',
-                      answer: [
-                        {
-                          valueCoding: {
-                            system: 'http://snomed.info/sct',
-                            code: '22717011000036101',
-                            display: 'Chloramphenicol 1% eye ointment'
-                          }
-                        }
-                      ]
-                    },
-                    {
                       linkId: 'regularmedications-summary-current-status',
                       text: 'Status',
                       answer: [
@@ -628,19 +615,6 @@ export const QRAboriginalTorresStraitIslanderHealthCheck: QuestionnaireResponse 
                       answer: [
                         {
                           valueString: 'karvezide-pat-repop'
-                        }
-                      ]
-                    },
-                    {
-                      linkId: 'regularmedications-summary-current-medication',
-                      text: 'Medication',
-                      answer: [
-                        {
-                          valueCoding: {
-                            system: 'http://snomed.info/sct',
-                            code: '6554011000036100',
-                            display: 'Karvezide 300/12.5 tablet'
-                          }
                         }
                       ]
                     },
@@ -704,19 +678,6 @@ export const QRAboriginalTorresStraitIslanderHealthCheck: QuestionnaireResponse 
                       ]
                     },
                     {
-                      linkId: 'regularmedications-summary-current-medication',
-                      text: 'Medication',
-                      answer: [
-                        {
-                          valueCoding: {
-                            system: 'http://snomed.info/sct',
-                            code: '920941011000036100',
-                            display: 'CoQ10 (Blackmores)'
-                          }
-                        }
-                      ]
-                    },
-                    {
                       linkId: 'regularmedications-summary-current-status',
                       text: 'Status',
                       answer: [
@@ -753,19 +714,6 @@ export const QRAboriginalTorresStraitIslanderHealthCheck: QuestionnaireResponse 
                       ]
                     },
                     {
-                      linkId: 'regularmedications-summary-current-medication',
-                      text: 'Medication',
-                      answer: [
-                        {
-                          valueCoding: {
-                            system: 'http://snomed.info/sct',
-                            code: '23281011000036106',
-                            display: 'Bisoprolol fumarate 2.5 mg tablet'
-                          }
-                        }
-                      ]
-                    },
-                    {
                       linkId: 'regularmedications-summary-current-status',
                       text: 'Status',
                       answer: [
@@ -798,19 +746,6 @@ export const QRAboriginalTorresStraitIslanderHealthCheck: QuestionnaireResponse 
                       answer: [
                         {
                           valueString: 'hc-ms-pat-repop'
-                        }
-                      ]
-                    },
-                    {
-                      linkId: 'regularmedications-summary-current-medication',
-                      text: 'Medication',
-                      answer: [
-                        {
-                          valueCoding: {
-                            system: 'http://snomed.info/sct',
-                            code: '22015011000036108',
-                            display: 'Hydrocortisone 1% Topical Cream'
-                          }
                         }
                       ]
                     },
@@ -1400,112 +1335,6 @@ export const QRAboriginalTorresStraitIslanderHealthCheck: QuestionnaireResponse 
               text: 'Health priorities, actions and follow-up',
               item: [
                 {
-                  linkId: 'fe9feec6-593a-4106-8a7d-f9965a632ea2',
-                  text: 'Observation values',
-                  item: [
-                    {
-                      linkId: 'bac0f824-3784-400e-80f9-ad18d46bd8cb',
-                      text: 'Smoking status',
-                      item: [
-                        {
-                          linkId: '333007c7-47a9-482b-af11-e55484abf2ae',
-                          text: 'Value',
-                          answer: [
-                            {
-                              valueCoding: {
-                                system: 'http://snomed.info/sct',
-                                code: '77176002',
-                                display: 'Current smoker'
-                              }
-                            }
-                          ]
-                        },
-                        {
-                          linkId: 'cvdrisk-smokingstatus-date',
-                          text: 'Date performed',
-                          answer: [
-                            {
-                              valueDate: '2016-07-02'
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      linkId: 'fa4f73a3-7633-410c-9177-8aa43b117122',
-                      text: 'Systolic Blood Pressure',
-                      item: [
-                        {
-                          linkId: '818ce640-c8dd-457d-b607-3aaa8da38524',
-                          text: 'Value',
-                          answer: [
-                            {
-                              valueInteger: 165
-                            }
-                          ]
-                        },
-                        {
-                          linkId: '85d8faf7-ddb0-446c-b489-28d786d6de50',
-                          text: 'Date performed',
-                          answer: [
-                            {
-                              valueDate: '2023-09-13'
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      linkId: 'e693c7d2-be69-4f1f-b72d-7ff2ea3cd536',
-                      text: 'Total Cholesterol',
-                      item: [
-                        {
-                          linkId: '99932a93-8135-47b2-933b-fd751b34b7af',
-                          text: 'Value',
-                          answer: [
-                            {
-                              valueDecimal: 5.9
-                            }
-                          ]
-                        },
-                        {
-                          linkId: '16cbe87b-5c8d-4385-b7d9-da3f07f63f8a',
-                          text: 'Date performed',
-                          answer: [
-                            {
-                              valueDate: '2023-01-17'
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      linkId: '87eefaf6-010f-4b0d-9f51-2c33e46e6c69',
-                      text: 'HDL Cholesterol',
-                      item: [
-                        {
-                          linkId: 'c14b4513-1e20-461d-97f4-4631711adc65',
-                          text: 'Value',
-                          answer: [
-                            {
-                              valueDecimal: 1.5
-                            }
-                          ]
-                        },
-                        {
-                          linkId: '6407e0a7-c416-4a75-933b-904c0dcf88ca',
-                          text: 'Date performed',
-                          answer: [
-                            {
-                              valueDate: '2023-01-17'
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
                   linkId: '1c1eea28-6c82-4b7b-aaa3-8655ce70f2fd',
                   text: 'Type 2 diabetes mellitus',
                   answer: [
@@ -1528,8 +1357,8 @@ export const QRAboriginalTorresStraitIslanderHealthCheck: QuestionnaireResponse 
   },
   author: {
     type: 'Practitioner',
-    display: 'Dr Peter Primary',
-    reference: 'Practitioner/primary-peter'
+    reference: 'Practitioner/primary-peter',
+    display: 'Dr Peter Primary'
   },
   authored: '2025-08-07T07:38:03.107Z',
   meta: {
