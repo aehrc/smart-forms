@@ -25,7 +25,7 @@ import {
   questionnaireFactory,
   questionnaireResponseFactory
 } from '../testUtils';
-import { expect, fireEvent } from 'storybook/test';
+import { expect, fireEvent, within } from 'storybook/test';
 import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -98,5 +98,58 @@ export const TextBasicResponse: Story = createStory({
     const inputText = await getInputText(canvasElement, targetLinkId);
 
     expect(inputText).toBe(targetInput);
+  }
+}) as Story;
+
+/* Text with instructions for accessibility testing */
+const qTextAccessibility = questionnaireFactory([
+  {
+    linkId: 'comments',
+    type: 'text',
+    repeats: false,
+    text: 'Additional Comments',
+    item: [
+      {
+        linkId: 'comments-instructions',
+        type: 'display',
+        text: 'Please provide any additional information you think is relevant',
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory',
+            valueCodeableConcept: {
+              coding: [
+                {
+                  system: 'http://hl7.org/fhir/questionnaire-display-category',
+                  code: 'instructions'
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+]);
+
+export const TextInstructionsAccessibility: Story = createStory({
+  args: {
+    questionnaire: qTextAccessibility
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const inputField = canvas.getByTestId('q-item-text-field');
+    const textarea = inputField.querySelector('textarea');
+    const ariaDescribedBy = textarea?.getAttribute('aria-describedby');
+
+    // Check that aria-describedby is present and references the instructions
+    expect(ariaDescribedBy).toBeTruthy();
+    expect(ariaDescribedBy).toContain('instructions-comments');
+
+    // Check that the instructions element exists with the correct ID
+    const instructionsElement = document.getElementById('instructions-comments');
+    expect(instructionsElement).toBeTruthy();
+    expect(instructionsElement?.textContent).toContain(
+      'Please provide any additional information you think is relevant'
+    );
   }
 }) as Story;
