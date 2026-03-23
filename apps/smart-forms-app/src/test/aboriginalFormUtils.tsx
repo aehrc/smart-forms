@@ -125,4 +125,3 @@ function buildFetchResourceCallback(requestDefinitions: RequestDefinition[]) {
     return Promise.resolve({});
   };
 }
-

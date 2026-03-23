@@ -241,6 +241,29 @@ export async function getInputText(canvasElement: HTMLElement, linkId: string) {
   return input.value;
 }
 
+export async function getCqfText(canvasElement: HTMLElement, linkId: string) {
+  const displayElement = await findByLinkIdOrLabel(canvasElement, linkId);
+
+  const rawText = displayElement.textContent ?? '';
+  const text = rawText.replace(/\s+/g, ' ').trim();
+
+  if (!text) {
+    throw new Error(`Display text was not found inside ${`[data-linkid=${linkId}] block`}`);
+  }
+
+  return text;
+}
+
+export async function getSelectText(canvasElement: HTMLElement, linkId: string) {
+  const element = await findByLinkIdOrLabel(canvasElement, linkId);
+
+  if (!element) {
+    throw new Error(`Select or input was not found inside element with data-label="${linkId}"`);
+  }
+
+  return (element.querySelector('span')?.textContent ?? '').trim();
+}
+
 export async function chooseSelectOption(
   canvasElement: HTMLElement,
   linkId: string,
@@ -326,6 +349,28 @@ export async function findByLinkIdOrLabel(
     }
 
     return el;
+  });
+}
+
+export async function findAllByLinkIdOrLabel(
+  canvasElement: HTMLElement,
+  linkId: string
+): Promise<HTMLElement[]> {
+  const selectorByLinkId = `[data-linkid="${linkId}"]`;
+  const selectorByLabel = `[data-label="${linkId}"]`;
+
+  return await waitFor(() => {
+    const byLinkId = Array.from(canvasElement.querySelectorAll<HTMLElement>(selectorByLinkId));
+    const byLabel = Array.from(canvasElement.querySelectorAll<HTMLElement>(selectorByLabel));
+
+    const unique = Array.from(new Set<HTMLElement>([...byLinkId, ...byLabel]));
+    if (unique.length === 0) {
+      throw new Error(
+        `Elements with selectors "${selectorByLinkId}" or "${selectorByLabel}" not found`
+      );
+    }
+
+    return unique;
   });
 }
 
