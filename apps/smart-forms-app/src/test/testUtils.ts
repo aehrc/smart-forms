@@ -455,7 +455,6 @@ export async function invokeExtract(
   if (!lastCall) {
     throw new Error('Expected onExtractResult to be called');
   }
-  console.log('lastCall', lastCall[0]);
 
   return getExtractResultBundle(lastCall[0]);
 }
