@@ -1528,8 +1528,8 @@ export const QRAboriginalTorresStraitIslanderHealthCheck: QuestionnaireResponse 
   },
   author: {
     type: 'Practitioner',
-    display: 'Dr Peter Primary',
-    reference: 'Practitioner/primary-peter'
+    reference: 'Practitioner/primary-peter',
+    display: 'Dr Peter Primary'
   },
   authored: '2025-08-07T07:38:03.107Z',
   meta: {

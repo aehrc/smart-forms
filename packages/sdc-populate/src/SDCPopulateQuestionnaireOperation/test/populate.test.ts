@@ -14,6 +14,25 @@ import { inputParamsAboriginalTorresStraitIslanderHealthCheck } from '../../test
 import { QRAboriginalTorresStraitIslanderHealthCheck } from '../../test-data-shared/AboriginalTorresStraitIslanderHealthCheck/QRAboriginalTorresStraitIslanderHealthCheck';
 import { resolveLookupPromises } from '../utils/resolveLookupPromises';
 import { resolvedLookupAboriginalTorresStraitIslanderHealthCheck } from '../../test-data-shared/AboriginalTorresStraitIslanderHealthCheck/resolvedLookupAboriginalTorresStraitIslanderHealthCheck';
+import fhirpath from 'fhirpath';
+import fhirpath_r4_model from 'fhirpath/fhir-context/r4/index.js';
+
+// fhirpath v4 requires array context variable items to have __path__ (attached non-enumerably
+// when objects pass through fhirpath.evaluate). Plain static TS objects lack this, so we
+// run each FHIR resource item through fhirpath's $this to stamp __path__ onto it.
+function prepareContextForFhirpathV4(ctx: Record<string, any>): Record<string, any> {
+  const prepared = { ...ctx };
+  for (const [key, value] of Object.entries(prepared)) {
+    if (Array.isArray(value) && value.some((i) => i?.resourceType)) {
+      prepared[key] = value.map((item) => {
+        if (!item?.resourceType) return item;
+        const result = fhirpath.evaluate(item, '$this', {}, fhirpath_r4_model) as any[];
+        return result[0] ?? item;
+      });
+    }
+  }
+  return prepared;
+}
 
 // Mock createFhirPathContext function
 jest.mock('../utils/createFhirPathContext', () => {
@@ -115,8 +134,9 @@ describe('populate', () => {
 
     // Outputs
     const mockResponse: QuestionnaireResponse = QRAboriginalTorresStraitIslanderHealthCheck;
-    const mockContext: Record<string, any> =
-      FhirPathContextAboriginalTorresStraitIslanderHealthCheck;
+    const mockContext: Record<string, any> = prepareContextForFhirpathV4(
+      FhirPathContextAboriginalTorresStraitIslanderHealthCheck
+    );
 
     (createFhirPathContext as jest.Mock).mockImplementation(async () => mockContext);
     (resolveLookupPromises as jest.Mock).mockImplementation(
