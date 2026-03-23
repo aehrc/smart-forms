@@ -21,9 +21,12 @@
 // 2. Prevent it from showing up in typedoc in the documentation site, which will affect docs search
 
 import { evaluate } from 'fhirpath';
+import type { Mock } from 'storybook/internal/test';
 import { fireEvent, screen, userEvent, waitFor } from 'storybook/internal/test';
 import { questionnaireResponseStore } from '@aehrc/smart-forms-renderer';
 import { act } from 'react';
+import type { ExtractResult, InAppExtractOutput } from '@aehrc/sdc-template-extract';
+import { extractResultIsOperationOutcome } from '@aehrc/sdc-template-extract';
 
 export async function inputText(
   canvasElement: HTMLElement,
@@ -430,4 +433,37 @@ export function getBirthDateForAge(ageInYears: number): string {
   const today = new Date();
   const birthDate = new Date(today.getFullYear() - ageInYears, today.getMonth(), today.getDate());
   return birthDate.toISOString().slice(0, 10);
+}
+
+export async function invokeExtract(
+  canvasElement: HTMLElement,
+  onExtractResultMock: Mock<(extractResult: InAppExtractOutput) => void>
+) {
+  const button = canvasElement.querySelector('button[data-testid="save-button"]');
+  if (!button) {
+    throw new Error('Save button not found');
+  }
+  await act(async () => {
+    fireEvent.click(button);
+  });
+
+  await waitFor(() => expect(onExtractResultMock.mock.lastCall).toBeDefined(), {
+    timeout: 5000
+  });
+
+  const lastCall = onExtractResultMock.mock.lastCall;
+  if (!lastCall) {
+    throw new Error('Expected onExtractResult to be called');
+  }
+  console.log('lastCall', lastCall[0]);
+
+  return getExtractResultBundle(lastCall[0]);
+}
+
+function getExtractResultBundle(extractResultOutput: InAppExtractOutput) {
+  expect(extractResultOutput.extractSuccess).toBe(true);
+  const extractResult = extractResultOutput.extractResult as ExtractResult;
+  expect(extractResultIsOperationOutcome(extractResult)).toBe(false);
+
+  return extractResult.extractedBundle;
 }

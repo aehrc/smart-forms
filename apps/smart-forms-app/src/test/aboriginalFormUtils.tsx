@@ -2,16 +2,19 @@ import {
   BaseRenderer,
   buildForm,
   RendererThemeProvider,
+  useQuestionnaireResponseStore,
+  useQuestionnaireStore,
   useRendererQueryClient
 } from '@aehrc/smart-forms-renderer';
 
 import aboriginalForm from '../data/resources/Questionnaire/Questionnaire-AboriginalTorresStraitIslanderHealthCheckAssembled-0.4.0.json';
-import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import type { Questionnaire } from 'fhir/r4';
 import { QueryClientProvider } from '@tanstack/react-query';
 import type { Patient } from 'fhir/r4';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { useEffect, useState } from 'react';
-import { extractResultIsOperationOutcome, inAppExtract } from '@aehrc/sdc-template-extract';
+import { inAppExtract, type InAppExtractOutput } from '@aehrc/sdc-template-extract';
+import Button from '@mui/material/Button';
 const terminologyServerUrl = 'https://r4.ontoserver.csiro.au/fhir';
 
 export type RequestDefinition = {
@@ -23,6 +26,7 @@ export type RequestDefinition = {
 interface AboriginalFormProps {
   patient?: Patient;
   requestDefinitions?: RequestDefinition[];
+  onExtractResult?: (extractResult: InAppExtractOutput) => void;
 }
 
 export function AboriginalForm(props: AboriginalFormProps) {
@@ -91,6 +95,7 @@ function BuildFormWrapperWithPopulate(props: BuildFormWrapperWithPopulateProps) 
     <RendererThemeProvider>
       <QueryClientProvider client={queryClient}>
         <BaseRenderer />
+        <SaveControl onExtractResult={props.onExtractResult} />
       </QueryClientProvider>
     </RendererThemeProvider>
   );
@@ -127,20 +132,23 @@ function buildFetchResourceCallback(requestDefinitions: RequestDefinition[]) {
   };
 }
 
-export async function runExtract(
-  questionnaireResponse: QuestionnaireResponse,
-  questionnaire: Questionnaire
-) {
-  const inAppExtractOutput = await inAppExtract(questionnaireResponse, questionnaire, null);
+function SaveControl({
+  onExtractResult
+}: {
+  onExtractResult?: (extractResult: InAppExtractOutput) => void;
+}) {
+  const qr = useQuestionnaireResponseStore.use.updatableResponse();
+  const q = useQuestionnaireStore.use.sourceQuestionnaire();
 
-  if (!inAppExtractOutput.extractSuccess) {
-    throw new Error('Extract failed');
-  }
+  return (
+    <Button
+      data-testid="save-button"
+      onClick={async () => {
+        const result = await inAppExtract(qr, q, null);
 
-  const extractResult = inAppExtractOutput.extractResult;
-  if (extractResultIsOperationOutcome(extractResult)) {
-    throw new Error('Extract failed');
-  }
-
-  return extractResult.extractedBundle;
+        onExtractResult?.(result);
+      }}>
+      Save
+    </Button>
+  );
 }

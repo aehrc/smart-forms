@@ -1,6 +1,8 @@
-import { render } from '@testing-library/react';
-import { AboriginalForm, runExtract } from './aboriginalFormUtils';
-import { condition, patient, resolvedCondition } from './aboriginalFormIntegrationData';
+import { vi, beforeAll } from 'vitest';
+import { render, waitFor } from '@testing-library/react';
+import { AboriginalForm } from './aboriginalFormUtils';
+import { nonSnomedCondition, patient } from './aboriginalFormIntegrationData';
+import { findByLinkIdOrLabel, inputDate, inputText, invokeExtract, selectTab } from './testUtils';
 import { FhirResource } from 'fhir/r4';
 
 vi.mock('fhirclient', () => ({
@@ -17,20 +19,32 @@ beforeAll(() => {
 
 describe('Extraction workflow for', () => {
   test('Conditions', async () => {
-    const { container } = render(<AboriginalForm patient={patient} requestDefinitions={[]} />);
-
-    // Fill condition table with data from condition
-    // Fill condition table with data from resolvedCondition
-
-    const extractedBundle = await runExtract({}, {});
-    expect(extractedBundle.entry).toHaveLength(2);
-
-    expect(extractedBundle.entry?.[0]?.resource).toStrictEqual(removeId(condition));
-    expect(extractedBundle.entry?.[1]?.resource).toStrictEqual(removeId(resolvedCondition));
+    const onExtractResult = vi.fn();
+    const { container } = render(
+      <AboriginalForm patient={patient} requestDefinitions={[]} onExtractResult={onExtractResult} />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 5000
+    });
+    await selectTab(container, 'Medical history and current problems');
+    const newDiagnosisContainer = await findByLinkIdOrLabel(container, 'New diagnosis');
+    await inputText(newDiagnosisContainer, 'Condition', 'Non-SNOMED condition');
+    await inputDate(newDiagnosisContainer, 'Onset date', '10/10/2025');
+    await inputText(newDiagnosisContainer, 'Comment', 'Test comment');
+    
+    const extractedBundle = await invokeExtract(container, onExtractResult);
+    expect(extractedBundle.entry).toHaveLength(1);
+    // Verification status is not extracted
+    expect(extractedBundle.entry?.[0]?.resource).toStrictEqual(
+      omitResourceFields(nonSnomedCondition, ['id', 'verificationStatus'])
+    );
   });
 });
 
-function removeId(resource: FhirResource) {
-  const { id, ...resourceWithoutId } = resource;
-  return resourceWithoutId;
+function omitResourceFields<T extends FhirResource>(resource: T, fieldsToRemove: (keyof T)[]) {
+  const resourceCopy = { ...resource };
+  fieldsToRemove.forEach((field) => {
+    delete resourceCopy[field];
+  });
+  return resourceCopy;
 }

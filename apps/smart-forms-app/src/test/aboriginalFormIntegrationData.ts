@@ -211,8 +211,8 @@ export const patient: Patient = {
   ]
 };
 
-const onsetDateTime = '2025-10-10T00:00:00.000Z';
-const abatementDateTime = '2026-01-01T00:00:00.000Z';
+const onsetDateTime = '2025-10-10';
+const abatementDateTime = '2026-01-01';
 
 export const condition: Condition = {
   resourceType: 'Condition',
@@ -261,13 +261,6 @@ export const nonSnomedCondition: Condition = {
   subject: { reference: `Patient/${patient.id}` },
   onsetDateTime,
   code: {
-    coding: [
-      {
-        system: 'http://loinc.org',
-        code: '78910',
-        display: 'Non-SNOMED condition'
-      }
-    ],
     text: 'Non-SNOMED condition'
   },
   clinicalStatus: {
@@ -293,6 +286,11 @@ export const nonSnomedCondition: Condition = {
           code: 'problem-list-item'
         }
       ]
+    }
+  ],
+  note: [
+    {
+      text: 'Test comment'
     }
   ]
 };
