@@ -29,13 +29,17 @@ interface RemoveItemButtonProps {
 }
 
 function RemoveItemButton(props: RemoveItemButtonProps) {
-  const { answer, numOfRepeatAnswers, readOnly, onRemoveAnswer } = props;
+  const { answer, readOnly, onRemoveAnswer, numOfRepeatAnswers } = props;
 
-  const isDisabled = answer === null || numOfRepeatAnswers === 1 || readOnly;
+  const isDisabled = answer === null || numOfRepeatAnswers === 0 ||  readOnly;
 
+  if(!isDisabled) {
+    console.log(props);
+  }
   return (
     <RepeatRemoveTooltip title="Remove item">
       <span role="button">
+        remove item button 2
         <IconButton
           size="small"
           color="error"

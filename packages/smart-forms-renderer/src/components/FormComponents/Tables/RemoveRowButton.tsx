@@ -31,9 +31,9 @@ interface RemoveRowButtonProps {
 }
 
 function RemoveRowButton(props: RemoveRowButtonProps) {
-  const { nullableQrItem, numOfRows, readOnly, onRemoveItem } = props;
+  const { nullableQrItem, readOnly, onRemoveItem } = props;
 
-  const isDisabled = nullableQrItem === null || numOfRows === 1 || readOnly;
+  const isDisabled = nullableQrItem === null || readOnly;
   return (
     <RemoveButtonTableCell>
       <Tooltip title="Remove item">
