@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import { useState } from 'react';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Autocomplete from '@mui/material/Autocomplete';
 import Typography from '@mui/material/Typography';
@@ -67,16 +66,6 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
-  const [open, setOpen] = useState(false);
-
-  // Handle focus with delayed dropdown opening for better screen reader experience
-  function handleFocus() {
-    // Delay opening to allow screen readers to announce the field name first
-    setTimeout(() => {
-      setOpen(true);
-    }, 150); // 150ms delay allows VoiceOver to announce the field
-  }
-
   if (codings.length > 0) {
     return (
       <>
@@ -90,9 +79,6 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
           value={valueCoding ?? null}
           onChange={(_, newValue) => onSelectChange(newValue)}
           autoHighlight
-          open={open}
-          onOpen={() => setOpen(true)}
-          onClose={() => setOpen(false)}
           sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }}
           size="small"
           disabled={readOnly && readOnlyVisualStyle === 'disabled'}
@@ -103,7 +89,6 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
               textFieldWidth={textFieldWidth}
               isTabled={isTabled}
               placeholder={valueCoding ? undefined : entryFormat || displayPrompt}
-              onFocus={handleFocus}
               {...params}
               slotProps={{
                 input: {

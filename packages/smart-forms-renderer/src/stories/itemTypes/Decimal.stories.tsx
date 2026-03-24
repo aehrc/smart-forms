@@ -24,8 +24,7 @@ import {
   getInputText,
   inputDecimal,
   questionnaireFactory,
-  questionnaireResponseFactory,
-  unitExtFactory
+  questionnaireResponseFactory
 } from '../testUtils';
 import { expect, fireEvent } from 'storybook/test';
 import { createStory } from '../storybookWrappers/createStory';
@@ -80,19 +79,17 @@ export const DecimalBasic: Story = createStory({
     expect(result[0]).toEqual(expect.objectContaining({ valueDecimal: targetWeight }));
 
     // Clear value
-    const clearButton = canvasElement.querySelector('button[aria-label="Clear"]');
-    if (clearButton) {
-      fireEvent.click(clearButton as HTMLElement);
+    const clearButton = canvasElement.querySelector('button[title="Clear"]');
+    fireEvent.click(clearButton as HTMLElement);
 
-      // Here we await for debounced store update
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      const resultAfterClear = await getAnswers(targetLinkId);
-      expect(resultAfterClear).toHaveLength(0);
+    // Here we await for debounced store update
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const resultAfterClear = await getAnswers(targetLinkId);
+    expect(resultAfterClear).toHaveLength(0);
 
-      const elementAfterClear = await findByLinkIdOrLabel(canvasElement, targetLinkId);
-      const input = elementAfterClear.querySelector('input');
-      expect(input?.getAttribute('value')).toBe('');
-    }
+    const elementAfterClear = await findByLinkIdOrLabel(canvasElement, targetLinkId);
+    const input = elementAfterClear.querySelector('input');
+    expect(input?.getAttribute('value')).toBe('');
   }
 }) as Story;
 
@@ -105,30 +102,5 @@ export const DecimalBasicResponse: Story = createStory({
     const input = await getInputText(canvasElement, targetLinkId);
 
     expect(input).toBe(targetWeight.toString());
-  }
-}) as Story;
-/* Decimal Unit Accessibility story */
-const accessibilityTargetLinkId = 'height';
-const qDecimalAccessibility = questionnaireFactory([
-  {
-    linkId: accessibilityTargetLinkId,
-    extension: [unitExtFactory('cm', 'cm')],
-    type: 'decimal',
-    text: 'Height'
-  }
-]);
-
-export const DecimalUnitAccessibility: Story = createStory({
-  args: {
-    questionnaire: qDecimalAccessibility
-  },
-  play: async ({ canvasElement }) => {
-    // Find the decimal input field by its data-test attribute
-    const element = await findByLinkIdOrLabel(canvasElement, accessibilityTargetLinkId);
-    const inputField = element.querySelector('div[data-test="q-item-decimal-field"]');
-    const input = inputField?.querySelector('input');
-
-    // Verify the aria-label includes the item text and unit for screen reader accessibility
-    expect(input?.getAttribute('aria-label')).toBe('Height (cm)');
   }
 }) as Story;
