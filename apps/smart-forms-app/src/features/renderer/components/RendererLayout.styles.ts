@@ -24,7 +24,7 @@ import {
 export const Main = styled(Box)(({ theme }) => ({
   flexGrow: 1,
   overflow: 'auto',
-  minHeight: '100%',
+  height: '100vh',
   paddingTop: HEADER_MOBILE_HEIGHT + 16,
   paddingBottom: theme.spacing(4),
   [theme.breakpoints.up('sm')]: {

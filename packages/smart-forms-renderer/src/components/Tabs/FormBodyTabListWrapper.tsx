@@ -30,12 +30,13 @@ interface FormBodyTabListWrapperProps {
   topLevelItems: QuestionnaireItem[];
   currentTabIndex: number;
   tabs: Tabs;
+  maxHeight?: string | number;
 }
 
 const FormBodyTabListWrapper = memo(function FormBodyTabListWrapper(
   props: FormBodyTabListWrapperProps
 ) {
-  const { topLevelItems, currentTabIndex, tabs } = props;
+  const { topLevelItems, currentTabIndex, tabs, maxHeight } = props;
 
   const [completedTabsExpanded, setCompletedTabsExpanded] = useState(true);
 
@@ -43,7 +44,7 @@ const FormBodyTabListWrapper = memo(function FormBodyTabListWrapper(
     useContextDisplayItems(topLevelItems);
 
   return (
-    <Card sx={{ p: 0.75, mb: 2 }}>
+    <Card sx={{ p: 0.75, mb: 2, ...(maxHeight ? { maxHeight, overflowY: 'auto' } : {}) }}>
       <Box sx={{ flexGrow: 1 }}>
         <aside aria-label="Form sections">
           <PrimarySelectableList
