@@ -5,6 +5,12 @@ This log documents changes for [@aehrc/sdc-populate](https://www.npmjs.com/packa
 
 Changelog only includes changes from version 4.0.0 onwards.
 
+## [4.7.0] - 2026-03-25
+### Added
+- Enable the FHIRPath `resolve()` function. The `fhirServerUrl` is now threaded through FHIRPath evaluations, allowing expressions that use `resolve()` to fetch referenced resources from the FHIR server. This also includes an upgrade of the `fhirpath` dependency from v3 to v4. See issue [#1806](https://github.com/aehrc/smart-forms/issues/1806)
+### Fixed
+- Fixed `$lookup` not being performed for all codings in repeat group instances by moving display value lookup to operate on the final QuestionnaireResponse items rather than on initial expressions. See issue [#1833](https://github.com/aehrc/smart-forms/issues/1833)
+
 ## [4.6.3] - 2026-03-11
 ### Fixed
 - Relaxed restriction on `fhirContext` launch context entries - `type` is no longer required. Resource type is now inferred from the `reference` if `type` is not provided.
