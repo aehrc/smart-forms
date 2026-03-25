@@ -75,7 +75,7 @@
     "@storybook/react-vite": "^9.1.13",
     "@storybook/test-runner": "^0.24.0",
     "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.0",
+    "@testing-library/react": "^16.3.2",
     "@types/deep-diff": "^1.0.5",
     "@types/fhir": "^0.0.41",
     "@types/jest": "^29.5.14",
