@@ -89,6 +89,11 @@ function RepeatGroup(props: RepeatGroupProps) {
     const newLastItemIndex = repeatGroups.length;
     mutateRepeatEnableWhenItems(qItem.linkId, newLastItemIndex, 'remove');
 
+    if (updatedRepeatGroups.length === 0) {
+      mutateRepeatEnableWhenItems(qItem.linkId, 0, 'add');
+      updatedRepeatGroups.push({ id: generateNewRepeatId(qItem.linkId), qrItem: null });
+    }
+
     setRepeatGroups(updatedRepeatGroups);
 
     onQrRepeatGroupChange({
