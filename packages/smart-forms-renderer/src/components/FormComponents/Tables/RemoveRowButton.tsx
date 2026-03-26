@@ -31,7 +31,7 @@ interface RemoveRowButtonProps {
 }
 
 function RemoveRowButton(props: RemoveRowButtonProps) {
-  const { nullableQrItem, readOnly, onRemoveItem } = props;
+  const { nullableQrItem, onRemoveItem } = props;
 
   const isDisabled = nullableQrItem === null;
 

@@ -33,9 +33,6 @@ function RemoveItemButton(props: RemoveItemButtonProps) {
 
   const isDisabled = answer === null || numOfRepeatAnswers === 1 || readOnly;
 
-  if(!isDisabled) {
-    console.log(props);
-  }
   return (
     <RepeatRemoveTooltip title="Remove item">
       <span role="button">
