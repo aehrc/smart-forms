@@ -17,7 +17,7 @@
 
 import { useLayoutEffect, useRef, useState } from 'react';
 import { BaseRenderer, rendererConfigStore } from '@aehrc/smart-forms-renderer';
-import type { Patient, Practitioner } from 'fhir/r4';
+import type { Encounter, Patient, Practitioner, PractitionerRole } from 'fhir/r4';
 import { Box, Typography } from '@mui/material';
 import useLaunchContextNames from '../hooks/useLaunchContextNames.ts';
 import ExtractMenu from './ExtractMenu.tsx';
@@ -28,6 +28,8 @@ interface PlaygroundRendererProps {
   sourceFhirServerUrl: string | null;
   patient: Patient | null;
   user: Practitioner | null;
+  encounter: Encounter | null;
+  practitionerRole: PractitionerRole | null;
   terminologyServerUrl: string;
   isExtracting: boolean;
   onObservationExtract: () => void;
@@ -39,6 +41,8 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
     sourceFhirServerUrl,
     patient,
     user,
+    encounter,
+    practitionerRole,
     terminologyServerUrl,
     isExtracting,
     onObservationExtract,
@@ -57,7 +61,12 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
     }
   }, []);
 
-  const { patientName, userName } = useLaunchContextNames(patient, user);
+  const { patientName, userName, encounterName, practitionerRoleName } = useLaunchContextNames(
+    patient,
+    user,
+    encounter,
+    practitionerRole
+  );
 
   const isPrePopulating = spinner.isSpinning && spinner.status === 'prepopulate';
   const isRePopulateWriting = spinner.isSpinning && spinner.status === 'repopulate-write';
@@ -82,6 +91,8 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
           sourceFhirServerUrl={sourceFhirServerUrl}
           patient={patient}
           user={user}
+          encounter={encounter}
+          practitionerRole={practitionerRole}
           terminologyServerUrl={terminologyServerUrl}
           spinner={spinner}
           onSpinnerChange={(newSpinner) => setSpinner(newSpinner)}
@@ -97,9 +108,19 @@ function PlaygroundRenderer(props: PlaygroundRendererProps) {
             Patient: {patientName}
           </Typography>
         ) : null}
+        {encounterName ? (
+          <Typography variant="subtitle2" color="text.secondary">
+            Encounter: {encounterName}
+          </Typography>
+        ) : null}
         {userName ? (
           <Typography variant="subtitle2" color="text.secondary">
             User: {userName}
+          </Typography>
+        ) : null}
+        {practitionerRoleName ? (
+          <Typography variant="subtitle2" color="text.secondary">
+            PractitionerRole: {practitionerRoleName}
           </Typography>
         ) : null}
       </Box>

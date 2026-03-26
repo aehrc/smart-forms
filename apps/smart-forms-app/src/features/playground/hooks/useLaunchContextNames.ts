@@ -17,9 +17,14 @@
 
 import { useMemo } from 'react';
 import { constructName } from '../../../utils/humanName.ts';
-import type { Patient, Practitioner } from 'fhir/r4';
+import type { Encounter, Patient, Practitioner, PractitionerRole } from 'fhir/r4';
 
-function useLaunchContextNames(patient: Patient | null, user: Practitioner | null) {
+function useLaunchContextNames(
+  patient: Patient | null,
+  user: Practitioner | null,
+  encounter: Encounter | null,
+  practitionerRole: PractitionerRole | null
+) {
   const patientName = useMemo(() => {
     if (patient?.name) {
       return constructName(patient.name);
@@ -36,7 +41,11 @@ function useLaunchContextNames(patient: Patient | null, user: Practitioner | nul
     return user?.id ?? null;
   }, [user]);
 
-  return { patientName, userName };
+  const encounterName = useMemo(() => encounter?.id ?? null, [encounter]);
+
+  const practitionerRoleName = useMemo(() => practitionerRole?.id ?? null, [practitionerRole]);
+
+  return { patientName, userName, encounterName, practitionerRoleName };
 }
 
 export default useLaunchContextNames;
