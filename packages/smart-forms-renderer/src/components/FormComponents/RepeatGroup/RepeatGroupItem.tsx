@@ -55,8 +55,8 @@ function RepeatGroupItem(props: RepeatGroupItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly, repeatGroupIndex);
 
   return (
-    <RepeatGroupContainerStack direction="row" justifyContent="end">
-      <Box sx={{ flexGrow: 1 }}>
+    <RepeatGroupContainerStack direction="row">
+      <Box sx={{ flexGrow: 1, overflowX: 'auto' }}>
         <GroupItem
           qItem={qItem}
           qrItem={answeredQrItem}
