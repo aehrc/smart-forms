@@ -100,7 +100,6 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
         <AccordionDetails sx={{ pt: 0 }}>
           {itemTextToDisplay ? <Divider sx={{ mb: 1.5, opacity: 0.6 }} /> : null}
           <TransitionGroup>
-            this is the mapping of the repeat group
             {repeatGroups.map(({ id, qrItem: nullableQrItem }, index) => {
               const answeredQrItem = createEmptyQrItem(qItem, undefined);
               if (nullableQrItem) {
