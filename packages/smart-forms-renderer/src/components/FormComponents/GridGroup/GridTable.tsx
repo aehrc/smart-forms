@@ -103,7 +103,7 @@ function GridTable(props: GridTableProps) {
           }
 
           return (
-            <TableRow key={qItem.linkId}>
+            <TableRow key={qItem.linkId} data-linkid={qItem.linkId} data-label={qItem.text}>
               <GridRow
                 qItem={qItem}
                 qrItem={qrItem ?? null}
