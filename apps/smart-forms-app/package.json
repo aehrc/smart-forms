@@ -78,7 +78,7 @@
     "@playwright/test": "^1.56.1",
     "@sentry/cli": "^2.57.0",
     "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.0",
+    "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
     "@types/fhir": "^0.0.41",
     "@types/he": "^1.2.3",
