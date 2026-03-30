@@ -346,7 +346,7 @@ const aboutTheHealthCheckQuestionnaireResponse: QuestionnaireResponse = {
   authored: '2026-03-01'
 };
 
-const currentMedication: MedicationStatement = {
+export const currentMedication: MedicationStatement = {
   resourceType: 'MedicationStatement',
   id: 'current-medication',
   subject: { reference: `Patient/${patient.id}` },
@@ -474,18 +474,11 @@ const allergy: AllergyIntolerance = {
   ]
 };
 
-const nonSnomedAllergy: AllergyIntolerance = {
+export const nonSnomedAllergy: AllergyIntolerance = {
   resourceType: 'AllergyIntolerance',
   id: 'non-snomed-allergy',
   patient: { reference: `Patient/${patient.id}` },
   code: {
-    coding: [
-      {
-        system: 'http://loinc.org',
-        code: '1234-5',
-        display: 'Non-SNOMED allergen'
-      }
-    ],
     text: 'Non-SNOMED allergen'
   },
   clinicalStatus: {
@@ -546,19 +539,12 @@ const immunization: Immunization = {
   ]
 };
 
-const nonSnomedImmunization: Immunization = {
+export const nonSnomedImmunization: Immunization = {
   resourceType: 'Immunization',
   id: 'non-snomed-immunization',
   status: 'completed',
   patient: { reference: `Patient/${patient.id}` },
   vaccineCode: {
-    coding: [
-      {
-        system: 'http://loinc.org',
-        code: '2468-0',
-        display: 'Non-SNOMED vaccine'
-      }
-    ],
     text: 'Non-SNOMED vaccine'
   },
   occurrenceDateTime: '2026-03-02',
@@ -570,19 +556,33 @@ const nonSnomedImmunization: Immunization = {
   ]
 };
 
-const obsTobaccoSmokingStatus: Observation = {
+export const obsTobaccoSmokingStatus: Observation = {
   resourceType: 'Observation',
   id: 'obs-tobacco-smoking-status',
   status: 'final',
   subject: { reference: `Patient/${patient.id}` },
+  "category": [
+    {
+      coding: [
+        {
+          system: 'http://terminology.hl7.org/CodeSystem/observation-category',
+          code: 'social-history'
+        }
+      ]
+    }
+  ],
   code: {
     coding: [
       {
         system: 'http://snomed.info/sct',
-        code: '1747861000168109',
-        display: 'Tobacco smoking status'
+        code: '1747861000168109'
+      },
+      {
+        code: '72166-2',
+        system: 'http://loinc.org',
       }
-    ]
+    ],
+    text: 'Smoking status'
   },
   effectiveDateTime: '2025-12-01',
   valueCodeableConcept: {
@@ -596,16 +596,27 @@ const obsTobaccoSmokingStatus: Observation = {
   }
 };
 
-const obsBodyHeight: Observation = {
+export const obsBodyHeight: Observation = {
   resourceType: 'Observation',
   id: 'obs-body-height',
   status: 'final',
   subject: { reference: `Patient/${patient.id}` },
+  "category": [
+     {
+      coding: [
+        {
+          system: 'http://terminology.hl7.org/CodeSystem/observation-category',
+          code: 'vital-signs'
+        }
+      ]
+    }
+  ],
   code: {
     coding: [
-      { system: 'http://loinc.org', code: '8302-2', display: 'Height' },
-      { system: 'http://snomed.info/sct', code: '50373000', display: 'Height' }
-    ]
+      { system: 'http://loinc.org', code: '8302-2' },
+      { system: 'http://snomed.info/sct', code: '50373000' }
+    ],
+    text: 'Height'
   },
   effectiveDateTime: '2025-11-20',
   valueQuantity: {
@@ -616,16 +627,27 @@ const obsBodyHeight: Observation = {
   }
 };
 
-const obsBodyWeight: Observation = {
+export const obsBodyWeight: Observation = {
   resourceType: 'Observation',
   id: 'obs-body-weight',
   status: 'final',
+  "category": [
+     {
+      coding: [
+        {
+          system: 'http://terminology.hl7.org/CodeSystem/observation-category',
+          code: 'vital-signs'
+        }
+      ]
+    }
+  ],
   subject: { reference: `Patient/${patient.id}` },
   code: {
     coding: [
-      { system: 'http://loinc.org', code: '29463-7', display: 'Weight' },
-      { system: 'http://snomed.info/sct', code: '27113001', display: 'Weight' }
-    ]
+      { system: 'http://loinc.org', code: '29463-7' },
+      { system: 'http://snomed.info/sct', code: '27113001' }
+    ],
+    text: 'Weight'
   },
   effectiveDateTime: '2025-11-21',
   valueQuantity: {
@@ -656,16 +678,27 @@ const obsHeadCircumference: Observation = {
   }
 };
 
-const obsWaistCircumference: Observation = {
+export const obsWaistCircumference: Observation = {
   resourceType: 'Observation',
   id: 'obs-waist-circumference',
   status: 'final',
   subject: { reference: `Patient/${patient.id}` },
+  "category": [
+         {
+          coding: [
+             {
+               code: 'vital-signs',
+               system: 'http://terminology.hl7.org/CodeSystem/observation-category',
+             }  
+           ],
+         },
+       ],
   code: {
     coding: [
-      { system: 'http://loinc.org', code: '8280-0', display: 'Waist circumference' },
-      { system: 'http://snomed.info/sct', code: '276361009', display: 'Waist circumference' }
-    ]
+      { system: 'http://loinc.org', code: '8280-0' },
+      { system: 'http://snomed.info/sct', code: '276361009' }
+    ],
+    text: 'Waist circumference'
   },
   effectiveDateTime: '2025-11-23',
   valueQuantity: {
@@ -676,16 +709,27 @@ const obsWaistCircumference: Observation = {
   }
 };
 
-const obsHeartRate: Observation = {
+export const obsHeartRate: Observation = {
   resourceType: 'Observation',
   id: 'obs-heart-rate',
   status: 'final',
   subject: { reference: `Patient/${patient.id}` },
+  "category": [
+         {
+           coding: [
+             {
+               code: 'vital-signs',
+               system: 'http://terminology.hl7.org/CodeSystem/observation-category',
+            },
+          ]
+        }
+      ],
   code: {
     coding: [
-      { system: 'http://loinc.org', code: '8867-4', display: 'Heart rate' },
-      { system: 'http://snomed.info/sct', code: '364075005', display: 'Heart rate' }
-    ]
+      { system: 'http://loinc.org', code: '8867-4' },
+      { system: 'http://snomed.info/sct', code: '364075005' }
+    ],
+    text: 'Heart rate'
   },
   effectiveDateTime: '2025-12-04',
   valueQuantity: {
@@ -696,16 +740,27 @@ const obsHeartRate: Observation = {
   }
 };
 
-const obsHeartRhythm: Observation = {
+export const obsHeartRhythm: Observation = {
   resourceType: 'Observation',
   id: 'obs-heart-rhythm',
   status: 'final',
   subject: { reference: `Patient/${patient.id}` },
+  "category": [
+     {
+      coding: [
+         {
+           code: 'vital-signs',
+           system: 'http://terminology.hl7.org/CodeSystem/observation-category',
+         }
+       ]
+     }
+   ],
   code: {
     coding: [
-      { system: 'http://loinc.org', code: '8884-9', display: 'Heart rhythm' },
-      { system: 'http://snomed.info/sct', code: '364074009', display: 'Heart rhythm' }
-    ]
+      { system: 'http://loinc.org', code: '8884-9' },
+      { system: 'http://snomed.info/sct', code: '364074009' }
+    ],
+    text: 'Heart rhythm'
   },
   effectiveDateTime: '2025-12-03',
   valueCodeableConcept: {
@@ -719,7 +774,7 @@ const obsHeartRhythm: Observation = {
   }
 };
 
-const obsBloodPressure: Observation = {
+export const obsBloodPressure: Observation = {
   resourceType: 'Observation',
   id: 'obs-blood-pressure',
   status: 'final',
