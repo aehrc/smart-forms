@@ -25,4 +25,4 @@ jobs:
 
       - name: Run vitest tests
         run: npm run test-715 -w apps/smart-forms-app
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v6

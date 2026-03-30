@@ -66,7 +66,7 @@ jobs:
 
       - name: Run jest tests
         run: npm run test -w apps/smart-forms-app
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v6
 
       - name: Upload smart-forms-app coverage report to GitHub
         uses: actions/upload-artifact@v4
@@ -100,7 +100,7 @@ jobs:
 
       - name: Run jest tests
         run: npm run test -w packages/smart-forms-renderer
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v6
 
       - name: Upload smart-forms-renderer coverage report to GitHub
         uses: actions/upload-artifact@v4
@@ -128,7 +128,7 @@ jobs:
 
       - name: Run jest tests
         run: npm run test -w packages/sdc-populate
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v6
 
       - name: Upload sdc-populate coverage report to GitHub
         uses: actions/upload-artifact@v4
@@ -184,7 +184,7 @@ jobs:
 
       - name: Run jest tests
         run: npm run test -w packages/sdc-assemble
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v6
 
       - name: Upload sdc-assemble coverage report to GitHub
         uses: actions/upload-artifact@v4
@@ -212,7 +212,7 @@ jobs:
 
       - name: Run jest tests
         run: npm run test -w packages/sdc-template-extract
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v6
 
       - name: Upload sdc-template-extract coverage report to GitHub
         uses: actions/upload-artifact@v4
