@@ -15,7 +15,8 @@ import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { useEffect, useState } from 'react';
 import { inAppExtract, type InAppExtractOutput } from '@aehrc/sdc-template-extract';
 import Button from '@mui/material/Button';
-const terminologyServerUrl = 'https://r4.ontoserver.csiro.au/fhir';
+
+export const terminologyServerUrl = 'https://r4.ontoserver.csiro.au/fhir';
 
 export type RequestDefinition = {
   urlPrefix: string;
