@@ -34,7 +34,7 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker builds
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           # list of Docker images to build
           images: ghcr.io/${{ github.repository }}/smart-forms
