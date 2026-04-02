@@ -1,5 +1,13 @@
 import { useMemo, useState } from 'react';
-import { Box, Button, Dialog, DialogActions, DialogContent, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  Typography
+} from '@mui/material';
 import type { Bundle, BundleEntry } from 'fhir/r4';
 import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import {
@@ -18,6 +26,7 @@ interface WriteBackBundleSelectorProps {
   isSaving: SavingWriteBackMode;
   isAmendment?: boolean;
   extractedBundle: Bundle;
+  disableWriteBackSelection?: boolean;
   onCloseDialog: () => void;
   onWriteBackBundle: (bundleToWriteBack: Bundle, savingWriteBackMode: SavingWriteBackMode) => void;
   onDialogExited?: () => void;
@@ -29,6 +38,7 @@ function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
     isSaving,
     isAmendment,
     extractedBundle,
+    disableWriteBackSelection = false,
     onCloseDialog,
     onWriteBackBundle,
     onDialogExited
@@ -176,33 +186,45 @@ function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
         }
       }}>
       <StandardDialogTitle onCloseDialog={onCloseDialog}>
-        Select items to write back to patient record
+        {disableWriteBackSelection
+          ? `Confirm save as ${isAmendment ? 'amendment' : 'final'} and write back`
+          : 'Select items to write back to patient record'}
       </StandardDialogTitle>
 
-      <DialogContent dividers>
-        <Button
-          onClick={allValidKeysSelected ? handleUnselectAll : handleSelectAll}
-          variant="outlined"
-          size="small">
-          {allValidKeysSelected ? 'Unselect All' : 'Select All'}
-        </Button>
+      <DialogContent dividers={!disableWriteBackSelection}>
+        {disableWriteBackSelection ? (
+          <DialogContentText>
+            Are you sure you want to save this response as{' '}
+            {isAmendment ? 'an amendment' : 'final'} and write back all items to the patient
+            record?
+          </DialogContentText>
+        ) : (
+          <>
+            <Button
+              onClick={allValidKeysSelected ? handleUnselectAll : handleSelectAll}
+              variant="outlined"
+              size="small">
+              {allValidKeysSelected ? 'Unselect All' : 'Select All'}
+            </Button>
 
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
-          {allBundleEntries.map((bundleEntry, bundleEntryIndex) => {
-            return (
-              <WriteBackBundleSelectorItem
-                key={bundleEntryIndex}
-                bundleEntry={bundleEntry}
-                bundleEntryIndex={bundleEntryIndex}
-                selectedKeys={selectedKeys}
-                allValidKeys={allValidKeys}
-                populatedResourceMap={populatedResourceMap}
-                isEntrySelected={isEntrySelected}
-                onToggleCheckbox={handleToggleCheckbox}
-              />
-            );
-          })}
-        </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
+              {allBundleEntries.map((bundleEntry, bundleEntryIndex) => {
+                return (
+                  <WriteBackBundleSelectorItem
+                    key={bundleEntryIndex}
+                    bundleEntry={bundleEntry}
+                    bundleEntryIndex={bundleEntryIndex}
+                    selectedKeys={selectedKeys}
+                    allValidKeys={allValidKeys}
+                    populatedResourceMap={populatedResourceMap}
+                    isEntrySelected={isEntrySelected}
+                    onToggleCheckbox={handleToggleCheckbox}
+                  />
+                );
+              })}
+            </Box>
+          </>
+        )}
       </DialogContent>
 
       <DialogActions>
@@ -214,9 +236,11 @@ function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
             justifyContent: 'space-between',
             pl: 1
           }}>
-          <Typography component="div" variant="body2" color="text.secondary">
-            {selectedKeys.size} of {allValidKeys.size} valid entries selected
-          </Typography>
+          {disableWriteBackSelection ? null : (
+            <Typography component="div" variant="body2" color="text.secondary">
+              {selectedKeys.size} of {allValidKeys.size} valid entries selected
+            </Typography>
+          )}
 
           <Box display="flex" gap={1}>
             <Button onClick={onCloseDialog} disabled={!!isSaving}>

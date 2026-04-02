@@ -43,7 +43,8 @@ export interface RendererSaveAsFinalWriteBackDialogProps {
 function RendererSaveAsFinalWriteBackDialog(props: RendererSaveAsFinalWriteBackDialogProps) {
   const { dialogOpen, isAmendment, extractedBundle, onCloseDialog, onDialogExited } = props;
 
-  const { smartClient, patient, user, launchQuestionnaire } = useSmartClient();
+  const { smartClient, patient, user, launchQuestionnaire, disableWriteBackSelection } =
+    useSmartClient();
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
@@ -174,6 +175,7 @@ function RendererSaveAsFinalWriteBackDialog(props: RendererSaveAsFinalWriteBackD
       isSaving={isSaving}
       isAmendment={isAmendment}
       extractedBundle={extractedBundle}
+      disableWriteBackSelection={disableWriteBackSelection}
       onCloseDialog={handleClose}
       onWriteBackBundle={async (bundleToWriteBack, savingWriteBackMode) => {
         if (savingWriteBackMode === 'saving-only') {

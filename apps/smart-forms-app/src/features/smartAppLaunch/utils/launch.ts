@@ -78,9 +78,13 @@ export interface FhirContext {
   [key: string]: unknown;
 }
 
+export const DISABLE_WRITEBACK_SELECTION_CONTEXT_KEY =
+  'https://smartforms.csiro.au/smart-app-launch/extra-context/disable-writeback-selection';
+
 export interface tokenResponseCustomised extends fhirclient.TokenResponse {
   fhirContext?: FhirContext[];
   intent?: string;
+  'https://smartforms.csiro.au/smart-app-launch/extra-context/disable-writeback-selection'?: boolean;
 }
 
 // Use Australian Digital Health namespace with the "new" role for fhirContext:

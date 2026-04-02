@@ -30,6 +30,7 @@ export interface SmartClientState {
   resolvedFhirContextReferences: Record<string, FhirResource> | null;
   launchQuestionnaire: Questionnaire | null;
   tokenReceivedTimestamp: number | null;
+  disableWriteBackSelection: boolean;
 }
 
 export type SmartClientActions =
@@ -40,7 +41,8 @@ export type SmartClientActions =
     }
   | { type: 'SET_QUESTIONNAIRE_CONTEXT'; payload: Questionnaire }
   | { type: 'SET_FHIR_CONTEXT'; payload: FhirContext[] }
-  | { type: 'SET_RESOLVED_FHIR_CONTEXT_REFERENCES'; payload: Record<string, FhirResource> };
+  | { type: 'SET_RESOLVED_FHIR_CONTEXT_REFERENCES'; payload: Record<string, FhirResource> }
+  | { type: 'SET_DISABLE_WRITEBACK_SELECTION'; payload: boolean };
 
 function smartClientReducer(state: SmartClientState, action: SmartClientActions): SmartClientState {
   switch (action.type) {
@@ -59,6 +61,8 @@ function smartClientReducer(state: SmartClientState, action: SmartClientActions)
       return { ...state, fhirContext: action.payload };
     case 'SET_RESOLVED_FHIR_CONTEXT_REFERENCES':
       return { ...state, resolvedFhirContextReferences: action.payload };
+    case 'SET_DISABLE_WRITEBACK_SELECTION':
+      return { ...state, disableWriteBackSelection: action.payload };
     default:
       return state;
   }
@@ -72,7 +76,8 @@ const initialSmartClientState: SmartClientState = {
   launchQuestionnaire: null,
   fhirContext: null,
   resolvedFhirContextReferences: null,
-  tokenReceivedTimestamp: null
+  tokenReceivedTimestamp: null,
+  disableWriteBackSelection: false
 };
 
 export interface SmartClientContextType {

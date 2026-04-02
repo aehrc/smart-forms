@@ -93,6 +93,13 @@ function useSmartClient() {
     setResolvedFhirContextReferences(resolvedFhirContextReferences);
   }
 
+  function setDisableWriteBackSelection(disableWriteBackSelection: boolean) {
+    dispatch({
+      type: 'SET_DISABLE_WRITEBACK_SELECTION',
+      payload: disableWriteBackSelection
+    });
+  }
+
   const smartClient = state.smartClient;
   const patient = state.patient;
   const user = state.user;
@@ -100,6 +107,7 @@ function useSmartClient() {
   const launchQuestionnaire = state.launchQuestionnaire;
   const fhirContext = state.fhirContext;
   const tokenReceivedTimestamp = state.tokenReceivedTimestamp;
+  const disableWriteBackSelection = state.disableWriteBackSelection;
 
   return {
     smartClient,
@@ -109,11 +117,13 @@ function useSmartClient() {
     launchQuestionnaire,
     fhirContext,
     tokenReceivedTimestamp,
+    disableWriteBackSelection,
     setSmartClient,
     setCommonLaunchContexts,
     setQuestionnaireLaunchContext,
     setFhirContext: setFhirContextArray,
-    setResolvedFhirContextReferences: setResolvedFhirContext
+    setResolvedFhirContextReferences: setResolvedFhirContext,
+    setDisableWriteBackSelection
   };
 }
 

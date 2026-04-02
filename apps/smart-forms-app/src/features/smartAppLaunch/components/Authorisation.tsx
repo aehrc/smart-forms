@@ -19,6 +19,7 @@ import { useContext, useEffect, useReducer } from 'react';
 import { oauth2 } from 'fhirclient';
 import type { tokenResponseCustomised } from '../utils/launch.ts';
 import {
+  DISABLE_WRITEBACK_SELECTION_CONTEXT_KEY,
   getQuestionnaireReferences,
   readCommonLaunchContexts,
   readQuestionnaireContext,
@@ -79,7 +80,8 @@ function Authorisation() {
     setCommonLaunchContexts,
     setQuestionnaireLaunchContext,
     setFhirContext,
-    setResolvedFhirContextReferences
+    setResolvedFhirContextReferences,
+    setDisableWriteBackSelection
   } = useSmartClient();
 
   const { enqueueSnackbar } = useSnackbar();
@@ -115,11 +117,16 @@ function Authorisation() {
           });
 
           // Read FhirContext from the token response
-          const fhirContext =
-            (client.state.tokenResponse as tokenResponseCustomised)?.fhirContext ?? null;
+          const tokenResponse = client.state.tokenResponse as tokenResponseCustomised;
+          const fhirContext = tokenResponse?.fhirContext ?? null;
           if (fhirContext) {
             setFhirContext(fhirContext);
           }
+
+          // Read disable-writeback-selection extra context from the token response
+          const disableWriteBackSelection =
+            tokenResponse?.[DISABLE_WRITEBACK_SELECTION_CONTEXT_KEY] ?? false;
+          setDisableWriteBackSelection(disableWriteBackSelection);
 
           // Get Questionnaire context from fhirContext array
           // the set questionnaire launch context if available
