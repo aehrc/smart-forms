@@ -270,13 +270,13 @@ describe('Population workflow for', () => {
 
     const medRow1 = medicationRows[0]!;
     const currentMedication = await getInputText(medRow1, 'Medication');
-    expect(currentMedication).toBe('Paracetamol 500mg tablet');
+    expect(currentMedication).toBe('Paracetamol 500 mg tablet');
     const currentMedicationStatus = await getInputText(medRow1, 'Status');
     expect(currentMedicationStatus).toBe('Active');
     const currentMedicationDosage = await getInputText(medRow1, 'Dosage');
     expect(currentMedicationDosage).toBe('Once daily, 10mg');
     const currentMedicationReasonCode = await getInputText(medRow1, 'Clinical indication');
-    expect(currentMedicationReasonCode).toBe('Clinical indication for medication');
+    expect(currentMedicationReasonCode).toBe('Iris tuck');
     const currentMedicationComment = await getInputText(medRow1, 'Comment');
     expect(currentMedicationComment).toBe('Patient should take with food');
 
@@ -307,7 +307,7 @@ describe('Population workflow for', () => {
     expect(allergiesRows.length).toBe(2);
     const allergyRow1 = allergiesRows[0]!;
     const allergySubstance = await getInputText(allergyRow1, 'Substance');
-    expect(allergySubstance).toBe('Cashew nuts');
+    expect(allergySubstance).toBe('Cashew nut specific IgE');
     const allergyStatus = await getInputText(allergyRow1, 'Status');
     expect(allergyStatus).toBe('Active');
     const allergyManifestation = await getInputText(allergyRow1, 'Manifestation');
@@ -359,7 +359,7 @@ describe('Population workflow for', () => {
       vaccinesPreviouslyGiven.querySelector('tbody tr:nth-child(1)')!;
     expect(vaccinesRow1).toBeTruthy();
     const vaccine1 = await getInputText(vaccinesRow1, 'Vaccine');
-    expect(vaccine1).toBe('Vaccine');
+    expect(vaccine1).toBe('Hepatitis A vaccine');
     const vaccineBatchNumber1 = await getInputText(vaccinesRow1, 'Batch number');
     expect(vaccineBatchNumber1).toBe('BATCH-123');
     const vaccineDate1 = await getInputText(vaccinesRow1, 'Administration date');

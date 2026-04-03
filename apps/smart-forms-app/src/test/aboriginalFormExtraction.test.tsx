@@ -1,10 +1,37 @@
-import { vi, beforeAll} from 'vitest';
-import { render, waitFor, screen} from '@testing-library/react';
+import { vi, beforeAll } from 'vitest';
+import { render, waitFor } from '@testing-library/react';
 import { AboriginalForm, terminologyServerUrl } from './aboriginalFormUtils';
-import { nonSnomedCondition, patient, condition, currentMedication, obsTobaccoSmokingStatus, obsBodyHeight, obsBodyWeight, obsHeartRate, obsHeartRhythm, nonSnomedAllergy, nonSnomedImmunization, obsWaistCircumference, obsBloodPressure } from './aboriginalFormIntegrationData';
-import { findByLinkIdOrLabel, inputDate, inputText, invokeExtract, selectTab, findAllByLinkIdOrLabel, chooseSelectOption } from './testUtils';
-import { FhirResource } from 'fhir/r4';
-import {userEvent} from 'storybook/internal/test';
+import {
+  nonSnomedCondition,
+  patient,
+  condition,
+  currentMedication,
+  obsTobaccoSmokingStatus,
+  obsBodyHeight,
+  obsBodyWeight,
+  obsHeartRate,
+  obsHeartRhythm,
+  nonSnomedAllergy,
+  nonSnomedImmunization,
+  obsWaistCircumference,
+  obsBloodPressure,
+  nonSnomedMedication,
+  immunization,
+  obsLengthHeight,
+  allergy,
+  makeSearchSetBundle,
+  obsHeadCircumference
+} from './aboriginalFormIntegrationData';
+import {
+  findByLinkIdOrLabel,
+  inputDate,
+  inputText,
+  invokeExtract,
+  selectTab,
+  chooseSelectOption,
+  checkRadioOption
+} from './testUtils';
+import { FhirResource, MedicationStatement } from 'fhir/r4';
 
 vi.mock('fhirclient', async () => {
   const actual = await vi.importActual<typeof import('fhirclient')>('fhirclient');
@@ -37,7 +64,7 @@ beforeAll(() => {
 });
 
 describe('Extraction workflow for', () => {
-  test.only('Conditions', async () => {
+  test('non-SNOMED conditions', async () => {
     const onExtractResult = vi.fn();
     const { container } = render(
       <AboriginalForm patient={patient} requestDefinitions={[]} onExtractResult={onExtractResult} />
@@ -47,37 +74,165 @@ describe('Extraction workflow for', () => {
     });
     await selectTab(container, 'Medical history and current problems');
     const newDiagnosisContainer = await findByLinkIdOrLabel(container, 'New diagnosis');
-    const conditionRow1: HTMLElement = newDiagnosisContainer.querySelector('tbody tr:nth-child(1)')!;
-    expect(conditionRow1).toBeTruthy();
-    await inputText(conditionRow1, 'Condition', 'Non-SNOMED condition');
-    await inputDate(conditionRow1, 'Onset date', '10/10/2025');
-    await inputText(conditionRow1, 'Comment', 'Test comment');
+    await inputText(newDiagnosisContainer, 'Condition', 'Non-SNOMED condition');
+    await inputDate(newDiagnosisContainer, 'Onset date', '10/10/2025');
+    await inputText(newDiagnosisContainer, 'Comment', 'Test comment');
 
-    const addRowButton = screen.getByTestId('AddIcon');
-    await userEvent.click(addRowButton);
-
-    const conditionRow2: HTMLElement = newDiagnosisContainer.querySelector('tbody tr:nth-child(2)')!;
-    expect(conditionRow2).toBeTruthy();
-    await chooseSelectOption(conditionRow2, 'Condition', 'Parkinson\'s disease');
-    await inputDate(conditionRow2, 'Onset date', '10/10/2025');
-    await inputText(conditionRow2, 'Comment', 'Test comment');
-    
     const extractedBundle = await invokeExtract(container, onExtractResult);
-    expect(extractedBundle.entry).toHaveLength(2);
-    // Verification status is not extracted
+    expect(extractedBundle.entry).toHaveLength(1);
     expect(extractedBundle.entry?.[0]?.resource).toStrictEqual(
       omitResourceFields(nonSnomedCondition, ['id', 'verificationStatus'])
     );
+  });
 
-    expect(extractedBundle.entry?.[1]?.resource).toStrictEqual(
+  test('SNOMED conditions', async () => {
+    const onExtractResult = vi.fn();
+    const { container } = render(
+      <AboriginalForm patient={patient} requestDefinitions={[]} onExtractResult={onExtractResult} />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 5000
+    });
+    await selectTab(container, 'Medical history and current problems');
+    const newDiagnosisContainer = await findByLinkIdOrLabel(container, 'New diagnosis');
+
+    await chooseSelectOption(newDiagnosisContainer, 'Condition', "Parkinson's disease");
+    await inputDate(newDiagnosisContainer, 'Onset date', '10/10/2025');
+    await inputText(newDiagnosisContainer, 'Comment', 'Test comment');
+
+    const extractedBundle = await invokeExtract(container, onExtractResult);
+    expect(extractedBundle.entry).toHaveLength(1);
+
+    expect(extractedBundle.entry?.[0]?.resource).toStrictEqual(
       omitResourceFields(condition, ['id', 'verificationStatus'])
     );
-
-
   });
-  
-  
-  test('Medications', async () => {
+
+  test('Change condition clinical status and abatement date', async () => {
+    const onExtractResult = vi.fn();
+    const { container } = render(
+      <AboriginalForm
+        patient={patient}
+        requestDefinitions={[
+          {
+            urlPrefix: 'Condition',
+            params: {},
+            responseBody: makeSearchSetBundle([condition])
+          }
+        ]}
+        onExtractResult={onExtractResult}
+      />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 5000
+    });
+    await selectTab(container, 'Medical history and current problems');
+    const medicalHistorySummaryContainer = await findByLinkIdOrLabel(
+      container,
+      'Medical history summary'
+    );
+    await chooseSelectOption(medicalHistorySummaryContainer, 'Clinical status', 'Inactive');
+    await inputDate(medicalHistorySummaryContainer, 'Abatement date', '01/04/2026');
+
+    const extractedBundle = await invokeExtract(container, onExtractResult);
+    expect(extractedBundle.entry).toHaveLength(1);
+    expect(extractedBundle.entry?.[0]?.request).toStrictEqual({
+      method: 'PATCH',
+      url: `Condition/${condition.id}`
+    });
+    expect(extractedBundle.entry?.[0]?.resource).toStrictEqual({
+      parameter: [
+        {
+          name: 'operation',
+          part: [
+            {
+              name: 'type',
+              valueCode: 'add'
+            },
+            {
+              name: 'path',
+              valueString: 'Condition'
+            },
+            {
+              name: 'name',
+              valueString: 'clinicalStatus'
+            },
+            {
+              name: 'value',
+              valueCodeableConcept: {
+                coding: [
+                  {
+                    code: 'inactive',
+                    display: 'Inactive',
+                    system: 'http://terminology.hl7.org/CodeSystem/condition-clinical'
+                  }
+                ]
+              }
+            },
+            {
+              name: 'pathLabel',
+              valueString: 'Clinical status'
+            }
+          ]
+        },
+        {
+          name: 'operation',
+          part: [
+            {
+              name: 'type',
+              valueCode: 'add'
+            },
+            {
+              name: 'path',
+              valueString: 'Condition'
+            },
+            {
+              name: 'name',
+              valueString: 'abatement'
+            },
+            {
+              name: 'value',
+              valueDateTime: '2026-04-01'
+            },
+            {
+              name: 'pathLabel',
+              valueString: 'Abatement date'
+            }
+          ]
+        }
+      ],
+      resourceType: 'Parameters'
+    });
+  });
+
+  test('non-SNOMED medications', async () => {
+    const onExtractResult = vi.fn();
+    const { container } = render(
+      <AboriginalForm patient={patient} requestDefinitions={[]} onExtractResult={onExtractResult} />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 5000
+    });
+    await selectTab(container, 'Regular medications');
+    const newMedicationContainer = await findByLinkIdOrLabel(container, 'New medications');
+    await inputText(newMedicationContainer, 'Medication', 'Non-SNOMED medication');
+    await inputText(newMedicationContainer, 'Dosage', 'Once daily, 5mg');
+    await inputText(
+      newMedicationContainer,
+      'Clinical indication',
+      'Non-SNOMED clinical indication for medication'
+    );
+    await inputText(newMedicationContainer, 'Comment', 'Non-SNOMED medication note');
+
+    const extractedBundle = await invokeExtract(container, onExtractResult);
+    expect(extractedBundle.entry).toHaveLength(1);
+    const actualMedication = extractedBundle.entry?.[0]?.resource as MedicationStatement;
+    expect(omitResourceFields(actualMedication, ['dateAsserted'])).toStrictEqual(
+      omitResourceFields(nonSnomedMedication, ['id', 'dateAsserted'])
+    );
+  });
+
+  test('SNOMED medications', async () => {
     const onExtractResult = vi.fn();
     const { container } = render(
       <AboriginalForm patient={patient} requestDefinitions={[]} onExtractResult={onExtractResult} />
@@ -87,22 +242,579 @@ describe('Extraction workflow for', () => {
     });
 
     await selectTab(container, 'Regular medications');
-    const newMedicationContainer = await findAllByLinkIdOrLabel(container, 'New medications');
-    const medRow1 = newMedicationContainer[0]!;
-    await inputText(medRow1, 'Medication', 'Paracetamol 500mg tablet');
-    await inputText(medRow1, 'Dosage', 'Once daily, 10mg');
-    await inputText(medRow1, 'Clinical indication', 'Clinical indication for medication');
-    await inputText(medRow1, 'Comment', 'Patient should take with food');
+    const newMedicationContainer = await findByLinkIdOrLabel(container, 'New medications');
+    await chooseSelectOption(newMedicationContainer, 'Medication', 'Paracetamol 500 mg tablet');
+    await inputText(newMedicationContainer, 'Dosage', 'Once daily, 10mg');
+    await chooseSelectOption(newMedicationContainer, 'Clinical indication', 'Iris tuck');
+    await inputText(newMedicationContainer, 'Comment', 'Patient should take with food');
 
     const extractedBundle = await invokeExtract(container, onExtractResult);
     expect(extractedBundle.entry).toHaveLength(1);
-
-    expect(extractedBundle.entry?.[0]?.resource).toStrictEqual(
-      omitResourceFields(currentMedication, ['id'])
+    const actualMedication = extractedBundle.entry?.[0]?.resource as MedicationStatement;
+    expect(omitResourceFields(actualMedication, ['dateAsserted'])).toStrictEqual(
+      omitResourceFields(currentMedication, ['id', 'dateAsserted'])
     );
   });
 
-  test('Allergies/adverse reactions', async () => {
+  test('Change medications status', async () => {
+    const onExtractResult = vi.fn();
+    const { container } = render(
+      <AboriginalForm
+        patient={patient}
+        requestDefinitions={[
+          {
+            urlPrefix: 'MedicationStatement',
+            params: {},
+            responseBody: makeSearchSetBundle([currentMedication])
+          }
+        ]}
+        onExtractResult={onExtractResult}
+      />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 5000
+    });
+    await selectTab(container, 'Regular medications');
+    const currentMedicationsContainer = await findByLinkIdOrLabel(container, 'Current medications');
+    await chooseSelectOption(currentMedicationsContainer, 'Status', 'Completed');
+
+    const extractedBundle = await invokeExtract(container, onExtractResult);
+    expect(extractedBundle.entry).toHaveLength(1);
+    expect(extractedBundle.entry?.[0]?.request).toStrictEqual({
+      method: 'PATCH',
+      url: `MedicationStatement/${currentMedication.id}`
+    });
+    expect(extractedBundle.entry?.[0]?.resource).toStrictEqual({
+      parameter: [
+        {
+          name: 'operation',
+          part: [
+            {
+              name: 'type',
+              valueCode: 'add'
+            },
+            {
+              name: 'path',
+              valueString: 'MedicationStatement'
+            },
+            {
+              name: 'name',
+              valueString: 'status'
+            },
+            {
+              name: 'value',
+              valueCode: 'completed'
+            },
+            {
+              name: 'pathLabel',
+              valueString: 'Status'
+            }
+          ]
+        },
+        {
+          name: 'operation',
+          part: [
+            {
+              name: 'type',
+              valueCode: 'add'
+            },
+            {
+              name: 'path',
+              valueString: 'MedicationStatement.dosage[0]'
+            },
+            {
+              name: 'name',
+              valueString: 'text'
+            },
+            {
+              name: 'value',
+              valueString: 'Once daily, 10mg'
+            },
+            {
+              name: 'pathLabel',
+              valueString: 'Dosage'
+            }
+          ]
+        },
+        {
+          name: 'operation',
+          part: [
+            {
+              name: 'type',
+              valueCode: 'add'
+            },
+            {
+              name: 'path',
+              valueString: 'MedicationStatement.note[0]'
+            },
+            {
+              name: 'name',
+              valueString: 'text'
+            },
+            {
+              name: 'value',
+              valueMarkdown: 'Patient should take with food'
+            },
+            {
+              name: 'pathLabel',
+              valueString: 'Comment'
+            }
+          ]
+        }
+      ],
+      resourceType: 'Parameters'
+    });
+  });
+
+  test('Change medications dosage', async () => {
+    const onExtractResult = vi.fn();
+    const { container } = render(
+      <AboriginalForm
+        patient={patient}
+        requestDefinitions={[
+          {
+            urlPrefix: 'MedicationStatement',
+            params: {},
+            responseBody: makeSearchSetBundle([currentMedication])
+          }
+        ]}
+        onExtractResult={onExtractResult}
+      />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 5000
+    });
+    await selectTab(container, 'Regular medications');
+    const currentMedicationsContainer = await findByLinkIdOrLabel(container, 'Current medications');
+    await inputText(currentMedicationsContainer, 'Dosage', 'Twice daily, 10mg');
+
+    const extractedBundle = await invokeExtract(container, onExtractResult);
+    expect(extractedBundle.entry).toHaveLength(1);
+    expect(extractedBundle.entry?.[0]?.request).toStrictEqual({
+      method: 'PATCH',
+      url: `MedicationStatement/${currentMedication.id}`
+    });
+
+    expect(extractedBundle.entry?.[0]?.resource).toStrictEqual({
+      parameter: [
+        {
+          name: 'operation',
+          part: [
+            {
+              name: 'type',
+              valueCode: 'add'
+            },
+            {
+              name: 'path',
+              valueString: 'MedicationStatement'
+            },
+            {
+              name: 'name',
+              valueString: 'status'
+            },
+            {
+              name: 'value',
+              valueCode: 'active'
+            },
+            {
+              name: 'pathLabel',
+              valueString: 'Status'
+            }
+          ]
+        },
+        {
+          name: 'operation',
+          part: [
+            {
+              name: 'type',
+              valueCode: 'add'
+            },
+            {
+              name: 'path',
+              valueString: 'MedicationStatement.dosage[0]'
+            },
+            {
+              name: 'name',
+              valueString: 'text'
+            },
+            {
+              name: 'value',
+              valueString: 'Twice daily, 10mg'
+            },
+            {
+              name: 'pathLabel',
+              valueString: 'Dosage'
+            }
+          ]
+        },
+        {
+          name: 'operation',
+          part: [
+            {
+              name: 'type',
+              valueCode: 'add'
+            },
+            {
+              name: 'path',
+              valueString: 'MedicationStatement.note[0]'
+            },
+            {
+              name: 'name',
+              valueString: 'text'
+            },
+            {
+              name: 'value',
+              valueMarkdown: 'Patient should take with food'
+            },
+            {
+              name: 'pathLabel',
+              valueString: 'Comment'
+            }
+          ]
+        }
+      ],
+      resourceType: 'Parameters'
+    });
+  });
+
+  test('Add medications dosage', async () => {
+    const currentMedicationWithoutDosage = omitResourceFields(currentMedication, ['dosage']);
+    const onExtractResult = vi.fn();
+    const { container } = render(
+      <AboriginalForm
+        patient={patient}
+        requestDefinitions={[
+          {
+            urlPrefix: 'MedicationStatement',
+            params: {},
+            responseBody: makeSearchSetBundle([currentMedicationWithoutDosage])
+          }
+        ]}
+        onExtractResult={onExtractResult}
+      />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 5000
+    });
+    await selectTab(container, 'Regular medications');
+    const currentMedicationsContainer = await findByLinkIdOrLabel(container, 'Current medications');
+    await inputText(currentMedicationsContainer, 'Dosage', 'Twice daily, 10mg');
+
+    const extractedBundle = await invokeExtract(container, onExtractResult);
+    expect(extractedBundle.entry).toHaveLength(1);
+    expect(extractedBundle.entry?.[0]?.request).toStrictEqual({
+      method: 'PATCH',
+      url: `MedicationStatement/${currentMedication.id}`
+    });
+
+    expect(extractedBundle.entry?.[0]?.resource).toStrictEqual({
+      parameter: [
+        {
+          name: 'operation',
+          part: [
+            {
+              name: 'type',
+              valueCode: 'add'
+            },
+            {
+              name: 'path',
+              valueString: 'MedicationStatement'
+            },
+            {
+              name: 'name',
+              valueString: 'status'
+            },
+            {
+              name: 'value',
+              valueCode: 'active'
+            },
+            {
+              name: 'pathLabel',
+              valueString: 'Status'
+            }
+          ]
+        },
+        {
+          name: 'operation',
+          part: [
+            {
+              name: 'type',
+              valueCode: 'add'
+            },
+            {
+              name: 'path',
+              valueString: 'MedicationStatement'
+            },
+            {
+              name: 'name',
+              valueString: 'dosage'
+            },
+            {
+              name: 'value',
+              valueDosage: {
+                text: 'Twice daily, 10mg'
+              }
+            },
+            {
+              name: 'pathLabel',
+              valueString: 'Dosage'
+            }
+          ]
+        },
+        {
+          name: 'operation',
+          part: [
+            {
+              name: 'type',
+              valueCode: 'add'
+            },
+            {
+              name: 'path',
+              valueString: 'MedicationStatement.note[0]'
+            },
+            {
+              name: 'name',
+              valueString: 'text'
+            },
+            {
+              name: 'value',
+              valueMarkdown: 'Patient should take with food'
+            },
+            {
+              name: 'pathLabel',
+              valueString: 'Comment'
+            }
+          ]
+        }
+      ],
+      resourceType: 'Parameters'
+    });
+  });
+
+  test('Change medications comment', async () => {
+    const onExtractResult = vi.fn();
+    const { container } = render(
+      <AboriginalForm
+        patient={patient}
+        requestDefinitions={[
+          {
+            urlPrefix: 'MedicationStatement',
+            params: {},
+            responseBody: makeSearchSetBundle([currentMedication])
+          }
+        ]}
+        onExtractResult={onExtractResult}
+      />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 5000
+    });
+    await selectTab(container, 'Regular medications');
+    const currentMedicationsContainer = await findByLinkIdOrLabel(container, 'Current medications');
+    await inputText(currentMedicationsContainer, 'Comment', 'Changed comment');
+
+    const extractedBundle = await invokeExtract(container, onExtractResult);
+    expect(extractedBundle.entry).toHaveLength(1);
+    expect(extractedBundle.entry?.[0]?.request).toStrictEqual({
+      method: 'PATCH',
+      url: `MedicationStatement/${currentMedication.id}`
+    });
+    expect(extractedBundle.entry?.[0]?.resource).toStrictEqual({
+      parameter: [
+        {
+          name: 'operation',
+          part: [
+            {
+              name: 'type',
+              valueCode: 'add'
+            },
+            {
+              name: 'path',
+              valueString: 'MedicationStatement'
+            },
+            {
+              name: 'name',
+              valueString: 'status'
+            },
+            {
+              name: 'value',
+              valueCode: 'active'
+            },
+            {
+              name: 'pathLabel',
+              valueString: 'Status'
+            }
+          ]
+        },
+        {
+          name: 'operation',
+          part: [
+            {
+              name: 'type',
+              valueCode: 'add'
+            },
+            {
+              name: 'path',
+              valueString: 'MedicationStatement.dosage[0]'
+            },
+            {
+              name: 'name',
+              valueString: 'text'
+            },
+            {
+              name: 'value',
+              valueString: 'Once daily, 10mg'
+            },
+            {
+              name: 'pathLabel',
+              valueString: 'Dosage'
+            }
+          ]
+        },
+        {
+          name: 'operation',
+          part: [
+            {
+              name: 'type',
+              valueCode: 'add'
+            },
+            {
+              name: 'path',
+              valueString: 'MedicationStatement.note[0]'
+            },
+            {
+              name: 'name',
+              valueString: 'text'
+            },
+            {
+              name: 'value',
+              valueMarkdown: 'Changed comment'
+            },
+            {
+              name: 'pathLabel',
+              valueString: 'Comment'
+            }
+          ]
+        }
+      ],
+      resourceType: 'Parameters'
+    });
+  });
+
+  test('Add medications comment', async () => {
+    const currentMedicationWithoutComment = omitResourceFields(currentMedication, ['note']);
+    const onExtractResult = vi.fn();
+    const { container } = render(
+      <AboriginalForm
+        patient={patient}
+        requestDefinitions={[
+          {
+            urlPrefix: 'MedicationStatement',
+            params: {},
+            responseBody: makeSearchSetBundle([currentMedicationWithoutComment])
+          }
+        ]}
+        onExtractResult={onExtractResult}
+      />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 5000
+    });
+    await selectTab(container, 'Regular medications');
+    const currentMedicationsContainer = await findByLinkIdOrLabel(container, 'Current medications');
+    await inputText(currentMedicationsContainer, 'Comment', 'Added comment');
+
+    const extractedBundle = await invokeExtract(container, onExtractResult);
+    expect(extractedBundle.entry).toHaveLength(1);
+    expect(extractedBundle.entry?.[0]?.request).toStrictEqual({
+      method: 'PATCH',
+      url: `MedicationStatement/${currentMedication.id}`
+    });
+    expect(extractedBundle.entry?.[0]?.resource).toStrictEqual({
+      parameter: [
+        {
+          name: 'operation',
+          part: [
+            {
+              name: 'type',
+              valueCode: 'add'
+            },
+            {
+              name: 'path',
+              valueString: 'MedicationStatement'
+            },
+            {
+              name: 'name',
+              valueString: 'status'
+            },
+            {
+              name: 'value',
+              valueCode: 'active'
+            },
+            {
+              name: 'pathLabel',
+              valueString: 'Status'
+            }
+          ]
+        },
+        {
+          name: 'operation',
+          part: [
+            {
+              name: 'type',
+              valueCode: 'add'
+            },
+            {
+              name: 'path',
+              valueString: 'MedicationStatement.dosage[0]'
+            },
+            {
+              name: 'name',
+              valueString: 'text'
+            },
+            {
+              name: 'value',
+              valueString: 'Once daily, 10mg'
+            },
+            {
+              name: 'pathLabel',
+              valueString: 'Dosage'
+            }
+          ]
+        },
+        {
+          name: 'operation',
+          part: [
+            {
+              name: 'type',
+              valueCode: 'add'
+            },
+            {
+              name: 'path',
+              valueString: 'MedicationStatement'
+            },
+            {
+              name: 'name',
+              valueString: 'note'
+            },
+            {
+              name: 'value',
+              valueAnnotation: {
+                text: 'Added comment'
+              }
+            },
+            {
+              name: 'pathLabel',
+              valueString: 'Comment'
+            }
+          ]
+        }
+      ],
+      resourceType: 'Parameters'
+    });
+  });
+
+  test('non-SNOMED allergies/adverse reactions', async () => {
     const onExtractResult = vi.fn();
     const { container } = render(
       <AboriginalForm patient={patient} requestDefinitions={[]} onExtractResult={onExtractResult} />
@@ -111,19 +823,326 @@ describe('Extraction workflow for', () => {
       timeout: 5000
     });
     await selectTab(container, 'Allergies/adverse reactions');
-    const newAllergyContainer = await findAllByLinkIdOrLabel(container, 'New adverse reaction risks');
-    const allergyRow1 = newAllergyContainer[0]!;
-    await inputText(allergyRow1, 'Substance', 'Non-SNOMED allergen');
-    await inputText(allergyRow1, 'Manifestation', 'Non-SNOMED reaction');
-    await inputText(allergyRow1, 'Comment', 'Non-SNOMED allergy note');
+    const newAllergyContainer = await findByLinkIdOrLabel(container, 'New adverse reaction risks');
+    await inputText(newAllergyContainer, 'Substance', 'Non-SNOMED allergen');
+    await inputText(newAllergyContainer, 'Manifestation', 'Non-SNOMED reaction');
+    await inputText(newAllergyContainer, 'Comment', 'Non-SNOMED allergy note');
 
     const extractedBundle = await invokeExtract(container, onExtractResult);
     expect(extractedBundle.entry).toHaveLength(1);
     expect(extractedBundle.entry?.[0]?.resource).toStrictEqual(
       omitResourceFields(nonSnomedAllergy, ['id'])
     );
+  });
 
-    
+  test('SNOMED allergies/adverse reactions', async () => {
+    const onExtractResult = vi.fn();
+    const { container } = render(
+      <AboriginalForm patient={patient} requestDefinitions={[]} onExtractResult={onExtractResult} />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 5000
+    });
+    await selectTab(container, 'Allergies/adverse reactions');
+    const newAllergyContainer = await findByLinkIdOrLabel(container, 'New adverse reaction risks');
+    await chooseSelectOption(newAllergyContainer, 'Substance', 'Cashew nut specific IgE');
+    await chooseSelectOption(newAllergyContainer, 'Manifestation', 'Rash');
+    await inputText(newAllergyContainer, 'Comment', 'Patient experiences rash and swelling');
+
+    const extractedBundle = await invokeExtract(container, onExtractResult);
+    expect(extractedBundle.entry).toHaveLength(1);
+    expect(extractedBundle.entry?.[0]?.resource).toStrictEqual(omitResourceFields(allergy, ['id']));
+  });
+
+  test('Change allergies/adverse reactions status', async () => {
+    const onExtractResult = vi.fn();
+    const { container } = render(
+      <AboriginalForm
+        patient={patient}
+        requestDefinitions={[
+          {
+            urlPrefix: 'AllergyIntolerance',
+            params: {},
+            responseBody: makeSearchSetBundle([allergy])
+          }
+        ]}
+        onExtractResult={onExtractResult}
+      />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 5000
+    });
+    await selectTab(container, 'Allergies/adverse reactions');
+    const allergySummaryContainer = await findByLinkIdOrLabel(
+      container,
+      'Adverse reaction risk summary'
+    );
+    await chooseSelectOption(allergySummaryContainer, 'Status', 'Inactive');
+
+    const extractedBundle = await invokeExtract(container, onExtractResult);
+    expect(extractedBundle.entry).toHaveLength(1);
+    expect(extractedBundle.entry?.[0]?.request).toStrictEqual({
+      method: 'PATCH',
+      url: `AllergyIntolerance/${allergy.id}`
+    });
+    expect(extractedBundle.entry?.[0]?.resource).toStrictEqual({
+      parameter: [
+        {
+          name: 'operation',
+          part: [
+            {
+              name: 'type',
+              valueCode: 'add'
+            },
+            {
+              name: 'path',
+              valueString: 'AllergyIntolerance'
+            },
+            {
+              name: 'name',
+              valueString: 'clinicalStatus'
+            },
+            {
+              name: 'value',
+              valueCodeableConcept: {
+                coding: [
+                  {
+                    code: 'inactive',
+                    display: 'Inactive',
+                    system: 'http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical'
+                  }
+                ]
+              }
+            },
+            {
+              name: 'pathLabel',
+              valueString: 'Clinical status'
+            }
+          ]
+        },
+        {
+          name: 'operation',
+          part: [
+            {
+              name: 'type',
+              valueCode: 'add'
+            },
+            {
+              name: 'path',
+              valueString: 'AllergyIntolerance.note[0]'
+            },
+            {
+              name: 'name',
+              valueString: 'text'
+            },
+            {
+              name: 'value',
+              valueMarkdown: 'Patient experiences rash and swelling'
+            },
+            {
+              name: 'pathLabel',
+              valueString: 'Comment'
+            }
+          ]
+        }
+      ],
+      resourceType: 'Parameters'
+    });
+  });
+
+  test('Change allergies/adverse reactions comment', async () => {
+    const onExtractResult = vi.fn();
+    const { container } = render(
+      <AboriginalForm
+        patient={patient}
+        requestDefinitions={[
+          {
+            urlPrefix: 'AllergyIntolerance',
+            params: {},
+            responseBody: makeSearchSetBundle([allergy])
+          }
+        ]}
+        onExtractResult={onExtractResult}
+      />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 5000
+    });
+    await selectTab(container, 'Allergies/adverse reactions');
+    const allergySummaryContainer = await findByLinkIdOrLabel(
+      container,
+      'Adverse reaction risk summary'
+    );
+    await inputText(allergySummaryContainer, 'Comment', 'Changed comment');
+
+    const extractedBundle = await invokeExtract(container, onExtractResult);
+    expect(extractedBundle.entry).toHaveLength(1);
+    expect(extractedBundle.entry?.[0]?.request).toStrictEqual({
+      method: 'PATCH',
+      url: `AllergyIntolerance/${allergy.id}`
+    });
+    expect(extractedBundle.entry?.[0]?.resource).toStrictEqual({
+      parameter: [
+        {
+          name: 'operation',
+          part: [
+            {
+              name: 'type',
+              valueCode: 'add'
+            },
+            {
+              name: 'path',
+              valueString: 'AllergyIntolerance'
+            },
+            {
+              name: 'name',
+              valueString: 'clinicalStatus'
+            },
+            {
+              name: 'value',
+              valueCodeableConcept: {
+                coding: [
+                  {
+                    code: 'active',
+                    display: 'Active',
+                    system: 'http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical'
+                  }
+                ]
+              }
+            },
+            {
+              name: 'pathLabel',
+              valueString: 'Clinical status'
+            }
+          ]
+        },
+        {
+          name: 'operation',
+          part: [
+            {
+              name: 'type',
+              valueCode: 'add'
+            },
+            {
+              name: 'path',
+              valueString: 'AllergyIntolerance.note[0]'
+            },
+            {
+              name: 'name',
+              valueString: 'text'
+            },
+            {
+              name: 'value',
+              valueMarkdown: 'Changed comment'
+            },
+            {
+              name: 'pathLabel',
+              valueString: 'Comment'
+            }
+          ]
+        }
+      ],
+      resourceType: 'Parameters'
+    });
+  });
+
+  test('Add allergies/adverse reactions comment', async () => {
+    const allergyWithoutComment = omitResourceFields(allergy, ['note']);
+    const onExtractResult = vi.fn();
+    const { container } = render(
+      <AboriginalForm
+        patient={patient}
+        requestDefinitions={[
+          {
+            urlPrefix: 'AllergyIntolerance',
+            params: {},
+            responseBody: makeSearchSetBundle([allergyWithoutComment])
+          }
+        ]}
+        onExtractResult={onExtractResult}
+      />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 5000
+    });
+    await selectTab(container, 'Allergies/adverse reactions');
+    const allergySummaryContainer = await findByLinkIdOrLabel(
+      container,
+      'Adverse reaction risk summary'
+    );
+    await inputText(allergySummaryContainer, 'Comment', 'Added comment');
+
+    const extractedBundle = await invokeExtract(container, onExtractResult);
+    expect(extractedBundle.entry).toHaveLength(1);
+    expect(extractedBundle.entry?.[0]?.request).toStrictEqual({
+      method: 'PATCH',
+      url: `AllergyIntolerance/${allergy.id}`
+    });
+    expect(extractedBundle.entry?.[0]?.resource).toStrictEqual({
+      parameter: [
+        {
+          name: 'operation',
+          part: [
+            {
+              name: 'type',
+              valueCode: 'add'
+            },
+            {
+              name: 'path',
+              valueString: 'AllergyIntolerance'
+            },
+            {
+              name: 'name',
+              valueString: 'clinicalStatus'
+            },
+            {
+              name: 'value',
+              valueCodeableConcept: {
+                coding: [
+                  {
+                    code: 'active',
+                    display: 'Active',
+                    system: 'http://terminology.hl7.org/CodeSystem/allergyintolerance-clinical'
+                  }
+                ]
+              }
+            },
+            {
+              name: 'pathLabel',
+              valueString: 'Clinical status'
+            }
+          ]
+        },
+        {
+          name: 'operation',
+          part: [
+            {
+              name: 'type',
+              valueCode: 'add'
+            },
+            {
+              name: 'path',
+              valueString: 'AllergyIntolerance'
+            },
+            {
+              name: 'name',
+              valueString: 'note'
+            },
+            {
+              name: 'value',
+              valueAnnotation: {
+                text: 'Added comment'
+              }
+            },
+            {
+              name: 'pathLabel',
+              valueString: 'Comment'
+            }
+          ]
+        }
+      ],
+      resourceType: 'Parameters'
+    });
   });
 
   test('Substance use, including tobacco', async () => {
@@ -139,8 +1158,6 @@ describe('Extraction workflow for', () => {
     await chooseSelectOption(smokingStatusContainer, 'New status', 'Current smoker');
     await inputDate(smokingStatusContainer, 'New date', '01/12/2025');
 
-    await new Promise(resolve => setTimeout(resolve, 30000));
-
     const extractedBundle = await invokeExtract(container, onExtractResult);
     expect(extractedBundle.entry).toHaveLength(1);
 
@@ -149,7 +1166,7 @@ describe('Extraction workflow for', () => {
     );
   });
 
-  test('Immunisations', async () => {
+  test('non-SNOMED immunisations', async () => {
     const onExtractResult = vi.fn();
     const { container } = render(
       <AboriginalForm patient={patient} requestDefinitions={[]} onExtractResult={onExtractResult} />
@@ -172,7 +1189,29 @@ describe('Extraction workflow for', () => {
     );
   });
 
-  test('Examination', async () => {
+  test('SNOMED immunisations', async () => {
+    const onExtractResult = vi.fn();
+    const { container } = render(
+      <AboriginalForm patient={patient} requestDefinitions={[]} onExtractResult={onExtractResult} />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 5000
+    });
+    await selectTab(container, 'Immunisation');
+    const vaccinesGivenToday = await findByLinkIdOrLabel(container, 'Vaccines given today');
+    await chooseSelectOption(vaccinesGivenToday, 'Vaccine', 'Hepatitis A vaccine');
+    await inputText(vaccinesGivenToday, 'Batch number', 'BATCH-123');
+    await inputDate(vaccinesGivenToday, 'Administration date', '01/03/2026');
+    await inputText(vaccinesGivenToday, 'Comment', 'Routine immunisation comment');
+
+    const extractedBundle = await invokeExtract(container, onExtractResult);
+    expect(extractedBundle.entry).toHaveLength(1);
+    expect(extractedBundle.entry?.[0]?.resource).toStrictEqual(
+      omitResourceFields(immunization, ['id'])
+    );
+  });
+
+  test('Height', async () => {
     const onExtractResult = vi.fn();
     const { container } = render(
       <AboriginalForm patient={patient} requestDefinitions={[]} onExtractResult={onExtractResult} />
@@ -184,47 +1223,178 @@ describe('Extraction workflow for', () => {
     const heightContainer = await findByLinkIdOrLabel(container, 'Height');
     await inputText(heightContainer, 'New result', '170');
     await inputDate(heightContainer, 'New result date', '20/11/2025');
+
+    const extractedBundle = await invokeExtract(container, onExtractResult);
+    expect(extractedBundle.entry).toHaveLength(1);
+    expect(extractedBundle.entry?.[0]?.resource).toStrictEqual(
+      omitResourceFields(obsBodyHeight, ['id'])
+    );
+  });
+
+  test('Weight', async () => {
+    const onExtractResult = vi.fn();
+    const { container } = render(
+      <AboriginalForm patient={patient} requestDefinitions={[]} onExtractResult={onExtractResult} />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 5000
+    });
+    await selectTab(container, 'Examination');
     const weightContainer = await findByLinkIdOrLabel(container, 'Weight');
     await inputText(weightContainer, 'New result', '70');
     await inputDate(weightContainer, 'New result date', '21/11/2025');
+
+    const extractedBundle = await invokeExtract(container, onExtractResult);
+    expect(extractedBundle.entry).toHaveLength(1);
+    expect(extractedBundle.entry?.[0]?.resource).toStrictEqual(
+      omitResourceFields(obsBodyWeight, ['id'])
+    );
+  });
+
+  test('Waist circumference', async () => {
+    const onExtractResult = vi.fn();
+    const { container } = render(
+      <AboriginalForm patient={patient} requestDefinitions={[]} onExtractResult={onExtractResult} />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 5000
+    });
+    await selectTab(container, 'Examination');
     const waistCircumferenceContainer = await findByLinkIdOrLabel(container, 'Waist circumference');
     await inputText(waistCircumferenceContainer, 'New result', '90');
     await inputDate(waistCircumferenceContainer, 'New result date', '23/11/2025');
+
+    const extractedBundle = await invokeExtract(container, onExtractResult);
+    expect(extractedBundle.entry).toHaveLength(1);
+    expect(extractedBundle.entry?.[0]?.resource).toStrictEqual(
+      omitResourceFields(obsWaistCircumference, ['id'])
+    );
+  });
+
+  test('Heart rate', async () => {
+    const onExtractResult = vi.fn();
+    const { container } = render(
+      <AboriginalForm patient={patient} requestDefinitions={[]} onExtractResult={onExtractResult} />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 5000
+    });
+    await selectTab(container, 'Examination');
     const heartRateContainer = await findByLinkIdOrLabel(container, 'Heart rate');
     await inputText(heartRateContainer, 'New result', '72');
     await inputDate(heartRateContainer, 'New result date', '04/12/2025');
+
+    const extractedBundle = await invokeExtract(container, onExtractResult);
+    expect(extractedBundle.entry).toHaveLength(1);
+    expect(extractedBundle.entry?.[0]?.resource).toStrictEqual(
+      omitResourceFields(obsHeartRate, ['id'])
+    );
+  });
+
+  test('Heart rhythm', async () => {
+    const onExtractResult = vi.fn();
+    const { container } = render(
+      <AboriginalForm patient={patient} requestDefinitions={[]} onExtractResult={onExtractResult} />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 5000
+    });
+    await selectTab(container, 'Examination');
     const heartRhythmContainer = await findByLinkIdOrLabel(container, 'Heart rhythm');
-    await chooseSelectOption(heartRhythmContainer, 'New result', 'Regular heart rhythm');
+    await checkRadioOption(heartRhythmContainer, 'New result', 'Regular heart rhythm');
     await inputDate(heartRhythmContainer, 'New result date', '03/12/2025');
+
+    const extractedBundle = await invokeExtract(container, onExtractResult);
+    expect(extractedBundle.entry).toHaveLength(1);
+    expect(extractedBundle.entry?.[0]?.resource).toStrictEqual(
+      omitResourceFields(obsHeartRhythm, ['id'])
+    );
+  });
+
+  test('Blood pressure', async () => {
+    const onExtractResult = vi.fn();
+    const { container } = render(
+      <AboriginalForm patient={patient} requestDefinitions={[]} onExtractResult={onExtractResult} />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 5000
+    });
+    await selectTab(container, 'Examination');
     const bloodPressureContainer = await findByLinkIdOrLabel(container, 'Blood pressure');
     await inputText(bloodPressureContainer, 'Systolic', '120');
     await inputText(bloodPressureContainer, 'Diastolic', '80');
     await inputDate(bloodPressureContainer, 'Date performed', '02/12/2025');
 
     const extractedBundle = await invokeExtract(container, onExtractResult);
-    expect(extractedBundle.entry).toHaveLength(6);
-
+    expect(extractedBundle.entry).toHaveLength(1);
     expect(extractedBundle.entry?.[0]?.resource).toStrictEqual(
-      omitResourceFields(obsBodyHeight, ['id'])
-    );
-
-    expect(extractedBundle.entry?.[1]?.resource).toStrictEqual(
-      omitResourceFields(obsBodyWeight, ['id'])
-    );
-    expect(extractedBundle.entry?.[2]?.resource).toStrictEqual(
-      omitResourceFields(obsWaistCircumference, ['id'])
-    );
-
-    expect(extractedBundle.entry?.[3]?.resource).toStrictEqual(
-      omitResourceFields(obsHeartRate, ['id'])
-    );
-
-    expect(extractedBundle.entry?.[4]?.resource).toStrictEqual(
-      omitResourceFields(obsHeartRhythm, ['id'])
-    );
-
-    expect(extractedBundle.entry?.[5]?.resource).toStrictEqual(
       omitResourceFields(obsBloodPressure, ['id'])
+    );
+  });
+
+  test('Length/Height', async () => {
+    const onExtractResult = vi.fn();
+    const today = new Date();
+    const fiveYearsOldBirthDate = new Date(
+      today.getFullYear() - 5,
+      today.getMonth(),
+      today.getDate()
+    )
+      .toISOString()
+      .slice(0, 10);
+    const fiveYearsOldPatient = { ...patient, birthDate: fiveYearsOldBirthDate };
+    const { container } = render(
+      <AboriginalForm
+        patient={fiveYearsOldPatient}
+        requestDefinitions={[]}
+        onExtractResult={onExtractResult}
+      />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 5000
+    });
+    await selectTab(container, 'Examination');
+    const lengthHeightContainer = await findByLinkIdOrLabel(container, 'Length/Height');
+    await inputText(lengthHeightContainer, 'New result', '10');
+    await inputDate(lengthHeightContainer, 'New result date', '20/11/2025');
+
+    const extractedBundle = await invokeExtract(container, onExtractResult);
+    expect(extractedBundle.entry).toHaveLength(1);
+    expect(extractedBundle.entry?.[0]?.resource).toStrictEqual(
+      omitResourceFields(obsLengthHeight, ['id'])
+    );
+  });
+
+  test('Head circumference', async () => {
+    const onExtractResult = vi.fn();
+    const today = new Date();
+    const fiveYearsOldBirthDate = new Date(
+      today.getFullYear() - 5,
+      today.getMonth(),
+      today.getDate()
+    )
+      .toISOString()
+      .slice(0, 10);
+    const fiveYearsOldPatient = { ...patient, birthDate: fiveYearsOldBirthDate };
+    const { container } = render(
+      <AboriginalForm
+        patient={fiveYearsOldPatient}
+        requestDefinitions={[]}
+        onExtractResult={onExtractResult}
+      />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 5000
+    });
+    await selectTab(container, 'Examination');
+    const headCircumferenceContainer = await findByLinkIdOrLabel(container, 'Head circumference');
+    await inputText(headCircumferenceContainer, 'New result', '55');
+    await inputDate(headCircumferenceContainer, 'New result date', '22/11/2025');
+
+    const extractedBundle = await invokeExtract(container, onExtractResult);
+    expect(extractedBundle.entry).toHaveLength(1);
+    expect(extractedBundle.entry?.[0]?.resource).toStrictEqual(
+      omitResourceFields(obsHeadCircumference, ['id'])
     );
   });
 });

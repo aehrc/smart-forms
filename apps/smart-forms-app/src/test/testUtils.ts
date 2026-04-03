@@ -285,7 +285,7 @@ export async function chooseSelectOption(
     fireEvent.change(input, { target: { value: optionLabel } });
   });
 
-  const option = await screen.findByRole('option', { name: optionLabel }, { timeout: 10000})
+  const option = await screen.findByRole('option', { name: optionLabel }, { timeout: 10000 });
 
   await act(async () => {
     fireEvent.click(option);

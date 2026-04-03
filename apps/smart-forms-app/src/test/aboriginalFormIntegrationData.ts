@@ -223,11 +223,16 @@ export const condition: Condition = {
     coding: [
       {
         system: 'http://snomed.info/sct',
-        code: '123456',
+        code: '49049000',
         display: "Parkinson's disease"
       }
     ]
   },
+  note: [
+    {
+      text: 'Test comment'
+    }
+  ],
   clinicalStatus: {
     coding: [
       {
@@ -350,13 +355,13 @@ export const currentMedication: MedicationStatement = {
   resourceType: 'MedicationStatement',
   id: 'current-medication',
   subject: { reference: `Patient/${patient.id}` },
-  effectiveDateTime: '2026-03-01',
+  dateAsserted: '2026-03-01',
   medicationCodeableConcept: {
     coding: [
       {
-        system: 'http://snomed.info/sct',
-        code: '123456',
-        display: 'Paracetamol 500mg tablet'
+        code: '23628011000036109',
+        display: 'Paracetamol 500 mg tablet',
+        system: 'http://snomed.info/sct'
       }
     ]
   },
@@ -371,8 +376,8 @@ export const currentMedication: MedicationStatement = {
       coding: [
         {
           system: 'http://snomed.info/sct',
-          code: '271807003',
-          display: 'Clinical indication for medication'
+          code: '418022001',
+          display: 'Iris tuck'
         }
       ]
     }
@@ -384,19 +389,12 @@ export const currentMedication: MedicationStatement = {
   ]
 };
 
-const nonSnomedMedication: MedicationStatement = {
+export const nonSnomedMedication: MedicationStatement = {
   resourceType: 'MedicationStatement',
   id: 'current-non-snomed-medication',
   subject: { reference: `Patient/${patient.id}` },
-  effectiveDateTime: '2026-03-01',
+  dateAsserted: '2026-03-01',
   medicationCodeableConcept: {
-    coding: [
-      {
-        system: 'http://loinc.org',
-        code: '98765-4',
-        display: 'Non-SNOMED medication'
-      }
-    ],
     text: 'Non-SNOMED medication'
   },
   status: 'active',
@@ -407,13 +405,6 @@ const nonSnomedMedication: MedicationStatement = {
   ],
   reasonCode: [
     {
-      coding: [
-        {
-          system: 'http://loinc.org',
-          code: '13579-2',
-          display: 'Non-SNOMED clinical indication for medication'
-        }
-      ],
       text: 'Non-SNOMED clinical indication for medication'
     }
   ],
@@ -431,7 +422,7 @@ const aboutTheHealthCheckInProgressQuestionnaireResponse: QuestionnaireResponse 
   authored: '2025-07-31T10:00:00+09:30'
 };
 
-const allergy: AllergyIntolerance = {
+export const allergy: AllergyIntolerance = {
   resourceType: 'AllergyIntolerance',
   id: 'allergy',
   patient: { reference: `Patient/${patient.id}` },
@@ -439,8 +430,8 @@ const allergy: AllergyIntolerance = {
     coding: [
       {
         system: 'http://snomed.info/sct',
-        code: '227493005',
-        display: 'Cashew nuts'
+        code: '388050007',
+        display: 'Cashew nut specific IgE'
       }
     ]
   },
@@ -493,13 +484,6 @@ export const nonSnomedAllergy: AllergyIntolerance = {
     {
       manifestation: [
         {
-          coding: [
-            {
-              system: 'http://loinc.org',
-              code: '5678-9',
-              display: 'Non-SNOMED reaction'
-            }
-          ],
           text: 'Non-SNOMED reaction'
         }
       ]
@@ -512,7 +496,7 @@ export const nonSnomedAllergy: AllergyIntolerance = {
   ]
 };
 
-const immunization: Immunization = {
+export const immunization: Immunization = {
   resourceType: 'Immunization',
   id: 'immunization',
   status: 'completed',
@@ -522,8 +506,8 @@ const immunization: Immunization = {
     coding: [
       {
         system: 'http://snomed.info/sct',
-        code: '123456',
-        display: 'Vaccine'
+        code: '836375003',
+        display: 'Hepatitis A vaccine'
       }
     ]
   },
@@ -561,7 +545,7 @@ export const obsTobaccoSmokingStatus: Observation = {
   id: 'obs-tobacco-smoking-status',
   status: 'final',
   subject: { reference: `Patient/${patient.id}` },
-  "category": [
+  category: [
     {
       coding: [
         {
@@ -579,7 +563,7 @@ export const obsTobaccoSmokingStatus: Observation = {
       },
       {
         code: '72166-2',
-        system: 'http://loinc.org',
+        system: 'http://loinc.org'
       }
     ],
     text: 'Smoking status'
@@ -601,8 +585,8 @@ export const obsBodyHeight: Observation = {
   id: 'obs-body-height',
   status: 'final',
   subject: { reference: `Patient/${patient.id}` },
-  "category": [
-     {
+  category: [
+    {
       coding: [
         {
           system: 'http://terminology.hl7.org/CodeSystem/observation-category',
@@ -627,12 +611,43 @@ export const obsBodyHeight: Observation = {
   }
 };
 
+export const obsLengthHeight: Observation = {
+  resourceType: 'Observation',
+  id: 'obs-length-height',
+  status: 'final',
+  subject: { reference: `Patient/${patient.id}` },
+  category: [
+    {
+      coding: [
+        {
+          system: 'http://terminology.hl7.org/CodeSystem/observation-category',
+          code: 'vital-signs'
+        }
+      ]
+    }
+  ],
+  code: {
+    coding: [
+      { system: 'http://loinc.org', code: '8302-2' },
+      { system: 'http://snomed.info/sct', code: '50373000' }
+    ],
+    text: 'Height'
+  },
+  effectiveDateTime: '2025-11-20',
+  valueQuantity: {
+    value: 10,
+    unit: 'cm',
+    system: 'http://unitsofmeasure.org',
+    code: 'cm'
+  }
+};
+
 export const obsBodyWeight: Observation = {
   resourceType: 'Observation',
   id: 'obs-body-weight',
   status: 'final',
-  "category": [
-     {
+  category: [
+    {
       coding: [
         {
           system: 'http://terminology.hl7.org/CodeSystem/observation-category',
@@ -658,16 +673,27 @@ export const obsBodyWeight: Observation = {
   }
 };
 
-const obsHeadCircumference: Observation = {
+export const obsHeadCircumference: Observation = {
   resourceType: 'Observation',
   id: 'obs-head-circumference',
   status: 'final',
   subject: { reference: `Patient/${patient.id}` },
+  category: [
+    {
+      coding: [
+        {
+          code: 'vital-signs',
+          system: 'http://terminology.hl7.org/CodeSystem/observation-category'
+        }
+      ]
+    }
+  ],
   code: {
     coding: [
-      { system: 'http://loinc.org', code: '9843-4', display: 'Head circumference' },
-      { system: 'http://snomed.info/sct', code: '363812007', display: 'Head circumference' }
-    ]
+      { system: 'http://loinc.org', code: '9843-4' },
+      { system: 'http://snomed.info/sct', code: '363812007' }
+    ],
+    text: 'Head circumference'
   },
   effectiveDateTime: '2025-11-22',
   valueQuantity: {
@@ -683,16 +709,16 @@ export const obsWaistCircumference: Observation = {
   id: 'obs-waist-circumference',
   status: 'final',
   subject: { reference: `Patient/${patient.id}` },
-  "category": [
-         {
-          coding: [
-             {
-               code: 'vital-signs',
-               system: 'http://terminology.hl7.org/CodeSystem/observation-category',
-             }  
-           ],
-         },
-       ],
+  category: [
+    {
+      coding: [
+        {
+          code: 'vital-signs',
+          system: 'http://terminology.hl7.org/CodeSystem/observation-category'
+        }
+      ]
+    }
+  ],
   code: {
     coding: [
       { system: 'http://loinc.org', code: '8280-0' },
@@ -714,16 +740,16 @@ export const obsHeartRate: Observation = {
   id: 'obs-heart-rate',
   status: 'final',
   subject: { reference: `Patient/${patient.id}` },
-  "category": [
-         {
-           coding: [
-             {
-               code: 'vital-signs',
-               system: 'http://terminology.hl7.org/CodeSystem/observation-category',
-            },
-          ]
+  category: [
+    {
+      coding: [
+        {
+          code: 'vital-signs',
+          system: 'http://terminology.hl7.org/CodeSystem/observation-category'
         }
-      ],
+      ]
+    }
+  ],
   code: {
     coding: [
       { system: 'http://loinc.org', code: '8867-4' },
@@ -745,16 +771,16 @@ export const obsHeartRhythm: Observation = {
   id: 'obs-heart-rhythm',
   status: 'final',
   subject: { reference: `Patient/${patient.id}` },
-  "category": [
-     {
+  category: [
+    {
       coding: [
-         {
-           code: 'vital-signs',
-           system: 'http://terminology.hl7.org/CodeSystem/observation-category',
-         }
-       ]
-     }
-   ],
+        {
+          code: 'vital-signs',
+          system: 'http://terminology.hl7.org/CodeSystem/observation-category'
+        }
+      ]
+    }
+  ],
   code: {
     coding: [
       { system: 'http://loinc.org', code: '8884-9' },
@@ -779,14 +805,28 @@ export const obsBloodPressure: Observation = {
   id: 'obs-blood-pressure',
   status: 'final',
   subject: { reference: `Patient/${patient.id}` },
+  category: [
+    {
+      coding: [
+        {
+          system: 'http://terminology.hl7.org/CodeSystem/observation-category',
+          code: 'vital-signs'
+        }
+      ]
+    }
+  ],
   code: {
     coding: [
       {
         system: 'http://loinc.org',
-        code: '85354-9',
-        display: 'Blood pressure panel with all children optional'
+        code: '85354-9'
+      },
+      {
+        code: '75367002',
+        system: 'http://snomed.info/sct'
       }
-    ]
+    ],
+    text: 'Blood pressure'
   },
   effectiveDateTime: '2025-12-02',
   component: [
@@ -795,14 +835,18 @@ export const obsBloodPressure: Observation = {
         coding: [
           {
             system: 'http://loinc.org',
-            code: '8480-6',
-            display: 'Systolic blood pressure'
+            code: '8480-6'
+          },
+          {
+            code: '271649006',
+            system: 'http://snomed.info/sct'
           }
-        ]
+        ],
+        text: 'Systolic'
       },
       valueQuantity: {
         value: 120,
-        unit: 'mmHg',
+        unit: 'mm[Hg]',
         system: 'http://unitsofmeasure.org',
         code: 'mm[Hg]'
       }
@@ -812,14 +856,18 @@ export const obsBloodPressure: Observation = {
         coding: [
           {
             system: 'http://loinc.org',
-            code: '8462-4',
-            display: 'Diastolic blood pressure'
+            code: '8462-4'
+          },
+          {
+            code: '271650006',
+            system: 'http://snomed.info/sct'
           }
-        ]
+        ],
+        text: 'Diastolic'
       },
       valueQuantity: {
         value: 80,
-        unit: 'mmHg',
+        unit: 'mm[Hg]',
         system: 'http://unitsofmeasure.org',
         code: 'mm[Hg]'
       }
@@ -997,7 +1045,7 @@ export const requestDefinitions: RequestDefinition[] = [
   }
 ];
 
-function makeSearchSetBundle(resources: FhirResource[]) {
+export function makeSearchSetBundle(resources: FhirResource[]) {
   return {
     resourceType: 'Bundle',
     type: 'searchset',
