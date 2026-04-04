@@ -42,7 +42,7 @@ import QuantityItem from '../QuantityItem/QuantityItem';
 import SliderItem from '../SliderItem/SliderItem';
 import StringItem from '../StringItem/StringItem';
 import TextItem from '../TextItem/TextItem';
-import CustomTimeItem from '../TimeItem/CustomTimeItem';
+import TimeItem from '../TimeItem/TimeItem';
 import UrlItem from '../UrlItem/UrlItem';
 
 interface SingleItemSwitcherProps
@@ -212,7 +212,7 @@ function SingleItemSwitcher(props: SingleItemSwitcherProps) {
       );
     case 'time':
       return (
-        <CustomTimeItem
+        <TimeItem
           key={answerKey}
           qItem={qItem}
           qrItem={qrItem}

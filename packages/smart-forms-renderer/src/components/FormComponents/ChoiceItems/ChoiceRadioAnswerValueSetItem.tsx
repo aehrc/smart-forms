@@ -35,6 +35,7 @@ function ChoiceRadioAnswerValueSetItem(props: BaseItemProps) {
     qrItem,
     isRepeated,
     isTabled,
+    renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
     calcExpUpdated,
@@ -62,6 +63,8 @@ function ChoiceRadioAnswerValueSetItem(props: BaseItemProps) {
 
   // Perform validation checks - there's no string-based input here
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
+  const { displayInstructions } = renderingExtensions;
+  const instructionsId = displayInstructions && !feedback ? `instructions-${qItem.linkId}` : undefined;
 
   const options = useMemo(() => convertCodingsToAnswerOptions(codings), [codings]);
 
@@ -95,6 +98,7 @@ function ChoiceRadioAnswerValueSetItem(props: BaseItemProps) {
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
         terminologyError={terminologyError}
         isTabled={isTabled}
+        instructionsId={instructionsId}
         onCheckedChange={handleChange}
         onClear={handleClear}
       />
@@ -124,6 +128,7 @@ function ChoiceRadioAnswerValueSetItem(props: BaseItemProps) {
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             terminologyError={terminologyError}
             isTabled={isTabled}
+            instructionsId={instructionsId}
             onCheckedChange={handleChange}
             onClear={handleClear}
           />

@@ -27,7 +27,7 @@ import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import useTerminologyServerQuery from '../../../hooks/useTerminologyServerQuery';
 import debounce from 'lodash.debounce';
 import { AUTOCOMPLETE_DEBOUNCE_DURATION, DEBOUNCE_DURATION } from '../../../utils/debounce';
-import CustomOpenChoiceField from './CustomOpenChoiceField';
+import OpenChoiceAutocompleteField from './OpenChoiceAutocompleteField';
 import ItemFieldGrid, { getInstructionsId } from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
 import { sanitizeInput } from '../../../utils/inputSanitization';
@@ -76,8 +76,6 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
 
   // Perform validation checks
   const validationFeedback = useValidationFeedback(qItem, feedbackFromParent);
-
-  // Get instructions ID for aria-describedby
   const { displayInstructions } = useRenderingExtensions(qItem);
   const instructionsId = getInstructionsId(qItem, displayInstructions, !!validationFeedback);
 
@@ -173,10 +171,11 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
 
   if (isRepeated) {
     return (
-      <CustomOpenChoiceField
+      <OpenChoiceAutocompleteField
         qItem={qItem}
         options={options}
         valueAutocomplete={valueAutocomplete}
+        input={input}
         loading={loading}
         feedback={feedback}
         readOnly={readOnly}
@@ -200,10 +199,11 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
         readOnly={readOnly}
         labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
         fieldChildren={
-          <CustomOpenChoiceField
+          <OpenChoiceAutocompleteField
             qItem={qItem}
             options={options}
             valueAutocomplete={valueAutocomplete}
+            input={input}
             loading={loading}
             feedback={feedback}
             readOnly={readOnly}

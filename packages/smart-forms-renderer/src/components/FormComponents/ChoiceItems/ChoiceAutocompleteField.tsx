@@ -49,6 +49,7 @@ interface ChoiceAutocompleteFieldsProps
   feedback: { message: string; color: AlertColor } | null;
   readOnly: boolean;
   calcExpUpdated: boolean;
+  instructionsId?: string;
 
   onInputChange: (newInput: string) => void;
   onValueChange: (newValue: Coding | null) => void;
@@ -63,6 +64,7 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
     feedback,
     readOnly,
     calcExpUpdated,
+    instructionsId,
     isTabled,
     renderingExtensions,
     onInputChange,
@@ -132,6 +134,13 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
                   <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
                 </>
               )
+            },
+            htmlInput: {
+              ...params.inputProps,
+              ...(isTabled
+                ? { 'aria-label': qItem.text ?? `Unnamed ${qItem.type} item` }
+                : { 'aria-labelledby': `label-${qItem.linkId}` }),
+              ...(instructionsId && { 'aria-describedby': instructionsId })
             }
           }}
         />

@@ -115,8 +115,9 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
             sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
             <RadioGroup
               id={qItem.type + '-' + qItem.linkId}
-              aria-labelledby={'label-' + qItem.linkId}
-              {...(instructionsId && { 'aria-describedby': instructionsId })}
+              aria-labelledby={
+                instructionsId ? `label-${qItem.linkId} ${instructionsId}` : `label-${qItem.linkId}`
+              }
               row={orientation === ChoiceItemOrientation.Horizontal}
               sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
               aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
@@ -137,7 +138,6 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
                     readOnly={readOnly}
                     disabledViaToggleExpression={false}
                     fullWidth={inputsFlexGrow}
-                    ariaDescribedBy={instructionsId}
                   />
                   <ChoiceRadioSingle
                     value="true"
@@ -145,7 +145,6 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
                     readOnly={readOnly}
                     disabledViaToggleExpression={false}
                     fullWidth={inputsFlexGrow}
-                    ariaDescribedBy={instructionsId}
                   />
                 </>
               ) : (
@@ -156,7 +155,6 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
                     readOnly={readOnly}
                     disabledViaToggleExpression={false}
                     fullWidth={inputsFlexGrow}
-                    ariaDescribedBy={instructionsId}
                   />
                   <ChoiceRadioSingle
                     value="false"
@@ -164,7 +162,6 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
                     readOnly={readOnly}
                     disabledViaToggleExpression={false}
                     fullWidth={inputsFlexGrow}
-                    ariaDescribedBy={instructionsId}
                   />
                 </>
               )}

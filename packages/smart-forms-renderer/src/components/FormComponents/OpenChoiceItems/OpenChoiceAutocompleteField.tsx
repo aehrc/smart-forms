@@ -51,7 +51,7 @@ interface OpenChoiceAutocompleteFieldProps
   feedback: { message: string; color: AlertColor } | null;
   readOnly: boolean;
   calcExpUpdated: boolean;
-  instructionsId: string | undefined;
+  instructionsId?: string;
   onValueChange: (
     newValue: Coding | string | null,
     reason: AutocompleteChangeReason | string

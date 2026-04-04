@@ -26,11 +26,10 @@ interface RadioOptionListProps {
   readOnly: boolean;
   fullWidth: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
-  instructionsId?: string | undefined;
 }
 
 function RadioOptionList(props: RadioOptionListProps) {
-  const { options, readOnly, fullWidth, answerOptionsToggleExpressionsMap, instructionsId } = props;
+  const { options, readOnly, fullWidth, answerOptionsToggleExpressionsMap } = props;
 
   return (
     <>
@@ -49,7 +48,6 @@ function RadioOptionList(props: RadioOptionListProps) {
               readOnly={readOnly}
               disabledViaToggleExpression={optionDisabledViaToggleExpression}
               fullWidth={fullWidth}
-              ariaDescribedBy={instructionsId}
             />
           );
         }
@@ -65,7 +63,6 @@ function RadioOptionList(props: RadioOptionListProps) {
               readOnly={readOnly}
               disabledViaToggleExpression={optionDisabledViaToggleExpression}
               fullWidth={fullWidth}
-              ariaDescribedBy={instructionsId}
             />
           );
         }
@@ -79,7 +76,6 @@ function RadioOptionList(props: RadioOptionListProps) {
               readOnly={readOnly}
               disabledViaToggleExpression={optionDisabledViaToggleExpression}
               fullWidth={fullWidth}
-              ariaDescribedBy={instructionsId}
             />
           );
         }

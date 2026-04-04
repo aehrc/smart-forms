@@ -15,7 +15,8 @@
  * limitations under the License.
  */
 
-import type { Coding } from 'fhir/r4';
+import type { AutocompleteChangeReason } from '@mui/material';
+import type { QuestionnaireItemAnswerOption } from 'fhir/r4';
 import useReadOnly from '../../../hooks/useReadOnly';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
@@ -26,7 +27,7 @@ import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid, { getInstructionsId } from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
 import { sanitizeInput } from '../../../utils/inputSanitization';
-import CustomOpenChoiceField from './CustomOpenChoiceField';
+import OpenChoiceSelectAnswerOptionField from './OpenChoiceSelectAnswerOptionField';
 
 function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
   const {
@@ -47,8 +48,6 @@ function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
-
-  // Get instructions ID for aria-describedby
   const { displayInstructions } = useRenderingExtensions(qItem);
   const instructionsId = getInstructionsId(qItem, displayInstructions, !!feedback);
 
@@ -57,60 +56,62 @@ function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
   const answerOptions = qItem.answerOption;
   if (!answerOptions) return null;
 
-  // Convert answerOptions to Coding format for CustomOpenChoiceField
-  const codingOptions: Coding[] = answerOptions
-    .map((opt) => opt.valueCoding)
-    .filter((coding): coding is Coding => Boolean(coding));
-
   const qrOpenChoice = qrItem ?? createEmptyQrItem(qItem, answerKey);
-
-  // Get current value as Coding or string
-  let valueAutocomplete: Coding | string = '';
-  if (qrOpenChoice.answer && qrOpenChoice.answer[0]) {
-    const answer = qrOpenChoice.answer[0];
-    if (answer.valueCoding) {
-      valueAutocomplete = answer.valueCoding;
-    } else if (answer.valueString) {
-      valueAutocomplete = answer.valueString;
-    }
+  let valueSelect: QuestionnaireItemAnswerOption | string | null = null;
+  if (qrOpenChoice.answer) {
+    valueSelect = qrOpenChoice.answer[0] ?? null;
   }
 
   // Event handlers
   // Handler function which handles both input change and selection change
-  function handleValueChange(newValue: Coding | string | null, reason: string) {
+  function handleValueChange(
+    newValue: QuestionnaireItemAnswerOption | string | null,
+    reason: AutocompleteChangeReason | string
+  ) {
+    //if the reason is reset, then we don't change the value, otherwise you will end up with looped setState calls
     if (reason === 'reset') {
       return;
     }
+    if (newValue) {
+      //If the value is a string (i.e from freeSolo input)
+      if (typeof newValue === 'string') {
+        onQrItemChange({
+          ...qrOpenChoice,
+          answer: [{ id: answerKey, valueString: sanitizeInput(newValue) }]
+        });
+        return;
+      }
 
-    if (!newValue) {
-      onQrItemChange(createEmptyQrItem(qItem, answerKey));
+      //If the value is not a string, then it is a coding.
+      const option = newValue;
+      if (option['valueCoding']) {
+        onQrItemChange({
+          ...qrOpenChoice,
+          answer: [{ id: answerKey, valueCoding: option.valueCoding }]
+        });
+      } else if (option['valueString']) {
+        onQrItemChange({
+          ...qrOpenChoice,
+          answer: [{ id: answerKey, valueString: sanitizeInput(option.valueString) }]
+        });
+      } else if (option['valueInteger']) {
+        onQrItemChange({
+          ...qrOpenChoice,
+          answer: [{ id: answerKey, valueInteger: option.valueInteger }]
+        });
+      }
       return;
     }
-
-    // If the value is a string (custom input)
-    if (typeof newValue === 'string') {
-      onQrItemChange({
-        ...qrOpenChoice,
-        answer: [{ id: answerKey, valueString: sanitizeInput(newValue) }]
-      });
-      return;
-    }
-
-    // If the value is a Coding (selected from dropdown)
-    onQrItemChange({
-      ...qrOpenChoice,
-      answer: [{ id: answerKey, valueCoding: newValue }]
-    });
+    onQrItemChange(createEmptyQrItem(qItem, answerKey));
   }
 
   if (isRepeated) {
     return (
-      <CustomOpenChoiceField
+      <OpenChoiceSelectAnswerOptionField
         qItem={qItem}
-        options={codingOptions}
-        valueAutocomplete={valueAutocomplete}
-        loading={false}
-        feedback={feedback ? { message: feedback, color: 'error' } : null}
+        options={answerOptions}
+        valueSelect={valueSelect}
+        feedback={feedback}
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         isTabled={isTabled}
@@ -132,12 +133,11 @@ function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
         readOnly={readOnly}
         labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
         fieldChildren={
-          <CustomOpenChoiceField
+          <OpenChoiceSelectAnswerOptionField
             qItem={qItem}
-            options={codingOptions}
-            valueAutocomplete={valueAutocomplete}
-            loading={false}
-            feedback={feedback ? { message: feedback, color: 'error' } : null}
+            options={answerOptions}
+            valueSelect={valueSelect}
+            feedback={feedback}
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}

@@ -26,7 +26,7 @@ import { convertCodingsToAnswerOptions, updateChoiceCheckboxAnswers } from '../.
 import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
-import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import ItemFieldGrid, { getInstructionsId } from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
 import ChoiceCheckboxAnswerValueSetFields from './ChoiceCheckboxAnswerValueSetFields';
 
@@ -56,6 +56,7 @@ function ChoiceCheckboxAnswerValueSetItem(props: BaseItemProps) {
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
+  const instructionsId = getInstructionsId(qItem, displayInstructions, !!feedback);
 
   // Get codings/options from valueSet
   // TODO use dynamicCodingsUpdated to trigger a "refresh" icon when codings are dynamically updated
@@ -105,6 +106,7 @@ function ChoiceCheckboxAnswerValueSetItem(props: BaseItemProps) {
           answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
           terminologyError={terminologyError}
           isTabled={isTabled}
+          instructionsId={instructionsId}
           onCheckedChange={handleCheckedChange}
           onClear={handleClear}
         />
@@ -134,6 +136,7 @@ function ChoiceCheckboxAnswerValueSetItem(props: BaseItemProps) {
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             terminologyError={terminologyError}
             isTabled={isTabled}
+            instructionsId={instructionsId}
             onCheckedChange={handleCheckedChange}
             onClear={handleClear}
           />

@@ -36,6 +36,7 @@ interface ChoiceCheckboxAnswerValueSetFieldsProps {
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   terminologyError: TerminologyError;
   isTabled: boolean;
+  instructionsId?: string;
   onCheckedChange: (newValue: string) => void;
   onClear: () => void;
 }
@@ -51,6 +52,7 @@ function ChoiceCheckboxAnswerValueSetFields(props: ChoiceCheckboxAnswerValueSetF
     answerOptionsToggleExpressionsMap,
     terminologyError,
     isTabled,
+    instructionsId,
     onCheckedChange,
     onClear
   } = props;
@@ -66,6 +68,7 @@ function ChoiceCheckboxAnswerValueSetFields(props: ChoiceCheckboxAnswerValueSetF
         expressionUpdated={expressionUpdated}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
         isTabled={isTabled}
+        instructionsId={instructionsId}
         onCheckedChange={onCheckedChange}
         onClear={onClear}
       />

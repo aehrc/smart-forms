@@ -34,6 +34,7 @@ function SliderItem(props: BaseItemProps) {
     qrItem,
     isRepeated,
     isTabled,
+    renderingExtensions,
     parentIsReadOnly,
     feedbackFromParent,
     onQrItemChange
@@ -61,6 +62,8 @@ function SliderItem(props: BaseItemProps) {
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
+  const instructionsId =
+    renderingExtensions.displayInstructions && !feedback ? `instructions-${qItem.linkId}` : undefined;
 
   // Event handlers
   function handleValueChange(newValue: number) {
@@ -76,6 +79,7 @@ function SliderItem(props: BaseItemProps) {
         <SliderField
           linkId={qItem.linkId}
           itemType={qItem.type}
+          itemText={qItem.text}
           value={valueInteger}
           minValue={minValue}
           maxValue={maxValue}
@@ -86,6 +90,7 @@ function SliderItem(props: BaseItemProps) {
           feedback={feedback}
           readOnly={readOnly}
           isTabled={isTabled}
+          instructionsId={instructionsId}
           onValueChange={handleValueChange}
         />
       </Box>
@@ -107,6 +112,7 @@ function SliderItem(props: BaseItemProps) {
             <SliderField
               linkId={qItem.linkId}
               itemType={qItem.type}
+              itemText={qItem.text}
               value={valueInteger}
               minValue={minValue}
               maxValue={maxValue}
@@ -117,6 +123,7 @@ function SliderItem(props: BaseItemProps) {
               feedback={feedback}
               readOnly={readOnly}
               isTabled={isTabled}
+              instructionsId={instructionsId}
               onValueChange={handleValueChange}
             />
           </Box>

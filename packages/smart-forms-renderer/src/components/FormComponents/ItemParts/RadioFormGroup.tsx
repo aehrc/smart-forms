@@ -62,9 +62,13 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
           sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>
           <RadioGroup
             id={qItem.type + '-' + qItem.linkId}
-            {...(!isTabled
-              ? { 'aria-labelledby': 'label-' + qItem.linkId }
-              : { 'aria-label': qItem.text ?? 'Unnamed radio group' })}
+            {...(!isTabled && {
+              'aria-labelledby': instructionsId
+                ? `label-${qItem.linkId} ${instructionsId}`
+                : `label-${qItem.linkId}`
+            })}
+            {...(isTabled && { 'aria-label': qItem.text ?? 'Unnamed radio group' })}
+            {...(isTabled && instructionsId && { 'aria-describedby': instructionsId })}
             aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
             row={orientation === ChoiceItemOrientation.Horizontal}
             sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}
@@ -83,7 +87,6 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
               readOnly={readOnly}
               fullWidth={inputsFlexGrow}
               answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
-              instructionsId={instructionsId}
             />
             {children}
           </RadioGroup>

@@ -74,7 +74,12 @@ const AttachmentFileCollector = memo(function AttachmentFileCollector(
       <Stack direction="row" justifyContent="space-between" pt={0.5}>
         <Box data-test="q-item-attachment-file-input">
           <Tooltip title="Attach file">
-            <IconButton component="label" size="small" disabled={readOnly}>
+            <IconButton
+              component="label"
+              size="small"
+              disabled={readOnly}
+              aria-label="Attach file"
+              {...(instructionsId && { 'aria-describedby': instructionsId })}>
               <AttachFileIcon fontSize="small" />
               <input
                 type="file"

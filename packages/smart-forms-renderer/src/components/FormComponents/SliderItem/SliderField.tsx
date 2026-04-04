@@ -28,6 +28,7 @@ import { StandardSlider } from './Slider.styles';
 interface SliderFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
   itemType: string;
+  itemText: string | undefined;
   value: number;
   minValue: number;
   minLabel: string;
@@ -37,6 +38,7 @@ interface SliderFieldProps extends PropsWithIsTabledAttribute {
   isInteracted: boolean;
   feedback: string;
   readOnly: boolean;
+  instructionsId?: string;
   onValueChange: (newValue: number) => void;
 }
 
@@ -44,6 +46,7 @@ function SliderField(props: SliderFieldProps) {
   const {
     linkId,
     itemType,
+    itemText,
     value,
     minValue,
     maxValue,
@@ -53,6 +56,7 @@ function SliderField(props: SliderFieldProps) {
     isInteracted,
     feedback,
     readOnly,
+    instructionsId,
     isTabled,
     onValueChange
   } = props;
@@ -95,6 +99,13 @@ function SliderField(props: SliderFieldProps) {
           disabled={readOnly && readOnlyVisualStyle === 'disabled'}
           readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
           aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
+          {...(!isTabled && { 'aria-labelledby': `label-${linkId}` })}
+          {...(isTabled && { 'aria-label': itemText ?? 'Unnamed slider' })}
+          slotProps={{
+            input: {
+              ...(instructionsId && { 'aria-describedby': instructionsId })
+            }
+          }}
           valueLabelDisplay="auto"
           data-test="q-item-slider-field"
         />

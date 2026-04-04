@@ -26,11 +26,10 @@ interface ChoiceRadioSingleProps {
   readOnly: boolean;
   disabledViaToggleExpression: boolean;
   fullWidth: boolean;
-  ariaDescribedBy?: string;
 }
 
 function ChoiceRadioSingle(props: ChoiceRadioSingleProps) {
-  const { value, label, readOnly, disabledViaToggleExpression, fullWidth, ariaDescribedBy } = props;
+  const { value, label, readOnly, disabledViaToggleExpression, fullWidth } = props;
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
 
@@ -54,14 +53,7 @@ function ChoiceRadioSingle(props: ChoiceRadioSingleProps) {
       disabled={isHtmlDisabled}
       value={value}
       control={
-        <StandardRadio
-          data-test={`radio-single-${label}`}
-          size="small"
-          readOnly={isHtmlReadOnly}
-          inputProps={{
-            ...(ariaDescribedBy && { 'aria-describedby': ariaDescribedBy })
-          }}
-        />
+        <StandardRadio data-test={`radio-single-${label}`} size="small" readOnly={isHtmlReadOnly} />
       }
       label={label}
     />

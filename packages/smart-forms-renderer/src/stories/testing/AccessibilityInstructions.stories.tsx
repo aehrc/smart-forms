@@ -68,8 +68,7 @@ export const StringInstructionsAccessibility: Story = createStory({
     // Use findByLinkIdOrLabel to wait for element to be rendered
     const element = await findByLinkIdOrLabel(canvasElement, 'email');
     const inputField = element.querySelector('[data-test="q-item-string-field"]');
-    // String fields use multiline TextField which renders as textarea
-    const input = inputField?.querySelector('textarea');
+    const input = inputField?.querySelector('input, textarea');
     const ariaDescribedBy = input?.getAttribute('aria-describedby');
 
     // Check that aria-describedby is present and references the instructions
@@ -175,15 +174,12 @@ export const BooleanInstructionsAccessibility: Story = createStory({
     // Use findByLinkIdOrLabel to wait for element to be rendered
     const element = await findByLinkIdOrLabel(canvasElement, 'consent');
     const radioGroup = element.querySelector('[role="radiogroup"]');
+    const ariaLabelledBy = radioGroup?.getAttribute('aria-labelledby');
 
-    // For Boolean radio buttons, aria-describedby is on the individual radio inputs
-    const radioInputs = radioGroup?.querySelectorAll('input[type="radio"]');
-    const firstRadioInput = radioInputs?.[0];
-    const ariaDescribedBy = firstRadioInput?.getAttribute('aria-describedby');
-
-    // Check that aria-describedby is present and references the instructions
-    expect(ariaDescribedBy).toBeTruthy();
-    expect(ariaDescribedBy).toContain('instructions-consent');
+    // Check that aria-labelledby includes both field label and instructions IDs
+    expect(ariaLabelledBy).toBeTruthy();
+    expect(ariaLabelledBy).toContain('label-consent');
+    expect(ariaLabelledBy).toContain('instructions-consent');
 
     // Check that the instructions element exists with the correct ID
     const instructionsElement = document.getElementById('instructions-consent');
@@ -580,12 +576,13 @@ export const TimeInstructionsAccessibility: Story = createStory({
   },
   play: async ({ canvasElement }) => {
     const element = await findByLinkIdOrLabel(canvasElement, 'waketime');
-    // CustomTimeField doesn't have a data-test attribute, so we look for the input directly
-    const input = element.querySelector('input');
+    const input = element.querySelector('[data-test="q-item-time-field"] input');
     const ariaDescribedBy = input?.getAttribute('aria-describedby');
+    const ariaLabelledBy = input?.getAttribute('aria-labelledby');
 
     expect(ariaDescribedBy).toBeTruthy();
     expect(ariaDescribedBy).toContain('instructions-waketime');
+    expect(ariaLabelledBy).toContain('label-waketime');
 
     const instructionsElement = document.getElementById('instructions-waketime');
     expect(instructionsElement).toBeTruthy();
@@ -634,9 +631,8 @@ export const ChoiceInstructionsAccessibility: Story = createStory({
   },
   play: async ({ canvasElement }) => {
     const element = await findByLinkIdOrLabel(canvasElement, 'gender');
-    // CustomChoiceSelectField uses MUI Select, find the group wrapper with aria-describedby
-    const groupWrapper = element.querySelector('[role="group"]');
-    const ariaDescribedBy = groupWrapper?.getAttribute('aria-describedby');
+    const radioInput = element.querySelector('input[type="radio"]');
+    const ariaDescribedBy = radioInput?.getAttribute('aria-describedby');
 
     expect(ariaDescribedBy).toBeTruthy();
     expect(ariaDescribedBy).toContain('instructions-gender');
@@ -688,9 +684,8 @@ export const OpenChoiceInstructionsAccessibility: Story = createStory({
   },
   play: async ({ canvasElement }) => {
     const element = await findByLinkIdOrLabel(canvasElement, 'occupation');
-    const select = element.querySelector('[data-test="q-item-open-choice-select"]');
-    const selectButton = select?.querySelector('[role="combobox"]');
-    const ariaDescribedBy = selectButton?.getAttribute('aria-describedby');
+    const input = element.querySelector('input, textarea');
+    const ariaDescribedBy = input?.getAttribute('aria-describedby');
 
     expect(ariaDescribedBy).toBeTruthy();
     expect(ariaDescribedBy).toContain('instructions-occupation');
@@ -699,6 +694,72 @@ export const OpenChoiceInstructionsAccessibility: Story = createStory({
     expect(instructionsElement).toBeTruthy();
     expect(instructionsElement?.textContent).toContain(
       'Select your occupation or enter a custom value'
+    );
+  }
+}) as Story;
+
+/* Slider with instructions for accessibility testing */
+const qSliderAccessibility = questionnaireFactory([
+  {
+    linkId: 'pain-score',
+    type: 'integer',
+    repeats: false,
+    text: 'Pain score',
+    extension: [
+      {
+        url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+        valueCodeableConcept: {
+          coding: [
+            {
+              system: 'http://hl7.org/fhir/questionnaire-item-control',
+              code: 'slider'
+            }
+          ]
+        }
+      }
+    ],
+    item: [
+      {
+        linkId: 'pain-score-instructions',
+        type: 'display',
+        text: 'Use the slider to choose your pain score from zero to 100',
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-displayCategory',
+            valueCodeableConcept: {
+              coding: [
+                {
+                  system: 'http://hl7.org/fhir/questionnaire-display-category',
+                  code: 'instructions'
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+]);
+
+export const SliderInstructionsAccessibility: Story = createStory({
+  args: {
+    questionnaire: qSliderAccessibility
+  },
+  play: async ({ canvasElement }) => {
+    const element = await findByLinkIdOrLabel(canvasElement, 'pain-score');
+    const slider = element.querySelector('[data-test="q-item-slider-field"]');
+    const sliderInput = slider?.querySelector('input[type="range"]');
+    const ariaDescribedBy = sliderInput?.getAttribute('aria-describedby');
+    const ariaLabelledBy = sliderInput?.getAttribute('aria-labelledby');
+
+    expect(ariaDescribedBy).toBeTruthy();
+    expect(ariaDescribedBy).toContain('instructions-pain-score');
+    expect(ariaLabelledBy).toContain('label-pain-score');
+
+    const instructionsElement = document.getElementById('instructions-pain-score');
+    expect(instructionsElement).toBeTruthy();
+    expect(instructionsElement?.textContent).toContain(
+      'Use the slider to choose your pain score from zero to 100'
     );
   }
 }) as Story;

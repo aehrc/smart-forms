@@ -26,7 +26,7 @@ import { findInAnswerOptions } from '../../../utils/choice';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
-import CustomChoiceSelectField from './CustomChoiceSelectField';
+import ChoiceSelectAnswerOptionFields from './ChoiceSelectAnswerOptionFields';
 
 interface ChoiceSelectAnswerOptionViewProps
   extends PropsWithIsRepeatedAttribute,
@@ -68,7 +68,7 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
 
   if (isRepeated) {
     return (
-      <CustomChoiceSelectField
+      <ChoiceSelectAnswerOptionFields
         qItem={qItem}
         options={options}
         valueSelect={valueSelect}
@@ -95,7 +95,7 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
         readOnly={readOnly}
         labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
         fieldChildren={
-          <CustomChoiceSelectField
+      <ChoiceSelectAnswerOptionFields
             qItem={qItem}
             options={options}
             valueSelect={valueSelect}
