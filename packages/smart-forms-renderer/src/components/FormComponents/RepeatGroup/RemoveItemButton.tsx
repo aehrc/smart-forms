@@ -29,9 +29,9 @@ interface RemoveItemButtonProps {
 }
 
 function RemoveItemButton(props: RemoveItemButtonProps) {
-  const { nullableQrItem, numOfRepeatGroups, readOnly, onRemoveItem } = props;
+  const { nullableQrItem, readOnly, onRemoveItem } = props;
 
-  const isDisabled = nullableQrItem === null || numOfRepeatGroups === 1 || readOnly;
+  const isDisabled = nullableQrItem === null || readOnly;
 
   return (
     <RepeatRemoveTooltip title="Remove item">
