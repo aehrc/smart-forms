@@ -362,3 +362,21 @@ export async function getAnswerRecursiveByLabel(text: string) {
   );
   return result;
 }
+
+export async function getVisibleTab(canvasElement: HTMLElement): Promise<HTMLElement> {
+  return await waitFor(() => {
+    const tabPanel = canvasElement.querySelector<HTMLElement>(
+      '[data-test="renderer-tab-panel"]:not([hidden])'
+    );
+    const accordion = canvasElement.querySelector<HTMLElement>(
+      '[data-test="renderer-accordion"]:has(button[aria-expanded="true"])'
+    );
+
+    const tabPanelOrAccordion = tabPanel ?? accordion;
+    if (!tabPanelOrAccordion) {
+      throw new Error('Visible tab panel or accordion not found');
+    }
+
+    return tabPanelOrAccordion;
+  });
+}

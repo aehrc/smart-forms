@@ -133,7 +133,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
             <StandardTextField
               textFieldWidth={textFieldWidth}
               isTabled={isTabled}
-              placeholder={entryFormat || displayPrompt}
+              placeholder={valueSelect ? undefined : entryFormat || displayPrompt}
               {...params}
               slotProps={{
                 input: {

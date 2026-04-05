@@ -17,7 +17,7 @@
 
 import type { Dispatch, ReactNode } from 'react';
 import { createContext, useReducer } from 'react';
-import type { Encounter, Patient, Practitioner, Questionnaire } from 'fhir/r4';
+import type { Encounter, FhirResource, Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import type Client from 'fhirclient/lib/Client';
 import type { FhirContext } from '../features/smartAppLaunch/utils/launch.ts';
 
@@ -27,6 +27,7 @@ export interface SmartClientState {
   user: Practitioner | null;
   encounter: Encounter | null;
   fhirContext: FhirContext[] | null;
+  resolvedFhirContextReferences: Record<string, FhirResource> | null;
   launchQuestionnaire: Questionnaire | null;
   tokenReceivedTimestamp: number | null;
 }
@@ -38,7 +39,8 @@ export type SmartClientActions =
       payload: { patient: Patient | null; user: Practitioner | null; encounter: Encounter | null };
     }
   | { type: 'SET_QUESTIONNAIRE_CONTEXT'; payload: Questionnaire }
-  | { type: 'SET_FHIR_CONTEXT'; payload: FhirContext[] };
+  | { type: 'SET_FHIR_CONTEXT'; payload: FhirContext[] }
+  | { type: 'SET_RESOLVED_FHIR_CONTEXT_REFERENCES'; payload: Record<string, FhirResource> };
 
 function smartClientReducer(state: SmartClientState, action: SmartClientActions): SmartClientState {
   switch (action.type) {
@@ -55,6 +57,8 @@ function smartClientReducer(state: SmartClientState, action: SmartClientActions)
       return { ...state, launchQuestionnaire: action.payload };
     case 'SET_FHIR_CONTEXT':
       return { ...state, fhirContext: action.payload };
+    case 'SET_RESOLVED_FHIR_CONTEXT_REFERENCES':
+      return { ...state, resolvedFhirContextReferences: action.payload };
     default:
       return state;
   }
@@ -67,6 +71,7 @@ const initialSmartClientState: SmartClientState = {
   encounter: null,
   launchQuestionnaire: null,
   fhirContext: null,
+  resolvedFhirContextReferences: null,
   tokenReceivedTimestamp: null
 };
 

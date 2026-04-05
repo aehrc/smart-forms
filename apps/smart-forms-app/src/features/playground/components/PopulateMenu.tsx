@@ -20,7 +20,7 @@ import Menu from '@mui/material/Menu';
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 import { useState } from 'react';
 import { CircularProgress, Tooltip } from '@mui/material';
-import type { Patient, Practitioner } from 'fhir/r4';
+import type { Encounter, Patient, Practitioner, PractitionerRole } from 'fhir/r4';
 import PrePopulateMenuItem from './PrePopulateMenuItem.tsx';
 import RePopulateMenuItem from './RePopulateMenuItem.tsx';
 import type { RendererSpinner } from '../../renderer/types/rendererSpinner.ts';
@@ -30,14 +30,24 @@ interface PopulateMenuProps {
   sourceFhirServerUrl: string | null;
   patient: Patient | null;
   user: Practitioner | null;
+  encounter: Encounter | null;
+  practitionerRole: PractitionerRole | null;
   terminologyServerUrl: string;
   spinner: RendererSpinner;
   onSpinnerChange: (newSpinner: RendererSpinner) => void;
 }
 
 function PopulateMenu(props: PopulateMenuProps) {
-  const { sourceFhirServerUrl, patient, user, terminologyServerUrl, spinner, onSpinnerChange } =
-    props;
+  const {
+    sourceFhirServerUrl,
+    patient,
+    user,
+    encounter,
+    practitionerRole,
+    terminologyServerUrl,
+    spinner,
+    onSpinnerChange
+  } = props;
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [repopulatedContext, setRepopulatedContext] = useState<Record<string, any>>({});
@@ -104,6 +114,8 @@ function PopulateMenu(props: PopulateMenuProps) {
           sourceFhirServerUrl={sourceFhirServerUrl}
           patient={patient}
           user={user}
+          encounter={encounter}
+          practitionerRole={practitionerRole}
           terminologyServerUrl={terminologyServerUrl}
           onSpinnerChange={onSpinnerChange}
           onCloseMenu={handleClose}
@@ -113,6 +125,8 @@ function PopulateMenu(props: PopulateMenuProps) {
           sourceFhirServerUrl={sourceFhirServerUrl}
           patient={patient}
           user={user}
+          encounter={encounter}
+          practitionerRole={practitionerRole}
           terminologyServerUrl={terminologyServerUrl}
           onSpinnerChange={onSpinnerChange}
           onCloseMenu={handleClose}
