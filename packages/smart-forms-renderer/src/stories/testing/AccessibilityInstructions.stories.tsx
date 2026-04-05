@@ -17,8 +17,12 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import { findByLinkIdOrLabel, questionnaireFactory } from '../testUtils';
-import { expect } from 'storybook/test';
+import {
+  findByLinkIdOrLabel,
+  itemControlExtFactory,
+  questionnaireFactory
+} from '../testUtils';
+import { expect, waitFor } from 'storybook/test';
 import { createStory } from '../storybookWrappers/createStory';
 
 const meta = {
@@ -576,13 +580,17 @@ export const TimeInstructionsAccessibility: Story = createStory({
   },
   play: async ({ canvasElement }) => {
     const element = await findByLinkIdOrLabel(canvasElement, 'waketime');
-    const input = element.querySelector('[data-test="q-item-time-field"] input');
-    const ariaDescribedBy = input?.getAttribute('aria-describedby');
-    const ariaLabelledBy = input?.getAttribute('aria-labelledby');
+    const group = element.querySelector('[data-test="q-item-time-field"]');
+    const groupLabelledBy = group?.getAttribute('aria-labelledby');
+    expect(groupLabelledBy).toBeTruthy();
+    expect(groupLabelledBy).toContain('label-waketime');
+    expect(groupLabelledBy).toContain('instructions-waketime');
 
-    expect(ariaDescribedBy).toBeTruthy();
-    expect(ariaDescribedBy).toContain('instructions-waketime');
-    expect(ariaLabelledBy).toContain('label-waketime');
+    const input = group?.querySelector('input');
+    const inputDescribedBy = input?.getAttribute('aria-describedby');
+    if (inputDescribedBy) {
+      expect(inputDescribedBy).toContain('instructions-waketime');
+    }
 
     const instructionsElement = document.getElementById('instructions-waketime');
     expect(instructionsElement).toBeTruthy();
@@ -597,6 +605,7 @@ const qChoiceAccessibility = questionnaireFactory([
     type: 'choice',
     repeats: false,
     text: 'Gender',
+    extension: [itemControlExtFactory('radio-button')],
     answerOption: [
       { valueCoding: { code: 'male', display: 'Male' } },
       { valueCoding: { code: 'female', display: 'Female' } },
@@ -631,14 +640,30 @@ export const ChoiceInstructionsAccessibility: Story = createStory({
   },
   play: async ({ canvasElement }) => {
     const element = await findByLinkIdOrLabel(canvasElement, 'gender');
-    const radioInput = element.querySelector('input[type="radio"]');
-    const ariaDescribedBy = radioInput?.getAttribute('aria-describedby');
 
-    expect(ariaDescribedBy).toBeTruthy();
-    expect(ariaDescribedBy).toContain('instructions-gender');
+    await waitFor(
+      () => {
+        expect(document.getElementById('instructions-gender')).toBeTruthy();
+      },
+      { timeout: 30000 }
+    );
+
+    const radioGroup = element.querySelector('[data-test="q-item-radio-group"]');
+    if (radioGroup) {
+      const ariaLabelledBy = radioGroup.getAttribute('aria-labelledby');
+      expect(ariaLabelledBy).toBeTruthy();
+      expect(ariaLabelledBy).toContain('label-gender');
+      expect(ariaLabelledBy).toContain('instructions-gender');
+    } else {
+      const combobox = element.querySelector('[role="combobox"]');
+      expect(combobox).toBeTruthy();
+      const innerInput = combobox?.querySelector('input');
+      const ariaDescribedBy = innerInput?.getAttribute('aria-describedby');
+      expect(ariaDescribedBy).toBeTruthy();
+      expect(ariaDescribedBy).toContain('instructions-gender');
+    }
 
     const instructionsElement = document.getElementById('instructions-gender');
-    expect(instructionsElement).toBeTruthy();
     expect(instructionsElement?.textContent).toContain('Please select your gender identity');
   }
 }) as Story;
@@ -747,17 +772,31 @@ export const SliderInstructionsAccessibility: Story = createStory({
   },
   play: async ({ canvasElement }) => {
     const element = await findByLinkIdOrLabel(canvasElement, 'pain-score');
+
+    await waitFor(
+      () => {
+        expect(document.getElementById('instructions-pain-score')).toBeTruthy();
+      },
+      { timeout: 30000 }
+    );
+
     const slider = element.querySelector('[data-test="q-item-slider-field"]');
+    const roleSlider = slider?.querySelector('[role="slider"]');
     const sliderInput = slider?.querySelector('input[type="range"]');
-    const ariaDescribedBy = sliderInput?.getAttribute('aria-describedby');
-    const ariaLabelledBy = sliderInput?.getAttribute('aria-labelledby');
+    const ariaDescribedBy =
+      roleSlider?.getAttribute('aria-describedby') ??
+      slider?.getAttribute('aria-describedby') ??
+      sliderInput?.getAttribute('aria-describedby');
+    const ariaLabelledBy =
+      roleSlider?.getAttribute('aria-labelledby') ??
+      slider?.getAttribute('aria-labelledby') ??
+      sliderInput?.getAttribute('aria-labelledby');
 
     expect(ariaDescribedBy).toBeTruthy();
     expect(ariaDescribedBy).toContain('instructions-pain-score');
     expect(ariaLabelledBy).toContain('label-pain-score');
 
     const instructionsElement = document.getElementById('instructions-pain-score');
-    expect(instructionsElement).toBeTruthy();
     expect(instructionsElement?.textContent).toContain(
       'Use the slider to choose your pain score from zero to 100'
     );

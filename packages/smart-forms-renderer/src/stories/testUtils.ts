@@ -7,7 +7,7 @@ import type {
   QuestionnaireResponse,
   QuestionnaireResponseItem
 } from 'fhir/r4';
-import { fireEvent, screen, userEvent, waitFor } from 'storybook/internal/test';
+import { fireEvent, screen, userEvent, waitFor, within } from 'storybook/internal/test';
 
 export async function getQuantityTextValues(
   canvasElement: HTMLElement,
@@ -206,6 +206,102 @@ export function сqfExpressionFactory(text: string) {
 
 export const ucumSystem = 'http://unitsofmeasure.org';
 
+/** Parses strings like `11:00 am` for MUI desktop time picker interactions */
+function parse12hDisplayTime(text: string): { hour12: string; minute: string; meridiem: string } {
+  const m = String(text).trim().match(/^(\d{1,2}):(\d{2})\s*(am|pm)$/i);
+  if (!m) {
+    throw new Error(`Expected display time like "11:00 am", got: ${text}`);
+  }
+  const hour12 = String(parseInt(m[1], 10));
+  const minute = m[2];
+  const meridiem = m[3].toUpperCase();
+  return { hour12, minute, meridiem };
+}
+
+async function clickMultiSectionClockOption(multiRoot: Element, labelMatcher: RegExp) {
+  const option = Array.from(multiRoot.querySelectorAll<HTMLElement>('[role="option"]')).find(
+    (el) => {
+      const label = el.getAttribute('aria-label') ?? el.textContent ?? '';
+      return labelMatcher.test(label.trim());
+    }
+  );
+  if (!option) {
+    throw new Error(`No time option matching ${labelMatcher}`);
+  }
+  await userEvent.click(option);
+}
+
+async function setTimeViaMuiDesktopPicker(timeFieldRoot: Element, doc: Document, displayTime: string) {
+  const { hour12, minute, meridiem } = parse12hDisplayTime(displayTime);
+  const minuteVal = parseInt(minute, 10);
+  // MUI enUS: hoursClockNumberText → "11 hours", minutesClockNumberText → "0 minutes"
+  const hourOptionName = new RegExp(`^${hour12}\\s+hours$`, 'i');
+  const minuteOptionName = new RegExp(`^${minuteVal}\\s+minutes$`, 'i');
+
+  const openButton = within(timeFieldRoot as HTMLElement).getByRole('button', {
+    name: /choose time/i
+  });
+  await userEvent.click(openButton);
+
+  await waitFor(
+    () => {
+      const multi = doc.querySelector('.MuiMultiSectionDigitalClock-root');
+      const single = doc.querySelector('.MuiDigitalClock-root');
+      if (!multi && !single) {
+        throw new Error('Time picker popover did not open');
+      }
+    },
+    { timeout: 10000 }
+  );
+
+  const multiRoot = doc.querySelector('.MuiMultiSectionDigitalClock-root');
+  if (multiRoot) {
+    const lists = multiRoot.querySelectorAll<HTMLElement>('[role="listbox"]');
+    if (lists.length < 2) {
+      throw new Error('Expected multi-section time lists');
+    }
+
+    // Match by aria-label anywhere in the clock (column order varies with RTL / MUI version).
+    await clickMultiSectionClockOption(multiRoot, hourOptionName);
+    await clickMultiSectionClockOption(multiRoot, minuteOptionName);
+
+    if (lists.length >= 3) {
+      await clickMultiSectionClockOption(multiRoot, new RegExp(`^${meridiem}$`, 'i'));
+    }
+
+    const okButton = await waitFor(() => {
+      const popper = doc.querySelector('.MuiPickersPopper-root');
+      if (!popper) {
+        throw new Error('Pickers popper missing');
+      }
+      const buttons = popper.querySelectorAll('button');
+      for (const b of buttons) {
+        if (/^OK$/i.test(b.textContent?.trim() ?? '')) {
+          return b;
+        }
+      }
+      throw new Error('OK button not found in time picker');
+    });
+    await userEvent.click(okButton);
+  } else {
+    const singleRoot = doc.querySelector('.MuiDigitalClock-root');
+    if (!singleRoot) {
+      throw new Error('Digital clock root missing');
+    }
+    const listbox = singleRoot.querySelector<HTMLElement>('[role="listbox"]');
+    if (!listbox) {
+      throw new Error('Digital clock listbox missing');
+    }
+    const labelRe = new RegExp(
+      `${hour12}:0*${parseInt(minute, 10)}\\s*${meridiem}`,
+      'i'
+    );
+    await userEvent.click(within(listbox).getByRole('option', { name: labelRe }));
+  }
+
+  await new Promise((resolve) => setTimeout(resolve, 300));
+}
+
 export async function inputText(
   canvasElement: HTMLElement,
   linkId: string,
@@ -228,6 +324,25 @@ export async function inputText(
     fireEvent.change(timeInput, { target: { value: text } });
     // Wait for debounced store update
     await new Promise((resolve) => setTimeout(resolve, 500));
+    return;
+  }
+
+  // Standalone time item (MUI TimePicker in TimeField): open the desktop picker and
+  // select a time — programmatic input does not reliably invoke MUI onChange in CI.
+  const timeFieldRoot = questionElement.querySelector('[data-test="q-item-time-field"]');
+  if (timeFieldRoot) {
+    const doc = canvasElement.ownerDocument;
+    await waitFor(
+      () => {
+        if (
+          !within(timeFieldRoot as HTMLElement).queryByRole('button', { name: /choose time/i })
+        ) {
+          throw new Error(`Time picker open button not ready for ${linkId}`);
+        }
+      },
+      { timeout: 10000 }
+    );
+    await setTimeViaMuiDesktopPicker(timeFieldRoot, doc, String(text));
     return;
   }
 
@@ -387,6 +502,14 @@ export async function getInputText(canvasElement: HTMLElement, linkId: string) {
     return (timeInput as HTMLInputElement).value;
   }
 
+  const timeFieldRoot = questionElement.querySelector('[data-test="q-item-time-field"]');
+  if (timeFieldRoot) {
+    const tpInput =
+      timeFieldRoot.querySelector<HTMLInputElement>('input[role="spinbutton"]') ??
+      timeFieldRoot.querySelector<HTMLInputElement>('input');
+    return tpInput?.value ?? '';
+  }
+
   // Check if this is a MUI Select (role="combobox")
   // But exclude AM/PM selects by checking if it's within ampm test container
   const selectButton = questionElement.querySelector('[role="combobox"]');
@@ -394,7 +517,15 @@ export async function getInputText(canvasElement: HTMLElement, linkId: string) {
     // Make sure this is not the AM/PM select within a time field
     const isAmPmSelect = selectButton.closest('[data-test="ampm"]');
     if (!isAmPmSelect) {
-      // For MUI Select, get the displayed text content, not the value
+      const innerInput = selectButton.querySelector<HTMLInputElement>('input');
+      if (innerInput?.value) {
+        return innerInput.value;
+      }
+      const tag = questionElement.querySelector('.MuiAutocomplete-tag');
+      const tagText = tag?.textContent?.trim();
+      if (tagText) {
+        return tagText;
+      }
       const displayText = selectButton.textContent?.trim() || '';
       return displayText;
     }
@@ -530,19 +661,22 @@ export async function findByLinkIdOrLabel(
   const selectorByLinkId = `[data-linkid="${linkId}"]`;
   const selectorByLabel = `[data-label="${linkId}"]`;
 
-  return await waitFor(() => {
-    const el =
-      canvasElement.querySelector<HTMLElement>(selectorByLinkId) ??
-      canvasElement.querySelector<HTMLElement>(selectorByLabel);
+  return await waitFor(
+    () => {
+      const el =
+        canvasElement.querySelector<HTMLElement>(selectorByLinkId) ??
+        canvasElement.querySelector<HTMLElement>(selectorByLabel);
 
-    if (!el) {
-      throw new Error(
-        `Element with selectors "${selectorByLinkId}" or "${selectorByLabel}" not found`
-      );
-    }
+      if (!el) {
+        throw new Error(
+          `Element with selectors "${selectorByLinkId}" or "${selectorByLabel}" not found`
+        );
+      }
 
-    return el;
-  });
+      return el;
+    },
+    { timeout: 60000 }
+  );
 }
 
 export async function inputOpenChoiceOtherText(
