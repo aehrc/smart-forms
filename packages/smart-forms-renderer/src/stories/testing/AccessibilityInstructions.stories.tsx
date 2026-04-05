@@ -17,11 +17,7 @@
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
-import {
-  findByLinkIdOrLabel,
-  itemControlExtFactory,
-  questionnaireFactory
-} from '../testUtils';
+import { findByLinkIdOrLabel, itemControlExtFactory, questionnaireFactory } from '../testUtils';
 import { expect, waitFor } from 'storybook/test';
 import { createStory } from '../storybookWrappers/createStory';
 

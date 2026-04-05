@@ -208,7 +208,9 @@ export const ucumSystem = 'http://unitsofmeasure.org';
 
 /** Parses strings like `11:00 am` for MUI desktop time picker interactions */
 function parse12hDisplayTime(text: string): { hour12: string; minute: string; meridiem: string } {
-  const m = String(text).trim().match(/^(\d{1,2}):(\d{2})\s*(am|pm)$/i);
+  const m = String(text)
+    .trim()
+    .match(/^(\d{1,2}):(\d{2})\s*(am|pm)$/i);
   if (!m) {
     throw new Error(`Expected display time like "11:00 am", got: ${text}`);
   }
@@ -231,7 +233,11 @@ async function clickMultiSectionClockOption(multiRoot: Element, labelMatcher: Re
   await userEvent.click(option);
 }
 
-async function setTimeViaMuiDesktopPicker(timeFieldRoot: Element, doc: Document, displayTime: string) {
+async function setTimeViaMuiDesktopPicker(
+  timeFieldRoot: Element,
+  doc: Document,
+  displayTime: string
+) {
   const { hour12, minute, meridiem } = parse12hDisplayTime(displayTime);
   const minuteVal = parseInt(minute, 10);
   // MUI enUS: hoursClockNumberText → "11 hours", minutesClockNumberText → "0 minutes"
@@ -292,10 +298,7 @@ async function setTimeViaMuiDesktopPicker(timeFieldRoot: Element, doc: Document,
     if (!listbox) {
       throw new Error('Digital clock listbox missing');
     }
-    const labelRe = new RegExp(
-      `${hour12}:0*${parseInt(minute, 10)}\\s*${meridiem}`,
-      'i'
-    );
+    const labelRe = new RegExp(`${hour12}:0*${parseInt(minute, 10)}\\s*${meridiem}`, 'i');
     await userEvent.click(within(listbox).getByRole('option', { name: labelRe }));
   }
 
@@ -334,9 +337,7 @@ export async function inputText(
     const doc = canvasElement.ownerDocument;
     await waitFor(
       () => {
-        if (
-          !within(timeFieldRoot as HTMLElement).queryByRole('button', { name: /choose time/i })
-        ) {
+        if (!within(timeFieldRoot as HTMLElement).queryByRole('button', { name: /choose time/i })) {
           throw new Error(`Time picker open button not ready for ${linkId}`);
         }
       },
