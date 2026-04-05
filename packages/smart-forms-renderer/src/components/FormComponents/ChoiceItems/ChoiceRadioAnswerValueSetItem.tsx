@@ -64,7 +64,8 @@ function ChoiceRadioAnswerValueSetItem(props: BaseItemProps) {
   // Perform validation checks - there's no string-based input here
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
   const { displayInstructions } = renderingExtensions;
-  const instructionsId = displayInstructions && !feedback ? `instructions-${qItem.linkId}` : undefined;
+  const instructionsId =
+    displayInstructions && !feedback ? `instructions-${qItem.linkId}` : undefined;
 
   const options = useMemo(() => convertCodingsToAnswerOptions(codings), [codings]);
 

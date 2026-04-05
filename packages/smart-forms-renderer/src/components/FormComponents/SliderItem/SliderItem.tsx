@@ -63,7 +63,9 @@ function SliderItem(props: BaseItemProps) {
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
   const instructionsId =
-    renderingExtensions.displayInstructions && !feedback ? `instructions-${qItem.linkId}` : undefined;
+    renderingExtensions.displayInstructions && !feedback
+      ? `instructions-${qItem.linkId}`
+      : undefined;
 
   // Event handlers
   function handleValueChange(newValue: number) {

@@ -95,7 +95,7 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
         readOnly={readOnly}
         labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
         fieldChildren={
-      <ChoiceSelectAnswerOptionFields
+          <ChoiceSelectAnswerOptionFields
             qItem={qItem}
             options={options}
             valueSelect={valueSelect}
