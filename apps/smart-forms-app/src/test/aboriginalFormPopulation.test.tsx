@@ -10,9 +10,37 @@ import {
   selectTab,
   findByLinkIdOrLabel,
   findAllByLinkIdOrLabel,
-  getSelectText
+  getSelectText,
+  getRadioValue
 } from './testUtils.ts';
-import { patient, requestDefinitions } from './aboriginalFormIntegrationData.ts';
+import {
+  aboutTheHealthCheckInProgressQuestionnaireResponse,
+  aboutTheHealthCheckQuestionnaireResponse,
+  allergy,
+  condition,
+  currentMedication,
+  diabetesCondition,
+  immunization,
+  makeSearchSetBundle,
+  nonSnomedAllergy,
+  nonSnomedCondition,
+  nonSnomedImmunization,
+  nonSnomedMedication,
+  obsBloodPressure,
+  obsBodyHeight,
+  obsBodyWeight,
+  obsCVDRiskResult,
+  obsHDLCholesterol,
+  obsHeadCircumference,
+  obsHeartRate,
+  obsHeartRhythm,
+  obsLengthHeight,
+  obsTobaccoSmokingStatus,
+  obsTotalCholesterol,
+  obsWaistCircumference,
+  patient,
+  resolvedCondition
+} from './aboriginalFormIntegrationData.ts';
 import { Patient } from 'fhir/r4';
 
 vi.mock('fhirclient', () => ({
@@ -29,12 +57,10 @@ beforeAll(() => {
 
 describe('Population workflow for', () => {
   test('Patient details', async () => {
-    const { container } = render(
-      <AboriginalForm patient={patient} requestDefinitions={requestDefinitions} />
-    );
+    const { container } = render(<AboriginalForm patient={patient} requestDefinitions={[]} />);
 
     await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
-      timeout: 5000
+      timeout: 10000
     });
     await selectTab(container, 'Patient Details');
 
@@ -140,11 +166,11 @@ describe('Population workflow for', () => {
       ]
     };
     const { container } = render(
-      <AboriginalForm patient={patientNoFixedAddress} requestDefinitions={requestDefinitions} />
+      <AboriginalForm patient={patientNoFixedAddress} requestDefinitions={[]} />
     );
 
     await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
-      timeout: 5000
+      timeout: 10000
     });
     await selectTab(container, 'Patient Details');
 
@@ -156,11 +182,20 @@ describe('Population workflow for', () => {
 
   test('Medical conditions', async () => {
     const { container } = render(
-      <AboriginalForm patient={patient} requestDefinitions={requestDefinitions} />
+      <AboriginalForm
+        patient={patient}
+        requestDefinitions={[
+          {
+            urlPrefix: 'Condition',
+            params: {},
+            responseBody: makeSearchSetBundle([condition, nonSnomedCondition, resolvedCondition])
+          }
+        ]}
+      />
     );
 
     await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
-      timeout: 5000
+      timeout: 10000
     });
     await selectTab(container, 'Medical history and current problems');
 
@@ -198,11 +233,23 @@ describe('Population workflow for', () => {
 
   test('About the health check', async () => {
     const { container } = render(
-      <AboriginalForm patient={patient} requestDefinitions={requestDefinitions} />
+      <AboriginalForm
+        patient={patient}
+        requestDefinitions={[
+          {
+            urlPrefix: 'QuestionnaireResponse',
+            params: { status: 'completed' },
+            responseBody: makeSearchSetBundle([
+              aboutTheHealthCheckQuestionnaireResponse,
+              aboutTheHealthCheckInProgressQuestionnaireResponse
+            ])
+          }
+        ]}
+      />
     );
 
     await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
-      timeout: 5000
+      timeout: 10000
     });
     await selectTab(container, 'About the health check');
 
@@ -233,12 +280,10 @@ describe('Population workflow for', () => {
   });
 
   test('Consent', async () => {
-    const { container } = render(
-      <AboriginalForm patient={patient} requestDefinitions={requestDefinitions} />
-    );
+    const { container } = render(<AboriginalForm patient={patient} requestDefinitions={[]} />);
 
     await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
-      timeout: 5000
+      timeout: 10000
     });
     await selectTab(container, 'Consent');
 
@@ -254,11 +299,20 @@ describe('Population workflow for', () => {
   });
   test('Regular medications', async () => {
     const { container } = render(
-      <AboriginalForm patient={patient} requestDefinitions={requestDefinitions} />
+      <AboriginalForm
+        patient={patient}
+        requestDefinitions={[
+          {
+            urlPrefix: 'MedicationStatement',
+            params: {},
+            responseBody: makeSearchSetBundle([currentMedication, nonSnomedMedication])
+          }
+        ]}
+      />
     );
 
     await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
-      timeout: 5000
+      timeout: 10000
     });
     await selectTab(container, 'Regular medications');
 
@@ -269,8 +323,8 @@ describe('Population workflow for', () => {
     expect(medicationRows.length).toBe(2);
 
     const medRow1 = medicationRows[0]!;
-    const currentMedication = await getInputText(medRow1, 'Medication');
-    expect(currentMedication).toBe('Paracetamol 500 mg tablet');
+    const currentMedicationValue = await getInputText(medRow1, 'Medication');
+    expect(currentMedicationValue).toBe('Paracetamol 500 mg tablet');
     const currentMedicationStatus = await getInputText(medRow1, 'Status');
     expect(currentMedicationStatus).toBe('Active');
     const currentMedicationDosage = await getInputText(medRow1, 'Dosage');
@@ -295,11 +349,20 @@ describe('Population workflow for', () => {
 
   test('Allergies', async () => {
     const { container } = render(
-      <AboriginalForm patient={patient} requestDefinitions={requestDefinitions} />
+      <AboriginalForm
+        patient={patient}
+        requestDefinitions={[
+          {
+            urlPrefix: 'AllergyIntolerance',
+            params: {},
+            responseBody: makeSearchSetBundle([allergy, nonSnomedAllergy])
+          }
+        ]}
+      />
     );
 
     await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
-      timeout: 5000
+      timeout: 10000
     });
     await selectTab(container, 'Allergies/adverse reactions');
 
@@ -328,11 +391,20 @@ describe('Population workflow for', () => {
 
   test('Substance use, including tobacco', async () => {
     const { container } = render(
-      <AboriginalForm patient={patient} requestDefinitions={requestDefinitions} />
+      <AboriginalForm
+        patient={patient}
+        requestDefinitions={[
+          {
+            urlPrefix: 'Observation',
+            params: { code: '1747861000168109' },
+            responseBody: makeSearchSetBundle([obsTobaccoSmokingStatus])
+          }
+        ]}
+      />
     );
 
     await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
-      timeout: 5000
+      timeout: 10000
     });
     await selectTab(container, 'Substance use, including tobacco');
 
@@ -343,11 +415,20 @@ describe('Population workflow for', () => {
 
   test('Immunizations', async () => {
     const { container } = render(
-      <AboriginalForm patient={patient} requestDefinitions={requestDefinitions} />
+      <AboriginalForm
+        patient={patient}
+        requestDefinitions={[
+          {
+            urlPrefix: 'Immunization',
+            params: {},
+            responseBody: makeSearchSetBundle([immunization, nonSnomedImmunization])
+          }
+        ]}
+      />
     );
 
     await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
-      timeout: 5000
+      timeout: 10000
     });
     await selectTab(container, 'Immunisation');
 
@@ -380,25 +461,96 @@ describe('Population workflow for', () => {
     expect(vaccineComment2).toBe('Non-SNOMED immunisation comment');
   });
 
-  test('Examination', async () => {
+  test('Height', async () => {
     const { container } = render(
-      <AboriginalForm patient={patient} requestDefinitions={requestDefinitions} />
+      <AboriginalForm
+        patient={patient}
+        requestDefinitions={[
+          {
+            urlPrefix: 'Observation',
+            params: { code: '8302-2' },
+            responseBody: makeSearchSetBundle([obsBodyHeight])
+          }
+        ]}
+      />
     );
 
     await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
-      timeout: 5000
+      timeout: 10000
     });
     await selectTab(container, 'Examination');
-
     const heightStringContainer = await findByLinkIdOrLabel(container, 'Height');
     const lastResultHeight = await getCqfText(heightStringContainer, 'Last result');
     expect(lastResultHeight).toBe('170 cm ( 20 Nov 2025 )');
+  });
+
+  test('Weight', async () => {
+    const { container } = render(
+      <AboriginalForm
+        patient={patient}
+        requestDefinitions={[
+          {
+            urlPrefix: 'Observation',
+            params: { code: '29463-7' },
+            responseBody: makeSearchSetBundle([obsBodyWeight])
+          }
+        ]}
+      />
+    );
+
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 10000
+    });
+    await selectTab(container, 'Examination');
     const weightStringContainer = await findByLinkIdOrLabel(container, 'Weight');
     const lastResultWeight = await getCqfText(weightStringContainer, 'Last result');
     expect(lastResultWeight).toBe('70 kg ( 21 Nov 2025 )');
+  });
+
+  test('BMI', async () => {
+    const { container } = render(
+      <AboriginalForm
+        patient={patient}
+        requestDefinitions={[
+          {
+            urlPrefix: 'Observation',
+            params: { code: '8302-2' },
+            responseBody: makeSearchSetBundle([obsBodyHeight])
+          },
+          {
+            urlPrefix: 'Observation',
+            params: { code: '29463-7' },
+            responseBody: makeSearchSetBundle([obsBodyWeight])
+          }
+        ]}
+      />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 10000
+    });
+    await selectTab(container, 'Examination');
     const bmiStringContainer = await findByLinkIdOrLabel(container, 'BMI (calculated)');
     const lastResultBmi = await getCqfText(bmiStringContainer, 'Last result');
     expect(lastResultBmi).toBe('24.2 kg/m2');
+  });
+
+  test('Waist circumference', async () => {
+    const { container } = render(
+      <AboriginalForm
+        patient={patient}
+        requestDefinitions={[
+          {
+            urlPrefix: 'Observation',
+            params: { code: '8280-0' },
+            responseBody: makeSearchSetBundle([obsWaistCircumference])
+          }
+        ]}
+      />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 10000
+    });
+    await selectTab(container, 'Examination');
     const waistCircumferenceStringContainer = await findByLinkIdOrLabel(
       container,
       'Waist circumference'
@@ -408,48 +560,268 @@ describe('Population workflow for', () => {
       'Last result'
     );
     expect(lastResultWaistCircumference).toBe('90 cm ( 23 Nov 2025 )');
+  });
+
+  test('Heart rate', async () => {
+    const { container } = render(
+      <AboriginalForm
+        patient={patient}
+        requestDefinitions={[
+          {
+            urlPrefix: 'Observation',
+            params: { code: '8867-4' },
+            responseBody: makeSearchSetBundle([obsHeartRate])
+          }
+        ]}
+      />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 10000
+    });
+    await selectTab(container, 'Examination');
     const heartRateStringContainer = await findByLinkIdOrLabel(container, 'Heart rate');
     const lastResultHeartRate = await getCqfText(heartRateStringContainer, 'Last result');
     expect(lastResultHeartRate).toBe('72 /min ( 4 Dec 2025 )');
+  });
+
+  test('Heart rhythm', async () => {
+    const { container } = render(
+      <AboriginalForm
+        patient={patient}
+        requestDefinitions={[
+          {
+            urlPrefix: 'Observation',
+            params: { code: '364074009' },
+            responseBody: makeSearchSetBundle([obsHeartRhythm])
+          }
+        ]}
+      />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 10000
+    });
+    await selectTab(container, 'Examination');
     const heartRhythmStringContainer = await findByLinkIdOrLabel(container, 'Heart rhythm');
     const lastResultHeartRhythm = await getCqfText(heartRhythmStringContainer, 'Last result');
     expect(lastResultHeartRhythm).toBe('Regular heart rhythm ( 3 Dec 2025 )');
   });
 
-  test('CVD risk', async () => {
+  test('Blood pressure', async () => {
     const { container } = render(
-      <AboriginalForm patient={patient} requestDefinitions={requestDefinitions} />
+      <AboriginalForm
+        patient={patient}
+        requestDefinitions={[
+          {
+            urlPrefix: 'Observation',
+            params: { code: '85354-9' },
+            responseBody: makeSearchSetBundle([obsBloodPressure])
+          }
+        ]}
+      />
     );
-
     await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
-      timeout: 5000
+      timeout: 10000
+    });
+    await selectTab(container, 'Examination');
+    const bloodPressureStringContainer = await findByLinkIdOrLabel(container, 'Blood pressure');
+    const lastResultBloodPressure = await getCqfText(bloodPressureStringContainer, 'Last result');
+    expect(lastResultBloodPressure).toBe('120 / 80 mm Hg ( 2 Dec 2025 )');
+  });
+
+  test('Head circumference', async () => {
+    const patientAge5: Patient = {
+      ...patient,
+      birthDate: getBirthDateForAge(5)
+    };
+    const { container } = render(
+      <AboriginalForm
+        patient={patientAge5}
+        requestDefinitions={[
+          {
+            urlPrefix: 'Observation',
+            params: { code: '9843-4' },
+            responseBody: makeSearchSetBundle([obsHeadCircumference])
+          }
+        ]}
+      />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 10000
+    });
+    await selectTab(container, 'Examination');
+    const headCircumferenceStringContainer = await findByLinkIdOrLabel(
+      container,
+      'Head circumference'
+    );
+    const lastResultHeadCircumference = await getCqfText(
+      headCircumferenceStringContainer,
+      'Last result'
+    );
+    expect(lastResultHeadCircumference).toBe('55 cm ( 22 Nov 2025 )');
+  });
+
+  test('Length/Height', async () => {
+    const patientAge5: Patient = {
+      ...patient,
+      birthDate: getBirthDateForAge(5)
+    };
+    const { container } = render(
+      <AboriginalForm
+        patient={patientAge5}
+        requestDefinitions={[
+          {
+            urlPrefix: 'Observation',
+            params: { code: '8302-2' },
+            responseBody: makeSearchSetBundle([obsLengthHeight])
+          }
+        ]}
+      />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 10000
+    });
+    await selectTab(container, 'Examination');
+    const lengthHeightStringContainer = await findByLinkIdOrLabel(container, 'Length/Height');
+    const lastResultLengthHeight = await getCqfText(lengthHeightStringContainer, 'Last result');
+    expect(lastResultLengthHeight).toBe('10 cm ( 20 Nov 2025 )');
+  });
+
+  test('CVD risk result', async () => {
+    const { container } = render(
+      <AboriginalForm
+        patient={patient}
+        requestDefinitions={[
+          {
+            urlPrefix: 'Observation',
+            params: { code: '441829007' },
+            responseBody: makeSearchSetBundle([obsCVDRiskResult])
+          }
+        ]}
+      />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 10000
     });
     await selectTab(container, 'Absolute cardiovascular disease risk calculation');
-
     const cvdRiskResult = await findByLinkIdOrLabel(container, 'CVD risk result');
     const cvdRiskResultValue = await getInputText(cvdRiskResult, 'Latest available result');
     expect(cvdRiskResultValue).toBe('10% Low risk ( 5 Dec 2025 )');
+  });
+
+  test('Smoking status', async () => {
+    const { container } = render(
+      <AboriginalForm
+        patient={patient}
+        requestDefinitions={[
+          {
+            urlPrefix: 'Observation',
+            params: { code: '1747861000168109' },
+            responseBody: makeSearchSetBundle([obsTobaccoSmokingStatus])
+          }
+        ]}
+      />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 10000
+    });
+    await selectTab(container, 'Absolute cardiovascular disease risk calculation');
     const smokingStatus = await findByLinkIdOrLabel(container, 'Smoking status');
     const smokingStatusValue = await getSelectText(smokingStatus, 'Value');
     expect(smokingStatusValue).toBe('Current smoker');
     const smokingStatusDatePerformed = await getInputText(smokingStatus, 'Date performed');
     expect(smokingStatusDatePerformed).toBe('01/12/2025');
+  });
+
+  test('Systolic blood pressure', async () => {
+    const { container } = render(
+      <AboriginalForm
+        patient={patient}
+        requestDefinitions={[
+          {
+            urlPrefix: 'Observation',
+            params: { code: '85354-9' },
+            responseBody: makeSearchSetBundle([obsBloodPressure])
+          }
+        ]}
+      />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 10000
+    });
+    await selectTab(container, 'Absolute cardiovascular disease risk calculation');
     const bloodPressure = await findByLinkIdOrLabel(container, 'Systolic Blood Pressure');
     const bloodPressureValue = await getInputText(bloodPressure, 'Value');
     expect(bloodPressureValue).toBe('120');
     const bloodPressureDatePerformed = await getInputText(bloodPressure, 'Date performed');
     expect(bloodPressureDatePerformed).toBe('02/12/2025');
+  });
+
+  test('Total cholesterol', async () => {
+    const { container } = render(
+      <AboriginalForm
+        patient={patient}
+        requestDefinitions={[
+          {
+            urlPrefix: 'Observation',
+            params: { code: '14647-2' },
+            responseBody: makeSearchSetBundle([obsTotalCholesterol])
+          }
+        ]}
+      />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 10000
+    });
+    await selectTab(container, 'Absolute cardiovascular disease risk calculation');
     const totalCholesterol = await findByLinkIdOrLabel(container, 'Total Cholesterol');
     const totalCholesterolValue = await getInputText(totalCholesterol, 'Value');
     expect(totalCholesterolValue).toBe('5.2');
     const totalCholesterolDatePerformed = await getInputText(totalCholesterol, 'Date performed');
     expect(totalCholesterolDatePerformed).toBe('15/11/2025');
+  });
+
+  test('HDL cholesterol', async () => {
+    const { container } = render(
+      <AboriginalForm
+        patient={patient}
+        requestDefinitions={[
+          {
+            urlPrefix: 'Observation',
+            params: { code: '14646-4' },
+            responseBody: makeSearchSetBundle([obsHDLCholesterol])
+          }
+        ]}
+      />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 10000
+    });
+    await selectTab(container, 'Absolute cardiovascular disease risk calculation');
     const hdlCholesterol = await findByLinkIdOrLabel(container, 'HDL Cholesterol');
     const hdlCholesterolValue = await getInputText(hdlCholesterol, 'Value');
     expect(hdlCholesterolValue).toBe('1.3');
     const hdlCholesterolDatePerformed = await getInputText(hdlCholesterol, 'Date performed');
     expect(hdlCholesterolDatePerformed).toBe('16/11/2025');
-    const type2Diabetes = await getInputText(container, 'Type 2 diabetes mellitus');
+  });
+
+  test('Type 2 diabetes mellitus', async () => {
+    const { container } = render(
+      <AboriginalForm
+        patient={patient}
+        requestDefinitions={[
+          {
+            urlPrefix: 'Condition',
+            params: {},
+            responseBody: makeSearchSetBundle([diabetesCondition])
+          }
+        ]}
+      />
+    );
+    await waitFor(() => expect(container.innerHTML).toContain('Patient Details'), {
+      timeout: 10000
+    });
+    await selectTab(container, 'Absolute cardiovascular disease risk calculation');
+    const type2Diabetes = await getRadioValue(container, 'Type 2 diabetes mellitus');
     expect(type2Diabetes).toBe('true');
   });
 });

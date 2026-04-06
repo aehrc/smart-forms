@@ -342,7 +342,48 @@ export const resolvedCondition: Condition = {
   ]
 };
 
-const aboutTheHealthCheckQuestionnaireResponse: QuestionnaireResponse = {
+export const diabetesCondition: Condition = {
+  resourceType: 'Condition',
+  id: 'active-diabetes-condition',
+  subject: { reference: `Patient/${patient.id}` },
+  onsetDateTime,
+  code: {
+    coding: [
+      {
+        system: 'http://snomed.info/sct',
+        code: '44054006',
+        display: 'Diabetes mellitus'
+      }
+    ]
+  },
+  clinicalStatus: {
+    coding: [
+      {
+        system: 'http://terminology.hl7.org/CodeSystem/condition-clinical',
+        code: 'active'
+      }
+    ]
+  },
+  verificationStatus: {
+    coding: [
+      {
+        code: 'confirmed'
+      }
+    ]
+  },
+  category: [
+    {
+      coding: [
+        {
+          system: 'http://terminology.hl7.org/CodeSystem/condition-category',
+          code: 'problem-list-item'
+        }
+      ]
+    }
+  ]
+};
+
+export const aboutTheHealthCheckQuestionnaireResponse: QuestionnaireResponse = {
   resourceType: 'QuestionnaireResponse',
   id: 'qr-about-the-health-check',
   status: 'completed',
@@ -415,7 +456,7 @@ export const nonSnomedMedication: MedicationStatement = {
   ]
 };
 
-const aboutTheHealthCheckInProgressQuestionnaireResponse: QuestionnaireResponse = {
+export const aboutTheHealthCheckInProgressQuestionnaireResponse: QuestionnaireResponse = {
   ...aboutTheHealthCheckQuestionnaireResponse,
   id: 'qr-about-the-health-check-in-progress',
   status: 'in-progress',
@@ -875,7 +916,7 @@ export const obsBloodPressure: Observation = {
   ]
 };
 
-const obsTotalCholesterol: Observation = {
+export const obsTotalCholesterol: Observation = {
   resourceType: 'Observation',
   id: 'obs-total-cholesterol',
   status: 'final',
@@ -898,7 +939,7 @@ const obsTotalCholesterol: Observation = {
   }
 };
 
-const obsHDLCholesterol: Observation = {
+export const obsHDLCholesterol: Observation = {
   resourceType: 'Observation',
   id: 'obs-hdl-cholesterol',
   status: 'final',
@@ -921,7 +962,7 @@ const obsHDLCholesterol: Observation = {
   }
 };
 
-const obsCVDRiskResult: Observation = {
+export const obsCVDRiskResult: Observation = {
   resourceType: 'Observation',
   id: 'obs-cvd-risk-result',
   status: 'final',
@@ -954,96 +995,6 @@ const obsCVDRiskResult: Observation = {
     }
   ]
 };
-
-export const requestDefinitions: RequestDefinition[] = [
-  {
-    urlPrefix: 'Condition',
-    params: {},
-    responseBody: makeSearchSetBundle([condition, nonSnomedCondition, resolvedCondition])
-  },
-
-  {
-    urlPrefix: 'QuestionnaireResponse',
-    params: { status: 'completed' },
-    responseBody: makeSearchSetBundle([aboutTheHealthCheckQuestionnaireResponse])
-  },
-
-  {
-    urlPrefix: 'QuestionnaireResponse',
-    params: {},
-    responseBody: makeSearchSetBundle([aboutTheHealthCheckInProgressQuestionnaireResponse])
-  },
-  {
-    urlPrefix: 'MedicationStatement',
-    params: {},
-    responseBody: makeSearchSetBundle([currentMedication, nonSnomedMedication])
-  },
-  {
-    urlPrefix: 'Observation',
-    params: { code: '1747861000168109' },
-    responseBody: makeSearchSetBundle([obsTobaccoSmokingStatus])
-  },
-  {
-    urlPrefix: 'Observation',
-    params: { code: '8302-2' },
-    responseBody: makeSearchSetBundle([obsBodyHeight])
-  },
-  {
-    urlPrefix: 'Observation',
-    params: { code: '29463-7' },
-    responseBody: makeSearchSetBundle([obsBodyWeight])
-  },
-  {
-    urlPrefix: 'Observation',
-    params: { code: '9843-4' },
-    responseBody: makeSearchSetBundle([obsHeadCircumference])
-  },
-  {
-    urlPrefix: 'Observation',
-    params: { code: '8280-0' },
-    responseBody: makeSearchSetBundle([obsWaistCircumference])
-  },
-  {
-    urlPrefix: 'Observation',
-    params: { code: '8867-4' },
-    responseBody: makeSearchSetBundle([obsHeartRate])
-  },
-  {
-    urlPrefix: 'Observation',
-    params: { code: '364074009' },
-    responseBody: makeSearchSetBundle([obsHeartRhythm])
-  },
-  {
-    urlPrefix: 'Observation',
-    params: { code: '85354-9' },
-    responseBody: makeSearchSetBundle([obsBloodPressure])
-  },
-  {
-    urlPrefix: 'Observation',
-    params: { code: '14647-2' },
-    responseBody: makeSearchSetBundle([obsTotalCholesterol])
-  },
-  {
-    urlPrefix: 'Observation',
-    params: { code: '14646-4' },
-    responseBody: makeSearchSetBundle([obsHDLCholesterol])
-  },
-  {
-    urlPrefix: 'Observation',
-    params: { code: '441829007' },
-    responseBody: makeSearchSetBundle([obsCVDRiskResult])
-  },
-  {
-    urlPrefix: 'AllergyIntolerance',
-    params: {},
-    responseBody: makeSearchSetBundle([allergy, nonSnomedAllergy])
-  },
-  {
-    urlPrefix: 'Immunization',
-    params: {},
-    responseBody: makeSearchSetBundle([immunization, nonSnomedImmunization])
-  }
-];
 
 export function makeSearchSetBundle(resources: FhirResource[]) {
   return {

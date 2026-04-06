@@ -244,6 +244,19 @@ export async function getInputText(canvasElement: HTMLElement, linkId: string) {
   return input.value;
 }
 
+export async function getRadioValue(canvasElement: HTMLElement, linkId: string) {
+  const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
+  const input = questionElement?.querySelector('input:checked');
+
+  if (!input) {
+    throw new Error(
+      `Input with value checked was not found inside ${`[data-linkid=${linkId}] block`}`
+    );
+  }
+
+  return (input as HTMLInputElement).value;
+}
+
 export async function getCqfText(canvasElement: HTMLElement, linkId: string) {
   const displayElement = await findByLinkIdOrLabel(canvasElement, linkId);
 
