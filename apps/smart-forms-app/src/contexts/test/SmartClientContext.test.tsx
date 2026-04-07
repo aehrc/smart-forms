@@ -96,6 +96,7 @@ describe('SmartClientContext', () => {
       expect(mockContext.state.launchQuestionnaire).toBeNull();
       expect(mockContext.state.fhirContext).toBeNull();
       expect(mockContext.state.tokenReceivedTimestamp).toBeNull();
+      expect(mockContext.state.disableWriteBackSelection).toBe(false);
       expect(typeof mockContext.dispatch).toBe('function');
     });
 
@@ -346,6 +347,43 @@ describe('SmartClientContext', () => {
 
       expect(mockContext.state.fhirContext).toBe(newFhirContext);
       expect(mockContext.state.fhirContext).toHaveLength(1);
+    });
+  });
+
+  describe('SET_DISABLE_WRITEBACK_SELECTION action', () => {
+    it('should set disableWriteBackSelection to true', () => {
+      renderWithProvider((context) => {
+        mockContext = context;
+      });
+
+      act(() => {
+        mockContext.dispatch({
+          type: 'SET_DISABLE_WRITEBACK_SELECTION',
+          payload: true
+        });
+      });
+
+      expect(mockContext.state.disableWriteBackSelection).toBe(true);
+
+      // Other state should remain unchanged
+      expect(mockContext.state.smartClient).toBeNull();
+      expect(mockContext.state.patient).toBeNull();
+    });
+
+    it('should set disableWriteBackSelection back to false', () => {
+      renderWithProvider((context) => {
+        mockContext = context;
+      });
+
+      act(() => {
+        mockContext.dispatch({ type: 'SET_DISABLE_WRITEBACK_SELECTION', payload: true });
+      });
+
+      act(() => {
+        mockContext.dispatch({ type: 'SET_DISABLE_WRITEBACK_SELECTION', payload: false });
+      });
+
+      expect(mockContext.state.disableWriteBackSelection).toBe(false);
     });
   });
 
