@@ -101,7 +101,9 @@ function SliderField(props: SliderFieldProps) {
           aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
           {...(!isTabled && { 'aria-labelledby': `label-${linkId}` })}
           {...(isTabled && { 'aria-label': itemText ?? 'Unnamed slider' })}
-          {...(instructionsId && { 'aria-describedby': instructionsId })}
+          {...(instructionsId
+            ? { slotProps: { input: { 'aria-describedby': instructionsId } } }
+            : {})}
           valueLabelDisplay="auto"
           data-test="q-item-slider-field"
         />
