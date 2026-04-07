@@ -53,7 +53,7 @@ function CustomDateTimeItem(props: BaseItemProps) {
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
-  const { displayPrompt, entryFormat } = renderingExtensions;
+  const { displayPrompt, entryFormat, displayInstructions } = renderingExtensions;
 
   // Init input value
   const answerKey = getQRItemId(qrItem?.answer?.[0]?.id);
@@ -103,6 +103,12 @@ function CustomDateTimeItem(props: BaseItemProps) {
   );
 
   dateFeedback = useDateNonEmptyValidation(dateInput, timeInput, dateFeedback, timeFeedback);
+
+  // Generate instruction ID if instructions exist and there's no feedback
+  const instructionsId =
+    displayInstructions && !dateFeedback && !timeFeedback
+      ? `instructions-${qItem.linkId}`
+      : undefined;
 
   function handleSelectDate(selectedDate: string) {
     setDateInput(selectedDate);
@@ -189,6 +195,7 @@ function CustomDateTimeItem(props: BaseItemProps) {
           readOnly={readOnly}
           calcExpUpdated={calcExpUpdated}
           isTabled={isTabled}
+          instructionsId={instructionsId}
           onDateInputChange={handleDateInputChange}
           onSelectDate={handleSelectDate}
           setDateFocused={setDateFocused}
@@ -226,6 +233,7 @@ function CustomDateTimeItem(props: BaseItemProps) {
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}
+            instructionsId={instructionsId}
             onDateInputChange={handleDateInputChange}
             onSelectDate={handleSelectDate}
             setDateFocused={setDateFocused}

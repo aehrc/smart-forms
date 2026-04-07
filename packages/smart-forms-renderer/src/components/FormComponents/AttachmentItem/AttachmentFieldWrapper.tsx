@@ -35,6 +35,7 @@ interface AttachmentFieldWrapperProps
   attachmentValues: AttachmentValues;
   feedback: string;
   readOnly: boolean;
+  instructionsId: string | undefined;
   onUploadFile: (file: File | null) => void;
   onUrlChange: (url: string) => void;
   onFileNameChange: (fileName: string) => void;
@@ -48,6 +49,7 @@ function AttachmentFieldWrapper(props: AttachmentFieldWrapperProps) {
     readOnly,
     isRepeated,
     isTabled,
+    instructionsId,
     onUploadFile,
     onUrlChange,
     onFileNameChange
@@ -60,10 +62,12 @@ function AttachmentFieldWrapper(props: AttachmentFieldWrapperProps) {
       <AttachmentField
         linkId={qItem.linkId}
         itemType={qItem.type}
+        itemText={qItem.text}
         attachmentValues={attachmentValues}
         feedback={feedback}
         readOnly={readOnly}
         isTabled={isTabled}
+        instructionsId={instructionsId}
         onUploadFile={onUploadFile}
         onUrlChange={onUrlChange}
         onFileNameChange={onFileNameChange}
@@ -85,10 +89,12 @@ function AttachmentFieldWrapper(props: AttachmentFieldWrapperProps) {
           <AttachmentField
             linkId={qItem.linkId}
             itemType={qItem.type}
+            itemText={qItem.text}
             attachmentValues={attachmentValues}
             feedback={feedback}
             readOnly={readOnly}
             isTabled={isTabled}
+            instructionsId={instructionsId}
             onUploadFile={onUploadFile}
             onUrlChange={onUrlChange}
             onFileNameChange={onFileNameChange}
