@@ -194,9 +194,8 @@ function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
       <DialogContent dividers={!disableWriteBackSelection}>
         {disableWriteBackSelection ? (
           <DialogContentText>
-            Are you sure you want to save this response as{' '}
-            {isAmendment ? 'an amendment' : 'final'} and write back all items to the patient
-            record?
+            Are you sure you want to save this response as {isAmendment ? 'an amendment' : 'final'}{' '}
+            and write back all items to the patient record?
           </DialogContentText>
         ) : (
           <>
