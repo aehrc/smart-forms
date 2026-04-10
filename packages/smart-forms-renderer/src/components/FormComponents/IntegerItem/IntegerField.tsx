@@ -33,6 +33,7 @@ interface IntegerFieldProps extends PropsWithIsTabledAttribute {
   renderingExtensions: RenderingExtensions;
   readOnly: boolean;
   calcExpUpdated: boolean;
+  instructionsId: string | undefined;
   onInputChange: (value: string) => void;
   onRepopulateSync: (newQrItem: QuestionnaireResponseItem | null) => unknown;
 }
@@ -46,6 +47,7 @@ function IntegerField(props: IntegerFieldProps) {
     readOnly,
     calcExpUpdated,
     isTabled,
+    instructionsId,
     onInputChange,
     onRepopulateSync
   } = props;
@@ -87,7 +89,8 @@ function IntegerField(props: IntegerFieldProps) {
         htmlInput: {
           inputMode: 'numeric',
           pattern: '[0-9]*',
-          ...(ariaLabel && { 'aria-label': ariaLabel })
+          ...(ariaLabel && { 'aria-label': ariaLabel }),
+          ...(instructionsId && { 'aria-describedby': instructionsId })
         },
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',

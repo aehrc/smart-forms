@@ -172,12 +172,14 @@ describe('usePopulate', () => {
     user: mockUser,
     encounter: mockEncounter,
     fhirContext: null,
+    resolvedFhirContextReferences: null,
     launchQuestionnaire: null,
     tokenReceivedTimestamp: null,
     setSmartClient: jest.fn(),
     setCommonLaunchContexts: jest.fn(),
     setQuestionnaireLaunchContext: jest.fn(),
     setFhirContext: jest.fn(),
+    setResolvedFhirContextReferences: jest.fn(),
     ...overrides
   });
 

@@ -37,6 +37,7 @@ interface DateTimeFieldProps extends PropsWithIsTabledAttribute {
   entryFormat: string;
   readOnly: boolean;
   calcExpUpdated: boolean;
+  instructionsId: string | undefined;
   onDateInputChange: (newDateInput: string) => void;
   onSelectDate: (selectedDate: string) => void;
   setDateFocused: Dispatch<SetStateAction<boolean>>;
@@ -61,6 +62,7 @@ function DateTimeField(props: DateTimeFieldProps) {
     readOnly,
     calcExpUpdated,
     isTabled,
+    instructionsId,
     onDateInputChange,
     onSelectDate,
     setDateFocused,
@@ -83,6 +85,7 @@ function DateTimeField(props: DateTimeFieldProps) {
         calcExpUpdated={calcExpUpdated}
         isPartOfDateTime={true}
         isTabled={isTabled}
+        instructionsId={instructionsId}
         setFocused={setDateFocused}
         onInputChange={onDateInputChange}
         onSelectDate={onSelectDate}
@@ -90,6 +93,7 @@ function DateTimeField(props: DateTimeFieldProps) {
       <CustomTimeField
         linkId={linkId}
         itemType={itemType}
+        itemText={itemText}
         timeInput={timeInput}
         periodInput={periodInput}
         is24HourNotation={is24HourNotation}
@@ -99,6 +103,7 @@ function DateTimeField(props: DateTimeFieldProps) {
         calcExpUpdated={calcExpUpdated}
         isPartOfDateTime={true}
         isTabled={isTabled}
+        instructionsId={instructionsId}
         onTimeInputChange={(newTimeInput) => onTimeInputChange(newTimeInput, periodInput)}
         onPeriodChange={(newPeriodInput) => onTimeInputChange(timeInput, newPeriodInput)}
       />

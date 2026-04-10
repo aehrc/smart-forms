@@ -89,7 +89,8 @@ jest.mock('../stores', () => ({
     use: {
       patient: () => mockPatient,
       user: () => mockUser,
-      encounter: () => mockEncounter
+      encounter: () => mockEncounter,
+      resolvedFhirContextReferences: () => null
     }
   },
   useQuestionnaireStore: {
@@ -280,6 +281,7 @@ describe('useValueSetCodings', () => {
         'Patient',
         mockPatient,
         null,
+        null,
         null
       );
       expect(mockFhirpath.evaluate).toHaveBeenCalledWith(
@@ -455,7 +457,7 @@ describe('useValueSetCodings', () => {
         answerValueSet: 'http://hl7.org/fhir/ValueSet/test'
       };
 
-      const { result } = renderHook(() => useValueSetCodings(qItem));
+      renderHook(() => useValueSetCodings(qItem));
 
       // Wait for async effects
       await act(async () => {

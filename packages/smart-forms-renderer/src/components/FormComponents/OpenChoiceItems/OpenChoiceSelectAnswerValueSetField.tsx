@@ -43,6 +43,7 @@ interface OpenChoiceSelectAnswerValueSetFieldProps
   feedback: string;
   readOnly: boolean;
   calcExpUpdated: boolean;
+  instructionsId?: string;
   onValueChange: (
     newValue: Coding | string | null,
     reason: AutocompleteChangeReason | string
@@ -58,6 +59,7 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
     feedback,
     readOnly,
     calcExpUpdated,
+    instructionsId,
     isTabled,
     renderingExtensions,
     onValueChange
@@ -103,6 +105,13 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
                     <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
                   </>
                 )
+              },
+              htmlInput: {
+                ...params.inputProps,
+                ...(isTabled
+                  ? { 'aria-label': qItem.text ?? `Unnamed ${qItem.type} item` }
+                  : { 'aria-labelledby': `label-${qItem.linkId}` }),
+                ...(instructionsId && { 'aria-describedby': instructionsId })
               }
             }}
           />

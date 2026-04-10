@@ -17,11 +17,13 @@
 
 import { Box, Button, Dialog, DialogActions, DialogContent } from '@mui/material';
 import PlaygroundPatientPicker from './PlaygroundPatientPicker.tsx';
-import type { Patient, Practitioner } from 'fhir/r4';
+import type { Encounter, Patient, Practitioner, PractitionerRole } from 'fhir/r4';
 import { useState } from 'react';
 import PlaygroundUserPicker from './PlaygroundUserPicker.tsx';
 import PlaygroundFhirServerUrlInput from './PlaygroundFhirServerInput.tsx';
 import StandardDialogTitle from '../../../components/Dialog/StandardDialogTitle.tsx';
+import PlaygroundEncounterPicker from './PlaygroundEncounterPicker.tsx';
+import PlaygroundPractitionerRolePicker from './PlaygroundPractitionerRolePicker.tsx';
 
 export interface PlaygroundSettingsDialogProps {
   open: boolean;
@@ -29,10 +31,14 @@ export interface PlaygroundSettingsDialogProps {
   sourceFhirServerUrl: string;
   patient: Patient | null;
   user: Practitioner | null;
+  encounter: Encounter | null;
+  practitionerRole: PractitionerRole | null;
   terminologyServerUrl: string;
   onSourceFhirServerUrlChange: (url: string) => unknown;
   onPatientChange: (patient: Patient | null) => unknown;
   onUserChange: (practitioner: Practitioner | null) => unknown;
+  onEncounterChange: (encounter: Encounter | null) => unknown;
+  onPractitionerRoleChange: (practitionerRole: PractitionerRole | null) => unknown;
   onTerminologyServerUrlChange: (url: string) => unknown;
 }
 
@@ -43,10 +49,14 @@ function PlaygroundSettingsDialog(props: PlaygroundSettingsDialogProps) {
     sourceFhirServerUrl,
     patient,
     user,
+    encounter,
+    practitionerRole,
     terminologyServerUrl,
     onSourceFhirServerUrlChange,
     onPatientChange,
     onUserChange,
+    onEncounterChange,
+    onPractitionerRoleChange,
     onTerminologyServerUrlChange
   } = props;
 
@@ -62,6 +72,10 @@ function PlaygroundSettingsDialog(props: PlaygroundSettingsDialogProps) {
 
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(patient);
   const [selectedUser, setSelectedUser] = useState<Practitioner | null>(user);
+  const [selectedEncounter, setSelectedEncounter] = useState<Encounter | null>(encounter);
+  const [selectedPractitionerRole, setSelectedPractitionerRole] = useState<PractitionerRole | null>(
+    practitionerRole
+  );
 
   // Event handlers
   function handleCancel() {
@@ -70,6 +84,8 @@ function PlaygroundSettingsDialog(props: PlaygroundSettingsDialogProps) {
     setTerminologyServerUrlInput(terminologyServerUrl);
     setSelectedPatient(patient);
     setSelectedUser(user);
+    setSelectedEncounter(encounter);
+    setSelectedPractitionerRole(practitionerRole);
   }
 
   function handleSave() {
@@ -79,6 +95,8 @@ function PlaygroundSettingsDialog(props: PlaygroundSettingsDialogProps) {
     );
     onPatientChange(selectedPatient);
     onUserChange(selectedUser);
+    onEncounterChange(selectedEncounter);
+    onPractitionerRoleChange(selectedPractitionerRole);
 
     // Set Terminology Server URL to the input value if it is valid, otherwise use the current value
     onTerminologyServerUrlChange(
@@ -92,18 +110,38 @@ function PlaygroundSettingsDialog(props: PlaygroundSettingsDialogProps) {
     onSourceFhirServerUrlChange(sourceFhirServerUrlInput);
     setSelectedPatient(null);
     setSelectedUser(null);
+    setSelectedEncounter(null);
+    setSelectedPractitionerRole(null);
   }
 
   function handleValidateSourceFhirServerUrl(isValid: boolean | 'unchecked') {
     setSourceFhirServerUrlInputValid(isValid);
   }
 
-  // SourceFhirServerEndpoint, Patient or Practitioner has changed
+  function handleSelectPatient(newPatient: Patient | null) {
+    setSelectedPatient(newPatient);
+    // Reset encounter when patient changes since it is scoped to the patient
+    if (newPatient?.id !== selectedPatient?.id) {
+      setSelectedEncounter(null);
+    }
+  }
+
+  function handleSelectUser(newUser: Practitioner | null) {
+    setSelectedUser(newUser);
+    // Reset practitionerRole when user changes since it is scoped to the user
+    if (newUser?.id !== selectedUser?.id) {
+      setSelectedPractitionerRole(null);
+    }
+  }
+
+  // SourceFhirServerEndpoint, Patient, User, Encounter or PractitionerRole has changed
   const changesMade =
     sourceFhirServerUrlInput !== sourceFhirServerUrl ||
     terminologyServerUrlInput !== terminologyServerUrl ||
     selectedPatient?.id !== patient?.id ||
-    selectedUser?.id !== user?.id;
+    selectedUser?.id !== user?.id ||
+    selectedEncounter?.id !== encounter?.id ||
+    selectedPractitionerRole?.id !== practitionerRole?.id;
 
   const sourceFhirServerButtonIsEnabled =
     sourceFhirServerUrlInput !== sourceFhirServerUrl && sourceFhirServerUrlInputValid === true;
@@ -161,13 +199,27 @@ function PlaygroundSettingsDialog(props: PlaygroundSettingsDialogProps) {
         <PlaygroundPatientPicker
           sourceFhirServerUrl={sourceFhirServerUrl}
           selectedPatient={selectedPatient}
-          onSelectPatient={(patient) => setSelectedPatient(patient)}
+          onSelectPatient={handleSelectPatient}
+        />
+        <Box my={4} />
+        <PlaygroundEncounterPicker
+          sourceFhirServerUrl={sourceFhirServerUrl}
+          selectedPatient={selectedPatient}
+          selectedEncounter={selectedEncounter}
+          onSelectEncounter={(enc) => setSelectedEncounter(enc)}
         />
         <Box my={4} />
         <PlaygroundUserPicker
           sourceFhirServerUrl={sourceFhirServerUrl}
           selectedUser={selectedUser}
-          onSelectUser={(practitioner) => setSelectedUser(practitioner)}
+          onSelectUser={handleSelectUser}
+        />
+        <Box my={4} />
+        <PlaygroundPractitionerRolePicker
+          sourceFhirServerUrl={sourceFhirServerUrl}
+          selectedUser={selectedUser}
+          selectedPractitionerRole={selectedPractitionerRole}
+          onSelectPractitionerRole={(pr) => setSelectedPractitionerRole(pr)}
         />
       </DialogContent>
       <DialogActions>

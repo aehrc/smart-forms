@@ -58,6 +58,9 @@ function ChoiceSelectAnswerValueSetItem(props: BaseItemProps) {
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
+  const { displayInstructions } = renderingExtensions;
+  const instructionsId =
+    displayInstructions && !feedback ? `instructions-${qItem.linkId}` : undefined;
 
   // Get codings/options from valueSet
   const { codings, terminologyError, dynamicCodingsUpdated } = useValueSetCodings(qItem);
@@ -112,6 +115,7 @@ function ChoiceSelectAnswerValueSetItem(props: BaseItemProps) {
         isTabled={isTabled}
         renderingExtensions={renderingExtensions}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+        instructionsId={instructionsId}
         onSelectChange={handleChange}
       />
     );
@@ -137,6 +141,7 @@ function ChoiceSelectAnswerValueSetItem(props: BaseItemProps) {
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+            instructionsId={instructionsId}
             onSelectChange={handleChange}
           />
         }

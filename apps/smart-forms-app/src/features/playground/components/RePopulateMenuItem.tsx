@@ -1,6 +1,6 @@
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { fetchResourceCallback } from './PrePopCallbackForPlayground.tsx';
-import type { Patient, Practitioner } from 'fhir/r4';
+import type { Encounter, Patient, Practitioner, PractitionerRole } from 'fhir/r4';
 import { generateItemsToRepopulate, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import { ListItemIcon, ListItemText } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
@@ -12,6 +12,8 @@ interface RePopulateMenuItemProps {
   sourceFhirServerUrl: string | null;
   patient: Patient | null;
   user: Practitioner | null;
+  encounter: Encounter | null;
+  practitionerRole: PractitionerRole | null;
   terminologyServerUrl: string;
   onSpinnerChange: (newSpinner: RendererSpinner) => void;
   onCloseMenu: () => void;
@@ -23,6 +25,8 @@ function RePopulateMenuItem(props: RePopulateMenuItemProps) {
     sourceFhirServerUrl,
     patient,
     user,
+    encounter,
+    practitionerRole,
     onSpinnerChange,
     onCloseMenu,
     onSetRepopulatedContext
@@ -34,7 +38,7 @@ function RePopulateMenuItem(props: RePopulateMenuItemProps) {
 
   const populateEnabled = sourceFhirServerUrl !== null && patient !== null;
 
-  // Event handler for pre-populate
+  // Event handler for re-populate
   function handleRepopulate() {
     onCloseMenu();
 
@@ -56,7 +60,11 @@ function RePopulateMenuItem(props: RePopulateMenuItemProps) {
         authToken: null
       },
       patient: patient,
-      user: user ?? undefined
+      user: user ?? undefined,
+      encounter: encounter ?? undefined,
+      fhirContext: practitionerRole
+        ? [{ reference: `PractitionerRole/${practitionerRole.id}` }]
+        : undefined
     }).then(async ({ populateSuccess, populateResult }) => {
       if (!populateSuccess || !populateResult) {
         onSpinnerChange({ isSpinning: false, status: null, message: '' });

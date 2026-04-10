@@ -18,11 +18,13 @@
 import type { QuestionnaireItemAnswerOption } from 'fhir/r4';
 import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 import useReadOnly from '../../../hooks/useReadOnly';
+import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../utils/choice';
 import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
+import { getInstructionsId } from '../ItemParts/ItemFieldGrid';
 import ChoiceSelectAnswerOptionView from './ChoiceSelectAnswerOptionView';
 
 function ChoiceSelectAnswerOptionItem(props: BaseItemProps) {
@@ -44,6 +46,10 @@ function ChoiceSelectAnswerOptionItem(props: BaseItemProps) {
 
   // Perform validation checks - there's no string-based input here
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
+
+  // Get instructions ID for aria-describedby
+  const { displayInstructions } = useRenderingExtensions(qItem);
+  const instructionsId = getInstructionsId(qItem, displayInstructions, !!feedback);
 
   // Init input value
   const answerKey = getQRItemId(qrItem?.answer?.[0]?.id);
@@ -94,6 +100,7 @@ function ChoiceSelectAnswerOptionItem(props: BaseItemProps) {
       isTabled={isTabled}
       renderingExtensions={renderingExtensions}
       answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+      instructionsId={instructionsId}
       onFocusLinkId={() => onFocusLinkId(qItem.linkId)}
       onSelectChange={handleChange}
     />

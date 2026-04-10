@@ -65,6 +65,9 @@ function ChoiceAutocompleteItem(props: BaseItemProps) {
 
   // Perform validation checks
   const validationFeedback = useValidationFeedback(qItem, feedbackFromParent);
+  const { displayInstructions } = renderingExtensions;
+  const instructionsId =
+    displayInstructions && !validationFeedback ? `instructions-${qItem.linkId}` : undefined;
 
   const {
     options,
@@ -111,6 +114,7 @@ function ChoiceAutocompleteItem(props: BaseItemProps) {
         calcExpUpdated={calcExpUpdated}
         isTabled={isTabled}
         renderingExtensions={renderingExtensions}
+        instructionsId={instructionsId}
         onInputChange={setInput}
         onValueChange={handleValueChange}
       />
@@ -138,6 +142,7 @@ function ChoiceAutocompleteItem(props: BaseItemProps) {
             calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
+            instructionsId={instructionsId}
             onInputChange={setInput}
             onValueChange={handleValueChange}
           />

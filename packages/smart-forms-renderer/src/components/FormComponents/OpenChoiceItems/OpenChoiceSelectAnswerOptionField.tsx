@@ -42,6 +42,7 @@ interface OpenChoiceSelectAnswerOptionFieldProps
   feedback: string;
   readOnly: boolean;
   calcExpUpdated: boolean;
+  instructionsId?: string;
   onValueChange: (
     newValue: QuestionnaireItemAnswerOption | string | null,
     reason: AutocompleteChangeReason | string
@@ -56,6 +57,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
     feedback,
     readOnly,
     calcExpUpdated,
+    instructionsId,
     isTabled,
     renderingExtensions,
     onValueChange
@@ -120,7 +122,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
             multiline
             textFieldWidth={textFieldWidth}
             isTabled={isTabled}
-            placeholder={entryFormat || displayPrompt}
+            placeholder={valueSelect ? undefined : entryFormat || displayPrompt}
             {...params}
             slotProps={{
               input: {
@@ -138,6 +140,13 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
                     paddingLeft: '0px'
                   }
                 }
+              },
+              htmlInput: {
+                ...params.inputProps,
+                ...(isTabled
+                  ? { 'aria-label': qItem.text ?? `Unnamed ${qItem.type} item` }
+                  : { 'aria-labelledby': `label-${qItem.linkId}` }),
+                ...(instructionsId && { 'aria-describedby': instructionsId })
               }
             }}
           />

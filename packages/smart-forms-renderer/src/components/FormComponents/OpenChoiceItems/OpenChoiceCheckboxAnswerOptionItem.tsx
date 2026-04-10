@@ -30,7 +30,7 @@ import { updateOpenLabelAnswer } from '../../../utils/openChoice';
 import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
-import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import ItemFieldGrid, { getInstructionsId } from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
 import OpenChoiceCheckboxAnswerOptionFields from './OpenChoiceCheckboxAnswerOptionFields';
 
@@ -58,8 +58,8 @@ function OpenChoiceCheckboxAnswerOptionItem(props: BaseItemProps) {
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
-
   const { displayInstructions } = renderingExtensions;
+  const instructionsId = getInstructionsId(qItem, displayInstructions, !!feedback);
   const openLabelText = getOpenLabelText(qItem);
 
   const options = qItem.answerOption ?? [];
@@ -164,6 +164,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: BaseItemProps) {
           expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
           answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
           isTabled={isTabled}
+          instructionsId={instructionsId}
           onOptionChange={handleOptionChange}
           onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
           onOpenLabelInputChange={handleOpenLabelInputChange}
@@ -197,6 +198,7 @@ function OpenChoiceCheckboxAnswerOptionItem(props: BaseItemProps) {
             expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             isTabled={isTabled}
+            instructionsId={instructionsId}
             onOptionChange={handleOptionChange}
             onOpenLabelCheckedChange={handleOpenLabelCheckedChange}
             onOpenLabelInputChange={handleOpenLabelInputChange}
