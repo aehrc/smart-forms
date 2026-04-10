@@ -129,5 +129,14 @@ export const OpenLabel: Story = createStory({
 export const Hidden: Story = createStory({
   args: {
     questionnaire: qHidden
+  },
+  play: async ({ canvasElement }) => {
+    const expectedText = "If hidden works, you wouldn't see the question below!";
+    const canvas = within(canvasElement);
+
+    const displayTextElement = await canvas.findByText(expectedText, { exact: true });
+    expect(displayTextElement.textContent).toBe(expectedText);
+
+    expect(canvas.queryByText('Hidden string field', { exact: true })).toBeNull();
   }
 }) as Story;

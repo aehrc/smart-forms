@@ -655,18 +655,29 @@ export async function chooseQuantityOption(
   await new Promise((resolve) => setTimeout(resolve, 500));
 }
 
+export function queryByLinkIdOrLabel(
+  canvasElement: HTMLElement,
+  linkIdOrLabel: string
+): HTMLElement | null {
+  const selectorByLinkId = `[data-linkid="${linkIdOrLabel}"]`;
+  const selectorByLabel = `[data-label="${linkIdOrLabel}"]`;
+
+  return (
+    canvasElement.querySelector<HTMLElement>(selectorByLinkId) ??
+    canvasElement.querySelector<HTMLElement>(selectorByLabel)
+  );
+}
+
 export async function findByLinkIdOrLabel(
   canvasElement: HTMLElement,
-  linkId: string
+  linkIdOrLabel: string
 ): Promise<HTMLElement> {
-  const selectorByLinkId = `[data-linkid="${linkId}"]`;
-  const selectorByLabel = `[data-label="${linkId}"]`;
+  const selectorByLinkId = `[data-linkid="${linkIdOrLabel}"]`;
+  const selectorByLabel = `[data-label="${linkIdOrLabel}"]`;
 
   return await waitFor(
     () => {
-      const el =
-        canvasElement.querySelector<HTMLElement>(selectorByLinkId) ??
-        canvasElement.querySelector<HTMLElement>(selectorByLabel);
+      const el = queryByLinkIdOrLabel(canvasElement, linkIdOrLabel);
 
       if (!el) {
         throw new Error(

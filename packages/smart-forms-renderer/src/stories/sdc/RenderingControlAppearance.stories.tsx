@@ -16,6 +16,7 @@
  */
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, fireEvent, waitFor, within } from 'storybook/test';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
   qChoiceOrientation,
@@ -30,6 +31,7 @@ import {
   qWidthGTable
 } from '../assets/questionnaires';
 import { createStory } from '../storybookWrappers/createStory';
+import { findByLinkIdOrLabel, queryByLinkIdOrLabel } from '../testUtils';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -89,12 +91,56 @@ export const CollapsibleSingleDefaultClosed: Story = createStory({
 export const CollapsibleGroupDefaultOpen: Story = createStory({
   args: {
     questionnaire: qCollapsibleGroupDefaultOpen
+  },
+  play: async ({ canvasElement }) => {
+    const heightLinkId = 'patient-height';
+
+    const groupBlock = await findByLinkIdOrLabel(canvasElement, 'bmi-collapsible');
+    const toggle = within(groupBlock).getByRole('button');
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    await findByLinkIdOrLabel(canvasElement, heightLinkId);
+
+    fireEvent.click(toggle);
+    await waitFor(() => {
+      expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    });
+    await waitFor(() => {
+      expect(queryByLinkIdOrLabel(canvasElement, heightLinkId)).toBeNull();
+    });
+
+    fireEvent.click(toggle);
+    await waitFor(() => {
+      expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    });
+    await findByLinkIdOrLabel(canvasElement, heightLinkId);
   }
 }) as Story;
 
 export const CollapsibleGroupDefaultClosed: Story = createStory({
   args: {
     questionnaire: qCollapsibleGroupDefaultClosed
+  },
+  play: async ({ canvasElement }) => {
+    const heightLinkId = 'patient-height';
+
+    const groupBlock = await findByLinkIdOrLabel(canvasElement, 'bmi-collapsible');
+    const toggle = within(groupBlock).getByRole('button');
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    expect(queryByLinkIdOrLabel(canvasElement, heightLinkId)).toBeNull();
+
+    fireEvent.click(toggle);
+    await waitFor(() => {
+      expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    });
+    await findByLinkIdOrLabel(canvasElement, heightLinkId);
+
+    fireEvent.click(toggle);
+    await waitFor(() => {
+      expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    });
+    await waitFor(() => {
+      expect(queryByLinkIdOrLabel(canvasElement, heightLinkId)).toBeNull();
+    });
   }
 }) as Story;
 
