@@ -96,6 +96,8 @@ function StringField(props: StringFieldProps) {
         }
       }}
       helperText={feedback}
+      data-linkid={qItem.linkId}
+      data-label={qItem.text}
       data-test="q-item-string-field"
     />
   );
