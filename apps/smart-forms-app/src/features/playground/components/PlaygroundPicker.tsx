@@ -18,21 +18,35 @@
 // @ts-ignore
 import { Box, Stack, Typography } from '@mui/material';
 import FileCollector from './FileCollector.tsx';
-import type { Patient, Practitioner, Questionnaire } from 'fhir/r4';
+import type { Encounter, Patient, Practitioner, PractitionerRole, Questionnaire } from 'fhir/r4';
 import PlaygroundQuestionnairePicker from './PlaygroundQuestionnairePicker.tsx';
 import useLaunchContextNames from '../hooks/useLaunchContextNames.ts';
 
 interface PlaygroundPickerProps {
   patient: Patient | null;
   user: Practitioner | null;
+  encounter: Encounter | null;
+  practitionerRole: PractitionerRole | null;
   onBuildQuestionnaireFromFile: (file: File) => void;
   onBuildQuestionnaireFromResource: (questionnaire: Questionnaire) => void;
 }
 
 function PlaygroundPicker(props: PlaygroundPickerProps) {
-  const { patient, user, onBuildQuestionnaireFromFile, onBuildQuestionnaireFromResource } = props;
+  const {
+    patient,
+    user,
+    encounter,
+    practitionerRole,
+    onBuildQuestionnaireFromFile,
+    onBuildQuestionnaireFromResource
+  } = props;
 
-  const { patientName, userName } = useLaunchContextNames(patient, user);
+  const { patientName, userName, encounterName, practitionerRoleName } = useLaunchContextNames(
+    patient,
+    user,
+    encounter,
+    practitionerRole
+  );
 
   return (
     <>
@@ -42,9 +56,19 @@ function PlaygroundPicker(props: PlaygroundPickerProps) {
             Patient: {patientName}
           </Typography>
         ) : null}
-        {patientName && userName ? (
+        {encounterName ? (
+          <Typography variant="subtitle2" color="text.secondary">
+            Encounter: {encounterName}
+          </Typography>
+        ) : null}
+        {userName ? (
           <Typography variant="subtitle2" color="text.secondary">
             User: {userName}
+          </Typography>
+        ) : null}
+        {practitionerRoleName ? (
+          <Typography variant="subtitle2" color="text.secondary">
+            PractitionerRole: {practitionerRoleName}
           </Typography>
         ) : null}
       </Stack>

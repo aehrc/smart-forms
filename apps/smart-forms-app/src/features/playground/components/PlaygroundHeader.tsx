@@ -24,7 +24,7 @@ import { StyledRoot, StyledToolbar } from '../../../components/Header/Header.sty
 import { memo, useState } from 'react';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
-import type { Patient, Practitioner } from 'fhir/r4';
+import type { Encounter, Patient, Practitioner, PractitionerRole } from 'fhir/r4';
 import PlaygroundSettingsDialog from './PlaygroundSettingsDialog.tsx';
 import SettingsIcon from '@mui/icons-material/Settings';
 import UpdatingIndicator from '../../renderer/components/RendererHeader/UpdatingIndicator.tsx';
@@ -33,10 +33,14 @@ interface PlaygroundHeaderProps {
   sourceFhirServerUrl: string;
   patient: Patient | null;
   user: Practitioner | null;
+  encounter: Encounter | null;
+  practitionerRole: PractitionerRole | null;
   terminologyServerUrl: string;
   onSourceFhirServerUrlChange: (url: string) => void;
   onPatientChange: (patient: Patient | null) => void;
   onUserChange: (practitioner: Practitioner | null) => void;
+  onEncounterChange: (encounter: Encounter | null) => void;
+  onPractitionerRoleChange: (practitionerRole: PractitionerRole | null) => void;
   onTerminologyServerUrlChange: (url: string) => void;
 }
 
@@ -45,10 +49,14 @@ const PlaygroundHeader = memo(function PlaygroundHeader(props: PlaygroundHeaderP
     sourceFhirServerUrl,
     patient,
     user,
+    encounter,
+    practitionerRole,
     terminologyServerUrl,
     onSourceFhirServerUrlChange,
     onPatientChange,
     onUserChange,
+    onEncounterChange,
+    onPractitionerRoleChange,
     onTerminologyServerUrlChange
   } = props;
 
@@ -112,10 +120,14 @@ const PlaygroundHeader = memo(function PlaygroundHeader(props: PlaygroundHeaderP
           sourceFhirServerUrl={sourceFhirServerUrl}
           patient={patient}
           user={user}
+          encounter={encounter}
+          practitionerRole={practitionerRole}
           terminologyServerUrl={terminologyServerUrl}
           onSourceFhirServerUrlChange={onSourceFhirServerUrlChange}
           onPatientChange={onPatientChange}
           onUserChange={onUserChange}
+          onEncounterChange={onEncounterChange}
+          onPractitionerRoleChange={onPractitionerRoleChange}
           onTerminologyServerUrlChange={onTerminologyServerUrlChange}
         />
       </StyledToolbar>

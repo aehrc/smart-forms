@@ -36,6 +36,7 @@ interface OpenChoiceRadioAnswerValueSetFieldsProps {
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   terminologyError: TerminologyError;
   isTabled: boolean;
+  instructionsId?: string;
   onValueChange: (changedOptionValue: string | null, changedOpenLabelValue: string | null) => void;
   onClear: () => void;
 }
@@ -54,6 +55,7 @@ function OpenChoiceRadioAnswerValueSetFields(props: OpenChoiceRadioAnswerValueSe
     answerOptionsToggleExpressionsMap,
     terminologyError,
     isTabled,
+    instructionsId,
     onValueChange,
     onClear
   } = props;
@@ -69,6 +71,7 @@ function OpenChoiceRadioAnswerValueSetFields(props: OpenChoiceRadioAnswerValueSe
         expressionUpdated={expressionUpdated}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
         isTabled={isTabled}
+        instructionsId={instructionsId}
         onCheckedChange={(newValue) => onValueChange(newValue, null)}
         onClear={onClear}>
         <RadioButtonWithOpenLabel

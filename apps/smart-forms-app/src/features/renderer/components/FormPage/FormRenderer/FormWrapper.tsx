@@ -50,10 +50,12 @@ function FormWrapper() {
         <title>{sourceQuestionnaire.title ?? 'Form Renderer'}</title>
       </Helmet>
 
-      <Box px={3}>
-        <BaseRenderer />
+      <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <Box px={3} sx={{ flex: 1, overflow: 'auto', minHeight: 0 }}>
+          <BaseRenderer />
+        </Box>
+        <RendererInfoFooter />
       </Box>
-      <RendererInfoFooter />
 
       {/* Debug footer */}
       {debugModeEnabled ? <RendererDebugFooter /> : null}

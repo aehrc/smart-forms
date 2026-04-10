@@ -23,6 +23,7 @@ interface ChoiceCheckboxFormGroupProps {
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   isTabled: boolean;
+  instructionsId?: string;
   onCheckedChange: (newValue: string) => void;
   onClear: () => void;
   children?: ReactNode; // Mainly used for open-choice openLabel field
@@ -38,6 +39,7 @@ function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
     expressionUpdated,
     answerOptionsToggleExpressionsMap,
     isTabled,
+    instructionsId,
     onCheckedChange,
     onClear,
     children
@@ -68,6 +70,7 @@ function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
             {...(!isTabled
               ? { 'aria-labelledby': 'label-' + qItem.linkId }
               : { 'aria-label': qItem.text ?? 'Unnamed checkbox list' })}
+            {...(instructionsId && { 'aria-describedby': instructionsId })}
             role="group"
             row={orientation === ChoiceItemOrientation.Horizontal}
             sx={inputsFlexGrow ? { width: '100%', flexWrap: 'nowrap' } : {}}>

@@ -39,7 +39,7 @@ import { constructResponse } from './constructResponse';
 import { createOutputParameters } from './createOutputParameters';
 import { removeEmptyAnswersFromResponse } from './removeEmptyAnswers';
 import { isEncounterContextParameter, isUserContextParameter } from './typePredicates';
-import { addDisplayToInitialExpressionsCodings } from './addDisplayToCodings';
+import { addDisplayToQuestionnaireResponseCodings } from './addDisplayToCodings';
 
 /**
  * Executes the SDC Populate Questionnaire operation - $populate.
@@ -96,7 +96,8 @@ export async function populate(
     populationExpressions.itemPopulationContexts,
     fhirPathContext,
     issues,
-    fetchTerminologyRequestConfig
+    fetchTerminologyRequestConfig,
+    fetchResourceRequestConfig
   );
 
   // Get values for expressions
@@ -105,27 +106,31 @@ export async function populate(
       populationExpressions,
       fhirPathContext,
       issues,
-      fetchTerminologyRequestConfig
+      fetchTerminologyRequestConfig,
+      fetchResourceRequestConfig
     );
-
-  // In evaluatedInitialExpressions, add display values to codings lacking them
-  const completeInitialExpressions = await addDisplayToInitialExpressionsCodings(
-    evaluatedInitialExpressions,
-    fetchTerminologyCallback,
-    fetchTerminologyRequestConfig
-  );
 
   // Construct response from initialExpressions
   const questionnaireResponse = await constructResponse(
     questionnaire,
     subjectReference,
     {
-      initialExpressions: completeInitialExpressions,
+      initialExpressions: evaluatedInitialExpressions,
       itemPopulationContexts: evaluatedItemPopulationContexts
     },
     fhirPathContext,
     user,
     encounter,
+    fetchTerminologyCallback,
+    fetchTerminologyRequestConfig,
+    fetchResourceRequestConfig
+  );
+
+  // Add display values to any valueCoding answers lacking them via CodeSystem $lookup.
+  // Done as a post-processing step on the final QR so that codings from all code paths
+  // are covered — including those only produced during per-instance repeat group evaluation.
+  await addDisplayToQuestionnaireResponseCodings(
+    questionnaireResponse.item ?? [],
     fetchTerminologyCallback,
     fetchTerminologyRequestConfig
   );

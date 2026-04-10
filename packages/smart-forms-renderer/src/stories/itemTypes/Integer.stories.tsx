@@ -79,7 +79,11 @@ export const IntegerBasic: Story = createStory({
     expect(result[0]).toEqual(expect.objectContaining({ valueInteger: basicAge }));
 
     // Clear value
-    const clearButton = canvasElement.querySelector('button[title="Clear"]');
+    const element = await findByLinkIdOrLabel(canvasElement, targetLinkId);
+    const clearButton = element.querySelector('button[title="Clear"]');
+    if (!clearButton) {
+      throw new Error(`Clear button not found for ${targetLinkId}`);
+    }
     fireEvent.click(clearButton as HTMLElement);
 
     // Here we await for debounced store update

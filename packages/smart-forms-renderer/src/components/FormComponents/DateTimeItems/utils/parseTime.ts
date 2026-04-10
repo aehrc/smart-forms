@@ -58,7 +58,9 @@ export function validateTimeInput(
   }
 
   // Test period input is valid
-  if (!(periodInput === 'AM' || periodInput === 'PM' || is24HourNotation)) {
+  // Allow empty period if we're in 24-hour notation, or if period is AM/PM
+  // Also allow empty period for ambiguous times (00-12) - will default to AM
+  if (!is24HourNotation && periodInput !== '' && periodInput !== 'AM' && periodInput !== 'PM') {
     return { timeIsValid: false, is24HourNotation: false };
   }
 

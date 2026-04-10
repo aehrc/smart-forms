@@ -24,7 +24,7 @@ import { updateChoiceCheckboxAnswers } from '../../../utils/choice';
 import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
-import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import ItemFieldGrid, { getInstructionsId } from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
 import ChoiceCheckboxAnswerOptionFields from './ChoiceCheckboxAnswerOptionFields';
 
@@ -58,6 +58,7 @@ function ChoiceCheckboxAnswerOptionItem(props: BaseItemProps) {
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
+  const instructionsId = getInstructionsId(qItem, displayInstructions, !!feedback);
 
   const options = qItem.answerOption ?? [];
 
@@ -98,6 +99,7 @@ function ChoiceCheckboxAnswerOptionItem(props: BaseItemProps) {
           expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
           answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
           isTabled={isTabled}
+          instructionsId={instructionsId}
           onCheckedChange={handleCheckedChange}
           onClear={handleClear}
         />
@@ -126,6 +128,7 @@ function ChoiceCheckboxAnswerOptionItem(props: BaseItemProps) {
             expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
             isTabled={isTabled}
+            instructionsId={instructionsId}
             onCheckedChange={handleCheckedChange}
             onClear={handleClear}
           />

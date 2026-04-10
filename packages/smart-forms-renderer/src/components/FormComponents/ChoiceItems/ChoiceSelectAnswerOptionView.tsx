@@ -39,6 +39,7 @@ interface ChoiceSelectAnswerOptionViewProps
   readOnly: boolean;
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
+  instructionsId: string | undefined;
   onSelectChange: (newValue: QuestionnaireItemAnswerOption | null) => void;
   onFocusLinkId: () => void;
 }
@@ -55,6 +56,7 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
     readOnly,
     expressionUpdated,
     answerOptionsToggleExpressionsMap,
+    instructionsId,
     onFocusLinkId,
     onSelectChange
   } = props;
@@ -76,6 +78,7 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
         isTabled={isTabled}
         renderingExtensions={renderingExtensions}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+        instructionsId={instructionsId}
         onSelectChange={onSelectChange}
       />
     );
@@ -102,6 +105,7 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+            instructionsId={instructionsId}
             onSelectChange={onSelectChange}
           />
         }

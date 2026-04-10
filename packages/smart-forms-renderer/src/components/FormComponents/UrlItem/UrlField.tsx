@@ -32,6 +32,7 @@ interface UrlFieldProps extends PropsWithIsTabledAttribute {
   displayUnit: string;
   entryFormat: string;
   readOnly: boolean;
+  instructionsId: string | undefined;
   onInputChange: (value: string) => void;
 }
 
@@ -46,6 +47,7 @@ function UrlField(props: UrlFieldProps) {
     entryFormat,
     readOnly,
     isTabled,
+    instructionsId,
     onInputChange
   } = props;
 
@@ -79,6 +81,9 @@ function UrlField(props: UrlFieldProps) {
               <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>
           )
+        },
+        htmlInput: {
+          ...(instructionsId && { 'aria-describedby': instructionsId })
         }
       }}
       helperText={feedback}

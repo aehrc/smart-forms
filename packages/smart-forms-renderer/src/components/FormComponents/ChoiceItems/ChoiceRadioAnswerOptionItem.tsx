@@ -53,6 +53,12 @@ function ChoiceRadioAnswerOptionItem(props: BaseItemProps) {
   // Perform validation checks - there's no string-based input here
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
+  const { displayInstructions } = renderingExtensions;
+
+  // Generate instruction ID if instructions exist and there's no feedback
+  const instructionsId =
+    displayInstructions && !feedback ? `instructions-${qItem.linkId}` : undefined;
+
   const options = qItem.answerOption ?? [];
 
   // Process answerOptionsToggleExpressions
@@ -107,6 +113,7 @@ function ChoiceRadioAnswerOptionItem(props: BaseItemProps) {
           expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
           answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
           isTabled={isTabled}
+          instructionsId={instructionsId}
           onFocusLinkId={() => onFocusLinkId(qItem.linkId)}
           onCheckedChange={handleChange}
           onClear={handleClear}
@@ -127,6 +134,7 @@ function ChoiceRadioAnswerOptionItem(props: BaseItemProps) {
           expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
           renderingExtensions={renderingExtensions}
           answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+          instructionsId={instructionsId}
           onFocusLinkId={() => onFocusLinkId(qItem.linkId)}
           onSelectChange={handleChange}
         />

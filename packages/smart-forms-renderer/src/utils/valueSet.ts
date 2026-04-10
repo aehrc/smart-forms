@@ -198,7 +198,8 @@ export function getResourceFromLaunchContext(
   resourceType: FhirResourceString,
   patient: Patient | null,
   user: Practitioner | null,
-  encounter: Encounter | null
+  encounter: Encounter | null,
+  resolvedFhirContextReferences: Record<string, FhirResource> | null
 ): FhirResource | null {
   switch (resourceType) {
     case 'Patient':
@@ -208,7 +209,7 @@ export function getResourceFromLaunchContext(
     case 'Encounter':
       return encounter;
   }
-  return null;
+  return resolvedFhirContextReferences?.[resourceType] ?? null;
 }
 
 /**

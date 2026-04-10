@@ -26,6 +26,7 @@ import useSliderExtensions from '../../../hooks/useSliderExtensions';
 import Box from '@mui/material/Box';
 import { useQuestionnaireStore } from '../../../stores';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import ItemLabel from '../ItemParts/ItemLabel';
 
 function SliderItem(props: BaseItemProps) {
@@ -59,8 +60,10 @@ function SliderItem(props: BaseItemProps) {
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
-  // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
+  const { displayInstructions } = useRenderingExtensions(qItem);
+  const instructionsId =
+    displayInstructions && !feedback ? `instructions-${qItem.linkId}` : undefined;
 
   // Event handlers
   function handleValueChange(newValue: number) {
@@ -76,6 +79,7 @@ function SliderItem(props: BaseItemProps) {
         <SliderField
           linkId={qItem.linkId}
           itemType={qItem.type}
+          itemText={qItem.text}
           value={valueInteger}
           minValue={minValue}
           maxValue={maxValue}
@@ -86,6 +90,7 @@ function SliderItem(props: BaseItemProps) {
           feedback={feedback}
           readOnly={readOnly}
           isTabled={isTabled}
+          instructionsId={instructionsId}
           onValueChange={handleValueChange}
         />
       </Box>
@@ -101,12 +106,14 @@ function SliderItem(props: BaseItemProps) {
       <ItemFieldGrid
         qItem={qItem}
         readOnly={readOnly}
+        feedback={feedback ?? undefined}
         labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
         fieldChildren={
           <Box px={4}>
             <SliderField
               linkId={qItem.linkId}
               itemType={qItem.type}
+              itemText={qItem.text}
               value={valueInteger}
               minValue={minValue}
               maxValue={maxValue}
@@ -117,6 +124,7 @@ function SliderItem(props: BaseItemProps) {
               feedback={feedback}
               readOnly={readOnly}
               isTabled={isTabled}
+              instructionsId={instructionsId}
               onValueChange={handleValueChange}
             />
           </Box>

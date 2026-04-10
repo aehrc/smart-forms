@@ -29,11 +29,13 @@ interface QuantityUnitFieldProps extends PropsWithIsTabledAttribute {
   valueSelect: QuestionnaireItemAnswerOption | null;
   readOnly: boolean;
   calcExpUpdated: boolean;
+  instructionsId: string | undefined;
   onChange: (newValue: QuestionnaireItemAnswerOption | null) => void;
 }
 
 function QuantityUnitField(props: QuantityUnitFieldProps) {
-  const { linkId, itemType, options, valueSelect, readOnly, isTabled, onChange } = props;
+  const { linkId, itemType, options, valueSelect, readOnly, isTabled, instructionsId, onChange } =
+    props;
   // TODO this component doesn't have a calcExpUpdated update animation
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
@@ -54,14 +56,31 @@ function QuantityUnitField(props: QuantityUnitFieldProps) {
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
       size="small"
-      renderInput={(params) => (
-        <StandardTextField
-          data-test="q-item-unit-field"
-          textFieldWidth={textFieldWidth}
-          isTabled={isTabled}
-          {...params}
-        />
-      )}
+      renderInput={(params) => {
+        // Merge instructionsId with any existing aria-describedby from Autocomplete
+        const existingAriaDescribedBy = params.inputProps?.['aria-describedby'];
+        const mergedAriaDescribedBy = [existingAriaDescribedBy, instructionsId]
+          .filter(Boolean)
+          .join(' ');
+
+        return (
+          <StandardTextField
+            data-test="q-item-unit-field"
+            textFieldWidth={textFieldWidth}
+            isTabled={isTabled}
+            {...params}
+            slotProps={{
+              input: {
+                ...params.InputProps,
+                inputProps: {
+                  ...params.inputProps,
+                  ...(mergedAriaDescribedBy && { 'aria-describedby': mergedAriaDescribedBy })
+                }
+              }
+            }}
+          />
+        );
+      }}
     />
   );
 }

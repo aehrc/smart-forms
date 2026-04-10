@@ -20,6 +20,7 @@ import type { Quantity, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import debounce from 'lodash.debounce';
 import useReadOnly from '../../../hooks/useReadOnly';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
@@ -113,6 +114,12 @@ function QuantityItem(props: BaseItemProps) {
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
+
+  const { displayInstructions } = useRenderingExtensions(qItem);
+
+  // Generate instruction ID if instructions exist and there's no feedback
+  const instructionsId =
+    displayInstructions && !feedback ? `instructions-${qItem.linkId}` : undefined;
 
   // Event handlers
   function handleComparatorInputChange(newComparatorInput: Quantity['comparator'] | null) {
@@ -210,6 +217,7 @@ function QuantityItem(props: BaseItemProps) {
           readOnly={readOnly}
           calcExpUpdated={calcExpUpdated}
           isTabled={isTabled}
+          instructionsId={instructionsId}
           onInputChange={handleValueInputChange}
         />
         {showUnitOptions ? (
@@ -221,6 +229,7 @@ function QuantityItem(props: BaseItemProps) {
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}
+            instructionsId={instructionsId}
             onChange={handleUnitInputChange}
           />
         ) : null}
@@ -262,6 +271,7 @@ function QuantityItem(props: BaseItemProps) {
               readOnly={readOnly}
               calcExpUpdated={calcExpUpdated}
               isTabled={isTabled}
+              instructionsId={instructionsId}
               onInputChange={handleValueInputChange}
             />
             {showUnitOptions ? (
@@ -273,6 +283,7 @@ function QuantityItem(props: BaseItemProps) {
                 readOnly={readOnly}
                 calcExpUpdated={calcExpUpdated}
                 isTabled={isTabled}
+                instructionsId={instructionsId}
                 onChange={handleUnitInputChange}
               />
             ) : null}
