@@ -160,6 +160,8 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
                 inputProps: enhancedInputProps
               }
             }}
+            data-linkid={qItem.linkId}
+            data-label={qItem.text}
             data-test="q-item-open-choice-autocomplete-field"
           />
         );
