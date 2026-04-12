@@ -25,6 +25,7 @@ import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import { useRendererConfigStore } from '../../../stores';
 import RequiredAsterisk from '../ItemParts/RequiredAsterisk';
 import ItemTextSwitcher from '../ItemParts/ItemTextSwitcher';
+import ItemPrefixSwitcher from '../ItemParts/ItemPrefixSwitcher';
 import FlyoverItem from '../ItemParts/FlyoverItem';
 import { getHeadingTag } from '../../../utils/headingVariant';
 import type { PropsWithParentStylesAttribute } from '../../../interfaces/renderProps.interface';
@@ -81,7 +82,15 @@ const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
                 *
               </RequiredAsterisk>
             ) : null}
-            <ItemTextSwitcher qItem={qItem} />
+            <Box
+              component="span"
+              display="inline-flex"
+              alignItems="baseline"
+              gap={0.5}
+              flexWrap="wrap">
+              <ItemPrefixSwitcher qItem={qItem} />
+              <ItemTextSwitcher qItem={qItem} />
+            </Box>
 
             {/* Required asterisk position is behind text */}
             {required && requiredIndicatorPosition === 'end' ? (

@@ -18,13 +18,11 @@
 import React, { memo } from 'react';
 import Collapse from '@mui/material/Collapse';
 import { TransitionGroup } from 'react-transition-group';
-import { getShortText } from '../../utils/extensions';
 import type { QuestionnaireItem } from 'fhir/r4';
 import FormBodySingleTab from './FormBodySingleTab';
 import type { Tabs } from '../../interfaces/tab.interface';
 import { useQuestionnaireStore } from '../../stores';
 import { isTabHidden } from '../../utils/tabs';
-import { getItemTextToDisplay } from '../../utils/itemTextToDisplay';
 
 interface FormBodyTabListProps {
   topLevelItems: QuestionnaireItem[];
@@ -63,7 +61,6 @@ const FormBodyTabList = memo(function FormBodyTabList(props: FormBodyTabListProp
         }
 
         const tabIsSelected = currentTabIndex.toString() === i.toString();
-        const tabLabel = getShortText(qItem) ?? getItemTextToDisplay(qItem) ?? '';
 
         return (
           <Collapse
@@ -75,7 +72,6 @@ const FormBodyTabList = memo(function FormBodyTabList(props: FormBodyTabListProp
               qItem={qItem}
               contextDisplayItems={contextDisplayItems}
               selected={tabIsSelected}
-              tabLabel={tabLabel}
               listIndex={i}
             />
           </Collapse>

@@ -16,7 +16,7 @@
  */
 
 import type { QuestionnaireItem } from 'fhir/r4';
-import { getItemTextToDisplay } from '../../utils/itemTextToDisplay';
+import { getItemTextToDisplay, itemHasLabelHeadingContent } from '../../utils/itemTextToDisplay';
 
 // Mock the extensions module
 jest.mock('../../utils/extensions', () => ({
@@ -305,6 +305,50 @@ describe('getItemTextToDisplay', () => {
 
       expect(result).toBeNull();
       expect(mockIsItemTextHidden).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('itemHasLabelHeadingContent', () => {
+    it('returns true when text is present', () => {
+      const qItem: QuestionnaireItem = {
+        linkId: 'a',
+        type: 'group',
+        text: 'Section'
+      };
+      expect(itemHasLabelHeadingContent(qItem)).toBe(true);
+    });
+
+    it('returns true when only prefix is present', () => {
+      const qItem: QuestionnaireItem = {
+        linkId: 'a',
+        type: 'group',
+        prefix: '1.'
+      };
+      expect(itemHasLabelHeadingContent(qItem)).toBe(true);
+    });
+
+    it('returns true when _prefix has extensions', () => {
+      const qItem: QuestionnaireItem = {
+        linkId: 'a',
+        type: 'group',
+        _prefix: {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/rendering-markdown',
+              valueMarkdown: '**A**'
+            }
+          ]
+        }
+      };
+      expect(itemHasLabelHeadingContent(qItem)).toBe(true);
+    });
+
+    it('returns false when no text, prefix or _prefix extensions', () => {
+      const qItem: QuestionnaireItem = {
+        linkId: 'a',
+        type: 'group'
+      };
+      expect(itemHasLabelHeadingContent(qItem)).toBe(false);
     });
   });
 });

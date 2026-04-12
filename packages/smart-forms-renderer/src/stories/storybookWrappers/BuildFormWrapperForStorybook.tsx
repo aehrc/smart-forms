@@ -32,6 +32,10 @@ import CopyButtonsForStorybook from './CopyButtonsForStorybook';
 import ActionBarForStorybook from './ActionBarForStorybook';
 import { useSmartConfigStore } from '../../stores';
 import type Client from 'fhirclient/lib/Client';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+import { QuestionnaireTitleText } from '../../components';
 
 interface BuildFormWrapperForStorybookProps {
   questionnaire: Questionnaire;
@@ -81,6 +85,14 @@ function BuildFormWrapperForStorybook(props: BuildFormWrapperForStorybookProps) 
         <ActionBarForStorybook>
           <CopyButtonsForStorybook />
         </ActionBarForStorybook>
+        {questionnaire.title || questionnaire._title ? (
+          <Box px={2} pt={1.5} pb={1}>
+            <Typography variant="h6" component="h1" gutterBottom={false}>
+              <QuestionnaireTitleText questionnaire={questionnaire} />
+            </Typography>
+            <Divider sx={{ mt: 1 }} />
+          </Box>
+        ) : null}
         <BaseRenderer />
       </QueryClientProvider>
     </RendererThemeProvider>

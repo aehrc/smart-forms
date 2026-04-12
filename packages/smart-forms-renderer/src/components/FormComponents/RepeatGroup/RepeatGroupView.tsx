@@ -37,7 +37,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import GroupHeading from '../GroupItem/GroupHeading';
-import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
+import { itemHasLabelHeadingContent } from '../../../utils/itemTextToDisplay';
 import { isGroupAddItemButtonHidden } from '../../../utils/extensions';
 import GroupAccordion from '../GroupItem/GroupAccordion';
 
@@ -74,8 +74,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
-  // Get item.text as display label
-  const itemTextToDisplay = getItemTextToDisplay(qItem);
+  const showGroupHeading = itemHasLabelHeadingContent(qItem);
 
   const groupCollapsibleValue = getGroupCollapsible(qItem);
   if (groupCollapsibleValue) {
@@ -90,7 +89,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
         }}
         style={parentStyles || undefined}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ minHeight: '28px' }}>
-          {itemTextToDisplay ? (
+          {showGroupHeading ? (
             <GroupHeading
               qItem={qItem}
               readOnly={readOnly}
@@ -99,7 +98,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
           ) : null}
         </AccordionSummary>
         <AccordionDetails sx={{ pt: 0 }}>
-          {itemTextToDisplay ? <Divider sx={{ mb: 1.5, opacity: 0.6 }} /> : null}
+          {showGroupHeading ? <Divider sx={{ mb: 1.5, opacity: 0.6 }} /> : null}
           <TransitionGroup>
             {repeatGroups.map(({ id, qrItem: nullableQrItem }, index) => {
               const answeredQrItem = createEmptyQrItem(qItem, undefined);
@@ -140,7 +139,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
       isRepeated={true}
       style={parentStyles || undefined}>
       <Card elevation={groupCardElevation} sx={{ p: 3, py: 1.5, mb: 2.5 }}>
-        {itemTextToDisplay ? (
+        {showGroupHeading ? (
           <>
             <GroupHeading
               qItem={qItem}

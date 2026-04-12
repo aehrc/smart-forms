@@ -15,25 +15,19 @@
  * limitations under the License.
  */
 
-export type { SmartFormsRendererProps } from './Renderer';
-export { SmartFormsRenderer, BaseRenderer } from './Renderer';
-export {
-  SingleItem,
-  GroupItem,
-  RepeatItem,
-  RepeatGroup,
-  GroupTable,
-  GridGroup,
-  parseFhirDateToDisplayDate,
-  parseFhirDateTimeToDisplayDateTime,
-  ItemFieldGrid,
-  ItemLabel,
-  BooleanField,
-  DecimalField,
-  StringField,
-  ChoiceRadioSingle,
-  QuestionnaireTitleText
-} from './FormComponents';
+import React from 'react';
+import type { Questionnaire } from 'fhir/r4';
+import StyledText from './StyledText';
 
-// Styled MUI components
-export { FullWidthFormComponentBox } from './Box.styles';
+export interface QuestionnaireTitleTextProps {
+  questionnaire: Questionnaire;
+}
+
+/** Renders `Questionnaire.title` with optional `Questionnaire._title` rendering extensions (xhtml, markdown, style). */
+function QuestionnaireTitleText(props: QuestionnaireTitleTextProps) {
+  const { questionnaire } = props;
+
+  return <StyledText textToDisplay={questionnaire.title ?? null} element={questionnaire._title} />;
+}
+
+export default QuestionnaireTitleText;

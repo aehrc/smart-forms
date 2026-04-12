@@ -29,7 +29,8 @@ import { getQrItemsIndex, mapQItemsIndex } from '../../../utils/mapItem';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import useHidden from '../../../hooks/useHidden';
-import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
+import ItemPrefixSwitcher from '../ItemParts/ItemPrefixSwitcher';
+import ItemTextSwitcher from '../ItemParts/ItemTextSwitcher';
 
 interface GridRowProps
   extends PropsWithQrItemChangeHandler,
@@ -78,14 +79,18 @@ function GridRow(props: GridRowProps) {
 
   const qrItemsByIndex = getQrItemsIndex(rowQItems, rowQrItems, qItemsIndexMap);
 
-  // Get item.text as display label
-  const itemTextToDisplay = getItemTextToDisplay(qItem);
-
   return (
     <>
       <GridTextTableCell>
-        <Typography component="span" fontWeight="bold">
-          {itemTextToDisplay}
+        <Typography
+          component="span"
+          fontWeight="bold"
+          display="inline-flex"
+          alignItems="baseline"
+          gap={0.5}
+          flexWrap="wrap">
+          <ItemPrefixSwitcher qItem={qItem} />
+          <ItemTextSwitcher qItem={qItem} />
         </Typography>
       </GridTextTableCell>
       {columnHeaderLabels.map((label, colIndex) => {

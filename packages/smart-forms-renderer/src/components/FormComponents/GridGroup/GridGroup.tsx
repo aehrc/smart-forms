@@ -34,7 +34,7 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore, useRendererConfigStore } from '../../../stores';
 import GroupHeading from '../GroupItem/GroupHeading';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
-import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
+import { getItemTextToDisplay, itemHasLabelHeadingContent } from '../../../utils/itemTextToDisplay';
 import { isItemHidden } from '../../../utils/qItem';
 import { useResizeColumns } from '../../../hooks/useResizeColumns';
 import { getColumnWidth } from '../../../utils/extensions';
@@ -152,8 +152,7 @@ function GridGroup(props: GridGroupProps) {
     onQrItemChange(updatedQrGroup);
   }
 
-  // Get item.text as display label
-  const itemTextToDisplay = getItemTextToDisplay(qItem);
+  const showGroupHeading = itemHasLabelHeadingContent(qItem);
 
   return (
     <QGroupContainerBox
@@ -164,7 +163,7 @@ function GridGroup(props: GridGroupProps) {
       data-label={qItem.text}
       onClick={() => onFocusLinkId(qItem.linkId)}
       style={parentStyles || undefined}>
-      {itemTextToDisplay ? (
+      {showGroupHeading ? (
         <>
           <GroupHeading qItem={qItem} readOnly={readOnly} groupCardElevation={groupCardElevation} />
           <Divider sx={{ my: 1, opacity: 0.6 }} />

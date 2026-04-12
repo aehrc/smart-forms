@@ -27,17 +27,21 @@ import { useFocusTabHeading } from '../../hooks/useFocusTabHeading';
 import useDisplayCqfAndCalculatedExpression from '../../hooks/useDisplayCqfAndCalculatedExpression';
 import RequiredAsterisk from '../FormComponents/ItemParts/RequiredAsterisk';
 import useRenderingExtensions from '../../hooks/useRenderingExtensions';
+import ItemPrefixSwitcher from '../FormComponents/ItemParts/ItemPrefixSwitcher';
+import { getShortText } from '../../utils/extensions';
+import { getItemTextToDisplay } from '../../utils/itemTextToDisplay';
 
 interface FormBodySingleTabProps {
   qItem: QuestionnaireItem;
   contextDisplayItems: QuestionnaireItem[];
   selected: boolean;
-  tabLabel: string;
   listIndex: number;
 }
 
 const FormBodySingleTab = memo(function FormBodySingleTab(props: FormBodySingleTabProps) {
-  const { qItem, contextDisplayItems, selected, tabLabel, listIndex } = props;
+  const { qItem, contextDisplayItems, selected, listIndex } = props;
+
+  const tabLabel = getShortText(qItem) ?? getItemTextToDisplay(qItem) ?? '';
 
   const switchTab = useQuestionnaireStore.use.switchTab();
   const disableHeadingFocusOnTabSwitch =
@@ -84,8 +88,13 @@ const FormBodySingleTab = memo(function FormBodySingleTab(props: FormBodySingleT
                   component="span"
                   fontWeight={600}
                   fontSize="0.8125rem"
-                  aria-label={itemTextAriaLabel}>
-                  {tabLabel}
+                  aria-label={itemTextAriaLabel}
+                  display="inline-flex"
+                  alignItems="baseline"
+                  gap={0.25}
+                  flexWrap="wrap">
+                  <ItemPrefixSwitcher qItem={qItem} />
+                  <span>{tabLabel}</span>
                 </Typography>
 
                 {/* Required asterisk position is behind text */}
