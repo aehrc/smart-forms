@@ -57,7 +57,8 @@ function RadioOptionList(props: RadioOptionListProps) {
             <ChoiceRadioSingle
               key={option.valueString}
               value={option.valueString}
-              label={
+              label={option.valueString}
+              styledLabel={
                 <StyledText textToDisplay={option.valueString} element={option._valueString} />
               }
               readOnly={readOnly}
