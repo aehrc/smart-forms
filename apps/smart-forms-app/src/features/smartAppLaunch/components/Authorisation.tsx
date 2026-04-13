@@ -124,8 +124,10 @@ function Authorisation() {
           }
 
           // Read disable-writeback-selection extra context from the token response
+          const rawDisableWriteBackSelection =
+            tokenResponse?.[DISABLE_WRITEBACK_SELECTION_CONTEXT_KEY];
           const disableWriteBackSelection =
-            tokenResponse?.[DISABLE_WRITEBACK_SELECTION_CONTEXT_KEY] === true;
+            rawDisableWriteBackSelection === true || rawDisableWriteBackSelection === 'true';
           setDisableWriteBackSelection(disableWriteBackSelection);
 
           // Get Questionnaire context from fhirContext array
