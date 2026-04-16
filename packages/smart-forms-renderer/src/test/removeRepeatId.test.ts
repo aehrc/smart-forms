@@ -78,6 +78,89 @@ describe('removeRepeatId', () => {
       expect(result.text).toBe('Test item text');
     });
 
+    it('should preserve definition from qItem when present', () => {
+      const qItem: QuestionnaireItem = {
+        linkId: 'test-item',
+        type: 'boolean',
+        text: 'Has triple negative breast cancer',
+        definition:
+          'http://example.org/fhir/StructureDefinition/IsTNBCFeature#Observation.value[x]'
+      };
+
+      const qrItem: QuestionnaireResponseItem = {
+        linkId: 'test-item',
+        definition:
+          'http://example.org/fhir/StructureDefinition/IsTNBCFeature#Observation.value[x]',
+        text: 'Has triple negative breast cancer',
+        answer: [{ valueBoolean: true }]
+      };
+
+      const result = removeInternalRepeatIdsRecursive(qItem, qrItem) as QuestionnaireResponseItem;
+
+      expect(result.definition).toBe(
+        'http://example.org/fhir/StructureDefinition/IsTNBCFeature#Observation.value[x]'
+      );
+    });
+
+    it('should preserve definition on nested group and child items', () => {
+      const qItem: QuestionnaireItem = {
+        linkId: '1',
+        type: 'group',
+        text: 'IsTNBCFeature',
+        definition: 'http://example.org/fhir/StructureDefinition/IsTNBCFeature',
+        item: [
+          {
+            linkId: '1.1',
+            type: 'boolean',
+            text: 'Has triple negative breast cancer',
+            definition:
+              'http://example.org/fhir/StructureDefinition/IsTNBCFeature#Observation.value[x]'
+          }
+        ]
+      };
+
+      const qrItem: QuestionnaireResponseItem = {
+        linkId: '1',
+        definition: 'http://example.org/fhir/StructureDefinition/IsTNBCFeature',
+        text: 'IsTNBCFeature',
+        item: [
+          {
+            linkId: '1.1',
+            definition:
+              'http://example.org/fhir/StructureDefinition/IsTNBCFeature#Observation.value[x]',
+            text: 'Has triple negative breast cancer',
+            answer: [{ valueBoolean: true }]
+          }
+        ]
+      };
+
+      const result = removeInternalRepeatIdsRecursive(qItem, qrItem) as QuestionnaireResponseItem;
+
+      expect(result.definition).toBe(
+        'http://example.org/fhir/StructureDefinition/IsTNBCFeature'
+      );
+      expect(result.item![0].definition).toBe(
+        'http://example.org/fhir/StructureDefinition/IsTNBCFeature#Observation.value[x]'
+      );
+    });
+
+    it('should not include definition property when qItem has none', () => {
+      const qItem: QuestionnaireItem = {
+        linkId: 'test-item',
+        type: 'string',
+        text: 'No definition here'
+      };
+
+      const qrItem: QuestionnaireResponseItem = {
+        linkId: 'test-item',
+        answer: [{ valueString: 'answer' }]
+      };
+
+      const result = removeInternalRepeatIdsRecursive(qItem, qrItem) as QuestionnaireResponseItem;
+
+      expect(result).not.toHaveProperty('definition');
+    });
+
     it('should handle empty answers correctly', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',

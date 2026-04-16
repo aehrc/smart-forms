@@ -366,6 +366,7 @@ describe('manageForm utils', () => {
   });
 
   describe('getResponse', () => {
+
     it('should get response and clean internal IDs', () => {
       const mockSourceQuestionnaire = {
         resourceType: 'Questionnaire' as const,
@@ -394,6 +395,7 @@ describe('manageForm utils', () => {
 
       mockUpdateQuestionnaireResponse.mockReturnValue(mockCleanResponse);
 
+      debugger;
       const result = getResponse();
 
       expect(mockUpdateQuestionnaireResponse).toHaveBeenCalledWith(
