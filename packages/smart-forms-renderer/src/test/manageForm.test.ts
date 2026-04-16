@@ -395,7 +395,6 @@ describe('manageForm utils', () => {
 
       mockUpdateQuestionnaireResponse.mockReturnValue(mockCleanResponse);
 
-      debugger;
       const result = getResponse();
 
       expect(mockUpdateQuestionnaireResponse).toHaveBeenCalledWith(

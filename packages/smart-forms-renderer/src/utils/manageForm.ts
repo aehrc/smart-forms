@@ -239,7 +239,6 @@ export async function initialiseFhirClient(fhirClient: Client): Promise<void> {
  * @author Sean Fong
  */
 export function getResponse(): QuestionnaireResponse {
-  debugger;
   const cleanResponse = removeInternalIdsFromResponse(
     questionnaireStore.getState().sourceQuestionnaire,
     questionnaireResponseStore.getState().updatableResponse
