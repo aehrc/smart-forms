@@ -366,7 +366,6 @@ describe('manageForm utils', () => {
   });
 
   describe('getResponse', () => {
-
     it('should get response and clean internal IDs', () => {
       const mockSourceQuestionnaire = {
         resourceType: 'Questionnaire' as const,
