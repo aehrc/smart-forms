@@ -767,6 +767,28 @@ export async function findByLinkIdOrLabel(
   );
 }
 
+export async function findAllByLinkIdOrLabel(
+  canvasElement: HTMLElement,
+  linkId: string
+): Promise<HTMLElement[]> {
+  const selectorByLinkId = `[data-linkid="${linkId}"]`;
+  const selectorByLabel = `[data-label="${linkId}"]`;
+
+  return await waitFor(() => {
+    const byLinkId = Array.from(canvasElement.querySelectorAll<HTMLElement>(selectorByLinkId));
+    const byLabel = Array.from(canvasElement.querySelectorAll<HTMLElement>(selectorByLabel));
+
+    const unique = Array.from(new Set<HTMLElement>([...byLinkId, ...byLabel]));
+    if (unique.length === 0) {
+      throw new Error(
+        `Elements with selectors "${selectorByLinkId}" or "${selectorByLabel}" not found`
+      );
+    }
+
+    return unique;
+  });
+}
+
 export async function getNthRow(container: HTMLElement, index: number): Promise<HTMLElement> {
   return await waitFor(
     () => {
@@ -832,6 +854,33 @@ export async function clickAddRow(canvasElement: HTMLElement, groupLinkIdOrLabel
       throw new Error(`Add row button is disabled for group "${groupLinkIdOrLabel}"`);
     }
     return addButton;
+  });
+
+  await userEvent.click(button);
+  await new Promise((resolve) => setTimeout(resolve, 300));
+}
+
+
+export async function clickAddItem(canvasElement: HTMLElement, groupLinkIdOrLabel: string) {
+  const groupContainer = await findByLinkIdOrLabel(canvasElement, groupLinkIdOrLabel);
+
+  const button = await waitFor(() => {
+    let currentNode: HTMLElement | null = groupContainer;
+    while (currentNode && currentNode !== canvasElement) {
+      let sibling = currentNode.nextElementSibling as HTMLElement | null;
+      while (sibling) {
+        const addButton = sibling.querySelector<HTMLButtonElement>(
+          'button[data-test="button-add-repeat-item"]'
+        );
+        if (addButton && !addButton.disabled) {
+          return addButton;
+        }
+        sibling = sibling.nextElementSibling as HTMLElement | null;
+      }
+      currentNode = currentNode.parentElement;
+    }
+
+    throw new Error(`Add row button not found after group "${groupLinkIdOrLabel}"`);
   });
 
   await userEvent.click(button);
