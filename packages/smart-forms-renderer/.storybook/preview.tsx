@@ -91,6 +91,52 @@ const mockLibrary: Record<string, unknown> = {
           }
         ]
       }
+    },
+  'https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=https://smartforms.csiro.au/ig/ValueSet/MedicalHistory&filter=Asthma&count=10':
+    {
+      resourceType: 'ValueSet',
+      expansion: {
+        contains: [
+          {
+            system: 'http://snomed.info/sct',
+            code: '195967001',
+            display: 'Asthma'
+          },
+          {
+            system: 'http://snomed.info/sct',
+            code: '44054006',
+            display: 'Diabetes mellitus type 2'
+          },
+          {
+            system: 'http://snomed.info/sct',
+            code: '38341003',
+            display: 'Hypertension'
+          }
+        ]
+      }
+    },
+  'https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=http://hl7.org/fhir/ValueSet/languages':
+    {
+      resourceType: 'ValueSet',
+      expansion: {
+        contains: [
+          {
+            system: 'urn:ietf:bcp:47',
+            code: 'en',
+            display: 'English'
+          },
+          {
+            system: 'urn:ietf:bcp:47',
+            code: 'es',
+            display: 'Spanish'
+          },
+          {
+            system: 'urn:ietf:bcp:47',
+            code: 'fr',
+            display: 'French'
+          }
+        ]
+      }
     }
 };
 

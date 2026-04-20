@@ -31,7 +31,12 @@ import {
   qWidthGTable
 } from '../assets/questionnaires';
 import { createStory } from '../storybookWrappers/createStory';
-import { findByLinkIdOrLabel, queryByLinkIdOrLabel } from '../testUtils';
+import {
+  chooseSliderValue,
+  findByLinkIdOrLabel,
+  getAnswers,
+  queryByLinkIdOrLabel
+} from '../testUtils';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -61,6 +66,12 @@ export const ChoiceOrientation: Story = createStory({
 export const SliderStepValue: Story = createStory({
   args: {
     questionnaire: qSliderStepValue
+  },
+  play: async ({ canvasElement }) => {
+    await chooseSliderValue(canvasElement, 'pain-measure', 5);
+
+    const answers = await getAnswers('pain-measure');
+    expect(answers).toEqual([expect.objectContaining({ valueInteger: 5 })]);
   }
 }) as Story;
 

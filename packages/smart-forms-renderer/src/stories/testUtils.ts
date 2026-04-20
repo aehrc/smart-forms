@@ -640,6 +640,7 @@ export async function chooseSelectOption(
   if (selectButton) {
     // For MUI Select, use userEvent to click and open the menu
     await userEvent.click(selectButton);
+    fireEvent.change(selectButton, { target: { value: optionLabel } });
 
     // Wait for the option to appear in the document
     const option = await waitFor(
