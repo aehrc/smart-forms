@@ -126,7 +126,7 @@ export const OpenChoiceAnswerOptionBasic: Story = createStory({
     expect(input1).not.toBeChecked();
 
     /* Test 2: Enter "Pharmacy" in open label field */
-    await checkRadioOption(canvasElement, aoTargetLinkId, 'Other, please specify');
+    await checkRadioOption(canvasElement, aoTargetLinkId, 'Other, please specify:');
     await inputOpenChoiceOtherText(canvasElement, aoTargetLinkId, aoTargetOpenLabelInput);
 
     const result2 = await getAnswers(aoTargetLinkId);
