@@ -89,21 +89,21 @@ function ChoiceSelectAnswerOptionItem(props: BaseItemProps) {
   }
 
   return (
-      <ChoiceSelectAnswerOptionView
-        qItem={qItem}
-        options={options}
-        valueChoice={valueChoice}
-        feedback={feedback}
-        readOnly={readOnly}
-        expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
-        isRepeated={isRepeated}
-        isTabled={isTabled}
-        renderingExtensions={renderingExtensions}
-        answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
-        instructionsId={instructionsId}
-        onFocusLinkId={() => onFocusLinkId(qItem.linkId)}
-        onSelectChange={handleChange}
-      />
+    <ChoiceSelectAnswerOptionView
+      qItem={qItem}
+      options={options}
+      valueChoice={valueChoice}
+      feedback={feedback}
+      readOnly={readOnly}
+      expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
+      isRepeated={isRepeated}
+      isTabled={isTabled}
+      renderingExtensions={renderingExtensions}
+      answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+      instructionsId={instructionsId}
+      onFocusLinkId={() => onFocusLinkId(qItem.linkId)}
+      onSelectChange={handleChange}
+    />
   );
 }
 
