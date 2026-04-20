@@ -83,8 +83,7 @@ describe('removeRepeatId', () => {
         linkId: 'test-item',
         type: 'boolean',
         text: 'Has triple negative breast cancer',
-        definition:
-          'http://example.org/fhir/StructureDefinition/IsTNBCFeature#Observation.value[x]'
+        definition: 'http://example.org/fhir/StructureDefinition/IsTNBCFeature#Observation.value[x]'
       };
 
       const qrItem: QuestionnaireResponseItem = {
@@ -136,9 +135,7 @@ describe('removeRepeatId', () => {
 
       const result = removeInternalRepeatIdsRecursive(qItem, qrItem) as QuestionnaireResponseItem;
 
-      expect(result.definition).toBe(
-        'http://example.org/fhir/StructureDefinition/IsTNBCFeature'
-      );
+      expect(result.definition).toBe('http://example.org/fhir/StructureDefinition/IsTNBCFeature');
       expect(result.item![0].definition).toBe(
         'http://example.org/fhir/StructureDefinition/IsTNBCFeature#Observation.value[x]'
       );
