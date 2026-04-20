@@ -96,7 +96,8 @@ export async function populate(
     populationExpressions.itemPopulationContexts,
     fhirPathContext,
     issues,
-    fetchTerminologyRequestConfig
+    fetchTerminologyRequestConfig,
+    fetchResourceRequestConfig
   );
 
   // Get values for expressions
@@ -105,7 +106,8 @@ export async function populate(
       populationExpressions,
       fhirPathContext,
       issues,
-      fetchTerminologyRequestConfig
+      fetchTerminologyRequestConfig,
+      fetchResourceRequestConfig
     );
 
   // Construct response from initialExpressions
@@ -120,7 +122,8 @@ export async function populate(
     user,
     encounter,
     fetchTerminologyCallback,
-    fetchTerminologyRequestConfig
+    fetchTerminologyRequestConfig,
+    fetchResourceRequestConfig
   );
 
   // Add display values to any valueCoding answers lacking them via CodeSystem $lookup.

@@ -25,7 +25,7 @@ import {
   questionnaireFactory,
   questionnaireResponseFactory
 } from '../testUtils';
-import { expect } from 'storybook/test';
+import { expect, waitFor } from 'storybook/test';
 import { createStory } from '../storybookWrappers/createStory';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -44,7 +44,8 @@ type Story = StoryObj<typeof meta>;
 /* Time Basic story */
 const targetLinkId = 'last-meal';
 const targetTimeInput = '11:00:00';
-const targetTimeInputString = '11:00 am';
+/** Matches what users type in the default 12h TimeField (hh:mm a) */
+const targetTimeDisplayString = '11:00 am';
 
 const qTimeBasic = questionnaireFactory([
   {
@@ -68,10 +69,24 @@ export const TimeBasic: Story = createStory({
     questionnaire: qTimeBasic
   },
   play: async ({ canvasElement }) => {
-    await inputTime(canvasElement, targetLinkId, targetTimeInputString);
+    await waitFor(
+      () => {
+        expect(canvasElement.querySelector(`[data-linkid="${targetLinkId}"]`)).toBeTruthy();
+        expect(canvasElement.querySelector('[data-test="q-item-time-field"]')).toBeTruthy();
+      },
+      { timeout: 60000 }
+    );
 
-    const result = await getAnswers(targetLinkId);
-    expect(result).toHaveLength(1);
+    await inputTime(canvasElement, targetLinkId, targetTimeDisplayString);
+
+    let result: Awaited<ReturnType<typeof getAnswers>> = [];
+    await waitFor(
+      async () => {
+        result = await getAnswers(targetLinkId);
+        expect(result).toHaveLength(1);
+      },
+      { timeout: 30000 }
+    );
     expect(result[0].valueTime).toBe(targetTimeInput);
   }
 }) as Story;
@@ -84,6 +99,7 @@ export const TimeBasicResponse: Story = createStory({
   play: async ({ canvasElement }) => {
     const inputText = await getInputText(canvasElement, targetLinkId);
 
-    expect(inputText).toBe(targetTimeInputString);
+    // TimeField defaults to 12-hour format; locale may use "am" or "AM"
+    expect(inputText.toLowerCase().replace(/\s+/g, ' ').trim()).toBe('11:00 am');
   }
 }) as Story;

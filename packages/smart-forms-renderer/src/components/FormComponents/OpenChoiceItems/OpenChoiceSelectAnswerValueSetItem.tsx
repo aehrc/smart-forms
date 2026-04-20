@@ -18,13 +18,14 @@
 import type { AutocompleteChangeReason } from '@mui/material';
 import type { Coding } from 'fhir/r4';
 import useReadOnly from '../../../hooks/useReadOnly';
+import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import useValueSetCodings from '../../../hooks/useValueSetCodings';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
 import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
-import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import ItemFieldGrid, { getInstructionsId } from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
 import { sanitizeInput } from '../../../utils/inputSanitization';
 import OpenChoiceSelectAnswerValueSetField from './OpenChoiceSelectAnswerValueSetField';
@@ -48,6 +49,8 @@ function OpenChoiceSelectAnswerValueSetItem(props: BaseItemProps) {
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
+  const { displayInstructions } = useRenderingExtensions(qItem);
+  const instructionsId = getInstructionsId(qItem, displayInstructions, !!feedback);
 
   // Init input value
   const answerKey = getQRItemId(qrItem?.answer?.[0]?.id);
@@ -130,6 +133,7 @@ function OpenChoiceSelectAnswerValueSetItem(props: BaseItemProps) {
         isTabled={isTabled}
         renderingExtensions={renderingExtensions}
         readOnly={readOnly}
+        instructionsId={instructionsId}
         onValueChange={handleValueChange}
         calcExpUpdated={calcExpUpdated}
       />
@@ -156,6 +160,7 @@ function OpenChoiceSelectAnswerValueSetItem(props: BaseItemProps) {
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
             readOnly={readOnly}
+            instructionsId={instructionsId}
             onValueChange={handleValueChange}
             calcExpUpdated={calcExpUpdated}
           />

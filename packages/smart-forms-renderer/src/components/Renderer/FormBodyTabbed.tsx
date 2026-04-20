@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Grid } from '@mui/material';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import TabContext from '@mui/lab/TabContext';
@@ -46,6 +46,44 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
 
   const tabListWidthOrResponsive = useRendererConfigStore.use.tabListWidthOrResponsive();
   const tabListStickyTop = useRendererConfigStore.use.tabListStickyTop() ?? 0;
+
+  const tabListGridRef = useRef<HTMLDivElement>(null);
+  const [tabListMaxHeight, setTabListMaxHeight] = useState<string | undefined>();
+
+  useEffect(() => {
+    const el = tabListGridRef.current;
+    if (!el) return;
+
+    // Walk up the DOM to find the nearest scrollable ancestor (the element that
+    // position:sticky sticks relative to). Measure available height directly from
+    // the DOM rather than using hardcoded offsets, so it works regardless of what
+    // containers the renderer is embedded in.
+    const getScrollContainer = (element: HTMLElement): HTMLElement | null => {
+      let parent = element.parentElement;
+      while (parent && parent !== document.documentElement) {
+        const { overflow, overflowY } = getComputedStyle(parent);
+        if (/auto|scroll/.test(overflow) || /auto|scroll/.test(overflowY)) return parent;
+        parent = parent.parentElement;
+      }
+      return null;
+    };
+
+    const scrollContainer = getScrollContainer(el);
+
+    const update = () => {
+      const containerBottom = scrollContainer
+        ? scrollContainer.getBoundingClientRect().bottom
+        : window.innerHeight;
+      const elTop = el.getBoundingClientRect().top;
+      setTabListMaxHeight(`${Math.max(containerBottom - elTop, 0) - 16}px`);
+    };
+
+    update();
+    window.addEventListener('resize', update, { passive: true });
+    return () => {
+      window.removeEventListener('resize', update);
+    };
+  }, []);
 
   const indexMap: Record<string, number> = useMemo(
     () => mapQItemsIndex(topLevelQItem),
@@ -81,8 +119,7 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
             flexShrink: 0,
             position: 'sticky',
             top: tabListStickyTop,
-            alignSelf: 'flex-start',
-            maxHeight: `calc(100vh - ${tabListStickyTop}px)`
+            alignSelf: 'flex-start'
           }
         }
       : {
@@ -90,8 +127,7 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
           sx: {
             position: 'sticky',
             top: tabListStickyTop,
-            alignSelf: 'flex-start',
-            maxHeight: `calc(100vh - ${tabListStickyTop}px)`
+            alignSelf: 'flex-start'
           }
         };
 
@@ -103,8 +139,13 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
   return (
     <Grid container spacing={1.5} sx={{ flexWrap: 'nowrap' }}>
       <TabContext value={currentTab.toString()}>
-        <Grid {...tabListWrapperProps}>
-          <FormBodyTabListWrapper topLevelItems={qItems} currentTabIndex={currentTab} tabs={tabs} />
+        <Grid ref={tabListGridRef} {...tabListWrapperProps}>
+          <FormBodyTabListWrapper
+            topLevelItems={qItems}
+            currentTabIndex={currentTab}
+            tabs={tabs}
+            maxHeight={tabListMaxHeight}
+          />
         </Grid>
 
         <Grid {...qItemTabPanelProps}>

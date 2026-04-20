@@ -10,6 +10,11 @@ For changelogs of other libraries, please refer to their respective repositories
 
 Changelog only includes changes from version 0.36.0 onwards.
 
+## [1.3.1] - 2026-03-25
+### Fixed
+- Fixed accordion scroll position jumping when expanding accordion items. See issue [#1796](https://github.com/aehrc/smart-forms/issues/1796)
+- Fixed the sticky tab list overflowing the viewport on long forms. The tab list now dynamically constrains its height and becomes scrollable when needed.
+
 ## [1.3.0] - 2026-03-11
 ### Added
 - Added `tabListStickyTop` option to the renderer store. When supplied, a tabbed form's tab menu will stick to the top of the page offset by this value, keeping it visible during scrolling.

@@ -34,6 +34,7 @@ interface QuantityFieldProps extends PropsWithIsTabledAttribute {
   entryFormat: string;
   readOnly: boolean;
   calcExpUpdated: boolean;
+  instructionsId: string | undefined;
   onInputChange: (value: string) => void;
 }
 
@@ -50,6 +51,7 @@ function QuantityField(props: QuantityFieldProps) {
     readOnly,
     calcExpUpdated,
     isTabled,
+    instructionsId,
     onInputChange
   } = props;
 
@@ -83,7 +85,12 @@ function QuantityField(props: QuantityFieldProps) {
       isTabled={isTabled}
       size="small"
       slotProps={{
-        htmlInput: { inputMode: 'numeric', pattern: '[0-9]*', 'aria-label': ariaLabel },
+        htmlInput: {
+          inputMode: 'numeric',
+          pattern: '[0-9]*',
+          ...(ariaLabel && { 'aria-label': ariaLabel }),
+          ...(instructionsId && { 'aria-describedby': instructionsId })
+        },
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',
           endAdornment: (

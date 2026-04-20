@@ -41,9 +41,11 @@ import {
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import PlaygroundPicker from './PlaygroundPicker.tsx';
 import type {
+  Encounter,
   OperationOutcomeIssue,
   Patient,
   Practitioner,
+  PractitionerRole,
   Questionnaire,
   QuestionnaireResponse
 } from 'fhir/r4';
@@ -68,6 +70,14 @@ function Playground() {
   );
   const [patient, setPatient] = useLocalStorage<Patient | null>('playgroundLaunchPatient', null);
   const [user, setUser] = useLocalStorage<Practitioner | null>('playgroundLaunchUser', null);
+  const [encounter, setEncounter] = useLocalStorage<Encounter | null>(
+    'playgroundLaunchEncounter',
+    null
+  );
+  const [practitionerRole, setPractitionerRole] = useLocalStorage<PractitionerRole | null>(
+    'playgroundLaunchPractitionerRole',
+    null
+  );
 
   // Terminology Server to do terminology queries
   const [terminologyServerUrl, setTerminologyServerUrl] = useLocalStorage<string>(
@@ -97,6 +107,9 @@ function Playground() {
   const setSmartConfigStoreClient = useSmartConfigStore.use.setClient();
   const setSmartConfigStorePatient = useSmartConfigStore.use.setPatient();
   const setSmartConfigStoreUser = useSmartConfigStore.use.setUser();
+  const setSmartConfigStoreEncounter = useSmartConfigStore.use.setEncounter();
+  const setSmartConfigStoreResolvedFhirContextReferences =
+    useSmartConfigStore.use.setResolvedFhirContextReferences();
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -130,6 +143,14 @@ function Playground() {
 
         if (user) {
           setSmartConfigStoreUser(user);
+        }
+
+        if (encounter) {
+          setSmartConfigStoreEncounter(encounter);
+        }
+
+        if (practitionerRole) {
+          setSmartConfigStoreResolvedFhirContextReferences({ PractitionerRole: practitionerRole });
         }
 
         // Before building the form, reset any existing form state
@@ -279,7 +300,10 @@ function Playground() {
         },
         patient: patient,
         user: user ?? undefined,
-        encounter: undefined
+        encounter: encounter ?? undefined,
+        fhirContext: practitionerRole
+          ? [{ reference: `PractitionerRole/${practitionerRole.id}` }]
+          : undefined
       });
 
       responseToCompare = populateRes.populateResult?.populatedResponse ?? null;
@@ -358,15 +382,31 @@ function Playground() {
         sourceFhirServerUrl={sourceFhirServerUrl}
         patient={patient}
         user={user}
+        encounter={encounter}
+        practitionerRole={practitionerRole}
         terminologyServerUrl={terminologyServerUrl}
         onSourceFhirServerUrlChange={(url) => {
           setSourceFhirServerUrl(url);
         }}
-        onPatientChange={(patient) => {
-          setPatient(patient);
+        onPatientChange={(newPatient) => {
+          setPatient(newPatient);
+          // Reset encounter when patient changes since it is scoped to the patient
+          if (newPatient?.id !== patient?.id) {
+            setEncounter(null);
+          }
         }}
-        onUserChange={(user) => {
-          setUser(user);
+        onUserChange={(newUser) => {
+          setUser(newUser);
+          // Reset practitionerRole when user changes since it is scoped to the user
+          if (newUser?.id !== user?.id) {
+            setPractitionerRole(null);
+          }
+        }}
+        onEncounterChange={(encounter) => {
+          setEncounter(encounter);
+        }}
+        onPractitionerRoleChange={(practitionerRole) => {
+          setPractitionerRole(practitionerRole);
         }}
         onTerminologyServerUrlChange={(url) => {
           setTerminologyServerUrl(url);
@@ -380,6 +420,8 @@ function Playground() {
                 sourceFhirServerUrl={sourceFhirServerUrl}
                 patient={patient}
                 user={user}
+                encounter={encounter}
+                practitionerRole={practitionerRole}
                 terminologyServerUrl={terminologyServerUrl}
                 isExtracting={isExtracting}
                 onObservationExtract={handleObservationExtract}
@@ -391,6 +433,8 @@ function Playground() {
               <PlaygroundPicker
                 patient={patient}
                 user={user}
+                encounter={encounter}
+                practitionerRole={practitionerRole}
                 onBuildQuestionnaireFromFile={handleBuildQuestionnaireFromFile}
                 onBuildQuestionnaireFromResource={handleBuildQuestionnaireFromResource}
               />

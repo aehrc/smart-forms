@@ -21,11 +21,13 @@ import debounce from 'lodash.debounce';
 import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import useReadOnly from '../../../hooks/useReadOnly';
+import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import AttachmentFieldWrapper from './AttachmentFieldWrapper';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import { createAttachmentAnswer } from '../../../utils/fileUtils';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import { getInstructionsId } from '../ItemParts/ItemFieldGrid';
 
 export interface AttachmentValues {
   uploadedFile: File | null;
@@ -59,6 +61,10 @@ function AttachmentItem(props: BaseItemProps) {
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
+
+  // Get instructions ID for aria-describedby
+  const { displayInstructions } = useRenderingExtensions(qItem);
+  const instructionsId = getInstructionsId(qItem, displayInstructions, !!feedback);
 
   // Event handlers
   async function handleUploadFile(newUploadedFile: File | null) {
@@ -111,6 +117,7 @@ function AttachmentItem(props: BaseItemProps) {
         readOnly={readOnly}
         isRepeated={isRepeated}
         isTabled={isTabled}
+        instructionsId={instructionsId}
         onUploadFile={handleUploadFile}
         onUrlChange={handleUrlChange}
         onFileNameChange={handleFileNameChange}

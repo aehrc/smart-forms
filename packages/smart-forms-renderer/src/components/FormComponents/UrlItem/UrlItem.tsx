@@ -18,12 +18,13 @@
 import React, { useCallback, useState } from 'react';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import debounce from 'lodash.debounce';
 import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import UrlField from './UrlField';
-import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import ItemFieldGrid, { getInstructionsId } from '../ItemParts/ItemFieldGrid';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import ItemLabel from '../ItemParts/ItemLabel';
@@ -59,6 +60,11 @@ function UrlItem(props: BaseItemProps) {
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
 
+  const { displayInstructions } = useRenderingExtensions(qItem);
+
+  // Get instructions ID for aria-describedby
+  const instructionsId = getInstructionsId(qItem, displayInstructions, !!feedback);
+
   // Event handlers
   function handleChange(newInput: string) {
     setInput(newInput);
@@ -93,6 +99,7 @@ function UrlItem(props: BaseItemProps) {
         displayUnit={displayUnit}
         entryFormat={entryFormat}
         readOnly={readOnly}
+        instructionsId={instructionsId}
         onInputChange={handleChange}
         isTabled={isTabled}
       />
@@ -118,6 +125,7 @@ function UrlItem(props: BaseItemProps) {
             displayUnit={displayUnit}
             entryFormat={entryFormat}
             readOnly={readOnly}
+            instructionsId={instructionsId}
             onInputChange={handleChange}
             isTabled={isTabled}
           />

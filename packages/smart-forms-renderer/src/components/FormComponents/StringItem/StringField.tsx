@@ -34,6 +34,7 @@ interface StringFieldProps extends PropsWithIsTabledAttribute {
   renderingExtensions: RenderingExtensions;
   readOnly: boolean;
   calcExpUpdated: boolean;
+  instructionsId: string | undefined;
   onInputChange: (value: string) => void;
   onRepopulateSync: (newQrItem: QuestionnaireResponseItem | null) => unknown;
 }
@@ -47,6 +48,7 @@ function StringField(props: StringFieldProps) {
     readOnly,
     isTabled,
     calcExpUpdated,
+    instructionsId,
     onInputChange,
     onRepopulateSync
   } = props;
@@ -89,10 +91,15 @@ function StringField(props: StringFieldProps) {
               <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
             </InputAdornment>
           )
+        },
+        htmlInput: {
+          ...(instructionsId && { 'aria-describedby': instructionsId })
         }
       }}
       helperText={<AccessibleFeedback>{feedback}</AccessibleFeedback>}
       data-test="q-item-string-field"
+      data-linkid={qItem.linkId}
+      data-label={qItem.text}
     />
   );
 }

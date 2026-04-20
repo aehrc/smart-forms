@@ -31,6 +31,7 @@ import AccessibleFeedback from '../../ItemParts/AccessibleFeedback';
 interface CustomTimeFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
   itemType: string;
+  itemText?: string;
   timeInput: string;
   periodInput: string;
   is24HourNotation: boolean;
@@ -39,6 +40,7 @@ interface CustomTimeFieldProps extends PropsWithIsTabledAttribute {
   readOnly: boolean;
   calcExpUpdated: boolean;
   isPartOfDateTime: boolean;
+  instructionsId?: string;
   onTimeInputChange: (newInput: string) => void;
   onPeriodChange: (newPeriod: string) => void;
 }
@@ -47,6 +49,7 @@ function CustomTimeField(props: CustomTimeFieldProps) {
   const {
     linkId,
     itemType,
+    itemText,
     timeInput,
     periodInput,
     is24HourNotation,
@@ -56,6 +59,7 @@ function CustomTimeField(props: CustomTimeFieldProps) {
     calcExpUpdated,
     isPartOfDateTime,
     isTabled,
+    instructionsId,
     onTimeInputChange,
     onPeriodChange
   } = props;
@@ -78,27 +82,31 @@ function CustomTimeField(props: CustomTimeFieldProps) {
         alignItems="center"
         columnGap={1}
         sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160 }}>
-        <MuiTextField
-          data-test={'time'}
-          id={timeId}
-          value={timeInput}
-          error={!!feedback}
-          fullWidth
-          sx={{ flex: 1 }}
-          onChange={(e: ChangeEvent<HTMLInputElement>) => onTimeInputChange(e.target.value)}
-          label={displayPrompt}
-          placeholder="--:--"
-          disabled={readOnly && readOnlyVisualStyle === 'disabled'}
-          size="small"
-          slotProps={{
-            input: {
-              readOnly: readOnly && readOnlyVisualStyle === 'readonly'
-            }
-          }}
-        />
-        <FormControl sx={{ flex: 1 }}>
+        <Box data-test="time">
+          <MuiTextField
+            id={timeId}
+            value={timeInput}
+            error={!!feedback}
+            fullWidth
+            sx={{ flex: 1 }}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => onTimeInputChange(e.target.value)}
+            label={displayPrompt}
+            placeholder="--:--"
+            disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+            size="small"
+            slotProps={{
+              input: {
+                readOnly: readOnly && readOnlyVisualStyle === 'readonly'
+              },
+              htmlInput: {
+                ...(isTabled ? {} : { 'aria-label': itemText ?? `Unnamed ${itemType} item` }),
+                ...(instructionsId && { 'aria-describedby': instructionsId })
+              }
+            }}
+          />
+        </Box>
+        <FormControl sx={{ flex: 1 }} data-test="ampm">
           <Select
-            data-test={'ampm'}
             id={periodId}
             value={is24HourNotation ? '' : periodInput}
             error={!!feedback}

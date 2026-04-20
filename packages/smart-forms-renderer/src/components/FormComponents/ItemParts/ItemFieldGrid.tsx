@@ -16,7 +16,6 @@
  */
 
 import type { ReactNode } from 'react';
-import React from 'react';
 import type { QuestionnaireItem } from 'fhir/r4';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import { useRendererConfigStore } from '../../../stores';
@@ -33,6 +32,17 @@ interface ItemFieldGridProps {
   timeFeedback?: string;
 }
 
+/**
+ * Helper function to generate instruction ID if instructions exist and there's no feedback
+ */
+export function getInstructionsId(
+  qItem: QuestionnaireItem,
+  displayInstructions: string,
+  hasFeedback: boolean
+): string | undefined {
+  return displayInstructions && !hasFeedback ? `instructions-${qItem.linkId}` : undefined;
+}
+
 function ItemFieldGrid(props: ItemFieldGridProps) {
   const { qItem, readOnly, labelChildren, fieldChildren } = props;
 
@@ -40,6 +50,12 @@ function ItemFieldGrid(props: ItemFieldGridProps) {
   const { labelBreakpoints, fieldBreakpoints, columnGapPixels, rowGapPixels } = itemResponsive;
 
   const { displayInstructions } = useRenderingExtensions(qItem);
+
+  // Generate instruction ID if instructions exist and there's no feedback
+  const instructionsId =
+    displayInstructions && !props.feedback && !props.dateFeedback && !props.timeFeedback
+      ? `instructions-${qItem.linkId}`
+      : undefined;
 
   return (
     <Grid container columnSpacing={columnGapPixels + 'px'} rowGap={rowGapPixels + 'px'}>
@@ -50,8 +66,10 @@ function ItemFieldGrid(props: ItemFieldGridProps) {
       <Grid size={{ ...fieldBreakpoints }}>
         <>{fieldChildren}</>
         {/* Only show display instructions if there is no feedback of any type */}
-        {!props.feedback && !props.dateFeedback && !props.timeFeedback && (
-          <DisplayInstructions readOnly={readOnly}>{displayInstructions}</DisplayInstructions>
+        {instructionsId && (
+          <DisplayInstructions id={instructionsId} readOnly={readOnly}>
+            {displayInstructions}
+          </DisplayInstructions>
         )}
       </Grid>
     </Grid>
