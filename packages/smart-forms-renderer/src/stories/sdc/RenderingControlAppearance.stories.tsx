@@ -90,12 +90,56 @@ export const WidthGrid: Story = createStory({
 export const CollapsibleSingleDefaultOpen: Story = createStory({
   args: {
     questionnaire: qCollapsibleSingleDefaultOpen
+  },
+  play: async ({ canvasElement }) => {
+    const detailsLinkId = 'details-working';
+
+    const page = within(canvasElement);
+    const toggle = await waitFor(() => {
+      const buttons = page.queryAllByRole('button');
+      const collapsibleToggle = buttons.find((button) => button.hasAttribute('aria-expanded'));
+      if (!collapsibleToggle) {
+        throw new Error('Collapsible toggle button not found on page');
+      }
+      return collapsibleToggle;
+    });
+    await findByLinkIdOrLabel(canvasElement, detailsLinkId);
+
+    fireEvent.click(toggle);
+    await waitFor(() => {
+      expect(queryByLinkIdOrLabel(canvasElement, detailsLinkId)).toBeNull();
+    });
+
+    fireEvent.click(toggle);
+    await findByLinkIdOrLabel(canvasElement, detailsLinkId);
   }
 }) as Story;
 
 export const CollapsibleSingleDefaultClosed: Story = createStory({
   args: {
     questionnaire: qCollapsibleSingleDefaultClosed
+  },
+  play: async ({ canvasElement }) => {
+    const detailsLinkId = 'details-working';
+
+    const page = within(canvasElement);
+    const toggle = await waitFor(() => {
+      const buttons = page.queryAllByRole('button');
+      const collapsibleToggle = buttons.find((button) => button.hasAttribute('aria-expanded'));
+      if (!collapsibleToggle) {
+        throw new Error('Collapsible toggle button not found on page');
+      }
+      return collapsibleToggle;
+    });
+    expect(queryByLinkIdOrLabel(canvasElement, detailsLinkId)).toBeNull();
+
+    fireEvent.click(toggle);
+    await findByLinkIdOrLabel(canvasElement, detailsLinkId);
+
+    fireEvent.click(toggle);
+    await waitFor(() => {
+      expect(queryByLinkIdOrLabel(canvasElement, detailsLinkId)).toBeNull();
+    });
   }
 }) as Story;
 
@@ -158,5 +202,37 @@ export const CollapsibleGroupDefaultClosed: Story = createStory({
 export const CollapsibleGroupNested: Story = createStory({
   args: {
     questionnaire: qCollapsibleGroupNested
+  },
+  play: async ({ canvasElement }) => {
+    const streetLinkId = '2fee2d51-7828-4178-b8c1-35edd32ba338';
+
+    const page = within(canvasElement);
+    const toggle = await waitFor(() => {
+      const buttons = page
+        .queryAllByRole('button')
+        .filter((button) => button.hasAttribute('aria-expanded'));
+      const secondToggle = buttons[1];
+      if (!secondToggle) {
+        throw new Error('Second collapsible toggle button not found on page');
+      }
+      return secondToggle;
+    });
+
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    await findByLinkIdOrLabel(canvasElement, streetLinkId);
+
+    fireEvent.click(toggle);
+    await waitFor(() => {
+      expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    });
+    await waitFor(() => {
+      expect(queryByLinkIdOrLabel(canvasElement, streetLinkId)).toBeNull();
+    });
+
+    fireEvent.click(toggle);
+    await waitFor(() => {
+      expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    });
+    await findByLinkIdOrLabel(canvasElement, streetLinkId);
   }
 }) as Story;
