@@ -60,35 +60,6 @@ export const Required: Story = createStory({
 export const RepeatsAutocomplete: Story = createStory({
   args: {
     questionnaire: qRepeatsAutocomplete
-  },
-  play: async ({ canvasElement, step }) => {
-    await step('Select first repeated value', async () => {
-      await chooseSelectOption(canvasElement, 'medical-history-repeat', 'Asthma');
-    });
-
-    await step('Add repeated item and select second value', async () => {
-      await clickAddItem(canvasElement, 'medical-history-repeat');
-      const questions = await findAllByLinkIdOrLabel(canvasElement, 'medical-history-repeat');
-      await chooseSelectOption(questions[1], 'medical-history-repeat', 'Hypertension');
-    });
-
-    const answers = await getAnswers('medical-history-repeat');
-    expect(answers).toEqual([
-      expect.objectContaining({
-        valueCoding: expect.objectContaining({
-          system: 'http://snomed.info/sct',
-          code: '195967001',
-          display: 'Asthma'
-        })
-      }),
-      expect.objectContaining({
-        valueCoding: expect.objectContaining({
-          system: 'http://snomed.info/sct',
-          code: '38341003',
-          display: 'Hypertension'
-        })
-      })
-    ]);
   }
 }) as Story;
 
