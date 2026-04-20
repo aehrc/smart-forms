@@ -102,9 +102,7 @@ export async function getGroupAnswers(groupLinkId: string, answerLinkId: string)
 
   const result = await evaluate(
     qr,
-    groupLinkId
-      ? `QuestionnaireResponse.item.where(linkId='${groupLinkId}').item.where(linkId='${answerLinkId}').answer`
-      : `QuestionnaireResponse.item.where(linkId='${answerLinkId}').answer`
+    `QuestionnaireResponse.repeat(item).where(linkId='${groupLinkId}').item.where(linkId='${answerLinkId}').answer`
   );
 
   return result;
@@ -689,6 +687,77 @@ export async function findByLinkIdOrLabel(
     },
     { timeout: 60000 }
   );
+}
+
+export async function getNthRow(container: HTMLElement, index: number): Promise<HTMLElement> {
+  return await waitFor(
+    () => {
+      const rows = container.querySelectorAll<HTMLElement>('tbody tr');
+      const row = rows[index];
+      if (!row) {
+        throw new Error(`Row at index ${index} not found`);
+      }
+      return row;
+    },
+    { timeout: 5000 }
+  );
+}
+
+async function clickNavigationButton(
+  canvasElement: HTMLElement,
+  buttonNameMatcher: RegExp,
+  errorMessage: string
+) {
+  const element = within(canvasElement);
+  const button = await waitFor(() => {
+    const navButton = element.queryByRole('button', { name: buttonNameMatcher });
+    if (!navButton) {
+      throw new Error(errorMessage);
+    }
+    if ((navButton as HTMLButtonElement).disabled) {
+      throw new Error(`Navigation button is disabled: ${buttonNameMatcher}`);
+    }
+    return navButton;
+  });
+
+  await userEvent.click(button);
+  await new Promise((resolve) => setTimeout(resolve, 300));
+}
+
+export async function clickNextTab(canvasElement: HTMLElement) {
+  await clickNavigationButton(canvasElement, /^next tab$/i, 'Next tab button not found');
+}
+
+export async function clickPreviousTab(canvasElement: HTMLElement) {
+  await clickNavigationButton(canvasElement, /^previous tab$/i, 'Previous tab button not found');
+}
+
+export async function clickNextPage(canvasElement: HTMLElement) {
+  await clickNavigationButton(canvasElement, /^next page$/i, 'Next page button not found');
+}
+
+export async function clickPreviousPage(canvasElement: HTMLElement) {
+  await clickNavigationButton(canvasElement, /^previous page$/i, 'Previous page button not found');
+}
+
+export async function clickAddRow(canvasElement: HTMLElement, groupLinkIdOrLabel: string) {
+  const groupContainer = await findByLinkIdOrLabel(canvasElement, groupLinkIdOrLabel);
+
+  const button = await waitFor(() => {
+    const addButton = groupContainer.querySelector<HTMLButtonElement>(
+      'button[data-test="button-add-repeat-item"]'
+    );
+    if (!addButton) {
+      throw new Error(`Add row button not found inside group "${groupLinkIdOrLabel}"`);
+    }
+    if (addButton.disabled) {
+      throw new Error(`Add row button is disabled for group "${groupLinkIdOrLabel}"`);
+    }
+    return addButton;
+  });
+
+  await userEvent.click(button);
+  await new Promise((resolve) => setTimeout(resolve, 300));
 }
 
 export async function inputOpenChoiceOtherText(
