@@ -373,6 +373,83 @@ export async function checkCheckBox(canvasElement: HTMLElement, linkId: string) 
   await new Promise((resolve) => setTimeout(resolve, 500));
 }
 
+export async function checkCheckboxOption(
+  canvasElement: HTMLElement,
+  linkId: string,
+  text: string
+) {
+  const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
+  const checkbox = questionElement?.querySelector(
+    `span[data-test="checkbox-single-${text}"] input`
+  );
+
+  if (!checkbox) {
+    throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
+  }
+
+  fireEvent.click(checkbox);
+  // Here we await for debounced store update
+  await new Promise((resolve) => setTimeout(resolve, 500));
+}
+
+export async function checkCheckboxOtherOption(
+  canvasElement: HTMLElement,
+  linkId: string,
+  text: string
+) {
+  const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
+  const openLabelBox = questionElement?.querySelector(
+    'div[data-test="q-item-checkbox-open-label-box"]'
+  );
+  const checkbox = openLabelBox?.querySelector('input[type="checkbox"]');
+  const textarea = openLabelBox?.querySelector('textarea');
+
+  if (!checkbox) {
+    throw new Error(
+      `Checkbox other option was not found inside [data-test="q-item-checkbox-open-label-box"] for [data-linkid=${linkId}] block`
+    );
+  }
+  if (!textarea) {
+    throw new Error(
+      `Textarea was not found inside [data-test="q-item-checkbox-open-label-box"] for [data-linkid=${linkId}] block`
+    );
+  }
+
+  fireEvent.click(checkbox);
+  fireEvent.change(textarea, { target: { value: text } });
+  // Here we await for debounced store update
+  await new Promise((resolve) => setTimeout(resolve, 500));
+}
+
+export async function checkRadioOtherOption(
+  canvasElement: HTMLElement,
+  linkId: string,
+  text: string
+) {
+  const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
+  const openLabelBox = questionElement?.querySelector(
+    'div[data-test="q-item-radio-open-label-box"]'
+  );
+  const radio = openLabelBox?.querySelector('input[type="radio"]');
+  const textarea = openLabelBox?.querySelector('textarea');
+
+  if (!radio) {
+    throw new Error(
+      `Radio other option was not found inside [data-test="q-item-radio-open-label-box"] for [data-linkid=${linkId}] block`
+    );
+  }
+  if (!textarea) {
+    throw new Error(
+      `Textarea was not found inside [data-test="q-item-radio-open-label-box"] for [data-linkid=${linkId}] block`
+    );
+  }
+
+  fireEvent.click(radio);
+  fireEvent.change(textarea, { target: { value: text } });
+  // Here we await for debounced store update
+  await new Promise((resolve) => setTimeout(resolve, 500));
+}
+
 export async function inputFile(
   canvasElement: HTMLElement,
   linkId: string,
@@ -758,6 +835,47 @@ export async function clickAddRow(canvasElement: HTMLElement, groupLinkIdOrLabel
 
   await userEvent.click(button);
   await new Promise((resolve) => setTimeout(resolve, 300));
+}
+
+export async function chooseSliderValue(canvasElement: HTMLElement, linkId: string, index: number) {
+  const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
+  const sliderField = questionElement?.querySelector('span[data-test="q-item-slider-field"]');
+
+  if (!sliderField) {
+    throw new Error(
+      `Slider field was not found inside [data-test="q-item-slider-field"] for [data-linkid=${linkId}] block`
+    );
+  }
+
+  const sliderTarget = await waitFor(
+    () => {
+      const markLabel = sliderField.querySelector<HTMLElement>(
+        `.MuiSlider-markLabel[data-index="${index}"]`
+      );
+      const mark = sliderField.querySelector<HTMLElement>(`.MuiSlider-mark[data-index="${index}"]`);
+      const target = markLabel ?? mark;
+      if (!target) {
+        throw new Error(
+          `Slider mark with [data-index="${index}"] was not found inside [data-linkid=${linkId}]`
+        );
+      }
+      return target;
+    },
+    { timeout: 5000 }
+  );
+
+  const sliderRect = sliderField.getBoundingClientRect();
+  const markRect = sliderTarget.getBoundingClientRect();
+  const clientX = markRect.left + markRect.width / 2;
+  const clientY = sliderRect.top + sliderRect.height / 2;
+
+  // MUI slider reacts to pointer position on the slider root.
+  fireEvent.mouseDown(sliderField, { clientX, clientY });
+  fireEvent.mouseUp(sliderField, { clientX, clientY });
+  fireEvent.click(sliderField, { clientX, clientY });
+
+  // Here we await for debounced store update
+  await new Promise((resolve) => setTimeout(resolve, 500));
 }
 
 export async function inputOpenChoiceOtherText(
