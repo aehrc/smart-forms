@@ -65,10 +65,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
-  // Initialise with the selected value's label so the textarea shows it immediately
-  const [inputValue, setInputValue] = React.useState(
-    valueSelect ? getAnswerOptionLabel(valueSelect) : ''
-  );
+  const [inputValue, setInputValue] = React.useState('');
 
   // Keep track of current selected value when input is changed
   const [currentValueSelect, setCurrentValueSelect] =
@@ -86,31 +83,28 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
         onChange={(_, newValue) => {
           onSelectChange(newValue);
           setCurrentValueSelect(newValue);
-          setInputValue(newValue ? getAnswerOptionLabel(newValue) : '');
         }}
         inputValue={inputValue}
         onInputChange={(_, newInputValue, reason) => {
-          if (reason === 'input') {
-            // User is typing — if a value is selected, typing clears it
-            if (valueSelect) {
-              onSelectChange(null);
-            }
+          if (!inputValue && valueSelect && reason !== 'clear') {
+            // Convert current input value to be the current value plus additional input
+            onSelectChange(null);
+            setInputValue(getAnswerOptionLabel(valueSelect) + newInputValue);
+          } else {
             setInputValue(newInputValue);
-          } else if (reason === 'clear') {
-            setInputValue('');
           }
-          // Ignore 'reset' — handled by onChange above
         }}
         onBlur={() => {
-          // Restore the last confirmed selection on blur
+          // Set value on blur if there is any current input
           if (currentValueSelect) {
             onSelectChange(currentValueSelect);
-            setInputValue(getAnswerOptionLabel(currentValueSelect));
+            setInputValue(''); // Clear input after blur
           }
         }}
         onKeyDown={(e) => {
           if (e.key === 'Backspace') {
             if (!inputValue && valueSelect) {
+              // Convert current selection to input value on backspace when input is empty
               onSelectChange(null);
               setInputValue(getAnswerOptionLabel(valueSelect));
             }
@@ -120,7 +114,10 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
         sx={{
           maxWidth: !isTabled ? textFieldWidth : 3000,
           minWidth: 160,
-          flexGrow: 1
+          flexGrow: 1,
+          '& .MuiAutocomplete-tag': {
+            mx: 0
+          }
         }}
         size="small"
         disabled={readOnly && readOnlyVisualStyle === 'disabled'}
@@ -134,7 +131,6 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
 
           return (
             <StandardTextField
-              multiline
               textFieldWidth={textFieldWidth}
               isTabled={isTabled}
               placeholder={valueSelect ? undefined : entryFormat || displayPrompt}
@@ -149,7 +145,12 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
                       <ExpressionUpdateFadingIcon fadeIn={expressionUpdated} disabled={readOnly} />
                       <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
                     </>
-                  )
+                  ),
+                  sx: {
+                    '&.MuiOutlinedInput-root.MuiInputBase-sizeSmall .MuiAutocomplete-input': {
+                      paddingLeft: '0px'
+                    }
+                  }
                 },
                 htmlInput: {
                   ...params.inputProps,
@@ -178,6 +179,23 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
                 )}
               </span>
             </li>
+          );
+        }}
+        renderValue={(value, getItemProps) => {
+          const selectedOption = options.find((opt) => opt.valueString === value.valueString);
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { onDelete, ...rest } = getItemProps();
+          return (
+            <span {...rest} style={{ paddingLeft: '8.5px' }}>
+              {value.valueString && selectedOption ? (
+                <StyledText
+                  textToDisplay={getAnswerOptionLabel(value)}
+                  element={selectedOption._valueString}
+                />
+              ) : (
+                getAnswerOptionLabel(value)
+              )}
+            </span>
           );
         }}
       />
