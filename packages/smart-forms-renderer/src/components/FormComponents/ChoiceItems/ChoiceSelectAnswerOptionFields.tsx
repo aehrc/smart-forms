@@ -186,7 +186,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { onDelete, ...rest } = getItemProps();
           return (
-            <span {...rest}>
+            <span {...rest} style={{ paddingLeft: '8.5px' }}>
               {value.valueString && selectedOption ? (
                 <StyledText
                   textToDisplay={getAnswerOptionLabel(value)}
