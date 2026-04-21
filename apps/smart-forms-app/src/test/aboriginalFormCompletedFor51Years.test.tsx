@@ -16,7 +16,6 @@ import {
   inputDateTime
 } from './testUtils.ts';
 import { AboriginalForm } from './aboriginalFormUtils.tsx';
-import { Await } from 'react-router-dom';
 
 vi.mock('fhirclient', () => ({
   client: () => ({
