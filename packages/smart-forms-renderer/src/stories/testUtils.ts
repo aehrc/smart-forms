@@ -860,7 +860,6 @@ export async function clickAddRow(canvasElement: HTMLElement, groupLinkIdOrLabel
   await new Promise((resolve) => setTimeout(resolve, 300));
 }
 
-
 export async function clickAddItem(canvasElement: HTMLElement, groupLinkIdOrLabel: string) {
   const groupContainer = await findByLinkIdOrLabel(canvasElement, groupLinkIdOrLabel);
 
