@@ -81,6 +81,10 @@ import type { Breakpoints } from '@mui/material';
  * @property disableHeadingFocusOnTabSwitch - If `true`, disables automatic focus on the first heading when switching tabs.
  *  - Default: `false`
  *
+ * @property hideQuestionnaireTitle - If `true`, suppresses the renderer's built-in rendering of `Questionnaire.title`.
+ *   Set this to `true` when the consuming app already renders the title in its own header to avoid displaying it twice.
+ *   - Default: `false`
+ *
  * @property readOnlyVisualStyle - If `true`, item.readOnly will result in form fields having MUI disabled property and styles (recommended from usability perspective). If `false`, item.readOnly will result in form fields having HTML readonly property (less stable, but recommended from accessibility perspective).
  *   - Default: `true`
  */
@@ -111,6 +115,7 @@ export interface RendererConfig {
   disablePageButtons?: boolean;
   disableTabButtons?: boolean;
   disableHeadingFocusOnTabSwitch?: boolean;
+  hideQuestionnaireTitle?: boolean;
 }
 
 /**
@@ -145,6 +150,7 @@ export interface RendererConfigStoreType {
   disablePageButtons: boolean;
   disableTabButtons: boolean;
   disableHeadingFocusOnTabSwitch: boolean;
+  hideQuestionnaireTitle: boolean;
   setRendererConfig: (params: RendererConfig) => void;
 }
 
@@ -176,6 +182,7 @@ export const rendererConfigStore = createStore<RendererConfigStoreType>()((set) 
   disablePageButtons: false,
   disableTabButtons: false,
   disableHeadingFocusOnTabSwitch: false,
+  hideQuestionnaireTitle: false,
   setRendererConfig: (params: RendererConfig) => {
     set((state) => ({
       readOnlyVisualStyle: params.readOnlyVisualStyle ?? state.readOnlyVisualStyle,
@@ -196,7 +203,8 @@ export const rendererConfigStore = createStore<RendererConfigStoreType>()((set) 
       disablePageButtons: params.disablePageButtons ?? state.disablePageButtons,
       disableTabButtons: params.disableTabButtons ?? state.disableTabButtons,
       disableHeadingFocusOnTabSwitch:
-        params.disableHeadingFocusOnTabSwitch ?? state.disableHeadingFocusOnTabSwitch
+        params.disableHeadingFocusOnTabSwitch ?? state.disableHeadingFocusOnTabSwitch,
+      hideQuestionnaireTitle: params.hideQuestionnaireTitle ?? state.hideQuestionnaireTitle
     }));
   }
 }));

@@ -27,6 +27,8 @@ import type { QrRepeatGroup } from '../../interfaces/repeatGroup.interface';
 import FormBodyPaginated from './FormBodyPaginated';
 import { Container } from '@mui/material';
 import { useFormUpdateQueueStore } from '../../stores/formUpdateQueueStore';
+import { useRendererConfigStore } from '../../stores';
+import QuestionnaireTitleText from '../FormComponents/ItemParts/QuestionnaireTitleText';
 import dayjs from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
@@ -53,6 +55,7 @@ silenceReactBeautifulDndError();
 function BaseRenderer() {
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
   const readOnly = useQuestionnaireStore.use.readOnly();
+  const hideQuestionnaireTitle = useRendererConfigStore.use.hideQuestionnaireTitle();
 
   const responseKey = useQuestionnaireResponseStore.use.key();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
@@ -99,6 +102,9 @@ function BaseRenderer() {
     return (
       <Fade in={true} timeout={500}>
         <Container disableGutters maxWidth="xl" key={responseKey}>
+          {!hideQuestionnaireTitle && sourceQuestionnaire.title ? (
+            <QuestionnaireTitleText questionnaire={sourceQuestionnaire} />
+          ) : null}
           <FormBodyPaginated
             topLevelQItems={topLevelQItems}
             topLevelQRItems={topLevelQRItemsByIndex}
@@ -115,6 +121,9 @@ function BaseRenderer() {
   return (
     <Fade in={true} timeout={500}>
       <Container disableGutters maxWidth="xl" key={responseKey}>
+        {!hideQuestionnaireTitle && sourceQuestionnaire.title ? (
+          <QuestionnaireTitleText questionnaire={sourceQuestionnaire} />
+        ) : null}
         {topLevelQItems.map((qItem, index) => {
           const qrItemOrItems = topLevelQRItemsByIndex[index];
 
