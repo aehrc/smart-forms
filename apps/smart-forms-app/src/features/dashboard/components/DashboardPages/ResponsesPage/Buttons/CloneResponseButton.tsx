@@ -129,11 +129,10 @@ function CloneResponseButton(props: CloneResponseButtonProps) {
     }
 
     // Create a cloned response - strip id, meta, and authored so it is treated as a new response
-    const { id: _id, meta: _meta, authored: _authored, ...clonedResponse } = selectedResponse;
-    const newResponse: QuestionnaireResponse = {
-      ...clonedResponse,
-      status: 'in-progress'
-    };
+    const newResponse: QuestionnaireResponse = { ...selectedResponse, status: 'in-progress' };
+    delete newResponse.id;
+    delete newResponse.meta;
+    delete newResponse.authored;
 
     // Build form with cloned response content - no pre-population occurs
     await resetAndBuildForm({

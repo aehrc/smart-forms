@@ -40,11 +40,10 @@ function ViewerCloneResponseAction() {
     setIsLoading(true);
 
     // Strip id, meta and authored so the response is treated as new when saved
-    const { id: _id, meta: _meta, authored: _authored, ...clonedResponse } = sourceResponse;
-    const newResponse: QuestionnaireResponse = {
-      ...clonedResponse,
-      status: 'in-progress'
-    };
+    const newResponse: QuestionnaireResponse = { ...sourceResponse, status: 'in-progress' };
+    delete newResponse.id;
+    delete newResponse.meta;
+    delete newResponse.authored;
 
     await buildForm({
       questionnaire: sourceQuestionnaire,
