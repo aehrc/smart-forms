@@ -29,7 +29,7 @@ interface RemoveItemButtonProps {
 }
 
 function RemoveItemButton(props: RemoveItemButtonProps) {
-  const { answer, numOfRepeatAnswers, readOnly, onRemoveAnswer } = props;
+  const { answer, readOnly, onRemoveAnswer, numOfRepeatAnswers } = props;
 
   const isDisabled = answer === null || numOfRepeatAnswers === 1 || readOnly;
 
