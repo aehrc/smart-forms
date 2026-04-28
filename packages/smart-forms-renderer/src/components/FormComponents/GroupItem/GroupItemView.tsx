@@ -38,10 +38,10 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Divider from '@mui/material/Divider';
 import { getGroupCollapsible } from '../../../utils/qItem';
 import useReadOnly from '../../../hooks/useReadOnly';
-import { GroupAccordion } from './GroupAccordion.styles';
 import PageButtonsWrapper from './PageButtonWrapper';
 import { useParseXhtml } from '../../../hooks/useParseXhtml';
 import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
+import GroupAccordion from './GroupAccordion';
 
 interface GroupItemViewProps
   extends PropsWithQrItemChangeHandler,
@@ -171,6 +171,8 @@ function GroupItemView(props: GroupItemViewProps) {
         data-test="q-item-group-box"
         role="region"
         aria-label={qItem.text ?? 'Unnamed group'}
+        data-linkid={qItem.linkId}
+        data-label={qItem.text}
         style={combinedStyles || undefined}>
         {/* Show group heading when item.repeats=false AND itemTextToDisplay is valid */}
         {!isRepeated && itemTextToDisplay ? (
@@ -216,6 +218,8 @@ function GroupItemView(props: GroupItemViewProps) {
       cardElevation={groupCardElevation}
       isRepeated={isRepeated}
       data-test="q-item-group-box"
+      data-linkid={qItem.linkId}
+      data-label={qItem.text}
       role="region"
       aria-label={qItem.text ?? 'Unnamed group'}>
       <GroupCard

@@ -22,7 +22,7 @@ export const GroupCard = styled(Card, {
   shouldForwardProp: (prop) => prop !== 'elevation' && prop !== 'isRepeated'
 })<{ elevation: number; isRepeated: boolean }>(({ elevation, isRepeated }) => ({
   paddingTop: '20px',
-  paddingBottom: '20px',
+  paddingBottom: '0px',
   paddingLeft: elevation === 1 ? '26px' : '24px',
   paddingRight: elevation === 1 ? '26px' : '24px',
   marginBottom: isRepeated ? 0 : '28px'

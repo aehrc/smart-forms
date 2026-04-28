@@ -43,6 +43,7 @@ interface ChoiceSelectAnswerValueSetFieldsProps
   readOnly: boolean;
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
+  instructionsId?: string;
   onSelectChange: (newValue: Coding | null) => void;
 }
 
@@ -58,6 +59,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
     isTabled,
     renderingExtensions,
     answerOptionsToggleExpressionsMap,
+    instructionsId,
     onSelectChange
   } = props;
 
@@ -85,9 +87,10 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
           readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
           renderInput={(params) => (
             <StandardTextField
+              multiline
               textFieldWidth={textFieldWidth}
               isTabled={isTabled}
-              placeholder={entryFormat || displayPrompt}
+              placeholder={valueCoding ? undefined : entryFormat || displayPrompt}
               {...params}
               slotProps={{
                 input: {
@@ -99,14 +102,15 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
                       <ExpressionUpdateFadingIcon fadeIn={expressionUpdated} disabled={readOnly} />
                       <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
                     </>
-                  ),
-                  inputProps: {
-                    ...params.inputProps,
-                    ...(isTabled
-                      ? { 'aria-label': qItem.text ?? 'Unnamed choice dropdown' }
-                      : { 'aria-labelledby': `label-${qItem.linkId}` }),
-                    role: 'combobox'
-                  }
+                  )
+                },
+                htmlInput: {
+                  ...params.inputProps,
+                  ...(isTabled
+                    ? { 'aria-label': qItem.text ?? 'Unnamed choice dropdown' }
+                    : { 'aria-labelledby': `label-${qItem.linkId}` }),
+                  ...(instructionsId && { 'aria-describedby': instructionsId }),
+                  role: 'combobox'
                 }
               }}
               data-test="q-item-choice-select-answer-value-set-field"

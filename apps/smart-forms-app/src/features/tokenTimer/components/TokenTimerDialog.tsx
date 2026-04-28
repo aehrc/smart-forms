@@ -35,7 +35,11 @@ import {
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import { saveQuestionnaireResponse } from '../../../api/saveQr.ts';
 import useSmartClient from '../../../hooks/useSmartClient.ts';
-import { saveErrorMessage, saveSuccessMessage } from '../../../interfaces/snackbar.interface.ts';
+import {
+  saveErrorMessage,
+  saveSuccessMessage,
+  saveAmendmentSuccessMessage
+} from '../../../interfaces/snackbar.interface.ts';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import StandardDialogTitle from '../../../components/Dialog/StandardDialogTitle.tsx';
 
@@ -50,11 +54,14 @@ function TokenTimerDialog(props: TokenTimerDialogProps) {
   const { smartClient, patient, user, launchQuestionnaire } = useSmartClient();
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
   const setUpdatableResponseAsSaved =
     useQuestionnaireResponseStore.use.setUpdatableResponseAsSaved();
 
   const [isSaving, setIsSaving] = useState(false);
+
+  const isAmendment = sourceResponse.status === 'amended' || sourceResponse.status === 'completed';
 
   const navigate = useNavigate();
 
@@ -79,11 +86,11 @@ function TokenTimerDialog(props: TokenTimerDialogProps) {
       structuredClone(updatableResponse)
     );
 
-    responseToSave.status = 'in-progress';
+    responseToSave.status = isAmendment ? 'amended' : 'in-progress';
     saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
       .then((savedResponse) => {
         setUpdatableResponseAsSaved(savedResponse);
-        enqueueSnackbar(saveSuccessMessage, {
+        enqueueSnackbar(isAmendment ? saveAmendmentSuccessMessage : saveSuccessMessage, {
           variant: 'success',
           action: (
             <Tooltip title="View Responses">
@@ -121,15 +128,13 @@ function TokenTimerDialog(props: TokenTimerDialogProps) {
       <StandardDialogTitle onCloseDialog={handleClose}>Session expiring soon</StandardDialogTitle>
       <DialogContent>
         <DialogContentText>
-          {
-            "You have 15 minutes left in your session. Do you want to save your progress so far as a draft? You wouldn't be able to save your progress after the session expires."
-          }
+          {`You have 15 minutes left in your session. Do you want to save your ${isAmendment ? 'amendment' : 'progress so far as a draft'}? You won't be able to save your ${isAmendment ? 'amendment' : 'progress'} after the session expires.`}
         </DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
         <Button loading={isSaving} onClick={handleSave}>
-          Save Progress
+          Save {isAmendment ? 'Amendment' : 'Progress'}
         </Button>
       </DialogActions>
     </Dialog>

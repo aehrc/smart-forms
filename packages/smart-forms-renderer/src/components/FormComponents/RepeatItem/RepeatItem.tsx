@@ -70,6 +70,11 @@ function RepeatItem(props: RepeatItemProps) {
 
     updatedRepeatAnswers.splice(index, 1);
 
+    if (updatedRepeatAnswers.length === 0) {
+      onQrItemChange({ ...createEmptyQrItem(qItem, undefined) });
+      return;
+    }
+
     onQrItemChange({
       ...createEmptyQrItem(qItem, undefined),
       answer: updatedRepeatAnswers.flatMap((repeatAnswer) => (repeatAnswer ? [repeatAnswer] : []))

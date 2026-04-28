@@ -24,6 +24,7 @@ import { useQuestionnaireResponseStore, useQuestionnaireStore } from '@aehrc/sma
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import {
   saveAsFinalSuccessMessage,
+  saveAmendmentSuccessMessage,
   saveErrorMessage
 } from '../../../../interfaces/snackbar.interface.ts';
 import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
@@ -31,16 +32,13 @@ import StandardDialogTitle from '../../../../components/Dialog/StandardDialogTit
 
 export interface RendererSaveAsFinalDialogProps {
   open: boolean;
-  customContentText?: string;
+  isAmendment: boolean;
+  additionalContentText?: string;
   closeDialog: () => unknown;
 }
 
 function RendererSaveAsFinalOnlyDialog(props: RendererSaveAsFinalDialogProps) {
-  const {
-    open,
-    customContentText = "Are you sure you want to save this form as final? You won't be able to edit it after.",
-    closeDialog
-  } = props;
+  const { open, isAmendment, additionalContentText, closeDialog } = props;
 
   const { smartClient, patient, user, launchQuestionnaire } = useSmartClient();
 
@@ -48,6 +46,8 @@ function RendererSaveAsFinalOnlyDialog(props: RendererSaveAsFinalDialogProps) {
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
   const setUpdatableResponseAsSaved =
     useQuestionnaireResponseStore.use.setUpdatableResponseAsSaved();
+
+  const contentText = `${additionalContentText ? `${additionalContentText} ` : ''}Are you sure you want to ${isAmendment ? 'amend this response' : 'save this response as final'}?`;
 
   const [isSaving, setIsSaving] = useState(false);
 
@@ -83,7 +83,7 @@ function RendererSaveAsFinalOnlyDialog(props: RendererSaveAsFinalDialogProps) {
       user,
       sourceQuestionnaire,
       updatableResponse,
-      'completed'
+      isAmendment ? 'amended' : 'completed'
     );
 
     if (!savedResponse) {
@@ -96,7 +96,7 @@ function RendererSaveAsFinalOnlyDialog(props: RendererSaveAsFinalDialogProps) {
     }
 
     setUpdatableResponseAsSaved(savedResponse);
-    enqueueSnackbar(saveAsFinalSuccessMessage, {
+    enqueueSnackbar(isAmendment ? saveAmendmentSuccessMessage : saveAsFinalSuccessMessage, {
       variant: 'success',
       action: <CloseSnackbar variant="success" />
     });
@@ -106,14 +106,16 @@ function RendererSaveAsFinalOnlyDialog(props: RendererSaveAsFinalDialogProps) {
 
   return (
     <Dialog open={open} onClose={handleClose} data-test="dialog-confirm-save">
-      <StandardDialogTitle onCloseDialog={handleClose}>Confirm save as final</StandardDialogTitle>
+      <StandardDialogTitle onCloseDialog={handleClose}>
+        Confirm save as {isAmendment ? 'amendment' : 'final'}
+      </StandardDialogTitle>
       <DialogContent>
-        <DialogContentText>{customContentText}</DialogContentText>
+        <DialogContentText>{contentText}</DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
         <Button data-test="save-as-final-button" loading={isSaving} onClick={handleSaveAsFinal}>
-          Save as final
+          Save as {isAmendment ? 'amendment' : 'final'}
         </Button>
       </DialogActions>
     </Dialog>

@@ -17,7 +17,7 @@
 
 import { useContext } from 'react';
 import { SmartClientContext } from '../contexts/SmartClientContext.tsx';
-import type { Encounter, Patient, Practitioner, Questionnaire } from 'fhir/r4';
+import type { Encounter, FhirResource, Patient, Practitioner, Questionnaire } from 'fhir/r4';
 import { useSmartConfigStore } from '@aehrc/smart-forms-renderer';
 import type Client from 'fhirclient/lib/Client';
 import type { FhirContext } from '../features/smartAppLaunch/utils/launch.ts';
@@ -30,6 +30,8 @@ function useSmartClient() {
   const setUser = useSmartConfigStore.use.setUser();
   const setEncounter = useSmartConfigStore.use.setEncounter();
   const setFhirContext = useSmartConfigStore.use.setFhirContext();
+  const setResolvedFhirContextReferences =
+    useSmartConfigStore.use.setResolvedFhirContextReferences();
 
   function setSmartClient(client: Client) {
     dispatch({
@@ -82,6 +84,22 @@ function useSmartClient() {
     setFhirContext(fhirContext);
   }
 
+  function setResolvedFhirContext(resolvedFhirContextReferences: Record<string, FhirResource>) {
+    dispatch({
+      type: 'SET_RESOLVED_FHIR_CONTEXT_REFERENCES',
+      payload: resolvedFhirContextReferences
+    });
+
+    setResolvedFhirContextReferences(resolvedFhirContextReferences);
+  }
+
+  function setDisableWriteBackSelection(disableWriteBackSelection: boolean) {
+    dispatch({
+      type: 'SET_DISABLE_WRITEBACK_SELECTION',
+      payload: disableWriteBackSelection
+    });
+  }
+
   const smartClient = state.smartClient;
   const patient = state.patient;
   const user = state.user;
@@ -89,6 +107,7 @@ function useSmartClient() {
   const launchQuestionnaire = state.launchQuestionnaire;
   const fhirContext = state.fhirContext;
   const tokenReceivedTimestamp = state.tokenReceivedTimestamp;
+  const disableWriteBackSelection = state.disableWriteBackSelection;
 
   return {
     smartClient,
@@ -98,10 +117,13 @@ function useSmartClient() {
     launchQuestionnaire,
     fhirContext,
     tokenReceivedTimestamp,
+    disableWriteBackSelection,
     setSmartClient,
     setCommonLaunchContexts,
     setQuestionnaireLaunchContext,
-    setFhirContext: setFhirContextArray
+    setFhirContext: setFhirContextArray,
+    setResolvedFhirContextReferences: setResolvedFhirContext,
+    setDisableWriteBackSelection
   };
 }
 

@@ -159,7 +159,7 @@ function GridGroup(props: GridGroupProps) {
     <QGroupContainerBox
       cardElevation={groupCardElevation}
       isRepeated={false}
-      py={3}
+      py={0}
       data-linkid={qItem.linkId}
       data-label={qItem.text}
       onClick={() => onFocusLinkId(qItem.linkId)}

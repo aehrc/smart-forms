@@ -18,12 +18,13 @@
 import type { AutocompleteChangeReason } from '@mui/material';
 import type { QuestionnaireItemAnswerOption } from 'fhir/r4';
 import useReadOnly from '../../../hooks/useReadOnly';
+import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
 import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
-import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
+import ItemFieldGrid, { getInstructionsId } from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
 import { sanitizeInput } from '../../../utils/inputSanitization';
 import OpenChoiceSelectAnswerOptionField from './OpenChoiceSelectAnswerOptionField';
@@ -47,6 +48,8 @@ function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
+  const { displayInstructions } = useRenderingExtensions(qItem);
+  const instructionsId = getInstructionsId(qItem, displayInstructions, !!feedback);
 
   // Init input value
   const answerKey = getQRItemId(qrItem?.answer?.[0]?.id);
@@ -67,7 +70,6 @@ function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
   ) {
     //if the reason is reset, then we don't change the value, otherwise you will end up with looped setState calls
     if (reason === 'reset') {
-      // console.log("Reason: ", reason)
       return;
     }
     if (newValue) {
@@ -114,6 +116,7 @@ function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
         calcExpUpdated={calcExpUpdated}
         isTabled={isTabled}
         renderingExtensions={renderingExtensions}
+        instructionsId={instructionsId}
         onValueChange={handleValueChange}
       />
     );
@@ -139,6 +142,7 @@ function OpenChoiceSelectAnswerOptionItem(props: BaseItemProps) {
             calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}
             renderingExtensions={renderingExtensions}
+            instructionsId={instructionsId}
             onValueChange={handleValueChange}
           />
         }

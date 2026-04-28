@@ -38,6 +38,7 @@ interface CustomDateFieldProps extends PropsWithIsTabledAttribute {
   readOnly: boolean;
   calcExpUpdated: boolean;
   isPartOfDateTime: boolean;
+  instructionsId: string | undefined;
   setFocused: Dispatch<SetStateAction<boolean>>;
   onInputChange: (newInput: string) => void;
   onSelectDate: (newDateValue: string) => void;
@@ -58,6 +59,7 @@ function CustomDateField(props: CustomDateFieldProps) {
     calcExpUpdated,
     isPartOfDateTime,
     isTabled,
+    instructionsId,
     setFocused,
     onInputChange,
     onSelectDate
@@ -84,6 +86,8 @@ function CustomDateField(props: CustomDateFieldProps) {
     <StandardTextField
       {...(!isTabled && { id: id })}
       data-test={'date'}
+      data-linkid={linkId}
+      data-label={itemText}
       ref={anchorRef}
       fullWidth
       textFieldWidth={textFieldWidth}
@@ -113,10 +117,11 @@ function CustomDateField(props: CustomDateFieldProps) {
                 onFocus={(focus) => setFocused(focus)}
               />
             </InputAdornment>
-          ),
-          inputProps: {
-            ...(isTabled ? {} : { 'aria-label': itemText ?? `Unnamed ${itemType} item` })
-          }
+          )
+        },
+        htmlInput: {
+          ...(isTabled ? {} : { 'aria-label': itemText ?? `Unnamed ${itemType} item` }),
+          ...(instructionsId && { 'aria-describedby': instructionsId })
         }
       }}
       helperText={feedback}

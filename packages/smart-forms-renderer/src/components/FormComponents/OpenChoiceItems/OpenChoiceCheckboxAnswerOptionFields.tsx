@@ -35,6 +35,7 @@ interface OpenChoiceCheckboxAnswerOptionFieldsProps {
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   isTabled: boolean;
+  instructionsId?: string;
   onOptionChange: (changedOptionValue: string) => void;
   onOpenLabelCheckedChange: (checked: boolean) => void;
   onOpenLabelInputChange: (input: string) => void;
@@ -54,6 +55,7 @@ function OpenChoiceCheckboxAnswerOptionFields(props: OpenChoiceCheckboxAnswerOpt
     expressionUpdated,
     answerOptionsToggleExpressionsMap,
     isTabled,
+    instructionsId,
     onOptionChange,
     onOpenLabelCheckedChange,
     onOpenLabelInputChange,
@@ -70,6 +72,7 @@ function OpenChoiceCheckboxAnswerOptionFields(props: OpenChoiceCheckboxAnswerOpt
       expressionUpdated={expressionUpdated}
       answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
       isTabled={isTabled}
+      instructionsId={instructionsId}
       onCheckedChange={onOptionChange}
       onClear={onClear}>
       <CheckboxSingleWithOpenLabel

@@ -34,15 +34,17 @@ import { responseIsOperationOutcome } from '../../../../utils/operationOutcome.t
 
 export interface RendererSaveAsFinalWriteBackDialogProps {
   dialogOpen: boolean;
+  isAmendment: boolean;
   extractedBundle: Bundle;
   onCloseDialog: () => unknown;
   onDialogExited: () => unknown;
 }
 
 function RendererSaveAsFinalWriteBackDialog(props: RendererSaveAsFinalWriteBackDialogProps) {
-  const { dialogOpen, extractedBundle, onCloseDialog, onDialogExited } = props;
+  const { dialogOpen, isAmendment, extractedBundle, onCloseDialog, onDialogExited } = props;
 
-  const { smartClient, patient, user, launchQuestionnaire } = useSmartClient();
+  const { smartClient, patient, user, launchQuestionnaire, disableWriteBackSelection } =
+    useSmartClient();
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
@@ -83,7 +85,7 @@ function RendererSaveAsFinalWriteBackDialog(props: RendererSaveAsFinalWriteBackD
       user,
       sourceQuestionnaire,
       updatableResponse,
-      'completed'
+      isAmendment ? 'amended' : 'completed'
     );
 
     if (!savedResponse) {
@@ -119,7 +121,7 @@ function RendererSaveAsFinalWriteBackDialog(props: RendererSaveAsFinalWriteBackD
       user,
       sourceQuestionnaire,
       updatableResponse,
-      'completed'
+      isAmendment ? 'amended' : 'completed'
     );
 
     // If save QR fails, skip whole write back process
@@ -171,7 +173,9 @@ function RendererSaveAsFinalWriteBackDialog(props: RendererSaveAsFinalWriteBackD
       viewMode="renderer"
       dialogOpen={dialogOpen}
       isSaving={isSaving}
+      isAmendment={isAmendment}
       extractedBundle={extractedBundle}
+      disableWriteBackSelection={disableWriteBackSelection}
       onCloseDialog={handleClose}
       onWriteBackBundle={async (bundleToWriteBack, savingWriteBackMode) => {
         if (savingWriteBackMode === 'saving-only') {

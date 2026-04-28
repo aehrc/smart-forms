@@ -33,6 +33,7 @@ interface DecimalFieldProps extends PropsWithIsTabledAttribute {
   renderingExtensions: RenderingExtensions;
   readOnly: boolean;
   calcExpUpdated: boolean;
+  instructionsId: string | undefined;
   onInputChange: (value: string) => void;
   onRepopulateSync: (newQrItem: QuestionnaireResponseItem | null) => unknown;
 }
@@ -46,6 +47,7 @@ function DecimalField(props: DecimalFieldProps) {
     readOnly,
     calcExpUpdated,
     isTabled,
+    instructionsId,
     onInputChange,
     onRepopulateSync
   } = props;
@@ -86,7 +88,8 @@ function DecimalField(props: DecimalFieldProps) {
         htmlInput: {
           inputMode: 'numeric',
           pattern: '[0-9]*',
-          ...(ariaLabel && { 'aria-label': ariaLabel })
+          ...(ariaLabel && { 'aria-label': ariaLabel }),
+          ...(instructionsId && { 'aria-describedby': instructionsId })
         },
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',

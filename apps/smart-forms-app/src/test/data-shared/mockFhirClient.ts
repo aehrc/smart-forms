@@ -22,7 +22,7 @@ const iss = 'https://example.com/fhir';
 const clientId = 'client-id-mock';
 
 const scope =
-  'launch openid fhirUser online_access patient/AllergyIntolerance.cs patient/Condition.cs patient/Encounter.r patient/Immunization.cs patient/Medication.r patient/MedicationStatement.cs patient/Observation.cs patient/Patient.r patient/Practitioner.r patient/QuestionnaireResponse.crus launch/questionnaire?role=http://ns.electronichealth.net.au/smart/role/new';
+  'launch openid fhirUser online_access patient/AllergyIntolerance.cus patient/Condition.cus patient/Encounter.r patient/Immunization.cs patient/Medication.r patient/MedicationStatement.cus patient/Observation.cs patient/Patient.r patient/Practitioner.r patient/QuestionnaireResponse.crus launch/questionnaire?role=http://ns.electronichealth.net.au/smart/role/new';
 
 // mock patient ID
 const patientId = 'pat-mock';

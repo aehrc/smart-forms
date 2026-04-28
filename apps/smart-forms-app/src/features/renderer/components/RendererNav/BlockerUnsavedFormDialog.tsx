@@ -42,6 +42,7 @@ function BlockerUnsavedFormDialog(props: Props) {
   const [isSaving, setIsSaving] = useState(false);
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
   const setUpdatableResponseAsSaved =
     useQuestionnaireResponseStore.use.setUpdatableResponseAsSaved();
@@ -49,6 +50,8 @@ function BlockerUnsavedFormDialog(props: Props) {
 
   const isLaunched = !!(smartClient && patient && user);
   const launchQuestionnaireExists = !!launchQuestionnaire;
+
+  const isAmendment = sourceResponse.status === 'amended' || sourceResponse.status === 'completed';
 
   // Event handlers
   function handleCancel() {
@@ -74,7 +77,7 @@ function BlockerUnsavedFormDialog(props: Props) {
     responseToSave = removeEmptyAnswersFromResponse(sourceQuestionnaire, responseToSave);
 
     setIsSaving(true);
-    responseToSave.status = 'in-progress';
+    responseToSave.status = isAmendment ? 'amended' : 'in-progress';
     saveQuestionnaireResponse(smartClient, patient, user, sourceQuestionnaire, responseToSave)
       .then((savedResponse) => {
         setUpdatableResponseAsSaved(savedResponse);
@@ -104,7 +107,7 @@ function BlockerUnsavedFormDialog(props: Props) {
         <Button onClick={handleProceed}>Proceed anyway</Button>
         {isLaunched ? (
           <Button loading={isSaving} onClick={handleSave}>
-            Save and proceed
+            Save {isAmendment ? 'as amendment' : 'progress'} and proceed
           </Button>
         ) : null}
       </DialogActions>

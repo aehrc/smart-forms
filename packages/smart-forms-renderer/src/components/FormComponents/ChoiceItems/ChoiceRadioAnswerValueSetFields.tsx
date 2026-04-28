@@ -32,6 +32,7 @@ interface ChoiceRadioAnswerValueSetFieldsProps {
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
   terminologyError: TerminologyError;
   isTabled: boolean;
+  instructionsId?: string;
   onCheckedChange: (newValue: string) => void;
   onClear: () => void;
 }
@@ -47,6 +48,7 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
     answerOptionsToggleExpressionsMap,
     terminologyError,
     isTabled,
+    instructionsId,
     onCheckedChange,
     onClear
   } = props;
@@ -62,6 +64,7 @@ function ChoiceRadioAnswerValueSetFields(props: ChoiceRadioAnswerValueSetFieldsP
         expressionUpdated={expressionUpdated}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
         isTabled={isTabled}
+        instructionsId={instructionsId}
         onCheckedChange={onCheckedChange}
         onClear={onClear}
       />

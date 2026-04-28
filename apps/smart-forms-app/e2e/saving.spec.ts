@@ -63,6 +63,24 @@ test('Saving a response as draft then final', async ({ page }) => {
 
   // Select response in responses page
   await page.getByTestId('renderer-operation-item').getByText('View Existing Responses').click();
+
+  // The FHIR server search index may lag behind the write. React Query may also serve a
+  // cached list that pre-dates the save. Poll with page reloads (which bust the cache and
+  // trigger a fresh GET) until the newly saved in-progress row appears.
+  await expect(async () => {
+    const inProgressRow = page.getByTestId('response-list-row').getByText('in-progress').first();
+    if (!(await inProgressRow.isVisible())) {
+      const refetchPromise = page.waitForResponse(
+        (response) =>
+          response.url().includes(`${PLAYWRIGHT_EHR_URL}/QuestionnaireResponse`) &&
+          response.request().method() === 'GET'
+      );
+      await page.reload();
+      await refetchPromise;
+    }
+    await expect(inProgressRow).toBeVisible();
+  }).toPass({ intervals: [2000, 3000, 5000], timeout: 30000 });
+
   await page.getByTestId('response-list-row').getByText('in-progress').first().click();
   await expect(page.getByTestId('button-open-response')).toBeEnabled();
   await page.getByTestId('button-open-response').click();

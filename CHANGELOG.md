@@ -10,6 +10,29 @@ For changelogs of other libraries, please refer to their respective repositories
 
 Changelog only includes changes from version 0.36.0 onwards.
 
+## [1.3.1] - 2026-03-25
+### Fixed
+- Fixed accordion scroll position jumping when expanding accordion items. See issue [#1796](https://github.com/aehrc/smart-forms/issues/1796)
+- Fixed the sticky tab list overflowing the viewport on long forms. The tab list now dynamically constrains its height and becomes scrollable when needed.
+
+## [1.3.0] - 2026-03-11
+### Added
+- Added `tabListStickyTop` option to the renderer store. When supplied, a tabbed form's tab menu will stick to the top of the page offset by this value, keeping it visible during scrolling.
+- `fhirContext` references from SMART App Launch are now resolved and stored in the renderer SMART config, making them available for use in `answerExpressions`.
+### Fixed
+- Conditionally display placeholder in select fields, fixing issue [1834](https://github.com/aehrc/smart-forms/issues/1834)
+
+## [1.2.14] - 2026-03-05
+### Changed
+- Reduced vertical padding and margins to limit excessive whitespace in the renderer.
+- Changed standalone autocomplete fields to be multiline so that value is not truncated.
+### Fixed
+- Fixed regression causing some calculatedExpressions to not be displayed.
+
+## [1.2.13] - 2026-02-12
+### Fixed
+- Fixed an issue where existing QuestionnaireResponse repeat group items were being overwritten by blank data when applying calculatedExpression values, causing issue [#1811](https://github.com/aehrc/smart-forms/issues/1811)
+
 ## [1.2.12] - 2026-01-13
 ### Added
 - Added support for text styling on answerOption.valueString.

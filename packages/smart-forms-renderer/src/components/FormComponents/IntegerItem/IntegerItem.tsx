@@ -19,6 +19,7 @@ import debounce from 'lodash.debounce';
 import { useCallback, useState } from 'react';
 import useReadOnly from '../../../hooks/useReadOnly';
 import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
 import { DEBOUNCE_DURATION } from '../../../utils/debounce';
@@ -56,6 +57,12 @@ function IntegerItem(props: BaseItemProps) {
 
   // Perform validation checks
   const feedback = useValidationFeedback(qItem, feedbackFromParent);
+
+  const { displayInstructions } = useRenderingExtensions(qItem);
+
+  // Generate instruction ID if instructions exist and there's no feedback
+  const instructionsId =
+    displayInstructions && !feedback ? `instructions-${qItem.linkId}` : undefined;
 
   // Event handlers
   function handleInputChange(newInput: string) {
@@ -108,6 +115,7 @@ function IntegerItem(props: BaseItemProps) {
         readOnly={readOnly}
         calcExpUpdated={calcExpUpdated}
         isTabled={isTabled}
+        instructionsId={instructionsId}
         onInputChange={handleInputChange}
         onRepopulateSync={handleRepopulateSync}
       />
@@ -133,6 +141,7 @@ function IntegerItem(props: BaseItemProps) {
             readOnly={readOnly}
             calcExpUpdated={calcExpUpdated}
             isTabled={isTabled}
+            instructionsId={instructionsId}
             onInputChange={handleInputChange}
             onRepopulateSync={handleRepopulateSync}
           />

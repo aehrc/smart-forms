@@ -19,9 +19,11 @@ import { useContext, useEffect, useReducer } from 'react';
 import { oauth2 } from 'fhirclient';
 import type { tokenResponseCustomised } from '../utils/launch.ts';
 import {
+  DISABLE_WRITEBACK_SELECTION_CONTEXT_KEY,
   getQuestionnaireReferences,
   readCommonLaunchContexts,
   readQuestionnaireContext,
+  resolveFhirContextReferences,
   responseToQuestionnaireResource
 } from '../utils/launch.ts';
 import { postQuestionnaireToSMARTHealthIT } from '../../../api/saveQr.ts';
@@ -73,8 +75,14 @@ function Authorisation() {
 
   const { config } = useContext(ConfigContext);
 
-  const { setSmartClient, setCommonLaunchContexts, setQuestionnaireLaunchContext, setFhirContext } =
-    useSmartClient();
+  const {
+    setSmartClient,
+    setCommonLaunchContexts,
+    setQuestionnaireLaunchContext,
+    setFhirContext,
+    setResolvedFhirContextReferences,
+    setDisableWriteBackSelection
+  } = useSmartClient();
 
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -109,11 +117,18 @@ function Authorisation() {
           });
 
           // Read FhirContext from the token response
-          const fhirContext =
-            (client.state.tokenResponse as tokenResponseCustomised)?.fhirContext ?? null;
+          const tokenResponse = client.state.tokenResponse as tokenResponseCustomised;
+          const fhirContext = tokenResponse?.fhirContext ?? null;
           if (fhirContext) {
             setFhirContext(fhirContext);
           }
+
+          // Read disable-writeback-selection extra context from the token response
+          const rawDisableWriteBackSelection =
+            tokenResponse?.[DISABLE_WRITEBACK_SELECTION_CONTEXT_KEY];
+          const disableWriteBackSelection =
+            rawDisableWriteBackSelection === true || rawDisableWriteBackSelection === 'true';
+          setDisableWriteBackSelection(disableWriteBackSelection);
 
           // Get Questionnaire context from fhirContext array
           // the set questionnaire launch context if available
@@ -166,6 +181,13 @@ function Authorisation() {
           } else {
             dispatch({ type: 'UPDATE_HAS_QUESTIONNAIRE', payload: false });
           }
+
+          // Resolve other FHIR context references
+          resolveFhirContextReferences(client, fhirContext ?? []).then(
+            (resolvedFhirContextReferences) => {
+              setResolvedFhirContextReferences(resolvedFhirContextReferences);
+            }
+          );
         })
         .catch((error: Error) => {
           // Prompt user to launch app if app is unlaunched

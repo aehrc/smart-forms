@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import React from 'react';
 import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
@@ -33,13 +32,13 @@ import AddItemButton from './AddItemButton';
 import type { RepeatGroupSingleModel } from '../../../interfaces/repeatGroup.interface';
 import useReadOnly from '../../../hooks/useReadOnly';
 import { getGroupCollapsible } from '../../../utils/qItem';
-import { GroupAccordion } from '../GroupItem/GroupAccordion.styles';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import GroupHeading from '../GroupItem/GroupHeading';
 import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
 import { isGroupAddItemButtonHidden } from '../../../utils/extensions';
+import GroupAccordion from '../GroupItem/GroupAccordion';
 
 interface RepeatGroupViewProps
   extends PropsWithParentIsReadOnlyAttribute,
@@ -139,7 +138,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
       cardElevation={groupCardElevation}
       isRepeated={true}
       style={parentStyles || undefined}>
-      <Card elevation={groupCardElevation} sx={{ p: 3, py: 2.5, mb: 3.5 }}>
+      <Card elevation={groupCardElevation} sx={{ p: 3, py: 1.5, mt: 2.5 }}>
         {itemTextToDisplay ? (
           <>
             <GroupHeading
