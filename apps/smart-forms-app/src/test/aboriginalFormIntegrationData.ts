@@ -9,7 +9,6 @@ import type {
   QuestionnaireResponse
 } from 'fhir/r4';
 import { getBirthDateForAge } from './testUtils';
-import type { RequestDefinition } from './aboriginalFormUtils';
 
 export const patient: Patient = {
   resourceType: 'Patient',

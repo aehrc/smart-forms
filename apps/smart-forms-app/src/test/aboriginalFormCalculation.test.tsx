@@ -2,7 +2,6 @@ import { render, waitFor } from '@testing-library/react';
 import { vi, beforeAll } from 'vitest';
 
 import {
-  chooseSelectOption,
   inputInteger,
   inputText,
   selectTab,
