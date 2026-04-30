@@ -23,7 +23,7 @@ import {
 } from '../utils/preview';
 import { QAboriginalTorresStraitIslanderHealthCheck } from '../../../test/data-shared/QAboriginalTorresStraitIslanderHealthCheck.ts';
 import { QRAboriginalTorresStraitIslanderHealthCheck } from '../../../test/data-shared/QRAboriginalTorresStraitIslanderHealthCheck.ts';
-import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import type { Questionnaire, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
 
 describe('qrToHTML', () => {
   const questionnaire = QAboriginalTorresStraitIslanderHealthCheck;
@@ -50,9 +50,9 @@ describe('qrToHTML', () => {
     const rootDiv = htmlDoc.querySelector('div[xmlns="http://www.w3.org/1999/xhtml"]');
     expect(rootDiv).toBeTruthy();
 
-    const articleElement = htmlDoc.querySelector('article');
-    expect(articleElement).toBeTruthy();
-    expect(articleElement?.getAttribute('style')).toContain('color-scheme');
+    const contentDiv = htmlDoc.querySelector('div[style*="color-scheme"]');
+    expect(contentDiv).toBeTruthy();
+    expect(contentDiv?.getAttribute('style')).toContain('color-scheme');
 
     // Check title rendering
     const h1Element = htmlDoc.querySelector('h1');
@@ -222,7 +222,8 @@ describe('qrToHTML', () => {
     expect(html).toContain('Group Test');
     expect(html).toContain('Personal Information');
     expect(html).toContain('<h2');
-    expect(html).toContain('<section>');
+    expect(html).not.toContain('<section>');
+    expect(html).not.toContain('<article');
   });
 
   // Test with the actual working data to verify repeating item rendering
@@ -234,8 +235,8 @@ describe('qrToHTML', () => {
     const parsedDoc = parser.parseFromString(html, 'text/html');
 
     // Test basic structure using DOM queries
-    const articleElement = parsedDoc.querySelector('article');
-    expect(articleElement).toBeTruthy();
+    const contentDiv = parsedDoc.querySelector('div[style*="color-scheme"]');
+    expect(contentDiv).toBeTruthy();
 
     const h1Element = parsedDoc.querySelector('h1');
     expect(h1Element?.textContent).toMatch(/Aboriginal and Torres Strait Islander Health Check/);
@@ -284,24 +285,18 @@ describe('qrToHTML', () => {
     expect(html.length).toBeGreaterThan(500);
   });
 
-  // Test that sections are created even when content doesn't render
-  it('creates section structure for groups', () => {
+  // Test that group structure uses XHTML-conformant elements (no article/section)
+  it('uses conformant XHTML elements without article or section tags', () => {
     const html = qrToHTML(questionnaire, questionnaireResponse);
 
-    // Parse HTML string into a Document for proper DOM querying
-    const parser = new DOMParser();
-    const sectionDoc = parser.parseFromString(html, 'text/html');
+    // XHTML conformance: article and section are not in the FHIR-allowed XHTML subset
+    expect(html).not.toContain('<article');
+    expect(html).not.toContain('<section>');
+    expect(html).not.toContain('</section>');
 
-    // Check for section elements using DOM querying
-    const sectionElements = sectionDoc.querySelectorAll('section');
-    expect(sectionElements.length).toBeGreaterThan(0);
-
-    // Verify sections are properly nested within article
-    const articleElement = sectionDoc.querySelector('article');
-    expect(articleElement).toBeTruthy();
-
-    const sectionsInArticle = articleElement?.querySelectorAll('section');
-    expect(sectionsInArticle?.length).toBeGreaterThan(0);
+    // Main heading (h1) still renders and the document has structural div wrappers
+    expect(html).toContain('<h1');
+    expect(html).toContain('<div');
   });
 
   // Test various edge cases and error conditions
@@ -501,6 +496,48 @@ describe('answerToString - Direct Unit Tests', () => {
     const answer = { valueInteger: 42 };
     const result = answerToString(answer);
     expect(result).toBe('42');
+  });
+
+  it('handles valueDecimal with unit from qItem', () => {
+    const answer = { valueDecimal: 72.5 };
+    const qItem: QuestionnaireItem = {
+      linkId: 'weight',
+      type: 'decimal',
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+          valueCoding: { system: 'http://unitsofmeasure.org', code: 'kg', display: 'kg' }
+        }
+      ]
+    };
+    const result = answerToString(answer, qItem);
+    expect(result).toBe('72.5 kg');
+  });
+
+  it('handles valueInteger with unit from qItem', () => {
+    const answer = { valueInteger: 170 };
+    const qItem: QuestionnaireItem = {
+      linkId: 'height',
+      type: 'integer',
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+          valueCoding: { system: 'http://unitsofmeasure.org', code: 'cm', display: 'cm' }
+        }
+      ]
+    };
+    const result = answerToString(answer, qItem);
+    expect(result).toBe('170 cm');
+  });
+
+  it('handles valueDecimal with qItem but no unit extension', () => {
+    const answer = { valueDecimal: 3.14 };
+    const qItem: QuestionnaireItem = {
+      linkId: 'ratio',
+      type: 'decimal'
+    };
+    const result = answerToString(answer, qItem);
+    expect(result).toBe('3.14');
   });
 
   it('handles valueDate', () => {
@@ -749,7 +786,7 @@ describe('renderRepeatGroupHtml - Direct Unit Tests', () => {
     expect(html.length).toBeGreaterThan(0);
   });
 
-  it('handles nested repeat groups with fallback message', () => {
+  it('renders nested repeat groups as nested tables', () => {
     const qItem = {
       linkId: 'outer-group',
       type: 'group' as const,
@@ -805,16 +842,24 @@ describe('renderRepeatGroupHtml - Direct Unit Tests', () => {
     expect(thead).toBeTruthy();
     expect(tbody).toBeTruthy();
 
-    // Should have header for Inner Group
+    // Should have header for Inner Group column
     const headers = thead?.querySelectorAll('th');
     expect(headers?.length).toBe(1);
     expect(headers?.[0].textContent).toBe('Inner Group');
 
-    // Should have some row in tbody
+    // Should have at least one row in tbody (querySelectorAll includes nested tr elements)
     const rows = tbody?.querySelectorAll('tr');
     expect(rows?.length).toBeGreaterThanOrEqual(1);
 
-    // Function executed successfully
+    // The td should contain a nested table (not a fallback message)
+    // Use string-based checks to avoid JSDOM nested-table DOM quirks
+    expect(html).not.toContain('not supported');
+    const tableCount = (html.match(/<table/g) ?? []).length;
+    expect(tableCount).toBeGreaterThanOrEqual(2);
+    // Nested table header and data are rendered
+    expect(html).toContain('Nested Field');
+    expect(html).toContain('Nested Value');
+
     expect(html.length).toBeGreaterThan(0);
   });
 

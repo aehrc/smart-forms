@@ -53,9 +53,9 @@ export function qrToHTML(
     return '';
   }
 
-  // Start with a base HTML <article> structure
+  // Start with a base HTML <div> structure (article/section are not in the FHIR-allowed XHTML subset)
   // Left styles inline for all HTML tags because the styles do not apply when used in a JS string variable
-  let html = `<article style="color-scheme: light; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; margin: 0; color: #1f2328; background-color: #ffffff; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans',Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji'; font-size: 16px; line-height: 1.5; word-wrap: break-word;">`;
+  let html = `<div style="color-scheme: light; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; margin: 0; color: #1f2328; background-color: #ffffff; font-family: -apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans',Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji'; font-size: 16px; line-height: 1.5; word-wrap: break-word;">`;
 
   // Title as h1
   html += `<h1 style="margin-top: 0; margin-bottom: .67em; font-weight: 600; padding-bottom: .3em; font-size: 2em; border-bottom: 1px solid #d1d9e0b3;">
@@ -96,11 +96,11 @@ export function qrToHTML(
 
   // Close any remaining open sections
   while (openSections.length > 0) {
-    html += `</section>`;
+    html += `</div>`;
     openSections.pop();
   }
 
-  html += `</article>`;
+  html += `</div>`;
 
   // Wrap in a div with XHTML namespace
   return `<div xmlns="http://www.w3.org/1999/xhtml">${html}</div>`;
@@ -143,12 +143,12 @@ function handleSectionTransition(
 
   // Close sections that are deeper than or equal to the current level
   while (openSections.length > 0 && openSections[openSections.length - 1] >= groupNestLevel) {
-    html += `</section>`;
+    html += `</div>`;
     openSections.pop();
   }
 
   // Open new section for the current level
-  html += `<section>`;
+  html += `<div>`;
   openSections.push(groupNestLevel);
 
   return html;
@@ -280,14 +280,14 @@ function renderItemHtmlRecursive(
       html += `<div style="margin-bottom: 0.5em;"><strong style="font-weight: 600;">${label}</strong></div>`;
       html += `<ul style="margin-top: 0; margin-bottom: 1rem; font-weight: 400; padding-left: 2em;">`;
       for (const a of qrItem.answer) {
-        html += `<li>${he.encode(answerToString(a))}</li>`;
+        html += `<li>${he.encode(answerToString(a, qItem))}</li>`;
       }
       html += `</ul>`;
     } else {
       html += qrItem.answer
         .map(
           (a) =>
-            `<p style="margin-top: 0; margin-bottom: 1rem; font-weight: 400;"><strong style="font-weight: 600;">${label}</strong><br/>${he.encode(answerToString(a))}</p>`
+            `<p style="margin-top: 0; margin-bottom: 1rem; font-weight: 400;"><strong style="font-weight: 600;">${label}</strong><br/>${he.encode(answerToString(a, qItem))}</p>`
         )
         .join('');
     }
@@ -377,26 +377,32 @@ export function renderRepeatGroupHtml(
     const childQItems = qItem.item ?? [];
     const childQRItems = qrItemInstance.item ?? [];
 
-    const indexMap = mapQItemsIndex(qItem);
-    const qrItemsByIndex = getQrItemsIndex(childQItems, childQRItems, indexMap);
+    // Group QR items by linkId (handles nested repeat groups with multiple instances)
+    const qrItemsByLinkId: Record<string, QuestionnaireResponseItem[]> = {};
+    for (const qrItem of childQRItems) {
+      if (!qrItemsByLinkId[qrItem.linkId]) {
+        qrItemsByLinkId[qrItem.linkId] = [];
+      }
+      qrItemsByLinkId[qrItem.linkId].push(qrItem);
+    }
 
     html += `<tr style="background-color: #fff; border-top: 1px solid #d1d9e0b3;">`;
-    for (const [index, childQItem] of childQItems.entries()) {
+    for (const childQItem of childQItems) {
       if (structuredDataCapture.getHidden(childQItem)) {
         continue;
       }
 
-      const childQRItem = qrItemsByIndex[index];
+      const matchingQRItems = qrItemsByLinkId[childQItem.linkId] ?? [];
 
-      // Do not support repeat group nesting for now
-      if (Array.isArray(childQRItem)) {
-        html += `<td style="padding: 6px 13px; border: 1px solid #d1d9e0;" colspan="${childQRItem.length}">Nested repeat groups not supported in narrative</td>`;
-        continue;
+      if (childQItem.type === 'group' && childQItem.repeats && matchingQRItems.length > 0) {
+        // Nested repeat group — render recursively as a nested table
+        const nestedHtml = renderRepeatGroupHtml(childQItem, matchingQRItems);
+        html += `<td style="padding: 6px 13px; border: 1px solid #d1d9e0;">${nestedHtml}</td>`;
+      } else {
+        const answer = matchingQRItems[0]?.answer?.[0];
+        const value = answer ? answerToString(answer, childQItem) : '';
+        html += `<td style="padding: 6px 13px; border: 1px solid #d1d9e0;">${he.encode(value)}</td>`;
       }
-
-      const answer = childQRItem?.answer?.[0];
-      const value = answer ? answerToString(answer) : '';
-      html += `<td style="padding: 6px 13px; border: 1px solid #d1d9e0;">${he.encode(value)}</td>`;
     }
     html += `</tr>`;
   }
@@ -412,16 +418,33 @@ export function renderRepeatGroupHtml(
  * @param {QuestionnaireResponseItemAnswer} answer - The answer object to convert.
  * @returns {string} A string representation of the answer value.
  */
-export function answerToString(answer: QuestionnaireResponseItemAnswer): string {
+export function answerToString(
+  answer: QuestionnaireResponseItemAnswer,
+  qItem?: QuestionnaireItem
+): string {
   if (answer.valueBoolean !== undefined) {
     return answer.valueBoolean ? 'Yes' : 'No';
   }
 
   if (answer.valueDecimal !== undefined) {
+    if (qItem) {
+      const unit = structuredDataCapture.getUnit(qItem);
+      const unitLabel = unit?.display ?? unit?.code ?? '';
+      if (unitLabel) {
+        return `${answer.valueDecimal} ${unitLabel}`;
+      }
+    }
     return `${answer.valueDecimal}`;
   }
 
   if (answer.valueInteger !== undefined) {
+    if (qItem) {
+      const unit = structuredDataCapture.getUnit(qItem);
+      const unitLabel = unit?.display ?? unit?.code ?? '';
+      if (unitLabel) {
+        return `${answer.valueInteger} ${unitLabel}`;
+      }
+    }
     return `${answer.valueInteger}`;
   }
 
