@@ -121,7 +121,7 @@ The Smart Forms app uses a `config.json` file for configuration, fetched at runt
     "terminologyServerUrl": "https://tx.ontoserver.csiro.au/fhir",
     "formsServerUrl": "https://smartforms.csiro.au/api/fhir",
     "defaultClientId": "a57d90e3-5f69-4b92-aa2e-2992180863c1",
-    "launchScopes": "launch openid fhirUser online_access patient/AllergyIntolerance.cs patient/Condition.cs patient/Encounter.r patient/Immunization.cs patient/Medication.r patient/MedicationStatement.cs patient/Observation.cs patient/Patient.r patient/QuestionnaireResponse.crus user/Practitioner.r launch/questionnaire?role=http://ns.electronichealth.net.au/smart/role/new",
+    "launchScopes": "launch openid fhirUser online_access patient/AllergyIntolerance.cus patient/Condition.cus patient/Encounter.r patient/Immunization.cs patient/Medication.r patient/MedicationStatement.cus patient/Observation.cs patient/Patient.r patient/QuestionnaireResponse.crus user/Practitioner.r launch/questionnaire?role=http://ns.electronichealth.net.au/smart/role/new",
     "registeredClientIdsUrl": "https://smartforms.csiro.au/smart-config/config.json"
    }
    ```

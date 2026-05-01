@@ -28,6 +28,14 @@ Refer to the conformance checklist here: https://github.com/aehrc/smart-forms/bl
 #### SMART App Launch
 SMART App Launch is a framework that allows the app to be integrated within a healthcare system in a secure and efficient manner to capture standardised, structured health information for healthcare clients.
 
+##### Extra Launch Context
+
+Smart Forms supports passing additional context to the app via the SMART App Launch token response, as described in the [SMART App Launch scopes and launch context](https://build.fhir.org/ig/HL7/smart-app-launch/scopes-and-launch-context.html#example-extra-context---extensions-for-non-fhir-context) specification. Custom extra context keys are defined under the namespace `https://smartforms.csiro.au/smart-app-launch/extra-context/`.
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `https://smartforms.csiro.au/smart-app-launch/extra-context/disable-writeback-selection` | `boolean` | When `true`, skips the item selection step in the Save Final & Write Back dialog and writes back all items to the patient record. The string `"true"` is also accepted for launchers that serialize all values as strings. |
+
 
 
 ### Features
