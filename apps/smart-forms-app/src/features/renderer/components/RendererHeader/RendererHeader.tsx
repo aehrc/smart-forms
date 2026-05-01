@@ -23,11 +23,7 @@ import { LogoWrapper } from '../../../../components/Logos/Logo.styles.ts';
 import { StyledRoot, StyledToolbar } from '../../../../components/Header/Header.styles.ts';
 import { memo } from 'react';
 import HeaderIcons from '../../../../components/Header/HeaderIcons.tsx';
-import {
-  QuestionnaireTitleText,
-  useQuestionnaireStore,
-  useResponsive
-} from '@aehrc/smart-forms-renderer';
+import { useQuestionnaireStore, useResponsive } from '@aehrc/smart-forms-renderer';
 import TokenTimer from '../../../tokenTimer/components/TokenTimer.tsx';
 import MenuIcon from '@mui/icons-material/Menu';
 
@@ -70,7 +66,7 @@ const RendererHeader = memo(function RendererHeader(props: RendererHeaderProps) 
 
         <Box m={0.5}>
           <Typography variant="subtitle1" color="text.primary" fontSize={isLgUp ? 13 : 11}>
-            <QuestionnaireTitleText questionnaire={sourceQuestionnaire} />
+            {sourceQuestionnaire.title ?? ''}
           </Typography>
         </Box>
         <Box flexGrow={1} />

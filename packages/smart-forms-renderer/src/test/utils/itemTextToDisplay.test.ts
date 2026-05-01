@@ -350,5 +350,40 @@ describe('getItemTextToDisplay', () => {
       };
       expect(itemHasLabelHeadingContent(qItem)).toBe(false);
     });
+
+    it('returns false when _prefix has only a translation extension (not a rendering/calculated extension)', () => {
+      const qItem: QuestionnaireItem = {
+        linkId: 'a',
+        type: 'group',
+        _prefix: {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/translation',
+              extension: [
+                { url: 'lang', valueCode: 'fr' },
+                { url: 'content', valueString: 'Q.' }
+              ]
+            }
+          ]
+        }
+      };
+      expect(itemHasLabelHeadingContent(qItem)).toBe(false);
+    });
+
+    it('returns true when _prefix has a calculatedExpression extension', () => {
+      const qItem: QuestionnaireItem = {
+        linkId: 'a',
+        type: 'group',
+        _prefix: {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
+              valueExpression: { language: 'text/fhirpath', expression: "'Q.'" }
+            }
+          ]
+        }
+      };
+      expect(itemHasLabelHeadingContent(qItem)).toBe(true);
+    });
   });
 });

@@ -97,13 +97,15 @@ function GridGroup(props: GridGroupProps) {
     ]
   );
 
-  // Get column headers from first row item.text
+  // Get column headers from first row items, including prefix and text rendering info
   const columnHeaders: {
+    qItem: QuestionnaireItem;
     label: string;
     styleString: string | null;
   }[] = useMemo(
     () =>
       visibleColumnItems.map((firstItem) => ({
+        qItem: firstItem,
         label: getItemTextToDisplay(firstItem) ?? ' ',
         styleString: structuredDataCapture.getStyle(firstItem._text) ?? null
       })) ?? [],

@@ -25,7 +25,7 @@ import { updateQrItemsInGroup } from '../../utils/qrItem';
 import { isPaginatedForm } from '../../utils/page';
 import type { QrRepeatGroup } from '../../interfaces/repeatGroup.interface';
 import FormBodyPaginated from './FormBodyPaginated';
-import { Container } from '@mui/material';
+import { Box, Container } from '@mui/material';
 import { useFormUpdateQueueStore } from '../../stores/formUpdateQueueStore';
 import { useRendererConfigStore } from '../../stores';
 import QuestionnaireTitleText from '../FormComponents/ItemParts/QuestionnaireTitleText';
@@ -102,8 +102,10 @@ function BaseRenderer() {
     return (
       <Fade in={true} timeout={500}>
         <Container disableGutters maxWidth="xl" key={responseKey}>
-          {!hideQuestionnaireTitle && sourceQuestionnaire.title ? (
-            <QuestionnaireTitleText questionnaire={sourceQuestionnaire} />
+          {!hideQuestionnaireTitle && (sourceQuestionnaire.title || sourceQuestionnaire._title) ? (
+            <Box px={2} pt={2} pb={1}>
+              <QuestionnaireTitleText questionnaire={sourceQuestionnaire} />
+            </Box>
           ) : null}
           <FormBodyPaginated
             topLevelQItems={topLevelQItems}
@@ -121,8 +123,10 @@ function BaseRenderer() {
   return (
     <Fade in={true} timeout={500}>
       <Container disableGutters maxWidth="xl" key={responseKey}>
-        {!hideQuestionnaireTitle && sourceQuestionnaire.title ? (
-          <QuestionnaireTitleText questionnaire={sourceQuestionnaire} />
+        {!hideQuestionnaireTitle && (sourceQuestionnaire.title || sourceQuestionnaire._title) ? (
+          <Box px={2} pt={2} pb={1}>
+            <QuestionnaireTitleText questionnaire={sourceQuestionnaire} />
+          </Box>
         ) : null}
         {topLevelQItems.map((qItem, index) => {
           const qrItemOrItems = topLevelQRItemsByIndex[index];

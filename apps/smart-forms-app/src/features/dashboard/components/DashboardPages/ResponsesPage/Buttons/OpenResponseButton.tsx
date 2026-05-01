@@ -146,12 +146,15 @@ function OpenResponseButton(props: OpenResponseButtonProps) {
     const newPopulatedContext = populateRes.populateResult?.populatedContext;
 
     // Before building the form, reset any existing form state
-    await resetAndBuildForm({
-      questionnaire: referencedQuestionnaire,
-      questionnaireResponse: selectedResponse,
-      terminologyServerUrl: config.terminologyServerUrl,
-      additionalContext: newPopulatedContext
-    });
+    await resetAndBuildForm(
+      {
+        questionnaire: referencedQuestionnaire,
+        questionnaireResponse: selectedResponse,
+        terminologyServerUrl: config.terminologyServerUrl,
+        additionalContext: newPopulatedContext
+      },
+      true
+    );
 
     navigate('/viewer');
     setIsLoading(false);

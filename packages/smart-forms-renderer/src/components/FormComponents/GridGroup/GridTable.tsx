@@ -21,6 +21,7 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import Box from '@mui/material/Box';
 import { HeaderTableCell } from '../Tables/Table.styles';
 import GridRow from './GridRow';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
@@ -31,6 +32,7 @@ import type {
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
 import { default as parseStyleToJs } from 'style-to-js';
+import ItemPrefixSwitcher from '../ItemParts/ItemPrefixSwitcher';
 
 interface GridTableProps
   extends PropsWithQrItemChangeHandler,
@@ -40,6 +42,7 @@ interface GridTableProps
   qrItems: QuestionnaireResponseItem[];
   qItemsIndexMap: Record<string, number>;
   columnHeaders: {
+    qItem: QuestionnaireItem;
     label: string;
     styleString: string | null;
   }[];
@@ -71,8 +74,8 @@ function GridTable(props: GridTableProps) {
       <TableHead>
         <TableRow>
           <HeaderTableCell />
-          {/* Render column headers (with combined styles) */}
-          {columnHeaders.map(({ label, styleString }) => {
+          {/* Render column headers (with combined styles, prefix and text) */}
+          {columnHeaders.map(({ qItem, label, styleString }) => {
             // Add default textAlign center style to all grid headers
             const defaultStyle: React.CSSProperties = {
               textAlign: 'center'
@@ -87,7 +90,10 @@ function GridTable(props: GridTableProps) {
 
             return (
               <HeaderTableCell key={label} size="medium" style={combinedStyle}>
-                {label}
+                <Box display="inline-flex" alignItems="baseline" gap={0.5} flexWrap="wrap">
+                  <ItemPrefixSwitcher qItem={qItem} />
+                  {label}
+                </Box>
               </HeaderTableCell>
             );
           })}
