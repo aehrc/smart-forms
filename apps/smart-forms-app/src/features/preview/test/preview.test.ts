@@ -786,7 +786,9 @@ describe('renderRepeatGroupHtml - Direct Unit Tests', () => {
     expect(html.length).toBeGreaterThan(0);
   });
 
-  it('renders nested repeat groups as nested tables', () => {
+  it('renders complex repeat groups (group children) as card layout with inner table for simple sub-group', () => {
+    // Outer group has a group-type child → complex → card layout (not a table)
+    // Inner group has only string children → simple → table inside the card
     const qItem = {
       linkId: 'outer-group',
       type: 'group' as const,
@@ -832,35 +834,109 @@ describe('renderRepeatGroupHtml - Direct Unit Tests', () => {
     const html = renderRepeatGroupHtml(qItem, qrItems);
     const htmlDoc = parseHtml(html);
 
-    // Should contain table structure
+    // Outer group is complex (group child) → card layout, no outer table
+    expect(html).not.toMatch(/^<table/);
+
+    // Card: bordered div with one instance
+    const cardMatches = html.match(/border: 1px solid #d1d9e0; border-radius: 6px/g);
+    expect(cardMatches?.length).toBe(1);
+
+    // Inner Group renders as an h4 heading within the card
+    const h4 = htmlDoc.querySelector('h4');
+    expect(h4?.textContent?.trim()).toBe('Inner Group');
+
+    // Inner group is simple (string child) → table with header "Nested Field"
     const table = htmlDoc.querySelector('table');
     expect(table).toBeTruthy();
-
-    // Should have thead and tbody
-    const thead = table?.querySelector('thead');
-    const tbody = table?.querySelector('tbody');
-    expect(thead).toBeTruthy();
-    expect(tbody).toBeTruthy();
-
-    // Should have header for Inner Group column
-    const headers = thead?.querySelectorAll('th');
+    const headers = table?.querySelectorAll('th');
     expect(headers?.length).toBe(1);
-    expect(headers?.[0].textContent).toBe('Inner Group');
+    expect(headers?.[0].textContent).toBe('Nested Field');
 
-    // Should have at least one row in tbody (querySelectorAll includes nested tr elements)
-    const rows = tbody?.querySelectorAll('tr');
-    expect(rows?.length).toBeGreaterThanOrEqual(1);
-
-    // The td should contain a nested table (not a fallback message)
-    // Use string-based checks to avoid JSDOM nested-table DOM quirks
-    expect(html).not.toContain('not supported');
-    const tableCount = (html.match(/<table/g) ?? []).length;
-    expect(tableCount).toBeGreaterThanOrEqual(2);
-    // Nested table header and data are rendered
-    expect(html).toContain('Nested Field');
+    // Table data is present
     expect(html).toContain('Nested Value');
 
-    expect(html.length).toBeGreaterThan(0);
+    // Exactly one table (no outer table, one inner table)
+    const tableCount = (html.match(/<table/g) ?? []).length;
+    expect(tableCount).toBe(1);
+  });
+
+  it('renders repeating group with mixed group and answer siblings as card layout', () => {
+    // Mirrors the GPCCMP "Problems/Needs" structure: a repeating group whose children
+    // include both plain answer items and nested group items. A table would collapse
+    // these into columns, expanding horizontally; card layout renders each instance as a block.
+    const qItem = {
+      linkId: 'goals-tasks',
+      type: 'group' as const,
+      text: 'Goals and Tasks',
+      repeats: true,
+      item: [
+        {
+          linkId: 'problem-name',
+          type: 'string' as const,
+          text: 'Problem/Need'
+        },
+        {
+          linkId: 'interventions',
+          type: 'group' as const,
+          text: 'Interventions and Actions',
+          repeats: true,
+          item: [
+            {
+              linkId: 'intervention-text',
+              type: 'string' as const,
+              text: 'Intervention'
+            }
+          ]
+        }
+      ]
+    };
+
+    const qrItems = [
+      {
+        linkId: 'goals-tasks',
+        item: [
+          {
+            linkId: 'problem-name',
+            answer: [{ valueString: 'Chronic pain management' }]
+          },
+          {
+            linkId: 'interventions',
+            item: [{ linkId: 'intervention-text', answer: [{ valueString: 'Physio referral' }] }]
+          }
+        ]
+      },
+      {
+        linkId: 'goals-tasks',
+        item: [
+          {
+            linkId: 'problem-name',
+            answer: [{ valueString: 'Diabetes' }]
+          },
+          {
+            linkId: 'interventions',
+            item: [{ linkId: 'intervention-text', answer: [{ valueString: 'Diet plan' }] }]
+          }
+        ]
+      }
+    ];
+
+    const html = renderRepeatGroupHtml(qItem, qrItems);
+
+    // Complex group → card layout, NOT a top-level table
+    expect(html).not.toMatch(/^<table/);
+
+    // Two card divs (one per repeat instance)
+    const cardMatches = html.match(/border: 1px solid #d1d9e0; border-radius: 6px/g);
+    expect(cardMatches?.length).toBe(2);
+
+    // Both problem/need answers appear
+    expect(html).toContain('Chronic pain management');
+    expect(html).toContain('Diabetes');
+
+    // Inner repeating group (interventions, simple) renders as a table
+    expect(html).toContain('<table');
+    expect(html).toContain('Physio referral');
+    expect(html).toContain('Diet plan');
   });
 
   it('handles empty qrItems array', () => {

@@ -297,6 +297,16 @@ function renderItemHtmlRecursive(
 }
 
 /**
+ * Returns true if every non-hidden child of a repeating group is a plain answer item (not a group).
+ * Tables are only appropriate for flat repeating groups; complex structures (with group children) need card layout.
+ */
+function isSimpleRepeatGroup(qItem: QuestionnaireItem): boolean {
+  return (qItem.item ?? [])
+    .filter((child) => !structuredDataCapture.getHidden(child))
+    .every((child) => child.type !== 'group');
+}
+
+/**
  * Renders an inline-styled HTML heading tag (`<h2>` to `<h4>`) for a group QuestionnaireItem, based on its nesting level.
  *
  * @param {QuestionnaireItem} qItem - The group Questionnaire item to render.
@@ -342,11 +352,66 @@ function getGroupHeading(qItem: QuestionnaireItem, nestedLevel: number): string 
 }
 
 /**
- * Renders a repeated group of QuestionnaireResponseItems as an HTML table, applying GitHub-flavored Markdown inline styles.
+ * Renders each instance of a complex repeating group (one that has group-type children) as a bordered card block.
+ * Uses the same qrItemsByLinkId lookup strategy as the table renderer to locate child QR items, then renders
+ * non-group children as answer paragraphs and group children with an h4 heading via renderRepeatGroupHtml.
+ */
+function renderComplexRepeatGroupHtml(
+  qItem: QuestionnaireItem,
+  qrItems: QuestionnaireResponseItem[]
+): string {
+  let html = '';
+  const childQItems = qItem.item ?? [];
+
+  for (const qrItemInstance of qrItems) {
+    html += `<div style="border: 1px solid #d1d9e0; border-radius: 6px; padding: 1em; margin-bottom: 0.75em;">`;
+
+    const childQRItems = qrItemInstance.item ?? [];
+    const qrItemsByLinkId: Record<string, QuestionnaireResponseItem[]> = {};
+    for (const qrChildItem of childQRItems) {
+      if (!qrItemsByLinkId[qrChildItem.linkId]) {
+        qrItemsByLinkId[qrChildItem.linkId] = [];
+      }
+      qrItemsByLinkId[qrChildItem.linkId].push(qrChildItem);
+    }
+
+    for (const childQItem of childQItems) {
+      if (structuredDataCapture.getHidden(childQItem)) continue;
+
+      const matchingQRItems = qrItemsByLinkId[childQItem.linkId] ?? [];
+
+      if (childQItem.type === 'group') {
+        if (matchingQRItems.length > 0) {
+          if (childQItem.text) {
+            html += `<h4 style="margin-top: 1rem; margin-bottom: 0.5rem; font-weight: 600; line-height: 1.25; font-size: 1em;">${he.encode(childQItem.text)}</h4>`;
+          }
+          html += renderRepeatGroupHtml(childQItem, matchingQRItems);
+        }
+      } else {
+        const answer = matchingQRItems[0]?.answer?.[0];
+        if (answer) {
+          const label = he.encode(childQItem.text ?? '');
+          const value = he.encode(answerToString(answer, childQItem));
+          html += `<p style="margin-top: 0; margin-bottom: 0.5rem; font-weight: 400;"><strong style="font-weight: 600;">${label}</strong><br/>${value}</p>`;
+        }
+      }
+    }
+
+    html += `</div>`;
+  }
+
+  return html;
+}
+
+/**
+ * Renders a repeated group of QuestionnaireResponseItems as HTML.
+ * Simple groups (all non-group children) use a table for a compact grid view.
+ * Complex groups (any group-type child) use a card-per-instance layout to avoid
+ * a horizontally-expanding table that is not print-friendly.
  *
  * @param {QuestionnaireItem} qItem - The repeating group Questionnaire item with child items.
  * @param {QuestionnaireResponseItem[]} qrItems - Array of repeated response items for the group.
- * @returns {string} HTML string of the rendered table.
+ * @returns {string} HTML string of the rendered output.
  */
 export function renderRepeatGroupHtml(
   qItem: QuestionnaireItem,
@@ -354,6 +419,10 @@ export function renderRepeatGroupHtml(
 ): string {
   if (!Array.isArray(qrItems)) {
     return '';
+  }
+
+  if (!isSimpleRepeatGroup(qItem)) {
+    return renderComplexRepeatGroupHtml(qItem, qrItems);
   }
 
   // Table headers from child questions
