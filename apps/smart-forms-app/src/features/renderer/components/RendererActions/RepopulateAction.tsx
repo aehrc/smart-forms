@@ -38,6 +38,7 @@ import {
   fetchResourceCallback,
   fetchTerminologyCallback
 } from '../../../prepopulate/utils/callback.ts';
+import { formatPopulateIssuesForUser } from '../../../prepopulate/utils/prepopulateIssues.ts';
 import type Client from 'fhirclient/lib/Client';
 import { useState } from 'react';
 
@@ -130,11 +131,12 @@ function RepopulateAction(props: RepopulateActionProps) {
 
       onSpinnerChange({ isSpinning: false, status: 'repopulate-fetch', message: '' });
       if (issues) {
-        enqueueSnackbar(
-          'There might be issues while retrieving the latest information, data is partially retrieved. View console for details.',
-          { action: <CloseSnackbar /> }
-        );
-        console.warn(issues);
+        enqueueSnackbar(formatPopulateIssuesForUser(issues), {
+          variant: 'warning',
+          persist: true,
+          action: <CloseSnackbar variant="warning" />
+        });
+        console.warn('Re-population issues:', issues);
         return;
       }
     },
