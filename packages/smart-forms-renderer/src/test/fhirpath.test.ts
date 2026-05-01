@@ -252,7 +252,9 @@ describe('handleFhirPathResult', () => {
 
 describe('isExpressionCached', () => {
   it('returns false for expression containing %', () => {
-    expect(isExpressionCached('%resource.memberOf(url)', { '%resource.memberOf(url)': [true] })).toBe(false);
+    expect(
+      isExpressionCached('%resource.memberOf(url)', { '%resource.memberOf(url)': [true] })
+    ).toBe(false);
   });
 
   it('returns true when expression-only key is in cache', () => {
