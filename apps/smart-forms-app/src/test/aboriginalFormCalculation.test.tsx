@@ -2,13 +2,13 @@ import { render, waitFor } from '@testing-library/react';
 import { vi, beforeAll } from 'vitest';
 
 import {
-  chooseSelectOption,
   inputInteger,
   inputText,
   selectTab,
   getInputText,
   inputDecimal,
-  getVisibleTab
+  getVisibleTab,
+  checkRadioOption
 } from './testUtils.ts';
 import { AboriginalForm } from './aboriginalFormUtils.tsx';
 
@@ -110,7 +110,7 @@ describe('New result calculation field', () => {
     const dateFieldValueBefore = await getInputText(container, 'obs-heartrhythm-newdate');
     expect(dateFieldValueBefore).toBe('');
 
-    await chooseSelectOption(container, 'obs-heartrhythm-newresult', 'Regular heart rhythm');
+    await checkRadioOption(container, 'obs-heartrhythm-newresult', 'Regular heart rhythm');
 
     const dateFieldValueAfter = await getInputText(container, 'obs-heartrhythm-newdate');
     const today = new Date();
@@ -127,7 +127,7 @@ describe('New result calculation field', () => {
     const dateFieldValueBefore = await getInputText(container, 'obs-heartrhythm-newdate');
     expect(dateFieldValueBefore).toBe('');
 
-    await chooseSelectOption(container, 'obs-heartrhythm-newresult', 'Irregular heart rhythm');
+    await checkRadioOption(container, 'obs-heartrhythm-newresult', 'Irregular heart rhythm');
 
     const dateFieldValueAfter = await getInputText(container, 'obs-heartrhythm-newdate');
     const today = new Date();

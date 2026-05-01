@@ -21,9 +21,12 @@
 // 2. Prevent it from showing up in typedoc in the documentation site, which will affect docs search
 
 import { evaluate } from 'fhirpath';
+import type { Mock } from 'storybook/internal/test';
 import { fireEvent, screen, userEvent, waitFor } from 'storybook/internal/test';
 import { questionnaireResponseStore } from '@aehrc/smart-forms-renderer';
 import { act } from 'react';
+import type { ExtractResult, InAppExtractOutput } from '@aehrc/sdc-template-extract';
+import { extractResultIsOperationOutcome } from '@aehrc/sdc-template-extract';
 
 export async function inputText(
   canvasElement: HTMLElement,
@@ -241,6 +244,42 @@ export async function getInputText(canvasElement: HTMLElement, linkId: string) {
   return input.value;
 }
 
+export async function getRadioValue(canvasElement: HTMLElement, linkId: string) {
+  const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
+  const input = questionElement?.querySelector('input:checked');
+
+  if (!input) {
+    throw new Error(
+      `Input with value checked was not found inside ${`[data-linkid=${linkId}] block`}`
+    );
+  }
+
+  return (input as HTMLInputElement).value;
+}
+
+export async function getCqfText(canvasElement: HTMLElement, linkId: string) {
+  const displayElement = await findByLinkIdOrLabel(canvasElement, linkId);
+
+  const rawText = displayElement.textContent ?? '';
+  const text = rawText.replace(/\s+/g, ' ').trim();
+
+  if (!text) {
+    throw new Error(`Display text was not found inside ${`[data-linkid=${linkId}] block`}`);
+  }
+
+  return text;
+}
+
+export async function getSelectText(canvasElement: HTMLElement, linkId: string) {
+  const element = await findByLinkIdOrLabel(canvasElement, linkId);
+
+  if (!element) {
+    throw new Error(`Select or input was not found inside element with data-label="${linkId}"`);
+  }
+
+  return (element.querySelector('span')?.textContent ?? '').trim();
+}
+
 export async function chooseSelectOption(
   canvasElement: HTMLElement,
   linkId: string,
@@ -256,9 +295,10 @@ export async function chooseSelectOption(
   await act(async () => {
     fireEvent.focus(input);
     fireEvent.keyDown(input, { key: 'ArrowDown', code: 'ArrowDown' });
+    fireEvent.change(input, { target: { value: optionLabel } });
   });
 
-  const option = await screen.findByText(optionLabel);
+  const option = await screen.findByRole('option', { name: optionLabel }, { timeout: 10000 });
 
   await act(async () => {
     fireEvent.click(option);
@@ -329,6 +369,28 @@ export async function findByLinkIdOrLabel(
   });
 }
 
+export async function findAllByLinkIdOrLabel(
+  canvasElement: HTMLElement,
+  linkId: string
+): Promise<HTMLElement[]> {
+  const selectorByLinkId = `[data-linkid="${linkId}"]`;
+  const selectorByLabel = `[data-label="${linkId}"]`;
+
+  return await waitFor(() => {
+    const byLinkId = Array.from(canvasElement.querySelectorAll<HTMLElement>(selectorByLinkId));
+    const byLabel = Array.from(canvasElement.querySelectorAll<HTMLElement>(selectorByLabel));
+
+    const unique = Array.from(new Set<HTMLElement>([...byLinkId, ...byLabel]));
+    if (unique.length === 0) {
+      throw new Error(
+        `Elements with selectors "${selectorByLinkId}" or "${selectorByLabel}" not found`
+      );
+    }
+
+    return unique;
+  });
+}
+
 export async function inputOpenChoiceOtherText(
   canvasElement: HTMLElement,
   linkId: string,
@@ -379,4 +441,42 @@ export async function getVisibleTab(canvasElement: HTMLElement): Promise<HTMLEle
 
     return tabPanelOrAccordion;
   });
+}
+
+export function getBirthDateForAge(ageInYears: number): string {
+  const today = new Date();
+  const birthDate = new Date(today.getFullYear() - ageInYears, today.getMonth(), today.getDate());
+  return birthDate.toISOString().slice(0, 10);
+}
+
+export async function invokeExtract(
+  canvasElement: HTMLElement,
+  onExtractResultMock: Mock<(extractResult: InAppExtractOutput) => void>
+) {
+  const button = canvasElement.querySelector('button[data-testid="save-button"]');
+  if (!button) {
+    throw new Error('Save button not found');
+  }
+  await act(async () => {
+    fireEvent.click(button);
+  });
+
+  await waitFor(() => expect(onExtractResultMock.mock.lastCall).toBeDefined(), {
+    timeout: 5000
+  });
+
+  const lastCall = onExtractResultMock.mock.lastCall;
+  if (!lastCall) {
+    throw new Error('Expected onExtractResult to be called');
+  }
+
+  return getExtractResultBundle(lastCall[0]);
+}
+
+function getExtractResultBundle(extractResultOutput: InAppExtractOutput) {
+  expect(extractResultOutput.extractSuccess).toBe(true);
+  const extractResult = extractResultOutput.extractResult as ExtractResult;
+  expect(extractResultIsOperationOutcome(extractResult)).toBe(false);
+
+  return extractResult.extractedBundle;
 }

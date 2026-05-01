@@ -127,7 +127,7 @@ test('Completed questionnaire for 12 years', async () => {
     'Aboriginal and/or Torres Strait Islander Health Worker / Health Practitioner',
     'practitioner Doe'
   );
-  await chooseSelectOption(container, 'Location of health check', 'Clinic');
+  await checkRadioOption(container, 'Location of health check', 'Clinic');
 
   //Current priorities
   await selectTab(container, 'Current health/patient priorities');

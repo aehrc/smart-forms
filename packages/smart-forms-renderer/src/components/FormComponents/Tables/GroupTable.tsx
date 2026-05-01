@@ -158,12 +158,18 @@ function GroupTable(props: GroupTableProps) {
   }
 
   function handleRemoveRow(index: number) {
-    const updatedTableRows = [...tableRows];
+    let updatedTableRows = [...tableRows];
 
     const rowToRemove = updatedTableRows[index];
     const updatedSelectedIds = selectedIds.filter((id) => id !== rowToRemove.id);
 
     updatedTableRows.splice(index, 1);
+
+    if (updatedTableRows.length === 0) {
+      const newRowId = generateNewRepeatId(qItem.linkId);
+      updatedTableRows = [{ id: newRowId, qrItem: null }];
+      updatedSelectedIds.push(newRowId);
+    }
 
     setTableRows(updatedTableRows);
 
