@@ -35,9 +35,7 @@ export function itemHasLabelHeadingContent(qItem: QuestionnaireItem): boolean {
   if (qItem.prefix) {
     return true;
   }
-  if (
-    qItem._prefix?.extension?.some((ext) => PREFIX_RENDERING_EXTENSION_URLS.has(ext.url ?? ''))
-  ) {
+  if (qItem._prefix?.extension?.some((ext) => PREFIX_RENDERING_EXTENSION_URLS.has(ext.url ?? ''))) {
     return true;
   }
   return false;

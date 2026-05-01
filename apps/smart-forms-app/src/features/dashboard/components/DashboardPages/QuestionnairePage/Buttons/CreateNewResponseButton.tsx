@@ -48,7 +48,10 @@ function CreateNewResponseButton() {
     }
 
     // Before building the form, reset any existing form state
-    await resetAndBuildForm({ questionnaire, terminologyServerUrl: config.terminologyServerUrl }, true);
+    await resetAndBuildForm(
+      { questionnaire, terminologyServerUrl: config.terminologyServerUrl },
+      true
+    );
 
     navigate('/renderer');
     setIsLoading(false);
