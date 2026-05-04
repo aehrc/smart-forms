@@ -15,9 +15,10 @@
  * limitations under the License.
  */
 
+import type { ReactNode } from 'react';
 import { Typography } from '@mui/material';
 
-export function AccountNameTypography(props: { name: string }) {
+export function AccountNameTypography(props: { name: ReactNode }) {
   const { name } = props;
 
   return (

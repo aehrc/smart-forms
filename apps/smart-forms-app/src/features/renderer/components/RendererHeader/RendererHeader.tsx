@@ -66,7 +66,7 @@ const RendererHeader = memo(function RendererHeader(props: RendererHeaderProps) 
 
         <Box m={0.5}>
           <Typography variant="subtitle1" color="text.primary" fontSize={isLgUp ? 13 : 11}>
-            {sourceQuestionnaire.title}
+            {sourceQuestionnaire.title ?? ''}
           </Typography>
         </Box>
         <Box flexGrow={1} />

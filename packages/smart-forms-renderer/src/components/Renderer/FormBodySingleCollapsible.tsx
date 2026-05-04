@@ -27,6 +27,8 @@ import { getContextDisplays } from '../../utils/tabs';
 import type { QuestionnaireItem } from 'fhir/r4';
 import { getShortText } from '../../utils/extensions';
 import ContextDisplayItem from '../FormComponents/ItemParts/ContextDisplayItem';
+import ItemPrefixSwitcher from '../FormComponents/ItemParts/ItemPrefixSwitcher';
+import ItemTextSwitcher from '../FormComponents/ItemParts/ItemTextSwitcher';
 import { getItemTextToDisplay } from '../../utils/itemTextToDisplay';
 
 interface FormBodySingleCollapsibleProps {
@@ -44,7 +46,7 @@ const FormBodySingleCollapsible = memo(function FormBodySingleCollapsible(
 
   const contextDisplayItems = getContextDisplays(qItem);
 
-  const collapsibleLabel = getShortText(qItem) ?? getItemTextToDisplay(qItem) ?? '';
+  const shortOrTextLabel = getShortText(qItem) ?? getItemTextToDisplay(qItem) ?? '';
 
   const isExpanded = selectedIndex === index;
 
@@ -60,7 +62,15 @@ const FormBodySingleCollapsible = memo(function FormBodySingleCollapsible(
       onChange={() => onToggleExpand(index)}>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Box display="flex" alignItems="center" justifyContent="space-between" width="100%" mr={3}>
-          <Typography component="h2">{collapsibleLabel}</Typography>
+          <Typography
+            component="h2"
+            display="inline-flex"
+            alignItems="baseline"
+            gap={0.5}
+            flexWrap="wrap">
+            <ItemPrefixSwitcher qItem={qItem} />
+            {getShortText(qItem) ? shortOrTextLabel : <ItemTextSwitcher qItem={qItem} />}
+          </Typography>
           <Box display="flex" columnGap={0.5}>
             {contextDisplayItems.map((item) => {
               return <ContextDisplayItem key={item.linkId} displayItem={item} />;

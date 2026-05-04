@@ -24,6 +24,7 @@ import RequiredAsterisk from './RequiredAsterisk';
 import { getContextDisplays } from '../../../utils/tabs';
 import ContextDisplayItem from './ContextDisplayItem';
 import ItemTextSwitcher from './ItemTextSwitcher';
+import ItemPrefixSwitcher from './ItemPrefixSwitcher';
 import Typography from '@mui/material/Typography';
 import FlyoverItem from './FlyoverItem';
 import type { PropsWithParentStylesAttribute } from '../../../interfaces/renderProps.interface';
@@ -78,7 +79,15 @@ const ItemLabel = memo(function ItemLabel(props: ItemLabelProps) {
             </RequiredAsterisk>
           ) : null}
 
-          <ItemTextSwitcher qItem={qItem} />
+          <Box
+            component="span"
+            display="inline-flex"
+            alignItems="baseline"
+            gap={0.5}
+            flexWrap="wrap">
+            <ItemPrefixSwitcher qItem={qItem} />
+            <ItemTextSwitcher qItem={qItem} />
+          </Box>
 
           {/* Required asterisk position is behind text */}
           {required && requiredIndicatorPosition === 'end' ? (

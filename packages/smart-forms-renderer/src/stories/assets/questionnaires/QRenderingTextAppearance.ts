@@ -492,6 +492,193 @@ export const qRenderingXhtmlGroupPropagationClassStyles: Questionnaire = {
   ]
 };
 
+// ── Questionnaire.title rendering extensions ─────────────────────────────────
+
+export const qRenderingStyleTitle: Questionnaire = {
+  resourceType: 'Questionnaire',
+  title: 'Plain title (fallback)',
+  _title: {
+    extension: [
+      {
+        url: 'http://hl7.org/fhir/StructureDefinition/rendering-style',
+        valueString: 'color: #1565C0; font-size: 1.5rem; font-weight: 700; letter-spacing: 0.02em;'
+      }
+    ]
+  },
+  status: 'draft',
+  item: [{ linkId: 'q1', text: 'Your name', type: 'string' }]
+};
+
+export const qRenderingMarkdownTitle: Questionnaire = {
+  resourceType: 'Questionnaire',
+  title: 'Plain title (fallback)',
+  _title: {
+    extension: [
+      {
+        url: 'http://hl7.org/fhir/StructureDefinition/rendering-markdown',
+        valueMarkdown: '## **Patient Health Check** *(rendering-markdown)*'
+      }
+    ]
+  },
+  status: 'draft',
+  item: [{ linkId: 'q1', text: 'Your name', type: 'string' }]
+};
+
+export const qRenderingXhtmlTitle: Questionnaire = {
+  resourceType: 'Questionnaire',
+  title: 'Plain title (fallback)',
+  _title: {
+    extension: [
+      {
+        url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
+        valueString:
+          '<span xmlns="http://www.w3.org/1999/xhtml" style="color: #6A1B9A; font-size: 1.4rem; font-weight: bold;">&#x2605; Patient Health Check <em>(rendering-xhtml)</em></span>'
+      }
+    ]
+  },
+  status: 'draft',
+  item: [{ linkId: 'q1', text: 'Your name', type: 'string' }]
+};
+
+// ── Questionnaire.item.prefix rendering extensions ───────────────────────────
+
+export const qRenderingStylePrefix: Questionnaire = {
+  resourceType: 'Questionnaire',
+  title: 'item.prefix — rendering-style',
+  status: 'draft',
+  item: [
+    {
+      linkId: 'group-a',
+      text: 'Patient Details',
+      type: 'group',
+      prefix: '1.',
+      _prefix: {
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/rendering-style',
+            valueString: 'color: #1565C0; font-weight: 800; font-size: 1.1rem;'
+          }
+        ]
+      },
+      item: [
+        { linkId: 'q1', text: 'First name', type: 'string', prefix: '1.1' },
+        { linkId: 'q2', text: 'Last name', type: 'string', prefix: '1.2' }
+      ]
+    },
+    {
+      linkId: 'group-b',
+      text: 'Medical History',
+      type: 'group',
+      prefix: '2.',
+      _prefix: {
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/rendering-style',
+            valueString: 'color: #B71C1C; font-weight: 800; font-size: 1.1rem;'
+          }
+        ]
+      },
+      item: [{ linkId: 'q3', text: 'Any known allergies?', type: 'boolean', prefix: '2.1' }]
+    }
+  ]
+};
+
+export const qRenderingMarkdownPrefix: Questionnaire = {
+  resourceType: 'Questionnaire',
+  title: 'item.prefix — rendering-markdown',
+  status: 'draft',
+  item: [
+    {
+      linkId: 'q1',
+      text: 'Blood pressure reading',
+      type: 'string',
+      prefix: 'Q1',
+      _prefix: {
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/rendering-markdown',
+            valueMarkdown: '**Q1** *(markdown prefix)*'
+          }
+        ]
+      }
+    },
+    {
+      linkId: 'q2',
+      text: 'Heart rate',
+      type: 'string',
+      prefix: 'Q2',
+      _prefix: {
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/rendering-markdown',
+            valueMarkdown: '**Q2** *(markdown prefix)*'
+          }
+        ]
+      }
+    }
+  ]
+};
+
+export const qRenderingXhtmlPrefix: Questionnaire = {
+  resourceType: 'Questionnaire',
+  title: 'item.prefix — rendering-xhtml',
+  status: 'draft',
+  item: [
+    {
+      linkId: 'q1',
+      text: 'Smoking status',
+      type: 'boolean',
+      prefix: 'A.',
+      _prefix: {
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
+            valueString:
+              '<span xmlns="http://www.w3.org/1999/xhtml" style="display:inline-block; background:#FFF3E0; color:#E65100; font-weight:bold; padding:1px 6px; border-radius:4px; font-size:0.85rem;">A.</span>'
+          }
+        ]
+      }
+    },
+    {
+      linkId: 'q2',
+      text: 'Alcohol use',
+      type: 'boolean',
+      prefix: 'B.',
+      _prefix: {
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
+            valueString:
+              '<span xmlns="http://www.w3.org/1999/xhtml" style="display:inline-block; background:#E8F5E9; color:#2E7D32; font-weight:bold; padding:1px 6px; border-radius:4px; font-size:0.85rem;">B.</span>'
+          }
+        ]
+      }
+    }
+  ]
+};
+
+export const qPrefixOnlyNoText: Questionnaire = {
+  resourceType: 'Questionnaire',
+  title: 'Group heading driven only by prefix (no item.text)',
+  status: 'draft',
+  item: [
+    {
+      linkId: 'group-no-text',
+      type: 'group',
+      prefix: 'Section A',
+      _prefix: {
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/rendering-style',
+            valueString: 'color: #4A148C; font-weight: 700; font-size: 1rem;'
+          }
+        ]
+      },
+      item: [{ linkId: 'q1', text: 'Question inside prefix-only group', type: 'string' }]
+    }
+  ]
+};
+
 export const qRenderingAnswerOptionValueString: Questionnaire = {
   resourceType: 'Questionnaire',
   status: 'draft',

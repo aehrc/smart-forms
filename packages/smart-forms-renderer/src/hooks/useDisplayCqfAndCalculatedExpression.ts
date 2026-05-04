@@ -27,7 +27,7 @@ import type { CalculatedExpression } from '../interfaces';
  * - If the value is a string or number → returns it as a string.
  *
  * @param {QuestionnaireItem} qItem - The questionnaire item.
- * @param {CalculatedExpression['from']} from - The expression source. Should be a one of 'item._text' or 'item._text.aria-label'
+ * @param {CalculatedExpression['from']} from - The expression source (e.g. 'item._text', 'item._text.aria-label', 'item._prefix')
  * @returns {string | null} The display value as a string, empty string, or null.
  */
 function useDisplayCqfAndCalculatedExpression(
