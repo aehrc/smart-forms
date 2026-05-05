@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-import { useState, useContext } from 'react';
+import { useContext, useState } from 'react';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import { useSnackbar } from 'notistack';
-import { ConfigContext } from '../../configChecker/contexts/ConfigContext.tsx';
+import { formatPopulateIssuesForUser } from '../utils/prepopulateIssues.ts';
 import {
   buildForm,
   useQuestionnaireResponseStore,
@@ -29,6 +29,7 @@ import useSmartClient from '../../../hooks/useSmartClient.ts';
 import type { RendererSpinner } from '../../renderer/types/rendererSpinner.ts';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { fetchResourceCallback, fetchTerminologyCallback } from '../utils/callback.ts';
+import { ConfigContext } from '../../configChecker/contexts/ConfigContext.tsx';
 
 function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void {
   const { isSpinning, status } = spinner;
@@ -45,7 +46,9 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
   const [isPopulated, setIsPopulated] = useState(false);
 
   const { enqueueSnackbar } = useSnackbar();
+
   const { config } = useContext(ConfigContext);
+  const { showDeveloperMessages } = config;
 
   // Do not run population if spinner purpose is "repopulate"
   if (status !== 'prepopulate') {
@@ -129,14 +132,18 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
 
       onStopSpinner();
       if (issues) {
-        // Only show the snackbar message if developer messages are enabled
-        if (config.showDeveloperMessages ?? true) {
+        if (showDeveloperMessages) {
           enqueueSnackbar(
             'Form partially populated, there might be pre-population issues. View console for details.',
             { action: <CloseSnackbar /> }
           );
+        } else {
+          enqueueSnackbar(formatPopulateIssuesForUser(issues), {
+            variant: 'warning',
+            persist: true,
+            action: <CloseSnackbar variant="warning" />
+          });
         }
-        // Always log to console - clinicians won't see this, but developers need it
         console.warn(issues);
         return;
       }

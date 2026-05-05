@@ -7,6 +7,9 @@ import MenuItem from '@mui/material/MenuItem';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import type { RendererSpinner } from '../../renderer/types/rendererSpinner.ts';
 import { resetAndBuildForm } from '../../../utils/manageForm.ts';
+import { useSnackbar } from 'notistack';
+import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
+import { formatPopulateIssuesForUser } from '../../prepopulate/utils/prepopulateIssues.ts';
 
 interface PrePopulateMenuItemProps {
   sourceFhirServerUrl: string | null;
@@ -32,6 +35,7 @@ function PrePopulateMenuItem(props: PrePopulateMenuItemProps) {
   } = props;
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const { enqueueSnackbar } = useSnackbar();
 
   const populateEnabled = sourceFhirServerUrl !== null && patient !== null;
 
@@ -62,33 +66,48 @@ function PrePopulateMenuItem(props: PrePopulateMenuItemProps) {
       fhirContext: practitionerRole
         ? [{ reference: `PractitionerRole/${practitionerRole.id}` }]
         : undefined
-    }).then(async ({ populateSuccess, populateResult }) => {
-      if (!populateSuccess || !populateResult) {
-        onSpinnerChange({
-          isSpinning: false,
-          status: null,
-          message: ''
+    })
+      .then(async ({ populateSuccess, populateResult }) => {
+        if (!populateSuccess || !populateResult) {
+          onSpinnerChange({ isSpinning: false, status: null, message: '' });
+          enqueueSnackbar('Form could not be pre-populated.', {
+            variant: 'warning',
+            action: <CloseSnackbar variant="warning" />
+          });
+          return;
+        }
+
+        const { populatedResponse, issues, populatedContext } = populateResult;
+
+        // Call to buildForm to pre-populate the QR which repaints the entire BaseRenderer view
+        // Also passes the populatedContext to the FhirPathContext
+        await resetAndBuildForm({
+          questionnaire: sourceQuestionnaire,
+          questionnaireResponse: populatedResponse,
+          terminologyServerUrl,
+          additionalContext: populatedContext
         });
-        return;
-      }
 
-      const { populatedResponse, populatedContext } = populateResult;
+        onSpinnerChange({ isSpinning: false, status: null, message: '' });
 
-      // Call to buildForm to pre-populate the QR which repaints the entire BaseRenderer view
-      // Also passes the populatedContext to the FhirPathContext
-      await resetAndBuildForm({
-        questionnaire: sourceQuestionnaire,
-        questionnaireResponse: populatedResponse,
-        terminologyServerUrl,
-        additionalContext: populatedContext
+        if (issues) {
+          enqueueSnackbar(formatPopulateIssuesForUser(issues), {
+            variant: 'warning',
+            persist: true,
+            action: <CloseSnackbar variant="warning" />
+          });
+          console.warn('Pre-population issues:', issues);
+        } else {
+          enqueueSnackbar('Form pre-populated.', { action: <CloseSnackbar /> });
+        }
+      })
+      .catch(() => {
+        onSpinnerChange({ isSpinning: false, status: null, message: '' });
+        enqueueSnackbar('Form could not be pre-populated.', {
+          variant: 'warning',
+          action: <CloseSnackbar variant="warning" />
+        });
       });
-
-      onSpinnerChange({
-        isSpinning: false,
-        status: null,
-        message: ''
-      });
-    });
   }
 
   return (
