@@ -21,6 +21,7 @@ import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import { useRendererConfigStore } from '../../../stores';
 import DisplayInstructions from '../DisplayItem/DisplayInstructions';
 import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 
 interface ItemFieldGridProps {
   qItem: QuestionnaireItem;
@@ -49,6 +50,9 @@ function ItemFieldGrid(props: ItemFieldGridProps) {
   const itemResponsive = useRendererConfigStore.use.itemResponsive();
   const { labelBreakpoints, fieldBreakpoints, columnGapPixels, rowGapPixels } = itemResponsive;
 
+  const prepopulationWarningLinkIds = useRendererConfigStore.use.prepopulationWarningLinkIds();
+  const hasPrepopWarning = prepopulationWarningLinkIds.has(qItem.linkId);
+
   const { displayInstructions } = useRenderingExtensions(qItem);
 
   // Generate instruction ID if instructions exist and there's no feedback
@@ -70,6 +74,11 @@ function ItemFieldGrid(props: ItemFieldGridProps) {
           <DisplayInstructions id={instructionsId} readOnly={readOnly}>
             {displayInstructions}
           </DisplayInstructions>
+        )}
+        {hasPrepopWarning && (
+          <Typography variant="caption" color="warning.main" display="block" mt={0.5}>
+            This field could not be pre-populated.
+          </Typography>
         )}
       </Grid>
     </Grid>

@@ -111,6 +111,14 @@ export interface RendererConfig {
   disablePageButtons?: boolean;
   disableTabButtons?: boolean;
   disableHeadingFocusOnTabSwitch?: boolean;
+
+  /**
+   * Set of questionnaire item linkIds whose pre-population failed.
+   * When provided, the renderer renders an inline warning below each affected field
+   * so clinicians can see at a glance which fields were not pre-populated and why.
+   * Pass an empty Set to clear all warnings (e.g. when loading a new form).
+   */
+  prepopulationWarningLinkIds?: Set<string>;
 }
 
 /**
@@ -145,6 +153,7 @@ export interface RendererConfigStoreType {
   disablePageButtons: boolean;
   disableTabButtons: boolean;
   disableHeadingFocusOnTabSwitch: boolean;
+  prepopulationWarningLinkIds: Set<string>;
   setRendererConfig: (params: RendererConfig) => void;
 }
 
@@ -176,6 +185,7 @@ export const rendererConfigStore = createStore<RendererConfigStoreType>()((set) 
   disablePageButtons: false,
   disableTabButtons: false,
   disableHeadingFocusOnTabSwitch: false,
+  prepopulationWarningLinkIds: new Set<string>(),
   setRendererConfig: (params: RendererConfig) => {
     set((state) => ({
       readOnlyVisualStyle: params.readOnlyVisualStyle ?? state.readOnlyVisualStyle,
@@ -196,7 +206,9 @@ export const rendererConfigStore = createStore<RendererConfigStoreType>()((set) 
       disablePageButtons: params.disablePageButtons ?? state.disablePageButtons,
       disableTabButtons: params.disableTabButtons ?? state.disableTabButtons,
       disableHeadingFocusOnTabSwitch:
-        params.disableHeadingFocusOnTabSwitch ?? state.disableHeadingFocusOnTabSwitch
+        params.disableHeadingFocusOnTabSwitch ?? state.disableHeadingFocusOnTabSwitch,
+      prepopulationWarningLinkIds:
+        params.prepopulationWarningLinkIds ?? state.prepopulationWarningLinkIds
     }));
   }
 }));

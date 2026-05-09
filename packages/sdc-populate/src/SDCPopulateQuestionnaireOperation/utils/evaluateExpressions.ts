@@ -66,7 +66,7 @@ export async function generateExpressionValues(
           `SDC-Populate Error: fhirpath evaluation for InitialExpression ${expression} failed. Details below:` +
             e
         );
-        issues.push(createInvalidWarningIssue(String(e)));
+        issues.push(createInvalidWarningIssue(String(e), linkId));
         continue;
       }
 
@@ -92,7 +92,7 @@ export async function generateExpressionValues(
           `SDC-Populate Error: fhirpath evaluation for ItemPopulationContext ${expression} failed. Details below:` +
             e
         );
-        issues.push(createInvalidWarningIssue(String(e)));
+        issues.push(createInvalidWarningIssue(String(e), linkId));
         continue;
       }
 

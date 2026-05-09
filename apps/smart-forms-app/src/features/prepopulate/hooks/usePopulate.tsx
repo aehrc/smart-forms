@@ -18,9 +18,13 @@
 import { useContext, useState } from 'react';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import { useSnackbar } from 'notistack';
-import { formatPopulateIssuesForUser } from '../utils/prepopulateIssues.ts';
+import {
+  extractWarningLinkIds,
+  formatPopulateIssuesForUser
+} from '../utils/prepopulateIssues.ts';
 import {
   buildForm,
+  rendererConfigStore,
   useQuestionnaireResponseStore,
   useQuestionnaireStore,
   useTerminologyServerStore
@@ -132,6 +136,9 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
 
       onStopSpinner();
       if (issues) {
+        rendererConfigStore
+          .getState()
+          .setRendererConfig({ prepopulationWarningLinkIds: extractWarningLinkIds(issues) });
         if (showDeveloperMessages) {
           enqueueSnackbar(
             'Form partially populated, there might be pre-population issues. View console for details.',
@@ -148,6 +155,9 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
         return;
       }
 
+      rendererConfigStore
+        .getState()
+        .setRendererConfig({ prepopulationWarningLinkIds: new Set() });
       enqueueSnackbar('Form populated', {
         preventDuplicate: true,
         action: <CloseSnackbar />

@@ -26,6 +26,7 @@ import type { RendererSpinner } from '../../types/rendererSpinner.ts';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import {
   generateItemsToRepopulate,
+  rendererConfigStore,
   useQuestionnaireStore,
   useTerminologyServerStore
 } from '@aehrc/smart-forms-renderer';
@@ -38,7 +39,10 @@ import {
   fetchResourceCallback,
   fetchTerminologyCallback
 } from '../../../prepopulate/utils/callback.ts';
-import { formatPopulateIssuesForUser } from '../../../prepopulate/utils/prepopulateIssues.ts';
+import {
+  extractWarningLinkIds,
+  formatPopulateIssuesForUser
+} from '../../../prepopulate/utils/prepopulateIssues.ts';
 import type Client from 'fhirclient/lib/Client';
 import { useState } from 'react';
 
@@ -131,6 +135,9 @@ function RepopulateAction(props: RepopulateActionProps) {
 
       onSpinnerChange({ isSpinning: false, status: 'repopulate-fetch', message: '' });
       if (issues) {
+        rendererConfigStore
+          .getState()
+          .setRendererConfig({ prepopulationWarningLinkIds: extractWarningLinkIds(issues) });
         enqueueSnackbar(formatPopulateIssuesForUser(issues), {
           variant: 'warning',
           persist: true,
@@ -139,6 +146,9 @@ function RepopulateAction(props: RepopulateActionProps) {
         console.warn('Re-population issues:', issues);
         return;
       }
+      rendererConfigStore
+        .getState()
+        .setRendererConfig({ prepopulationWarningLinkIds: new Set() });
     },
     onError: () => {
       onSpinnerChange({ isSpinning: false, status: null, message: '' });

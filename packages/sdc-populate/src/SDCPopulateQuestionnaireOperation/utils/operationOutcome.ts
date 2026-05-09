@@ -36,15 +36,21 @@ export function createErrorOutcome(errorMessage: string): OperationOutcome {
 }
 
 /**
- * Create an OperationOutcome issue of severity "warning" and code "invalid" with a supplied warning message
+ * Create an OperationOutcome issue of severity "warning" and code "invalid" with a supplied warning message.
+ * When a linkId is provided it is recorded in the `expression` field so that consumers can identify
+ * which questionnaire item was affected by the failure.
  *
  * @author Sean Fong
  */
-export function createInvalidWarningIssue(warningMessage: string): OperationOutcomeIssue {
+export function createInvalidWarningIssue(
+  warningMessage: string,
+  linkId?: string
+): OperationOutcomeIssue {
   return {
     severity: 'warning',
     code: 'invalid',
-    details: { text: warningMessage }
+    details: { text: warningMessage },
+    ...(linkId && { expression: [linkId] })
   };
 }
 

@@ -54,3 +54,23 @@ export function formatPopulateIssuesForUser(issues: OperationOutcome): string {
     'evaluated. Affected fields will need to be filled in manually.'
   );
 }
+
+/**
+ * Extracts the set of questionnaire item linkIds that were recorded in the `expression` field
+ * of each `OperationOutcomeIssue`. These are the specific fields that failed to pre-populate
+ * and should be highlighted in the renderer.
+ *
+ * Only `invalid`-coded issues carry a linkId (set by `createInvalidWarningIssue` in sdc-populate).
+ * `not-found` issues relate to server-level resource fetching and are not tied to a single item.
+ */
+export function extractWarningLinkIds(issues: OperationOutcome): Set<string> {
+  const linkIds = new Set<string>();
+  for (const issue of issues.issue ?? []) {
+    if (issue.code === 'invalid' && issue.expression) {
+      for (const expr of issue.expression) {
+        linkIds.add(expr);
+      }
+    }
+  }
+  return linkIds;
+}

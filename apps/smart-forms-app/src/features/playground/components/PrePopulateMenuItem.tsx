@@ -1,6 +1,6 @@
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { fetchResourceCallback } from './PrePopCallbackForPlayground.tsx';
-import { useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import { rendererConfigStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
 import type { Encounter, Patient, Practitioner, PractitionerRole } from 'fhir/r4';
 import { ListItemIcon, ListItemText } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
@@ -9,7 +9,10 @@ import type { RendererSpinner } from '../../renderer/types/rendererSpinner.ts';
 import { resetAndBuildForm } from '../../../utils/manageForm.ts';
 import { useSnackbar } from 'notistack';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
-import { formatPopulateIssuesForUser } from '../../prepopulate/utils/prepopulateIssues.ts';
+import {
+  extractWarningLinkIds,
+  formatPopulateIssuesForUser
+} from '../../prepopulate/utils/prepopulateIssues.ts';
 
 interface PrePopulateMenuItemProps {
   sourceFhirServerUrl: string | null;
@@ -91,6 +94,9 @@ function PrePopulateMenuItem(props: PrePopulateMenuItemProps) {
         onSpinnerChange({ isSpinning: false, status: null, message: '' });
 
         if (issues) {
+          rendererConfigStore
+            .getState()
+            .setRendererConfig({ prepopulationWarningLinkIds: extractWarningLinkIds(issues) });
           enqueueSnackbar(formatPopulateIssuesForUser(issues), {
             variant: 'warning',
             persist: true,
@@ -98,6 +104,9 @@ function PrePopulateMenuItem(props: PrePopulateMenuItemProps) {
           });
           console.warn('Pre-population issues:', issues);
         } else {
+          rendererConfigStore
+            .getState()
+            .setRendererConfig({ prepopulationWarningLinkIds: new Set() });
           enqueueSnackbar('Form pre-populated.', { action: <CloseSnackbar /> });
         }
       })
