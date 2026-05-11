@@ -146,9 +146,7 @@ function RepopulateAction(props: RepopulateActionProps) {
         console.warn('Re-population issues:', issues);
         return;
       }
-      rendererConfigStore
-        .getState()
-        .setRendererConfig({ prepopulationWarningLinkIds: new Set() });
+      rendererConfigStore.getState().setRendererConfig({ prepopulationWarningLinkIds: new Set() });
     },
     onError: () => {
       onSpinnerChange({ isSpinning: false, status: null, message: '' });
