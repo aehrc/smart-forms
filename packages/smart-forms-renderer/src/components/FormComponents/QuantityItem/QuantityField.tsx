@@ -26,7 +26,7 @@ import { StandardTextField } from '../Textfield.styles';
 interface QuantityFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
   itemType: string;
-  itemText: string | undefined;
+  itemText?: string;
   input: string;
   feedback: string;
   displayPrompt: string;
