@@ -549,6 +549,43 @@ describe('usePopulate', () => {
       });
     });
 
+    it('should retry once and succeed if first attempt fails', async () => {
+      const spinner = createSpinner(true, 'prepopulate');
+      mockPopulateQuestionnaire
+        .mockResolvedValueOnce({ populateSuccess: false, populateResult: null })
+        .mockResolvedValueOnce({
+          populateSuccess: true,
+          populateResult: { populatedResponse: mockResponse }
+        });
+
+      renderHook(() => usePopulate(spinner, mockOnStopSpinner));
+
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
+      expect(mockPopulateQuestionnaire).toHaveBeenCalledTimes(2);
+      expect(mockBuildForm).toHaveBeenCalled();
+      expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Form populated', {
+        preventDuplicate: true,
+        action: expect.anything()
+      });
+    });
+
+    it('should show failure message if both attempts fail', async () => {
+      const spinner = createSpinner(true, 'prepopulate');
+      mockPopulateQuestionnaire.mockResolvedValue({ populateSuccess: false, populateResult: null });
+
+      renderHook(() => usePopulate(spinner, mockOnStopSpinner));
+
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
+      expect(mockPopulateQuestionnaire).toHaveBeenCalledTimes(2);
+      expect(mockBuildForm).not.toHaveBeenCalled();
+      expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Form not populated', {
+        variant: 'warning',
+        action: expect.anything()
+      });
+    });
+
     it('should handle missing populate result', async () => {
       const spinner = createSpinner(true, 'prepopulate');
       mockPopulateQuestionnaire.mockResolvedValue({
