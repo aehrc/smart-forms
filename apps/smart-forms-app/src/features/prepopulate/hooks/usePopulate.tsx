@@ -81,7 +81,7 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
 
   setIsPopulated(true);
 
-  const populateParams = {
+  populateQuestionnaire({
     questionnaire: sourceQuestionnaire,
     fetchResourceCallback: fetchResourceCallback,
     fetchResourceRequestConfig: {
@@ -96,17 +96,9 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
     fetchTerminologyCallback: fetchTerminologyCallback,
     fetchTerminologyRequestConfig: {
       terminologyServerUrl: defaultTerminologyServerUrl
-    }
-  };
-
-  populateQuestionnaire(populateParams)
-    .then((populateRes) => {
-      // Retry once if the first attempt fails - handles transient server slowness on first use
-      if (!populateRes?.populateSuccess || !populateRes?.populateResult) {
-        return populateQuestionnaire(populateParams);
-      }
-      return populateRes;
-    })
+    },
+    timeoutMs: 30000
+  })
     .then(async (populateRes) => {
       if (!populateRes) {
         onStopSpinner();
