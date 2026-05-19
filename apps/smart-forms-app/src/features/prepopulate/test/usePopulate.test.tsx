@@ -317,8 +317,7 @@ describe('usePopulate', () => {
         fetchTerminologyCallback: expect.any(Function),
         fetchTerminologyRequestConfig: {
           terminologyServerUrl: 'https://test-terminology-server.com'
-        },
-        timeoutMs: 30000
+        }
       });
     });
 

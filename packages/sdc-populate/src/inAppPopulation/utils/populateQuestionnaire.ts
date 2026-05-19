@@ -60,7 +60,7 @@ export interface PopulateResult {
  * @property fhirContext - An array of contextual resources within a launch. See https://build.fhir.org/ig/HL7/smart-app-launch/scopes-and-launch-context.html#fhircontext-exp
  * @property fetchTerminologyCallback - A callback function to fetch terminology resources, optional
  * @property fetchTerminologyRequestConfig - Any request configuration to be passed to the fetchTerminologyCallback i.e. headers, auth etc., optional
- * @property timeoutMs - Timeout in milliseconds for the $populate operation, default is 10000ms (10 seconds)
+ * @property timeoutMs - Timeout in milliseconds for the $populate operation, default is 30000ms (30 seconds)
  *
  * @author Sean Fong
  */
@@ -103,7 +103,7 @@ export async function populateQuestionnaire(params: PopulateQuestionnaireParams)
     fhirContext,
     fetchTerminologyCallback,
     fetchTerminologyRequestConfig,
-    timeoutMs = 10000
+    timeoutMs = 30000
   } = params;
 
   const { inputParameters } = await initialiseInputParameters(

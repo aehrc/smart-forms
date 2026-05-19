@@ -96,8 +96,7 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
     fetchTerminologyCallback: fetchTerminologyCallback,
     fetchTerminologyRequestConfig: {
       terminologyServerUrl: defaultTerminologyServerUrl
-    },
-    timeoutMs: 30000
+    }
   })
     .then(async (populateRes) => {
       if (!populateRes) {
