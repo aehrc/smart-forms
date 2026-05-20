@@ -20,6 +20,7 @@ import ClearIcon from '@mui/icons-material/Clear';
 import CreateNewResponseButton from '../../../dashboard/components/DashboardPages/QuestionnairePage/Buttons/CreateNewResponseButton.tsx';
 import type { QuestionnaireResponse } from 'fhir/r4';
 import OpenResponseButton from '../../../dashboard/components/DashboardPages/ResponsesPage/Buttons/OpenResponseButton.tsx';
+import CloneResponseButton from '../../../dashboard/components/DashboardPages/ResponsesPage/Buttons/CloneResponseButton.tsx';
 
 interface ExistingResponsesTableToolbarButtonsProps {
   selectedResponse: QuestionnaireResponse | null;
@@ -33,6 +34,7 @@ function ExistingResponsesTableToolbarButtons(props: ExistingResponsesTableToolb
     return (
       <Box display="flex" alignItems="center" columnGap={2}>
         <OpenResponseButton selectedResponse={selectedResponse} />
+        <CloneResponseButton selectedResponse={selectedResponse} />
         <Stack alignItems="center">
           <IconButton onClick={onClearSelection}>
             <ClearIcon />
