@@ -127,8 +127,7 @@ describe('removeEmptyAnswersFromItemRecursive', () => {
 
     const qrItem: QuestionnaireResponseItem = {
       linkId: 'test-item',
-      definition:
-        'http://example.org/fhir/StructureDefinition/IsTNBCFeature#Observation.value[x]',
+      definition: 'http://example.org/fhir/StructureDefinition/IsTNBCFeature#Observation.value[x]',
       text: 'Has triple negative breast cancer',
       answer: [{ valueBoolean: true }]
     };
