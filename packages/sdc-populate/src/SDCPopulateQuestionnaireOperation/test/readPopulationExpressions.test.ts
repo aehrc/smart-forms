@@ -73,7 +73,7 @@ describe('readPopulationExpressions - itemPopulationContext', () => {
                 valueExpression: {
                   language: 'text/fhirpath',
                   expression:
-                    "%ConditionRepeat.onset.ofType(dateTime).toString().substring(0,10).toDate()"
+                    '%ConditionRepeat.onset.ofType(dateTime).toString().substring(0,10).toDate()'
                 }
               }
             ]
