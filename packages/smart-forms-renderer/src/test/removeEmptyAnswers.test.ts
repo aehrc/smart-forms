@@ -117,6 +117,53 @@ describe('removeEmptyAnswersFromItemRecursive', () => {
     expect(result).toEqual(qrItem);
   });
 
+  it('should preserve definition from qItem when present', () => {
+    const qItem: QuestionnaireItem = {
+      linkId: 'test-item',
+      type: 'boolean',
+      text: 'Has triple negative breast cancer',
+      definition: 'http://example.org/fhir/StructureDefinition/IsTNBCFeature#Observation.value[x]'
+    };
+
+    const qrItem: QuestionnaireResponseItem = {
+      linkId: 'test-item',
+      definition:
+        'http://example.org/fhir/StructureDefinition/IsTNBCFeature#Observation.value[x]',
+      text: 'Has triple negative breast cancer',
+      answer: [{ valueBoolean: true }]
+    };
+
+    mockQrItemHasItemsOrAnswer.mockReturnValue(true);
+    mockIsHiddenByEnableWhen.mockReturnValue(false);
+
+    const result = removeEmptyAnswersFromItemRecursive(qItem, qrItem, enableWhenContext);
+
+    expect((result as QuestionnaireResponseItem).definition).toBe(
+      'http://example.org/fhir/StructureDefinition/IsTNBCFeature#Observation.value[x]'
+    );
+  });
+
+  it('should not include definition property when qItem has none', () => {
+    const qItem: QuestionnaireItem = {
+      linkId: 'test-item',
+      type: 'string',
+      text: 'No definition here'
+    };
+
+    const qrItem: QuestionnaireResponseItem = {
+      linkId: 'test-item',
+      text: 'No definition here',
+      answer: [{ valueString: 'answer' }]
+    };
+
+    mockQrItemHasItemsOrAnswer.mockReturnValue(true);
+    mockIsHiddenByEnableWhen.mockReturnValue(false);
+
+    const result = removeEmptyAnswersFromItemRecursive(qItem, qrItem, enableWhenContext);
+
+    expect(result).not.toHaveProperty('definition');
+  });
+
   it('should return null when item is hidden by enableWhen', () => {
     const qItem: QuestionnaireItem = {
       linkId: 'test-item',
