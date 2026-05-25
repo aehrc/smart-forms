@@ -80,6 +80,7 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
   }
 
   setIsPopulated(true);
+
   populateQuestionnaire({
     questionnaire: sourceQuestionnaire,
     fetchResourceCallback: fetchResourceCallback,
