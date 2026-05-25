@@ -81,10 +81,12 @@ export const qrRemoveIdResult: QuestionnaireResponse = {
       item: [
         {
           linkId: 'myPatient1.name',
+          definition: 'http://hl7.org/fhir/StructureDefinition/Patient#Patient.name',
           text: 'name *',
           item: [
             {
               linkId: 'myPatient1.name.first',
+              definition: 'http://hl7.org/fhir/StructureDefinition/Patient#Patient.name.given',
               text: 'firstName *',
               answer: [
                 {
@@ -96,10 +98,12 @@ export const qrRemoveIdResult: QuestionnaireResponse = {
         },
         {
           linkId: 'myPatient1.name',
+          definition: 'http://hl7.org/fhir/StructureDefinition/Patient#Patient.name',
           text: 'name *',
           item: [
             {
               linkId: 'myPatient1.name.first',
+              definition: 'http://hl7.org/fhir/StructureDefinition/Patient#Patient.name.given',
               text: 'firstName *',
               answer: [
                 {
