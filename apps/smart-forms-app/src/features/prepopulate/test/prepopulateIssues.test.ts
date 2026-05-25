@@ -26,11 +26,7 @@ import {
 // Helpers
 // ---------------------------------------------------------------------------
 
-function makeOutcome(
-  code: string,
-  detailsText?: string,
-  expression?: string[]
-): OperationOutcome {
+function makeOutcome(code: string, detailsText?: string, expression?: string[]): OperationOutcome {
   return {
     resourceType: 'OperationOutcome',
     issue: [
@@ -90,7 +86,9 @@ describe('formatPopulateIssuesForUser', () => {
     });
 
     it('returns network-error message when details.text contains "NetworkError"', () => {
-      const msg = formatPopulateIssuesForUser(makeOutcome('invalid', 'NetworkError: connection refused'));
+      const msg = formatPopulateIssuesForUser(
+        makeOutcome('invalid', 'NetworkError: connection refused')
+      );
       expect(msg).toContain('could not reach the health record server');
     });
   });
@@ -105,7 +103,7 @@ describe('formatPopulateIssuesForUser', () => {
         ]
       };
       const msg = formatPopulateIssuesForUser(outcome, 1);
-      expect(msg).toContain("no matching records");
+      expect(msg).toContain('no matching records');
       expect(msg).toContain('1 field affected');
     });
 
@@ -115,7 +113,7 @@ describe('formatPopulateIssuesForUser', () => {
         issue: [{ severity: 'warning', code: 'not-found' }]
       };
       const msg = formatPopulateIssuesForUser(outcome);
-      expect(msg).toContain("no matching records");
+      expect(msg).toContain('no matching records');
       expect(msg).toContain('permission');
     });
   });
@@ -123,7 +121,10 @@ describe('formatPopulateIssuesForUser', () => {
   describe('missing launch context detection', () => {
     it('returns missing-context message when details.text contains "undefined environment variable"', () => {
       const msg = formatPopulateIssuesForUser(
-        makeOutcome('invalid', 'Error: Attempting to access an undefined environment variable: patient')
+        makeOutcome(
+          'invalid',
+          'Error: Attempting to access an undefined environment variable: patient'
+        )
       );
       expect(msg).toContain('required patient context');
       expect(msg).toContain('not available in this session');
@@ -133,7 +134,7 @@ describe('formatPopulateIssuesForUser', () => {
   describe('default (standalone expression failure)', () => {
     it('returns generic expression-failure message as fallback', () => {
       const msg = formatPopulateIssuesForUser(makeOutcome('invalid', 'Some fhirpath error'));
-      expect(msg).toContain("pre-fill calculations could not be completed");
+      expect(msg).toContain('pre-fill calculations could not be completed');
     });
   });
 
@@ -187,8 +188,8 @@ describe('extractWarningMessages', () => {
       ]
     };
     const map = extractWarningMessages(outcome);
-    expect(map.get('link-1')).toContain("no matching records");
-    expect(map.get('link-2')).toContain("no matching records");
+    expect(map.get('link-1')).toContain('no matching records');
+    expect(map.get('link-2')).toContain('no matching records');
   });
 
   it('maps linkId to missing-context message when details.text has "undefined environment variable"', () => {
@@ -198,7 +199,9 @@ describe('extractWarningMessages', () => {
         {
           severity: 'warning',
           code: 'invalid',
-          details: { text: 'Error: Attempting to access an undefined environment variable: patient' },
+          details: {
+            text: 'Error: Attempting to access an undefined environment variable: patient'
+          },
           expression: ['link-3']
         }
       ]
@@ -210,7 +213,7 @@ describe('extractWarningMessages', () => {
   it('maps linkId to generic calculation message for standalone expression failure', () => {
     const outcome = makeOutcome('invalid', 'Some fhirpath error', ['link-4']);
     const map = extractWarningMessages(outcome);
-    expect(map.get('link-4')).toContain("calculation could not be completed");
+    expect(map.get('link-4')).toContain('calculation could not be completed');
   });
 
   it('ignores invalid issues without an expression array', () => {
