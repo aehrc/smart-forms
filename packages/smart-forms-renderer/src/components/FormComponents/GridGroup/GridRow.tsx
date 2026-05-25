@@ -28,8 +28,12 @@ import SingleItem from '../SingleItem/SingleItem';
 import { getQrItemsIndex, mapQItemsIndex } from '../../../utils/mapItem';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import Tooltip from '@mui/material/Tooltip';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import useHidden from '../../../hooks/useHidden';
 import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
+import { useRendererConfigStore } from '../../../stores';
+import { getGroupPrepopWarning } from '../../../utils/prepopulationWarnings';
 
 interface GridRowProps
   extends PropsWithQrItemChangeHandler,
@@ -58,6 +62,9 @@ function GridRow(props: GridRowProps) {
 
   const qItemsIndexMap = useMemo(() => mapQItemsIndex(qItem), [qItem]);
 
+  const prepopulationWarningMessages = useRendererConfigStore.use.prepopulationWarningMessages();
+  const rowWarning = getGroupPrepopWarning(qItem, prepopulationWarningMessages);
+
   const itemIsHidden = useHidden(qItem);
   if (itemIsHidden) {
     return null;
@@ -84,9 +91,34 @@ function GridRow(props: GridRowProps) {
   return (
     <>
       <GridTextTableCell>
-        <Typography component="span" fontWeight="bold">
-          {itemTextToDisplay}
-        </Typography>
+        <Box display="inline-flex" alignItems="center" gap={0.5}>
+          <Typography component="span" fontWeight="bold">
+            {itemTextToDisplay}
+          </Typography>
+          {rowWarning ? (
+            <Tooltip
+              title={
+                <Box>
+                  <Typography variant="caption" display="block" sx={{ mb: 0.5 }}>
+                    {rowWarning.reason}
+                  </Typography>
+                  <Typography variant="caption" fontWeight="bold" display="block">
+                    Fields not pre-populated:
+                  </Typography>
+                  <Box component="ul" sx={{ m: 0, pl: 2 }}>
+                    {rowWarning.fieldNames.map((name) => (
+                      <li key={name}>
+                        <Typography variant="caption">{name}</Typography>
+                      </li>
+                    ))}
+                  </Box>
+                </Box>
+              }
+              arrow>
+              <WarningAmberIcon color="warning" fontSize="small" sx={{ flexShrink: 0 }} />
+            </Tooltip>
+          ) : null}
+        </Box>
       </GridTextTableCell>
       {columnHeaderLabels.map((label, colIndex) => {
         // Find the QuestionnaireItem in this row that matches the current column label

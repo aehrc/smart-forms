@@ -26,6 +26,7 @@ import type { RendererSpinner } from '../../types/rendererSpinner.ts';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
 import {
   generateItemsToRepopulate,
+  questionnaireStore,
   rendererConfigStore,
   useQuestionnaireStore,
   useTerminologyServerStore
@@ -40,8 +41,9 @@ import {
   fetchTerminologyCallback
 } from '../../../prepopulate/utils/callback.ts';
 import {
-  extractWarningLinkIds,
-  formatPopulateIssuesForUser
+  extractWarningMessages,
+  formatPopulateIssuesForUser,
+  getWarningFieldNames
 } from '../../../prepopulate/utils/prepopulateIssues.ts';
 import type Client from 'fhirclient/lib/Client';
 import { useState } from 'react';
@@ -135,10 +137,13 @@ function RepopulateAction(props: RepopulateActionProps) {
 
       onSpinnerChange({ isSpinning: false, status: 'repopulate-fetch', message: '' });
       if (issues) {
+        const warningMessages = extractWarningMessages(issues);
         rendererConfigStore
           .getState()
-          .setRendererConfig({ prepopulationWarningLinkIds: extractWarningLinkIds(issues) });
-        enqueueSnackbar(formatPopulateIssuesForUser(issues), {
+          .setRendererConfig({ prepopulationWarningMessages: warningMessages });
+        const questionnaire = questionnaireStore.getState().sourceQuestionnaire;
+        const fieldNames = getWarningFieldNames(questionnaire, new Set(warningMessages.keys()));
+        enqueueSnackbar(formatPopulateIssuesForUser(issues, warningMessages.size, fieldNames), {
           variant: 'warning',
           persist: true,
           action: <CloseSnackbar variant="warning" />
@@ -146,7 +151,7 @@ function RepopulateAction(props: RepopulateActionProps) {
         console.warn('Re-population issues:', issues);
         return;
       }
-      rendererConfigStore.getState().setRendererConfig({ prepopulationWarningLinkIds: new Set() });
+      rendererConfigStore.getState().setRendererConfig({ prepopulationWarningMessages: new Map() });
     },
     onError: () => {
       onSpinnerChange({ isSpinning: false, status: null, message: '' });

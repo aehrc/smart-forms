@@ -1,6 +1,10 @@
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { fetchResourceCallback } from './PrePopCallbackForPlayground.tsx';
-import { rendererConfigStore, useQuestionnaireStore } from '@aehrc/smart-forms-renderer';
+import {
+  questionnaireStore,
+  rendererConfigStore,
+  useQuestionnaireStore
+} from '@aehrc/smart-forms-renderer';
 import type { Encounter, Patient, Practitioner, PractitionerRole } from 'fhir/r4';
 import { ListItemIcon, ListItemText } from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
@@ -10,8 +14,9 @@ import { resetAndBuildForm } from '../../../utils/manageForm.ts';
 import { useSnackbar } from 'notistack';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import {
-  extractWarningLinkIds,
-  formatPopulateIssuesForUser
+  extractWarningMessages,
+  formatPopulateIssuesForUser,
+  getWarningFieldNames
 } from '../../prepopulate/utils/prepopulateIssues.ts';
 
 interface PrePopulateMenuItemProps {
@@ -94,10 +99,13 @@ function PrePopulateMenuItem(props: PrePopulateMenuItemProps) {
         onSpinnerChange({ isSpinning: false, status: null, message: '' });
 
         if (issues) {
+          const warningMessages = extractWarningMessages(issues);
           rendererConfigStore
             .getState()
-            .setRendererConfig({ prepopulationWarningLinkIds: extractWarningLinkIds(issues) });
-          enqueueSnackbar(formatPopulateIssuesForUser(issues), {
+            .setRendererConfig({ prepopulationWarningMessages: warningMessages });
+          const questionnaire = questionnaireStore.getState().sourceQuestionnaire;
+          const fieldNames = getWarningFieldNames(questionnaire, new Set(warningMessages.keys()));
+          enqueueSnackbar(formatPopulateIssuesForUser(issues, warningMessages.size, fieldNames), {
             variant: 'warning',
             persist: true,
             action: <CloseSnackbar variant="warning" />
@@ -106,7 +114,7 @@ function PrePopulateMenuItem(props: PrePopulateMenuItemProps) {
         } else {
           rendererConfigStore
             .getState()
-            .setRendererConfig({ prepopulationWarningLinkIds: new Set() });
+            .setRendererConfig({ prepopulationWarningMessages: new Map() });
           enqueueSnackbar('Form pre-populated.', { action: <CloseSnackbar /> });
         }
       })

@@ -18,6 +18,8 @@
 import React, { memo } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import Tooltip from '@mui/material/Tooltip';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import type { QuestionnaireItem } from 'fhir/r4';
 import { getContextDisplays } from '../../../utils/tabs';
 import ContextDisplayItem from '../ItemParts/ContextDisplayItem';
@@ -28,6 +30,7 @@ import ItemTextSwitcher from '../ItemParts/ItemTextSwitcher';
 import FlyoverItem from '../ItemParts/FlyoverItem';
 import { getHeadingTag } from '../../../utils/headingVariant';
 import type { PropsWithParentStylesAttribute } from '../../../interfaces/renderProps.interface';
+import { getGroupPrepopWarning } from '../../../utils/prepopulationWarnings';
 
 interface GroupHeadingProps extends PropsWithParentStylesAttribute {
   qItem: QuestionnaireItem;
@@ -48,6 +51,8 @@ const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
   } = props;
 
   const requiredIndicatorPosition = useRendererConfigStore.use.requiredIndicatorPosition();
+  const prepopulationWarningMessages = useRendererConfigStore.use.prepopulationWarningMessages();
+  const groupWarning = getGroupPrepopWarning(qItem, prepopulationWarningMessages);
 
   const { required, displayFlyover } = useRenderingExtensions(qItem);
   const contextDisplayItems = getContextDisplays(qItem);
@@ -94,6 +99,36 @@ const GroupHeading = memo(function GroupHeading(props: GroupHeadingProps) {
               <Typography component="span" sx={{ ml: 0.75 }}>
                 <FlyoverItem displayFlyover={displayFlyover} readOnly={readOnly} />
               </Typography>
+            ) : null}
+
+            {/* Pre-population warning icon — shown when one or more fields in this group
+                could not be pre-populated. Tooltip explains why and lists the affected fields. */}
+            {groupWarning ? (
+              <Tooltip
+                title={
+                  <Box>
+                    <Typography variant="caption" display="block" sx={{ mb: 0.5 }}>
+                      {groupWarning.reason}
+                    </Typography>
+                    <Typography variant="caption" fontWeight="bold" display="block">
+                      Fields not pre-populated:
+                    </Typography>
+                    <Box component="ul" sx={{ m: 0, pl: 2 }}>
+                      {groupWarning.fieldNames.map((name) => (
+                        <li key={name}>
+                          <Typography variant="caption">{name}</Typography>
+                        </li>
+                      ))}
+                    </Box>
+                  </Box>
+                }
+                arrow>
+                <WarningAmberIcon
+                  color="warning"
+                  fontSize="small"
+                  sx={{ ml: 0.75, verticalAlign: 'middle', flexShrink: 0 }}
+                />
+              </Tooltip>
             ) : null}
           </Typography>
         </Box>

@@ -18,9 +18,14 @@
 import { useContext, useState } from 'react';
 import CloseSnackbar from '../../../components/Snackbar/CloseSnackbar.tsx';
 import { useSnackbar } from 'notistack';
-import { extractWarningLinkIds, formatPopulateIssuesForUser } from '../utils/prepopulateIssues.ts';
+import {
+  extractWarningMessages,
+  formatPopulateIssuesForUser,
+  getWarningFieldNames
+} from '../utils/prepopulateIssues.ts';
 import {
   buildForm,
+  questionnaireStore,
   rendererConfigStore,
   useQuestionnaireResponseStore,
   useQuestionnaireStore,
@@ -133,16 +138,21 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
 
       onStopSpinner();
       if (issues) {
+        const warningMessages = extractWarningMessages(issues);
         rendererConfigStore
           ?.getState()
-          .setRendererConfig({ prepopulationWarningLinkIds: extractWarningLinkIds(issues) });
+          .setRendererConfig({ prepopulationWarningMessages: warningMessages });
         if (showDeveloperMessages) {
           enqueueSnackbar(
             'Form partially populated, there might be pre-population issues. View console for details.',
             { action: <CloseSnackbar /> }
           );
         } else {
-          enqueueSnackbar(formatPopulateIssuesForUser(issues), {
+          const questionnaire = questionnaireStore?.getState().sourceQuestionnaire;
+          const fieldNames = questionnaire
+            ? getWarningFieldNames(questionnaire, new Set(warningMessages.keys()))
+            : [];
+          enqueueSnackbar(formatPopulateIssuesForUser(issues, warningMessages.size, fieldNames), {
             variant: 'warning',
             persist: true,
             action: <CloseSnackbar variant="warning" />
@@ -152,7 +162,9 @@ function usePopulate(spinner: RendererSpinner, onStopSpinner: () => void): void 
         return;
       }
 
-      rendererConfigStore?.getState().setRendererConfig({ prepopulationWarningLinkIds: new Set() });
+      rendererConfigStore
+        ?.getState()
+        .setRendererConfig({ prepopulationWarningMessages: new Map() });
       enqueueSnackbar('Form populated', {
         preventDuplicate: true,
         action: <CloseSnackbar />
