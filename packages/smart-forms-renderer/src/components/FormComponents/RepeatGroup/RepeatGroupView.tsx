@@ -168,6 +168,9 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
                   onRemoveItem={() => onRemoveItem(index)}
                   onQrItemChange={(newQrItem) => onAnswerChange(newQrItem, index)}
                 />
+                {index < repeatGroups.length - 1 ? (
+                  <Divider sx={{ mt: 1, mb: 1.5, opacity: 0.6 }} />
+                ) : null}
               </Collapse>
             );
           })}
