@@ -137,7 +137,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
       cardElevation={groupCardElevation}
       isRepeated={true}
       style={parentStyles || undefined}>
-      <Card elevation={groupCardElevation} sx={{ p: 3, py: 1.5, mt: 2.5 }}>
+      <Card elevation={groupCardElevation} sx={{ p: 3, py: 1.5, mb: 2.5 }}>
         {showGroupHeading ? (
           <>
             <GroupHeading
@@ -168,6 +168,9 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
                   onRemoveItem={() => onRemoveItem(index)}
                   onQrItemChange={(newQrItem) => onAnswerChange(newQrItem, index)}
                 />
+                {index < repeatGroups.length - 1 ? (
+                  <Divider sx={{ mt: 1, mb: 1.5, opacity: 0.6 }} />
+                ) : null}
               </Collapse>
             );
           })}
