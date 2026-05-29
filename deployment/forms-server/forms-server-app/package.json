@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "aws-cdk-lib": "^2.221.1",
-    "constructs": "^10.4.2",
+    "constructs": "^10.6.0",
     "forms-server-assemble-endpoint": "^0.1.0",
     "forms-server-hapi-endpoint": "^0.1.0",
     "forms-server-populate-endpoint": "^0.1.0",
