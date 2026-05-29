@@ -35,7 +35,7 @@
     "@emotion/styled": "^11.14.1",
     "@fontsource/material-icons": "^5.2.7",
     "@fontsource/roboto": "^5.2.10",
-    "@microlink/react-json-view": "^1.27.0",
+    "@microlink/react-json-view": "^1.31.20",
     "@monaco-editor/react": "^4.7.0",
     "@mui/icons-material": "^7.1.1",
     "@mui/lab": "^7.0.0-beta.13",
