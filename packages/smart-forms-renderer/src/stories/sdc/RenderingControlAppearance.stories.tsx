@@ -16,6 +16,7 @@
  */
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, fireEvent, waitFor, within } from 'storybook/test';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
   qChoiceOrientation,
@@ -30,6 +31,12 @@ import {
   qWidthGTable
 } from '../assets/questionnaires';
 import { createStory } from '../storybookWrappers/createStory';
+import {
+  chooseSliderValue,
+  findByLinkIdOrLabel,
+  getAnswers,
+  queryByLinkIdOrLabel
+} from '../testUtils';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -59,6 +66,12 @@ export const ChoiceOrientation: Story = createStory({
 export const SliderStepValue: Story = createStory({
   args: {
     questionnaire: qSliderStepValue
+  },
+  play: async ({ canvasElement }) => {
+    await chooseSliderValue(canvasElement, 'pain-measure', 5);
+
+    const answers = await getAnswers('pain-measure');
+    expect(answers).toEqual([expect.objectContaining({ valueInteger: 5 })]);
   }
 }) as Story;
 
@@ -77,29 +90,149 @@ export const WidthGrid: Story = createStory({
 export const CollapsibleSingleDefaultOpen: Story = createStory({
   args: {
     questionnaire: qCollapsibleSingleDefaultOpen
+  },
+  play: async ({ canvasElement }) => {
+    const detailsLinkId = 'details-working';
+
+    const page = within(canvasElement);
+    const toggle = await waitFor(() => {
+      const buttons = page.queryAllByRole('button');
+      const collapsibleToggle = buttons.find((button) => button.hasAttribute('aria-expanded'));
+      if (!collapsibleToggle) {
+        throw new Error('Collapsible toggle button not found on page');
+      }
+      return collapsibleToggle;
+    });
+    await findByLinkIdOrLabel(canvasElement, detailsLinkId);
+
+    fireEvent.click(toggle);
+    await waitFor(() => {
+      expect(queryByLinkIdOrLabel(canvasElement, detailsLinkId)).toBeNull();
+    });
+
+    fireEvent.click(toggle);
+    await findByLinkIdOrLabel(canvasElement, detailsLinkId);
   }
 }) as Story;
 
 export const CollapsibleSingleDefaultClosed: Story = createStory({
   args: {
     questionnaire: qCollapsibleSingleDefaultClosed
+  },
+  play: async ({ canvasElement }) => {
+    const detailsLinkId = 'details-working';
+
+    const page = within(canvasElement);
+    const toggle = await waitFor(() => {
+      const buttons = page.queryAllByRole('button');
+      const collapsibleToggle = buttons.find((button) => button.hasAttribute('aria-expanded'));
+      if (!collapsibleToggle) {
+        throw new Error('Collapsible toggle button not found on page');
+      }
+      return collapsibleToggle;
+    });
+    expect(queryByLinkIdOrLabel(canvasElement, detailsLinkId)).toBeNull();
+
+    fireEvent.click(toggle);
+    await findByLinkIdOrLabel(canvasElement, detailsLinkId);
+
+    fireEvent.click(toggle);
+    await waitFor(() => {
+      expect(queryByLinkIdOrLabel(canvasElement, detailsLinkId)).toBeNull();
+    });
   }
 }) as Story;
 
 export const CollapsibleGroupDefaultOpen: Story = createStory({
   args: {
     questionnaire: qCollapsibleGroupDefaultOpen
+  },
+  play: async ({ canvasElement }) => {
+    const heightLinkId = 'patient-height';
+
+    const groupBlock = await findByLinkIdOrLabel(canvasElement, 'bmi-collapsible');
+    const toggle = within(groupBlock).getByRole('button');
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    await findByLinkIdOrLabel(canvasElement, heightLinkId);
+
+    fireEvent.click(toggle);
+    await waitFor(() => {
+      expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    });
+    await waitFor(() => {
+      expect(queryByLinkIdOrLabel(canvasElement, heightLinkId)).toBeNull();
+    });
+
+    fireEvent.click(toggle);
+    await waitFor(() => {
+      expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    });
+    await findByLinkIdOrLabel(canvasElement, heightLinkId);
   }
 }) as Story;
 
 export const CollapsibleGroupDefaultClosed: Story = createStory({
   args: {
     questionnaire: qCollapsibleGroupDefaultClosed
+  },
+  play: async ({ canvasElement }) => {
+    const heightLinkId = 'patient-height';
+
+    const groupBlock = await findByLinkIdOrLabel(canvasElement, 'bmi-collapsible');
+    const toggle = within(groupBlock).getByRole('button');
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    expect(queryByLinkIdOrLabel(canvasElement, heightLinkId)).toBeNull();
+
+    fireEvent.click(toggle);
+    await waitFor(() => {
+      expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    });
+    await findByLinkIdOrLabel(canvasElement, heightLinkId);
+
+    fireEvent.click(toggle);
+    await waitFor(() => {
+      expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    });
+    await waitFor(() => {
+      expect(queryByLinkIdOrLabel(canvasElement, heightLinkId)).toBeNull();
+    });
   }
 }) as Story;
 
 export const CollapsibleGroupNested: Story = createStory({
   args: {
     questionnaire: qCollapsibleGroupNested
+  },
+  play: async ({ canvasElement }) => {
+    const streetLinkId = '2fee2d51-7828-4178-b8c1-35edd32ba338';
+
+    const page = within(canvasElement);
+    const toggle = await waitFor(() => {
+      const buttons = page
+        .queryAllByRole('button')
+        .filter((button) => button.hasAttribute('aria-expanded'));
+      const secondToggle = buttons[1];
+      if (!secondToggle) {
+        throw new Error('Second collapsible toggle button not found on page');
+      }
+      return secondToggle;
+    });
+
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    await findByLinkIdOrLabel(canvasElement, streetLinkId);
+
+    fireEvent.click(toggle);
+    await waitFor(() => {
+      expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    });
+    await waitFor(() => {
+      expect(queryByLinkIdOrLabel(canvasElement, streetLinkId)).toBeNull();
+    });
+
+    fireEvent.click(toggle);
+    await waitFor(() => {
+      expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    });
+    await findByLinkIdOrLabel(canvasElement, streetLinkId);
   }
 }) as Story;

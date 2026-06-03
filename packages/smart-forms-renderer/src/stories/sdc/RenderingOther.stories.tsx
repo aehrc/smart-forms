@@ -16,6 +16,7 @@
  */
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect } from 'storybook/test';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
   qPreferredTerminologyServer,
@@ -27,6 +28,15 @@ import {
   qRequired
 } from '../assets/questionnaires';
 import { createStory } from '../storybookWrappers/createStory';
+import {
+  checkCheckboxOption,
+  chooseSelectOption,
+  clickAddItem,
+  findAllByLinkIdOrLabel,
+  getAnswers,
+  getGroupAnswers,
+  inputText
+} from '../testUtils';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -56,18 +66,142 @@ export const RepeatsAutocomplete: Story = createStory({
 export const RepeatsCheckbox: Story = createStory({
   args: {
     questionnaire: qRepeatsCheckbox
+  },
+  play: async ({ canvasElement }) => {
+    await checkCheckboxOption(canvasElement, 'primary-carers-repeat', 'Mother');
+    await checkCheckboxOption(canvasElement, 'primary-carers-repeat', 'Father');
+
+    const answers = await getAnswers('primary-carers-repeat');
+    expect(answers).toEqual([
+      expect.objectContaining({
+        valueCoding: expect.objectContaining({
+          system: 'http://terminology.hl7.org/CodeSystem/v3-RoleCode',
+          code: 'MTH',
+          display: 'Mother'
+        })
+      }),
+      expect.objectContaining({
+        valueCoding: expect.objectContaining({
+          system: 'http://terminology.hl7.org/CodeSystem/v3-RoleCode',
+          code: 'FTH',
+          display: 'Father'
+        })
+      })
+    ]);
   }
 }) as Story;
 
 export const RepeatsGroup: Story = createStory({
   args: {
     questionnaire: qRepeatsGroup
+  },
+  play: async ({ canvasElement, step }) => {
+    await step('Fill first home address street', async () => {
+      await inputText(canvasElement, 'home-address-street', '123 First St');
+    });
+
+    await step('Add second group and fill street', async () => {
+      await clickAddItem(canvasElement, 'home-address-group');
+      const addressGroups = await findAllByLinkIdOrLabel(canvasElement, 'home-address-group');
+      await inputText(addressGroups[1], 'home-address-street', '456 Second St');
+    });
+
+    const streetAnswers = await getGroupAnswers('home-address-group', 'home-address-street');
+    expect(streetAnswers).toEqual([
+      expect.objectContaining({ valueString: '123 First St' }),
+      expect.objectContaining({ valueString: '456 Second St' })
+    ]);
   }
 }) as Story;
 
 export const RepeatsGroupNested: Story = createStory({
   args: {
     questionnaire: qRepeatsGroupNested
+  },
+  play: async ({ canvasElement, step }) => {
+    await step('Fill first intervention status and notes g1/g2', async () => {
+      const interventions = await findAllByLinkIdOrLabel(
+        canvasElement,
+        'restrictive-practice-intervention'
+      );
+      const firstIntervention = interventions[0];
+
+      await chooseSelectOption(
+        firstIntervention,
+        'restrictive-practice-intervention-status',
+        'In Progress'
+      );
+
+      await inputText(firstIntervention, 'restrictive-practice-intervention-note-text', 'g1');
+      await clickAddItem(firstIntervention, 'restrictive-practice-intervention-note');
+      const firstInterventionNotes = await findAllByLinkIdOrLabel(
+        firstIntervention,
+        'restrictive-practice-intervention-note'
+      );
+      await inputText(
+        firstInterventionNotes[1],
+        'restrictive-practice-intervention-note-text',
+        'g2'
+      );
+    });
+
+    await step('Add second intervention globally and fill notes g3/g4', async () => {
+      await clickAddItem(canvasElement, 'restrictive-practice-intervention');
+      const interventions = await findAllByLinkIdOrLabel(
+        canvasElement,
+        'restrictive-practice-intervention'
+      );
+      const secondIntervention = interventions[1];
+
+      await chooseSelectOption(
+        secondIntervention,
+        'restrictive-practice-intervention-status',
+        'On Hold'
+      );
+      await inputText(secondIntervention, 'restrictive-practice-intervention-note-text', 'g3');
+      await clickAddItem(secondIntervention, 'restrictive-practice-intervention-note');
+      const secondInterventionNotes = await findAllByLinkIdOrLabel(
+        secondIntervention,
+        'restrictive-practice-intervention-note'
+      );
+      await inputText(
+        secondInterventionNotes[1],
+        'restrictive-practice-intervention-note-text',
+        'g4'
+      );
+    });
+
+    const statusAnswers = await getGroupAnswers(
+      'restrictive-practice-intervention',
+      'restrictive-practice-intervention-status'
+    );
+    const noteTextAnswers = await getGroupAnswers(
+      'restrictive-practice-intervention-note',
+      'restrictive-practice-intervention-note-text'
+    );
+
+    expect(statusAnswers).toEqual([
+      expect.objectContaining({
+        valueCoding: expect.objectContaining({
+          system: 'http://hl7.org/fhir/event-status',
+          code: 'in-progress',
+          display: 'In Progress'
+        })
+      }),
+      expect.objectContaining({
+        valueCoding: expect.objectContaining({
+          system: 'http://hl7.org/fhir/event-status',
+          code: 'on-hold',
+          display: 'On Hold'
+        })
+      })
+    ]);
+    expect(noteTextAnswers).toEqual([
+      expect.objectContaining({ valueString: 'g1' }),
+      expect.objectContaining({ valueString: 'g2' }),
+      expect.objectContaining({ valueString: 'g3' }),
+      expect.objectContaining({ valueString: 'g4' })
+    ]);
   }
 }) as Story;
 
@@ -80,5 +214,19 @@ export const ReadOnly: Story = createStory({
 export const PreferredTerminologyServer: Story = createStory({
   args: {
     questionnaire: qPreferredTerminologyServer
+  },
+  play: async ({ canvasElement }) => {
+    await chooseSelectOption(canvasElement, 'languages', 'English');
+
+    const answers = await getAnswers('languages');
+    expect(answers).toEqual([
+      expect.objectContaining({
+        valueCoding: expect.objectContaining({
+          system: 'urn:ietf:bcp:47',
+          code: 'en',
+          display: 'English'
+        })
+      })
+    ]);
   }
 }) as Story;

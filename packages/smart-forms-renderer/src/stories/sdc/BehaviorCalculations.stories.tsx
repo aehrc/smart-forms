@@ -16,6 +16,7 @@
  */
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect } from 'storybook/test';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
   qChainedCalculation,
@@ -25,6 +26,7 @@ import {
   qVariable
 } from '../assets/questionnaires';
 import { createStory } from '../storybookWrappers/createStory';
+import { getAnswers, inputInteger } from '../testUtils';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -66,5 +68,16 @@ export const OldCvdRiskCalculator: Story = createStory({
 export const ChainedCalculation: Story = createStory({
   args: {
     questionnaire: qChainedCalculation
+  },
+  play: async ({ canvasElement }) => {
+    await inputInteger(canvasElement, 'number-input', 2);
+
+    const numberInputAnswers = await getAnswers('number-input');
+    const calcResultAnswers = await getAnswers('calc-result');
+    const resultIs4Answers = await getAnswers('result-is-4');
+
+    expect(numberInputAnswers).toEqual([expect.objectContaining({ valueInteger: 2 })]);
+    expect(calcResultAnswers).toEqual([expect.objectContaining({ valueDecimal: 4 })]);
+    expect(resultIs4Answers).toEqual([expect.objectContaining({ valueBoolean: true })]);
   }
 }) as Story;

@@ -45,7 +45,7 @@ export const qInitialRepeats: Questionnaire = {
       repeats: false,
       item: [
         {
-          linkId: 'patient-age',
+          linkId: 'visited-states',
           definition: 'http://hl7.org.au/fhir/StructureDefinition/au-address#Address.state',
           text: 'Visited states',
           type: 'choice',
