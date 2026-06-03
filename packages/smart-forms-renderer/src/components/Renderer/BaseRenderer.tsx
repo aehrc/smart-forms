@@ -101,7 +101,7 @@ function BaseRenderer() {
   if (wholeFormIsPaginated) {
     return (
       <Fade in={true} timeout={500}>
-        <Container disableGutters maxWidth="xl" key={responseKey}>
+        <Container disableGutters maxWidth={false} key={responseKey}>
           {!hideQuestionnaireTitle && (sourceQuestionnaire.title || sourceQuestionnaire._title) ? (
             <Box px={2} pt={2} pb={1}>
               <QuestionnaireTitleText questionnaire={sourceQuestionnaire} />
@@ -122,7 +122,7 @@ function BaseRenderer() {
 
   return (
     <Fade in={true} timeout={500}>
-      <Container disableGutters maxWidth="xl" key={responseKey}>
+      <Container disableGutters maxWidth={false} key={responseKey}>
         {!hideQuestionnaireTitle && (sourceQuestionnaire.title || sourceQuestionnaire._title) ? (
           <Box px={2} pt={2} pb={1}>
             <QuestionnaireTitleText questionnaire={sourceQuestionnaire} />

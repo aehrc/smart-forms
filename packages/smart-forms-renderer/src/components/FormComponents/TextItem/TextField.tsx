@@ -16,6 +16,7 @@
  */
 
 import InputAdornment from '@mui/material/InputAdornment';
+import Box from '@mui/material/Box';
 import MuiTextField from './MuiTextField';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { useRendererConfigStore } from '../../../stores';
@@ -55,41 +56,43 @@ function TextField(props: TextFieldProps) {
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
 
   return (
-    <MuiTextField
-      id={qItem.type + '-' + qItem.linkId}
-      value={input}
-      error={!!feedback}
-      onChange={(event) => onInputChange(event.target.value)}
-      disabled={readOnly && readOnlyVisualStyle === 'disabled'}
-      placeholder={entryFormat || displayPrompt}
-      fullWidth
-      multiline
-      size="small"
-      minRows={3}
-      slotProps={{
-        input: {
-          readOnly: readOnly && readOnlyVisualStyle === 'readonly',
-          endAdornment: (
-            <InputAdornment position="end">
-              <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
-              <ItemRepopulateButton
-                qItem={qItem}
-                repopulatable={isRepopulatable}
-                onRepopulate={onRepopulateSync}
-              />
-              <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
-            </InputAdornment>
-          )
-        },
-        htmlInput: {
-          ...(instructionsId && { 'aria-describedby': instructionsId })
-        }
-      }}
-      helperText={<AccessibleFeedback>{feedback}</AccessibleFeedback>}
-      data-test="q-item-text-field"
-      data-linkid={qItem.linkId}
-      data-label={qItem.text}
-    />
+    <Box sx={{ maxWidth: (theme) => theme.breakpoints.values.sm }}>
+      <MuiTextField
+        id={qItem.type + '-' + qItem.linkId}
+        value={input}
+        error={!!feedback}
+        onChange={(event) => onInputChange(event.target.value)}
+        disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+        placeholder={entryFormat || displayPrompt}
+        fullWidth
+        multiline
+        size="small"
+        minRows={3}
+        slotProps={{
+          input: {
+            readOnly: readOnly && readOnlyVisualStyle === 'readonly',
+            endAdornment: (
+              <InputAdornment position="end">
+                <ExpressionUpdateFadingIcon fadeIn={calcExpUpdated} disabled={readOnly} />
+                <ItemRepopulateButton
+                  qItem={qItem}
+                  repopulatable={isRepopulatable}
+                  onRepopulate={onRepopulateSync}
+                />
+                <DisplayUnitText readOnly={readOnly}>{displayUnit}</DisplayUnitText>
+              </InputAdornment>
+            )
+          },
+          htmlInput: {
+            ...(instructionsId && { 'aria-describedby': instructionsId })
+          }
+        }}
+        helperText={<AccessibleFeedback>{feedback}</AccessibleFeedback>}
+        data-test="q-item-text-field"
+        data-linkid={qItem.linkId}
+        data-label={qItem.text}
+      />
+    </Box>
   );
 }
 

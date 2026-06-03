@@ -162,7 +162,8 @@ function OpenChoiceRadioAnswerValueSetItem(props: BaseItemProps) {
       data-test="q-item-open-choice-radio-answer-option-box"
       data-linkid={qItem.linkId}
       data-label={qItem.text}
-      onClick={() => onFocusLinkId(qItem.linkId)}>
+      onClick={() => onFocusLinkId(qItem.linkId)}
+      sx={{ maxWidth: (theme) => theme.breakpoints.values.lg }}>
       <ItemFieldGrid
         qItem={qItem}
         readOnly={readOnly}

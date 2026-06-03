@@ -89,7 +89,8 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
       data-test="q-item-choice-select-answer-option-box"
       data-linkid={qItem.linkId}
       data-label={qItem.text}
-      onClick={onFocusLinkId}>
+      onClick={onFocusLinkId}
+      sx={{ maxWidth: (theme) => theme.breakpoints.values.lg }}>
       <ItemFieldGrid
         qItem={qItem}
         readOnly={readOnly}

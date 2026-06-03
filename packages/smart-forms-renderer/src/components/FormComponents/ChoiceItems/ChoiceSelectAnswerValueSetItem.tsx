@@ -124,7 +124,8 @@ function ChoiceSelectAnswerValueSetItem(props: BaseItemProps) {
   return (
     <FullWidthFormComponentBox
       data-test="q-item-choice-select-answer-value-set-box"
-      onClick={() => onFocusLinkId(qItem.linkId)}>
+      onClick={() => onFocusLinkId(qItem.linkId)}
+      sx={{ maxWidth: (theme) => theme.breakpoints.values.lg }}>
       <ItemFieldGrid
         qItem={qItem}
         readOnly={readOnly}

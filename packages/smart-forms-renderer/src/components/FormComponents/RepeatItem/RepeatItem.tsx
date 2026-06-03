@@ -25,7 +25,6 @@ import { createEmptyQrItem } from '../../../utils/qrItem';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import AddItemButton from './AddItemButton';
 import { TransitionGroup } from 'react-transition-group';
-import RepeatField from './RepeatField';
 import Collapse from '@mui/material/Collapse';
 import useInitialiseRepeatAnswers from '../../../hooks/useInitialiseRepeatAnswers';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
@@ -33,6 +32,10 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import { useQuestionnaireStore } from '../../../stores';
 import { generateExistingRepeatId, generateNewRepeatId } from '../../../utils/repeatId';
 import ItemLabel from '../ItemParts/ItemLabel';
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import SingleItem from '../SingleItem/SingleItem';
+import RemoveItemButton from './RemoveItemButton';
 
 interface RepeatItemProps extends PropsWithQrItemChangeHandler, PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
@@ -96,38 +99,53 @@ function RepeatItem(props: RepeatItemProps) {
       data-linkid={qItem.linkId}
       data-label={qItem.text}
       onClick={() => onFocusLinkId(qItem.linkId)}>
-      <ItemFieldGrid
-        qItem={qItem}
-        readOnly={readOnly}
-        labelChildren={<ItemLabel qItem={qItem} readOnly={readOnly} />}
-        fieldChildren={
-          <TransitionGroup>
-            {repeatAnswers.map((answer, index) => {
-              const repeatAnswerQrItem = createEmptyQrItem(qItem, answer?.id);
-              if (answer) {
-                repeatAnswerQrItem.answer = [answer];
-              }
+      <TransitionGroup>
+        {repeatAnswers.map((answer, index) => {
+          const repeatAnswerQrItem = createEmptyQrItem(qItem, answer?.id);
+          if (answer) {
+            repeatAnswerQrItem.answer = [answer];
+          }
 
-              return (
-                <Collapse
-                  key={answer?.id ?? generateExistingRepeatId(qItem.linkId, index)}
-                  timeout={200}>
-                  <RepeatField
+          return (
+            <Collapse
+              key={answer?.id ?? generateExistingRepeatId(qItem.linkId, index)}
+              timeout={200}>
+              <Stack
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
+                sx={{ mb: 1 }}>
+                <Box sx={{ flexGrow: 1, maxWidth: (theme) => theme.breakpoints.values.lg }}>
+                  <ItemFieldGrid
                     qItem={qItem}
-                    qrItem={repeatAnswerQrItem}
-                    answer={answer}
-                    numOfRepeatAnswers={repeatAnswers.length}
-                    groupCardElevation={groupCardElevation}
-                    parentIsReadOnly={parentIsReadOnly}
-                    onRemoveAnswer={() => handleRemoveItem(index)}
-                    onQrItemChange={(newQrItem) => handleAnswerChange(newQrItem, index)}
+                    readOnly={readOnly}
+                    labelChildren={
+                      index === 0 ? <ItemLabel qItem={qItem} readOnly={readOnly} /> : undefined
+                    }
+                    fieldChildren={
+                      <SingleItem
+                        qItem={qItem}
+                        qrItem={repeatAnswerQrItem}
+                        isRepeated={qItem.repeats ?? false}
+                        isTabled={false}
+                        groupCardElevation={groupCardElevation}
+                        parentIsReadOnly={parentIsReadOnly}
+                        onQrItemChange={(newQrItem) => handleAnswerChange(newQrItem, index)}
+                      />
+                    }
                   />
-                </Collapse>
-              );
-            })}
-          </TransitionGroup>
-        }
-      />
+                </Box>
+                <RemoveItemButton
+                  answer={answer}
+                  numOfRepeatAnswers={repeatAnswers.length}
+                  readOnly={readOnly}
+                  onRemoveAnswer={() => handleRemoveItem(index)}
+                />
+              </Stack>
+            </Collapse>
+          );
+        })}
+      </TransitionGroup>
 
       <AddItemButton repeatAnswers={repeatAnswers} readOnly={readOnly} onAddItem={handleAddItem} />
     </FullWidthFormComponentBox>
