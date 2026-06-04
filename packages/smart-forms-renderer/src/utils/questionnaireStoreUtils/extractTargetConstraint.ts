@@ -1,4 +1,4 @@
-import type { Extension, Questionnaire } from 'fhir/r4';
+import type { Extension, Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import type {
   TargetConstraint,
   TargetConstraintExpression,
@@ -55,17 +55,36 @@ export function constructTargetConstraint(extension: Extension): TargetConstrain
 export function extractTargetConstraints(
   questionnaire: Questionnaire
 ): Record<string, TargetConstraint> {
-  if (!questionnaire.extension || questionnaire.extension.length === 0) {
-    return {};
-  }
-
   const targetConstraints: Record<string, TargetConstraint> = {};
-  for (const ext of questionnaire.extension) {
+
+  // Questionnaire-level extensions
+  for (const ext of questionnaire.extension ?? []) {
     const targetConstraint = constructTargetConstraint(ext);
     if (targetConstraint?.key) {
-      targetConstraints[targetConstraint?.key] = targetConstraint;
+      targetConstraints[targetConstraint.key] = targetConstraint;
     }
   }
 
+  // Item-level extensions (recursive)
+  extractTargetConstraintsFromItems(questionnaire.item ?? [], targetConstraints);
+
   return targetConstraints;
+}
+
+function extractTargetConstraintsFromItems(
+  items: QuestionnaireItem[],
+  targetConstraints: Record<string, TargetConstraint>
+) {
+  for (const item of items) {
+    for (const ext of item.extension ?? []) {
+      const targetConstraint = constructTargetConstraint(ext);
+      if (targetConstraint?.key) {
+        // Record the item's own linkId so the error surfaces on the correct field.
+        // readTargetConstraintLocationLinkIds will override this if a location is provided.
+        targetConstraint.linkId = item.linkId;
+        targetConstraints[targetConstraint.key] = targetConstraint;
+      }
+    }
+    extractTargetConstraintsFromItems(item.item ?? [], targetConstraints);
+  }
 }

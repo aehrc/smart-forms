@@ -81,7 +81,10 @@ describe('targetConstraint', () => {
   });
 
   describe('evaluateInitialTargetConstraints', () => {
-    it('should evaluate initial target constraints with valid expressions', async () => {
+    it('should set isInvalid=false when expression returns true (constraint met)', async () => {
+      // Per FHIR spec, expressions return true when the constraint is MET (valid).
+      // constraint-1: expression returns [true] → constraint met → isInvalid should be false
+      // constraint-2: expression returns [false] → constraint violated → isInvalid should be true
       const mockInitialResponse: QuestionnaireResponse = {
         resourceType: 'QuestionnaireResponse',
         status: 'in-progress',
@@ -91,11 +94,11 @@ describe('targetConstraint', () => {
       const mockInitialResponseItemMap: Record<string, QuestionnaireResponseItem[]> = {};
 
       const mockTargetConstraints: Record<string, TargetConstraint> = {
-        'constraint-1': createMockTargetConstraint('constraint-1', 'true', false),
+        'constraint-1': createMockTargetConstraint('constraint-1', 'age >= 0', false),
         'constraint-2': createMockTargetConstraint(
           'constraint-2',
           '%context.item.where(linkId="test").answer.value',
-          true
+          false
         )
       };
 
@@ -118,18 +121,17 @@ describe('targetConstraint', () => {
         terminologyServerUrl
       };
 
-      // Mock createFhirPathContext
       mockCreateFhirPathContext.mockResolvedValue({
         fhirPathContext: { updated: 'context' },
         fhirPathTerminologyCache: {}
       });
 
-      // Mock fhirpath evaluate calls
+      // constraint-1: expression returns true → constraint MET → isInvalid = false (no change from initial)
+      // constraint-2: expression returns false → constraint VIOLATED → isInvalid = true
       mockFhirpathEvaluate
-        .mockReturnValueOnce(Promise.resolve([true])) // First constraint returns true
-        .mockReturnValueOnce([false]); // Second constraint returns false (sync)
+        .mockReturnValueOnce(Promise.resolve([true]))
+        .mockReturnValueOnce([false]);
 
-      // Mock handleFhirPathResult
       mockHandleFhirPathResult.mockResolvedValueOnce([true]).mockResolvedValueOnce([false]);
 
       const result = await evaluateInitialTargetConstraints(params);
@@ -146,8 +148,8 @@ describe('targetConstraint', () => {
       expect(mockFhirpathEvaluate).toHaveBeenCalledTimes(2);
       expect(mockHandleFhirPathResult).toHaveBeenCalledTimes(2);
 
-      expect(result.initialTargetConstraints['constraint-1'].isInvalid).toBe(true);
-      expect(result.initialTargetConstraints['constraint-2'].isInvalid).toBe(false);
+      expect(result.initialTargetConstraints['constraint-1'].isInvalid).toBe(false);
+      expect(result.initialTargetConstraints['constraint-2'].isInvalid).toBe(true);
       expect(result.updatedFhirPathContext).toEqual({ updated: 'context' });
     });
 
@@ -219,7 +221,7 @@ describe('targetConstraint', () => {
       expect(result.initialTargetConstraints).toEqual(mockTargetConstraints);
     });
 
-    it('should handle empty results by setting isInvalid to false', async () => {
+    it('should set isInvalid=false when expression returns empty (safe default)', async () => {
       const mockTargetConstraints: Record<string, TargetConstraint> = {
         'constraint-empty': createMockTargetConstraint('constraint-empty', 'empty.result', true)
       };
@@ -247,12 +249,14 @@ describe('targetConstraint', () => {
       expect(result.initialTargetConstraints['constraint-empty'].isInvalid).toBe(false);
     });
 
-    it('should handle intersect expressions with empty results', async () => {
+    it('should set isInvalid=true when intersect expression returns empty (constraint violated)', async () => {
+      // fhirpath.js returns [] when an intersect() expression evaluates to false.
+      // This means the constraint IS violated, so isInvalid should be true.
       const mockTargetConstraints: Record<string, TargetConstraint> = {
         'constraint-intersect': createMockTargetConstraint(
           'constraint-intersect',
           'item.intersect(empty)',
-          true
+          false // starts valid
         )
       };
 
@@ -276,7 +280,7 @@ describe('targetConstraint', () => {
 
       const result = await evaluateInitialTargetConstraints(params);
 
-      expect(result.initialTargetConstraints['constraint-intersect'].isInvalid).toBe(false);
+      expect(result.initialTargetConstraints['constraint-intersect'].isInvalid).toBe(true);
     });
 
     it('should cache async terminology results', async () => {
@@ -350,9 +354,15 @@ describe('targetConstraint', () => {
       expect(result.initialTargetConstraints['constraint-error'].isInvalid).toBe(false); // Should remain unchanged
     });
 
-    it('should not update isInvalid when value is the same to prevent infinite loops', async () => {
+    it('should not update isInvalid when expression returns correct spec-compliant value (prevents infinite loops)', async () => {
+      // constraint already correctly marked as valid (isInvalid=false), and expression returns true
+      // (constraint met) → !true = false → same as existing → no update
       const mockTargetConstraints: Record<string, TargetConstraint> = {
-        'constraint-same': createMockTargetConstraint('constraint-same', 'true', true)
+        'constraint-already-valid': createMockTargetConstraint(
+          'constraint-already-valid',
+          'age >= 0',
+          false // already correct
+        )
       };
 
       const params = {
@@ -375,7 +385,7 @@ describe('targetConstraint', () => {
 
       const result = await evaluateInitialTargetConstraints(params);
 
-      expect(result.initialTargetConstraints['constraint-same'].isInvalid).toBe(true); // Unchanged
+      expect(result.initialTargetConstraints['constraint-already-valid'].isInvalid).toBe(false);
     });
 
     it('should handle non-boolean results', async () => {
@@ -412,9 +422,34 @@ describe('targetConstraint', () => {
   });
 
   describe('evaluateTargetConstraints', () => {
-    it('should evaluate target constraints and return update status', async () => {
+    it('should set isInvalid=true and isUpdated=true when expression returns false (constraint violated)', async () => {
+      // constraint starts valid (isInvalid=false), expression returns false → violated → update to true
       const mockTargetConstraints: Record<string, TargetConstraint> = {
-        'constraint-1': createMockTargetConstraint('constraint-1', 'true', false)
+        'constraint-1': createMockTargetConstraint('constraint-1', 'age >= 0', false)
+      };
+
+      const fhirPathContext = { test: 'context' };
+      const fhirPathTerminologyCache = {};
+      const terminologyServerUrl = 'https://tx.fhir.org/r4';
+
+      mockFhirpathEvaluate.mockReturnValue([false]);
+      mockHandleFhirPathResult.mockResolvedValue([false]);
+
+      const result = await evaluateTargetConstraints(
+        fhirPathContext,
+        fhirPathTerminologyCache,
+        mockTargetConstraints,
+        terminologyServerUrl
+      );
+
+      expect(result.isUpdated).toBe(true);
+      expect(result.updatedTargetConstraints['constraint-1'].isInvalid).toBe(true);
+    });
+
+    it('should set isInvalid=false and isUpdated=true when expression returns true (constraint met)', async () => {
+      // constraint starts violated (isInvalid=true), expression returns true → met → update to false
+      const mockTargetConstraints: Record<string, TargetConstraint> = {
+        'constraint-1': createMockTargetConstraint('constraint-1', 'age >= 0', true)
       };
 
       const fhirPathContext = { test: 'context' };
@@ -432,12 +467,13 @@ describe('targetConstraint', () => {
       );
 
       expect(result.isUpdated).toBe(true);
-      expect(result.updatedTargetConstraints['constraint-1'].isInvalid).toBe(true);
+      expect(result.updatedTargetConstraints['constraint-1'].isInvalid).toBe(false);
     });
 
-    it('should return false for isUpdated when no constraints change', async () => {
+    it('should return isUpdated=false when constraint value does not change', async () => {
+      // constraint already correctly valid (isInvalid=false), expression returns true → no change
       const mockTargetConstraints: Record<string, TargetConstraint> = {
-        'constraint-1': createMockTargetConstraint('constraint-1', 'true', true)
+        'constraint-1': createMockTargetConstraint('constraint-1', 'age >= 0', false)
       };
 
       const fhirPathContext = { test: 'context' };
@@ -455,7 +491,7 @@ describe('targetConstraint', () => {
       );
 
       expect(result.isUpdated).toBe(false);
-      expect(result.updatedTargetConstraints['constraint-1'].isInvalid).toBe(true);
+      expect(result.updatedTargetConstraints['constraint-1'].isInvalid).toBe(false);
     });
 
     it('should use cached results for repeated expressions', async () => {
@@ -506,13 +542,43 @@ describe('targetConstraint', () => {
       expect(result.isUpdated).toBe(false);
     });
 
-    it('should handle empty results and intersect edge cases', async () => {
+    it('should keep isInvalid=true when intersect still returns empty after a form edit (constraint remains violated)', async () => {
+      // After any form edit, all constraints are re-evaluated. If an intersect constraint was
+      // already violated (isInvalid=true) and the expression still returns [], isInvalid must
+      // stay true — without the fix, the generic empty case would reset it to false.
+      const mockTargetConstraints: Record<string, TargetConstraint> = {
+        'constraint-intersect': createMockTargetConstraint(
+          'constraint-intersect',
+          'item.intersect(empty)',
+          true // violated from previous evaluation
+        )
+      };
+
+      const fhirPathContext = { test: 'context' };
+      const fhirPathTerminologyCache = {};
+      const terminologyServerUrl = 'https://tx.fhir.org/r4';
+
+      mockFhirpathEvaluate.mockReturnValue([]);
+      mockHandleFhirPathResult.mockResolvedValue([]);
+
+      const result = await evaluateTargetConstraints(
+        fhirPathContext,
+        fhirPathTerminologyCache,
+        mockTargetConstraints,
+        terminologyServerUrl
+      );
+
+      expect(result.isUpdated).toBe(false);
+      expect(result.updatedTargetConstraints['constraint-intersect'].isInvalid).toBe(true);
+    });
+
+    it('should set isInvalid=false for empty result (safe default) and isInvalid=true for intersect empty result (constraint violated)', async () => {
       const mockTargetConstraints: Record<string, TargetConstraint> = {
         'constraint-empty': createMockTargetConstraint('constraint-empty', 'empty.result', true),
         'constraint-intersect': createMockTargetConstraint(
           'constraint-intersect',
           'item.intersect(empty)',
-          true
+          false // starts valid
         )
       };
 
@@ -531,8 +597,10 @@ describe('targetConstraint', () => {
       );
 
       expect(result.isUpdated).toBe(true);
+      // Generic empty → safe default: not invalid
       expect(result.updatedTargetConstraints['constraint-empty'].isInvalid).toBe(false);
-      expect(result.updatedTargetConstraints['constraint-intersect'].isInvalid).toBe(false);
+      // Intersect empty → constraint violated: invalid
+      expect(result.updatedTargetConstraints['constraint-intersect'].isInvalid).toBe(true);
     });
   });
 
@@ -586,10 +654,77 @@ describe('targetConstraint', () => {
       // Check that linkIds were added to the constraints
       expect(mockTargetConstraints['constraint-1'].linkId).toBe('item-1');
       expect(mockTargetConstraints['constraint-2'].linkId).toBe('item-2');
+      // constraint with no location and no pre-set linkId is not mapped
       expect(mockTargetConstraints['constraint-no-location'].linkId).toBeUndefined();
     });
 
-    it('should handle multiple constraints pointing to the same linkId', () => {
+    it('should map item-level constraints by their pre-set linkId (no location)', () => {
+      // Constraints extracted from item extensions have linkId set during extraction
+      // (no location extension). readTargetConstraintLocationLinkIds should include these
+      // in the returned map.
+      const mockQuestionnaire: Questionnaire = {
+        resourceType: 'Questionnaire',
+        status: 'active',
+        item: [
+          { linkId: 'field-a', type: 'string', text: 'Field A' },
+          { linkId: 'field-b', type: 'string', text: 'Field B' }
+        ]
+      };
+
+      // No location: these take the else-if(linkId) branch, not the location branch.
+      // If location were set, it would override linkId via FHIRPath resolution instead.
+      const mockTargetConstraints: Record<string, TargetConstraint> = {
+        'item-level-1': {
+          ...createMockTargetConstraint('item-level-1', 'field.exists()'),
+          linkId: 'field-a', // set during extraction
+          location: undefined
+        },
+        'item-level-2': {
+          ...createMockTargetConstraint('item-level-2', 'other.exists()'),
+          linkId: 'field-b', // set during extraction
+          location: undefined
+        }
+      };
+
+      const result = readTargetConstraintLocationLinkIds(mockQuestionnaire, mockTargetConstraints);
+
+      // No fhirpath evaluation needed — linkId already known from extraction
+      expect(mockFhirpathEvaluate).not.toHaveBeenCalled();
+
+      expect(result).toEqual({
+        'field-a': ['item-level-1'],
+        'field-b': ['item-level-2']
+      });
+    });
+
+    it('should accumulate multiple item-level constraints on the same linkId', () => {
+      const mockQuestionnaire: Questionnaire = {
+        resourceType: 'Questionnaire',
+        status: 'active',
+        item: [{ linkId: 'shared-field', type: 'string', text: 'Shared' }]
+      };
+
+      const mockTargetConstraints: Record<string, TargetConstraint> = {
+        'constraint-a': {
+          ...createMockTargetConstraint('constraint-a', 'expr-a'),
+          linkId: 'shared-field',
+          location: undefined
+        },
+        'constraint-b': {
+          ...createMockTargetConstraint('constraint-b', 'expr-b'),
+          linkId: 'shared-field',
+          location: undefined
+        }
+      };
+
+      const result = readTargetConstraintLocationLinkIds(mockQuestionnaire, mockTargetConstraints);
+
+      expect(result['shared-field']).toHaveLength(2);
+      expect(result['shared-field']).toContain('constraint-a');
+      expect(result['shared-field']).toContain('constraint-b');
+    });
+
+    it('should handle multiple constraints pointing to the same linkId via location', () => {
       const mockQuestionnaire: Questionnaire = {
         resourceType: 'Questionnaire',
         status: 'active',
