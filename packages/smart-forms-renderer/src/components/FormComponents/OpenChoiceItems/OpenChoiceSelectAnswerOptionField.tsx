@@ -20,6 +20,8 @@ import { getAnswerOptionLabel } from '../../../utils/openChoice';
 import { StandardTextField } from '../Textfield.styles';
 import type { AutocompleteChangeReason } from '@mui/material/Autocomplete';
 import Autocomplete from '@mui/material/Autocomplete';
+import FormControl from '@mui/material/FormControl';
+import FormHelperText from '@mui/material/FormHelperText';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type {
   PropsWithIsTabledAttribute,
@@ -27,10 +29,10 @@ import type {
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import { useRendererConfigStore } from '../../../stores';
-import { StyledRequiredTypography } from '../Item.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import StyledText from '../ItemParts/StyledText';
+import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
 
 interface OpenChoiceSelectAnswerOptionFieldProps
   extends PropsWithIsTabledAttribute,
@@ -71,7 +73,14 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
   const [inputValue, setInputValue] = React.useState('');
 
   return (
-    <>
+    <FormControl
+      error={!!feedback}
+      sx={{
+        width: '100%',
+        maxWidth: !isTabled ? textFieldWidth : 3000,
+        minWidth: 160,
+        flexGrow: 1
+      }}>
       <Autocomplete
         id={qItem.type + '-' + qItem.linkId}
         value={valueSelect ?? null}
@@ -104,16 +113,10 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
             }
           }
         }}
+        fullWidth
         freeSolo
         autoHighlight
-        sx={{
-          maxWidth: !isTabled ? textFieldWidth : 3000,
-          minWidth: 160,
-          flexGrow: 1,
-          '& .MuiAutocomplete-tag': {
-            mx: 0
-          }
-        }}
+        sx={{ '& .MuiAutocomplete-tag': { mx: 0 } }}
         disabled={readOnly && readOnlyVisualStyle === 'disabled'}
         readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
         size="small"
@@ -122,6 +125,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
             multiline
             textFieldWidth={textFieldWidth}
             isTabled={isTabled}
+            error={!!feedback}
             placeholder={valueSelect ? undefined : entryFormat || displayPrompt}
             {...params}
             slotProps={{
@@ -192,8 +196,12 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
         }}
       />
 
-      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
-    </>
+      {feedback ? (
+        <FormHelperText>
+          <AccessibleFeedback>{feedback}</AccessibleFeedback>
+        </FormHelperText>
+      ) : null}
+    </FormControl>
   );
 }
 
