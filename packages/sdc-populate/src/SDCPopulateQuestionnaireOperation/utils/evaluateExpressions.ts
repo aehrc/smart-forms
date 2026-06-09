@@ -29,6 +29,27 @@ import { handleFhirPathResult } from './createFhirPathContext';
 import { TERMINOLOGY_SERVER_URL } from '../../globals';
 
 /**
+ * Stamps fhirpath's internal __path__ metadata onto a FHIR resource so it can be safely
+ * used as an array context variable (%name) in subsequent fhirpath.evaluate() calls.
+ *
+ * fhirpath v4 requires each item in an array context variable to carry __path__ so the
+ * R4 model can resolve nested BackboneElement paths (e.g. reaction.manifestation.select(…)).
+ * Without it, fhirpath throws when navigating past the first level.
+ *
+ * The mechanism is documented in the fhirpath README and CHANGELOG (since v2.11.0):
+ * objects returned by fhirpath.evaluate() automatically receive __path__.
+ * Evaluating a resource against '$this' is the minimal way to attach this metadata
+ * to plain JSON objects that have not yet passed through fhirpath.
+ *
+ * Non-resource values (no resourceType) are returned unchanged.
+ */
+export function stampFhirpathMetadata(item: any): any {
+  if (!item?.resourceType) return item;
+  const stamped = fhirpath.evaluate(item, '$this', {}, fhirpath_r4_model) as any[];
+  return stamped[0] ?? item;
+}
+
+/**
  * Use FHIRPath.js to evaluate initialExpressions and generate its values to be populated into the questionnaireResponse.
  * Removes unsupported functions from expressions to avoid errors. Populates values for each linkId.
  *
@@ -85,7 +106,11 @@ export async function generateExpressionValues(
           terminologyUrl: terminologyServerUrl ?? TERMINOLOGY_SERVER_URL,
           ...(fhirServerUrl && { fhirServerUrl })
         });
-        itemPopulationContext.value = await handleFhirPathResult(fhirPathResult);
+        const rawValues = await handleFhirPathResult(fhirPathResult);
+
+        // Stamp __path__ on each resource so it can be safely used as an array context variable
+        // in constructRepeatGroupInstances. See stampFhirpathMetadata for full explanation.
+        itemPopulationContext.value = rawValues.map(stampFhirpathMetadata);
       } catch (e) {
         // e is not thrown as an Error type in fhirpath.js, so we can't use `if (e instanceof Error)` here
         console.warn(
@@ -148,8 +173,9 @@ export async function evaluateItemPopulationContexts(
         continue;
       }
 
-      // Save evaluated item population context result into context object
-      contextMap[itemPopulationContext.name] = evaluatedResult;
+      // Stamp __path__ on each resource before storing in contextMap.
+      // See stampFhirpathMetadata for full explanation.
+      contextMap[itemPopulationContext.name] = evaluatedResult.map(stampFhirpathMetadata);
     }
   }
 

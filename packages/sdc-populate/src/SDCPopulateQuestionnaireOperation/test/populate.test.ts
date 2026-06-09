@@ -16,19 +16,15 @@ import { resolveLookupPromises } from '../utils/resolveLookupPromises';
 import { resolvedLookupAboriginalTorresStraitIslanderHealthCheck } from '../../test-data-shared/AboriginalTorresStraitIslanderHealthCheck/resolvedLookupAboriginalTorresStraitIslanderHealthCheck';
 import fhirpath from 'fhirpath';
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4/index.js';
+import { stampFhirpathMetadata } from '../utils/evaluateExpressions';
 
-// fhirpath v4 requires array context variable items to have __path__ (attached non-enumerably
-// when objects pass through fhirpath.evaluate). Plain static TS objects lack this, so we
-// run each FHIR resource item through fhirpath's $this to stamp __path__ onto it.
+// Prepares a fhirpath context for use in tests by stamping __path__ on all resource arrays.
+// Uses the same stampFhirpathMetadata helper used in production code.
 function prepareContextForFhirpathV4(ctx: Record<string, any>): Record<string, any> {
   const prepared = { ...ctx };
   for (const [key, value] of Object.entries(prepared)) {
-    if (Array.isArray(value) && value.some((i) => i?.resourceType)) {
-      prepared[key] = value.map((item) => {
-        if (!item?.resourceType) return item;
-        const result = fhirpath.evaluate(item, '$this', {}, fhirpath_r4_model) as any[];
-        return result[0] ?? item;
-      });
+    if (Array.isArray(value) && value.some((i: any) => i?.resourceType)) {
+      prepared[key] = value.map(stampFhirpathMetadata);
     }
   }
   return prepared;
@@ -212,6 +208,78 @@ describe('populate', () => {
     )?.valueAttachment?.data as string;
     const decodedResultContext = JSON.parse(Base64.decode(resultContext));
     expect(decodedResultContext).toStrictEqual(mockContext);
+  });
+});
+
+describe('populate - fhirpath v4 __path__ requirement for nested BackboneElements', () => {
+  /**
+   * Reproduces the regression seen in aboriginalFormPopulation.test.tsx where
+   * AllergyIntolerance.reaction.manifestation.select(...) returns empty even though the
+   * data is present.
+   *
+   * Root cause: fhirpath v4 requires __path__ to be stamped on context variable items.
+   * Resources fetched via fetchResourceCallback arrive as plain JSON (no __path__).
+   * When fhirpath evaluates itemPopulationContext it returns top-level resources with __path__,
+   * but nested BackboneElements (reaction[]) inside those resources still lack __path__.
+   * Navigating through reaction.manifestation inside select() then silently returns empty.
+   *
+   * The fix is to stamp __path__ on every resource BEFORE it is used as a context variable.
+   */
+  it('reaction.manifestation.select() throws for a plain resource (no __path__)', () => {
+    const allergyPlain = {
+      resourceType: 'AllergyIntolerance',
+      id: 'allergy-plain',
+      reaction: [
+        {
+          manifestation: [
+            {
+              coding: [{ system: 'http://snomed.info/sct', code: '271807003', display: 'Rash' }]
+            }
+          ]
+        }
+      ]
+    };
+
+    // Without __path__, fhirpath v4 throws when navigating nested BackboneElements.
+    // In constructRepeatGroupInstances this error is caught silently → field stays empty.
+    expect(() =>
+      fhirpath.evaluate(
+        {},
+        "%allergy.reaction.manifestation.select((coding.where(system='http://snomed.info/sct') | coding.where(system!='http://snomed.info/sct').first() | text).first())",
+        { allergy: [allergyPlain] },
+        fhirpath_r4_model
+      )
+    ).toThrow();
+  });
+
+  it('reaction.manifestation.select() returns Rash after __path__ is stamped via $this', () => {
+    const allergyPlain = {
+      resourceType: 'AllergyIntolerance',
+      id: 'allergy-stamped',
+      reaction: [
+        {
+          manifestation: [
+            {
+              coding: [{ system: 'http://snomed.info/sct', code: '271807003', display: 'Rash' }]
+            }
+          ]
+        }
+      ]
+    };
+
+    // Stamp __path__ by running through fhirpath.evaluate with $this
+    const stamped = (fhirpath.evaluate(allergyPlain, '$this', {}, fhirpath_r4_model) as any[])[0];
+
+    const result = fhirpath.evaluate(
+      {},
+      "%allergy.reaction.manifestation.select((coding.where(system='http://snomed.info/sct') | coding.where(system!='http://snomed.info/sct').first() | text).first())",
+      { allergy: [stamped] },
+      fhirpath_r4_model
+    );
+
+    // With __path__ stamped, the nested navigation works correctly
+    expect(result).toHaveLength(1);
+    expect((result[0] as any).display).toBe('Rash');
   });
 });
 
