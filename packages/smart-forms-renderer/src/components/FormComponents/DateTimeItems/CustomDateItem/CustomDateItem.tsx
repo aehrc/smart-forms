@@ -69,7 +69,8 @@ function CustomDateItem(props: BaseItemProps) {
   // Perform validation checks
   // Constraint and required feedback takes priority; fall back to date format feedback.
   const validationFeedback = useValidationFeedback(qItem, undefined);
-  const feedback = validationFeedback || useDateValidation(input, dateParseFail);
+  const dateValidationFeedback = useDateValidation(input, dateParseFail);
+  const feedback = validationFeedback || dateValidationFeedback;
 
   // Generate instruction ID if instructions exist and there's no feedback
   const instructionsId =
