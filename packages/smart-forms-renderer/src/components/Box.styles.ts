@@ -26,8 +26,9 @@ export const QGroupContainerBox = styled(Box, {
   marginBottom: cardElevation === 1 || isRepeated ? 0 : 18
 }));
 
-export const FullWidthFormComponentBox = styled(Box)(() => ({
-  marginBottom: 10
+export const FullWidthFormComponentBox = styled(Box)(({ theme }) => ({
+  marginBottom: 10,
+  maxWidth: theme.breakpoints.values.lg
 }));
 
 export const FormTitleWrapper = styled(Box)(() => ({
