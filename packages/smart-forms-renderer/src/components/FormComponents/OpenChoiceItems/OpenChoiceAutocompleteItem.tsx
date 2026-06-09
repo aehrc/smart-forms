@@ -193,8 +193,7 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
       data-test="q-item-open-choice-autocomplete-box"
       data-linkid={qItem.linkId}
       data-label={qItem.text}
-      onClick={() => onFocusLinkId(qItem.linkId)}
-      sx={{ maxWidth: (theme) => theme.breakpoints.values.lg }}>
+      onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid
         qItem={qItem}
         readOnly={readOnly}

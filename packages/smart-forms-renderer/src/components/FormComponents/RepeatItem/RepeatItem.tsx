@@ -33,7 +33,6 @@ import { useQuestionnaireStore } from '../../../stores';
 import { generateExistingRepeatId, generateNewRepeatId } from '../../../utils/repeatId';
 import ItemLabel from '../ItemParts/ItemLabel';
 import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
 import SingleItem from '../SingleItem/SingleItem';
 import RemoveItemButton from './RemoveItemButton';
 
@@ -98,7 +97,8 @@ function RepeatItem(props: RepeatItemProps) {
       data-test="q-item-repeat-box"
       data-linkid={qItem.linkId}
       data-label={qItem.text}
-      onClick={() => onFocusLinkId(qItem.linkId)}>
+      onClick={() => onFocusLinkId(qItem.linkId)}
+      sx={{ maxWidth: 'none' }}>
       <TransitionGroup>
         {repeatAnswers.map((answer, index) => {
           const repeatAnswerQrItem = createEmptyQrItem(qItem, answer?.id);
@@ -110,12 +110,8 @@ function RepeatItem(props: RepeatItemProps) {
             <Collapse
               key={answer?.id ?? generateExistingRepeatId(qItem.linkId, index)}
               timeout={200}>
-              <Stack
-                direction="row"
-                alignItems="center"
-                justifyContent="space-between"
-                sx={{ mb: 1 }}>
-                <Box sx={{ flexGrow: 1, maxWidth: (theme) => theme.breakpoints.values.lg }}>
+              <Box sx={{ position: 'relative', mb: 1 }}>
+                <Box sx={{ maxWidth: (theme) => theme.breakpoints.values.lg }}>
                   <ItemFieldGrid
                     qItem={qItem}
                     readOnly={readOnly}
@@ -135,13 +131,21 @@ function RepeatItem(props: RepeatItemProps) {
                     }
                   />
                 </Box>
-                <RemoveItemButton
-                  answer={answer}
-                  numOfRepeatAnswers={repeatAnswers.length}
-                  readOnly={readOnly}
-                  onRemoveAnswer={() => handleRemoveItem(index)}
-                />
-              </Stack>
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    right: 0,
+                    top: '50%',
+                    transform: 'translateY(-50%)'
+                  }}>
+                  <RemoveItemButton
+                    answer={answer}
+                    numOfRepeatAnswers={repeatAnswers.length}
+                    readOnly={readOnly}
+                    onRemoveAnswer={() => handleRemoveItem(index)}
+                  />
+                </Box>
+              </Box>
             </Collapse>
           );
         })}

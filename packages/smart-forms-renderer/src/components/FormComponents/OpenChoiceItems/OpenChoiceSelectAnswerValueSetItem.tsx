@@ -145,8 +145,7 @@ function OpenChoiceSelectAnswerValueSetItem(props: BaseItemProps) {
       data-test="q-item-open-choice-select-answer-value-set-box"
       data-linkid={qItem.linkId}
       data-label={qItem.text}
-      onClick={() => onFocusLinkId(qItem.linkId)}
-      sx={{ maxWidth: (theme) => theme.breakpoints.values.lg }}>
+      onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid
         qItem={qItem}
         readOnly={readOnly}

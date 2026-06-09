@@ -77,8 +77,7 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
       data-test="q-item-choice-radio-answer-option-box"
       data-linkid={qItem.linkId}
       data-label={qItem.text}
-      onClick={onFocusLinkId}
-      sx={{ maxWidth: (theme) => theme.breakpoints.values.lg }}>
+      onClick={onFocusLinkId}>
       <ItemFieldGrid
         qItem={qItem}
         readOnly={readOnly}

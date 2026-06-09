@@ -120,8 +120,7 @@ function ChoiceCheckboxAnswerValueSetItem(props: BaseItemProps) {
       data-test="q-item-choice-checkbox-answer-value-set-box"
       data-linkid={qItem.linkId}
       data-label={qItem.text}
-      onClick={() => onFocusLinkId(qItem.linkId)}
-      sx={{ maxWidth: (theme) => theme.breakpoints.values.lg }}>
+      onClick={() => onFocusLinkId(qItem.linkId)}>
       <ItemFieldGrid
         qItem={qItem}
         readOnly={readOnly}
