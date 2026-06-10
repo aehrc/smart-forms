@@ -136,7 +136,9 @@ export function validateTargetConstraint(): Record<string, OperationOutcome> {
         null as unknown as QuestionnaireResponseItem, // We don't need a QuestionnaireResponseItem here
         null,
         locationExpression,
-        []
+        [],
+        targetConstraint.severityCode,
+        targetConstraint.human
       );
 
       const invalidItemKey = targetConstraint.linkId ?? `target-constraint-${targetConstraint.key}`;
@@ -781,12 +783,22 @@ export function createValidationOperationOutcome(
   qrItem: QuestionnaireResponseItem | null,
   answerIndex: number | null,
   locationExpression: string,
-  existingOperationOutcomeIssues: OperationOutcomeIssue[] = []
+  existingOperationOutcomeIssues: OperationOutcomeIssue[] = [],
+  severity: 'error' | 'warning' = 'error',
+  humanReadable?: string
 ): OperationOutcome {
   return {
     resourceType: 'OperationOutcome',
     issue: existingOperationOutcomeIssues.concat(
-      createValidationOperationOutcomeIssue(error, qItem, qrItem, answerIndex, locationExpression)
+      createValidationOperationOutcomeIssue(
+        error,
+        qItem,
+        qrItem,
+        answerIndex,
+        locationExpression,
+        severity,
+        humanReadable
+      )
     )
   };
 }
