@@ -30,7 +30,7 @@
     "@types/jest": "^29.5.14",
     "jest": "^29.7.0",
     "ts-jest": "^29.4.2",
-    "tsup": "^8.5.0"
+    "tsup": "^8.5.1"
   },
   "type": "module",
   "main": "./dist/index.cjs",
