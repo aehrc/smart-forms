@@ -110,8 +110,17 @@ function RepeatItem(props: RepeatItemProps) {
             <Collapse
               key={answer?.id ?? generateExistingRepeatId(qItem.linkId, index)}
               timeout={200}>
-              <Box sx={{ position: 'relative', mb: 1 }}>
-                <Box sx={{ maxWidth: (theme) => theme.breakpoints.values.lg }}>
+              <Box
+                sx={{ containerType: 'inline-size', display: 'flex', alignItems: 'center', mb: 1 }}>
+                <Box
+                  sx={(theme) => ({
+                    flexShrink: 0,
+                    width: 'calc(100% - 48px)',
+                    maxWidth: `calc(${theme.breakpoints.values.lg}px - 100px)`,
+                    [`@container (min-width: ${theme.breakpoints.values.lg}px)`]: {
+                      width: '100%'
+                    }
+                  })}>
                   <ItemFieldGrid
                     qItem={qItem}
                     readOnly={readOnly}
@@ -131,13 +140,7 @@ function RepeatItem(props: RepeatItemProps) {
                     }
                   />
                 </Box>
-                <Box
-                  sx={{
-                    position: 'absolute',
-                    right: 0,
-                    top: '50%',
-                    transform: 'translateY(-50%)'
-                  }}>
+                <Box sx={{ ml: 'auto' }}>
                   <RemoveItemButton
                     answer={answer}
                     numOfRepeatAnswers={repeatAnswers.length}
