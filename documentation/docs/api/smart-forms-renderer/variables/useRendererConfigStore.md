@@ -64,6 +64,14 @@
 
 `boolean`
 
+#### use.hideQuestionnaireTitle()
+
+> **hideQuestionnaireTitle**: () => `boolean`
+
+##### Returns
+
+`boolean`
+
 #### use.inputsFlexGrow()
 
 > **inputsFlexGrow**: () => `boolean`
@@ -145,6 +153,14 @@
 ##### Returns
 
 [`UseResponsiveProps`](../interfaces/UseResponsiveProps.md)
+
+#### use.tabListStickyTop()
+
+> **tabListStickyTop**: () => `number`
+
+##### Returns
+
+`number`
 
 #### use.tabListWidthOrResponsive()
 

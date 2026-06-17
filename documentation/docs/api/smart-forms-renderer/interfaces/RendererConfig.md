@@ -69,6 +69,16 @@ If `true`, hides the quantity comparator field.
 
 ***
 
+### hideQuestionnaireTitle?
+
+> `optional` **hideQuestionnaireTitle**: `boolean`
+
+If `true`, suppresses the renderer's built-in rendering of `Questionnaire.title`.
+  Set this to `true` when the consuming app already renders the title in its own header to avoid displaying it twice.
+  - Default: `false`
+
+***
+
 ### inputsFlexGrow?
 
 > `optional` **inputsFlexGrow**: `boolean`
@@ -137,6 +147,16 @@ If `true`, swaps "Yes" and "No" options for boolean fields.
 
 Defines when the form should switch to a tabbed layout based on screen size.
   - Default: `{ query: 'up', start: 'md' }`
+
+***
+
+### tabListStickyTop?
+
+> `optional` **tabListStickyTop**: `number`
+
+The pixel offset from the top of the viewport at which the tab list becomes sticky.
+  Set this to the height of any sticky header in the consuming app so the tab list sticks immediately below it.
+  - Default: `0`
 
 ***
 

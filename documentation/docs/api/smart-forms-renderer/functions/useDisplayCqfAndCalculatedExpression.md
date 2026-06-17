@@ -13,7 +13,7 @@ Returns the value of a cqf-expression, calculatedExpression or ItemTextAriaLabel
 | Parameter | Type | Description |
 | ------ | ------ | ------ |
 | `qItem` | `QuestionnaireItem` | The questionnaire item. |
-| `from` | `"item"` \| `"item._text"` \| `"item._text.aria-label"` \| `"item._answerValueSet"` | The expression source. Should be a one of 'item._text' or 'item._text.aria-label' |
+| `from` | `"item"` \| `"item._text"` \| `"item._text.aria-label"` \| `"item._prefix"` \| `"item._answerValueSet"` | The expression source (e.g. 'item._text', 'item._text.aria-label', 'item._prefix') |
 
 ## Returns
 

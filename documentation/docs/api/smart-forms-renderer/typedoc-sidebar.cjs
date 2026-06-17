@@ -366,6 +366,11 @@ const typedocSidebar = {
         },
         {
           type: "doc",
+          id: "api/smart-forms-renderer/functions/QuestionnaireTitleText",
+          label: "QuestionnaireTitleText"
+        },
+        {
+          type: "doc",
           id: "api/smart-forms-renderer/functions/removeEmptyAnswersFromResponse",
           label: "removeEmptyAnswersFromResponse"
         },
