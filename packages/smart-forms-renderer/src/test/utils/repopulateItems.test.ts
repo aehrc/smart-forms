@@ -1290,9 +1290,7 @@ describe('repopulateItems', () => {
       const serverItems = [itemA, itemB, itemC];
       const currentItems = [itemB, itemC];
 
-      mockGetQrItemsIndex
-        .mockReturnValueOnce([serverItems])
-        .mockReturnValueOnce([currentItems]);
+      mockGetQrItemsIndex.mockReturnValueOnce([serverItems]).mockReturnValueOnce([currentItems]);
 
       // deepEqual: true only when same object reference (simulates content equality for B=B, C=C)
       mockDeepEqual.mockImplementation((a: unknown, b: unknown) => a === b);
@@ -1330,9 +1328,7 @@ describe('repopulateItems', () => {
       const serverItems = [itemC, itemA, itemB];
       const currentItems = [itemA, itemB, itemC];
 
-      mockGetQrItemsIndex
-        .mockReturnValueOnce([serverItems])
-        .mockReturnValueOnce([currentItems]);
+      mockGetQrItemsIndex.mockReturnValueOnce([serverItems]).mockReturnValueOnce([currentItems]);
 
       mockDeepEqual.mockImplementation((a: unknown, b: unknown) => a === b);
 
@@ -1366,9 +1362,7 @@ describe('repopulateItems', () => {
       const serverItems = [itemA, itemB, itemC, itemD];
       const currentItems = [itemA, itemB, itemC];
 
-      mockGetQrItemsIndex
-        .mockReturnValueOnce([serverItems])
-        .mockReturnValueOnce([currentItems]);
+      mockGetQrItemsIndex.mockReturnValueOnce([serverItems]).mockReturnValueOnce([currentItems]);
 
       mockDeepEqual.mockImplementation((a: unknown, b: unknown) => a === b);
 
