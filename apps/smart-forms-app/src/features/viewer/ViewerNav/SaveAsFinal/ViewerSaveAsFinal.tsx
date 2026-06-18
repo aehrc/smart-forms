@@ -20,9 +20,16 @@ import { useState } from 'react';
 import ViewerOperationItem from '../ViewerOperationItem.tsx';
 import ViewerSaveAsFinalDialog from './ViewerSaveAsFinalDialog.tsx';
 import useSmartClient from '../../../../hooks/useSmartClient.ts';
+import { useQuestionnaireResponseStore } from '@aehrc/smart-forms-renderer';
+import { useSnackbar } from 'notistack';
+import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
+import { formHasErrorsViewerMessage } from '../../../../interfaces/snackbar.interface.ts';
 
 function ViewerSaveAsFinal() {
   const { smartClient } = useSmartClient();
+  const responseHasErrors = useQuestionnaireResponseStore.use.responseHasErrors();
+  const highlightRequiredItems = useQuestionnaireResponseStore.use.highlightRequiredItems();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -32,9 +39,18 @@ function ViewerSaveAsFinal() {
         title="Save as Final"
         icon={<TaskAltIcon />}
         onClick={() => {
-          if (smartClient) {
-            setDialogOpen(true);
+          if (!smartClient) return;
+
+          if (responseHasErrors) {
+            highlightRequiredItems();
+            enqueueSnackbar(formHasErrorsViewerMessage, {
+              variant: 'error',
+              action: <CloseSnackbar variant="error" />
+            });
+            return;
           }
+
+          setDialogOpen(true);
         }}
       />
       <ViewerSaveAsFinalDialog open={dialogOpen} closeDialog={() => setDialogOpen(false)} />

@@ -20,6 +20,9 @@ export const saveErrorMessage = 'An error occurred while saving.';
 export const formHasErrorsMessage =
   'The form has errors that must be fixed before saving as final.';
 
+export const formHasErrorsViewerMessage =
+  'This response has errors. Edit the response to view and fix them before saving as final.';
+
 export const saveSuccessMessage = 'Response saved';
 export const saveAsFinalSuccessMessage = 'Response saved as final';
 export const saveAmendmentSuccessMessage = 'Response saved as amendment';
