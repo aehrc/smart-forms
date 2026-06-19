@@ -28,7 +28,7 @@ export const QGroupContainerBox = styled(Box, {
 
 export const FullWidthFormComponentBox = styled(Box)(({ theme }) => ({
   marginBottom: 10,
-  maxWidth: `calc(${theme.breakpoints.values.lg}px - 100px)`
+  maxWidth: `min(calc(100% - 40px), calc(${theme.breakpoints.values.lg}px - 100px))`
 }));
 
 export const FormTitleWrapper = styled(Box)(() => ({

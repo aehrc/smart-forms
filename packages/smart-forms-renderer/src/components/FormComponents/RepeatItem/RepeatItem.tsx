@@ -110,16 +110,12 @@ function RepeatItem(props: RepeatItemProps) {
             <Collapse
               key={answer?.id ?? generateExistingRepeatId(qItem.linkId, index)}
               timeout={200}>
-              <Box
-                sx={{ containerType: 'inline-size', display: 'flex', alignItems: 'center', mb: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                 <Box
                   sx={(theme) => ({
-                    flexShrink: 0,
-                    width: 'calc(100% - 48px)',
-                    maxWidth: `calc(${theme.breakpoints.values.lg}px - 100px)`,
-                    [`@container (min-width: ${theme.breakpoints.values.lg}px)`]: {
-                      width: '100%'
-                    }
+                    flex: '1 1 0',
+                    minWidth: 0,
+                    maxWidth: `calc(${theme.breakpoints.values.lg}px - 100px)`
                   })}>
                   <ItemFieldGrid
                     qItem={qItem}
