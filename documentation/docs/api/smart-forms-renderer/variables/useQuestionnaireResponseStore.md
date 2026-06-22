@@ -85,6 +85,14 @@ This is the React version of the store which can be used as React hooks in React
 
 `boolean`
 
+#### use.responseHasErrors()
+
+> **responseHasErrors**: () => `boolean`
+
+##### Returns
+
+`boolean`
+
 #### use.responseIsValid()
 
 > **responseIsValid**: () => `boolean`

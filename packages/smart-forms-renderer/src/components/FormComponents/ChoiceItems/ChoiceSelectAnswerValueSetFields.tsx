@@ -18,6 +18,8 @@
 import { useState } from 'react';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Autocomplete from '@mui/material/Autocomplete';
+import FormControl from '@mui/material/FormControl';
+import FormHelperText from '@mui/material/FormHelperText';
 import Typography from '@mui/material/Typography';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
@@ -29,9 +31,9 @@ import { useRendererConfigStore } from '../../../stores';
 import { isCodingDisabled } from '../../../utils/choice';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import { StyledAlert } from '../../Alert.styles';
-import { StyledRequiredTypography } from '../Item.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { StandardTextField } from '../Textfield.styles';
+import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
 
 interface ChoiceSelectAnswerValueSetFieldsProps
   extends PropsWithIsTabledAttribute,
@@ -81,7 +83,14 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
 
   if (codings.length > 0) {
     return (
-      <>
+      <FormControl
+        error={!!feedback}
+        sx={{
+          width: '100%',
+          maxWidth: !isTabled ? textFieldWidth : 3000,
+          minWidth: 160,
+          flexGrow: 1
+        }}>
         <Autocomplete
           {...(!isTabled && { id: `${qItem.type}-${qItem.linkId}` })}
           options={codings}
@@ -91,11 +100,11 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
           getOptionLabel={(option) => option.display ?? `${option.code}`}
           value={valueCoding ?? null}
           onChange={(_, newValue) => onSelectChange(newValue)}
+          fullWidth
           autoHighlight
           open={open}
           onOpen={() => setOpen(true)}
           onClose={() => setOpen(false)}
-          sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }}
           size="small"
           disabled={readOnly && readOnlyVisualStyle === 'disabled'}
           readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
@@ -104,6 +113,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
               multiline
               textFieldWidth={textFieldWidth}
               isTabled={isTabled}
+              error={!!feedback}
               placeholder={valueCoding ? undefined : entryFormat || displayPrompt}
               onFocus={handleFocus}
               {...params}
@@ -135,8 +145,12 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
           )}
         />
 
-        {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
-      </>
+        {feedback ? (
+          <FormHelperText>
+            <AccessibleFeedback>{feedback}</AccessibleFeedback>
+          </FormHelperText>
+        ) : null}
+      </FormControl>
     );
   }
 

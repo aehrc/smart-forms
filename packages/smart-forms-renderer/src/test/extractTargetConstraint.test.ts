@@ -493,5 +493,185 @@ describe('extractTargetConstraint - Phase 5', () => {
 
       expect(result).toEqual({});
     });
+
+    it('should extract target constraints from item-level extensions', () => {
+      const questionnaire: Questionnaire = {
+        resourceType: 'Questionnaire',
+        status: 'active',
+        item: [
+          {
+            linkId: 'field-a',
+            text: 'Field A',
+            type: 'string',
+            extension: [
+              {
+                url: 'http://hl7.org/fhir/StructureDefinition/targetConstraint',
+                extension: [
+                  { url: 'key', valueId: 'item-constraint' },
+                  { url: 'severity', valueCode: 'error' },
+                  {
+                    url: 'expression',
+                    valueExpression: {
+                      expression: 'field.exists() implies other.exists()',
+                      language: 'text/fhirpath'
+                    }
+                  },
+                  { url: 'human', valueString: 'Other is required when field is set' }
+                ]
+              }
+            ]
+          }
+        ]
+      };
+
+      const result = extractTargetConstraints(questionnaire);
+
+      expect(result['item-constraint']).toMatchObject({
+        key: 'item-constraint',
+        severityCode: 'error',
+        human: 'Other is required when field is set',
+        linkId: 'field-a'
+      });
+    });
+
+    it('should set linkId on item-level constraints but not on questionnaire-level constraints', () => {
+      const questionnaire: Questionnaire = {
+        resourceType: 'Questionnaire',
+        status: 'active',
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/targetConstraint',
+            extension: [
+              { url: 'key', valueId: 'q-level-constraint' },
+              { url: 'severity', valueCode: 'warning' },
+              {
+                url: 'expression',
+                valueExpression: { expression: 'true', language: 'text/fhirpath' }
+              },
+              { url: 'human', valueString: 'Questionnaire-level constraint' }
+            ]
+          }
+        ],
+        item: [
+          {
+            linkId: 'my-item',
+            text: 'My Item',
+            type: 'string',
+            extension: [
+              {
+                url: 'http://hl7.org/fhir/StructureDefinition/targetConstraint',
+                extension: [
+                  { url: 'key', valueId: 'item-level-constraint' },
+                  { url: 'severity', valueCode: 'error' },
+                  {
+                    url: 'expression',
+                    valueExpression: { expression: 'value.exists()', language: 'text/fhirpath' }
+                  },
+                  { url: 'human', valueString: 'Item-level constraint' }
+                ]
+              }
+            ]
+          }
+        ]
+      };
+
+      const result = extractTargetConstraints(questionnaire);
+
+      // Questionnaire-level constraint has no linkId (set later by readTargetConstraintLocationLinkIds if it has a location)
+      expect(result['q-level-constraint'].linkId).toBeUndefined();
+      // Item-level constraint has linkId set from the item during extraction
+      expect(result['item-level-constraint'].linkId).toBe('my-item');
+    });
+
+    it('should extract target constraints from nested item extensions', () => {
+      const questionnaire: Questionnaire = {
+        resourceType: 'Questionnaire',
+        status: 'active',
+        item: [
+          {
+            linkId: 'group',
+            text: 'Group',
+            type: 'group',
+            item: [
+              {
+                linkId: 'nested-field',
+                text: 'Nested Field',
+                type: 'string',
+                extension: [
+                  {
+                    url: 'http://hl7.org/fhir/StructureDefinition/targetConstraint',
+                    extension: [
+                      { url: 'key', valueId: 'nested-constraint' },
+                      { url: 'severity', valueCode: 'error' },
+                      {
+                        url: 'expression',
+                        valueExpression: { expression: 'value.exists()', language: 'text/fhirpath' }
+                      },
+                      { url: 'human', valueString: 'Nested constraint' }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      };
+
+      const result = extractTargetConstraints(questionnaire);
+
+      expect(result['nested-constraint']).toMatchObject({
+        key: 'nested-constraint',
+        linkId: 'nested-field'
+      });
+    });
+
+    it('should extract both questionnaire-level and item-level constraints together', () => {
+      const questionnaire: Questionnaire = {
+        resourceType: 'Questionnaire',
+        status: 'active',
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/targetConstraint',
+            extension: [
+              { url: 'key', valueId: 'q-constraint' },
+              { url: 'severity', valueCode: 'warning' },
+              {
+                url: 'expression',
+                valueExpression: { expression: 'true', language: 'text/fhirpath' }
+              },
+              { url: 'human', valueString: 'Questionnaire constraint' }
+            ]
+          }
+        ],
+        item: [
+          {
+            linkId: 'item-1',
+            text: 'Item 1',
+            type: 'string',
+            extension: [
+              {
+                url: 'http://hl7.org/fhir/StructureDefinition/targetConstraint',
+                extension: [
+                  { url: 'key', valueId: 'item-constraint' },
+                  { url: 'severity', valueCode: 'error' },
+                  {
+                    url: 'expression',
+                    valueExpression: { expression: 'value.exists()', language: 'text/fhirpath' }
+                  },
+                  { url: 'human', valueString: 'Item constraint' }
+                ]
+              }
+            ]
+          }
+        ]
+      };
+
+      const result = extractTargetConstraints(questionnaire);
+
+      expect(Object.keys(result)).toHaveLength(2);
+      expect(result['q-constraint']).toBeDefined();
+      expect(result['item-constraint']).toBeDefined();
+      expect(result['item-constraint'].linkId).toBe('item-1');
+    });
   });
 });

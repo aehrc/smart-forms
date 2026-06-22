@@ -80,6 +80,12 @@ Required items are not highlighted by default (to provide a less-jarring UX), bu
 
 ***
 
+### responseHasErrors
+
+> **responseHasErrors**: `boolean`
+
+***
+
 ### responseIsValid
 
 > **responseIsValid**: `boolean`

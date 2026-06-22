@@ -46,6 +46,12 @@ RendererConfigStore properties and methods
 
 ***
 
+### hideQuestionnaireTitle
+
+> **hideQuestionnaireTitle**: `boolean`
+
+***
+
 ### inputsFlexGrow
 
 > **inputsFlexGrow**: `boolean`
@@ -111,6 +117,12 @@ RendererConfigStore properties and methods
 ### showTabbedFormAt
 
 > **showTabbedFormAt**: [`UseResponsiveProps`](UseResponsiveProps.md)
+
+***
+
+### tabListStickyTop
+
+> **tabListStickyTop**: `number`
 
 ***
 
