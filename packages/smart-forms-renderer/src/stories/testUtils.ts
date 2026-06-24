@@ -102,9 +102,7 @@ export async function getGroupAnswers(groupLinkId: string, answerLinkId: string)
 
   const result = await evaluate(
     qr,
-    groupLinkId
-      ? `QuestionnaireResponse.item.where(linkId='${groupLinkId}').item.where(linkId='${answerLinkId}').answer`
-      : `QuestionnaireResponse.item.where(linkId='${answerLinkId}').answer`
+    `QuestionnaireResponse.repeat(item).where(linkId='${groupLinkId}').item.where(linkId='${answerLinkId}').answer`
   );
 
   return result;
@@ -375,6 +373,83 @@ export async function checkCheckBox(canvasElement: HTMLElement, linkId: string) 
   await new Promise((resolve) => setTimeout(resolve, 500));
 }
 
+export async function checkCheckboxOption(
+  canvasElement: HTMLElement,
+  linkId: string,
+  text: string
+) {
+  const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
+  const checkbox = questionElement?.querySelector(
+    `span[data-test="checkbox-single-${text}"] input`
+  );
+
+  if (!checkbox) {
+    throw new Error(`Input or textarea was not found inside ${`[data-linkid=${linkId}] block`}`);
+  }
+
+  fireEvent.click(checkbox);
+  // Here we await for debounced store update
+  await new Promise((resolve) => setTimeout(resolve, 500));
+}
+
+export async function checkCheckboxOtherOption(
+  canvasElement: HTMLElement,
+  linkId: string,
+  text: string
+) {
+  const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
+  const openLabelBox = questionElement?.querySelector(
+    'div[data-test="q-item-checkbox-open-label-box"]'
+  );
+  const checkbox = openLabelBox?.querySelector('input[type="checkbox"]');
+  const textarea = openLabelBox?.querySelector('textarea');
+
+  if (!checkbox) {
+    throw new Error(
+      `Checkbox other option was not found inside [data-test="q-item-checkbox-open-label-box"] for [data-linkid=${linkId}] block`
+    );
+  }
+  if (!textarea) {
+    throw new Error(
+      `Textarea was not found inside [data-test="q-item-checkbox-open-label-box"] for [data-linkid=${linkId}] block`
+    );
+  }
+
+  fireEvent.click(checkbox);
+  fireEvent.change(textarea, { target: { value: text } });
+  // Here we await for debounced store update
+  await new Promise((resolve) => setTimeout(resolve, 500));
+}
+
+export async function checkRadioOtherOption(
+  canvasElement: HTMLElement,
+  linkId: string,
+  text: string
+) {
+  const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
+  const openLabelBox = questionElement?.querySelector(
+    'div[data-test="q-item-radio-open-label-box"]'
+  );
+  const radio = openLabelBox?.querySelector('input[type="radio"]');
+  const textarea = openLabelBox?.querySelector('textarea');
+
+  if (!radio) {
+    throw new Error(
+      `Radio other option was not found inside [data-test="q-item-radio-open-label-box"] for [data-linkid=${linkId}] block`
+    );
+  }
+  if (!textarea) {
+    throw new Error(
+      `Textarea was not found inside [data-test="q-item-radio-open-label-box"] for [data-linkid=${linkId}] block`
+    );
+  }
+
+  fireEvent.click(radio);
+  fireEvent.change(textarea, { target: { value: text } });
+  // Here we await for debounced store update
+  await new Promise((resolve) => setTimeout(resolve, 500));
+}
+
 export async function inputFile(
   canvasElement: HTMLElement,
   linkId: string,
@@ -565,6 +640,7 @@ export async function chooseSelectOption(
   if (selectButton) {
     // For MUI Select, use userEvent to click and open the menu
     await userEvent.click(selectButton);
+    fireEvent.change(selectButton, { target: { value: optionLabel } });
 
     // Wait for the option to appear in the document
     const option = await waitFor(
@@ -655,18 +731,29 @@ export async function chooseQuantityOption(
   await new Promise((resolve) => setTimeout(resolve, 500));
 }
 
+export function queryByLinkIdOrLabel(
+  canvasElement: HTMLElement,
+  linkIdOrLabel: string
+): HTMLElement | null {
+  const selectorByLinkId = `[data-linkid="${linkIdOrLabel}"]`;
+  const selectorByLabel = `[data-label="${linkIdOrLabel}"]`;
+
+  return (
+    canvasElement.querySelector<HTMLElement>(selectorByLinkId) ??
+    canvasElement.querySelector<HTMLElement>(selectorByLabel)
+  );
+}
+
 export async function findByLinkIdOrLabel(
   canvasElement: HTMLElement,
-  linkId: string
+  linkIdOrLabel: string
 ): Promise<HTMLElement> {
-  const selectorByLinkId = `[data-linkid="${linkId}"]`;
-  const selectorByLabel = `[data-label="${linkId}"]`;
+  const selectorByLinkId = `[data-linkid="${linkIdOrLabel}"]`;
+  const selectorByLabel = `[data-label="${linkIdOrLabel}"]`;
 
   return await waitFor(
     () => {
-      const el =
-        canvasElement.querySelector<HTMLElement>(selectorByLinkId) ??
-        canvasElement.querySelector<HTMLElement>(selectorByLabel);
+      const el = queryByLinkIdOrLabel(canvasElement, linkIdOrLabel);
 
       if (!el) {
         throw new Error(
@@ -678,6 +765,166 @@ export async function findByLinkIdOrLabel(
     },
     { timeout: 60000 }
   );
+}
+
+export async function findAllByLinkIdOrLabel(
+  canvasElement: HTMLElement,
+  linkId: string
+): Promise<HTMLElement[]> {
+  const selectorByLinkId = `[data-linkid="${linkId}"]`;
+  const selectorByLabel = `[data-label="${linkId}"]`;
+
+  return await waitFor(() => {
+    const byLinkId = Array.from(canvasElement.querySelectorAll<HTMLElement>(selectorByLinkId));
+    const byLabel = Array.from(canvasElement.querySelectorAll<HTMLElement>(selectorByLabel));
+
+    const unique = Array.from(new Set<HTMLElement>([...byLinkId, ...byLabel]));
+    if (unique.length === 0) {
+      throw new Error(
+        `Elements with selectors "${selectorByLinkId}" or "${selectorByLabel}" not found`
+      );
+    }
+
+    return unique;
+  });
+}
+
+export async function getNthRow(container: HTMLElement, index: number): Promise<HTMLElement> {
+  return await waitFor(
+    () => {
+      const rows = container.querySelectorAll<HTMLElement>('tbody tr');
+      const row = rows[index];
+      if (!row) {
+        throw new Error(`Row at index ${index} not found`);
+      }
+      return row;
+    },
+    { timeout: 5000 }
+  );
+}
+
+async function clickNavigationButton(
+  canvasElement: HTMLElement,
+  buttonNameMatcher: RegExp,
+  errorMessage: string
+) {
+  const element = within(canvasElement);
+  const button = await waitFor(() => {
+    const navButton = element.queryByRole('button', { name: buttonNameMatcher });
+    if (!navButton) {
+      throw new Error(errorMessage);
+    }
+    if ((navButton as HTMLButtonElement).disabled) {
+      throw new Error(`Navigation button is disabled: ${buttonNameMatcher}`);
+    }
+    return navButton;
+  });
+
+  await userEvent.click(button);
+  await new Promise((resolve) => setTimeout(resolve, 300));
+}
+
+export async function clickNextTab(canvasElement: HTMLElement) {
+  await clickNavigationButton(canvasElement, /^next tab$/i, 'Next tab button not found');
+}
+
+export async function clickPreviousTab(canvasElement: HTMLElement) {
+  await clickNavigationButton(canvasElement, /^previous tab$/i, 'Previous tab button not found');
+}
+
+export async function clickNextPage(canvasElement: HTMLElement) {
+  await clickNavigationButton(canvasElement, /^next page$/i, 'Next page button not found');
+}
+
+export async function clickPreviousPage(canvasElement: HTMLElement) {
+  await clickNavigationButton(canvasElement, /^previous page$/i, 'Previous page button not found');
+}
+
+export async function clickAddRow(canvasElement: HTMLElement, groupLinkIdOrLabel: string) {
+  const groupContainer = await findByLinkIdOrLabel(canvasElement, groupLinkIdOrLabel);
+
+  const button = await waitFor(() => {
+    const addButton = groupContainer.querySelector<HTMLButtonElement>(
+      'button[data-test="button-add-repeat-item"]'
+    );
+    if (!addButton) {
+      throw new Error(`Add row button not found inside group "${groupLinkIdOrLabel}"`);
+    }
+    if (addButton.disabled) {
+      throw new Error(`Add row button is disabled for group "${groupLinkIdOrLabel}"`);
+    }
+    return addButton;
+  });
+
+  await userEvent.click(button);
+  await new Promise((resolve) => setTimeout(resolve, 300));
+}
+
+export async function clickAddItem(canvasElement: HTMLElement, groupLinkIdOrLabel: string) {
+  const groupContainer = await findByLinkIdOrLabel(canvasElement, groupLinkIdOrLabel);
+
+  const button = await waitFor(() => {
+    let currentNode: HTMLElement | null = groupContainer;
+    while (currentNode && currentNode !== canvasElement) {
+      let sibling = currentNode.nextElementSibling as HTMLElement | null;
+      while (sibling) {
+        const addButton = sibling.querySelector<HTMLButtonElement>(
+          'button[data-test="button-add-repeat-item"]'
+        );
+        if (addButton && !addButton.disabled) {
+          return addButton;
+        }
+        sibling = sibling.nextElementSibling as HTMLElement | null;
+      }
+      currentNode = currentNode.parentElement;
+    }
+
+    throw new Error(`Add row button not found after group "${groupLinkIdOrLabel}"`);
+  });
+
+  await userEvent.click(button);
+  await new Promise((resolve) => setTimeout(resolve, 300));
+}
+
+export async function chooseSliderValue(canvasElement: HTMLElement, linkId: string, index: number) {
+  const questionElement = await findByLinkIdOrLabel(canvasElement, linkId);
+  const sliderField = questionElement?.querySelector('span[data-test="q-item-slider-field"]');
+
+  if (!sliderField) {
+    throw new Error(
+      `Slider field was not found inside [data-test="q-item-slider-field"] for [data-linkid=${linkId}] block`
+    );
+  }
+
+  const sliderTarget = await waitFor(
+    () => {
+      const markLabel = sliderField.querySelector<HTMLElement>(
+        `.MuiSlider-markLabel[data-index="${index}"]`
+      );
+      const mark = sliderField.querySelector<HTMLElement>(`.MuiSlider-mark[data-index="${index}"]`);
+      const target = markLabel ?? mark;
+      if (!target) {
+        throw new Error(
+          `Slider mark with [data-index="${index}"] was not found inside [data-linkid=${linkId}]`
+        );
+      }
+      return target;
+    },
+    { timeout: 5000 }
+  );
+
+  const sliderRect = sliderField.getBoundingClientRect();
+  const markRect = sliderTarget.getBoundingClientRect();
+  const clientX = markRect.left + markRect.width / 2;
+  const clientY = sliderRect.top + sliderRect.height / 2;
+
+  // MUI slider reacts to pointer position on the slider root.
+  fireEvent.mouseDown(sliderField, { clientX, clientY });
+  fireEvent.mouseUp(sliderField, { clientX, clientY });
+  fireEvent.click(sliderField, { clientX, clientY });
+
+  // Here we await for debounced store update
+  await new Promise((resolve) => setTimeout(resolve, 500));
 }
 
 export async function inputOpenChoiceOtherText(
