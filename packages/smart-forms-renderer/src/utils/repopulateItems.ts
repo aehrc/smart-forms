@@ -463,11 +463,47 @@ function retrieveRepeatGroupCurrentQRItems(
     return;
   }
 
-  if (deepEqual(currentQRItems, serverQRItems)) {
+  // Use content-based matching instead of order-sensitive deepEqual on the whole array.
+  // When users delete items from a repeat group the remaining items shift positions,
+  // causing a naive positional comparison to flag all items as changed.
+  const unmatchedServerIndices = new Set(serverQRItems.map((_, i) => i));
+  const matchedCurrentItems: QuestionnaireResponseItem[] = [];
+  const matchedServerItems: QuestionnaireResponseItem[] = [];
+  const unmatchedCurrentItems: QuestionnaireResponseItem[] = [];
+
+  for (const currentItem of currentQRItems) {
+    let matchedServerIndex = -1;
+    for (const si of unmatchedServerIndices) {
+      if (deepEqual(currentItem, serverQRItems[si])) {
+        matchedServerIndex = si;
+        break;
+      }
+    }
+    if (matchedServerIndex >= 0) {
+      matchedCurrentItems.push(currentItem);
+      matchedServerItems.push(serverQRItems[matchedServerIndex]);
+      unmatchedServerIndices.delete(matchedServerIndex);
+    } else {
+      unmatchedCurrentItems.push(currentItem);
+    }
+  }
+
+  const unmatchedServerItems = Array.from(unmatchedServerIndices).map((i) => serverQRItems[i]);
+
+  // All items matched — nothing to repopulate
+  if (unmatchedCurrentItems.length === 0 && unmatchedServerItems.length === 0) {
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete itemsToRepopulate[qItem.linkId];
     return;
   }
 
-  itemsToRepopulate[qItem.linkId].currentQRItems = currentQRItems;
+  // Build aligned arrays with matched pairs first so the index-based dialog comparison works:
+  // - Positions 0..n-1: matched pairs (deepEqual = true → hidden in dialog)
+  // - Positions n..n+k-1: new server items (currentQRItems[i] out-of-bounds → shown as "new")
+  // - Positions n+k..end: items removed from server (serverQRItems[i] out-of-bounds → shown as "removed")
+  itemsToRepopulate[qItem.linkId].currentQRItems = [
+    ...matchedCurrentItems,
+    ...unmatchedCurrentItems
+  ];
+  itemsToRepopulate[qItem.linkId].serverQRItems = [...matchedServerItems, ...unmatchedServerItems];
 }

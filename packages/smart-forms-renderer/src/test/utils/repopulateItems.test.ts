@@ -1245,4 +1245,146 @@ describe('repopulateItems', () => {
       expect(result).toBeDefined();
     });
   });
+
+  describe('retrieveRepeatGroupCurrentQRItems content-based matching (issue #1940)', () => {
+    const makeConditionItem = (id: string): QuestionnaireResponseItem => ({
+      linkId: 'repeat-group',
+      text: 'Repeat Group',
+      item: [{ linkId: 'conditionId', answer: [{ valueString: id }] }]
+    });
+
+    const qItem: QuestionnaireItem = {
+      linkId: 'repeat-group',
+      type: 'group',
+      text: 'Repeat Group',
+      repeats: true
+    };
+
+    const baseParams = {
+      tabs: {},
+      enableWhenIsActivated: false,
+      enableWhenItems: { singleItems: {}, repeatItems: {} },
+      enableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} }
+    };
+
+    beforeEach(() => {
+      // Reset the queue to clear stale mockReturnValueOnce values left by earlier tests
+      // that call getItemsToRepopulate with an empty updatableResponse (which causes an early
+      // return before getQrItemsIndex is ever called, leaving queued values unconsumed).
+      mockGetQrItemsIndex.mockReset();
+      mockIsTabContainer.mockReturnValue(false);
+      mockContainsTabs.mockReturnValue(false);
+      mockIsSpecificItemControl.mockReturnValue(false);
+      mockIsHiddenByEnableWhen.mockReturnValue(false);
+      mockMapQItemsIndex.mockReturnValue({ 'repeat-group': 0 });
+    });
+
+    it('should not flag repeat group as changed when user deleted first item causing index shift', () => {
+      // Server has [A, B, C]; user deleted A so current is [B, C].
+      // deepEqual by position would flag all 3 as changed. Content matching should find
+      // that B and C already exist and only show A as new.
+      const itemA = makeConditionItem('A');
+      const itemB = makeConditionItem('B');
+      const itemC = makeConditionItem('C');
+
+      const serverItems = [itemA, itemB, itemC];
+      const currentItems = [itemB, itemC];
+
+      mockGetQrItemsIndex.mockReturnValueOnce([serverItems]).mockReturnValueOnce([currentItems]);
+
+      // deepEqual: true only when same object reference (simulates content equality for B=B, C=C)
+      mockDeepEqual.mockImplementation((a: unknown, b: unknown) => a === b);
+
+      const result = getItemsToRepopulate({
+        sourceQuestionnaire: { resourceType: 'Questionnaire', status: 'active', item: [qItem] },
+        populatedResponse: {
+          resourceType: 'QuestionnaireResponse',
+          status: 'completed',
+          item: [itemA, itemB, itemC]
+        },
+        updatableResponse: {
+          resourceType: 'QuestionnaireResponse',
+          status: 'in-progress',
+          item: [itemB, itemC]
+        },
+        ...baseParams
+      });
+
+      // Group should still be in itemsToRepopulate because A is new
+      expect(result['repeat-group']).toBeDefined();
+
+      // Aligned arrays: matched pairs (B, C) first, then unmatched server items (A)
+      expect(result['repeat-group'].currentQRItems).toEqual([itemB, itemC]);
+      expect(result['repeat-group'].serverQRItems).toEqual([itemB, itemC, itemA]);
+    });
+
+    it('should remove repeat group from itemsToRepopulate when all items match regardless of order', () => {
+      // Server returns [C, A, B]; current is [A, B, C] (same content, different order).
+      // Content matching should detect no real differences.
+      const itemA = makeConditionItem('A');
+      const itemB = makeConditionItem('B');
+      const itemC = makeConditionItem('C');
+
+      const serverItems = [itemC, itemA, itemB];
+      const currentItems = [itemA, itemB, itemC];
+
+      mockGetQrItemsIndex.mockReturnValueOnce([serverItems]).mockReturnValueOnce([currentItems]);
+
+      mockDeepEqual.mockImplementation((a: unknown, b: unknown) => a === b);
+
+      const result = getItemsToRepopulate({
+        sourceQuestionnaire: { resourceType: 'Questionnaire', status: 'active', item: [qItem] },
+        populatedResponse: {
+          resourceType: 'QuestionnaireResponse',
+          status: 'completed',
+          item: [itemC, itemA, itemB]
+        },
+        updatableResponse: {
+          resourceType: 'QuestionnaireResponse',
+          status: 'in-progress',
+          item: [itemA, itemB, itemC]
+        },
+        ...baseParams
+      });
+
+      // No real differences — group should be removed from itemsToRepopulate
+      expect(result['repeat-group']).toBeUndefined();
+    });
+
+    it('should show new server item at end of aligned arrays, not at a mismatched position', () => {
+      // Server has [A, B, C, D] (D is new); current is [A, B, C].
+      // Only D should appear as a new item at index 3.
+      const itemA = makeConditionItem('A');
+      const itemB = makeConditionItem('B');
+      const itemC = makeConditionItem('C');
+      const itemD = makeConditionItem('D');
+
+      const serverItems = [itemA, itemB, itemC, itemD];
+      const currentItems = [itemA, itemB, itemC];
+
+      mockGetQrItemsIndex.mockReturnValueOnce([serverItems]).mockReturnValueOnce([currentItems]);
+
+      mockDeepEqual.mockImplementation((a: unknown, b: unknown) => a === b);
+
+      const result = getItemsToRepopulate({
+        sourceQuestionnaire: { resourceType: 'Questionnaire', status: 'active', item: [qItem] },
+        populatedResponse: {
+          resourceType: 'QuestionnaireResponse',
+          status: 'completed',
+          item: [itemA, itemB, itemC, itemD]
+        },
+        updatableResponse: {
+          resourceType: 'QuestionnaireResponse',
+          status: 'in-progress',
+          item: [itemA, itemB, itemC]
+        },
+        ...baseParams
+      });
+
+      expect(result['repeat-group']).toBeDefined();
+      // A, B, C match at positions 0-2; D is new at position 3
+      expect(result['repeat-group'].currentQRItems).toEqual([itemA, itemB, itemC]);
+      expect(result['repeat-group'].serverQRItems).toEqual([itemA, itemB, itemC, itemD]);
+    });
+  });
 });
