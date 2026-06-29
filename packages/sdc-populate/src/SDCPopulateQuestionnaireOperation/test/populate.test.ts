@@ -356,4 +356,3 @@ describe('populate - non-repeating itemPopulationContext children evaluated glob
     expect(patientIdItem?.answer?.[0]?.valueString).toBe('test-patient-123');
   });
 });
-
