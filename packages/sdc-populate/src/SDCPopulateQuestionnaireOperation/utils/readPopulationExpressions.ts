@@ -73,8 +73,12 @@ function readQuestionnaireItemRecursive(
       }
     }
 
-    // Children of an itemPopulationContext group are evaluated per-item, not globally
-    const childrenUnderContext = underItemPopulationContext || !!itemPopulationContext;
+    // Children of a *repeating* itemPopulationContext group are evaluated per-item in
+    // constructRepeatGroupInstances, so they must be excluded from the global map.
+    // Non-repeating groups (repeats: false) with itemPopulationContext are single-instance;
+    // their children are evaluated globally once the context variable is available.
+    const childrenUnderContext =
+      underItemPopulationContext || (!!itemPopulationContext && !!item.repeats);
     items.forEach((item) => {
       readQuestionnaireItemRecursive(item, populationExpressions, childrenUnderContext);
     });

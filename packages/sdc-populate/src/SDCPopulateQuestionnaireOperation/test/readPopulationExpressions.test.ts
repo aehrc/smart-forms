@@ -115,3 +115,60 @@ describe('readPopulationExpressions - itemPopulationContext', () => {
     );
   });
 });
+
+describe('readPopulationExpressions - non-repeating itemPopulationContext', () => {
+  // A non-repeating group with itemPopulationContext is a single-instance group whose
+  // children's initialExpressions should be evaluated globally (once, against the full
+  // context), not per-instance.
+  const questionnaire: Questionnaire = {
+    resourceType: 'Questionnaire',
+    status: 'active',
+    item: [
+      {
+        linkId: 'allergy-group',
+        type: 'group',
+        extension: [
+          {
+            url: SDC_ITEM_POP_CTX,
+            valueExpression: {
+              name: 'AllergyCtx',
+              language: 'text/fhirpath',
+              expression: '%AllergyBundle.entry.resource'
+            }
+          }
+        ],
+        item: [
+          {
+            linkId: 'allergy-display',
+            type: 'string',
+            extension: [
+              {
+                url: SDC_INITIAL_EXPR,
+                valueExpression: {
+                  language: 'text/fhirpath',
+                  expression: '%AllergyCtx.code.coding.display'
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  };
+
+  const { initialExpressions, itemPopulationContexts } = readPopulationExpressions(questionnaire);
+
+  it('includes children of a non-repeating itemPopulationContext group in initialExpressions', () => {
+    expect(initialExpressions['allergy-display']).toBeDefined();
+    expect(initialExpressions['allergy-display'].expression).toEqual(
+      '%AllergyCtx.code.coding.display'
+    );
+  });
+
+  it('registers the itemPopulationContext', () => {
+    expect(itemPopulationContexts['AllergyCtx']).toBeDefined();
+    expect(itemPopulationContexts['AllergyCtx'].expression).toEqual(
+      '%AllergyBundle.entry.resource'
+    );
+  });
+});
