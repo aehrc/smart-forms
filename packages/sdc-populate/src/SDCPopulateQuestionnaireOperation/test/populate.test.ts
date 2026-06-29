@@ -273,3 +273,86 @@ describe('populate - repeat group with toString()', () => {
     }
   });
 });
+
+// Minimal questionnaire with a NON-repeating group that has itemPopulationContext.
+// Children's initialExpressions must be evaluated globally (not per-instance via repeat group
+// logic). The child expression uses a simple flat property (.id) to isolate this behaviour.
+const qNonRepeatGroupSimple = {
+  resourceType: 'Questionnaire',
+  id: 'non-repeat-ipc-simple-test',
+  status: 'active',
+  item: [
+    {
+      linkId: 'patient-group',
+      type: 'group',
+      extension: [
+        {
+          url: SDC_ITEM_POP_CTX,
+          valueExpression: {
+            name: 'PatientCtx',
+            language: 'text/fhirpath',
+            expression: '%PatientBundle.entry.resource'
+          }
+        }
+      ],
+      item: [
+        {
+          linkId: 'patient-id',
+          type: 'string',
+          extension: [
+            {
+              url: SDC_INITIAL_EXPR,
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%PatientCtx.id'
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+describe('populate - non-repeating itemPopulationContext children evaluated globally', () => {
+  it('populates a child item whose initialExpression uses a simple property of the context variable', async () => {
+    const mockContext = {
+      resource: { resourceType: 'QuestionnaireResponse', status: 'in-progress' },
+      rootResource: { resourceType: 'QuestionnaireResponse', status: 'in-progress' },
+      patient: { resourceType: 'Patient', id: 'test-patient' },
+      PatientBundle: {
+        resourceType: 'Bundle',
+        type: 'searchset',
+        entry: [{ resource: { resourceType: 'Patient', id: 'test-patient-123' } }]
+      }
+    };
+
+    (createFhirPathContext as jest.Mock).mockImplementation(async () => mockContext);
+    (resolveLookupPromises as jest.Mock).mockImplementation(async () => ({}));
+
+    const inputParameters: InputParameters = {
+      resourceType: 'Parameters',
+      parameter: [
+        { name: 'questionnaire', resource: qNonRepeatGroupSimple as any },
+        { name: 'subject', valueReference: { type: 'Patient', reference: 'Patient/test-patient' } }
+      ]
+    };
+
+    const result = await populate(
+      inputParameters,
+      mockFetchResourceCallback,
+      mockFetchResourceCallbackConfig,
+      mockTerminologyCallback,
+      mockTerminologyCallbackConfig
+    );
+
+    const response = (result as OutputParameters).parameter.find((p) => p.name === 'response')
+      ?.resource as QuestionnaireResponse;
+
+    const patientIdItem = response.item
+      ?.find((i) => i.linkId === 'patient-group')
+      ?.item?.find((i) => i.linkId === 'patient-id');
+
+    expect(patientIdItem?.answer?.[0]?.valueString).toBe('test-patient-123');
+  });
+});
