@@ -456,7 +456,9 @@ function validateSingleItem(
         answer.valueInteger ||
         answer.valueDecimal ||
         answer.valueUri ||
-        answer.valueQuantity
+        answer.valueQuantity ||
+        answer.valueDate ||
+        answer.valueDateTime
       ) {
         const invalidInputType = getInputInvalidType({
           qItem,
@@ -526,6 +528,10 @@ function getInputInString(answer?: QuestionnaireResponseItemAnswer) {
   } else if (answer.valueQuantity && answer.valueQuantity.value) {
     // return the valueQuantity as string
     return answer.valueQuantity.value.toString();
+  } else if (answer.valueDate) {
+    return answer.valueDate;
+  } else if (answer.valueDateTime) {
+    return answer.valueDateTime;
   }
 
   return '';
