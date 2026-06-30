@@ -39,6 +39,10 @@ test.beforeEach(async ({ page }) => {
   // Expect pre-population
   const populateResponse = await populatePromise;
   expect(populateResponse.status()).toBe(200);
+
+  // Wait for the 'Form populated' snackbar — it fires after buildSourceResponse completes,
+  // meaning the form is fully initialised and ready for interaction
+  await expect(page.getByText('Form populated')).toBeVisible({ timeout: 30_000 });
 });
 
 test('Saving a response as draft then final', async ({ page }) => {
