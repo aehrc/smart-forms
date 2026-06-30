@@ -25,11 +25,11 @@ test.beforeEach(async ({ page }) => {
   // Launch from Smart EHR launcher (with MBS715 questionnaire context)
   const populatePromise = page.waitForResponse(
     (response) =>
-      /^https:\/\/proxy\.smartforms\.io\/v\/r4\/fhir\/(Observation|Condition)\?.+$/.test(
-        response.url()
-      ) && response.request().method() === 'GET'
+      response.url().startsWith(`${PLAYWRIGHT_EHR_URL}/`) &&
+      /(Observation|Condition)/.test(response.url()) &&
+      response.request().method() === 'GET'
   );
-  const launchUrl = `${PLAYWRIGHT_APP_URL}/launch?iss=https%3A%2F%2Fproxy.smartforms.io%2Fv%2Fr4%2Ffhir&launch=${LAUNCH_PARAM_WITH_Q}`;
+  const launchUrl = `${PLAYWRIGHT_APP_URL}/launch?iss=${encodeURIComponent(PLAYWRIGHT_EHR_URL)}&launch=${LAUNCH_PARAM_WITH_Q}`;
   console.log('Playwright navigating to: ', launchUrl);
   await page.goto(launchUrl);
 
@@ -56,6 +56,9 @@ test('Saving a response as draft then final', async ({ page }) => {
       response.url() === `${PLAYWRIGHT_EHR_URL}/QuestionnaireResponse` &&
       response.request().method() === 'POST'
   );
+  await expect(
+    page.getByTestId('renderer-operation-item').getByText('Save Progress')
+  ).toBeEnabled();
   await page.getByTestId('renderer-operation-item').getByText('Save Progress').click();
   const saveDraftResponse = await saveAsDraftPromise;
   expect(saveDraftResponse.status()).toBe(201);
