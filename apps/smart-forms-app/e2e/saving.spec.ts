@@ -46,13 +46,13 @@ test.beforeEach(async ({ page }) => {
 });
 
 test('Saving a response as draft then final', async ({ page }) => {
-  // Go to Consent tab and click on a boolean item
+  // Go to Consent tab and click on a radio choice item
   await page
     .getByTestId('renderer-tab-list')
     .locator('.MuiButtonBase-root')
     .getByText('Consent')
     .click();
-  await page.getByTestId('q-item-boolean-box').first().locator('input').first().click();
+  await page.getByTestId('q-item-choice-radio-answer-value-set-box').first().locator('input').first().click();
 
   // Save as draft
   const saveAsDraftPromise = page.waitForResponse(
