@@ -52,7 +52,12 @@ test('Saving a response as draft then final', async ({ page }) => {
     .locator('.MuiButtonBase-root')
     .getByText('Consent')
     .click();
-  await page.getByTestId('q-item-choice-radio-answer-value-set-box').first().locator('input').first().click();
+  await page
+    .getByTestId('q-item-choice-radio-answer-value-set-box')
+    .first()
+    .locator('input')
+    .first()
+    .click();
 
   // Save as draft
   const saveAsDraftPromise = page.waitForResponse(
