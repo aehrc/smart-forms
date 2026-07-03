@@ -5,6 +5,11 @@ This log documents changes for [@aehrc/sdc-populate](https://www.npmjs.com/packa
 
 Changelog only includes changes from version 4.0.0 onwards.
 
+## [4.7.1] - 2026-07-03
+### Fixed
+- Fixed false-positive `OperationOutcomeIssue` errors for `toString()` and similar single-item FHIRPath functions in repeat group `initialExpression`s. Children of repeating `itemPopulationContext` groups are now excluded from global pre-evaluation and are always evaluated against the correctly scoped per-item context; children of non-repeating `itemPopulationContext` groups continue to be evaluated globally.
+- Increased populate operation timeout to 30 seconds, reducing false "Form not populated" errors caused by transient server slowness (e.g. cold caches on first use).
+
 ## [4.7.0] - 2026-03-25
 ### Added
 - Enable the FHIRPath `resolve()` function. The `fhirServerUrl` is now threaded through FHIRPath evaluations, allowing expressions that use `resolve()` to fetch referenced resources from the FHIR server. This also includes an upgrade of the `fhirpath` dependency from v3 to v4. See issue [#1806](https://github.com/aehrc/smart-forms/issues/1806)
