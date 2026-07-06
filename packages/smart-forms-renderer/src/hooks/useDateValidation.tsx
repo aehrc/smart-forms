@@ -16,47 +16,66 @@
  */
 
 import {
+  getDateSeparator,
+  getMonthYearFormat,
   getNumOfSeparators,
   validateThreeMatches,
   validateTwoMatches
 } from '../components/FormComponents/DateTimeItems/utils/parseDate';
 import dayjs from 'dayjs';
+import useDateFormat from './useDateFormat';
+import { useRendererConfigStore } from '../stores';
+import { interpolate } from '../i18n';
+
+// Separators we know how to recognise; anything other than the configured one is rejected.
+const knownDateSeparators = ['/', '.', '-'];
 
 function useDateValidation(input: string, parseFail: boolean = false): string {
+  const dateFormat = useDateFormat();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
+  const separator = getDateSeparator(dateFormat);
+  const monthYearFormat = getMonthYearFormat(dateFormat);
+
   if (input === '') {
     return '';
   }
 
-  if (input.includes('-')) {
-    return 'Input does not match the required format with "/" as the separator.';
+  const hasForeignSeparator = knownDateSeparators.some(
+    (knownSeparator) => knownSeparator !== separator && input.includes(knownSeparator)
+  );
+  if (hasForeignSeparator) {
+    return interpolate(rendererStrings.dateSeparatorError, { separator });
   }
 
-  const numOfSeparators = getNumOfSeparators(input, '/');
+  const numOfSeparators = getNumOfSeparators(input, separator);
 
   if (numOfSeparators === 2) {
-    const threeMatchesDate = dayjs(input, `DD/MM/YYYY`);
+    const threeMatchesDate = dayjs(input, dateFormat);
     if (!threeMatchesDate.isValid()) {
-      return 'Input does not match the format DD/MM/YYYY.';
+      return interpolate(rendererStrings.dateFullFormatError, { format: dateFormat });
     }
 
-    const matches = input.split('/');
-    if (!validateThreeMatches(matches[0], matches[1], matches[2])) {
-      return 'Input is an invalid date.';
+    const matches = input.split(separator);
+    if (!validateThreeMatches(matches[0], matches[1], matches[2], dateFormat)) {
+      return rendererStrings.dateInvalidError;
     }
 
     return '';
   }
 
   if (numOfSeparators === 1) {
-    const twoMatchesDate = dayjs(input, `MM/YYYY`);
+    const twoMatchesDate = dayjs(input, monthYearFormat);
     if (!twoMatchesDate.isValid()) {
-      return 'Input does not match the formats MM/YYYY or DD/MM/YYYY.';
+      return interpolate(rendererStrings.dateMonthOrFullFormatError, {
+        monthYearFormat,
+        format: dateFormat
+      });
     }
 
-    const matches = input.split('/');
+    const matches = input.split(separator);
 
     if (!validateTwoMatches(matches[0], matches[1])) {
-      return 'Input is an invalid date.';
+      return rendererStrings.dateInvalidError;
     }
 
     return '';
@@ -70,10 +89,10 @@ function useDateValidation(input: string, parseFail: boolean = false): string {
   }
 
   if (parseFail) {
-    return 'Input is an invalid date.';
+    return rendererStrings.dateInvalidError;
   }
 
-  return 'Input does not match any date format.';
+  return rendererStrings.dateUnrecognizedError;
 }
 
 export default useDateValidation;

@@ -23,6 +23,7 @@ import type { PropsWithIsTabledAttribute } from '../../../../interfaces/renderPr
 import { StandardTextField } from '../../Textfield.styles';
 import DatePicker from './DatePicker';
 import { useRendererConfigStore } from '../../../../stores';
+import useDateFormat from '../../../../hooks/useDateFormat';
 import ExpressionUpdateFadingIcon from '../../ItemParts/ExpressionUpdateFadingIcon';
 
 interface CustomDateFieldProps extends PropsWithIsTabledAttribute {
@@ -67,13 +68,14 @@ function CustomDateField(props: CustomDateFieldProps) {
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
+  const dateFormat = useDateFormat();
 
   const anchorRef = useRef<HTMLDivElement | null>(null);
 
   // If this reusable date field is part of a DateTime component, the id should be appended with '-date'
   const id = isPartOfDateTime ? itemType + '-' + linkId + '-date' : itemType + '-' + linkId;
 
-  let placeholderText = 'DD/MM/YYYY';
+  let placeholderText = dateFormat;
   if (displayPrompt !== '') {
     placeholderText = displayPrompt;
   }
@@ -112,7 +114,7 @@ function CustomDateField(props: CustomDateFieldProps) {
                 readOnly={readOnly}
                 anchorEl={anchorRef.current}
                 onSelectDate={(valueDayjs: Dayjs) => {
-                  onSelectDate(valueDayjs.format('DD/MM/YYYY'));
+                  onSelectDate(valueDayjs.format(dateFormat));
                 }}
                 onFocus={(focus) => setFocused(focus)}
               />

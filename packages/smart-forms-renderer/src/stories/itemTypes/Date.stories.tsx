@@ -91,3 +91,18 @@ export const DateBasicResponse: Story = createStory({
     expect(input).toBe(targetDateInput);
   }
 }) as Story;
+
+/* Date with a Swiss German locale, showing the DD.MM.YYYY format */
+export const DateLocaleDeCH: Story = createStory({
+  args: {
+    questionnaire: qDateBasic,
+    questionnaireResponse: qrDateBasicResponse,
+    rendererConfigOptions: { locale: 'de-CH' }
+  },
+  play: async ({ canvasElement }) => {
+    const input = await getInputText(canvasElement, targetLinkId);
+
+    // Same underlying date (1990-01-01) rendered with the Swiss separator
+    expect(input).toBe('01.01.1990');
+  }
+}) as Story;

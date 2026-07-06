@@ -1,0 +1,9 @@
+{
+  "booleanYesLabel": "Ja",
+  "booleanNoLabel": "Nein",
+  "dateSeparatorError": "Die Eingabe entspricht nicht dem Format mit «{separator}» als Trennzeichen.",
+  "dateFullFormatError": "Die Eingabe entspricht nicht dem Format {format}.",
+  "dateMonthOrFullFormatError": "Die Eingabe entspricht weder dem Format {monthYearFormat} noch {format}.",
+  "dateInvalidError": "Die Eingabe ist kein gültiges Datum.",
+  "dateUnrecognizedError": "Die Eingabe entspricht keinem Datumsformat."
+}

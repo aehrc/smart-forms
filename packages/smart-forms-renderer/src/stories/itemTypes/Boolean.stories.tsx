@@ -165,3 +165,18 @@ export const BooleanCheckboxResponse: Story = createStory({
     expect(input).toBeChecked();
   }
 }) as Story;
+
+/* Boolean with a Swiss German locale, showing localised Yes/No labels (Ja/Nein) */
+export const BooleanLocaleDeCH: Story = createStory({
+  args: {
+    questionnaire: qBooleanBasic,
+    rendererConfigOptions: { locale: 'de-CH' }
+  },
+  play: async ({ canvasElement }) => {
+    await checkRadioOption(canvasElement, targetLinkId, 'Ja');
+
+    const result = await getAnswers(targetLinkId);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual(expect.objectContaining({ valueBoolean: true }));
+  }
+}) as Story;
