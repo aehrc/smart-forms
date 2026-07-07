@@ -27,5 +27,11 @@
   "dateTimeDateRequired": "La data è obbligatoria",
   "terminologyMinCharacters": "Inserisci almeno 2 caratteri per cercare i risultati.",
   "terminologyError": "Si è verificato un errore. Riprova più tardi o cerca un altro termine.",
-  "terminologyNoResults": "Non è stato trovato nulla. Prova a cercare un altro termine."
+  "terminologyNoResults": "Non è stato trovato nulla. Prova a cercare un altro termine.",
+  "optionsUnavailable": "Nessuna opzione disponibile.",
+  "optionsFetchError": "Impossibile recuperare le opzioni dal questionario o dal contesto di avvio",
+  "fetchingResults": "Caricamento dei risultati…",
+  "unableToLoadForm": "Impossibile caricare il modulo",
+  "somethingWentWrong": "Qualcosa è andato storto qui",
+  "terminologyServerFetchError": "Si è verificato un errore durante il recupero delle opzioni dal server di terminologia per {valueSet}"
 }

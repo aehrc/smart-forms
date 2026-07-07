@@ -76,6 +76,7 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
@@ -90,7 +91,7 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
       loading={loading}
-      loadingText={'Fetching results...'}
+      loadingText={rendererStrings.fetchingResults}
       clearOnEscape
       freeSolo
       sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 220, flexGrow: 1 }}

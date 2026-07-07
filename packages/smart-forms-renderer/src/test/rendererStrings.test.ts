@@ -57,7 +57,13 @@ const validRendererStringKeys: Record<keyof RendererStrings, true> = {
   dateTimeDateRequired: true,
   terminologyMinCharacters: true,
   terminologyError: true,
-  terminologyNoResults: true
+  terminologyNoResults: true,
+  optionsUnavailable: true,
+  optionsFetchError: true,
+  fetchingResults: true,
+  unableToLoadForm: true,
+  somethingWentWrong: true,
+  terminologyServerFetchError: true
 };
 
 describe('bundled locale catalogs (JSON)', () => {

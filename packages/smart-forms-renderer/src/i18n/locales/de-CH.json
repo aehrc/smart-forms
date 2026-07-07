@@ -27,5 +27,11 @@
   "dateTimeDateRequired": "Datum ist erforderlich",
   "terminologyMinCharacters": "Geben Sie mindestens 2 Zeichen ein, um nach Ergebnissen zu suchen.",
   "terminologyError": "Ein Fehler ist aufgetreten. Versuchen Sie es später erneut oder suchen Sie nach einem anderen Begriff.",
-  "terminologyNoResults": "Es konnte nichts gefunden werden. Versuchen Sie es mit einem anderen Suchbegriff."
+  "terminologyNoResults": "Es konnte nichts gefunden werden. Versuchen Sie es mit einem anderen Suchbegriff.",
+  "optionsUnavailable": "Keine Optionen verfügbar.",
+  "optionsFetchError": "Optionen konnten nicht aus dem Fragebogen oder dem Launch-Kontext geladen werden",
+  "fetchingResults": "Ergebnisse werden geladen …",
+  "unableToLoadForm": "Formular konnte nicht geladen werden",
+  "somethingWentWrong": "Hier ist etwas schiefgelaufen",
+  "terminologyServerFetchError": "Beim Laden der Optionen vom Terminologieserver für {valueSet} ist ein Fehler aufgetreten"
 }

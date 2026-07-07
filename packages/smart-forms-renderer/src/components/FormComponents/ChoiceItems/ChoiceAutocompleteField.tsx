@@ -73,6 +73,7 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
@@ -86,7 +87,7 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
       loading={loading}
-      loadingText={'Fetching results...'}
+      loadingText={rendererStrings.fetchingResults}
       clearOnEscape
       autoHighlight
       onChange={(_, newValue) => onValueChange(newValue)}

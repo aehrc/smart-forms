@@ -99,6 +99,19 @@ export interface RendererStrings {
   terminologyError: string;
   /** Terminology autocomplete message shown when the query returns no results. */
   terminologyNoResults: string;
+
+  /** Shown when a choice/open-choice field has no options to display. */
+  optionsUnavailable: string;
+  /** Shown when a field's options cannot be resolved from the questionnaire or launch context. */
+  optionsFetchError: string;
+  /** Autocomplete loading text while options are being fetched. */
+  fetchingResults: string;
+  /** Fallback shown when a form body fails to load. */
+  unableToLoadForm: string;
+  /** Fallback shown when an unsupported group item is encountered. */
+  somethingWentWrong: string;
+  /** Shown when the terminology server errors while expanding a value set. Supports `{valueSet}`. */
+  terminologyServerFetchError: string;
   /**
    * Optional override for the full-date input/display format, as a dayjs format string
    * (e.g. `'DD.MM.YYYY'`).
@@ -148,7 +161,14 @@ export const defaultRendererStrings: RendererStrings = {
   dateTimeDateRequired: 'Date is required',
   terminologyMinCharacters: 'Enter at least 2 characters to search for results.',
   terminologyError: 'An error occurred. Try again later or try searching for a different term.',
-  terminologyNoResults: "We couldn't seem to find anything. Try searching for a different term."
+  terminologyNoResults: "We couldn't seem to find anything. Try searching for a different term.",
+  optionsUnavailable: 'No options available.',
+  optionsFetchError: 'Unable to fetch options from the questionnaire or launch context',
+  fetchingResults: 'Fetching results...',
+  unableToLoadForm: 'Unable to load form',
+  somethingWentWrong: 'Something went wrong here',
+  terminologyServerFetchError:
+    'There was an error fetching options from the terminology server for {valueSet}'
   // dateFormat is intentionally omitted; it is derived from the active locale (see resolveDateFormat).
 };
 
