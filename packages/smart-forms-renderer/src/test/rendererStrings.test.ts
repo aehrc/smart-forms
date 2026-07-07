@@ -35,7 +35,26 @@ const validRendererStringKeys: Record<keyof RendererStrings, true> = {
   dateFullFormatError: true,
   dateMonthOrFullFormatError: true,
   dateInvalidError: true,
-  dateUnrecognizedError: true
+  dateUnrecognizedError: true,
+  validationUnknownIssue: true,
+  fieldRequired: true,
+  regexMismatchWithExpression: true,
+  regexMismatch: true,
+  minLengthWithLimit: true,
+  minLengthFallback: true,
+  maxLengthWithLimit: true,
+  maxLengthFallback: true,
+  maxDecimalPlacesWithLimit: true,
+  maxDecimalPlacesFallback: true,
+  minValueWithLimit: true,
+  minValueFallback: true,
+  maxValueWithLimit: true,
+  maxValueFallback: true,
+  minQuantityWithLimit: true,
+  minQuantityFallback: true,
+  maxQuantityWithLimit: true,
+  maxQuantityFallback: true,
+  dateTimeDateRequired: true
 };
 
 describe('bundled locale catalogs (JSON)', () => {

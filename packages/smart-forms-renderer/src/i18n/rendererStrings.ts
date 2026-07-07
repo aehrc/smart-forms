@@ -53,6 +53,45 @@ export interface RendererStrings {
   dateInvalidError: string;
   /** Date validation error when the input matches no supported date format. */
   dateUnrecognizedError: string;
+
+  /** Fallback validation error when an input is invalid but no specific issue is available. */
+  validationUnknownIssue: string;
+  /** Validation error when a required field is empty (fallback if no custom required text is provided). */
+  fieldRequired: string;
+  /** Validation error when input fails a regex, including the pattern. Supports `{regex}`. */
+  regexMismatchWithExpression: string;
+  /** Validation error when input fails a regex (no pattern available). */
+  regexMismatch: string;
+  /** Validation error when input is shorter than the minimum length. Supports `{minLength}`. */
+  minLengthWithLimit: string;
+  /** Validation error when input is shorter than the minimum length (no limit available). */
+  minLengthFallback: string;
+  /** Validation error when input is longer than the maximum length. Supports `{maxLength}`. */
+  maxLengthWithLimit: string;
+  /** Validation error when input is longer than the maximum length (no limit available). */
+  maxLengthFallback: string;
+  /** Validation error when a number has too many decimal places. Supports `{maxDecimalPlaces}`. */
+  maxDecimalPlacesWithLimit: string;
+  /** Validation error when a number has too many decimal places (no limit available). */
+  maxDecimalPlacesFallback: string;
+  /** Validation error when a value is below the minimum. Supports `{minValue}`. */
+  minValueWithLimit: string;
+  /** Validation error when a value is below the minimum (no limit available). */
+  minValueFallback: string;
+  /** Validation error when a value is above the maximum. Supports `{maxValue}`. */
+  maxValueWithLimit: string;
+  /** Validation error when a value is above the maximum (no limit available). */
+  maxValueFallback: string;
+  /** Validation error when a quantity is below the minimum. Supports `{minQuantityValue}`. */
+  minQuantityWithLimit: string;
+  /** Validation error when a quantity is below the minimum (no limit available). */
+  minQuantityFallback: string;
+  /** Validation error when a quantity is above the maximum. Supports `{maxQuantityValue}`. */
+  maxQuantityWithLimit: string;
+  /** Validation error when a quantity is above the maximum (no limit available). */
+  maxQuantityFallback: string;
+  /** Validation error shown for a date/time item when the time is set but the date is empty. */
+  dateTimeDateRequired: string;
   /**
    * Optional override for the full-date input/display format, as a dayjs format string
    * (e.g. `'DD.MM.YYYY'`).
@@ -79,7 +118,27 @@ export const defaultRendererStrings: RendererStrings = {
   dateFullFormatError: 'Input does not match the format {format}.',
   dateMonthOrFullFormatError: 'Input does not match the formats {monthYearFormat} or {format}.',
   dateInvalidError: 'Input is an invalid date.',
-  dateUnrecognizedError: 'Input does not match any date format.'
+  dateUnrecognizedError: 'Input does not match any date format.',
+  validationUnknownIssue:
+    'Input is invalid but no specific issues are found. Please report this at https://github.com/aehrc/smart-forms/issues.',
+  fieldRequired: 'This field is required.',
+  regexMismatchWithExpression: 'Input should match the specified regex: {regex}',
+  regexMismatch: 'Input should match the specified regex.',
+  minLengthWithLimit: 'Enter at least {minLength} characters.',
+  minLengthFallback: 'Input is below the minimum character limit.',
+  maxLengthWithLimit: 'Enter no more than {maxLength} characters.',
+  maxLengthFallback: 'Input is above the maximum character limit.',
+  maxDecimalPlacesWithLimit: 'Enter a number with no more than {maxDecimalPlaces} decimal places.',
+  maxDecimalPlacesFallback: 'Input has too many decimal places.',
+  minValueWithLimit: 'Enter a value greater than or equal to {minValue}.',
+  minValueFallback: 'Input is less than the minimum value allowed.',
+  maxValueWithLimit: 'Enter a value less than or equal to {maxValue}.',
+  maxValueFallback: 'Input exceeds the maximum value allowed.',
+  minQuantityWithLimit: 'Enter a quantity greater than or equal to {minQuantityValue}.',
+  minQuantityFallback: 'Input is less than the minimum quantity allowed.',
+  maxQuantityWithLimit: 'Enter a quantity less than or equal to {maxQuantityValue}.',
+  maxQuantityFallback: 'Input exceeds the maximum quantity allowed.',
+  dateTimeDateRequired: 'Date is required'
   // dateFormat is intentionally omitted; it is derived from the active locale (see resolveDateFormat).
 };
 
