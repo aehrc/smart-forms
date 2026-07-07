@@ -24,5 +24,8 @@
   "minQuantityFallback": "Die Eingabe ist kleiner als die zulässige Mindestmenge.",
   "maxQuantityWithLimit": "Geben Sie eine Menge kleiner oder gleich {maxQuantityValue} ein.",
   "maxQuantityFallback": "Die Eingabe überschreitet die zulässige Höchstmenge.",
-  "dateTimeDateRequired": "Datum ist erforderlich"
+  "dateTimeDateRequired": "Datum ist erforderlich",
+  "terminologyMinCharacters": "Geben Sie mindestens 2 Zeichen ein, um nach Ergebnissen zu suchen.",
+  "terminologyError": "Ein Fehler ist aufgetreten. Versuchen Sie es später erneut oder suchen Sie nach einem anderen Begriff.",
+  "terminologyNoResults": "Es konnte nichts gefunden werden. Versuchen Sie es mit einem anderen Suchbegriff."
 }

@@ -92,6 +92,13 @@ export interface RendererStrings {
   maxQuantityFallback: string;
   /** Validation error shown for a date/time item when the time is set but the date is empty. */
   dateTimeDateRequired: string;
+
+  /** Terminology autocomplete hint shown when fewer than 2 characters have been typed. */
+  terminologyMinCharacters: string;
+  /** Terminology autocomplete message shown when the value set query fails. */
+  terminologyError: string;
+  /** Terminology autocomplete message shown when the query returns no results. */
+  terminologyNoResults: string;
   /**
    * Optional override for the full-date input/display format, as a dayjs format string
    * (e.g. `'DD.MM.YYYY'`).
@@ -138,7 +145,10 @@ export const defaultRendererStrings: RendererStrings = {
   minQuantityFallback: 'Input is less than the minimum quantity allowed.',
   maxQuantityWithLimit: 'Enter a quantity less than or equal to {maxQuantityValue}.',
   maxQuantityFallback: 'Input exceeds the maximum quantity allowed.',
-  dateTimeDateRequired: 'Date is required'
+  dateTimeDateRequired: 'Date is required',
+  terminologyMinCharacters: 'Enter at least 2 characters to search for results.',
+  terminologyError: 'An error occurred. Try again later or try searching for a different term.',
+  terminologyNoResults: "We couldn't seem to find anything. Try searching for a different term."
   // dateFormat is intentionally omitted; it is derived from the active locale (see resolveDateFormat).
 };
 

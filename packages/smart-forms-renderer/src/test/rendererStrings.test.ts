@@ -54,7 +54,10 @@ const validRendererStringKeys: Record<keyof RendererStrings, true> = {
   minQuantityFallback: true,
   maxQuantityWithLimit: true,
   maxQuantityFallback: true,
-  dateTimeDateRequired: true
+  dateTimeDateRequired: true,
+  terminologyMinCharacters: true,
+  terminologyError: true,
+  terminologyNoResults: true
 };
 
 describe('bundled locale catalogs (JSON)', () => {

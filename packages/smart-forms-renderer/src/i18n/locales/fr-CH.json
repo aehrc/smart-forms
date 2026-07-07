@@ -24,5 +24,8 @@
   "minQuantityFallback": "La saisie est inférieure à la quantité minimale autorisée.",
   "maxQuantityWithLimit": "Saisissez une quantité inférieure ou égale à {maxQuantityValue}.",
   "maxQuantityFallback": "La saisie dépasse la quantité maximale autorisée.",
-  "dateTimeDateRequired": "La date est obligatoire"
+  "dateTimeDateRequired": "La date est obligatoire",
+  "terminologyMinCharacters": "Saisissez au moins 2 caractères pour rechercher des résultats.",
+  "terminologyError": "Une erreur s'est produite. Réessayez plus tard ou recherchez un autre terme.",
+  "terminologyNoResults": "Aucun résultat n'a été trouvé. Essayez de rechercher un autre terme."
 }
