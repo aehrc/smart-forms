@@ -33,5 +33,17 @@
   "fetchingResults": "Chargement des résultats…",
   "unableToLoadForm": "Impossible de charger le formulaire",
   "somethingWentWrong": "Une erreur s'est produite ici",
-  "terminologyServerFetchError": "Une erreur s'est produite lors de la récupération des options depuis le serveur de terminologie pour {valueSet}"
+  "terminologyServerFetchError": "Une erreur s'est produite lors de la récupération des options depuis le serveur de terminologie pour {valueSet}",
+  "clear": "Effacer",
+  "removeItem": "Supprimer l'élément",
+  "nextPage": "Page suivante",
+  "previousPage": "Page précédente",
+  "attachFile": "Joindre un fichier",
+  "removeFile": "Supprimer le fichier",
+  "pickDate": "Choisir une date",
+  "syncSuccessful": "Synchronisation réussie",
+  "syncWithServer": "Synchroniser avec le serveur",
+  "syncFailed": "Impossible de synchroniser l'élément « {item} ».",
+  "dragRow": "Déplacer la ligne",
+  "formSections": "Sections du formulaire"
 }

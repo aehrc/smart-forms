@@ -112,6 +112,31 @@ export interface RendererStrings {
   somethingWentWrong: string;
   /** Shown when the terminology server errors while expanding a value set. Supports `{valueSet}`. */
   terminologyServerFetchError: string;
+
+  /** Clear-input button label/tooltip. */
+  clear: string;
+  /** Remove-item button label/tooltip (repeats and table rows). */
+  removeItem: string;
+  /** Next-page navigation button label. */
+  nextPage: string;
+  /** Previous-page navigation button label. */
+  previousPage: string;
+  /** Attach-file button label/tooltip. */
+  attachFile: string;
+  /** Remove-file button tooltip. */
+  removeFile: string;
+  /** Date-picker calendar button label. */
+  pickDate: string;
+  /** Repopulate button tooltip after a successful sync. */
+  syncSuccessful: string;
+  /** Repopulate button tooltip prompting a sync with the server. */
+  syncWithServer: string;
+  /** Repopulate button tooltip shown when syncing an item fails. Supports `{item}`. */
+  syncFailed: string;
+  /** Drag-handle label for reordering table rows. */
+  dragRow: string;
+  /** Accessible label for the tab list navigation landmark. */
+  formSections: string;
   /**
    * Optional override for the full-date input/display format, as a dayjs format string
    * (e.g. `'DD.MM.YYYY'`).
@@ -168,7 +193,19 @@ export const defaultRendererStrings: RendererStrings = {
   unableToLoadForm: 'Unable to load form',
   somethingWentWrong: 'Something went wrong here',
   terminologyServerFetchError:
-    'There was an error fetching options from the terminology server for {valueSet}'
+    'There was an error fetching options from the terminology server for {valueSet}',
+  clear: 'Clear',
+  removeItem: 'Remove item',
+  nextPage: 'Next page',
+  previousPage: 'Previous page',
+  attachFile: 'Attach file',
+  removeFile: 'Remove file',
+  pickDate: 'Pick a date',
+  syncSuccessful: 'Sync successful',
+  syncWithServer: 'Sync with server',
+  syncFailed: 'Unable to sync item "{item}".',
+  dragRow: 'Drag row',
+  formSections: 'Form sections'
   // dateFormat is intentionally omitted; it is derived from the active locale (see resolveDateFormat).
 };
 

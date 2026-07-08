@@ -63,7 +63,19 @@ const validRendererStringKeys: Record<keyof RendererStrings, true> = {
   fetchingResults: true,
   unableToLoadForm: true,
   somethingWentWrong: true,
-  terminologyServerFetchError: true
+  terminologyServerFetchError: true,
+  clear: true,
+  removeItem: true,
+  nextPage: true,
+  previousPage: true,
+  attachFile: true,
+  removeFile: true,
+  pickDate: true,
+  syncSuccessful: true,
+  syncWithServer: true,
+  syncFailed: true,
+  dragRow: true,
+  formSections: true
 };
 
 describe('bundled locale catalogs (JSON)', () => {

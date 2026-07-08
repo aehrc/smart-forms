@@ -33,5 +33,17 @@
   "fetchingResults": "Caricamento dei risultati…",
   "unableToLoadForm": "Impossibile caricare il modulo",
   "somethingWentWrong": "Qualcosa è andato storto qui",
-  "terminologyServerFetchError": "Si è verificato un errore durante il recupero delle opzioni dal server di terminologia per {valueSet}"
+  "terminologyServerFetchError": "Si è verificato un errore durante il recupero delle opzioni dal server di terminologia per {valueSet}",
+  "clear": "Cancella",
+  "removeItem": "Rimuovi elemento",
+  "nextPage": "Pagina successiva",
+  "previousPage": "Pagina precedente",
+  "attachFile": "Allega file",
+  "removeFile": "Rimuovi file",
+  "pickDate": "Scegli una data",
+  "syncSuccessful": "Sincronizzazione riuscita",
+  "syncWithServer": "Sincronizza con il server",
+  "syncFailed": "Impossibile sincronizzare l'elemento «{item}».",
+  "dragRow": "Trascina la riga",
+  "formSections": "Sezioni del modulo"
 }

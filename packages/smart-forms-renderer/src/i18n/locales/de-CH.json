@@ -33,5 +33,17 @@
   "fetchingResults": "Ergebnisse werden geladen …",
   "unableToLoadForm": "Formular konnte nicht geladen werden",
   "somethingWentWrong": "Hier ist etwas schiefgelaufen",
-  "terminologyServerFetchError": "Beim Laden der Optionen vom Terminologieserver für {valueSet} ist ein Fehler aufgetreten"
+  "terminologyServerFetchError": "Beim Laden der Optionen vom Terminologieserver für {valueSet} ist ein Fehler aufgetreten",
+  "clear": "Löschen",
+  "removeItem": "Element entfernen",
+  "nextPage": "Nächste Seite",
+  "previousPage": "Vorherige Seite",
+  "attachFile": "Datei anhängen",
+  "removeFile": "Datei entfernen",
+  "pickDate": "Datum auswählen",
+  "syncSuccessful": "Synchronisierung erfolgreich",
+  "syncWithServer": "Mit Server synchronisieren",
+  "syncFailed": "Element «{item}» konnte nicht synchronisiert werden.",
+  "dragRow": "Zeile verschieben",
+  "formSections": "Formularabschnitte"
 }

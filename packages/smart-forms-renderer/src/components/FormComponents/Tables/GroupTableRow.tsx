@@ -29,6 +29,7 @@ import TableCell from '@mui/material/TableCell';
 import Box from '@mui/material/Box';
 import { Draggable } from 'react-beautiful-dnd';
 import { StyledGroupTableRow } from './Table.styles';
+import { useRendererConfigStore } from '../../../stores';
 
 interface GroupTableRowProps extends PropsWithParentIsReadOnlyAttribute, TableRowProps {
   rowId: string;
@@ -70,6 +71,8 @@ function GroupTableRow(props: GroupTableRowProps) {
     onSelectRow
   } = props;
 
+  const dragRowLabel = useRendererConfigStore.use.rendererStrings().dragRow;
+
   if (showExtraGTableInteractions) {
     return (
       <Draggable draggableId={rowId} index={index}>
@@ -84,7 +87,7 @@ function GroupTableRow(props: GroupTableRowProps) {
             <>
               <TableCell padding="none">
                 <Box
-                  aria-label="Drag row"
+                  aria-label={dragRowLabel}
                   display="flex"
                   alignItems="center"
                   justifyContent="center"
