@@ -676,6 +676,239 @@ describe('clearing choice fields removes the answer from updatableResponse', () 
     expect(getUpdatableResponseString()).toContain('condition-1');
   });
 
+  test('RepeatGroup - clearing the only answer in a row removes the whole row instance (issue #1994 follow-up)', async () => {
+    const questionnaire: Questionnaire = {
+      resourceType: 'Questionnaire',
+      status: 'active',
+      item: [
+        {
+          linkId: 'new-medications',
+          text: 'New medications',
+          type: 'group',
+          repeats: true,
+          item: [
+            {
+              linkId: 'medication',
+              text: 'Medication',
+              type: 'choice',
+              extension: [autocompleteItemControlExtension],
+              answerValueSet: 'https://example.com/fhir/ValueSet/medications'
+            },
+            {
+              linkId: 'dosage',
+              text: 'Dosage',
+              type: 'string'
+            }
+          ]
+        }
+      ]
+    };
+
+    // One repeat group instance whose only answer is the medication
+    const questionnaireResponse: QuestionnaireResponse = {
+      resourceType: 'QuestionnaireResponse',
+      status: 'in-progress',
+      item: [
+        {
+          linkId: 'new-medications',
+          text: 'New medications',
+          item: [
+            {
+              linkId: 'medication',
+              text: 'Medication',
+              answer: [
+                {
+                  valueCoding: {
+                    system: 'http://snomed.info/sct',
+                    code: '1162331000168106',
+                    display: 'Cocaine (Perrigo) 0.5% mouthwash'
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+
+    render(
+      <SmartFormsRenderer
+        questionnaire={questionnaire}
+        questionnaireResponse={questionnaireResponse}
+      />
+    );
+
+    await waitFor(() => expect(screen.getByDisplayValue(/Cocaine/)).toBeTruthy());
+    expect(getUpdatableResponseString()).toContain('1162331000168106');
+
+    const clearButton = document.querySelector('.MuiAutocomplete-clearIndicator');
+    expect(clearButton).toBeTruthy();
+    fireEvent.click(clearButton as Element);
+
+    // The whole row instance is removed - no { linkId, text, item: [] } husk remains
+    await waitFor(() => expect(getUpdatableResponseString()).not.toContain('1162331000168106'));
+    await waitFor(() =>
+      expect(getUpdatableResponseString()).not.toContain('"linkId":"new-medications"')
+    );
+    // Only the response root remains, with an empty top-level item array
+    expect(
+      (questionnaireResponseStore.getState().updatableResponse.item ?? []).length
+    ).toBe(0);
+  });
+
+  test('RepeatGroup - clearing one answer keeps the row when it still has other answers', async () => {
+    const questionnaire: Questionnaire = {
+      resourceType: 'Questionnaire',
+      status: 'active',
+      item: [
+        {
+          linkId: 'new-medications',
+          text: 'New medications',
+          type: 'group',
+          repeats: true,
+          item: [
+            {
+              linkId: 'medication',
+              text: 'Medication',
+              type: 'choice',
+              extension: [autocompleteItemControlExtension],
+              answerValueSet: 'https://example.com/fhir/ValueSet/medications'
+            },
+            {
+              linkId: 'dosage',
+              text: 'Dosage',
+              type: 'string'
+            }
+          ]
+        }
+      ]
+    };
+
+    const questionnaireResponse: QuestionnaireResponse = {
+      resourceType: 'QuestionnaireResponse',
+      status: 'in-progress',
+      item: [
+        {
+          linkId: 'new-medications',
+          text: 'New medications',
+          item: [
+            {
+              linkId: 'medication',
+              text: 'Medication',
+              answer: [{ valueCoding: asthmaCoding }]
+            },
+            {
+              linkId: 'dosage',
+              text: 'Dosage',
+              answer: [{ valueString: '5mg daily' }]
+            }
+          ]
+        }
+      ]
+    };
+
+    render(
+      <SmartFormsRenderer
+        questionnaire={questionnaire}
+        questionnaireResponse={questionnaireResponse}
+      />
+    );
+
+    await waitFor(() => expect(screen.getByDisplayValue('Asthma')).toBeTruthy());
+
+    const clearButton = document.querySelector('.MuiAutocomplete-clearIndicator');
+    fireEvent.click(clearButton as Element);
+
+    // Medication answer removed, but the row survives because dosage still has a value
+    await waitFor(() => expect(getUpdatableResponseString()).not.toContain('Asthma'));
+    expect(getUpdatableResponseString()).toContain('5mg daily');
+    expect(getUpdatableResponseString()).toContain('"linkId":"new-medications"');
+  });
+
+  test('gtable - clearing the only answer in a row removes the whole row instance', async () => {
+    const questionnaire: Questionnaire = {
+      resourceType: 'Questionnaire',
+      status: 'active',
+      item: [
+        {
+          linkId: 'new-diagnoses',
+          text: 'New diagnoses',
+          type: 'group',
+          repeats: true,
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+              valueCodeableConcept: {
+                coding: [
+                  {
+                    system: 'http://hl7.org/fhir/questionnaire-item-control',
+                    code: 'gtable'
+                  }
+                ]
+              }
+            }
+          ],
+          item: [
+            {
+              linkId: 'condition',
+              text: 'Condition',
+              type: 'open-choice',
+              extension: [autocompleteItemControlExtension],
+              answerValueSet: 'https://example.com/fhir/ValueSet/conditions'
+            },
+            {
+              linkId: 'onset-date',
+              text: 'Onset date',
+              type: 'date'
+            }
+          ]
+        }
+      ]
+    };
+
+    const questionnaireResponse: QuestionnaireResponse = {
+      resourceType: 'QuestionnaireResponse',
+      status: 'in-progress',
+      item: [
+        {
+          linkId: 'new-diagnoses',
+          text: 'New diagnoses',
+          item: [
+            {
+              linkId: 'condition',
+              text: 'Condition',
+              answer: [{ valueCoding: asthmaCoding }]
+            }
+          ]
+        }
+      ]
+    };
+
+    render(
+      <SmartFormsRenderer
+        questionnaire={questionnaire}
+        questionnaireResponse={questionnaireResponse}
+      />
+    );
+
+    await waitFor(() => expect(screen.getByDisplayValue('Asthma')).toBeTruthy());
+    expect(getUpdatableResponseString()).toContain('Asthma');
+
+    const clearButton = document.querySelector('.MuiAutocomplete-clearIndicator');
+    expect(clearButton).toBeTruthy();
+    fireEvent.click(clearButton as Element);
+
+    // The whole row instance is removed - no { linkId, text, item: [] } husk remains
+    await waitFor(() => expect(getUpdatableResponseString()).not.toContain('Asthma'));
+    await waitFor(() =>
+      expect(getUpdatableResponseString()).not.toContain('"linkId":"new-diagnoses"')
+    );
+    // Only the response root remains, with an empty top-level item array
+    expect(
+      (questionnaireResponseStore.getState().updatableResponse.item ?? []).length
+    ).toBe(0);
+  });
+
   test('RepeatItem Add Item button adds a visible empty row without changing the QuestionnaireResponse', async () => {
     const questionnaire: Questionnaire = {
       resourceType: 'Questionnaire',
