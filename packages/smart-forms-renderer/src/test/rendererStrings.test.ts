@@ -75,7 +75,11 @@ const validRendererStringKeys: Record<keyof RendererStrings, true> = {
   syncWithServer: true,
   syncFailed: true,
   dragRow: true,
-  formSections: true
+  formSections: true,
+  mandatoryField: true,
+  selectRow: true,
+  selectAllRows: true,
+  unnamedItem: true
 };
 
 describe('bundled locale catalogs (JSON)', () => {

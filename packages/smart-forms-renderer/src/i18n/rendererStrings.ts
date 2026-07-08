@@ -137,6 +137,14 @@ export interface RendererStrings {
   dragRow: string;
   /** Accessible label for the tab list navigation landmark. */
   formSections: string;
+  /** Screen-reader-only text marking a required field (rendered next to the asterisk). */
+  mandatoryField: string;
+  /** Accessible label for a table row select control. Supports `{label}`. */
+  selectRow: string;
+  /** Accessible label for a table select-all control. Supports `{label}`. */
+  selectAllRows: string;
+  /** Fallback accessible label for an item with no text, by item type. Supports `{type}`. */
+  unnamedItem: string;
   /**
    * Optional override for the full-date input/display format, as a dayjs format string
    * (e.g. `'DD.MM.YYYY'`).
@@ -205,7 +213,11 @@ export const defaultRendererStrings: RendererStrings = {
   syncWithServer: 'Sync with server',
   syncFailed: 'Unable to sync item "{item}".',
   dragRow: 'Drag row',
-  formSections: 'Form sections'
+  formSections: 'Form sections',
+  mandatoryField: 'Mandatory field',
+  selectRow: 'Select row {label}',
+  selectAllRows: 'Select all rows in {label}',
+  unnamedItem: 'Unnamed {type} item'
   // dateFormat is intentionally omitted; it is derived from the active locale (see resolveDateFormat).
 };
 

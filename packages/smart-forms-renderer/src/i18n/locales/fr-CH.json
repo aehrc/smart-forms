@@ -45,5 +45,9 @@
   "syncWithServer": "Synchroniser avec le serveur",
   "syncFailed": "Impossible de synchroniser l'élément « {item} ».",
   "dragRow": "Déplacer la ligne",
-  "formSections": "Sections du formulaire"
+  "formSections": "Sections du formulaire",
+  "mandatoryField": "Champ obligatoire",
+  "selectRow": "Sélectionner la ligne {label}",
+  "selectAllRows": "Sélectionner toutes les lignes de {label}",
+  "unnamedItem": "Élément {type} sans nom"
 }

@@ -45,5 +45,9 @@
   "syncWithServer": "Mit Server synchronisieren",
   "syncFailed": "Element «{item}» konnte nicht synchronisiert werden.",
   "dragRow": "Zeile verschieben",
-  "formSections": "Formularabschnitte"
+  "formSections": "Formularabschnitte",
+  "mandatoryField": "Pflichtfeld",
+  "selectRow": "Zeile {label} auswählen",
+  "selectAllRows": "Alle Zeilen in {label} auswählen",
+  "unnamedItem": "Unbenanntes {type}-Element"
 }

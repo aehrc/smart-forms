@@ -45,5 +45,9 @@
   "syncWithServer": "Sincronizza con il server",
   "syncFailed": "Impossibile sincronizzare l'elemento «{item}».",
   "dragRow": "Trascina la riga",
-  "formSections": "Sezioni del modulo"
+  "formSections": "Sezioni del modulo",
+  "mandatoryField": "Campo obbligatorio",
+  "selectRow": "Seleziona la riga {label}",
+  "selectAllRows": "Seleziona tutte le righe in {label}",
+  "unnamedItem": "Elemento {type} senza nome"
 }
