@@ -124,8 +124,12 @@ export function updateQrItemsInGroup(
   const qrItemsRealIndexArr = qrItems.map((qrItem) => qItemsIndexMap[qrItem.linkId]);
 
   if (newQrItem && newQrItem.linkId in qItemsIndexMap) {
+    // Only add/insert an item if it has items or answers with values - clearing a field emits an
+    // empty item (optionally with a stub answer { id: answerKey }) which should not be added
     if (qrItems.length === 0) {
-      qrItems.push(newQrItem);
+      if (qrItemHasItemsOrAnswer(newQrItem)) {
+        qrItems.push(newQrItem);
+      }
       return;
     }
 
@@ -135,7 +139,6 @@ export function updateQrItemsInGroup(
       // Add qrItem at the end of qrGroup if it is larger than the other indexes
       if (newQrItemIndex > qrItemsRealIndexArr[i]) {
         if (i === qrItemsRealIndexArr.length - 1) {
-          // As of 07-05-2025, added this here to prevent adding empty items - only add if an item has items or answers
           if (qrItemHasItemsOrAnswer(newQrItem)) {
             qrItems.push(newQrItem);
           }
@@ -146,7 +149,7 @@ export function updateQrItemsInGroup(
       // Replace or delete qrItem at its supposed position if its index is already present within qrGroup
       if (newQrItemIndex === qrItemsRealIndexArr[i]) {
         // newQrItem has answer value
-        if (newQrItem.item?.length || newQrItem.answer?.length) {
+        if (qrItemHasItemsOrAnswer(newQrItem)) {
           qrItems[i] = newQrItem;
           break;
         }
@@ -158,7 +161,9 @@ export function updateQrItemsInGroup(
 
       // Add qrItem at its supposed position if its index is not present within qrGroup
       if (newQrItemIndex < qrItemsRealIndexArr[i]) {
-        qrItems.splice(i, 0, newQrItem);
+        if (qrItemHasItemsOrAnswer(newQrItem)) {
+          qrItems.splice(i, 0, newQrItem);
+        }
         break;
       }
     }

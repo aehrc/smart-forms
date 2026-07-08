@@ -1,4 +1,9 @@
-import type { Questionnaire, QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
+import type {
+  Questionnaire,
+  QuestionnaireResponse,
+  QuestionnaireResponseItem,
+  QuestionnaireResponseItemAnswer
+} from 'fhir/r4';
 import type { RendererConfig } from '../stores';
 import {
   questionnaireResponseStore,
@@ -293,11 +298,44 @@ export function removeInternalIdsFromResponse(
   );
 }
 
+const answerValueKeys: (keyof QuestionnaireResponseItemAnswer)[] = [
+  'valueBoolean',
+  'valueDecimal',
+  'valueInteger',
+  'valueDate',
+  'valueDateTime',
+  'valueTime',
+  'valueString',
+  'valueUri',
+  'valueAttachment',
+  'valueCoding',
+  'valueQuantity',
+  'valueReference'
+];
+
+/**
+ * Check if a QuestionnaireResponseItemAnswer has an actual value - any value[x] property or nested items.
+ * Returns false for stub answers that only carry an internal answer key e.g. { id: answerKey }, which
+ * components emit via createEmptyQrItem() when a field is cleared.
+ */
+export function answerHasValue(answer: QuestionnaireResponseItemAnswer): boolean {
+  return (
+    answerValueKeys.some((key) => answer[key] !== undefined) ||
+    (!!answer.item && answer.item.length > 0)
+  );
+}
+
 /**
  * Check if a QuestionnaireResponseItem has either an item or an answer property.
+ * Answers only count if at least one entry has an actual value - a lone stub answer
+ * { id: answerKey } left behind by clearing a field does not count.
  *
  * @author Sean Fong
  */
 export function qrItemHasItemsOrAnswer(qrItem: QuestionnaireResponseItem): boolean {
-  return (!!qrItem.item && qrItem.item.length > 0) || (!!qrItem.answer && qrItem.answer.length > 0);
+  if (!!qrItem.item && qrItem.item.length > 0) {
+    return true;
+  }
+
+  return !!qrItem.answer && qrItem.answer.length > 0 && qrItem.answer.some(answerHasValue);
 }
