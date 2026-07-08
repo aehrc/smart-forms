@@ -33,6 +33,17 @@ const mockFetchQuestionnaireCallbackConfig = {
   sourceServerUrl: 'https://example.com/fhir'
 };
 
+// Collect every linkId in an item tree (depth-first), used to assert that (nested)
+// subQuestionnaire placeholders were resolved into their children's items.
+function collectLinkIds(items: Questionnaire['item']): string[] {
+  const linkIds: string[] = [];
+  for (const item of items ?? []) {
+    linkIds.push(item.linkId);
+    linkIds.push(...collectLinkIds(item.item));
+  }
+  return linkIds;
+}
+
 describe('assemble', () => {
   const createBaseQuestionnaire = (): Questionnaire => ({
     resourceType: 'Questionnaire',
@@ -214,6 +225,14 @@ describe('assemble', () => {
     expect(assembledQuestionnaire.version).toBe('1.0.0-assembled');
     expect(assembledQuestionnaire.url).toBe('http://example.com/assessments/test/1');
     expect(mockFetchSubquestionnaires).toHaveBeenCalledTimes(2);
+
+    // The nested subquestionnaire is itself modular: its `deep-subq-ref` placeholder must be
+    // resolved (recursively) into the deep subquestionnaire's `deep-question` item. Regression
+    // guard: if the recursive assembly result of a child is discarded, the child is spliced in
+    // un-assembled and `deep-subq-ref` survives while `deep-question` never appears.
+    const allLinkIds = collectLinkIds(assembledQuestionnaire.item);
+    expect(allLinkIds).toContain('deep-question');
+    expect(allLinkIds).not.toContain('deep-subq-ref');
   });
 
   it('should handle multiple subquestionnaires in same parent', async () => {
