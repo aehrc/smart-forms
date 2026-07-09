@@ -29,6 +29,8 @@ import type {
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import { useRendererConfigStore } from '../../../stores';
+import { interpolate } from '../../../i18n';
+import { StyledRequiredTypography } from '../Item.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import StyledText from '../ItemParts/StyledText';
@@ -67,6 +69,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
@@ -148,7 +151,10 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
               htmlInput: {
                 ...params.inputProps,
                 ...(isTabled
-                  ? { 'aria-label': qItem.text ?? `Unnamed ${qItem.type} item` }
+                  ? {
+                      'aria-label':
+                        qItem.text ?? interpolate(rendererStrings.unnamedItem, { type: qItem.type })
+                    }
                   : { 'aria-labelledby': `label-${qItem.linkId}` }),
                 ...(instructionsId && { 'aria-describedby': instructionsId })
               }

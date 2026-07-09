@@ -35,6 +35,7 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import type { AlertColor } from '@mui/material/Alert';
 import { useRendererConfigStore } from '../../../stores';
+import { interpolate } from '../../../i18n';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 
@@ -139,7 +140,10 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
             htmlInput: {
               ...params.inputProps,
               ...(isTabled
-                ? { 'aria-label': qItem.text ?? `Unnamed ${qItem.type} item` }
+                ? {
+                    'aria-label':
+                      qItem.text ?? interpolate(rendererStrings.unnamedItem, { type: qItem.type })
+                  }
                 : { 'aria-labelledby': `label-${qItem.linkId}` }),
               ...(instructionsId && { 'aria-describedby': instructionsId })
             }

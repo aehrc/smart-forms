@@ -9,6 +9,7 @@ import type {
   PropsWithQrItemChangeHandler
 } from '../../interfaces/renderProps.interface';
 import { useQuestionnaireStore, useRendererConfigStore } from '../../stores';
+import { interpolate } from '../../i18n';
 import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';
 import { createEmptyQrGroup, updateQrItemsInGroup } from '../../utils/qrItem';
 
@@ -74,7 +75,7 @@ function FormBodyPageContainer(props: FormBodyPageContainerProps) {
 
             return (
               <TabPanel
-                aria-label={`${qItem.text ?? 'Unnamed'} page`}
+                aria-label={qItem.text ? interpolate(rendererStrings.pageAriaLabel, { label: qItem.text }) : rendererStrings.unnamedPage}
                 key={qItem.linkId}
                 sx={{ p: 0 }}
                 value={i.toString()}

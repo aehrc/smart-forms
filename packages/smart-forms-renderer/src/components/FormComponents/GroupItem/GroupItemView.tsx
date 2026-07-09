@@ -40,6 +40,7 @@ import { getGroupCollapsible } from '../../../utils/qItem';
 import useReadOnly from '../../../hooks/useReadOnly';
 import PageButtonsWrapper from './PageButtonWrapper';
 import { useParseXhtml } from '../../../hooks/useParseXhtml';
+import { useRendererConfigStore } from '../../../stores';
 import { itemHasLabelHeadingContent } from '../../../utils/itemTextToDisplay';
 import GroupAccordion from './GroupAccordion';
 
@@ -85,6 +86,8 @@ function GroupItemView(props: GroupItemViewProps) {
     onQrItemChange,
     onQrRepeatGroupChange
   } = props;
+
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   // If XHTML has styles, pass them to the GroupItemView so it cna be applied down the tree
   const xhtmlStyles = useParseXhtml(qItem._text, qItem.text)?.styles;
@@ -168,7 +171,7 @@ function GroupItemView(props: GroupItemViewProps) {
         isRepeated={isRepeated}
         data-test="q-item-group-box"
         role="region"
-        aria-label={qItem.text ?? 'Unnamed group'}
+        aria-label={qItem.text ?? rendererStrings.unnamedGroup}
         data-linkid={qItem.linkId}
         data-label={qItem.text}
         style={combinedStyles || undefined}>
@@ -219,7 +222,7 @@ function GroupItemView(props: GroupItemViewProps) {
       data-linkid={qItem.linkId}
       data-label={qItem.text}
       role="region"
-      aria-label={qItem.text ?? 'Unnamed group'}>
+      aria-label={qItem.text ?? rendererStrings.unnamedGroup}>
       <GroupCard
         elevation={groupCardElevation}
         isRepeated={isRepeated}

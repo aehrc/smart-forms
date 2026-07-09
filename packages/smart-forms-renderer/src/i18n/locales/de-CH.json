@@ -49,5 +49,17 @@
   "mandatoryField": "Pflichtfeld",
   "selectRow": "Zeile {label} auswählen",
   "selectAllRows": "Alle Zeilen in {label} auswählen",
-  "unnamedItem": "Unbenanntes {type}-Element"
+  "unnamedItem": "Unbenanntes {type}-Element",
+  "unnamedAttachment": "Unbenanntes Anhangfeld",
+  "unnamedNestedItem": "Unbenanntes Element mit verschachtelten Elementen",
+  "unnamedOpenLabel": "Unbenanntes Freitextfeld",
+  "unnamedRadioGroup": "Unbenannte Optionsgruppe",
+  "unnamedCheckbox": "Unbenanntes Kontrollkästchen",
+  "unnamedCheckboxList": "Unbenannte Kontrollkästchenliste",
+  "unnamedChoiceDropdown": "Unbenanntes Auswahl-Dropdown",
+  "unnamedGroup": "Unbenannte Gruppe",
+  "unnamedTimeField": "Unbenanntes Zeitfeld",
+  "unnamedSlider": "Unbenannter Schieberegler",
+  "pageAriaLabel": "Seite {label}",
+  "unnamedPage": "Unbenannte Seite"
 }

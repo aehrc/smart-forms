@@ -49,5 +49,17 @@
   "mandatoryField": "Champ obligatoire",
   "selectRow": "Sélectionner la ligne {label}",
   "selectAllRows": "Sélectionner toutes les lignes de {label}",
-  "unnamedItem": "Élément {type} sans nom"
+  "unnamedItem": "Élément {type} sans nom",
+  "unnamedAttachment": "Champ de pièce jointe sans nom",
+  "unnamedNestedItem": "Élément sans nom avec éléments imbriqués",
+  "unnamedOpenLabel": "Champ de saisie libre sans nom",
+  "unnamedRadioGroup": "Groupe de boutons radio sans nom",
+  "unnamedCheckbox": "Case à cocher sans nom",
+  "unnamedCheckboxList": "Liste de cases à cocher sans nom",
+  "unnamedChoiceDropdown": "Liste déroulante de choix sans nom",
+  "unnamedGroup": "Groupe sans nom",
+  "unnamedTimeField": "Champ d'heure sans nom",
+  "unnamedSlider": "Curseur sans nom",
+  "pageAriaLabel": "Page {label}",
+  "unnamedPage": "Page sans nom"
 }

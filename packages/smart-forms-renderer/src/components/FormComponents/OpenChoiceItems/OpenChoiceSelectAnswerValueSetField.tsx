@@ -122,7 +122,10 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
               htmlInput: {
                 ...params.inputProps,
                 ...(isTabled
-                  ? { 'aria-label': qItem.text ?? `Unnamed ${qItem.type} item` }
+                  ? {
+                      'aria-label':
+                        qItem.text ?? interpolate(rendererStrings.unnamedItem, { type: qItem.type })
+                    }
                   : { 'aria-labelledby': `label-${qItem.linkId}` }),
                 ...(instructionsId && { 'aria-describedby': instructionsId })
               }

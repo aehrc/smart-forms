@@ -24,6 +24,7 @@ import { StandardTextField } from '../../Textfield.styles';
 import DatePicker from './DatePicker';
 import { useRendererConfigStore } from '../../../../stores';
 import useDateFormat from '../../../../hooks/useDateFormat';
+import { interpolate } from '../../../../i18n';
 import ExpressionUpdateFadingIcon from '../../ItemParts/ExpressionUpdateFadingIcon';
 
 interface CustomDateFieldProps extends PropsWithIsTabledAttribute {
@@ -69,6 +70,7 @@ function CustomDateField(props: CustomDateFieldProps) {
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
   const dateFormat = useDateFormat();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const anchorRef = useRef<HTMLDivElement | null>(null);
 
@@ -122,7 +124,12 @@ function CustomDateField(props: CustomDateFieldProps) {
           )
         },
         htmlInput: {
-          ...(isTabled ? {} : { 'aria-label': itemText ?? `Unnamed ${itemType} item` }),
+          ...(isTabled
+            ? {}
+            : {
+                'aria-label':
+                  itemText ?? interpolate(rendererStrings.unnamedItem, { type: itemType })
+              }),
           ...(instructionsId && { 'aria-describedby': instructionsId })
         }
       }}

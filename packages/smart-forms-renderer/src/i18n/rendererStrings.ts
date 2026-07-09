@@ -145,6 +145,30 @@ export interface RendererStrings {
   selectAllRows: string;
   /** Fallback accessible label for an item with no text, by item type. Supports `{type}`. */
   unnamedItem: string;
+  /** Fallback accessible label for an attachment field with no text. */
+  unnamedAttachment: string;
+  /** Fallback accessible label for a group with nested items and no text. */
+  unnamedNestedItem: string;
+  /** Fallback accessible label for an open-label field with no text. */
+  unnamedOpenLabel: string;
+  /** Fallback accessible label for a radio group with no text. */
+  unnamedRadioGroup: string;
+  /** Fallback accessible label for a checkbox with no text. */
+  unnamedCheckbox: string;
+  /** Fallback accessible label for a checkbox list with no text. */
+  unnamedCheckboxList: string;
+  /** Fallback accessible label for a choice dropdown with no text. */
+  unnamedChoiceDropdown: string;
+  /** Fallback accessible label for a group with no text. */
+  unnamedGroup: string;
+  /** Fallback accessible label for a time field with no text. */
+  unnamedTimeField: string;
+  /** Fallback accessible label for a slider with no text. */
+  unnamedSlider: string;
+  /** Accessible label for a page region. Supports `{label}`. */
+  pageAriaLabel: string;
+  /** Fallback accessible label for a page with no text. */
+  unnamedPage: string;
   /**
    * Optional override for the full-date input/display format, as a dayjs format string
    * (e.g. `'DD.MM.YYYY'`).
@@ -217,7 +241,19 @@ export const defaultRendererStrings: RendererStrings = {
   mandatoryField: 'Mandatory field',
   selectRow: 'Select row {label}',
   selectAllRows: 'Select all rows in {label}',
-  unnamedItem: 'Unnamed {type} item'
+  unnamedItem: 'Unnamed {type} item',
+  unnamedAttachment: 'Unnamed attachment field',
+  unnamedNestedItem: 'Unnamed item with nested items',
+  unnamedOpenLabel: 'Unnamed open label field',
+  unnamedRadioGroup: 'Unnamed radio group',
+  unnamedCheckbox: 'Unnamed checkbox',
+  unnamedCheckboxList: 'Unnamed checkbox list',
+  unnamedChoiceDropdown: 'Unnamed choice dropdown',
+  unnamedGroup: 'Unnamed group',
+  unnamedTimeField: 'Unnamed time field',
+  unnamedSlider: 'Unnamed slider',
+  pageAriaLabel: '{label} page',
+  unnamedPage: 'Unnamed page'
   // dateFormat is intentionally omitted; it is derived from the active locale (see resolveDateFormat).
 };
 

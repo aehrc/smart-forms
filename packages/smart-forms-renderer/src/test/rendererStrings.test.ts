@@ -79,7 +79,19 @@ const validRendererStringKeys: Record<keyof RendererStrings, true> = {
   mandatoryField: true,
   selectRow: true,
   selectAllRows: true,
-  unnamedItem: true
+  unnamedItem: true,
+  unnamedAttachment: true,
+  unnamedNestedItem: true,
+  unnamedOpenLabel: true,
+  unnamedRadioGroup: true,
+  unnamedCheckbox: true,
+  unnamedCheckboxList: true,
+  unnamedChoiceDropdown: true,
+  unnamedGroup: true,
+  unnamedTimeField: true,
+  unnamedSlider: true,
+  pageAriaLabel: true,
+  unnamedPage: true
 };
 
 describe('bundled locale catalogs (JSON)', () => {

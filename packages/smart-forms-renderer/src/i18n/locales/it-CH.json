@@ -49,5 +49,17 @@
   "mandatoryField": "Campo obbligatorio",
   "selectRow": "Seleziona la riga {label}",
   "selectAllRows": "Seleziona tutte le righe in {label}",
-  "unnamedItem": "Elemento {type} senza nome"
+  "unnamedItem": "Elemento {type} senza nome",
+  "unnamedAttachment": "Campo allegato senza nome",
+  "unnamedNestedItem": "Elemento senza nome con elementi nidificati",
+  "unnamedOpenLabel": "Campo di testo libero senza nome",
+  "unnamedRadioGroup": "Gruppo di pulsanti di opzione senza nome",
+  "unnamedCheckbox": "Casella di controllo senza nome",
+  "unnamedCheckboxList": "Elenco di caselle di controllo senza nome",
+  "unnamedChoiceDropdown": "Menu a discesa di scelta senza nome",
+  "unnamedGroup": "Gruppo senza nome",
+  "unnamedTimeField": "Campo ora senza nome",
+  "unnamedSlider": "Cursore senza nome",
+  "pageAriaLabel": "Pagina {label}",
+  "unnamedPage": "Pagina senza nome"
 }
