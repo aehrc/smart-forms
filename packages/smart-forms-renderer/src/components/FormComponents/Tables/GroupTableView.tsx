@@ -155,8 +155,7 @@ function GroupTableView(props: GroupTableViewProps) {
                         onChange={onSelectAll}
                         slotProps={{
                           input: {
-                            'aria-label':
-                              selectAllRowsLabel
+                            'aria-label': selectAllRowsLabel
                           }
                         }}
                       />
@@ -235,8 +234,7 @@ function GroupTableView(props: GroupTableViewProps) {
                     onChange={onSelectAll}
                     slotProps={{
                       input: {
-                        'aria-label':
-                          selectAllRowsLabel
+                        'aria-label': selectAllRowsLabel
                       }
                     }}
                   />

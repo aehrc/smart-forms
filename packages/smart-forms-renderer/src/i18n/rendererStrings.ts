@@ -191,7 +191,8 @@ export interface RendererStrings {
 export const defaultRendererStrings: RendererStrings = {
   booleanYesLabel: 'Yes',
   booleanNoLabel: 'No',
-  dateSeparatorError: 'Input does not match the required format with "{separator}" as the separator.',
+  dateSeparatorError:
+    'Input does not match the required format with "{separator}" as the separator.',
   dateFullFormatError: 'Input does not match the format {format}.',
   dateMonthOrFullFormatError: 'Input does not match the formats {monthYearFormat} or {format}.',
   dateInvalidError: 'Input is an invalid date.',
@@ -265,7 +266,7 @@ export const defaultRendererStrings: RendererStrings = {
  * locales by importing the partial and adding an entry here.
  */
 export const bundledRendererStrings: Record<string, Partial<RendererStrings>> = {
-  'en': defaultRendererStrings,
+  en: defaultRendererStrings,
   'de-CH': deCHRendererStrings,
   'fr-CH': frCHRendererStrings,
   'it-CH': itCHRendererStrings

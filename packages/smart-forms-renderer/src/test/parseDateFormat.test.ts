@@ -146,7 +146,9 @@ describe('date parsing with a configurable format', () => {
   });
 
   it('round-trips a US (MM/DD/YYYY) date via an explicit override', () => {
-    rendererConfigStore.getState().setRendererConfig({ rendererStrings: { dateFormat: 'MM/DD/YYYY' } });
+    rendererConfigStore
+      .getState()
+      .setRendererConfig({ rendererStrings: { dateFormat: 'MM/DD/YYYY' } });
 
     expect(parseFhirDateToDisplayDate('2024-03-15')).toEqual({ displayDate: '03/15/2024' });
     expect(parseInputDateToFhirDate('03/15/2024')).toBe('2024-03-15');

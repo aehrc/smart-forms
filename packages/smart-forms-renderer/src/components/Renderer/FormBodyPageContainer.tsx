@@ -75,7 +75,11 @@ function FormBodyPageContainer(props: FormBodyPageContainerProps) {
 
             return (
               <TabPanel
-                aria-label={qItem.text ? interpolate(rendererStrings.pageAriaLabel, { label: qItem.text }) : rendererStrings.unnamedPage}
+                aria-label={
+                  qItem.text
+                    ? interpolate(rendererStrings.pageAriaLabel, { label: qItem.text })
+                    : rendererStrings.unnamedPage
+                }
                 key={qItem.linkId}
                 sx={{ p: 0 }}
                 value={i.toString()}

@@ -52,8 +52,7 @@ function deriveDateFormatFromLocale(locale: string): string | undefined {
     return undefined;
   }
 
-  const hasAllTokens =
-    format.includes('DD') && format.includes('MM') && format.includes('YYYY');
+  const hasAllTokens = format.includes('DD') && format.includes('MM') && format.includes('YYYY');
   const onlySeparatorsRemain = /^[^A-Za-z0-9]*$/.test(format.replace(/DD|MM|YYYY/g, ''));
 
   return hasAllTokens && onlySeparatorsRemain ? format : undefined;

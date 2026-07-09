@@ -107,7 +107,11 @@ function FormBodyPaginated(props: FormBodyPaginatedProps) {
               if (itemIsGroup) {
                 return (
                   <TabPanel
-                    aria-label={qItem.text ? interpolate(rendererStrings.pageAriaLabel, { label: qItem.text }) : rendererStrings.unnamedPage}
+                    aria-label={
+                      qItem.text
+                        ? interpolate(rendererStrings.pageAriaLabel, { label: qItem.text })
+                        : rendererStrings.unnamedPage
+                    }
                     key={qItem.linkId}
                     sx={{ p: 0 }}
                     value={i.toString()}
@@ -131,7 +135,11 @@ function FormBodyPaginated(props: FormBodyPaginatedProps) {
               // Page consists of a non-group item
               return (
                 <TabPanel
-                  aria-label={qItem.text ? interpolate(rendererStrings.pageAriaLabel, { label: qItem.text }) : rendererStrings.unnamedPage}
+                  aria-label={
+                    qItem.text
+                      ? interpolate(rendererStrings.pageAriaLabel, { label: qItem.text })
+                      : rendererStrings.unnamedPage
+                  }
                   key={qItem.linkId}
                   sx={{ p: 0 }}
                   value={i.toString()}

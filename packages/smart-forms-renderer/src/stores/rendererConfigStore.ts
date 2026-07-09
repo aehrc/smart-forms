@@ -223,10 +223,7 @@ export const rendererConfigStore = createStore<RendererConfigStoreType>()((set) 
         params.disableHeadingFocusOnTabSwitch ?? state.disableHeadingFocusOnTabSwitch,
       hideQuestionnaireTitle: params.hideQuestionnaireTitle ?? state.hideQuestionnaireTitle,
       locale: params.locale ?? state.locale,
-      rendererStrings: resolveRendererStrings(
-        params.locale ?? state.locale,
-        params.rendererStrings
-      )
+      rendererStrings: resolveRendererStrings(params.locale ?? state.locale, params.rendererStrings)
     }));
   }
 }));
