@@ -94,7 +94,10 @@ const qDisplayCalculationBasic = questionnaireFactory(
   ],
   {
     extension: [
-      variableExtFactory('gender', `item.where(linkId = '${targetLinkId}').answer.valueCoding.code`)
+      variableExtFactory(
+        'gender',
+        `item.where(linkId = '${targetLinkId}').answer.valueCoding.display`
+      )
     ]
   }
 );
@@ -107,7 +110,7 @@ export const DisplayCalculationBasic: Story = createStory({
     await chooseSelectOption(canvasElement, targetLinkId, targetCoding.display);
 
     const element = within(canvasElement);
-    expect(element.queryAllByText(targetDisplayCalc)).toBeDefined();
+    expect(await element.findByText(targetDisplayCalc)).toBeDefined();
   }
 }) as Story;
 
@@ -121,5 +124,12 @@ qDisplayCalculationStyled.item[1]._text.extension.push({
 export const DisplayCalculationStyled: Story = createStory({
   args: {
     questionnaire: qDisplayCalculationStyled
+  },
+  play: async ({ canvasElement }) => {
+    await chooseSelectOption(canvasElement, targetLinkId, targetCoding.display);
+
+    const element = within(canvasElement);
+    const displayNode = await element.findByText(targetDisplayCalc);
+    expect(getComputedStyle(displayNode).color).toBe('rgb(46, 125, 50)');
   }
 }) as Story;

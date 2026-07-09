@@ -113,6 +113,8 @@ function GroupItemView(props: GroupItemViewProps) {
         disableGutters
         defaultExpanded={isDefaultOpen}
         elevation={groupCardElevation}
+        data-linkid={qItem.linkId}
+        data-label={qItem.text}
         slotProps={{
           transition: { unmountOnExit: true, timeout: 250 }
         }}

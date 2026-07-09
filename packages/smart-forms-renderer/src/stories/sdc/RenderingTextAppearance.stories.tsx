@@ -16,6 +16,7 @@
  */
 
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect, within } from 'storybook/test';
 import BuildFormWrapperForStorybook from '../storybookWrappers/BuildFormWrapperForStorybook';
 import {
   qDisplayCategoryInstructions,
@@ -110,6 +111,19 @@ export const RenderingAnswerOptionValueString: Story = createStory({
 export const DisplayCategoryInstructions: Story = createStory({
   args: {
     questionnaire: qDisplayCategoryInstructions
+  },
+  play: async ({ canvasElement }) => {
+    const expectedText = 'Have not claimed a health check in the past nine months';
+    const canvas = within(canvasElement);
+
+    const instructionsTextElement = await canvas.findByText(expectedText, { exact: true });
+    expect(instructionsTextElement.textContent).toBe(expectedText);
+
+    const computedStyle = window.getComputedStyle(instructionsTextElement);
+    expect(computedStyle.fontSize).toBe('12px');
+    expect(computedStyle.fontWeight).toBe('500');
+    expect(computedStyle.lineHeight).toBe('18px');
+    expect(computedStyle.color).toBe('rgb(66, 66, 66)');
   }
 }) as Story;
 
@@ -122,6 +136,15 @@ export const OpenLabel: Story = createStory({
 export const Hidden: Story = createStory({
   args: {
     questionnaire: qHidden
+  },
+  play: async ({ canvasElement }) => {
+    const expectedText = "If hidden works, you wouldn't see the question below!";
+    const canvas = within(canvasElement);
+
+    const displayTextElement = await canvas.findByText(expectedText, { exact: true });
+    expect(displayTextElement.textContent).toBe(expectedText);
+
+    expect(canvas.queryByText('Hidden string field', { exact: true })).toBeNull();
   }
 }) as Story;
 
