@@ -28,7 +28,7 @@ import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
-import { useRendererConfigStore } from '../../../stores';
+import { useQuestionnaireStore, useRendererConfigStore } from '../../../stores';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import StyledText from '../ItemParts/StyledText';
@@ -67,6 +67,8 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
+  const answerOptionsLookupFailures = useQuestionnaireStore.use.answerOptionsLookupFailures();
+  const lookupFailed = answerOptionsLookupFailures.has(qItem.linkId);
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
@@ -196,6 +198,13 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
         }}
       />
 
+      {lookupFailed ? (
+        <FormHelperText error>
+          <AccessibleFeedback>
+            Unable to load option labels — terminology server may be unavailable
+          </AccessibleFeedback>
+        </FormHelperText>
+      ) : null}
       {feedback ? (
         <FormHelperText>
           <AccessibleFeedback>{feedback}</AccessibleFeedback>

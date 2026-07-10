@@ -42,6 +42,8 @@ export interface QuestionnaireModel {
   initialExpressions: Record<string, InitialExpression>;
   answerExpressions: Record<string, AnswerExpression>;
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
+  /** linkIds whose answerOption codings had no display and whose $lookup failed */
+  answerOptionsLookupFailures: Set<string>;
   answerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
   processedValueSets: Record<string, ProcessedValueSet>;
   cachedValueSetCodings: Record<string, Coding[]>;

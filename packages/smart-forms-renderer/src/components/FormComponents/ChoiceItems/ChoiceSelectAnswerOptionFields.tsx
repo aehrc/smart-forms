@@ -24,7 +24,7 @@ import type {
   PropsWithIsTabledAttribute,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
-import { useRendererConfigStore } from '../../../stores';
+import { useQuestionnaireStore, useRendererConfigStore } from '../../../stores';
 import { compareAnswerOptionValue, isOptionDisabled } from '../../../utils/choice';
 import { getAnswerOptionLabel } from '../../../utils/openChoice';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
@@ -64,6 +64,8 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
+  const answerOptionsLookupFailures = useQuestionnaireStore.use.answerOptionsLookupFailures();
+  const lookupFailed = answerOptionsLookupFailures.has(qItem.linkId);
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
@@ -204,6 +206,13 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
         }}
       />
 
+      {lookupFailed ? (
+        <FormHelperText error>
+          <AccessibleFeedback>
+            Unable to load option labels — terminology server may be unavailable
+          </AccessibleFeedback>
+        </FormHelperText>
+      ) : null}
       {feedback ? (
         <FormHelperText>
           <AccessibleFeedback>{feedback}</AccessibleFeedback>

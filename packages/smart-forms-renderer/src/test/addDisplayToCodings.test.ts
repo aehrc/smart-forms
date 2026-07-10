@@ -180,12 +180,13 @@ describe('addDisplayToCodings - Phase 5', () => {
         ]
       };
 
-      const result = await addDisplayToAnswerOptions(
+      const { answerOptions: result, lookupFailedLinkIds } = await addDisplayToAnswerOptions(
         answerOptions,
         'http://terminology.hl7.org/fhir'
       );
 
       expect(result).toEqual(answerOptions);
+      expect(lookupFailedLinkIds.size).toBe(0);
       expect(mockClient).not.toHaveBeenCalled();
     });
 
@@ -212,7 +213,7 @@ describe('addDisplayToCodings - Phase 5', () => {
       const mockRequest = jest.fn().mockResolvedValue(mockLookupResponse);
       mockClient.mockReturnValue({ request: mockRequest } as any);
 
-      const result = await addDisplayToAnswerOptions(
+      const { answerOptions: result, lookupFailedLinkIds } = await addDisplayToAnswerOptions(
         answerOptions,
         'http://terminology.hl7.org/fhir'
       );
@@ -224,17 +225,54 @@ describe('addDisplayToCodings - Phase 5', () => {
       expect(result.item1[0].valueCoding?.display).toBe('Fever');
       expect(result.item1[1].valueCoding?.display).toBe('Existing');
       expect(result.item1[2]).toEqual({ valueString: 'text option' });
+      expect(lookupFailedLinkIds.size).toBe(0);
+    });
+
+    it('should report lookupFailedLinkIds when terminology server is unavailable', async () => {
+      // This is the bug reported in issue #1931:
+      // When the terminology server is down, codings without displays still have no display after
+      // lookup. Previously the UI would silently fall back to showing the raw code. Now
+      // lookupFailedLinkIds records which items had this failure so the UI can show an error.
+      const answerOptions = {
+        'carer-type': [
+          { valueCoding: { system: 'http://snomed.info/sct', code: '133932002' } }, // no display
+          { valueCoding: { system: 'http://snomed.info/sct', code: '394738000' } } // no display
+        ],
+        'relationship-type': [
+          { valueCoding: { system: 'http://snomed.info/sct', code: '72705000', display: 'Mother' } } // already has display
+        ]
+      };
+
+      const mockRequest = jest.fn().mockRejectedValue(new Error('Network Error'));
+      mockClient.mockReturnValue({ request: mockRequest } as any);
+
+      const { answerOptions: result, lookupFailedLinkIds } = await addDisplayToAnswerOptions(
+        answerOptions,
+        'http://terminology.hl7.org/fhir'
+      );
+
+      // Displays remain undefined because lookups failed
+      expect(result['carer-type'][0].valueCoding?.display).toBeUndefined();
+      expect(result['carer-type'][1].valueCoding?.display).toBeUndefined();
+      // Item with existing display is unaffected
+      expect(result['relationship-type'][0].valueCoding?.display).toBe('Mother');
+
+      // The linkId whose lookup failed is tracked so the UI can warn the user
+      expect(lookupFailedLinkIds.has('carer-type')).toBe(true);
+      // Items that already had displays and didn't need a lookup are NOT flagged
+      expect(lookupFailedLinkIds.has('relationship-type')).toBe(false);
     });
 
     it('should handle empty answer options', async () => {
       const answerOptions = {};
 
-      const result = await addDisplayToAnswerOptions(
+      const { answerOptions: result, lookupFailedLinkIds } = await addDisplayToAnswerOptions(
         answerOptions,
         'http://terminology.hl7.org/fhir'
       );
 
       expect(result).toEqual({});
+      expect(lookupFailedLinkIds.size).toBe(0);
       expect(mockClient).not.toHaveBeenCalled();
     });
 
@@ -243,12 +281,13 @@ describe('addDisplayToCodings - Phase 5', () => {
         item1: []
       };
 
-      const result = await addDisplayToAnswerOptions(
+      const { answerOptions: result, lookupFailedLinkIds } = await addDisplayToAnswerOptions(
         answerOptions,
         'http://terminology.hl7.org/fhir'
       );
 
       expect(result).toEqual(answerOptions);
+      expect(lookupFailedLinkIds.size).toBe(0);
       expect(mockClient).not.toHaveBeenCalled();
     });
   });

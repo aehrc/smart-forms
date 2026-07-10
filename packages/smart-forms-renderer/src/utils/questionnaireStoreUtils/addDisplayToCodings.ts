@@ -55,13 +55,22 @@ export async function addDisplayToCacheCodings(
   return cachedValueSetCodings;
 }
 
+export interface AnswerOptionsLookupResult {
+  answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
+  /** linkIds whose codings had no display and whose $lookup call failed or returned no display */
+  lookupFailedLinkIds: Set<string>;
+}
+
 // Use this for a Record<linkId, answerOption[]>
 export async function addDisplayToAnswerOptions(
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>,
   terminologyServerUrl: string
-): Promise<Record<string, QuestionnaireItemAnswerOption[]>> {
-  // Store code system lookup promises for codings without displays
+): Promise<AnswerOptionsLookupResult> {
+  // Store code system lookup promises for codings without displays.
+  // Also track which linkIds need a lookup so we can identify failures afterward.
   const codeSystemLookupPromises: Record<string, CodeSystemLookupPromise> = {};
+  const linkIdsNeedingLookup = new Set<string>();
+
   for (const key in answerOptions) {
     const options = answerOptions[key];
     for (const option of options) {
@@ -71,12 +80,15 @@ export async function addDisplayToAnswerOptions(
           promise: getCodeSystemLookupPromise(query, terminologyServerUrl),
           oldCoding: option.valueCoding
         };
+        linkIdsNeedingLookup.add(key);
       }
     }
   }
 
   // Resolves lookup promises in one go and assign newCodings to processedCodings
   const resolvedCodeSystemLookupPromises = await resolveLookupPromises(codeSystemLookupPromises);
+  const lookupFailedLinkIds = new Set<string>();
+
   for (const key in answerOptions) {
     const options = answerOptions[key];
 
@@ -86,12 +98,16 @@ export async function addDisplayToAnswerOptions(
         const resolvedLookup = resolvedCodeSystemLookupPromises[lookUpKey];
         if (resolvedLookup?.newCoding?.display) {
           option.valueCoding.display = resolvedLookup.newCoding.display;
+        } else if (linkIdsNeedingLookup.has(key) && !option.valueCoding.display) {
+          // This linkId had codings that needed a lookup but the display is still missing —
+          // either the $lookup request failed or the server returned no display value.
+          lookupFailedLinkIds.add(key);
         }
       }
     }
   }
 
-  return answerOptions;
+  return { answerOptions, lookupFailedLinkIds };
 }
 
 // Use this for an array of codings

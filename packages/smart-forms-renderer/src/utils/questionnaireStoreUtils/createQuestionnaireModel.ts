@@ -104,11 +104,10 @@ export async function createQuestionnaireModel(
     terminologyServerUrl
   );
 
-  // In answerOptions, add display values to codings lacking them
-  const completeAnswerOptions = await addDisplayToAnswerOptions(
-    answerOptions,
-    terminologyServerUrl
-  );
+  // In answerOptions, add display values to codings lacking them.
+  // lookupFailedLinkIds contains linkIds where the $lookup call failed so the UI can warn the user.
+  const { answerOptions: completeAnswerOptions, lookupFailedLinkIds: answerOptionsLookupFailures } =
+    await addDisplayToAnswerOptions(answerOptions, terminologyServerUrl);
 
   return {
     itemMap,
@@ -124,6 +123,7 @@ export async function createQuestionnaireModel(
     initialExpressions,
     answerExpressions,
     answerOptions: completeAnswerOptions,
+    answerOptionsLookupFailures,
     answerOptionsToggleExpressions: answerOptionsToggleExpressions,
     processedValueSets,
     cachedValueSetCodings,
