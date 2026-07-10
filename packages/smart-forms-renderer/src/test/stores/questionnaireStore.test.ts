@@ -123,7 +123,8 @@ describe('questionnaireStore', () => {
     cachedValueSetCodings: {},
     fhirPathContext: {},
     fhirPathTerminologyCache: {},
-    answerOptions: {}
+    answerOptions: {},
+    answerOptionsLookupFailures: new Set<string>()
   };
 
   const mockInitialiseFormResult = {
