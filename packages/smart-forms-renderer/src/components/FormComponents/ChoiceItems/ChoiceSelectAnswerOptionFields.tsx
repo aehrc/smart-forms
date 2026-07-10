@@ -125,7 +125,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
         autoHighlight
         sx={{ '& .MuiAutocomplete-tag': { mx: 0 } }}
         size="small"
-        disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+        disabled={lookupFailed || (readOnly && readOnlyVisualStyle === 'disabled')}
         readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
         renderInput={(params) => {
           // Merge instructionsId with any existing aria-describedby from Autocomplete

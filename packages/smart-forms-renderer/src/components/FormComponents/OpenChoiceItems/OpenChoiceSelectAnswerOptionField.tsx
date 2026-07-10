@@ -119,7 +119,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
         freeSolo
         autoHighlight
         sx={{ '& .MuiAutocomplete-tag': { mx: 0 } }}
-        disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+        disabled={lookupFailed || (readOnly && readOnlyVisualStyle === 'disabled')}
         readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
         size="small"
         renderInput={(params) => (
