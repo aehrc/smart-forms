@@ -22,6 +22,9 @@ import type { AutocompleteChangeReason } from '@mui/material/Autocomplete';
 import Autocomplete from '@mui/material/Autocomplete';
 import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
+import Typography from '@mui/material/Typography';
+// @ts-ignore: Module has no declaration file
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type {
   PropsWithIsTabledAttribute,
@@ -33,6 +36,7 @@ import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import StyledText from '../ItemParts/StyledText';
 import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
+import { StyledAlert } from '../../Alert.styles';
 
 interface OpenChoiceSelectAnswerOptionFieldProps
   extends PropsWithIsTabledAttribute,
@@ -73,6 +77,17 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
   const [inputValue, setInputValue] = React.useState('');
+
+  if (lookupFailed) {
+    return (
+      <StyledAlert color="error">
+        <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
+        <Typography component="div">
+          Unable to load option labels — terminology server may be unavailable
+        </Typography>
+      </StyledAlert>
+    );
+  }
 
   return (
     <FormControl
@@ -119,7 +134,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
         freeSolo
         autoHighlight
         sx={{ '& .MuiAutocomplete-tag': { mx: 0 } }}
-        disabled={lookupFailed || (readOnly && readOnlyVisualStyle === 'disabled')}
+        disabled={readOnly && readOnlyVisualStyle === 'disabled'}
         readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
         size="small"
         renderInput={(params) => (
@@ -198,13 +213,6 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
         }}
       />
 
-      {lookupFailed ? (
-        <FormHelperText error>
-          <AccessibleFeedback>
-            Unable to load option labels — terminology server may be unavailable
-          </AccessibleFeedback>
-        </FormHelperText>
-      ) : null}
       {feedback ? (
         <FormHelperText>
           <AccessibleFeedback>{feedback}</AccessibleFeedback>

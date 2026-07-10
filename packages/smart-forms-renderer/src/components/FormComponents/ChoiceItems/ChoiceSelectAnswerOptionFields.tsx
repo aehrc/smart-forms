@@ -19,6 +19,9 @@ import React from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
 import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
+import Typography from '@mui/material/Typography';
+// @ts-ignore: Module has no declaration file
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type {
   PropsWithIsTabledAttribute,
@@ -32,6 +35,7 @@ import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon'
 import { StandardTextField } from '../Textfield.styles';
 import StyledText from '../ItemParts/StyledText';
 import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
+import { StyledAlert } from '../../Alert.styles';
 
 interface ChoiceSelectAnswerOptionFieldsProps
   extends PropsWithIsTabledAttribute,
@@ -74,6 +78,19 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
   // Keep track of current selected value when input is changed
   const [currentValueSelect, setCurrentValueSelect] =
     React.useState<QuestionnaireItemAnswerOption | null>(valueSelect);
+
+  // Terminology server could not resolve displays for this item's answerOptions — show the same
+  // StyledAlert pattern used by answerValueSet fields to keep the UI consistent.
+  if (lookupFailed) {
+    return (
+      <StyledAlert color="error">
+        <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
+        <Typography component="div">
+          Unable to load option labels — terminology server may be unavailable
+        </Typography>
+      </StyledAlert>
+    );
+  }
 
   return (
     <FormControl
@@ -125,7 +142,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
         autoHighlight
         sx={{ '& .MuiAutocomplete-tag': { mx: 0 } }}
         size="small"
-        disabled={lookupFailed || (readOnly && readOnlyVisualStyle === 'disabled')}
+        disabled={readOnly && readOnlyVisualStyle === 'disabled'}
         readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
         renderInput={(params) => {
           // Merge instructionsId with any existing aria-describedby from Autocomplete
@@ -206,13 +223,6 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
         }}
       />
 
-      {lookupFailed ? (
-        <FormHelperText error>
-          <AccessibleFeedback>
-            Unable to load option labels — terminology server may be unavailable
-          </AccessibleFeedback>
-        </FormHelperText>
-      ) : null}
       {feedback ? (
         <FormHelperText>
           <AccessibleFeedback>{feedback}</AccessibleFeedback>
