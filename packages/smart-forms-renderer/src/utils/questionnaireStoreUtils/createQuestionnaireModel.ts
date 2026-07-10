@@ -146,6 +146,7 @@ function createEmptyModel(): QuestionnaireModel {
     enableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} },
     answerExpressions: {},
     answerOptions: {},
+    answerOptionsLookupFailures: new Set<string>(),
     answerOptionsToggleExpressions: {},
     enableWhenItems: { singleItems: {}, repeatItems: {} },
     processedValueSets: {},
