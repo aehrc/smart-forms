@@ -41,3 +41,4 @@ export {
 } from './extractObservation';
 
 export { getQuestionnaireItem, getSectionHeading } from './misc';
+export { getValidationErrorKey, getBaseLinkIdFromErrorKey } from './validateErrorKey';
