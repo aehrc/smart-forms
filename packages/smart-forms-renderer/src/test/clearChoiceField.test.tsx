@@ -135,9 +135,7 @@ describe('clearing choice fields removes the answer from updatableResponse', () 
     await clearAutocompleteField('condition');
 
     await waitFor(() => expect(getUpdatableResponseString()).not.toContain('Asthma'));
-    await waitFor(() =>
-      expect(getUpdatableResponseString()).not.toContain('"linkId":"condition"')
-    );
+    await waitFor(() => expect(getUpdatableResponseString()).not.toContain('"linkId":"condition"'));
   });
 
   test('standalone ChoiceAutocomplete - answer with an id (stub answer scenario from issue #1994)', async () => {
@@ -180,9 +178,7 @@ describe('clearing choice fields removes the answer from updatableResponse', () 
     await clearAutocompleteField('condition');
 
     await waitFor(() => expect(getUpdatableResponseString()).not.toContain('Asthma'));
-    await waitFor(() =>
-      expect(getUpdatableResponseString()).not.toContain('"linkId":"condition"')
-    );
+    await waitFor(() => expect(getUpdatableResponseString()).not.toContain('"linkId":"condition"'));
   });
 
   test('ChoiceAutocomplete inside a repeat group - answer without id', async () => {
@@ -249,9 +245,7 @@ describe('clearing choice fields removes the answer from updatableResponse', () 
     await clearAutocompleteField('condition');
 
     await waitFor(() => expect(getUpdatableResponseString()).not.toContain('Asthma'));
-    await waitFor(() =>
-      expect(getUpdatableResponseString()).not.toContain('"linkId":"condition"')
-    );
+    await waitFor(() => expect(getUpdatableResponseString()).not.toContain('"linkId":"condition"'));
   });
 
   test('ChoiceSelect (answerOption) inside a repeat group - answer without id', async () => {
@@ -370,9 +364,7 @@ describe('clearing choice fields removes the answer from updatableResponse', () 
     await clearAutocompleteField('condition');
 
     await waitFor(() => expect(getUpdatableResponseString()).not.toContain('Asthma'));
-    await waitFor(() =>
-      expect(getUpdatableResponseString()).not.toContain('"linkId":"condition"')
-    );
+    await waitFor(() => expect(getUpdatableResponseString()).not.toContain('"linkId":"condition"'));
   });
 
   test('ChoiceAutocomplete with repeats: true - clearing one row keeps the other row values and both rows visible', async () => {
@@ -402,7 +394,11 @@ describe('clearing choice fields removes the answer from updatableResponse', () 
             { id: 'condition-repeat-000000', valueCoding: asthmaCoding },
             {
               id: 'condition-repeat-000001',
-              valueCoding: { system: 'http://snomed.info/sct', code: '38341003', display: 'Hypertension' }
+              valueCoding: {
+                system: 'http://snomed.info/sct',
+                code: '38341003',
+                display: 'Hypertension'
+              }
             }
           ]
         }
@@ -577,9 +573,7 @@ describe('clearing choice fields removes the answer from updatableResponse', () 
     await clearAutocompleteField('condition');
 
     await waitFor(() => expect(getUpdatableResponseString()).not.toContain('Asthma'));
-    await waitFor(() =>
-      expect(getUpdatableResponseString()).not.toContain('"linkId":"condition"')
-    );
+    await waitFor(() => expect(getUpdatableResponseString()).not.toContain('"linkId":"condition"'));
   });
 
   test('OpenChoiceAutocomplete inside a gtable repeat group (Aboriginal Health Check shape) - clearing removes the value', async () => {
@@ -751,9 +745,7 @@ describe('clearing choice fields removes the answer from updatableResponse', () 
       expect(getUpdatableResponseString()).not.toContain('"linkId":"new-medications"')
     );
     // Only the response root remains, with an empty top-level item array
-    expect(
-      (questionnaireResponseStore.getState().updatableResponse.item ?? []).length
-    ).toBe(0);
+    expect((questionnaireResponseStore.getState().updatableResponse.item ?? []).length).toBe(0);
   });
 
   test('RepeatGroup - clearing one answer keeps the row when it still has other answers', async () => {
@@ -904,9 +896,7 @@ describe('clearing choice fields removes the answer from updatableResponse', () 
       expect(getUpdatableResponseString()).not.toContain('"linkId":"new-diagnoses"')
     );
     // Only the response root remains, with an empty top-level item array
-    expect(
-      (questionnaireResponseStore.getState().updatableResponse.item ?? []).length
-    ).toBe(0);
+    expect((questionnaireResponseStore.getState().updatableResponse.item ?? []).length).toBe(0);
   });
 
   test('RepeatItem Add Item button adds a visible empty row without changing the QuestionnaireResponse', async () => {
@@ -953,7 +943,9 @@ describe('clearing choice fields removes the answer from updatableResponse', () 
 
     // A second (empty) row is rendered
     await waitFor(() =>
-      expect(document.querySelectorAll('[data-linkid="condition"] .MuiAutocomplete-root').length).toBe(2)
+      expect(
+        document.querySelectorAll('[data-linkid="condition"] .MuiAutocomplete-root').length
+      ).toBe(2)
     );
 
     // The QuestionnaireResponse is unchanged - no stub answer was added
