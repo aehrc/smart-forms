@@ -37,7 +37,7 @@ import {
 } from './getProperties';
 import { propagateProperties } from './propagate';
 import cloneDeep from 'lodash.clonedeep';
-import { getCanonicalUrls } from './canonical';
+import { alignItemsWithParentForm, getCanonicalUrls } from './canonical';
 
 /**
  * The $assemble operation - https://build.fhir.org/ig/HL7/sdc/OperationDefinition-Questionnaire-assemble.html
@@ -178,8 +178,14 @@ async function assembleQuestionnaire(
     return matchingLanguageOutcome;
   }
 
-  // Get items
-  const items: (QuestionnaireItem[] | null)[] = getItems(subquestionnaires);
+  // Get items, then align them with the parent form's item positions so that regular items mixed
+  // in alongside subQuestionnaire placeholders are preserved in place (getItems returns a compact
+  // list with one entry per subquestionnaire, but propagateProperties looks them up by parent item
+  // position).
+  const items: (QuestionnaireItem[] | null)[] = alignItemsWithParentForm(
+    parentQuestionnaire,
+    getItems(subquestionnaires)
+  );
 
   // Get urls with versions
   const urls: string[] = getUrls(subquestionnaires);
