@@ -32,13 +32,9 @@ import QuestionnaireTitleText from '../FormComponents/ItemParts/QuestionnaireTit
 import dayjs from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-// Swiss dayjs locale data localises the date picker *calendar popup* (month/weekday names) for these
-// locales. The date input format itself is derived via Intl and needs no locale import (see
-// resolveDateFormat). Consumers wanting a localised calendar for other locales can import the matching
-// dayjs/locale/<tag> themselves.
-import 'dayjs/locale/de-ch';
-import 'dayjs/locale/fr-ch';
-import 'dayjs/locale/it-ch';
+// Note: the renderer bundles no dayjs locale data. Consumers wanting a localised date picker
+// *calendar popup* (month/weekday names) import the matching dayjs/locale/<tag> in their app.
+// The date input format itself is derived via Intl and needs no locale import (see resolveDateFormat).
 import {
   silenceAutocompleteTextareaWarning,
   silenceReactBeautifulDndError

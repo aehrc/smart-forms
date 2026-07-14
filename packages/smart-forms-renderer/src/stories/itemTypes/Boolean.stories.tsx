@@ -166,11 +166,26 @@ export const BooleanCheckboxResponse: Story = createStory({
   }
 }) as Story;
 
-/* Boolean with a Swiss German locale, showing localised Yes/No labels (Ja/Nein) */
+/*
+ * Boolean with Swiss German renderer strings, showing localised Yes/No labels (Ja/Nein).
+ *
+ * This demonstrates the consumer localisation pattern: the renderer bundles no translations,
+ * so the consuming app owns its translation catalog (e.g. a per-locale JSON file it maintains
+ * and loads however it likes) and injects it as a Partial<RendererStrings> via
+ * `rendererConfigOptions.rendererStrings`. `locale` is passed alongside purely for
+ * date formatting / calendar localisation — it does not select strings.
+ */
 export const BooleanLocaleDeCH: Story = createStory({
   args: {
     questionnaire: qBooleanBasic,
-    rendererConfigOptions: { locale: 'de-CH' }
+    rendererConfigOptions: {
+      locale: 'de-CH',
+      // Inline here for the story; a real app would import this from its own translation file.
+      rendererStrings: {
+        booleanYesLabel: 'Ja',
+        booleanNoLabel: 'Nein'
+      }
+    }
   },
   play: async ({ canvasElement }) => {
     await checkRadioOption(canvasElement, targetLinkId, 'Ja');

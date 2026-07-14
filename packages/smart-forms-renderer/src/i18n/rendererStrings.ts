@@ -15,13 +15,6 @@
  * limitations under the License.
  */
 
-// Bundled locale catalogs are authored as standard JSON translation files (translator-tool
-// friendly). Their values are type-checked against RendererStrings via the bundledRendererStrings
-// Record type below; a unit test additionally guards against unknown keys (typos).
-import deCHRendererStrings from './locales/de-CH.json';
-import frCHRendererStrings from './locales/fr-CH.json';
-import itCHRendererStrings from './locales/it-CH.json';
-
 /**
  * RendererStrings is the catalog of user-facing strings that the renderer itself
  * provides (the renderer "chrome"), as opposed to text that comes from the
@@ -31,10 +24,12 @@ import itCHRendererStrings from './locales/it-CH.json';
  * a simple shallow spread (see {@link resolveRendererStrings}). Every entry must
  * have an English default in {@link defaultRendererStrings}.
  *
- * To localise the renderer, either:
- * - pass a known `locale` in the renderer config to select a bundled catalog
- *   (e.g. `'de-CH'`), and/or
- * - pass a `rendererStrings` partial override to replace individual strings.
+ * To localise the renderer, pass a `rendererStrings` partial catalog in the
+ * renderer config (e.g. `buildForm({ rendererConfigOptions: { rendererStrings } })`).
+ * The renderer does not bundle any translations; consuming apps own their
+ * translation files (e.g. per-locale JSON) and inject them here. The `locale`
+ * config option does not select strings — it only drives date formatting and
+ * calendar localisation.
  *
  * @author Smart Forms
  */
@@ -259,43 +254,19 @@ export const defaultRendererStrings: RendererStrings = {
 };
 
 /**
- * Bundled renderer string catalogs keyed by BCP-47 locale tag.
- * Consumers can select one of these via the renderer config `locale` option.
+ * Resolve the effective renderer strings for the given consumer-supplied
+ * partial catalog.
  *
- * Each non-default locale lives in its own file under `./locales`; register new
- * locales by importing the partial and adding an entry here.
+ * Missing keys fall back to the English defaults ({@link defaultRendererStrings}),
+ * so this never throws. The renderer bundles no translations — consuming apps own
+ * their translation files and pass them in via the renderer config `rendererStrings`
+ * option (see `buildForm({ rendererConfigOptions: { rendererStrings } })`).
+ *
+ * @param overrides - Consumer-supplied strings that take precedence over the English defaults.
  */
-export const bundledRendererStrings: Record<string, Partial<RendererStrings>> = {
-  en: defaultRendererStrings,
-  'de-CH': deCHRendererStrings,
-  'fr-CH': frCHRendererStrings,
-  'it-CH': itCHRendererStrings
-};
-
-/**
- * Resolve the effective renderer strings for a given locale and optional
- * per-string overrides.
- *
- * Resolution order (later wins):
- * 1. English defaults ({@link defaultRendererStrings})
- * 2. Bundled catalog for `locale`, if one exists (exact match, then the base
- *    language sub-tag, e.g. `de-CH` falls back to `de`)
- * 3. Explicit `overrides`
- *
- * Unknown locales simply fall back to the English defaults, so this never throws.
- *
- * @param locale - BCP-47 locale tag, e.g. `'de-CH'`. Optional.
- * @param overrides - Per-string overrides that take precedence over the catalog.
- */
-export function resolveRendererStrings(
-  locale?: string,
-  overrides?: Partial<RendererStrings>
-): RendererStrings {
-  const localeCatalog = locale ? lookupBundledCatalog(locale) : undefined;
-
+export function resolveRendererStrings(overrides?: Partial<RendererStrings>): RendererStrings {
   return {
     ...defaultRendererStrings,
-    ...localeCatalog,
     ...overrides
   };
 }
@@ -307,14 +278,4 @@ export function resolveRendererStrings(
  */
 export function interpolate(template: string, params: Record<string, string> = {}): string {
   return template.replace(/\{(\w+)\}/g, (match, key) => (key in params ? params[key] : match));
-}
-
-function lookupBundledCatalog(locale: string): Partial<RendererStrings> | undefined {
-  if (bundledRendererStrings[locale]) {
-    return bundledRendererStrings[locale];
-  }
-
-  // Fall back from a region-specific tag (e.g. `de-CH`) to its base language (`de`)
-  const baseLanguage = locale.split('-')[0];
-  return bundledRendererStrings[baseLanguage];
 }

@@ -127,7 +127,9 @@ export interface RendererConfig {
   disableTabButtons?: boolean;
   disableHeadingFocusOnTabSwitch?: boolean;
   hideQuestionnaireTitle?: boolean;
+  /** BCP-47 locale tag (e.g. `'de-CH'`). Drives date formatting and calendar localisation only — it does not select renderer strings. */
   locale?: string;
+  /** Consumer-supplied translations for the renderer chrome, merged on top of the English defaults. */
   rendererStrings?: Partial<RendererStrings>;
 }
 
@@ -223,7 +225,11 @@ export const rendererConfigStore = createStore<RendererConfigStoreType>()((set) 
         params.disableHeadingFocusOnTabSwitch ?? state.disableHeadingFocusOnTabSwitch,
       hideQuestionnaireTitle: params.hideQuestionnaireTitle ?? state.hideQuestionnaireTitle,
       locale: params.locale ?? state.locale,
-      rendererStrings: resolveRendererStrings(params.locale ?? state.locale, params.rendererStrings)
+      // Like every other field, only recompute when provided — a partial setRendererConfig call
+      // must not wipe previously injected strings back to the English defaults.
+      rendererStrings: params.rendererStrings
+        ? resolveRendererStrings(params.rendererStrings)
+        : state.rendererStrings
     }));
   }
 }));

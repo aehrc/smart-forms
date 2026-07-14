@@ -38,7 +38,7 @@ export {
 
 // i18n / renderer string exports
 export type { RendererStrings } from './i18n';
-export { defaultRendererStrings, bundledRendererStrings, resolveRendererStrings } from './i18n';
+export { defaultRendererStrings, resolveRendererStrings } from './i18n';
 
 // state management store exports
 export type {

@@ -27,6 +27,10 @@ import {
 } from '../testUtils';
 import { expect } from 'storybook/test';
 import { createStory } from '../storybookWrappers/createStory';
+// Consumer-side dayjs locale import: the renderer bundles no dayjs locale data, so apps that
+// want a localised calendar popup (month/weekday names) import the matching dayjs/locale/<tag>
+// themselves — exactly as done here for the DateLocaleDeCH story.
+import 'dayjs/locale/de-ch';
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta = {
@@ -92,7 +96,14 @@ export const DateBasicResponse: Story = createStory({
   }
 }) as Story;
 
-/* Date with a Swiss German locale, showing the DD.MM.YYYY format */
+/*
+ * Date with a Swiss German locale, showing the DD.MM.YYYY format.
+ *
+ * `locale` drives date handling only: the input/display format is derived from the locale via
+ * Intl (de-CH -> DD.MM.YYYY, no bundled data needed), and the calendar popup uses the
+ * consumer-imported `dayjs/locale/de-ch` (see import at the top of this file). Localised
+ * validation messages would be injected via `rendererStrings`, as in the Boolean story.
+ */
 export const DateLocaleDeCH: Story = createStory({
   args: {
     questionnaire: qDateBasic,

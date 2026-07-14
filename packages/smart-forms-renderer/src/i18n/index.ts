@@ -16,9 +16,4 @@
  */
 
 export type { RendererStrings } from './rendererStrings';
-export {
-  defaultRendererStrings,
-  bundledRendererStrings,
-  resolveRendererStrings,
-  interpolate
-} from './rendererStrings';
+export { defaultRendererStrings, resolveRendererStrings, interpolate } from './rendererStrings';
