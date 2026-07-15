@@ -31,7 +31,6 @@ import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 import { useRendererConfigStore } from '../../../stores';
 import { interpolate } from '../../../i18n';
-import { StyledRequiredTypography } from '../Item.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import AccessibleFeedback from '../ItemParts/AccessibleFeedback';

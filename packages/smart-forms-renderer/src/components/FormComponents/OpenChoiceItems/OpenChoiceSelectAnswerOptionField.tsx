@@ -30,7 +30,6 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import { useRendererConfigStore } from '../../../stores';
 import { interpolate } from '../../../i18n';
-import { StyledRequiredTypography } from '../Item.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import StyledText from '../ItemParts/StyledText';
