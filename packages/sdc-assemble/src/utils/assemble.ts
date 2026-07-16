@@ -144,8 +144,17 @@ async function assembleQuestionnaire(
     return subquestionnaires;
   }
 
-  // Recursively assemble subquestionnaires if required
-  for (let subquestionnaire of subquestionnaires) {
+  // Recursively assemble subquestionnaires if required.
+  // NB: iterate by index and write the assembled result BACK into the array. A `for...of` loop
+  // with `subquestionnaire = assembled` only reassigns the loop variable, leaving the array
+  // element (and therefore getItems() below) pointing at the un-assembled child — so a
+  // subquestionnaire that is itself modular would be spliced in without its own children resolved.
+  for (let i = 0; i < subquestionnaires.length; i++) {
+    const subquestionnaire = subquestionnaires[i];
+    if (!subquestionnaire) {
+      continue;
+    }
+
     const assembled: Questionnaire | OperationOutcome = await assembleQuestionnaire(
       subquestionnaire,
       totalCanonicals,
@@ -160,7 +169,7 @@ async function assembleQuestionnaire(
       return assembled;
     }
 
-    subquestionnaire = assembled;
+    subquestionnaires[i] = assembled;
   }
 
   // Check for prohibited attributes and compare matching language properties
