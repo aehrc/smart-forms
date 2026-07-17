@@ -44,6 +44,7 @@ function CheckboxSingle(props: CheckboxSingleProps) {
   } = props;
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   // When an option is disabled via toggle expression, it should truly be "disabled", regardless of readOnlyVisualStyle.
   // Both isDisabled and isReadOnly are mutually exclusive.
@@ -85,7 +86,8 @@ function CheckboxSingle(props: CheckboxSingleProps) {
           }}
           slotProps={{
             input: {
-              'aria-label': (typeof label === 'string' ? label : labelText) ?? 'Unnamed checkbox'
+              'aria-label':
+                (typeof label === 'string' ? label : labelText) ?? rendererStrings.unnamedCheckbox
             }
           }}
         />

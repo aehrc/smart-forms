@@ -41,6 +41,7 @@ import {
 import useReadOnly from '../../../hooks/useReadOnly';
 import Box from '@mui/material/Box';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
+import { useRendererConfigStore } from '../../../stores';
 
 interface SingleItemViewProps
   extends PropsWithQrItemChangeHandler,
@@ -76,6 +77,7 @@ function SingleItemView(props: SingleItemViewProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
   const renderingExtensions = useRenderingExtensions(qItem);
   const groupCollapsibleValue = getGroupCollapsible(qItem);
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   // Item hidden, do not render
   if (itemIsHidden) {
@@ -137,7 +139,7 @@ function SingleItemView(props: SingleItemViewProps) {
         isRepeated={isRepeated}
         data-test="q-item-group-box"
         role="region"
-        aria-label={qItem.text ?? 'Unnamed item with nested items'}>
+        aria-label={qItem.text ?? rendererStrings.unnamedNestedItem}>
         <GroupCard elevation={groupCardElevation} isRepeated={isRepeated}>
           <SingleItemSwitcher
             qItem={qItem}

@@ -25,11 +25,17 @@ import useDateValidation from '../hooks/useDateValidation';
 const mockGetNumOfSeparators = jest.fn();
 const mockValidateThreeMatches = jest.fn();
 const mockValidateTwoMatches = jest.fn();
+const mockGetDateSeparator = jest.fn();
+const mockGetMonthYearFormat = jest.fn();
+const mockResolveDateFormat = jest.fn();
 
 jest.mock('../components/FormComponents/DateTimeItems/utils/parseDate', () => ({
   getNumOfSeparators: (...args: any[]) => mockGetNumOfSeparators(...args),
   validateThreeMatches: (...args: any[]) => mockValidateThreeMatches(...args),
-  validateTwoMatches: (...args: any[]) => mockValidateTwoMatches(...args)
+  validateTwoMatches: (...args: any[]) => mockValidateTwoMatches(...args),
+  getDateSeparator: (...args: any[]) => mockGetDateSeparator(...args),
+  getMonthYearFormat: (...args: any[]) => mockGetMonthYearFormat(...args),
+  resolveDateFormat: (...args: any[]) => mockResolveDateFormat(...args)
 }));
 
 // Mock dayjs
@@ -54,6 +60,9 @@ describe('useDateValidation', () => {
     mockValidateThreeMatches.mockReturnValue(true);
     mockValidateTwoMatches.mockReturnValue(true);
     mockIsValid.mockReturnValue(true);
+    mockGetDateSeparator.mockReturnValue('/');
+    mockGetMonthYearFormat.mockReturnValue('MM/YYYY');
+    mockResolveDateFormat.mockReturnValue('DD/MM/YYYY');
   });
 
   describe('empty input handling', () => {
@@ -124,7 +133,7 @@ describe('useDateValidation', () => {
 
       expect(result.current).toBe('');
       expect(mockDayjs).toHaveBeenCalledWith('15/03/2024', 'DD/MM/YYYY');
-      expect(mockValidateThreeMatches).toHaveBeenCalledWith('15', '03', '2024');
+      expect(mockValidateThreeMatches).toHaveBeenCalledWith('15', '03', '2024', 'DD/MM/YYYY');
     });
 
     it('should reject invalid dayjs format', () => {
@@ -143,7 +152,7 @@ describe('useDateValidation', () => {
       const { result } = renderHook(() => useDateValidation('29/02/2023'));
 
       expect(result.current).toBe('Input is an invalid date.');
-      expect(mockValidateThreeMatches).toHaveBeenCalledWith('29', '02', '2023');
+      expect(mockValidateThreeMatches).toHaveBeenCalledWith('29', '02', '2023', 'DD/MM/YYYY');
     });
 
     it('should handle edge case dates', () => {
@@ -153,7 +162,7 @@ describe('useDateValidation', () => {
       const { result } = renderHook(() => useDateValidation('29/02/2024')); // Leap year
 
       expect(result.current).toBe('');
-      expect(mockValidateThreeMatches).toHaveBeenCalledWith('29', '02', '2024');
+      expect(mockValidateThreeMatches).toHaveBeenCalledWith('29', '02', '2024', 'DD/MM/YYYY');
     });
 
     it('should handle single digit day and month', () => {
@@ -163,7 +172,7 @@ describe('useDateValidation', () => {
       const { result } = renderHook(() => useDateValidation('1/1/2024'));
 
       expect(result.current).toBe('');
-      expect(mockValidateThreeMatches).toHaveBeenCalledWith('1', '1', '2024');
+      expect(mockValidateThreeMatches).toHaveBeenCalledWith('1', '1', '2024', 'DD/MM/YYYY');
     });
 
     it('should handle malformed input with 2 separators', () => {
@@ -433,7 +442,7 @@ describe('useDateValidation', () => {
 
       renderHook(() => useDateValidation('15/06/2024'));
 
-      expect(mockValidateThreeMatches).toHaveBeenCalledWith('15', '06', '2024');
+      expect(mockValidateThreeMatches).toHaveBeenCalledWith('15', '06', '2024', 'DD/MM/YYYY');
     });
 
     it('should call validateTwoMatches with split components', () => {

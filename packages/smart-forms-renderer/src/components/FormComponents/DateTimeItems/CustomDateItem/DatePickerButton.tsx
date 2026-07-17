@@ -36,12 +36,13 @@ function DatePickerButton(props: DatePickerButtonProps) {
   const { onOpen, readOnly } = props;
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const pickDateLabel = useRendererConfigStore.use.rendererStrings().pickDate;
 
   return (
     <IconButton
       sx={{ height: 30, width: 30, color: 'text.secondary' }}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
-      aria-label="Pick a date"
+      aria-label={pickDateLabel}
       tabIndex={readOnly ? -1 : 0}
       onClick={(e) => {
         e.stopPropagation();

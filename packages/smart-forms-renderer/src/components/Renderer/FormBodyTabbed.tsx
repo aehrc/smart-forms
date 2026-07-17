@@ -46,6 +46,7 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
 
   const tabListWidthOrResponsive = useRendererConfigStore.use.tabListWidthOrResponsive();
   const tabListStickyTop = useRendererConfigStore.use.tabListStickyTop() ?? 0;
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const tabListGridRef = useRef<HTMLDivElement>(null);
   const [tabListMaxHeight, setTabListMaxHeight] = useState<string | undefined>();
@@ -101,7 +102,7 @@ function FormBodyTabbed(props: FormBodyTabbedProps) {
   }
 
   if (!qItems || !qrItems) {
-    return <>Unable to load form</>;
+    return <>{rendererStrings.unableToLoadForm}</>;
   }
 
   const qrItemsByIndex = getQrItemsIndex(qItems, qrItems, indexMap);
