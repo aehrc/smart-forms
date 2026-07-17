@@ -28,6 +28,7 @@ import useReadOnly from '../../../hooks/useReadOnly';
 import GroupTableView from './GroupTableView';
 import type { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
 import { getGroupTableItemsToUpdate } from '../../../utils/groupTable';
+import { qrItemHasItemsOrAnswer } from '../../../utils/manageForm';
 import useGroupTableRows from '../../../hooks/useGroupTableRows';
 import { flushSync } from 'react-dom';
 import { generateNewRepeatId } from '../../../utils/repeatId';
@@ -139,6 +140,13 @@ function GroupTable(props: GroupTableProps) {
 
   // Event Handlers
   function handleRowChange(newQrRow: QuestionnaireResponseItem, index: number) {
+    // If the change leaves the row with no items or answers (e.g. its last answer was
+    // cleared), remove the row entirely - same as the Remove Item button
+    if (!qrItemHasItemsOrAnswer(newQrRow)) {
+      handleRemoveRow(index);
+      return;
+    }
+
     const updatedTableRows = [...tableRows];
 
     if (newQrRow.item) {
