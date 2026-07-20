@@ -57,8 +57,12 @@ export async function addDisplayToCacheCodings(
 
 export interface AnswerOptionsLookupResult {
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
-  /** linkIds whose codings had no display and whose $lookup call failed or returned no display */
-  lookupFailedLinkIds: Set<string>;
+  /**
+   * Per-coding keys (`${system}|${code}`) where the $lookup call failed or returned no display.
+   * Granular enough to show a fallback label per individual option that couldn't be resolved,
+   * while leaving successfully-resolved options in the same dropdown unaffected.
+   */
+  lookupFailedCodingKeys: Set<string>;
 }
 
 // Use this for a Record<linkId, answerOption[]>
@@ -67,9 +71,9 @@ export async function addDisplayToAnswerOptions(
   terminologyServerUrl: string
 ): Promise<AnswerOptionsLookupResult> {
   // Store code system lookup promises for codings without displays.
-  // Also track which linkIds need a lookup so we can identify failures afterward.
+  // Track each coding key (system|code) that needed a lookup so we can identify failures afterward.
   const codeSystemLookupPromises: Record<string, CodeSystemLookupPromise> = {};
-  const linkIdsNeedingLookup = new Set<string>();
+  const codingKeysNeedingLookup = new Set<string>();
 
   for (const key in answerOptions) {
     const options = answerOptions[key];
@@ -80,14 +84,14 @@ export async function addDisplayToAnswerOptions(
           promise: getCodeSystemLookupPromise(query, terminologyServerUrl),
           oldCoding: option.valueCoding
         };
-        linkIdsNeedingLookup.add(key);
+        codingKeysNeedingLookup.add(`${option.valueCoding.system}|${option.valueCoding.code}`);
       }
     }
   }
 
   // Resolves lookup promises in one go and assign newCodings to processedCodings
   const resolvedCodeSystemLookupPromises = await resolveLookupPromises(codeSystemLookupPromises);
-  const lookupFailedLinkIds = new Set<string>();
+  const lookupFailedCodingKeys = new Set<string>();
 
   for (const key in answerOptions) {
     const options = answerOptions[key];
@@ -95,19 +99,21 @@ export async function addDisplayToAnswerOptions(
     for (const option of options) {
       if (option.valueCoding) {
         const lookUpKey = `system=${option.valueCoding.system}&code=${option.valueCoding.code}`;
+        const codingKey = `${option.valueCoding.system}|${option.valueCoding.code}`;
         const resolvedLookup = resolvedCodeSystemLookupPromises[lookUpKey];
         if (resolvedLookup?.newCoding?.display) {
           option.valueCoding.display = resolvedLookup.newCoding.display;
-        } else if (linkIdsNeedingLookup.has(key) && !option.valueCoding.display) {
-          // This linkId had codings that needed a lookup but the display is still missing —
-          // either the $lookup request failed or the server returned no display value.
-          lookupFailedLinkIds.add(key);
+        } else if (codingKeysNeedingLookup.has(codingKey) && !option.valueCoding.display) {
+          // This coding needed a lookup but still has no display — the $lookup request either
+          // failed or the server returned no display value. Track it so individual options can
+          // show a fallback label (e.g. "[133932002]") instead of the raw code silently.
+          lookupFailedCodingKeys.add(codingKey);
         }
       }
     }
   }
 
-  return { answerOptions, lookupFailedLinkIds };
+  return { answerOptions, lookupFailedCodingKeys };
 }
 
 // Use this for an array of codings

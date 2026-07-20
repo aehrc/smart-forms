@@ -106,8 +106,10 @@ export async function createQuestionnaireModel(
 
   // In answerOptions, add display values to codings lacking them.
   // lookupFailedLinkIds contains linkIds where the $lookup call failed so the UI can warn the user.
-  const { answerOptions: completeAnswerOptions, lookupFailedLinkIds: answerOptionsLookupFailures } =
-    await addDisplayToAnswerOptions(answerOptions, terminologyServerUrl);
+  const {
+    answerOptions: completeAnswerOptions,
+    lookupFailedCodingKeys: answerOptionsLookupFailures
+  } = await addDisplayToAnswerOptions(answerOptions, terminologyServerUrl);
 
   return {
     itemMap,

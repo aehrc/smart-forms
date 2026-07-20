@@ -22,9 +22,6 @@ import type { AutocompleteChangeReason } from '@mui/material/Autocomplete';
 import Autocomplete from '@mui/material/Autocomplete';
 import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
-import Typography from '@mui/material/Typography';
-// @ts-ignore: Module has no declaration file
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type {
   PropsWithIsTabledAttribute,
@@ -36,7 +33,6 @@ import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import StyledText from '../ItemParts/StyledText';
 import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
-import { StyledAlert } from '../../Alert.styles';
 
 interface OpenChoiceSelectAnswerOptionFieldProps
   extends PropsWithIsTabledAttribute,
@@ -72,22 +68,29 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
   const answerOptionsLookupFailures = useQuestionnaireStore.use.answerOptionsLookupFailures();
-  const lookupFailed = answerOptionsLookupFailures.has(qItem.linkId);
+
+  const hasLookupFailure = options.some(
+    (opt) =>
+      opt.valueCoding &&
+      !opt.valueCoding.display &&
+      answerOptionsLookupFailures.has(`${opt.valueCoding.system}|${opt.valueCoding.code}`)
+  );
+
+  function getLabelWithFallback(option: QuestionnaireItemAnswerOption | string): string {
+    if (typeof option === 'string') return option;
+    if (
+      option.valueCoding &&
+      !option.valueCoding.display &&
+      answerOptionsLookupFailures.has(`${option.valueCoding.system}|${option.valueCoding.code}`)
+    ) {
+      return `[${option.valueCoding.code}]`;
+    }
+    return getAnswerOptionLabel(option);
+  }
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
   const [inputValue, setInputValue] = React.useState('');
-
-  if (lookupFailed) {
-    return (
-      <StyledAlert color="error">
-        <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-        <Typography component="div">
-          Unable to load option labels — terminology server may be unavailable
-        </Typography>
-      </StyledAlert>
-    );
-  }
 
   return (
     <FormControl
@@ -102,14 +105,14 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
         id={qItem.type + '-' + qItem.linkId}
         value={valueSelect ?? null}
         options={options}
-        getOptionLabel={(option) => getAnswerOptionLabel(option)}
+        getOptionLabel={(option) => getLabelWithFallback(option)}
         onChange={(_, newValue, reason) => onValueChange(newValue, reason)}
         inputValue={inputValue}
         onInputChange={(_, newInputValue, reason) => {
           if (!inputValue && valueSelect && reason !== 'clear') {
             // Convert current input value to be the current value plus additional input
             onValueChange(null, 'clear');
-            setInputValue(getAnswerOptionLabel(valueSelect) + newInputValue);
+            setInputValue(getLabelWithFallback(valueSelect) + newInputValue);
           } else {
             setInputValue(newInputValue);
           }
@@ -126,7 +129,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
             if (!inputValue && valueSelect) {
               // Convert current selection to input value on backspace when input is empty
               onValueChange(null, 'clear');
-              setInputValue(getAnswerOptionLabel(valueSelect));
+              setInputValue(getLabelWithFallback(valueSelect));
             }
           }
         }}
@@ -179,11 +182,11 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
               <span>
                 {option.valueString ? (
                   <StyledText
-                    textToDisplay={getAnswerOptionLabel(option)}
+                    textToDisplay={getLabelWithFallback(option)}
                     element={option._valueString}
                   />
                 ) : (
-                  getAnswerOptionLabel(option)
+                  getLabelWithFallback(option)
                 )}
               </span>
             </li>
@@ -202,17 +205,24 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
             <span {...rest}>
               {typeof value !== 'string' && value.valueString && selectedOption ? (
                 <StyledText
-                  textToDisplay={getAnswerOptionLabel(value)}
+                  textToDisplay={getLabelWithFallback(value)}
                   element={selectedOption._valueString}
                 />
               ) : (
-                getAnswerOptionLabel(value)
+                getLabelWithFallback(value)
               )}
             </span>
           );
         }}
       />
 
+      {hasLookupFailure ? (
+        <FormHelperText sx={{ color: 'warning.main' }}>
+          <AccessibleFeedback>
+            Some option labels could not be loaded — terminology server may be unavailable
+          </AccessibleFeedback>
+        </FormHelperText>
+      ) : null}
       {feedback ? (
         <FormHelperText>
           <AccessibleFeedback>{feedback}</AccessibleFeedback>

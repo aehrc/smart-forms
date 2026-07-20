@@ -180,13 +180,13 @@ describe('addDisplayToCodings - Phase 5', () => {
         ]
       };
 
-      const { answerOptions: result, lookupFailedLinkIds } = await addDisplayToAnswerOptions(
+      const { answerOptions: result, lookupFailedCodingKeys } = await addDisplayToAnswerOptions(
         answerOptions,
         'http://terminology.hl7.org/fhir'
       );
 
       expect(result).toEqual(answerOptions);
-      expect(lookupFailedLinkIds.size).toBe(0);
+      expect(lookupFailedCodingKeys.size).toBe(0);
       expect(mockClient).not.toHaveBeenCalled();
     });
 
@@ -213,7 +213,7 @@ describe('addDisplayToCodings - Phase 5', () => {
       const mockRequest = jest.fn().mockResolvedValue(mockLookupResponse);
       mockClient.mockReturnValue({ request: mockRequest } as any);
 
-      const { answerOptions: result, lookupFailedLinkIds } = await addDisplayToAnswerOptions(
+      const { answerOptions: result, lookupFailedCodingKeys } = await addDisplayToAnswerOptions(
         answerOptions,
         'http://terminology.hl7.org/fhir'
       );
@@ -225,14 +225,15 @@ describe('addDisplayToCodings - Phase 5', () => {
       expect(result.item1[0].valueCoding?.display).toBe('Fever');
       expect(result.item1[1].valueCoding?.display).toBe('Existing');
       expect(result.item1[2]).toEqual({ valueString: 'text option' });
-      expect(lookupFailedLinkIds.size).toBe(0);
+      expect(lookupFailedCodingKeys.size).toBe(0);
     });
 
-    it('should report lookupFailedLinkIds when terminology server is unavailable', async () => {
+    it('should report lookupFailedCodingKeys when terminology server is unavailable', async () => {
       // This is the bug reported in issue #1931:
       // When the terminology server is down, codings without displays still have no display after
       // lookup. Previously the UI would silently fall back to showing the raw code. Now
-      // lookupFailedLinkIds records which items had this failure so the UI can show an error.
+      // lookupFailedCodingKeys records which individual codings had this failure so the UI can
+      // show a bracketed fallback label per option (e.g. "[133932002]") and an amber warning.
       const answerOptions = {
         'carer-type': [
           { valueCoding: { system: 'http://snomed.info/sct', code: '133932002' } }, // no display
@@ -246,7 +247,7 @@ describe('addDisplayToCodings - Phase 5', () => {
       const mockRequest = jest.fn().mockRejectedValue(new Error('Network Error'));
       mockClient.mockReturnValue({ request: mockRequest } as any);
 
-      const { answerOptions: result, lookupFailedLinkIds } = await addDisplayToAnswerOptions(
+      const { answerOptions: result, lookupFailedCodingKeys } = await addDisplayToAnswerOptions(
         answerOptions,
         'http://terminology.hl7.org/fhir'
       );
@@ -257,22 +258,23 @@ describe('addDisplayToCodings - Phase 5', () => {
       // Item with existing display is unaffected
       expect(result['relationship-type'][0].valueCoding?.display).toBe('Mother');
 
-      // The linkId whose lookup failed is tracked so the UI can warn the user
-      expect(lookupFailedLinkIds.has('carer-type')).toBe(true);
-      // Items that already had displays and didn't need a lookup are NOT flagged
-      expect(lookupFailedLinkIds.has('relationship-type')).toBe(false);
+      // Each failing coding is tracked individually by its system|code key
+      expect(lookupFailedCodingKeys.has('http://snomed.info/sct|133932002')).toBe(true);
+      expect(lookupFailedCodingKeys.has('http://snomed.info/sct|394738000')).toBe(true);
+      // Codings that already had displays and didn't need a lookup are NOT flagged
+      expect(lookupFailedCodingKeys.has('http://snomed.info/sct|72705000')).toBe(false);
     });
 
     it('should handle empty answer options', async () => {
       const answerOptions = {};
 
-      const { answerOptions: result, lookupFailedLinkIds } = await addDisplayToAnswerOptions(
+      const { answerOptions: result, lookupFailedCodingKeys } = await addDisplayToAnswerOptions(
         answerOptions,
         'http://terminology.hl7.org/fhir'
       );
 
       expect(result).toEqual({});
-      expect(lookupFailedLinkIds.size).toBe(0);
+      expect(lookupFailedCodingKeys.size).toBe(0);
       expect(mockClient).not.toHaveBeenCalled();
     });
 
@@ -281,13 +283,13 @@ describe('addDisplayToCodings - Phase 5', () => {
         item1: []
       };
 
-      const { answerOptions: result, lookupFailedLinkIds } = await addDisplayToAnswerOptions(
+      const { answerOptions: result, lookupFailedCodingKeys } = await addDisplayToAnswerOptions(
         answerOptions,
         'http://terminology.hl7.org/fhir'
       );
 
       expect(result).toEqual(answerOptions);
-      expect(lookupFailedLinkIds.size).toBe(0);
+      expect(lookupFailedCodingKeys.size).toBe(0);
       expect(mockClient).not.toHaveBeenCalled();
     });
   });

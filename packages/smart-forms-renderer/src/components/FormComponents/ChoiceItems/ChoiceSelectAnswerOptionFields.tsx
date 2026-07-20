@@ -19,9 +19,6 @@ import React from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
 import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
-import Typography from '@mui/material/Typography';
-// @ts-ignore: Module has no declaration file
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type {
   PropsWithIsTabledAttribute,
@@ -35,7 +32,6 @@ import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon'
 import { StandardTextField } from '../Textfield.styles';
 import StyledText from '../ItemParts/StyledText';
 import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
-import { StyledAlert } from '../../Alert.styles';
 
 interface ChoiceSelectAnswerOptionFieldsProps
   extends PropsWithIsTabledAttribute,
@@ -69,7 +65,27 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
   const answerOptionsLookupFailures = useQuestionnaireStore.use.answerOptionsLookupFailures();
-  const lookupFailed = answerOptionsLookupFailures.has(qItem.linkId);
+
+  // Derive per-field failure flag and a label getter that shows [code] for any option
+  // whose display couldn't be resolved, keeping successfully-resolved options unchanged.
+  const hasLookupFailure = options.some(
+    (opt) =>
+      opt.valueCoding &&
+      !opt.valueCoding.display &&
+      answerOptionsLookupFailures.has(`${opt.valueCoding.system}|${opt.valueCoding.code}`)
+  );
+
+  function getLabelWithFallback(option: QuestionnaireItemAnswerOption | string): string {
+    if (typeof option === 'string') return option;
+    if (
+      option.valueCoding &&
+      !option.valueCoding.display &&
+      answerOptionsLookupFailures.has(`${option.valueCoding.system}|${option.valueCoding.code}`)
+    ) {
+      return `[${option.valueCoding.code}]`;
+    }
+    return getAnswerOptionLabel(option);
+  }
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
@@ -78,19 +94,6 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
   // Keep track of current selected value when input is changed
   const [currentValueSelect, setCurrentValueSelect] =
     React.useState<QuestionnaireItemAnswerOption | null>(valueSelect);
-
-  // Terminology server could not resolve displays for this item's answerOptions — show the same
-  // StyledAlert pattern used by answerValueSet fields to keep the UI consistent.
-  if (lookupFailed) {
-    return (
-      <StyledAlert color="error">
-        <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-        <Typography component="div">
-          Unable to load option labels — terminology server may be unavailable
-        </Typography>
-      </StyledAlert>
-    );
-  }
 
   return (
     <FormControl
@@ -106,7 +109,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
         value={valueSelect ?? null}
         options={options}
         getOptionDisabled={(option) => isOptionDisabled(option, answerOptionsToggleExpressionsMap)}
-        getOptionLabel={(option) => getAnswerOptionLabel(option)}
+        getOptionLabel={(option) => getLabelWithFallback(option)}
         isOptionEqualToValue={(option, value) => compareAnswerOptionValue(option, value)}
         onChange={(_, newValue) => {
           onSelectChange(newValue);
@@ -117,7 +120,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
           if (!inputValue && valueSelect && reason !== 'clear') {
             // Convert current input value to be the current value plus additional input
             onSelectChange(null);
-            setInputValue(getAnswerOptionLabel(valueSelect) + newInputValue);
+            setInputValue(getLabelWithFallback(valueSelect) + newInputValue);
           } else {
             setInputValue(newInputValue);
           }
@@ -134,7 +137,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
             if (!inputValue && valueSelect) {
               // Convert current selection to input value on backspace when input is empty
               onSelectChange(null);
-              setInputValue(getAnswerOptionLabel(valueSelect));
+              setInputValue(getLabelWithFallback(valueSelect));
             }
           }
         }}
@@ -194,11 +197,11 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
               <span>
                 {option.valueString ? (
                   <StyledText
-                    textToDisplay={getAnswerOptionLabel(option)}
+                    textToDisplay={getLabelWithFallback(option)}
                     element={option._valueString}
                   />
                 ) : (
-                  getAnswerOptionLabel(option)
+                  getLabelWithFallback(option)
                 )}
               </span>
             </li>
@@ -212,17 +215,24 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
             <span {...rest} style={{ paddingLeft: '8.5px' }}>
               {value.valueString && selectedOption ? (
                 <StyledText
-                  textToDisplay={getAnswerOptionLabel(value)}
+                  textToDisplay={getLabelWithFallback(value)}
                   element={selectedOption._valueString}
                 />
               ) : (
-                getAnswerOptionLabel(value)
+                getLabelWithFallback(value)
               )}
             </span>
           );
         }}
       />
 
+      {hasLookupFailure ? (
+        <FormHelperText sx={{ color: 'warning.main' }}>
+          <AccessibleFeedback>
+            Some option labels could not be loaded — terminology server may be unavailable
+          </AccessibleFeedback>
+        </FormHelperText>
+      ) : null}
       {feedback ? (
         <FormHelperText>
           <AccessibleFeedback>{feedback}</AccessibleFeedback>

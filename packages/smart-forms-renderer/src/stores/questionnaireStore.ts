@@ -129,7 +129,7 @@ export interface QuestionnaireStoreType {
   enableWhenIsActivated: boolean;
   enableWhenExpressions: EnableWhenExpressions;
   answerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
-  /** linkIds whose answerOption codings had no display and whose $lookup call failed */
+  /** Per-coding keys (`${system}|${code}`) where $lookup failed — options can show a fallback label */
   answerOptionsLookupFailures: Set<string>;
   processedValueSets: Record<string, ProcessedValueSet>;
   cachedValueSetCodings: Record<string, Coding[]>;
