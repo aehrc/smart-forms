@@ -23,6 +23,7 @@ interface ChoiceRadioAnswerOptionFieldsProps {
   options: QuestionnaireItemAnswerOption[];
   valueRadio: string | null;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   readOnly: boolean;
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
@@ -38,6 +39,7 @@ function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps
     options,
     valueRadio,
     feedback,
+    feedbackSeverity,
     readOnly,
     expressionUpdated,
     answerOptionsToggleExpressionsMap,
@@ -53,6 +55,7 @@ function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps
       options={options}
       valueRadio={valueRadio}
       feedback={feedback}
+      feedbackSeverity={feedbackSeverity}
       readOnly={readOnly}
       expressionUpdated={expressionUpdated}
       answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}

@@ -17,7 +17,7 @@
 
 import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 import useReadOnly from '../../../hooks/useReadOnly';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useValidationFeedbackSeverity from '../../../hooks/useValidationFeedbackSeverity';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
 import { updateChoiceCheckboxAnswers } from '../../../utils/choice';
@@ -57,7 +57,7 @@ function ChoiceCheckboxAnswerOptionItem(props: BaseItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, feedbackFromParent);
+  const { feedback, feedbackSeverity } = useValidationFeedbackSeverity(qItem, feedbackFromParent);
   const instructionsId = getInstructionsId(qItem, displayInstructions, !!feedback);
 
   const options = qItem.answerOption ?? [];
@@ -95,6 +95,7 @@ function ChoiceCheckboxAnswerOptionItem(props: BaseItemProps) {
           options={options}
           answers={answers}
           feedback={feedback}
+          feedbackSeverity={feedbackSeverity}
           readOnly={readOnly}
           expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
           answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
@@ -124,6 +125,7 @@ function ChoiceCheckboxAnswerOptionItem(props: BaseItemProps) {
             options={options}
             answers={answers}
             feedback={feedback}
+            feedbackSeverity={feedbackSeverity}
             readOnly={readOnly}
             expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}

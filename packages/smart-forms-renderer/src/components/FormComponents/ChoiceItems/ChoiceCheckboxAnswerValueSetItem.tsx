@@ -18,7 +18,7 @@
 import { useMemo } from 'react';
 import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 import useReadOnly from '../../../hooks/useReadOnly';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useValidationFeedbackSeverity from '../../../hooks/useValidationFeedbackSeverity';
 import useValueSetCodings from '../../../hooks/useValueSetCodings';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
@@ -55,7 +55,7 @@ function ChoiceCheckboxAnswerValueSetItem(props: BaseItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, feedbackFromParent);
+  const { feedback, feedbackSeverity } = useValidationFeedbackSeverity(qItem, feedbackFromParent);
   const instructionsId = getInstructionsId(qItem, displayInstructions, !!feedback);
 
   // Get codings/options from valueSet
@@ -101,6 +101,7 @@ function ChoiceCheckboxAnswerValueSetItem(props: BaseItemProps) {
           options={options}
           answers={answers}
           feedback={feedback}
+          feedbackSeverity={feedbackSeverity}
           readOnly={readOnly}
           expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
           answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
@@ -131,6 +132,7 @@ function ChoiceCheckboxAnswerValueSetItem(props: BaseItemProps) {
             options={options}
             answers={answers}
             feedback={feedback}
+            feedbackSeverity={feedbackSeverity}
             readOnly={readOnly}
             expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}

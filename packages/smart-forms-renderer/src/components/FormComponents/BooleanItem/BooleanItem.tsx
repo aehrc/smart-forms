@@ -17,7 +17,7 @@
 
 import Box from '@mui/material/Box';
 import useReadOnly from '../../../hooks/useReadOnly';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useValidationFeedbackSeverity from '../../../hooks/useValidationFeedbackSeverity';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
 import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
@@ -44,7 +44,7 @@ function BooleanItem(props: BaseItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks - there's no string-based input here
-  const feedback = useValidationFeedback(qItem, feedbackFromParent);
+  const { feedback, feedbackSeverity } = useValidationFeedbackSeverity(qItem, feedbackFromParent);
 
   // Get instructions ID for aria-describedby
   const { displayInstructions } = useRenderingExtensions(qItem);
@@ -90,6 +90,7 @@ function BooleanItem(props: BaseItemProps) {
           readOnly={readOnly}
           valueBoolean={valueBoolean}
           feedback={feedback}
+          feedbackSeverity={feedbackSeverity}
           calcExpUpdated={calcExpUpdated}
           instructionsId={instructionsId}
           onCheckedChange={handleValueChange}
@@ -106,6 +107,7 @@ function BooleanItem(props: BaseItemProps) {
         readOnly={readOnly}
         valueBoolean={valueBoolean}
         feedback={feedback}
+        feedbackSeverity={feedbackSeverity}
         calcExpUpdated={calcExpUpdated}
         instructionsId={instructionsId}
         onCheckedChange={handleValueChange}
@@ -130,6 +132,7 @@ function BooleanItem(props: BaseItemProps) {
             readOnly={readOnly}
             valueBoolean={valueBoolean}
             feedback={feedback}
+            feedbackSeverity={feedbackSeverity}
             calcExpUpdated={calcExpUpdated}
             instructionsId={instructionsId}
             onCheckedChange={handleValueChange}

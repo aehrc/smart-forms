@@ -19,6 +19,7 @@ interface ChoiceCheckboxFormGroupProps {
   options: QuestionnaireItemAnswerOption[];
   answers: QuestionnaireResponseItemAnswer[];
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   readOnly: boolean;
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
@@ -35,6 +36,7 @@ function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
     options,
     answers,
     feedback,
+    feedbackSeverity,
     readOnly,
     expressionUpdated,
     answerOptionsToggleExpressionsMap,
@@ -94,7 +96,12 @@ function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
         <ClearInputButton buttonShown={!answersEmpty} readOnly={readOnly} onClear={onClear} />
       </Box>
 
-      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
+      {feedback ? (
+        <StyledRequiredTypography
+          sx={feedbackSeverity === 'warning' ? { color: 'warning.main' } : undefined}>
+          {feedback}
+        </StyledRequiredTypography>
+      ) : null}
     </>
   );
 }

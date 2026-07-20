@@ -43,6 +43,7 @@ interface OpenChoiceSelectAnswerValueSetFieldProps
   valueSelect: Coding | string | null;
   terminologyError: TerminologyError;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   readOnly: boolean;
   calcExpUpdated: boolean;
   instructionsId?: string;
@@ -59,6 +60,7 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
     valueSelect,
     terminologyError,
     feedback,
+    feedbackSeverity,
     readOnly,
     calcExpUpdated,
     instructionsId,
@@ -74,7 +76,7 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
 
   return (
     <FormControl
-      error={!!feedback}
+      error={!!feedback && feedbackSeverity !== 'warning'}
       sx={{
         width: '100%',
         maxWidth: !isTabled ? textFieldWidth : 3000,
@@ -101,7 +103,7 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
             multiline
             textFieldWidth={textFieldWidth}
             isTabled={isTabled}
-            error={!!feedback}
+            error={!!feedback && feedbackSeverity !== 'warning'}
             placeholder={entryFormat || displayPrompt}
             {...params}
             slotProps={{
@@ -135,7 +137,7 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
       ) : null}
 
       {feedback ? (
-        <FormHelperText>
+        <FormHelperText sx={feedbackSeverity === 'warning' ? { color: 'warning.main' } : undefined}>
           <AccessibleFeedback>{feedback}</AccessibleFeedback>
         </FormHelperText>
       ) : null}

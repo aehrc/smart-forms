@@ -27,6 +27,7 @@ interface ChoiceRadioAnswerOptionViewProps extends PropsWithIsRepeatedAttribute 
   options: QuestionnaireItemAnswerOption[];
   valueChoice: string | null;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   readOnly: boolean;
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
@@ -43,6 +44,7 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
     options,
     valueChoice,
     feedback,
+    feedbackSeverity,
     isRepeated,
     readOnly,
     expressionUpdated,
@@ -61,6 +63,7 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
         options={options}
         valueRadio={valueChoice}
         feedback={feedback}
+        feedbackSeverity={feedbackSeverity}
         readOnly={readOnly}
         expressionUpdated={expressionUpdated}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
@@ -88,6 +91,7 @@ function ChoiceRadioAnswerOptionView(props: ChoiceRadioAnswerOptionViewProps) {
             options={options}
             valueRadio={valueChoice}
             feedback={feedback}
+            feedbackSeverity={feedbackSeverity}
             readOnly={readOnly}
             expressionUpdated={expressionUpdated}
             answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}

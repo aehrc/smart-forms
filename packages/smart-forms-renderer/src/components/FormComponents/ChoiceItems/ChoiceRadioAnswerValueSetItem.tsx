@@ -18,7 +18,7 @@
 import { useMemo } from 'react';
 import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 import useReadOnly from '../../../hooks/useReadOnly';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useValidationFeedbackSeverity from '../../../hooks/useValidationFeedbackSeverity';
 import useValueSetCodings from '../../../hooks/useValueSetCodings';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
@@ -62,7 +62,7 @@ function ChoiceRadioAnswerValueSetItem(props: BaseItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks - there's no string-based input here
-  const feedback = useValidationFeedback(qItem, feedbackFromParent);
+  const { feedback, feedbackSeverity } = useValidationFeedbackSeverity(qItem, feedbackFromParent);
   const { displayInstructions } = renderingExtensions;
   const instructionsId =
     displayInstructions && !feedback ? `instructions-${qItem.linkId}` : undefined;
@@ -94,6 +94,7 @@ function ChoiceRadioAnswerValueSetItem(props: BaseItemProps) {
         options={options}
         valueRadio={valueRadio}
         feedback={feedback}
+        feedbackSeverity={feedbackSeverity}
         readOnly={readOnly}
         expressionUpdated={calcExpUpdated || dynamicCodingsUpdated || answerOptionsToggleExpUpdated}
         answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
@@ -122,6 +123,7 @@ function ChoiceRadioAnswerValueSetItem(props: BaseItemProps) {
             options={options}
             valueRadio={valueRadio}
             feedback={feedback}
+            feedbackSeverity={feedbackSeverity}
             readOnly={readOnly}
             expressionUpdated={
               calcExpUpdated || dynamicCodingsUpdated || answerOptionsToggleExpUpdated
