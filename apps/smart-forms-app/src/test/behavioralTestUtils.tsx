@@ -38,12 +38,15 @@ export function BehavioralTestWrapper(props: BehavioralTestWrapperProps) {
   useEffect(() => {
     const load = async () => {
       setIsPopulating(true);
+      if (requestDefinitions && !patient) {
+        throw new Error('Patient must be provided when request definitions are provided');
+      }
 
-      if (patient && requestDefinitions) {
+      if (patient) {
         const result = await populateQuestionnaire({
           questionnaire: questionnaire,
           patient: patient,
-          fetchResourceCallback: buildFetchResourceCallback(requestDefinitions),
+          fetchResourceCallback: buildFetchResourceCallback(requestDefinitions ?? []),
           fetchResourceRequestConfig: { sourceServerUrl: 'http://mock.example' }
         });
 
