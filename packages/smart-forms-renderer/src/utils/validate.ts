@@ -43,6 +43,7 @@ import type { RegexValidation } from '../interfaces/regex.interface';
 import { parseDecimalStringToFloat } from './parseInputs';
 import dayjs from 'dayjs';
 import { questionnaireStore, rendererConfigStore } from '../stores';
+import { getValidationErrorKey } from './validateErrorKey';
 
 export enum ValidationResult {
   unknown = 'unknown', // Unknown validation result
@@ -238,7 +239,8 @@ export function validateQuestionnaireResponse(
       enableWhenItems,
       enableWhenExpressions,
       enableWhenAsReadOnly,
-      isRepeatGroupInstance: false
+      isRepeatGroupInstance: false,
+      repeatInstancePath: []
     });
 
     // Increment qrItemIndex
@@ -265,6 +267,8 @@ interface ValidateItemRecursiveParams {
   enableWhenAsReadOnly: boolean | Set<QuestionnaireItem['type']>;
   isRepeatGroupInstance: boolean;
   parentRepeatGroupIndex?: number;
+  // Path of enclosing repeating group instance indices, used to build instance-scoped error keys
+  repeatInstancePath: number[];
 }
 
 function validateItemRecursive(params: ValidateItemRecursiveParams) {
@@ -278,7 +282,8 @@ function validateItemRecursive(params: ValidateItemRecursiveParams) {
     enableWhenExpressions,
     enableWhenAsReadOnly,
     isRepeatGroupInstance,
-    parentRepeatGroupIndex
+    parentRepeatGroupIndex,
+    repeatInstancePath
   } = params;
   let { locationExpression } = params;
 
@@ -314,7 +319,8 @@ function validateItemRecursive(params: ValidateItemRecursiveParams) {
         enableWhenItems,
         enableWhenExpressions,
         enableWhenAsReadOnly,
-        isRepeatGroupInstance: false
+        isRepeatGroupInstance: false,
+        repeatInstancePath
       });
       return;
     }
@@ -333,13 +339,14 @@ function validateItemRecursive(params: ValidateItemRecursiveParams) {
     // Check if group is required and has no answers
     if (qItem.type === 'group' && qItem.required) {
       if (!qrItem.item || qrItem.item?.length === 0) {
-        invalidItems[qItem.linkId] = createValidationOperationOutcome(
+        const errorKey = getValidationErrorKey(qItem.linkId, repeatInstancePath);
+        invalidItems[errorKey] = createValidationOperationOutcome(
           ValidationResult.required,
           qItem,
           qrItem,
           null,
           locationExpression,
-          invalidItems[qItem.linkId]?.issue
+          invalidItems[errorKey]?.issue
         );
       }
     }
@@ -370,7 +377,9 @@ function validateItemRecursive(params: ValidateItemRecursiveParams) {
         enableWhenItems,
         enableWhenExpressions,
         enableWhenAsReadOnly,
-        isRepeatGroupInstance: false
+        isRepeatGroupInstance: false,
+        // Propagate the enclosing repeat instance path unchanged to descendants
+        repeatInstancePath
       });
     }
   }
@@ -381,7 +390,7 @@ function validateItemRecursive(params: ValidateItemRecursiveParams) {
   }
 
   // Validate the item, note that this can be either a group or a non-group
-  validateSingleItem(qItem, qrItem, invalidItems, locationExpression);
+  validateSingleItem(qItem, qrItem, invalidItems, locationExpression, repeatInstancePath);
 }
 
 function validateRepeatGroupRecursive(params: ValidateItemRecursiveParams) {
@@ -394,7 +403,8 @@ function validateRepeatGroupRecursive(params: ValidateItemRecursiveParams) {
     enableWhenIsActivated,
     enableWhenItems,
     enableWhenExpressions,
-    enableWhenAsReadOnly
+    enableWhenAsReadOnly,
+    repeatInstancePath
   } = params;
 
   if (!qItem.item || qItem.item.length === 0 || !qrItem.item || qrItem.item.length === 0) {
@@ -418,7 +428,9 @@ function validateRepeatGroupRecursive(params: ValidateItemRecursiveParams) {
       enableWhenExpressions,
       enableWhenAsReadOnly,
       isRepeatGroupInstance: true,
-      parentRepeatGroupIndex: index
+      parentRepeatGroupIndex: index,
+      // Append this instance's index to the path so its descendants get instance-scoped error keys
+      repeatInstancePath: [...repeatInstancePath, index]
     });
   }
 }
@@ -427,22 +439,25 @@ function validateSingleItem(
   qItem: QuestionnaireItem,
   qrItem: QuestionnaireResponseItem,
   invalidItems: Record<string, OperationOutcome>,
-  locationExpression: string
+  locationExpression: string,
+  repeatInstancePath: number[]
 ) {
   // Skip display items
   if (qItem.type === 'display') {
     return invalidItems;
   }
 
+  const errorKey = getValidationErrorKey(qItem.linkId, repeatInstancePath);
+
   // Validate item.required first before every other validation check
   if (qItem.required && (!qrItem.answer || isAnswerEffectivelyEmpty(qrItem.answer))) {
-    invalidItems[qItem.linkId] = createValidationOperationOutcome(
+    invalidItems[errorKey] = createValidationOperationOutcome(
       ValidationResult.required,
       qItem,
       qrItem,
       null,
       locationExpression,
-      invalidItems[qItem.linkId]?.issue
+      invalidItems[errorKey]?.issue
     );
 
     return invalidItems;
@@ -475,13 +490,13 @@ function validateSingleItem(
         });
 
         if (invalidInputType) {
-          invalidItems[qItem.linkId] = createValidationOperationOutcome(
+          invalidItems[errorKey] = createValidationOperationOutcome(
             invalidInputType,
             qItem,
             qrItem,
             i,
             locationExpression,
-            invalidItems[qItem.linkId]?.issue
+            invalidItems[errorKey]?.issue
           );
         } // if not invalid input types found
         else {

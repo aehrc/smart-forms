@@ -15,10 +15,11 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { RepeatGroupContainerStack } from '../RepeatItem/RepeatItem.styles';
 import Box from '@mui/material/Box';
 import GroupItem from '../GroupItem/GroupItem';
+import { RepeatGroupInstanceContext } from '../../../contexts/RepeatGroupInstanceContext';
 import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
@@ -54,27 +55,34 @@ function RepeatGroupItem(props: RepeatGroupItemProps) {
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly, repeatGroupIndex);
 
+  // Append this instance's index to the enclosing repeat instance path so that descendant
+  // items look up their own instance-scoped validation errors (see useValidationFeedback)
+  const parentRepeatInstancePath = useContext(RepeatGroupInstanceContext);
+  const repeatInstancePath = [...parentRepeatInstancePath, repeatGroupIndex];
+
   return (
-    <RepeatGroupContainerStack direction="row">
-      <Box sx={{ flexGrow: 1, overflowX: 'auto' }}>
-        <GroupItem
-          qItem={qItem}
-          qrItem={answeredQrItem}
-          isRepeated={true}
-          parentIsRepeatGroup={true}
-          parentRepeatGroupIndex={repeatGroupIndex}
-          parentIsReadOnly={parentIsReadOnly}
-          groupCardElevation={groupCardElevation}
-          onQrItemChange={onQrItemChange}
+    <RepeatGroupInstanceContext.Provider value={repeatInstancePath}>
+      <RepeatGroupContainerStack direction="row">
+        <Box sx={{ flexGrow: 1, overflowX: 'auto' }}>
+          <GroupItem
+            qItem={qItem}
+            qrItem={answeredQrItem}
+            isRepeated={true}
+            parentIsRepeatGroup={true}
+            parentRepeatGroupIndex={repeatGroupIndex}
+            parentIsReadOnly={parentIsReadOnly}
+            groupCardElevation={groupCardElevation}
+            onQrItemChange={onQrItemChange}
+          />
+        </Box>
+        <RemoveItemButton
+          nullableQrItem={nullableQrItem}
+          numOfRepeatGroups={numOfRepeatGroups}
+          readOnly={readOnly}
+          onRemoveItem={onRemoveItem}
         />
-      </Box>
-      <RemoveItemButton
-        nullableQrItem={nullableQrItem}
-        numOfRepeatGroups={numOfRepeatGroups}
-        readOnly={readOnly}
-        onRemoveItem={onRemoveItem}
-      />
-    </RepeatGroupContainerStack>
+      </RepeatGroupContainerStack>
+    </RepeatGroupInstanceContext.Provider>
   );
 }
 
