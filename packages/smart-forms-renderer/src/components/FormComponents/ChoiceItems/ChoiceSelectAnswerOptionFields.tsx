@@ -24,7 +24,7 @@ import type {
   PropsWithIsTabledAttribute,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
-import { useRendererConfigStore } from '../../../stores';
+import { useQuestionnaireStore, useRendererConfigStore } from '../../../stores';
 import { compareAnswerOptionValue, isOptionDisabled } from '../../../utils/choice';
 import { getAnswerOptionLabel } from '../../../utils/openChoice';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
@@ -64,6 +64,28 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
+  const answerOptionsLookupFailures = useQuestionnaireStore.use.answerOptionsLookupFailures();
+
+  // Derive per-field failure flag and a label getter that shows [code] for any option
+  // whose display couldn't be resolved, keeping successfully-resolved options unchanged.
+  const hasLookupFailure = options.some(
+    (opt) =>
+      opt.valueCoding &&
+      !opt.valueCoding.display &&
+      answerOptionsLookupFailures.has(`${opt.valueCoding.system}|${opt.valueCoding.code}`)
+  );
+
+  function getLabelWithFallback(option: QuestionnaireItemAnswerOption | string): string {
+    if (typeof option === 'string') return option;
+    if (
+      option.valueCoding &&
+      !option.valueCoding.display &&
+      answerOptionsLookupFailures.has(`${option.valueCoding.system}|${option.valueCoding.code}`)
+    ) {
+      return `[${option.valueCoding.code}]`;
+    }
+    return getAnswerOptionLabel(option);
+  }
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
@@ -87,7 +109,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
         value={valueSelect ?? null}
         options={options}
         getOptionDisabled={(option) => isOptionDisabled(option, answerOptionsToggleExpressionsMap)}
-        getOptionLabel={(option) => getAnswerOptionLabel(option)}
+        getOptionLabel={(option) => getLabelWithFallback(option)}
         isOptionEqualToValue={(option, value) => compareAnswerOptionValue(option, value)}
         onChange={(_, newValue) => {
           onSelectChange(newValue);
@@ -98,7 +120,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
           if (!inputValue && valueSelect && reason !== 'clear') {
             // Convert current input value to be the current value plus additional input
             onSelectChange(null);
-            setInputValue(getAnswerOptionLabel(valueSelect) + newInputValue);
+            setInputValue(getLabelWithFallback(valueSelect) + newInputValue);
           } else {
             setInputValue(newInputValue);
           }
@@ -115,7 +137,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
             if (!inputValue && valueSelect) {
               // Convert current selection to input value on backspace when input is empty
               onSelectChange(null);
-              setInputValue(getAnswerOptionLabel(valueSelect));
+              setInputValue(getLabelWithFallback(valueSelect));
             }
           }
         }}
@@ -175,11 +197,11 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
               <span>
                 {option.valueString ? (
                   <StyledText
-                    textToDisplay={getAnswerOptionLabel(option)}
+                    textToDisplay={getLabelWithFallback(option)}
                     element={option._valueString}
                   />
                 ) : (
-                  getAnswerOptionLabel(option)
+                  getLabelWithFallback(option)
                 )}
               </span>
             </li>
@@ -193,17 +215,24 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
             <span {...rest} style={{ paddingLeft: '8.5px' }}>
               {value.valueString && selectedOption ? (
                 <StyledText
-                  textToDisplay={getAnswerOptionLabel(value)}
+                  textToDisplay={getLabelWithFallback(value)}
                   element={selectedOption._valueString}
                 />
               ) : (
-                getAnswerOptionLabel(value)
+                getLabelWithFallback(value)
               )}
             </span>
           );
         }}
       />
 
+      {hasLookupFailure ? (
+        <FormHelperText sx={{ color: 'warning.main' }}>
+          <AccessibleFeedback>
+            Some option labels could not be loaded — terminology server may be unavailable
+          </AccessibleFeedback>
+        </FormHelperText>
+      ) : null}
       {feedback ? (
         <FormHelperText>
           <AccessibleFeedback>{feedback}</AccessibleFeedback>
