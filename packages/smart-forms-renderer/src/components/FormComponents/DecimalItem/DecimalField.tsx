@@ -30,6 +30,7 @@ interface DecimalFieldProps extends PropsWithIsTabledAttribute {
   qItem: QuestionnaireItem;
   input: string;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   renderingExtensions: RenderingExtensions;
   readOnly: boolean;
   calcExpUpdated: boolean;
@@ -43,6 +44,7 @@ function DecimalField(props: DecimalFieldProps) {
     qItem,
     input,
     feedback,
+    feedbackSeverity,
     renderingExtensions,
     readOnly,
     calcExpUpdated,
@@ -75,7 +77,7 @@ function DecimalField(props: DecimalFieldProps) {
     <StandardTextField
       id={inputId}
       value={input}
-      error={!!feedback}
+      error={!!feedback && feedbackSeverity !== 'warning'}
       helperText={feedback}
       onChange={(event) => onInputChange(event.target.value)}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
@@ -90,6 +92,9 @@ function DecimalField(props: DecimalFieldProps) {
           pattern: '[0-9]*',
           ...(ariaLabel && { 'aria-label': ariaLabel }),
           ...(instructionsId && { 'aria-describedby': instructionsId })
+        },
+        formHelperText: {
+          sx: feedbackSeverity === 'warning' && !!feedback ? { color: 'warning.main' } : undefined
         },
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',

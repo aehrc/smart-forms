@@ -15,6 +15,7 @@ interface ChoiceRadioGroupProps {
   options: QuestionnaireItemAnswerOption[];
   valueRadio: string | null;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   readOnly: boolean;
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
@@ -31,6 +32,7 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
     options,
     valueRadio,
     feedback,
+    feedbackSeverity,
     readOnly,
     expressionUpdated,
     answerOptionsToggleExpressionsMap,
@@ -99,7 +101,12 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
         <ClearInputButton buttonShown={!!valueRadio} readOnly={readOnly} onClear={onClear} />
       </Box>
 
-      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
+      {feedback ? (
+        <StyledRequiredTypography
+          sx={feedbackSeverity === 'warning' ? { color: 'warning.main' } : undefined}>
+          {feedback}
+        </StyledRequiredTypography>
+      ) : null}
     </>
   );
 }
