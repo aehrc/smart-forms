@@ -313,6 +313,88 @@ describe('assemble', () => {
     expect(assembledQuestionnaire.item?.[0]?.item?.[1]?.linkId).toBe('medical-history');
   });
 
+  it('should preserve regular items mixed alongside a subquestionnaire placeholder', async () => {
+    // A form group that mixes a regular question (index 0) with a subQuestionnaire placeholder
+    // (index 1). getItems() returns a compact list with a single entry (index 0), so without
+    // aligning it to the parent item positions the child items land on the regular question —
+    // dropping it — while the placeholder at index 1 is left unresolved.
+    const mixedQuestionnaire: Questionnaire = {
+      resourceType: 'Questionnaire',
+      id: 'mixed-subq',
+      status: 'draft',
+      version: '1.0.0',
+      url: 'http://example.com/assessments/test/1',
+      meta: {
+        profile: ['http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-modular']
+      },
+      item: [
+        {
+          linkId: 'root-group',
+          type: 'group',
+          item: [
+            {
+              linkId: 'manifestation',
+              type: 'choice',
+              text: 'Manifestation'
+            },
+            {
+              linkId: 'begin-ref',
+              type: 'display',
+              extension: [
+                {
+                  url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire',
+                  valueCanonical: 'http://example.com/assessments/test/1/ManifestationBegin|1.0.0'
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+
+    const beginSubquestionnaire: Questionnaire = {
+      resourceType: 'Questionnaire',
+      id: 'manifestation-begin',
+      status: 'draft',
+      version: '1.0.0',
+      url: 'http://example.com/assessments/test/1/ManifestationBegin',
+      item: [
+        { linkId: 'beginUnknown', type: 'boolean', text: 'Onset unknown' },
+        { linkId: 'beginDate', type: 'date', text: 'Onset date' }
+      ]
+    };
+
+    const inputParameters = createInputParameters(mixedQuestionnaire);
+
+    mockFetchSubquestionnaires.mockResolvedValue([beginSubquestionnaire]);
+
+    const result = await assemble(
+      inputParameters,
+      mockFetchQuestionnaireCallback,
+      mockFetchQuestionnaireCallbackConfig
+    );
+
+    expect(result.resourceType).toBe('Questionnaire');
+    const assembledQuestionnaire = result as Questionnaire;
+
+    const assembledItems = assembledQuestionnaire.item?.[0]?.item;
+    // The regular manifestation question is kept in place; the placeholder is replaced by the
+    // subquestionnaire's items (in order), with no leftover subQuestionnaire placeholder.
+    expect(assembledItems?.map((item) => item.linkId)).toEqual([
+      'manifestation',
+      'beginUnknown',
+      'beginDate'
+    ]);
+    const hasUnresolvedPlaceholder = assembledItems?.some((item) =>
+      item.extension?.some(
+        (ext) =>
+          ext.url ===
+          'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire'
+      )
+    );
+    expect(hasUnresolvedPlaceholder).toBe(false);
+  });
+
   it('should propagate contained resources from subquestionnaires', async () => {
     const rootQuestionnaire = createBaseQuestionnaire();
 
