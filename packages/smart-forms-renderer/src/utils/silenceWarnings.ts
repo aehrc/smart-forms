@@ -39,31 +39,3 @@ export function silenceAutocompleteTextareaWarning() {
     originalWarn(...args);
   };
 }
-
-/**
- * This function monkey-patches `console.error` to silence a specific warning from react-beautiful-dnd about a soon to be deprecated feature.
- * The project is sunsetted, so it is unlikely to be fixed.
- *
- * Monkey-patching console methods is not best practice as it hides important warnings/errors and make debugging harder.
- *
- * However, in this case:
- * - The warning only appears in development.
- * - The message cannot be actioned by us (it's internal to the library). See https://github.com/atlassian/react-beautiful-dnd/issues/2563
- * - It clutters the console without providing useful information.
- */
-export function silenceReactBeautifulDndError() {
-  const originalError = console.error;
-
-  console.error = (...args: any[]) => {
-    if (
-      typeof args[0] === 'string' &&
-      args[0].includes(
-        'Warning: Connect(Droppable): Support for defaultProps will be removed from memo components in a future major release.'
-      )
-    ) {
-      // ignore this warning
-      return;
-    }
-    originalError(...args);
-  };
-}

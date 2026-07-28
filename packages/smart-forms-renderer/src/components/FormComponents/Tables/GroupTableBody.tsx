@@ -21,8 +21,8 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import type { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
 import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 import GroupTableRow from './GroupTableRow';
-import type { DropResult } from 'react-beautiful-dnd';
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import type { DropResult } from '@hello-pangea/dnd';
+import { DragDropContext, Droppable } from '@hello-pangea/dnd';
 import { reorderRows } from '../../../utils/groupTable';
 import TableBody from '@mui/material/TableBody';
 
