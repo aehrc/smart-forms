@@ -1,6 +1,3 @@
-// Import self-host typography Inter font
-import '@fontsource/inter';
-
 // interface exports
 export type {
   Tab,
