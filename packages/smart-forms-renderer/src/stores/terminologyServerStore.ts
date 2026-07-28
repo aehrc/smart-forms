@@ -34,7 +34,9 @@ import type { FetchTerminologyCallback } from '@aehrc/sdc-populate';
  *   parsed JSON body of the response, and reject on a transport or HTTP error.
  *   This is the same callback shape `@aehrc/sdc-populate` accepts, so one implementation can serve both.
  *
- * @property requestTimeoutMs - How long a single terminology request may take before it is abandoned.
+ * @property requestTimeoutMs - How long a value set expansion may take during form build before it
+ *   is abandoned. Applies only to the batch `$expand` of `answerValueSet` bindings; `$validate-code`
+ *   and `CodeSystem/$lookup` are not timed.
  *   - Default: `5000`
  */
 export interface TerminologyRequestOptions {
@@ -49,7 +51,7 @@ export interface TerminologyRequestOptions {
  *
  * @property url - The current terminology server URL
  * @property fetchTerminologyCallback - The injected terminology transport, or `null` to use the built-in `fhirclient` one
- * @property requestTimeoutMs - The timeout applied to a single terminology request, in milliseconds
+ * @property requestTimeoutMs - The timeout applied to build-time batch value set expansion, in milliseconds
  * @property setUrl - Set the terminology server URL
  * @property resetUrl - Reset the terminology server URL to the default
  * @property setRequestOptions - Set one or more terminology request options, leaving the rest untouched
