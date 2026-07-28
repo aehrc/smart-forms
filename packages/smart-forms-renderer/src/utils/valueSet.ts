@@ -26,7 +26,6 @@ import type {
   QuestionnaireItem,
   ValueSet
 } from 'fhir/r4';
-import { client } from 'fhirclient';
 import type { FhirResourceString } from '../interfaces/populate.interface';
 import type { VariableXFhirQuery } from '../interfaces/variables.interface';
 import type {
@@ -35,6 +34,7 @@ import type {
   ValueSetPromise
 } from '../interfaces/valueSet.interface';
 import { getRelevantCodingProperties } from './choice';
+import { getTerminologyRequestTimeoutMs, terminologyRequest } from './terminologyRequest';
 
 const VALID_VALUE_SET_URL_REGEX =
   /https?:\/\/(www\.)?[-\w@:%.+~#=]{2,256}\.[a-z]{2,4}\b([-@\w:%+.~#?&/=]*ValueSet[-@\w:%+.~#?&/=]*)/;
@@ -66,9 +66,7 @@ export function getValueSetPromise(url: string, terminologyServerUrl: string): P
 
   valueSetUrl = valueSetUrl.replace('|', '&version=');
 
-  return client({ serverUrl: terminologyServerUrl }).request({
-    url: 'ValueSet/$expand?url=' + valueSetUrl
-  });
+  return terminologyRequest('ValueSet/$expand?url=' + valueSetUrl, terminologyServerUrl);
 }
 
 function validateCodeResponseIsValid(response: any): response is ValidateCodeResponse {
@@ -91,9 +89,10 @@ export async function validateCodePromise(
   code: string,
   terminologyServerUrl: string
 ): Promise<ValidateCodeResponse | null> {
-  const validateCodeResponse = await client({ serverUrl: terminologyServerUrl }).request({
-    url: `ValueSet/$validate-code?url=${url}&system=${system}&code=${code}`
-  });
+  const validateCodeResponse = await terminologyRequest(
+    `ValueSet/$validate-code?url=${url}&system=${system}&code=${code}`,
+    terminologyServerUrl
+  );
 
   if (validateCodeResponse && validateCodeResponseIsValid(validateCodeResponse)) {
     return validateCodeResponse;
@@ -121,7 +120,7 @@ export async function resolveValueSetPromises(
   const valueSetPromiseKeys = Object.keys(valueSetPromises);
   const valueSetPromiseValues = Object.values(valueSetPromises);
 
-  const timeoutMs = 5000;
+  const timeoutMs = getTerminologyRequestTimeoutMs();
   const promises = valueSetPromiseValues.map((valueSetPromise) =>
     addTimeoutToPromise(valueSetPromise.promise, timeoutMs)
   );

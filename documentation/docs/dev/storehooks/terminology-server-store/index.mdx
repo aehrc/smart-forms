@@ -7,6 +7,8 @@ sidebar_position: 5
 The TerminologyServerStore exposes the following properties:
 
 - **url**
+- **fetchTerminologyCallback**
+- **requestTimeoutMs**
 
 Here's how you use the store hook in your React functional component:
 
@@ -23,5 +25,45 @@ function App() {
 ```
 
 There are some live examples on the following pages that demonstrate how to use the hooks.
+
+## Supplying your own terminology transport
+
+By default the renderer makes its terminology requests (`ValueSet/$expand`, `ValueSet/$validate-code`
+and `CodeSystem/$lookup`) with the built-in [fhirclient](https://github.com/smart-on-fhir/client-js)
+transport, which needs a browser `fetch`. If you are hosting the renderer somewhere that cannot use it,
+React Native for example, or you need to add authentication headers or your own caching, supply a
+`fetchTerminologyCallback` once at startup and every terminology request will go through it instead:
+
+```ts
+import { terminologyServerStore } from '@aehrc/smart-forms-renderer';
+import type { FetchTerminologyCallback } from '@aehrc/smart-forms-renderer';
+
+const fetchTerminologyCallback: FetchTerminologyCallback = async (query, requestConfig) => {
+  const { terminologyServerUrl } = requestConfig;
+  const baseUrl = terminologyServerUrl.endsWith('/')
+    ? terminologyServerUrl
+    : `${terminologyServerUrl}/`;
+
+  const response = await myHttpClient.get(`${baseUrl}${query}`);
+  return response.json();
+};
+
+terminologyServerStore.getState().setRequestOptions({
+  fetchTerminologyCallback,
+  requestTimeoutMs: 20000
+});
+```
+
+`query` is the request relative to the terminology server, for example
+`ValueSet/$expand?url=http://example.com/ValueSet/test`, and the callback must resolve with the parsed
+JSON body and reject on a transport or HTTP error. This is the same callback shape
+`@aehrc/sdc-populate`'s `populateQuestionnaire()` accepts, so one implementation can serve both.
+
+`requestTimeoutMs` sets how long a single terminology request may take before it is abandoned, which
+defaults to 5000. Raise it for slower networks such as mobile.
+
+Both options are optional and independent: leaving `fetchTerminologyCallback` unset keeps the built-in
+transport. `setRequestOptions()` only changes the options you pass, and `resetRequestOptions()` puts
+both back to their defaults.
 
 Refer to the [API Reference](/docs/api/smart-forms-renderer/interfaces/TerminologyServerStoreType) for more information on each property.

@@ -16,3 +16,7 @@
  */
 
 export const TERMINOLOGY_SERVER_URL = 'https://tx.ontoserver.csiro.au/fhir';
+
+// How long a single terminology request is allowed to take before it is abandoned.
+// Overridable via terminologyServerStore.setRequestOptions({ requestTimeoutMs }).
+export const TERMINOLOGY_REQUEST_TIMEOUT_MS = 5000;
