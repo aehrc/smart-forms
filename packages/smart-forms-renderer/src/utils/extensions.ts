@@ -24,8 +24,6 @@ import type {
 } from 'fhir/r4';
 import type { RegexValidation } from '../interfaces/regex.interface';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
-import { default as htmlParse } from 'html-react-parser';
-import type { JSX } from 'react';
 import { getInitialExpression } from './getExpressionsFromItem';
 
 export function hasDisplayCategory(qItem: QuestionnaireItem): boolean {
@@ -327,30 +325,41 @@ export function getTextDisplayInstructions(qItem: QuestionnaireItem): string {
 }
 
 /**
- * Get text display flyover for items with itemControlCode flyover and has an flyover childItem
- * Also works for XHTML rendering as a bonus
+ * Plain-data source of a flyover's display text, before any XHTML parsing.
+ * Exactly one of the two members carries the flyover, mirroring the precedence of
+ * rendering-xhtml over item.text.
+ */
+export interface TextDisplayFlyoverSource {
+  /** Raw XHTML string of the flyover childItem, or null when it has no rendering-xhtml extension. */
+  xHtmlString: string | null;
+  /** Plain text of the flyover childItem, or '' when there is no flyover childItem to show. */
+  text: string;
+}
+
+/**
+ * Get the text display flyover source for items with itemControlCode flyover and has an flyover childItem.
+ * This is the DOM-free half of the flyover lookup: it reads the extensions and returns plain data,
+ * leaving XHTML parsing to the UI layer (see getTextDisplayFlyover in hooks/useParseXhtml).
  *
  * @author Sean Fong
  */
-export function getTextDisplayFlyover(
-  qItem: QuestionnaireItem
-): string | JSX.Element | JSX.Element[] {
+export function getTextDisplayFlyoverSource(qItem: QuestionnaireItem): TextDisplayFlyoverSource {
   if (qItem.item) {
     for (const childItem of qItem.item) {
       if (childItem.type === 'display' && isSpecificItemControl(childItem, 'flyover')) {
         const xHtmlString = getXHtmlString(childItem);
         if (xHtmlString) {
-          return htmlParse(xHtmlString);
+          return { xHtmlString, text: '' };
         }
 
         if (typeof childItem.text === 'string') {
-          return childItem.text;
+          return { xHtmlString: null, text: childItem.text };
         }
       }
     }
   }
 
-  return '';
+  return { xHtmlString: null, text: '' };
 }
 
 /**

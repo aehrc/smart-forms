@@ -18,7 +18,104 @@
  * limitations under the License.
  */
 
-import { convertKebabToCamelCase, getStylesFromClass } from '../hooks/useParseXhtml';
+import {
+  convertKebabToCamelCase,
+  getStylesFromClass,
+  getTextDisplayFlyover
+} from '../hooks/useParseXhtml';
+import type { QuestionnaireItem } from 'fhir/r4';
+import React from 'react';
+
+describe('getTextDisplayFlyover', () => {
+  const ITEM_CONTROL_URL = 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl';
+
+  it('returns parsed xHtmlString when getXHtmlString returns a value', () => {
+    const qItem: QuestionnaireItem = {
+      linkId: 'q1',
+      type: 'group',
+      item: [
+        {
+          linkId: 'q1-child-flyover',
+          type: 'display',
+          text: 'flyover fallback text',
+          _text: {
+            extension: [
+              {
+                url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
+                valueString: '<div xmlns="http://www.w3.org/1999/xhtml">Flyover from XHTML</div>'
+              }
+            ]
+          },
+          extension: [
+            {
+              url: ITEM_CONTROL_URL,
+              valueCodeableConcept: {
+                coding: [
+                  {
+                    system: 'http://hl7.org/fhir/questionnaire-item-control',
+                    code: 'flyover'
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    };
+
+    const jsxResult = getTextDisplayFlyover(qItem);
+
+    // Ensure it's a valid React element
+    expect(React.isValidElement(jsxResult)).toBe(true);
+
+    // Check content of the React element
+    expect(jsxResult).toEqual(
+      React.createElement(
+        'div',
+        { xmlns: 'http://www.w3.org/1999/xhtml' } as any,
+        'Flyover from XHTML'
+      )
+    );
+  });
+
+  it('returns childItem.text if no XHTML string', () => {
+    const qItem: QuestionnaireItem = {
+      linkId: 'q1',
+      type: 'group',
+      item: [
+        {
+          linkId: 'q1-child-flyover',
+          type: 'display',
+          text: 'flyover plain text',
+          extension: [
+            {
+              url: ITEM_CONTROL_URL,
+              valueCodeableConcept: {
+                coding: [
+                  {
+                    system: 'http://hl7.org/fhir/questionnaire-item-control',
+                    code: 'flyover'
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    };
+
+    expect(getTextDisplayFlyover(qItem)).toBe('flyover plain text');
+  });
+
+  it('returns empty string if there is no flyover childItem', () => {
+    const qItem: QuestionnaireItem = {
+      linkId: 'q1',
+      type: 'group'
+    };
+
+    expect(getTextDisplayFlyover(qItem)).toBe('');
+  });
+});
 
 describe('convertKebabToCamelCase', () => {
   it('should convert kebab-case to camelCase', () => {

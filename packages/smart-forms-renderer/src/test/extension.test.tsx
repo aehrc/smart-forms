@@ -32,7 +32,7 @@ import {
   getRegexValidation,
   getRequiredFeedback,
   getShortText,
-  getTextDisplayFlyover,
+  getTextDisplayFlyoverSource,
   getTextDisplayInstructions,
   getTextDisplayLower,
   getTextDisplayPrompt,
@@ -48,7 +48,6 @@ import {
   shouldRenderNestedItems
 } from '../utils/extensions';
 import type { Extension, QuestionnaireItem } from 'fhir/r4';
-import React from 'react';
 
 describe('hasDisplayCategory', () => {
   const DISPLAY_CATEGORY_URL =
@@ -1126,10 +1125,10 @@ describe('getTextDisplayInstructions', () => {
   });
 });
 
-describe('getTextDisplayFlyover', () => {
+describe('getTextDisplayFlyoverSource', () => {
   const ITEM_CONTROL_URL = 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl';
 
-  it('returns parsed xHtmlString when getXHtmlString returns a value', () => {
+  it('returns the raw xHtmlString when getXHtmlString returns a value', () => {
     const qItem: QuestionnaireItem = {
       linkId: 'q1',
       type: 'group',
@@ -1163,19 +1162,11 @@ describe('getTextDisplayFlyover', () => {
       ]
     };
 
-    const jsxResult = getTextDisplayFlyover(qItem);
-
-    // Ensure it's a valid React element
-    expect(React.isValidElement(jsxResult)).toBe(true);
-
-    // Check content of the React element
-    expect(jsxResult).toEqual(
-      React.createElement(
-        'div',
-        { xmlns: 'http://www.w3.org/1999/xhtml' } as any,
-        'Flyover from XHTML'
-      )
-    );
+    // The extension reader stays DOM-free, so it hands back the unparsed markup
+    expect(getTextDisplayFlyoverSource(qItem)).toEqual({
+      xHtmlString: '<div xmlns="http://www.w3.org/1999/xhtml">Flyover from XHTML</div>',
+      text: ''
+    });
   });
 
   it('returns childItem.text if no XHTML string', () => {
@@ -1204,15 +1195,18 @@ describe('getTextDisplayFlyover', () => {
       ]
     };
 
-    expect(getTextDisplayFlyover(qItem)).toBe('flyover plain text');
+    expect(getTextDisplayFlyoverSource(qItem)).toEqual({
+      xHtmlString: null,
+      text: 'flyover plain text'
+    });
   });
 
-  it('returns empty string if there is no child item', () => {
+  it('returns empty text if there is no child item', () => {
     const qItem: QuestionnaireItem = {
       linkId: 'q1',
       type: 'group'
     };
-    expect(getTextDisplayFlyover(qItem)).toBe('');
+    expect(getTextDisplayFlyoverSource(qItem)).toEqual({ xHtmlString: null, text: '' });
   });
 
   it('handles item.text missing gracefully', () => {
@@ -1239,10 +1233,10 @@ describe('getTextDisplayFlyover', () => {
         }
       ]
     };
-    expect(getTextDisplayFlyover(qItem)).toBe('');
+    expect(getTextDisplayFlyoverSource(qItem)).toEqual({ xHtmlString: null, text: '' });
   });
 
-  it('returns empty string if display child type is not "display"', () => {
+  it('returns empty text if display child type is not "display"', () => {
     const qItem: QuestionnaireItem = {
       linkId: 'q1',
       type: 'group',
@@ -1267,7 +1261,7 @@ describe('getTextDisplayFlyover', () => {
         }
       ]
     };
-    expect(getTextDisplayFlyover(qItem)).toBe('');
+    expect(getTextDisplayFlyoverSource(qItem)).toEqual({ xHtmlString: null, text: '' });
   });
 });
 

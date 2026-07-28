@@ -15,9 +15,10 @@
  * limitations under the License.
  */
 
+import type { JSX } from 'react';
 import React, { useMemo } from 'react';
-import { getXHtmlStringFromExtension } from '../utils/extensions';
-import type { Element } from 'fhir/r4';
+import { getTextDisplayFlyoverSource, getXHtmlStringFromExtension } from '../utils/extensions';
+import type { Element, QuestionnaireItem } from 'fhir/r4';
 import type { HTMLReactParserOptions } from 'html-react-parser';
 import { attributesToProps, default as htmlParse, domToReact } from 'html-react-parser';
 import type { Attributes } from 'html-react-parser/lib/attributes-to-props';
@@ -25,6 +26,27 @@ import type { Attributes } from 'html-react-parser/lib/attributes-to-props';
 export interface ParsedXhtml {
   content: React.ReactNode;
   styles?: Record<string, string>;
+}
+
+/**
+ * Get text display flyover for items with itemControlCode flyover and has an flyover childItem
+ * Also works for XHTML rendering as a bonus
+ *
+ * The extension reading is done by getTextDisplayFlyoverSource in utils/extensions, which stays
+ * DOM-free; this wrapper adds the XHTML parsing, so it lives in the UI layer.
+ *
+ * @author Sean Fong
+ */
+export function getTextDisplayFlyover(
+  qItem: QuestionnaireItem
+): string | JSX.Element | JSX.Element[] {
+  const { xHtmlString, text } = getTextDisplayFlyoverSource(qItem);
+
+  if (xHtmlString) {
+    return htmlParse(xHtmlString);
+  }
+
+  return text;
 }
 
 export function useParseXhtml(
