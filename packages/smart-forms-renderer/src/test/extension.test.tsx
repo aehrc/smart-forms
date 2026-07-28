@@ -1263,6 +1263,43 @@ describe('getTextDisplayFlyoverSource', () => {
     };
     expect(getTextDisplayFlyoverSource(qItem)).toEqual({ xHtmlString: null, text: '' });
   });
+
+  it('falls through to a later flyover childItem when the first carries neither XHTML nor text', () => {
+    const flyoverExtension: Extension = {
+      url: ITEM_CONTROL_URL,
+      valueCodeableConcept: {
+        coding: [
+          {
+            system: 'http://hl7.org/fhir/questionnaire-item-control',
+            code: 'flyover'
+          }
+        ]
+      }
+    };
+
+    const qItem: QuestionnaireItem = {
+      linkId: 'q1',
+      type: 'group',
+      item: [
+        {
+          linkId: 'q1-child-flyover-empty',
+          type: 'display',
+          extension: [flyoverExtension]
+        },
+        {
+          linkId: 'q1-child-flyover-text',
+          type: 'display',
+          text: 'second flyover',
+          extension: [flyoverExtension]
+        }
+      ]
+    };
+
+    expect(getTextDisplayFlyoverSource(qItem)).toEqual({
+      xHtmlString: null,
+      text: 'second flyover'
+    });
+  });
 });
 
 describe('getRegexString', () => {
