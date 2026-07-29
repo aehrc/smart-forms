@@ -19,11 +19,11 @@
  * CalculatedExpression interface
  *
  * @property expression - CalculatedExpression FHIRPath expression
- * @property from - Whether the expressions is for the item itself, for item._text or item._answerValueSet
+ * @property from - Whether the expressions is for the item itself, for item._text, item._prefix or item._answerValueSet
  * @property value - Evaluated value of the expression via FHIRPath
  */
 export interface CalculatedExpression {
   expression: string;
-  from: 'item' | 'item._text' | 'item._text.aria-label' | 'item._answerValueSet';
+  from: 'item' | 'item._text' | 'item._text.aria-label' | 'item._prefix' | 'item._answerValueSet';
   value?: number | string | boolean | object | null;
 }

@@ -26,6 +26,7 @@ import {
   qEnableWhenMultiCheckbox,
   qInitialRepeats,
   qInitialSingle,
+  qTargetConstraintItemLevel,
   qTargetConstraintMultiple,
   qTargetConstraintSimple,
   qText
@@ -102,6 +103,12 @@ export const TargetConstraintSimple: Story = createStory({
 export const TargetConstraintMulti: Story = createStory({
   args: {
     questionnaire: qTargetConstraintMultiple
+  }
+}) as Story;
+
+export const TargetConstraintItemLevel: Story = createStory({
+  args: {
+    questionnaire: qTargetConstraintItemLevel
   }
 }) as Story;
 

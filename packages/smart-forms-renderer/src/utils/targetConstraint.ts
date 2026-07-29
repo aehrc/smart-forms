@@ -90,19 +90,20 @@ export async function evaluateInitialTargetConstraints(
       const result = await handleFhirPathResult(fhirPathResult);
 
       // Update targetConstraints if length of result array > 0
-      // Only update when current isInvalid value is different from the result, otherwise it will result in am infinite loop as per #733
-      if (result.length > 0 && initialValue !== result[0] && typeof result[0] === 'boolean') {
-        targetConstraints[key].isInvalid = result[0];
+      // Per FHIR spec, constraint expressions evaluate to true when the constraint is *met* (valid), so isInvalid = !result
+      // Only update when current isInvalid value differs from the new value, otherwise it will result in an infinite loop as per #733
+      if (result.length > 0 && initialValue !== !result[0] && typeof result[0] === 'boolean') {
+        targetConstraints[key].isInvalid = !result[0];
       }
 
-      // Update isInvalid value to false if no result is returned
-      if (result.length === 0 && initialValue !== false) {
+      // Update isInvalid value to false if no result is returned (intersect handled separately below)
+      if (result.length === 0 && !expression.includes('intersect') && initialValue !== false) {
         targetConstraints[key].isInvalid = false;
       }
 
-      // handle intersect edge case - evaluate() returns empty array if result is false
-      if (expression.includes('intersect') && result.length === 0 && initialValue !== false) {
-        targetConstraints[key].isInvalid = false;
+      // handle intersect edge case - evaluate() returns empty array if result is false (constraint violated)
+      if (expression.includes('intersect') && result.length === 0 && initialValue !== true) {
+        targetConstraints[key].isInvalid = true;
       }
 
       // If fhirPathResult is an async terminology call, cache the result
@@ -150,21 +151,22 @@ export async function evaluateTargetConstraints(
       const result = await handleFhirPathResult(fhirPathResult);
 
       // Update targetConstraints if length of result array > 0
-      // Only update when current isInvalid value is different from the result, otherwise it will result in am infinite loop as per #733
-      if (result.length > 0 && initialValue !== result[0] && typeof result[0] === 'boolean') {
-        targetConstraints[key].isInvalid = result[0];
+      // Per FHIR spec, constraint expressions evaluate to true when the constraint is *met* (valid), so isInvalid = !result
+      // Only update when current isInvalid value differs from the new value, otherwise it will result in an infinite loop as per #733
+      if (result.length > 0 && initialValue !== !result[0] && typeof result[0] === 'boolean') {
+        targetConstraints[key].isInvalid = !result[0];
         isUpdated = true;
       }
 
-      // Update isInvalid value to false if no result is returned
-      if (result.length === 0 && initialValue !== false) {
+      // Update isInvalid value to false if no result is returned (intersect handled separately below)
+      if (result.length === 0 && !expression.includes('intersect') && initialValue !== false) {
         targetConstraints[key].isInvalid = false;
         isUpdated = true;
       }
 
-      // handle intersect edge case - evaluate() returns empty array if result is false
-      if (expression.includes('intersect') && result.length === 0 && initialValue !== false) {
-        targetConstraints[key].isInvalid = false;
+      // handle intersect edge case - evaluate() returns empty array if result is false (constraint violated)
+      if (expression.includes('intersect') && result.length === 0 && initialValue !== true) {
+        targetConstraints[key].isInvalid = true;
         isUpdated = true;
       }
 
@@ -190,6 +192,7 @@ export function readTargetConstraintLocationLinkIds(
   const targetConstraintLinkIds: Record<string, string[]> = {};
   for (const [targetConstraintKey, targetConstraint] of Object.entries(targetConstraints)) {
     if (targetConstraint.location) {
+      // location overrides item-level linkId: resolve via FHIRPath and store the result
       const targetConstraintLinkId = getTargetConstraintLocationLinkId(
         questionnaire,
         targetConstraint.location
@@ -206,6 +209,13 @@ export function readTargetConstraintLocationLinkIds(
 
         // Add to targetConstraint.linkId
         targetConstraints[targetConstraintKey].linkId = targetConstraintLinkId;
+      }
+    } else if (targetConstraint.linkId) {
+      // No location — constraint was defined on the item directly, linkId set during extraction
+      if (targetConstraintLinkIds[targetConstraint.linkId]) {
+        targetConstraintLinkIds[targetConstraint.linkId].push(targetConstraintKey);
+      } else {
+        targetConstraintLinkIds[targetConstraint.linkId] = [targetConstraintKey];
       }
     }
   }

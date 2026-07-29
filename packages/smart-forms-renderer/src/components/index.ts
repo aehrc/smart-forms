@@ -31,7 +31,8 @@ export {
   BooleanField,
   DecimalField,
   StringField,
-  ChoiceRadioSingle
+  ChoiceRadioSingle,
+  QuestionnaireTitleText
 } from './FormComponents';
 
 // Styled MUI components

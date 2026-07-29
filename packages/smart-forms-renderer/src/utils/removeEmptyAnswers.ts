@@ -145,6 +145,7 @@ function removeEmptyAnswersFromItem(
 
   return {
     linkId: qItem.linkId,
+    ...(qItem.definition && { definition: qItem.definition }),
     ...(qItem.text && { text: qItem.text }),
     ...(childQrItems.length > 0 && { item: childQrItems }),
     ...(updatedAnswers.length > 0 && { answer: updatedAnswers })

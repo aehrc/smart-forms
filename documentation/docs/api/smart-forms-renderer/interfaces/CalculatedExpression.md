@@ -14,9 +14,9 @@ CalculatedExpression FHIRPath expression
 
 ### from
 
-> **from**: `"item"` \| `"item._text"` \| `"item._text.aria-label"` \| `"item._answerValueSet"`
+> **from**: `"item"` \| `"item._text"` \| `"item._text.aria-label"` \| `"item._prefix"` \| `"item._answerValueSet"`
 
-Whether the expressions is for the item itself, for item._text or item._answerValueSet
+Whether the expressions is for the item itself, for item._text, item._prefix or item._answerValueSet
 
 ***
 

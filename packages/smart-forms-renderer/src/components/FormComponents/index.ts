@@ -23,6 +23,7 @@ export { GroupTable } from './Tables';
 export { GridGroup } from './GridGroup';
 export { parseFhirDateToDisplayDate, parseFhirDateTimeToDisplayDateTime } from './DateTimeItems';
 export { ItemFieldGrid, ItemLabel } from './ItemParts';
+export { default as QuestionnaireTitleText } from './ItemParts/QuestionnaireTitleText';
 
 // item type components
 export { BooleanField } from './BooleanItem';

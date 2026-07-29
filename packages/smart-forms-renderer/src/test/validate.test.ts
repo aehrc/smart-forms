@@ -753,6 +753,79 @@ describe('validate', () => {
       expect(result).toEqual({}); // Should be empty since item is hidden
     });
 
+    it('should pass severityCode through to the OperationOutcome issue severity', () => {
+      const errorConstraint = {
+        key: 'tc-error',
+        linkId: 'test-item',
+        isInvalid: true,
+        severityCode: 'error' as const,
+        human: 'Systolic must be greater than diastolic',
+        valueExpression: { language: 'text/fhirpath', expression: 'systolic >= diastolic' }
+      };
+
+      const warningConstraint = {
+        key: 'tc-warning',
+        linkId: 'warning-item',
+        isInvalid: true,
+        severityCode: 'warning' as const,
+        human: 'Consider reviewing this value',
+        valueExpression: { language: 'text/fhirpath', expression: 'value > 0' }
+      };
+
+      mockQuestionnaireStore.getState.mockReturnValue({
+        itemMap: {
+          'test-item': { linkId: 'test-item', type: 'integer', text: 'Systolic' },
+          'warning-item': { linkId: 'warning-item', type: 'integer', text: 'Value' }
+        },
+        targetConstraints: {
+          'tc-error': errorConstraint,
+          'tc-warning': warningConstraint
+        },
+        enableWhenIsActivated: false,
+        enableWhenItems: { singleItems: {}, repeatItems: {} },
+        enableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} }
+      } as any);
+
+      mockIsItemHidden.mockReturnValue(false);
+
+      const result = validateTargetConstraint();
+
+      expect(result['test-item'].issue[0].severity).toBe('error');
+      expect(result['warning-item'].issue[0].severity).toBe('warning');
+    });
+
+    it('should pass human text through to the OperationOutcome issue details', () => {
+      const mockTargetConstraint = {
+        key: 'tc-1',
+        linkId: 'test-item',
+        isInvalid: true,
+        severityCode: 'error' as const,
+        human: 'Systolic must be greater than diastolic',
+        valueExpression: { language: 'text/fhirpath', expression: 'systolic >= diastolic' }
+      };
+
+      mockQuestionnaireStore.getState.mockReturnValue({
+        itemMap: {
+          'test-item': { linkId: 'test-item', type: 'integer', text: 'Systolic' }
+        },
+        targetConstraints: { 'tc-1': mockTargetConstraint },
+        enableWhenIsActivated: false,
+        enableWhenItems: { singleItems: {}, repeatItems: {} },
+        enableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} }
+      } as any);
+
+      mockIsItemHidden.mockReturnValue(false);
+
+      const result = validateTargetConstraint();
+
+      expect(result['test-item'].issue[0].details?.text).toBe(
+        'Systolic must be greater than diastolic'
+      );
+      expect(result['test-item'].issue[0].details?.coding?.[0]?.display).toBe(
+        'Systolic must be greater than diastolic'
+      );
+    });
+
     it('should handle target constraints without linkId', () => {
       const mockTargetConstraint = {
         key: 'tc-1',
@@ -1266,6 +1339,38 @@ describe('validate', () => {
 
       expect(result.issue[0].details?.coding?.[0]?.code).toBe(ValidationResult.invariant);
       expect(result.issue[0].code).toBe('business-rule');
+    });
+
+    it('should use the provided severity on the OperationOutcome issue', () => {
+      const result = createValidationOperationOutcome(
+        ValidationResult.invariant,
+        mockQItem,
+        mockQrItem,
+        0,
+        'QuestionnaireResponse.item[0]',
+        [],
+        'warning'
+      );
+
+      expect(result.issue[0].severity).toBe('warning');
+    });
+
+    it('should set humanReadable as details text for invariant results', () => {
+      const result = createValidationOperationOutcome(
+        ValidationResult.invariant,
+        mockQItem,
+        mockQrItem,
+        0,
+        'QuestionnaireResponse.item[0]',
+        [],
+        'error',
+        'Systolic must be greater than diastolic'
+      );
+
+      expect(result.issue[0].details?.text).toBe('Systolic must be greater than diastolic');
+      expect(result.issue[0].details?.coding?.[0]?.display).toBe(
+        'Systolic must be greater than diastolic'
+      );
     });
 
     it('should handle unknown validation result types', () => {

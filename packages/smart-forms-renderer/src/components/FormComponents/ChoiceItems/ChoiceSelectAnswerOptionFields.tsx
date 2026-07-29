@@ -17,6 +17,8 @@
 
 import React from 'react';
 import Autocomplete from '@mui/material/Autocomplete';
+import FormControl from '@mui/material/FormControl';
+import FormHelperText from '@mui/material/FormHelperText';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import type {
   PropsWithIsTabledAttribute,
@@ -25,11 +27,11 @@ import type {
 import { useRendererConfigStore } from '../../../stores';
 import { compareAnswerOptionValue, isOptionDisabled } from '../../../utils/choice';
 import { getAnswerOptionLabel } from '../../../utils/openChoice';
-import { StyledRequiredTypography } from '../Item.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import { StandardTextField } from '../Textfield.styles';
 import StyledText from '../ItemParts/StyledText';
+import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
 
 interface ChoiceSelectAnswerOptionFieldsProps
   extends PropsWithIsTabledAttribute,
@@ -72,7 +74,14 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
     React.useState<QuestionnaireItemAnswerOption | null>(valueSelect);
 
   return (
-    <>
+    <FormControl
+      error={!!feedback}
+      sx={{
+        width: '100%',
+        maxWidth: !isTabled ? textFieldWidth : 3000,
+        minWidth: 160,
+        flexGrow: 1
+      }}>
       <Autocomplete
         id={qItem.type + '-' + qItem.linkId}
         value={valueSelect ?? null}
@@ -110,15 +119,9 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
             }
           }
         }}
+        fullWidth
         autoHighlight
-        sx={{
-          maxWidth: !isTabled ? textFieldWidth : 3000,
-          minWidth: 160,
-          flexGrow: 1,
-          '& .MuiAutocomplete-tag': {
-            mx: 0
-          }
-        }}
+        sx={{ '& .MuiAutocomplete-tag': { mx: 0 } }}
         size="small"
         disabled={readOnly && readOnlyVisualStyle === 'disabled'}
         readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
@@ -133,6 +136,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
             <StandardTextField
               textFieldWidth={textFieldWidth}
               isTabled={isTabled}
+              error={!!feedback}
               placeholder={valueSelect ? undefined : entryFormat || displayPrompt}
               {...params}
               slotProps={{
@@ -200,8 +204,12 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
         }}
       />
 
-      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
-    </>
+      {feedback ? (
+        <FormHelperText>
+          <AccessibleFeedback>{feedback}</AccessibleFeedback>
+        </FormHelperText>
+      ) : null}
+    </FormControl>
   );
 }
 

@@ -18,6 +18,7 @@
 import { useState } from 'react';
 import useDateValidation from '../../../../hooks/useDateValidation';
 import useReadOnly from '../../../../hooks/useReadOnly';
+import useValidationFeedback from '../../../../hooks/useValidationFeedback';
 import type { BaseItemProps } from '../../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../../stores';
 import { createEmptyQrItem, getQRItemId } from '../../../../utils/qrItem';
@@ -66,7 +67,10 @@ function CustomDateItem(props: BaseItemProps) {
   const [focused, setFocused] = useState(false);
 
   // Perform validation checks
-  const feedback = useDateValidation(input, dateParseFail);
+  // Constraint and required feedback takes priority; fall back to date format feedback.
+  const validationFeedback = useValidationFeedback(qItem, undefined);
+  const dateValidationFeedback = useDateValidation(input, dateParseFail);
+  const feedback = validationFeedback || dateValidationFeedback;
 
   // Generate instruction ID if instructions exist and there's no feedback
   const instructionsId =

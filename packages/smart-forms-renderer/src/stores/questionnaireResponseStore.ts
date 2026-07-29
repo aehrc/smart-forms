@@ -31,6 +31,12 @@ import { questionnaireStore } from './questionnaireStore';
 import { createQuestionnaireResponseItemMap } from '../utils/questionnaireResponseStoreUtils/updatableResponseItems';
 import { generateUniqueId } from '../utils/extractObservation';
 
+function hasErrors(invalidItems: Record<string, OperationOutcome>): boolean {
+  return Object.values(invalidItems).some((outcome) =>
+    outcome.issue.some((issue) => issue.severity === 'error' || issue.severity === 'fatal')
+  );
+}
+
 /**
  * QuestionnaireResponseStore properties and methods
  * Properties can be accessed for fine-grain details.
@@ -63,6 +69,7 @@ export interface QuestionnaireResponseStoreType {
   invalidItems: Record<string, OperationOutcome>;
   requiredItemsIsHighlighted: boolean;
   responseIsValid: boolean;
+  responseHasErrors: boolean;
   validateResponse: (questionnaire: Questionnaire, updatedResponse: QuestionnaireResponse) => void;
   buildSourceResponse: (response: QuestionnaireResponse) => void;
   updateResponse: (updatedResponse: QuestionnaireResponse, isInitialUpdate: boolean) => void;
@@ -89,12 +96,14 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
     invalidItems: {},
     requiredItemsIsHighlighted: false,
     responseIsValid: true,
+    responseHasErrors: false,
     validateResponse: (questionnaire: Questionnaire, updatedResponse: QuestionnaireResponse) => {
       const updatedInvalidItems = validateForm(questionnaire, updatedResponse);
 
       set(() => ({
         invalidItems: updatedInvalidItems,
-        responseIsValid: Object.keys(updatedInvalidItems).length === 0
+        responseIsValid: Object.keys(updatedInvalidItems).length === 0,
+        responseHasErrors: hasErrors(updatedInvalidItems)
       }));
     },
     buildSourceResponse: (questionnaireResponse: QuestionnaireResponse) => {
@@ -111,7 +120,8 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
         ),
         invalidItems: initialInvalidItems,
         requiredItemsIsHighlighted: false,
-        responseIsValid: Object.keys(initialInvalidItems).length === 0
+        responseIsValid: Object.keys(initialInvalidItems).length === 0,
+        responseHasErrors: hasErrors(initialInvalidItems)
       }));
     },
     updateResponse: (updatedResponse: QuestionnaireResponse, isInitialUpdate: boolean) => {
@@ -126,7 +136,8 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
             updatedResponse
           ),
           invalidItems: updatedInvalidItems,
-          responseIsValid: Object.keys(updatedInvalidItems).length === 0
+          responseIsValid: Object.keys(updatedInvalidItems).length === 0,
+          responseHasErrors: hasErrors(updatedInvalidItems)
         };
 
         // If this is the initial update, skip updating the form changes
@@ -156,7 +167,8 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
         ),
         formChangesHistory: [],
         invalidItems: updatedInvalidItems,
-        responseIsValid: Object.keys(updatedInvalidItems).length === 0
+        responseIsValid: Object.keys(updatedInvalidItems).length === 0,
+        responseHasErrors: hasErrors(updatedInvalidItems)
       }));
     },
     setUpdatableResponseAsEmpty: (clearedResponse: QuestionnaireResponse) => {
@@ -172,7 +184,8 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
         formChangesHistory: [],
         invalidItems: updatedInvalidItems,
         requiredItemsIsHighlighted: false,
-        responseIsValid: Object.keys(updatedInvalidItems).length === 0
+        responseIsValid: Object.keys(updatedInvalidItems).length === 0,
+        responseHasErrors: hasErrors(updatedInvalidItems)
       }));
     },
     destroySourceResponse: () => {
@@ -188,7 +201,8 @@ export const questionnaireResponseStore = createStore<QuestionnaireResponseStore
         formChangesHistory: [],
         invalidItems: {},
         requiredItemsIsHighlighted: false,
-        responseIsValid: true
+        responseIsValid: true,
+        responseHasErrors: false
       }));
     },
     highlightRequiredItems: () =>

@@ -38,7 +38,7 @@ import dayjs from 'dayjs';
 import fhirpath from 'fhirpath';
 // Need to specifically import from 'index.js' to get it working with ts
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4/index.js';
-import { getItemPopulationContextName } from './readPopulationExpressions';
+import { getInitialExpression, getItemPopulationContextName } from './readPopulationExpressions';
 import { createQuestionnaireReference } from './createQuestionnaireReference';
 import { parseItemInitialToAnswer, parseValueToAnswer } from './parse';
 import { getValueSetPromise } from '../api/expandValueSet';
@@ -571,11 +571,11 @@ async function constructRepeatGroupInstances(
   const terminologyServerUrl = fetchTerminologyRequestConfig?.terminologyServerUrl ?? null;
   const fhirServerUrl = fetchResourceRequestConfig?.sourceServerUrl ?? null;
 
-  // Look in initialExpressions of each of the child items to relate back to the itemPopulationContext its using
+  // Look in child items to relate back to the itemPopulationContext being used
   let itemPopulationContextExpression: string | undefined;
   let itemPopulationContext: ItemPopulationContext | undefined;
   for (const childItem of qRepeatGroupParent.item) {
-    const expression = initialExpressions[childItem.linkId]?.expression;
+    const expression = getInitialExpression(childItem)?.expression;
     if (!expression) continue;
 
     const contextName = getItemPopulationContextName(expression);
@@ -623,9 +623,10 @@ async function constructRepeatGroupInstances(
     };
 
     for (const childItem of qRepeatGroupParent.item) {
-      // Populate answers from initialExpressions
-      const initialExpression = initialExpressions[childItem.linkId];
-      if (initialExpression) {
+      // Populate answers from initialExpression — read directly from the questionnaire item
+      // so that expressions are evaluated per-item against the scoped context, not the global one
+      const childInitialExpression = getInitialExpression(childItem);
+      if (childInitialExpression?.expression) {
         // Allow child items consuming itemPopulationContext to access renderer-wide variables via fhirPathContext
         const fhirPathContextWithItemPopulationContext = {
           ...fhirPathContext,
@@ -635,7 +636,7 @@ async function constructRepeatGroupInstances(
         try {
           const fhirPathResult = fhirpath.evaluate(
             {},
-            initialExpression.expression,
+            childInitialExpression.expression,
             fhirPathContextWithItemPopulationContext,
             fhirpath_r4_model,
             {
@@ -670,7 +671,7 @@ async function constructRepeatGroupInstances(
         } catch (e) {
           // e is not thrown as an Error type in fhirpath.js, so we can't use `if (e instanceof Error)` here
           console.warn(
-            `SDC-Populate Error: fhirpath evaluation for ItemPopulationContext child for expression ${initialExpression.expression} failed. Details below:` +
+            `SDC-Populate Error: fhirpath evaluation for ItemPopulationContext child for expression ${childInitialExpression.expression} failed. Details below:` +
               e
           );
         }

@@ -232,6 +232,58 @@ describe('getExpressionsFromItem utils', () => {
       });
     });
 
+    it('should return calculated expressions from item._prefix extension', () => {
+      const qItem: QuestionnaireItem = {
+        linkId: 'test-item',
+        type: 'string',
+        _prefix: {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: "'Q'"
+              }
+            }
+          ]
+        }
+      };
+
+      const result = getCalculatedExpressions(qItem);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toEqual({
+        expression: "'Q'",
+        from: 'item._prefix'
+      });
+    });
+
+    it('should return cqf expressions from item._prefix extension', () => {
+      const qItem: QuestionnaireItem = {
+        linkId: 'test-item',
+        type: 'string',
+        _prefix: {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%idx'
+              }
+            }
+          ]
+        }
+      };
+
+      const result = getCalculatedExpressions(qItem);
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toEqual({
+        expression: '%idx',
+        from: 'item._prefix'
+      });
+    });
+
     it('should return cqf expressions from item._answerValueSet extension', () => {
       const qItem: QuestionnaireItem = {
         linkId: 'test-item',
@@ -295,6 +347,51 @@ describe('getExpressionsFromItem utils', () => {
         expression: 'Patient.name.family',
         from: 'item._text'
       });
+    });
+
+    it('should combine expressions from item, item._text and item._prefix', () => {
+      const qItem: QuestionnaireItem = {
+        linkId: 'test-item',
+        type: 'decimal',
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-calculatedExpression',
+            valueExpression: {
+              language: 'text/fhirpath',
+              expression: '%a'
+            }
+          }
+        ],
+        _text: {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%b'
+              }
+            }
+          ]
+        },
+        _prefix: {
+          extension: [
+            {
+              url: 'http://hl7.org/fhir/StructureDefinition/cqf-expression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression: '%c'
+              }
+            }
+          ]
+        }
+      };
+
+      const result = getCalculatedExpressions(qItem);
+
+      expect(result).toHaveLength(3);
+      expect(result[0]).toEqual({ expression: '%a', from: 'item' });
+      expect(result[1]).toEqual({ expression: '%b', from: 'item._text' });
+      expect(result[2]).toEqual({ expression: '%c', from: 'item._prefix' });
     });
 
     it('should filter out expressions with empty expression strings', () => {

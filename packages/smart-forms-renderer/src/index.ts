@@ -32,7 +32,8 @@ export {
   DecimalField,
   StringField,
   ChoiceRadioSingle,
-  FullWidthFormComponentBox
+  FullWidthFormComponentBox,
+  QuestionnaireTitleText
 } from './components';
 
 // state management store exports

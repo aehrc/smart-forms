@@ -1170,7 +1170,7 @@ export const qTargetConstraintSimple: Questionnaire = {
           valueExpression: {
             language: 'text/fhirpath',
             expression:
-              "%resource.item.where(linkId='1.1').answer.value < %resource.item.where(linkId='1.2').answer.value"
+              "%resource.item.where(linkId='1.1').answer.value >= %resource.item.where(linkId='1.2').answer.value"
           }
         },
         {
@@ -1237,7 +1237,7 @@ export const qTargetConstraintMultiple: Questionnaire = {
           valueExpression: {
             language: 'text/fhirpath',
             expression:
-              "%resource.item.where(linkId='aus-contact').answer.valueString.matches('^[0-9 ]+$').not()"
+              "%resource.item.where(linkId='aus-contact').answer.valueString.matches('^[0-9 ]+$')"
           }
         },
         {
@@ -1271,7 +1271,7 @@ export const qTargetConstraintMultiple: Questionnaire = {
           valueExpression: {
             language: 'text/fhirpath',
             expression:
-              "%resource.item.where(linkId='aus-contact').answer.value.matches('^(?!02|03|07|08|1300|1900|1800|04).+$')"
+              "%resource.item.where(linkId='aus-contact').answer.value.matches('^(02|03|04|07|08|1300|1800|1900)[0-9 ]+$')"
           }
         },
         {
@@ -1317,6 +1317,49 @@ export const qTargetConstraintMultiple: Questionnaire = {
           linkId: 'aus-contact-instructions',
           text: 'Include an area code for landlines',
           type: 'display'
+        }
+      ]
+    }
+  ]
+};
+
+// Demonstrates item-level targetConstraint (constraint defined directly on the item, no location
+// extension needed). The error surfaces on the "Last name" field when "First name" is filled
+// but "Last name" is empty.
+export const qTargetConstraintItemLevel: Questionnaire = {
+  resourceType: 'Questionnaire',
+  status: 'draft',
+  item: [
+    {
+      linkId: 'instructions',
+      text: 'Enter a first name, then leave last name blank to trigger a constraint error on the last name field.',
+      type: 'display'
+    },
+    {
+      linkId: 'firstName',
+      text: 'First name',
+      type: 'string'
+    },
+    {
+      linkId: 'lastName',
+      text: 'Last name',
+      type: 'string',
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/targetConstraint',
+          extension: [
+            { url: 'key', valueId: 'last-name-required' },
+            { url: 'severity', valueCode: 'error' },
+            {
+              url: 'expression',
+              valueExpression: {
+                language: 'text/fhirpath',
+                expression:
+                  "%resource.item.where(linkId='firstName').answer.value.exists() implies %resource.item.where(linkId='lastName').answer.value.exists()"
+              }
+            },
+            { url: 'human', valueString: 'Last name is required when first name is provided' }
+          ]
         }
       ]
     }

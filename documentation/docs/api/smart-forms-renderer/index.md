@@ -87,6 +87,7 @@
 | [parseDecimalStringWithPrecision](functions/parseDecimalStringWithPrecision.md) | - |
 | [parseFhirDateTimeToDisplayDateTime](functions/parseFhirDateTimeToDisplayDateTime.md) | Parse a FHIR dateTime string to a human-readable display format. Supports full and partial FHIR dateTime values. |
 | [parseFhirDateToDisplayDate](functions/parseFhirDateToDisplayDate.md) | Parse a FHIR date string to a human-readable display format. |
+| [QuestionnaireTitleText](functions/QuestionnaireTitleText.md) | Renders `Questionnaire.title` with support for optional `Questionnaire._title` rendering extensions (xhtml, markdown, style). |
 | [removeEmptyAnswersFromResponse](functions/removeEmptyAnswersFromResponse.md) | Remove all empty/hidden answers from the filled QuestionnaireResponse. This takes into account enableWhens, enableWhenExpressions, items without item.answer, empty item.answer arrays and empty strings. This does not remove items that are hidden by the http://hl7.org/fhir/StructureDefinition/questionnaire-hidden extension. |
 | [removeInternalIdsFromResponse](functions/removeInternalIdsFromResponse.md) | Remove all instances of item.answer.id from the filled QuestionnaireResponse. These IDs are used internally for rendering repeating items, and can be safely left out of the final response. |
 | [rendererThemeComponentOverrides](functions/rendererThemeComponentOverrides.md) | - |

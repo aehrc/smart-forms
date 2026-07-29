@@ -78,6 +78,30 @@ describe('useDisplayCqfAndCalculatedExpression', () => {
     });
   });
 
+  describe('basic functionality (item._prefix)', () => {
+    it('should return null when no calculated expressions exist', () => {
+      mockCalculatedExpressions.mockReturnValue({});
+
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._prefix')
+      );
+
+      expect(result.current).toBeNull();
+    });
+
+    it('should find expression with from field "item._prefix"', () => {
+      mockCalculatedExpressions.mockReturnValue({
+        'basic-item': [{ from: 'item._prefix', value: '1.' }]
+      });
+
+      const { result } = renderHook(() =>
+        useDisplayCqfAndCalculatedExpression(basicQItem, 'item._prefix')
+      );
+
+      expect(result.current).toBe('1.');
+    });
+  });
+
   describe('basic functionality (item._text.aria-label)', () => {
     it('should return null when no calculated expressions exist', () => {
       mockCalculatedExpressions.mockReturnValue({});

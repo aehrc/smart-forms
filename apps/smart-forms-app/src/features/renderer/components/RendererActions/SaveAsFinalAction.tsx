@@ -32,6 +32,10 @@ import RendererSaveAsFinalOnlyDialog from './RendererSaveAsFinalOnlyDialog.tsx';
 import RendererSaveAsFinalWriteBackDialog from './RendererSaveAsFinalWriteBackDialog.tsx';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { fetchResourceCallback } from '../../../prepopulate/utils/callback.ts';
+import { useSnackbar } from 'notistack';
+import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
+import { formHasErrorsMessage } from '../../../../interfaces/snackbar.interface.ts';
+import { findFirstErrorTabIndex } from '../../utils/tabNavigation.ts';
 
 interface SaveAsFinalActionProps extends SpeedDialActionProps {
   isSpeedDial?: boolean;
@@ -48,12 +52,45 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
   const [extractedBundle, setExtractedBundle] = useState<Bundle | null>(null);
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const tabs = useQuestionnaireStore.use.tabs();
+  const switchTab = useQuestionnaireStore.use.switchTab();
+
   const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
   const formChangesHistory = useQuestionnaireResponseStore.use.formChangesHistory();
+  const responseHasErrors = useQuestionnaireResponseStore.use.responseHasErrors();
+  const invalidItems = useQuestionnaireResponseStore.use.invalidItems();
+  const highlightRequiredItems = useQuestionnaireResponseStore.use.highlightRequiredItems();
+
+  const { enqueueSnackbar } = useSnackbar();
 
   // freeze state of response status so dialog content doesn't change during the save process
   const [responseStatus] = useState(sourceResponse.status);
+
+  // Returns true if save should be aborted due to validation errors
+  function handleValidationErrors(): boolean {
+    if (!responseHasErrors) return false;
+
+    highlightRequiredItems();
+
+    if (Object.keys(tabs).length > 0) {
+      const firstErrorTabIndex = findFirstErrorTabIndex(
+        Object.keys(invalidItems),
+        sourceQuestionnaire.item ?? [],
+        tabs
+      );
+      if (firstErrorTabIndex !== null) {
+        switchTab(firstErrorTabIndex);
+      }
+    }
+
+    enqueueSnackbar(formHasErrorsMessage, {
+      variant: 'error',
+      action: <CloseSnackbar variant="error" />
+    });
+
+    return true;
+  }
 
   // Events handlers
   async function handleTemplateExtract() {
@@ -179,6 +216,8 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
           isAmendment={isAmendment}
           writeBackEnabled={writeBackEnabled}
           onSaveAsFinalActionClick={async () => {
+            if (handleValidationErrors()) return;
+
             if (extractMechanism === 'template-based') {
               await handleTemplateExtract();
             }
@@ -220,7 +259,10 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
         isDisabled={buttonIsDisabled}
         isAmendment={isAmendment}
         writeBackEnabled={writeBackEnabled}
-        onSaveAsFinalActionClick={handleOpenDialog}
+        onSaveAsFinalActionClick={() => {
+          if (handleValidationErrors()) return;
+          handleOpenDialog();
+        }}
         {...speedDialActionProps}
       />
       <RendererSaveAsFinalOnlyDialog

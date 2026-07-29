@@ -18,6 +18,8 @@
 import React from 'react';
 import type { AutocompleteChangeReason } from '@mui/material/Autocomplete';
 import Autocomplete from '@mui/material/Autocomplete';
+import FormControl from '@mui/material/FormControl';
+import FormHelperText from '@mui/material/FormHelperText';
 import { StandardTextField } from '../Textfield.styles';
 import Typography from '@mui/material/Typography';
 import type {
@@ -28,9 +30,9 @@ import type {
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 import { useRendererConfigStore } from '../../../stores';
-import { StyledRequiredTypography } from '../Item.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
+import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
 
 interface OpenChoiceSelectAnswerValueSetFieldProps
   extends PropsWithIsTabledAttribute,
@@ -71,7 +73,14 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
   return (
-    <>
+    <FormControl
+      error={!!feedback}
+      sx={{
+        width: '100%',
+        maxWidth: !isTabled ? textFieldWidth : 3000,
+        minWidth: 160,
+        flexGrow: 1
+      }}>
       <Autocomplete
         id={qItem.type + '-' + qItem.linkId}
         value={valueSelect ?? null}
@@ -81,9 +90,9 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
         }
         onChange={(_, newValue, reason) => onValueChange(newValue, reason)}
         onInputChange={(_, newValue, reason) => onValueChange(newValue, reason)}
+        fullWidth
         freeSolo
         autoHighlight
-        sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }}
         disabled={readOnly && readOnlyVisualStyle === 'disabled'}
         readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
         size="small"
@@ -92,6 +101,7 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
             multiline
             textFieldWidth={textFieldWidth}
             isTabled={isTabled}
+            error={!!feedback}
             placeholder={entryFormat || displayPrompt}
             {...params}
             slotProps={{
@@ -124,8 +134,12 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
         </Typography>
       ) : null}
 
-      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
-    </>
+      {feedback ? (
+        <FormHelperText>
+          <AccessibleFeedback>{feedback}</AccessibleFeedback>
+        </FormHelperText>
+      ) : null}
+    </FormControl>
   );
 }
 

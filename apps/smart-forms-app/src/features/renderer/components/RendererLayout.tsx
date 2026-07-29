@@ -33,6 +33,7 @@ import { useQuestionnaireResponseStore, useResponsive } from '@aehrc/smart-forms
 import useSmartClient from '../../../hooks/useSmartClient.ts';
 import type { RendererSpinner } from '../types/rendererSpinner.ts';
 import RepopulateBackdrop from '../../repopulate/components/RepopulateBackdrop.tsx';
+import { useLocation } from 'react-router-dom';
 
 function RendererLayout() {
   const { smartClient, patient, user } = useSmartClient();
@@ -43,8 +44,11 @@ function RendererLayout() {
   const [desktopNavCollapsed, setDesktopNavCollapsed] = useState(false);
 
   // Init population spinner
+  // Skip pre-population if navigated here via CloneResponseButton (isClone passed via router state)
+  const { state } = useLocation();
+  const isCloneLoad = !!(state as { isClone?: boolean } | null)?.isClone;
   let initialSpinner: RendererSpinner = { isSpinning: false, status: 'prepopulate', message: '' };
-  if (smartClient && patient && user && !sourceResponse.id) {
+  if (smartClient && patient && user && !sourceResponse.id && !isCloneLoad) {
     initialSpinner = {
       isSpinning: true,
       status: 'prepopulate',

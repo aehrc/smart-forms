@@ -23,6 +23,7 @@ import useDateNonEmptyValidation from '../../../../hooks/useDateTimeNonEmpty';
 import useDateValidation from '../../../../hooks/useDateValidation';
 import useReadOnly from '../../../../hooks/useReadOnly';
 import useTimeValidation from '../../../../hooks/useTimeValidation';
+import useValidationFeedback from '../../../../hooks/useValidationFeedback';
 import type { BaseItemProps } from '../../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../../stores';
 import { createEmptyQrItem, getQRItemId } from '../../../../utils/qrItem';
@@ -95,6 +96,8 @@ function CustomDateTimeItem(props: BaseItemProps) {
   const [dateFocused, setDateFocused] = useState(false);
 
   // Perform validation checks
+  // Constraint and required feedback takes priority; fall back to date/time format feedback.
+  const validationFeedback = useValidationFeedback(qItem, undefined);
   let dateFeedback = useDateValidation(dateInput, dateParseFail);
   const { timeFeedback, is24HourNotation } = useTimeValidation(
     timeInput,
@@ -103,6 +106,7 @@ function CustomDateTimeItem(props: BaseItemProps) {
   );
 
   dateFeedback = useDateNonEmptyValidation(dateInput, timeInput, dateFeedback, timeFeedback);
+  dateFeedback = validationFeedback || dateFeedback;
 
   // Generate instruction ID if instructions exist and there's no feedback
   const instructionsId =

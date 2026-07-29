@@ -70,7 +70,7 @@ Questionnaire to populate
 
 > `optional` **timeoutMs**: `number`
 
-Timeout in milliseconds for the $populate operation, default is 10000ms (10 seconds)
+Timeout in milliseconds for the $populate operation, default is 30000ms (30 seconds)
 
 ***
 

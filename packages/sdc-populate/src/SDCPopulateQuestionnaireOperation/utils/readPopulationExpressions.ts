@@ -38,13 +38,16 @@ export function readPopulationExpressions(questionnaire: Questionnaire): Populat
 }
 
 /**
- * Recursively read a single questionnaire item/group and save its initialExpression into the object if present
+ * Recursively read a single questionnaire item/group and save its initialExpression into the object if present.
+ * initialExpressions belonging to children of an itemPopulationContext group are excluded from the global map —
+ * they are evaluated per-item in constructRepeatGroupInstances and must not be pre-evaluated against the full collection.
  *
  * @author Sean Fong
  */
 function readQuestionnaireItemRecursive(
   item: QuestionnaireItem,
-  populationExpressions: PopulationExpressions
+  populationExpressions: PopulationExpressions,
+  underItemPopulationContext = false
 ): PopulationExpressions {
   const items = item.item;
   if (items && items.length > 0) {
@@ -59,7 +62,32 @@ function readQuestionnaireItemRecursive(
       };
     }
 
-    // Read initial expression of group item
+    // Read initial expression of group item — skipped when under an itemPopulationContext
+    if (!underItemPopulationContext) {
+      const initialExpression = getInitialExpression(item);
+      if (initialExpression && initialExpression.expression) {
+        populationExpressions.initialExpressions[item.linkId] = {
+          expression: initialExpression.expression,
+          value: undefined
+        };
+      }
+    }
+
+    // Children of a *repeating* itemPopulationContext group are evaluated per-item in
+    // constructRepeatGroupInstances, so they must be excluded from the global map.
+    // Non-repeating groups (repeats: false) with itemPopulationContext are single-instance;
+    // their children are evaluated globally once the context variable is available.
+    const childrenUnderContext =
+      underItemPopulationContext || (!!itemPopulationContext && !!item.repeats);
+    items.forEach((item) => {
+      readQuestionnaireItemRecursive(item, populationExpressions, childrenUnderContext);
+    });
+
+    return populationExpressions;
+  }
+
+  // Read initial expression of qItem — skipped when under an itemPopulationContext
+  if (!underItemPopulationContext) {
     const initialExpression = getInitialExpression(item);
     if (initialExpression && initialExpression.expression) {
       populationExpressions.initialExpressions[item.linkId] = {
@@ -67,22 +95,6 @@ function readQuestionnaireItemRecursive(
         value: undefined
       };
     }
-
-    // iterate through items of item recursively
-    items.forEach((item) => {
-      readQuestionnaireItemRecursive(item, populationExpressions);
-    });
-
-    return populationExpressions;
-  }
-
-  // Read initial expression of qItem
-  const initialExpression = getInitialExpression(item);
-  if (initialExpression && initialExpression.expression) {
-    populationExpressions.initialExpressions[item.linkId] = {
-      expression: initialExpression.expression,
-      value: undefined
-    };
   }
 
   return populationExpressions;
