@@ -6,7 +6,7 @@ This folder contains the **forms-server** services architecture for deploying a 
 ### forms-server-app
 Runs on AWS Fargate as the main orchestrator application.
 
-### hapi-endpoint
+### hapi-endpoint (../shared/hapi-endpoint)
 A microservice running in Docker that serves as the base HAPI FHIR server.  
 From: https://github.com/hapifhir/hapi-fhir-jpaserver-starter
 
@@ -41,7 +41,7 @@ Additionally, the routing is handled via `deployment/cloudfront/SmartFormsRedire
 ## Deployment steps
 Run steps 1, 2, 3, and 4-7 in four separate terminal windows respectively.
 
-1. `npm i` and `npm run watch` in hapi-endpoint.
+1. `npm i` and `npm run watch` in ../shared/hapi-endpoint.
 2. `npm i` and `npm run watch` in assemble-endpoint.
 3. `npm i` and `npm run watch` in populate-endpoint.
 4. `npm i` and `npm run build` in forms-server-app.
