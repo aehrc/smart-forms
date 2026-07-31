@@ -30,6 +30,7 @@ import { extractResultIsOperationOutcome, inAppExtract } from '@aehrc/sdc-templa
 import type { Bundle, QuestionnaireResponse } from 'fhir/r4';
 import RendererSaveAsFinalOnlyDialog from './RendererSaveAsFinalOnlyDialog.tsx';
 import RendererSaveAsFinalWriteBackDialog from './RendererSaveAsFinalWriteBackDialog.tsx';
+import { validateExtractedBundle } from '../../../writeBack/utils/validateExtractedBundle.ts';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { fetchResourceCallback } from '../../../prepopulate/utils/callback.ts';
 import { useSnackbar } from 'notistack';
@@ -45,11 +46,14 @@ interface SaveAsFinalActionProps extends SpeedDialActionProps {
 function SaveAsFinalAction(props: SaveAsFinalActionProps) {
   const { isSpeedDial, onCloseSpeedDial, ...speedDialActionProps } = props;
 
-  const { smartClient, patient, user, encounter } = useSmartClient();
+  const { smartClient, patient, user, encounter, extraLaunchContext } = useSmartClient();
 
   const [saveAsFinalDialogOpen, setSaveAsFinalDialogOpen] = useState(false);
   const [isExtracting, setExtracting] = useState(false);
   const [extractedBundle, setExtractedBundle] = useState<Bundle | null>(null);
+  const [invalidBundleEntryIndices, setInvalidBundleEntryIndices] = useState<Set<number> | null>(
+    null
+  );
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
   const tabs = useQuestionnaireStore.use.tabs();
@@ -139,7 +143,15 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
       return;
     }
 
+    // Validate before updating state — ensures WriteBackBundleSelectorDialog mounts with
+    // invalidBundleEntryIndices already set, so its selectedKeys initializer excludes invalid entries
+    const validationResults = extraLaunchContext.disableBundleValidation
+      ? new Set<number>()
+      : await validateExtractedBundle(extractResult.extractedBundle, smartClient);
+
+    // All four updates land in the same React 18 batch → single render → component mounts correctly
     setExtractedBundle(extractResult.extractedBundle);
+    setInvalidBundleEntryIndices(validationResults.size > 0 ? validationResults : null);
     setExtracting(false);
 
     // Open dialog after extraction is complete
@@ -188,6 +200,7 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
     // Reset extract-related states back to false
     setExtracting(false);
     setExtractedBundle(null);
+    setInvalidBundleEntryIndices(null);
   }
 
   // Check if an in-progress QR has been saved before via versionId
@@ -235,6 +248,7 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
             dialogOpen={saveAsFinalDialogOpen}
             isAmendment={isAmendment}
             extractedBundle={extractedBundle}
+            invalidBundleEntryIndices={invalidBundleEntryIndices ?? undefined}
             onCloseDialog={handleCloseDialog}
             onDialogExited={handleDialogExited}
           />

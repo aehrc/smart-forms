@@ -96,7 +96,10 @@ describe('SmartClientContext', () => {
       expect(mockContext.state.launchQuestionnaire).toBeNull();
       expect(mockContext.state.fhirContext).toBeNull();
       expect(mockContext.state.tokenReceivedTimestamp).toBeNull();
-      expect(mockContext.state.disableWriteBackSelection).toBe(false);
+      expect(mockContext.state.extraLaunchContext).toEqual({
+        disableWriteBackSelection: false,
+        disableBundleValidation: false
+      });
       expect(typeof mockContext.dispatch).toBe('function');
     });
 
@@ -350,40 +353,52 @@ describe('SmartClientContext', () => {
     });
   });
 
-  describe('SET_DISABLE_WRITEBACK_SELECTION action', () => {
-    it('should set disableWriteBackSelection to true', () => {
+  describe('SET_EXTRA_LAUNCH_CONTEXT action', () => {
+    it('should set extraLaunchContext', () => {
       renderWithProvider((context) => {
         mockContext = context;
       });
 
       act(() => {
         mockContext.dispatch({
-          type: 'SET_DISABLE_WRITEBACK_SELECTION',
-          payload: true
+          type: 'SET_EXTRA_LAUNCH_CONTEXT',
+          payload: { disableWriteBackSelection: true, disableBundleValidation: true }
         });
       });
 
-      expect(mockContext.state.disableWriteBackSelection).toBe(true);
+      expect(mockContext.state.extraLaunchContext).toEqual({
+        disableWriteBackSelection: true,
+        disableBundleValidation: true
+      });
 
       // Other state should remain unchanged
       expect(mockContext.state.smartClient).toBeNull();
       expect(mockContext.state.patient).toBeNull();
     });
 
-    it('should set disableWriteBackSelection back to false', () => {
+    it('should reset extraLaunchContext back to defaults', () => {
       renderWithProvider((context) => {
         mockContext = context;
       });
 
       act(() => {
-        mockContext.dispatch({ type: 'SET_DISABLE_WRITEBACK_SELECTION', payload: true });
+        mockContext.dispatch({
+          type: 'SET_EXTRA_LAUNCH_CONTEXT',
+          payload: { disableWriteBackSelection: true, disableBundleValidation: true }
+        });
       });
 
       act(() => {
-        mockContext.dispatch({ type: 'SET_DISABLE_WRITEBACK_SELECTION', payload: false });
+        mockContext.dispatch({
+          type: 'SET_EXTRA_LAUNCH_CONTEXT',
+          payload: { disableWriteBackSelection: false, disableBundleValidation: false }
+        });
       });
 
-      expect(mockContext.state.disableWriteBackSelection).toBe(false);
+      expect(mockContext.state.extraLaunchContext).toEqual({
+        disableWriteBackSelection: false,
+        disableBundleValidation: false
+      });
     });
   });
 
