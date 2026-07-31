@@ -22,7 +22,7 @@
     "constructs": "^10.3.0"
   },
   "dependencies": {
-    "aws-cdk": "^2.1031.0"
+    "aws-cdk": "^2.1134.0"
   },
   "description": "HAPI FHIR server on Fargate backed by RDS PostgreSQL, shared by the forms-server and ehr-proxy stacks"
 }
