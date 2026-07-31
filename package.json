@@ -19,6 +19,7 @@
     "services/*",
     "deployment/forms-server/*",
     "deployment/ehr-proxy/*",
+    "deployment/shared/*",
     "documentation"
   ],
   "devDependencies": {

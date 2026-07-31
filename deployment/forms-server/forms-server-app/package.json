@@ -23,8 +23,8 @@
     "aws-cdk-lib": "^2.260.0",
     "constructs": "^10.6.0",
     "forms-server-assemble-endpoint": "^0.1.0",
-    "forms-server-hapi-endpoint": "^0.1.0",
     "forms-server-populate-endpoint": "^0.1.0",
+    "shared-hapi-endpoint": "^0.1.0",
     "source-map-support": "^0.5.21"
   }
 }

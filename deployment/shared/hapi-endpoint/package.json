@@ -1,5 +1,5 @@
 {
-  "name": "ehr-proxy-hapi-endpoint",
+  "name": "shared-hapi-endpoint",
   "version": "0.1.0",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -23,5 +23,6 @@
   },
   "dependencies": {
     "aws-cdk": "^2.1031.0"
-  }
+  },
+  "description": "HAPI FHIR server on Fargate backed by RDS PostgreSQL, shared by the forms-server and ehr-proxy stacks"
 }

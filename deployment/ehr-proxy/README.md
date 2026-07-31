@@ -6,7 +6,7 @@ This folder contains the **ehr-proxy** services architecture for deploying a pla
 ### ehr-proxy-app
 Runs on AWS Fargate as the main orchestrator application.
 
-### hapi-endpoint
+### hapi-endpoint (../shared/hapi-endpoint)
 A microservice running in Docker that serves as the plain HAPI FHIR server.
 
 From: https://github.com/hapifhir/hapi-fhir-jpaserver-starter
@@ -38,7 +38,7 @@ SMART-enabled FHIR Server: `https://proxy.smartforms.io/v/r4/fhir/`
 ## Deployment steps
 Run steps 1, 2, and 3-6 in three separate terminal windows respectively.
 
-1. `npm i` and `npm run watch` in hapi-endpoint.
+1. `npm i` and `npm run watch` in ../shared/hapi-endpoint.
 2. `npm i` and `npm run watch` in smart-proxy.
 3. `npm i` and `npm run build` in ehr-proxy-app.
 4. `aws sso login --profile smart-forms`
