@@ -153,6 +153,15 @@ export class HapiEndpoint extends Construct {
       this.service,
       'Allow the HAPI FHIR server to reach its database'
     );
-    this.service.node.addDependency(this.database);
+
+    // No explicit `service.node.addDependency(database)` here. It reads like cheap insurance, but
+    // `node.addDependency` applies across whole construct subtrees: it makes the service's security
+    // group depend on the database's ingress rule, and that rule already references the service's
+    // security group. CloudFormation rejects the resulting cycle when it builds the change set.
+    //
+    // The ordering it was meant to guarantee already exists. SPRING_DATASOURCE_URL resolves the
+    // database endpoint through Fn::GetAtt and the credentials resolve through the generated
+    // secret, so the task definition cannot be created before the database, and the service cannot
+    // be created before its task definition.
   }
 }
