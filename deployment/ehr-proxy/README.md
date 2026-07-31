@@ -13,6 +13,12 @@ From: https://github.com/hapifhir/hapi-fhir-jpaserver-starter
 
 Base URL: `https://proxy.smartforms.io/fhir/`
 
+The endpoint is backed by a dedicated RDS PostgreSQL instance (`db.t4g.micro`) created alongside it
+in the same construct. HAPI defaults to an in-memory H2 database when no datasource is configured,
+which means the server starts empty every time the Fargate task is replaced, so the datasource is
+configured explicitly. Credentials are generated into Secrets Manager and injected into the task as
+`SPRING_DATASOURCE_USERNAME` and `SPRING_DATASOURCE_PASSWORD`.
+
 ### smart-proxy
 A microservice running in Docker that acts as a SMART on FHIR plugin layered on top of the HAPI server.
 It requires the `FHIR_SERVER_R4` environment variable pointing to the HAPI server.

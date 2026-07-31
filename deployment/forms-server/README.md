@@ -12,6 +12,12 @@ From: https://github.com/hapifhir/hapi-fhir-jpaserver-starter
 
 Base URL: `https://smartforms.csiro.au/api/fhir/`
 
+The endpoint is backed by a dedicated RDS PostgreSQL instance (`db.t4g.small`) created alongside it
+in the same construct. HAPI defaults to an in-memory H2 database when no datasource is configured,
+which means the server starts empty every time the Fargate task is replaced, so the datasource is
+configured explicitly. Credentials are generated into Secrets Manager and injected into the task as
+`SPRING_DATASOURCE_USERNAME` and `SPRING_DATASOURCE_PASSWORD`.
+
 ### assemble-endpoint
 A microservice in Docker for Questionnaire [$assemble](https://build.fhir.org/ig/HL7/sdc/OperationDefinition-Questionnaire-assemble.html) operation.
 
