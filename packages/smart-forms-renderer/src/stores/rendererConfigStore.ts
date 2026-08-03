@@ -87,14 +87,15 @@ import { defaultRendererStrings, resolveRendererStrings } from '../i18n/renderer
  *   Set this to `true` when the consuming app already renders the title in its own header to avoid displaying it twice.
  *   - Default: `false`
  *
- * @property locale - BCP-47 locale tag (e.g. `'de-CH'`) used to select a bundled catalog of renderer strings
- *   (the renderer's own UI text such as the boolean Yes/No labels). Unknown locales fall back to English.
- *   This does not translate `Questionnaire`-sourced text such as `item.text`.
- *   - Default: `undefined` (English)
+ * @property locale - BCP-47 locale tag (e.g. `'de-CH'`). Drives date formatting and calendar
+ *   localisation only — it does **not** select renderer strings. Use `rendererStrings` to translate
+ *   the renderer's own UI text. This does not translate `Questionnaire`-sourced text such as `item.text`.
+ *   - Default: `undefined` (`DD/MM/YYYY` dates)
  *
- * @property rendererStrings - Per-string overrides for the renderer's own UI text, merged on top of the
- *   `locale` catalog. Use this to customise individual labels without providing a full locale catalog.
- *   - Default: `undefined`
+ * @property rendererStrings - Consumer-supplied translations/overrides for the renderer's own UI text
+ *   (such as the boolean Yes/No labels), merged on top of the English defaults. Supply as many or as
+ *   few strings as you need; anything omitted stays English.
+ *   - Default: `undefined` (English)
  *
  * @property readOnlyVisualStyle - If `true`, item.readOnly will result in form fields having MUI disabled property and styles (recommended from usability perspective). If `false`, item.readOnly will result in form fields having HTML readonly property (less stable, but recommended from accessibility perspective).
  *   - Default: `true`

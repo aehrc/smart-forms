@@ -197,7 +197,7 @@ describe('useDateValidation', () => {
 
       expect(result.current).toBe('');
       expect(mockDayjs).toHaveBeenCalledWith('03/2024', 'MM/YYYY');
-      expect(mockValidateTwoMatches).toHaveBeenCalledWith('03', '2024');
+      expect(mockValidateTwoMatches).toHaveBeenCalledWith('03', '2024', 'DD/MM/YYYY');
     });
 
     it('should reject invalid dayjs format for MM/YYYY', () => {
@@ -216,7 +216,7 @@ describe('useDateValidation', () => {
       const { result } = renderHook(() => useDateValidation('00/2024'));
 
       expect(result.current).toBe('Input is an invalid date.');
-      expect(mockValidateTwoMatches).toHaveBeenCalledWith('00', '2024');
+      expect(mockValidateTwoMatches).toHaveBeenCalledWith('00', '2024', 'DD/MM/YYYY');
     });
 
     it('should handle single digit month', () => {
@@ -226,7 +226,7 @@ describe('useDateValidation', () => {
       const { result } = renderHook(() => useDateValidation('1/2024'));
 
       expect(result.current).toBe('');
-      expect(mockValidateTwoMatches).toHaveBeenCalledWith('1', '2024');
+      expect(mockValidateTwoMatches).toHaveBeenCalledWith('1', '2024', 'DD/MM/YYYY');
     });
 
     it('should handle malformed input with 1 separator', () => {
@@ -452,7 +452,7 @@ describe('useDateValidation', () => {
 
       renderHook(() => useDateValidation('06/2024'));
 
-      expect(mockValidateTwoMatches).toHaveBeenCalledWith('06', '2024');
+      expect(mockValidateTwoMatches).toHaveBeenCalledWith('06', '2024', 'DD/MM/YYYY');
     });
   });
 

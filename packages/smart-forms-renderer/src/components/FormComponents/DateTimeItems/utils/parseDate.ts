@@ -27,8 +27,9 @@ const fallbackDateFormat = 'DD/MM/YYYY';
  * which carries data for every locale (no locale imports/bundle needed).
  * For example `de-CH` -> `DD.MM.YYYY`, `en-US` -> `MM/DD/YYYY`, `ja-JP` -> `YYYY/MM/DD`.
  *
- * Returns `undefined` for an invalid locale, or if the locale's short date uses anything other
- * than day/month/year separated by punctuation (in which case the caller falls back).
+ * Returns `undefined` for an invalid locale, or if the locale's short date is anything other than
+ * day/month/year joined by a single repeated punctuation character — e.g. `hu-HU`/`ko-KR`
+ * (`YYYY. MM. DD.`) are rejected, and the caller falls back to `DD/MM/YYYY`.
  */
 function deriveDateFormatFromLocale(locale: string): string | undefined {
   let format: string;
@@ -53,9 +54,15 @@ function deriveDateFormatFromLocale(locale: string): string | undefined {
   }
 
   const hasAllTokens = format.includes('DD') && format.includes('MM') && format.includes('YYYY');
-  const onlySeparatorsRemain = /^[^A-Za-z0-9]*$/.test(format.replace(/DD|MM|YYYY/g, ''));
 
-  return hasAllTokens && onlySeparatorsRemain ? format : undefined;
+  // The input handling downstream (`getDateSeparator`, `getNumOfSeparators`) assumes the tokens are
+  // joined by a single, repeated punctuation character. Reject anything else — no separator at all
+  // (e.g. `YYYYMMDD`), mixed separators, or extra literals (e.g. `YYYY. MM. DD.`) — so the caller
+  // falls back to the default format instead of producing a format no typed date can satisfy.
+  const separators = format.replace(/DD|MM|YYYY/g, '');
+  const usesSingleSeparator = /^([^A-Za-z0-9])\1*$/.test(separators);
+
+  return hasAllTokens && usesSingleSeparator ? format : undefined;
 }
 
 /**
@@ -101,11 +108,22 @@ export function getDateSeparator(dateFormat: string): string {
 }
 
 /**
- * Derives the month-year format from a full-date format string.
- * For example `DD.MM.YYYY` -> `MM.YYYY`.
+ * Derives the month-year format from a full-date format string, preserving the token order of
+ * the full date. For example `DD.MM.YYYY` -> `MM.YYYY`, `MM/DD/YYYY` (US) -> `MM/YYYY` and
+ * `YYYY/MM/DD` (year-first, e.g. `ja-JP`) -> `YYYY/MM`.
  */
 export function getMonthYearFormat(dateFormat: string): string {
-  return `MM${getDateSeparator(dateFormat)}YYYY`;
+  const separator = getDateSeparator(dateFormat);
+  const tokens = getDateTokenOrder(dateFormat)
+    .filter((token) => token !== 'D')
+    .map((token) => (token === 'M' ? 'MM' : 'YYYY'));
+
+  // A format missing the month or year token can't produce a month-year format; fall back to month-first
+  if (tokens.length !== 2) {
+    return `MM${separator}YYYY`;
+  }
+
+  return tokens.join(separator);
 }
 
 /**
@@ -182,9 +200,9 @@ export function validateDateInput(input: string) {
     return false;
   }
 
-  // Handle MM/YYYY format
+  // Handle month-year format (e.g. MM/YYYY or YYYY/MM)
   if (matches.length === 2) {
-    return validateTwoMatches(matches[0], matches[1]);
+    return validateTwoMatches(matches[0], matches[1], dateFormat);
   }
 
   // Handle full-date format (e.g. DD/MM/YYYY or MM/DD/YYYY)
@@ -195,13 +213,20 @@ export function validateDateInput(input: string) {
   return false;
 }
 
-export function validateTwoMatches(monthInput: string, yearInput: string) {
-  const monthNum = parseInt(monthInput, 10);
+/**
+ * Validates the two positional parts of a month-year value (in the order they appear in the
+ * input), mapping them to month/year according to the month-year format derived from `dateFormat`.
+ * This makes validation work for month-first (`MM/YYYY`) and year-first (`YYYY/MM`) formats alike.
+ */
+export function validateTwoMatches(firstInput: string, secondInput: string, dateFormat: string) {
+  const { month, year } = orderDateParts([firstInput, secondInput], getMonthYearFormat(dateFormat));
+
+  const monthNum = parseInt(month, 10);
   if (monthNum < 1 || monthNum > 12) {
     return false;
   }
 
-  return (monthInput.length === 1 || monthInput.length === 2) && yearInput.length === 4;
+  return (month.length === 1 || month.length === 2) && year.length === 4;
 }
 
 /**

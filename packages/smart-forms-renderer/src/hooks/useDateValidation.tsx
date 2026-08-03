@@ -74,7 +74,7 @@ function useDateValidation(input: string, parseFail: boolean = false): string {
 
     const matches = input.split(separator);
 
-    if (!validateTwoMatches(matches[0], matches[1])) {
+    if (!validateTwoMatches(matches[0], matches[1], dateFormat)) {
       return rendererStrings.dateInvalidError;
     }
 
