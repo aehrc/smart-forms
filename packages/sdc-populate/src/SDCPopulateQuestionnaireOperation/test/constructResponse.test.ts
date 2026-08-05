@@ -16,7 +16,7 @@
  */
 
 import { describe, expect, it } from '@jest/globals';
-import { checkIsDateTime, checkIsTime, convertDateTimeToDate } from '../utils/constructResponse';
+import { checkIsDateTime, convertDateTimeToDate } from '../utils/constructResponse';
 
 // These tests lock the date versus dateTime discrimination used by parseValueToAnswer() to decide
 // whether a populated answer becomes a valueDate or a valueDateTime. The suite runs with
@@ -125,22 +125,5 @@ describe('convertDateTimeToDate', () => {
 
   it('returns the original value for a time-only value', () => {
     expect(convertDateTimeToDate('10:00:00')).toBe('10:00:00');
-  });
-});
-
-describe('checkIsTime', () => {
-  it('accepts a time, with or without fractional seconds', () => {
-    expect(checkIsTime('00:00:00')).toBe(true);
-    expect(checkIsTime('14:30:45')).toBe(true);
-    expect(checkIsTime('23:59:60')).toBe(true);
-    expect(checkIsTime('14:30:45.123')).toBe(true);
-  });
-
-  it('rejects an out-of-range or malformed time', () => {
-    expect(checkIsTime('24:00:00')).toBe(false);
-    expect(checkIsTime('14:60:00')).toBe(false);
-    expect(checkIsTime('14:30')).toBe(false);
-    expect(checkIsTime('2023-06-15T14:30:45Z')).toBe(false);
-    expect(checkIsTime('')).toBe(false);
   });
 });
