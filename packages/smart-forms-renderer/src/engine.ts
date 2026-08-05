@@ -29,10 +29,11 @@
  * specifiers and the package does not set `"type": "module"`, so every entrypoint including
  * this one is bundler-only. That is pre-existing and unchanged here.
  *
- * This entrypoint is the supported alternative. Its contents are the subset of the package's
- * public API that has no DOM or UI-library dependency, plus the vanilla Zustand stores that
- * hold form state. It intentionally re-exports nothing from `src/components`, `src/hooks` or
- * `src/theme`.
+ * This entrypoint is the supported alternative. Its contents are the subset of the root
+ * barrel's public API that has no DOM or UI-library dependency, plus the vanilla Zustand
+ * stores that hold form state. Every name exported here is also exported from the package
+ * root (a test enforces this), so nothing becomes public by appearing here alone. It
+ * intentionally re-exports nothing from `src/components`, `src/hooks` or `src/theme`.
  *
  * Two consequences of being headless are worth stating:
  * - Nothing here renders. `buildForm` and the stores drive form state; drawing it is the
@@ -51,9 +52,6 @@ export {
   useQuestionnaireResponseStore
 } from './stores/questionnaireResponseStore';
 
-export type { FormUpdateQueueStoreType, UpdateTask } from './stores/formUpdateQueueStore';
-export { formUpdateQueueStore, useFormUpdateQueueStore } from './stores/formUpdateQueueStore';
-
 export type { TerminologyServerStoreType } from './stores/terminologyServerStore';
 export { terminologyServerStore, useTerminologyServerStore } from './stores/terminologyServerStore';
 
@@ -71,33 +69,16 @@ export {
   destroyForm,
   getResponse,
   removeEmptyAnswersFromResponse,
-  removeInternalIdsFromResponse,
-  initialiseFhirClient,
-  answerHasValue,
-  qrItemHasItemsOrAnswer
+  removeInternalIdsFromResponse
 } from './utils/manageForm';
 export { initialiseQuestionnaireResponse } from './utils/initialise';
 
 // QuestionnaireResponse item construction and traversal
-export {
-  createEmptyQrItem,
-  createEmptyQrGroup,
-  updateQrItemsInGroup,
-  removeNoAnswerQrItem,
-  getQRItemId
-} from './utils/qrItem';
+export { createEmptyQrItem, createEmptyQrGroup, updateQrItemsInGroup } from './utils/qrItem';
 export { mapQItemsIndex, getQrItemsIndex } from './utils/mapItem';
 
 // Questionnaire item inspection
-export type { CollapsibleType } from './utils/qItem';
-export {
-  isRepeatItemAndNotCheckbox,
-  isCheckbox,
-  isHiddenByEnableWhen,
-  isItemHidden,
-  getGroupCollapsible,
-  getXHtmlStringFromQuestionnaire
-} from './utils/qItem';
+export { isRepeatItemAndNotCheckbox, isHiddenByEnableWhen } from './utils/qItem';
 export { isSpecificItemControl, getDecimalPrecision } from './utils/extensions';
 export { getQuestionnaireItem, getSectionHeading } from './utils/misc';
 
@@ -110,12 +91,8 @@ export { generateItemsToRepopulate } from './utils/repopulateItems';
 export { repopulateResponse } from './utils/repopulateIntoResponse';
 
 // Observation-based extraction
-export type { Extractable } from './utils/extractObservation';
 export {
   extractObservationBased,
   canBeObservationExtracted,
-  buildBundleFromObservationArray,
-  mapQItemsExtractable,
-  createObservation,
-  generateUniqueId
+  buildBundleFromObservationArray
 } from './utils/extractObservation';
