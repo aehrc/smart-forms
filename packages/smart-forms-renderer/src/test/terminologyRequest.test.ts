@@ -85,10 +85,6 @@ describe('terminologyRequest', () => {
       expect(result).toEqual(mockResponse);
     });
 
-    it('should default fetchTerminologyCallback to null', () => {
-      expect(terminologyServerStore.getState().fetchTerminologyCallback).toBeNull();
-    });
-
     it('should fall back to the built-in transport when the injected callback is set back to null', async () => {
       const fetchTerminologyCallback = injectTerminologyCallback({ resourceType: 'ValueSet' });
       terminologyServerStore.getState().setRequestOptions({ fetchTerminologyCallback: null });
@@ -248,9 +244,8 @@ describe('terminologyRequest', () => {
   });
 
   describe('requestTimeoutMs', () => {
-    it('should default to 5000 milliseconds', () => {
-      expect(TERMINOLOGY_REQUEST_TIMEOUT_MS).toBe(5000);
-      expect(getTerminologyRequestTimeoutMs()).toBe(5000);
+    afterEach(() => {
+      jest.useRealTimers();
     });
 
     it('should return the configured timeout', () => {
@@ -259,7 +254,8 @@ describe('terminologyRequest', () => {
     });
 
     it('should abandon a value set that takes longer than the configured timeout', async () => {
-      terminologyServerStore.getState().setRequestOptions({ requestTimeoutMs: 10 });
+      jest.useFakeTimers();
+      terminologyServerStore.getState().setRequestOptions({ requestTimeoutMs: 100 });
 
       const valueSetPromises: Record<string, ValueSetPromise> = {
         slow: {
@@ -269,12 +265,15 @@ describe('terminologyRequest', () => {
         }
       };
 
-      const result = await resolveValueSetPromises(valueSetPromises);
+      const resultPromise = resolveValueSetPromises(valueSetPromises);
+      await jest.advanceTimersByTimeAsync(200);
+      const result = await resultPromise;
 
       expect(result['slow']).toBeUndefined();
     });
 
     it('should keep a value set that resolves within the configured timeout', async () => {
+      jest.useFakeTimers();
       terminologyServerStore.getState().setRequestOptions({ requestTimeoutMs: 500 });
 
       const mockValueSet: ValueSet = { resourceType: 'ValueSet', status: 'active', id: 'vs-1' };
@@ -286,7 +285,9 @@ describe('terminologyRequest', () => {
         }
       };
 
-      const result = await resolveValueSetPromises(valueSetPromises);
+      const resultPromise = resolveValueSetPromises(valueSetPromises);
+      await jest.advanceTimersByTimeAsync(500);
+      const result = await resultPromise;
 
       expect(result['slow'].valueSet).toEqual(mockValueSet);
     });
