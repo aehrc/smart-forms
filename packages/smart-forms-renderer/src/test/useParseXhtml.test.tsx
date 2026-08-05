@@ -23,7 +23,7 @@ import {
   getStylesFromClass,
   getTextDisplayFlyover
 } from '../hooks/useParseXhtml';
-import type { QuestionnaireItem } from 'fhir/r4';
+import type { Extension, QuestionnaireItem } from 'fhir/r4';
 import React from 'react';
 
 describe('getTextDisplayFlyover', () => {
@@ -107,13 +107,101 @@ describe('getTextDisplayFlyover', () => {
     expect(getTextDisplayFlyover(qItem)).toBe('flyover plain text');
   });
 
-  it('returns empty string if there is no flyover childItem', () => {
+  it('returns empty string if there is no child item', () => {
     const qItem: QuestionnaireItem = {
       linkId: 'q1',
       type: 'group'
     };
-
     expect(getTextDisplayFlyover(qItem)).toBe('');
+  });
+
+  it('handles item.text missing gracefully', () => {
+    const qItem: QuestionnaireItem = {
+      linkId: 'q1',
+      type: 'group',
+      item: [
+        {
+          linkId: 'q1-child-flyover',
+          type: 'display',
+          extension: [
+            {
+              url: ITEM_CONTROL_URL,
+              valueCodeableConcept: {
+                coding: [
+                  {
+                    system: 'http://hl7.org/fhir/questionnaire-item-control',
+                    code: 'flyover'
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    };
+    expect(getTextDisplayFlyover(qItem)).toBe('');
+  });
+
+  it('returns empty string if display child type is not "display"', () => {
+    const qItem: QuestionnaireItem = {
+      linkId: 'q1',
+      type: 'group',
+      item: [
+        {
+          linkId: 'q1-child-instructions',
+          type: 'group',
+          text: 'flyover plain text',
+          extension: [
+            {
+              url: ITEM_CONTROL_URL,
+              valueCodeableConcept: {
+                coding: [
+                  {
+                    system: 'http://hl7.org/fhir/questionnaire-item-control',
+                    code: 'flyover'
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    };
+    expect(getTextDisplayFlyover(qItem)).toBe('');
+  });
+
+  it('falls through to a later flyover childItem when the first carries neither XHTML nor text', () => {
+    const flyoverExtension: Extension = {
+      url: ITEM_CONTROL_URL,
+      valueCodeableConcept: {
+        coding: [
+          {
+            system: 'http://hl7.org/fhir/questionnaire-item-control',
+            code: 'flyover'
+          }
+        ]
+      }
+    };
+
+    const qItem: QuestionnaireItem = {
+      linkId: 'q1',
+      type: 'group',
+      item: [
+        {
+          linkId: 'q1-child-flyover-empty',
+          type: 'display',
+          extension: [flyoverExtension]
+        },
+        {
+          linkId: 'q1-child-flyover-text',
+          type: 'display',
+          text: 'second flyover',
+          extension: [flyoverExtension]
+        }
+      ]
+    };
+
+    expect(getTextDisplayFlyover(qItem)).toBe('second flyover');
   });
 });
 

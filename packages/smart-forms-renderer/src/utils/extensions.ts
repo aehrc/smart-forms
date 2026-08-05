@@ -325,44 +325,6 @@ export function getTextDisplayInstructions(qItem: QuestionnaireItem): string {
 }
 
 /**
- * Plain-data source of a flyover's display text, before any XHTML parsing.
- * Exactly one of the two members carries the flyover, mirroring the precedence of
- * rendering-xhtml over item.text.
- */
-export interface TextDisplayFlyoverSource {
-  /** Raw XHTML string of the flyover childItem, or null when it has no rendering-xhtml extension. */
-  xHtmlString: string | null;
-  /** Plain text of the flyover childItem, or '' when there is no flyover childItem to show. */
-  text: string;
-}
-
-/**
- * Get the text display flyover source for items with itemControlCode flyover and has an flyover childItem.
- * This is the DOM-free half of the flyover lookup: it reads the extensions and returns plain data,
- * leaving XHTML parsing to the UI layer (see getTextDisplayFlyover in hooks/useParseXhtml).
- *
- * @author Sean Fong
- */
-export function getTextDisplayFlyoverSource(qItem: QuestionnaireItem): TextDisplayFlyoverSource {
-  if (qItem.item) {
-    for (const childItem of qItem.item) {
-      if (childItem.type === 'display' && isSpecificItemControl(childItem, 'flyover')) {
-        const xHtmlString = getXHtmlString(childItem);
-        if (xHtmlString) {
-          return { xHtmlString, text: '' };
-        }
-
-        if (typeof childItem.text === 'string') {
-          return { xHtmlString: null, text: childItem.text };
-        }
-      }
-    }
-  }
-
-  return { xHtmlString: null, text: '' };
-}
-
-/**
  * Get regex validation for items with regex extensions
  *
  * @author Sean Fong
