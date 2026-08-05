@@ -19,7 +19,7 @@ import { useCallback, useMemo, useState } from 'react';
 import type { Quantity, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import debounce from 'lodash.debounce';
 import useReadOnly from '../../../hooks/useReadOnly';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useValidationFeedbackSeverity from '../../../hooks/useValidationFeedbackSeverity';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
@@ -113,7 +113,7 @@ function QuantityItem(props: BaseItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, feedbackFromParent);
+  const { feedback, feedbackSeverity } = useValidationFeedbackSeverity(qItem, feedbackFromParent);
 
   const { displayInstructions } = useRenderingExtensions(qItem);
 
@@ -211,6 +211,7 @@ function QuantityItem(props: BaseItemProps) {
           itemText={qItem.text}
           input={valueInput}
           feedback={feedback ?? ''}
+          feedbackSeverity={feedbackSeverity}
           displayPrompt={displayPrompt}
           displayUnit={displayUnit}
           entryFormat={entryFormat}
@@ -265,6 +266,7 @@ function QuantityItem(props: BaseItemProps) {
               itemText={qItem.text}
               input={valueInput}
               feedback={feedback ?? ''}
+              feedbackSeverity={feedbackSeverity}
               displayPrompt={displayPrompt}
               displayUnit={displayUnit}
               entryFormat={entryFormat}

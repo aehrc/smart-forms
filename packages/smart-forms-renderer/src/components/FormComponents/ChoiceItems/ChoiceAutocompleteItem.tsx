@@ -22,7 +22,7 @@ import type { AlertColor } from '@mui/material/Alert';
 import useDebounce from '../../../hooks/useDebounce';
 import useReadOnly from '../../../hooks/useReadOnly';
 import useTerminologyServerQuery from '../../../hooks/useTerminologyServerQuery';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useValidationFeedbackSeverity from '../../../hooks/useValidationFeedbackSeverity';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
 import { AUTOCOMPLETE_DEBOUNCE_DURATION } from '../../../utils/debounce';
@@ -64,7 +64,8 @@ function ChoiceAutocompleteItem(props: BaseItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const validationFeedback = useValidationFeedback(qItem, feedbackFromParent);
+  const { feedback: validationFeedback, feedbackSeverity: validationFeedbackSeverity } =
+    useValidationFeedbackSeverity(qItem, feedbackFromParent);
   const { displayInstructions } = renderingExtensions;
   const instructionsId =
     displayInstructions && !validationFeedback ? `instructions-${qItem.linkId}` : undefined;
@@ -79,7 +80,7 @@ function ChoiceAutocompleteItem(props: BaseItemProps) {
   if (terminologyFeedback) {
     feedback = terminologyFeedback;
   } else if (validationFeedback !== '') {
-    feedback = { message: validationFeedback, color: 'error' };
+    feedback = { message: validationFeedback, color: validationFeedbackSeverity };
   }
 
   if (!qItem.answerValueSet) {

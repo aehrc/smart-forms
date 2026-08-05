@@ -17,7 +17,7 @@
 
 import React, { useCallback, useState } from 'react';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useValidationFeedbackSeverity from '../../../hooks/useValidationFeedbackSeverity';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
 import debounce from 'lodash.debounce';
 import { createEmptyQrItem, getQRItemId } from '../../../utils/qrItem';
@@ -58,7 +58,7 @@ function UrlItem(props: BaseItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks
-  const feedback = useValidationFeedback(qItem, feedbackFromParent);
+  const { feedback, feedbackSeverity } = useValidationFeedbackSeverity(qItem, feedbackFromParent);
 
   const { displayInstructions } = useRenderingExtensions(qItem);
 
@@ -95,6 +95,7 @@ function UrlItem(props: BaseItemProps) {
         itemType={qItem.type}
         input={input}
         feedback={feedback ?? ''}
+        feedbackSeverity={feedbackSeverity}
         displayPrompt={displayPrompt}
         displayUnit={displayUnit}
         entryFormat={entryFormat}
@@ -121,6 +122,7 @@ function UrlItem(props: BaseItemProps) {
             itemType={qItem.type}
             input={input}
             feedback={feedback ?? ''}
+            feedbackSeverity={feedbackSeverity}
             displayPrompt={displayPrompt}
             displayUnit={displayUnit}
             entryFormat={entryFormat}

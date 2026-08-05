@@ -29,6 +29,7 @@ interface QuantityFieldProps extends PropsWithIsTabledAttribute {
   itemText?: string;
   input: string;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   displayPrompt: string;
   displayUnit: string;
   entryFormat: string;
@@ -45,6 +46,7 @@ function QuantityField(props: QuantityFieldProps) {
     itemText,
     input,
     feedback,
+    feedbackSeverity,
     displayPrompt,
     displayUnit,
     entryFormat,
@@ -76,7 +78,7 @@ function QuantityField(props: QuantityFieldProps) {
     <StandardTextField
       id={inputId}
       value={input}
-      error={!!feedback}
+      error={!!feedback && feedbackSeverity !== 'warning'}
       onChange={(event) => onInputChange(event.target.value)}
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       placeholder={placeholderText}
@@ -90,6 +92,9 @@ function QuantityField(props: QuantityFieldProps) {
           pattern: '[0-9]*',
           ...(ariaLabel && { 'aria-label': ariaLabel }),
           ...(instructionsId && { 'aria-describedby': instructionsId })
+        },
+        formHelperText: {
+          sx: feedbackSeverity === 'warning' && !!feedback ? { color: 'warning.main' } : undefined
         },
         input: {
           readOnly: readOnly && readOnlyVisualStyle === 'readonly',

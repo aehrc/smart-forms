@@ -36,6 +36,7 @@ interface ChoiceSelectAnswerOptionViewProps
   options: QuestionnaireItemAnswerOption[];
   valueChoice: string | null;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   readOnly: boolean;
   expressionUpdated: boolean;
   answerOptionsToggleExpressionsMap: Map<string, boolean>;
@@ -50,6 +51,7 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
     options,
     valueChoice,
     feedback,
+    feedbackSeverity,
     isRepeated,
     isTabled,
     renderingExtensions,
@@ -73,6 +75,7 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
         options={options}
         valueSelect={valueSelect}
         feedback={feedback}
+        feedbackSeverity={feedbackSeverity}
         readOnly={readOnly}
         expressionUpdated={expressionUpdated}
         isTabled={isTabled}
@@ -100,6 +103,7 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
             options={options}
             valueSelect={valueSelect}
             feedback={feedback}
+            feedbackSeverity={feedbackSeverity}
             readOnly={readOnly}
             expressionUpdated={expressionUpdated}
             isTabled={isTabled}

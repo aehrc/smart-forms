@@ -37,6 +37,7 @@ interface SliderFieldProps extends PropsWithIsTabledAttribute {
   stepValue: number;
   isInteracted: boolean;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   readOnly: boolean;
   instructionsId?: string;
   onValueChange: (newValue: number) => void;
@@ -55,6 +56,7 @@ function SliderField(props: SliderFieldProps) {
     maxLabel,
     isInteracted,
     feedback,
+    feedbackSeverity,
     readOnly,
     instructionsId,
     isTabled,
@@ -109,7 +111,12 @@ function SliderField(props: SliderFieldProps) {
         />
       </Stack>
 
-      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
+      {feedback ? (
+        <StyledRequiredTypography
+          sx={feedbackSeverity === 'warning' ? { color: 'warning.main' } : undefined}>
+          {feedback}
+        </StyledRequiredTypography>
+      ) : null}
     </>
   );
 }

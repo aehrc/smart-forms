@@ -19,7 +19,7 @@ import type { QuestionnaireItemAnswerOption } from 'fhir/r4';
 import useAnswerOptionsToggleExpressions from '../../../hooks/useAnswerOptionsToggleExpressions';
 import useReadOnly from '../../../hooks/useReadOnly';
 import useRenderingExtensions from '../../../hooks/useRenderingExtensions';
-import useValidationFeedback from '../../../hooks/useValidationFeedback';
+import useValidationFeedbackSeverity from '../../../hooks/useValidationFeedbackSeverity';
 import type { BaseItemProps } from '../../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../../stores';
 import { findInAnswerOptions, getQrChoiceValue } from '../../../utils/choice';
@@ -45,7 +45,7 @@ function ChoiceSelectAnswerOptionItem(props: BaseItemProps) {
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
   // Perform validation checks - there's no string-based input here
-  const feedback = useValidationFeedback(qItem, feedbackFromParent);
+  const { feedback, feedbackSeverity } = useValidationFeedbackSeverity(qItem, feedbackFromParent);
 
   // Get instructions ID for aria-describedby
   const { displayInstructions } = useRenderingExtensions(qItem);
@@ -94,6 +94,7 @@ function ChoiceSelectAnswerOptionItem(props: BaseItemProps) {
       options={options}
       valueChoice={valueChoice}
       feedback={feedback}
+      feedbackSeverity={feedbackSeverity}
       readOnly={readOnly}
       expressionUpdated={calcExpUpdated || answerOptionsToggleExpUpdated}
       isRepeated={isRepeated}

@@ -37,6 +37,7 @@ interface BooleanFieldProps {
   readOnly: boolean;
   valueBoolean: boolean | undefined;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   calcExpUpdated: boolean;
   instructionsId: string | undefined;
   onCheckedChange: (newValue: string) => void;
@@ -49,6 +50,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
     readOnly,
     valueBoolean,
     feedback,
+    feedbackSeverity,
     calcExpUpdated,
     instructionsId,
     onCheckedChange,
@@ -182,7 +184,12 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
         />
       </Box>
 
-      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
+      {feedback ? (
+        <StyledRequiredTypography
+          sx={feedbackSeverity === 'warning' ? { color: 'warning.main' } : undefined}>
+          {feedback}
+        </StyledRequiredTypography>
+      ) : null}
     </>
   );
 });

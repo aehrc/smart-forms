@@ -35,6 +35,7 @@ interface AttachmentFieldProps extends PropsWithIsTabledAttribute {
   itemText: string | undefined;
   attachmentValues: AttachmentValues;
   feedback: string;
+  feedbackSeverity?: 'error' | 'warning';
   readOnly: boolean;
   instructionsId: string | undefined;
   onUploadFile: (file: File | null) => void;
@@ -49,6 +50,7 @@ function AttachmentField(props: AttachmentFieldProps) {
     itemText,
     attachmentValues,
     feedback,
+    feedbackSeverity,
     readOnly,
     isTabled,
     instructionsId,
@@ -148,7 +150,12 @@ function AttachmentField(props: AttachmentFieldProps) {
         </Stack>
       </div>
 
-      {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
+      {feedback ? (
+        <StyledRequiredTypography
+          sx={feedbackSeverity === 'warning' ? { color: 'warning.main' } : undefined}>
+          {feedback}
+        </StyledRequiredTypography>
+      ) : null}
     </>
   );
 }
