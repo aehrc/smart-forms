@@ -11,20 +11,7 @@ View the changelog [here](https://github.com/aehrc/smart-forms/blob/main/CHANGEL
 
 We recently updated to v1.0.0 which includes some breaking changes. Please refer to the [migration guide](https://github.com/aehrc/smart-forms/blob/main/MIGRATION-v1.0.md) for more information.
 
-## Typography
-
-The renderer theme asks for the [Inter](https://rsms.me/inter/) typeface, falling back to the platform's default sans-serif font. The library does not load any webfont itself, so if you want the intended typography, provide Inter in your own application. The simplest way is to self-host it:
-
-```bash
-npm install @fontsource/inter
-```
-
-```ts
-// In your application entrypoint
-import '@fontsource/inter';
-```
-
-Linking a hosted stylesheet or declaring your own `@font-face` works equally well. If Inter is not available the renderer still lays out correctly, it just uses your platform's default sans-serif font.
+The renderer does not load any webfont itself. To get the intended [Inter](https://rsms.me/inter/) typography, provide the font in your own application as described in the [Typography section of the documentation](https://smartforms.csiro.au/docs/dev/renderer-overview#typography).
 
 ---
 
