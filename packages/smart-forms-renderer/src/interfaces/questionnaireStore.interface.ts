@@ -42,6 +42,8 @@ export interface QuestionnaireModel {
   initialExpressions: Record<string, InitialExpression>;
   answerExpressions: Record<string, AnswerExpression>;
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>;
+  /** Per-coding keys (`${system}|${code}`) where $lookup failed — individual options can be labelled with their code as fallback */
+  answerOptionsLookupFailures: Set<string>;
   answerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
   processedValueSets: Record<string, ProcessedValueSet>;
   cachedValueSetCodings: Record<string, Coding[]>;
