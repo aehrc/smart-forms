@@ -27,7 +27,7 @@ import type { GroupTableRowModel } from '../../../interfaces/groupTable.interfac
 import DragIndicator from '@mui/icons-material/DragIndicator';
 import TableCell from '@mui/material/TableCell';
 import Box from '@mui/material/Box';
-import { Draggable } from 'react-beautiful-dnd';
+import { Draggable } from '@hello-pangea/dnd';
 import { StyledGroupTableRow } from './Table.styles';
 
 interface GroupTableRowProps extends PropsWithParentIsReadOnlyAttribute, TableRowProps {
