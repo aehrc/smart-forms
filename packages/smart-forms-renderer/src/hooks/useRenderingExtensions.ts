@@ -23,22 +23,12 @@ import {
   isItemRepopulatable
 } from '../utils/extensions';
 import { getTextDisplayFlyover } from './useParseXhtml';
-import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import type { QuestionnaireItem } from 'fhir/r4';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
-import type { JSX } from 'react';
 import { useMemo } from 'react';
+import type { RenderingExtensions } from '../interfaces/renderingExtensions.interface';
 
-export interface RenderingExtensions {
-  displayUnit: string;
-  displayPrompt: string;
-  displayInstructions: string;
-  displayFlyover: string | JSX.Element | JSX.Element[];
-  readOnly: boolean;
-  entryFormat: string;
-  required: boolean;
-  quantityUnit: QuestionnaireItemAnswerOption | null;
-  isRepopulatable: boolean;
-}
+export type { RenderingExtensions } from '../interfaces/renderingExtensions.interface';
 
 function useRenderingExtensions(qItem: QuestionnaireItem): RenderingExtensions {
   return useMemo(
