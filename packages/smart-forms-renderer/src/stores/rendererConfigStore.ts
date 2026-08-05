@@ -18,7 +18,7 @@
 import { createStore } from 'zustand/vanilla';
 import { createSelectors } from './selector';
 import type { QuestionnaireItem } from 'fhir/r4';
-import type { UseResponsiveProps } from '../hooks';
+import type { UseResponsiveProps } from '../hooks/useResponsive';
 import type { Breakpoints } from '@mui/material';
 
 /**
