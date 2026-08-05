@@ -1,8 +1,7 @@
 name: CDK Infrastructure Deployment
 
-# Deliberately dispatch only. These stacks back the demo and evaluation environments, and an
-# unattended deploy replaces the HAPI tasks, which briefly takes the FHIR servers offline. Deploying
-# is therefore always a decision someone makes, never a side effect of merging.
+# Deliberately dispatch only: deploying briefly takes the FHIR servers offline, so it is always
+# someone's decision, never a side effect of merging. See deployment/README.md.
 on:
   workflow_dispatch:
     inputs:
@@ -30,40 +29,13 @@ jobs:
   diff:
     name: Diff ${{ inputs.stack }}
     runs-on: ubuntu-latest
-    outputs:
-      has_changes: ${{ steps.diff.outputs.has_changes }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Use Node.js 20.x
-        uses: actions/setup-node@v4
+      - name: Set up Node, build the deployment packages, configure AWS
+        uses: ./.github/actions/cdk-setup
         with:
-          node-version: 20
-          cache: npm
-
-      - name: Check the deployment role is configured
-        run: |
-          if [ -z "${{ vars.AWS_CDK_DEPLOY_ROLE_ARN }}" ]; then
-            echo "::error::Repository variable AWS_CDK_DEPLOY_ROLE_ARN is not set."
-            echo "::error::It must name a role that trusts repo:aehrc/smart-forms and can assume the"
-            echo "::error::cdk-hnb659fds-* bootstrap roles in account 209248795938."
-            exit 1
-          fi
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build deployment packages
-        run: |
-          npm run build -w shared-hapi-endpoint
-          npm run build -w ehr-proxy-smart-proxy
-          npm run build -w forms-server-assemble-endpoint
-          npm run build -w forms-server-populate-endpoint
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ vars.AWS_CDK_DEPLOY_ROLE_ARN }}
+          role-arn: ${{ vars.AWS_CDK_DEPLOY_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
       # The default change set method is used rather than --method=template on purpose. A
@@ -71,18 +43,13 @@ jobs:
       # graph, which is how a circular dependency between the HAPI service and its database once
       # reached a deploy attempt undetected.
       - name: cdk diff
-        id: diff
         run: |
           set -o pipefail
-          changes=0
           for stack in $(.github/scripts/cdk-stacks.sh '${{ inputs.stack }}'); do
             dir=$(.github/scripts/cdk-stacks.sh --dir "$stack")
             echo "::group::cdk diff $stack"
             ( cd "$dir" && npx cdk diff "$stack" 2>&1 ) | tee "/tmp/diff-$stack.txt"
             echo "::endgroup::"
-            if grep -qE "Number of stacks with differences: [1-9]" "/tmp/diff-$stack.txt"; then
-              changes=1
-            fi
             {
               echo "### \`$stack\`"
               echo '```'
@@ -91,39 +58,21 @@ jobs:
               echo '```'
             } >> "$GITHUB_STEP_SUMMARY"
           done
-          echo "has_changes=$changes" >> "$GITHUB_OUTPUT"
 
   deploy:
     name: Deploy ${{ inputs.stack }}
     needs: diff
     if: inputs.action == 'deploy'
     runs-on: ubuntu-latest
-    # Access control lives here. Configure `aws-production` in Settings > Environments with the
-    # reviewers allowed to deploy. An `if: github.actor == ...` check is not a security boundary.
+    # Access control lives here, in the environment's required reviewers. See deployment/README.md.
     environment: aws-production
     steps:
       - uses: actions/checkout@v4
 
-      - name: Use Node.js 20.x
-        uses: actions/setup-node@v4
+      - name: Set up Node, build the deployment packages, configure AWS
+        uses: ./.github/actions/cdk-setup
         with:
-          node-version: 20
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build deployment packages
-        run: |
-          npm run build -w shared-hapi-endpoint
-          npm run build -w ehr-proxy-smart-proxy
-          npm run build -w forms-server-assemble-endpoint
-          npm run build -w forms-server-populate-endpoint
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ vars.AWS_CDK_DEPLOY_ROLE_ARN }}
+          role-arn: ${{ vars.AWS_CDK_DEPLOY_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: cdk deploy

@@ -1,8 +1,7 @@
 name: CDK Infrastructure Drift Check
 
-# Nothing deploys these stacks automatically, so what is on main and what is running in AWS can
-# drift apart silently. They were last deployed in 2025 and sat behind main for months without
-# anyone noticing. This reports that gap rather than waiting for someone to trip over it.
+# Nothing deploys these stacks automatically, so main and the deployed stacks can drift apart
+# silently. This reports that gap. See deployment/README.md.
 on:
   schedule:
     # 09:00 Monday, Australian eastern time.
@@ -24,33 +23,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Use Node.js 20.x
-        uses: actions/setup-node@v4
+      - name: Set up Node, build the deployment packages, configure AWS
+        uses: ./.github/actions/cdk-setup
         with:
-          node-version: 20
-          cache: npm
-
-      - name: Check the deployment role is configured
-        run: |
-          if [ -z "${{ vars.AWS_CDK_DEPLOY_ROLE_ARN }}" ]; then
-            echo "::error::Repository variable AWS_CDK_DEPLOY_ROLE_ARN is not set."
-            exit 1
-          fi
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build deployment packages
-        run: |
-          npm run build -w shared-hapi-endpoint
-          npm run build -w ehr-proxy-smart-proxy
-          npm run build -w forms-server-assemble-endpoint
-          npm run build -w forms-server-populate-endpoint
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ vars.AWS_CDK_DEPLOY_ROLE_ARN }}
+          role-arn: ${{ vars.AWS_CDK_DEPLOY_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
       # --method=template here, unlike the deploy workflow. This job only asks whether main and the
@@ -62,7 +38,7 @@ jobs:
         run: |
           set -o pipefail
           drifted=''
-          for stack in EhrProxyAppStack FormsServerAppStack; do
+          for stack in $(.github/scripts/cdk-stacks.sh both); do
             dir=$(.github/scripts/cdk-stacks.sh --dir "$stack")
             echo "::group::cdk diff $stack"
             ( cd "$dir" && npx cdk diff "$stack" --method=template 2>&1 ) | tee "/tmp/$stack.txt"
@@ -79,7 +55,7 @@ jobs:
             else
               echo "## No drift. Deployed stacks match main."
             fi
-            for stack in EhrProxyAppStack FormsServerAppStack; do
+            for stack in $(.github/scripts/cdk-stacks.sh both); do
               echo "<details><summary>$stack</summary>"
               echo
               echo '```'
