@@ -15,6 +15,9 @@
  * limitations under the License.
  */
 
+// Self-hosted Inter, the typeface requested by the renderer and app themes
+import '@fontsource/inter';
+
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import type { DefaultOptions } from '@tanstack/react-query';
