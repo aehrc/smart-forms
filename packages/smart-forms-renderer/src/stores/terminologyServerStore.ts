@@ -47,7 +47,9 @@ export interface TerminologyRequestOptions {
 /**
  * TerminologyServerStore properties and methods
  * Properties can be accessed for fine-grain details.
- * Methods are usually used internally, using them from an external source is not recommended.
+ * Methods are usually used internally. The exceptions are `setUrl` and `setRequestOptions`
+ * (with their reset counterparts), which are the supported public entry points for configuring
+ * the terminology server URL and the terminology transport.
  *
  * @property url - The current terminology server URL
  * @property fetchTerminologyCallback - The injected terminology transport, or `null` to use the built-in `fhirclient` one

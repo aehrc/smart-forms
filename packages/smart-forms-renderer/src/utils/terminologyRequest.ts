@@ -44,7 +44,9 @@ export function terminologyRequest(query: string, terminologyServerUrl: string):
 }
 
 /**
- * Returns the timeout, in milliseconds, that a single terminology request is allowed to take.
+ * Returns the timeout, in milliseconds, that a value set expansion may take during form build
+ * before it is abandoned. Applies only to the batch `$expand` of `answerValueSet` bindings in
+ * `resolveValueSetPromises()`; other terminology calls have no timeout.
  * Defaults to 5000, overridable via `terminologyServerStore.getState().setRequestOptions()`.
  */
 export function getTerminologyRequestTimeoutMs(): number {

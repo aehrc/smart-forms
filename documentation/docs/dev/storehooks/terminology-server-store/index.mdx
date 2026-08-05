@@ -59,11 +59,14 @@ terminologyServerStore.getState().setRequestOptions({
 JSON body and reject on a transport or HTTP error. This is the same callback shape
 `@aehrc/sdc-populate`'s `populateQuestionnaire()` accepts, so one implementation can serve both.
 
-`requestTimeoutMs` sets how long a single terminology request may take before it is abandoned, which
-defaults to 5000. Raise it for slower networks such as mobile.
+`requestTimeoutMs` sets how long a value set expansion may take during form build before it is
+abandoned, which defaults to 5000. It applies only to the batch `$expand` of `answerValueSet`
+bindings; `$validate-code` and `CodeSystem/$lookup` are not timed. Raise it for slower networks such
+as mobile.
 
 Both options are optional and independent: leaving `fetchTerminologyCallback` unset keeps the built-in
 transport. `setRequestOptions()` only changes the options you pass, and `resetRequestOptions()` puts
-both back to their defaults.
+both back to their defaults. Unlike the terminology server URL, which `buildForm()` resets on every
+build, these options persist across `buildForm()` calls, so set them once at startup.
 
 Refer to the [API Reference](/docs/api/smart-forms-renderer/interfaces/TerminologyServerStoreType) for more information on each property.
