@@ -19,6 +19,7 @@ import type { SpeedDialActionProps } from '@mui/material';
 import {
   buildBundleFromObservationArray,
   extractObservationBased,
+  getBaseLinkIdFromErrorKey,
   useQuestionnaireResponseStore,
   useQuestionnaireStore
 } from '@aehrc/smart-forms-renderer';
@@ -74,8 +75,11 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
     highlightRequiredItems();
 
     if (Object.keys(tabs).length > 0) {
+      // invalidItems keys may be instance-scoped (e.g. `linkId///1` for repeating groups),
+      // so map them back to their base linkId before matching against questionnaire items
+      const invalidLinkIds = Object.keys(invalidItems).map(getBaseLinkIdFromErrorKey);
       const firstErrorTabIndex = findFirstErrorTabIndex(
-        Object.keys(invalidItems),
+        invalidLinkIds,
         sourceQuestionnaire.item ?? [],
         tabs
       );

@@ -99,7 +99,9 @@ export {
   canBeObservationExtracted,
   buildBundleFromObservationArray,
   getQuestionnaireItem,
-  getSectionHeading
+  getSectionHeading,
+  getValidationErrorKey,
+  getBaseLinkIdFromErrorKey
 } from './utils';
 
 // theme provider exports
