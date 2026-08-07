@@ -17,7 +17,12 @@
  * limitations under the License.
  */
 
-import { getBaseLinkIdFromErrorKey, getValidationErrorKey } from '../utils/validateErrorKey';
+import {
+  appendRepeatInstanceIndex,
+  getBaseLinkIdFromErrorKey,
+  getValidationErrorKey,
+  UNMATCHABLE_REPEAT_INSTANCE_INDEX
+} from '../utils/validateErrorKey';
 
 describe('getValidationErrorKey', () => {
   it('returns the bare linkId when there is no repeat instance path', () => {
@@ -58,5 +63,25 @@ describe('getBaseLinkIdFromErrorKey', () => {
   it('round-trips with getValidationErrorKey', () => {
     const key = getValidationErrorKey('some-link-id', [4, 2]);
     expect(getBaseLinkIdFromErrorKey(key)).toBe('some-link-id');
+  });
+});
+
+describe('appendRepeatInstanceIndex', () => {
+  it('appends a QuestionnaireResponse instance index to the parent path', () => {
+    expect(appendRepeatInstanceIndex([], 0)).toEqual([0]);
+    expect(appendRepeatInstanceIndex([1], 2)).toEqual([1, 2]);
+  });
+
+  it('appends an unmatchable index when the instance is not in the QuestionnaireResponse', () => {
+    expect(appendRepeatInstanceIndex([], null)).toEqual([UNMATCHABLE_REPEAT_INSTANCE_INDEX]);
+    expect(appendRepeatInstanceIndex([1], null)).toEqual([1, UNMATCHABLE_REPEAT_INSTANCE_INDEX]);
+  });
+
+  it('produces a key that validation can never write for an instance not in the QuestionnaireResponse', () => {
+    const unmatchableKey = getValidationErrorKey('my-item', appendRepeatInstanceIndex([], null));
+
+    // Validation only walks QuestionnaireResponse instances, so its indices are always >= 0
+    expect(unmatchableKey).not.toBe(getValidationErrorKey('my-item', [0]));
+    expect(unmatchableKey).not.toBe(getValidationErrorKey('my-item'));
   });
 });

@@ -16,7 +16,11 @@
  */
 
 import type { QuestionnaireResponseItem } from 'fhir/r4';
-import { getGroupTableItemsToUpdate, reorderRows } from '../../utils/groupTable';
+import {
+  getGroupTableItemsToUpdate,
+  getQrGroupTableRowIndex,
+  reorderRows
+} from '../../utils/groupTable';
 import type { GroupTableRowModel } from '../../interfaces/groupTable.interface';
 
 describe('groupTable utilities', () => {
@@ -299,6 +303,67 @@ describe('groupTable utilities', () => {
         expect(result[0].linkId).toBe('row1'); // Table order is preserved
         expect(result[1].linkId).toBe('row3');
       });
+    });
+  });
+
+  describe('getQrGroupTableRowIndex', () => {
+    const filledRow = (id: string): GroupTableRowModel => ({
+      id,
+      qrItem: { linkId: id, item: [] } as QuestionnaireResponseItem
+    });
+
+    const emptyRow = (id: string): GroupTableRowModel => ({ id, qrItem: null });
+
+    it('matches the row position in getGroupTableItemsToUpdate for every row', () => {
+      const tableRows = [
+        emptyRow('row1'), // dropped: no qrItem
+        filledRow('row2'),
+        filledRow('row3'), // dropped: not selected
+        filledRow('row4')
+      ];
+      const selectedIds = ['row1', 'row2', 'row4'];
+
+      const qrItems = getGroupTableItemsToUpdate(tableRows, selectedIds);
+
+      // Every row that made it into the QR must resolve to its own position in that array
+      tableRows.forEach((row, index) => {
+        const qrRowIndex = getQrGroupTableRowIndex(tableRows, selectedIds, index);
+
+        if (qrRowIndex === null) {
+          expect(qrItems.some((qrItem) => qrItem.linkId === row.id)).toBe(false);
+          return;
+        }
+
+        expect(qrItems[qrRowIndex].linkId).toBe(row.id);
+      });
+
+      expect(getQrGroupTableRowIndex(tableRows, selectedIds, 1)).toBe(0);
+      expect(getQrGroupTableRowIndex(tableRows, selectedIds, 3)).toBe(1);
+    });
+
+    it('returns null for a row with no qrItem', () => {
+      const tableRows = [emptyRow('row1'), filledRow('row2')];
+
+      expect(getQrGroupTableRowIndex(tableRows, ['row1', 'row2'], 0)).toBeNull();
+    });
+
+    it('returns null for an unselected row', () => {
+      const tableRows = [filledRow('row1'), filledRow('row2')];
+
+      expect(getQrGroupTableRowIndex(tableRows, ['row2'], 0)).toBeNull();
+    });
+
+    it('returns null for an out-of-range index', () => {
+      expect(getQrGroupTableRowIndex([filledRow('row1')], ['row1'], 5)).toBeNull();
+    });
+
+    it('is the rendered index when no earlier row is dropped', () => {
+      const tableRows = [filledRow('row1'), filledRow('row2'), filledRow('row3')];
+      const selectedIds = ['row1', 'row2', 'row3'];
+
+      expect(getQrGroupTableRowIndex(tableRows, selectedIds, 0)).toBe(0);
+      expect(getQrGroupTableRowIndex(tableRows, selectedIds, 1)).toBe(1);
+      expect(getQrGroupTableRowIndex(tableRows, selectedIds, 2)).toBe(2);
     });
   });
 });

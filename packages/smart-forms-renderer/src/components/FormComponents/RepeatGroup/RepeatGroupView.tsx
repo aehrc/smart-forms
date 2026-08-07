@@ -39,6 +39,7 @@ import GroupHeading from '../GroupItem/GroupHeading';
 import { itemHasLabelHeadingContent } from '../../../utils/itemTextToDisplay';
 import { isGroupAddItemButtonHidden } from '../../../utils/extensions';
 import GroupAccordion from '../GroupItem/GroupAccordion';
+import { getQrRepeatGroupInstanceIndex } from '../../../utils/repeatGroup';
 
 interface RepeatGroupViewProps
   extends PropsWithParentIsReadOnlyAttribute,
@@ -110,6 +111,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
                   <RepeatGroupItem
                     qItem={qItem}
                     repeatGroupIndex={index}
+                    qrInstanceIndex={getQrRepeatGroupInstanceIndex(repeatGroups, index)}
                     answeredQrItem={answeredQrItem}
                     nullableQrItem={nullableQrItem}
                     numOfRepeatGroups={repeatGroups.length}
@@ -160,6 +162,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
                 <RepeatGroupItem
                   qItem={qItem}
                   repeatGroupIndex={index}
+                  qrInstanceIndex={getQrRepeatGroupInstanceIndex(repeatGroups, index)}
                   answeredQrItem={answeredQrItem}
                   nullableQrItem={nullableQrItem}
                   numOfRepeatGroups={repeatGroups.length}
