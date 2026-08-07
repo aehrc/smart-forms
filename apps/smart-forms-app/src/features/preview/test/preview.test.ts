@@ -939,6 +939,116 @@ describe('renderRepeatGroupHtml - Direct Unit Tests', () => {
     expect(html).toContain('Diet plan');
   });
 
+  it('preserves every answer for a repeating field inside a complex (card) repeat group', () => {
+    // Mirrors the real GPCCMP structure: "Goals and tasks" (plan-goalstasks) is a repeating
+    // group with a group-type child (Interventions), making it "complex" → card layout.
+    // Its "Problems/Needs" sibling is a multi-select open-choice, so a single instance can
+    // have more than one answer — losing all but the first here would be a real clinical gap.
+    const qItem = {
+      linkId: 'goals-tasks',
+      type: 'group' as const,
+      text: 'Goals and Tasks',
+      repeats: true,
+      item: [
+        {
+          linkId: 'problem-name',
+          type: 'open-choice' as const,
+          text: 'Problems/Needs',
+          repeats: true
+        },
+        {
+          linkId: 'interventions',
+          type: 'group' as const,
+          text: 'Interventions and Actions',
+          repeats: true,
+          item: [{ linkId: 'intervention-text', type: 'string' as const, text: 'Intervention' }]
+        }
+      ]
+    };
+
+    const qrItems = [
+      {
+        linkId: 'goals-tasks',
+        item: [
+          {
+            linkId: 'problem-name',
+            answer: [{ valueString: 'Diabetes' }, { valueString: 'Hypertension' }]
+          },
+          {
+            linkId: 'interventions',
+            item: [{ linkId: 'intervention-text', answer: [{ valueString: 'Diet plan' }] }]
+          }
+        ]
+      }
+    ];
+
+    const html = renderRepeatGroupHtml(qItem, qrItems);
+    const htmlDoc = parseHtml(html);
+
+    // Both selected Problems/Needs must appear — not just the first
+    const listItems = Array.from(htmlDoc.querySelectorAll('li')).map((li) => li.textContent);
+    expect(listItems).toEqual(['Diabetes', 'Hypertension']);
+  });
+
+  it('renders a non-repeating nested group as label/value paragraphs, not a table, inside a card', () => {
+    // A plain one-off sub-group (no `repeats`) nested inside a complex repeat group should
+    // render the same way it would anywhere else in the document — heading + label/value pairs —
+    // not get pulled into table/card styling, which is reserved for things that actually repeat.
+    const qItem = {
+      linkId: 'goals-tasks',
+      type: 'group' as const,
+      text: 'Goals and Tasks',
+      repeats: true,
+      item: [
+        {
+          linkId: 'interventions',
+          type: 'group' as const,
+          text: 'Interventions',
+          repeats: true,
+          item: [{ linkId: 'intervention-text', type: 'string' as const, text: 'Intervention' }]
+        },
+        {
+          linkId: 'target',
+          type: 'group' as const,
+          text: 'Target',
+          item: [
+            { linkId: 'target-street', type: 'string' as const, text: 'Street' },
+            { linkId: 'target-city', type: 'string' as const, text: 'City' }
+          ]
+        }
+      ]
+    };
+
+    const qrItems = [
+      {
+        linkId: 'goals-tasks',
+        item: [
+          {
+            linkId: 'interventions',
+            item: [{ linkId: 'intervention-text', answer: [{ valueString: 'Diet plan' }] }]
+          },
+          {
+            linkId: 'target',
+            item: [
+              { linkId: 'target-street', answer: [{ valueString: '123 Main St' }] },
+              { linkId: 'target-city', answer: [{ valueString: 'Springfield' }] }
+            ]
+          }
+        ]
+      }
+    ];
+
+    const html = renderRepeatGroupHtml(qItem, qrItems);
+    const htmlDoc = parseHtml(html);
+
+    // Interventions (repeats: true) still renders as a table
+    expect(htmlDoc.querySelectorAll('table').length).toBe(1);
+
+    // Target (no `repeats`) must NOT produce a second table — just label/value paragraphs
+    const paragraphs = Array.from(htmlDoc.querySelectorAll('p')).map((p) => p.textContent);
+    expect(paragraphs).toEqual(['Street123 Main St', 'CitySpringfield']);
+  });
+
   it('handles empty qrItems array', () => {
     const qItem = {
       linkId: 'empty-group',
@@ -1116,8 +1226,62 @@ describe('renderRepeatGroupHtml - Direct Unit Tests', () => {
     expect(rows?.length).toBe(1);
 
     const cell = rows?.[0].querySelector('td');
-    // Multiple answers should be processed somehow
-    expect(cell?.textContent?.length).toBeGreaterThanOrEqual(0);
+    // All three answers should be present in the cell, not just the first
+    expect(cell?.innerHTML).toBe('Blue<br>Green<br>Red');
+  });
+
+  it('renders every answer for a repeating column, mirroring GPCCMP allergy manifestations', () => {
+    // Mirrors the GPCCMP "Recorded adverse reaction risks" table: a simple (non-card) repeat
+    // group where one column (Manifestation) is itself repeats:true, e.g. an allergic reaction
+    // with multiple recorded manifestations for the same substance.
+    const qItem = {
+      linkId: 'recordedallergies',
+      type: 'group' as const,
+      text: 'Recorded adverse reaction risks',
+      repeats: true,
+      item: [
+        {
+          linkId: 'substance',
+          type: 'open-choice' as const,
+          text: 'Substance',
+          repeats: false
+        },
+        {
+          linkId: 'manifestation',
+          type: 'open-choice' as const,
+          text: 'Manifestation',
+          repeats: true
+        }
+      ]
+    };
+
+    const qrItems = [
+      {
+        linkId: 'recordedallergies',
+        item: [
+          {
+            linkId: 'substance',
+            answer: [{ valueString: 'Penicillin' }]
+          },
+          {
+            linkId: 'manifestation',
+            answer: [{ valueString: 'Rash' }, { valueString: 'Anaphylaxis' }]
+          }
+        ]
+      }
+    ];
+
+    const html = renderRepeatGroupHtml(qItem, qrItems);
+    const htmlDoc = parseHtml(html);
+
+    const rows = htmlDoc.querySelectorAll('table tbody tr');
+    expect(rows.length).toBe(1);
+
+    const cells = rows[0].querySelectorAll('td');
+    expect(cells[0].textContent).toBe('Penicillin');
+
+    // Both manifestations must appear — losing "Anaphylaxis" here would be a real clinical-safety gap
+    expect(cells[1].innerHTML).toBe('Rash<br>Anaphylaxis');
   });
 
   it('covers nested repeat groups fallback with array structure', () => {

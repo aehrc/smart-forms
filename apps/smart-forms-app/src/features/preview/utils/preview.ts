@@ -107,8 +107,9 @@ export function qrToHTML(
 }
 
 /**
- * Handles opening and closing section elements based on heading level transitions.
+ * Handles opening and closing section-wrapper <div>s based on heading level transitions.
  * Closes sections that are deeper than the current level and opens a new section if needed.
+ * Uses <div>, not <section>, because <section> is not in the FHIR-allowed XHTML subset.
  *
  * Example:
  *   let html = '';
@@ -117,17 +118,17 @@ export function qrToHTML(
  *   // Encounter a Level 2 heading (<h2>)
  *   html = handleSectionTransition(2, openSections, html);
  *   html += "{h2 content}";
- *   // html: "<section>{h2 content}"
+ *   // html: "<div>{h2 content}"
  *
  *   // Next, encounter a Level 3 heading (<h3>)
  *   html = handleSectionTransition(3, openSections, html);
  *   html += "{h3 content}";
- *   // html: "<section>{h2 content}<section>{h3 content}"
+ *   // html: "<div>{h2 content}<div>{h3 content}"
  *
  *   // Next, another Level 2 heading (<h2> again => must close h3 and h2 sections first)
  *   html = handleSectionTransition(2, openSections, html);
  *   html += "{next h2 content}";
- *   // html: "<section>{h2 content}<section>{h3 content}</section></section><section>{next h2 content}"
+ *   // html: "<div>{h2 content}<div>{h3 content}</div></div><div>{next h2 content}"
  *
  * Moving down a heading level closes the deeper (nested) sections before opening a new one.
  */
@@ -273,27 +274,52 @@ function renderItemHtmlRecursive(
 
   // Render answers
   const qrItem = qrItemOrItems;
-  if (qrItem?.answer && qrItem.answer.length > 0) {
-    const label = he.encode(qrItem.text ?? '');
-
-    if (qItem.repeats && qItem.type !== 'group') {
-      html += `<div style="margin-bottom: 0.5em;"><strong style="font-weight: 600;">${label}</strong></div>`;
-      html += `<ul style="margin-top: 0; margin-bottom: 1rem; font-weight: 400; padding-left: 2em;">`;
-      for (const a of qrItem.answer) {
-        html += `<li>${he.encode(answerToString(a, qItem))}</li>`;
-      }
-      html += `</ul>`;
-    } else {
-      html += qrItem.answer
-        .map(
-          (a) =>
-            `<p style="margin-top: 0; margin-bottom: 1rem; font-weight: 400;"><strong style="font-weight: 600;">${label}</strong><br/>${he.encode(answerToString(a, qItem))}</p>`
-        )
-        .join('');
-    }
+  if (qrItem) {
+    html += renderAnswerHtml(qItem, qrItem, '1rem');
   }
 
   return html;
+}
+
+/**
+ * Renders a QuestionnaireResponseItem's answer(s) as label/value HTML: a single `<p>` for a
+ * non-repeating item, or a bolded label followed by a `<ul>` of `<li>` for a repeating one.
+ * Shared by the plain recursive renderer and the complex-repeat-group card renderer so a fix to
+ * how answers render only ever needs to happen in one place.
+ *
+ * @param {QuestionnaireItem} qItem - The Questionnaire item, used for repeats/type and unit lookups.
+ * @param {QuestionnaireResponseItem} qrItem - The matching response item holding the answer(s).
+ * @param {string} marginBottom - CSS margin-bottom value for the rendered block, so callers can
+ *   fit it to their surrounding spacing (e.g. tighter inside a card than at the top level).
+ * @returns {string} HTML string, or an empty string if there are no answers to render.
+ */
+function renderAnswerHtml(
+  qItem: QuestionnaireItem,
+  qrItem: QuestionnaireResponseItem,
+  marginBottom: string
+): string {
+  if (!qrItem.answer || qrItem.answer.length === 0) {
+    return '';
+  }
+
+  const label = he.encode(qrItem.text ?? qItem.text ?? '');
+
+  if (qItem.repeats && qItem.type !== 'group') {
+    let html = `<div style="margin-bottom: 0.5em;"><strong style="font-weight: 600;">${label}</strong></div>`;
+    html += `<ul style="margin-top: 0; margin-bottom: ${marginBottom}; font-weight: 400; padding-left: 2em;">`;
+    for (const a of qrItem.answer) {
+      html += `<li>${he.encode(answerToString(a, qItem))}</li>`;
+    }
+    html += `</ul>`;
+    return html;
+  }
+
+  return qrItem.answer
+    .map(
+      (a) =>
+        `<p style="margin-top: 0; margin-bottom: ${marginBottom}; font-weight: 400;"><strong style="font-weight: 600;">${label}</strong><br/>${he.encode(answerToString(a, qItem))}</p>`
+    )
+    .join('');
 }
 
 /**
@@ -352,9 +378,59 @@ function getGroupHeading(qItem: QuestionnaireItem, nestedLevel: number): string 
 }
 
 /**
- * Renders each instance of a complex repeating group (one that has group-type children) as a bordered card block.
- * Uses the same qrItemsByLinkId lookup strategy as the table renderer to locate child QR items, then renders
- * non-group children as answer paragraphs and group children with an h4 heading via renderRepeatGroupHtml.
+ * Renders a set of child QuestionnaireItems and their matching QuestionnaireResponseItems as label/value
+ * paragraphs (or lists, for repeating answers). Group children that repeat are delegated to
+ * renderRepeatGroupHtml (table or nested card); group children that don't repeat are just headed and
+ * recursed into with this same function, so a plain one-off sub-group renders the same way regardless of
+ * how deep it's nested. Used for each instance body of a complex repeating group.
+ */
+function renderGroupFieldsHtml(
+  childQItems: QuestionnaireItem[],
+  childQRItems: QuestionnaireResponseItem[]
+): string {
+  let html = '';
+
+  const qrItemsByLinkId: Record<string, QuestionnaireResponseItem[]> = {};
+  for (const qrChildItem of childQRItems) {
+    if (!qrItemsByLinkId[qrChildItem.linkId]) {
+      qrItemsByLinkId[qrChildItem.linkId] = [];
+    }
+    qrItemsByLinkId[qrChildItem.linkId].push(qrChildItem);
+  }
+
+  for (const childQItem of childQItems) {
+    if (structuredDataCapture.getHidden(childQItem)) continue;
+
+    const matchingQRItems = qrItemsByLinkId[childQItem.linkId] ?? [];
+
+    if (childQItem.type === 'group') {
+      if (matchingQRItems.length === 0) continue;
+
+      if (childQItem.text) {
+        html += `<h4 style="margin-top: 1rem; margin-bottom: 0.5rem; font-weight: 600; line-height: 1.25; font-size: 1em;">${he.encode(childQItem.text)}</h4>`;
+      }
+
+      if (childQItem.repeats) {
+        html += renderRepeatGroupHtml(childQItem, matchingQRItems);
+      } else {
+        // A one-off sub-group is never a list of instances, so it gets the same plain
+        // label/value treatment as everywhere else in the document, not table/card styling.
+        html += renderGroupFieldsHtml(childQItem.item ?? [], matchingQRItems[0]?.item ?? []);
+      }
+    } else {
+      const matchingQRItem = matchingQRItems[0];
+      if (matchingQRItem) {
+        html += renderAnswerHtml(childQItem, matchingQRItem, '0.5rem');
+      }
+    }
+  }
+
+  return html;
+}
+
+/**
+ * Renders each instance of a complex repeating group (one that has group-type children) as a bordered
+ * card block, with the instance's fields rendered by renderGroupFieldsHtml.
  */
 function renderComplexRepeatGroupHtml(
   qItem: QuestionnaireItem,
@@ -365,38 +441,7 @@ function renderComplexRepeatGroupHtml(
 
   for (const qrItemInstance of qrItems) {
     html += `<div style="border: 1px solid #d1d9e0; border-radius: 6px; padding: 1em; margin-bottom: 0.75em;">`;
-
-    const childQRItems = qrItemInstance.item ?? [];
-    const qrItemsByLinkId: Record<string, QuestionnaireResponseItem[]> = {};
-    for (const qrChildItem of childQRItems) {
-      if (!qrItemsByLinkId[qrChildItem.linkId]) {
-        qrItemsByLinkId[qrChildItem.linkId] = [];
-      }
-      qrItemsByLinkId[qrChildItem.linkId].push(qrChildItem);
-    }
-
-    for (const childQItem of childQItems) {
-      if (structuredDataCapture.getHidden(childQItem)) continue;
-
-      const matchingQRItems = qrItemsByLinkId[childQItem.linkId] ?? [];
-
-      if (childQItem.type === 'group') {
-        if (matchingQRItems.length > 0) {
-          if (childQItem.text) {
-            html += `<h4 style="margin-top: 1rem; margin-bottom: 0.5rem; font-weight: 600; line-height: 1.25; font-size: 1em;">${he.encode(childQItem.text)}</h4>`;
-          }
-          html += renderRepeatGroupHtml(childQItem, matchingQRItems);
-        }
-      } else {
-        const answer = matchingQRItems[0]?.answer?.[0];
-        if (answer) {
-          const label = he.encode(childQItem.text ?? '');
-          const value = he.encode(answerToString(answer, childQItem));
-          html += `<p style="margin-top: 0; margin-bottom: 0.5rem; font-weight: 400;"><strong style="font-weight: 600;">${label}</strong><br/>${value}</p>`;
-        }
-      }
-    }
-
+    html += renderGroupFieldsHtml(childQItems, qrItemInstance.item ?? []);
     html += `</div>`;
   }
 
@@ -446,7 +491,7 @@ export function renderRepeatGroupHtml(
     const childQItems = qItem.item ?? [];
     const childQRItems = qrItemInstance.item ?? [];
 
-    // Group QR items by linkId (handles nested repeat groups with multiple instances)
+    // Group QR items by linkId (a repeating group instance can have multiple children sharing a linkId)
     const qrItemsByLinkId: Record<string, QuestionnaireResponseItem[]> = {};
     for (const qrItem of childQRItems) {
       if (!qrItemsByLinkId[qrItem.linkId]) {
@@ -461,17 +506,12 @@ export function renderRepeatGroupHtml(
         continue;
       }
 
+      // Simple repeat groups (checked by isSimpleRepeatGroup above) never have group-type children,
+      // so childQItem is always a plain answer item here.
       const matchingQRItems = qrItemsByLinkId[childQItem.linkId] ?? [];
-
-      if (childQItem.type === 'group' && childQItem.repeats && matchingQRItems.length > 0) {
-        // Nested repeat group — render recursively as a nested table
-        const nestedHtml = renderRepeatGroupHtml(childQItem, matchingQRItems);
-        html += `<td style="padding: 6px 13px; border: 1px solid #d1d9e0;">${nestedHtml}</td>`;
-      } else {
-        const answer = matchingQRItems[0]?.answer?.[0];
-        const value = answer ? answerToString(answer, childQItem) : '';
-        html += `<td style="padding: 6px 13px; border: 1px solid #d1d9e0;">${he.encode(value)}</td>`;
-      }
+      const answers = matchingQRItems[0]?.answer ?? [];
+      const value = answers.map((a) => he.encode(answerToString(a, childQItem))).join('<br/>');
+      html += `<td style="padding: 6px 13px; border: 1px solid #d1d9e0;">${value}</td>`;
     }
     html += `</tr>`;
   }
