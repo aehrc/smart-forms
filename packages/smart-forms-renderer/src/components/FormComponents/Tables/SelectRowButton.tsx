@@ -19,6 +19,7 @@ import React from 'react';
 import TableCell from '@mui/material/TableCell';
 import { StandardCheckbox } from '../../Checkbox.styles';
 import { useRendererConfigStore } from '../../../stores';
+import { interpolate } from '../../../i18n';
 import type { QuestionnaireItem } from 'fhir/r4';
 
 interface SelectRowButtonProps {
@@ -32,6 +33,9 @@ function SelectRowButton(props: SelectRowButtonProps) {
   const { qItem, isChecked, readOnly, onSelectItem } = props;
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
+
+  const rowLabel = qItem.text ?? interpolate(rendererStrings.unnamedItem, { type: qItem.type });
 
   return (
     <TableCell padding="none">
@@ -47,7 +51,7 @@ function SelectRowButton(props: SelectRowButtonProps) {
         onChange={onSelectItem}
         slotProps={{
           input: {
-            'aria-label': 'Select row ' + (qItem.text ?? `Unnamed ${qItem.type} item`)
+            'aria-label': interpolate(rendererStrings.selectRow, { label: rowLabel })
           }
         }}
       />

@@ -25,6 +25,8 @@ import type {
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 import { StyledAlert } from '../../Alert.styles';
 import CheckboxFormGroup from '../ItemParts/CheckboxFormGroup';
+import { useRendererConfigStore } from '../../../stores';
+import { interpolate } from '../../../i18n';
 
 interface ChoiceCheckboxAnswerValueSetFieldsProps {
   qItem: QuestionnaireItem;
@@ -57,6 +59,8 @@ function ChoiceCheckboxAnswerValueSetFields(props: ChoiceCheckboxAnswerValueSetF
     onClear
   } = props;
 
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
+
   if (options.length > 0) {
     return (
       <CheckboxFormGroup
@@ -80,8 +84,9 @@ function ChoiceCheckboxAnswerValueSetFields(props: ChoiceCheckboxAnswerValueSetF
       <StyledAlert color="error">
         <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
         <Typography component="div">
-          There was an error fetching options from the terminology server for{' '}
-          {terminologyError.answerValueSet}
+          {interpolate(rendererStrings.terminologyServerFetchError, {
+            valueSet: `${terminologyError.answerValueSet}`
+          })}
         </Typography>
       </StyledAlert>
     );
@@ -90,7 +95,7 @@ function ChoiceCheckboxAnswerValueSetFields(props: ChoiceCheckboxAnswerValueSetF
   if (options.length === 0) {
     return (
       <Typography sx={{ py: 0.5 }} fontWeight={600} fontSize={13}>
-        No options available.
+        {rendererStrings.optionsUnavailable}
       </Typography>
     );
   }
@@ -98,7 +103,7 @@ function ChoiceCheckboxAnswerValueSetFields(props: ChoiceCheckboxAnswerValueSetF
   return (
     <StyledAlert color="error">
       <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-      <Typography>Unable to fetch options from the questionnaire or launch context</Typography>
+      <Typography>{rendererStrings.optionsFetchError}</Typography>
     </StyledAlert>
   );
 }
