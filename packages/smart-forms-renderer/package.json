@@ -52,7 +52,7 @@
     "lodash.difference": "^4.5.0",
     "lodash.differencewith": "^4.5.0",
     "lodash.intersection": "^4.4.0",
-    "nanoid": "^5.1.5",
+    "nanoid": "^5.1.16",
     "react-beautiful-dnd": "^13.1.1",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
