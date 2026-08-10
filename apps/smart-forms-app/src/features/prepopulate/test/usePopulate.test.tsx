@@ -175,13 +175,16 @@ describe('usePopulate', () => {
     resolvedFhirContextReferences: null,
     launchQuestionnaire: null,
     tokenReceivedTimestamp: null,
-    disableWriteBackSelection: false,
+    extraLaunchContext: {
+      disableWriteBackSelection: false,
+      disableBundleValidation: false
+    },
     setSmartClient: jest.fn(),
     setCommonLaunchContexts: jest.fn(),
     setQuestionnaireLaunchContext: jest.fn(),
     setFhirContext: jest.fn(),
     setResolvedFhirContextReferences: jest.fn(),
-    setDisableWriteBackSelection: jest.fn(),
+    setExtraLaunchContext: jest.fn(),
     ...overrides
   });
 
