@@ -29,6 +29,7 @@ function RequiredAsterisk(props: RequiredAsteriskProps) {
   const { readOnly, children = '*', ...rest } = props;
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const mandatoryFieldLabel = useRendererConfigStore.use.rendererStrings().mandatoryField;
 
   const readOnlyTextColor = readOnlyVisualStyle === 'disabled' ? 'text.disabled' : 'text.secondary';
 
@@ -43,7 +44,7 @@ function RequiredAsterisk(props: RequiredAsteriskProps) {
       </Typography>
 
       {/* Screen-reader-only accessible label */}
-      <SrOnly>Mandatory field</SrOnly>
+      <SrOnly>{mandatoryFieldLabel}</SrOnly>
     </>
   );
 }

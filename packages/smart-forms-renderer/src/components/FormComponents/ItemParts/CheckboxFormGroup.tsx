@@ -47,6 +47,7 @@ function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const inputsFlexGrow = useRendererConfigStore.use.inputsFlexGrow();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
@@ -69,7 +70,7 @@ function CheckboxFormGroup(props: ChoiceCheckboxFormGroupProps) {
             id={qItem.type + '-' + qItem.linkId}
             {...(!isTabled
               ? { 'aria-labelledby': 'label-' + qItem.linkId }
-              : { 'aria-label': qItem.text ?? 'Unnamed checkbox list' })}
+              : { 'aria-label': qItem.text ?? rendererStrings.unnamedCheckboxList })}
             {...(instructionsId && { 'aria-describedby': instructionsId })}
             role="group"
             row={orientation === ChoiceItemOrientation.Horizontal}

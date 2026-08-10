@@ -46,6 +46,11 @@ jest.mock('../stores', () => ({
     use: {
       url: () => mockDefaultTerminologyServerUrl
     }
+  },
+  useRendererConfigStore: {
+    use: {
+      rendererStrings: () => jest.requireActual('../i18n').defaultRendererStrings
+    }
   }
 }));
 

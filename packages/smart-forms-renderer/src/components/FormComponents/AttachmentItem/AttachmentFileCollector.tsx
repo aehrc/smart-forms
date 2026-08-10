@@ -22,6 +22,7 @@ import AttachmentFileDropBox from './AttachmentFileDropBox';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
+import { useRendererConfigStore } from '../../../stores';
 
 interface AttachmentFileCollectorProps extends PropsWithIsTabledAttribute {
   uploadedFile: File | null;
@@ -34,6 +35,8 @@ const AttachmentFileCollector = memo(function AttachmentFileCollector(
   props: AttachmentFileCollectorProps
 ) {
   const { uploadedFile, readOnly, isTabled, instructionsId, onUploadFile } = props;
+
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const handleFileDrop = useCallback(
     (item: { files: any[] }) => {
@@ -73,12 +76,12 @@ const AttachmentFileCollector = memo(function AttachmentFileCollector(
       />
       <Stack direction="row" justifyContent="space-between" pt={0.5}>
         <Box data-test="q-item-attachment-file-input">
-          <Tooltip title="Attach file">
+          <Tooltip title={rendererStrings.attachFile}>
             <IconButton
               component="label"
               size="small"
               disabled={readOnly}
-              aria-label="Attach file"
+              aria-label={rendererStrings.attachFile}
               {...(instructionsId && { 'aria-describedby': instructionsId })}>
               <AttachFileIcon fontSize="small" />
               <input
@@ -89,7 +92,7 @@ const AttachmentFileCollector = memo(function AttachmentFileCollector(
               />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Remove file">
+          <Tooltip title={rendererStrings.removeFile}>
             <span>
               <IconButton
                 disabled={!uploadedFile || readOnly}

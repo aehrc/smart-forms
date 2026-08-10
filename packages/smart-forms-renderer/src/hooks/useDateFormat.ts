@@ -16,20 +16,19 @@
  */
 
 import { useRendererConfigStore } from '../stores';
+import { resolveDateFormat } from '../components/FormComponents/DateTimeItems/utils/parseDate';
 
-function useDateNonEmptyValidation(
-  dateInput: string,
-  timeInput: string,
-  dateFeedback: string,
-  timeFeedback: string
-): string {
-  const dateTimeDateRequired = useRendererConfigStore.use.rendererStrings().dateTimeDateRequired;
+/**
+ * Returns the resolved full-date input/display format for the active renderer config.
+ *
+ * Subscribes to both the `locale` and the optional `dateFormat` override so components
+ * re-render when either changes. See {@link resolveDateFormat} for the resolution order.
+ */
+function useDateFormat(): string {
+  const dateFormatOverride = useRendererConfigStore.use.rendererStrings().dateFormat;
+  const locale = useRendererConfigStore.use.locale();
 
-  if (!dateFeedback && !timeFeedback && timeInput && dateInput === '') {
-    return dateTimeDateRequired;
-  }
-
-  return dateFeedback;
+  return resolveDateFormat(locale, dateFormatOverride);
 }
 
-export default useDateNonEmptyValidation;
+export default useDateFormat;

@@ -17,6 +17,7 @@ function OpenLabelField(props: OpenLabelFieldProps) {
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const fieldReadOnly = !openLabelOptionSelected || readOnly;
 
@@ -50,7 +51,7 @@ function OpenLabelField(props: OpenLabelFieldProps) {
           )
         },
         htmlInput: {
-          'aria-label': label ?? 'Unnamed open label field'
+          'aria-label': label ?? rendererStrings.unnamedOpenLabel
         }
       }}
     />

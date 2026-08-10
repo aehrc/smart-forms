@@ -15,21 +15,5 @@
  * limitations under the License.
  */
 
-import { useRendererConfigStore } from '../stores';
-
-function useDateNonEmptyValidation(
-  dateInput: string,
-  timeInput: string,
-  dateFeedback: string,
-  timeFeedback: string
-): string {
-  const dateTimeDateRequired = useRendererConfigStore.use.rendererStrings().dateTimeDateRequired;
-
-  if (!dateFeedback && !timeFeedback && timeInput && dateInput === '') {
-    return dateTimeDateRequired;
-  }
-
-  return dateFeedback;
-}
-
-export default useDateNonEmptyValidation;
+export type { RendererStrings } from './rendererStrings';
+export { defaultRendererStrings, resolveRendererStrings, interpolate } from './rendererStrings';
