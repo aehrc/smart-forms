@@ -35,6 +35,7 @@ import type {
 import type { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
 import GroupTableBody from './GroupTableBody';
 import { useQuestionnaireStore, useRendererConfigStore } from '../../../stores';
+import { interpolate } from '../../../i18n';
 import { getGroupCollapsible } from '../../../utils/qItem';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -42,7 +43,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import GroupHeading from '../GroupItem/GroupHeading';
 import { StandardCheckbox } from '../../Checkbox.styles';
 import { Box } from '@mui/material';
-import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
+import { itemHasLabelHeadingContent } from '../../../utils/itemTextToDisplay';
 import { isGroupAddItemButtonHidden } from '../../../utils/extensions';
 import GroupAccordion from '../GroupItem/GroupAccordion';
 
@@ -91,6 +92,11 @@ function GroupTableView(props: GroupTableViewProps) {
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
+
+  const selectAllRowsLabel = interpolate(rendererStrings.selectAllRows, {
+    label: qItem.text ?? interpolate(rendererStrings.unnamedItem, { type: qItem.type })
+  });
 
   const groupCollapsibleValue = getGroupCollapsible(qItem);
 
@@ -100,7 +106,7 @@ function GroupTableView(props: GroupTableViewProps) {
 
   const showExtraGTableInteractions = isRepeated && !readOnly;
 
-  const itemTextToDisplay = getItemTextToDisplay(qItem);
+  const showGroupHeading = itemHasLabelHeadingContent(qItem);
 
   // If the table is collapsible, wrap it in an accordion
   if (groupCollapsibleValue) {
@@ -114,7 +120,7 @@ function GroupTableView(props: GroupTableViewProps) {
           transition: { unmountOnExit: true, timeout: 250 }
         }}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ minHeight: '28px' }}>
-          {itemTextToDisplay ? (
+          {showGroupHeading ? (
             <GroupHeading
               qItem={qItem}
               readOnly={readOnly}
@@ -123,7 +129,7 @@ function GroupTableView(props: GroupTableViewProps) {
           ) : null}
         </AccordionSummary>
         <AccordionDetails sx={{ pt: 0 }}>
-          {itemTextToDisplay ? <Divider sx={{ mb: 1.5, opacity: 0.6 }} /> : null}
+          {showGroupHeading ? <Divider sx={{ mb: 1.5, opacity: 0.6 }} /> : null}
           <TableContainer component={Paper} elevation={groupCardElevation}>
             <Table>
               {showExtraGTableInteractions && !isGroupAddItemButtonHidden(qItem) ? (
@@ -149,8 +155,7 @@ function GroupTableView(props: GroupTableViewProps) {
                         onChange={onSelectAll}
                         slotProps={{
                           input: {
-                            'aria-label':
-                              'Select all rows in ' + (qItem.text ?? `Unnamed ${qItem.type} item`)
+                            'aria-label': selectAllRowsLabel
                           }
                         }}
                       />
@@ -198,7 +203,7 @@ function GroupTableView(props: GroupTableViewProps) {
       data-label={qItem.text}
       onClick={() => onFocusLinkId(qItem.linkId)}
       style={parentStyles || undefined}>
-      {itemTextToDisplay ? (
+      {showGroupHeading ? (
         <>
           <GroupHeading qItem={qItem} readOnly={readOnly} groupCardElevation={groupCardElevation} />
           <Divider sx={{ my: 1, opacity: 0.6 }} />
@@ -229,8 +234,7 @@ function GroupTableView(props: GroupTableViewProps) {
                     onChange={onSelectAll}
                     slotProps={{
                       input: {
-                        'aria-label':
-                          'Select all rows in ' + (qItem.text ?? `Unnamed ${qItem.type} item`)
+                        'aria-label': selectAllRowsLabel
                       }
                     }}
                   />

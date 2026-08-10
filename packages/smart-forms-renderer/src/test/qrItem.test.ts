@@ -353,6 +353,9 @@ describe('updateQrItemsInGroup', () => {
 
     const qItemsIndexMap = { 'item-1': 0 };
 
+    // Mock the dependency
+    mockQrItemHasItemsOrAnswer.mockReturnValue(true);
+
     updateQrItemsInGroup(newQrItem, null, questionnaireResponseOrQrItem, qItemsIndexMap);
 
     expect(questionnaireResponseOrQrItem.item).toHaveLength(1);
@@ -380,10 +383,97 @@ describe('updateQrItemsInGroup', () => {
 
     const qItemsIndexMap = { 'item-1': 0 };
 
+    // Mock the dependency - an item with no answer has no items or answers
+    mockQrItemHasItemsOrAnswer.mockReturnValue(false);
+
     updateQrItemsInGroup(newQrItem, null, questionnaireResponseOrQrItem, qItemsIndexMap);
 
     // Item should be removed since it has no answer
     expect(questionnaireResponseOrQrItem.item).toHaveLength(0);
+  });
+
+  it('should remove existing item when replaced with an item containing only a stub answer', () => {
+    const existingItem: QuestionnaireResponseItem = {
+      linkId: 'item-1',
+      text: 'Condition',
+      answer: [{ id: 'someAnswerKey', valueCoding: { code: '195967001', display: 'Asthma' } }]
+    };
+
+    // Emitted by createEmptyQrItem(qItem, answerKey) when clearing a choice field
+    const newQrItem: QuestionnaireResponseItem = {
+      linkId: 'item-1',
+      text: 'Condition',
+      answer: [{ id: 'someAnswerKey' }]
+    };
+
+    const questionnaireResponseOrQrItem: QuestionnaireResponseItem = {
+      linkId: 'group-1',
+      text: 'Test Group',
+      item: [existingItem]
+    };
+
+    const qItemsIndexMap = { 'item-1': 0 };
+
+    // Mock the dependency - a stub answer with only an id has no items or answers
+    mockQrItemHasItemsOrAnswer.mockReturnValue(false);
+
+    updateQrItemsInGroup(newQrItem, null, questionnaireResponseOrQrItem, qItemsIndexMap);
+
+    // Item should be removed instead of being replaced by the stub
+    expect(questionnaireResponseOrQrItem.item).toHaveLength(0);
+  });
+
+  it('should not push stub-answer item into an empty group', () => {
+    const newQrItem: QuestionnaireResponseItem = {
+      linkId: 'item-1',
+      text: 'Condition',
+      answer: [{ id: 'someAnswerKey' }]
+    };
+
+    const questionnaireResponseOrQrItem: QuestionnaireResponseItem = {
+      linkId: 'group-1',
+      text: 'Test Group',
+      item: []
+    };
+
+    const qItemsIndexMap = { 'item-1': 0 };
+
+    // Mock the dependency - a stub answer with only an id has no items or answers
+    mockQrItemHasItemsOrAnswer.mockReturnValue(false);
+
+    updateQrItemsInGroup(newQrItem, null, questionnaireResponseOrQrItem, qItemsIndexMap);
+
+    expect(questionnaireResponseOrQrItem.item).toHaveLength(0);
+  });
+
+  it('should not insert stub-answer item at its supposed position', () => {
+    const existingItem2: QuestionnaireResponseItem = {
+      linkId: 'item-2',
+      text: 'Item 2',
+      answer: [{ valueString: 'value2' }]
+    };
+
+    const newQrItem: QuestionnaireResponseItem = {
+      linkId: 'item-1',
+      text: 'Condition',
+      answer: [{ id: 'someAnswerKey' }]
+    };
+
+    const questionnaireResponseOrQrItem: QuestionnaireResponseItem = {
+      linkId: 'group-1',
+      text: 'Test Group',
+      item: [existingItem2]
+    };
+
+    const qItemsIndexMap = { 'item-1': 0, 'item-2': 1 };
+
+    // Mock the dependency - a stub answer with only an id has no items or answers
+    mockQrItemHasItemsOrAnswer.mockReturnValue(false);
+
+    updateQrItemsInGroup(newQrItem, null, questionnaireResponseOrQrItem, qItemsIndexMap);
+
+    expect(questionnaireResponseOrQrItem.item).toHaveLength(1);
+    expect(questionnaireResponseOrQrItem.item?.[0].linkId).toBe('item-2');
   });
 
   it('should insert item at correct position based on index', () => {

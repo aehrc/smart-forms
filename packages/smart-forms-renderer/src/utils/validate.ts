@@ -26,6 +26,7 @@ import type {
 } from 'fhir/r4';
 import { getQrItemsIndex, mapQItemsIndex } from './mapItem';
 import type { EnableWhenExpressions, EnableWhenItems } from '../interfaces/enableWhen.interface';
+import { answerHasValue } from './manageForm';
 import { isItemHidden } from './qItem';
 import {
   getDecimalPrecision,
@@ -136,7 +137,9 @@ export function validateTargetConstraint(): Record<string, OperationOutcome> {
         null as unknown as QuestionnaireResponseItem, // We don't need a QuestionnaireResponseItem here
         null,
         locationExpression,
-        []
+        [],
+        targetConstraint.severityCode,
+        targetConstraint.human
       );
 
       const invalidItemKey = targetConstraint.linkId ?? `target-constraint-${targetConstraint.key}`;
@@ -454,7 +457,9 @@ function validateSingleItem(
         answer.valueInteger ||
         answer.valueDecimal ||
         answer.valueUri ||
-        answer.valueQuantity
+        answer.valueQuantity ||
+        answer.valueDate ||
+        answer.valueDateTime
       ) {
         const invalidInputType = getInputInvalidType({
           qItem,
@@ -490,7 +495,8 @@ function validateSingleItem(
 }
 
 /**
- * Check if an answer array is effectively empty (no answers or all string answers are empty/whitespace-only)
+ * Check if an answer array is effectively empty (no answers, all string answers are empty/whitespace-only,
+ * or all answers are value-less stubs e.g. { id: answerKey } left behind by clearing a field or an empty repeat instance)
  */
 function isAnswerEffectivelyEmpty(answers: QuestionnaireResponseItemAnswer[]): boolean {
   if (!answers || answers.length === 0) {
@@ -503,8 +509,8 @@ function isAnswerEffectivelyEmpty(answers: QuestionnaireResponseItemAnswer[]): b
       return answer.valueString.trim() === '';
     }
 
-    // For other answer types, they're not empty if they exist
-    return false;
+    // For other answer types, they're empty if they have no value[x] or nested items
+    return !answerHasValue(answer);
   });
 }
 
@@ -524,6 +530,10 @@ function getInputInString(answer?: QuestionnaireResponseItemAnswer) {
   } else if (answer.valueQuantity && answer.valueQuantity.value) {
     // return the valueQuantity as string
     return answer.valueQuantity.value.toString();
+  } else if (answer.valueDate) {
+    return answer.valueDate;
+  } else if (answer.valueDateTime) {
+    return answer.valueDateTime;
   }
 
   return '';
@@ -781,12 +791,22 @@ export function createValidationOperationOutcome(
   qrItem: QuestionnaireResponseItem | null,
   answerIndex: number | null,
   locationExpression: string,
-  existingOperationOutcomeIssues: OperationOutcomeIssue[] = []
+  existingOperationOutcomeIssues: OperationOutcomeIssue[] = [],
+  severity: 'error' | 'warning' = 'error',
+  humanReadable?: string
 ): OperationOutcome {
   return {
     resourceType: 'OperationOutcome',
     issue: existingOperationOutcomeIssues.concat(
-      createValidationOperationOutcomeIssue(error, qItem, qrItem, answerIndex, locationExpression)
+      createValidationOperationOutcomeIssue(
+        error,
+        qItem,
+        qrItem,
+        answerIndex,
+        locationExpression,
+        severity,
+        humanReadable
+      )
     )
   };
 }

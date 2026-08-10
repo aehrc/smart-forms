@@ -26,6 +26,7 @@ import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import useInitialiseRepeatGroups from '../../../hooks/useInitialiseRepeatGroups';
 import { useQuestionnaireStore } from '../../../stores';
 import RepeatGroupView from './RepeatGroupView';
+import { qrItemHasItemsOrAnswer } from '../../../utils/manageForm';
 import { generateNewRepeatId } from '../../../utils/repeatId';
 
 interface RepeatGroupProps
@@ -62,6 +63,13 @@ function RepeatGroup(props: RepeatGroupProps) {
   const [repeatGroups, setRepeatGroups] = useState(initialRepeatGroups);
 
   function handleAnswerChange(newQrItem: QuestionnaireResponseItem, index: number) {
+    // If the change leaves the repeat group instance with no items or answers (e.g. its last
+    // answer was cleared), remove the instance entirely - same as the Remove Item button
+    if (!qrItemHasItemsOrAnswer(newQrItem)) {
+      handleRemoveItem(index);
+      return;
+    }
+
     const updatedRepeatGroups = [...repeatGroups];
 
     if (newQrItem.item) {

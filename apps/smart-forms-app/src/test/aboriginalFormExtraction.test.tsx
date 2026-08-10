@@ -40,17 +40,21 @@ vi.mock('fhirclient', async () => {
   return {
     ...actual,
     client: (input: string | { serverUrl?: string }) => {
-      const actualClient = actual.client(input as never);
       const serverUrl = typeof input === 'string' ? input : input?.serverUrl;
 
       if (serverUrl === terminologyServerUrl) {
-        return actualClient;
+        // Use native fetch to forward requests to the real terminology server.
+        // vi.importActual resolves the Node entry of fhirclient which has no `client`,
+        // so we can't use actual.client() here.
+        return {
+          request: ({ url }: { url: string }) =>
+            fetch(`${serverUrl}/${url}`, {
+              headers: { Accept: 'application/json' }
+            }).then((res) => res.json())
+        };
       }
 
-      return {
-        ...actualClient,
-        request: mockedRequest
-      };
+      return { request: mockedRequest };
     }
   };
 });

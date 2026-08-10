@@ -19,6 +19,7 @@ import { Box, IconButton, Stack, Typography } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
 import { constructName } from '../../../../../../utils/humanName.ts';
 import OpenResponseButton from '../Buttons/OpenResponseButton.tsx';
+import CloneResponseButton from '../Buttons/CloneResponseButton.tsx';
 import type { QuestionnaireResponse } from 'fhir/r4';
 import useSmartClient from '../../../../../../hooks/useSmartClient.ts';
 import useSelectedQuestionnaire from '../../../../hooks/useSelectedQuestionnaire.ts';
@@ -44,6 +45,7 @@ function ResponseListToolbarButtons(props: ResponseListToolbarButtonsProps) {
     return (
       <Box display="flex" alignItems="center" columnGap={2}>
         <OpenResponseButton selectedResponse={selectedResponse} />
+        <CloneResponseButton selectedResponse={selectedResponse} />
         <Stack alignItems="center">
           <IconButton onClick={onClearSelection}>
             <ClearIcon />

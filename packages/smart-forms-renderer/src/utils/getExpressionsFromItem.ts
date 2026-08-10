@@ -60,7 +60,7 @@ export function getEnableWhenExpression(qItem: QuestionnaireItem): Expression | 
 }
 
 /**
- * Get calculatedExpression.valueExpression if its present in item or item._text
+ * Get calculatedExpression.valueExpression if its present in item, item._text or item._prefix
  *
  * @author Sean Fong
  */
@@ -84,6 +84,19 @@ export function getCalculatedExpressions(qItem: QuestionnaireItem): CalculatedEx
       (calculatedExpression): CalculatedExpression => ({
         expression: calculatedExpression.valueExpression?.expression ?? '',
         from: 'item._text'
+      })
+    )
+    .filter((calculatedExpression) => calculatedExpression.expression !== '');
+
+  // For item._prefix - cqfExpressions and calculatedExpressions (same pattern as item._text)
+  const calculatedAndCqfExpressionsInPrefix = [
+    ...findCqfExpressionsInExtensions(qItem._prefix?.extension ?? []),
+    ...findCalculatedExpressionsInExtensions(qItem._prefix?.extension ?? [])
+  ]
+    .map(
+      (calculatedExpression): CalculatedExpression => ({
+        expression: calculatedExpression.valueExpression?.expression ?? '',
+        from: 'item._prefix'
       })
     )
     .filter((calculatedExpression) => calculatedExpression.expression !== '');
@@ -115,6 +128,7 @@ export function getCalculatedExpressions(qItem: QuestionnaireItem): CalculatedEx
   return [
     ...calculatedExpressionsInItem,
     ...calculatedAndCqfExpressionsInText,
+    ...calculatedAndCqfExpressionsInPrefix,
     ...itemTextAriaLabelExpressionInText,
     ...cqfExpressionsInAnswerValueSet
   ];

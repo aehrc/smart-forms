@@ -20,6 +20,8 @@ import { createSelectors } from './selector';
 import type { QuestionnaireItem } from 'fhir/r4';
 import type { UseResponsiveProps } from '../hooks';
 import type { Breakpoints } from '@mui/material';
+import type { RendererStrings } from '../i18n/rendererStrings';
+import { defaultRendererStrings, resolveRendererStrings } from '../i18n/rendererStrings';
 
 /**
  * RendererConfig interface
@@ -81,6 +83,20 @@ import type { Breakpoints } from '@mui/material';
  * @property disableHeadingFocusOnTabSwitch - If `true`, disables automatic focus on the first heading when switching tabs.
  *  - Default: `false`
  *
+ * @property hideQuestionnaireTitle - If `true`, suppresses the renderer's built-in rendering of `Questionnaire.title`.
+ *   Set this to `true` when the consuming app already renders the title in its own header to avoid displaying it twice.
+ *   - Default: `false`
+ *
+ * @property locale - BCP-47 locale tag (e.g. `'de-CH'`). Drives date formatting and calendar
+ *   localisation only — it does **not** select renderer strings. Use `rendererStrings` to translate
+ *   the renderer's own UI text. This does not translate `Questionnaire`-sourced text such as `item.text`.
+ *   - Default: `undefined` (`DD/MM/YYYY` dates)
+ *
+ * @property rendererStrings - Consumer-supplied translations/overrides for the renderer's own UI text
+ *   (such as the boolean Yes/No labels), merged on top of the English defaults. Supply as many or as
+ *   few strings as you need; anything omitted stays English.
+ *   - Default: `undefined` (English)
+ *
  * @property readOnlyVisualStyle - If `true`, item.readOnly will result in form fields having MUI disabled property and styles (recommended from usability perspective). If `false`, item.readOnly will result in form fields having HTML readonly property (less stable, but recommended from accessibility perspective).
  *   - Default: `true`
  */
@@ -111,6 +127,11 @@ export interface RendererConfig {
   disablePageButtons?: boolean;
   disableTabButtons?: boolean;
   disableHeadingFocusOnTabSwitch?: boolean;
+  hideQuestionnaireTitle?: boolean;
+  /** BCP-47 locale tag (e.g. `'de-CH'`). Drives date formatting and calendar localisation only — it does not select renderer strings. */
+  locale?: string;
+  /** Consumer-supplied translations for the renderer chrome, merged on top of the English defaults. */
+  rendererStrings?: Partial<RendererStrings>;
 }
 
 /**
@@ -145,6 +166,9 @@ export interface RendererConfigStoreType {
   disablePageButtons: boolean;
   disableTabButtons: boolean;
   disableHeadingFocusOnTabSwitch: boolean;
+  hideQuestionnaireTitle: boolean;
+  locale: string | undefined;
+  rendererStrings: RendererStrings;
   setRendererConfig: (params: RendererConfig) => void;
 }
 
@@ -176,6 +200,9 @@ export const rendererConfigStore = createStore<RendererConfigStoreType>()((set) 
   disablePageButtons: false,
   disableTabButtons: false,
   disableHeadingFocusOnTabSwitch: false,
+  hideQuestionnaireTitle: false,
+  locale: undefined,
+  rendererStrings: defaultRendererStrings,
   setRendererConfig: (params: RendererConfig) => {
     set((state) => ({
       readOnlyVisualStyle: params.readOnlyVisualStyle ?? state.readOnlyVisualStyle,
@@ -196,7 +223,14 @@ export const rendererConfigStore = createStore<RendererConfigStoreType>()((set) 
       disablePageButtons: params.disablePageButtons ?? state.disablePageButtons,
       disableTabButtons: params.disableTabButtons ?? state.disableTabButtons,
       disableHeadingFocusOnTabSwitch:
-        params.disableHeadingFocusOnTabSwitch ?? state.disableHeadingFocusOnTabSwitch
+        params.disableHeadingFocusOnTabSwitch ?? state.disableHeadingFocusOnTabSwitch,
+      hideQuestionnaireTitle: params.hideQuestionnaireTitle ?? state.hideQuestionnaireTitle,
+      locale: params.locale ?? state.locale,
+      // Like every other field, only recompute when provided — a partial setRendererConfig call
+      // must not wipe previously injected strings back to the English defaults.
+      rendererStrings: params.rendererStrings
+        ? resolveRendererStrings(params.rendererStrings)
+        : state.rendererStrings
     }));
   }
 }));

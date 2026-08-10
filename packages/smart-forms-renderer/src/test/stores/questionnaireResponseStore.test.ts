@@ -100,6 +100,7 @@ describe('questionnaireResponseStore', () => {
       expect(state.invalidItems).toEqual({});
       expect(state.requiredItemsIsHighlighted).toBe(false);
       expect(state.responseIsValid).toBe(true);
+      expect(state.responseHasErrors).toBe(false);
     });
   });
 
@@ -316,6 +317,64 @@ describe('questionnaireResponseStore', () => {
       expect(state.invalidItems).toEqual({});
       expect(state.requiredItemsIsHighlighted).toBe(false);
       expect(state.responseIsValid).toBe(true);
+    });
+  });
+
+  describe('responseHasErrors', () => {
+    it('should be false when there are no invalid items', () => {
+      mockValidateForm.mockReturnValue({});
+      questionnaireResponseStore
+        .getState()
+        .validateResponse(mockQuestionnaire, mockQuestionnaireResponse);
+
+      expect(questionnaireResponseStore.getState().responseHasErrors).toBe(false);
+    });
+
+    it('should be true when an invalid item has an error-severity issue', () => {
+      mockValidateForm.mockReturnValue({
+        'test-item': {
+          resourceType: 'OperationOutcome' as const,
+          issue: [{ severity: 'error', code: 'business-rule' }]
+        }
+      });
+      questionnaireResponseStore
+        .getState()
+        .validateResponse(mockQuestionnaire, mockQuestionnaireResponse);
+
+      expect(questionnaireResponseStore.getState().responseHasErrors).toBe(true);
+    });
+
+    it('should be false when invalid items contain only warning-severity issues', () => {
+      mockValidateForm.mockReturnValue({
+        'test-item': {
+          resourceType: 'OperationOutcome' as const,
+          issue: [{ severity: 'warning', code: 'business-rule' }]
+        }
+      });
+      questionnaireResponseStore
+        .getState()
+        .validateResponse(mockQuestionnaire, mockQuestionnaireResponse);
+
+      // responseIsValid is false (there are invalid items) but responseHasErrors is false (no errors, only warnings)
+      expect(questionnaireResponseStore.getState().responseIsValid).toBe(false);
+      expect(questionnaireResponseStore.getState().responseHasErrors).toBe(false);
+    });
+
+    it('should be true when at least one issue is error-severity alongside warnings', () => {
+      mockValidateForm.mockReturnValue({
+        'test-item': {
+          resourceType: 'OperationOutcome' as const,
+          issue: [
+            { severity: 'warning', code: 'business-rule' },
+            { severity: 'error', code: 'business-rule' }
+          ]
+        }
+      });
+      questionnaireResponseStore
+        .getState()
+        .validateResponse(mockQuestionnaire, mockQuestionnaireResponse);
+
+      expect(questionnaireResponseStore.getState().responseHasErrors).toBe(true);
     });
   });
 

@@ -25,6 +25,7 @@ import PrintIcon from '@mui/icons-material/Print';
 import { PrintComponentRefContext } from '../ViewerLayout.tsx';
 import { useReactToPrint } from 'react-to-print';
 import ViewerOperationItem from './ViewerOperationItem.tsx';
+import ViewerCloneResponseAction from './ViewerCloneResponseAction.tsx';
 import {
   NavSectionHeading,
   NavSectionHeadingWrapper,
@@ -94,6 +95,7 @@ function ViewerOperationSection() {
             }}
           />
         ) : null}
+        <ViewerCloneResponseAction />
         <ViewerOperationItem title={'Print Preview'} icon={<PrintIcon />} onClick={handlePrint} />
       </List>
     </NavSectionWrapper>

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-export const PLAYWRIGHT_EHR_URL = 'https://proxy.smartforms.io/v/r4/fhir';
+export const PLAYWRIGHT_EHR_URL = process.env.PLAYWRIGHT_LOCAL_EHR_URL ?? '';
 export const PLAYWRIGHT_FORMS_SERVER_URL = 'https://smartforms.csiro.au/api/fhir';
 
 export const PLAYWRIGHT_APP_URL = process.env.CI
@@ -92,7 +92,7 @@ export const LAUNCH_PARAM_WITH_Q = btoa(
     0,
     1,
     // Adjust version if the MBS715 questionnaire version changes
-    '{"role":"http://ns.electronichealth.net.au/smart/role/new","canonical":"http://www.health.gov.au/assessments/mbs/715|0.3.0-assembled","type":"Questionnaire"}',
+    '{"role":"http://ns.electronichealth.net.au/smart/role/new","canonical":"http://www.health.gov.au/assessments/mbs/715|0.4.0-assembled","type":"Questionnaire"}',
     'https://proxy.smartforms.io/v/r4/fhir',
     false
   ])

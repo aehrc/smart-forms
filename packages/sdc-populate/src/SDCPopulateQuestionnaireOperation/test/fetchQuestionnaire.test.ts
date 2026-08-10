@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+import { describe, expect, it, jest, test } from '@jest/globals';
 import type { Bundle, OperationOutcome, Questionnaire } from 'fhir/r4';
 import { fetchQuestionnaire, safeReplaceCanonicalVersion } from '../api/fetchQuestionnaire';
 import type { InputParameters } from '../interfaces'; // Adjust FHIR version if needed

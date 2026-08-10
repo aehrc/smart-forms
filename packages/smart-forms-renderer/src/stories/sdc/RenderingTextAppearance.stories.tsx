@@ -21,15 +21,22 @@ import {
   qDisplayCategoryInstructions,
   qHidden,
   qOpenLabel,
+  qPrefixOnlyNoText,
   qRenderingAnswerOptionValueString,
   qRenderingMarkdownDisplay,
+  qRenderingMarkdownPrefix,
+  qRenderingMarkdownTitle,
   qRenderingStyleBooleanItem,
+  qRenderingStylePrefix,
+  qRenderingStyleTitle,
   qRenderingXhtmlBooleanItem,
   qRenderingXhtmlDisplayBase64ImageItem,
   qRenderingXhtmlDisplayListItem,
   qRenderingXhtmlGroupPropagationClassStyles,
   qRenderingXhtmlGroupPropagationInlineStyles,
-  qRenderingXhtmlGroupPropagationNested
+  qRenderingXhtmlGroupPropagationNested,
+  qRenderingXhtmlPrefix,
+  qRenderingXhtmlTitle
 } from '../assets/questionnaires';
 import { createStory } from '../storybookWrappers/createStory';
 
@@ -115,5 +122,51 @@ export const OpenLabel: Story = createStory({
 export const Hidden: Story = createStory({
   args: {
     questionnaire: qHidden
+  }
+}) as Story;
+
+// ── Questionnaire.title rendering extensions (Issue #1794) ───────────────────
+
+export const RenderingStyleTitle: Story = createStory({
+  args: {
+    questionnaire: qRenderingStyleTitle
+  }
+}) as Story;
+
+export const RenderingMarkdownTitle: Story = createStory({
+  args: {
+    questionnaire: qRenderingMarkdownTitle
+  }
+}) as Story;
+
+export const RenderingXHTMLTitle: Story = createStory({
+  args: {
+    questionnaire: qRenderingXhtmlTitle
+  }
+}) as Story;
+
+// ── Questionnaire.item.prefix rendering extensions (Issue #1794) ─────────────
+
+export const RenderingStylePrefix: Story = createStory({
+  args: {
+    questionnaire: qRenderingStylePrefix
+  }
+}) as Story;
+
+export const RenderingMarkdownPrefix: Story = createStory({
+  args: {
+    questionnaire: qRenderingMarkdownPrefix
+  }
+}) as Story;
+
+export const RenderingXHTMLPrefix: Story = createStory({
+  args: {
+    questionnaire: qRenderingXhtmlPrefix
+  }
+}) as Story;
+
+export const PrefixOnlyNoText: Story = createStory({
+  args: {
+    questionnaire: qPrefixOnlyNoText
   }
 }) as Story;

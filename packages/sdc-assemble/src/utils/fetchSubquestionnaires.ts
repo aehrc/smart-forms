@@ -66,7 +66,8 @@ export async function fetchSubquestionnaires(
         continue;
       }
 
-      // Fallback to get Bundle from response.data (axios scenario)
+      // Fallback to get Bundle from response.data, for responses that wrap the payload in a
+      // data property, as axios-style HTTP clients do
       if (
         settledPromise.value &&
         typeof settledPromise.value === 'object' &&
@@ -77,7 +78,7 @@ export async function fetchSubquestionnaires(
         continue;
       }
 
-      // Handle OperationOutcome in response.data (axios scenario)
+      // Handle OperationOutcome in response.data, for the same wrapped-payload shape
       if (
         settledPromise.value &&
         typeof settledPromise.value === 'object' &&

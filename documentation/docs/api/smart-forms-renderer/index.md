@@ -87,12 +87,13 @@
 | [parseDecimalStringWithPrecision](functions/parseDecimalStringWithPrecision.md) | - |
 | [parseFhirDateTimeToDisplayDateTime](functions/parseFhirDateTimeToDisplayDateTime.md) | Parse a FHIR dateTime string to a human-readable display format. Supports full and partial FHIR dateTime values. |
 | [parseFhirDateToDisplayDate](functions/parseFhirDateToDisplayDate.md) | Parse a FHIR date string to a human-readable display format. |
+| [QuestionnaireTitleText](functions/QuestionnaireTitleText.md) | Renders `Questionnaire.title` with support for optional `Questionnaire._title` rendering extensions (xhtml, markdown, style). |
 | [removeEmptyAnswersFromResponse](functions/removeEmptyAnswersFromResponse.md) | Remove all empty/hidden answers from the filled QuestionnaireResponse. This takes into account enableWhens, enableWhenExpressions, items without item.answer, empty item.answer arrays and empty strings. This does not remove items that are hidden by the http://hl7.org/fhir/StructureDefinition/questionnaire-hidden extension. |
 | [removeInternalIdsFromResponse](functions/removeInternalIdsFromResponse.md) | Remove all instances of item.answer.id from the filled QuestionnaireResponse. These IDs are used internally for rendering repeating items, and can be safely left out of the final response. |
 | [rendererThemeComponentOverrides](functions/rendererThemeComponentOverrides.md) | - |
 | [RendererThemeProvider](functions/RendererThemeProvider.md) | Default theme used by the renderer using Material UI. You can customise your own theme by defining a new ThemeProvider. |
 | [RepeatGroup](functions/RepeatGroup.md) | Main component to render a repeating, group Questionnaire item. Store and manages the state of multiple instances of GroupItem in a repeating group. |
-| [RepeatItem](functions/RepeatItem.md) | Main component to render a repeating, non-group Questionnaire item. |
+| [RepeatItem](functions/RepeatItem.md) | Main component to render a repeating, non-group Questionnaire item. Repeat answer instances (including empty ones) are tracked in local state, similar to RepeatGroup and GroupTable - only answers with values are emitted to the QuestionnaireResponse. |
 | [repopulateForm](functions/repopulateForm.md) | Re-populate the form with a provided (already filled) QuestionnaireResponse. |
 | [repopulateResponse](functions/repopulateResponse.md) | Re-populate checked items in the re-population dialog into the current QuestionnaireResponse |
 | [SingleItem](functions/SingleItem.md) | Main component to render a repeating, non-group Questionnaire item. Store and manages the state of multiple instances of SingleItem in a repeating item. |

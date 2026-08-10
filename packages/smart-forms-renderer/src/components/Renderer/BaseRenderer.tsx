@@ -25,11 +25,16 @@ import { updateQrItemsInGroup } from '../../utils/qrItem';
 import { isPaginatedForm } from '../../utils/page';
 import type { QrRepeatGroup } from '../../interfaces/repeatGroup.interface';
 import FormBodyPaginated from './FormBodyPaginated';
-import { Container } from '@mui/material';
+import { Box, Container } from '@mui/material';
 import { useFormUpdateQueueStore } from '../../stores/formUpdateQueueStore';
+import { useRendererConfigStore } from '../../stores';
+import QuestionnaireTitleText from '../FormComponents/ItemParts/QuestionnaireTitleText';
 import dayjs from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+// Note: the renderer bundles no dayjs locale data. Consumers wanting a localised date picker
+// *calendar popup* (month/weekday names) import the matching dayjs/locale/<tag> in their app.
+// The date input format itself is derived via Intl and needs no locale import (see resolveDateFormat).
 import {
   silenceAutocompleteTextareaWarning,
   silenceReactBeautifulDndError
@@ -53,6 +58,7 @@ silenceReactBeautifulDndError();
 function BaseRenderer() {
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
   const readOnly = useQuestionnaireStore.use.readOnly();
+  const hideQuestionnaireTitle = useRendererConfigStore.use.hideQuestionnaireTitle();
 
   const responseKey = useQuestionnaireResponseStore.use.key();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
@@ -98,7 +104,12 @@ function BaseRenderer() {
   if (wholeFormIsPaginated) {
     return (
       <Fade in={true} timeout={500}>
-        <Container disableGutters maxWidth="xl" key={responseKey}>
+        <Container disableGutters maxWidth={false} key={responseKey}>
+          {!hideQuestionnaireTitle && (sourceQuestionnaire.title || sourceQuestionnaire._title) ? (
+            <Box px={2} pt={2} pb={1}>
+              <QuestionnaireTitleText questionnaire={sourceQuestionnaire} />
+            </Box>
+          ) : null}
           <FormBodyPaginated
             topLevelQItems={topLevelQItems}
             topLevelQRItems={topLevelQRItemsByIndex}
@@ -114,7 +125,12 @@ function BaseRenderer() {
 
   return (
     <Fade in={true} timeout={500}>
-      <Container disableGutters maxWidth="xl" key={responseKey}>
+      <Container disableGutters maxWidth={false} key={responseKey}>
+        {!hideQuestionnaireTitle && (sourceQuestionnaire.title || sourceQuestionnaire._title) ? (
+          <Box px={2} pt={2} pb={1}>
+            <QuestionnaireTitleText questionnaire={sourceQuestionnaire} />
+          </Box>
+        ) : null}
         {topLevelQItems.map((qItem, index) => {
           const qrItemOrItems = topLevelQRItemsByIndex[index];
 

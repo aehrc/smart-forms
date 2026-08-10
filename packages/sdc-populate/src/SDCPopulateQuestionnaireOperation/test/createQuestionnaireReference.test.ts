@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+import { describe, expect, it } from '@jest/globals';
 import type { Questionnaire } from 'fhir/r4';
 import { createQuestionnaireReference } from '../utils/createQuestionnaireReference';
 

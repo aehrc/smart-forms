@@ -10,6 +10,26 @@ For changelogs of other libraries, please refer to their respective repositories
 
 Changelog only includes changes from version 0.36.0 onwards.
 
+## [1.4.0] - 2026-07-03
+### Added
+- Instruction text (`display` items with `questionnaire-displayCategory: instructions`) is now programmatically associated with its parent input field via `aria-describedby` across all field types. Screen readers now announce the instruction text when the field receives focus, rather than requiring a separate tab to the instruction item. See issue [#1640](https://github.com/aehrc/smart-forms/issues/1640)
+- Added rendering of `Questionnaire.title` and `item.prefix`. Both now appear in the renderer, and support text styling via `rendering-style`, `rendering-markdown`, and `rendering-xhtml` extensions. Set `hideQuestionnaireTitle: true` in the renderer config to suppress the built-in title rendering.
+- Added `responseHasErrors` to the `QuestionnaireResponseStore`. This is `true` when the response contains items with error or fatal severity — it does not consider warnings.
+- Added item-level `targetConstraint` support. Constraints can now be defined directly on questionnaire items (not only at the questionnaire root), and are extracted and evaluated per-item.
+- Added screen reader announcements for error messages in input fields via `role='alert'` and `aria-live='assertive'`. See issue [#1745](https://github.com/aehrc/smart-forms/issues/1745)
+- Improved responsive layout on large screens — the renderer now expands to fill available screen width, with per-item max-widths applied to keep individual inputs at a readable size. See issue [#1936](https://github.com/aehrc/smart-forms/issues/1936)
+- Added horizontal dividers between repeat group instances in `RepeatGroupView`.
+- The remove button in repeat groups is now enabled even when only one instance remains, allowing users to clear pre-populated data. Removing the last instance leaves one blank instance in its place. See issue [#1810](https://github.com/aehrc/smart-forms/issues/1810)
+### Fixed
+- Fixed `targetConstraint` expression logic being inverted — per the FHIR spec, expressions should return `true` when the constraint is satisfied (valid). See issue [#1954](https://github.com/aehrc/smart-forms/issues/1954)
+- Fixed validation errors (required, `targetConstraint`) not surfacing on `date` and `dateTime` fields. These fields now correctly report constraint and required errors.
+- Fixed `date` and `dateTime` fields not validating against `minValue`/`maxValue` constraints.
+- Fixed repopulate dialog incorrectly showing unchanged repeat group items as modified after a user had deleted or reordered instances. The comparison was positional, so any shift in item index caused remaining items to appear as changed. Matching is now content-based. See issue [#1940](https://github.com/aehrc/smart-forms/issues/1940)
+- Fixed `getResponse()` and `removeEmptyAnswers()` stripping `item.definition` from returned QuestionnaireResponse items. See issue [#1801](https://github.com/aehrc/smart-forms/issues/1801)
+- Fixed selected value in choice select (autocomplete) fields appearing too far left due to missing padding. See issue [#1842](https://github.com/aehrc/smart-forms/issues/1842)
+- Fixed deeply nested repeat group content being pushed off-screen when zooming in, with no scrollbar to access it. Group items now scroll horizontally independently. See issue [#1809](https://github.com/aehrc/smart-forms/issues/1809)
+- Fixed validation feedback text not wrapping correctly in grid/table cells for autocomplete-based choice fields — it was rendered as a flex sibling of the input, compressing it into the remaining row space. Feedback now stacks below the input. Also fixes the missing error border on these fields when feedback is present.
+
 ## [1.3.1] - 2026-03-25
 ### Fixed
 - Fixed accordion scroll position jumping when expanding accordion items. See issue [#1796](https://github.com/aehrc/smart-forms/issues/1796)

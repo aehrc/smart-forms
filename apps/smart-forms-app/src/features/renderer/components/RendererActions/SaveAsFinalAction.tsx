@@ -30,8 +30,13 @@ import { extractResultIsOperationOutcome, inAppExtract } from '@aehrc/sdc-templa
 import type { Bundle, QuestionnaireResponse } from 'fhir/r4';
 import RendererSaveAsFinalOnlyDialog from './RendererSaveAsFinalOnlyDialog.tsx';
 import RendererSaveAsFinalWriteBackDialog from './RendererSaveAsFinalWriteBackDialog.tsx';
+import { validateExtractedBundle } from '../../../writeBack/utils/validateExtractedBundle.ts';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { fetchResourceCallback } from '../../../prepopulate/utils/callback.ts';
+import { useSnackbar } from 'notistack';
+import CloseSnackbar from '../../../../components/Snackbar/CloseSnackbar.tsx';
+import { formHasErrorsMessage } from '../../../../interfaces/snackbar.interface.ts';
+import { findFirstErrorTabIndex } from '../../utils/tabNavigation.ts';
 
 interface SaveAsFinalActionProps extends SpeedDialActionProps {
   isSpeedDial?: boolean;
@@ -41,19 +46,55 @@ interface SaveAsFinalActionProps extends SpeedDialActionProps {
 function SaveAsFinalAction(props: SaveAsFinalActionProps) {
   const { isSpeedDial, onCloseSpeedDial, ...speedDialActionProps } = props;
 
-  const { smartClient, patient, user, encounter } = useSmartClient();
+  const { smartClient, patient, user, encounter, extraLaunchContext } = useSmartClient();
 
   const [saveAsFinalDialogOpen, setSaveAsFinalDialogOpen] = useState(false);
   const [isExtracting, setExtracting] = useState(false);
   const [extractedBundle, setExtractedBundle] = useState<Bundle | null>(null);
+  const [invalidBundleEntryIndices, setInvalidBundleEntryIndices] = useState<Set<number> | null>(
+    null
+  );
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
+  const tabs = useQuestionnaireStore.use.tabs();
+  const switchTab = useQuestionnaireStore.use.switchTab();
+
   const sourceResponse = useQuestionnaireResponseStore.use.sourceResponse();
   const updatableResponse = useQuestionnaireResponseStore.use.updatableResponse();
   const formChangesHistory = useQuestionnaireResponseStore.use.formChangesHistory();
+  const responseHasErrors = useQuestionnaireResponseStore.use.responseHasErrors();
+  const invalidItems = useQuestionnaireResponseStore.use.invalidItems();
+  const highlightRequiredItems = useQuestionnaireResponseStore.use.highlightRequiredItems();
+
+  const { enqueueSnackbar } = useSnackbar();
 
   // freeze state of response status so dialog content doesn't change during the save process
   const [responseStatus] = useState(sourceResponse.status);
+
+  // Returns true if save should be aborted due to validation errors
+  function handleValidationErrors(): boolean {
+    if (!responseHasErrors) return false;
+
+    highlightRequiredItems();
+
+    if (Object.keys(tabs).length > 0) {
+      const firstErrorTabIndex = findFirstErrorTabIndex(
+        Object.keys(invalidItems),
+        sourceQuestionnaire.item ?? [],
+        tabs
+      );
+      if (firstErrorTabIndex !== null) {
+        switchTab(firstErrorTabIndex);
+      }
+    }
+
+    enqueueSnackbar(formHasErrorsMessage, {
+      variant: 'error',
+      action: <CloseSnackbar variant="error" />
+    });
+
+    return true;
+  }
 
   // Events handlers
   async function handleTemplateExtract() {
@@ -102,7 +143,15 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
       return;
     }
 
+    // Validate before updating state — ensures WriteBackBundleSelectorDialog mounts with
+    // invalidBundleEntryIndices already set, so its selectedKeys initializer excludes invalid entries
+    const validationResults = extraLaunchContext.disableBundleValidation
+      ? new Set<number>()
+      : await validateExtractedBundle(extractResult.extractedBundle, smartClient);
+
+    // All four updates land in the same React 18 batch → single render → component mounts correctly
     setExtractedBundle(extractResult.extractedBundle);
+    setInvalidBundleEntryIndices(validationResults.size > 0 ? validationResults : null);
     setExtracting(false);
 
     // Open dialog after extraction is complete
@@ -151,6 +200,7 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
     // Reset extract-related states back to false
     setExtracting(false);
     setExtractedBundle(null);
+    setInvalidBundleEntryIndices(null);
   }
 
   // Check if an in-progress QR has been saved before via versionId
@@ -179,6 +229,8 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
           isAmendment={isAmendment}
           writeBackEnabled={writeBackEnabled}
           onSaveAsFinalActionClick={async () => {
+            if (handleValidationErrors()) return;
+
             if (extractMechanism === 'template-based') {
               await handleTemplateExtract();
             }
@@ -196,6 +248,7 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
             dialogOpen={saveAsFinalDialogOpen}
             isAmendment={isAmendment}
             extractedBundle={extractedBundle}
+            invalidBundleEntryIndices={invalidBundleEntryIndices ?? undefined}
             onCloseDialog={handleCloseDialog}
             onDialogExited={handleDialogExited}
           />
@@ -220,7 +273,10 @@ function SaveAsFinalAction(props: SaveAsFinalActionProps) {
         isDisabled={buttonIsDisabled}
         isAmendment={isAmendment}
         writeBackEnabled={writeBackEnabled}
-        onSaveAsFinalActionClick={handleOpenDialog}
+        onSaveAsFinalActionClick={() => {
+          if (handleValidationErrors()) return;
+          handleOpenDialog();
+        }}
         {...speedDialActionProps}
       />
       <RendererSaveAsFinalOnlyDialog

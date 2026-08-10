@@ -15,8 +15,11 @@
  * limitations under the License.
  */
 
+import { useState } from 'react';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import Autocomplete from '@mui/material/Autocomplete';
+import FormControl from '@mui/material/FormControl';
+import FormHelperText from '@mui/material/FormHelperText';
 import Typography from '@mui/material/Typography';
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
@@ -25,12 +28,13 @@ import type {
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import { useRendererConfigStore } from '../../../stores';
+import { interpolate } from '../../../i18n';
 import { isCodingDisabled } from '../../../utils/choice';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import { StyledAlert } from '../../Alert.styles';
-import { StyledRequiredTypography } from '../Item.styles';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import { StandardTextField } from '../Textfield.styles';
+import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
 
 interface ChoiceSelectAnswerValueSetFieldsProps
   extends PropsWithIsTabledAttribute,
@@ -65,12 +69,30 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
+  const [open, setOpen] = useState(false);
+
+  // Handle focus with delayed dropdown opening for better screen reader experience
+  function handleFocus() {
+    // Delay opening to allow screen readers to announce the field name first
+    setTimeout(() => {
+      setOpen(true);
+    }, 150); // 150ms delay allows VoiceOver to announce the field
+  }
+
   if (codings.length > 0) {
     return (
-      <>
+      <FormControl
+        error={!!feedback}
+        sx={{
+          width: '100%',
+          maxWidth: !isTabled ? textFieldWidth : 3000,
+          minWidth: 160,
+          flexGrow: 1
+        }}>
         <Autocomplete
           {...(!isTabled && { id: `${qItem.type}-${qItem.linkId}` })}
           options={codings}
@@ -80,8 +102,11 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
           getOptionLabel={(option) => option.display ?? `${option.code}`}
           value={valueCoding ?? null}
           onChange={(_, newValue) => onSelectChange(newValue)}
+          fullWidth
           autoHighlight
-          sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 160, flexGrow: 1 }}
+          open={open}
+          onOpen={() => setOpen(true)}
+          onClose={() => setOpen(false)}
           size="small"
           disabled={readOnly && readOnlyVisualStyle === 'disabled'}
           readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
@@ -90,7 +115,9 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
               multiline
               textFieldWidth={textFieldWidth}
               isTabled={isTabled}
+              error={!!feedback}
               placeholder={valueCoding ? undefined : entryFormat || displayPrompt}
+              onFocus={handleFocus}
               {...params}
               slotProps={{
                 input: {
@@ -107,7 +134,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
                 htmlInput: {
                   ...params.inputProps,
                   ...(isTabled
-                    ? { 'aria-label': qItem.text ?? 'Unnamed choice dropdown' }
+                    ? { 'aria-label': qItem.text ?? rendererStrings.unnamedChoiceDropdown }
                     : { 'aria-labelledby': `label-${qItem.linkId}` }),
                   ...(instructionsId && { 'aria-describedby': instructionsId }),
                   role: 'combobox'
@@ -120,8 +147,12 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
           )}
         />
 
-        {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
-      </>
+        {feedback ? (
+          <FormHelperText>
+            <AccessibleFeedback>{feedback}</AccessibleFeedback>
+          </FormHelperText>
+        ) : null}
+      </FormControl>
     );
   }
 
@@ -130,8 +161,9 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
       <StyledAlert color="error">
         <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
         <Typography component="div">
-          There was an error fetching options from the terminology server for{' '}
-          {terminologyError.answerValueSet}
+          {interpolate(rendererStrings.terminologyServerFetchError, {
+            valueSet: `${terminologyError.answerValueSet}`
+          })}
         </Typography>
       </StyledAlert>
     );
@@ -140,7 +172,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
   if (codings.length === 0) {
     return (
       <Typography sx={{ py: 0.5 }} fontWeight={600} fontSize={13}>
-        No options available.
+        {rendererStrings.optionsUnavailable}
       </Typography>
     );
   }
@@ -148,9 +180,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
   return (
     <StyledAlert color="error">
       <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-      <Typography component="div">
-        Unable to fetch options from the questionnaire or launch context
-      </Typography>
+      <Typography component="div">{rendererStrings.optionsFetchError}</Typography>
     </StyledAlert>
   );
 }

@@ -22,6 +22,7 @@ import { beforeEach, describe, expect, jest } from '@jest/globals';
 import type { QuestionnaireResponse, QuestionnaireResponseItem } from 'fhir/r4';
 // Import the functions to test
 import {
+  answerHasValue,
   buildForm,
   destroyForm,
   getResponse,
@@ -531,6 +532,68 @@ describe('manageForm utils', () => {
       const result = qrItemHasItemsOrAnswer(qrItem);
 
       expect(result).toBe(false);
+    });
+
+    it('should return false when qrItem only has a stub answer with an answer key', () => {
+      // Emitted by createEmptyQrItem(qItem, answerKey) when clearing a field
+      const qrItem: QuestionnaireResponseItem = {
+        linkId: 'test-item',
+        text: 'Test Item',
+        answer: [{ id: 'someAnswerKey' }]
+      };
+
+      const result = qrItemHasItemsOrAnswer(qrItem);
+
+      expect(result).toBe(false);
+    });
+
+    it('should return false when qrItem only has a stub answer with an internal repeat id', () => {
+      // Empty repeat answer instances are tracked in RepeatItem local state and
+      // should never count as an answer in the QuestionnaireResponse
+      const qrItem: QuestionnaireResponseItem = {
+        linkId: 'test-item',
+        text: 'Test Item',
+        answer: [{ id: 'test-item-repeat-abc123' }]
+      };
+
+      const result = qrItemHasItemsOrAnswer(qrItem);
+
+      expect(result).toBe(false);
+    });
+
+    it('should return true when at least one answer entry has a value amongst stubs', () => {
+      const qrItem: QuestionnaireResponseItem = {
+        linkId: 'test-item',
+        text: 'Test Item',
+        answer: [{ id: 'someAnswerKey' }, { id: 'anotherAnswerKey', valueInteger: 0 }]
+      };
+
+      const result = qrItemHasItemsOrAnswer(qrItem);
+
+      expect(result).toBe(true);
+    });
+  });
+
+  describe('answerHasValue', () => {
+    it('should return true for value[x] properties, including falsy values', () => {
+      expect(answerHasValue({ valueString: 'test' })).toBe(true);
+      expect(answerHasValue({ valueBoolean: false })).toBe(true);
+      expect(answerHasValue({ valueInteger: 0 })).toBe(true);
+      expect(answerHasValue({ valueDecimal: 0 })).toBe(true);
+      expect(answerHasValue({ id: 'someAnswerKey', valueCoding: { code: '195967001' } })).toBe(
+        true
+      );
+    });
+
+    it('should return true for answers with nested items', () => {
+      expect(answerHasValue({ item: [{ linkId: 'nested-item' }] })).toBe(true);
+    });
+
+    it('should return false for stub answers without a value', () => {
+      expect(answerHasValue({})).toBe(false);
+      expect(answerHasValue({ id: 'someAnswerKey' })).toBe(false);
+      expect(answerHasValue({ id: 'test-item-repeat-abc123' })).toBe(false);
+      expect(answerHasValue({ id: 'someAnswerKey', item: [] })).toBe(false);
     });
   });
 

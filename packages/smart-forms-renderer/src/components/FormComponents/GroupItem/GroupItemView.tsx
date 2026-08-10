@@ -40,7 +40,8 @@ import { getGroupCollapsible } from '../../../utils/qItem';
 import useReadOnly from '../../../hooks/useReadOnly';
 import PageButtonsWrapper from './PageButtonWrapper';
 import { useParseXhtml } from '../../../hooks/useParseXhtml';
-import { getItemTextToDisplay } from '../../../utils/itemTextToDisplay';
+import { useRendererConfigStore } from '../../../stores';
+import { itemHasLabelHeadingContent } from '../../../utils/itemTextToDisplay';
 import GroupAccordion from './GroupAccordion';
 
 interface GroupItemViewProps
@@ -86,6 +87,8 @@ function GroupItemView(props: GroupItemViewProps) {
     onQrRepeatGroupChange
   } = props;
 
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
+
   // If XHTML has styles, pass them to the GroupItemView so it cna be applied down the tree
   const xhtmlStyles = useParseXhtml(qItem._text, qItem.text)?.styles;
 
@@ -101,8 +104,7 @@ function GroupItemView(props: GroupItemViewProps) {
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly, parentRepeatGroupIndex);
 
-  // Get item.text as display label
-  const itemTextToDisplay = getItemTextToDisplay(qItem);
+  const showGroupHeading = itemHasLabelHeadingContent(qItem);
 
   // Render collapsible group item
   // If group item is a repeating instance, do not render group item as collapsible
@@ -119,8 +121,7 @@ function GroupItemView(props: GroupItemViewProps) {
         }}
         style={combinedStyles || undefined}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ minHeight: '28px' }}>
-          {/* Show group heading when itemTextToDisplay is valid */}
-          {itemTextToDisplay ? (
+          {showGroupHeading ? (
             <GroupHeading
               qItem={qItem}
               readOnly={readOnly}
@@ -132,7 +133,7 @@ function GroupItemView(props: GroupItemViewProps) {
           ) : null}
         </AccordionSummary>
         <AccordionDetails sx={{ pt: 0 }}>
-          {itemTextToDisplay ? <Divider sx={{ mb: 1.5, opacity: 0.6 }} /> : null}
+          {showGroupHeading ? <Divider sx={{ mb: 1.5, opacity: 0.6 }} /> : null}
           <>
             {childQItems.map((childQItem: QuestionnaireItem, i) => {
               const qrItemOrItems = qrItemsByIndex[i];
@@ -170,12 +171,12 @@ function GroupItemView(props: GroupItemViewProps) {
         isRepeated={isRepeated}
         data-test="q-item-group-box"
         role="region"
-        aria-label={qItem.text ?? 'Unnamed group'}
+        aria-label={qItem.text ?? rendererStrings.unnamedGroup}
         data-linkid={qItem.linkId}
         data-label={qItem.text}
         style={combinedStyles || undefined}>
-        {/* Show group heading when item.repeats=false AND itemTextToDisplay is valid */}
-        {!isRepeated && itemTextToDisplay ? (
+        {/* Show group heading when item.repeats=false AND heading content exists */}
+        {!isRepeated && showGroupHeading ? (
           <>
             <GroupHeading
               qItem={qItem}
@@ -221,13 +222,13 @@ function GroupItemView(props: GroupItemViewProps) {
       data-linkid={qItem.linkId}
       data-label={qItem.text}
       role="region"
-      aria-label={qItem.text ?? 'Unnamed group'}>
+      aria-label={qItem.text ?? rendererStrings.unnamedGroup}>
       <GroupCard
         elevation={groupCardElevation}
         isRepeated={isRepeated}
         style={combinedStyles || undefined}>
-        {/* Show group heading when item.repeats=false AND itemTextToDisplay is valid */}
-        {!isRepeated && itemTextToDisplay ? (
+        {/* Show group heading when item.repeats=false AND heading content exists */}
+        {!isRepeated && showGroupHeading ? (
           <>
             <GroupHeading
               qItem={qItem}

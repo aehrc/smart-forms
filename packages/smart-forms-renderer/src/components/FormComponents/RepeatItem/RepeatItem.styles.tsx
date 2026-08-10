@@ -23,10 +23,6 @@ export const RepeatRemoveTooltip = styled(Tooltip)(() => ({
   marginLeft: 8
 }));
 
-export const RepeatItemContainerStack = styled(Stack)(() => ({
-  alignItems: 'center'
-}));
-
 export const RepeatGroupContainerStack = styled(Stack)(() => ({
   alignItems: 'center'
 }));
