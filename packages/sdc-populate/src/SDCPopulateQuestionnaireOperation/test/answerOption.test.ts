@@ -83,4 +83,37 @@ describe('findInAnswerOptions', () => {
     const result = findInAnswerOptions([], 'anything');
     expect(result).toBeUndefined();
   });
+
+  it('finds option by Coding value matching system and code', () => {
+    const result = findInAnswerOptions(options, { system: 'http://loinc.org', code: '1234-5' });
+    expect(result).toEqual({
+      valueCoding: { ...codingOption.valueCoding }
+    });
+  });
+
+  it('finds option by Coding value without a system when codes match', () => {
+    const result = findInAnswerOptions(options, { code: '1234-5' });
+    expect(result).toEqual({
+      valueCoding: { ...codingOption.valueCoding }
+    });
+  });
+
+  it('returns undefined for Coding value with a different system', () => {
+    const result = findInAnswerOptions(options, {
+      system: 'http://snomed.info/sct',
+      code: '1234-5'
+    });
+    expect(result).toBeUndefined();
+  });
+
+  it('returns undefined for Coding value with a non-matching code', () => {
+    const result = findInAnswerOptions(options, { system: 'http://loinc.org', code: '9999-9' });
+    expect(result).toBeUndefined();
+  });
+
+  it('does not match a Quantity-like object against coding options', () => {
+    const quantity = { value: 10, unit: '1234-5', system: 'http://loinc.org', code: '1234-5' };
+    const result = findInAnswerOptions(options, quantity as never);
+    expect(result).toBeUndefined();
+  });
 });

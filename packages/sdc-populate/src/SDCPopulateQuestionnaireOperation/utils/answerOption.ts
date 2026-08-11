@@ -15,29 +15,41 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireItemAnswerOption, QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import type {
+  Coding,
+  QuestionnaireItemAnswerOption,
+  QuestionnaireResponseItemAnswer
+} from 'fhir/r4';
 import { getRelevantCodingProperties } from './codingProperties';
 
 /**
- * Find and return corresponding answerOption based on selected answer in form.
- * Matches by code, display, string, or integer value.
+ * Find and return corresponding answerOption based on a populated or selected answer value.
+ * String values match by code, display, string, or integer value.
+ * Coding values (e.g. from an initialExpression FHIRPath result) match coding options by code,
+ * with system agreement when both sides specify one.
  *
  * @author Sean Fong
  */
 export function findInAnswerOptions(
   options: QuestionnaireItemAnswerOption[],
-  str: string
+  value: string | Coding
 ): QuestionnaireResponseItemAnswer | undefined {
   for (const option of options) {
     if (option.valueCoding) {
-      if (str === option.valueCoding.code) {
-        return {
-          valueCoding: getRelevantCodingProperties(option.valueCoding)
-        };
-      }
+      if (typeof value === 'string') {
+        if (value === option.valueCoding.code) {
+          return {
+            valueCoding: getRelevantCodingProperties(option.valueCoding)
+          };
+        }
 
-      // handle case where valueCoding.code is not present
-      if (str === option.valueCoding.display) {
+        // handle case where valueCoding.code is not present
+        if (value === option.valueCoding.display) {
+          return {
+            valueCoding: getRelevantCodingProperties(option.valueCoding)
+          };
+        }
+      } else if (valueIsCoding(value) && codingMatchesOption(value, option.valueCoding)) {
         return {
           valueCoding: getRelevantCodingProperties(option.valueCoding)
         };
@@ -45,7 +57,7 @@ export function findInAnswerOptions(
     }
 
     if (option.valueString) {
-      if (str === option.valueString) {
+      if (value === option.valueString) {
         return {
           valueString: option.valueString
         };
@@ -53,7 +65,7 @@ export function findInAnswerOptions(
     }
 
     if (option.valueInteger) {
-      if (str === option.valueInteger.toString()) {
+      if (value === option.valueInteger.toString()) {
         return {
           valueInteger: option.valueInteger
         };
@@ -62,4 +74,31 @@ export function findInAnswerOptions(
   }
 
   return;
+}
+
+/**
+ * Check that a non-string answer value is a Coding, and not another complex type
+ * carrying a "code" property such as a Quantity.
+ */
+function valueIsCoding(value: Coding): value is Coding {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    typeof value.code === 'string' &&
+    !('value' in value) &&
+    !('unit' in value)
+  );
+}
+
+function codingMatchesOption(coding: Coding, optionCoding: Coding): boolean {
+  if (!coding.code || !optionCoding.code || coding.code !== optionCoding.code) {
+    return false;
+  }
+
+  // when both codings specify a system, they must agree
+  if (coding.system && optionCoding.system && coding.system !== optionCoding.system) {
+    return false;
+  }
+
+  return true;
 }

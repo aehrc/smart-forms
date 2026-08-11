@@ -136,6 +136,20 @@ describe('parseValueToAnswer', () => {
     });
   });
 
+  it('returns answerOption for a Coding value found in answerOption', () => {
+    const qItem: QuestionnaireItem = {
+      linkId: 'q1',
+      type: 'choice',
+      answerOption: [{ valueCoding: { system: 'sys', code: 'code1', display: 'Code One' } }]
+    };
+
+    // Coding values come from FHIRPath results, e.g. %condition.code.coding.first()
+    const result = parseValueToAnswer(qItem, { system: 'sys', code: 'code1' });
+    expect(result).toEqual({
+      valueCoding: { system: 'sys', code: 'code1', display: 'Code One' }
+    });
+  });
+
   it('returns valueBoolean for boolean type and boolean value', () => {
     const qItem: QuestionnaireItem = {
       linkId: 'q1',
