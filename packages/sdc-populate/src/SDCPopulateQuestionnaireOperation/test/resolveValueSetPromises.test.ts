@@ -157,4 +157,84 @@ describe('filterValueSetAnswersRecursive', () => {
 
     expect(result).toEqual(input);
   });
+
+  it('preserves coding answers outside answerOptions for open-choice items', () => {
+    const input = {
+      linkId: 'q1',
+      answer: [
+        { valueCoding: { system: 'sys', code: 'a' } },
+        { valueCoding: { system: 'http://hl7.org/fhir/sid/icd-10-cm', code: 'J44.9' } }
+      ]
+    };
+
+    const result = filterValueSetAnswersRecursive(
+      input,
+      {},
+      mockAnswerOptions,
+      {},
+      {
+        q1: 'open-choice'
+      }
+    );
+
+    // Matching coding is normalised to the option's coding, non-matching coding is kept as is
+    expect(result?.answer).toEqual([
+      { valueCoding: { system: 'sys', code: 'a', display: 'A' } },
+      { valueCoding: { system: 'http://hl7.org/fhir/sid/icd-10-cm', code: 'J44.9' } }
+    ]);
+  });
+
+  it('still filters out non-matching coding answers for choice items', () => {
+    const input = {
+      linkId: 'q1',
+      answer: [
+        { valueCoding: { system: 'sys', code: 'a' } },
+        { valueCoding: { system: 'http://hl7.org/fhir/sid/icd-10-cm', code: 'J44.9' } }
+      ]
+    };
+
+    const result = filterValueSetAnswersRecursive(
+      input,
+      {},
+      mockAnswerOptions,
+      {},
+      {
+        q1: 'choice'
+      }
+    );
+
+    expect(result?.answer).toEqual([{ valueCoding: { system: 'sys', code: 'a', display: 'A' } }]);
+  });
+
+  it('preserves coding answers outside a contained valueSet for open-choice items', () => {
+    const input = {
+      linkId: 'q3',
+      answer: [{ valueCoding: { system: 'sys', code: 'z', display: 'Z' } }]
+    };
+
+    const result = filterValueSetAnswersRecursive(input, {}, {}, mockContainedResources, {
+      q3: 'open-choice'
+    });
+
+    expect(result?.answer).toEqual([{ valueCoding: { system: 'sys', code: 'z', display: 'Z' } }]);
+  });
+
+  it('preserves coding answers outside an expanded valueSet for open-choice items', () => {
+    const input = {
+      linkId: 'q2',
+      answer: [{ valueCoding: { system: 'sys', code: '9' } }]
+    };
+
+    const result = filterValueSetAnswersRecursive(
+      input,
+      mockResolvedValueSetPromises,
+      {},
+      {},
+      {
+        q2: 'open-choice'
+      }
+    );
+
+    expect(result?.answer).toEqual([{ valueCoding: { system: 'sys', code: '9' } }]);
+  });
 });

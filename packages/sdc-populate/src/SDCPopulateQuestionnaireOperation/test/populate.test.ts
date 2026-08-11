@@ -356,3 +356,122 @@ describe('populate - non-repeating itemPopulationContext children evaluated glob
     expect(patientIdItem?.answer?.[0]?.valueString).toBe('test-patient-123');
   });
 });
+
+// Minimal questionnaire with an open-choice item and a choice item, both with answerOptions
+// and initialExpressions that resolve to a Coding NOT present in the answerOptions.
+// Open-choice must keep the answer (arbitrary values are allowed), choice must filter it out.
+const qOpenChoicePrefill = {
+  resourceType: 'Questionnaire',
+  id: 'open-choice-prefill-test',
+  status: 'active',
+  item: [
+    {
+      linkId: 'dx-open-choice',
+      type: 'open-choice',
+      answerOption: [
+        {
+          valueCoding: {
+            system: 'http://hl7.org/fhir/sid/icd-10-cm',
+            code: 'E11.9',
+            display: 'Type 2 diabetes mellitus without complications'
+          }
+        }
+      ],
+      extension: [
+        {
+          url: SDC_INITIAL_EXPR,
+          valueExpression: {
+            language: 'text/fhirpath',
+            expression: '%ConditionBundle.entry.resource.code.coding.first()'
+          }
+        }
+      ]
+    },
+    {
+      linkId: 'dx-choice',
+      type: 'choice',
+      answerOption: [
+        {
+          valueCoding: {
+            system: 'http://hl7.org/fhir/sid/icd-10-cm',
+            code: 'E11.9',
+            display: 'Type 2 diabetes mellitus without complications'
+          }
+        }
+      ],
+      extension: [
+        {
+          url: SDC_INITIAL_EXPR,
+          valueExpression: {
+            language: 'text/fhirpath',
+            expression: '%ConditionBundle.entry.resource.code.coding.first()'
+          }
+        }
+      ]
+    }
+  ]
+};
+
+describe('populate - open-choice answers outside answerOptions', () => {
+  it('keeps a coding answer outside answerOptions for open-choice, filters it for choice', async () => {
+    const mockContext = {
+      resource: { resourceType: 'QuestionnaireResponse', status: 'in-progress' },
+      rootResource: { resourceType: 'QuestionnaireResponse', status: 'in-progress' },
+      patient: { resourceType: 'Patient', id: 'test-patient' },
+      ConditionBundle: {
+        resourceType: 'Bundle',
+        type: 'searchset',
+        entry: [
+          {
+            resource: {
+              resourceType: 'Condition',
+              id: 'cond-copd',
+              code: {
+                coding: [
+                  {
+                    system: 'http://hl7.org/fhir/sid/icd-10-cm',
+                    code: 'J44.9',
+                    display: 'Chronic obstructive pulmonary disease, unspecified'
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    };
+
+    (createFhirPathContext as jest.Mock).mockImplementation(async () => mockContext);
+    (resolveLookupPromises as jest.Mock).mockImplementation(async () => ({}));
+
+    const inputParameters: InputParameters = {
+      resourceType: 'Parameters',
+      parameter: [
+        { name: 'questionnaire', resource: qOpenChoicePrefill as any },
+        { name: 'subject', valueReference: { type: 'Patient', reference: 'Patient/test-patient' } }
+      ]
+    };
+
+    const result = await populate(
+      inputParameters,
+      mockFetchResourceCallback,
+      mockFetchResourceCallbackConfig,
+      mockTerminologyCallback,
+      mockTerminologyCallbackConfig
+    );
+
+    const response = (result as OutputParameters).parameter.find((p) => p.name === 'response')
+      ?.resource as QuestionnaireResponse;
+
+    // Open-choice: the answer survives even though it is not in answerOptions
+    const openChoiceItem = response.item?.find((i) => i.linkId === 'dx-open-choice');
+    expect(openChoiceItem?.answer?.[0]?.valueCoding).toMatchObject({
+      system: 'http://hl7.org/fhir/sid/icd-10-cm',
+      code: 'J44.9'
+    });
+
+    // Choice: the non-matching answer is filtered out
+    const choiceItem = response.item?.find((i) => i.linkId === 'dx-choice');
+    expect(choiceItem?.answer).toBeUndefined();
+  });
+});

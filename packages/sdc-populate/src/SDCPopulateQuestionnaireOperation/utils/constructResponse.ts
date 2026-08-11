@@ -98,6 +98,10 @@ export async function constructResponse(
 
   const containedResources = questionnaire.contained ?? [];
 
+  // Record item types so open-choice items can be identified when filtering valueSet answers
+  const itemTypes: Record<string, QuestionnaireItem['type']> = {};
+  recordItemTypesRecursive(questionnaire.item, itemTypes);
+
   // Populate questionnaire response as a two-step process
   // In first step, populate answers from initialExpressions and get answerValueSet promises wherever population of valueSet answers are required
   // In second step, resolves all promises in parallel and populate valueSet answers by comparing their codes
@@ -142,7 +146,13 @@ export async function constructResponse(
   valueSetPromises = await resolveValueSetPromises(valueSetPromises);
   const updatedTopLevelQRItems: QuestionnaireResponseItem[] = topLevelQRItems
     .map((qrItem) =>
-      filterValueSetAnswersRecursive(qrItem, valueSetPromises, answerOptions, containedValueSets)
+      filterValueSetAnswersRecursive(
+        qrItem,
+        valueSetPromises,
+        answerOptions,
+        containedValueSets,
+        itemTypes
+      )
     )
     .filter((item): item is QuestionnaireResponseItem => item !== null);
 
@@ -466,6 +476,18 @@ function recordAnswerOption(
 ) {
   if (qItem.answerOption) {
     answerOptions[qItem.linkId] = qItem.answerOption;
+  }
+}
+
+function recordItemTypesRecursive(
+  qItems: QuestionnaireItem[],
+  itemTypes: Record<string, QuestionnaireItem['type']>
+) {
+  for (const qItem of qItems) {
+    itemTypes[qItem.linkId] = qItem.type;
+    if (qItem.item) {
+      recordItemTypesRecursive(qItem.item, itemTypes);
+    }
   }
 }
 

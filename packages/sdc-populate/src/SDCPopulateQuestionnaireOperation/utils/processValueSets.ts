@@ -17,6 +17,7 @@
 
 import type {
   Coding,
+  QuestionnaireItem,
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
@@ -68,13 +69,17 @@ function responseIsValueSet(response: any): response is ValueSet {
 /**
  * Read a questionnaire response item recursively and retrieve valueSet answers if present
  *
+ * @param itemTypes - Questionnaire item types keyed by linkId, used to identify open-choice items
+ * whose answers are allowed to fall outside the provided options
+ *
  * @author Sean Fong
  */
 export function filterValueSetAnswersRecursive(
   qrItem: QuestionnaireResponseItem,
   valueSetPromises: Record<string, ValueSetPromise>,
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>,
-  containedResources: Record<string, ValueSet>
+  containedResources: Record<string, ValueSet>,
+  itemTypes: Record<string, QuestionnaireItem['type']> = {}
 ): QuestionnaireResponseItem | null {
   const items = qrItem.item;
 
@@ -82,7 +87,13 @@ export function filterValueSetAnswersRecursive(
     // iterate through items of item recursively
     const qrItems: QuestionnaireResponseItem[] = items
       .map((item) =>
-        filterValueSetAnswersRecursive(item, valueSetPromises, answerOptions, containedResources)
+        filterValueSetAnswersRecursive(
+          item,
+          valueSetPromises,
+          answerOptions,
+          containedResources,
+          itemTypes
+        )
       )
       .filter((item): item is QuestionnaireResponseItem => item !== null);
 
@@ -90,27 +101,33 @@ export function filterValueSetAnswersRecursive(
   }
 
   const linkId = qrItem.linkId;
+  const isOpenChoice = itemTypes[linkId] === 'open-choice';
 
   const valueSetOptionCodings = valueSetPromises[linkId]?.valueSet?.expansion?.contains;
   if (qrItem.answer && valueSetOptionCodings) {
-    return { ...qrItem, answer: filterAndNormaliseAnswers(qrItem.answer, valueSetOptionCodings) };
+    return {
+      ...qrItem,
+      answer: filterAndNormaliseAnswers(qrItem.answer, valueSetOptionCodings, isOpenChoice)
+    };
   }
 
   const answerOptionCodings = answerOptions[linkId]?.map((option) => option.valueCoding);
   if (qrItem.answer && answerOptionCodings) {
-    return { ...qrItem, answer: filterAndNormaliseAnswers(qrItem.answer, answerOptionCodings) };
+    return {
+      ...qrItem,
+      answer: filterAndNormaliseAnswers(qrItem.answer, answerOptionCodings, isOpenChoice)
+    };
   }
 
   const containedValueSetOptionCodings = containedResources[linkId]?.expansion?.contains;
   if (qrItem.answer && containedValueSetOptionCodings) {
-    const cleanedAnswers = filterAndNormaliseAnswers(qrItem.answer, containedValueSetOptionCodings);
+    const cleanedAnswers = filterAndNormaliseAnswers(
+      qrItem.answer,
+      containedValueSetOptionCodings,
+      isOpenChoice
+    );
 
-    return cleanedAnswers.length > 0
-      ? {
-          ...qrItem,
-          answer: filterAndNormaliseAnswers(qrItem.answer, containedValueSetOptionCodings)
-        }
-      : null;
+    return cleanedAnswers.length > 0 ? { ...qrItem, answer: cleanedAnswers } : null;
   }
 
   // If item does not have any valueSet nor answerOption
@@ -119,14 +136,16 @@ export function filterValueSetAnswersRecursive(
 
 /**
  * Normalises a list of QuestionnaireResponse answers by:
- * - Filtering out valueCoding answers that are not present in the provided options
+ * - Filtering out valueCoding answers that are not present in the provided options,
+ *   unless the item is open-choice, where answers outside the options are allowed
  * - Converting valueString answers to valueCoding when matching codes are found in options
  * - Preserving all other answers, including valueString answers that do not match any coding,
  *   to support open-choice questions where arbitrary strings are allowed
  */
 function filterAndNormaliseAnswers(
   answers: QuestionnaireResponseItemAnswer[],
-  options: (Coding | undefined)[]
+  options: (Coding | undefined)[],
+  isOpenChoice: boolean
 ) {
   const newAnswers: QuestionnaireResponseItemAnswer[] = [];
 
@@ -139,6 +158,9 @@ function filterAndNormaliseAnswers(
           valueCoding: valueCoding
         };
         newAnswers.push(newAnswer);
+      } else if (isOpenChoice) {
+        // Open-choice items accept answers outside the provided options, keep the answer as is
+        newAnswers.push(answer);
       }
 
       // Add continue here to skip to the next iteration if answer coding is not in options
