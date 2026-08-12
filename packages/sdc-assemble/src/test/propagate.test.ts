@@ -83,6 +83,20 @@ describe('propagateProperties', () => {
 
   it('should propagate items from subquestionnaires', () => {
     const parentQuestionnaire = createBaseParentQuestionnaire();
+    // Make subq1-ref and subq2-ref real subQuestionnaire placeholders — propagateProperties
+    // replaces items that carry the subQuestionnaire extension, in document order.
+    parentQuestionnaire.item![0]!.item![0]!.extension = [
+      {
+        url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire',
+        valueCanonical: 'http://example.com/subq1|1.0.0'
+      }
+    ];
+    parentQuestionnaire.item![0]!.item![1]!.extension = [
+      {
+        url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire',
+        valueCanonical: 'http://example.com/subq2|1.0.0'
+      }
+    ];
 
     const subqItem1: QuestionnaireItem = {
       linkId: 'question1',
@@ -527,6 +541,14 @@ describe('propagateProperties', () => {
 
   it('should handle complex scenario with multiple property types', () => {
     const parentQuestionnaire = createBaseParentQuestionnaire();
+    // Only subq1-ref is a real subQuestionnaire placeholder; subq2-ref stays a regular display
+    // item and is therefore kept in place unchanged.
+    parentQuestionnaire.item![0]!.item![0]!.extension = [
+      {
+        url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire',
+        valueCanonical: 'http://example.com/subq1|1.0.0'
+      }
+    ];
 
     const subqItem1: QuestionnaireItem = {
       linkId: 'subq1-item',

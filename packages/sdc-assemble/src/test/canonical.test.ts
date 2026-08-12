@@ -16,7 +16,7 @@
  */
 
 import { describe, expect, it } from '@jest/globals';
-import type { Questionnaire } from 'fhir/r4';
+import type { Questionnaire, QuestionnaireItem } from 'fhir/r4';
 import { getCanonicalUrls } from '../utils/canonical';
 
 describe('getCanonicalUrls', () => {
@@ -322,5 +322,82 @@ describe('getCanonicalUrls', () => {
       expect(Array.isArray(result)).toBe(true);
       expect(result).toEqual([]);
     });
+  });
+});
+
+describe('getCanonicalUrls with nested wrapper groups', () => {
+  const subQuestionnaireItem = (linkId: string, canonical: string): QuestionnaireItem => ({
+    linkId,
+    type: 'display',
+    extension: [
+      {
+        url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire',
+        valueCanonical: canonical
+      }
+    ]
+  });
+
+  const buildParent = (formItems: QuestionnaireItem[]): Questionnaire => ({
+    resourceType: 'Questionnaire',
+    id: 'parent',
+    status: 'draft',
+    item: [{ linkId: 'form', type: 'group', item: formItems }]
+  });
+
+  it('collects a placeholder nested inside a wrapper group', () => {
+    const parent = buildParent([
+      {
+        linkId: 'person',
+        type: 'group',
+        item: [subQuestionnaireItem('personInitials', 'http://example.com/personInitials')]
+      },
+      subQuestionnaireItem('manifestation', 'http://example.com/manifestation')
+    ]);
+
+    const result = getCanonicalUrls(parent, [], true);
+
+    expect(result).toEqual([
+      'http://example.com/personInitials',
+      'http://example.com/manifestation'
+    ]);
+  });
+
+  it('collects placeholders in depth-first document order across wrapper groups', () => {
+    const parent = buildParent([
+      {
+        linkId: 'person',
+        type: 'group',
+        item: [
+          subQuestionnaireItem('personInitials', 'http://example.com/personInitials'),
+          subQuestionnaireItem('personGeneral', 'http://example.com/personGeneral')
+        ]
+      },
+      subQuestionnaireItem('manifestation', 'http://example.com/manifestation'),
+      subQuestionnaireItem('exposition', 'http://example.com/exposition')
+    ]);
+
+    const result = getCanonicalUrls(parent, [], true);
+
+    expect(result).toEqual([
+      'http://example.com/personInitials',
+      'http://example.com/personGeneral',
+      'http://example.com/manifestation',
+      'http://example.com/exposition'
+    ]);
+  });
+
+  it('detects a circular dependency on a nested placeholder', () => {
+    const parent = buildParent([
+      {
+        linkId: 'person',
+        type: 'group',
+        item: [subQuestionnaireItem('personInitials', 'http://example.com/personInitials')]
+      }
+    ]);
+
+    const result = getCanonicalUrls(parent, ['http://example.com/personInitials'], true);
+
+    expect(Array.isArray(result)).toBe(false);
+    expect((result as { resourceType: string }).resourceType).toBe('OperationOutcome');
   });
 });
