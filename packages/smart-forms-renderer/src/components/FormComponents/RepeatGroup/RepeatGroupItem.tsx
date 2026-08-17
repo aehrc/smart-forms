@@ -15,10 +15,12 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useContext } from 'react';
 import { RepeatGroupContainerStack } from '../RepeatItem/RepeatItem.styles';
 import Box from '@mui/material/Box';
 import GroupItem from '../GroupItem/GroupItem';
+import { RepeatGroupInstanceContext } from '../../../contexts/RepeatGroupInstanceContext';
+import { appendRepeatInstanceIndex } from '../../../utils/validateErrorKey';
 import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
@@ -32,6 +34,8 @@ interface RepeatGroupItemProps
     PropsWithParentIsReadOnlyAttribute {
   qItem: QuestionnaireItem;
   repeatGroupIndex: number;
+  /** This instance's index within the QuestionnaireResponse, or null if it isn't in the QR yet */
+  qrInstanceIndex: number | null;
   answeredQrItem: QuestionnaireResponseItem;
   nullableQrItem: QuestionnaireResponseItem | null;
   numOfRepeatGroups: number;
@@ -43,6 +47,7 @@ function RepeatGroupItem(props: RepeatGroupItemProps) {
   const {
     qItem,
     repeatGroupIndex,
+    qrInstanceIndex,
     answeredQrItem,
     nullableQrItem,
     numOfRepeatGroups,
@@ -54,27 +59,35 @@ function RepeatGroupItem(props: RepeatGroupItemProps) {
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly, repeatGroupIndex);
 
+  // Append this instance's index to the enclosing repeat instance path so that descendant items look
+  // up their own instance-scoped validation errors (see useValidationFeedback). Uses the
+  // QuestionnaireResponse index, not repeatGroupIndex, because that is what validation walks.
+  const parentRepeatInstancePath = useContext(RepeatGroupInstanceContext);
+  const repeatInstancePath = appendRepeatInstanceIndex(parentRepeatInstancePath, qrInstanceIndex);
+
   return (
-    <RepeatGroupContainerStack direction="row">
-      <Box sx={{ flexGrow: 1, overflowX: 'auto' }}>
-        <GroupItem
-          qItem={qItem}
-          qrItem={answeredQrItem}
-          isRepeated={true}
-          parentIsRepeatGroup={true}
-          parentRepeatGroupIndex={repeatGroupIndex}
-          parentIsReadOnly={parentIsReadOnly}
-          groupCardElevation={groupCardElevation}
-          onQrItemChange={onQrItemChange}
+    <RepeatGroupInstanceContext.Provider value={repeatInstancePath}>
+      <RepeatGroupContainerStack direction="row">
+        <Box sx={{ flexGrow: 1, overflowX: 'auto' }}>
+          <GroupItem
+            qItem={qItem}
+            qrItem={answeredQrItem}
+            isRepeated={true}
+            parentIsRepeatGroup={true}
+            parentRepeatGroupIndex={repeatGroupIndex}
+            parentIsReadOnly={parentIsReadOnly}
+            groupCardElevation={groupCardElevation}
+            onQrItemChange={onQrItemChange}
+          />
+        </Box>
+        <RemoveItemButton
+          nullableQrItem={nullableQrItem}
+          numOfRepeatGroups={numOfRepeatGroups}
+          readOnly={readOnly}
+          onRemoveItem={onRemoveItem}
         />
-      </Box>
-      <RemoveItemButton
-        nullableQrItem={nullableQrItem}
-        numOfRepeatGroups={numOfRepeatGroups}
-        readOnly={readOnly}
-        onRemoveItem={onRemoveItem}
-      />
-    </RepeatGroupContainerStack>
+      </RepeatGroupContainerStack>
+    </RepeatGroupInstanceContext.Provider>
   );
 }
 
