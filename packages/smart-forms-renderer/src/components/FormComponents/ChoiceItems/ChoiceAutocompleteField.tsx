@@ -46,6 +46,8 @@ interface ChoiceAutocompleteFieldsProps
   qItem: QuestionnaireItem;
   options: Coding[];
   valueCoding: Coding | null;
+  /** Debounced search term sent to the terminology server. Fewer than 2 characters means no query has run. */
+  searchTerm: string;
   loading: boolean;
   feedback: { message: string; color: AlertColor } | null;
   readOnly: boolean;
@@ -61,6 +63,7 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
     qItem,
     options,
     valueCoding,
+    searchTerm,
     loading,
     feedback,
     readOnly,
@@ -89,6 +92,11 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
       readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
       loading={loading}
       loadingText={rendererStrings.fetchingResults}
+      noOptionsText={
+        searchTerm.length < 2
+          ? rendererStrings.autocompleteTypeToSearch
+          : rendererStrings.terminologyNoResults
+      }
       clearOnEscape
       autoHighlight
       onChange={(_, newValue) => onValueChange(newValue)}
