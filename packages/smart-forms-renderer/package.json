@@ -86,6 +86,10 @@
       "types": "./lib/hooks/index.d.ts",
       "default": "./lib/hooks/index.js"
     },
+    "./lib/i18n": {
+      "types": "./lib/i18n/index.d.ts",
+      "default": "./lib/i18n/index.js"
+    },
     "./lib/interfaces": {
       "types": "./lib/interfaces/index.d.ts",
       "default": "./lib/interfaces/index.js"
