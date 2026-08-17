@@ -81,10 +81,16 @@ export interface FhirContext {
 export const DISABLE_WRITEBACK_SELECTION_CONTEXT_KEY =
   'https://smartforms.csiro.au/smart-app-launch/extra-context/disable-writeback-selection';
 
+export const DISABLE_BUNDLE_VALIDATION_CONTEXT_KEY =
+  'https://smartforms.csiro.au/smart-app-launch/extra-context/disable-bundle-validation';
+
 export interface tokenResponseCustomised extends fhirclient.TokenResponse {
   fhirContext?: FhirContext[];
   intent?: string;
   'https://smartforms.csiro.au/smart-app-launch/extra-context/disable-writeback-selection'?:
+    | boolean
+    | string;
+  'https://smartforms.csiro.au/smart-app-launch/extra-context/disable-bundle-validation'?:
     | boolean
     | string;
 }

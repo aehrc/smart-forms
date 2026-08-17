@@ -93,7 +93,7 @@
 | [rendererThemeComponentOverrides](functions/rendererThemeComponentOverrides.md) | - |
 | [RendererThemeProvider](functions/RendererThemeProvider.md) | Default theme used by the renderer using Material UI. You can customise your own theme by defining a new ThemeProvider. |
 | [RepeatGroup](functions/RepeatGroup.md) | Main component to render a repeating, group Questionnaire item. Store and manages the state of multiple instances of GroupItem in a repeating group. |
-| [RepeatItem](functions/RepeatItem.md) | Main component to render a repeating, non-group Questionnaire item. |
+| [RepeatItem](functions/RepeatItem.md) | Main component to render a repeating, non-group Questionnaire item. Repeat answer instances (including empty ones) are tracked in local state, similar to RepeatGroup and GroupTable - only answers with values are emitted to the QuestionnaireResponse. |
 | [repopulateForm](functions/repopulateForm.md) | Re-populate the form with a provided (already filled) QuestionnaireResponse. |
 | [repopulateResponse](functions/repopulateResponse.md) | Re-populate checked items in the re-population dialog into the current QuestionnaireResponse |
 | [SingleItem](functions/SingleItem.md) | Main component to render a repeating, non-group Questionnaire item. Store and manages the state of multiple instances of SingleItem in a repeating item. |

@@ -10,6 +10,7 @@ import type {
 } from '../../interfaces/renderProps.interface';
 import { useQuestionnaireStore } from '../../stores';
 import { useRendererConfigStore } from '../../stores/rendererConfigStore';
+import { interpolate } from '../../i18n';
 import { SingleItem } from '../FormComponents';
 import PageButtonsWrapper from '../FormComponents/GroupItem/PageButtonWrapper';
 import { QGroupContainerBox } from '../Box.styles';
@@ -31,6 +32,7 @@ function FormBodyPaginated(props: FormBodyPaginatedProps) {
   const pages = useQuestionnaireStore.use.pages();
   const currentPage = useQuestionnaireStore.use.currentPageIndex();
   const disableCardView = useRendererConfigStore.use.disablePageCardView();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const { headerQItems, pageQItems, footerQItems } = useMemo(() => {
     const headerQItems: [QuestionnaireItem, number][] = [];
@@ -105,7 +107,11 @@ function FormBodyPaginated(props: FormBodyPaginatedProps) {
               if (itemIsGroup) {
                 return (
                   <TabPanel
-                    aria-label={`${qItem.text ?? 'Unnamed'} page`}
+                    aria-label={
+                      qItem.text
+                        ? interpolate(rendererStrings.pageAriaLabel, { label: qItem.text })
+                        : rendererStrings.unnamedPage
+                    }
                     key={qItem.linkId}
                     sx={{ p: 0 }}
                     value={i.toString()}
@@ -129,7 +135,11 @@ function FormBodyPaginated(props: FormBodyPaginatedProps) {
               // Page consists of a non-group item
               return (
                 <TabPanel
-                  aria-label={`${qItem.text ?? 'Unnamed'} page`}
+                  aria-label={
+                    qItem.text
+                      ? interpolate(rendererStrings.pageAriaLabel, { label: qItem.text })
+                      : rendererStrings.unnamedPage
+                  }
                   key={qItem.linkId}
                   sx={{ p: 0 }}
                   value={i.toString()}
@@ -139,7 +149,7 @@ function FormBodyPaginated(props: FormBodyPaginatedProps) {
                     isRepeated={isRepeated}
                     data-test="q-item-group-box"
                     role="region"
-                    aria-label={qItem.text ?? 'Unnamed group'}>
+                    aria-label={qItem.text ?? rendererStrings.unnamedGroup}>
                     {disableCardView ? (
                       <>
                         <SingleItem

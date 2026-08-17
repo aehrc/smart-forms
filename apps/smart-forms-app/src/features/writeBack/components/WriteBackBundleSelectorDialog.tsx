@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import {
+  Alert,
   Box,
   Button,
   Dialog,
@@ -26,6 +27,7 @@ interface WriteBackBundleSelectorProps {
   isSaving: SavingWriteBackMode;
   isAmendment?: boolean;
   extractedBundle: Bundle;
+  invalidBundleEntryIndices?: Set<number>;
   disableWriteBackSelection?: boolean;
   onCloseDialog: () => void;
   onWriteBackBundle: (bundleToWriteBack: Bundle, savingWriteBackMode: SavingWriteBackMode) => void;
@@ -38,6 +40,7 @@ function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
     isSaving,
     isAmendment,
     extractedBundle,
+    invalidBundleEntryIndices,
     disableWriteBackSelection = false,
     onCloseDialog,
     onWriteBackBundle,
@@ -66,7 +69,18 @@ function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
     [allBundleEntries]
   );
 
-  const [selectedKeys, setSelectedKeys] = useState<Set<string>>(allValidKeys);
+  // Valid keys that can actually be selected (excludes $validate failures)
+  const selectableKeys: Set<string> = useMemo(() => {
+    const keys = new Set(allValidKeys);
+    if (invalidBundleEntryIndices) {
+      for (const index of invalidBundleEntryIndices) {
+        keys.delete(createSelectionKey(index));
+      }
+    }
+    return keys;
+  }, [allValidKeys, invalidBundleEntryIndices]);
+
+  const [selectedKeys, setSelectedKeys] = useState<Set<string>>(selectableKeys);
 
   function isEntrySelected(
     bundleEntryIndex: number,
@@ -146,7 +160,7 @@ function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
   }
 
   function handleSelectAll() {
-    setSelectedKeys(allValidKeys);
+    setSelectedKeys(selectableKeys);
   }
 
   function handleUnselectAll() {
@@ -165,7 +179,8 @@ function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
     );
   }
 
-  const allValidKeysSelected = selectedKeys.size === allValidKeys.size;
+  const allSelectableKeysSelected =
+    selectableKeys.size > 0 && selectedKeys.size === selectableKeys.size;
 
   // Button texts based on if view mode is in renderer or playground
   const writeBackButtonText =
@@ -192,19 +207,60 @@ function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
       </StandardDialogTitle>
 
       <DialogContent dividers={!disableWriteBackSelection}>
+        {invalidBundleEntryIndices && invalidBundleEntryIndices.size > 0 ? (
+          <Alert severity="warning" sx={{ mb: 2 }}>
+            {invalidBundleEntryIndices.size}{' '}
+            {invalidBundleEntryIndices.size === 1 ? 'entry has' : 'entries have'} validation errors
+            and will not be written back.
+          </Alert>
+        ) : null}
+
         {disableWriteBackSelection ? (
-          <DialogContentText>
-            Are you sure you want to save this response as {isAmendment ? 'an amendment' : 'final'}{' '}
-            and write back all items to the patient record?
-          </DialogContentText>
+          <>
+            {invalidBundleEntryIndices && invalidBundleEntryIndices.size > 0 ? (
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 2 }}>
+                {Array.from(invalidBundleEntryIndices).map((index) => (
+                  <WriteBackBundleSelectorItem
+                    key={index}
+                    bundleEntry={allBundleEntries[index]}
+                    bundleEntryIndex={index}
+                    selectedKeys={selectedKeys}
+                    allValidKeys={allValidKeys}
+                    populatedResourceMap={populatedResourceMap}
+                    isInvalid={true}
+                    isEntrySelected={isEntrySelected}
+                    onToggleCheckbox={handleToggleCheckbox}
+                  />
+                ))}
+              </Box>
+            ) : null}
+
+            {selectedKeys.size > 0 ? (
+              <DialogContentText>
+                Are you sure you want to save this response as{' '}
+                {isAmendment ? 'an amendment' : 'final'} and write back{' '}
+                {invalidBundleEntryIndices && invalidBundleEntryIndices.size > 0
+                  ? `${selectedKeys.size} valid ${selectedKeys.size === 1 ? 'entry' : 'entries'}`
+                  : 'all items'}{' '}
+                to the patient record?
+              </DialogContentText>
+            ) : (
+              <DialogContentText>
+                All items have validation errors and will not be written back. Are you sure you want
+                to save this response as {isAmendment ? 'an amendment' : 'final'} only?
+              </DialogContentText>
+            )}
+          </>
         ) : (
           <>
-            <Button
-              onClick={allValidKeysSelected ? handleUnselectAll : handleSelectAll}
-              variant="outlined"
-              size="small">
-              {allValidKeysSelected ? 'Unselect All' : 'Select All'}
-            </Button>
+            {selectableKeys.size > 0 ? (
+              <Button
+                onClick={allSelectableKeysSelected ? handleUnselectAll : handleSelectAll}
+                variant="outlined"
+                size="small">
+                {allSelectableKeysSelected ? 'Unselect All' : 'Select All'}
+              </Button>
+            ) : null}
 
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
               {allBundleEntries.map((bundleEntry, bundleEntryIndex) => {
@@ -216,6 +272,7 @@ function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
                     selectedKeys={selectedKeys}
                     allValidKeys={allValidKeys}
                     populatedResourceMap={populatedResourceMap}
+                    isInvalid={invalidBundleEntryIndices?.has(bundleEntryIndex) ?? false}
                     isEntrySelected={isEntrySelected}
                     onToggleCheckbox={handleToggleCheckbox}
                   />
@@ -237,7 +294,7 @@ function WriteBackBundleSelectorDialog(props: WriteBackBundleSelectorProps) {
           }}>
           {disableWriteBackSelection ? null : (
             <Typography component="div" variant="body2" color="text.secondary">
-              {selectedKeys.size} of {allValidKeys.size} valid entries selected
+              {selectedKeys.size} of {selectableKeys.size} valid entries selected
             </Typography>
           )}
 

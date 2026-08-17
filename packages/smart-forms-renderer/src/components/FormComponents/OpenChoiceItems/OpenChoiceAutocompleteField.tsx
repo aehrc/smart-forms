@@ -36,6 +36,7 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import type { AlertColor } from '@mui/material/Alert';
 import { useRendererConfigStore } from '../../../stores';
+import { interpolate } from '../../../i18n';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 
@@ -76,6 +77,7 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
@@ -90,7 +92,7 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
       loading={loading}
-      loadingText={'Fetching results...'}
+      loadingText={rendererStrings.fetchingResults}
       clearOnEscape
       freeSolo
       sx={{ maxWidth: !isTabled ? textFieldWidth : 3000, minWidth: 220, flexGrow: 1 }}
@@ -108,7 +110,10 @@ function OpenChoiceAutocompleteField(props: OpenChoiceAutocompleteFieldProps) {
         const enhancedInputProps = {
           ...params.inputProps,
           ...(isTabled
-            ? { 'aria-label': qItem.text ?? `Unnamed ${qItem.type} item` }
+            ? {
+                'aria-label':
+                  qItem.text ?? interpolate(rendererStrings.unnamedItem, { type: qItem.type })
+              }
             : { 'aria-labelledby': `label-${qItem.linkId}` }),
           ...(mergedAriaDescribedBy && { 'aria-describedby': mergedAriaDescribedBy })
         };

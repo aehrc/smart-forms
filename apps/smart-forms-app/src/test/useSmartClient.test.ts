@@ -31,7 +31,10 @@ const mockContextValue: SmartClientContextType = {
     fhirContext: null,
     resolvedFhirContextReferences: null,
     tokenReceivedTimestamp: null,
-    disableWriteBackSelection: false
+    extraLaunchContext: {
+      disableWriteBackSelection: false,
+      disableBundleValidation: false
+    }
   },
   dispatch: mockDispatch
 };
@@ -66,35 +69,28 @@ describe('useSmartClient', () => {
     jest.clearAllMocks();
   });
 
-  it('returns disableWriteBackSelection from context state', () => {
+  it('returns extraLaunchContext from context state', () => {
     const { result } = renderHook(() => useSmartClient());
 
-    expect(result.current.disableWriteBackSelection).toBe(false);
-  });
-
-  it('setDisableWriteBackSelection dispatches SET_DISABLE_WRITEBACK_SELECTION with true', () => {
-    const { result } = renderHook(() => useSmartClient());
-
-    act(() => {
-      result.current.setDisableWriteBackSelection(true);
-    });
-
-    expect(mockDispatch).toHaveBeenCalledWith({
-      type: 'SET_DISABLE_WRITEBACK_SELECTION',
-      payload: true
+    expect(result.current.extraLaunchContext).toEqual({
+      disableWriteBackSelection: false,
+      disableBundleValidation: false
     });
   });
 
-  it('setDisableWriteBackSelection dispatches SET_DISABLE_WRITEBACK_SELECTION with false', () => {
+  it('setExtraLaunchContext dispatches SET_EXTRA_LAUNCH_CONTEXT', () => {
     const { result } = renderHook(() => useSmartClient());
 
     act(() => {
-      result.current.setDisableWriteBackSelection(false);
+      result.current.setExtraLaunchContext({
+        disableWriteBackSelection: true,
+        disableBundleValidation: false
+      });
     });
 
     expect(mockDispatch).toHaveBeenCalledWith({
-      type: 'SET_DISABLE_WRITEBACK_SELECTION',
-      payload: false
+      type: 'SET_EXTRA_LAUNCH_CONTEXT',
+      payload: { disableWriteBackSelection: true, disableBundleValidation: false }
     });
   });
 });

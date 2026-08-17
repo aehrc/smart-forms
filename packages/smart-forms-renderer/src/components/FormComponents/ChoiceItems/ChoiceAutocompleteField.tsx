@@ -35,6 +35,7 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import type { AlertColor } from '@mui/material/Alert';
 import { useRendererConfigStore } from '../../../stores';
+import { interpolate } from '../../../i18n';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 
@@ -73,6 +74,7 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
@@ -86,7 +88,7 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
       disabled={readOnly && readOnlyVisualStyle === 'disabled'}
       readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
       loading={loading}
-      loadingText={'Fetching results...'}
+      loadingText={rendererStrings.fetchingResults}
       clearOnEscape
       autoHighlight
       onChange={(_, newValue) => onValueChange(newValue)}
@@ -138,7 +140,10 @@ function ChoiceAutocompleteField(props: ChoiceAutocompleteFieldsProps) {
             htmlInput: {
               ...params.inputProps,
               ...(isTabled
-                ? { 'aria-label': qItem.text ?? `Unnamed ${qItem.type} item` }
+                ? {
+                    'aria-label':
+                      qItem.text ?? interpolate(rendererStrings.unnamedItem, { type: qItem.type })
+                  }
                 : { 'aria-labelledby': `label-${qItem.linkId}` }),
               ...(instructionsId && { 'aria-describedby': instructionsId })
             }

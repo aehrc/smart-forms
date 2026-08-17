@@ -14,6 +14,7 @@ interface WriteBackBundleSelectorItemProps {
   selectedKeys: Set<string>;
   allValidKeys: Set<string>;
   populatedResourceMap: Map<string, FhirResource>;
+  isInvalid: boolean;
   isEntrySelected: (
     bundleEntryIndex: number,
     operationEntryIndex?: number
@@ -29,6 +30,7 @@ function WriteBackBundleSelectorItem(props: WriteBackBundleSelectorItemProps) {
     allValidKeys,
     isEntrySelected,
     populatedResourceMap,
+    isInvalid,
     onToggleCheckbox
   } = props;
 
@@ -82,13 +84,14 @@ function WriteBackBundleSelectorItem(props: WriteBackBundleSelectorItemProps) {
     <Box
       sx={{
         border: 1,
-        borderColor: 'grey.300',
+        borderColor: isInvalid ? 'error.main' : 'grey.300',
         borderRadius: 1,
         p: 2
       }}>
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        {/* If resource is Parameters but is not a FHIRPatch, grey out the checkbox */}
-        {resource.resourceType === 'Parameters' && !parametersIsFhirPatch(resource) ? (
+        {/* Disable checkbox when entry failed $validate, or when Parameters is not a valid FHIRPatch */}
+        {isInvalid ||
+        (resource.resourceType === 'Parameters' && !parametersIsFhirPatch(resource)) ? (
           <Box sx={{ cursor: 'not-allowed' }}>
             <Checkbox
               checked={checkboxIsChecked}

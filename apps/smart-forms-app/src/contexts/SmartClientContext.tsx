@@ -21,6 +21,11 @@ import type { Encounter, FhirResource, Patient, Practitioner, Questionnaire } fr
 import type Client from 'fhirclient/lib/Client';
 import type { FhirContext } from '../features/smartAppLaunch/utils/launch.ts';
 
+export interface ExtraLaunchContext {
+  disableWriteBackSelection: boolean;
+  disableBundleValidation: boolean;
+}
+
 export interface SmartClientState {
   smartClient: Client | null;
   patient: Patient | null;
@@ -30,7 +35,7 @@ export interface SmartClientState {
   resolvedFhirContextReferences: Record<string, FhirResource> | null;
   launchQuestionnaire: Questionnaire | null;
   tokenReceivedTimestamp: number | null;
-  disableWriteBackSelection: boolean;
+  extraLaunchContext: ExtraLaunchContext;
 }
 
 export type SmartClientActions =
@@ -42,7 +47,7 @@ export type SmartClientActions =
   | { type: 'SET_QUESTIONNAIRE_CONTEXT'; payload: Questionnaire }
   | { type: 'SET_FHIR_CONTEXT'; payload: FhirContext[] }
   | { type: 'SET_RESOLVED_FHIR_CONTEXT_REFERENCES'; payload: Record<string, FhirResource> }
-  | { type: 'SET_DISABLE_WRITEBACK_SELECTION'; payload: boolean };
+  | { type: 'SET_EXTRA_LAUNCH_CONTEXT'; payload: ExtraLaunchContext };
 
 function smartClientReducer(state: SmartClientState, action: SmartClientActions): SmartClientState {
   switch (action.type) {
@@ -61,8 +66,8 @@ function smartClientReducer(state: SmartClientState, action: SmartClientActions)
       return { ...state, fhirContext: action.payload };
     case 'SET_RESOLVED_FHIR_CONTEXT_REFERENCES':
       return { ...state, resolvedFhirContextReferences: action.payload };
-    case 'SET_DISABLE_WRITEBACK_SELECTION':
-      return { ...state, disableWriteBackSelection: action.payload };
+    case 'SET_EXTRA_LAUNCH_CONTEXT':
+      return { ...state, extraLaunchContext: action.payload };
     default:
       return state;
   }
@@ -77,7 +82,10 @@ const initialSmartClientState: SmartClientState = {
   fhirContext: null,
   resolvedFhirContextReferences: null,
   tokenReceivedTimestamp: null,
-  disableWriteBackSelection: false
+  extraLaunchContext: {
+    disableWriteBackSelection: false,
+    disableBundleValidation: false
+  }
 };
 
 export interface SmartClientContextType {

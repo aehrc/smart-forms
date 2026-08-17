@@ -905,3 +905,40 @@ export const qRenderingAnswerOptionValueString: Questionnaire = {
     }
   ]
 };
+
+// Labels long enough to wrap onto multiple lines, both as plain text and as rendering-xhtml.
+// Guards against https://github.com/aehrc/smart-forms/issues/2048, where a wrapping label was
+// pushed below its field instead of staying in line with it.
+export const qWrappingItemLabels: Questionnaire = {
+  resourceType: 'Questionnaire',
+  status: 'draft',
+  item: [
+    {
+      linkId: 'wrapping-label-plain',
+      text: 'Do you have access to the Aus CVD Risk-i application from your clinical system?',
+      type: 'boolean',
+      repeats: false
+    },
+    {
+      linkId: 'wrapping-label-xhtml',
+      text: 'Do you have access to the Aus CVD Risk-i application from your clinical system?',
+      _text: {
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/rendering-xhtml',
+            valueString:
+              '<div xmlns="http://www.w3.org/1999/xhtml"><p>Do you have access to the <em>Aus&nbsp;CVD&nbsp;Risk&#8209;i</em> application from your clinical system?</p></div>'
+          }
+        ]
+      },
+      type: 'boolean',
+      repeats: false
+    },
+    {
+      linkId: 'wrapping-label-string',
+      text: 'Do you have access to the Aus CVD Risk-i application from your clinical system, and if so, which version?',
+      type: 'string',
+      repeats: false
+    }
+  ]
+};

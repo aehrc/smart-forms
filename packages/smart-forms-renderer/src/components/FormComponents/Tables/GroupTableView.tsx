@@ -35,6 +35,7 @@ import type {
 import type { GroupTableRowModel } from '../../../interfaces/groupTable.interface';
 import GroupTableBody from './GroupTableBody';
 import { useQuestionnaireStore, useRendererConfigStore } from '../../../stores';
+import { interpolate } from '../../../i18n';
 import { getGroupCollapsible } from '../../../utils/qItem';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -91,6 +92,11 @@ function GroupTableView(props: GroupTableViewProps) {
   const onFocusLinkId = useQuestionnaireStore.use.onFocusLinkId();
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
+
+  const selectAllRowsLabel = interpolate(rendererStrings.selectAllRows, {
+    label: qItem.text ?? interpolate(rendererStrings.unnamedItem, { type: qItem.type })
+  });
 
   const groupCollapsibleValue = getGroupCollapsible(qItem);
 
@@ -149,8 +155,7 @@ function GroupTableView(props: GroupTableViewProps) {
                         onChange={onSelectAll}
                         slotProps={{
                           input: {
-                            'aria-label':
-                              'Select all rows in ' + (qItem.text ?? `Unnamed ${qItem.type} item`)
+                            'aria-label': selectAllRowsLabel
                           }
                         }}
                       />
@@ -229,8 +234,7 @@ function GroupTableView(props: GroupTableViewProps) {
                     onChange={onSelectAll}
                     slotProps={{
                       input: {
-                        'aria-label':
-                          'Select all rows in ' + (qItem.text ?? `Unnamed ${qItem.type} item`)
+                        'aria-label': selectAllRowsLabel
                       }
                     }}
                   />

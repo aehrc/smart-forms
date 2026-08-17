@@ -28,6 +28,7 @@ import type {
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
 import { useRendererConfigStore } from '../../../stores';
+import { interpolate } from '../../../i18n';
 import { isCodingDisabled } from '../../../utils/choice';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import { StyledAlert } from '../../Alert.styles';
@@ -68,6 +69,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
@@ -132,7 +134,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
                 htmlInput: {
                   ...params.inputProps,
                   ...(isTabled
-                    ? { 'aria-label': qItem.text ?? 'Unnamed choice dropdown' }
+                    ? { 'aria-label': qItem.text ?? rendererStrings.unnamedChoiceDropdown }
                     : { 'aria-labelledby': `label-${qItem.linkId}` }),
                   ...(instructionsId && { 'aria-describedby': instructionsId }),
                   role: 'combobox'
@@ -159,8 +161,9 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
       <StyledAlert color="error">
         <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
         <Typography component="div">
-          There was an error fetching options from the terminology server for{' '}
-          {terminologyError.answerValueSet}
+          {interpolate(rendererStrings.terminologyServerFetchError, {
+            valueSet: `${terminologyError.answerValueSet}`
+          })}
         </Typography>
       </StyledAlert>
     );
@@ -169,7 +172,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
   if (codings.length === 0) {
     return (
       <Typography sx={{ py: 0.5 }} fontWeight={600} fontSize={13}>
-        No options available.
+        {rendererStrings.optionsUnavailable}
       </Typography>
     );
   }
@@ -177,9 +180,7 @@ function ChoiceSelectAnswerValueSetFields(props: ChoiceSelectAnswerValueSetField
   return (
     <StyledAlert color="error">
       <ErrorOutlineIcon color="error" sx={{ pr: 0.75 }} />
-      <Typography component="div">
-        Unable to fetch options from the questionnaire or launch context
-      </Typography>
+      <Typography component="div">{rendererStrings.optionsFetchError}</Typography>
     </StyledAlert>
   );
 }

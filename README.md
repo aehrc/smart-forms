@@ -70,12 +70,10 @@ Any questionnnaire/SDC-related discussion can be raised in the questionnaire str
 
 ## Licensing and attribution
 
-Smart Forms is copyright © 2022-2025, Commonwealth Scientific and Industrial
+Smart Forms is copyright © 2022-2026, Commonwealth Scientific and Industrial
 Research Organisation
 (CSIRO) ABN 41 687 119 230. Licensed under
 the [Apache License, version 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 
 This means that you are free to use, modify and redistribute the software as
 you wish, even for commercial purposes.
-
-**Smart Forms is experimental software at the moment, use it at your own risk!**

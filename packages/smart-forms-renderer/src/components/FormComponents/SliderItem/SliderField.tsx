@@ -63,6 +63,7 @@ function SliderField(props: SliderFieldProps) {
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const sliderMarks = getSliderMarks(minValue, maxValue, minLabel, maxLabel, stepValue);
 
@@ -100,7 +101,7 @@ function SliderField(props: SliderFieldProps) {
           readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
           aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
           {...(!isTabled && { 'aria-labelledby': `label-${linkId}` })}
-          {...(isTabled && { 'aria-label': itemText ?? 'Unnamed slider' })}
+          {...(isTabled && { 'aria-label': itemText ?? rendererStrings.unnamedSlider })}
           {...(instructionsId
             ? { slotProps: { input: { 'aria-describedby': instructionsId } } }
             : {})}

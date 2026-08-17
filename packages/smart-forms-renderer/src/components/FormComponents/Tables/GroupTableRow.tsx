@@ -32,6 +32,7 @@ import TableCell from '@mui/material/TableCell';
 import Box from '@mui/material/Box';
 import { Draggable } from 'react-beautiful-dnd';
 import { StyledGroupTableRow } from './Table.styles';
+import { useRendererConfigStore } from '../../../stores';
 
 interface GroupTableRowProps extends PropsWithParentIsReadOnlyAttribute, TableRowProps {
   rowId: string;
@@ -74,6 +75,8 @@ function GroupTableRow(props: GroupTableRowProps) {
     onSelectRow
   } = props;
 
+  const dragRowLabel = useRendererConfigStore.use.rendererStrings().dragRow;
+
   // Append this row's index to the enclosing repeat instance path so that the row's cells look up
   // their own instance-scoped validation errors (see useValidationFeedback). Uses the
   // QuestionnaireResponse index, not the rendered row index, because that is what validation walks.
@@ -97,7 +100,7 @@ function GroupTableRow(props: GroupTableRowProps) {
             <>
               <TableCell padding="none">
                 <Box
-                  aria-label="Drag row"
+                  aria-label={dragRowLabel}
                   display="flex"
                   alignItems="center"
                   justifyContent="center"

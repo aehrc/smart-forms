@@ -62,6 +62,11 @@ jest.mock('../stores', () => ({
       targetConstraints: () => mockTargetConstraints,
       targetConstraintLinkIds: () => mockTargetConstraintLinkIds
     }
+  },
+  useRendererConfigStore: {
+    use: {
+      rendererStrings: () => jest.requireActual('../i18n').defaultRendererStrings
+    }
   }
 }));
 
