@@ -43,6 +43,31 @@ jobs:
       - name: Build application
         run: cd apps/demo-renderer-app && npm run build
 
+  build-documentation:
+    name: Build Documentation
+    runs-on: ubuntu-latest
+    # Mirrors the Docusaurus build in deploy_docs.yml so webpack-only resolution errors are caught
+    # before merge. Vite (apps, Storybook) is more lenient than webpack, so those jobs miss them.
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 20.18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.18
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build workspace packages (monorepo dependencies)
+        run: |
+          npm run build -w packages/sdc-assemble
+          npm run build -w packages/sdc-populate
+          npm run build -w packages/sdc-template-extract
+          npm run build -w packages/smart-forms-renderer
+
+      - name: Build documentation website
+        run: npm run build -w documentation
+
   jest-smart-forms-app-tests:
     name: Jest Tests - Smart Forms App
     runs-on: ubuntu-latest
