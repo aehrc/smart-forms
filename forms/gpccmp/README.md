@@ -93,6 +93,8 @@ helpers are next touched.
 ## Running the suite in CI
 
 `.github/workflows/vitest_gpccmp.yml` builds the four `packages/*` libraries, typechecks this
-package, and runs the suite on every push. It is green — all 25 tests pass, in roughly 140 seconds
-on a warm checkout. Treat any failure as a real regression; there is no expected-failure list to
+package, and runs the suite on every push and pull request. A warm local verification on 2026-08-24
+ran all 25 tests in 152.56–195.63 seconds; the four builds, typecheck, and tests took
+181.51–230.76 seconds in total, excluding `npm ci`. GitHub Actions reports the authoritative CI
+runtime on each run. Treat any failure as a real regression; there is no expected-failure list to
 compare against any more.

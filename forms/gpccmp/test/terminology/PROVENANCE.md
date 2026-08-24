@@ -26,14 +26,14 @@ To refresh one:
 ```sh
 curl -s -H 'Accept: application/fhir+json' \
   'https://r4.ontoserver.csiro.au/fhir/ValueSet/$expand?url=https://healthterminologies.gov.au/fhir/ValueSet/smoking-status-1' \
-  | jq 'del(.expansion.identifier, .expansion.timestamp)' > smoking-status-1.json
+  | jq 'del(.expansion.identifier)' > smoking-status-1.json
 ```
 
 ## The one edit made to each response
 
-`expansion.identifier` and `expansion.timestamp` are stripped. Both change on every request, so
-keeping them would make the fixture look modified whenever it was refreshed. Everything else,
-including the `copyright` element, is as the server returned it — the ADHA and SNOMED CT terms
+`expansion.identifier` is stripped because it changes on every request. `expansion.timestamp` is
+retained: FHIR R4 requires it, and it records when this particular snapshot was produced. Everything
+else, including the `copyright` element, is as the server returned it — the ADHA and SNOMED CT terms
 require that statement to travel with every copy.
 
 ## What this does not do

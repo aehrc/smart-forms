@@ -9,7 +9,9 @@ import australianStatesTerritories from './terminology/australian-states-territo
 // leaves `Loading...`. Mocked to `{}`, a choice item renders with no options and therefore no
 // input element at all — so the expansions below are what make those items selectable.
 // See terminology/PROVENANCE.md for where they came from and how to refresh them.
-const expansions: Record<string, unknown> = {
+type TimestampedExpansion = { expansion: { timestamp: string } };
+
+const expansions: Record<string, TimestampedExpansion> = {
   'https://healthterminologies.gov.au/fhir/ValueSet/smoking-status-1': smokingStatus,
   'https://healthterminologies.gov.au/fhir/ValueSet/alcohol-intake-status-1': alcoholIntakeStatus,
   'https://healthterminologies.gov.au/fhir/ValueSet/australian-states-territories-2':

@@ -1,6 +1,6 @@
 name: Vitest GP CCMP Behaviour Tests
 
-on: [workflow_dispatch, push, workflow_call]
+on: [workflow_dispatch, push, pull_request, workflow_call]
 
 jobs:
   vitest-gpccmp-tests:
