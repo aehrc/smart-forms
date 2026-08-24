@@ -2,6 +2,7 @@ import type { Questionnaire } from 'fhir/r4';
 import type { BehavioralTestWrapperProps } from '../behavioralTestUtils';
 import { BehavioralTestWrapper } from '../behavioralTestUtils';
 import gpccmpForm from './data/resources/Questionnaire/Questionnaire-GPChronicConditionManagementPlanAssembled.json';
+import { vi } from 'vitest';
 import { render, waitFor } from '@testing-library/react';
 import {
   inputDecimal,
@@ -15,6 +16,12 @@ import {
 function GpccmpForm(props: Omit<BehavioralTestWrapperProps, 'questionnaire'>) {
   return <BehavioralTestWrapper questionnaire={gpccmpForm as Questionnaire} {...props} />;
 }
+
+vi.mock('fhirclient', () => ({
+  client: () => ({
+    request: vi.fn(() => Promise.resolve({}))
+  })
+}));
 
 beforeAll(() => {
   globalThis.ResizeObserver = class ResizeObserver {
