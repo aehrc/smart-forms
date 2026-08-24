@@ -1,8 +1,7 @@
 import type { Questionnaire } from 'fhir/r4';
 import type { BehavioralTestWrapperProps } from '@aehrc/questionnaire-test-toolkit';
 import { BehavioralTestWrapper } from '@aehrc/questionnaire-test-toolkit';
-import gpccmpForm from './data/resources/Questionnaire/Questionnaire-GPChronicConditionManagementPlanAssembled.json';
-import { vi } from 'vitest';
+import gpccmpForm from '../questionnaire/Questionnaire-GPChronicConditionManagementPlanAssembled.json';
 import { render, waitFor } from '@testing-library/react';
 import {
   chooseSelectOption,
@@ -17,20 +16,6 @@ import {
 function GpccmpForm(props: Omit<BehavioralTestWrapperProps, 'questionnaire'>) {
   return <BehavioralTestWrapper questionnaire={gpccmpForm as Questionnaire} {...props} />;
 }
-
-vi.mock('fhirclient', () => ({
-  client: () => ({
-    request: vi.fn(() => Promise.resolve({}))
-  })
-}));
-
-beforeAll(() => {
-  globalThis.ResizeObserver = class ResizeObserver {
-    observe() {}
-    unobserve() {}
-    disconnect() {}
-  };
-});
 
 //Patient details
 describe('My Aged Care boundary values', () => {

@@ -8,3 +8,6 @@ storybook-static
 *.js
 *.config.*
 *.html
+
+# Assembled questionnaire snapshots are artifacts, not source — see questionnaire/PROVENANCE.md
+forms/*/questionnaire/*.json
