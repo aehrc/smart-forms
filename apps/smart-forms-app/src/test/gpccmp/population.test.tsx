@@ -1,10 +1,10 @@
 import type { Patient, Questionnaire } from 'fhir/r4';
-import type { BehavioralTestWrapperProps } from '../behavioralTestUtils';
-import { BehavioralTestWrapper } from '../behavioralTestUtils';
+import type { BehavioralTestWrapperProps } from '@aehrc/questionnaire-test-toolkit';
+import { BehavioralTestWrapper } from '@aehrc/questionnaire-test-toolkit';
 import gpccmpForm from './data/resources/Questionnaire/Questionnaire-GPChronicConditionManagementPlanAssembled.json';
 import { vi } from 'vitest';
 import { render, waitFor } from '@testing-library/react';
-import { getBirthDateForAge, getInputText, selectTab } from '../testUtils';
+import { getBirthDateForAge, getInputText, selectTab } from '@aehrc/questionnaire-test-toolkit';
 
 export const patient: Patient = {
   resourceType: 'Patient',

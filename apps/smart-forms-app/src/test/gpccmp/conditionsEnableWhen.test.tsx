@@ -1,10 +1,15 @@
 import type { Questionnaire } from 'fhir/r4';
-import type { BehavioralTestWrapperProps } from '../behavioralTestUtils';
-import { BehavioralTestWrapper } from '../behavioralTestUtils';
+import type { BehavioralTestWrapperProps } from '@aehrc/questionnaire-test-toolkit';
+import { BehavioralTestWrapper } from '@aehrc/questionnaire-test-toolkit';
 import gpccmpForm from './data/resources/Questionnaire/Questionnaire-GPChronicConditionManagementPlanAssembled.json';
 import { vi } from 'vitest';
 import { render, waitFor } from '@testing-library/react';
-import { inputInteger, checkRadioOption, findByLinkIdOrLabel, inputText } from '../testUtils';
+import {
+  inputInteger,
+  checkRadioOption,
+  findByLinkIdOrLabel,
+  inputText
+} from '@aehrc/questionnaire-test-toolkit';
 
 function GpccmpForm(props: Omit<BehavioralTestWrapperProps, 'questionnaire'>) {
   return <BehavioralTestWrapper questionnaire={gpccmpForm as Questionnaire} {...props} />;

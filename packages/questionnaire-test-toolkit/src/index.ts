@@ -25,8 +25,9 @@
 
 // -- Harness ---------------------------------------------------------------------------------
 
-export { BehavioralTestWrapper, terminologyServerUrl } from './behavioralTestUtils';
-export type { BehavioralTestWrapperProps, RequestDefinition } from './behavioralTestUtils';
+export { BehavioralTestWrapper } from './behavioralTestUtils';
+export { terminologyServerUrl } from './behavioralTestConstants';
+export type { BehavioralTestWrapperProps, RequestDefinition } from './behavioralTestTypes';
 
 // -- Entering answers -----------------------------------------------------------------------
 

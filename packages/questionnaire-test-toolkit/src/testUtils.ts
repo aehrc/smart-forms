@@ -21,8 +21,9 @@
 // 2. Prevent it from showing up in typedoc in the documentation site, which will affect docs search
 
 import { evaluate } from 'fhirpath';
-import type { Mock } from 'storybook/internal/test';
-import { fireEvent, screen, userEvent, waitFor } from 'storybook/internal/test';
+import type { Mock } from 'vitest';
+import { fireEvent, screen, waitFor } from '@testing-library/dom';
+import userEvent from '@testing-library/user-event';
 import { questionnaireResponseStore } from '@aehrc/smart-forms-renderer';
 import { act } from 'react';
 import type { ExtractResult, InAppExtractOutput } from '@aehrc/sdc-template-extract';
@@ -461,9 +462,14 @@ export async function invokeExtract(
     fireEvent.click(button);
   });
 
-  await waitFor(() => expect(onExtractResultMock.mock.lastCall).toBeDefined(), {
-    timeout: 5000
-  });
+  await waitFor(
+    () => {
+      if (!onExtractResultMock.mock.lastCall) {
+        throw new Error('Expected onExtractResult to be called');
+      }
+    },
+    { timeout: 5000 }
+  );
 
   const lastCall = onExtractResultMock.mock.lastCall;
   if (!lastCall) {
@@ -474,9 +480,13 @@ export async function invokeExtract(
 }
 
 function getExtractResultBundle(extractResultOutput: InAppExtractOutput) {
-  expect(extractResultOutput.extractSuccess).toBe(true);
+  if (!extractResultOutput.extractSuccess) {
+    throw new Error('Expected extraction to succeed');
+  }
   const extractResult = extractResultOutput.extractResult as ExtractResult;
-  expect(extractResultIsOperationOutcome(extractResult)).toBe(false);
+  if (extractResultIsOperationOutcome(extractResult)) {
+    throw new Error('Expected extraction not to return an OperationOutcome');
+  }
 
   return extractResult.extractedBundle;
 }
