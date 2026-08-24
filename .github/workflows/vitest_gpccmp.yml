@@ -1,0 +1,31 @@
+name: Vitest GP CCMP Behaviour Tests
+
+on: [workflow_dispatch, push, workflow_call]
+
+jobs:
+  vitest-gpccmp-tests:
+    name: Vitest Questionnaire Behaviour Tests - GP CCMP
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build workspace packages (monorepo dependencies)
+        run: |
+          npm run build -w packages/sdc-assemble
+          npm run build -w packages/sdc-populate
+          npm run build -w packages/sdc-template-extract
+          npm run build -w packages/smart-forms-renderer
+
+      - name: Typecheck
+        run: npm run typecheck -w forms/gpccmp
+
+      - name: Run vitest tests
+        run: npm run test -w forms/gpccmp

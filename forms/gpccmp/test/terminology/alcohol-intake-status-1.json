@@ -1,0 +1,51 @@
+{
+  "resourceType": "ValueSet",
+  "url": "https://healthterminologies.gov.au/fhir/ValueSet/alcohol-intake-status-1",
+  "identifier": [
+    {
+      "system": "urn:ietf:rfc:3986",
+      "value": "urn:oid:1.2.36.1.2001.1004.201.10265"
+    }
+  ],
+  "version": "1.0.0",
+  "name": "AlcoholIntakeStatus",
+  "title": "Alcohol Intake Status",
+  "status": "active",
+  "experimental": false,
+  "copyright": "Copyright © 2022 Australian Digital Health Agency - All rights reserved. Except for the material identified below, this content is licensed under a Creative Commons Attribution 4.0 International License. See https://creativecommons.org/licenses/by/4.0/. \n\nThis resource includes SNOMED Clinical Terms™ (SNOMED CT®) which is used by permission of the International Health Terminology Standards Development Organisation (IHTSDO). All rights reserved. SNOMED CT®, was originally created by The College of American Pathologists. “SNOMED” and “SNOMED CT” are registered trademarks of the IHTSDO. \n\nThe rights to use and implement or implementation of SNOMED CT content are limited to the extent it is necessary to allow for the end use of this material.  No further rights are granted in respect of the International Release and no further use of any SNOMED CT content by any other party is permitted. \n\nAll copies of this resource must include this copyright statement and all information contained in this statement.",
+  "expansion": {
+    "total": 4,
+    "parameter": [
+      {
+        "name": "used-codesystem",
+        "valueUri": "http://snomed.info/sct|http://snomed.info/sct/32506021000036107/version/20260731"
+      },
+      {
+        "name": "version",
+        "valueUri": "http://snomed.info/sct|http://snomed.info/sct/32506021000036107/version/20260731"
+      }
+    ],
+    "contains": [
+      {
+        "system": "http://snomed.info/sct",
+        "code": "783261004",
+        "display": "Lifetime non-drinker"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "82581004",
+        "display": "Former drinker"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "219006",
+        "display": "Current drinker"
+      },
+      {
+        "system": "http://snomed.info/sct",
+        "code": "228276006",
+        "display": "Occasional drinker"
+      }
+    ]
+  }
+}

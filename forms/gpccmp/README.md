@@ -49,28 +49,50 @@ contract with something explicitly not final, so a failing lookup after a refres
 rather than a regression. Do not reformat the file and do not add a second copy beside it — read
 `questionnaire/PROVENANCE.md` before touching it.
 
-## Known failures
+## Terminology
 
-Five of the twenty-five tests fail, and have since before the suite moved here. This is the
-expected state: compare against it test by test before concluding that anything new has broken.
+Three of the questionnaire's `choice` items are backed by external `answerValueSet`s. `test/setup.ts`
+mocks `fhirclient` so the suite makes no network calls, and answers `$expand` from the real
+expansions vendored in `test/terminology/` — see that directory's `PROVENANCE.md` for the server,
+the retrieval date, and how to refresh them.
 
-| Test | Cause |
-|---|---|
-| `calculation` › Substance use calculations › *Smoking new status date* | ValueSet — `…substanceusegrid-smokingstatus-newresultvalue`, `https://healthterminologies.gov.au/fhir/ValueSet/smoking-status-1` |
-| `calculation` › Substance use calculations › *Alcohol consumption new status date* | ValueSet — `…substanceusegrid-alcoholstatus-newresultvalue`, `https://healthterminologies.gov.au/fhir/ValueSet/alcohol-intake-status-1` |
-| `conditionsEnableWhenBehavior` › Home Address › *for patients with a home address* | ValueSet — `State`, `https://healthterminologies.gov.au/fhir/ValueSet/australian-states-territories-2` |
-| `conditionsEnableWhenBehavior` › Clinic Address › *clinic address* | ValueSet — `State`, same |
-| `conditionsEnableWhenBehavior` › Home Address › *for patients without a home address* | **Substantive, untriaged** — see below |
+Anything not in that directory still resolves to `{}`, which renders a `choice` item with no options
+and therefore no input element at all. A test that suddenly cannot find a select is usually a
+questionnaire that gained a ValueSet the fixtures do not cover.
 
-The four ValueSet failures share one cause: `test/setup.ts` mocks `fhirclient` to resolve `{}` for
-every request, so a `choice` item backed by an external `answerValueSet` renders with no options
-and therefore no input element at all. They cannot pass as written. The fix is valid `$expand`
-responses; a working example exists in `packages/smart-forms-renderer/.storybook/preview.tsx`, and
-it already covers the states-and-territories ValueSet the two `State` assertions need.
+### The suite runs offline, and enforces it
 
-The fifth is different. At `test/conditionsEnableWhenBehavior.test.tsx:70`, after checking *No
-fixed address*, the test expects `Street address` to have left the DOM; the lookup resolves
-instead. The group `patient-contact-homeaddress-details` is gated by an `enableWhenExpression`
-(`%HomeAddressNoFixedAddress.empty() or %HomeAddressNoFixedAddress = false`), not a plain
-`enableWhen`. Label ambiguity was ruled out: three items carry the text `Street address`, but in
-this render state only the home one is in the DOM. Candidate renderer bug.
+`fhirclient` is the only HTTP client in the dependency chain — the renderer, `sdc-populate` and
+`sdc-template-extract` pull in no `axios`, `undici` or `node-fetch` — so mocking it is enough to
+take the suite off the network. Verified by instrumenting `fetch`, `XMLHttpRequest` and
+`node:http`/`node:https` across a full run: zero egress.
+
+`test/setup.ts` then makes `fetch` and `XMLHttpRequest.open` throw, so it stays that way. Without
+that, a renderer that started calling `fetch` directly would quietly reach the real Ontoserver in
+CI — slow, flaky, and green for the wrong reason. If you hit
+`Network access from a test`, add the response to `test/terminology/` or mock the caller; do not
+relax the guard.
+
+## Two items that only population can reach
+
+`patient-contact-homeaddress` is `readOnly: true` in the questionnaire, so everything under it —
+including the `No fixed address` checkbox — renders with `pointer-events: none`. The checkbox
+carries an initialExpression reading the `no-fixed-address` extension off the patient's home
+address, which is the design: the flag comes from the patient record, not from the user.
+
+So `conditionsEnableWhenBehavior` › *for patients without a home address* renders with a `Patient`
+that has that extension rather than clicking anything. Tests that need this state must populate;
+clicking is a silent no-op.
+
+Note that its sibling, *for patients with a home address*, still types into that same read-only
+group. It passes because the toolkit's `inputText` uses `fireEvent.change`, which ignores
+`readOnly`. That is a pre-existing weakness in the test, not in the renderer — it asserts an
+interaction a real user cannot perform. Left alone here; worth revisiting when the toolkit's input
+helpers are next touched.
+
+## Running the suite in CI
+
+`.github/workflows/vitest_gpccmp.yml` builds the four `packages/*` libraries, typechecks this
+package, and runs the suite on every push. It is green — all 25 tests pass, in roughly 140 seconds
+on a warm checkout. Treat any failure as a real regression; there is no expected-failure list to
+compare against any more.

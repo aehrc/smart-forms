@@ -1,4 +1,4 @@
-import type { Questionnaire } from 'fhir/r4';
+import type { Patient, Questionnaire } from 'fhir/r4';
 import type { BehavioralTestWrapperProps } from '@aehrc/questionnaire-test-toolkit';
 import { BehavioralTestWrapper } from '@aehrc/questionnaire-test-toolkit';
 import gpccmpForm from '../questionnaire/Questionnaire-GPChronicConditionManagementPlanAssembled.json';
@@ -9,8 +9,7 @@ import {
   inputInteger,
   checkRadioOption,
   findByLinkIdOrLabel,
-  inputText,
-  checkCheckBox
+  inputText
 } from '@aehrc/questionnaire-test-toolkit';
 
 function GpccmpForm(props: Omit<BehavioralTestWrapperProps, 'questionnaire'>) {
@@ -55,6 +54,25 @@ describe('My Aged Care boundary values', () => {
   });
 });
 
+const noFixedAddressPatient: Patient = {
+  resourceType: 'Patient',
+  id: 'patient-no-fixed-address',
+  name: [{ use: 'official', family: 'Doe', given: ['Jane'] }],
+  birthDate: '1990-01-01',
+  gender: 'female',
+  address: [
+    {
+      use: 'home',
+      extension: [
+        {
+          url: 'http://hl7.org.au/fhir/StructureDefinition/no-fixed-address',
+          valueBoolean: true
+        }
+      ]
+    }
+  ]
+};
+
 describe('Home Address', () => {
   test('for patients with a home address', async () => {
     const { container } = render(<GpccmpForm />);
@@ -67,13 +85,17 @@ describe('Home Address', () => {
     await inputText(container, 'Postcode', '2000');
   });
 
+  // `No fixed address` cannot be ticked by hand: its group `patient-contact-homeaddress` is
+  // `readOnly: true`, so the checkbox renders with `pointer-events: none` and a click is a no-op.
+  // The item carries an initialExpression reading the `no-fixed-address` extension off the
+  // patient's home address, so population is the only way this flag is ever set — and the only
+  // way to reach the state this test is about.
   test('for patients without a home address', async () => {
-    const { container } = render(<GpccmpForm />);
+    const { container } = render(<GpccmpForm patient={noFixedAddressPatient} />);
     await waitFor(() => expect(container.innerHTML).toContain('Patient details'), {
       timeout: 10000
     });
 
-    await checkCheckBox(container, 'No fixed address');
     await expect(
       async () => await findByLinkIdOrLabel(container, 'Street address')
     ).rejects.toThrow();

@@ -54,9 +54,11 @@ There is no automated refresh. To replace this snapshot:
    path, so nothing else needs to change.
 4. **Update the table above** — new `version`, new `date`, the sub-questionnaire versions used, and
    the date you retrieved them.
-5. **Re-run `npm test` in `forms/gpccmp`** and compare test by test against the expected state in
-   [`../README.md`](../README.md) → *Known failures*. Expect `linkId` drift: a failing
-   `findByLinkIdOrLabel` after a refresh is a renamed item, not a regression.
+5. **Re-run `npm test` in `forms/gpccmp`.** All 25 tests pass today, so any failure is a real one.
+   Expect `linkId` drift: a failing `findByLinkIdOrLabel` after a refresh is a renamed item, not a
+   regression. A `choice` item that renders with no options means the refresh introduced an
+   `answerValueSet` the fixtures in [`../test/terminology/`](../test/terminology/PROVENANCE.md) do
+   not cover.
 
 Do **not** add a second copy alongside this one. The application already carries the Aboriginal and
 Torres Strait Islander Health Check at both `0.1.0` and `0.4.0` — 700 KB and 1.07 MB side by side.

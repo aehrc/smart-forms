@@ -1,0 +1,76 @@
+{
+  "resourceType": "ValueSet",
+  "url": "https://healthterminologies.gov.au/fhir/ValueSet/australian-states-territories-2",
+  "identifier": [
+    {
+      "system": "urn:ietf:rfc:3986",
+      "value": "urn:oid:1.2.36.1.2001.1004.201.10026"
+    }
+  ],
+  "version": "2.0.2",
+  "name": "AustralianStatesAndTerritories",
+  "title": "Australian States and Territories",
+  "status": "active",
+  "experimental": false,
+  "copyright": "Copyright © 2018 Australian Digital Health Agency - All rights reserved. Except for the material identified below, this content is licensed under a Creative Commons Attribution 4.0 International License. See https://creativecommons.org/licenses/by/4.0/. \n\nThis resource includes material that is based on Australian Institute of Health and Welfare material. \n\nAll copies of this resource must include this copyright statement and all information contained in this statement.",
+  "expansion": {
+    "total": 9,
+    "parameter": [
+      {
+        "name": "used-codesystem",
+        "valueUri": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-states-territories-1|1.1.3"
+      },
+      {
+        "name": "version",
+        "valueUri": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-states-territories-1|1.1.3"
+      }
+    ],
+    "contains": [
+      {
+        "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-states-territories-1",
+        "code": "ACT",
+        "display": "Australian Capital Territory"
+      },
+      {
+        "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-states-territories-1",
+        "code": "NSW",
+        "display": "New South Wales"
+      },
+      {
+        "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-states-territories-1",
+        "code": "NT",
+        "display": "Northern Territory"
+      },
+      {
+        "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-states-territories-1",
+        "code": "OTHER",
+        "display": "Other territories"
+      },
+      {
+        "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-states-territories-1",
+        "code": "QLD",
+        "display": "Queensland"
+      },
+      {
+        "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-states-territories-1",
+        "code": "SA",
+        "display": "South Australia"
+      },
+      {
+        "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-states-territories-1",
+        "code": "TAS",
+        "display": "Tasmania"
+      },
+      {
+        "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-states-territories-1",
+        "code": "VIC",
+        "display": "Victoria"
+      },
+      {
+        "system": "https://healthterminologies.gov.au/fhir/CodeSystem/australian-states-territories-1",
+        "code": "WA",
+        "display": "Western Australia"
+      }
+    ]
+  }
+}
