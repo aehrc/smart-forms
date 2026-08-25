@@ -20,6 +20,7 @@ import { RepeatRemoveTooltip } from './RepeatItem.styles';
 import IconButton from '@mui/material/IconButton';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import type { QuestionnaireResponseItemAnswer } from 'fhir/r4';
+import { useRendererConfigStore } from '../../../stores';
 
 interface RemoveItemButtonProps {
   answer: QuestionnaireResponseItemAnswer | null;
@@ -31,17 +32,19 @@ interface RemoveItemButtonProps {
 function RemoveItemButton(props: RemoveItemButtonProps) {
   const { answer, readOnly, onRemoveAnswer, numOfRepeatAnswers } = props;
 
+  const removeItemLabel = useRendererConfigStore.use.rendererStrings().removeItem;
+
   const isDisabled = answer === null || numOfRepeatAnswers === 1 || readOnly;
 
   return (
-    <RepeatRemoveTooltip title="Remove item">
+    <RepeatRemoveTooltip title={removeItemLabel}>
       <span role="button">
         <IconButton
           size="small"
           color="error"
           disabled={isDisabled}
           onClick={onRemoveAnswer}
-          aria-label="Remove item">
+          aria-label={removeItemLabel}>
           <RemoveCircleOutlineIcon fontSize="small" />
         </IconButton>
       </span>

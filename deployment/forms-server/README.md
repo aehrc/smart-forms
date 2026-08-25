@@ -6,11 +6,17 @@ This folder contains the **forms-server** services architecture for deploying a 
 ### forms-server-app
 Runs on AWS Fargate as the main orchestrator application.
 
-### hapi-endpoint
+### hapi-endpoint (../shared/hapi-endpoint)
 A microservice running in Docker that serves as the base HAPI FHIR server.  
 From: https://github.com/hapifhir/hapi-fhir-jpaserver-starter
 
 Base URL: `https://smartforms.csiro.au/api/fhir/`
+
+The endpoint is backed by a dedicated RDS PostgreSQL instance (`db.t4g.small`) created alongside it
+in the same construct. HAPI defaults to an in-memory H2 database when no datasource is configured,
+which means the server starts empty every time the Fargate task is replaced, so the datasource is
+configured explicitly. Credentials are generated into Secrets Manager and injected into the task as
+`SPRING_DATASOURCE_USERNAME` and `SPRING_DATASOURCE_PASSWORD`.
 
 ### assemble-endpoint
 A microservice in Docker for Questionnaire [$assemble](https://build.fhir.org/ig/HL7/sdc/OperationDefinition-Questionnaire-assemble.html) operation.
@@ -35,7 +41,7 @@ Additionally, the routing is handled via `deployment/cloudfront/SmartFormsRedire
 ## Deployment steps
 Run steps 1, 2, 3, and 4-7 in four separate terminal windows respectively.
 
-1. `npm i` and `npm run watch` in hapi-endpoint.
+1. `npm i` and `npm run watch` in ../shared/hapi-endpoint.
 2. `npm i` and `npm run watch` in assemble-endpoint.
 3. `npm i` and `npm run watch` in populate-endpoint.
 4. `npm i` and `npm run build` in forms-server-app.

@@ -12,7 +12,8 @@ import {
 import { Certificate, CertificateValidation } from 'aws-cdk-lib/aws-certificatemanager';
 import { ARecord, HostedZone, RecordTarget } from 'aws-cdk-lib/aws-route53';
 import { LoadBalancerTarget } from 'aws-cdk-lib/aws-route53-targets';
-import { HapiEndpoint } from 'ehr-proxy-hapi-endpoint';
+import { InstanceSize } from 'aws-cdk-lib/aws-ec2';
+import { HapiEndpoint } from 'shared-hapi-endpoint';
 import { SmartProxy } from 'ehr-proxy-smart-proxy';
 
 export class EhrProxyAppStack extends cdk.Stack {
@@ -53,7 +54,20 @@ export class EhrProxyAppStack extends cdk.Stack {
       certificates: [certificate]
     });
 
-    const hapi = new HapiEndpoint(this, 'EhrProxyHapi', { cluster });
+    const hapi = new HapiEndpoint(this, 'EhrProxyHapi', {
+      cluster,
+      // Must keep matching the deployed resources. See `HapiEndpointProps.constructIdPrefix`.
+      constructIdPrefix: 'EhrProxyHapi',
+      serviceName: 'ehr-proxy-hapi',
+      cpu: '1024',
+      memoryMiB: '2048',
+      databaseInstanceSize: InstanceSize.MICRO,
+      hapiSettings: {
+        // This must match `Certificate.domainName` above - 'proxy.smartforms.io'
+        // This must match `fhirServerBaseUrl` in: ../../smart-proxy/lib/index.ts
+        'hapi.fhir.server_address': 'https://proxy.smartforms.io/fhir'
+      }
+    });
     const smartProxy = new SmartProxy(this, 'EhrProxySmartProxy', { cluster });
 
     // Create a target for the HAPI FHIR API service

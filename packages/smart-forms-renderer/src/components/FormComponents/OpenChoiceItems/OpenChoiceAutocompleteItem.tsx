@@ -129,9 +129,12 @@ function OpenChoiceAutocompleteItem(props: BaseItemProps) {
       setInput(newValue);
     }
 
+    // newValue is null when the field is cleared e.g. via the clear button ("clear") or Escape ("clearOnEscape") -
+    // the reason is not "input"/"selectOption" in those cases, so update the QR immediately here
     if (newValue === null) {
       setInput('');
-      newValue = '';
+      onQrItemChange(createEmptyQrItem(qItem, answerKey));
+      return;
     }
 
     if (typeof newValue === 'string' && reason === 'input') {

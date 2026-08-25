@@ -18,6 +18,7 @@
 import React from 'react';
 import { SecondaryFab } from '../Button.styles';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import { useRendererConfigStore } from '../../../stores';
 
 interface PreviousPageButtonProps {
   isDisabled: boolean;
@@ -27,10 +28,12 @@ interface PreviousPageButtonProps {
 function PreviousPageButton(props: PreviousPageButtonProps) {
   const { isDisabled, onPreviousPageClick } = props;
 
+  const previousPageLabel = useRendererConfigStore.use.rendererStrings().previousPage;
+
   return (
     <SecondaryFab
       size="small"
-      aria-label="Previous page"
+      aria-label={previousPageLabel}
       disabled={isDisabled}
       onClick={onPreviousPageClick}>
       <ChevronLeftIcon fontSize="small" />

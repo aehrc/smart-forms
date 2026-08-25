@@ -19,7 +19,11 @@ import type { Coding, QuestionnaireItem, ValueSet } from 'fhir/r4';
 import { getValueSetCodings, getValueSetPromise } from '../utils/valueSet';
 
 import type { AlertColor } from '@mui/material/Alert';
-import { useQuestionnaireStore, useTerminologyServerStore } from '../stores';
+import {
+  useQuestionnaireStore,
+  useRendererConfigStore,
+  useTerminologyServerStore
+} from '../stores';
 import { useQuery } from '@tanstack/react-query';
 import { getItemTerminologyServerToUse } from '../utils/preferredTerminologyServer';
 
@@ -33,6 +37,7 @@ function useTerminologyServerQuery(
   const itemPreferredTerminologyServers =
     useQuestionnaireStore.use.itemPreferredTerminologyServers();
   const defaultTerminologyServerUrl = useTerminologyServerStore.use.url();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   let fullUrl = '';
   let options: Coding[] = [];
@@ -43,7 +48,7 @@ function useTerminologyServerQuery(
   }
 
   if (searchTerm.length === 1) {
-    feedback = { message: 'Enter at least 2 characters to search for results.', color: 'info' };
+    feedback = { message: rendererStrings.terminologyMinCharacters, color: 'info' };
   }
 
   // Restructure url to include filter and count parameters
@@ -79,7 +84,7 @@ function useTerminologyServerQuery(
   if (error) {
     console.warn('Ontoserver query failed. Details below: \n' + error);
     feedback = {
-      message: 'An error occurred. Try again later or try searching for a different term.',
+      message: rendererStrings.terminologyError,
       color: 'error'
     };
   }
@@ -89,7 +94,7 @@ function useTerminologyServerQuery(
       options = getValueSetCodings(data);
     } else {
       feedback = {
-        message: "We couldn't seem to find anything. Try searching for a different term.",
+        message: rendererStrings.terminologyNoResults,
         color: 'warning'
       };
     }

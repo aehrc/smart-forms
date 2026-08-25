@@ -28,7 +28,12 @@ import {
   getRegexValidation,
   getRequiredFeedback
 } from '../utils/extensions';
-import { useQuestionnaireResponseStore, useQuestionnaireStore } from '../stores';
+import {
+  useQuestionnaireResponseStore,
+  useQuestionnaireStore,
+  useRendererConfigStore
+} from '../stores';
+import { interpolate } from '../i18n';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 
 function useValidationFeedback(
@@ -37,6 +42,7 @@ function useValidationFeedback(
 ): string {
   const invalidItems = useQuestionnaireResponseStore.use.invalidItems();
   const requiredItemsIsHighlighted = useQuestionnaireResponseStore.use.requiredItemsIsHighlighted();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   // Target constraint-based validation
   const targetConstraints = useQuestionnaireStore.use.targetConstraints();
@@ -69,7 +75,7 @@ function useValidationFeedback(
 
   // There is an invalidOperationOutcome but no issues, something is wrong with the validation - should never happen
   if (!invalidOperationOutcome.issue || invalidOperationOutcome.issue.length === 0) {
-    return 'Input is invalid but no specific issues are found. Please report this at https://github.com/aehrc/smart-forms/issues.';
+    return rendererStrings.validationUnknownIssue;
   }
 
   // Required-based validation
@@ -78,7 +84,7 @@ function useValidationFeedback(
     const requiredIssue = invalidOperationOutcome.issue.find((issue) => issue.code === 'required');
     if (requiredIssue) {
       const requiredFeedback = getRequiredFeedback(qItem);
-      return requiredFeedback ?? 'This field is required.';
+      return requiredFeedback ?? rendererStrings.fieldRequired;
     }
   }
 
@@ -89,47 +95,51 @@ function useValidationFeedback(
 
     // If no validation code is provided, something is wrong with the validation - should never happen
     if (!validationCode) {
-      return 'Input is invalid but no specific issues are found. Please report this at https://github.com/aehrc/smart-forms/issues.';
+      return rendererStrings.validationUnknownIssue;
     }
 
     // http://hl7.org/fhir/StructureDefinition/regex
     if (validationCode === 'regex') {
       const regexValidation = getRegexValidation(qItem);
       if (regexValidation) {
-        return `Input should match the specified regex: ${regexValidation.expression}`;
+        return interpolate(rendererStrings.regexMismatchWithExpression, {
+          regex: `${regexValidation.expression}`
+        });
       }
 
-      return 'Input should match the specified regex.';
+      return rendererStrings.regexMismatch;
     }
 
     // http://hl7.org/fhir/StructureDefinition/minLength
     if (validationCode === 'minLength') {
       const minLength = structuredDataCapture.getMinLength(qItem);
       if (typeof minLength === 'number') {
-        return `Enter at least ${minLength} characters.`;
+        return interpolate(rendererStrings.minLengthWithLimit, { minLength: `${minLength}` });
       }
 
-      return 'Input is below the minimum character limit.';
+      return rendererStrings.minLengthFallback;
     }
 
     // Questionnaire.item.maxLength
     if (validationCode === 'maxLength') {
       const maxLength = qItem.maxLength;
       if (typeof maxLength === 'number') {
-        return `Enter no more than ${maxLength} characters.`;
+        return interpolate(rendererStrings.maxLengthWithLimit, { maxLength: `${maxLength}` });
       }
 
-      return 'Input is above the maximum character limit.';
+      return rendererStrings.maxLengthFallback;
     }
 
     // http://hl7.org/fhir/StructureDefinition/maxDecimalPlaces
     if (validationCode === 'maxDecimalPlaces') {
       const maxDecimalPlaces = structuredDataCapture.getMaxDecimalPlaces(qItem);
       if (typeof maxDecimalPlaces === 'number') {
-        return `Enter a number with no more than ${maxDecimalPlaces} decimal places.`;
+        return interpolate(rendererStrings.maxDecimalPlacesWithLimit, {
+          maxDecimalPlaces: `${maxDecimalPlaces}`
+        });
       }
 
-      return 'Input has too many decimal places.';
+      return rendererStrings.maxDecimalPlacesFallback;
     }
 
     // http://hl7.org/fhir/StructureDefinition/minValue
@@ -141,10 +151,10 @@ function useValidationFeedback(
 
       const minValue = getMinValue(qItem);
       if (typeof minValue === 'string' || typeof minValue === 'number') {
-        return `Enter a value greater than or equal to ${minValue}.`;
+        return interpolate(rendererStrings.minValueWithLimit, { minValue: `${minValue}` });
       }
 
-      return 'Input is less than the minimum value allowed.';
+      return rendererStrings.minValueFallback;
     }
 
     // http://hl7.org/fhir/StructureDefinition/maxValue
@@ -156,10 +166,10 @@ function useValidationFeedback(
 
       const maxValue = getMaxValue(qItem);
       if (typeof maxValue === 'string' || typeof maxValue === 'number') {
-        return `Enter a value less than or equal to ${maxValue}.`;
+        return interpolate(rendererStrings.maxValueWithLimit, { maxValue: `${maxValue}` });
       }
 
-      return 'Input exceeds the maximum value allowed.';
+      return rendererStrings.maxValueFallback;
     }
 
     // http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-minQuantity
@@ -171,10 +181,12 @@ function useValidationFeedback(
 
       const minQuantityValue = getMinQuantityValue(qItem);
       if (typeof minQuantityValue === 'number') {
-        return `Enter a quantity greater than or equal to ${minQuantityValue}.`;
+        return interpolate(rendererStrings.minQuantityWithLimit, {
+          minQuantityValue: `${minQuantityValue}`
+        });
       }
 
-      return 'Input is less than the minimum quantity allowed.';
+      return rendererStrings.minQuantityFallback;
     }
 
     // http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-maxQuantity
@@ -186,10 +198,12 @@ function useValidationFeedback(
 
       const maxQuantityValue = getMaxQuantityValue(qItem);
       if (typeof maxQuantityValue === 'number') {
-        return `Enter a quantity less than or equal to ${maxQuantityValue}.`;
+        return interpolate(rendererStrings.maxQuantityWithLimit, {
+          maxQuantityValue: `${maxQuantityValue}`
+        });
       }
 
-      return 'Input exceeds the maximum quantity allowed.';
+      return rendererStrings.maxQuantityFallback;
     }
 
     // No specific issue code, continue to the next issue

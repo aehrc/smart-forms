@@ -238,6 +238,86 @@ describe('getFilteredItemsToRepopulate', () => {
     // currentQRItem should stay undefined / as per original
     expect(filtered['63fe14f3-2374-4382-bce7-180e2747c97f'].currentQRItem).toBeUndefined();
   });
+
+  // Regression tests for https://github.com/aehrc/smart-forms/issues/1940
+  // Rows deleted on the server between repopulations: the dialog correctly shows the
+  // deletions, but applying them corrupted the result (deleted rows resurrected/duplicated
+  // and the internal mark-as-deleted extension leaked into the QuestionnaireResponse).
+  describe('server-side deletions in repeat groups', () => {
+    const markAsDeletedUrl =
+      'https://smartforms.csiro.au/custom-functionality/repopulation/mark-as-deleted';
+
+    function buildRepeatGroupRow(value: string) {
+      return {
+        linkId: 'problem',
+        item: [{ linkId: 'problem-name', answer: [{ valueString: value }] }]
+      };
+    }
+
+    const rowA = buildRepeatGroupRow('A');
+    const rowB = buildRepeatGroupRow('B');
+    const rowC = buildRepeatGroupRow('C');
+
+    function buildDeletionScenario(): {
+      tuplesMap: Map<string, [string, ItemToRepopulate][]>;
+      originalItems: Record<string, ItemToRepopulate>;
+    } {
+      // Form has rows [A, B, C]; rows A and B were deleted on the server, so it returns [C].
+      // Detection (retrieveRepeatGroupCurrentQRItems) aligns matched pairs first:
+      // currentQRItems = [C, A, B], serverQRItems = [C]
+      // → dialog child 0 hidden (C unchanged), child 1 "A removed", child 2 "B removed"
+      const itemToRepopulate: ItemToRepopulate = {
+        qItem: { linkId: 'problem', text: 'Recorded problems', type: 'group', repeats: true },
+        sectionItemText: 'Clinical details',
+        parentItemText: 'Clinical details',
+        isInGrid: false,
+        currentQRItems: [rowC, rowA, rowB],
+        serverQRItems: [rowC]
+      };
+
+      return {
+        tuplesMap: new Map([['Clinical details', [['problem', itemToRepopulate]]]]),
+        originalItems: { problem: itemToRepopulate }
+      };
+    }
+
+    it('removes all accepted deletions instead of resurrecting/duplicating rows', () => {
+      const { tuplesMap, originalItems } = buildDeletionScenario();
+
+      // Accept both deletions, as shown in the dialog
+      const selectedKeys = new Set(['heading-0-parent-0-child-1', 'heading-0-parent-0-child-2']);
+
+      const filtered = getFilteredItemsToRepopulate(tuplesMap, selectedKeys, originalItems);
+
+      // The dialog promised only row C remains
+      expect(filtered['problem'].serverQRItems).toEqual([rowC]);
+    });
+
+    it('does not leak the mark-as-deleted extension into the result', () => {
+      const { tuplesMap, originalItems } = buildDeletionScenario();
+
+      const selectedKeys = new Set(['heading-0-parent-0-child-1', 'heading-0-parent-0-child-2']);
+
+      const filtered = getFilteredItemsToRepopulate(tuplesMap, selectedKeys, originalItems);
+
+      const leakedMarkers = (filtered['problem'].serverQRItems ?? []).filter((serverQRItem) =>
+        serverQRItem.extension?.some((ext) => ext.url === markAsDeletedUrl)
+      );
+      expect(leakedMarkers).toEqual([]);
+    });
+
+    it('keeps unaccepted deletions in the form', () => {
+      const { tuplesMap, originalItems } = buildDeletionScenario();
+
+      // Accept only the deletion of row A; leave row B's deletion unselected
+      const selectedKeys = new Set(['heading-0-parent-0-child-1']);
+
+      const filtered = getFilteredItemsToRepopulate(tuplesMap, selectedKeys, originalItems);
+
+      // Row A removed, row B preserved from current values
+      expect(filtered['problem'].serverQRItems).toEqual([rowC, rowB]);
+    });
+  });
 });
 
 describe('getChipColorByValueChangeMode', () => {

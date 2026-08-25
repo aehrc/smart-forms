@@ -64,6 +64,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
   const answerOptionsLookupFailures = useQuestionnaireStore.use.answerOptionsLookupFailures();
 
   // Derive per-field failure flag and a label getter that shows [code] for any option
@@ -181,7 +182,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
                 htmlInput: {
                   ...params.inputProps,
                   ...(isTabled
-                    ? { 'aria-label': qItem.text ?? 'Unnamed choice dropdown' }
+                    ? { 'aria-label': qItem.text ?? rendererStrings.unnamedChoiceDropdown }
                     : { 'aria-labelledby': `label-${qItem.linkId}` }),
                   ...(mergedAriaDescribedBy && { 'aria-describedby': mergedAriaDescribedBy }),
                   role: 'combobox'

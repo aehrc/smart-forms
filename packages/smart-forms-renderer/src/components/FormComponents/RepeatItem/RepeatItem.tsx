@@ -15,13 +15,18 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../../interfaces/renderProps.interface';
-import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import type {
+  QuestionnaireItem,
+  QuestionnaireResponseItem,
+  QuestionnaireResponseItemAnswer
+} from 'fhir/r4';
 import { createEmptyQrItem } from '../../../utils/qrItem';
+import { answerHasValue } from '../../../utils/manageForm';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import AddItemButton from './AddItemButton';
 import { TransitionGroup } from 'react-transition-group';
@@ -44,6 +49,8 @@ interface RepeatItemProps extends PropsWithQrItemChangeHandler, PropsWithParentI
 
 /**
  * Main component to render a repeating, non-group Questionnaire item.
+ * Repeat answer instances (including empty ones) are tracked in local state, similar to
+ * RepeatGroup and GroupTable - only answers with values are emitted to the QuestionnaireResponse.
  *
  * @author Sean Fong
  */
@@ -54,17 +61,28 @@ function RepeatItem(props: RepeatItemProps) {
 
   const readOnly = useReadOnly(qItem, parentIsReadOnly);
 
-  const repeatAnswers = useInitialiseRepeatAnswers(qItem.linkId, qrItem);
+  const initialRepeatAnswers = useInitialiseRepeatAnswers(qItem.linkId, qrItem);
+
+  const [repeatAnswers, setRepeatAnswers] = useState(initialRepeatAnswers);
+
+  // Emit only answers with values - empty answer instances stay in local state so the
+  // QuestionnaireResponse is not polluted with value-less stub answers e.g. { id: answerKey }
+  function emitAnswersWithValues(updatedRepeatAnswers: (QuestionnaireResponseItemAnswer | null)[]) {
+    onQrItemChange({
+      ...createEmptyQrItem(qItem, undefined),
+      answer: updatedRepeatAnswers.flatMap((repeatAnswer) =>
+        repeatAnswer && answerHasValue(repeatAnswer) ? [repeatAnswer] : []
+      )
+    });
+  }
 
   // Event Handlers
   function handleAnswerChange(newQrItem: QuestionnaireResponseItem, index: number) {
     const updatedRepeatAnswers = [...repeatAnswers];
     updatedRepeatAnswers[index] = newQrItem.answer ? newQrItem.answer[0] : null;
 
-    onQrItemChange({
-      ...createEmptyQrItem(qItem, undefined),
-      answer: updatedRepeatAnswers.flatMap((repeatAnswer) => (repeatAnswer ? [repeatAnswer] : []))
-    });
+    setRepeatAnswers(updatedRepeatAnswers);
+    emitAnswersWithValues(updatedRepeatAnswers);
   }
 
   function handleRemoveItem(index: number) {
@@ -73,23 +91,16 @@ function RepeatItem(props: RepeatItemProps) {
     updatedRepeatAnswers.splice(index, 1);
 
     if (updatedRepeatAnswers.length === 0) {
-      onQrItemChange({ ...createEmptyQrItem(qItem, undefined) });
-      return;
+      updatedRepeatAnswers.push({ id: generateNewRepeatId(qItem.linkId) });
     }
 
-    onQrItemChange({
-      ...createEmptyQrItem(qItem, undefined),
-      answer: updatedRepeatAnswers.flatMap((repeatAnswer) => (repeatAnswer ? [repeatAnswer] : []))
-    });
+    setRepeatAnswers(updatedRepeatAnswers);
+    emitAnswersWithValues(updatedRepeatAnswers);
   }
 
   function handleAddItem() {
-    const updatedRepeatAnswers = [...repeatAnswers, { id: generateNewRepeatId(qItem.linkId) }];
-
-    onQrItemChange({
-      ...createEmptyQrItem(qItem, undefined),
-      answer: updatedRepeatAnswers.flatMap((repeatAnswer) => (repeatAnswer ? [repeatAnswer] : []))
-    });
+    // The new answer instance has no value yet, so the QuestionnaireResponse does not change
+    setRepeatAnswers([...repeatAnswers, { id: generateNewRepeatId(qItem.linkId) }]);
   }
 
   return (

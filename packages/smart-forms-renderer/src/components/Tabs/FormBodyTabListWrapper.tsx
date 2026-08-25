@@ -25,6 +25,7 @@ import Divider from '@mui/material/Divider';
 import FormBodyTabList from './FormBodyTabList';
 import ShowCompletedTabsSection from './ShowCompletedTabsSection';
 import useContextDisplayItems from '../../hooks/useContextDisplayItems';
+import { useRendererConfigStore } from '../../stores';
 
 interface FormBodyTabListWrapperProps {
   topLevelItems: QuestionnaireItem[];
@@ -38,6 +39,8 @@ const FormBodyTabListWrapper = memo(function FormBodyTabListWrapper(
 ) {
   const { topLevelItems, currentTabIndex, tabs, maxHeight } = props;
 
+  const formSectionsLabel = useRendererConfigStore.use.rendererStrings().formSections;
+
   const [completedTabsExpanded, setCompletedTabsExpanded] = useState(true);
 
   const { allContextDisplayItems, completedDisplayItemExists } =
@@ -46,7 +49,7 @@ const FormBodyTabListWrapper = memo(function FormBodyTabListWrapper(
   return (
     <Card sx={{ p: 0.75, mb: 2, ...(maxHeight ? { maxHeight, overflowY: 'auto' } : {}) }}>
       <Box sx={{ flexGrow: 1 }}>
-        <aside aria-label="Form sections">
+        <aside aria-label={formSectionsLabel}>
           <PrimarySelectableList
             dense
             disablePadding

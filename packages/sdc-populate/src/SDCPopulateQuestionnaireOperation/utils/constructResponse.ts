@@ -33,8 +33,8 @@ import type {
   ValueSetPromise
 } from '../interfaces/expressions.interface';
 import { filterValueSetAnswersRecursive, resolveValueSetPromises } from './processValueSets';
-import moment from 'moment';
 import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 import fhirpath from 'fhirpath';
 // Need to specifically import from 'index.js' to get it working with ts
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4/index.js';
@@ -50,6 +50,11 @@ import type {
 import { handleFhirPathResult } from './createFhirPathContext';
 import { TERMINOLOGY_SERVER_URL } from '../../globals';
 import { getDisplayName } from './humanName';
+
+// Required by checkIsDateTime() and convertDateTimeToDate() for strict parsing against a list of
+// accepted formats. Without this plugin, dayjs ignores the format argument and falls back to a
+// lenient parse.
+dayjs.extend(customParseFormat);
 
 /**
  * Constructs a questionnaireResponse recursively from a specified questionnaire, its subject and its initialExpressions.
@@ -517,16 +522,16 @@ function getAnswerValues(
 export function checkIsDateTime(value: string): boolean {
   const acceptedFormats = ['YYYY', 'YYYY-MM', 'YYYY-MM-DD', 'YYYY-MM-DDTHH:mm:ssZ'];
   const formattedDate = dayjs(value).format();
-  return moment(formattedDate, acceptedFormats, true).isValid();
+  return dayjs(formattedDate, acceptedFormats, true).isValid();
 }
 
 export function convertDateTimeToDate(value: string): string {
   const acceptedFormats = ['YYYY-MM-DDTHH:mm:ssZ'];
   const formattedDate = dayjs(value).format();
-  const isDateTime = moment(formattedDate, acceptedFormats, true).isValid();
+  const isDateTime = dayjs(formattedDate, acceptedFormats, true).isValid();
 
   if (isDateTime) {
-    return moment(formattedDate).format('YYYY-MM-DD');
+    return dayjs(formattedDate).format('YYYY-MM-DD');
   }
 
   return value;

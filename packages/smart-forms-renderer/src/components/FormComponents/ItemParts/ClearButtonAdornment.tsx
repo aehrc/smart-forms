@@ -1,5 +1,6 @@
 import { IconButton } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
+import { useRendererConfigStore } from '../../../stores';
 
 interface ClearButtonAdornmentProps {
   readOnly: boolean;
@@ -8,6 +9,8 @@ interface ClearButtonAdornmentProps {
 
 export function ClearButtonAdornment(props: ClearButtonAdornmentProps) {
   const { readOnly, onClear } = props;
+
+  const clearLabel = useRendererConfigStore.use.rendererStrings().clear;
 
   if (readOnly) {
     return null;
@@ -18,7 +21,7 @@ export function ClearButtonAdornment(props: ClearButtonAdornmentProps) {
       aria-hidden="true"
       tabIndex={-1}
       size="small"
-      title="Clear"
+      title={clearLabel}
       onClick={(e) => {
         onClear();
 

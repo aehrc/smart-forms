@@ -16,7 +16,7 @@
  */
 
 // @ts-ignore
-import React, { useEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import type { Patient, Practitioner, Questionnaire, QuestionnaireResponse } from 'fhir/r4';
 import { BaseRenderer } from '../../components';
 import { QueryClientProvider } from '@tanstack/react-query';
@@ -30,7 +30,9 @@ import './iframeResizerChild';
 import RendererThemeProvider from '../../theme/RendererThemeProvider';
 import CopyButtonsForStorybook from './CopyButtonsForStorybook';
 import ActionBarForStorybook from './ActionBarForStorybook';
-import { useSmartConfigStore } from '../../stores';
+import { rendererConfigStore, useSmartConfigStore } from '../../stores';
+import type { RendererConfig } from '../../stores';
+import { defaultRendererStrings } from '../../i18n';
 import type Client from 'fhirclient/lib/Client';
 
 interface BuildFormWrapperForStorybookProps {
@@ -39,10 +41,20 @@ interface BuildFormWrapperForStorybookProps {
   fhirClient?: Client;
   patient?: Patient;
   user?: Practitioner;
+  rendererConfigOptions?: RendererConfig;
 }
 
 function BuildFormWrapperForStorybook(props: BuildFormWrapperForStorybookProps) {
-  const { questionnaire, questionnaireResponse, fhirClient, patient, user } = props;
+  const { questionnaire, questionnaireResponse, fhirClient, patient, user, rendererConfigOptions } =
+    props;
+
+  // Reset locale-driven renderer config to defaults on mount so a story that sets a `locale`
+  // (e.g. de-CH) does not leak its config into subsequent stories. This is a useLayoutEffect
+  // declared before useBuildForm so it runs before buildForm's own useLayoutEffect re-applies
+  // this story's rendererConfigOptions.
+  useLayoutEffect(() => {
+    rendererConfigStore.setState({ locale: undefined, rendererStrings: defaultRendererStrings });
+  }, []);
 
   // If a fhirClient is provided, set it in the store so that it can be used by InitialExpressionRepopulatable button
   const setClient = useSmartConfigStore.use.setClient();
@@ -68,7 +80,8 @@ function BuildFormWrapperForStorybook(props: BuildFormWrapperForStorybookProps) 
   const isBuilding = useBuildForm({
     questionnaire,
     questionnaireResponse,
-    terminologyServerUrl: STORYBOOK_TERMINOLOGY_SERVER_URL
+    terminologyServerUrl: STORYBOOK_TERMINOLOGY_SERVER_URL,
+    rendererConfigOptions
   });
 
   if (isBuilding) {
