@@ -16,7 +16,7 @@
  */
 
 import React from 'react';
-import { getAnswerOptionLabel, isLookupFailedOption } from '../../../utils/openChoice';
+import { getAnswerOptionLabel, isDisplayUnavailable } from '../../../utils/openChoice';
 import { StandardTextField } from '../Textfield.styles';
 import type { AutocompleteChangeReason } from '@mui/material/Autocomplete';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -71,8 +71,8 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
   const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   // Hide options whose display couldn't be resolved so raw codes are never shown in the dropdown.
-  const hasLookupFailure = options.some(isLookupFailedOption);
-  const visibleOptions = options.filter((option) => !isLookupFailedOption(option));
+  const hasUnavailableDisplayOptions = options.some(isDisplayUnavailable);
+  const visibleOptions = options.filter((option) => !isDisplayUnavailable(option));
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
@@ -205,7 +205,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
         }}
       />
 
-      {hasLookupFailure ? (
+      {hasUnavailableDisplayOptions ? (
         <FormHelperText sx={{ color: 'warning.main' }}>
           <AccessibleFeedback>
             Some items in this list were not able to be displayed

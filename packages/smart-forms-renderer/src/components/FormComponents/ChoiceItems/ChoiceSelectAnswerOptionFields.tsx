@@ -26,7 +26,7 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import { useRendererConfigStore } from '../../../stores';
 import { compareAnswerOptionValue, isOptionDisabled } from '../../../utils/choice';
-import { getAnswerOptionLabel, isLookupFailedOption } from '../../../utils/openChoice';
+import { getAnswerOptionLabel, isDisplayUnavailable } from '../../../utils/openChoice';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import { StandardTextField } from '../Textfield.styles';
@@ -67,8 +67,8 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
   const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   // Hide options whose display couldn't be resolved so raw codes are never shown in the dropdown.
-  const hasLookupFailure = options.some(isLookupFailedOption);
-  const visibleOptions = options.filter((option) => !isLookupFailedOption(option));
+  const hasUnavailableDisplayOptions = options.some(isDisplayUnavailable);
+  const visibleOptions = options.filter((option) => !isDisplayUnavailable(option));
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
@@ -209,7 +209,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
         }}
       />
 
-      {hasLookupFailure ? (
+      {hasUnavailableDisplayOptions ? (
         <FormHelperText sx={{ color: 'warning.main' }}>
           <AccessibleFeedback>
             Some items in this list were not able to be displayed
