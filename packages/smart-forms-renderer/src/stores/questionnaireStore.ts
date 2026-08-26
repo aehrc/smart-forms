@@ -129,8 +129,6 @@ export interface QuestionnaireStoreType {
   enableWhenIsActivated: boolean;
   enableWhenExpressions: EnableWhenExpressions;
   answerOptionsToggleExpressions: Record<string, AnswerOptionsToggleExpression[]>;
-  /** Per-coding keys (`${system}|${code}`) where $lookup failed — options can show a fallback label */
-  answerOptionsLookupFailures: Set<string>;
   processedValueSets: Record<string, ProcessedValueSet>;
   cachedValueSetCodings: Record<string, Coding[]>;
   fhirPathContext: Record<string, any>;
@@ -197,7 +195,6 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
   targetConstraints: {},
   targetConstraintLinkIds: {},
   answerOptionsToggleExpressions: {},
-  answerOptionsLookupFailures: new Set<string>(),
   calculatedExpressions: {},
   initialExpressions: {},
   enableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} },
@@ -282,7 +279,6 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       targetConstraints: initialTargetConstraints,
       targetConstraintLinkIds: targetConstraintLinkIds,
       answerOptionsToggleExpressions: initialAnswerOptionsToggleExpressions,
-      answerOptionsLookupFailures: questionnaireModel.answerOptionsLookupFailures,
       enableWhenItems: initialEnableWhenItems,
       enableWhenLinkedQuestions: initialEnableWhenLinkedQuestions,
       enableWhenExpressions: initialEnableWhenExpressions,
@@ -313,7 +309,6 @@ export const questionnaireStore = createStore<QuestionnaireStoreType>()((set, ge
       targetConstraints: {},
       targetConstraintLinkIds: {},
       answerOptionsToggleExpressions: {},
-      answerOptionsLookupFailures: new Set<string>(),
       enableWhenItems: { singleItems: {}, repeatItems: {} },
       enableWhenLinkedQuestions: {},
       enableWhenExpressions: { singleExpressions: {}, repeatExpressions: {} },

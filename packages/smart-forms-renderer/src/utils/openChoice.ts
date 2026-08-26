@@ -171,3 +171,10 @@ export function getAnswerOptionLabel(option: QuestionnaireItemAnswerOption | str
     return '';
   }
 }
+
+// A valueCoding still missing its display after addDisplayToAnswerOptions has run means its
+// $lookup failed - every coding without a display gets a lookup attempt, and only a successful
+// one ever sets display. Hide these from choice/open-choice dropdowns instead of showing raw codes.
+export function isLookupFailedOption(option: QuestionnaireItemAnswerOption): boolean {
+  return !!(option.valueCoding && !option.valueCoding.display);
+}
