@@ -25,6 +25,7 @@ import type {
 } from 'fhir/r4';
 import type { ValueSetPromise } from '../interfaces/expressions.interface';
 import { getRelevantCodingProperties } from './codingProperties';
+import { codingMatchesOption } from './answerOption';
 
 export async function resolveValueSetPromises(
   valueSetPromises: Record<string, ValueSetPromise>
@@ -208,7 +209,12 @@ function codingIsInOptions(answerCoding: Coding, options: (Coding | undefined)[]
     return null;
   }
 
-  const foundCoding = options.find((option) => option?.code === answerCoding.code);
+  // Must mirror the step-1 matching in findInAnswerOptions: bare-code comparison here
+  // would silently rewrite a same-code coding from a different system to the option's
+  // coding, undoing the system-agreement rule applied during initial population.
+  const foundCoding = options.find(
+    (option) => option !== undefined && codingMatchesOption(answerCoding, option)
+  );
   if (foundCoding) {
     return getRelevantCodingProperties(foundCoding);
   }

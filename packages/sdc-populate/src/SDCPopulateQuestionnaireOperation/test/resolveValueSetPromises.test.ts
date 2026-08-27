@@ -206,6 +206,60 @@ describe('filterValueSetAnswersRecursive', () => {
     expect(result?.answer).toEqual([{ valueCoding: { system: 'sys', code: 'a', display: 'A' } }]);
   });
 
+  it('does not rewrite a same-code coding from a different system to the option coding', () => {
+    const input = {
+      linkId: 'q1',
+      answer: [
+        { valueCoding: { system: 'http://snomed.info/sct', code: 'a', display: 'SNOMED A' } }
+      ]
+    };
+
+    const choiceResult = filterValueSetAnswersRecursive(
+      input,
+      {},
+      mockAnswerOptions,
+      {},
+      { q1: 'choice' }
+    );
+    // dropped, not substituted with { system: 'sys', code: 'a' }
+    expect(choiceResult?.answer).toEqual([]);
+
+    const openChoiceResult = filterValueSetAnswersRecursive(
+      input,
+      {},
+      mockAnswerOptions,
+      {},
+      { q1: 'open-choice' }
+    );
+    // kept exactly as populated, still SNOMED
+    expect(openChoiceResult?.answer).toEqual([
+      { valueCoding: { system: 'http://snomed.info/sct', code: 'a', display: 'SNOMED A' } }
+    ]);
+  });
+
+  it('matches display-only codings by display instead of undefined === undefined', () => {
+    const displayOnlyOptions = {
+      q1: [{ valueCoding: { display: 'A' } }, { valueCoding: { display: 'B' } }]
+    };
+    const input = {
+      linkId: 'q1',
+      answer: [{ valueCoding: { display: 'B' } }]
+    };
+
+    const result = filterValueSetAnswersRecursive(
+      input,
+      {},
+      displayOnlyOptions,
+      {},
+      {
+        q1: 'choice'
+      }
+    );
+
+    // stays B; a code-only comparison would find option A first
+    expect(result?.answer).toEqual([{ valueCoding: { display: 'B' } }]);
+  });
+
   it('preserves coding answers outside a contained valueSet for open-choice items', () => {
     const input = {
       linkId: 'q3',

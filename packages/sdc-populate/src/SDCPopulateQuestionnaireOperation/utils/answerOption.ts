@@ -90,15 +90,22 @@ function valueIsCoding(value: Coding): value is Coding {
   );
 }
 
-function codingMatchesOption(coding: Coding, optionCoding: Coding): boolean {
-  if (!coding.code || !optionCoding.code || coding.code !== optionCoding.code) {
-    return false;
-  }
-
+export function codingMatchesOption(coding: Coding, optionCoding: Coding): boolean {
   // when both codings specify a system, they must agree
   if (coding.system && optionCoding.system && coding.system !== optionCoding.system) {
     return false;
   }
 
-  return true;
+  if (coding.code && optionCoding.code) {
+    return coding.code === optionCoding.code;
+  }
+
+  // display-only codings are legal in answerOption; when neither side carries a
+  // code, fall back to display equality rather than treating undefined === undefined
+  // as a match
+  if (!coding.code && !optionCoding.code) {
+    return Boolean(coding.display) && coding.display === optionCoding.display;
+  }
+
+  return false;
 }
