@@ -117,9 +117,20 @@ export function parseValueToAnswer(
     return { valueQuantity: value };
   }
 
-  if (typeof value === 'object' && value.system && value.code) {
+  // A Coding may legally omit its system; require a code and exclude Quantity-shaped
+  // objects, which also carry a `code` property
+  if (typeof value === 'object' && value.code && !('value' in value) && !('unit' in value)) {
     return {
       valueCoding: getRelevantCodingProperties(value)
+    };
+  }
+
+  // No branch below can represent an object. Fall back to its display text rather than
+  // emitting an object inside valueString, which is structurally invalid in a
+  // QuestionnaireResponse and survives removeEmptyAnswersFromResponse.
+  if (typeof value === 'object') {
+    return {
+      valueString: typeof value.display === 'string' ? value.display : JSON.stringify(value)
     };
   }
 

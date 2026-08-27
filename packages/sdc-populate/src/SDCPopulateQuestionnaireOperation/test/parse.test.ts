@@ -118,6 +118,36 @@ describe('parseItemInitialToAnswer', () => {
 });
 
 describe('parseValueToAnswer', () => {
+  it('returns valueCoding for a systemless coding that matches no answerOption', () => {
+    const qItem = {
+      linkId: 'dx',
+      type: 'open-choice' as const,
+      answerOption: [
+        {
+          valueCoding: {
+            system: 'http://hl7.org/fhir/sid/icd-10-cm',
+            code: 'E11.9',
+            display: 'T2DM'
+          }
+        }
+      ]
+    };
+
+    const result = parseValueToAnswer(qItem, { code: 'J44.9', display: 'COPD' });
+
+    expect(result).toEqual({ valueCoding: { code: 'J44.9', display: 'COPD' } });
+  });
+
+  it('never emits an object inside valueString for unrecognised object values', () => {
+    const qItem = { linkId: 'q', type: 'string' as const };
+
+    const withDisplay = parseValueToAnswer(qItem, { display: 'just text' });
+    expect(withDisplay).toEqual({ valueString: 'just text' });
+
+    const opaque = parseValueToAnswer(qItem, { reference: 'Patient/1' });
+    expect(typeof opaque.valueString).toBe('string');
+  });
+
   it('returns answerOption if found', () => {
     const qItem: QuestionnaireItem = {
       linkId: 'q1',
