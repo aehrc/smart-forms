@@ -17,7 +17,6 @@
 
 import type {
   Coding,
-  QuestionnaireItem,
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItem,
   QuestionnaireResponseItemAnswer,
@@ -70,8 +69,8 @@ function responseIsValueSet(response: any): response is ValueSet {
 /**
  * Read a questionnaire response item recursively and retrieve valueSet answers if present
  *
- * @param itemTypes - Questionnaire item types keyed by linkId, used to identify open-choice items
- * whose answers are allowed to fall outside the provided options
+ * @param openChoiceLinkIds - linkIds of open-choice items, whose answers are allowed to
+ * fall outside the provided options
  *
  * @author Sean Fong
  */
@@ -80,7 +79,7 @@ export function filterValueSetAnswersRecursive(
   valueSetPromises: Record<string, ValueSetPromise>,
   answerOptions: Record<string, QuestionnaireItemAnswerOption[]>,
   containedResources: Record<string, ValueSet>,
-  itemTypes: Record<string, QuestionnaireItem['type']> = {}
+  openChoiceLinkIds: Set<string>
 ): QuestionnaireResponseItem | null {
   const items = qrItem.item;
 
@@ -93,7 +92,7 @@ export function filterValueSetAnswersRecursive(
           valueSetPromises,
           answerOptions,
           containedResources,
-          itemTypes
+          openChoiceLinkIds
         )
       )
       .filter((item): item is QuestionnaireResponseItem => item !== null);
@@ -102,7 +101,7 @@ export function filterValueSetAnswersRecursive(
   }
 
   const linkId = qrItem.linkId;
-  const isOpenChoice = itemTypes[linkId] === 'open-choice';
+  const isOpenChoice = openChoiceLinkIds.has(linkId);
 
   const valueSetOptionCodings = valueSetPromises[linkId]?.valueSet?.expansion?.contains;
   if (qrItem.answer && valueSetOptionCodings) {

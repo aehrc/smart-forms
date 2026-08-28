@@ -108,7 +108,8 @@ describe('filterValueSetAnswersRecursive', () => {
       input,
       mockResolvedValueSetPromises,
       mockAnswerOptions,
-      mockContainedResources
+      mockContainedResources,
+      new Set<string>()
     );
 
     expect(result).toBeDefined();
@@ -142,7 +143,13 @@ describe('filterValueSetAnswersRecursive', () => {
       ]
     };
 
-    const result = filterValueSetAnswersRecursive(input, {}, {}, mockContainedResources);
+    const result = filterValueSetAnswersRecursive(
+      input,
+      {},
+      {},
+      mockContainedResources,
+      new Set<string>()
+    );
 
     expect(result).toBeNull();
   });
@@ -153,7 +160,7 @@ describe('filterValueSetAnswersRecursive', () => {
       text: 'No answers'
     };
 
-    const result = filterValueSetAnswersRecursive(input, {}, {}, {});
+    const result = filterValueSetAnswersRecursive(input, {}, {}, {}, new Set<string>());
 
     expect(result).toEqual(input);
   });
@@ -172,9 +179,7 @@ describe('filterValueSetAnswersRecursive', () => {
       {},
       mockAnswerOptions,
       {},
-      {
-        q1: 'open-choice'
-      }
+      new Set(['q1'])
     );
 
     // Matching coding is normalised to the option's coding, non-matching coding is kept as is
@@ -198,9 +203,7 @@ describe('filterValueSetAnswersRecursive', () => {
       {},
       mockAnswerOptions,
       {},
-      {
-        q1: 'choice'
-      }
+      new Set<string>()
     );
 
     expect(result?.answer).toEqual([{ valueCoding: { system: 'sys', code: 'a', display: 'A' } }]);
@@ -219,7 +222,7 @@ describe('filterValueSetAnswersRecursive', () => {
       {},
       mockAnswerOptions,
       {},
-      { q1: 'choice' }
+      new Set<string>()
     );
     // dropped, not substituted with { system: 'sys', code: 'a' }
     expect(choiceResult?.answer).toEqual([]);
@@ -229,7 +232,7 @@ describe('filterValueSetAnswersRecursive', () => {
       {},
       mockAnswerOptions,
       {},
-      { q1: 'open-choice' }
+      new Set(['q1'])
     );
     // kept exactly as populated, still SNOMED
     expect(openChoiceResult?.answer).toEqual([
@@ -251,9 +254,7 @@ describe('filterValueSetAnswersRecursive', () => {
       {},
       displayOnlyOptions,
       {},
-      {
-        q1: 'choice'
-      }
+      new Set<string>()
     );
 
     // stays B; a code-only comparison would find option A first
@@ -266,9 +267,13 @@ describe('filterValueSetAnswersRecursive', () => {
       answer: [{ valueCoding: { system: 'sys', code: 'z', display: 'Z' } }]
     };
 
-    const result = filterValueSetAnswersRecursive(input, {}, {}, mockContainedResources, {
-      q3: 'open-choice'
-    });
+    const result = filterValueSetAnswersRecursive(
+      input,
+      {},
+      {},
+      mockContainedResources,
+      new Set(['q3'])
+    );
 
     expect(result?.answer).toEqual([{ valueCoding: { system: 'sys', code: 'z', display: 'Z' } }]);
   });
@@ -284,9 +289,7 @@ describe('filterValueSetAnswersRecursive', () => {
       mockResolvedValueSetPromises,
       {},
       {},
-      {
-        q2: 'open-choice'
-      }
+      new Set(['q2'])
     );
 
     expect(result?.answer).toEqual([{ valueCoding: { system: 'sys', code: '9' } }]);
