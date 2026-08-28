@@ -117,3 +117,12 @@ describe('findInAnswerOptions', () => {
     expect(result).toBeUndefined();
   });
 });
+
+describe('findInAnswerOptions zero-valued integer options', () => {
+  it('matches answerOption valueInteger 0 for a populated string "0"', () => {
+    const options = [{ valueInteger: 0 }, { valueInteger: 5 }];
+
+    expect(findInAnswerOptions(options, '0')).toEqual({ valueInteger: 0 });
+    expect(findInAnswerOptions(options, '5')).toEqual({ valueInteger: 5 });
+  });
+});

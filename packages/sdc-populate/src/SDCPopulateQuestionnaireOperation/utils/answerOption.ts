@@ -64,7 +64,7 @@ export function findInAnswerOptions(
       }
     }
 
-    if (option.valueInteger) {
+    if (typeof option.valueInteger === 'number') {
       if (value === option.valueInteger.toString()) {
         return {
           valueInteger: option.valueInteger
