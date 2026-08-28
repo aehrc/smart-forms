@@ -16,6 +16,10 @@
  */
 
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import { useRendererConfigStore } from '../../../stores';
+import { isDisplayUnavailable } from '../../../utils/openChoice';
+import { StyledWarningTypography } from '../Item.styles';
+import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
 import RadioButtonWithOpenLabel from '../ItemParts/RadioButtonWithOpenLabel';
 import RadioFormGroup from '../ItemParts/RadioFormGroup';
 
@@ -54,28 +58,41 @@ function OpenChoiceRadioAnswerOptionFields(props: OpenChoiceRadioAnswerOptionFie
     onClear
   } = props;
 
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
+
+  // Hide options whose display couldn't be resolved so raw codes are never shown in the list.
+  const hasUnavailableDisplayOptions = options.some(isDisplayUnavailable);
+  const visibleOptions = options.filter((option) => !isDisplayUnavailable(option));
+
   return (
-    <RadioFormGroup
-      data-test={`radio-group-${openLabelValue}`}
-      qItem={qItem}
-      options={options}
-      valueRadio={valueRadio}
-      feedback={feedback}
-      readOnly={readOnly}
-      expressionUpdated={expressionUpdated}
-      answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
-      isTabled={isTabled}
-      instructionsId={instructionsId}
-      onCheckedChange={(newValue) => onValueChange(newValue, null)}
-      onClear={onClear}>
-      <RadioButtonWithOpenLabel
-        value={openLabelValue}
-        label={openLabelText}
+    <>
+      <RadioFormGroup
+        data-test={`radio-group-${openLabelValue}`}
+        qItem={qItem}
+        options={visibleOptions}
+        valueRadio={valueRadio}
+        feedback={feedback}
         readOnly={readOnly}
-        isSelected={openLabelSelected}
-        onInputChange={(input) => onValueChange(null, input)}
-      />
-    </RadioFormGroup>
+        expressionUpdated={expressionUpdated}
+        answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+        isTabled={isTabled}
+        instructionsId={instructionsId}
+        onCheckedChange={(newValue) => onValueChange(newValue, null)}
+        onClear={onClear}>
+        <RadioButtonWithOpenLabel
+          value={openLabelValue}
+          label={openLabelText}
+          readOnly={readOnly}
+          isSelected={openLabelSelected}
+          onInputChange={(input) => onValueChange(null, input)}
+        />
+      </RadioFormGroup>
+      {hasUnavailableDisplayOptions ? (
+        <StyledWarningTypography>
+          <AccessibleFeedback>{rendererStrings.answerOptionDisplayUnavailable}</AccessibleFeedback>
+        </StyledWarningTypography>
+      ) : null}
+    </>
   );
 }
 

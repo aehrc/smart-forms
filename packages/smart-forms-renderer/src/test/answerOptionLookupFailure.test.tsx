@@ -37,6 +37,8 @@ jest.mock('react-dnd-html5-backend', () => ({
   NativeTypes: { FILE: '__NATIVE_FILE__' }
 }));
 
+import ChoiceCheckboxAnswerOptionFields from '../components/FormComponents/ChoiceItems/ChoiceCheckboxAnswerOptionFields';
+import ChoiceRadioAnswerOptionFields from '../components/FormComponents/ChoiceItems/ChoiceRadioAnswerOptionFields';
 import ChoiceSelectAnswerOptionFields from '../components/FormComponents/ChoiceItems/ChoiceSelectAnswerOptionFields';
 import OpenChoiceSelectAnswerOptionField from '../components/FormComponents/OpenChoiceItems/OpenChoiceSelectAnswerOptionField';
 import type { RenderingExtensions } from '../hooks/useRenderingExtensions';
@@ -138,6 +140,50 @@ describe('answerOption terminology lookup failure', () => {
     );
 
     fireEvent.mouseDown(screen.getByRole('combobox'));
+
+    expect(screen.getByText('Mother')).toBeTruthy();
+    expect(screen.queryByText('133932002')).toBeNull();
+    expect(screen.getByText(warningText)).toBeTruthy();
+  });
+
+  test('ChoiceCheckboxAnswerOptionFields hides the failed option and shows the warning', () => {
+    render(
+      <ChoiceCheckboxAnswerOptionFields
+        qItem={qItem}
+        options={options}
+        answers={[]}
+        feedback=""
+        readOnly={false}
+        expressionUpdated={false}
+        answerOptionsToggleExpressionsMap={new Map()}
+        isTabled={false}
+        instructionsId={undefined}
+        onCheckedChange={jest.fn()}
+        onClear={jest.fn()}
+      />
+    );
+
+    expect(screen.getByText('Mother')).toBeTruthy();
+    expect(screen.queryByText('133932002')).toBeNull();
+    expect(screen.getByText(warningText)).toBeTruthy();
+  });
+
+  test('ChoiceRadioAnswerOptionFields hides the failed option and shows the warning', () => {
+    render(
+      <ChoiceRadioAnswerOptionFields
+        qItem={qItem}
+        options={options}
+        valueRadio={null}
+        feedback=""
+        readOnly={false}
+        expressionUpdated={false}
+        answerOptionsToggleExpressionsMap={new Map()}
+        isTabled={false}
+        instructionsId={undefined}
+        onCheckedChange={jest.fn()}
+        onClear={jest.fn()}
+      />
+    );
 
     expect(screen.getByText('Mother')).toBeTruthy();
     expect(screen.queryByText('133932002')).toBeNull();

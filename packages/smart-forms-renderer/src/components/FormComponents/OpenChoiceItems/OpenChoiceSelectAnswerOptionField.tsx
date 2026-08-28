@@ -207,9 +207,7 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
 
       {hasUnavailableDisplayOptions ? (
         <FormHelperText sx={{ color: 'warning.main' }}>
-          <AccessibleFeedback>
-            Some items in this list were not able to be displayed
-          </AccessibleFeedback>
+          <AccessibleFeedback>{rendererStrings.answerOptionDisplayUnavailable}</AccessibleFeedback>
         </FormHelperText>
       ) : null}
       {feedback ? (

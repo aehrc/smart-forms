@@ -20,6 +20,10 @@ import type {
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
+import { useRendererConfigStore } from '../../../stores';
+import { isDisplayUnavailable } from '../../../utils/openChoice';
+import { StyledWarningTypography } from '../Item.styles';
+import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
 import CheckboxFormGroup from '../ItemParts/CheckboxFormGroup';
 
 interface ChoiceCheckboxAnswerOptionFieldsProps {
@@ -51,20 +55,33 @@ function ChoiceCheckboxAnswerOptionFields(props: ChoiceCheckboxAnswerOptionField
     onClear
   } = props;
 
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
+
+  // Hide options whose display couldn't be resolved so raw codes are never shown in the list.
+  const hasUnavailableDisplayOptions = options.some(isDisplayUnavailable);
+  const visibleOptions = options.filter((option) => !isDisplayUnavailable(option));
+
   return (
-    <CheckboxFormGroup
-      qItem={qItem}
-      options={options}
-      answers={answers}
-      feedback={feedback}
-      readOnly={readOnly}
-      expressionUpdated={expressionUpdated}
-      answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
-      isTabled={isTabled}
-      instructionsId={instructionsId}
-      onCheckedChange={onCheckedChange}
-      onClear={onClear}
-    />
+    <>
+      <CheckboxFormGroup
+        qItem={qItem}
+        options={visibleOptions}
+        answers={answers}
+        feedback={feedback}
+        readOnly={readOnly}
+        expressionUpdated={expressionUpdated}
+        answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+        isTabled={isTabled}
+        instructionsId={instructionsId}
+        onCheckedChange={onCheckedChange}
+        onClear={onClear}
+      />
+      {hasUnavailableDisplayOptions ? (
+        <StyledWarningTypography>
+          <AccessibleFeedback>{rendererStrings.answerOptionDisplayUnavailable}</AccessibleFeedback>
+        </StyledWarningTypography>
+      ) : null}
+    </>
   );
 }
 

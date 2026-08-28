@@ -16,6 +16,10 @@
  */
 
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import { useRendererConfigStore } from '../../../stores';
+import { isDisplayUnavailable } from '../../../utils/openChoice';
+import { StyledWarningTypography } from '../Item.styles';
+import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
 import RadioFormGroup from '../ItemParts/RadioFormGroup';
 
 interface ChoiceRadioAnswerOptionFieldsProps {
@@ -47,20 +51,33 @@ function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps
     onClear
   } = props;
 
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
+
+  // Hide options whose display couldn't be resolved so raw codes are never shown in the list.
+  const hasUnavailableDisplayOptions = options.some(isDisplayUnavailable);
+  const visibleOptions = options.filter((option) => !isDisplayUnavailable(option));
+
   return (
-    <RadioFormGroup
-      qItem={qItem}
-      options={options}
-      valueRadio={valueRadio}
-      feedback={feedback}
-      readOnly={readOnly}
-      expressionUpdated={expressionUpdated}
-      answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
-      isTabled={isTabled}
-      instructionsId={instructionsId}
-      onCheckedChange={onCheckedChange}
-      onClear={onClear}
-    />
+    <>
+      <RadioFormGroup
+        qItem={qItem}
+        options={visibleOptions}
+        valueRadio={valueRadio}
+        feedback={feedback}
+        readOnly={readOnly}
+        expressionUpdated={expressionUpdated}
+        answerOptionsToggleExpressionsMap={answerOptionsToggleExpressionsMap}
+        isTabled={isTabled}
+        instructionsId={instructionsId}
+        onCheckedChange={onCheckedChange}
+        onClear={onClear}
+      />
+      {hasUnavailableDisplayOptions ? (
+        <StyledWarningTypography>
+          <AccessibleFeedback>{rendererStrings.answerOptionDisplayUnavailable}</AccessibleFeedback>
+        </StyledWarningTypography>
+      ) : null}
+    </>
   );
 }
 
