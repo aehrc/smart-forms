@@ -117,17 +117,15 @@ export function parseValueToAnswer(
     return { valueQuantity: value };
   }
 
-  // A Coding may legally omit its system; valueIsCoding requires a code and rejects
-  // any object carrying non-Coding properties (e.g. a value-less Quantity)
+  // A Coding may legally omit its system
   if (valueIsCoding(value)) {
     return {
       valueCoding: getRelevantCodingProperties(value)
     };
   }
 
-  // No branch below can represent an object. Fall back to its display text rather than
-  // emitting an object inside valueString, which is structurally invalid in a
-  // QuestionnaireResponse and survives removeEmptyAnswersFromResponse.
+  // No branch below can represent an object; fall back to its display text so an
+  // object never ends up inside valueString
   if (typeof value === 'object') {
     return {
       valueString: typeof value.display === 'string' ? value.display : JSON.stringify(value)

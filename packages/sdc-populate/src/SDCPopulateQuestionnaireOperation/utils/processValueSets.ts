@@ -208,9 +208,8 @@ function codingIsInOptions(answerCoding: Coding, options: (Coding | undefined)[]
     return null;
   }
 
-  // Must mirror the step-1 matching in findInAnswerOptions: bare-code comparison here
-  // would silently rewrite a same-code coding from a different system to the option's
-  // coding, undoing the system-agreement rule applied during initial population.
+  // Must stay in step with findInAnswerOptions: both run on the same answers, and any
+  // disagreement between the two matchers silently rewrites or drops an answer
   const foundCoding = options.find(
     (option) => option !== undefined && codingMatchesOption(answerCoding, option)
   );

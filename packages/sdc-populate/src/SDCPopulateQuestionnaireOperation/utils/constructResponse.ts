@@ -100,7 +100,7 @@ export async function constructResponse(
 
   // Filled during the population walk below, alongside answerOptions and
   // containedValueSets, so open-choice items can be identified when filtering
-  // valueSet answers — the filter only ever consults items that walk visited
+  // valueSet answers
   const openChoiceLinkIds = new Set<string>();
 
   // Populate questionnaire response as a two-step process

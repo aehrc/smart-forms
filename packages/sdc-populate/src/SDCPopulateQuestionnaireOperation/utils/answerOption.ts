@@ -92,9 +92,6 @@ const CODING_PROPERTIES = new Set([
 ]);
 
 export function valueIsCoding(value: unknown): value is Coding {
-  // An allowlist rather than excluding known Quantity properties: other code-bearing
-  // FHIR types (e.g. a value-less Quantity carrying only system/code/comparator) must
-  // not pass as Codings just because the excluded keys happen to be absent.
   return (
     typeof value === 'object' &&
     value !== null &&
@@ -113,9 +110,7 @@ export function codingMatchesOption(coding: Coding, optionCoding: Coding): boole
     return coding.code === optionCoding.code;
   }
 
-  // display-only codings are legal in answerOption; when neither side carries a
-  // code, fall back to display equality rather than treating undefined === undefined
-  // as a match
+  // display-only codings are legal in answerOption; match them by display
   if (!coding.code && !optionCoding.code) {
     return Boolean(coding.display) && coding.display === optionCoding.display;
   }
