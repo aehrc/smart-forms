@@ -80,13 +80,26 @@ export function findInAnswerOptions(
  * Check that a non-string answer value is a Coding, and not another complex type
  * carrying a "code" property such as a Quantity.
  */
-function valueIsCoding(value: Coding): value is Coding {
+// Element properties (id, extension) plus everything a Coding can carry
+const CODING_PROPERTIES = new Set([
+  'id',
+  'extension',
+  'system',
+  'version',
+  'code',
+  'display',
+  'userSelected'
+]);
+
+export function valueIsCoding(value: unknown): value is Coding {
+  // An allowlist rather than excluding known Quantity properties: other code-bearing
+  // FHIR types (e.g. a value-less Quantity carrying only system/code/comparator) must
+  // not pass as Codings just because the excluded keys happen to be absent.
   return (
     typeof value === 'object' &&
     value !== null &&
-    typeof value.code === 'string' &&
-    !('value' in value) &&
-    !('unit' in value)
+    typeof (value as Coding).code === 'string' &&
+    Object.keys(value).every((key) => CODING_PROPERTIES.has(key))
   );
 }
 

@@ -20,7 +20,7 @@ import type {
   QuestionnaireItemInitial,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
-import { findInAnswerOptions } from './answerOption';
+import { findInAnswerOptions, valueIsCoding } from './answerOption';
 import { checkIsDateTime, checkIsTime, convertDateTimeToDate } from './constructResponse';
 import { getRelevantCodingProperties } from './codingProperties';
 
@@ -117,9 +117,9 @@ export function parseValueToAnswer(
     return { valueQuantity: value };
   }
 
-  // A Coding may legally omit its system; require a code and exclude Quantity-shaped
-  // objects, which also carry a `code` property
-  if (typeof value === 'object' && value.code && !('value' in value) && !('unit' in value)) {
+  // A Coding may legally omit its system; valueIsCoding requires a code and rejects
+  // any object carrying non-Coding properties (e.g. a value-less Quantity)
+  if (valueIsCoding(value)) {
     return {
       valueCoding: getRelevantCodingProperties(value)
     };

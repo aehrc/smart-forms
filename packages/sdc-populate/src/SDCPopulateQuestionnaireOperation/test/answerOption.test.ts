@@ -126,3 +126,24 @@ describe('findInAnswerOptions zero-valued integer options', () => {
     expect(findInAnswerOptions(options, '5')).toEqual({ valueInteger: 5 });
   });
 });
+
+describe('findInAnswerOptions rejects non-Coding code-bearing objects', () => {
+  it('does not match a value-less Quantity against a coding option by code', () => {
+    const options = [{ valueCoding: { code: 'mg', display: 'milligram' } }];
+    const quantityLike = {
+      system: 'http://unitsofmeasure.org',
+      code: 'mg',
+      comparator: '<'
+    };
+
+    expect(findInAnswerOptions(options, quantityLike as never)).toBeUndefined();
+  });
+
+  it('still matches a genuine systemless coding by code', () => {
+    const options = [{ valueCoding: { system: 'sys', code: 'mg', display: 'milligram' } }];
+
+    expect(findInAnswerOptions(options, { code: 'mg' })).toEqual({
+      valueCoding: { system: 'sys', code: 'mg', display: 'milligram' }
+    });
+  });
+});
