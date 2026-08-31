@@ -41,28 +41,26 @@ export function getGroupTableItemsToUpdate(tableRows: GroupTableRowModel[], sele
 }
 
 /**
- * Get the index of a rendered gtable row within the QuestionnaireResponse, or null if the row has no
- * QuestionnaireResponse counterpart.
+ * Get the QuestionnaireResponse index of every rendered gtable row, in rendered order. A row with no
+ * QuestionnaireResponse counterpart gets `null`.
  *
  * Rows that are unselected or still empty are dropped by {@link getGroupTableItemsToUpdate}, so a
  * row's rendered index is not its index in the QuestionnaireResponse. Validation walks the
- * QuestionnaireResponse, so instance-scoped error keys must use this index instead.
+ * QuestionnaireResponse, so instance-scoped error keys must use these indices instead.
  *
- * Keep the filter here in sync with {@link getGroupTableItemsToUpdate}.
+ * Computed for the whole table in a single pass over a Set of selected ids, so callers rendering n
+ * rows stay linear rather than re-scanning the preceding rows once per row.
+ *
+ * Keep the selection/emptiness test here in sync with {@link getGroupTableItemsToUpdate}.
  *
  * @author Clinton Gillespie
  */
-export function getQrGroupTableRowIndex(
+export function getQrGroupTableRowIndexes(
   tableRows: GroupTableRowModel[],
-  selectedIds: string[],
-  rowIndex: number
-): number | null {
-  const row = tableRows[rowIndex];
-  if (!row || !row.qrItem || !selectedIds.includes(row.id)) {
-    return null;
-  }
+  selectedIds: string[]
+): (number | null)[] {
+  const selectedIdSet = new Set(selectedIds);
+  let qrIndex = 0;
 
-  return tableRows
-    .slice(0, rowIndex)
-    .filter((precedingRow) => selectedIds.includes(precedingRow.id) && precedingRow.qrItem).length;
+  return tableRows.map((row) => (selectedIdSet.has(row.id) && row.qrItem ? qrIndex++ : null));
 }

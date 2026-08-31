@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { RepeatGroupContainerStack } from '../RepeatItem/RepeatItem.styles';
 import Box from '@mui/material/Box';
 import GroupItem from '../GroupItem/GroupItem';
@@ -62,8 +62,13 @@ function RepeatGroupItem(props: RepeatGroupItemProps) {
   // Append this instance's index to the enclosing repeat instance path so that descendant items look
   // up their own instance-scoped validation errors (see useValidationFeedback). Uses the
   // QuestionnaireResponse index, not repeatGroupIndex, because that is what validation walks.
+  // Memoised to keep the provided context value referentially stable, so that memoising a descendant
+  // item in future actually lets it bail out of a re-render.
   const parentRepeatInstancePath = useContext(RepeatGroupInstanceContext);
-  const repeatInstancePath = appendRepeatInstanceIndex(parentRepeatInstancePath, qrInstanceIndex);
+  const repeatInstancePath = useMemo(
+    () => appendRepeatInstanceIndex(parentRepeatInstancePath, qrInstanceIndex),
+    [parentRepeatInstancePath, qrInstanceIndex]
+  );
 
   return (
     <RepeatGroupInstanceContext.Provider value={repeatInstancePath}>

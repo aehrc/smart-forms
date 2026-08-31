@@ -38,7 +38,7 @@ export const UNMATCHABLE_REPEAT_INSTANCE_INDEX = -1;
  *
  * `qrInstanceIndex` must be the instance's index within the **QuestionnaireResponse**, not its index
  * in the rendered list — the two differ whenever an earlier instance is absent from the QR (see
- * {@link getQrRepeatGroupInstanceIndex} and {@link getQrGroupTableRowIndex}). Pass `null` when the
+ * {@link getQrRepeatGroupInstanceIndexes} and {@link getQrGroupTableRowIndexes}). Pass `null` when the
  * instance has no QR counterpart at all.
  *
  * @author Clinton Gillespie

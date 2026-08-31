@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+import { useMemo } from 'react';
 import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithParentIsRepeatGroupAttribute,
@@ -39,7 +40,7 @@ import GroupHeading from '../GroupItem/GroupHeading';
 import { itemHasLabelHeadingContent } from '../../../utils/itemTextToDisplay';
 import { isGroupAddItemButtonHidden } from '../../../utils/extensions';
 import GroupAccordion from '../GroupItem/GroupAccordion';
-import { getQrRepeatGroupInstanceIndex } from '../../../utils/repeatGroup';
+import { getQrRepeatGroupInstanceIndexes } from '../../../utils/repeatGroup';
 
 interface RepeatGroupViewProps
   extends PropsWithParentIsReadOnlyAttribute,
@@ -76,6 +77,13 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
 
   const showGroupHeading = itemHasLabelHeadingContent(qItem);
 
+  // Each instance's index within the QuestionnaireResponse, computed once for the whole list rather
+  // than re-derived per instance, so rendering n instances stays linear.
+  const qrInstanceIndexes = useMemo(
+    () => getQrRepeatGroupInstanceIndexes(repeatGroups),
+    [repeatGroups]
+  );
+
   const groupCollapsibleValue = getGroupCollapsible(qItem);
   if (groupCollapsibleValue) {
     const isDefaultOpen = groupCollapsibleValue === 'default-open';
@@ -111,7 +119,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
                   <RepeatGroupItem
                     qItem={qItem}
                     repeatGroupIndex={index}
-                    qrInstanceIndex={getQrRepeatGroupInstanceIndex(repeatGroups, index)}
+                    qrInstanceIndex={qrInstanceIndexes[index]}
                     answeredQrItem={answeredQrItem}
                     nullableQrItem={nullableQrItem}
                     numOfRepeatGroups={repeatGroups.length}
@@ -162,7 +170,7 @@ function RepeatGroupView(props: RepeatGroupViewProps) {
                 <RepeatGroupItem
                   qItem={qItem}
                   repeatGroupIndex={index}
-                  qrInstanceIndex={getQrRepeatGroupInstanceIndex(repeatGroups, index)}
+                  qrInstanceIndex={qrInstanceIndexes[index]}
                   answeredQrItem={answeredQrItem}
                   nullableQrItem={nullableQrItem}
                   numOfRepeatGroups={repeatGroups.length}

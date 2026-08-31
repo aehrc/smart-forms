@@ -18,27 +18,25 @@
 import type { RepeatGroupSingleModel } from '../interfaces/repeatGroup.interface';
 
 /**
- * Get the index of a rendered repeating group instance within the QuestionnaireResponse, or null if
- * the instance has no QuestionnaireResponse counterpart.
+ * Get the QuestionnaireResponse index of every rendered repeating group instance, in rendered order.
+ * An instance with no QuestionnaireResponse counterpart gets `null`.
  *
  * Instances that are still empty (added via "Add Item" but never filled in) hold a null `qrItem` and
  * are dropped when RepeatGroup builds its QuestionnaireResponse items, so an instance's rendered
  * index is not its index in the QuestionnaireResponse. Validation walks the QuestionnaireResponse, so
- * instance-scoped error keys must use this index instead.
+ * instance-scoped error keys must use these indices instead.
+ *
+ * Computed for the whole list in a single pass, so callers rendering n instances stay linear rather
+ * than re-scanning the preceding instances once per instance.
  *
  * Keep this in sync with how RepeatGroup projects `repeatGroups` into `onQrRepeatGroupChange`.
  *
  * @author Clinton Gillespie
  */
-export function getQrRepeatGroupInstanceIndex(
-  repeatGroups: RepeatGroupSingleModel[],
-  instanceIndex: number
-): number | null {
-  const repeatGroup = repeatGroups[instanceIndex];
-  if (!repeatGroup || !repeatGroup.qrItem) {
-    return null;
-  }
+export function getQrRepeatGroupInstanceIndexes(
+  repeatGroups: RepeatGroupSingleModel[]
+): (number | null)[] {
+  let qrIndex = 0;
 
-  return repeatGroups.slice(0, instanceIndex).filter((precedingGroup) => precedingGroup.qrItem)
-    .length;
+  return repeatGroups.map((repeatGroup) => (repeatGroup.qrItem ? qrIndex++ : null));
 }

@@ -18,14 +18,14 @@
  */
 
 import type { RepeatGroupSingleModel } from '../../interfaces/repeatGroup.interface';
-import { getQrRepeatGroupInstanceIndex } from '../../utils/repeatGroup';
+import { getQrRepeatGroupInstanceIndexes } from '../../utils/repeatGroup';
 
 /** Mirrors how RepeatGroup projects its instances into onQrRepeatGroupChange */
 function toQrItems(repeatGroups: RepeatGroupSingleModel[]) {
   return repeatGroups.flatMap((singleGroup) => (singleGroup.qrItem ? [singleGroup.qrItem] : []));
 }
 
-describe('getQrRepeatGroupInstanceIndex', () => {
+describe('getQrRepeatGroupInstanceIndexes', () => {
   const filledInstance = (id: string): RepeatGroupSingleModel => ({
     id,
     qrItem: { linkId: id, item: [] }
@@ -42,9 +42,12 @@ describe('getQrRepeatGroupInstanceIndex', () => {
     ];
 
     const qrItems = toQrItems(repeatGroups);
+    const qrInstanceIndexes = getQrRepeatGroupInstanceIndexes(repeatGroups);
+
+    expect(qrInstanceIndexes).toHaveLength(repeatGroups.length);
 
     repeatGroups.forEach((repeatGroup, index) => {
-      const qrInstanceIndex = getQrRepeatGroupInstanceIndex(repeatGroups, index);
+      const qrInstanceIndex = qrInstanceIndexes[index];
 
       if (qrInstanceIndex === null) {
         expect(repeatGroup.qrItem).toBeNull();
@@ -55,18 +58,17 @@ describe('getQrRepeatGroupInstanceIndex', () => {
     });
 
     // The regression case from #1985: a blank first instance shifts the QR index of every later one
-    expect(getQrRepeatGroupInstanceIndex(repeatGroups, 1)).toBe(0);
-    expect(getQrRepeatGroupInstanceIndex(repeatGroups, 3)).toBe(1);
+    expect(qrInstanceIndexes).toEqual([null, 0, null, 1]);
   });
 
   it('returns null for an instance that is not in the QuestionnaireResponse', () => {
     const repeatGroups = [emptyInstance('instance0'), filledInstance('instance1')];
 
-    expect(getQrRepeatGroupInstanceIndex(repeatGroups, 0)).toBeNull();
+    expect(getQrRepeatGroupInstanceIndexes(repeatGroups)).toEqual([null, 0]);
   });
 
-  it('returns null for an out-of-range index', () => {
-    expect(getQrRepeatGroupInstanceIndex([filledInstance('instance0')], 5)).toBeNull();
+  it('returns an empty array when there are no instances', () => {
+    expect(getQrRepeatGroupInstanceIndexes([])).toEqual([]);
   });
 
   it('is the rendered index when no earlier instance is empty', () => {
@@ -76,8 +78,6 @@ describe('getQrRepeatGroupInstanceIndex', () => {
       filledInstance('instance2')
     ];
 
-    expect(getQrRepeatGroupInstanceIndex(repeatGroups, 0)).toBe(0);
-    expect(getQrRepeatGroupInstanceIndex(repeatGroups, 1)).toBe(1);
-    expect(getQrRepeatGroupInstanceIndex(repeatGroups, 2)).toBe(2);
+    expect(getQrRepeatGroupInstanceIndexes(repeatGroups)).toEqual([0, 1, 2]);
   });
 });
