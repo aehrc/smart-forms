@@ -108,6 +108,7 @@ function ChoiceAutocompleteItem(props: BaseItemProps) {
         qItem={qItem}
         options={options}
         valueCoding={valueCoding ?? null}
+        searchTerm={debouncedInput}
         loading={loading}
         feedback={feedback}
         readOnly={readOnly}
@@ -136,6 +137,7 @@ function ChoiceAutocompleteItem(props: BaseItemProps) {
             qItem={qItem}
             options={options}
             valueCoding={valueCoding ?? null}
+            searchTerm={debouncedInput}
             loading={loading}
             feedback={feedback}
             readOnly={readOnly}

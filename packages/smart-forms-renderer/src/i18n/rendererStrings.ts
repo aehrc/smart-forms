@@ -101,6 +101,8 @@ export interface RendererStrings {
   optionsFetchError: string;
   /** Autocomplete loading text while options are being fetched. */
   fetchingResults: string;
+  /** Autocomplete text shown before enough characters have been typed to search. */
+  autocompleteTypeToSearch: string;
   /** Fallback shown when a form body fails to load. */
   unableToLoadForm: string;
   /** Fallback shown when an unsupported group item is encountered. */
@@ -218,6 +220,7 @@ export const defaultRendererStrings: RendererStrings = {
   optionsUnavailable: 'No options available.',
   optionsFetchError: 'Unable to fetch options from the questionnaire or launch context',
   fetchingResults: 'Fetching results...',
+  autocompleteTypeToSearch: 'Type to search...',
   unableToLoadForm: 'Unable to load form',
   somethingWentWrong: 'Something went wrong here',
   terminologyServerFetchError:

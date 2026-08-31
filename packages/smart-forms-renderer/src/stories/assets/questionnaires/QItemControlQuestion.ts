@@ -71,6 +71,32 @@ export const qOpenChoiceAutocomplete: Questionnaire = {
   ]
 };
 
+export const qChoiceAutocomplete: Questionnaire = {
+  resourceType: 'Questionnaire',
+  status: 'draft',
+  item: [
+    {
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+          valueCodeableConcept: {
+            coding: [
+              {
+                system: 'http://hl7.org/fhir/questionnaire-item-control',
+                code: 'autocomplete'
+              }
+            ]
+          }
+        }
+      ],
+      linkId: 'gender',
+      text: 'Gender',
+      type: 'choice',
+      answerValueSet: 'http://hl7.org/fhir/ValueSet/administrative-gender'
+    }
+  ]
+};
+
 export const qChoiceDropDownAnswerOption: Questionnaire = {
   resourceType: 'Questionnaire',
   status: 'draft',
