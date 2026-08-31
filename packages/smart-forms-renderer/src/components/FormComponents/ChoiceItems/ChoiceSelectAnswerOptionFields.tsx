@@ -26,7 +26,11 @@ import type {
 } from '../../../interfaces/renderProps.interface';
 import { useRendererConfigStore } from '../../../stores';
 import { compareAnswerOptionValue, isOptionDisabled } from '../../../utils/choice';
-import { getAnswerOptionLabel, isDisplayUnavailable } from '../../../utils/openChoice';
+import {
+  getAnswerOptionLabel,
+  includeAnsweredOptions,
+  isDisplayUnavailable
+} from '../../../utils/openChoice';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import { StandardTextField } from '../Textfield.styles';
@@ -66,9 +70,13 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
   const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
-  // Hide options whose display couldn't be resolved so raw codes are never shown in the dropdown.
+  // Hide options whose display couldn't be resolved so raw codes are never shown in the dropdown,
+  // but never hide the currently selected answer - it stays visible using its originally-recorded
+  // display (or a raw code as a last resort) instead of desyncing from the dropdown entirely.
+  const visibleOptions = includeAnsweredOptions(options, valueSelect ? [valueSelect] : []);
+  // Warn whenever anything couldn't be freshly resolved, even if it's still shown via fallback -
+  // a merged-back answer can look fine on screen while quietly relying on a stale/raw-code label.
   const hasUnavailableDisplayOptions = options.some(isDisplayUnavailable);
-  const visibleOptions = options.filter((option) => !isDisplayUnavailable(option));
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 

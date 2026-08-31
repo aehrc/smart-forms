@@ -15,14 +15,19 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import type {
+  QuestionnaireItem,
+  QuestionnaireItemAnswerOption,
+  QuestionnaireResponseItemAnswer
+} from 'fhir/r4';
 import { useMemo } from 'react';
 import type {
   PropsWithIsRepeatedAttribute,
   PropsWithIsTabledAttribute,
   PropsWithRenderingExtensionsAttribute
 } from '../../../interfaces/renderProps.interface';
-import { findInAnswerOptions } from '../../../utils/choice';
+import { compareAnswerOptionValue } from '../../../utils/choice';
+import { withFallbackDisplay } from '../../../utils/openChoice';
 import { FullWidthFormComponentBox } from '../../Box.styles';
 import ItemFieldGrid from '../ItemParts/ItemFieldGrid';
 import ItemLabel from '../ItemParts/ItemLabel';
@@ -34,7 +39,7 @@ interface ChoiceSelectAnswerOptionViewProps
     PropsWithRenderingExtensionsAttribute {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
-  valueChoice: string | null;
+  qrAnswer: QuestionnaireResponseItemAnswer | null;
   feedback: string;
   readOnly: boolean;
   expressionUpdated: boolean;
@@ -48,7 +53,7 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
   const {
     qItem,
     options,
-    valueChoice,
+    qrAnswer,
     feedback,
     isRepeated,
     isTabled,
@@ -61,10 +66,14 @@ function ChoiceSelectAnswerOptionView(props: ChoiceSelectAnswerOptionViewProps) 
     onSelectChange
   } = props;
 
-  const valueSelect: QuestionnaireItemAnswerOption | null = useMemo(
-    () => findInAnswerOptions(options, valueChoice ?? '') ?? null,
-    [options, valueChoice]
-  );
+  const valueSelect: QuestionnaireItemAnswerOption | null = useMemo(() => {
+    if (!qrAnswer) {
+      return null;
+    }
+
+    const liveValue = options.find((option) => compareAnswerOptionValue(option, qrAnswer)) ?? null;
+    return liveValue ? withFallbackDisplay(liveValue, qrAnswer.valueCoding) : null;
+  }, [options, qrAnswer]);
 
   if (isRepeated) {
     return (

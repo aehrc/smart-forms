@@ -15,9 +15,14 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import type {
+  QuestionnaireItem,
+  QuestionnaireItemAnswerOption,
+  QuestionnaireResponseItemAnswer
+} from 'fhir/r4';
 import { useRendererConfigStore } from '../../../stores';
-import { isDisplayUnavailable } from '../../../utils/openChoice';
+import { getAnswerValueString } from '../../../utils/choice';
+import { includeAnsweredOptions, isDisplayUnavailable } from '../../../utils/openChoice';
 import { StyledWarningTypography } from '../Item.styles';
 import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
 import RadioFormGroup from '../ItemParts/RadioFormGroup';
@@ -25,7 +30,7 @@ import RadioFormGroup from '../ItemParts/RadioFormGroup';
 interface ChoiceRadioAnswerOptionFieldsProps {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
-  valueRadio: string | null;
+  qrAnswer: QuestionnaireResponseItemAnswer | null;
   feedback: string;
   readOnly: boolean;
   expressionUpdated: boolean;
@@ -40,7 +45,7 @@ function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps
   const {
     qItem,
     options,
-    valueRadio,
+    qrAnswer,
     feedback,
     readOnly,
     expressionUpdated,
@@ -53,9 +58,16 @@ function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps
 
   const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
-  // Hide options whose display couldn't be resolved so raw codes are never shown in the list.
+  // Match string for <RadioGroup value={...}>
+  const valueRadio = qrAnswer ? (getAnswerValueString(qrAnswer) ?? '') : '';
+
+  // Hide options whose display couldn't be resolved so raw codes are never shown in the list,
+  // but never hide the currently selected answer - it stays visible using its originally-recorded
+  // display (or a raw code as a last resort) instead of vanishing from the radio group entirely.
+  const visibleOptions = includeAnsweredOptions(options, qrAnswer ? [qrAnswer] : []);
+  // Warn whenever anything couldn't be freshly resolved, even if it's still shown via fallback -
+  // a merged-back answer can look fine on screen while quietly relying on a stale/raw-code label.
   const hasUnavailableDisplayOptions = options.some(isDisplayUnavailable);
-  const visibleOptions = options.filter((option) => !isDisplayUnavailable(option));
 
   return (
     <>

@@ -173,7 +173,7 @@ describe('answerOption terminology lookup failure', () => {
       <ChoiceRadioAnswerOptionFields
         qItem={qItem}
         options={options}
-        valueRadio={null}
+        qrAnswer={null}
         feedback=""
         readOnly={false}
         expressionUpdated={false}

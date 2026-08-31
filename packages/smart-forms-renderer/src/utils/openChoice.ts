@@ -16,6 +16,7 @@
  */
 
 import type {
+  Coding,
   QuestionnaireItem,
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItem,
@@ -177,4 +178,60 @@ export function getAnswerOptionLabel(option: QuestionnaireItemAnswerOption | str
 // choice/open-choice dropdowns rather than falling back to showing the code.
 export function isDisplayUnavailable(option: QuestionnaireItemAnswerOption): boolean {
   return !!(option.valueCoding && !option.valueCoding.display);
+}
+
+// Prefer a freshly-resolved display; if the live lookup couldn't resolve one, fall back to
+// whatever display was captured on the answer when it was originally recorded, rather than
+// losing the label entirely or leaking a raw code for an answer the user already gave.
+export function withFallbackDisplay(
+  option: QuestionnaireItemAnswerOption,
+  fallbackCoding: Coding | undefined
+): QuestionnaireItemAnswerOption {
+  if (!option.valueCoding || option.valueCoding.display || !fallbackCoding?.display) {
+    return option;
+  }
+
+  return {
+    ...option,
+    valueCoding: { ...option.valueCoding, display: fallbackCoding.display }
+  };
+}
+
+// Make sure an already-answered coded option is always represented, even if its display
+// couldn't be resolved this session - only options the user hasn't already picked should ever
+// be hidden by isDisplayUnavailable.
+export function includeAnsweredOptions(
+  allOptions: QuestionnaireItemAnswerOption[],
+  answers: Array<{ valueCoding?: Coding }>
+): QuestionnaireItemAnswerOption[] {
+  const visible = allOptions.filter((option) => !isDisplayUnavailable(option));
+
+  for (const answer of answers) {
+    const code = answer.valueCoding?.code;
+    if (!code) {
+      continue;
+    }
+
+    const alreadyVisible = visible.some(
+      (option) =>
+        option.valueCoding?.system === answer.valueCoding?.system &&
+        option.valueCoding?.code === code
+    );
+    if (alreadyVisible) {
+      continue;
+    }
+
+    const definitionOption = allOptions.find(
+      (option) =>
+        option.valueCoding?.system === answer.valueCoding?.system &&
+        option.valueCoding?.code === code
+    );
+    if (!definitionOption?.valueCoding) {
+      continue;
+    }
+
+    visible.push(withFallbackDisplay(definitionOption, answer.valueCoding));
+  }
+
+  return visible;
 }

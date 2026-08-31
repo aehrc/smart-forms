@@ -157,6 +157,20 @@ export function getChoiceControlType(qItem: QuestionnaireItem) {
   return ChoiceItemControl.Select;
 }
 
+// Collapse a single answer (coding/string/integer) down to the plain string used to match it
+// against a rendered option's value - e.g. a coding prefers its code, falling back to display.
+export function getAnswerValueString(answer: QuestionnaireResponseItemAnswer): string | null {
+  if (answer.valueCoding) {
+    return answer.valueCoding.code ?? answer.valueCoding.display ?? '';
+  } else if (answer.valueString !== undefined) {
+    return answer.valueString;
+  } else if (answer.valueInteger) {
+    return answer.valueInteger.toString();
+  }
+
+  return null;
+}
+
 /**
  * Find and return string value from selected answer
  *
@@ -167,13 +181,9 @@ export function getQrChoiceValue(
   returnNull?: boolean
 ): string | null {
   if (qrChoice.answer && qrChoice.answer.length > 0) {
-    const answer = qrChoice['answer'][0];
-    if (answer['valueCoding']) {
-      return answer.valueCoding.code ?? answer.valueCoding.display ?? '';
-    } else if (answer['valueString'] !== undefined) {
-      return answer.valueString;
-    } else if (answer['valueInteger']) {
-      return answer.valueInteger.toString();
+    const value = getAnswerValueString(qrChoice.answer[0]);
+    if (value !== null) {
+      return value;
     }
   }
 
