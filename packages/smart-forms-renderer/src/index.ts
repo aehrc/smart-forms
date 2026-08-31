@@ -63,7 +63,7 @@ export {
 } from './stores';
 
 // hooks exports
-export type { UseResponsiveProps } from './hooks';
+export type { UseResponsiveProps, FeedbackSeverity, ValidationFeedbackWithSeverity } from './hooks';
 export {
   useHidden,
   useReadOnly,
@@ -71,6 +71,7 @@ export {
   useRendererQueryClient,
   useRenderingExtensions,
   useValidationFeedback,
+  useValidationFeedbackSeverity,
   useValueSetCodings,
   useDisplayCqfAndCalculatedExpression,
   useResponsive
