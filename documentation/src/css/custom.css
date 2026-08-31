@@ -4,6 +4,9 @@
  * work well for content-centric websites.
  */
 
+/* Self-hosted Inter, the typeface requested by the renderer theme in live code blocks. */
+@import '@fontsource/inter/index.css';
+
 /* You can override the default Infima variables here. */
 :root {
   --ifm-color-primary: #1976d2;
