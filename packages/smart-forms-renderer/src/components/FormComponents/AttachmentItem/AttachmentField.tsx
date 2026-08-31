@@ -61,6 +61,7 @@ function AttachmentField(props: AttachmentFieldProps) {
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const readOnlyTextColor = readOnlyVisualStyle === 'disabled' ? 'text.disabled' : 'text.secondary';
 
@@ -73,7 +74,7 @@ function AttachmentField(props: AttachmentFieldProps) {
       <div
         role="group"
         {...(!isTabled && { 'aria-labelledby': `label-${linkId}` })}
-        {...(isTabled && { 'aria-label': itemText ?? 'Unnamed attachment field' })}
+        {...(isTabled && { 'aria-label': itemText ?? rendererStrings.unnamedAttachment })}
         {...(instructionsId && { 'aria-describedby': instructionsId })}>
         <Stack rowGap={1} id={itemType + '-' + linkId}>
           <Typography

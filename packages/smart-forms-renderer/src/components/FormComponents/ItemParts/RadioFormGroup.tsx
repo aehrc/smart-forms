@@ -45,6 +45,7 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const inputsFlexGrow = useRendererConfigStore.use.inputsFlexGrow();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const orientation = getChoiceOrientation(qItem) ?? ChoiceItemOrientation.Vertical;
 
@@ -69,7 +70,7 @@ function RadioFormGroup(props: ChoiceRadioGroupProps) {
                 ? `label-${qItem.linkId} ${instructionsId}`
                 : `label-${qItem.linkId}`
             })}
-            {...(isTabled && { 'aria-label': qItem.text ?? 'Unnamed radio group' })}
+            {...(isTabled && { 'aria-label': qItem.text ?? rendererStrings.unnamedRadioGroup })}
             {...(isTabled && instructionsId && { 'aria-describedby': instructionsId })}
             aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
             row={orientation === ChoiceItemOrientation.Horizontal}

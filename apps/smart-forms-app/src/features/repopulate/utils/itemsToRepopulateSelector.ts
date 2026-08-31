@@ -251,22 +251,22 @@ export function getFilteredItemsToRepopulate(
           filteredItem.serverQRItems = [];
         }
 
+        // Fill unselected slots with current values first, then drop accepted deletions in a
+        // separate pass. Doing both in a single loop corrupts the result: splicing shifts later
+        // items into already-visited indices (so a deletion marker can survive) and re-opens
+        // their vacated tail slots to be re-filled from current values (resurrecting deleted items).
         for (let i = 0; i < maxNumberOfItems; i++) {
           if (filteredItem.serverQRItems[i] === undefined && originalItem.currentQRItems[i]) {
             filteredItem.serverQRItems[i] = originalItem.currentQRItems[i];
           }
-
-          // If the original item is marked as deleted (has the https://smartforms.csiro.au/custom-functionality/repopulation/mark-as-deleted extension), remove the deleted item
-          if (filteredItem.serverQRItems[i]) {
-            const hasDeletedExtension = itemHasMarkAsDeletedExtension(
-              filteredItem.serverQRItems[i]
-            );
-
-            if (hasDeletedExtension) {
-              filteredItem.serverQRItems.splice(i, 1);
-            }
-          }
         }
+
+        // Remove items accepted as deletions (marked with the https://smartforms.csiro.au/custom-functionality/repopulation/mark-as-deleted extension),
+        // so the marker never leaks into the final QuestionnaireResponse. Also drops any holes left in the sparse array.
+        filteredItem.serverQRItems = filteredItem.serverQRItems.filter(
+          (serverQRItem) =>
+            serverQRItem !== undefined && !itemHasMarkAsDeletedExtension(serverQRItem)
+        );
       }
     }
   }

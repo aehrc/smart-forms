@@ -66,6 +66,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
@@ -161,7 +162,7 @@ function ChoiceSelectAnswerOptionFields(props: ChoiceSelectAnswerOptionFieldsPro
                 htmlInput: {
                   ...params.inputProps,
                   ...(isTabled
-                    ? { 'aria-label': qItem.text ?? 'Unnamed choice dropdown' }
+                    ? { 'aria-label': qItem.text ?? rendererStrings.unnamedChoiceDropdown }
                     : { 'aria-labelledby': `label-${qItem.linkId}` }),
                   ...(mergedAriaDescribedBy && { 'aria-describedby': mergedAriaDescribedBy }),
                   role: 'combobox'

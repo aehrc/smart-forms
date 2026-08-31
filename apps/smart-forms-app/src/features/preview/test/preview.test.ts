@@ -23,7 +23,7 @@ import {
 } from '../utils/preview';
 import { QAboriginalTorresStraitIslanderHealthCheck } from '../../../test/data-shared/QAboriginalTorresStraitIslanderHealthCheck.ts';
 import { QRAboriginalTorresStraitIslanderHealthCheck } from '../../../test/data-shared/QRAboriginalTorresStraitIslanderHealthCheck.ts';
-import type { Questionnaire, QuestionnaireResponse } from 'fhir/r4';
+import type { Questionnaire, QuestionnaireItem, QuestionnaireResponse } from 'fhir/r4';
 
 describe('qrToHTML', () => {
   const questionnaire = QAboriginalTorresStraitIslanderHealthCheck;
@@ -50,9 +50,9 @@ describe('qrToHTML', () => {
     const rootDiv = htmlDoc.querySelector('div[xmlns="http://www.w3.org/1999/xhtml"]');
     expect(rootDiv).toBeTruthy();
 
-    const articleElement = htmlDoc.querySelector('article');
-    expect(articleElement).toBeTruthy();
-    expect(articleElement?.getAttribute('style')).toContain('color-scheme');
+    const contentDiv = htmlDoc.querySelector('div[style*="color-scheme"]');
+    expect(contentDiv).toBeTruthy();
+    expect(contentDiv?.getAttribute('style')).toContain('color-scheme');
 
     // Check title rendering
     const h1Element = htmlDoc.querySelector('h1');
@@ -222,7 +222,8 @@ describe('qrToHTML', () => {
     expect(html).toContain('Group Test');
     expect(html).toContain('Personal Information');
     expect(html).toContain('<h2');
-    expect(html).toContain('<section>');
+    expect(html).not.toContain('<section>');
+    expect(html).not.toContain('<article');
   });
 
   // Test with the actual working data to verify repeating item rendering
@@ -234,8 +235,8 @@ describe('qrToHTML', () => {
     const parsedDoc = parser.parseFromString(html, 'text/html');
 
     // Test basic structure using DOM queries
-    const articleElement = parsedDoc.querySelector('article');
-    expect(articleElement).toBeTruthy();
+    const contentDiv = parsedDoc.querySelector('div[style*="color-scheme"]');
+    expect(contentDiv).toBeTruthy();
 
     const h1Element = parsedDoc.querySelector('h1');
     expect(h1Element?.textContent).toMatch(/Aboriginal and Torres Strait Islander Health Check/);
@@ -284,24 +285,18 @@ describe('qrToHTML', () => {
     expect(html.length).toBeGreaterThan(500);
   });
 
-  // Test that sections are created even when content doesn't render
-  it('creates section structure for groups', () => {
+  // Test that group structure uses XHTML-conformant elements (no article/section)
+  it('uses conformant XHTML elements without article or section tags', () => {
     const html = qrToHTML(questionnaire, questionnaireResponse);
 
-    // Parse HTML string into a Document for proper DOM querying
-    const parser = new DOMParser();
-    const sectionDoc = parser.parseFromString(html, 'text/html');
+    // XHTML conformance: article and section are not in the FHIR-allowed XHTML subset
+    expect(html).not.toContain('<article');
+    expect(html).not.toContain('<section>');
+    expect(html).not.toContain('</section>');
 
-    // Check for section elements using DOM querying
-    const sectionElements = sectionDoc.querySelectorAll('section');
-    expect(sectionElements.length).toBeGreaterThan(0);
-
-    // Verify sections are properly nested within article
-    const articleElement = sectionDoc.querySelector('article');
-    expect(articleElement).toBeTruthy();
-
-    const sectionsInArticle = articleElement?.querySelectorAll('section');
-    expect(sectionsInArticle?.length).toBeGreaterThan(0);
+    // Main heading (h1) still renders and the document has structural div wrappers
+    expect(html).toContain('<h1');
+    expect(html).toContain('<div');
   });
 
   // Test various edge cases and error conditions
@@ -501,6 +496,48 @@ describe('answerToString - Direct Unit Tests', () => {
     const answer = { valueInteger: 42 };
     const result = answerToString(answer);
     expect(result).toBe('42');
+  });
+
+  it('handles valueDecimal with unit from qItem', () => {
+    const answer = { valueDecimal: 72.5 };
+    const qItem: QuestionnaireItem = {
+      linkId: 'weight',
+      type: 'decimal',
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+          valueCoding: { system: 'http://unitsofmeasure.org', code: 'kg', display: 'kg' }
+        }
+      ]
+    };
+    const result = answerToString(answer, qItem);
+    expect(result).toBe('72.5 kg');
+  });
+
+  it('handles valueInteger with unit from qItem', () => {
+    const answer = { valueInteger: 170 };
+    const qItem: QuestionnaireItem = {
+      linkId: 'height',
+      type: 'integer',
+      extension: [
+        {
+          url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-unit',
+          valueCoding: { system: 'http://unitsofmeasure.org', code: 'cm', display: 'cm' }
+        }
+      ]
+    };
+    const result = answerToString(answer, qItem);
+    expect(result).toBe('170 cm');
+  });
+
+  it('handles valueDecimal with qItem but no unit extension', () => {
+    const answer = { valueDecimal: 3.14 };
+    const qItem: QuestionnaireItem = {
+      linkId: 'ratio',
+      type: 'decimal'
+    };
+    const result = answerToString(answer, qItem);
+    expect(result).toBe('3.14');
   });
 
   it('handles valueDate', () => {
@@ -749,7 +786,9 @@ describe('renderRepeatGroupHtml - Direct Unit Tests', () => {
     expect(html.length).toBeGreaterThan(0);
   });
 
-  it('handles nested repeat groups with fallback message', () => {
+  it('renders complex repeat groups (group children) as card layout with inner table for simple sub-group', () => {
+    // Outer group has a group-type child → complex → card layout (not a table)
+    // Inner group has only string children → simple → table inside the card
     const qItem = {
       linkId: 'outer-group',
       type: 'group' as const,
@@ -795,27 +834,219 @@ describe('renderRepeatGroupHtml - Direct Unit Tests', () => {
     const html = renderRepeatGroupHtml(qItem, qrItems);
     const htmlDoc = parseHtml(html);
 
-    // Should contain table structure
+    // Outer group is complex (group child) → card layout, no outer table
+    expect(html).not.toMatch(/^<table/);
+
+    // Card: bordered div with one instance
+    const cardMatches = html.match(/border: 1px solid #d1d9e0; border-radius: 6px/g);
+    expect(cardMatches?.length).toBe(1);
+
+    // Inner Group renders as an h4 heading within the card
+    const h4 = htmlDoc.querySelector('h4');
+    expect(h4?.textContent?.trim()).toBe('Inner Group');
+
+    // Inner group is simple (string child) → table with header "Nested Field"
     const table = htmlDoc.querySelector('table');
     expect(table).toBeTruthy();
-
-    // Should have thead and tbody
-    const thead = table?.querySelector('thead');
-    const tbody = table?.querySelector('tbody');
-    expect(thead).toBeTruthy();
-    expect(tbody).toBeTruthy();
-
-    // Should have header for Inner Group
-    const headers = thead?.querySelectorAll('th');
+    const headers = table?.querySelectorAll('th');
     expect(headers?.length).toBe(1);
-    expect(headers?.[0].textContent).toBe('Inner Group');
+    expect(headers?.[0].textContent).toBe('Nested Field');
 
-    // Should have some row in tbody
-    const rows = tbody?.querySelectorAll('tr');
-    expect(rows?.length).toBeGreaterThanOrEqual(1);
+    // Table data is present
+    expect(html).toContain('Nested Value');
 
-    // Function executed successfully
-    expect(html.length).toBeGreaterThan(0);
+    // Exactly one table (no outer table, one inner table)
+    const tableCount = (html.match(/<table/g) ?? []).length;
+    expect(tableCount).toBe(1);
+  });
+
+  it('renders repeating group with mixed group and answer siblings as card layout', () => {
+    // Mirrors the GPCCMP "Problems/Needs" structure: a repeating group whose children
+    // include both plain answer items and nested group items. A table would collapse
+    // these into columns, expanding horizontally; card layout renders each instance as a block.
+    const qItem = {
+      linkId: 'goals-tasks',
+      type: 'group' as const,
+      text: 'Goals and Tasks',
+      repeats: true,
+      item: [
+        {
+          linkId: 'problem-name',
+          type: 'string' as const,
+          text: 'Problem/Need'
+        },
+        {
+          linkId: 'interventions',
+          type: 'group' as const,
+          text: 'Interventions and Actions',
+          repeats: true,
+          item: [
+            {
+              linkId: 'intervention-text',
+              type: 'string' as const,
+              text: 'Intervention'
+            }
+          ]
+        }
+      ]
+    };
+
+    const qrItems = [
+      {
+        linkId: 'goals-tasks',
+        item: [
+          {
+            linkId: 'problem-name',
+            answer: [{ valueString: 'Chronic pain management' }]
+          },
+          {
+            linkId: 'interventions',
+            item: [{ linkId: 'intervention-text', answer: [{ valueString: 'Physio referral' }] }]
+          }
+        ]
+      },
+      {
+        linkId: 'goals-tasks',
+        item: [
+          {
+            linkId: 'problem-name',
+            answer: [{ valueString: 'Diabetes' }]
+          },
+          {
+            linkId: 'interventions',
+            item: [{ linkId: 'intervention-text', answer: [{ valueString: 'Diet plan' }] }]
+          }
+        ]
+      }
+    ];
+
+    const html = renderRepeatGroupHtml(qItem, qrItems);
+
+    // Complex group → card layout, NOT a top-level table
+    expect(html).not.toMatch(/^<table/);
+
+    // Two card divs (one per repeat instance)
+    const cardMatches = html.match(/border: 1px solid #d1d9e0; border-radius: 6px/g);
+    expect(cardMatches?.length).toBe(2);
+
+    // Both problem/need answers appear
+    expect(html).toContain('Chronic pain management');
+    expect(html).toContain('Diabetes');
+
+    // Inner repeating group (interventions, simple) renders as a table
+    expect(html).toContain('<table');
+    expect(html).toContain('Physio referral');
+    expect(html).toContain('Diet plan');
+  });
+
+  it('preserves every answer for a repeating field inside a complex (card) repeat group', () => {
+    // Mirrors the real GPCCMP structure: "Goals and tasks" (plan-goalstasks) is a repeating
+    // group with a group-type child (Interventions), making it "complex" → card layout.
+    // Its "Problems/Needs" sibling is a multi-select open-choice, so a single instance can
+    // have more than one answer — losing all but the first here would be a real clinical gap.
+    const qItem = {
+      linkId: 'goals-tasks',
+      type: 'group' as const,
+      text: 'Goals and Tasks',
+      repeats: true,
+      item: [
+        {
+          linkId: 'problem-name',
+          type: 'open-choice' as const,
+          text: 'Problems/Needs',
+          repeats: true
+        },
+        {
+          linkId: 'interventions',
+          type: 'group' as const,
+          text: 'Interventions and Actions',
+          repeats: true,
+          item: [{ linkId: 'intervention-text', type: 'string' as const, text: 'Intervention' }]
+        }
+      ]
+    };
+
+    const qrItems = [
+      {
+        linkId: 'goals-tasks',
+        item: [
+          {
+            linkId: 'problem-name',
+            answer: [{ valueString: 'Diabetes' }, { valueString: 'Hypertension' }]
+          },
+          {
+            linkId: 'interventions',
+            item: [{ linkId: 'intervention-text', answer: [{ valueString: 'Diet plan' }] }]
+          }
+        ]
+      }
+    ];
+
+    const html = renderRepeatGroupHtml(qItem, qrItems);
+    const htmlDoc = parseHtml(html);
+
+    // Both selected Problems/Needs must appear — not just the first
+    const listItems = Array.from(htmlDoc.querySelectorAll('li')).map((li) => li.textContent);
+    expect(listItems).toEqual(['Diabetes', 'Hypertension']);
+  });
+
+  it('renders a non-repeating nested group as label/value paragraphs, not a table, inside a card', () => {
+    // A plain one-off sub-group (no `repeats`) nested inside a complex repeat group should
+    // render the same way it would anywhere else in the document — heading + label/value pairs —
+    // not get pulled into table/card styling, which is reserved for things that actually repeat.
+    const qItem = {
+      linkId: 'goals-tasks',
+      type: 'group' as const,
+      text: 'Goals and Tasks',
+      repeats: true,
+      item: [
+        {
+          linkId: 'interventions',
+          type: 'group' as const,
+          text: 'Interventions',
+          repeats: true,
+          item: [{ linkId: 'intervention-text', type: 'string' as const, text: 'Intervention' }]
+        },
+        {
+          linkId: 'target',
+          type: 'group' as const,
+          text: 'Target',
+          item: [
+            { linkId: 'target-street', type: 'string' as const, text: 'Street' },
+            { linkId: 'target-city', type: 'string' as const, text: 'City' }
+          ]
+        }
+      ]
+    };
+
+    const qrItems = [
+      {
+        linkId: 'goals-tasks',
+        item: [
+          {
+            linkId: 'interventions',
+            item: [{ linkId: 'intervention-text', answer: [{ valueString: 'Diet plan' }] }]
+          },
+          {
+            linkId: 'target',
+            item: [
+              { linkId: 'target-street', answer: [{ valueString: '123 Main St' }] },
+              { linkId: 'target-city', answer: [{ valueString: 'Springfield' }] }
+            ]
+          }
+        ]
+      }
+    ];
+
+    const html = renderRepeatGroupHtml(qItem, qrItems);
+    const htmlDoc = parseHtml(html);
+
+    // Interventions (repeats: true) still renders as a table
+    expect(htmlDoc.querySelectorAll('table').length).toBe(1);
+
+    // Target (no `repeats`) must NOT produce a second table — just label/value paragraphs
+    const paragraphs = Array.from(htmlDoc.querySelectorAll('p')).map((p) => p.textContent);
+    expect(paragraphs).toEqual(['Street123 Main St', 'CitySpringfield']);
   });
 
   it('handles empty qrItems array', () => {
@@ -995,8 +1226,62 @@ describe('renderRepeatGroupHtml - Direct Unit Tests', () => {
     expect(rows?.length).toBe(1);
 
     const cell = rows?.[0].querySelector('td');
-    // Multiple answers should be processed somehow
-    expect(cell?.textContent?.length).toBeGreaterThanOrEqual(0);
+    // All three answers should be present in the cell, not just the first
+    expect(cell?.innerHTML).toBe('Blue<br>Green<br>Red');
+  });
+
+  it('renders every answer for a repeating column, mirroring GPCCMP allergy manifestations', () => {
+    // Mirrors the GPCCMP "Recorded adverse reaction risks" table: a simple (non-card) repeat
+    // group where one column (Manifestation) is itself repeats:true, e.g. an allergic reaction
+    // with multiple recorded manifestations for the same substance.
+    const qItem = {
+      linkId: 'recordedallergies',
+      type: 'group' as const,
+      text: 'Recorded adverse reaction risks',
+      repeats: true,
+      item: [
+        {
+          linkId: 'substance',
+          type: 'open-choice' as const,
+          text: 'Substance',
+          repeats: false
+        },
+        {
+          linkId: 'manifestation',
+          type: 'open-choice' as const,
+          text: 'Manifestation',
+          repeats: true
+        }
+      ]
+    };
+
+    const qrItems = [
+      {
+        linkId: 'recordedallergies',
+        item: [
+          {
+            linkId: 'substance',
+            answer: [{ valueString: 'Penicillin' }]
+          },
+          {
+            linkId: 'manifestation',
+            answer: [{ valueString: 'Rash' }, { valueString: 'Anaphylaxis' }]
+          }
+        ]
+      }
+    ];
+
+    const html = renderRepeatGroupHtml(qItem, qrItems);
+    const htmlDoc = parseHtml(html);
+
+    const rows = htmlDoc.querySelectorAll('table tbody tr');
+    expect(rows.length).toBe(1);
+
+    const cells = rows[0].querySelectorAll('td');
+    expect(cells[0].textContent).toBe('Penicillin');
+
+    // Both manifestations must appear — losing "Anaphylaxis" here would be a real clinical-safety gap
+    expect(cells[1].innerHTML).toBe('Rash<br>Anaphylaxis');
   });
 
   it('covers nested repeat groups fallback with array structure', () => {

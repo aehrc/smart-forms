@@ -23,9 +23,11 @@ import Box from '@mui/material/Box';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import {
   useQuestionnaireStore,
+  useRendererConfigStore,
   useSmartConfigStore,
   useTerminologyServerStore
 } from '../../../stores';
+import { interpolate } from '../../../i18n';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
 import { getQuestionnaireResponseItem } from '../../../utils/misc';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
@@ -50,6 +52,7 @@ function ItemRepopulateButton(props: ItemRepopulateButtonProps) {
   const fhirContext = useSmartConfigStore.use.fhirContext();
 
   const defaultTerminologyServerUrl = useTerminologyServerStore.use.url();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const sourceQuestionnaire = useQuestionnaireStore.use.sourceQuestionnaire();
 
@@ -116,7 +119,7 @@ function ItemRepopulateButton(props: ItemRepopulateButtonProps) {
   if (repopulationState === 'success') {
     return (
       <Box
-        title="Sync successful"
+        title={rendererStrings.syncSuccessful}
         sx={{
           width: 30,
           height: 30,
@@ -132,7 +135,7 @@ function ItemRepopulateButton(props: ItemRepopulateButtonProps) {
   if (repopulationState === 'error') {
     return (
       <Box
-        title={`Unable to sync item "${qItem.text ?? qItem.linkId}".`}
+        title={interpolate(rendererStrings.syncFailed, { item: `${qItem.text ?? qItem.linkId}` })}
         sx={{
           width: 30,
           height: 30,
@@ -152,7 +155,7 @@ function ItemRepopulateButton(props: ItemRepopulateButtonProps) {
       }}>
       {
         <IconButton
-          title="Sync with server"
+          title={rendererStrings.syncWithServer}
           size="small"
           onClick={handleClick}
           disabled={repopulationState === 'loading'}>

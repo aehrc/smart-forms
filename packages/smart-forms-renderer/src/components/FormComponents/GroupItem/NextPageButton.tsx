@@ -18,6 +18,7 @@
 import React from 'react';
 import { SecondaryFab } from '../Button.styles';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import { useRendererConfigStore } from '../../../stores';
 
 interface NextPageButtonProps {
   isDisabled: boolean;
@@ -27,10 +28,12 @@ interface NextPageButtonProps {
 function NextPageButton(props: NextPageButtonProps) {
   const { isDisabled, onNextPageClick } = props;
 
+  const nextPageLabel = useRendererConfigStore.use.rendererStrings().nextPage;
+
   return (
     <SecondaryFab
       size="small"
-      aria-label="Next page"
+      aria-label={nextPageLabel}
       disabled={isDisabled}
       onClick={onNextPageClick}>
       <ChevronRightIcon fontSize="small" />

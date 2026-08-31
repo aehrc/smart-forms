@@ -31,6 +31,7 @@ function ClearInputButton(props: ClearInputButtonProps) {
   const { buttonShown, readOnly, onClear } = props;
 
   const hideClearButton = useRendererConfigStore.use.hideClearButton();
+  const clearLabel = useRendererConfigStore.use.rendererStrings().clear;
 
   // If "hideClearButton" config is true OR if item.readOnly is true, do not render button
   if (hideClearButton || readOnly) {
@@ -42,15 +43,15 @@ function ClearInputButton(props: ClearInputButtonProps) {
   }
 
   return (
-    <Tooltip role="button" title="Clear">
+    <Tooltip role="button" title={clearLabel}>
       <Button
-        aria-label="Clear"
+        aria-label={clearLabel}
         sx={{
           color: grey['500'],
           '&:hover': { backgroundColor: grey['200'] }
         }}
         onClick={onClear}>
-        Clear
+        {clearLabel}
       </Button>
     </Tooltip>
   );

@@ -15,14 +15,18 @@
  * limitations under the License.
  */
 
+import { useRendererConfigStore } from '../stores';
+
 function useDateNonEmptyValidation(
   dateInput: string,
   timeInput: string,
   dateFeedback: string,
   timeFeedback: string
 ): string {
+  const dateTimeDateRequired = useRendererConfigStore.use.rendererStrings().dateTimeDateRequired;
+
   if (!dateFeedback && !timeFeedback && timeInput && dateInput === '') {
-    return 'Date is required';
+    return dateTimeDateRequired;
   }
 
   return dateFeedback;

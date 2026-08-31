@@ -17,12 +17,12 @@
 
 import {
   getQuantityUnit,
-  getTextDisplayFlyover,
   getTextDisplayInstructions,
   getTextDisplayPrompt,
   getTextDisplayUnit,
   isItemRepopulatable
 } from '../utils/extensions';
+import { getTextDisplayFlyover } from './useParseXhtml';
 import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
 import type { JSX } from 'react';

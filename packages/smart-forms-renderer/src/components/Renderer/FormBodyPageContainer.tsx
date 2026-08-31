@@ -8,7 +8,8 @@ import type {
   PropsWithParentIsReadOnlyAttribute,
   PropsWithQrItemChangeHandler
 } from '../../interfaces/renderProps.interface';
-import { useQuestionnaireStore } from '../../stores';
+import { useQuestionnaireStore, useRendererConfigStore } from '../../stores';
+import { interpolate } from '../../i18n';
 import { getQrItemsIndex, mapQItemsIndex } from '../../utils/mapItem';
 import { createEmptyQrGroup, updateQrItemsInGroup } from '../../utils/qrItem';
 
@@ -31,6 +32,7 @@ function FormBodyPageContainer(props: FormBodyPageContainerProps) {
 
   const pages = useQuestionnaireStore.use.pages();
   const currentPage = useQuestionnaireStore.use.currentPageIndex();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const indexMap: Record<string, number> = useMemo(
     () => mapQItemsIndex(topLevelQItem),
@@ -48,7 +50,7 @@ function FormBodyPageContainer(props: FormBodyPageContainerProps) {
   }
 
   if (!qItems || !qrItems) {
-    return <>Unable to load form</>;
+    return <>{rendererStrings.unableToLoadForm}</>;
   }
 
   const qrItemsByIndex = getQrItemsIndex(qItems, qrItems, indexMap);
@@ -73,7 +75,11 @@ function FormBodyPageContainer(props: FormBodyPageContainerProps) {
 
             return (
               <TabPanel
-                aria-label={`${qItem.text ?? 'Unnamed'} page`}
+                aria-label={
+                  qItem.text
+                    ? interpolate(rendererStrings.pageAriaLabel, { label: qItem.text })
+                    : rendererStrings.unnamedPage
+                }
                 key={qItem.linkId}
                 sx={{ p: 0 }}
                 value={i.toString()}

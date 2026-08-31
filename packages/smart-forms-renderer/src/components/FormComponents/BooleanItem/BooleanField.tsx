@@ -60,6 +60,7 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const inputsFlexGrow = useRendererConfigStore.use.inputsFlexGrow();
   const reverseBooleanYesNo = useRendererConfigStore.use.reverseBooleanYesNo();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const booleanAsCheckbox = isSpecificItemControl(qItem, 'check-box');
 
@@ -138,14 +139,14 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
                 <>
                   <ChoiceRadioSingle
                     value="false"
-                    label="No"
+                    label={rendererStrings.booleanNoLabel}
                     readOnly={readOnly}
                     disabledViaToggleExpression={false}
                     fullWidth={inputsFlexGrow}
                   />
                   <ChoiceRadioSingle
                     value="true"
-                    label="Yes"
+                    label={rendererStrings.booleanYesLabel}
                     readOnly={readOnly}
                     disabledViaToggleExpression={false}
                     fullWidth={inputsFlexGrow}
@@ -155,14 +156,14 @@ const BooleanField = memo(function BooleanField(props: BooleanFieldProps) {
                 <>
                   <ChoiceRadioSingle
                     value="true"
-                    label="Yes"
+                    label={rendererStrings.booleanYesLabel}
                     readOnly={readOnly}
                     disabledViaToggleExpression={false}
                     fullWidth={inputsFlexGrow}
                   />
                   <ChoiceRadioSingle
                     value="false"
-                    label="No"
+                    label={rendererStrings.booleanNoLabel}
                     readOnly={readOnly}
                     disabledViaToggleExpression={false}
                     fullWidth={inputsFlexGrow}

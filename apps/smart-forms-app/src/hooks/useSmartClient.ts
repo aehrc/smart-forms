@@ -21,6 +21,7 @@ import type { Encounter, FhirResource, Patient, Practitioner, Questionnaire } fr
 import { useSmartConfigStore } from '@aehrc/smart-forms-renderer';
 import type Client from 'fhirclient/lib/Client';
 import type { FhirContext } from '../features/smartAppLaunch/utils/launch.ts';
+import type { ExtraLaunchContext } from '../contexts/SmartClientContext.tsx';
 
 function useSmartClient() {
   const { state, dispatch } = useContext(SmartClientContext);
@@ -93,10 +94,10 @@ function useSmartClient() {
     setResolvedFhirContextReferences(resolvedFhirContextReferences);
   }
 
-  function setDisableWriteBackSelection(disableWriteBackSelection: boolean) {
+  function setExtraLaunchContext(extraLaunchContext: ExtraLaunchContext) {
     dispatch({
-      type: 'SET_DISABLE_WRITEBACK_SELECTION',
-      payload: disableWriteBackSelection
+      type: 'SET_EXTRA_LAUNCH_CONTEXT',
+      payload: extraLaunchContext
     });
   }
 
@@ -107,7 +108,7 @@ function useSmartClient() {
   const launchQuestionnaire = state.launchQuestionnaire;
   const fhirContext = state.fhirContext;
   const tokenReceivedTimestamp = state.tokenReceivedTimestamp;
-  const disableWriteBackSelection = state.disableWriteBackSelection;
+  const extraLaunchContext = state.extraLaunchContext;
 
   return {
     smartClient,
@@ -117,13 +118,13 @@ function useSmartClient() {
     launchQuestionnaire,
     fhirContext,
     tokenReceivedTimestamp,
-    disableWriteBackSelection,
+    extraLaunchContext,
     setSmartClient,
     setCommonLaunchContexts,
     setQuestionnaireLaunchContext,
     setFhirContext: setFhirContextArray,
     setResolvedFhirContextReferences: setResolvedFhirContext,
-    setDisableWriteBackSelection
+    setExtraLaunchContext
   };
 }
 

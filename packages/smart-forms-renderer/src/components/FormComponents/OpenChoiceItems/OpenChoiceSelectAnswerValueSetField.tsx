@@ -30,6 +30,7 @@ import type {
 import type { Coding, QuestionnaireItem } from 'fhir/r4';
 import type { TerminologyError } from '../../../hooks/useValueSetCodings';
 import { useRendererConfigStore } from '../../../stores';
+import { interpolate } from '../../../i18n';
 import DisplayUnitText from '../ItemParts/DisplayUnitText';
 import ExpressionUpdateFadingIcon from '../ItemParts/ExpressionUpdateFadingIcon';
 import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
@@ -71,6 +72,7 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
+  const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 
@@ -121,7 +123,10 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
               htmlInput: {
                 ...params.inputProps,
                 ...(isTabled
-                  ? { 'aria-label': qItem.text ?? `Unnamed ${qItem.type} item` }
+                  ? {
+                      'aria-label':
+                        qItem.text ?? interpolate(rendererStrings.unnamedItem, { type: qItem.type })
+                    }
                   : { 'aria-labelledby': `label-${qItem.linkId}` }),
                 ...(instructionsId && { 'aria-describedby': instructionsId })
               }
@@ -131,8 +136,9 @@ function OpenChoiceSelectAnswerValueSetField(props: OpenChoiceSelectAnswerValueS
       />
       {terminologyError.error ? (
         <Typography>
-          There was an error fetching options from the terminology server for{' '}
-          {terminologyError.answerValueSet}
+          {interpolate(rendererStrings.terminologyServerFetchError, {
+            valueSet: `${terminologyError.answerValueSet}`
+          })}
         </Typography>
       ) : null}
 
