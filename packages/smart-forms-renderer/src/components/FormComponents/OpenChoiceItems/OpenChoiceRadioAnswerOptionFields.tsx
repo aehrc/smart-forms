@@ -15,9 +15,13 @@
  * limitations under the License.
  */
 
-import type { QuestionnaireItem, QuestionnaireItemAnswerOption } from 'fhir/r4';
+import type {
+  QuestionnaireItem,
+  QuestionnaireItemAnswerOption,
+  QuestionnaireResponseItemAnswer
+} from 'fhir/r4';
 import { useRendererConfigStore } from '../../../stores';
-import { isDisplayUnavailable } from '../../../utils/openChoice';
+import { includeAnsweredOptions, isDisplayUnavailable } from '../../../utils/openChoice';
 import { StyledWarningTypography } from '../Item.styles';
 import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
 import RadioButtonWithOpenLabel from '../ItemParts/RadioButtonWithOpenLabel';
@@ -27,6 +31,7 @@ interface OpenChoiceRadioAnswerOptionFieldsProps {
   qItem: QuestionnaireItem;
   options: QuestionnaireItemAnswerOption[];
   valueRadio: string | null;
+  answers: QuestionnaireResponseItemAnswer[];
   openLabelText: string;
   openLabelValue: string | null;
   openLabelSelected: boolean;
@@ -45,6 +50,7 @@ function OpenChoiceRadioAnswerOptionFields(props: OpenChoiceRadioAnswerOptionFie
     qItem,
     options,
     valueRadio,
+    answers,
     openLabelText,
     openLabelValue,
     openLabelSelected,
@@ -60,9 +66,11 @@ function OpenChoiceRadioAnswerOptionFields(props: OpenChoiceRadioAnswerOptionFie
 
   const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
-  // Hide options whose display couldn't be resolved so raw codes are never shown in the list.
+  // Hide options whose display couldn't be resolved so raw codes are never shown in the list,
+  // but never hide the currently selected answer - it stays visible using its originally-recorded
+  // display (or a raw code as a last resort) instead of vanishing from the radio group entirely.
   const hasUnavailableDisplayOptions = options.some(isDisplayUnavailable);
-  const visibleOptions = options.filter((option) => !isDisplayUnavailable(option));
+  const visibleOptions = includeAnsweredOptions(options, answers);
 
   return (
     <>

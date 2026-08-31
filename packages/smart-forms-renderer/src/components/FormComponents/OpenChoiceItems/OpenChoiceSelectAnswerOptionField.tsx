@@ -16,7 +16,11 @@
  */
 
 import React from 'react';
-import { getAnswerOptionLabel, isDisplayUnavailable } from '../../../utils/openChoice';
+import {
+  getAnswerOptionLabel,
+  includeAnsweredOptions,
+  isDisplayUnavailable
+} from '../../../utils/openChoice';
 import { StandardTextField } from '../Textfield.styles';
 import type { AutocompleteChangeReason } from '@mui/material/Autocomplete';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -70,9 +74,14 @@ function OpenChoiceSelectAnswerOptionField(props: OpenChoiceSelectAnswerOptionFi
   const textFieldWidth = useRendererConfigStore.use.textFieldWidth();
   const rendererStrings = useRendererConfigStore.use.rendererStrings();
 
-  // Hide options whose display couldn't be resolved so raw codes are never shown in the dropdown.
+  // Hide options whose display couldn't be resolved so raw codes are never shown in the dropdown,
+  // but never hide the currently selected answer - it stays visible using its originally-recorded
+  // display (or a raw code as a last resort) instead of desyncing from the dropdown entirely.
   const hasUnavailableDisplayOptions = options.some(isDisplayUnavailable);
-  const visibleOptions = options.filter((option) => !isDisplayUnavailable(option));
+  const visibleOptions = includeAnsweredOptions(
+    options,
+    valueSelect && typeof valueSelect !== 'string' ? [valueSelect] : []
+  );
 
   const { displayUnit, displayPrompt, entryFormat } = renderingExtensions;
 

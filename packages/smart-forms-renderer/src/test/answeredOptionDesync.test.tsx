@@ -132,6 +132,39 @@ function buildResponse(display: string): QuestionnaireResponse {
   };
 }
 
+function buildOpenChoiceQuestionnaire(
+  itemControl: 'select' | 'radio-button' | 'check-box'
+): Questionnaire {
+  return {
+    resourceType: 'Questionnaire',
+    status: 'active',
+    item: [
+      {
+        extension:
+          itemControl === 'select'
+            ? undefined
+            : [
+                {
+                  url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+                  valueCodeableConcept: {
+                    coding: [
+                      {
+                        system: 'http://hl7.org/fhir/questionnaire-item-control',
+                        code: itemControl
+                      }
+                    ]
+                  }
+                }
+              ],
+        linkId: 'role',
+        text: 'Role',
+        type: 'open-choice',
+        answerOption: [{ valueCoding: { ...CODE } }]
+      }
+    ]
+  };
+}
+
 describe('previously-answered option survives a failed re-lookup on reload', () => {
   test('Select: shows the originally-recorded display instead of the raw code', async () => {
     mockLookupRejects();
@@ -215,5 +248,64 @@ describe("checkbox stays checked when a code's display text changes (terminology
     expect(checkbox).toBeTruthy();
     expect(checkbox.checked).toBe(true);
     expect(screen.queryByText(warningText)).toBeNull();
+  });
+});
+
+describe('previously-answered open-choice option survives a failed re-lookup on reload', () => {
+  test('OpenChoice Select: shows the originally-recorded display instead of the raw code', async () => {
+    mockLookupRejects();
+
+    render(
+      <SmartFormsRenderer
+        questionnaire={buildOpenChoiceQuestionnaire('select')}
+        questionnaireResponse={buildResponse('Carer')}
+        terminologyServerUrl="http://fake-terminology-server"
+      />
+    );
+
+    await waitFor(() => expect(document.querySelector('[data-linkid="role"]')).toBeTruthy());
+    await waitFor(() => expect(screen.getByText('Carer')).toBeTruthy());
+    expect(screen.queryByText('133932002')).toBeNull();
+    expect(screen.getByText(warningText)).toBeTruthy();
+  });
+
+  test('OpenChoice Radio: the previously-selected option is still rendered and checked', async () => {
+    mockLookupRejects();
+
+    render(
+      <SmartFormsRenderer
+        questionnaire={buildOpenChoiceQuestionnaire('radio-button')}
+        questionnaireResponse={buildResponse('Carer')}
+        terminologyServerUrl="http://fake-terminology-server"
+      />
+    );
+
+    await waitFor(() => expect(document.querySelector('[data-linkid="role"]')).toBeTruthy());
+    await waitFor(() => expect(screen.getByText('Carer')).toBeTruthy());
+
+    const radio = document.querySelector('input[type="radio"]') as HTMLInputElement;
+    expect(radio).toBeTruthy();
+    expect(radio.checked).toBe(true);
+    expect(screen.getByText(warningText)).toBeTruthy();
+  });
+
+  test('OpenChoice Checkbox: the previously-checked option is still rendered and checked', async () => {
+    mockLookupRejects();
+
+    render(
+      <SmartFormsRenderer
+        questionnaire={buildOpenChoiceQuestionnaire('check-box')}
+        questionnaireResponse={buildResponse('Carer')}
+        terminologyServerUrl="http://fake-terminology-server"
+      />
+    );
+
+    await waitFor(() => expect(document.querySelector('[data-linkid="role"]')).toBeTruthy());
+    await waitFor(() => expect(screen.getByText('Carer')).toBeTruthy());
+
+    const checkbox = document.querySelector('input[type="checkbox"]') as HTMLInputElement;
+    expect(checkbox).toBeTruthy();
+    expect(checkbox.checked).toBe(true);
+    expect(screen.getByText(warningText)).toBeTruthy();
   });
 });
