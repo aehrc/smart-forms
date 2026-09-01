@@ -23,6 +23,7 @@ jobs:
           npm run build -w packages/sdc-populate
           npm run build -w packages/sdc-template-extract
           npm run build -w packages/smart-forms-renderer
+          npm run build -w packages/questionnaire-test-toolkit
 
       - name: Build application
         run: npm run build -w apps/smart-forms-app
@@ -245,6 +246,7 @@ jobs:
           npm run build -w packages/sdc-populate
           npm run build -w packages/sdc-template-extract
           npm run build -w packages/smart-forms-renderer
+          npm run build -w packages/questionnaire-test-toolkit
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
