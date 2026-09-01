@@ -1,5 +1,5 @@
-import type { BehavioralTestWrapperProps } from './behavioralTestUtils';
-import { BehavioralTestWrapper } from './behavioralTestUtils';
+import type { BehavioralTestWrapperProps } from '@aehrc/questionnaire-test-toolkit';
+import { BehavioralTestWrapper } from '@aehrc/questionnaire-test-toolkit';
 import aboriginalForm from '../data/resources/Questionnaire/Questionnaire-AboriginalTorresStraitIslanderHealthCheckAssembled-0.4.0.json';
 import type { Questionnaire } from 'fhir/r4';
 

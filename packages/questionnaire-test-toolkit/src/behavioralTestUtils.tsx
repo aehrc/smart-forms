@@ -1,3 +1,20 @@
+/*
+ * Copyright 2025 Commonwealth Scientific and Industrial Research
+ * Organisation (CSIRO) ABN 41 687 119 230.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import {
   BaseRenderer,
   buildForm,
@@ -6,44 +23,38 @@ import {
   useQuestionnaireStore,
   useRendererQueryClient
 } from '@aehrc/smart-forms-renderer';
-
-import type { Patient, Questionnaire } from 'fhir/r4';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { populateQuestionnaire } from '@aehrc/sdc-populate';
 import { useEffect, useState } from 'react';
 import { inAppExtract, type InAppExtractOutput } from '@aehrc/sdc-template-extract';
-import Button from '@mui/material/Button';
+import { terminologyServerUrl } from './behavioralTestConstants';
+import type { BehavioralTestWrapperProps, RequestDefinition } from './behavioralTestTypes';
 
-export const terminologyServerUrl = 'https://r4.ontoserver.csiro.au/fhir';
-
-export type RequestDefinition = {
-  urlPrefix: string;
-  params?: Record<string, string>;
-  responseBody: any;
-};
-
-export interface BehavioralTestWrapperProps {
-  patient?: Patient;
-  requestDefinitions?: RequestDefinition[];
-  onExtractResult?: (extractResult: InAppExtractOutput) => void;
-  questionnaire: Questionnaire;
-}
-
+/**
+ * Mounts a Questionnaire in the renderer for behaviour and integration tests.
+ *
+ * When a patient is supplied, the questionnaire is populated first. Resource requests made by
+ * population are resolved from requestDefinitions, which keeps the test independent of a FHIR
+ * server. The rendered response can be extracted through the Save button exposed by the wrapper.
+ */
 export function BehavioralTestWrapper(props: BehavioralTestWrapperProps) {
   const { questionnaire, patient, requestDefinitions } = props;
   const queryClient = useRendererQueryClient();
-
   const [isPopulating, setIsPopulating] = useState(false);
 
   useEffect(() => {
     const load = async () => {
       setIsPopulating(true);
 
-      if (patient && requestDefinitions) {
+      if (requestDefinitions && !patient) {
+        throw new Error('Patient must be provided when request definitions are provided');
+      }
+
+      if (patient) {
         const result = await populateQuestionnaire({
-          questionnaire: questionnaire,
-          patient: patient,
-          fetchResourceCallback: buildFetchResourceCallback(requestDefinitions),
+          questionnaire,
+          patient,
+          fetchResourceCallback: buildFetchResourceCallback(requestDefinitions ?? []),
           fetchResourceRequestConfig: { sourceServerUrl: 'http://mock.example' }
         });
 
@@ -54,19 +65,18 @@ export function BehavioralTestWrapper(props: BehavioralTestWrapperProps) {
         }
 
         const { populatedResponse, populatedContext } = populateResult;
-
         await buildForm({
-          questionnaire: questionnaire,
+          questionnaire,
           questionnaireResponse: populatedResponse,
           terminologyServerUrl,
           additionalContext: {
-            patient: patient,
+            patient,
             ...populatedContext
           }
         });
       } else {
         await buildForm({
-          questionnaire: questionnaire,
+          questionnaire,
           terminologyServerUrl
         });
       }
@@ -74,7 +84,7 @@ export function BehavioralTestWrapper(props: BehavioralTestWrapperProps) {
       setIsPopulating(false);
     };
 
-    load();
+    void load();
   }, [questionnaire, patient, requestDefinitions]);
 
   if (isPopulating) {
@@ -93,32 +103,30 @@ export function BehavioralTestWrapper(props: BehavioralTestWrapperProps) {
 
 function buildFetchResourceCallback(requestDefinitions: RequestDefinition[]) {
   return async (url: string) => {
-    const requestUrl = url;
-    const [path, queryString] = requestUrl.split('?');
-
+    const [path, queryString] = url.split('?');
     const searchParams = new URLSearchParams(queryString ?? '');
     const paramsObject: Record<string, string> = {};
     searchParams.forEach((value, key) => {
       paramsObject[key] = value;
     });
 
-    const match = requestDefinitions.find((def) => {
-      if (!path.startsWith(def.urlPrefix)) {
+    const match = requestDefinitions.find((definition) => {
+      if (!path.startsWith(definition.urlPrefix)) {
         return false;
       }
 
-      if (!def.params) {
+      if (!definition.params) {
         return true;
       }
 
-      return Object.entries(def.params).every(([key, value]) => paramsObject[key] === value);
+      return Object.entries(definition.params).every(([key, value]) => paramsObject[key] === value);
     });
 
     if (match) {
-      return Promise.resolve(match.responseBody);
+      return match.responseBody;
     }
 
-    return Promise.resolve({});
+    return {};
   };
 }
 
@@ -131,14 +139,14 @@ function SaveControl({
   const q = useQuestionnaireStore.use.sourceQuestionnaire();
 
   return (
-    <Button
+    <button
       data-testid="save-button"
+      type="button"
       onClick={async () => {
         const result = await inAppExtract(qr, q, null);
-
         onExtractResult?.(result);
       }}>
       Save
-    </Button>
+    </button>
   );
 }
