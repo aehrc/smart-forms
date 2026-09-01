@@ -79,7 +79,7 @@ export function findInAnswerOptions(
       }
     }
 
-    if (option.valueString) {
+    if (option.valueString !== undefined) {
       if (valueInString === option.valueString) {
         return {
           valueString: option.valueString
@@ -87,7 +87,7 @@ export function findInAnswerOptions(
       }
     }
 
-    if (option.valueInteger) {
+    if (option.valueInteger !== undefined) {
       if (valueInString === option.valueInteger.toString()) {
         return {
           valueInteger: option.valueInteger
@@ -112,11 +112,11 @@ export function compareAnswerOptionValue(
     return false;
   }
 
-  if (value.valueString) {
+  if (value.valueString !== undefined) {
     return option.valueString === value.valueString;
   }
 
-  if (value.valueInteger) {
+  if (value.valueInteger !== undefined) {
     return option.valueInteger === value.valueInteger;
   }
 
@@ -164,7 +164,7 @@ export function getAnswerValueString(answer: QuestionnaireResponseItemAnswer): s
     return answer.valueCoding.code ?? answer.valueCoding.display ?? '';
   } else if (answer.valueString !== undefined) {
     return answer.valueString;
-  } else if (answer.valueInteger) {
+  } else if (answer.valueInteger !== undefined) {
     return answer.valueInteger.toString();
   }
 

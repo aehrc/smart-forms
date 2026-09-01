@@ -309,3 +309,26 @@ describe('previously-answered open-choice option survives a failed re-lookup on 
     expect(screen.getByText(warningText)).toBeTruthy();
   });
 });
+
+describe("OpenChoice Select stays fresh when a code's display text changes (terminology rename)", () => {
+  test('OpenChoice Select: shows the freshly-resolved display, not the stale recorded one', async () => {
+    // Stored answer was recorded with the old display "Carer"; the terminology server now
+    // returns a renamed display "Support person" for the same code. Before this fix,
+    // OpenChoiceSelectAnswerOptionItem never re-matched its stored answer against the live
+    // options list, so it would keep showing "Carer" indefinitely.
+    mockLookupResolves('Support person');
+
+    render(
+      <SmartFormsRenderer
+        questionnaire={buildOpenChoiceQuestionnaire('select')}
+        questionnaireResponse={buildResponse('Carer')}
+        terminologyServerUrl="http://fake-terminology-server"
+      />
+    );
+
+    await waitFor(() => expect(document.querySelector('[data-linkid="role"]')).toBeTruthy());
+    await waitFor(() => expect(screen.getByText('Support person')).toBeTruthy());
+    expect(screen.queryByText('Carer')).toBeNull();
+    expect(screen.queryByText(warningText)).toBeNull();
+  });
+});
