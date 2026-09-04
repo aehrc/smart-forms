@@ -20,10 +20,8 @@ import type {
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
-import { useRendererConfigStore } from '../../../stores';
-import { includeAnsweredOptions, isDisplayUnavailable } from '../../../utils/openChoice';
-import { StyledWarningTypography } from '../Item.styles';
-import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
+import useAnswerOptionVisibility from '../../../hooks/useAnswerOptionVisibility';
+import AnswerOptionUnavailableWarning from '../ItemParts/AnswerOptionUnavailableWarning';
 import CheckboxFormGroup from '../ItemParts/CheckboxFormGroup';
 import CheckboxSingleWithOpenLabel from '../ItemParts/CheckboxSingleWithOpenLabel';
 
@@ -66,13 +64,10 @@ function OpenChoiceCheckboxAnswerOptionFields(props: OpenChoiceCheckboxAnswerOpt
     onClear
   } = props;
 
-  const rendererStrings = useRendererConfigStore.use.rendererStrings();
-
-  // Hide options whose display couldn't be resolved so raw codes are never shown in the list,
-  // but never hide an option the user has already answered - it stays visible using its
-  // originally-recorded display (or a raw code as a last resort) instead of vanishing outright.
-  const hasUnavailableDisplayOptions = options.some(isDisplayUnavailable);
-  const visibleOptions = includeAnsweredOptions(options, answers);
+  const { visibleOptions, hasUnavailableDisplayOptions } = useAnswerOptionVisibility(
+    options,
+    answers
+  );
 
   return (
     <>
@@ -97,11 +92,7 @@ function OpenChoiceCheckboxAnswerOptionFields(props: OpenChoiceCheckboxAnswerOpt
           onInputChange={onOpenLabelInputChange}
         />
       </CheckboxFormGroup>
-      {hasUnavailableDisplayOptions ? (
-        <StyledWarningTypography>
-          <AccessibleFeedback>{rendererStrings.answerOptionDisplayUnavailable}</AccessibleFeedback>
-        </StyledWarningTypography>
-      ) : null}
+      {hasUnavailableDisplayOptions ? <AnswerOptionUnavailableWarning /> : null}
     </>
   );
 }

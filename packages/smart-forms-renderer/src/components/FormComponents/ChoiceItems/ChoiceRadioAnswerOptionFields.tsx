@@ -20,11 +20,9 @@ import type {
   QuestionnaireItemAnswerOption,
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
-import { useRendererConfigStore } from '../../../stores';
+import useAnswerOptionVisibility from '../../../hooks/useAnswerOptionVisibility';
 import { getAnswerValueString } from '../../../utils/choice';
-import { includeAnsweredOptions, isDisplayUnavailable } from '../../../utils/openChoice';
-import { StyledWarningTypography } from '../Item.styles';
-import AccessibleFeedback from '../ItemParts/AccessibleFeedback';
+import AnswerOptionUnavailableWarning from '../ItemParts/AnswerOptionUnavailableWarning';
 import RadioFormGroup from '../ItemParts/RadioFormGroup';
 
 interface ChoiceRadioAnswerOptionFieldsProps {
@@ -56,18 +54,13 @@ function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps
     onClear
   } = props;
 
-  const rendererStrings = useRendererConfigStore.use.rendererStrings();
-
   // Match string for <RadioGroup value={...}>
   const valueRadio = qrAnswer ? (getAnswerValueString(qrAnswer) ?? '') : '';
 
-  // Hide options whose display couldn't be resolved so raw codes are never shown in the list,
-  // but never hide the currently selected answer - it stays visible using its originally-recorded
-  // display (or a raw code as a last resort) instead of vanishing from the radio group entirely.
-  const visibleOptions = includeAnsweredOptions(options, qrAnswer ? [qrAnswer] : []);
-  // Warn whenever anything couldn't be freshly resolved, even if it's still shown via fallback -
-  // a merged-back answer can look fine on screen while quietly relying on a stale/raw-code label.
-  const hasUnavailableDisplayOptions = options.some(isDisplayUnavailable);
+  const { visibleOptions, hasUnavailableDisplayOptions } = useAnswerOptionVisibility(
+    options,
+    qrAnswer ? [qrAnswer] : []
+  );
 
   return (
     <>
@@ -84,11 +77,7 @@ function ChoiceRadioAnswerOptionFields(props: ChoiceRadioAnswerOptionFieldsProps
         onCheckedChange={onCheckedChange}
         onClear={onClear}
       />
-      {hasUnavailableDisplayOptions ? (
-        <StyledWarningTypography>
-          <AccessibleFeedback>{rendererStrings.answerOptionDisplayUnavailable}</AccessibleFeedback>
-        </StyledWarningTypography>
-      ) : null}
+      {hasUnavailableDisplayOptions ? <AnswerOptionUnavailableWarning /> : null}
     </>
   );
 }

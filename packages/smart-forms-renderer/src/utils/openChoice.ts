@@ -23,6 +23,7 @@ import type {
   QuestionnaireResponseItemAnswer
 } from 'fhir/r4';
 import { OpenChoiceItemControl } from '../interfaces/choice.enum';
+import { generateCodingKey } from '../hooks/useAnswerOptionsToggleExpressions';
 import { isSpecificItemControl } from './extensions';
 import { deepEqual } from 'fast-equals';
 import differenceWith from 'lodash.differencewith';
@@ -214,27 +215,38 @@ export function includeAnsweredOptions(
   answers: Array<{ valueCoding?: Coding }>
 ): QuestionnaireItemAnswerOption[] {
   const visible = allOptions.filter((option) => !isDisplayUnavailable(option));
+  if (answers.length === 0) {
+    return visible;
+  }
+
+  // Keyed by system+code (see generateCodingKey) so lookups are O(1) instead of re-scanning
+  // the option arrays per answer, and so identity is judged consistently everywhere - never by
+  // display, which can legitimately differ between the answer's history and the live definition.
+  const visibleKeys = new Set<string>();
+  for (const option of visible) {
+    if (option.valueCoding) {
+      visibleKeys.add(generateCodingKey(option.valueCoding));
+    }
+  }
+
+  const definitionsByKey = new Map<string, QuestionnaireItemAnswerOption>();
+  for (const option of allOptions) {
+    if (option.valueCoding) {
+      definitionsByKey.set(generateCodingKey(option.valueCoding), option);
+    }
+  }
 
   for (const answer of answers) {
-    const code = answer.valueCoding?.code;
-    if (!code) {
+    if (!answer.valueCoding?.code) {
       continue;
     }
 
-    const alreadyVisible = visible.some(
-      (option) =>
-        option.valueCoding?.system === answer.valueCoding?.system &&
-        option.valueCoding?.code === code
-    );
-    if (alreadyVisible) {
+    const key = generateCodingKey(answer.valueCoding);
+    if (visibleKeys.has(key)) {
       continue;
     }
 
-    const definitionOption = allOptions.find(
-      (option) =>
-        option.valueCoding?.system === answer.valueCoding?.system &&
-        option.valueCoding?.code === code
-    );
+    const definitionOption = definitionsByKey.get(key);
     if (!definitionOption?.valueCoding) {
       continue;
     }
@@ -245,6 +257,7 @@ export function includeAnsweredOptions(
     }
 
     visible.push(optionWithDisplay);
+    visibleKeys.add(key);
   }
 
   return visible;
