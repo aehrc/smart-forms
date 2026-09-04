@@ -633,7 +633,7 @@ describe('isOptionDisabled', () => {
       display: 'Example'
     }
   };
-  const optionKey = 'coding:http://loinc.org-1234-5-Example';
+  const optionKey = 'coding:http://loinc.org-code:1234-5';
   it('returns false if the toggle map is empty', () => {
     const map = new Map();
     expect(isOptionDisabled(sampleOption, map)).toBe(false);
@@ -661,7 +661,7 @@ describe('isCodingDisabled', () => {
     code: '1234-5',
     display: 'Example'
   };
-  const codingKey = 'coding:http://loinc.org-1234-5-Example';
+  const codingKey = 'coding:http://loinc.org-code:1234-5';
 
   it('returns false if the toggle map is empty', () => {
     const map = new Map();

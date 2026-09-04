@@ -132,6 +132,21 @@ function buildResponse(display: string): QuestionnaireResponse {
   };
 }
 
+// Legacy/externally-authored answer that never had a display captured at all.
+function buildResponseWithNoDisplay(): QuestionnaireResponse {
+  return {
+    resourceType: 'QuestionnaireResponse',
+    status: 'in-progress',
+    item: [
+      {
+        linkId: 'role',
+        text: 'Role',
+        answer: [{ valueCoding: { ...CODE } }]
+      }
+    ]
+  };
+}
+
 function buildOpenChoiceQuestionnaire(
   itemControl: 'select' | 'radio-button' | 'check-box'
 ): Questionnaire {
@@ -330,5 +345,57 @@ describe("OpenChoice Select stays fresh when a code's display text changes (term
     await waitFor(() => expect(screen.getByText('Support person')).toBeTruthy());
     expect(screen.queryByText('Carer')).toBeNull();
     expect(screen.queryByText(warningText)).toBeNull();
+  });
+});
+
+describe('an answer with no display anywhere never leaks a raw code', () => {
+  test('Select: shows nothing selected rather than the raw code', async () => {
+    mockLookupRejects();
+
+    render(
+      <SmartFormsRenderer
+        questionnaire={buildQuestionnaire('select')}
+        questionnaireResponse={buildResponseWithNoDisplay()}
+        terminologyServerUrl="http://fake-terminology-server"
+      />
+    );
+
+    await waitFor(() => expect(document.querySelector('[data-linkid="role"]')).toBeTruthy());
+    await waitFor(() => expect(screen.getByText(warningText)).toBeTruthy());
+    expect(screen.queryByText('133932002')).toBeNull();
+  });
+
+  test('Radio: the option does not render rather than showing the raw code', async () => {
+    mockLookupRejects();
+
+    render(
+      <SmartFormsRenderer
+        questionnaire={buildQuestionnaire('radio-button')}
+        questionnaireResponse={buildResponseWithNoDisplay()}
+        terminologyServerUrl="http://fake-terminology-server"
+      />
+    );
+
+    await waitFor(() => expect(document.querySelector('[data-linkid="role"]')).toBeTruthy());
+    await waitFor(() => expect(screen.getByText(warningText)).toBeTruthy());
+    expect(document.querySelector('input[type="radio"]')).toBeNull();
+    expect(screen.queryByText('133932002')).toBeNull();
+  });
+
+  test('Checkbox: the option does not render rather than showing the raw code', async () => {
+    mockLookupRejects();
+
+    render(
+      <SmartFormsRenderer
+        questionnaire={buildQuestionnaire('check-box')}
+        questionnaireResponse={buildResponseWithNoDisplay()}
+        terminologyServerUrl="http://fake-terminology-server"
+      />
+    );
+
+    await waitFor(() => expect(document.querySelector('[data-linkid="role"]')).toBeTruthy());
+    await waitFor(() => expect(screen.getByText(warningText)).toBeTruthy());
+    expect(document.querySelector('input[type="checkbox"]')).toBeNull();
+    expect(screen.queryByText('133932002')).toBeNull();
   });
 });

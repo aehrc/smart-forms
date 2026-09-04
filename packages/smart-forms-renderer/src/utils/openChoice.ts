@@ -181,25 +181,34 @@ export function isDisplayUnavailable(option: QuestionnaireItemAnswerOption): boo
 }
 
 // Prefer a freshly-resolved display; if the live lookup couldn't resolve one, fall back to
-// whatever display was captured on the answer when it was originally recorded, rather than
-// losing the label entirely or leaking a raw code for an answer the user already gave.
+// whatever display was captured on the answer when it was originally recorded. Returns null
+// when neither source has a display - callers must never render a raw code as a substitute.
 export function withFallbackDisplay(
   option: QuestionnaireItemAnswerOption,
   fallbackCoding: Coding | undefined
-): QuestionnaireItemAnswerOption {
-  if (!option.valueCoding || option.valueCoding.display || !fallbackCoding?.display) {
+): QuestionnaireItemAnswerOption | null {
+  if (!option.valueCoding) {
     return option;
   }
 
-  return {
-    ...option,
-    valueCoding: { ...option.valueCoding, display: fallbackCoding.display }
-  };
+  if (option.valueCoding.display) {
+    return option;
+  }
+
+  if (fallbackCoding?.display) {
+    return {
+      ...option,
+      valueCoding: { ...option.valueCoding, display: fallbackCoding.display }
+    };
+  }
+
+  return null;
 }
 
 // Make sure an already-answered coded option is always represented, even if its display
 // couldn't be resolved this session - only options the user hasn't already picked should ever
-// be hidden by isDisplayUnavailable.
+// be hidden by isDisplayUnavailable. If no display can be found anywhere (neither live nor the
+// answer's own history), the option is left out entirely rather than showing a raw code.
 export function includeAnsweredOptions(
   allOptions: QuestionnaireItemAnswerOption[],
   answers: Array<{ valueCoding?: Coding }>
@@ -230,7 +239,12 @@ export function includeAnsweredOptions(
       continue;
     }
 
-    visible.push(withFallbackDisplay(definitionOption, answer.valueCoding));
+    const optionWithDisplay = withFallbackDisplay(definitionOption, answer.valueCoding);
+    if (!optionWithDisplay) {
+      continue;
+    }
+
+    visible.push(optionWithDisplay);
   }
 
   return visible;
