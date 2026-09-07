@@ -18,12 +18,14 @@
 import React from 'react';
 import type { PropsWithIsTabledAttribute } from '../../../interfaces/renderProps.interface';
 import { getSliderMarks } from '../../../utils/slider';
+import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import SliderLabels from './SliderLabels';
 import SliderDisplayValue from './SliderDisplayValue';
 import { useRendererConfigStore } from '../../../stores';
 import { StyledRequiredTypography } from '../Item.styles';
 import { StandardSlider } from './Slider.styles';
+import ClearInputButton from '../ItemParts/ClearInputButton';
 
 interface SliderFieldProps extends PropsWithIsTabledAttribute {
   linkId: string;
@@ -40,6 +42,7 @@ interface SliderFieldProps extends PropsWithIsTabledAttribute {
   readOnly: boolean;
   instructionsId?: string;
   onValueChange: (newValue: number) => void;
+  onClear: () => void;
 }
 
 function SliderField(props: SliderFieldProps) {
@@ -58,7 +61,8 @@ function SliderField(props: SliderFieldProps) {
     readOnly,
     instructionsId,
     isTabled,
-    onValueChange
+    onValueChange,
+    onClear
   } = props;
 
   const readOnlyVisualStyle = useRendererConfigStore.use.readOnlyVisualStyle();
@@ -76,39 +80,47 @@ function SliderField(props: SliderFieldProps) {
 
   return (
     <>
-      <Stack sx={{ ...sliderSx }}>
-        <SliderDisplayValue value={value} hasLabels={hasLabels} isInteracted={isInteracted} />
-        {hasLabels ? <SliderLabels minLabel={minLabel} maxLabel={maxLabel} /> : null}
-        <StandardSlider
-          id={itemType + '-' + linkId}
-          value={value}
-          min={minValue}
-          max={maxValue}
-          step={stepValue}
-          marks={sliderMarks}
-          sx={{ ...sliderSx }}
-          onChange={(_, newValue) => {
-            // If item.readOnly=true, do not allow any changes
-            if (readOnly) {
-              return;
-            }
+      <Box
+        display="flex"
+        alignItems={{ xs: 'start', sm: 'center' }}
+        flexDirection={{ xs: 'column', sm: 'row' }}
+        columnGap={1}>
+        <Stack sx={{ ...sliderSx }}>
+          <SliderDisplayValue value={value} hasLabels={hasLabels} isInteracted={isInteracted} />
+          {hasLabels ? <SliderLabels minLabel={minLabel} maxLabel={maxLabel} /> : null}
+          <StandardSlider
+            id={itemType + '-' + linkId}
+            value={value}
+            min={minValue}
+            max={maxValue}
+            step={stepValue}
+            marks={sliderMarks}
+            sx={{ ...sliderSx }}
+            onChange={(_, newValue) => {
+              // If item.readOnly=true, do not allow any changes
+              if (readOnly) {
+                return;
+              }
 
-            if (typeof newValue === 'number') {
-              onValueChange(newValue);
-            }
-          }}
-          disabled={readOnly && readOnlyVisualStyle === 'disabled'}
-          readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
-          aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
-          {...(!isTabled && { 'aria-labelledby': `label-${linkId}` })}
-          {...(isTabled && { 'aria-label': itemText ?? rendererStrings.unnamedSlider })}
-          {...(instructionsId
-            ? { slotProps: { input: { 'aria-describedby': instructionsId } } }
-            : {})}
-          valueLabelDisplay="auto"
-          data-test="q-item-slider-field"
-        />
-      </Stack>
+              if (typeof newValue === 'number') {
+                onValueChange(newValue);
+              }
+            }}
+            disabled={readOnly && readOnlyVisualStyle === 'disabled'}
+            readOnly={readOnly && readOnlyVisualStyle === 'readonly'}
+            aria-readonly={readOnly && readOnlyVisualStyle === 'readonly'}
+            {...(!isTabled && { 'aria-labelledby': `label-${linkId}` })}
+            {...(isTabled && { 'aria-label': itemText ?? rendererStrings.unnamedSlider })}
+            {...(instructionsId
+              ? { slotProps: { input: { 'aria-describedby': instructionsId } } }
+              : {})}
+            valueLabelDisplay="auto"
+            data-test="q-item-slider-field"
+          />
+        </Stack>
+
+        <ClearInputButton buttonShown={isInteracted} readOnly={readOnly} onClear={onClear} />
+      </Box>
 
       {feedback ? <StyledRequiredTypography>{feedback}</StyledRequiredTypography> : null}
     </>
