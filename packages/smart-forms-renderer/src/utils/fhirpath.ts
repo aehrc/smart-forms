@@ -267,13 +267,14 @@ export async function evaluateLinkIdVariables(
 
   for (const variable of linkIdVariables) {
     if (variable.expression && variable.name) {
-      if (isExpressionCached(variable.expression, fhirPathTerminologyCache)) {
+      const focusNode = qrItem ?? {};
+      if (isExpressionCached(variable.expression, fhirPathTerminologyCache, focusNode)) {
         continue;
       }
 
       try {
         const fhirPathResult = fhirpath.evaluate(
-          qrItem ?? {},
+          focusNode,
           {
             base: 'QuestionnaireResponse.item',
             expression: variable.expression
@@ -288,9 +289,10 @@ export async function evaluateLinkIdVariables(
         const result = await handleFhirPathResult(fhirPathResult);
         fhirPathContext[`${variable.name}`] = result;
 
-        // If fhirPathResult is an async terminology call, cache the result
+        // If fhirPathResult is an async terminology call, cache the result keyed by both
+        // expression and focus node so that a changed answer invalidates the cached result
         if (fhirPathResult instanceof Promise) {
-          cacheTerminologyResult(variable.expression, result, fhirPathTerminologyCache);
+          cacheTerminologyResult(variable.expression, result, fhirPathTerminologyCache, focusNode);
         }
       } catch (e) {
         console.warn(e.message, `LinkId: ${linkId}\nExpression: ${variable.expression}`);
@@ -318,7 +320,7 @@ export async function evaluateQuestionnaireLevelVariables(
 
   for (const variable of questionnaireLevelVariables) {
     if (variable.expression) {
-      if (isExpressionCached(variable.expression, fhirPathTerminologyCache)) {
+      if (isExpressionCached(variable.expression, fhirPathTerminologyCache, resource)) {
         continue;
       }
 
@@ -340,9 +342,10 @@ export async function evaluateQuestionnaireLevelVariables(
         const result = await handleFhirPathResult(fhirPathResult);
         fhirPathContext[`${variable.name}`] = result;
 
-        // If fhirPathResult is an async terminology call, cache the result
+        // If fhirPathResult is an async terminology call, cache the result keyed by both
+        // expression and focus node so that a changed response invalidates the cached result
         if (fhirPathResult instanceof Promise) {
-          cacheTerminologyResult(variable.expression, result, fhirPathTerminologyCache);
+          cacheTerminologyResult(variable.expression, result, fhirPathTerminologyCache, resource);
         }
       } catch (e) {
         console.warn(e.message, `Questionnaire-level\nExpression: ${variable.expression}`);
@@ -368,40 +371,46 @@ export async function handleFhirPathResult(result: any[] | Promise<any[]>) {
  * Determines whether a FHIRPath expression result is cached.
  *
  * Expressions containing variables (e.g. `%something`) are never considered cached, because we can never know what a variable resolves to at runtime.
+ * When a `focusNode` is provided, it is included in the cache key so that results are not reused across different inputs (e.g. different `qrItem` values for `memberOf()` calls).
  *
  * @param {string} expression - The FHIRPath expression to check.
  * @param {Record<string, any>} fhirPathTerminologyCache - Object storing cached expression results.
+ * @param {unknown} [focusNode] - Optional focus node passed to fhirpath.evaluate(). When provided it is serialised as part of the cache key.
  * @returns {boolean} `true` if the expression is cached and contains no variables; otherwise `false`.
  */
 export function isExpressionCached(
   expression: string,
-  fhirPathTerminologyCache: Record<string, any>
+  fhirPathTerminologyCache: Record<string, any>,
+  focusNode?: unknown
 ): boolean {
   // Expressions with variables are never cached
   if (expression.includes('%')) {
     return false;
   }
-
+  const key = focusNode !== undefined ? `${expression}|${JSON.stringify(focusNode)}` : expression;
   // Check if expression exists in cache
-  return Object.prototype.hasOwnProperty.call(fhirPathTerminologyCache, expression);
+  return Object.prototype.hasOwnProperty.call(fhirPathTerminologyCache, key);
 }
 
 /**
  * Caches the result of a FHIRPath evaluation if it was an asynchronous terminology call and the expression contains no variables (e.g. `%something`).
+ * When a `focusNode` is provided, it is included in the cache key to differentiate results for different inputs.
  *
  * @param {string} expression - The FHIRPath expression that was evaluated.
  * @param {any} result - The evaluated result of the expression with async resolved.
  * @param {Record<string, any>} fhirPathTerminologyCache - The cache object to store results.
+ * @param {unknown} [focusNode] - Optional focus node passed to fhirpath.evaluate(). When provided it is serialised as part of the cache key.
  */
 export function cacheTerminologyResult(
   expression: string,
   result: any,
-  fhirPathTerminologyCache: Record<string, any>
+  fhirPathTerminologyCache: Record<string, any>,
+  focusNode?: unknown
 ) {
   // Skip caching for expressions with variables
   if (expression.includes('%')) {
     return;
   }
-
-  fhirPathTerminologyCache[expression] = result;
+  const key = focusNode !== undefined ? `${expression}|${JSON.stringify(focusNode)}` : expression;
+  fhirPathTerminologyCache[key] = result;
 }

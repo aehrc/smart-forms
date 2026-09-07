@@ -20,10 +20,12 @@
 
 import {
   addEmptyXFhirQueryVariablesToFhirPathContext,
+  cacheTerminologyResult,
   createFhirPathContext,
   evaluateLinkIdVariables,
   evaluateQuestionnaireLevelVariables,
-  handleFhirPathResult
+  handleFhirPathResult,
+  isExpressionCached
 } from '../utils/fhirpath';
 import {
   BMICalculationExistingFhirPathContext,
@@ -245,5 +247,112 @@ describe('handleFhirPathResult', () => {
     const syncResult = ['valueA', 'valueB'];
     const result = await handleFhirPathResult(syncResult);
     expect(result).toEqual(['valueA', 'valueB']);
+  });
+});
+
+describe('isExpressionCached', () => {
+  it('returns false for expression containing %', () => {
+    expect(
+      isExpressionCached('%resource.memberOf(url)', { '%resource.memberOf(url)': [true] })
+    ).toBe(false);
+  });
+
+  it('returns true when expression-only key is in cache', () => {
+    expect(isExpressionCached('memberOf(url)', { 'memberOf(url)': [true] })).toBe(true);
+  });
+
+  it('returns false when expression is not in cache', () => {
+    expect(isExpressionCached('memberOf(url)', {})).toBe(false);
+  });
+
+  it('returns true when compound key (expression + focusNode) is in cache', () => {
+    const focusNode = { answer: [{ valueString: 'A' }] };
+    const key = `memberOf(url)|${JSON.stringify(focusNode)}`;
+    expect(isExpressionCached('memberOf(url)', { [key]: [true] }, focusNode)).toBe(true);
+  });
+
+  it('returns false when focusNode differs from the cached one', () => {
+    const cachedFocus = { answer: [{ valueString: 'A' }] };
+    const newFocus = { answer: [{ valueString: 'B' }] };
+    const key = `memberOf(url)|${JSON.stringify(cachedFocus)}`;
+    expect(isExpressionCached('memberOf(url)', { [key]: [true] }, newFocus)).toBe(false);
+  });
+
+  it('misses cache when focusNode is provided but only the expression-only key exists', () => {
+    const focusNode = { answer: [{ valueString: 'A' }] };
+    expect(isExpressionCached('memberOf(url)', { 'memberOf(url)': [true] }, focusNode)).toBe(false);
+  });
+});
+
+describe('cacheTerminologyResult', () => {
+  it('skips caching for expressions with %', () => {
+    const cache: Record<string, any> = {};
+    cacheTerminologyResult('%resource.memberOf(url)', [true], cache);
+    expect(cache).toEqual({});
+  });
+
+  it('stores result under expression key when no focusNode', () => {
+    const cache: Record<string, any> = {};
+    cacheTerminologyResult('memberOf(url)', [true], cache);
+    expect(cache).toEqual({ 'memberOf(url)': [true] });
+  });
+
+  it('stores result under compound key when focusNode is provided', () => {
+    const cache: Record<string, any> = {};
+    const focusNode = { answer: [{ valueString: 'A' }] };
+    cacheTerminologyResult('memberOf(url)', [true], cache, focusNode);
+    const expectedKey = `memberOf(url)|${JSON.stringify(focusNode)}`;
+    expect(cache).toEqual({ [expectedKey]: [true] });
+  });
+});
+
+describe('evaluateLinkIdVariables - stale cache prevention', () => {
+  const terminologyServerUrl = 'https://example.com/terminology/fhir';
+  const expression = 'answer.value';
+  const variablesFhirPath: Record<string, any[]> = {
+    'item-link': [{ name: 'myVar', language: 'text/fhirpath', expression }]
+  };
+
+  it('re-evaluates when qrItem changes, preventing stale async cache results', async () => {
+    const qrItemA = { linkId: 'item-link', answer: [{ valueString: 'A' }] };
+    const qrItemB = { linkId: 'item-link', answer: [{ valueString: 'B' }] };
+
+    // Simulate a previously cached async terminology result for qrItemA
+    const cacheKeyA = `${expression}|${JSON.stringify(qrItemA)}`;
+    const terminologyCache: Record<string, any> = { [cacheKeyA]: ['A'] };
+
+    // Evaluate with qrItemB - compound key is different, so cache should miss
+    const result = await evaluateLinkIdVariables(
+      'item-link',
+      variablesFhirPath,
+      { myVar: ['A'] }, // stale context from previous eval with qrItemA
+      terminologyCache,
+      terminologyServerUrl,
+      qrItemB
+    );
+
+    // Should re-evaluate with qrItemB's answer, not return stale 'A'
+    expect(result.fhirPathContext.myVar).toEqual(['B']);
+  });
+
+  it('skips re-evaluation when qrItem is unchanged (valid cache hit)', async () => {
+    const qrItem = { linkId: 'item-link', answer: [{ valueString: 'A' }] };
+
+    // Simulate a previously cached async terminology result for this qrItem
+    const cacheKey = `${expression}|${JSON.stringify(qrItem)}`;
+    const terminologyCache: Record<string, any> = { [cacheKey]: ['A'] };
+
+    // Evaluate with the same qrItem - compound key matches, should hit cache
+    const result = await evaluateLinkIdVariables(
+      'item-link',
+      variablesFhirPath,
+      { myVar: ['A'] }, // context already has correct value
+      terminologyCache,
+      terminologyServerUrl,
+      qrItem
+    );
+
+    // Cache hit - fhirPathContext keeps the existing value
+    expect(result.fhirPathContext.myVar).toEqual(['A']);
   });
 });
