@@ -34,7 +34,7 @@ import type {
 } from '../interfaces/expressions.interface';
 import { filterValueSetAnswersRecursive, resolveValueSetPromises } from './processValueSets';
 import dayjs from 'dayjs';
-import customParseFormat from 'dayjs/plugin/customParseFormat';
+import customParseFormat from 'dayjs/plugin/customParseFormat.js';
 import fhirpath from 'fhirpath';
 // Need to specifically import from 'index.js' to get it working with ts
 import fhirpath_r4_model from 'fhirpath/fhir-context/r4/index.js';
