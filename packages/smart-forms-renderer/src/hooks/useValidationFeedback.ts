@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+import { useContext } from 'react';
 import type { QuestionnaireItem } from 'fhir/r4';
 import {
   getMaxQuantityValue,
@@ -35,6 +36,8 @@ import {
 } from '../stores';
 import { interpolate } from '../i18n';
 import { structuredDataCapture } from 'fhir-sdc-helpers';
+import { RepeatGroupInstanceContext } from '../contexts/RepeatGroupInstanceContext';
+import { getValidationErrorKey } from '../utils/validateErrorKey';
 
 function useValidationFeedback(
   qItem: QuestionnaireItem,
@@ -43,6 +46,10 @@ function useValidationFeedback(
   const invalidItems = useQuestionnaireResponseStore.use.invalidItems();
   const requiredItemsIsHighlighted = useQuestionnaireResponseStore.use.requiredItemsIsHighlighted();
   const rendererStrings = useRendererConfigStore.use.rendererStrings();
+
+  // Path of enclosing repeating group instance indices (empty when not inside a repeating group).
+  // Used to look up this specific instance's validation errors rather than a shared linkId key.
+  const repeatInstancePath = useContext(RepeatGroupInstanceContext);
 
   // Target constraint-based validation
   const targetConstraints = useQuestionnaireStore.use.targetConstraints();
@@ -65,8 +72,9 @@ function useValidationFeedback(
     return feedbackFromParent;
   }
 
-  // Feedback from current item from QR invalidItems
-  const invalidOperationOutcome = invalidItems[qItem.linkId];
+  // Feedback from current item from QR invalidItems, keyed by this repeat instance (if any)
+  const invalidOperationOutcome =
+    invalidItems[getValidationErrorKey(qItem.linkId, repeatInstancePath)];
 
   // Invalid items are not present, so no feedback returned
   if (!invalidOperationOutcome) {

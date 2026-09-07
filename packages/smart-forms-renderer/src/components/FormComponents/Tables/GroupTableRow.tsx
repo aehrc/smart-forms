@@ -15,8 +15,10 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, { useContext, useMemo } from 'react';
 import type { QuestionnaireItem, QuestionnaireResponseItem } from 'fhir/r4';
+import { RepeatGroupInstanceContext } from '../../../contexts/RepeatGroupInstanceContext';
+import { appendRepeatInstanceIndex } from '../../../utils/validateErrorKey';
 import type { PropsWithParentIsReadOnlyAttribute } from '../../../interfaces/renderProps.interface';
 import type { TableRowProps } from '@mui/material/TableRow';
 import TableRow from '@mui/material/TableRow';
@@ -41,7 +43,8 @@ interface GroupTableRowProps extends PropsWithParentIsReadOnlyAttribute, TableRo
   hoverDisabled: boolean;
   tableRows: GroupTableRowModel[];
   itemIsSelected: boolean;
-  selectedIds: string[];
+  /** This row's index within the QuestionnaireResponse, or null if it isn't in the QR */
+  qrRowIndex: number | null;
   qItemsIndexMap: Record<string, number>;
   visibleItemLabels: string[];
   calculatedColumnWidths: { width: string; isFixed: boolean }[];
@@ -62,6 +65,7 @@ function GroupTableRow(props: GroupTableRowProps) {
     hoverDisabled,
     tableRows,
     itemIsSelected,
+    qrRowIndex,
     qItemsIndexMap,
     visibleItemLabels,
     calculatedColumnWidths,
@@ -72,6 +76,17 @@ function GroupTableRow(props: GroupTableRowProps) {
   } = props;
 
   const dragRowLabel = useRendererConfigStore.use.rendererStrings().dragRow;
+
+  // Append this row's index to the enclosing repeat instance path so that the row's cells look up
+  // their own instance-scoped validation errors (see useValidationFeedback). Uses the
+  // QuestionnaireResponse index, not the rendered row index, because that is what validation walks.
+  // Memoised to keep the provided context value referentially stable, so that memoising a descendant
+  // item in future actually lets it bail out of a re-render.
+  const parentRepeatInstancePath = useContext(RepeatGroupInstanceContext);
+  const repeatInstancePath = useMemo(
+    () => appendRepeatInstanceIndex(parentRepeatInstancePath, qrRowIndex),
+    [parentRepeatInstancePath, qrRowIndex]
+  );
 
   if (showExtraGTableInteractions) {
     return (
@@ -105,15 +120,17 @@ function GroupTableRow(props: GroupTableRowProps) {
                 onSelectItem={() => onSelectRow(rowId)}
               />
             </>
-            <GroupTableRowCells
-              qItem={tableQItem}
-              qrItem={answeredQrItem}
-              qItemsIndexMap={qItemsIndexMap}
-              visibleItemLabels={visibleItemLabels}
-              calculatedColumnWidths={calculatedColumnWidths}
-              parentIsReadOnly={readOnly}
-              onQrItemChange={(newQrGroup) => onRowChange(newQrGroup, index)}
-            />
+            <RepeatGroupInstanceContext.Provider value={repeatInstancePath}>
+              <GroupTableRowCells
+                qItem={tableQItem}
+                qrItem={answeredQrItem}
+                qItemsIndexMap={qItemsIndexMap}
+                visibleItemLabels={visibleItemLabels}
+                calculatedColumnWidths={calculatedColumnWidths}
+                parentIsReadOnly={readOnly}
+                onQrItemChange={(newQrGroup) => onRowChange(newQrGroup, index)}
+              />
+            </RepeatGroupInstanceContext.Provider>
             <RemoveRowButton
               nullableQrItem={nullableQrItem}
               numOfRows={tableRows.length}
@@ -129,15 +146,17 @@ function GroupTableRow(props: GroupTableRowProps) {
   return (
     <TableRow>
       <TableCell padding="checkbox" />
-      <GroupTableRowCells
-        qItem={tableQItem}
-        qrItem={answeredQrItem}
-        qItemsIndexMap={qItemsIndexMap}
-        visibleItemLabels={visibleItemLabels}
-        calculatedColumnWidths={calculatedColumnWidths}
-        parentIsReadOnly={readOnly}
-        onQrItemChange={(newQrGroup) => onRowChange(newQrGroup, index)}
-      />
+      <RepeatGroupInstanceContext.Provider value={repeatInstancePath}>
+        <GroupTableRowCells
+          qItem={tableQItem}
+          qrItem={answeredQrItem}
+          qItemsIndexMap={qItemsIndexMap}
+          visibleItemLabels={visibleItemLabels}
+          calculatedColumnWidths={calculatedColumnWidths}
+          parentIsReadOnly={readOnly}
+          onQrItemChange={(newQrGroup) => onRowChange(newQrGroup, index)}
+        />
+      </RepeatGroupInstanceContext.Provider>
       <TableCell padding="checkbox" />
     </TableRow>
   );
